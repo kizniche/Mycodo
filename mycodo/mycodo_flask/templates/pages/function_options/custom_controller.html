@@ -71,47 +71,10 @@
         </div>
       </div>
 
-    {% if 'custom_options' in dict_controllers[each_controller.device]['options_enabled'] %}
-
-      {% for each_option in dict_controllers[each_controller.device]['custom_options'] %}
-
-        {% if each_option['type'] in ['float', 'integer', 'text'] %}
-
-      <div class="col-auto">
-        <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
-        <div>
-          <input class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="text" value="{{custom_options_values_controllers[each_controller.unique_id][each_option['id']]}}">
-        </div>
-      </div>
-
-          {% elif each_option['type'] == 'select' %}
-
-      <div class="col-auto">
-        <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
-        <div>
-          <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}">
-            <option value="">{{dict_translation['select_one']['title']}}</option>
-            {% for each_set in each_option['options_select'] %}
-            <option value="{{each_set[0]}}"{% if each_set[0] == custom_options_values_controllers[each_controller.unique_id][each_option['id']] %} selected{% endif %}>{{each_set[1]}}</option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-
-          {% elif each_option['type'] == 'bool' %}
-
-      <div class="col-auto">
-        <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
-        <div class="input-group-text">
-          <input id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="checkbox" value="y"{% if custom_options_values_controllers[each_controller.unique_id][each_option['id']] %} checked{% endif %}>
-        </div>
-      </div>
-
-        {% endif %}
-
-      {% endfor %}
-
-    {% endif %}
+    {% set dict_options = dict_controllers[each_controller.device] %}
+    {% set unique_id = each_controller.unique_id %}
+    {% set custom_options_values = custom_options_values_controllers %}
+    {% include 'pages/TEMPLATE_OPTIONS_Custom_Options.html' %}
 
     </div>
 

@@ -53,13 +53,14 @@ CONTROLLER_INFORMATION = {
     'controller_name_unique': 'EXAMPLE_CONTROLLER',
     'controller_name': 'Example Custom Controller',
 
-    'message': 'This is a custom message that will appear above the Controller options on the Function page.',
+    'message': 'This is a custom message that will appear above the Controller options on the Function page. It merely demonstrates how to generate user option inputs. It will retrieve the last selected measurement, turn as selected output on for 15 seconds, then deactivate itself. Study the code to develop your own controller.',
 
     'options_enabled': [
         'custom_options'
     ],
 
     'dependencies_module': [
+        # Example dependencies that will be installed when the user adds the controller
         # ('apt', 'build-essential', 'build-essential'),
         # ('apt', 'bison', 'bison'),
         # ('apt', 'libasound2-dev', 'libasound2-dev'),
@@ -92,8 +93,58 @@ CONTROLLER_INFORMATION = {
             'default_value': True,
             'name': lazy_gettext('Boolean 1'),
             'phrase': lazy_gettext('Boolean 1 Description')
+        },
+        {
+            'id': 'select_1',
+            'type': 'select',
+            'default_value': '',
+            'options_select': [
+                ('', 'No Option Selected'),
+                ('FIRST', 'First Option Selected'),
+                ('SECOND', 'Second Option Selected'),
+                ('THIRD', 'Third Option Selected'),
+            ],
+            'name': lazy_gettext('Select 1'),
+            'phrase': lazy_gettext('Select 1 Description')
+        },
+        {
+            'id': 'select_measurement_1',
+            'type': 'select_measurement',
+            'default_value': '',
+            'options_select': [
+                'Input',
+                'Output',
+                'Math',
+                'PID'
+            ],
+            'name': lazy_gettext('Select Measurement 1'),
+            'phrase': lazy_gettext('Select Measurement 1 Description')
+        },
+        {
+            'id': 'select_device_1',
+            'type': 'select_device',
+            'default_value': '',
+            'options_select': [
+                'Output',
+            ],
+            'name': lazy_gettext('Select Device 1'),
+            'phrase': lazy_gettext('Select Device 1 Description')
+        },
+        {
+            'id': 'select_device_2',
+            'type': 'select_device',
+            'default_value': '',
+            'options_select': [
+                'Input',
+                'Output',
+                'Math',
+                'PID',
+                'Trigger',
+                'Custom'
+            ],
+            'name': lazy_gettext('Select Device 2'),
+            'phrase': lazy_gettext('Select Device 2 Description')
         }
-        # TODO: Add custom options for Input/Conditional/Math/Method/PID/Trigger/LCD form selection
     ]
 }
 
@@ -115,6 +166,12 @@ class CustomModule(AbstractController, threading.Thread):
         self.text_1 = None
         self.integer_1 = None
         self.bool_1 = None
+        self.select_1 = None
+        self.select_measurement_1_device_id = None
+        self.select_measurement_1_measurement_id = None
+        self.select_device_1_id = None
+        self.select_device_2_id = None
+
         # Set custom options
         custom_controller = db_retrieve_table_daemon(
             CustomController, unique_id=unique_id)
@@ -133,9 +190,74 @@ class CustomModule(AbstractController, threading.Thread):
             self.ready.set()
             self.running = True
 
-            self.logger.debug("Custom controller starting with options: {}, {}, {}...".format(
-                self.text_1, self.integer_1, self.bool_1))
+            # Make sure the option "Log Level: Debug" is enabled for these
+            # messages to appear in the daemon log.
+            self.logger.debug(
+                "Custom controller started with options: "
+                "{}, {}, {}, {}, {}, {}, {}".format(
+                    self.text_1,
+                    self.integer_1,
+                    self.bool_1,
+                    self.select_1,
+                    self.select_measurement_1_device_id,
+                    self.select_measurement_1_measurement_id,
+                    self.select_device_1_id))
 
+            # Get last measurement for select_measurement_1
+            last_measurement = self.get_last_measurement(
+                self.select_measurement_1_device_id,
+                self.select_measurement_1_measurement_id)
+
+            if last_measurement:
+                self.logger.debug(
+                    "Most recent timestamp and measurement for "
+                    "select_measurement_1: {timestamp}, {meas}".format(
+                        timestamp=last_measurement[0],
+                        meas=last_measurement[1]))
+            else:
+                self.logger.debug(
+                    "Could not find a measurement in the database for "
+                    "select_measurement_1 device ID {} and measurement "
+                    "ID {}".format(
+                        self.select_measurement_1_device_id,
+                        self.select_measurement_1_measurement_id))
+
+            # Turn Output select_device_1 on for 15 seconds
+            self.logger.debug(
+                "Turning select_device_1 with ID {} on for 15 "
+                "seconds...".format(
+                    self.select_device_1_id))
+            self.control.output_on(self.select_device_1_id, amount=15)
+
+            # Deactivate controller in the SQL database
+            self.logger.debug(
+                "Deactivating (SQL) Custom controller select_device_2 with"
+                " ID {} ...".format(self.select_device_2_id))
+            from mycodo.databases.utils import session_scope
+            from mycodo.config import SQL_DATABASE_MYCODO
+            MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_cont = new_session.query(CustomController).filter(
+                    CustomController.unique_id == self.select_device_2_id).first()
+                mod_cont.is_activated = False
+                new_session.commit()
+
+            # Deactivate select_device_1_id in the dameon
+            # Since we're deactivating this controller (itself), we need to thread this command
+            # Note: this command will only deactivate the controller in the Daemon. It will still
+            # be activated in the database, so the next restart of the daemon, this controller
+            # will start back up again. This is why the previous action deactivated the controller
+            # in the database prior to deactivating it in the daemon.
+            self.logger.debug(
+                "Deactivating (Daemon) Custom controller select_device_2 with"
+                " ID {} ...".format(self.select_device_2_id))
+            deactivate_controller = threading.Thread(
+                target=self.control.controller_deactivate,
+                args=('Custom',
+                      self.select_device_2_id,))
+            deactivate_controller.start()
+
+            # Start a loop
             while self.running:
                 time.sleep(1)
         except:
@@ -156,3 +278,4 @@ class CustomModule(AbstractController, threading.Thread):
         controller = db_retrieve_table_daemon(
             CustomController, unique_id=self.unique_id)
         self.log_level_debug = controller.log_level_debug
+        self.set_log_level_debug(self.log_level_debug)

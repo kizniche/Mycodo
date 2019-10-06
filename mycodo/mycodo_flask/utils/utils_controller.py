@@ -12,13 +12,12 @@ from mycodo.databases.models import CustomController
 from mycodo.databases.models import DisplayOrder
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
+from mycodo.mycodo_flask.utils.utils_general import custom_options_return_string
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.system_pi import csv_to_list_of_str
-from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import list_to_csv
-from mycodo.utils.system_pi import str_is_float
 
 logger = logging.getLogger(__name__)
 
@@ -43,80 +42,12 @@ def controller_mod(form, request_form):
         mod_controller.name = form.name.data
         mod_controller.log_level_debug = form.log_level_debug.data
 
-        # Custom options
-        list_options = []
-        if 'custom_options' in dict_controllers[mod_controller.device]:
-            for each_option in dict_controllers[mod_controller.device]['custom_options']:
-                null_value = True
-                for key in request_form.keys():
-                    if each_option['id'] == key:
-                        constraints_pass = True
-                        constraints_errors = []
-                        value = None
-                        if each_option['type'] == 'float':
-                            if str_is_float(request_form.get(key)):
-                                if 'constraints_pass' in each_option:
-                                    (constraints_pass,
-                                     constraints_errors,
-                                     mod_controller) = each_option['constraints_pass'](
-                                        mod_controller, float(request_form.get(key)))
-                                if constraints_pass:
-                                    value = float(request_form.get(key))
-                            else:
-                                error.append(
-                                    "{name} must represent a float/decimal value "
-                                    "(submitted '{value}')".format(
-                                        name=each_option['name'],
-                                        value=request_form.get(key)))
-
-                        elif each_option['type'] == 'integer':
-                            if is_int(request_form.get(key)):
-                                if 'constraints_pass' in each_option:
-                                    (constraints_pass,
-                                     constraints_errors,
-                                     mod_controller) = each_option['constraints_pass'](
-                                        mod_controller, int(request_form.get(key)))
-                                if constraints_pass:
-                                    value = int(request_form.get(key))
-                            else:
-                                error.append(
-                                    "{name} must represent an integer value "
-                                    "(submitted '{value}')".format(
-                                        name=each_option['name'],
-                                        value=request_form.get(key)))
-
-                        elif each_option['type'] in ['text', 'select']:
-                            if 'constraints_pass' in each_option:
-                                (constraints_pass,
-                                 constraints_errors,
-                                 mod_controller) = each_option['constraints_pass'](
-                                    mod_controller, request_form.get(key))
-                            if constraints_pass:
-                                value = request_form.get(key)
-
-                        elif each_option['type'] == 'bool':
-                            value = bool(request_form.get(key))
-
-                        for each_error in constraints_errors:
-                            error.append(
-                                "Error: {name}: {error}".format(
-                                    name=each_option['name'],
-                                    error=each_error))
-
-                        if value is not None:
-                            null_value = False
-                            option = '{id},{value}'.format(
-                                id=key,
-                                value=value)
-                            list_options.append(option)
-
-                if null_value:
-                    option = '{id},'.format(id=each_option['id'])
-                    list_options.append(option)
-
-        mod_controller.custom_options = ';'.join(list_options)
+        # Generate string to save from custom options
+        error, custom_options = custom_options_return_string(
+            error, dict_controllers, mod_controller, request_form)
 
         if not error:
+            mod_controller.custom_options = custom_options
             db.session.commit()
 
     except sqlalchemy.exc.OperationalError as except_msg:
@@ -178,7 +109,7 @@ def controller_activate(controller_id):
         controller=TRANSLATIONS['controller']['title'])
 
     if not error:
-        controller_activate_deactivate('activate', 'CustomController', controller_id)
+        controller_activate_deactivate('activate', 'Custom', controller_id)
 
     flash_success_errors(error, action, url_for('routes_page.page_function'))
 
@@ -191,6 +122,6 @@ def controller_deactivate(controller_id):
         controller=TRANSLATIONS['controller']['title'])
 
     if not error:
-        controller_activate_deactivate('deactivate', 'CustomController', controller_id)
+        controller_activate_deactivate('deactivate', 'Custom', controller_id)
 
     flash_success_errors(error, action, url_for('routes_page.page_function'))

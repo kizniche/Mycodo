@@ -20,8 +20,8 @@ from mycodo.config import FUNCTION_INFO
 from mycodo.config import LCD_INFO
 from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
-from mycodo.config import OUTPUT_INFO
 from mycodo.config import OUTPUTS_PWM
+from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_CAMERAS
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
@@ -45,9 +45,95 @@ from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import dpkg_package_exists
+from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import return_measurement_info
+from mycodo.utils.system_pi import str_is_float
 
 logger = logging.getLogger(__name__)
+
+
+#
+# Custom options
+#
+
+def custom_options_return_string(error, dict_options, mod_dev, request_form):
+    # Custom options
+    list_options = []
+    if 'custom_options' in dict_options[mod_dev.device]:
+        for each_option in dict_options[mod_dev.device]['custom_options']:
+            null_value = True
+            for key in request_form.keys():
+                if each_option['id'] == key:
+                    constraints_pass = True
+                    constraints_errors = []
+                    value = None
+
+                    if each_option['type'] == 'float':
+                        if str_is_float(request_form.get(key)):
+                            if 'constraints_pass' in each_option:
+                                (constraints_pass,
+                                 constraints_errors,
+                                 mod_dev) = each_option['constraints_pass'](
+                                    mod_dev, float(request_form.get(key)))
+                            if constraints_pass:
+                                value = float(request_form.get(key))
+                        else:
+                            error.append(
+                                "{name} must represent a float/decimal value "
+                                "(submitted '{value}')".format(
+                                    name=each_option['name'],
+                                    value=request_form.get(key)))
+
+                    elif each_option['type'] == 'integer':
+                        if is_int(request_form.get(key)):
+                            if 'constraints_pass' in each_option:
+                                (constraints_pass,
+                                 constraints_errors,
+                                 mod_dev) = each_option['constraints_pass'](
+                                    mod_dev, int(request_form.get(key)))
+                            if constraints_pass:
+                                value = int(request_form.get(key))
+                        else:
+                            error.append(
+                                "{name} must represent an integer value "
+                                "(submitted '{value}')".format(
+                                    name=each_option['name'],
+                                    value=request_form.get(key)))
+
+                    elif each_option['type'] in [
+                            'text',
+                            'select',
+                            'select_measurement',
+                            'select_device']:
+                        if 'constraints_pass' in each_option:
+                            (constraints_pass,
+                             constraints_errors,
+                             mod_dev) = each_option['constraints_pass'](
+                                mod_dev, request_form.get(key))
+                        if constraints_pass:
+                            value = request_form.get(key)
+
+                    elif each_option['type'] == 'bool':
+                        value = bool(request_form.get(key))
+
+                    for each_error in constraints_errors:
+                        error.append(
+                            "Error: {name}: {error}".format(
+                                name=each_option['name'],
+                                error=each_error))
+
+                    if value is not None:
+                        null_value = False
+                        option = '{id},{value}'.format(
+                            id=key,
+                            value=value)
+                        list_options.append(option)
+
+            if null_value:
+                option = '{id},'.format(id=each_option['id'])
+                list_options.append(option)
+
+    return error, ';'.join(list_options)
 
 
 #
@@ -112,7 +198,7 @@ def controller_activate_deactivate(controller_action,
         "Math": TRANSLATIONS['math']['title'],
         "PID": TRANSLATIONS['pid']['title'],
         "Trigger": TRANSLATIONS['trigger']['title'],
-        "CustomController": '{} {}'.format(
+        "Custom": '{} {}'.format(
             TRANSLATIONS['custom']['title'],
             TRANSLATIONS['controller']['title'])
     }
@@ -142,7 +228,7 @@ def controller_activate_deactivate(controller_action,
     elif controller_type == 'Trigger':
         mod_controller = Trigger.query.filter(
             Trigger.unique_id == controller_id).first()
-    elif controller_type == 'CustomController':
+    elif controller_type == 'Custom':
         mod_controller = CustomController.query.filter(
             CustomController.unique_id == controller_id).first()
 

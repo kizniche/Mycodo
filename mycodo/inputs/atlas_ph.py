@@ -143,11 +143,8 @@ class InputModule(AbstractInput):
             device_id = self.calibrate_sensor_measure.split(',')[0]
             measurement_id = self.calibrate_sensor_measure.split(',')[1]
 
-            all_device_measurements = db_retrieve_table_daemon(
+            device_measurement = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
-                DeviceMeasurements.device_id == self.input_dev.unique_id)
-
-            device_measurement = all_device_measurements.filter(
                 DeviceMeasurements.unique_id == measurement_id).first()
             if device_measurement:
                 conversion = db_retrieve_table_daemon(

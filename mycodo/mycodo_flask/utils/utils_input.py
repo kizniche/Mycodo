@@ -19,17 +19,16 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
+from mycodo.mycodo_flask.utils.utils_general import custom_options_return_string
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
-from mycodo.utils.system_pi import parse_custom_option_values
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import csv_to_list_of_str
-from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import list_to_csv
-from mycodo.utils.system_pi import str_is_float
+from mycodo.utils.system_pi import parse_custom_option_values
 
 logger = logging.getLogger(__name__)
 
@@ -433,80 +432,13 @@ def input_mod(form_mod, request_form):
                 for each_error in constraints_errors:
                     flash(each_error, 'error')
 
-        # Custom options
-        list_options = []
-        if 'custom_options' in dict_inputs[mod_input.device]:
-            for each_option in dict_inputs[mod_input.device]['custom_options']:
-                null_value = True
-                for key in request_form.keys():
-                    if each_option['id'] == key:
-                        constraints_pass = True
-                        constraints_errors = []
-                        value = None
-                        if each_option['type'] == 'float':
-                            if str_is_float(request_form.get(key)):
-                                if 'constraints_pass' in each_option:
-                                    (constraints_pass,
-                                     constraints_errors,
-                                     mod_input) = each_option['constraints_pass'](
-                                        mod_input, float(request_form.get(key)))
-                                if constraints_pass:
-                                    value = float(request_form.get(key))
-                            else:
-                                error.append(
-                                    "{name} must represent a float/decimal value "
-                                    "(submitted '{value}')".format(
-                                        name=each_option['name'],
-                                        value=request_form.get(key)))
-
-                        elif each_option['type'] == 'integer':
-                            if is_int(request_form.get(key)):
-                                if 'constraints_pass' in each_option:
-                                    (constraints_pass,
-                                     constraints_errors,
-                                     mod_input) = each_option['constraints_pass'](
-                                        mod_input, int(request_form.get(key)))
-                                if constraints_pass:
-                                    value = int(request_form.get(key))
-                            else:
-                                error.append(
-                                    "{name} must represent an integer value "
-                                    "(submitted '{value}')".format(
-                                        name=each_option['name'],
-                                        value=request_form.get(key)))
-
-                        elif each_option['type'] in ['text', 'select']:
-                            if 'constraints_pass' in each_option:
-                                (constraints_pass,
-                                 constraints_errors,
-                                 mod_input) = each_option['constraints_pass'](
-                                    mod_input, request_form.get(key))
-                            if constraints_pass:
-                                value = request_form.get(key)
-
-                        elif each_option['type'] == 'bool':
-                            value = bool(request_form.get(key))
-
-                        for each_error in constraints_errors:
-                            error.append(
-                                "Error: {name}: {error}".format(
-                                    name=each_option['name'],
-                                    error=each_error))
-
-                        if value is not None:
-                            null_value = False
-                            option = '{id},{value}'.format(
-                                id=key,
-                                value=value)
-                            list_options.append(option)
-
-                if null_value:
-                    option = '{id},'.format(id=each_option['id'])
-                    list_options.append(option)
-
-        mod_input.custom_options = ';'.join(list_options)
+        # Generate string to save from custom options
+        error, custom_options = custom_options_return_string(
+            error, dict_inputs, mod_input, request_form)
 
         if not error:
+            mod_input.custom_options = custom_options
+
             # Add or delete channels for variable measurement Inputs
             if ('measurements_variable_amount' in dict_inputs[mod_input.device] and
                     dict_inputs[mod_input.device]['measurements_variable_amount']):

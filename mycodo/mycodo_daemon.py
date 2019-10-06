@@ -133,7 +133,7 @@ class DaemonController:
             'Math': {},
             'PID': {},
             'Trigger': {},
-            'CustomController': {}
+            'Custom': {}
         }
 
         # Controllers that may launch multiple threads
@@ -145,7 +145,7 @@ class DaemonController:
             'Math',
             'PID',
             'LCD',
-            'CustomController'
+            'Custom'
         ]
         self.thread_shutdown_timer = None
         self.start_time = time.time()
@@ -246,7 +246,7 @@ class DaemonController:
         :return: 0 for success, 1 for fail, with success or error message
         :rtype: int, str
 
-        :param cont_type: Which controller type is to be activated?
+        :param cont_type: The controller type to be activated
         :type cont_type: str
         :param cont_id: Unique ID for controller
         :type cont_id: str
@@ -281,7 +281,7 @@ class DaemonController:
             elif cont_type == 'Trigger':
                 controller_manage['type'] = Trigger
                 controller_manage['function'] = TriggerController
-            elif cont_type == 'CustomController':
+            elif cont_type == 'Custom':
                 controller_manage['type'] = CustomController
 
                 custom_controller = db_retrieve_table_daemon(controller_manage['type'],
@@ -337,7 +337,7 @@ class DaemonController:
         :return: 0 for success, 1 for fail, with success or error message
         :rtype: int, str
 
-        :param cont_type: Which controller type is to be activated?
+        :param cont_type: The controller type to be deactivated
         :type cont_type: str
         :param cont_id: Unique ID for controller
         :type cont_id: str
@@ -432,9 +432,9 @@ class DaemonController:
             for trigger_id in self.controller['Trigger']:
                 if not self.controller['Trigger'][trigger_id].is_running():
                     return "Error: Trigger ID {}".format(trigger_id)
-            for controller_id in self.controller['CustomController']:
-                if not self.controller['CustomController'][controller_id].is_running():
-                    return "Error: CustomController ID {}".format(trigger_id)
+            for controller_id in self.controller['Custom']:
+                if not self.controller['Custom'][controller_id].is_running():
+                    return "Error: Custom ID {}".format(controller_id)
             if not self.controller['Output'].is_running():
                 return "Error: Output controller"
         except Exception as except_msg:
@@ -793,7 +793,7 @@ class DaemonController:
                 'Math': db_retrieve_table_daemon(Math, entry='all'),
                 'PID': db_retrieve_table_daemon(PID, entry='all'),
                 'Trigger': db_retrieve_table_daemon(Trigger, entry='all'),
-                'CustomController': db_retrieve_table_daemon(CustomController, entry='all')
+                'Custom': db_retrieve_table_daemon(CustomController, entry='all')
             }
 
             self.logger.debug("Starting Output Controller")

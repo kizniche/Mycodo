@@ -100,7 +100,10 @@
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Num_channels.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Enabled.html' %}
 
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Custom_Options.html' %}
+        {% set dict_options = dict_inputs[each_input.device] %}
+        {% set unique_id = each_input.unique_id %}
+        {% set custom_options_values = custom_options_values_inputs %}
+        {% include 'pages/TEMPLATE_OPTIONS_Custom_Options.html' %}
 
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Single_Input_Math.html' %}
         {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_EDGE.html' %}
