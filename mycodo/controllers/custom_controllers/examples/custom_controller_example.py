@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# controller_example.py - Pocketsphinx controller for speech recognition
+#  custom_controller_example.py - Custom controller example file for importing into Mycodo
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
 #

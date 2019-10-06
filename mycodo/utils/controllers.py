@@ -44,8 +44,11 @@ def parse_controller_information():
         return dict_inp
 
     excluded_files = [
-        '__init__.py', '__pycache__', 'base_controller.py', 'custom_controllers',
-        'examples', 'scripts', 'tmp_controllers', 'sensorutils.py'
+        '__init__.py', '__pycache__', 'base_controller.py',
+        'custom_controllers', 'examples', 'scripts', 'tmp_controllers',
+        'sensorutils.py', 'controller_conditional.py', 'controller_input.py',
+        'controller_lcd.py', 'controller_math.py', 'controller_output.py',
+        'controller_pid.py', 'controller_trigger.py'
     ]
 
     controller_paths = [PATH_CONTROLLERS, PATH_CONTROLLERS_CUSTOM]
