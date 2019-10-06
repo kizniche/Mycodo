@@ -10,6 +10,8 @@ Latest version: 7.7.9 |Build Status| |Codacy Badge| |DOI|
 `HTML <http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html>`__,
 `TEXT <https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt>`__)
 
+`Mycodo Support <https://play.google.com/store/apps/details?id=com.mycodo.mycododocs>`__ (Android App)
+
 `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__
 
 Mycodo is an automated monitoring and regulation system that was built
