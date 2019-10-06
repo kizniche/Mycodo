@@ -4,7 +4,7 @@ import logging
 
 import os
 
-logger = logging.getLogger("mycodo.system_pi")
+logger = logging.getLogger("mycodo.modules")
 
 if logging.getLevelName(logging.getLogger().getEffectiveLevel()) == 'INFO':
     logger.setLevel(logging.INFO)
