@@ -518,7 +518,7 @@ if __name__ == "__main__":
 
     elif args.activatecontroller:
         if args.activatecontroller[0] not in [
-                'Conditional', 'Input', 'LCD', 'Math', 'PID', 'Trigger']:
+                'Conditional', 'Input', 'LCD', 'Math', 'PID', 'Trigger', 'Custom']:
             logger.info(
                 "Invalid controller type: {}. Options: Conditional, Input, "
                 "LCD, Math, PID, Trigger.".format(args.activatecontroller[0]))
@@ -533,7 +533,7 @@ if __name__ == "__main__":
 
     elif args.deactivatecontroller:
         if args.deactivatecontroller[0] not in [
-                'Conditional', 'Input', 'LCD', 'Math', 'PID', 'Trigger']:
+                'Conditional', 'Input', 'LCD', 'Math', 'PID', 'Trigger', 'Custom']:
             logger.info(
                 "Invalid controller type: {}. Options: Conditional, Input, "
                 "LCD, Math, PID, Trigger.".format(args.activatecontroller[0]))
