@@ -50,6 +50,7 @@ from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import return_measurement_info
+from mycodo.utils.system_pi import str_is_float
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -253,9 +254,7 @@ class OutputController(AbstractController, threading.Thread):
 
             # PWM Outputs
             elif self.output_type[each_output_id] in OUTPUTS_PWM:
-                from mycodo.utils.system_pi import str_is_float
-                if (str_is_float(self.output_state_startup[each_output_id]) and
-                        float(self.output_state_startup[each_output_id]) == 0):
+                if self.output_state_startup[each_output_id] == '0':
                     self.logger.info(
                         "Setting Output {id} startup duty cycle to 0 %".format(
                             id=each_output_id.split('-')[0]))
@@ -1195,10 +1194,12 @@ output_id = '{}'
         if self.output_interface[output_id] == 'FTDI':
             self.atlas_command[output_id] = AtlasScientificFTDI(
                 self.output_location[output_id])
+
         elif self.output_interface[output_id] == 'I2C':
             self.atlas_command[output_id] = AtlasScientificI2C(
                 i2c_address=int(str(self.output_location[output_id]), 16),
                 i2c_bus=self.output_i2c_bus[output_id])
+
         elif self.output_interface[output_id] == 'UART':
             self.atlas_command[output_id] = AtlasScientificUART(
                 self.output_location[output_id],
@@ -1301,7 +1302,7 @@ output_id = '{}'
                         self.pwm_output[output_id].set_PWM_dutycycle(
                             self.output_pin[output_id], 0)
                     else:
-                        self.logger.error("Cound not connect to pigpiod")
+                        self.logger.error("Could not connect to pigpiod")
                 self.pwm_state[output_id] = None
                 self.logger.info("PWM {id} setup on pin {pin}".format(
                     id=output_id.split('-')[0], pin=self.output_pin[output_id]))

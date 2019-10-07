@@ -41,6 +41,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Data')},
     'deactivate': {
         'title': lazy_gettext('Deactivate')},
+    'default': {
+        'title': lazy_gettext('Default')},
     'delete': {
         'title': lazy_gettext('Delete')},
     'diagnostic': {

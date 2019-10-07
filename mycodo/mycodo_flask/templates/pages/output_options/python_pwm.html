@@ -11,8 +11,8 @@
     <select class="form-control form-tooltip form-dropdown" id="state_startup" name="state_startup" data-placement="top" title="{{dict_translation['state_startup']['phrase']}}">
       <option value="-1"{% if each_output.state_startup == None %} selected{% endif %}>{{_('Do Nothing')}}</option>
       <option value="0"{% if each_output.state_startup == '0' %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
-      <option value="set_duty_cycle"{% if each_output.state_startup == 'set_duty_cycle' %} selected{% endif %}>User Set Value</option>
-      <option value="last_duty_cycle"{% if each_output.state_startup == 'last_duty_cycle' %} selected{% endif %}>Last Set Value</option>
+      <option value="set_duty_cycle"{% if each_output.state_startup == 'set_duty_cycle' %} selected{% endif %}>{{_('User Set Value')}}</option>
+      <option value="last_duty_cycle"{% if each_output.state_startup == 'last_duty_cycle' %} selected{% endif %}>{{_('Last Known Value')}}</option>
     </select>
   </div>
 </div>
@@ -28,7 +28,7 @@
     <select class="form-control form-tooltip form-dropdown" id="state_shutdown" name="state_shutdown" data-placement="top" title="{{dict_translation['state_shutdown']['phrase']}}">
       <option value="-1"{% if each_output.state_startup == None %} selected{% endif %}>{{_('Do Nothing')}}</option>
       <option value="0"{% if each_output.state_startup == '0' %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
-      <option value="set_duty_cycle"{% if each_output.state_startup == 'set_duty_cycle' %} selected{% endif %}>User Set Value</option>
+      <option value="set_duty_cycle"{% if each_output.state_startup == 'set_duty_cycle' %} selected{% endif %}>{{_('User Set Value')}}</option>
     </select>
   </div>
 </div>

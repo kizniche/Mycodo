@@ -1,6 +1,6 @@
 ## 7.7.10 (Unreleased)
 
-This release brings a big feature: Custom Controllers. Now users can add Custom Controllers just like Custom Inputs. There is a new section of the Settings menu called Controllers where a single-file Custom Controller file can be imported into Mycodo. This new controller will appear in the dropdown list on the Functions page, and will act like any other function controller (PID, Trigger, LCD, etc.), but now the only controller limitation is your coding ability.
+This release brings a big feature: Custom Controllers. Now users can import Custom Controllers just like Custom Inputs. There is a new settings section of the Configuration menu called Controllers, where a single-file Custom Controller can be imported into Mycodo. This new controller will appear in the dropdown list on the Functions page, and will act like any other function controller (PID, Trigger, LCD, etc.). See the [Custom Controllers](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-controllers) section of the manual.
 
 ### Bugfixes
 
@@ -10,7 +10,7 @@ This release brings a big feature: Custom Controllers. Now users can add Custom 
 
 ### Features
 
- - Add ability to add Custom Controllers
+ - Add ability to import Custom Controllers
  - Add ability to set PWM Output startup and shutdown state ([#699](https://github.com/kizniche/mycodo/issues/699))
  - Add Dashboard Widget: Output PWM Range Slider ([#699](https://github.com/kizniche/mycodo/issues/699))
  - Add ability to use Input/Math measurements with PID setpoint tracking ([#639](https://github.com/kizniche/mycodo/issues/639))

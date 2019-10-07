@@ -1451,6 +1451,7 @@ def page_function():
 
     controllers = []
     controllers_all = [('Conditional', conditional),
+                       ('Custom', custom_controllers),
                        ('Input', input_dev),
                        ('LCD', lcd),
                        ('Math', math),
