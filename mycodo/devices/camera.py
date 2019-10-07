@@ -132,7 +132,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         if settings.custom_options:
             cmd += " " + settings.custom_options
 
-        out, err, status = cmd_output(cmd, stdout_pipe=False)
+        out, err, status = cmd_output(cmd, stdout_pipe=False, user='root')
         logger.debug(
             "Camera debug message: "
             "cmd: {}; out: {}; error: {}; status: {}".format(

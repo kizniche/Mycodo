@@ -1,4 +1,4 @@
-## 7.7.10 (Unreleased)
+## 7.8.0 (Unreleased)
 
 This release brings a big feature: Custom Controllers. Now users can import Custom Controllers just like Custom Inputs. There is a new settings section of the Configuration menu called Controllers, where a single-file Custom Controller can be imported into Mycodo. This new controller will appear in the dropdown list on the Functions page, and will act like any other function controller (PID, Trigger, LCD, etc.). See the [Custom Controllers](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-controllers) section of the manual.
 
@@ -9,10 +9,11 @@ There's also a new Android app, [Mycodo Support](https://play.google.com/store/a
  - Fix Atlas Scientific EZP Pump not working with PID Controllers ([#562](https://github.com/kizniche/mycodo/issues/562))
  - Fix Output page not showing Duty Cycle for PWM Output status
  - Fix blank Live page if Inputs added but not yet activated
+ - Fix inability to capture photos with USB camera ([#677](https://github.com/kizniche/mycodo/issues/677))
 
 ### Features
 
- - Add ability to import Custom Controllers
+ - Add ability to import Custom Controllers (See [Custom Controllers](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-controllers))
  - Add ability to set PWM Output startup and shutdown state ([#699](https://github.com/kizniche/mycodo/issues/699))
  - Add Dashboard Widget: Output PWM Range Slider ([#699](https://github.com/kizniche/mycodo/issues/699))
  - Add ability to use Input/Math measurements with PID setpoint tracking ([#639](https://github.com/kizniche/mycodo/issues/639))
