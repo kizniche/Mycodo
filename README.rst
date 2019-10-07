@@ -17,7 +17,7 @@ Latest version: 7.7.9 |Build Status| |Codacy Badge| |DOI|
 Mycodo is an automated monitoring and regulation system that was built
 to run on the `Raspberry
 Pi <https://en.wikipedia.org/wiki/Raspberry_Pi>`__ (versions Zero, 1, 2,
-and 3).
+3, and 4).
 
 Originally designed to cultivate edible mushrooms, Mycodo has grown to
 include the ability to do much more, including cultivating plants,
@@ -335,7 +335,7 @@ Dutch
 ~~~~~
 
 Mycodo is een geautomatiseerd monitoring- en regelsysteem dat is gebouwd
-om op de Raspberry Pi te draaien (versies Zero, 1, 2 en 3).
+om op de Raspberry Pi te draaien (versies Zero, 1, 2, 3 en 4).
 
 Oorspronkelijk ontworpen om eetbare paddenstoelen te kweken, is Mycodo
 uitgegroeid tot het vermogen om veel meer te doen, waaronder het kweken
@@ -360,7 +360,7 @@ French
 ~~~~~~
 
 Mycodo est un système de surveillance et de régulation automatisé conçu
-pour fonctionner sur le Raspberry Pi (versions zéro, 1, 2 et 3).
+pour fonctionner sur le Raspberry Pi (versions zéro, 1, 2, 3 et 4).
 
 Conçu à l'origine pour cultiver des champignons comestibles, Mycodo s'est
 développé pour inclure la capacité de faire beaucoup plus, notamment la
@@ -386,7 +386,7 @@ German
 ~~~~~~
 
 Mycodo ist ein automatisiertes Überwachungs- und Regulierungssystem, das
-für den Raspberry Pi (Versionen Zero, 1, 2 und 3) entwickelt wurde.
+für den Raspberry Pi (Versionen Zero, 1, 2, 3 und 4) entwickelt wurde.
 
 Ursprünglich für die Kultivierung von Speisepilzen konzipiert, hat Mycodo
 die Fähigkeit zu weitaus mehr erweitert, darunter die Kultivierung von
@@ -412,7 +412,7 @@ Italian
 ~~~~~~~
 
 Mycodo è un sistema di monitoraggio e regolazione automatico che è stato
-creato per funzionare sul Raspberry Pi (versioni Zero, 1, 2 e 3).
+creato per funzionare sul Raspberry Pi (versioni Zero, 1, 2, 3 e 4).
 
 Originariamente progettato per coltivare funghi commestibili, Mycodo è
 cresciuto fino a comprendere la capacità di fare molto di più, coltivando
@@ -436,7 +436,7 @@ Norwegian
 ~~~~~~~~~
 
 Mycodo er et automatisert overvåkings- og reguleringssystem som ble bygget
-for å kjøre på Raspberry Pi (versjoner Zero, 1, 2 og 3).
+for å kjøre på Raspberry Pi (versjoner Zero, 1, 2, 3 og 4).
 
 Mycodo er opprinnelig utviklet for å dyrke spiselige sopp, og har vokst
 til å inkludere muligheten til å gjøre mye mer, inkludert dyrking av
@@ -460,7 +460,7 @@ Portuguese
 ~~~~~~~~~~
 
 O Mycodo é um sistema automatizado de monitoramento e regulação que foi
-construído para rodar no Raspberry Pi (versões Zero, 1, 2 e 3).
+construído para rodar no Raspberry Pi (versões Zero, 1, 2, 3 e 4).
 
 Originalmente concebido para cultivar cogumelos comestíveis, o Mycodo
 cresceu para incluir a capacidade de fazer muito mais, incluindo cultivar
@@ -485,7 +485,7 @@ Russian
 ~~~~~~~
 
 Mycodo - это автоматизированная система мониторинга и регулирования,
-созданная для работы на Raspberry Pi (версии Zero, 1, 2 и 3).
+созданная для работы на Raspberry Pi (версии Zero, 1, 2, 3 и 4).
 
 Первоначально разработанный для выращивания съедобных грибов, Mycodo
 вырос и теперь способен делать гораздо больше, включая выращивание
@@ -511,7 +511,7 @@ Serbian
 ~~~~~~~
 
 Мицодо је аутоматски систем за надзор и регулацију који је направљен да
-ради на Распберри Пи (верзије Зеро, 1, 2 и 3).
+ради на Распберри Пи (верзије Зеро, 1, 2, 3 и 4).
 
 Оригинално дизајниран за узгајање јестивих гљива, Мицодо је нарастао на
 могућност да уради много више, укључујући култивирање биљака, култивисање
@@ -534,7 +534,7 @@ Spanish
 ~~~~~~~
 
 Mycodo es un sistema automatizado de monitoreo y regulación que fue creado
-para ejecutarse en la Raspberry Pi (versiones cero, 1, 2 y 3).
+para ejecutarse en la Raspberry Pi (versiones cero, 1, 2, 3 y 4).
 
 Originalmente diseñado para cultivar hongos comestibles, Mycodo ha crecido
 para incluir la capacidad de hacer mucho más, incluido el cultivo de plantas,
@@ -558,7 +558,7 @@ Swedish
 ~~~~~~~
 
 Mycodo är ett automatiserat övervaknings- och reglersystem som byggdes
-för att springa på Raspberry Pi (versioner noll, 1, 2 och 3).
+för att springa på Raspberry Pi (versioner noll, 1, 2, 3 och 4).
 
 Mycodo har ursprungligen utformats för att odla ätliga svampar, och har
 därmed ökat möjligheten att göra mycket mer, inklusive odling av växter,
@@ -581,7 +581,7 @@ navigering och konfiguration från alla webbläsaraktiverade enheter.
 Chinese
 ~~~~~~~
 
-Mycodo是一个自动监控和调节系统，可在Raspberry Pi上运行（版本为Zero，1,2和3）。
+Mycodo是一个自动监控和调节系统，可在Raspberry Pi上运行（版本为Zero，1,2,3和4）。
 
 Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更多的事情，包括种植植物，培养微生物，保持蜂蜜蜂房稳态，孵化动物和鸡蛋，维持水生系统，陈年奶酪，发酵食品和烟草，烹饪食物（sous-vide）等等。
 

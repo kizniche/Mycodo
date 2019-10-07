@@ -328,6 +328,23 @@ in the Mycodo system. Custom Inputs can be uploaded on the
 ``Configure -> Inputs`` page. After import, they will be available to use
 on the ``Setup -> Data`` page.
 
+If you have a sensor that is not currently supported by Mycodo, you can build
+your own input module and import it into Mycodo. All information about an
+input is contained within the input module, set in the dictionary
+'INPUT_INFORMATION'. Each module will requires at a minimum for these variables
+to be set: 'input_name_unique', 'input_manufacturer', 'input_name',
+'measurements_name', and 'measurements_dict'.
+
+Open any of the built-in modules located in the inputs directory (https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for examples of the proper formatting.
+
+There's also minimal input module template that generates random data as an example:
+
+https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py
+
+The following link provides the full list of available INPUT_INFORMATION options along with descriptions:
+
+https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py
+
 Additionally, I have another github repository devoted to Custom Inputs and
 Controllers that are not included in the built-in set. These can be found at
 `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
@@ -2571,24 +2588,6 @@ readd all the Dashboard Elements that were once there.
 
 Miscellaneous
 =============
-
-Create an Input Module
-----------------------
-
-***This section is a work-in-progress***
-
-If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo. All information about an input is contained within the input module, set in the dictionary 'INPUT_INFORMATION'. Each module will requires at a minimum for these variables to be set: 'input_name_unique', 'input_manufacturer', 'input_name', 'measurements_name', and 'measurements_dict'.
-
-Open any of the built-in modules located in the inputs directory (https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for examples of the proper formatting.
-
-There's also minimal input module template that generates random data as an example:
-
-https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py
-
-The following link provides the full list of available INPUT_INFORMATION options along with descriptions:
-
-https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py
-
 
 Dashboard
 ---------

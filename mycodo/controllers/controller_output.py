@@ -40,6 +40,7 @@ from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
+from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
 from mycodo.mycodo_client import DaemonControl
@@ -121,11 +122,11 @@ class OutputController(AbstractController, threading.Thread):
         self.output_time_turned_on = {}
 
     def loop(self):
-        current_time = datetime.datetime.now()
+        """ Main loop of the output controller """
         for output_id in self.output_id:
             # Is the current time past the time the output was supposed
             # to turn off?
-            if (self.output_on_until[output_id] < current_time and
+            if (self.output_on_until[output_id] < datetime.datetime.now() and
                     self.output_on_duration[output_id] and
                     not self.output_off_triggered[output_id] and
                     (self.output_type[output_id] in ['command',
@@ -134,8 +135,7 @@ class OutputController(AbstractController, threading.Thread):
                                                      'python_pwm'] or
                      self.output_pin[output_id] is not None)):
 
-                # Use threads to prevent a slow execution of a
-                # process that could slow the loop
+                # Use a thread to prevent blocking the loop
                 self.output_off_triggered[output_id] = True
                 turn_output_off = threading.Thread(
                     target=self.output_on_off,
@@ -144,7 +144,8 @@ class OutputController(AbstractController, threading.Thread):
                 turn_output_off.start()
 
     def run_finally(self):
-        # Turn all outputs off
+        """ Run when the controller is shutting down """
+        # Turn all outputs to their shutdown state
         for each_output_id in self.output_id:
             if self.output_state_shutdown[each_output_id] == '0':
                 self.logger.info(
@@ -175,6 +176,7 @@ class OutputController(AbstractController, threading.Thread):
         self.cleanup_gpio()
 
     def initialize_variables(self):
+        """ Begin initializing output parameters """
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_output
 
@@ -197,6 +199,7 @@ class OutputController(AbstractController, threading.Thread):
                 "Problem initializing outputs: {err}".format(err=except_msg))
 
     def all_outputs_initialize(self, outputs):
+        """ Initialize all output variables and classes """
         for each_output in outputs:
             self.output_id[each_output.unique_id] = each_output.id
             self.output_unique_id[each_output.unique_id] = each_output.unique_id
@@ -379,7 +382,6 @@ class OutputController(AbstractController, threading.Thread):
         if self.output_type[output_id] == 'atlas_ezo_pmp':
             volume_ml = amount
             if state == 'on' and volume_ml > 0:
-                write_cmd = None
                 if self.output_mode[output_id] == 'fastest_flow_rate':
                     minutes_to_run = volume_ml * 105
                     write_cmd = 'D,{ml:.2f}'.format(ml=volume_ml)
@@ -411,7 +413,7 @@ class OutputController(AbstractController, threading.Thread):
                 add_measurements_influxdb(
                     self.output_unique_id[output_id], measurement_dict)
 
-            elif state == 'off' or volume_ml == 0:
+            elif state == 'off' or volume_ml <= 0:
                 write_cmd = 'X'
                 self.logger.debug("EZO-PMP command: {}".format(write_cmd))
                 self.atlas_command[output_id].write(write_cmd)
@@ -444,14 +446,16 @@ class OutputController(AbstractController, threading.Thread):
         #
         # Signaled to turn output on
         #
-        if state == 'on':
+        elif state == 'on':
             off_until_datetime = db_retrieve_table_daemon(
                 Output, unique_id=self.output_unique_id[output_id]).off_until
 
             # Check if pin is valid
-            if (self.output_type[output_id] in [
-                    'pwm', 'wired', 'wireless_rpi_rf'] and
+            if (self.output_type[output_id] in ['pwm',
+                                                'wired',
+                                                'wireless_rpi_rf'] and
                     self.output_pin[output_id] is None):
+
                 self.logger.warning(
                     "Invalid pin for output {id} ({name}): {pin}.".format(
                         id=self.output_id[output_id],
@@ -554,6 +558,7 @@ class OutputController(AbstractController, threading.Thread):
 
                 # Output is on, but not for an amount
                 elif self.is_on(output_id) and not self.output_on_duration:
+
                     self.output_on_duration[output_id] = True
                     self.output_on_until[output_id] = (
                         current_time + datetime.timedelta(seconds=abs(amount)))
@@ -569,6 +574,7 @@ class OutputController(AbstractController, threading.Thread):
 
                 # Output is not already on
                 else:
+
                     self.logger.debug(
                         "Output {id} ({name}) on for {dur:.1f} "
                         "seconds.".format(
@@ -587,6 +593,7 @@ class OutputController(AbstractController, threading.Thread):
                                                  'python',
                                                  'wired',
                                                  'wireless_rpi_rf']:
+
                 # Don't turn on if already on, except if it's a radio frequency output
                 if self.is_on(output_id) and self.output_type[output_id] != 'wireless_rpi_rf':
                     self.logger.debug(
@@ -609,7 +616,9 @@ class OutputController(AbstractController, threading.Thread):
 
             # PWM output
             elif self.output_type[output_id] in OUTPUTS_PWM:
-                if self.output_type[output_id] == 'pwm' and self.pwm_hertz[output_id] <= 0:
+
+                if (self.output_type[output_id] == 'pwm' and
+                        self.pwm_hertz[output_id] <= 0):
                     self.logger.warning("PWM Hertz must be a positive value")
                     return 1
 
@@ -666,6 +675,7 @@ class OutputController(AbstractController, threading.Thread):
 
             # Write PWM duty cycle to database
             if self.output_type[output_id] in OUTPUTS_PWM:
+
                 if self.pwm_invert_signal[output_id]:
                     duty_cycle = 100.0
                 else:
@@ -686,6 +696,7 @@ class OutputController(AbstractController, threading.Thread):
             # Write output amount to database
             elif (self.output_time_turned_on[output_id] is not None or
                     self.output_on_duration[output_id]):
+
                 duration_sec = None
                 timestamp = None
                 if self.output_on_duration[output_id]:
@@ -732,6 +743,7 @@ class OutputController(AbstractController, threading.Thread):
 
     def output_switch(self, output_id, state, duty_cycle=None):
         """Conduct the actual execution of GPIO state change, PWM, or command execution"""
+
         if self.output_type[output_id] == 'wired':
             if state == 'on':
                 GPIO.output(self.output_pin[output_id],
@@ -1179,7 +1191,11 @@ output_id = '{}'
                 id=output_id, msg=msg)
 
     def setup_atlas_command(self, output_id):
-        if self.output_interface[output_id] == 'I2C':
+        """ Initialize the appropriate Atlas Scientific class for th einterface type """
+        if self.output_interface[output_id] == 'FTDI':
+            self.atlas_command[output_id] = AtlasScientificFTDI(
+                self.output_location[output_id])
+        elif self.output_interface[output_id] == 'I2C':
             self.atlas_command[output_id] = AtlasScientificI2C(
                 i2c_address=int(str(self.output_location[output_id]), 16),
                 i2c_bus=self.output_i2c_bus[output_id])
@@ -1189,6 +1205,7 @@ output_id = '{}'
                 baudrate=self.output_baud_rate[output_id])
 
     def output_sec_currently_on(self, output_id):
+        """ Return how many seconds an output has been currently on for """
         if not self.is_on(output_id):
             return 0
         else:
@@ -1313,6 +1330,7 @@ output_id = '{}'
                 return 'off'
 
     def set_off_until(self, dt_off_until, output_id):
+        """ Save the datetime of when the output is supposed to stay off until """
         with session_scope(MYCODO_DB_PATH) as new_session:
             mod_cont = new_session.query(Output).filter(
                 Output.unique_id == self.output_unique_id[output_id]).first()
@@ -1372,10 +1390,12 @@ output_id = '{}'
         :return: Is it safe to manipulate this output?
         :rtype: bool
         """
-        if self.output_type[output_id] == 'wired' and self.output_pin[output_id]:
+        if (self.output_type[output_id] == 'wired' and
+                self.output_pin[output_id]):
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(self.output_pin[output_id], GPIO.OUT)
             return True
+
         elif self.output_type[output_id] in ['command',
                                              'command_pwm',
                                              'python',
@@ -1383,7 +1403,9 @@ output_id = '{}'
                                              'wireless_rpi_rf',
                                              'atlas_ezo_pmp']:
             return True
+
         elif self.output_type[output_id] == 'pwm':
             if output_id in self.pwm_output:
                 return True
+
         return False
