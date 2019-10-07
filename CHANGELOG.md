@@ -2,6 +2,8 @@
 
 This release brings a big feature: Custom Controllers. Now users can import Custom Controllers just like Custom Inputs. There is a new settings section of the Configuration menu called Controllers, where a single-file Custom Controller can be imported into Mycodo. This new controller will appear in the dropdown list on the Functions page, and will act like any other function controller (PID, Trigger, LCD, etc.). See the [Custom Controllers](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-controllers) section of the manual.
 
+There's also a new Android app, [Mycodo Support](https://play.google.com/store/apps/details?id=com.mycodo.mycododocs) that provides access to several Mycodo support resources.
+
 ### Bugfixes
 
  - Fix Atlas Scientific EZP Pump not working with PID Controllers ([#562](https://github.com/kizniche/mycodo/issues/562))
