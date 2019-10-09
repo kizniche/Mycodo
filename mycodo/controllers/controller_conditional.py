@@ -28,13 +28,12 @@ import time
 
 import os
 
-from mycodo.controllers.base_controller import AbstractController
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP
-from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -54,9 +53,6 @@ class ConditionalController(AbstractController, threading.Thread):
 
         self.unique_id = unique_id
         self.sample_rate = None
-
-        self.control = DaemonControl()
-
         self.pause_loop = False
         self.verify_pause_loop = True
         self.is_activated = None
@@ -92,12 +88,13 @@ class ConditionalController(AbstractController, threading.Thread):
             while self.pause_loop:
                 time.sleep(0.1)
 
+        self.time_conditional = time.time()
         # Check if the conditional period has elapsed
         if (self.is_activated and self.timer_period and
-                self.timer_period < time.time() and
-                self.timer_refractory_period < time.time()):
+                self.timer_period < self.time_conditional and
+                self.timer_refractory_period < self.time_conditional):
 
-            while self.timer_period < time.time():
+            while self.timer_period < self.time_conditional:
                 self.timer_period += self.period
 
             self.attempt_execute(self.check_conditionals)
@@ -152,9 +149,8 @@ class ConditionalController(AbstractController, threading.Thread):
         cond = db_retrieve_table_daemon(
             Conditional, unique_id=self.unique_id, entry='first')
 
-        now = time.time()
         timestamp = datetime.datetime.fromtimestamp(
-            now).strftime('%Y-%m-%d %H:%M:%S')
+            self.time_conditional).strftime('%Y-%m-%d %H:%M:%S')
         message = "{ts}\n[Conditional {id}]\n[Name: {name}]".format(
             ts=timestamp,
             name=cond.name,
@@ -165,16 +161,17 @@ class ConditionalController(AbstractController, threading.Thread):
         with open(file_run, 'r') as file:
             self.logger.debug("Conditional Statement (post-replacement):\n{}".format(file.read()))
 
-        message += '\n[Conditional Statement]:' \
+        message += '\n[Conditional Statement Code Executed]:' \
                    '\n--------------------' \
                    '\n{statement}' \
                    '\n--------------------' \
+                   '\n\n[Messages]:' \
                    '\n'.format(
             statement=cond.conditional_statement)
 
         # Set the refractory period
         if self.refractory_period:
-            self.timer_refractory_period = time.time() + self.refractory_period
+            self.timer_refractory_period = self.time_conditional + self.refractory_period
 
         module_name = "mycodo.conditional.{}".format(os.path.basename(file_run).split('.')[0])
         spec = importlib.util.spec_from_file_location(module_name, file_run)

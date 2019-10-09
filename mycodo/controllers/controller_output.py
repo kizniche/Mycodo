@@ -1268,13 +1268,13 @@ output_id = '{}'
                             not self.output_on_state[output_id])
                 state = 'LOW' if self.output_on_state[output_id] else 'HIGH'
                 self.logger.info(
-                    "Output {id} setup on pin {pin} and turned OFF "
+                    "Output {id} (GPIO) setup on pin {pin} and turned OFF "
                     "(OFF={state})".format(id=output_id.split('-')[0],
                                            pin=self.output_pin[output_id],
                                            state=state))
             except Exception as except_msg:
                 self.logger.exception(
-                    "Output {id} was unable to be setup on pin {pin} with "
+                    "Output {id} (GPIO) was unable to be setup on pin {pin} with "
                     "trigger={trigger}: {err}".format(
                         id=output_id.split('-')[0],
                         pin=self.output_pin[output_id],
@@ -1304,11 +1304,11 @@ output_id = '{}'
                     else:
                         self.logger.error("Could not connect to pigpiod")
                 self.pwm_state[output_id] = None
-                self.logger.info("PWM {id} setup on pin {pin}".format(
+                self.logger.info("Output {id} (PWM) setup on pin {pin}".format(
                     id=output_id.split('-')[0], pin=self.output_pin[output_id]))
             except Exception as except_msg:
                 self.logger.exception(
-                    "PWM {id} was unable to be setup on pin {pin}: "
+                    "Output {id} (PWM) was unable to be setup on pin {pin}: "
                     "{err}".format(id=output_id,
                                    pin=self.output_pin[output_id],
                                    err=except_msg))
