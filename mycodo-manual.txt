@@ -8,6 +8,7 @@ Mycodo Manual
     -   [Mycodo Client](#mycodo-client)
     -   [Data](#data)
         -   [Input](#input)
+        -   [Custom Inputs](#custom-inputs)
         -   [Math](#math)
     -   [Output](#output)
         -   [PWM](#pwm)
@@ -39,7 +40,6 @@ Mycodo Manual
     -   [Camera Settings](#camera-settings)
     -   [Diagnostic Settings](#diagnostic-settings)
 -   [Miscellaneous](#miscellaneous)
-    -   [Create an Input Module](#create-an-input-module)
     -   [Dashboard](#dashboard)
         -   [Graphs](#graphs)
         -   [Gauges](#gauges)
@@ -470,6 +470,28 @@ an Input import system in Mycodo that allows user-created Inputs to be
 used in the Mycodo system. Custom Inputs can be uploaded on the
 Configure -> Inputs page. After import, they will be available to use on
 the Setup -> Data page.
+
+If you have a sensor that is not currently supported by Mycodo, you can
+build your own input module and import it into Mycodo. All information
+about an input is contained within the input module, set in the
+dictionary ‘INPUT_INFORMATION’. Each module will requires at a minimum
+for these variables to be set: ‘input_name_unique’,
+‘input_manufacturer’, ‘input_name’, ‘measurements_name’, and
+‘measurements_dict’.
+
+Open any of the built-in modules located in the inputs directory
+(https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for
+examples of the proper formatting.
+
+There’s also minimal input module template that generates random data as
+an example:
+
+https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py
+
+The following link provides the full list of available INPUT_INFORMATION
+options along with descriptions:
+
+https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py
 
 Additionally, I have another github repository devoted to Custom Inputs
 and Controllers that are not included in the built-in set. These can be
@@ -966,15 +988,19 @@ command, to name a few.
 
   Startup State           This specifies whether the output should be ON
                           or OFF when mycodo initially starts. Some
-                          outputs have an additional option ‘Neither’
-                          which will not issue an on or off command when
-                          Mycodo starts or stops.
+                          outputs have an additional options.
+
+  Startup Value           If the Startup State is set to User Set Value
+                          (such as for PWM Outputs), then this value will
+                          be set when Mycodo starts up.
 
   Shutdown State          This specifies whether the output should be ON
                           or OFF when mycodo initially shuts down. Some
-                          outputs have an additional option ‘Neither’
-                          which will not issue an on or off command when
-                          Mycodo starts or stops.
+                          outputs have an additional options.
+
+  Shutdown Value          If the Shutdown State is set to User Set Value
+                          (such as for PWM Outputs), then this value will
+                          be set when Mycodo shuts down.
 
   Trigger at Startup      Select to enable triggering Functions (such as
                           Output Triggers) when Mycodo starts and if Start
@@ -2610,33 +2636,6 @@ Dashboard Elements that were once there.
 
 
 MISCELLANEOUS
-
-
-Create an Input Module
-
-_THIS SECTION IS A WORK-IN-PROGRESS_
-
-If you have a sensor that is not currently supported by Mycodo, you can
-build your own input module and import it into Mycodo. All information
-about an input is contained within the input module, set in the
-dictionary ‘INPUT_INFORMATION’. Each module will requires at a minimum
-for these variables to be set: ‘input_name_unique’,
-‘input_manufacturer’, ‘input_name’, ‘measurements_name’, and
-‘measurements_dict’.
-
-Open any of the built-in modules located in the inputs directory
-(https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for
-examples of the proper formatting.
-
-There’s also minimal input module template that generates random data as
-an example:
-
-https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py
-
-The following link provides the full list of available INPUT_INFORMATION
-options along with descriptions:
-
-https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py
 
 
 Dashboard

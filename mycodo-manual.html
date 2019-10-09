@@ -387,6 +387,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#mycodo-client">Mycodo Client</a></li>
 <li><a href="#data">Data</a><ul>
 <li><a href="#input">Input</a></li>
+<li><a href="#custom-inputs">Custom Inputs</a></li>
 <li><a href="#math">Math</a></li>
 </ul></li>
 <li><a href="#output">Output</a><ul>
@@ -395,6 +396,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#pumps">Pumps</a></li>
 </ul></li>
 <li><a href="#function">Function</a><ul>
+<li><a href="#custom-controllers">Custom Controllers</a></li>
 <li><a href="#pid-controller">PID Controller</a></li>
 <li><a href="#conditional">Conditional</a></li>
 <li><a href="#trigger">Trigger</a></li>
@@ -424,7 +426,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#diagnostic-settings">Diagnostic Settings</a></li>
 </ul></li>
 <li><a href="#miscellaneous">Miscellaneous</a><ul>
-<li><a href="#create-an-input-module">Create an Input Module</a></li>
 <li><a href="#dashboard">Dashboard</a><ul>
 <li><a href="#graphs">Graphs</a></li>
 <li><a href="#gauges">Gauges</a></li>
@@ -658,8 +659,14 @@ optional arguments:
 <p>Data are individual pieces of information stored for later use. They may be values acquired from sensors, signals from analog-to-digital controllers, a response from a command, or even math performed on other data to produce an average, to name a few. Add, configure, and activate Inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.</p>
 <h3 id="input">Input</h3>
 <p>Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere, which will be stored in a time-series database (InfluxDB). This database will provide measurements for <a href="#graphs">Graphs</a>, <a href="#lcds">LCDs</a>, <a href="#pid-controllers">PID Controllers</a>, <a href="#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.</p>
-<h4 id="custom-inputs">Custom Inputs</h4>
+<h3 id="custom-inputs">Custom Inputs</h3>
 <p>Before discussing the built-in Inputs, it should be noted that there is an Input import system in Mycodo that allows user-created Inputs to be used in the Mycodo system. Custom Inputs can be uploaded on the <code>Configure -&gt; Inputs</code> page. After import, they will be available to use on the <code>Setup -&gt; Data</code> page.</p>
+<p>If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo. All information about an input is contained within the input module, set in the dictionary ‘INPUT_INFORMATION’. Each module will requires at a minimum for these variables to be set: ‘input_name_unique’, ‘input_manufacturer’, ‘input_name’, ‘measurements_name’, and ‘measurements_dict’.</p>
+<p>Open any of the built-in modules located in the inputs directory (<a href="https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/" class="uri">https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/</a>) for examples of the proper formatting.</p>
+<p>There’s also minimal input module template that generates random data as an example:</p>
+<p><a href="https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py" class="uri">https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py</a></p>
+<p>The following link provides the full list of available INPUT_INFORMATION options along with descriptions:</p>
+<p><a href="https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py" class="uri">https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py</a></p>
 <p>Additionally, I have another github repository devoted to Custom Inputs and Controllers that are not included in the built-in set. These can be found at <a href="https://github.com/kizniche/Mycodo-custom">kizniche/Mycodo-custom</a>.</p>
 <h4 id="built-in-inputs">Built-In Inputs</h4>
 <p>In addition to several supported sensors and devices, a Linux command may be specified that will be executed and the return value stored in the measurement database to be used throughout the Mycodo system.</p>
@@ -1106,11 +1113,19 @@ optional arguments:
 </tr>
 <tr class="odd">
 <td>Startup State</td>
-<td>This specifies whether the output should be ON or OFF when mycodo initially starts. Some outputs have an additional option ‘Neither’ which will not issue an on or off command when Mycodo starts or stops.</td>
+<td>This specifies whether the output should be ON or OFF when mycodo initially starts. Some outputs have an additional options.</td>
 </tr>
 <tr class="even">
+<td>Startup Value</td>
+<td>If the Startup State is set to User Set Value (such as for PWM Outputs), then this value will be set when Mycodo starts up.</td>
+</tr>
+<tr class="odd">
 <td>Shutdown State</td>
-<td>This specifies whether the output should be ON or OFF when mycodo initially shuts down. Some outputs have an additional option ‘Neither’ which will not issue an on or off command when Mycodo starts or stops.</td>
+<td>This specifies whether the output should be ON or OFF when mycodo initially shuts down. Some outputs have an additional options.</td>
+</tr>
+<tr class="even">
+<td>Shutdown Value</td>
+<td>If the Shutdown State is set to User Set Value (such as for PWM Outputs), then this value will be set when Mycodo shuts down.</td>
 </tr>
 <tr class="odd">
 <td>Trigger at Startup</td>
@@ -1258,7 +1273,7 @@ optional arguments:
 <h2 id="function">Function</h2>
 <p><code>Setup -&gt; Function</code></p>
 <p>Functions couple Inputs with Outputs to perform specific tasks. For example, this could be regulation of temperature with a temperature sensor and heater with a PID Controller.</p>
-<h4 id="custom-controllers">Custom Controllers</h4>
+<h3 id="custom-controllers">Custom Controllers</h3>
 <p>Before discussing the built-in Functions/Controllers, it should be noted that there is an Controller import system in Mycodo that allows user-created Controllers to be used in the Mycodo system. Custom Inputs can be uploaded on the <code>Configure -&gt; Controllers</code> page. After import, they will be available to use on the <code>Setup -&gt; Function</code> page.</p>
 <p>There are also example Custom Controller files in <code>Mycodo/mycodo/controllers/custom_controllers/examples</code></p>
 <p>Additionally, I have another github repository devoted to Custom Inputs and Controllers that are not included in the built-in set. These can be found at <a href="https://github.com/kizniche/Mycodo-custom">kizniche/Mycodo-custom</a>.</p>
@@ -2644,14 +2659,6 @@ measurement <span class="op">=</span> <span class="va">self</span>.measure(<span
 </tbody>
 </table>
 <h1 id="miscellaneous">Miscellaneous</h1>
-<h2 id="create-an-input-module">Create an Input Module</h2>
-<p><strong><em>This section is a work-in-progress</em></strong></p>
-<p>If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo. All information about an input is contained within the input module, set in the dictionary ‘INPUT_INFORMATION’. Each module will requires at a minimum for these variables to be set: ‘input_name_unique’, ‘input_manufacturer’, ‘input_name’, ‘measurements_name’, and ‘measurements_dict’.</p>
-<p>Open any of the built-in modules located in the inputs directory (<a href="https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/" class="uri">https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/</a>) for examples of the proper formatting.</p>
-<p>There’s also minimal input module template that generates random data as an example:</p>
-<p><a href="https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py" class="uri">https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py</a></p>
-<p>The following link provides the full list of available INPUT_INFORMATION options along with descriptions:</p>
-<p><a href="https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py" class="uri">https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py</a></p>
 <h2 id="dashboard">Dashboard</h2>
 <p><code>Data -&gt; Dashboard</code></p>
 <p>The dashboard is where you can add pieces of data for easy viewing. It is highly customizable and provides an easy way to see exactly what data you want to see on one screen.</p>
