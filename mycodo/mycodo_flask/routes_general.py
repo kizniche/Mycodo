@@ -26,7 +26,9 @@ from flask_limiter import Limiter
 from sqlalchemy import and_
 
 from mycodo.config import INFLUXDB_DATABASE
+from mycodo.config import INFLUXDB_HOST
 from mycodo.config import INFLUXDB_PASSWORD
+from mycodo.config import INFLUXDB_PORT
 from mycodo.config import INFLUXDB_USER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LOG_PATH
@@ -269,6 +271,15 @@ def last_data(unique_id, measure_type, measurement_id, period):
         return '', 204
 
     if measure_type in ['input', 'math', 'output', 'pid']:
+
+        from influxdb import InfluxDBClient
+        client = InfluxDBClient(
+            INFLUXDB_HOST,
+            INFLUXDB_PORT,
+            INFLUXDB_USER,
+            INFLUXDB_PASSWORD,
+            INFLUXDB_DATABASE)
+
         current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
         current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
         current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
@@ -314,7 +325,12 @@ def last_data(unique_id, measure_type, measurement_id, period):
                     value='LAST')
             if query_str == 1:
                 return '', 204
+
             raw_data = dbcon.query(query_str).raw
+            # raw_data = client.query(query_str)
+            # logger.error("TEST00: {}".format(raw_data.raw))
+            # logger.error("TEST01: {}".format(raw_data['series'][0]))
+
             number = len(raw_data['series'][0]['values'])
             time_raw = raw_data['series'][0]['values'][number - 1][0]
             value = raw_data['series'][0]['values'][number - 1][1]
