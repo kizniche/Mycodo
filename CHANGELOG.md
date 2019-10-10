@@ -19,6 +19,11 @@ There's also a new Android app, [Mycodo Support](https://play.google.com/store/a
  - Add ability to use Input/Math measurements with PID setpoint tracking ([#639](https://github.com/kizniche/mycodo/issues/639))
  - Add search to Function select
 
+### Miscellaneous
+
+ - Remove Flask_influxdb
+ - Upgrade Influxdb from 1.7.6 to 1.7.8
+
 
 ## 7.7.9 (2019.09.29)
 

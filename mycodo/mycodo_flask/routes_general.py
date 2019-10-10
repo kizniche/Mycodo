@@ -11,7 +11,6 @@ import os
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
 from flask import Response
-from flask import current_app
 from flask import flash
 from flask import jsonify
 from flask import redirect
@@ -21,8 +20,8 @@ from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 from flask_csv import send_csv
-from flask_influxdb import InfluxDB
 from flask_limiter import Limiter
+from influxdb import InfluxDBClient
 from sqlalchemy import and_
 
 from mycodo.config import INFLUXDB_DATABASE
@@ -61,8 +60,6 @@ blueprint = Blueprint('routes_general',
                       template_folder='../templates')
 
 logger = logging.getLogger(__name__)
-
-influx_db = InfluxDB()
 
 limiter = Limiter(key_func=get_ip_address)
 
@@ -271,20 +268,12 @@ def last_data(unique_id, measure_type, measurement_id, period):
         return '', 204
 
     if measure_type in ['input', 'math', 'output', 'pid']:
-
-        from influxdb import InfluxDBClient
-        client = InfluxDBClient(
+        dbcon = InfluxDBClient(
             INFLUXDB_HOST,
             INFLUXDB_PORT,
             INFLUXDB_USER,
             INFLUXDB_PASSWORD,
             INFLUXDB_DATABASE)
-
-        current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-        current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-        current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
-        current_app.config['INFLUXDB_TIMEOUT'] = 5
-        dbcon = influx_db.connection
 
         if measure_type in ['input', 'math', 'output', 'pid']:
             measure = DeviceMeasurements.query.filter(
@@ -327,9 +316,6 @@ def last_data(unique_id, measure_type, measurement_id, period):
                 return '', 204
 
             raw_data = dbcon.query(query_str).raw
-            # raw_data = client.query(query_str)
-            # logger.error("TEST00: {}".format(raw_data.raw))
-            # logger.error("TEST01: {}".format(raw_data['series'][0]))
 
             number = len(raw_data['series'][0]['values'])
             time_raw = raw_data['series'][0]['values'][number - 1][0]
@@ -374,11 +360,12 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
             return '', 204
 
     elif measure_type in ['input', 'math', 'output', 'pid']:
-        current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-        current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-        current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
-        current_app.config['INFLUXDB_TIMEOUT'] = 5
-        dbcon = influx_db.connection
+        dbcon = InfluxDBClient(
+            INFLUXDB_HOST,
+            INFLUXDB_PORT,
+            INFLUXDB_USER,
+            INFLUXDB_PASSWORD,
+            INFLUXDB_DATABASE)
 
         if measure_type in ['input', 'math', 'output', 'pid']:
             measure = DeviceMeasurements.query.filter(
@@ -445,11 +432,12 @@ def generate_thermal_image_from_timestamp(unique_id, timestamp):
     assure_path_exists(save_path)
     path_file = os.path.join(save_path, filename)
 
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
-    current_app.config['INFLUXDB_TIMEOUT'] = 5
-    dbcon = influx_db.connection
+    dbcon = InfluxDBClient(
+        INFLUXDB_HOST,
+        INFLUXDB_PORT,
+        INFLUXDB_USER,
+        INFLUXDB_PASSWORD,
+        INFLUXDB_DATABASE)
 
     input_dev = Input.query.filter(Input.unique_id == unique_id).first()
     pixels = []
@@ -494,11 +482,12 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
     Return data from start_seconds to end_seconds from influxdb.
     Used for exporting data.
     """
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
-    current_app.config['INFLUXDB_TIMEOUT'] = 5
-    dbcon = influx_db.connection
+    dbcon = InfluxDBClient(
+        INFLUXDB_HOST,
+        INFLUXDB_PORT,
+        INFLUXDB_USER,
+        INFLUXDB_PASSWORD,
+        INFLUXDB_DATABASE)
 
     output = Output.query.filter(Output.unique_id == unique_id).first()
     input_dev = Input.query.filter(Input.unique_id == unique_id).first()
@@ -589,11 +578,12 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
         else:
             return '', 204
 
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
-    current_app.config['INFLUXDB_TIMEOUT'] = 5
-    dbcon = influx_db.connection
+    dbcon = InfluxDBClient(
+        INFLUXDB_HOST,
+        INFLUXDB_PORT,
+        INFLUXDB_USER,
+        INFLUXDB_PASSWORD,
+        INFLUXDB_DATABASE)
 
     if device_type in ['input', 'math', 'pid']:
         measure = DeviceMeasurements.query.filter(DeviceMeasurements.unique_id == measurement_id).first()
@@ -780,11 +770,12 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
     Return data from start_seconds to end_seconds from influxdb.
     Used for asynchronous graph display of many points (up to millions).
     """
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
-    current_app.config['INFLUXDB_TIMEOUT'] = 5
-    dbcon = influx_db.connection
+    dbcon = InfluxDBClient(
+        INFLUXDB_HOST,
+        INFLUXDB_PORT,
+        INFLUXDB_USER,
+        INFLUXDB_PASSWORD,
+        INFLUXDB_DATABASE)
 
     # Set the time frame to the past year if start/end not specified
     if start_seconds == '0' and end_seconds == '0':
@@ -950,7 +941,7 @@ def output_mod(output_id, state, out_type, amount):
             (str_is_float(amount) and float(amount) >= 0)):
         return daemon.output_on_off(output_id, state, float(amount))
     elif (state == 'on' and out_type in OUTPUTS_PWM and
-              (str_is_float(amount) and float(amount) >= 0)):
+            (str_is_float(amount) and float(amount) >= 0)):
         return daemon.output_on(
             output_id,
             duty_cycle=float(amount))
@@ -1006,11 +997,12 @@ def computer_command(action):
 #
 
 def return_point_timestamp(dev_id, unit, period, measurement=None, channel=None):
-    current_app.config['INFLUXDB_USER'] = INFLUXDB_USER
-    current_app.config['INFLUXDB_PASSWORD'] = INFLUXDB_PASSWORD
-    current_app.config['INFLUXDB_DATABASE'] = INFLUXDB_DATABASE
-    current_app.config['INFLUXDB_TIMEOUT'] = 5
-    dbcon = influx_db.connection
+    dbcon = InfluxDBClient(
+        INFLUXDB_HOST,
+        INFLUXDB_PORT,
+        INFLUXDB_USER,
+        INFLUXDB_PASSWORD,
+        INFLUXDB_DATABASE)
 
     query_str = query_string(
         unit,

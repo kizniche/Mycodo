@@ -17,7 +17,6 @@ Flask == 1.1.1
 Flask_Babel == 0.12.2
 Flask_Compress == 1.4.0
 Flask_CSV == 1.2.0
-Flask_InfluxDB == 0.2  # Requires influxdb == 5.0.0
 Flask_Limiter == 1.1.0
 Flask_Login == 0.4.1
 Flask_SQLAlchemy == 2.4.1
@@ -25,7 +24,7 @@ Flask_SSLify == 0.1.5
 Flask_WTF == 0.14.2
 geocoder == 1.38.1
 gunicorn == 19.9.0
-influxdb == 5.0.0
+influxdb == 5.2.3
 filelock == 3.0.12
 pylibftdi == 0.17.0
 pyro5 == 5.6

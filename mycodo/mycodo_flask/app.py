@@ -32,7 +32,6 @@ from mycodo.mycodo_flask import routes_remote_admin
 from mycodo.mycodo_flask import routes_settings
 from mycodo.mycodo_flask import routes_static
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.routes_general import influx_db
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 
 
@@ -63,7 +62,6 @@ def register_extensions(app):
 
     # Influx db time-series database
     db.init_app(app)
-    influx_db.init_app(app)
 
     # Limit authentication blueprint requests to 200 per minute
     limiter = Limiter(app, key_func=get_ip_address)
