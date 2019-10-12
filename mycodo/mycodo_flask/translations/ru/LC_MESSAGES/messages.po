@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-08 19:51-0400\n"
+"POT-Creation-Date: 2019-10-11 23:11-0400\n"
 "PO-Revision-Date: 2018-08-10 15:43-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -1824,7 +1824,7 @@ msgstr ""
 msgid "The serial device to write to"
 msgstr ""
 
-#: mycodo_flask/app.py:102
+#: mycodo_flask/app.py:100
 msgid "Please log in to access this page"
 msgstr "Пожалуйста, войдите, чтобы получить доступ к этой странице"
 
@@ -1938,19 +1938,19 @@ msgstr "Успешно вышла из системы"
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "Требуется действительная температура: %(temp)s недействительно."
 
-#: mycodo_flask/routes_general.py:972
+#: mycodo_flask/routes_general.py:979
 msgid "System rebooting in 10 seconds"
 msgstr "Перезагрузка системы за 10 секунд"
 
-#: mycodo_flask/routes_general.py:974
+#: mycodo_flask/routes_general.py:981
 msgid "System shutting down in 10 seconds"
 msgstr "Выключение системы за 10 секунд"
 
-#: mycodo_flask/routes_general.py:976
+#: mycodo_flask/routes_general.py:983
 msgid "Command to restart the daemon sent"
 msgstr "Команда для перезапуска отправленного демона"
 
-#: mycodo_flask/routes_general.py:978
+#: mycodo_flask/routes_general.py:985
 msgid "Command to reload the frontend sent"
 msgstr "Команда для перезагрузки отправленного интерфейса"
 

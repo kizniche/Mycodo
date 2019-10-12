@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-08 19:51-0400\n"
+"POT-Creation-Date: 2019-10-11 23:11-0400\n"
 "PO-Revision-Date: 2019-01-29 14:25-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sv\n"
@@ -1815,7 +1815,7 @@ msgstr ""
 msgid "The serial device to write to"
 msgstr ""
 
-#: mycodo_flask/app.py:102
+#: mycodo_flask/app.py:100
 msgid "Please log in to access this page"
 msgstr "Logga in för att komma åt den här sidan"
 
@@ -1931,19 +1931,19 @@ msgstr "Utloggad framgångsrikt"
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "En giltig temperatur krävs: %(temp)s är ogiltig."
 
-#: mycodo_flask/routes_general.py:972
+#: mycodo_flask/routes_general.py:979
 msgid "System rebooting in 10 seconds"
 msgstr "Systemstart om 10 sekunder"
 
-#: mycodo_flask/routes_general.py:974
+#: mycodo_flask/routes_general.py:981
 msgid "System shutting down in 10 seconds"
 msgstr "Systemet stängs av om 10 sekunder"
 
-#: mycodo_flask/routes_general.py:976
+#: mycodo_flask/routes_general.py:983
 msgid "Command to restart the daemon sent"
 msgstr "Kommandot att starta om den skickade demonen"
 
-#: mycodo_flask/routes_general.py:978
+#: mycodo_flask/routes_general.py:985
 msgid "Command to reload the frontend sent"
 msgstr "Kommandot att ladda om frontänden skickad"
 

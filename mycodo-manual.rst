@@ -1082,9 +1082,9 @@ sensor and heater with a PID Controller.
 Custom Controllers
 ``````````````````
 
-Before discussing the built-in Functions/Controllers, it should be noted that there is an
-Controller import system in Mycodo that allows user-created Controllers to be used
-in the Mycodo system. Custom Inputs can be uploaded on the
+Before discussing the built-in Functions/Controllers, it should be noted that there is a
+Custom Controller import system in Mycodo that allows user-created Controllers to be used
+in the Mycodo system. Custom Controllers can be uploaded on the
 ``Configure -> Controllers`` page. After import, they
 will be available to use on the ``Setup -> Function`` page.
 
