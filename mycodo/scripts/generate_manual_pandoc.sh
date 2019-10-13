@@ -24,11 +24,6 @@ then
 
   # output plain text
   pandoc --table-of-contents -s -S -t plain -o ${INSTALL_DIRECTORY}/mycodo-manual.txt ${INSTALL_DIRECTORY}/mycodo-manual.rst
-
-  cp ${INSTALL_DIRECTORY}/mycodo-manual.txt ${INSTALL_DIRECTORY}/docs/mycodo-manual.txt
-  cp ${INSTALL_DIRECTORY}/mycodo-manual.html ${INSTALL_DIRECTORY}/docs/mycodo-manual.html
-  cp ${INSTALL_DIRECTORY}/mycodo-manual.pdf ${INSTALL_DIRECTORY}/docs/mycodo-manual.pdf
-
 else
   printf "The command pandoc could not be found in the PATH!"
 fi
