@@ -10,6 +10,8 @@ There's also a new Android app, [Mycodo Support](https://play.google.com/store/a
  - Fix Output page not showing Duty Cycle for PWM Output status
  - Fix blank Live page if Inputs added but not yet activated
  - Fix inability to capture photos with USB camera ([#677](https://github.com/kizniche/mycodo/issues/677))
+ - Fix issues related to influxdb not fully starting before the Mycodo daemon
+ - Fix timeout exporting large amounts of data
 
 ### Features
 

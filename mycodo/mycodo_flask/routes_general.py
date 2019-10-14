@@ -19,7 +19,6 @@ from flask import send_from_directory
 from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
-from flask_csv import send_csv
 from flask_limiter import Limiter
 from influxdb import InfluxDBClient
 from sqlalchemy import and_
@@ -487,7 +486,7 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
         INFLUXDB_PORT,
         INFLUXDB_USER,
         INFLUXDB_PASSWORD,
-        INFLUXDB_DATABASE)
+        INFLUXDB_DATABASE, timeout=100)
 
     output = Output.query.filter(Output.unique_id == unique_id).first()
     input_dev = Input.query.filter(Input.unique_id == unique_id).first()
@@ -537,16 +536,31 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
     col_1 = 'timestamp (UTC)'
     col_2 = '{name} {meas} ({id})'.format(
         name=name, meas=measurement, id=unique_id)
-    csv_filename = '{id}_{meas}.csv'.format(id=unique_id, meas=measurement)
+    csv_filename = '{id}_{name}_{meas}.csv'.format(
+        id=unique_id, name=name, meas=measurement)
 
-    # Populate list of dictionary entries for each column to convert to CSV
-    # and send to the user to download
-    csv_data = []
-    for each_data in raw_data['series'][0]['values']:
-        csv_data.append({col_1: str(each_data[0][:-4]).replace('T', ' '),
-                         col_2: each_data[1]})
+    from flask import Response
+    import csv
+    from io import StringIO
 
-    return send_csv(csv_data, csv_filename, [col_1, col_2])
+    def iter_csv(data):
+        """ Stream CSV file to user for download """
+        line = StringIO()
+        writer = csv.writer(line)
+        writer.writerow([col_1, col_2])
+        for csv_line in data:
+            writer.writerow([
+                str(csv_line[0][:-4]).replace('T', ' '),
+                csv_line[1]
+            ])
+            line.seek(0)
+            yield line.read()
+            line.truncate(0)
+            line.seek(0)
+
+    response = Response(iter_csv(raw_data['series'][0]['values']), mimetype='text/csv')
+    response.headers['Content-Disposition'] = 'attachment; filename="{}"'.format(csv_filename)
+    return response
 
 
 @blueprint.route('/async/<device_id>/<device_type>/<measurement_id>/<start_seconds>/<end_seconds>')
