@@ -2,6 +2,8 @@
 layout: default
 ---
 
+Placeholder until I have time to develop more.
+
 Text can be **bold**, _italic_, or ~~strikethrough~~.
 
 [Link to another page](./another-page.html).
