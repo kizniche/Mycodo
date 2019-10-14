@@ -1,4 +1,4 @@
-## 7.8.0 (Unreleased)
+## 7.8.0 (2019.10.14)
 
 This release brings a big feature: Custom Controllers. Now users can import Custom Controllers just like Custom Inputs. There is a new settings section of the Configuration menu called Controllers, where a single-file Custom Controller can be imported into Mycodo. This new controller will appear in the dropdown list on the Functions page, and will act like any other function controller (PID, Trigger, LCD, etc.). See the [Custom Controllers](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-controllers) section of the manual.
 
