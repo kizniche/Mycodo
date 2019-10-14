@@ -38,7 +38,6 @@ from mycodo.databases.models import PID
 from mycodo.databases.models import Role
 from mycodo.databases.models import Trigger
 from mycodo.databases.models import User
-from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.inputs import parse_input_information
@@ -261,6 +260,7 @@ def controller_activate_deactivate(controller_action,
 
     try:
         if not error:
+            from mycodo.mycodo_client import DaemonControl
             control = DaemonControl()
             if controller_action == 'activate':
                 return_values = control.controller_activate(
