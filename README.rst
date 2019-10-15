@@ -26,7 +26,7 @@ meats, fermenting foods and tobacco, sous-vide cooking, controlling
 reflow ovens, and more.
 
 .. contents::
-   :depth: 3
+   :depth: 1
 
 Features
 --------
