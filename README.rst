@@ -46,6 +46,56 @@ Features
 -  `Upgrade System <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#upgrading>`__ to easily upgrade the Mycodo system to the latest release or restore to a previously-backed up version.
 -  `Translation <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#translations>`__ to several languages, including English, Chinese, Dutch, German, French, Italian, Norwegian, Portuguese, Russian, Serbian, Spanish, and Swedish.
 
+Get Mycodo
+----------
+
+These install procedures have been tested to work with the Raspberry Pi
+(versions Zero, 1, 2, 3, and 4) following a fresh install of
+`Raspbian <https://www.raspberrypi.org/downloads/raspbian/>`__ Buster
+(2019-06-20) Lite version, with an active internet connection.
+
+Install
+~~~~~~~
+
+Mycodo will be installed by executing install.sh. As a part of the
+installation, you will be prompted with a few options to determine which
+components to install and configure.
+
+.. code:: bash
+
+    curl -L https://raw.githubusercontent.com/kizniche/Mycodo/master/install/install | bash
+
+
+Make sure the install script finishes without errors. A log of the
+output will be created at ``~/Mycodo/install/setup.log``.
+
+If the install is successful, the web user interface should be
+accessible by navigating a web browser to ``https://127.0.0.1/``,
+replacing ``127.0.0.1`` with your Raspberry Pi's IP address. The first
+time you visit this page, you will be prompted to create an admin user.
+You will then be redirected to the login page. Once logged in, check
+that the host name and version number at the top left of the page is
+green, indicating the daemon is running. Red indicates the
+daemon is inactive or unresponsive. Ensure any java-blocking plugins are
+disabled for all parts of the web interface to function properly.
+
+Install Notes
+~~~~~~~~~~~~~
+
+If you receive an unresolvable error during the install, please `create
+an issue <https://github.com/kizniche/Mycodo/issues>`__. If you want to
+try to diagnose the issue yourself, see `Diagnosing
+Issues <#diagnosing-issues>`__.
+
+A minimal set of anonymous usage statistics are collected to help
+improve development. No identifying information is saved from the
+information that is collected and it is only used to improve Mycodo. No
+other sources will have access to this information. The data collected
+is mainly how much specific features are used, and other similar
+statistics. The data that's collected can be viewed from the 'View
+collected statistics' link in the ``Settings -> General`` page. You may
+opt out from the General Settings page.
+
 What is PID Control?
 --------------------
 
@@ -107,56 +157,6 @@ sections of the manual.
 
 Additionally, I have another github repository devoted to Custom Inputs that are not included in
 the built-in set. These can be found at `kizniche/Mycodo-custom-inputs <https://github.com/kizniche/Mycodo-custom-inputs>`__.
-
-Get Mycodo
-----------
-
-These install procedures have been tested to work with the Raspberry Pi
-(versions Zero, 1, 2, 3, and 4) following a fresh install of
-`Raspbian <https://www.raspberrypi.org/downloads/raspbian/>`__ Buster
-(2019-06-20) Lite version, with an active internet connection.
-
-Install
-~~~~~~~
-
-Mycodo will be installed by executing install.sh. As a part of the
-installation, you will be prompted with a few options to determine which
-components to install and configure.
-
-.. code:: bash
-
-    curl -L https://raw.githubusercontent.com/kizniche/Mycodo/master/install/install | bash
-
-
-Make sure the install script finishes without errors. A log of the
-output will be created at ``~/Mycodo/install/setup.log``.
-
-If the install is successful, the web user interface should be
-accessible by navigating a web browser to ``https://127.0.0.1/``,
-replacing ``127.0.0.1`` with your Raspberry Pi's IP address. The first
-time you visit this page, you will be prompted to create an admin user.
-You will then be redirected to the login page. Once logged in, check
-that the host name and version number at the top left of the page is
-green, indicating the daemon is running. Red indicates the
-daemon is inactive or unresponsive. Ensure any java-blocking plugins are
-disabled for all parts of the web interface to function properly.
-
-Install Notes
-~~~~~~~~~~~~~
-
-If you receive an unresolvable error during the install, please `create
-an issue <https://github.com/kizniche/Mycodo/issues>`__. If you want to
-try to diagnose the issue yourself, see `Diagnosing
-Issues <#diagnosing-issues>`__.
-
-A minimal set of anonymous usage statistics are collected to help
-improve development. No identifying information is saved from the
-information that is collected and it is only used to improve Mycodo. No
-other sources will have access to this information. The data collected
-is mainly how much specific features are used, and other similar
-statistics. The data that's collected can be viewed from the 'View
-collected statistics' link in the ``Settings -> General`` page. You may
-opt out from the General Settings page.
 
 Web Server Security
 -------------------
