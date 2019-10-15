@@ -17,29 +17,19 @@ and outputs in interesting ways to sense and manipulate the environment.
 
 `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__
 
-Originally designed to cultivate edible mushrooms, Mycodo has grown to
-include the ability to do much more, including cultivating plants,
-culturing microorganisms, maintaining honey bee apiary homeostasis,
-incubating animals and eggs, maintaining aquatic systems, aging cheeses,
-fermenting foods and tobacco, cooking food (sous-vide), and more.
-
-The system comprises a backend (daemon) and a frontend (user interface).
-The backend conducts measurements from sensors and devices, then
-coordinate a diverse set of responses to those measurements, including
-the ability to modulate outputs (relays, PWM, wireless outlets),
-regulate environmental conditions with electrical devices under PID
-control (steady regulation or changing over time), schedule timers,
-capture photos and stream video, trigger actions when measurements meet
-certain conditions (modulate relays, execute commands, notify by email,
-etc.), and more. The frontend is a web interface that enables easy
-navigation and configuration from any browser-enabled device.
+Originally designed to cultivate edible mushrooms, Mycodo has grown the
+ability to do much more. Some projects Mycodo has been used include
+cultivating plants (hydro- and aqua-ponics), culturing microorganisms,
+maintaining honey bee apiary homeostasis, incubating animals and eggs,
+maintaining aquatic systems, aging cheeses, dry-aging curing and smoking
+meats, fermenting foods and tobacco, sous-vide cooking, controlling
+reflow ovens, and more.
 
 .. contents::
    :depth: 3
 
 Features
 --------
-
 
 -  `Inputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input>`__ that record measurements from a number of places, including sensors, GPIO pin states, analog-to-digital converters, and custom input modules.
 -  `Outputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output>`__ that perform actions such as switching GPIO pins high/low, generating pulse-width-modulation, sending information to LCD displays, and executing Linux shell commands and Python code.
@@ -118,49 +108,16 @@ sections of the manual.
 Additionally, I have another github repository devoted to Custom Inputs that are not included in
 the built-in set. These can be found at `kizniche/Mycodo-custom-inputs <https://github.com/kizniche/Mycodo-custom-inputs>`__.
 
-Install
--------
+Get Mycodo
+----------
 
 These install procedures have been tested to work with the Raspberry Pi
 (versions Zero, 1, 2, 3, and 4) following a fresh install of
 `Raspbian <https://www.raspberrypi.org/downloads/raspbian/>`__ Buster
 (2019-06-20) Lite version, with an active internet connection.
 
-Install Raspbian
-~~~~~~~~~~~~~~~~
-
-Once Raspbian has been installed, follow the guide below to set up the
-system prior to installing Mycodo.
-
-
-
-After writing Raspbian to an SD card and enabling ssh by creating a file
-named ``ssh`` on the boot partition, insert the SD card into the Pi and
-power the system. Whether you log in with the GUI or terminal via SSH to
-your Raspberry Pi's IP address for the first time (user: pi, password:
-raspberry), issue the following command to start raspi-config and set
-the following options.
-
-::
-
-    sudo raspi-config
-
-Then change the following settings
-
--  ``Change User Password`` (change the password from the default
-   'raspberry')
--  ``Localisation Options`` -> ``Change Locale`` (set and select
-   en\_US.UTF-8, if US)
--  ``Localisation Options`` -> ``Change Timezone``
--  ``Interfacing Options`` -> ``SSH`` -> ``Enable``
--  Reboot
-
-**It's very important that you don't skip the file system expansion and
-reboot steps! These need to be done before continuing or there won't be
-enough free disk space to install Mycodo.**
-
-Install Mycodo
-~~~~~~~~~~~~~~
+Install
+~~~~~~~
 
 Mycodo will be installed by executing install.sh. As a part of the
 installation, you will be prompted with a few options to determine which
@@ -175,12 +132,12 @@ Make sure the install script finishes without errors. A log of the
 output will be created at ``~/Mycodo/install/setup.log``.
 
 If the install is successful, the web user interface should be
-accessible by navigating a web browser to ``https://0.0.0.0/``,
-replacing ``0.0.0.0`` with your Raspberry Pi's IP address. The first
+accessible by navigating a web browser to ``https://127.0.0.1/``,
+replacing ``127.0.0.1`` with your Raspberry Pi's IP address. The first
 time you visit this page, you will be prompted to create an admin user.
-After creating an admin user, you will be redirected to the login page.
-Once logged in, make sure the host name and version number at the top
-left is green, indicating the daemon is running. Red indicates the
+You will then be redirected to the login page. Once logged in, check
+that the host name and version number at the top left of the page is
+green, indicating the daemon is running. Red indicates the
 daemon is inactive or unresponsive. Ensure any java-blocking plugins are
 disabled for all parts of the web interface to function properly.
 
@@ -198,9 +155,8 @@ information that is collected and it is only used to improve Mycodo. No
 other sources will have access to this information. The data collected
 is mainly how much specific features are used, and other similar
 statistics. The data that's collected can be viewed from the 'View
-collected statistics' link in the Settings -> General page or in the
-file ``~/Mycodo/databases/statistics.csv``. You may opt out from
-transmitting this information in the General settings.
+collected statistics' link in the ``Settings -> General`` page. You may
+opt out from the General Settings page.
 
 Web Server Security
 -------------------
@@ -296,8 +252,7 @@ Languages
    `Chinese <#chinese>`__.
 
 By default, mycodo will display the default language set by your browser. You may also
-force a language in the settings at ``[Gear Icon]`` -> ``Configure`` ->
-``General`` -> ``Language``
+force a language in the settings at ``[Gear Icon] -> Configure -> General -> Language``
 
 If you would like to improve the translations, you can submit a pull request with an
 amended .po file from ~/Mycodo/mycodo/mycodo_flask/translations/ or start a
