@@ -9,6 +9,12 @@ camera/
 statistics.csv
 statistics.id
 
+# jekyll
+_site
+.sass-cache
+Gemfile.lock
+*.gem
+
 ### C template
 # Object files
 *.o

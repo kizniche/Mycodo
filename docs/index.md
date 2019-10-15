@@ -2,124 +2,49 @@
 layout: default
 ---
 
-Placeholder until I have time to develop more.
+Mycodo is open source software for the Raspberry Pi that couples input and output devices in interesting ways to sense and manipulate the environment.
 
-Text can be **bold**, _italic_, or ~~strikethrough~~.
+## Features
 
-[Link to another page](./another-page.html).
+*   **Inputs** such as sensors, GPIO pin states, analog-to-digital converters, custom user created single-file input modules
+*   **Outputs** such as switching GPIO High/Low, pulse-width-modulation, LCD display, Python code, Linux commands
+*   **Dashboard** with configurable widgets, such as interactive graphs, gauges, output state indicators, text measurements
+*   **Proportional Integral Derivative (PID) controllers** for environmental condition regulation
+*   **Setpoint Tracking** for changing environmental conditions over time (reptile terrarium, reflow oven, thermal cycler, sous-vide, etc.)
+*   **Conditional Statements** for reacting to input measurements, manipulating outputs, and executing actions
+*   **Timers** (daily, duration, sunrise/sunset, etc.) to trigger actions at periodic intervals
+*   **Notifications** to alert via email when measurements reach or exceed user-specified thresholds
+*   **Energy Usage Statistics** to calculate and track power consumption and cost over time
+*   **Notes** to keep track of events, alerts, and other important points in time
+*   **Camera Feed** for remote live stream, image capture, or time-lapse photography 
 
-There should be whitespace between paragraphs.
+## Screenshots
 
-There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
+![Mycodo Dashboard](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/05/Mycodo-3.6.0-tango-Graph-2016-05-21-11-15-26.png)
 
-# Header 1
+## Get Mycodo
 
-This is a normal paragraph following a header. GitHub is a code hosting platform for version control and collaboration. It lets you and others work together on projects from anywhere.
+### Prerequisites
 
-## Header 2
+*   [Raspberry Pi](https://www.raspberrypi.org/) single-board computer (any version: Zero, 1, 2, 3, or 4)
+*   [Raspbian OS](https://www.raspberrypi.org/downloads/raspbian/) flashed to a micro SD card
+*   An active internet connection
 
-> This is a blockquote following a header.
->
-> When something is important enough, you do it even if the odds are not in your favor.
+### Install
 
-### Header 3
+Once you have the Raspberry Pi booted into Raspbian with an internet connection, run the following command in a terminal to install Mycodo:
 
-```js
-// Javascript code with syntax highlighting.
-var fun = function lang(l) {
-  dateformat.i18n = require('./lang/' + l)
-  return true;
-}
+```bash
+curl -L https://raw.githubusercontent.com/kizniche/Mycodo/master/install/install | bash
 ```
 
-```ruby
-# Ruby code with syntax highlighting
-GitHubPages::Dependencies.gems.each do |gem, version|
-  s.add_dependency(gem, "= #{version}")
-end
-```
-
-#### Header 4
-
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-*   This is an unordered list following a header.
-
-##### Header 5
-
-1.  This is an ordered list following a header.
-2.  This is an ordered list following a header.
-3.  This is an ordered list following a header.
-
-###### Header 6
-
-| head1        | head two          | three |
-|:-------------|:------------------|:------|
-| ok           | good swedish fish | nice  |
-| out of stock | good and plenty   | nice  |
-| ok           | good `oreos`      | hmm   |
-| ok           | good `zoute` drop | yumm  |
-
-### There's a horizontal rule below this.
-
-* * *
-
-### Here is an unordered list:
-
-*   Item foo
-*   Item bar
-*   Item baz
-*   Item zip
-
-### And an ordered list:
-
-1.  Item one
-1.  Item two
-1.  Item three
-1.  Item four
-
-### And a nested list:
-
-- level 1 item
-  - level 2 item
-  - level 2 item
-    - level 3 item
-    - level 3 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-  - level 2 item
-  - level 2 item
-- level 1 item
-
-### Small image
-
-![Octocat](https://github.githubassets.com/images/icons/emoji/octocat.png)
-
-### Large image
-
-![Branching](https://guides.github.com/activities/hello-world/branching.png)
-
-
-### Definition lists can be used with HTML syntax.
-
-<dl>
-<dt>Name</dt>
-<dd>Godzilla</dd>
-<dt>Born</dt>
-<dd>1952</dd>
-<dt>Birthplace</dt>
-<dd>Japan</dd>
-<dt>Color</dt>
-<dd>Green</dd>
-</dl>
+If the install is successful, open a web browser to the Raspberry Pi's IP address and you will be greeted with a screen to create an Admin user and password.
 
 ```
-Long, single-line code blocks should not wrap. They should horizontally scroll if they are too long. This line should be long enough to demonstrate this.
+https://127.0.0.1/
 ```
 
-```
-The final element.
-```
+## Support
+
+*   [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst)
+*   [Mycodo Support](https://play.google.com/store/apps/details?id=com.mycodo.mycododocs) (Android App)
