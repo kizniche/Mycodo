@@ -5,6 +5,9 @@ Environmental Regulation System
 
 Latest version: 7.8.1 |Build Status| |Codacy Badge| |DOI|
 
+Mycodo is open source software for the Raspberry Pi that couples inputs
+and outputs in interesting ways to sense and manipulate the environment.
+
 `Mycodo Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__
 (`PDF <https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf>`__,
 `HTML <http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html>`__,
@@ -13,11 +16,6 @@ Latest version: 7.8.1 |Build Status| |Codacy Badge| |DOI|
 `Mycodo Support <https://play.google.com/store/apps/details?id=com.mycodo.mycododocs>`__ (Android App)
 
 `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__
-
-Mycodo is an automated monitoring and regulation system that was built
-to run on the `Raspberry
-Pi <https://en.wikipedia.org/wiki/Raspberry_Pi>`__ (versions Zero, 1, 2,
-3, and 4).
 
 Originally designed to cultivate edible mushrooms, Mycodo has grown to
 include the ability to do much more, including cultivating plants,
@@ -38,6 +36,11 @@ navigation and configuration from any browser-enabled device.
 
 .. contents::
    :depth: 3
+
+Features
+--------
+
+
 
 What is PID Control?
 --------------------
@@ -65,53 +68,37 @@ with minimal tuning, and already displays a very minimal deviation from
 the setpoint (±0.5° Celsius). Further tuning would reduce this
 variability further.
 
-Software Features
------------------
+Features
+--------
 
--  `Inputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#data>`__:
-   Periodically measure devices, such as analog-to-digital converters (ADCs), sensors (temperature, humidity, etc.), or add your own.
--  `Outputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output>`__:
-   Manipulate the environment by switching GPIO pins High or Low, switching relays, generating PWM signals, email notifications, executing linux/Python 3 commands, and more.
--  `PID Controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-controller>`__:
-   Couple inputs with outputs to create feedback loops in order to regulate environmental conditions.
--  `Methods <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#methods>`__:
-   Change the desired condition over time (useful for reflow ovens, thermal cyclers, mimicking natural environmental changes, etc.).
--  `Timers/Triggers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#trigger>`__:
-   Schedule the execution of actions in response to various times, intervals, or actions.
--  `Conditionals <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional>`__:
-   Develop complex responses based on input measurements and custom user code.
--  `LCDs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#lcds>`__:
-   Display measurements and data on 16x2 up to 128x64 I2C-enabled LCD displays.
--  Camera support: Raspberry Pi Camera and USB cameras, to stream live
-   video (only Pi cam), capture still images and video, and create
-   time-lapses.
--  Web Interface: Access using a web browser on your local network or
-   anywhere in the world with an internet connection.
--  Secure Login: High-security login system utilizing the latest
-   encryption and authorization standards.
--  System upgrade: When a new version is released on github, an upgrade
-   can be initiated from the web interface.
--  Languages: English,
-   `Dutch <#dutch>`__,
-   `German <#german>`__,
-   `French <#french>`__,
-   `Italian <#italian>`__,
-   `Norwegian <#norwegian>`__,
-   `Portuguese <#portuguese>`__,
-   `Russian <#russian>`__,
-   `Serbian <#serbian>`__,
-   `Spanish <#spanish>`__,
-   `Swedish <#swedish>`__,
-   `Chinese <#chinese>`__.
-    (Change language under Configure -> Language)
-
-`Read the manual <#manual>`__ for details.
+-  **`Inputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input>`__** that record measurements from a number of places, including sensors, GPIO pin states, analog-to-digital converters, and custom input modules.
+-  **`Outputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output>`__** that perform actions such as switching GPIO pins high/low, generating pulse-width-modulation, sending information to LCD displays, and executing Linux shell commands and Python code.
+-  **`Web Interface <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#web-interface>`__** for securely accessing the system using a web browser on your local network or anywhere in the world with an internet connection.
+-  **`Dashboard <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#dashboard>`__** that display configurable widgets, including interactive live and historical graphs, gauges, output state indicators, text measurements.
+-  **`Proportional Integral Derivative (PID) controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-controller>`__** that regulate environmental conditions with feedback loops utilizing Inputs and Outputs.
+-  **`Setpoint Tracking <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#methods>`__** for changing a PID controller setpoint over time, for use with things like reptile terrariums, reflow ovens, thermal cyclers, sous-vide cooking, and more.
+-  **`Conditional Statements <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional>`__** that react to input measurements, manipulate outputs, and execute actions based on user-generated code. This is a very powerful feature that enables custom user-created `conditions <https://en.wikipedia.org/wiki/Conditional_(computer_programming))) for Inputs, Outputs, Actions, and other parts of the system.
+-  **`Triggers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#trigger>`__** that can trigger actions at periodic intervals (daily, duration, sunrise/sunset, etc.).
+-  **`Alerts <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#alerts>`__** to alert via email when measurements reach or exceed user-specified thresholds.
+-  **`Notes <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#notes>`__** to keep track of events, alerts, and other important points in time.
+-  **`Camera Feed <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#camera>`__** for remote live stream, image capture, or time-lapse photography.
+-  **`Energy Usage Statistics <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#energy-usage>`__** to calculate and track power consumption and cost over time.
+-  **`Upgrade System <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#upgrading>`__** to easily upgrade the Mycodo system to the latest release or restore to a previously-backed up version.
+-  **`Translation <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#translations>`__** to several languages, including English, Chinese, Dutch, German, French, Italian, Norwegian, Portuguese, Russian, Serbian, Spanish, and Swedish.
 
 Issues and Discussion
 ---------------------
 
 Before making a post on the forum or issue on github, read the pertinent section of the
 `Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__.
+
+Need assistance with Mycodo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you Mycodo is supposedly operating correctly and you would like assistance with how to
+configure the system or to merely discuss something related to Mycodo, do a search on the
+`Mycodo Forum <https://kylegabriel.com/forum/mycodo/>`__ for a similar discussion. If a pertinent
+topic doesn't already exist on the forum, create a new post in the appropriate subforum.
 
 Bug in the Mycodo Software
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -123,14 +110,6 @@ been discussed or resolved. If your issue is novel, you can create a
 make sure to read all information in the issue template and follow the instructions. Replace
 the template text with the actual information, such as "step 1" under "Steps to Reproduce
 the issue" should be replaced with the actual step to reproduce the issue.
-
-Need assistance with Mycodo
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you Mycodo is supposedly operating correctly and you would like assistance with how to
-configure the system or to merely discuss something related to Mycodo, do a search on the
-`Mycodo Forum <https://kylegabriel.com/forum/mycodo/>`__ for a similar discussion. If a pertinent
-topic doesn't already exist on the forum, create a new post in the appropriate subforum.
 
 Supported Inputs
 ----------------
@@ -147,19 +126,17 @@ Install
 -------
 
 These install procedures have been tested to work with the Raspberry Pi
-(versions Zero, 1, 2, and 3) following a fresh install of
+(versions Zero, 1, 2, 3, and 4) following a fresh install of
 `Raspbian <https://www.raspberrypi.org/downloads/raspbian/>`__ Buster
 (2019-06-20) Lite version, with an active internet connection.
+
+Install Raspbian
+~~~~~~~~~~~~~~~~
 
 Once Raspbian has been installed, follow the guide below to set up the
 system prior to installing Mycodo.
 
-Configure raspi-config
-~~~~~~~~~~~~~~~~~~~~~~
 
-**It's very important that you don't skip the file system expansion and
-reboot steps! These need to be done before continuing or there won't be
-enough free disk space to install Mycodo.**
 
 After writing Raspbian to an SD card and enabling ssh by creating a file
 named ``ssh`` on the boot partition, insert the SD card into the Pi and
@@ -181,6 +158,10 @@ Then change the following settings
 -  ``Localisation Options`` -> ``Change Timezone``
 -  ``Interfacing Options`` -> ``SSH`` -> ``Enable``
 -  Reboot
+
+**It's very important that you don't skip the file system expansion and
+reboot steps! These need to be done before continuing or there won't be
+enough free disk space to install Mycodo.**
 
 Install Mycodo
 ~~~~~~~~~~~~~~

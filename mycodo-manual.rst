@@ -206,12 +206,43 @@ at ``/var/log/mycodo/mycodoupgrade.log``
 
     sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
 
+Backup-Restore
+==============
+
+``[Gear Icon] -> Backup Restore``
+
+A backup is made to /var/Mycodo-backups when the system is upgraded or
+through the web interface on the ``[Gear Icon] -> Backup Restore`` page.
+
+If you need to restore a backup, this can be done on the
+``[Gear Icon] -> Backup  Restore``
+page. Find the backup you would like restored and press
+the Restore button beside it. A restore can also be initialized through
+the command line. Use the following commands to initialize a restore,
+changing the appropriate directory names, 'user' to your user name, and
+TIME and COMMIT to the appropriate text found as the directory names in
+/var/Mycodo-backups/
+
+.. code-block:: bash
+
+    sudo mv /home/user/Mycodo /home/user/Mycodo_old
+    sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
+    sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
+
 Features
 ========
 
 The following sections describe the essential modules of Mycodo that can
 be used to perform functions or communicate with other parts of Mycodo.
 Each section performs specific tasks or groups of related tasks.
+
+Web Interface
+-------------
+
+The main frontend of Mycodo is a web interface that allows any device with a web
+browser to view collected data and configure devices. The web interface supports
+an authentication system with user/password credentials, user roles that grant/deny
+access to parts of the system, and SSL for encrypted browsing.
 
 Mycodo Client
 -------------
@@ -2083,6 +2114,15 @@ and use the
 start (x3) and end (x0) will be automatically stretched or skewed to fit
 within a 24-hour period and this method will repeat daily.
 
+Translations
+------------
+
+Mycodo has been translated to several languages. By default, the language of the
+browser will determine which language is used, but may be overridden in the General
+Settings, at ``[Gear Icon] -> Configure -> General``. If you find an issue with a
+translation or would like to add another language, see the `Translations <https://github.com/kizniche/Mycodo/wiki/Translations>`__ section of the Wiki and consider making
+a Pull Request or `Creating an Issue <https://github.com/kizniche/Mycodo/issues/new>`__.
+
 PID Tuning
 ==========
 
@@ -3033,29 +3073,6 @@ measurement. For calculating based on Output duration, see
 | Select Amp Measurement | This is a measurement with the amp (A) units that     |
 |                        | will be used to calculate energy usage.               |
 +------------------------+-------------------------------------------------------+
-
-Backup-Restore
---------------
-
-``[Gear Icon] -> Backup Restore``
-
-A backup is made to /var/Mycodo-backups when the system is upgraded or
-through the web interface on the ``[Gear Icon] -> Backup Restore`` page.
-
-If you need to restore a backup, this can be done on the
-``[Gear Icon] -> Backup  Restore``
-page. Find the backup you would like restored and press
-the Restore button beside it. A restore can also be initialized through
-the command line. Use the following commands to initialize a restore,
-changing the appropriate directory names, 'user' to your user name, and
-TIME and COMMIT to the appropriate text found as the directory names in
-/var/Mycodo-backups/
-
-.. code-block:: bash
-
-    sudo mv /home/user/Mycodo /home/user/Mycodo_old
-    sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
-    sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
 
 System Information
 ------------------
