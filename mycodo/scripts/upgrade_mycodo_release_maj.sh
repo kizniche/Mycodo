@@ -152,9 +152,18 @@ runSelfUpgrade() {
     printf "Done.\n"
   fi
 
+  if [ -d ${INSTALL_DIRECTORY}/Mycodo/mycodo/controllers/custom_controllers ] ; then
+    printf "Copying mycodo/controllers/custom_controllers..."
+    if ! cp ${INSTALL_DIRECTORY}/Mycodo/mycodo/controllers/custom_controllers/*.py ${MYCODO_NEW_TMP_DIR}/mycodo/controllers/custom_controllers/ ; then
+      printf "Failed: Error while trying to copy mycodo/controllers/custom_controllers"
+      error_found
+    fi
+    printf "Done.\n"
+  fi
+
   if [ -d ${INSTALL_DIRECTORY}/Mycodo/mycodo/inputs/custom_inputs ] ; then
     printf "Copying mycodo/inputs/custom_inputs..."
-    if ! cp -R ${INSTALL_DIRECTORY}/Mycodo/mycodo/inputs/custom_inputs ${MYCODO_NEW_TMP_DIR}/mycodo/inputs/custom_inputs ; then
+    if ! cp -R ${INSTALL_DIRECTORY}/Mycodo/mycodo/inputs/custom_inputs ${MYCODO_NEW_TMP_DIR}/mycodo/inputs/custom_inputs/ ; then
       printf "Failed: Error while trying to copy mycodo/inputs/custom_inputs"
       error_found
     fi
