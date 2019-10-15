@@ -6,17 +6,17 @@ Mycodo is open source software for the Raspberry Pi that couples inputs and outp
 
 ## Features
 
-*   **[Inputs](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#data)** such as sensors, GPIO pin states, analog-to-digital converters, custom user created single-file input modules
-*   **[Outputs](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output)** such as switching GPIO High/Low, pulse-width-modulation, LCD display, Python code, Linux commands
-*   **[Dashboard](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#dashboard)** with configurable widgets, such as interactive graphs, gauges, output state indicators, text measurements
-*   **[Proportional Integral Derivative (PID) controllers](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-controller)** for environmental condition regulation
-*   **[Setpoint Tracking](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#methods)** for changing environmental conditions over time (reptile terrarium, reflow oven, thermal cycler, sous-vide, etc.)
-*   **[Conditional Statements](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional)** for reacting to input measurements, manipulating outputs, and executing actions
-*   **[Timers](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#trigger)** (daily, duration, sunrise/sunset, etc.) to trigger actions at periodic intervals
-*   **[Notifications](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#alert-settings)** to alert via email when measurements reach or exceed user-specified thresholds
-*   **[Notes](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#notes)** to keep track of events, alerts, and other important points in time
-*   **[Camera Feed](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#camera)** for remote live stream, image capture, or time-lapse photography 
-*   **[Energy Usage Statistics](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#energy-usage)** to calculate and track power consumption and cost over time
+*   **[Inputs](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input)** that record measurements from a number of places, including sensors, GPIO pin states, analog-to-digital converters, and custom input modules.
+*   **[Outputs](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output)** that perform actions such as switching GPIO pins high/low, generating pulse-width-modulation, sending information to LCD displays, and executing Linux shell commands and Python code.
+*   **[Dashboard](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#dashboard)** that display configurable widgets, including interactive live and historical graphs, gauges, output state indicators, text measurements.
+*   **[Proportional Integral Derivative (PID) controllers](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-controller)** that regulate environmental conditions with feedback loops utilizing Inputs and Outputs.
+*   **[Setpoint Tracking](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#methods)** for changing a PID controller setpoint over time, for use with things like reptile terrariums, reflow ovens, thermal cyclers, sous-vide cooking, and more.
+*   **[Conditional Statements](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional)** that react to input measurements, manipulate outputs, and execute actions based on user-generated code. This is a very powerful feature that enables custom user-created [conditions](https://en.wikipedia.org/wiki/Conditional_(computer_programming))) for Inputs, Outputs, Actions, and other parts of the system.
+*   **[Triggers](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#trigger)** that can trigger actions at periodic intervals (daily, duration, sunrise/sunset, etc.).
+*   **[Alerts](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#alerts)** to alert via email when measurements reach or exceed user-specified thresholds.
+*   **[Notes](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#notes)** to keep track of events, alerts, and other important points in time.
+*   **[Camera Feed](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#camera)** for remote live stream, image capture, or time-lapse photography.
+*   **[Energy Usage Statistics](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#energy-usage)** to calculate and track power consumption and cost over time.
 
 ## Get Mycodo
 

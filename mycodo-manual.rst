@@ -1705,7 +1705,12 @@ Additional Conditions
 Trigger
 ```````
 
-A Trigger Controller will execute actions when events are triggered.
+A Trigger Controller will execute actions when events are triggered, such as
+an output turning on or off, a GPIO pin changing it's voltage state, or timed
+events, including various timers (duration, time period, time point, etc), or
+the sunrise or sunset time at a specific latitude and longitude. One the trigger
+is defined, add any number of `Actions <#function-actions>`__ to be executed
+when that event is triggered.
 
 Output (On/Off) Options
 '''''''''''''''''''''''
@@ -2872,6 +2877,19 @@ time only another ~50kb is downloaded.
 Note: Live Graphs require measurements to be acquired, therefore at
 least one sensor needs to be added and activated in order to display
 live data.
+
+Alerts
+------
+
+Alerts can be used to notify users about the state of the system.
+For things like sensor monitoring, this could be a threshold that indicates
+something needs attention. E-Mail notifications are built-in to Mycodo in
+a number of places, however there are several places (Inputs, Outputs,
+Controllers) that allow custom Python code to be used, enabling many other
+notification options to be built.
+
+See `Alert Settings <#alert-settings>`__ for more information about setting up
+Alerts.
 
 Notes
 -----
