@@ -3,10 +3,12 @@ Mycodo
 
 Environmental Regulation System
 
-Latest version: 7.8.1 |Build Status| |Codacy Badge| |DOI|
+Latest version: 7.8.1
 
 Mycodo is open source software for the Raspberry Pi that couples inputs
 and outputs in interesting ways to sense and manipulate the environment.
+
+|Build Status| |Codacy Badge| |DOI|
 
 `Mycodo Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__
 (`PDF <https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf>`__,
@@ -37,7 +39,7 @@ Features
 -  `Dashboard <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#dashboard>`__ that display configurable widgets, including interactive live and historical graphs, gauges, output state indicators, text measurements.
 -  `Proportional Integral Derivative (PID) controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-controller>`__ that regulate environmental conditions with feedback loops utilizing Inputs and Outputs.
 -  `Setpoint Tracking <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#methods>`__ for changing a PID controller setpoint over time, for use with things like reptile terrariums, reflow ovens, thermal cyclers, sous-vide cooking, and more.
--  `Conditional Statements <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional>`__ that react to input measurements, manipulate outputs, and execute actions based on user-generated code. This is a very powerful feature that enables custom user-created `conditions <https://en.wikipedia.org/wiki/Conditional_(computer_programming))) for Inputs, Outputs, Actions, and other parts of the system.
+-  `Conditional Statements <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional>`__ that react to input measurements, manipulate outputs, and execute actions based on user-generated code. This is a very powerful feature that enables custom user-created `conditions <https://en.wikipedia.org/wiki/Conditional_(computer_programming)>`__ for Inputs, Outputs, Actions, and other parts of the system.
 -  `Triggers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#trigger>`__ that can trigger actions at periodic intervals (daily, duration, sunrise/sunset, etc.).
 -  `Alerts <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#alerts>`__ to alert via email when measurements reach or exceed user-specified thresholds.
 -  `Notes <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#notes>`__ to keep track of events, alerts, and other important points in time.
@@ -57,14 +59,13 @@ These install procedures have been tested to work with the Raspberry Pi
 Install
 ~~~~~~~
 
-Mycodo will be installed by executing install.sh. As a part of the
-installation, you will be prompted with a few options to determine which
-components to install and configure.
-
 .. code:: bash
 
     curl -L https://raw.githubusercontent.com/kizniche/Mycodo/master/install/install | bash
 
+
+Install Notes
+~~~~~~~~~~~~~
 
 Make sure the install script finishes without errors. A log of the
 output will be created at ``~/Mycodo/install/setup.log``.
@@ -78,9 +79,6 @@ that the host name and version number at the top left of the page is
 green, indicating the daemon is running. Red indicates the
 daemon is inactive or unresponsive. Ensure any java-blocking plugins are
 disabled for all parts of the web interface to function properly.
-
-Install Notes
-~~~~~~~~~~~~~
 
 If you receive an unresolvable error during the install, please `create
 an issue <https://github.com/kizniche/Mycodo/issues>`__. If you want to
@@ -96,8 +94,48 @@ statistics. The data that's collected can be viewed from the 'View
 collected statistics' link in the ``Settings -> General`` page. You may
 opt out from the General Settings page.
 
+Support
+-------
+
+Before making a post on the forum or issue on github, please read the
+`Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__.
+
+Need assistance with Mycodo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you Mycodo is supposedly operating correctly and you would like assistance with how to
+configure the system or to merely discuss something related to Mycodo, do a search on the
+`Mycodo Forum <https://kylegabriel.com/forum/mycodo/>`__ for a similar discussion. If a pertinent
+topic doesn't already exist on the forum, create a new post in the appropriate subforum.
+
+Bug in the Mycodo Software
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you believe there is a bug in the Mycodo software, first search through the guthub
+`Issues <https://github.com/kizniche/Mycodo/issues>`__ and see if your issue has already
+been discussed or resolved. If your issue is novel, you can create a
+`New Issue <https://github.com/kizniche/Mycodo/issues/new>`__. When creating a new issue,
+make sure to read all information in the issue template and follow the instructions. Replace
+the template text with the actual information, such as "step 1" under "Steps to Reproduce
+the issue" should be replaced with the actual step to reproduce the issue.
+
+Manual
+------
+
+The Mycodo Manual may be viewed as
+`Markdown <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__,
+`PDF <https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf>`__,
+`HTML <http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html>`__,
+or `Plain
+Text <https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt>`__
+
+The `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__ also contains useful information.
+
+About Mycodo
+------------
+
 What is PID Control?
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 A `proportional-derivative-integral (PID)
 controller <https://en.wikipedia.org/wiki/PID_controller>`__ is a
@@ -122,33 +160,8 @@ with minimal tuning, and already displays a very minimal deviation from
 the setpoint (±0.5° Celsius). Further tuning would reduce this
 variability further.
 
-Issues and Discussion
----------------------
-
-Before making a post on the forum or issue on github, read the pertinent section of the
-`Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__.
-
-Need assistance with Mycodo
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you Mycodo is supposedly operating correctly and you would like assistance with how to
-configure the system or to merely discuss something related to Mycodo, do a search on the
-`Mycodo Forum <https://kylegabriel.com/forum/mycodo/>`__ for a similar discussion. If a pertinent
-topic doesn't already exist on the forum, create a new post in the appropriate subforum.
-
-Bug in the Mycodo Software
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you believe there is a bug in the Mycodo software, first search through the guthub
-`Issues <https://github.com/kizniche/Mycodo/issues>`__ and see if your issue has already
-been discussed or resolved. If your issue is novel, you can create a
-`New Issue <https://github.com/kizniche/Mycodo/issues/new>`__. When creating a new issue,
-make sure to read all information in the issue template and follow the instructions. Replace
-the template text with the actual information, such as "step 1" under "Steps to Reproduce
-the issue" should be replaced with the actual step to reproduce the issue.
-
 Supported Inputs
-----------------
+~~~~~~~~~~~~~~~~
 
 All supported Inputs can be found under the
 `Input Devices <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input-devices>`__
@@ -159,7 +172,7 @@ Additionally, I have another github repository devoted to Custom Inputs that are
 the built-in set. These can be found at `kizniche/Mycodo-custom-inputs <https://github.com/kizniche/Mycodo-custom-inputs>`__.
 
 Web Server Security
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 An SSL certificate will be generated (expires in 10 years) and stored at
 ``~/Mycodo/mycodo/mycodo_flask/ssl_certs/`` during the install process
@@ -173,7 +186,7 @@ continually receive a warning message about the security of your site,
 unless you add the certificate to your browser's trusted list.
 
 Upgrade
--------
+~~~~~~~
 
 Mycodo can be easily upgraded from the web interface by selecting
 ``Upgrade`` from the configuration menu. Alternatively, an upgrade can
@@ -182,18 +195,6 @@ be initiated from a terminal with the following command:
 ::
 
     sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
-
-Manual
-------
-
-The Mycodo Manual may be viewed as
-`Markdown <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__,
-`PDF <https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf>`__,
-`HTML <http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html>`__,
-or `Plain
-Text <https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt>`__
-
-The `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__ also contains useful information.
 
 Donate
 ------
