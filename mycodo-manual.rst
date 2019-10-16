@@ -2114,15 +2114,6 @@ and use the
 start (x3) and end (x0) will be automatically stretched or skewed to fit
 within a 24-hour period and this method will repeat daily.
 
-Translations
-------------
-
-Mycodo has been translated to several languages. By default, the language of the
-browser will determine which language is used, but may be overridden in the General
-Settings, at ``[Gear Icon] -> Configure -> General``. If you find an issue with a
-translation or would like to add another language, see the `Translations <https://github.com/kizniche/Mycodo/wiki/Translations>`__ section of the Wiki and consider making
-a Pull Request or `Creating an Issue <https://github.com/kizniche/Mycodo/issues/new>`__.
-
 PID Tuning
 ==========
 
@@ -3186,7 +3177,6 @@ To test the new rule:
 
 Now, every time the dust sensor is plugged in, it shows up at /dev/dust-sensor
 
-
 Infrared Remote
 ---------------
 
@@ -3374,6 +3364,17 @@ You can verify this is working by running ``infrared_receive.py``, then executin
 
 IR codes can be sent from Mycodo using the Infrared Remote Send Function Action. The ``Remote`` option should to match the remote name in the config file in ``/etc/lirc/lircd.conf.d/`` and the ``Code`` option should match a code that's in ``/home/pi/.lircrc``. If ``Times to Send`` is set larger than 1, the code will be sent multiple times at intervals of 0.5 seconds.
 
+Translations
+------------
+
+Mycodo has been translated to several languages. By default, the language of the
+browser will determine which language is used, but may be overridden in the General
+Settings, at ``[Gear Icon] -> Configure -> General``. If you find an issue with a
+translation or would like to add another language, see the
+`Translations <https://github.com/kizniche/Mycodo/wiki/Translations>`__
+section of the Wiki and consider making a Pull Request or
+`Creating an Issue <https://github.com/kizniche/Mycodo/issues/new>`__.
+
 Troubleshooting
 ===============
 
@@ -3437,29 +3438,30 @@ github for more information about diagnosing issues.
 Devices
 =======
 
-All Input and Output devices are listed below.
+Supported Input and Output devices are listed below.
+
+I2C
+---
 
 The I2C interface should be enabled with ``raspi-config``.
 
-The 1-wire interface should be configured with `these
-instructions <https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing>`__.
+1-Wire
+------
 
-`This
-documentation <http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip>`__
+The 1-wire interface should be configured with `these instructions
+<https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing>`__.
+
+UART
+----
+
+`This documentation
+<http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip>`__
 provides specific installation procedures for configuring UART with the
 Raspberry Pi version 1 or 2.
 
-The K30 may be tested by executing
-``~/Mycodo/mycodo/tests/manual_tests/test_uart_K30.py``
-
-For Atlas Scientific sensors, `this
-guide <https://www.atlas-scientific.com/_files/code/pi_sample_code.pdf>`__
-may be used, as well as the above K-30 guide, to set up UART on the
-Raspberry Pi 1 and 2. However, for Pi 3s, use the procedure below.
-
-Because the UART is handled differently by the Raspberry Pi 3, from of
-the addition of bluetooth, there are a different set of instructions. If
-installing Mycodo on a Raspberry Pi 3, you only need to perform these
+Because the UART is handled differently higher after the Raspberry Pi 2 (due to
+the addition of bluetooth), there are a different set of instructions. If
+installing Mycodo on a Raspberry Pi 3 or above, you only need to perform these
 steps to configure UART:
 
 Run raspi-config
@@ -3483,6 +3485,15 @@ Input Devices
     `AM2320 <#am2320>`__: Relative humidity, temperature
     `link <https://www.adafruit.com/product/3721>`__
 
+    Atlas Scientific DO: Dissolved Oxygen
+    `link <https://www.atlas-scientific.com/dissolved-oxygen.html>`__
+
+    Atlas Scientific EC: Electrical Conductivity
+    `link <https://www.atlas-scientific.com/conductivity.html>`__
+
+    Atlas Scientific ORP: Oxidation-Reduction Potential
+    `link <https://www.atlas-scientific.com/orp.html>`__
+
     `Atlas Scientific pH <#atlas-scientific-ph>`__: pH
     `link <https://www.atlas-scientific.com/ph.html>`__
 
@@ -3498,11 +3509,20 @@ Input Devices
     `BMP085, BMP180 <#bmp085-bmp180>`__: Barometric pressure, temperature
     `link <https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi>`__
 
+    BMP280: Barometric pressure, temperature
+    `link <https://www.bosch-sensortec.com/bst/products/all_products/bmp280>`__
+
     `CCS811 <#ccs811>`__: CO2, VOC, temperature
     `link <https://www.sparkfun.com/products/14193>`__
 
+    Cozir: CO2, humidity, temperature
+    `link <https://www.co2meter.com/collections/co2-sensors/products/cozir-co2-temperature-humidity-sensor>`__
+
     `Chirp <#chirp>`__: Moisture, light, and temperature
     `link <https://wemakethings.net/chirp/>`__
+
+    `DHT11 <#dht11>`__, `DHT22 <#dht22>`__/AM2302: Relative humidity and temperature
+    `link <https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring>`__
 
     `DS18B20 <#ds18b20>`__: Temperature
     `link <https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf>`__
@@ -3519,8 +3539,8 @@ Input Devices
     `DS1825 <#ds1825>`__: Temperature
     `link <https://datasheets.maximintegrated.com/en/ds/DS1825.pdf>`__
 
-    `DHT11 <#dht11>`__, `DHT22 <#dht22>`__/AM2302: Relative humidity and temperature
-    `link <https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/wiring>`__
+    HDC1000: Relative humidity and temperature
+    `link <http://www.ti.com/lit/ds/symlink/hdc1000.pdf>`__
 
     `HTU21D <#htu21d>`__: Relative humidity and temperature
     `link <http://www.te.com/usa-en/product-CAT-HSC0004.html>`__
@@ -3540,10 +3560,22 @@ Input Devices
     `MAX31865 <#max31856>`__: Temperature
     `link <https://www.adafruit.com/product/3328>`__
 
+    Miflora: Battery, electrical conductivity, light, moisture, temperature
+    `link <https://gadget-freakz.com/product/xiaomi-mi-flora-plant-sensor/>`__
+
+    MCP9808: Temperature
+    `link <http://ww1.microchip.com/downloads/en/DeviceDoc/25095A.pdf>`__
+
+    MH-Z16: Carbon dioxide (CO2) in ppmv
+    `link <https://www.winsen-sensor.com/sensors/co2-sensor/mh-z16.html>`__
+
     `MH-Z19 <#mh-z19>`__: Carbon dioxide (CO2) in ppmv
     `link <http://www.winsen-sensor.com/products/ndir-co2-sensor/mh-z19.html>`__
 
-    `SHT1x <#sht1x>`__/`SHT3x <#sht3x>`__/`SHT7x <#sht7x>`__/`SHT31 Smart Gadget <#sht31>`__: Relative humidity and temperature
+    Ruuvitag: Relative humidity, temperature, pressure, battery, acceleration (g, x, y, and z)
+    `link <https://ruuvi.com/>`__
+
+    `SHT1x <#sht1x>`__/SHT2x/`SHT3x <#sht3x>`__/`SHT7x <#sht7x>`__/`SHT31 Smart Gadget <#sht31>`__: Relative humidity and temperature
     `link <https://github.com/mk-fg/sht-sensor>`__
 
     `Sonoff TH10/16 (Tasmota firmware) <#sonoff-th10-16>`__: Relative humidity and temperature
@@ -3557,12 +3589,33 @@ Input Devices
     `TSL2591 <#tsl2591>`__: Light
     `link <https://www.adafruit.com/product/1980>`__
 
+    ZH03B: Particle sensor
+    `link <https://www.winsen-sensor.com/sensors/dust-sensor/zh3b.html>`__
+
+Other Inputs
+------------
+
+-  Raspberry Pi CPU: Temperature
+-  Raspberry Pi CPU: CPU load
+-  Raspberry Pi: Free disk space
+-  Raspberry Pi: GPIO pin state
+-  Raspberry Pi: GPIO pin rising or falling edge
+-  Raspberry Pi: Measure PWM from signal
+-  Raspberry Pi: Measure RPM from signal
+-  Mycodo: Daemon RAM use
+-  Mycodo: Network ping response
+-  Mycodo: Network port open
+-  The Things Network: Receive measurements from Data Storage Integration
+-  MTQQ: Subscribe to MQTT channels
+-  Python Code: Execute Python 3 code and store a variable number of measurements
+-  Linux Command: Executes a linux command and stores the returned value
+-  `Custom Input <#custom-inputs>`__: Create your own custom input
+
 Output Devices
 --------------
 
     `Atlas EZO-PMP Peristaltic Pump <#atlas-scientific-ezo-pmp>`__: Carbon dioxide (CO2) in ppmv
     `link <https://www.atlas-scientific.com/peristaltic.html>`__
-
 
 Edge Detection
 --------------
@@ -3639,6 +3692,8 @@ be necessary to attain your desired range.
 
 Device Specific Information
 ===========================
+
+This information may not be current, so always reference and follow manufacturer recommendations for operating their devices.
 
 LCD Displays
 ------------

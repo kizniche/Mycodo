@@ -4,7 +4,9 @@ Mycodo Manual
 -   [Brief Overview](#brief-overview)
 -   [Frequently Asked Questions](#frequently-asked-questions)
 -   [Upgrading](#upgrading)
+-   [Backup-Restore](#backup-restore)
 -   [Features](#features)
+    -   [Web Interface](#web-interface)
     -   [Mycodo Client](#mycodo-client)
     -   [Data](#data)
         -   [Input](#input)
@@ -50,6 +52,7 @@ Mycodo Manual
         -   [PID Control](#pid-control)
     -   [Live Measurements](#live-measurements)
     -   [Asynchronous Graphs](#asynchronous-graphs)
+    -   [Alerts](#alerts)
     -   [Notes](#notes)
         -   [Tag Options](#tag-options)
         -   [Note Options](#note-options)
@@ -57,17 +60,21 @@ Mycodo Manual
     -   [Dependencies](#dependencies)
     -   [Camera](#camera)
     -   [Energy Usage](#energy-usage)
-    -   [Backup-Restore](#backup-restore)
     -   [System Information](#system-information)
     -   [USB Device Persistence Across
         Reboots](#usb-device-persistence-across-reboots)
     -   [Infrared Remote](#infrared-remote)
+    -   [Translations](#translations)
 -   [Troubleshooting](#troubleshooting)
     -   [Daemon Not Running](#daemon-not-running)
     -   [Incorrect Database Version](#incorrect-database-version)
     -   [More](#more)
 -   [Devices](#devices)
+    -   [I2C](#i2c)
+    -   [1-Wire](#wire)
+    -   [UART](#uart)
     -   [Input Devices](#input-devices)
+    -   [Other Inputs](#other-inputs)
     -   [Output Devices](#output-devices)
     -   [Edge Detection](#edge-detection)
     -   [I2C Multiplexers](#i2c-multiplexers)
@@ -355,12 +362,43 @@ command in a terminal. A log of the upgrade process is created at
 
 
 
+BACKUP-RESTORE
+
+
+[Gear Icon] -> Backup Restore
+
+A backup is made to /var/Mycodo-backups when the system is upgraded or
+through the web interface on the [Gear Icon] -> Backup Restore page.
+
+If you need to restore a backup, this can be done on the
+[Gear Icon] -> Backup  Restore page. Find the backup you would like
+restored and press the Restore button beside it. A restore can also be
+initialized through the command line. Use the following commands to
+initialize a restore, changing the appropriate directory names, ‘user’
+to your user name, and TIME and COMMIT to the appropriate text found as
+the directory names in /var/Mycodo-backups/
+
+    sudo mv /home/user/Mycodo /home/user/Mycodo_old
+    sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
+    sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
+
+
+
 FEATURES
 
 
 The following sections describe the essential modules of Mycodo that can
 be used to perform functions or communicate with other parts of Mycodo.
 Each section performs specific tasks or groups of related tasks.
+
+
+Web Interface
+
+The main frontend of Mycodo is a web interface that allows any device
+with a web browser to view collected data and configure devices. The web
+interface supports an authentication system with user/password
+credentials, user roles that grant/deny access to parts of the system,
+and SSL for encrypted browsing.
 
 
 Mycodo Client
@@ -1795,7 +1833,12 @@ Additional Conditions
 
 Trigger
 
-A Trigger Controller will execute actions when events are triggered.
+A Trigger Controller will execute actions when events are triggered,
+such as an output turning on or off, a GPIO pin changing it’s voltage
+state, or timed events, including various timers (duration, time period,
+time point, etc), or the sunrise or sunset time at a specific latitude
+and longitude. One the trigger is defined, add any number of Actions to
+be executed when that event is triggered.
 
 Output (On/Off) Options
 
@@ -2914,6 +2957,18 @@ least one sensor needs to be added and activated in order to display
 live data.
 
 
+Alerts
+
+Alerts can be used to notify users about the state of the system. For
+things like sensor monitoring, this could be a threshold that indicates
+something needs attention. E-Mail notifications are built-in to Mycodo
+in a number of places, however there are several places (Inputs,
+Outputs, Controllers) that allow custom Python code to be used, enabling
+many other notification options to be built.
+
+See Alert Settings for more information about setting up Alerts.
+
+
 Notes
 
 More -> Notes
@@ -3050,26 +3105,6 @@ Settings.
   Select Amp Measurement This is a measurement with the amp (A) units that
                          will be used to calculate energy usage.
   ------------------------------------------------------------------------
-
-
-Backup-Restore
-
-[Gear Icon] -> Backup Restore
-
-A backup is made to /var/Mycodo-backups when the system is upgraded or
-through the web interface on the [Gear Icon] -> Backup Restore page.
-
-If you need to restore a backup, this can be done on the
-[Gear Icon] -> Backup  Restore page. Find the backup you would like
-restored and press the Restore button beside it. A restore can also be
-initialized through the command line. Use the following commands to
-initialize a restore, changing the appropriate directory names, ‘user’
-to your user name, and TIME and COMMIT to the appropriate text found as
-the directory names in /var/Mycodo-backups/
-
-    sudo mv /home/user/Mycodo /home/user/Mycodo_old
-    sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
-    sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
 
 
 System Information
@@ -3404,6 +3439,17 @@ that’s in /home/pi/.lircrc. If Times to Send is set larger than 1, the
 code will be sent multiple times at intervals of 0.5 seconds.
 
 
+Translations
+
+Mycodo has been translated to several languages. By default, the
+language of the browser will determine which language is used, but may
+be overridden in the General Settings, at
+[Gear Icon] -> Configure -> General. If you find an issue with a
+translation or would like to add another language, see the Translations
+section of the Wiki and consider making a Pull Request or Creating an
+Issue.
+
+
 
 TROUBLESHOOTING
 
@@ -3465,26 +3511,28 @@ information about diagnosing issues.
 DEVICES
 
 
-All Input and Output devices are listed below.
+Supported Input and Output devices are listed below.
+
+
+I2C
 
 The I2C interface should be enabled with raspi-config.
 
+
+1-Wire
+
 The 1-wire interface should be configured with these instructions.
+
+
+UART
 
 This documentation provides specific installation procedures for
 configuring UART with the Raspberry Pi version 1 or 2.
 
-The K30 may be tested by executing
-~/Mycodo/mycodo/tests/manual_tests/test_uart_K30.py
-
-For Atlas Scientific sensors, this guide may be used, as well as the
-above K-30 guide, to set up UART on the Raspberry Pi 1 and 2. However,
-for Pi 3s, use the procedure below.
-
-Because the UART is handled differently by the Raspberry Pi 3, from of
-the addition of bluetooth, there are a different set of instructions. If
-installing Mycodo on a Raspberry Pi 3, you only need to perform these
-steps to configure UART:
+Because the UART is handled differently higher after the Raspberry Pi 2
+(due to the addition of bluetooth), there are a different set of
+instructions. If installing Mycodo on a Raspberry Pi 3 or above, you
+only need to perform these steps to configure UART:
 
 Run raspi-config
 
@@ -3504,6 +3552,12 @@ Input Devices
 
   AM2320: Relative humidity, temperature link
 
+  Atlas Scientific DO: Dissolved Oxygen link
+
+  Atlas Scientific EC: Electrical Conductivity link
+
+  Atlas Scientific ORP: Oxidation-Reduction Potential link
+
   Atlas Scientific pH: pH link
 
   Atlas Scientific PT-1000: Temperature link
@@ -3514,9 +3568,15 @@ Input Devices
 
   BMP085, BMP180: Barometric pressure, temperature link
 
+  BMP280: Barometric pressure, temperature link
+
   CCS811: CO2, VOC, temperature link
 
+  Cozir: CO2, humidity, temperature link
+
   Chirp: Moisture, light, and temperature link
+
+  DHT11, DHT22/AM2302: Relative humidity and temperature link
 
   DS18B20: Temperature link
 
@@ -3528,7 +3588,7 @@ Input Devices
 
   DS1825: Temperature link
 
-  DHT11, DHT22/AM2302: Relative humidity and temperature link
+  HDC1000: Relative humidity and temperature link
 
   HTU21D: Relative humidity and temperature link
 
@@ -3542,9 +3602,19 @@ Input Devices
 
   MAX31865: Temperature link
 
+  Miflora: Battery, electrical conductivity, light, moisture,
+  temperature link
+
+  MCP9808: Temperature link
+
+  MH-Z16: Carbon dioxide (CO2) in ppmv link
+
   MH-Z19: Carbon dioxide (CO2) in ppmv link
 
-  SHT1x/SHT3x/SHT7x/SHT31 Smart Gadget: Relative humidity and
+  Ruuvitag: Relative humidity, temperature, pressure, battery,
+  acceleration (g, x, y, and z) link
+
+  SHT1x/SHT2x/SHT3x/SHT7x/SHT31 Smart Gadget: Relative humidity and
   temperature link
 
   Sonoff TH10/16 (Tasmota firmware): Relative humidity and temperature
@@ -3554,6 +3624,30 @@ Input Devices
   TSL2561: Light link
 
   TSL2591: Light link
+
+  ZH03B: Particle sensor link
+
+
+Other Inputs
+
+-   Raspberry Pi CPU: Temperature
+-   Raspberry Pi CPU: CPU load
+-   Raspberry Pi: Free disk space
+-   Raspberry Pi: GPIO pin state
+-   Raspberry Pi: GPIO pin rising or falling edge
+-   Raspberry Pi: Measure PWM from signal
+-   Raspberry Pi: Measure RPM from signal
+-   Mycodo: Daemon RAM use
+-   Mycodo: Network ping response
+-   Mycodo: Network port open
+-   The Things Network: Receive measurements from Data Storage
+    Integration
+-   MTQQ: Subscribe to MQTT channels
+-   Python Code: Execute Python 3 code and store a variable number of
+    measurements
+-   Linux Command: Executes a linux command and stores the returned
+    value
+-   Custom Input: Create your own custom input
 
 
 Output Devices
@@ -3628,6 +3722,10 @@ attain your desired range.
 
 
 DEVICE SPECIFIC INFORMATION
+
+
+This information may not be current, so always reference and follow
+manufacturer recommendations for operating their devices.
 
 
 LCD Displays

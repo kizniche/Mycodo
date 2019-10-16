@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-13 17:02-0400\n"
+"POT-Creation-Date: 2019-10-15 22:42-0400\n"
 "PO-Revision-Date: 2018-08-10 15:59-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -1889,19 +1889,19 @@ msgstr "成功退出"
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "需要有效温度: %(temp)s 无效。"
 
-#: mycodo_flask/routes_general.py:979
+#: mycodo_flask/routes_general.py:993
 msgid "System rebooting in 10 seconds"
 msgstr "系统在10秒内重启"
 
-#: mycodo_flask/routes_general.py:981
+#: mycodo_flask/routes_general.py:995
 msgid "System shutting down in 10 seconds"
 msgstr "系统在10秒内关闭"
 
-#: mycodo_flask/routes_general.py:983
+#: mycodo_flask/routes_general.py:997
 msgid "Command to restart the daemon sent"
 msgstr "用于重新启动守护程序的命令"
 
-#: mycodo_flask/routes_general.py:985
+#: mycodo_flask/routes_general.py:999
 msgid "Command to reload the frontend sent"
 msgstr "命令重新加载发送的前端"
 
@@ -5086,7 +5086,7 @@ msgstr "已成功添加ID为 %(id)s 的{dev}"
 msgid "Execute All"
 msgstr "执行全部"
 
-#: mycodo_flask/utils/utils_general.py:259
+#: mycodo_flask/utils/utils_general.py:258
 #: mycodo_flask/utils/utils_remote_host.py:160
 #: mycodo_flask/utils/utils_remote_host.py:164
 #: mycodo_flask/utils/utils_remote_host.py:168
