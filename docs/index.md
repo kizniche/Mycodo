@@ -31,7 +31,7 @@ Mycodo is open source software for the Raspberry Pi that couples inputs and outp
 
 ### Install
 
-Once you have the Raspberry Pi booted into Raspbian with an internet connection, run the following command in a terminal to install Mycodo:
+Once you have the Raspberry Pi booted into Raspbian with an internet connection, run the following command in a terminal to initiate the Mycodo install:
 
 ```bash
 curl -L https://raw.githubusercontent.com/kizniche/Mycodo/master/install/install | bash

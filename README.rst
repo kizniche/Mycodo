@@ -19,15 +19,23 @@ and outputs in interesting ways to sense and manipulate the environment.
 
 `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__
 
-Originally designed to cultivate edible mushrooms, Mycodo has grown the
-ability to do much more. Some projects Mycodo has been used include
-cultivating plants (hydro- and aqua-ponics), culturing microorganisms,
-maintaining honey bee apiary homeostasis, incubating animals and eggs,
-maintaining aquatic systems, aging cheeses, dry-aging curing and smoking
-meats, fermenting foods and tobacco, sous-vide cooking, controlling
-reflow ovens, and more.
+Originally developed to cultivate edible mushrooms, Mycodo has evolved to do much more. Here are a few things that have been done with Mycodo:
 
-.. contents::
+-  Growing mushrooms and plants
+-  Maintaining aquatic systems (e.g. fish, hydroponic, aquaponic)
+-  Maintaining honey bee apiary homeostasis
+-  Maintaining terrarium, herpetarium, and vivarium environments
+-  Incubating young animals and eggs
+-  Aging cheese
+-  Dry-aging, curing, and smoking meat
+-  Fermenting beer, food, and tobacco
+-  Controlling sous-vide cookers
+-  Controlling reflow ovens
+-  Culturing microorganisms
+-  Treating agricultural waste water
+-  ...and more
+
+.. contents:: Table of Contents
    :depth: 1
 
 Features
@@ -64,15 +72,15 @@ Prerequisites
 -  An active internet connection
 
 Mycodo been tested to work with the Raspberry Pi (versions Zero, 1, 2,
-3, and 4) following a fresh install of
-`Raspbian <https://www.raspberrypi.org/downloads/raspbian/>`__ Buster
-(2019-06-20) Lite version, with an active internet connection.
+3, and 4) following a fresh install of Raspbian Buster (2019-06-20)
+Lite version, with an active internet connection.
 
 Install
 ~~~~~~~
 
 Once you have the Raspberry Pi booted into Raspbian with an internet
-connection, run the following command in a terminal to install Mycodo:
+connection, run the following command in a terminal to initiate the
+Mycodo install:
 
 .. code:: bash
 
