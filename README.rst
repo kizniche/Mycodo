@@ -48,16 +48,21 @@ Features
 -  `Upgrade System <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#upgrading>`__ to easily upgrade the Mycodo system to the latest release or restore to a previously-backed up version.
 -  `Translation <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#translations>`__ to several languages, including English, Chinese, Dutch, German, French, Italian, Norwegian, Portuguese, Russian, Serbian, Spanish, and Swedish.
 
-Get Mycodo
-----------
+Screenshots
+-----------
+
+Visit the `Screenshots <https://github.com/kizniche/Mycodo/wiki/Screenshots>`__ page of the Wiki.
+
+Install
+-------
 
 These install procedures have been tested to work with the Raspberry Pi
 (versions Zero, 1, 2, 3, and 4) following a fresh install of
 `Raspbian <https://www.raspberrypi.org/downloads/raspbian/>`__ Buster
 (2019-06-20) Lite version, with an active internet connection.
 
-Install
-~~~~~~~
+Once you have the Raspberry Pi booted into Raspbian with an internet
+connection, run the following command in a terminal to install Mycodo:
 
 .. code:: bash
 
