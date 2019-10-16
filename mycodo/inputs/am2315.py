@@ -172,7 +172,6 @@ class InputModule(AbstractInput):
                 self.logger.debug(
                     "Measurement {num} returned failed CRC".format(
                         num=num_measure))
-                pass
             else:
                 dew_pt = calculate_dewpoint(temperature, humidity)
                 return dew_pt, humidity, temperature

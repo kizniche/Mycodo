@@ -213,7 +213,7 @@ class DaemonController:
                     if self.enable_upgrade_check:
                         self.check_mycodo_upgrade_exists(now)
 
-            except Exception as except_msg:
+            except Exception:
                 self.logger.exception("Daemon Error")
                 raise
 

@@ -50,7 +50,6 @@ from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import return_measurement_info
-from mycodo.utils.system_pi import str_is_float
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 

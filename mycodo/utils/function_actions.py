@@ -123,9 +123,7 @@ def get_condition_value(condition_id):
 
     # Return controller active state
     elif sql_condition.condition_type == 'controller_status':
-        (controller_type,
-         controller_object,
-         controller_entry) = which_controller(sql_condition.controller_id)
+        controller_type, _, _ = which_controller(sql_condition.controller_id)
         control = DaemonControl()
         return control.controller_is_active(
             controller_type, sql_condition.controller_id)

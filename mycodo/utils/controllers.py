@@ -26,7 +26,6 @@ import logging
 
 import os
 
-from mycodo.config import PATH_CONTROLLERS
 from mycodo.config import PATH_CONTROLLERS_CUSTOM
 from mycodo.utils.modules import load_module_from_file
 

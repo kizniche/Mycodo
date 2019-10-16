@@ -144,7 +144,7 @@ if __name__ == '__main__':
 
         # continuous polling command automatically polls the board
         if input_val.upper().startswith("POLL"):
-            delaytime = float(string.split(input_val, ',')[1])
+            delaytime = float(input_val.split(',')[1])
 
             dev.send_cmd("C,0")  # turn off continuous mode
             # clear all previous data
@@ -158,10 +158,10 @@ if __name__ == '__main__':
                 while True:
                     dev.send_cmd("R")
                     lines = dev.read_lines()
-                    for i in range(len(lines)):
-                        # print lines[i]
-                        if lines[i][0] != '*':
-                            print("Response: ", lines[i])
+                    for line in lines:
+                        # print line
+                        if line[0] != '*':
+                            print("Response: {}".format(line))
                     time.sleep(delaytime)
 
             except KeyboardInterrupt:  # catches the ctrl-c command, which breaks the loop above
