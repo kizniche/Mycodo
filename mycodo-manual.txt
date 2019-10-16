@@ -82,46 +82,10 @@ Mycodo Manual
     -   [Analog-to-Digital Converters](#analog-to-digital-converters)
 -   [Device Specific Information](#device-specific-information)
     -   [LCD Displays](#lcd-displays)
-    -   [Output Device Details](#output-device-details)
-        -   [Atlas Scientific EZO-PMP](#atlas-scientific-ezo-pmp)
-    -   [Input Device Details](#input-device-details)
+    -   [Input Device Notes](#input-device-notes)
         -   [Raspberry Pi](#raspberry-pi)
         -   [AM2315](#am2315)
-        -   [AM2320](#am2320)
-        -   [Atlas Scientific pH](#atlas-scientific-ph)
-        -   [Atlas Scientific PT-1000](#atlas-scientific-pt-1000)
-        -   [BH1750](#bh1750)
-        -   [BME280](#bme280)
-        -   [BMP085, BMP180](#bmp085-bmp180)
-        -   [CCS811](#ccs811)
-        -   [Chirp](#chirp)
-        -   [DHT11](#dht11)
-        -   [DHT22, AM2302](#dht22-am2302)
-        -   [DS18B20](#ds18b20)
-        -   [DS18S20](#ds18s20)
-        -   [DS1822](#ds1822)
-        -   [DS28EA00](#ds28ea00)
-        -   [DS1825](#ds1825)
-        -   [HTU21D](#htu21d)
         -   [K-30](#k-30)
-        -   [MAX31850K](#max31850k)
-        -   [MAX31855K](#max31855k)
-        -   [MAX31856](#max31856)
-        -   [MAX31865](#max31865)
-        -   [MH-Z16](#mh-z16)
-        -   [MH-Z19](#mh-z19)
-        -   [SHT1x](#sht1x)
-        -   [SHT3x](#sht3x)
-        -   [SHT7x](#sht7x)
-        -   [TMP006, TMP007](#tmp006-tmp007)
-        -   [TSL2561](#tsl2561)
-        -   [TSL2591](#tsl2591)
-        -   [Winsen ZH03B](#winsen-zh03b)
-    -   [Analog to Digital Converters](#analog-to-digital-converters-1)
-        -   [ADS1x15](#ads1x15)
-        -   [ADS1256](#ads1256)
-        -   [MCP3008](#mcp3008)
-        -   [MCP342x](#mcp342x)
     -   [Diagrams](#diagrams)
         -   [DHT11 Diagrams](#dht11-diagrams)
         -   [DS18B20 Diagrams](#ds18b20-diagrams)
@@ -3549,84 +3513,47 @@ reboot.
 
 Input Devices
 
-  AM2315: Relative humidity, temperature link
-
-  AM2320: Relative humidity, temperature link
-
-  Atlas Scientific DO: Dissolved Oxygen link
-
-  Atlas Scientific EC: Electrical Conductivity link
-
-  Atlas Scientific ORP: Oxidation-Reduction Potential link
-
-  Atlas Scientific pH: pH link
-
-  Atlas Scientific PT-1000: Temperature link
-
-  BH1750: Light link
-
-  BME280: Barometric pressure, humidity, temperature link
-
-  BMP085, BMP180: Barometric pressure, temperature link
-
-  BMP280: Barometric pressure, temperature link
-
-  CCS811: CO2, VOC, temperature link
-
-  Cozir: CO2, humidity, temperature link
-
-  Chirp: Moisture, light, and temperature link
-
-  DHT11, DHT22/AM2302: Relative humidity and temperature link
-
-  DS18B20: Temperature link
-
-  DS18S20: Temperature link
-
-  DS1822: Temperature link
-
-  DS28EA00: Temperature link
-
-  DS1825: Temperature link
-
-  HDC1000: Relative humidity and temperature link
-
-  HTU21D: Relative humidity and temperature link
-
-  K30: Carbon dioxide (CO2) in ppmv link
-
-  MAX31850K: Temperature link
-
-  MAX31855K: Temperature link
-
-  MAX31856: Temperature link
-
-  MAX31865: Temperature link
-
-  Miflora: Battery, electrical conductivity, light, moisture,
-  temperature link
-
-  MCP9808: Temperature link
-
-  MH-Z16: Carbon dioxide (CO2) in ppmv link
-
-  MH-Z19: Carbon dioxide (CO2) in ppmv link
-
-  Ruuvitag: Relative humidity, temperature, pressure, battery,
-  acceleration (g, x, y, and z) link
-
-  SHT1x/SHT2x/SHT3x/SHT7x/SHT31 Smart Gadget: Relative humidity and
-  temperature link
-
-  Sonoff TH10/16 (Tasmota firmware): Relative humidity and temperature
-
-  TMP006, TMP007: Contactless temperature link
-
-  TSL2561: Light link
-
-  TSL2591: Light link
-
-  ZH03B: Particle sensor link
+-   AM2315: Relative humidity, temperature link
+-   AM2320: Relative humidity, temperature link
+-   Atlas Scientific DO: Dissolved Oxygen link
+-   Atlas Scientific EC: Electrical Conductivity link
+-   Atlas Scientific ORP: Oxidation-Reduction Potential link
+-   Atlas Scientific pH: Potential hydrogen link
+-   Atlas Scientific PT-1000: Temperature link
+-   BH1750: Light link
+-   BME280: Barometric pressure, humidity, temperature link
+-   BMP085, BMP180: Barometric pressure, temperature link
+-   BMP280: Barometric pressure, temperature link
+-   CCS811: CO2, VOC, temperature link
+-   Cozir: CO2, humidity, temperature link
+-   Chirp: Moisture, light, and temperature link
+-   DHT11, DHT22/AM2302: Relative humidity and temperature link
+-   DS18B20: Temperature link
+-   DS18S20: Temperature link
+-   DS1822: Temperature link
+-   DS28EA00: Temperature link
+-   DS1825: Temperature link
+-   HDC1000: Relative humidity and temperature link
+-   HTU21D: Relative humidity and temperature link
+-   K30: Carbon dioxide (CO2) in ppmv link
+-   MAX31850K: Temperature link
+-   MAX31855K: Temperature link
+-   MAX31856: Temperature link
+-   MAX31865: Temperature link
+-   Miflora: Battery, electrical conductivity, light, moisture,
+    temperature link
+-   MCP9808: Temperature link
+-   MH-Z16: Carbon dioxide (CO2) in ppmv link
+-   MH-Z19: Carbon dioxide (CO2) in ppmv link
+-   Ruuvitag: Relative humidity, temperature, pressure, battery,
+    acceleration (g, x, y, and z) link
+-   SHT1x/SHT2x/SHT3x/SHT7x/SHT31 Smart Gadget: Relative humidity and
+    temperature link
+-   Sonoff TH10/16 (Tasmota firmware): Relative humidity and temperature
+-   TMP006, TMP007: Contactless temperature link
+-   TSL2561: Light link
+-   TSL2591: Light link
+-   ZH03B: Particle sensor link
 
 
 Other Inputs
@@ -3653,7 +3580,7 @@ Other Inputs
 
 Output Devices
 
-  Atlas EZO-PMP Peristaltic Pump: Pump volumes in milliliters link
+-   Atlas EZO-PMP Peristaltic Pump: Pump volumes in milliliters link
 
 
 Other Outputs
@@ -3721,13 +3648,10 @@ An analog to digital converter (ADC) allows the use of any analog sensor
 that outputs a variable voltage. A voltage divider may be necessary to
 attain your desired range.
 
-  ADS1x15: Analog-to-digital converter link
-
-  ADS1256: Analog-to-digital converter link
-
-  MCP3008: Analog-to-digital converter link
-
-  MCP342x: Analog-to-digital converter link
+-   ADS1x15: Analog-to-digital converter link
+-   ADS1256: Analog-to-digital converter link
+-   MCP3008: Analog-to-digital converter link
+-   MCP342x: Analog-to-digital converter link
 
 
 
@@ -3748,24 +3672,7 @@ I2C backpack that should be compatible.
 [image4] 
 
 
-Output Device Details
-
-Atlas Scientific EZO-PMP
-
-Embedded Dosing Pump
-
-Specifications
-
--   Flow Rate: 0.5 ml to 105 ml/min
--   Accuracy: ±1%
--   Calibration: Single point
--   Tubing Size: Any 5.. O.D. tubing
--   Interfaces: I2C and UART
--   Operating Voltages: 3.3V - 5V (logic), 12V - 24V (motor)
--   Pump Head: 2 meters
-
-
-Input Device Details
+Input Device Notes
 
 Raspberry Pi
 
@@ -3774,17 +3681,6 @@ that measure the temperature of the CPU/GPU. This is the easiest sensor
 to set up in Mycodo, as it is immediately available to be used.
 
 AM2315
-
-Specifications
-
--   0-100% humidity readings with 1% (10-90% RH) and 3% (0-10% RH and
-    90-100% RH) accuracy
--   -20 °C to 80 °C temperature readings ±0.1 °C typical accuracy
--   3.5 to 5.5V power and I/O
--   10 mA max current use during conversion (while requesting data)
--   No more than 0.5 Hz sampling rate (once every 2 seconds)
-
-Notes
 
 From @Theoi-Meteoroi on GitHub:
 
@@ -3808,191 +3704,6 @@ After rebooting, a new I2C bus at /dev/i2c-3 should exist with SDA on
 pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate
 pull-up resistors before connecting any devices.
 
-AM2320
-
-Specifications
-
--   ±0.5 °C accuracy
-
-Atlas Scientific pH
-
-The Atlas Scientific pH sensor measures the pH of a liquid.
-
-Specifications
-
--   UART or I2C
--   Probe Max Pressure: 690 kPa (100PSI)
--   Probe Max Depth 60 M (197 ft)
--   Probe Weight: 49 grams
--   Probe can be fully submerged in fresh or salt water indefinitely
-
-Atlas Scientific PT-1000
-
-The PT1000 temperature probe is a resistance type thermometer. Where PT
-stands for platinum and 1000 is the measured resistance of the probe at
-0 °C in ohms (1k at 0 °C).
-
-Specifications
-
--   Serial or I2C
--   Accuracy ±(0.15 + (0.002*t))
--   Probe type: Class A Platinum, RTD (resistance temperature detector)
--   Cable length: 81cm (32")
--   Cable material: Silicone rubber
--   30mm sensing area (304 SS)
--   6mm Diameter
--   BNC Connector
--   Reaction Time: 90% value in 13 seconds
--   Probe output: analog
--   Full temperature sensing range: -200 °C to 850 °C
--   Cable max temp 125 °C
--   Cable min temp -55 °C
-
-BH1750
-
-The BH1750 is an I2C luminosity sensor that provides a digital value in
-lux (lx) over a range of 1 - 65535 lx.
-
-BME280
-
-The BME280 is the upgrade to the BMP085/BMP180/BMP183. It has a low
-altitude noise of 0.25m and the same fast conversion time. It has the
-same specifications, but can use either I2C or SPI.
-
-Specifications
-
--   300-1100 hPa (9000m to -500m above sea level)
--   -40 °C to +85 °C operational range
--   ±3% humidity accuracy tolerance
--   ±1% humidity hysteresis
--   ±1 hPa pressure accuracy
--   ±2 °C temperature accuracy
--   Vin: 3 to 5V
--   Logic: 3 to 5V compliant
--   I2C 7-bit address 0x76 or 0x77
-
-BMP085, BMP180
-
-The BMP180 replaces the BMP085. It is completely identical to the BMP085
-in terms of firmware/software/interfacing.
-
-Specifications
-
--   300-1100 hPa (9000m to -500m above sea level)
--   Up to 0.03hPa / 0.25m resolution
--   -40 °C to +85 °C operational range
--   ±2 °C temperature accuracy
--   Vin: 3 to 5V
--   Logic: 3 to 5V compliant
--   I2C 7-bit address 0x77
-
-CCS811
-
-Be aware that the CCS811 datasheet recommends a burn-in of 48 hours and
-a run-in of 20 minutes (you must allow 20 minutes for the sensor to warm
-up and output valid data).
-
-Specifications
-
--   400 – 8,192 ppmv CO2
--   0 - 1,187 ppbv VOC
--   Ambient temperature measured from 10K NTC Thermistor (separate from
-    chip, may or may not be included on the board you purchase)
--   Warm-up time: ~ 20 min.
-
-Chirp
-
-The Chirp sensor measures moisture, light, and temperature.
-
-Specifications
-
--   Vin: 3 to 5V
--   I2C 7-bit address 0x77
-
-DHT11
-
-Specifications
-
--   3 to 5V power and I/O
--   2.5mA max current use during conversion (while requesting data)
--   20-80% humidity readings with 5% accuracy
--   0 °C to 50 °C temperature readings ±2 °C accuracy
--   No more than 1 Hz sampling rate (once every second)
-
-DHT22, AM2302
-
-Compared to the DHT11, this sensor is more precise, more accurate and
-works in a bigger range of temperature/humidity, but its larger and more
-expensive. The wiring is the same as the DHT11.
-
-Specifications
-
--   0-100% humidity readings with 2% (10-90% RH) and 5% (0-10% RH and
-    90-100% RH) accuracy
--   -40 °C to 80 °C temperature readings ±0.5 °C accuracy
--   3 to 5V power and I/O
--   2.5mA max current use during conversion (while requesting data)
--   No more than 0.5 Hz sampling rate (once every 2 seconds)
-
-DS18B20
-
-The DS18B20 is a 1-Wire digital temperature sensor from Maxim IC. Each
-sensor has a unique 64-Bit Serial number, allowing for a huge number of
-sensors to be used on one data bus.
-
-Specifications
-
--   Usable temperature range: -55 °C to 125 °C
--   9 to 12 bit selectable resolution
--   Uses 1-Wire interface- requires only one digital pin for
-    communication
--   Unique 64 bit ID burned into chip
--   Multiple sensors can share one pin
--   ±0.5 °C Accuracy from -10 °C to +85 °C
--   Temperature-limit alarm system
--   Query time is less than 750ms
--   Usable with 3.0V to 5.5V power/data
-
-DS18S20
-
-Specifications
-
--   Usable temperature range: -55 °C to 125 °C
--   ±0.5 °C Accuracy from -10 °C to +85 °C
--   9-bit resolution
-
-DS1822
-
-Specifications
-
--   Usable temperature range: -55 °C to 125 °C
--   ±2 °C Accuracy from -10 °C to +85 °C
--   9 to 12 bit selectable resolution
-
-DS28EA00
-
-Specifications
-
--   Usable temperature range: -40 °C to 85 °C
--   9 to 12 bit selectable resolution
-
-DS1825
-
-Specifications
-
--   Usable temperature range: -55 °C to 125 °C
--   ±0.5 °C Accuracy from -10 °C to +85 °C
--   9 to 12 bit selectable resolution
-
-HTU21D
-
-Specifications
-
--   0-100% humidity readings with 2% (20-80% RH) and 2%-5% (0-20% RH and
-    80-100% RH) accuracy
--   Optimum accuracy measurements within 5 to 95% RH
--   -30 °C to 90 °C temperature readings ±1 °C typical accuracy
-
 K-30
 
 [image5] 
@@ -4001,239 +3712,6 @@ Be very careful when connecting the K-30, as there is no reverse-voltage
 protection and improper connections could destroy your sensor.
 
 Wiring instructions for the Raspberry Pi can be found here.
-
-Specifications
-
--   0 – 10,000 ppmv (0 - 5,000 ppmv within specifications)
--   Repeatability: ±20 ppm ±1% of measured value within specifications
--   Accuracy: ±30 ppm ±3% of measured value within specifications
--   Non-dispersive infrared (NDIR) technology
--   Sensor life expectancy: > 15 years
--   Self-diagnostics: complete function check of the sensor module
--   Warm-up time: < 1 min. (@ full specs < 15 min)
--   0.5 Hz sampling rate (once every 2 seconds)
-
-MAX31850K
-
-Specifications
-
--   Measures K-type thermocouples
--   14-bit, 0.25 °C resolution
-
-MAX31855K
-
-Specifications
-
--   Measures K-type thermocouples
--   Serial interface
--   -200 °C to 1350 °C output in 0.25 degree increments
--   K thermocouples have about ±2 °C to ±6 °C accuracy
--   Internal temperature reading
-
-MAX31856
-
-Measures several types of thermocouples (K, J, N, R, S, T, E, and B).
-
-Specifications
-
--   Serial interface
--   -210 °C to 1800 °C output in 0.0078125 ° resolution (many
-    thermocouples have about ±2 °C to ±6 °C accuracy or worse depending
-    on the temperature and type, so the resolution will be a lot better
-    than the accuracy)
--   Works with any K, J, N, R, S, T, E, or B type thermocouple
--   Internal temperature reading
-
-MAX31865
-
-Measures the PT100 or PT1000 platinum resistance temperature detectors
-(RTDs).
-
-Specifications
-
--   Serial interface
--   -200 °C to 850 °C
--   Works with the PT100 and PT1000 RTD
-
-MH-Z16
-
-Specifications
-
--   Interface: UART and I2C
--   0 – 10,000 ppmv
--   Resolution ratio: 5 ppmv (0 ~ 2000 ppmv), 10 ppmv (2000 ~ 5000
-    ppmv), ±20 ppmv (5000 ~ 10000 ppmv)
--   Accuracy: ±50 ppm ±5 %
--   Repeatability: ±30 ppmv
--   Non-dispersive infrared (NDIR) technology
--   Sensor life expectancy: > 5 years
--   Warm-up time: 3 minutes
--   Response time: < 30 seconds
-
-MH-Z19
-
-Specifications
-
--   Interface: UART
--   0 – 5,000 ppmv
--   Accuracy: ±50 ppm ±5% of measured value within specifications
--   Non-dispersive infrared (NDIR) technology
--   Sensor life expectancy: > 5 years
--   Warm-up time: 3 min.
--   0.2 Hz sampling rate (once every 5 seconds)
-
-SHT1x
-
-(SHT10, SHT11, SHT15)
-
-Specifications
-
--   0-100% humidity readings with 2%-5% (10-90% RH) and 2%-7.5% (0-10%
-    RH and 90-100% RH) accuracy
--   -40 °C to 125 °C temperature readings ±0.5 °C, ±0.4 °C, and ±0.3 °C
-    typical accuracy (respectively)
--   2.4 to 5.5V power and I/O
--   No more than 0.125 Hz sampling rate (once every 8 seconds)
-
-SHT3x
-
-(SHT30, SHT31/SHT31 Smart Gadget, SHT35)
-
-Specifications
-
--   0-100% humidity readings with ±3%,±2%, and ±1.5% relative humidity
-    accuracy
--   ±0.2°C,±0.2°C,and ±0.1°C temperature accuracy for most uses
--   -40 °C to 125 °C temperature
--   Supply voltage range - 2.15 to 5.5V
-
-SHT7x
-
-(SHT71, SHT75)
-
-Specifications
-
--   0-100% humidity readings with 2%-3% (10-90% RH) and 2%-5% (0-10% RH
-    and 90-100% RH) accuracy
--   -40 °C to 125 °C temperature readings ±0.4 °C and ±0.3 °C typical
-    accuracy (respectively)
--   2.4 to 5.5V power and I/O
--   No more than 0.125 Hz sampling rate (once every 8 seconds)
-
-Sonoff TH10/16
-
-(TH10, TH16)
-
-The Sonoff TH10/TH16 supports four kinds of temperature monitor and
-humidity monitor sensors: Si7021, AM2301, DS18B20, and DHT11.
-
-This wifi-enabled ESP8266 based device uses the Tasmota firmware that
-can be found here.
-
-Specifications
-
--   Remote ON/OFF–Turn electrical devices on/off, can work without TH
-    sensor
-
-TMP006, TMP007
-
-The TMP006 Breakout can measure the temperature of an object without
-making contact with it. By using a thermopile to detect and absorb the
-infrared energy an object is emitting, the TMP006 Breakout can determine
-how hot or cold the object is.
-
-Specifications
-
--   Usable temperature range: -40 °C to 125 °C
--   Optimal operating voltage of 3.3V to 5V (tolerant up to 7V max)
-
-TSL2561
-
-The TSL2561 Luminosity Sensor is a sophisticated light sensor which has
-a flat response across most of the visible spectrum. Unlike simpler
-sensors, the TSL2561 measures both infrared and visible light to better
-approximate the response of the human eye. And because the TSL2561 is an
-integrating sensor (it soaks up light for a predetermined amount of
-time), it is capable of measuring both small and large amounts of light
-by changing the integration time.
-
-Specifications
-
--   Light range: 0.1 - 40k+ lux
--   Vin: 3V and a low supply
--   Max current: 0.6mA.
-
-TSL2591
-
-Specifications
-
--   Light range: 188 uLux to 88,000 Lux
-
-Winsen ZH03B
-
-Laser Dust sensor module is a common type, small size sensor, using
-laser scattering principle to detect the dust particles in air, with
-good selectivity and stability.
-
-Specifications
-
--   Detection: PM1.0, PM2.5, PM10
--   Working humidity: 0~85% RH (no condensation)
--   Working temperature: -10 °C to 50 °C
--   Response time (T90) <= 45 seconds
--   Life span: 3 years (in air)
-
-
-Analog to Digital Converters
-
-ADS1x15
-
-(ADS1015, ADS1115)
-
-Specifications
-
--   Interface: I2C
--   I2C 7-bit addresses 0x48 - 0x4B
--   Input channels: 2 (differential), 4 (single-ended)
--   Power: 2.0 - 5.5 V
--   Sample Rate: 1015: 128SPS to 3.3kSPS, 1115: 8SPS to 860SPS
--   Resolution: 1015: 12-bit, 1115: 16-bit
-
-ADS1256
-
-ADS1256
-
-Specifications
-
--   Interface: SPI
--   Input channels: 8
--   Input range: 0 - 5.25 V
--   Power: 1.8 - 3.6 V
--   Resolution: 24-bit
-
-MCP3008
-
-Specifications
-
--   Interface: SPI
--   8 channels
--   10-bit resolution
--   Input range: 0 - 3.3 V
-
-MCP342x
-
-(MCP3422, MCP3423, MCP3424, MCP3426, MCP3427, MCP3428)
-
-Specifications
-
--   Interface: I2C
--   I2C 7-bit addresses 0x68 - 0x6F
--   MCP3422: 2 channel, 12, 14, 16, or 18 bit
--   MCP3423: 2 channel, 12, 14, 16, or 18 bit
--   MCP3424: 4 channel, 12, 14, 16, or 18 bit
--   MCP3426: 2 channel, 12, 14, or 16 bit
--   MCP3427: 2 channel, 12, 14, or 16 bit
--   MCP3428: 4 channel, 12, 14, or 16 bit
 
 
 Diagrams
