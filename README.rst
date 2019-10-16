@@ -19,6 +19,12 @@ and outputs in interesting ways to sense and manipulate the environment.
 
 `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__
 
+.. contents:: Table of Contents
+   :depth: 1
+
+About
+-----
+
 Originally developed to cultivate edible mushrooms, Mycodo has evolved to do much more. Here are a few things that have been done with Mycodo:
 
 -  Growing mushrooms and plants
@@ -34,9 +40,6 @@ Originally developed to cultivate edible mushrooms, Mycodo has evolved to do muc
 -  Culturing microorganisms
 -  Treating agricultural waste water
 -  ...and more
-
-.. contents:: Table of Contents
-   :depth: 1
 
 Features
 --------
