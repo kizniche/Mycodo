@@ -3614,8 +3614,17 @@ Other Inputs
 Output Devices
 --------------
 
-    `Atlas EZO-PMP Peristaltic Pump <#atlas-scientific-ezo-pmp>`__: Carbon dioxide (CO2) in ppmv
+    `Atlas EZO-PMP Peristaltic Pump <#atlas-scientific-ezo-pmp>`__: Pump volumes in milliliters
     `link <https://www.atlas-scientific.com/peristaltic.html>`__
+
+Other Outputs
+-------------
+
+-  GPIO Pin (High/Low)
+-  GPIO PWM Signal generation
+-  Python Command for On and Off actions
+-  Linux Shell command for On and Off actions
+-  Wireless 314/433 Mhz LPD/SRD (rpi-rf)
 
 Edge Detection
 --------------

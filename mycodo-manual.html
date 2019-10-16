@@ -465,6 +465,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#input-devices">Input Devices</a></li>
 <li><a href="#other-inputs">Other Inputs</a></li>
 <li><a href="#output-devices">Output Devices</a></li>
+<li><a href="#other-outputs">Other Outputs</a></li>
 <li><a href="#edge-detection">Edge Detection</a></li>
 <li><a href="#i2c-multiplexers">I2C Multiplexers</a></li>
 <li><a href="#analog-to-digital-converters">Analog-to-Digital Converters</a></li>
@@ -3415,8 +3416,16 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 </ul>
 <h2 id="output-devices">Output Devices</h2>
 <blockquote>
-<p><a href="#atlas-scientific-ezo-pmp">Atlas EZO-PMP Peristaltic Pump</a>: Carbon dioxide (CO2) in ppmv <a href="https://www.atlas-scientific.com/peristaltic.html">link</a></p>
+<p><a href="#atlas-scientific-ezo-pmp">Atlas EZO-PMP Peristaltic Pump</a>: Pump volumes in milliliters <a href="https://www.atlas-scientific.com/peristaltic.html">link</a></p>
 </blockquote>
+<h2 id="other-outputs">Other Outputs</h2>
+<ul>
+<li>GPIO Pin (High/Low)</li>
+<li>GPIO PWM Signal generation</li>
+<li>Python Command for On and Off actions</li>
+<li>Linux Shell command for On and Off actions</li>
+<li>Wireless 314/433 Mhz LPD/SRD (rpi-rf)</li>
+</ul>
 <h2 id="edge-detection">Edge Detection</h2>
 <p>The detection of a changing signal, for instance a simple switch completing a circuit, requires the use of edge detection. By detecting a rising edge (LOW to HIGH), a falling edge (HIGH to LOW), or both, actions or events can be triggered. The GPIO chosen to detect the signal should be equipped with an appropriate resistor that either pulls the GPIO up [to 5-volts] or down [to ground]. The option to enable the internal pull-up or pull-down resistors is not available for safety reasons. Use your own resistor to pull the GPIO high or low.</p>
 <p>Examples of devices that can be used with edge detection: simple switches and buttons, PIR motion sensors, reed switches, hall effect sensors, float switches, and more.</p>
