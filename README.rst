@@ -22,25 +22,6 @@ and outputs in interesting ways to sense and manipulate the environment.
 .. contents:: Table of Contents
    :depth: 1
 
-About
------
-
-Originally developed to cultivate edible mushrooms, Mycodo has evolved to do much more. Here are a few things that have been done with Mycodo:
-
--  Growing mushrooms and plants
--  Maintaining aquatic systems (e.g. fish, hydroponic, aquaponic)
--  Maintaining honey bee apiary homeostasis
--  Maintaining terrarium, herpetarium, and vivarium environments
--  Incubating young animals and eggs
--  Aging cheese
--  Dry-aging, curing, and smoking meat
--  Fermenting beer, food, and tobacco
--  Controlling sous-vide cookers
--  Controlling reflow ovens
--  Culturing microorganisms
--  Treating agricultural waste water
--  ...and more
-
 Features
 --------
 
@@ -58,6 +39,35 @@ Features
 -  `Energy Usage Statistics <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#energy-usage>`__ to calculate and track power consumption and cost over time.
 -  `Upgrade System <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#upgrading>`__ to easily upgrade the Mycodo system to the latest release or restore to a previously-backed up version.
 -  `Translation <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#translations>`__ to several languages, including English, Chinese, Dutch, German, French, Italian, Norwegian, Portuguese, Russian, Serbian, Spanish, and Swedish.
+
+Uses
+----
+
+Originally developed to cultivate edible mushrooms, Mycodo has evolved to do much more. Here are a few things that have been done with Mycodo:
+
+My projects
+
+-  `Growing mushrooms <http://kylegabriel.com/projects/2015/04/mushroom-cultivation-revisited.html>`__
+-  `Growing plants <https://www.youtube.com/watch?v=QNCx_VE7D-8>`__
+-  `Maintaining honey bee apiary homeostasis <https://kylegabriel.com/projects/2015/12/environmentally-controlled-apiary.html>`__
+-  `Maintaining humidity in an underground artificial bat cave <https://kylegabriel.com/projects/2015/10/artificial-bat-cave.html>`__
+-  `Remote radiation monitoring and mapping <https://kylegabriel.com/projects/2019/08/remote-radiation-monitoring.html>`__
+-  `Cooking sous-vide <https://hackaday.io/project/11997-mycodo-environmental-regulation-system/log/45733-sous-vide-pid-tuning-and-the-unexpected-electrical-fire>`__
+
+Projects of others
+
+-  Maintaining aquatic systems (e.g. fish, hydroponic, aquaponic)
+-  Maintaining terrarium, herpetarium, and vivarium environments
+-  Incubating young animals and eggs
+-  Aging cheese
+-  Dry-aging, curing, and smoking meat
+-  Fermenting beer, food, and tobacco
+-  Controlling reflow ovens
+-  Culturing microorganisms
+-  Treating agricultural waste water
+-  ...and more
+
+`Let me know <https://kylegabriel.com/contact/>`__ how you use Mycodo, and I may include it on this list.
 
 Screenshots
 -----------
@@ -157,11 +167,8 @@ Text <https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt
 
 The `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__ also contains useful information.
 
-About Mycodo
-------------
-
-What is PID Control?
-~~~~~~~~~~~~~~~~~~~~
+About PID Control
+-----------------
 
 A `proportional-derivative-integral (PID)
 controller <https://en.wikipedia.org/wiki/PID_controller>`__ is a
@@ -186,8 +193,14 @@ with minimal tuning, and already displays a very minimal deviation from
 the setpoint (±0.5° Celsius). Further tuning would reduce this
 variability further.
 
+See the
+`PID Controller <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-controller>`__
+and
+`PID Tuning <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-tuning>`__
+sections of the manual for more information.
+
 Supported Inputs
-~~~~~~~~~~~~~~~~
+----------------
 
 All supported Inputs can be found under the
 `Input Devices <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input-devices>`__
@@ -196,31 +209,6 @@ sections of the manual.
 
 Additionally, I have another github repository devoted to Custom Inputs that are not included in
 the built-in set. These can be found at `kizniche/Mycodo-custom-inputs <https://github.com/kizniche/Mycodo-custom-inputs>`__.
-
-Web Server Security
-~~~~~~~~~~~~~~~~~~~
-
-An SSL certificate will be generated (expires in 10 years) and stored at
-``~/Mycodo/mycodo/mycodo_flask/ssl_certs/`` during the install process
-to allow SSL to be used to securely connect to the web interface. If you
-want to use your own SSL certificates, replace them with your own.
-
-If using the auto-generated certificate from the install, be aware that
-it will not be verified when visiting the web interface using the
-``https://`` address prefix (opposed to ``http://``). You may
-continually receive a warning message about the security of your site,
-unless you add the certificate to your browser's trusted list.
-
-Upgrade
-~~~~~~~
-
-Mycodo can be easily upgraded from the web interface by selecting
-``Upgrade`` from the configuration menu. Alternatively, an upgrade can
-be initiated from a terminal with the following command:
-
-::
-
-    sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
 
 Donate
 ------

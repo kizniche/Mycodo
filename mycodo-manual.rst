@@ -245,6 +245,17 @@ system. The web interface supports an authentication system with user/password
 credentials, user roles that grant/deny access to parts of the system, and SSL
 for encrypted browsing.
 
+An SSL certificate will be generated (expires in 10 years) and stored at
+``~/Mycodo/mycodo/mycodo_flask/ssl_certs/`` during the install process
+to allow SSL to be used to securely connect to the web interface. If you
+want to use your own SSL certificates, replace them with your own.
+
+If using the auto-generated certificate from the install, be aware that
+it will not be verified when visiting the web interface using the ``https://``
+address prefix. You may continually receive a warning message about the
+security of your site, unless you add the certificate to your browser's
+trusted list.
+
 Data Viewing
 ------------
 
