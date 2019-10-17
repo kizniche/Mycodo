@@ -342,7 +342,7 @@ def trigger_action(
                 target=control.output_on_off,
                 args=(cond_action.do_unique_id,
                       cond_action.do_output_state,),
-                kwargs={'duration': cond_action.do_output_duration})
+                kwargs={'amount': cond_action.do_output_duration})
             output_on_off.start()
 
         # Actuate output (PWM)

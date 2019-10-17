@@ -1,3 +1,10 @@
+## 7.8.2 (Unreleased)
+
+### Bugfixes
+
+ - Fix Output Action
+
+
 ## 7.8.1 (2019.10.15)
 
 ### Bugfixes
