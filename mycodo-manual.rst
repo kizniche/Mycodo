@@ -3,7 +3,7 @@ Mycodo Manual
 -------------
 
 .. contents::
-    :depth: 3
+    :depth: 4
 
 
 About Mycodo
@@ -230,105 +230,68 @@ TIME and COMMIT to the appropriate text found as the directory names in
     sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
     sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
 
-Features
-========
+Operation
+=========
 
-The following sections describe the essential modules of Mycodo that can
+The following sections describe the components of Mycodo that can
 be used to perform functions or communicate with other parts of Mycodo.
-Each section performs specific tasks or groups of related tasks.
 
 Web Interface
 -------------
 
 The main frontend of Mycodo is a web interface that allows any device with a web
-browser to view collected data and configure devices. The web interface supports
-an authentication system with user/password credentials, user roles that grant/deny
-access to parts of the system, and SSL for encrypted browsing.
+browser to view collected data and configure the backend, or the daemon, of the
+system. The web interface supports an authentication system with user/password
+credentials, user roles that grant/deny access to parts of the system, and SSL
+for encrypted browsing.
 
-Mycodo Client
--------------
+Data Viewing
+------------
 
-::
+There are several ways to visualize collected data. Additionally, the dashboard
+can be used for both viewing data and manipulating the system, thanks to the
+numerous dashboard widgets available.
 
-    pi@raspberry:~ $ mycodo-client --help
-    usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
-                         [--deactivatecontroller CONTROLLER ID] [--pid_pause ID]
-                         [--pid_hold ID] [--pid_resume ID] [--pid_get_setpoint ID]
-                         [--pid_get_error ID] [--pid_get_integrator ID]
-                         [--pid_get_derivator ID] [--pid_get_kp ID]
-                         [--pid_get_ki ID] [--pid_get_kd ID]
-                         [--pid_set_setpoint ID SETPOINT]
-                         [--pid_set_integrator ID INTEGRATOR]
-                         [--pid_set_derivator ID DERIVATOR] [--pid_set_kp ID KP]
-                         [--pid_set_ki ID KI] [--pid_set_kd ID KD] [-c] [--ramuse]
-                         [--input_force_measurements INPUTID]
-                         [--lcd_backlight_on LCDID] [--lcd_backlight_off LCDID]
-                         [--lcd_reset LCDID] [--output_state OUTPUTID]
-                         [--output_currently_on OUTPUTID] [--outputoff OUTPUTID]
-                         [--outputon OUTPUTID] [--duration SECONDS]
-                         [--dutycycle DUTYCYCLE] [--trigger_action ACTIONID]
-                         [--trigger_all_actions FUNCTIONID] [-t]
+Live Measurements
+`````````````````
 
-    Client for Mycodo daemon.
+``Data -> Live``
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      --activatecontroller CONTROLLER ID
-                            Activate controller. Options: Conditional, LCD, Math,
-                            PID, Input
-      --deactivatecontroller CONTROLLER ID
-                            Deactivate controller. Options: Conditional, LCD,
-                            Math, PID, Input
-      --pid_pause ID        Pause PID controller.
-      --pid_hold ID         Hold PID controller.
-      --pid_resume ID       Resume PID controller.
-      --pid_get_setpoint ID
-                            Get the setpoint value of the PID controller.
-      --pid_get_error ID    Get the error value of the PID controller.
-      --pid_get_integrator ID
-                            Get the integrator value of the PID controller.
-      --pid_get_derivator ID
-                            Get the derivator value of the PID controller.
-      --pid_get_kp ID       Get the Kp gain of the PID controller.
-      --pid_get_ki ID       Get the Ki gain of the PID controller.
-      --pid_get_kd ID       Get the Kd gain of the PID controller.
-      --pid_set_setpoint ID SETPOINT
-                            Set the setpoint value of the PID controller.
-      --pid_set_integrator ID INTEGRATOR
-                            Set the integrator value of the PID controller.
-      --pid_set_derivator ID DERIVATOR
-                            Set the derivator value of the PID controller.
-      --pid_set_kp ID KP    Set the Kp gain of the PID controller.
-      --pid_set_ki ID KI    Set the Ki gain of the PID controller.
-      --pid_set_kd ID KD    Set the Kd gain of the PID controller.
-      -c, --checkdaemon     Check if all active daemon controllers are running
-      --ramuse              Return the amount of ram used by the Mycodo daemon
-      --input_force_measurements INPUTID
-                            Force acquiring measurements for Input ID
-      --lcd_backlight_on LCDID
-                            Turn on LCD backlight with LCD ID
-      --lcd_backlight_off LCDID
-                            Turn off LCD backlight with LCD ID
-      --lcd_reset LCDID     Reset LCD with LCD ID
-      --output_state OUTPUTID
-                            State of output with output ID
-      --output_currently_on OUTPUTID
-                            How many seconds an output has currently been active
-                            for
-      --outputoff OUTPUTID  Turn off output with output ID
-      --outputon OUTPUTID   Turn on output with output ID
-      --duration SECONDS    Turn on output for a duration of time (seconds)
-      --dutycycle DUTYCYCLE
-                            Turn on PWM output for a duty cycle (%)
-      --trigger_action ACTIONID
-                            Trigger action with Action ID
-      --trigger_all_actions FUNCTIONID
-                            Trigger all actions belonging to Function with ID
-      -t, --terminate       Terminate the daemon
+The ``Live`` page is the first page a user sees after logging
+in to Mycodo. It will display the current measurements being acquired
+from Input and Math controllers. If there is nothing displayed on the
+``Live`` page, ensure an Input or Math controller is both
+configured correctly and activated. Data will be automatically updated
+on the page from the measurement database.
 
+Asynchronous Graphs
+```````````````````
+
+``Data -> Asynchronous Graphs``
+
+A graphical data display that is useful for viewing data sets spanning
+relatively long periods of time (weeks/months/years), which could be
+very data- and processor-intensive to view as a Live Graph. Select a
+time frame and data will be loaded from that time span, if it exists.
+The first view will be of the entire selected data set. For every
+view/zoom, 700 data points will be loaded. If there are more than 700
+data points recorded for the time span selected, 700 points will be
+created from an averaging of the points in that time span. This enables
+much less data to be used to navigate a large data set. For instance, 4
+months of data may be 10 megabytes if all of it were downloaded.
+However, when viewing a 4 month span, it's not possible to see every
+data point of that 10 megabytes, and aggregating of points is
+inevitable. With asynchronous loading of data, you only download what
+you see. So, instead of downloading 10 megabytes every graph load, only
+~50kb will be downloaded until a new zoom level is selected, at which
+time only another ~50kb is downloaded.
+
+Note: Live Graphs require measurements to be acquired, therefore at
+least one sensor needs to be added and activated in order to display
+live data.
 
 Dashboard
----------
+`````````
 
 ``Data -> Dashboard``
 
@@ -349,8 +312,8 @@ you want to see on one screen.
 
 Specific options for each Dashboard element are below.
 
-Graph Options
-`````````````
+Graph Widget
+''''''''''''
 
 A graphical data display that is useful for viewing data sets spanning
 relatively short periods of time (hours/days/weeks). Select a time frame
@@ -415,8 +378,8 @@ select the plus sign on the top-right of a graph.
 | Tick                  |                                                 |
 +-----------------------+-------------------------------------------------+
 
-Gauge Options
-`````````````
+Gauge Widget
+''''''''''''
 
 Gauges are visual objects that allow one to quickly see what the latest
 measurement is of an input. An example that you may be familiar with is
@@ -440,8 +403,8 @@ a speedometer in a car.
 |                       | measurement.                                    |
 +-----------------------+-------------------------------------------------+
 
-Camera Options
-``````````````
+Camera Widget
+'''''''''''''
 
 Cameras may be added to keep a continuous view on areas.
 
@@ -469,8 +432,8 @@ Cameras may be added to keep a continuous view on areas.
 | Add Timestamp         | Append a timestamp to the image.                |
 +-----------------------+-------------------------------------------------+
 
-Indicator Options
-`````````````````
+Indicator Widget
+''''''''''''''''
 
 Shows a green or red button depending if the measurement value is 0 or not 0.
 
@@ -492,8 +455,8 @@ Shows a green or red button depending if the measurement value is 0 or not 0.
 | Measurement           | The device to display information about.        |
 +-----------------------+-------------------------------------------------+
 
-Measurement Options
-```````````````````
+Measurement Widget
+``````````````````
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -516,8 +479,8 @@ Measurement Options
 | Measurement           | The device to display information about.        |
 +-----------------------+-------------------------------------------------+
 
-Output Options
-``````````````
+Output Widget
+`````````````
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -543,8 +506,8 @@ Output Options
 | Output                | The output to display information about.        |
 +-----------------------+-------------------------------------------------+
 
-PID Control Options
-```````````````````
+PID Control Widget
+``````````````````
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -572,44 +535,6 @@ PID Control Options
 +-----------------------+-------------------------------------------------+
 | PID                   | The PID to display information about.           |
 +-----------------------+-------------------------------------------------+
-
-Live Measurements
------------------
-
-``Data -> Live``
-
-The ``Live`` page is the first page a user sees after logging
-in to Mycodo. It will display the current measurements being acquired
-from Input and Math controllers. If there is nothing displayed on the
-``Live`` page, ensure an Input or Math controller is both
-configured correctly and activated. Data will be automatically updated
-on the page from the measurement database.
-
-Asynchronous Graphs
--------------------
-
-``Data -> Asynchronous Graphs``
-
-A graphical data display that is useful for viewing data sets spanning
-relatively long periods of time (weeks/months/years), which could be
-very data- and processor-intensive to view as a Live Graph. Select a
-time frame and data will be loaded from that time span, if it exists.
-The first view will be of the entire selected data set. For every
-view/zoom, 700 data points will be loaded. If there are more than 700
-data points recorded for the time span selected, 700 points will be
-created from an averaging of the points in that time span. This enables
-much less data to be used to navigate a large data set. For instance, 4
-months of data may be 10 megabytes if all of it were downloaded.
-However, when viewing a 4 month span, it's not possible to see every
-data point of that 10 megabytes, and aggregating of points is
-inevitable. With asynchronous loading of data, you only download what
-you see. So, instead of downloading 10 megabytes every graph load, only
-~50kb will be downloaded until a new zoom level is selected, at which
-time only another ~50kb is downloaded.
-
-Note: Live Graphs require measurements to be acquired, therefore at
-least one sensor needs to be added and activated in order to display
-live data.
 
 Input
 -----
@@ -2605,6 +2530,87 @@ system is running.
 |                       | others to investigate software or hardware      |
 |                       | issues.                                         |
 +-----------------------+-------------------------------------------------+
+
+Mycodo Client
+-------------
+
+::
+
+    pi@raspberry:~ $ mycodo-client --help
+    usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
+                         [--deactivatecontroller CONTROLLER ID] [--pid_pause ID]
+                         [--pid_hold ID] [--pid_resume ID] [--pid_get_setpoint ID]
+                         [--pid_get_error ID] [--pid_get_integrator ID]
+                         [--pid_get_derivator ID] [--pid_get_kp ID]
+                         [--pid_get_ki ID] [--pid_get_kd ID]
+                         [--pid_set_setpoint ID SETPOINT]
+                         [--pid_set_integrator ID INTEGRATOR]
+                         [--pid_set_derivator ID DERIVATOR] [--pid_set_kp ID KP]
+                         [--pid_set_ki ID KI] [--pid_set_kd ID KD] [-c] [--ramuse]
+                         [--input_force_measurements INPUTID]
+                         [--lcd_backlight_on LCDID] [--lcd_backlight_off LCDID]
+                         [--lcd_reset LCDID] [--output_state OUTPUTID]
+                         [--output_currently_on OUTPUTID] [--outputoff OUTPUTID]
+                         [--outputon OUTPUTID] [--duration SECONDS]
+                         [--dutycycle DUTYCYCLE] [--trigger_action ACTIONID]
+                         [--trigger_all_actions FUNCTIONID] [-t]
+
+    Client for Mycodo daemon.
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --activatecontroller CONTROLLER ID
+                            Activate controller. Options: Conditional, LCD, Math,
+                            PID, Input
+      --deactivatecontroller CONTROLLER ID
+                            Deactivate controller. Options: Conditional, LCD,
+                            Math, PID, Input
+      --pid_pause ID        Pause PID controller.
+      --pid_hold ID         Hold PID controller.
+      --pid_resume ID       Resume PID controller.
+      --pid_get_setpoint ID
+                            Get the setpoint value of the PID controller.
+      --pid_get_error ID    Get the error value of the PID controller.
+      --pid_get_integrator ID
+                            Get the integrator value of the PID controller.
+      --pid_get_derivator ID
+                            Get the derivator value of the PID controller.
+      --pid_get_kp ID       Get the Kp gain of the PID controller.
+      --pid_get_ki ID       Get the Ki gain of the PID controller.
+      --pid_get_kd ID       Get the Kd gain of the PID controller.
+      --pid_set_setpoint ID SETPOINT
+                            Set the setpoint value of the PID controller.
+      --pid_set_integrator ID INTEGRATOR
+                            Set the integrator value of the PID controller.
+      --pid_set_derivator ID DERIVATOR
+                            Set the derivator value of the PID controller.
+      --pid_set_kp ID KP    Set the Kp gain of the PID controller.
+      --pid_set_ki ID KI    Set the Ki gain of the PID controller.
+      --pid_set_kd ID KD    Set the Kd gain of the PID controller.
+      -c, --checkdaemon     Check if all active daemon controllers are running
+      --ramuse              Return the amount of ram used by the Mycodo daemon
+      --input_force_measurements INPUTID
+                            Force acquiring measurements for Input ID
+      --lcd_backlight_on LCDID
+                            Turn on LCD backlight with LCD ID
+      --lcd_backlight_off LCDID
+                            Turn off LCD backlight with LCD ID
+      --lcd_reset LCDID     Reset LCD with LCD ID
+      --output_state OUTPUTID
+                            State of output with output ID
+      --output_currently_on OUTPUTID
+                            How many seconds an output has currently been active
+                            for
+      --outputoff OUTPUTID  Turn off output with output ID
+      --outputon OUTPUTID   Turn on output with output ID
+      --duration SECONDS    Turn on output for a duration of time (seconds)
+      --dutycycle DUTYCYCLE
+                            Turn on PWM output for a duty cycle (%)
+      --trigger_action ACTIONID
+                            Trigger action with Action ID
+      --trigger_all_actions FUNCTIONID
+                            Trigger all actions belonging to Function with ID
+      -t, --terminate       Terminate the daemon
 
 Infrared Remote
 ---------------
