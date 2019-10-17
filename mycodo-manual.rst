@@ -954,6 +954,8 @@ there will on average be 6 measurements returned to have math performed).
 Math Options
 ````````````
 
+Types of math controllers.
+
 +---------------------------------+-------------------------------------------------+
 | Type                            | Description                                     |
 +=================================+=================================================+
@@ -1004,6 +1006,7 @@ Math Options
 |                                 | temperatures, and optional pressure.            |
 +---------------------------------+-------------------------------------------------+
 
+Math controller options.
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1084,7 +1087,6 @@ An output can be a PWM signal, a simple HIGH/LOW signal to operate a
 relay, a 315/433 MHz signal to switch a radio frequency-operated relay,
 driving of pumps and motors, or an execution of a linux or Python command,
 to name a few.
-
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1410,7 +1412,7 @@ controller is paused, the values will be used once the controller
 resumes operation.
 
 PID Controller Options
-''''''''''''''''''''''
+``````````````````````
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -2570,9 +2572,11 @@ system is running.
 Infrared Remote
 ---------------
 
-#### Note 1: As of 4/8/2019, the Raspberry Pi kernel no longer supports ``lirc-rpi`` as an overlay in ``/boot/config.txt`` (use ``gpio-ir``, details below). To ensure the below instructions work, make sure you are using the latest kernel by running ``sudo rpi-update``
+This functionality may or may not work. Since Raspbian upgraded to Buster, I have not been able to get it to work. I will try to restore functionality.
 
-#### Note 2: Currently only receiving IR commands is working. IR sending is not working. When I get time to test and develop an implementation of this feature that both sends and receives IR signals, I will remove this note.
+Note 1: As of 4/8/2019, the Raspberry Pi kernel no longer supports ``lirc-rpi`` as an overlay in ``/boot/config.txt`` (use ``gpio-ir``, details below). To ensure the below instructions work, make sure you are using the latest kernel by running ``sudo rpi-update``
+
+Note 2: Currently only receiving IR commands is working. IR sending is not working. When I get time to test and develop an implementation of this feature that both sends and receives IR signals, I will remove this note.
 
 Infrared (IR) light is a common way to send and receive signals across distances. This is typically done with IR remotes with several buttons configured to send different signals. These signals can be detected by the Raspberry Pi with the use of an `IR receiver diode <https://www.sparkfun.com/products/10266>`__ and used to perform actions within the linux environment and Mycodo. This is done with `lirc <http://lirc.org/>`__, and needs to be properly configured before IR signals can be detected and interpreted.
 
