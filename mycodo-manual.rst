@@ -456,7 +456,7 @@ Shows a green or red button depending if the measurement value is 0 or not 0.
 +-----------------------+-------------------------------------------------+
 
 Measurement Widget
-``````````````````
+''''''''''''''''''
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -480,7 +480,7 @@ Measurement Widget
 +-----------------------+-------------------------------------------------+
 
 Output Widget
-`````````````
+'''''''''''''
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -507,7 +507,7 @@ Output Widget
 +-----------------------+-------------------------------------------------+
 
 PID Control Widget
-``````````````````
+''''''''''''''''''
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1013,8 +1013,8 @@ relay, a 315/433 MHz signal to switch a radio frequency-operated relay,
 driving of pumps and motors, or an execution of a linux or Python command,
 to name a few.
 
-Output Options
-``````````````
+General Output Options
+``````````````````````
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1168,7 +1168,7 @@ PWM pins can be set up on the ``Setup -> Output``` page, then it may be used by 
 PID Controller.
 
 PWM (GPIO) Options
-``````````````````
+''''''''''''''''''
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1194,9 +1194,6 @@ PWM (GPIO) Options
 |                       | `Energy Usage                                   |
 |                       | Settings <#energy-usage-settings>`__.           |
 +-----------------------+-------------------------------------------------+
-
-PWM Information
-```````````````
 
 Non-hardware PWM Pins
 '''''''''''''''''''''
@@ -1274,7 +1271,7 @@ Atlas EZO-PMP Pump
 Currently, only one pump is supported, the Atlas Scientific EZO-PMP peristaltic pump.
 
 Atlas EZO-PMP Pump Options
-``````````````````````````
+''''''''''''''''''''''''''
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
