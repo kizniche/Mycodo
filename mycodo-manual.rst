@@ -349,8 +349,8 @@ you want to see on one screen.
 
 Specific options for each Dashboard element are below.
 
-Graphs
-``````
+Graph Options
+`````````````
 
 A graphical data display that is useful for viewing data sets spanning
 relatively short periods of time (hours/days/weeks). Select a time frame
@@ -415,8 +415,8 @@ select the plus sign on the top-right of a graph.
 | Tick                  |                                                 |
 +-----------------------+-------------------------------------------------+
 
-Gauges
-``````
+Gauge Options
+`````````````
 
 Gauges are visual objects that allow one to quickly see what the latest
 measurement is of an input. An example that you may be familiar with is
@@ -440,8 +440,8 @@ a speedometer in a car.
 |                       | measurement.                                    |
 +-----------------------+-------------------------------------------------+
 
-Cameras
-```````
+Camera Options
+``````````````
 
 Cameras may be added to keep a continuous view on areas.
 
@@ -469,8 +469,8 @@ Cameras may be added to keep a continuous view on areas.
 | Add Timestamp         | Append a timestamp to the image.                |
 +-----------------------+-------------------------------------------------+
 
-Indicator
-`````````
+Indicator Options
+`````````````````
 
 Shows a green or red button depending if the measurement value is 0 or not 0.
 
@@ -492,8 +492,8 @@ Shows a green or red button depending if the measurement value is 0 or not 0.
 | Measurement           | The device to display information about.        |
 +-----------------------+-------------------------------------------------+
 
-Measurement
-```````````
+Measurement Options
+```````````````````
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -516,8 +516,8 @@ Measurement
 | Measurement           | The device to display information about.        |
 +-----------------------+-------------------------------------------------+
 
-Output
-``````
+Output Options
+``````````````
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -543,8 +543,8 @@ Output
 | Output                | The output to display information about.        |
 +-----------------------+-------------------------------------------------+
 
-PID Control
-```````````
+PID Control Options
+```````````````````
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1088,6 +1088,9 @@ relay, a 315/433 MHz signal to switch a radio frequency-operated relay,
 driving of pumps and motors, or an execution of a linux or Python command,
 to name a few.
 
+Output Options
+``````````````
+
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
 +=======================+=================================================+
@@ -1186,8 +1189,32 @@ to name a few.
 |                       | environmental condition.                        |
 +-----------------------+-------------------------------------------------+
 
-PWM
-```
+On/Off (GPIO)
+`````````````
+
+The On/Off (GPIO) output merely turns a GPIO pin High (3.3 volts) or Low (0 volts).
+This is useful for controlling things like electromechanical switches,
+such as relays, to turn electrical devices on and off.
+
+Relays are electromechanical or solid-state devices that enable a small
+voltage signal (such as from a microprocessor) to activate a much larger
+voltage, without exposing the low-voltage system to the dangers of the
+higher voltage.
+
+Add and configure outputs in the Output tab. Outputs must be properly
+set up before PID regulation can be achieved.
+
+To set up a wired relay, set the "GPIO Pin" to the BCM GPIO number of
+each pin that activates each relay. *On Trigger* should be set to the
+signal that activates the relay (the device attached to the relay turns
+on). If your relay activates when the potential across the coil is
+0-volts, set *On Trigger* to "Low", otherwise if your relay activates
+when the potential across the coil is 3.3-volts (or whatever switching
+voltage you are using, if not being driven by the GPIO pin), set it to
+"High".
+
+PWM (GPIO)
+``````````
 
 Pulse-width modulation (PWM) is a modulation technique used to encode a
 message into a pulsing signal, at a specific frequency in Hertz (Hz).
@@ -1215,6 +1242,9 @@ in percent, 100% being fully on.
 PWM pins can be set up on the ``Setup -> Output``` page, then it may be used by a PWM
 PID Controller.
 
+PWM (GPIO) Options
+``````````````````
+
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
 +=======================+=================================================+
@@ -1239,6 +1269,9 @@ PID Controller.
 |                       | `Energy Usage                                   |
 |                       | Settings <#energy-usage-settings>`__.           |
 +-----------------------+-------------------------------------------------+
+
+PWM Information
+```````````````
 
 Non-hardware PWM Pins
 '''''''''''''''''''''
@@ -1308,33 +1341,31 @@ cycle| 
 PWM output modulating alternating current (AC) at 99% duty cycle
 
 |Schematic: PWM output modulating alternating current (AC) at 99% duty
-cycle| 
+cycle|
 
-Relays
-``````
+Atlas EZO-PMP Pump
+``````````````````
 
-Relays are electromechanical or solid-state devices that enable a small
-voltage signal (such as from a microprocessor) to activate a much larger
-voltage, without exposing the low-voltage system to the dangers of the
-higher voltage.
+Currently, only one pump is supported, the Atlas Scientific EZO-PMP peristaltic pump.
 
-Add and configure outputs in the Output tab. Outputs must be properly
-set up before PID regulation can be achieved.
+Atlas EZO-PMP Pump Options
+``````````````````````````
 
-Wired
-'''''
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Output Mode           | "Fastest low Rate" will pump liquid at the      |
+|                       | fastest rate the pump can perform. "Specify     |
+|                       | Flow Rate" will pump liquid at the rate         |
+|                       | with the "Flow Rate (ml/min)" option.           |
++-----------------------+-------------------------------------------------+
+| Flow Rate (ml/min)    | This is how fast liquid will be pumped if the   |
+|                       | "Specify Flow Rate" option is selected for the  |
+|                       | Output Mode option.                             |
++-----------------------+-------------------------------------------------+
 
-To set up a wired relay, set the "GPIO Pin" to the BCM GPIO number of
-each pin that activates each relay. *On Trigger* should be set to the
-signal that activates the relay (the device attached to the relay turns
-on). If your relay activates when the potential across the coil is
-0-volts, set *On Trigger* to "Low", otherwise if your relay activates
-when the potential across the coil is 3.3-volts (or whatever switching
-voltage you are using, if not being driven by the GPIO pin), set it to
-"High".
-
-Wireless
-''''''''
+Wireless 315/433 MHz
+````````````````````
 
 Certain 315/433 MHz wireless relays may be used, however you will need to
 set the pin of the transmitter (using BCM numbering), pulse length,
@@ -1357,14 +1388,25 @@ relay that does not work with the current code, submit a
 `new issue <https://github.com/kizniche/Mycodo/issues/new>`__ with details of
 your hardware.
 
-Command
-'''''''
+Linux Command
+`````````````
 
 Another option for output control is to execute a terminal command when
-the output is turned on, off, or a duty cycle. Commands will be executed
-as the user 'root'.
+the output is turned on, off, or a duty cycle is set. Commands will be executed
+as the user 'root'. When a Linux Command output is created, example code is
+provided to demonstrate how to use the output.
 
-Wireless and Command Output Note: Since the wireless protocol only
+Python Command
+``````````````
+
+The Python Command output operates similarly to the Linux Command output,
+however Python 3 code is being executed. When a Python Command output is
+created, example code is provided to demonstrate how to use the output.
+
+Output Notes
+````````````
+
+Wireless and Command (Linux/Python) Outputs: Since the wireless protocol only
 allows 1-way communication to 315/433 MHz devices, wireless relays are
 assumed to be off until they are turned on, and therefore will appear
 red (off) when added. If a wireless relay is turned off or on outside
@@ -1373,11 +1415,6 @@ determine the state of the relay and will indicate whichever state the
 relay was last. This is, if Mycodo turns the wireless relay on, and a
 remote is used to turn the relay off, Mycodo will still assume the relay
 is on.
-
-Pumps
-`````
-
-Currently, only one pump is supported, the Atlas Scientific EZO-PMP peristaltic pump.
 
 Custom Controllers
 ------------------
