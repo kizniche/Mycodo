@@ -37,9 +37,9 @@ Brief Overview
 There are a number of different uses for Mycodo. Some users simply store
 sensor measurements to monitor conditions remotely, others regulate the
 environmental conditions of a physical space, while others capture
-motion-activated or timelapse photography, and more.
+motion-activated or timelapse photography, among other uses.
 
-Input controllers acquire measurements and store them in a
+Input controllers acquire measurements and store them in the InfluxDB
 `time series database <https://en.wikipedia.org/wiki/Time_series_database>`__.
 Measurements typically come from sensors, but may also be configured to
 use the return value of linux or Python commands, or math equations,
@@ -48,8 +48,9 @@ making a very powerful system for acquiring and generating data.
 Output controllers produce changes to the general input/output (GPIO)
 pins or may be configured to execute linux or Python commands, enabling
 a large number of potential uses. There are a few different types of
-outputs: simple switching of pins (HIGH/LOW), generating pulse-width
-modulated (PWM) signals, switching 315/433 MHz wireless outlets, as well as
+outputs: simple switching of GPIO pins (HIGH/LOW), generating pulse-width
+modulated (PWM) signals, switching 315/433 MHz wireless outlets,
+controlling Atlas Scientific peristaltic pumps, as well as
 executing linux and Python commands. The most common output is using a relay
 to switch electrical devices on and off.
 
@@ -58,15 +59,16 @@ create a feedback loop that uses the Output device to modulate an
 environmental condition the Input measures. Certain Inputs may be coupled
 with certain Outputs to create a variety of different control and
 regulation applications. Beyond simple regulation, Methods may be used
-to create changing setpoints over time, enabling such things as thermal
+to create a changing setpoint over time, enabling such things as thermal
 cyclers, reflow ovens, environmental simulation for terrariums, food and
 beverage fermentation or curing, and cooking food
 (`sous-vide <https://en.wikipedia.org/wiki/Sous-vide>`__), to name a
 few.
 
-Triggers can be set to activate events based on specific dates and times or
-according to durations of time. Conditionals are used to activates certain
-events based on the truth of custom user statements (e.g. "Sensor1 > 23 and 10
+Triggers can be set to activate events based on specific dates and times,
+according to durations of time, or the sunrise/sunset at a specific latitude
+and longitude. Conditionals are used to activates certain events based on
+the truth of custom user conditional statements (e.g. "Sensor1 > 23 and 10
 < Sensor2 < 30").
 
 Frequently Asked Questions
@@ -195,8 +197,7 @@ Upgrading
 
 ``[Gear Icon] -> Upgrade``
 
-If you already have Mycodo installed (version >= 4.0.0), you can perform
-an upgrade to the latest
+If you already have Mycodo installed, you can perform an upgrade to the latest
 `Mycodo Release <https://github.com/kizniche/Mycodo/releases>`__ by either using
 the Upgrade option in the web interface (recommended) or by issuing the
 following command in a terminal. A log of the upgrade process is created
@@ -325,20 +326,293 @@ Mycodo Client
                             Trigger all actions belonging to Function with ID
       -t, --terminate       Terminate the daemon
 
-Data
-----
 
-``Setup -> Data``
+Dashboard
+---------
 
-Data are individual pieces of information stored for later use. They may
-be values acquired from sensors, signals from analog-to-digital controllers,
-a response from a command, or even math performed on other data to produce
-an average, to name a few. Add, configure, and activate Inputs to begin
-recording measurements to the database and allow them to be used throughout
-Mycodo.
+``Data -> Dashboard``
+
+The dashboard is where you can add pieces of data for easy viewing. It
+is highly customizable and provides an easy way to see exactly what data
+you want to see on one screen.
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Width                 | The width of the dashboard object on the page,  |
+|                       | in 1/12th increments. Multiple dashboard object |
+|                       | can share the sme row if their combined         |
+|                       | fraction doesn't exceed 12/12.                  |
++-----------------------+-------------------------------------------------+
+| Height (pixels)       | The height of the dashboard object.             |
++-----------------------+-------------------------------------------------+
+
+Specific options for each Dashboard element are below.
+
+Graphs
+``````
+
+A graphical data display that is useful for viewing data sets spanning
+relatively short periods of time (hours/days/weeks). Select a time frame
+to view data and continually updating data from new sensor measurements.
+Multiple graphs can be created on one page that enables a dashboard to
+be created of graphed sensor data. Each graph may have one or more data
+from inputs, outputs, or PIDs rendered onto it. To edit graph options,
+select the plus sign on the top-right of a graph.
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| x-Axis (minutes)      | The duration to display on the x-axis of the    |
+|                       | graph.                                          |
++-----------------------+-------------------------------------------------+
+| Enable Auto Refresh   | Automatically refresh the data on the graph     |
+|                       | Refresh Period.                                 |
++-----------------------+-------------------------------------------------+
+| Refresh (seconds)     | The duration between acquisitions of new data   |
+|                       | to display on the graph.                        |
++-----------------------+-------------------------------------------------+
+| Inputs/Outputs/PIDs   | The Inputs, Outputs, and PIDs to display on the |
+|                       | graph.                                          |
++-----------------------+-------------------------------------------------+
+| Enable X-Axis Reset   | Reset the x-axis min/max every time new data    |
+|                       | comes in during the auto refresh.               |
++-----------------------+-------------------------------------------------+
+| Enable Title          | Show a title of the graph name.                 |
++-----------------------+-------------------------------------------------+
+| Enable Navbar         | Show a slidable navigation bar at the bottom of |
+|                       | the graph.                                      |
++-----------------------+-------------------------------------------------+
+| Enable Export         | Enable a button on the top right of the graph   |
+|                       | to allow exporting of the currently-displayed   |
+|                       | data as PNG, JPEG, PDF, SVG, CSV, XLS.          |
++-----------------------+-------------------------------------------------+
+| Enable Range Selector | Show a set of navigation buttons at the top of  |
+|                       | the graph to quickly change the display         |
+|                       | duration.                                       |
++-----------------------+-------------------------------------------------+
+| Enable Graph Shift    | If enabled, old data points are removed when    |
+|                       | new data is added to the graph. Only            |
+|                       | recommended to enable if Enable Navbar is       |
+|                       | enabled.                                        |
++-----------------------+-------------------------------------------------+
+| Enable Custom Colors  | Use custom colors for Input, Output, and PID    |
+|                       | lines. Select the colors with the buttons that  |
+|                       | appear below this checkbox.                     |
++-----------------------+-------------------------------------------------+
+| Enable Manual Y-Axis  | Set the minimum and maximum y-axes of a         |
+| Min/Max               | particular graph. Set both the minimum and      |
+|                       | maximum to 0 to disable for a particular        |
+|                       | y-axis.                                         |
++-----------------------+-------------------------------------------------+
+| Enable Y-Axis Align   | Align the ticks of several y-axes of the same   |
+| Ticks                 | graph.                                          |
++-----------------------+-------------------------------------------------+
+| Enable Y-Axis Start   | Start all y-axes of a graph on the same tick.   |
+| On Tick               |                                                 |
++-----------------------+-------------------------------------------------+
+| Enable Y-Axis End On  | End all y-axes of a graph on the same tick.     |
+| Tick                  |                                                 |
++-----------------------+-------------------------------------------------+
+
+Gauges
+``````
+
+Gauges are visual objects that allow one to quickly see what the latest
+measurement is of an input. An example that you may be familiar with is
+a speedometer in a car.
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Refresh (seconds)     | The duration between acquisitions of new data   |
+|                       | to display on the graph.                        |
++-----------------------+-------------------------------------------------+
+| Max Age (seconds)     | The maximum allowable age of the measurement.   |
+|                       | If the age is greater than this, the gauge will |
+|                       | turn off, indicating there is an issue.         |
++-----------------------+-------------------------------------------------+
+| Gauge Min             | The lowest value of the gauge.                  |
++-----------------------+-------------------------------------------------+
+| Gauge Max             | The highest value of the gauge.                 |
++-----------------------+-------------------------------------------------+
+| Show Timestamp        | Show the timestamp of the current gauge         |
+|                       | measurement.                                    |
++-----------------------+-------------------------------------------------+
+
+Cameras
+```````
+
+Cameras may be added to keep a continuous view on areas.
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Refresh (seconds)     | The duration between acquisitions of new data   |
+|                       | to display on the graph.                        |
++-----------------------+-------------------------------------------------+
+| Max Age (seconds)     | The maximum allowed age of the image timestamp  |
+|                       | before a "No Recent Image" message is returned. |
++-----------------------+-------------------------------------------------+
+| Acquire Image (and    | Acquire a new images and save the previous      |
+| save new file)        | image.                                          |
++-----------------------+-------------------------------------------------+
+| Acquire Image (and    | Acquire a new image but erase the previous      |
+| erase last file)      | image.                                          |
++-----------------------+-------------------------------------------------+
+| Display Live Video    | Automatically start a video stream and display  |
+| Stream                | it.                                             |
++-----------------------+-------------------------------------------------+
+| Display Latest        | Display the latest timelapse image that exists. |
+| Timelapse Image       |                                                 |
++-----------------------+-------------------------------------------------+
+| Add Timestamp         | Append a timestamp to the image.                |
++-----------------------+-------------------------------------------------+
+
+Indicator
+`````````
+
+Shows a green or red button depending if the measurement value is 0 or not 0.
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Refresh (seconds)     | The duration between acquisitions of new data   |
+|                       | to display on the graph.                        |
++-----------------------+-------------------------------------------------+
+| Max Age (seconds)     | The maximum allowable age of the measurement.   |
+|                       | If the age is greater than this, the gauge will |
+|                       | turn off, indicating there is an issue.         |
++-----------------------+-------------------------------------------------+
+| Timestamp Font Size   | The font size of the timestamp value in em.     |
+| (em)                  |                                                 |
++-----------------------+-------------------------------------------------+
+| Invert                | Invert/reverse the colors.                      |
++-----------------------+-------------------------------------------------+
+| Measurement           | The device to display information about.        |
++-----------------------+-------------------------------------------------+
+
+Measurement
+```````````
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Refresh (seconds)     | The duration between acquisitions of new data   |
+|                       | to display on the graph.                        |
++-----------------------+-------------------------------------------------+
+| Max Age (seconds)     | The maximum allowable age of the measurement.   |
+|                       | If the age is greater than this, the gauge will |
+|                       | turn off, indicating there is an issue.         |
++-----------------------+-------------------------------------------------+
+| Value Font Size (em)  | The font size of the measurement value in em.   |
++-----------------------+-------------------------------------------------+
+| Timestamp Font Size   | The font size of the timestamp value in em.     |
+| (em)                  |                                                 |
++-----------------------+-------------------------------------------------+
+| Decimal Places        | The number of digits to display to the right of |
+|                       | the decimal.                                    |
++-----------------------+-------------------------------------------------+
+| Measurement           | The device to display information about.        |
++-----------------------+-------------------------------------------------+
+
+Output
+``````
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Refresh (seconds)     | The duration between acquisitions of new data   |
+|                       | to display on the graph.                        |
++-----------------------+-------------------------------------------------+
+| Max Age (seconds)     | The maximum allowable age of the measurement.   |
+|                       | If the age is greater than this, the gauge will |
+|                       | turn off, indicating there is an issue.         |
++-----------------------+-------------------------------------------------+
+| Value Font Size (em)  | The font size of the output value in em.        |
++-----------------------+-------------------------------------------------+
+| Timestamp Font Size   | The font size of the timestamp value in em.     |
+| (em)                  |                                                 |
++-----------------------+-------------------------------------------------+
+| Decimal Places        | The number of digits to display to the right of |
+|                       | the decimal.                                    |
++-----------------------+-------------------------------------------------+
+| Feature Output        | Display buttons to turn On and Off the relay    |
+| Controls              | from the dashboard element.                     |
++-----------------------+-------------------------------------------------+
+| Output                | The output to display information about.        |
++-----------------------+-------------------------------------------------+
+
+PID Control
+```````````
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Refresh (seconds)     | The duration between acquisitions of new data   |
+|                       | to display on the graph.                        |
++-----------------------+-------------------------------------------------+
+| Max Age (seconds)     | The maximum allowable age of the measurement.   |
+|                       | If the age is greater than this, the gauge will |
+|                       | turn off, indicating there is an issue.         |
++-----------------------+-------------------------------------------------+
+| Value Font Size (em)  | The font size of the measurement value in em.   |
++-----------------------+-------------------------------------------------+
+| Timestamp Font Size   | The font size of the timestamp value in em.     |
+| (em)                  |                                                 |
++-----------------------+-------------------------------------------------+
+| Decimal Places        | The number of digits to display to the right of |
+|                       | the decimal.                                    |
++-----------------------+-------------------------------------------------+
+| Show PID Information  | Show extra PID information on the dashboard     |
+|                       | element.                                        |
++-----------------------+-------------------------------------------------+
+| Show Set Setpoint     | Allow setting the PID setpoint on the dashboard |
+|                       | element.                                        |
++-----------------------+-------------------------------------------------+
+| PID                   | The PID to display information about.           |
++-----------------------+-------------------------------------------------+
+
+Live Measurements
+-----------------
+
+``Data -> Live``
+
+The ``Live`` page is the first page a user sees after logging
+in to Mycodo. It will display the current measurements being acquired
+from Input and Math controllers. If there is nothing displayed on the
+``Live`` page, ensure an Input or Math controller is both
+configured correctly and activated. Data will be automatically updated
+on the page from the measurement database.
+
+Asynchronous Graphs
+-------------------
+
+``Data -> Asynchronous Graphs``
+
+A graphical data display that is useful for viewing data sets spanning
+relatively long periods of time (weeks/months/years), which could be
+very data- and processor-intensive to view as a Live Graph. Select a
+time frame and data will be loaded from that time span, if it exists.
+The first view will be of the entire selected data set. For every
+view/zoom, 700 data points will be loaded. If there are more than 700
+data points recorded for the time span selected, 700 points will be
+created from an averaging of the points in that time span. This enables
+much less data to be used to navigate a large data set. For instance, 4
+months of data may be 10 megabytes if all of it were downloaded.
+However, when viewing a 4 month span, it's not possible to see every
+data point of that 10 megabytes, and aggregating of points is
+inevitable. With asynchronous loading of data, you only download what
+you see. So, instead of downloading 10 megabytes every graph load, only
+~50kb will be downloaded until a new zoom level is selected, at which
+time only another ~50kb is downloaded.
+
+Note: Live Graphs require measurements to be acquired, therefore at
+least one sensor needs to be added and activated in order to display
+live data.
 
 Input
-`````
+-----
 
 Inputs, such as sensors, ADC signals, or even a response from a command,
 enable measuring conditions in the environment or elsewhere, which will
@@ -350,38 +624,8 @@ Mycodo to operate from. Add, configure, and activate inputs to begin
 recording measurements to the database and allow them to be used throughout
 Mycodo.
 
-Custom Inputs
+Input Options
 `````````````
-
-Before discussing the built-in Inputs, it should be noted that there is an
-Input import system in Mycodo that allows user-created Inputs to be used
-in the Mycodo system. Custom Inputs can be uploaded on the
-``Configure -> Inputs`` page. After import, they will be available to use
-on the ``Setup -> Data`` page.
-
-If you have a sensor that is not currently supported by Mycodo, you can build
-your own input module and import it into Mycodo. All information about an
-input is contained within the input module, set in the dictionary
-'INPUT_INFORMATION'. Each module will requires at a minimum for these variables
-to be set: 'input_name_unique', 'input_manufacturer', 'input_name',
-'measurements_name', and 'measurements_dict'.
-
-Open any of the built-in modules located in the inputs directory (https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for examples of the proper formatting.
-
-There's also minimal input module template that generates random data as an example:
-
-https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py
-
-The following link provides the full list of available INPUT_INFORMATION options along with descriptions:
-
-https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py
-
-Additionally, I have another github repository devoted to Custom Inputs and
-Controllers that are not included in the built-in set. These can be found at
-`kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
-
-Built-In Inputs
-'''''''''''''''
 
 In addition to several supported sensors and devices, a Linux command
 may be specified that will be executed and the return value stored in
@@ -585,8 +829,37 @@ the measurement database to be used throughout the Mycodo system.
 
 1. `Debouncing a signal <http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing>`__
 
+Custom Code
+```````````
+
+There is an Input import system in Mycodo that allows user-created Inputs to be
+used in the Mycodo system. Custom Inputs can be uploaded on the
+``Configure -> Inputs`` page. After import, they will be available to use
+on the ``Setup -> Data`` page.
+
+If you have a sensor that is not currently supported by Mycodo, you can build
+your own input module and import it into Mycodo. All information about an
+input is contained within the input module, set in the dictionary
+'INPUT_INFORMATION'. Each module will requires at a minimum for these variables
+to be set: 'input_name_unique', 'input_manufacturer', 'input_name',
+'measurements_name', and 'measurements_dict'.
+
+Open any of the built-in modules located in the inputs directory (https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for examples of the proper formatting.
+
+There's also minimal input module template that generates random data as an example:
+
+https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py
+
+The following link provides the full list of available INPUT_INFORMATION options along with descriptions:
+
+https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py
+
+Additionally, I have another github repository devoted to Custom Inputs and
+Controllers that are not included in the built-in set. These can be found at
+`kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
+
 The Things Network
-''''''''''''''''''
+``````````````````
 
 `The Things Network <https://www.thethingsnetwork.org/>`__ (TTN) Input
 module enables downloading of data from TTN if the Data Storage Integration
@@ -666,7 +939,7 @@ into Mycodo through the ``Configure -> Inputs`` page. After import, they
 will be available to use on the ``Setup -> Data`` page.
 
 Math
-````
+----
 
 Math controllers allow one or more Inputs to have math applied to
 produce a new value that may be used within Mycodo.
@@ -677,6 +950,9 @@ means the controller will acquire all measurements from the present
 until the "Max Age (seconds)" set by the user (e.g. if measurements
 are acquired every 10 seconds, and a Max Age is set to 60 seconds,
 there will on average be 6 measurements returned to have math performed).
+
+Math Options
+````````````
 
 +---------------------------------+-------------------------------------------------+
 | Type                            | Description                                     |
@@ -1101,17 +1377,8 @@ Pumps
 
 Currently, only one pump is supported, the Atlas Scientific EZO-PMP peristaltic pump.
 
-Function
---------
-
-``Setup -> Function``
-
-Functions couple Inputs with Outputs to perform specific tasks. For
-example, this could be regulation of temperature with a temperature
-sensor and heater with a PID Controller.
-
 Custom Controllers
-``````````````````
+------------------
 
 Before discussing the built-in Functions/Controllers, it should be noted that there is a
 Custom Controller import system in Mycodo that allows user-created Controllers to be used
@@ -1126,7 +1393,7 @@ are not included in the built-in set. These can be found at
 `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
 
 PID Controller
-``````````````
+--------------
 
 A
 `proportional-derivative-integral (PID) controller <https://en.wikipedia.org/wiki/PID_controller>`__
@@ -1141,6 +1408,9 @@ PID settings may be changed while the PID is activated and the new
 settings will take effect immediately. If settings are changed while the
 controller is paused, the values will be used once the controller
 resumes operation.
+
+PID Controller Options
+''''''''''''''''''''''
 
 +-----------------------+-------------------------------------------------+
 | Setting               | Description                                     |
@@ -1271,9 +1541,8 @@ resumes operation.
 | Method                |                                                 |
 +-----------------------+-------------------------------------------------+
 
-
 PID Autotune
-''''''''''''
+````````````
 
 The Autotune feature is useful for determining appropriate Kp, Ki, and Kd
 gains of a PID controller. The autotuner will manipulate an output and measure the response in
@@ -1412,14 +1681,79 @@ And typical Daemon Log output will look like this:
 
 
 Conditional
-```````````
+-----------
 
 Conditional controllers are used to perform certain actions based on whether a
 conditional statement is true, which is typically based on a measurement or GPIO
 state.
 
+
+Conditional Options
+```````````````````
+
+Check if the latest measurement is above or below the set value.
+
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Conditional Statement | The text string that includes device IDs        |
+|                       | enclosed in curly brackets ({}) that            |
+|                       | will be converted to the actual measurement     |
+|                       | before being evaluated by python to determine   |
+|                       | if it is True or False. If True, the associated |
+|                       | actions will be executed.                       |
++-----------------------+-------------------------------------------------+
+| Period (seconds)      | The period (seconds) between conditional        |
+|                       | checks.                                         |
++-----------------------+-------------------------------------------------+
+| Refractory Period     | The minimum duration (seconds) to wait after a  |
+| (seconds)             | conditional has been triggered to begin         |
+|                       | evaluating the conditional again.               |
++-----------------------+-------------------------------------------------+
+| Log Level: Debug      | Show debug lines in the daemon log.             |
++-----------------------+-------------------------------------------------+
+
+Conditions are variables that can be used within the Conditional Statement.
+
++-----------------------+-------------------------------------------------+
+| Condition             | Description                                     |
++=======================+=================================================+
+| Measurement           | Acquires the latest measurement from an Input   |
+| (Single)              | or device. Set Max Age (seconds) to restrict    |
+|                       | how long to accept values. If the latest value  |
+|                       | is older than this duration, "None" is          |
+|                       | returned.                                       |
++-----------------------+-------------------------------------------------+
+| Measurement           | Acquires the last measurements from an Input    |
+| (Multiple)            | or device. Set Max Age (seconds) to restrict    |
+|                       | how long to accept values. If no values are     |
+|                       | found in this duration, "None" is returned.     |
+|                       | This differs from the "Measurement (Single)"    |
+|                       | Condition because it returns a list of          |
+|                       | dictionaries with 'time' and 'value' key pairs. |
++-----------------------+-------------------------------------------------+
+| GPIO State            | Acquires the current GPIO state and returns     |
+|                       | 1 if HIGH or 0 if LOW. If the latest            |
+|                       | value is older than this duration, "None" is    |
+|                       | returned.                                       |
++-----------------------+-------------------------------------------------+
+| Output State          | Returns 'on' if the output is currently on, and |
+|                       | 'off' if it's currently off.                    |
++-----------------------+-------------------------------------------------+
+| Output Duration On    | Returns how long the output has currently been  |
+|                       | on, in seconds. Returns 0 if off.               |
++-----------------------+-------------------------------------------------+
+| Controller Running    | Returns True if the controller is active, False |
+|                       | if inactive.                                    |
++-----------------------+-------------------------------------------------+
+| Max Age (seconds)     | The minimum age (seconds) the measurement can   |
+|                       | be. If the last measurement is older than this, |
+|                       | "None" will be returned instead of a            |
+|                       | measurement.                                    |
++-----------------------+-------------------------------------------------+
+
 Conditional Setup Guide
-'''''''''''''''''''''''
+```````````````````````
 
 Python 3 is the environment that these conditionals will be executed. The
 following functions can be used within your code.
@@ -1658,83 +1992,8 @@ devices or outputs may respond atypically or fail when switched on and off in
 rapid succession. Therefore, trial run your configuration before connecting
 devices to any outputs.
 
-Conditional Options
-'''''''''''''''''''
-
-Check if the latest measurement is above or below the set value.
-
-+-----------------------+-------------------------------------------------+
-| Setting               | Description                                     |
-+=======================+=================================================+
-| Conditional Statement | The text string that includes device IDs        |
-|                       | enclosed in curly brackets ({}) that            |
-|                       | will be converted to the actual measurement     |
-|                       | before being evaluated by python to determine   |
-|                       | if it is True or False. If True, the associated |
-|                       | actions will be executed.                       |
-+-----------------------+-------------------------------------------------+
-| Period (seconds)      | The period (seconds) between conditional        |
-|                       | checks.                                         |
-+-----------------------+-------------------------------------------------+
-| Refractory Period     | The minimum duration (seconds) to wait after a  |
-| (seconds)             | conditional has been triggered to begin         |
-|                       | evaluating the conditional again.               |
-+-----------------------+-------------------------------------------------+
-
-Conditional Condition Options
-'''''''''''''''''''''''''''''
-
-Conditional Conditions are variables that can be used within the Conditional
-Statement.
-
-+-----------------------+-------------------------------------------------+
-| Condition             | Description                                     |
-+=======================+=================================================+
-| Measurement           | Acquires the latest measurement from an Input   |
-| (Single)              | or device. Set Max Age (seconds) to restrict    |
-|                       | how long to accept values. If the latest value  |
-|                       | is older than this duration, "None" is          |
-|                       | returned.                                       |
-+-----------------------+-------------------------------------------------+
-| Measurement           | Acquires the last measurements from an Input    |
-| (Multiple)            | or device. Set Max Age (seconds) to restrict    |
-|                       | how long to accept values. If no values are     |
-|                       | found in this duration, "None" is returned.     |
-|                       | This differs from the "Measurement (Single)"    |
-|                       | Condition because it returns a list of          |
-|                       | dictionaries with 'time' and 'value' key pairs. |
-+-----------------------+-------------------------------------------------+
-| GPIO State            | Acquires the current GPIO state and returns     |
-|                       | 1 if HIGH or 0 if LOW. If the latest            |
-|                       | value is older than this duration, "None" is    |
-|                       | returned.                                       |
-+-----------------------+-------------------------------------------------+
-| Output State          | Returns 'on' if the output is currently on, and |
-|                       | 'off' if it's currently off.                    |
-+-----------------------+-------------------------------------------------+
-| Output Duration On    | Returns how long the output has currently been  |
-|                       | on, in seconds. Returns 0 if off.               |
-+-----------------------+-------------------------------------------------+
-| Max Age (seconds)     | The minimum age (seconds) the measurement can   |
-|                       | be. If the last measurement is older than this, |
-|                       | "None" will be returned instead of a            |
-|                       | measurement.                                    |
-+-----------------------+-------------------------------------------------+
-
-Additional Conditions
-
-+-----------------------+-------------------------------------------------+
-| Condition             | Description                                     |
-+=======================+=================================================+
-| Output Duration On    | Returns how long the output has currently been  |
-|                       | on, in seconds. Returns 0 if off.               |
-+-----------------------+-------------------------------------------------+
-| Controller Running    | Returns True if the controller is active, False |
-|                       | if inactive.                                    |
-+-----------------------+-------------------------------------------------+
-
 Trigger
-```````
+-------
 
 A Trigger Controller will execute actions when events are triggered, such as
 an output turning on or off, a GPIO pin changing it's voltage state, or timed
@@ -1744,7 +2003,7 @@ is defined, add any number of `Actions <#function-actions>`__ to be executed
 when that event is triggered.
 
 Output (On/Off) Options
-'''''''''''''''''''''''
+```````````````````````
 
 Monitor the state of an output.
 
@@ -1769,7 +2028,7 @@ Monitor the state of an output.
 +-----------------------+-------------------------------------------------+
 
 Output (PWM) Options
-''''''''''''''''''''
+````````````````````
 
 Monitor the state of a PWM output.
 
@@ -1787,7 +2046,7 @@ Monitor the state of a PWM output.
 +-----------------------+-------------------------------------------------+
 
 Edge Options
-''''''''''''
+````````````
 
 Monitor the state of a pin for a rising and/or falling edge.
 
@@ -1803,7 +2062,7 @@ Monitor the state of a pin for a rising and/or falling edge.
 +-----------------------+-------------------------------------------------+
 
 Run PWM Method Options
-''''''''''''''''''''''
+``````````````````````
 
 Select a Duration Method and this will set the selected PWM Output to the
 duty cycle specified by the method.
@@ -1825,9 +2084,11 @@ duty cycle specified by the method.
 +------------------------+-------------------------------------------------+
 
 Infrared Remote Input Options
-'''''''''''''''''''''''''''''
+`````````````````````````````
 
 Mycodo uses lirc to detect Infrared signals. Follow the `lirc setup guide <#infrared-remote>`__ before using this feature.
+
+Note: Raspbian Buster broke this feature. Work is in progress to restore functionality.
 
 +------------------------+-------------------------------------------------+
 | Setting                | Description                                     |
@@ -1838,7 +2099,7 @@ Mycodo uses lirc to detect Infrared signals. Follow the `lirc setup guide <#infr
 +------------------------+-------------------------------------------------+
 
 Sunrise/Sunset Options
-''''''''''''''''''''''
+``````````````````````
 
 Trigger events at sunrise or sunset (or a time offset of those), based on
 latitude and longitude.
@@ -1865,7 +2126,7 @@ latitude and longitude.
 +-----------------------+-------------------------------------------------+
 
 Timer (Duration) Options
-''''''''''''''''''''''''
+````````````````````````
 
 Run a timer that triggers Conditional Actions every period.
 
@@ -1880,7 +2141,7 @@ Run a timer that triggers Conditional Actions every period.
 +------------------------+-------------------------------------------------+
 
 Timer (Daily Time Point) Options
-''''''''''''''''''''''''''''''''
+````````````````````````````````
 
 Run a timer that triggers Conditional Actions at a specific time every day.
 
@@ -1893,7 +2154,7 @@ Run a timer that triggers Conditional Actions at a specific time every day.
 +-----------------------+-------------------------------------------------+
 
 Timer (Daily Time Span) Options
-'''''''''''''''''''''''''''''''
+```````````````````````````````
 
 Run a timer that triggers Conditional Actions at a specific period if it's
 between the set start and end times. For example, if the Start Time is set
@@ -1926,7 +2187,7 @@ Output remains on during this period.
 +------------------------+------------------------------------------------+
 
 Function Actions
-''''''''''''''''
+----------------
 
 These are the actions that can be added to Function controllers (i.e.
 Conditional, Trigger).
@@ -1985,6 +2246,90 @@ Conditional, Trigger).
 |                       | controller.                                     |
 +-----------------------+-------------------------------------------------+
 
+Methods
+-------
+
+``Setup -> Method``
+
+Methods enable Setpoint Tracking in PIDs and time-based duty cycle
+changes in timers. Normally, a PID controller will regulate an
+environmental condition to a specific setpoint. If you would like the
+setpoint to change over time, this is called setpoint tracking. Setpoint
+Tracking is useful for applications such as reflow ovens, thermal
+cyclers (DNA replication), mimicking natural daily cycles, and more.
+Methods may also be used to change a duty cycle over time when used with
+a Run PWM Method Conditional.
+
+Method Options
+``````````````
+
+These options are shared with several method types.
+
++-------------------+-------------------------------------------------------+
+| Setting           | Description                                           |
++===================+=======================================================+
+| Start Time/Date   | This is the start time of a range of time.            |
++-------------------+-------------------------------------------------------+
+| End Time/Date     | This is the end time of a range of time.              |
++-------------------+-------------------------------------------------------+
+| Start Setpoint    | This is the start setpoint of a range of setpoints.   |
++-------------------+-------------------------------------------------------+
+| End Setpoint      | This is the end setpoint of a range of setpoints.     |
++-------------------+-------------------------------------------------------+
+
+Time/Date Method
+````````````````
+
+A time/date method allows a specific time/date span to dictate the
+setpoint. This is useful for long-running methods, that may take place
+over the period of days, weeks, or months.
+
+Duration Method
+```````````````
+
+A Duration Method allows a ***Setpoint*** (for PIDs) or ***Duty Cycle***
+(for Conditional) to be set after specific durations of time. Each new
+duration added will stack, meaning it will come after the previous
+duration, meaning a newly-added ***Start Setpoint*** will begin after
+the previous entry's ***End Setpoint***.
+
+If the "Repeat Method" option is used, this will cause the method to
+repeat once it has reached the end. If this option is used, no more
+durations may be added to the method. If the repeat option is deleted
+then more durations may be added. For instance, if your method is 200
+seconds total, if the Repeat Duration is set to 600 seconds, the method
+will repeat 3 times and then automatically turn off the PID or Conditional.
+
+Daily (Time-Based) Method
+`````````````````````````
+
+The daily time-based method is similar to the time/date method, however
+it will repeat every day. Therefore, it is essential that only the span
+of one day be set in this method. Begin with the start time at 00:00:00
+and end at 23:59:59 (or 00:00:00, which would be 24 hours from the
+start). The start time must be equal or greater than the previous end
+time.
+
+Daily (Sine Wave) Method
+````````````````````````
+
+The daily sine wave method defines the setpoint over the day based on a
+sinusoidal wave. The sine wave is defined by y = [A \* sin(B \* x + C)]
++ D, where A is amplitude, B is frequency, C is the angle shift, and D
+is the y-axis shift. This method will repeat daily.
+
+Daily (Bezier Curve) Method
+```````````````````````````
+
+A daily Bezier curve method define the setpoint over the day based on a
+cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended
+you use the
+`graphical Bezier curve generator <https://www.desmos.com/calculator/cahqdxeshd>`__
+and use the
+8 variables it creates for 4 points (each a set of x and y). The x-axis
+start (x3) and end (x0) will be automatically stretched or skewed to fit
+within a 24-hour period and this method will repeat daily.
+
 LCDs
 ----
 
@@ -2027,257 +2372,398 @@ next every set period.
 |                       | frame, the display will indicate "NO DATA".     |
 +-----------------------+-------------------------------------------------+
 
-Methods
--------
+Alerts
+------
 
-``Setup -> Method``
+Alerts can be used to notify users about the state of the system.
+For things like sensor monitoring, this could be a threshold that indicates
+something needs attention. E-Mail notifications are built-in to Mycodo in
+a number of places, however there are several places (Inputs, Outputs,
+Controllers) that allow custom Python code to be used, enabling many other
+notification options to be built.
 
-Methods enable Setpoint Tracking in PIDs and time-based duty cycle
-changes in timers. Normally, a PID controller will regulate an
-environmental condition to a specific setpoint. If you would like the
-setpoint to change over time, this is called setpoint tracking. Setpoint
-Tracking is useful for applications such as reflow ovens, thermal
-cyclers (DNA replication), mimicking natural daily cycles, and more.
-Methods may also be used to change a duty cycle over time when used with
-a Run PWM Method Conditional.
+See `Alert Settings <#alert-settings>`__ for more information about setting up
+Alerts.
 
-Universal Options
-`````````````````
+Notes
+-----
 
-These options are shared with several method types.
+``More -> Notes``
 
-+-------------------+-------------------------------------------------------+
-| Setting           | Description                                           |
-+===================+=======================================================+
-| Start Time/Date   | This is the start time of a range of time.            |
-+-------------------+-------------------------------------------------------+
-| End Time/Date     | This is the end time of a range of time.              |
-+-------------------+-------------------------------------------------------+
-| Start Setpoint    | This is the start setpoint of a range of setpoints.   |
-+-------------------+-------------------------------------------------------+
-| End Setpoint      | This is the end setpoint of a range of setpoints.     |
-+-------------------+-------------------------------------------------------+
+Notes may be created that can then be displayed on graphs or referenced
+at a later time. All notes are timestamped with the date/time of creation
+or may be created with a custom date/time. Each note must have at least
+one tag selected. Tags are what are selected to be displayed on a graph
+and all notes with that tag will appear in the time frame selected on the
+graph.
 
-Specific Method Options
-```````````````````````
+Tag Options
+```````````
 
-Time/Date Method
-''''''''''''''''
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Name                  | A name for the tag. Must not contain spaces.    |
++-----------------------+-------------------------------------------------+
+| Rename                | Rename the tag.                                 |
++-----------------------+-------------------------------------------------+
 
-A time/date method allows a specific time/date span to dictate the
-setpoint. This is useful for long-running methods, that may take place
-over the period of days, weeks, or months.
+Note Options
+````````````
 
-Duration Method
-'''''''''''''''
++-----------------------+-------------------------------------------------+
+| Setting               | Description                                     |
++=======================+=================================================+
+| Name                  | A name for the note.                            |
++-----------------------+-------------------------------------------------+
+| Use Custom Date/Time  | Check to enter a custom date/time for the note. |
++-----------------------+-------------------------------------------------+
+| Custom Date/Time      | Store the note with this custom date/time.      |
++-----------------------+-------------------------------------------------+
+| Attached Files        | Attach one or more files to the note.           |
++-----------------------+-------------------------------------------------+
+| Tags                  | Associate the note with at least one tag.       |
++-----------------------+-------------------------------------------------+
+| Note                  | The text body of the note. The text will appear |
+|                       | monospaced, so code will format properly.       |
++-----------------------+-------------------------------------------------+
 
-A Duration Method allows a ***Setpoint*** (for PIDs) or ***Duty Cycle***
-(for Conditional) to be set after specific durations of time. Each new
-duration added will stack, meaning it will come after the previous
-duration, meaning a newly-added ***Start Setpoint*** will begin after
-the previous entry's ***End Setpoint***.
+Export-Import
+-------------
 
-If the "Repeat Method" option is used, this will cause the method to
-repeat once it has reached the end. If this option is used, no more
-durations may be added to the method. If the repeat option is deleted
-then more durations may be added. For instance, if your method is 200
-seconds total, if the Repeat Duration is set to 600 seconds, the method
-will repeat 3 times and then automatically turn off the PID or Conditional.
+``More -> Export Import``
 
-Daily (Time-Based) Method
-'''''''''''''''''''''''''
+Measurements that fall within the selected date/time frame may be
+exported as CSV with their corresponding timestamps.
 
-The daily time-based method is similar to the time/date method, however
-it will repeat every day. Therefore, it is essential that only the span
-of one day be set in this method. Begin with the start time at 00:00:00
-and end at 23:59:59 (or 00:00:00, which would be 24 hours from the
-start). The start time must be equal or greater than the previous end
-time.
+Additionally, the entire measurement database (influxdb) may be exported
+as a ZIP archive backup. This ZIP may be imported back in any Mycodo system
+to restore these measurements. Note that an import will override the
+current data (i.e. destroying it).
 
-Daily (Sine Wave) Method
-''''''''''''''''''''''''
+Mycodo settings may be exported as a ZIP file containing the Mycodo
+settings database (sqlite). This ZIP file may be used to restore the
+settings database to another Mycodo install, as long as the Mycodo
+version and database versions are the same. Future support for
+installing older (or newer) databases and performing an automatic
+upgrade/downgrade is in the works.
 
-The daily sine wave method defines the setpoint over the day based on a
-sinusoidal wave. The sine wave is defined by y = [A \* sin(B \* x + C)]
-+ D, where A is amplitude, B is frequency, C is the angle shift, and D
-is the y-axis shift. This method will repeat daily.
+Dependencies
+------------
 
-Daily (Bezier Curve) Method
-'''''''''''''''''''''''''''
+``[Gear Icon] -> Dependencies``
 
-A daily Bezier curve method define the setpoint over the day based on a
-cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended
-you use the
-`graphical Bezier curve generator <https://www.desmos.com/calculator/cahqdxeshd>`__
-and use the
-8 variables it creates for 4 points (each a set of x and y). The x-axis
-start (x3) and end (x0) will be automatically stretched or skewed to fit
-within a 24-hour period and this method will repeat daily.
+The dependency page allows viewing of dependency information and the
+ability to initiate their installation.
 
-PID Tuning
-==========
+During the installation of Mycodo, there is an option to select which
+dependencies to install. If "Minimal Install" or "Custom Install" was
+selected (rather than "Full Install"), there may be unmet dependencies
+on your system. Don't worry, this isn't necessarily a problem. These
+optional dependencies only need to be installed when there's a
+particular feature you want to use. When a user attempts to use a
+feature that has an unmet dependency, the user will be forwarded to the
+Dependency page in order to install it.
 
-``Function -> PIDs``
+Camera
+------
 
-PID Control Theory
+``More -> Camera``
+
+Once a cameras has been set up (in the
+`Camera Settings <#camera-settings>`__), it may be used to capture still images,
+create time-lapses, and stream video. Cameras may also be used by
+`Conditional Statements <#conditional-statements>`__ to trigger a camera
+image or video capture (as well as the ability to email the image/video
+with a notification).
+
+Energy Usage
+------------
+
+``More -> Energy Usage``
+
+There are two methods for calculating energy usage. The first relies on
+determining how long Outputs have been on. Based on this, if the number
+of Amps the output draws has been set in the output Settings, then the
+kWh and cost can be calculated. Discovering the number of amps the
+device draws can be accomplished by calculating this from the output
+typically given as watts on the device label, or with the use of a
+current clamp while the device is operating. The limitation of this
+method is PWM Outputs are not currently used to calculate these figures
+due to the difficulty determining the current consumption of devices
+driven by PWM signals.
+
+The second method for calculating energy consumption is more accurate and
+is the recommended method if you desire the most accurate estimation
+of energy consumption and cost. This method relies on an Input or Math
+measuring Amps. One way to do this is with the used of an analog-to-digital
+converter (ADC) that converts the voltage output from a transformer into
+current (Amps). One wire from the AC line that powers your device(s) passes
+thorough the transformer and the device converts the current that passes
+through that wire into a voltage that corresponds to the amperage. For
+instance, the below sensor converts 0 - 50 amps input to 0 - 5 volts output.
+An ADC receives this output as its input. One would set this conversion
+range in Mycodo and the calculated amperage will be stored. On the Energy
+Usage page, add this ADC Input measurement and a report summary will be
+generated. Keep in mind that for a particular period (for example, the past
+week) to be accurate, there needs to be a constant measurement of amps at a
+periodic rate. The faster the rate the more accurate the calculation will
+be. This is due to the amperage measurements being averaged for this period
+prior to calculating kWh and cost. If there is any time turing this period
+where amp measurements aren't being acquired when in fact there are devices
+consuming current, the calculation is likely to not be accurate.
+
+|Current Sensor Transformer|
+
+`Greystone CS-650-50 AC Solid Core Current Sensor (Transformer) <https://shop.greystoneenergy.com/shop/cs-sensor-series-ac-solid-core-current-sensor>`__
+
+The following settings are for calculating energy usage from an amp
+measurement. For calculating based on Output duration, see
+`Energy Usage Settings <#energy-usage-settings>`__.
+
++------------------------+-------------------------------------------------------+
+| Setting                | Description                                           |
++========================+=======================================================+
+| Select Amp Measurement | This is a measurement with the amp (A) units that     |
+|                        | will be used to calculate energy usage.               |
++------------------------+-------------------------------------------------------+
+
+System Information
 ------------------
 
-The PID controller is the most common regulatory controller found in
-industrial settings, for it"s ability to handle both simple and complex
-regulation. The PID controller has three paths, the proportional,
-integral, and derivative.
+``[Gear Icon] -> System Information``
 
-The **P**\ roportional takes the error and multiplies it by the constant
-K\ :sub:`p`, to yield an output value. When the error is large, there
-will be a large proportional output.
+This page serves to provide information about the Mycodo frontend and
+backend as well as the linux system it's running on. Several commands
+and their output are listed to give the user information about how their
+system is running.
 
-The **I**\ ntegral takes the error and multiplies it by K\ :sub:`i`,
-then integrates it (K:sub:`i` · 1/s). As the error changes over time,
-the integral will continually sum it and multiply it by the constant
-K\ :sub:`i`. The integral is used to remove perpetual error in the
-control system. If using K\ :sub:`p` alone produces an output that
-produces a perpetual error (i.e. if the sensor measurement never reaches
-the Set Point), the integral will increase the output until the error
-decreases and the Set Point is reached.
++-----------------------+-------------------------------------------------+
+| Command               | Description                                     |
++=======================+=================================================+
+| Mycodo Version        | The current version of Mycodo, reported by the  |
+|                       | configuration file.                             |
++-----------------------+-------------------------------------------------+
+| Python Version        | The version of python currently running the web |
+|                       | user interface.                                 |
++-----------------------+-------------------------------------------------+
+| Database Version      | The current version of the settings database.   |
+|                       | If the current version is different from what   |
+|                       | it should be, an error will appear indicating   |
+|                       | the issue and a link to find out more           |
+|                       | information about the issue.                    |
++-----------------------+-------------------------------------------------+
+| Daemon Status         | This will be a green "Running" or a red         |
+|                       | "Stopped". Additionally, the Mycodo version and |
+|                       | hostname text at the top-left of the screen May |
+|                       | be Green, Yellow, or Red to indicate the        |
+|                       | status. Green = daemon running, yellow = unable |
+|                       | to connect, and red = daemon not running.       |
++-----------------------+-------------------------------------------------+
+| ...                   | Several other status indicators and commands    |
+|                       | are listed to provide information about the     |
+|                       | health of the system. Use these in addition to  |
+|                       | others to investigate software or hardware      |
+|                       | issues.                                         |
++-----------------------+-------------------------------------------------+
 
-The **D**\ erivative multiplies the error by K\ :sub:`d`, then
-differentiates it (K:sub:`d` · s). When the error rate changes over
-time, the output signal will change. The faster the change in error, the
-larger the derivative path becomes, decreasing the output rate of
-change. This has the effect of dampening overshoot and undershoot
-(oscillation) of the Set Point.
+Infrared Remote
+---------------
 
---------------
+#### Note 1: As of 4/8/2019, the Raspberry Pi kernel no longer supports ``lirc-rpi`` as an overlay in ``/boot/config.txt`` (use ``gpio-ir``, details below). To ensure the below instructions work, make sure you are using the latest kernel by running ``sudo rpi-update``
 
-Using temperature as an example, the Process Variable (PV) is the
-measured temperature, the Setpoint (SP) is the desired temperature, and
-the Error (e) is the distance between the measured temperature and the
-desired temperature (indicating if the actual temperature is too hot or
-too cold and to what degree). The error is manipulated by each of the
-three PID components, producing an output, called the Manipulated
-Variable (MV) or Control Variable (CV). To allow control of how much
-each path contributes to the output value, each path is multiplied by a
-gain (represented by *K\ :sub:`P`*, *K\ :sub:`I`*, and *K\ :sub:`D`*).
-By adjusting the gains, the sensitivity of the system to each path is
-affected. When all three paths are summed, the PID output is produced.
-If a gain is set to 0, that path does not contribute to the output and
-that path is essentially turned off.
+#### Note 2: Currently only receiving IR commands is working. IR sending is not working. When I get time to test and develop an implementation of this feature that both sends and receives IR signals, I will remove this note.
 
-The output can be used a number of ways, however this controller was
-designed to use the output to affect the measured value (PV). This
-feedback loop, with a *properly tuned* PID controller, can achieve a set
-point in a short period of time, maintain regulation with little
-oscillation, and respond quickly to disturbance.
+Infrared (IR) light is a common way to send and receive signals across distances. This is typically done with IR remotes with several buttons configured to send different signals. These signals can be detected by the Raspberry Pi with the use of an `IR receiver diode <https://www.sparkfun.com/products/10266>`__ and used to perform actions within the linux environment and Mycodo. This is done with `lirc <http://lirc.org/>`__, and needs to be properly configured before IR signals can be detected and interpreted.
 
-Therefor, if one would be regulating temperature, the sensor would be a
-temperature sensor and the feedback device(s) would be able to heat and
-cool. If the temperature is lower than the Set Point, the output value
-would be positive and a heater would activate. The temperature would
-rise toward the desired temperature, causing the error to decrease and a
-lower output to be produced. This feedback loop would continue until the
-error reaches 0 (at which point the output would be 0). If the
-temperature continues to rise past the Set Point (this is may be
-acceptable, depending on the degree), the PID would produce a negative
-output, which could be used by the cooling device to bring the
-temperature back down, to reduce the error. If the temperature would
-normally lower without the aid of a cooling device, then the system can
-be simplified by omitting a cooler and allowing it to lower on its own.
+The IR receiver typically has three connections, power (3.3 volts), ground, and data (GPIO pin), and should be connected to the appropriate pins of your Raspberry Pi. Make sure your IR receiver can operate at 3.3 volts, which is the appropriate voltage GPIOs operate at. For testing, I used the `Sparkfun Infrared Control Kit <https://www.sparkfun.com/products/14677>`__, which has an `Information Guide <https://learn.sparkfun.com/tutorials/ir-control-kit-hookup-guide>`__, however there are cheaper alternatives.
 
-Implementing a controller that effectively utilizes *K\ :sub:`P`*,
-*K\ :sub:`I`*, and *K\ :sub:`D`* can be challenging. Furthermore, it is
-often unnecessary. For instance, the *K\ :sub:`I`* and *K\ :sub:`D`* can
-be set to 0, effectively turning them off and producing the very popular
-and simple P controller. Also popular is the PI controller. It is
-recommended to start with only *K\ :sub:`P`* activated, then experiment
-with *K\ :sub:`P`* and *K\ :sub:`I`*, before finally using all three.
-Because systems will vary (e.g. airspace volume, degree of insulation,
-and the degree of impact from the connected device, etc.), each path
-will need to be adjusted through experimentation to produce an effective
-output.
+Adding an Infrared Output device or an Infrared Send function action will automatically install the dependencies, otherwise it can be done manually:
 
-Quick Setup Examples
---------------------
+``sudo apt install liblircclient-dev lirc``
 
-These example setups are meant to illustrate how to configure regulation
-in particular directions, and not to achieve ideal values to configure
-your *K\ :sub:`P`*, *K\ :sub:`I`*, and *K\ :sub:`D`* gains. There are a
-number of online resources that discuss techniques and methods that have
-been developed to determine ideal PID values (such as
-`here <http://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops>`__,
-`here <http://innovativecontrols.com/blog/basics-tuning-pid-loops>`__,
-`here <https://hennulat.wordpress.com/2011/01/12/pid-loop-tuning-101/>`__,
-`here <http://eas.uccs.edu/wang/ECE4330F12/PID-without-a-PhD.pdf>`__,
-and `here <http://www.atmel.com/Images/doc2558.pdf>`__) and since there
-are no universal values that will work for every system, it is
-recommended to conduct your own research to understand the variables and
-essential to conduct your own experiments to effectively implement them.
+``~/Mycodo/env/bin/pip install python-lirc py-irsend``
 
-Provided merely as an example of the variance of PID values, one of my
-setups had temperature PID values (up regulation) of *K\ :sub:`P`* = 30,
-*K\ :sub:`I`* = 1.0, and *K\ :sub:`D`* = 0.5, and humidity PID values
-(up regulation) of *K\ :sub:`P`* = 1.0, *K\ :sub:`I`* = 0.2, and
-*K\ :sub:`D`* = 0.5. Furthermore, these values may not have been optimal
-but they worked well for the conditions of my environmental chamber.
+Edit ``/boot/config.txt`` and add to the end of the file, replacing "17" with the GPIO (BCM numbering) connected to your IR LED and "18" with the GPIO connected to the IR receiver. You can omit either of these options if you aren't using either the IR receiver or transmitting LED:
 
-Exact Temperature Regulation
-----------------------------
+``
+dtoverlay=gpio-ir,gpio_pin=18
+dtoverlay=gpio-ir-tx,gpio_pin=17
+``
 
-This will set up the system to raise and lower the temperature to a
-certain level with two regulatory devices (one that heats and one that
-cools).
+Edit ``/etc/lirc/lirc_options.conf`` and ensure the following settings are set:
 
-Add a sensor, then save the proper device and pin/address for each
-sensor and activate the sensor.
+::
 
-Add two outputs, then save each GPIO and On Trigger state.
+    driver = default
+    device = /dev/lirc1
 
-Add a PID, then select the newly-created sensor. Change *Setpoint* to
-the desired temperature, *Regulate Direction* to "Both". Set *Raise
-Output* to the relay attached to the heating device and the *Lower
-Relay* to the relay attached to the cooling device.
+Restart your system:
 
-Set *K\ :sub:`P`* = 1, *K\ :sub:`I`* = 0, and *K\ :sub:`D`* = 0, then
-activate the PID.
+``sudo shutdown now -r``
 
-If the temperature is lower than the Set Point, the heater should
-activate at some interval determined by the PID controller until the
-temperature rises to the set point. If the temperature goes higher than
-the Set Point (or Set Point + Buffer), the cooling device will activate
-until the temperature returns to the set point. If the temperature is
-not reaching the Set Point after a reasonable amount of time, increase
-the *K\ :sub:`P`* value and see how that affects the system. Experiment
-with different configurations involving only *Read Interval* and
-*K\ :sub:`P`* to achieve a good regulation. Avoid changing the
-*K\ :sub:`I`* and *K\ :sub:`D`* from 0 until a working regulation is
-achieved with *K\ :sub:`P`* alone.
+Check `this remote database <http://lirc-remotes.sourceforge.net/remotes-table.html>`__ for your remote, and if it's found, place it in ``/etc/lirc/lircd.conf.d/``, otherwise you will need to generate a config file for your remote.
 
-View graphs in the 6 to 12 hour time span to identify how well the
-temperature is regulated to the Setpoint. What is meant by
-well-regulated will vary, depending on your specific application and
-tolerances. Most applications of a PID controller would like to see the
-proper temperature attained within a reasonable amount of time and with
-little oscillation around the Setpoint.
+To generate a config file for your remote, lirc must first be stopped:
 
-Once regulation is achieved, experiment by reducing *K\ :sub:`P`*
-slightly (~25%) and increasing *K\ :sub:`I`* by a low amount to start,
-such as 0.1 (or lower, 0.01), then start the PID and observe how well
-the controller regulates. Slowly increase *K\ :sub:`I`* until regulation
-becomes both quick and with little oscillation. At this point, you
-should be fairly familiar with experimenting with the system and the
-*K\ :sub:`D`* value can be experimented with once both *K\ :sub:`P`* and
-*K\ :sub:`I`* have been tuned.
+``sudo service lircd stop``
 
-High Temperature Regulation
----------------------------
+Then, issue the following command:
 
-Often the system can be simplified if two-way regulation is not needed.
-For instance, if cooling is unnecessary, this can be removed from the
-system and only up-regulation can be used.
+``sudo irrecord -n -d /dev/lirc1``
 
-Use the same configuration as the
-`Exact Temperature Regulation <#exact-temperature-regulation>`__
-example, except change *Regulate Direction* to "Raise" and do not touch
-the "Down Relay" section.
+You will be prompted with a very specific set of instructions in order to map your remote. If you successfully finish the config generation, you will have a *.lirc.conf file that you should place in ``/etc/lirc/lircd.conf.d/``
+
+If ``irrecord`` is unable to parse the remote code (due to complexity or other issue), you can still use the raw data to create a config file. To obtain the raw code data, run the following command, and press a button on the remote once.
+
+``mode2 -m``
+
+You should see output similar to the following, with data represented in 6 columns.
+
+::
+
+    pi@rapsberry:~ $ mode2 -m
+    Using driver default on device /dev/lirc0
+    Trying device: /dev/lirc0
+    Using device: /dev/lirc0
+     16777215
+
+         3431     1747      444     1313      441     1312
+          444      471      441      474      440      474
+          440     1315      439      476      438      480
+          444     1312      442     1313      441      475
+          438     1317      439      476      437      477
+
+Use the 6-column data to generate your config file, with the following as an example ``example_remote.lircd.conf``, that should be placed in ``/etc/lirc/lircd.conf.d/``.
+
+::
+
+    begin remote
+      name  example_remote
+      flags RAW_CODES
+      eps           30
+      aeps          100
+
+      ptrail       0
+      repeat       0  0
+      gap          107902
+
+          begin raw_codes
+              name KEY_POWER
+                 3431     1747      444     1313      441     1312
+                  444      471      441      474      440      474
+                  440     1315      439      476      438      480
+                  444     1312      442     1313      441      475
+                  438     1317      439      476      437      477
+          end raw_codes
+    end remote
+
+Start lirc back up to load all the remote config files:
+
+``sudo service lirc start``
+
+Now, start ``irw`` and press a button on your remote. If everything works, you should see information appear when you press each button, such as below:
+
+::
+
+    pi@raspberry:~ $ irw
+    0000000000ff629d 00 KEY_POWER simple_remote
+    0000000000ff22dd 01 KEY_A simple_remote
+    0000000000ff02fd 01 KEY_B simple_remote
+    0000000000ffc23d 00 KEY_C simple_remote
+    0000000000ff9867 00 KEY_UP simple_remote
+    0000000000ff38c7 00 KEY_DOWN simple_remote
+    0000000000ff30cf 01 KEY_LEFT simple_remote
+    0000000000ff7a85 00 KEY_RIGHT simple_remote
+    0000000000ff18e7 01 KEY_SELECT simple_remote
+
+Now that we have the remote detected and mapped, we can set commands to be executed or what word is returned to Mycodo. Create a file ``~/.lirc``:
+
+``nano ~/.lircrc``
+
+and configure the responses to button presses
+
+::
+
+    begin
+      button = KEY_POWER
+      prog = mycodo
+      config = power
+      repeat = 0
+    end
+    begin
+      button = KEY_A
+      prog = mycodo
+      config = a
+      repeat = 0
+    end
+
+To test this with Python, create the test program ``infrared_receive.py``:
+
+::
+
+    import lirc
+    import time
+
+    sockid = lirc.init("mycodo", blocking=False)
+    while True:
+        code = lirc.nextcode()
+        if code:
+            print(code[0])
+        time.sleep(0.05)
+
+Execute this using the Mycodo virtualenv:
+
+``~/Mycodo/env/bin/python infrared_receive.py``
+
+And press the buttons defined in ``~/.lirc`` and see if the output appears on the console:
+
+::
+
+    pi@raspberry:~ $ ~/Mycodo/env/bin/python ./test_IR.py
+    power
+    a
+
+From here, you can create any Python code to react to button presses on your remote. You can also set up the Mycodo Function Trigger: Infrared Remote Input and trigger events in response to Mycodo detecting specific button presses. See `Infrared Remote Input Options <#infrared-remote-input-options>`__ for configuring this trigger.
+
+In order to send an IR signal to your IR LED, connect your LED to the GPIO defined with ``gpio_out_pin=17`` in ``/boot/config.txt``. You can test if your LED is working by creating a file, ``LED_blink.py``, replacing ``17`` with the pin connected to your LED:
+
+.. code-block:: python
+
+    import RPi.GPIO as GPIO
+    import time
+
+    pin = 17
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(pin, GPIO.OUT, initial=GPIO.LOW)
+
+    while True:
+        GPIO.output(pin, GPIO.HIGH)
+        time.sleep(1)
+        GPIO.output(pin, GPIO.LOW)
+        time.sleep(1)
+
+Since IR LEDs produce a wavelength of light that humans can't see, you'll need to aim a video camera that lacks an infrared filter and see if the LED is blinking.
+
+If your LED is working, then issue the following command, replacing ``simple_remote`` with the name of your remote defined in your config file:
+
+``irsend SEND_ONCE simple_remote KEY_POWER``
+
+You can verify this is working by running ``infrared_receive.py``, then executing the ``irsend`` command while it's still running, and you should see it print the button command that was sent.
+
+IR codes can be sent from Mycodo using the Infrared Remote Send Function Action. The ``Remote`` option should to match the remote name in the config file in ``/etc/lirc/lircd.conf.d/`` and the ``Code`` option should match a code that's in ``/home/pi/.lircrc``. If ``Times to Send`` is set larger than 1, the code will be sent multiple times at intervals of 0.5 seconds.
+
+Translations
+------------
+
+Mycodo has been translated to several languages. By default, the language of the
+browser will determine which language is used, but may be overridden in the General
+Settings, at ``[Gear Icon] -> Configure -> General``. If you find an issue with a
+translation or would like to add another language, see the
+`Translations <https://github.com/kizniche/Mycodo/wiki/Translations>`__
+section of the Wiki and consider making a Pull Request or
+`Creating an Issue <https://github.com/kizniche/Mycodo/issues/new>`__.
 
 Configuration Settings
 ======================
@@ -2381,7 +2867,6 @@ follow a specific format. See
 | Import Input Module   | Select your input module file, then click this  |
 |                       | button to begin the import.                     |
 +-----------------------+-------------------------------------------------+
-
 
 Measurement Settings
 --------------------
@@ -2622,758 +3107,171 @@ readd all the Dashboard Elements that were once there.
 | Delete All Notes and Note Tags | Delete all notes and note tags.                 |
 +--------------------------------+-------------------------------------------------+
 
-Miscellaneous
-=============
 
-Dashboard
----------
+PID Tuning
+==========
 
-``Data -> Dashboard``
+``Function -> PIDs``
 
-The dashboard is where you can add pieces of data for easy viewing. It
-is highly customizable and provides an easy way to see exactly what data
-you want to see on one screen.
-
-+-----------------------+-------------------------------------------------+
-| Setting               | Description                                     |
-+=======================+=================================================+
-| Width                 | The width of the dashboard object on the page,  |
-|                       | in 1/12th increments. Multiple dashboard object |
-|                       | can share the sme row if their combined         |
-|                       | fraction doesn't exceed 12/12.                  |
-+-----------------------+-------------------------------------------------+
-| Height (pixels)       | The height of the dashboard object.             |
-+-----------------------+-------------------------------------------------+
-
-Specific options for each Dashboard element are below.
-
-Graphs
-``````
-
-A graphical data display that is useful for viewing data sets spanning
-relatively short periods of time (hours/days/weeks). Select a time frame
-to view data and continually updating data from new sensor measurements.
-Multiple graphs can be created on one page that enables a dashboard to
-be created of graphed sensor data. Each graph may have one or more data
-from inputs, outputs, or PIDs rendered onto it. To edit graph options,
-select the plus sign on the top-right of a graph.
-
-+-----------------------+-------------------------------------------------+
-| Setting               | Description                                     |
-+=======================+=================================================+
-| x-Axis (minutes)      | The duration to display on the x-axis of the    |
-|                       | graph.                                          |
-+-----------------------+-------------------------------------------------+
-| Enable Auto Refresh   | Automatically refresh the data on the graph     |
-|                       | Refresh Period.                                 |
-+-----------------------+-------------------------------------------------+
-| Refresh (seconds)     | The duration between acquisitions of new data   |
-|                       | to display on the graph.                        |
-+-----------------------+-------------------------------------------------+
-| Inputs/Outputs/PIDs   | The Inputs, Outputs, and PIDs to display on the |
-|                       | graph.                                          |
-+-----------------------+-------------------------------------------------+
-| Enable X-Axis Reset   | Reset the x-axis min/max every time new data    |
-|                       | comes in during the auto refresh.               |
-+-----------------------+-------------------------------------------------+
-| Enable Title          | Show a title of the graph name.                 |
-+-----------------------+-------------------------------------------------+
-| Enable Navbar         | Show a slidable navigation bar at the bottom of |
-|                       | the graph.                                      |
-+-----------------------+-------------------------------------------------+
-| Enable Export         | Enable a button on the top right of the graph   |
-|                       | to allow exporting of the currently-displayed   |
-|                       | data as PNG, JPEG, PDF, SVG, CSV, XLS.          |
-+-----------------------+-------------------------------------------------+
-| Enable Range Selector | Show a set of navigation buttons at the top of  |
-|                       | the graph to quickly change the display         |
-|                       | duration.                                       |
-+-----------------------+-------------------------------------------------+
-| Enable Graph Shift    | If enabled, old data points are removed when    |
-|                       | new data is added to the graph. Only            |
-|                       | recommended to enable if Enable Navbar is       |
-|                       | enabled.                                        |
-+-----------------------+-------------------------------------------------+
-| Enable Custom Colors  | Use custom colors for Input, Output, and PID    |
-|                       | lines. Select the colors with the buttons that  |
-|                       | appear below this checkbox.                     |
-+-----------------------+-------------------------------------------------+
-| Enable Manual Y-Axis  | Set the minimum and maximum y-axes of a         |
-| Min/Max               | particular graph. Set both the minimum and      |
-|                       | maximum to 0 to disable for a particular        |
-|                       | y-axis.                                         |
-+-----------------------+-------------------------------------------------+
-| Enable Y-Axis Align   | Align the ticks of several y-axes of the same   |
-| Ticks                 | graph.                                          |
-+-----------------------+-------------------------------------------------+
-| Enable Y-Axis Start   | Start all y-axes of a graph on the same tick.   |
-| On Tick               |                                                 |
-+-----------------------+-------------------------------------------------+
-| Enable Y-Axis End On  | End all y-axes of a graph on the same tick.     |
-| Tick                  |                                                 |
-+-----------------------+-------------------------------------------------+
-
-Gauges
-``````
-
-Gauges are visual objects that allow one to quickly see what the latest
-measurement is of an input. An example that you may be familiar with is
-a speedometer in a car.
-
-+-----------------------+-------------------------------------------------+
-| Setting               | Description                                     |
-+=======================+=================================================+
-| Refresh (seconds)     | The duration between acquisitions of new data   |
-|                       | to display on the graph.                        |
-+-----------------------+-------------------------------------------------+
-| Max Age (seconds)     | The maximum allowable age of the measurement.   |
-|                       | If the age is greater than this, the gauge will |
-|                       | turn off, indicating there is an issue.         |
-+-----------------------+-------------------------------------------------+
-| Gauge Min             | The lowest value of the gauge.                  |
-+-----------------------+-------------------------------------------------+
-| Gauge Max             | The highest value of the gauge.                 |
-+-----------------------+-------------------------------------------------+
-| Show Timestamp        | Show the timestamp of the current gauge         |
-|                       | measurement.                                    |
-+-----------------------+-------------------------------------------------+
-
-Cameras
-```````
-
-Cameras may be added to keep a continuous view on areas.
-
-+-----------------------+-------------------------------------------------+
-| Setting               | Description                                     |
-+=======================+=================================================+
-| Refresh (seconds)     | The duration between acquisitions of new data   |
-|                       | to display on the graph.                        |
-+-----------------------+-------------------------------------------------+
-| Max Age (seconds)     | The maximum allowed age of the image timestamp  |
-|                       | before a "No Recent Image" message is returned. |
-+-----------------------+-------------------------------------------------+
-| Acquire Image (and    | Acquire a new images and save the previous      |
-| save new file)        | image.                                          |
-+-----------------------+-------------------------------------------------+
-| Acquire Image (and    | Acquire a new image but erase the previous      |
-| erase last file)      | image.                                          |
-+-----------------------+-------------------------------------------------+
-| Display Live Video    | Automatically start a video stream and display  |
-| Stream                | it.                                             |
-+-----------------------+-------------------------------------------------+
-| Display Latest        | Display the latest timelapse image that exists. |
-| Timelapse Image       |                                                 |
-+-----------------------+-------------------------------------------------+
-| Add Timestamp         | Append a timestamp to the image.                |
-+-----------------------+-------------------------------------------------+
-
-Indicator
-`````````
-
-Shows a green or red button depending if the measurement value is 0 or not 0.
-
-+-----------------------+-------------------------------------------------+
-| Setting               | Description                                     |
-+=======================+=================================================+
-| Refresh (seconds)     | The duration between acquisitions of new data   |
-|                       | to display on the graph.                        |
-+-----------------------+-------------------------------------------------+
-| Max Age (seconds)     | The maximum allowable age of the measurement.   |
-|                       | If the age is greater than this, the gauge will |
-|                       | turn off, indicating there is an issue.         |
-+-----------------------+-------------------------------------------------+
-| Timestamp Font Size   | The font size of the timestamp value in em.     |
-| (em)                  |                                                 |
-+-----------------------+-------------------------------------------------+
-| Invert                | Invert/reverse the colors.                      |
-+-----------------------+-------------------------------------------------+
-| Measurement           | The device to display information about.        |
-+-----------------------+-------------------------------------------------+
-
-Measurement
-```````````
-
-+-----------------------+-------------------------------------------------+
-| Setting               | Description                                     |
-+=======================+=================================================+
-| Refresh (seconds)     | The duration between acquisitions of new data   |
-|                       | to display on the graph.                        |
-+-----------------------+-------------------------------------------------+
-| Max Age (seconds)     | The maximum allowable age of the measurement.   |
-|                       | If the age is greater than this, the gauge will |
-|                       | turn off, indicating there is an issue.         |
-+-----------------------+-------------------------------------------------+
-| Value Font Size (em)  | The font size of the measurement value in em.   |
-+-----------------------+-------------------------------------------------+
-| Timestamp Font Size   | The font size of the timestamp value in em.     |
-| (em)                  |                                                 |
-+-----------------------+-------------------------------------------------+
-| Decimal Places        | The number of digits to display to the right of |
-|                       | the decimal.                                    |
-+-----------------------+-------------------------------------------------+
-| Measurement           | The device to display information about.        |
-+-----------------------+-------------------------------------------------+
-
-Output
-``````
-
-+-----------------------+-------------------------------------------------+
-| Setting               | Description                                     |
-+=======================+=================================================+
-| Refresh (seconds)     | The duration between acquisitions of new data   |
-|                       | to display on the graph.                        |
-+-----------------------+-------------------------------------------------+
-| Max Age (seconds)     | The maximum allowable age of the measurement.   |
-|                       | If the age is greater than this, the gauge will |
-|                       | turn off, indicating there is an issue.         |
-+-----------------------+-------------------------------------------------+
-| Value Font Size (em)  | The font size of the output value in em.        |
-+-----------------------+-------------------------------------------------+
-| Timestamp Font Size   | The font size of the timestamp value in em.     |
-| (em)                  |                                                 |
-+-----------------------+-------------------------------------------------+
-| Decimal Places        | The number of digits to display to the right of |
-|                       | the decimal.                                    |
-+-----------------------+-------------------------------------------------+
-| Feature Output        | Display buttons to turn On and Off the relay    |
-| Controls              | from the dashboard element.                     |
-+-----------------------+-------------------------------------------------+
-| Output                | The output to display information about.        |
-+-----------------------+-------------------------------------------------+
-
-PID Control
-```````````
-
-+-----------------------+-------------------------------------------------+
-| Setting               | Description                                     |
-+=======================+=================================================+
-| Refresh (seconds)     | The duration between acquisitions of new data   |
-|                       | to display on the graph.                        |
-+-----------------------+-------------------------------------------------+
-| Max Age (seconds)     | The maximum allowable age of the measurement.   |
-|                       | If the age is greater than this, the gauge will |
-|                       | turn off, indicating there is an issue.         |
-+-----------------------+-------------------------------------------------+
-| Value Font Size (em)  | The font size of the measurement value in em.   |
-+-----------------------+-------------------------------------------------+
-| Timestamp Font Size   | The font size of the timestamp value in em.     |
-| (em)                  |                                                 |
-+-----------------------+-------------------------------------------------+
-| Decimal Places        | The number of digits to display to the right of |
-|                       | the decimal.                                    |
-+-----------------------+-------------------------------------------------+
-| Show PID Information  | Show extra PID information on the dashboard     |
-|                       | element.                                        |
-+-----------------------+-------------------------------------------------+
-| Show Set Setpoint     | Allow setting the PID setpoint on the dashboard |
-|                       | element.                                        |
-+-----------------------+-------------------------------------------------+
-| PID                   | The PID to display information about.           |
-+-----------------------+-------------------------------------------------+
-
-Live Measurements
------------------
-
-``Data -> Live``
-
-The ``Live`` page is the first page a user sees after logging
-in to Mycodo. It will display the current measurements being acquired
-from Input and Math controllers. If there is nothing displayed on the
-``Live`` page, ensure an Input or Math controller is both
-configured correctly and activated. Data will be automatically updated
-on the page from the measurement database.
-
-Asynchronous Graphs
--------------------
-
-``Data -> Asynchronous Graphs``
-
-A graphical data display that is useful for viewing data sets spanning
-relatively long periods of time (weeks/months/years), which could be
-very data- and processor-intensive to view as a Live Graph. Select a
-time frame and data will be loaded from that time span, if it exists.
-The first view will be of the entire selected data set. For every
-view/zoom, 700 data points will be loaded. If there are more than 700
-data points recorded for the time span selected, 700 points will be
-created from an averaging of the points in that time span. This enables
-much less data to be used to navigate a large data set. For instance, 4
-months of data may be 10 megabytes if all of it were downloaded.
-However, when viewing a 4 month span, it's not possible to see every
-data point of that 10 megabytes, and aggregating of points is
-inevitable. With asynchronous loading of data, you only download what
-you see. So, instead of downloading 10 megabytes every graph load, only
-~50kb will be downloaded until a new zoom level is selected, at which
-time only another ~50kb is downloaded.
-
-Note: Live Graphs require measurements to be acquired, therefore at
-least one sensor needs to be added and activated in order to display
-live data.
-
-Alerts
-------
-
-Alerts can be used to notify users about the state of the system.
-For things like sensor monitoring, this could be a threshold that indicates
-something needs attention. E-Mail notifications are built-in to Mycodo in
-a number of places, however there are several places (Inputs, Outputs,
-Controllers) that allow custom Python code to be used, enabling many other
-notification options to be built.
-
-See `Alert Settings <#alert-settings>`__ for more information about setting up
-Alerts.
-
-Notes
------
-
-``More -> Notes``
-
-Notes may be created that can then be displayed on graphs or referenced
-at a later time. All notes are timestamped with the date/time of creation
-or may be created with a custom date/time. Each note must have at least
-one tag selected. Tags are what are selected to be displayed on a graph
-and all notes with that tag will appear in the time frame selected on the
-graph.
-
-Tag Options
-```````````
-
-+-----------------------+-------------------------------------------------+
-| Setting               | Description                                     |
-+=======================+=================================================+
-| Name                  | A name for the tag. Must not contain spaces.    |
-+-----------------------+-------------------------------------------------+
-| Rename                | Rename the tag.                                 |
-+-----------------------+-------------------------------------------------+
-
-Note Options
-````````````
-
-+-----------------------+-------------------------------------------------+
-| Setting               | Description                                     |
-+=======================+=================================================+
-| Name                  | A name for the note.                            |
-+-----------------------+-------------------------------------------------+
-| Use Custom Date/Time  | Check to enter a custom date/time for the note. |
-+-----------------------+-------------------------------------------------+
-| Custom Date/Time      | Store the note with this custom date/time.      |
-+-----------------------+-------------------------------------------------+
-| Attached Files        | Attach one or more files to the note.           |
-+-----------------------+-------------------------------------------------+
-| Tags                  | Associate the note with at least one tag.       |
-+-----------------------+-------------------------------------------------+
-| Note                  | The text body of the note. The text will appear |
-|                       | monospaced, so code will format properly.       |
-+-----------------------+-------------------------------------------------+
-
-Export-Import
--------------
-
-``More -> Export Import``
-
-Measurements that fall within the selected date/time frame may be
-exported as CSV with their corresponding timestamps.
-
-Additionally, the entire measurement database (influxdb) may be exported
-as a ZIP archive backup. This ZIP may be imported back in any Mycodo system
-to restore these measurements. Note that an import will override the
-current data (i.e. destroying it).
-
-Mycodo settings may be exported as a ZIP file containing the Mycodo
-settings database (sqlite). This ZIP file may be used to restore the
-settings database to another Mycodo install, as long as the Mycodo
-version and database versions are the same. Future support for
-installing older (or newer) databases and performing an automatic
-upgrade/downgrade is in the works.
-
-Dependencies
-------------
-
-``[Gear Icon] -> Dependencies``
-
-The dependency page allows viewing of dependency information and the
-ability to initiate their installation.
-
-During the installation of Mycodo, there is an option to select which
-dependencies to install. If "Minimal Install" or "Custom Install" was
-selected (rather than "Full Install"), there may be unmet dependencies
-on your system. Don't worry, this isn't necessarily a problem. These
-optional dependencies only need to be installed when there's a
-particular feature you want to use. When a user attempts to use a
-feature that has an unmet dependency, the user will be forwarded to the
-Dependency page in order to install it.
-
-Camera
-------
-
-``More -> Camera``
-
-Once a cameras has been set up (in the
-`Camera Settings <#camera-settings>`__), it may be used to capture still images,
-create time-lapses, and stream video. Cameras may also be used by
-`Conditional Statements <#conditional-statements>`__ to trigger a camera
-image or video capture (as well as the ability to email the image/video
-with a notification).
-
-Energy Usage
-------------
-
-``More -> Energy Usage``
-
-There are two methods for calculating energy usage. The first relies on
-determining how long Outputs have been on. Based on this, if the number
-of Amps the output draws has been set in the output Settings, then the
-kWh and cost can be calculated. Discovering the number of amps the
-device draws can be accomplished by calculating this from the output
-typically given as watts on the device label, or with the use of a
-current clamp while the device is operating. The limitation of this
-method is PWM Outputs are not currently used to calculate these figures
-due to the difficulty determining the current consumption of devices
-driven by PWM signals.
-
-The second method for calculating energy consumption is more accurate and
-is the recommended method if you desire the most accurate estimation
-of energy consumption and cost. This method relies on an Input or Math
-measuring Amps. One way to do this is with the used of an analog-to-digital
-converter (ADC) that converts the voltage output from a transformer into
-current (Amps). One wire from the AC line that powers your device(s) passes
-thorough the transformer and the device converts the current that passes
-through that wire into a voltage that corresponds to the amperage. For
-instance, the below sensor converts 0 - 50 amps input to 0 - 5 volts output.
-An ADC receives this output as its input. One would set this conversion
-range in Mycodo and the calculated amperage will be stored. On the Energy
-Usage page, add this ADC Input measurement and a report summary will be
-generated. Keep in mind that for a particular period (for example, the past
-week) to be accurate, there needs to be a constant measurement of amps at a
-periodic rate. The faster the rate the more accurate the calculation will
-be. This is due to the amperage measurements being averaged for this period
-prior to calculating kWh and cost. If there is any time turing this period
-where amp measurements aren't being acquired when in fact there are devices
-consuming current, the calculation is likely to not be accurate.
-
-|Current Sensor Transformer|
-
-`Greystone CS-650-50 AC Solid Core Current Sensor (Transformer) <https://shop.greystoneenergy.com/shop/cs-sensor-series-ac-solid-core-current-sensor>`__
-
-The following settings are for calculating energy usage from an amp
-measurement. For calculating based on Output duration, see
-`Energy Usage Settings <#energy-usage-settings>`__.
-
-+------------------------+-------------------------------------------------------+
-| Setting                | Description                                           |
-+========================+=======================================================+
-| Select Amp Measurement | This is a measurement with the amp (A) units that     |
-|                        | will be used to calculate energy usage.               |
-+------------------------+-------------------------------------------------------+
-
-System Information
+PID Control Theory
 ------------------
 
-``[Gear Icon] -> System Information``
-
-This page serves to provide information about the Mycodo frontend and
-backend as well as the linux system it's running on. Several commands
-and their output are listed to give the user information about how their
-system is running.
-
-+-----------------------+-------------------------------------------------+
-| Command               | Description                                     |
-+=======================+=================================================+
-| Mycodo Version        | The current version of Mycodo, reported by the  |
-|                       | configuration file.                             |
-+-----------------------+-------------------------------------------------+
-| Python Version        | The version of python currently running the web |
-|                       | user interface.                                 |
-+-----------------------+-------------------------------------------------+
-| Database Version      | The current version of the settings database.   |
-|                       | If the current version is different from what   |
-|                       | it should be, an error will appear indicating   |
-|                       | the issue and a link to find out more           |
-|                       | information about the issue.                    |
-+-----------------------+-------------------------------------------------+
-| Daemon Status         | This will be a green "Running" or a red         |
-|                       | "Stopped". Additionally, the Mycodo version and |
-|                       | hostname text at the top-left of the screen May |
-|                       | be Green, Yellow, or Red to indicate the        |
-|                       | status. Green = daemon running, yellow = unable |
-|                       | to connect, and red = daemon not running.       |
-+-----------------------+-------------------------------------------------+
-| ...                   | Several other status indicators and commands    |
-|                       | are listed to provide information about the     |
-|                       | health of the system. Use these in addition to  |
-|                       | others to investigate software or hardware      |
-|                       | issues.                                         |
-+-----------------------+-------------------------------------------------+
-
-USB Device Persistence Across Reboots
--------------------------------------
-
-From `(#547) Theoi-Meteoroi on Github <https://github.com/kizniche/Mycodo/issues/547#issuecomment-428752904>`__:
-
-Using USB devices, such as USB-to-serial interfaces to connect a sensor,
-while convenient, poses an issue if there are multiple devices when the
-system reboots. After a reboot, there is no guarantee the device will
-persist with the same name. For instance, if Sensor A is /dev/ttyUSB0
-and Sensor B is /dev/ttyUSB1, after a reboot Sensor A may be /dev/ttyUSB1
-and Sensor B may be /dev/ttyUSB0. This will cause Mycodo to query the
-wrong device for a measurement, potentially causing a mis-measurement,
-or worse, an incorrect measurement because the response is not from the
-correct sensor (I've seen my temperature sensor read 700+ degrees celsius
-because of this!). Follow the instructions below to alleviate this issue.
-
-I use udev to create a persistent device name ('/dev/dust-sensor') that
-will be linked to the /dev/ttyUSBn that is chosen at device arrival in
-the kernel. The only requirement is some attribute returned from the USB
-device that is unique. The common circumstance is that none of the
-attributes are unique and you get stuck with just VID and PID, which is
-ok as long as you don't have any other adapters that report the same VID
-and PID. If you have multiple adapters with the same VID and PID, then
-hopefully they have some unique attribute. This command will walk the
-attributes. Run on each USB device and then compare differences to
-possibly find some attribute to use.
-
-``udevadm info --name=/dev/ttyUSB0 --attribute-walk``
-
-I ended up using the serial number on the ZH03B to program the USB adapter
-serial field. This way guarantees unique serial numbers rather than me
-trying to remember what was the last serial number I used to increment
-by 1.
-
-When you plug a USB device in it can be enumerated to different device
-names by the operating system. To fix this problem for this sensor on
-linux, I changed attributes that make the connection unique.
-
-First - find the VID and PID for the USB device:
-
-::
-
-    pi@raspberry:~ $ lsusb
-    Bus 001 Device 008: ID 10c4:ea60 Cygnal Integrated Products, Inc. CP210x UART Bridge / myAVR mySmartUSB light
-    Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp. SMSC9512/9514 Fast Ethernet Adapter
-    Bus 001 Device 002: ID 0424:9514 Standard Microsystems Corp. SMC9514 Hub
-    Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-
-In this case the Vendor ID is 10c4 The Product ID is ea60
-
-Since I changed the serial number field - this will be unique.
-
-::
-
-    pi@raspberry:~ $ udevadm info --name=/dev/ttyUSB0 --attribute-walk | grep serial
-    SUBSYSTEMS=="usb-serial"
-    ATTRS{serial}=="ZH03B180904"
-    ATTRS{serial}=="3f980000.usb"
-
-Now I have an attribute to tell udev what to do. I create a file in /etc/udev/rules.d with a name like "99-dustsensor.rules". In that file I tell udev what device name to create when it sees this device plugged in:
-
-``SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="ZH03B180904" SYMLINK+="dust-sensor"``
-
-To test the new rule:
-
-::
-
-    pi@raspberry:/dev $ sudo udevadm trigger
-    pi@raspberry:/dev $ ls -al dust-sensor
-    lrwxrwxrwx 1 root root 7 Oct 6 21:04 dust-sensor -> ttyUSB0
-
-Now, every time the dust sensor is plugged in, it shows up at /dev/dust-sensor
-
-Infrared Remote
----------------
-
-#### Note 1: As of 4/8/2019, the Raspberry Pi kernel no longer supports ``lirc-rpi`` as an overlay in ``/boot/config.txt`` (use ``gpio-ir``, details below). To ensure the below instructions work, make sure you are using the latest kernel by running ``sudo rpi-update``
-
-#### Note 2: Currently only receiving IR commands is working. IR sending is not working. When I get time to test and develop an implementation of this feature that both sends and receives IR signals, I will remove this note.
-
-Infrared (IR) light is a common way to send and receive signals across distances. This is typically done with IR remotes with several buttons configured to send different signals. These signals can be detected by the Raspberry Pi with the use of an `IR receiver diode <https://www.sparkfun.com/products/10266>`__ and used to perform actions within the linux environment and Mycodo. This is done with `lirc <http://lirc.org/>`__, and needs to be properly configured before IR signals can be detected and interpreted.
-
-The IR receiver typically has three connections, power (3.3 volts), ground, and data (GPIO pin), and should be connected to the appropriate pins of your Raspberry Pi. Make sure your IR receiver can operate at 3.3 volts, which is the appropriate voltage GPIOs operate at. For testing, I used the `Sparkfun Infrared Control Kit <https://www.sparkfun.com/products/14677>`__, which has an `Information Guide <https://learn.sparkfun.com/tutorials/ir-control-kit-hookup-guide>`__, however there are cheaper alternatives.
-
-Adding an Infrared Output device or an Infrared Send function action will automatically install the dependencies, otherwise it can be done manually:
-
-``sudo apt install liblircclient-dev lirc``
-
-``~/Mycodo/env/bin/pip install python-lirc py-irsend``
-
-Edit ``/boot/config.txt`` and add to the end of the file, replacing "17" with the GPIO (BCM numbering) connected to your IR LED and "18" with the GPIO connected to the IR receiver. You can omit either of these options if you aren't using either the IR receiver or transmitting LED:
-
-``
-dtoverlay=gpio-ir,gpio_pin=18
-dtoverlay=gpio-ir-tx,gpio_pin=17
-``
-
-Edit ``/etc/lirc/lirc_options.conf`` and ensure the following settings are set:
-
-::
-
-    driver = default
-    device = /dev/lirc1
-
-Restart your system:
-
-``sudo shutdown now -r``
-
-Check `this remote database <http://lirc-remotes.sourceforge.net/remotes-table.html>`__ for your remote, and if it's found, place it in ``/etc/lirc/lircd.conf.d/``, otherwise you will need to generate a config file for your remote.
-
-To generate a config file for your remote, lirc must first be stopped:
-
-``sudo service lircd stop``
-
-Then, issue the following command:
-
-``sudo irrecord -n -d /dev/lirc1``
-
-You will be prompted with a very specific set of instructions in order to map your remote. If you successfully finish the config generation, you will have a *.lirc.conf file that you should place in ``/etc/lirc/lircd.conf.d/``
-
-If ``irrecord`` is unable to parse the remote code (due to complexity or other issue), you can still use the raw data to create a config file. To obtain the raw code data, run the following command, and press a button on the remote once.
-
-``mode2 -m``
-
-You should see output similar to the following, with data represented in 6 columns.
-
-::
-
-    pi@rapsberry:~ $ mode2 -m
-    Using driver default on device /dev/lirc0
-    Trying device: /dev/lirc0
-    Using device: /dev/lirc0
-     16777215
-
-         3431     1747      444     1313      441     1312
-          444      471      441      474      440      474
-          440     1315      439      476      438      480
-          444     1312      442     1313      441      475
-          438     1317      439      476      437      477
-
-Use the 6-column data to generate your config file, with the following as an example ``example_remote.lircd.conf``, that should be placed in ``/etc/lirc/lircd.conf.d/``.
-
-::
-
-    begin remote
-      name  example_remote
-      flags RAW_CODES
-      eps           30
-      aeps          100
-
-      ptrail       0
-      repeat       0  0
-      gap          107902
-
-          begin raw_codes
-              name KEY_POWER
-                 3431     1747      444     1313      441     1312
-                  444      471      441      474      440      474
-                  440     1315      439      476      438      480
-                  444     1312      442     1313      441      475
-                  438     1317      439      476      437      477
-          end raw_codes
-    end remote
-
-Start lirc back up to load all the remote config files:
-
-``sudo service lirc start``
-
-Now, start ``irw`` and press a button on your remote. If everything works, you should see information appear when you press each button, such as below:
-
-::
-
-    pi@raspberry:~ $ irw
-    0000000000ff629d 00 KEY_POWER simple_remote
-    0000000000ff22dd 01 KEY_A simple_remote
-    0000000000ff02fd 01 KEY_B simple_remote
-    0000000000ffc23d 00 KEY_C simple_remote
-    0000000000ff9867 00 KEY_UP simple_remote
-    0000000000ff38c7 00 KEY_DOWN simple_remote
-    0000000000ff30cf 01 KEY_LEFT simple_remote
-    0000000000ff7a85 00 KEY_RIGHT simple_remote
-    0000000000ff18e7 01 KEY_SELECT simple_remote
-
-Now that we have the remote detected and mapped, we can set commands to be executed or what word is returned to Mycodo. Create a file ``~/.lirc``:
-
-``nano ~/.lircrc``
-
-and configure the responses to button presses
-
-::
-
-    begin
-      button = KEY_POWER
-      prog = mycodo
-      config = power
-      repeat = 0
-    end
-    begin
-      button = KEY_A
-      prog = mycodo
-      config = a
-      repeat = 0
-    end
-
-To test this with Python, create the test program ``infrared_receive.py``:
-
-::
-
-    import lirc
-    import time
-
-    sockid = lirc.init("mycodo", blocking=False)
-    while True:
-        code = lirc.nextcode()
-        if code:
-            print(code[0])
-        time.sleep(0.05)
-
-Execute this using the Mycodo virtualenv:
-
-``~/Mycodo/env/bin/python infrared_receive.py``
-
-And press the buttons defined in ``~/.lirc`` and see if the output appears on the console:
-
-::
-
-    pi@raspberry:~ $ ~/Mycodo/env/bin/python ./test_IR.py
-    power
-    a
-
-From here, you can create any Python code to react to button presses on your remote. You can also set up the Mycodo Function Trigger: Infrared Remote Input and trigger events in response to Mycodo detecting specific button presses. See `Infrared Remote Input Options <#infrared-remote-input-options>`__ for configuring this trigger.
-
-In order to send an IR signal to your IR LED, connect your LED to the GPIO defined with ``gpio_out_pin=17`` in ``/boot/config.txt``. You can test if your LED is working by creating a file, ``LED_blink.py``, replacing ``17`` with the pin connected to your LED:
-
-.. code-block:: python
-
-    import RPi.GPIO as GPIO
-    import time
-
-    pin = 17
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(pin, GPIO.OUT, initial=GPIO.LOW)
-
-    while True:
-        GPIO.output(pin, GPIO.HIGH)
-        time.sleep(1)
-        GPIO.output(pin, GPIO.LOW)
-        time.sleep(1)
-
-Since IR LEDs produce a wavelength of light that humans can't see, you'll need to aim a video camera that lacks an infrared filter and see if the LED is blinking.
-
-If your LED is working, then issue the following command, replacing ``simple_remote`` with the name of your remote defined in your config file:
-
-``irsend SEND_ONCE simple_remote KEY_POWER``
-
-You can verify this is working by running ``infrared_receive.py``, then executing the ``irsend`` command while it's still running, and you should see it print the button command that was sent.
-
-IR codes can be sent from Mycodo using the Infrared Remote Send Function Action. The ``Remote`` option should to match the remote name in the config file in ``/etc/lirc/lircd.conf.d/`` and the ``Code`` option should match a code that's in ``/home/pi/.lircrc``. If ``Times to Send`` is set larger than 1, the code will be sent multiple times at intervals of 0.5 seconds.
-
-Translations
-------------
-
-Mycodo has been translated to several languages. By default, the language of the
-browser will determine which language is used, but may be overridden in the General
-Settings, at ``[Gear Icon] -> Configure -> General``. If you find an issue with a
-translation or would like to add another language, see the
-`Translations <https://github.com/kizniche/Mycodo/wiki/Translations>`__
-section of the Wiki and consider making a Pull Request or
-`Creating an Issue <https://github.com/kizniche/Mycodo/issues/new>`__.
+The PID controller is the most common regulatory controller found in
+industrial settings, for it"s ability to handle both simple and complex
+regulation. The PID controller has three paths, the proportional,
+integral, and derivative.
+
+The **P**\ roportional takes the error and multiplies it by the constant
+K\ :sub:`p`, to yield an output value. When the error is large, there
+will be a large proportional output.
+
+The **I**\ ntegral takes the error and multiplies it by K\ :sub:`i`,
+then integrates it (K:sub:`i` · 1/s). As the error changes over time,
+the integral will continually sum it and multiply it by the constant
+K\ :sub:`i`. The integral is used to remove perpetual error in the
+control system. If using K\ :sub:`p` alone produces an output that
+produces a perpetual error (i.e. if the sensor measurement never reaches
+the Set Point), the integral will increase the output until the error
+decreases and the Set Point is reached.
+
+The **D**\ erivative multiplies the error by K\ :sub:`d`, then
+differentiates it (K:sub:`d` · s). When the error rate changes over
+time, the output signal will change. The faster the change in error, the
+larger the derivative path becomes, decreasing the output rate of
+change. This has the effect of dampening overshoot and undershoot
+(oscillation) of the Set Point.
+
+--------------
+
+Using temperature as an example, the Process Variable (PV) is the
+measured temperature, the Setpoint (SP) is the desired temperature, and
+the Error (e) is the distance between the measured temperature and the
+desired temperature (indicating if the actual temperature is too hot or
+too cold and to what degree). The error is manipulated by each of the
+three PID components, producing an output, called the Manipulated
+Variable (MV) or Control Variable (CV). To allow control of how much
+each path contributes to the output value, each path is multiplied by a
+gain (represented by *K\ :sub:`P`*, *K\ :sub:`I`*, and *K\ :sub:`D`*).
+By adjusting the gains, the sensitivity of the system to each path is
+affected. When all three paths are summed, the PID output is produced.
+If a gain is set to 0, that path does not contribute to the output and
+that path is essentially turned off.
+
+The output can be used a number of ways, however this controller was
+designed to use the output to affect the measured value (PV). This
+feedback loop, with a *properly tuned* PID controller, can achieve a set
+point in a short period of time, maintain regulation with little
+oscillation, and respond quickly to disturbance.
+
+Therefor, if one would be regulating temperature, the sensor would be a
+temperature sensor and the feedback device(s) would be able to heat and
+cool. If the temperature is lower than the Set Point, the output value
+would be positive and a heater would activate. The temperature would
+rise toward the desired temperature, causing the error to decrease and a
+lower output to be produced. This feedback loop would continue until the
+error reaches 0 (at which point the output would be 0). If the
+temperature continues to rise past the Set Point (this is may be
+acceptable, depending on the degree), the PID would produce a negative
+output, which could be used by the cooling device to bring the
+temperature back down, to reduce the error. If the temperature would
+normally lower without the aid of a cooling device, then the system can
+be simplified by omitting a cooler and allowing it to lower on its own.
+
+Implementing a controller that effectively utilizes *K\ :sub:`P`*,
+*K\ :sub:`I`*, and *K\ :sub:`D`* can be challenging. Furthermore, it is
+often unnecessary. For instance, the *K\ :sub:`I`* and *K\ :sub:`D`* can
+be set to 0, effectively turning them off and producing the very popular
+and simple P controller. Also popular is the PI controller. It is
+recommended to start with only *K\ :sub:`P`* activated, then experiment
+with *K\ :sub:`P`* and *K\ :sub:`I`*, before finally using all three.
+Because systems will vary (e.g. airspace volume, degree of insulation,
+and the degree of impact from the connected device, etc.), each path
+will need to be adjusted through experimentation to produce an effective
+output.
+
+Quick Setup Examples
+--------------------
+
+These example setups are meant to illustrate how to configure regulation
+in particular directions, and not to achieve ideal values to configure
+your *K\ :sub:`P`*, *K\ :sub:`I`*, and *K\ :sub:`D`* gains. There are a
+number of online resources that discuss techniques and methods that have
+been developed to determine ideal PID values (such as
+`here <http://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops>`__,
+`here <http://innovativecontrols.com/blog/basics-tuning-pid-loops>`__,
+`here <https://hennulat.wordpress.com/2011/01/12/pid-loop-tuning-101/>`__,
+`here <http://eas.uccs.edu/wang/ECE4330F12/PID-without-a-PhD.pdf>`__,
+and `here <http://www.atmel.com/Images/doc2558.pdf>`__) and since there
+are no universal values that will work for every system, it is
+recommended to conduct your own research to understand the variables and
+essential to conduct your own experiments to effectively implement them.
+
+Provided merely as an example of the variance of PID values, one of my
+setups had temperature PID values (up regulation) of *K\ :sub:`P`* = 30,
+*K\ :sub:`I`* = 1.0, and *K\ :sub:`D`* = 0.5, and humidity PID values
+(up regulation) of *K\ :sub:`P`* = 1.0, *K\ :sub:`I`* = 0.2, and
+*K\ :sub:`D`* = 0.5. Furthermore, these values may not have been optimal
+but they worked well for the conditions of my environmental chamber.
+
+Exact Temperature Regulation
+----------------------------
+
+This will set up the system to raise and lower the temperature to a
+certain level with two regulatory devices (one that heats and one that
+cools).
+
+Add a sensor, then save the proper device and pin/address for each
+sensor and activate the sensor.
+
+Add two outputs, then save each GPIO and On Trigger state.
+
+Add a PID, then select the newly-created sensor. Change *Setpoint* to
+the desired temperature, *Regulate Direction* to "Both". Set *Raise
+Output* to the relay attached to the heating device and the *Lower
+Relay* to the relay attached to the cooling device.
+
+Set *K\ :sub:`P`* = 1, *K\ :sub:`I`* = 0, and *K\ :sub:`D`* = 0, then
+activate the PID.
+
+If the temperature is lower than the Set Point, the heater should
+activate at some interval determined by the PID controller until the
+temperature rises to the set point. If the temperature goes higher than
+the Set Point (or Set Point + Buffer), the cooling device will activate
+until the temperature returns to the set point. If the temperature is
+not reaching the Set Point after a reasonable amount of time, increase
+the *K\ :sub:`P`* value and see how that affects the system. Experiment
+with different configurations involving only *Read Interval* and
+*K\ :sub:`P`* to achieve a good regulation. Avoid changing the
+*K\ :sub:`I`* and *K\ :sub:`D`* from 0 until a working regulation is
+achieved with *K\ :sub:`P`* alone.
+
+View graphs in the 6 to 12 hour time span to identify how well the
+temperature is regulated to the Setpoint. What is meant by
+well-regulated will vary, depending on your specific application and
+tolerances. Most applications of a PID controller would like to see the
+proper temperature attained within a reasonable amount of time and with
+little oscillation around the Setpoint.
+
+Once regulation is achieved, experiment by reducing *K\ :sub:`P`*
+slightly (~25%) and increasing *K\ :sub:`I`* by a low amount to start,
+such as 0.1 (or lower, 0.01), then start the PID and observe how well
+the controller regulates. Slowly increase *K\ :sub:`I`* until regulation
+becomes both quick and with little oscillation. At this point, you
+should be fairly familiar with experimenting with the system and the
+*K\ :sub:`D`* value can be experimented with once both *K\ :sub:`P`* and
+*K\ :sub:`I`* have been tuned.
+
+High Temperature Regulation
+---------------------------
+
+Often the system can be simplified if two-way regulation is not needed.
+For instance, if cooling is unnecessary, this can be removed from the
+system and only up-regulation can be used.
+
+Use the same configuration as the
+`Exact Temperature Regulation <#exact-temperature-regulation>`__
+example, except change *Regulate Direction* to "Raise" and do not touch
+the "Down Relay" section.
 
 Troubleshooting
 ===============
@@ -3579,6 +3477,12 @@ limits by how many you can use at the same time. I2C multiplexers are
 extremely clever and useful in these scenarios because they allow
 multiple sensors with the same I2C address to be connected.
 
+For instance, the TCA9548A/PCA9548A: I2C Multiplexer has 8 selectable
+addresses, so 8 multiplexers can be connected to one Raspberry Pi.
+Each multiplexer has 8 channels, allowing up to 8 devices/sensors with
+the same address to be connected to each multiplexer. 8 multiplexers x 8
+channels = 64 devices/sensors with the same I2C address.
+
 Multiplexers can be set up by loading a kernel driver to handle the
 communication, producing a new I2C bus device for each multiplexer
 channel. To enable the driver for the TCA9548A/PCA9548A, visit
@@ -3591,18 +3495,14 @@ https://github.com/camrex/i2c-mux-pca9545a and other drivers are available
 elsewhere. See the manufacturer or user forums for details. Some
 multiplexers I've tested are below.
 
-    TCA9548A/PCA9548A: I2C Multiplexer
-    `link <https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview>`__
-    (I2C): Has 8 selectable addresses, so 8 multiplexers can be
-    connected to one Raspberry Pi. Each multiplexer has 8 channels,
-    allowing up to 8 devices/sensors with the same address to be
-    connected to each multiplexer. 8 multiplexers x 8 channels = 64
-    devices/sensors with the same I2C address.
+-  TCA9548A/PCA9548A: I2C Multiplexer
+`link <https://learn.adafruit.com/adafruit-tca9548a-1-to-8-i2c-multiplexer-breakout/overview>`__
+(I2C): 8 selectable addresses, 8 channels
 
-    TCA9545A: I2C Bus Multiplexer
-    `link <http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/>`__
-    (I2C): This board also creates 4 new I2C buses, but each with their
-    own selectable voltage, either 3.3 or 5.0 volts.
+-  TCA9545A: I2C Bus Multiplexer
+`link <http://store.switchdoc.com/i2c-4-channel-mux-extender-expander-board-grove-pin-headers-for-arduino-and-raspberry-pi/>`__
+(I2C): The linked Grove board creates 4 new I2C buses, each with their
+own selectable voltage, either 3.3 or 5.0 volts.
 
 Analog-to-Digital Converters
 ----------------------------
@@ -3612,13 +3512,13 @@ that outputs a variable voltage. A `voltage
 divider <https://learn.sparkfun.com/tutorials/voltage-dividers>`__ may
 be necessary to attain your desired range.
 
--  `ADS1x15 <#ads1x15>`__: Analog-to-digital converter `link <https://www.adafruit.com/product/1085>`__
--  `ADS1256 <#ads1256>`__: Analog-to-digital converter `link <http://www.ti.com/product/ADS1256>`__
--  `MCP3008 <#mcp3008>`__: Analog-to-digital converter `link <https://www.adafruit.com/product/856>`__
--  `MCP342x <#mcp342x>`__: Analog-to-digital converter `link <http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)>`__
+-  ADS1x15: Analog-to-digital converter `link <https://www.adafruit.com/product/1085>`__
+-  ADS1256: Analog-to-digital converter `link <http://www.ti.com/product/ADS1256>`__
+-  MCP3008: Analog-to-digital converter `link <https://www.adafruit.com/product/856>`__
+-  MCP342x: Analog-to-digital converter `link <http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)>`__
 
-Device Specific Information
-===========================
+Device Notes
+============
 
 This information may not be current, so always reference and follow manufacturer recommendations for operating their devices.
 
@@ -3634,18 +3534,15 @@ backpack that should be compatible.
 
 |image4| 
 
-Input Device Notes
-------------------
-
 Raspberry Pi
-````````````
+------------
 
 The Raspberry Pi has an integrated temperature sensor on the BCM2835 SoC
 that measure the temperature of the CPU/GPU. This is the easiest sensor
 to set up in Mycodo, as it is immediately available to be used.
 
 AM2315
-``````
+------
 
 From
 `@Theoi-Meteoroi <https://github.com/kizniche/Mycodo/issues/315#issuecomment-344798815>`__
@@ -3674,7 +3571,7 @@ pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate
 pull-up resistors before connecting any devices.
 
 K-30
-````
+----
 
 |image5| 
 
@@ -3683,6 +3580,79 @@ protection and improper connections could destroy your sensor.
 
 Wiring instructions for the Raspberry Pi can be found
 `here <https://www.co2meter.com/blogs/news/8307094-using-co2meter-com-sensors-with-raspberry-pi>`__.
+
+USB Device Persistence Across Reboots
+-------------------------------------
+
+From `(#547) Theoi-Meteoroi on Github <https://github.com/kizniche/Mycodo/issues/547#issuecomment-428752904>`__:
+
+Using USB devices, such as USB-to-serial interfaces to connect a sensor,
+while convenient, poses an issue if there are multiple devices when the
+system reboots. After a reboot, there is no guarantee the device will
+persist with the same name. For instance, if Sensor A is /dev/ttyUSB0
+and Sensor B is /dev/ttyUSB1, after a reboot Sensor A may be /dev/ttyUSB1
+and Sensor B may be /dev/ttyUSB0. This will cause Mycodo to query the
+wrong device for a measurement, potentially causing a mis-measurement,
+or worse, an incorrect measurement because the response is not from the
+correct sensor (I've seen my temperature sensor read 700+ degrees celsius
+because of this!). Follow the instructions below to alleviate this issue.
+
+I use udev to create a persistent device name ('/dev/dust-sensor') that
+will be linked to the /dev/ttyUSBn that is chosen at device arrival in
+the kernel. The only requirement is some attribute returned from the USB
+device that is unique. The common circumstance is that none of the
+attributes are unique and you get stuck with just VID and PID, which is
+ok as long as you don't have any other adapters that report the same VID
+and PID. If you have multiple adapters with the same VID and PID, then
+hopefully they have some unique attribute. This command will walk the
+attributes. Run on each USB device and then compare differences to
+possibly find some attribute to use.
+
+``udevadm info --name=/dev/ttyUSB0 --attribute-walk``
+
+I ended up using the serial number on the ZH03B to program the USB adapter
+serial field. This way guarantees unique serial numbers rather than me
+trying to remember what was the last serial number I used to increment
+by 1.
+
+When you plug a USB device in it can be enumerated to different device
+names by the operating system. To fix this problem for this sensor on
+linux, I changed attributes that make the connection unique.
+
+First - find the VID and PID for the USB device:
+
+::
+
+    pi@raspberry:~ $ lsusb
+    Bus 001 Device 008: ID 10c4:ea60 Cygnal Integrated Products, Inc. CP210x UART Bridge / myAVR mySmartUSB light
+    Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp. SMSC9512/9514 Fast Ethernet Adapter
+    Bus 001 Device 002: ID 0424:9514 Standard Microsystems Corp. SMC9514 Hub
+    Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+
+In this case the Vendor ID is 10c4 The Product ID is ea60
+
+Since I changed the serial number field - this will be unique.
+
+::
+
+    pi@raspberry:~ $ udevadm info --name=/dev/ttyUSB0 --attribute-walk | grep serial
+    SUBSYSTEMS=="usb-serial"
+    ATTRS{serial}=="ZH03B180904"
+    ATTRS{serial}=="3f980000.usb"
+
+Now I have an attribute to tell udev what to do. I create a file in /etc/udev/rules.d with a name like "99-dustsensor.rules". In that file I tell udev what device name to create when it sees this device plugged in:
+
+``SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="ZH03B180904" SYMLINK+="dust-sensor"``
+
+To test the new rule:
+
+::
+
+    pi@raspberry:/dev $ sudo udevadm trigger
+    pi@raspberry:/dev $ ls -al dust-sensor
+    lrwxrwxrwx 1 root root 7 Oct 6 21:04 dust-sensor -> ttyUSB0
+
+Now, every time the dust sensor is plugged in, it shows up at /dev/dust-sensor
 
 Diagrams
 --------

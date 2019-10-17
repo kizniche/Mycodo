@@ -14,7 +14,7 @@ Mycodo is open source software for the Raspberry Pi that couples inputs and outp
 *   **[Setpoint Tracking](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#methods)** for changing a PID controller setpoint over time, for use with things like reptile terrariums, reflow ovens, thermal cyclers, sous-vide cooking, and more.
 *   **[Conditional Statements](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional)** that react to input measurements, manipulate outputs, and execute actions based on user-generated code. This is a very powerful feature that enables custom user-created [conditions](https://en.wikipedia.org/wiki/Conditional_(computer_programming))) for Inputs, Outputs, Actions, and other parts of the system.
 *   **[Triggers](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#trigger)** that can trigger actions at periodic intervals (daily, duration, sunrise/sunset, etc.).
-*   **[Alerts](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#alerts)** to alert via email when measurements reach or exceed user-specified thresholds.
+*   **[Alerts](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#alerts)** to notify via email when measurements reach or exceed user-specified thresholds.
 *   **[Notes](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#notes)** to keep track of events, alerts, and other important points in time.
 *   **[Camera Feed](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#camera)** for remote live stream, image capture, or time-lapse photography.
 *   **[Energy Usage Statistics](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#energy-usage)** to calculate and track power consumption and cost over time.
