@@ -3380,46 +3380,13 @@ github for more information about diagnosing issues.
 Devices
 =======
 
-Supported Input and Output devices are listed below.
-
-I2C
----
-
-The I2C interface should be enabled with ``raspi-config``.
-
-1-Wire
-------
-
-The 1-wire interface should be configured with `these instructions
-<https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing>`__.
-
-UART
-----
-
-`This documentation
-<http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip>`__
-provides specific installation procedures for configuring UART with the
-Raspberry Pi version 1 or 2.
-
-Because the UART is handled differently higher after the Raspberry Pi 2 (due to
-the addition of bluetooth), there are a different set of instructions. If
-installing Mycodo on a Raspberry Pi 3 or above, you only need to perform these
-steps to configure UART:
-
-Run raspi-config
-
-``sudo raspi-config``
-
-Go to ``Advanced Options`` -> ``Serial`` and disable. Then edit
-``/boot/config.txt``
-
-``sudo vi /boot/config.txt``
-
-Find the line "enable\_uart=0" and change it to "enable\_uart=1", then
-reboot.
-
 Input Devices
 -------------
+
+Supported Input and Output devices are listed below.
+
+Built-In Inputs
+```````````````
 
 -  AM2315: Relative humidity, temperature `link <https://www.adafruit.com/product/1293>`__
 -  AM2320: Relative humidity, temperature `link <https://www.adafruit.com/product/3721>`__
@@ -3460,8 +3427,8 @@ Input Devices
 -  TSL2591: Light `link <https://www.adafruit.com/product/1980>`__
 -  ZH03B: Particle sensor `link <https://www.winsen-sensor.com/sensors/dust-sensor/zh3b.html>`__
 
-Other Inputs
-------------
+Other Built-In Inputs
+`````````````````````
 
 -  Raspberry Pi CPU: Temperature
 -  Raspberry Pi CPU: CPU load
@@ -3479,38 +3446,8 @@ Other Inputs
 -  Linux Command: Executes a linux command and stores the returned value
 -  `Custom Input <#custom-inputs>`__: Create your own custom input
 
-Output Devices
---------------
-
--  Atlas EZO-PMP Peristaltic Pump: Pump volumes in milliliters `link <https://www.atlas-scientific.com/peristaltic.html>`__
-
-Other Outputs
--------------
-
--  GPIO Pin (High/Low)
--  GPIO PWM Signal generation
--  Python Command for On and Off actions
--  Linux Shell command for On and Off actions
--  Wireless 314/433 Mhz LPD/SRD (rpi-rf)
-
-Edge Detection
---------------
-
-The detection of a changing signal, for instance a simple switch
-completing a circuit, requires the use of edge detection. By detecting a
-rising edge (LOW to HIGH), a falling edge (HIGH to LOW), or both,
-actions or events can be triggered. The GPIO chosen to detect the signal
-should be equipped with an appropriate resistor that either pulls the
-GPIO up [to 5-volts] or down [to ground]. The option to enable the
-internal pull-up or pull-down resistors is not available for safety
-reasons. Use your own resistor to pull the GPIO high or low.
-
-Examples of devices that can be used with edge detection: simple
-switches and buttons, PIR motion sensors, reed switches, hall effect
-sensors, float switches, and more.
-
 I2C Multiplexers
-----------------
+````````````````
 
 All devices that connected to the Raspberry Pi by the I2C bus need to
 have a unique address in order to communicate. Some inputs may have the
@@ -3549,7 +3486,7 @@ multiplexers I've tested are below.
 own selectable voltage, either 3.3 or 5.0 volts.
 
 Analog-to-Digital Converters
-----------------------------
+````````````````````````````
 
 An analog to digital converter (ADC) allows the use of any analog sensor
 that outputs a variable voltage. A `voltage
@@ -3561,10 +3498,79 @@ be necessary to attain your desired range.
 -  MCP3008: Analog-to-digital converter `link <https://www.adafruit.com/product/856>`__
 -  MCP342x: Analog-to-digital converter `link <http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)>`__
 
+I2C Information
+```````````````
+
+The I2C interface should be enabled with ``raspi-config``.
+
+1-Wire Information
+``````````````````
+
+The 1-wire interface should be configured with `these instructions
+<https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing>`__.
+
+UART Information
+````````````````
+
+`This documentation
+<http://www.co2meters.com/Documentation/AppNotes/AN137-Raspberry-Pi.zip>`__
+provides specific installation procedures for configuring UART with the
+Raspberry Pi version 1 or 2.
+
+Because the UART is handled differently higher after the Raspberry Pi 2 (due to
+the addition of bluetooth), there are a different set of instructions. If
+installing Mycodo on a Raspberry Pi 3 or above, you only need to perform these
+steps to configure UART:
+
+Run raspi-config
+
+``sudo raspi-config``
+
+Go to ``Advanced Options`` -> ``Serial`` and disable. Then edit
+``/boot/config.txt``
+
+``sudo vi /boot/config.txt``
+
+Find the line "enable\_uart=0" and change it to "enable\_uart=1", then
+reboot.
+
+Output Devices
+--------------
+
+Built-In Outputs
+````````````````
+
+-  Atlas EZO-PMP Peristaltic Pump: Pump volumes in milliliters `link <https://www.atlas-scientific.com/peristaltic.html>`__
+
+Other Built-In Outputs
+``````````````````````
+
+-  GPIO Pin (High/Low)
+-  GPIO PWM Signal generation
+-  Python Command for On and Off actions
+-  Linux Shell command for On and Off actions
+-  Wireless 314/433 Mhz LPD/SRD (rpi-rf)
+
 Device Notes
 ============
 
 This information may not be current, so always reference and follow manufacturer recommendations for operating their devices.
+
+Edge Detection
+--------------
+
+The detection of a changing signal, for instance a simple switch
+completing a circuit, requires the use of edge detection. By detecting a
+rising edge (LOW to HIGH), a falling edge (HIGH to LOW), or both,
+actions or events can be triggered. The GPIO chosen to detect the signal
+should be equipped with an appropriate resistor that either pulls the
+GPIO up [to 5-volts] or down [to ground]. The option to enable the
+internal pull-up or pull-down resistors is not available for safety
+reasons. Use your own resistor to pull the GPIO high or low.
+
+Examples of devices that can be used with edge detection: simple
+switches and buttons, PIR motion sensors, reed switches, hall effect
+sensors, float switches, and more.
 
 LCD Displays
 ------------
