@@ -2,7 +2,7 @@
 import datetime
 import logging
 import time
-import fractions
+
 import os
 import picamera
 
