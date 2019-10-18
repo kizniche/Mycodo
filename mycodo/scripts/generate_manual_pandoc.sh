@@ -17,6 +17,10 @@ if [[ $(command -v pandoc) ]]
 then
   # Reformat restructuredtext
   pandoc -s --toc --toc-depth=4 -f rst -t rst -o ${INSTALL_DIRECTORY}/mycodo-manual.rst ${INSTALL_DIRECTORY}/mycodo-manual.rst
+  # Delete line after ".. container:: contents"
+  sed -i '/^.. container:: contents/{n;d}' ${INSTALL_DIRECTORY}/mycodo-manual.rst
+  # Delete line ".. container:: contents"
+  sed -i '/^.. container:: contents/d' ${INSTALL_DIRECTORY}/mycodo-manual.rst
 
   # Generate PDF file
   pandoc -V geometry:margin=0.5in --table-of-contents -s -o ${INSTALL_DIRECTORY}/mycodo-manual.pdf ${INSTALL_DIRECTORY}/mycodo-manual.rst

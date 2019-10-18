@@ -6,8 +6,6 @@ Mycodo Manual
    :depth: 4
 ..
 
-.. container:: contents
-
 About Mycodo
 ============
 
@@ -966,7 +964,7 @@ Types of math controllers.
 |                            | option.                                 |
 +----------------------------+-----------------------------------------+
 | Difference                 | Stores the mathematical difference      |
-|                            | (value_1 -value_2).                     |
+|                            | (value_1 - value_2).                    |
 +----------------------------+-----------------------------------------+
 | Equation                   | Stores the calculated value of an       |
 |                            | equation.                               |
