@@ -16,7 +16,7 @@ cd ${INSTALL_DIRECTORY}
 if [[ $(command -v pandoc) ]]
 then
   # Reformat restructuredtext
-  pandoc -s -f rst -t rst -o ${INSTALL_DIRECTORY}/mycodo-manual.rst ${INSTALL_DIRECTORY}/mycodo-manual.rst
+  pandoc -s --toc --toc-depth=4 -f rst -t rst -o ${INSTALL_DIRECTORY}/mycodo-manual.rst ${INSTALL_DIRECTORY}/mycodo-manual.rst
 
   # Generate PDF file
   pandoc -V geometry:margin=0.5in --table-of-contents -s -o ${INSTALL_DIRECTORY}/mycodo-manual.pdf ${INSTALL_DIRECTORY}/mycodo-manual.rst

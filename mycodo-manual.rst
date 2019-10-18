@@ -2,6 +2,10 @@
 Mycodo Manual
 =============
 
+.. contents::
+   :depth: 4
+..
+
 .. container:: contents
 
 About Mycodo
@@ -2575,8 +2579,8 @@ analog-to-digital converter (ADC) that converts the voltage output from
 a transformer into current (Amps). One wire from the AC line that powers
 your device(s) passes thorough the transformer and the device converts
 the current that passes through that wire into a voltage that
-corresponds to the amperage. For instance, the below sensor converts 0 -
-50 amps input to 0 - 5 volts output. An ADC receives this output as its
+corresponds to the amperage. For instance, the below sensor converts 0
+-50 amps input to 0 - 5 volts output. An ADC receives this output as its
 input. One would set this conversion range in Mycodo and the calculated
 amperage will be stored. On the Energy Usage page, add this ADC Input
 measurement and a report summary will be generated. Keep in mind that
