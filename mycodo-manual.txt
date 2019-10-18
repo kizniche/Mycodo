@@ -5,31 +5,68 @@ Mycodo Manual
 -   [Frequently Asked Questions](#frequently-asked-questions)
 -   [Upgrading](#upgrading)
 -   [Backup-Restore](#backup-restore)
--   [Features](#features)
+-   [Operation](#operation)
     -   [Web Interface](#web-interface)
-    -   [Mycodo Client](#mycodo-client)
-    -   [Data](#data)
-        -   [Input](#input)
-        -   [Custom Inputs](#custom-inputs)
-        -   [Math](#math)
+    -   [Data Viewing](#data-viewing)
+        -   [Live Measurements](#live-measurements)
+        -   [Asynchronous Graphs](#asynchronous-graphs)
+        -   [Dashboard](#dashboard)
+    -   [Input](#input)
+        -   [Input Options](#input-options)
+        -   [Custom Code](#custom-code)
+        -   [The Things Network](#the-things-network)
+    -   [Math](#math)
+        -   [Math Options](#math-options)
     -   [Output](#output)
-        -   [PWM](#pwm)
-        -   [Relays](#relays)
-        -   [Pumps](#pumps)
-    -   [Function](#function)
-        -   [Custom Controllers](#custom-controllers)
-        -   [PID Controller](#pid-controller)
-        -   [Conditional](#conditional)
-        -   [Trigger](#trigger)
-    -   [LCDs](#lcds)
+        -   [General Output Options](#general-output-options)
+        -   [On/Off (GPIO)](#onoff-gpio)
+        -   [PWM (GPIO)](#pwm-gpio)
+        -   [Atlas EZO-PMP Pump](#atlas-ezo-pmp-pump)
+        -   [Wireless 315/433 MHz](#wireless-315433-mhz)
+        -   [Linux Command](#linux-command)
+        -   [Python Command](#python-command)
+        -   [Output Notes](#output-notes)
+    -   [Custom Controllers](#custom-controllers)
+    -   [PID Controller](#pid-controller)
+        -   [PID Controller Options](#pid-controller-options)
+        -   [PID Autotune](#pid-autotune)
+    -   [Conditional](#conditional)
+        -   [Conditional Options](#conditional-options)
+        -   [Conditional Setup Guide](#conditional-setup-guide)
+    -   [Trigger](#trigger)
+        -   [Output (On/Off) Options](#output-onoff-options)
+        -   [Output (PWM) Options](#output-pwm-options)
+        -   [Edge Options](#edge-options)
+        -   [Run PWM Method Options](#run-pwm-method-options)
+        -   [Infrared Remote Input
+            Options](#infrared-remote-input-options)
+        -   [Sunrise/Sunset Options](#sunrisesunset-options)
+        -   [Timer (Duration) Options](#timer-duration-options)
+        -   [Timer (Daily Time Point)
+            Options](#timer-daily-time-point-options)
+        -   [Timer (Daily Time Span)
+            Options](#timer-daily-time-span-options)
+    -   [Function Actions](#function-actions)
     -   [Methods](#methods)
-        -   [Universal Options](#universal-options)
-        -   [Specific Method Options](#specific-method-options)
--   [PID Tuning](#pid-tuning)
-    -   [PID Control Theory](#pid-control-theory)
-    -   [Quick Setup Examples](#quick-setup-examples)
-    -   [Exact Temperature Regulation](#exact-temperature-regulation)
-    -   [High Temperature Regulation](#high-temperature-regulation)
+        -   [Method Options](#method-options)
+        -   [Time/Date Method](#timedate-method)
+        -   [Duration Method](#duration-method)
+        -   [Daily (Time-Based) Method](#daily-time-based-method)
+        -   [Daily (Sine Wave) Method](#daily-sine-wave-method)
+        -   [Daily (Bezier Curve) Method](#daily-bezier-curve-method)
+    -   [LCDs](#lcds)
+    -   [Alerts](#alerts)
+    -   [Notes](#notes)
+        -   [Tag Options](#tag-options)
+        -   [Note Options](#note-options)
+    -   [Export-Import](#export-import)
+    -   [Dependencies](#dependencies)
+    -   [Camera](#camera)
+    -   [Energy Usage](#energy-usage)
+    -   [System Information](#system-information)
+    -   [Mycodo Client](#mycodo-client)
+    -   [Infrared Remote](#infrared-remote)
+    -   [Translations](#translations)
 -   [Configuration Settings](#configuration-settings)
     -   [General Settings](#general-settings)
     -   [Energy Usage Settings](#energy-usage-settings)
@@ -41,51 +78,36 @@ Mycodo Manual
     -   [Alert Settings](#alert-settings)
     -   [Camera Settings](#camera-settings)
     -   [Diagnostic Settings](#diagnostic-settings)
--   [Miscellaneous](#miscellaneous)
-    -   [Dashboard](#dashboard)
-        -   [Graphs](#graphs)
-        -   [Gauges](#gauges)
-        -   [Cameras](#cameras)
-        -   [Indicator](#indicator)
-        -   [Measurement](#measurement)
-        -   [Output](#output-1)
-        -   [PID Control](#pid-control)
-    -   [Live Measurements](#live-measurements)
-    -   [Asynchronous Graphs](#asynchronous-graphs)
-    -   [Alerts](#alerts)
-    -   [Notes](#notes)
-        -   [Tag Options](#tag-options)
-        -   [Note Options](#note-options)
-    -   [Export-Import](#export-import)
-    -   [Dependencies](#dependencies)
-    -   [Camera](#camera)
-    -   [Energy Usage](#energy-usage)
-    -   [System Information](#system-information)
-    -   [USB Device Persistence Across
-        Reboots](#usb-device-persistence-across-reboots)
-    -   [Infrared Remote](#infrared-remote)
-    -   [Translations](#translations)
+-   [PID Tuning](#pid-tuning)
+    -   [PID Control Theory](#pid-control-theory)
+    -   [Quick Setup Examples](#quick-setup-examples)
+    -   [Exact Temperature Regulation](#exact-temperature-regulation)
+    -   [High Temperature Regulation](#high-temperature-regulation)
 -   [Troubleshooting](#troubleshooting)
     -   [Daemon Not Running](#daemon-not-running)
     -   [Incorrect Database Version](#incorrect-database-version)
     -   [More](#more)
 -   [Devices](#devices)
-    -   [I2C](#i2c)
-    -   [1-Wire](#wire)
-    -   [UART](#uart)
     -   [Input Devices](#input-devices)
-    -   [Other Inputs](#other-inputs)
+        -   [Built-In Inputs](#built-in-inputs)
+        -   [Other Built-In Inputs](#other-built-in-inputs)
+        -   [I2C Multiplexers](#i2c-multiplexers)
+        -   [Analog-to-Digital
+            Converters](#analog-to-digital-converters)
+        -   [I2C Information](#i2c-information)
+        -   [1-Wire Information](#wire-information)
+        -   [UART Information](#uart-information)
     -   [Output Devices](#output-devices)
-    -   [Other Outputs](#other-outputs)
+        -   [Built-In Outputs](#built-in-outputs)
+        -   [Other Built-In Outputs](#other-built-in-outputs)
+-   [Device Notes](#device-notes)
     -   [Edge Detection](#edge-detection)
-    -   [I2C Multiplexers](#i2c-multiplexers)
-    -   [Analog-to-Digital Converters](#analog-to-digital-converters)
--   [Device Specific Information](#device-specific-information)
     -   [LCD Displays](#lcd-displays)
-    -   [Input Device Notes](#input-device-notes)
-        -   [Raspberry Pi](#raspberry-pi)
-        -   [AM2315](#am2315)
-        -   [K-30](#k-30)
+    -   [Raspberry Pi](#raspberry-pi)
+    -   [AM2315](#am2315)
+    -   [K-30](#k-30)
+    -   [USB Device Persistence Across
+        Reboots](#usb-device-persistence-across-reboots)
     -   [Diagrams](#diagrams)
         -   [DHT11 Diagrams](#dht11-diagrams)
         -   [DS18B20 Diagrams](#ds18b20-diagrams)
@@ -126,36 +148,38 @@ BRIEF OVERVIEW
 There are a number of different uses for Mycodo. Some users simply store
 sensor measurements to monitor conditions remotely, others regulate the
 environmental conditions of a physical space, while others capture
-motion-activated or timelapse photography, and more.
+motion-activated or timelapse photography, among other uses.
 
-Input controllers acquire measurements and store them in a time series
-database. Measurements typically come from sensors, but may also be
-configured to use the return value of linux or Python commands, or math
-equations, making a very powerful system for acquiring and generating
-data.
+Input controllers acquire measurements and store them in the InfluxDB
+time series database. Measurements typically come from sensors, but may
+also be configured to use the return value of linux or Python commands,
+or math equations, making a very powerful system for acquiring and
+generating data.
 
 Output controllers produce changes to the general input/output (GPIO)
 pins or may be configured to execute linux or Python commands, enabling
 a large number of potential uses. There are a few different types of
-outputs: simple switching of pins (HIGH/LOW), generating pulse-width
-modulated (PWM) signals, switching 315/433 MHz wireless outlets, as well
-as executing linux and Python commands. The most common output is using
-a relay to switch electrical devices on and off.
+outputs: simple switching of GPIO pins (HIGH/LOW), generating
+pulse-width modulated (PWM) signals, switching 315/433 MHz wireless
+outlets, controlling Atlas Scientific peristaltic pumps, as well as
+executing linux and Python commands. The most common output is using a
+relay to switch electrical devices on and off.
 
 When Inputs and Outputs are combined, PID controllers may be used to
 create a feedback loop that uses the Output device to modulate an
 environmental condition the Input measures. Certain Inputs may be
 coupled with certain Outputs to create a variety of different control
 and regulation applications. Beyond simple regulation, Methods may be
-used to create changing setpoints over time, enabling such things as
+used to create a changing setpoint over time, enabling such things as
 thermal cyclers, reflow ovens, environmental simulation for terrariums,
 food and beverage fermentation or curing, and cooking food (sous-vide),
 to name a few.
 
-Triggers can be set to activate events based on specific dates and times
-or according to durations of time. Conditionals are used to activates
-certain events based on the truth of custom user statements (e.g.
-“Sensor1 > 23 and 10 < Sensor2 < 30”).
+Triggers can be set to activate events based on specific dates and
+times, according to durations of time, or the sunrise/sunset at a
+specific latitude and longitude. Conditionals are used to activates
+certain events based on the truth of custom user conditional statements
+(e.g. “Sensor1 > 23 and 10 < Sensor2 < 30”).
 
 
 
@@ -317,10 +341,10 @@ UPGRADING
 
 [Gear Icon] -> Upgrade
 
-If you already have Mycodo installed (version >= 4.0.0), you can perform
-an upgrade to the latest Mycodo Release by either using the Upgrade
-option in the web interface (recommended) or by issuing the following
-command in a terminal. A log of the upgrade process is created at
+If you already have Mycodo installed, you can perform an upgrade to the
+latest Mycodo Release by either using the Upgrade option in the web
+interface (recommended) or by issuing the following command in a
+terminal. A log of the upgrade process is created at
 /var/log/mycodo/mycodoupgrade.log
 
     sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
@@ -349,112 +373,312 @@ the directory names in /var/Mycodo-backups/
 
 
 
-FEATURES
+OPERATION
 
 
-The following sections describe the essential modules of Mycodo that can
-be used to perform functions or communicate with other parts of Mycodo.
-Each section performs specific tasks or groups of related tasks.
+The following sections describe the components of Mycodo that can be
+used to perform functions or communicate with other parts of Mycodo.
 
 
 Web Interface
 
 The main frontend of Mycodo is a web interface that allows any device
-with a web browser to view collected data and configure devices. The web
-interface supports an authentication system with user/password
-credentials, user roles that grant/deny access to parts of the system,
-and SSL for encrypted browsing.
+with a web browser to view collected data and configure the backend, or
+the daemon, of the system. The web interface supports an authentication
+system with user/password credentials, user roles that grant/deny access
+to parts of the system, and SSL for encrypted browsing.
+
+An SSL certificate will be generated (expires in 10 years) and stored at
+~/Mycodo/mycodo/mycodo_flask/ssl_certs/ during the install process to
+allow SSL to be used to securely connect to the web interface. If you
+want to use your own SSL certificates, replace them with your own.
+
+If using the auto-generated certificate from the install, be aware that
+it will not be verified when visiting the web interface using the
+https:// address prefix. You may continually receive a warning message
+about the security of your site, unless you add the certificate to your
+browser’s trusted list.
 
 
-Mycodo Client
+Data Viewing
 
-    pi@raspberry:~ $ mycodo-client --help
-    usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
-                         [--deactivatecontroller CONTROLLER ID] [--pid_pause ID]
-                         [--pid_hold ID] [--pid_resume ID] [--pid_get_setpoint ID]
-                         [--pid_get_error ID] [--pid_get_integrator ID]
-                         [--pid_get_derivator ID] [--pid_get_kp ID]
-                         [--pid_get_ki ID] [--pid_get_kd ID]
-                         [--pid_set_setpoint ID SETPOINT]
-                         [--pid_set_integrator ID INTEGRATOR]
-                         [--pid_set_derivator ID DERIVATOR] [--pid_set_kp ID KP]
-                         [--pid_set_ki ID KI] [--pid_set_kd ID KD] [-c] [--ramuse]
-                         [--input_force_measurements INPUTID]
-                         [--lcd_backlight_on LCDID] [--lcd_backlight_off LCDID]
-                         [--lcd_reset LCDID] [--output_state OUTPUTID]
-                         [--output_currently_on OUTPUTID] [--outputoff OUTPUTID]
-                         [--outputon OUTPUTID] [--duration SECONDS]
-                         [--dutycycle DUTYCYCLE] [--trigger_action ACTIONID]
-                         [--trigger_all_actions FUNCTIONID] [-t]
+There are several ways to visualize collected data. Additionally, the
+dashboard can be used for both viewing data and manipulating the system,
+thanks to the numerous dashboard widgets available.
 
-    Client for Mycodo daemon.
+Live Measurements
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      --activatecontroller CONTROLLER ID
-                            Activate controller. Options: Conditional, LCD, Math,
-                            PID, Input
-      --deactivatecontroller CONTROLLER ID
-                            Deactivate controller. Options: Conditional, LCD,
-                            Math, PID, Input
-      --pid_pause ID        Pause PID controller.
-      --pid_hold ID         Hold PID controller.
-      --pid_resume ID       Resume PID controller.
-      --pid_get_setpoint ID
-                            Get the setpoint value of the PID controller.
-      --pid_get_error ID    Get the error value of the PID controller.
-      --pid_get_integrator ID
-                            Get the integrator value of the PID controller.
-      --pid_get_derivator ID
-                            Get the derivator value of the PID controller.
-      --pid_get_kp ID       Get the Kp gain of the PID controller.
-      --pid_get_ki ID       Get the Ki gain of the PID controller.
-      --pid_get_kd ID       Get the Kd gain of the PID controller.
-      --pid_set_setpoint ID SETPOINT
-                            Set the setpoint value of the PID controller.
-      --pid_set_integrator ID INTEGRATOR
-                            Set the integrator value of the PID controller.
-      --pid_set_derivator ID DERIVATOR
-                            Set the derivator value of the PID controller.
-      --pid_set_kp ID KP    Set the Kp gain of the PID controller.
-      --pid_set_ki ID KI    Set the Ki gain of the PID controller.
-      --pid_set_kd ID KD    Set the Kd gain of the PID controller.
-      -c, --checkdaemon     Check if all active daemon controllers are running
-      --ramuse              Return the amount of ram used by the Mycodo daemon
-      --input_force_measurements INPUTID
-                            Force acquiring measurements for Input ID
-      --lcd_backlight_on LCDID
-                            Turn on LCD backlight with LCD ID
-      --lcd_backlight_off LCDID
-                            Turn off LCD backlight with LCD ID
-      --lcd_reset LCDID     Reset LCD with LCD ID
-      --output_state OUTPUTID
-                            State of output with output ID
-      --output_currently_on OUTPUTID
-                            How many seconds an output has currently been active
-                            for
-      --outputoff OUTPUTID  Turn off output with output ID
-      --outputon OUTPUTID   Turn on output with output ID
-      --duration SECONDS    Turn on output for a duration of time (seconds)
-      --dutycycle DUTYCYCLE
-                            Turn on PWM output for a duty cycle (%)
-      --trigger_action ACTIONID
-                            Trigger action with Action ID
-      --trigger_all_actions FUNCTIONID
-                            Trigger all actions belonging to Function with ID
-      -t, --terminate       Terminate the daemon
+Data -> Live
 
+The Live page is the first page a user sees after logging in to Mycodo.
+It will display the current measurements being acquired from Input and
+Math controllers. If there is nothing displayed on the Live page, ensure
+an Input or Math controller is both configured correctly and activated.
+Data will be automatically updated on the page from the measurement
+database.
 
-Data
+Asynchronous Graphs
 
-Setup -> Data
+Data -> Asynchronous Graphs
 
-Data are individual pieces of information stored for later use. They may
-be values acquired from sensors, signals from analog-to-digital
-controllers, a response from a command, or even math performed on other
-data to produce an average, to name a few. Add, configure, and activate
-Inputs to begin recording measurements to the database and allow them to
-be used throughout Mycodo.
+A graphical data display that is useful for viewing data sets spanning
+relatively long periods of time (weeks/months/years), which could be
+very data- and processor-intensive to view as a Live Graph. Select a
+time frame and data will be loaded from that time span, if it exists.
+The first view will be of the entire selected data set. For every
+view/zoom, 700 data points will be loaded. If there are more than 700
+data points recorded for the time span selected, 700 points will be
+created from an averaging of the points in that time span. This enables
+much less data to be used to navigate a large data set. For instance, 4
+months of data may be 10 megabytes if all of it were downloaded.
+However, when viewing a 4 month span, it’s not possible to see every
+data point of that 10 megabytes, and aggregating of points is
+inevitable. With asynchronous loading of data, you only download what
+you see. So, instead of downloading 10 megabytes every graph load, only
+~50kb will be downloaded until a new zoom level is selected, at which
+time only another ~50kb is downloaded.
+
+Note: Live Graphs require measurements to be acquired, therefore at
+least one sensor needs to be added and activated in order to display
+live data.
+
+Dashboard
+
+Data -> Dashboard
+
+The dashboard is where you can add pieces of data for easy viewing. It
+is highly customizable and provides an easy way to see exactly what data
+you want to see on one screen.
+
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Width                   The width of the dashboard object on the page,
+                          in 1/12th increments. Multiple dashboard object
+                          can share the sme row if their combined fraction
+                          doesn’t exceed 12/12.
+
+  Height (pixels)         The height of the dashboard object.
+  ------------------------------------------------------------------------
+
+Specific options for each Dashboard element are below.
+
+Graph Widget
+
+A graphical data display that is useful for viewing data sets spanning
+relatively short periods of time (hours/days/weeks). Select a time frame
+to view data and continually updating data from new sensor measurements.
+Multiple graphs can be created on one page that enables a dashboard to
+be created of graphed sensor data. Each graph may have one or more data
+from inputs, outputs, or PIDs rendered onto it. To edit graph options,
+select the plus sign on the top-right of a graph.
+
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  x-Axis (minutes)        The duration to display on the x-axis of the
+                          graph.
+
+  Enable Auto Refresh     Automatically refresh the data on the graph
+                          Refresh Period.
+
+  Refresh (seconds)       The duration between acquisitions of new data to
+                          display on the graph.
+
+  Inputs/Outputs/PIDs     The Inputs, Outputs, and PIDs to display on the
+                          graph.
+
+  Enable X-Axis Reset     Reset the x-axis min/max every time new data
+                          comes in during the auto refresh.
+
+  Enable Title            Show a title of the graph name.
+
+  Enable Navbar           Show a slidable navigation bar at the bottom of
+                          the graph.
+
+  Enable Export           Enable a button on the top right of the graph to
+                          allow exporting of the currently-displayed data
+                          as PNG, JPEG, PDF, SVG, CSV, XLS.
+
+  Enable Range Selector   Show a set of navigation buttons at the top of
+                          the graph to quickly change the display
+                          duration.
+
+  Enable Graph Shift      If enabled, old data points are removed when new
+                          data is added to the graph. Only recommended to
+                          enable if Enable Navbar is enabled.
+
+  Enable Custom Colors    Use custom colors for Input, Output, and PID
+                          lines. Select the colors with the buttons that
+                          appear below this checkbox.
+
+  Enable Manual Y-Axis    Set the minimum and maximum y-axes of a
+  Min/Max                 particular graph. Set both the minimum and
+                          maximum to 0 to disable for a particular y-axis.
+
+  Enable Y-Axis Align     Align the ticks of several y-axes of the same
+  Ticks                   graph.
+
+  Enable Y-Axis Start On  Start all y-axes of a graph on the same tick.
+  Tick                    
+
+  Enable Y-Axis End On    End all y-axes of a graph on the same tick.
+  Tick                    
+  ------------------------------------------------------------------------
+
+Gauge Widget
+
+Gauges are visual objects that allow one to quickly see what the latest
+measurement is of an input. An example that you may be familiar with is
+a speedometer in a car.
+
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Refresh (seconds)       The duration between acquisitions of new data to
+                          display on the graph.
+
+  Max Age (seconds)       The maximum allowable age of the measurement. If
+                          the age is greater than this, the gauge will
+                          turn off, indicating there is an issue.
+
+  Gauge Min               The lowest value of the gauge.
+
+  Gauge Max               The highest value of the gauge.
+
+  Show Timestamp          Show the timestamp of the current gauge
+                          measurement.
+  ------------------------------------------------------------------------
+
+Camera Widget
+
+Cameras may be added to keep a continuous view on areas.
+
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Refresh (seconds)       The duration between acquisitions of new data to
+                          display on the graph.
+
+  Max Age (seconds)       The maximum allowed age of the image timestamp
+                          before a “No Recent Image” message is returned.
+
+  Acquire Image (and save Acquire a new images and save the previous
+  new file)               image.
+
+  Acquire Image (and      Acquire a new image but erase the previous
+  erase last file)        image.
+
+  Display Live Video      Automatically start a video stream and display
+  Stream                  it.
+
+  Display Latest          Display the latest timelapse image that exists.
+  Timelapse Image         
+
+  Add Timestamp           Append a timestamp to the image.
+  ------------------------------------------------------------------------
+
+Indicator Widget
+
+Shows a green or red button depending if the measurement value is 0 or
+not 0.
+
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Refresh (seconds)       The duration between acquisitions of new data to
+                          display on the graph.
+
+  Max Age (seconds)       The maximum allowable age of the measurement. If
+                          the age is greater than this, the gauge will
+                          turn off, indicating there is an issue.
+
+  Timestamp Font Size     The font size of the timestamp value in em.
+  (em)                    
+
+  Invert                  Invert/reverse the colors.
+
+  Measurement             The device to display information about.
+  ------------------------------------------------------------------------
+
+Measurement Widget
+
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Refresh (seconds)       The duration between acquisitions of new data to
+                          display on the graph.
+
+  Max Age (seconds)       The maximum allowable age of the measurement. If
+                          the age is greater than this, the gauge will
+                          turn off, indicating there is an issue.
+
+  Value Font Size (em)    The font size of the measurement value in em.
+
+  Timestamp Font Size     The font size of the timestamp value in em.
+  (em)                    
+
+  Decimal Places          The number of digits to display to the right of
+                          the decimal.
+
+  Measurement             The device to display information about.
+  ------------------------------------------------------------------------
+
+Output Widget
+
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Refresh (seconds)       The duration between acquisitions of new data to
+                          display on the graph.
+
+  Max Age (seconds)       The maximum allowable age of the measurement. If
+                          the age is greater than this, the gauge will
+                          turn off, indicating there is an issue.
+
+  Value Font Size (em)    The font size of the output value in em.
+
+  Timestamp Font Size     The font size of the timestamp value in em.
+  (em)                    
+
+  Decimal Places          The number of digits to display to the right of
+                          the decimal.
+
+  Feature Output Controls Display buttons to turn On and Off the relay
+                          from the dashboard element.
+
+  Output                  The output to display information about.
+  ------------------------------------------------------------------------
+
+PID Control Widget
+
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Refresh (seconds)       The duration between acquisitions of new data to
+                          display on the graph.
+
+  Max Age (seconds)       The maximum allowable age of the measurement. If
+                          the age is greater than this, the gauge will
+                          turn off, indicating there is an issue.
+
+  Value Font Size (em)    The font size of the measurement value in em.
+
+  Timestamp Font Size     The font size of the timestamp value in em.
+  (em)                    
+
+  Decimal Places          The number of digits to display to the right of
+                          the decimal.
+
+  Show PID Information    Show extra PID information on the dashboard
+                          element.
+
+  Show Set Setpoint       Allow setting the PID setpoint on the dashboard
+                          element.
+
+  PID                     The PID to display information about.
+  ------------------------------------------------------------------------
+
 
 Input
 
@@ -466,41 +690,7 @@ Statements, and other parts of Mycodo to operate from. Add, configure,
 and activate inputs to begin recording measurements to the database and
 allow them to be used throughout Mycodo.
 
-Custom Inputs
-
-Before discussing the built-in Inputs, it should be noted that there is
-an Input import system in Mycodo that allows user-created Inputs to be
-used in the Mycodo system. Custom Inputs can be uploaded on the
-Configure -> Inputs page. After import, they will be available to use on
-the Setup -> Data page.
-
-If you have a sensor that is not currently supported by Mycodo, you can
-build your own input module and import it into Mycodo. All information
-about an input is contained within the input module, set in the
-dictionary ‘INPUT_INFORMATION’. Each module will requires at a minimum
-for these variables to be set: ‘input_name_unique’,
-‘input_manufacturer’, ‘input_name’, ‘measurements_name’, and
-‘measurements_dict’.
-
-Open any of the built-in modules located in the inputs directory
-(https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for
-examples of the proper formatting.
-
-There’s also minimal input module template that generates random data as
-an example:
-
-https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py
-
-The following link provides the full list of available INPUT_INFORMATION
-options along with descriptions:
-
-https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py
-
-Additionally, I have another github repository devoted to Custom Inputs
-and Controllers that are not included in the built-in set. These can be
-found at kizniche/Mycodo-custom.
-
-Built-In Inputs
+Input Options
 
 In addition to several supported sensors and devices, a Linux command
 may be specified that will be executed and the return value stored in
@@ -702,6 +892,39 @@ the measurement database to be used throughout the Mycodo system.
 
 1.  Debouncing a signal
 
+Custom Code
+
+There is an Input import system in Mycodo that allows user-created
+Inputs to be used in the Mycodo system. Custom Inputs can be uploaded on
+the Configure -> Inputs page. After import, they will be available to
+use on the Setup -> Data page.
+
+If you have a sensor that is not currently supported by Mycodo, you can
+build your own input module and import it into Mycodo. All information
+about an input is contained within the input module, set in the
+dictionary ‘INPUT_INFORMATION’. Each module will requires at a minimum
+for these variables to be set: ‘input_name_unique’,
+‘input_manufacturer’, ‘input_name’, ‘measurements_name’, and
+‘measurements_dict’.
+
+Open any of the built-in modules located in the inputs directory
+(https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for
+examples of the proper formatting.
+
+There’s also minimal input module template that generates random data as
+an example:
+
+https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py
+
+The following link provides the full list of available INPUT_INFORMATION
+options along with descriptions:
+
+https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py
+
+Additionally, I have another github repository devoted to Custom Inputs
+and Controllers that are not included in the built-in set. These can be
+found at kizniche/Mycodo-custom.
+
 The Things Network
 
 The Things Network (TTN) Input module enables downloading of data from
@@ -780,6 +1003,7 @@ These example Input modules may be modified to suit your needs and
 imported into Mycodo through the Configure -> Inputs page. After import,
 they will be available to use on the Setup -> Data page.
 
+
 Math
 
 Math controllers allow one or more Inputs to have math applied to
@@ -791,6 +1015,10 @@ controller will acquire all measurements from the present until the “Max
 Age (seconds)” set by the user (e.g. if measurements are acquired every
 10 seconds, and a Max Age is set to 60 seconds, there will on average be
 6 measurements returned to have math performed).
+
+Math Options
+
+Types of math controllers.
 
   ------------------------------------------------------------------------
   Type                          Description
@@ -844,6 +1072,8 @@ Age (seconds)” set by the user (e.g. if measurements are acquired every
                                 humidity from the dry-bulb and wet-bulb
                                 temperatures, and optional pressure.
   ------------------------------------------------------------------------
+
+Math controller options.
 
   ---------------------------------------------------------------------------------
   Setting                    Description
@@ -920,6 +1150,8 @@ An output can be a PWM signal, a simple HIGH/LOW signal to operate a
 relay, a 315/433 MHz signal to switch a radio frequency-operated relay,
 driving of pumps and motors, or an execution of a linux or Python
 command, to name a few.
+
+General Output Options
 
   ------------------------------------------------------------------------
   Setting                 Description
@@ -1016,7 +1248,30 @@ command, to name a few.
                           condition.
   ------------------------------------------------------------------------
 
-PWM
+On/Off (GPIO)
+
+The On/Off (GPIO) output merely turns a GPIO pin High (3.3 volts) or Low
+(0 volts). This is useful for controlling things like electromechanical
+switches, such as relays, to turn electrical devices on and off.
+
+Relays are electromechanical or solid-state devices that enable a small
+voltage signal (such as from a microprocessor) to activate a much larger
+voltage, without exposing the low-voltage system to the dangers of the
+higher voltage.
+
+Add and configure outputs in the Output tab. Outputs must be properly
+set up before PID regulation can be achieved.
+
+To set up a wired relay, set the “GPIO Pin” to the BCM GPIO number of
+each pin that activates each relay. _On Trigger_ should be set to the
+signal that activates the relay (the device attached to the relay turns
+on). If your relay activates when the potential across the coil is
+0-volts, set _On Trigger_ to “Low”, otherwise if your relay activates
+when the potential across the coil is 3.3-volts (or whatever switching
+voltage you are using, if not being driven by the GPIO pin), set it to
+“High”.
+
+PWM (GPIO)
 
 Pulse-width modulation (PWM) is a modulation technique used to encode a
 message into a pulsing signal, at a specific frequency in Hertz (Hz).
@@ -1043,6 +1298,8 @@ in percent, 100% being fully on.
 
 PWM pins can be set up on the Setup -> Output` page, then it may be used
 by a PWM PID Controller.
+
+PWM (GPIO) Options
 
   ------------------------------------------------------------------------
   Setting                 Description
@@ -1122,30 +1379,29 @@ cycle] 
 PWM output modulating alternating current (AC) at 99% duty cycle
 
 [Schematic: PWM output modulating alternating current (AC) at 99% duty
-cycle] 
+cycle]
 
-Relays
+Atlas EZO-PMP Pump
 
-Relays are electromechanical or solid-state devices that enable a small
-voltage signal (such as from a microprocessor) to activate a much larger
-voltage, without exposing the low-voltage system to the dangers of the
-higher voltage.
+Currently, only one pump is supported, the Atlas Scientific EZO-PMP
+peristaltic pump.
 
-Add and configure outputs in the Output tab. Outputs must be properly
-set up before PID regulation can be achieved.
+Atlas EZO-PMP Pump Options
 
-Wired
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Output Mode             “Fastest low Rate” will pump liquid at the
+                          fastest rate the pump can perform. “Specify Flow
+                          Rate” will pump liquid at the rate with the
+                          “Flow Rate (ml/min)” option.
 
-To set up a wired relay, set the “GPIO Pin” to the BCM GPIO number of
-each pin that activates each relay. _On Trigger_ should be set to the
-signal that activates the relay (the device attached to the relay turns
-on). If your relay activates when the potential across the coil is
-0-volts, set _On Trigger_ to “Low”, otherwise if your relay activates
-when the potential across the coil is 3.3-volts (or whatever switching
-voltage you are using, if not being driven by the GPIO pin), set it to
-“High”.
+  Flow Rate (ml/min)      This is how fast liquid will be pumped if the
+                          “Specify Flow Rate” option is selected for the
+                          Output Mode option.
+  ------------------------------------------------------------------------
 
-Wireless
+Wireless 315/433 MHz
 
 Certain 315/433 MHz wireless relays may be used, however you will need
 to set the pin of the transmitter (using BCM numbering), pulse length,
@@ -1164,35 +1420,32 @@ Electrical Outlets (see Issue 88 for more information). If you have a
 315/433 MHz transmitter/receiver and a wireless relay that does not work
 with the current code, submit a new issue with details of your hardware.
 
-Command
+Linux Command
 
 Another option for output control is to execute a terminal command when
-the output is turned on, off, or a duty cycle. Commands will be executed
-as the user ‘root’.
+the output is turned on, off, or a duty cycle is set. Commands will be
+executed as the user ‘root’. When a Linux Command output is created,
+example code is provided to demonstrate how to use the output.
 
-Wireless and Command Output Note: Since the wireless protocol only
-allows 1-way communication to 315/433 MHz devices, wireless relays are
-assumed to be off until they are turned on, and therefore will appear
-red (off) when added. If a wireless relay is turned off or on outside
-Mycodo (by a remote, for instance), Mycodo will _NOT_ be able to
+Python Command
+
+The Python Command output operates similarly to the Linux Command
+output, however Python 3 code is being executed. When a Python Command
+output is created, example code is provided to demonstrate how to use
+the output.
+
+Output Notes
+
+Wireless and Command (Linux/Python) Outputs: Since the wireless protocol
+only allows 1-way communication to 315/433 MHz devices, wireless relays
+are assumed to be off until they are turned on, and therefore will
+appear red (off) when added. If a wireless relay is turned off or on
+outside Mycodo (by a remote, for instance), Mycodo will _NOT_ be able to
 determine the state of the relay and will indicate whichever state the
 relay was last. This is, if Mycodo turns the wireless relay on, and a
 remote is used to turn the relay off, Mycodo will still assume the relay
 is on.
 
-Pumps
-
-Currently, only one pump is supported, the Atlas Scientific EZO-PMP
-peristaltic pump.
-
-
-Function
-
-Setup -> Function
-
-Functions couple Inputs with Outputs to perform specific tasks. For
-example, this could be regulation of temperature with a temperature
-sensor and heater with a PID Controller.
 
 Custom Controllers
 
@@ -1209,6 +1462,7 @@ Additionally, I have another github repository devoted to Custom Inputs
 and Controllers that are not included in the built-in set. These can be
 found at kizniche/Mycodo-custom.
 
+
 PID Controller
 
 A proportional-derivative-integral (PID) controller is a control loop
@@ -1223,6 +1477,8 @@ PID settings may be changed while the PID is activated and the new
 settings will take effect immediately. If settings are changed while the
 controller is paused, the values will be used once the controller
 resumes operation.
+
+PID Controller Options
 
   ---------------------------------------------------------------------------------
   Setting                    Description
@@ -1475,11 +1731,73 @@ And typical Daemon Log output will look like this:
     2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Ki: 0.11927040744014512
     2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Kd: 4.101408080354794
 
+
 Conditional
 
 Conditional controllers are used to perform certain actions based on
 whether a conditional statement is true, which is typically based on a
 measurement or GPIO state.
+
+Conditional Options
+
+Check if the latest measurement is above or below the set value.
+
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Conditional Statement   The text string that includes device IDs
+                          enclosed in curly brackets ({}) that will be
+                          converted to the actual measurement before being
+                          evaluated by python to determine if it is True
+                          or False. If True, the associated actions will
+                          be executed.
+
+  Period (seconds)        The period (seconds) between conditional checks.
+
+  Refractory Period       The minimum duration (seconds) to wait after a
+  (seconds)               conditional has been triggered to begin
+                          evaluating the conditional again.
+
+  Log Level: Debug        Show debug lines in the daemon log.
+  ------------------------------------------------------------------------
+
+Conditions are variables that can be used within the Conditional
+Statement.
+
+  ------------------------------------------------------------------------
+  Condition               Description
+  ----------------------- ------------------------------------------------
+  Measurement (Single)    Acquires the latest measurement from an Input or
+                          device. Set Max Age (seconds) to restrict how
+                          long to accept values. If the latest value is
+                          older than this duration, “None” is returned.
+
+  Measurement (Multiple)  Acquires the last measurements from an Input or
+                          device. Set Max Age (seconds) to restrict how
+                          long to accept values. If no values are found in
+                          this duration, “None” is returned. This differs
+                          from the “Measurement (Single)” Condition
+                          because it returns a list of dictionaries with
+                          ‘time’ and ‘value’ key pairs.
+
+  GPIO State              Acquires the current GPIO state and returns 1 if
+                          HIGH or 0 if LOW. If the latest value is older
+                          than this duration, “None” is returned.
+
+  Output State            Returns ‘on’ if the output is currently on, and
+                          ‘off’ if it’s currently off.
+
+  Output Duration On      Returns how long the output has currently been
+                          on, in seconds. Returns 0 if off.
+
+  Controller Running      Returns True if the controller is active, False
+                          if inactive.
+
+  Max Age (seconds)       The minimum age (seconds) the measurement can
+                          be. If the last measurement is older than this,
+                          “None” will be returned instead of a
+                          measurement.
+  ------------------------------------------------------------------------
 
 Conditional Setup Guide
 
@@ -1726,75 +2044,6 @@ conflicts. Some devices or outputs may respond atypically or fail when
 switched on and off in rapid succession. Therefore, trial run your
 configuration before connecting devices to any outputs.
 
-Conditional Options
-
-Check if the latest measurement is above or below the set value.
-
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Conditional Statement   The text string that includes device IDs
-                          enclosed in curly brackets ({}) that will be
-                          converted to the actual measurement before being
-                          evaluated by python to determine if it is True
-                          or False. If True, the associated actions will
-                          be executed.
-
-  Period (seconds)        The period (seconds) between conditional checks.
-
-  Refractory Period       The minimum duration (seconds) to wait after a
-  (seconds)               conditional has been triggered to begin
-                          evaluating the conditional again.
-  ------------------------------------------------------------------------
-
-Conditional Condition Options
-
-Conditional Conditions are variables that can be used within the
-Conditional Statement.
-
-  ------------------------------------------------------------------------
-  Condition               Description
-  ----------------------- ------------------------------------------------
-  Measurement (Single)    Acquires the latest measurement from an Input or
-                          device. Set Max Age (seconds) to restrict how
-                          long to accept values. If the latest value is
-                          older than this duration, “None” is returned.
-
-  Measurement (Multiple)  Acquires the last measurements from an Input or
-                          device. Set Max Age (seconds) to restrict how
-                          long to accept values. If no values are found in
-                          this duration, “None” is returned. This differs
-                          from the “Measurement (Single)” Condition
-                          because it returns a list of dictionaries with
-                          ‘time’ and ‘value’ key pairs.
-
-  GPIO State              Acquires the current GPIO state and returns 1 if
-                          HIGH or 0 if LOW. If the latest value is older
-                          than this duration, “None” is returned.
-
-  Output State            Returns ‘on’ if the output is currently on, and
-                          ‘off’ if it’s currently off.
-
-  Output Duration On      Returns how long the output has currently been
-                          on, in seconds. Returns 0 if off.
-
-  Max Age (seconds)       The minimum age (seconds) the measurement can
-                          be. If the last measurement is older than this,
-                          “None” will be returned instead of a
-                          measurement.
-  ------------------------------------------------------------------------
-
-Additional Conditions
-
-  ------------------------------------------------------------------------
-  Condition               Description
-  ----------------------- ------------------------------------------------
-  Output Duration On      Returns how long the output has currently been
-                          on, in seconds. Returns 0 if off.
-
-  Controller Running      Returns True if the controller is active, False
-                          if inactive.
-  ------------------------------------------------------------------------
 
 Trigger
 
@@ -1887,6 +2136,9 @@ Infrared Remote Input Options
 Mycodo uses lirc to detect Infrared signals. Follow the lirc setup guide
 before using this feature.
 
+Note: Raspbian Buster broke this feature. Work is in progress to restore
+functionality.
+
   Setting                  Description
   ------------------------ ------------------------------------------------
   Program                  This is the variable ‘program’ in ~/.lircrc
@@ -1978,6 +2230,7 @@ period.
                           Conditional Actions.
   ------------------------------------------------------------------------
 
+
 Function Actions
 
 These are the actions that can be added to Function controllers (i.e.
@@ -2036,48 +2289,6 @@ Conditional, Trigger).
   ------------------------------------------------------------------------
 
 
-LCDs
-
-Setup -> LCD
-
-Data may be output to a liquid crystal display (LCD) for easy viewing.
-Please see LCD Displays for specific information regarding
-compatibility.
-
-There may be multiple displays created for each LCD. If there is only
-one display created for the LCD, it will refresh at the set period. If
-there is more than one display, it will cycle from one display to the
-next every set period.
-
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Reset Flashing          If the LCD is flashing to alert you because it
-                          was instructed to do so by a triggered
-                          Conditional Statement, use this button to stop
-                          the flashing.
-
-  Type                    Select either a 16x2 or 20x4 character LCD
-                          display.
-
-  I2C Address             Select the I2C to communicate with the LCD.
-
-  Period                  This is the period of time (in seconds) between
-                          redrawing the LCD with new data or switching to
-                          the next set of displays (if multiple displays
-                          are used).
-
-  Add Display Set         Add a set of display lines to the LCD.
-
-  Display Line #          Select which measurement to display on each line
-                          of the LCD.
-
-  Max Age (seconds)       The maximum age the measurement is allowed to
-                          be. If no measurement was acquired in this time
-                          frame, the display will indicate “NO DATA”.
-  ------------------------------------------------------------------------
-
-
 Methods
 
 Setup -> Method
@@ -2091,7 +2302,7 @@ cyclers (DNA replication), mimicking natural daily cycles, and more.
 Methods may also be used to change a duty cycle over time when used with
 a Run PWM Method Conditional.
 
-Universal Options
+Method Options
 
 These options are shared with several method types.
 
@@ -2101,8 +2312,6 @@ These options are shared with several method types.
   End Time/Date      This is the end time of a range of time.
   Start Setpoint     This is the start setpoint of a range of setpoints.
   End Setpoint       This is the end setpoint of a range of setpoints.
-
-Specific Method Options
 
 Time/Date Method
 
@@ -2152,159 +2361,550 @@ end (x0) will be automatically stretched or skewed to fit within a
 24-hour period and this method will repeat daily.
 
 
+LCDs
 
-PID TUNING
+Setup -> LCD
 
+Data may be output to a liquid crystal display (LCD) for easy viewing.
+Please see LCD Displays for specific information regarding
+compatibility.
 
-Function -> PIDs
+There may be multiple displays created for each LCD. If there is only
+one display created for the LCD, it will refresh at the set period. If
+there is more than one display, it will cycle from one display to the
+next every set period.
 
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Reset Flashing          If the LCD is flashing to alert you because it
+                          was instructed to do so by a triggered
+                          Conditional Statement, use this button to stop
+                          the flashing.
 
-PID Control Theory
+  Type                    Select either a 16x2 or 20x4 character LCD
+                          display.
 
-The PID controller is the most common regulatory controller found in
-industrial settings, for it"s ability to handle both simple and complex
-regulation. The PID controller has three paths, the proportional,
-integral, and derivative.
+  I2C Address             Select the I2C to communicate with the LCD.
 
-The Proportional takes the error and multiplies it by the constant Kp,
-to yield an output value. When the error is large, there will be a large
-proportional output.
+  Period                  This is the period of time (in seconds) between
+                          redrawing the LCD with new data or switching to
+                          the next set of displays (if multiple displays
+                          are used).
 
-The Integral takes the error and multiplies it by Ki, then integrates it
-(Ki · 1/s). As the error changes over time, the integral will
-continually sum it and multiply it by the constant Ki. The integral is
-used to remove perpetual error in the control system. If using Kp alone
-produces an output that produces a perpetual error (i.e. if the sensor
-measurement never reaches the Set Point), the integral will increase the
-output until the error decreases and the Set Point is reached.
+  Add Display Set         Add a set of display lines to the LCD.
 
-The Derivative multiplies the error by Kd, then differentiates it (Kd ·
-s). When the error rate changes over time, the output signal will
-change. The faster the change in error, the larger the derivative path
-becomes, decreasing the output rate of change. This has the effect of
-dampening overshoot and undershoot (oscillation) of the Set Point.
+  Display Line #          Select which measurement to display on each line
+                          of the LCD.
 
-------------------------------------------------------------------------
-
-Using temperature as an example, the Process Variable (PV) is the
-measured temperature, the Setpoint (SP) is the desired temperature, and
-the Error (e) is the distance between the measured temperature and the
-desired temperature (indicating if the actual temperature is too hot or
-too cold and to what degree). The error is manipulated by each of the
-three PID components, producing an output, called the Manipulated
-Variable (MV) or Control Variable (CV). To allow control of how much
-each path contributes to the output value, each path is multiplied by a
-gain (represented by _KP_, _KI_, and _KD_). By adjusting the gains, the
-sensitivity of the system to each path is affected. When all three paths
-are summed, the PID output is produced. If a gain is set to 0, that path
-does not contribute to the output and that path is essentially turned
-off.
-
-The output can be used a number of ways, however this controller was
-designed to use the output to affect the measured value (PV). This
-feedback loop, with a _properly tuned_ PID controller, can achieve a set
-point in a short period of time, maintain regulation with little
-oscillation, and respond quickly to disturbance.
-
-Therefor, if one would be regulating temperature, the sensor would be a
-temperature sensor and the feedback device(s) would be able to heat and
-cool. If the temperature is lower than the Set Point, the output value
-would be positive and a heater would activate. The temperature would
-rise toward the desired temperature, causing the error to decrease and a
-lower output to be produced. This feedback loop would continue until the
-error reaches 0 (at which point the output would be 0). If the
-temperature continues to rise past the Set Point (this is may be
-acceptable, depending on the degree), the PID would produce a negative
-output, which could be used by the cooling device to bring the
-temperature back down, to reduce the error. If the temperature would
-normally lower without the aid of a cooling device, then the system can
-be simplified by omitting a cooler and allowing it to lower on its own.
-
-Implementing a controller that effectively utilizes _KP_, _KI_, and _KD_
-can be challenging. Furthermore, it is often unnecessary. For instance,
-the _KI_ and _KD_ can be set to 0, effectively turning them off and
-producing the very popular and simple P controller. Also popular is the
-PI controller. It is recommended to start with only _KP_ activated, then
-experiment with _KP_ and _KI_, before finally using all three. Because
-systems will vary (e.g. airspace volume, degree of insulation, and the
-degree of impact from the connected device, etc.), each path will need
-to be adjusted through experimentation to produce an effective output.
+  Max Age (seconds)       The maximum age the measurement is allowed to
+                          be. If no measurement was acquired in this time
+                          frame, the display will indicate “NO DATA”.
+  ------------------------------------------------------------------------
 
 
-Quick Setup Examples
+Alerts
 
-These example setups are meant to illustrate how to configure regulation
-in particular directions, and not to achieve ideal values to configure
-your _KP_, _KI_, and _KD_ gains. There are a number of online resources
-that discuss techniques and methods that have been developed to
-determine ideal PID values (such as here, here, here, here, and here)
-and since there are no universal values that will work for every system,
-it is recommended to conduct your own research to understand the
-variables and essential to conduct your own experiments to effectively
-implement them.
+Alerts can be used to notify users about the state of the system. For
+things like sensor monitoring, this could be a threshold that indicates
+something needs attention. E-Mail notifications are built-in to Mycodo
+in a number of places, however there are several places (Inputs,
+Outputs, Controllers) that allow custom Python code to be used, enabling
+many other notification options to be built.
 
-Provided merely as an example of the variance of PID values, one of my
-setups had temperature PID values (up regulation) of _KP_ = 30, _KI_ =
-1.0, and _KD_ = 0.5, and humidity PID values (up regulation) of _KP_ =
-1.0, _KI_ = 0.2, and _KD_ = 0.5. Furthermore, these values may not have
-been optimal but they worked well for the conditions of my environmental
-chamber.
+See Alert Settings for more information about setting up Alerts.
 
 
-Exact Temperature Regulation
+Notes
 
-This will set up the system to raise and lower the temperature to a
-certain level with two regulatory devices (one that heats and one that
-cools).
+More -> Notes
 
-Add a sensor, then save the proper device and pin/address for each
-sensor and activate the sensor.
+Notes may be created that can then be displayed on graphs or referenced
+at a later time. All notes are timestamped with the date/time of
+creation or may be created with a custom date/time. Each note must have
+at least one tag selected. Tags are what are selected to be displayed on
+a graph and all notes with that tag will appear in the time frame
+selected on the graph.
 
-Add two outputs, then save each GPIO and On Trigger state.
+Tag Options
 
-Add a PID, then select the newly-created sensor. Change _Setpoint_ to
-the desired temperature, _Regulate Direction_ to “Both”. Set _Raise
-Output_ to the relay attached to the heating device and the _Lower
-Relay_ to the relay attached to the cooling device.
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Name                    A name for the tag. Must not contain spaces.
+  Rename                  Rename the tag.
 
-Set _KP_ = 1, _KI_ = 0, and _KD_ = 0, then activate the PID.
+Note Options
 
-If the temperature is lower than the Set Point, the heater should
-activate at some interval determined by the PID controller until the
-temperature rises to the set point. If the temperature goes higher than
-the Set Point (or Set Point + Buffer), the cooling device will activate
-until the temperature returns to the set point. If the temperature is
-not reaching the Set Point after a reasonable amount of time, increase
-the _KP_ value and see how that affects the system. Experiment with
-different configurations involving only _Read Interval_ and _KP_ to
-achieve a good regulation. Avoid changing the _KI_ and _KD_ from 0 until
-a working regulation is achieved with _KP_ alone.
+  ------------------------------------------------------------------------
+  Setting                 Description
+  ----------------------- ------------------------------------------------
+  Name                    A name for the note.
 
-View graphs in the 6 to 12 hour time span to identify how well the
-temperature is regulated to the Setpoint. What is meant by
-well-regulated will vary, depending on your specific application and
-tolerances. Most applications of a PID controller would like to see the
-proper temperature attained within a reasonable amount of time and with
-little oscillation around the Setpoint.
+  Use Custom Date/Time    Check to enter a custom date/time for the note.
 
-Once regulation is achieved, experiment by reducing _KP_ slightly (~25%)
-and increasing _KI_ by a low amount to start, such as 0.1 (or lower,
-0.01), then start the PID and observe how well the controller regulates.
-Slowly increase _KI_ until regulation becomes both quick and with little
-oscillation. At this point, you should be fairly familiar with
-experimenting with the system and the _KD_ value can be experimented
-with once both _KP_ and _KI_ have been tuned.
+  Custom Date/Time        Store the note with this custom date/time.
+
+  Attached Files          Attach one or more files to the note.
+
+  Tags                    Associate the note with at least one tag.
+
+  Note                    The text body of the note. The text will appear
+                          monospaced, so code will format properly.
+  ------------------------------------------------------------------------
 
 
-High Temperature Regulation
+Export-Import
 
-Often the system can be simplified if two-way regulation is not needed.
-For instance, if cooling is unnecessary, this can be removed from the
-system and only up-regulation can be used.
+More -> Export Import
 
-Use the same configuration as the Exact Temperature Regulation example,
-except change _Regulate Direction_ to “Raise” and do not touch the “Down
-Relay” section.
+Measurements that fall within the selected date/time frame may be
+exported as CSV with their corresponding timestamps.
+
+Additionally, the entire measurement database (influxdb) may be exported
+as a ZIP archive backup. This ZIP may be imported back in any Mycodo
+system to restore these measurements. Note that an import will override
+the current data (i.e. destroying it).
+
+Mycodo settings may be exported as a ZIP file containing the Mycodo
+settings database (sqlite). This ZIP file may be used to restore the
+settings database to another Mycodo install, as long as the Mycodo
+version and database versions are the same. Future support for
+installing older (or newer) databases and performing an automatic
+upgrade/downgrade is in the works.
+
+
+Dependencies
+
+[Gear Icon] -> Dependencies
+
+The dependency page allows viewing of dependency information and the
+ability to initiate their installation.
+
+During the installation of Mycodo, there is an option to select which
+dependencies to install. If “Minimal Install” or “Custom Install” was
+selected (rather than “Full Install”), there may be unmet dependencies
+on your system. Don’t worry, this isn’t necessarily a problem. These
+optional dependencies only need to be installed when there’s a
+particular feature you want to use. When a user attempts to use a
+feature that has an unmet dependency, the user will be forwarded to the
+Dependency page in order to install it.
+
+
+Camera
+
+More -> Camera
+
+Once a cameras has been set up (in the Camera Settings), it may be used
+to capture still images, create time-lapses, and stream video. Cameras
+may also be used by Conditional Statements to trigger a camera image or
+video capture (as well as the ability to email the image/video with a
+notification).
+
+
+Energy Usage
+
+More -> Energy Usage
+
+There are two methods for calculating energy usage. The first relies on
+determining how long Outputs have been on. Based on this, if the number
+of Amps the output draws has been set in the output Settings, then the
+kWh and cost can be calculated. Discovering the number of amps the
+device draws can be accomplished by calculating this from the output
+typically given as watts on the device label, or with the use of a
+current clamp while the device is operating. The limitation of this
+method is PWM Outputs are not currently used to calculate these figures
+due to the difficulty determining the current consumption of devices
+driven by PWM signals.
+
+The second method for calculating energy consumption is more accurate
+and is the recommended method if you desire the most accurate estimation
+of energy consumption and cost. This method relies on an Input or Math
+measuring Amps. One way to do this is with the used of an
+analog-to-digital converter (ADC) that converts the voltage output from
+a transformer into current (Amps). One wire from the AC line that powers
+your device(s) passes thorough the transformer and the device converts
+the current that passes through that wire into a voltage that
+corresponds to the amperage. For instance, the below sensor converts 0 -
+50 amps input to 0 - 5 volts output. An ADC receives this output as its
+input. One would set this conversion range in Mycodo and the calculated
+amperage will be stored. On the Energy Usage page, add this ADC Input
+measurement and a report summary will be generated. Keep in mind that
+for a particular period (for example, the past week) to be accurate,
+there needs to be a constant measurement of amps at a periodic rate. The
+faster the rate the more accurate the calculation will be. This is due
+to the amperage measurements being averaged for this period prior to
+calculating kWh and cost. If there is any time turing this period where
+amp measurements aren’t being acquired when in fact there are devices
+consuming current, the calculation is likely to not be accurate.
+
+[Current Sensor Transformer]
+
+Greystone CS-650-50 AC Solid Core Current Sensor (Transformer)
+
+The following settings are for calculating energy usage from an amp
+measurement. For calculating based on Output duration, see Energy Usage
+Settings.
+
+  ------------------------------------------------------------------------
+  Setting                Description
+  ---------------------- -------------------------------------------------
+  Select Amp Measurement This is a measurement with the amp (A) units that
+                         will be used to calculate energy usage.
+  ------------------------------------------------------------------------
+
+
+System Information
+
+[Gear Icon] -> System Information
+
+This page serves to provide information about the Mycodo frontend and
+backend as well as the linux system it’s running on. Several commands
+and their output are listed to give the user information about how their
+system is running.
+
+  ------------------------------------------------------------------------
+  Command                 Description
+  ----------------------- ------------------------------------------------
+  Mycodo Version          The current version of Mycodo, reported by the
+                          configuration file.
+
+  Python Version          The version of python currently running the web
+                          user interface.
+
+  Database Version        The current version of the settings database. If
+                          the current version is different from what it
+                          should be, an error will appear indicating the
+                          issue and a link to find out more information
+                          about the issue.
+
+  Daemon Status           This will be a green “Running” or a red
+                          “Stopped”. Additionally, the Mycodo version and
+                          hostname text at the top-left of the screen May
+                          be Green, Yellow, or Red to indicate the status.
+                          Green = daemon running, yellow = unable to
+                          connect, and red = daemon not running.
+
+  …                       Several other status indicators and commands are
+                          listed to provide information about the health
+                          of the system. Use these in addition to others
+                          to investigate software or hardware issues.
+  ------------------------------------------------------------------------
+
+
+Mycodo Client
+
+    pi@raspberry:~ $ mycodo-client --help
+    usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
+                         [--deactivatecontroller CONTROLLER ID] [--pid_pause ID]
+                         [--pid_hold ID] [--pid_resume ID] [--pid_get_setpoint ID]
+                         [--pid_get_error ID] [--pid_get_integrator ID]
+                         [--pid_get_derivator ID] [--pid_get_kp ID]
+                         [--pid_get_ki ID] [--pid_get_kd ID]
+                         [--pid_set_setpoint ID SETPOINT]
+                         [--pid_set_integrator ID INTEGRATOR]
+                         [--pid_set_derivator ID DERIVATOR] [--pid_set_kp ID KP]
+                         [--pid_set_ki ID KI] [--pid_set_kd ID KD] [-c] [--ramuse]
+                         [--input_force_measurements INPUTID]
+                         [--lcd_backlight_on LCDID] [--lcd_backlight_off LCDID]
+                         [--lcd_reset LCDID] [--output_state OUTPUTID]
+                         [--output_currently_on OUTPUTID] [--outputoff OUTPUTID]
+                         [--outputon OUTPUTID] [--duration SECONDS]
+                         [--dutycycle DUTYCYCLE] [--trigger_action ACTIONID]
+                         [--trigger_all_actions FUNCTIONID] [-t]
+
+    Client for Mycodo daemon.
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --activatecontroller CONTROLLER ID
+                            Activate controller. Options: Conditional, LCD, Math,
+                            PID, Input
+      --deactivatecontroller CONTROLLER ID
+                            Deactivate controller. Options: Conditional, LCD,
+                            Math, PID, Input
+      --pid_pause ID        Pause PID controller.
+      --pid_hold ID         Hold PID controller.
+      --pid_resume ID       Resume PID controller.
+      --pid_get_setpoint ID
+                            Get the setpoint value of the PID controller.
+      --pid_get_error ID    Get the error value of the PID controller.
+      --pid_get_integrator ID
+                            Get the integrator value of the PID controller.
+      --pid_get_derivator ID
+                            Get the derivator value of the PID controller.
+      --pid_get_kp ID       Get the Kp gain of the PID controller.
+      --pid_get_ki ID       Get the Ki gain of the PID controller.
+      --pid_get_kd ID       Get the Kd gain of the PID controller.
+      --pid_set_setpoint ID SETPOINT
+                            Set the setpoint value of the PID controller.
+      --pid_set_integrator ID INTEGRATOR
+                            Set the integrator value of the PID controller.
+      --pid_set_derivator ID DERIVATOR
+                            Set the derivator value of the PID controller.
+      --pid_set_kp ID KP    Set the Kp gain of the PID controller.
+      --pid_set_ki ID KI    Set the Ki gain of the PID controller.
+      --pid_set_kd ID KD    Set the Kd gain of the PID controller.
+      -c, --checkdaemon     Check if all active daemon controllers are running
+      --ramuse              Return the amount of ram used by the Mycodo daemon
+      --input_force_measurements INPUTID
+                            Force acquiring measurements for Input ID
+      --lcd_backlight_on LCDID
+                            Turn on LCD backlight with LCD ID
+      --lcd_backlight_off LCDID
+                            Turn off LCD backlight with LCD ID
+      --lcd_reset LCDID     Reset LCD with LCD ID
+      --output_state OUTPUTID
+                            State of output with output ID
+      --output_currently_on OUTPUTID
+                            How many seconds an output has currently been active
+                            for
+      --outputoff OUTPUTID  Turn off output with output ID
+      --outputon OUTPUTID   Turn on output with output ID
+      --duration SECONDS    Turn on output for a duration of time (seconds)
+      --dutycycle DUTYCYCLE
+                            Turn on PWM output for a duty cycle (%)
+      --trigger_action ACTIONID
+                            Trigger action with Action ID
+      --trigger_all_actions FUNCTIONID
+                            Trigger all actions belonging to Function with ID
+      -t, --terminate       Terminate the daemon
+
+
+Infrared Remote
+
+This functionality may or may not work. Since Raspbian upgraded to
+Buster, I have not been able to get it to work. I will try to restore
+functionality.
+
+Note 1: As of 4/8/2019, the Raspberry Pi kernel no longer supports
+lirc-rpi as an overlay in /boot/config.txt (use gpio-ir, details below).
+To ensure the below instructions work, make sure you are using the
+latest kernel by running sudo rpi-update
+
+Note 2: Currently only receiving IR commands is working. IR sending is
+not working. When I get time to test and develop an implementation of
+this feature that both sends and receives IR signals, I will remove this
+note.
+
+Infrared (IR) light is a common way to send and receive signals across
+distances. This is typically done with IR remotes with several buttons
+configured to send different signals. These signals can be detected by
+the Raspberry Pi with the use of an IR receiver diode and used to
+perform actions within the linux environment and Mycodo. This is done
+with lirc, and needs to be properly configured before IR signals can be
+detected and interpreted.
+
+The IR receiver typically has three connections, power (3.3 volts),
+ground, and data (GPIO pin), and should be connected to the appropriate
+pins of your Raspberry Pi. Make sure your IR receiver can operate at 3.3
+volts, which is the appropriate voltage GPIOs operate at. For testing, I
+used the Sparkfun Infrared Control Kit, which has an Information Guide,
+however there are cheaper alternatives.
+
+Adding an Infrared Output device or an Infrared Send function action
+will automatically install the dependencies, otherwise it can be done
+manually:
+
+sudo apt install liblircclient-dev lirc
+
+~/Mycodo/env/bin/pip install python-lirc py-irsend
+
+Edit /boot/config.txt and add to the end of the file, replacing “17”
+with the GPIO (BCM numbering) connected to your IR LED and “18” with the
+GPIO connected to the IR receiver. You can omit either of these options
+if you aren’t using either the IR receiver or transmitting LED:
+
+dtoverlay=gpio-ir,gpio_pin=18 dtoverlay=gpio-ir-tx,gpio_pin=17
+
+Edit /etc/lirc/lirc_options.conf and ensure the following settings are
+set:
+
+    driver = default
+    device = /dev/lirc1
+
+Restart your system:
+
+sudo shutdown now -r
+
+Check this remote database for your remote, and if it’s found, place it
+in /etc/lirc/lircd.conf.d/, otherwise you will need to generate a config
+file for your remote.
+
+To generate a config file for your remote, lirc must first be stopped:
+
+sudo service lircd stop
+
+Then, issue the following command:
+
+sudo irrecord -n -d /dev/lirc1
+
+You will be prompted with a very specific set of instructions in order
+to map your remote. If you successfully finish the config generation,
+you will have a *.lirc.conf file that you should place in
+/etc/lirc/lircd.conf.d/
+
+If irrecord is unable to parse the remote code (due to complexity or
+other issue), you can still use the raw data to create a config file. To
+obtain the raw code data, run the following command, and press a button
+on the remote once.
+
+mode2 -m
+
+You should see output similar to the following, with data represented in
+6 columns.
+
+    pi@rapsberry:~ $ mode2 -m
+    Using driver default on device /dev/lirc0
+    Trying device: /dev/lirc0
+    Using device: /dev/lirc0
+     16777215
+
+         3431     1747      444     1313      441     1312
+          444      471      441      474      440      474
+          440     1315      439      476      438      480
+          444     1312      442     1313      441      475
+          438     1317      439      476      437      477
+
+Use the 6-column data to generate your config file, with the following
+as an example example_remote.lircd.conf, that should be placed in
+/etc/lirc/lircd.conf.d/.
+
+    begin remote
+      name  example_remote
+      flags RAW_CODES
+      eps           30
+      aeps          100
+
+      ptrail       0
+      repeat       0  0
+      gap          107902
+
+          begin raw_codes
+              name KEY_POWER
+                 3431     1747      444     1313      441     1312
+                  444      471      441      474      440      474
+                  440     1315      439      476      438      480
+                  444     1312      442     1313      441      475
+                  438     1317      439      476      437      477
+          end raw_codes
+    end remote
+
+Start lirc back up to load all the remote config files:
+
+sudo service lirc start
+
+Now, start irw and press a button on your remote. If everything works,
+you should see information appear when you press each button, such as
+below:
+
+    pi@raspberry:~ $ irw
+    0000000000ff629d 00 KEY_POWER simple_remote
+    0000000000ff22dd 01 KEY_A simple_remote
+    0000000000ff02fd 01 KEY_B simple_remote
+    0000000000ffc23d 00 KEY_C simple_remote
+    0000000000ff9867 00 KEY_UP simple_remote
+    0000000000ff38c7 00 KEY_DOWN simple_remote
+    0000000000ff30cf 01 KEY_LEFT simple_remote
+    0000000000ff7a85 00 KEY_RIGHT simple_remote
+    0000000000ff18e7 01 KEY_SELECT simple_remote
+
+Now that we have the remote detected and mapped, we can set commands to
+be executed or what word is returned to Mycodo. Create a file ~/.lirc:
+
+nano ~/.lircrc
+
+and configure the responses to button presses
+
+    begin
+      button = KEY_POWER
+      prog = mycodo
+      config = power
+      repeat = 0
+    end
+    begin
+      button = KEY_A
+      prog = mycodo
+      config = a
+      repeat = 0
+    end
+
+To test this with Python, create the test program infrared_receive.py:
+
+    import lirc
+    import time
+
+    sockid = lirc.init("mycodo", blocking=False)
+    while True:
+        code = lirc.nextcode()
+        if code:
+            print(code[0])
+        time.sleep(0.05)
+
+Execute this using the Mycodo virtualenv:
+
+~/Mycodo/env/bin/python infrared_receive.py
+
+And press the buttons defined in ~/.lirc and see if the output appears
+on the console:
+
+    pi@raspberry:~ $ ~/Mycodo/env/bin/python ./test_IR.py
+    power
+    a
+
+From here, you can create any Python code to react to button presses on
+your remote. You can also set up the Mycodo Function Trigger: Infrared
+Remote Input and trigger events in response to Mycodo detecting specific
+button presses. See Infrared Remote Input Options for configuring this
+trigger.
+
+In order to send an IR signal to your IR LED, connect your LED to the
+GPIO defined with gpio_out_pin=17 in /boot/config.txt. You can test if
+your LED is working by creating a file, LED_blink.py, replacing 17 with
+the pin connected to your LED:
+
+    import RPi.GPIO as GPIO
+    import time
+
+    pin = 17
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(pin, GPIO.OUT, initial=GPIO.LOW)
+
+    while True:
+        GPIO.output(pin, GPIO.HIGH)
+        time.sleep(1)
+        GPIO.output(pin, GPIO.LOW)
+        time.sleep(1)
+
+Since IR LEDs produce a wavelength of light that humans can’t see,
+you’ll need to aim a video camera that lacks an infrared filter and see
+if the LED is blinking.
+
+If your LED is working, then issue the following command, replacing
+simple_remote with the name of your remote defined in your config file:
+
+irsend SEND_ONCE simple_remote KEY_POWER
+
+You can verify this is working by running infrared_receive.py, then
+executing the irsend command while it’s still running, and you should
+see it print the button command that was sent.
+
+IR codes can be sent from Mycodo using the Infrared Remote Send Function
+Action. The Remote option should to match the remote name in the config
+file in /etc/lirc/lircd.conf.d/ and the Code option should match a code
+that’s in /home/pi/.lircrc. If Times to Send is set larger than 1, the
+code will be sent multiple times at intervals of 0.5 seconds.
+
+
+Translations
+
+Mycodo has been translated to several languages. By default, the
+language of the browser will determine which language is used, but may
+be overridden in the General Settings, at
+[Gear Icon] -> Configure -> General. If you find an issue with a
+translation or would like to add another language, see the Translations
+section of the Wiki and consider making a Pull Request or Creating an
+Issue.
 
 
 
@@ -2643,471 +3243,456 @@ Dashboard Elements that were once there.
 
 
 
-MISCELLANEOUS
+PID TUNING
+
+
+Function -> PIDs
+
+
+PID Control Theory
+
+The PID controller is the most common regulatory controller found in
+industrial settings, for it"s ability to handle both simple and complex
+regulation. The PID controller has three paths, the proportional,
+integral, and derivative.
+
+The Proportional takes the error and multiplies it by the constant Kp,
+to yield an output value. When the error is large, there will be a large
+proportional output.
+
+The Integral takes the error and multiplies it by Ki, then integrates it
+(Ki · 1/s). As the error changes over time, the integral will
+continually sum it and multiply it by the constant Ki. The integral is
+used to remove perpetual error in the control system. If using Kp alone
+produces an output that produces a perpetual error (i.e. if the sensor
+measurement never reaches the Set Point), the integral will increase the
+output until the error decreases and the Set Point is reached.
+
+The Derivative multiplies the error by Kd, then differentiates it (Kd ·
+s). When the error rate changes over time, the output signal will
+change. The faster the change in error, the larger the derivative path
+becomes, decreasing the output rate of change. This has the effect of
+dampening overshoot and undershoot (oscillation) of the Set Point.
+
+------------------------------------------------------------------------
+
+Using temperature as an example, the Process Variable (PV) is the
+measured temperature, the Setpoint (SP) is the desired temperature, and
+the Error (e) is the distance between the measured temperature and the
+desired temperature (indicating if the actual temperature is too hot or
+too cold and to what degree). The error is manipulated by each of the
+three PID components, producing an output, called the Manipulated
+Variable (MV) or Control Variable (CV). To allow control of how much
+each path contributes to the output value, each path is multiplied by a
+gain (represented by _KP_, _KI_, and _KD_). By adjusting the gains, the
+sensitivity of the system to each path is affected. When all three paths
+are summed, the PID output is produced. If a gain is set to 0, that path
+does not contribute to the output and that path is essentially turned
+off.
+
+The output can be used a number of ways, however this controller was
+designed to use the output to affect the measured value (PV). This
+feedback loop, with a _properly tuned_ PID controller, can achieve a set
+point in a short period of time, maintain regulation with little
+oscillation, and respond quickly to disturbance.
+
+Therefor, if one would be regulating temperature, the sensor would be a
+temperature sensor and the feedback device(s) would be able to heat and
+cool. If the temperature is lower than the Set Point, the output value
+would be positive and a heater would activate. The temperature would
+rise toward the desired temperature, causing the error to decrease and a
+lower output to be produced. This feedback loop would continue until the
+error reaches 0 (at which point the output would be 0). If the
+temperature continues to rise past the Set Point (this is may be
+acceptable, depending on the degree), the PID would produce a negative
+output, which could be used by the cooling device to bring the
+temperature back down, to reduce the error. If the temperature would
+normally lower without the aid of a cooling device, then the system can
+be simplified by omitting a cooler and allowing it to lower on its own.
+
+Implementing a controller that effectively utilizes _KP_, _KI_, and _KD_
+can be challenging. Furthermore, it is often unnecessary. For instance,
+the _KI_ and _KD_ can be set to 0, effectively turning them off and
+producing the very popular and simple P controller. Also popular is the
+PI controller. It is recommended to start with only _KP_ activated, then
+experiment with _KP_ and _KI_, before finally using all three. Because
+systems will vary (e.g. airspace volume, degree of insulation, and the
+degree of impact from the connected device, etc.), each path will need
+to be adjusted through experimentation to produce an effective output.
+
+
+Quick Setup Examples
+
+These example setups are meant to illustrate how to configure regulation
+in particular directions, and not to achieve ideal values to configure
+your _KP_, _KI_, and _KD_ gains. There are a number of online resources
+that discuss techniques and methods that have been developed to
+determine ideal PID values (such as here, here, here, here, and here)
+and since there are no universal values that will work for every system,
+it is recommended to conduct your own research to understand the
+variables and essential to conduct your own experiments to effectively
+implement them.
+
+Provided merely as an example of the variance of PID values, one of my
+setups had temperature PID values (up regulation) of _KP_ = 30, _KI_ =
+1.0, and _KD_ = 0.5, and humidity PID values (up regulation) of _KP_ =
+1.0, _KI_ = 0.2, and _KD_ = 0.5. Furthermore, these values may not have
+been optimal but they worked well for the conditions of my environmental
+chamber.
+
+
+Exact Temperature Regulation
+
+This will set up the system to raise and lower the temperature to a
+certain level with two regulatory devices (one that heats and one that
+cools).
+
+Add a sensor, then save the proper device and pin/address for each
+sensor and activate the sensor.
+
+Add two outputs, then save each GPIO and On Trigger state.
+
+Add a PID, then select the newly-created sensor. Change _Setpoint_ to
+the desired temperature, _Regulate Direction_ to “Both”. Set _Raise
+Output_ to the relay attached to the heating device and the _Lower
+Relay_ to the relay attached to the cooling device.
+
+Set _KP_ = 1, _KI_ = 0, and _KD_ = 0, then activate the PID.
 
+If the temperature is lower than the Set Point, the heater should
+activate at some interval determined by the PID controller until the
+temperature rises to the set point. If the temperature goes higher than
+the Set Point (or Set Point + Buffer), the cooling device will activate
+until the temperature returns to the set point. If the temperature is
+not reaching the Set Point after a reasonable amount of time, increase
+the _KP_ value and see how that affects the system. Experiment with
+different configurations involving only _Read Interval_ and _KP_ to
+achieve a good regulation. Avoid changing the _KI_ and _KD_ from 0 until
+a working regulation is achieved with _KP_ alone.
 
-Dashboard
+View graphs in the 6 to 12 hour time span to identify how well the
+temperature is regulated to the Setpoint. What is meant by
+well-regulated will vary, depending on your specific application and
+tolerances. Most applications of a PID controller would like to see the
+proper temperature attained within a reasonable amount of time and with
+little oscillation around the Setpoint.
+
+Once regulation is achieved, experiment by reducing _KP_ slightly (~25%)
+and increasing _KI_ by a low amount to start, such as 0.1 (or lower,
+0.01), then start the PID and observe how well the controller regulates.
+Slowly increase _KI_ until regulation becomes both quick and with little
+oscillation. At this point, you should be fairly familiar with
+experimenting with the system and the _KD_ value can be experimented
+with once both _KP_ and _KI_ have been tuned.
+
+
+High Temperature Regulation
+
+Often the system can be simplified if two-way regulation is not needed.
+For instance, if cooling is unnecessary, this can be removed from the
+system and only up-regulation can be used.
+
+Use the same configuration as the Exact Temperature Regulation example,
+except change _Regulate Direction_ to “Raise” and do not touch the “Down
+Relay” section.
+
+
+
+TROUBLESHOOTING
+
+
+Daemon Not Running
+
+-   Check the Logs: From the [Gear Icon] -> Mycodo Logs page, check the
+    Daemon Log for any errors. If the issue began after an upgrade, also
+    check the Upgrade Log for indications of an issue.
+-   Determine if the Daemon is Running: Execute
+    ps aux | grep '/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_daemon.py'
+    in a terminal and look for an entry to be returned. If nothing is
+    returned, the daemon is not running.
+-   Daemon Lock File: If the daemon is not running, make sure the daemon
+    lock file is deleted at /var/lock/mycodo.pid. The daemon cannot
+    start if the lock file is present.
+-   If a solution could not be found after investigating the above
+    suggestions, submit a New Mycodo Issue on github.
+
+
+Incorrect Database Version
+
+-   Check the [Gear Icon] -> System Information page or select the
+    mycodo logo in the top-left.
+-   An incorrect database version error means the version stored in the
+    Mycodo settings database (~/Mycodo/databases/mycodo.db) is not
+    correct for the latest version of Mycodo, determined in the Mycodo
+    config file (~/Mycodo/mycodo/config.py).
+-   This can be caused by an error in the upgrade process from an older
+    database version to a newer version, or from a database that did not
+    upgrade during the Mycodo upgrade process.
+-   Check the Upgrade Log for any issues that may have occurred. The log
+    is located at /var/log/mycodo/mycodoupgrade.log but may also be
+    accessed from the web UI (if you’re able to): select [Gear Icon] ->
+    Mycodo Logs -> Upgrade Log.
+-   Sometimes issues may not immediately present themselves. It is not
+    uncommon to be experiencing a database issue that was actually
+    introduced several Mycodo versions ago, before the latest upgrade.
+-   Because of the nature of how many versions the database can be in,
+    correcting a database issue may be very difficult. It may be much
+    easier to delete your database and let Mycodo generate a new one.
+-   Use the following commands to rename your database and restart the
+    web UI. If both commands are successful, refresh your web UI page in
+    your browser in order to generate a new database and create a new
+    Admin user.
+
+&nbsp;
+    mv ~/Mycodo/databases/mycodo.db ~/Mycodo/databases/mycodo.db.backup
+    sudo service mycodoflask restart
+
+
+More
+
+Check out the Diagnosing Mycodo Issues Wiki Page on github for more
+information about diagnosing issues.
+
+
+
+DEVICES
+
+
+Input Devices
+
+Supported Input and Output devices are listed below.
+
+Built-In Inputs
+
+-   AM2315: Relative humidity, temperature link
+-   AM2320: Relative humidity, temperature link
+-   Atlas Scientific DO: Dissolved Oxygen link
+-   Atlas Scientific EC: Electrical Conductivity link
+-   Atlas Scientific ORP: Oxidation-Reduction Potential link
+-   Atlas Scientific pH: Potential hydrogen link
+-   Atlas Scientific PT-1000: Temperature link
+-   BH1750: Light link
+-   BME280: Barometric pressure, humidity, temperature link
+-   BMP085, BMP180: Barometric pressure, temperature link
+-   BMP280: Barometric pressure, temperature link
+-   CCS811: CO2, VOC, temperature link
+-   Cozir: CO2, humidity, temperature link
+-   Chirp: Moisture, light, and temperature link
+-   DHT11, DHT22/AM2302: Relative humidity and temperature link
+-   DS18B20: Temperature link
+-   DS18S20: Temperature link
+-   DS1822: Temperature link
+-   DS28EA00: Temperature link
+-   DS1825: Temperature link
+-   HDC1000: Relative humidity and temperature link
+-   HTU21D: Relative humidity and temperature link
+-   K30: Carbon dioxide (CO2) in ppmv link
+-   MAX31850K: Temperature link
+-   MAX31855K: Temperature link
+-   MAX31856: Temperature link
+-   MAX31865: Temperature link
+-   Miflora: Battery, electrical conductivity, light, moisture,
+    temperature link
+-   MCP9808: Temperature link
+-   MH-Z16: Carbon dioxide (CO2) in ppmv link
+-   MH-Z19: Carbon dioxide (CO2) in ppmv link
+-   Ruuvitag: Relative humidity, temperature, pressure, battery,
+    acceleration (g, x, y, and z) link
+-   SHT1x/SHT2x/SHT3x/SHT7x/SHT31 Smart Gadget: Relative humidity and
+    temperature link
+-   Sonoff TH10/16 (Tasmota firmware): Relative humidity and temperature
+-   TMP006, TMP007: Contactless temperature link
+-   TSL2561: Light link
+-   TSL2591: Light link
+-   ZH03B: Particle sensor link
+
+Other Built-In Inputs
+
+-   Raspberry Pi CPU: Temperature
+-   Raspberry Pi CPU: CPU load
+-   Raspberry Pi: Free disk space
+-   Raspberry Pi: GPIO pin state
+-   Raspberry Pi: GPIO pin rising or falling edge
+-   Raspberry Pi: Measure PWM from signal
+-   Raspberry Pi: Measure RPM from signal
+-   Mycodo: Daemon RAM use
+-   Mycodo: Network ping response
+-   Mycodo: Network port open
+-   The Things Network: Receive measurements from Data Storage
+    Integration
+-   MTQQ: Subscribe to MQTT channels
+-   Python Code: Execute Python 3 code and store a variable number of
+    measurements
+-   Linux Command: Executes a linux command and stores the returned
+    value
+-   Custom Input: Create your own custom input
+
+I2C Multiplexers
+
+All devices that connected to the Raspberry Pi by the I2C bus need to
+have a unique address in order to communicate. Some inputs may have the
+same address (such as the AM2315), which prevents more than one from
+being connected at the same time. Others may provide the ability to
+change the address, however the address range may be limited, which
+limits by how many you can use at the same time. I2C multiplexers are
+extremely clever and useful in these scenarios because they allow
+multiple sensors with the same I2C address to be connected.
+
+For instance, the TCA9548A/PCA9548A: I2C Multiplexer has 8 selectable
+addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each
+multiplexer has 8 channels, allowing up to 8 devices/sensors with the
+same address to be connected to each multiplexer. 8 multiplexers x 8
+channels = 64 devices/sensors with the same I2C address.
+
+Multiplexers can be set up by loading a kernel driver to handle the
+communication, producing a new I2C bus device for each multiplexer
+channel. To enable the driver for the TCA9548A/PCA9548A, visit
+GPIO-pca9548 to get the code and latest install instructions. If
+successfully set up, there will be 8 new I2C buses on the
+[Gear Icon] -> System Information page.
+
+The driver for the TCA9545A can be found at
+https://github.com/camrex/i2c-mux-pca9545a and other drivers are
+available elsewhere. See the manufacturer or user forums for details.
+Some multiplexers I’ve tested are below.
 
-Data -> Dashboard
+- TCA9548A/PCA9548A: I2C Multiplexer link (I2C): 8 selectable addresses,
+8 channels
+
+- TCA9545A: I2C Bus Multiplexer link (I2C): The linked Grove board
+creates 4 new I2C buses, each with their own selectable voltage, either
+3.3 or 5.0 volts.
 
-The dashboard is where you can add pieces of data for easy viewing. It
-is highly customizable and provides an easy way to see exactly what data
-you want to see on one screen.
+Analog-to-Digital Converters
 
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Width                   The width of the dashboard object on the page,
-                          in 1/12th increments. Multiple dashboard object
-                          can share the sme row if their combined fraction
-                          doesn’t exceed 12/12.
+An analog to digital converter (ADC) allows the use of any analog sensor
+that outputs a variable voltage. A voltage divider may be necessary to
+attain your desired range.
 
-  Height (pixels)         The height of the dashboard object.
-  ------------------------------------------------------------------------
+-   ADS1x15: Analog-to-digital converter link
+-   ADS1256: Analog-to-digital converter link
+-   MCP3008: Analog-to-digital converter link
+-   MCP342x: Analog-to-digital converter link
+
+I2C Information
+
+The I2C interface should be enabled with raspi-config.
+
+1-Wire Information
 
-Specific options for each Dashboard element are below.
+The 1-wire interface should be configured with these instructions.
 
-Graphs
+UART Information
 
-A graphical data display that is useful for viewing data sets spanning
-relatively short periods of time (hours/days/weeks). Select a time frame
-to view data and continually updating data from new sensor measurements.
-Multiple graphs can be created on one page that enables a dashboard to
-be created of graphed sensor data. Each graph may have one or more data
-from inputs, outputs, or PIDs rendered onto it. To edit graph options,
-select the plus sign on the top-right of a graph.
+This documentation provides specific installation procedures for
+configuring UART with the Raspberry Pi version 1 or 2.
 
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  x-Axis (minutes)        The duration to display on the x-axis of the
-                          graph.
+Because the UART is handled differently higher after the Raspberry Pi 2
+(due to the addition of bluetooth), there are a different set of
+instructions. If installing Mycodo on a Raspberry Pi 3 or above, you
+only need to perform these steps to configure UART:
 
-  Enable Auto Refresh     Automatically refresh the data on the graph
-                          Refresh Period.
+Run raspi-config
 
-  Refresh (seconds)       The duration between acquisitions of new data to
-                          display on the graph.
+sudo raspi-config
 
-  Inputs/Outputs/PIDs     The Inputs, Outputs, and PIDs to display on the
-                          graph.
+Go to Advanced Options -> Serial and disable. Then edit /boot/config.txt
 
-  Enable X-Axis Reset     Reset the x-axis min/max every time new data
-                          comes in during the auto refresh.
+sudo vi /boot/config.txt
 
-  Enable Title            Show a title of the graph name.
+Find the line “enable_uart=0” and change it to “enable_uart=1”, then
+reboot.
 
-  Enable Navbar           Show a slidable navigation bar at the bottom of
-                          the graph.
 
-  Enable Export           Enable a button on the top right of the graph to
-                          allow exporting of the currently-displayed data
-                          as PNG, JPEG, PDF, SVG, CSV, XLS.
+Output Devices
 
-  Enable Range Selector   Show a set of navigation buttons at the top of
-                          the graph to quickly change the display
-                          duration.
+Built-In Outputs
 
-  Enable Graph Shift      If enabled, old data points are removed when new
-                          data is added to the graph. Only recommended to
-                          enable if Enable Navbar is enabled.
+-   Atlas EZO-PMP Peristaltic Pump: Pump volumes in milliliters link
 
-  Enable Custom Colors    Use custom colors for Input, Output, and PID
-                          lines. Select the colors with the buttons that
-                          appear below this checkbox.
+Other Built-In Outputs
 
-  Enable Manual Y-Axis    Set the minimum and maximum y-axes of a
-  Min/Max                 particular graph. Set both the minimum and
-                          maximum to 0 to disable for a particular y-axis.
+-   GPIO Pin (High/Low)
+-   GPIO PWM Signal generation
+-   Python Command for On and Off actions
+-   Linux Shell command for On and Off actions
+-   Wireless 314/433 Mhz LPD/SRD (rpi-rf)
 
-  Enable Y-Axis Align     Align the ticks of several y-axes of the same
-  Ticks                   graph.
 
-  Enable Y-Axis Start On  Start all y-axes of a graph on the same tick.
-  Tick                    
 
-  Enable Y-Axis End On    End all y-axes of a graph on the same tick.
-  Tick                    
-  ------------------------------------------------------------------------
+DEVICE NOTES
 
-Gauges
 
-Gauges are visual objects that allow one to quickly see what the latest
-measurement is of an input. An example that you may be familiar with is
-a speedometer in a car.
+This information may not be current, so always reference and follow
+manufacturer recommendations for operating their devices.
 
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Refresh (seconds)       The duration between acquisitions of new data to
-                          display on the graph.
 
-  Max Age (seconds)       The maximum allowable age of the measurement. If
-                          the age is greater than this, the gauge will
-                          turn off, indicating there is an issue.
+Edge Detection
 
-  Gauge Min               The lowest value of the gauge.
+The detection of a changing signal, for instance a simple switch
+completing a circuit, requires the use of edge detection. By detecting a
+rising edge (LOW to HIGH), a falling edge (HIGH to LOW), or both,
+actions or events can be triggered. The GPIO chosen to detect the signal
+should be equipped with an appropriate resistor that either pulls the
+GPIO up [to 5-volts] or down [to ground]. The option to enable the
+internal pull-up or pull-down resistors is not available for safety
+reasons. Use your own resistor to pull the GPIO high or low.
 
-  Gauge Max               The highest value of the gauge.
+Examples of devices that can be used with edge detection: simple
+switches and buttons, PIR motion sensors, reed switches, hall effect
+sensors, float switches, and more.
 
-  Show Timestamp          Show the timestamp of the current gauge
-                          measurement.
-  ------------------------------------------------------------------------
 
-Cameras
+LCD Displays
 
-Cameras may be added to keep a continuous view on areas.
+There are only a few number fo LCDs that are supported. 16x2 and 20x4
+character LCD displays with I2C backpacks and the 128x32 / 128x64 OLED
+displays are supported. The below image is the type of device with the
+I2C backpack that should be compatible.
 
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Refresh (seconds)       The duration between acquisitions of new data to
-                          display on the graph.
+[image4] 
 
-  Max Age (seconds)       The maximum allowed age of the image timestamp
-                          before a “No Recent Image” message is returned.
 
-  Acquire Image (and save Acquire a new images and save the previous
-  new file)               image.
+Raspberry Pi
 
-  Acquire Image (and      Acquire a new image but erase the previous
-  erase last file)        image.
+The Raspberry Pi has an integrated temperature sensor on the BCM2835 SoC
+that measure the temperature of the CPU/GPU. This is the easiest sensor
+to set up in Mycodo, as it is immediately available to be used.
 
-  Display Live Video      Automatically start a video stream and display
-  Stream                  it.
 
-  Display Latest          Display the latest timelapse image that exists.
-  Timelapse Image         
+AM2315
 
-  Add Timestamp           Append a timestamp to the image.
-  ------------------------------------------------------------------------
+From @Theoi-Meteoroi on GitHub:
 
-Indicator
+I figured out why this [AM2315] sensor is unreliable with Rpi3 hardware
+I2C. It is among a number of I2C devices that really hates the BCM2835
+clock stretching blunder (hardware bug: raspberrypi/linux#254). The
+wakeup attempts fail, consistently. I checked the bitstream with a
+sniffer, and see that the sensor may respond once out of 20 or so tries
+(or not at all) but only with a single byte returned. The solution is to
+use a software implementation of the I2C bus. You need to add pull-up
+resistors (4.7k is dandy) to 3.3v and install the i2c_gpio device
+overlay. Seems to work fine now, will run for a few days, but the CRC
+failures are gone and I get good readings, every time. And no twiddling
+the power for the sensor is required.
 
-Shows a green or red button depending if the measurement value is 0 or
-not 0.
+To enable software I2C, add the following line to your /boot/config.txt
 
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Refresh (seconds)       The duration between acquisitions of new data to
-                          display on the graph.
+dtoverlay=i2c-gpio,i2c_gpio_sda=23,i2c_gpio_scl=24,i2c_gpio_delay_us=4
 
-  Max Age (seconds)       The maximum allowable age of the measurement. If
-                          the age is greater than this, the gauge will
-                          turn off, indicating there is an issue.
+After rebooting, a new I2C bus at /dev/i2c-3 should exist with SDA on
+pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate
+pull-up resistors before connecting any devices.
 
-  Timestamp Font Size     The font size of the timestamp value in em.
-  (em)                    
 
-  Invert                  Invert/reverse the colors.
+K-30
 
-  Measurement             The device to display information about.
-  ------------------------------------------------------------------------
+[image5] 
 
-Measurement
+Be very careful when connecting the K-30, as there is no reverse-voltage
+protection and improper connections could destroy your sensor.
 
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Refresh (seconds)       The duration between acquisitions of new data to
-                          display on the graph.
-
-  Max Age (seconds)       The maximum allowable age of the measurement. If
-                          the age is greater than this, the gauge will
-                          turn off, indicating there is an issue.
-
-  Value Font Size (em)    The font size of the measurement value in em.
-
-  Timestamp Font Size     The font size of the timestamp value in em.
-  (em)                    
-
-  Decimal Places          The number of digits to display to the right of
-                          the decimal.
-
-  Measurement             The device to display information about.
-  ------------------------------------------------------------------------
-
-Output
-
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Refresh (seconds)       The duration between acquisitions of new data to
-                          display on the graph.
-
-  Max Age (seconds)       The maximum allowable age of the measurement. If
-                          the age is greater than this, the gauge will
-                          turn off, indicating there is an issue.
-
-  Value Font Size (em)    The font size of the output value in em.
-
-  Timestamp Font Size     The font size of the timestamp value in em.
-  (em)                    
-
-  Decimal Places          The number of digits to display to the right of
-                          the decimal.
-
-  Feature Output Controls Display buttons to turn On and Off the relay
-                          from the dashboard element.
-
-  Output                  The output to display information about.
-  ------------------------------------------------------------------------
-
-PID Control
-
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Refresh (seconds)       The duration between acquisitions of new data to
-                          display on the graph.
-
-  Max Age (seconds)       The maximum allowable age of the measurement. If
-                          the age is greater than this, the gauge will
-                          turn off, indicating there is an issue.
-
-  Value Font Size (em)    The font size of the measurement value in em.
-
-  Timestamp Font Size     The font size of the timestamp value in em.
-  (em)                    
-
-  Decimal Places          The number of digits to display to the right of
-                          the decimal.
-
-  Show PID Information    Show extra PID information on the dashboard
-                          element.
-
-  Show Set Setpoint       Allow setting the PID setpoint on the dashboard
-                          element.
-
-  PID                     The PID to display information about.
-  ------------------------------------------------------------------------
-
-
-Live Measurements
-
-Data -> Live
-
-The Live page is the first page a user sees after logging in to Mycodo.
-It will display the current measurements being acquired from Input and
-Math controllers. If there is nothing displayed on the Live page, ensure
-an Input or Math controller is both configured correctly and activated.
-Data will be automatically updated on the page from the measurement
-database.
-
-
-Asynchronous Graphs
-
-Data -> Asynchronous Graphs
-
-A graphical data display that is useful for viewing data sets spanning
-relatively long periods of time (weeks/months/years), which could be
-very data- and processor-intensive to view as a Live Graph. Select a
-time frame and data will be loaded from that time span, if it exists.
-The first view will be of the entire selected data set. For every
-view/zoom, 700 data points will be loaded. If there are more than 700
-data points recorded for the time span selected, 700 points will be
-created from an averaging of the points in that time span. This enables
-much less data to be used to navigate a large data set. For instance, 4
-months of data may be 10 megabytes if all of it were downloaded.
-However, when viewing a 4 month span, it’s not possible to see every
-data point of that 10 megabytes, and aggregating of points is
-inevitable. With asynchronous loading of data, you only download what
-you see. So, instead of downloading 10 megabytes every graph load, only
-~50kb will be downloaded until a new zoom level is selected, at which
-time only another ~50kb is downloaded.
-
-Note: Live Graphs require measurements to be acquired, therefore at
-least one sensor needs to be added and activated in order to display
-live data.
-
-
-Alerts
-
-Alerts can be used to notify users about the state of the system. For
-things like sensor monitoring, this could be a threshold that indicates
-something needs attention. E-Mail notifications are built-in to Mycodo
-in a number of places, however there are several places (Inputs,
-Outputs, Controllers) that allow custom Python code to be used, enabling
-many other notification options to be built.
-
-See Alert Settings for more information about setting up Alerts.
-
-
-Notes
-
-More -> Notes
-
-Notes may be created that can then be displayed on graphs or referenced
-at a later time. All notes are timestamped with the date/time of
-creation or may be created with a custom date/time. Each note must have
-at least one tag selected. Tags are what are selected to be displayed on
-a graph and all notes with that tag will appear in the time frame
-selected on the graph.
-
-Tag Options
-
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Name                    A name for the tag. Must not contain spaces.
-  Rename                  Rename the tag.
-
-Note Options
-
-  ------------------------------------------------------------------------
-  Setting                 Description
-  ----------------------- ------------------------------------------------
-  Name                    A name for the note.
-
-  Use Custom Date/Time    Check to enter a custom date/time for the note.
-
-  Custom Date/Time        Store the note with this custom date/time.
-
-  Attached Files          Attach one or more files to the note.
-
-  Tags                    Associate the note with at least one tag.
-
-  Note                    The text body of the note. The text will appear
-                          monospaced, so code will format properly.
-  ------------------------------------------------------------------------
-
-
-Export-Import
-
-More -> Export Import
-
-Measurements that fall within the selected date/time frame may be
-exported as CSV with their corresponding timestamps.
-
-Additionally, the entire measurement database (influxdb) may be exported
-as a ZIP archive backup. This ZIP may be imported back in any Mycodo
-system to restore these measurements. Note that an import will override
-the current data (i.e. destroying it).
-
-Mycodo settings may be exported as a ZIP file containing the Mycodo
-settings database (sqlite). This ZIP file may be used to restore the
-settings database to another Mycodo install, as long as the Mycodo
-version and database versions are the same. Future support for
-installing older (or newer) databases and performing an automatic
-upgrade/downgrade is in the works.
-
-
-Dependencies
-
-[Gear Icon] -> Dependencies
-
-The dependency page allows viewing of dependency information and the
-ability to initiate their installation.
-
-During the installation of Mycodo, there is an option to select which
-dependencies to install. If “Minimal Install” or “Custom Install” was
-selected (rather than “Full Install”), there may be unmet dependencies
-on your system. Don’t worry, this isn’t necessarily a problem. These
-optional dependencies only need to be installed when there’s a
-particular feature you want to use. When a user attempts to use a
-feature that has an unmet dependency, the user will be forwarded to the
-Dependency page in order to install it.
-
-
-Camera
-
-More -> Camera
-
-Once a cameras has been set up (in the Camera Settings), it may be used
-to capture still images, create time-lapses, and stream video. Cameras
-may also be used by Conditional Statements to trigger a camera image or
-video capture (as well as the ability to email the image/video with a
-notification).
-
-
-Energy Usage
-
-More -> Energy Usage
-
-There are two methods for calculating energy usage. The first relies on
-determining how long Outputs have been on. Based on this, if the number
-of Amps the output draws has been set in the output Settings, then the
-kWh and cost can be calculated. Discovering the number of amps the
-device draws can be accomplished by calculating this from the output
-typically given as watts on the device label, or with the use of a
-current clamp while the device is operating. The limitation of this
-method is PWM Outputs are not currently used to calculate these figures
-due to the difficulty determining the current consumption of devices
-driven by PWM signals.
-
-The second method for calculating energy consumption is more accurate
-and is the recommended method if you desire the most accurate estimation
-of energy consumption and cost. This method relies on an Input or Math
-measuring Amps. One way to do this is with the used of an
-analog-to-digital converter (ADC) that converts the voltage output from
-a transformer into current (Amps). One wire from the AC line that powers
-your device(s) passes thorough the transformer and the device converts
-the current that passes through that wire into a voltage that
-corresponds to the amperage. For instance, the below sensor converts 0 -
-50 amps input to 0 - 5 volts output. An ADC receives this output as its
-input. One would set this conversion range in Mycodo and the calculated
-amperage will be stored. On the Energy Usage page, add this ADC Input
-measurement and a report summary will be generated. Keep in mind that
-for a particular period (for example, the past week) to be accurate,
-there needs to be a constant measurement of amps at a periodic rate. The
-faster the rate the more accurate the calculation will be. This is due
-to the amperage measurements being averaged for this period prior to
-calculating kWh and cost. If there is any time turing this period where
-amp measurements aren’t being acquired when in fact there are devices
-consuming current, the calculation is likely to not be accurate.
-
-[Current Sensor Transformer]
-
-Greystone CS-650-50 AC Solid Core Current Sensor (Transformer)
-
-The following settings are for calculating energy usage from an amp
-measurement. For calculating based on Output duration, see Energy Usage
-Settings.
-
-  ------------------------------------------------------------------------
-  Setting                Description
-  ---------------------- -------------------------------------------------
-  Select Amp Measurement This is a measurement with the amp (A) units that
-                         will be used to calculate energy usage.
-  ------------------------------------------------------------------------
-
-
-System Information
-
-[Gear Icon] -> System Information
-
-This page serves to provide information about the Mycodo frontend and
-backend as well as the linux system it’s running on. Several commands
-and their output are listed to give the user information about how their
-system is running.
-
-  ------------------------------------------------------------------------
-  Command                 Description
-  ----------------------- ------------------------------------------------
-  Mycodo Version          The current version of Mycodo, reported by the
-                          configuration file.
-
-  Python Version          The version of python currently running the web
-                          user interface.
-
-  Database Version        The current version of the settings database. If
-                          the current version is different from what it
-                          should be, an error will appear indicating the
-                          issue and a link to find out more information
-                          about the issue.
-
-  Daemon Status           This will be a green “Running” or a red
-                          “Stopped”. Additionally, the Mycodo version and
-                          hostname text at the top-left of the screen May
-                          be Green, Yellow, or Red to indicate the status.
-                          Green = daemon running, yellow = unable to
-                          connect, and red = daemon not running.
-
-  …                       Several other status indicators and commands are
-                          listed to provide information about the health
-                          of the system. Use these in addition to others
-                          to investigate software or hardware issues.
-  ------------------------------------------------------------------------
+Wiring instructions for the Raspberry Pi can be found here.
 
 
 USB Device Persistence Across Reboots
@@ -3180,538 +3765,6 @@ To test the new rule:
 
 Now, every time the dust sensor is plugged in, it shows up at
 /dev/dust-sensor
-
-
-Infrared Remote
-
-#### Note 1: As of 4/8/2019, the Raspberry Pi kernel no longer supports
-lirc-rpi as an overlay in /boot/config.txt (use gpio-ir, details below).
-To ensure the below instructions work, make sure you are using the
-latest kernel by running sudo rpi-update
-
-#### Note 2: Currently only receiving IR commands is working. IR sending
-is not working. When I get time to test and develop an implementation of
-this feature that both sends and receives IR signals, I will remove this
-note.
-
-Infrared (IR) light is a common way to send and receive signals across
-distances. This is typically done with IR remotes with several buttons
-configured to send different signals. These signals can be detected by
-the Raspberry Pi with the use of an IR receiver diode and used to
-perform actions within the linux environment and Mycodo. This is done
-with lirc, and needs to be properly configured before IR signals can be
-detected and interpreted.
-
-The IR receiver typically has three connections, power (3.3 volts),
-ground, and data (GPIO pin), and should be connected to the appropriate
-pins of your Raspberry Pi. Make sure your IR receiver can operate at 3.3
-volts, which is the appropriate voltage GPIOs operate at. For testing, I
-used the Sparkfun Infrared Control Kit, which has an Information Guide,
-however there are cheaper alternatives.
-
-Adding an Infrared Output device or an Infrared Send function action
-will automatically install the dependencies, otherwise it can be done
-manually:
-
-sudo apt install liblircclient-dev lirc
-
-~/Mycodo/env/bin/pip install python-lirc py-irsend
-
-Edit /boot/config.txt and add to the end of the file, replacing “17”
-with the GPIO (BCM numbering) connected to your IR LED and “18” with the
-GPIO connected to the IR receiver. You can omit either of these options
-if you aren’t using either the IR receiver or transmitting LED:
-
-dtoverlay=gpio-ir,gpio_pin=18 dtoverlay=gpio-ir-tx,gpio_pin=17
-
-Edit /etc/lirc/lirc_options.conf and ensure the following settings are
-set:
-
-    driver = default
-    device = /dev/lirc1
-
-Restart your system:
-
-sudo shutdown now -r
-
-Check this remote database for your remote, and if it’s found, place it
-in /etc/lirc/lircd.conf.d/, otherwise you will need to generate a config
-file for your remote.
-
-To generate a config file for your remote, lirc must first be stopped:
-
-sudo service lircd stop
-
-Then, issue the following command:
-
-sudo irrecord -n -d /dev/lirc1
-
-You will be prompted with a very specific set of instructions in order
-to map your remote. If you successfully finish the config generation,
-you will have a *.lirc.conf file that you should place in
-/etc/lirc/lircd.conf.d/
-
-If irrecord is unable to parse the remote code (due to complexity or
-other issue), you can still use the raw data to create a config file. To
-obtain the raw code data, run the following command, and press a button
-on the remote once.
-
-mode2 -m
-
-You should see output similar to the following, with data represented in
-6 columns.
-
-    pi@rapsberry:~ $ mode2 -m
-    Using driver default on device /dev/lirc0
-    Trying device: /dev/lirc0
-    Using device: /dev/lirc0
-     16777215
-
-         3431     1747      444     1313      441     1312
-          444      471      441      474      440      474
-          440     1315      439      476      438      480
-          444     1312      442     1313      441      475
-          438     1317      439      476      437      477
-
-Use the 6-column data to generate your config file, with the following
-as an example example_remote.lircd.conf, that should be placed in
-/etc/lirc/lircd.conf.d/.
-
-    begin remote
-      name  example_remote
-      flags RAW_CODES
-      eps           30
-      aeps          100
-
-      ptrail       0
-      repeat       0  0
-      gap          107902
-
-          begin raw_codes
-              name KEY_POWER
-                 3431     1747      444     1313      441     1312
-                  444      471      441      474      440      474
-                  440     1315      439      476      438      480
-                  444     1312      442     1313      441      475
-                  438     1317      439      476      437      477
-          end raw_codes
-    end remote
-
-Start lirc back up to load all the remote config files:
-
-sudo service lirc start
-
-Now, start irw and press a button on your remote. If everything works,
-you should see information appear when you press each button, such as
-below:
-
-    pi@raspberry:~ $ irw
-    0000000000ff629d 00 KEY_POWER simple_remote
-    0000000000ff22dd 01 KEY_A simple_remote
-    0000000000ff02fd 01 KEY_B simple_remote
-    0000000000ffc23d 00 KEY_C simple_remote
-    0000000000ff9867 00 KEY_UP simple_remote
-    0000000000ff38c7 00 KEY_DOWN simple_remote
-    0000000000ff30cf 01 KEY_LEFT simple_remote
-    0000000000ff7a85 00 KEY_RIGHT simple_remote
-    0000000000ff18e7 01 KEY_SELECT simple_remote
-
-Now that we have the remote detected and mapped, we can set commands to
-be executed or what word is returned to Mycodo. Create a file ~/.lirc:
-
-nano ~/.lircrc
-
-and configure the responses to button presses
-
-    begin
-      button = KEY_POWER
-      prog = mycodo
-      config = power
-      repeat = 0
-    end
-    begin
-      button = KEY_A
-      prog = mycodo
-      config = a
-      repeat = 0
-    end
-
-To test this with Python, create the test program infrared_receive.py:
-
-    import lirc
-    import time
-
-    sockid = lirc.init("mycodo", blocking=False)
-    while True:
-        code = lirc.nextcode()
-        if code:
-            print(code[0])
-        time.sleep(0.05)
-
-Execute this using the Mycodo virtualenv:
-
-~/Mycodo/env/bin/python infrared_receive.py
-
-And press the buttons defined in ~/.lirc and see if the output appears
-on the console:
-
-    pi@raspberry:~ $ ~/Mycodo/env/bin/python ./test_IR.py
-    power
-    a
-
-From here, you can create any Python code to react to button presses on
-your remote. You can also set up the Mycodo Function Trigger: Infrared
-Remote Input and trigger events in response to Mycodo detecting specific
-button presses. See Infrared Remote Input Options for configuring this
-trigger.
-
-In order to send an IR signal to your IR LED, connect your LED to the
-GPIO defined with gpio_out_pin=17 in /boot/config.txt. You can test if
-your LED is working by creating a file, LED_blink.py, replacing 17 with
-the pin connected to your LED:
-
-    import RPi.GPIO as GPIO
-    import time
-
-    pin = 17
-    GPIO.setwarnings(False)
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(pin, GPIO.OUT, initial=GPIO.LOW)
-
-    while True:
-        GPIO.output(pin, GPIO.HIGH)
-        time.sleep(1)
-        GPIO.output(pin, GPIO.LOW)
-        time.sleep(1)
-
-Since IR LEDs produce a wavelength of light that humans can’t see,
-you’ll need to aim a video camera that lacks an infrared filter and see
-if the LED is blinking.
-
-If your LED is working, then issue the following command, replacing
-simple_remote with the name of your remote defined in your config file:
-
-irsend SEND_ONCE simple_remote KEY_POWER
-
-You can verify this is working by running infrared_receive.py, then
-executing the irsend command while it’s still running, and you should
-see it print the button command that was sent.
-
-IR codes can be sent from Mycodo using the Infrared Remote Send Function
-Action. The Remote option should to match the remote name in the config
-file in /etc/lirc/lircd.conf.d/ and the Code option should match a code
-that’s in /home/pi/.lircrc. If Times to Send is set larger than 1, the
-code will be sent multiple times at intervals of 0.5 seconds.
-
-
-Translations
-
-Mycodo has been translated to several languages. By default, the
-language of the browser will determine which language is used, but may
-be overridden in the General Settings, at
-[Gear Icon] -> Configure -> General. If you find an issue with a
-translation or would like to add another language, see the Translations
-section of the Wiki and consider making a Pull Request or Creating an
-Issue.
-
-
-
-TROUBLESHOOTING
-
-
-Daemon Not Running
-
--   Check the Logs: From the [Gear Icon] -> Mycodo Logs page, check the
-    Daemon Log for any errors. If the issue began after an upgrade, also
-    check the Upgrade Log for indications of an issue.
--   Determine if the Daemon is Running: Execute
-    ps aux | grep '/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_daemon.py'
-    in a terminal and look for an entry to be returned. If nothing is
-    returned, the daemon is not running.
--   Daemon Lock File: If the daemon is not running, make sure the daemon
-    lock file is deleted at /var/lock/mycodo.pid. The daemon cannot
-    start if the lock file is present.
--   If a solution could not be found after investigating the above
-    suggestions, submit a New Mycodo Issue on github.
-
-
-Incorrect Database Version
-
--   Check the [Gear Icon] -> System Information page or select the
-    mycodo logo in the top-left.
--   An incorrect database version error means the version stored in the
-    Mycodo settings database (~/Mycodo/databases/mycodo.db) is not
-    correct for the latest version of Mycodo, determined in the Mycodo
-    config file (~/Mycodo/mycodo/config.py).
--   This can be caused by an error in the upgrade process from an older
-    database version to a newer version, or from a database that did not
-    upgrade during the Mycodo upgrade process.
--   Check the Upgrade Log for any issues that may have occurred. The log
-    is located at /var/log/mycodo/mycodoupgrade.log but may also be
-    accessed from the web UI (if you’re able to): select [Gear Icon] ->
-    Mycodo Logs -> Upgrade Log.
--   Sometimes issues may not immediately present themselves. It is not
-    uncommon to be experiencing a database issue that was actually
-    introduced several Mycodo versions ago, before the latest upgrade.
--   Because of the nature of how many versions the database can be in,
-    correcting a database issue may be very difficult. It may be much
-    easier to delete your database and let Mycodo generate a new one.
--   Use the following commands to rename your database and restart the
-    web UI. If both commands are successful, refresh your web UI page in
-    your browser in order to generate a new database and create a new
-    Admin user.
-
-&nbsp;
-    mv ~/Mycodo/databases/mycodo.db ~/Mycodo/databases/mycodo.db.backup
-    sudo service mycodoflask restart
-
-
-More
-
-Check out the Diagnosing Mycodo Issues Wiki Page on github for more
-information about diagnosing issues.
-
-
-
-DEVICES
-
-
-Supported Input and Output devices are listed below.
-
-
-I2C
-
-The I2C interface should be enabled with raspi-config.
-
-
-1-Wire
-
-The 1-wire interface should be configured with these instructions.
-
-
-UART
-
-This documentation provides specific installation procedures for
-configuring UART with the Raspberry Pi version 1 or 2.
-
-Because the UART is handled differently higher after the Raspberry Pi 2
-(due to the addition of bluetooth), there are a different set of
-instructions. If installing Mycodo on a Raspberry Pi 3 or above, you
-only need to perform these steps to configure UART:
-
-Run raspi-config
-
-sudo raspi-config
-
-Go to Advanced Options -> Serial and disable. Then edit /boot/config.txt
-
-sudo vi /boot/config.txt
-
-Find the line “enable_uart=0” and change it to “enable_uart=1”, then
-reboot.
-
-
-Input Devices
-
--   AM2315: Relative humidity, temperature link
--   AM2320: Relative humidity, temperature link
--   Atlas Scientific DO: Dissolved Oxygen link
--   Atlas Scientific EC: Electrical Conductivity link
--   Atlas Scientific ORP: Oxidation-Reduction Potential link
--   Atlas Scientific pH: Potential hydrogen link
--   Atlas Scientific PT-1000: Temperature link
--   BH1750: Light link
--   BME280: Barometric pressure, humidity, temperature link
--   BMP085, BMP180: Barometric pressure, temperature link
--   BMP280: Barometric pressure, temperature link
--   CCS811: CO2, VOC, temperature link
--   Cozir: CO2, humidity, temperature link
--   Chirp: Moisture, light, and temperature link
--   DHT11, DHT22/AM2302: Relative humidity and temperature link
--   DS18B20: Temperature link
--   DS18S20: Temperature link
--   DS1822: Temperature link
--   DS28EA00: Temperature link
--   DS1825: Temperature link
--   HDC1000: Relative humidity and temperature link
--   HTU21D: Relative humidity and temperature link
--   K30: Carbon dioxide (CO2) in ppmv link
--   MAX31850K: Temperature link
--   MAX31855K: Temperature link
--   MAX31856: Temperature link
--   MAX31865: Temperature link
--   Miflora: Battery, electrical conductivity, light, moisture,
-    temperature link
--   MCP9808: Temperature link
--   MH-Z16: Carbon dioxide (CO2) in ppmv link
--   MH-Z19: Carbon dioxide (CO2) in ppmv link
--   Ruuvitag: Relative humidity, temperature, pressure, battery,
-    acceleration (g, x, y, and z) link
--   SHT1x/SHT2x/SHT3x/SHT7x/SHT31 Smart Gadget: Relative humidity and
-    temperature link
--   Sonoff TH10/16 (Tasmota firmware): Relative humidity and temperature
--   TMP006, TMP007: Contactless temperature link
--   TSL2561: Light link
--   TSL2591: Light link
--   ZH03B: Particle sensor link
-
-
-Other Inputs
-
--   Raspberry Pi CPU: Temperature
--   Raspberry Pi CPU: CPU load
--   Raspberry Pi: Free disk space
--   Raspberry Pi: GPIO pin state
--   Raspberry Pi: GPIO pin rising or falling edge
--   Raspberry Pi: Measure PWM from signal
--   Raspberry Pi: Measure RPM from signal
--   Mycodo: Daemon RAM use
--   Mycodo: Network ping response
--   Mycodo: Network port open
--   The Things Network: Receive measurements from Data Storage
-    Integration
--   MTQQ: Subscribe to MQTT channels
--   Python Code: Execute Python 3 code and store a variable number of
-    measurements
--   Linux Command: Executes a linux command and stores the returned
-    value
--   Custom Input: Create your own custom input
-
-
-Output Devices
-
--   Atlas EZO-PMP Peristaltic Pump: Pump volumes in milliliters link
-
-
-Other Outputs
-
--   GPIO Pin (High/Low)
--   GPIO PWM Signal generation
--   Python Command for On and Off actions
--   Linux Shell command for On and Off actions
--   Wireless 314/433 Mhz LPD/SRD (rpi-rf)
-
-
-Edge Detection
-
-The detection of a changing signal, for instance a simple switch
-completing a circuit, requires the use of edge detection. By detecting a
-rising edge (LOW to HIGH), a falling edge (HIGH to LOW), or both,
-actions or events can be triggered. The GPIO chosen to detect the signal
-should be equipped with an appropriate resistor that either pulls the
-GPIO up [to 5-volts] or down [to ground]. The option to enable the
-internal pull-up or pull-down resistors is not available for safety
-reasons. Use your own resistor to pull the GPIO high or low.
-
-Examples of devices that can be used with edge detection: simple
-switches and buttons, PIR motion sensors, reed switches, hall effect
-sensors, float switches, and more.
-
-
-I2C Multiplexers
-
-All devices that connected to the Raspberry Pi by the I2C bus need to
-have a unique address in order to communicate. Some inputs may have the
-same address (such as the AM2315), which prevents more than one from
-being connected at the same time. Others may provide the ability to
-change the address, however the address range may be limited, which
-limits by how many you can use at the same time. I2C multiplexers are
-extremely clever and useful in these scenarios because they allow
-multiple sensors with the same I2C address to be connected.
-
-Multiplexers can be set up by loading a kernel driver to handle the
-communication, producing a new I2C bus device for each multiplexer
-channel. To enable the driver for the TCA9548A/PCA9548A, visit
-GPIO-pca9548 to get the code and latest install instructions. If
-successfully set up, there will be 8 new I2C buses on the
-[Gear Icon] -> System Information page.
-
-The driver for the TCA9545A can be found at
-https://github.com/camrex/i2c-mux-pca9545a and other drivers are
-available elsewhere. See the manufacturer or user forums for details.
-Some multiplexers I’ve tested are below.
-
-  TCA9548A/PCA9548A: I2C Multiplexer link (I2C): Has 8 selectable
-  addresses, so 8 multiplexers can be connected to one Raspberry Pi.
-  Each multiplexer has 8 channels, allowing up to 8 devices/sensors with
-  the same address to be connected to each multiplexer. 8 multiplexers x
-  8 channels = 64 devices/sensors with the same I2C address.
-
-  TCA9545A: I2C Bus Multiplexer link (I2C): This board also creates 4
-  new I2C buses, but each with their own selectable voltage, either 3.3
-  or 5.0 volts.
-
-
-Analog-to-Digital Converters
-
-An analog to digital converter (ADC) allows the use of any analog sensor
-that outputs a variable voltage. A voltage divider may be necessary to
-attain your desired range.
-
--   ADS1x15: Analog-to-digital converter link
--   ADS1256: Analog-to-digital converter link
--   MCP3008: Analog-to-digital converter link
--   MCP342x: Analog-to-digital converter link
-
-
-
-DEVICE SPECIFIC INFORMATION
-
-
-This information may not be current, so always reference and follow
-manufacturer recommendations for operating their devices.
-
-
-LCD Displays
-
-There are only a few number fo LCDs that are supported. 16x2 and 20x4
-character LCD displays with I2C backpacks and the 128x32 / 128x64 OLED
-displays are supported. The below image is the type of device with the
-I2C backpack that should be compatible.
-
-[image4] 
-
-
-Input Device Notes
-
-Raspberry Pi
-
-The Raspberry Pi has an integrated temperature sensor on the BCM2835 SoC
-that measure the temperature of the CPU/GPU. This is the easiest sensor
-to set up in Mycodo, as it is immediately available to be used.
-
-AM2315
-
-From @Theoi-Meteoroi on GitHub:
-
-I figured out why this [AM2315] sensor is unreliable with Rpi3 hardware
-I2C. It is among a number of I2C devices that really hates the BCM2835
-clock stretching blunder (hardware bug: raspberrypi/linux#254). The
-wakeup attempts fail, consistently. I checked the bitstream with a
-sniffer, and see that the sensor may respond once out of 20 or so tries
-(or not at all) but only with a single byte returned. The solution is to
-use a software implementation of the I2C bus. You need to add pull-up
-resistors (4.7k is dandy) to 3.3v and install the i2c_gpio device
-overlay. Seems to work fine now, will run for a few days, but the CRC
-failures are gone and I get good readings, every time. And no twiddling
-the power for the sensor is required.
-
-To enable software I2C, add the following line to your /boot/config.txt
-
-dtoverlay=i2c-gpio,i2c_gpio_sda=23,i2c_gpio_scl=24,i2c_gpio_delay_us=4
-
-After rebooting, a new I2C bus at /dev/i2c-3 should exist with SDA on
-pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate
-pull-up resistors before connecting any devices.
-
-K-30
-
-[image5] 
-
-Be very careful when connecting the K-30, as there is no reverse-voltage
-protection and improper connections could destroy your sensor.
-
-Wiring instructions for the Raspberry Pi can be found here.
 
 
 Diagrams
