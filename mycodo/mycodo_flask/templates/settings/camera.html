@@ -67,9 +67,10 @@
           <div class="col-12" style="color: red">
             {{_("Raspberry Pi Camera support doesn't appear to be enabled. Please enable it using the Raspberry Pi configuration or with the command 'sudo raspi-config'")}}
           </div>
-          {% else %}
-            {% include 'settings/camera_options/picamera.html' %}
           {% endif %}
+        {% endif %}
+        {% if each_camera.library == 'picamera' %}
+          {% include 'settings/camera_options/picamera.html' %}
         {% elif each_camera.library == 'opencv' %}
           {% include 'settings/camera_options/opencv.html' %}
         {% elif each_camera.library == 'fswebcam' %}

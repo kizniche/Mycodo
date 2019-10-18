@@ -1,15 +1,22 @@
+## 7.8.5 (Unreleased)
+
+### Features
+
+ - Add ability to set picamera auto white balance mode or set manual Red/Blue white balance ([#703](https://github.com/kizniche/mycodo/issues/703))
+
+
 ## 7.8.4 (2019.10.18)
 
 ### Bugfixes
 
- - Actually fix inability to save PID options
+ - Actually fix inability to save PID options ([#701](https://github.com/kizniche/mycodo/issues/701))
 
 
 ## 7.8.3 (2019.10.18)
 
 ### Bugfixes
 
- - Fix inability to save PID options
+ - Fix inability to save PID options ([#701](https://github.com/kizniche/mycodo/issues/701))
 
 
 ## 7.8.2 (2019.10.17)

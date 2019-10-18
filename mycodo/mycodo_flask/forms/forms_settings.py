@@ -55,6 +55,11 @@ class SettingsCamera(FlaskForm):
         lazy_gettext('Saturation'), widget=NumberInput(step='any'))
     white_balance = DecimalField(
         lazy_gettext('White Balance'), widget=NumberInput(step='any'))
+    picamera_awb = StringField(lazy_gettext('Auto White Balance'))
+    picamera_awb_gain_red = DecimalField(
+        lazy_gettext('AWB Gain Red'), widget=NumberInput(step='any'))
+    picamera_awb_gain_blue = DecimalField(
+        lazy_gettext('AWB Gain Blue'), widget=NumberInput(step='any'))
     custom_options = StringField(lazy_gettext('Custom Options'))
     output_id = StringField(TRANSLATIONS['output']['title'])
     output_duration = DecimalField(

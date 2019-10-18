@@ -26,6 +26,9 @@ class Camera(CRUDMixin, db.Model):
     hue = db.Column(db.Float, default=None)
     saturation = db.Column(db.Float, default=0.3)
     white_balance = db.Column(db.Float, default=0.0)
+    picamera_awb = db.Column(db.Text, default='auto')
+    picamera_awb_gain_red = db.Column(db.Float, default=0.5)
+    picamera_awb_gain_blue = db.Column(db.Float, default=0.5)
     custom_options = db.Column(db.Text, default='')
     output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Turn output on during capture
     output_duration = db.Column(db.Float, default=3.0)

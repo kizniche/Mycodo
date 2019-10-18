@@ -1214,6 +1214,9 @@ def camera_mod(form_camera):
             mod_camera.contrast = form_camera.contrast.data
             mod_camera.exposure = form_camera.exposure.data
             mod_camera.saturation = form_camera.saturation.data
+            mod_camera.picamera_awb = form_camera.picamera_awb.data
+            mod_camera.picamera_awb_gain_red = form_camera.picamera_awb_gain_red.data
+            mod_camera.picamera_awb_gain_blue = form_camera.picamera_awb_gain_blue.data
         else:
             error.append("Unknown camera library")
 

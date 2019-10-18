@@ -2,7 +2,7 @@
 import datetime
 import logging
 import time
-
+import fractions
 import os
 import picamera
 
@@ -100,6 +100,10 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                     camera.contrast = int(settings.contrast)
                     camera.exposure_compensation = int(settings.exposure)
                     camera.saturation = int(settings.saturation)
+                    camera.awb_mode = settings.picamera_awb
+                    if settings.picamera_awb == 'off':
+                        camera.awb_gains = (settings.picamera_awb_gain_red,
+                                            settings.picamera_awb_gain_blue)
                     camera.start_preview()
                     time.sleep(2)  # Camera warm-up time
 

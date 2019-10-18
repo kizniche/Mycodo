@@ -40,3 +40,32 @@
     {{form_camera.saturation(class_='form-control', value=each_camera.saturation)}}
    </div>
 </div>
+<div class="col-auto">
+  {{form_camera.picamera_awb.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="picamera_awb" name="picamera_awb">
+      <option value="off"{% if 'off' == each_camera.picamera_awb %} selected{% endif %}>Off</option>
+      <option value="auto"{% if 'auto' == each_camera.picamera_awb %} selected{% endif %}>Auto</option>
+      <option value="sunlight"{% if 'sunlight' == each_camera.picamera_awb %} selected{% endif %}>Sunlight</option>
+      <option value="cloudy"{% if 'cloudy' == each_camera.picamera_awb %} selected{% endif %}>Cloudy</option>
+      <option value="shade"{% if 'shade' == each_camera.picamera_awb %} selected{% endif %}>Shade</option>
+      <option value="tungsten"{% if 'tungsten' == each_camera.picamera_awb %} selected{% endif %}>Tungsten</option>
+      <option value="fluorescent"{% if 'fluorescent' == each_camera.picamera_awb %} selected{% endif %}>Fluorescent</option>
+      <option value="incandescent"{% if 'incandescent' == each_camera.picamera_awb %} selected{% endif %}>Incandescent</option>
+      <option value="flash"{% if 'flash' == each_camera.picamera_awb %} selected{% endif %}>Flash</option>
+      <option value="horizon"{% if 'horizon' == each_camera.picamera_awb %} selected{% endif %}>Horizon</option>
+    </select>
+  </div>
+</div>
+<div class="col-auto">
+  {{form_camera.picamera_awb_gain_red.label(class_='control-label')}}
+  <div>
+    {{form_camera.picamera_awb_gain_red(class_='form-control', value=each_camera.picamera_awb_gain_red, **{'title': 'When Auto White Balance is set to "Off", the AWB Red and Blue gains will be used. These represent the red and blue balance of the camera. These values will be between 0.0 and 8.0.'})}}
+   </div>
+</div>
+<div class="col-auto">
+  {{form_camera.picamera_awb_gain_blue.label(class_='control-label')}}
+  <div>
+    {{form_camera.picamera_awb_gain_blue(class_='form-control', value=each_camera.picamera_awb_gain_blue, **{'title': 'When Auto White Balance is set to "Off", the AWB Red and Blue gains will be used. These represent the red and blue balance of the camera. These values will be between 0.0 and 8.0.'})}}
+   </div>
+</div>
