@@ -7,13 +7,13 @@ from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import BooleanField
 from wtforms import DecimalField
-from wtforms import IntegerField
 from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import validators
 from wtforms import widgets
 from wtforms.validators import DataRequired
+from wtforms.validators import Optional
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config_translations import TRANSLATIONS
@@ -103,10 +103,7 @@ class PIDModBase(FlaskForm):
     setpoint_tracking_method_id = StringField('Setpoint Tracking Method')
     setpoint_tracking_input_math_id = StringField('Setpoint Tracking Input/Math')
     setpoint_tracking_max_age = DecimalField('Max Age (seconds)',
-        validators=[validators.NumberRange(
-            min=-1000000,
-            max=1000000
-        )],
+        validators=[Optional()],
         widget=NumberInput(step='any'))
     pid_mod = SubmitField(TRANSLATIONS['save']['title'])
     pid_hold = SubmitField(lazy_gettext('Hold'))

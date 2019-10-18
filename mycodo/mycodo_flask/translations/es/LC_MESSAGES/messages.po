@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-15 22:47-0400\n"
+"POT-Creation-Date: 2019-10-18 17:20-0400\n"
 "PO-Revision-Date: 2018-08-10 15:21-0400\n"
 "Last-Translator: \n"
 "Language: es\n"
@@ -752,7 +752,7 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: config_translations.py:73 mycodo_flask/forms/forms_pid.py:111
+#: config_translations.py:73 mycodo_flask/forms/forms_pid.py:109
 msgid "Hold"
 msgstr ""
 
@@ -862,7 +862,7 @@ msgstr ""
 msgid "Password"
 msgstr ""
 
-#: config_translations.py:113 mycodo_flask/forms/forms_pid.py:112
+#: config_translations.py:113 mycodo_flask/forms/forms_pid.py:110
 #: mycodo_flask/templates/pages/function_options/action_options/pause_actions.html:8
 #: mycodo_flask/templates/pages/function_options/action_options/pause_pid.html:11
 msgid "Pause"
@@ -900,7 +900,7 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: config_translations.py:127 mycodo_flask/forms/forms_pid.py:113
+#: config_translations.py:127 mycodo_flask/forms/forms_pid.py:111
 #: mycodo_flask/templates/pages/function_options/action_options/resume_pid.html:11
 msgid "Resume"
 msgstr ""
@@ -1242,7 +1242,7 @@ msgid "Period (seconds)"
 msgstr ""
 
 #: config_translations.py:260
-msgid "The duration (seconds) between input reads"
+msgid "The duration (seconds) between measurements or actions"
 msgstr ""
 
 #: config_translations.py:262
@@ -2145,11 +2145,11 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_dashboard.py:145
 #: mycodo_flask/forms/forms_dashboard.py:161
-#: mycodo_flask/forms/forms_dashboard.py:181 mycodo_flask/forms/forms_lcd.py:88
-#: mycodo_flask/forms/forms_lcd.py:100 mycodo_flask/forms/forms_lcd.py:112
-#: mycodo_flask/forms/forms_lcd.py:124 mycodo_flask/forms/forms_lcd.py:136
-#: mycodo_flask/forms/forms_lcd.py:148 mycodo_flask/forms/forms_lcd.py:160
-#: mycodo_flask/forms/forms_lcd.py:172
+#: mycodo_flask/forms/forms_dashboard.py:181 mycodo_flask/forms/forms_lcd.py:90
+#: mycodo_flask/forms/forms_lcd.py:105 mycodo_flask/forms/forms_lcd.py:120
+#: mycodo_flask/forms/forms_lcd.py:135 mycodo_flask/forms/forms_lcd.py:150
+#: mycodo_flask/forms/forms_lcd.py:165 mycodo_flask/forms/forms_lcd.py:180
+#: mycodo_flask/forms/forms_lcd.py:195
 msgid "Decimal Places"
 msgstr ""
 
@@ -2594,108 +2594,108 @@ msgstr ""
 msgid "Hardware Pin, <= 30 MHz"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:31
+#: mycodo_flask/forms/forms_pid.py:32
 msgid "Direction"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:33
+#: mycodo_flask/forms/forms_pid.py:34
 msgid "Raise"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:34
+#: mycodo_flask/forms/forms_pid.py:35
 msgid "Lower"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:35
+#: mycodo_flask/forms/forms_pid.py:36
 #: mycodo_flask/templates/pages/function_options/trigger_options/edge.html:27
 msgid "Both"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:69
+#: mycodo_flask/forms/forms_pid.py:70
 msgid "Band (+/- Setpoint)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:71
+#: mycodo_flask/forms/forms_pid.py:72
 msgid "Store Lower as Negative"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:73
+#: mycodo_flask/forms/forms_pid.py:74
 msgid "Kp Gain"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:80
+#: mycodo_flask/forms/forms_pid.py:81
 msgid "Ki Gain"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:87
+#: mycodo_flask/forms/forms_pid.py:88
 msgid "Kd Gain"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:94
+#: mycodo_flask/forms/forms_pid.py:95
 msgid "Integrator Min"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:97
+#: mycodo_flask/forms/forms_pid.py:98
 msgid "Integrator Max"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:99
+#: mycodo_flask/forms/forms_pid.py:100
 msgid "Output (Raise)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:100
+#: mycodo_flask/forms/forms_pid.py:101
 msgid "Output (Lower)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:121
+#: mycodo_flask/forms/forms_pid.py:119
 msgid "Noise Band"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:124
+#: mycodo_flask/forms/forms_pid.py:122
 msgid "Outstep"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:126 mycodo_flask/utils/utils_pid.py:203
+#: mycodo_flask/forms/forms_pid.py:124 mycodo_flask/utils/utils_pid.py:206
 msgid "Start Autotune"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:131
+#: mycodo_flask/forms/forms_pid.py:129
 msgid "Min On Duration (Raise)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:139
+#: mycodo_flask/forms/forms_pid.py:137
 msgid "Max On Duration (Raise)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:147
+#: mycodo_flask/forms/forms_pid.py:145
 msgid "Min Off Duration (Raise)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:158
+#: mycodo_flask/forms/forms_pid.py:156
 msgid "Min On Duration (Lower)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:166
+#: mycodo_flask/forms/forms_pid.py:164
 msgid "Max On Duration (Lower)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:174
+#: mycodo_flask/forms/forms_pid.py:172
 msgid "Min Off Duration (Lower)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:185
+#: mycodo_flask/forms/forms_pid.py:183
 msgid "Min Duty Cycle (Raise)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:193
+#: mycodo_flask/forms/forms_pid.py:191
 msgid "Max Duty Cycle (Raise)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:204
+#: mycodo_flask/forms/forms_pid.py:202
 msgid "Min Duty Cycle (Lower)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_pid.py:212
+#: mycodo_flask/forms/forms_pid.py:210
 msgid "Max Duty Cycle (Lower)"
 msgstr ""
 
@@ -3966,19 +3966,6 @@ msgstr ""
 msgid "Choose the direction(s) to regulate"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:101
-msgid ""
-"The duration between calculating a new PID output to power the raise and "
-"lower outputs."
-msgstr ""
-
-#: mycodo_flask/templates/pages/function_options/pid.html:113
-msgid ""
-"Maximum allowable measurement age (to allow the PID controller to "
-"manipulate outputs, the measurement must have occurred in the past x "
-"seconds)"
-msgstr ""
-
 #: mycodo_flask/templates/pages/function_options/pid.html:128
 msgid ""
 "This is the desired state of a perticular environmental condition. For "
@@ -5172,8 +5159,8 @@ msgstr ""
 msgid "Deactivate Math controller before modifying its settings"
 msgstr ""
 
-#: mycodo_flask/utils/utils_math.py:115 mycodo_flask/utils/utils_pid.py:126
-#: mycodo_flask/utils/utils_pid.py:133
+#: mycodo_flask/utils/utils_math.py:115 mycodo_flask/utils/utils_pid.py:129
+#: mycodo_flask/utils/utils_pid.py:136
 msgid "Error in form field(s)"
 msgstr ""
 
@@ -5350,25 +5337,25 @@ msgstr ""
 msgid "Invalid value"
 msgstr ""
 
-#: mycodo_flask/utils/utils_pid.py:153
+#: mycodo_flask/utils/utils_pid.py:156
 msgid "Raise and lower outputs cannot be the same"
 msgstr ""
 
-#: mycodo_flask/utils/utils_pid.py:229 mycodo_flask/utils/utils_pid.py:238
+#: mycodo_flask/utils/utils_pid.py:232 mycodo_flask/utils/utils_pid.py:241
 msgid "A valid Measurement is required"
 msgstr ""
 
-#: mycodo_flask/utils/utils_pid.py:242
+#: mycodo_flask/utils/utils_pid.py:245
 msgid "A Raise Output and/or a Lower Output is required"
 msgstr ""
 
-#: mycodo_flask/utils/utils_pid.py:269
+#: mycodo_flask/utils/utils_pid.py:272
 msgid ""
 "Cannot activate PID controller if the associated sensor controller is "
 "inactive"
 msgstr ""
 
-#: mycodo_flask/utils/utils_pid.py:276
+#: mycodo_flask/utils/utils_pid.py:279
 msgid ""
 "Cannot activate PID controller if raise and/or lower output IDs are not "
 "selected"
@@ -6363,7 +6350,7 @@ msgstr ""
 #~ msgstr "Período (segundos)"
 
 #~ msgid "The duration (seconds) between input reads"
-#~ msgstr "La duración (segundos) entre las lecturas de entrada"
+#~ msgstr ""
 
 #~ msgid "Clock Pin"
 #~ msgstr "Pin Clock"
@@ -8572,9 +8559,6 @@ msgstr ""
 #~ " PID output to power the raise "
 #~ "and lower outputs."
 #~ msgstr ""
-#~ "La duración entre el cálculo de "
-#~ "una nueva salida PID para alimentar "
-#~ "los relés de subida y bajada."
 
 #~ msgid ""
 #~ "Maximum allowable measurement age (to "
@@ -8582,11 +8566,6 @@ msgstr ""
 #~ " outputs, the measurement must have "
 #~ "occurred in the past x seconds)"
 #~ msgstr ""
-#~ "Edad de medición máxima permitida (para"
-#~ " permitir que el controlador PID "
-#~ "manipule los relés, la medición debe "
-#~ "haber ocurrido en los últimos x "
-#~ "segundos)"
 
 #~ msgid ""
 #~ "This is the desired state of a "

@@ -153,7 +153,7 @@ Here is how I generally set up Mycodo to monitor and regulate:
 
 *Can I communicate with Mycodo from the command line?*
 
-Yes, ~/Mycodo/mycodo/mycodo_client.py has this functionality, but
+Yes, ~/Mycodo/mycodo/mycodo\_client.py has this functionality, but
 there's a lot to be desired. See `Mycodo Client <#mycodo-client>`__, but
 note it may not be the most current list of commands, so it's
 recommended to execute ``mycodo-client --help`` to see a full list of
@@ -237,7 +237,7 @@ process is created at ``/var/log/mycodo/mycodoupgrade.log``
 
 .. code:: bash
 
-   sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
+    sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
 
 Backup-Restore
 ==============
@@ -257,9 +257,9 @@ the directory names in /var/Mycodo-backups/
 
 .. code:: bash
 
-   sudo mv /home/user/Mycodo /home/user/Mycodo_old
-   sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
-   sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
+    sudo mv /home/user/Mycodo /home/user/Mycodo_old
+    sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
+    sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
 
 Operation
 =========
@@ -341,16 +341,16 @@ The dashboard is where you can add pieces of data for easy viewing. It
 is highly customizable and provides an easy way to see exactly what data
 you want to see on one screen.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Width                | The width of the dashboard object on the      |
-|                      | page, in 1/12th increments. Multiple          |
-|                      | dashboard object can share the sme row if     |
-|                      | their combined fraction doesn't exceed 12/12. |
-+----------------------+-----------------------------------------------+
-| Height (pixels)      | The height of the dashboard object.           |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Width                   | The width of the dashboard object on the page,   |
+|                         | in 1/12th increments. Multiple dashboard object  |
+|                         | can share the sme row if their combined fraction |
+|                         | doesn't exceed 12/12.                            |
++-------------------------+--------------------------------------------------+
+| Height (pixels)         | The height of the dashboard object.              |
++-------------------------+--------------------------------------------------+
 
 Specific options for each Dashboard element are below.
 
@@ -365,60 +365,58 @@ be created of graphed sensor data. Each graph may have one or more data
 from inputs, outputs, or PIDs rendered onto it. To edit graph options,
 select the plus sign on the top-right of a graph.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| x-Axis (minutes)     | The duration to display on the x-axis of the  |
-|                      | graph.                                        |
-+----------------------+-----------------------------------------------+
-| Enable Auto Refresh  | Automatically refresh the data on the graph   |
-|                      | Refresh Period.                               |
-+----------------------+-----------------------------------------------+
-| Refresh (seconds)    | The duration between acquisitions of new data |
-|                      | to display on the graph.                      |
-+----------------------+-----------------------------------------------+
-| Inputs/Outputs/PIDs  | The Inputs, Outputs, and PIDs to display on   |
-|                      | the graph.                                    |
-+----------------------+-----------------------------------------------+
-| Enable X-Axis Reset  | Reset the x-axis min/max every time new data  |
-|                      | comes in during the auto refresh.             |
-+----------------------+-----------------------------------------------+
-| Enable Title         | Show a title of the graph name.               |
-+----------------------+-----------------------------------------------+
-| Enable Navbar        | Show a slidable navigation bar at the bottom  |
-|                      | of the graph.                                 |
-+----------------------+-----------------------------------------------+
-| Enable Export        | Enable a button on the top right of the graph |
-|                      | to allow exporting of the currently-displayed |
-|                      | data as PNG, JPEG, PDF, SVG, CSV, XLS.        |
-+----------------------+-----------------------------------------------+
-| Enable Range         | Show a set of navigation buttons at the top   |
-| Selector             | of the graph to quickly change the display    |
-|                      | duration.                                     |
-+----------------------+-----------------------------------------------+
-| Enable Graph Shift   | If enabled, old data points are removed when  |
-|                      | new data is added to the graph. Only          |
-|                      | recommended to enable if Enable Navbar is     |
-|                      | enabled.                                      |
-+----------------------+-----------------------------------------------+
-| Enable Custom Colors | Use custom colors for Input, Output, and PID  |
-|                      | lines. Select the colors with the buttons     |
-|                      | that appear below this checkbox.              |
-+----------------------+-----------------------------------------------+
-| Enable Manual Y-Axis | Set the minimum and maximum y-axes of a       |
-| Min/Max              | particular graph. Set both the minimum and    |
-|                      | maximum to 0 to disable for a particular      |
-|                      | y-axis.                                       |
-+----------------------+-----------------------------------------------+
-| Enable Y-Axis Align  | Align the ticks of several y-axes of the same |
-| Ticks                | graph.                                        |
-+----------------------+-----------------------------------------------+
-| Enable Y-Axis Start  | Start all y-axes of a graph on the same tick. |
-| On Tick              |                                               |
-+----------------------+-----------------------------------------------+
-| Enable Y-Axis End On | End all y-axes of a graph on the same tick.   |
-| Tick                 |                                               |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| x-Axis (minutes)        | The duration to display on the x-axis of the     |
+|                         | graph.                                           |
++-------------------------+--------------------------------------------------+
+| Enable Auto Refresh     | Automatically refresh the data on the graph      |
+|                         | Refresh Period.                                  |
++-------------------------+--------------------------------------------------+
+| Refresh (seconds)       | The duration between acquisitions of new data to |
+|                         | display on the graph.                            |
++-------------------------+--------------------------------------------------+
+| Inputs/Outputs/PIDs     | The Inputs, Outputs, and PIDs to display on the  |
+|                         | graph.                                           |
++-------------------------+--------------------------------------------------+
+| Enable X-Axis Reset     | Reset the x-axis min/max every time new data     |
+|                         | comes in during the auto refresh.                |
++-------------------------+--------------------------------------------------+
+| Enable Title            | Show a title of the graph name.                  |
++-------------------------+--------------------------------------------------+
+| Enable Navbar           | Show a slidable navigation bar at the bottom of  |
+|                         | the graph.                                       |
++-------------------------+--------------------------------------------------+
+| Enable Export           | Enable a button on the top right of the graph to |
+|                         | allow exporting of the currently-displayed data  |
+|                         | as PNG, JPEG, PDF, SVG, CSV, XLS.                |
++-------------------------+--------------------------------------------------+
+| Enable Range Selector   | Show a set of navigation buttons at the top of   |
+|                         | the graph to quickly change the display          |
+|                         | duration.                                        |
++-------------------------+--------------------------------------------------+
+| Enable Graph Shift      | If enabled, old data points are removed when new |
+|                         | data is added to the graph. Only recommended to  |
+|                         | enable if Enable Navbar is enabled.              |
++-------------------------+--------------------------------------------------+
+| Enable Custom Colors    | Use custom colors for Input, Output, and PID     |
+|                         | lines. Select the colors with the buttons that   |
+|                         | appear below this checkbox.                      |
++-------------------------+--------------------------------------------------+
+| Enable Manual Y-Axis    | Set the minimum and maximum y-axes of a          |
+| Min/Max                 | particular graph. Set both the minimum and       |
+|                         | maximum to 0 to disable for a particular y-axis. |
++-------------------------+--------------------------------------------------+
+| Enable Y-Axis Align     | Align the ticks of several y-axes of the same    |
+| Ticks                   | graph.                                           |
++-------------------------+--------------------------------------------------+
+| Enable Y-Axis Start On  | Start all y-axes of a graph on the same tick.    |
+| Tick                    |                                                  |
++-------------------------+--------------------------------------------------+
+| Enable Y-Axis End On    | End all y-axes of a graph on the same tick.      |
+| Tick                    |                                                  |
++-------------------------+--------------------------------------------------+
 
 Gauge Widget
 ^^^^^^^^^^^^
@@ -427,53 +425,52 @@ Gauges are visual objects that allow one to quickly see what the latest
 measurement is of an input. An example that you may be familiar with is
 a speedometer in a car.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Refresh (seconds)    | The duration between acquisitions of new data |
-|                      | to display on the graph.                      |
-+----------------------+-----------------------------------------------+
-| Max Age (seconds)    | The maximum allowable age of the measurement. |
-|                      | If the age is greater than this, the gauge    |
-|                      | will turn off, indicating there is an issue.  |
-+----------------------+-----------------------------------------------+
-| Gauge Min            | The lowest value of the gauge.                |
-+----------------------+-----------------------------------------------+
-| Gauge Max            | The highest value of the gauge.               |
-+----------------------+-----------------------------------------------+
-| Show Timestamp       | Show the timestamp of the current gauge       |
-|                      | measurement.                                  |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Refresh (seconds)       | The duration between acquisitions of new data to |
+|                         | display on the graph.                            |
++-------------------------+--------------------------------------------------+
+| Max Age (seconds)       | The maximum allowable age of the measurement. If |
+|                         | the age is greater than this, the gauge will     |
+|                         | turn off, indicating there is an issue.          |
++-------------------------+--------------------------------------------------+
+| Gauge Min               | The lowest value of the gauge.                   |
++-------------------------+--------------------------------------------------+
+| Gauge Max               | The highest value of the gauge.                  |
++-------------------------+--------------------------------------------------+
+| Show Timestamp          | Show the timestamp of the current gauge          |
+|                         | measurement.                                     |
++-------------------------+--------------------------------------------------+
 
 Camera Widget
 ^^^^^^^^^^^^^
 
 Cameras may be added to keep a continuous view on areas.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Refresh (seconds)    | The duration between acquisitions of new data |
-|                      | to display on the graph.                      |
-+----------------------+-----------------------------------------------+
-| Max Age (seconds)    | The maximum allowed age of the image          |
-|                      | timestamp before a "No Recent Image" message  |
-|                      | is returned.                                  |
-+----------------------+-----------------------------------------------+
-| Acquire Image (and   | Acquire a new images and save the previous    |
-| save new file)       | image.                                        |
-+----------------------+-----------------------------------------------+
-| Acquire Image (and   | Acquire a new image but erase the previous    |
-| erase last file)     | image.                                        |
-+----------------------+-----------------------------------------------+
-| Display Live Video   | Automatically start a video stream and        |
-| Stream               | display it.                                   |
-+----------------------+-----------------------------------------------+
-| Display Latest       | Display the latest timelapse image that       |
-| Timelapse Image      | exists.                                       |
-+----------------------+-----------------------------------------------+
-| Add Timestamp        | Append a timestamp to the image.              |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Refresh (seconds)       | The duration between acquisitions of new data to |
+|                         | display on the graph.                            |
++-------------------------+--------------------------------------------------+
+| Max Age (seconds)       | The maximum allowed age of the image timestamp   |
+|                         | before a "No Recent Image" message is returned.  |
++-------------------------+--------------------------------------------------+
+| Acquire Image (and save | Acquire a new images and save the previous       |
+| new file)               | image.                                           |
++-------------------------+--------------------------------------------------+
+| Acquire Image (and      | Acquire a new image but erase the previous       |
+| erase last file)        | image.                                           |
++-------------------------+--------------------------------------------------+
+| Display Live Video      | Automatically start a video stream and display   |
+| Stream                  | it.                                              |
++-------------------------+--------------------------------------------------+
+| Display Latest          | Display the latest timelapse image that exists.  |
+| Timelapse Image         |                                                  |
++-------------------------+--------------------------------------------------+
+| Add Timestamp           | Append a timestamp to the image.                 |
++-------------------------+--------------------------------------------------+
 
 Indicator Widget
 ^^^^^^^^^^^^^^^^
@@ -481,104 +478,104 @@ Indicator Widget
 Shows a green or red button depending if the measurement value is 0 or
 not 0.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Refresh (seconds)    | The duration between acquisitions of new data |
-|                      | to display on the graph.                      |
-+----------------------+-----------------------------------------------+
-| Max Age (seconds)    | The maximum allowable age of the measurement. |
-|                      | If the age is greater than this, the gauge    |
-|                      | will turn off, indicating there is an issue.  |
-+----------------------+-----------------------------------------------+
-| Timestamp Font Size  | The font size of the timestamp value in em.   |
-| (em)                 |                                               |
-+----------------------+-----------------------------------------------+
-| Invert               | Invert/reverse the colors.                    |
-+----------------------+-----------------------------------------------+
-| Measurement          | The device to display information about.      |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Refresh (seconds)       | The duration between acquisitions of new data to |
+|                         | display on the graph.                            |
++-------------------------+--------------------------------------------------+
+| Max Age (seconds)       | The maximum allowable age of the measurement. If |
+|                         | the age is greater than this, the gauge will     |
+|                         | turn off, indicating there is an issue.          |
++-------------------------+--------------------------------------------------+
+| Timestamp Font Size     | The font size of the timestamp value in em.      |
+| (em)                    |                                                  |
++-------------------------+--------------------------------------------------+
+| Invert                  | Invert/reverse the colors.                       |
++-------------------------+--------------------------------------------------+
+| Measurement             | The device to display information about.         |
++-------------------------+--------------------------------------------------+
 
 Measurement Widget
 ^^^^^^^^^^^^^^^^^^
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Refresh (seconds)    | The duration between acquisitions of new data |
-|                      | to display on the graph.                      |
-+----------------------+-----------------------------------------------+
-| Max Age (seconds)    | The maximum allowable age of the measurement. |
-|                      | If the age is greater than this, the gauge    |
-|                      | will turn off, indicating there is an issue.  |
-+----------------------+-----------------------------------------------+
-| Value Font Size (em) | The font size of the measurement value in em. |
-+----------------------+-----------------------------------------------+
-| Timestamp Font Size  | The font size of the timestamp value in em.   |
-| (em)                 |                                               |
-+----------------------+-----------------------------------------------+
-| Decimal Places       | The number of digits to display to the right  |
-|                      | of the decimal.                               |
-+----------------------+-----------------------------------------------+
-| Measurement          | The device to display information about.      |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Refresh (seconds)       | The duration between acquisitions of new data to |
+|                         | display on the graph.                            |
++-------------------------+--------------------------------------------------+
+| Max Age (seconds)       | The maximum allowable age of the measurement. If |
+|                         | the age is greater than this, the gauge will     |
+|                         | turn off, indicating there is an issue.          |
++-------------------------+--------------------------------------------------+
+| Value Font Size (em)    | The font size of the measurement value in em.    |
++-------------------------+--------------------------------------------------+
+| Timestamp Font Size     | The font size of the timestamp value in em.      |
+| (em)                    |                                                  |
++-------------------------+--------------------------------------------------+
+| Decimal Places          | The number of digits to display to the right of  |
+|                         | the decimal.                                     |
++-------------------------+--------------------------------------------------+
+| Measurement             | The device to display information about.         |
++-------------------------+--------------------------------------------------+
 
 Output Widget
 ^^^^^^^^^^^^^
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Refresh (seconds)    | The duration between acquisitions of new data |
-|                      | to display on the graph.                      |
-+----------------------+-----------------------------------------------+
-| Max Age (seconds)    | The maximum allowable age of the measurement. |
-|                      | If the age is greater than this, the gauge    |
-|                      | will turn off, indicating there is an issue.  |
-+----------------------+-----------------------------------------------+
-| Value Font Size (em) | The font size of the output value in em.      |
-+----------------------+-----------------------------------------------+
-| Timestamp Font Size  | The font size of the timestamp value in em.   |
-| (em)                 |                                               |
-+----------------------+-----------------------------------------------+
-| Decimal Places       | The number of digits to display to the right  |
-|                      | of the decimal.                               |
-+----------------------+-----------------------------------------------+
-| Feature Output       | Display buttons to turn On and Off the relay  |
-| Controls             | from the dashboard element.                   |
-+----------------------+-----------------------------------------------+
-| Output               | The output to display information about.      |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Refresh (seconds)       | The duration between acquisitions of new data to |
+|                         | display on the graph.                            |
++-------------------------+--------------------------------------------------+
+| Max Age (seconds)       | The maximum allowable age of the measurement. If |
+|                         | the age is greater than this, the gauge will     |
+|                         | turn off, indicating there is an issue.          |
++-------------------------+--------------------------------------------------+
+| Value Font Size (em)    | The font size of the output value in em.         |
++-------------------------+--------------------------------------------------+
+| Timestamp Font Size     | The font size of the timestamp value in em.      |
+| (em)                    |                                                  |
++-------------------------+--------------------------------------------------+
+| Decimal Places          | The number of digits to display to the right of  |
+|                         | the decimal.                                     |
++-------------------------+--------------------------------------------------+
+| Feature Output Controls | Display buttons to turn On and Off the relay     |
+|                         | from the dashboard element.                      |
++-------------------------+--------------------------------------------------+
+| Output                  | The output to display information about.         |
++-------------------------+--------------------------------------------------+
 
 PID Control Widget
 ^^^^^^^^^^^^^^^^^^
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Refresh (seconds)    | The duration between acquisitions of new data |
-|                      | to display on the graph.                      |
-+----------------------+-----------------------------------------------+
-| Max Age (seconds)    | The maximum allowable age of the measurement. |
-|                      | If the age is greater than this, the gauge    |
-|                      | will turn off, indicating there is an issue.  |
-+----------------------+-----------------------------------------------+
-| Value Font Size (em) | The font size of the measurement value in em. |
-+----------------------+-----------------------------------------------+
-| Timestamp Font Size  | The font size of the timestamp value in em.   |
-| (em)                 |                                               |
-+----------------------+-----------------------------------------------+
-| Decimal Places       | The number of digits to display to the right  |
-|                      | of the decimal.                               |
-+----------------------+-----------------------------------------------+
-| Show PID Information | Show extra PID information on the dashboard   |
-|                      | element.                                      |
-+----------------------+-----------------------------------------------+
-| Show Set Setpoint    | Allow setting the PID setpoint on the         |
-|                      | dashboard element.                            |
-+----------------------+-----------------------------------------------+
-| PID                  | The PID to display information about.         |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Refresh (seconds)       | The duration between acquisitions of new data to |
+|                         | display on the graph.                            |
++-------------------------+--------------------------------------------------+
+| Max Age (seconds)       | The maximum allowable age of the measurement. If |
+|                         | the age is greater than this, the gauge will     |
+|                         | turn off, indicating there is an issue.          |
++-------------------------+--------------------------------------------------+
+| Value Font Size (em)    | The font size of the measurement value in em.    |
++-------------------------+--------------------------------------------------+
+| Timestamp Font Size     | The font size of the timestamp value in em.      |
+| (em)                    |                                                  |
++-------------------------+--------------------------------------------------+
+| Decimal Places          | The number of digits to display to the right of  |
+|                         | the decimal.                                     |
++-------------------------+--------------------------------------------------+
+| Show PID Information    | Show extra PID information on the dashboard      |
+|                         | element.                                         |
++-------------------------+--------------------------------------------------+
+| Show Set Setpoint       | Allow setting the PID setpoint on the dashboard  |
+|                         | element.                                         |
++-------------------------+--------------------------------------------------+
+| PID                     | The PID to display information about.            |
++-------------------------+--------------------------------------------------+
 
 Input
 -----
@@ -600,208 +597,199 @@ In addition to several supported sensors and devices, a Linux command
 may be specified that will be executed and the return value stored in
 the measurement database to be used throughout the Mycodo system.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Activate             | After the sensor has been properly            |
-|                      | configured, activation begins acquiring       |
-|                      | measurements from the sensor. Any activated   |
-|                      | conditional statements will now being         |
-|                      | operating.                                    |
-+----------------------+-----------------------------------------------+
-| Deactivate           | Deactivation stops measurements from being    |
-|                      | acquired from the sensor. All associated      |
-|                      | conditional statements will cease to operate. |
-+----------------------+-----------------------------------------------+
-| Save                 | Save the current configuration entered into   |
-|                      | the input boxes for a particular sensor.      |
-+----------------------+-----------------------------------------------+
-| Delete               | Delete a particular sensor.                   |
-+----------------------+-----------------------------------------------+
-| Acquire Measurements | Force the input to conduct measurements and   |
-| Now                  | them in the database.                         |
-+----------------------+-----------------------------------------------+
-| Up/Down              | Move a particular sensor up or down in the    |
-|                      | order displayed.                              |
-+----------------------+-----------------------------------------------+
-| Power Output         | Select a output that powers the sensor. This  |
-|                      | enables powering cycling (turn off then on)   |
-|                      | when the sensor returns 3 consecutive errors  |
-|                      | to attempt to fix the issue. Transistors may  |
-|                      | also be used instead of a relay (note: NPN    |
-|                      | transistors are preferred over PNP for        |
-|                      | powering sensors).                            |
-+----------------------+-----------------------------------------------+
-| Location             | Depending on what sensor is being used, you   |
-|                      | will need to either select a serial number    |
-|                      | (DS18B20 temperature sensor), a GPIO pin (in  |
-|                      | the case of sensors read by a GPIO), or an    |
-|                      | I2C address. or other.                        |
-+----------------------+-----------------------------------------------+
-| I2C Bus              | The bus to be used to communicate with the    |
-|                      | I2C address.                                  |
-+----------------------+-----------------------------------------------+
-| Period (seconds)     | After the sensor is successfully read and a   |
-|                      | database entry is made, this is the duration  |
-|                      | of time waited until the sensor is measured   |
-|                      | again.                                        |
-+----------------------+-----------------------------------------------+
-| Measurement Unit     | Select the unit to save the measurement as    |
-|                      | (only available for select measurements).     |
-+----------------------+-----------------------------------------------+
-| Pre Output           | If you require a output to be activated       |
-|                      | before a measurement is made (for instance,   |
-|                      | if you have a pump that extracts air to a     |
-|                      | chamber where the sensor resides), this is    |
-|                      | the output number that will be activated. The |
-|                      | output will be activated for a duration       |
-|                      | defined by the Pre Duration, then once the    |
-|                      | output turns off, a measurement by the sensor |
-|                      | is made.                                      |
-+----------------------+-----------------------------------------------+
-| Pre Output Duration  | This is the duration of time that the Pre     |
-| (seconds)            | Output runs for before the sensor measurement |
-|                      | is obtained.                                  |
-+----------------------+-----------------------------------------------+
-| Pre Output During    | If enabled, the Pre Output stays on during    |
-| Measurement          | the acquisition of a measurement. If          |
-|                      | disabled, the Pre Output is turned off        |
-|                      | directly before acquiring a measurement.      |
-+----------------------+-----------------------------------------------+
-| Command              | A linux command (executed as the user 'root') |
-|                      | that the return value becomes the measurement |
-+----------------------+-----------------------------------------------+
-| Command Measurement  | The measured condition (e.g. temperature,     |
-|                      | humidity, etc.) from the linux command        |
-+----------------------+-----------------------------------------------+
-| Command Units        | The units of the measurement condition from   |
-|                      | the linux command                             |
-+----------------------+-----------------------------------------------+
-| Edge                 | Edge sensors only: Select whether the Rising  |
-|                      | or Falling (or both) edges of a changing      |
-|                      | voltage are detected. A number of devices to  |
-|                      | do this when in-line with a circuit supplying |
-|                      | a 3.3-volt input signal to a GPIO, such as    |
-|                      | simple mechanical switch, a button, a magnet  |
-|                      | (reed/hall) sensor, a PIR motion detector,    |
-|                      | and more.                                     |
-+----------------------+-----------------------------------------------+
-| Bounce Time (ms)     | Edge sensors only: This is the number of      |
-|                      | milliseconds to bounce the input signal. This |
-|                      | is commonly called debouncing a signal [1]    |
-|                      | and may be necessary if using a mechanical    |
-|                      | circuit.                                      |
-+----------------------+-----------------------------------------------+
-| Reset Period         | Edge sensors only: This is the period of time |
-| (seconds)            | after an edge detection that another edge     |
-|                      | will not be recorded. This enables devices    |
-|                      | such as PIR motion sensors that may stay      |
-|                      | activated for longer periods of time.         |
-+----------------------+-----------------------------------------------+
-| Measurement          | Analog-to-digital converter only: The type of |
-|                      | measurement being acquired by the ADC. For    |
-|                      | instance, if the resistance of a photocell is |
-|                      | being measured through a voltage divider,     |
-|                      | this measurement would be "light".            |
-+----------------------+-----------------------------------------------+
-| Units                | Analog-to-digital converter only: This is the |
-|                      | unit of the measurement. With the above       |
-|                      | example of "light" as the measurement, the    |
-|                      | unit may be "lux" or "intensity".             |
-+----------------------+-----------------------------------------------+
-| BT Adapter           | The Bluetooth adapter to communicate with the |
-|                      | input.                                        |
-+----------------------+-----------------------------------------------+
-| Clock Pin            | The GPIO (using BCM numbering) connected to   |
-|                      | the Clock pin of the ADC                      |
-+----------------------+-----------------------------------------------+
-| CS Pin               | The GPIO (using BCM numbering) connected to   |
-|                      | the CS pin of the ADC                         |
-+----------------------+-----------------------------------------------+
-| MISO Pin             | The GPIO (using BCM numbering) connected to   |
-|                      | the MISO pin of the ADC                       |
-+----------------------+-----------------------------------------------+
-| MOSI Pin             | The GPIO (using BCM numbering) connected to   |
-|                      | the MOSI pin of the ADC                       |
-+----------------------+-----------------------------------------------+
-| RTD Probe Type       | Select to measure from a PT100 or PT1000      |
-|                      | probe.                                        |
-+----------------------+-----------------------------------------------+
-| Resistor Reference   | If your reference resistor is not the default |
-| (Ohm)                | (400 Ohm for PT100, 4000 Ohm for PT1000), you |
-|                      | can manually set this value. Several          |
-|                      | manufacturers now use 430 Ohm resistors on    |
-|                      | their circuit boards, therefore it's          |
-|                      | recommended to verify the accuracy of your    |
-|                      | measurements and adjust this value if         |
-|                      | necessary.                                    |
-+----------------------+-----------------------------------------------+
-| Channel              | Analog-to-digital converter only: This is the |
-|                      | channel to obtain the voltage measurement     |
-|                      | from the ADC.                                 |
-+----------------------+-----------------------------------------------+
-| Gain                 | Analog-to-digital converter only: set the     |
-|                      | gain when acquiring the measurement.          |
-+----------------------+-----------------------------------------------+
-| Sample Speed         | Analog-to-digital converter only: set the     |
-|                      | sample speed (typically samples per second).  |
-+----------------------+-----------------------------------------------+
-| Volts Min            | Analog-to-digital converter only: What is the |
-|                      | minimum voltage to use when scaling to        |
-|                      | produce the unit value for the database. For  |
-|                      | instance, if your ADC is not expected to      |
-|                      | measure below 0.2 volts for your particular   |
-|                      | circuit, set this to "0.2".                   |
-+----------------------+-----------------------------------------------+
-| Volts Max            | Analog-to-digital converter only: This is     |
-|                      | similar to the Min option above, however it   |
-|                      | is setting the ceiling to the voltage range.  |
-|                      | Units Min Analog-to-digital converter only:   |
-|                      | This value will be the lower value of a range |
-|                      | that will use the Min and Max Voltages,       |
-|                      | above, to produce a unit output. For          |
-|                      | instance, if your voltage range is 0.0 - 1.0  |
-|                      | volts, and the unit range is 1 - 60, and a    |
-|                      | voltage of 0.5 is measured, in addition to    |
-|                      | 0.5 being stored in the database, 30 will be  |
-|                      | stored as well. This enables creating         |
-|                      | calibrated scales to use with your particular |
-|                      | circuit.                                      |
-+----------------------+-----------------------------------------------+
-| Units Max            | Analog-to-digital converter only: This is     |
-|                      | similar to the Min option above, however it   |
-|                      | is setting the ceiling to the unit range.     |
-+----------------------+-----------------------------------------------+
-| Weighting            | The This is a number between 0 and 1 and      |
-|                      | indicates how much the old reading affects    |
-|                      | the new reading. It defaults to 0 which means |
-|                      | the old reading has no effect. This may be    |
-|                      | used to smooth the data.                      |
-+----------------------+-----------------------------------------------+
-| Pulses Per Rev       | The number of pulses for a complete           |
-|                      | revolution.                                   |
-+----------------------+-----------------------------------------------+
-| Port                 | The server port to be queried (Server Port    |
-|                      | Open input).                                  |
-+----------------------+-----------------------------------------------+
-| Times to Check       | The number of times to attempt to ping a      |
-|                      | server (Server Ping input).                   |
-+----------------------+-----------------------------------------------+
-| Deadline (seconds)   | The maximum amount of time to wait for each   |
-|                      | ping attempt, after which 0 (offline) will be |
-|                      | returned (Server Ping input).                 |
-+----------------------+-----------------------------------------------+
-| Number of            | The number of unique measurements to store    |
-| Measurement          | data for this input.                          |
-+----------------------+-----------------------------------------------+
-| Application ID       | The Application ID on The Things Network.     |
-+----------------------+-----------------------------------------------+
-| App API Key          | The Application API Key on The Things         |
-|                      | Network.                                      |
-+----------------------+-----------------------------------------------+
-| Device ID            | The Device ID of the Application on The       |
-|                      | Things Network.                               |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Activate                | After the sensor has been properly configured,   |
+|                         | activation begins acquiring measurements from    |
+|                         | the sensor. Any activated conditional statements |
+|                         | will now being operating.                        |
++-------------------------+--------------------------------------------------+
+| Deactivate              | Deactivation stops measurements from being       |
+|                         | acquired from the sensor. All associated         |
+|                         | conditional statements will cease to operate.    |
++-------------------------+--------------------------------------------------+
+| Save                    | Save the current configuration entered into the  |
+|                         | input boxes for a particular sensor.             |
++-------------------------+--------------------------------------------------+
+| Delete                  | Delete a particular sensor.                      |
++-------------------------+--------------------------------------------------+
+| Acquire Measurements    | Force the input to conduct measurements and them |
+| Now                     | in the database.                                 |
++-------------------------+--------------------------------------------------+
+| Up/Down                 | Move a particular sensor up or down in the order |
+|                         | displayed.                                       |
++-------------------------+--------------------------------------------------+
+| Power Output            | Select a output that powers the sensor. This     |
+|                         | enables powering cycling (turn off then on) when |
+|                         | the sensor returns 3 consecutive errors to       |
+|                         | attempt to fix the issue. Transistors may also   |
+|                         | be used instead of a relay (note: NPN            |
+|                         | transistors are preferred over PNP for powering  |
+|                         | sensors).                                        |
++-------------------------+--------------------------------------------------+
+| Location                | Depending on what sensor is being used, you will |
+|                         | need to either select a serial number (DS18B20   |
+|                         | temperature sensor), a GPIO pin (in the case of  |
+|                         | sensors read by a GPIO), or an I2C address. or   |
+|                         | other.                                           |
++-------------------------+--------------------------------------------------+
+| I2C Bus                 | The bus to be used to communicate with the I2C   |
+|                         | address.                                         |
++-------------------------+--------------------------------------------------+
+| Period (seconds)        | After the sensor is successfully read and a      |
+|                         | database entry is made, this is the duration of  |
+|                         | time waited until the sensor is measured again.  |
++-------------------------+--------------------------------------------------+
+| Measurement Unit        | Select the unit to save the measurement as (only |
+|                         | available for select measurements).              |
++-------------------------+--------------------------------------------------+
+| Pre Output              | If you require a output to be activated before a |
+|                         | measurement is made (for instance, if you have a |
+|                         | pump that extracts air to a chamber where the    |
+|                         | sensor resides), this is the output number that  |
+|                         | will be activated. The output will be activated  |
+|                         | for a duration defined by the Pre Duration, then |
+|                         | once the output turns off, a measurement by the  |
+|                         | sensor is made.                                  |
++-------------------------+--------------------------------------------------+
+| Pre Output Duration     | This is the duration of time that the Pre Output |
+| (seconds)               | runs for before the sensor measurement is        |
+|                         | obtained.                                        |
++-------------------------+--------------------------------------------------+
+| Pre Output During       | If enabled, the Pre Output stays on during the   |
+| Measurement             | acquisition of a measurement. If disabled, the   |
+|                         | Pre Output is turned off directly before         |
+|                         | acquiring a measurement.                         |
++-------------------------+--------------------------------------------------+
+| Command                 | A linux command (executed as the user 'root')    |
+|                         | that the return value becomes the measurement    |
++-------------------------+--------------------------------------------------+
+| Command Measurement     | The measured condition (e.g. temperature,        |
+|                         | humidity, etc.) from the linux command           |
++-------------------------+--------------------------------------------------+
+| Command Units           | The units of the measurement condition from the  |
+|                         | linux command                                    |
++-------------------------+--------------------------------------------------+
+| Edge                    | Edge sensors only: Select whether the Rising or  |
+|                         | Falling (or both) edges of a changing voltage    |
+|                         | are detected. A number of devices to do this     |
+|                         | when in-line with a circuit supplying a 3.3-volt |
+|                         | input signal to a GPIO, such as simple           |
+|                         | mechanical switch, a button, a magnet            |
+|                         | (reed/hall) sensor, a PIR motion detector, and   |
+|                         | more.                                            |
++-------------------------+--------------------------------------------------+
+| Bounce Time (ms)        | Edge sensors only: This is the number of         |
+|                         | milliseconds to bounce the input signal. This is |
+|                         | commonly called debouncing a signal [1] and may  |
+|                         | be necessary if using a mechanical circuit.      |
++-------------------------+--------------------------------------------------+
+| Reset Period (seconds)  | Edge sensors only: This is the period of time    |
+|                         | after an edge detection that another edge will   |
+|                         | not be recorded. This enables devices such as    |
+|                         | PIR motion sensors that may stay activated for   |
+|                         | longer periods of time.                          |
++-------------------------+--------------------------------------------------+
+| Measurement             | Analog-to-digital converter only: The type of    |
+|                         | measurement being acquired by the ADC. For       |
+|                         | instance, if the resistance of a photocell is    |
+|                         | being measured through a voltage divider, this   |
+|                         | measurement would be "light".                    |
++-------------------------+--------------------------------------------------+
+| Units                   | Analog-to-digital converter only: This is the    |
+|                         | unit of the measurement. With the above example  |
+|                         | of "light" as the measurement, the unit may be   |
+|                         | "lux" or "intensity".                            |
++-------------------------+--------------------------------------------------+
+| BT Adapter              | The Bluetooth adapter to communicate with the    |
+|                         | input.                                           |
++-------------------------+--------------------------------------------------+
+| Clock Pin               | The GPIO (using BCM numbering) connected to the  |
+|                         | Clock pin of the ADC                             |
++-------------------------+--------------------------------------------------+
+| CS Pin                  | The GPIO (using BCM numbering) connected to the  |
+|                         | CS pin of the ADC                                |
++-------------------------+--------------------------------------------------+
+| MISO Pin                | The GPIO (using BCM numbering) connected to the  |
+|                         | MISO pin of the ADC                              |
++-------------------------+--------------------------------------------------+
+| MOSI Pin                | The GPIO (using BCM numbering) connected to the  |
+|                         | MOSI pin of the ADC                              |
++-------------------------+--------------------------------------------------+
+| RTD Probe Type          | Select to measure from a PT100 or PT1000 probe.  |
++-------------------------+--------------------------------------------------+
+| Resistor Reference      | If your reference resistor is not the default    |
+| (Ohm)                   | (400 Ohm for PT100, 4000 Ohm for PT1000), you    |
+|                         | can manually set this value. Several             |
+|                         | manufacturers now use 430 Ohm resistors on their |
+|                         | circuit boards, therefore it's recommended to    |
+|                         | verify the accuracy of your measurements and     |
+|                         | adjust this value if necessary.                  |
++-------------------------+--------------------------------------------------+
+| Channel                 | Analog-to-digital converter only: This is the    |
+|                         | channel to obtain the voltage measurement from   |
+|                         | the ADC.                                         |
++-------------------------+--------------------------------------------------+
+| Gain                    | Analog-to-digital converter only: set the gain   |
+|                         | when acquiring the measurement.                  |
++-------------------------+--------------------------------------------------+
+| Sample Speed            | Analog-to-digital converter only: set the sample |
+|                         | speed (typically samples per second).            |
++-------------------------+--------------------------------------------------+
+| Volts Min               | Analog-to-digital converter only: What is the    |
+|                         | minimum voltage to use when scaling to produce   |
+|                         | the unit value for the database. For instance,   |
+|                         | if your ADC is not expected to measure below 0.2 |
+|                         | volts for your particular circuit, set this to   |
+|                         | "0.2".                                           |
++-------------------------+--------------------------------------------------+
+| Volts Max               | Analog-to-digital converter only: This is        |
+|                         | similar to the Min option above, however it is   |
+|                         | setting the ceiling to the voltage range. Units  |
+|                         | Min Analog-to-digital converter only: This value |
+|                         | will be the lower value of a range that will use |
+|                         | the Min and Max Voltages, above, to produce a    |
+|                         | unit output. For instance, if your voltage range |
+|                         | is 0.0 - 1.0 volts, and the unit range is 1 -    |
+|                         | 60, and a voltage of 0.5 is measured, in         |
+|                         | addition to 0.5 being stored in the database, 30 |
+|                         | will be stored as well. This enables creating    |
+|                         | calibrated scales to use with your particular    |
+|                         | circuit.                                         |
++-------------------------+--------------------------------------------------+
+| Units Max               | Analog-to-digital converter only: This is        |
+|                         | similar to the Min option above, however it is   |
+|                         | setting the ceiling to the unit range.           |
++-------------------------+--------------------------------------------------+
+| Weighting               | The This is a number between 0 and 1 and         |
+|                         | indicates how much the old reading affects the   |
+|                         | new reading. It defaults to 0 which means the    |
+|                         | old reading has no effect. This may be used to   |
+|                         | smooth the data.                                 |
++-------------------------+--------------------------------------------------+
+| Pulses Per Rev          | The number of pulses for a complete revolution.  |
++-------------------------+--------------------------------------------------+
+| Port                    | The server port to be queried (Server Port Open  |
+|                         | input).                                          |
++-------------------------+--------------------------------------------------+
+| Times to Check          | The number of times to attempt to ping a server  |
+|                         | (Server Ping input).                             |
++-------------------------+--------------------------------------------------+
+| Deadline (seconds)      | The maximum amount of time to wait for each ping |
+|                         | attempt, after which 0 (offline) will be         |
+|                         | returned (Server Ping input).                    |
++-------------------------+--------------------------------------------------+
+| Number of Measurement   | The number of unique measurements to store data  |
+|                         | for this input.                                  |
++-------------------------+--------------------------------------------------+
+| Application ID          | The Application ID on The Things Network.        |
++-------------------------+--------------------------------------------------+
+| App API Key             | The Application API Key on The Things Network.   |
++-------------------------+--------------------------------------------------+
+| Device ID               | The Device ID of the Application on The Things   |
+|                         | Network.                                         |
++-------------------------+--------------------------------------------------+
 
 1. `Debouncing a
    signal <http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing>`__
@@ -817,10 +805,10 @@ available to use on the ``Setup -> Data`` page.
 If you have a sensor that is not currently supported by Mycodo, you can
 build your own input module and import it into Mycodo. All information
 about an input is contained within the input module, set in the
-dictionary 'INPUT_INFORMATION'. Each module will requires at a minimum
-for these variables to be set: 'input_name_unique',
-'input_manufacturer', 'input_name', 'measurements_name', and
-'measurements_dict'.
+dictionary 'INPUT\_INFORMATION'. Each module will requires at a minimum
+for these variables to be set: 'input\_name\_unique',
+'input\_manufacturer', 'input\_name', 'measurements\_name', and
+'measurements\_dict'.
 
 Open any of the built-in modules located in the inputs directory
 (https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for
@@ -831,8 +819,8 @@ an example:
 
 https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py
 
-The following link provides the full list of available INPUT_INFORMATION
-options along with descriptions:
+The following link provides the full list of available
+INPUT\_INFORMATION options along with descriptions:
 
 https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py
 
@@ -857,22 +845,22 @@ Payload Format is selected, the decoder code may look like this:
 
 .. code:: javascript
 
-   function Decoder(bytes, port) {
-       var decoded = {};
-       var rawTemp = bytes[0] + bytes[1] * 256;
-       decoded.temperature = sflt162f(rawTemp) * 100;
-       return decoded;
-   }
+    function Decoder(bytes, port) {
+        var decoded = {};
+        var rawTemp = bytes[0] + bytes[1] * 256;
+        decoded.temperature = sflt162f(rawTemp) * 100;
+        return decoded;
+    }
 
-   function sflt162f(rawSflt16) {
-       rawSflt16 &= 0xFFFF;
-       if (rawSflt16 === 0x8000)
-           return -0.0;
-       var sSign = ((rawSflt16 & 0x8000) !== 0) ? -1 : 1;
-       var exp1 = (rawSflt16 >> 11) & 0xF;
-       var mant1 = (rawSflt16 & 0x7FF) / 2048.0;
-       return sSign * mant1 * Math.pow(2, exp1 - 15);
-   }
+    function sflt162f(rawSflt16) {
+        rawSflt16 &= 0xFFFF;
+        if (rawSflt16 === 0x8000)
+            return -0.0;
+        var sSign = ((rawSflt16 & 0x8000) !== 0) ? -1 : 1;
+        var exp1 = (rawSflt16 >> 11) & 0xF;
+        var mant1 = (rawSflt16 & 0x7FF) / 2048.0;
+        return sSign * mant1 * Math.pow(2, exp1 - 15);
+    }
 
 This will decode the 2-byte payload into a temperature float value with
 the name "temperature". Set "Number of Measurements" to "1", then set
@@ -905,12 +893,12 @@ temperature, in this case).
 
 .. code:: python
 
-   string_send = 'B,{},{},{}'.format(
-       return_dict[1]['value'],
-       return_dict[2]['value'],
-       return_dict[0]['value'])
-   self.serial_send = self.serial.Serial(self.serial_device, 9600)
-   self.serial_send.write(string_send.encode())
+    string_send = 'B,{},{},{}'.format(
+        return_dict[1]['value'],
+        return_dict[2]['value'],
+        return_dict[0]['value'])
+    self.serial_send = self.serial.Serial(self.serial_device, 9600)
+    self.serial_send.write(string_send.encode())
 
 This is useful if multiple data strings are to be sent to the same
 serial device (e.g. if both ``bme280_ttn.py`` and ``k30_ttn.py`` are
@@ -943,135 +931,129 @@ Math Options
 
 Types of math controllers.
 
-+----------------------------+-----------------------------------------+
-| Type                       | Description                             |
-+============================+=========================================+
-| Average (Last, Multiple    | Stores the statistical mean of the last |
-| Channels)                  | measurement of multiple selected        |
-|                            | measurement channels.                   |
-+----------------------------+-----------------------------------------+
-| Average (Past, Single      | Stores the statistical mean of one      |
-| Channel)                   | selected measurement channel over a     |
-|                            | duration of time determined by the Max  |
-|                            | Age (seconds) option.                   |
-+----------------------------+-----------------------------------------+
-| Sum (Last, Multiple        | Stores the sum of multiple selected     |
-| Channels)                  | measurement channels.                   |
-+----------------------------+-----------------------------------------+
-| Sum (Past, Single Channel) | Stores the sum of one selected          |
-|                            | measurement channel over a duration of  |
-|                            | time determined by the Max Age(seconds) |
-|                            | option.                                 |
-+----------------------------+-----------------------------------------+
-| Difference                 | Stores the mathematical difference      |
-|                            | (value_1 - value_2).                    |
-+----------------------------+-----------------------------------------+
-| Equation                   | Stores the calculated value of an       |
-|                            | equation.                               |
-+----------------------------+-----------------------------------------+
-| Redundancy                 | Select multiple Inputs and if one input |
-|                            | isn't available, the next measurement   |
-|                            | will be used. For example, this is      |
-|                            | useful if an Input stops but you don't  |
-|                            | want a PID controller to stop working   |
-|                            | if there is another measurement that    |
-|                            | can be used. More than one Input can be |
-|                            | and the preferred Order of Use can be   |
-|                            | defined.                                |
-+----------------------------+-----------------------------------------+
-| Verification               | Ensures the greatest difference between |
-|                            | any selected Inputs is less than Max    |
-|                            | Difference, and if so, stores the       |
-|                            | average of the selected measurements.   |
-+----------------------------+-----------------------------------------+
-| Median                     | Stores the statistical median from the  |
-|                            | selected measurements.                  |
-+----------------------------+-----------------------------------------+
-| Maximum                    | Stores the largest measurement from the |
-|                            | selected measurements.                  |
-+----------------------------+-----------------------------------------+
-| Minimum                    | Stores the smallest measurement from    |
-|                            | the selected measurements.              |
-+----------------------------+-----------------------------------------+
-| Humidity                   | Calculates and stores the percent       |
-|                            | relative humidity from the dry-bulb and |
-|                            | wet-bulb temperatures, and optional     |
-|                            | pressure.                               |
-+----------------------------+-----------------------------------------+
++-------------------------------+--------------------------------------------+
+| Type                          | Description                                |
++===============================+============================================+
+| Average (Last, Multiple       | Stores the statistical mean of the last    |
+| Channels)                     | measurement of multiple selected           |
+|                               | measurement channels.                      |
++-------------------------------+--------------------------------------------+
+| Average (Past, Single         | Stores the statistical mean of one         |
+| Channel)                      | selected measurement channel over a        |
+|                               | duration of time determined by the Max Age |
+|                               | (seconds) option.                          |
++-------------------------------+--------------------------------------------+
+| Sum (Last, Multiple Channels) | Stores the sum of multiple selected        |
+|                               | measurement channels.                      |
++-------------------------------+--------------------------------------------+
+| Sum (Past, Single Channel)    | Stores the sum of one selected measurement |
+|                               | channel over a duration of time determined |
+|                               | by the Max Age(seconds) option.            |
++-------------------------------+--------------------------------------------+
+| Difference                    | Stores the mathematical difference         |
+|                               | (value\_1 - value\_2).                     |
++-------------------------------+--------------------------------------------+
+| Equation                      | Stores the calculated value of an          |
+|                               | equation.                                  |
++-------------------------------+--------------------------------------------+
+| Redundancy                    | Select multiple Inputs and if one input    |
+|                               | isn't available, the next measurement will |
+|                               | be used. For example, this is useful if an |
+|                               | Input stops but you don't want a PID       |
+|                               | controller to stop working if there is     |
+|                               | another measurement that can be used. More |
+|                               | than one Input can be and the preferred    |
+|                               | Order of Use can be defined.               |
++-------------------------------+--------------------------------------------+
+| Verification                  | Ensures the greatest difference between    |
+|                               | any selected Inputs is less than Max       |
+|                               | Difference, and if so, stores the average  |
+|                               | of the selected measurements.              |
++-------------------------------+--------------------------------------------+
+| Median                        | Stores the statistical median from the     |
+|                               | selected measurements.                     |
++-------------------------------+--------------------------------------------+
+| Maximum                       | Stores the largest measurement from the    |
+|                               | selected measurements.                     |
++-------------------------------+--------------------------------------------+
+| Minimum                       | Stores the smallest measurement from the   |
+|                               | selected measurements.                     |
++-------------------------------+--------------------------------------------+
+| Humidity                      | Calculates and stores the percent relative |
+|                               | humidity from the dry-bulb and wet-bulb    |
+|                               | temperatures, and optional pressure.       |
++-------------------------------+--------------------------------------------+
 
 Math controller options.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Input                | Select the Inputs to use with the particular  |
-|                      | Math controller                               |
-+----------------------+-----------------------------------------------+
-| Period (seconds)     | The duration of time between calculating and  |
-|                      | storing a new value                           |
-+----------------------+-----------------------------------------------+
-| Max Age (seconds)    | The maximum allowed age of the Input          |
-|                      | measurements. If an Input measurement is      |
-|                      | older than this period, the calculation is    |
-|                      | cancelled and the new value is not stored in  |
-|                      | the database. Consequently, if another        |
-|                      | controller has a Max Age set and cannot       |
-|                      | retrieve a current Math value, it will cease  |
-|                      | functioning. A PID controller, for instance,  |
-|                      | may stop regulating if there is no new Math   |
-|                      | value created, preventing the PID controller  |
-|                      | from continuing to run when it should not.    |
-+----------------------+-----------------------------------------------+
-| Start Offset         | Wait this duration before attempting the      |
-| (seconds)            | first calculation/measurement.                |
-+----------------------+-----------------------------------------------+
-| Measurement          | This is the condition being measured. For     |
-|                      | instance, if all of the selected measurements |
-|                      | are temperature, this should also be          |
-|                      | temperature. A list of the pre-defined        |
-|                      | measurements that may be used is below.       |
-+----------------------+-----------------------------------------------+
-| Units                | This is the units to display along with the   |
-|                      | measurement, on Graphs. If a pre-defined      |
-|                      | measurement is used, this field will default  |
-|                      | to the units associated with that             |
-|                      | measurement.                                  |
-+----------------------+-----------------------------------------------+
-| Reverse Equation     | For Difference calculations, this will        |
-|                      | reverse the equation order, from              |
-|                      | ``value_1 - value_2`` to                      |
-|                      | ``value_2 - value_1``.                        |
-+----------------------+-----------------------------------------------+
-| Absolute Value       | For Difference calculations, this will yield  |
-|                      | an absolute value (positive number).          |
-+----------------------+-----------------------------------------------+
-| Max Difference       | If the difference between any selected Input  |
-|                      | is greater than this value, no new value will |
-|                      | be stored in the database.                    |
-+----------------------+-----------------------------------------------+
-| Dry-Bulb Temperature | The measurement that will serve as the        |
-|                      | dry-bulb temperature (this is the warmer of   |
-|                      | the two temperature measurements)             |
-+----------------------+-----------------------------------------------+
-| Wet-Bulb Temperature | The measurement that will serve as the        |
-|                      | wet-bulb temperature (this is the colder of   |
-|                      | the two temperature measurements)             |
-+----------------------+-----------------------------------------------+
-| Pressure             | This is an optional pressure measurement that |
-|                      | can be used to calculate the percent relative |
-|                      | humidity. If disabled, a default 101325 Pa    |
-|                      | will be used in the calculation.              |
-+----------------------+-----------------------------------------------+
-| Equation             | An equation that will be solved with Python's |
-|                      | eval() function. Let "x" represent the input  |
-|                      | value. Valid equation symbols include: + - \* |
-|                      | / ^                                           |
-+----------------------+-----------------------------------------------+
-| Order of Use         | This is the order in which the selected       |
-|                      | Inputs will be used. This must be a comma     |
-|                      | separated list of Input IDs (integers, not    |
-|                      | UUIDs).                                       |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Input                   | Select the Inputs to use with the particular     |
+|                         | Math controller                                  |
++-------------------------+--------------------------------------------------+
+| Period (seconds)        | The duration of time between calculating and     |
+|                         | storing a new value                              |
++-------------------------+--------------------------------------------------+
+| Max Age (seconds)       | The maximum allowed age of the Input             |
+|                         | measurements. If an Input measurement is older   |
+|                         | than this period, the calculation is cancelled   |
+|                         | and the new value is not stored in the database. |
+|                         | Consequently, if another controller has a Max    |
+|                         | Age set and cannot retrieve a current Math       |
+|                         | value, it will cease functioning. A PID          |
+|                         | controller, for instance, may stop regulating if |
+|                         | there is no new Math value created, preventing   |
+|                         | the PID controller from continuing to run when   |
+|                         | it should not.                                   |
++-------------------------+--------------------------------------------------+
+| Start Offset (seconds)  | Wait this duration before attempting the first   |
+|                         | calculation/measurement.                         |
++-------------------------+--------------------------------------------------+
+| Measurement             | This is the condition being measured. For        |
+|                         | instance, if all of the selected measurements    |
+|                         | are temperature, this should also be             |
+|                         | temperature. A list of the pre-defined           |
+|                         | measurements that may be used is below.          |
++-------------------------+--------------------------------------------------+
+| Units                   | This is the units to display along with the      |
+|                         | measurement, on Graphs. If a pre-defined         |
+|                         | measurement is used, this field will default to  |
+|                         | the units associated with that measurement.      |
++-------------------------+--------------------------------------------------+
+| Reverse Equation        | For Difference calculations, this will reverse   |
+|                         | the equation order, from ``value_1 - value_2``   |
+|                         | to ``value_2 - value_1``.                        |
++-------------------------+--------------------------------------------------+
+| Absolute Value          | For Difference calculations, this will yield an  |
+|                         | absolute value (positive number).                |
++-------------------------+--------------------------------------------------+
+| Max Difference          | If the difference between any selected Input is  |
+|                         | greater than this value, no new value will be    |
+|                         | stored in the database.                          |
++-------------------------+--------------------------------------------------+
+| Dry-Bulb Temperature    | The measurement that will serve as the dry-bulb  |
+|                         | temperature (this is the warmer of the two       |
+|                         | temperature measurements)                        |
++-------------------------+--------------------------------------------------+
+| Wet-Bulb Temperature    | The measurement that will serve as the wet-bulb  |
+|                         | temperature (this is the colder of the two       |
+|                         | temperature measurements)                        |
++-------------------------+--------------------------------------------------+
+| Pressure                | This is an optional pressure measurement that    |
+|                         | can be used to calculate the percent relative    |
+|                         | humidity. If disabled, a default 101325 Pa will  |
+|                         | be used in the calculation.                      |
++-------------------------+--------------------------------------------------+
+| Equation                | An equation that will be solved with Python's    |
+|                         | eval() function. Let "x" represent the input     |
+|                         | value. Valid equation symbols include: + - \* /  |
+|                         | ^                                                |
++-------------------------+--------------------------------------------------+
+| Order of Use            | This is the order in which the selected Inputs   |
+|                         | will be used. This must be a comma separated     |
+|                         | list of Input IDs (integers, not UUIDs).         |
++-------------------------+--------------------------------------------------+
 
 Output
 ------
@@ -1087,104 +1069,101 @@ command, to name a few.
 General Output Options
 ~~~~~~~~~~~~~~~~~~~~~~
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Pin                  | This is the GPIO that will be the signal to   |
-|                      | the output, using BCM numbering.              |
-+----------------------+-----------------------------------------------+
-| WiringPi Pin         | This is the GPIO that will be the signal to   |
-|                      | the output, using WiringPi numbering.         |
-+----------------------+-----------------------------------------------+
-| On State             | This is the state of the GPIO to signal the   |
-|                      | output to turn the device on. HIGH will send  |
-|                      | a 3.3-volt signal and LOW will send a 0-volt  |
-|                      | signal. If you output completes the circuit   |
-|                      | (and the device powers on) when a 3.3-volt    |
-|                      | signal is sent, then set this to HIGH. If the |
-|                      | device powers when a 0-volt signal is sent,   |
-|                      | set this to LOW.                              |
-+----------------------+-----------------------------------------------+
-| Protocol             | This is the protocol to use to transmit via   |
-|                      | 315/433 MHz. Default is 1, but if this        |
-|                      | doesn't work, increment the number.           |
-+----------------------+-----------------------------------------------+
-| UART Device          | The UART device connected to the device.      |
-+----------------------+-----------------------------------------------+
-| Baud Rate            | The baud rate of the UART device.             |
-+----------------------+-----------------------------------------------+
-| I2C Address          | The I2C address of the device.                |
-+----------------------+-----------------------------------------------+
-| I2C Bus              | The I2C bus the device is connected to.       |
-+----------------------+-----------------------------------------------+
-| Output Mode          | The Output mode, if supported.                |
-+----------------------+-----------------------------------------------+
-| Flow Rate            | The flow rate to dispense the volume          |
-|                      | (ml/min).                                     |
-+----------------------+-----------------------------------------------+
-| Pulse Length         | This is the pulse length to transmit via      |
-|                      | 315/433 MHz. Default is 189 ms.               |
-+----------------------+-----------------------------------------------+
-| Bit Length           | This is the bit length to transmit via        |
-|                      | 315/433 MHz. Default is 24-bit.               |
-+----------------------+-----------------------------------------------+
-| On Command           | This is the command used to turn the output   |
-|                      | on. For wireless relays, this is the          |
-|                      | numerical command to be transmitted, and for  |
-|                      | command outputs this is the command to be     |
-|                      | executed. Commands may be for the linux       |
-|                      | terminal or Python 3 (depending on which      |
-|                      | output type selected).                        |
-+----------------------+-----------------------------------------------+
-| Off Command          | This is the command used to turn the output   |
-|                      | off. For wireless relays, this is the         |
-|                      | numerical command to be transmitted, and for  |
-|                      | command outputs this is the command to be     |
-|                      | executed. Commands may be for the linux       |
-|                      | terminal or Python 3 (depending on which      |
-|                      | output type selected).                        |
-+----------------------+-----------------------------------------------+
-| PWM Command          | This is the command used to set the duty      |
-|                      | cycle. The string "((duty_cycle))" in the     |
-|                      | command will be replaced with the actual duty |
-|                      | cycle before the command is executed. Ensure  |
-|                      | "((duty_cycle))" is included in your command  |
-|                      | for this feature to work correctly. Commands  |
-|                      | may be for the linux terminal or Python 3     |
-|                      | (depending on which output type selected).    |
-+----------------------+-----------------------------------------------+
-| Current Draw (amps)  | The is the amount of current the device       |
-|                      | powered by the output draws. Note: this value |
-|                      | should be calculated based on the voltage set |
-|                      | in the `Energy Usage                          |
-|                      | Settings <#energy-usage-settings>`__.         |
-+----------------------+-----------------------------------------------+
-| Startup State        | This specifies whether the output should be   |
-|                      | ON or OFF when mycodo initially starts. Some  |
-|                      | outputs have an additional options.           |
-+----------------------+-----------------------------------------------+
-| Startup Value        | If the Startup State is set to User Set Value |
-|                      | (such as for PWM Outputs), then this value    |
-|                      | will be set when Mycodo starts up.            |
-+----------------------+-----------------------------------------------+
-| Shutdown State       | This specifies whether the output should be   |
-|                      | ON or OFF when mycodo initially shuts down.   |
-|                      | Some outputs have an additional options.      |
-+----------------------+-----------------------------------------------+
-| Shutdown Value       | If the Shutdown State is set to User Set      |
-|                      | Value (such as for PWM Outputs), then this    |
-|                      | value will be set when Mycodo shuts down.     |
-+----------------------+-----------------------------------------------+
-| Trigger at Startup   | Select to enable triggering Functions (such   |
-|                      | as Output Triggers) when Mycodo starts and if |
-|                      | Start State is set to ON.                     |
-+----------------------+-----------------------------------------------+
-| Seconds to turn On   | This is a way to turn a output on for a       |
-|                      | specific duration of time. This can be useful |
-|                      | for testing the outputs and powered devices   |
-|                      | or the measured effects a device may have on  |
-|                      | an environmental condition.                   |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Pin                     | This is the GPIO that will be the signal to the  |
+|                         | output, using BCM numbering.                     |
++-------------------------+--------------------------------------------------+
+| WiringPi Pin            | This is the GPIO that will be the signal to the  |
+|                         | output, using WiringPi numbering.                |
++-------------------------+--------------------------------------------------+
+| On State                | This is the state of the GPIO to signal the      |
+|                         | output to turn the device on. HIGH will send a   |
+|                         | 3.3-volt signal and LOW will send a 0-volt       |
+|                         | signal. If you output completes the circuit (and |
+|                         | the device powers on) when a 3.3-volt signal is  |
+|                         | sent, then set this to HIGH. If the device       |
+|                         | powers when a 0-volt signal is sent, set this to |
+|                         | LOW.                                             |
++-------------------------+--------------------------------------------------+
+| Protocol                | This is the protocol to use to transmit via      |
+|                         | 315/433 MHz. Default is 1, but if this doesn't   |
+|                         | work, increment the number.                      |
++-------------------------+--------------------------------------------------+
+| UART Device             | The UART device connected to the device.         |
++-------------------------+--------------------------------------------------+
+| Baud Rate               | The baud rate of the UART device.                |
++-------------------------+--------------------------------------------------+
+| I2C Address             | The I2C address of the device.                   |
++-------------------------+--------------------------------------------------+
+| I2C Bus                 | The I2C bus the device is connected to.          |
++-------------------------+--------------------------------------------------+
+| Output Mode             | The Output mode, if supported.                   |
++-------------------------+--------------------------------------------------+
+| Flow Rate               | The flow rate to dispense the volume (ml/min).   |
++-------------------------+--------------------------------------------------+
+| Pulse Length            | This is the pulse length to transmit via 315/433 |
+|                         | MHz. Default is 189 ms.                          |
++-------------------------+--------------------------------------------------+
+| Bit Length              | This is the bit length to transmit via 315/433   |
+|                         | MHz. Default is 24-bit.                          |
++-------------------------+--------------------------------------------------+
+| On Command              | This is the command used to turn the output on.  |
+|                         | For wireless relays, this is the numerical       |
+|                         | command to be transmitted, and for command       |
+|                         | outputs this is the command to be executed.      |
+|                         | Commands may be for the linux terminal or Python |
+|                         | 3 (depending on which output type selected).     |
++-------------------------+--------------------------------------------------+
+| Off Command             | This is the command used to turn the output off. |
+|                         | For wireless relays, this is the numerical       |
+|                         | command to be transmitted, and for command       |
+|                         | outputs this is the command to be executed.      |
+|                         | Commands may be for the linux terminal or Python |
+|                         | 3 (depending on which output type selected).     |
++-------------------------+--------------------------------------------------+
+| PWM Command             | This is the command used to set the duty cycle.  |
+|                         | The string "((duty\_cycle))" in the command will |
+|                         | be replaced with the actual duty cycle before    |
+|                         | the command is executed. Ensure                  |
+|                         | "((duty\_cycle))" is included in your command    |
+|                         | for this feature to work correctly. Commands may |
+|                         | be for the linux terminal or Python 3 (depending |
+|                         | on which output type selected).                  |
++-------------------------+--------------------------------------------------+
+| Current Draw (amps)     | The is the amount of current the device powered  |
+|                         | by the output draws. Note: this value should be  |
+|                         | calculated based on the voltage set in the       |
+|                         | `Energy Usage                                    |
+|                         | Settings <#energy-usage-settings>`__.            |
++-------------------------+--------------------------------------------------+
+| Startup State           | This specifies whether the output should be ON   |
+|                         | or OFF when mycodo initially starts. Some        |
+|                         | outputs have an additional options.              |
++-------------------------+--------------------------------------------------+
+| Startup Value           | If the Startup State is set to User Set Value    |
+|                         | (such as for PWM Outputs), then this value will  |
+|                         | be set when Mycodo starts up.                    |
++-------------------------+--------------------------------------------------+
+| Shutdown State          | This specifies whether the output should be ON   |
+|                         | or OFF when mycodo initially shuts down. Some    |
+|                         | outputs have an additional options.              |
++-------------------------+--------------------------------------------------+
+| Shutdown Value          | If the Shutdown State is set to User Set Value   |
+|                         | (such as for PWM Outputs), then this value will  |
+|                         | be set when Mycodo shuts down.                   |
++-------------------------+--------------------------------------------------+
+| Trigger at Startup      | Select to enable triggering Functions (such as   |
+|                         | Output Triggers) when Mycodo starts and if Start |
+|                         | State is set to ON.                              |
++-------------------------+--------------------------------------------------+
+| Seconds to turn On      | This is a way to turn a output on for a specific |
+|                         | duration of time. This can be useful for testing |
+|                         | the outputs and powered devices or the measured  |
+|                         | effects a device may have on an environmental    |
+|                         | condition.                                       |
++-------------------------+--------------------------------------------------+
 
 On/Off (GPIO)
 ~~~~~~~~~~~~~
@@ -1226,10 +1205,10 @@ resultant waveform perceived by the load must be as smooth as possible.
 The rate (or frequency) at which the power supply must switch can vary
 greatly depending on load and application, for example
 
-   Switching has to be done several times a minute in an electric stove;
-   120 Hz in a lamp dimmer; between a few kilohertz (kHz) to tens of kHz
-   for a motor drive; and well into the tens or hundreds of kHz in audio
-   amplifiers and computer power supplies.
+    Switching has to be done several times a minute in an electric
+    stove; 120 Hz in a lamp dimmer; between a few kilohertz (kHz) to
+    tens of kHz for a motor drive; and well into the tens or hundreds of
+    kHz in audio amplifiers and computer power supplies.
 
 The term duty cycle describes the proportion of 'on' time to the regular
 interval or 'period' of time; a low duty cycle corresponds to low power,
@@ -1242,30 +1221,30 @@ be used by a PWM PID Controller.
 PWM (GPIO) Options
 ^^^^^^^^^^^^^^^^^^
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Library              | Select the method for producing the PWM       |
-|                      | signal. Hardware pins can produce up to a 30  |
-|                      | MHz PWM signal, while any other (non-hardware |
-|                      | PWM) pin can produce up to a 40 kHz PWM       |
-|                      | signal. See the table, below, for the         |
-|                      | hardware pins on various Pi boards.           |
-+----------------------+-----------------------------------------------+
-| BCM Pin              | This is the GPIO that will output the PWM     |
-|                      | signal, using BCM numbering.                  |
-+----------------------+-----------------------------------------------+
-| Hertz                | This is frequency of the PWM signal.          |
-+----------------------+-----------------------------------------------+
-| Duty Cycle           | This is the proportion of the time on to the  |
-|                      | time off, expressed in percent (0 - 100).     |
-+----------------------+-----------------------------------------------+
-| Current Draw (amps)  | This is the current draw, in amps, when the   |
-|                      | duty cycle is 100%. Note: this value should   |
-|                      | be calculated based on the voltage set in the |
-|                      | `Energy Usage                                 |
-|                      | Settings <#energy-usage-settings>`__.         |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Library                 | Select the method for producing the PWM signal.  |
+|                         | Hardware pins can produce up to a 30 MHz PWM     |
+|                         | signal, while any other (non-hardware PWM) pin   |
+|                         | can produce up to a 40 kHz PWM signal. See the   |
+|                         | table, below, for the hardware pins on various   |
+|                         | Pi boards.                                       |
++-------------------------+--------------------------------------------------+
+| BCM Pin                 | This is the GPIO that will output the PWM        |
+|                         | signal, using BCM numbering.                     |
++-------------------------+--------------------------------------------------+
+| Hertz                   | This is frequency of the PWM signal.             |
++-------------------------+--------------------------------------------------+
+| Duty Cycle              | This is the proportion of the time on to the     |
+|                         | time off, expressed in percent (0 - 100).        |
++-------------------------+--------------------------------------------------+
+| Current Draw (amps)     | This is the current draw, in amps, when the duty |
+|                         | cycle is 100%. Note: this value should be        |
+|                         | calculated based on the voltage set in the       |
+|                         | `Energy Usage                                    |
+|                         | Settings <#energy-usage-settings>`__.            |
++-------------------------+--------------------------------------------------+
 
 Non-hardware PWM Pins
 ^^^^^^^^^^^^^^^^^^^^^
@@ -1283,27 +1262,27 @@ The exact frequency may be set when using hardware PWM pins. The same
 PWM channel is available on multiple GPIO. The latest frequency and duty
 cycle setting will be used by all GPIO pins which share a PWM channel.
 
-+-----------+---------------+-----------------------------+
-| BCM Pin   | PWM Channel   | Raspberry Pi Version        |
-+===========+===============+=============================+
-| 12        | 0             | All models except A and B   |
-+-----------+---------------+-----------------------------+
-| 13        | 1             | All models except A and B   |
-+-----------+---------------+-----------------------------+
-| 18        | 0             | All models                  |
-+-----------+---------------+-----------------------------+
-| 19        | 1             | All models except A and B   |
-+-----------+---------------+-----------------------------+
-| 40        | 0             | Compute module only         |
-+-----------+---------------+-----------------------------+
-| 41        | 1             | Compute module only         |
-+-----------+---------------+-----------------------------+
-| 45        | 1             | Compute module only         |
-+-----------+---------------+-----------------------------+
-| 52        | 0             | Compute module only         |
-+-----------+---------------+-----------------------------+
-| 53        | 1             | Compute module only         |
-+-----------+---------------+-----------------------------+
++--------------+------------------+--------------------------------+
+| BCM Pin      | PWM Channel      | Raspberry Pi Version           |
++==============+==================+================================+
+| 12           | 0                | All models except A and B      |
++--------------+------------------+--------------------------------+
+| 13           | 1                | All models except A and B      |
++--------------+------------------+--------------------------------+
+| 18           | 0                | All models                     |
++--------------+------------------+--------------------------------+
+| 19           | 1                | All models except A and B      |
++--------------+------------------+--------------------------------+
+| 40           | 0                | Compute module only            |
++--------------+------------------+--------------------------------+
+| 41           | 1                | Compute module only            |
++--------------+------------------+--------------------------------+
+| 45           | 1                | Compute module only            |
++--------------+------------------+--------------------------------+
+| 52           | 0                | Compute module only            |
++--------------+------------------+--------------------------------+
+| 53           | 1                | Compute module only            |
++--------------+------------------+--------------------------------+
 
 Schematics for DC Fan Control
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1346,18 +1325,18 @@ peristaltic pump.
 Atlas EZO-PMP Pump Options
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Output Mode          | "Fastest low Rate" will pump liquid at the    |
-|                      | fastest rate the pump can perform. "Specify   |
-|                      | Flow Rate" will pump liquid at the rate with  |
-|                      | the "Flow Rate (ml/min)" option.              |
-+----------------------+-----------------------------------------------+
-| Flow Rate (ml/min)   | This is how fast liquid will be pumped if the |
-|                      | "Specify Flow Rate" option is selected for    |
-|                      | the Output Mode option.                       |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Output Mode             | "Fastest low Rate" will pump liquid at the       |
+|                         | fastest rate the pump can perform. "Specify Flow |
+|                         | Rate" will pump liquid at the rate with the      |
+|                         | "Flow Rate (ml/min)" option.                     |
++-------------------------+--------------------------------------------------+
+| Flow Rate (ml/min)      | This is how fast liquid will be pumped if the    |
+|                         | "Specify Flow Rate" option is selected for the   |
+|                         | Output Mode option.                              |
++-------------------------+--------------------------------------------------+
 
 Wireless 315/433 MHz
 ~~~~~~~~~~~~~~~~~~~~
@@ -1373,7 +1352,7 @@ that button.
 
 .. code:: python
 
-   sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/devices/wireless_rpi_rf.py -d 2 -g 17
+    sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/devices/wireless_rpi_rf.py -d 2 -g 17
 
 433 MHz wireless relays have been successfully tested with SMAKN 433MHz
 RF Transmitters/Receivers and Etekcity Wireless Remote Control
@@ -1450,136 +1429,132 @@ resumes operation.
 PID Controller Options
 ~~~~~~~~~~~~~~~~~~~~~~
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Activate/Deactivate  | Turn a particular PID controller on or off.   |
-+----------------------+-----------------------------------------------+
-| Pause                | When paused, the control variable will not be |
-|                      | updated and the PID will not turn on the      |
-|                      | associated outputs. Settings can be changed   |
-|                      | without losing current PID output values.     |
-+----------------------+-----------------------------------------------+
-| Hold                 | When held, the control variable will not be   |
-|                      | updated but the PID will turn on the          |
-|                      | associated outputs, Settings can be changed   |
-|                      | without losing current PID output values.     |
-+----------------------+-----------------------------------------------+
-| Resume               | Resume a PID controller from being held or    |
-|                      | paused.                                       |
-+----------------------+-----------------------------------------------+
-| Direction            | This is the direction that you wish to        |
-|                      | regulate. For example, if you only require    |
-|                      | the temperature to be raised, set this to     |
-|                      | "Up," but if you require regulation up and    |
-|                      | down, set this to "Both."                     |
-+----------------------+-----------------------------------------------+
-| Period               | This is the duration between when the PID     |
-|                      | acquires a measurement, the PID is updated,   |
-|                      | and the output is modulated.                  |
-+----------------------+-----------------------------------------------+
-| Start Offset         | Wait this duration before attempting the      |
-| (seconds)            | first calculation/measurement.                |
-+----------------------+-----------------------------------------------+
-| Max Age              | The time (in seconds) that the sensor         |
-|                      | measurement age is required to be less than.  |
-|                      | If the measurement is not younger than this   |
-|                      | age, the measurement is thrown out and the    |
-|                      | PID will not actuate the output. This is a    |
-|                      | safety measure to ensure the PID is only      |
-|                      | using recent measurements.                    |
-+----------------------+-----------------------------------------------+
-| Setpoint             | This is the specific point you would like the |
-|                      | environment to be regulated at. For example,  |
-|                      | if you would like the humidity regulated to   |
-|                      | 60%, enter 60.                                |
-+----------------------+-----------------------------------------------+
-| Band (+/- Setpoint)  | Hysteresis option. If set to a non-0 value,   |
-|                      | the setpoint will become a band, which will   |
-|                      | be between the band_max=setpoint+band and     |
-|                      | band_min=setpoint-band. If Raising, the PID   |
-|                      | will raise above band_max, then wait until    |
-|                      | the condition falls below band_min to resume  |
-|                      | regulation. If Lowering, the PID will lower   |
-|                      | below band_min, then wait until the condition |
-|                      | rises above band_max to resume regulating. If |
-|                      | set to Both, regulation will only occur to    |
-|                      | the outside min and max of the band, and      |
-|                      | cease when within the band. Set to 0 to       |
-|                      | disable Hysteresis.                           |
-+----------------------+-----------------------------------------------+
-| Store Lower as       | Checking this will store all output variables |
-| Negative             | (PID and output duration/duty cycle) as a     |
-|                      | negative values in the measurement database.  |
-|                      | This is useful for displaying graphs that     |
-|                      | indicate whether the PID is currently         |
-|                      | lowering or raising. Disable this if you      |
-|                      | desire all positive values to be stored in    |
-|                      | the measurement database.                     |
-+----------------------+-----------------------------------------------+
-| K\ :sub:`P` Gain     | Proportional coefficient (non-negative).      |
-|                      | Accounts for present values of the error. For |
-|                      | example, if the error is large and positive,  |
-|                      | the control output will also be large and     |
-|                      | positive.                                     |
-+----------------------+-----------------------------------------------+
-| K\ :sub:`I` Gain     | Integral coefficient (non-negative). Accounts |
-|                      | for past values of the error. For example, if |
-|                      | the current output is not sufficiently        |
-|                      | strong, the integral of the error will        |
-|                      | accumulate over time, and the controller will |
-|                      | respond by applying a stronger action.        |
-+----------------------+-----------------------------------------------+
-| K\ :sub:`D` Gain     | Derivative coefficient (non-negative).        |
-|                      | Accounts for predicted future values of the   |
-|                      | error, based on its current rate of change.   |
-+----------------------+-----------------------------------------------+
-| Integrator Min       | The minimum allowed integrator value, for     |
-|                      | calculating Ki_total: (Ki_total = Ki \*       |
-|                      | integrator; and PID output = Kp_total +       |
-|                      | Ki_total + Kd_total)                          |
-+----------------------+-----------------------------------------------+
-| Integrator Max       | The maximum allowed integrator value, for     |
-|                      | calculating Ki_total: (Ki_total = Ki \*       |
-|                      | integrator; and PID output = Kp_total +       |
-|                      | Ki_total + Kd_total)                          |
-+----------------------+-----------------------------------------------+
-| Output (Raise)       | This is the output that will cause the        |
-|                      | particular environmental condition to rise.   |
-|                      | In the case of raising the temperature, this  |
-|                      | may be a heating pad or coil.                 |
-+----------------------+-----------------------------------------------+
-| Min Duration (raise) | This is the minimum that the PID output must  |
-|                      | be before the Up Output turns on. If the PID  |
-|                      | output exceeds this minimum, the Up Output    |
-|                      | will turn on for the PID output number of     |
-|                      | seconds.                                      |
-+----------------------+-----------------------------------------------+
-| Max Duration (raise) | This is the maximum duration the Up Output is |
-|                      | allowed to turn on for. If the PID output     |
-|                      | exceeds this number, the Up Output will turn  |
-|                      | on for no greater than this duration of time. |
-+----------------------+-----------------------------------------------+
-| Output (Lower)       | This is the output that will cause the        |
-|                      | particular environmental condition to lower.  |
-|                      | In the case of lowering the CO2, this may be  |
-|                      | an exhaust fan.                               |
-+----------------------+-----------------------------------------------+
-| Min Duration (lower) | This is the minimum that the PID output must  |
-|                      | be before the Down Output turns on. If the    |
-|                      | PID output exceeds this minimum, the Down     |
-|                      | Output will turn on for the PID output number |
-|                      | of seconds.                                   |
-+----------------------+-----------------------------------------------+
-| Max Duration (lower) | This is the maximum duration the Down Output  |
-|                      | is allowed to turn on for. if the PID output  |
-|                      | exceeds this number, the Down Output will     |
-|                      | turn on for no greater than this duration of  |
-|                      | time.                                         |
-+----------------------+-----------------------------------------------+
-| Setpoint Tracking    | Set a method to change the setpoint over      |
-| Method               | time.                                         |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Activate/Deactivate     | Turn a particular PID controller on or off.      |
++-------------------------+--------------------------------------------------+
+| Pause                   | When paused, the control variable will not be    |
+|                         | updated and the PID will not turn on the         |
+|                         | associated outputs. Settings can be changed      |
+|                         | without losing current PID output values.        |
++-------------------------+--------------------------------------------------+
+| Hold                    | When held, the control variable will not be      |
+|                         | updated but the PID will turn on the associated  |
+|                         | outputs, Settings can be changed without losing  |
+|                         | current PID output values.                       |
++-------------------------+--------------------------------------------------+
+| Resume                  | Resume a PID controller from being held or       |
+|                         | paused.                                          |
++-------------------------+--------------------------------------------------+
+| Direction               | This is the direction that you wish to regulate. |
+|                         | For example, if you only require the temperature |
+|                         | to be raised, set this to "Up," but if you       |
+|                         | require regulation up and down, set this to      |
+|                         | "Both."                                          |
++-------------------------+--------------------------------------------------+
+| Period                  | This is the duration between when the PID        |
+|                         | acquires a measurement, the PID is updated, and  |
+|                         | the output is modulated.                         |
++-------------------------+--------------------------------------------------+
+| Start Offset (seconds)  | Wait this duration before attempting the first   |
+|                         | calculation/measurement.                         |
++-------------------------+--------------------------------------------------+
+| Max Age                 | The time (in seconds) that the sensor            |
+|                         | measurement age is required to be less than. If  |
+|                         | the measurement is not younger than this age,    |
+|                         | the measurement is thrown out and the PID will   |
+|                         | not actuate the output. This is a safety measure |
+|                         | to ensure the PID is only using recent           |
+|                         | measurements.                                    |
++-------------------------+--------------------------------------------------+
+| Setpoint                | This is the specific point you would like the    |
+|                         | environment to be regulated at. For example, if  |
+|                         | you would like the humidity regulated to 60%,    |
+|                         | enter 60.                                        |
++-------------------------+--------------------------------------------------+
+| Band (+/- Setpoint)     | Hysteresis option. If set to a non-0 value, the  |
+|                         | setpoint will become a band, which will be       |
+|                         | between the band\_max=setpoint+band and          |
+|                         | band\_min=setpoint-band. If Raising, the PID     |
+|                         | will raise above band\_max, then wait until the  |
+|                         | condition falls below band\_min to resume        |
+|                         | regulation. If Lowering, the PID will lower      |
+|                         | below band\_min, then wait until the condition   |
+|                         | rises above band\_max to resume regulating. If   |
+|                         | set to Both, regulation will only occur to the   |
+|                         | outside min and max of the band, and cease when  |
+|                         | within the band. Set to 0 to disable Hysteresis. |
++-------------------------+--------------------------------------------------+
+| Store Lower as Negative | Checking this will store all output variables    |
+|                         | (PID and output duration/duty cycle) as a        |
+|                         | negative values in the measurement database.     |
+|                         | This is useful for displaying graphs that        |
+|                         | indicate whether the PID is currently lowering   |
+|                         | or raising. Disable this if you desire all       |
+|                         | positive values to be stored in the measurement  |
+|                         | database.                                        |
++-------------------------+--------------------------------------------------+
+| K\ :sub:`P` Gain        | Proportional coefficient (non-negative).         |
+|                         | Accounts for present values of the error. For    |
+|                         | example, if the error is large and positive, the |
+|                         | control output will also be large and positive.  |
++-------------------------+--------------------------------------------------+
+| K\ :sub:`I` Gain        | Integral coefficient (non-negative). Accounts    |
+|                         | for past values of the error. For example, if    |
+|                         | the current output is not sufficiently strong,   |
+|                         | the integral of the error will accumulate over   |
+|                         | time, and the controller will respond by         |
+|                         | applying a stronger action.                      |
++-------------------------+--------------------------------------------------+
+| K\ :sub:`D` Gain        | Derivative coefficient (non-negative). Accounts  |
+|                         | for predicted future values of the error, based  |
+|                         | on its current rate of change.                   |
++-------------------------+--------------------------------------------------+
+| Integrator Min          | The minimum allowed integrator value, for        |
+|                         | calculating Ki\_total: (Ki\_total = Ki \*        |
+|                         | integrator; and PID output = Kp\_total +         |
+|                         | Ki\_total + Kd\_total)                           |
++-------------------------+--------------------------------------------------+
+| Integrator Max          | The maximum allowed integrator value, for        |
+|                         | calculating Ki\_total: (Ki\_total = Ki \*        |
+|                         | integrator; and PID output = Kp\_total +         |
+|                         | Ki\_total + Kd\_total)                           |
++-------------------------+--------------------------------------------------+
+| Output (Raise)          | This is the output that will cause the           |
+|                         | particular environmental condition to rise. In   |
+|                         | the case of raising the temperature, this may be |
+|                         | a heating pad or coil.                           |
++-------------------------+--------------------------------------------------+
+| Min Duration (raise)    | This is the minimum that the PID output must be  |
+|                         | before the Up Output turns on. If the PID output |
+|                         | exceeds this minimum, the Up Output will turn on |
+|                         | for the PID output number of seconds.            |
++-------------------------+--------------------------------------------------+
+| Max Duration (raise)    | This is the maximum duration the Up Output is    |
+|                         | allowed to turn on for. If the PID output        |
+|                         | exceeds this number, the Up Output will turn on  |
+|                         | for no greater than this duration of time.       |
++-------------------------+--------------------------------------------------+
+| Output (Lower)          | This is the output that will cause the           |
+|                         | particular environmental condition to lower. In  |
+|                         | the case of lowering the CO2, this may be an     |
+|                         | exhaust fan.                                     |
++-------------------------+--------------------------------------------------+
+| Min Duration (lower)    | This is the minimum that the PID output must be  |
+|                         | before the Down Output turns on. If the PID      |
+|                         | output exceeds this minimum, the Down Output     |
+|                         | will turn on for the PID output number of        |
+|                         | seconds.                                         |
++-------------------------+--------------------------------------------------+
+| Max Duration (lower)    | This is the maximum duration the Down Output is  |
+|                         | allowed to turn on for. if the PID output        |
+|                         | exceeds this number, the Down Output will turn   |
+|                         | on for no greater than this duration of time.    |
++-------------------------+--------------------------------------------------+
+| Setpoint Tracking       | Set a method to change the setpoint over time.   |
+| Method                  |                                                  |
++-------------------------+--------------------------------------------------+
 
 PID Autotune
 ~~~~~~~~~~~~
@@ -1603,20 +1578,20 @@ this is the case, try modifying your system to reduce disturbances. Once
 the autotune successfully completes, disturbances may be reintroduced in
 order to further tune the PID controller to handle them.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Noise Band           | This is the amount above the setpoint the     |
-|                      | measured condition must reach before the      |
-|                      | output turns off. This is also how much below |
-|                      | the setpoint the measured condition must fall |
-|                      | before the output turns back on.              |
-+----------------------+-----------------------------------------------+
-| Outstep              | This is how many seconds the output will turn |
-|                      | on every PID Period. For instance, to         |
-|                      | autotune with 50% power, ensure the Outstep   |
-|                      | is half the value of the PID Period.          |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Noise Band              | This is the amount above the setpoint the        |
+|                         | measured condition must reach before the output  |
+|                         | turns off. This is also how much below the       |
+|                         | setpoint the measured condition must fall before |
+|                         | the output turns back on.                        |
++-------------------------+--------------------------------------------------+
+| Outstep                 | This is how many seconds the output will turn on |
+|                         | every PID Period. For instance, to autotune with |
+|                         | 50% power, ensure the Outstep is half the value  |
+|                         | of the PID Period.                               |
++-------------------------+--------------------------------------------------+
 
 Typical graph output will look like this:
 
@@ -1626,99 +1601,99 @@ And typical Daemon Log output will look like this:
 
 ::
 
-   2018-08-04 23:32:20,876 - mycodo.pid_3b533dff - INFO - Activated in 187.2 ms
-   2018-08-04 23:32:20,877 - mycodo.pid_autotune - INFO - PID Autotune started
-   2018-08-04 23:33:50,823 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:33:50,830 - mycodo.pid_autotune - INFO - Cycle: 19
-   2018-08-04 23:33:50,831 - mycodo.pid_autotune - INFO - switched state: relay step down
-   2018-08-04 23:33:50,832 - mycodo.pid_autotune - INFO - input: 32.52
-   2018-08-04 23:36:00,854 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:36:00,860 - mycodo.pid_autotune - INFO - Cycle: 45
-   2018-08-04 23:36:00,862 - mycodo.pid_autotune - INFO - found peak: 34.03
-   2018-08-04 23:36:00,863 - mycodo.pid_autotune - INFO - peak count: 1
-   2018-08-04 23:37:20,802 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:37:20,809 - mycodo.pid_autotune - INFO - Cycle: 61
-   2018-08-04 23:37:20,810 - mycodo.pid_autotune - INFO - switched state: relay step up
-   2018-08-04 23:37:20,811 - mycodo.pid_autotune - INFO - input: 31.28
-   2018-08-04 23:38:30,867 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:38:30,874 - mycodo.pid_autotune - INFO - Cycle: 75
-   2018-08-04 23:38:30,876 - mycodo.pid_autotune - INFO - found peak: 32.17
-   2018-08-04 23:38:30,878 - mycodo.pid_autotune - INFO - peak count: 2
-   2018-08-04 23:38:40,852 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:38:40,858 - mycodo.pid_autotune - INFO - Cycle: 77
-   2018-08-04 23:38:40,860 - mycodo.pid_autotune - INFO - switched state: relay step down
-   2018-08-04 23:38:40,861 - mycodo.pid_autotune - INFO - input: 32.85
-   2018-08-04 23:40:50,834 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:40:50,835 - mycodo.pid_autotune - INFO - Cycle: 103
-   2018-08-04 23:40:50,836 - mycodo.pid_autotune - INFO - found peak: 33.93
-   2018-08-04 23:40:50,836 - mycodo.pid_autotune - INFO - peak count: 3
-   2018-08-04 23:42:05,799 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:42:05,805 - mycodo.pid_autotune - INFO - Cycle: 118
-   2018-08-04 23:42:05,806 - mycodo.pid_autotune - INFO - switched state: relay step up
-   2018-08-04 23:42:05,807 - mycodo.pid_autotune - INFO - input: 31.27
-   2018-08-04 23:43:15,816 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:43:15,822 - mycodo.pid_autotune - INFO - Cycle: 132
-   2018-08-04 23:43:15,824 - mycodo.pid_autotune - INFO - found peak: 32.09
-   2018-08-04 23:43:15,825 - mycodo.pid_autotune - INFO - peak count: 4
-   2018-08-04 23:43:25,790 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:43:25,796 - mycodo.pid_autotune - INFO - Cycle: 134
-   2018-08-04 23:43:25,797 - mycodo.pid_autotune - INFO - switched state: relay step down
-   2018-08-04 23:43:25,798 - mycodo.pid_autotune - INFO - input: 32.76
-   2018-08-04 23:45:30,802 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:45:30,808 - mycodo.pid_autotune - INFO - Cycle: 159
-   2018-08-04 23:45:30,810 - mycodo.pid_autotune - INFO - found peak: 33.98
-   2018-08-04 23:45:30,811 - mycodo.pid_autotune - INFO - peak count: 5
-   2018-08-04 23:45:30,812 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:45:30,814 - mycodo.pid_autotune - INFO - amplitude: 0.9099999999999989
-   2018-08-04 23:45:30,815 - mycodo.pid_autotune - INFO - amplitude deviation: 0.06593406593406595
-   2018-08-04 23:46:40,851 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:46:40,857 - mycodo.pid_autotune - INFO - Cycle: 173
-   2018-08-04 23:46:40,858 - mycodo.pid_autotune - INFO - switched state: relay step up
-   2018-08-04 23:46:40,859 - mycodo.pid_autotune - INFO - input: 31.37
-   2018-08-04 23:47:55,860 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:47:55,866 - mycodo.pid_autotune - INFO - Cycle: 188
-   2018-08-04 23:47:55,868 - mycodo.pid_autotune - INFO - found peak: 32.36
-   2018-08-04 23:47:55,869 - mycodo.pid_autotune - INFO - peak count: 6
-   2018-08-04 23:47:55,870 - mycodo.pid_autotune - INFO -
-   2018-08-04 23:47:55,871 - mycodo.pid_autotune - INFO - amplitude: 0.9149999999999979
-   2018-08-04 23:47:55,872 - mycodo.pid_autotune - INFO - amplitude deviation: 0.032786885245900406
-   2018-08-04 23:47:55,873 - mycodo.pid_3b533dff - INFO - time:  16 min
-   2018-08-04 23:47:55,874 - mycodo.pid_3b533dff - INFO - state: succeeded
-   2018-08-04 23:47:55,874 - mycodo.pid_3b533dff - INFO -
-   2018-08-04 23:47:55,875 - mycodo.pid_3b533dff - INFO - rule: ziegler-nichols
-   2018-08-04 23:47:55,876 - mycodo.pid_3b533dff - INFO - Kp: 0.40927018474290117
-   2018-08-04 23:47:55,877 - mycodo.pid_3b533dff - INFO - Ki: 0.05846588600007114
-   2018-08-04 23:47:55,879 - mycodo.pid_3b533dff - INFO - Kd: 0.7162385434443115
-   2018-08-04 23:47:55,880 - mycodo.pid_3b533dff - INFO -
-   2018-08-04 23:47:55,881 - mycodo.pid_3b533dff - INFO - rule: tyreus-luyben
-   2018-08-04 23:47:55,887 - mycodo.pid_3b533dff - INFO - Kp: 0.3162542336649691
-   2018-08-04 23:47:55,889 - mycodo.pid_3b533dff - INFO - Ki: 0.010165091543194185
-   2018-08-04 23:47:55,890 - mycodo.pid_3b533dff - INFO - Kd: 0.7028026111719073
-   2018-08-04 23:47:55,891 - mycodo.pid_3b533dff - INFO -
-   2018-08-04 23:47:55,892 - mycodo.pid_3b533dff - INFO - rule: ciancone-marlin
-   2018-08-04 23:47:55,892 - mycodo.pid_3b533dff - INFO - Kp: 0.21083615577664605
-   2018-08-04 23:47:55,893 - mycodo.pid_3b533dff - INFO - Ki: 0.06626133746674728
-   2018-08-04 23:47:55,893 - mycodo.pid_3b533dff - INFO - Kd: 0.3644161687558038
-   2018-08-04 23:47:55,894 - mycodo.pid_3b533dff - INFO -
-   2018-08-04 23:47:55,894 - mycodo.pid_3b533dff - INFO - rule: pessen-integral
-   2018-08-04 23:47:55,895 - mycodo.pid_3b533dff - INFO - Kp: 0.49697093861638
-   2018-08-04 23:47:55,895 - mycodo.pid_3b533dff - INFO - Ki: 0.0887428626786794
-   2018-08-04 23:47:55,896 - mycodo.pid_3b533dff - INFO - Kd: 1.04627757151908
-   2018-08-04 23:47:55,896 - mycodo.pid_3b533dff - INFO -
-   2018-08-04 23:47:55,897 - mycodo.pid_3b533dff - INFO - rule: some-overshoot
-   2018-08-04 23:47:55,898 - mycodo.pid_3b533dff - INFO - Kp: 0.23191977135431066
-   2018-08-04 23:47:55,898 - mycodo.pid_3b533dff - INFO - Ki: 0.03313066873337365
-   2018-08-04 23:47:55,899 - mycodo.pid_3b533dff - INFO - Kd: 1.0823160212047374
-   2018-08-04 23:47:55,899 - mycodo.pid_3b533dff - INFO -
-   2018-08-04 23:47:55,900 - mycodo.pid_3b533dff - INFO - rule: no-overshoot
-   2018-08-04 23:47:55,900 - mycodo.pid_3b533dff - INFO - Kp: 0.1391518628125864
-   2018-08-04 23:47:55,901 - mycodo.pid_3b533dff - INFO - Ki: 0.01987840124002419
-   2018-08-04 23:47:55,901 - mycodo.pid_3b533dff - INFO - Kd: 0.6493896127228425
-   2018-08-04 23:47:55,902 - mycodo.pid_3b533dff - INFO -
-   2018-08-04 23:47:55,902 - mycodo.pid_3b533dff - INFO - rule: brewing
-   2018-08-04 23:47:55,903 - mycodo.pid_3b533dff - INFO - Kp: 5.566074512503456
-   2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Ki: 0.11927040744014512
-   2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Kd: 4.101408080354794
+    2018-08-04 23:32:20,876 - mycodo.pid_3b533dff - INFO - Activated in 187.2 ms
+    2018-08-04 23:32:20,877 - mycodo.pid_autotune - INFO - PID Autotune started
+    2018-08-04 23:33:50,823 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:33:50,830 - mycodo.pid_autotune - INFO - Cycle: 19
+    2018-08-04 23:33:50,831 - mycodo.pid_autotune - INFO - switched state: relay step down
+    2018-08-04 23:33:50,832 - mycodo.pid_autotune - INFO - input: 32.52
+    2018-08-04 23:36:00,854 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:36:00,860 - mycodo.pid_autotune - INFO - Cycle: 45
+    2018-08-04 23:36:00,862 - mycodo.pid_autotune - INFO - found peak: 34.03
+    2018-08-04 23:36:00,863 - mycodo.pid_autotune - INFO - peak count: 1
+    2018-08-04 23:37:20,802 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:37:20,809 - mycodo.pid_autotune - INFO - Cycle: 61
+    2018-08-04 23:37:20,810 - mycodo.pid_autotune - INFO - switched state: relay step up
+    2018-08-04 23:37:20,811 - mycodo.pid_autotune - INFO - input: 31.28
+    2018-08-04 23:38:30,867 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:38:30,874 - mycodo.pid_autotune - INFO - Cycle: 75
+    2018-08-04 23:38:30,876 - mycodo.pid_autotune - INFO - found peak: 32.17
+    2018-08-04 23:38:30,878 - mycodo.pid_autotune - INFO - peak count: 2
+    2018-08-04 23:38:40,852 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:38:40,858 - mycodo.pid_autotune - INFO - Cycle: 77
+    2018-08-04 23:38:40,860 - mycodo.pid_autotune - INFO - switched state: relay step down
+    2018-08-04 23:38:40,861 - mycodo.pid_autotune - INFO - input: 32.85
+    2018-08-04 23:40:50,834 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:40:50,835 - mycodo.pid_autotune - INFO - Cycle: 103
+    2018-08-04 23:40:50,836 - mycodo.pid_autotune - INFO - found peak: 33.93
+    2018-08-04 23:40:50,836 - mycodo.pid_autotune - INFO - peak count: 3
+    2018-08-04 23:42:05,799 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:42:05,805 - mycodo.pid_autotune - INFO - Cycle: 118
+    2018-08-04 23:42:05,806 - mycodo.pid_autotune - INFO - switched state: relay step up
+    2018-08-04 23:42:05,807 - mycodo.pid_autotune - INFO - input: 31.27
+    2018-08-04 23:43:15,816 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:43:15,822 - mycodo.pid_autotune - INFO - Cycle: 132
+    2018-08-04 23:43:15,824 - mycodo.pid_autotune - INFO - found peak: 32.09
+    2018-08-04 23:43:15,825 - mycodo.pid_autotune - INFO - peak count: 4
+    2018-08-04 23:43:25,790 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:43:25,796 - mycodo.pid_autotune - INFO - Cycle: 134
+    2018-08-04 23:43:25,797 - mycodo.pid_autotune - INFO - switched state: relay step down
+    2018-08-04 23:43:25,798 - mycodo.pid_autotune - INFO - input: 32.76
+    2018-08-04 23:45:30,802 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:45:30,808 - mycodo.pid_autotune - INFO - Cycle: 159
+    2018-08-04 23:45:30,810 - mycodo.pid_autotune - INFO - found peak: 33.98
+    2018-08-04 23:45:30,811 - mycodo.pid_autotune - INFO - peak count: 5
+    2018-08-04 23:45:30,812 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:45:30,814 - mycodo.pid_autotune - INFO - amplitude: 0.9099999999999989
+    2018-08-04 23:45:30,815 - mycodo.pid_autotune - INFO - amplitude deviation: 0.06593406593406595
+    2018-08-04 23:46:40,851 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:46:40,857 - mycodo.pid_autotune - INFO - Cycle: 173
+    2018-08-04 23:46:40,858 - mycodo.pid_autotune - INFO - switched state: relay step up
+    2018-08-04 23:46:40,859 - mycodo.pid_autotune - INFO - input: 31.37
+    2018-08-04 23:47:55,860 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:47:55,866 - mycodo.pid_autotune - INFO - Cycle: 188
+    2018-08-04 23:47:55,868 - mycodo.pid_autotune - INFO - found peak: 32.36
+    2018-08-04 23:47:55,869 - mycodo.pid_autotune - INFO - peak count: 6
+    2018-08-04 23:47:55,870 - mycodo.pid_autotune - INFO -
+    2018-08-04 23:47:55,871 - mycodo.pid_autotune - INFO - amplitude: 0.9149999999999979
+    2018-08-04 23:47:55,872 - mycodo.pid_autotune - INFO - amplitude deviation: 0.032786885245900406
+    2018-08-04 23:47:55,873 - mycodo.pid_3b533dff - INFO - time:  16 min
+    2018-08-04 23:47:55,874 - mycodo.pid_3b533dff - INFO - state: succeeded
+    2018-08-04 23:47:55,874 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,875 - mycodo.pid_3b533dff - INFO - rule: ziegler-nichols
+    2018-08-04 23:47:55,876 - mycodo.pid_3b533dff - INFO - Kp: 0.40927018474290117
+    2018-08-04 23:47:55,877 - mycodo.pid_3b533dff - INFO - Ki: 0.05846588600007114
+    2018-08-04 23:47:55,879 - mycodo.pid_3b533dff - INFO - Kd: 0.7162385434443115
+    2018-08-04 23:47:55,880 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,881 - mycodo.pid_3b533dff - INFO - rule: tyreus-luyben
+    2018-08-04 23:47:55,887 - mycodo.pid_3b533dff - INFO - Kp: 0.3162542336649691
+    2018-08-04 23:47:55,889 - mycodo.pid_3b533dff - INFO - Ki: 0.010165091543194185
+    2018-08-04 23:47:55,890 - mycodo.pid_3b533dff - INFO - Kd: 0.7028026111719073
+    2018-08-04 23:47:55,891 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,892 - mycodo.pid_3b533dff - INFO - rule: ciancone-marlin
+    2018-08-04 23:47:55,892 - mycodo.pid_3b533dff - INFO - Kp: 0.21083615577664605
+    2018-08-04 23:47:55,893 - mycodo.pid_3b533dff - INFO - Ki: 0.06626133746674728
+    2018-08-04 23:47:55,893 - mycodo.pid_3b533dff - INFO - Kd: 0.3644161687558038
+    2018-08-04 23:47:55,894 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,894 - mycodo.pid_3b533dff - INFO - rule: pessen-integral
+    2018-08-04 23:47:55,895 - mycodo.pid_3b533dff - INFO - Kp: 0.49697093861638
+    2018-08-04 23:47:55,895 - mycodo.pid_3b533dff - INFO - Ki: 0.0887428626786794
+    2018-08-04 23:47:55,896 - mycodo.pid_3b533dff - INFO - Kd: 1.04627757151908
+    2018-08-04 23:47:55,896 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,897 - mycodo.pid_3b533dff - INFO - rule: some-overshoot
+    2018-08-04 23:47:55,898 - mycodo.pid_3b533dff - INFO - Kp: 0.23191977135431066
+    2018-08-04 23:47:55,898 - mycodo.pid_3b533dff - INFO - Ki: 0.03313066873337365
+    2018-08-04 23:47:55,899 - mycodo.pid_3b533dff - INFO - Kd: 1.0823160212047374
+    2018-08-04 23:47:55,899 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,900 - mycodo.pid_3b533dff - INFO - rule: no-overshoot
+    2018-08-04 23:47:55,900 - mycodo.pid_3b533dff - INFO - Kp: 0.1391518628125864
+    2018-08-04 23:47:55,901 - mycodo.pid_3b533dff - INFO - Ki: 0.01987840124002419
+    2018-08-04 23:47:55,901 - mycodo.pid_3b533dff - INFO - Kd: 0.6493896127228425
+    2018-08-04 23:47:55,902 - mycodo.pid_3b533dff - INFO -
+    2018-08-04 23:47:55,902 - mycodo.pid_3b533dff - INFO - rule: brewing
+    2018-08-04 23:47:55,903 - mycodo.pid_3b533dff - INFO - Kp: 5.566074512503456
+    2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Ki: 0.11927040744014512
+    2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Kd: 4.101408080354794
 
 Conditional
 -----------
@@ -1732,65 +1707,62 @@ Conditional Options
 
 Check if the latest measurement is above or below the set value.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Conditional          | The text string that includes device IDs      |
-| Statement            | enclosed in curly brackets ({}) that will be  |
-|                      | converted to the actual measurement before    |
-|                      | being evaluated by python to determine if it  |
-|                      | is True or False. If True, the associated     |
-|                      | actions will be executed.                     |
-+----------------------+-----------------------------------------------+
-| Period (seconds)     | The period (seconds) between conditional      |
-|                      | checks.                                       |
-+----------------------+-----------------------------------------------+
-| Refractory Period    | The minimum duration (seconds) to wait after  |
-| (seconds)            | a conditional has been triggered to begin     |
-|                      | evaluating the conditional again.             |
-+----------------------+-----------------------------------------------+
-| Log Level: Debug     | Show debug lines in the daemon log.           |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Conditional Statement   | The text string that includes device IDs         |
+|                         | enclosed in curly brackets ({}) that will be     |
+|                         | converted to the actual measurement before being |
+|                         | evaluated by python to determine if it is True   |
+|                         | or False. If True, the associated actions will   |
+|                         | be executed.                                     |
++-------------------------+--------------------------------------------------+
+| Period (seconds)        | The period (seconds) between conditional checks. |
++-------------------------+--------------------------------------------------+
+| Refractory Period       | The minimum duration (seconds) to wait after a   |
+| (seconds)               | conditional has been triggered to begin          |
+|                         | evaluating the conditional again.                |
++-------------------------+--------------------------------------------------+
+| Log Level: Debug        | Show debug lines in the daemon log.              |
++-------------------------+--------------------------------------------------+
 
 Conditions are variables that can be used within the Conditional
 Statement.
 
-+----------------------+-----------------------------------------------+
-| Condition            | Description                                   |
-+======================+===============================================+
-| Measurement (Single) | Acquires the latest measurement from an Input |
-|                      | or device. Set Max Age (seconds) to restrict  |
-|                      | how long to accept values. If the latest      |
-|                      | value is older than this duration, "None" is  |
-|                      | returned.                                     |
-+----------------------+-----------------------------------------------+
-| Measurement          | Acquires the last measurements from an Input  |
-| (Multiple)           | or device. Set Max Age (seconds) to restrict  |
-|                      | how long to accept values. If no values are   |
-|                      | found in this duration, "None" is returned.   |
-|                      | This differs from the "Measurement (Single)"  |
-|                      | Condition because it returns a list of        |
-|                      | dictionaries with 'time' and 'value' key      |
-|                      | pairs.                                        |
-+----------------------+-----------------------------------------------+
-| GPIO State           | Acquires the current GPIO state and returns 1 |
-|                      | if HIGH or 0 if LOW. If the latest value is   |
-|                      | older than this duration, "None" is returned. |
-+----------------------+-----------------------------------------------+
-| Output State         | Returns 'on' if the output is currently on,   |
-|                      | and 'off' if it's currently off.              |
-+----------------------+-----------------------------------------------+
-| Output Duration On   | Returns how long the output has currently     |
-|                      | been on, in seconds. Returns 0 if off.        |
-+----------------------+-----------------------------------------------+
-| Controller Running   | Returns True if the controller is active,     |
-|                      | False if inactive.                            |
-+----------------------+-----------------------------------------------+
-| Max Age (seconds)    | The minimum age (seconds) the measurement can |
-|                      | be. If the last measurement is older than     |
-|                      | this, "None" will be returned instead of a    |
-|                      | measurement.                                  |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Condition               | Description                                      |
++=========================+==================================================+
+| Measurement (Single)    | Acquires the latest measurement from an Input or |
+|                         | device. Set Max Age (seconds) to restrict how    |
+|                         | long to accept values. If the latest value is    |
+|                         | older than this duration, "None" is returned.    |
++-------------------------+--------------------------------------------------+
+| Measurement (Multiple)  | Acquires the last measurements from an Input or  |
+|                         | device. Set Max Age (seconds) to restrict how    |
+|                         | long to accept values. If no values are found in |
+|                         | this duration, "None" is returned. This differs  |
+|                         | from the "Measurement (Single)" Condition        |
+|                         | because it returns a list of dictionaries with   |
+|                         | 'time' and 'value' key pairs.                    |
++-------------------------+--------------------------------------------------+
+| GPIO State              | Acquires the current GPIO state and returns 1 if |
+|                         | HIGH or 0 if LOW. If the latest value is older   |
+|                         | than this duration, "None" is returned.          |
++-------------------------+--------------------------------------------------+
+| Output State            | Returns 'on' if the output is currently on, and  |
+|                         | 'off' if it's currently off.                     |
++-------------------------+--------------------------------------------------+
+| Output Duration On      | Returns how long the output has currently been   |
+|                         | on, in seconds. Returns 0 if off.                |
++-------------------------+--------------------------------------------------+
+| Controller Running      | Returns True if the controller is active, False  |
+|                         | if inactive.                                     |
++-------------------------+--------------------------------------------------+
+| Max Age (seconds)       | The minimum age (seconds) the measurement can    |
+|                         | be. If the last measurement is older than this,  |
+|                         | "None" will be returned instead of a             |
+|                         | measurement.                                     |
++-------------------------+--------------------------------------------------+
 
 Conditional Setup Guide
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -1800,27 +1772,26 @@ The following functions can be used within your code.
 
 Note: Indentation must use 4 spaces (not 2 spaces, tabs, or other).
 
-+--------------------------+--------------------------------------------+
-| Function                 | Description                                |
-+==========================+============================================+
-| self.condition("{ID}")   | Returns a measurement for the Condition    |
-|                          | with ID.                                   |
-+--------------------------+--------------------------------------------+
-| self.condition_dict("{ID | Returns a dictionary of measurement for    |
-| }")                      | the Condition with ID.                     |
-+--------------------------+--------------------------------------------+
-| self.run_action("{ID}")  | Executes the Action with ID.               |
-+--------------------------+--------------------------------------------+
-| self.run_all_actions()   | Executes all actions.                      |
-+--------------------------+--------------------------------------------+
-| self.logger.info()       | Writes a log line to the daemon log.       |
-|                          | 'info' may also be changed to 'error' or   |
-|                          | 'debug'.                                   |
-+--------------------------+--------------------------------------------+
++-----------------------------+-----------------------------------------------+
+| Function                    | Description                                   |
++=============================+===============================================+
+| self.condition("{ID}")      | Returns a measurement for the Condition with  |
+|                             | ID.                                           |
++-----------------------------+-----------------------------------------------+
+| self.condition\_dict("{ID   | Returns a dictionary of measurement for the   |
+| }")                         | Condition with ID.                            |
++-----------------------------+-----------------------------------------------+
+| self.run\_action("{ID}")    | Executes the Action with ID.                  |
++-----------------------------+-----------------------------------------------+
+| self.run\_all\_actions()    | Executes all actions.                         |
++-----------------------------+-----------------------------------------------+
+| self.logger.info()          | Writes a log line to the daemon log. 'info'   |
+|                             | may also be changed to 'error' or 'debug'.    |
++-----------------------------+-----------------------------------------------+
 
 There are additional functions that can be used, but these must use the
 full UUID (not an abridged version as the functions above). See
-/home/pi/Mycodo/mycodo/mycodo_client.py for the functions available for
+/home/pi/Mycodo/mycodo/mycodo\_client.py for the functions available for
 use. These may be accessed via the 'control' object. An example, below,
 will return how long the output has been on (or 0 if it's currently
 off):
@@ -1864,7 +1835,7 @@ the screenshots, below, that correspond to the numbers in parentheses:
 -  The default Conditional Statement (3) contains placeholder IDs that
    need to be changed to your Condition and Action IDs. Change the ID in
    self.condition("{asdf1234}") to your Condition ID. Change the ID in
-   self.run_action("{qwer5678}", message=message) to your Action ID.
+   self.run\_action("{qwer5678}", message=message) to your Action ID.
    Click ``Save`` at the top of the Conditional.
 -  The logic used in the Conditional Statement will need to be adjusted
    to suit your particular needs. Additionally, you may add more
@@ -1894,43 +1865,43 @@ section of the Conditional, as long as it's within the set Max Age.
 
 .. code:: python
 
-   # Example 1, no measurement, useful to notify by email when an Input stops working
-   if self.condition("{asdf1234}") is None:
-       self.run_all_actions()
+    # Example 1, no measurement, useful to notify by email when an Input stops working
+    if self.condition("{asdf1234}") is None:
+        self.run_all_actions()
 
-   # Example 2, test two measurements
-   measure_1 = self.condition("{asdf1234}")
-   measure_2 = self.condition("{hjkl5678}")
-   if None not in [measure_1, measure_2]:
-       if measure_1 < 20 and measure_2 > 10:
-           self.run_all_actions()
+    # Example 2, test two measurements
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if measure_1 < 20 and measure_2 > 10:
+            self.run_all_actions()
 
-   # Example 3, test two measurements and sum of measurements
-   measure_1 = self.condition("{asdf1234}")
-   measure_2 = self.condition("{hjkl5678}")
-   if None not in [measure_1, measure_2]:
-       sum = measure_1 + measure_2
-       if measure_1 > 2 and 10 < measure_2 < 23 and sum < 30.5:
-           self.run_all_actions()
+    # Example 3, test two measurements and sum of measurements
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        sum = measure_1 + measure_2
+        if measure_1 > 2 and 10 < measure_2 < 23 and sum < 30.5:
+            self.run_all_actions()
 
-   # Example 4, combine into one conditional
-   measurement = self.condition("{asdf1234}")
-   if measurement != None and 20 < measurement < 30:
-       self.run_all_actions()
+    # Example 4, combine into one conditional
+    measurement = self.condition("{asdf1234}")
+    if measurement != None and 20 < measurement < 30:
+        self.run_all_actions()
 
-   # Example 5, test two measurements and convert Edge Input from 0 or 1 to True or False
-   measure_1 = self.condition("{asdf1234}")
-   measure_2 = self.condition("{hjkl5678}")
-   if None not in [measure_1, measure_2]:
-       if bool(measure_1) and measure_2 > 10:
-           self.run_all_actions()
+    # Example 5, test two measurements and convert Edge Input from 0 or 1 to True or False
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if bool(measure_1) and measure_2 > 10:
+            self.run_all_actions()
 
-   # Example 6, test measurement with "or" and a rounded measurement
-   measure_1 = self.condition("{asdf1234}")
-   measure_2 = self.condition("{hjkl5678}")
-   if None not in [measure_1, measure_2]:
-       if measure_1 > 20 or int(round(measure_2)) in [20, 21, 22]:
-           self.run_all_actions()
+    # Example 6, test measurement with "or" and a rounded measurement
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if measure_1 > 20 or int(round(measure_2)) in [20, 21, 22]:
+            self.run_all_actions()
 
 "Measurement (Multiple)" is useful if you need to check if a particular
 value has been stored in any of the past measurements (within the set
@@ -1940,18 +1911,18 @@ you need to check each past value if it occurred. Here is an example
 that retrieves all measurements from the past 30 minutes and checks if
 each measurement value is equal to "119". If "119" exists, the Actions
 are executed and ``break`` is used to exit the ``for`` loop.
-each_measure['time'] may also be used to retrieve the timestamp for the
+each\_measure['time'] may also be used to retrieve the timestamp for the
 particular measurement.
 
 .. code:: python
 
-   # Example 1, find a particular measurement in the past 30 minutes (set Max Age to 1800 seconds)
-   measurements = self.condition_dict("{asdf1234}")
-   if measurements:
-       for each_measure in measurements:
-           if each_measure['value'] == 119:
-               self.run_all_actions()
-               break
+    # Example 1, find a particular measurement in the past 30 minutes (set Max Age to 1800 seconds)
+    measurements = self.condition_dict("{asdf1234}")
+    if measurements:
+        for each_measure in measurements:
+            if each_measure['value'] == 119:
+                self.run_all_actions()
+                break
 
 Advanced ``Conditional Statement`` examples:
 
@@ -1959,94 +1930,94 @@ These examples expand on the simple examples, above, by activating
 specific actions. The following examples will reference actions with IDs
 that can be found under the ``Actions`` section of the Conditional. Two
 example action ID will be used: "qwer1234" and "uiop5678". Additionally,
-self.run_all_actions() is used here, which will run all actions in the
+self.run\_all\_actions() is used here, which will run all actions in the
 order in which they appear in the Actions section of the Conditional.
 
 .. code:: python
 
-   # Example 1
-   measurement = self.condition("{asdf1234}")
-   if measurement is None:
-       self.run_action("{qwer1234}")
-   elif measurement > 23:
-       self.run_action("{uiop5678}")
-   else:
-       self.run_all_actions()
+    # Example 1
+    measurement = self.condition("{asdf1234}")
+    if measurement is None:
+        self.run_action("{qwer1234}")
+    elif measurement > 23:
+        self.run_action("{uiop5678}")
+    else:
+        self.run_all_actions()
 
-   # Example 2, test two measurements
-   measure_1 = self.condition("{asdf1234}")
-   measure_2 = self.condition("{hjkl5678}")
-   if None not in [measure_1, measure_2]:
-       if measure_1 < 20 and measure_2 > 10:
-           self.run_action("{qwer1234}")
-           self.run_action("{uiop5678}")
+    # Example 2, test two measurements
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if measure_1 < 20 and measure_2 > 10:
+            self.run_action("{qwer1234}")
+            self.run_action("{uiop5678}")
 
-   # Example 3, test two measurements and sum of measurements
-   measure_1 = self.condition("{asdf1234}")
-   measure_2 = self.condition("{hjkl5678}")
-   if None not in [measure_1, measure_2]:
-       sum = measure_1 + measure_2
-       if measure_1 > 2 and 10 < measure_2 < 23 and sum < 30.5:
-           self.run_action("{qwer1234}")
-       else:
-           self.run_action("{uiop5678}")
+    # Example 3, test two measurements and sum of measurements
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        sum = measure_1 + measure_2
+        if measure_1 > 2 and 10 < measure_2 < 23 and sum < 30.5:
+            self.run_action("{qwer1234}")
+        else:
+            self.run_action("{uiop5678}")
 
-   # Example 4, combine into one conditional
-   measurement = self.condition("{asdf1234}")
-   if measurement != None and 20 < measurement < 30:
-       self.run_action("{uiop5678}")
+    # Example 4, combine into one conditional
+    measurement = self.condition("{asdf1234}")
+    if measurement != None and 20 < measurement < 30:
+        self.run_action("{uiop5678}")
 
-   # Example 5, test two measurements and convert Edge Input from 0 or 1 to True or False
-   measure_1 = self.condition("{asdf1234}")
-   measure_2 = self.condition("{hjkl5678}")
-   if None not in [measure_1, measure_2]:
-       if bool(measure_1) and measure_2 > 10:
-           self.run_all_actions()
+    # Example 5, test two measurements and convert Edge Input from 0 or 1 to True or False
+    measure_1 = self.condition("{asdf1234}")
+    measure_2 = self.condition("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if bool(measure_1) and measure_2 > 10:
+            self.run_all_actions()
 
-   # Example 6, test measurement with "or" and a rounded measurement
-   measure_1 = self.measure("{asdf1234}")
-   measure_2 = self.measure("{hjkl5678}")
-   if None not in [measure_1, measure_2]:
-       if measure_1 > 20 or int(round(measure_2)) in [20, 21, 22]:
-           self.run_action("{qwer1234}")
-           if measure_1 > 30:
-               self.run_action("{uiop5678}")
+    # Example 6, test measurement with "or" and a rounded measurement
+    measure_1 = self.measure("{asdf1234}")
+    measure_2 = self.measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if measure_1 > 20 or int(round(measure_2)) in [20, 21, 22]:
+            self.run_action("{qwer1234}")
+            if measure_1 > 30:
+                self.run_action("{uiop5678}")
 
 If your action is a type that receives a message (E-Mail or Note), you
 can modify this message to include extra information before it is added
 to the Note or E-Mail. To do this, append a string to the variable
 ``self.message`` and add this to the ``message`` parameter of
-self.run_action() or self.run_all_actions(). Below are some examples.
+self.run\_action() or self.run\_all\_actions(). Below are some examples.
 Note the use of "+=" instead of "=", which appends the string to the
 variable ``self.message``.
 
 .. code:: python
 
-   # Example 1
-   measurement = self.measure("{asdf1234}")
-   if measurement is None and measurement > 23:
-       self.message += "Measurement was {}".format(measurement)
-       self.run_action("{uiop5678}", message=self.message)
+    # Example 1
+    measurement = self.measure("{asdf1234}")
+    if measurement is None and measurement > 23:
+        self.message += "Measurement was {}".format(measurement)
+        self.run_action("{uiop5678}", message=self.message)
 
-   # Example 2
-   measure_1 = self.measure("{asdf1234}")
-   measure_2 = self.measure("{hjkl5678}")
-   if None not in [measure_1, measure_2]:
-       if measure_1 < 20 and measure_2 > 10:
-           self.message += "Measurement 1: {m1}, Measurement 2: {m2}".format(m1=measure_1, m2=measure_2)
-           self.run_all_actions(message=self.message)
+    # Example 2
+    measure_1 = self.measure("{asdf1234}")
+    measure_2 = self.measure("{hjkl5678}")
+    if None not in [measure_1, measure_2]:
+        if measure_1 < 20 and measure_2 > 10:
+            self.message += "Measurement 1: {m1}, Measurement 2: {m2}".format(m1=measure_1, m2=measure_2)
+            self.run_all_actions(message=self.message)
 
 Logging can also be used to log messages to the daemon log using
 ``self.logger``:
 
 .. code:: python
 
-   # Example 1
-   measurement = self.measure("{asdf1234}")
-   if measurement is None and measurement > 23:
-       self.logging.error("Warning, measurement was {}".format(measurement))
-       self.message += "Measurement was {}".format(measurement)
-       self.run_action("{uiop5678}", message=self.message)
+    # Example 1
+    measurement = self.measure("{asdf1234}")
+    if measurement is None and measurement > 23:
+        self.logging.error("Warning, measurement was {}".format(measurement))
+        self.message += "Measurement was {}".format(measurement)
+        self.run_action("{uiop5678}", message=self.message)
 
 Before activating any conditionals, it's advised to thoroughly explore
 all possible scenarios and plan a configuration that eliminates
@@ -2070,59 +2041,59 @@ Output (On/Off) Options
 
 Monitor the state of an output.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| If Output            | The Output to monitor for a change of state.  |
-+----------------------+-----------------------------------------------+
-| If State             | If the state of the output changes to On or   |
-|                      | Off the conditional will trigger. If "On (any |
-|                      | duration) is selected, th trigger will occur  |
-|                      | no matter how long the output turns on for,   |
-|                      | whereas if only "On" is selected, the         |
-|                      | conditional will trigger only when the output |
-|                      | turns on for a duration of time equal to the  |
-|                      | set "Duration (seconds)".                     |
-+----------------------+-----------------------------------------------+
-| If Duration          | If "On" is selected, an optional duration     |
-| (seconds)            | (seconds) may be set that will trigger the    |
-|                      | conditional only if the Output is turned on   |
-|                      | for this specific duration.                   |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| If Output               | The Output to monitor for a change of state.     |
++-------------------------+--------------------------------------------------+
+| If State                | If the state of the output changes to On or Off  |
+|                         | the conditional will trigger. If "On (any        |
+|                         | duration) is selected, th trigger will occur no  |
+|                         | matter how long the output turns on for, whereas |
+|                         | if only "On" is selected, the conditional will   |
+|                         | trigger only when the output turns on for a      |
+|                         | duration of time equal to the set "Duration      |
+|                         | (seconds)".                                      |
++-------------------------+--------------------------------------------------+
+| If Duration (seconds)   | If "On" is selected, an optional duration        |
+|                         | (seconds) may be set that will trigger the       |
+|                         | conditional only if the Output is turned on for  |
+|                         | this specific duration.                          |
++-------------------------+--------------------------------------------------+
 
 Output (PWM) Options
 ~~~~~~~~~~~~~~~~~~~~
 
 Monitor the state of a PWM output.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| If Output            | The Output to monitor for a change of state.  |
-+----------------------+-----------------------------------------------+
-| If State             | If the duty cycle of the output is greater    |
-|                      | than,less than, or equal to the set value,    |
-|                      | trigger the Conditional Actions.              |
-+----------------------+-----------------------------------------------+
-| If Duty Cycle (%)    | The duty cycle for the Output to be checked   |
-|                      | against.                                      |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| If Output               | The Output to monitor for a change of state.     |
++-------------------------+--------------------------------------------------+
+| If State                | If the duty cycle of the output is greater       |
+|                         | than,less than, or equal to the set value,       |
+|                         | trigger the Conditional Actions.                 |
++-------------------------+--------------------------------------------------+
+| If Duty Cycle (%)       | The duty cycle for the Output to be checked      |
+|                         | against.                                         |
++-------------------------+--------------------------------------------------+
 
 Edge Options
 ~~~~~~~~~~~~
 
 Monitor the state of a pin for a rising and/or falling edge.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| If Edge Detected     | The conditional will be triggered if a change |
-|                      | in state is detected, either Rising when the  |
-|                      | state changes from LOW (0 volts) to HIGH (3.5 |
-|                      | volts) or Falling when the state changes from |
-|                      | HIGH (3.3 volts) to LOW (0 volts), or Both    |
-|                      | (Rising and Falling).                         |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| If Edge Detected        | The conditional will be triggered if a change in |
+|                         | state is detected, either Rising when the state  |
+|                         | changes from LOW (0 volts) to HIGH (3.5 volts)   |
+|                         | or Falling when the state changes from HIGH (3.3 |
+|                         | volts) to LOW (0 volts), or Both (Rising and     |
+|                         | Falling).                                        |
++-------------------------+--------------------------------------------------+
 
 Run PWM Method Options
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -2130,21 +2101,21 @@ Run PWM Method Options
 Select a Duration Method and this will set the selected PWM Output to
 the duty cycle specified by the method.
 
-+-----------------------+-----------------------------------------------+
-| Setting               | Description                                   |
-+=======================+===============================================+
-| Duration Method       | Select which Method to use.                   |
-+-----------------------+-----------------------------------------------+
-| PWM Output            | Select which PWM Output to use.               |
-+-----------------------+-----------------------------------------------+
-| Period (seconds)      | Select the interval of time to calculate the  |
-|                       | duty cycle, then apply to the PWM Output.     |
-+-----------------------+-----------------------------------------------+
-| Trigger Every Period  | Trigger Conditional Actions every period.     |
-+-----------------------+-----------------------------------------------+
-| Trigger when          | Trigger Conditional Actions when the          |
-| Activated             | Conditional is activated.                     |
-+-----------------------+-----------------------------------------------+
++--------------------------+--------------------------------------------------+
+| Setting                  | Description                                      |
++==========================+==================================================+
+| Duration Method          | Select which Method to use.                      |
++--------------------------+--------------------------------------------------+
+| PWM Output               | Select which PWM Output to use.                  |
++--------------------------+--------------------------------------------------+
+| Period (seconds)         | Select the interval of time to calculate the     |
+|                          | duty cycle, then apply to the PWM Output.        |
++--------------------------+--------------------------------------------------+
+| Trigger Every Period     | Trigger Conditional Actions every period.        |
++--------------------------+--------------------------------------------------+
+| Trigger when Activated   | Trigger Conditional Actions when the Conditional |
+|                          | is activated.                                    |
++--------------------------+--------------------------------------------------+
 
 Infrared Remote Input Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2155,13 +2126,13 @@ guide <#infrared-remote>`__ before using this feature.
 Note: Raspbian Buster broke this feature. Work is in progress to restore
 functionality.
 
-+-----------------------+-----------------------------------------------+
-| Setting               | Description                                   |
-+=======================+===============================================+
-| Program               | This is the variable 'program' in ~/.lircrc   |
-+-----------------------+-----------------------------------------------+
-| Word                  | This is the variable 'config' in ~/.lircrc    |
-+-----------------------+-----------------------------------------------+
++--------------------------+--------------------------------------------------+
+| Setting                  | Description                                      |
++==========================+==================================================+
+| Program                  | This is the variable 'program' in ~/.lircrc      |
++--------------------------+--------------------------------------------------+
+| Word                     | This is the variable 'config' in ~/.lircrc       |
++--------------------------+--------------------------------------------------+
 
 Sunrise/Sunset Options
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -2169,42 +2140,41 @@ Sunrise/Sunset Options
 Trigger events at sunrise or sunset (or a time offset of those), based
 on latitude and longitude.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Rise or Set          | Select which to trigger the conditional, at   |
-|                      | sunrise or sunset.                            |
-+----------------------+-----------------------------------------------+
-| Latitude (decimal)   | Latitude of the sunrise/sunset, using decimal |
-|                      | format.                                       |
-+----------------------+-----------------------------------------------+
-| Longitude (decimal)  | Longitude of the sunrise/sunset, using        |
-|                      | decimal format.                               |
-+----------------------+-----------------------------------------------+
-| Zenith               | The Zenith angle of the sun.                  |
-+----------------------+-----------------------------------------------+
-| Date Offset (days)   | Set a sunrise/sunset offset in days (positive |
-|                      | or negative).                                 |
-+----------------------+-----------------------------------------------+
-| Time Offset          | Set a sunrise/sunset offset in minutes        |
-| (minutes)            | (positive or negative).                       |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Rise or Set             | Select which to trigger the conditional, at      |
+|                         | sunrise or sunset.                               |
++-------------------------+--------------------------------------------------+
+| Latitude (decimal)      | Latitude of the sunrise/sunset, using decimal    |
+|                         | format.                                          |
++-------------------------+--------------------------------------------------+
+| Longitude (decimal)     | Longitude of the sunrise/sunset, using decimal   |
+|                         | format.                                          |
++-------------------------+--------------------------------------------------+
+| Zenith                  | The Zenith angle of the sun.                     |
++-------------------------+--------------------------------------------------+
+| Date Offset (days)      | Set a sunrise/sunset offset in days (positive or |
+|                         | negative).                                       |
++-------------------------+--------------------------------------------------+
+| Time Offset (minutes)   | Set a sunrise/sunset offset in minutes (positive |
+|                         | or negative).                                    |
++-------------------------+--------------------------------------------------+
 
 Timer (Duration) Options
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Run a timer that triggers Conditional Actions every period.
 
-+-----------------------+-----------------------------------------------+
-| Setting               | Description                                   |
-+=======================+===============================================+
-| Period (seconds)      | The period of time between triggering         |
-|                       | Conditional Actions.                          |
-+-----------------------+-----------------------------------------------+
-| Start Offset          | Set this to start the first trigger a number  |
-| (seconds)             | of seconds after the Conditional is           |
-|                       | activated.                                    |
-+-----------------------+-----------------------------------------------+
++--------------------------+--------------------------------------------------+
+| Setting                  | Description                                      |
++==========================+==================================================+
+| Period (seconds)         | The period of time between triggering            |
+|                          | Conditional Actions.                             |
++--------------------------+--------------------------------------------------+
+| Start Offset (seconds)   | Set this to start the first trigger a number of  |
+|                          | seconds after the Conditional is activated.      |
++--------------------------+--------------------------------------------------+
 
 Timer (Daily Time Point) Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2212,14 +2182,13 @@ Timer (Daily Time Point) Options
 Run a timer that triggers Conditional Actions at a specific time every
 day.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Start Time (HH:MM)   | Set the time to trigger Conditional Actions,  |
-|                      | in the format "HH:MM", with HH denoting       |
-|                      | hours, and MM denoting minutes. Time is in    |
-|                      | 24-hour format.                               |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Start Time (HH:MM)      | Set the time to trigger Conditional Actions, in  |
+|                         | the format "HH:MM", with HH denoting hours, and  |
+|                         | MM denoting minutes. Time is in 24-hour format.  |
++-------------------------+--------------------------------------------------+
 
 Timer (Daily Time Span) Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -2238,22 +2207,22 @@ setting an Output to turn the lights on every few minutes during the
 Start -> End period, it ensured the Output remains on during this
 period.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Start Time (HH:MM)   | Set the start time to trigger Conditional     |
-|                      | Actions, in the format "HH:MM", with HH       |
-|                      | denoting hours, and MM denoting minutes. Time |
-|                      | is in 24-hour format.                         |
-+----------------------+-----------------------------------------------+
-| End Time (HH:MM)     | Set the end time to trigger Conditional       |
-|                      | Actions, in the format "HH:MM", with HH       |
-|                      | denoting hours, and MM denoting minutes. Time |
-|                      | is in 24-hour format.                         |
-+----------------------+-----------------------------------------------+
-| Period (seconds)     | The period of time between triggering         |
-|                      | Conditional Actions.                          |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Start Time (HH:MM)      | Set the start time to trigger Conditional        |
+|                         | Actions, in the format "HH:MM", with HH denoting |
+|                         | hours, and MM denoting minutes. Time is in       |
+|                         | 24-hour format.                                  |
++-------------------------+--------------------------------------------------+
+| End Time (HH:MM)        | Set the end time to trigger Conditional Actions, |
+|                         | in the format "HH:MM", with HH denoting hours,   |
+|                         | and MM denoting minutes. Time is in 24-hour      |
+|                         | format.                                          |
++-------------------------+--------------------------------------------------+
+| Period (seconds)        | The period of time between triggering            |
+|                         | Conditional Actions.                             |
++-------------------------+--------------------------------------------------+
 
 Function Actions
 ----------------
@@ -2261,62 +2230,57 @@ Function Actions
 These are the actions that can be added to Function controllers (i.e.
 Conditional, Trigger).
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Actions: Pause       | Pause executing actions for a duration of     |
-|                      | time (seconds).                               |
-+----------------------+-----------------------------------------------+
-| Camera: Capture      | Capture a photo with the selected camera.     |
-| Photo                |                                               |
-+----------------------+-----------------------------------------------+
-| Create Note          | Create a note containing the conditional      |
-|                      | statement and actions, using a particular     |
-|                      | tag.                                          |
-+----------------------+-----------------------------------------------+
-| Controller: Activate | Activate a particular controller.             |
-+----------------------+-----------------------------------------------+
-| Controller:          | Deactivate a particular controller.           |
-| Deactivate           |                                               |
-+----------------------+-----------------------------------------------+
-| E-Mail               | Send an email containing the conditional      |
-|                      | statement and actions.                        |
-+----------------------+-----------------------------------------------+
-| E-Mail with Photo    | Send an email containing the conditional      |
-| Attachment           | statement, actions, and captured photo.       |
-+----------------------+-----------------------------------------------+
-| E-Mail with Video    | Send an email containing the conditional      |
-| Attachment           | statement, actions, and captured video.       |
-+----------------------+-----------------------------------------------+
-| Execute Command      | Execute a command in the linux shell (as user |
-|                      | 'root').                                      |
-+----------------------+-----------------------------------------------+
-| Infrared Remote Send | Send an infrared signal. See `Infrared        |
-|                      | Remote <#infrared-remote>`__ for details.     |
-+----------------------+-----------------------------------------------+
-| LCD: Backlight       | Turn the LCD backlight on or off. Note: Only  |
-|                      | some LCDs are supported.                      |
-+----------------------+-----------------------------------------------+
-| LCD: Flash           | Start of stop the LCD flashing to indicate an |
-|                      | alert. Note: Only some LCDs are supported.    |
-+----------------------+-----------------------------------------------+
-| Output: Duration     | Turn a output on, off, or on for a duration   |
-|                      | of time.                                      |
-+----------------------+-----------------------------------------------+
-| Output: Duty Cycle   | Turn a PWM output off or on for a duty cycle. |
-+----------------------+-----------------------------------------------+
-| PID: Pause           | Pause a particular PID controller.            |
-+----------------------+-----------------------------------------------+
-| PID: Hold            | Hold a particular PID controller.             |
-+----------------------+-----------------------------------------------+
-| PID: Resume          | Resume a particular PID controller.           |
-+----------------------+-----------------------------------------------+
-| PID: Set Method      | Set the Method of a particular PID            |
-|                      | controller.                                   |
-+----------------------+-----------------------------------------------+
-| PID: Set Setpoint    | Set the Setpoint of a particular PID          |
-|                      | controller.                                   |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Actions: Pause          | Pause executing actions for a duration of time   |
+|                         | (seconds).                                       |
++-------------------------+--------------------------------------------------+
+| Camera: Capture Photo   | Capture a photo with the selected camera.        |
++-------------------------+--------------------------------------------------+
+| Create Note             | Create a note containing the conditional         |
+|                         | statement and actions, using a particular tag.   |
++-------------------------+--------------------------------------------------+
+| Controller: Activate    | Activate a particular controller.                |
++-------------------------+--------------------------------------------------+
+| Controller: Deactivate  | Deactivate a particular controller.              |
++-------------------------+--------------------------------------------------+
+| E-Mail                  | Send an email containing the conditional         |
+|                         | statement and actions.                           |
++-------------------------+--------------------------------------------------+
+| E-Mail with Photo       | Send an email containing the conditional         |
+| Attachment              | statement, actions, and captured photo.          |
++-------------------------+--------------------------------------------------+
+| E-Mail with Video       | Send an email containing the conditional         |
+| Attachment              | statement, actions, and captured video.          |
++-------------------------+--------------------------------------------------+
+| Execute Command         | Execute a command in the linux shell (as user    |
+|                         | 'root').                                         |
++-------------------------+--------------------------------------------------+
+| Infrared Remote Send    | Send an infrared signal. See `Infrared           |
+|                         | Remote <#infrared-remote>`__ for details.        |
++-------------------------+--------------------------------------------------+
+| LCD: Backlight          | Turn the LCD backlight on or off. Note: Only     |
+|                         | some LCDs are supported.                         |
++-------------------------+--------------------------------------------------+
+| LCD: Flash              | Start of stop the LCD flashing to indicate an    |
+|                         | alert. Note: Only some LCDs are supported.       |
++-------------------------+--------------------------------------------------+
+| Output: Duration        | Turn a output on, off, or on for a duration of   |
+|                         | time.                                            |
++-------------------------+--------------------------------------------------+
+| Output: Duty Cycle      | Turn a PWM output off or on for a duty cycle.    |
++-------------------------+--------------------------------------------------+
+| PID: Pause              | Pause a particular PID controller.               |
++-------------------------+--------------------------------------------------+
+| PID: Hold               | Hold a particular PID controller.                |
++-------------------------+--------------------------------------------------+
+| PID: Resume             | Resume a particular PID controller.              |
++-------------------------+--------------------------------------------------+
+| PID: Set Method         | Set the Method of a particular PID controller.   |
++-------------------------+--------------------------------------------------+
+| PID: Set Setpoint       | Set the Setpoint of a particular PID controller. |
++-------------------------+--------------------------------------------------+
 
 Methods
 -------
@@ -2337,18 +2301,17 @@ Method Options
 
 These options are shared with several method types.
 
-+-----------------+----------------------------------------------------+
-| Setting         | Description                                        |
-+=================+====================================================+
-| Start Time/Date | This is the start time of a range of time.         |
-+-----------------+----------------------------------------------------+
-| End Time/Date   | This is the end time of a range of time.           |
-+-----------------+----------------------------------------------------+
-| Start Setpoint  | This is the start setpoint of a range of           |
-|                 | setpoints.                                         |
-+-----------------+----------------------------------------------------+
-| End Setpoint    | This is the end setpoint of a range of setpoints.  |
-+-----------------+----------------------------------------------------+
++--------------------+-------------------------------------------------------+
+| Setting            | Description                                           |
++====================+=======================================================+
+| Start Time/Date    | This is the start time of a range of time.            |
++--------------------+-------------------------------------------------------+
+| End Time/Date      | This is the end time of a range of time.              |
++--------------------+-------------------------------------------------------+
+| Start Setpoint     | This is the start setpoint of a range of setpoints.   |
++--------------------+-------------------------------------------------------+
+| End Setpoint       | This is the end setpoint of a range of setpoints.     |
++--------------------+-------------------------------------------------------+
 
 Time/Date Method
 ~~~~~~~~~~~~~~~~
@@ -2417,34 +2380,33 @@ one display created for the LCD, it will refresh at the set period. If
 there is more than one display, it will cycle from one display to the
 next every set period.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Reset Flashing       | If the LCD is flashing to alert you because   |
-|                      | it was instructed to do so by a triggered     |
-|                      | Conditional Statement, use this button to     |
-|                      | stop the flashing.                            |
-+----------------------+-----------------------------------------------+
-| Type                 | Select either a 16x2 or 20x4 character LCD    |
-|                      | display.                                      |
-+----------------------+-----------------------------------------------+
-| I2C Address          | Select the I2C to communicate with the LCD.   |
-+----------------------+-----------------------------------------------+
-| Period               | This is the period of time (in seconds)       |
-|                      | between redrawing the LCD with new data or    |
-|                      | switching to the next set of displays (if     |
-|                      | multiple displays are used).                  |
-+----------------------+-----------------------------------------------+
-| Add Display Set      | Add a set of display lines to the LCD.        |
-+----------------------+-----------------------------------------------+
-| Display Line #       | Select which measurement to display on each   |
-|                      | line of the LCD.                              |
-+----------------------+-----------------------------------------------+
-| Max Age (seconds)    | The maximum age the measurement is allowed to |
-|                      | be. If no measurement was acquired in this    |
-|                      | time frame, the display will indicate "NO     |
-|                      | DATA".                                        |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Reset Flashing          | If the LCD is flashing to alert you because it   |
+|                         | was instructed to do so by a triggered           |
+|                         | Conditional Statement, use this button to stop   |
+|                         | the flashing.                                    |
++-------------------------+--------------------------------------------------+
+| Type                    | Select either a 16x2 or 20x4 character LCD       |
+|                         | display.                                         |
++-------------------------+--------------------------------------------------+
+| I2C Address             | Select the I2C to communicate with the LCD.      |
++-------------------------+--------------------------------------------------+
+| Period                  | This is the period of time (in seconds) between  |
+|                         | redrawing the LCD with new data or switching to  |
+|                         | the next set of displays (if multiple displays   |
+|                         | are used).                                       |
++-------------------------+--------------------------------------------------+
+| Add Display Set         | Add a set of display lines to the LCD.           |
++-------------------------+--------------------------------------------------+
+| Display Line #          | Select which measurement to display on each line |
+|                         | of the LCD.                                      |
++-------------------------+--------------------------------------------------+
+| Max Age (seconds)       | The maximum age the measurement is allowed to    |
+|                         | be. If no measurement was acquired in this time  |
+|                         | frame, the display will indicate "NO DATA".      |
++-------------------------+--------------------------------------------------+
 
 Alerts
 ------
@@ -2474,35 +2436,33 @@ selected on the graph.
 Tag Options
 ~~~~~~~~~~~
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Name                 | A name for the tag. Must not contain spaces.  |
-+----------------------+-----------------------------------------------+
-| Rename               | Rename the tag.                               |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Name                    | A name for the tag. Must not contain spaces.     |
++-------------------------+--------------------------------------------------+
+| Rename                  | Rename the tag.                                  |
++-------------------------+--------------------------------------------------+
 
 Note Options
 ~~~~~~~~~~~~
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Name                 | A name for the note.                          |
-+----------------------+-----------------------------------------------+
-| Use Custom Date/Time | Check to enter a custom date/time for the     |
-|                      | note.                                         |
-+----------------------+-----------------------------------------------+
-| Custom Date/Time     | Store the note with this custom date/time.    |
-+----------------------+-----------------------------------------------+
-| Attached Files       | Attach one or more files to the note.         |
-+----------------------+-----------------------------------------------+
-| Tags                 | Associate the note with at least one tag.     |
-+----------------------+-----------------------------------------------+
-| Note                 | The text body of the note. The text will      |
-|                      | appear monospaced, so code will format        |
-|                      | properly.                                     |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Name                    | A name for the note.                             |
++-------------------------+--------------------------------------------------+
+| Use Custom Date/Time    | Check to enter a custom date/time for the note.  |
++-------------------------+--------------------------------------------------+
+| Custom Date/Time        | Store the note with this custom date/time.       |
++-------------------------+--------------------------------------------------+
+| Attached Files          | Attach one or more files to the note.            |
++-------------------------+--------------------------------------------------+
+| Tags                    | Associate the note with at least one tag.        |
++-------------------------+--------------------------------------------------+
+| Note                    | The text body of the note. The text will appear  |
+|                         | monospaced, so code will format properly.        |
++-------------------------+--------------------------------------------------+
 
 Export-Import
 -------------
@@ -2599,12 +2559,12 @@ The following settings are for calculating energy usage from an amp
 measurement. For calculating based on Output duration, see `Energy Usage
 Settings <#energy-usage-settings>`__.
 
-+---------------------+------------------------------------------------+
-| Setting             | Description                                    |
-+=====================+================================================+
-| Select Amp          | This is a measurement with the amp (A) units   |
-| Measurement         | that will be used to calculate energy usage.   |
-+---------------------+------------------------------------------------+
++------------------------+---------------------------------------------------+
+| Setting                | Description                                       |
++========================+===================================================+
+| Select Amp Measurement | This is a measurement with the amp (A) units that |
+|                        | will be used to calculate energy usage.           |
++------------------------+---------------------------------------------------+
 
 System Information
 ------------------
@@ -2616,116 +2576,114 @@ backend as well as the linux system it's running on. Several commands
 and their output are listed to give the user information about how their
 system is running.
 
-+----------------------+-----------------------------------------------+
-| Command              | Description                                   |
-+======================+===============================================+
-| Mycodo Version       | The current version of Mycodo, reported by    |
-|                      | the configuration file.                       |
-+----------------------+-----------------------------------------------+
-| Python Version       | The version of python currently running the   |
-|                      | web user interface.                           |
-+----------------------+-----------------------------------------------+
-| Database Version     | The current version of the settings database. |
-|                      | If the current version is different from what |
-|                      | it should be, an error will appear indicating |
-|                      | the issue and a link to find out more         |
-|                      | information about the issue.                  |
-+----------------------+-----------------------------------------------+
-| Daemon Status        | This will be a green "Running" or a red       |
-|                      | "Stopped". Additionally, the Mycodo version   |
-|                      | and hostname text at the top-left of the      |
-|                      | screen May be Green, Yellow, or Red to        |
-|                      | indicate the status. Green = daemon running,  |
-|                      | yellow = unable to connect, and red = daemon  |
-|                      | not running.                                  |
-+----------------------+-----------------------------------------------+
-| ...                  | Several other status indicators and commands  |
-|                      | are listed to provide information about the   |
-|                      | health of the system. Use these in addition   |
-|                      | to others to investigate software or hardware |
-|                      | issues.                                       |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Command                 | Description                                      |
++=========================+==================================================+
+| Mycodo Version          | The current version of Mycodo, reported by the   |
+|                         | configuration file.                              |
++-------------------------+--------------------------------------------------+
+| Python Version          | The version of python currently running the web  |
+|                         | user interface.                                  |
++-------------------------+--------------------------------------------------+
+| Database Version        | The current version of the settings database. If |
+|                         | the current version is different from what it    |
+|                         | should be, an error will appear indicating the   |
+|                         | issue and a link to find out more information    |
+|                         | about the issue.                                 |
++-------------------------+--------------------------------------------------+
+| Daemon Status           | This will be a green "Running" or a red          |
+|                         | "Stopped". Additionally, the Mycodo version and  |
+|                         | hostname text at the top-left of the screen May  |
+|                         | be Green, Yellow, or Red to indicate the status. |
+|                         | Green = daemon running, yellow = unable to       |
+|                         | connect, and red = daemon not running.           |
++-------------------------+--------------------------------------------------+
+| ...                     | Several other status indicators and commands are |
+|                         | listed to provide information about the health   |
+|                         | of the system. Use these in addition to others   |
+|                         | to investigate software or hardware issues.      |
++-------------------------+--------------------------------------------------+
 
 Mycodo Client
 -------------
 
 ::
 
-   pi@raspberry:~ $ mycodo-client --help
-   usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
-                        [--deactivatecontroller CONTROLLER ID] [--pid_pause ID]
-                        [--pid_hold ID] [--pid_resume ID] [--pid_get_setpoint ID]
-                        [--pid_get_error ID] [--pid_get_integrator ID]
-                        [--pid_get_derivator ID] [--pid_get_kp ID]
-                        [--pid_get_ki ID] [--pid_get_kd ID]
-                        [--pid_set_setpoint ID SETPOINT]
-                        [--pid_set_integrator ID INTEGRATOR]
-                        [--pid_set_derivator ID DERIVATOR] [--pid_set_kp ID KP]
-                        [--pid_set_ki ID KI] [--pid_set_kd ID KD] [-c] [--ramuse]
-                        [--input_force_measurements INPUTID]
-                        [--lcd_backlight_on LCDID] [--lcd_backlight_off LCDID]
-                        [--lcd_reset LCDID] [--output_state OUTPUTID]
-                        [--output_currently_on OUTPUTID] [--outputoff OUTPUTID]
-                        [--outputon OUTPUTID] [--duration SECONDS]
-                        [--dutycycle DUTYCYCLE] [--trigger_action ACTIONID]
-                        [--trigger_all_actions FUNCTIONID] [-t]
+    pi@raspberry:~ $ mycodo-client --help
+    usage: mycodo-client [-h] [--activatecontroller CONTROLLER ID]
+                         [--deactivatecontroller CONTROLLER ID] [--pid_pause ID]
+                         [--pid_hold ID] [--pid_resume ID] [--pid_get_setpoint ID]
+                         [--pid_get_error ID] [--pid_get_integrator ID]
+                         [--pid_get_derivator ID] [--pid_get_kp ID]
+                         [--pid_get_ki ID] [--pid_get_kd ID]
+                         [--pid_set_setpoint ID SETPOINT]
+                         [--pid_set_integrator ID INTEGRATOR]
+                         [--pid_set_derivator ID DERIVATOR] [--pid_set_kp ID KP]
+                         [--pid_set_ki ID KI] [--pid_set_kd ID KD] [-c] [--ramuse]
+                         [--input_force_measurements INPUTID]
+                         [--lcd_backlight_on LCDID] [--lcd_backlight_off LCDID]
+                         [--lcd_reset LCDID] [--output_state OUTPUTID]
+                         [--output_currently_on OUTPUTID] [--outputoff OUTPUTID]
+                         [--outputon OUTPUTID] [--duration SECONDS]
+                         [--dutycycle DUTYCYCLE] [--trigger_action ACTIONID]
+                         [--trigger_all_actions FUNCTIONID] [-t]
 
-   Client for Mycodo daemon.
+    Client for Mycodo daemon.
 
-   optional arguments:
-     -h, --help            show this help message and exit
-     --activatecontroller CONTROLLER ID
-                           Activate controller. Options: Conditional, LCD, Math,
-                           PID, Input
-     --deactivatecontroller CONTROLLER ID
-                           Deactivate controller. Options: Conditional, LCD,
-                           Math, PID, Input
-     --pid_pause ID        Pause PID controller.
-     --pid_hold ID         Hold PID controller.
-     --pid_resume ID       Resume PID controller.
-     --pid_get_setpoint ID
-                           Get the setpoint value of the PID controller.
-     --pid_get_error ID    Get the error value of the PID controller.
-     --pid_get_integrator ID
-                           Get the integrator value of the PID controller.
-     --pid_get_derivator ID
-                           Get the derivator value of the PID controller.
-     --pid_get_kp ID       Get the Kp gain of the PID controller.
-     --pid_get_ki ID       Get the Ki gain of the PID controller.
-     --pid_get_kd ID       Get the Kd gain of the PID controller.
-     --pid_set_setpoint ID SETPOINT
-                           Set the setpoint value of the PID controller.
-     --pid_set_integrator ID INTEGRATOR
-                           Set the integrator value of the PID controller.
-     --pid_set_derivator ID DERIVATOR
-                           Set the derivator value of the PID controller.
-     --pid_set_kp ID KP    Set the Kp gain of the PID controller.
-     --pid_set_ki ID KI    Set the Ki gain of the PID controller.
-     --pid_set_kd ID KD    Set the Kd gain of the PID controller.
-     -c, --checkdaemon     Check if all active daemon controllers are running
-     --ramuse              Return the amount of ram used by the Mycodo daemon
-     --input_force_measurements INPUTID
-                           Force acquiring measurements for Input ID
-     --lcd_backlight_on LCDID
-                           Turn on LCD backlight with LCD ID
-     --lcd_backlight_off LCDID
-                           Turn off LCD backlight with LCD ID
-     --lcd_reset LCDID     Reset LCD with LCD ID
-     --output_state OUTPUTID
-                           State of output with output ID
-     --output_currently_on OUTPUTID
-                           How many seconds an output has currently been active
-                           for
-     --outputoff OUTPUTID  Turn off output with output ID
-     --outputon OUTPUTID   Turn on output with output ID
-     --duration SECONDS    Turn on output for a duration of time (seconds)
-     --dutycycle DUTYCYCLE
-                           Turn on PWM output for a duty cycle (%)
-     --trigger_action ACTIONID
-                           Trigger action with Action ID
-     --trigger_all_actions FUNCTIONID
-                           Trigger all actions belonging to Function with ID
-     -t, --terminate       Terminate the daemon
+    optional arguments:
+      -h, --help            show this help message and exit
+      --activatecontroller CONTROLLER ID
+                            Activate controller. Options: Conditional, LCD, Math,
+                            PID, Input
+      --deactivatecontroller CONTROLLER ID
+                            Deactivate controller. Options: Conditional, LCD,
+                            Math, PID, Input
+      --pid_pause ID        Pause PID controller.
+      --pid_hold ID         Hold PID controller.
+      --pid_resume ID       Resume PID controller.
+      --pid_get_setpoint ID
+                            Get the setpoint value of the PID controller.
+      --pid_get_error ID    Get the error value of the PID controller.
+      --pid_get_integrator ID
+                            Get the integrator value of the PID controller.
+      --pid_get_derivator ID
+                            Get the derivator value of the PID controller.
+      --pid_get_kp ID       Get the Kp gain of the PID controller.
+      --pid_get_ki ID       Get the Ki gain of the PID controller.
+      --pid_get_kd ID       Get the Kd gain of the PID controller.
+      --pid_set_setpoint ID SETPOINT
+                            Set the setpoint value of the PID controller.
+      --pid_set_integrator ID INTEGRATOR
+                            Set the integrator value of the PID controller.
+      --pid_set_derivator ID DERIVATOR
+                            Set the derivator value of the PID controller.
+      --pid_set_kp ID KP    Set the Kp gain of the PID controller.
+      --pid_set_ki ID KI    Set the Ki gain of the PID controller.
+      --pid_set_kd ID KD    Set the Kd gain of the PID controller.
+      -c, --checkdaemon     Check if all active daemon controllers are running
+      --ramuse              Return the amount of ram used by the Mycodo daemon
+      --input_force_measurements INPUTID
+                            Force acquiring measurements for Input ID
+      --lcd_backlight_on LCDID
+                            Turn on LCD backlight with LCD ID
+      --lcd_backlight_off LCDID
+                            Turn off LCD backlight with LCD ID
+      --lcd_reset LCDID     Reset LCD with LCD ID
+      --output_state OUTPUTID
+                            State of output with output ID
+      --output_currently_on OUTPUTID
+                            How many seconds an output has currently been active
+                            for
+      --outputoff OUTPUTID  Turn off output with output ID
+      --outputon OUTPUTID   Turn on output with output ID
+      --duration SECONDS    Turn on output for a duration of time (seconds)
+      --dutycycle DUTYCYCLE
+                            Turn on PWM output for a duty cycle (%)
+      --trigger_action ACTIONID
+                            Trigger action with Action ID
+      --trigger_all_actions FUNCTIONID
+                            Trigger all actions belonging to Function with ID
+      -t, --terminate       Terminate the daemon
 
 Infrared Remote
 ---------------
@@ -2783,8 +2741,8 @@ are set:
 
 ::
 
-   driver = default
-   device = /dev/lirc1
+    driver = default
+    device = /dev/lirc1
 
 Restart your system:
 
@@ -2820,17 +2778,17 @@ You should see output similar to the following, with data represented in
 
 ::
 
-   pi@rapsberry:~ $ mode2 -m
-   Using driver default on device /dev/lirc0
-   Trying device: /dev/lirc0
-   Using device: /dev/lirc0
-    16777215
+    pi@rapsberry:~ $ mode2 -m
+    Using driver default on device /dev/lirc0
+    Trying device: /dev/lirc0
+    Using device: /dev/lirc0
+     16777215
 
-        3431     1747      444     1313      441     1312
-         444      471      441      474      440      474
-         440     1315      439      476      438      480
-         444     1312      442     1313      441      475
-         438     1317      439      476      437      477
+         3431     1747      444     1313      441     1312
+          444      471      441      474      440      474
+          440     1315      439      476      438      480
+          444     1312      442     1313      441      475
+          438     1317      439      476      437      477
 
 Use the 6-column data to generate your config file, with the following
 as an example ``example_remote.lircd.conf``, that should be placed in
@@ -2838,25 +2796,25 @@ as an example ``example_remote.lircd.conf``, that should be placed in
 
 ::
 
-   begin remote
-     name  example_remote
-     flags RAW_CODES
-     eps           30
-     aeps          100
+    begin remote
+      name  example_remote
+      flags RAW_CODES
+      eps           30
+      aeps          100
 
-     ptrail       0
-     repeat       0  0
-     gap          107902
+      ptrail       0
+      repeat       0  0
+      gap          107902
 
-         begin raw_codes
-             name KEY_POWER
-                3431     1747      444     1313      441     1312
-                 444      471      441      474      440      474
-                 440     1315      439      476      438      480
-                 444     1312      442     1313      441      475
-                 438     1317      439      476      437      477
-         end raw_codes
-   end remote
+          begin raw_codes
+              name KEY_POWER
+                 3431     1747      444     1313      441     1312
+                  444      471      441      474      440      474
+                  440     1315      439      476      438      480
+                  444     1312      442     1313      441      475
+                  438     1317      439      476      437      477
+          end raw_codes
+    end remote
 
 Start lirc back up to load all the remote config files:
 
@@ -2868,16 +2826,16 @@ such as below:
 
 ::
 
-   pi@raspberry:~ $ irw
-   0000000000ff629d 00 KEY_POWER simple_remote
-   0000000000ff22dd 01 KEY_A simple_remote
-   0000000000ff02fd 01 KEY_B simple_remote
-   0000000000ffc23d 00 KEY_C simple_remote
-   0000000000ff9867 00 KEY_UP simple_remote
-   0000000000ff38c7 00 KEY_DOWN simple_remote
-   0000000000ff30cf 01 KEY_LEFT simple_remote
-   0000000000ff7a85 00 KEY_RIGHT simple_remote
-   0000000000ff18e7 01 KEY_SELECT simple_remote
+    pi@raspberry:~ $ irw
+    0000000000ff629d 00 KEY_POWER simple_remote
+    0000000000ff22dd 01 KEY_A simple_remote
+    0000000000ff02fd 01 KEY_B simple_remote
+    0000000000ffc23d 00 KEY_C simple_remote
+    0000000000ff9867 00 KEY_UP simple_remote
+    0000000000ff38c7 00 KEY_DOWN simple_remote
+    0000000000ff30cf 01 KEY_LEFT simple_remote
+    0000000000ff7a85 00 KEY_RIGHT simple_remote
+    0000000000ff18e7 01 KEY_SELECT simple_remote
 
 Now that we have the remote detected and mapped, we can set commands to
 be executed or what word is returned to Mycodo. Create a file
@@ -2889,33 +2847,33 @@ and configure the responses to button presses
 
 ::
 
-   begin
-     button = KEY_POWER
-     prog = mycodo
-     config = power
-     repeat = 0
-   end
-   begin
-     button = KEY_A
-     prog = mycodo
-     config = a
-     repeat = 0
-   end
+    begin
+      button = KEY_POWER
+      prog = mycodo
+      config = power
+      repeat = 0
+    end
+    begin
+      button = KEY_A
+      prog = mycodo
+      config = a
+      repeat = 0
+    end
 
 To test this with Python, create the test program
 ``infrared_receive.py``:
 
 ::
 
-   import lirc
-   import time
+    import lirc
+    import time
 
-   sockid = lirc.init("mycodo", blocking=False)
-   while True:
-       code = lirc.nextcode()
-       if code:
-           print(code[0])
-       time.sleep(0.05)
+    sockid = lirc.init("mycodo", blocking=False)
+    while True:
+        code = lirc.nextcode()
+        if code:
+            print(code[0])
+        time.sleep(0.05)
 
 Execute this using the Mycodo virtualenv:
 
@@ -2926,9 +2884,9 @@ appears on the console:
 
 ::
 
-   pi@raspberry:~ $ ~/Mycodo/env/bin/python ./test_IR.py
-   power
-   a
+    pi@raspberry:~ $ ~/Mycodo/env/bin/python ./test_IR.py
+    power
+    a
 
 From here, you can create any Python code to react to button presses on
 your remote. You can also set up the Mycodo Function Trigger: Infrared
@@ -2944,19 +2902,19 @@ replacing ``17`` with the pin connected to your LED:
 
 .. code:: python
 
-   import RPi.GPIO as GPIO
-   import time
+    import RPi.GPIO as GPIO
+    import time
 
-   pin = 17
-   GPIO.setwarnings(False)
-   GPIO.setmode(GPIO.BCM)
-   GPIO.setup(pin, GPIO.OUT, initial=GPIO.LOW)
+    pin = 17
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(pin, GPIO.OUT, initial=GPIO.LOW)
 
-   while True:
-       GPIO.output(pin, GPIO.HIGH)
-       time.sleep(1)
-       GPIO.output(pin, GPIO.LOW)
-       time.sleep(1)
+    while True:
+        GPIO.output(pin, GPIO.HIGH)
+        time.sleep(1)
+        GPIO.output(pin, GPIO.LOW)
+        time.sleep(1)
 
 Since IR LEDs produce a wavelength of light that humans can't see,
 you'll need to aim a video camera that lacks an infrared filter and see
@@ -3005,35 +2963,34 @@ General Settings
 
 ``[Gear Icon] -> Configure -> General``
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Language             | Set the language that will be displayed in    |
-|                      | the web user interface.                       |
-+----------------------+-----------------------------------------------+
-| Force HTTPS          | Require web browsers to use SSL/HTTPS. Any    |
-|                      | request to http:// will be redirected to      |
-|                      | https://.                                     |
-+----------------------+-----------------------------------------------+
-| Hide success alerts  | Hide all success alert boxes that appear at   |
-|                      | the top of the page.                          |
-+----------------------+-----------------------------------------------+
-| Hide info alerts     | Hide all info alert boxes that appear at the  |
-|                      | top of the page.                              |
-+----------------------+-----------------------------------------------+
-| Hide warning alerts  | Hide all warning alert boxes that appear at   |
-|                      | the top of the page.                          |
-+----------------------+-----------------------------------------------+
-| Opt-out of           | Turn off sending anonymous usage statistics.  |
-| statistics           | Please consider that this helps the           |
-|                      | development to leave on.                      |
-+----------------------+-----------------------------------------------+
-| Check for Updates    | Automatically check for updates every 2 days  |
-|                      | and notify through the web interface. If      |
-|                      | there is a new update, the Configure (Gear    |
-|                      | Icon) as well as the Upgrade menu will turn   |
-|                      | the color red.                                |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Language                | Set the language that will be displayed in the   |
+|                         | web user interface.                              |
++-------------------------+--------------------------------------------------+
+| Force HTTPS             | Require web browsers to use SSL/HTTPS. Any       |
+|                         | request to http:// will be redirected to         |
+|                         | https://.                                        |
++-------------------------+--------------------------------------------------+
+| Hide success alerts     | Hide all success alert boxes that appear at the  |
+|                         | top of the page.                                 |
++-------------------------+--------------------------------------------------+
+| Hide info alerts        | Hide all info alert boxes that appear at the top |
+|                         | of the page.                                     |
++-------------------------+--------------------------------------------------+
+| Hide warning alerts     | Hide all warning alert boxes that appear at the  |
+|                         | top of the page.                                 |
++-------------------------+--------------------------------------------------+
+| Opt-out of statistics   | Turn off sending anonymous usage statistics.     |
+|                         | Please consider that this helps the development  |
+|                         | to leave on.                                     |
++-------------------------+--------------------------------------------------+
+| Check for Updates       | Automatically check for updates every 2 days and |
+|                         | notify through the web interface. If there is a  |
+|                         | new update, the Configure (Gear Icon) as well as |
+|                         | the Upgrade menu will turn the color red.        |
++-------------------------+--------------------------------------------------+
 
 Energy Usage Settings
 ---------------------
@@ -3047,37 +3004,36 @@ being used by the relays to operate electrical devices. Note: Proper
 energy usage calculations also rely on the correct current draw to be
 set for each output (see `Output Settings <#output>`__).
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Max Amps             | Set the maximum allowed amperage to be        |
-|                      | switched on at any given time. If a output    |
-|                      | that's instructed to turn on will cause the   |
-|                      | sum of active devices to exceed this amount,  |
-|                      | the output will not be allowed to turn on, to |
-|                      | prevent any damage that may result from       |
-|                      | exceeding current limits.                     |
-+----------------------+-----------------------------------------------+
-| Voltage              | Alternating current (AC) voltage that is      |
-|                      | switched by the outputs. This is usually 120  |
-|                      | or 240.                                       |
-+----------------------+-----------------------------------------------+
-| Cost per kWh         | This is how much you pay per kWh.             |
-+----------------------+-----------------------------------------------+
-| Currency Unit        | This is the unit used for the currency that   |
-|                      | pays for electricity.                         |
-+----------------------+-----------------------------------------------+
-| Day of Month         | This is the day of the month (1-30) that the  |
-|                      | electricity meter is read (which will         |
-|                      | correspond to the electrical bill).           |
-+----------------------+-----------------------------------------------+
-| Generate Usage/Cost  | These options define when an Energy Usage     |
-| Report               | Report will be generated. Currently these     |
-|                      | Only support the Output Duration calculation  |
-|                      | method. For more information about the        |
-|                      | methods, see `Energy                          |
-|                      | Usage <#energy-usage>`__.                     |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Max Amps                | Set the maximum allowed amperage to be switched  |
+|                         | on at any given time. If a output that's         |
+|                         | instructed to turn on will cause the sum of      |
+|                         | active devices to exceed this amount, the output |
+|                         | will not be allowed to turn on, to prevent any   |
+|                         | damage that may result from exceeding current    |
+|                         | limits.                                          |
++-------------------------+--------------------------------------------------+
+| Voltage                 | Alternating current (AC) voltage that is         |
+|                         | switched by the outputs. This is usually 120 or  |
+|                         | 240.                                             |
++-------------------------+--------------------------------------------------+
+| Cost per kWh            | This is how much you pay per kWh.                |
++-------------------------+--------------------------------------------------+
+| Currency Unit           | This is the unit used for the currency that pays |
+|                         | for electricity.                                 |
++-------------------------+--------------------------------------------------+
+| Day of Month            | This is the day of the month (1-30) that the     |
+|                         | electricity meter is read (which will correspond |
+|                         | to the electrical bill).                         |
++-------------------------+--------------------------------------------------+
+| Generate Usage/Cost     | These options define when an Energy Usage Report |
+| Report                  | will be generated. Currently these Only support  |
+|                         | the Output Duration calculation method. For more |
+|                         | information about the methods, see `Energy       |
+|                         | Usage <#energy-usage>`__.                        |
++-------------------------+--------------------------------------------------+
 
 Input Settings
 --------------
@@ -3088,12 +3044,12 @@ Input modules may be imported and used within Mycodo. These modules must
 follow a specific format. See `Create an Input
 Module <#create-an-input-module>`__ for more details.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Import Input Module  | Select your input module file, then click     |
-|                      | this button to begin the import.              |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Import Input Module     | Select your input module file, then click this   |
+|                         | button to begin the import.                      |
++-------------------------+--------------------------------------------------+
 
 Measurement Settings
 --------------------
@@ -3112,29 +3068,29 @@ selected. It is okay to create a custom measurement for a measurement
 that already exist (this is how new units for a currently-installed
 measurement is added).
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Measurement Name     | Name for the measurement (e.g. "Weight",      |
-|                      | "Length").                                    |
-+----------------------+-----------------------------------------------+
-| Measurement Units    | Select all the units that are associated with |
-|                      | the measurement.                              |
-+----------------------+-----------------------------------------------+
-| Unit Name            | Name for the unit (e.g. "Kilogram", "Meter"). |
-+----------------------+-----------------------------------------------+
-| Unit Abbreviation    | Abbreviation for the unit (e.g. "kg", "m").   |
-+----------------------+-----------------------------------------------+
-| Convert From Unit    | The unit that will be converted from.         |
-+----------------------+-----------------------------------------------+
-| Convert To Unit      | The unit that will be converted to.           |
-+----------------------+-----------------------------------------------+
-| Equation             | The equation used to convert one unit to      |
-|                      | another. The lowercase letter "x" must be     |
-|                      | included in the equation (e.g. "x/1000+20",   |
-|                      | "250*(x/3)"). This "x" will be replaced with  |
-|                      | the actual measurement being converted.       |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Measurement Name        | Name for the measurement (e.g. "Weight",         |
+|                         | "Length").                                       |
++-------------------------+--------------------------------------------------+
+| Measurement Units       | Select all the units that are associated with    |
+|                         | the measurement.                                 |
++-------------------------+--------------------------------------------------+
+| Unit Name               | Name for the unit (e.g. "Kilogram", "Meter").    |
++-------------------------+--------------------------------------------------+
+| Unit Abbreviation       | Abbreviation for the unit (e.g. "kg", "m").      |
++-------------------------+--------------------------------------------------+
+| Convert From Unit       | The unit that will be converted from.            |
++-------------------------+--------------------------------------------------+
+| Convert To Unit         | The unit that will be converted to.              |
++-------------------------+--------------------------------------------------+
+| Equation                | The equation used to convert one unit to         |
+|                         | another. The lowercase letter "x" must be        |
+|                         | included in the equation (e.g. "x/1000+20",      |
+|                         | "250\*(x/3)"). This "x" will be replaced with    |
+|                         | the actual measurement being converted.          |
++-------------------------+--------------------------------------------------+
 
 Users
 -----
@@ -3147,24 +3103,24 @@ an Admin Creation Form. This is the first page you see when starting
 Mycodo for the first time. After an Admin user has been created,
 additional users may be created from the User Settings page.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Username             | Choose a user name that is between 2 and 64   |
-|                      | characters. The user name is case insensitive |
-|                      | (all user names are converted to lower-case). |
-+----------------------+-----------------------------------------------+
-| Email                | The email associated with the new account.    |
-+----------------------+-----------------------------------------------+
-| Password/Repeat      | Choose a password that is between 6 and 64    |
-|                      | characters and only contain letters, numbers, |
-|                      | and symbols.                                  |
-+----------------------+-----------------------------------------------+
-| Role                 | Roles are a way of imposing access            |
-|                      | restrictions on users, to either allow or     |
-|                      | deny actions. See the table below for         |
-|                      | explanations of the four default Roles.       |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Username                | Choose a user name that is between 2 and 64      |
+|                         | characters. The user name is case insensitive    |
+|                         | (all user names are converted to lower-case).    |
++-------------------------+--------------------------------------------------+
+| Email                   | The email associated with the new account.       |
++-------------------------+--------------------------------------------------+
+| Password/Repeat         | Choose a password that is between 6 and 64       |
+|                         | characters and only contain letters, numbers,    |
+|                         | and symbols.                                     |
++-------------------------+--------------------------------------------------+
+| Role                    | Roles are a way of imposing access restrictions  |
+|                         | on users, to either allow or deny actions. See   |
+|                         | the table below for explanations of the four     |
+|                         | default Roles.                                   |
++-------------------------+--------------------------------------------------+
 
 User Roles
 ----------
@@ -3173,23 +3129,23 @@ Roles define the permissions of each user. There are 4 default roles
 that determine if a user can view or edit particular areas of Mycodo.
 Four roles are provided by default, but custom roles may be created.
 
-+--------------------+---------+----------+-----------+-----------+
-| Role               | Admin   | Editor   | Monitor   | Guest     |
-+====================+=========+==========+===========+===========+
-| Edit Users         | X       |          |           |           |
-+--------------------+---------+----------+-----------+-----------+
-| Edit Controllers   | X       | X        |           |           |
-+--------------------+---------+----------+-----------+-----------+
-| Edit Settings      | X       | X        |           |           |
-+--------------------+---------+----------+-----------+-----------+
-| View Settings      | X       | X        | X         |           |
-+--------------------+---------+----------+-----------+-----------+
-| View Camera        | X       | X        | X         |           |
-+--------------------+---------+----------+-----------+-----------+
-| View Stats         | X       | X        | X         |           |
-+--------------------+---------+----------+-----------+-----------+
-| View Logs          | X       | X        | X         |           |
-+--------------------+---------+----------+-----------+-----------+
++-----------------------+------------+-------------+--------------+--------------+
+| Role                  | Admin      | Editor      | Monitor      | Guest        |
++=======================+============+=============+==============+==============+
+| Edit Users            | X          |             |              |              |
++-----------------------+------------+-------------+--------------+--------------+
+| Edit Controllers      | X          | X           |              |              |
++-----------------------+------------+-------------+--------------+--------------+
+| Edit Settings         | X          | X           |              |              |
++-----------------------+------------+-------------+--------------+--------------+
+| View Settings         | X          | X           | X            |              |
++-----------------------+------------+-------------+--------------+--------------+
+| View Camera           | X          | X           | X            |              |
++-----------------------+------------+-------------+--------------+--------------+
+| View Stats            | X          | X           | X            |              |
++-----------------------+------------+-------------+--------------+--------------+
+| View Logs             | X          | X           | X            |              |
++-----------------------+------------+-------------+--------------+--------------+
 
 The ``Edit Controllers`` permission protects the editing of
 Conditionals, Graphs, LCDs, Methods, PIDs, Outputs, and Inputs.
@@ -3207,20 +3163,20 @@ Pi settings configure parts of the linux system that Mycodo runs on.
 pigpiod is required if you wish to use PWM Outputs, as well as PWM, RPM,
 DHT22, DHT11, HTU21D Inputs.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Enable/Disable       | These are system interfaces that can be       |
-| Feature              | enabled and disabled from the web UI via the  |
-|                      | ``raspi-config`` command.                     |
-+----------------------+-----------------------------------------------+
-| pigpiod Sample Rate  | This is the sample rate the pigpiod service   |
-|                      | will operate at. The lower number enables     |
-|                      | faster PWM frequencies, but may significantly |
-|                      | increase processor load on the Pi Zeros.      |
-|                      | pigpiod may als be disabled completely if     |
-|                      | it's not required (see note, above).          |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Enable/Disable Feature  | These are system interfaces that can be enabled  |
+|                         | and disabled from the web UI via the             |
+|                         | ``raspi-config`` command.                        |
++-------------------------+--------------------------------------------------+
+| pigpiod Sample Rate     | This is the sample rate the pigpiod service will |
+|                         | operate at. The lower number enables faster PWM  |
+|                         | frequencies, but may significantly increase      |
+|                         | processor load on the Pi Zeros. pigpiod may als  |
+|                         | be disabled completely if it's not required (see |
+|                         | note, above).                                    |
++-------------------------+--------------------------------------------------+
 
 Alert Settings
 --------------
@@ -3229,35 +3185,34 @@ Alert Settings
 
 Alert settings set up the credentials for sending email notifications.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| SMTP Host            | The SMTP server to use to send emails from.   |
-+----------------------+-----------------------------------------------+
-| SMTP Port            | Port to communicate with the SMTP server (465 |
-|                      | for SSL, 587 for TSL).                        |
-+----------------------+-----------------------------------------------+
-| Enable SSL           | Check to enable SSL, uncheck to enable TSL.   |
-+----------------------+-----------------------------------------------+
-| SMTP User            | The user name to send the email from. This    |
-|                      | can be just a name or the entire email        |
-|                      | address.                                      |
-+----------------------+-----------------------------------------------+
-| SMTP Password        | The password for the user.                    |
-+----------------------+-----------------------------------------------+
-| From Email           | What the from email address be set as. This   |
-|                      | should be the actual email address for this   |
-|                      | user.                                         |
-+----------------------+-----------------------------------------------+
-| Max emails (per      | Set the maximum number of emails that can be  |
-| hour)                | sent per hour. If more notifications are      |
-|                      | triggered within the hour and this number has |
-|                      | been reached, the notifications will be       |
-|                      | discarded.                                    |
-+----------------------+-----------------------------------------------+
-| Send Test Email      | Test the email configuration by sending a     |
-|                      | test email.                                   |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| SMTP Host               | The SMTP server to use to send emails from.      |
++-------------------------+--------------------------------------------------+
+| SMTP Port               | Port to communicate with the SMTP server (465    |
+|                         | for SSL, 587 for TSL).                           |
++-------------------------+--------------------------------------------------+
+| Enable SSL              | Check to enable SSL, uncheck to enable TSL.      |
++-------------------------+--------------------------------------------------+
+| SMTP User               | The user name to send the email from. This can   |
+|                         | be just a name or the entire email address.      |
++-------------------------+--------------------------------------------------+
+| SMTP Password           | The password for the user.                       |
++-------------------------+--------------------------------------------------+
+| From Email              | What the from email address be set as. This      |
+|                         | should be the actual email address for this      |
+|                         | user.                                            |
++-------------------------+--------------------------------------------------+
+| Max emails (per hour)   | Set the maximum number of emails that can be     |
+|                         | sent per hour. If more notifications are         |
+|                         | triggered within the hour and this number has    |
+|                         | been reached, the notifications will be          |
+|                         | discarded.                                       |
++-------------------------+--------------------------------------------------+
+| Send Test Email         | Test the email configuration by sending a test   |
+|                         | email.                                           |
++-------------------------+--------------------------------------------------+
 
 Camera Settings
 ---------------
@@ -3270,46 +3225,44 @@ software. Note that not every option (such as Hue or White Balance) may
 be able to be used with your particular camera, due to manufacturer
 differences in hardware and software.
 
-+----------------------+-----------------------------------------------+
-| Setting              | Description                                   |
-+======================+===============================================+
-| Type                 | Select whether the camera is a Raspberry Pi   |
-|                      | Camera or a USB camera.                       |
-+----------------------+-----------------------------------------------+
-| Library              | Select which library to use to communicate    |
-|                      | with the camera. The Raspberry Pi Camera uses |
-|                      | picamera, and USB cameras should be set to    |
-|                      | fswebcam.                                     |
-+----------------------+-----------------------------------------------+
-| Device               | The device to use to connect to the camera.   |
-|                      | fswebcam is the only library that uses this   |
-|                      | option.                                       |
-+----------------------+-----------------------------------------------+
-| Output               | This output will turn on during the capture   |
-|                      | of any still image (which includes            |
-|                      | timelapses).                                  |
-+----------------------+-----------------------------------------------+
-| Output Duration      | Turn output on for this duration of time      |
-|                      | before the image is captured.                 |
-+----------------------+-----------------------------------------------+
-| Rotate Image         | The number of degrees to rotate the image.    |
-+----------------------+-----------------------------------------------+
-| ...                  | Image Width, Image Height, Brightness,        |
-|                      | Contrast, Exposure, Gain, Hue, Saturation,    |
-|                      | White Balance. These options are              |
-|                      | self-explanatory. Not all options will work   |
-|                      | with all cameras.                             |
-+----------------------+-----------------------------------------------+
-| Pre Command          | A command to execute (as user 'root') before  |
-|                      | a still image is captured.                    |
-+----------------------+-----------------------------------------------+
-| Post Command         | A command to execute (as user 'root') after a |
-|                      | still image is captured.                      |
-+----------------------+-----------------------------------------------+
-| Flip horizontally    | Flip, or mirror, the image horizontally.      |
-+----------------------+-----------------------------------------------+
-| Flip vertically      | Flip, or mirror, the image vertically.        |
-+----------------------+-----------------------------------------------+
++-------------------------+--------------------------------------------------+
+| Setting                 | Description                                      |
++=========================+==================================================+
+| Type                    | Select whether the camera is a Raspberry Pi      |
+|                         | Camera or a USB camera.                          |
++-------------------------+--------------------------------------------------+
+| Library                 | Select which library to use to communicate with  |
+|                         | the camera. The Raspberry Pi Camera uses         |
+|                         | picamera, and USB cameras should be set to       |
+|                         | fswebcam.                                        |
++-------------------------+--------------------------------------------------+
+| Device                  | The device to use to connect to the camera.      |
+|                         | fswebcam is the only library that uses this      |
+|                         | option.                                          |
++-------------------------+--------------------------------------------------+
+| Output                  | This output will turn on during the capture of   |
+|                         | any still image (which includes timelapses).     |
++-------------------------+--------------------------------------------------+
+| Output Duration         | Turn output on for this duration of time before  |
+|                         | the image is captured.                           |
++-------------------------+--------------------------------------------------+
+| Rotate Image            | The number of degrees to rotate the image.       |
++-------------------------+--------------------------------------------------+
+| ...                     | Image Width, Image Height, Brightness, Contrast, |
+|                         | Exposure, Gain, Hue, Saturation, White Balance.  |
+|                         | These options are self-explanatory. Not all      |
+|                         | options will work with all cameras.              |
++-------------------------+--------------------------------------------------+
+| Pre Command             | A command to execute (as user 'root') before a   |
+|                         | still image is captured.                         |
++-------------------------+--------------------------------------------------+
+| Post Command            | A command to execute (as user 'root') after a    |
+|                         | still image is captured.                         |
++-------------------------+--------------------------------------------------+
+| Flip horizontally       | Flip, or mirror, the image horizontally.         |
++-------------------------+--------------------------------------------------+
+| Flip vertically         | Flip, or mirror, the image vertically.           |
++-------------------------+--------------------------------------------------+
 
 Diagnostic Settings
 -------------------
@@ -3329,15 +3282,15 @@ Dashboard Elements may be the most economical method to enable access to
 the ``Data -> Dashboard`` page again, at the cost of having to readd all
 the Dashboard Elements that were once there.
 
-+---------------------------+------------------------------------------+
-| Setting                   | Description                              |
-+===========================+==========================================+
-| Delete All Dashboard      | Delete all saved Dashboard Elements from |
-| Elements                  | the Dashboard.                           |
-+---------------------------+------------------------------------------+
-| Delete All Notes and Note | Delete all notes and note tags.          |
-| Tags                      |                                          |
-+---------------------------+------------------------------------------+
++------------------------------+---------------------------------------------+
+| Setting                      | Description                                 |
++==============================+=============================================+
+| Delete All Dashboard         | Delete all saved Dashboard Elements from    |
+| Elements                     | the Dashboard.                              |
++------------------------------+---------------------------------------------+
+| Delete All Notes and Note    | Delete all notes and note tags.             |
+| Tags                         |                                             |
++------------------------------+---------------------------------------------+
 
 PID Tuning
 ==========
@@ -3382,11 +3335,11 @@ too cold and to what degree). The error is manipulated by each of the
 three PID components, producing an output, called the Manipulated
 Variable (MV) or Control Variable (CV). To allow control of how much
 each path contributes to the output value, each path is multiplied by a
-gain (represented by *K:sub:`P\`*, *K:sub:`I\`*, and *K:sub:`D\`*). By
-adjusting the gains, the sensitivity of the system to each path is
-affected. When all three paths are summed, the PID output is produced.
-If a gain is set to 0, that path does not contribute to the output and
-that path is essentially turned off.
+gain (represented by *K\ :sub:`P\\`*, *K\ :sub:`I\\`*, and
+*K\ :sub:`D\\`*). By adjusting the gains, the sensitivity of the system
+to each path is affected. When all three paths are summed, the PID
+output is produced. If a gain is set to 0, that path does not contribute
+to the output and that path is essentially turned off.
 
 The output can be used a number of ways, however this controller was
 designed to use the output to affect the measured value (PV). This
@@ -3408,26 +3361,26 @@ temperature back down, to reduce the error. If the temperature would
 normally lower without the aid of a cooling device, then the system can
 be simplified by omitting a cooler and allowing it to lower on its own.
 
-Implementing a controller that effectively utilizes *K:sub:`P\`*,
-*K:sub:`I\`*, and *K:sub:`D\`* can be challenging. Furthermore, it is
-often unnecessary. For instance, the *K:sub:`I\`* and *K:sub:`D\`* can
-be set to 0, effectively turning them off and producing the very popular
-and simple P controller. Also popular is the PI controller. It is
-recommended to start with only *K:sub:`P\`* activated, then experiment
-with *K:sub:`P\`* and *K:sub:`I\`*, before finally using all three.
-Because systems will vary (e.g. airspace volume, degree of insulation,
-and the degree of impact from the connected device, etc.), each path
-will need to be adjusted through experimentation to produce an effective
-output.
+Implementing a controller that effectively utilizes *K\ :sub:`P\\`*,
+*K\ :sub:`I\\`*, and *K\ :sub:`D\\`* can be challenging. Furthermore, it
+is often unnecessary. For instance, the *K\ :sub:`I\\`* and
+*K\ :sub:`D\\`* can be set to 0, effectively turning them off and
+producing the very popular and simple P controller. Also popular is the
+PI controller. It is recommended to start with only *K\ :sub:`P\\`*
+activated, then experiment with *K\ :sub:`P\\`* and *K\ :sub:`I\\`*,
+before finally using all three. Because systems will vary (e.g. airspace
+volume, degree of insulation, and the degree of impact from the
+connected device, etc.), each path will need to be adjusted through
+experimentation to produce an effective output.
 
 Quick Setup Examples
 --------------------
 
 These example setups are meant to illustrate how to configure regulation
 in particular directions, and not to achieve ideal values to configure
-your *K:sub:`P\`*, *K:sub:`I\`*, and *K:sub:`D\`* gains. There are a
-number of online resources that discuss techniques and methods that have
-been developed to determine ideal PID values (such as
+your *K\ :sub:`P\\`*, *K\ :sub:`I\\`*, and *K\ :sub:`D\\`* gains. There
+are a number of online resources that discuss techniques and methods
+that have been developed to determine ideal PID values (such as
 `here <http://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops>`__,
 `here <http://innovativecontrols.com/blog/basics-tuning-pid-loops>`__,
 `here <https://hennulat.wordpress.com/2011/01/12/pid-loop-tuning-101/>`__,
@@ -3438,11 +3391,12 @@ recommended to conduct your own research to understand the variables and
 essential to conduct your own experiments to effectively implement them.
 
 Provided merely as an example of the variance of PID values, one of my
-setups had temperature PID values (up regulation) of *K:sub:`P\`* = 30,
-*K:sub:`I\`* = 1.0, and *K:sub:`D\`* = 0.5, and humidity PID values (up
-regulation) of *K:sub:`P\`* = 1.0, *K:sub:`I\`* = 0.2, and *K:sub:`D\`*
-= 0.5. Furthermore, these values may not have been optimal but they
-worked well for the conditions of my environmental chamber.
+setups had temperature PID values (up regulation) of *K\ :sub:`P\\`* =
+30, *K\ :sub:`I\\`* = 1.0, and *K\ :sub:`D\\`* = 0.5, and humidity PID
+values (up regulation) of *K\ :sub:`P\\`* = 1.0, *K\ :sub:`I\\`* = 0.2,
+and *K\ :sub:`D\\`* = 0.5. Furthermore, these values may not have been
+optimal but they worked well for the conditions of my environmental
+chamber.
 
 Exact Temperature Regulation
 ----------------------------
@@ -3461,8 +3415,8 @@ the desired temperature, *Regulate Direction* to "Both". Set *Raise
 Output* to the relay attached to the heating device and the *Lower
 Relay* to the relay attached to the cooling device.
 
-Set *K:sub:`P\`* = 1, *K:sub:`I\`* = 0, and *K:sub:`D\`* = 0, then
-activate the PID.
+Set *K\ :sub:`P\\`* = 1, *K\ :sub:`I\\`* = 0, and *K\ :sub:`D\\`* = 0,
+then activate the PID.
 
 If the temperature is lower than the Set Point, the heater should
 activate at some interval determined by the PID controller until the
@@ -3470,11 +3424,11 @@ temperature rises to the set point. If the temperature goes higher than
 the Set Point (or Set Point + Buffer), the cooling device will activate
 until the temperature returns to the set point. If the temperature is
 not reaching the Set Point after a reasonable amount of time, increase
-the *K:sub:`P\`* value and see how that affects the system. Experiment
-with different configurations involving only *Read Interval* and
-*K:sub:`P\`* to achieve a good regulation. Avoid changing the
-*K:sub:`I\`* and *K:sub:`D\`* from 0 until a working regulation is
-achieved with *K:sub:`P\`* alone.
+the *K\ :sub:`P\\`* value and see how that affects the system.
+Experiment with different configurations involving only *Read Interval*
+and *K\ :sub:`P\\`* to achieve a good regulation. Avoid changing the
+*K\ :sub:`I\\`* and *K\ :sub:`D\\`* from 0 until a working regulation is
+achieved with *K\ :sub:`P\\`* alone.
 
 View graphs in the 6 to 12 hour time span to identify how well the
 temperature is regulated to the Setpoint. What is meant by
@@ -3483,14 +3437,14 @@ tolerances. Most applications of a PID controller would like to see the
 proper temperature attained within a reasonable amount of time and with
 little oscillation around the Setpoint.
 
-Once regulation is achieved, experiment by reducing *K:sub:`P\`*
-slightly (~25%) and increasing *K:sub:`I\`* by a low amount to start,
+Once regulation is achieved, experiment by reducing *K\ :sub:`P\\`*
+slightly (~25%) and increasing *K\ :sub:`I\\`* by a low amount to start,
 such as 0.1 (or lower, 0.01), then start the PID and observe how well
-the controller regulates. Slowly increase *K:sub:`I\`* until regulation
-becomes both quick and with little oscillation. At this point, you
-should be fairly familiar with experimenting with the system and the
-*K:sub:`D\`* value can be experimented with once both *K:sub:`P\`* and
-*K:sub:`I\`* have been tuned.
+the controller regulates. Slowly increase *K\ :sub:`I\\`* until
+regulation becomes both quick and with little oscillation. At this
+point, you should be fairly familiar with experimenting with the system
+and the *K\ :sub:`D\\`* value can be experimented with once both
+*K\ :sub:`P\\`* and *K\ :sub:`I\\`* have been tuned.
 
 High Temperature Regulation
 ---------------------------
@@ -3553,8 +3507,8 @@ Incorrect Database Version
 
 .. code:: bash
 
-   mv ~/Mycodo/databases/mycodo.db ~/Mycodo/databases/mycodo.db.backup
-   sudo service mycodoflask restart
+    mv ~/Mycodo/databases/mycodo.db ~/Mycodo/databases/mycodo.db.backup
+    sudo service mycodoflask restart
 
 More
 ----
@@ -3759,7 +3713,7 @@ Go to ``Advanced Options`` -> ``Serial`` and disable. Then edit
 
 ``sudo vi /boot/config.txt``
 
-Find the line "enable_uart=0" and change it to "enable_uart=1", then
+Find the line "enable\_uart=0" and change it to "enable\_uart=1", then
 reboot.
 
 Output Devices
@@ -3836,7 +3790,7 @@ The wakeup attempts fail, consistently. I checked the bitstream with a
 sniffer, and see that the sensor may respond once out of 20 or so tries
 (or not at all) but only with a single byte returned. The solution is to
 use a software implementation of the I2C bus. You need to add pull-up
-resistors (4.7k is dandy) to 3.3v and install the i2c_gpio device
+resistors (4.7k is dandy) to 3.3v and install the i2c\_gpio device
 overlay. Seems to work fine now, will run for a few days, but the CRC
 failures are gone and I get good readings, every time. And no twiddling
 the power for the sensor is required.
@@ -3905,11 +3859,11 @@ First - find the VID and PID for the USB device:
 
 ::
 
-   pi@raspberry:~ $ lsusb
-   Bus 001 Device 008: ID 10c4:ea60 Cygnal Integrated Products, Inc. CP210x UART Bridge / myAVR mySmartUSB light
-   Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp. SMSC9512/9514 Fast Ethernet Adapter
-   Bus 001 Device 002: ID 0424:9514 Standard Microsystems Corp. SMC9514 Hub
-   Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+    pi@raspberry:~ $ lsusb
+    Bus 001 Device 008: ID 10c4:ea60 Cygnal Integrated Products, Inc. CP210x UART Bridge / myAVR mySmartUSB light
+    Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp. SMSC9512/9514 Fast Ethernet Adapter
+    Bus 001 Device 002: ID 0424:9514 Standard Microsystems Corp. SMC9514 Hub
+    Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 
 In this case the Vendor ID is 10c4 The Product ID is ea60
 
@@ -3917,10 +3871,10 @@ Since I changed the serial number field - this will be unique.
 
 ::
 
-   pi@raspberry:~ $ udevadm info --name=/dev/ttyUSB0 --attribute-walk | grep serial
-   SUBSYSTEMS=="usb-serial"
-   ATTRS{serial}=="ZH03B180904"
-   ATTRS{serial}=="3f980000.usb"
+    pi@raspberry:~ $ udevadm info --name=/dev/ttyUSB0 --attribute-walk | grep serial
+    SUBSYSTEMS=="usb-serial"
+    ATTRS{serial}=="ZH03B180904"
+    ATTRS{serial}=="3f980000.usb"
 
 Now I have an attribute to tell udev what to do. I create a file in
 /etc/udev/rules.d with a name like "99-dustsensor.rules". In that file I
@@ -3933,9 +3887,9 @@ To test the new rule:
 
 ::
 
-   pi@raspberry:/dev $ sudo udevadm trigger
-   pi@raspberry:/dev $ ls -al dust-sensor
-   lrwxrwxrwx 1 root root 7 Oct 6 21:04 dust-sensor -> ttyUSB0
+    pi@raspberry:/dev $ sudo udevadm trigger
+    pi@raspberry:/dev $ ls -al dust-sensor
+    lrwxrwxrwx 1 root root 7 Oct 6 21:04 dust-sensor -> ttyUSB0
 
 Now, every time the dust sensor is plugged in, it shows up at
 /dev/dust-sensor

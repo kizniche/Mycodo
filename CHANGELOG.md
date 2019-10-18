@@ -1,3 +1,10 @@
+## 7.8.4 (2019.10.18)
+
+### Bugfixes
+
+ - Actually fix inability to save PID options
+
+
 ## 7.8.3 (2019.10.18)
 
 ### Bugfixes

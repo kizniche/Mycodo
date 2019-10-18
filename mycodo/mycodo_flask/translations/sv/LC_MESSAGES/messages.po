@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-15 22:47-0400\n"
+"POT-Creation-Date: 2019-10-18 17:20-0400\n"
 "PO-Revision-Date: 2019-01-29 14:25-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sv\n"
@@ -754,7 +754,7 @@ msgstr "Fungera"
 msgid "General"
 msgstr "Allmän"
 
-#: config_translations.py:73 mycodo_flask/forms/forms_pid.py:111
+#: config_translations.py:73 mycodo_flask/forms/forms_pid.py:109
 msgid "Hold"
 msgstr "Håll"
 
@@ -864,7 +864,7 @@ msgstr "Produktion"
 msgid "Password"
 msgstr "Lösenord"
 
-#: config_translations.py:113 mycodo_flask/forms/forms_pid.py:112
+#: config_translations.py:113 mycodo_flask/forms/forms_pid.py:110
 #: mycodo_flask/templates/pages/function_options/action_options/pause_actions.html:8
 #: mycodo_flask/templates/pages/function_options/action_options/pause_pid.html:11
 msgid "Pause"
@@ -902,7 +902,7 @@ msgstr "ordna"
 msgid "Reset"
 msgstr ""
 
-#: config_translations.py:127 mycodo_flask/forms/forms_pid.py:113
+#: config_translations.py:127 mycodo_flask/forms/forms_pid.py:111
 #: mycodo_flask/templates/pages/function_options/action_options/resume_pid.html:11
 msgid "Resume"
 msgstr "Återuppta"
@@ -1252,8 +1252,8 @@ msgid "Period (seconds)"
 msgstr "Period (sekunder)"
 
 #: config_translations.py:260
-msgid "The duration (seconds) between input reads"
-msgstr "Varaktigheten (sekunder) mellan ingången läser"
+msgid "The duration (seconds) between measurements or actions"
+msgstr ""
 
 #: config_translations.py:262
 msgid "Clock Pin"
@@ -2189,11 +2189,11 @@ msgstr "Timestamp typsnitt (em)"
 
 #: mycodo_flask/forms/forms_dashboard.py:145
 #: mycodo_flask/forms/forms_dashboard.py:161
-#: mycodo_flask/forms/forms_dashboard.py:181 mycodo_flask/forms/forms_lcd.py:88
-#: mycodo_flask/forms/forms_lcd.py:100 mycodo_flask/forms/forms_lcd.py:112
-#: mycodo_flask/forms/forms_lcd.py:124 mycodo_flask/forms/forms_lcd.py:136
-#: mycodo_flask/forms/forms_lcd.py:148 mycodo_flask/forms/forms_lcd.py:160
-#: mycodo_flask/forms/forms_lcd.py:172
+#: mycodo_flask/forms/forms_dashboard.py:181 mycodo_flask/forms/forms_lcd.py:90
+#: mycodo_flask/forms/forms_lcd.py:105 mycodo_flask/forms/forms_lcd.py:120
+#: mycodo_flask/forms/forms_lcd.py:135 mycodo_flask/forms/forms_lcd.py:150
+#: mycodo_flask/forms/forms_lcd.py:165 mycodo_flask/forms/forms_lcd.py:180
+#: mycodo_flask/forms/forms_lcd.py:195
 msgid "Decimal Places"
 msgstr "Decimala platser"
 
@@ -2640,108 +2640,108 @@ msgstr "Varje Pin, <= 40 kHz"
 msgid "Hardware Pin, <= 30 MHz"
 msgstr "Hårdvara Pin, <= 30 MHz"
 
-#: mycodo_flask/forms/forms_pid.py:31
+#: mycodo_flask/forms/forms_pid.py:32
 msgid "Direction"
 msgstr "Riktning"
 
-#: mycodo_flask/forms/forms_pid.py:33
+#: mycodo_flask/forms/forms_pid.py:34
 msgid "Raise"
 msgstr "Höja"
 
-#: mycodo_flask/forms/forms_pid.py:34
+#: mycodo_flask/forms/forms_pid.py:35
 msgid "Lower"
 msgstr "Lägre"
 
-#: mycodo_flask/forms/forms_pid.py:35
+#: mycodo_flask/forms/forms_pid.py:36
 #: mycodo_flask/templates/pages/function_options/trigger_options/edge.html:27
 msgid "Both"
 msgstr "Både"
 
-#: mycodo_flask/forms/forms_pid.py:69
+#: mycodo_flask/forms/forms_pid.py:70
 msgid "Band (+/- Setpoint)"
 msgstr "Band (+/- Börvärde)"
 
-#: mycodo_flask/forms/forms_pid.py:71
+#: mycodo_flask/forms/forms_pid.py:72
 msgid "Store Lower as Negative"
 msgstr "Store Lägre som negativ"
 
-#: mycodo_flask/forms/forms_pid.py:73
+#: mycodo_flask/forms/forms_pid.py:74
 msgid "Kp Gain"
 msgstr "Kp Gain"
 
-#: mycodo_flask/forms/forms_pid.py:80
+#: mycodo_flask/forms/forms_pid.py:81
 msgid "Ki Gain"
 msgstr "Ki Gain"
 
-#: mycodo_flask/forms/forms_pid.py:87
+#: mycodo_flask/forms/forms_pid.py:88
 msgid "Kd Gain"
 msgstr "Kd Gain"
 
-#: mycodo_flask/forms/forms_pid.py:94
+#: mycodo_flask/forms/forms_pid.py:95
 msgid "Integrator Min"
 msgstr "Integrator Min"
 
-#: mycodo_flask/forms/forms_pid.py:97
+#: mycodo_flask/forms/forms_pid.py:98
 msgid "Integrator Max"
 msgstr "Integrator Max"
 
-#: mycodo_flask/forms/forms_pid.py:99
+#: mycodo_flask/forms/forms_pid.py:100
 msgid "Output (Raise)"
 msgstr "Utmatning (höj)"
 
-#: mycodo_flask/forms/forms_pid.py:100
+#: mycodo_flask/forms/forms_pid.py:101
 msgid "Output (Lower)"
 msgstr "Utgång (lägre)"
 
-#: mycodo_flask/forms/forms_pid.py:121
+#: mycodo_flask/forms/forms_pid.py:119
 msgid "Noise Band"
 msgstr "Bullerband"
 
-#: mycodo_flask/forms/forms_pid.py:124
+#: mycodo_flask/forms/forms_pid.py:122
 msgid "Outstep"
 msgstr "Outstep"
 
-#: mycodo_flask/forms/forms_pid.py:126 mycodo_flask/utils/utils_pid.py:203
+#: mycodo_flask/forms/forms_pid.py:124 mycodo_flask/utils/utils_pid.py:206
 msgid "Start Autotune"
 msgstr "Starta Autotune"
 
-#: mycodo_flask/forms/forms_pid.py:131
+#: mycodo_flask/forms/forms_pid.py:129
 msgid "Min On Duration (Raise)"
 msgstr "Min på varaktighet (höj)"
 
-#: mycodo_flask/forms/forms_pid.py:139
+#: mycodo_flask/forms/forms_pid.py:137
 msgid "Max On Duration (Raise)"
 msgstr "Max på varaktighet (höj)"
 
-#: mycodo_flask/forms/forms_pid.py:147
+#: mycodo_flask/forms/forms_pid.py:145
 msgid "Min Off Duration (Raise)"
 msgstr "Min Av Varaktighet (Höj)"
 
-#: mycodo_flask/forms/forms_pid.py:158
+#: mycodo_flask/forms/forms_pid.py:156
 msgid "Min On Duration (Lower)"
 msgstr "Min på varaktighet (lägre)"
 
-#: mycodo_flask/forms/forms_pid.py:166
+#: mycodo_flask/forms/forms_pid.py:164
 msgid "Max On Duration (Lower)"
 msgstr "Max på varaktighet (lägre)"
 
-#: mycodo_flask/forms/forms_pid.py:174
+#: mycodo_flask/forms/forms_pid.py:172
 msgid "Min Off Duration (Lower)"
 msgstr "Min Av Varaktighet (Nedre)"
 
-#: mycodo_flask/forms/forms_pid.py:185
+#: mycodo_flask/forms/forms_pid.py:183
 msgid "Min Duty Cycle (Raise)"
 msgstr "Min arbetscykel (höja)"
 
-#: mycodo_flask/forms/forms_pid.py:193
+#: mycodo_flask/forms/forms_pid.py:191
 msgid "Max Duty Cycle (Raise)"
 msgstr "Max arbetscykel (höja)"
 
-#: mycodo_flask/forms/forms_pid.py:204
+#: mycodo_flask/forms/forms_pid.py:202
 msgid "Min Duty Cycle (Lower)"
 msgstr "Min arbetscykel (lägre)"
 
-#: mycodo_flask/forms/forms_pid.py:212
+#: mycodo_flask/forms/forms_pid.py:210
 msgid "Max Duty Cycle (Lower)"
 msgstr "Max arbetscykel (lägre)"
 
@@ -4073,23 +4073,6 @@ msgstr "Välj mätning som ska användas som ingång"
 msgid "Choose the direction(s) to regulate"
 msgstr "Välj riktning (er) för att reglera"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:101
-msgid ""
-"The duration between calculating a new PID output to power the raise and "
-"lower outputs."
-msgstr ""
-"Varaktigheten mellan att beräkna en ny PID-utgång för att driva upp "
-"höjningen och sänka utgångarna."
-
-#: mycodo_flask/templates/pages/function_options/pid.html:113
-msgid ""
-"Maximum allowable measurement age (to allow the PID controller to "
-"manipulate outputs, the measurement must have occurred in the past x "
-"seconds)"
-msgstr ""
-"Maximal tillåten mätålder (för att tillåta PID-kontrollen att manipulera "
-"utgångar måste mätningen ha skett under de senaste x sekunderna)"
-
 #: mycodo_flask/templates/pages/function_options/pid.html:128
 msgid ""
 "This is the desired state of a perticular environmental condition. For "
@@ -5394,8 +5377,8 @@ msgstr "%(type)s Math med ID %(id)s (%(uuid)s) har lagts till"
 msgid "Deactivate Math controller before modifying its settings"
 msgstr "Inaktivera Math-kontrollern innan du ändrar inställningarna"
 
-#: mycodo_flask/utils/utils_math.py:115 mycodo_flask/utils/utils_pid.py:126
-#: mycodo_flask/utils/utils_pid.py:133
+#: mycodo_flask/utils/utils_math.py:115 mycodo_flask/utils/utils_pid.py:129
+#: mycodo_flask/utils/utils_pid.py:136
 msgid "Error in form field(s)"
 msgstr "Fel i formulärfält"
 
@@ -5578,19 +5561,19 @@ msgstr "Utgången avstängd: %(rvalue)s"
 msgid "Invalid value"
 msgstr "ogiltigt värde"
 
-#: mycodo_flask/utils/utils_pid.py:153
+#: mycodo_flask/utils/utils_pid.py:156
 msgid "Raise and lower outputs cannot be the same"
 msgstr "Höj och sänk utdata kan inte vara samma"
 
-#: mycodo_flask/utils/utils_pid.py:229 mycodo_flask/utils/utils_pid.py:238
+#: mycodo_flask/utils/utils_pid.py:232 mycodo_flask/utils/utils_pid.py:241
 msgid "A valid Measurement is required"
 msgstr "En giltig mätning krävs"
 
-#: mycodo_flask/utils/utils_pid.py:242
+#: mycodo_flask/utils/utils_pid.py:245
 msgid "A Raise Output and/or a Lower Output is required"
 msgstr "En höjningsutgång och / eller en lägre utgång krävs"
 
-#: mycodo_flask/utils/utils_pid.py:269
+#: mycodo_flask/utils/utils_pid.py:272
 msgid ""
 "Cannot activate PID controller if the associated sensor controller is "
 "inactive"
@@ -5598,7 +5581,7 @@ msgstr ""
 "Kan inte aktivera PID-regulatorn om den tillhörande sensorkontrollen är "
 "inaktiv"
 
-#: mycodo_flask/utils/utils_pid.py:276
+#: mycodo_flask/utils/utils_pid.py:279
 msgid ""
 "Cannot activate PID controller if raise and/or lower output IDs are not "
 "selected"
@@ -5745,4 +5728,27 @@ msgstr ""
 
 #~ msgid "Neither"
 #~ msgstr "Varken"
+
+#~ msgid "The duration (seconds) between input reads"
+#~ msgstr "Varaktigheten (sekunder) mellan ingången läser"
+
+#~ msgid ""
+#~ "The duration between calculating a new"
+#~ " PID output to power the raise "
+#~ "and lower outputs."
+#~ msgstr ""
+#~ "Varaktigheten mellan att beräkna en ny"
+#~ " PID-utgång för att driva upp "
+#~ "höjningen och sänka utgångarna."
+
+#~ msgid ""
+#~ "Maximum allowable measurement age (to "
+#~ "allow the PID controller to manipulate"
+#~ " outputs, the measurement must have "
+#~ "occurred in the past x seconds)"
+#~ msgstr ""
+#~ "Maximal tillåten mätålder (för att "
+#~ "tillåta PID-kontrollen att manipulera "
+#~ "utgångar måste mätningen ha skett under"
+#~ " de senaste x sekunderna)"
 

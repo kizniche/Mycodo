@@ -69,7 +69,10 @@ def pid_mod(form_mod_pid_base,
         mod_pid.setpoint_tracking_id = form_mod_pid_base.setpoint_tracking_method_id.data
     elif form_mod_pid_base.setpoint_tracking_type.data == 'input-math':
         mod_pid.setpoint_tracking_id = form_mod_pid_base.setpoint_tracking_input_math_id.data
-        mod_pid.setpoint_tracking_max_age = form_mod_pid_base.setpoint_tracking_max_age.data
+        if form_mod_pid_base.setpoint_tracking_max_age.data:
+            mod_pid.setpoint_tracking_max_age = form_mod_pid_base.setpoint_tracking_max_age.data
+        else:
+            mod_pid.setpoint_tracking_max_age = 120
     else:
         mod_pid.setpoint_tracking_id = ''
 
