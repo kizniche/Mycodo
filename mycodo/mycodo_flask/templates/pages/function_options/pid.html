@@ -98,7 +98,7 @@
       <div class="col-auto">
         {{form_mod_pid_base.period.label(class_='control-label')}}
         <div>
-          {{form_mod_pid_base.period(class_='form-control', value=each_pid.period, **{'title':_('The duration between calculating a new PID output to power the raise and lower outputs.')})}}
+          {{form_mod_pid_base.period(class_='form-control', value=each_pid.period, **{'title': dict_translation['period']['phrase']})}}
         </div>
       </div>
       <div class="col-auto">
@@ -110,7 +110,7 @@
       <div class="col-auto">
         {{form_mod_pid_base.max_measure_age.label(class_='control-label')}}
         <div>
-          {{form_mod_pid_base.max_measure_age(class_='form-control', value=each_pid.max_measure_age, **{'title':_('Maximum allowable measurement age (to allow the PID controller to manipulate outputs, the measurement must have occurred in the past x seconds)')})}}
+          {{form_mod_pid_base.max_measure_age(class_='form-control', value=each_pid.max_measure_age, **{'title': dict_translation['max_age']['phrase']})}}
         </div>
       </div>
       <div class="col-auto">
@@ -279,7 +279,7 @@
       </div>
     </div>
 
-  <script>
+    <script>
     $(document).ready(function(){
       var checkPattern = function () {
         if ($('#setpoint_tracking_type_{{each_pid.unique_id}}').val() === 'method') {

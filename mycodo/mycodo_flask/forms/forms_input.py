@@ -73,8 +73,8 @@ class InputMod(FlaskForm):
         TRANSLATIONS['period']['title'],
         validators=[DataRequired(),
                     validators.NumberRange(
-                        min=5.0,
-                        max=86400.0
+                        min=5,
+                        max=86400
         )],
         widget=NumberInput(step='any')
     )
@@ -82,8 +82,8 @@ class InputMod(FlaskForm):
         TRANSLATIONS['start_offset']['title'],
         validators=[DataRequired(),
                     validators.NumberRange(
-                        min=0.0,
-                        max=86400.0
+                        min=0,
+                        max=86400
                     )],
         widget=NumberInput(step='any')
     )

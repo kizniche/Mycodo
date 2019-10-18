@@ -257,7 +257,7 @@ TRANSLATIONS = {
         'phrase': lazy_gettext('Command to execute (as user mycodo) when the output is instructed to turn on')},
     'period': {
         'title': lazy_gettext('Period (seconds)'),
-        'phrase': lazy_gettext('The duration (seconds) between input reads')},
+        'phrase': lazy_gettext('The duration (seconds) between measurements or actions')},
     'pin_clock': {
         'title': lazy_gettext('Clock Pin'),
         'phrase': lazy_gettext('The GPIO (using BCM numbering) connected to the Clock pin')},

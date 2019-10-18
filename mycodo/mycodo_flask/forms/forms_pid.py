@@ -7,6 +7,7 @@ from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import BooleanField
 from wtforms import DecimalField
+from wtforms import IntegerField
 from wtforms import SelectField
 from wtforms import StringField
 from wtforms import SubmitField
@@ -39,8 +40,8 @@ class PIDModBase(FlaskForm):
     period = DecimalField(
         TRANSLATIONS['period']['title'],
         validators=[validators.NumberRange(
-            min=1.0,
-            max=86400.0
+            min=1,
+            max=86400
         )],
         widget=NumberInput(step='any')
     )
@@ -52,8 +53,8 @@ class PIDModBase(FlaskForm):
     max_measure_age = DecimalField(
         TRANSLATIONS['max_age']['title'],
         validators=[validators.NumberRange(
-            min=1.0,
-            max=86400.0
+            min=1,
+            max=86400
         )],
         widget=NumberInput(step='any')
     )
