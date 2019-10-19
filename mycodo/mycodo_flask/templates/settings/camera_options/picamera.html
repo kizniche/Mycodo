@@ -1,7 +1,7 @@
 <div class="col-auto">
   {{form_camera.rotation.label(class_='control-label')}}
   <div>
-    {{form_camera.rotation(class_='form-control', value=each_camera.rotation)}}
+    {{form_camera.rotation(class_='form-control', value=each_camera.rotation, **{'title': 'Accepted values: 0, 90, 180, or 270. Default: 0.'})}}
    </div>
 </div>
 <div class="col-auto">
@@ -19,37 +19,37 @@
 <div class="col-auto">
   {{form_camera.brightness.label(class_='control-label')}}
   <div>
-    {{form_camera.brightness(class_='form-control', value=each_camera.brightness)}}
+    {{form_camera.brightness(class_='form-control', value=each_camera.brightness, **{'title': 'Accepted values: 0 - 100. Default: 50.'})}}
    </div>
 </div>
 <div class="col-auto">
   {{form_camera.contrast.label(class_='control-label')}}
   <div>
-    {{form_camera.contrast(class_='form-control', value=each_camera.contrast)}}
+    {{form_camera.contrast(class_='form-control', value=each_camera.contrast, **{'title': 'Accepted values: -100 - 100. Default: 0.'})}}
    </div>
 </div>
 <div class="col-auto">
   {{form_camera.exposure.label(class_='control-label')}}
   <div>
-    {{form_camera.exposure(class_='form-control', value=each_camera.exposure)}}
+    {{form_camera.exposure(class_='form-control', value=each_camera.exposure, **{'title': 'Accepted values: -25 - 25. Default: 0.'})}}
    </div>
 </div>
 <div class="col-auto">
   {{form_camera.saturation.label(class_='control-label')}}
   <div>
-    {{form_camera.saturation(class_='form-control', value=each_camera.saturation)}}
-   </div>
-</div>
-<div class="col-auto">
-  {{form_camera.picamera_shutter_speed.label(class_='control-label')}}
-  <div>
-    {{form_camera.picamera_shutter_speed(class_='form-control', value=each_camera.picamera_shutter_speed, **{'title': 'Shutter speed in microseconds. Seeting to 0 disables and shutter speed will be automatically determined.'})}}
+    {{form_camera.saturation(class_='form-control', value=each_camera.saturation, **{'title': 'Accepted values: -100 - 100. Default: 0.'})}}
    </div>
 </div>
 <div class="col-auto">
   {{form_camera.picamera_sharpness.label(class_='control-label')}}
   <div>
     {{form_camera.picamera_sharpness(class_='form-control', value=each_camera.picamera_sharpness, **{'title': 'Accepted values: -100 - 100. Default: 0.'})}}
+   </div>
+</div>
+<div class="col-auto">
+  {{form_camera.picamera_shutter_speed.label(class_='control-label')}}
+  <div>
+    {{form_camera.picamera_shutter_speed(class_='form-control', value=each_camera.picamera_shutter_speed, **{'title': 'Shutter speed in microseconds. Seeting to 0 disables and shutter speed will be automatically determined.'})}}
    </div>
 </div>
 <div class="col-auto">
