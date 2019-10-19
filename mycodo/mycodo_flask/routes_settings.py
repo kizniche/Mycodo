@@ -5,23 +5,19 @@ import logging
 import flask_login
 import operator
 import os
-from flask import current_app
 from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
 from flask.blueprints import Blueprint
 
-from mycodo.config import CAMERA_LIBRARIES
 from mycodo.config import LANGUAGES
 from mycodo.config import PATH_CONTROLLERS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import THEMES
-from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Misc
-from mycodo.databases.models import Output
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Unit
@@ -71,47 +67,6 @@ def settings_alerts():
     return render_template('settings/alerts.html',
                            smtp=smtp,
                            form_email_alert=form_email_alert)
-
-
-@blueprint.route('/settings/camera', methods=('GET', 'POST'))
-@flask_login.login_required
-def settings_camera():
-    """ Display camera settings """
-    if not utils_general.user_has_permission('view_settings'):
-        return redirect(url_for('routes_general.home'))
-
-    form_camera = forms_settings.SettingsCamera()
-
-    camera = Camera.query.all()
-    output = Output.query.all()
-
-    pi_camera_enabled = False
-    try:
-        if (not current_app.config['TESTING'] and
-                'start_x=1' in open('/boot/config.txt').read()):
-            pi_camera_enabled = True
-    except IOError as e:
-        logger.error("Camera IOError raised in '/settings/camera' endpoint: "
-                     "{err}".format(err=e))
-
-    if request.method == 'POST':
-        if not utils_general.user_has_permission('edit_settings'):
-            return redirect(url_for('routes_general.home'))
-
-        if form_camera.camera_add.data:
-            utils_settings.camera_add(form_camera)
-        elif form_camera.camera_mod.data:
-            utils_settings.camera_mod(form_camera)
-        elif form_camera.camera_del.data:
-            utils_settings.camera_del(form_camera)
-        return redirect(url_for('routes_settings.settings_camera'))
-
-    return render_template('settings/camera.html',
-                           camera=camera,
-                           camera_libraries=CAMERA_LIBRARIES,
-                           form_camera=form_camera,
-                           pi_camera_enabled=pi_camera_enabled,
-                           output=output)
 
 
 @blueprint.route('/settings/general', methods=('GET', 'POST'))

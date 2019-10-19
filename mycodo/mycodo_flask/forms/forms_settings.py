@@ -23,68 +23,6 @@ from mycodo.config_translations import TRANSLATIONS
 
 
 #
-# Settings (Camera)
-#
-
-class SettingsCamera(FlaskForm):
-    camera_id = StringField('Camera ID', widget=widgets.HiddenInput())
-    name = StringField(TRANSLATIONS['name']['title'])
-    library = StringField(lazy_gettext('Library'))
-    device = StringField(lazy_gettext('Device'))
-    opencv_device = IntegerField(
-        lazy_gettext('OpenCV Device'), widget=NumberInput())
-    hflip = BooleanField(lazy_gettext('Flip image horizontally'))
-    vflip = BooleanField(lazy_gettext('Flip image vertically'))
-    rotation = IntegerField(
-        lazy_gettext('Rotate Image'), widget=NumberInput())
-    height = IntegerField(
-        lazy_gettext('Image Height'), widget=NumberInput())
-    width = IntegerField(
-        lazy_gettext('Image Width'), widget=NumberInput())
-    brightness = DecimalField(
-        lazy_gettext('Brightness'), widget=NumberInput(step='any'))
-    contrast = DecimalField(
-        lazy_gettext('Contrast'), widget=NumberInput(step='any'))
-    exposure = DecimalField(
-        lazy_gettext('Exposure'), widget=NumberInput(step='any'))
-    gain = DecimalField(
-        lazy_gettext('Gain'), widget=NumberInput(step='any'))
-    hue = DecimalField(
-        lazy_gettext('Hue'), widget=NumberInput(step='any'))
-    saturation = DecimalField(
-        lazy_gettext('Saturation'), widget=NumberInput(step='any'))
-    white_balance = DecimalField(
-        lazy_gettext('White Balance'), widget=NumberInput(step='any'))
-    custom_options = StringField(lazy_gettext('Custom Options'))
-    output_id = StringField(TRANSLATIONS['output']['title'])
-    output_duration = DecimalField(
-        '{} ({})'.format(TRANSLATIONS['duration']['title'],
-                         TRANSLATIONS['output']['title']),
-        widget=NumberInput(step='any'))
-    cmd_pre_camera = StringField(lazy_gettext('Pre Command'))
-    cmd_post_camera = StringField(lazy_gettext('Post Command'))
-    path_still = StringField(lazy_gettext('Still Image Path'))
-    path_timelapse = StringField(lazy_gettext('Timelapse Path'))
-    path_video = StringField(lazy_gettext('Video Path'))
-    camera_add = SubmitField(TRANSLATIONS['add']['title'])
-    camera_mod = SubmitField(TRANSLATIONS['save']['title'])
-    camera_del = SubmitField(TRANSLATIONS['delete']['title'])
-
-    # Picamera
-    picamera_shutter_speed = IntegerField(lazy_gettext('Shutter Speed'))
-    picamera_sharpness = IntegerField(lazy_gettext('Sharpness'))
-    picamera_iso = StringField(lazy_gettext('ISO'))
-    picamera_awb = StringField(lazy_gettext('Auto White Balance'))
-    picamera_awb_gain_red = DecimalField(
-        lazy_gettext('AWB Gain Red'), widget=NumberInput(step='any'))
-    picamera_awb_gain_blue = DecimalField(
-        lazy_gettext('AWB Gain Blue'), widget=NumberInput(step='any'))
-    picamera_exposure_mode = StringField(lazy_gettext('Exposure Mode'))
-    picamera_meter_mode = StringField(lazy_gettext('Meter Mode'))
-    picamera_image_effect = StringField(lazy_gettext('Image Effect'))
-
-
-#
 # Settings (Email)
 #
 

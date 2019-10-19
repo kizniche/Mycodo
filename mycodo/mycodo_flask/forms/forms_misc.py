@@ -5,7 +5,6 @@
 
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
-from wtforms import DecimalField
 from wtforms import FileField
 from wtforms import HiddenField
 from wtforms import IntegerField
@@ -38,37 +37,6 @@ class EnergyUsageMod(FlaskForm):
     energy_usage_range_calc = SubmitField(TRANSLATIONS['calculate']['title'])
     energy_usage_mod = SubmitField(TRANSLATIONS['save']['title'])
     energy_usage_delete = SubmitField(TRANSLATIONS['delete']['title'])
-
-
-#
-# Camera Use
-#
-
-class Camera(FlaskForm):
-    camera_id = StringField('Camera ID', widget=widgets.HiddenInput())
-    capture_still = SubmitField(lazy_gettext('Capture Still'))
-    start_timelapse = SubmitField(lazy_gettext('Start Timelapse'))
-    pause_timelapse = SubmitField(lazy_gettext('Pause Timelapse'))
-    resume_timelapse = SubmitField(lazy_gettext('Resume Timelapse'))
-    stop_timelapse = SubmitField(lazy_gettext('Stop Timelapse'))
-    timelapse_interval = DecimalField(
-        lazy_gettext('Interval (seconds)'),
-        validators=[validators.NumberRange(
-            min=0,
-            message=lazy_gettext('Photo Interval must be a positive value')
-        )],
-        widget=NumberInput(step='any')
-    )
-    timelapse_runtime_sec = DecimalField(
-        lazy_gettext('Run Time (seconds)'),
-        validators=[validators.NumberRange(
-            min=0,
-            message=lazy_gettext('Total Run Time must be a positive value')
-        )],
-        widget=NumberInput(step='any')
-    )
-    start_stream = SubmitField(lazy_gettext('Start Stream'))
-    stop_stream = SubmitField(lazy_gettext('Stop Stream'))
 
 
 #

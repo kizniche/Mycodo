@@ -74,7 +74,7 @@
       <div class="col-auto">
         {{form_mod_pid_base.measurement.label(class_='control-label')}}
         <div>
-          <select class="form-control" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
+          <select class="form-control form-tooltip form-dropdown" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
             <option value="">None Selected</option>
           {% for each_choice, value in choices_input.items() -%}
             <option value="{{each_choice}}"{% if each_pid.measurement == each_choice %} selected{% endif %}>{{value}}</option>
@@ -88,7 +88,7 @@
       <div class="col-auto">
         {{form_mod_pid_base.direction.label(class_='control-label')}}
         <div>
-          <select class="form-control" id="direction" name="direction" title="" data-original-title="{{_('Choose the direction(s) to regulate')}}">
+          <select class="form-control form-tooltip form-dropdown" id="direction" name="direction" title="" data-original-title="{{_('Choose the direction(s) to regulate')}}">
             <option value="raise"{% if each_pid.direction == 'raise' %} selected{% endif %}>Raise</option>
             <option value="lower"{% if each_pid.direction == 'lower' %} selected{% endif %}>Lower</option>
             <option value="both"{% if each_pid.direction == 'both' %} selected{% endif %}>Both</option>
@@ -179,7 +179,7 @@
       <div class="col-auto">
         {{form_mod_pid_base.raise_output_id.label(class_='control-label')}}
         <div>
-          <select class="form-control" id="raise_output_id" name="raise_output_id" title="" data-original-title="{{_('The output that will raise the selected environmental condition (Measure Type)')}}.">
+          <select class="form-control form-tooltip form-dropdown" id="raise_output_id" name="raise_output_id" title="" data-original-title="{{_('The output that will raise the selected environmental condition (Measure Type)')}}.">
             <option value="">{{_('Disabled')}}</option>
             {%- for each_output in output -%}
               <option value="{{each_output.unique_id}}"{% if each_pid.raise_output_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
@@ -202,7 +202,7 @@
       <div class="col-auto">
         {{form_mod_pid_base.lower_output_id.label(class_='control-label')}}
         <div>
-          <select class="form-control" id="lower_output_id" name="lower_output_id" title="" data-original-title="{{_('The output that will lower the selected environmental condition (Measure Type)')}}.">
+          <select class="form-control form-tooltip form-dropdown" id="lower_output_id" name="lower_output_id" title="" data-original-title="{{_('The output that will lower the selected environmental condition (Measure Type)')}}.">
             <option value="">{{_('Disabled')}}</option>
             {%- for each_output in output -%}
               <option value="{{each_output.unique_id}}"{% if each_pid.lower_output_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
@@ -226,7 +226,7 @@
         <div>
           {{form_mod_pid_base.setpoint_tracking_type.label(class_='control-label')}}
         </div>
-        <select class="form-control" id="setpoint_tracking_type_{{each_pid.unique_id}}" name="setpoint_tracking_type" title="" data-original-title="{{dict_translation['start_offset']['phrase']}}">
+        <select class="form-control form-tooltip form-dropdown" id="setpoint_tracking_type_{{each_pid.unique_id}}" name="setpoint_tracking_type" title="" data-original-title="{{dict_translation['start_offset']['phrase']}}">
           <option value="">{{_('Disabled')}}</option>
           <option value="method"{% if each_pid.setpoint_tracking_type == 'method' %} selected{% endif %}>{{_('Method')}}</option>
           <option value="input-math"{% if each_pid.setpoint_tracking_type == 'input-math' %} selected{% endif %}>{{_('Input/Math')}}</option>
@@ -237,7 +237,7 @@
         <div>
           {{form_mod_pid_base.setpoint_tracking_method_id.label(class_='control-label')}}
         </div>
-        <select class="form-control" id="setpoint_tracking_method_id" name="setpoint_tracking_method_id" title="" data-original-title="{{_('Select one for calculating the setpoint. When enabled, measurements override the PID setpoint.')}}">
+        <select class="form-control form-tooltip form-dropdown" id="setpoint_tracking_method_id" name="setpoint_tracking_method_id" title="" data-original-title="{{_('Select one for calculating the setpoint. When enabled, measurements override the PID setpoint.')}}">
           <option value="">{{_('Select One')}}</option>
 
           {%- set valid_saved_method = [] -%}
@@ -260,7 +260,7 @@
         <div>
           {{form_mod_pid_base.setpoint_tracking_input_math_id.label(class_='control-label')}}
         </div>
-        <select class="form-control" id="setpoint_tracking_input_math_id" name="setpoint_tracking_input_math_id" title="" data-original-title="{{_('Select one for calculating the setpoint. When enabled, measurements override the PID setpoint.')}}">
+        <select class="form-control form-tooltip form-dropdown" id="setpoint_tracking_input_math_id" name="setpoint_tracking_input_math_id" title="" data-original-title="{{_('Select one for calculating the setpoint. When enabled, measurements override the PID setpoint.')}}">
           <option value="">{{_('Select One')}}</option>
 
           {% for each_choice, value in choices_input.items() -%}

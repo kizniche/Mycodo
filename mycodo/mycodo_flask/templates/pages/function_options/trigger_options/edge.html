@@ -1,7 +1,7 @@
 <div class="col-12 col-md-4">
   {{form_trigger.measurement.label(class_='control-label')}}
   <div>
-    <select class="form-control" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
+    <select class="form-control form-tooltip form-dropdown" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
     {% set edge_sensor = [] %}
     {% for each_choice, value in choices_input.items() -%}

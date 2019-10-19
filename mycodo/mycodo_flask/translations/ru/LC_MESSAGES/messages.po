@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-18 17:20-0400\n"
+"POT-Creation-Date: 2019-10-19 17:35-0400\n"
 "PO-Revision-Date: 2018-08-10 15:43-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -62,8 +62,8 @@ msgid "Difference"
 msgstr ""
 
 #: config.py:137 mycodo_flask/forms/forms_math.py:75
-#: mycodo_flask/forms/forms_settings.py:242
-#: mycodo_flask/forms/forms_settings.py:250
+#: mycodo_flask/forms/forms_settings.py:193
+#: mycodo_flask/forms/forms_settings.py:201
 msgid "Equation"
 msgstr ""
 
@@ -457,8 +457,8 @@ msgstr ""
 msgid "Microsieverts per hour"
 msgstr ""
 
-#: config_devices_units.py:221 mycodo_flask/forms/forms_misc.py:28
-#: mycodo_flask/forms/forms_misc.py:36
+#: config_devices_units.py:221 mycodo_flask/forms/forms_misc.py:27
+#: mycodo_flask/forms/forms_misc.py:35
 msgid "Amp"
 msgstr ""
 
@@ -751,7 +751,7 @@ msgstr ""
 msgid "Function"
 msgstr ""
 
-#: config_translations.py:71 mycodo_flask/templates/layout-settings.html:24
+#: config_translations.py:71 mycodo_flask/templates/layout-settings.html:33
 msgid "General"
 msgstr ""
 
@@ -770,10 +770,10 @@ msgstr ""
 
 #: config_translations.py:79 mycodo_flask/templates/tools/notes.html:138
 #: mycodo_flask/utils/utils_notes.py:453
-#: mycodo_flask/utils/utils_settings.py:323
-#: mycodo_flask/utils/utils_settings.py:423
-#: mycodo_flask/utils/utils_settings.py:458
-#: mycodo_flask/utils/utils_settings.py:583
+#: mycodo_flask/utils/utils_settings.py:322
+#: mycodo_flask/utils/utils_settings.py:422
+#: mycodo_flask/utils/utils_settings.py:457
+#: mycodo_flask/utils/utils_settings.py:582
 msgid "Import"
 msgstr ""
 
@@ -808,8 +808,8 @@ msgstr ""
 msgid "Math"
 msgstr ""
 
-#: config_translations.py:93 mycodo_flask/forms/forms_misc.py:28
-#: mycodo_flask/forms/forms_misc.py:36
+#: config_translations.py:93 mycodo_flask/forms/forms_misc.py:27
+#: mycodo_flask/forms/forms_misc.py:35
 #: mycodo_flask/templates/pages/dashboard_options/add_measurement.html:10
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:25
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:25
@@ -953,8 +953,8 @@ msgstr ""
 msgid "Up"
 msgstr ""
 
-#: config_translations.py:151 mycodo_flask/forms/forms_settings.py:179
-#: mycodo_flask/forms/forms_settings.py:193
+#: config_translations.py:151 mycodo_flask/forms/forms_settings.py:130
+#: mycodo_flask/forms/forms_settings.py:144
 msgid "Upload"
 msgstr ""
 
@@ -970,7 +970,7 @@ msgstr ""
 msgid "Select the 1-wire device ID"
 msgstr ""
 
-#: config_translations.py:160 mycodo_flask/forms/forms_settings.py:51
+#: config_translations.py:160 mycodo_flask/forms/forms_camera.py:67
 msgid "Gain"
 msgstr ""
 
@@ -1358,7 +1358,7 @@ msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr ""
 
 #: config_translations.py:303 inputs/ds18b20.py:77 inputs/ds18s20.py:69
-#: mycodo_flask/forms/forms_settings.py:32
+#: mycodo_flask/forms/forms_camera.py:23
 msgid "Library"
 msgstr ""
 
@@ -1456,7 +1456,7 @@ msgstr ""
 msgid "Select the type of setpoint tracking"
 msgstr ""
 
-#: config_translations.py:342 mycodo_flask/forms/forms_settings.py:151
+#: config_translations.py:342 mycodo_flask/forms/forms_settings.py:102
 msgid "Voltage"
 msgstr ""
 
@@ -1656,7 +1656,7 @@ msgstr ""
 msgid "Set the measuring range of the sensor"
 msgstr ""
 
-#: inputs/mqtt_paho.py:44 mycodo_flask/forms/forms_settings.py:360
+#: inputs/mqtt_paho.py:44 mycodo_flask/forms/forms_settings.py:311
 msgid "Hostname"
 msgstr ""
 
@@ -1841,20 +1841,20 @@ msgid "Cannot access admin creation form if an admin user already exists."
 msgstr ""
 
 #: mycodo_flask/routes_authentication.py:71
-#: mycodo_flask/utils/utils_settings.py:155
-#: mycodo_flask/utils/utils_settings.py:195
+#: mycodo_flask/utils/utils_settings.py:154
+#: mycodo_flask/utils/utils_settings.py:194
 msgid "Passwords do not match. Please try again."
 msgstr ""
 
 #: mycodo_flask/routes_authentication.py:75
-#: mycodo_flask/utils/utils_settings.py:140
+#: mycodo_flask/utils/utils_settings.py:139
 msgid ""
 "Invalid user name. Must be between 2 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
 
 #: mycodo_flask/routes_authentication.py:81
-#: mycodo_flask/utils/utils_settings.py:150
+#: mycodo_flask/utils/utils_settings.py:149
 msgid ""
 "Invalid password. Must be between 6 and 64 characters and only contain "
 "letters, numbers, and symbols."
@@ -1906,19 +1906,19 @@ msgstr ""
 msgid "Command to reload the frontend sent"
 msgstr ""
 
-#: mycodo_flask/routes_page.py:194
+#: mycodo_flask/routes_page.py:213
 msgid "Cannot start time-lapse if stream is active."
 msgstr ""
 
-#: mycodo_flask/routes_page.py:224
+#: mycodo_flask/routes_page.py:243
 msgid "Cannot start stream if time-lapse is active."
 msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:36
 #: mycodo_flask/forms/forms_authentication.py:37
-#: mycodo_flask/forms/forms_settings.py:298
-#: mycodo_flask/forms/forms_settings.py:330
-#: mycodo_flask/forms/forms_settings.py:331
+#: mycodo_flask/forms/forms_settings.py:249
+#: mycodo_flask/forms/forms_settings.py:281
+#: mycodo_flask/forms/forms_settings.py:282
 msgid "Repeat Password"
 msgstr ""
 
@@ -1976,12 +1976,164 @@ msgid "pH Points to Calibrate"
 msgstr ""
 
 #: mycodo_flask/forms/forms_calibration.py:62
-#: mycodo_flask/forms/forms_settings.py:33
+#: mycodo_flask/forms/forms_camera.py:24
 msgid "Device"
 msgstr ""
 
 #: mycodo_flask/forms/forms_calibration.py:65
 msgid "Set Resolution"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:26
+msgid "Capture Still"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:27
+msgid "Start Timelapse"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:28
+msgid "Pause Timelapse"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:29
+msgid "Resume Timelapse"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:30
+msgid "Stop Timelapse"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:32
+msgid "Interval (seconds)"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:35
+msgid "Photo Interval must be a positive value"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:40
+msgid "Run Time (seconds)"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:43
+msgid "Total Run Time must be a positive value"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:47
+msgid "Start Stream"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:48
+msgid "Stop Stream"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:51
+msgid "OpenCV Device"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:52
+msgid "Flip image horizontally"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:53
+msgid "Flip image vertically"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:55
+msgid "Rotate Image"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:57
+msgid "Image Height"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:59
+msgid "Image Width"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:61
+msgid "Brightness"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:63
+msgid "Contrast"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:65
+msgid "Exposure"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:69
+msgid "Hue"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:71
+msgid "Saturation"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:73
+msgid "White Balance"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:74
+msgid "Custom Options"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:80
+msgid "Pre Command"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:81
+msgid "Post Command"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:82
+msgid "Still Image Path"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:83
+msgid "Timelapse Path"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:84
+msgid "Video Path"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:90
+msgid "Shutter Speed"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:91
+msgid "Sharpness"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:92
+msgid "ISO"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:93
+msgid "Auto White Balance"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:95
+msgid "AWB Gain Red"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:97
+msgid "AWB Gain Blue"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:98
+msgid "Exposure Mode"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:99
+msgid "Meter Mode"
+msgstr ""
+
+#: mycodo_flask/forms/forms_camera.py:100
+msgid "Image Effect"
 msgstr ""
 
 #: mycodo_flask/forms/forms_conditional.py:30
@@ -2048,7 +2200,7 @@ msgid "Outputs"
 msgstr ""
 
 #: mycodo_flask/forms/forms_dashboard.py:73 mycodo_flask/forms/forms_math.py:49
-#: mycodo_flask/templates/layout-settings.html:26
+#: mycodo_flask/templates/layout-settings.html:35
 msgid "Inputs"
 msgstr ""
 
@@ -2397,123 +2549,79 @@ msgstr ""
 msgid "State"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:37 mycodo_flask/forms/forms_misc.py:90
+#: mycodo_flask/forms/forms_misc.py:36 mycodo_flask/forms/forms_misc.py:58
 msgid "Time Range MM/DD/YYYY HH:MM"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:49
-msgid "Capture Still"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:50
-msgid "Start Timelapse"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:51
-msgid "Pause Timelapse"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:52
-msgid "Resume Timelapse"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:53
-msgid "Stop Timelapse"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:55
-msgid "Interval (seconds)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:58
-msgid "Photo Interval must be a positive value"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:63
-msgid "Run Time (seconds)"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:66
-msgid "Total Run Time must be a positive value"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:70
-msgid "Start Stream"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:71
-msgid "Stop Stream"
-msgstr ""
-
-#: mycodo_flask/forms/forms_misc.py:79
+#: mycodo_flask/forms/forms_misc.py:47
 msgid "Stop Daemon"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:80
+#: mycodo_flask/forms/forms_misc.py:48
 msgid "Start Daemon"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:81
+#: mycodo_flask/forms/forms_misc.py:49
 msgid "Restart Daemon"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:89
+#: mycodo_flask/forms/forms_misc.py:57
 msgid "Measurement to Export"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:91
+#: mycodo_flask/forms/forms_misc.py:59
 msgid "Export Data as CSV"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:95
+#: mycodo_flask/forms/forms_misc.py:63
 msgid "Export Settings"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:100
+#: mycodo_flask/forms/forms_misc.py:68
 msgid "Import Settings"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:104
+#: mycodo_flask/forms/forms_misc.py:72
 msgid "Export Influxdb"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:109
+#: mycodo_flask/forms/forms_misc.py:77
 msgid "Import Influxdb"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:119
+#: mycodo_flask/forms/forms_misc.py:87
 msgid "Lines"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:122
+#: mycodo_flask/forms/forms_misc.py:90
 msgid "Number of lines should be greater than 0"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:127
+#: mycodo_flask/forms/forms_misc.py:95
 msgid "Log"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:128
+#: mycodo_flask/forms/forms_misc.py:96
 msgid "View Log"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:136
+#: mycodo_flask/forms/forms_misc.py:104
 msgid "Upgrade Mycodo"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:137
+#: mycodo_flask/forms/forms_misc.py:105
 msgid "Upgrade Mycodo to Next Major Version"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:146
+#: mycodo_flask/forms/forms_misc.py:114
 msgid "Create Backup"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:147
+#: mycodo_flask/forms/forms_misc.py:115
 msgid "Restore Backup"
 msgstr ""
 
-#: mycodo_flask/forms/forms_misc.py:148
+#: mycodo_flask/forms/forms_misc.py:116
 msgid "Delete Backup"
 msgstr ""
 
@@ -2702,448 +2810,376 @@ msgstr ""
 msgid "Max Duty Cycle (Lower)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:35
-msgid "OpenCV Device"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:36
-msgid "Flip image horizontally"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:37
-msgid "Flip image vertically"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:39
-msgid "Rotate Image"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:41
-msgid "Image Height"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:43
-msgid "Image Width"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:45
-msgid "Brightness"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:47
-msgid "Contrast"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:49
-msgid "Exposure"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:53
-msgid "Hue"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:55
-msgid "Saturation"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:57
-msgid "White Balance"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:58
-msgid "Custom Options"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:64
-msgid "Pre Command"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:65
-msgid "Post Command"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:66
-msgid "Still Image Path"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:67
-msgid "Timelapse Path"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:68
-msgid "Video Path"
-msgstr ""
-
-#: mycodo_flask/forms/forms_settings.py:80
-#: mycodo_flask/forms/forms_settings.py:81
+#: mycodo_flask/forms/forms_settings.py:31
+#: mycodo_flask/forms/forms_settings.py:32
 msgid "SMTP Host"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:85
-#: mycodo_flask/forms/forms_settings.py:86
+#: mycodo_flask/forms/forms_settings.py:36
+#: mycodo_flask/forms/forms_settings.py:37
 msgid "SMTP Port"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:90
+#: mycodo_flask/forms/forms_settings.py:41
 msgid "Port should be between 1 and 65535"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:96
-#: mycodo_flask/forms/forms_settings.py:97
+#: mycodo_flask/forms/forms_settings.py:47
+#: mycodo_flask/forms/forms_settings.py:48
 msgid "SMTP User"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:101
+#: mycodo_flask/forms/forms_settings.py:52
 msgid "SMTP Password"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:105
+#: mycodo_flask/forms/forms_settings.py:56
 msgid "From Email"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:113
-#: mycodo_flask/forms/forms_settings.py:114
+#: mycodo_flask/forms/forms_settings.py:64
+#: mycodo_flask/forms/forms_settings.py:65
 msgid "Max emails (per hour)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:117
+#: mycodo_flask/forms/forms_settings.py:68
 msgid "Must have at least one message able to be sent per hour."
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:122
+#: mycodo_flask/forms/forms_settings.py:73
 msgid "Send Test Email"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:124
+#: mycodo_flask/forms/forms_settings.py:75
 msgid "Test Email To"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:125
+#: mycodo_flask/forms/forms_settings.py:76
 msgid "To Email Address"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:139
+#: mycodo_flask/forms/forms_settings.py:90
 msgid "Landing Page"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:140
+#: mycodo_flask/forms/forms_settings.py:91
 msgid "Language"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:141
+#: mycodo_flask/forms/forms_settings.py:92
 msgid "Pyro Timeout"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:142
+#: mycodo_flask/forms/forms_settings.py:93
 msgid "Enable Daemon Debug Logging"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:143
+#: mycodo_flask/forms/forms_settings.py:94
 msgid "Force HTTPS"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:144
+#: mycodo_flask/forms/forms_settings.py:95
 msgid "Hide success messages"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:145
+#: mycodo_flask/forms/forms_settings.py:96
 msgid "Hide info messages"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:146
+#: mycodo_flask/forms/forms_settings.py:97
 msgid "Hide warning messages"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:147
+#: mycodo_flask/forms/forms_settings.py:98
 msgid "Hide Form Tooltips"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:149
+#: mycodo_flask/forms/forms_settings.py:100
 msgid "Max Amps"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:153
+#: mycodo_flask/forms/forms_settings.py:104
 msgid "Cost per kWh"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:154
+#: mycodo_flask/forms/forms_settings.py:105
 msgid "Currency Unit"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:155
+#: mycodo_flask/forms/forms_settings.py:106
 msgid "Day of Month"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:156
+#: mycodo_flask/forms/forms_settings.py:107
 msgid "Generate Usage/Cost Report"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:157
+#: mycodo_flask/forms/forms_settings.py:108
 msgid "Time Span to Generate"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:159
+#: mycodo_flask/forms/forms_settings.py:110
 msgid "Day of Week/Month to Generate"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:161
+#: mycodo_flask/forms/forms_settings.py:112
 msgid "Hour of Day to Generate"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:165
+#: mycodo_flask/forms/forms_settings.py:116
 #: mycodo_flask/templates/settings/general.html:195
 msgid "Hour Options: 0-23"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:169
+#: mycodo_flask/forms/forms_settings.py:120
 msgid "Opt-out of statistics"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:170
+#: mycodo_flask/forms/forms_settings.py:121
 msgid "Check for Updates"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:180
+#: mycodo_flask/forms/forms_settings.py:131
 #: mycodo_flask/templates/settings/controller.html:13
 msgid "Import Controller Module"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:194
+#: mycodo_flask/forms/forms_settings.py:145
 #: mycodo_flask/templates/settings/input.html:13
 msgid "Import Input Module"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:207
-#: mycodo_flask/forms/forms_settings.py:214
+#: mycodo_flask/forms/forms_settings.py:158
+#: mycodo_flask/forms/forms_settings.py:165
 msgid "Measurement Name"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:208
-#: mycodo_flask/forms/forms_settings.py:215
+#: mycodo_flask/forms/forms_settings.py:159
+#: mycodo_flask/forms/forms_settings.py:166
 msgid "Measurement Units"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:209
+#: mycodo_flask/forms/forms_settings.py:160
 #: mycodo_flask/templates/settings/measurement.html:13
 msgid "Add Measurement"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:222
-#: mycodo_flask/forms/forms_settings.py:230
+#: mycodo_flask/forms/forms_settings.py:173
+#: mycodo_flask/forms/forms_settings.py:181
 msgid "Unit Name"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:224
-#: mycodo_flask/forms/forms_settings.py:231
+#: mycodo_flask/forms/forms_settings.py:175
+#: mycodo_flask/forms/forms_settings.py:182
 msgid "Unit Abbreviation"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:225
+#: mycodo_flask/forms/forms_settings.py:176
 #: mycodo_flask/templates/settings/measurement.html:44
 msgid "Add Unit"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:238
-#: mycodo_flask/forms/forms_settings.py:248
+#: mycodo_flask/forms/forms_settings.py:189
+#: mycodo_flask/forms/forms_settings.py:199
 msgid "Convert From Unit"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:240
+#: mycodo_flask/forms/forms_settings.py:191
 msgid "Convert To Measurement"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:243
+#: mycodo_flask/forms/forms_settings.py:194
 #: mycodo_flask/templates/settings/measurement.html:71
 msgid "Add Conversion"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:249
+#: mycodo_flask/forms/forms_settings.py:200
 msgid "Convert To Unit"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:261
+#: mycodo_flask/forms/forms_settings.py:212
 msgid "Role Name"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:262
+#: mycodo_flask/forms/forms_settings.py:213
 #: mycodo_flask/templates/tools/logview.html:3
 msgid "View Logs"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:263
+#: mycodo_flask/forms/forms_settings.py:214
 msgid "View Stats"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:264
+#: mycodo_flask/forms/forms_settings.py:215
 msgid "View Camera"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:265
+#: mycodo_flask/forms/forms_settings.py:216
 msgid "View Settings"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:266
+#: mycodo_flask/forms/forms_settings.py:217
 msgid "Edit Users"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:267
+#: mycodo_flask/forms/forms_settings.py:218
 msgid "Edit Controllers"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:268
+#: mycodo_flask/forms/forms_settings.py:219
 msgid "Edit Settings"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:270
+#: mycodo_flask/forms/forms_settings.py:221
 msgid "Add Role"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:290
-#: mycodo_flask/forms/forms_settings.py:321
+#: mycodo_flask/forms/forms_settings.py:241
+#: mycodo_flask/forms/forms_settings.py:272
 msgid "Passwords must match"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:293
-#: mycodo_flask/forms/forms_settings.py:325
+#: mycodo_flask/forms/forms_settings.py:244
+#: mycodo_flask/forms/forms_settings.py:276
 msgid "Password must be 6 or more characters"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:300
+#: mycodo_flask/forms/forms_settings.py:251
 msgid "Role"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:302
-#: mycodo_flask/forms/forms_settings.py:337
+#: mycodo_flask/forms/forms_settings.py:253
+#: mycodo_flask/forms/forms_settings.py:288
 msgid "Theme"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:303
+#: mycodo_flask/forms/forms_settings.py:254
 #: mycodo_flask/templates/settings/users.html:13
 msgid "Add User"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:316
+#: mycodo_flask/forms/forms_settings.py:267
 msgid "New Password"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:333
+#: mycodo_flask/forms/forms_settings.py:284
 msgid "Role ID"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:348
+#: mycodo_flask/forms/forms_settings.py:299
 msgid "Enable I2C"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:349
+#: mycodo_flask/forms/forms_settings.py:300
 msgid "Disable I2C"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:350
+#: mycodo_flask/forms/forms_settings.py:301
 msgid "Enable 1-Wire"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:351
+#: mycodo_flask/forms/forms_settings.py:302
 msgid "Disable 1-Wire"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:352
+#: mycodo_flask/forms/forms_settings.py:303
 msgid "Enable Serial"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:353
+#: mycodo_flask/forms/forms_settings.py:304
 msgid "Disable Serial"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:354
+#: mycodo_flask/forms/forms_settings.py:305
 msgid "Enable SPI"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:355
+#: mycodo_flask/forms/forms_settings.py:306
 msgid "Disable SPI"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:356
+#: mycodo_flask/forms/forms_settings.py:307
 msgid "Enable SSH"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:357
+#: mycodo_flask/forms/forms_settings.py:308
 msgid "Disable SSH"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:358
+#: mycodo_flask/forms/forms_settings.py:309
 msgid "Enable Pi Camera"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:359
+#: mycodo_flask/forms/forms_settings.py:310
 msgid "Disable Pi Camera"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:361
+#: mycodo_flask/forms/forms_settings.py:312
 msgid "Change Hostname"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:362
+#: mycodo_flask/forms/forms_settings.py:313
 msgid "Configure pigpiod"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:363
+#: mycodo_flask/forms/forms_settings.py:314
 msgid "Reconfigure"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:366
+#: mycodo_flask/forms/forms_settings.py:317
 msgid "Conditional Sample Rate (seconds)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:369
+#: mycodo_flask/forms/forms_settings.py:320
 msgid "Input Sample Rate (seconds)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:372
+#: mycodo_flask/forms/forms_settings.py:323
 msgid "Math Sample Rate (seconds)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:375
+#: mycodo_flask/forms/forms_settings.py:326
 msgid "Output Sample Rate (seconds)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:378
+#: mycodo_flask/forms/forms_settings.py:329
 msgid "PID Sample Rate (seconds)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:380
+#: mycodo_flask/forms/forms_settings.py:331
 msgid "Save Sample Rates"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:388
+#: mycodo_flask/forms/forms_settings.py:339
 msgid "Delete All Dashboard Elements"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:389
+#: mycodo_flask/forms/forms_settings.py:340
 msgid "Delete All Inputs"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:390
+#: mycodo_flask/forms/forms_settings.py:341
 msgid "Delete All Maths"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:391
+#: mycodo_flask/forms/forms_settings.py:342
 msgid "Delete All Notes and Note Tags"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:392
+#: mycodo_flask/forms/forms_settings.py:343
 msgid "Delete All Outputs"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:393
+#: mycodo_flask/forms/forms_settings.py:344
 msgid "Delete Settings Database"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:394
-#: mycodo_flask/forms/forms_settings.py:395
+#: mycodo_flask/forms/forms_settings.py:345
+#: mycodo_flask/forms/forms_settings.py:346
 msgid "Delete File"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:396
+#: mycodo_flask/forms/forms_settings.py:347
 msgid "Reset Email Counter"
 msgstr ""
 
@@ -3258,39 +3294,34 @@ msgstr ""
 msgid "Exit"
 msgstr ""
 
-#: mycodo_flask/templates/layout-settings.html:25
+#: mycodo_flask/templates/layout-settings.html:34
 #: mycodo_flask/templates/pages/function.html:37
 msgid "Controllers"
 msgstr ""
 
-#: mycodo_flask/templates/layout-settings.html:27
+#: mycodo_flask/templates/layout-settings.html:36
 #: mycodo_flask/templates/settings/input.html:41
 #: mycodo_flask/templates/settings/measurement.html:116
 #: mycodo_flask/templates/settings/measurement.html:293
 msgid "Measurements"
 msgstr ""
 
-#: mycodo_flask/templates/layout-settings.html:28
+#: mycodo_flask/templates/layout-settings.html:37
 #: mycodo_flask/templates/settings/users.html:74
 msgid "Users"
 msgstr ""
 
-#: mycodo_flask/templates/layout-settings.html:29
+#: mycodo_flask/templates/layout-settings.html:38
 #: mycodo_flask/templates/settings/pi.html:4
 #: mycodo_flask/templates/settings/pi.html:6
 msgid "Raspberry Pi"
 msgstr ""
 
-#: mycodo_flask/templates/layout-settings.html:30
+#: mycodo_flask/templates/layout-settings.html:39
 msgid "Alerts"
 msgstr ""
 
-#: mycodo_flask/templates/layout-settings.html:31
-#: mycodo_flask/templates/pages/camera.html:3
-msgid "Cameras"
-msgstr ""
-
-#: mycodo_flask/templates/layout-settings.html:32
+#: mycodo_flask/templates/layout-settings.html:40
 #: mycodo_flask/templates/settings/diagnostic.html:11
 msgid "Diagnostics"
 msgstr ""
@@ -3538,23 +3569,50 @@ msgstr ""
 msgid "latest"
 msgstr ""
 
-#: mycodo_flask/templates/pages/camera.html:32
+#: mycodo_flask/templates/pages/camera.html:3
+msgid "Cameras"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:66
 msgid "Create Timelapse"
 msgstr ""
 
-#: mycodo_flask/templates/pages/camera.html:91
+#: mycodo_flask/templates/pages/camera.html:126
+msgid "Name for this Camera"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:133
+msgid ""
+"Raspberry Pi Camera support doesn't appear to be enabled. Please enable "
+"it using the Raspberry Pi configuration or with the command 'sudo raspi-"
+"config'"
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:183
+msgid "Path to save still image files. Leave blank to use default location."
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:189
+msgid "Path to save timelapse image files. Leave blank to use default location."
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:195
+msgid "Path to save video files. Leave blank to use default location."
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:220
 msgid "Video Stream"
 msgstr ""
 
-#: mycodo_flask/templates/pages/camera.html:98
+#: mycodo_flask/templates/pages/camera.html:227
 msgid "Timelapse Parameters"
 msgstr ""
 
-#: mycodo_flask/templates/pages/camera.html:110
+#: mycodo_flask/templates/pages/camera.html:239
 msgid "Last Timelapse"
 msgstr ""
 
-#: mycodo_flask/templates/pages/camera.html:117
+#: mycodo_flask/templates/pages/camera.html:246
 msgid "Last Still"
 msgstr ""
 
@@ -4685,33 +4743,6 @@ msgstr ""
 msgid "Maximum number of alerts that can be emailed per hour."
 msgstr ""
 
-#: mycodo_flask/templates/settings/camera.html:11
-msgid "Camera Settings"
-msgstr ""
-
-#: mycodo_flask/templates/settings/camera.html:50
-msgid "Name for this Camera"
-msgstr ""
-
-#: mycodo_flask/templates/settings/camera.html:68
-msgid ""
-"Raspberry Pi Camera support doesn't appear to be enabled. Please enable "
-"it using the Raspberry Pi configuration or with the command 'sudo raspi-"
-"config'"
-msgstr ""
-
-#: mycodo_flask/templates/settings/camera.html:117
-msgid "Path to save still image files. Leave blank to use default location."
-msgstr ""
-
-#: mycodo_flask/templates/settings/camera.html:123
-msgid "Path to save timelapse image files. Leave blank to use default location."
-msgstr ""
-
-#: mycodo_flask/templates/settings/camera.html:129
-msgid "Path to save video files. Leave blank to use default location."
-msgstr ""
-
 #: mycodo_flask/templates/settings/controller.html:11
 msgid "Controller Settings"
 msgstr ""
@@ -4721,7 +4752,7 @@ msgid "Imported Controller Modules"
 msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:11
-#: mycodo_flask/utils/utils_settings.py:257
+#: mycodo_flask/utils/utils_settings.py:256
 msgid "General Settings"
 msgstr ""
 
@@ -5280,7 +5311,7 @@ msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
 #: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
-#: mycodo_flask/utils/utils_settings.py:1412
+#: mycodo_flask/utils/utils_settings.py:1294
 msgid "File"
 msgstr ""
 
@@ -5369,61 +5400,61 @@ msgstr ""
 msgid "Remote Host %(host)s with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:84
+#: mycodo_flask/utils/utils_settings.py:83
 msgid "User Role"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:146
+#: mycodo_flask/utils/utils_settings.py:145
 msgid "Another user already has that email address."
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:193
+#: mycodo_flask/utils/utils_settings.py:192
 msgid "Invalid password"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:636
+#: mycodo_flask/utils/utils_settings.py:635
 #, python-format
 msgid "Measurement with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:700
-#: mycodo_flask/utils/utils_settings.py:741
-#: mycodo_flask/utils/utils_settings.py:783
+#: mycodo_flask/utils/utils_settings.py:699
+#: mycodo_flask/utils/utils_settings.py:740
+#: mycodo_flask/utils/utils_settings.py:782
 msgid "Unit"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:722
+#: mycodo_flask/utils/utils_settings.py:721
 #, python-format
 msgid "Unit with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:812
-#: mycodo_flask/utils/utils_settings.py:854
-#: mycodo_flask/utils/utils_settings.py:887
+#: mycodo_flask/utils/utils_settings.py:811
+#: mycodo_flask/utils/utils_settings.py:853
+#: mycodo_flask/utils/utils_settings.py:886
 msgid "Conversion"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:835
+#: mycodo_flask/utils/utils_settings.py:834
 #, python-format
 msgid "Conversion with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:1099
+#: mycodo_flask/utils/utils_settings.py:1098
 msgid "Pi Settings"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:1109
+#: mycodo_flask/utils/utils_settings.py:1108
 msgid "Alert Settings"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:1121
+#: mycodo_flask/utils/utils_settings.py:1120
 #, python-format
 msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
 "successful."
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:1436
+#: mycodo_flask/utils/utils_settings.py:1318
 msgid "Reset email counter"
 msgstr ""
 
@@ -9293,7 +9324,7 @@ msgstr ""
 #~ "почте в час."
 
 #~ msgid "Camera Settings"
-#~ msgstr "Настройки камеры"
+#~ msgstr ""
 
 #~ msgid "Name for this Camera"
 #~ msgstr "Имя для этой камеры"

@@ -176,7 +176,7 @@
       <div class="form-group">
         {{form_settings_general.output_usage_report_span.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
-          <select class="form-control" id="output_usage_report_span" name="output_usage_report_span" title="" data-original-title="{{_('How often to generate a report')}}">
+          <select class="form-control form-tooltip form-dropdown" id="output_usage_report_span" name="output_usage_report_span" title="" data-original-title="{{_('How often to generate a report')}}">
             <option value="monthly"{% if misc.output_usage_report_span == 'monthly' %} selected{% endif %}>Monthly</option>
             <option value="weekly"{% if misc.output_usage_report_span == 'weekly' %} selected{% endif %}>Weekly</option>
             <option value="daily"{% if misc.output_usage_report_span == 'daily' %} selected{% endif %}>Daily</option>

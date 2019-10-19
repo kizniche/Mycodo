@@ -28,6 +28,7 @@ from sqlalchemy import and_
 
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import BACKUP_LOG_FILE
+from mycodo.config import CAMERA_LIBRARIES
 from mycodo.config import CONDITIONAL_CONDITIONS
 from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DAEMON_PID_FILE
@@ -80,6 +81,7 @@ from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_client import daemon_active
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.forms import forms_camera
 from mycodo.mycodo_flask.forms import forms_conditional
 from mycodo.mycodo_flask.forms import forms_custom_controller
 from mycodo.mycodo_flask.forms import forms_dashboard
@@ -93,6 +95,7 @@ from mycodo.mycodo_flask.forms import forms_output
 from mycodo.mycodo_flask.forms import forms_pid
 from mycodo.mycodo_flask.forms import forms_trigger
 from mycodo.mycodo_flask.routes_static import inject_variables
+from mycodo.mycodo_flask.utils import utils_camera
 from mycodo.mycodo_flask.utils import utils_conditional
 from mycodo.mycodo_flask.utils import utils_controller
 from mycodo.mycodo_flask.utils import utils_dashboard
@@ -112,7 +115,6 @@ from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.influx import average_past_seconds
 from mycodo.utils.influx import average_start_end_seconds
 from mycodo.utils.inputs import list_analog_to_digital_converters
-from mycodo.utils.system_pi import parse_custom_option_values
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
@@ -120,6 +122,7 @@ from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import dpkg_package_exists
 from mycodo.utils.system_pi import list_to_csv
+from mycodo.utils.system_pi import parse_custom_option_values
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.tools import return_output_usage
 
@@ -169,8 +172,18 @@ def page_camera():
     if not utils_general.user_has_permission('view_camera'):
         return redirect(url_for('routes_general.home'))
 
-    form_camera = forms_misc.Camera()
+    form_camera = forms_camera.Camera()
     camera = Camera.query.all()
+    output = Output.query.all()
+
+    pi_camera_enabled = False
+    try:
+        if (not current_app.config['TESTING'] and
+                'start_x=1' in open('/boot/config.txt').read()):
+            pi_camera_enabled = True
+    except IOError as e:
+        logger.error("Camera IOError raised in '/settings/camera' endpoint: "
+                     "{err}".format(err=e))
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_settings'):
@@ -179,7 +192,13 @@ def page_camera():
         control = DaemonControl()
         mod_camera = Camera.query.filter(
             Camera.unique_id == form_camera.camera_id.data).first()
-        if form_camera.capture_still.data:
+        if form_camera.camera_add.data:
+            utils_camera.camera_add(form_camera)
+        elif form_camera.camera_mod.data:
+            utils_camera.camera_mod(form_camera)
+        elif form_camera.camera_del.data:
+            utils_camera.camera_del(form_camera)
+        elif form_camera.capture_still.data:
             # If a stream is active, stop the stream to take a photo
             if mod_camera.stream_started:
                 camera_stream = import_module(
@@ -248,11 +267,14 @@ def page_camera():
 
     return render_template('pages/camera.html',
                            camera=camera,
+                           camera_libraries=CAMERA_LIBRARIES,
                            form_camera=form_camera,
                            latest_img_still=latest_img_still,
                            latest_img_still_ts=latest_img_still_ts,
                            latest_img_tl=latest_img_tl,
                            latest_img_tl_ts=latest_img_tl_ts,
+                           output=output,
+                           pi_camera_enabled=pi_camera_enabled,
                            time_now=time_now)
 
 
