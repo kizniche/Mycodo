@@ -1,7 +1,10 @@
 ## 7.8.5 (Unreleased)
 
+This update improves the backup/restore mechanism for the Mycodo InfluxDB time-series database. InfluxDB backups made prior to v7.8.5 will need to be restored manually. All new backups made will be in the Enterprise-compatible backup format, and only this format will be able to be restored moving forward. See [Backing up and restoring in InfluxDB](https://docs.influxdata.com/influxdb/v1.7/administration/backup_and_restore/) for more information.
+
 ### Features
 
+ - Update InfluxDB database export/import to use new Enterprise-compatible backup format
  - Add picamera options: white balance, shutter speed, sharpness, iso, exposure mode, meter mode, and image effect ([#313](https://github.com/kizniche/mycodo/issues/313), [#703](https://github.com/kizniche/mycodo/issues/703))
 
 

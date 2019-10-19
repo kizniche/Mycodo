@@ -10,9 +10,15 @@ import os
 import shutil
 from flask import send_file
 from flask import url_for
+from influxdb import InfluxDBClient
 from werkzeug.utils import secure_filename
 
 from mycodo.config import ALEMBIC_VERSION
+from mycodo.config import INFLUXDB_DATABASE
+from mycodo.config import INFLUXDB_HOST
+from mycodo.config import INFLUXDB_PASSWORD
+from mycodo.config import INFLUXDB_PORT
+from mycodo.config import INFLUXDB_USER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import SQL_DATABASE_MYCODO
@@ -23,6 +29,7 @@ from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 
 logger = logging.getLogger(__name__)
+
 
 #
 # Export
@@ -99,8 +106,8 @@ def export_settings(form):
 
 def export_influxdb(form):
     """
-    Save the InfluxDB metastore and mycodo_db database to a zip file and serve
-    it to the user
+    Save the Mycodo InfluxDB database in the Enterprise-compatible format, zip
+    archive it, and serve it to the user.
     """
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['export']['title'],
@@ -117,8 +124,8 @@ def export_influxdb(form):
         # Create new directory (make sure it's empty)
         assure_path_exists(influx_backup_dir)
 
-        cmd = "/usr/bin/influxd backup -database mycodo_db {path}".format(
-            path=influx_backup_dir)
+        cmd = "/usr/bin/influxd backup -database {db} -portable {path}".format(
+            db=INFLUXDB_DATABASE, path=influx_backup_dir)
         _, _, status = cmd_output(cmd)
 
         influxd_version_out, _, _ = cmd_output(
@@ -372,21 +379,16 @@ def import_influxdb(form):
                 form.influxdb_import_file.data.filename)
             full_path = os.path.join(tmp_folder, filename)
             assure_path_exists(tmp_folder)
-            assure_path_exists(tmp_folder)
             form.influxdb_import_file.data.save(
                 os.path.join(tmp_folder, filename))
 
             # Check if contents of zip file are correct
             try:
                 file_list = zipfile.ZipFile(full_path, 'r').namelist()
-                if not any("meta." in s for s in file_list):
-                    error.append(
-                        "Metastore not found: No 'meta.*' files found "
-                        "in archive")
-                elif not any("mycodo_db.autogen." in s for s in file_list):
-                    error.append(
-                        "Databases not found: No 'mycodo_db.autogen.*' "
-                        "files found in archive")
+                if not any(".meta" in s for s in file_list):
+                    error.append("No '.meta' file found in archive")
+                elif not any(".manifest" in s for s in file_list):
+                    error.append("No '.manifest' file found in archive")
             except Exception as err:
                 error.append("Exception while opening zip file: "
                              "{err}".format(err=err))
@@ -403,46 +405,30 @@ def import_influxdb(form):
 
         if not error:
             try:
-                # Stop influxdb and Mycodo daemon (backend) from
-                # running (influxdb must be stopped to restore database)
-                cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                      "daemon_stop".format(
-                    pth=INSTALL_DIRECTORY)
-                out, _, _ = cmd_output(cmd)
-
-                cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                      "influxdb_stop".format(
-                    pth=INSTALL_DIRECTORY)
-                out, _, _ = cmd_output(cmd)
-
-                # Import the mestastore and database
+                # Restore the backup to new database mycodo_db_bak
                 output_successes = []
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                      "influxdb_restore_metastore {dir}".format(
-                    pth=INSTALL_DIRECTORY, dir=tmp_folder)
+                      "influxdb_restore_mycodo_db {dir}".format(
+                        pth=INSTALL_DIRECTORY, dir=tmp_folder)
                 out, _, _ = cmd_output(cmd)
                 if out:
                     output_successes.append(out.decode('utf-8'))
 
-                cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                      "influxdb_restore_database {dir}".format(
-                    pth=INSTALL_DIRECTORY, dir=tmp_folder)
-                out, _, _ = cmd_output(cmd)
-                if out:
-                    output_successes.append(out.decode('utf-8'))
+                # Copy all measurements from backup to current database
+                mycodo_db_backup = 'mycodo_db_bak'
+                client = InfluxDBClient(
+                    INFLUXDB_HOST,
+                    INFLUXDB_PORT,
+                    INFLUXDB_USER,
+                    INFLUXDB_PASSWORD,
+                    mycodo_db_backup,
+                    timeout=5)
+                query_str = "SELECT * INTO {}..:MEASUREMENT FROM /.*/ GROUP BY *".format(
+                    INFLUXDB_DATABASE)
+                client.query(query_str)
 
-                # Start influxdb and Mycodo daemon (backend)
-                cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                      "influxdb_start".format(
-                    pth=INSTALL_DIRECTORY)
-                out, _, _ = cmd_output(cmd)
-
-                time.sleep(2)
-
-                cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                      "daemon_start".format(
-                    pth=INSTALL_DIRECTORY)
-                out, _, _ = cmd_output(cmd)
+                # Delete backup database
+                client.drop_database(mycodo_db_backup)
 
                 # Delete tmp directory if it exists
                 if os.path.isdir(tmp_folder):
@@ -450,12 +436,11 @@ def import_influxdb(form):
 
                 if all(output_successes):  # Success!
                     output_successes.append(
-                        "InfluxDB metastore and database successfully "
-                        "imported")
+                        "InfluxDB database successfully imported")
                     return output_successes
             except Exception as err:
                 error.append(
-                    "Exception while importing metastore and database: "
+                    "Exception while importing database: "
                     "{err}".format(err=err))
 
     except Exception as err:

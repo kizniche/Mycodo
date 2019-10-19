@@ -77,13 +77,8 @@ int main(int argc, char *argv[]) {
 		} else if (strcmp(argv[1], "influxdb_stop") == 0) {
 			sprintf(cmd, "service influxdb stop");
 			system(cmd);
-		} else if (strcmp(argv[1], "influxdb_restore_metastore") == 0 && (argc > 2)) {
-			sprintf(cmd, "influxd restore -metadir /var/lib/influxdb/meta %s", argv[2]);
-			system(cmd);
-		} else if (strcmp(argv[1], "influxdb_restore_database") == 0 && (argc > 2)) {
-			sprintf(cmd, "influxd restore -database mycodo_db -datadir /var/lib/influxdb/data %s", argv[2]);
-			system(cmd);
-			sprintf(cmd, "chown -R influxdb.influxdb /var/lib/influxdb/data");
+		} else if (strcmp(argv[1], "influxdb_restore_mycodo_db") == 0 && (argc > 2)) {
+			sprintf(cmd, "influxd restore -portable -db mycodo_db -newdb mycodo_db_bak %s", argv[2]);
 			system(cmd);
 		} else if (strcmp(argv[1], "initialize") == 0) {
             upgrade_commands(argv[0], "initialize");
@@ -173,6 +168,7 @@ int main(int argc, char *argv[]) {
 		printf("   influxdb_start:             Start influxdb\n");
 		printf("   influxdb_stop:              Stop influxdb\n");
 		printf("   influxdb_restart:           Restart influxdb\n");
+		printf("   influxdb_restore_mycodo_db  Restore influxdb database mycodo_db to mycodo_db_bak\n");
 		printf("   initialize:                 Run the Mycodo initialization sequence\n");
 		printf("   update_permissions:         Set the Mycodo file/folder permissions\n");
 		printf("   restart:                    Restart the computer after a 10 second pause\n");
