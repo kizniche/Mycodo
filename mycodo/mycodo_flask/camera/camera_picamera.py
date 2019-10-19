@@ -24,11 +24,17 @@ class Camera(BaseCamera):
             camera.contrast = int(self.camera_options.contrast)
             camera.exposure_compensation = int(self.camera_options.exposure)
             camera.saturation = int(self.camera_options.saturation)
+            camera.shutter_speed = self.camera_options.picamera_shutter_speed
+            camera.sharpness = self.camera_options.picamera_sharpness
+            camera.iso = self.camera_options.picamera_iso
             camera.awb_mode = self.camera_options.picamera_awb
             if self.camera_options.picamera_awb == 'off':
                 camera.awb_gains = (
                     self.camera_options.picamera_awb_gain_red,
                     self.camera_options.picamera_awb_gain_blue)
+            camera.exposure_mode = self.camera_options.picamera_exposure_mode
+            camera.meter_mode = self.camera_options.picamera_meter_mode
+            camera.image_effect = self.camera_options.picamera_image_effect
 
             # let camera warm up
             time.sleep(2)

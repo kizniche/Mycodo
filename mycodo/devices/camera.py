@@ -101,10 +101,17 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                     camera.contrast = int(settings.contrast)
                     camera.exposure_compensation = int(settings.exposure)
                     camera.saturation = int(settings.saturation)
+                    camera.shutter_speed = settings.picamera_shutter_speed
+                    camera.sharpness = settings.picamera_sharpness
+                    camera.iso = settings.picamera_iso
                     camera.awb_mode = settings.picamera_awb
                     if settings.picamera_awb == 'off':
                         camera.awb_gains = (settings.picamera_awb_gain_red,
                                             settings.picamera_awb_gain_blue)
+                    camera.exposure_mode = settings.picamera_exposure_mode
+                    camera.meter_mode = settings.picamera_meter_mode
+                    camera.image_effect = settings.picamera_image_effect
+
                     camera.start_preview()
                     time.sleep(2)  # Camera warm-up time
 

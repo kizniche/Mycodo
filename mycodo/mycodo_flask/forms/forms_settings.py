@@ -55,11 +55,6 @@ class SettingsCamera(FlaskForm):
         lazy_gettext('Saturation'), widget=NumberInput(step='any'))
     white_balance = DecimalField(
         lazy_gettext('White Balance'), widget=NumberInput(step='any'))
-    picamera_awb = StringField(lazy_gettext('Auto White Balance'))
-    picamera_awb_gain_red = DecimalField(
-        lazy_gettext('AWB Gain Red'), widget=NumberInput(step='any'))
-    picamera_awb_gain_blue = DecimalField(
-        lazy_gettext('AWB Gain Blue'), widget=NumberInput(step='any'))
     custom_options = StringField(lazy_gettext('Custom Options'))
     output_id = StringField(TRANSLATIONS['output']['title'])
     output_duration = DecimalField(
@@ -74,6 +69,19 @@ class SettingsCamera(FlaskForm):
     camera_add = SubmitField(TRANSLATIONS['add']['title'])
     camera_mod = SubmitField(TRANSLATIONS['save']['title'])
     camera_del = SubmitField(TRANSLATIONS['delete']['title'])
+
+    # Picamera
+    picamera_shutter_speed = IntegerField(lazy_gettext('Shutter Speed'))
+    picamera_sharpness = IntegerField(lazy_gettext('Sharpness'))
+    picamera_iso = StringField(lazy_gettext('ISO'))
+    picamera_awb = StringField(lazy_gettext('Auto White Balance'))
+    picamera_awb_gain_red = DecimalField(
+        lazy_gettext('AWB Gain Red'), widget=NumberInput(step='any'))
+    picamera_awb_gain_blue = DecimalField(
+        lazy_gettext('AWB Gain Blue'), widget=NumberInput(step='any'))
+    picamera_exposure_mode = StringField(lazy_gettext('Exposure Mode'))
+    picamera_meter_mode = StringField(lazy_gettext('Meter Mode'))
+    picamera_image_effect = StringField(lazy_gettext('Image Effect'))
 
 
 #

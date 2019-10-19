@@ -26,9 +26,6 @@ class Camera(CRUDMixin, db.Model):
     hue = db.Column(db.Float, default=None)
     saturation = db.Column(db.Float, default=0.3)
     white_balance = db.Column(db.Float, default=0.0)
-    picamera_awb = db.Column(db.Text, default='auto')
-    picamera_awb_gain_red = db.Column(db.Float, default=0.5)
-    picamera_awb_gain_blue = db.Column(db.Float, default=0.5)
     custom_options = db.Column(db.Text, default='')
     output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Turn output on during capture
     output_duration = db.Column(db.Float, default=3.0)
@@ -45,6 +42,17 @@ class Camera(CRUDMixin, db.Model):
     path_still = db.Column(db.Text, default='')
     path_timelapse = db.Column(db.Text, default='')
     path_video = db.Column(db.Text, default='')
+
+    # picamera options
+    picamera_shutter_speed = db.Column(db.Integer, default=0)
+    picamera_sharpness = db.Column(db.Integer, default=0)
+    picamera_iso = db.Column(db.Integer, default=0)
+    picamera_awb = db.Column(db.Text, default='auto')
+    picamera_awb_gain_red = db.Column(db.Float, default=0.5)
+    picamera_awb_gain_blue = db.Column(db.Float, default=0.5)
+    picamera_exposure_mode = db.Column(db.Text, default='auto')
+    picamera_meter_mode = db.Column(db.Text, default='average')
+    picamera_image_effect = db.Column(db.Text, default='none')
 
     def __repr__(self):
         return "<{cls}(id={s.id}, name='{s.name}', library='{s.library}')>".format(s=self, cls=self.__class__.__name__)

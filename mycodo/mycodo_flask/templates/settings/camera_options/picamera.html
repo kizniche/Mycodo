@@ -41,6 +41,34 @@
    </div>
 </div>
 <div class="col-auto">
+  {{form_camera.picamera_shutter_speed.label(class_='control-label')}}
+  <div>
+    {{form_camera.picamera_shutter_speed(class_='form-control', value=each_camera.picamera_shutter_speed, **{'title': 'Shutter speed in microseconds. Seeting to 0 disables and shutter speed will be automatically determined.'})}}
+   </div>
+</div>
+<div class="col-auto">
+  {{form_camera.picamera_sharpness.label(class_='control-label')}}
+  <div>
+    {{form_camera.picamera_sharpness(class_='form-control', value=each_camera.picamera_sharpness, **{'title': 'Accepted values: -100 - 100. Default: 0.'})}}
+   </div>
+</div>
+<div class="col-auto">
+  {{form_camera.picamera_iso.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="picamera_iso" name="picamera_iso">
+      <option value="0"{% if each_camera.picamera_iso == 0 %} selected{% endif %}>Auto</option>
+      <option value="100"{% if each_camera.picamera_iso == 100 %} selected{% endif %}>100</option>
+      <option value="200"{% if each_camera.picamera_iso == 200 %} selected{% endif %}>200</option>
+      <option value="320"{% if each_camera.picamera_iso == 320 %} selected{% endif %}>320</option>
+      <option value="400"{% if each_camera.picamera_iso == 400 %} selected{% endif %}>400</option>
+      <option value="500"{% if each_camera.picamera_iso == 500 %} selected{% endif %}>500</option>
+      <option value="640"{% if each_camera.picamera_iso == 640 %} selected{% endif %}>640</option>
+      <option value="800"{% if each_camera.picamera_iso == 800 %} selected{% endif %}>800</option>
+      <option value="1600"{% if each_camera.picamera_iso == 1600 %} selected{% endif %}>1600</option>
+    </select>
+  </div>
+</div>
+<div class="col-auto">
   {{form_camera.picamera_awb.label(class_='control-label')}}
   <div>
     <select class="form-control" id="picamera_awb" name="picamera_awb">
@@ -68,4 +96,64 @@
   <div>
     {{form_camera.picamera_awb_gain_blue(class_='form-control', value=each_camera.picamera_awb_gain_blue, **{'title': 'When Auto White Balance is set to "Off", the AWB Red and Blue gains will be used. These represent the red and blue balance of the camera. These values will be between 0.0 and 8.0. Typical values for the gains are between 0.9 and 1.9.'})}}
    </div>
+</div>
+<div class="col-auto">
+  {{form_camera.picamera_exposure_mode.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="picamera_exposure_mode" name="picamera_exposure_mode" data-placement="top" title="With iso settings other than Auto, Exposure Mode becomes non-functional.">
+      <option value="auto"{% if each_camera.picamera_exposure_mode == "auto" %} selected{% endif %}>Auto</option>
+      <option value="off"{% if each_camera.picamera_exposure_mode == "off" %} selected{% endif %}>Off</option>
+      <option value="night"{% if each_camera.picamera_exposure_mode == "night" %} selected{% endif %}>Night</option>
+      <option value="nightpreview"{% if each_camera.picamera_exposure_mode == "nightpreview" %} selected{% endif %}>Nightpreview</option>
+      <option value="backlight"{% if each_camera.picamera_exposure_mode == "backlight" %} selected{% endif %}>Backlight</option>
+      <option value="spotlight"{% if each_camera.picamera_exposure_mode == "spotlight" %} selected{% endif %}>Spotlight</option>
+      <option value="sports"{% if each_camera.picamera_exposure_mode == "sports" %} selected{% endif %}>Sports</option>
+      <option value="snow"{% if each_camera.picamera_exposure_mode == "snow" %} selected{% endif %}>Snow</option>
+      <option value="beach"{% if each_camera.picamera_exposure_mode == "beach" %} selected{% endif %}>Beach</option>
+      <option value="verylong"{% if each_camera.picamera_exposure_mode == "verylong" %} selected{% endif %}>Verylong</option>
+      <option value="fixedfps"{% if each_camera.picamera_exposure_mode == "fixedfps" %} selected{% endif %}>Fixedfps</option>
+      <option value="antishake"{% if each_camera.picamera_exposure_mode == "antishake" %} selected{% endif %}>Antishake</option>
+      <option value="fireworks"{% if each_camera.picamera_exposure_mode == "fireworks" %} selected{% endif %}>Fireworks</option>
+    </select>
+  </div>
+</div>
+<div class="col-auto">
+  {{form_camera.picamera_meter_mode.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="picamera_meter_mode" name="picamera_meter_mode" data-placement="top" title="Adjusts the camera’s metering mode.">
+      <option value="average"{% if each_camera.picamera_meter_mode == "average" %} selected{% endif %}>Average</option>
+      <option value="spot"{% if each_camera.picamera_meter_mode == "spot" %} selected{% endif %}>Spot</option>
+      <option value="backlit"{% if each_camera.picamera_meter_mode == "backlit" %} selected{% endif %}>Backlit</option>
+      <option value="matrix"{% if each_camera.picamera_meter_mode == "matrix" %} selected{% endif %}>Matrix</option>
+    </select>
+  </div>
+</div>
+<div class="col-auto">
+  {{form_camera.picamera_image_effect.label(class_='control-label')}}
+  <div>
+    <select class="form-control" id="picamera_image_effect" name="picamera_image_effect" data-placement="top" title="Changes the effect applied by the camera.">
+      <option value="none"{% if each_camera.picamera_image_effect == "none" %} selected{% endif %}>none</option>
+      <option value="negative"{% if each_camera.picamera_image_effect == "negative" %} selected{% endif %}>negative</option>
+      <option value="solarize"{% if each_camera.picamera_image_effect == "solarize" %} selected{% endif %}>solarize</option>
+      <option value="sketch"{% if each_camera.picamera_image_effect == "sketch" %} selected{% endif %}>sketch</option>
+      <option value="denoise"{% if each_camera.picamera_image_effect == "denoise" %} selected{% endif %}>denoise</option>
+      <option value="emboss"{% if each_camera.picamera_image_effect == "emboss" %} selected{% endif %}>emboss</option>
+      <option value="oilpaint"{% if each_camera.picamera_image_effect == "oilpaint" %} selected{% endif %}>oilpaint</option>
+      <option value="hatch"{% if each_camera.picamera_image_effect == "hatch" %} selected{% endif %}>hatch</option>
+      <option value="gpen"{% if each_camera.picamera_image_effect == "gpen" %} selected{% endif %}>gpen</option>
+      <option value="pastel"{% if each_camera.picamera_image_effect == "pastel" %} selected{% endif %}>pastel</option>
+      <option value="watercolor"{% if each_camera.picamera_image_effect == "watercolor" %} selected{% endif %}>watercolor</option>
+      <option value="film"{% if each_camera.picamera_image_effect == "film" %} selected{% endif %}>film</option>
+      <option value="blur"{% if each_camera.picamera_image_effect == "blur" %} selected{% endif %}>blur</option>
+      <option value="saturation"{% if each_camera.picamera_image_effect == "saturation" %} selected{% endif %}>saturation</option>
+      <option value="colorswap"{% if each_camera.picamera_image_effect == "colorswap" %} selected{% endif %}>colorswap</option>
+      <option value="washedout"{% if each_camera.picamera_image_effect == "washedout" %} selected{% endif %}>washedout</option>
+      <option value="posterise"{% if each_camera.picamera_image_effect == "posterise" %} selected{% endif %}>posterise</option>
+      <option value="colorpoint"{% if each_camera.picamera_image_effect == "colorpoint" %} selected{% endif %}>colorpoint</option>
+      <option value="colorbalance"{% if each_camera.picamera_image_effect == "colorbalance" %} selected{% endif %}>colorbalance</option>
+      <option value="cartoon"{% if each_camera.picamera_image_effect == "cartoon" %} selected{% endif %}>cartoon</option>
+      <option value="deinterlace1"{% if each_camera.picamera_image_effect == "deinterlace1" %} selected{% endif %}>deinterlace1</option>
+      <option value="deinterlace2"{% if each_camera.picamera_image_effect == "deinterlace2" %} selected{% endif %}>deinterlace2</option>
+    </select>
+  </div>
 </div>
