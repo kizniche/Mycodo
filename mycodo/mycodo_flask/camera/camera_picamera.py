@@ -1,38 +1,41 @@
 # -*- coding: utf-8 -*-
-#
 # From https://github.com/miguelgrinberg/flask-video-streaming
-#
-import io
 import time
+
+import io
 import picamera
+
 from mycodo.mycodo_flask.camera.base_camera import BaseCamera
 
 
 class Camera(BaseCamera):
     camera_options = None
 
-    @staticmethod
-    def set_camera_options(camera_options):
-        Camera.camera_options = camera_options
+    def set_camera_options(self, camera_options):
+        self.camera_options = camera_options
 
-    @staticmethod
-    def frames():
+    def frames(self):
         with picamera.PiCamera() as camera:
-            camera.resolution = (Camera.camera_options.width,
-                                 Camera.camera_options.height)
-            camera.hflip = Camera.camera_options.hflip
-            camera.vflip = Camera.camera_options.vflip
-            camera.brightness = int(Camera.camera_options.brightness)
-            camera.contrast = int(Camera.camera_options.contrast)
-            camera.exposure_compensation = int(Camera.camera_options.exposure)
-            camera.saturation = int(Camera.camera_options.saturation)
+            camera.resolution = (self.camera_options.width,
+                                 self.camera_options.height)
+            camera.hflip = self.camera_options.hflip
+            camera.vflip = self.camera_options.vflip
+            camera.brightness = int(self.camera_options.brightness)
+            camera.contrast = int(self.camera_options.contrast)
+            camera.exposure_compensation = int(self.camera_options.exposure)
+            camera.saturation = int(self.camera_options.saturation)
+            camera.awb_mode = self.camera_options.picamera_awb
+            if self.camera_options.picamera_awb == 'off':
+                camera.awb_gains = (
+                    self.camera_options.picamera_awb_gain_red,
+                    self.camera_options.picamera_awb_gain_blue)
 
             # let camera warm up
             time.sleep(2)
 
             stream = io.BytesIO()
-            for _ in camera.capture_continuous(stream, 'jpeg',
-                                               use_video_port=True):
+            for _ in camera.capture_continuous(
+                    stream, 'jpeg', use_video_port=True):
                 # return current frame
                 stream.seek(0)
                 time.sleep(0.3)
