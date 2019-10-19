@@ -44,7 +44,7 @@
   <div class="col-auto">
     {{form_mod_input_measurement.select_measurement_unit.label(class_='control-label')}}
     <div>
-      <select class="form-control" id="select_measurement_unit" name="select_measurement_unit" >
+      <select class="form-control" id="select_measurement_unit" name="select_measurement_unit">
         <option value="">{{dict_translation['select_one']['title']}}</option>
         {% for each_submit, each_display in choices_measurements_units.items() %}
         <option value="{{each_submit}}"{% if each_submit == each_measurement.measurement + ',' + each_measurement.unit %} selected{% endif %}>{{each_display}}</option>

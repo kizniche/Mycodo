@@ -2,7 +2,7 @@
 
 ### Features
 
- - Add picamera options: white balance, shutter speed, sharpness, iso, exposure_mode, meter_mode, image_effect ([#313](https://github.com/kizniche/mycodo/issues/313), [#703](https://github.com/kizniche/mycodo/issues/703))
+ - Add picamera options: white balance, shutter speed, sharpness, iso, exposure mode, meter mode, and image effect ([#313](https://github.com/kizniche/mycodo/issues/313), [#703](https://github.com/kizniche/mycodo/issues/703))
 
 
 ## 7.8.4 (2019.10.18)

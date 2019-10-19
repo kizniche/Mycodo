@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
-#
 # From https://github.com/miguelgrinberg/flask-video-streaming
-#
-import time
 import threading
+import time
+
 try:
     from greenlet import getcurrent as get_ident
 except ImportError:

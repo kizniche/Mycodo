@@ -15,26 +15,26 @@ class Camera(BaseCamera):
         self.camera_options = camera_options
 
     def frames(self):
+        settings = self.camera_options
         with picamera.PiCamera() as camera:
-            camera.resolution = (self.camera_options.width,
-                                 self.camera_options.height)
-            camera.hflip = self.camera_options.hflip
-            camera.vflip = self.camera_options.vflip
-            camera.brightness = int(self.camera_options.brightness)
-            camera.contrast = int(self.camera_options.contrast)
-            camera.exposure_compensation = int(self.camera_options.exposure)
-            camera.saturation = int(self.camera_options.saturation)
-            camera.shutter_speed = self.camera_options.picamera_shutter_speed
-            camera.sharpness = self.camera_options.picamera_sharpness
-            camera.iso = self.camera_options.picamera_iso
-            camera.awb_mode = self.camera_options.picamera_awb
-            if self.camera_options.picamera_awb == 'off':
-                camera.awb_gains = (
-                    self.camera_options.picamera_awb_gain_red,
-                    self.camera_options.picamera_awb_gain_blue)
-            camera.exposure_mode = self.camera_options.picamera_exposure_mode
-            camera.meter_mode = self.camera_options.picamera_meter_mode
-            camera.image_effect = self.camera_options.picamera_image_effect
+            camera.resolution = (settings.width, settings.height)
+            camera.hflip = settings.hflip
+            camera.vflip = settings.vflip
+            camera.rotation = settings.rotation
+            camera.brightness = int(settings.brightness)
+            camera.contrast = int(settings.contrast)
+            camera.exposure_compensation = int(settings.exposure)
+            camera.saturation = int(settings.saturation)
+            camera.shutter_speed = settings.picamera_shutter_speed
+            camera.sharpness = settings.picamera_sharpness
+            camera.iso = settings.picamera_iso
+            camera.awb_mode = settings.picamera_awb
+            if settings.picamera_awb == 'off':
+                camera.awb_gains = (settings.picamera_awb_gain_red,
+                                    settings.picamera_awb_gain_blue)
+            camera.exposure_mode = settings.picamera_exposure_mode
+            camera.meter_mode = settings.picamera_meter_mode
+            camera.image_effect = settings.picamera_image_effect
 
             # let camera warm up
             time.sleep(2)

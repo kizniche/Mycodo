@@ -92,8 +92,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         for _ in range(5):
             try:
                 with picamera.PiCamera() as camera:
-                    camera.resolution = (settings.width,
-                                         settings.height)
+                    camera.resolution = (settings.width, settings.height)
                     camera.hflip = settings.hflip
                     camera.vflip = settings.vflip
                     camera.rotation = settings.rotation

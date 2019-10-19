@@ -43,7 +43,7 @@
       <div class="col-auto">
         {{form_energy_usage_add.energy_usage_select.label(class_='control-label')}}
         <div>
-          <select class="form-control" id="energy_usage_select" name="energy_usage_select" style="width: 100%;" title="" data-original-title="{{_('Select a measurement with the unit:') + ' ' +_('Amps')}}">
+          <select class="form-control form-tooltip form-dropdown" id="energy_usage_select" name="energy_usage_select" style="width: 100%;" title="" data-original-title="{{_('Select a measurement with the unit:') + ' ' +_('Amps')}}">
             <option value="">{{dict_translation['select_one']['title']}}</option>
           {% for each_choice, value in choices_input.items() -%}
             <option value="{{each_choice}}">{{value}}</option>
@@ -98,7 +98,7 @@
         <div class="col-auto">
           {{form_energy_usage_mod.selection_device_measure_ids.label(class_='control-label')}}
           <div>
-            <select class="form-control" id="selection_device_measure_ids" name="selection_device_measure_ids" style="width: 100%;" title="" data-original-title="{{_('Select a measurement with the unit:') + ' ' +_('Amps')}}">
+            <select class="form-control form-tooltip form-dropdown" id="selection_device_measure_ids" name="selection_device_measure_ids" style="width: 100%;" title="" data-original-title="{{_('Select a measurement with the unit:') + ' ' +_('Amps')}}">
               <option value="">None Selected</option>
             {% for each_choice, value in choices_input.items() -%}
               <option value="{{each_choice}}"{% if each_choice == each_energy.device_id + ',' + each_energy.measurement_id %} selected{% endif %}>{{value}}</option>

@@ -55,7 +55,7 @@
 <div class="col-auto">
   {{form_camera.picamera_iso.label(class_='control-label')}}
   <div>
-    <select class="form-control" id="picamera_iso" name="picamera_iso">
+    <select class="form-control form-tooltip form-dropdown" id="picamera_iso" name="picamera_iso" data-placement="top" title="Changes the ISO applied by the camera.">
       <option value="0"{% if each_camera.picamera_iso == 0 %} selected{% endif %}>Auto</option>
       <option value="100"{% if each_camera.picamera_iso == 100 %} selected{% endif %}>100</option>
       <option value="200"{% if each_camera.picamera_iso == 200 %} selected{% endif %}>200</option>
@@ -100,7 +100,7 @@
 <div class="col-auto">
   {{form_camera.picamera_exposure_mode.label(class_='control-label')}}
   <div>
-    <select class="form-control" id="picamera_exposure_mode" name="picamera_exposure_mode" data-placement="top" title="With iso settings other than Auto, Exposure Mode becomes non-functional.">
+    <select class="form-control form-tooltip form-dropdown" id="picamera_exposure_mode" name="picamera_exposure_mode" data-placement="top" title="With iso settings other than Auto, Exposure Mode becomes non-functional.">
       <option value="auto"{% if each_camera.picamera_exposure_mode == "auto" %} selected{% endif %}>Auto</option>
       <option value="off"{% if each_camera.picamera_exposure_mode == "off" %} selected{% endif %}>Off</option>
       <option value="night"{% if each_camera.picamera_exposure_mode == "night" %} selected{% endif %}>Night</option>
@@ -120,7 +120,7 @@
 <div class="col-auto">
   {{form_camera.picamera_meter_mode.label(class_='control-label')}}
   <div>
-    <select class="form-control" id="picamera_meter_mode" name="picamera_meter_mode" data-placement="top" title="Adjusts the camera’s metering mode.">
+    <select class="form-control form-tooltip form-dropdown" id="picamera_meter_mode" name="picamera_meter_mode" data-placement="top" title="Adjusts the camera’s metering mode.">
       <option value="average"{% if each_camera.picamera_meter_mode == "average" %} selected{% endif %}>Average</option>
       <option value="spot"{% if each_camera.picamera_meter_mode == "spot" %} selected{% endif %}>Spot</option>
       <option value="backlit"{% if each_camera.picamera_meter_mode == "backlit" %} selected{% endif %}>Backlit</option>
@@ -131,7 +131,7 @@
 <div class="col-auto">
   {{form_camera.picamera_image_effect.label(class_='control-label')}}
   <div>
-    <select class="form-control" id="picamera_image_effect" name="picamera_image_effect" data-placement="top" title="Changes the effect applied by the camera.">
+    <select class="form-control form-tooltip form-dropdown" id="picamera_image_effect" name="picamera_image_effect" data-placement="top" title="Changes the effect applied by the camera.">
       <option value="none"{% if each_camera.picamera_image_effect == "none" %} selected{% endif %}>none</option>
       <option value="negative"{% if each_camera.picamera_image_effect == "negative" %} selected{% endif %}>negative</option>
       <option value="solarize"{% if each_camera.picamera_image_effect == "solarize" %} selected{% endif %}>solarize</option>
