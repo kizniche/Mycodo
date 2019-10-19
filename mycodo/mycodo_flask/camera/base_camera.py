@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # From https://github.com/miguelgrinberg/flask-video-streaming
+import logging
 import threading
 import time
 
@@ -10,6 +11,8 @@ except ImportError:
         from thread import get_ident
     except ImportError:
         from _thread import get_ident
+
+logger = logging.getLogger(__name__)
 
 
 class CameraEvent(object):
@@ -100,7 +103,7 @@ class BaseCamera(object):
     @classmethod
     def _thread(cls, unique_id):
         """Camera background thread."""
-        print('[{id}] Starting camera thread'.format(id=unique_id))
+        logger.info('[{id}] Starting camera thread'.format(id=unique_id))
         frames_iterator = cls.frames()
         for frame in frames_iterator:
             BaseCamera.frame[unique_id] = frame
@@ -111,13 +114,13 @@ class BaseCamera(object):
             # the last 10 seconds then stop the thread
             if time.time() - BaseCamera.last_access[unique_id] > 10:
                 frames_iterator.close()
-                print('[{id}] Stopping camera thread due to '
-                      'inactivity'.format(id=unique_id))
+                logger.info('[{id}] Stopping camera thread due to '
+                            'inactivity'.format(id=unique_id))
                 break
             if not BaseCamera.running[unique_id]:
                 frames_iterator.close()
-                print('[{id}] Camera thread instructed to '
-                      'shut down'.format(id=unique_id))
+                logger.info('[{id}] Camera thread instructed to '
+                            'shut down'.format(id=unique_id))
                 break
         BaseCamera.thread[unique_id] = None
         BaseCamera.running[unique_id] = False

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # From https://github.com/miguelgrinberg/flask-video-streaming
+import logging
 import time
 
 import io
@@ -7,15 +8,20 @@ import picamera
 
 from mycodo.mycodo_flask.camera.base_camera import BaseCamera
 
+logger = logging.getLogger(__name__)
+
 
 class Camera(BaseCamera):
     camera_options = None
 
-    def set_camera_options(self, camera_options):
-        self.camera_options = camera_options
+    @staticmethod
+    def set_camera_options(camera_options):
+        logger.info("Setting camera options")
+        Camera.camera_options = camera_options
 
-    def frames(self):
-        settings = self.camera_options
+    @staticmethod
+    def frames():
+        settings = Camera.camera_options
         with picamera.PiCamera() as camera:
             camera.resolution = (settings.width, settings.height)
             camera.hflip = settings.hflip
