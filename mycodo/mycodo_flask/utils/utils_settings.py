@@ -975,40 +975,40 @@ def settings_pi_mod(form):
         mod_misc.sample_rate_controller_pid = form.sample_rate_controller_pid.data
         db.session.commit()
     elif form.enable_i2c.data:
-        _, _, status = cmd_output("raspi-config nonint do_i2c 0")
+        _, _, status = cmd_output("raspi-config nonint do_i2c 0", user='root')
         action_str = "Enable I2C"
     elif form.disable_i2c.data:
-        _, _, status = cmd_output("raspi-config nonint do_i2c 1")
+        _, _, status = cmd_output("raspi-config nonint do_i2c 1", user='root')
         action_str = "Disable I2C"
     elif form.enable_one_wire.data:
-        _, _, status = cmd_output("raspi-config nonint do_onewire 0")
+        _, _, status = cmd_output("raspi-config nonint do_onewire 0", user='root')
         action_str = "Enable 1-Wire"
     elif form.disable_one_wire.data:
-        _, _, status = cmd_output("raspi-config nonint do_onewire 1")
+        _, _, status = cmd_output("raspi-config nonint do_onewire 1", user='root')
         action_str = "Disable 1-Wire"
     elif form.enable_serial.data:
-        _, _, status = cmd_output("raspi-config nonint do_serial 0")
+        _, _, status = cmd_output("raspi-config nonint do_serial 0", user='root')
         action_str = "Enable Serial"
     elif form.disable_serial.data:
-        _, _, status = cmd_output("raspi-config nonint do_serial 1")
+        _, _, status = cmd_output("raspi-config nonint do_serial 1", user='root')
         action_str = "Disable Serial"
     elif form.enable_spi.data:
-        _, _, status = cmd_output("raspi-config nonint do_spi 0")
+        _, _, status = cmd_output("raspi-config nonint do_spi 0", user='root')
         action_str = "Enable SPI"
     elif form.disable_spi.data:
-        _, _, status = cmd_output("raspi-config nonint do_spi 1")
+        _, _, status = cmd_output("raspi-config nonint do_spi 1", user='root')
         action_str = "Disable SPI"
     elif form.enable_ssh.data:
-        _, _, status = cmd_output("raspi-config nonint do_ssh 0")
+        _, _, status = cmd_output("raspi-config nonint do_ssh 0", user='root')
         action_str = "Enable SSH"
     elif form.disable_ssh.data:
-        _, _, status = cmd_output("raspi-config nonint do_ssh 1")
+        _, _, status = cmd_output("raspi-config nonint do_ssh 1", user='root')
         action_str = "Disable SSH"
     elif form.enable_pi_camera.data:
-        _, _, status = cmd_output("raspi-config nonint do_camera 0")
+        _, _, status = cmd_output("raspi-config nonint do_camera 0", user='root')
         action_str = "Enable Pi Camera"
     elif form.disable_pi_camera.data:
-        _, _, status = cmd_output("raspi-config nonint do_camera 1")
+        _, _, status = cmd_output("raspi-config nonint do_camera 1", user='root')
         action_str = "Disable Pi Camera"
     elif form.change_hostname.data:
         if is_valid_hostname(form.hostname.data):
