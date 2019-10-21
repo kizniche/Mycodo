@@ -17,8 +17,6 @@ class Camera(CRUDMixin, db.Model):
     hflip = db.Column(db.Boolean, default=False)  # Horizontal flip image
     vflip = db.Column(db.Boolean, default=False)  # Vertical flip image
     rotation = db.Column(db.Integer, default=0)  # Rotation degree (0-360)
-    height = db.Column(db.Integer, default=480)
-    width = db.Column(db.Integer, default=640)
     brightness = db.Column(db.Float, default=None)
     contrast = db.Column(db.Float, default=None)
     exposure = db.Column(db.Float, default=None)
@@ -32,6 +30,10 @@ class Camera(CRUDMixin, db.Model):
     cmd_pre_camera = db.Column(db.Text, default='')  # Command to execute before capture
     cmd_post_camera = db.Column(db.Text, default='')  # Command to execute after capture
     stream_started = db.Column(db.Boolean, default=False)
+    hide_still = db.Column(db.Boolean, default=False)
+    hide_timelapse = db.Column(db.Boolean, default=False)
+
+    # Timelapse
     timelapse_started = db.Column(db.Boolean, default=False)
     timelapse_paused = db.Column(db.Boolean, default=False)
     timelapse_start_time = db.Column(db.Float, default=None)
@@ -39,9 +41,17 @@ class Camera(CRUDMixin, db.Model):
     timelapse_interval = db.Column(db.Float, default=None)
     timelapse_next_capture = db.Column(db.Float, default=None)
     timelapse_capture_number = db.Column(db.Integer, default=None)
+
+    # Paths
     path_still = db.Column(db.Text, default='')
     path_timelapse = db.Column(db.Text, default='')
     path_video = db.Column(db.Text, default='')
+
+    # Resolutions
+    width = db.Column(db.Integer, default=1024)
+    height = db.Column(db.Integer, default=768)
+    resolution_stream_width = db.Column(db.Integer, default=1024)
+    resolution_stream_height = db.Column(db.Integer, default=768)
 
     # picamera options
     picamera_shutter_speed = db.Column(db.Integer, default=0)

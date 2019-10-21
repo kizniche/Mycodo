@@ -23,7 +23,8 @@ class Camera(BaseCamera):
     def frames():
         settings = Camera.camera_options
         with picamera.PiCamera() as camera:
-            camera.resolution = (settings.width, settings.height)
+            camera.resolution = (settings.resolution_stream_width,
+                                 settings.resolution_stream_height)
             camera.hflip = settings.hflip
             camera.vflip = settings.vflip
             camera.rotation = settings.rotation

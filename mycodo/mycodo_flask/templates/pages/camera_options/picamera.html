@@ -17,6 +17,18 @@
    </div>
 </div>
 <div class="col-auto">
+  {{form_camera.resolution_stream_width.label(class_='control-label')}}
+  <div>
+    {{form_camera.resolution_stream_width(class_='form-control', value=each_camera.resolution_stream_width)}}
+   </div>
+</div>
+<div class="col-auto">
+  {{form_camera.resolution_stream_height.label(class_='control-label')}}
+  <div>
+    {{form_camera.resolution_stream_height(class_='form-control', value=each_camera.resolution_stream_height)}}
+   </div>
+</div>
+<div class="col-auto">
   {{form_camera.brightness.label(class_='control-label')}}
   <div>
     {{form_camera.brightness(class_='form-control', value=each_camera.brightness, **{'title': 'Accepted values: 0 - 100. Default: 50.'})}}

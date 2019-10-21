@@ -53,10 +53,6 @@ class Camera(FlaskForm):
     vflip = BooleanField(lazy_gettext('Flip image vertically'))
     rotation = IntegerField(
         lazy_gettext('Rotate Image'), widget=NumberInput())
-    height = IntegerField(
-        lazy_gettext('Image Height'), widget=NumberInput())
-    width = IntegerField(
-        lazy_gettext('Image Width'), widget=NumberInput())
     brightness = DecimalField(
         lazy_gettext('Brightness'), widget=NumberInput(step='any'))
     contrast = DecimalField(
@@ -85,6 +81,18 @@ class Camera(FlaskForm):
     camera_add = SubmitField(TRANSLATIONS['add']['title'])
     camera_mod = SubmitField(TRANSLATIONS['save']['title'])
     camera_del = SubmitField(TRANSLATIONS['delete']['title'])
+    hide_still = BooleanField(lazy_gettext('Hide Last Still'))
+    hide_timelapse = BooleanField(lazy_gettext('Hide Last Timelapse'))
+
+    # Resolutions
+    width = IntegerField(
+        lazy_gettext('Still Image Width'), widget=NumberInput())
+    height = IntegerField(
+        lazy_gettext('Still Image Height'), widget=NumberInput())
+    resolution_stream_width = IntegerField(
+        lazy_gettext('Stream Width'), widget=NumberInput())
+    resolution_stream_height = IntegerField(
+        lazy_gettext('Stream Height'), widget=NumberInput())
 
     # Picamera
     picamera_shutter_speed = IntegerField(lazy_gettext('Shutter Speed'))

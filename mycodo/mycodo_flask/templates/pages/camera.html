@@ -120,12 +120,6 @@
       </div>
 
       <div class="row small-gutters">
-        <div class="col-12 col-sm-3">
-          {{form_camera.name.label(class_='control-label')}}
-          <div>
-            {{form_camera.name(class_='form-control', value=each_camera.name, **{'title':_('Name for this Camera')})}}
-          </div>
-        </div>
 
       {% if each_camera.library == 'picamera' %}
         {% if not pi_camera_enabled %}
@@ -134,26 +128,23 @@
         </div>
         {% endif %}
       {% endif %}
-      {% if each_camera.library == 'picamera' %}
-        {% include 'pages/camera_options/picamera.html' %}
-      {% elif each_camera.library == 'opencv' %}
-        {% include 'pages/camera_options/opencv.html' %}
-      {% elif each_camera.library == 'fswebcam' %}
-        {% include 'pages/camera_options/fswebcam.html' %}
-      {% endif %}
 
-        <div style="clear: both;"></div>
-
+        <div class="col-12 col-sm-3">
+          {{form_camera.name.label(class_='control-label')}}
+          <div>
+            {{form_camera.name(class_='form-control', value=each_camera.name, **{'title':_('Name for this Camera')})}}
+          </div>
+        </div>
         <div class="col-auto">
           {{form_camera.cmd_pre_camera.label(class_='control-label')}}
           <div>
-            {{form_camera.cmd_pre_camera(class_='form-control', value=each_camera.cmd_pre_camera)}}
+            {{form_camera.cmd_pre_camera(class_='form-control', value=each_camera.cmd_pre_camera, **{'title':_('Linux shell command to execute prior to acquiring a still image.')})}}
            </div>
         </div>
         <div class="col-auto">
           {{form_camera.cmd_post_camera.label(class_='control-label')}}
           <div>
-            {{form_camera.cmd_post_camera(class_='form-control', value=each_camera.cmd_post_camera)}}
+            {{form_camera.cmd_post_camera(class_='form-control', value=each_camera.cmd_post_camera, **{'title':_('Linux shell command to execute after acquiring a still image.')})}}
            </div>
         </div>
         <div class="col-auto">
@@ -174,7 +165,7 @@
         <div class="col-auto">
           {{form_camera.output_duration.label(class_='control-label')}}
           <div>
-            {{form_camera.output_duration(class_='form-control', value=each_camera.output_duration)}}
+            {{form_camera.output_duration(class_='form-control', value=each_camera.output_duration, **{'title':_('The duration to keep the output on prior to acquiring a still image. FOr example, useful for fluorescent lights that take a few seconds to turn on.')})}}
            </div>
         </div>
         <div class="col-auto">
@@ -207,6 +198,27 @@
             <input id="vflip" name="vflip" type="checkbox" value="y"{% if each_camera.vflip %} checked{% endif %}>
           </div>
         </div>
+        <div class="col-auto">
+          {{form_camera.hide_still.label(class_='control-label')}}
+          <div class="input-group-text">
+            <input id="hide_still" name="hide_still" type="checkbox" value="y"{% if each_camera.hide_still %} checked{% endif %}>
+          </div>
+        </div>
+        <div class="col-auto">
+          {{form_camera.hide_timelapse.label(class_='control-label')}}
+          <div class="input-group-text">
+            <input id="hide_timelapse" name="hide_timelapse" type="checkbox" value="y"{% if each_camera.hide_timelapse %} checked{% endif %}>
+          </div>
+        </div>
+
+       {% if each_camera.library == 'picamera' %}
+        {% include 'pages/camera_options/picamera.html' %}
+      {% elif each_camera.library == 'opencv' %}
+        {% include 'pages/camera_options/opencv.html' %}
+      {% elif each_camera.library == 'fswebcam' %}
+        {% include 'pages/camera_options/fswebcam.html' %}
+      {% endif %}
+
       </div>
 
       </form>
@@ -222,7 +234,7 @@
       </div>
     {%- endif -%}
 
-    {% if each_camera.timelapse_started %}
+    {% if each_camera.timelapse_started and not each_camera.hide_timelapse %}
       <div>
         {{_('Timelapse Parameters')}}:
         <br>Time-lapse: {% if each_camera.timelapse_paused %}Paused{% else %}Running{% endif %}
@@ -234,14 +246,14 @@
       </div>
     {% endif %}
 
-    {% if latest_img_tl[each_camera.unique_id] %}
+    {% if latest_img_tl[each_camera.unique_id] and not each_camera.hide_timelapse %}
       <div class="container-timelapse-{{each_camera.unique_id}}">
         {{_('Last Timelapse')}}: {{latest_img_tl_ts[each_camera.unique_id]}}
         <br/><a href="/camera/{{each_camera.unique_id}}/timelapse/{{latest_img_tl[each_camera.unique_id]}}" target="_blank"><img style="max-width: 100%" src="/camera/{{each_camera.unique_id}}/timelapse/{{latest_img_tl[each_camera.unique_id]}}"></a>
       </div>
     {% endif %}
 
-    {% if latest_img_still[each_camera.unique_id] %}
+    {% if latest_img_still[each_camera.unique_id] and not each_camera.hide_still %}
       <div class="container-still-{{each_camera.unique_id}}">
         {{_('Last Still')}}: {{latest_img_still_ts[each_camera.unique_id]}}
         <br/><a href="/camera/{{each_camera.unique_id}}/still/{{latest_img_still[each_camera.unique_id]}}" target="_blank"><img style="max-width: 100%" src="/camera/{{each_camera.unique_id}}/still/{{latest_img_still[each_camera.unique_id]}}"></a>

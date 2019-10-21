@@ -67,22 +67,21 @@ def camera_mod(form_camera):
             Camera.unique_id == form_camera.camera_id.data).first()
         mod_camera.name = form_camera.name.data
 
+        mod_camera.width = form_camera.width.data
+        mod_camera.height = form_camera.height.data
+        mod_camera.hflip = form_camera.hflip.data
+        mod_camera.vflip = form_camera.vflip.data
+        mod_camera.rotation = form_camera.rotation.data
+        mod_camera.brightness = form_camera.brightness.data
+        mod_camera.hide_still = form_camera.hide_still.data
+        mod_camera.hide_timelapse = form_camera.hide_timelapse.data
+
         if mod_camera.library == 'fswebcam':
             mod_camera.device = form_camera.device.data
-            mod_camera.hflip = form_camera.hflip.data
-            mod_camera.vflip = form_camera.vflip.data
-            mod_camera.rotation = form_camera.rotation.data
-            mod_camera.height = form_camera.height.data
-            mod_camera.width = form_camera.width.data
-            mod_camera.brightness = form_camera.brightness.data
             mod_camera.custom_options = form_camera.custom_options.data
         elif mod_camera.library == 'picamera':
-            mod_camera.hflip = form_camera.hflip.data
-            mod_camera.vflip = form_camera.vflip.data
-            mod_camera.rotation = form_camera.rotation.data
-            mod_camera.height = form_camera.height.data
-            mod_camera.width = form_camera.width.data
-            mod_camera.brightness = form_camera.brightness.data
+            mod_camera.resolution_stream_width = form_camera.resolution_stream_width.data
+            mod_camera.resolution_stream_height = form_camera.resolution_stream_height.data
             mod_camera.contrast = form_camera.contrast.data
             mod_camera.exposure = form_camera.exposure.data
             mod_camera.saturation = form_camera.saturation.data
