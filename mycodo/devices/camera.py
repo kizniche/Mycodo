@@ -141,7 +141,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         if settings.rotation:
             cmd += " --rotate {angle}".format(angle=settings.rotation)
         if settings.custom_options:
-            cmd += " " + settings.custom_options
+            cmd += " {}".format(settings.custom_options)
 
         out, err, status = cmd_output(cmd, stdout_pipe=False, user='root')
         logger.debug(
