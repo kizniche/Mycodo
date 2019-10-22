@@ -62,6 +62,9 @@ class Actions(FlaskForm):
     do_output_pwm = DecimalField(
         lazy_gettext('Duty Cycle (%)'),
         widget=NumberInput(step='any'))
+    do_output_pwm2 = DecimalField(
+        lazy_gettext('Duty Cycle (%)'),
+        widget=NumberInput(step='any'))
     do_camera_duration = DecimalField(
         lazy_gettext('Duration (seconds)'),
         widget=NumberInput(step='any'))

@@ -13,6 +13,8 @@ This update also moves the Camera options from the Settings to the Camera page, 
  - Update InfluxDB database export/import to use new Enterprise-compatible backup format
  - Add general camera options: stream height/width, hide last still, and hide last timelapse ([#703](https://github.com/kizniche/mycodo/issues/703))
  - Add picamera options: white balance, shutter speed, sharpness, iso, exposure mode, meter mode, and image effect ([#313](https://github.com/kizniche/mycodo/issues/313), [#703](https://github.com/kizniche/mycodo/issues/703))
+ - Add Function Action: Ramp PWM ([#704](https://github.com/kizniche/mycodo/issues/704))
+ - Add Conditional Conditions: Measurement (Single, Past, Average), Measurement (Single, Past, Sum) ([#636](https://github.com/kizniche/mycodo/issues/636))
 
 ### Miscellaneous
 

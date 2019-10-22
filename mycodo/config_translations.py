@@ -19,6 +19,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Activate')},
     'alert': {
         'title': lazy_gettext('Alert')},
+    'average': {
+        'title': lazy_gettext('Average')},
     'calibration': {
         'title': lazy_gettext('Calibration')},
     'calculate': {
@@ -81,6 +83,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Input')},
     'invalid': {
         'title': lazy_gettext('Invalid')},
+    'last': {
+        'title': lazy_gettext('Last')},
     'lcd': {
         'title': lazy_gettext('LCD')},
     'line': {
@@ -107,6 +111,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('On')},
     'output': {
         'title': lazy_gettext('Output')},
+    'past': {
+        'title': lazy_gettext('Past')},
     'password': {
         'title': lazy_gettext('Password')},
     'pause': {
@@ -117,6 +123,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Pin')},
     'pwm': {
         'title': lazy_gettext('PWM')},
+    'ramp': {
+        'title': lazy_gettext('Ramp')},
     'rename': {
         'title': lazy_gettext('Rename')},
     'reorder': {
@@ -137,6 +145,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Settings')},
     'single': {
         'title': lazy_gettext('Single')},
+    'sum': {
+        'title': lazy_gettext('Sum')},
     'tag': {
         'title': lazy_gettext('Tag')},
     'text': {

@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '7.8.4'
-ALEMBIC_VERSION = '4b619edb9a8f'
+ALEMBIC_VERSION = '0bd51c536217'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -423,12 +423,24 @@ CALIBRATION_INFO = {
 
 # Conditional controllers
 CONDITIONAL_CONDITIONS = [
-    ('measurement', "{} ({})".format(
+    ('measurement', "{} ({}, {})".format(
         TRANSLATIONS['measurement']['title'],
-        TRANSLATIONS['single']['title'])),
-    ('measurement_dict', "{} ({})".format(
+        TRANSLATIONS['single']['title'],
+        TRANSLATIONS['last']['title'])),
+    ('measurement_past_average', "{} ({}, {}, {})".format(
         TRANSLATIONS['measurement']['title'],
-        TRANSLATIONS['multiple']['title'])),
+        TRANSLATIONS['single']['title'],
+        TRANSLATIONS['past']['title'],
+        TRANSLATIONS['average']['title'])),
+    ('measurement_past_sum', "{} ({}, {}, {})".format(
+        TRANSLATIONS['measurement']['title'],
+        TRANSLATIONS['single']['title'],
+        TRANSLATIONS['past']['title'],
+        TRANSLATIONS['sum']['title'])),
+    ('measurement_dict', "{} ({}, {})".format(
+        TRANSLATIONS['measurement']['title'],
+        TRANSLATIONS['multiple']['title'],
+        TRANSLATIONS['past']['title'])),
     ('gpio_state', lazy_gettext('GPIO State')),
     ('output_state', lazy_gettext('Output State')),
     ('output_duration_on', lazy_gettext('Output Duration On')),
@@ -634,6 +646,12 @@ FUNCTION_ACTION_INFO = {
             TRANSLATIONS['duty_cycle']['title']),
         'dependencies_module': []
     },
+    'output_ramp_pwm': {
+        'name': '{} {}'.format(
+            TRANSLATIONS['ramp']['title'],
+            TRANSLATIONS['duty_cycle']['title']),
+        'dependencies_module': []
+    },
     'pause_pid': {
         'name': '{}: {}'.format(
             TRANSLATIONS['pid']['title'],
@@ -694,6 +712,7 @@ FUNCTION_ACTIONS = [
     ('flash_lcd_on', FUNCTION_ACTION_INFO['flash_lcd_on']['name']),
     ('output', FUNCTION_ACTION_INFO['output']['name']),
     ('output_pwm', FUNCTION_ACTION_INFO['output_pwm']['name']),
+    ('output_ramp_pwm', FUNCTION_ACTION_INFO['output_ramp_pwm']['name']),
     ('pause_pid', FUNCTION_ACTION_INFO['pause_pid']['name']),
     ('resume_pid', FUNCTION_ACTION_INFO['resume_pid']['name']),
     ('method_pid', FUNCTION_ACTION_INFO['method_pid']['name']),

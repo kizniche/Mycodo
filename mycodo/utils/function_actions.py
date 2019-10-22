@@ -73,7 +73,9 @@ def get_condition_value(condition_id):
         ConditionalConditions.unique_id == condition_id).first()
 
     # Check Measurement Conditions
-    if sql_condition.condition_type == 'measurement':
+    if sql_condition.condition_type in ['measurement',
+                                        'measurement_past_average',
+                                        'measurement_past_sum']:
         device_id = sql_condition.measurement.split(',')[0]
         measurement_id = sql_condition.measurement.split(',')[1]
 
@@ -94,11 +96,28 @@ def get_condition_value(condition_id):
             return
 
         max_age = sql_condition.max_age
-        # Check if there hasn't been a measurement in the last set number
-        # of seconds. If not, trigger conditional
-        last_measurement = get_last_measurement(
-            device_id, unit, measurement, channel, max_age)
-        return last_measurement
+
+        if sql_condition.condition_type == 'measurement':
+            return_measurement = get_last_measurement(
+                device_id, unit, measurement, channel, max_age)
+        elif sql_condition.condition_type == 'measurement_past_average':
+            measurement_list = []
+            measurements_str = get_past_measurements(
+                device_id, unit, measurement, channel, max_age)
+            for each_set in measurements_str.split(';'):
+                measurement_list.append(float(each_set.split(',')[1]))
+            return_measurement = sum(measurement_list) / len(measurement_list)
+        elif sql_condition.condition_type == 'measurement_past_sum':
+            measurement_list = []
+            measurements_str = get_past_measurements(
+                device_id, unit, measurement, channel, max_age)
+            for each_set in measurements_str.split(';'):
+                measurement_list.append(float(each_set.split(',')[1]))
+            return_measurement = sum(measurement_list)
+        else:
+            return
+
+        return return_measurement
 
     # Return GPIO state
     elif sql_condition.condition_type == 'gpio_state':
@@ -239,6 +258,210 @@ def get_past_measurements(unique_id, unit, measurement, channel, duration_sec):
         return string_ts_values
 
 
+def action_pause(cond_action, message):
+    message += " [{id}] Pause actions for {sec} seconds.".format(
+        id=cond_action.id,
+        sec=cond_action.pause_duration)
+
+    time.sleep(cond_action.pause_duration)
+    return message
+
+
+def action_ir_send(cond_action, message):
+    command = 'irsend SEND_ONCE {remote} {code}'.format(
+        remote=cond_action.remote, code=cond_action.code)
+    output, err, stat = cmd_output(command)
+
+    # Send more than once
+    if cond_action.send_times > 1:
+        for _ in range(cond_action.send_times - 1):
+            time.sleep(0.5)
+            output, err, stat = cmd_output(command)
+
+    message += " [{id}] Infrared Send " \
+               "code '{code}', remote '{remote}', times: {times}:" \
+               "\nOutput: {out}" \
+               "\nError: {err}" \
+               "\nStatus: {stat}'.".format(
+        id=cond_action.id,
+        code=cond_action.code,
+        remote=cond_action.remote,
+        times=cond_action.send_times,
+        out=output,
+        err=err,
+        stat=stat)
+    return message
+
+
+def action_output(cond_action, message, control):
+    this_output = db_retrieve_table_daemon(
+        Output, unique_id=cond_action.do_unique_id, entry='first')
+    message += " Turn output {unique_id} ({id}, {name}) {state}".format(
+        unique_id=cond_action.do_unique_id,
+        id=this_output.id,
+        name=this_output.name,
+        state=cond_action.do_output_state)
+    if (cond_action.do_output_state == 'on' and
+            cond_action.do_output_duration):
+        message += " for {sec} seconds".format(
+            sec=cond_action.do_output_duration)
+    message += "."
+
+    output_on_off = threading.Thread(
+        target=control.output_on_off,
+        args=(cond_action.do_unique_id,
+              cond_action.do_output_state,),
+        kwargs={'amount': cond_action.do_output_duration})
+    output_on_off.start()
+    return message
+
+
+def action_output_pwm(cond_action, message, control):
+    this_output = db_retrieve_table_daemon(
+        Output, unique_id=cond_action.do_unique_id, entry='first')
+    message += " Turn output {unique_id} ({id}, {name}) duty cycle to {duty_cycle}%.".format(
+        unique_id=cond_action.do_unique_id,
+        id=this_output.id,
+        name=this_output.name,
+        duty_cycle=cond_action.do_output_pwm)
+
+    output_on = threading.Thread(
+        target=control.output_on,
+        args=(cond_action.do_unique_id,),
+        kwargs={'duty_cycle': cond_action.do_output_pwm})
+    output_on.start()
+    return message
+
+
+def action_output_ramp_pwm(cond_action, message, control):
+    this_output = db_retrieve_table_daemon(
+        Output, unique_id=cond_action.do_unique_id, entry='first')
+    message += " Ramp output {unique_id} ({id}, {name}) " \
+               "duty cycle from {fdc}% to {tdc}% over {sec} seconds.".format(
+        unique_id=cond_action.do_unique_id,
+        id=this_output.id,
+        name=this_output.name,
+        fdc=cond_action.do_output_pwm,
+        tdc=cond_action.do_output_pwm2,
+        sec=cond_action.do_output_duration)
+
+    change_in_duty_cycle = abs(cond_action.do_output_pwm - cond_action.do_output_pwm2)
+    steps = change_in_duty_cycle * 10
+    seconds_per_step = cond_action.do_output_duration / steps
+
+    start_duty_cycle = cond_action.do_output_pwm
+    end_duty_cycle = cond_action.do_output_pwm2
+    current_duty_cycle = start_duty_cycle
+
+    output_on = threading.Thread(
+        target=control.output_on,
+        args=(cond_action.do_unique_id,),
+        kwargs={'duty_cycle': start_duty_cycle})
+    output_on.start()
+
+    loop_running = True
+    timer = time.time() + seconds_per_step
+    while True:
+        if timer < time.time():
+            while timer < time.time():
+                timer += seconds_per_step
+                if start_duty_cycle < end_duty_cycle:
+                    current_duty_cycle += 0.1
+                    if current_duty_cycle > end_duty_cycle:
+                        current_duty_cycle = end_duty_cycle
+                        loop_running = False
+                else:
+                    current_duty_cycle -= 0.1
+                    if current_duty_cycle < end_duty_cycle:
+                        current_duty_cycle = end_duty_cycle
+                        loop_running = False
+
+            output_on = threading.Thread(
+                target=control.output_on,
+                args=(cond_action.do_unique_id,),
+                kwargs={'duty_cycle': current_duty_cycle})
+            output_on.start()
+
+            if not loop_running:
+                break
+
+    return message
+
+
+def action_command(cond_action, message):
+    # Replace string variables with actual values
+    command_str = cond_action.do_action_string
+
+    # TODO: Maybe get this working again with the new measurement system
+    # # Replace measurement variables
+    # if last_measurement:
+    #     command_str = command_str.replace(
+    #         "((measure_{var}))".format(
+    #             var=device_measurement), str(last_measurement))
+    # if device and device.period:
+    #     command_str = command_str.replace(
+    #         "((measure_period))", str(device.period))
+    # if input_dev:
+    #     command_str = command_str.replace(
+    #         "((measure_location))", str(input_dev.location))
+    # if input_dev and device_measurement == input_dev.measurements:
+    #     command_str = command_str.replace(
+    #         "((measure_linux_command))", str(last_measurement))
+    #
+    # # Replace output variables
+    # if output:
+    #     if output.pin:
+    #         command_str = command_str.replace(
+    #             "((output_pin))", str(output.pin))
+    #     if output_state:
+    #         command_str = command_str.replace(
+    #             "((output_action))", str(output_state))
+    #     if on_duration:
+    #         command_str = command_str.replace(
+    #             "((output_duration))", str(on_duration))
+    #     if duty_cycle:
+    #         command_str = command_str.replace(
+    #             "((output_pwm))", str(duty_cycle))
+    #
+    # # Replace edge variables
+    # if edge:
+    #     command_str = command_str.replace(
+    #         "((edge_state))", str(edge))
+
+    message += " Execute '{com}' ".format(
+        com=command_str)
+
+    _, _, cmd_status = cmd_output(command_str)
+
+    message += "(return status: {stat}).".format(stat=cmd_status)
+    return message
+
+
+# def action_(cond_action, message):
+#
+#     return message
+#
+#
+# def action_(cond_action, message):
+#
+#     return message
+#
+#
+# def action_(cond_action, message):
+#
+#     return message
+#
+#
+# def action_(cond_action, message):
+#
+#     return message
+#
+#
+# def action_(cond_action, message):
+#
+#     return message
+
+
 def trigger_action(
         cond_action_id,
         message='',
@@ -290,127 +513,35 @@ def trigger_action(
 
         # Pause
         if cond_action.action_type == 'pause_actions':
-            message += " [{id}] Pause actions for {sec} seconds.".format(
-                id=cond_action.id,
-                sec=cond_action.pause_duration)
-
-            time.sleep(cond_action.pause_duration)
+            message = action_pause(cond_action, message)
 
         # Infrared Send
         if cond_action.action_type == 'infrared_send':
-            command = 'irsend SEND_ONCE {remote} {code}'.format(
-                remote=cond_action.remote, code=cond_action.code)
-            output, err, stat = cmd_output(command)
-
-            # Send more than once
-            if cond_action.send_times > 1:
-                for _ in range(cond_action.send_times - 1):
-                    time.sleep(0.5)
-                    output, err, stat = cmd_output(command)
-
-            message += " [{id}] Infrared Send " \
-                       "code '{code}', remote '{remote}', times: {times}:" \
-                       "\nOutput: {out}" \
-                       "\nError: {err}" \
-                       "\nStatus: {stat}'.".format(
-                            id=cond_action.id,
-                            code=cond_action.code,
-                            remote=cond_action.remote,
-                            times=cond_action.send_times,
-                            out=output,
-                            err=err,
-                            stat=stat)
+            message = action_ir_send(cond_action, message)
 
         # Actuate output (duration)
         if (cond_action.action_type == 'output' and
                 cond_action.do_unique_id and
                 cond_action.do_output_state in ['on', 'off']):
-            this_output = db_retrieve_table_daemon(
-                Output, unique_id=cond_action.do_unique_id, entry='first')
-            message += " Turn output {unique_id} ({id}, {name}) {state}".format(
-                unique_id=cond_action.do_unique_id,
-                id=this_output.id,
-                name=this_output.name,
-                state=cond_action.do_output_state)
-            if (cond_action.do_output_state == 'on' and
-                    cond_action.do_output_duration):
-                message += " for {sec} seconds".format(
-                    sec=cond_action.do_output_duration)
-            message += "."
-
-            output_on_off = threading.Thread(
-                target=control.output_on_off,
-                args=(cond_action.do_unique_id,
-                      cond_action.do_output_state,),
-                kwargs={'amount': cond_action.do_output_duration})
-            output_on_off.start()
+            message = action_output(cond_action, message, control)
 
         # Actuate output (PWM)
         if (cond_action.action_type == 'output_pwm' and
                 cond_action.do_unique_id and
                 0 <= cond_action.do_output_pwm <= 100):
-            this_output = db_retrieve_table_daemon(
-                Output, unique_id=cond_action.do_unique_id, entry='first')
-            message += " Turn output {unique_id} ({id}, {name}) duty cycle to {duty_cycle}%.".format(
-                unique_id=cond_action.do_unique_id,
-                id=this_output.id,
-                name=this_output.name,
-                duty_cycle=cond_action.do_output_pwm)
+            message = action_output_pwm(cond_action, message, control)
 
-            output_on = threading.Thread(
-                target=control.output_on,
-                args=(cond_action.do_unique_id,),
-                kwargs={'duty_cycle': cond_action.do_output_pwm})
-            output_on.start()
+        # Ramp output (PWM)
+        if (cond_action.action_type == 'output_ramp_pwm' and
+                cond_action.do_unique_id and
+                0 <= cond_action.do_output_pwm <= 100 and
+                0 <= cond_action.do_output_pwm2 <= 100 and
+                cond_action.do_output_duration > 0):
+            message = action_output_ramp_pwm(cond_action, message, control)
 
         # Execute command in shell
         if cond_action.action_type == 'command':
-
-            # Replace string variables with actual values
-            command_str = cond_action.do_action_string
-
-            # TODO: Maybe get this working again with the new measurement system
-            # # Replace measurement variables
-            # if last_measurement:
-            #     command_str = command_str.replace(
-            #         "((measure_{var}))".format(
-            #             var=device_measurement), str(last_measurement))
-            # if device and device.period:
-            #     command_str = command_str.replace(
-            #         "((measure_period))", str(device.period))
-            # if input_dev:
-            #     command_str = command_str.replace(
-            #         "((measure_location))", str(input_dev.location))
-            # if input_dev and device_measurement == input_dev.measurements:
-            #     command_str = command_str.replace(
-            #         "((measure_linux_command))", str(last_measurement))
-            #
-            # # Replace output variables
-            # if output:
-            #     if output.pin:
-            #         command_str = command_str.replace(
-            #             "((output_pin))", str(output.pin))
-            #     if output_state:
-            #         command_str = command_str.replace(
-            #             "((output_action))", str(output_state))
-            #     if on_duration:
-            #         command_str = command_str.replace(
-            #             "((output_duration))", str(on_duration))
-            #     if duty_cycle:
-            #         command_str = command_str.replace(
-            #             "((output_pwm))", str(duty_cycle))
-            #
-            # # Replace edge variables
-            # if edge:
-            #     command_str = command_str.replace(
-            #         "((edge_state))", str(edge))
-
-            message += " Execute '{com}' ".format(
-                com=command_str)
-
-            _, _, cmd_status = cmd_output(command_str)
-
-            message += "(return status: {stat}).".format(stat=cmd_status)
+            message = action_command(cond_action, message)
 
         # Create Note
         if cond_action.action_type == 'create_note':

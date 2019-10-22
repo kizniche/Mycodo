@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import logging
+import threading
 
 import sqlalchemy
 from flask import current_app
@@ -317,6 +318,12 @@ def action_mod(form):
             mod_action.do_unique_id = form.do_unique_id.data
             mod_action.do_output_pwm = form.do_output_pwm.data
 
+        elif mod_action.action_type == 'output_ramp_pwm':
+            mod_action.do_unique_id = form.do_unique_id.data
+            mod_action.do_output_pwm = form.do_output_pwm.data
+            mod_action.do_output_pwm2 = form.do_output_pwm2.data
+            mod_action.do_output_duration = form.do_output_duration.data
+
         elif mod_action.action_type in ['activate_controller',
                                         'deactivate_controller']:
             mod_action.do_unique_id = form.do_unique_id.data
@@ -454,9 +461,11 @@ def action_execute_all(form):
     try:
         if not error:
             control = DaemonControl()
-            control.trigger_all_actions(
-                form.function_id.data,
-                message="Test triggering all actions of function {}".format(form.function_id.data))
+            trigger_all_actions = threading.Thread(
+                target=control.trigger_all_actions,
+                args=(form.function_id.data,),
+                kwargs={'message': "Triggering all actions of function {}".format(form.function_id.data)})
+            trigger_all_actions.start()
     except Exception as except_msg:
         error.append(except_msg)
 

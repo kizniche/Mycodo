@@ -131,6 +131,10 @@
 
     {% if each_condition.condition_type == 'measurement' %}
       {% include 'pages/function_options/conditional_options/measurement.html' %}
+    {% elif each_condition.condition_type == 'measurement_past_average' %}
+      {% include 'pages/function_options/conditional_options/measurement_past_average.html' %}
+    {% elif each_condition.condition_type == 'measurement_past_sum' %}
+      {% include 'pages/function_options/conditional_options/measurement_past_sum.html' %}
     {% elif each_condition.condition_type == 'measurement_dict' %}
       {% include 'pages/function_options/conditional_options/measurement_dict.html' %}
     {% elif each_condition.condition_type == 'gpio_state' %}

@@ -177,6 +177,8 @@ def conditional_condition_mod(form):
             ConditionalConditions.unique_id == form.conditional_condition_id.data).first()
 
         if cond_mod.condition_type in ['measurement',
+                                       'measurement_past_average',
+                                       'measurement_past_sum',
                                        'measurement_dict']:
             error = check_form_measurements(form, error)
             cond_mod.measurement = form.measurement.data

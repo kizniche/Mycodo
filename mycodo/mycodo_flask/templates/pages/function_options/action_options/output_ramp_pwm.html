@@ -1,0 +1,32 @@
+<div class="col-auto">
+  {{form_actions.do_unique_id.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('What output to manipulate')}}">
+      <option value=""></option>
+      {%- for each_output in output if each_output.output_type in OUTPUTS_PWM -%}
+        <option value="{{each_output.unique_id}}"{% if each_action.do_unique_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
+      {%- endfor -%}
+    </select>
+  </div>
+</div>
+<div class="col-auto">
+  <label class='control-label'>{{_('Start')}} {{_('Duty Cycle')}} (%)</label>
+  <div>
+    {{form_actions.do_output_pwm(class_='form-control', value=each_action.do_output_pwm, **{'title':_('Start duty cycle')})}}
+  </div>
+</div>
+<div class="col-auto">
+  <label class='control-label'>{{_('End')}} {{_('Duty Cycle')}} (%)</label>
+  <div>
+    {{form_actions.do_output_pwm2(class_='form-control', value=each_action.do_output_pwm2, **{'title':_('End duty cycle')})}}
+  </div>
+</div>
+<div class="col-auto">
+  {{form_actions.do_output_duration.label(class_='control-label')}}
+  <div>
+    {{form_actions.do_output_duration(class_='form-control', value=each_action.do_output_duration, **{'title':_('Duration')})}}
+  </div>
+</div>
+<div class="col-12">
+  <strong>{{_('Ramp')}} {{_('Duty Cycle')}}</strong>: {{_('Ramp an Output from one duty cycle to another duty cycle (in 0.1% steps) over a period of time.')}}
+</div>

@@ -122,6 +122,7 @@ class Actions(CRUDMixin, db.Model):
     do_output_state = db.Column(db.Text, default='')  # 'on' or 'off'
     do_output_duration = db.Column(db.Float, default=0.0)
     do_output_pwm = db.Column(db.Float, default=0.0)
+    do_output_pwm2 = db.Column(db.Float, default=0.0)
     do_camera_duration = db.Column(db.Float, default=5.0)
 
     # Infrared remote send

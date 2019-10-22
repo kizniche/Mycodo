@@ -1740,14 +1740,26 @@ Statement.
 +---------------------------+------------------------------------------------+
 | Condition                 | Description                                    |
 +===========================+================================================+
-| Measurement (Single)      | Acquires the latest measurement from an Input  |
-|                           | or device. Set Max Age (seconds) to restrict   |
+| Measurement (Single,      | Acquires the latest measurement from an Input  |
+| Last)                     | or device. Set Max Age (seconds) to restrict   |
 |                           | how long to accept values. If the latest value |
 |                           | is older than this duration, "None" is         |
 |                           | returned.                                      |
 +---------------------------+------------------------------------------------+
-| Measurement (Multiple)    | Acquires the last measurements from an Input   |
-|                           | or device. Set Max Age (seconds) to restrict   |
+| Measurement (Single,      | Acquires the past measurements from an Input   |
+| Past, Average)            | or device, then averages them. Set Max Age     |
+|                           | (seconds) to restrict how long to accept       |
+|                           | values. If all values are older than this      |
+|                           | duration, "None" is returned.                  |
++---------------------------+------------------------------------------------+
+| Measurement (Single,      | Acquires the past measurements from an Input   |
+| Past, Sum)                | or device, then sums them. Set Max Age         |
+|                           | (seconds) to restrict how long to accept       |
+|                           | values. If all values are older than this      |
+|                           | duration, "None" is returned.                  |
++---------------------------+------------------------------------------------+
+| Measurement (Multiple,    | Acquires the past measurements from an Input   |
+| Past)                     | or device. Set Max Age (seconds) to restrict   |
 |                           | how long to accept values. If no values are    |
 |                           | found in this duration, "None" is returned.    |
 |                           | This differs from the "Measurement (Single)"   |
