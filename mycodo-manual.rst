@@ -1621,7 +1621,11 @@ PID Controller Options
 PID Tuning
 ~~~~~~~~~~
 
-``Function -> PIDs``
+PID tuning is a complex process, but not unattainable if enough time and
+effort is invested to learn how a PID operates. Below is a primer for
+understanding how a PID controller operates and a few examples of how to
+tune a PID controller. For further discussion, join the `Mycodo PID Tuning
+<https://kylegabriel.com/forum/pid-tuning/>`__ forum.
 
 PID Control Theory
 ^^^^^^^^^^^^^^^^^^
