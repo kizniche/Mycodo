@@ -4056,7 +4056,7 @@ Raspberry Pi, 8 relays, 8 outlets:
 |Schematic: Pi, 8 relays, and 8 outlets| 
 
 .. |PID Animation| image:: manual_images/PID-Animation.gif
-.. |PID Equation| image:: manual_images/PID-Equation.gif
+.. |PID Equation| image:: manual_images/PID-Equation.jpg
 .. |Schematic: PWM output modulating alternating current (AC) at 1% duty cycle (1of2)| image:: manual_images/Schematic-PWM-DC-12-volt-fan-control.png
 .. |Schematic: PWM output modulating alternating current (AC) at 1% duty cycle (2of2)| image:: manual_images/Schematic-PWM-AC-1percent-duty-cycle.png
 .. |Schematic: PWM output modulating alternating current (AC) at 50% duty cycle| image:: manual_images/Schematic-PWM-AC-50percent-duty-cycle.png
