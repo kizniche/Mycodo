@@ -1662,7 +1662,7 @@ variable has on the output. This can be seen in the PID equation:
 
 .. math::
 
-   \frac{ \sum_{t=0}^{N}f(t,k) }{N}
+   \\frac{ \\sum_{t=0}^{N}f(t,k) }{N}
 
 --------------
 
