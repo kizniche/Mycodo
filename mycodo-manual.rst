@@ -1655,14 +1655,14 @@ larger the derivative path becomes, decreasing the output rate of
 change. This has the effect of dampening overshoot and undershoot
 (oscillation) of the Set Point.
 
+|PID Animation|
+
 The K\ :sub:`P`, K\ :sub:`I`, and K\ :sub:`D` gains determine how much
 each of the P, I, and D variables influence the final PID output value.
 For instance, the greater the value of the gain, the more influence that
-variable has on the output. This can be seen in the PID equation:
+variable has on the output.
 
-.. math::
-
-   \\frac{ \\sum_{t=0}^{N}f(t,k) }{N}
+|PID Equation|
 
 --------------
 
@@ -4055,6 +4055,8 @@ Raspberry Pi, 8 relays, 8 outlets:
 
 |Schematic: Pi, 8 relays, and 8 outlets| 
 
+.. |PID Animation| image:: manual_images/PID-Animation.gif
+.. |PID Equation| image:: manual_images/PID-Equation.gif
 .. |Schematic: PWM output modulating alternating current (AC) at 1% duty cycle (1of2)| image:: manual_images/Schematic-PWM-DC-12-volt-fan-control.png
 .. |Schematic: PWM output modulating alternating current (AC) at 1% duty cycle (2of2)| image:: manual_images/Schematic-PWM-AC-1percent-duty-cycle.png
 .. |Schematic: PWM output modulating alternating current (AC) at 50% duty cycle| image:: manual_images/Schematic-PWM-AC-50percent-duty-cycle.png
