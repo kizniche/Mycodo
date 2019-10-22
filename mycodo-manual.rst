@@ -1664,6 +1664,24 @@ variable has on the output.
 
 |PID Equation|
 
+The output from the PID controller can be used in a number of ways. A simple
+use is to use this value as the number of seconds an output is turned on during
+a periodic interval (Period). For instance, if the Period is set to 30 seconds,
+the PID equation has the desired measurement and the actual measurement used to
+calculate the PID output every 30 seconds. The more the output is on during this
+period, the more it will affect the system. For example, an output on for 15
+seconds every 30 seconds is at a 50 % duty cycle, and would affect the system
+roughly half as much as when the output is on for 30 seconds every 30 seconds, or at at
+100 % duty cycle. The PID controller will calculate the output based on the amount
+of error (how far the actual measurement is from the desired
+measurement). If the error increases or persists, the output increases,
+causing the output to turn on for a longer duration within the Period, which usually in term causes
+the measured condition to change and the error to reduce. When the error reduces, the
+control variable decreases, meaning the output is turned on for a shorter duration
+of time. The ultimate goal of a well-tuned PID controller is to bring the actual
+measurement to the desired measurement quickly, with little overshoot, and maintain
+the setpoint with minimal oscillation.
+
 --------------
 
 Using temperature as an example, the Process Variable (PV) is the
