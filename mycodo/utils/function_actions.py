@@ -6,6 +6,7 @@ import time
 import RPi.GPIO as GPIO
 import os
 
+from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
@@ -293,7 +294,8 @@ def action_ir_send(cond_action, message):
     return message
 
 
-def action_output(cond_action, message, control):
+def action_output(cond_action, message):
+    control = DaemonControl()
     this_output = db_retrieve_table_daemon(
         Output, unique_id=cond_action.do_unique_id, entry='first')
     message += " Turn output {unique_id} ({id}, {name}) {state}".format(
@@ -316,7 +318,8 @@ def action_output(cond_action, message, control):
     return message
 
 
-def action_output_pwm(cond_action, message, control):
+def action_output_pwm(cond_action, message):
+    control = DaemonControl()
     this_output = db_retrieve_table_daemon(
         Output, unique_id=cond_action.do_unique_id, entry='first')
     message += " Turn output {unique_id} ({id}, {name}) duty cycle to {duty_cycle}%.".format(
@@ -333,7 +336,8 @@ def action_output_pwm(cond_action, message, control):
     return message
 
 
-def action_output_ramp_pwm(cond_action, message, control):
+def action_output_ramp_pwm(cond_action, message):
+    control = DaemonControl()
     this_output = db_retrieve_table_daemon(
         Output, unique_id=cond_action.do_unique_id, entry='first')
     message += " Ramp output {unique_id} ({id}, {name}) " \
@@ -384,7 +388,6 @@ def action_output_ramp_pwm(cond_action, message, control):
 
             if not loop_running:
                 break
-
     return message
 
 
@@ -437,29 +440,399 @@ def action_command(cond_action, message):
     return message
 
 
-# def action_(cond_action, message):
-#
-#     return message
-#
-#
-# def action_(cond_action, message):
-#
-#     return message
-#
-#
-# def action_(cond_action, message):
-#
-#     return message
-#
-#
-# def action_(cond_action, message):
-#
-#     return message
-#
-#
-# def action_(cond_action, message):
-#
-#     return message
+def action_create_note(cond_action, message, single_action, note_tags):
+    tag_name = db_retrieve_table_daemon(
+        NoteTags, unique_id=cond_action.do_action_string).name
+
+    message += " Create note with tag '{}'.".format(tag_name)
+    if single_action and cond_action.do_action_string:
+        list_tags = []
+        check_tag = db_retrieve_table_daemon(
+            NoteTags, unique_id=cond_action.do_action_string)
+        if check_tag:
+            list_tags.append(cond_action.do_action_string)
+
+        if list_tags:
+            with session_scope(MYCODO_DB_PATH) as db_session:
+                new_note = Notes()
+                new_note.name = 'Action'
+                new_note.tags = ','.join(list_tags)
+                new_note.note = message
+                db_session.add(new_note)
+    else:
+        note_tags.append(cond_action.do_action_string)
+    return message, note_tags
+
+
+def action_photo(cond_action, message):
+    this_camera = db_retrieve_table_daemon(
+        Camera, unique_id=cond_action.do_unique_id, entry='first')
+    message += "  Capturing photo with camera {unique_id} ({id}, {name}).".format(
+        unique_id=cond_action.do_unique_id,
+        id=this_camera.id,
+        name=this_camera.name)
+    camera_still = db_retrieve_table_daemon(
+        Camera, unique_id=cond_action.do_unique_id)
+    attachment_path_file = camera_record('photo', camera_still.unique_id)
+    attachment_file = os.path.join(attachment_path_file[0], attachment_path_file[1])
+    return message, attachment_file
+
+
+def action_video(cond_action, message):
+    this_camera = db_retrieve_table_daemon(
+        Camera, unique_id=cond_action.do_unique_id, entry='first')
+    message += "  Capturing video with camera {unique_id} ({id}, {name}).".format(
+        unique_id=cond_action.do_unique_id,
+        id=this_camera.id,
+        name=this_camera.name)
+    camera_stream = db_retrieve_table_daemon(
+        Camera, unique_id=cond_action.do_unique_id)
+    attachment_path_file = camera_record(
+        'video', camera_stream.unique_id,
+        duration_sec=cond_action.do_camera_duration)
+    attachment_file = os.path.join(attachment_path_file[0], attachment_path_file[1])
+    return message, attachment_file
+
+
+def action_email(logger_actions,
+                 cond_action,
+                 message,
+                 single_action,
+                 attachment_file,
+                 email_recipients,
+                 attachment_type):
+    message += " Notify {email}.".format(
+        email=cond_action.do_action_string)
+    # attachment_type != False indicates to
+    # attach a photo or video
+    if cond_action.action_type == 'photo_email':
+        message += " Photo attached to email."
+        attachment_type = 'still'
+    elif cond_action.action_type == 'video_email':
+        message += " Video attached to email."
+        attachment_type = 'video'
+
+    if single_action:
+        # If the emails per hour limit has not been exceeded
+        smtp_wait_timer, allowed_to_send_notice = check_allowed_to_email()
+        if allowed_to_send_notice and cond_action.do_action_string:
+            smtp = db_retrieve_table_daemon(SMTP, entry='first')
+            send_email(smtp.host, smtp.ssl, smtp.port,
+                       smtp.user, smtp.passw, smtp.email_from,
+                       [cond_action.do_action_string], message,
+                       attachment_file, attachment_type)
+        else:
+            logger_actions.error(
+                "Wait {sec:.0f} seconds to email again.".format(
+                    sec=smtp_wait_timer - time.time()))
+    else:
+        email_recipients.append(cond_action.do_action_string)
+
+    # Email the Conditional message to multiple recipients
+    # Optionally capture a photo or video and attach to the email.
+    if cond_action.action_type in ['email_multiple']:
+
+        message += " Notify {email}.".format(
+            email=cond_action.do_action_string)
+        # attachment_type != False indicates to
+        # attach a photo or video
+        if cond_action.action_type == 'photo_email':
+            message += " Photo attached to email."
+            attachment_type = 'still'
+        elif cond_action.action_type == 'video_email':
+            message += " Video attached to email."
+            attachment_type = 'video'
+
+        if single_action:
+            # If the emails per hour limit has not been exceeded
+            smtp_wait_timer, allowed_to_send_notice = check_allowed_to_email()
+            if allowed_to_send_notice and cond_action.do_action_string:
+                smtp = db_retrieve_table_daemon(SMTP, entry='first')
+                send_email(smtp.host, smtp.ssl, smtp.port,
+                           smtp.user, smtp.passw, smtp.email_from,
+                           cond_action.do_action_string.split(','), message,
+                           attachment_file, attachment_type)
+            else:
+                logger.error(
+                    "Wait {sec:.0f} seconds to email again.".format(
+                        sec=smtp_wait_timer - time.time()))
+        else:
+            email_recipients.extend(cond_action.do_action_string.split(','))
+    return message, email_recipients, attachment_type
+
+
+def action_activate_controller(cond_action, message):
+    control = DaemonControl()
+    (controller_type,
+     controller_object,
+     controller_entry) = which_controller(
+        cond_action.do_unique_id)
+    message += " Activate Controller {unique_id} ({id}, {name}).".format(
+        unique_id=cond_action.do_unique_id,
+        id=controller_entry.id,
+        name=controller_entry.name)
+    if controller_entry.is_activated:
+        message += " Notice: Controller is already active!"
+    else:
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            mod_cont = new_session.query(controller_object).filter(
+                controller_object.unique_id == cond_action.do_unique_id).first()
+            mod_cont.is_activated = True
+            new_session.commit()
+        activate_controller = threading.Thread(
+            target=control.controller_activate,
+            args=(controller_type,
+                  cond_action.do_unique_id,))
+        activate_controller.start()
+    return message
+
+
+def action_deactivate_controller(cond_action, message):
+    control = DaemonControl()
+    (controller_type,
+     controller_object,
+     controller_entry) = which_controller(
+        cond_action.do_unique_id)
+    message += " Deactivate Controller {unique_id} ({id}, {name}).".format(
+        unique_id=cond_action.do_unique_id,
+        id=controller_entry.id,
+        name=controller_entry.name)
+    if not controller_entry.is_activated:
+        message += " Notice: Controller is already inactive!"
+    else:
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            mod_cont = new_session.query(controller_object).filter(
+                controller_object.unique_id == cond_action.do_unique_id).first()
+            mod_cont.is_activated = False
+            new_session.commit()
+        deactivate_controller = threading.Thread(
+            target=control.controller_deactivate,
+            args=(controller_type,
+                  cond_action.do_unique_id,))
+        deactivate_controller.start()
+    return message
+
+
+def action_resume_pid(cond_action, message):
+    control = DaemonControl()
+    pid = db_retrieve_table_daemon(
+        PID, unique_id=cond_action.do_unique_id, entry='first')
+    message += " Resume PID {unique_id} ({id}, {name}).".format(
+        unique_id=cond_action.do_unique_id,
+        id=pid.id,
+        name=pid.name)
+    if not pid.is_paused:
+        message += " Notice: PID is not paused!"
+    elif pid.is_activated:
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            mod_pid = new_session.query(PID).filter(
+                PID.unique_id == cond_action.do_unique_id).first()
+            mod_pid.is_paused = False
+            new_session.commit()
+        resume_pid = threading.Thread(
+            target=control.pid_resume,
+            args=(cond_action.do_unique_id,))
+        resume_pid.start()
+    return message
+
+
+def action_pause_pid(cond_action, message):
+    control = DaemonControl()
+    pid = db_retrieve_table_daemon(
+        PID, unique_id=cond_action.do_unique_id, entry='first')
+    message += " Pause PID {unique_id} ({id}, {name}).".format(
+        unique_id=cond_action.do_unique_id,
+        id=pid.id,
+        name=pid.name)
+    if pid.is_paused:
+        message += " Notice: PID is already paused!"
+    elif pid.is_activated:
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            mod_pid = new_session.query(PID).filter(
+                PID.unique_id == cond_action.do_unique_id).first()
+            mod_pid.is_paused = True
+            new_session.commit()
+        pause_pid = threading.Thread(
+            target=control.pid_pause,
+            args=(cond_action.do_unique_id,))
+        pause_pid.start()
+    return message
+
+
+def action_setpoint_pid(cond_action, message):
+    control = DaemonControl()
+    pid = db_retrieve_table_daemon(
+        PID, unique_id=cond_action.do_unique_id, entry='first')
+    message += " Set Setpoint of PID {unique_id} ({id}, {name}).".format(
+        unique_id=cond_action.do_unique_id,
+        id=pid.id,
+        name=pid.name)
+    if pid.is_activated:
+        setpoint_pid = threading.Thread(
+            target=control.pid_set,
+            args=(pid.unique_id,
+                  'setpoint',
+                  float(cond_action.do_action_string),))
+        setpoint_pid.start()
+    else:
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            mod_pid = new_session.query(PID).filter(
+                PID.unique_id == cond_action.do_unique_id).first()
+            mod_pid.setpoint = float(cond_action.do_action_string)
+            new_session.commit()
+    return message
+
+
+def action_setpoint_pid_raise(cond_action, message):
+    control = DaemonControl()
+    pid = db_retrieve_table_daemon(
+        PID, unique_id=cond_action.do_unique_id, entry='first')
+    new_setpoint = pid.setpoint + float(cond_action.do_action_string)
+    message += " Raise Setpoint of PID {unique_id} by {amt}, to {sp} ({id}, {name}).".format(
+        unique_id=cond_action.do_unique_id,
+        amt=float(cond_action.do_action_string),
+        sp=new_setpoint,
+        id=pid.id,
+        name=pid.name)
+    if pid.is_activated:
+        setpoint_pid = threading.Thread(
+            target=control.pid_set,
+            args=(pid.unique_id,
+                  'setpoint',
+                  new_setpoint,))
+        setpoint_pid.start()
+    else:
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            mod_pid = new_session.query(PID).filter(
+                PID.unique_id == cond_action.do_unique_id).first()
+            mod_pid.setpoint = new_setpoint
+            new_session.commit()
+    return message
+
+
+def action_setpoint_pid_lower(cond_action, message):
+    control = DaemonControl()
+    pid = db_retrieve_table_daemon(
+        PID, unique_id=cond_action.do_unique_id, entry='first')
+    new_setpoint = pid.setpoint - float(cond_action.do_action_string)
+    message += " Lower Setpoint of PID {unique_id} by {amt}, to {sp} ({id}, {name}).".format(
+        unique_id=cond_action.do_unique_id,
+        amt=float(cond_action.do_action_string),
+        sp=new_setpoint,
+        id=pid.id,
+        name=pid.name)
+    if pid.is_activated:
+        setpoint_pid = threading.Thread(
+            target=control.pid_set,
+            args=(pid.unique_id,
+                  'setpoint',
+                  new_setpoint,))
+        setpoint_pid.start()
+    else:
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            mod_pid = new_session.query(PID).filter(
+                PID.unique_id == cond_action.do_unique_id).first()
+            mod_pid.setpoint = new_setpoint
+            new_session.commit()
+    return message
+
+
+def action_method_pid(cond_action, message):
+    control = DaemonControl()
+    pid = db_retrieve_table_daemon(
+        PID, unique_id=cond_action.do_unique_id, entry='first')
+    message += " Set Method of PID {unique_id} ({id}, {name}).".format(
+        unique_id=cond_action.do_unique_id,
+        id=pid.id,
+        name=pid.name)
+
+    # Instruct method to start
+    with session_scope(MYCODO_DB_PATH) as new_session:
+        mod_pid = new_session.query(PID).filter(
+            PID.unique_id == cond_action.do_unique_id).first()
+        mod_pid.method_start_time = 'Ready'
+        new_session.commit()
+
+    pid = db_retrieve_table_daemon(
+        PID, unique_id=cond_action.do_unique_id, entry='first')
+    if pid.is_activated:
+        method_pid = threading.Thread(
+            target=control.pid_set,
+            args=(pid.unique_id,
+                  'method',
+                  cond_action.do_action_string,))
+        method_pid.start()
+    else:
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            mod_pid = new_session.query(PID).filter(
+                PID.unique_id == cond_action.do_unique_id).first()
+            mod_pid.method_id = cond_action.do_action_string
+            new_session.commit()
+    return message
+
+
+def action_flash_lcd_on(cond_action, message):
+    control = DaemonControl()
+    lcd = db_retrieve_table_daemon(
+        LCD, unique_id=cond_action.do_unique_id)
+    message += " LCD {unique_id} ({id}, {name}) Flash On.".format(
+        unique_id=cond_action.do_unique_id,
+        id=lcd.id,
+        name=lcd.name)
+
+    start_flashing = threading.Thread(
+        target=control.lcd_flash,
+        args=(cond_action.do_unique_id, True,))
+    start_flashing.start()
+    return message
+
+
+def action_flash_lcd_off(cond_action, message):
+    control = DaemonControl()
+    lcd = db_retrieve_table_daemon(
+        LCD, unique_id=cond_action.do_unique_id)
+    message += " LCD {unique_id} ({id}, {name}) Flash Off.".format(
+        unique_id=cond_action.do_unique_id,
+        id=lcd.id,
+        name=lcd.name)
+
+    start_flashing = threading.Thread(
+        target=control.lcd_flash,
+        args=(cond_action.do_unique_id, False,))
+    start_flashing.start()
+    return message
+
+
+def action_lcd_backlight_off(cond_action, message):
+    control = DaemonControl()
+    lcd = db_retrieve_table_daemon(
+        LCD, unique_id=cond_action.do_unique_id)
+    message += " LCD {unique_id} ({id}, {name}) Backlight Off.".format(
+        unique_id=cond_action.do_unique_id,
+        id=lcd.id,
+        name=lcd.name)
+
+    start_flashing = threading.Thread(
+        target=control.lcd_backlight,
+        args=(cond_action.do_unique_id, False,))
+    start_flashing.start()
+    return message
+
+
+def action_lcd_backlight_on(cond_action, message):
+    control = DaemonControl()
+    lcd = db_retrieve_table_daemon(
+        LCD, unique_id=cond_action.do_unique_id)
+    message += " LCD {unique_id} ({id}, {name}) Backlight On.".format(
+        unique_id=cond_action.do_unique_id,
+        id=lcd.id,
+        name=lcd.name)
+
+    start_flashing = threading.Thread(
+        target=control.lcd_backlight,
+        args=(cond_action.do_unique_id, True,))
+    start_flashing.start()
+    return message
 
 
 def trigger_action(
@@ -491,11 +864,16 @@ def trigger_action(
     """
     cond_action = db_retrieve_table_daemon(Actions, unique_id=cond_action_id)
     if not cond_action:
-        message += 'Error: Action with ID {} not found!'.format(cond_action_id)
+        message += 'Error: Action with ID {} not found!'.format(
+            cond_action_id)
         if single_action:
             return message
         else:
-            return message, note_tags, email_recipients, attachment_file, attachment_type
+            return (message,
+                    note_tags,
+                    email_recipients,
+                    attachment_file,
+                    attachment_type)
 
     logger_actions = logging.getLogger("mycodo.trigger_action_{id}".format(
         id=cond_action.unique_id.split('-')[0]))
@@ -505,407 +883,78 @@ def trigger_action(
     else:
         logger_actions.setLevel(logging.INFO)
 
-    message += "\n[Action {id}]:".format(
-        id=cond_action.unique_id.split('-')[0], action_type=cond_action.action_type)
+    message += "\n[Action {id}, {name}]:".format(
+        id=cond_action.unique_id.split('-')[0],
+        name=FUNCTION_ACTION_INFO[cond_action.action_type]['name'])
 
     try:
-        control = DaemonControl()
-
-        # Pause
         if cond_action.action_type == 'pause_actions':
             message = action_pause(cond_action, message)
-
-        # Infrared Send
-        if cond_action.action_type == 'infrared_send':
+        elif cond_action.action_type == 'infrared_send':
             message = action_ir_send(cond_action, message)
-
-        # Actuate output (duration)
-        if (cond_action.action_type == 'output' and
+        elif (cond_action.action_type == 'output' and
                 cond_action.do_unique_id and
                 cond_action.do_output_state in ['on', 'off']):
-            message = action_output(cond_action, message, control)
-
-        # Actuate output (PWM)
-        if (cond_action.action_type == 'output_pwm' and
+            message = action_output(cond_action, message)
+        elif (cond_action.action_type == 'output_pwm' and
                 cond_action.do_unique_id and
                 0 <= cond_action.do_output_pwm <= 100):
-            message = action_output_pwm(cond_action, message, control)
-
-        # Ramp output (PWM)
-        if (cond_action.action_type == 'output_ramp_pwm' and
+            message = action_output_pwm(cond_action, message)
+        elif (cond_action.action_type == 'output_ramp_pwm' and
                 cond_action.do_unique_id and
                 0 <= cond_action.do_output_pwm <= 100 and
                 0 <= cond_action.do_output_pwm2 <= 100 and
                 cond_action.do_output_duration > 0):
-            message = action_output_ramp_pwm(cond_action, message, control)
-
-        # Execute command in shell
-        if cond_action.action_type == 'command':
+            message = action_output_ramp_pwm(cond_action, message)
+        elif cond_action.action_type == 'command':
             message = action_command(cond_action, message)
+        elif cond_action.action_type == 'create_note':
+            message, note_tags = action_create_note(
+                cond_action, message, single_action, note_tags)
+        elif cond_action.action_type in ['photo', 'photo_email']:
+            message, attachment_file = action_photo(cond_action, message)
+        elif cond_action.action_type in ['video', 'video_email']:
+            message, attachment_file = action_video(cond_action, message)
+        elif cond_action.action_type in ['email',
+                                         'photo_email',
+                                         'video_email']:
+            message, email_recipients, attachment_type = action_email(
+                logger_actions,
+                cond_action,
+                message,
+                single_action,
+                attachment_file,
+                email_recipients,
+                attachment_type)
+        elif cond_action.action_type == 'activate_controller':
+            message = action_activate_controller(cond_action, message)
+        elif cond_action.action_type == 'deactivate_controller':
+            message = action_deactivate_controller(cond_action, message)
+        elif cond_action.action_type == 'resume_pid':
+            message = action_resume_pid(cond_action, message)
+        elif cond_action.action_type == 'pause_pid':
+            message = action_pause_pid(cond_action, message)
+        elif cond_action.action_type == 'setpoint_pid':
+            message = action_setpoint_pid(cond_action, message)
+        elif cond_action.action_type == 'setpoint_pid_raise':
+            message = action_setpoint_pid_raise(cond_action, message)
+        elif cond_action.action_type == 'setpoint_pid_lower':
+            message = action_setpoint_pid_lower(cond_action, message)
+        elif cond_action.action_type == 'method_pid':
+            message = action_method_pid(cond_action, message)
+        elif cond_action.action_type == 'flash_lcd_on':
+            message = action_flash_lcd_on(cond_action, message)
+        elif cond_action.action_type == 'flash_lcd_off':
+            message = action_flash_lcd_off(cond_action, message)
+        elif cond_action.action_type == 'lcd_backlight_off':
+            message = action_lcd_backlight_off(cond_action, message)
+        elif cond_action.action_type == 'lcd_backlight_on':
+            message = action_lcd_backlight_on(cond_action, message)
 
-        # Create Note
-        if cond_action.action_type == 'create_note':
-            tag_name = db_retrieve_table_daemon(
-                NoteTags, unique_id=cond_action.do_action_string).name
-
-            message += " Create note with tag '{}'.".format(tag_name)
-            if single_action and cond_action.do_action_string:
-                list_tags = []
-                check_tag = db_retrieve_table_daemon(
-                    NoteTags, unique_id=cond_action.do_action_string)
-                if check_tag:
-                    list_tags.append(cond_action.do_action_string)
-
-                if list_tags:
-                    with session_scope(MYCODO_DB_PATH) as db_session:
-                        new_note = Notes()
-                        new_note.name = 'Action'
-                        new_note.tags = ','.join(list_tags)
-                        new_note.note = message
-                        db_session.add(new_note)
-            else:
-                note_tags.append(cond_action.do_action_string)
-
-        # Capture photo
-        # If emailing later, store location of photo as attachment_file
-        if cond_action.action_type in ['photo', 'photo_email']:
-            this_camera = db_retrieve_table_daemon(
-                Camera, unique_id=cond_action.do_unique_id, entry='first')
-            message += "  Capturing photo with camera {unique_id} ({id}, {name}).".format(
-                unique_id=cond_action.do_unique_id,
-                id=this_camera.id,
-                name=this_camera.name)
-            camera_still = db_retrieve_table_daemon(
-                Camera, unique_id=cond_action.do_unique_id)
-            attachment_path_file = camera_record('photo', camera_still.unique_id)
-            attachment_file = os.path.join(attachment_path_file[0], attachment_path_file[1])
-
-        # Capture video
-        if cond_action.action_type in ['video', 'video_email']:
-            this_camera = db_retrieve_table_daemon(
-                Camera, unique_id=cond_action.do_unique_id, entry='first')
-            message += "  Capturing video with camera {unique_id} ({id}, {name}).".format(
-                unique_id=cond_action.do_unique_id,
-                id=this_camera.id,
-                name=this_camera.name)
-            camera_stream = db_retrieve_table_daemon(
-                Camera, unique_id=cond_action.do_unique_id)
-            attachment_path_file = camera_record(
-                'video', camera_stream.unique_id,
-                duration_sec=cond_action.do_camera_duration)
-            attachment_file = os.path.join(attachment_path_file[0], attachment_path_file[1])
-
-        # Activate Controller
-        if cond_action.action_type == 'activate_controller':
-            (controller_type,
-             controller_object,
-             controller_entry) = which_controller(
-                cond_action.do_unique_id)
-            message += " Activate Controller {unique_id} ({id}, {name}).".format(
-                unique_id=cond_action.do_unique_id,
-                id=controller_entry.id,
-                name=controller_entry.name)
-            if controller_entry.is_activated:
-                message += " Notice: Controller is already active!"
-            else:
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_cont = new_session.query(controller_object).filter(
-                        controller_object.unique_id == cond_action.do_unique_id).first()
-                    mod_cont.is_activated = True
-                    new_session.commit()
-                activate_controller = threading.Thread(
-                    target=control.controller_activate,
-                    args=(controller_type,
-                          cond_action.do_unique_id,))
-                activate_controller.start()
-
-        # Deactivate Controller
-        if cond_action.action_type == 'deactivate_controller':
-            (controller_type,
-             controller_object,
-             controller_entry) = which_controller(
-                cond_action.do_unique_id)
-            message += " Deactivate Controller {unique_id} ({id}, {name}).".format(
-                unique_id=cond_action.do_unique_id,
-                id=controller_entry.id,
-                name=controller_entry.name)
-            if not controller_entry.is_activated:
-                message += " Notice: Controller is already inactive!"
-            else:
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_cont = new_session.query(controller_object).filter(
-                        controller_object.unique_id == cond_action.do_unique_id).first()
-                    mod_cont.is_activated = False
-                    new_session.commit()
-                deactivate_controller = threading.Thread(
-                    target=control.controller_deactivate,
-                    args=(controller_type,
-                          cond_action.do_unique_id,))
-                deactivate_controller.start()
-
-        # Resume PID controller
-        if cond_action.action_type == 'resume_pid':
-            pid = db_retrieve_table_daemon(
-                PID, unique_id=cond_action.do_unique_id, entry='first')
-            message += " Resume PID {unique_id} ({id}, {name}).".format(
-                unique_id=cond_action.do_unique_id,
-                id=pid.id,
-                name=pid.name)
-            if not pid.is_paused:
-                message += " Notice: PID is not paused!"
-            elif pid.is_activated:
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_pid = new_session.query(PID).filter(
-                        PID.unique_id == cond_action.do_unique_id).first()
-                    mod_pid.is_paused = False
-                    new_session.commit()
-                resume_pid = threading.Thread(
-                    target=control.pid_resume,
-                    args=(cond_action.do_unique_id,))
-                resume_pid.start()
-
-        # Pause PID controller
-        if cond_action.action_type == 'pause_pid':
-            pid = db_retrieve_table_daemon(
-                PID, unique_id=cond_action.do_unique_id, entry='first')
-            message += " Pause PID {unique_id} ({id}, {name}).".format(
-                unique_id=cond_action.do_unique_id,
-                id=pid.id,
-                name=pid.name)
-            if pid.is_paused:
-                message += " Notice: PID is already paused!"
-            elif pid.is_activated:
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_pid = new_session.query(PID).filter(
-                        PID.unique_id == cond_action.do_unique_id).first()
-                    mod_pid.is_paused = True
-                    new_session.commit()
-                pause_pid = threading.Thread(
-                    target=control.pid_pause,
-                    args=(cond_action.do_unique_id,))
-                pause_pid.start()
-
-        # Set PID Setpoint
-        if cond_action.action_type == 'setpoint_pid':
-            pid = db_retrieve_table_daemon(
-                PID, unique_id=cond_action.do_unique_id, entry='first')
-            message += " Set Setpoint of PID {unique_id} ({id}, {name}).".format(
-                unique_id=cond_action.do_unique_id,
-                id=pid.id,
-                name=pid.name)
-            if pid.is_activated:
-                setpoint_pid = threading.Thread(
-                    target=control.pid_set,
-                    args=(pid.unique_id,
-                          'setpoint',
-                          float(cond_action.do_action_string),))
-                setpoint_pid.start()
-            else:
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_pid = new_session.query(PID).filter(
-                        PID.unique_id == cond_action.do_unique_id).first()
-                    mod_pid.setpoint = float(cond_action.do_action_string)
-                    new_session.commit()
-
-        # Raise PID Setpoint
-        if cond_action.action_type == 'setpoint_pid_raise':
-            pid = db_retrieve_table_daemon(
-                PID, unique_id=cond_action.do_unique_id, entry='first')
-            new_setpoint = pid.setpoint + float(cond_action.do_action_string)
-            message += " Raise Setpoint of PID {unique_id} by {amt}, to {sp} ({id}, {name}).".format(
-                unique_id=cond_action.do_unique_id,
-                amt=float(cond_action.do_action_string),
-                sp=new_setpoint,
-                id=pid.id,
-                name=pid.name)
-            if pid.is_activated:
-                setpoint_pid = threading.Thread(
-                    target=control.pid_set,
-                    args=(pid.unique_id,
-                          'setpoint',
-                          new_setpoint,))
-                setpoint_pid.start()
-            else:
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_pid = new_session.query(PID).filter(
-                        PID.unique_id == cond_action.do_unique_id).first()
-                    mod_pid.setpoint = new_setpoint
-                    new_session.commit()
-
-        # Lower PID Setpoint
-        if cond_action.action_type == 'setpoint_pid_lower':
-            pid = db_retrieve_table_daemon(
-                PID, unique_id=cond_action.do_unique_id, entry='first')
-            new_setpoint = pid.setpoint - float(cond_action.do_action_string)
-            message += " Lower Setpoint of PID {unique_id} by {amt}, to {sp} ({id}, {name}).".format(
-                unique_id=cond_action.do_unique_id,
-                amt=float(cond_action.do_action_string),
-                sp=new_setpoint,
-                id=pid.id,
-                name=pid.name)
-            if pid.is_activated:
-                setpoint_pid = threading.Thread(
-                    target=control.pid_set,
-                    args=(pid.unique_id,
-                          'setpoint',
-                          new_setpoint,))
-                setpoint_pid.start()
-            else:
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_pid = new_session.query(PID).filter(
-                        PID.unique_id == cond_action.do_unique_id).first()
-                    mod_pid.setpoint = new_setpoint
-                    new_session.commit()
-
-        # Set PID Method and start method from beginning
-        if cond_action.action_type == 'method_pid':
-            pid = db_retrieve_table_daemon(
-                PID, unique_id=cond_action.do_unique_id, entry='first')
-            message += " Set Method of PID {unique_id} ({id}, {name}).".format(
-                unique_id=cond_action.do_unique_id,
-                id=pid.id,
-                name=pid.name)
-
-            # Instruct method to start
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                mod_pid = new_session.query(PID).filter(
-                    PID.unique_id == cond_action.do_unique_id).first()
-                mod_pid.method_start_time = 'Ready'
-                new_session.commit()
-
-            pid = db_retrieve_table_daemon(
-                PID, unique_id=cond_action.do_unique_id, entry='first')
-            if pid.is_activated:
-                method_pid = threading.Thread(
-                    target=control.pid_set,
-                    args=(pid.unique_id,
-                          'method',
-                          cond_action.do_action_string,))
-                method_pid.start()
-            else:
-                with session_scope(MYCODO_DB_PATH) as new_session:
-                    mod_pid = new_session.query(PID).filter(
-                        PID.unique_id == cond_action.do_unique_id).first()
-                    mod_pid.method_id = cond_action.do_action_string
-                    new_session.commit()
-
-        # Email the Conditional message to a single recipient.
-        # Optionally capture a photo or video and attach to the email.
-        if cond_action.action_type in [
-                'email', 'photo_email', 'video_email']:
-
-            message += " Notify {email}.".format(
-                email=cond_action.do_action_string)
-            # attachment_type != False indicates to
-            # attach a photo or video
-            if cond_action.action_type == 'photo_email':
-                message += " Photo attached to email."
-                attachment_type = 'still'
-            elif cond_action.action_type == 'video_email':
-                message += " Video attached to email."
-                attachment_type = 'video'
-
-            if single_action:
-                # If the emails per hour limit has not been exceeded
-                smtp_wait_timer, allowed_to_send_notice = check_allowed_to_email()
-                if allowed_to_send_notice and cond_action.do_action_string:
-                    smtp = db_retrieve_table_daemon(SMTP, entry='first')
-                    send_email(smtp.host, smtp.ssl, smtp.port,
-                               smtp.user, smtp.passw, smtp.email_from,
-                               [cond_action.do_action_string], message,
-                               attachment_file, attachment_type)
-                else:
-                    logger_actions.error(
-                        "Wait {sec:.0f} seconds to email again.".format(
-                            sec=smtp_wait_timer - time.time()))
-            else:
-                email_recipients.append(cond_action.do_action_string)
-
-            # Email the Conditional message to multiple recipients
-            # Optionally capture a photo or video and attach to the email.
-            if cond_action.action_type in ['email_multiple']:
-
-                message += " Notify {email}.".format(
-                    email=cond_action.do_action_string)
-                # attachment_type != False indicates to
-                # attach a photo or video
-                if cond_action.action_type == 'photo_email':
-                    message += " Photo attached to email."
-                    attachment_type = 'still'
-                elif cond_action.action_type == 'video_email':
-                    message += " Video attached to email."
-                    attachment_type = 'video'
-
-                if single_action:
-                    # If the emails per hour limit has not been exceeded
-                    smtp_wait_timer, allowed_to_send_notice = check_allowed_to_email()
-                    if allowed_to_send_notice and cond_action.do_action_string:
-                        smtp = db_retrieve_table_daemon(SMTP, entry='first')
-                        send_email(smtp.host, smtp.ssl, smtp.port,
-                                   smtp.user, smtp.passw, smtp.email_from,
-                                   cond_action.do_action_string.split(','), message,
-                                   attachment_file, attachment_type)
-                    else:
-                        logger_actions.error(
-                            "Wait {sec:.0f} seconds to email again.".format(
-                                sec=smtp_wait_timer - time.time()))
-                else:
-                    email_recipients.extend(cond_action.do_action_string.split(','))
-
-        if cond_action.action_type == 'flash_lcd_on':
-            lcd = db_retrieve_table_daemon(
-                LCD, unique_id=cond_action.do_unique_id)
-            message += " LCD {unique_id} ({id}, {name}) Flash On.".format(
-                unique_id=cond_action.do_unique_id,
-                id=lcd.id,
-                name=lcd.name)
-
-            start_flashing = threading.Thread(
-                target=control.lcd_flash,
-                args=(cond_action.do_unique_id, True,))
-            start_flashing.start()
-
-        if cond_action.action_type == 'flash_lcd_off':
-            lcd = db_retrieve_table_daemon(
-                LCD, unique_id=cond_action.do_unique_id)
-            message += " LCD {unique_id} ({id}, {name}) Flash Off.".format(
-                unique_id=cond_action.do_unique_id,
-                id=lcd.id,
-                name=lcd.name)
-
-            start_flashing = threading.Thread(
-                target=control.lcd_flash,
-                args=(cond_action.do_unique_id, False,))
-            start_flashing.start()
-
-        if cond_action.action_type == 'lcd_backlight_off':
-            lcd = db_retrieve_table_daemon(
-                LCD, unique_id=cond_action.do_unique_id)
-            message += " LCD {unique_id} ({id}, {name}) Backlight Off.".format(
-                unique_id=cond_action.do_unique_id,
-                id=lcd.id,
-                name=lcd.name)
-
-            start_flashing = threading.Thread(
-                target=control.lcd_backlight,
-                args=(cond_action.do_unique_id, False,))
-            start_flashing.start()
-
-        if cond_action.action_type == 'lcd_backlight_on':
-            lcd = db_retrieve_table_daemon(
-                LCD, unique_id=cond_action.do_unique_id)
-            message += " LCD {unique_id} ({id}, {name}) Backlight On.".format(
-                unique_id=cond_action.do_unique_id,
-                id=lcd.id,
-                name=lcd.name)
-
-            start_flashing = threading.Thread(
-                target=control.lcd_backlight,
-                args=(cond_action.do_unique_id, True,))
-            start_flashing.start()
     except Exception:
         logger_actions.exception("Error triggering action:")
-        message += " Error while executing action! See Daemon log for details."
+        message += " Error while executing action! " \
+                   "See Daemon log for details."
 
     logger_actions.debug("Message: {}".format(message))
     logger_actions.debug("Note Tags: {}".format(note_tags))
@@ -916,7 +965,8 @@ def trigger_action(
     if single_action:
         return message
     else:
-        return message, note_tags, email_recipients, attachment_file, attachment_type
+        return (message, note_tags, email_recipients,
+                attachment_file, attachment_type)
 
 
 def trigger_function_actions(function_id, message='', debug=False):
@@ -928,8 +978,9 @@ def trigger_function_actions(function_id, message='', debug=False):
     :param debug: determine if logging level should be DEBUG
     :return:
     """
-    logger_actions = logging.getLogger("mycodo.trigger_function_actions_{id}".format(
-        id=function_id.split('-')[0]))
+    logger_actions = logging.getLogger(
+        "mycodo.trigger_function_actions_{id}".format(
+            id=function_id.split('-')[0]))
 
     if debug:
         logger_actions.setLevel(logging.DEBUG)
@@ -957,14 +1008,15 @@ def trigger_function_actions(function_id, message='', debug=False):
          note_tags,
          email_recipients,
          attachment_file,
-         attachment_type) = trigger_action(cond_action.unique_id,
-                                           message=message,
-                                           single_action=False,
-                                           note_tags=note_tags,
-                                           email_recipients=email_recipients,
-                                           attachment_file=attachment_file,
-                                           attachment_type=attachment_type,
-                                           debug=debug)
+         attachment_type) = trigger_action(
+            cond_action.unique_id,
+            message=message,
+            single_action=False,
+            note_tags=note_tags,
+            email_recipients=email_recipients,
+            attachment_file=attachment_file,
+            attachment_type=attachment_type,
+            debug=debug)
 
     # Send email after all conditional actions have been checked
     # In order to append all action messages to send in the email
