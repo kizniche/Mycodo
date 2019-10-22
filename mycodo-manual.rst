@@ -1618,8 +1618,177 @@ PID Controller Options
 | Method                  | time.                                      |
 +-------------------------+--------------------------------------------+
 
+PID Tuning
+~~~~~~~~~~
+
+``Function -> PIDs``
+
+PID Control Theory
+^^^^^^^^^^^^^^^^^^
+
+The PID controller is the most common regulatory controller found in
+industrial settings, for it"s ability to handle both simple and complex
+regulation. The PID controller has three paths, the proportional,
+integral, and derivative.
+
+The **P**\ roportional takes the error and multiplies it by the constant
+K\ :sub:`p`, to yield an output value. When the error is large, there
+will be a large proportional output.
+
+The **I**\ ntegral takes the error and multiplies it by K\ :sub:`i`,
+then integrates it (K:sub:`i` · 1/s). As the error changes over time,
+the integral will continually sum it and multiply it by the constant
+K\ :sub:`i`. The integral is used to remove perpetual error in the
+control system. If using K\ :sub:`p` alone produces an output that
+produces a perpetual error (i.e. if the sensor measurement never reaches
+the Set Point), the integral will increase the output until the error
+decreases and the Set Point is reached.
+
+The **D**\ erivative multiplies the error by K\ :sub:`d`, then
+differentiates it (K:sub:`d` · s). When the error rate changes over
+time, the output signal will change. The faster the change in error, the
+larger the derivative path becomes, decreasing the output rate of
+change. This has the effect of dampening overshoot and undershoot
+(oscillation) of the Set Point.
+
+--------------
+
+Using temperature as an example, the Process Variable (PV) is the
+measured temperature, the Setpoint (SP) is the desired temperature, and
+the Error (e) is the distance between the measured temperature and the
+desired temperature (indicating if the actual temperature is too hot or
+too cold and to what degree). The error is manipulated by each of the
+three PID components, producing an output, called the Manipulated
+Variable (MV) or Control Variable (CV). To allow control of how much
+each path contributes to the output value, each path is multiplied by a
+gain (represented by *K:sub:`P\\\\\`*, *K:sub:`I\\\\\`*, and
+*K:sub:`D\\\\\`*). By adjusting the gains, the sensitivity of the system
+to each path is affected. When all three paths are summed, the PID
+output is produced. If a gain is set to 0, that path does not contribute
+to the output and that path is essentially turned off.
+
+The output can be used a number of ways, however this controller was
+designed to use the output to affect the measured value (PV). This
+feedback loop, with a *properly tuned* PID controller, can achieve a set
+point in a short period of time, maintain regulation with little
+oscillation, and respond quickly to disturbance.
+
+Therefor, if one would be regulating temperature, the sensor would be a
+temperature sensor and the feedback device(s) would be able to heat and
+cool. If the temperature is lower than the Set Point, the output value
+would be positive and a heater would activate. The temperature would
+rise toward the desired temperature, causing the error to decrease and a
+lower output to be produced. This feedback loop would continue until the
+error reaches 0 (at which point the output would be 0). If the
+temperature continues to rise past the Set Point (this is may be
+acceptable, depending on the degree), the PID would produce a negative
+output, which could be used by the cooling device to bring the
+temperature back down, to reduce the error. If the temperature would
+normally lower without the aid of a cooling device, then the system can
+be simplified by omitting a cooler and allowing it to lower on its own.
+
+Implementing a controller that effectively utilizes *K:sub:`P\\\\\`*,
+*K:sub:`I\\\\\`*, and *K:sub:`D\\\\\`* can be challenging. Furthermore,
+it is often unnecessary. For instance, the *K:sub:`I\\\\\`* and
+*K:sub:`D\\\\\`* can be set to 0, effectively turning them off and
+producing the very popular and simple P controller. Also popular is the
+PI controller. It is recommended to start with only *K:sub:`P\\\\\`*
+activated, then experiment with *K:sub:`P\\\\\`* and *K:sub:`I\\\\\`*,
+before finally using all three. Because systems will vary (e.g. airspace
+volume, degree of insulation, and the degree of impact from the
+connected device, etc.), each path will need to be adjusted through
+experimentation to produce an effective output.
+
+Quick Setup Examples
+^^^^^^^^^^^^^^^^^^^^
+
+These example setups are meant to illustrate how to configure regulation
+in particular directions, and not to achieve ideal values to configure
+your *K:sub:`P\\\\\`*, *K:sub:`I\\\\\`*, and *K:sub:`D\\\\\`* gains.
+There are a number of online resources that discuss techniques and
+methods that have been developed to determine ideal PID values (such as
+`here <http://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops>`__,
+`here <http://innovativecontrols.com/blog/basics-tuning-pid-loops>`__,
+`here <https://hennulat.wordpress.com/2011/01/12/pid-loop-tuning-101/>`__,
+`here <http://eas.uccs.edu/wang/ECE4330F12/PID-without-a-PhD.pdf>`__,
+and `here <http://www.atmel.com/Images/doc2558.pdf>`__) and since there
+are no universal values that will work for every system, it is
+recommended to conduct your own research to understand the variables and
+essential to conduct your own experiments to effectively implement them.
+
+Provided merely as an example of the variance of PID values, one of my
+setups had temperature PID values (up regulation) of *K:sub:`P\\\\\`* =
+30, *K:sub:`I\\\\\`* = 1.0, and *K:sub:`D\\\\\`* = 0.5, and humidity PID
+values (up regulation) of *K:sub:`P\\\\\`* = 1.0, *K:sub:`I\\\\\`* =
+0.2, and *K:sub:`D\\\\\`* = 0.5. Furthermore, these values may not have
+been optimal but they worked well for the conditions of my environmental
+chamber.
+
+Exact Temperature Regulation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This will set up the system to raise and lower the temperature to a
+certain level with two regulatory devices (one that heats and one that
+cools).
+
+Add a sensor, then save the proper device and pin/address for each
+sensor and activate the sensor.
+
+Add two outputs, then save each GPIO and On Trigger state.
+
+Add a PID, then select the newly-created sensor. Change *Setpoint* to
+the desired temperature, *Regulate Direction* to "Both". Set *Raise
+Output* to the relay attached to the heating device and the *Lower
+Relay* to the relay attached to the cooling device.
+
+Set *K:sub:`P\\\\\`* = 1, *K:sub:`I\\\\\`* = 0, and *K:sub:`D\\\\\`* =
+0, then activate the PID.
+
+If the temperature is lower than the Set Point, the heater should
+activate at some interval determined by the PID controller until the
+temperature rises to the set point. If the temperature goes higher than
+the Set Point (or Set Point + Buffer), the cooling device will activate
+until the temperature returns to the set point. If the temperature is
+not reaching the Set Point after a reasonable amount of time, increase
+the *K:sub:`P\\\\\`* value and see how that affects the system.
+Experiment with different configurations involving only *Read Interval*
+and *K:sub:`P\\\\\`* to achieve a good regulation. Avoid changing the
+*K:sub:`I\\\\\`* and *K:sub:`D\\\\\`* from 0 until a working regulation
+is achieved with *K:sub:`P\\\\\`* alone.
+
+View graphs in the 6 to 12 hour time span to identify how well the
+temperature is regulated to the Setpoint. What is meant by
+well-regulated will vary, depending on your specific application and
+tolerances. Most applications of a PID controller would like to see the
+proper temperature attained within a reasonable amount of time and with
+little oscillation around the Setpoint.
+
+Once regulation is achieved, experiment by reducing *K:sub:`P\\\\\`*
+slightly (~25%) and increasing *K:sub:`I\\\\\`* by a low amount to
+start, such as 0.1 (or lower, 0.01), then start the PID and observe how
+well the controller regulates. Slowly increase *K:sub:`I\\\\\`* until
+regulation becomes both quick and with little oscillation. At this
+point, you should be fairly familiar with experimenting with the system
+and the *K:sub:`D\\\\\`* value can be experimented with once both
+*K:sub:`P\\\\\`* and *K:sub:`I\\\\\`* have been tuned.
+
+High Temperature Regulation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Often the system can be simplified if two-way regulation is not needed.
+For instance, if cooling is unnecessary, this can be removed from the
+system and only up-regulation can be used.
+
+Use the same configuration as the `Exact Temperature
+Regulation <#exact-temperature-regulation>`__ example, except change
+*Regulate Direction* to "Raise" and do not touch the "Down Relay"
+section.
+
 PID Autotune
 ~~~~~~~~~~~~
+
+Note: This is an experimental feature. It is best nto used until you
+are familiar with the operation and tuning of a PID.
 
 The Autotune feature is useful for determining appropriate Kp, Ki, and
 Kd gains of a PID controller. The autotuner will manipulate an output
@@ -3406,172 +3575,6 @@ the Dashboard Elements that were once there.
 | Delete All Notes and Note | Delete all notes and note tags.          |
 | Tags                      |                                          |
 +---------------------------+------------------------------------------+
-
-PID Tuning
-==========
-
-``Function -> PIDs``
-
-PID Control Theory
-------------------
-
-The PID controller is the most common regulatory controller found in
-industrial settings, for it"s ability to handle both simple and complex
-regulation. The PID controller has three paths, the proportional,
-integral, and derivative.
-
-The **P**\ roportional takes the error and multiplies it by the constant
-K\ :sub:`p`, to yield an output value. When the error is large, there
-will be a large proportional output.
-
-The **I**\ ntegral takes the error and multiplies it by K\ :sub:`i`,
-then integrates it (K:sub:`i` · 1/s). As the error changes over time,
-the integral will continually sum it and multiply it by the constant
-K\ :sub:`i`. The integral is used to remove perpetual error in the
-control system. If using K\ :sub:`p` alone produces an output that
-produces a perpetual error (i.e. if the sensor measurement never reaches
-the Set Point), the integral will increase the output until the error
-decreases and the Set Point is reached.
-
-The **D**\ erivative multiplies the error by K\ :sub:`d`, then
-differentiates it (K:sub:`d` · s). When the error rate changes over
-time, the output signal will change. The faster the change in error, the
-larger the derivative path becomes, decreasing the output rate of
-change. This has the effect of dampening overshoot and undershoot
-(oscillation) of the Set Point.
-
---------------
-
-Using temperature as an example, the Process Variable (PV) is the
-measured temperature, the Setpoint (SP) is the desired temperature, and
-the Error (e) is the distance between the measured temperature and the
-desired temperature (indicating if the actual temperature is too hot or
-too cold and to what degree). The error is manipulated by each of the
-three PID components, producing an output, called the Manipulated
-Variable (MV) or Control Variable (CV). To allow control of how much
-each path contributes to the output value, each path is multiplied by a
-gain (represented by *K:sub:`P\\\\\`*, *K:sub:`I\\\\\`*, and
-*K:sub:`D\\\\\`*). By adjusting the gains, the sensitivity of the system
-to each path is affected. When all three paths are summed, the PID
-output is produced. If a gain is set to 0, that path does not contribute
-to the output and that path is essentially turned off.
-
-The output can be used a number of ways, however this controller was
-designed to use the output to affect the measured value (PV). This
-feedback loop, with a *properly tuned* PID controller, can achieve a set
-point in a short period of time, maintain regulation with little
-oscillation, and respond quickly to disturbance.
-
-Therefor, if one would be regulating temperature, the sensor would be a
-temperature sensor and the feedback device(s) would be able to heat and
-cool. If the temperature is lower than the Set Point, the output value
-would be positive and a heater would activate. The temperature would
-rise toward the desired temperature, causing the error to decrease and a
-lower output to be produced. This feedback loop would continue until the
-error reaches 0 (at which point the output would be 0). If the
-temperature continues to rise past the Set Point (this is may be
-acceptable, depending on the degree), the PID would produce a negative
-output, which could be used by the cooling device to bring the
-temperature back down, to reduce the error. If the temperature would
-normally lower without the aid of a cooling device, then the system can
-be simplified by omitting a cooler and allowing it to lower on its own.
-
-Implementing a controller that effectively utilizes *K:sub:`P\\\\\`*,
-*K:sub:`I\\\\\`*, and *K:sub:`D\\\\\`* can be challenging. Furthermore,
-it is often unnecessary. For instance, the *K:sub:`I\\\\\`* and
-*K:sub:`D\\\\\`* can be set to 0, effectively turning them off and
-producing the very popular and simple P controller. Also popular is the
-PI controller. It is recommended to start with only *K:sub:`P\\\\\`*
-activated, then experiment with *K:sub:`P\\\\\`* and *K:sub:`I\\\\\`*,
-before finally using all three. Because systems will vary (e.g. airspace
-volume, degree of insulation, and the degree of impact from the
-connected device, etc.), each path will need to be adjusted through
-experimentation to produce an effective output.
-
-Quick Setup Examples
---------------------
-
-These example setups are meant to illustrate how to configure regulation
-in particular directions, and not to achieve ideal values to configure
-your *K:sub:`P\\\\\`*, *K:sub:`I\\\\\`*, and *K:sub:`D\\\\\`* gains.
-There are a number of online resources that discuss techniques and
-methods that have been developed to determine ideal PID values (such as
-`here <http://robotics.stackexchange.com/questions/167/what-are-good-strategies-for-tuning-pid-loops>`__,
-`here <http://innovativecontrols.com/blog/basics-tuning-pid-loops>`__,
-`here <https://hennulat.wordpress.com/2011/01/12/pid-loop-tuning-101/>`__,
-`here <http://eas.uccs.edu/wang/ECE4330F12/PID-without-a-PhD.pdf>`__,
-and `here <http://www.atmel.com/Images/doc2558.pdf>`__) and since there
-are no universal values that will work for every system, it is
-recommended to conduct your own research to understand the variables and
-essential to conduct your own experiments to effectively implement them.
-
-Provided merely as an example of the variance of PID values, one of my
-setups had temperature PID values (up regulation) of *K:sub:`P\\\\\`* =
-30, *K:sub:`I\\\\\`* = 1.0, and *K:sub:`D\\\\\`* = 0.5, and humidity PID
-values (up regulation) of *K:sub:`P\\\\\`* = 1.0, *K:sub:`I\\\\\`* =
-0.2, and *K:sub:`D\\\\\`* = 0.5. Furthermore, these values may not have
-been optimal but they worked well for the conditions of my environmental
-chamber.
-
-Exact Temperature Regulation
-----------------------------
-
-This will set up the system to raise and lower the temperature to a
-certain level with two regulatory devices (one that heats and one that
-cools).
-
-Add a sensor, then save the proper device and pin/address for each
-sensor and activate the sensor.
-
-Add two outputs, then save each GPIO and On Trigger state.
-
-Add a PID, then select the newly-created sensor. Change *Setpoint* to
-the desired temperature, *Regulate Direction* to "Both". Set *Raise
-Output* to the relay attached to the heating device and the *Lower
-Relay* to the relay attached to the cooling device.
-
-Set *K:sub:`P\\\\\`* = 1, *K:sub:`I\\\\\`* = 0, and *K:sub:`D\\\\\`* =
-0, then activate the PID.
-
-If the temperature is lower than the Set Point, the heater should
-activate at some interval determined by the PID controller until the
-temperature rises to the set point. If the temperature goes higher than
-the Set Point (or Set Point + Buffer), the cooling device will activate
-until the temperature returns to the set point. If the temperature is
-not reaching the Set Point after a reasonable amount of time, increase
-the *K:sub:`P\\\\\`* value and see how that affects the system.
-Experiment with different configurations involving only *Read Interval*
-and *K:sub:`P\\\\\`* to achieve a good regulation. Avoid changing the
-*K:sub:`I\\\\\`* and *K:sub:`D\\\\\`* from 0 until a working regulation
-is achieved with *K:sub:`P\\\\\`* alone.
-
-View graphs in the 6 to 12 hour time span to identify how well the
-temperature is regulated to the Setpoint. What is meant by
-well-regulated will vary, depending on your specific application and
-tolerances. Most applications of a PID controller would like to see the
-proper temperature attained within a reasonable amount of time and with
-little oscillation around the Setpoint.
-
-Once regulation is achieved, experiment by reducing *K:sub:`P\\\\\`*
-slightly (~25%) and increasing *K:sub:`I\\\\\`* by a low amount to
-start, such as 0.1 (or lower, 0.01), then start the PID and observe how
-well the controller regulates. Slowly increase *K:sub:`I\\\\\`* until
-regulation becomes both quick and with little oscillation. At this
-point, you should be fairly familiar with experimenting with the system
-and the *K:sub:`D\\\\\`* value can be experimented with once both
-*K:sub:`P\\\\\`* and *K:sub:`I\\\\\`* have been tuned.
-
-High Temperature Regulation
----------------------------
-
-Often the system can be simplified if two-way regulation is not needed.
-For instance, if cooling is unnecessary, this can be removed from the
-system and only up-regulation can be used.
-
-Use the same configuration as the `Exact Temperature
-Regulation <#exact-temperature-regulation>`__ example, except change
-*Regulate Direction* to "Raise" and do not touch the "Down Relay"
-section.
 
 Troubleshooting
 ===============
