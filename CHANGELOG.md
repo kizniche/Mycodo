@@ -6,6 +6,8 @@ This update also moves the Camera options from the Settings to the Camera page, 
 
 ### Bugfixes
 
+ - Fix Asynchronous Graphs not displaying data
+ - Fix Conditional Measurement (Multiple) Condition error
  - Fix inability to set Raspberry Pi (raspi-config) settings from the Configuration menu
 
 ### Features

@@ -60,7 +60,7 @@ class ConditionalRun:
             list_ts_values = []
             for each_set in string_sets.split(';'):
                 ts_value = each_set.split(',')
-                list_ts_values.append({{'time': ts_value[0], 'value': float(ts_value[1])}})
+                list_ts_values.append({'time': ts_value[0], 'value': float(ts_value[1])})
             return list_ts_values
         return None
 

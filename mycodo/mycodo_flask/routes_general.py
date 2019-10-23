@@ -599,10 +599,9 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
         INFLUXDB_PASSWORD,
         INFLUXDB_DATABASE)
 
-    if device_type in ['input', 'math', 'pid']:
-        measure = DeviceMeasurements.query.filter(DeviceMeasurements.unique_id == measurement_id).first()
-    elif device_type == 'output':
-        measure = Output.query.filter(Output.unique_id == device_id).first()
+    if device_type in ['input', 'math', 'output', 'pid']:
+        measure = DeviceMeasurements.query.filter(
+            DeviceMeasurements.unique_id == measurement_id).first()
     else:
         measure = None
 
@@ -715,8 +714,8 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
 
         first_point = raw_data['series'][0]['values'][0][0]
 
-    start = datetime.datetime.strptime(first_point[:26],
-                                       '%Y-%m-%dT%H:%M:%S.%f')
+    start = datetime.datetime.strptime(
+        first_point[:23], '%Y-%m-%dT%H:%M:%S.%f')
     start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     logger.debug('Count = {}'.format(count_points))
@@ -883,8 +882,8 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
 
         first_point = raw_data['series'][0]['values'][0][0]
 
-    start = datetime.datetime.strptime(first_point[:26],
-                                       '%Y-%m-%dT%H:%M:%S.%f')
+    start = datetime.datetime.strptime(
+        first_point[:23], '%Y-%m-%dT%H:%M:%S.%f')
     start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     logger.debug('Count = {}'.format(count_points))
