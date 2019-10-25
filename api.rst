@@ -1,16 +1,19 @@
+Mycodo API
+==========
+
 Daemon Control Object
-=====================
+---------------------
 
 class mycodo_client.DaemonControl(uri='PYRO:mycodo.pyro_server@127.0.0.1:9090', pyro_timeout=None)
---------------------------------------------------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The mycodo client object implements a way to communicate with a mycodo daemon and query information from the influxdb database.
 
 Parameters
 ^^^^^^^^^^
 
- - **uri** - the pyro5 uri to use to connect to the daemon
- - **pyro_timeout** - the pyro5 timeout period
+-  **uri** - the pyro5 uri to use to connect to the daemon
+-  **pyro_timeout** - the pyro5 timeout period
 
 controller_activate(controller_type, controller_id)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
