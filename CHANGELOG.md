@@ -1,3 +1,10 @@
+## 7.9.1 (Unreleased)
+
+### Bugfixes
+
+ - Fix issue querying data for Asynchronous graphs
+
+
 ## 7.9.0 (2019.10.24)
 
 This update improves the backup/restore mechanism for the Mycodo InfluxDB time-series database. InfluxDB backups made prior to v7.8.5 will need to be restored manually. All new backups made will be in the Enterprise-compatible backup format, and only this format will be able to be restored moving forward. See [Backing up and restoring in InfluxDB](https://docs.influxdata.com/influxdb/v1.7/administration/backup_and_restore/) for more information.

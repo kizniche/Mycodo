@@ -48,6 +48,7 @@ from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 from mycodo.utils.image import generate_thermal_image_from_pixels
+from mycodo.utils.influx import influx_time_str_to_milliseconds
 from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import return_measurement_info
@@ -715,7 +716,8 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
         first_point = raw_data['series'][0]['values'][0][0]
 
     start = datetime.datetime.strptime(
-        first_point[:23], '%Y-%m-%dT%H:%M:%S.%f')
+        influx_time_str_to_milliseconds(first_point),
+        '%Y-%m-%dT%H:%M:%S.%f')
     start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     logger.debug('Count = {}'.format(count_points))
@@ -883,7 +885,8 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
         first_point = raw_data['series'][0]['values'][0][0]
 
     start = datetime.datetime.strptime(
-        first_point[:23], '%Y-%m-%dT%H:%M:%S.%f')
+        influx_time_str_to_milliseconds(first_point),
+        '%Y-%m-%dT%H:%M:%S.%f')
     start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     logger.debug('Count = {}'.format(count_points))

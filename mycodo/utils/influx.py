@@ -408,6 +408,13 @@ def sum_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
         return query_output.raw['series'][0]['values'][0][1]
 
 
+def influx_time_str_to_milliseconds(timestamp_str):
+    """ Converts InfluxDB time string with "Z" from nanoseconds to milliseconds and removes the Z """
+    start_date_time = timestamp_str.split('Z')[0].split('.')[0]
+    start_milliseconds = timestamp_str.split('Z')[0].split('.')[1][:3]
+    return '{}.{}'.format(start_date_time, start_milliseconds)
+
+
 def valid_date_str(date_str):
     try:
         datetime.datetime.strptime(date_str, '%Y-%m-%dT%H:%M:%S.%fZ')
