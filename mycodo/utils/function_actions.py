@@ -341,16 +341,25 @@ def action_output_ramp_pwm(cond_action, message):
     this_output = db_retrieve_table_daemon(
         Output, unique_id=cond_action.do_unique_id, entry='first')
     message += " Ramp output {unique_id} ({id}, {name}) " \
-               "duty cycle from {fdc}% to {tdc}% over {sec} seconds.".format(
-        unique_id=cond_action.do_unique_id,
-        id=this_output.id,
-        name=this_output.name,
-        fdc=cond_action.do_output_pwm,
-        tdc=cond_action.do_output_pwm2,
-        sec=cond_action.do_output_duration)
+               "duty cycle from {fdc}% to {tdc}% in increments " \
+               "of {inc} over {sec} seconds.".format(
+                    unique_id=cond_action.do_unique_id,
+                    id=this_output.id,
+                    name=this_output.name,
+                    fdc=cond_action.do_output_pwm,
+                    tdc=cond_action.do_output_pwm2,
+                    inc=cond_action.do_action_string,
+                    sec=cond_action.do_output_duration)
+
+    if cond_action.do_action_string not in ['0.1', '1.0']:
+        logger.error("Increment not 0.1 or 1.0")
+        return
+    else:
+        increment = float(cond_action.do_action_string)
 
     change_in_duty_cycle = abs(cond_action.do_output_pwm - cond_action.do_output_pwm2)
-    steps = change_in_duty_cycle * 10
+    steps = change_in_duty_cycle * 1 / increment
+
     seconds_per_step = cond_action.do_output_duration / steps
 
     start_duty_cycle = cond_action.do_output_pwm
@@ -370,12 +379,12 @@ def action_output_ramp_pwm(cond_action, message):
             while timer < time.time():
                 timer += seconds_per_step
                 if start_duty_cycle < end_duty_cycle:
-                    current_duty_cycle += 0.1
+                    current_duty_cycle += increment
                     if current_duty_cycle > end_duty_cycle:
                         current_duty_cycle = end_duty_cycle
                         loop_running = False
                 else:
-                    current_duty_cycle -= 0.1
+                    current_duty_cycle -= increment
                     if current_duty_cycle < end_duty_cycle:
                         current_duty_cycle = end_duty_cycle
                         loop_running = False

@@ -322,6 +322,7 @@ def action_mod(form):
             mod_action.do_unique_id = form.do_unique_id.data
             mod_action.do_output_pwm = form.do_output_pwm.data
             mod_action.do_output_pwm2 = form.do_output_pwm2.data
+            mod_action.do_action_string = form.do_action_string.data
             mod_action.do_output_duration = form.do_output_duration.data
 
         elif mod_action.action_type in ['activate_controller',

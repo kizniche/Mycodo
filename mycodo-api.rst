@@ -13,7 +13,13 @@ Daemon Control Object
 
 The mycodo client object implements a way to communicate with a mycodo daemon and query information from the influxdb database.
 
-Example import: ***from mycodo.mycodo_client import DaemonControl***
+Example usage:
+
+.. code:: python
+
+    from mycodo.mycodo_client import DaemonControl
+    control = DaemonControl()
+    control.terminate_daemon()
 
 Parameters:
 
