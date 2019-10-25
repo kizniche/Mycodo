@@ -15,6 +15,7 @@ class User(UserMixin, CRUDMixin, db.Model):
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.VARCHAR(64), unique=True, index=True)
     password_hash = db.Column(db.VARCHAR(255))
+    api_key = db.Column(db.BLOB, unique=True)
     email = db.Column(db.VARCHAR(64), unique=True, index=True)
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), default=None)
     theme = db.Column(db.VARCHAR(64))

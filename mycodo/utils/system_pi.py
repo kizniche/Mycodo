@@ -11,6 +11,7 @@ import traceback
 from collections import OrderedDict
 from threading import Timer
 
+import base64
 import os
 
 from mycodo.config import INSTALL_DIRECTORY
@@ -405,6 +406,11 @@ def set_user_grp(filepath, user, group):
 #
 # Converters
 #
+
+def base64_encode_bytes(key_bytes):
+    encoded_bytes = base64.b64encode(key_bytes)
+    encoded_str = str(encoded_bytes, "utf-8")
+    return encoded_str
 
 def celsius_to_kelvin(celsius):
     try:

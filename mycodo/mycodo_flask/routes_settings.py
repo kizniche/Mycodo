@@ -29,6 +29,7 @@ from mycodo.mycodo_flask.utils import utils_settings
 from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
+from mycodo.utils.system_pi import base64_encode_bytes
 from mycodo.utils.system_pi import cmd_output
 
 logger = logging.getLogger('mycodo.mycodo_flask.settings')
@@ -43,6 +44,12 @@ blueprint = Blueprint('routes_settings',
 @flask_login.login_required
 def inject_dictionary():
     return inject_variables()
+
+
+@blueprint.context_processor
+@flask_login.login_required
+def api_key_tools():
+    return dict(base64_encode_bytes=base64_encode_bytes)
 
 
 @blueprint.route('/settings/alerts', methods=('GET', 'POST'))
@@ -279,6 +286,8 @@ def settings_users():
 
         if form_add_user.add_user.data:
             utils_settings.user_add(form_add_user)
+        elif form_mod_user.generate_api_key.data:
+            utils_settings.generate_api_key(form_mod_user)
         elif form_mod_user.delete.data:
             if utils_settings.user_del(form_mod_user) == 'logout':
                 return redirect('/logout')

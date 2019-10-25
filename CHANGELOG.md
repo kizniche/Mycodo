@@ -4,6 +4,10 @@
 
  - Fix issue querying data for Asynchronous graphs
 
+### Features
+
+ - Add web API access
+
 
 ## 7.9.0 (2019.10.24)
 

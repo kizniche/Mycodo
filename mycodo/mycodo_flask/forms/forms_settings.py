@@ -280,12 +280,14 @@ class UserMod(FlaskForm):
     password_repeat = PasswordField(
         lazy_gettext('Repeat Password'),
         render_kw={"placeholder": lazy_gettext("Repeat Password")})
+    api_key = StringField('API Key', render_kw={"placeholder": "API Key (Base64)"})
     role_id = IntegerField(
         lazy_gettext('Role ID'),
         validators=[DataRequired()],
         widget=NumberInput()
     )
     theme = StringField(lazy_gettext('Theme'))
+    generate_api_key = SubmitField("Generate API Key")
     save = SubmitField(TRANSLATIONS['save']['title'])
     delete = SubmitField(TRANSLATIONS['delete']['title'])
 

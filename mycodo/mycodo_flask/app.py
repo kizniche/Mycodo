@@ -4,6 +4,9 @@
 #           configuring the system, and controlling the daemon.
 #
 
+import logging
+
+import base64
 import flask_login
 from flask import Flask
 from flask import flash
@@ -34,6 +37,8 @@ from mycodo.mycodo_flask import routes_static
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 
+logger = logging.getLogger(__name__)
+
 
 def create_app(config=ProdConfig):
     """
@@ -56,49 +61,12 @@ def register_extensions(app):
     """ register extensions to the app """
     app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
 
-    # Compress app responses with gzip
-    compress = Compress()
-    compress.init_app(app)
+    db.init_app(app)  # Influx db time-series database
 
-    # Influx db time-series database
-    db.init_app(app)
-
-    # Limit authentication blueprint requests to 200 per minute
-    limiter = Limiter(app, key_func=get_ip_address)
-    limiter.limit("200/minute")(routes_authentication.blueprint)
-
-    # Language translations
-    babel = Babel(app)
-
-    @babel.localeselector
-    def get_locale():
-        try:
-            user = User.query.filter(
-                User.id == flask_login.current_user.id).first()
-            if user and user.language != '':
-                for key in LANGUAGES:
-                    if key == user.language:
-                        return key
-        # Bypass endpoint test error "'AnonymousUserMixin' object has no attribute 'id'"
-        except AttributeError:
-            pass
-        return request.accept_languages.best_match(LANGUAGES.keys())
-
-    # User login management
-    login_manager = flask_login.LoginManager()
-    login_manager.init_app(app)
-
-    @login_manager.user_loader
-    def user_loader(user_id):
-        user = User.query.filter(User.id == user_id).first()
-        if not user:
-            return
-        return user
-
-    @login_manager.unauthorized_handler
-    def unauthorized():
-        flash(gettext('Please log in to access this page'), "error")
-        return redirect(url_for('routes_authentication.do_login'))
+    app = extension_babal(app)  # Language translations
+    app = extension_compress(app)  # Compress app responses with gzip
+    app = extension_limiter(app)  # Limit authentication blueprint requests to 200 per minute
+    app = extension_login_manager(app)  # User login management
 
     # Create and populate database if it doesn't exist
     with app.app_context():
@@ -129,3 +97,80 @@ def register_blueprints(app):
     app.register_blueprint(routes_remote_admin.blueprint)  # register remote admin views
     app.register_blueprint(routes_settings.blueprint)  # register settings views
     app.register_blueprint(routes_static.blueprint)  # register static routes
+
+
+def extension_babal(app):
+    babel = Babel(app)
+
+    @babel.localeselector
+    def get_locale():
+        try:
+            user = User.query.filter(
+                User.id == flask_login.current_user.id).first()
+            if user and user.language != '':
+                for key in LANGUAGES:
+                    if key == user.language:
+                        return key
+        # Bypass endpoint test error "'AnonymousUserMixin' object has no attribute 'id'"
+        except AttributeError:
+            pass
+        return request.accept_languages.best_match(LANGUAGES.keys())
+
+    return app
+
+
+def extension_compress(app):
+    compress = Compress()
+    compress.init_app(app)
+    return app
+
+
+def extension_limiter(app):
+    limiter = Limiter(app, key_func=get_ip_address)
+    limiter.limit("200/minute")(routes_authentication.blueprint)
+    return app
+
+
+def extension_login_manager(app):
+    login_manager = flask_login.LoginManager()
+    login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def user_loader(user_id):
+        user = User.query.filter(User.id == user_id).first()
+        if not user:
+            return
+        return user
+
+    @login_manager.request_loader
+    def load_user_from_request(request):
+        # first, try to login using the api_key url arg
+        api_key = request.args.get('api_key')
+        if api_key:
+            user = User.query.filter_by(api_key=api_key).first()
+            if user:
+                return user
+
+        # next, try to login using Basic Auth
+        api_key = request.headers.get('Authorization')
+        if api_key:
+            api_key = api_key.replace('Basic ', '', 1)
+            if not api_key:
+                return
+            try:
+                api_key = base64.b64decode(api_key)
+                user = User.query.filter_by(api_key=api_key).first()
+            except Exception:
+                return
+            if user:
+                return user
+
+        # return None if both methods did not login the user
+        return None
+
+    @login_manager.unauthorized_handler
+    def unauthorized():
+        flash(gettext('Please log in to access this page'), "error")
+        return redirect(url_for('routes_authentication.do_login'))
+
+    return app

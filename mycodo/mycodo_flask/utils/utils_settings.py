@@ -25,6 +25,7 @@ from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.config_translations import TRANSLATIONS
+from mycodo.databases import set_api_key
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import Dashboard
@@ -170,6 +171,27 @@ def user_add(form):
             error, action, url_for('routes_settings.settings_users'))
     else:
         flash_form_errors(form)
+
+
+def generate_api_key(form):
+    mod_user = User.query.filter(
+        User.unique_id == form.user_id.data).first()
+    action = '{action} {controller} {user}'.format(
+        action=TRANSLATIONS['modify']['title'],
+        controller=TRANSLATIONS['user']['title'],
+        user=mod_user.name)
+    error = []
+
+    try:
+        mod_user = User.query.filter(
+            User.unique_id == form.user_id.data).first()
+        mod_user.api_key = set_api_key(128)
+        db.session.commit()
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_users'))
 
 
 def user_mod(form):
