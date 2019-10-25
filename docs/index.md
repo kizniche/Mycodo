@@ -51,20 +51,20 @@ https://127.0.0.1/
 
 ## Screenshots
 
-![Mycodo 5.7.2 Dashboard](http://kylegabriel.com/screenshots/screenshot_mycodo_dashbaord_v5.7.2.png)
+![Mycodo 5.7.2 Dashboard](https://kylegabriel.com/screenshots/screenshot_mycodo_dashbaord_v5.7.2.png)
 
 ---
 
-![Mycodo 3.6.0 Dashboard](http://kylegabriel.com/screenshots/screenshot_mycodo_dashboard_v3.6.0.png)
+![Mycodo 3.6.0 Dashboard](https://kylegabriel.com/screenshots/screenshot_mycodo_dashboard_v3.6.0.png)
 
 ---
 
-![Mycodo 5.2.0 Dashboard](http://kylegabriel.com/screenshots/screenshot_mycodo_dashboard_v5.2.0.png)
+![Mycodo 5.2.0 Dashboard](https://kylegabriel.com/screenshots/screenshot_mycodo_dashboard_v5.2.0.png)
 
 ---
 
-![Mycodo 5.5.0 Data Page](http://kylegabriel.com/screenshots/screenshot_mycodo_data_v5.5.0.png)
+![Mycodo 5.5.0 Data Page](https://kylegabriel.com/screenshots/screenshot_mycodo_data_v5.5.0.png)
 
 ---
 
-![Live Page](http://kylegabriel.com/projects/wp-content/uploads/sites/3/2017/03/screenshot-192.168.0.7-2017-03-01-18-17-14-live.png)
+![Live Page](https://kylegabriel.com/projects/wp-content/uploads/sites/3/2017/03/screenshot-192.168.0.7-2017-03-01-18-17-14-live.png)
