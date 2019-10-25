@@ -31,8 +31,6 @@ then
 
   # Generate plain text
   pandoc --table-of-contents -s -S -t plain -o ${INSTALL_DIRECTORY}/mycodo-manual.txt ${INSTALL_DIRECTORY}/mycodo-manual.rst
-
-  cp ${INSTALL_DIRECTORY}/mycodo-manual.txt ${INSTALL_DIRECTORY}/docs/mycodo-manual.txt
 else
   printf "The command pandoc could not be found in the PATH!"
 fi

@@ -56,17 +56,20 @@ class DaemonControl:
     """
     Communicate with the daemon to execute commands or retrieve information.
     """
-    def __init__(self):
+    def __init__(self, uri='PYRO:mycodo.pyro_server@127.0.0.1:9090', pyro_timeout=None):
         self.pyro_timeout = 30
         try:
             misc = db_retrieve_table_daemon(Misc, entry='first')
-            self.pyro_timeout = misc.rpyc_timeout  # TODO: Rename to pyro_timeout at next major revision
+            if pyro_timeout:
+                self.pyro_timeout = pyro_timeout
+            else:
+                self.pyro_timeout = misc.rpyc_timeout  # TODO: Rename to pyro_timeout at next major revision
         except Exception as e:
             logger.exception(
                 "Could not access SQL table to determine Pyro Timeout. "
                 "Using 30 seconds. Error: {}".format(e))
 
-        self.uri= 'PYRO:mycodo.pyro_server@127.0.0.1:9090'
+        self.uri= uri
 
     def proxy(self):
         try:
