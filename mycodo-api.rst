@@ -1,8 +1,13 @@
+==========
 Mycodo API
 ==========
 
+.. contents::
+   :depth: 2
+..
+
 Daemon Control Object
----------------------
+=====================
 
 **class mycodo_client.DaemonControl**\ (*pyro_uri='PYRO:mycodo.pyro_server@127.0.0.1:9090'*, *pyro_timeout=None*)
 
@@ -315,13 +320,15 @@ Parameters:
 -  **message** - A message to send with the action that may be used by the action.
 -  **debug** - Whether to show debug logging messages.
 
+--------------
+
 Flask Endpoints
----------------
+===============
 
 An API Key can be generated from the User Settings page (Configuration -> Users). This is stored as a 128-bit bytes object in the database, but will be presented as a base64-encoded string. This can be used to access web endpoints. For example:
 
 API Access using Basic Authorization
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------
 
 The API Key is presented to the user as a base64-encoded string. It can be used with a Basic Authorization header to authenticate with the web interface, for example:
 
@@ -330,6 +337,6 @@ The API Key is presented to the user as a base64-encoded string. It can be used 
     curl -k -v -H 'authorization: Basic 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=' https://127.0.0.1/daemonactive
 
 Endpoints
-~~~~~~~~~
+---------
 
 Coming soon
