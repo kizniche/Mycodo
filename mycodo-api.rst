@@ -6,6 +6,8 @@ Mycodo APIs
    :depth: 2
 ..
 
+**Note: Not Fully Implemented**
+
 Daemon Control Object
 =====================
 
@@ -365,10 +367,6 @@ Some 4xx errors that could be handled programmatically (e.g., a card is declined
 
 Endpoints
 ---------
-
-Work in progress
-
---------------
 
 /async/:device_id/:device_type/:measurement_id/:start_seconds/:end_seconds
 
