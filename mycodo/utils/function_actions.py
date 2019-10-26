@@ -359,7 +359,6 @@ def action_output_ramp_pwm(cond_action, message):
 
     change_in_duty_cycle = abs(cond_action.do_output_pwm - cond_action.do_output_pwm2)
     steps = change_in_duty_cycle * 1 / increment
-
     seconds_per_step = cond_action.do_output_duration / steps
 
     start_duty_cycle = cond_action.do_output_pwm

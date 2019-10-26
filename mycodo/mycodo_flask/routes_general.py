@@ -106,7 +106,7 @@ def camera_img_return_path(camera_unique_id, img_type, filename):
         path = os.path.join(camera_path, img_type)
         if os.path.isdir(path):
             files = (files for files in os.listdir(path)
-                if os.path.isfile(os.path.join(path, files)))
+                     if os.path.isfile(os.path.join(path, files)))
         else:
             files = []
         if filename in files:
@@ -783,7 +783,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
 def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
     """
     Return data from start_seconds to end_seconds from influxdb.
-    Used for asynchronous graph display of many points (up to millions).
+    Used for asynchronous energy usage display of many points (up to millions).
     """
     dbcon = InfluxDBClient(
         INFLUXDB_HOST,
@@ -940,7 +940,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
 
             return jsonify(raw_data['series'][0]['values'])
         except Exception as e:
-            logger.error("URL for 'async_data' raised and error: "
+            logger.error("URL for 'async_usage' raised and error: "
                          "{err}".format(err=e))
             return '', 204
 

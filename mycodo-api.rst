@@ -345,4 +345,60 @@ The API Key is presented to the user as a base64-encoded string. It can be used 
 Endpoints
 ---------
 
-Coming soon
+Work in progress
+
+--------------
+
+**/async/**\ *<device_id>*\ **/**\ *<device_type>*\ **/**\ *<measurement_id>*\ **/**\ *<start_seconds>*\ **/**\ *<end_seconds>*
+
+Returns 700 measurements between *start_seconds* (epoch) and *end_seconds* (epoch).
+
+--------------
+
+**/daemonactive**
+
+--------------
+
+**/last/**\ *<unique_id>*\ **/**\ *<measure_type>*\ **/**\ *<measurement_id>*\ **/**\ *<period>*
+
+Returns the last measurement.
+
+--------------
+
+**/last_pid/**\ *<pid_id>*\ **/**\ *<input_period>*
+
+--------------
+
+**/output_mod/**\ *<output_id>*\ **/**\ *<state>*\ **/**\ *<out_type>*\ **/**\ *<amount>*
+
+--------------
+
+**/outputstate**
+
+Returns the current state of all Outputs.
+
+--------------
+
+**/outputstate_unique_id/**\ *<unique_id>*
+
+Returns the current state of a single Output.
+
+--------------
+
+**/pid_mod_unique_id/**\ *<unique_id>*\ **/**\ *<state>*
+
+--------------
+
+**/systemctl/**\ *<action>*
+
+--------------
+
+**/time**
+
+Returns the current time.
+
+--------------
+
+**/past/**\ *<unique_id>*\ **/**\ *<measure_type>*\ **/**\ *<measurement_id>*\ **/**\ *<past_seconds>*
+
+Returns all measurements from the past *past_seconds* seconds.

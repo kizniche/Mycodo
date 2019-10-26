@@ -33,6 +33,7 @@ class CRUDMixin(object):
 
 
 def set_api_key(length):
+    """ Generates an API key of specific length """
     return secrets.token_bytes(length)
 
 
