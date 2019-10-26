@@ -1,5 +1,9 @@
 # coding=utf-8
-import secrets
+try:
+    import secrets
+except Exception:
+    import python2_secrets as secrets
+
 import uuid
 
 from flask import current_app
@@ -31,8 +35,10 @@ class CRUDMixin(object):
         except Exception as error:
             current_app.logger.error("Failed to delete '{record}': '{err}'".format(record=self, err=error))
 
+
 def set_api_key(length):
     return secrets.token_bytes(length)
+
 
 def set_uuid():
     """ returns a uuid string """
