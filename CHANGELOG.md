@@ -1,4 +1,9 @@
-## 7.9.1 (Unreleased)
+## 7.10.0 (Unreleased)
+
+ - Add REST API access, API endpoints, and API manual section ([#705](https://github.com/kizniche/mycodo/issues/705))
+
+
+## 7.9.1 (2019.10.26)
 
 ### Bugfixes
 
@@ -6,7 +11,6 @@
 
 ### Features
 
- - Add REST API access, API endpoints, and API manual section ([#705](https://github.com/kizniche/mycodo/issues/705))
  - Add ability to select duty cycle step size for PWM Ramp Function Action ([#704](https://github.com/kizniche/mycodo/issues/704))
 
 

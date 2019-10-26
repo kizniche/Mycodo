@@ -5,6 +5,7 @@ import pwd
 import time
 from collections import OrderedDict
 
+import distro
 import geocoder
 import hashlib
 import os
@@ -209,6 +210,7 @@ def recreate_stat_file():
         ['stat', 'value'],
         ['id', get_anonymous_id()],
         ['uptime', 0.0],
+        ['os_version', float(distro.linux_distribution()[1])],
         ['RPi_revision', get_pi_revision()],
         ['Mycodo_revision', MYCODO_VERSION],
         ['alembic_version', 0],

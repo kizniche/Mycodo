@@ -772,12 +772,12 @@ def user_has_permission(permission):
     user = User.query.filter(User.name == flask_login.current_user.name).first()
     role = Role.query.filter(Role.id == user.role_id).first()
     if ((permission == 'edit_settings' and role.edit_settings) or
-        (permission == 'edit_controllers' and role.edit_controllers) or
-        (permission == 'edit_users' and role.edit_users) or
-        (permission == 'view_settings' and role.view_settings) or
-        (permission == 'view_camera' and role.view_camera) or
-        (permission == 'view_stats' and role.view_stats) or
-        (permission == 'view_logs' and role.view_logs)):
+            (permission == 'edit_controllers' and role.edit_controllers) or
+            (permission == 'edit_users' and role.edit_users) or
+            (permission == 'view_settings' and role.view_settings) or
+            (permission == 'view_camera' and role.view_camera) or
+            (permission == 'view_stats' and role.view_stats) or
+            (permission == 'view_logs' and role.view_logs)):
         return True
     flash("You don't have permission to do that", "error")
     return False
