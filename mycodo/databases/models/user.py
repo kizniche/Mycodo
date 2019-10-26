@@ -1,15 +1,11 @@
 # coding=utf-8
 import bcrypt
-from flask import app
 from flask_login import UserMixin
 
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
-
-from flask_marshmallow import Marshmallow  # must be imported after SQLAlchemy
-
-ma = Marshmallow(app)
+from mycodo.mycodo_flask.extensions import ma
 
 
 class User(UserMixin, CRUDMixin, db.Model):
