@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
+from flask import app
+
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.extensions import ma
+
+from flask_marshmallow import Marshmallow  # must be imported after SQLAlchemy
+
+ma = Marshmallow(app)
 
 
 class Input(CRUDMixin, db.Model):

@@ -38,7 +38,6 @@ from mycodo.mycodo_flask import routes_static
 from mycodo.mycodo_flask.api import Inputs
 from mycodo.mycodo_flask.api import Users
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.extensions import ma
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 
 logger = logging.getLogger(__name__)
@@ -66,7 +65,6 @@ def register_extensions(app):
     app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
 
     db.init_app(app)  # Influx db time-series database
-    ma.init_app(app)
 
     app = extension_api(app)  # API
     app = extension_babal(app)  # Language translations
