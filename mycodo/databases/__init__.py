@@ -1,9 +1,5 @@
 # coding=utf-8
-try:
-    import secrets
-except Exception:
-    import python2_secrets as secrets
-
+import secrets
 import uuid
 
 from flask import current_app
