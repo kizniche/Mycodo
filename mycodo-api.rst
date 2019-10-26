@@ -350,11 +350,18 @@ For HTTP Basic authentication, you will use your API Key:
 
     curl -k -v -H 'authorization: Basic 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=' https://127.0.0.1/daemonactive
 
-Authentication may also be conducted with the use of the api_key parameter:
+Authentication may also be conducted with the use of the api_key URL parameter:
 
 .. code:: bash
 
     curl -k -v https://127.0.0.1/daemonactive?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=
+
+Errors
+------
+
+Mycodo uses conventional HTTP response codes to indicate the success or failure of an API request. In general: Codes in the 2xx range indicate success. Codes in the 4xx range indicate an error that failed given the information provided (e.g., a required parameter was omitted, a charge failed, etc.). Codes in the 5xx range indicate an error with Mycodo's servers (these are rare).
+
+Some 4xx errors that could be handled programmatically (e.g., a card is declined) include an error code that briefly explains the error reported.
 
 Endpoints
 ---------
@@ -363,7 +370,7 @@ Work in progress
 
 --------------
 
-/async/:device_id/:device_type/:measurement_id/:start_seconds>/:end_seconds>
+/async/:device_id/:device_type/:measurement_id/:start_seconds/:end_seconds
 
 Returns: 700 measurements between *start_seconds* (epoch) and *end_seconds* (epoch).
 
@@ -372,6 +379,22 @@ Returns: 700 measurements between *start_seconds* (epoch) and *end_seconds* (epo
 /daemonactive
 
 Returns: "active" if the daemon is active.
+
+--------------
+
+/get_inputs
+
+Returns: dictionary of all input settings.
+
+Permissions: View Settings
+
+--------------
+
+/get_users
+
+Returns: dictionary of all user information except password and API key.
+
+Permissions: View Settings
 
 --------------
 
@@ -414,6 +437,7 @@ Returns: the current state of a single Output.
 Returns: the current time.
 
 --------------
+
 
 /past/:unique_id/:measure_type/:measurement_id/:past_seconds
 

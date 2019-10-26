@@ -6,7 +6,7 @@
 
 ### Features
 
- - Add web API access
+ - Add REST API access, API endpoints, and API manual section ([#705](https://github.com/kizniche/mycodo/issues/705))
  - Add ability to select duty cycle step size for PWM Ramp Function Action ([#704](https://github.com/kizniche/mycodo/issues/704))
 
 
