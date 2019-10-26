@@ -1,6 +1,6 @@
-==========
-Mycodo API
-==========
+===========
+Mycodo APIs
+===========
 
 .. contents::
    :depth: 2
@@ -328,19 +328,33 @@ Parameters:
 
 --------------
 
-Flask Endpoints
-===============
+REST API
+========
 
-An API Key can be generated from the User Settings page (Configuration -> Users). This is stored as a 128-bit bytes object in the database, but will be presented as a base64-encoded string. This can be used to access web endpoints. For example:
+An API is an application programming interface - in short, it’s a set of rules that lets programs talk to each other, exposing data and functionality across the internet in a consistent format.
 
-API Access using Basic Authorization
-------------------------------------
+REST stands for Representational State Transfer. This is an architectural pattern that describes how distributed systems can expose a consistent interface. When people use the term ‘REST API,’ they are generally referring to an API accessed via HTTP protocol at a predefined set of URLs.
 
-The API Key is presented to the user as a base64-encoded string. It can be used with a Basic Authorization header to authenticate with the web interface, for example:
+These URLs represent various resources - any information or content accessed at that location, which can be returned as JSON, HTML, audio files, or images. Often, resources have one or more methods that can be performed on them over HTTP, like GET, POST, PUT and DELETE.
+
+Authentication
+--------------
+
+An API Key can be generated from the User Settings page (Configuration -> Users). This is stored as a 128-bit bytes object in the database, but will be presented as a base64-encoded string. This can be used to access HTTPS endpoints. The API Key is presented to the user as a base64-encoded string.
+
+Mycodo supports HTTP Basic authentication. This allows you to protect the URLs on your web server so that only you and Mycodo can access them. All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will also fail.
+
+For HTTP Basic authentication, you will use your API Key:
 
 .. code:: bash
 
     curl -k -v -H 'authorization: Basic 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=' https://127.0.0.1/daemonactive
+
+Authentication may also be conducted with the use of the api_key parameter:
+
+.. code:: bash
+
+    curl -k -v https://127.0.0.1/daemonactive?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=
 
 Endpoints
 ---------
@@ -349,56 +363,58 @@ Work in progress
 
 --------------
 
-**/async/**\ *<device_id>*\ **/**\ *<device_type>*\ **/**\ *<measurement_id>*\ **/**\ *<start_seconds>*\ **/**\ *<end_seconds>*
+/async/:device_id/:device_type/:measurement_id/:start_seconds>/:end_seconds>
 
-Returns 700 measurements between *start_seconds* (epoch) and *end_seconds* (epoch).
-
---------------
-
-**/daemonactive**
+Returns: 700 measurements between *start_seconds* (epoch) and *end_seconds* (epoch).
 
 --------------
 
-**/last/**\ *<unique_id>*\ **/**\ *<measure_type>*\ **/**\ *<measurement_id>*\ **/**\ *<period>*
+/daemonactive
 
-Returns the last measurement.
-
---------------
-
-**/last_pid/**\ *<pid_id>*\ **/**\ *<input_period>*
+Returns: "active" if the daemon is active.
 
 --------------
 
-**/output_mod/**\ *<output_id>*\ **/**\ *<state>*\ **/**\ *<out_type>*\ **/**\ *<amount>*
+/last/:unique_id/:measure_type/:measurement_id/:period
+
+Returns: last measurement.
 
 --------------
 
-**/outputstate**
-
-Returns the current state of all Outputs.
+/last_pid/:pid_id/:input_period
 
 --------------
 
-**/outputstate_unique_id/**\ *<unique_id>*
-
-Returns the current state of a single Output.
+/output_mod/:output_id/:state/:out_type/:amount
 
 --------------
 
-**/pid_mod_unique_id/**\ *<unique_id>*\ **/**\ *<state>*
+/outputstate
+
+Returns: the current state of all Outputs.
 
 --------------
 
-**/systemctl/**\ *<action>*
+/outputstate_unique_id/:unique_id
+
+Returns: the current state of a single Output.
 
 --------------
 
-**/time**
-
-Returns the current time.
+/pid_mod_unique_id/:unique_id/:state
 
 --------------
 
-**/past/**\ *<unique_id>*\ **/**\ *<measure_type>*\ **/**\ *<measurement_id>*\ **/**\ *<past_seconds>*
+/systemctl/:action
 
-Returns all measurements from the past *past_seconds* seconds.
+--------------
+
+/time
+
+Returns: the current time.
+
+--------------
+
+/past/:unique_id/:measure_type/:measurement_id/:past_seconds
+
+Returns: all measurements from the past *past_seconds* seconds.

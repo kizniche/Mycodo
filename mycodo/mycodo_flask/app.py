@@ -146,6 +146,7 @@ def extension_login_manager(app):
     def load_user_from_request(request):
         # first, try to login using the api_key url arg
         api_key = request.args.get('api_key')
+        api_key = base64.b64decode(api_key)
         if api_key:
             user = User.query.filter_by(api_key=api_key).first()
             if user:
