@@ -8,6 +8,7 @@ import socket
 import subprocess
 import time
 import traceback
+import requests
 from collections import OrderedDict
 from threading import Timer
 
@@ -285,17 +286,9 @@ def cmd_output(command, stdout_pipe=True, timeout=360, user='pi', cwd='/home/pi'
         return None, None, None
 
 
-def internet(host="8.8.8.8", port=53, timeout=3):
-    """
-    Checks if there is an internet connection
-    Host: 8.8.8.8 (google-public-dns-a.google.com)
-    OpenPort: 53/tcp
-    Service: domain (DNS/TCP)
-    """
+def internet(url='http://www.google.com/', timeout=3):
     try:
-        socket.setdefaulttimeout(timeout)
-        socket.socket(socket.AF_INET,
-                      socket.SOCK_STREAM).connect((host, port))
+        _ = requests.get(url, timeout=timeout)
         return True
     except Exception as e:
         logger.error(
