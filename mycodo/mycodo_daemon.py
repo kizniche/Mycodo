@@ -684,9 +684,9 @@ class DaemonController:
                 'off',
                 trigger_conditionals=trigger_conditionals)
             if return_status:
-                return "Error"
+                return "error"
             else:
-                return "Turned off"
+                return "success"
         except Exception as except_msg:
             message = "Could not turn output off:" \
                       " {err}".format(err=except_msg)
@@ -721,9 +721,9 @@ class DaemonController:
                     duty_cycle=duty_cycle,
                     trigger_conditionals=trigger_conditionals)
                 if return_status:
-                    return "Error"
+                    return "error"
                 else:
-                    return "Turned on"
+                    return "success"
         except Exception as except_msg:
             message = "Could not turn output on:" \
                       " {err}".format(err=except_msg)

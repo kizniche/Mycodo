@@ -366,6 +366,9 @@ class OutputController(AbstractController, threading.Thread):
             duty_cycle,
             trigger_conditionals))
 
+        if amount is None:
+            amount = 0
+
         current_time = datetime.datetime.now()
 
         # Check if output exists

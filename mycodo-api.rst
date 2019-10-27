@@ -368,6 +368,10 @@ Some 4xx errors that could be handled programmatically (e.g., a card is declined
 Endpoints
 ---------
 
+Visit https://127.0.0.1/api for the current API endpoints. Below may not be accurate and will be slowly merged into the new API system.
+
+--------------
+
 /async/:device_id/:device_type/:measurement_id/:start_seconds/:end_seconds
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
