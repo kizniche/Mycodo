@@ -369,34 +369,44 @@ Endpoints
 ---------
 
 /async/:device_id/:device_type/:measurement_id/:start_seconds/:end_seconds
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+GET
+^^^
 
 Returns: 700 measurements between *start_seconds* (epoch) and *end_seconds* (epoch).
 
 --------------
 
 /daemonactive
+~~~~~~~~~~~~~
+
+GET
+^^^
 
 Returns: "active" if the daemon is active.
 
 --------------
 
-/get_inputs
+/inputs
+~~~~~~~
+
+GET
+^^^
+
+User permissions required: View Settings
 
 Returns: dictionary of all input settings.
-
-Permissions: View Settings
-
---------------
-
-/get_users
-
-Returns: dictionary of all user information except password and API key.
-
-Permissions: View Settings
 
 --------------
 
 /last/:unique_id/:measure_type/:measurement_id/:period
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+GET
+^^^
+
+Queries influxdb for measurements in the past *period*
 
 Returns: last measurement.
 
@@ -407,10 +417,22 @@ Returns: last measurement.
 --------------
 
 /output_mod/:output_id/:state/:out_type/:amount
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+GET
+^^^
+
+Turns an Output on of off
+
+Returns: success or fail
 
 --------------
 
 /outputstate
+~~~~~~~~~~~~
+
+GET
+^^^
 
 Returns: the current state of all Outputs.
 
@@ -419,6 +441,12 @@ Returns: the current state of all Outputs.
 /outputstate_unique_id/:unique_id
 
 Returns: the current state of a single Output.
+
+--------------
+
+/past/:unique_id/:measure_type/:measurement_id/:past_seconds
+
+Returns: all measurements from the past *past_seconds* seconds.
 
 --------------
 
@@ -436,7 +464,12 @@ Returns: the current time.
 
 --------------
 
+/users
+~~~~~~
 
-/past/:unique_id/:measure_type/:measurement_id/:past_seconds
+GET
+^^^
 
-Returns: all measurements from the past *past_seconds* seconds.
+User permissions required: View Settings
+
+Returns: dictionary of all user information except password and API key.

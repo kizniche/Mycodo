@@ -18,7 +18,7 @@ Flask_Compress == 1.4.0
 Flask_Limiter == 1.1.0
 Flask_Login == 0.4.1
 Flask_Marshmallow == 0.10.1
-Flask_Restful == 0.3.7
+Flask_RestPlus == 0.13.0
 Flask_SQLAlchemy == 2.4.1
 Flask_SSLify == 0.1.5
 Flask_WTF == 0.14.2

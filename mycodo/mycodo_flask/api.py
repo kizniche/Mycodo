@@ -2,7 +2,9 @@
 import logging
 
 import flask_login
-from flask_restful import Resource
+from flask import Blueprint
+from flask_restplus import Api
+from flask_restplus import Resource
 
 from mycodo.databases.models import Input
 from mycodo.databases.models import User
@@ -12,28 +14,33 @@ from mycodo.mycodo_flask.utils import utils_general
 
 logger = logging.getLogger(__name__)
 
+api_bp = Blueprint('api', __name__, url_prefix='/api')
 
-class Inputs(Resource):
-    @flask_login.login_required
-    def get(self):
-        if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
-        inputs_list = []
-        input_schema = InputSchema()
-        all_inputs = Input.query.all()
-        for each_input in all_inputs:
-            inputs_list.append(input_schema.dump(each_input))
-        return inputs_list
+api = Api(api_bp, version='1.0', title='Mycodo API',
+          description='An API for Mycodo')
 
 
+@api.route('/inputs')
 class Users(Resource):
+    """Interacts with Input settings in the SQL database"""
+    @api.doc('dump_users')
     @flask_login.login_required
     def get(self):
+        """Dumps all Input settings"""
         if not utils_general.user_has_permission('view_settings'):
             return 'You do not have permission to access this.', 401
-        users_list = []
+        input_schema = InputSchema()
+        return input_schema.dump(Input.query.all(), many=True)
+
+
+@api.route('/users')
+class Users(Resource):
+    """Interacts with User settings in the SQL database"""
+    @api.doc('dump_users')
+    @flask_login.login_required
+    def get(self):
+        """Dumps all User settings"""
+        if not utils_general.user_has_permission('view_settings'):
+            return 'You do not have permission to access this.', 401
         user_schema = UserSchema()
-        all_users = User.query.all()
-        for each_user in all_users:
-            users_list.append(user_schema.dump(each_user))
-        return users_list
+        return user_schema.dump(User.query.all(), many=True)

@@ -15,7 +15,6 @@ from flask_babel import Babel
 from flask_babel import gettext
 from flask_compress import Compress
 from flask_limiter import Limiter
-# from flask_restful import Api
 from flask_sslify import SSLify
 
 from mycodo.config import LANGUAGES
@@ -33,10 +32,8 @@ from mycodo.mycodo_flask import routes_page
 from mycodo.mycodo_flask import routes_remote_admin
 from mycodo.mycodo_flask import routes_settings
 from mycodo.mycodo_flask import routes_static
-# from mycodo.mycodo_flask.api import Inputs
-# from mycodo.mycodo_flask.api import Users
+from mycodo.mycodo_flask.api import api_bp
 from mycodo.mycodo_flask.extensions import db
-# from mycodo.mycodo_flask.extensions import ma
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 
 logger = logging.getLogger(__name__)
@@ -64,9 +61,7 @@ def register_extensions(app):
     app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
 
     db.init_app(app)  # Influx db time-series database
-    # ma.init_app(app)  # Flask_Marshmallow
 
-    # app = extension_api(app)  # API
     app = extension_babal(app)  # Language translations
     app = extension_compress(app)  # Compress app responses with gzip
     app = extension_limiter(app)  # Limit authentication blueprint requests to 200 per minute
@@ -92,6 +87,7 @@ def register_extensions(app):
 
 def register_blueprints(app):
     """ register blueprints to the app """
+    app.register_blueprint(api_bp)  # API
     app.register_blueprint(routes_admin.blueprint)  # register admin views
     app.register_blueprint(routes_authentication.blueprint)  # register login/logout views
     app.register_blueprint(routes_calibration.blueprint)  # register calibration views
@@ -121,13 +117,6 @@ def extension_babal(app):
         return request.accept_languages.best_match(LANGUAGES.keys())
 
     return app
-
-
-# def extension_api(app):
-#     api = Api(app)
-#     api.add_resource(Inputs, '/get_inputs')
-#     api.add_resource(Users, '/get_users')
-#     return app
 
 
 def extension_compress(app):
