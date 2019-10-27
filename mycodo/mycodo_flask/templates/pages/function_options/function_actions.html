@@ -13,10 +13,10 @@
         <span style="font-size: 3.6em" class="collapse-button{{each_function.id}} fa fa-plus-square"></span>
       </a>
     </div>
-    <div class="col-4 col-sm-4">
+    <div class="col-4 col-sm-3">
       {{form_function.execute_all_actions(class_='form-control btn btn-sm')}}
     </div>
-    <div class="col-7 col-sm-7">
+    <div class="col-7 col-sm-8">
       <input class="form-control btn btn-sm" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{each_function.name}}">
     </div>
   </div>

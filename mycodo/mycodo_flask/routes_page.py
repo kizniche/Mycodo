@@ -1833,15 +1833,19 @@ def page_data():
     names_input = {}
     all_elements = input_dev
     for each_element in all_elements:
-        names_input[each_element.unique_id] = '[{id}] {name}'.format(
-            id=each_element.unique_id.split('-')[0], name=each_element.name)
+        names_input[each_element.unique_id] = '[{id:02d}] ({uid}) {name}'.format(
+            id=each_element.id,
+            uid=each_element.unique_id.split('-')[0],
+            name=each_element.name)
 
     # Create dict of Math names
     names_math = {}
     all_elements = math
     for each_element in all_elements:
-        names_math[each_element.unique_id] = '[{id}] {name}'.format(
-            id=each_element.unique_id.split('-')[0], name=each_element.name)
+        names_math[each_element.unique_id] = '[{id:02d}] ({uid}) {name}'.format(
+            id=each_element.id,
+            uid=each_element.unique_id.split('-')[0],
+            name=each_element.name)
 
     # Create list of file names from the math_options directory
     # Used in generating the correct options for each math controller

@@ -18,15 +18,15 @@
         <span style="font-size: 3.6em" class="collapse-button{{each_pid.id}} fa fa-plus-square"></span>
       </a>
     </div>
-    <div class="col-5 col-sm-4 col-md-3 col-lg-4">
+    <div class="col-5 col-sm-3 col-md-3 col-lg-3">
       {{form_mod_pid_base.name(class_='form-control', value=each_pid.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
-    <div class="col-5 col-sm-3 col-md-2 col-lg-3">
-      <input class="form-control btn btn-sm" type="button" onclick="setClipboard('{{each_pid.unique_id}}')" title="UUID: {{each_pid.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="[PID]
-      {%- if each_pid.is_activated and not each_pid.is_paused %} {{_('Active')}}
-      {%- elif each_pid.is_activated and each_pid.is_paused %} {{_('Paused')}}
-      {%- elif each_pid.is_held %} {{_('On Hold')}}
-      {%- else %} {{_('Inactive')}}
+    <div class="col-5 col-sm-4 col-md-2 col-lg-4">
+      <input class="form-control btn btn-sm" type="button" onclick="setClipboard('{{each_pid.unique_id}}')" title="UUID: {{each_pid.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="PID Controller
+      {%- if each_pid.is_activated and not each_pid.is_paused %} [{{_('Active')}}]
+      {%- elif each_pid.is_activated and each_pid.is_paused %} [{{_('Paused')}}]
+      {%- elif each_pid.is_held %} [{{_('On Hold')}}]
+      {%- else %} [{{_('Inactive')}}]
       {%-endif -%}
       ">
     </div>
