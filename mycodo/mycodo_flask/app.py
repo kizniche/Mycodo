@@ -164,11 +164,25 @@ def extension_login_manager(app):
         except:
             pass
 
+        try:  # next, try to login using X-API-KEY
+            api_key = req.headers.get('X-API-KEY')
+            api_key = base64.b64decode(api_key)
+            user = User.query.filter_by(api_key=api_key).first()
+            if user:
+                return user
+        except:
+            pass
+
         # return None if both methods did not login the user
         return None
 
     @login_manager.unauthorized_handler
     def unauthorized():
+        try:
+            if str(request.url_rule).startswith('/api/'):
+                return 'Unauthorized', 401
+        except:
+            pass
         flash(gettext('Please log in to access this page'), "error")
         return redirect(url_for('routes_authentication.do_login'))
 

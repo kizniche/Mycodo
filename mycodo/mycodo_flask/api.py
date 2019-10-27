@@ -16,14 +16,31 @@ logger = logging.getLogger(__name__)
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
+authorizations = {
+    'apikey': {
+        'type': 'apiKey',
+        'in': 'header',
+        'name': 'X-API-KEY'
+    }
+}
+
 api = Api(api_bp, version='1.0', title='Mycodo API',
-          description='An API for Mycodo')
+          description='An API for Mycodo',
+          authorizations=authorizations)
+
+ns_settings = api.namespace('settings', description='Settings operations')
 
 
-@api.route('/inputs')
+@ns_settings.route('/inputs')
 class Users(Resource):
     """Interacts with Input settings in the SQL database"""
-    @api.doc('dump_users')
+    @api.doc(responses={
+        200: 'Success',
+        401: 'Invalid API Key',
+        403: 'Invalid Permissions'
+    })
+    @ns_settings.doc('dump_users')
+    @api.doc(security='apikey')
     @flask_login.login_required
     def get(self):
         """Dumps all Input settings"""
@@ -33,10 +50,16 @@ class Users(Resource):
         return input_schema.dump(Input.query.all(), many=True)
 
 
-@api.route('/users')
+@ns_settings.route('/users')
 class Users(Resource):
     """Interacts with User settings in the SQL database"""
-    @api.doc('dump_users')
+    @api.doc(responses={
+        200: 'Success',
+        401: 'Invalid API Key',
+        403: 'Invalid Permissions'
+    })
+    @ns_settings.doc('dump_users')
+    @api.doc(security='apikey')
     @flask_login.login_required
     def get(self):
         """Dumps all User settings"""
