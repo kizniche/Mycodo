@@ -17,7 +17,7 @@
       {{form_function.execute_all_actions(class_='form-control btn btn-sm')}}
     </div>
     <div class="col-7 col-sm-7">
-      <input class="form-control btn btn-sm" disabled="" title="UUID: {{each_function.unique_id}}" value="{{each_function.name}}" type="text">
+      <input class="form-control btn btn-sm" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{each_function.name}}">
     </div>
   </div>
 

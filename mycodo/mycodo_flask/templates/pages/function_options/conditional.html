@@ -19,11 +19,11 @@
       {{form_conditional.name(class_='form-control', value=each_cond.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
     <div class="col-5 col-sm-3 col-md-4 col-lg-3">
-      <input class="form-control btn btn-sm" disabled="" title="UUID: {{each_cond.unique_id}}" value="[{{dict_translation['conditional']['title']}}]
+      <input class="form-control btn btn-sm" type="button" onclick="setClipboard('{{each_cond.unique_id}}')" title="UUID: {{each_cond.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="[{{dict_translation['conditional']['title']}}]
         {%- if each_cond.is_activated %} {{_('Active')}}
         {%- else %} {{_('Inactive')}}
         {%- endif -%}
-      " type="text">
+      ">
     </div>
 
     <div class="col-6 col-sm-4 col-md-4 col-lg-4">

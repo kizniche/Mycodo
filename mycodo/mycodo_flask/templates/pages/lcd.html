@@ -54,11 +54,11 @@
         {{form_lcd_mod.name(class_='form-control', value=each_lcd.name, **{'title': dict_translation['name']['phrase']})}}
       </div>
       <div class="col-sm-5 col-lg-2 no-gutters">
-        <input class="form-control btn btn-sm" title="[{{'%02d' % each_lcd.id}}] UUID: {{each_lcd.unique_id}}" disabled="" value="
+        <input class="form-control btn btn-sm" type="button" onclick="setClipboard('{{each_lcd.unique_id}}')" title="[{{'%02d' % each_lcd.id}}] UUID: {{each_lcd.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="
         {%- if each_lcd.is_activated %}{{_('Active')}}
         {%- else %}{{_('Inactive')}}
         {%-endif -%}
-        " type="text">
+        ">
       </div>
       <div class="col-sm-3 col-lg-2 no-gutters">
         {%- if each_lcd.is_activated %}

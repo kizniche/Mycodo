@@ -679,18 +679,15 @@ class DaemonController:
         :type trigger_conditionals: bool
         """
         try:
-            return_status = self.controller['Output'].output_on_off(
+            return self.controller['Output'].output_on_off(
                 output_id,
                 'off',
                 trigger_conditionals=trigger_conditionals)
-            if return_status:
-                return "error"
-            else:
-                return "success"
         except Exception as except_msg:
             message = "Could not turn output off:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
+            return 1, message
 
     def output_on(self, output_id, amount=0.0, min_off=0.0,
                   duty_cycle=0.0, trigger_conditionals=True):
@@ -713,21 +710,18 @@ class DaemonController:
                 self.logger.error("Could not find Output Controller")
                 return "Error"
             else:
-                return_status = self.controller['Output'].output_on_off(
+                return self.controller['Output'].output_on_off(
                     output_id,
                     'on',
                     amount=amount,
                     min_off=min_off,
                     duty_cycle=duty_cycle,
                     trigger_conditionals=trigger_conditionals)
-                if return_status:
-                    return "error"
-                else:
-                    return "success"
         except Exception as except_msg:
             message = "Could not turn output on:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
+            return 1, message
 
     def output_setup(self, action, output_id):
         """

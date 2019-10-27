@@ -22,13 +22,13 @@
       {{form_mod_pid_base.name(class_='form-control', value=each_pid.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
     <div class="col-5 col-sm-3 col-md-2 col-lg-3">
-      <input class="form-control btn btn-sm" title="UUID: {{each_pid.unique_id}}" disabled="" value="[PID]
+      <input class="form-control btn btn-sm" type="button" onclick="setClipboard('{{each_pid.unique_id}}')" title="UUID: {{each_pid.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="[PID]
       {%- if each_pid.is_activated and not each_pid.is_paused %} {{_('Active')}}
       {%- elif each_pid.is_activated and each_pid.is_paused %} {{_('Paused')}}
       {%- elif each_pid.is_held %} {{_('On Hold')}}
       {%- else %} {{_('Inactive')}}
       {%-endif -%}
-      " type="text">
+      ">
     </div>
   {%- if each_pid.is_activated %}
     <div class="col-6 col-sm-4 col-md-2 col-lg-2">

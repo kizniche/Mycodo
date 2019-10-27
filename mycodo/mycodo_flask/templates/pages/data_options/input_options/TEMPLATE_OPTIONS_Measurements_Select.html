@@ -23,13 +23,13 @@
     {% if each_measurement.unit %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_measurement.unique_id}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel}} {% endif %}{{dict_measurements[each_measurement.measurement]['name']}} ({{dict_units[each_measurement.unit]['unit']}})" type="text">
+    <input class="form-control btn btn-sm btn-block" type="button" onclick="setClipboard('{{each_measurement.unique_id}}')" title="UUID: {{each_measurement.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel}} {% endif %}{{dict_measurements[each_measurement.measurement]['name']}} ({{dict_units[each_measurement.unit]['unit']}})">
   </div>
 
     {% else %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-sm btn-block" disabled="" title="UUID: {{each_measurement.unique_id}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel}} {% endif %}" type="text">
+    <input class="form-control btn btn-sm btn-block" type="button" onclick="setClipboard('{{each_measurement.unique_id}}')" title="UUID: {{each_measurement.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel}} {% endif %}">
   </div>
 
     {% endif %}

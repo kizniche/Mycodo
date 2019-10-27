@@ -187,7 +187,7 @@
             {{form_mod_output.name(class_='form-control', value=each_output.name, **{'title': dict_translation['name']['phrase']})}}
           </div>
           <div class="col-5 col-md-6 col-lg-2 small-gutters">
-            <input class="form-control btn btn-sm btn-block" disabled="" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}" value="{{ _('Unconfigured')}}" type="text">
+            <input class="form-control btn btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">
           </div>
 
         {% if each_output.output_type not in ['pwm', 'command_pwm', 'python_pwm', 'atlas_ezo_pmp'] -%}

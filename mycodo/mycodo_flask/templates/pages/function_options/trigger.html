@@ -19,12 +19,12 @@
       {{form_trigger.name(class_='form-control', value=each_trigger.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
     <div class="col-5 col-sm-3 col-md-4 col-lg-3">
-      <input class="form-control btn btn-sm" disabled="" title="UUID: {{each_trigger.unique_id}}" value="
+      <input class="form-control btn btn-sm" type="button" onclick="setClipboard('{{each_trigger.unique_id}}')" title="UUID: {{each_trigger.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="
         {% for each_function in function_types if each_trigger.trigger_type == each_function[0] %}[{{each_function[1]}}]{% endfor %}
         {%- if each_trigger.is_activated %} {{_('Active')}}
         {%- else %} {{_('Inactive')}}
         {%-endif -%}
-      " type="text">
+      ">
     </div>
 
     <div class="col-6 col-sm-4 col-md-4 col-lg-4">

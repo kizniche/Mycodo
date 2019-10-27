@@ -347,7 +347,7 @@ class OutputController(AbstractController, threading.Thread):
 
         :param output_id: ID for output
         :type output_id: str
-        :param state: What state is desired? 'on' or 'off'
+        :param state: What state is desired? 'on', 1, True or 'off', 0, False
         :type state: str
         :param amount: If state is 'on', an amount can be set to turn the output off after
         :type amount: float
@@ -358,6 +358,8 @@ class OutputController(AbstractController, threading.Thread):
         :param trigger_conditionals: Whether to trigger conditionals to act or not
         :type trigger_conditionals: bool
         """
+        msg = ''
+
         self.logger.debug("output_on_off({}, {}, {}, {}, {}, {})".format(
             output_id,
             state,
@@ -369,6 +371,13 @@ class OutputController(AbstractController, threading.Thread):
         if amount is None:
             amount = 0
 
+        if state not in ['on', 1, True, 'off', 0, False]:
+            return 1, 'state not "on", 1, True, "off", 0, or False'
+        elif state in ['on', 1, True]:
+            state = 'on'
+        elif state in ['off', 0, False]:
+            state = 'off'
+
         current_time = datetime.datetime.now()
 
         # Check if output exists
@@ -377,7 +386,7 @@ class OutputController(AbstractController, threading.Thread):
                 "Cannot turn {state} Output with ID {id}. "
                 "It doesn't exist".format(
                     state=state, id=output_id))
-            return 1
+            return 1, 'output doe not exist'
 
         # Atlas EZP-PMP
         if self.output_type[output_id] == 'atlas_ezo_pmp':
@@ -392,12 +401,15 @@ class OutputController(AbstractController, threading.Thread):
                     write_cmd = 'D,{ml:.2f},{min:.2f}'.format(
                             ml=volume_ml, min=minutes_to_run)
                 else:
-                    self.logger.error("Invalid output_mode: '{}'".format(
-                        self.output_mode[output_id]))
-                    return
+                    msg = "Invalid output_mode: '{}'".format(
+                        self.output_mode[output_id])
+                    self.logger.error(msg)
+                    return 1, msg
 
                 self.logger.debug("EZO-PMP command: {}".format(write_cmd))
                 self.atlas_command[output_id].write(write_cmd)
+
+                msg = 'pump turned on'
 
                 measurement_dict = {
                     0: {
@@ -434,15 +446,16 @@ class OutputController(AbstractController, threading.Thread):
                     self.output_unique_id[output_id], measurement_dict)
 
             else:
-                self.logger.error(
-                    "Invalid parameters: ID: {id}, "
-                    "State: {state}, "
-                    "Volume: {vol}, "
-                    "Flow Rate: {fr}".format(
-                        id=output_id,
-                        state=state,
-                        vol=volume_ml,
-                        fr=self.output_flow_rate[output_id]))
+                msg = "Invalid parameters: ID: {id}, " \
+                      "State: {state}, " \
+                      "Volume: {vol}, " \
+                      "Flow Rate: {fr}".format(
+                          id=output_id,
+                          state=state,
+                          vol=volume_ml,
+                          fr=self.output_flow_rate[output_id])
+                self.logger.error(msg)
+                return 1, msg
 
         #
         # Signaled to turn output on
@@ -456,13 +469,12 @@ class OutputController(AbstractController, threading.Thread):
                                                 'wired',
                                                 'wireless_rpi_rf'] and
                     self.output_pin[output_id] is None):
-
-                self.logger.warning(
-                    "Invalid pin for output {id} ({name}): {pin}.".format(
+                msg = "Invalid pin for output {id} ({name}): {pin}.".format(
                         id=self.output_id[output_id],
                         name=self.output_name[output_id],
-                        pin=self.output_pin[output_id]))
-                return 1
+                        pin=self.output_pin[output_id])
+                self.logger.warning(msg)
+                return 1, msg
 
             # Check if max amperage will be exceeded
             if self.output_type[output_id] in ['command',
@@ -472,28 +484,29 @@ class OutputController(AbstractController, threading.Thread):
                 current_amps = self.current_amp_load()
                 max_amps = db_retrieve_table_daemon(Misc, entry='first').max_amps
                 if current_amps + self.output_amps[output_id] > max_amps:
-                    self.logger.warning(
-                        "Cannot turn output {} ({}) On. If this output turns on, "
-                        "there will be {} amps being drawn, which exceeds the "
-                        "maximum set draw of {} amps.".format(
+                    msg = "Cannot turn output {} ({}) On. If this output " \
+                          "turns on, there will be {} amps being drawn, " \
+                          "which exceeds the maximum set draw of {} " \
+                          "amps.".format(
                             self.output_id[output_id],
                             self.output_name[output_id],
                             current_amps,
-                            max_amps))
-                    return 1
+                            max_amps)
+                    self.logger.warning(msg)
+                    return 1, msg
 
                 # Check if time is greater than off_until to allow an output on
                 if off_until_datetime and off_until_datetime > current_time and not self.is_on(output_id):
                     off_seconds = (
                         off_until_datetime - current_time).total_seconds()
-                    self.logger.debug(
-                        "Output {id} ({name}) instructed to turn on, however "
-                        "the output has been instructed to stay off for "
-                        "{off_sec:.2f} more seconds.".format(
+                    msg = "Output {id} ({name}) instructed to turn on, " \
+                          "however the output has been instructed to stay " \
+                          "off for {off_sec:.2f} more seconds.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id],
-                            off_sec=off_seconds))
-                    return 1
+                            off_sec=off_seconds)
+                    self.logger.debug(msg)
+                    return 1, msg
 
             # Turn output on for an amount
             if (self.output_type[output_id] in ['command',
@@ -517,18 +530,19 @@ class OutputController(AbstractController, threading.Thread):
                         remaining_time = 0
 
                     time_on = abs(self.output_last_duration[output_id]) - remaining_time
-                    self.logger.debug(
-                        "Output {rid} ({rname}) is already on for an amount "
-                        "of {ron:.2f} seconds (with {rremain:.2f} seconds "
-                        "remaining). Recording the amount of time the output "
-                        "has been on ({rbeenon:.2f} sec) and updating the "
-                        "amount to {rnewon:.2f} seconds.".format(
+                    msg = "Output {rid} ({rname}) is already on for an " \
+                          "amount of {ron:.2f} seconds (with {rremain:.2f} " \
+                          "seconds remaining). Recording the amount of time " \
+                          "the output has been on ({rbeenon:.2f} sec) and " \
+                          "updating the amount to {rnewon:.2f} " \
+                          "seconds.".format(
                             rid=self.output_id[output_id],
                             rname=self.output_name[output_id],
                             ron=abs(self.output_last_duration[output_id]),
                             rremain=remaining_time,
                             rbeenon=time_on,
-                            rnewon=abs(amount)))
+                            rnewon=abs(amount))
+                    self.logger.debug(msg)
                     self.output_on_until[output_id] = (
                         current_time + datetime.timedelta(seconds=abs(amount)))
                     self.output_last_duration[output_id] = amount
@@ -555,7 +569,7 @@ class OutputController(AbstractController, threading.Thread):
                                     'timestamp': timestamp})
                         write_db.start()
 
-                    return 0
+                    return 0, msg
 
                 # Output is on, but not for an amount
                 elif self.is_on(output_id) and not self.output_on_duration:
@@ -564,24 +578,23 @@ class OutputController(AbstractController, threading.Thread):
                     self.output_on_until[output_id] = (
                         current_time + datetime.timedelta(seconds=abs(amount)))
                     self.output_last_duration[output_id] = amount
-                    self.logger.debug(
-                        "Output {id} ({name}) is currently on without an "
-                        "amount. Turning into an amount of {dur:.1f} "
-                        "seconds.".format(
+                    msg = "Output {id} ({name}) is currently on without an " \
+                          "amount. Turning into an amount of {dur:.1f} " \
+                          "seconds.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id],
-                            dur=abs(amount)))
-                    return 0
+                            dur=abs(amount))
+                    self.logger.debug(msg)
+                    return 0, msg
 
                 # Output is not already on
                 else:
-
-                    self.logger.debug(
-                        "Output {id} ({name}) on for {dur:.1f} "
-                        "seconds.".format(
+                    msg = "Output {id} ({name}) on for {dur:.1f} " \
+                          "seconds.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id],
-                            dur=abs(amount)))
+                            dur=abs(amount))
+                    self.logger.debug(msg)
                     self.output_switch(output_id, 'on')
                     self.output_on_until[output_id] = (
                             datetime.datetime.now() +
@@ -597,22 +610,22 @@ class OutputController(AbstractController, threading.Thread):
 
                 # Don't turn on if already on, except if it's a radio frequency output
                 if self.is_on(output_id) and self.output_type[output_id] != 'wireless_rpi_rf':
-                    self.logger.debug(
-                        "Output {id} ({name}) is already on.".format(
+                    msg = "Output {id} ({name}) is already on.".format(
                             id=self.output_id[output_id],
-                            name=self.output_name[output_id]))
-                    return 1
+                            name=self.output_name[output_id])
+                    self.logger.debug(msg)
+                    return 1, msg
                 else:
                     # Record the time the output was turned on in order to
                     # calculate and log the total amount is was on, when
                     # it eventually turns off.
                     if not self.output_time_turned_on[output_id]:
                         self.output_time_turned_on[output_id] = datetime.datetime.now()
-                    self.logger.debug(
-                        "Output {id} ({name}) ON at {timeon}.".format(
+                    msg = "Output {id} ({name}) ON at {timeon}.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id],
-                            timeon=self.output_time_turned_on[output_id]))
+                            timeon=self.output_time_turned_on[output_id])
+                    self.logger.debug(msg)
                     self.output_switch(output_id, 'on')
 
             # PWM output
@@ -620,19 +633,21 @@ class OutputController(AbstractController, threading.Thread):
 
                 if (self.output_type[output_id] == 'pwm' and
                         self.pwm_hertz[output_id] <= 0):
-                    self.logger.warning("PWM Hertz must be a positive value")
-                    return 1
+                    msg = 'PWM Hertz must be a positive value'
+                    self.logger.warning(msg)
+                    return 1, msg
 
                 if self.pwm_invert_signal[output_id]:
                     duty_cycle = 100.0 - abs(duty_cycle)
 
                 self.output_switch(output_id, 'on', duty_cycle=duty_cycle)
-                self.logger.debug(
-                    "PWM {id} ({name}) set to a duty cycle of {dc:.2f}% at {hertz} Hz".format(
+                msg = "PWM {id} ({name}) set to a duty cycle of {dc:.2f}% " \
+                      "at {hertz} Hz".format(
                         id=self.output_id[output_id],
                         name=self.output_name[output_id],
                         dc=abs(duty_cycle),
-                        hertz=self.pwm_hertz[output_id]))
+                        hertz=self.pwm_hertz[output_id])
+                self.logger.debug(msg)
 
                 # Record the time the PWM was turned on
                 if duty_cycle:
@@ -658,21 +673,25 @@ class OutputController(AbstractController, threading.Thread):
         elif state == 'off':
 
             if not self._is_setup(output_id):
-                self.logger.error("Cannot turn off Output {id}: Output not "
-                                  "set up properly.".format(id=output_id))
-                return
+                msg = "Cannot turn off Output {id}: Output not set up " \
+                      "properly.".format(id=output_id)
+                self.logger.error(msg)
+                return 1, msg
 
             if (self.output_type[output_id] in ['pwm',
                                                 'wired',
                                                 'wireless_rpi_rf'] and
                     self.output_pin[output_id] is None):
-                return
+                msg = 'pin must be set'
+                self.logger.error(msg)
+                return 1, msg
 
             self.output_switch(output_id, 'off')
 
-            self.logger.debug("Output {id} ({name}) turned off.".format(
+            msg = "Output {id} ({name}) turned off.".format(
                     id=self.output_id[output_id],
-                    name=self.output_name[output_id]))
+                    name=self.output_name[output_id])
+            self.logger.debug(msg)
 
             # Write PWM duty cycle to database
             if self.output_type[output_id] in OUTPUTS_PWM:
@@ -742,8 +761,17 @@ class OutputController(AbstractController, threading.Thread):
         if trigger_conditionals:
             self.check_triggers(output_id, on_duration=amount)
 
+        return 1, msg
+
     def output_switch(self, output_id, state, duty_cycle=None):
         """Conduct the actual execution of GPIO state change, PWM, or command execution"""
+
+        if state not in ['on', 1, True, 'off', 0, False]:
+            return 1, 'state not "on", 1, True, "off", 0, or False'
+        elif state in ['on', 1, True]:
+            state = 'on'
+        elif state in ['off', 0, False]:
+            state = 'off'
 
         if self.output_type[output_id] == 'wired':
             if state == 'on':

@@ -1,6 +1,7 @@
 ## 7.10.0 (Unreleased)
 
  - Add REST API access, API endpoints, and API manual section ([#705](https://github.com/kizniche/mycodo/issues/705))
+ - Add button to copy device UUID to clipboard
 
 
 ## 7.9.1 (2019.10.26)

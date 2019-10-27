@@ -196,6 +196,8 @@ TRANSLATIONS = {
     'convert_to_measurement_unit': {
         'title': lazy_gettext('Convert to Unit'),
         'phrase': lazy_gettext('Convert the measurement to a different unit')},
+    'copy_to_clipboard': {
+        'phrase': lazy_gettext('click to copy to the clipboard')},
     'deadline': {
         'title': lazy_gettext('Deadline'),
         'phrase': lazy_gettext('Time (seconds) to wait until failure')},

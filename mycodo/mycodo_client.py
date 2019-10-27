@@ -220,10 +220,12 @@ class DaemonControl:
 
     def output_on_off(self, output_id, state, amount=0.0):
         """ Turn an output on or off """
-        if state == 'on':
+        if state in ['on', 1, True]:
             return self.output_on(output_id, amount)
-        else:
+        elif state in ['off', 0, False]:
             return self.output_off(output_id)
+        else:
+            return 1, 'state not "on", 1, True, "off", 0, or False. Found: "{}"'.format(state)
 
     def output_sec_currently_on(self, output_id):
         """ Return the amount an output is currently on for (e.g. number fo seconds) """
