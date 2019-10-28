@@ -29,6 +29,7 @@ class InputSingle(Resource):
             401: 'Invalid API Key',
             403: 'Insufficient Permissions',
             404: 'Not Found',
+            429: 'Too Many Requests'
         }
     )
     @flask_login.login_required
@@ -51,6 +52,7 @@ class InputDump(Resource):
             401: 'Invalid API Key',
             403: 'Insufficient Permissions',
             404: 'Not Found',
+            429: 'Too Many Requests'
         }
     )
     @flask_login.login_required
@@ -73,6 +75,7 @@ class OutputSingle(Resource):
             401: 'Invalid API Key',
             403: 'Insufficient Permissions',
             404: 'Not Found',
+            429: 'Too Many Requests'
         }
     )
     @flask_login.login_required
@@ -95,6 +98,7 @@ class outputDump(Resource):
             401: 'Invalid API Key',
             403: 'Insufficient Permissions',
             404: 'Not Found',
+            429: 'Too Many Requests'
         }
     )
     @flask_login.login_required
@@ -117,6 +121,7 @@ class UserSingle(Resource):
             401: 'Invalid API Key',
             403: 'Insufficient Permissions',
             404: 'Not Found',
+            429: 'Too Many Requests'
         }
     )
     @flask_login.login_required
@@ -139,6 +144,7 @@ class UserDump(Resource):
             401: 'Invalid API Key',
             403: 'Insufficient Permissions',
             404: 'Not Found',
+            429: 'Too Many Requests'
         }
     )
     @flask_login.login_required

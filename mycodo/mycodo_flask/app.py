@@ -15,6 +15,7 @@ from flask_babel import Babel
 from flask_babel import gettext
 from flask_compress import Compress
 from flask_limiter import Limiter
+from flask_login import current_user
 from flask_sslify import SSLify
 
 from mycodo.config import LANGUAGES
@@ -125,9 +126,21 @@ def extension_compress(app):
     return app
 
 
+def get_key_func():
+    """Custom key_func for flask-limiter to handle both logged-in and logged-out requests"""
+    if get_ip_address():
+        str_return = get_ip_address()
+    else:
+        str_return = '0.0.0.0'
+    if current_user and hasattr(current_user, 'name'):
+        str_return += '/{}'.format(current_user.name)
+    return str_return
+
+
 def extension_limiter(app):
-    limiter = Limiter(app, key_func=get_ip_address)
-    limiter.limit("200/minute")(routes_authentication.blueprint)
+    limiter = Limiter(app, key_func=get_key_func, headers_enabled=True)
+    limiter.limit("300/hour")(routes_authentication.blueprint)
+    limiter.limit("200/minute")(api_bp)
     return app
 
 

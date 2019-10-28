@@ -15,10 +15,10 @@ logger = logging.getLogger(__name__)
 ns_output = Namespace('output', description='Output operations')
 
 
-@ns_output.route('/set_pwm/<string:uuid>/<float:duty_cycle>')
+@ns_output.route('/set_pwm/<string:uuid>/<duty_cycle>')
 @ns_output.doc(params={
-    'uuid': 'The Unique ID',
-    'duty_cycle': 'The duty cycle, in percent (%)'
+    'uuid': 'The Unique ID.',
+    'duty_cycle': 'The duty cycle (percent, %) to set the PWM output.'
 })
 class OutputPWM(Resource):
     """Manipulates a PWM Output"""
@@ -29,17 +29,28 @@ class OutputPWM(Resource):
             401: 'Invalid API Key',
             403: 'Insufficient Permissions',
             404: 'Not Found',
+            429: 'Too Many Requests',
             460: 'Fail',
             461: 'Unknown Response'
         }
     )
     @flask_login.login_required
     def post(self, uuid, duty_cycle):
-        """Change the state of a PWM output with the specified uuid"""
+        """Change the Duty Cycle of a PWM output with the specified uuid"""
         if not utils_general.user_has_permission('view_settings'):
             return 'You do not have permission to access this.', 401
+
+        try:
+            duty_cycle = float(duty_cycle)
+        except:
+            return 'Fail: duty_cycle does not represent float value', 460
+
+        if duty_cycle < 0 or duty_cycle > 100:
+            return 'Fail: duty_cycle must be >= 0 and <= 100.', 460
+
         control = DaemonControl()
         return_ = control.output_on(uuid, duty_cycle=float(duty_cycle))
+
         if return_ is None:
             return 'Success', 200
         elif return_[0] in [0, 'success']:
@@ -51,32 +62,29 @@ class OutputPWM(Resource):
 
 
 set_state_fields = ns_output.model('OutputSetState', {
-    'state': fields.String(
-        description='State to set the output',
-        required=True,
-        enum=['on', 'off']),
     'duration': fields.Float(
         description='The duration to keep the output on, in seconds',
         required=False,
         example=10.0,
-        exclusiveMin=0)
+        exclusiveMin=0),
 })
 
 
-@ns_output.route('/set_state/<string:uuid>')
+@ns_output.route('/set_state/<string:uuid>/<string:state>')
 @ns_output.doc(
         security='apikey',
         responses={
             401: 'Invalid API Key',
             403: 'Insufficient Permissions',
             404: 'Not Found',
+            429: 'Too Many Requests',
             461: 'Unknown Response'
         }
     )
 @ns_output.doc(params={
     'uuid': 'The Unique ID',
-    'state': 'State of output, "on" or "off"',
-    'duration': 'A duration, in seconds.'
+    'state': 'The state to set the output ("on" or "off")',
+    'duration': 'The duration (seconds) to keep the output on.'
 })
 class OutputState(Resource):
     """Manipulates an Output"""
@@ -89,16 +97,18 @@ class OutputState(Resource):
         }
     )
     @flask_login.login_required
-    def post(self, uuid):
+    def post(self, uuid, state):
         """Change the state of an on/off output with the specified uuid"""
         if not utils_general.user_has_permission('view_settings'):
             return 'You do not have permission to access this.', 401
-        state = request.args.get("state")
-        duration = request.args.get("duration")
-        if duration is None:
+        try:
+            duration = float(request.args.get("duration"))
+        except:
             duration = 0
+
         control = DaemonControl()
-        return_ = control.output_on_off(uuid, state, float(duration))
+        return_ = control.output_on_off(uuid, state, amount=float(duration))
+
         if return_ is None:
             return 'Success', 200
         elif return_[0] in [0, 'success']:

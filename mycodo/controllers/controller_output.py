@@ -761,7 +761,7 @@ class OutputController(AbstractController, threading.Thread):
         if trigger_conditionals:
             self.check_triggers(output_id, on_duration=amount)
 
-        return 1, msg
+        return 0, msg
 
     def output_switch(self, output_id, state, duty_cycle=None):
         """Conduct the actual execution of GPIO state change, PWM, or command execution"""
