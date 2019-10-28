@@ -212,8 +212,8 @@ def get_last_measurement(unique_id, unit, measurement, channel, duration_sec):
     last_measurement = read_last_influxdb(
         unique_id,
         unit,
-        measurement,
         channel,
+        measure=measurement,
         duration_sec=duration_sec)
 
     if last_measurement is not None:
@@ -246,9 +246,9 @@ def get_past_measurements(unique_id, unit, measurement, channel, duration_sec):
     past_measurements = read_past_influxdb(
         unique_id,
         unit,
-        measurement,
         channel,
-        past_seconds=duration_sec)
+        duration_sec,
+        measure=measurement)
 
     if past_measurements:
         string_ts_values = ''

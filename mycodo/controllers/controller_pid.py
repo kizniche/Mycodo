@@ -325,9 +325,9 @@ class PIDController(AbstractController, threading.Thread):
                     last_measurement = read_last_influxdb(
                         device_id,
                         measurement.unit,
-                        measurement.measurement,
                         measurement.channel,
-                        self.setpoint_tracking_max_age)
+                        measure=measurement.measurement,
+                        duration_sec=self.setpoint_tracking_max_age)
 
                     if last_measurement[1] is not None:
                         self.setpoint = last_measurement[1]
@@ -639,9 +639,9 @@ class PIDController(AbstractController, threading.Thread):
             self.last_measurement = read_last_influxdb(
                 self.device_id,
                 unit,
-                measurement,
                 channel,
-                int(self.max_measure_age))
+                measure=measurement,
+                duration_sec=int(self.max_measure_age))
 
             if self.last_measurement:
                 self.last_time = self.last_measurement[0]

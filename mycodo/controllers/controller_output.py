@@ -288,8 +288,8 @@ class OutputController(AbstractController, threading.Thread):
                     last_measurement = read_last_influxdb(
                         each_output_id,
                         unit,
-                        measurement,
                         channel,
+                        measure=measurement,
                         duration_sec=None)
 
                     if last_measurement:
@@ -1397,8 +1397,8 @@ output_id = '{}'
                     last_measurement = read_last_influxdb(
                         output_id,
                         each_dev_meas.unit,
-                        each_dev_meas.measurement,
-                        each_dev_meas.channel)
+                        each_dev_meas.channel,
+                        measure=each_dev_meas.measurement,)
                     if last_measurement:
                         datetime_ts = datetime.datetime.strptime(
                             last_measurement[0][:-7], '%Y-%m-%dT%H:%M:%S.%f')

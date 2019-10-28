@@ -33,11 +33,18 @@ from mycodo.mycodo_flask import routes_page
 from mycodo.mycodo_flask import routes_remote_admin
 from mycodo.mycodo_flask import routes_settings
 from mycodo.mycodo_flask import routes_static
-from mycodo.mycodo_flask.api import api_bp
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 
 logger = logging.getLogger(__name__)
+
+# Test enabling API (should not work with Raspbian OS version < 10)
+ENABLE_API = False
+try:
+    from mycodo.mycodo_flask.api import api_blueprint
+    ENABLE_API = True
+except:
+    logger.exception("API")
 
 
 def create_app(config=ProdConfig):
@@ -88,7 +95,9 @@ def register_extensions(app):
 
 def register_blueprints(app):
     """ register blueprints to the app """
-    app.register_blueprint(api_bp)  # API
+    if ENABLE_API:
+        app.register_blueprint(api_blueprint)  # API
+
     app.register_blueprint(routes_admin.blueprint)  # register admin views
     app.register_blueprint(routes_authentication.blueprint)  # register login/logout views
     app.register_blueprint(routes_calibration.blueprint)  # register calibration views
@@ -140,7 +149,10 @@ def get_key_func():
 def extension_limiter(app):
     limiter = Limiter(app, key_func=get_key_func, headers_enabled=True)
     limiter.limit("300/hour")(routes_authentication.blueprint)
-    limiter.limit("200/minute")(api_bp)
+
+    if ENABLE_API:
+        limiter.limit("200/minute")(api_blueprint)
+
     return app
 
 

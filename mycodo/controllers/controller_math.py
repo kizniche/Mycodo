@@ -749,9 +749,9 @@ class MathController(AbstractController, threading.Thread):
                 last_measurement = read_last_influxdb(
                     device_id,
                     measurement.unit,
-                    measurement.measurement,
                     measurement.channel,
-                    self.max_measure_age)
+                    measure=measurement.measurement,
+                    duration_sec=self.max_measure_age)
                 if not last_measurement:
                     return False, None
                 else:
@@ -768,9 +768,9 @@ class MathController(AbstractController, threading.Thread):
         measurement = read_last_influxdb(
             device_id,
             measurement.unit,
-            measurement.measurement,
             measurement.channel,
-            self.max_measure_age)
+            measure=measurement.measurement,
+            duration_sec=self.max_measure_age)
         if not measurement:
             return False, None
         return True, measurement

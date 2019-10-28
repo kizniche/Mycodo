@@ -244,8 +244,8 @@ class AbstractController(object):
         last_measurement = read_last_influxdb(
             device_id,
             unit,
-            measurement,
             channel,
-            max_age)
+            measure=measurement,
+            duration_sec=max_age)
 
         return last_measurement

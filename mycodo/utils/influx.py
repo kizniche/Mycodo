@@ -239,7 +239,7 @@ def query_string(unit, unique_id,
     return query
 
 
-def read_past_influxdb(unique_id, unit, measurement, channel, past_seconds):
+def read_past_influxdb(unique_id, unit, channel, past_seconds, measure=None):
     raw_data = None
     client = InfluxDBClient(
         INFLUXDB_HOST,
@@ -251,7 +251,7 @@ def read_past_influxdb(unique_id, unit, measurement, channel, past_seconds):
     query_str = query_string(
         unit,
         unique_id,
-        measure=measurement,
+        measure=measure,
         channel=channel,
         past_sec=past_seconds)
     if query_str == 1:
@@ -272,12 +272,12 @@ def read_past_influxdb(unique_id, unit, measurement, channel, past_seconds):
         return raw_data['series'][0]['values']
 
 
-def read_last_influxdb(unique_id, unit, measurement, channel, duration_sec=None):
+def read_last_influxdb(unique_id, unit, channel, measure=None, duration_sec=None):
     """
     Query Influxdb for the last entry.
 
     example:
-        read_last_influxdb('00000001', 'temperature')
+        read_last_influxdb('00000001', 'C', 0)
 
     :return: list of time and value
     :rtype: list
@@ -288,9 +288,9 @@ def read_last_influxdb(unique_id, unit, measurement, channel, duration_sec=None)
     :param unit: What unit to query in the Influxdb
         database (eg. 'C', 's')
     :type unit: str
-    :param measurement: What measurement to query in the Influxdb
+    :param measure: What measurement to query in the Influxdb
         database (eg. 'temperature', 'duration_time')
-    :type measurement: str or None
+    :type measure: str or None
     :param channel: Channel
     :type channel: int or None
     :param duration_sec: How many seconds to look for a past measurement
@@ -301,12 +301,12 @@ def read_last_influxdb(unique_id, unit, measurement, channel, duration_sec=None)
 
     if duration_sec:
         query = query_string(unit, unique_id,
-                             measure=measurement,
+                             measure=measure,
                              channel=channel,
                              past_sec=int(duration_sec))
     else:
         query = query_string(unit, unique_id,
-                             measure=measurement,
+                             measure=measure,
                              channel=channel,
                              value='LAST')
 

@@ -7,11 +7,12 @@ from flask_restplus import Api
 from mycodo.mycodo_flask.api.input import ns_input
 from mycodo.mycodo_flask.api.measurement import ns_measurement
 from mycodo.mycodo_flask.api.output import ns_output
+from mycodo.mycodo_flask.api.pid import ns_pid
 from mycodo.mycodo_flask.api.user import ns_user
 
 logger = logging.getLogger(__name__)
 
-api_bp = Blueprint('api', __name__, url_prefix='/api')
+api_blueprint = Blueprint('api', __name__, url_prefix='/api')
 
 authorizations = {
     'apikey': {
@@ -22,7 +23,7 @@ authorizations = {
 }
 
 api = Api(
-    api_bp,
+    api_blueprint,
     version='1.0',
     title='Mycodo API',
     description='An API for Mycodo',
@@ -32,4 +33,5 @@ api = Api(
 api.add_namespace(ns_input)
 api.add_namespace(ns_measurement)
 api.add_namespace(ns_output)
+api.add_namespace(ns_pid)
 api.add_namespace(ns_user)

@@ -348,14 +348,13 @@ class LCDController(AbstractController, threading.Thread):
                         self.lcd_line[display_id][i]['id'],
                         '/.*/',
                         None,
-                        None,
                         duration_sec=self.lcd_max_age[display_id][i])
                 else:
                     last_measurement = read_last_influxdb(
                         self.lcd_line[display_id][i]['id'],
                         self.lcd_line[display_id][i]['unit'],
-                        self.lcd_line[display_id][i]['measure'],
                         self.lcd_line[display_id][i]['channel'],
+                        measure=self.lcd_line[display_id][i]['measure'],
                         duration_sec=self.lcd_max_age[display_id][i])
 
                 if last_measurement:
