@@ -2,6 +2,7 @@
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.extensions import ma
 
 
 class Measurement(CRUDMixin, db.Model):
@@ -75,3 +76,8 @@ class DeviceMeasurements(CRUDMixin, db.Model):
     scale_to_max = db.Column(db.Float, default=20)
 
     conversion_id = db.Column(db.Text, db.ForeignKey('conversion.unique_id'), default='')
+
+
+class DeviceMeasurementsSchema(ma.ModelSchema):
+    class Meta:
+        model = DeviceMeasurements

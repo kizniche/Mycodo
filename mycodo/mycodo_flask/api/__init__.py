@@ -4,8 +4,10 @@ import logging
 from flask import Blueprint
 from flask_restplus import Api
 
+from mycodo.mycodo_flask.api.input import ns_input
+from mycodo.mycodo_flask.api.measurement import ns_measurement
 from mycodo.mycodo_flask.api.output import ns_output
-from mycodo.mycodo_flask.api.settings import ns_settings
+from mycodo.mycodo_flask.api.user import ns_user
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +29,10 @@ api = Api(
     authorizations=authorizations
 )
 
+api.add_namespace(ns_input)
+api.add_namespace(ns_measurement)
 api.add_namespace(ns_output)
-api.add_namespace(ns_settings)
+api.add_namespace(ns_user)
 
 
 # import flask_login
