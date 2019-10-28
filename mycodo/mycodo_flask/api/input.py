@@ -12,7 +12,7 @@ from mycodo.mycodo_flask.utils import utils_general
 
 logger = logging.getLogger(__name__)
 
-ns_input = Namespace('input', description='Input operations')
+ns_input = Namespace('inputs', description='Input operations')
 
 default_responses = {
     200: 'Success',
@@ -25,7 +25,23 @@ default_responses = {
 }
 
 
-@ns_input.route('/settings/<string:unique_id>')
+@ns_input.route('/')
+@ns_input.doc(security='apikey', responses=default_responses)
+class InputDump(Resource):
+    """Interacts with Input settings in the SQL database"""
+    @flask_login.login_required
+    def get(self):
+        """Show all input settings"""
+        if not utils_general.user_has_permission('view_settings'):
+            return 'You do not have permission to access this.', 401
+        try:
+            input_schema = InputSchema()
+            return input_schema.dump(Input.query.all(), many=True)[0], 200
+        except Exception:
+            return 'Fail: {}'.format(traceback.format_exc()), 460
+
+
+@ns_input.route('/<string:unique_id>')
 @ns_input.doc(security='apikey', responses=default_responses)
 @ns_input.doc(params={'unique_id': 'The unique ID of the input'})
 class InputSingle(Resource):
@@ -41,20 +57,3 @@ class InputSingle(Resource):
             return input_schema.dump(input_), 200
         except Exception:
             return 'Fail: {}'.format(traceback.format_exc()), 460
-
-
-@ns_input.route('/settings_all')
-@ns_input.doc(security='apikey', responses=default_responses)
-class InputDump(Resource):
-    """Interacts with Input settings in the SQL database"""
-    @flask_login.login_required
-    def get(self):
-        """Show all input settings"""
-        if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
-        try:
-            input_schema = InputSchema()
-            return input_schema.dump(Input.query.all(), many=True)[0], 200
-        except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
-

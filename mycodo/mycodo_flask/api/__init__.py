@@ -33,20 +33,3 @@ api.add_namespace(ns_input)
 api.add_namespace(ns_measurement)
 api.add_namespace(ns_output)
 api.add_namespace(ns_user)
-
-
-# import flask_login
-# from flask_restplus import Resource
-# @api.route('/export_swagger')
-# @api.doc(security='apikey')
-# class ExportSwaggerJSON(Resource):
-#     """Exports swagger JSON"""
-#     @flask_login.login_required
-#     def get(self):
-#         """Export swagger JSON to swagger.json file"""
-#         from mycodo.mycodo_flask.utils import utils_general
-#         import json
-#         if not utils_general.user_has_permission('view_settings'):
-#             return 'You do not have permission to access this.', 401
-#         with open("/home/pi/swagger.json", "w") as text_file:
-#             text_file.write(json.dumps(api.__schema__, indent=2))

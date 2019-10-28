@@ -15,7 +15,7 @@ and outputs in interesting ways to sense and manipulate the environment.
 `HTML <http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html>`__,
 `TEXT <https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt>`__)
 
-`Mycodo API Access <https://github.com/kizniche/Mycodo/blob/master/mycodo-api.rst>`__
+`Mycodo API <http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-api.html>`__
 
 `Mycodo Support <https://play.google.com/store/apps/details?id=com.mycodo.mycododocs>`__ (Android App)
 

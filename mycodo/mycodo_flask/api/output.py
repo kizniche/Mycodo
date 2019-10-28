@@ -15,7 +15,7 @@ from mycodo.mycodo_flask.utils import utils_general
 
 logger = logging.getLogger(__name__)
 
-ns_output = Namespace('output', description='Output operations')
+ns_output = Namespace('outputs', description='Output operations')
 
 default_responses = {
     200: 'Success',
@@ -38,7 +38,23 @@ def return_handler(return_):
         return '', 461
 
 
-@ns_output.route('/settings/<string:unique_id>')
+@ns_output.route('/')
+@ns_output.doc(security='apikey', responses=default_responses)
+class OutputDump(Resource):
+    """Interacts with output settings in the SQL database"""
+    @flask_login.login_required
+    def get(self):
+        """Show all output settings"""
+        if not utils_general.user_has_permission('view_settings'):
+            return 'You do not have permission to access this.', 401
+        try:
+            output_schema = OutputSchema()
+            return output_schema.dump(Output.query.all(), many=True)[0], 200
+        except Exception:
+            return 'Fail: {}'.format(traceback.format_exc()), 460
+
+
+@ns_output.route('/<string:unique_id>')
 @ns_output.doc(security='apikey', responses=default_responses)
 @ns_output.doc(params={'unique_id': 'The unique ID of the output'})
 class OutputSingle(Resource):
@@ -52,22 +68,6 @@ class OutputSingle(Resource):
             output_schema = OutputSchema()
             output_ = Output.query.filter_by(unique_id=unique_id).first()
             return output_schema.dump(output_), 200
-        except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
-
-
-@ns_output.route('/settings_all')
-@ns_output.doc(security='apikey', responses=default_responses)
-class OutputDump(Resource):
-    """Interacts with output settings in the SQL database"""
-    @flask_login.login_required
-    def get(self):
-        """Show all output settings"""
-        if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
-        try:
-            output_schema = OutputSchema()
-            return output_schema.dump(Output.query.all(), many=True)[0], 200
         except Exception:
             return 'Fail: {}'.format(traceback.format_exc()), 460
 

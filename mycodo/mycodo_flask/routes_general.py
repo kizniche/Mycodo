@@ -1192,16 +1192,16 @@ def pid_mod_unique_id(unique_id, state):
         return return_str
 
 
-import flask_login
-from mycodo.mycodo_flask.api import api
-@blueprint.route('/export_swagger')
-@flask_login.login_required
-def export_swagger():
-    """Export swagger JSON to swagger.json file"""
-    from mycodo.mycodo_flask.utils import utils_general
-    import json
-    if not utils_general.user_has_permission('view_settings'):
-        return 'You do not have permission to access this.', 401
-    with open("/home/pi/swagger.json", "w") as text_file:
-        text_file.write(json.dumps(api.__schema__, indent=2))
-    return 'success'
+# import flask_login
+# from mycodo.mycodo_flask.api import api
+# @blueprint.route('/export_swagger')
+# @flask_login.login_required
+# def export_swagger():
+#     """Export swagger JSON to swagger.json file"""
+#     from mycodo.mycodo_flask.utils import utils_general
+#     import json
+#     if not utils_general.user_has_permission('view_settings'):
+#         return 'You do not have permission to access this.', 401
+#     with open("/home/pi/swagger.json", "w") as text_file:
+#         text_file.write(json.dumps(api.__schema__, indent=2))
+#     return 'success'
