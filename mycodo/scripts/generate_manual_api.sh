@@ -2,7 +2,8 @@
 # Generates the API offline HTML documentation
 #
 # Dependencies
-# npm install -g redoc-cli
+# sudo npm install -g redoc-cli
+# sudo npm install -g npx
 #
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
