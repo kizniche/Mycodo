@@ -12,14 +12,16 @@ and outputs in interesting ways to sense and manipulate the environment.
 
 `Mycodo Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__
 (`PDF <https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf>`__,
-`HTML <http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html>`__,
+`HTML <https://kizniche.github.io/Mycodo/mycodo-manual.html>`__,
 `TEXT <https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt>`__)
 
-`Mycodo API <http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-api.html>`__
+`Mycodo API <https://kizniche.github.io/Mycodo/mycodo-api.html>`__
 
 `Mycodo Support <https://play.google.com/store/apps/details?id=com.mycodo.mycododocs>`__ (Android App)
 
 `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__
+
+`Mycodo on GitHub.io <https://kizniche.github.io/Mycodo/>`__
 
 .. contents:: Table of Contents
    :depth: 1
