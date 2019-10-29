@@ -64,7 +64,6 @@ def test_routes_when_not_logged_in(testapp):
     print("\nTest: test_routes_when_not_logged_in")
     routes = [
         '',
-        'api',
         'admin/backup',
         'admin/statistics',
         'admin/upgrade',
