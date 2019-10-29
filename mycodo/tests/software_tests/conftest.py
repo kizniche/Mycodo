@@ -18,6 +18,7 @@ patch.dict("sys.modules",
 
 import pytest
 import tempfile
+import secrets
 import shutil
 import os
 from mycodo.mycodo_flask.app import create_app
@@ -83,6 +84,7 @@ def create_admin_user():
         user = UserFactory()
         user.name = 'admin'
         user.set_password('53CR3t_p4zZW0rD')
+        user.api_key = secrets.token_bytes(12)
         user.language = 'en'
         user.save()
         user.role_id = Role.query.filter_by(name='Admin').first().id
@@ -96,6 +98,7 @@ def create_guest_user():
         user.name = 'guest'
         user.email = 'guest@email.com'
         user.set_password('53CR3t_p4zZW0rD')
+        user.api_key = secrets.token_bytes(12)
         user.role_id = Role.query.filter_by(name='Guest').first().id
         user.language = 'en'
         user.save()

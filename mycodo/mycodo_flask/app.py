@@ -7,6 +7,7 @@ import logging
 import base64
 import flask_login
 from flask import Flask
+from flask import Response
 from flask import flash
 from flask import redirect
 from flask import request
@@ -172,10 +173,9 @@ def extension_login_manager(app):
         try:  # first, try to login using the api_key url arg
             api_key = req.args.get('api_key')
             api_key = base64.b64decode(api_key)
-            if api_key:
-                user = User.query.filter_by(api_key=api_key).first()
-                if user:
-                    return user
+            user = User.query.filter_by(api_key=api_key).first()
+            if user:
+                return user
         except:
             pass
 
@@ -198,14 +198,14 @@ def extension_login_manager(app):
         except:
             pass
 
-        # return None if both methods did not login the user
-        return None
+        # User unable to be logged in
+        return
 
     @login_manager.unauthorized_handler
     def unauthorized():
         try:
             if str(request.url_rule).startswith('/api/'):
-                return 'Unauthorized', 401
+                return None, 401
         except:
             pass
         flash(gettext('Please log in to access this page'), "error")

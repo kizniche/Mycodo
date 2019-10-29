@@ -5,6 +5,7 @@ import traceback
 import flask_login
 from flask_restplus import Namespace
 from flask_restplus import Resource
+from flask_restplus import abort
 from flask_restplus import fields
 
 from mycodo.databases.models import DeviceMeasurements
@@ -16,16 +17,17 @@ from mycodo.utils.influx import write_influxdb_value
 
 logger = logging.getLogger(__name__)
 
-ns_measurement = Namespace('measurements', description='Measurement operations')
+ns_measurement = Namespace(
+    'measurements', description='Measurement operations')
 
 default_responses = {
     200: 'Success',
     401: 'Invalid API Key',
     403: 'Insufficient Permissions',
     404: 'Not Found',
+    422: 'Unprocessable Entity',
     429: 'Too Many Requests',
-    460: 'Fail',
-    461: 'Unknown Response'
+    500: 'Internal Server Error'
 }
 
 device_measurement_fields = ns_measurement.model('Measurement Settings Fields', {
@@ -73,13 +75,13 @@ class Measurements(Resource):
     def get(self):
         """Show all measurement settings"""
         if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
+            abort(403)
         try:
             measure_schema = DeviceMeasurementsSchema()
             return {'measurements': measure_schema.dump(
                 DeviceMeasurements.query.all(), many=True)[0]}, 200
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())
 
 
 @ns_measurement.route('/by_device_id/<string:device_id>')
@@ -97,7 +99,7 @@ class MeasurementsDeviceID(Resource):
     def get(self, device_id):
         """Show the settings for all measurements with the device_id"""
         if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
+            abort(403)
         try:
             measure_schema = DeviceMeasurementsSchema()
             measure_ = DeviceMeasurements.query.filter_by(
@@ -105,7 +107,7 @@ class MeasurementsDeviceID(Resource):
             return {'measurements': measure_schema.dump(
                 measure_, many=True)[0]}, 200
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())
 
 
 @ns_measurement.route('/by_unique_id/<string:unique_id>')
@@ -122,14 +124,14 @@ class MeasurementsUniqueID(Resource):
     def get(self, unique_id):
         """Show the settings for a measurement with the unique_id"""
         if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
+            abort(403)
         try:
             measure_schema = DeviceMeasurementsSchema()
             measure_ = DeviceMeasurements.query.filter_by(
                 unique_id=unique_id).first()
             return measure_schema.dump(measure_)[0], 200
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())
 
 
 @ns_measurement.route('/create/<string:unique_id>/<string:unit>/<int:channel>/<value>')
@@ -150,23 +152,23 @@ class MeasurementsCreate(Resource):
     def post(self, unique_id, unit, channel, value):
         """Save a measurement to the mycodo_db database in InfluxDB"""
         if not utils_general.user_has_permission('edit_controllers'):
-            return 'You do not have permission to access this.', 401
+            abort(403)
 
         if channel < 0:
-            return 'Fail: Channel must be >= 0', 460
+            abort(422, custom='channel must be >= 0')
 
         try:
             value = float(value)
         except:
-            return 'Fail: value does not represent a float'
+            abort(422, custom='value does not represent a float')
 
         try:
             return_ = write_influxdb_value(unique_id, unit, value, channel=channel)
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())
 
         if return_:
-            return 'Fail', 460
+            abort(500)
         else:
             return 'Success', 200
 
@@ -190,12 +192,12 @@ class MeasurementsLast(Resource):
     def get(self, unique_id, unit, channel, past_seconds):
         """Return the last stored measurement from InfluxDB"""
         if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
+            abort(403)
 
         if channel < 0:
-            return 'Fail: channel must be >= 0', 460
+            abort(422, custom='channel must be >= 0')
         if past_seconds < 1:
-            return 'Fail: past_seconds must be >= 1', 460
+            abort(422, custom='past_seconds must be >= 1')
 
         try:
             return_ = read_last_influxdb(
@@ -205,7 +207,7 @@ class MeasurementsLast(Resource):
             else:
                 return return_, 200
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())
 
 
 @ns_measurement.route('/past/<string:unique_id>/<string:unit>/<int:channel>/<int:past_seconds>')
@@ -227,12 +229,12 @@ class MeasurementsPast(Resource):
     def get(self, unique_id, unit, channel, past_seconds):
         """Return a list of the last stored measurements from InfluxDB"""
         if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
+            abort(403)
 
         if channel < 0:
-            return 'Fail: channel must be >= 0', 460
+            abort(422, custom='channel must be >= 0')
         if past_seconds < 1:
-            return 'Fail: past_seconds must be >= 1', 460
+            abort(422, custom='past_seconds must be >= 1')
 
         try:
             return_ = read_past_influxdb(
@@ -246,4 +248,4 @@ class MeasurementsPast(Resource):
             else:
                 return return_, 200
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())

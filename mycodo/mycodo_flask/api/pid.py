@@ -5,6 +5,7 @@ import traceback
 import flask_login
 from flask_restplus import Namespace
 from flask_restplus import Resource
+from flask_restplus import abort
 from flask_restplus import fields
 
 from mycodo.databases.models import PID
@@ -21,8 +22,8 @@ default_responses = {
     403: 'Insufficient Permissions',
     404: 'Not Found',
     429: 'Too Many Requests',
-    460: 'Fail',
-    461: 'Unknown Response'
+    461: 'Unknown Response',
+    500: 'Internal Server Error'
 }
 
 
@@ -82,13 +83,13 @@ class PIDDump(Resource):
     def get(self):
         """Show all pid settings"""
         if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
+            abort(403)
         try:
             pid_schema = PIDSchema()
             return {'pids': pid_schema.dump(
                 PID.query.all(), many=True)[0]}, 200
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())
 
 
 @ns_pid.route('/by_unique_id/<string:unique_id>')
@@ -105,10 +106,10 @@ class PIDSingle(Resource):
     def get(self, unique_id):
         """Show the settings for a pid with the unique_id"""
         if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
+            abort(403)
         try:
             pid_schema = PIDSchema()
             pid_ = PID.query.filter_by(unique_id=unique_id).first()
             return pid_schema.dump(pid_)[0], 200
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())

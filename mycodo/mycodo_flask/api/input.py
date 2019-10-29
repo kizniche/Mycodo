@@ -5,6 +5,7 @@ import traceback
 import flask_login
 from flask_restplus import Namespace
 from flask_restplus import Resource
+from flask_restplus import abort
 from flask_restplus import fields
 
 from mycodo.databases.models import Input
@@ -21,8 +22,7 @@ default_responses = {
     403: 'Insufficient Permissions',
     404: 'Not Found',
     429: 'Too Many Requests',
-    460: 'Fail',
-    461: 'Unknown Response'
+    500: 'Internal Server Error'
 }
 
 input_fields = ns_input.model('Input Settings Fields', {
@@ -92,13 +92,13 @@ class InputDump(Resource):
     def get(self):
         """Show all input settings"""
         if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
+            abort(403)
         try:
             input_schema = InputSchema()
             return {'inputs': input_schema.dump(
                 Input.query.all(), many=True)[0]}, 200
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())
 
 
 @ns_input.route('/by_unique_id/<string:unique_id>')
@@ -115,10 +115,10 @@ class InputSingle(Resource):
     def get(self, unique_id):
         """Show the settings for an input"""
         if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
+            abort(403)
         try:
             input_schema = InputSchema()
             input_ = Input.query.filter_by(unique_id=unique_id).first()
             return input_schema.dump(input_)[0], 200
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())

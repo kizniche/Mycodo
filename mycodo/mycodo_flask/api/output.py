@@ -6,6 +6,7 @@ import flask_login
 from flask import request
 from flask_restplus import Namespace
 from flask_restplus import Resource
+from flask_restplus import abort
 from flask_restplus import fields
 
 from mycodo.databases.models import Output
@@ -22,11 +23,11 @@ default_responses = {
     401: 'Invalid API Key',
     403: 'Insufficient Permissions',
     404: 'Not Found',
+    422: 'Unprocessable Entity',
     429: 'Too Many Requests',
     460: 'Fail',
-    461: 'Unknown Response'
+    500: 'Internal Server Error'
 }
-
 
 output_fields = ns_output.model('Output Settings Fields', {
     'id': fields.Integer,
@@ -77,6 +78,7 @@ set_state_fields = ns_output.model('OutputSetState', {
         exclusiveMin=0)
 })
 
+
 def return_handler(return_):
     if return_ is None:
         return 'Success', 200
@@ -85,7 +87,7 @@ def return_handler(return_):
     elif return_[0] in [1, 'error']:
         return 'Fail: {}'.format(return_[1]), 460
     else:
-        return '', 461
+        return '', 500
 
 
 @ns_output.route('/')
@@ -98,13 +100,13 @@ class OutputDump(Resource):
     def get(self):
         """Show all output settings"""
         if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
+            abort(403)
         try:
             output_schema = OutputSchema()
             return {'outputs': output_schema.dump(
                 Output.query.all(), many=True)[0]}, 200
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())
 
 
 @ns_output.route('/by_unique_id/<string:unique_id>')
@@ -121,13 +123,13 @@ class OutputSingle(Resource):
     def get(self, unique_id):
         """Show the settings for an output with the unique_id"""
         if not utils_general.user_has_permission('view_settings'):
-            return 'You do not have permission to access this.', 401
+            abort(403)
         try:
             output_schema = OutputSchema()
             output_ = Output.query.filter_by(unique_id=unique_id).first()
             return output_schema.dump(output_)[0], 200
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())
 
 
 @ns_output.route('/set_pwm/<string:unique_id>/<duty_cycle>')
@@ -146,22 +148,22 @@ class OutputPWM(Resource):
     def post(self, unique_id, duty_cycle):
         """Set the Duty Cycle of a PWM output"""
         if not utils_general.user_has_permission('edit_controllers'):
-            return 'You do not have permission to access this.', 401
+            abort(403)
 
         try:
             duty_cycle = float(duty_cycle)
         except:
-            return 'Fail: duty_cycle does not represent float value', 460
+            abort(422, custom='duty_cycle does not represent float value')
 
         if duty_cycle < 0 or duty_cycle > 100:
-            return 'Fail. Required: 0 <= duty_cycle <= 100.', 460
+            abort(422, custom='Required: 0 <= duty_cycle <= 100')
 
         try:
             control = DaemonControl()
             return_ = control.output_on(unique_id, duty_cycle=float(duty_cycle))
             return return_handler(return_)
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())
 
 
 @ns_output.route('/set_state/<string:unique_id>/<string:state>')
@@ -182,10 +184,15 @@ class OutputState(Resource):
     def post(self, unique_id, state):
         """Change the state of an on/off output"""
         if not utils_general.user_has_permission('edit_controllers'):
-            return 'You do not have permission to access this.', 401
-        try:
-            duration = float(request.args.get("duration"))
-        except:
+            abort(403)
+
+        duration = request.args.get("duration")
+        if duration is not None:
+            try:
+                duration = float(request.args.get("duration"))
+            except:
+                abort(422, custom='duration does not represent a number')
+        else:
             duration = 0
 
         try:
@@ -194,4 +201,4 @@ class OutputState(Resource):
                 unique_id, state, amount=float(duration))
             return return_handler(return_)
         except Exception:
-            return 'Fail: {}'.format(traceback.format_exc()), 460
+            abort(500, custom=traceback.format_exc())

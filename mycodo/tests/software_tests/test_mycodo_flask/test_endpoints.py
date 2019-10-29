@@ -29,6 +29,16 @@ def redirects_to_admin_creation_page(testapp, endpoint):
     assert "<!-- Route: /create_admin -->" in response
 
 
+def returns_401_unauthorized(testapp, endpoint):
+    """ helper function that verifies 401 is returned """
+    except_msg = None
+    try:
+        response = testapp.get(endpoint, expect_errors=True).maybe_follow()
+    except Exception as msg:
+        except_msg = str(msg)
+    assert except_msg.startswith("Bad response: 401 UNAUTHORIZED"), "Response Status Failure: {}".format(endpoint)
+
+
 def test_sees_admin_creation_form(testapp):
     """ No Admin user exists: user sees the admin creation page """
     print("\nTest: test_sees_admin_creation_form")
@@ -54,6 +64,7 @@ def test_routes_when_not_logged_in(testapp):
     print("\nTest: test_routes_when_not_logged_in")
     routes = [
         '',
+        'api'
         'admin/backup',
         'admin/statistics',
         'admin/upgrade',
@@ -95,6 +106,23 @@ def test_routes_when_not_logged_in(testapp):
         redirects_to_login_page(testapp=testapp, endpoint='/{add}'.format(add=route))
 
 
+def test_api_when_not_logged_in(testapp):
+    """
+    Verifies behavior of these API endpoints when not logged in.
+    All API endpoint requests should return 401 (unauthorized).
+    """
+    print("\nTest: test_api_when_not_logged_in")
+    routes = [
+        'inputs',
+        'outputs',
+        'measurements',
+        'pids',
+        'users'
+    ]
+    for route in routes:
+        returns_401_unauthorized(testapp=testapp, endpoint='/api/{add}'.format(add=route))
+
+
 # ---------------------------
 #   Tests Logged in as Admin
 # ---------------------------
@@ -111,6 +139,7 @@ def test_routes_logged_in_as_admin(_, testapp):
 
     # Test all endpoints
     routes = [
+        ('api', 'Mycodo API'),
         ('admin/backup', '<!-- Route: /admin/backup -->'),
         ('admin/statistics', '<!-- Route: /admin/statistics -->'),
         ('admin/upgrade', '<!-- Route: /admin/upgrade -->'),
