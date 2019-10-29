@@ -181,6 +181,34 @@ def test_routes_logged_in_as_admin(_, testapp):
 
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
+def test_api_logged_in_as_admin(_, testapp):
+    """ Verifies behavior of these API endpoints for a logged in admin user """
+    print("\nTest: test_api_logged_in_as_admin")
+
+    print("test_routes_logged_in_as_admin: login_user(testapp, 'admin', '53CR3t_p4zZW0rD')")
+    login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
+
+    # Test if the navigation bar is seen on the main page
+    sees_navbar(testapp)
+
+    # Test all endpoints
+    routes = [
+        ('inputs', '"inputs":'),
+        ('measurements', '"measurements":'),
+        ('outputs', '"outputs":'),
+        ('pids', '"pids":'),
+        ('users', '"users":'),
+    ]
+
+    for index, route in enumerate(routes):
+        print("test_routes_logged_in_as_admin: Test Route ({}/{}): testapp.get('/api/{}').maybe_follow()".format(
+            index + 1, len(routes), route[0]))
+        response = testapp.get('/api/{add}'.format(add=route[0])).maybe_follow()
+        assert response.status_code == 200, "Endpoint Tested: {page}".format(page=route[0])
+        assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
+
+
+@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_add_all_data_devices_logged_in_as_admin(_, testapp):
     """ Verifies adding all inputs as a logged in admin user """
     print("\nTest: test_add_all_data_devices_logged_in_as_admin")
