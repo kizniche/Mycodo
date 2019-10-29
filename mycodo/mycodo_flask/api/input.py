@@ -95,8 +95,9 @@ class InputDump(Resource):
             abort(403)
         try:
             input_schema = InputSchema()
-            return {'inputs': input_schema.dump(
-                Input.query.all(), many=True)[0]}, 200
+            input_dump = input_schema.dump(Input.query.all(), many=True)
+            logger.error("TEST00: {}, {}".format(input_dump, len(input_dump)))
+            return {'inputs': input_dump[0]}, 200
         except Exception:
             abort(500, custom=traceback.format_exc())
 

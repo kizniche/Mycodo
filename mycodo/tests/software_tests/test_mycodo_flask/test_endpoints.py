@@ -122,6 +122,16 @@ def test_api_when_not_logged_in(testapp):
         returns_401_unauthorized(testapp=testapp, endpoint='/api/{add}'.format(add=route))
 
 
+def test_api_docs_when_not_logged_in(testapp):
+    """
+    Verifies behavior of these API endpoints when not logged in.
+    API docs endpoint endpoint requests should return 200.
+    """
+    response = testapp.get('/api').maybe_follow()
+    assert response.status_code == 200, "Endpoint Tested: /api"
+    assert 'Mycodo API' in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
+
+
 # ---------------------------
 #   Tests Logged in as Admin
 # ---------------------------
