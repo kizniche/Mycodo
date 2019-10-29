@@ -119,6 +119,11 @@ class SettingsGeneral(FlaskForm):
     )
     stats_opt_out = BooleanField(lazy_gettext('Opt-out of statistics'))
     enable_upgrade_check = BooleanField(lazy_gettext('Check for Updates'))
+    net_test_ip = StringField(lazy_gettext('Internet Test IP Address'))
+    net_test_port = IntegerField(
+        lazy_gettext('Internet Test Port'), widget=NumberInput())
+    net_test_timeout = IntegerField(
+        lazy_gettext('Internet Test Timeout'), widget=NumberInput())
     Submit = SubmitField(TRANSLATIONS['save']['title'])
 
 

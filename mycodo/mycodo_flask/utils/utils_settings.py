@@ -309,6 +309,9 @@ def settings_general_mod(form):
                 mod_misc.output_usage_report_hour = form.output_usage_report_hour.data
                 mod_misc.stats_opt_out = form.stats_opt_out.data
                 mod_misc.enable_upgrade_check = form.enable_upgrade_check.data
+                mod_misc.net_test_ip = form.net_test_ip.data
+                mod_misc.net_test_port = form.net_test_port.data
+                mod_misc.net_test_timeout = form.net_test_timeout.data
 
                 mod_user = User.query.filter(
                     User.id == flask_login.current_user.id).first()

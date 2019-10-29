@@ -367,7 +367,10 @@ def admin_upgrade():
     if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('routes_general.home'))
 
-    if not internet():
+    misc = Misc.query.first()
+    if not internet(host=misc.net_test_ip,
+                    port=misc.net_test_port,
+                    timeout=misc.net_test_timeout):
         flash(gettext("Upgrade functionality is disabled because an internet "
                       "connection was unable to be detected"),
               "error")

@@ -1,7 +1,10 @@
 ## 7.10.0 (Unreleased)
 
+### Features
+
  - Add REST API access, API endpoints, and API manual section ([#705](https://github.com/kizniche/mycodo/issues/705))
  - Add button to copy device UUID to clipboard
+ - Add ability to set IP, port, and timeout for upgrade internet check
 
 
 ## 7.9.1 (2019.10.26)

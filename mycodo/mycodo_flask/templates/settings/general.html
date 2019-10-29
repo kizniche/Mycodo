@@ -117,6 +117,29 @@
         </div>
       </div>
       <div class="form-group">
+        <div class="col-sm-12">
+          <h3>Upgrade Options</h3>
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.net_test_ip.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.net_test_ip(class_='form-control', value=misc.net_test_ip, **{'title':_("The IP address to test if there is an active internet connection required to allow upgrading.")})}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.net_test_port.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.net_test_port(class_='form-control', value=misc.net_test_port, **{'title':_("The port of the internet test IP address.")})}}
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.net_test_timeout.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.net_test_timeout(class_='form-control', value=misc.net_test_timeout, **{'title':_("The timeout period (seconds) for testing the internet connection.")})}}
+        </div>
+      </div>
+      <div class="form-group">
         {{form_settings_general.enable_upgrade_check.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
           {%- if misc.enable_upgrade_check == true -%}
