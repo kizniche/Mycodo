@@ -54,7 +54,9 @@ class UserDump(Resource):
             abort(403)
         try:
             user_schema = UserSchema()
-            return {'users': user_schema.dump(User.query.all(), many=True)[0]}, 200
+            user_data = user_schema.dump(User.query.all(), many=True)
+            if user_data:
+                return {'users': user_data[0]}, 200
         except Exception:
             abort(500, custom=traceback.format_exc())
 
@@ -73,7 +75,9 @@ class UserSingle(Resource):
             abort(403)
         try:
             user_schema = UserSchema()
-            user_ = User.query.filter_by(unique_id=unique_id).first()
-            return user_schema.dump(user_)[0], 200
+            user_data = user_schema.dump(
+                User.query.filter_by(unique_id=unique_id).first())
+            if user_data:
+                return user_data[0], 200
         except Exception:
             abort(500, custom=traceback.format_exc())

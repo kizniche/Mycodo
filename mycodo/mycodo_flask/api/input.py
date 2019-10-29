@@ -95,9 +95,9 @@ class InputDump(Resource):
             abort(403)
         try:
             input_schema = InputSchema()
-            input_dump = input_schema.dump(Input.query.all(), many=True)
-            logger.error("TEST00: {}, {}".format(input_dump, len(input_dump)))
-            return {'inputs': input_dump[0]}, 200
+            input_data = input_schema.dump(Input.query.all(), many=True)
+            if input_data:
+                return {'inputs': input_data[0]}, 200
         except Exception:
             abort(500, custom=traceback.format_exc())
 
@@ -119,7 +119,9 @@ class InputSingle(Resource):
             abort(403)
         try:
             input_schema = InputSchema()
-            input_ = Input.query.filter_by(unique_id=unique_id).first()
-            return input_schema.dump(input_)[0], 200
+            input_data = input_schema.dump(
+                Input.query.filter_by(unique_id=unique_id).first())
+            if input_data:
+                return input_data[0], 200
         except Exception:
             abort(500, custom=traceback.format_exc())

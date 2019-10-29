@@ -103,8 +103,10 @@ class OutputDump(Resource):
             abort(403)
         try:
             output_schema = OutputSchema()
-            return {'outputs': output_schema.dump(
-                Output.query.all(), many=True)[0]}, 200
+            output_data = output_schema.dump(
+                Output.query.all(), many=True)
+            if output_data:
+                return {'outputs': output_data[0]}, 200
         except Exception:
             abort(500, custom=traceback.format_exc())
 
@@ -126,8 +128,10 @@ class OutputSingle(Resource):
             abort(403)
         try:
             output_schema = OutputSchema()
-            output_ = Output.query.filter_by(unique_id=unique_id).first()
-            return output_schema.dump(output_)[0], 200
+            output_data = output_schema.dump(
+                Output.query.filter_by(unique_id=unique_id).first())
+            if output_data:
+                return output_data[0], 200
         except Exception:
             abort(500, custom=traceback.format_exc())
 
@@ -160,7 +164,8 @@ class OutputPWM(Resource):
 
         try:
             control = DaemonControl()
-            return_ = control.output_on(unique_id, duty_cycle=float(duty_cycle))
+            return_ = control.output_on(
+                unique_id, duty_cycle=float(duty_cycle))
             return return_handler(return_)
         except Exception:
             abort(500, custom=traceback.format_exc())

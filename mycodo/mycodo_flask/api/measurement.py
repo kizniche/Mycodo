@@ -78,8 +78,10 @@ class Measurements(Resource):
             abort(403)
         try:
             measure_schema = DeviceMeasurementsSchema()
-            return {'measurements': measure_schema.dump(
-                DeviceMeasurements.query.all(), many=True)[0]}, 200
+            measure_data = measure_schema.dump(
+                DeviceMeasurements.query.all(), many=True)
+            if measure_data:
+                return {'measurements': measure_data[0]}, 200
         except Exception:
             abort(500, custom=traceback.format_exc())
 
@@ -102,10 +104,11 @@ class MeasurementsDeviceID(Resource):
             abort(403)
         try:
             measure_schema = DeviceMeasurementsSchema()
-            measure_ = DeviceMeasurements.query.filter_by(
-                device_id=device_id).all()
-            return {'measurements': measure_schema.dump(
-                measure_, many=True)[0]}, 200
+            measure_data = measure_schema.dump(
+                DeviceMeasurements.query.filter_by(
+                    device_id=device_id).all(), many=True)
+            if measure_data:
+                return {'measurements': measure_data[0]}, 200
         except Exception:
             abort(500, custom=traceback.format_exc())
 
@@ -127,9 +130,11 @@ class MeasurementsUniqueID(Resource):
             abort(403)
         try:
             measure_schema = DeviceMeasurementsSchema()
-            measure_ = DeviceMeasurements.query.filter_by(
-                unique_id=unique_id).first()
-            return measure_schema.dump(measure_)[0], 200
+            measure_data = measure_schema.dump(
+                DeviceMeasurements.query.filter_by(
+                    unique_id=unique_id).first())
+            if measure_data:
+                return measure_data[0], 200
         except Exception:
             abort(500, custom=traceback.format_exc())
 
@@ -163,7 +168,8 @@ class MeasurementsCreate(Resource):
             abort(422, custom='value does not represent a float')
 
         try:
-            return_ = write_influxdb_value(unique_id, unit, value, channel=channel)
+            return_ = write_influxdb_value(
+                unique_id, unit, value, channel=channel)
         except Exception:
             abort(500, custom=traceback.format_exc())
 

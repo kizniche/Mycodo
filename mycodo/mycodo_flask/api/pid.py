@@ -86,8 +86,9 @@ class PIDDump(Resource):
             abort(403)
         try:
             pid_schema = PIDSchema()
-            return {'pids': pid_schema.dump(
-                PID.query.all(), many=True)[0]}, 200
+            pid_data = pid_schema.dump(PID.query.all(), many=True)
+            if pid_data:
+                return {'pids': pid_data[0]}, 200
         except Exception:
             abort(500, custom=traceback.format_exc())
 
@@ -109,7 +110,9 @@ class PIDSingle(Resource):
             abort(403)
         try:
             pid_schema = PIDSchema()
-            pid_ = PID.query.filter_by(unique_id=unique_id).first()
-            return pid_schema.dump(pid_)[0], 200
+            pid_data = pid_schema.dump(
+                PID.query.filter_by(unique_id=unique_id).first())
+            if pid_data:
+                return pid_data[0], 200
         except Exception:
             abort(500, custom=traceback.format_exc())
