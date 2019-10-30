@@ -27,6 +27,7 @@ then
 
   # Generate HTML (HTML5) file
   pandoc --table-of-contents -H ${INSTALL_DIRECTORY}/mycodo/scripts/pandoc.css_style --self-contained -s -S -t html5 -o ${INSTALL_DIRECTORY}/mycodo-manual.html ${INSTALL_DIRECTORY}/mycodo-manual.rst
+  ${INSTALL_DIRECTORY}/mycodo-manual.html ${INSTALL_DIRECTORY}/docs/mycodo-manual.html
 
   # Generate plain text
   pandoc --table-of-contents -s -S -t plain -o ${INSTALL_DIRECTORY}/mycodo-manual.txt ${INSTALL_DIRECTORY}/mycodo-manual.rst

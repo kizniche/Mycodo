@@ -19,6 +19,8 @@ if curl -k -s --head --request GET https://192.168.0.9/api/swagger.json | grep "
 
     # Change title
     sed -i 's/<title>ReDoc documentation<\/title>/<title>Mycodo API documentation<\/title>/g' ${INSTALL_DIRECTORY}/mycodo-api.html
+
+    cp ${INSTALL_DIRECTORY}/mycodo-api.html ${INSTALL_DIRECTORY}/docs/mycodo-api.html
   fi
 else
   printf "Cannot connect to https://192.168.0.9/api/swagger.json\n"
