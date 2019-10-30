@@ -164,10 +164,9 @@ Manual
 
 The Mycodo Manual may be viewed as
 `Markdown <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__,
-`PDF <https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf>`__,
+`PDF <https://kizniche.github.io/Mycodo/mycodo-manual.pdf>`__,
 `HTML <https://kizniche.github.io/Mycodo/mycodo-manual.html>`__,
-or `Plain
-Text <https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt>`__
+or `Plain Text <https://kizniche.github.io/Mycodo/mycodo-manual.txt>`__
 
 The `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__ also contains useful information.
 
