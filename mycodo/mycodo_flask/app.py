@@ -42,7 +42,7 @@ logger = logging.getLogger(__name__)
 # Test enabling API (should not work with Raspbian OS version < 10)
 ENABLE_API = False
 try:
-    from mycodo.mycodo_flask.api import api_blueprint
+    from mycodo.mycodo_flask.api import api_v1_blueprint
     ENABLE_API = True
 except:
     logger.exception("API")
@@ -97,7 +97,7 @@ def register_extensions(app):
 def register_blueprints(app):
     """ register blueprints to the app """
     if ENABLE_API:
-        app.register_blueprint(api_blueprint)  # API
+        app.register_blueprint(api_v1_blueprint)  # API
 
     app.register_blueprint(routes_admin.blueprint)  # register admin views
     app.register_blueprint(routes_authentication.blueprint)  # register login/logout views
@@ -152,7 +152,7 @@ def extension_limiter(app):
     limiter.limit("300/hour")(routes_authentication.blueprint)
 
     if ENABLE_API:
-        limiter.limit("200/minute")(api_blueprint)
+        limiter.limit("200/minute")(api_v1_blueprint)
 
     return app
 

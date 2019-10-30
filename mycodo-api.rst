@@ -8,6 +8,52 @@ Mycodo APIs
 
 **Note: Not Fully Implemented**
 
+REST API
+========
+
+An API is an application programming interface - in short, it’s a set of rules that lets programs talk to each other, exposing data and functionality across the internet in a consistent format.
+
+REST stands for Representational State Transfer. This is an architectural pattern that describes how distributed systems can expose a consistent interface. When people use the term ‘REST API,’ they are generally referring to an API accessed via HTTP protocol at a predefined set of URLs.
+
+These URLs represent various resources - any information or content accessed at that location, which can be returned as JSON, HTML, audio files, or images. Often, resources have one or more methods that can be performed on them over HTTP, like GET, POST, PUT and DELETE.
+
+Authentication
+--------------
+
+An API Key can be generated from the User Settings page (Configuration -> Users). This is stored as a 128-bit bytes object in the database, but will be presented as a base64-encoded string. This can be used to access HTTPS endpoints. The API Key is presented to the user as a base64-encoded string.
+
+Mycodo supports several authentication methods. All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will fail.
+
+Here are a few methods using your API Key:
+
+.. code:: bash
+
+    curl -k -v -X GET -H 'authorization: Basic 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=' https://127.0.0.1/users
+
+.. code:: bash
+
+    curl -k -v -x GET -H 'X-API-KEY: 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=' https://127.0.0.1/users
+
+.. code:: bash
+
+    curl -k -v -x GET https://127.0.0.1/users?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=
+
+Errors
+------
+
+Mycodo uses conventional HTTP response codes to indicate the success or failure of an API request. In general: Codes in the 2xx range indicate success. Codes in the 4xx range indicate an error that failed given the information provided (e.g., a required parameter was omitted, a charge failed, etc.). Codes in the 5xx range indicate an error with Mycodo's servers (these are rare).
+
+Some 4xx errors that could be handled programmatically (e.g., a card is declined) include an error code that briefly explains the error reported.
+
+Endpoints
+---------
+
+Visit https://127.0.0.1/api/v1 for documentation of the current API endpoints of your Mycodo install.
+
+Documentation for the latest API version is also available in HTML format: `Mycodo API Docs <https://kizniche.github.io/Mycodo/mycodo-api.html>`__
+
+--------------
+
 Daemon Control Object
 =====================
 
@@ -327,47 +373,3 @@ Parameters:
 -  **function_id** - The unique ID of the controller.
 -  **message** - A message to send with the action that may be used by the action.
 -  **debug** - Whether to show debug logging messages.
-
---------------
-
-REST API
-========
-
-An API is an application programming interface - in short, it’s a set of rules that lets programs talk to each other, exposing data and functionality across the internet in a consistent format.
-
-REST stands for Representational State Transfer. This is an architectural pattern that describes how distributed systems can expose a consistent interface. When people use the term ‘REST API,’ they are generally referring to an API accessed via HTTP protocol at a predefined set of URLs.
-
-These URLs represent various resources - any information or content accessed at that location, which can be returned as JSON, HTML, audio files, or images. Often, resources have one or more methods that can be performed on them over HTTP, like GET, POST, PUT and DELETE.
-
-Authentication
---------------
-
-An API Key can be generated from the User Settings page (Configuration -> Users). This is stored as a 128-bit bytes object in the database, but will be presented as a base64-encoded string. This can be used to access HTTPS endpoints. The API Key is presented to the user as a base64-encoded string.
-
-Mycodo supports several authentication methods. All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will fail.
-
-Here are a few methods using your API Key:
-
-.. code:: bash
-
-    curl -k -v -X GET -H 'authorization: Basic 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=' https://127.0.0.1/users
-
-.. code:: bash
-
-    curl -k -v -x GET -H 'X-API-KEY: 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=' https://127.0.0.1/users
-
-.. code:: bash
-
-    curl -k -v -x GET https://127.0.0.1/users?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=
-
-Errors
-------
-
-Mycodo uses conventional HTTP response codes to indicate the success or failure of an API request. In general: Codes in the 2xx range indicate success. Codes in the 4xx range indicate an error that failed given the information provided (e.g., a required parameter was omitted, a charge failed, etc.). Codes in the 5xx range indicate an error with Mycodo's servers (these are rare).
-
-Some 4xx errors that could be handled programmatically (e.g., a card is declined) include an error code that briefly explains the error reported.
-
-Endpoints
----------
-
-Visit https://127.0.0.1/api for the current API endpoints of your Mycodo install. `Mycodo API documentation in HTML format <https://kizniche.github.io/Mycodo/mycodo-api.html>`__ is also available.

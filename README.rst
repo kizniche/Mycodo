@@ -15,7 +15,7 @@ and outputs in interesting ways to sense and manipulate the environment.
 `HTML <https://kizniche.github.io/Mycodo/mycodo-manual.html>`__,
 `TEXT <https://kizniche.github.io/Mycodo/mycodo-manual.txt>`__)
 
-`Mycodo API <https://kizniche.github.io/Mycodo/mycodo-api.html>`__
+`Mycodo API <https://kizniche.github.io/Mycodo/mycodo-api.html>`__ (Latest Version: 1)
 
 `Mycodo Support <https://play.google.com/store/apps/details?id=com.mycodo.mycododocs>`__ (Android App)
 
@@ -169,6 +169,13 @@ The Mycodo Manual may be viewed as
 or `Plain Text <https://kizniche.github.io/Mycodo/mycodo-manual.txt>`__
 
 The `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__ also contains useful information.
+
+REST API
+--------
+
+The latest API documentation can be found here: `Mycodo API Docs <https://kizniche.github.io/Mycodo/mycodo-api.html>`__
+
+If a new API version is released, older documentation will be provided here.
 
 About PID Control
 -----------------
