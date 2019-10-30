@@ -11,9 +11,9 @@ and outputs in interesting ways to sense and manipulate the environment.
 |Build Status| |Codacy Badge| |DOI|
 
 `Mycodo Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__
-(`PDF <https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf>`__,
+(`PDF <https://kizniche.github.io/Mycodo/mycodo-manual.pdf>`__,
 `HTML <https://kizniche.github.io/Mycodo/mycodo-manual.html>`__,
-`TEXT <https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt>`__)
+`TEXT <https://kizniche.github.io/Mycodo/mycodo-manual.txt>`__)
 
 `Mycodo API <https://kizniche.github.io/Mycodo/mycodo-api.html>`__
 

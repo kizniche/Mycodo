@@ -844,13 +844,6 @@ def page_graph_async():
                            y_axes=y_axes)
 
 
-@blueprint.route('/help', methods=('GET', 'POST'))
-@flask_login.login_required
-def page_help():
-    """ Display Mycodo manual/help """
-    return render_template('mycodo-manual.html')
-
-
 @blueprint.route('/info', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_info():

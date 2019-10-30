@@ -223,9 +223,10 @@
             <a class="nav-link dropdown-toggle" href="#" id="dropdown02" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-question-circle" style="font-size: 1.5em;"></i></a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown02">
             {% if help_page[0] != '' %}
-              <a class="dropdown-item{% if active_page == 'help' %} active{% endif %}" target="_blank" href="{{url_for('routes_page.page_help')}}#{{help_page[0]}}"><i class="fas fa-book"></i> {{_('Help')}}: {{help_page[1]}}</a>
+              <a class="dropdown-item{% if active_page == 'help' %} active{% endif %}" target="_blank" href="/static/manual/mycodo-manual.html#{{help_page[0]}}"><i class="fas fa-book"></i> {{_('Help')}}: {{help_page[1]}}</a>
             {% endif %}
-              <a class="dropdown-item{% if active_page == 'help' %} active{% endif %}" target="_blank" href="{{url_for('routes_page.page_help')}}"><i class="fas fa-book"></i> {{_('Mycodo Manual')}}</a>
+              <a class="dropdown-item{% if active_page == 'help' %} active{% endif %}" target="_blank" href="/static/manual/mycodo-manual.html"><i class="fas fa-book"></i> {{_('Mycodo Manual')}}</a>
+              <a class="dropdown-item" target="_blank" href="/static/manual/mycodo-api.html"><i class="fas fa-plug"></i> {{_('Mycodo API Manual')}}</a>
               <a class="dropdown-item" target="_blank" href="/api"><i class="fas fa-plug"></i> {{_('Mycodo API')}}</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" target="_blank" href="https://kylegabriel.com/forum/"><i class="fas fa-comments"></i> {{_('Discussion Forum')}}</a>

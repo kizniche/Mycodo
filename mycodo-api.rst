@@ -344,19 +344,21 @@ Authentication
 
 An API Key can be generated from the User Settings page (Configuration -> Users). This is stored as a 128-bit bytes object in the database, but will be presented as a base64-encoded string. This can be used to access HTTPS endpoints. The API Key is presented to the user as a base64-encoded string.
 
-Mycodo supports HTTP Basic authentication. This allows you to protect the URLs on your web server so that only you and Mycodo can access them. All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will also fail.
+Mycodo supports several authentication methods. All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will fail.
 
-For HTTP Basic authentication, you will use your API Key:
-
-.. code:: bash
-
-    curl -k -v -H 'authorization: Basic 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=' https://127.0.0.1/daemonactive
-
-Authentication may also be conducted with the use of the api_key URL parameter:
+Here are a few methods using your API Key:
 
 .. code:: bash
 
-    curl -k -v https://127.0.0.1/daemonactive?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=
+    curl -k -v -X GET -H 'authorization: Basic 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=' https://127.0.0.1/users
+
+.. code:: bash
+
+    curl -k -v -x GET -H 'X-API-KEY: 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=' https://127.0.0.1/users
+
+.. code:: bash
+
+    curl -k -v -x GET https://127.0.0.1/users?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=
 
 Errors
 ------
@@ -368,112 +370,4 @@ Some 4xx errors that could be handled programmatically (e.g., a card is declined
 Endpoints
 ---------
 
-Visit https://127.0.0.1/api for the current API endpoints. Below may not be accurate and will be slowly merged into the new API system.
-
---------------
-
-/async/:device_id/:device_type/:measurement_id/:start_seconds/:end_seconds
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-GET
-^^^
-
-Returns: 700 measurements between *start_seconds* (epoch) and *end_seconds* (epoch).
-
---------------
-
-/daemonactive
-~~~~~~~~~~~~~
-
-GET
-^^^
-
-Returns: "active" if the daemon is active.
-
---------------
-
-/inputs
-~~~~~~~
-
-GET
-^^^
-
-User permissions required: View Settings
-
-Returns: dictionary of all input settings.
-
---------------
-
-/last/:unique_id/:measure_type/:measurement_id/:period
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-GET
-^^^
-
-Queries influxdb for measurements in the past *period*
-
-Returns: last measurement.
-
---------------
-
-/last_pid/:pid_id/:input_period
-
---------------
-
-/output_mod/:output_id/:state/:out_type/:amount
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-GET
-^^^
-
-Turns an Output on of off
-
-Returns: success or fail
-
---------------
-
-/outputstate
-~~~~~~~~~~~~
-
-GET
-^^^
-
-Returns: the current state of all Outputs.
-
---------------
-
-/outputstate_unique_id/:unique_id
-
-Returns: the current state of a single Output.
-
---------------
-
-/past/:unique_id/:measure_type/:measurement_id/:past_seconds
-
-Returns: all measurements from the past *past_seconds* seconds.
-
---------------
-
-/pid_mod_unique_id/:unique_id/:state
-
---------------
-
-/systemctl/:action
-
---------------
-
-/time
-
-Returns: the current time.
-
---------------
-
-/users
-~~~~~~
-
-GET
-^^^
-
-User permissions required: View Settings
-
-Returns: dictionary of all user information except password and API key.
+Visit https://127.0.0.1/api for the current API endpoints of your Mycodo install. `Mycodo API documentation in HTML format <https://kizniche.github.io/Mycodo/mycodo-api.html>`__ is also available.

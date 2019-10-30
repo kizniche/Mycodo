@@ -47,6 +47,7 @@ https://127.0.0.1/
 
 *   [Mycodo on GitHub](https://github.com/kizniche/Mycodo)
 *   [Mycodo Manual](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst)
+*   [Mycodo API](https://kizniche.github.io/Mycodo/mycodo-api.html)
 *   [Mycodo Support](https://play.google.com/store/apps/details?id=com.mycodo.mycododocs) (Android App)
 
 ## Screenshots
