@@ -126,7 +126,7 @@ def test_api_docs_when_not_logged_in(testapp):
     Verifies behavior of these API endpoints when not logged in.
     API docs endpoint endpoint requests should return 200.
     """
-    response = testapp.get('/api').maybe_follow()
+    response = testapp.get('/api/v1').maybe_follow()
     assert response.status_code == 200, "Endpoint Tested: /api"
     assert 'Mycodo API' in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
 
@@ -208,9 +208,9 @@ def test_api_logged_in_as_admin(_, testapp):
     ]
 
     for index, route in enumerate(routes):
-        print("test_routes_logged_in_as_admin: Test Route ({}/{}): testapp.get('/api/{}').maybe_follow()".format(
+        print("test_routes_logged_in_as_admin: Test Route ({}/{}): testapp.get('/api/v1/{}').maybe_follow()".format(
             index + 1, len(routes), route[0]))
-        response = testapp.get('/api/{add}'.format(add=route[0])).maybe_follow()
+        response = testapp.get('/api/v1/{add}'.format(add=route[0])).maybe_follow()
         assert response.status_code == 200, "Endpoint Tested: {page}".format(page=route[0])
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
 
