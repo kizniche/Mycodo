@@ -23,11 +23,11 @@ then
   sed -i '/^.. container:: contents/d' ${INSTALL_DIRECTORY}/mycodo-manual.rst
 
   # Generate PDF file
-  pandoc -V geometry:margin=0.5in --table-of-contents -s -o ${INSTALL_DIRECTORY}/mycodo-manual.pdf ${INSTALL_DIRECTORY}/mycodo-manual.rst
+  pandoc -V geometry:margin=0.5in --table-of-contents -s -o ${INSTALL_DIRECTORY}/docs/mycodo-manual.pdf ${INSTALL_DIRECTORY}/mycodo-manual.rst
 
   # Generate HTML (HTML5) file
   pandoc --table-of-contents -H ${INSTALL_DIRECTORY}/mycodo/scripts/pandoc.css_style --self-contained -s -S -t html5 -o ${INSTALL_DIRECTORY}/docs/mycodo-manual.html ${INSTALL_DIRECTORY}/mycodo-manual.rst
-  ${INSTALL_DIRECTORY}/docs/mycodo-manual.html ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/static/manual/mycodo-manual.html
+  cp ${INSTALL_DIRECTORY}/docs/mycodo-manual.html ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/static/manual/mycodo-manual.html
 
   # Generate plain text
   pandoc --table-of-contents -s -S -t plain -o ${INSTALL_DIRECTORY}/docs/mycodo-manual.txt ${INSTALL_DIRECTORY}/mycodo-manual.rst

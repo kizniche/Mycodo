@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-29 22:18-0400\n"
+"POT-Creation-Date: 2019-10-30 17:01-0400\n"
 "PO-Revision-Date: 2019-01-29 14:25-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sv\n"
@@ -1772,7 +1772,7 @@ msgstr ""
 msgid "The serial device to write to"
 msgstr ""
 
-#: mycodo_flask/app.py:211
+#: mycodo_flask/app.py:210
 msgid "Please log in to access this page"
 msgstr ""
 
@@ -3395,31 +3395,39 @@ msgstr ""
 msgid "Mycodo Manual"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:230
-msgid "Discussion Forum"
+#: mycodo_flask/templates/layout.html:229
+msgid "Mycodo API Docs"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:231
-msgid "Submit an Issue"
+#: mycodo_flask/templates/layout.html:230
+msgid "Mycodo API"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:232
-msgid "Mycodo on Github"
+msgid "Discussion Forum"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:233
+msgid "Submit an Issue"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:234
+msgid "Mycodo on Github"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:235
 msgid "Changelog"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:240
+#: mycodo_flask/templates/layout.html:242
 msgid "Configure"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:241
+#: mycodo_flask/templates/layout.html:243
 msgid "Mycodo Logs"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:242
+#: mycodo_flask/templates/layout.html:244
 #: mycodo_flask/templates/pages/info.html:3
 #: mycodo_flask/templates/pages/info.html:5
 msgid "System Information"
@@ -3428,42 +3436,42 @@ msgstr ""
 #: mycodo_flask/templates/admin/dependencies.html:3
 #: mycodo_flask/templates/admin/dependencies.html:5
 #: mycodo_flask/templates/admin/dependencies.html:44
-#: mycodo_flask/templates/layout.html:244
+#: mycodo_flask/templates/layout.html:246
 msgid "Dependencies"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:246
+#: mycodo_flask/templates/layout.html:248
 msgid "Upgrade"
 msgstr ""
 
 #: mycodo_flask/templates/admin/backup.html:3
 #: mycodo_flask/templates/admin/backup.html:5
 #: mycodo_flask/templates/admin/backup.html:12
-#: mycodo_flask/templates/layout.html:247
+#: mycodo_flask/templates/layout.html:249
 msgid "Backup Restore"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:249
+#: mycodo_flask/templates/layout.html:251
 msgid "Restart Backend"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:250
+#: mycodo_flask/templates/layout.html:252
 msgid "Restart Frontend"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:252
+#: mycodo_flask/templates/layout.html:254
 msgid "Restart System"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:253
+#: mycodo_flask/templates/layout.html:255
 msgid "Shutdown System"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:255
+#: mycodo_flask/templates/layout.html:257
 msgid "Remote Admin"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:257
+#: mycodo_flask/templates/layout.html:259
 msgid "Logout"
 msgstr ""
 
@@ -5671,19 +5679,19 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Add Dashboard Element"
-#~ msgstr "Lägg till Dashboard Element"
+#~ msgstr ""
 
 #~ msgid "Graph"
-#~ msgstr "Graf"
+#~ msgstr ""
 
 #~ msgid "Gauge"
-#~ msgstr "Mätare"
+#~ msgstr ""
 
 #~ msgid "PWM Slider"
 #~ msgstr ""
 
 #~ msgid "PID Control"
-#~ msgstr "PID-kontroll"
+#~ msgstr ""
 
 #~ msgid "Average (Last, Multiple Channels)"
 #~ msgstr ""
@@ -5698,79 +5706,79 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Difference"
-#~ msgstr "Skillnad"
+#~ msgstr ""
 
 #~ msgid "Equation"
-#~ msgstr "Ekvation"
+#~ msgstr ""
 
 #~ msgid "Humidity (Wet/Dry-Bulb)"
-#~ msgstr "Fuktighet (våt / torr lampa)"
+#~ msgstr ""
 
 #~ msgid "Redundancy"
-#~ msgstr "redundans"
+#~ msgstr ""
 
 #~ msgid "Statistics"
-#~ msgstr "Statistik"
+#~ msgstr ""
 
 #~ msgid "Verification"
-#~ msgstr "Verifiering"
+#~ msgstr ""
 
 #~ msgid "Vapor Pressure Deficit"
-#~ msgstr "Ångtrycksunderskott"
+#~ msgstr ""
 
 #~ msgid "Time/Date"
-#~ msgstr "Tid / Datum"
+#~ msgstr ""
 
 #~ msgid "Duration"
-#~ msgstr "Varaktighet"
+#~ msgstr ""
 
 #~ msgid "Daily (Time-Based)"
-#~ msgstr "Daglig (tidsbaserad)"
+#~ msgstr ""
 
 #~ msgid "Daily (Sine Wave)"
-#~ msgstr "Dagligen (Sine Wave)"
+#~ msgstr ""
 
 #~ msgid "Daily (Bezier Curve)"
-#~ msgstr "Daglig (Bezier Curve)"
+#~ msgstr ""
 
 #~ msgid "On/Off (GPIO)"
-#~ msgstr "På / Av (GPIO)"
+#~ msgstr ""
 
 #~ msgid "PWM (GPIO)"
-#~ msgstr "PWM (GPIO)"
+#~ msgstr ""
 
 #~ msgid "Wireless 315/433MHz LPD/SRD (rpi-rf)"
-#~ msgstr "Trådlös 315 / 433MHz LPD / SRD (rpi-rf)"
+#~ msgstr ""
 
 #~ msgid "On/Off (Linux Command)"
-#~ msgstr "På / Av (Linux Command)"
+#~ msgstr ""
 
 #~ msgid "PWM (Linux Command)"
-#~ msgstr "PWM (Linux Command)"
+#~ msgstr ""
 
 #~ msgid "On/Off (Python Command)"
-#~ msgstr "På / Av (Python Command)"
+#~ msgstr ""
 
 #~ msgid "PWM (Python Command)"
-#~ msgstr "PWM (Python Command)"
+#~ msgstr ""
 
 #~ msgid "Atlas EZO-PMP"
-#~ msgstr "Atlas EZO-PMP"
+#~ msgstr ""
 
 #~ msgid "FTDI"
 #~ msgstr ""
 
 #~ msgid "I2C"
-#~ msgstr "I2C"
+#~ msgstr ""
 
 #~ msgid "UART"
-#~ msgstr "UART"
+#~ msgstr ""
 
 #~ msgid "DS-Type Sensor Calibration"
-#~ msgstr "DS-typ Sensor Kalibrering"
+#~ msgstr ""
 
 #~ msgid "GPIO State"
-#~ msgstr "GPIO-staten"
+#~ msgstr ""
 
 #~ msgid "Output State"
 #~ msgstr ""
@@ -5782,43 +5790,43 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Spacer"
-#~ msgstr "spacer"
+#~ msgstr ""
 
 #~ msgid "Execute Actions"
-#~ msgstr "Utför åtgärder"
+#~ msgstr ""
 
 #~ msgid "Trigger: Timer (Daily Point)"
-#~ msgstr "Trigger: Timer (Daily Point)"
+#~ msgstr ""
 
 #~ msgid "Daily Span"
-#~ msgstr "Daglig spänning"
+#~ msgstr ""
 
 #~ msgid "Infrared Receive"
 #~ msgstr ""
 
 #~ msgid "Run PWM Method"
-#~ msgstr "Kör PWM Metod"
+#~ msgstr ""
 
 #~ msgid "Sunrise/Sunset"
-#~ msgstr "Soluppgång solnedgång"
+#~ msgstr ""
 
 #~ msgid "Camera: Capture Photo"
-#~ msgstr "Kamera: Capture Photo"
+#~ msgstr ""
 
 #~ msgid "Email with Photo Attachment"
-#~ msgstr "E-post med Photo Attachment"
+#~ msgstr ""
 
 #~ msgid "Email with Video Attachment"
-#~ msgstr "E-post med Video Attachment"
+#~ msgstr ""
 
 #~ msgid "Execute Command"
-#~ msgstr "Utför kommando"
+#~ msgstr ""
 
 #~ msgid "Infrared Send"
 #~ msgstr ""
 
 #~ msgid "Backlight Off"
-#~ msgstr "Bakgrundsbelysning Av"
+#~ msgstr ""
 
 #~ msgid "Backlight On"
 #~ msgstr ""
@@ -5830,10 +5838,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Set Method"
-#~ msgstr "Ange metod"
+#~ msgstr ""
 
 #~ msgid "Set Setpoint"
-#~ msgstr "Ställ in börvärde"
+#~ msgstr ""
 
 #~ msgid "Raise Setpoint"
 #~ msgstr ""
@@ -5854,436 +5862,436 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Altitude"
-#~ msgstr "Höjd över havet"
+#~ msgstr ""
 
 #~ msgid "Battery"
-#~ msgstr "Batteri"
+#~ msgstr ""
 
 #~ msgid "Boolean"
-#~ msgstr "Boolean"
+#~ msgstr ""
 
 #~ msgid "CO2"
-#~ msgstr "CO2"
+#~ msgstr ""
 
 #~ msgid "CPU Load 1 min"
-#~ msgstr "CPU-belastning 1 min"
+#~ msgstr ""
 
 #~ msgid "CPU Load 5 min"
-#~ msgstr "CPU-belastning 5 min"
+#~ msgstr ""
 
 #~ msgid "CPU Load 15 min"
-#~ msgstr "CPU-belastning 15 min"
+#~ msgstr ""
 
 #~ msgid "Dewpoint"
-#~ msgstr "Daggpunkt"
+#~ msgstr ""
 
 #~ msgid "Disk"
-#~ msgstr "Disk"
+#~ msgstr ""
 
 #~ msgid "Dissolved Oxygen"
 #~ msgstr ""
 
 #~ msgid "Duty Cycle"
-#~ msgstr "Driftscykel"
+#~ msgstr ""
 
 #~ msgid "GPIO Edge"
-#~ msgstr "GPIO Edge"
+#~ msgstr ""
 
 #~ msgid "Electrical Conductivity"
-#~ msgstr "Elektrisk konduktivitet"
+#~ msgstr ""
 
 #~ msgid "Electrical Current"
-#~ msgstr "Elektrisk ström"
+#~ msgstr ""
 
 #~ msgid "Electrical Potential"
-#~ msgstr "Elektrisk potential"
+#~ msgstr ""
 
 #~ msgid "Frequency"
-#~ msgstr "Frekvens"
+#~ msgstr ""
 
 #~ msgid "Humidity"
-#~ msgstr "Fuktighet"
+#~ msgstr ""
 
 #~ msgid "Humidity Ratio"
-#~ msgstr "Luftfuktighet"
+#~ msgstr ""
 
 #~ msgid "Ion Concentration"
-#~ msgstr "Jonkoncentration"
+#~ msgstr ""
 
 #~ msgid "Light"
-#~ msgstr "Ljus"
+#~ msgstr ""
 
 #~ msgid "Moisture"
-#~ msgstr "Fukt"
+#~ msgstr ""
 
 #~ msgid "Oxidation Reduction Potential"
 #~ msgstr ""
 
 #~ msgid "PID P-Value"
-#~ msgstr "PID P-värde"
+#~ msgstr ""
 
 #~ msgid "PID I-Value"
-#~ msgstr "PID I-värde"
+#~ msgstr ""
 
 #~ msgid "PID D-Value"
-#~ msgstr "PID D-värde"
+#~ msgstr ""
 
 #~ msgid "Pressure"
-#~ msgstr "Tryck"
+#~ msgstr ""
 
 #~ msgid "Pulse Width"
-#~ msgstr "Pulsbredd"
+#~ msgstr ""
 
 #~ msgid "Radiation Dose Rate"
 #~ msgstr ""
 
 #~ msgid "Revolutions"
-#~ msgstr "Revolutions"
+#~ msgstr ""
 
 #~ msgid "Setpoint"
-#~ msgstr "börvärde"
+#~ msgstr ""
 
 #~ msgid "Band Min"
-#~ msgstr "Band Min"
+#~ msgstr ""
 
 #~ msgid "Band Max"
-#~ msgstr "Band Max"
+#~ msgstr ""
 
 #~ msgid "Specific Enthalpy"
-#~ msgstr "Specifik engtal"
+#~ msgstr ""
 
 #~ msgid "Specific Volume"
-#~ msgstr "Specifik volym"
+#~ msgstr ""
 
 #~ msgid "Temperature"
-#~ msgstr "Temperatur"
+#~ msgstr ""
 
 #~ msgid "Unitless"
 #~ msgstr ""
 
 #~ msgid "VOC"
-#~ msgstr "VOC"
+#~ msgstr ""
 
 #~ msgid "Volume"
-#~ msgstr "Volym"
+#~ msgstr ""
 
 #~ msgid "Microsecond"
-#~ msgstr "mikro"
+#~ msgstr ""
 
 #~ msgid "Microsiemens per centimeter"
-#~ msgstr "Microsiemens per centimeter"
+#~ msgstr ""
 
 #~ msgid "Microsieverts per hour"
 #~ msgstr ""
 
 #~ msgid "Amp"
-#~ msgstr "Amp"
+#~ msgstr ""
 
 #~ msgid "Celsius"
-#~ msgstr "Celsius"
+#~ msgstr ""
 
 #~ msgid "Counts per minute"
 #~ msgstr ""
 
 #~ msgid "CPU Load"
-#~ msgstr "CPU-laddning"
+#~ msgstr ""
 
 #~ msgid "Decimal"
-#~ msgstr "Decimal"
+#~ msgstr ""
 
 #~ msgid "Fahrenheit"
-#~ msgstr "fahrenheit"
+#~ msgstr ""
 
 #~ msgid "Foot"
-#~ msgstr "Fot"
+#~ msgstr ""
 
 #~ msgid "Full"
-#~ msgstr "Full"
+#~ msgstr ""
 
 #~ msgid "G-Force"
 #~ msgstr ""
 
 #~ msgid "Gigabyte"
-#~ msgstr "Gigabyte"
+#~ msgstr ""
 
 #~ msgid "Hour"
 #~ msgstr ""
 
 #~ msgid "Hertz"
-#~ msgstr "Hertz"
+#~ msgstr ""
 
 #~ msgid "Infrared"
-#~ msgstr "Infraröd"
+#~ msgstr ""
 
 #~ msgid "Kelvin"
-#~ msgstr "Kelvin"
+#~ msgstr ""
 
 #~ msgid "Kilobyte"
-#~ msgstr "kilobyte"
+#~ msgstr ""
 
 #~ msgid "Kilogram per kilogram"
-#~ msgstr "Kilogram per kilo"
+#~ msgstr ""
 
 #~ msgid "Kilohertz"
-#~ msgstr "kilohertz"
+#~ msgstr ""
 
 #~ msgid "Kilojoule per kilogram"
-#~ msgstr "Kilojoule per kilo"
+#~ msgstr ""
 
 #~ msgid "Kilopascal"
-#~ msgstr "kilopascal"
+#~ msgstr ""
 
 #~ msgid "Lux"
-#~ msgstr "Lux"
+#~ msgstr ""
 
 #~ msgid "Meter"
-#~ msgstr "Meter"
+#~ msgstr ""
 
 #~ msgid "Milligram per Liter"
 #~ msgstr ""
 
 #~ msgid "Minute"
-#~ msgstr "Minut"
+#~ msgstr ""
 
 #~ msgid "Milliliter"
-#~ msgstr "milliliter"
+#~ msgstr ""
 
 #~ msgid "Millivolt"
 #~ msgstr ""
 
 #~ msgid "Cubic meters per kilogram"
-#~ msgstr "Kubiska meter per kilo"
+#~ msgstr ""
 
 #~ msgid "Megahertz"
-#~ msgstr "Megahertz"
+#~ msgstr ""
 
 #~ msgid "Megabyte"
-#~ msgstr "mega~~POS=TRUNC"
+#~ msgstr ""
 
 #~ msgid "Pascal"
-#~ msgstr "Pascal"
+#~ msgstr ""
 
 #~ msgid "Percent"
-#~ msgstr "Procent"
+#~ msgstr ""
 
 #~ msgid "pH"
-#~ msgstr "pH"
+#~ msgstr ""
 
 #~ msgid "PID values"
-#~ msgstr "PID-värden"
+#~ msgstr ""
 
 #~ msgid "Parts per billion"
-#~ msgstr "Delar per miljard"
+#~ msgstr ""
 
 #~ msgid "Parts per million"
-#~ msgstr "Delar per miljon"
+#~ msgstr ""
 
 #~ msgid "Pounds per square inch"
 #~ msgstr ""
 
 #~ msgid "Revolutions per minute"
-#~ msgstr "Varv per minut"
+#~ msgstr ""
 
 #~ msgid "Second"
-#~ msgstr "Andra"
+#~ msgstr ""
 
 #~ msgid "Microgram per cubic meter"
-#~ msgstr "Mikrogram per kubikmeter"
+#~ msgstr ""
 
 #~ msgid "Volt"
-#~ msgstr "Volt"
+#~ msgstr ""
 
 #~ msgid "Actions"
-#~ msgstr "Åtgärder"
+#~ msgstr ""
 
 #~ msgid "Add"
-#~ msgstr "Lägg till"
+#~ msgstr ""
 
 #~ msgid "Activate"
-#~ msgstr "Aktivera"
+#~ msgstr ""
 
 #~ msgid "Alert"
-#~ msgstr "Varna"
+#~ msgstr ""
 
 #~ msgid "Average"
 #~ msgstr ""
 
 #~ msgid "Calibration"
-#~ msgstr "Kalibrering"
+#~ msgstr ""
 
 #~ msgid "Calculate"
 #~ msgstr ""
 
 #~ msgid "Camera"
-#~ msgstr "Kamera"
+#~ msgstr ""
 
 #~ msgid "Cancel"
-#~ msgstr "Annullera"
+#~ msgstr ""
 
 #~ msgid "Conditional"
-#~ msgstr "Villkorlig"
+#~ msgstr ""
 
 #~ msgid "Controller"
-#~ msgstr "Kontrollant"
+#~ msgstr ""
 
 #~ msgid "Create"
-#~ msgstr "Skapa"
+#~ msgstr ""
 
 #~ msgid "Custom"
-#~ msgstr "Beställnings"
+#~ msgstr ""
 
 #~ msgid "Dashboard"
-#~ msgstr "instrumentbräda"
+#~ msgstr ""
 
 #~ msgid "Data"
-#~ msgstr "Data"
+#~ msgstr ""
 
 #~ msgid "Deactivate"
-#~ msgstr "Avaktivera"
+#~ msgstr ""
 
 #~ msgid "Default"
 #~ msgstr ""
 
 #~ msgid "Delete"
-#~ msgstr "Radera"
+#~ msgstr ""
 
 #~ msgid "Diagnostic"
-#~ msgstr "Diagnostisk"
+#~ msgstr ""
 
 #~ msgid "Display"
-#~ msgstr "Visa"
+#~ msgstr ""
 
 #~ msgid "Down"
-#~ msgstr "Ner"
+#~ msgstr ""
 
 #~ msgid "Edge"
-#~ msgstr "Kant"
+#~ msgstr ""
 
 #~ msgid "Edit"
-#~ msgstr "Redigera"
+#~ msgstr ""
 
 #~ msgid "E-Mail"
-#~ msgstr "E-post"
+#~ msgstr ""
 
 #~ msgid "Energy Usage"
-#~ msgstr "Energianvändning"
+#~ msgstr ""
 
 #~ msgid "Error"
-#~ msgstr "Fel"
+#~ msgstr ""
 
 #~ msgid "Export"
-#~ msgstr "Exportera"
+#~ msgstr ""
 
 #~ msgid "Function"
-#~ msgstr "Fungera"
+#~ msgstr ""
 
 #~ msgid "General"
-#~ msgstr "Allmän"
+#~ msgstr ""
 
 #~ msgid "Hold"
-#~ msgstr "Håll"
+#~ msgstr ""
 
 #~ msgid "Indicator"
-#~ msgstr "Indikator"
+#~ msgstr ""
 
 #~ msgid "Invert"
-#~ msgstr "Invertera"
+#~ msgstr ""
 
 #~ msgid "Import"
-#~ msgstr "Importera"
+#~ msgstr ""
 
 #~ msgid "Input"
-#~ msgstr "Inmatning"
+#~ msgstr ""
 
 #~ msgid "Invalid"
-#~ msgstr "Ogiltig"
+#~ msgstr ""
 
 #~ msgid "Last"
 #~ msgstr ""
 
 #~ msgid "LCD"
-#~ msgstr "LCD"
+#~ msgstr ""
 
 #~ msgid "Line"
-#~ msgstr "Linje"
+#~ msgstr ""
 
 #~ msgid "Login"
-#~ msgstr "Logga in"
+#~ msgstr ""
 
 #~ msgid "Math"
-#~ msgstr "Matematik"
+#~ msgstr ""
 
 #~ msgid "Measurement"
-#~ msgstr "Mått"
+#~ msgstr ""
 
 #~ msgid "Method"
-#~ msgstr "Metod"
+#~ msgstr ""
 
 #~ msgid "Modify"
-#~ msgstr "Ändra"
+#~ msgstr ""
 
 #~ msgid "Multiple"
 #~ msgstr ""
 
 #~ msgid "None Available"
-#~ msgstr "Ingen tillgänglig"
+#~ msgstr ""
 
 #~ msgid "Note"
-#~ msgstr "Notera"
+#~ msgstr ""
 
 #~ msgid "Off"
-#~ msgstr "Av"
+#~ msgstr ""
 
 #~ msgid "On"
-#~ msgstr "På"
+#~ msgstr ""
 
 #~ msgid "Output"
-#~ msgstr "Produktion"
+#~ msgstr ""
 
 #~ msgid "Past"
 #~ msgstr ""
 
 #~ msgid "Password"
-#~ msgstr "Lösenord"
+#~ msgstr ""
 
 #~ msgid "Pause"
-#~ msgstr "Paus"
+#~ msgstr ""
 
 #~ msgid "PID"
-#~ msgstr "PID"
+#~ msgstr ""
 
 #~ msgid "Pin"
 #~ msgstr ""
 
 #~ msgid "PWM"
-#~ msgstr "PWM"
+#~ msgstr ""
 
 #~ msgid "Ramp"
 #~ msgstr ""
 
 #~ msgid "Rename"
-#~ msgstr "Döpa om"
+#~ msgstr ""
 
 #~ msgid "Reorder"
-#~ msgstr "ordna"
+#~ msgstr ""
 
 #~ msgid "Reset"
 #~ msgstr ""
 
 #~ msgid "Resume"
-#~ msgstr "Återuppta"
+#~ msgstr ""
 
 #~ msgid "Save"
-#~ msgstr "Spara"
+#~ msgstr ""
 
 #~ msgid "Save Order"
-#~ msgstr "Spara beställning"
+#~ msgstr ""
 
 #~ msgid "Select One"
-#~ msgstr "Välj en"
+#~ msgstr ""
 
 #~ msgid "Settings"
-#~ msgstr "inställningar"
+#~ msgstr ""
 
 #~ msgid "Single"
 #~ msgstr ""
@@ -6292,160 +6300,154 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Tag"
-#~ msgstr "Märka"
+#~ msgstr ""
 
 #~ msgid "Text"
 #~ msgstr ""
 
 #~ msgid "Timer"
-#~ msgstr "Timer"
+#~ msgstr ""
 
 #~ msgid "Trigger"
-#~ msgstr "trigger"
+#~ msgstr ""
 
 #~ msgid "Up"
-#~ msgstr "Upp"
+#~ msgstr ""
 
 #~ msgid "Upload"
-#~ msgstr "Ladda upp"
+#~ msgstr ""
 
 #~ msgid "User"
-#~ msgstr "Användare"
+#~ msgstr ""
 
 #~ msgid "1-Wire Device ID"
-#~ msgstr "1-tråds-ID"
+#~ msgstr ""
 
 #~ msgid "Select the 1-wire device ID"
-#~ msgstr "Välj 1-tråds-enhetens ID"
+#~ msgstr ""
 
 #~ msgid "Gain"
-#~ msgstr "Få"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Adjust the gain to change the "
 #~ "measurable voltage range. See ADC "
 #~ "documentation for details."
 #~ msgstr ""
-#~ "Justera förstärkningen för att ändra det"
-#~ " mätbara spänningsområdet. Se ADC-"
-#~ "dokumentation för detaljer."
 
 #~ msgid "Resolution"
-#~ msgstr "Upplösning"
+#~ msgstr ""
 
 #~ msgid "ADC Resolution (see ADC documentation)"
-#~ msgstr "ADC-upplösning (se ADC-dokumentation)"
+#~ msgstr ""
 
 #~ msgid "Sample Speed"
-#~ msgstr "Provhastighet"
+#~ msgstr ""
 
 #~ msgid "ADC Sample Speed (see ADC documentation)"
-#~ msgstr "ADC-provhastighet (se ADC-dokumentation)"
+#~ msgstr ""
 
 #~ msgid "Current Draw (amps)"
-#~ msgstr "Nuvarande Draw (ampere)"
+#~ msgstr ""
 
 #~ msgid "The number of amps the output device draws (at 120/240 VAC)"
-#~ msgstr "Antalet ampere som utmatningsenheten drar (vid 120/240 VAC)"
+#~ msgstr ""
 
 #~ msgid "Baud Rate"
-#~ msgstr "Baud Rate"
+#~ msgstr ""
 
 #~ msgid "The UART baud rate"
-#~ msgstr "UART baudräntan"
+#~ msgstr ""
 
 #~ msgid "MAC (XX:XX:XX:XX:XX:XX)"
-#~ msgstr "MAC (XX: XX: XX: XX: XX: XX)"
+#~ msgstr ""
 
 #~ msgid "The MAC address of the input"
-#~ msgstr "Inmatningens MAC-adress"
+#~ msgstr ""
 
 #~ msgid "BT Adapter"
-#~ msgstr "BT-adapter"
+#~ msgstr ""
 
 #~ msgid "The Bluetooth adapter of the input"
-#~ msgstr "Bluetooth-adaptern på ingången"
+#~ msgstr ""
 
 #~ msgid "Command"
-#~ msgstr "Kommando"
+#~ msgstr ""
 
 #~ msgid "The command to executed (as user mycodo) to return a measurement value"
 #~ msgstr ""
-#~ "Kommandot som ska utföras (som "
-#~ "användarens mycodo) för att returnera "
-#~ "ett mätvärde"
 
 #~ msgid "Select the unit of the measurement to be stored in the database"
-#~ msgstr "Välj den måttenhet som ska lagras i databasen"
+#~ msgstr ""
 
 #~ msgid "Convert to Unit"
-#~ msgstr "Konvertera till enhet"
+#~ msgstr ""
 
 #~ msgid "Convert the measurement to a different unit"
-#~ msgstr "Konvertera mätningen till en annan enhet"
+#~ msgstr ""
 
 #~ msgid "Deadline"
-#~ msgstr "Deadline"
+#~ msgstr ""
 
 #~ msgid "Time (seconds) to wait until failure"
-#~ msgstr "Tid (sekunder) för att vänta tills fel"
+#~ msgstr ""
 
 #~ msgid "Duration On (seconds)"
-#~ msgstr "Varaktighet På (sekunder)"
+#~ msgstr ""
 
 #~ msgid "Turn on for a duration of time (seconds)"
-#~ msgstr "Slå på under en tid (sekunder)"
+#~ msgstr ""
 
 #~ msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
-#~ msgstr "Driftscykel för PWM (procent, 0,0 - 100,0)"
+#~ msgstr ""
 
 #~ msgid "Flow Rate (ml/min)"
-#~ msgstr "Flödeshastighet (ml / min)"
+#~ msgstr ""
 
 #~ msgid "Flow rate in ml/minute (0.5 min, 105 max)"
 #~ msgstr ""
 
 #~ msgid "FTDI Device"
-#~ msgstr "FTDI-enhet"
+#~ msgstr ""
 
 #~ msgid "The FTDI device (e.g. /dev/ttyUSB1)"
-#~ msgstr "FTDI-enheten (t.ex. / dev / ttyUSB1)"
+#~ msgstr ""
 
 #~ msgid "Pin (GPIO)"
-#~ msgstr "Pin (GPIO)"
+#~ msgstr ""
 
 #~ msgid "The GPIO pin using BCM numbering"
-#~ msgstr "GPIO-stiftet med BCM-nummerering"
+#~ msgstr ""
 
 #~ msgid "Host"
-#~ msgstr "Värd"
+#~ msgstr ""
 
 #~ msgid "Host address or IP"
-#~ msgstr "Värdadress eller IP"
+#~ msgstr ""
 
 #~ msgid "I<sup>2</sup>C Bus"
-#~ msgstr "Jag <sup> 2 </ sup> C Bus"
+#~ msgstr ""
 
 #~ msgid "The I2C bus the device is connected to"
-#~ msgstr "Den I2C-buss som enheten är ansluten till"
+#~ msgstr ""
 
 #~ msgid "I<sup>2</sup>C Address"
-#~ msgstr "Jag <sup> 2 </ sup> C Adress"
+#~ msgstr ""
 
 #~ msgid "The I2C address of the device"
-#~ msgstr "I2C-adressen till enheten"
+#~ msgstr ""
 
 #~ msgid "Interface"
-#~ msgstr "Gränssnitt"
+#~ msgstr ""
 
 #~ msgid "The interface used to communicate"
-#~ msgstr "Gränssnittet användes för att kommunicera"
+#~ msgstr ""
 
 #~ msgid "Invert Scale"
-#~ msgstr "Invertera skalan"
+#~ msgstr ""
 
 #~ msgid "Invert the scale"
-#~ msgstr "Invertera skalan"
+#~ msgstr ""
 
 #~ msgid "Log Level: Debug"
 #~ msgstr ""
@@ -6454,40 +6456,37 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Max Age (seconds)"
-#~ msgstr "Max ålder (sekunder)"
+#~ msgstr ""
 
 #~ msgid "The maximum allowable measurement age"
-#~ msgstr "Den maximala tillåtna mätåldern"
+#~ msgstr ""
 
 #~ msgid "Unit Measurement"
-#~ msgstr "Enhetsmätning"
+#~ msgstr ""
 
 #~ msgid "Select a unit for the stored value"
-#~ msgstr "Välj en enhet för det lagrade värdet"
+#~ msgstr ""
 
 #~ msgid "Measurements Enabled"
-#~ msgstr "Mätningar aktiverade"
+#~ msgstr ""
 
 #~ msgid "The measurements to record"
-#~ msgstr "Mätningarna att spela in"
+#~ msgstr ""
 
 #~ msgid "Name"
-#~ msgstr "namn"
+#~ msgstr ""
 
 #~ msgid "A name to distinguish this from others"
-#~ msgstr "Ett namn som skiljer det från andra"
+#~ msgstr ""
 
 #~ msgid "Off Command"
-#~ msgstr "Off Command"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Command to execute (as user mycodo) "
 #~ "when the output is instructed to "
 #~ "turn off"
 #~ msgstr ""
-#~ "Kommando att utföra (som användar "
-#~ "mycodo) när utmatningen är instruerad "
-#~ "att stänga av"
 
 #~ msgid "Output Mode"
 #~ msgstr ""
@@ -6514,61 +6513,58 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Startup State"
-#~ msgstr "Starta staten"
+#~ msgstr ""
 
 #~ msgid "When Mycodo starts, set the output state"
-#~ msgstr "När Mycodo startar, ställ in utgångsläget"
+#~ msgstr ""
 
 #~ msgid "On Command"
-#~ msgstr "På kommando"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Command to execute (as user mycodo) "
 #~ "when the output is instructed to "
 #~ "turn on"
 #~ msgstr ""
-#~ "Kommando att exekvera (som användar "
-#~ "mycodo) när utmatningen är instruerad "
-#~ "att aktivera"
 
 #~ msgid "Period (seconds)"
-#~ msgstr "Period (sekunder)"
+#~ msgstr ""
 
 #~ msgid "The duration (seconds) between measurements or actions"
 #~ msgstr ""
 
 #~ msgid "Clock Pin"
-#~ msgstr "Klocka Pin"
+#~ msgstr ""
 
 #~ msgid "The GPIO (using BCM numbering) connected to the Clock pin"
-#~ msgstr "GPIO (med BCM-nummerering) ansluten till klockstiften"
+#~ msgstr ""
 
 #~ msgid "CS Pin"
-#~ msgstr "CS Pin"
+#~ msgstr ""
 
 #~ msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
-#~ msgstr "GPIO (med BCM-numrering) ansluten till kabelvalstiften"
+#~ msgstr ""
 
 #~ msgid "MISO Pin"
-#~ msgstr "MISO Pin"
+#~ msgstr ""
 
 #~ msgid "The GPIO (using BCM numbering) connected to the MISO pin"
-#~ msgstr "GPIO (med BCM-nummerering) ansluten till MISO-stiftet"
+#~ msgstr ""
 
 #~ msgid "MOSI Pin"
-#~ msgstr "MOSI-pin"
+#~ msgstr ""
 
 #~ msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
-#~ msgstr "GPIO (med BCM-nummerering) ansluten till MOSI-stiftet"
+#~ msgstr ""
 
 #~ msgid "Port"
-#~ msgstr "Hamn"
+#~ msgstr ""
 
 #~ msgid "Host port number"
-#~ msgstr "Värd port nummer"
+#~ msgstr ""
 
 #~ msgid "Pre Out Duration"
-#~ msgstr "Fördröjningstid"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "If a Pre Output is selected, set"
@@ -6576,140 +6572,125 @@ msgstr ""
 #~ " Pre Output on for before every "
 #~ "measurement is acquired."
 #~ msgstr ""
-#~ "Om en Pre Output har valts, ställa"
-#~ " in varaktigheten (sekunder) för att "
-#~ "slå på Pre Output innan varje "
-#~ "mätning förvärvas."
 
 #~ msgid "Pre During Measure"
-#~ msgstr "Pre under åtgärd"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Check to turn the output off after"
 #~ " (opposed to before) the measurement "
 #~ "is complete"
 #~ msgstr ""
-#~ "Kontrollera att utgången är avstängd "
-#~ "efter (i motsats till tidigare) "
-#~ "mätningen är klar"
 
 #~ msgid "Pre Output"
-#~ msgstr "Pre Output"
+#~ msgstr ""
 
 #~ msgid "Turn the selected output on before taking every measurement"
-#~ msgstr "Vrid den valda utsignalen innan du tar varje mätning"
+#~ msgstr ""
 
 #~ msgid "Protocol"
-#~ msgstr "Protokoll"
+#~ msgstr ""
 
 #~ msgid "Wireless 433 MHz protocol"
-#~ msgstr "Trådlöst 433 MHz protokoll"
+#~ msgstr ""
 
 #~ msgid "Pulse Length"
-#~ msgstr "Pulslängd"
+#~ msgstr ""
 
 #~ msgid "Wireless 433 MHz pulse length"
-#~ msgstr "Trådlös 433 MHz pulslängd"
+#~ msgstr ""
 
 #~ msgid "Amount to Dispense (ml)"
-#~ msgstr "Mängd till Dispense (ml)"
+#~ msgstr ""
 
 #~ msgid "Volume in ml to pump"
-#~ msgstr "Volym i ml för pumpning"
+#~ msgstr ""
 
 #~ msgid "PWM Command"
-#~ msgstr "PWM-kommando"
+#~ msgstr ""
 
 #~ msgid "Command to execute (as user mycodo) to set the PWM duty cycle (%%)"
 #~ msgstr ""
-#~ "Kommando att utföra (som användar "
-#~ "mycodo) för att ställa in PWM-"
-#~ "arbetscykeln (%%)"
 
 #~ msgid "Frequency (Hertz)"
-#~ msgstr "Frekvens (Hertz)"
+#~ msgstr ""
 
 #~ msgid "The Hertz to output the PWM signal (0 - 70,000)"
-#~ msgstr "Hertz för att mata ut PWM-signalen (0 - 70 000)"
+#~ msgstr ""
 
 #~ msgid "Library"
-#~ msgstr "Bibliotek"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Which method to produce the PWM "
 #~ "signal (hardware pins can produce higher"
 #~ " frequencies)"
 #~ msgstr ""
-#~ "Vilken metod för att producera PWM-"
-#~ "signalen (hårdvarubärmar kan producera högre"
-#~ " frekvenser)"
 
 #~ msgid "Reference Resistance"
-#~ msgstr "Referensresistens"
+#~ msgstr ""
 
 #~ msgid "Reference resistance (Ohm)"
-#~ msgstr "Referensmotstånd (Ohm)"
+#~ msgstr ""
 
 #~ msgid "Measurement resolution"
-#~ msgstr "Mätupplösning"
+#~ msgstr ""
 
 #~ msgid "Pulses Per Rev"
-#~ msgstr "Pulser per rev"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The number of pulses per revolution "
 #~ "to calculate revolutions per minute "
 #~ "(RPM)"
-#~ msgstr "Antalet pulser per revolution för att beräkna varv per minut (RPM)"
+#~ msgstr ""
 
 #~ msgid "Sample Time"
-#~ msgstr "Provtid"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The amount of time (seconds) to "
 #~ "sample the input before caluclating the"
 #~ " measurement"
 #~ msgstr ""
-#~ "Mängden tid (sekunder) för att prova "
-#~ "inmatningen innan mätningen avkännes"
 
 #~ msgid "Unscaled Unit Min"
-#~ msgstr "Oskalad enhet Min"
+#~ msgstr ""
 
 #~ msgid "Unscaled minimum unit"
-#~ msgstr "Oskalad minsta enhet"
+#~ msgstr ""
 
 #~ msgid "Unscaled Unit Max"
-#~ msgstr "Oskalad enhet Max"
+#~ msgstr ""
 
 #~ msgid "Unscaled maximum unit"
-#~ msgstr "Oskalad maximal enhet"
+#~ msgstr ""
 
 #~ msgid "Rescaled Unit Min"
-#~ msgstr "Uppskalad enhet Min"
+#~ msgstr ""
 
 #~ msgid "Rescaled minimum unit"
-#~ msgstr "Uppskalad minsta enhet"
+#~ msgstr ""
 
 #~ msgid "Rescaled Unit Max"
-#~ msgstr "Uppskalad enhet Max"
+#~ msgstr ""
 
 #~ msgid "Rescaled maximum unit"
-#~ msgstr "Uppskalad maximal enhet"
+#~ msgstr ""
 
 #~ msgid "Measurement Unit"
-#~ msgstr "Måttenhet"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Select the measurement and unit to "
 #~ "store this measurement in the database"
-#~ msgstr "Välj mätning och enhet för att lagra denna mätning i databasen"
+#~ msgstr ""
 
 #~ msgid "Sensitivity"
-#~ msgstr "Känslighet"
+#~ msgstr ""
 
 #~ msgid "Measurement sensitivity"
-#~ msgstr "Mätningskänslighet"
+#~ msgstr ""
 
 #~ msgid "Setpoint Tracking Type"
 #~ msgstr ""
@@ -6718,72 +6699,67 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Voltage"
-#~ msgstr "Spänning"
+#~ msgstr ""
 
 #~ msgid "The input voltage to the sensor"
-#~ msgstr "Ingångsspänningen till sensorn"
+#~ msgstr ""
 
 #~ msgid "Start Offset (seconds)"
-#~ msgstr "Start Offset (sekunder)"
+#~ msgstr ""
 
 #~ msgid "The duration (seconds) to wait before the first operation"
-#~ msgstr "Varaktigheten (sekunder) att vänta innan den första operationen"
+#~ msgstr ""
 
 #~ msgid "Edge detection: low to high (rising), high to low (falling), or both"
 #~ msgstr ""
-#~ "Kantdetektering: låg till hög (stigande), "
-#~ "hög till låg (fallande) eller båda"
 
 #~ msgid "Bounce Time (ms)"
-#~ msgstr "Bounce Time (ms)"
+#~ msgstr ""
 
 #~ msgid "The amount of time (miliseconds) to bounce the input signal"
-#~ msgstr "Mängden tid (milisekunder) för att studsa insignalen"
+#~ msgstr ""
 
 #~ msgid "Reset Period"
-#~ msgstr "Återställningsperiod"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Wait a period of time (seconds) "
 #~ "after the first edge detection to "
 #~ "begin detecting again"
 #~ msgstr ""
-#~ "Vänta en tid (sekunder) efter det "
-#~ "att den första kanten upptäcktes för "
-#~ "att börja upptäcka igen"
 
 #~ msgid "RTD Probe Type"
-#~ msgstr "RTD Probe Type"
+#~ msgstr ""
 
 #~ msgid "The type of thermocouple connected"
-#~ msgstr "Typ av termoelement anslutet"
+#~ msgstr ""
 
 #~ msgid "Times Check"
-#~ msgstr "Tidscheck"
+#~ msgstr ""
 
 #~ msgid "Number of times to check"
-#~ msgstr "Antal gånger att kontrollera"
+#~ msgstr ""
 
 #~ msgid "On State"
 #~ msgstr ""
 
 #~ msgid "What state triggers the output to turn on? High or Low?"
-#~ msgstr "Vilket tillstånd utlöses för att sätta på? Hög eller låg?"
+#~ msgstr ""
 
 #~ msgid "Trigger at Startup"
-#~ msgstr "Utlösare vid uppstart"
+#~ msgstr ""
 
 #~ msgid "Whether or not to trigger Functions when Mycodo starts"
-#~ msgstr "Oavsett om du vill aktivera Funktioner när Mycodo startar"
+#~ msgstr ""
 
 #~ msgid "UART Device"
-#~ msgstr "UART-enhet"
+#~ msgstr ""
 
 #~ msgid "The UART device location (e.g. /dev/ttyUSB1)"
-#~ msgstr "UART-enhetens plats (t.ex. / dev / ttyUSB1)"
+#~ msgstr ""
 
 #~ msgid "Weighting"
-#~ msgstr "viktning"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The weighting of the previous "
@@ -6792,10 +6768,6 @@ msgstr ""
 #~ "smoothing measurements. 0.0 means no "
 #~ "weighting."
 #~ msgstr ""
-#~ "Vägningen av föregående mätning på "
-#~ "nuvarande mätning. Område: 0,0-1,0. Används"
-#~ " för utjämning av mätningar. 0,0 "
-#~ "betyder ingen viktning."
 
 #~ msgid "Text 1"
 #~ msgstr ""
@@ -6840,18 +6812,16 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Set the calibration method to perform during Input activation"
-#~ msgstr "Ställ in kalibreringsmetoden för att utföra under Input-aktivering"
+#~ msgstr ""
 
 #~ msgid "Calibration Max Age"
-#~ msgstr "Kalibrering Maximal ålder"
+#~ msgstr ""
 
 #~ msgid "The Max Age (seconds) of the Input/Math to use for calibration"
 #~ msgstr ""
-#~ "Maximal ålder (sekunder) för Input / "
-#~ "Math som ska användas för kalibrering"
 
 #~ msgid "Select the library used to communicate"
-#~ msgstr "Välj biblioteket som används för att kommunicera"
+#~ msgstr ""
 
 #~ msgid "Command Timeout"
 #~ msgstr ""
@@ -6869,19 +6839,19 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Enable ABC"
-#~ msgstr "Aktivera ABC"
+#~ msgstr ""
 
 #~ msgid "Enable automatic baseline correction (ABC)"
-#~ msgstr "Aktivera automatisk baslinjekorrigering (ABC)"
+#~ msgstr ""
 
 #~ msgid "Measurement Range"
-#~ msgstr "Mätområde"
+#~ msgstr ""
 
 #~ msgid "Set the measuring range of the sensor"
-#~ msgstr "Ställ in sensorns mätområde"
+#~ msgstr ""
 
 #~ msgid "Hostname"
-#~ msgstr "Värdnamn"
+#~ msgstr ""
 
 #~ msgid "The hostname of the MQTT server"
 #~ msgstr ""
@@ -6902,54 +6872,46 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Download Stored Data"
-#~ msgstr "Hämta lagrade data"
+#~ msgstr ""
 
 #~ msgid "Download the data logged to the device."
-#~ msgstr "Ladda ner data som är loggad till enheten."
+#~ msgstr ""
 
 #~ msgid "Set Logging Interval"
-#~ msgstr "Ställ in loggintervall"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Set the logging interval (seconds) the"
 #~ " device will store measurements on "
 #~ "its internal memory."
 #~ msgstr ""
-#~ "Ställ in loggintervallet (sekunder) enheten"
-#~ " lagrar mätningar på internminnet."
 
 #~ msgid "Enable Heater"
-#~ msgstr "Aktivera värmare"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Enable heater to evaporate condensation. "
 #~ "Turn on heater x seconds every y"
 #~ " measurements."
 #~ msgstr ""
-#~ "Aktivera värmaren för att förånga "
-#~ "kondens. Slå på värmaren x sekunder "
-#~ "varje y-mätning."
 
 #~ msgid "Heater On Seconds"
-#~ msgstr "Värmare på sekunder"
+#~ msgstr ""
 
 #~ msgid "How long to turn the heater on (seconds)."
-#~ msgstr "Hur länge ska du slå på värmaren (sekunder)."
+#~ msgstr ""
 
 #~ msgid "Heater On Period"
-#~ msgstr "Värmare på period"
+#~ msgstr ""
 
 #~ msgid "After how many measurements to turn the heater on. This will repeat."
 #~ msgstr ""
-#~ "Efter hur många mätningar ska du "
-#~ "slå på värmaren. Detta kommer att "
-#~ "upprepas."
 
 #~ msgid "IP Address"
-#~ msgstr "IP-adress"
+#~ msgstr ""
 
 #~ msgid "The IP address of the device"
-#~ msgstr "Enhets IP-adress"
+#~ msgstr ""
 
 #~ msgid "Application ID"
 #~ msgstr ""
@@ -6970,16 +6932,16 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Fan Off After Measure"
-#~ msgstr "Fläkt av efter åtgärd"
+#~ msgstr ""
 
 #~ msgid "Turn the fan on only during the measurement"
-#~ msgstr "Slå på fläkten endast under mätningen"
+#~ msgstr ""
 
 #~ msgid "Fan On Duration"
-#~ msgstr "Fan på varaktighet"
+#~ msgstr ""
 
 #~ msgid "How long to turn the fan on (seconds) before acquiring measurements"
-#~ msgstr "Hur länge ska du slå på fläkten (sekunder) innan du får mätningar"
+#~ msgstr ""
 
 #~ msgid "Serial Device"
 #~ msgstr ""
@@ -6988,247 +6950,228 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Please log in to access this page"
-#~ msgstr "Logga in för att komma åt den här sidan"
+#~ msgstr ""
 
 #~ msgid "Backup in progress"
-#~ msgstr "Säkerhetskopiering pågår"
+#~ msgstr ""
 
 #~ msgid "Deletion of backup in progress"
-#~ msgstr "Radering av säkerhetskopiering pågår"
+#~ msgstr ""
 
 #~ msgid "Restore in progress"
-#~ msgstr "Återställ pågår"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Upgrade functionality is disabled because "
 #~ "an internet connection was unable to "
 #~ "be detected"
 #~ msgstr ""
-#~ "Uppgraderingsfunktionen är inaktiverad eftersom "
-#~ "en internetanslutning inte kunde detekteras"
 
 #~ msgid ""
 #~ "There was an error encountered during"
 #~ " the upgrade process. Check the "
 #~ "upgrade log for details."
 #~ msgstr ""
-#~ "Ett fel uppstod under uppgraderingsprocessen."
-#~ " Kontrollera uppgraderingsloggen för detaljer."
 
 #~ msgid ""
 #~ "Could not determine local mycodo version"
 #~ " or online release versions: {err}"
 #~ msgstr ""
-#~ "Det gick inte att bestämma lokala "
-#~ "mycodo-versioner eller versionsversioner online:"
-#~ " {err}"
 
 #~ msgid "The upgrade (from master branch) has started"
-#~ msgstr "Uppgraderingen (från huvudgrenen) har börjat"
+#~ msgstr ""
 
 #~ msgid "The upgrade has started"
-#~ msgstr "Uppgraderingen har börjat"
+#~ msgstr ""
 
 #~ msgid "The major version upgrade has started"
-#~ msgstr "Den stora versionen uppgraderingen har börjat"
+#~ msgstr ""
 
 #~ msgid "You cannot upgrade if an upgrade is not available"
-#~ msgstr "Du kan inte uppgradera om en uppgradering inte är tillgänglig"
+#~ msgstr ""
 
 #~ msgid "Cannot access admin creation form if an admin user already exists."
 #~ msgstr ""
-#~ "Kan inte komma åt adminskapsformuläret "
-#~ "om en administratörs användare redan "
-#~ "existerar."
 
 #~ msgid "Passwords do not match. Please try again."
-#~ msgstr "Lösenorden matchar inte. Var god försök igen."
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Invalid user name. Must be between "
 #~ "2 and 64 characters and only "
 #~ "contain letters and numbers."
 #~ msgstr ""
-#~ "Ogiltigt användarnamn. Måste vara mellan "
-#~ "2 och 64 tecken och innehåller "
-#~ "bara bokstäver och siffror."
 
 #~ msgid ""
 #~ "Invalid password. Must be between 6 "
 #~ "and 64 characters and only contain "
 #~ "letters, numbers, and symbols."
 #~ msgstr ""
-#~ "Felaktigt lösenord. Måste vara mellan 6"
-#~ " och 64 tecken och innehåller bara"
-#~ " bokstäver, siffror och symboler."
 
 #~ msgid "User '%(user)s' successfully created. Please log in below."
-#~ msgstr "Användaren '%(user)s' har skapats. Vänligen logga in nedan."
+#~ msgstr ""
 
 #~ msgid "Failed to create user '%(user)s': %(err)s"
-#~ msgstr "Misslyckades med att skapa användarens '%(user)s': %(err)s"
+#~ msgstr ""
 
 #~ msgid "Cannot access login page if you're already logged in"
-#~ msgstr "Kan inte komma åt inloggningssidan om du redan är inloggad"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Too many failed login attempts. Please"
 #~ " wait %(min)s minutes before attempting "
 #~ "to log in again"
 #~ msgstr ""
-#~ "För många misslyckade inloggningsförsök. Vänta"
-#~ " vänta %(min)s minuter innan du "
-#~ "försöker logga in igen"
 
 #~ msgid "Successfully logged out"
-#~ msgstr "Utloggad framgångsrikt"
+#~ msgstr ""
 
 #~ msgid "A valid temperature is required: %(temp)s is invalid."
-#~ msgstr "En giltig temperatur krävs: %(temp)s är ogiltig."
+#~ msgstr ""
 
 #~ msgid "System rebooting in 10 seconds"
-#~ msgstr "Systemstart om 10 sekunder"
+#~ msgstr ""
 
 #~ msgid "System shutting down in 10 seconds"
-#~ msgstr "Systemet stängs av om 10 sekunder"
+#~ msgstr ""
 
 #~ msgid "Command to restart the daemon sent"
-#~ msgstr "Kommandot att starta om den skickade demonen"
+#~ msgstr ""
 
 #~ msgid "Command to reload the frontend sent"
-#~ msgstr "Kommandot att ladda om frontänden skickad"
+#~ msgstr ""
 
 #~ msgid "Cannot start time-lapse if stream is active."
-#~ msgstr "Kan inte starta time-lapse om ström är aktiv."
+#~ msgstr ""
 
 #~ msgid "Cannot start stream if time-lapse is active."
-#~ msgstr "Kan inte starta strömmen om tidsfördröjning är aktiv."
+#~ msgstr ""
 
 #~ msgid "Repeat Password"
-#~ msgstr "Repetera lösenord"
+#~ msgstr ""
 
 #~ msgid "remember"
-#~ msgstr "kom ihåg"
+#~ msgstr ""
 
 #~ msgid "Domain or IP Address"
-#~ msgstr "Domän eller IP-adress"
+#~ msgstr ""
 
 #~ msgid "Add Host"
-#~ msgstr "Lägg till värd"
+#~ msgstr ""
 
 #~ msgid "Delete Host"
-#~ msgstr "Ta bort värd"
+#~ msgstr ""
 
 #~ msgid "I Understand"
-#~ msgstr "Jag förstår"
+#~ msgstr ""
 
 #~ msgid "Select"
-#~ msgstr "Välj"
+#~ msgstr ""
 
 #~ msgid "Atlas EZO Pump"
 #~ msgstr ""
 
 #~ msgid "Begin Calibration"
-#~ msgstr "Börja kalibrering"
+#~ msgstr ""
 
 #~ msgid "Clear Calibration"
-#~ msgstr "Klar kalibrering"
+#~ msgstr ""
 
 #~ msgid "Continue to Next Stage"
-#~ msgstr "Fortsätt till nästa steg"
+#~ msgstr ""
 
 #~ msgid "Atlas pH Sensor"
-#~ msgstr "Atlas pH Sensor"
+#~ msgstr ""
 
 #~ msgid "pH Points to Calibrate"
 #~ msgstr ""
 
 #~ msgid "Device"
-#~ msgstr "anordning"
+#~ msgstr ""
 
 #~ msgid "Set Resolution"
-#~ msgstr "Ange upplösning"
+#~ msgstr ""
 
 #~ msgid "Capture Still"
-#~ msgstr "Fånga fortfarande"
+#~ msgstr ""
 
 #~ msgid "Start Timelapse"
-#~ msgstr "Starta Timelapse"
+#~ msgstr ""
 
 #~ msgid "Pause Timelapse"
-#~ msgstr "Paus Timelapse"
+#~ msgstr ""
 
 #~ msgid "Resume Timelapse"
-#~ msgstr "Fortsätt Timelapse"
+#~ msgstr ""
 
 #~ msgid "Stop Timelapse"
-#~ msgstr "Stoppa Timelapse"
+#~ msgstr ""
 
 #~ msgid "Interval (seconds)"
-#~ msgstr "Intervall (sekunder)"
+#~ msgstr ""
 
 #~ msgid "Photo Interval must be a positive value"
-#~ msgstr "Fotointervall måste vara ett positivt värde"
+#~ msgstr ""
 
 #~ msgid "Run Time (seconds)"
-#~ msgstr "Körtid (sekunder)"
+#~ msgstr ""
 
 #~ msgid "Total Run Time must be a positive value"
-#~ msgstr "Total körtid måste vara ett positivt värde"
+#~ msgstr ""
 
 #~ msgid "Start Stream"
-#~ msgstr "Starta strömmen"
+#~ msgstr ""
 
 #~ msgid "Stop Stream"
-#~ msgstr "Stoppa strömmen"
+#~ msgstr ""
 
 #~ msgid "OpenCV Device"
-#~ msgstr "OpenCV Device"
+#~ msgstr ""
 
 #~ msgid "Flip image horizontally"
-#~ msgstr "Vänd bilden horisontellt"
+#~ msgstr ""
 
 #~ msgid "Flip image vertically"
-#~ msgstr "Vänd bilden vertikalt"
+#~ msgstr ""
 
 #~ msgid "Rotate Image"
-#~ msgstr "Rotera bild"
+#~ msgstr ""
 
 #~ msgid "Brightness"
-#~ msgstr "ljusstyrka"
+#~ msgstr ""
 
 #~ msgid "Contrast"
-#~ msgstr "Kontrast"
+#~ msgstr ""
 
 #~ msgid "Exposure"
-#~ msgstr "Exponering"
+#~ msgstr ""
 
 #~ msgid "Hue"
-#~ msgstr "Nyans"
+#~ msgstr ""
 
 #~ msgid "Saturation"
-#~ msgstr "Mättnad"
+#~ msgstr ""
 
 #~ msgid "White Balance"
-#~ msgstr "Vitbalans"
+#~ msgstr ""
 
 #~ msgid "Custom Options"
-#~ msgstr "Anpassade alternativ"
+#~ msgstr ""
 
 #~ msgid "Pre Command"
-#~ msgstr "Pre Command"
+#~ msgstr ""
 
 #~ msgid "Post Command"
-#~ msgstr "Postkommando"
+#~ msgstr ""
 
 #~ msgid "Still Image Path"
-#~ msgstr "Stillbildsbanan"
+#~ msgstr ""
 
 #~ msgid "Timelapse Path"
-#~ msgstr "Timelapse-sökvägen"
+#~ msgstr ""
 
 #~ msgid "Video Path"
-#~ msgstr "Videobana"
+#~ msgstr ""
 
 #~ msgid "Hide Last Still"
 #~ msgstr ""
@@ -7276,151 +7219,151 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Conditional Statement"
-#~ msgstr "Villkorligt uttalande"
+#~ msgstr ""
 
 #~ msgid "Refractory Period (seconds)"
-#~ msgstr "Eldfasta perioden (sekunder)"
+#~ msgstr ""
 
 #~ msgid "Add Condition"
-#~ msgstr "Lägg till villkor"
+#~ msgstr ""
 
 #~ msgid "Add Action"
-#~ msgstr "Lägg till åtgärd"
+#~ msgstr ""
 
 #~ msgid "Test All Actions"
-#~ msgstr "Testa alla åtgärder"
+#~ msgstr ""
 
 #~ msgid "GPIO Pin (BCM)"
-#~ msgstr "GPIO Pin (BCM)"
+#~ msgstr ""
 
 #~ msgid "Width"
-#~ msgstr "Bredd"
+#~ msgstr ""
 
 #~ msgid "Height (pixels)"
-#~ msgstr "Höjd (pixlar)"
+#~ msgstr ""
 
 #~ msgid "Refresh (seconds)"
-#~ msgstr "Uppdatera (sekunder)"
+#~ msgstr ""
 
 #~ msgid "Number of seconds to wait between acquiring any new measurements."
-#~ msgstr "Antal sekunder att vänta mellan att förvärva nya mätningar."
+#~ msgstr ""
 
 #~ msgid "Visible Elements"
-#~ msgstr "Synliga Element"
+#~ msgstr ""
 
 #~ msgid "Maths"
-#~ msgstr "Matte"
+#~ msgstr ""
 
 #~ msgid "Note Tags"
-#~ msgstr "Anmärkningstaggar"
+#~ msgstr ""
 
 #~ msgid "PIDs"
-#~ msgstr "PID"
+#~ msgstr ""
 
 #~ msgid "Outputs"
-#~ msgstr "utgångar"
+#~ msgstr ""
 
 #~ msgid "Inputs"
-#~ msgstr "ingångar"
+#~ msgstr ""
 
 #~ msgid "X-Axis (minutes)"
-#~ msgstr "X-Axis (minuter)"
+#~ msgstr ""
 
 #~ msgid "Number of minutes to display of past measurements."
-#~ msgstr "Antal minuter för visning av tidigare mätningar."
+#~ msgstr ""
 
 #~ msgid "Enable Auto Refresh"
-#~ msgstr "Aktivera automatisk uppdatering"
+#~ msgstr ""
 
 #~ msgid "Enable X-Axis Reset"
-#~ msgstr "Aktivera X-Axis Reset"
+#~ msgstr ""
 
 #~ msgid "Enable Title"
-#~ msgstr "Aktivera Titel"
+#~ msgstr ""
 
 #~ msgid "Enable Navbar"
-#~ msgstr "Aktivera Navbar"
+#~ msgstr ""
 
 #~ msgid "Enable Export"
-#~ msgstr "Aktivera export"
+#~ msgstr ""
 
 #~ msgid "Enable Range Selector"
-#~ msgstr "Aktivera områdesväljare"
+#~ msgstr ""
 
 #~ msgid "Enable Graph Shift"
-#~ msgstr "Aktivera Graph Shift"
+#~ msgstr ""
 
 #~ msgid "Enable Manual Y-Axis Min/Max"
-#~ msgstr "Aktivera manuell Y-axel Min / Max"
+#~ msgstr ""
 
 #~ msgid "Enable Y-Axis Align Ticks"
-#~ msgstr "Aktivera Y-Axis Justera fästingar"
+#~ msgstr ""
 
 #~ msgid "Enable Y-Axis Start On Tick"
-#~ msgstr "Aktivera Y-Axis Start On Tick"
+#~ msgstr ""
 
 #~ msgid "Enable Y-Axis End On Tick"
-#~ msgstr "Aktivera Y-Axis End On Tick"
+#~ msgstr ""
 
 #~ msgid "Enable Custom Colors"
-#~ msgstr "Aktivera anpassade färger"
+#~ msgstr ""
 
 #~ msgid "Gauge Type"
-#~ msgstr "Mätartyp"
+#~ msgstr ""
 
 #~ msgid "Angular Gauge"
-#~ msgstr "Vinkelmätare"
+#~ msgstr ""
 
 #~ msgid "Solid Gauge"
-#~ msgstr "Solid Mätare"
+#~ msgstr ""
 
 #~ msgid "Gauge Min"
-#~ msgstr "Mått Min"
+#~ msgstr ""
 
 #~ msgid "Gauge Max"
-#~ msgstr "Mätare Max"
+#~ msgstr ""
 
 #~ msgid "Show Timestamp"
-#~ msgstr "Visa tidsstämpel"
+#~ msgstr ""
 
 #~ msgid "Value Font (em)"
-#~ msgstr "Värde teckensnitt (em)"
+#~ msgstr ""
 
 #~ msgid "Timestamp Font (em)"
-#~ msgstr "Timestamp typsnitt (em)"
+#~ msgstr ""
 
 #~ msgid "Decimal Places"
-#~ msgstr "Decimala platser"
+#~ msgstr ""
 
 #~ msgid "Feature Output Controls"
-#~ msgstr "Funktionsutgångskontroller"
+#~ msgstr ""
 
 #~ msgid "Show PID Information"
-#~ msgstr "Visa PID-information"
+#~ msgstr ""
 
 #~ msgid "Show Set Setpoint"
-#~ msgstr "Visa inställd börvärde"
+#~ msgstr ""
 
 #~ msgid "Image Display Type"
-#~ msgstr "Bildskärmstyp"
+#~ msgstr ""
 
 #~ msgid "Install All Dependencies"
-#~ msgstr "Installera alla beroende"
+#~ msgstr ""
 
 #~ msgid "Execute All Actions"
-#~ msgstr "Utför alla åtgärder"
+#~ msgstr ""
 
 #~ msgid "Duration (seconds)"
-#~ msgstr "Varaktighet (sekunder)"
+#~ msgstr ""
 
 #~ msgid "Action String"
-#~ msgstr "Action String"
+#~ msgstr ""
 
 #~ msgid "Controller ID"
-#~ msgstr "Controller ID"
+#~ msgstr ""
 
 #~ msgid "Then State"
-#~ msgstr "Då Stat"
+#~ msgstr ""
 
 #~ msgid "Duty Cycle (%)"
 #~ msgstr ""
@@ -7438,172 +7381,169 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Location"
-#~ msgstr "Plats"
+#~ msgstr ""
 
 #~ msgid "Power Output"
-#~ msgstr "Uteffekt"
+#~ msgstr ""
 
 #~ msgid "Calibration Measurement"
-#~ msgstr "Kalibreringsmätning"
+#~ msgstr ""
 
 #~ msgid "BT Adapter (hci[X])"
-#~ msgstr "BT-adapter (hci [X])"
+#~ msgstr ""
 
 #~ msgid "Acquire Measurements Now"
-#~ msgstr "Förvärv nu"
+#~ msgstr ""
 
 #~ msgid "Rescaled Measurement"
-#~ msgstr "Uppskalad mätning"
+#~ msgstr ""
 
 #~ msgid "LCD Type"
-#~ msgstr "LCD-typ"
+#~ msgstr ""
 
 #~ msgid "Address"
-#~ msgstr "Adress"
+#~ msgstr ""
 
 #~ msgid "I<sup>2</sup>C"
-#~ msgstr "I <sup> 2 </ sup> C"
+#~ msgstr ""
 
 #~ msgid "Bus"
-#~ msgstr "Buss"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Duration between calculating LCD output "
 #~ "and applying to regulation must be "
 #~ "between 5 and 86400 seconds."
 #~ msgstr ""
-#~ "Varaktigheten mellan beräkning av LCD-"
-#~ "utgång och reglering måste vara mellan"
-#~ " 5 och 86400 sekunder."
 
 #~ msgid "Add Display Set"
-#~ msgstr "Lägg till bildsätt"
+#~ msgstr ""
 
 #~ msgid "Reset LCD"
-#~ msgstr "Återställ LCD"
+#~ msgstr ""
 
 #~ msgid "Reverse Equation"
-#~ msgstr "Reverse Equation"
+#~ msgstr ""
 
 #~ msgid "Absolute Value"
-#~ msgstr "Absolutvärde"
+#~ msgstr ""
 
 #~ msgid "Dry Bulb Temperature"
-#~ msgstr "Torr lampa temperatur"
+#~ msgstr ""
 
 #~ msgid "Wet Bulb Temperature"
-#~ msgstr "Wet Bulb Temperature"
+#~ msgstr ""
 
 #~ msgid "optional"
-#~ msgstr "valfri"
+#~ msgstr ""
 
 #~ msgid "Order of Use"
-#~ msgstr "Beställningsordning"
+#~ msgstr ""
 
 #~ msgid "Max Difference"
-#~ msgstr "Max skillnad"
+#~ msgstr ""
 
 #~ msgid "Convert to Measurement"
-#~ msgstr "Konvertera till mätning"
+#~ msgstr ""
 
 #~ msgid "Start HH:MM:SS"
-#~ msgstr "Börja HH: MM: SS"
+#~ msgstr ""
 
 #~ msgid "End HH:MM:SS"
-#~ msgstr "Slut HH: MM: SS"
+#~ msgstr ""
 
 #~ msgid "Start YYYY-MM-DD HH:MM:SS"
-#~ msgstr "Börja ÅÅÅÅ-MM-DD HH: MM: SS"
+#~ msgstr ""
 
 #~ msgid "End YYYY-MM-DD HH:MM:SS"
-#~ msgstr "Avsluta ÅÅÅÅ-MM-DD HH: MM: SS"
+#~ msgstr ""
 
 #~ msgid "Start Setpoint"
-#~ msgstr "Börja börvärdet"
+#~ msgstr ""
 
 #~ msgid "End Setpoint (optional)"
-#~ msgstr "Slut Börvärde (tillval)"
+#~ msgstr ""
 
 #~ msgid "Duration to End (seconds)"
-#~ msgstr "Varaktighet till slut (sekunder)"
+#~ msgstr ""
 
 #~ msgid "Amplitude"
-#~ msgstr "Amplitud"
+#~ msgstr ""
 
 #~ msgid "Angle Shift (0 to 360)"
-#~ msgstr "Vinkelskift (0 till 360)"
+#~ msgstr ""
 
 #~ msgid "Y-Axis Shift"
-#~ msgstr "Y-Axis Shift"
+#~ msgstr ""
 
 #~ msgid "Time HH:MM:SS"
-#~ msgstr "Tid HH: MM: SS"
+#~ msgstr ""
 
 #~ msgid "Time YYYY-MM-DD HH:MM:SS"
-#~ msgstr "Tid ÅÅÅÅ-MM-DD HH: MM: SS"
+#~ msgstr ""
 
 #~ msgid "Duration/Duty Cycle"
-#~ msgstr "Varaktighet / Driftscykel"
+#~ msgstr ""
 
 #~ msgid "Relay State"
-#~ msgstr "Relä stat"
+#~ msgstr ""
 
 #~ msgid "Turn On"
-#~ msgstr "Sätta på"
+#~ msgstr ""
 
 #~ msgid "Turn Off"
-#~ msgstr "Stäng av"
+#~ msgstr ""
 
 #~ msgid "PWM (Duty Cycle)"
-#~ msgstr "PWM (Driftscykel)"
+#~ msgstr ""
 
 #~ msgid "Add to Method"
-#~ msgstr "Lägg till till metod"
+#~ msgstr ""
 
 #~ msgid "Set Repeat Option"
-#~ msgstr "Ställ upprepningsalternativ"
+#~ msgstr ""
 
 #~ msgid "End Setpoint"
-#~ msgstr "Slut Börvärde"
+#~ msgstr ""
 
 #~ msgid "State"
-#~ msgstr "stat"
+#~ msgstr ""
 
 #~ msgid "Time Range MM/DD/YYYY HH:MM"
-#~ msgstr "Tidsintervall DD / MM / ÅÅÅÅ HH: MM"
+#~ msgstr ""
 
 #~ msgid "Stop Daemon"
-#~ msgstr "Stoppa Daemon"
+#~ msgstr ""
 
 #~ msgid "Start Daemon"
-#~ msgstr "Start Daemon"
+#~ msgstr ""
 
 #~ msgid "Restart Daemon"
-#~ msgstr "Starta om Daemon"
+#~ msgstr ""
 
 #~ msgid "Measurement to Export"
-#~ msgstr "Mätning för export"
+#~ msgstr ""
 
 #~ msgid "Export Data as CSV"
-#~ msgstr "Exportera data som CSV"
+#~ msgstr ""
 
 #~ msgid "Export Settings"
-#~ msgstr "Exportera inställningar"
+#~ msgstr ""
 
 #~ msgid "Import Settings"
-#~ msgstr "Importera inställningar"
+#~ msgstr ""
 
 #~ msgid "Export Influxdb"
-#~ msgstr "Exportera Influxdb"
+#~ msgstr ""
 
 #~ msgid "Import Influxdb"
-#~ msgstr "Importera Influxdb"
+#~ msgstr ""
 
 #~ msgid "Lines"
-#~ msgstr "Rader"
+#~ msgstr ""
 
 #~ msgid "Number of lines should be greater than 0"
-#~ msgstr "Antal rader ska vara större än 0"
+#~ msgstr ""
 
 #~ msgid "Log"
 #~ msgstr ""
@@ -7612,195 +7552,193 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Upgrade Mycodo"
-#~ msgstr "Uppgradera Mycodo"
+#~ msgstr ""
 
 #~ msgid "Upgrade Mycodo to Next Major Version"
-#~ msgstr "Uppgradera Mycodo till nästa stora version"
+#~ msgstr ""
 
 #~ msgid "Create Backup"
-#~ msgstr "Skapa backup"
+#~ msgstr ""
 
 #~ msgid "Restore Backup"
-#~ msgstr "Återställa säkerhetskopia"
+#~ msgstr ""
 
 #~ msgid "Delete Backup"
-#~ msgstr "Ta bort säkerhetskopiering"
+#~ msgstr ""
 
 #~ msgid "Attached Files"
-#~ msgstr "Bifogade filer"
+#~ msgstr ""
 
 #~ msgid "Use Custom Date/Time"
-#~ msgstr "Använd Anpassad Datum / Tid"
+#~ msgstr ""
 
 #~ msgid "Tags"
-#~ msgstr "Tags"
+#~ msgstr ""
 
 #~ msgid "Filter Names"
-#~ msgstr "Filternamn"
+#~ msgstr ""
 
 #~ msgid "Filter Tags"
-#~ msgstr "Filter Taggar"
+#~ msgstr ""
 
 #~ msgid "Filter Files"
-#~ msgstr "Filtrera filer"
+#~ msgstr ""
 
 #~ msgid "Filter Notes"
-#~ msgstr "Filtrera anteckningar"
+#~ msgstr ""
 
 #~ msgid "Sort By"
-#~ msgstr "Sortera efter"
+#~ msgstr ""
 
 #~ msgid "Sort Direction"
-#~ msgstr "Sortera riktning"
+#~ msgstr ""
 
 #~ msgid "Show Notes"
-#~ msgstr "Visa anteckningar"
+#~ msgstr ""
 
 #~ msgid "Export Notes"
-#~ msgstr "Exportera anteckningar"
+#~ msgstr ""
 
 #~ msgid "Import Notes"
-#~ msgstr "Importera anteckningar"
+#~ msgstr ""
 
 #~ msgid "Quantity"
-#~ msgstr "Kvantitet"
+#~ msgstr ""
 
 #~ msgid "Invert Signal"
-#~ msgstr "Invertera signalen"
+#~ msgstr ""
 
 #~ msgid "The current draw of the device connected to this output, in amps."
 #~ msgstr ""
-#~ "Den nuvarande teckningen av enheten "
-#~ "ansluten till denna utgång, i ampere."
 
 #~ msgid "High"
-#~ msgstr "Hög"
+#~ msgstr ""
 
 #~ msgid "Low"
-#~ msgstr "Låg"
+#~ msgstr ""
 
 #~ msgid "Any Pin, <= 40 kHz"
-#~ msgstr "Varje Pin, <= 40 kHz"
+#~ msgstr ""
 
 #~ msgid "Hardware Pin, <= 30 MHz"
-#~ msgstr "Hårdvara Pin, <= 30 MHz"
+#~ msgstr ""
 
 #~ msgid "Direction"
-#~ msgstr "Riktning"
+#~ msgstr ""
 
 #~ msgid "Raise"
-#~ msgstr "Höja"
+#~ msgstr ""
 
 #~ msgid "Lower"
-#~ msgstr "Lägre"
+#~ msgstr ""
 
 #~ msgid "Both"
-#~ msgstr "Både"
+#~ msgstr ""
 
 #~ msgid "Band (+/- Setpoint)"
-#~ msgstr "Band (+/- Börvärde)"
+#~ msgstr ""
 
 #~ msgid "Store Lower as Negative"
-#~ msgstr "Store Lägre som negativ"
+#~ msgstr ""
 
 #~ msgid "Kp Gain"
-#~ msgstr "Kp Gain"
+#~ msgstr ""
 
 #~ msgid "Ki Gain"
-#~ msgstr "Ki Gain"
+#~ msgstr ""
 
 #~ msgid "Kd Gain"
-#~ msgstr "Kd Gain"
+#~ msgstr ""
 
 #~ msgid "Integrator Min"
-#~ msgstr "Integrator Min"
+#~ msgstr ""
 
 #~ msgid "Integrator Max"
-#~ msgstr "Integrator Max"
+#~ msgstr ""
 
 #~ msgid "Output (Raise)"
-#~ msgstr "Utmatning (höj)"
+#~ msgstr ""
 
 #~ msgid "Output (Lower)"
-#~ msgstr "Utgång (lägre)"
+#~ msgstr ""
 
 #~ msgid "Noise Band"
-#~ msgstr "Bullerband"
+#~ msgstr ""
 
 #~ msgid "Outstep"
-#~ msgstr "Outstep"
+#~ msgstr ""
 
 #~ msgid "Start Autotune"
-#~ msgstr "Starta Autotune"
+#~ msgstr ""
 
 #~ msgid "Min On Duration (Raise)"
-#~ msgstr "Min på varaktighet (höj)"
+#~ msgstr ""
 
 #~ msgid "Max On Duration (Raise)"
-#~ msgstr "Max på varaktighet (höj)"
+#~ msgstr ""
 
 #~ msgid "Min Off Duration (Raise)"
-#~ msgstr "Min Av Varaktighet (Höj)"
+#~ msgstr ""
 
 #~ msgid "Min On Duration (Lower)"
-#~ msgstr "Min på varaktighet (lägre)"
+#~ msgstr ""
 
 #~ msgid "Max On Duration (Lower)"
-#~ msgstr "Max på varaktighet (lägre)"
+#~ msgstr ""
 
 #~ msgid "Min Off Duration (Lower)"
-#~ msgstr "Min Av Varaktighet (Nedre)"
+#~ msgstr ""
 
 #~ msgid "Min Duty Cycle (Raise)"
-#~ msgstr "Min arbetscykel (höja)"
+#~ msgstr ""
 
 #~ msgid "Max Duty Cycle (Raise)"
-#~ msgstr "Max arbetscykel (höja)"
+#~ msgstr ""
 
 #~ msgid "Min Duty Cycle (Lower)"
-#~ msgstr "Min arbetscykel (lägre)"
+#~ msgstr ""
 
 #~ msgid "Max Duty Cycle (Lower)"
-#~ msgstr "Max arbetscykel (lägre)"
+#~ msgstr ""
 
 #~ msgid "SMTP Host"
-#~ msgstr "SMTP-värd"
+#~ msgstr ""
 
 #~ msgid "SMTP Port"
-#~ msgstr "SMTP-porten"
+#~ msgstr ""
 
 #~ msgid "Port should be between 1 and 65535"
-#~ msgstr "Hamnen ska vara mellan 1 och 65535"
+#~ msgstr ""
 
 #~ msgid "SMTP User"
-#~ msgstr "SMTP-användare"
+#~ msgstr ""
 
 #~ msgid "SMTP Password"
-#~ msgstr "SMTP-lösenord"
+#~ msgstr ""
 
 #~ msgid "From Email"
-#~ msgstr "Från epost"
+#~ msgstr ""
 
 #~ msgid "Max emails (per hour)"
-#~ msgstr "Max e-postmeddelanden (per timme)"
+#~ msgstr ""
 
 #~ msgid "Must have at least one message able to be sent per hour."
-#~ msgstr "Måste ha minst ett meddelande som kan skickas per timme."
+#~ msgstr ""
 
 #~ msgid "Send Test Email"
-#~ msgstr "Skicka test-e-post"
+#~ msgstr ""
 
 #~ msgid "Test Email To"
-#~ msgstr "Testa e-post till"
+#~ msgstr ""
 
 #~ msgid "To Email Address"
-#~ msgstr "Till e-postadress"
+#~ msgstr ""
 
 #~ msgid "Landing Page"
-#~ msgstr "Landningssida"
+#~ msgstr ""
 
 #~ msgid "Language"
-#~ msgstr "Språk"
+#~ msgstr ""
 
 #~ msgid "Pyro Timeout"
 #~ msgstr ""
@@ -7809,244 +7747,244 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Force HTTPS"
-#~ msgstr "Tvinga HTTPS"
+#~ msgstr ""
 
 #~ msgid "Hide success messages"
-#~ msgstr "Dölj succémeddelanden"
+#~ msgstr ""
 
 #~ msgid "Hide info messages"
-#~ msgstr "Dölj informationsmeddelanden"
+#~ msgstr ""
 
 #~ msgid "Hide warning messages"
-#~ msgstr "Dölj varningsmeddelanden"
+#~ msgstr ""
 
 #~ msgid "Hide Form Tooltips"
-#~ msgstr "Dölj formulärverktygstips"
+#~ msgstr ""
 
 #~ msgid "Max Amps"
-#~ msgstr "Max Amps"
+#~ msgstr ""
 
 #~ msgid "Cost per kWh"
-#~ msgstr "Kostnad per kWh"
+#~ msgstr ""
 
 #~ msgid "Currency Unit"
-#~ msgstr "Valutaenhet"
+#~ msgstr ""
 
 #~ msgid "Day of Month"
-#~ msgstr "Månadens dag"
+#~ msgstr ""
 
 #~ msgid "Generate Usage/Cost Report"
-#~ msgstr "Generera användnings- / kostnadsrapport"
+#~ msgstr ""
 
 #~ msgid "Time Span to Generate"
-#~ msgstr "Tidspan för att generera"
+#~ msgstr ""
 
 #~ msgid "Day of Week/Month to Generate"
-#~ msgstr "Veckodag / månad att generera"
+#~ msgstr ""
 
 #~ msgid "Hour of Day to Generate"
-#~ msgstr "Timme för att generera"
+#~ msgstr ""
 
 #~ msgid "Hour Options: 0-23"
-#~ msgstr "Timmealternativ: 0-23"
+#~ msgstr ""
 
 #~ msgid "Opt-out of statistics"
-#~ msgstr "Opt-out av statistik"
+#~ msgstr ""
 
 #~ msgid "Check for Updates"
-#~ msgstr "Sök efter uppdateringar"
+#~ msgstr ""
 
 #~ msgid "Import Controller Module"
 #~ msgstr ""
 
 #~ msgid "Import Input Module"
-#~ msgstr "Importera inmatningsmodul"
+#~ msgstr ""
 
 #~ msgid "Measurement Name"
-#~ msgstr "Mätningsnamn"
+#~ msgstr ""
 
 #~ msgid "Measurement Units"
-#~ msgstr "Mätenheter"
+#~ msgstr ""
 
 #~ msgid "Add Measurement"
-#~ msgstr "Lägg till mätning"
+#~ msgstr ""
 
 #~ msgid "Unit Name"
-#~ msgstr "Enhetsnamn"
+#~ msgstr ""
 
 #~ msgid "Unit Abbreviation"
-#~ msgstr "Enhetsförkortning"
+#~ msgstr ""
 
 #~ msgid "Add Unit"
-#~ msgstr "Lägg till enhet"
+#~ msgstr ""
 
 #~ msgid "Convert From Unit"
-#~ msgstr "Konvertera från enhet"
+#~ msgstr ""
 
 #~ msgid "Convert To Measurement"
-#~ msgstr "Konvertera till mätning"
+#~ msgstr ""
 
 #~ msgid "Add Conversion"
-#~ msgstr "Lägg till omvandling"
+#~ msgstr ""
 
 #~ msgid "Convert To Unit"
-#~ msgstr "Konvertera till enhet"
+#~ msgstr ""
 
 #~ msgid "Role Name"
-#~ msgstr "Rollnamn"
+#~ msgstr ""
 
 #~ msgid "View Logs"
-#~ msgstr "Visa loggar"
+#~ msgstr ""
 
 #~ msgid "View Stats"
-#~ msgstr "Visa statistik"
+#~ msgstr ""
 
 #~ msgid "View Camera"
-#~ msgstr "Visa kamera"
+#~ msgstr ""
 
 #~ msgid "View Settings"
-#~ msgstr "Visa inställningar"
+#~ msgstr ""
 
 #~ msgid "Edit Users"
-#~ msgstr "Redigera användare"
+#~ msgstr ""
 
 #~ msgid "Edit Controllers"
-#~ msgstr "Redigera Controllers"
+#~ msgstr ""
 
 #~ msgid "Edit Settings"
-#~ msgstr "Ändra inställningar"
+#~ msgstr ""
 
 #~ msgid "Add Role"
-#~ msgstr "Lägg till roll"
+#~ msgstr ""
 
 #~ msgid "Passwords must match"
-#~ msgstr "Lösenorden måste matcha"
+#~ msgstr ""
 
 #~ msgid "Password must be 6 or more characters"
-#~ msgstr "Lösenordet måste vara 6 eller flera tecken"
+#~ msgstr ""
 
 #~ msgid "Role"
-#~ msgstr "Roll"
+#~ msgstr ""
 
 #~ msgid "Theme"
-#~ msgstr "Tema"
+#~ msgstr ""
 
 #~ msgid "Add User"
-#~ msgstr "Lägg till användare"
+#~ msgstr ""
 
 #~ msgid "New Password"
-#~ msgstr "nytt lösenord"
+#~ msgstr ""
 
 #~ msgid "Role ID"
-#~ msgstr "Roll-ID"
+#~ msgstr ""
 
 #~ msgid "Enable I2C"
-#~ msgstr "Aktivera I2C"
+#~ msgstr ""
 
 #~ msgid "Disable I2C"
-#~ msgstr "Inaktivera I2C"
+#~ msgstr ""
 
 #~ msgid "Enable 1-Wire"
-#~ msgstr "Aktivera 1-tråd"
+#~ msgstr ""
 
 #~ msgid "Disable 1-Wire"
-#~ msgstr "Inaktivera 1-tråd"
+#~ msgstr ""
 
 #~ msgid "Enable Serial"
-#~ msgstr "Aktivera seriell"
+#~ msgstr ""
 
 #~ msgid "Disable Serial"
-#~ msgstr "Inaktivera seriell"
+#~ msgstr ""
 
 #~ msgid "Enable SPI"
-#~ msgstr "Aktivera SPI"
+#~ msgstr ""
 
 #~ msgid "Disable SPI"
-#~ msgstr "Inaktivera SPI"
+#~ msgstr ""
 
 #~ msgid "Enable SSH"
-#~ msgstr "Aktivera SSH"
+#~ msgstr ""
 
 #~ msgid "Disable SSH"
-#~ msgstr "Inaktivera SSH"
+#~ msgstr ""
 
 #~ msgid "Enable Pi Camera"
-#~ msgstr "Aktivera Pi-kamera"
+#~ msgstr ""
 
 #~ msgid "Disable Pi Camera"
-#~ msgstr "Inaktivera Pi-kamera"
+#~ msgstr ""
 
 #~ msgid "Change Hostname"
-#~ msgstr "Ändra värdnamn"
+#~ msgstr ""
 
 #~ msgid "Configure pigpiod"
-#~ msgstr "Konfigurera pigpiod"
+#~ msgstr ""
 
 #~ msgid "Reconfigure"
-#~ msgstr "konfigurera"
+#~ msgstr ""
 
 #~ msgid "Conditional Sample Rate (seconds)"
-#~ msgstr "Villkorlig provfrekvens (sekunder)"
+#~ msgstr ""
 
 #~ msgid "Input Sample Rate (seconds)"
-#~ msgstr "Inmatningsprovhastighet (sekunder)"
+#~ msgstr ""
 
 #~ msgid "Math Sample Rate (seconds)"
-#~ msgstr "Matematisk provfrekvens (sekunder)"
+#~ msgstr ""
 
 #~ msgid "Output Sample Rate (seconds)"
-#~ msgstr "Utmatningsprovhastighet (sekunder)"
+#~ msgstr ""
 
 #~ msgid "PID Sample Rate (seconds)"
-#~ msgstr "PID-provfrekvens (sekunder)"
+#~ msgstr ""
 
 #~ msgid "Save Sample Rates"
-#~ msgstr "Spara provpriser"
+#~ msgstr ""
 
 #~ msgid "Delete All Dashboard Elements"
-#~ msgstr "Ta bort alla instrumentpanelelement"
+#~ msgstr ""
 
 #~ msgid "Delete All Inputs"
-#~ msgstr "Ta bort alla ingångar"
+#~ msgstr ""
 
 #~ msgid "Delete All Maths"
-#~ msgstr "Ta bort alla matriser"
+#~ msgstr ""
 
 #~ msgid "Delete All Notes and Note Tags"
-#~ msgstr "Ta bort alla anteckningar och antecknings etiketter"
+#~ msgstr ""
 
 #~ msgid "Delete All Outputs"
-#~ msgstr "Ta bort alla utmatningar"
+#~ msgstr ""
 
 #~ msgid "Delete Settings Database"
-#~ msgstr "Ta bort inställningsdatabasen"
+#~ msgstr ""
 
 #~ msgid "Delete File"
-#~ msgstr "Radera fil"
+#~ msgstr ""
 
 #~ msgid "Reset Email Counter"
 #~ msgstr ""
 
 #~ msgid "If Edge Detected"
-#~ msgstr "Om kant upptäckt"
+#~ msgstr ""
 
 #~ msgid "Rise or Set"
-#~ msgstr "Rise eller Set"
+#~ msgstr ""
 
 #~ msgid "Latitude (decimal)"
-#~ msgstr "Latitude (decimal)"
+#~ msgstr ""
 
 #~ msgid "Longitude (decimal)"
-#~ msgstr "Längd (decimal)"
+#~ msgstr ""
 
 #~ msgid "Zenith"
-#~ msgstr "Zenit"
+#~ msgstr ""
 
 #~ msgid "Date Offset (days)"
-#~ msgstr "Dagsförskjutning (dagar)"
+#~ msgstr ""
 
 #~ msgid "Time Offset (minutes)"
-#~ msgstr "Tidsförskjutning (minuter)"
+#~ msgstr ""
 
 #~ msgid "Program"
 #~ msgstr ""
@@ -8055,169 +7993,169 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Start Time (HH:MM)"
-#~ msgstr "Starttid (HH: MM)"
+#~ msgstr ""
 
 #~ msgid "End Time (HH:MM)"
-#~ msgstr "Sluttid (HH: MM)"
+#~ msgstr ""
 
 #~ msgid "Trigger Every Period"
-#~ msgstr "Trigger varje period"
+#~ msgstr ""
 
 #~ msgid "Trigger when Activated"
-#~ msgstr "Trigger när aktiverad"
+#~ msgstr ""
 
 #~ msgid "If ID 1"
-#~ msgstr "Om ID 1"
+#~ msgstr ""
 
 #~ msgid "If ID 2"
-#~ msgstr "Om ID 2"
+#~ msgstr ""
 
 #~ msgid "If State"
-#~ msgstr "Om staten"
+#~ msgstr ""
 
 #~ msgid "If Duration (seconds)"
-#~ msgstr "Om varaktighet (sekunder)"
+#~ msgstr ""
 
 #~ msgid "If Duty Cycle (%%)"
-#~ msgstr "Om arbetscykel (%%)"
+#~ msgstr ""
 
 #~ msgid "Error 404: Page Not Found"
-#~ msgstr "Fel 404: Sidan hittades inte"
+#~ msgstr ""
 
 #~ msgid "Error 500: Internal Server Error"
-#~ msgstr "Fel 500: Internt serverfel"
+#~ msgstr ""
 
 #~ msgid "Create Admin"
-#~ msgstr "Skapa administratör"
+#~ msgstr ""
 
 #~ msgid "Create Admin User"
-#~ msgstr "Skapa administratörs användare"
+#~ msgstr ""
 
 #~ msgid "Login information is stored locally"
-#~ msgstr "Inloggningsinformation lagras lokalt"
+#~ msgstr ""
 
 #~ msgid "Success"
-#~ msgstr "Framgång"
+#~ msgstr ""
 
 #~ msgid "Info"
-#~ msgstr "Info"
+#~ msgstr ""
 
 #~ msgid "Setup"
-#~ msgstr "Inrätta"
+#~ msgstr ""
 
 #~ msgid "Exit"
-#~ msgstr "Utgång"
+#~ msgstr ""
 
 #~ msgid "Controllers"
 #~ msgstr ""
 
 #~ msgid "Measurements"
-#~ msgstr "mätningar"
+#~ msgstr ""
 
 #~ msgid "Users"
-#~ msgstr "användare"
+#~ msgstr ""
 
 #~ msgid "Raspberry Pi"
-#~ msgstr "Raspberry Pi"
+#~ msgstr ""
 
 #~ msgid "Alerts"
-#~ msgstr "varningar"
+#~ msgstr ""
 
 #~ msgid "Diagnostics"
-#~ msgstr "Diagnostik"
+#~ msgstr ""
 
 #~ msgid "Daemon is Not Running"
-#~ msgstr "Daemon går inte"
+#~ msgstr ""
 
 #~ msgid "Daemon is Running"
-#~ msgstr "Daemon är igång"
+#~ msgstr ""
 
 #~ msgid "Cannot Check Daemon Status"
-#~ msgstr "Kan inte kolla Daemon Status"
+#~ msgstr ""
 
 #~ msgid "No Connection"
-#~ msgstr "Ingen förbindelse"
+#~ msgstr ""
 
 #~ msgid "Live"
-#~ msgstr "leva"
+#~ msgstr ""
 
 #~ msgid "Asynchronous Graphs"
-#~ msgstr "Asynchronous Graphs"
+#~ msgstr ""
 
 #~ msgid "Calibration & Setup"
-#~ msgstr "Kalibrering och inställning"
+#~ msgstr ""
 
 #~ msgid "More"
-#~ msgstr "Mer"
+#~ msgstr ""
 
 #~ msgid "Energy Usage Reports"
 #~ msgstr ""
 
 #~ msgid "Help"
-#~ msgstr "Hjälp"
+#~ msgstr ""
 
 #~ msgid "Mycodo Manual"
-#~ msgstr "Mycodo Manual"
+#~ msgstr ""
 
 #~ msgid "Discussion Forum"
 #~ msgstr ""
 
 #~ msgid "Submit an Issue"
-#~ msgstr "Skicka ett problem"
+#~ msgstr ""
 
 #~ msgid "Mycodo on Github"
-#~ msgstr "Mycodo på Github"
+#~ msgstr ""
 
 #~ msgid "Changelog"
-#~ msgstr "Ändringslogg"
+#~ msgstr ""
 
 #~ msgid "Configure"
-#~ msgstr "konfigurera"
+#~ msgstr ""
 
 #~ msgid "Mycodo Logs"
-#~ msgstr "Mycodo loggar"
+#~ msgstr ""
 
 #~ msgid "System Information"
-#~ msgstr "Systeminformation"
+#~ msgstr ""
 
 #~ msgid "Dependencies"
-#~ msgstr "beroenden"
+#~ msgstr ""
 
 #~ msgid "Upgrade"
-#~ msgstr "uppgradering"
+#~ msgstr ""
 
 #~ msgid "Backup Restore"
-#~ msgstr "Backup Restore"
+#~ msgstr ""
 
 #~ msgid "Restart Backend"
-#~ msgstr "Starta om backend"
+#~ msgstr ""
 
 #~ msgid "Restart Frontend"
-#~ msgstr "Starta om Frontend"
+#~ msgstr ""
 
 #~ msgid "Restart System"
-#~ msgstr "Starta om systemet"
+#~ msgstr ""
 
 #~ msgid "Shutdown System"
-#~ msgstr "Avstängningssystem"
+#~ msgstr ""
 
 #~ msgid "Remote Admin"
-#~ msgstr "Fjärradministratör"
+#~ msgstr ""
 
 #~ msgid "Logout"
-#~ msgstr "Logga ut"
+#~ msgstr ""
 
 #~ msgid "You're logged in already!"
-#~ msgstr "Du är redan inloggad!"
+#~ msgstr ""
 
 #~ msgid "Remember me"
-#~ msgstr "Kom ihåg mig"
+#~ msgstr ""
 
 #~ msgid "90 days"
-#~ msgstr "90 dagar"
+#~ msgstr ""
 
 #~ msgid "Sign in"
-#~ msgstr "Logga in"
+#~ msgstr ""
 
 #~ msgid "Forgot password?"
 #~ msgstr ""
@@ -8230,12 +8168,6 @@ msgstr ""
 #~ "data, go to the Export / Import"
 #~ " page."
 #~ msgstr ""
-#~ "Säkerhetskopieringar kan skapas för att "
-#~ "behålla Mycodo-inställningar eller återställa"
-#~ " dem vid en senare tidpunkt. "
-#~ "Kamerabilderna är inte säkerhetskopierade. För"
-#~ " att spara mätdata, gå till sidan "
-#~ "Exportera / Importera."
 
 #~ msgid ""
 #~ "Several software dependencies used by "
@@ -8247,20 +8179,12 @@ msgstr ""
 #~ "ability to install currently unmet "
 #~ "dependencies."
 #~ msgstr ""
-#~ "Flera programvaruberoende som används av "
-#~ "Mycodo-funktioner kan vara inaktiverade. "
-#~ "Detta görs för att påskynda den "
-#~ "ursprungliga installationsprocessen. Den här "
-#~ "sidan kan användas för att bestämma "
-#~ "vilka beroenden som är installerade och"
-#~ " möjligheten att installera för närvarande"
-#~ " obestämda beroenden."
 
 #~ msgid "Collected Statistics"
-#~ msgstr "Samlad statistik"
+#~ msgstr ""
 
 #~ msgid "Mycodo is currently in the process of an upgrade"
-#~ msgstr "Mycodo är för närvarande på väg att uppgradera"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "If an upgrade is not currently in"
@@ -8268,10 +8192,6 @@ msgstr ""
 #~ "~/Mycodo/.upgrade file to be able to "
 #~ "reinitiate the upgrade process."
 #~ msgstr ""
-#~ "Om en uppgradering inte pågår, kan "
-#~ "du ta bort filen ~ / Mycodo "
-#~ "/ .upgrade för att kunna initiera "
-#~ "uppgraderingen."
 
 #~ msgid ""
 #~ "An upgrade often takes several minutes,"
@@ -8288,19 +8208,6 @@ msgstr ""
 #~ "backend before creating a new github "
 #~ "issue."
 #~ msgstr ""
-#~ "En uppgradering tar ofta flera minuter,"
-#~ " och i vissa fall längre, att "
-#~ "slutföra. Ge processen tillräckligt med "
-#~ "tid att springa innan du gör "
-#~ "någonting. När uppgraderingen har slutförts"
-#~ " ändras indikatorn för demonstatus längst"
-#~ " upp till vänster från rött till "
-#~ "grönt. Vissa drivrutiner kräver att "
-#~ "backenden startas om för att de "
-#~ "ska bli aktiva. Om du upplever en"
-#~ " erorr, försök att starta om "
-#~ "bakgrunden innan du skapar ett nytt "
-#~ "githubproblem."
 
 #~ msgid ""
 #~ "You can monitor the upgrade progress "
@@ -8314,30 +8221,17 @@ msgstr ""
 #~ "to inspect the entire log in order"
 #~ " to diagnose the issue."
 #~ msgstr ""
-#~ "Du kan övervaka uppgraderingsförloppet med "
-#~ "live-loggvisningen nedan, genom att "
-#~ "navigera till Konfigurera -> Mycodo Logs"
-#~ " -> Uppgraderingslogg, eller genom att "
-#~ "öppna /var/log/mycodo/mycodoupgrade.log. Nedan visas"
-#~ " de senaste 40 raderna i "
-#~ "uppgraderingsloggen, uppdaterad var 5: e "
-#~ "sekund. Om ett fel uppstår är det"
-#~ " lämpligt att inspektera hela loggen "
-#~ "för att kunna diagnostisera problemet."
 
 #~ msgid "There was an error that occurred during the upgrade"
-#~ msgstr "Ett fel uppstod under uppgraderingen"
+#~ msgstr ""
 
 #~ msgid "View the upgrade log at /var/log/mycodo/mycodoupgrade.log."
-#~ msgstr "Visa uppgraderingsloggen på /var/log/mycodo/mycodoupgrade.log."
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Delete ~/Mycodo/.upgrade to acknowledge this"
 #~ " message and restore upgrade functionality."
 #~ msgstr ""
-#~ "Ta bort ~ / Mycodo / .upgrade "
-#~ "för att bekräfta detta meddelande och"
-#~ " återställ uppgraderingsfunktionalitet."
 
 #~ msgid ""
 #~ "No internet connection detected. To "
@@ -8345,15 +8239,9 @@ msgstr ""
 #~ "need an internet connection. Refresh the"
 #~ " page when one is connected."
 #~ msgstr ""
-#~ "Ingen internetuppkoppling upptäckt. För att"
-#~ " uppgradera Mycodo automatiskt behöver du"
-#~ " en internetanslutning. Uppdatera sidan när"
-#~ " en är ansluten."
 
 #~ msgid "No upgrade is available. You are running the latest release, version"
 #~ msgstr ""
-#~ "Ingen uppgradering är tillgänglig. Du "
-#~ "kör den senaste versionen, versionen"
 
 #~ msgid ""
 #~ "Click the button below to begin "
@@ -8370,35 +8258,21 @@ msgstr ""
 #~ " new version as unstable until you"
 #~ " have verified it works as expected)."
 #~ msgstr ""
-#~ "Klicka på knappen nedan för att "
-#~ "starta uppgraderingsprocessen. Obs! En "
-#~ "uppgradering tar ofta flera minuter och"
-#~ " i sällsynta fall timmar att "
-#~ "slutföra. Under den tiden kommer Mycodo"
-#~ " webbgränssnitt och serverns inspelningssensorer"
-#~ " och manipulera utgångar (bland andra "
-#~ "tjänster) att stängas helt av. Det "
-#~ "rekommenderas inte att göra en "
-#~ "uppgradering på en produktionsmaskin (det "
-#~ "vill säga förtroende köpa verifiering: "
-#~ "behandla den nya versionen som instabil"
-#~ " tills du har verifierat den fungerar"
-#~ " som förväntat)."
 
 #~ msgid "Current to latest versions"
-#~ msgstr "Nuvarande till senaste versionerna"
+#~ msgstr ""
 
 #~ msgid "current"
-#~ msgstr "nuvarande"
+#~ msgstr ""
 
 #~ msgid "latest"
-#~ msgstr "senast"
+#~ msgstr ""
 
 #~ msgid "Cameras"
-#~ msgstr "kameror"
+#~ msgstr ""
 
 #~ msgid "Create Timelapse"
-#~ msgstr "Skapa Timelapse"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Raspberry Pi Camera support doesn't "
@@ -8407,11 +8281,6 @@ msgstr ""
 #~ " or with the command 'sudo raspi-"
 #~ "config'"
 #~ msgstr ""
-#~ "Raspberry Pi Kamera stöd verkar inte "
-#~ "vara aktiverat. Vänligen aktivera den "
-#~ "med hjälp av Raspberry Pi-"
-#~ "konfigurationen eller med kommandot 'sudo "
-#~ "raspi-config'"
 
 #~ msgid ""
 #~ "Different options are available to "
@@ -8423,7 +8292,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Name for this Camera"
-#~ msgstr "Namn för den här kameran"
+#~ msgstr ""
 
 #~ msgid "Linux shell command to execute prior to acquiring a still image."
 #~ msgstr ""
@@ -8441,43 +8310,35 @@ msgstr ""
 
 #~ msgid "Path to save still image files. Leave blank to use default location."
 #~ msgstr ""
-#~ "Sökväg för att spara stillbildsfiler. "
-#~ "Lämna tomt för att använda "
-#~ "standardplatsen."
 
 #~ msgid ""
 #~ "Path to save timelapse image files. "
 #~ "Leave blank to use default location."
 #~ msgstr ""
-#~ "Sökväg för att spara bildfiler för "
-#~ "timelapse. Lämna tomt för att använda"
-#~ " standardplatsen."
 
 #~ msgid "Path to save video files. Leave blank to use default location."
 #~ msgstr ""
-#~ "Vägen för att spara videofiler. Lämna"
-#~ " tomt för att använda standardplatsen."
 
 #~ msgid "Video Stream"
-#~ msgstr "Videoström"
+#~ msgstr ""
 
 #~ msgid "Timelapse Parameters"
-#~ msgstr "Timelapse Parametrar"
+#~ msgstr ""
 
 #~ msgid "Last Timelapse"
-#~ msgstr "Senaste Timelapse"
+#~ msgstr ""
 
 #~ msgid "Last Still"
-#~ msgstr "Sist fortfarande"
+#~ msgstr ""
 
 #~ msgid "Active"
-#~ msgstr "Aktiva"
+#~ msgstr ""
 
 #~ msgid "Inactive"
-#~ msgstr "Inaktiv"
+#~ msgstr ""
 
 #~ msgid "Value"
-#~ msgstr "Värde"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Functions conduct complex tasks, often "
@@ -8489,69 +8350,57 @@ msgstr ""
 #~ "temperature sensor and heater in order"
 #~ " to regulate temperature."
 #~ msgstr ""
-#~ "Funktioner utför komplicerade uppgifter, ofta"
-#~ " koppla en eller flera <a "
-#~ "href=\"/data\"> Data </a> källor med <a"
-#~ " href=\"/output\"> Utdata </a>. Till "
-#~ "exempel kan detta använda en PID-"
-#~ "kontroller för att skapa en "
-#~ "återkopplingsslinga med en temperatursensor "
-#~ "och värmare för att reglera "
-#~ "temperaturen."
 
 #~ msgid "Native Functions"
 #~ msgstr ""
 
 #~ msgid "Asynchronous Graph"
-#~ msgstr "Asynkron graf"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Hold down the <kbd>Ctrl</kbd> or "
 #~ "<kbd>&#8984;</kbd> key to select more "
 #~ "than one"
 #~ msgstr ""
-#~ "Håll ner <kbd> Ctrl </ kbd> eller"
-#~ " <kbd> & # 8984; </ kbd> för"
-#~ " att välja mer än en"
 
 #~ msgid "Mycodo Version:"
-#~ msgstr "Mycodo Version:"
+#~ msgstr ""
 
 #~ msgid "Python Version:"
-#~ msgstr "Python Version:"
+#~ msgstr ""
 
 #~ msgid "Database Version"
-#~ msgstr "Databasversion"
+#~ msgstr ""
 
 #~ msgid "Daemon Status"
-#~ msgstr "Daemon Status"
+#~ msgstr ""
 
 #~ msgid "Running"
-#~ msgstr "Löpning"
+#~ msgstr ""
 
 #~ msgid "Not Running"
-#~ msgstr "Springer inte"
+#~ msgstr ""
 
 #~ msgid "Daemon Process ID"
-#~ msgstr "Daemon Process ID"
+#~ msgstr ""
 
 #~ msgid "Daemon RAM Usage"
-#~ msgstr "Daemon RAM-användning"
+#~ msgstr ""
 
 #~ msgid "Daemon Virtualenv"
-#~ msgstr "Daemon Virtualenv"
+#~ msgstr ""
 
 #~ msgid "Yes"
-#~ msgstr "Ja"
+#~ msgstr ""
 
 #~ msgid "No"
-#~ msgstr "Nej"
+#~ msgstr ""
 
 #~ msgid "Frontend RAM Usage"
-#~ msgstr "Frontend RAM-användning"
+#~ msgstr ""
 
 #~ msgid "Frontend Virtualenv"
-#~ msgstr "Frontend Virtualenv"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "LCDs allow the display of data for"
@@ -8559,37 +8408,33 @@ msgstr ""
 #~ "alerts to conditional events you "
 #~ "configure (flash the LCD)."
 #~ msgstr ""
-#~ "LCD-skärmar tillåter visning av data "
-#~ "för enkel visning och för visning "
-#~ "av varningar till villkorliga händelser "
-#~ "du konfigurerar (blinkar LCD-skärmen)."
 
 #~ msgid "Display Set"
-#~ msgstr "Display Set"
+#~ msgstr ""
 
 #~ msgid "Live Measurements"
-#~ msgstr "Live mätningar"
+#~ msgstr ""
 
 #~ msgid "No Data Sources Activated"
-#~ msgstr "Inga datakällor aktiverade"
+#~ msgstr ""
 
 #~ msgid "Input (%(type)s), %(sec)s second interval"
-#~ msgstr "Inmatning (%(type)s), %(sec)s andra intervall"
+#~ msgstr ""
 
 #~ msgid "Timestamp"
-#~ msgstr "Tidsstämpel"
+#~ msgstr ""
 
 #~ msgid "Please wait"
-#~ msgstr "Vänta"
+#~ msgstr ""
 
 #~ msgid "Math (%(type)s), %(sec)s second interval"
-#~ msgstr "Math (%(type)s), %(sec)s andra intervall"
+#~ msgstr ""
 
 #~ msgid "Back to Method Management"
-#~ msgstr "Tillbaka till Metodhantering"
+#~ msgstr ""
 
 #~ msgid "Output Modulation"
-#~ msgstr "Output Modulation"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Note: This feature is currently not "
@@ -8597,14 +8442,9 @@ msgstr ""
 #~ " modulated if applied to a PID. "
 #~ "This will be implemented soon."
 #~ msgstr ""
-#~ "Obs! Den här funktionen är för "
-#~ "närvarande inte implementerad. Dessa utgångar"
-#~ " kommer INTE att moduleras om de "
-#~ "tillämpas på en PID. Detta kommer "
-#~ "att genomföras snart."
 
 #~ msgid "Modulate the selected output."
-#~ msgstr "Modulera den valda utsignalen."
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Methods allow different types of "
@@ -8615,19 +8455,12 @@ msgstr ""
 #~ "the setpoint to change over time, "
 #~ "this is called setpoint tracking."
 #~ msgstr ""
-#~ "Metoder tillåter olika typer av "
-#~ "börvärdesspårning i PID-kontroller. Normalt"
-#~ " reglerar en PID-regulator ett "
-#~ "miljöförhållande till ett specifikt börvärde."
-#~ " Om du vill att börvärdet ska "
-#~ "ändras över tiden kallas detta "
-#~ "börvärdesspårning."
 
 #~ msgid "No Saved Methods Exist"
-#~ msgstr "Inga sparade metoder existerar"
+#~ msgstr ""
 
 #~ msgid "Saved Methods"
-#~ msgstr "Sparade metoder"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Output devices enable Mycodo to "
@@ -8638,20 +8471,12 @@ msgstr ""
 #~ "an input, output devices can be "
 #~ "used for feedback regulation."
 #~ msgstr ""
-#~ "Output-enheter gör det möjligt för "
-#~ "Mycodo att manipulera saker genom "
-#~ "användning av utgångar (trådbundna och "
-#~ "trådlösa), PWM-signaler och exekvering "
-#~ "av kommandon. När det är kopplat "
-#~ "till en PID-kontroller, med en "
-#~ "ingång, kan utmatningsenheter användas för "
-#~ "återkopplingsreglering."
 
 #~ msgid "Unconfigured"
-#~ msgstr "okonfigurerat"
+#~ msgstr ""
 
 #~ msgid "Pump Volume"
-#~ msgstr "Pumpvolym"
+#~ msgstr ""
 
 #~ msgid "Select a measurement with the unit:"
 #~ msgstr ""
@@ -8663,37 +8488,37 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Past Day"
-#~ msgstr "Förra dagen"
+#~ msgstr ""
 
 #~ msgid "Past Week"
-#~ msgstr "Förra veckan"
+#~ msgstr ""
 
 #~ msgid "Past Month"
-#~ msgstr "Senaste månaden"
+#~ msgstr ""
 
 #~ msgid "Amps (Average over period)"
 #~ msgstr ""
 
 #~ msgid "Cost"
-#~ msgstr "Kosta"
+#~ msgstr ""
 
 #~ msgid "ID"
-#~ msgstr "ID"
+#~ msgstr ""
 
 #~ msgid "From"
-#~ msgstr "Från"
+#~ msgstr ""
 
 #~ msgid "Past Year"
-#~ msgstr "Förra året"
+#~ msgstr ""
 
 #~ msgid "Duration On (hours)"
-#~ msgstr "Varaktighet på (timmar)"
+#~ msgstr ""
 
 #~ msgid "Total"
-#~ msgstr "Total"
+#~ msgstr ""
 
 #~ msgid "Usage Reports"
-#~ msgstr "Användningsrapporter"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "No Reports. Go to <a "
@@ -8702,16 +8527,16 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Acquire Image (and save new file)"
-#~ msgstr "Få bild (och spara ny fil)"
+#~ msgstr ""
 
 #~ msgid "Acquire Image (and erase last file)"
-#~ msgstr "Hämta bild (och radera den senaste filen)"
+#~ msgstr ""
 
 #~ msgid "Display Live Video Stream"
-#~ msgstr "Visa Live Video Stream"
+#~ msgstr ""
 
 #~ msgid "Display Latest Timelapse Image"
-#~ msgstr "Visa senaste Timelapse-bilden"
+#~ msgstr ""
 
 #~ msgid "Series Options"
 #~ msgstr ""
@@ -8720,67 +8545,61 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "PWM On"
-#~ msgstr "PWM På"
+#~ msgstr ""
 
 #~ msgid "Out"
 #~ msgstr ""
 
 #~ msgid "Sec On"
-#~ msgstr "Sec On"
+#~ msgstr ""
 
 #~ msgid "A numerical value to set the PID setpoint"
-#~ msgstr "Ett numeriskt värde för att ställa in PID börvärdet"
+#~ msgstr ""
 
 #~ msgid "Measurement Settings"
-#~ msgstr "Mätningsinställningar"
+#~ msgstr ""
 
 #~ msgid "The duration (seconds) between math calculations"
-#~ msgstr "Varaktigheten (sekunder) mellan matematiska beräkningar"
+#~ msgstr ""
 
 #~ msgid "The Python 3 code to execute"
-#~ msgstr "Python 3-koden som ska utföras"
+#~ msgstr ""
 
 #~ msgid "Do Not Rescale"
-#~ msgstr "Ändra inte"
+#~ msgstr ""
 
 #~ msgid "Do Not Convert"
-#~ msgstr "Konvertera inte"
+#~ msgstr ""
 
 #~ msgid "Number of measurements"
 #~ msgstr ""
 
 #~ msgid "Disabled"
-#~ msgstr "Inaktiverad"
+#~ msgstr ""
 
 #~ msgid "No Measurement/Unit Selected"
-#~ msgstr "Ingen mätning / enhet vald"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "An equation to store the soved "
 #~ "value of. Let \"x\" represent the "
 #~ "input value."
 #~ msgstr ""
-#~ "En ekvation för att lagra det "
-#~ "soved värdet av. Låt \"x\" representera"
-#~ " inmatningsvärdet."
 
 #~ msgid "The maximum allowed difference between any selected measurements"
-#~ msgstr "Den maximala tillåtna skillnaden mellan alla valda mätningar"
+#~ msgstr ""
 
 #~ msgid "The duration between checking whether the conditional is true"
-#~ msgstr "Varaktigheten mellan att kontrollera om villkoret är sant"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The minimum duration after a conditional"
 #~ " trigger to wait before beggining "
 #~ "monitoring again"
 #~ msgstr ""
-#~ "Minsta varaktigheten efter en villkorlig "
-#~ "utlösare att vänta innan du bedrar "
-#~ "övervakning igen"
 
 #~ msgid "Conditions"
-#~ msgstr "Betingelser"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "will execute only this action. "
@@ -8789,16 +8608,16 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Paused"
-#~ msgstr "pausad"
+#~ msgstr ""
 
 #~ msgid "On Hold"
-#~ msgstr "Placerad i kö"
+#~ msgstr ""
 
 #~ msgid "Select the measurement to use as the input"
-#~ msgstr "Välj mätning som ska användas som ingång"
+#~ msgstr ""
 
 #~ msgid "Choose the direction(s) to regulate"
-#~ msgstr "Välj riktning (er) för att reglera"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "This is the desired state of a "
@@ -8806,10 +8625,6 @@ msgstr ""
 #~ "instance, this could be the desired "
 #~ "temperature in Celsius."
 #~ msgstr ""
-#~ "Detta är det önskade tillståndet av "
-#~ "ett pertikulärt miljöförhållande. Det kan "
-#~ "till exempel vara den önskade "
-#~ "temperaturen i Celsius."
 
 #~ msgid ""
 #~ "The control hysteresis surounding the "
@@ -8817,18 +8632,15 @@ msgstr ""
 #~ " setpoint plus and minus the band "
 #~ "value. 0 is disabled."
 #~ msgstr ""
-#~ "Kontrollhysteresen omger börvärdet, med ett"
-#~ " band som är börvärdet plus och "
-#~ "minus bandvärdet. 0 är inaktiverad."
 
 #~ msgid "Proportional gain"
-#~ msgstr "Proportionell vinst"
+#~ msgstr ""
 
 #~ msgid "Integral gain"
-#~ msgstr "Integral vinst"
+#~ msgstr ""
 
 #~ msgid "Derivative gain"
-#~ msgstr "Derivat vinning"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Limit the integrator minimum, for "
@@ -8836,10 +8648,6 @@ msgstr ""
 #~ " integrator; and PID output = "
 #~ "Kp_total + Ki_total + Kd_total)"
 #~ msgstr ""
-#~ "Begränsa integratorminnet, för att beräkna "
-#~ "Ki_total: (Ki_total = Ki * integrator;"
-#~ " och PID-utgång = Kp_total + "
-#~ "Ki_total + Kd_total)"
 
 #~ msgid ""
 #~ "Limit the integrator maximum, for "
@@ -8847,22 +8655,18 @@ msgstr ""
 #~ " integrator; and PID output = "
 #~ "Kp_total + Ki_total + Kd_total)"
 #~ msgstr ""
-#~ "Begränsa integratorns maximala, för att "
-#~ "beräkna Ki_total: (Ki_total = Ki * "
-#~ "integrator; och PID-utgång = Kp_total"
-#~ " + Ki_total + Kd_total)"
 
 #~ msgid ""
 #~ "The output that will raise the "
 #~ "selected environmental condition (Measure "
 #~ "Type)"
-#~ msgstr "Utgången som kommer att höja det valda miljötillståndet (Måttyp)"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The output that will lower the "
 #~ "selected environmental condition (Measure "
 #~ "Type)"
-#~ msgstr "Utgången som sänker det valda miljötillståndet (Måttyp)"
+#~ msgstr ""
 
 #~ msgid "Input/Math"
 #~ msgstr ""
@@ -8877,22 +8681,19 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Manage Methods"
-#~ msgstr "Hantera metoder"
+#~ msgstr ""
 
 #~ msgid "Maximum allowable measurement age"
 #~ msgstr ""
 
 #~ msgid "Autotune"
-#~ msgstr "Autotune"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Autotune Only: How much above and "
 #~ "below the setpoint the process variable"
 #~ " must reach before changing direction."
 #~ msgstr ""
-#~ "Endast autotune: Hur mycket över och "
-#~ "under börvärdet måste processvariabeln nå "
-#~ "innan du ändrar riktningen."
 
 #~ msgid ""
 #~ "Autotune Only: How many seconds to "
@@ -8901,26 +8702,21 @@ msgstr ""
 #~ "PID Period, it will be on 100%%"
 #~ " of the time."
 #~ msgstr ""
-#~ "Endast autotune: Hur många sekunder ska"
-#~ " du vända på varje PID-cykel. "
-#~ "Om det till exempel motsvarar PID-"
-#~ "perioden kommer det att vara på "
-#~ "100 %% av tiden."
 
 #~ msgid "Controller to affect"
-#~ msgstr "Controller att påverka"
+#~ msgstr ""
 
 #~ msgid "Activate a controller."
 #~ msgstr ""
 
 #~ msgid "Command to execute (as user \"mycodo\")"
-#~ msgstr "Kommando att exekvera (som användare \"mycodo\")"
+#~ msgstr ""
 
 #~ msgid "Execute a Linux shell command."
 #~ msgstr ""
 
 #~ msgid "Tag to save note with"
-#~ msgstr "Tagg för att spara anteckning med"
+#~ msgstr ""
 
 #~ msgid "Create a note with the selected Tag."
 #~ msgstr ""
@@ -8929,10 +8725,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Email Address"
-#~ msgstr "E-postadress"
+#~ msgstr ""
 
 #~ msgid "Email address to notify"
-#~ msgstr "E-postadress för att meddela"
+#~ msgstr ""
 
 #~ msgid "Email a single recipient."
 #~ msgstr ""
@@ -8944,7 +8740,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "LCD to flash"
-#~ msgstr "LCD för att blinka"
+#~ msgstr ""
 
 #~ msgid "Stop LCD flashing."
 #~ msgstr ""
@@ -8971,28 +8767,28 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "PID to affect"
-#~ msgstr "PID att påverka"
+#~ msgstr ""
 
 #~ msgid "Method to set the PID to use"
-#~ msgstr "Metod för att ställa in PID att använda"
+#~ msgstr ""
 
 #~ msgid "Select a method to set the PID to use."
 #~ msgstr ""
 
 #~ msgid "What output to manipulate"
-#~ msgstr "Vilken produktionen ska manipuleras"
+#~ msgstr ""
 
 #~ msgid "Turn the output on or off"
-#~ msgstr "Slå på eller av utgången"
+#~ msgstr ""
 
 #~ msgid "How long to turn the output on (optional)"
-#~ msgstr "Hur länge ska du sätta på utmatningen på (valfritt)"
+#~ msgstr ""
 
 #~ msgid "Turn an Output Off, On, or On or a duration."
 #~ msgstr ""
 
 #~ msgid "What duty cycle to set the output"
-#~ msgstr "Vilken arbetscykel för att ställa in utgången"
+#~ msgstr ""
 
 #~ msgid "Set an Output to a PWM duty cycle."
 #~ msgstr ""
@@ -9016,7 +8812,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "How long to pause executing actions"
-#~ msgstr "Hur länge pausar körningsåtgärder"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Set a delay between executing Actions"
@@ -9027,7 +8823,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Camera to capture with"
-#~ msgstr "Kameran att fånga med"
+#~ msgstr ""
 
 #~ msgid "Capture a photo with the selected Camera."
 #~ msgstr ""
@@ -9039,7 +8835,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "The value to set the PID setpoint"
-#~ msgstr "Värdet för att ställa in PID börvärdet"
+#~ msgstr ""
 
 #~ msgid "Set the Setpoint of a PID."
 #~ msgstr ""
@@ -9057,10 +8853,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Video Duration (seconds)"
-#~ msgstr "Videolängd (sekunder)"
+#~ msgstr ""
 
 #~ msgid "Duration to record video (sec)"
-#~ msgstr "Varaktighet för inspelning av video (sek)"
+#~ msgstr ""
 
 #~ msgid "Camera: Capture Video"
 #~ msgstr ""
@@ -9082,15 +8878,12 @@ msgstr ""
 #~ " of. The return value will be "
 #~ "True when HIGH and False when LOW."
 #~ msgstr ""
-#~ "GPIO-stiftet för att mäta tillståndet"
-#~ " för. Returvärdet kommer att vara "
-#~ "sant när högt och falskt när LOW."
 
 #~ msgid "returns 1 if the output is HIGH and 0 if the output is LOW."
 #~ msgstr ""
 
 #~ msgid "Do not accept measurements older than this age"
-#~ msgstr "Acceptera inte mätningar som är äldre än denna ålder"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "returns the last value found within "
@@ -9138,11 +8931,6 @@ msgstr ""
 #~ "below this value, the Lower Output "
 #~ "will not turn on."
 #~ msgstr ""
-#~ "Minimiperioden (i sekunder) som krävs "
-#~ "för att nedre utgången ska aktiveras."
-#~ " Om en On-varaktighet är under "
-#~ "detta värde, kommer den lägre "
-#~ "utmatningen inte att sätta på."
 
 #~ msgid ""
 #~ "The maximum duration (in seconds) "
@@ -9152,15 +8940,9 @@ msgstr ""
 #~ " Lower Output will turn on for "
 #~ "this set duration."
 #~ msgstr ""
-#~ "Den maximala längden (i sekunder) som"
-#~ " tillåts för den lägre utmatningen "
-#~ "att vara på för, per period. Om"
-#~ " en ON-varaktighet överstiger detta "
-#~ "värde, aktiveras den lägre utgången för"
-#~ " denna inställda varaktighet."
 
 #~ msgid "This output will remain off for at least this duration of time"
-#~ msgstr "Denna utmatning kommer att förbli under minst denna tidsperiod"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The minimum duration (in seconds) "
@@ -9169,11 +8951,6 @@ msgstr ""
 #~ "below this value, the Raise Output "
 #~ "will not turn on."
 #~ msgstr ""
-#~ "Minimiperioden (i sekunder) som krävs "
-#~ "för att höja utgången för att "
-#~ "aktivera. Om en On-varaktighet ligger"
-#~ " under detta värde, kommer inte "
-#~ "höjningsutgången att sätta på."
 
 #~ msgid ""
 #~ "The maximum duration (in seconds) "
@@ -9183,12 +8960,6 @@ msgstr ""
 #~ " Raise Output will turn on for "
 #~ "this set duration."
 #~ msgstr ""
-#~ "Den maximala längden (i sekunder) som"
-#~ " tillåts för höjningsutgången ska vara "
-#~ "på för per period. Om en On-"
-#~ "varaktighet överstiger detta värde, aktiveras"
-#~ " höjningsutgången för den här inställda "
-#~ "varaktigheten."
 
 #~ msgid ""
 #~ "The minimum duty cycle (in %%). If"
@@ -9196,9 +8967,6 @@ msgstr ""
 #~ "value, this is the value that will"
 #~ " be used."
 #~ msgstr ""
-#~ "Minsta tullsatsen (i %%). Om en "
-#~ "arbetscykel är under detta värde är "
-#~ "detta det värde som ska användas."
 
 #~ msgid ""
 #~ "The maximum duty cycle (in %%). If"
@@ -9206,10 +8974,6 @@ msgstr ""
 #~ "value, this is the value that will"
 #~ " be used."
 #~ msgstr ""
-#~ "Den maximala arbetscykeln (i %%). Om "
-#~ "en arbetscykel är under detta värde "
-#~ "är detta det värde som ska "
-#~ "användas."
 
 #~ msgid ""
 #~ "The maximum duty cycle (in %%). If"
@@ -9217,19 +8981,15 @@ msgstr ""
 #~ "value, this is the value that will"
 #~ " be used."
 #~ msgstr ""
-#~ "Den maximala arbetscykeln (i %%). Om "
-#~ "en arbetscykel är över detta värde "
-#~ "är detta det värde som ska "
-#~ "användas."
 
 #~ msgid "Detect low to high (rising), high to low (falling), or both?"
-#~ msgstr "Upptäck låg till hög (stigande), hög till låg (fallande) eller båda?"
+#~ msgstr ""
 
 #~ msgid "Rising"
-#~ msgstr "Stigande"
+#~ msgstr ""
 
 #~ msgid "Falling"
-#~ msgstr "Faller"
+#~ msgstr ""
 
 #~ msgid "The program variable set in ~/.lircrc"
 #~ msgstr ""
@@ -9238,33 +8998,31 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Trigger this conditional to act when this output turns on or off"
-#~ msgstr "Trigger detta villkorat att agera när denna utgång slås på eller av"
+#~ msgstr ""
 
 #~ msgid "What action will trigger this conditional statement, on or off?"
 #~ msgstr ""
-#~ "Vilken åtgärd kommer att utlösa detta"
-#~ " villkorliga uttalande, på eller av?"
 
 #~ msgid "no duration"
-#~ msgstr "ingen varaktighet"
+#~ msgstr ""
 
 #~ msgid "any duration"
-#~ msgstr "vilken tid som helst"
+#~ msgstr ""
 
 #~ msgid "no or any duration"
-#~ msgstr "nej eller någon varaktighet"
+#~ msgstr ""
 
 #~ msgid "equal to duration"
-#~ msgstr "lika med varaktighet"
+#~ msgstr ""
 
 #~ msgid "greater than duration"
-#~ msgstr "större än varaktighet"
+#~ msgstr ""
 
 #~ msgid "greater than or equal to duration"
 #~ msgstr ""
 
 #~ msgid "less than duration"
-#~ msgstr "mindre än varaktighet"
+#~ msgstr ""
 
 #~ msgid "less than or equal to duration"
 #~ msgstr ""
@@ -9275,10 +9033,6 @@ msgstr ""
 #~ "should trigger when the output On "
 #~ "duration equals this amount"
 #~ msgstr ""
-#~ "(Valfritt) Ställ in detta till en "
-#~ "viss tidsperiod om villkoret ska utlösas"
-#~ " när utgången på varaktighet motsvarar "
-#~ "detta belopp"
 
 #~ msgid ""
 #~ "The conditional is triggered when the"
@@ -9287,75 +9041,63 @@ msgstr ""
 #~ "the measurement timestamp is greater "
 #~ "than the value of seconds"
 #~ msgstr ""
-#~ "Den villkorliga utlöses när det uppmätta"
-#~ " tillståndet är större än eller "
-#~ "mindre än det inställda värdet, eller"
-#~ " mätstamstämpeln är större än värdet "
-#~ "av sekunder"
 
 #~ msgid "Greater Than (>)"
-#~ msgstr "Större än (>)"
+#~ msgstr ""
 
 #~ msgid "Less Than (<)"
-#~ msgstr "Mindre än (<)"
+#~ msgstr ""
 
 #~ msgid "Equal To (=)"
-#~ msgstr "Lika med (=)"
+#~ msgstr ""
 
 #~ msgid "The duty cycle of the output to be checked"
-#~ msgstr "Driftscykeln för utgången som ska kontrolleras"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Run this duration method, using the "
 #~ "output value to set the Duty Cycle"
 #~ " of a PWM output"
 #~ msgstr ""
-#~ "Kör den här varaktighetsmetoden med "
-#~ "utgångsvärdet för att ställa in "
-#~ "driftscykeln för en PWM-utgång"
 
 #~ msgid "Apply the Duty Cycle to this PWM Output"
-#~ msgstr "Applicera arbetscykeln till denna PWM-utgång"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The duration between calculating and "
 #~ "setting the Duty Cycle of the the"
 #~ " PWM Output"
 #~ msgstr ""
-#~ "Varaktigheten mellan beräkning och inställning"
-#~ " av arbetscykeln för PWM-utgången"
 
 #~ msgid "Trigger conditional at sunrise or sunset?"
-#~ msgstr "Trigger villkorad vid soluppgång eller solnedgång?"
+#~ msgstr ""
 
 #~ msgid "Sunrise"
-#~ msgstr "Soluppgång"
+#~ msgstr ""
 
 #~ msgid "Sunset"
-#~ msgstr "Solnedgång"
+#~ msgstr ""
 
 #~ msgid "Latitude for sunrise or sunset"
-#~ msgstr "Breddgrad för soluppgång eller solnedgång"
+#~ msgstr ""
 
 #~ msgid "Longitude for sunrise or sunset"
-#~ msgstr "Längd för soluppgång eller solnedgång"
+#~ msgstr ""
 
 #~ msgid "Zenith for sunrise or sunset"
-#~ msgstr "Zenith för soluppgång eller solnedgång"
+#~ msgstr ""
 
 #~ msgid "The number of days to offset from the date of the sunrise or sunset"
 #~ msgstr ""
-#~ "Antalet dagar som ska kompenseras från"
-#~ " soluppgångens eller solnedgångens datum"
 
 #~ msgid "The number of minutes to offset from the sunrise or sunset"
-#~ msgstr "Antalet minuter för att kompensera från soluppgången eller solnedgången"
+#~ msgstr ""
 
 #~ msgid "Trigger conditional actions at an interval of time"
-#~ msgstr "Trigger villkorliga åtgärder på ett tidsintervall"
+#~ msgstr ""
 
 #~ msgid "A duration to wait before beginning the timer"
-#~ msgstr "En varaktighet att vänta innan du börjar timern"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Define the setpoint over a period "
@@ -9365,12 +9107,6 @@ msgstr ""
 #~ "midnight (00:00) if you wish to "
 #~ "fill the entire day."
 #~ msgstr ""
-#~ "Definiera börvärdet över en tidsperiod "
-#~ "baserat på specifika tider på dagen. "
-#~ "Denna metod kommer att upprepas "
-#~ "dagligen. Starta första gången vid "
-#~ "midnatt (00:00) om du vill fylla "
-#~ "hela dagen."
 
 #~ msgid ""
 #~ "The new entry's start time may be"
@@ -9380,12 +9116,6 @@ msgstr ""
 #~ "be used if there is any "
 #~ "unaccounted time."
 #~ msgstr ""
-#~ "Den nya inmatningens starttid kan vara"
-#~ " lika med sista inmatningens sluttid, "
-#~ "men den kan inte överlappa varandra. "
-#~ "Standardbörvärdet för PID kommer att "
-#~ "användas om det inte finns någon "
-#~ "beräknad tid."
 
 #~ msgid ""
 #~ "Activate or deactivate an output at "
@@ -9394,14 +9124,9 @@ msgstr ""
 #~ " the time of day. For example, "
 #~ "3:05 PM would be \"15:05\"."
 #~ msgstr ""
-#~ "Aktivera eller inaktivera en utgång vid"
-#~ " en viss tidpunkt på dagen. Tim "
-#~ "och minut (HH: MM) här definieras "
-#~ "som tid på dagen. Till exempel "
-#~ "skulle 15:05 vara \"15:05\"."
 
 #~ msgid "Modulate the selected output"
-#~ msgstr "Modulera den valda utsignalen"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Define the setpoint over the day "
@@ -9419,20 +9144,6 @@ msgstr ""
 #~ "period and this method will repeat "
 #~ "daily."
 #~ msgstr ""
-#~ "Definiera börvärdet över dagen baserat "
-#~ "på en kubisk Bezier-kurva. Om du"
-#~ " inte känner till en Bezier-kurva,"
-#~ " rekommenderas att du använder <a "
-#~ "href=\"https://www.desmos.com/calculator/cahqdxeshd\" "
-#~ "target=\"_blank\"> grafisk Bezier-kurvagenerator "
-#~ "</a> och använd de 8 variablerna "
-#~ "som skapas för 4 punkter (var och"
-#~ " en en uppsättning x och y). "
-#~ "X-axeln start (x3) och slutet (x0) "
-#~ "kommer automatiskt att sträckas eller "
-#~ "skevas för att passa inom en "
-#~ "24-timmarsperiod och denna metod kommer "
-#~ "att upprepas dagligen."
 
 #~ msgid ""
 #~ "Define the setpoint over the day "
@@ -9444,36 +9155,22 @@ msgstr ""
 #~ "y-axis shift. This method will repeat"
 #~ " daily."
 #~ msgstr ""
-#~ "Definiera börvärdet över dagen baserat "
-#~ "på en sinusformad våg definierad av "
-#~ "y = [A * sin (B * x +"
-#~ " C)] + D, där A är amplitud,"
-#~ " B är frekvens, C är vinkelskiftet"
-#~ " och D är y -axskift. Denna "
-#~ "metod kommer att upprepas dagligen."
 
 #~ msgid ""
 #~ "Define the setpoint over a period "
 #~ "of time based on specific times/dates."
 #~ msgstr ""
-#~ "Definiera börvärdet över en tidsperiod "
-#~ "baserat på specifika tider / datum."
 
 #~ msgid ""
 #~ "Activate or deactivate a output within"
 #~ " this method at a specific time/date."
 #~ msgstr ""
-#~ "Aktivera eller inaktivera en utgång inom"
-#~ " denna metod vid en viss tidpunkt "
-#~ "/ datum."
 
 #~ msgid ""
 #~ "Define the setpoint over a period "
 #~ "of time, based on specific durations "
 #~ "of time."
 #~ msgstr ""
-#~ "Definiera börvärdet över en tidsperiod, "
-#~ "baserat på specifika tidsförhållanden."
 
 #~ msgid ""
 #~ "Duration here is defined as the "
@@ -9485,15 +9182,6 @@ msgstr ""
 #~ "it will execute after the last "
 #~ "duration already in the method."
 #~ msgstr ""
-#~ "Varaktigheten här definieras som tiden "
-#~ "efter den föregående varaktigheten. Om "
-#~ "detta är den första längden som "
-#~ "läggs till, kommer detta att vara "
-#~ "början på metoden. Om det inte är"
-#~ " den första längden som läggs till,"
-#~ " kommer den att utföras efter den "
-#~ "sista varaktigheten som redan finns i"
-#~ " metoden."
 
 #~ msgid ""
 #~ "Activate or deactivate an output within"
@@ -9505,38 +9193,21 @@ msgstr ""
 #~ "modulation 60 seconds after the start"
 #~ " of the method."
 #~ msgstr ""
-#~ "Aktivera eller inaktivera en utmatning "
-#~ "inom denna metod vid en viss tid."
-#~ " Varaktigheten här definieras som hur "
-#~ "mycket tid det har gått sedan "
-#~ "metodens början. Till exempel skulle 60"
-#~ " sekunder utföra moduleringen 60 sekunder"
-#~ " efter metodens start."
 
 #~ msgid ""
 #~ "Use the following options to instruct"
 #~ " the method to restart when it "
 #~ "reaches the end."
 #~ msgstr ""
-#~ "Använd följande alternativ för att "
-#~ "instruera metoden att starta om när "
-#~ "den når slutet."
 
 #~ msgid "If you do not wish for the method to repeat, do not use this option."
 #~ msgstr ""
-#~ "Om du inte önskar att metoden ska"
-#~ " repetera, använd inte det här "
-#~ "alternativet."
 
 #~ msgid ""
 #~ "You may enter a duration (seconds) "
 #~ "that the method will end after, "
 #~ "otherwise leave blank to repeat forever."
 #~ msgstr ""
-#~ "Du kan ange en varaktighet (sekunder)"
-#~ " som metoden kommer att sluta efter,"
-#~ " annars lämna blank för att repetera"
-#~ " för alltid."
 
 #~ msgid "Fastest Flow Rate"
 #~ msgstr ""
@@ -9554,31 +9225,31 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Any Pin, <= 40kHz"
-#~ msgstr "Vilken Pin, <= 40kHz"
+#~ msgstr ""
 
 #~ msgid "Hardware Pin, <= 30MHz"
-#~ msgstr "Hårdvara Pin, <= 30MHz"
+#~ msgstr ""
 
 #~ msgid "Wireless 433 MHz On command"
-#~ msgstr "Trådlös 433 MHz på kommando"
+#~ msgstr ""
 
 #~ msgid "Wireless 433 MHz Off command"
-#~ msgstr "Trådlöst 433 MHz Off-kommando"
+#~ msgstr ""
 
 #~ msgid "Alerts Settings"
-#~ msgstr "Varningar Inställningar"
+#~ msgstr ""
 
 #~ msgid "465 for SSL, 587 for TSL"
-#~ msgstr "465 för SSL, 587 för TSL"
+#~ msgstr ""
 
 #~ msgid "Usually your full email address"
-#~ msgstr "Vanligtvis din fullständiga e-postadress"
+#~ msgstr ""
 
 #~ msgid "Only enter a password here if you wish to change it"
-#~ msgstr "Ange bara ett lösenord här om du vill ändra det"
+#~ msgstr ""
 
 #~ msgid "Maximum number of alerts that can be emailed per hour."
-#~ msgstr "Maximalt antal varningar som kan skickas per timme."
+#~ msgstr ""
 
 #~ msgid "Controller Settings"
 #~ msgstr ""
@@ -9587,13 +9258,13 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "General Settings"
-#~ msgstr "Allmänna Inställningar"
+#~ msgstr ""
 
 #~ msgid "Selecting a language will override the web browser's language"
-#~ msgstr "Om du väljer ett språk överstyrs webbläsarens språk"
+#~ msgstr ""
 
 #~ msgid "Which page to land on after logging in"
-#~ msgstr "Vilken sida ska landa efter efter inloggning"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Set the timeout (seconds) for Pyro "
@@ -9611,134 +9282,113 @@ msgstr ""
 #~ "to use SSL (port 443) for greater"
 #~ " security."
 #~ msgstr ""
-#~ "Kontrollera att alla webbanslutningar ska "
-#~ "användas för att använda SSL (port "
-#~ "443) för större säkerhet."
 
 #~ msgid ""
 #~ "Check to prevent Success alert messages"
 #~ " from appearing at the top of "
 #~ "the page."
 #~ msgstr ""
-#~ "Kontrollera att förhindra att meddelanden "
-#~ "om framgångsvarning visas högst upp på"
-#~ " sidan."
 
 #~ msgid ""
 #~ "Check to prevent Info alert messages "
 #~ "from appearing at the top of the"
 #~ " page."
 #~ msgstr ""
-#~ "Kontrollera att information om "
-#~ "varningsmeddelanden inte visas högst upp "
-#~ "på sidan."
 
 #~ msgid ""
 #~ "Check to prevent Warning alert messages"
 #~ " from appearing at the top of "
 #~ "the page."
-#~ msgstr "Kontrollera att varningsmeddelanden inte visas högst upp på sidan."
+#~ msgstr ""
 
 #~ msgid "Hide tooltips that pop up over form inputs."
-#~ msgstr "Dölj verktygstips som dyker upp över formuläringångar."
+#~ msgstr ""
 
 #~ msgid "Check if you do not wish to send anonymous usage statistics."
-#~ msgstr "Kontrollera om du inte vill skicka anonym användarstatistik."
+#~ msgstr ""
 
 #~ msgid "View collected statistics"
-#~ msgstr "Visa samlad statistik"
+#~ msgstr ""
 
 #~ msgid "Check if you would like Mycodo to automatically check for upgrades."
 #~ msgstr ""
-#~ "Kontrollera om du vill att Mycodo "
-#~ "automatiskt ska checka upp för "
-#~ "uppgraderingar."
 
 #~ msgid "Set the maximum allowed amperage to be switched on at any given time"
 #~ msgstr ""
-#~ "Ställ in den maximala tillåtna effekten"
-#~ " som ska vara påslagen vid en "
-#~ "viss tidpunkt"
 
 #~ msgid "Set the voltage used to power the devices powered by the outputs"
 #~ msgstr ""
-#~ "Ställ in den spänning som används "
-#~ "för att driva enheterna som drivs "
-#~ "av utgångarna"
 
 #~ msgid "Set the cost per kilowatt-hour"
-#~ msgstr "Ställ in kostnaden per kilowatt-timme"
+#~ msgstr ""
 
 #~ msgid "Set the unit of currency used to pay for the electricity"
-#~ msgstr "Ställ in den valuta som används för att betala för el"
+#~ msgstr ""
 
 #~ msgid "Set a day of the month to calculate monthly power usage"
-#~ msgstr "Ange en dag i månaden för att beräkna månadsförbrukningen"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Automatically generate output usage reports"
 #~ " on a daily/weekly/monthly schedule"
 #~ msgstr ""
-#~ "Generera automatiskt användningsrapporter på "
-#~ "ett dagligt / veckovis / månatligt "
-#~ "schema"
 
 #~ msgid "How often to generate a report"
-#~ msgstr "Hur ofta genererar en rapport"
+#~ msgstr ""
 
 #~ msgid "Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28"
-#~ msgstr "Dag Alternativ: Dagligen: 1-7 (1 = Måndag), Månadsvis: 1-28"
+#~ msgstr ""
 
 #~ msgid "Input Settings"
-#~ msgstr "Ingångsinställningar"
+#~ msgstr ""
 
 #~ msgid "Imported Input Modules"
-#~ msgstr "Importerade ingångsmoduler"
+#~ msgstr ""
 
 #~ msgid "Manufacturer"
 #~ msgstr ""
 
 #~ msgid "Units"
-#~ msgstr "Enheter"
+#~ msgstr ""
 
 #~ msgid "Conversions"
-#~ msgstr "omvandlingar"
+#~ msgstr ""
 
 #~ msgid "All"
-#~ msgstr "Allt"
+#~ msgstr ""
 
 #~ msgid "Raspberry Pi Settings"
-#~ msgstr "Raspberry Pi Inställningar"
+#~ msgstr ""
 
 #~ msgid "User Settings"
-#~ msgstr "Användarinställningar"
+#~ msgstr ""
 
 #~ msgid "Roles"
-#~ msgstr "roller"
+#~ msgstr ""
 
 #~ msgid "Export Import"
-#~ msgstr "Export Import"
+#~ msgstr ""
 
 #~ msgid "Select the number of lines to display from the end of a log"
-#~ msgstr "Välj antal rader som ska visas från slutet av en logg"
+#~ msgstr ""
 
 #~ msgid "Notes"
-#~ msgstr "anteckningar"
+#~ msgstr ""
 
 #~ msgid "Edit Note"
-#~ msgstr "Redigera anteckning"
+#~ msgstr ""
 
 #~ msgid "Manage"
-#~ msgstr "Hantera"
+#~ msgstr ""
 
 #~ msgid "Select one or more tags"
-#~ msgstr "Välj en eller flera taggar"
+#~ msgstr ""
 
 #~ msgid "Search"
-#~ msgstr "Sök"
+#~ msgstr ""
 
 #~ msgid "Found"
-#~ msgstr "Hittades"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "This guide will walk you through "
@@ -9775,10 +9425,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Calibration Failed"
-#~ msgstr "Kalibrering misslyckades"
+#~ msgstr ""
 
 #~ msgid "Refer to the logs for details"
-#~ msgstr "Se loggarna för detaljer"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Measure how much fluid (ml) was "
@@ -9788,22 +9438,22 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Calibration Succeeded"
-#~ msgstr "Kalibrering lyckades"
+#~ msgstr ""
 
 #~ msgid "Calibration Complete"
-#~ msgstr "Kalibrering Komplett"
+#~ msgstr ""
 
 #~ msgid "Latest pH measurement"
-#~ msgstr "Senaste pH-mätningen"
+#~ msgstr ""
 
 #~ msgid "Error acquiring measurement"
-#~ msgstr "Fel vid förvärv av mätning"
+#~ msgstr ""
 
 #~ msgid "Please wait for the sensor measurements to equilibrate"
 #~ msgstr ""
 
 #~ msgid "seconds"
-#~ msgstr "sekunder"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "This guide will walk you through "
@@ -9835,11 +9485,6 @@ msgstr ""
 #~ "temperature (in Celsius) of your "
 #~ "solutions, then click Continue."
 #~ msgstr ""
-#~ "Se till att alla pH-"
-#~ "kalibreringslösningar är samma temperatur. "
-#~ "Ange temperaturen (i Celsius) av dina"
-#~ " lösningar och klicka sedan på "
-#~ "Fortsätt."
 
 #~ msgid ""
 #~ "Rinse the pH probe with distilled "
@@ -9848,52 +9493,52 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Ready"
-#~ msgstr "Redo"
+#~ msgstr ""
 
 #~ msgid "Select a DS18B20 sensor"
-#~ msgstr "Välj en DS18B20-sensor"
+#~ msgstr ""
 
 #~ msgid "Select a resolution"
-#~ msgstr "Välj en upplösning"
+#~ msgstr ""
 
 #~ msgid "Daemon response: %(resp)s"
-#~ msgstr "Daemon svar: %(resp)s"
+#~ msgstr ""
 
 #~ msgid "Condition"
-#~ msgstr "Tillstånd"
+#~ msgstr ""
 
 #~ msgid "Deactivate controller before modifying its settings"
-#~ msgstr "Inaktivera kontrollern innan du ändrar inställningarna"
+#~ msgstr ""
 
 #~ msgid "{dev} with ID %(id)s successfully added"
-#~ msgstr "{dev} med ID %(id)s har lagts till"
+#~ msgstr ""
 
 #~ msgid "Execute All"
-#~ msgstr "Kör alla"
+#~ msgstr ""
 
 #~ msgid "Error: %(err)s"
-#~ msgstr "Fel:%(err)s"
+#~ msgstr ""
 
 #~ msgid "%(msg)s"
-#~ msgstr "%(msg)s"
+#~ msgstr ""
 
 #~ msgid "%(err)s"
-#~ msgstr "%(err)s"
+#~ msgstr ""
 
 #~ msgid "Entry with ID %(id)s not found"
-#~ msgstr "Inmatning med ID %(id)s hittades inte"
+#~ msgstr ""
 
 #~ msgid "Error in the %(field)s field - %(err)s"
-#~ msgstr "Fel i fältet %(field)s - %(err)s"
+#~ msgstr ""
 
 #~ msgid "Cannot move above the first item in the list"
-#~ msgstr "Kan inte flytta över det första objektet i listan"
+#~ msgstr ""
 
 #~ msgid "Cannot move below the last item in the list"
-#~ msgstr "Kan inte flytta under sista objektet i listan"
+#~ msgstr ""
 
 #~ msgid "%(type)s Input with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "%(type)s Inmatning med ID %(id)s (%(uuid)s) har lagts till"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Choose a Read Period equal to or"
@@ -9901,99 +9546,92 @@ msgstr ""
 #~ "become unresponsive if the period is "
 #~ "below 7."
 #~ msgstr ""
-#~ "Välj en läsperiod som är lika med"
-#~ " eller större än 7. AM2315 kan "
-#~ "bli oförsvarlig om perioden är under "
-#~ "7."
 
 #~ msgid "The Read Period cannot be less than the Pre Output Duration"
-#~ msgstr "Läsperioden kan inte vara mindre än Pre Output Duration"
+#~ msgstr ""
 
 #~ msgid "Invalid device or improper permissions to read device"
-#~ msgstr "Ogiltig enhet eller felaktiga behörigheter för att läsa enheten"
+#~ msgstr ""
 
 #~ msgid "Pin (GPIO) must be set"
 #~ msgstr ""
 
 #~ msgid "Force Measurements"
-#~ msgstr "Force Mätningar"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Activate controller before attempting to "
 #~ "force the acquisition of measurements"
-#~ msgstr "Aktivera kontrollenheten innan du försöker tvinga förvärv av mätningar"
+#~ msgstr ""
 
 #~ msgid "Deactivate LCD controller before modifying its settings."
-#~ msgstr "Inaktivera LCD-kontrollern innan du ändrar inställningarna."
+#~ msgstr ""
 
 #~ msgid "Cannot activate LCD if there are blank lines"
-#~ msgstr "Kan inte aktivera LCD om det finns tomma linjer"
+#~ msgstr ""
 
 #~ msgid "Deactivate LCD controller before modifying its settings"
-#~ msgstr "Inaktivera LCD-kontrollern innan du ändrar inställningarna"
+#~ msgstr ""
 
 #~ msgid "The last display cannot be deleted"
-#~ msgstr "Den sista skärmen kan inte raderas"
+#~ msgstr ""
 
 #~ msgid "%(type)s Math with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "%(type)s Math med ID %(id)s (%(uuid)s) har lagts till"
+#~ msgstr ""
 
 #~ msgid "Deactivate Math controller before modifying its settings"
-#~ msgstr "Inaktivera Math-kontrollern innan du ändrar inställningarna"
+#~ msgstr ""
 
 #~ msgid "Error in form field(s)"
-#~ msgstr "Fel i formulärfält"
+#~ msgstr ""
 
 #~ msgid "Duration must be a positive integer"
-#~ msgstr "Varaktigheten måste vara ett positivt heltal"
+#~ msgstr ""
 
 #~ msgid "Duration must be a valid integer"
-#~ msgstr "Varaktighet måste vara ett giltigt heltal"
+#~ msgstr ""
 
 #~ msgid "Required: Start date/time, end date/time, start setpoint"
-#~ msgstr "Krävs: Startdatum / tid, slutdatum / tid, startbörvärde"
+#~ msgstr ""
 
 #~ msgid "Invalid Date/Time format. Correct format: MM/DD/YYYY HH:MM:SS"
-#~ msgstr "Ogiltigt datum / tid format. Korrekt format: DD / MM / ÅÅÅÅ HH: MM: SS"
+#~ msgstr ""
 
 #~ msgid "The end time/date must be after the start time/date."
-#~ msgstr "Sluttid / datum måste vara efter starttid / datum."
+#~ msgstr ""
 
 #~ msgid "Required: Start time, end time, start setpoint"
-#~ msgstr "Krävs: Starttid, sluttid, start börvärde"
+#~ msgstr ""
 
 #~ msgid "Invalid Date/Time format. Correct format: HH:MM:SS"
-#~ msgstr "Ogiltigt datum / tid format. Korrekt format: HH: MM: SS"
+#~ msgstr ""
 
 #~ msgid "The end time must be after the start time."
-#~ msgstr "Sluttiden måste vara efter starttiden."
+#~ msgstr ""
 
 #~ msgid "Required: Duration, start setpoint"
-#~ msgstr "Obligatorisk: Varaktighet, start börvärde"
+#~ msgstr ""
 
 #~ msgid "Required: Duration must be positive"
-#~ msgstr "Obligatorisk: Varaktigheten måste vara positiv"
+#~ msgstr ""
 
 #~ msgid "Required: Date/Time, Output, and Output State"
-#~ msgstr "Krävs: Datum / Tid, Utgång och Utgångsstatus"
+#~ msgstr ""
 
 #~ msgid "Invalid Date/Time format. Correct format: DD-MM-YYYY HH:MM:SS"
-#~ msgstr "Ogiltigt datum / tid format. Korrekt format: DD-MM-ÅÅÅÅ HH: MM: SS"
+#~ msgstr ""
 
 #~ msgid "Required: Output, Output State, and Output Duration"
-#~ msgstr "Obligatorisk: Utgång, Utgångsstat och Utgångsvaraktighet"
+#~ msgstr ""
 
 #~ msgid "Required: Time, Relay ID, and Relay State"
-#~ msgstr "Krävs: Tid, Relä ID och Relä State"
+#~ msgstr ""
 
 #~ msgid "Error: Angle Shift is out of range. It must be <= 0 and <= 360."
 #~ msgstr ""
-#~ "Fel: Vinkelskiftet ligger utanför intervallet."
-#~ " Det måste vara <= 0 och <= "
-#~ "360."
 
 #~ msgid "Error: X0 must be greater than X3."
-#~ msgstr "Fel: X0 måste vara större än X3."
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The new entry start time (%(st)s) "
@@ -10001,152 +9639,165 @@ msgstr ""
 #~ "time (%(et)s). Note: They may be "
 #~ "the same time."
 #~ msgstr ""
-#~ "Den nya startstartstiden (%(st)s) kan "
-#~ "inte överlappa sista inmatningens sluttid "
-#~ "(%(et)s). Obs! De kan vara samma "
-#~ "gång."
 
 #~ msgid "Added duration to method from %(st)s to %(end)s"
-#~ msgstr "Längd till metod från %(st)s till %(end)s"
+#~ msgstr ""
 
 #~ msgid "Added method restart"
-#~ msgstr "Tillagd metod omstart"
+#~ msgstr ""
 
 #~ msgid "Added duration to method for %(sec)s seconds"
-#~ msgstr "Längd till metod för %(sec)s sekunder"
+#~ msgstr ""
 
 #~ msgid "Added output modulation to method at start time: %(tm)s"
-#~ msgstr "Tillagd utgångsmodulation till metod vid starttid: %(tm)s"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The entry start time (%(st)s) cannot "
 #~ "overlap the previous entry's end time"
 #~ " (%(et)s)"
 #~ msgstr ""
-#~ "Starttid för start (%(st)s) kan inte "
-#~ "överlappa föregående inmatningens sluttid "
-#~ "(%(et)s)"
 
 #~ msgid ""
 #~ "The entry end time (%(et)s) cannot "
 #~ "overlap the next entry's start time "
 #~ "(%(st)s)"
 #~ msgstr ""
-#~ "Ingångstiden (%(et)s) kan inte överlappa "
-#~ "nästa ingångs starttid (%(st)s)"
 
 #~ msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 #~ msgstr ""
 
 #~ msgid "File"
-#~ msgstr "Fil"
+#~ msgstr ""
 
 #~ msgid "Invalid quantity"
-#~ msgstr "Ogiltig mängd"
+#~ msgstr ""
 
 #~ msgid "Acceptable values"
-#~ msgstr "Godtagbara värden"
+#~ msgstr ""
 
 #~ msgid "Actuate"
-#~ msgstr "aktivera"
+#~ msgstr ""
 
 #~ msgid "Cannot modulate output with a GPIO of 0"
-#~ msgstr "Kan inte modulera utgången med en GPIO på 0"
+#~ msgstr ""
 
 #~ msgid "Value must be greater than 0"
-#~ msgstr "Värdet måste vara större än 0"
+#~ msgstr ""
 
 #~ msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
-#~ msgstr "Utgången aktiverad för %(sec)s sekunder: %(rvalue)s"
+#~ msgstr ""
 
 #~ msgid "Invalid pin"
-#~ msgstr "Ogiltig PIN"
+#~ msgstr ""
 
 #~ msgid "PWM Hertz must be a positive value"
-#~ msgstr "PWM Hertz måste vara ett positivt värde"
+#~ msgstr ""
 
 #~ msgid "PWM duty cycle must be a positive value"
-#~ msgstr "PWM-arbetscykeln måste vara ett positivt värde"
+#~ msgstr ""
 
 #~ msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
-#~ msgstr "PWM satt till %(dc)s %% vid %(hertz)s Hz: %(rvalue)s"
+#~ msgstr ""
 
 #~ msgid "Output turned on: %(rvalue)s"
-#~ msgstr "Utgången aktiverad: %(rvalue)s"
+#~ msgstr ""
 
 #~ msgid "Output turned off: %(rvalue)s"
-#~ msgstr "Utgången avstängd: %(rvalue)s"
+#~ msgstr ""
 
 #~ msgid "Invalid value"
-#~ msgstr "ogiltigt värde"
+#~ msgstr ""
 
 #~ msgid "Raise and lower outputs cannot be the same"
-#~ msgstr "Höj och sänk utdata kan inte vara samma"
+#~ msgstr ""
 
 #~ msgid "A valid Measurement is required"
-#~ msgstr "En giltig mätning krävs"
+#~ msgstr ""
 
 #~ msgid "A Raise Output and/or a Lower Output is required"
-#~ msgstr "En höjningsutgång och / eller en lägre utgång krävs"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Cannot activate PID controller if the"
 #~ " associated sensor controller is inactive"
 #~ msgstr ""
-#~ "Kan inte aktivera PID-regulatorn om "
-#~ "den tillhörande sensorkontrollen är inaktiv"
 
 #~ msgid ""
 #~ "Cannot activate PID controller if raise"
 #~ " and/or lower output IDs are not "
 #~ "selected"
 #~ msgstr ""
-#~ "Kan inte aktivera PID-kontrollen om "
-#~ "det inte är markerat att höja och"
-#~ " / eller sänka utmatnings-ID"
 
 #~ msgid "Remote Host %(host)s with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "Fjärrvärden %(host)s med ID %(id)s (%(uuid)s) har lagts till"
+#~ msgstr ""
 
 #~ msgid "User Role"
-#~ msgstr "Användarroll"
+#~ msgstr ""
 
 #~ msgid "Another user already has that email address."
-#~ msgstr "En annan användare har redan den e-postadressen."
+#~ msgstr ""
 
 #~ msgid "Invalid password"
-#~ msgstr "Felaktigt lösenord"
+#~ msgstr ""
 
 #~ msgid "Measurement with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "Mätning med ID %(id)s (%(uuid)s) har lagts till"
+#~ msgstr ""
 
 #~ msgid "Unit"
-#~ msgstr "Enhet"
+#~ msgstr ""
 
 #~ msgid "Unit with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "Enhet med ID %(id)s (%(uuid)s) har lagts till"
+#~ msgstr ""
 
 #~ msgid "Conversion"
-#~ msgstr "Omvandling"
+#~ msgstr ""
 
 #~ msgid "Conversion with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "Konvertering med ID %(id)s (%(uuid)s) har lagts till"
+#~ msgstr ""
 
 #~ msgid "Pi Settings"
-#~ msgstr "Pi Inställningar"
+#~ msgstr ""
 
 #~ msgid "Alert Settings"
-#~ msgstr "Alert Settings"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Test email sent to %(recip)s. Check "
 #~ "your inbox to see if it was "
 #~ "successful."
 #~ msgstr ""
-#~ "Test e-post skickat till %(recip)s. "
-#~ "Kontrollera din inkorg för att se "
-#~ "om den lyckades."
 
 #~ msgid "Reset email counter"
+#~ msgstr ""
+
+#~ msgid "click to copy to the clipboard"
+#~ msgstr ""
+
+#~ msgid "Internet Test IP Address"
+#~ msgstr ""
+
+#~ msgid "Internet Test Port"
+#~ msgstr ""
+
+#~ msgid "Internet Test Timeout"
+#~ msgstr ""
+
+#~ msgid "Increment"
+#~ msgstr ""
+
+#~ msgid "The amount of the duty cycle change for each step."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The IP address to test if there"
+#~ " is an active internet connection "
+#~ "required to allow upgrading."
+#~ msgstr ""
+
+#~ msgid "The port of the internet test IP address."
+#~ msgstr ""
+
+#~ msgid "The timeout period (seconds) for testing the internet connection."
 #~ msgstr ""
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-29 22:18-0400\n"
+"POT-Creation-Date: 2019-10-30 17:01-0400\n"
 "PO-Revision-Date: 2018-08-21 10:41-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt\n"
@@ -1772,7 +1772,7 @@ msgstr ""
 msgid "The serial device to write to"
 msgstr ""
 
-#: mycodo_flask/app.py:211
+#: mycodo_flask/app.py:210
 msgid "Please log in to access this page"
 msgstr ""
 
@@ -3395,31 +3395,39 @@ msgstr ""
 msgid "Mycodo Manual"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:230
-msgid "Discussion Forum"
+#: mycodo_flask/templates/layout.html:229
+msgid "Mycodo API Docs"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:231
-msgid "Submit an Issue"
+#: mycodo_flask/templates/layout.html:230
+msgid "Mycodo API"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:232
-msgid "Mycodo on Github"
+msgid "Discussion Forum"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:233
+msgid "Submit an Issue"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:234
+msgid "Mycodo on Github"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:235
 msgid "Changelog"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:240
+#: mycodo_flask/templates/layout.html:242
 msgid "Configure"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:241
+#: mycodo_flask/templates/layout.html:243
 msgid "Mycodo Logs"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:242
+#: mycodo_flask/templates/layout.html:244
 #: mycodo_flask/templates/pages/info.html:3
 #: mycodo_flask/templates/pages/info.html:5
 msgid "System Information"
@@ -3428,42 +3436,42 @@ msgstr ""
 #: mycodo_flask/templates/admin/dependencies.html:3
 #: mycodo_flask/templates/admin/dependencies.html:5
 #: mycodo_flask/templates/admin/dependencies.html:44
-#: mycodo_flask/templates/layout.html:244
+#: mycodo_flask/templates/layout.html:246
 msgid "Dependencies"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:246
+#: mycodo_flask/templates/layout.html:248
 msgid "Upgrade"
 msgstr ""
 
 #: mycodo_flask/templates/admin/backup.html:3
 #: mycodo_flask/templates/admin/backup.html:5
 #: mycodo_flask/templates/admin/backup.html:12
-#: mycodo_flask/templates/layout.html:247
+#: mycodo_flask/templates/layout.html:249
 msgid "Backup Restore"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:249
+#: mycodo_flask/templates/layout.html:251
 msgid "Restart Backend"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:250
+#: mycodo_flask/templates/layout.html:252
 msgid "Restart Frontend"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:252
+#: mycodo_flask/templates/layout.html:254
 msgid "Restart System"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:253
+#: mycodo_flask/templates/layout.html:255
 msgid "Shutdown System"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:255
+#: mycodo_flask/templates/layout.html:257
 msgid "Remote Admin"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:257
+#: mycodo_flask/templates/layout.html:259
 msgid "Logout"
 msgstr ""
 
@@ -9752,5 +9760,35 @@ msgstr ""
 #~ "returns the sum of the values "
 #~ "found within the Max Age, otherwise "
 #~ "returns None."
+#~ msgstr ""
+
+#~ msgid "click to copy to the clipboard"
+#~ msgstr ""
+
+#~ msgid "Internet Test IP Address"
+#~ msgstr ""
+
+#~ msgid "Internet Test Port"
+#~ msgstr ""
+
+#~ msgid "Internet Test Timeout"
+#~ msgstr ""
+
+#~ msgid "Increment"
+#~ msgstr ""
+
+#~ msgid "The amount of the duty cycle change for each step."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The IP address to test if there"
+#~ " is an active internet connection "
+#~ "required to allow upgrading."
+#~ msgstr ""
+
+#~ msgid "The port of the internet test IP address."
+#~ msgstr ""
+
+#~ msgid "The timeout period (seconds) for testing the internet connection."
 #~ msgstr ""
 

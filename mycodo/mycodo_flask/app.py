@@ -7,7 +7,6 @@ import logging
 import base64
 import flask_login
 from flask import Flask
-from flask import Response
 from flask import flash
 from flask import redirect
 from flask import request

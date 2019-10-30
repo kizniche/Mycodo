@@ -14,7 +14,7 @@ if curl -k -s --head --request GET https://192.168.0.9/api/v1/swagger.json | gre
   then
     rm -rf /tmp/swagger.json
     wget --no-check-certificate https://192.168.0.9/api/v1/swagger.json -O /tmp/swagger.json
-    npx redoc-cli bundle -o ${INSTALL_DIRECTORY}/mycodo-api.html /tmp/swagger.json
+    npx redoc-cli bundle -o ${INSTALL_DIRECTORY}/docs/mycodo-api.html /tmp/swagger.json
     rm -rf /tmp/swagger.json
 
     # Change title

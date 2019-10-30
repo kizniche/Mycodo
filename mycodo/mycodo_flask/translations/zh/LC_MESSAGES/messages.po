@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-29 22:18-0400\n"
+"POT-Creation-Date: 2019-10-30 17:01-0400\n"
 "PO-Revision-Date: 2018-08-10 15:59-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -1772,7 +1772,7 @@ msgstr ""
 msgid "The serial device to write to"
 msgstr ""
 
-#: mycodo_flask/app.py:211
+#: mycodo_flask/app.py:210
 msgid "Please log in to access this page"
 msgstr ""
 
@@ -3395,31 +3395,39 @@ msgstr ""
 msgid "Mycodo Manual"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:230
-msgid "Discussion Forum"
+#: mycodo_flask/templates/layout.html:229
+msgid "Mycodo API Docs"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:231
-msgid "Submit an Issue"
+#: mycodo_flask/templates/layout.html:230
+msgid "Mycodo API"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:232
-msgid "Mycodo on Github"
+msgid "Discussion Forum"
 msgstr ""
 
 #: mycodo_flask/templates/layout.html:233
+msgid "Submit an Issue"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:234
+msgid "Mycodo on Github"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:235
 msgid "Changelog"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:240
+#: mycodo_flask/templates/layout.html:242
 msgid "Configure"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:241
+#: mycodo_flask/templates/layout.html:243
 msgid "Mycodo Logs"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:242
+#: mycodo_flask/templates/layout.html:244
 #: mycodo_flask/templates/pages/info.html:3
 #: mycodo_flask/templates/pages/info.html:5
 msgid "System Information"
@@ -3428,42 +3436,42 @@ msgstr ""
 #: mycodo_flask/templates/admin/dependencies.html:3
 #: mycodo_flask/templates/admin/dependencies.html:5
 #: mycodo_flask/templates/admin/dependencies.html:44
-#: mycodo_flask/templates/layout.html:244
+#: mycodo_flask/templates/layout.html:246
 msgid "Dependencies"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:246
+#: mycodo_flask/templates/layout.html:248
 msgid "Upgrade"
 msgstr ""
 
 #: mycodo_flask/templates/admin/backup.html:3
 #: mycodo_flask/templates/admin/backup.html:5
 #: mycodo_flask/templates/admin/backup.html:12
-#: mycodo_flask/templates/layout.html:247
+#: mycodo_flask/templates/layout.html:249
 msgid "Backup Restore"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:249
+#: mycodo_flask/templates/layout.html:251
 msgid "Restart Backend"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:250
+#: mycodo_flask/templates/layout.html:252
 msgid "Restart Frontend"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:252
+#: mycodo_flask/templates/layout.html:254
 msgid "Restart System"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:253
+#: mycodo_flask/templates/layout.html:255
 msgid "Shutdown System"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:255
+#: mycodo_flask/templates/layout.html:257
 msgid "Remote Admin"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:257
+#: mycodo_flask/templates/layout.html:259
 msgid "Logout"
 msgstr ""
 
@@ -5657,19 +5665,19 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Add Dashboard Element"
-#~ msgstr "添加仪表板元素"
+#~ msgstr ""
 
 #~ msgid "Graph"
-#~ msgstr "图形"
+#~ msgstr ""
 
 #~ msgid "Gauge"
-#~ msgstr "测量"
+#~ msgstr ""
 
 #~ msgid "PWM Slider"
 #~ msgstr ""
 
 #~ msgid "PID Control"
-#~ msgstr "PID控制"
+#~ msgstr ""
 
 #~ msgid "Average (Last, Multiple Channels)"
 #~ msgstr ""
@@ -5684,79 +5692,79 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Difference"
-#~ msgstr "区别"
+#~ msgstr ""
 
 #~ msgid "Equation"
-#~ msgstr "方程"
+#~ msgstr ""
 
 #~ msgid "Humidity (Wet/Dry-Bulb)"
-#~ msgstr "湿度（湿/干灯泡）"
+#~ msgstr ""
 
 #~ msgid "Redundancy"
-#~ msgstr "冗余"
+#~ msgstr ""
 
 #~ msgid "Statistics"
-#~ msgstr "统计"
+#~ msgstr ""
 
 #~ msgid "Verification"
-#~ msgstr "验证"
+#~ msgstr ""
 
 #~ msgid "Vapor Pressure Deficit"
-#~ msgstr "蒸汽压力不足"
+#~ msgstr ""
 
 #~ msgid "Time/Date"
-#~ msgstr "时间/日期"
+#~ msgstr ""
 
 #~ msgid "Duration"
-#~ msgstr "持续时间"
+#~ msgstr ""
 
 #~ msgid "Daily (Time-Based)"
-#~ msgstr "每日（基于时间）"
+#~ msgstr ""
 
 #~ msgid "Daily (Sine Wave)"
-#~ msgstr "每日（正弦波）"
+#~ msgstr ""
 
 #~ msgid "Daily (Bezier Curve)"
-#~ msgstr "每日（贝塞尔曲线）"
+#~ msgstr ""
 
 #~ msgid "On/Off (GPIO)"
-#~ msgstr "开/关（GPIO）"
+#~ msgstr ""
 
 #~ msgid "PWM (GPIO)"
-#~ msgstr "PWM（GPIO）"
+#~ msgstr ""
 
 #~ msgid "Wireless 315/433MHz LPD/SRD (rpi-rf)"
-#~ msgstr "无线315 / 433MHz LPD / SRD（rpi-rf）"
+#~ msgstr ""
 
 #~ msgid "On/Off (Linux Command)"
-#~ msgstr "开/关（Linux命令）"
+#~ msgstr ""
 
 #~ msgid "PWM (Linux Command)"
-#~ msgstr "PWM（Linux命令）"
+#~ msgstr ""
 
 #~ msgid "On/Off (Python Command)"
-#~ msgstr "开/关（Python命令）"
+#~ msgstr ""
 
 #~ msgid "PWM (Python Command)"
-#~ msgstr "PWM（Python命令）"
+#~ msgstr ""
 
 #~ msgid "Atlas EZO-PMP"
-#~ msgstr "Atlas EZO-PMP"
+#~ msgstr ""
 
 #~ msgid "FTDI"
 #~ msgstr ""
 
 #~ msgid "I2C"
-#~ msgstr "I2C"
+#~ msgstr ""
 
 #~ msgid "UART"
-#~ msgstr "UART"
+#~ msgstr ""
 
 #~ msgid "DS-Type Sensor Calibration"
-#~ msgstr "DS型传感器校准"
+#~ msgstr ""
 
 #~ msgid "GPIO State"
-#~ msgstr "GPIO国家"
+#~ msgstr ""
 
 #~ msgid "Output State"
 #~ msgstr ""
@@ -5768,43 +5776,43 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Spacer"
-#~ msgstr "间隔"
+#~ msgstr ""
 
 #~ msgid "Execute Actions"
-#~ msgstr "执行动作"
+#~ msgstr ""
 
 #~ msgid "Trigger: Timer (Daily Point)"
-#~ msgstr "触发：定时器（每日点）"
+#~ msgstr ""
 
 #~ msgid "Daily Span"
-#~ msgstr "每日跨度"
+#~ msgstr ""
 
 #~ msgid "Infrared Receive"
 #~ msgstr ""
 
 #~ msgid "Run PWM Method"
-#~ msgstr "运行PWM方法"
+#~ msgstr ""
 
 #~ msgid "Sunrise/Sunset"
-#~ msgstr "日出日落"
+#~ msgstr ""
 
 #~ msgid "Camera: Capture Photo"
-#~ msgstr "相机：拍摄照片"
+#~ msgstr ""
 
 #~ msgid "Email with Photo Attachment"
-#~ msgstr "带照片附件的电子邮件"
+#~ msgstr ""
 
 #~ msgid "Email with Video Attachment"
-#~ msgstr "带视频附件的电子邮件"
+#~ msgstr ""
 
 #~ msgid "Execute Command"
-#~ msgstr "执行命令"
+#~ msgstr ""
 
 #~ msgid "Infrared Send"
 #~ msgstr ""
 
 #~ msgid "Backlight Off"
-#~ msgstr "背光关闭"
+#~ msgstr ""
 
 #~ msgid "Backlight On"
 #~ msgstr ""
@@ -5816,10 +5824,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Set Method"
-#~ msgstr "设置方法"
+#~ msgstr ""
 
 #~ msgid "Set Setpoint"
-#~ msgstr "设定设定值"
+#~ msgstr ""
 
 #~ msgid "Raise Setpoint"
 #~ msgstr ""
@@ -5840,436 +5848,436 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Altitude"
-#~ msgstr "高度"
+#~ msgstr ""
 
 #~ msgid "Battery"
-#~ msgstr "电池"
+#~ msgstr ""
 
 #~ msgid "Boolean"
-#~ msgstr "布尔"
+#~ msgstr ""
 
 #~ msgid "CO2"
-#~ msgstr "CO2"
+#~ msgstr ""
 
 #~ msgid "CPU Load 1 min"
-#~ msgstr "CPU负载1分钟"
+#~ msgstr ""
 
 #~ msgid "CPU Load 5 min"
-#~ msgstr "CPU负载5分钟"
+#~ msgstr ""
 
 #~ msgid "CPU Load 15 min"
-#~ msgstr "CPU负载15分钟"
+#~ msgstr ""
 
 #~ msgid "Dewpoint"
-#~ msgstr "露点"
+#~ msgstr ""
 
 #~ msgid "Disk"
-#~ msgstr "磁盘"
+#~ msgstr ""
 
 #~ msgid "Dissolved Oxygen"
 #~ msgstr ""
 
 #~ msgid "Duty Cycle"
-#~ msgstr "占空比"
+#~ msgstr ""
 
 #~ msgid "GPIO Edge"
-#~ msgstr "GPIO Edge"
+#~ msgstr ""
 
 #~ msgid "Electrical Conductivity"
-#~ msgstr "电导率"
+#~ msgstr ""
 
 #~ msgid "Electrical Current"
-#~ msgstr "电流"
+#~ msgstr ""
 
 #~ msgid "Electrical Potential"
-#~ msgstr "电势"
+#~ msgstr ""
 
 #~ msgid "Frequency"
-#~ msgstr "频率"
+#~ msgstr ""
 
 #~ msgid "Humidity"
-#~ msgstr "湿度"
+#~ msgstr ""
 
 #~ msgid "Humidity Ratio"
-#~ msgstr "湿度比"
+#~ msgstr ""
 
 #~ msgid "Ion Concentration"
-#~ msgstr "离子浓度"
+#~ msgstr ""
 
 #~ msgid "Light"
-#~ msgstr "光"
+#~ msgstr ""
 
 #~ msgid "Moisture"
-#~ msgstr "湿气"
+#~ msgstr ""
 
 #~ msgid "Oxidation Reduction Potential"
 #~ msgstr ""
 
 #~ msgid "PID P-Value"
-#~ msgstr "PID P值"
+#~ msgstr ""
 
 #~ msgid "PID I-Value"
-#~ msgstr "PID I值"
+#~ msgstr ""
 
 #~ msgid "PID D-Value"
-#~ msgstr "PID D值"
+#~ msgstr ""
 
 #~ msgid "Pressure"
-#~ msgstr "压力"
+#~ msgstr ""
 
 #~ msgid "Pulse Width"
-#~ msgstr "脉冲宽度"
+#~ msgstr ""
 
 #~ msgid "Radiation Dose Rate"
 #~ msgstr ""
 
 #~ msgid "Revolutions"
-#~ msgstr "革命"
+#~ msgstr ""
 
 #~ msgid "Setpoint"
-#~ msgstr "设定点"
+#~ msgstr ""
 
 #~ msgid "Band Min"
-#~ msgstr "Band Min"
+#~ msgstr ""
 
 #~ msgid "Band Max"
-#~ msgstr "Band Max"
+#~ msgstr ""
 
 #~ msgid "Specific Enthalpy"
-#~ msgstr "具体焓"
+#~ msgstr ""
 
 #~ msgid "Specific Volume"
-#~ msgstr "比容"
+#~ msgstr ""
 
 #~ msgid "Temperature"
-#~ msgstr "温度"
+#~ msgstr ""
 
 #~ msgid "Unitless"
 #~ msgstr ""
 
 #~ msgid "VOC"
-#~ msgstr "VOC"
+#~ msgstr ""
 
 #~ msgid "Volume"
-#~ msgstr "体积"
+#~ msgstr ""
 
 #~ msgid "Microsecond"
-#~ msgstr "微秒"
+#~ msgstr ""
 
 #~ msgid "Microsiemens per centimeter"
-#~ msgstr "每厘米微米门"
+#~ msgstr ""
 
 #~ msgid "Microsieverts per hour"
 #~ msgstr ""
 
 #~ msgid "Amp"
-#~ msgstr "安培"
+#~ msgstr ""
 
 #~ msgid "Celsius"
-#~ msgstr "摄氏"
+#~ msgstr ""
 
 #~ msgid "Counts per minute"
 #~ msgstr ""
 
 #~ msgid "CPU Load"
-#~ msgstr "CPU负载"
+#~ msgstr ""
 
 #~ msgid "Decimal"
-#~ msgstr "十进制"
+#~ msgstr ""
 
 #~ msgid "Fahrenheit"
-#~ msgstr "飞轮海"
+#~ msgstr ""
 
 #~ msgid "Foot"
-#~ msgstr "脚丫子"
+#~ msgstr ""
 
 #~ msgid "Full"
-#~ msgstr "充分"
+#~ msgstr ""
 
 #~ msgid "G-Force"
 #~ msgstr ""
 
 #~ msgid "Gigabyte"
-#~ msgstr "技嘉"
+#~ msgstr ""
 
 #~ msgid "Hour"
 #~ msgstr ""
 
 #~ msgid "Hertz"
-#~ msgstr "赫兹"
+#~ msgstr ""
 
 #~ msgid "Infrared"
-#~ msgstr "红外线"
+#~ msgstr ""
 
 #~ msgid "Kelvin"
-#~ msgstr "开"
+#~ msgstr ""
 
 #~ msgid "Kilobyte"
-#~ msgstr "千字节"
+#~ msgstr ""
 
 #~ msgid "Kilogram per kilogram"
-#~ msgstr "公斤每公斤"
+#~ msgstr ""
 
 #~ msgid "Kilohertz"
-#~ msgstr "千赫"
+#~ msgstr ""
 
 #~ msgid "Kilojoule per kilogram"
-#~ msgstr "Kilojoule每公斤"
+#~ msgstr ""
 
 #~ msgid "Kilopascal"
-#~ msgstr "千帕"
+#~ msgstr ""
 
 #~ msgid "Lux"
-#~ msgstr "勒克司"
+#~ msgstr ""
 
 #~ msgid "Meter"
-#~ msgstr "仪表"
+#~ msgstr ""
 
 #~ msgid "Milligram per Liter"
 #~ msgstr ""
 
 #~ msgid "Minute"
-#~ msgstr "分钟"
+#~ msgstr ""
 
 #~ msgid "Milliliter"
-#~ msgstr "毫升"
+#~ msgstr ""
 
 #~ msgid "Millivolt"
 #~ msgstr ""
 
 #~ msgid "Cubic meters per kilogram"
-#~ msgstr "每公斤立方米"
+#~ msgstr ""
 
 #~ msgid "Megahertz"
-#~ msgstr "兆赫"
+#~ msgstr ""
 
 #~ msgid "Megabyte"
-#~ msgstr "兆字节"
+#~ msgstr ""
 
 #~ msgid "Pascal"
-#~ msgstr "帕斯卡尔"
+#~ msgstr ""
 
 #~ msgid "Percent"
-#~ msgstr "百分"
+#~ msgstr ""
 
 #~ msgid "pH"
-#~ msgstr "pH值"
+#~ msgstr ""
 
 #~ msgid "PID values"
-#~ msgstr "PID值"
+#~ msgstr ""
 
 #~ msgid "Parts per billion"
-#~ msgstr "十亿分之一"
+#~ msgstr ""
 
 #~ msgid "Parts per million"
-#~ msgstr "百万分之一"
+#~ msgstr ""
 
 #~ msgid "Pounds per square inch"
 #~ msgstr ""
 
 #~ msgid "Revolutions per minute"
-#~ msgstr "每分钟转数"
+#~ msgstr ""
 
 #~ msgid "Second"
-#~ msgstr "第二"
+#~ msgstr ""
 
 #~ msgid "Microgram per cubic meter"
-#~ msgstr "每立方米的微克数"
+#~ msgstr ""
 
 #~ msgid "Volt"
-#~ msgstr "伏特"
+#~ msgstr ""
 
 #~ msgid "Actions"
-#~ msgstr "操作"
+#~ msgstr ""
 
 #~ msgid "Add"
-#~ msgstr "加"
+#~ msgstr ""
 
 #~ msgid "Activate"
-#~ msgstr "启用"
+#~ msgstr ""
 
 #~ msgid "Alert"
-#~ msgstr "警报"
+#~ msgstr ""
 
 #~ msgid "Average"
 #~ msgstr ""
 
 #~ msgid "Calibration"
-#~ msgstr "校准"
+#~ msgstr ""
 
 #~ msgid "Calculate"
 #~ msgstr ""
 
 #~ msgid "Camera"
-#~ msgstr "相机"
+#~ msgstr ""
 
 #~ msgid "Cancel"
-#~ msgstr "取消"
+#~ msgstr ""
 
 #~ msgid "Conditional"
-#~ msgstr "条件"
+#~ msgstr ""
 
 #~ msgid "Controller"
-#~ msgstr "调节器"
+#~ msgstr ""
 
 #~ msgid "Create"
-#~ msgstr "创建"
+#~ msgstr ""
 
 #~ msgid "Custom"
-#~ msgstr "习惯"
+#~ msgstr ""
 
 #~ msgid "Dashboard"
-#~ msgstr "仪表板"
+#~ msgstr ""
 
 #~ msgid "Data"
-#~ msgstr "数据"
+#~ msgstr ""
 
 #~ msgid "Deactivate"
-#~ msgstr "停用"
+#~ msgstr ""
 
 #~ msgid "Default"
 #~ msgstr ""
 
 #~ msgid "Delete"
-#~ msgstr "删除"
+#~ msgstr ""
 
 #~ msgid "Diagnostic"
-#~ msgstr "诊断"
+#~ msgstr ""
 
 #~ msgid "Display"
-#~ msgstr "显示"
+#~ msgstr ""
 
 #~ msgid "Down"
-#~ msgstr "下"
+#~ msgstr ""
 
 #~ msgid "Edge"
-#~ msgstr "边缘"
+#~ msgstr ""
 
 #~ msgid "Edit"
-#~ msgstr "编辑"
+#~ msgstr ""
 
 #~ msgid "E-Mail"
-#~ msgstr "电子邮件"
+#~ msgstr ""
 
 #~ msgid "Energy Usage"
-#~ msgstr "能源使用"
+#~ msgstr ""
 
 #~ msgid "Error"
-#~ msgstr "错误"
+#~ msgstr ""
 
 #~ msgid "Export"
-#~ msgstr "出口"
+#~ msgstr ""
 
 #~ msgid "Function"
-#~ msgstr "功能"
+#~ msgstr ""
 
 #~ msgid "General"
-#~ msgstr "一般"
+#~ msgstr ""
 
 #~ msgid "Hold"
-#~ msgstr "保持"
+#~ msgstr ""
 
 #~ msgid "Indicator"
-#~ msgstr "指示符"
+#~ msgstr ""
 
 #~ msgid "Invert"
-#~ msgstr "倒置"
+#~ msgstr ""
 
 #~ msgid "Import"
-#~ msgstr "进口"
+#~ msgstr ""
 
 #~ msgid "Input"
-#~ msgstr "输入"
+#~ msgstr ""
 
 #~ msgid "Invalid"
-#~ msgstr "无效"
+#~ msgstr ""
 
 #~ msgid "Last"
 #~ msgstr ""
 
 #~ msgid "LCD"
-#~ msgstr "液晶显示"
+#~ msgstr ""
 
 #~ msgid "Line"
-#~ msgstr "线"
+#~ msgstr ""
 
 #~ msgid "Login"
-#~ msgstr "登录"
+#~ msgstr ""
 
 #~ msgid "Math"
-#~ msgstr "数学"
+#~ msgstr ""
 
 #~ msgid "Measurement"
-#~ msgstr "测量"
+#~ msgstr ""
 
 #~ msgid "Method"
-#~ msgstr "方法"
+#~ msgstr ""
 
 #~ msgid "Modify"
-#~ msgstr "修改"
+#~ msgstr ""
 
 #~ msgid "Multiple"
 #~ msgstr ""
 
 #~ msgid "None Available"
-#~ msgstr "没有可用"
+#~ msgstr ""
 
 #~ msgid "Note"
-#~ msgstr "注意"
+#~ msgstr ""
 
 #~ msgid "Off"
-#~ msgstr "离"
+#~ msgstr ""
 
 #~ msgid "On"
-#~ msgstr "上"
+#~ msgstr ""
 
 #~ msgid "Output"
-#~ msgstr "产量"
+#~ msgstr ""
 
 #~ msgid "Past"
 #~ msgstr ""
 
 #~ msgid "Password"
-#~ msgstr "密码"
+#~ msgstr ""
 
 #~ msgid "Pause"
-#~ msgstr "暂停"
+#~ msgstr ""
 
 #~ msgid "PID"
-#~ msgstr "PID"
+#~ msgstr ""
 
 #~ msgid "Pin"
 #~ msgstr ""
 
 #~ msgid "PWM"
-#~ msgstr "PWM"
+#~ msgstr ""
 
 #~ msgid "Ramp"
 #~ msgstr ""
 
 #~ msgid "Rename"
-#~ msgstr "改名"
+#~ msgstr ""
 
 #~ msgid "Reorder"
-#~ msgstr "重新排序"
+#~ msgstr ""
 
 #~ msgid "Reset"
 #~ msgstr ""
 
 #~ msgid "Resume"
-#~ msgstr "恢复"
+#~ msgstr ""
 
 #~ msgid "Save"
-#~ msgstr "保存"
+#~ msgstr ""
 
 #~ msgid "Save Order"
-#~ msgstr "保存订单"
+#~ msgstr ""
 
 #~ msgid "Select One"
-#~ msgstr "选择一个"
+#~ msgstr ""
 
 #~ msgid "Settings"
-#~ msgstr "设置"
+#~ msgstr ""
 
 #~ msgid "Single"
 #~ msgstr ""
@@ -6278,154 +6286,154 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Tag"
-#~ msgstr "标签"
+#~ msgstr ""
 
 #~ msgid "Text"
 #~ msgstr ""
 
 #~ msgid "Timer"
-#~ msgstr "计时器"
+#~ msgstr ""
 
 #~ msgid "Trigger"
 #~ msgstr ""
 
 #~ msgid "Up"
-#~ msgstr "向上"
+#~ msgstr ""
 
 #~ msgid "Upload"
-#~ msgstr "上传"
+#~ msgstr ""
 
 #~ msgid "User"
-#~ msgstr "用户"
+#~ msgstr ""
 
 #~ msgid "1-Wire Device ID"
-#~ msgstr "1-Wire器件ID"
+#~ msgstr ""
 
 #~ msgid "Select the 1-wire device ID"
-#~ msgstr "选择1线设备ID"
+#~ msgstr ""
 
 #~ msgid "Gain"
-#~ msgstr "获得"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Adjust the gain to change the "
 #~ "measurable voltage range. See ADC "
 #~ "documentation for details."
-#~ msgstr "调整增益以改变可测量的电压范围。有关详情，请参阅ADC文档。"
+#~ msgstr ""
 
 #~ msgid "Resolution"
-#~ msgstr "解析度"
+#~ msgstr ""
 
 #~ msgid "ADC Resolution (see ADC documentation)"
-#~ msgstr "ADC分辨率（参见ADC文档）"
+#~ msgstr ""
 
 #~ msgid "Sample Speed"
-#~ msgstr "采样速度"
+#~ msgstr ""
 
 #~ msgid "ADC Sample Speed (see ADC documentation)"
-#~ msgstr "ADC采样速度（参见ADC文档）"
+#~ msgstr ""
 
 #~ msgid "Current Draw (amps)"
-#~ msgstr "电流消耗（安培）"
+#~ msgstr ""
 
 #~ msgid "The number of amps the output device draws (at 120/240 VAC)"
-#~ msgstr "输出设备绘制的放大器数量（120/240 VAC）"
+#~ msgstr ""
 
 #~ msgid "Baud Rate"
-#~ msgstr "波特率"
+#~ msgstr ""
 
 #~ msgid "The UART baud rate"
-#~ msgstr "UART波特率"
+#~ msgstr ""
 
 #~ msgid "MAC (XX:XX:XX:XX:XX:XX)"
-#~ msgstr "MAC（XX：XX：XX：XX：XX：XX）"
+#~ msgstr ""
 
 #~ msgid "The MAC address of the input"
-#~ msgstr "输入的MAC地址"
+#~ msgstr ""
 
 #~ msgid "BT Adapter"
-#~ msgstr "BT适配器"
+#~ msgstr ""
 
 #~ msgid "The Bluetooth adapter of the input"
-#~ msgstr "输入的蓝牙适配器"
+#~ msgstr ""
 
 #~ msgid "Command"
-#~ msgstr "命令"
+#~ msgstr ""
 
 #~ msgid "The command to executed (as user mycodo) to return a measurement value"
-#~ msgstr "要执行的命令（作为用户mycodo）以返回测量值"
+#~ msgstr ""
 
 #~ msgid "Select the unit of the measurement to be stored in the database"
-#~ msgstr "选择要存储在数据库中的测量单位"
+#~ msgstr ""
 
 #~ msgid "Convert to Unit"
-#~ msgstr "转换为单位"
+#~ msgstr ""
 
 #~ msgid "Convert the measurement to a different unit"
-#~ msgstr "将测量值转换为其他单位"
+#~ msgstr ""
 
 #~ msgid "Deadline"
-#~ msgstr "最后期限"
+#~ msgstr ""
 
 #~ msgid "Time (seconds) to wait until failure"
-#~ msgstr "等待失败的时间（秒）"
+#~ msgstr ""
 
 #~ msgid "Duration On (seconds)"
-#~ msgstr "持续时间（秒）"
+#~ msgstr ""
 
 #~ msgid "Turn on for a duration of time (seconds)"
-#~ msgstr "开启一段时间（秒）"
+#~ msgstr ""
 
 #~ msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
-#~ msgstr "PWM的占空比（百分比，0.0  -  100.0）"
+#~ msgstr ""
 
 #~ msgid "Flow Rate (ml/min)"
-#~ msgstr "流速（ml / min）"
+#~ msgstr ""
 
 #~ msgid "Flow rate in ml/minute (0.5 min, 105 max)"
 #~ msgstr ""
 
 #~ msgid "FTDI Device"
-#~ msgstr "FTDI设备"
+#~ msgstr ""
 
 #~ msgid "The FTDI device (e.g. /dev/ttyUSB1)"
-#~ msgstr "FTDI设备（例如/ dev / ttyUSB1）"
+#~ msgstr ""
 
 #~ msgid "Pin (GPIO)"
-#~ msgstr "引脚（GPIO）"
+#~ msgstr ""
 
 #~ msgid "The GPIO pin using BCM numbering"
-#~ msgstr "GPIO引脚使用BCM编号"
+#~ msgstr ""
 
 #~ msgid "Host"
-#~ msgstr "主办"
+#~ msgstr ""
 
 #~ msgid "Host address or IP"
-#~ msgstr "主机地址或IP"
+#~ msgstr ""
 
 #~ msgid "I<sup>2</sup>C Bus"
-#~ msgstr "我<sup> 2 </ sup> C Bus"
+#~ msgstr ""
 
 #~ msgid "The I2C bus the device is connected to"
-#~ msgstr "设备连接的I2C总线"
+#~ msgstr ""
 
 #~ msgid "I<sup>2</sup>C Address"
-#~ msgstr "我<sup> 2 </ sup> C地址"
+#~ msgstr ""
 
 #~ msgid "The I2C address of the device"
-#~ msgstr "设备的I2C地址"
+#~ msgstr ""
 
 #~ msgid "Interface"
-#~ msgstr "接口"
+#~ msgstr ""
 
 #~ msgid "The interface used to communicate"
-#~ msgstr "用于通信的接口"
+#~ msgstr ""
 
 #~ msgid "Invert Scale"
-#~ msgstr "反转比例"
+#~ msgstr ""
 
 #~ msgid "Invert the scale"
-#~ msgstr "反转比例"
+#~ msgstr ""
 
 #~ msgid "Log Level: Debug"
 #~ msgstr ""
@@ -6434,37 +6442,37 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Max Age (seconds)"
-#~ msgstr "最大年龄（秒）"
+#~ msgstr ""
 
 #~ msgid "The maximum allowable measurement age"
-#~ msgstr "最大允许测量年龄"
+#~ msgstr ""
 
 #~ msgid "Unit Measurement"
-#~ msgstr "单位测量"
+#~ msgstr ""
 
 #~ msgid "Select a unit for the stored value"
-#~ msgstr "选择存储值的单位"
+#~ msgstr ""
 
 #~ msgid "Measurements Enabled"
-#~ msgstr "测量已启用"
+#~ msgstr ""
 
 #~ msgid "The measurements to record"
-#~ msgstr "测量记录"
+#~ msgstr ""
 
 #~ msgid "Name"
-#~ msgstr "名称"
+#~ msgstr ""
 
 #~ msgid "A name to distinguish this from others"
-#~ msgstr "一个名称，以区别于其他人"
+#~ msgstr ""
 
 #~ msgid "Off Command"
-#~ msgstr "关闭命令"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Command to execute (as user mycodo) "
 #~ "when the output is instructed to "
 #~ "turn off"
-#~ msgstr "指示输出关闭时执行的命令（作为用户mycodo）"
+#~ msgstr ""
 
 #~ msgid "Output Mode"
 #~ msgstr ""
@@ -6491,184 +6499,184 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Startup State"
-#~ msgstr "开始状态"
+#~ msgstr ""
 
 #~ msgid "When Mycodo starts, set the output state"
-#~ msgstr "当Mycodo启动时，设置输出状态"
+#~ msgstr ""
 
 #~ msgid "On Command"
-#~ msgstr "在命令"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Command to execute (as user mycodo) "
 #~ "when the output is instructed to "
 #~ "turn on"
-#~ msgstr "指示打开输出时执行的命令（作为用户mycodo）"
+#~ msgstr ""
 
 #~ msgid "Period (seconds)"
-#~ msgstr "期间（秒）"
+#~ msgstr ""
 
 #~ msgid "The duration (seconds) between measurements or actions"
 #~ msgstr ""
 
 #~ msgid "Clock Pin"
-#~ msgstr "时钟针"
+#~ msgstr ""
 
 #~ msgid "The GPIO (using BCM numbering) connected to the Clock pin"
-#~ msgstr "GPIO（使用BCM编号）连接到Clock引脚"
+#~ msgstr ""
 
 #~ msgid "CS Pin"
-#~ msgstr "CS Pin"
+#~ msgstr ""
 
 #~ msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
-#~ msgstr "GPIO（使用BCM编号）连接到Cable Select引脚"
+#~ msgstr ""
 
 #~ msgid "MISO Pin"
-#~ msgstr "MISO Pin"
+#~ msgstr ""
 
 #~ msgid "The GPIO (using BCM numbering) connected to the MISO pin"
-#~ msgstr "GPIO（使用BCM编号）连接到MISO引脚"
+#~ msgstr ""
 
 #~ msgid "MOSI Pin"
-#~ msgstr "MOSI Pin"
+#~ msgstr ""
 
 #~ msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
-#~ msgstr "GPIO（使用BCM编号）连接到MOSI引脚"
+#~ msgstr ""
 
 #~ msgid "Port"
-#~ msgstr "港口"
+#~ msgstr ""
 
 #~ msgid "Host port number"
-#~ msgstr "主机端口号"
+#~ msgstr ""
 
 #~ msgid "Pre Out Duration"
-#~ msgstr "预备持续时间"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "If a Pre Output is selected, set"
 #~ " the duration (seconds) to turn the"
 #~ " Pre Output on for before every "
 #~ "measurement is acquired."
-#~ msgstr "如果选择了预输出，则设置持续时间（秒）以在获取每个测量值之前打开预输出。"
+#~ msgstr ""
 
 #~ msgid "Pre During Measure"
-#~ msgstr "预测期间"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Check to turn the output off after"
 #~ " (opposed to before) the measurement "
 #~ "is complete"
-#~ msgstr "检查在完成测量后（与之前相反）关闭输出"
+#~ msgstr ""
 
 #~ msgid "Pre Output"
-#~ msgstr "预输出"
+#~ msgstr ""
 
 #~ msgid "Turn the selected output on before taking every measurement"
-#~ msgstr "在进行每次测量之前，打开所选输出"
+#~ msgstr ""
 
 #~ msgid "Protocol"
-#~ msgstr "协议"
+#~ msgstr ""
 
 #~ msgid "Wireless 433 MHz protocol"
-#~ msgstr "无线433 MHz协议"
+#~ msgstr ""
 
 #~ msgid "Pulse Length"
-#~ msgstr "脉冲长度"
+#~ msgstr ""
 
 #~ msgid "Wireless 433 MHz pulse length"
-#~ msgstr "无线433 MHz脉冲长度"
+#~ msgstr ""
 
 #~ msgid "Amount to Dispense (ml)"
-#~ msgstr "分配量（ml）"
+#~ msgstr ""
 
 #~ msgid "Volume in ml to pump"
-#~ msgstr "以ml为单位的体积泵"
+#~ msgstr ""
 
 #~ msgid "PWM Command"
-#~ msgstr "PWM命令"
+#~ msgstr ""
 
 #~ msgid "Command to execute (as user mycodo) to set the PWM duty cycle (%%)"
-#~ msgstr "执行命令（作为用户mycodo）设置PWM占空比 (%%)"
+#~ msgstr ""
 
 #~ msgid "Frequency (Hertz)"
-#~ msgstr "频率（赫兹）"
+#~ msgstr ""
 
 #~ msgid "The Hertz to output the PWM signal (0 - 70,000)"
-#~ msgstr "赫兹输出PWM信号（0  -  70,000）"
+#~ msgstr ""
 
 #~ msgid "Library"
-#~ msgstr "图书馆"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Which method to produce the PWM "
 #~ "signal (hardware pins can produce higher"
 #~ " frequencies)"
-#~ msgstr "哪种方法可以产生PWM信号（硬件引脚可以产生更高的频率）"
+#~ msgstr ""
 
 #~ msgid "Reference Resistance"
-#~ msgstr "参考电阻"
+#~ msgstr ""
 
 #~ msgid "Reference resistance (Ohm)"
-#~ msgstr "参考电阻（欧姆）"
+#~ msgstr ""
 
 #~ msgid "Measurement resolution"
-#~ msgstr "测量分辨率"
+#~ msgstr ""
 
 #~ msgid "Pulses Per Rev"
-#~ msgstr "脉冲每转"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The number of pulses per revolution "
 #~ "to calculate revolutions per minute "
 #~ "(RPM)"
-#~ msgstr "计算每分钟转数（RPM）的每转脉冲数"
+#~ msgstr ""
 
 #~ msgid "Sample Time"
-#~ msgstr "采样时间"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The amount of time (seconds) to "
 #~ "sample the input before caluclating the"
 #~ " measurement"
-#~ msgstr "在计算测量值之前对输入进行采样的时间量（秒）"
+#~ msgstr ""
 
 #~ msgid "Unscaled Unit Min"
-#~ msgstr "非标定单位最小值"
+#~ msgstr ""
 
 #~ msgid "Unscaled minimum unit"
-#~ msgstr "非标定最小单位"
+#~ msgstr ""
 
 #~ msgid "Unscaled Unit Max"
-#~ msgstr "非标定单位最大值"
+#~ msgstr ""
 
 #~ msgid "Unscaled maximum unit"
-#~ msgstr "非标定最大单位"
+#~ msgstr ""
 
 #~ msgid "Rescaled Unit Min"
-#~ msgstr "重新调整的单位分钟"
+#~ msgstr ""
 
 #~ msgid "Rescaled minimum unit"
-#~ msgstr "重新调整的最小单位"
+#~ msgstr ""
 
 #~ msgid "Rescaled Unit Max"
-#~ msgstr "重新调整的单位最大值"
+#~ msgstr ""
 
 #~ msgid "Rescaled maximum unit"
-#~ msgstr "重新调整的最大单位"
+#~ msgstr ""
 
 #~ msgid "Measurement Unit"
-#~ msgstr "测量单位"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Select the measurement and unit to "
 #~ "store this measurement in the database"
-#~ msgstr "选择测量和单位以将此测量值存储在数据库中"
+#~ msgstr ""
 
 #~ msgid "Sensitivity"
-#~ msgstr "灵敏度"
+#~ msgstr ""
 
 #~ msgid "Measurement sensitivity"
-#~ msgstr "测量灵敏度"
+#~ msgstr ""
 
 #~ msgid "Setpoint Tracking Type"
 #~ msgstr ""
@@ -6677,67 +6685,67 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Voltage"
-#~ msgstr "电压"
+#~ msgstr ""
 
 #~ msgid "The input voltage to the sensor"
-#~ msgstr "传感器的输入电压"
+#~ msgstr ""
 
 #~ msgid "Start Offset (seconds)"
-#~ msgstr "开始偏移（秒）"
+#~ msgstr ""
 
 #~ msgid "The duration (seconds) to wait before the first operation"
-#~ msgstr "在第一次操作之前等待的持续时间（秒）"
+#~ msgstr ""
 
 #~ msgid "Edge detection: low to high (rising), high to low (falling), or both"
-#~ msgstr "边沿检测：从低到高（上升），从高到低（下降）或两者兼而有之"
+#~ msgstr ""
 
 #~ msgid "Bounce Time (ms)"
-#~ msgstr "弹跳时间（ms）"
+#~ msgstr ""
 
 #~ msgid "The amount of time (miliseconds) to bounce the input signal"
-#~ msgstr "反射输入信号的时间量（毫秒）"
+#~ msgstr ""
 
 #~ msgid "Reset Period"
-#~ msgstr "重置期间"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Wait a period of time (seconds) "
 #~ "after the first edge detection to "
 #~ "begin detecting again"
-#~ msgstr "在第一次边缘检测后等待一段时间（秒）以再次开始检测"
+#~ msgstr ""
 
 #~ msgid "RTD Probe Type"
-#~ msgstr "RTD探头类型"
+#~ msgstr ""
 
 #~ msgid "The type of thermocouple connected"
-#~ msgstr "连接的热电偶类型"
+#~ msgstr ""
 
 #~ msgid "Times Check"
-#~ msgstr "时间检查"
+#~ msgstr ""
 
 #~ msgid "Number of times to check"
-#~ msgstr "要检查的次数"
+#~ msgstr ""
 
 #~ msgid "On State"
-#~ msgstr "触发"
+#~ msgstr ""
 
 #~ msgid "What state triggers the output to turn on? High or Low?"
-#~ msgstr "什么状态触发输出打开？高还是低？"
+#~ msgstr ""
 
 #~ msgid "Trigger at Startup"
-#~ msgstr "在启动时触发"
+#~ msgstr ""
 
 #~ msgid "Whether or not to trigger Functions when Mycodo starts"
-#~ msgstr "是否在Mycodo启动时触发功能"
+#~ msgstr ""
 
 #~ msgid "UART Device"
-#~ msgstr "UART设备"
+#~ msgstr ""
 
 #~ msgid "The UART device location (e.g. /dev/ttyUSB1)"
-#~ msgstr "UART设备位置（例如/ dev / ttyUSB1）"
+#~ msgstr ""
 
 #~ msgid "Weighting"
-#~ msgstr "权重"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The weighting of the previous "
@@ -6745,7 +6753,7 @@ msgstr ""
 #~ "Range: 0.0 - 1.0. Used for "
 #~ "smoothing measurements. 0.0 means no "
 #~ "weighting."
-#~ msgstr "前一次测量对当前测量的加权。范围：0.0  -  1.0。用于平滑测量。 0.0表示没有加权。"
+#~ msgstr ""
 
 #~ msgid "Text 1"
 #~ msgstr ""
@@ -6790,16 +6798,16 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Set the calibration method to perform during Input activation"
-#~ msgstr "设置校准方法以在输入激活期间执行"
+#~ msgstr ""
 
 #~ msgid "Calibration Max Age"
-#~ msgstr "校准最大年龄"
+#~ msgstr ""
 
 #~ msgid "The Max Age (seconds) of the Input/Math to use for calibration"
-#~ msgstr "用于校准的输入/数学的最大年龄（秒）"
+#~ msgstr ""
 
 #~ msgid "Select the library used to communicate"
-#~ msgstr "选择用于通信的库"
+#~ msgstr ""
 
 #~ msgid "Command Timeout"
 #~ msgstr ""
@@ -6817,19 +6825,19 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Enable ABC"
-#~ msgstr "启用ABC"
+#~ msgstr ""
 
 #~ msgid "Enable automatic baseline correction (ABC)"
-#~ msgstr "启用自动基线校正（ABC）"
+#~ msgstr ""
 
 #~ msgid "Measurement Range"
-#~ msgstr "测量范围"
+#~ msgstr ""
 
 #~ msgid "Set the measuring range of the sensor"
-#~ msgstr "设置传感器的测量范围"
+#~ msgstr ""
 
 #~ msgid "Hostname"
-#~ msgstr "主机名"
+#~ msgstr ""
 
 #~ msgid "The hostname of the MQTT server"
 #~ msgstr ""
@@ -6850,46 +6858,46 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Download Stored Data"
-#~ msgstr "下载存储的数据"
+#~ msgstr ""
 
 #~ msgid "Download the data logged to the device."
-#~ msgstr "下载记录到设备的数据。"
+#~ msgstr ""
 
 #~ msgid "Set Logging Interval"
-#~ msgstr "设置记录间隔"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Set the logging interval (seconds) the"
 #~ " device will store measurements on "
 #~ "its internal memory."
-#~ msgstr "设置设备将测量值存储在其内部存储器上的记录间隔（秒）。"
+#~ msgstr ""
 
 #~ msgid "Enable Heater"
-#~ msgstr "启用加热器"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Enable heater to evaporate condensation. "
 #~ "Turn on heater x seconds every y"
 #~ " measurements."
-#~ msgstr "启用加热器以蒸发冷凝。每y次测量打开加热器x秒。"
+#~ msgstr ""
 
 #~ msgid "Heater On Seconds"
-#~ msgstr "加热器秒"
+#~ msgstr ""
 
 #~ msgid "How long to turn the heater on (seconds)."
-#~ msgstr "打开加热器多长时间（秒）。"
+#~ msgstr ""
 
 #~ msgid "Heater On Period"
-#~ msgstr "加热器期间"
+#~ msgstr ""
 
 #~ msgid "After how many measurements to turn the heater on. This will repeat."
-#~ msgstr "经过多少次测量才能打开加热器。这将重复。"
+#~ msgstr ""
 
 #~ msgid "IP Address"
-#~ msgstr "IP地址"
+#~ msgstr ""
 
 #~ msgid "The IP address of the device"
-#~ msgstr "设备的IP地址"
+#~ msgstr ""
 
 #~ msgid "Application ID"
 #~ msgstr ""
@@ -6910,16 +6918,16 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Fan Off After Measure"
-#~ msgstr "测量后风扇关闭"
+#~ msgstr ""
 
 #~ msgid "Turn the fan on only during the measurement"
-#~ msgstr "仅在测量期间打开风扇"
+#~ msgstr ""
 
 #~ msgid "Fan On Duration"
-#~ msgstr "扇子持续时间"
+#~ msgstr ""
 
 #~ msgid "How long to turn the fan on (seconds) before acquiring measurements"
-#~ msgstr "在获取测量值之前，将风扇打开多长时间（秒）"
+#~ msgstr ""
 
 #~ msgid "Serial Device"
 #~ msgstr ""
@@ -6928,228 +6936,228 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Please log in to access this page"
-#~ msgstr "请登录访问此页"
+#~ msgstr ""
 
 #~ msgid "Backup in progress"
-#~ msgstr "正在备份"
+#~ msgstr ""
 
 #~ msgid "Deletion of backup in progress"
-#~ msgstr "删除正在进行的备份"
+#~ msgstr ""
 
 #~ msgid "Restore in progress"
-#~ msgstr "正在恢复"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Upgrade functionality is disabled because "
 #~ "an internet connection was unable to "
 #~ "be detected"
-#~ msgstr "由于无法检测到Internet连接，因此禁用了升级功能"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "There was an error encountered during"
 #~ " the upgrade process. Check the "
 #~ "upgrade log for details."
-#~ msgstr "升级过程中遇到错误。检查升级日志以获取详细信息。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Could not determine local mycodo version"
 #~ " or online release versions: {err}"
-#~ msgstr "无法确定本地mycodo版本或在线发布版本：{err}"
+#~ msgstr ""
 
 #~ msgid "The upgrade (from master branch) has started"
-#~ msgstr "升级（来自主分支）已启动"
+#~ msgstr ""
 
 #~ msgid "The upgrade has started"
-#~ msgstr "升级已经开始"
+#~ msgstr ""
 
 #~ msgid "The major version upgrade has started"
-#~ msgstr "主要版本升级已经开始"
+#~ msgstr ""
 
 #~ msgid "You cannot upgrade if an upgrade is not available"
-#~ msgstr "如果升级不可用，则无法升级"
+#~ msgstr ""
 
 #~ msgid "Cannot access admin creation form if an admin user already exists."
-#~ msgstr "如果管理员用户已存在，则无法访问管理员创建表单。"
+#~ msgstr ""
 
 #~ msgid "Passwords do not match. Please try again."
-#~ msgstr "密码不匹配。请再试一次。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Invalid user name. Must be between "
 #~ "2 and 64 characters and only "
 #~ "contain letters and numbers."
-#~ msgstr "无效的用户名。必须介于2到64个字符之间，且只能包含字母和数字。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Invalid password. Must be between 6 "
 #~ "and 64 characters and only contain "
 #~ "letters, numbers, and symbols."
-#~ msgstr "无效的密码。必须介于6到64个字符之间，且只能包含字母，数字和符号。"
+#~ msgstr ""
 
 #~ msgid "User '%(user)s' successfully created. Please log in below."
-#~ msgstr "用户 '%(user)s' 已成功创建。请在下面登录。"
+#~ msgstr ""
 
 #~ msgid "Failed to create user '%(user)s': %(err)s"
-#~ msgstr "无法创建用户 '%(user)s': %(err)s"
+#~ msgstr ""
 
 #~ msgid "Cannot access login page if you're already logged in"
-#~ msgstr "如果您已经登录，则无法访问登录页面"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Too many failed login attempts. Please"
 #~ " wait %(min)s minutes before attempting "
 #~ "to log in again"
-#~ msgstr "登录尝试失败次数过多。请等待 %(min)s 分钟，然后再尝试登录"
+#~ msgstr ""
 
 #~ msgid "Successfully logged out"
-#~ msgstr "成功退出"
+#~ msgstr ""
 
 #~ msgid "A valid temperature is required: %(temp)s is invalid."
-#~ msgstr "需要有效温度: %(temp)s 无效。"
+#~ msgstr ""
 
 #~ msgid "System rebooting in 10 seconds"
-#~ msgstr "系统在10秒内重启"
+#~ msgstr ""
 
 #~ msgid "System shutting down in 10 seconds"
-#~ msgstr "系统在10秒内关闭"
+#~ msgstr ""
 
 #~ msgid "Command to restart the daemon sent"
-#~ msgstr "用于重新启动守护程序的命令"
+#~ msgstr ""
 
 #~ msgid "Command to reload the frontend sent"
-#~ msgstr "命令重新加载发送的前端"
+#~ msgstr ""
 
 #~ msgid "Cannot start time-lapse if stream is active."
-#~ msgstr "如果流处于活动状态，则无法启动延时。"
+#~ msgstr ""
 
 #~ msgid "Cannot start stream if time-lapse is active."
-#~ msgstr "如果延时有效，则无法启动流。"
+#~ msgstr ""
 
 #~ msgid "Repeat Password"
-#~ msgstr "重复输入密码"
+#~ msgstr ""
 
 #~ msgid "remember"
-#~ msgstr "记得"
+#~ msgstr ""
 
 #~ msgid "Domain or IP Address"
-#~ msgstr "域或IP地址"
+#~ msgstr ""
 
 #~ msgid "Add Host"
-#~ msgstr "添加主机"
+#~ msgstr ""
 
 #~ msgid "Delete Host"
-#~ msgstr "删除主机"
+#~ msgstr ""
 
 #~ msgid "I Understand"
-#~ msgstr "我明白"
+#~ msgstr ""
 
 #~ msgid "Select"
-#~ msgstr "选择"
+#~ msgstr ""
 
 #~ msgid "Atlas EZO Pump"
 #~ msgstr ""
 
 #~ msgid "Begin Calibration"
-#~ msgstr "开始校准"
+#~ msgstr ""
 
 #~ msgid "Clear Calibration"
-#~ msgstr "清除校准"
+#~ msgstr ""
 
 #~ msgid "Continue to Next Stage"
-#~ msgstr "继续下一阶段"
+#~ msgstr ""
 
 #~ msgid "Atlas pH Sensor"
-#~ msgstr "Atlas pH传感器"
+#~ msgstr ""
 
 #~ msgid "pH Points to Calibrate"
 #~ msgstr ""
 
 #~ msgid "Device"
-#~ msgstr "设备"
+#~ msgstr ""
 
 #~ msgid "Set Resolution"
-#~ msgstr "设置分辨率"
+#~ msgstr ""
 
 #~ msgid "Capture Still"
-#~ msgstr "捕获仍然"
+#~ msgstr ""
 
 #~ msgid "Start Timelapse"
-#~ msgstr "开始Timelapse"
+#~ msgstr ""
 
 #~ msgid "Pause Timelapse"
-#~ msgstr "暂停游戏中时光倒流"
+#~ msgstr ""
 
 #~ msgid "Resume Timelapse"
-#~ msgstr "恢复游戏中时光倒流"
+#~ msgstr ""
 
 #~ msgid "Stop Timelapse"
-#~ msgstr "停止尕"
+#~ msgstr ""
 
 #~ msgid "Interval (seconds)"
-#~ msgstr "间隔（秒）"
+#~ msgstr ""
 
 #~ msgid "Photo Interval must be a positive value"
-#~ msgstr "照片间隔必须是正值"
+#~ msgstr ""
 
 #~ msgid "Run Time (seconds)"
-#~ msgstr "运行时间（秒）"
+#~ msgstr ""
 
 #~ msgid "Total Run Time must be a positive value"
-#~ msgstr "总运行时间必须是正值"
+#~ msgstr ""
 
 #~ msgid "Start Stream"
-#~ msgstr "开始流"
+#~ msgstr ""
 
 #~ msgid "Stop Stream"
-#~ msgstr "停止流"
+#~ msgstr ""
 
 #~ msgid "OpenCV Device"
-#~ msgstr "OpenCV设备"
+#~ msgstr ""
 
 #~ msgid "Flip image horizontally"
-#~ msgstr "水平翻转图像"
+#~ msgstr ""
 
 #~ msgid "Flip image vertically"
-#~ msgstr "垂直翻转图像"
+#~ msgstr ""
 
 #~ msgid "Rotate Image"
-#~ msgstr "旋转图像"
+#~ msgstr ""
 
 #~ msgid "Brightness"
-#~ msgstr "亮度"
+#~ msgstr ""
 
 #~ msgid "Contrast"
-#~ msgstr "对比"
+#~ msgstr ""
 
 #~ msgid "Exposure"
-#~ msgstr "曝光"
+#~ msgstr ""
 
 #~ msgid "Hue"
-#~ msgstr "色调"
+#~ msgstr ""
 
 #~ msgid "Saturation"
-#~ msgstr "饱和"
+#~ msgstr ""
 
 #~ msgid "White Balance"
-#~ msgstr "白平衡"
+#~ msgstr ""
 
 #~ msgid "Custom Options"
-#~ msgstr "自定义选项"
+#~ msgstr ""
 
 #~ msgid "Pre Command"
-#~ msgstr "前命令"
+#~ msgstr ""
 
 #~ msgid "Post Command"
-#~ msgstr "后命令"
+#~ msgstr ""
 
 #~ msgid "Still Image Path"
-#~ msgstr "静止图像路径"
+#~ msgstr ""
 
 #~ msgid "Timelapse Path"
-#~ msgstr "间隔拍摄路径"
+#~ msgstr ""
 
 #~ msgid "Video Path"
-#~ msgstr "视频路径"
+#~ msgstr ""
 
 #~ msgid "Hide Last Still"
 #~ msgstr ""
@@ -7197,151 +7205,151 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Conditional Statement"
-#~ msgstr "条件声明"
+#~ msgstr ""
 
 #~ msgid "Refractory Period (seconds)"
-#~ msgstr "不应期（秒）"
+#~ msgstr ""
 
 #~ msgid "Add Condition"
-#~ msgstr "添加条件"
+#~ msgstr ""
 
 #~ msgid "Add Action"
-#~ msgstr "添加动作"
+#~ msgstr ""
 
 #~ msgid "Test All Actions"
-#~ msgstr "测试所有操作"
+#~ msgstr ""
 
 #~ msgid "GPIO Pin (BCM)"
-#~ msgstr "GPIO引脚（BCM）"
+#~ msgstr ""
 
 #~ msgid "Width"
-#~ msgstr "宽度"
+#~ msgstr ""
 
 #~ msgid "Height (pixels)"
-#~ msgstr "高度（像素）"
+#~ msgstr ""
 
 #~ msgid "Refresh (seconds)"
-#~ msgstr "刷新（秒）"
+#~ msgstr ""
 
 #~ msgid "Number of seconds to wait between acquiring any new measurements."
-#~ msgstr "获取任何新测量值之间等待的秒数。"
+#~ msgstr ""
 
 #~ msgid "Visible Elements"
-#~ msgstr "可见元素"
+#~ msgstr ""
 
 #~ msgid "Maths"
-#~ msgstr "数学"
+#~ msgstr ""
 
 #~ msgid "Note Tags"
-#~ msgstr "注意标签"
+#~ msgstr ""
 
 #~ msgid "PIDs"
-#~ msgstr "的PID"
+#~ msgstr ""
 
 #~ msgid "Outputs"
-#~ msgstr "输出"
+#~ msgstr ""
 
 #~ msgid "Inputs"
-#~ msgstr "输入"
+#~ msgstr ""
 
 #~ msgid "X-Axis (minutes)"
-#~ msgstr "X轴（分钟）"
+#~ msgstr ""
 
 #~ msgid "Number of minutes to display of past measurements."
-#~ msgstr "显示过去测量的分钟数。"
+#~ msgstr ""
 
 #~ msgid "Enable Auto Refresh"
-#~ msgstr "启用自动刷新"
+#~ msgstr ""
 
 #~ msgid "Enable X-Axis Reset"
-#~ msgstr "启用X轴重置"
+#~ msgstr ""
 
 #~ msgid "Enable Title"
-#~ msgstr "启用标题"
+#~ msgstr ""
 
 #~ msgid "Enable Navbar"
-#~ msgstr "启用Navbar"
+#~ msgstr ""
 
 #~ msgid "Enable Export"
-#~ msgstr "启用导出"
+#~ msgstr ""
 
 #~ msgid "Enable Range Selector"
-#~ msgstr "启用范围选择器"
+#~ msgstr ""
 
 #~ msgid "Enable Graph Shift"
-#~ msgstr "启用图表移位"
+#~ msgstr ""
 
 #~ msgid "Enable Manual Y-Axis Min/Max"
-#~ msgstr "启用手动Y轴最小/最大"
+#~ msgstr ""
 
 #~ msgid "Enable Y-Axis Align Ticks"
-#~ msgstr "启用Y轴对齐刻度"
+#~ msgstr ""
 
 #~ msgid "Enable Y-Axis Start On Tick"
-#~ msgstr "启用Y轴启动勾选"
+#~ msgstr ""
 
 #~ msgid "Enable Y-Axis End On Tick"
-#~ msgstr "在刻度线上启用Y轴结束"
+#~ msgstr ""
 
 #~ msgid "Enable Custom Colors"
-#~ msgstr "启用自定义颜色"
+#~ msgstr ""
 
 #~ msgid "Gauge Type"
-#~ msgstr "仪表类型"
+#~ msgstr ""
 
 #~ msgid "Angular Gauge"
-#~ msgstr "角度计"
+#~ msgstr ""
 
 #~ msgid "Solid Gauge"
-#~ msgstr "实心仪​​表"
+#~ msgstr ""
 
 #~ msgid "Gauge Min"
-#~ msgstr "Gauge Min"
+#~ msgstr ""
 
 #~ msgid "Gauge Max"
-#~ msgstr "Gauge Max"
+#~ msgstr ""
 
 #~ msgid "Show Timestamp"
-#~ msgstr "显示时间戳"
+#~ msgstr ""
 
 #~ msgid "Value Font (em)"
-#~ msgstr "值字体（em）"
+#~ msgstr ""
 
 #~ msgid "Timestamp Font (em)"
-#~ msgstr "时间戳字体（em）"
+#~ msgstr ""
 
 #~ msgid "Decimal Places"
-#~ msgstr "小数位"
+#~ msgstr ""
 
 #~ msgid "Feature Output Controls"
-#~ msgstr "功能输出控件"
+#~ msgstr ""
 
 #~ msgid "Show PID Information"
-#~ msgstr "显示PID信息"
+#~ msgstr ""
 
 #~ msgid "Show Set Setpoint"
-#~ msgstr "显示设定值"
+#~ msgstr ""
 
 #~ msgid "Image Display Type"
-#~ msgstr "图像显示类型"
+#~ msgstr ""
 
 #~ msgid "Install All Dependencies"
-#~ msgstr "安装所有依赖项"
+#~ msgstr ""
 
 #~ msgid "Execute All Actions"
-#~ msgstr "执行所有操作"
+#~ msgstr ""
 
 #~ msgid "Duration (seconds)"
-#~ msgstr "持续时间（秒）"
+#~ msgstr ""
 
 #~ msgid "Action String"
-#~ msgstr "动作字符串"
+#~ msgstr ""
 
 #~ msgid "Controller ID"
-#~ msgstr "控制器ID"
+#~ msgstr ""
 
 #~ msgid "Then State"
-#~ msgstr "然后陈述"
+#~ msgstr ""
 
 #~ msgid "Duty Cycle (%)"
 #~ msgstr ""
@@ -7359,169 +7367,169 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Location"
-#~ msgstr "位置"
+#~ msgstr ""
 
 #~ msgid "Power Output"
-#~ msgstr "功率输出"
+#~ msgstr ""
 
 #~ msgid "Calibration Measurement"
-#~ msgstr "校准测量"
+#~ msgstr ""
 
 #~ msgid "BT Adapter (hci[X])"
-#~ msgstr "BT适配器（hci [X]）"
+#~ msgstr ""
 
 #~ msgid "Acquire Measurements Now"
-#~ msgstr "立即获取测量值"
+#~ msgstr ""
 
 #~ msgid "Rescaled Measurement"
-#~ msgstr "重新调整测量"
+#~ msgstr ""
 
 #~ msgid "LCD Type"
-#~ msgstr "LCD类型"
+#~ msgstr ""
 
 #~ msgid "Address"
-#~ msgstr "地址"
+#~ msgstr ""
 
 #~ msgid "I<sup>2</sup>C"
-#~ msgstr "我<SUP> 2 </ SUP> C ^"
+#~ msgstr ""
 
 #~ msgid "Bus"
-#~ msgstr "总线"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Duration between calculating LCD output "
 #~ "and applying to regulation must be "
 #~ "between 5 and 86400 seconds."
-#~ msgstr "计算LCD输出和应用于调节之间的持续时间必须介于5和86400秒之间。"
+#~ msgstr ""
 
 #~ msgid "Add Display Set"
-#~ msgstr "添加显示集"
+#~ msgstr ""
 
 #~ msgid "Reset LCD"
-#~ msgstr "重置LCD"
+#~ msgstr ""
 
 #~ msgid "Reverse Equation"
-#~ msgstr "逆方程"
+#~ msgstr ""
 
 #~ msgid "Absolute Value"
-#~ msgstr "绝对值"
+#~ msgstr ""
 
 #~ msgid "Dry Bulb Temperature"
-#~ msgstr "干球温度"
+#~ msgstr ""
 
 #~ msgid "Wet Bulb Temperature"
-#~ msgstr "湿球温度"
+#~ msgstr ""
 
 #~ msgid "optional"
-#~ msgstr "可选的"
+#~ msgstr ""
 
 #~ msgid "Order of Use"
-#~ msgstr "使用顺序"
+#~ msgstr ""
 
 #~ msgid "Max Difference"
-#~ msgstr "最大差异"
+#~ msgstr ""
 
 #~ msgid "Convert to Measurement"
-#~ msgstr "转换为测量"
+#~ msgstr ""
 
 #~ msgid "Start HH:MM:SS"
-#~ msgstr "启动HH：MM：SS"
+#~ msgstr ""
 
 #~ msgid "End HH:MM:SS"
-#~ msgstr "结束HH：MM：SS"
+#~ msgstr ""
 
 #~ msgid "Start YYYY-MM-DD HH:MM:SS"
-#~ msgstr "开始YYYY-MM-DD HH：MM：SS"
+#~ msgstr ""
 
 #~ msgid "End YYYY-MM-DD HH:MM:SS"
-#~ msgstr "结束YYYY-MM-DD HH：MM：SS"
+#~ msgstr ""
 
 #~ msgid "Start Setpoint"
-#~ msgstr "启动设定点"
+#~ msgstr ""
 
 #~ msgid "End Setpoint (optional)"
-#~ msgstr "结束设定值（可选）"
+#~ msgstr ""
 
 #~ msgid "Duration to End (seconds)"
-#~ msgstr "持续时间（秒）"
+#~ msgstr ""
 
 #~ msgid "Amplitude"
-#~ msgstr "振幅"
+#~ msgstr ""
 
 #~ msgid "Angle Shift (0 to 360)"
-#~ msgstr "角度偏移（0到360）"
+#~ msgstr ""
 
 #~ msgid "Y-Axis Shift"
-#~ msgstr "Y轴移位"
+#~ msgstr ""
 
 #~ msgid "Time HH:MM:SS"
-#~ msgstr "时间HH：MM：SS"
+#~ msgstr ""
 
 #~ msgid "Time YYYY-MM-DD HH:MM:SS"
-#~ msgstr "时间YYYY-MM-DD HH：MM：SS"
+#~ msgstr ""
 
 #~ msgid "Duration/Duty Cycle"
-#~ msgstr "持续时间/工作周期"
+#~ msgstr ""
 
 #~ msgid "Relay State"
-#~ msgstr "继电器状态"
+#~ msgstr ""
 
 #~ msgid "Turn On"
-#~ msgstr "打开"
+#~ msgstr ""
 
 #~ msgid "Turn Off"
-#~ msgstr "关掉"
+#~ msgstr ""
 
 #~ msgid "PWM (Duty Cycle)"
-#~ msgstr "PWM（占空比）"
+#~ msgstr ""
 
 #~ msgid "Add to Method"
-#~ msgstr "添加到方法"
+#~ msgstr ""
 
 #~ msgid "Set Repeat Option"
-#~ msgstr "设置重复选项"
+#~ msgstr ""
 
 #~ msgid "End Setpoint"
-#~ msgstr "结束设定点"
+#~ msgstr ""
 
 #~ msgid "State"
-#~ msgstr "州"
+#~ msgstr ""
 
 #~ msgid "Time Range MM/DD/YYYY HH:MM"
-#~ msgstr "时间范围DD / MM / YYYY HH：MM"
+#~ msgstr ""
 
 #~ msgid "Stop Daemon"
-#~ msgstr "停止守护进程"
+#~ msgstr ""
 
 #~ msgid "Start Daemon"
-#~ msgstr "启动守护进程"
+#~ msgstr ""
 
 #~ msgid "Restart Daemon"
-#~ msgstr "重启守护进程"
+#~ msgstr ""
 
 #~ msgid "Measurement to Export"
-#~ msgstr "出口计量"
+#~ msgstr ""
 
 #~ msgid "Export Data as CSV"
-#~ msgstr "将数据导出为CSV"
+#~ msgstr ""
 
 #~ msgid "Export Settings"
-#~ msgstr "导出设置"
+#~ msgstr ""
 
 #~ msgid "Import Settings"
-#~ msgstr "导入设置"
+#~ msgstr ""
 
 #~ msgid "Export Influxdb"
-#~ msgstr "导出Influxdb"
+#~ msgstr ""
 
 #~ msgid "Import Influxdb"
-#~ msgstr "导入Influxdb"
+#~ msgstr ""
 
 #~ msgid "Lines"
-#~ msgstr "行"
+#~ msgstr ""
 
 #~ msgid "Number of lines should be greater than 0"
-#~ msgstr "行数应大于0"
+#~ msgstr ""
 
 #~ msgid "Log"
 #~ msgstr ""
@@ -7530,193 +7538,193 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Upgrade Mycodo"
-#~ msgstr "升级Mycodo"
+#~ msgstr ""
 
 #~ msgid "Upgrade Mycodo to Next Major Version"
-#~ msgstr "将Mycodo升级到下一个主要版本"
+#~ msgstr ""
 
 #~ msgid "Create Backup"
-#~ msgstr "创建备份"
+#~ msgstr ""
 
 #~ msgid "Restore Backup"
-#~ msgstr "恢复备份"
+#~ msgstr ""
 
 #~ msgid "Delete Backup"
-#~ msgstr "删除备份"
+#~ msgstr ""
 
 #~ msgid "Attached Files"
-#~ msgstr "附加的文件"
+#~ msgstr ""
 
 #~ msgid "Use Custom Date/Time"
-#~ msgstr "使用自定义日期/时间"
+#~ msgstr ""
 
 #~ msgid "Tags"
-#~ msgstr "标签"
+#~ msgstr ""
 
 #~ msgid "Filter Names"
-#~ msgstr "过滤器名称"
+#~ msgstr ""
 
 #~ msgid "Filter Tags"
-#~ msgstr "过滤标签"
+#~ msgstr ""
 
 #~ msgid "Filter Files"
-#~ msgstr "过滤文件"
+#~ msgstr ""
 
 #~ msgid "Filter Notes"
-#~ msgstr "过滤笔记"
+#~ msgstr ""
 
 #~ msgid "Sort By"
-#~ msgstr "排序方式"
+#~ msgstr ""
 
 #~ msgid "Sort Direction"
-#~ msgstr "排序方向"
+#~ msgstr ""
 
 #~ msgid "Show Notes"
-#~ msgstr "显示备注"
+#~ msgstr ""
 
 #~ msgid "Export Notes"
-#~ msgstr "出口说明"
+#~ msgstr ""
 
 #~ msgid "Import Notes"
-#~ msgstr "导入便笺"
+#~ msgstr ""
 
 #~ msgid "Quantity"
-#~ msgstr "数量"
+#~ msgstr ""
 
 #~ msgid "Invert Signal"
-#~ msgstr "反转信号"
+#~ msgstr ""
 
 #~ msgid "The current draw of the device connected to this output, in amps."
-#~ msgstr "连接到此输出的设备的电流消耗，以安培为单位。"
+#~ msgstr ""
 
 #~ msgid "High"
-#~ msgstr "高"
+#~ msgstr ""
 
 #~ msgid "Low"
-#~ msgstr "低"
+#~ msgstr ""
 
 #~ msgid "Any Pin, <= 40 kHz"
-#~ msgstr "任何引脚，<= 40 kHz"
+#~ msgstr ""
 
 #~ msgid "Hardware Pin, <= 30 MHz"
-#~ msgstr "硬件引脚，<= 30 MHz"
+#~ msgstr ""
 
 #~ msgid "Direction"
-#~ msgstr "方向"
+#~ msgstr ""
 
 #~ msgid "Raise"
-#~ msgstr "提高"
+#~ msgstr ""
 
 #~ msgid "Lower"
-#~ msgstr "降低"
+#~ msgstr ""
 
 #~ msgid "Both"
-#~ msgstr "都"
+#~ msgstr ""
 
 #~ msgid "Band (+/- Setpoint)"
-#~ msgstr "乐队（+/-设定点）"
+#~ msgstr ""
 
 #~ msgid "Store Lower as Negative"
-#~ msgstr "存储较低为负"
+#~ msgstr ""
 
 #~ msgid "Kp Gain"
-#~ msgstr "Kp Gain"
+#~ msgstr ""
 
 #~ msgid "Ki Gain"
-#~ msgstr "Ki Gain"
+#~ msgstr ""
 
 #~ msgid "Kd Gain"
-#~ msgstr "Kd Gain"
+#~ msgstr ""
 
 #~ msgid "Integrator Min"
-#~ msgstr "积分器Min"
+#~ msgstr ""
 
 #~ msgid "Integrator Max"
-#~ msgstr "积分器Max"
+#~ msgstr ""
 
 #~ msgid "Output (Raise)"
-#~ msgstr "输出（提升）"
+#~ msgstr ""
 
 #~ msgid "Output (Lower)"
-#~ msgstr "输出（下）"
+#~ msgstr ""
 
 #~ msgid "Noise Band"
-#~ msgstr "噪音带"
+#~ msgstr ""
 
 #~ msgid "Outstep"
-#~ msgstr "Outstep"
+#~ msgstr ""
 
 #~ msgid "Start Autotune"
-#~ msgstr "启动自动调谐"
+#~ msgstr ""
 
 #~ msgid "Min On Duration (Raise)"
-#~ msgstr "最小持续时间（提升）"
+#~ msgstr ""
 
 #~ msgid "Max On Duration (Raise)"
-#~ msgstr "最大持续时间（提升）"
+#~ msgstr ""
 
 #~ msgid "Min Off Duration (Raise)"
-#~ msgstr "最短关闭时间（提高）"
+#~ msgstr ""
 
 #~ msgid "Min On Duration (Lower)"
-#~ msgstr "最小持续时间（下）"
+#~ msgstr ""
 
 #~ msgid "Max On Duration (Lower)"
-#~ msgstr "Max On Duration（Lower）"
+#~ msgstr ""
 
 #~ msgid "Min Off Duration (Lower)"
-#~ msgstr "最短关闭时间（下限）"
+#~ msgstr ""
 
 #~ msgid "Min Duty Cycle (Raise)"
-#~ msgstr "最小工作周期（提升）"
+#~ msgstr ""
 
 #~ msgid "Max Duty Cycle (Raise)"
-#~ msgstr "最大占空比（提升）"
+#~ msgstr ""
 
 #~ msgid "Min Duty Cycle (Lower)"
-#~ msgstr "最小占空比（下）"
+#~ msgstr ""
 
 #~ msgid "Max Duty Cycle (Lower)"
-#~ msgstr "最大占空比（下）"
+#~ msgstr ""
 
 #~ msgid "SMTP Host"
-#~ msgstr "SMTP主机"
+#~ msgstr ""
 
 #~ msgid "SMTP Port"
-#~ msgstr "SMTP端口"
+#~ msgstr ""
 
 #~ msgid "Port should be between 1 and 65535"
-#~ msgstr "端口应介于1和65535之间"
+#~ msgstr ""
 
 #~ msgid "SMTP User"
-#~ msgstr "SMTP用户"
+#~ msgstr ""
 
 #~ msgid "SMTP Password"
-#~ msgstr "SMTP密码"
+#~ msgstr ""
 
 #~ msgid "From Email"
-#~ msgstr "来自电邮"
+#~ msgstr ""
 
 #~ msgid "Max emails (per hour)"
-#~ msgstr "最大电子邮件数（每小时）"
+#~ msgstr ""
 
 #~ msgid "Must have at least one message able to be sent per hour."
-#~ msgstr "必须至少有一条消息能够每小时发送一次。"
+#~ msgstr ""
 
 #~ msgid "Send Test Email"
-#~ msgstr "发送测试邮件"
+#~ msgstr ""
 
 #~ msgid "Test Email To"
-#~ msgstr "测试电子邮件到"
+#~ msgstr ""
 
 #~ msgid "To Email Address"
-#~ msgstr "电邮地址"
+#~ msgstr ""
 
 #~ msgid "Landing Page"
-#~ msgstr "登陆页面"
+#~ msgstr ""
 
 #~ msgid "Language"
-#~ msgstr "语言"
+#~ msgstr ""
 
 #~ msgid "Pyro Timeout"
 #~ msgstr ""
@@ -7725,244 +7733,244 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Force HTTPS"
-#~ msgstr "强制HTTPS"
+#~ msgstr ""
 
 #~ msgid "Hide success messages"
-#~ msgstr "隐藏成功消息"
+#~ msgstr ""
 
 #~ msgid "Hide info messages"
-#~ msgstr "隐藏信息消息"
+#~ msgstr ""
 
 #~ msgid "Hide warning messages"
-#~ msgstr "隐藏警告消息"
+#~ msgstr ""
 
 #~ msgid "Hide Form Tooltips"
-#~ msgstr "隐藏表单工具提示"
+#~ msgstr ""
 
 #~ msgid "Max Amps"
-#~ msgstr "最大安培"
+#~ msgstr ""
 
 #~ msgid "Cost per kWh"
-#~ msgstr "每千瓦时的成本"
+#~ msgstr ""
 
 #~ msgid "Currency Unit"
-#~ msgstr "货币单位"
+#~ msgstr ""
 
 #~ msgid "Day of Month"
-#~ msgstr "一个月的一天"
+#~ msgstr ""
 
 #~ msgid "Generate Usage/Cost Report"
-#~ msgstr "生成使用/成本报告"
+#~ msgstr ""
 
 #~ msgid "Time Span to Generate"
-#~ msgstr "生成时间跨度"
+#~ msgstr ""
 
 #~ msgid "Day of Week/Month to Generate"
-#~ msgstr "生成星期/月的日子"
+#~ msgstr ""
 
 #~ msgid "Hour of Day to Generate"
-#~ msgstr "生成的一天中的小时"
+#~ msgstr ""
 
 #~ msgid "Hour Options: 0-23"
-#~ msgstr "小时选项：0-23"
+#~ msgstr ""
 
 #~ msgid "Opt-out of statistics"
-#~ msgstr "选择退出统计数据"
+#~ msgstr ""
 
 #~ msgid "Check for Updates"
-#~ msgstr "检查更新"
+#~ msgstr ""
 
 #~ msgid "Import Controller Module"
 #~ msgstr ""
 
 #~ msgid "Import Input Module"
-#~ msgstr "导入输入模块"
+#~ msgstr ""
 
 #~ msgid "Measurement Name"
-#~ msgstr "测量名称"
+#~ msgstr ""
 
 #~ msgid "Measurement Units"
-#~ msgstr "测量单位"
+#~ msgstr ""
 
 #~ msgid "Add Measurement"
-#~ msgstr "添加测量"
+#~ msgstr ""
 
 #~ msgid "Unit Name"
-#~ msgstr "单位名称"
+#~ msgstr ""
 
 #~ msgid "Unit Abbreviation"
-#~ msgstr "单位缩写"
+#~ msgstr ""
 
 #~ msgid "Add Unit"
-#~ msgstr "添加单位"
+#~ msgstr ""
 
 #~ msgid "Convert From Unit"
-#~ msgstr "从单位转换"
+#~ msgstr ""
 
 #~ msgid "Convert To Measurement"
-#~ msgstr "转换为测量"
+#~ msgstr ""
 
 #~ msgid "Add Conversion"
-#~ msgstr "添加转换"
+#~ msgstr ""
 
 #~ msgid "Convert To Unit"
-#~ msgstr "转换为单位"
+#~ msgstr ""
 
 #~ msgid "Role Name"
-#~ msgstr "角色名称"
+#~ msgstr ""
 
 #~ msgid "View Logs"
-#~ msgstr "查看日志"
+#~ msgstr ""
 
 #~ msgid "View Stats"
-#~ msgstr "查看统计信息"
+#~ msgstr ""
 
 #~ msgid "View Camera"
-#~ msgstr "查看相机"
+#~ msgstr ""
 
 #~ msgid "View Settings"
-#~ msgstr "查看设置"
+#~ msgstr ""
 
 #~ msgid "Edit Users"
-#~ msgstr "编辑用户"
+#~ msgstr ""
 
 #~ msgid "Edit Controllers"
-#~ msgstr "编辑控制器"
+#~ msgstr ""
 
 #~ msgid "Edit Settings"
-#~ msgstr "编辑设置"
+#~ msgstr ""
 
 #~ msgid "Add Role"
-#~ msgstr "添加角色"
+#~ msgstr ""
 
 #~ msgid "Passwords must match"
-#~ msgstr "密码必须匹配"
+#~ msgstr ""
 
 #~ msgid "Password must be 6 or more characters"
-#~ msgstr "密码必须是6个或更多字符"
+#~ msgstr ""
 
 #~ msgid "Role"
-#~ msgstr "角色"
+#~ msgstr ""
 
 #~ msgid "Theme"
-#~ msgstr "主题"
+#~ msgstr ""
 
 #~ msgid "Add User"
-#~ msgstr "添加用户"
+#~ msgstr ""
 
 #~ msgid "New Password"
-#~ msgstr "新密码"
+#~ msgstr ""
 
 #~ msgid "Role ID"
-#~ msgstr "角色ID"
+#~ msgstr ""
 
 #~ msgid "Enable I2C"
-#~ msgstr "启用I2C"
+#~ msgstr ""
 
 #~ msgid "Disable I2C"
-#~ msgstr "禁用I2C"
+#~ msgstr ""
 
 #~ msgid "Enable 1-Wire"
-#~ msgstr "启用1-Wire"
+#~ msgstr ""
 
 #~ msgid "Disable 1-Wire"
-#~ msgstr "禁用1-Wire"
+#~ msgstr ""
 
 #~ msgid "Enable Serial"
-#~ msgstr "启用串行"
+#~ msgstr ""
 
 #~ msgid "Disable Serial"
-#~ msgstr "禁用串行"
+#~ msgstr ""
 
 #~ msgid "Enable SPI"
-#~ msgstr "启用S​​PI"
+#~ msgstr ""
 
 #~ msgid "Disable SPI"
-#~ msgstr "禁用SPI"
+#~ msgstr ""
 
 #~ msgid "Enable SSH"
-#~ msgstr "启用S​​SH"
+#~ msgstr ""
 
 #~ msgid "Disable SSH"
-#~ msgstr "禁用SSH"
+#~ msgstr ""
 
 #~ msgid "Enable Pi Camera"
-#~ msgstr "启用Pi相机"
+#~ msgstr ""
 
 #~ msgid "Disable Pi Camera"
-#~ msgstr "禁用Pi相机"
+#~ msgstr ""
 
 #~ msgid "Change Hostname"
-#~ msgstr "更改主机名"
+#~ msgstr ""
 
 #~ msgid "Configure pigpiod"
-#~ msgstr "配置pigpiod"
+#~ msgstr ""
 
 #~ msgid "Reconfigure"
-#~ msgstr "重新配置"
+#~ msgstr ""
 
 #~ msgid "Conditional Sample Rate (seconds)"
-#~ msgstr "条件采样率（秒）"
+#~ msgstr ""
 
 #~ msgid "Input Sample Rate (seconds)"
-#~ msgstr "输入采样率（秒）"
+#~ msgstr ""
 
 #~ msgid "Math Sample Rate (seconds)"
-#~ msgstr "数学采样率（秒）"
+#~ msgstr ""
 
 #~ msgid "Output Sample Rate (seconds)"
-#~ msgstr "输出采样率（秒）"
+#~ msgstr ""
 
 #~ msgid "PID Sample Rate (seconds)"
-#~ msgstr "PID采样率（秒）"
+#~ msgstr ""
 
 #~ msgid "Save Sample Rates"
-#~ msgstr "保存采样率"
+#~ msgstr ""
 
 #~ msgid "Delete All Dashboard Elements"
-#~ msgstr "删除所有仪表板元素"
+#~ msgstr ""
 
 #~ msgid "Delete All Inputs"
-#~ msgstr "删除所有输入"
+#~ msgstr ""
 
 #~ msgid "Delete All Maths"
-#~ msgstr "删除所有数学"
+#~ msgstr ""
 
 #~ msgid "Delete All Notes and Note Tags"
-#~ msgstr "删除所有注释和注释标签"
+#~ msgstr ""
 
 #~ msgid "Delete All Outputs"
-#~ msgstr "删除所有输出"
+#~ msgstr ""
 
 #~ msgid "Delete Settings Database"
-#~ msgstr "删除设置数据库"
+#~ msgstr ""
 
 #~ msgid "Delete File"
-#~ msgstr "删除文件"
+#~ msgstr ""
 
 #~ msgid "Reset Email Counter"
 #~ msgstr ""
 
 #~ msgid "If Edge Detected"
-#~ msgstr "如果检测到边缘"
+#~ msgstr ""
 
 #~ msgid "Rise or Set"
-#~ msgstr "上升或设定"
+#~ msgstr ""
 
 #~ msgid "Latitude (decimal)"
-#~ msgstr "纬度（十进制）"
+#~ msgstr ""
 
 #~ msgid "Longitude (decimal)"
-#~ msgstr "经度（十进制）"
+#~ msgstr ""
 
 #~ msgid "Zenith"
-#~ msgstr "顶点"
+#~ msgstr ""
 
 #~ msgid "Date Offset (days)"
-#~ msgstr "日期偏移（天）"
+#~ msgstr ""
 
 #~ msgid "Time Offset (minutes)"
-#~ msgstr "时间偏移（分钟）"
+#~ msgstr ""
 
 #~ msgid "Program"
 #~ msgstr ""
@@ -7971,169 +7979,169 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Start Time (HH:MM)"
-#~ msgstr "开始时间（HH：MM）"
+#~ msgstr ""
 
 #~ msgid "End Time (HH:MM)"
-#~ msgstr "结束时间（HH：MM）"
+#~ msgstr ""
 
 #~ msgid "Trigger Every Period"
-#~ msgstr "触发每个时期"
+#~ msgstr ""
 
 #~ msgid "Trigger when Activated"
-#~ msgstr "激活时触发"
+#~ msgstr ""
 
 #~ msgid "If ID 1"
-#~ msgstr "如果ID为1"
+#~ msgstr ""
 
 #~ msgid "If ID 2"
-#~ msgstr "如果是ID 2"
+#~ msgstr ""
 
 #~ msgid "If State"
-#~ msgstr "如果是国家"
+#~ msgstr ""
 
 #~ msgid "If Duration (seconds)"
-#~ msgstr "如果持续时间（秒）"
+#~ msgstr ""
 
 #~ msgid "If Duty Cycle (%%)"
-#~ msgstr "如果占空比（%%）"
+#~ msgstr ""
 
 #~ msgid "Error 404: Page Not Found"
-#~ msgstr "错误404：找不到页面"
+#~ msgstr ""
 
 #~ msgid "Error 500: Internal Server Error"
-#~ msgstr "错误500：内部服务器错误"
+#~ msgstr ""
 
 #~ msgid "Create Admin"
-#~ msgstr "创建管理员"
+#~ msgstr ""
 
 #~ msgid "Create Admin User"
-#~ msgstr "创建管理员用户"
+#~ msgstr ""
 
 #~ msgid "Login information is stored locally"
-#~ msgstr "登录信息存储在本地"
+#~ msgstr ""
 
 #~ msgid "Success"
-#~ msgstr "成功"
+#~ msgstr ""
 
 #~ msgid "Info"
-#~ msgstr "信息"
+#~ msgstr ""
 
 #~ msgid "Setup"
-#~ msgstr "建立"
+#~ msgstr ""
 
 #~ msgid "Exit"
-#~ msgstr "出口"
+#~ msgstr ""
 
 #~ msgid "Controllers"
 #~ msgstr ""
 
 #~ msgid "Measurements"
-#~ msgstr "测量"
+#~ msgstr ""
 
 #~ msgid "Users"
-#~ msgstr "用户"
+#~ msgstr ""
 
 #~ msgid "Raspberry Pi"
-#~ msgstr "树莓派"
+#~ msgstr ""
 
 #~ msgid "Alerts"
-#~ msgstr "警报"
+#~ msgstr ""
 
 #~ msgid "Diagnostics"
-#~ msgstr "诊断"
+#~ msgstr ""
 
 #~ msgid "Daemon is Not Running"
-#~ msgstr "守护程序未运行"
+#~ msgstr ""
 
 #~ msgid "Daemon is Running"
-#~ msgstr "守护进程正在运行"
+#~ msgstr ""
 
 #~ msgid "Cannot Check Daemon Status"
-#~ msgstr "无法检查守护程序状态"
+#~ msgstr ""
 
 #~ msgid "No Connection"
-#~ msgstr "无连接"
+#~ msgstr ""
 
 #~ msgid "Live"
-#~ msgstr "生活"
+#~ msgstr ""
 
 #~ msgid "Asynchronous Graphs"
-#~ msgstr "异步"
+#~ msgstr ""
 
 #~ msgid "Calibration & Setup"
-#~ msgstr "校准和设置"
+#~ msgstr ""
 
 #~ msgid "More"
-#~ msgstr "更多"
+#~ msgstr ""
 
 #~ msgid "Energy Usage Reports"
 #~ msgstr ""
 
 #~ msgid "Help"
-#~ msgstr "帮帮我"
+#~ msgstr ""
 
 #~ msgid "Mycodo Manual"
-#~ msgstr "Mycodo手册"
+#~ msgstr ""
 
 #~ msgid "Discussion Forum"
 #~ msgstr ""
 
 #~ msgid "Submit an Issue"
-#~ msgstr "提交问题"
+#~ msgstr ""
 
 #~ msgid "Mycodo on Github"
-#~ msgstr "Github上的Mycodo"
+#~ msgstr ""
 
 #~ msgid "Changelog"
-#~ msgstr "更新日志"
+#~ msgstr ""
 
 #~ msgid "Configure"
-#~ msgstr "配置"
+#~ msgstr ""
 
 #~ msgid "Mycodo Logs"
-#~ msgstr "Mycodo日志"
+#~ msgstr ""
 
 #~ msgid "System Information"
-#~ msgstr "系统信息"
+#~ msgstr ""
 
 #~ msgid "Dependencies"
-#~ msgstr "依赖"
+#~ msgstr ""
 
 #~ msgid "Upgrade"
-#~ msgstr "升级"
+#~ msgstr ""
 
 #~ msgid "Backup Restore"
-#~ msgstr "备份还原"
+#~ msgstr ""
 
 #~ msgid "Restart Backend"
-#~ msgstr "重启后端"
+#~ msgstr ""
 
 #~ msgid "Restart Frontend"
-#~ msgstr "重启前端"
+#~ msgstr ""
 
 #~ msgid "Restart System"
-#~ msgstr "重启系统"
+#~ msgstr ""
 
 #~ msgid "Shutdown System"
-#~ msgstr "关机系统"
+#~ msgstr ""
 
 #~ msgid "Remote Admin"
-#~ msgstr "远程管理员"
+#~ msgstr ""
 
 #~ msgid "Logout"
-#~ msgstr "登出"
+#~ msgstr ""
 
 #~ msgid "You're logged in already!"
-#~ msgstr "你已经登录了！"
+#~ msgstr ""
 
 #~ msgid "Remember me"
-#~ msgstr "记住账号"
+#~ msgstr ""
 
 #~ msgid "90 days"
-#~ msgstr "90天"
+#~ msgstr ""
 
 #~ msgid "Sign in"
-#~ msgstr "签到"
+#~ msgstr ""
 
 #~ msgid "Forgot password?"
 #~ msgstr ""
@@ -8145,7 +8153,7 @@ msgstr ""
 #~ "not backed up. To save measurement "
 #~ "data, go to the Export / Import"
 #~ " page."
-#~ msgstr "可以创建备份以保留Mycodo设置或稍后恢复它们。相机图像未备份。要保存测量数据，请转到“导出/导入”页面。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Several software dependencies used by "
@@ -8156,20 +8164,20 @@ msgstr ""
 #~ "dependencies are installed and the "
 #~ "ability to install currently unmet "
 #~ "dependencies."
-#~ msgstr "可能会禁用Mycodo功能使用的几个软件依赖项。这样做是为了加快初始安装过程。此页面可用于确定安装了哪些依赖项以及安装当前未满足的依赖项的功能。"
+#~ msgstr ""
 
 #~ msgid "Collected Statistics"
-#~ msgstr "收集的统计数据"
+#~ msgstr ""
 
 #~ msgid "Mycodo is currently in the process of an upgrade"
-#~ msgstr "Mycodo目前正在升级"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "If an upgrade is not currently in"
 #~ " progress, you may delete the "
 #~ "~/Mycodo/.upgrade file to be able to "
 #~ "reinitiate the upgrade process."
-#~ msgstr "如果当前未进行升级，则可以删除〜/ Mycodo / .upgrade文件以重新启动升级过程。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "An upgrade often takes several minutes,"
@@ -8185,7 +8193,7 @@ msgstr ""
 #~ "an erorr, attempt to restart the "
 #~ "backend before creating a new github "
 #~ "issue."
-#~ msgstr "升级通常需要几分钟，在某些情况下需要更长时间才能完成。在做任何事情之前给这个过程充足的时间来运行。升级成功完成后，左上角的守护程序状态指示器将从红色变为绿色。某些驱动程序需要重新启动后端才能使它们变为活动状态。如果遇到erorr，请在创建新的github问题之前尝试重新启动后端。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "You can monitor the upgrade progress "
@@ -8199,30 +8207,27 @@ msgstr ""
 #~ "to inspect the entire log in order"
 #~ " to diagnose the issue."
 #~ msgstr ""
-#~ "您可以使用下面的实时日志视图，通过导航到Configure  - > Mycodo Logs"
-#~ "  - > Upgrade "
-#~ "Log，或打开/var/log/mycodo/mycodoupgrade.log来监控升级进度。以下是升级日志的最后40行，每5秒更新一次。如果发生错误，建议检查整个日志以诊断问题。"
 
 #~ msgid "There was an error that occurred during the upgrade"
-#~ msgstr "升级期间发生错误"
+#~ msgstr ""
 
 #~ msgid "View the upgrade log at /var/log/mycodo/mycodoupgrade.log."
-#~ msgstr "在/var/log/mycodo/mycodoupgrade.log中查看升级日志。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Delete ~/Mycodo/.upgrade to acknowledge this"
 #~ " message and restore upgrade functionality."
-#~ msgstr "删除〜/ Mycodo / .upgrade以确认此消息并恢复升级功能。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "No internet connection detected. To "
 #~ "upgrade Mycodo automatically, you will "
 #~ "need an internet connection. Refresh the"
 #~ " page when one is connected."
-#~ msgstr "未检测到互联网连接。要自动升级Mycodo，您需要连接互联网。连接一个页面时刷新页面。"
+#~ msgstr ""
 
 #~ msgid "No upgrade is available. You are running the latest release, version"
-#~ msgstr "没有升级可用。您正在运行最新版本的版本"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Click the button below to begin "
@@ -8239,23 +8244,21 @@ msgstr ""
 #~ " new version as unstable until you"
 #~ " have verified it works as expected)."
 #~ msgstr ""
-#~ "单击下面的按钮开始升级过程。注意：升级通常需要几分钟，在极少数情况下需要几小时才能完成。在此期间，Mycodo "
-#~ "Web界面和服务器记录传感器和操作输出（以及其他服务）将完全关闭。建议不要在生产计算机上执行升级（即信任购买验证：将新版本视为不稳定，直到您验证其按预期工作为止）。"
 
 #~ msgid "Current to latest versions"
-#~ msgstr "当前到最新版本"
+#~ msgstr ""
 
 #~ msgid "current"
-#~ msgstr "当前"
+#~ msgstr ""
 
 #~ msgid "latest"
-#~ msgstr "最新"
+#~ msgstr ""
 
 #~ msgid "Cameras"
-#~ msgstr "相机"
+#~ msgstr ""
 
 #~ msgid "Create Timelapse"
-#~ msgstr "创建Timelapse"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Raspberry Pi Camera support doesn't "
@@ -8263,7 +8266,7 @@ msgstr ""
 #~ "it using the Raspberry Pi configuration"
 #~ " or with the command 'sudo raspi-"
 #~ "config'"
-#~ msgstr "Raspberry Pi Camera支持似乎未启用。请使用Raspberry Pi配置或命令'sudo raspi-config'启用它"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Different options are available to "
@@ -8275,7 +8278,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Name for this Camera"
-#~ msgstr "此相机的名称"
+#~ msgstr ""
 
 #~ msgid "Linux shell command to execute prior to acquiring a still image."
 #~ msgstr ""
@@ -8292,36 +8295,36 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Path to save still image files. Leave blank to use default location."
-#~ msgstr "保存静止图像文件的路径。留空以使用默认位置。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Path to save timelapse image files. "
 #~ "Leave blank to use default location."
-#~ msgstr "保存timelapse图像文件的路径。留空以使用默认位置。"
+#~ msgstr ""
 
 #~ msgid "Path to save video files. Leave blank to use default location."
-#~ msgstr "保存视频文件的路径。留空以使用默认位置。"
+#~ msgstr ""
 
 #~ msgid "Video Stream"
-#~ msgstr "视频流"
+#~ msgstr ""
 
 #~ msgid "Timelapse Parameters"
-#~ msgstr "间隔拍摄参数"
+#~ msgstr ""
 
 #~ msgid "Last Timelapse"
-#~ msgstr "最后一次游戏中"
+#~ msgstr ""
 
 #~ msgid "Last Still"
-#~ msgstr "最后还是"
+#~ msgstr ""
 
 #~ msgid "Active"
-#~ msgstr "活性"
+#~ msgstr ""
 
 #~ msgid "Inactive"
-#~ msgstr "待用"
+#~ msgstr ""
 
 #~ msgid "Value"
-#~ msgstr "值"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Functions conduct complex tasks, often "
@@ -8333,103 +8336,101 @@ msgstr ""
 #~ "temperature sensor and heater in order"
 #~ " to regulate temperature."
 #~ msgstr ""
-#~ "函数执行复杂的任务，通常将一个或多个<a href=\"/data\">数据</a>源与<a "
-#~ "href=\"/output\">输出</a>耦合。例如，这可以使用PID控制器来创建具有温度传感器和加热器的反馈回路，以便调节温度。"
 
 #~ msgid "Native Functions"
 #~ msgstr ""
 
 #~ msgid "Asynchronous Graph"
-#~ msgstr "异步图"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Hold down the <kbd>Ctrl</kbd> or "
 #~ "<kbd>&#8984;</kbd> key to select more "
 #~ "than one"
-#~ msgstr "按住<kbd> Ctrl </ kbd>或<kbd>＆＃8984; </ kbd>键选择多个"
+#~ msgstr ""
 
 #~ msgid "Mycodo Version:"
-#~ msgstr "Mycodo版本："
+#~ msgstr ""
 
 #~ msgid "Python Version:"
-#~ msgstr "Python版本："
+#~ msgstr ""
 
 #~ msgid "Database Version"
-#~ msgstr "数据库版本"
+#~ msgstr ""
 
 #~ msgid "Daemon Status"
-#~ msgstr "守护进程状态"
+#~ msgstr ""
 
 #~ msgid "Running"
-#~ msgstr "运行"
+#~ msgstr ""
 
 #~ msgid "Not Running"
-#~ msgstr "没跑"
+#~ msgstr ""
 
 #~ msgid "Daemon Process ID"
-#~ msgstr "守护程序进程ID"
+#~ msgstr ""
 
 #~ msgid "Daemon RAM Usage"
-#~ msgstr "守护进程RAM使用情况"
+#~ msgstr ""
 
 #~ msgid "Daemon Virtualenv"
-#~ msgstr "守护进程Virtualenv"
+#~ msgstr ""
 
 #~ msgid "Yes"
-#~ msgstr "是"
+#~ msgstr ""
 
 #~ msgid "No"
-#~ msgstr "没有"
+#~ msgstr ""
 
 #~ msgid "Frontend RAM Usage"
-#~ msgstr "前端RAM使用"
+#~ msgstr ""
 
 #~ msgid "Frontend Virtualenv"
-#~ msgstr "前端Virtualenv"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "LCDs allow the display of data for"
 #~ " easy viewing and for displaying "
 #~ "alerts to conditional events you "
 #~ "configure (flash the LCD)."
-#~ msgstr "LCD可以显示数据，便于查看和显示您配置的条件事件的警报（闪烁LCD）。"
+#~ msgstr ""
 
 #~ msgid "Display Set"
-#~ msgstr "显示集"
+#~ msgstr ""
 
 #~ msgid "Live Measurements"
-#~ msgstr "实时测量"
+#~ msgstr ""
 
 #~ msgid "No Data Sources Activated"
-#~ msgstr "没有激活数据源"
+#~ msgstr ""
 
 #~ msgid "Input (%(type)s), %(sec)s second interval"
-#~ msgstr "输入 (%(type)s)，%(sec)s 秒间隔"
+#~ msgstr ""
 
 #~ msgid "Timestamp"
-#~ msgstr "时间戳"
+#~ msgstr ""
 
 #~ msgid "Please wait"
-#~ msgstr "请稍候"
+#~ msgstr ""
 
 #~ msgid "Math (%(type)s), %(sec)s second interval"
-#~ msgstr "数学 (%(type)s), %(sec)s 秒间隔"
+#~ msgstr ""
 
 #~ msgid "Back to Method Management"
-#~ msgstr "返回方法管理"
+#~ msgstr ""
 
 #~ msgid "Output Modulation"
-#~ msgstr "输出调制"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Note: This feature is currently not "
 #~ "implemented. These outputs will NOT be"
 #~ " modulated if applied to a PID. "
 #~ "This will be implemented soon."
-#~ msgstr "注意：此功能目前尚未实现。如果应用于PID，则不会调制这些输出。这将很快实施。"
+#~ msgstr ""
 
 #~ msgid "Modulate the selected output."
-#~ msgstr "调制所选输出。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Methods allow different types of "
@@ -8439,13 +8440,13 @@ msgstr ""
 #~ "specific setpoint. If you would like "
 #~ "the setpoint to change over time, "
 #~ "this is called setpoint tracking."
-#~ msgstr "方法允许PID控制器中的不同类型的设定点跟踪。通常，PID控制器将环境条件调节到特定的设定点。如果您希望设定值随时间变化，则称为设定点跟踪。"
+#~ msgstr ""
 
 #~ msgid "No Saved Methods Exist"
-#~ msgstr "没有保存的方法存在"
+#~ msgstr ""
 
 #~ msgid "Saved Methods"
-#~ msgstr "保存的方法"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Output devices enable Mycodo to "
@@ -8455,13 +8456,13 @@ msgstr ""
 #~ "linked to a PID controller, with "
 #~ "an input, output devices can be "
 #~ "used for feedback regulation."
-#~ msgstr "输出设备使Mycodo能够通过使用输出（有线和无线），PWM信号和执行命令来操纵事物。当链接到带有输入的PID控制器时，输出设备可用于反馈调节。"
+#~ msgstr ""
 
 #~ msgid "Unconfigured"
-#~ msgstr "未配置"
+#~ msgstr ""
 
 #~ msgid "Pump Volume"
-#~ msgstr "泵容量"
+#~ msgstr ""
 
 #~ msgid "Select a measurement with the unit:"
 #~ msgstr ""
@@ -8473,37 +8474,37 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Past Day"
-#~ msgstr "过去的一天"
+#~ msgstr ""
 
 #~ msgid "Past Week"
-#~ msgstr "上周"
+#~ msgstr ""
 
 #~ msgid "Past Month"
-#~ msgstr "过去一个月"
+#~ msgstr ""
 
 #~ msgid "Amps (Average over period)"
 #~ msgstr ""
 
 #~ msgid "Cost"
-#~ msgstr "成本"
+#~ msgstr ""
 
 #~ msgid "ID"
-#~ msgstr "ID"
+#~ msgstr ""
 
 #~ msgid "From"
-#~ msgstr "从"
+#~ msgstr ""
 
 #~ msgid "Past Year"
-#~ msgstr "过去的一年"
+#~ msgstr ""
 
 #~ msgid "Duration On (hours)"
-#~ msgstr "持续时间（小时）"
+#~ msgstr ""
 
 #~ msgid "Total"
-#~ msgstr "总"
+#~ msgstr ""
 
 #~ msgid "Usage Reports"
-#~ msgstr "使用报告"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "No Reports. Go to <a "
@@ -8512,16 +8513,16 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Acquire Image (and save new file)"
-#~ msgstr "获取图像（并保存新文件）"
+#~ msgstr ""
 
 #~ msgid "Acquire Image (and erase last file)"
-#~ msgstr "获取图像（并删除最后一个文件）"
+#~ msgstr ""
 
 #~ msgid "Display Live Video Stream"
-#~ msgstr "显示实时视频流"
+#~ msgstr ""
 
 #~ msgid "Display Latest Timelapse Image"
-#~ msgstr "显示最新的间隔拍摄图像"
+#~ msgstr ""
 
 #~ msgid "Series Options"
 #~ msgstr ""
@@ -8530,61 +8531,61 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "PWM On"
-#~ msgstr "PWM开"
+#~ msgstr ""
 
 #~ msgid "Out"
 #~ msgstr ""
 
 #~ msgid "Sec On"
-#~ msgstr "Sec On"
+#~ msgstr ""
 
 #~ msgid "A numerical value to set the PID setpoint"
-#~ msgstr "用于设置PID设定值的数值"
+#~ msgstr ""
 
 #~ msgid "Measurement Settings"
-#~ msgstr "测量设置"
+#~ msgstr ""
 
 #~ msgid "The duration (seconds) between math calculations"
-#~ msgstr "数学计算之间的持续时间（秒）"
+#~ msgstr ""
 
 #~ msgid "The Python 3 code to execute"
-#~ msgstr "要执行的Python 3代码"
+#~ msgstr ""
 
 #~ msgid "Do Not Rescale"
-#~ msgstr "不要重新缩放"
+#~ msgstr ""
 
 #~ msgid "Do Not Convert"
-#~ msgstr "不要转换"
+#~ msgstr ""
 
 #~ msgid "Number of measurements"
 #~ msgstr ""
 
 #~ msgid "Disabled"
-#~ msgstr "残"
+#~ msgstr ""
 
 #~ msgid "No Measurement/Unit Selected"
-#~ msgstr "没有选择测量/单位"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "An equation to store the soved "
 #~ "value of. Let \"x\" represent the "
 #~ "input value."
-#~ msgstr "存储soved值的方程式。设“x”表示输入值。"
+#~ msgstr ""
 
 #~ msgid "The maximum allowed difference between any selected measurements"
-#~ msgstr "任何选定测量之间允许的最大差异"
+#~ msgstr ""
 
 #~ msgid "The duration between checking whether the conditional is true"
-#~ msgstr "检查条件是否为真之间的持续时间"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The minimum duration after a conditional"
 #~ " trigger to wait before beggining "
 #~ "monitoring again"
-#~ msgstr "条件触发器在再次开始监视之前等待的最短持续时间"
+#~ msgstr ""
 
 #~ msgid "Conditions"
-#~ msgstr "条件"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "will execute only this action. "
@@ -8593,39 +8594,39 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Paused"
-#~ msgstr "已暂停"
+#~ msgstr ""
 
 #~ msgid "On Hold"
-#~ msgstr "等候接听"
+#~ msgstr ""
 
 #~ msgid "Select the measurement to use as the input"
-#~ msgstr "选择要用作输入的测量"
+#~ msgstr ""
 
 #~ msgid "Choose the direction(s) to regulate"
-#~ msgstr "选择要调节的方向"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "This is the desired state of a "
 #~ "perticular environmental condition. For "
 #~ "instance, this could be the desired "
 #~ "temperature in Celsius."
-#~ msgstr "这是特定环境条件的理想状态。例如，这可能是摄氏温度。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The control hysteresis surounding the "
 #~ "setpoint, with a band that is the"
 #~ " setpoint plus and minus the band "
 #~ "value. 0 is disabled."
-#~ msgstr "控制滞后超出设定值，带宽为设定值加上和减去带宽值。 0被禁用。"
+#~ msgstr ""
 
 #~ msgid "Proportional gain"
-#~ msgstr "比例增益"
+#~ msgstr ""
 
 #~ msgid "Integral gain"
-#~ msgstr "积分增益"
+#~ msgstr ""
 
 #~ msgid "Derivative gain"
-#~ msgstr "衍生收益"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Limit the integrator minimum, for "
@@ -8633,8 +8634,6 @@ msgstr ""
 #~ " integrator; and PID output = "
 #~ "Kp_total + Ki_total + Kd_total)"
 #~ msgstr ""
-#~ "限制积分器最小值，用于计算Ki_total：（Ki_total = Ki *积分器; "
-#~ "PID输出= Kp_total + Ki_total + Kd_total）"
 
 #~ msgid ""
 #~ "Limit the integrator maximum, for "
@@ -8642,20 +8641,18 @@ msgstr ""
 #~ " integrator; and PID output = "
 #~ "Kp_total + Ki_total + Kd_total)"
 #~ msgstr ""
-#~ "限制积分器最大值，用于计算Ki_total：（Ki_total = Ki *积分器; "
-#~ "PID输出= Kp_total + Ki_total + Kd_total）"
 
 #~ msgid ""
 #~ "The output that will raise the "
 #~ "selected environmental condition (Measure "
 #~ "Type)"
-#~ msgstr "将提高所选环境条件的输出（测量类型）"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The output that will lower the "
 #~ "selected environmental condition (Measure "
 #~ "Type)"
-#~ msgstr "将降低所选环境条件的输出（测量类型）"
+#~ msgstr ""
 
 #~ msgid "Input/Math"
 #~ msgstr ""
@@ -8670,19 +8667,19 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Manage Methods"
-#~ msgstr "管理方法"
+#~ msgstr ""
 
 #~ msgid "Maximum allowable measurement age"
 #~ msgstr ""
 
 #~ msgid "Autotune"
-#~ msgstr "自动调谐"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Autotune Only: How much above and "
 #~ "below the setpoint the process variable"
 #~ " must reach before changing direction."
-#~ msgstr "仅自动调谐：在更改方向之前，过程变量必须达到设定值的上下几度。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Autotune Only: How many seconds to "
@@ -8690,22 +8687,22 @@ msgstr ""
 #~ " For instance, if this equals the "
 #~ "PID Period, it will be on 100%%"
 #~ " of the time."
-#~ msgstr "仅自动调谐：在每个PID周期上转动输出的秒数。例如，如果这等于PID Period，它将在100 %% 的时间内。"
+#~ msgstr ""
 
 #~ msgid "Controller to affect"
-#~ msgstr "控制器影响"
+#~ msgstr ""
 
 #~ msgid "Activate a controller."
 #~ msgstr ""
 
 #~ msgid "Command to execute (as user \"mycodo\")"
-#~ msgstr "要执行的命令（作为用户\"mycodo\"）"
+#~ msgstr ""
 
 #~ msgid "Execute a Linux shell command."
 #~ msgstr ""
 
 #~ msgid "Tag to save note with"
-#~ msgstr "标记以保存注释"
+#~ msgstr ""
 
 #~ msgid "Create a note with the selected Tag."
 #~ msgstr ""
@@ -8714,10 +8711,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Email Address"
-#~ msgstr "电子邮件地址"
+#~ msgstr ""
 
 #~ msgid "Email address to notify"
-#~ msgstr "电子邮件地址通知"
+#~ msgstr ""
 
 #~ msgid "Email a single recipient."
 #~ msgstr ""
@@ -8729,7 +8726,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "LCD to flash"
-#~ msgstr "LCD闪烁"
+#~ msgstr ""
 
 #~ msgid "Stop LCD flashing."
 #~ msgstr ""
@@ -8756,28 +8753,28 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "PID to affect"
-#~ msgstr "PID影响"
+#~ msgstr ""
 
 #~ msgid "Method to set the PID to use"
-#~ msgstr "设置要使用的PID的方法"
+#~ msgstr ""
 
 #~ msgid "Select a method to set the PID to use."
 #~ msgstr ""
 
 #~ msgid "What output to manipulate"
-#~ msgstr "要操纵什么输出"
+#~ msgstr ""
 
 #~ msgid "Turn the output on or off"
-#~ msgstr "打开或关闭输出"
+#~ msgstr ""
 
 #~ msgid "How long to turn the output on (optional)"
-#~ msgstr "打开输出多长时间（可选）"
+#~ msgstr ""
 
 #~ msgid "Turn an Output Off, On, or On or a duration."
 #~ msgstr ""
 
 #~ msgid "What duty cycle to set the output"
-#~ msgstr "设置输出的占空比"
+#~ msgstr ""
 
 #~ msgid "Set an Output to a PWM duty cycle."
 #~ msgstr ""
@@ -8801,7 +8798,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "How long to pause executing actions"
-#~ msgstr "暂停执行操作多长时间"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Set a delay between executing Actions"
@@ -8812,7 +8809,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Camera to capture with"
-#~ msgstr "用相机捕捉"
+#~ msgstr ""
 
 #~ msgid "Capture a photo with the selected Camera."
 #~ msgstr ""
@@ -8824,7 +8821,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "The value to set the PID setpoint"
-#~ msgstr "设置PID设定值的值"
+#~ msgstr ""
 
 #~ msgid "Set the Setpoint of a PID."
 #~ msgstr ""
@@ -8842,10 +8839,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Video Duration (seconds)"
-#~ msgstr "视频时长（秒）"
+#~ msgstr ""
 
 #~ msgid "Duration to record video (sec)"
-#~ msgstr "录制视频的持续时间（秒）"
+#~ msgstr ""
 
 #~ msgid "Camera: Capture Video"
 #~ msgstr ""
@@ -8866,13 +8863,13 @@ msgstr ""
 #~ "The GPIO pin to measure the state"
 #~ " of. The return value will be "
 #~ "True when HIGH and False when LOW."
-#~ msgstr "用于测量状态的GPIO引脚。高电平时返回值为True，低电平时返回False。"
+#~ msgstr ""
 
 #~ msgid "returns 1 if the output is HIGH and 0 if the output is LOW."
 #~ msgstr ""
 
 #~ msgid "Do not accept measurements older than this age"
-#~ msgstr "不接受超过此年龄的测量值"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "returns the last value found within "
@@ -8919,7 +8916,7 @@ msgstr ""
 #~ "activate. If an On duration is "
 #~ "below this value, the Lower Output "
 #~ "will not turn on."
-#~ msgstr "下限输出激活所需的最短持续时间（以秒为单位）。如果On持续时间低于此值，则Lower Output将不会打开。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The maximum duration (in seconds) "
@@ -8928,10 +8925,10 @@ msgstr ""
 #~ " duration is above this value, the"
 #~ " Lower Output will turn on for "
 #~ "this set duration."
-#~ msgstr "每个周期允许较低输出的最大持续时间（以秒为单位）。如果ON持续时间高于此值，则下限输出将在此设定的持续时间内打开。"
+#~ msgstr ""
 
 #~ msgid "This output will remain off for at least this duration of time"
-#~ msgstr "此输出将至少在此持续时间内保持关闭状态"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The minimum duration (in seconds) "
@@ -8939,7 +8936,7 @@ msgstr ""
 #~ "activate. If an On duration is "
 #~ "below this value, the Raise Output "
 #~ "will not turn on."
-#~ msgstr "提升输出激活所需的最短持续时间（以秒为单位）。如果“开启”持续时间低于此值，则“提升输出”将不会打开。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The maximum duration (in seconds) "
@@ -8948,37 +8945,37 @@ msgstr ""
 #~ " duration is above this value, the"
 #~ " Raise Output will turn on for "
 #~ "this set duration."
-#~ msgstr "每个周期允许提升输出的最大持续时间（以秒为单位）。如果开启持续时间高于此值，则提升输出将在此设定持续时间内开启。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The minimum duty cycle (in %%). If"
 #~ " a duty cycle is below this "
 #~ "value, this is the value that will"
 #~ " be used."
-#~ msgstr "最小占空比（以 %%). 如果占空比低于此值，则这是将使用的值。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The maximum duty cycle (in %%). If"
 #~ " a duty cycle is below this "
 #~ "value, this is the value that will"
 #~ " be used."
-#~ msgstr "最大占空比（以 %%). 如果占空比低于此值，则这是将使用的值。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The maximum duty cycle (in %%). If"
 #~ " a duty cycle is above this "
 #~ "value, this is the value that will"
 #~ " be used."
-#~ msgstr "最大占空比（以 %%). 如果占空比高于此值，则这是将使用的值。"
+#~ msgstr ""
 
 #~ msgid "Detect low to high (rising), high to low (falling), or both?"
-#~ msgstr "检测从低到高（上升），从高到低（下降）还是两者都检测？"
+#~ msgstr ""
 
 #~ msgid "Rising"
-#~ msgstr "升起"
+#~ msgstr ""
 
 #~ msgid "Falling"
-#~ msgstr "落下"
+#~ msgstr ""
 
 #~ msgid "The program variable set in ~/.lircrc"
 #~ msgstr ""
@@ -8987,31 +8984,31 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Trigger this conditional to act when this output turns on or off"
-#~ msgstr "触发此条件以在此输出打开或关闭时执行"
+#~ msgstr ""
 
 #~ msgid "What action will trigger this conditional statement, on or off?"
-#~ msgstr "什么操作会触发或关闭此条件语句？"
+#~ msgstr ""
 
 #~ msgid "no duration"
-#~ msgstr "没有持续时间"
+#~ msgstr ""
 
 #~ msgid "any duration"
-#~ msgstr "任何持续时间"
+#~ msgstr ""
 
 #~ msgid "no or any duration"
-#~ msgstr "没有或任何持续时间"
+#~ msgstr ""
 
 #~ msgid "equal to duration"
-#~ msgstr "等于持续时间"
+#~ msgstr ""
 
 #~ msgid "greater than duration"
-#~ msgstr "大于持续时间"
+#~ msgstr ""
 
 #~ msgid "greater than or equal to duration"
 #~ msgstr ""
 
 #~ msgid "less than duration"
-#~ msgstr "少于持续时间"
+#~ msgstr ""
 
 #~ msgid "less than or equal to duration"
 #~ msgstr ""
@@ -9021,7 +9018,7 @@ msgstr ""
 #~ "duration of time if the conditional "
 #~ "should trigger when the output On "
 #~ "duration equals this amount"
-#~ msgstr "（可选）如果条件应在输出开启持续时间等于此数量时触发，则将此值设置为特定的持续时间"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The conditional is triggered when the"
@@ -9029,64 +9026,64 @@ msgstr ""
 #~ "or less than the set value, or "
 #~ "the measurement timestamp is greater "
 #~ "than the value of seconds"
-#~ msgstr "当测量条件大于或小于设定值或测量时间戳大于秒值时触发条件"
+#~ msgstr ""
 
 #~ msgid "Greater Than (>)"
-#~ msgstr "大于（>）"
+#~ msgstr ""
 
 #~ msgid "Less Than (<)"
-#~ msgstr "小于（<）"
+#~ msgstr ""
 
 #~ msgid "Equal To (=)"
-#~ msgstr "等于（=）"
+#~ msgstr ""
 
 #~ msgid "The duty cycle of the output to be checked"
-#~ msgstr "要检查的输出的占空比"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Run this duration method, using the "
 #~ "output value to set the Duty Cycle"
 #~ " of a PWM output"
-#~ msgstr "运行此持续时间方法，使用输出值设置PWM输出的占空比"
+#~ msgstr ""
 
 #~ msgid "Apply the Duty Cycle to this PWM Output"
-#~ msgstr "将占空比应用于此PWM输出"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The duration between calculating and "
 #~ "setting the Duty Cycle of the the"
 #~ " PWM Output"
-#~ msgstr "计算和设置PWM输出的占空比之间的持续时间"
+#~ msgstr ""
 
 #~ msgid "Trigger conditional at sunrise or sunset?"
-#~ msgstr "在日出或日落时触发条件？"
+#~ msgstr ""
 
 #~ msgid "Sunrise"
-#~ msgstr "日出"
+#~ msgstr ""
 
 #~ msgid "Sunset"
-#~ msgstr "日落"
+#~ msgstr ""
 
 #~ msgid "Latitude for sunrise or sunset"
-#~ msgstr "纬度为日出或日落"
+#~ msgstr ""
 
 #~ msgid "Longitude for sunrise or sunset"
-#~ msgstr "经度为日出或日落"
+#~ msgstr ""
 
 #~ msgid "Zenith for sunrise or sunset"
-#~ msgstr "日出或日落的天顶"
+#~ msgstr ""
 
 #~ msgid "The number of days to offset from the date of the sunrise or sunset"
-#~ msgstr "从日出或日落之日起抵消的天数"
+#~ msgstr ""
 
 #~ msgid "The number of minutes to offset from the sunrise or sunset"
-#~ msgstr "从日出或日落偏移的分钟数"
+#~ msgstr ""
 
 #~ msgid "Trigger conditional actions at an interval of time"
-#~ msgstr "以一段时间触发条件操作"
+#~ msgstr ""
 
 #~ msgid "A duration to wait before beginning the timer"
-#~ msgstr "在开始计时器之前等待的持续时间"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Define the setpoint over a period "
@@ -9095,7 +9092,7 @@ msgstr ""
 #~ "daily. Start the first entry at "
 #~ "midnight (00:00) if you wish to "
 #~ "fill the entire day."
-#~ msgstr "根据一天中的特定时间定义一段时间内的设定值。这种方法每天都会重复。如果您希望填写整天，请在午夜（00:00）开始第一个条目。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The new entry's start time may be"
@@ -9104,7 +9101,7 @@ msgstr ""
 #~ "default setpoint for the PID will "
 #~ "be used if there is any "
 #~ "unaccounted time."
-#~ msgstr "新条目的开始时间可能等于最后一个条目的结束时间，但不能重叠。如果有任何未计时的时间，将使用PID的默认设定值。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Activate or deactivate an output at "
@@ -9112,10 +9109,10 @@ msgstr ""
 #~ " minute (HH:MM) here is defined as"
 #~ " the time of day. For example, "
 #~ "3:05 PM would be \"15:05\"."
-#~ msgstr "在特定时间激活或停用输出。小时和分钟（HH：MM）在这里定义为一天中的时间。例如，下午3:05将是\"15:05\"。"
+#~ msgstr ""
 
 #~ msgid "Modulate the selected output"
-#~ msgstr "调制所选输出"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Define the setpoint over the day "
@@ -9133,10 +9130,6 @@ msgstr ""
 #~ "period and this method will repeat "
 #~ "daily."
 #~ msgstr ""
-#~ "基于三次贝塞尔曲线定义一天中的设定值。如果不熟悉贝塞尔曲线，建议您使用<a "
-#~ "href=\"https://www.desmos.com/calculator/cahqdxeshd\" "
-#~ "target=\"_blank\">图形贝塞尔曲线生成器</a>并使用它为4个点创建的8个变量（每个变量都是一组x和y）。 "
-#~ "x轴开始（x3）和结束（x0）将自动拉伸或倾斜以适应24小时内，此方法将每天重复。"
 
 #~ msgid ""
 #~ "Define the setpoint over the day "
@@ -9148,25 +9141,22 @@ msgstr ""
 #~ "y-axis shift. This method will repeat"
 #~ " daily."
 #~ msgstr ""
-#~ "基于由y = [A * sin（B * x + "
-#~ "C）] + D定义的正弦波定义一天中的设定值，其中A是幅度，B是频率，C是角度偏移，D是y - "
-#~ "轴移位。这种方法每天都会重复。"
 
 #~ msgid ""
 #~ "Define the setpoint over a period "
 #~ "of time based on specific times/dates."
-#~ msgstr "根据特定时间/日期定义一段时间内的设定值。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Activate or deactivate a output within"
 #~ " this method at a specific time/date."
-#~ msgstr "在特定时间/日期激活或停用此方法中的输出。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Define the setpoint over a period "
 #~ "of time, based on specific durations "
 #~ "of time."
-#~ msgstr "根据特定的持续时间，在一段时间内定义设定值。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Duration here is defined as the "
@@ -9177,7 +9167,7 @@ msgstr ""
 #~ "is not the first duration added, "
 #~ "it will execute after the last "
 #~ "duration already in the method."
-#~ msgstr "此处的持续时间定义为上一个持续时间之后的时间量。如果这是第一个添加的持续时间，这将是方法的开头。如果这不是添加的第一个持续时间，它将在方法中已经存在的最后一个持续时间之后执行。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Activate or deactivate an output within"
@@ -9188,22 +9178,22 @@ msgstr ""
 #~ "seconds would execute the output "
 #~ "modulation 60 seconds after the start"
 #~ " of the method."
-#~ msgstr "在特定持续时间内激活或停用此方法中的输出。此处的持续时间定义为自方法开始以来的时间量。例如，60秒将在方法开始后60秒执行输出调制。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Use the following options to instruct"
 #~ " the method to restart when it "
 #~ "reaches the end."
-#~ msgstr "使用以下选项指示方法在到达结束时重新启动。"
+#~ msgstr ""
 
 #~ msgid "If you do not wish for the method to repeat, do not use this option."
-#~ msgstr "如果您不希望重复此方法，请不要使用此选项。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "You may enter a duration (seconds) "
 #~ "that the method will end after, "
 #~ "otherwise leave blank to repeat forever."
-#~ msgstr "您可以输入方法将结束的持续时间（秒），否则留空以永久重复。"
+#~ msgstr ""
 
 #~ msgid "Fastest Flow Rate"
 #~ msgstr ""
@@ -9221,31 +9211,31 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Any Pin, <= 40kHz"
-#~ msgstr "任何引脚，<= 40kHz"
+#~ msgstr ""
 
 #~ msgid "Hardware Pin, <= 30MHz"
-#~ msgstr "硬件引脚，<= 30MHz"
+#~ msgstr ""
 
 #~ msgid "Wireless 433 MHz On command"
-#~ msgstr "无线433 MHz开启命令"
+#~ msgstr ""
 
 #~ msgid "Wireless 433 MHz Off command"
-#~ msgstr "无线433 MHz关闭命令"
+#~ msgstr ""
 
 #~ msgid "Alerts Settings"
-#~ msgstr "提醒设置"
+#~ msgstr ""
 
 #~ msgid "465 for SSL, 587 for TSL"
-#~ msgstr "SSL为465，TSL为587"
+#~ msgstr ""
 
 #~ msgid "Usually your full email address"
-#~ msgstr "通常是您的完整邮箱地址"
+#~ msgstr ""
 
 #~ msgid "Only enter a password here if you wish to change it"
-#~ msgstr "如果您想更改密码，请在此处输入密码"
+#~ msgstr ""
 
 #~ msgid "Maximum number of alerts that can be emailed per hour."
-#~ msgstr "每小时可通过电子邮件发送的最大警报数。"
+#~ msgstr ""
 
 #~ msgid "Controller Settings"
 #~ msgstr ""
@@ -9254,13 +9244,13 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "General Settings"
-#~ msgstr "常规设置"
+#~ msgstr ""
 
 #~ msgid "Selecting a language will override the web browser's language"
-#~ msgstr "选择语言将覆盖Web浏览器的语言"
+#~ msgstr ""
 
 #~ msgid "Which page to land on after logging in"
-#~ msgstr "登录后要登陆的页面"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Set the timeout (seconds) for Pyro "
@@ -9277,114 +9267,114 @@ msgstr ""
 #~ "Check to force all web connections "
 #~ "to use SSL (port 443) for greater"
 #~ " security."
-#~ msgstr "选中此选项可强制所有Web连接使用SSL（端口443）以提高安全性。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Check to prevent Success alert messages"
 #~ " from appearing at the top of "
 #~ "the page."
-#~ msgstr "检查以防止成功警报消息显示在页面顶部。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Check to prevent Info alert messages "
 #~ "from appearing at the top of the"
 #~ " page."
-#~ msgstr "检查以防止信息警报消息出现在页面顶部。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Check to prevent Warning alert messages"
 #~ " from appearing at the top of "
 #~ "the page."
-#~ msgstr "检查以防止警告警报消息出现在页面顶部。"
+#~ msgstr ""
 
 #~ msgid "Hide tooltips that pop up over form inputs."
-#~ msgstr "隐藏弹出表单输入的工具提示。"
+#~ msgstr ""
 
 #~ msgid "Check if you do not wish to send anonymous usage statistics."
-#~ msgstr "检查您是否不希望发送匿名使用情况统计信息。"
+#~ msgstr ""
 
 #~ msgid "View collected statistics"
-#~ msgstr "查看收集的统计信"
+#~ msgstr ""
 
 #~ msgid "Check if you would like Mycodo to automatically check for upgrades."
-#~ msgstr "检查您是否希望Mycodo自动检查升级。"
+#~ msgstr ""
 
 #~ msgid "Set the maximum allowed amperage to be switched on at any given time"
-#~ msgstr "设置在任何给定时间打开的最大允许安培数"
+#~ msgstr ""
 
 #~ msgid "Set the voltage used to power the devices powered by the outputs"
-#~ msgstr "设置用于为输出供电的设备供电的电压"
+#~ msgstr ""
 
 #~ msgid "Set the cost per kilowatt-hour"
-#~ msgstr "设定每千瓦时的成本"
+#~ msgstr ""
 
 #~ msgid "Set the unit of currency used to pay for the electricity"
-#~ msgstr "设置用于支付电费的货币单位"
+#~ msgstr ""
 
 #~ msgid "Set a day of the month to calculate monthly power usage"
-#~ msgstr "设置一个月中的某天来计算每月用电量"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Automatically generate output usage reports"
 #~ " on a daily/weekly/monthly schedule"
-#~ msgstr "自动生成每日/每周/每月计划的输出使用报告"
+#~ msgstr ""
 
 #~ msgid "How often to generate a report"
-#~ msgstr "生成报告的频率"
+#~ msgstr ""
 
 #~ msgid "Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28"
-#~ msgstr "日期选项：每日：1-7（1 =星期一），每月：1-28"
+#~ msgstr ""
 
 #~ msgid "Input Settings"
-#~ msgstr "输入设置"
+#~ msgstr ""
 
 #~ msgid "Imported Input Modules"
-#~ msgstr "导入的输入模块"
+#~ msgstr ""
 
 #~ msgid "Manufacturer"
 #~ msgstr ""
 
 #~ msgid "Units"
-#~ msgstr "单位"
+#~ msgstr ""
 
 #~ msgid "Conversions"
-#~ msgstr "转换"
+#~ msgstr ""
 
 #~ msgid "All"
-#~ msgstr "所有"
+#~ msgstr ""
 
 #~ msgid "Raspberry Pi Settings"
-#~ msgstr "Raspberry Pi设置"
+#~ msgstr ""
 
 #~ msgid "User Settings"
-#~ msgstr "用户设置"
+#~ msgstr ""
 
 #~ msgid "Roles"
-#~ msgstr "角色"
+#~ msgstr ""
 
 #~ msgid "Export Import"
-#~ msgstr "出口进口"
+#~ msgstr ""
 
 #~ msgid "Select the number of lines to display from the end of a log"
-#~ msgstr "从日志末尾选择要显示的行数"
+#~ msgstr ""
 
 #~ msgid "Notes"
-#~ msgstr "笔记"
+#~ msgstr ""
 
 #~ msgid "Edit Note"
-#~ msgstr "编辑注释"
+#~ msgstr ""
 
 #~ msgid "Manage"
-#~ msgstr "管理"
+#~ msgstr ""
 
 #~ msgid "Select one or more tags"
-#~ msgstr "选择一个或多个标签"
+#~ msgstr ""
 
 #~ msgid "Search"
-#~ msgstr "搜索"
+#~ msgstr ""
 
 #~ msgid "Found"
-#~ msgstr "发现"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "This guide will walk you through "
@@ -9421,10 +9411,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Calibration Failed"
-#~ msgstr "校准失败"
+#~ msgstr ""
 
 #~ msgid "Refer to the logs for details"
-#~ msgstr "有关详细信息，请参阅日志"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Measure how much fluid (ml) was "
@@ -9434,22 +9424,22 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Calibration Succeeded"
-#~ msgstr "校准成功"
+#~ msgstr ""
 
 #~ msgid "Calibration Complete"
-#~ msgstr "校准完成"
+#~ msgstr ""
 
 #~ msgid "Latest pH measurement"
-#~ msgstr "最新的pH测量"
+#~ msgstr ""
 
 #~ msgid "Error acquiring measurement"
-#~ msgstr "获取测量时出错"
+#~ msgstr ""
 
 #~ msgid "Please wait for the sensor measurements to equilibrate"
 #~ msgstr ""
 
 #~ msgid "seconds"
-#~ msgstr "秒"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "This guide will walk you through "
@@ -9480,7 +9470,7 @@ msgstr ""
 #~ " the same temperature. Enter the "
 #~ "temperature (in Celsius) of your "
 #~ "solutions, then click Continue."
-#~ msgstr "确保所有pH校准溶液的温度相同。输入解决方案的温度（摄氏度），然后单击继续。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Rinse the pH probe with distilled "
@@ -9489,281 +9479,311 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Ready"
-#~ msgstr "准备"
+#~ msgstr ""
 
 #~ msgid "Select a DS18B20 sensor"
-#~ msgstr "选择DS18B20传感器"
+#~ msgstr ""
 
 #~ msgid "Select a resolution"
-#~ msgstr "选择分辨率"
+#~ msgstr ""
 
 #~ msgid "Daemon response: %(resp)s"
-#~ msgstr "守护进程响应: %(resp)s"
+#~ msgstr ""
 
 #~ msgid "Condition"
-#~ msgstr "条件"
+#~ msgstr ""
 
 #~ msgid "Deactivate controller before modifying its settings"
-#~ msgstr "在修改其设置之前停用控制器"
+#~ msgstr ""
 
 #~ msgid "{dev} with ID %(id)s successfully added"
-#~ msgstr "已成功添加ID为 %(id)s 的{dev}"
+#~ msgstr ""
 
 #~ msgid "Execute All"
-#~ msgstr "执行全部"
+#~ msgstr ""
 
 #~ msgid "Error: %(err)s"
-#~ msgstr "错误: %(err)s"
+#~ msgstr ""
 
 #~ msgid "%(msg)s"
-#~ msgstr "%(msg)s"
+#~ msgstr ""
 
 #~ msgid "%(err)s"
-#~ msgstr "%(err)s"
+#~ msgstr ""
 
 #~ msgid "Entry with ID %(id)s not found"
-#~ msgstr "未找到ID为 %(id)s 的条目"
+#~ msgstr ""
 
 #~ msgid "Error in the %(field)s field - %(err)s"
-#~ msgstr "%(field)s 字段中的错误 - %(err)s"
+#~ msgstr ""
 
 #~ msgid "Cannot move above the first item in the list"
-#~ msgstr "无法移动到列表中的第一个项目之上"
+#~ msgstr ""
 
 #~ msgid "Cannot move below the last item in the list"
-#~ msgstr "无法移动到列表中的最后一项之下"
+#~ msgstr ""
 
 #~ msgid "%(type)s Input with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "%(type)s 已成功添加ID为 %(id)s (%(uuid)s) 的输入"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Choose a Read Period equal to or"
 #~ " greater than 7. The AM2315 may "
 #~ "become unresponsive if the period is "
 #~ "below 7."
-#~ msgstr "选择等于或大于7的读取周期。如果周期低于7，AM2315可能会无响应。"
+#~ msgstr ""
 
 #~ msgid "The Read Period cannot be less than the Pre Output Duration"
-#~ msgstr "读取周期不能小于预输出持续时间"
+#~ msgstr ""
 
 #~ msgid "Invalid device or improper permissions to read device"
-#~ msgstr "设备无效或读取设备的权限不正确"
+#~ msgstr ""
 
 #~ msgid "Pin (GPIO) must be set"
 #~ msgstr ""
 
 #~ msgid "Force Measurements"
-#~ msgstr "力测量"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Activate controller before attempting to "
 #~ "force the acquisition of measurements"
-#~ msgstr "在尝试强制采集测量之前激活控制器"
+#~ msgstr ""
 
 #~ msgid "Deactivate LCD controller before modifying its settings."
-#~ msgstr "在修改其设置之前，请取消激活LCD控制器。"
+#~ msgstr ""
 
 #~ msgid "Cannot activate LCD if there are blank lines"
-#~ msgstr "如果有空行，则无法激活LCD"
+#~ msgstr ""
 
 #~ msgid "Deactivate LCD controller before modifying its settings"
-#~ msgstr "在修改其设置之前，请取消激活LCD控制器"
+#~ msgstr ""
 
 #~ msgid "The last display cannot be deleted"
-#~ msgstr "无法删除最后一个显示"
+#~ msgstr ""
 
 #~ msgid "%(type)s Math with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "%(type)s 已成功添加ID %(id)s (%(uuid)s) 的数学"
+#~ msgstr ""
 
 #~ msgid "Deactivate Math controller before modifying its settings"
-#~ msgstr "在修改其设置之前，请停用Math控制器"
+#~ msgstr ""
 
 #~ msgid "Error in form field(s)"
-#~ msgstr "表单字段中的错误"
+#~ msgstr ""
 
 #~ msgid "Duration must be a positive integer"
-#~ msgstr "持续时间必须是正整数"
+#~ msgstr ""
 
 #~ msgid "Duration must be a valid integer"
-#~ msgstr "持续时间必须是有效整数"
+#~ msgstr ""
 
 #~ msgid "Required: Start date/time, end date/time, start setpoint"
-#~ msgstr "必需：开始日期/时间，结束日期/时间，开始设定值"
+#~ msgstr ""
 
 #~ msgid "Invalid Date/Time format. Correct format: MM/DD/YYYY HH:MM:SS"
-#~ msgstr "无效的日期/时间格式。格式正确：DD / MM / YYYY HH：MM：SS"
+#~ msgstr ""
 
 #~ msgid "The end time/date must be after the start time/date."
-#~ msgstr "结束时间/日期必须在开始时间/日期之后。"
+#~ msgstr ""
 
 #~ msgid "Required: Start time, end time, start setpoint"
-#~ msgstr "必需：开始时间，结束时间，开始设定值"
+#~ msgstr ""
 
 #~ msgid "Invalid Date/Time format. Correct format: HH:MM:SS"
-#~ msgstr "无效的日期/时间格式。格式正确：HH：MM：SS"
+#~ msgstr ""
 
 #~ msgid "The end time must be after the start time."
-#~ msgstr "结束时间必须在开始时间之后。"
+#~ msgstr ""
 
 #~ msgid "Required: Duration, start setpoint"
-#~ msgstr "必需：持续时间，开始设定值"
+#~ msgstr ""
 
 #~ msgid "Required: Duration must be positive"
-#~ msgstr "必需：持续时间必须为正"
+#~ msgstr ""
 
 #~ msgid "Required: Date/Time, Output, and Output State"
-#~ msgstr "必需：日期/时间，输出和输出状态"
+#~ msgstr ""
 
 #~ msgid "Invalid Date/Time format. Correct format: DD-MM-YYYY HH:MM:SS"
-#~ msgstr "无效的日期/时间格式。格式正确：DD-MM-YYYY HH：MM：SS"
+#~ msgstr ""
 
 #~ msgid "Required: Output, Output State, and Output Duration"
-#~ msgstr "必需：输出，输出状态和输出持续时间"
+#~ msgstr ""
 
 #~ msgid "Required: Time, Relay ID, and Relay State"
-#~ msgstr "必需：时间，中继ID和中继状态"
+#~ msgstr ""
 
 #~ msgid "Error: Angle Shift is out of range. It must be <= 0 and <= 360."
-#~ msgstr "错误：角度偏移超出范围。它必须<= 0且<= 360。"
+#~ msgstr ""
 
 #~ msgid "Error: X0 must be greater than X3."
-#~ msgstr "错误：X0必须大于X3。"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The new entry start time (%(st)s) "
 #~ "cannot overlap the last entry's end "
 #~ "time (%(et)s). Note: They may be "
 #~ "the same time."
-#~ msgstr "新的条目开始时间 (%(st)s) 不能与最后一个条目的结束时间 (%(et)s) 重叠。注意：它们可能是同一时间。"
+#~ msgstr ""
 
 #~ msgid "Added duration to method from %(st)s to %(end)s"
-#~ msgstr "从 %(st)s 到 %(end)s 增加了方法的持续时间"
+#~ msgstr ""
 
 #~ msgid "Added method restart"
-#~ msgstr "添加方法重启"
+#~ msgstr ""
 
 #~ msgid "Added duration to method for %(sec)s seconds"
-#~ msgstr "为 %(sec)s 秒增加了方法的持续时间"
+#~ msgstr ""
 
 #~ msgid "Added output modulation to method at start time: %(tm)s"
-#~ msgstr "在开始时向方法添加输出调制: %(tm)s"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The entry start time (%(st)s) cannot "
 #~ "overlap the previous entry's end time"
 #~ " (%(et)s)"
-#~ msgstr "进入开始时间 (%(st)s) 不能与前一个条目的结束时间重叠 (%(et)s)"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The entry end time (%(et)s) cannot "
 #~ "overlap the next entry's start time "
 #~ "(%(st)s)"
-#~ msgstr "输入结束时间 (%(et)s) 不能与下一个条目的开始时间 (%(st)s) 重叠"
+#~ msgstr ""
 
 #~ msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 #~ msgstr ""
 
 #~ msgid "File"
-#~ msgstr "文件"
+#~ msgstr ""
 
 #~ msgid "Invalid quantity"
-#~ msgstr "数量无效"
+#~ msgstr ""
 
 #~ msgid "Acceptable values"
-#~ msgstr "可接受的值"
+#~ msgstr ""
 
 #~ msgid "Actuate"
-#~ msgstr "开动"
+#~ msgstr ""
 
 #~ msgid "Cannot modulate output with a GPIO of 0"
-#~ msgstr "无法在GPIO为0的情况下调制输出"
+#~ msgstr ""
 
 #~ msgid "Value must be greater than 0"
-#~ msgstr "值必须大于0"
+#~ msgstr ""
 
 #~ msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
-#~ msgstr "输出开启 %(sec)s 秒: %(rvalue)s"
+#~ msgstr ""
 
 #~ msgid "Invalid pin"
-#~ msgstr "无效的引脚"
+#~ msgstr ""
 
 #~ msgid "PWM Hertz must be a positive value"
-#~ msgstr "PWM赫兹必须是正值"
+#~ msgstr ""
 
 #~ msgid "PWM duty cycle must be a positive value"
-#~ msgstr "PWM占空比必须是正值"
+#~ msgstr ""
 
 #~ msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
-#~ msgstr "PWM设置为 %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
+#~ msgstr ""
 
 #~ msgid "Output turned on: %(rvalue)s"
-#~ msgstr "输出已打开: %(rvalue)s"
+#~ msgstr ""
 
 #~ msgid "Output turned off: %(rvalue)s"
-#~ msgstr "输出关闭: %(rvalue)s"
+#~ msgstr ""
 
 #~ msgid "Invalid value"
-#~ msgstr "无效值"
+#~ msgstr ""
 
 #~ msgid "Raise and lower outputs cannot be the same"
-#~ msgstr "提升和降低输出不能相同"
+#~ msgstr ""
 
 #~ msgid "A valid Measurement is required"
-#~ msgstr "需要有效的测量"
+#~ msgstr ""
 
 #~ msgid "A Raise Output and/or a Lower Output is required"
-#~ msgstr "需要提升输出和/或低输出"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Cannot activate PID controller if the"
 #~ " associated sensor controller is inactive"
-#~ msgstr "如果相关的传感器控制器处于非活动状态，则无法激活PID控"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Cannot activate PID controller if raise"
 #~ " and/or lower output IDs are not "
 #~ "selected"
-#~ msgstr "如果未选择上升和/或下限输出ID，则无法激活PID控制器"
+#~ msgstr ""
 
 #~ msgid "Remote Host %(host)s with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "已成功添加ID为 %(id)s (%(uuid)s) 的远程主机 %(host)s"
+#~ msgstr ""
 
 #~ msgid "User Role"
-#~ msgstr "用户角色"
+#~ msgstr ""
 
 #~ msgid "Another user already has that email address."
-#~ msgstr "另一位用户已拥有该电子邮件地址。"
+#~ msgstr ""
 
 #~ msgid "Invalid password"
-#~ msgstr "无效的密码"
+#~ msgstr ""
 
 #~ msgid "Measurement with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "成功添加ID %(id)s (%(uuid)s) 的测量值"
+#~ msgstr ""
 
 #~ msgid "Unit"
-#~ msgstr "单元"
+#~ msgstr ""
 
 #~ msgid "Unit with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "已成功添加ID为 %(id)s (%(uuid)s) 的单位"
+#~ msgstr ""
 
 #~ msgid "Conversion"
-#~ msgstr "转变"
+#~ msgstr ""
 
 #~ msgid "Conversion with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "已成功添加ID为 %(id)s (%(uuid)s) 的转换"
+#~ msgstr ""
 
 #~ msgid "Pi Settings"
-#~ msgstr "Pi设置"
+#~ msgstr ""
 
 #~ msgid "Alert Settings"
-#~ msgstr "警报设置"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Test email sent to %(recip)s. Check "
 #~ "your inbox to see if it was "
 #~ "successful."
-#~ msgstr "测试发送给 %(recip)s 的电子邮件。检查收件箱是否成功。"
+#~ msgstr ""
 
 #~ msgid "Reset email counter"
+#~ msgstr ""
+
+#~ msgid "click to copy to the clipboard"
+#~ msgstr ""
+
+#~ msgid "Internet Test IP Address"
+#~ msgstr ""
+
+#~ msgid "Internet Test Port"
+#~ msgstr ""
+
+#~ msgid "Internet Test Timeout"
+#~ msgstr ""
+
+#~ msgid "Increment"
+#~ msgstr ""
+
+#~ msgid "The amount of the duty cycle change for each step."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The IP address to test if there"
+#~ " is an active internet connection "
+#~ "required to allow upgrading."
+#~ msgstr ""
+
+#~ msgid "The port of the internet test IP address."
+#~ msgstr ""
+
+#~ msgid "The timeout period (seconds) for testing the internet connection."
 #~ msgstr ""
 
