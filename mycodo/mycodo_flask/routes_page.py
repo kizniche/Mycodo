@@ -848,7 +848,7 @@ def page_graph_async():
 @flask_login.login_required
 def page_help():
     """ Display Mycodo manual/help """
-    return render_template('manual.html')
+    return render_template('mycodo-manual.html')
 
 
 @blueprint.route('/info', methods=('GET', 'POST'))

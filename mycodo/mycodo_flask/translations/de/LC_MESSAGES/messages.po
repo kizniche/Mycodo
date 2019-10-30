@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-10-24 18:16-0400\n"
+"POT-Creation-Date: 2019-10-29 20:13-0400\n"
 "PO-Revision-Date: 2018-08-10 15:07-0400\n"
 "Last-Translator: \n"
 "Language: de\n"
@@ -61,8 +61,8 @@ msgid "Difference"
 msgstr ""
 
 #: config.py:137 mycodo_flask/forms/forms_math.py:75
-#: mycodo_flask/forms/forms_settings.py:193
-#: mycodo_flask/forms/forms_settings.py:201
+#: mycodo_flask/forms/forms_settings.py:198
+#: mycodo_flask/forms/forms_settings.py:206
 msgid "Equation"
 msgstr ""
 
@@ -92,7 +92,7 @@ msgstr ""
 
 #: config.py:254 config_devices_units.py:69 config_translations.py:57
 #: mycodo_flask/templates/pages/function_options/action_options/output.html:27
-#: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:27
+#: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:37
 msgid "Duration"
 msgstr ""
 
@@ -329,11 +329,12 @@ msgstr ""
 msgid "Dissolved Oxygen"
 msgstr ""
 
-#: config_devices_units.py:73 config_translations.py:206
+#: config_devices_units.py:73 config_translations.py:208
 #: mycodo_flask/templates/pages/function_options/action_options/output_pwm.html:19
 #: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:13
 #: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:19
-#: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:31
+#: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:25
+#: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:41
 msgid "Duty Cycle"
 msgstr ""
 
@@ -652,7 +653,7 @@ msgid "Calculate"
 msgstr ""
 
 #: config_translations.py:29 mycodo_flask/forms/forms_dashboard.py:188
-#: mycodo_flask/templates/layout.html:200
+#: mycodo_flask/templates/layout.html:210
 #: mycodo_flask/templates/pages/camera.html:5
 #: mycodo_flask/templates/pages/dashboard_options/add_camera.html:10
 #: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:11
@@ -685,11 +686,11 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
-#: config_translations.py:41 mycodo_flask/templates/layout.html:179
+#: config_translations.py:41 mycodo_flask/templates/layout.html:189
 msgid "Dashboard"
 msgstr ""
 
-#: config_translations.py:43 mycodo_flask/templates/layout.html:177
+#: config_translations.py:43 mycodo_flask/templates/layout.html:187
 msgid "Data"
 msgstr ""
 
@@ -718,7 +719,7 @@ msgstr ""
 msgid "Down"
 msgstr ""
 
-#: config_translations.py:59 config_translations.py:358
+#: config_translations.py:59 config_translations.py:360
 #: mycodo_flask/forms/forms_input.py:144
 msgid "Edge"
 msgstr ""
@@ -733,7 +734,7 @@ msgstr ""
 msgid "E-Mail"
 msgstr ""
 
-#: config_translations.py:65 mycodo_flask/templates/layout.html:203
+#: config_translations.py:65 mycodo_flask/templates/layout.html:213
 #: mycodo_flask/templates/pages/usage.html:3
 #: mycodo_flask/templates/pages/usage.html:5
 #: mycodo_flask/templates/pages/usage.html:35
@@ -779,10 +780,10 @@ msgstr ""
 
 #: config_translations.py:81 mycodo_flask/templates/tools/notes.html:138
 #: mycodo_flask/utils/utils_notes.py:453
-#: mycodo_flask/utils/utils_settings.py:322
-#: mycodo_flask/utils/utils_settings.py:422
-#: mycodo_flask/utils/utils_settings.py:457
-#: mycodo_flask/utils/utils_settings.py:582
+#: mycodo_flask/utils/utils_settings.py:347
+#: mycodo_flask/utils/utils_settings.py:447
+#: mycodo_flask/utils/utils_settings.py:482
+#: mycodo_flask/utils/utils_settings.py:607
 msgid "Import"
 msgstr ""
 
@@ -914,7 +915,7 @@ msgid "PWM"
 msgstr ""
 
 #: config_translations.py:127
-#: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:31
+#: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:41
 msgid "Ramp"
 msgstr ""
 
@@ -945,6 +946,7 @@ msgstr ""
 
 #: config_translations.py:141
 #: mycodo_flask/templates/pages/function_options/action_options/infrared_send.html:8
+#: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:28
 #: mycodo_flask/templates/pages/function_options/pid.html:241
 #: mycodo_flask/templates/pages/function_options/pid.html:264
 msgid "Select One"
@@ -987,8 +989,8 @@ msgstr ""
 msgid "Up"
 msgstr ""
 
-#: config_translations.py:161 mycodo_flask/forms/forms_settings.py:130
-#: mycodo_flask/forms/forms_settings.py:144
+#: config_translations.py:161 mycodo_flask/forms/forms_settings.py:135
+#: mycodo_flask/forms/forms_settings.py:149
 msgid "Upload"
 msgstr ""
 
@@ -1014,8 +1016,8 @@ msgid ""
 "documentation for details."
 msgstr ""
 
-#: config_translations.py:173 config_translations.py:319
-#: config_translations.py:322 mycodo_flask/forms/forms_calibration.py:64
+#: config_translations.py:173 config_translations.py:321
+#: config_translations.py:324 mycodo_flask/forms/forms_calibration.py:64
 msgid "Resolution"
 msgstr ""
 
@@ -1085,557 +1087,505 @@ msgid "Convert the measurement to a different unit"
 msgstr ""
 
 #: config_translations.py:200
+msgid "click to copy to the clipboard"
+msgstr ""
+
+#: config_translations.py:202
 msgid "Deadline"
 msgstr ""
 
-#: config_translations.py:201
+#: config_translations.py:203
 msgid "Time (seconds) to wait until failure"
 msgstr ""
 
-#: config_translations.py:203
+#: config_translations.py:205
 msgid "Duration On (seconds)"
 msgstr ""
 
-#: config_translations.py:204
+#: config_translations.py:206
 msgid "Turn on for a duration of time (seconds)"
 msgstr ""
 
-#: config_translations.py:207
+#: config_translations.py:209
 msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
 msgstr ""
 
-#: config_translations.py:209
+#: config_translations.py:211
 msgid "Flow Rate (ml/min)"
 msgstr ""
 
-#: config_translations.py:210
+#: config_translations.py:212
 msgid "Flow rate in ml/minute (0.5 min, 105 max)"
 msgstr ""
 
-#: config_translations.py:212
+#: config_translations.py:214
 msgid "FTDI Device"
 msgstr ""
 
-#: config_translations.py:213
+#: config_translations.py:215
 msgid "The FTDI device (e.g. /dev/ttyUSB1)"
 msgstr ""
 
-#: config_translations.py:215
+#: config_translations.py:217
 msgid "Pin (GPIO)"
 msgstr ""
 
-#: config_translations.py:216
+#: config_translations.py:218
 msgid "The GPIO pin using BCM numbering"
 msgstr ""
 
-#: config_translations.py:218
+#: config_translations.py:220
 msgid "Host"
 msgstr ""
 
-#: config_translations.py:219
+#: config_translations.py:221
 msgid "Host address or IP"
 msgstr ""
 
-#: config_translations.py:221
+#: config_translations.py:223
 msgid "I<sup>2</sup>C Bus"
 msgstr ""
 
-#: config_translations.py:222
+#: config_translations.py:224
 msgid "The I2C bus the device is connected to"
 msgstr ""
 
-#: config_translations.py:224
+#: config_translations.py:226
 msgid "I<sup>2</sup>C Address"
 msgstr ""
 
-#: config_translations.py:225
+#: config_translations.py:227
 msgid "The I2C address of the device"
 msgstr ""
 
-#: config_translations.py:227
+#: config_translations.py:229
 msgid "Interface"
 msgstr ""
 
-#: config_translations.py:228
+#: config_translations.py:230
 msgid "The interface used to communicate"
 msgstr ""
 
-#: config_translations.py:230
+#: config_translations.py:232
 msgid "Invert Scale"
 msgstr ""
 
-#: config_translations.py:231
+#: config_translations.py:233
 msgid "Invert the scale"
 msgstr ""
 
-#: config_translations.py:233
+#: config_translations.py:235
 msgid "Log Level: Debug"
 msgstr ""
 
-#: config_translations.py:234
+#: config_translations.py:236
 msgid "Show debug lines in the Daemon Log"
 msgstr ""
 
-#: config_translations.py:236
+#: config_translations.py:238
 msgid "Max Age (seconds)"
 msgstr ""
 
-#: config_translations.py:237
+#: config_translations.py:239
 msgid "The maximum allowable measurement age"
 msgstr ""
 
-#: config_translations.py:239
+#: config_translations.py:241
 msgid "Unit Measurement"
 msgstr ""
 
-#: config_translations.py:240
+#: config_translations.py:242
 msgid "Select a unit for the stored value"
 msgstr ""
 
-#: config_translations.py:242
+#: config_translations.py:244
 msgid "Measurements Enabled"
 msgstr ""
 
-#: config_translations.py:243
+#: config_translations.py:245
 msgid "The measurements to record"
 msgstr ""
 
-#: config_translations.py:245 mycodo_flask/templates/pages/usage.html:209
+#: config_translations.py:247 mycodo_flask/templates/pages/usage.html:209
 #: mycodo_flask/templates/settings/controller.html:39
 #: mycodo_flask/templates/settings/input.html:40
 msgid "Name"
 msgstr ""
 
-#: config_translations.py:246
+#: config_translations.py:248
 msgid "A name to distinguish this from others"
 msgstr ""
 
-#: config_translations.py:248
+#: config_translations.py:250
 msgid "Off Command"
 msgstr ""
 
-#: config_translations.py:249
+#: config_translations.py:251
 #: mycodo_flask/templates/pages/output_options/python.html:10
 msgid ""
 "Command to execute (as user mycodo) when the output is instructed to turn"
 " off"
 msgstr ""
 
-#: config_translations.py:251
+#: config_translations.py:253
 msgid "Output Mode"
 msgstr ""
 
-#: config_translations.py:252
+#: config_translations.py:254
 msgid "Mode to run the output"
 msgstr ""
 
-#: config_translations.py:254
+#: config_translations.py:256
 msgid "Shutdown Value"
 msgstr ""
 
-#: config_translations.py:255
+#: config_translations.py:257
 msgid "The output value to set when Mycodo shuts down"
 msgstr ""
 
-#: config_translations.py:257
+#: config_translations.py:259
 msgid "Startup Value"
 msgstr ""
 
-#: config_translations.py:258
+#: config_translations.py:260
 msgid "The output value to set when Mycodo starts up"
 msgstr ""
 
-#: config_translations.py:260
+#: config_translations.py:262
 msgid "Shutdown State"
 msgstr ""
 
-#: config_translations.py:261
+#: config_translations.py:263
 msgid "When Mycodo shuts down, set the output state"
 msgstr ""
 
-#: config_translations.py:263
+#: config_translations.py:265
 msgid "Startup State"
 msgstr ""
 
-#: config_translations.py:264
+#: config_translations.py:266
 msgid "When Mycodo starts, set the output state"
 msgstr ""
 
-#: config_translations.py:266
+#: config_translations.py:268
 msgid "On Command"
 msgstr ""
 
-#: config_translations.py:267
+#: config_translations.py:269
 #: mycodo_flask/templates/pages/output_options/python.html:4
 msgid ""
 "Command to execute (as user mycodo) when the output is instructed to turn"
 " on"
 msgstr ""
 
-#: config_translations.py:269 mycodo_flask/forms/forms_conditional.py:32
+#: config_translations.py:271 mycodo_flask/forms/forms_conditional.py:32
 #: mycodo_flask/forms/forms_lcd.py:55 mycodo_flask/forms/forms_math.py:37
 #: mycodo_flask/forms/forms_trigger.py:58
 msgid "Period (seconds)"
 msgstr ""
 
-#: config_translations.py:270
+#: config_translations.py:272
 msgid "The duration (seconds) between measurements or actions"
 msgstr ""
 
-#: config_translations.py:272
+#: config_translations.py:274
 msgid "Clock Pin"
 msgstr ""
 
-#: config_translations.py:273
+#: config_translations.py:275
 msgid "The GPIO (using BCM numbering) connected to the Clock pin"
 msgstr ""
 
-#: config_translations.py:275
+#: config_translations.py:277
 msgid "CS Pin"
 msgstr ""
 
-#: config_translations.py:276
+#: config_translations.py:278
 msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
 msgstr ""
 
-#: config_translations.py:278
+#: config_translations.py:280
 msgid "MISO Pin"
 msgstr ""
 
-#: config_translations.py:279
+#: config_translations.py:281
 msgid "The GPIO (using BCM numbering) connected to the MISO pin"
 msgstr ""
 
-#: config_translations.py:281
+#: config_translations.py:283
 msgid "MOSI Pin"
 msgstr ""
 
-#: config_translations.py:282
+#: config_translations.py:284
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr ""
 
-#: config_translations.py:284 inputs/mqtt_paho.py:52
+#: config_translations.py:286 inputs/mqtt_paho.py:52
 msgid "Port"
 msgstr ""
 
-#: config_translations.py:285
+#: config_translations.py:287
 msgid "Host port number"
 msgstr ""
 
-#: config_translations.py:287
+#: config_translations.py:289
 msgid "Pre Out Duration"
 msgstr ""
 
-#: config_translations.py:288
+#: config_translations.py:290
 msgid ""
 "If a Pre Output is selected, set the duration (seconds) to turn the Pre "
 "Output on for before every measurement is acquired."
 msgstr ""
 
-#: config_translations.py:292
+#: config_translations.py:294
 msgid "Pre During Measure"
 msgstr ""
 
-#: config_translations.py:293
+#: config_translations.py:295
 msgid ""
 "Check to turn the output off after (opposed to before) the measurement is"
 " complete"
 msgstr ""
 
-#: config_translations.py:295
+#: config_translations.py:297
 msgid "Pre Output"
 msgstr ""
 
-#: config_translations.py:296
+#: config_translations.py:298
 msgid "Turn the selected output on before taking every measurement"
 msgstr ""
 
-#: config_translations.py:298
+#: config_translations.py:300
 msgid "Protocol"
 msgstr ""
 
-#: config_translations.py:299
+#: config_translations.py:301
 msgid "Wireless 433 MHz protocol"
 msgstr ""
 
-#: config_translations.py:301
+#: config_translations.py:303
 msgid "Pulse Length"
 msgstr ""
 
-#: config_translations.py:302
+#: config_translations.py:304
 msgid "Wireless 433 MHz pulse length"
 msgstr ""
 
-#: config_translations.py:304
+#: config_translations.py:306
 msgid "Amount to Dispense (ml)"
 msgstr ""
 
-#: config_translations.py:305
+#: config_translations.py:307
 msgid "Volume in ml to pump"
 msgstr ""
 
-#: config_translations.py:307
+#: config_translations.py:309
 msgid "PWM Command"
 msgstr ""
 
-#: config_translations.py:308
+#: config_translations.py:310
 #, python-format
 msgid "Command to execute (as user mycodo) to set the PWM duty cycle (%%)"
 msgstr ""
 
-#: config_translations.py:310
+#: config_translations.py:312
 msgid "Frequency (Hertz)"
 msgstr ""
 
-#: config_translations.py:311
+#: config_translations.py:313
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr ""
 
-#: config_translations.py:313 inputs/ds18b20.py:77 inputs/ds18s20.py:69
+#: config_translations.py:315 inputs/ds18b20.py:77 inputs/ds18s20.py:69
 #: mycodo_flask/forms/forms_camera.py:23
 msgid "Library"
 msgstr ""
 
-#: config_translations.py:314
+#: config_translations.py:316
 msgid ""
 "Which method to produce the PWM signal (hardware pins can produce higher "
 "frequencies)"
 msgstr ""
 
-#: config_translations.py:316
+#: config_translations.py:318
 msgid "Reference Resistance"
 msgstr ""
 
-#: config_translations.py:317
+#: config_translations.py:319
 msgid "Reference resistance (Ohm)"
 msgstr ""
 
-#: config_translations.py:320 config_translations.py:323
+#: config_translations.py:322 config_translations.py:325
 msgid "Measurement resolution"
 msgstr ""
 
-#: config_translations.py:325
+#: config_translations.py:327
 msgid "Pulses Per Rev"
 msgstr ""
 
-#: config_translations.py:326
+#: config_translations.py:328
 msgid ""
 "The number of pulses per revolution to calculate revolutions per minute "
 "(RPM)"
 msgstr ""
 
-#: config_translations.py:328
+#: config_translations.py:330
 msgid "Sample Time"
 msgstr ""
 
-#: config_translations.py:329
+#: config_translations.py:331
 msgid ""
 "The amount of time (seconds) to sample the input before caluclating the "
 "measurement"
 msgstr ""
 
-#: config_translations.py:331
+#: config_translations.py:333
 msgid "Unscaled Unit Min"
 msgstr ""
 
-#: config_translations.py:332
+#: config_translations.py:334
 msgid "Unscaled minimum unit"
 msgstr ""
 
-#: config_translations.py:334
+#: config_translations.py:336
 msgid "Unscaled Unit Max"
 msgstr ""
 
-#: config_translations.py:335
+#: config_translations.py:337
 msgid "Unscaled maximum unit"
 msgstr ""
 
-#: config_translations.py:337
+#: config_translations.py:339
 msgid "Rescaled Unit Min"
 msgstr ""
 
-#: config_translations.py:338
+#: config_translations.py:340
 msgid "Rescaled minimum unit"
 msgstr ""
 
-#: config_translations.py:340
+#: config_translations.py:342
 msgid "Rescaled Unit Max"
 msgstr ""
 
-#: config_translations.py:341
+#: config_translations.py:343
 msgid "Rescaled maximum unit"
 msgstr ""
 
-#: config_translations.py:343
+#: config_translations.py:345
 msgid "Measurement Unit"
 msgstr ""
 
-#: config_translations.py:344
+#: config_translations.py:346
 msgid "Select the measurement and unit to store this measurement in the database"
 msgstr ""
 
-#: config_translations.py:346
+#: config_translations.py:348
 msgid "Sensitivity"
 msgstr ""
 
-#: config_translations.py:347
+#: config_translations.py:349
 msgid "Measurement sensitivity"
 msgstr ""
 
-#: config_translations.py:349
+#: config_translations.py:351
 msgid "Setpoint Tracking Type"
 msgstr ""
 
-#: config_translations.py:350
+#: config_translations.py:352
 msgid "Select the type of setpoint tracking"
 msgstr ""
 
-#: config_translations.py:352 mycodo_flask/forms/forms_settings.py:102
+#: config_translations.py:354 mycodo_flask/forms/forms_settings.py:102
 msgid "Voltage"
 msgstr ""
 
-#: config_translations.py:353
+#: config_translations.py:355
 msgid "The input voltage to the sensor"
 msgstr ""
 
-#: config_translations.py:355 mycodo_flask/forms/forms_conditional.py:40
+#: config_translations.py:357 mycodo_flask/forms/forms_conditional.py:40
 #: mycodo_flask/forms/forms_math.py:47 mycodo_flask/forms/forms_trigger.py:60
 msgid "Start Offset (seconds)"
 msgstr ""
 
-#: config_translations.py:356
+#: config_translations.py:358
 #: mycodo_flask/templates/pages/data_options/math.html:68
 #: mycodo_flask/templates/pages/function_options/conditional.html:77
 msgid "The duration (seconds) to wait before the first operation"
 msgstr ""
 
-#: config_translations.py:359
+#: config_translations.py:361
 msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr ""
 
-#: config_translations.py:361 mycodo_flask/forms/forms_input.py:146
+#: config_translations.py:363 mycodo_flask/forms/forms_input.py:146
 msgid "Bounce Time (ms)"
 msgstr ""
 
-#: config_translations.py:362
+#: config_translations.py:364
 msgid "The amount of time (miliseconds) to bounce the input signal"
 msgstr ""
 
-#: config_translations.py:364 mycodo_flask/forms/forms_input.py:148
+#: config_translations.py:366 mycodo_flask/forms/forms_input.py:148
 msgid "Reset Period"
 msgstr ""
 
-#: config_translations.py:365
+#: config_translations.py:367
 msgid ""
 "Wait a period of time (seconds) after the first edge detection to begin "
 "detecting again"
 msgstr ""
 
-#: config_translations.py:367
+#: config_translations.py:369
 msgid "RTD Probe Type"
 msgstr ""
 
-#: config_translations.py:368
+#: config_translations.py:370
 msgid "The type of thermocouple connected"
 msgstr ""
 
-#: config_translations.py:370
+#: config_translations.py:372
 msgid "Times Check"
 msgstr ""
 
-#: config_translations.py:371
+#: config_translations.py:373
 msgid "Number of times to check"
 msgstr ""
 
-#: config_translations.py:373
+#: config_translations.py:375
 msgid "On State"
 msgstr ""
 
-#: config_translations.py:374
+#: config_translations.py:376
 msgid "What state triggers the output to turn on? High or Low?"
 msgstr ""
 
-#: config_translations.py:376
+#: config_translations.py:378
 msgid "Trigger at Startup"
 msgstr ""
 
-#: config_translations.py:377
+#: config_translations.py:379
 msgid "Whether or not to trigger Functions when Mycodo starts"
 msgstr ""
 
-#: config_translations.py:379
+#: config_translations.py:381
 msgid "UART Device"
 msgstr ""
 
-#: config_translations.py:380
+#: config_translations.py:382
 msgid "The UART device location (e.g. /dev/ttyUSB1)"
 msgstr ""
 
-#: config_translations.py:382
+#: config_translations.py:384
 msgid "Weighting"
 msgstr ""
 
-#: config_translations.py:383
+#: config_translations.py:385
 msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
 "weighting."
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:78
-msgid "Text 1"
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:79
-msgid "Text 1 Description"
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:87
-msgid "Integer 1"
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:88
-msgid "Integer 1 Description"
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:94
-msgid "Boolean 1"
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:95
-msgid "Boolean 1 Description"
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:107
-msgid "Select 1"
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:108
-msgid "Select 1 Description"
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:120
-msgid "Select Measurement 1"
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:121
-msgid "Select Measurement 1 Description"
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:130
-msgid "Select Device 1"
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:131
-msgid "Select Device 1 Description"
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:145
-msgid "Select Device 2"
-msgstr ""
-
-#: controllers/custom_controllers/examples/custom_controller_example.py:146
-msgid "Select Device 2 Description"
 msgstr ""
 
 #: inputs/ads1256.py:86
@@ -1690,7 +1640,7 @@ msgstr ""
 msgid "Set the measuring range of the sensor"
 msgstr ""
 
-#: inputs/mqtt_paho.py:44 mycodo_flask/forms/forms_settings.py:311
+#: inputs/mqtt_paho.py:44 mycodo_flask/forms/forms_settings.py:318
 msgid "Hostname"
 msgstr ""
 
@@ -1822,7 +1772,7 @@ msgstr ""
 msgid "The serial device to write to"
 msgstr ""
 
-#: mycodo_flask/app.py:100
+#: mycodo_flask/app.py:211
 msgid "Please log in to access this page"
 msgstr ""
 
@@ -1838,35 +1788,35 @@ msgstr ""
 msgid "Restore in progress"
 msgstr ""
 
-#: mycodo_flask/routes_admin.py:371
+#: mycodo_flask/routes_admin.py:374
 msgid ""
 "Upgrade functionality is disabled because an internet connection was "
 "unable to be detected"
 msgstr ""
 
-#: mycodo_flask/routes_admin.py:391
+#: mycodo_flask/routes_admin.py:394
 msgid ""
 "There was an error encountered during the upgrade process. Check the "
 "upgrade log for details."
 msgstr ""
 
-#: mycodo_flask/routes_admin.py:410
+#: mycodo_flask/routes_admin.py:413
 msgid "Could not determine local mycodo version or online release versions: {err}"
 msgstr ""
 
-#: mycodo_flask/routes_admin.py:470
+#: mycodo_flask/routes_admin.py:473
 msgid "The upgrade (from master branch) has started"
 msgstr ""
 
-#: mycodo_flask/routes_admin.py:482
+#: mycodo_flask/routes_admin.py:485
 msgid "The upgrade has started"
 msgstr ""
 
-#: mycodo_flask/routes_admin.py:497
+#: mycodo_flask/routes_admin.py:500
 msgid "The major version upgrade has started"
 msgstr ""
 
-#: mycodo_flask/routes_admin.py:499
+#: mycodo_flask/routes_admin.py:502
 msgid "You cannot upgrade if an upgrade is not available"
 msgstr ""
 
@@ -1875,20 +1825,20 @@ msgid "Cannot access admin creation form if an admin user already exists."
 msgstr ""
 
 #: mycodo_flask/routes_authentication.py:71
-#: mycodo_flask/utils/utils_settings.py:154
-#: mycodo_flask/utils/utils_settings.py:194
+#: mycodo_flask/utils/utils_settings.py:155
+#: mycodo_flask/utils/utils_settings.py:216
 msgid "Passwords do not match. Please try again."
 msgstr ""
 
 #: mycodo_flask/routes_authentication.py:75
-#: mycodo_flask/utils/utils_settings.py:139
+#: mycodo_flask/utils/utils_settings.py:140
 msgid ""
 "Invalid user name. Must be between 2 and 64 characters and only contain "
 "letters and numbers."
 msgstr ""
 
 #: mycodo_flask/routes_authentication.py:81
-#: mycodo_flask/utils/utils_settings.py:149
+#: mycodo_flask/utils/utils_settings.py:150
 msgid ""
 "Invalid password. Must be between 6 and 64 characters and only contain "
 "letters, numbers, and symbols."
@@ -1924,19 +1874,19 @@ msgstr ""
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr ""
 
-#: mycodo_flask/routes_general.py:992
+#: mycodo_flask/routes_general.py:995
 msgid "System rebooting in 10 seconds"
 msgstr ""
 
-#: mycodo_flask/routes_general.py:994
+#: mycodo_flask/routes_general.py:997
 msgid "System shutting down in 10 seconds"
 msgstr ""
 
-#: mycodo_flask/routes_general.py:996
+#: mycodo_flask/routes_general.py:999
 msgid "Command to restart the daemon sent"
 msgstr ""
 
-#: mycodo_flask/routes_general.py:998
+#: mycodo_flask/routes_general.py:1001
 msgid "Command to reload the frontend sent"
 msgstr ""
 
@@ -1950,9 +1900,9 @@ msgstr ""
 
 #: mycodo_flask/forms/forms_authentication.py:36
 #: mycodo_flask/forms/forms_authentication.py:37
-#: mycodo_flask/forms/forms_settings.py:249
-#: mycodo_flask/forms/forms_settings.py:281
-#: mycodo_flask/forms/forms_settings.py:282
+#: mycodo_flask/forms/forms_settings.py:254
+#: mycodo_flask/forms/forms_settings.py:286
+#: mycodo_flask/forms/forms_settings.py:287
 msgid "Repeat Password"
 msgstr ""
 
@@ -2978,7 +2928,7 @@ msgid "Hour of Day to Generate"
 msgstr ""
 
 #: mycodo_flask/forms/forms_settings.py:116
-#: mycodo_flask/templates/settings/general.html:195
+#: mycodo_flask/templates/settings/general.html:218
 msgid "Hour Options: 0-23"
 msgstr ""
 
@@ -2990,247 +2940,259 @@ msgstr ""
 msgid "Check for Updates"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:131
+#: mycodo_flask/forms/forms_settings.py:122
+msgid "Internet Test IP Address"
+msgstr ""
+
+#: mycodo_flask/forms/forms_settings.py:124
+msgid "Internet Test Port"
+msgstr ""
+
+#: mycodo_flask/forms/forms_settings.py:126
+msgid "Internet Test Timeout"
+msgstr ""
+
+#: mycodo_flask/forms/forms_settings.py:136
 #: mycodo_flask/templates/settings/controller.html:13
 msgid "Import Controller Module"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:145
+#: mycodo_flask/forms/forms_settings.py:150
 #: mycodo_flask/templates/settings/input.html:13
 msgid "Import Input Module"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:158
-#: mycodo_flask/forms/forms_settings.py:165
+#: mycodo_flask/forms/forms_settings.py:163
+#: mycodo_flask/forms/forms_settings.py:170
 msgid "Measurement Name"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:159
-#: mycodo_flask/forms/forms_settings.py:166
+#: mycodo_flask/forms/forms_settings.py:164
+#: mycodo_flask/forms/forms_settings.py:171
 msgid "Measurement Units"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:160
+#: mycodo_flask/forms/forms_settings.py:165
 #: mycodo_flask/templates/settings/measurement.html:13
 msgid "Add Measurement"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:173
-#: mycodo_flask/forms/forms_settings.py:181
+#: mycodo_flask/forms/forms_settings.py:178
+#: mycodo_flask/forms/forms_settings.py:186
 msgid "Unit Name"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:175
-#: mycodo_flask/forms/forms_settings.py:182
+#: mycodo_flask/forms/forms_settings.py:180
+#: mycodo_flask/forms/forms_settings.py:187
 msgid "Unit Abbreviation"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:176
+#: mycodo_flask/forms/forms_settings.py:181
 #: mycodo_flask/templates/settings/measurement.html:44
 msgid "Add Unit"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:189
-#: mycodo_flask/forms/forms_settings.py:199
+#: mycodo_flask/forms/forms_settings.py:194
+#: mycodo_flask/forms/forms_settings.py:204
 msgid "Convert From Unit"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:191
+#: mycodo_flask/forms/forms_settings.py:196
 msgid "Convert To Measurement"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:194
+#: mycodo_flask/forms/forms_settings.py:199
 #: mycodo_flask/templates/settings/measurement.html:71
 msgid "Add Conversion"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:200
+#: mycodo_flask/forms/forms_settings.py:205
 msgid "Convert To Unit"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:212
+#: mycodo_flask/forms/forms_settings.py:217
 msgid "Role Name"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:213
+#: mycodo_flask/forms/forms_settings.py:218
 #: mycodo_flask/templates/tools/logview.html:3
 msgid "View Logs"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:214
+#: mycodo_flask/forms/forms_settings.py:219
 msgid "View Stats"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:215
+#: mycodo_flask/forms/forms_settings.py:220
 msgid "View Camera"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:216
+#: mycodo_flask/forms/forms_settings.py:221
 msgid "View Settings"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:217
+#: mycodo_flask/forms/forms_settings.py:222
 msgid "Edit Users"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:218
+#: mycodo_flask/forms/forms_settings.py:223
 msgid "Edit Controllers"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:219
+#: mycodo_flask/forms/forms_settings.py:224
 msgid "Edit Settings"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:221
+#: mycodo_flask/forms/forms_settings.py:226
 msgid "Add Role"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:241
-#: mycodo_flask/forms/forms_settings.py:272
+#: mycodo_flask/forms/forms_settings.py:246
+#: mycodo_flask/forms/forms_settings.py:277
 msgid "Passwords must match"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:244
-#: mycodo_flask/forms/forms_settings.py:276
+#: mycodo_flask/forms/forms_settings.py:249
+#: mycodo_flask/forms/forms_settings.py:281
 msgid "Password must be 6 or more characters"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:251
+#: mycodo_flask/forms/forms_settings.py:256
 msgid "Role"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:253
-#: mycodo_flask/forms/forms_settings.py:288
+#: mycodo_flask/forms/forms_settings.py:258
+#: mycodo_flask/forms/forms_settings.py:294
 msgid "Theme"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:254
+#: mycodo_flask/forms/forms_settings.py:259
 #: mycodo_flask/templates/settings/users.html:13
 msgid "Add User"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:267
+#: mycodo_flask/forms/forms_settings.py:272
 msgid "New Password"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:284
+#: mycodo_flask/forms/forms_settings.py:290
 msgid "Role ID"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:299
+#: mycodo_flask/forms/forms_settings.py:306
 msgid "Enable I2C"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:300
+#: mycodo_flask/forms/forms_settings.py:307
 msgid "Disable I2C"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:301
+#: mycodo_flask/forms/forms_settings.py:308
 msgid "Enable 1-Wire"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:302
+#: mycodo_flask/forms/forms_settings.py:309
 msgid "Disable 1-Wire"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:303
+#: mycodo_flask/forms/forms_settings.py:310
 msgid "Enable Serial"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:304
+#: mycodo_flask/forms/forms_settings.py:311
 msgid "Disable Serial"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:305
+#: mycodo_flask/forms/forms_settings.py:312
 msgid "Enable SPI"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:306
+#: mycodo_flask/forms/forms_settings.py:313
 msgid "Disable SPI"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:307
+#: mycodo_flask/forms/forms_settings.py:314
 msgid "Enable SSH"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:308
+#: mycodo_flask/forms/forms_settings.py:315
 msgid "Disable SSH"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:309
+#: mycodo_flask/forms/forms_settings.py:316
 msgid "Enable Pi Camera"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:310
+#: mycodo_flask/forms/forms_settings.py:317
 msgid "Disable Pi Camera"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:312
+#: mycodo_flask/forms/forms_settings.py:319
 msgid "Change Hostname"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:313
+#: mycodo_flask/forms/forms_settings.py:320
 msgid "Configure pigpiod"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:314
+#: mycodo_flask/forms/forms_settings.py:321
 msgid "Reconfigure"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:317
+#: mycodo_flask/forms/forms_settings.py:324
 msgid "Conditional Sample Rate (seconds)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:320
+#: mycodo_flask/forms/forms_settings.py:327
 msgid "Input Sample Rate (seconds)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:323
+#: mycodo_flask/forms/forms_settings.py:330
 msgid "Math Sample Rate (seconds)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:326
+#: mycodo_flask/forms/forms_settings.py:333
 msgid "Output Sample Rate (seconds)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:329
+#: mycodo_flask/forms/forms_settings.py:336
 msgid "PID Sample Rate (seconds)"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:331
+#: mycodo_flask/forms/forms_settings.py:338
 msgid "Save Sample Rates"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:339
+#: mycodo_flask/forms/forms_settings.py:346
 msgid "Delete All Dashboard Elements"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:340
+#: mycodo_flask/forms/forms_settings.py:347
 msgid "Delete All Inputs"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:341
+#: mycodo_flask/forms/forms_settings.py:348
 msgid "Delete All Maths"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:342
+#: mycodo_flask/forms/forms_settings.py:349
 msgid "Delete All Notes and Note Tags"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:343
+#: mycodo_flask/forms/forms_settings.py:350
 msgid "Delete All Outputs"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:344
+#: mycodo_flask/forms/forms_settings.py:351
 msgid "Delete Settings Database"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:345
-#: mycodo_flask/forms/forms_settings.py:346
+#: mycodo_flask/forms/forms_settings.py:352
+#: mycodo_flask/forms/forms_settings.py:353
 msgid "Delete File"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:347
+#: mycodo_flask/forms/forms_settings.py:354
 msgid "Reset Email Counter"
 msgstr ""
 
@@ -3337,7 +3299,7 @@ msgid "Info"
 msgstr ""
 
 #: mycodo_flask/templates/layout-remote.html:47
-#: mycodo_flask/templates/layout.html:186
+#: mycodo_flask/templates/layout.html:196
 msgid "Setup"
 msgstr ""
 
@@ -3377,37 +3339,37 @@ msgstr ""
 msgid "Diagnostics"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:78 mycodo_flask/templates/layout.html:87
-#: mycodo_flask/templates/layout.html:169
+#: mycodo_flask/templates/layout.html:88 mycodo_flask/templates/layout.html:97
+#: mycodo_flask/templates/layout.html:179
 msgid "Daemon is Not Running"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:83 mycodo_flask/templates/layout.html:169
+#: mycodo_flask/templates/layout.html:93 mycodo_flask/templates/layout.html:179
 msgid "Daemon is Running"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:93
+#: mycodo_flask/templates/layout.html:103
 msgid "Cannot Check Daemon Status"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:114
+#: mycodo_flask/templates/layout.html:124
 #: mycodo_flask/templates/pages/dashboard.html:394
 #: mycodo_flask/templates/pages/output.html:122
 msgid "No Connection"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:180
+#: mycodo_flask/templates/layout.html:190
 #: mycodo_flask/templates/pages/live.html:5
 msgid "Live"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:181
+#: mycodo_flask/templates/layout.html:191
 #: mycodo_flask/templates/pages/graph-async.html:3
 #: mycodo_flask/templates/pages/graph-async.html:30
 msgid "Asynchronous Graphs"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:193
+#: mycodo_flask/templates/layout.html:203
 #: mycodo_flask/templates/tools/calibration.html:3
 #: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:3
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:3
@@ -3415,49 +3377,49 @@ msgstr ""
 msgid "Calibration & Setup"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:198
+#: mycodo_flask/templates/layout.html:208
 msgid "More"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:204
+#: mycodo_flask/templates/layout.html:214
 #: mycodo_flask/templates/pages/usage_reports.html:12
 msgid "Energy Usage Reports"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:216
+#: mycodo_flask/templates/layout.html:226
 #: mycodo_flask/templates/pages/function_options/conditional.html:57
 msgid "Help"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:218
+#: mycodo_flask/templates/layout.html:228
 msgid "Mycodo Manual"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:220
+#: mycodo_flask/templates/layout.html:230
 msgid "Discussion Forum"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:221
+#: mycodo_flask/templates/layout.html:231
 msgid "Submit an Issue"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:222
+#: mycodo_flask/templates/layout.html:232
 msgid "Mycodo on Github"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:223
+#: mycodo_flask/templates/layout.html:233
 msgid "Changelog"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:230
+#: mycodo_flask/templates/layout.html:240
 msgid "Configure"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:231
+#: mycodo_flask/templates/layout.html:241
 msgid "Mycodo Logs"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:232
+#: mycodo_flask/templates/layout.html:242
 #: mycodo_flask/templates/pages/info.html:3
 #: mycodo_flask/templates/pages/info.html:5
 msgid "System Information"
@@ -3466,42 +3428,42 @@ msgstr ""
 #: mycodo_flask/templates/admin/dependencies.html:3
 #: mycodo_flask/templates/admin/dependencies.html:5
 #: mycodo_flask/templates/admin/dependencies.html:44
-#: mycodo_flask/templates/layout.html:234
+#: mycodo_flask/templates/layout.html:244
 msgid "Dependencies"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:236
+#: mycodo_flask/templates/layout.html:246
 msgid "Upgrade"
 msgstr ""
 
 #: mycodo_flask/templates/admin/backup.html:3
 #: mycodo_flask/templates/admin/backup.html:5
 #: mycodo_flask/templates/admin/backup.html:12
-#: mycodo_flask/templates/layout.html:237
+#: mycodo_flask/templates/layout.html:247
 msgid "Backup Restore"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:239
+#: mycodo_flask/templates/layout.html:249
 msgid "Restart Backend"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:240
+#: mycodo_flask/templates/layout.html:250
 msgid "Restart Frontend"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:242
+#: mycodo_flask/templates/layout.html:252
 msgid "Restart System"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:243
+#: mycodo_flask/templates/layout.html:253
 msgid "Shutdown System"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:245
+#: mycodo_flask/templates/layout.html:255
 msgid "Remote Admin"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:247
+#: mycodo_flask/templates/layout.html:257
 msgid "Logout"
 msgstr ""
 
@@ -4342,7 +4304,15 @@ msgstr ""
 msgid "End duty cycle"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:31
+#: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:25
+msgid "Increment"
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:27
+msgid "The amount of the duty cycle change for each step."
+msgstr ""
+
+#: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:41
 #, python-format
 msgid ""
 "Ramp an Output from one duty cycle to another duty cycle (in 0.1% steps) "
@@ -4867,7 +4837,7 @@ msgid "Imported Controller Modules"
 msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:11
-#: mycodo_flask/utils/utils_settings.py:256
+#: mycodo_flask/utils/utils_settings.py:278
 msgid "General Settings"
 msgstr ""
 
@@ -4928,40 +4898,54 @@ msgid "View collected statistics"
 msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:127
-msgid "Check if you would like Mycodo to automatically check for upgrades."
+msgid ""
+"The IP address to test if there is an active internet connection required"
+" to allow upgrading."
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:138
-msgid "Set the maximum allowed amperage to be switched on at any given time"
+#: mycodo_flask/templates/settings/general.html:133
+msgid "The port of the internet test IP address."
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:144
-msgid "Set the voltage used to power the devices powered by the outputs"
+#: mycodo_flask/templates/settings/general.html:139
+msgid "The timeout period (seconds) for testing the internet connection."
 msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:150
-msgid "Set the cost per kilowatt-hour"
+msgid "Check if you would like Mycodo to automatically check for upgrades."
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:156
-msgid "Set the unit of currency used to pay for the electricity"
+#: mycodo_flask/templates/settings/general.html:161
+msgid "Set the maximum allowed amperage to be switched on at any given time"
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:162
-msgid "Set a day of the month to calculate monthly power usage"
+#: mycodo_flask/templates/settings/general.html:167
+msgid "Set the voltage used to power the devices powered by the outputs"
 msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:173
+msgid "Set the cost per kilowatt-hour"
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:179
+msgid "Set the unit of currency used to pay for the electricity"
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:185
+msgid "Set a day of the month to calculate monthly power usage"
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:196
 msgid ""
 "Automatically generate output usage reports on a daily/weekly/monthly "
 "schedule"
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:179
+#: mycodo_flask/templates/settings/general.html:202
 msgid "How often to generate a report"
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:189
+#: mycodo_flask/templates/settings/general.html:212
 msgid "Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28"
 msgstr ""
 
@@ -4999,7 +4983,7 @@ msgstr ""
 msgid "User Settings"
 msgstr ""
 
-#: mycodo_flask/templates/settings/users.html:125
+#: mycodo_flask/templates/settings/users.html:135
 msgid "Roles"
 msgstr ""
 
@@ -5200,7 +5184,7 @@ msgstr ""
 msgid "{dev} with ID %(id)s successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_function.py:455
+#: mycodo_flask/utils/utils_function.py:456
 msgid "Execute All"
 msgstr ""
 
@@ -5426,7 +5410,7 @@ msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
 #: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
-#: mycodo_flask/utils/utils_settings.py:1294
+#: mycodo_flask/utils/utils_settings.py:1319
 msgid "File"
 msgstr ""
 
@@ -5515,61 +5499,61 @@ msgstr ""
 msgid "Remote Host %(host)s with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:83
+#: mycodo_flask/utils/utils_settings.py:84
 msgid "User Role"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:145
+#: mycodo_flask/utils/utils_settings.py:146
 msgid "Another user already has that email address."
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:192
+#: mycodo_flask/utils/utils_settings.py:214
 msgid "Invalid password"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:635
+#: mycodo_flask/utils/utils_settings.py:660
 #, python-format
 msgid "Measurement with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:699
-#: mycodo_flask/utils/utils_settings.py:740
-#: mycodo_flask/utils/utils_settings.py:782
+#: mycodo_flask/utils/utils_settings.py:724
+#: mycodo_flask/utils/utils_settings.py:765
+#: mycodo_flask/utils/utils_settings.py:807
 msgid "Unit"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:721
+#: mycodo_flask/utils/utils_settings.py:746
 #, python-format
 msgid "Unit with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:811
-#: mycodo_flask/utils/utils_settings.py:853
-#: mycodo_flask/utils/utils_settings.py:886
+#: mycodo_flask/utils/utils_settings.py:836
+#: mycodo_flask/utils/utils_settings.py:878
+#: mycodo_flask/utils/utils_settings.py:911
 msgid "Conversion"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:834
+#: mycodo_flask/utils/utils_settings.py:859
 #, python-format
 msgid "Conversion with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:1098
+#: mycodo_flask/utils/utils_settings.py:1123
 msgid "Pi Settings"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:1108
+#: mycodo_flask/utils/utils_settings.py:1133
 msgid "Alert Settings"
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:1120
+#: mycodo_flask/utils/utils_settings.py:1145
 #, python-format
 msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
 "successful."
 msgstr ""
 
-#: mycodo_flask/utils/utils_settings.py:1318
+#: mycodo_flask/utils/utils_settings.py:1343
 msgid "Reset email counter"
 msgstr ""
 
@@ -5652,19 +5636,19 @@ msgstr ""
 #~ msgstr "Weder"
 
 #~ msgid "Add Dashboard Element"
-#~ msgstr "Dashboard Element hinzufügen"
+#~ msgstr ""
 
 #~ msgid "Graph"
-#~ msgstr "Diagramm"
+#~ msgstr ""
 
 #~ msgid "Gauge"
-#~ msgstr "Maßstab"
+#~ msgstr ""
 
 #~ msgid "PWM Slider"
 #~ msgstr ""
 
 #~ msgid "PID Control"
-#~ msgstr "PID Kontrolle"
+#~ msgstr ""
 
 #~ msgid "Average (Last, Multiple Channels)"
 #~ msgstr ""
@@ -5679,79 +5663,79 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Difference"
-#~ msgstr "Unterschied"
+#~ msgstr ""
 
 #~ msgid "Equation"
-#~ msgstr "Gleichung"
+#~ msgstr ""
 
 #~ msgid "Humidity (Wet/Dry-Bulb)"
-#~ msgstr "Luftfeuchtigkeit (nasse / trockene Birne)"
+#~ msgstr ""
 
 #~ msgid "Redundancy"
-#~ msgstr "Redundanz"
+#~ msgstr ""
 
 #~ msgid "Statistics"
-#~ msgstr "Statistiken"
+#~ msgstr ""
 
 #~ msgid "Verification"
-#~ msgstr "Nachprüfung"
+#~ msgstr ""
 
 #~ msgid "Vapor Pressure Deficit"
-#~ msgstr "Dampfdruckdefizit"
+#~ msgstr ""
 
 #~ msgid "Time/Date"
-#~ msgstr "Zeit Datum"
+#~ msgstr ""
 
 #~ msgid "Duration"
-#~ msgstr "Laufzeit"
+#~ msgstr ""
 
 #~ msgid "Daily (Time-Based)"
-#~ msgstr "Täglich (zeitabhängig)"
+#~ msgstr ""
 
 #~ msgid "Daily (Sine Wave)"
-#~ msgstr "Täglich (Sinuswelle)"
+#~ msgstr ""
 
 #~ msgid "Daily (Bezier Curve)"
-#~ msgstr "Täglich (Bezierkurve)"
+#~ msgstr ""
 
 #~ msgid "On/Off (GPIO)"
-#~ msgstr "Ein / Aus (GPIO)"
+#~ msgstr ""
 
 #~ msgid "PWM (GPIO)"
-#~ msgstr "PWM (GPIO)"
+#~ msgstr ""
 
 #~ msgid "Wireless 315/433MHz LPD/SRD (rpi-rf)"
-#~ msgstr "Wireless 315 / 433MHz LPD / SRD (rpi-rf)"
+#~ msgstr ""
 
 #~ msgid "On/Off (Linux Command)"
-#~ msgstr "Ein / Aus (Linux-Befehl)"
+#~ msgstr ""
 
 #~ msgid "PWM (Linux Command)"
-#~ msgstr "PWM (Linux-Befehl)"
+#~ msgstr ""
 
 #~ msgid "On/Off (Python Command)"
-#~ msgstr "Ein / Aus (Python-Befehl)"
+#~ msgstr ""
 
 #~ msgid "PWM (Python Command)"
-#~ msgstr "PWM (Python-Befehl)"
+#~ msgstr ""
 
 #~ msgid "Atlas EZO-PMP"
-#~ msgstr "Atlas EZO-PMP"
+#~ msgstr ""
 
 #~ msgid "FTDI"
 #~ msgstr ""
 
 #~ msgid "I2C"
-#~ msgstr "I2C"
+#~ msgstr ""
 
 #~ msgid "UART"
-#~ msgstr "UART"
+#~ msgstr ""
 
 #~ msgid "DS-Type Sensor Calibration"
-#~ msgstr "DS-Sensorkalibrierung"
+#~ msgstr ""
 
 #~ msgid "GPIO State"
-#~ msgstr "GPIO Status"
+#~ msgstr ""
 
 #~ msgid "Output State"
 #~ msgstr ""
@@ -5763,43 +5747,43 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Spacer"
-#~ msgstr "Abstandshalter"
+#~ msgstr ""
 
 #~ msgid "Execute Actions"
-#~ msgstr "Aktionen ausführen"
+#~ msgstr ""
 
 #~ msgid "Trigger: Timer (Daily Point)"
-#~ msgstr "Trigger: Timer (Tagespunkt)"
+#~ msgstr ""
 
 #~ msgid "Daily Span"
-#~ msgstr "Tägliche Spanne"
+#~ msgstr ""
 
 #~ msgid "Infrared Receive"
 #~ msgstr ""
 
 #~ msgid "Run PWM Method"
-#~ msgstr "Führen Sie die PWM-Methode aus"
+#~ msgstr ""
 
 #~ msgid "Sunrise/Sunset"
-#~ msgstr "Sonnenaufgang Sonnenuntergang"
+#~ msgstr ""
 
 #~ msgid "Camera: Capture Photo"
-#~ msgstr "Kamera: Foto aufnehmen"
+#~ msgstr ""
 
 #~ msgid "Email with Photo Attachment"
-#~ msgstr "E-Mail mit Foto-Anhang"
+#~ msgstr ""
 
 #~ msgid "Email with Video Attachment"
-#~ msgstr "E-Mail mit Videoanhang"
+#~ msgstr ""
 
 #~ msgid "Execute Command"
-#~ msgstr "Befehl ausführen"
+#~ msgstr ""
 
 #~ msgid "Infrared Send"
 #~ msgstr ""
 
 #~ msgid "Backlight Off"
-#~ msgstr "Hintergrundbeleuchtung aus"
+#~ msgstr ""
 
 #~ msgid "Backlight On"
 #~ msgstr ""
@@ -5811,10 +5795,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Set Method"
-#~ msgstr "Methode einstellen"
+#~ msgstr ""
 
 #~ msgid "Set Setpoint"
-#~ msgstr "Setze den Sollwert"
+#~ msgstr ""
 
 #~ msgid "Raise Setpoint"
 #~ msgstr ""
@@ -5835,587 +5819,577 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Altitude"
-#~ msgstr "Höhenlage"
+#~ msgstr ""
 
 #~ msgid "Battery"
-#~ msgstr "Batterie"
+#~ msgstr ""
 
 #~ msgid "Boolean"
-#~ msgstr "Boolean"
+#~ msgstr ""
 
 #~ msgid "CO2"
-#~ msgstr "CO2"
+#~ msgstr ""
 
 #~ msgid "CPU Load 1 min"
-#~ msgstr "CPU-Last 1 min"
+#~ msgstr ""
 
 #~ msgid "CPU Load 5 min"
-#~ msgstr "CPU-Last 5 Minuten"
+#~ msgstr ""
 
 #~ msgid "CPU Load 15 min"
-#~ msgstr "CPU-Last 15 Minuten"
+#~ msgstr ""
 
 #~ msgid "Dewpoint"
-#~ msgstr "Taupunkt"
+#~ msgstr ""
 
 #~ msgid "Disk"
-#~ msgstr "Festplatte"
+#~ msgstr ""
 
 #~ msgid "Dissolved Oxygen"
 #~ msgstr ""
 
 #~ msgid "Duty Cycle"
-#~ msgstr "Einschaltdauer"
+#~ msgstr ""
 
 #~ msgid "GPIO Edge"
-#~ msgstr "GPIO Begrenzung"
+#~ msgstr ""
 
 #~ msgid "Electrical Conductivity"
-#~ msgstr "Elektrische Leitfähigkeit"
+#~ msgstr ""
 
 #~ msgid "Electrical Current"
-#~ msgstr "Elektrischer Strom"
+#~ msgstr ""
 
 #~ msgid "Electrical Potential"
-#~ msgstr "Elektrisches Potenzial"
+#~ msgstr ""
 
 #~ msgid "Frequency"
-#~ msgstr "Frequenz"
+#~ msgstr ""
 
 #~ msgid "Humidity"
-#~ msgstr "Feuchtigkeit"
+#~ msgstr ""
 
 #~ msgid "Humidity Ratio"
-#~ msgstr "Feuchtigkeitsfaktor"
+#~ msgstr ""
 
 #~ msgid "Ion Concentration"
-#~ msgstr "Ionenkonzentration"
+#~ msgstr ""
 
 #~ msgid "Light"
-#~ msgstr "Licht"
+#~ msgstr ""
 
 #~ msgid "Moisture"
-#~ msgstr "Feuchtigkeit"
+#~ msgstr ""
 
 #~ msgid "Oxidation Reduction Potential"
 #~ msgstr ""
 
 #~ msgid "PID P-Value"
-#~ msgstr "PID P-Wert"
+#~ msgstr ""
 
 #~ msgid "PID I-Value"
-#~ msgstr "PID I-Wert"
+#~ msgstr ""
 
 #~ msgid "PID D-Value"
-#~ msgstr "PID D-Wert"
+#~ msgstr ""
 
 #~ msgid "Pressure"
-#~ msgstr "Druck"
+#~ msgstr ""
 
 #~ msgid "Pulse Width"
-#~ msgstr "Impuls Weite"
+#~ msgstr ""
 
 #~ msgid "Radiation Dose Rate"
 #~ msgstr ""
 
 #~ msgid "Revolutions"
-#~ msgstr "Revolutionen"
+#~ msgstr ""
 
 #~ msgid "Setpoint"
-#~ msgstr "Sollwert"
+#~ msgstr ""
 
 #~ msgid "Band Min"
-#~ msgstr "Band minimal"
+#~ msgstr ""
 
 #~ msgid "Band Max"
-#~ msgstr "Band maximal"
+#~ msgstr ""
 
 #~ msgid "Specific Enthalpy"
-#~ msgstr "Spezifischer Wärmeinhalt"
+#~ msgstr ""
 
 #~ msgid "Specific Volume"
-#~ msgstr "Spezifisches Volumen"
+#~ msgstr ""
 
 #~ msgid "Temperature"
-#~ msgstr "Temperature"
+#~ msgstr ""
 
 #~ msgid "Unitless"
 #~ msgstr ""
 
 #~ msgid "VOC"
-#~ msgstr "VOC"
+#~ msgstr ""
 
 #~ msgid "Volume"
-#~ msgstr "Volumen"
+#~ msgstr ""
 
 #~ msgid "Microsecond"
-#~ msgstr "Mikrosekunde"
+#~ msgstr ""
 
 #~ msgid "Microsiemens per centimeter"
-#~ msgstr "Microsiemens pro Zentimeter"
+#~ msgstr ""
 
 #~ msgid "Microsieverts per hour"
 #~ msgstr ""
 
 #~ msgid "Amp"
-#~ msgstr "Ampere"
+#~ msgstr ""
 
 #~ msgid "Celsius"
-#~ msgstr "Celsius"
+#~ msgstr ""
 
 #~ msgid "Counts per minute"
 #~ msgstr ""
 
 #~ msgid "CPU Load"
-#~ msgstr "CPU-Last"
+#~ msgstr ""
 
 #~ msgid "Decimal"
-#~ msgstr "Dezimal"
+#~ msgstr ""
 
 #~ msgid "Fahrenheit"
-#~ msgstr "Fahrenheit"
+#~ msgstr ""
 
 #~ msgid "Foot"
-#~ msgstr "Fuß"
+#~ msgstr ""
 
 #~ msgid "Full"
-#~ msgstr "Voll"
+#~ msgstr ""
 
 #~ msgid "G-Force"
 #~ msgstr ""
 
 #~ msgid "Gigabyte"
-#~ msgstr "Gigabyte"
+#~ msgstr ""
 
 #~ msgid "Hour"
 #~ msgstr ""
 
 #~ msgid "Hertz"
-#~ msgstr "Hertz"
+#~ msgstr ""
 
 #~ msgid "Infrared"
-#~ msgstr "Infrarot"
+#~ msgstr ""
 
 #~ msgid "Kelvin"
-#~ msgstr "Kelvin"
+#~ msgstr ""
 
 #~ msgid "Kilobyte"
-#~ msgstr "Kilobyte"
+#~ msgstr ""
 
 #~ msgid "Kilogram per kilogram"
-#~ msgstr "Kilogramm pro Kilogramm"
+#~ msgstr ""
 
 #~ msgid "Kilohertz"
-#~ msgstr "Kilohertz"
+#~ msgstr ""
 
 #~ msgid "Kilojoule per kilogram"
-#~ msgstr "Kilojoule pro Kilogramm"
+#~ msgstr ""
 
 #~ msgid "Kilopascal"
-#~ msgstr "Kilopascal"
+#~ msgstr ""
 
 #~ msgid "Lux"
-#~ msgstr "Lux"
+#~ msgstr ""
 
 #~ msgid "Meter"
-#~ msgstr "Meter"
+#~ msgstr ""
 
 #~ msgid "Milligram per Liter"
 #~ msgstr ""
 
 #~ msgid "Minute"
-#~ msgstr "Minute"
+#~ msgstr ""
 
 #~ msgid "Milliliter"
-#~ msgstr "Milliliter"
+#~ msgstr ""
 
 #~ msgid "Millivolt"
 #~ msgstr ""
 
 #~ msgid "Cubic meters per kilogram"
-#~ msgstr "Kubikmeter pro Kilogramm"
+#~ msgstr ""
 
 #~ msgid "Megahertz"
-#~ msgstr "Megahertz"
+#~ msgstr ""
 
 #~ msgid "Megabyte"
-#~ msgstr "Megabyte"
+#~ msgstr ""
 
 #~ msgid "Pascal"
-#~ msgstr "Pascal"
+#~ msgstr ""
 
 #~ msgid "Percent"
-#~ msgstr "Prozent"
+#~ msgstr ""
 
 #~ msgid "pH"
-#~ msgstr "pH-Wert"
+#~ msgstr ""
 
 #~ msgid "PID values"
-#~ msgstr "PID-Werte"
+#~ msgstr ""
 
 #~ msgid "Parts per billion"
-#~ msgstr "Teile pro Milliarde"
+#~ msgstr ""
 
 #~ msgid "Parts per million"
-#~ msgstr "Teile pro Million"
+#~ msgstr ""
 
 #~ msgid "Pounds per square inch"
 #~ msgstr ""
 
 #~ msgid "Revolutions per minute"
-#~ msgstr "Revolutionen pro Minute"
+#~ msgstr ""
 
 #~ msgid "Second"
-#~ msgstr "Zweite"
+#~ msgstr ""
 
 #~ msgid "Microgram per cubic meter"
-#~ msgstr "Mikrogramm pro Kubikmeter"
+#~ msgstr ""
 
 #~ msgid "Volt"
-#~ msgstr "Volt"
+#~ msgstr ""
 
 #~ msgid "Actions"
-#~ msgstr "Aktionen"
+#~ msgstr ""
 
 #~ msgid "Add"
-#~ msgstr "Hinzufügen"
+#~ msgstr ""
 
 #~ msgid "Activate"
-#~ msgstr "Aktivieren"
+#~ msgstr ""
 
 #~ msgid "Alert"
-#~ msgstr "Warnen"
+#~ msgstr ""
 
 #~ msgid "Calibration"
-#~ msgstr "Kalibrierung"
+#~ msgstr ""
 
 #~ msgid "Calculate"
 #~ msgstr ""
 
 #~ msgid "Camera"
-#~ msgstr "Kamera"
+#~ msgstr ""
 
 #~ msgid "Cancel"
-#~ msgstr "Stornieren"
+#~ msgstr ""
 
 #~ msgid "Conditional"
-#~ msgstr "Bedingungen"
+#~ msgstr ""
 
 #~ msgid "Controller"
-#~ msgstr "Regler"
+#~ msgstr ""
 
 #~ msgid "Create"
-#~ msgstr "Erstellen"
+#~ msgstr ""
 
 #~ msgid "Custom"
-#~ msgstr "Brauch"
+#~ msgstr ""
 
 #~ msgid "Dashboard"
-#~ msgstr "Dashboard"
+#~ msgstr ""
 
 #~ msgid "Data"
-#~ msgstr "Daten"
+#~ msgstr ""
 
 #~ msgid "Deactivate"
-#~ msgstr "Deaktivieren"
+#~ msgstr ""
 
 #~ msgid "Default"
 #~ msgstr ""
 
 #~ msgid "Delete"
-#~ msgstr "Löschen"
+#~ msgstr ""
 
 #~ msgid "Diagnostic"
-#~ msgstr "Diagnose"
+#~ msgstr ""
 
 #~ msgid "Display"
-#~ msgstr "Anzeige"
+#~ msgstr ""
 
 #~ msgid "Down"
-#~ msgstr "Nach unten"
+#~ msgstr ""
 
 #~ msgid "Edge"
-#~ msgstr "Kante"
+#~ msgstr ""
 
 #~ msgid "Edit"
-#~ msgstr "Bearbeiten"
+#~ msgstr ""
 
 #~ msgid "E-Mail"
-#~ msgstr "Email"
+#~ msgstr ""
 
 #~ msgid "Energy Usage"
-#~ msgstr "Energieverbrauch"
+#~ msgstr ""
 
 #~ msgid "Error"
-#~ msgstr "Fehler"
+#~ msgstr ""
 
 #~ msgid "Export"
-#~ msgstr "Export"
+#~ msgstr ""
 
 #~ msgid "Function"
-#~ msgstr "Funktion"
+#~ msgstr ""
 
 #~ msgid "General"
-#~ msgstr "Allgemeines"
+#~ msgstr ""
 
 #~ msgid "Hold"
-#~ msgstr "Halt"
+#~ msgstr ""
 
 #~ msgid "Indicator"
-#~ msgstr "Indikator"
+#~ msgstr ""
 
 #~ msgid "Invert"
-#~ msgstr "Umkehren"
+#~ msgstr ""
 
 #~ msgid "Import"
-#~ msgstr "Import"
+#~ msgstr ""
 
 #~ msgid "Input"
-#~ msgstr "Eingabe"
+#~ msgstr ""
 
 #~ msgid "Invalid"
-#~ msgstr "Ungültig"
+#~ msgstr ""
 
 #~ msgid "LCD"
-#~ msgstr "LCD"
+#~ msgstr ""
 
 #~ msgid "Line"
-#~ msgstr "Linie"
+#~ msgstr ""
 
 #~ msgid "Login"
-#~ msgstr "Login"
+#~ msgstr ""
 
 #~ msgid "Math"
-#~ msgstr "Berechnung"
+#~ msgstr ""
 
 #~ msgid "Measurement"
-#~ msgstr "Messwert"
+#~ msgstr ""
 
 #~ msgid "Method"
-#~ msgstr "Verfahrensweise"
+#~ msgstr ""
 
 #~ msgid "Modify"
-#~ msgstr "Ändern"
+#~ msgstr ""
 
 #~ msgid "Multiple"
 #~ msgstr ""
 
 #~ msgid "None Available"
-#~ msgstr "Keine verfügbar"
+#~ msgstr ""
 
 #~ msgid "Note"
-#~ msgstr "Hinweis"
+#~ msgstr ""
 
 #~ msgid "Off"
-#~ msgstr "Aus"
+#~ msgstr ""
 
 #~ msgid "On"
-#~ msgstr "An"
+#~ msgstr ""
 
 #~ msgid "Output"
-#~ msgstr "Ausgabe"
+#~ msgstr ""
 
 #~ msgid "Password"
-#~ msgstr "Passwort"
+#~ msgstr ""
 
 #~ msgid "Pause"
-#~ msgstr "Pause"
+#~ msgstr ""
 
 #~ msgid "PID"
-#~ msgstr "PID"
+#~ msgstr ""
 
 #~ msgid "Pin"
 #~ msgstr ""
 
 #~ msgid "PWM"
-#~ msgstr "PWM"
+#~ msgstr ""
 
 #~ msgid "Rename"
-#~ msgstr "Umbenennen"
+#~ msgstr ""
 
 #~ msgid "Reorder"
-#~ msgstr "Aufnahme"
+#~ msgstr ""
 
 #~ msgid "Reset"
 #~ msgstr ""
 
 #~ msgid "Resume"
-#~ msgstr "Fortsetzen"
+#~ msgstr ""
 
 #~ msgid "Save"
-#~ msgstr "Speichern"
+#~ msgstr ""
 
 #~ msgid "Save Order"
-#~ msgstr "Speichern"
+#~ msgstr ""
 
 #~ msgid "Select One"
-#~ msgstr "Auswählen"
+#~ msgstr ""
 
 #~ msgid "Settings"
-#~ msgstr "Einstellungen"
+#~ msgstr ""
 
 #~ msgid "Single"
 #~ msgstr ""
 
 #~ msgid "Tag"
-#~ msgstr "Etikett"
+#~ msgstr ""
 
 #~ msgid "Text"
 #~ msgstr ""
 
 #~ msgid "Timer"
-#~ msgstr "Timer"
+#~ msgstr ""
 
 #~ msgid "Trigger"
-#~ msgstr "Auslösen"
+#~ msgstr ""
 
 #~ msgid "Up"
-#~ msgstr "Nach oben"
+#~ msgstr ""
 
 #~ msgid "Upload"
-#~ msgstr "Hochladen"
+#~ msgstr ""
 
 #~ msgid "User"
-#~ msgstr "Benutzer"
+#~ msgstr ""
 
 #~ msgid "1-Wire Device ID"
-#~ msgstr "1-Wire-Geräte-ID"
+#~ msgstr ""
 
 #~ msgid "Select the 1-wire device ID"
-#~ msgstr "Wählen Sie die 1-Draht-Geräte-ID"
+#~ msgstr ""
 
 #~ msgid "Gain"
-#~ msgstr "Gewinnen"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Adjust the gain to change the "
 #~ "measurable voltage range. See ADC "
 #~ "documentation for details."
 #~ msgstr ""
-#~ "Passen Sie die Verstärkung an, um "
-#~ "den messbaren Spannungsbereich zu ändern. "
-#~ "Weitere Informationen finden Sie in der"
-#~ " ADC-Dokumentation."
 
 #~ msgid "Resolution"
-#~ msgstr "Entscheidung"
+#~ msgstr ""
 
 #~ msgid "ADC Resolution (see ADC documentation)"
-#~ msgstr "ADC-Lösung (siehe ADC-Dokumentation)"
+#~ msgstr ""
 
 #~ msgid "Sample Speed"
-#~ msgstr "Probegeschwindigkeit"
+#~ msgstr ""
 
 #~ msgid "ADC Sample Speed (see ADC documentation)"
-#~ msgstr "ADC-Beispielgeschwindigkeit (siehe ADC-Dokumentation)"
+#~ msgstr ""
 
 #~ msgid "Current Draw (amps)"
-#~ msgstr "Aktuelle Zeichnung (amps)"
+#~ msgstr ""
 
 #~ msgid "The number of amps the output device draws (at 120/240 VAC)"
-#~ msgstr "Die Anzahl der Ampere, die das Ausgabegerät aufnimmt (bei 120/240 VAC)"
+#~ msgstr ""
 
 #~ msgid "Baud Rate"
-#~ msgstr "Baud-Rate"
+#~ msgstr ""
 
 #~ msgid "The UART baud rate"
-#~ msgstr "Die UART-Baudrate"
+#~ msgstr ""
 
 #~ msgid "MAC (XX:XX:XX:XX:XX:XX)"
-#~ msgstr "MAC (XX: XX: XX: XX: XX: XX)"
+#~ msgstr ""
 
 #~ msgid "The MAC address of the input"
-#~ msgstr "Die MAC-Adresse der Eingabe"
+#~ msgstr ""
 
 #~ msgid "BT Adapter"
-#~ msgstr "BT Adapter"
+#~ msgstr ""
 
 #~ msgid "The Bluetooth adapter of the input"
-#~ msgstr "Der Bluetooth-Adapter des Eingangs"
+#~ msgstr ""
 
 #~ msgid "Command"
-#~ msgstr "Befehl"
+#~ msgstr ""
 
 #~ msgid "The command to executed (as user mycodo) to return a measurement value"
 #~ msgstr ""
-#~ "Der Befehl, der ausgeführt wird (als "
-#~ "Benutzer mycodo), um einen Messwert "
-#~ "zurückzugeben"
 
 #~ msgid "Select the unit of the measurement to be stored in the database"
 #~ msgstr ""
-#~ "Wählen Sie die Einheit der Messung "
-#~ "aus, die in der Datenbank gespeichert"
-#~ " werden soll"
 
 #~ msgid "Convert to Unit"
-#~ msgstr "In Einheit umrechnen"
+#~ msgstr ""
 
 #~ msgid "Convert the measurement to a different unit"
-#~ msgstr "Konvertieren Sie die Messung in eine andere Einheit"
+#~ msgstr ""
 
 #~ msgid "Deadline"
-#~ msgstr "Frist"
+#~ msgstr ""
 
 #~ msgid "Time (seconds) to wait until failure"
-#~ msgstr "Wartezeit (Sekunden) bis zum Ausfall"
+#~ msgstr ""
 
 #~ msgid "Duration On (seconds)"
-#~ msgstr "Dauer AN (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "Turn on for a duration of time (seconds)"
-#~ msgstr "Einschalten für eine Zeitdauer (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
-#~ msgstr "Arbeitszyklus für die PWM (Prozent, 0,0 - 100,0)"
+#~ msgstr ""
 
 #~ msgid "Flow Rate (ml/min)"
-#~ msgstr "Flussrate (ml / min)"
+#~ msgstr ""
 
 #~ msgid "Flow rate in ml/minute (0.5 min, 105 max)"
 #~ msgstr ""
 
 #~ msgid "FTDI Device"
-#~ msgstr "FTDI-Gerät"
+#~ msgstr ""
 
 #~ msgid "The FTDI device (e.g. /dev/ttyUSB1)"
-#~ msgstr "Das FTDI-Gerät (zB / dev / ttyUSB1)"
+#~ msgstr ""
 
 #~ msgid "Pin (GPIO)"
-#~ msgstr "Pin (GPIO)"
+#~ msgstr ""
 
 #~ msgid "The GPIO pin using BCM numbering"
-#~ msgstr "Der GPIO-Pin mit BCM-Nummerierung"
+#~ msgstr ""
 
 #~ msgid "Host"
-#~ msgstr "Anbieter"
+#~ msgstr ""
 
 #~ msgid "Host address or IP"
-#~ msgstr "Hostadresse oder IP"
+#~ msgstr ""
 
 #~ msgid "I<sup>2</sup>C Bus"
-#~ msgstr "I<sup>2</sup>C Bus"
+#~ msgstr ""
 
 #~ msgid "The I2C bus the device is connected to"
-#~ msgstr "Der I2C-Bus, an den das Gerät angeschlossen ist"
+#~ msgstr ""
 
 #~ msgid "I<sup>2</sup>C Address"
-#~ msgstr "I <sup> 2 </ sup> C-Adresse"
+#~ msgstr ""
 
 #~ msgid "The I2C address of the device"
-#~ msgstr "Die I2C-Adresse des Geräts"
+#~ msgstr ""
 
 #~ msgid "Interface"
-#~ msgstr "Schnittstelle"
+#~ msgstr ""
 
 #~ msgid "The interface used to communicate"
-#~ msgstr "Die für die Kommunikation verwendete Schnittstelle"
+#~ msgstr ""
 
 #~ msgid "Invert Scale"
-#~ msgstr "Maßstab umkehren"
+#~ msgstr ""
 
 #~ msgid "Invert the scale"
-#~ msgstr "Invertieren Sie die Skala"
+#~ msgstr ""
 
 #~ msgid "Log Level: Debug"
 #~ msgstr ""
@@ -6424,40 +6398,37 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Max Age (seconds)"
-#~ msgstr "Maximale Lebensdauer (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "The maximum allowable measurement age"
-#~ msgstr "Das maximal zulässige Messalter"
+#~ msgstr ""
 
 #~ msgid "Unit Measurement"
-#~ msgstr "Maßeinheit"
+#~ msgstr ""
 
 #~ msgid "Select a unit for the stored value"
-#~ msgstr "Wählen Sie eine Einheit für den gespeicherten Wert"
+#~ msgstr ""
 
 #~ msgid "Measurements Enabled"
-#~ msgstr "Messungen aktiviert"
+#~ msgstr ""
 
 #~ msgid "The measurements to record"
-#~ msgstr "Die aufzuzeichnenden Messungen"
+#~ msgstr ""
 
 #~ msgid "Name"
-#~ msgstr "Name"
+#~ msgstr ""
 
 #~ msgid "A name to distinguish this from others"
-#~ msgstr "Ein Name, um dies von anderen zu unterscheiden"
+#~ msgstr ""
 
 #~ msgid "Off Command"
-#~ msgstr "Aus Befehl"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Command to execute (as user mycodo) "
 #~ "when the output is instructed to "
 #~ "turn off"
 #~ msgstr ""
-#~ "Befehl, der ausgeführt wird (als "
-#~ "Benutzer mycodo), wenn die Ausgabe "
-#~ "angewiesen wird, auszuschalten"
 
 #~ msgid "Output Mode"
 #~ msgstr ""
@@ -6484,64 +6455,58 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Startup State"
-#~ msgstr "Start Zustand"
+#~ msgstr ""
 
 #~ msgid "When Mycodo starts, set the output state"
-#~ msgstr "Wenn Mycodo startet, legen Sie den Ausgabezustand fest"
+#~ msgstr ""
 
 #~ msgid "On Command"
-#~ msgstr "An Befehl"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Command to execute (as user mycodo) "
 #~ "when the output is instructed to "
 #~ "turn on"
 #~ msgstr ""
-#~ "Befehl, der ausgeführt wird (als "
-#~ "Benutzer mycodo), wenn die Ausgabe zum"
-#~ " Einschalten angewiesen wird"
 
 #~ msgid "Period (seconds)"
-#~ msgstr "Zeitraum (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "The duration (seconds) between input reads"
 #~ msgstr ""
 
 #~ msgid "Clock Pin"
-#~ msgstr "Uhr Pin"
+#~ msgstr ""
 
 #~ msgid "The GPIO (using BCM numbering) connected to the Clock pin"
-#~ msgstr "Der GPIO (mit BCM-Nummerierung) mit dem Clock-Pin verbunden ist"
+#~ msgstr ""
 
 #~ msgid "CS Pin"
-#~ msgstr "CS Pin"
+#~ msgstr ""
 
 #~ msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
 #~ msgstr ""
-#~ "Der GPIO (mit BCM-Nummerierung), der "
-#~ "an den Cable Select-Pin angeschlossen"
-#~ " ist"
 
 #~ msgid "MISO Pin"
-#~ msgstr "MISO Pin"
+#~ msgstr ""
 
 #~ msgid "The GPIO (using BCM numbering) connected to the MISO pin"
-#~ msgstr "Der GPIO (mit BCM-Nummerierung) mit dem der MISO-Pin verbunden ist"
+#~ msgstr ""
 
 #~ msgid "MOSI Pin"
-#~ msgstr "MOSI Pin"
+#~ msgstr ""
 
 #~ msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
-#~ msgstr "Der GPIO (mit BCM-Nummerierung) mit dem der MOSI-Pin verbunden ist"
+#~ msgstr ""
 
 #~ msgid "Port"
-#~ msgstr "Port"
+#~ msgstr ""
 
 #~ msgid "Host port number"
-#~ msgstr "Host-Portnummer"
+#~ msgstr ""
 
 #~ msgid "Pre Out Duration"
-#~ msgstr "Pre Out Dauer"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "If a Pre Output is selected, set"
@@ -6549,147 +6514,125 @@ msgstr ""
 #~ " Pre Output on for before every "
 #~ "measurement is acquired."
 #~ msgstr ""
-#~ "Wenn eine Vor-Ausgabe ausgewählt ist,"
-#~ " stellen Sie die Dauer (Sekunden) "
-#~ "ein, um die Vor-Ausgabe einzuschalten,"
-#~ " bevor eine Messung durchgeführt wird."
 
 #~ msgid "Pre During Measure"
-#~ msgstr "Vormessung"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Check to turn the output off after"
 #~ " (opposed to before) the measurement "
 #~ "is complete"
 #~ msgstr ""
-#~ "Aktivieren Sie das Kontrollkästchen, um "
-#~ "den Ausgang auszuschalten, nachdem die "
-#~ "Messung abgeschlossen ist"
 
 #~ msgid "Pre Output"
-#~ msgstr "Vorleistung"
+#~ msgstr ""
 
 #~ msgid "Turn the selected output on before taking every measurement"
-#~ msgstr "Schalten Sie die ausgewählte Ausgabe vor jeder Messung ein"
+#~ msgstr ""
 
 #~ msgid "Protocol"
-#~ msgstr "Protokoll"
+#~ msgstr ""
 
 #~ msgid "Wireless 433 MHz protocol"
-#~ msgstr "Wireless 433 MHz Protokoll"
+#~ msgstr ""
 
 #~ msgid "Pulse Length"
-#~ msgstr "Pulslänge"
+#~ msgstr ""
 
 #~ msgid "Wireless 433 MHz pulse length"
-#~ msgstr "Wireless 433 MHz Pulslänge"
+#~ msgstr ""
 
 #~ msgid "Amount to Dispense (ml)"
-#~ msgstr "Ausgabemenge (ml)"
+#~ msgstr ""
 
 #~ msgid "Volume in ml to pump"
-#~ msgstr "Volumen in ml zum Pumpen"
+#~ msgstr ""
 
 #~ msgid "PWM Command"
-#~ msgstr "PWM Befehl"
+#~ msgstr ""
 
 #~ msgid "Command to execute (as user mycodo) to set the PWM duty cycle (%%)"
 #~ msgstr ""
-#~ "Befehl zum Ausführen (als Benutzer "
-#~ "mycodo) zum Einstellen des PWM-"
-#~ "Ausllastungsgrades (%%)"
 
 #~ msgid "Frequency (Hertz)"
-#~ msgstr "Frequenz (Hertz)"
+#~ msgstr ""
 
 #~ msgid "The Hertz to output the PWM signal (0 - 70,000)"
-#~ msgstr "Der Hertz Wert zur Ausgabe des PWM-Signals (0 - 70.000)"
+#~ msgstr ""
 
 #~ msgid "Library"
-#~ msgstr "Bibliothek"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Which method to produce the PWM "
 #~ "signal (hardware pins can produce higher"
 #~ " frequencies)"
 #~ msgstr ""
-#~ "Welche Methode zur Erzeugung des PWM-"
-#~ "Signals (Hardware Pins können höhere "
-#~ "Frequenzen erzeugen)"
 
 #~ msgid "Reference Resistance"
-#~ msgstr "Referenzwiderstand"
+#~ msgstr ""
 
 #~ msgid "Reference resistance (Ohm)"
-#~ msgstr "Referenzwiderstand (Ohm)"
+#~ msgstr ""
 
 #~ msgid "Measurement resolution"
-#~ msgstr "Messauflösung"
+#~ msgstr ""
 
 #~ msgid "Pulses Per Rev"
-#~ msgstr "Impulse pro Umdrehung"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The number of pulses per revolution "
 #~ "to calculate revolutions per minute "
 #~ "(RPM)"
 #~ msgstr ""
-#~ "Die Anzahl der Impulse pro Umdrehung "
-#~ "zur Berechnung der Umdrehungen pro "
-#~ "Minute (RPM)"
 
 #~ msgid "Sample Time"
-#~ msgstr "Beispielzeit"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The amount of time (seconds) to "
 #~ "sample the input before caluclating the"
 #~ " measurement"
 #~ msgstr ""
-#~ "Die Zeit (Sekunden) zum Abtasten der "
-#~ "Eingabe, bevor die Messung kalibriert "
-#~ "wird"
 
 #~ msgid "Unscaled Unit Min"
-#~ msgstr "Unskalierte Einheit min"
+#~ msgstr ""
 
 #~ msgid "Unscaled minimum unit"
-#~ msgstr "Nicht skalierte Mindesteinheit"
+#~ msgstr ""
 
 #~ msgid "Unscaled Unit Max"
-#~ msgstr "Unskalierte Einheit max"
+#~ msgstr ""
 
 #~ msgid "Unscaled maximum unit"
-#~ msgstr "Nicht skalierte maximale Einheit"
+#~ msgstr ""
 
 #~ msgid "Rescaled Unit Min"
-#~ msgstr "Neuskalierte Einheit min"
+#~ msgstr ""
 
 #~ msgid "Rescaled minimum unit"
-#~ msgstr "Mindestmaßeinheit neu skaliert"
+#~ msgstr ""
 
 #~ msgid "Rescaled Unit Max"
-#~ msgstr "Neuskalierte Einheit max"
+#~ msgstr ""
 
 #~ msgid "Rescaled maximum unit"
-#~ msgstr "Maximale Einheit neu skaliert"
+#~ msgstr ""
 
 #~ msgid "Measurement Unit"
-#~ msgstr "Maßeinheit"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Select the measurement and unit to "
 #~ "store this measurement in the database"
 #~ msgstr ""
-#~ "Wählen Sie die Messung und Einheit "
-#~ "aus, um diese Messung in der "
-#~ "Datenbank zu speichern"
 
 #~ msgid "Sensitivity"
-#~ msgstr "Empfindlichkeit"
+#~ msgstr ""
 
 #~ msgid "Measurement sensitivity"
-#~ msgstr "Messempfindlichkeit"
+#~ msgstr ""
 
 #~ msgid "Setpoint Tracking Type"
 #~ msgstr ""
@@ -6698,75 +6641,67 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Voltage"
-#~ msgstr "Spannung"
+#~ msgstr ""
 
 #~ msgid "The input voltage to the sensor"
-#~ msgstr "Die Eingangsspannung zum Sensor"
+#~ msgstr ""
 
 #~ msgid "Start Offset (seconds)"
-#~ msgstr "Start Offset (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "The duration (seconds) to wait before the first operation"
-#~ msgstr "Die Wartezeit (Sekunden) bis zur ersten Operation"
+#~ msgstr ""
 
 #~ msgid "Edge detection: low to high (rising), high to low (falling), or both"
 #~ msgstr ""
-#~ "Kantenerkennung: niedrig bis hoch (steigend),"
-#~ " hoch bis niedrig (fallend) oder "
-#~ "beides"
 
 #~ msgid "Bounce Time (ms)"
-#~ msgstr "Prellzeit (ms)"
+#~ msgstr ""
 
 #~ msgid "The amount of time (miliseconds) to bounce the input signal"
 #~ msgstr ""
-#~ "Die Zeit (Millisekunden), in der das "
-#~ "Eingangssignal zurückgesendet werden soll"
 
 #~ msgid "Reset Period"
-#~ msgstr "Periode zurücksetzen"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Wait a period of time (seconds) "
 #~ "after the first edge detection to "
 #~ "begin detecting again"
 #~ msgstr ""
-#~ "Warten Sie einen Zeitraum (Sekunden) "
-#~ "nach der ersten Kantenerkennung, um "
-#~ "erneut zu erkennen"
 
 #~ msgid "RTD Probe Type"
-#~ msgstr "RTD-Sondentyp"
+#~ msgstr ""
 
 #~ msgid "The type of thermocouple connected"
-#~ msgstr "Der Typ des angeschlossenen Thermoelements"
+#~ msgstr ""
 
 #~ msgid "Times Check"
-#~ msgstr "Zeiten prüfen"
+#~ msgstr ""
 
 #~ msgid "Number of times to check"
-#~ msgstr "Anzahl der zu überprüfenden Zeiten"
+#~ msgstr ""
 
 #~ msgid "On State"
 #~ msgstr ""
 
 #~ msgid "What state triggers the output to turn on? High or Low?"
-#~ msgstr "Welcher Status löst die Ausgabe aus? Hoch oder tief?"
+#~ msgstr ""
 
 #~ msgid "Trigger at Startup"
-#~ msgstr "Trigger beim Start"
+#~ msgstr ""
 
 #~ msgid "Whether or not to trigger Functions when Mycodo starts"
-#~ msgstr "Gibt an, ob beim Start von Mycodo Funktionen ausgelöst werden sollen"
+#~ msgstr ""
 
 #~ msgid "UART Device"
-#~ msgstr "UART-Gerät"
+#~ msgstr ""
 
 #~ msgid "The UART device location (e.g. /dev/ttyUSB1)"
-#~ msgstr "Der Standort des UART-Geräts (zB / dev / ttyUSB1)"
+#~ msgstr ""
 
 #~ msgid "Weighting"
-#~ msgstr "Gewichtung"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The weighting of the previous "
@@ -6775,11 +6710,6 @@ msgstr ""
 #~ "smoothing measurements. 0.0 means no "
 #~ "weighting."
 #~ msgstr ""
-#~ "Die Gewichtung der vorherigen Messung "
-#~ "auf die aktuelle Messung. Bereich: 0.0"
-#~ " - 1.0. Wird zum Glätten von "
-#~ "Messungen verwendet. 0.0 bedeutet keine "
-#~ "Gewichtung."
 
 #~ msgid "Text 1"
 #~ msgstr ""
@@ -6825,21 +6755,15 @@ msgstr ""
 
 #~ msgid "Set the calibration method to perform during Input activation"
 #~ msgstr ""
-#~ "Legen Sie die Kalibrierungsmethode fest, "
-#~ "die während der Aktivierung der Eingänge"
-#~ " ausgeführt werden soll"
 
 #~ msgid "Calibration Max Age"
-#~ msgstr "Max. Kalibrierung"
+#~ msgstr ""
 
 #~ msgid "The Max Age (seconds) of the Input/Math to use for calibration"
 #~ msgstr ""
-#~ "Das maximale Alter (Sekunden) der "
-#~ "Eingabe / Mathematik für die "
-#~ "Kalibrierung"
 
 #~ msgid "Select the library used to communicate"
-#~ msgstr "Wählen Sie die Bibliothek aus, die zur Kommunikation verwendet wird"
+#~ msgstr ""
 
 #~ msgid "Command Timeout"
 #~ msgstr ""
@@ -6857,19 +6781,19 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Enable ABC"
-#~ msgstr "ABC aktivieren"
+#~ msgstr ""
 
 #~ msgid "Enable automatic baseline correction (ABC)"
-#~ msgstr "Aktivieren der automatischen Grundlinienkorrektur (ABC)"
+#~ msgstr ""
 
 #~ msgid "Measurement Range"
-#~ msgstr "Messbereich"
+#~ msgstr ""
 
 #~ msgid "Set the measuring range of the sensor"
-#~ msgstr "Stellen Sie den Messbereich des Sensors ein"
+#~ msgstr ""
 
 #~ msgid "Hostname"
-#~ msgstr "Hostname"
+#~ msgstr ""
 
 #~ msgid "The hostname of the MQTT server"
 #~ msgstr ""
@@ -6890,56 +6814,46 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Download Stored Data"
-#~ msgstr "Gespeicherte Daten herunterladen"
+#~ msgstr ""
 
 #~ msgid "Download the data logged to the device."
-#~ msgstr "Laden Sie die aufgezeichneten Daten auf das Gerät herunter."
+#~ msgstr ""
 
 #~ msgid "Set Logging Interval"
-#~ msgstr "Legen Sie das Protokollierungsintervall fest"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Set the logging interval (seconds) the"
 #~ " device will store measurements on "
 #~ "its internal memory."
 #~ msgstr ""
-#~ "Legen Sie das Protokollierungsintervall "
-#~ "(Sekunden) fest, in dem das Gerät "
-#~ "die Messungen in seinem internen "
-#~ "Speicher speichert."
 
 #~ msgid "Enable Heater"
-#~ msgstr "Heizung aktivieren"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Enable heater to evaporate condensation. "
 #~ "Turn on heater x seconds every y"
 #~ " measurements."
 #~ msgstr ""
-#~ "Heizgerät aktivieren, um Kondensation zu "
-#~ "verdampfen. Schalten Sie alle x-Messungen "
-#~ "x Sekunden lang ein."
 
 #~ msgid "Heater On Seconds"
-#~ msgstr "Heizung in Sekunden"
+#~ msgstr ""
 
 #~ msgid "How long to turn the heater on (seconds)."
-#~ msgstr "Wie lange soll der Ofen eingeschaltet werden (Sekunden)."
+#~ msgstr ""
 
 #~ msgid "Heater On Period"
-#~ msgstr "Heizung auf Zeitraum"
+#~ msgstr ""
 
 #~ msgid "After how many measurements to turn the heater on. This will repeat."
 #~ msgstr ""
-#~ "Nach wie vielen Messungen muss der "
-#~ "Ofen eingeschaltet werden. Das wird sich"
-#~ " wiederholen."
 
 #~ msgid "IP Address"
-#~ msgstr "IP Adresse"
+#~ msgstr ""
 
 #~ msgid "The IP address of the device"
-#~ msgstr "Die IP-Adresse des Geräts"
+#~ msgstr ""
 
 #~ msgid "Application ID"
 #~ msgstr ""
@@ -6960,19 +6874,16 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Fan Off After Measure"
-#~ msgstr "Fan Off nach Maßnahme"
+#~ msgstr ""
 
 #~ msgid "Turn the fan on only during the measurement"
-#~ msgstr "Schalten Sie den Lüfter nur während der Messung ein"
+#~ msgstr ""
 
 #~ msgid "Fan On Duration"
-#~ msgstr "Fan On Dauer"
+#~ msgstr ""
 
 #~ msgid "How long to turn the fan on (seconds) before acquiring measurements"
 #~ msgstr ""
-#~ "Wie lange soll der Lüfter eingeschaltet"
-#~ " werden (Sekunden), bevor Messungen "
-#~ "durchgeführt werden"
 
 #~ msgid "Serial Device"
 #~ msgstr ""
@@ -6981,310 +6892,294 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Please log in to access this page"
-#~ msgstr "Bitte Anmelden um Zugriff zur Seite zu erhalten"
+#~ msgstr ""
 
 #~ msgid "Backup in progress"
-#~ msgstr "Sicherung läuft"
+#~ msgstr ""
 
 #~ msgid "Deletion of backup in progress"
-#~ msgstr "Backuplöschung läuft"
+#~ msgstr ""
 
 #~ msgid "Restore in progress"
-#~ msgstr "Wiederherstellung läuft"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Upgrade functionality is disabled because "
 #~ "an internet connection was unable to "
 #~ "be detected"
-#~ msgstr "Upgrade Funktion nicht möglich, da keine Internetverbindung besteht"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "There was an error encountered during"
 #~ " the upgrade process. Check the "
 #~ "upgrade log for details."
 #~ msgstr ""
-#~ "Fehler beim Upgrade. Detailinformationen "
-#~ "erhalten Sie im Upgrade-Logfile."
 
 #~ msgid ""
 #~ "Could not determine local mycodo version"
 #~ " or online release versions: {err}"
 #~ msgstr ""
-#~ "Fehler beim Ermitteln der lokalen mycodo"
-#~ " Version oder der online Release "
-#~ "Version: {err}"
 
 #~ msgid "The upgrade (from master branch) has started"
-#~ msgstr "Upgrade (von Master Branch) wurde gestartet"
+#~ msgstr ""
 
 #~ msgid "The upgrade has started"
-#~ msgstr "Upgrade wurde gestartet"
+#~ msgstr ""
 
 #~ msgid "The major version upgrade has started"
-#~ msgstr "Das Hauptversion Upgrade wurde gestartet"
+#~ msgstr ""
 
 #~ msgid "You cannot upgrade if an upgrade is not available"
-#~ msgstr "Upgrade nicht möglich, wenn kein Upgrade verfügbar ist"
+#~ msgstr ""
 
 #~ msgid "Cannot access admin creation form if an admin user already exists."
 #~ msgstr ""
-#~ "Anlegen eines Adminzuganges nicht möglich, "
-#~ "wenn bereits ein Admin besteht."
 
 #~ msgid "Passwords do not match. Please try again."
-#~ msgstr "Passwortübereinstimmung falsch. Bitte versuchen Sie es erneut."
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Invalid user name. Must be between "
 #~ "2 and 64 characters and only "
 #~ "contain letters and numbers."
 #~ msgstr ""
-#~ "Ungültiger Benutzername. Benutzername muß "
-#~ "zwischen 2 bis 64 Zeichen (Nummer "
-#~ "und Zahlen) haben."
 
 #~ msgid ""
 #~ "Invalid password. Must be between 6 "
 #~ "and 64 characters and only contain "
 #~ "letters, numbers, and symbols."
 #~ msgstr ""
-#~ "Ungültiges Passwort. Passwort muß zwischen "
-#~ "6 bis 64 Zeichen (Nummer, Zahlen "
-#~ "und Sonderzeichen) haben."
 
 #~ msgid "User '%(user)s' successfully created. Please log in below."
-#~ msgstr "Benutzer ‚%(user)s’ erfolgreich angelegt. Bitte einloggen."
+#~ msgstr ""
 
 #~ msgid "Failed to create user '%(user)s': %(err)s"
-#~ msgstr "Fehler beim Anlegen des Benutzer ‚%(user)s‘: %(err)s"
+#~ msgstr ""
 
 #~ msgid "Cannot access login page if you're already logged in"
-#~ msgstr "Login Seite nicht aufrufbar, wenn Sie bereits angemeldet sind"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Too many failed login attempts. Please"
 #~ " wait %(min)s minutes before attempting "
 #~ "to log in again"
 #~ msgstr ""
-#~ "Zuviel falsche Anmeldungen. Bitte warten "
-#~ "Sie %(min)s Minuten für den nächsten "
-#~ "Versuch"
 
 #~ msgid "Successfully logged out"
-#~ msgstr "Erfolgreich abgemeldet"
+#~ msgstr ""
 
 #~ msgid "A valid temperature is required: %(temp)s is invalid."
-#~ msgstr "Gültige Temperatur nötig: %(temp)s ist ungültig."
+#~ msgstr ""
 
 #~ msgid "System rebooting in 10 seconds"
-#~ msgstr "Systemneustart in 10 Sekunden"
+#~ msgstr ""
 
 #~ msgid "System shutting down in 10 seconds"
-#~ msgstr "Systemabschaltung in 10 Sekunden"
+#~ msgstr ""
 
 #~ msgid "Command to restart the daemon sent"
-#~ msgstr "Befehl zum Backend Neustart gesendet"
+#~ msgstr ""
 
 #~ msgid "Command to reload the frontend sent"
-#~ msgstr "Befehl zum Frontend Neustart gesendet"
+#~ msgstr ""
 
 #~ msgid "Cannot start time-lapse if stream is active."
-#~ msgstr "Zeitraffer kann nicht gestartet werden, wenn Stream aktiv ist."
+#~ msgstr ""
 
 #~ msgid "Cannot start stream if time-lapse is active."
-#~ msgstr "Stream kann nicht gestartet werden, wenn Zeitraffer aktiv ist."
+#~ msgstr ""
 
 #~ msgid "Repeat Password"
-#~ msgstr "Passwortwiederholung"
+#~ msgstr ""
 
 #~ msgid "remember"
-#~ msgstr "merken"
+#~ msgstr ""
 
 #~ msgid "Domain or IP Address"
-#~ msgstr "Domain oder IP Adresse"
+#~ msgstr ""
 
 #~ msgid "Add Host"
-#~ msgstr "Anbieter hinzufügen"
+#~ msgstr ""
 
 #~ msgid "Delete Host"
-#~ msgstr "Anbieter löschen"
+#~ msgstr ""
 
 #~ msgid "I Understand"
-#~ msgstr "Ich akzeptiere"
+#~ msgstr ""
 
 #~ msgid "Select"
-#~ msgstr "Wählen"
+#~ msgstr ""
 
 #~ msgid "Atlas EZO Pump"
 #~ msgstr ""
 
 #~ msgid "Begin Calibration"
-#~ msgstr "Starte Kalibrierung"
+#~ msgstr ""
 
 #~ msgid "Clear Calibration"
-#~ msgstr "Kalibrierung entfernen"
+#~ msgstr ""
 
 #~ msgid "Continue to Next Stage"
-#~ msgstr "Weiter zum nächsten Schritt"
+#~ msgstr ""
 
 #~ msgid "Atlas pH Sensor"
-#~ msgstr "Atlas pH Sensor"
+#~ msgstr ""
 
 #~ msgid "pH Points to Calibrate"
 #~ msgstr ""
 
 #~ msgid "Device"
-#~ msgstr "Gerät"
+#~ msgstr ""
 
 #~ msgid "Set Resolution"
-#~ msgstr "Entscheidung festlegen"
+#~ msgstr ""
 
 #~ msgid "Conditional Statement"
-#~ msgstr "Bedingte Erklärung"
+#~ msgstr ""
 
 #~ msgid "Refractory Period (seconds)"
-#~ msgstr "Überhitzungs Zeitraum (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "Add Condition"
-#~ msgstr "Bedingung hinzufügen"
+#~ msgstr ""
 
 #~ msgid "Add Action"
-#~ msgstr "Aktion hinzufügen"
+#~ msgstr ""
 
 #~ msgid "Test All Actions"
-#~ msgstr "Alle Aktionen testen"
+#~ msgstr ""
 
 #~ msgid "GPIO Pin (BCM)"
-#~ msgstr "GPIO Pin (BCM)"
+#~ msgstr ""
 
 #~ msgid "Width"
-#~ msgstr "Weite"
+#~ msgstr ""
 
 #~ msgid "Height (pixels)"
-#~ msgstr "Höhe (in Pixel)"
+#~ msgstr ""
 
 #~ msgid "Refresh (seconds)"
-#~ msgstr "Aktualisierung (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "Number of seconds to wait between acquiring any new measurements."
-#~ msgstr "Sekundenanzahl zwischen Beschaffung und Messwert."
+#~ msgstr ""
 
 #~ msgid "Visible Elements"
-#~ msgstr "Sichtbare Elemente"
+#~ msgstr ""
 
 #~ msgid "Maths"
-#~ msgstr "Mathe"
+#~ msgstr ""
 
 #~ msgid "Note Tags"
-#~ msgstr "Beachten Sie Tags"
+#~ msgstr ""
 
 #~ msgid "PIDs"
-#~ msgstr "PISs"
+#~ msgstr ""
 
 #~ msgid "Outputs"
-#~ msgstr "Ausgaben"
+#~ msgstr ""
 
 #~ msgid "Inputs"
-#~ msgstr "Eingaben"
+#~ msgstr ""
 
 #~ msgid "X-Axis (minutes)"
-#~ msgstr "X-Achsen (Minuten)"
+#~ msgstr ""
 
 #~ msgid "Number of minutes to display of past measurements."
-#~ msgstr "Minutenangabe vergangene Messwerte anzeigen."
+#~ msgstr ""
 
 #~ msgid "Enable Auto Refresh"
-#~ msgstr "Erlaube Auto-Refresh"
+#~ msgstr ""
 
 #~ msgid "Enable X-Axis Reset"
-#~ msgstr "Erlaubee X-Achsen Zurücksetzung"
+#~ msgstr ""
 
 #~ msgid "Enable Title"
-#~ msgstr "Aktiviere Titel"
+#~ msgstr ""
 
 #~ msgid "Enable Navbar"
-#~ msgstr "Aktiviere Navigationsleiste"
+#~ msgstr ""
 
 #~ msgid "Enable Export"
-#~ msgstr "Aktiviere Export"
+#~ msgstr ""
 
 #~ msgid "Enable Range Selector"
-#~ msgstr "Aktiviere Bereichsumschalter"
+#~ msgstr ""
 
 #~ msgid "Enable Graph Shift"
-#~ msgstr "Aktiviere Diagramm Umschalter"
+#~ msgstr ""
 
 #~ msgid "Enable Manual Y-Axis Min/Max"
-#~ msgstr "Aktiviere manuelle Y-Achse Min/Max"
+#~ msgstr ""
 
 #~ msgid "Enable Y-Axis Align Ticks"
-#~ msgstr "Aktiviere V-Achsen Ticks"
+#~ msgstr ""
 
 #~ msgid "Enable Y-Axis Start On Tick"
-#~ msgstr "Aktiviere Y-Achsen Start on Tick"
+#~ msgstr ""
 
 #~ msgid "Enable Y-Axis End On Tick"
-#~ msgstr "Aktiviere Y-Achsen End on Tick"
+#~ msgstr ""
 
 #~ msgid "Enable Custom Colors"
-#~ msgstr "Aktiviere Benutzerdefinierte Farben"
+#~ msgstr ""
 
 #~ msgid "Gauge Type"
-#~ msgstr "Maßstab Typ"
+#~ msgstr ""
 
 #~ msgid "Angular Gauge"
-#~ msgstr "Eckiger Maßstab"
+#~ msgstr ""
 
 #~ msgid "Solid Gauge"
-#~ msgstr "Solider Maßstab"
+#~ msgstr ""
 
 #~ msgid "Gauge Min"
-#~ msgstr "Maßstab min"
+#~ msgstr ""
 
 #~ msgid "Gauge Max"
-#~ msgstr "Maßstab max"
+#~ msgstr ""
 
 #~ msgid "Show Timestamp"
-#~ msgstr "Zeige Zeitleiste"
+#~ msgstr ""
 
 #~ msgid "Value Font (em)"
-#~ msgstr "Zeichenwert (em)"
+#~ msgstr ""
 
 #~ msgid "Timestamp Font (em)"
-#~ msgstr "Zeitwert (em)"
+#~ msgstr ""
 
 #~ msgid "Decimal Places"
-#~ msgstr "Dezimalstellen"
+#~ msgstr ""
 
 #~ msgid "Feature Output Controls"
-#~ msgstr "Feature Ausgabesteuerung"
+#~ msgstr ""
 
 #~ msgid "Show PID Information"
-#~ msgstr "Zeige PID Information"
+#~ msgstr ""
 
 #~ msgid "Show Set Setpoint"
-#~ msgstr "Zeige Sollwert setzen"
+#~ msgstr ""
 
 #~ msgid "Image Display Type"
-#~ msgstr "Bildanzeigetyp"
+#~ msgstr ""
 
 #~ msgid "Install All Dependencies"
-#~ msgstr "Installieren Sie alle Abhängigkeiten"
+#~ msgstr ""
 
 #~ msgid "Execute All Actions"
-#~ msgstr "Alle Aktionen ausführen"
+#~ msgstr ""
 
 #~ msgid "Duration (seconds)"
-#~ msgstr "Dauer (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "Action String"
-#~ msgstr "Aktions Kette (String)"
+#~ msgstr ""
 
 #~ msgid "Controller ID"
-#~ msgstr "Kontroller ID"
+#~ msgstr ""
 
 #~ msgid "Then State"
-#~ msgstr "Status danach"
+#~ msgstr ""
 
 #~ msgid "Duty Cycle (%)"
 #~ msgstr ""
@@ -7302,206 +7197,202 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Location"
-#~ msgstr "Ort"
+#~ msgstr ""
 
 #~ msgid "Power Output"
-#~ msgstr "Leistung"
+#~ msgstr ""
 
 #~ msgid "Calibration Measurement"
-#~ msgstr "Kalibrierungsmessung"
+#~ msgstr ""
 
 #~ msgid "BT Adapter (hci[X])"
-#~ msgstr "BT-Adapter (hci [X])"
+#~ msgstr ""
 
 #~ msgid "Acquire Measurements Now"
-#~ msgstr "Jetzt Messwerte erwerben"
+#~ msgstr ""
 
 #~ msgid "Rescaled Measurement"
-#~ msgstr "Neuskalierte Messung"
+#~ msgstr ""
 
 #~ msgid "LCD Type"
-#~ msgstr "LCD Typ"
+#~ msgstr ""
 
 #~ msgid "Address"
-#~ msgstr "Adresse"
+#~ msgstr ""
 
 #~ msgid "I<sup>2</sup>C"
-#~ msgstr "I<sup>2</sup>C"
+#~ msgstr ""
 
 #~ msgid "Bus"
-#~ msgstr "Bus"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Duration between calculating LCD output "
 #~ "and applying to regulation must be "
 #~ "between 5 and 86400 seconds."
 #~ msgstr ""
-#~ "Die Zeit zwischen  Berechnung der "
-#~ "LCD-Ausgabe und der Anwendung der "
-#~ "Regulierung muss zwischen 5 und 86400"
-#~ " Sekunden liegen."
 
 #~ msgid "Add Display Set"
-#~ msgstr "Display Set hinzufügen"
+#~ msgstr ""
 
 #~ msgid "Reset LCD"
-#~ msgstr "LCD zurücksetzen"
+#~ msgstr ""
 
 #~ msgid "Reverse Equation"
-#~ msgstr "Umgekehrte Gleichung"
+#~ msgstr ""
 
 #~ msgid "Absolute Value"
-#~ msgstr "Absoluter Wert"
+#~ msgstr ""
 
 #~ msgid "Dry Bulb Temperature"
-#~ msgstr "Trockenkugeltemperatur"
+#~ msgstr ""
 
 #~ msgid "Wet Bulb Temperature"
-#~ msgstr "Feuchtkugeltemperatur"
+#~ msgstr ""
 
 #~ msgid "optional"
-#~ msgstr "optional"
+#~ msgstr ""
 
 #~ msgid "Order of Use"
-#~ msgstr "Reihenfolge der Verwendung"
+#~ msgstr ""
 
 #~ msgid "Max Difference"
-#~ msgstr "Max Unterschied"
+#~ msgstr ""
 
 #~ msgid "Convert to Measurement"
-#~ msgstr "In Messung umrechnen"
+#~ msgstr ""
 
 #~ msgid "Start HH:MM:SS"
-#~ msgstr "Start HH:MM:SS"
+#~ msgstr ""
 
 #~ msgid "End HH:MM:SS"
-#~ msgstr "Ende HH:MM:SS"
+#~ msgstr ""
 
 #~ msgid "Start YYYY-MM-DD HH:MM:SS"
-#~ msgstr "Start YYYY-MM-DD HH:MM:SS"
+#~ msgstr ""
 
 #~ msgid "End YYYY-MM-DD HH:MM:SS"
-#~ msgstr "Ende YYYY-MM-DD HH:MM:SS"
+#~ msgstr ""
 
 #~ msgid "Start Setpoint"
-#~ msgstr "Sollwert starten"
+#~ msgstr ""
 
 #~ msgid "End Setpoint (optional)"
-#~ msgstr "Sollwert beenden (optional)"
+#~ msgstr ""
 
 #~ msgid "Duration to End (seconds)"
-#~ msgstr "Dauer bis Ende (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "Amplitude"
-#~ msgstr "Amplitude"
+#~ msgstr ""
 
 #~ msgid "Angle Shift (0 to 360)"
-#~ msgstr "Winkelverschiebung (0 bis 360)"
+#~ msgstr ""
 
 #~ msgid "Y-Axis Shift"
-#~ msgstr "Y-Achsenverschiebung"
+#~ msgstr ""
 
 #~ msgid "Time HH:MM:SS"
-#~ msgstr "Zeit HH:MM:SS"
+#~ msgstr ""
 
 #~ msgid "Time YYYY-MM-DD HH:MM:SS"
-#~ msgstr "Zeit YYYY-MM-DD HH:MM:SS"
+#~ msgstr ""
 
 #~ msgid "Duration/Duty Cycle"
-#~ msgstr "Dauer / Arbeitszyklus"
+#~ msgstr ""
 
 #~ msgid "Relay State"
-#~ msgstr "Relaisstatus"
+#~ msgstr ""
 
 #~ msgid "Turn On"
-#~ msgstr "Anschalten"
+#~ msgstr ""
 
 #~ msgid "Turn Off"
-#~ msgstr "Relaisstatus"
+#~ msgstr ""
 
 #~ msgid "PWM (Duty Cycle)"
-#~ msgstr "PWM (Arbeitszyklus)"
+#~ msgstr ""
 
 #~ msgid "Add to Method"
-#~ msgstr "Zur Methode hinzufügen"
+#~ msgstr ""
 
 #~ msgid "Set Repeat Option"
-#~ msgstr "Wiederholungsoption einstellen"
+#~ msgstr ""
 
 #~ msgid "End Setpoint"
-#~ msgstr "Sollwert beenden"
+#~ msgstr ""
 
 #~ msgid "State"
-#~ msgstr "Status"
+#~ msgstr ""
 
 #~ msgid "Time Range MM/DD/YYYY HH:MM"
-#~ msgstr "Zeitspanne MM/DD/YYYY HH:MM"
+#~ msgstr ""
 
 #~ msgid "Capture Still"
-#~ msgstr "Weiter aufnehmen"
+#~ msgstr ""
 
 #~ msgid "Start Timelapse"
-#~ msgstr "Starte Zeitraffer"
+#~ msgstr ""
 
 #~ msgid "Pause Timelapse"
-#~ msgstr "Pause Zeitraffer"
+#~ msgstr ""
 
 #~ msgid "Resume Timelapse"
-#~ msgstr "Zeitraffer fortsetzen"
+#~ msgstr ""
 
 #~ msgid "Stop Timelapse"
-#~ msgstr "Zeitraffer beenden"
+#~ msgstr ""
 
 #~ msgid "Interval (seconds)"
-#~ msgstr "Interval (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "Photo Interval must be a positive value"
-#~ msgstr "Fotointervall muss positiver Wert sein"
+#~ msgstr ""
 
 #~ msgid "Run Time (seconds)"
-#~ msgstr "Laufzeit (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "Total Run Time must be a positive value"
-#~ msgstr "Die Gesamtlaufzeit muss ein positiver Wert sein"
+#~ msgstr ""
 
 #~ msgid "Start Stream"
-#~ msgstr "Starte Stream"
+#~ msgstr ""
 
 #~ msgid "Stop Stream"
-#~ msgstr "Beende Stream"
+#~ msgstr ""
 
 #~ msgid "Stop Daemon"
-#~ msgstr "Beende Daemon"
+#~ msgstr ""
 
 #~ msgid "Start Daemon"
-#~ msgstr "Starte Daemon"
+#~ msgstr ""
 
 #~ msgid "Restart Daemon"
-#~ msgstr "Deamon Neustart"
+#~ msgstr ""
 
 #~ msgid "Measurement to Export"
-#~ msgstr "Messung Export"
+#~ msgstr ""
 
 #~ msgid "Export Data as CSV"
-#~ msgstr "Datenexport (CSV)"
+#~ msgstr ""
 
 #~ msgid "Export Settings"
-#~ msgstr "Exporteinstellungen"
+#~ msgstr ""
 
 #~ msgid "Import Settings"
-#~ msgstr "Import Einstellungen"
+#~ msgstr ""
 
 #~ msgid "Export Influxdb"
-#~ msgstr "Export Influxdb"
+#~ msgstr ""
 
 #~ msgid "Import Influxdb"
-#~ msgstr "Import Influxdb"
+#~ msgstr ""
 
 #~ msgid "Lines"
-#~ msgstr "Zeilen"
+#~ msgstr ""
 
 #~ msgid "Number of lines should be greater than 0"
-#~ msgstr "Zeilanzahl muß größer 0 sein"
+#~ msgstr ""
 
 #~ msgid "Log"
 #~ msgstr ""
@@ -7510,166 +7401,166 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Upgrade Mycodo"
-#~ msgstr "Upgrade Mycodo"
+#~ msgstr ""
 
 #~ msgid "Upgrade Mycodo to Next Major Version"
-#~ msgstr "Upgrade Mycodo zur nächsten Hauptversion"
+#~ msgstr ""
 
 #~ msgid "Create Backup"
-#~ msgstr "Erstelle Sicherung"
+#~ msgstr ""
 
 #~ msgid "Restore Backup"
-#~ msgstr "Backup wiederherstellen"
+#~ msgstr ""
 
 #~ msgid "Delete Backup"
-#~ msgstr "Sicherung löschen"
+#~ msgstr ""
 
 #~ msgid "Attached Files"
-#~ msgstr "Angehängte Dokumente"
+#~ msgstr ""
 
 #~ msgid "Use Custom Date/Time"
-#~ msgstr "Benutzerdefiniertes Datum / Uhrzeit verwenden"
+#~ msgstr ""
 
 #~ msgid "Tags"
-#~ msgstr "Stichworte"
+#~ msgstr ""
 
 #~ msgid "Filter Names"
-#~ msgstr "Filtern Sie Namen"
+#~ msgstr ""
 
 #~ msgid "Filter Tags"
-#~ msgstr "Tags filtern"
+#~ msgstr ""
 
 #~ msgid "Filter Files"
-#~ msgstr "Dateien filtern"
+#~ msgstr ""
 
 #~ msgid "Filter Notes"
-#~ msgstr "Hinweise filtern"
+#~ msgstr ""
 
 #~ msgid "Sort By"
-#~ msgstr "Sortiere nach"
+#~ msgstr ""
 
 #~ msgid "Sort Direction"
-#~ msgstr "Sortierrichtung"
+#~ msgstr ""
 
 #~ msgid "Show Notes"
-#~ msgstr "Notizen anzeigen"
+#~ msgstr ""
 
 #~ msgid "Export Notes"
-#~ msgstr "Notizen exportieren"
+#~ msgstr ""
 
 #~ msgid "Import Notes"
-#~ msgstr "Notizen importieren"
+#~ msgstr ""
 
 #~ msgid "Quantity"
-#~ msgstr "Anzahl"
+#~ msgstr ""
 
 #~ msgid "Invert Signal"
-#~ msgstr "Signal invertieren"
+#~ msgstr ""
 
 #~ msgid "The current draw of the device connected to this output, in amps."
-#~ msgstr "Die Stromzufuhr des an diesen Ausgang angeschlossenen Geräts in Ampere."
+#~ msgstr ""
 
 #~ msgid "High"
-#~ msgstr "Hoch"
+#~ msgstr ""
 
 #~ msgid "Low"
-#~ msgstr "Nieder"
+#~ msgstr ""
 
 #~ msgid "Any Pin, <= 40 kHz"
-#~ msgstr "Jeder Pin, <= 40 kHz"
+#~ msgstr ""
 
 #~ msgid "Hardware Pin, <= 30 MHz"
-#~ msgstr "Hardware Pin, <= 30 MHz"
+#~ msgstr ""
 
 #~ msgid "Direction"
-#~ msgstr "Richtung"
+#~ msgstr ""
 
 #~ msgid "Raise"
-#~ msgstr "Anheben"
+#~ msgstr ""
 
 #~ msgid "Lower"
-#~ msgstr "Niedriger"
+#~ msgstr ""
 
 #~ msgid "Both"
-#~ msgstr "Beide"
+#~ msgstr ""
 
 #~ msgid "Band (+/- Setpoint)"
-#~ msgstr "Band (+/- Sollwert)"
+#~ msgstr ""
 
 #~ msgid "Store Lower as Negative"
-#~ msgstr "Speichere Niedriger al negativ"
+#~ msgstr ""
 
 #~ msgid "Kp Gain"
-#~ msgstr "Kp Gewinn"
+#~ msgstr ""
 
 #~ msgid "Ki Gain"
-#~ msgstr "Ki Gewinn"
+#~ msgstr ""
 
 #~ msgid "Kd Gain"
-#~ msgstr "Kd Geweinn"
+#~ msgstr ""
 
 #~ msgid "Integrator Min"
-#~ msgstr "Integrator Min"
+#~ msgstr ""
 
 #~ msgid "Integrator Max"
-#~ msgstr "Integrator Max"
+#~ msgstr ""
 
 #~ msgid "Output (Raise)"
-#~ msgstr "Ausgabe (Erhöhung)"
+#~ msgstr ""
 
 #~ msgid "Output (Lower)"
-#~ msgstr "Ausgang (niedriger)"
+#~ msgstr ""
 
 #~ msgid "Noise Band"
-#~ msgstr "Lärmband"
+#~ msgstr ""
 
 #~ msgid "Outstep"
-#~ msgstr "Ausstieg"
+#~ msgstr ""
 
 #~ msgid "Start Autotune"
-#~ msgstr "Starten Sie Autotune"
+#~ msgstr ""
 
 #~ msgid "Min On Duration (Raise)"
-#~ msgstr "Min Ein-Dauer (Erhöhung)"
+#~ msgstr ""
 
 #~ msgid "Max On Duration (Raise)"
-#~ msgstr "Max Ein-Dauer (Erhöhung)"
+#~ msgstr ""
 
 #~ msgid "Min Off Duration (Raise)"
-#~ msgstr "Min Aus-Dauer (Erhöhung)"
+#~ msgstr ""
 
 #~ msgid "Min On Duration (Lower)"
-#~ msgstr "Min Ein-Dauer (Senkung)"
+#~ msgstr ""
 
 #~ msgid "Max On Duration (Lower)"
-#~ msgstr "Max Ein-Dauer (Senkung)"
+#~ msgstr ""
 
 #~ msgid "Min Off Duration (Lower)"
-#~ msgstr "Min Aus-Dauer (Senkung)"
+#~ msgstr ""
 
 #~ msgid "Min Duty Cycle (Raise)"
-#~ msgstr "Min Einschaltdauer (Erhöhung)"
+#~ msgstr ""
 
 #~ msgid "Max Duty Cycle (Raise)"
-#~ msgstr "Max Einschaltdauer (Erhöhung)"
+#~ msgstr ""
 
 #~ msgid "Min Duty Cycle (Lower)"
-#~ msgstr "Min Einschaltdauer (Senkung)"
+#~ msgstr ""
 
 #~ msgid "Max Duty Cycle (Lower)"
-#~ msgstr "Max Einschaltdauer (Senkung)"
+#~ msgstr ""
 
 #~ msgid "OpenCV Device"
-#~ msgstr "OpenCV Gerät"
+#~ msgstr ""
 
 #~ msgid "Flip image horizontally"
-#~ msgstr "Bild horizontal spiegeln"
+#~ msgstr ""
 
 #~ msgid "Flip image vertically"
-#~ msgstr "Bild vertikal spiegeln"
+#~ msgstr ""
 
 #~ msgid "Rotate Image"
-#~ msgstr "Bild drehen"
+#~ msgstr ""
 
 #~ msgid "Image Height"
 #~ msgstr ""
@@ -7678,79 +7569,79 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Brightness"
-#~ msgstr "Helligkeit"
+#~ msgstr ""
 
 #~ msgid "Contrast"
-#~ msgstr "Kontrast"
+#~ msgstr ""
 
 #~ msgid "Exposure"
-#~ msgstr "Exposition"
+#~ msgstr ""
 
 #~ msgid "Hue"
-#~ msgstr "Farbton"
+#~ msgstr ""
 
 #~ msgid "Saturation"
-#~ msgstr "Sättigung"
+#~ msgstr ""
 
 #~ msgid "White Balance"
-#~ msgstr "Weißabgleich"
+#~ msgstr ""
 
 #~ msgid "Custom Options"
-#~ msgstr "Benutzerdefinierte Optionen"
+#~ msgstr ""
 
 #~ msgid "Pre Command"
-#~ msgstr "Vorbefehl"
+#~ msgstr ""
 
 #~ msgid "Post Command"
-#~ msgstr "Nachbefehl"
+#~ msgstr ""
 
 #~ msgid "Still Image Path"
-#~ msgstr "Standbildpfad"
+#~ msgstr ""
 
 #~ msgid "Timelapse Path"
-#~ msgstr "Timelapse-Pfad"
+#~ msgstr ""
 
 #~ msgid "Video Path"
-#~ msgstr "Videopfad"
+#~ msgstr ""
 
 #~ msgid "SMTP Host"
-#~ msgstr "SMTP Host"
+#~ msgstr ""
 
 #~ msgid "SMTP Port"
-#~ msgstr "SMTP Port"
+#~ msgstr ""
 
 #~ msgid "Port should be between 1 and 65535"
-#~ msgstr "Port sollte zwischen 1 und 65535 liegen"
+#~ msgstr ""
 
 #~ msgid "SMTP User"
-#~ msgstr "SMTP Benutzer"
+#~ msgstr ""
 
 #~ msgid "SMTP Password"
-#~ msgstr "PMTP Passwort"
+#~ msgstr ""
 
 #~ msgid "From Email"
-#~ msgstr "Absender E-Mail"
+#~ msgstr ""
 
 #~ msgid "Max emails (per hour)"
-#~ msgstr "Maximale E-Mails (pro Std.)"
+#~ msgstr ""
 
 #~ msgid "Must have at least one message able to be sent per hour."
-#~ msgstr "Mindestens eine Nachricht pro Stunde muß gesendet werden können."
+#~ msgstr ""
 
 #~ msgid "Send Test Email"
-#~ msgstr "Sende Test E-Mail"
+#~ msgstr ""
 
 #~ msgid "Test Email To"
-#~ msgstr "Test E-Mail Empfänger"
+#~ msgstr ""
 
 #~ msgid "To Email Address"
-#~ msgstr "E-Mail Empfänger Adresse"
+#~ msgstr ""
 
 #~ msgid "Landing Page"
-#~ msgstr "Zielseite"
+#~ msgstr ""
 
 #~ msgid "Language"
-#~ msgstr "Sprache"
+#~ msgstr ""
 
 #~ msgid "Pyro Timeout"
 #~ msgstr ""
@@ -7759,244 +7650,244 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Force HTTPS"
-#~ msgstr "Erzwinge HTTPS"
+#~ msgstr ""
 
 #~ msgid "Hide success messages"
-#~ msgstr "Erfolgsnachrichten ausblenden"
+#~ msgstr ""
 
 #~ msgid "Hide info messages"
-#~ msgstr "Info-Nachrichten ausblenden"
+#~ msgstr ""
 
 #~ msgid "Hide warning messages"
-#~ msgstr "Verstecke Warn-Meldungen"
+#~ msgstr ""
 
 #~ msgid "Hide Form Tooltips"
-#~ msgstr "Tooltips ausblenden"
+#~ msgstr ""
 
 #~ msgid "Max Amps"
-#~ msgstr "Max Amps"
+#~ msgstr ""
 
 #~ msgid "Cost per kWh"
-#~ msgstr "Kosten pro kWh"
+#~ msgstr ""
 
 #~ msgid "Currency Unit"
-#~ msgstr "Währungseinheit"
+#~ msgstr ""
 
 #~ msgid "Day of Month"
-#~ msgstr "Tag des Monats"
+#~ msgstr ""
 
 #~ msgid "Generate Usage/Cost Report"
-#~ msgstr "Verbrauchs- / Kostenbericht generieren"
+#~ msgstr ""
 
 #~ msgid "Time Span to Generate"
-#~ msgstr "Zeitspanne generieren"
+#~ msgstr ""
 
 #~ msgid "Day of Week/Month to Generate"
-#~ msgstr "Tag der Woche / Monat generieren"
+#~ msgstr ""
 
 #~ msgid "Hour of Day to Generate"
-#~ msgstr "Stunde des Tages generieren"
+#~ msgstr ""
 
 #~ msgid "Hour Options: 0-23"
-#~ msgstr "Stunden-Optionen 0-23"
+#~ msgstr ""
 
 #~ msgid "Opt-out of statistics"
-#~ msgstr "Opt-out der Statistiken"
+#~ msgstr ""
 
 #~ msgid "Check for Updates"
-#~ msgstr "Auf Updates überprüfen"
+#~ msgstr ""
 
 #~ msgid "Import Controller Module"
 #~ msgstr ""
 
 #~ msgid "Import Input Module"
-#~ msgstr "Eingabemodul importieren"
+#~ msgstr ""
 
 #~ msgid "Measurement Name"
-#~ msgstr "Messungsname"
+#~ msgstr ""
 
 #~ msgid "Measurement Units"
-#~ msgstr "Messeinheiten"
+#~ msgstr ""
 
 #~ msgid "Add Measurement"
-#~ msgstr "Messung hinzufügen"
+#~ msgstr ""
 
 #~ msgid "Unit Name"
-#~ msgstr "Einheitenname"
+#~ msgstr ""
 
 #~ msgid "Unit Abbreviation"
-#~ msgstr "Abkürzung der Einheit"
+#~ msgstr ""
 
 #~ msgid "Add Unit"
-#~ msgstr "Einheit hinzufügen"
+#~ msgstr ""
 
 #~ msgid "Convert From Unit"
-#~ msgstr "Von Einheit umrechnen"
+#~ msgstr ""
 
 #~ msgid "Convert To Measurement"
-#~ msgstr "In Messung konvertieren"
+#~ msgstr ""
 
 #~ msgid "Add Conversion"
-#~ msgstr "Konvertierung hinzufügen"
+#~ msgstr ""
 
 #~ msgid "Convert To Unit"
-#~ msgstr "In Einheit konvertieren"
+#~ msgstr ""
 
 #~ msgid "Role Name"
-#~ msgstr "Benutzerrollen Name"
+#~ msgstr ""
 
 #~ msgid "View Logs"
-#~ msgstr "Logs anzeigen"
+#~ msgstr ""
 
 #~ msgid "View Stats"
-#~ msgstr "Statistiken anzeigen"
+#~ msgstr ""
 
 #~ msgid "View Camera"
-#~ msgstr "Kamera anzeigen"
+#~ msgstr ""
 
 #~ msgid "View Settings"
-#~ msgstr "Einstellungen anzeigen"
+#~ msgstr ""
 
 #~ msgid "Edit Users"
-#~ msgstr "Benutzer bearbeiten"
+#~ msgstr ""
 
 #~ msgid "Edit Controllers"
-#~ msgstr "Controller bearbeiten"
+#~ msgstr ""
 
 #~ msgid "Edit Settings"
-#~ msgstr "Einstellungen bearbeiten"
+#~ msgstr ""
 
 #~ msgid "Add Role"
-#~ msgstr "Benutzerrolle hinzufügen"
+#~ msgstr ""
 
 #~ msgid "Passwords must match"
-#~ msgstr "Passwort muss stimmen"
+#~ msgstr ""
 
 #~ msgid "Password must be 6 or more characters"
-#~ msgstr "Passwort muss mind. 6 Zeichen haben"
+#~ msgstr ""
 
 #~ msgid "Role"
-#~ msgstr "Benutzerrolle"
+#~ msgstr ""
 
 #~ msgid "Theme"
-#~ msgstr "Thema"
+#~ msgstr ""
 
 #~ msgid "Add User"
-#~ msgstr "Benutzer hinzufügen"
+#~ msgstr ""
 
 #~ msgid "New Password"
-#~ msgstr "Neues Paswort"
+#~ msgstr ""
 
 #~ msgid "Role ID"
-#~ msgstr "Benutzerrollen ID"
+#~ msgstr ""
 
 #~ msgid "Enable I2C"
-#~ msgstr "I2C aktivieren"
+#~ msgstr ""
 
 #~ msgid "Disable I2C"
-#~ msgstr "I2C deaktivieren"
+#~ msgstr ""
 
 #~ msgid "Enable 1-Wire"
-#~ msgstr "1-Wire aktivieren"
+#~ msgstr ""
 
 #~ msgid "Disable 1-Wire"
-#~ msgstr "1-Wire deaktivieren"
+#~ msgstr ""
 
 #~ msgid "Enable Serial"
-#~ msgstr "Serien aktivieren"
+#~ msgstr ""
 
 #~ msgid "Disable Serial"
-#~ msgstr "Serien deaktivieren"
+#~ msgstr ""
 
 #~ msgid "Enable SPI"
-#~ msgstr "SPI aktivieren"
+#~ msgstr ""
 
 #~ msgid "Disable SPI"
-#~ msgstr "SPI deaktivieren"
+#~ msgstr ""
 
 #~ msgid "Enable SSH"
-#~ msgstr "SSH aktivieren"
+#~ msgstr ""
 
 #~ msgid "Disable SSH"
-#~ msgstr "SSH deaktivieren"
+#~ msgstr ""
 
 #~ msgid "Enable Pi Camera"
-#~ msgstr "Pi Kamera aktivieren"
+#~ msgstr ""
 
 #~ msgid "Disable Pi Camera"
-#~ msgstr "Pi Kamera deaktivieren"
+#~ msgstr ""
 
 #~ msgid "Change Hostname"
-#~ msgstr "Hostname ändern"
+#~ msgstr ""
 
 #~ msgid "Configure pigpiod"
-#~ msgstr "Pigpoid konigurieren"
+#~ msgstr ""
 
 #~ msgid "Reconfigure"
-#~ msgstr "Rekonfigurieren"
+#~ msgstr ""
 
 #~ msgid "Conditional Sample Rate (seconds)"
-#~ msgstr "Bedingte Abtastrate (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "Input Sample Rate (seconds)"
-#~ msgstr "Eingangsabtastrate (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "Math Sample Rate (seconds)"
-#~ msgstr "Mathematische Abtastrate (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "Output Sample Rate (seconds)"
-#~ msgstr "Ausgabefrequenz (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "PID Sample Rate (seconds)"
-#~ msgstr "PID-Abtastrate (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "Save Sample Rates"
-#~ msgstr "Abtastrate sichern"
+#~ msgstr ""
 
 #~ msgid "Delete All Dashboard Elements"
-#~ msgstr "Löschen Sie alle Dashboard-Elemente"
+#~ msgstr ""
 
 #~ msgid "Delete All Inputs"
-#~ msgstr "Alle Eingaben löschen"
+#~ msgstr ""
 
 #~ msgid "Delete All Maths"
-#~ msgstr "Alle Mathe löschen"
+#~ msgstr ""
 
 #~ msgid "Delete All Notes and Note Tags"
-#~ msgstr "Löschen Sie alle Notizen und Hinweis-Tags"
+#~ msgstr ""
 
 #~ msgid "Delete All Outputs"
-#~ msgstr "Alle Ausgaben löschen"
+#~ msgstr ""
 
 #~ msgid "Delete Settings Database"
-#~ msgstr "Einstellungsdatenbank löschen"
+#~ msgstr ""
 
 #~ msgid "Delete File"
-#~ msgstr "Datei löschen"
+#~ msgstr ""
 
 #~ msgid "Reset Email Counter"
 #~ msgstr ""
 
 #~ msgid "If Edge Detected"
-#~ msgstr "Wenn Grenze gefunden"
+#~ msgstr ""
 
 #~ msgid "Rise or Set"
-#~ msgstr "Erhöhung oder Festlegen"
+#~ msgstr ""
 
 #~ msgid "Latitude (decimal)"
-#~ msgstr "Breitengrad (dezimal)"
+#~ msgstr ""
 
 #~ msgid "Longitude (decimal)"
-#~ msgstr "Längengrad (dezimal)"
+#~ msgstr ""
 
 #~ msgid "Zenith"
-#~ msgstr "Höhepunkt"
+#~ msgstr ""
 
 #~ msgid "Date Offset (days)"
-#~ msgstr "Datums Offset (Tage)"
+#~ msgstr ""
 
 #~ msgid "Time Offset (minutes)"
-#~ msgstr "Zeit Offset (Minuten)"
+#~ msgstr ""
 
 #~ msgid "Program"
 #~ msgstr ""
@@ -8005,172 +7896,172 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Start Time (HH:MM)"
-#~ msgstr "Startzeit (HH:MM)"
+#~ msgstr ""
 
 #~ msgid "End Time (HH:MM)"
-#~ msgstr "Endzeit (HH:MM)"
+#~ msgstr ""
 
 #~ msgid "Trigger Every Period"
-#~ msgstr "Auslöser jeder Dauer"
+#~ msgstr ""
 
 #~ msgid "Trigger when Activated"
-#~ msgstr "Auslösen wenn aktiviert"
+#~ msgstr ""
 
 #~ msgid "If ID 1"
-#~ msgstr "Wenn ID 1"
+#~ msgstr ""
 
 #~ msgid "If ID 2"
-#~ msgstr "Wenn ID 2"
+#~ msgstr ""
 
 #~ msgid "If State"
-#~ msgstr "Wenn Status"
+#~ msgstr ""
 
 #~ msgid "If Duration (seconds)"
-#~ msgstr "Wenn Dauer (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "If Duty Cycle (%%)"
-#~ msgstr "Wenn Pflicht-Umkreis (%%)"
+#~ msgstr ""
 
 #~ msgid "Error 404: Page Not Found"
-#~ msgstr "Fehler 404: Seite nicht gefunden"
+#~ msgstr ""
 
 #~ msgid "Error 500: Internal Server Error"
-#~ msgstr "Fehler 500: interner Server-Fehler"
+#~ msgstr ""
 
 #~ msgid "Create Admin"
-#~ msgstr "Admin erstellen"
+#~ msgstr ""
 
 #~ msgid "Create Admin User"
-#~ msgstr "Admin Benutzer erstellen"
+#~ msgstr ""
 
 #~ msgid "Login information is stored locally"
-#~ msgstr "Anmeldeinformationen werden lokal gespeichert"
+#~ msgstr ""
 
 #~ msgid "Success"
-#~ msgstr "Erfolg"
+#~ msgstr ""
 
 #~ msgid "Info"
-#~ msgstr "Info"
+#~ msgstr ""
 
 #~ msgid "Setup"
-#~ msgstr "Einrichtung"
+#~ msgstr ""
 
 #~ msgid "Exit"
-#~ msgstr "Ausgang"
+#~ msgstr ""
 
 #~ msgid "Controllers"
 #~ msgstr ""
 
 #~ msgid "Measurements"
-#~ msgstr "Messungen"
+#~ msgstr ""
 
 #~ msgid "Users"
-#~ msgstr "Benutzer"
+#~ msgstr ""
 
 #~ msgid "Raspberry Pi"
-#~ msgstr "Easy-Grow"
+#~ msgstr ""
 
 #~ msgid "Alerts"
-#~ msgstr "Benachrichtigungen"
+#~ msgstr ""
 
 #~ msgid "Cameras"
-#~ msgstr "Kameras"
+#~ msgstr ""
 
 #~ msgid "Diagnostics"
-#~ msgstr "Diagnose"
+#~ msgstr ""
 
 #~ msgid "Daemon is Not Running"
-#~ msgstr "Daemon läuft nicht"
+#~ msgstr ""
 
 #~ msgid "Daemon is Running"
-#~ msgstr "Daemon läuft"
+#~ msgstr ""
 
 #~ msgid "Cannot Check Daemon Status"
-#~ msgstr "Daemon Status kann nicht ermittelt werden"
+#~ msgstr ""
 
 #~ msgid "No Connection"
-#~ msgstr "Keine Verbindung"
+#~ msgstr ""
 
 #~ msgid "Live"
-#~ msgstr "Live"
+#~ msgstr ""
 
 #~ msgid "Asynchronous Graphs"
-#~ msgstr "Asynchronous Graphs"
+#~ msgstr ""
 
 #~ msgid "Calibration & Setup"
-#~ msgstr "Kalibrierung & Einrichtung"
+#~ msgstr ""
 
 #~ msgid "More"
-#~ msgstr "Mehr"
+#~ msgstr ""
 
 #~ msgid "Energy Usage Reports"
 #~ msgstr ""
 
 #~ msgid "Help"
-#~ msgstr "Hilfe"
+#~ msgstr ""
 
 #~ msgid "Mycodo Manual"
-#~ msgstr "Benutzerhandbuch"
+#~ msgstr ""
 
 #~ msgid "Discussion Forum"
 #~ msgstr ""
 
 #~ msgid "Submit an Issue"
-#~ msgstr "Ein Problem melden"
+#~ msgstr ""
 
 #~ msgid "Mycodo on Github"
-#~ msgstr "Mycodo bei Github"
+#~ msgstr ""
 
 #~ msgid "Changelog"
-#~ msgstr "Änderungsprotokoll"
+#~ msgstr ""
 
 #~ msgid "Configure"
-#~ msgstr "Konfigurieren"
+#~ msgstr ""
 
 #~ msgid "Mycodo Logs"
-#~ msgstr "Mycodo Logs"
+#~ msgstr ""
 
 #~ msgid "System Information"
-#~ msgstr "System Information"
+#~ msgstr ""
 
 #~ msgid "Dependencies"
-#~ msgstr "Abhängigkeiten"
+#~ msgstr ""
 
 #~ msgid "Upgrade"
-#~ msgstr "Upgrade"
+#~ msgstr ""
 
 #~ msgid "Backup Restore"
-#~ msgstr "Backup wiederherstellen"
+#~ msgstr ""
 
 #~ msgid "Restart Backend"
-#~ msgstr "Backend neu starten"
+#~ msgstr ""
 
 #~ msgid "Restart Frontend"
-#~ msgstr "Frontend neu starten"
+#~ msgstr ""
 
 #~ msgid "Restart System"
-#~ msgstr "System Neustart"
+#~ msgstr ""
 
 #~ msgid "Shutdown System"
-#~ msgstr "System abschalten"
+#~ msgstr ""
 
 #~ msgid "Remote Admin"
-#~ msgstr "Fernadministrator"
+#~ msgstr ""
 
 #~ msgid "Logout"
-#~ msgstr "Ausloggen"
+#~ msgstr ""
 
 #~ msgid "You're logged in already!"
-#~ msgstr "Sie sind bereits eingeloggt!"
+#~ msgstr ""
 
 #~ msgid "Remember me"
-#~ msgstr "Erinnere dich an mich"
+#~ msgstr ""
 
 #~ msgid "90 days"
-#~ msgstr "90 Tage"
+#~ msgstr ""
 
 #~ msgid "Sign in"
-#~ msgstr "Anmelden"
+#~ msgstr ""
 
 #~ msgid "Forgot password?"
 #~ msgstr ""
@@ -8183,13 +8074,6 @@ msgstr ""
 #~ "data, go to the Export / Import"
 #~ " page."
 #~ msgstr ""
-#~ "Sicherungen können erstellt werden, um "
-#~ "Mycodo-Einstellungen beizubehalten oder sie "
-#~ "zu einem späteren Zeitpunkt "
-#~ "wiederherzustellen. Kamerabilder werden nicht "
-#~ "gesichert. Um Messdaten zu speichern, "
-#~ "gehen Sie zur Seite Export / "
-#~ "Import."
 
 #~ msgid ""
 #~ "Several software dependencies used by "
@@ -8201,21 +8085,12 @@ msgstr ""
 #~ "ability to install currently unmet "
 #~ "dependencies."
 #~ msgstr ""
-#~ "Mehrere von Mycodo-Funktionen verwendete "
-#~ "Softwareabhängigkeiten sind möglicherweise "
-#~ "deaktiviert. Dies wird getan, um den "
-#~ "anfänglichen Installationsprozess zu beschleunigen."
-#~ " Diese Seite kann verwendet werden, "
-#~ "um festzustellen, welche Abhängigkeiten "
-#~ "installiert sind, und die Möglichkeit, "
-#~ "derzeit nicht erfüllte Abhängigkeiten zu "
-#~ "installieren."
 
 #~ msgid "Collected Statistics"
-#~ msgstr "Gesammelte Statistiken"
+#~ msgstr ""
 
 #~ msgid "Mycodo is currently in the process of an upgrade"
-#~ msgstr "Mycodo wird gerade aktualisiert"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "If an upgrade is not currently in"
@@ -8223,11 +8098,6 @@ msgstr ""
 #~ "~/Mycodo/.upgrade file to be able to "
 #~ "reinitiate the upgrade process."
 #~ msgstr ""
-#~ "Wenn derzeit kein Upgrade durchgeführt "
-#~ "wird, können Sie die Datei "
-#~ "~/Mycodo/.upgrade löschen, um den "
-#~ "Aktualisierungsvorgang erneut starten zu "
-#~ "können."
 
 #~ msgid ""
 #~ "An upgrade often takes several minutes,"
@@ -8244,19 +8114,6 @@ msgstr ""
 #~ "backend before creating a new github "
 #~ "issue."
 #~ msgstr ""
-#~ "Ein Upgrade dauert in der Regel "
-#~ "mehrere Minuten und in manchen Fällen"
-#~ " auch länger. Geben Sie dem Prozess"
-#~ " ausreichend Zeit, bevor Sie etwas "
-#~ "tun. Wenn das Upgrade erfolgreich "
-#~ "abgeschlossen wurde, ändert sich die "
-#~ "Statusanzeige des Dämons oben links von"
-#~ " rot auf grün. Einige Treiber "
-#~ "erfordern einen Neustart des Backends, "
-#~ "damit sie aktiv werden. Wenn ein "
-#~ "Fehler auftritt, versuchen Sie, das "
-#~ "Backend neu zu starten, bevor Sie "
-#~ "ein neues Github-Problem erstellen."
 
 #~ msgid ""
 #~ "You can monitor the upgrade progress "
@@ -8270,33 +8127,17 @@ msgstr ""
 #~ "to inspect the entire log in order"
 #~ " to diagnose the issue."
 #~ msgstr ""
-#~ "Sie können den Fortschritt des Upgrades"
-#~ " in der Live-Protokollansicht überwachen."
-#~ " Navigieren Sie dazu zu Konfigurieren "
-#~ "-> Mycodo-Protokolle -> Upgrade-"
-#~ "Protokoll oder öffnen Sie "
-#~ "/var/log/mycodo/mycodoupgrade.log. Die letzten 40"
-#~ " Zeilen des Aktualisierungsprotokolls werden "
-#~ "alle 5 Sekunden aktualisiert. Wenn ein"
-#~ " Fehler auftritt, ist es ratsam, das"
-#~ " gesamte Protokoll zu untersuchen, um "
-#~ "das Problem zu diagnostizieren."
 
 #~ msgid "There was an error that occurred during the upgrade"
-#~ msgstr "Während des Upgrades ist ein Fehler aufgetreten"
+#~ msgstr ""
 
 #~ msgid "View the upgrade log at /var/log/mycodo/mycodoupgrade.log."
 #~ msgstr ""
-#~ "Schauen Sie das Upgrade-Protokoll unter"
-#~ " /var/log/mycodo/mycodoupgrade.log an."
 
 #~ msgid ""
 #~ "Delete ~/Mycodo/.upgrade to acknowledge this"
 #~ " message and restore upgrade functionality."
 #~ msgstr ""
-#~ "Löschen Sie ~/Mycodo/.upgrade, um diese "
-#~ "Nachricht zu bestätigen und die "
-#~ "Upgrade-Funktion wiederherzustellen."
 
 #~ msgid ""
 #~ "No internet connection detected. To "
@@ -8304,14 +8145,9 @@ msgstr ""
 #~ "need an internet connection. Refresh the"
 #~ " page when one is connected."
 #~ msgstr ""
-#~ "Keine Internetverbindung gefunden. Um Mycodo"
-#~ " automatisch zu aktualisieren, benötigen "
-#~ "Sie eine Internetverbindung. Aktualisieren Sie"
-#~ " die Seite, wenn eine Verbindung "
-#~ "besteht."
 
 #~ msgid "No upgrade is available. You are running the latest release, version"
-#~ msgstr "Es ist kein Upgrade verfügbar. Sie führen die neueste Version aus"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Click the button below to begin "
@@ -8328,54 +8164,39 @@ msgstr ""
 #~ " new version as unstable until you"
 #~ " have verified it works as expected)."
 #~ msgstr ""
-#~ "Klicken Sie auf die Schaltfläche unten,"
-#~ " um mit dem Upgrade zu beginnen. "
-#~ "Hinweis: Ein Upgrade dauert oft mehrere"
-#~ " Minuten und in seltenen Fällen "
-#~ "Stunden. Während dieser Zeit werden die"
-#~ " Mycodo-Webinterface- und "
-#~ "Serveraufzeichnungssensoren und die "
-#~ "Manipulationsausgänge (neben anderen Diensten) "
-#~ "vollständig heruntergefahren. Es wird nicht"
-#~ " empfohlen, keine Aktualisierung auf einer"
-#~ " Produktionsmaschine durchzuführen (z. B. "
-#~ "Vertrauenskaufprüfung: Behandeln Sie die neue"
-#~ " Version als instabil, bis Sie "
-#~ "sichergestellt haben, dass sie wie "
-#~ "erwartet funktioniert)."
 
 #~ msgid "Current to latest versions"
-#~ msgstr "Aktuelle zur neuesten Version"
+#~ msgstr ""
 
 #~ msgid "current"
-#~ msgstr "aktuellle"
+#~ msgstr ""
 
 #~ msgid "latest"
-#~ msgstr "neueste/letzte"
+#~ msgstr ""
 
 #~ msgid "Create Timelapse"
-#~ msgstr "Zeitraffer erstellen"
+#~ msgstr ""
 
 #~ msgid "Video Stream"
-#~ msgstr "Video Stream"
+#~ msgstr ""
 
 #~ msgid "Timelapse Parameters"
-#~ msgstr "Zeitraffer Parameter"
+#~ msgstr ""
 
 #~ msgid "Last Timelapse"
-#~ msgstr "Letzter Zeitraffer"
+#~ msgstr ""
 
 #~ msgid "Last Still"
-#~ msgstr "Letzter"
+#~ msgstr ""
 
 #~ msgid "Active"
-#~ msgstr "Aktiv"
+#~ msgstr ""
 
 #~ msgid "Inactive"
-#~ msgstr "Inaktiv"
+#~ msgstr ""
 
 #~ msgid "Value"
-#~ msgstr "Wert"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Functions conduct complex tasks, often "
@@ -8387,69 +8208,57 @@ msgstr ""
 #~ "temperature sensor and heater in order"
 #~ " to regulate temperature."
 #~ msgstr ""
-#~ "Funktionen führen komplexe Aufgaben aus "
-#~ "und verbinden häufig eine oder mehrere"
-#~ " <u><a href=\"/data\">Daten</a></u> -Quellen mit"
-#~ " <u><a href=\"/output\">Ausgaben</a></u>. Dies "
-#~ "könnte beispielsweise ein PID-Regler "
-#~ "sein, um eine Rückkopplungsschleife mit "
-#~ "einem Temperatursensor und einer "
-#~ "Heizeinrichtung zu erzeugen, um die "
-#~ "Temperatur zu regulieren."
 
 #~ msgid "Native Functions"
 #~ msgstr ""
 
 #~ msgid "Asynchronous Graph"
-#~ msgstr "Asynchrone Grafik"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Hold down the <kbd>Ctrl</kbd> or "
 #~ "<kbd>&#8984;</kbd> key to select more "
 #~ "than one"
 #~ msgstr ""
-#~ "Halten Sie die Taste <kbd>Strg</kbd> "
-#~ "oder <kbd>&#8984;</kbd> gedrückt, um mehrere"
-#~ " auszuwählen"
 
 #~ msgid "Mycodo Version:"
-#~ msgstr "Mycodo Version:"
+#~ msgstr ""
 
 #~ msgid "Python Version:"
-#~ msgstr "Python Version:"
+#~ msgstr ""
 
 #~ msgid "Database Version"
-#~ msgstr "Datenbank Version"
+#~ msgstr ""
 
 #~ msgid "Daemon Status"
-#~ msgstr "Daemon Status"
+#~ msgstr ""
 
 #~ msgid "Running"
-#~ msgstr "Läuft"
+#~ msgstr ""
 
 #~ msgid "Not Running"
-#~ msgstr "Läuft nicht"
+#~ msgstr ""
 
 #~ msgid "Daemon Process ID"
-#~ msgstr "Daemon Prozess ID"
+#~ msgstr ""
 
 #~ msgid "Daemon RAM Usage"
-#~ msgstr "Daemon-RAM-Nutzung"
+#~ msgstr ""
 
 #~ msgid "Daemon Virtualenv"
-#~ msgstr "Daemon virtuelle Umgebung"
+#~ msgstr ""
 
 #~ msgid "Yes"
-#~ msgstr "Ja"
+#~ msgstr ""
 
 #~ msgid "No"
-#~ msgstr "Nein"
+#~ msgstr ""
 
 #~ msgid "Frontend RAM Usage"
-#~ msgstr "Frontend RAM Nutzung"
+#~ msgstr ""
 
 #~ msgid "Frontend Virtualenv"
-#~ msgstr "Frontend virtuelle Umgebung"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "LCDs allow the display of data for"
@@ -8457,38 +8266,33 @@ msgstr ""
 #~ "alerts to conditional events you "
 #~ "configure (flash the LCD)."
 #~ msgstr ""
-#~ "LCDs ermöglichen die Anzeige von Daten"
-#~ " zur einfachen Anzeige und zum "
-#~ "Anzeigen von Warnungen bei bedingten "
-#~ "Ereignissen, die Sie konfigurieren (Flashen"
-#~ " des LCD)."
 
 #~ msgid "Display Set"
-#~ msgstr "Set anzeigen"
+#~ msgstr ""
 
 #~ msgid "Live Measurements"
-#~ msgstr "Live Messungen"
+#~ msgstr ""
 
 #~ msgid "No Data Sources Activated"
-#~ msgstr "Keine Datenquellen aktiviert"
+#~ msgstr ""
 
 #~ msgid "Input (%(type)s), %(sec)s second interval"
-#~ msgstr "(%(type)s), %(sec)s Sek. Intervall"
+#~ msgstr ""
 
 #~ msgid "Timestamp"
-#~ msgstr "Zeitstempel"
+#~ msgstr ""
 
 #~ msgid "Please wait"
-#~ msgstr "Bitte warten"
+#~ msgstr ""
 
 #~ msgid "Math (%(type)s), %(sec)s second interval"
-#~ msgstr "Berechnung (%(type)s), %(sec)s zweites Intervall"
+#~ msgstr ""
 
 #~ msgid "Back to Method Management"
-#~ msgstr "Zurück zum Methoden Managment"
+#~ msgstr ""
 
 #~ msgid "Output Modulation"
-#~ msgstr "Ausgangsmodulation"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Note: This feature is currently not "
@@ -8496,14 +8300,9 @@ msgstr ""
 #~ " modulated if applied to a PID. "
 #~ "This will be implemented soon."
 #~ msgstr ""
-#~ "Hinweis: Diese Funktion ist derzeit "
-#~ "nicht implementiert. Diese Ausgänge werden "
-#~ "NICHT moduliert, wenn sie auf eine "
-#~ "PID angewendet werden. Dies wird bald"
-#~ " umgesetzt werden."
 
 #~ msgid "Modulate the selected output."
-#~ msgstr "Modulieren Sie die ausgewählten Ausgabe."
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Methods allow different types of "
@@ -8514,20 +8313,12 @@ msgstr ""
 #~ "the setpoint to change over time, "
 #~ "this is called setpoint tracking."
 #~ msgstr ""
-#~ "Methoden erlauben unterschiedliche Arten der"
-#~ " Sollwertverfolgung in PID-Reglern. "
-#~ "Normalerweise regelt ein PID-Regler eine"
-#~ " Umgebungsbedingung auf einen bestimmten "
-#~ "Sollwert. Wenn Sie möchten, dass sich"
-#~ " der Sollwert im Laufe der Zeit "
-#~ "ändert, wird dies als Sollwertverfolgung "
-#~ "bezeichnet."
 
 #~ msgid "No Saved Methods Exist"
-#~ msgstr "Keine gespeicherten Methoden vorhanden"
+#~ msgstr ""
 
 #~ msgid "Saved Methods"
-#~ msgstr "Gespeicherte Methoden"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Output devices enable Mycodo to "
@@ -8538,20 +8329,12 @@ msgstr ""
 #~ "an input, output devices can be "
 #~ "used for feedback regulation."
 #~ msgstr ""
-#~ "Ausgabegeräte ermöglichen es Mycodo, Dinge "
-#~ "durch die Verwendung von Ausgaben "
-#~ "(verdrahtet und drahtlos), PWM-Signalen "
-#~ "und Ausführen von Befehlen zu "
-#~ "manipulieren. Bei Anschluss an einen "
-#~ "PID-Regler mit einem Eingang können "
-#~ "Ausgabegeräte zur Rückkopplungsregelung verwendet"
-#~ " werden."
 
 #~ msgid "Unconfigured"
-#~ msgstr "Nicht konfiguriert"
+#~ msgstr ""
 
 #~ msgid "Pump Volume"
-#~ msgstr "Pumpenvolumen"
+#~ msgstr ""
 
 #~ msgid "Select a measurement with the unit:"
 #~ msgstr ""
@@ -8563,37 +8346,37 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Past Day"
-#~ msgstr "Gestern"
+#~ msgstr ""
 
 #~ msgid "Past Week"
-#~ msgstr "Letzte Woche"
+#~ msgstr ""
 
 #~ msgid "Past Month"
-#~ msgstr "Letzter Monat"
+#~ msgstr ""
 
 #~ msgid "Amps (Average over period)"
 #~ msgstr ""
 
 #~ msgid "Cost"
-#~ msgstr "Kosten"
+#~ msgstr ""
 
 #~ msgid "ID"
-#~ msgstr "ID"
+#~ msgstr ""
 
 #~ msgid "From"
-#~ msgstr "Von"
+#~ msgstr ""
 
 #~ msgid "Past Year"
-#~ msgstr "Letztes Jahr"
+#~ msgstr ""
 
 #~ msgid "Duration On (hours)"
-#~ msgstr "Dauer AN (Stunden)"
+#~ msgstr ""
 
 #~ msgid "Total"
-#~ msgstr "Gesamt"
+#~ msgstr ""
 
 #~ msgid "Usage Reports"
-#~ msgstr "Nutzungsbericht"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "No Reports. Go to <a "
@@ -8602,16 +8385,16 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Acquire Image (and save new file)"
-#~ msgstr "Bild erfassen (und neue Datei speichern)"
+#~ msgstr ""
 
 #~ msgid "Acquire Image (and erase last file)"
-#~ msgstr "Bild erfassen (und letzte Datei löschen)"
+#~ msgstr ""
 
 #~ msgid "Display Live Video Stream"
-#~ msgstr "Live-Videostream anzeigen"
+#~ msgstr ""
 
 #~ msgid "Display Latest Timelapse Image"
-#~ msgstr "Anzeige des letzten Zeitrafferbildes"
+#~ msgstr ""
 
 #~ msgid "Series Options"
 #~ msgstr ""
@@ -8620,67 +8403,61 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "PWM On"
-#~ msgstr "PWM AN"
+#~ msgstr ""
 
 #~ msgid "Out"
 #~ msgstr ""
 
 #~ msgid "Sec On"
-#~ msgstr "Sek AN"
+#~ msgstr ""
 
 #~ msgid "A numerical value to set the PID setpoint"
-#~ msgstr "Ein numerischer Wert zum Einstellen des PID-Sollwerts"
+#~ msgstr ""
 
 #~ msgid "Measurement Settings"
-#~ msgstr "Messeinstellungen"
+#~ msgstr ""
 
 #~ msgid "The duration (seconds) between math calculations"
-#~ msgstr "Die Dauer (Sekunden) zwischen mathematischen Berechnungen"
+#~ msgstr ""
 
 #~ msgid "The Python 3 code to execute"
-#~ msgstr "Der auszuführende Python 3-Code"
+#~ msgstr ""
 
 #~ msgid "Do Not Rescale"
-#~ msgstr "Nicht neu skalieren"
+#~ msgstr ""
 
 #~ msgid "Do Not Convert"
-#~ msgstr "Nicht konvertieren"
+#~ msgstr ""
 
 #~ msgid "Number of measurements"
 #~ msgstr ""
 
 #~ msgid "Disabled"
-#~ msgstr "Deaktiviert"
+#~ msgstr ""
 
 #~ msgid "No Measurement/Unit Selected"
-#~ msgstr "Keine Messung / Einheit ausgewählt"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "An equation to store the soved "
 #~ "value of. Let \"x\" represent the "
 #~ "input value."
 #~ msgstr ""
-#~ "Eine Gleichung zum Speichern des "
-#~ "gespeicherten Werts. \"x\" vertritt der "
-#~ "Eingabewert."
 
 #~ msgid "The maximum allowed difference between any selected measurements"
-#~ msgstr "Die maximal zulässige Differenz zwischen ausgewählten Messungen"
+#~ msgstr ""
 
 #~ msgid "The duration between checking whether the conditional is true"
-#~ msgstr "Die Dauer zwischen der Überprüfung, ob die Bedingung wahr ist"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The minimum duration after a conditional"
 #~ " trigger to wait before beggining "
 #~ "monitoring again"
 #~ msgstr ""
-#~ "Die Mindestdauer nach einem bedingten "
-#~ "Auslöser, um zu warten, bevor die "
-#~ "Überwachung erneut gestartet wird"
 
 #~ msgid "Conditions"
-#~ msgstr "Bedingungen"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "will execute only this action. "
@@ -8689,16 +8466,16 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Paused"
-#~ msgstr "Pausiert"
+#~ msgstr ""
 
 #~ msgid "On Hold"
-#~ msgstr "In Wartestellung"
+#~ msgstr ""
 
 #~ msgid "Select the measurement to use as the input"
-#~ msgstr "Wählen Sie die Messung aus, die als Eingabe verwendet werden soll"
+#~ msgstr ""
 
 #~ msgid "Choose the direction(s) to regulate"
-#~ msgstr "Wählen Sie die Richtung(en) zum Regeln"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The duration between calculating a new"
@@ -8719,10 +8496,6 @@ msgstr ""
 #~ "instance, this could be the desired "
 #~ "temperature in Celsius."
 #~ msgstr ""
-#~ "Dies ist der gewünschte Zustand einer"
-#~ " bestimmten Umgebungsbedingung. Zum Beispiel "
-#~ "könnte dies die gewünschte Temperatur in"
-#~ " Celsius sein."
 
 #~ msgid ""
 #~ "The control hysteresis surounding the "
@@ -8730,19 +8503,15 @@ msgstr ""
 #~ " setpoint plus and minus the band "
 #~ "value. 0 is disabled."
 #~ msgstr ""
-#~ "Die Regelhysterese umgibt den Sollwert, "
-#~ "mit einem Band, das den Sollwert "
-#~ "plus und minus dem Bandwert darstellt."
-#~ " 0 ist deaktiviert."
 
 #~ msgid "Proportional gain"
-#~ msgstr "Propotionaler Anstieg"
+#~ msgstr ""
 
 #~ msgid "Integral gain"
-#~ msgstr "Integraler Anstieg"
+#~ msgstr ""
 
 #~ msgid "Derivative gain"
-#~ msgstr "Derivativer Anstieg"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Limit the integrator minimum, for "
@@ -8750,10 +8519,6 @@ msgstr ""
 #~ " integrator; and PID output = "
 #~ "Kp_total + Ki_total + Kd_total)"
 #~ msgstr ""
-#~ "Begrenzen Sie das Integratorminimum, um "
-#~ "Ki_total zu berechnen: (Ki_total = Ki"
-#~ " * integrator; und PID output = "
-#~ "Kp_total + Ki_total + Kd_total)"
 
 #~ msgid ""
 #~ "Limit the integrator maximum, for "
@@ -8761,26 +8526,18 @@ msgstr ""
 #~ " integrator; and PID output = "
 #~ "Kp_total + Ki_total + Kd_total)"
 #~ msgstr ""
-#~ "Begrenzen Sie das Integratormaximum, um "
-#~ "Ki_total zu berechnen: (Ki_total = Ki"
-#~ " * Integrator; und PID Ausgabe = "
-#~ "Kp_total + Ki_total+ Kd_total)"
 
 #~ msgid ""
 #~ "The output that will raise the "
 #~ "selected environmental condition (Measure "
 #~ "Type)"
 #~ msgstr ""
-#~ "Die Ausgabe, die die ausgewählte "
-#~ "Umgebungsbedingung erhöht (Measure Type)"
 
 #~ msgid ""
 #~ "The output that will lower the "
 #~ "selected environmental condition (Measure "
 #~ "Type)"
 #~ msgstr ""
-#~ "Die Ausgabe, die die ausgewählte "
-#~ "Umgebungsbedingung verringert (Measure Type)"
 
 #~ msgid "Input/Math"
 #~ msgstr ""
@@ -8795,23 +8552,19 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Manage Methods"
-#~ msgstr "Methoden verwalten"
+#~ msgstr ""
 
 #~ msgid "Maximum allowable measurement age"
 #~ msgstr ""
 
 #~ msgid "Autotune"
-#~ msgstr "Autotune"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Autotune Only: How much above and "
 #~ "below the setpoint the process variable"
 #~ " must reach before changing direction."
 #~ msgstr ""
-#~ "Autotune Only: Wie viel über und "
-#~ "unter dem Sollwert muss die "
-#~ "Prozessvariable vor der Richtungsänderung "
-#~ "erreichen."
 
 #~ msgid ""
 #~ "Autotune Only: How many seconds to "
@@ -8820,26 +8573,21 @@ msgstr ""
 #~ "PID Period, it will be on 100%%"
 #~ " of the time."
 #~ msgstr ""
-#~ "Autotune Only: Wie viele Sekunden soll"
-#~ " der Ausgang bei jedem PID-Zyklus "
-#~ "eingeschaltet werden? Zum Beispiel, wenn "
-#~ "dies der PID-Periode entspricht, wird"
-#~ " es zu 100%% der Zeit sein."
 
 #~ msgid "Controller to affect"
-#~ msgstr "Controller zum Beeinflussen"
+#~ msgstr ""
 
 #~ msgid "Activate a controller."
 #~ msgstr ""
 
 #~ msgid "Command to execute (as user \"mycodo\")"
-#~ msgstr "Befehl zum Ausführen (als Benutzer \"mycodo\")"
+#~ msgstr ""
 
 #~ msgid "Execute a Linux shell command."
 #~ msgstr ""
 
 #~ msgid "Tag to save note with"
-#~ msgstr "Tag zum Speichern der Notiz mit"
+#~ msgstr ""
 
 #~ msgid "Create a note with the selected Tag."
 #~ msgstr ""
@@ -8848,10 +8596,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Email Address"
-#~ msgstr "E-Mail-Addresse"
+#~ msgstr ""
 
 #~ msgid "Email address to notify"
-#~ msgstr "E-Mail-Adresse für Benachrichtigung"
+#~ msgstr ""
 
 #~ msgid "Email a single recipient."
 #~ msgstr ""
@@ -8863,7 +8611,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "LCD to flash"
-#~ msgstr "LCD zum Blinken"
+#~ msgstr ""
 
 #~ msgid "Stop LCD flashing."
 #~ msgstr ""
@@ -8890,34 +8638,34 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "PID to affect"
-#~ msgstr "PID zum Beeinflussen"
+#~ msgstr ""
 
 #~ msgid "Method to set the PID to use"
-#~ msgstr "Methode zum Festlegen der zu verwendenden PID"
+#~ msgstr ""
 
 #~ msgid "Select a method to set the PID to use."
 #~ msgstr ""
 
 #~ msgid "What output to manipulate"
-#~ msgstr "Welche Ausgabe manipulieren"
+#~ msgstr ""
 
 #~ msgid "Turn the output on or off"
-#~ msgstr "Schalten Sie den Ausgang ein oder aus"
+#~ msgstr ""
 
 #~ msgid "How long to turn the output on (optional)"
-#~ msgstr "Wie lange soll der Ausgang eingeschaltet werden (optional)"
+#~ msgstr ""
 
 #~ msgid "Turn an Output Off, On, or On or a duration."
 #~ msgstr ""
 
 #~ msgid "What duty cycle to set the output"
-#~ msgstr "Welchen Arbeitszyklus, um die Ausgabe einzustellen"
+#~ msgstr ""
 
 #~ msgid "Set an Output to a PWM duty cycle."
 #~ msgstr ""
 
 #~ msgid "How long to pause executing actions"
-#~ msgstr "Wie lange soll die Ausführung von Aktionen angehalten werden?"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Set a delay between executing Actions"
@@ -8928,7 +8676,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Camera to capture with"
-#~ msgstr "Kamera zum Aufnehmen"
+#~ msgstr ""
 
 #~ msgid "Capture a photo with the selected Camera."
 #~ msgstr ""
@@ -8940,7 +8688,7 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "The value to set the PID setpoint"
-#~ msgstr "Der Wert zum Einstellen des PID-Sollwerts"
+#~ msgstr ""
 
 #~ msgid "Set the Setpoint of a PID."
 #~ msgstr ""
@@ -8958,10 +8706,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Video Duration (seconds)"
-#~ msgstr "Videodauer (Sekunden)"
+#~ msgstr ""
 
 #~ msgid "Duration to record video (sec)"
-#~ msgstr "Dauer zum Aufzeichnen des Videos (Sek.)"
+#~ msgstr ""
 
 #~ msgid "Camera: Capture Video"
 #~ msgstr ""
@@ -8983,15 +8731,12 @@ msgstr ""
 #~ " of. The return value will be "
 #~ "True when HIGH and False when LOW."
 #~ msgstr ""
-#~ "Der GPIO-Pin, um den Status von"
-#~ " zu messen. Der Rückgabewert ist True"
-#~ " bei HIGH und False bei LOW."
 
 #~ msgid "returns 1 if the output is HIGH and 0 if the output is LOW."
 #~ msgstr ""
 
 #~ msgid "Do not accept measurements older than this age"
-#~ msgstr "Akzeptieren Sie keine Messungen älter als dieses Alter"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "returns a value if one is found"
@@ -9025,11 +8770,6 @@ msgstr ""
 #~ "below this value, the Lower Output "
 #~ "will not turn on."
 #~ msgstr ""
-#~ "Die Mindestdauer (in Sekunden), die für"
-#~ " die Aktivierung des unteren Ausgangs "
-#~ "erforderlich ist. Wenn eine Einschaltdauer "
-#~ "unter diesem Wert liegt, wird der "
-#~ "untere Ausgang nicht eingeschaltet."
 
 #~ msgid ""
 #~ "The maximum duration (in seconds) "
@@ -9039,15 +8779,9 @@ msgstr ""
 #~ " Lower Output will turn on for "
 #~ "this set duration."
 #~ msgstr ""
-#~ "Die maximale Dauer (in Sekunden), die"
-#~ " für die untere Ausgabe pro Periode"
-#~ " zulässig ist. Wenn eine Einschaltdauer "
-#~ "über diesem Wert liegt, wird der "
-#~ "untere Ausgang für diese eingestellte "
-#~ "Dauer eingeschaltet."
 
 #~ msgid "This output will remain off for at least this duration of time"
-#~ msgstr "Dieser Ausgang bleibt für mindestens diese Zeitdauer ausgeschaltet"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The minimum duration (in seconds) "
@@ -9056,11 +8790,6 @@ msgstr ""
 #~ "below this value, the Raise Output "
 #~ "will not turn on."
 #~ msgstr ""
-#~ "Die Mindestdauer (in Sekunden), die für"
-#~ " die Aktivierung der Erhöhungs-Ausgabe "
-#~ "erforderlich ist. Wenn eine Einschaltdauer "
-#~ "unter diesem Wert liegt, wird der "
-#~ "Erhöhungs-Ausgang nicht eingeschaltet."
 
 #~ msgid ""
 #~ "The maximum duration (in seconds) "
@@ -9070,12 +8799,6 @@ msgstr ""
 #~ " Raise Output will turn on for "
 #~ "this set duration."
 #~ msgstr ""
-#~ "Die maximale Dauer (in Sekunden), für"
-#~ " die die Erhöhungs-Ausgabe pro "
-#~ "Periode aktiviert sein darf. Wenn eine"
-#~ " Einschaltdauer über diesem Wert liegt, "
-#~ "wird der Erhöhungs-Ausgabe für diese "
-#~ "eingestellte Dauer eingeschaltet."
 
 #~ msgid ""
 #~ "The minimum duty cycle (in %%). If"
@@ -9083,10 +8806,6 @@ msgstr ""
 #~ "value, this is the value that will"
 #~ " be used."
 #~ msgstr ""
-#~ "Der Mindest-Auslastungsgrad (in %%). "
-#~ "Wenn ein Auslastungsgrad unter diesem "
-#~ "Wert liegt, ist dies der Wert, der"
-#~ " verwendet wird."
 
 #~ msgid ""
 #~ "The maximum duty cycle (in %%). If"
@@ -9094,10 +8813,6 @@ msgstr ""
 #~ "value, this is the value that will"
 #~ " be used."
 #~ msgstr ""
-#~ "Das maximale Auslastungsgrad (in %%). "
-#~ "Wenn ein Auslastungsgrad unter diesem "
-#~ "Wert liegt, ist dies der Wert, der"
-#~ " verwendet wird."
 
 #~ msgid ""
 #~ "The maximum duty cycle (in %%). If"
@@ -9105,21 +8820,15 @@ msgstr ""
 #~ "value, this is the value that will"
 #~ " be used."
 #~ msgstr ""
-#~ "Das maximale Auslastungsgrad (in %%). "
-#~ "Wenn ein Auslastungsgrad unter diesem "
-#~ "Wert liegt, ist dies der Wert, der"
-#~ " verwendet wird."
 
 #~ msgid "Detect low to high (rising), high to low (falling), or both?"
 #~ msgstr ""
-#~ "Erkennen niedrig zu hoch (steigend), "
-#~ "hoch zu niedrig (fallend) oder beides?"
 
 #~ msgid "Rising"
-#~ msgstr "Steigend"
+#~ msgstr ""
 
 #~ msgid "Falling"
-#~ msgstr "Fallend"
+#~ msgstr ""
 
 #~ msgid "The program variable set in ~/.lircrc"
 #~ msgstr ""
@@ -9129,33 +8838,30 @@ msgstr ""
 
 #~ msgid "Trigger this conditional to act when this output turns on or off"
 #~ msgstr ""
-#~ "Aktivieren Sie diese Bedingung, um zu"
-#~ " reagieren, wenn diese Ausgabe ein- "
-#~ "oder ausgeschaltet wird"
 
 #~ msgid "What action will trigger this conditional statement, on or off?"
-#~ msgstr "Welche Aktion wird diese bedingte Anweisung auslösen, AN oder AUS?"
+#~ msgstr ""
 
 #~ msgid "no duration"
-#~ msgstr "keine Dauer"
+#~ msgstr ""
 
 #~ msgid "any duration"
-#~ msgstr "jede Dauer"
+#~ msgstr ""
 
 #~ msgid "no or any duration"
-#~ msgstr "keine oder irgendeine Dauer"
+#~ msgstr ""
 
 #~ msgid "equal to duration"
-#~ msgstr "gleich der Dauer"
+#~ msgstr ""
 
 #~ msgid "greater than duration"
-#~ msgstr "länger als die Dauer"
+#~ msgstr ""
 
 #~ msgid "greater than or equal to duration"
 #~ msgstr ""
 
 #~ msgid "less than duration"
-#~ msgstr "weniger als die Dauer"
+#~ msgstr ""
 
 #~ msgid "less than or equal to duration"
 #~ msgstr ""
@@ -9166,11 +8872,6 @@ msgstr ""
 #~ "should trigger when the output On "
 #~ "duration equals this amount"
 #~ msgstr ""
-#~ "(Optional) Stellen Sie dies auf eine "
-#~ "bestimmte Zeitdauer ein, wenn die "
-#~ "Bedingung ausgelöst werden soll, wenn "
-#~ "die Ausgabe EIN-Dauer diesem Betrag "
-#~ "entspricht"
 
 #~ msgid ""
 #~ "The conditional is triggered when the"
@@ -9179,81 +8880,63 @@ msgstr ""
 #~ "the measurement timestamp is greater "
 #~ "than the value of seconds"
 #~ msgstr ""
-#~ "Die Bedingung wird ausgelöst, wenn die"
-#~ " gemessene Bedingung größer oder kleiner"
-#~ " als der eingestellte Wert ist oder"
-#~ " der Zeitstempel der Messung größer "
-#~ "als der Wert von Sekunden ist"
 
 #~ msgid "Greater Than (>)"
-#~ msgstr "Größer als (>)"
+#~ msgstr ""
 
 #~ msgid "Less Than (<)"
-#~ msgstr "Kleiner als (<)"
+#~ msgstr ""
 
 #~ msgid "Equal To (=)"
-#~ msgstr "Gleich (=)"
+#~ msgstr ""
 
 #~ msgid "The duty cycle of the output to be checked"
-#~ msgstr "Auslastungsgrad des zu überprüfenden Ausgangs"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Run this duration method, using the "
 #~ "output value to set the Duty Cycle"
 #~ " of a PWM output"
 #~ msgstr ""
-#~ "Führen Sie diese Dauermethode aus und"
-#~ " verwenden Sie den Ausgangswert, um "
-#~ "das Tastverhältnis eines PWM-Ausgangs "
-#~ "einzustellen"
 
 #~ msgid "Apply the Duty Cycle to this PWM Output"
-#~ msgstr "Wenden Sie den Auslastungsgrad auf diesen PWM-Ausgang an"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The duration between calculating and "
 #~ "setting the Duty Cycle of the the"
 #~ " PWM Output"
 #~ msgstr ""
-#~ "Die Dauer zwischen dem Berechnen und "
-#~ "Einstellen des Auslastungsgrades des PWM-"
-#~ "Ausgangs"
 
 #~ msgid "Trigger conditional at sunrise or sunset?"
-#~ msgstr "Auslöser bedingt bei Sonnenaufgang oder Sonnenuntergang?"
+#~ msgstr ""
 
 #~ msgid "Sunrise"
-#~ msgstr "Sonnenaufgang"
+#~ msgstr ""
 
 #~ msgid "Sunset"
-#~ msgstr "Sonnenuntergang"
+#~ msgstr ""
 
 #~ msgid "Latitude for sunrise or sunset"
-#~ msgstr "Breitengrad für Sonnenaufgang oder Sonnenuntergang"
+#~ msgstr ""
 
 #~ msgid "Longitude for sunrise or sunset"
-#~ msgstr "Längengrad für Sonnenaufgang oder Sonnenuntergang"
+#~ msgstr ""
 
 #~ msgid "Zenith for sunrise or sunset"
-#~ msgstr "Zenith für Sonnenaufgang oder Sonnenuntergang"
+#~ msgstr ""
 
 #~ msgid "The number of days to offset from the date of the sunrise or sunset"
 #~ msgstr ""
-#~ "Die Anzahl der Tage, die vom Datum"
-#~ " des Sonnenaufgangs oder Sonnenuntergangs "
-#~ "abweichen sollen"
 
 #~ msgid "The number of minutes to offset from the sunrise or sunset"
 #~ msgstr ""
-#~ "Die Anzahl der Minuten, die vom "
-#~ "Sonnenaufgang oder Sonnenuntergang entfernt "
-#~ "werden sollen"
 
 #~ msgid "Trigger conditional actions at an interval of time"
-#~ msgstr "Auslösen bedingter Aktionen in einem Zeitintervall"
+#~ msgstr ""
 
 #~ msgid "A duration to wait before beginning the timer"
-#~ msgstr "Eine Wartezeit bis zum Beginn des Timers"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Define the setpoint over a period "
@@ -9263,12 +8946,6 @@ msgstr ""
 #~ "midnight (00:00) if you wish to "
 #~ "fill the entire day."
 #~ msgstr ""
-#~ "Definieren Sie den Sollwert über einen"
-#~ " bestimmten Zeitraum zu bestimmten "
-#~ "Tageszeiten. Diese Methode wird täglich "
-#~ "wiederholt. Beginnen Sie den ersten "
-#~ "Eintrag um Mitternacht (00:00), wenn Sie"
-#~ " den ganzen Tag füllen möchten."
 
 #~ msgid ""
 #~ "The new entry's start time may be"
@@ -9278,12 +8955,6 @@ msgstr ""
 #~ "be used if there is any "
 #~ "unaccounted time."
 #~ msgstr ""
-#~ "Die Startzeit des neuen Eintrags kann"
-#~ " der Endzeit des letzten Eintrags "
-#~ "entsprechen, aber nicht überlappen. Der "
-#~ "voreingestellte Sollwert für die PID "
-#~ "wird verwendet, wenn eine nicht erfasste"
-#~ " Zeit vorhanden ist."
 
 #~ msgid ""
 #~ "Activate or deactivate an output at "
@@ -9292,14 +8963,9 @@ msgstr ""
 #~ " the time of day. For example, "
 #~ "3:05 PM would be \"15:05\"."
 #~ msgstr ""
-#~ "Aktivieren oder deaktivieren Sie eine "
-#~ "Ausgabe zu einer bestimmten Tageszeit. "
-#~ "Stunde und Minute (HH:MM) ist hier "
-#~ "definiert als die Tageszeit. Zum "
-#~ "Beispiel wäre 15.05 Uhr \"15:05\"."
 
 #~ msgid "Modulate the selected output"
-#~ msgstr "Modulieren Sie den ausgewählten Ausgang"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Define the setpoint over the day "
@@ -9317,21 +8983,6 @@ msgstr ""
 #~ "period and this method will repeat "
 #~ "daily."
 #~ msgstr ""
-#~ "Definieren Sie den Sollwert über den "
-#~ "Tag basierend auf einer kubischen "
-#~ "Bezier-Kurve. Wenn Sie mit einer "
-#~ "Bezier-Kurve nicht vertraut sind, sollten"
-#~ " Sie den <a "
-#~ "href=\"https://www.desmos.com/calculator/cahqdxeshd\" "
-#~ "target=\"_blank\">grafischen Bezier-Kurvengenerator</a>"
-#~ " verwenden und die 8 verwenden "
-#~ "Variablen erstellt es für 4 Punkte "
-#~ "(jeweils eine Menge von x und y)."
-#~ " Der x-Achsenstart (x3) und das Ende"
-#~ " (x0) werden automatisch gedehnt oder "
-#~ "verschoben, um innerhalb eines 24-Stunden-"
-#~ "Zeitraums zu passen, und diese Methode"
-#~ " wird täglich wiederholt."
 
 #~ msgid ""
 #~ "Define the setpoint over the day "
@@ -9343,39 +8994,22 @@ msgstr ""
 #~ "y-axis shift. This method will repeat"
 #~ " daily."
 #~ msgstr ""
-#~ "Definieren Sie den Sollwert über den "
-#~ "Tag basierend auf einer sinusförmigen "
-#~ "Welle definiert durch y = [A * "
-#~ "sin(B * x + C)] + D, wobei"
-#~ " A die Amplitude, B die Frequenz, "
-#~ "C die Winkelverschiebung und D das "
-#~ "y ist -Achsverschiebung. Diese Methode "
-#~ "wird täglich wiederholt."
 
 #~ msgid ""
 #~ "Define the setpoint over a period "
 #~ "of time based on specific times/dates."
 #~ msgstr ""
-#~ "Definieren Sie den Sollwert über einen"
-#~ " Zeitraum basierend auf bestimmten Zeiten"
-#~ " / Daten."
 
 #~ msgid ""
 #~ "Activate or deactivate a output within"
 #~ " this method at a specific time/date."
 #~ msgstr ""
-#~ "Aktivieren oder deaktivieren Sie eine "
-#~ "Ausgabe innerhalb dieser Methode zu "
-#~ "einem bestimmten Zeitpunkt."
 
 #~ msgid ""
 #~ "Define the setpoint over a period "
 #~ "of time, based on specific durations "
 #~ "of time."
 #~ msgstr ""
-#~ "Definieren Sie den Sollwert über einen"
-#~ " bestimmten Zeitraum basierend auf "
-#~ "bestimmten Zeitdauern."
 
 #~ msgid ""
 #~ "Duration here is defined as the "
@@ -9387,14 +9021,6 @@ msgstr ""
 #~ "it will execute after the last "
 #~ "duration already in the method."
 #~ msgstr ""
-#~ "Dauer hier ist definiert als die "
-#~ "Zeit nach der vorherigen Dauer. Wenn "
-#~ "dies die erste hinzugefügte Dauer ist,"
-#~ " ist dies der Anfang der Methode. "
-#~ "Wenn dies nicht die erste hinzugefügte"
-#~ " Dauer ist, wird sie nach der "
-#~ "letzten bereits in der Methode "
-#~ "vorhandenen Dauer ausgeführt."
 
 #~ msgid ""
 #~ "Activate or deactivate an output within"
@@ -9406,40 +9032,21 @@ msgstr ""
 #~ "modulation 60 seconds after the start"
 #~ " of the method."
 #~ msgstr ""
-#~ "Aktivieren oder deaktivieren Sie eine "
-#~ "Ausgabe innerhalb dieser Methode zu "
-#~ "einer bestimmten Dauer. Dauer hier ist"
-#~ " definiert als die Zeit seit Beginn"
-#~ " der Methode. Zum Beispiel würden 60"
-#~ " Sekunden die Ausgangsmodulation 60 "
-#~ "Sekunden nach dem Start der Methode "
-#~ "ausführen."
 
 #~ msgid ""
 #~ "Use the following options to instruct"
 #~ " the method to restart when it "
 #~ "reaches the end."
 #~ msgstr ""
-#~ "Verwenden Sie die folgenden Optionen, um"
-#~ " die Methode anzuweisen, bei Erreichen "
-#~ "des Endes neu zu starten."
 
 #~ msgid "If you do not wish for the method to repeat, do not use this option."
 #~ msgstr ""
-#~ "Wenn Sie nicht möchten, dass die "
-#~ "Methode wiederholt wird, verwenden Sie "
-#~ "diese Option nicht."
 
 #~ msgid ""
 #~ "You may enter a duration (seconds) "
 #~ "that the method will end after, "
 #~ "otherwise leave blank to repeat forever."
 #~ msgstr ""
-#~ "Sie können eine Dauer (Sekunden) "
-#~ "eingeben, nach der die Methode enden "
-#~ "wird. Andernfalls lassen Sie das Feld"
-#~ " leer, um es für immer zu "
-#~ "wiederholen."
 
 #~ msgid "Fastest Flow Rate"
 #~ msgstr ""
@@ -9457,37 +9064,37 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Any Pin, <= 40kHz"
-#~ msgstr "Jeder Pin, <= 40 kHz"
+#~ msgstr ""
 
 #~ msgid "Hardware Pin, <= 30MHz"
-#~ msgstr "Hardware Pin, <= 30MHz"
+#~ msgstr ""
 
 #~ msgid "Wireless 433 MHz On command"
-#~ msgstr "Wireless 433 MHz AN Befehl"
+#~ msgstr ""
 
 #~ msgid "Wireless 433 MHz Off command"
-#~ msgstr "Wireless 433 MHz AUS Befehl"
+#~ msgstr ""
 
 #~ msgid "Alerts Settings"
-#~ msgstr "E-Mail Einstellungen"
+#~ msgstr ""
 
 #~ msgid "465 for SSL, 587 for TSL"
-#~ msgstr "465 für SSL, 587 für TSL"
+#~ msgstr ""
 
 #~ msgid "Usually your full email address"
-#~ msgstr "Ihre vollständige E-Mail-Adresse"
+#~ msgstr ""
 
 #~ msgid "Only enter a password here if you wish to change it"
-#~ msgstr "Geben Sie hier nur ein Passwort ein, wenn Sie es ändern möchten"
+#~ msgstr ""
 
 #~ msgid "Maximum number of alerts that can be emailed per hour."
-#~ msgstr "Maximale Anzahl von Warnungen, die per E-Mail gesendet werden können."
+#~ msgstr ""
 
 #~ msgid "Camera Settings"
 #~ msgstr ""
 
 #~ msgid "Name for this Camera"
-#~ msgstr "Name für diese Kamera"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Raspberry Pi Camera support doesn't "
@@ -9496,31 +9103,17 @@ msgstr ""
 #~ " or with the command 'sudo raspi-"
 #~ "config'"
 #~ msgstr ""
-#~ "Die Himbeer-Pi-Kamera-Unterstützung "
-#~ "scheint nicht aktiviert zu sein. Bitte"
-#~ " aktivieren Sie es mit der Raspberry"
-#~ " Pi-Konfiguration oder mit dem Befehl"
-#~ " 'sudo raspi-config'."
 
 #~ msgid "Path to save still image files. Leave blank to use default location."
 #~ msgstr ""
-#~ "Pfad zum Speichern von Standbilddateien. "
-#~ "Lassen Sie das Feld leer, um den"
-#~ " Standardspeicherort zu verwenden."
 
 #~ msgid ""
 #~ "Path to save timelapse image files. "
 #~ "Leave blank to use default location."
 #~ msgstr ""
-#~ "Pfad zum Speichern von Timelapse-"
-#~ "Bilddateien. Lassen Sie das Feld leer,"
-#~ " um den Standardspeicherort zu verwenden."
 
 #~ msgid "Path to save video files. Leave blank to use default location."
 #~ msgstr ""
-#~ "Pfad zum Speichern von Videodateien. "
-#~ "Lassen Sie das Feld leer, um den"
-#~ " Standardspeicherort zu verwenden."
 
 #~ msgid "Controller Settings"
 #~ msgstr ""
@@ -9529,15 +9122,13 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "General Settings"
-#~ msgstr "Allgemeine Einstellungen"
+#~ msgstr ""
 
 #~ msgid "Selecting a language will override the web browser's language"
 #~ msgstr ""
-#~ "Wenn Sie eine Sprache auswählen, wird"
-#~ " die Sprache des Webbrowsers überschrieben"
 
 #~ msgid "Which page to land on after logging in"
-#~ msgstr "Welcher Seite nach dem Einloggen soll aufgerufen werden"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Set the timeout (seconds) for Pyro "
@@ -9555,143 +9146,113 @@ msgstr ""
 #~ "to use SSL (port 443) for greater"
 #~ " security."
 #~ msgstr ""
-#~ "Aktivieren Sie diese Option, um alle "
-#~ "Webverbindungen zur Verwendung von SSL "
-#~ "(Port 443) für höhere Sicherheit zu "
-#~ "erzwingen."
 
 #~ msgid ""
 #~ "Check to prevent Success alert messages"
 #~ " from appearing at the top of "
 #~ "the page."
 #~ msgstr ""
-#~ "Aktivieren Sie diese Option, um zu "
-#~ "verhindern, dass Erfolgsmeldungen oben auf "
-#~ "der Seite angezeigt werden."
 
 #~ msgid ""
 #~ "Check to prevent Info alert messages "
 #~ "from appearing at the top of the"
 #~ " page."
 #~ msgstr ""
-#~ "Aktivieren Sie diese Option, um zu "
-#~ "verhindern, dass Info-Warnmeldungen oben "
-#~ "auf der Seite angezeigt werden."
 
 #~ msgid ""
 #~ "Check to prevent Warning alert messages"
 #~ " from appearing at the top of "
 #~ "the page."
 #~ msgstr ""
-#~ "Aktivieren Sie diese Option, um zu "
-#~ "verhindern, dass Warnmeldungen oben auf "
-#~ "der Seite angezeigt werden."
 
 #~ msgid "Hide tooltips that pop up over form inputs."
-#~ msgstr "Tooltips ausblenden, die bei Formulareingaben angezeigt werden."
+#~ msgstr ""
 
 #~ msgid "Check if you do not wish to send anonymous usage statistics."
 #~ msgstr ""
-#~ "Überprüfen Sie, ob Sie keine anonymen"
-#~ " Nutzungsstatistiken senden möchten."
 
 #~ msgid "View collected statistics"
-#~ msgstr "Gesammelte Statistiken anzeigen"
+#~ msgstr ""
 
 #~ msgid "Check if you would like Mycodo to automatically check for upgrades."
-#~ msgstr "Überprüfen Sie, ob Mycodo automatisch nach Upgrades suchen soll."
+#~ msgstr ""
 
 #~ msgid "Set the maximum allowed amperage to be switched on at any given time"
 #~ msgstr ""
-#~ "Stellen Sie die maximal erlaubte "
-#~ "Stromstärke zu einem bestimmten Zeitpunkt "
-#~ "ein"
 
 #~ msgid "Set the voltage used to power the devices powered by the outputs"
 #~ msgstr ""
-#~ "Stellen Sie die Spannung ein, mit "
-#~ "der die von den Ausgängen versorgten "
-#~ "Geräte betrieben werden"
 
 #~ msgid "Set the cost per kilowatt-hour"
-#~ msgstr "Stellen Sie die Kosten pro Kilowattstunde ein"
+#~ msgstr ""
 
 #~ msgid "Set the unit of currency used to pay for the electricity"
-#~ msgstr "Stellen Sie die Währungseinheit ein, in der der Strom bezahlt wird"
+#~ msgstr ""
 
 #~ msgid "Set a day of the month to calculate monthly power usage"
 #~ msgstr ""
-#~ "Legen Sie einen Tag des Monats "
-#~ "fest, um den monatlichen Stromverbrauch "
-#~ "zu berechnen"
 
 #~ msgid ""
 #~ "Automatically generate output usage reports"
 #~ " on a daily/weekly/monthly schedule"
 #~ msgstr ""
-#~ "Generieren Sie automatisch Ausgabenachrichten "
-#~ "zu einem täglichen / wöchentlichen / "
-#~ "monatlichen Zeitplan"
 
 #~ msgid "How often to generate a report"
-#~ msgstr "Wie oft soll ein Bericht erstellt werden"
+#~ msgstr ""
 
 #~ msgid "Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28"
-#~ msgstr "Tag Optionen: Täglich: 1-7 (1=Montag), Monatlich: 1-28"
+#~ msgstr ""
 
 #~ msgid "Input Settings"
-#~ msgstr "Eingabeeinstellungen"
+#~ msgstr ""
 
 #~ msgid "Imported Input Modules"
-#~ msgstr "Importierte Eingabemodule"
+#~ msgstr ""
 
 #~ msgid "Manufacturer"
 #~ msgstr ""
 
 #~ msgid "Units"
-#~ msgstr "Einheiten"
+#~ msgstr ""
 
 #~ msgid "Conversions"
-#~ msgstr "Umwandlungen"
+#~ msgstr ""
 
 #~ msgid "All"
-#~ msgstr "Alle"
+#~ msgstr ""
 
 #~ msgid "Raspberry Pi Settings"
-#~ msgstr "Easy-Grow Geräte Einstellungen"
+#~ msgstr ""
 
 #~ msgid "User Settings"
-#~ msgstr "Benutzereinstellungen"
+#~ msgstr ""
 
 #~ msgid "Roles"
-#~ msgstr "Rollen"
+#~ msgstr ""
 
 #~ msgid "Export Import"
-#~ msgstr "Export Import"
+#~ msgstr ""
 
 #~ msgid "Select the number of lines to display from the end of a log"
 #~ msgstr ""
-#~ "Wählen Sie die Anzahl der Zeilen "
-#~ "aus, die im Protokoll angezeigt werden"
-#~ " sollen"
 
 #~ msgid "Notes"
-#~ msgstr "Anmerkungen"
+#~ msgstr ""
 
 #~ msgid "Edit Note"
-#~ msgstr "Notiz bearbeiten"
+#~ msgstr ""
 
 #~ msgid "Manage"
-#~ msgstr "Verwalten"
+#~ msgstr ""
 
 #~ msgid "Select one or more tags"
-#~ msgstr "Wählen Sie ein oder mehrere Tags aus"
+#~ msgstr ""
 
 #~ msgid "Search"
-#~ msgstr "Suche"
+#~ msgstr ""
 
 #~ msgid "Found"
-#~ msgstr "Gefunden"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "This guide will walk you through "
@@ -9728,10 +9289,10 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Calibration Failed"
-#~ msgstr "Kalibrierung fehlgeschlagen"
+#~ msgstr ""
 
 #~ msgid "Refer to the logs for details"
-#~ msgstr "Einzelheiten finden Sie in den Protokollen"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Measure how much fluid (ml) was "
@@ -9741,22 +9302,22 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Calibration Succeeded"
-#~ msgstr "Kalibrierung erfolgreich"
+#~ msgstr ""
 
 #~ msgid "Calibration Complete"
-#~ msgstr "Kalibrierung abgeschlossen"
+#~ msgstr ""
 
 #~ msgid "Latest pH measurement"
-#~ msgstr "Neueste pH-Messung"
+#~ msgstr ""
 
 #~ msgid "Error acquiring measurement"
-#~ msgstr "Fehler beim Erfassen der Messung"
+#~ msgstr ""
 
 #~ msgid "Please wait for the sensor measurements to equilibrate"
 #~ msgstr ""
 
 #~ msgid "seconds"
-#~ msgstr "Sekunden"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "This guide will walk you through "
@@ -9788,11 +9349,6 @@ msgstr ""
 #~ "temperature (in Celsius) of your "
 #~ "solutions, then click Continue."
 #~ msgstr ""
-#~ "Stellen Sie sicher, dass alle pH-"
-#~ "Kalibrierlösungen die gleiche Temperatur "
-#~ "haben. Geben Sie die Temperatur (in "
-#~ "Celsius) Ihrer Lösungen ein und klicken"
-#~ " Sie dann auf Weiter."
 
 #~ msgid ""
 #~ "Rinse the pH probe with distilled "
@@ -9801,52 +9357,52 @@ msgstr ""
 #~ msgstr ""
 
 #~ msgid "Ready"
-#~ msgstr "Bereit"
+#~ msgstr ""
 
 #~ msgid "Select a DS18B20 sensor"
-#~ msgstr "Wählen Sie einen DS18B20-Sensor"
+#~ msgstr ""
 
 #~ msgid "Select a resolution"
-#~ msgstr "Wählen Sie eine Auflösung"
+#~ msgstr ""
 
 #~ msgid "Daemon response: %(resp)s"
-#~ msgstr "Daemon-Antwort %(resp)s"
+#~ msgstr ""
 
 #~ msgid "Condition"
-#~ msgstr "Bedingung"
+#~ msgstr ""
 
 #~ msgid "Deactivate controller before modifying its settings"
-#~ msgstr "Deaktivieren Sie den Controller, bevor Sie die Einstellungen ändern"
+#~ msgstr ""
 
 #~ msgid "{dev} with ID %(id)s successfully added"
-#~ msgstr "{dev} mit ID %(id)s wurde erfolgreich hinzugefügt"
+#~ msgstr ""
 
 #~ msgid "Execute All"
-#~ msgstr "Alles ausführen"
+#~ msgstr ""
 
 #~ msgid "Error: %(err)s"
-#~ msgstr "Fehler: %(err)s"
+#~ msgstr ""
 
 #~ msgid "%(msg)s"
-#~ msgstr "%(msg)s"
+#~ msgstr ""
 
 #~ msgid "%(err)s"
-#~ msgstr "%(err)s"
+#~ msgstr ""
 
 #~ msgid "Entry with ID %(id)s not found"
-#~ msgstr "Eintrag mit ID %(id)s wurde nicht gefunden"
+#~ msgstr ""
 
 #~ msgid "Error in the %(field)s field - %(err)s"
-#~ msgstr "Fehler in %(field)s Feld - %(err)s"
+#~ msgstr ""
 
 #~ msgid "Cannot move above the first item in the list"
-#~ msgstr "Kann nicht über den ersten Eintrag in der Liste hinausgehen"
+#~ msgstr ""
 
 #~ msgid "Cannot move below the last item in the list"
-#~ msgstr "Kann nicht unter den letzten Eintrag in der Liste hinausgehen"
+#~ msgstr ""
 
 #~ msgid "%(type)s Input with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "%(type)s Eingabe mit ID %(id)s (%(uuid)s) erfolgreich hinzugefügt"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Choose a Read Period equal to or"
@@ -9854,115 +9410,92 @@ msgstr ""
 #~ "become unresponsive if the period is "
 #~ "below 7."
 #~ msgstr ""
-#~ "Wählen Sie einen Lesezeitraum gleich "
-#~ "oder größer als 7. Der AM2315 "
-#~ "reagiert möglicherweise nicht mehr, wenn "
-#~ "der Zeitraum unter 7 liegt."
 
 #~ msgid "The Read Period cannot be less than the Pre Output Duration"
-#~ msgstr "Der Lesezeitraum darf nicht kürzer als die Vorausgabedauer sein"
+#~ msgstr ""
 
 #~ msgid "Invalid device or improper permissions to read device"
-#~ msgstr "Ungültiges Gerät oder falsche Berechtigungen zum Lesen des Geräts"
+#~ msgstr ""
 
 #~ msgid "Pin (GPIO) must be set"
 #~ msgstr ""
 
 #~ msgid "Force Measurements"
-#~ msgstr "Kraftmessungen"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Activate controller before attempting to "
 #~ "force the acquisition of measurements"
 #~ msgstr ""
-#~ "Aktivieren Sie den Controller, bevor Sie"
-#~ " versuchen, die Messwerterfassung zu "
-#~ "erzwingen"
 
 #~ msgid "Deactivate LCD controller before modifying its settings."
 #~ msgstr ""
-#~ "Deaktivieren Sie den LCD-Controller, "
-#~ "bevor Sie seine Einstellungen ändern."
 
 #~ msgid "Cannot activate LCD if there are blank lines"
-#~ msgstr "LCD kann nicht aktiviert werden, wenn Leerzeilen vorhanden sind"
+#~ msgstr ""
 
 #~ msgid "Deactivate LCD controller before modifying its settings"
 #~ msgstr ""
-#~ "Deaktivieren Sie den LCD-Controller, "
-#~ "bevor Sie seine Einstellungen ändern"
 
 #~ msgid "The last display cannot be deleted"
-#~ msgstr "Die letzte Anzeige kann nicht gelöscht werden"
+#~ msgstr ""
 
 #~ msgid "%(type)s Math with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "%(type)s Berechnung mit ID %(id)s (%(uuid)s) erfolgreich hinzugefügt"
+#~ msgstr ""
 
 #~ msgid "Deactivate Math controller before modifying its settings"
 #~ msgstr ""
-#~ "Deaktivieren Sie den Math-Controller, "
-#~ "bevor Sie seine Einstellungen ändern"
 
 #~ msgid "Error in form field(s)"
-#~ msgstr "Fehler in Formularfeld(ern)"
+#~ msgstr ""
 
 #~ msgid "Duration must be a positive integer"
-#~ msgstr "Die Dauer muss eine positive ganze Zahl sein"
+#~ msgstr ""
 
 #~ msgid "Duration must be a valid integer"
-#~ msgstr "Die Dauer muss eine gültige Ganzzahl sein"
+#~ msgstr ""
 
 #~ msgid "Required: Start date/time, end date/time, start setpoint"
-#~ msgstr "Erforderlich: Startdatum /-zeit, Enddatum /-zeit, Start-Sollwert"
+#~ msgstr ""
 
 #~ msgid "Invalid Date/Time format. Correct format: MM/DD/YYYY HH:MM:SS"
 #~ msgstr ""
-#~ "Ungültiges Datums- / Uhrzeitformat Korrektes"
-#~ " Format: MM/DD/YYYY HH:MM:SS"
 
 #~ msgid "The end time/date must be after the start time/date."
 #~ msgstr ""
-#~ "Die Endzeit / das Enddatum muss "
-#~ "nach der Startzeit / dem Startzeitpunkt"
-#~ " liegen."
 
 #~ msgid "Required: Start time, end time, start setpoint"
-#~ msgstr "Erforderlich: Startzeit, Endzeit, Start-Sollwert"
+#~ msgstr ""
 
 #~ msgid "Invalid Date/Time format. Correct format: HH:MM:SS"
-#~ msgstr "Ungültiges Datums- / Uhrzeitformat Korrektes Format: HH:MM:SS"
+#~ msgstr ""
 
 #~ msgid "The end time must be after the start time."
-#~ msgstr "Die Endzeit muss nach der Startzeit liegen."
+#~ msgstr ""
 
 #~ msgid "Required: Duration, start setpoint"
-#~ msgstr "Erforderlich: Dauer, Start-Sollwert"
+#~ msgstr ""
 
 #~ msgid "Required: Duration must be positive"
-#~ msgstr "Erforderlich: Dauer muss positiv sein"
+#~ msgstr ""
 
 #~ msgid "Required: Date/Time, Output, and Output State"
-#~ msgstr "Erforderlich: Datum / Uhrzeit, Ausgabe und Ausgabezustand"
+#~ msgstr ""
 
 #~ msgid "Invalid Date/Time format. Correct format: DD-MM-YYYY HH:MM:SS"
 #~ msgstr ""
-#~ "Ungültiges Datums- / Uhrzeitformat Korrektes"
-#~ " Format: MM/DD/YYYY HH:MM:SS"
 
 #~ msgid "Required: Output, Output State, and Output Duration"
-#~ msgstr "Erforderlich: Ausgabe, Ausgabestatus und Ausgabedauer"
+#~ msgstr ""
 
 #~ msgid "Required: Time, Relay ID, and Relay State"
-#~ msgstr "Erforderlich: Uhrzeit, Relais-ID und Relaisstatus"
+#~ msgstr ""
 
 #~ msgid "Error: Angle Shift is out of range. It must be <= 0 and <= 360."
 #~ msgstr ""
-#~ "Fehler: Winkelverschiebung liegt außerhalb des"
-#~ " zulässigen Bereichs. Es muss <= 0"
-#~ " und <= 360 sein."
 
 #~ msgid "Error: X0 must be greater than X3."
-#~ msgstr "Fehler: X0 muss größer als X3 sein."
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The new entry start time (%(st)s) "
@@ -9970,157 +9503,259 @@ msgstr ""
 #~ "time (%(et)s). Note: They may be "
 #~ "the same time."
 #~ msgstr ""
-#~ "Die Anfangszeit des neuen Eintrags "
-#~ "(%(st)s) darf nicht mit der Endzeit "
-#~ "des letzten Eintrags (%(et)s) überlappen. "
-#~ "Hinweis: Sie können die gleiche Zeit "
-#~ "sein."
 
 #~ msgid "Added duration to method from %(st)s to %(end)s"
-#~ msgstr "Die Dauer wurde der Methode von %(st)s bis %(end)s hinzugefügt"
+#~ msgstr ""
 
 #~ msgid "Added method restart"
-#~ msgstr "Neustart der Methode hinzugefügt"
+#~ msgstr ""
 
 #~ msgid "Added duration to method for %(sec)s seconds"
-#~ msgstr "Methode für %(sec)s Sekunden wurde der Dauer hinzugefügt"
+#~ msgstr ""
 
 #~ msgid "Added output modulation to method at start time: %(tm)s"
-#~ msgstr "Ausgabemodulation zur Methode zur Startzeit hinzugefügt: %(tm)s"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "The entry start time (%(st)s) cannot "
 #~ "overlap the previous entry's end time"
 #~ " (%(et)s)"
 #~ msgstr ""
-#~ "Die Anfangszeit des Eintrags (%(st)s) "
-#~ "darf die Endzeit des vorherigen Eintrags"
-#~ " nicht überschreiten (%(et)s)"
 
 #~ msgid ""
 #~ "The entry end time (%(et)s) cannot "
 #~ "overlap the next entry's start time "
 #~ "(%(st)s)"
 #~ msgstr ""
-#~ "Die Endzeit des Eintrags (%(et)s) darf"
-#~ " die Startzeit des nächsten Eintrags "
-#~ "nicht überlappen (%(st)s)"
 
 #~ msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 #~ msgstr ""
 
 #~ msgid "File"
-#~ msgstr "Datei"
+#~ msgstr ""
 
 #~ msgid "Invalid quantity"
-#~ msgstr "Ungültige Menge"
+#~ msgstr ""
 
 #~ msgid "Acceptable values"
-#~ msgstr "Akzeptable Werte"
+#~ msgstr ""
 
 #~ msgid "Actuate"
-#~ msgstr "Betätigen"
+#~ msgstr ""
 
 #~ msgid "Cannot modulate output with a GPIO of 0"
-#~ msgstr "Kann die Ausgabe nicht mit einem GPIO von 0 modulieren"
+#~ msgstr ""
 
 #~ msgid "Value must be greater than 0"
-#~ msgstr "Der Wert muss größer als 0 sein"
+#~ msgstr ""
 
 #~ msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
-#~ msgstr "Ausgabe aktiviert für %(sec)s Sekunden: %(rvalue)s"
+#~ msgstr ""
 
 #~ msgid "Invalid pin"
-#~ msgstr "Ungültige PIN"
+#~ msgstr ""
 
 #~ msgid "PWM Hertz must be a positive value"
-#~ msgstr "PWM Hertz muss ein positiver Wert sein"
+#~ msgstr ""
 
 #~ msgid "PWM duty cycle must be a positive value"
-#~ msgstr "Der PWM-Auslastungsgrad muss ein positiver Wert sein"
+#~ msgstr ""
 
 #~ msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
-#~ msgstr "PWM setzen auf %(dc)s %% mit %(hertz)s Hz: %(rvalue)s"
+#~ msgstr ""
 
 #~ msgid "Output turned on: %(rvalue)s"
-#~ msgstr "Ausgabe EIN: %(rvalue)s"
+#~ msgstr ""
 
 #~ msgid "Output turned off: %(rvalue)s"
-#~ msgstr "Ausgabe AUS: %(rvalue)s"
+#~ msgstr ""
 
 #~ msgid "Invalid value"
-#~ msgstr "Ungültiger Wert"
+#~ msgstr ""
 
 #~ msgid "Raise and lower outputs cannot be the same"
-#~ msgstr "Anhebung und Absenkung können nicht gleich sein"
+#~ msgstr ""
 
 #~ msgid "A valid Measurement is required"
-#~ msgstr "Eine gültige Messung ist erforderlich"
+#~ msgstr ""
 
 #~ msgid "A Raise Output and/or a Lower Output is required"
 #~ msgstr ""
-#~ "Eine Erhöhungsausgabe und/oder eine "
-#~ "Verringerungsausgabe sind erforderlich"
 
 #~ msgid ""
 #~ "Cannot activate PID controller if the"
 #~ " associated sensor controller is inactive"
 #~ msgstr ""
-#~ "PID-Regler kann nicht aktiviert werden,"
-#~ " wenn der zugehörige Sensorregler inaktiv"
-#~ " ist"
 
 #~ msgid ""
 #~ "Cannot activate PID controller if raise"
 #~ " and/or lower output IDs are not "
 #~ "selected"
 #~ msgstr ""
-#~ "Der PID-Regler kann nicht aktiviert "
-#~ "werden, wenn  Erhöhungs- und/oder "
-#~ "Absenkungs-IDs nicht ausgewählt sind"
 
 #~ msgid "Remote Host %(host)s with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "Remote Host %(host)s mit ID %(id)s (%(uuid)s) erfolgreich hinzugefügt"
+#~ msgstr ""
 
 #~ msgid "User Role"
-#~ msgstr "Benutzer-Rolle"
+#~ msgstr ""
 
 #~ msgid "Another user already has that email address."
-#~ msgstr "Ein anderer Benutzer hat bereits diese E-Mail-Adresse."
+#~ msgstr ""
 
 #~ msgid "Invalid password"
-#~ msgstr "Ungültiges Passwort"
+#~ msgstr ""
 
 #~ msgid "Measurement with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "Messung mit ID %(id)s (%(uuid)s) erfolgreich hinzugefügt"
+#~ msgstr ""
 
 #~ msgid "Unit"
-#~ msgstr "Einheit"
+#~ msgstr ""
 
 #~ msgid "Unit with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "Einheit mit ID %(id)s (%(uuid)s) wurde erfolgreich hinzugefügt"
+#~ msgstr ""
 
 #~ msgid "Conversion"
-#~ msgstr "Umwandlung"
+#~ msgstr ""
 
 #~ msgid "Conversion with ID %(id)s (%(uuid)s) successfully added"
-#~ msgstr "Konvertierung mit ID %(id)s (%(uuid)s) erfolgreich hinzugefügt"
+#~ msgstr ""
 
 #~ msgid "Pi Settings"
-#~ msgstr "Easy-Grow Einstellungen"
+#~ msgstr ""
 
 #~ msgid "Alert Settings"
-#~ msgstr "E-Mail Einstellungen"
+#~ msgstr ""
 
 #~ msgid ""
 #~ "Test email sent to %(recip)s. Check "
 #~ "your inbox to see if it was "
 #~ "successful."
 #~ msgstr ""
-#~ "Test-E-Mail an %(recip)s gesendet. Überprüfen"
-#~ " Sie bitte den Posteingang, um zu "
-#~ "sehen, ob er erfolgreich war."
 
 #~ msgid "Reset email counter"
+#~ msgstr ""
+
+#~ msgid "Average"
+#~ msgstr ""
+
+#~ msgid "Last"
+#~ msgstr ""
+
+#~ msgid "Past"
+#~ msgstr ""
+
+#~ msgid "Ramp"
+#~ msgstr ""
+
+#~ msgid "Sum"
+#~ msgstr ""
+
+#~ msgid "The duration (seconds) between measurements or actions"
+#~ msgstr ""
+
+#~ msgid "Hide Last Still"
+#~ msgstr ""
+
+#~ msgid "Hide Last Timelapse"
+#~ msgstr ""
+
+#~ msgid "Still Image Width"
+#~ msgstr ""
+
+#~ msgid "Still Image Height"
+#~ msgstr ""
+
+#~ msgid "Stream Width"
+#~ msgstr ""
+
+#~ msgid "Stream Height"
+#~ msgstr ""
+
+#~ msgid "Shutter Speed"
+#~ msgstr ""
+
+#~ msgid "Sharpness"
+#~ msgstr ""
+
+#~ msgid "ISO"
+#~ msgstr ""
+
+#~ msgid "Auto White Balance"
+#~ msgstr ""
+
+#~ msgid "AWB Gain Red"
+#~ msgstr ""
+
+#~ msgid "AWB Gain Blue"
+#~ msgstr ""
+
+#~ msgid "Exposure Mode"
+#~ msgstr ""
+
+#~ msgid "Meter Mode"
+#~ msgstr ""
+
+#~ msgid "Image Effect"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Different options are available to "
+#~ "fswebcam depending on the camera being"
+#~ " used. Execute 'fswebcam --device "
+#~ "/dev/video0 --list-controls' to see "
+#~ "available options to use in 'Custom "
+#~ "Options'."
+#~ msgstr ""
+
+#~ msgid "Linux shell command to execute prior to acquiring a still image."
+#~ msgstr ""
+
+#~ msgid "Linux shell command to execute after acquiring a still image."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The duration to keep the output on"
+#~ " prior to acquiring a still image."
+#~ " FOr example, useful for fluorescent "
+#~ "lights that take a few seconds to"
+#~ " turn on."
+#~ msgstr ""
+
+#~ msgid "Start"
+#~ msgstr ""
+
+#~ msgid "Start duty cycle"
+#~ msgstr ""
+
+#~ msgid "End"
+#~ msgstr ""
+
+#~ msgid "End duty cycle"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Ramp an Output from one duty cycle"
+#~ " to another duty cycle (in 0.1% "
+#~ "steps) over a period of time."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "returns the last value found within "
+#~ "the Max Age, otherwise returns None."
+#~ msgstr ""
+
+#~ msgid "Example"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "returns the average of the values "
+#~ "found within the Max Age, otherwise "
+#~ "returns None."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "returns the sum of the values "
+#~ "found within the Max Age, otherwise "
+#~ "returns None."
 #~ msgstr ""
 

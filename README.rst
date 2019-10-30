@@ -165,7 +165,7 @@ Manual
 The Mycodo Manual may be viewed as
 `Markdown <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__,
 `PDF <https://github.com/kizniche/Mycodo/raw/master/mycodo-manual.pdf>`__,
-`HTML <http://htmlpreview.github.io/?https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.html>`__,
+`HTML <https://kizniche.github.io/Mycodo/mycodo-manual.html>`__,
 or `Plain
 Text <https://raw.githubusercontent.com/kizniche/Mycodo/master/mycodo-manual.txt>`__
 
