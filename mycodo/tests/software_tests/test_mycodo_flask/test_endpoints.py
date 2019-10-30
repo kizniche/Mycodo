@@ -118,7 +118,7 @@ def test_api_when_not_logged_in(testapp):
         'users'
     ]
     for route in routes:
-        returns_401_unauthorized(testapp=testapp, endpoint='/api/{add}'.format(add=route))
+        returns_401_unauthorized(testapp=testapp, endpoint='/api/v1/{add}'.format(add=route))
 
 
 def test_api_docs_when_not_logged_in(testapp):
