@@ -2567,19 +2567,19 @@ Method Options
 
 These options are shared with several method types.
 
-+--------------------------+-------------------------------------------------+
-| Setting                  | Description                                     |
-+==========================+=================================================+
-| Start Time/Date          | This is the start time of a range of time.      |
-+--------------------------+-------------------------------------------------+
-| End Time/Date            | This is the end time of a range of time.        |
-+--------------------------+-------------------------------------------------+
-| Start Setpoint           | This is the start setpoint of a range of        |
-|                          | setpoints.                                      |
-+--------------------------+-------------------------------------------------+
-| End Setpoint             | This is the end setpoint of a range of          |
-|                          | setpoints.                                      |
-+--------------------------+-------------------------------------------------+
++-----------------------------+----------------------------------------------+
+| Setting                     | Description                                  |
++=============================+==============================================+
+| Start Time/Date             | This is the start time of a range of time.   |
++-----------------------------+----------------------------------------------+
+| End Time/Date               | This is the end time of a range of time.     |
++-----------------------------+----------------------------------------------+
+| Start Setpoint              | This is the start setpoint of a range of     |
+|                             | setpoints.                                   |
++-----------------------------+----------------------------------------------+
+| End Setpoint                | This is the end setpoint of a range of       |
+|                             | setpoints.                                   |
++-----------------------------+----------------------------------------------+
 
 Time/Date Method
 ----------------
