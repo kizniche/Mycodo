@@ -36,6 +36,23 @@ Here are a few methods using your API Key:
 
     curl -k -v -x GET "https://127.0.0.1/users?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=" -H "accept: application/vnd.mycodo.v1+json"
 
+.. code:: python
+
+    import json
+    import requests
+
+    ip_address = '127.0.0.1'
+    api_key = 'YOUR_API_KEY'
+    endpoint = 'settings/inputs'
+    url = 'https://{ip}/api/{ep}'.format(ip=ip_address, ep=endpoint)
+    headers = {
+        'Accept': 'application/vnd.mycodo.v1+json',
+        'X-API-KEY': api_key
+    }
+    response = requests.get(url, headers=headers, verify=False)
+    response_dict = json.loads(response.text)
+    print(response_dict)
+
 Errors
 ------
 
