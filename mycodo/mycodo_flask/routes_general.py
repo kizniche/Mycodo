@@ -11,8 +11,10 @@ import os
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
 from flask import Response
+from flask import current_app
 from flask import flash
 from flask import jsonify
+from flask import make_response
 from flask import redirect
 from flask import send_file
 from flask import send_from_directory
@@ -955,12 +957,20 @@ def output_mod(output_id, state, out_type, amount):
     daemon = DaemonControl()
     if (state in ['on', 'off'] and out_type == 'sec' and
             (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.output_on_off(output_id, state, float(amount))
+        out_status = daemon.output_on_off(output_id, state, float(amount))
+        if out_status[0]:
+            return 'ERROR: {}'.format(out_status[1])
+        else:
+            return 'SUCCESS: {}'.format(out_status[1])
     elif (state == 'on' and out_type in OUTPUTS_PWM and
             (str_is_float(amount) and float(amount) >= 0)):
-        return daemon.output_on(
+        out_status = daemon.output_on(
             output_id,
             duty_cycle=float(amount))
+        if out_status[0]:
+            return 'ERROR: {}'.format(out_status[1])
+        else:
+            return 'SUCCESS: {}'.format(out_status[1])
 
 
 @blueprint.route('/daemonactive')

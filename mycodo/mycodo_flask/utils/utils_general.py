@@ -565,7 +565,7 @@ def form_input_choices(choices, each_input, dict_units, dict_measurements):
             else:
                 measurement_unit = ' ({unit})'.format(unit=display_unit)
 
-            display = '[Input {id:02d}] {i_name}{chan_num}{chan_name}{meas}'.format(
+            display = '[Input {id:02d}]{chan_num} {i_name}{chan_name}{meas}'.format(
                 id=each_input.id,
                 i_name=each_input.name,
                 chan_num=channel_num,

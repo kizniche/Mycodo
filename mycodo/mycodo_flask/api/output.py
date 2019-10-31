@@ -10,14 +10,12 @@ from flask_restplus import Resource
 from flask_restplus import abort
 from flask_restplus import fields
 
-from mycodo.databases.models import Output
-from mycodo.databases.models.output import OutputSchema
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.utils import utils_general
 
 logger = logging.getLogger(__name__)
 
-ns_output = Namespace('outputs', description='Output operations')
+ns_output = Namespace('output', description='Output operations')
 
 default_responses = {
     200: 'Success',
@@ -30,48 +28,7 @@ default_responses = {
     500: 'Internal Server Error'
 }
 
-output_fields = ns_output.model('Output Settings Fields', {
-    'id': fields.Integer,
-    'unique_id': fields.String,
-    'output_type': fields.String,
-    'output_mode': fields.String,
-    'interface': fields.String,
-    'location': fields.String,
-    'i2c_bus': fields.Integer,
-    'baud_rate': fields.Integer,
-    'name': fields.String,
-    'measurement': fields.String,
-    'unit': fields.String,
-    'conversion_id': fields.String,
-    'channel': fields.Integer,
-    'pin': fields.Integer,
-    'on_state': fields.Boolean,
-    'amps': fields.Float,
-    'on_until': fields.DateTime,
-    'off_until': fields.DateTime,
-    'last_duration': fields.Float,
-    'on_duration': fields.Boolean,
-    'protocol': fields.Integer,
-    'pulse_length': fields.Integer,
-    'on_command': fields.String,
-    'off_command': fields.String,
-    'pwm_command': fields.String,
-    'trigger_functions_at_start': fields.Boolean,
-    'state_startup': fields.String,
-    'startup_value': fields.Float,
-    'state_shutdown': fields.String,
-    'shutdown_value': fields.Float,
-    'pwm_hertz': fields.Integer,
-    'pwm_library': fields.String,
-    'pwm_invert_signal': fields.Boolean,
-    'flow_rate': fields.Float
-})
-
-output_list_fields = ns_output.model('Output Settings Fields List', {
-    'outputs': fields.List(fields.Nested(output_fields)),
-})
-
-set_state_fields = ns_output.model('OutputSetState', {
+set_state_fields = ns_output.model('Output Set State', {
     'duration': fields.Float(
         description='The duration to keep the output on, in seconds',
         required=False,
@@ -91,55 +48,7 @@ def return_handler(return_):
         return '', 500
 
 
-@ns_output.route('/')
-@ns_output.doc(security='apikey', responses=default_responses)
-class OutputDump(Resource):
-    """Interacts with output settings in the SQL database"""
-
-    @accept('application/vnd.mycodo.v1+json')
-    @ns_output.marshal_with(output_list_fields)
-    @flask_login.login_required
-    def get(self):
-        """Show all output settings"""
-        if not utils_general.user_has_permission('view_settings'):
-            abort(403)
-        try:
-            output_schema = OutputSchema()
-            output_data = output_schema.dump(
-                Output.query.all(), many=True)
-            if output_data:
-                return {'outputs': output_data[0]}, 200
-        except Exception:
-            abort(500, custom=traceback.format_exc())
-
-
-@ns_output.route('/by_unique_id/<string:unique_id>')
-@ns_output.doc(
-    security='apikey',
-    responses=default_responses,
-    params={'unique_id': 'The unique ID of the output'}
-)
-class OutputSingle(Resource):
-    """Interacts with Output settings in the SQL database"""
-
-    @accept('application/vnd.mycodo.v1+json')
-    @ns_output.marshal_with(output_fields)
-    @flask_login.login_required
-    def get(self, unique_id):
-        """Show the settings for an output with the unique_id"""
-        if not utils_general.user_has_permission('view_settings'):
-            abort(403)
-        try:
-            output_schema = OutputSchema()
-            output_data = output_schema.dump(
-                Output.query.filter_by(unique_id=unique_id).first())
-            if output_data:
-                return output_data[0], 200
-        except Exception:
-            abort(500, custom=traceback.format_exc())
-
-
-@ns_output.route('/set_pwm/<string:unique_id>/<duty_cycle>')
+@ns_output.route('/pwm/<string:unique_id>/<duty_cycle>')
 @ns_output.doc(
     security='apikey',
     responses=default_responses,
@@ -175,7 +84,7 @@ class OutputPWM(Resource):
             abort(500, custom=traceback.format_exc())
 
 
-@ns_output.route('/set_state/<string:unique_id>/<string:state>')
+@ns_output.route('/state/<string:unique_id>/<string:state>')
 @ns_output.doc(
     security='apikey',
     responses=default_responses,
@@ -210,5 +119,31 @@ class OutputState(Resource):
             return_ = control.output_on_off(
                 unique_id, state, amount=float(duration))
             return return_handler(return_)
+        except Exception:
+            abort(500, custom=traceback.format_exc())
+
+
+@ns_output.route('/status/<string:unique_id>')
+@ns_output.doc(
+    security='apikey',
+    responses=default_responses,
+    params={
+        'unique_id': 'The unique ID of the output.'
+    }
+)
+class OutputPWM(Resource):
+    """Output status"""
+
+    @accept('application/vnd.mycodo.v1+json')
+    @flask_login.login_required
+    def get(self, unique_id):
+        """Activate a controller"""
+        if not utils_general.user_has_permission('edit_controllers'):
+            abort(403)
+
+        try:
+            control = DaemonControl()
+            output_state = control.output_state(unique_id)
+            return {'state': output_state}, 200
         except Exception:
             abort(500, custom=traceback.format_exc())

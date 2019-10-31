@@ -229,7 +229,12 @@ function modOutput(btn_val) {
       url: '/output_mod/' + btn_val,
     {% if not misc.hide_alert_success %}
       success: function(data) {
-          toastr['success']("Output " + data);
+        if (data.startsWith("SUCCESS")) {
+          toastr['success']("Output: " + data);
+        }
+        else {
+          toastr['error']("Output: " + data);
+        }
       },
     {% endif %}
     {% if not misc.hide_alert_warning %}

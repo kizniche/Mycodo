@@ -5,11 +5,12 @@ from flask import Blueprint
 from flask import make_response
 from flask_restplus import Api
 
-from mycodo.mycodo_flask.api.input import ns_input
+from mycodo.mycodo_flask.api.choices import ns_choices_measurement
+from mycodo.mycodo_flask.api.controller import ns_controller
+from mycodo.mycodo_flask.api.daemon import ns_daemon
 from mycodo.mycodo_flask.api.measurement import ns_measurement
 from mycodo.mycodo_flask.api.output import ns_output
-from mycodo.mycodo_flask.api.pid import ns_pid
-from mycodo.mycodo_flask.api.user import ns_user
+from mycodo.mycodo_flask.api.settings import ns_settings
 
 logger = logging.getLogger(__name__)
 
@@ -32,11 +33,12 @@ api = Api(
     default_mediatype='application/vnd.mycodo.v1+json'
 )
 
-api.add_namespace(ns_input)
+api.add_namespace(ns_choices_measurement)
+api.add_namespace(ns_controller)
+api.add_namespace(ns_daemon)
 api.add_namespace(ns_measurement)
 api.add_namespace(ns_output)
-api.add_namespace(ns_pid)
-api.add_namespace(ns_user)
+api.add_namespace(ns_settings)
 
 # Remove default accept header content type
 if 'application/json' in api.representations:

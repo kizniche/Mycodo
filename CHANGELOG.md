@@ -1,5 +1,9 @@
 ## 7.10.0 (Unreleased)
 
+### Bugfixes
+
+ - Fix Output control toaster always displaying error
+
 ### Features
 
  - Add REST API access, API endpoints, and API manual section ([#705](https://github.com/kizniche/mycodo/issues/705))

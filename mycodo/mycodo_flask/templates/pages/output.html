@@ -37,7 +37,12 @@
       url: '/output_mod/' + btn_val,
     {% if not misc.hide_alert_success %}
       success: function(data) {
-        toastr['success']("Output " + btn_val.split("/")[0] + ": " + data);
+        if (data.startsWith("SUCCESS")) {
+          toastr['success']("Output " + btn_val.split("/")[0] + ": " + data);
+        }
+        else {
+          toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
+        }
       },
     {% endif %}
     {% if not misc.hide_alert_warning %}
