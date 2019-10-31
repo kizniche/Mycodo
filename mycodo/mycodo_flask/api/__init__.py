@@ -45,11 +45,8 @@ if 'application/json' in api.representations:
 # Add API v1 + json accept content type
 @api.representation('application/vnd.mycodo.v1+json')
 def api_v1(data, code, headers):
-    try:
-        resp = make_response(data, code)
-        resp.headers.extend(headers)
-    except:
-        logger.exception("1")
+    resp = make_response(data, code)
+    resp.headers.extend(headers)
     return resp
 
 # To be used when v2 of the API is released
