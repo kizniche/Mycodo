@@ -263,11 +263,9 @@ def controller_activate_deactivate(controller_action,
             from mycodo.mycodo_client import DaemonControl
             control = DaemonControl()
             if controller_action == 'activate':
-                return_values = control.controller_activate(
-                    controller_type, controller_id)
+                return_values = control.controller_activate(controller_id)
             else:
-                return_values = control.controller_deactivate(
-                    controller_type, controller_id)
+                return_values = control.controller_deactivate(controller_id)
             if return_values[0]:
                 flash("{err}".format(err=return_values[1]), "error")
             else:

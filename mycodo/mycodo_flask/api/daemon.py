@@ -28,7 +28,7 @@ default_responses = {
 }
 
 daemon_status_fields = ns_daemon.model('Daemon Status Fields', {
-    'alive': fields.Boolean,
+    'is_running': fields.Boolean,
     'RAM': fields.Float,
     'python_virtual_env': fields.Boolean
 })
@@ -58,16 +58,16 @@ class OutputPWM(Resource):
             virtualenv = control.is_in_virtualenv()
             if status == 'alive':
                 return {
-                           'alive': True,
-                           'RAM': ram,
-                           'python_virtual_env': virtualenv
-                       }, 200
+                   'is_running': True,
+                   'RAM': ram,
+                   'python_virtual_env': virtualenv
+               }, 200
         except Exception:
             return {
-                       'alive': False,
-                       'RAM': None,
-                       'python_virtual_env': None
-                   }, 200
+               'is_running': False,
+               'RAM': None,
+               'python_virtual_env': None
+           }, 200
 
 
 @ns_daemon.route('/terminate')

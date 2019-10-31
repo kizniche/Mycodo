@@ -76,7 +76,7 @@ Parameters:
 
 --------------
 
-**controller_activate**\ (*controller_type*, *controller_id*)
+**controller_activate**\ (*controller_id*)
 
 Activates a controller.
 
@@ -87,7 +87,7 @@ Parameters:
 
 --------------
 
-**controller_deactivate**\ (*controller_type*, *controller_id*)
+**controller_deactivate**\ (*controller_id*)
 
 Deactivates a controller.
 

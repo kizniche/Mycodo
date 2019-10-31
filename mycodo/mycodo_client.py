@@ -112,9 +112,8 @@ class DaemonControl:
         finally:
             proxy._pyroTimeout = old_timeout
 
-    def controller_is_active(self, controller_type, controller_id):
-        return self.proxy().controller_is_active(
-            controller_type, controller_id)
+    def controller_is_active(self, controller_id):
+        return self.proxy().controller_is_active(controller_id)
 
     def daemon_status(self):
         return self.proxy().daemon_status()
@@ -129,13 +128,11 @@ class DaemonControl:
     # Daemon
     #
 
-    def controller_activate(self, controller_type, controller_id):
-        return self.proxy().controller_activate(
-            controller_type, controller_id)
+    def controller_activate(self, controller_id):
+        return self.proxy().controller_activate(controller_id)
 
-    def controller_deactivate(self, controller_type, controller_id):
-        return self.proxy().controller_deactivate(
-            controller_type, controller_id)
+    def controller_deactivate(self, controller_id):
+        return self.proxy().controller_deactivate(controller_id)
 
     def refresh_daemon_camera_settings(self):
         return self.proxy().refresh_daemon_camera_settings()
@@ -522,34 +519,20 @@ if __name__ == "__main__":
                         msg=return_msg))
 
     elif args.activatecontroller:
-        if args.activatecontroller[0] not in [
-                'Conditional', 'Input', 'LCD', 'Math', 'PID', 'Trigger', 'Custom']:
-            logger.info(
-                "Invalid controller type: {}. Options: Conditional, Input, "
-                "LCD, Math, PID, Trigger.".format(args.activatecontroller[0]))
-        else:
-            return_msg = daemon.controller_activate(
-                args.activatecontroller[0], args.activatecontroller[1])
-            logger.info("[Remote command] Activate {type} controller with "
-                        "ID '{id}': Server returned: {msg}".format(
-                            type=args.activatecontroller[0],
-                            id=args.activatecontroller[1],
-                            msg=return_msg))
+        return_msg = daemon.controller_activate(
+            args.activatecontroller[0])
+        logger.info("[Remote command] Activate controller with "
+                    "ID '{id}': Server returned: {msg}".format(
+                        id=args.activatecontroller[0],
+                        msg=return_msg))
 
     elif args.deactivatecontroller:
-        if args.deactivatecontroller[0] not in [
-                'Conditional', 'Input', 'LCD', 'Math', 'PID', 'Trigger', 'Custom']:
-            logger.info(
-                "Invalid controller type: {}. Options: Conditional, Input, "
-                "LCD, Math, PID, Trigger.".format(args.activatecontroller[0]))
-        else:
-            return_msg = daemon.controller_deactivate(
-                args.deactivatecontroller[0], args.deactivatecontroller[1])
-            logger.info("[Remote command] Deactivate {type} controller with "
-                        "ID '{id}': Server returned: {msg}".format(
-                            type=args.deactivatecontroller[0],
-                            id=args.deactivatecontroller[1],
-                            msg=return_msg))
+        return_msg = daemon.controller_deactivate(
+            args.deactivatecontroller[0])
+        logger.info("[Remote command] Deactivate controller with "
+                    "ID '{id}': Server returned: {msg}".format(
+                        id=args.deactivatecontroller[0],
+                        msg=return_msg))
 
     elif args.pid_pause:
         daemon.pid_pause(args.pid_pause[0])

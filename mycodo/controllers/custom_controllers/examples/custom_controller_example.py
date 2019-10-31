@@ -253,8 +253,7 @@ class CustomModule(AbstractController, threading.Thread):
                 " ID {} ...".format(self.select_device_2_id))
             deactivate_controller = threading.Thread(
                 target=self.control.controller_deactivate,
-                args=('Custom',
-                      self.select_device_2_id,))
+                args=(self.select_device_2_id,))
             deactivate_controller.start()
 
             # Start a loop

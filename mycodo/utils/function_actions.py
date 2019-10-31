@@ -145,8 +145,7 @@ def get_condition_value(condition_id):
     elif sql_condition.condition_type == 'controller_status':
         controller_type, _, _ = which_controller(sql_condition.controller_id)
         control = DaemonControl()
-        return control.controller_is_active(
-            controller_type, sql_condition.controller_id)
+        return control.controller_is_active(sql_condition.controller_id)
 
 
 def get_condition_value_dict(condition_id):
@@ -589,8 +588,7 @@ def action_activate_controller(cond_action, message):
             new_session.commit()
         activate_controller = threading.Thread(
             target=control.controller_activate,
-            args=(controller_type,
-                  cond_action.do_unique_id,))
+            args=(cond_action.do_unique_id,))
         activate_controller.start()
     return message
 
@@ -615,8 +613,7 @@ def action_deactivate_controller(cond_action, message):
             new_session.commit()
         deactivate_controller = threading.Thread(
             target=control.controller_deactivate,
-            args=(controller_type,
-                  cond_action.do_unique_id,))
+            args=(cond_action.do_unique_id,))
         deactivate_controller.start()
     return message
 

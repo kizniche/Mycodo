@@ -239,18 +239,34 @@ class DaemonController:
     def get_condition_measurement_dict(condition_id):
         return get_condition_value_dict(condition_id)
 
-    def controller_activate(self, cont_type, cont_id):
+    @staticmethod
+    def determine_controller_type(unique_id):
+        db_tables = {
+            'Conditional': db_retrieve_table_daemon(Conditional, unique_id=unique_id),
+            'Input': db_retrieve_table_daemon(Input, unique_id=unique_id),
+            'LCD': db_retrieve_table_daemon(LCD, unique_id=unique_id),
+            'Math': db_retrieve_table_daemon(Math, unique_id=unique_id),
+            'PID': db_retrieve_table_daemon(PID, unique_id=unique_id),
+            'Trigger': db_retrieve_table_daemon(Trigger, unique_id=unique_id),
+            'Custom': db_retrieve_table_daemon(CustomController, unique_id=unique_id)
+        }
+        controller_type = None
+        for each_type in db_tables:
+            if db_tables[each_type]:
+                controller_type = each_type
+        return controller_type
+
+    def controller_activate(self, cont_id):
         """
         Activate currently-inactive controller
 
         :return: 0 for success, 1 for fail, with success or error message
         :rtype: int, str
 
-        :param cont_type: The controller type to be activated
-        :type cont_type: str
         :param cont_id: Unique ID for controller
         :type cont_id: str
         """
+        cont_type = self.determine_controller_type(cont_id)
         try:
             if cont_id in self.controller[cont_type]:
                 if self.controller[cont_type][cont_id].is_running():
@@ -330,18 +346,17 @@ class DaemonController:
             self.logger.exception(message)
             return 1, message
 
-    def controller_deactivate(self, cont_type, cont_id):
+    def controller_deactivate(self, cont_id):
         """
         Deactivate currently-active controller
 
         :return: 0 for success, 1 for fail, with success or error message
         :rtype: int, str
 
-        :param cont_type: The controller type to be deactivated
-        :type cont_type: str
         :param cont_id: Unique ID for controller
         :type cont_id: str
         """
+        cont_type = self.determine_controller_type(cont_id)
         try:
             if cont_id in self.controller[cont_type]:
                 if self.controller[cont_type][cont_id].is_running():
@@ -378,26 +393,25 @@ class DaemonController:
             self.logger.exception(message)
             return 1, message
 
-    def controller_is_active(self, cont_type, cont_id):
+    def controller_is_active(self, cont_id):
         """
         Checks if a controller is active
 
         :return: True for active, False for inactive
         :rtype: bool
 
-        :param cont_type: Which controller type is to be activated?
-        :type cont_type: str
         :param cont_id: Unique ID for controller
         :type cont_id: str
         """
+        cont_type = self.determine_controller_type(cont_id)
         try:
             if cont_id in self.controller[cont_type]:
                 if self.controller[cont_type][cont_id].is_running():
                     return True
                 else:
                     message = "{type} controller with ID " \
-                              "{id} is not active.".format(type=cont_type,
-                                                              id=cont_id)
+                              "{id} is not active.".format(
+                        type=cont_type, id=cont_id)
                     self.logger.debug(message)
                     return False
             else:
@@ -407,8 +421,8 @@ class DaemonController:
                 return False
         except Exception as except_msg:
             message = "Error: {type} controller with ID {id}:" \
-                      " {err}".format(type=cont_type, id=cont_id,
-                                      err=except_msg)
+                      " {err}".format(
+                type=cont_type, id=cont_id, err=except_msg)
             self.logger.exception(message)
             return False
 
@@ -813,8 +827,7 @@ class DaemonController:
                         type=each_controller))
                 for each_entry in db_tables[each_controller]:
                     if each_entry.is_activated:
-                        self.controller_activate(
-                            each_controller, each_entry.unique_id)
+                        self.controller_activate(each_entry.unique_id)
                 self.logger.info(
                     "All activated {type} controllers started".format(
                         type=each_controller))
@@ -1054,17 +1067,17 @@ class PyroServer(object):
     def get_condition_measurement_dict(self, condition_id):
         return self.mycodo.get_condition_measurement_dict(condition_id)
 
-    def controller_activate(self, cont_type, cont_id):
+    def controller_activate(self, cont_id):
         """Activates a controller"""
-        return self.mycodo.controller_activate(cont_type, cont_id)
+        return self.mycodo.controller_activate(cont_id)
 
-    def controller_deactivate(self, cont_type, cont_id):
+    def controller_deactivate(self, cont_id):
         """Deactivates a controller"""
-        return self.mycodo.controller_deactivate(cont_type, cont_id)
+        return self.mycodo.controller_deactivate(cont_id)
 
-    def controller_is_active(self, cont_type, cont_id):
+    def controller_is_active(self, cont_id):
         """Checks if a controller is active"""
-        return self.mycodo.controller_is_active(cont_type, cont_id)
+        return self.mycodo.controller_is_active(cont_id)
 
     def check_daemon(self):
         """Check if all active controllers respond"""
