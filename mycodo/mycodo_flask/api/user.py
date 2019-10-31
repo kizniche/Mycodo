@@ -48,6 +48,7 @@ class UserDump(Resource):
     """Interacts with User settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
+    @ns_user.marshal_with(user_list_fields)
     @flask_login.login_required
     def get(self):
         """Show all user settings"""

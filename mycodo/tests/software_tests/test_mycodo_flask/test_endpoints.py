@@ -31,12 +31,11 @@ def redirects_to_admin_creation_page(testapp, endpoint):
 
 def returns_401_unauthorized(testapp, endpoint):
     """ helper function that verifies 401 is returned """
-    except_msg = None
-    try:
-        response = testapp.get(endpoint, expect_errors=True).maybe_follow()
-    except Exception as msg:
-        except_msg = str(msg)
-    assert except_msg.startswith("Bad response: 401 UNAUTHORIZED"), "Response Status Failure: {}".format(endpoint)
+    response = testapp.get(
+        endpoint,
+        headers={'Accept': 'application/vnd.mycodo.v1+json'},
+        expect_errors=True).maybe_follow()
+    assert response.status_code == 401, "Response Status Failure: {}".format(endpoint)
 
 
 def test_sees_admin_creation_form(testapp):
@@ -111,11 +110,11 @@ def test_api_when_not_logged_in(testapp):
     """
     print("\nTest: test_api_when_not_logged_in")
     routes = [
-        'inputs',
-        'outputs',
-        'measurements',
-        'pids',
-        'users'
+        'inputs/',
+        'outputs/',
+        'measurements/',
+        'pids/',
+        'users/'
     ]
     for route in routes:
         returns_401_unauthorized(testapp=testapp, endpoint='/api/{add}'.format(add=route))
@@ -195,22 +194,21 @@ def test_api_logged_in_as_admin(_, testapp):
     print("test_routes_logged_in_as_admin: login_user(testapp, 'admin', '53CR3t_p4zZW0rD')")
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 
-    # Test if the navigation bar is seen on the main page
-    sees_navbar(testapp)
-
     # Test all endpoints
     routes = [
-        ('inputs', '"inputs":'),
-        ('measurements', '"measurements":'),
-        ('outputs', '"outputs":'),
-        ('pids', '"pids":'),
-        ('users', '"users":'),
+        ('inputs/', '"inputs":'),
+        ('measurements/', '"measurements":'),
+        ('outputs/', '"outputs":'),
+        ('pids/', '"pids":'),
+        ('users/', '"users":'),
     ]
 
     for index, route in enumerate(routes):
         print("test_routes_logged_in_as_admin: Test Route ({}/{}): testapp.get('/api/{}').maybe_follow()".format(
             index + 1, len(routes), route[0]))
-        response = testapp.get('/api/{add}'.format(add=route[0])).maybe_follow()
+        response = testapp.get(
+            '/api/{add}'.format(add=route[0]),
+            headers={'Accept': 'application/vnd.mycodo.v1+json'})
         assert response.status_code == 200, "Endpoint Tested: {page}".format(page=route[0])
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
 

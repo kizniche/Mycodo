@@ -23,10 +23,8 @@ default_responses = {
     403: 'Insufficient Permissions',
     404: 'Not Found',
     429: 'Too Many Requests',
-    461: 'Unknown Response',
     500: 'Internal Server Error'
 }
-
 
 pid_fields = ns_pid.model('PID Settings Fields', {
     'id': fields.Integer,
