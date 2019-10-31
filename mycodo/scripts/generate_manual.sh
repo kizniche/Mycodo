@@ -29,6 +29,9 @@ then
   pandoc --table-of-contents -H ${INSTALL_DIRECTORY}/mycodo/scripts/pandoc.css_style --self-contained -s -S -t html5 -o ${INSTALL_DIRECTORY}/docs/mycodo-manual.html ${INSTALL_DIRECTORY}/mycodo-manual.rst
   cp ${INSTALL_DIRECTORY}/docs/mycodo-manual.html ${INSTALL_DIRECTORY}/mycodo/mycodo_flask/static/manual/mycodo-manual.html
 
+  # TODO: Remove once Mycodo Support 1.0 (Android app) i sno longer in use
+  cp ${INSTALL_DIRECTORY}/docs/mycodo-manual.html ${INSTALL_DIRECTORY}/mycodo-manual.html
+
   # Generate plain text
   pandoc --table-of-contents -s -S -t plain -o ${INSTALL_DIRECTORY}/docs/mycodo-manual.txt ${INSTALL_DIRECTORY}/mycodo-manual.rst
 else
