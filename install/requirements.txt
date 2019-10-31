@@ -1,43 +1,44 @@
 # Testing
-testfixtures == 6.10.0
-mock == 3.0.5
-pytest == 5.2.1
-factory_boy == 2.12.0
-webtest == 2.0.33
+testfixtures==6.10.0
+mock==3.0.5
+pytest==5.2.1
+factory_boy==2.12.0
+webtest==2.0.33
 
 # Mycodo base
-alembic == 1.2.1
-argparse == 1.4.0
-bcrypt == 3.1.4  # Note: bcrypt 3.1.6, 3.1.7 causes build errors in Raspbian Jessie (use 3.1.4). Raspbian Buster can use latest.
-daemonize == 2.5.0
-distro == 1.4.0
-filelock == 3.0.12
-Flask == 1.1.1
-Flask_Babel == 0.12.2
-Flask_Compress == 1.4.0
-Flask_Limiter == 1.1.0
-Flask_Login == 0.4.1
-Flask_Marshmallow == 0.10.1
-Flask_RestPlus == 0.13.0
-Flask_SQLAlchemy == 2.4.1
-Flask_SSLify == 0.1.5
-Flask_WTF == 0.14.2
-geocoder == 1.38.1
-gunicorn == 19.9.0
-influxdb == 5.2.3
-marshmallow_sqlalchemy == 0.19.0  # Required by Flask_Marshmallow to support SQLAlchemy, requires Python >= 3.6 (may be issue w/ Raspbian Jessie/Python 3.5)
-pylibftdi == 0.17.0
-pyro5 == 5.6
+alembic==1.2.1
+argparse==1.4.0
+bcrypt==3.1.4  # Note: bcrypt 3.1.6, 3.1.7 causes build errors in Raspbian Jessie (use 3.1.4). Raspbian Buster can use latest.
+daemonize==2.5.0
+distro==1.4.0
+filelock==3.0.12
+Flask==1.1.1
+Flask_Accept==0.0.6
+Flask_Babel==0.12.2
+Flask_Compress==1.4.0
+Flask_Limiter==1.1.0
+Flask_Login==0.4.1
+Flask_Marshmallow==0.10.1
+Flask_RestPlus==0.13.0
+Flask_SQLAlchemy==2.4.1
+Flask_SSLify==0.1.5
+Flask_WTF==0.14.2
+geocoder==1.38.1
+gunicorn==19.9.0
+influxdb==5.2.3
+marshmallow_sqlalchemy==0.19.0  # Required by Flask_Marshmallow to support SQLAlchemy, requires Python >= 3.6 (may be issue w/ Raspbian Jessie/Python 3.5)
+pylibftdi==0.17.0
+pyro5==5.6
 pyserial
-python-dateutil == 2.8.0
+python-dateutil==2.8.0
 requests
-SQLAlchemy == 1.3.9
-WTForms == 2.2.1
+SQLAlchemy==1.3.9
+WTForms==2.2.1
 
 # For Raspberry pi devices and Sensors
-picamera == 1.13
+picamera==1.13
 RPi.GPIO
-smbus2 == 0.3.0
+smbus2==0.3.0
 
 # For those still running pre-Buster using Python 3.5
-python2-secrets
+python2-secrets==1.0.5

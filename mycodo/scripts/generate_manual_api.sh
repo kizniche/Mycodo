@@ -9,11 +9,11 @@
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 cd ${INSTALL_DIRECTORY}
 
-if curl -k -s --head --request GET https://192.168.0.9/api/v1/swagger.json | grep "200 OK" > /dev/null; then
+if curl -k -s --head --request GET https://192.168.0.9/api/swagger.json | grep "200 OK" > /dev/null; then
   if [[ $(command -v redoc-cli) ]]
   then
     rm -rf /tmp/swagger.json
-    wget --no-check-certificate https://192.168.0.9/api/v1/swagger.json -O /tmp/swagger.json
+    wget --no-check-certificate https://192.168.0.9/api/swagger.json -O /tmp/swagger.json
     npx redoc-cli bundle -o ${INSTALL_DIRECTORY}/docs/mycodo-api.html /tmp/swagger.json
     rm -rf /tmp/swagger.json
 

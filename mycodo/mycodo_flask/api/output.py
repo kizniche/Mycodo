@@ -4,6 +4,7 @@ import traceback
 
 import flask_login
 from flask import request
+from flask_accept import accept
 from flask_restplus import Namespace
 from flask_restplus import Resource
 from flask_restplus import abort
@@ -95,6 +96,7 @@ def return_handler(return_):
 class OutputDump(Resource):
     """Interacts with output settings in the SQL database"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @ns_output.marshal_with(output_list_fields)
     @flask_login.login_required
     def get(self):
@@ -120,6 +122,7 @@ class OutputDump(Resource):
 class OutputSingle(Resource):
     """Interacts with Output settings in the SQL database"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @ns_output.marshal_with(output_fields)
     @flask_login.login_required
     def get(self, unique_id):
@@ -148,6 +151,7 @@ class OutputSingle(Resource):
 class OutputPWM(Resource):
     """Manipulates a PWM Output"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @flask_login.login_required
     def post(self, unique_id, duty_cycle):
         """Set the Duty Cycle of a PWM output"""
@@ -184,6 +188,7 @@ class OutputPWM(Resource):
 class OutputState(Resource):
     """Manipulates an Output"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @ns_output.expect(set_state_fields)
     @flask_login.login_required
     def post(self, unique_id, state):

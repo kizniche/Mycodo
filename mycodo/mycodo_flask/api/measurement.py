@@ -3,6 +3,7 @@ import logging
 import traceback
 
 import flask_login
+from flask_accept import accept
 from flask_restplus import Namespace
 from flask_restplus import Resource
 from flask_restplus import abort
@@ -70,6 +71,7 @@ measurement_list_fields = ns_measurement.model('Measurement List', {
 class Measurements(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @ns_measurement.marshal_with(device_measurement_list_fields)
     @flask_login.login_required
     def get(self):
@@ -96,6 +98,7 @@ class Measurements(Resource):
 class MeasurementsDeviceID(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @ns_measurement.marshal_with(device_measurement_list_fields)
     @flask_login.login_required
     def get(self, device_id):
@@ -122,6 +125,7 @@ class MeasurementsDeviceID(Resource):
 class MeasurementsUniqueID(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @ns_measurement.marshal_with(device_measurement_fields)
     @flask_login.login_required
     def get(self, unique_id):
@@ -153,6 +157,7 @@ class MeasurementsUniqueID(Resource):
 class MeasurementsCreate(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @flask_login.login_required
     def post(self, unique_id, unit, channel, value):
         """Save a measurement to the mycodo_db database in InfluxDB"""
@@ -193,6 +198,7 @@ class MeasurementsCreate(Resource):
 class MeasurementsLast(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @ns_measurement.marshal_with(measurement_fields)
     @flask_login.login_required
     def get(self, unique_id, unit, channel, past_seconds):
@@ -230,6 +236,7 @@ class MeasurementsLast(Resource):
 class MeasurementsPast(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @ns_measurement.marshal_with(measurement_list_fields)
     @flask_login.login_required
     def get(self, unique_id, unit, channel, past_seconds):

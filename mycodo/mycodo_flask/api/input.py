@@ -3,6 +3,7 @@ import logging
 import traceback
 
 import flask_login
+from flask_accept import accept
 from flask_restplus import Namespace
 from flask_restplus import Resource
 from flask_restplus import abort
@@ -87,6 +88,7 @@ input_list_fields = ns_input.model('Input Settings Fields List', {
 class InputDump(Resource):
     """Interacts with Input settings in the SQL database"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @ns_input.marshal_with(input_list_fields)
     @flask_login.login_required
     def get(self):
@@ -111,6 +113,7 @@ class InputDump(Resource):
 class InputSingle(Resource):
     """Interacts with Input settings in the SQL database"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @ns_input.marshal_with(input_fields)
     @flask_login.login_required
     def get(self, unique_id):

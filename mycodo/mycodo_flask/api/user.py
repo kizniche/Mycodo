@@ -3,6 +3,7 @@ import logging
 import traceback
 
 import flask_login
+from flask_accept import accept
 from flask_restplus import Namespace
 from flask_restplus import Resource
 from flask_restplus import abort
@@ -46,7 +47,7 @@ user_list_fields = ns_user.model('User Settings Fields List', {
 class UserDump(Resource):
     """Interacts with User settings in the SQL database"""
 
-    @ns_user.marshal_with(user_list_fields)
+    @accept('application/vnd.mycodo.v1+json')
     @flask_login.login_required
     def get(self):
         """Show all user settings"""
@@ -62,11 +63,15 @@ class UserDump(Resource):
 
 
 @ns_user.route('/by_unique_id/<string:unique_id>')
-@ns_user.doc(security='apikey', responses=default_responses)
-@ns_user.doc(params={'unique_id': 'The unique ID of the user'})
+@ns_user.doc(
+    security='apikey',
+    responses=default_responses,
+    params={'unique_id': 'The unique ID of the user'}
+)
 class UserSingle(Resource):
     """Interacts with user settings in the SQL database"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @ns_user.marshal_with(user_fields)
     @flask_login.login_required
     def get(self, unique_id):

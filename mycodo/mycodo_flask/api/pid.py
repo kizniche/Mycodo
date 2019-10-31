@@ -3,6 +3,7 @@ import logging
 import traceback
 
 import flask_login
+from flask_accept import accept
 from flask_restplus import Namespace
 from flask_restplus import Resource
 from flask_restplus import abort
@@ -78,6 +79,7 @@ pid_list_fields = ns_pid.model('PID Settings Fields List', {
 class PIDDump(Resource):
     """Interacts with PID settings in the SQL database"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @ns_pid.marshal_with(pid_list_fields)
     @flask_login.login_required
     def get(self):
@@ -102,6 +104,7 @@ class PIDDump(Resource):
 class PIDSingle(Resource):
     """Interacts with PID settings in the SQL database"""
 
+    @accept('application/vnd.mycodo.v1+json')
     @ns_pid.marshal_with(pid_fields)
     @flask_login.login_required
     def get(self, unique_id):
