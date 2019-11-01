@@ -40,7 +40,7 @@ daemon_terminate_fields = ns_daemon.model('Daemon Terminate Fields', {
 
 @ns_daemon.route('/')
 @ns_daemon.doc(security='apikey', responses=default_responses)
-class OutputPWM(Resource):
+class DaemonStatus(Resource):
     """Checks information about the daemon"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -72,7 +72,7 @@ class OutputPWM(Resource):
 
 @ns_daemon.route('/terminate')
 @ns_daemon.doc(security='apikey', responses=default_responses)
-class OutputPWM(Resource):
+class DaemonTerminate(Resource):
     """Checks information about the daemon"""
 
     @accept('application/vnd.mycodo.v1+json')

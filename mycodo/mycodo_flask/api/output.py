@@ -66,7 +66,7 @@ def return_handler(return_):
     responses=default_responses,
     params={'unique_id': 'The unique ID of the output.'}
 )
-class OutputPWM(Resource):
+class Outputs(Resource):
     """Output status"""
 
     @accept('application/vnd.mycodo.v1+json')

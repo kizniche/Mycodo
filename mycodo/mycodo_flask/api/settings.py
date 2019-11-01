@@ -249,7 +249,7 @@ user_list_fields = ns_settings.model('User Settings Fields List', {
 
 @ns_settings.route('/device_measurements/')
 @ns_settings.doc(security='apikey', responses=default_responses)
-class DeviceMeasurements(Resource):
+class SettingsDeviceMeasurements(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -276,7 +276,7 @@ class DeviceMeasurements(Resource):
     responses=default_responses,
     params={'unique_id': 'The unique ID of the measurement'}
 )
-class DeviceMeasurementsUniqueID(Resource):
+class SettingsDeviceMeasurementsUniqueID(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -306,7 +306,7 @@ class DeviceMeasurementsUniqueID(Resource):
     params={'device_id': 'The unique ID of the controller (Input, Math, '
                          'etc.) for which the measurement belongs.'}
 )
-class DeviceMeasurementsDeviceID(Resource):
+class SettingsDeviceMeasurementsDeviceID(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -332,7 +332,7 @@ class DeviceMeasurementsDeviceID(Resource):
 
 @ns_settings.route('/inputs/')
 @ns_settings.doc(security='apikey', responses=default_responses)
-class Inputs(Resource):
+class SettingsInputs(Resource):
     """Interacts with Input settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -358,7 +358,7 @@ class Inputs(Resource):
     responses=default_responses,
     params={'unique_id': 'The unique ID of the input'}
 )
-class InputsUniqueID(Resource):
+class SettingsInputsUniqueID(Resource):
     """Interacts with Input settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -380,7 +380,7 @@ class InputsUniqueID(Resource):
 
 @ns_settings.route('/measurements/')
 @ns_settings.doc(security='apikey', responses=default_responses)
-class Measurements(Resource):
+class SettingsMeasurements(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -406,7 +406,7 @@ class Measurements(Resource):
     responses=default_responses,
     params={'unique_id': 'The unique ID of the measurement'}
 )
-class MeasurementsUniqueID(Resource):
+class SettingsMeasurementsUniqueID(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -429,7 +429,7 @@ class MeasurementsUniqueID(Resource):
 
 @ns_settings.route('/outputs/')
 @ns_settings.doc(security='apikey', responses=default_responses)
-class Outputs(Resource):
+class SettingsOutputs(Resource):
     """Interacts with output settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -455,7 +455,7 @@ class Outputs(Resource):
     responses=default_responses,
     params={'unique_id': 'The unique ID of the output'}
 )
-class OutputsUniqueID(Resource):
+class SettingsOutputsUniqueID(Resource):
     """Interacts with Output settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -477,7 +477,7 @@ class OutputsUniqueID(Resource):
 
 @ns_settings.route('/pids/')
 @ns_settings.doc(security='apikey', responses=default_responses)
-class PIDs(Resource):
+class SettingsPIDs(Resource):
     """Interacts with PID settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -503,7 +503,7 @@ class PIDs(Resource):
     responses=default_responses,
     params={'unique_id': 'The unique ID of the pid'}
 )
-class PIDsUniqueID(Resource):
+class SettingsPIDsUniqueID(Resource):
     """Interacts with PID settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -525,7 +525,7 @@ class PIDsUniqueID(Resource):
 
 @ns_settings.route('/units/')
 @ns_settings.doc(security='apikey', responses=default_responses)
-class Units(Resource):
+class SettingsUnits(Resource):
     """Interacts with Unit settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -551,7 +551,7 @@ class Units(Resource):
     responses=default_responses,
     params={'unique_id': 'The unique ID of the unit'}
 )
-class UnitsUniqueID(Resource):
+class SettingsUnitsUniqueID(Resource):
     """Interacts with unit settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -573,7 +573,7 @@ class UnitsUniqueID(Resource):
 
 @ns_settings.route('/users/')
 @ns_settings.doc(security='apikey', responses=default_responses)
-class Users(Resource):
+class SettingsUsers(Resource):
     """Interacts with User settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -599,7 +599,7 @@ class Users(Resource):
     responses=default_responses,
     params={'unique_id': 'The unique ID of the user'}
 )
-class UsersUniqueID(Resource):
+class SettingsUsersUniqueID(Resource):
     """Interacts with user settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
