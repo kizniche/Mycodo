@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix Output control toaster always displaying error
+ - Fix translations not working ([#708](https://github.com/kizniche/mycodo/issues/708))
 
 ### Features
 
