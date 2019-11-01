@@ -15,7 +15,7 @@ from mycodo.mycodo_flask.utils import utils_general
 
 logger = logging.getLogger(__name__)
 
-ns_output = Namespace('output', description='Output operations')
+ns_output = Namespace('outputs', description='Output operations')
 
 default_responses = {
     200: 'Success',
@@ -28,116 +28,52 @@ default_responses = {
     500: 'Internal Server Error'
 }
 
-set_state_fields = ns_output.model('Output Set State', {
+output_status_fields = ns_output.model('Output Status Fields', {
+    'state': fields.String
+})
+
+output_set_fields = ns_output.model('Output Modulation Fields', {
+    'state': fields.Boolean(
+        description='Set a non-PWM output state to on (True) or off (False).',
+        required=False),
     'duration': fields.Float(
-        description='The duration to keep the output on, in seconds',
+        description='The duration to keep a non-PWM output on, in seconds.',
         required=False,
         example=10.0,
-        exclusiveMin=0)
+        exclusiveMin=0),
+    'duty_cycle': fields.Float(
+        description='The duty cycle to set a PWM output, in percent (%).',
+        required=False,
+        example=50.0,
+        min=0)
 })
 
 
 def return_handler(return_):
     if return_ is None:
-        return 'Success', 200
+        return {'message': 'Success'}, 200
     elif return_[0] in [0, 'success']:
-        return 'Success: {}'.format(return_[1]), 200
+        return {'message': 'Success: {}'.format(return_[1])}, 200
     elif return_[0] in [1, 'error']:
-        return 'Fail: {}'.format(return_[1]), 460
+        return {'message': 'Fail: {}'.format(return_[1])}, 460
     else:
         return '', 500
 
 
-@ns_output.route('/pwm/<string:unique_id>/<duty_cycle>')
+@ns_output.route('/<string:unique_id>')
 @ns_output.doc(
     security='apikey',
     responses=default_responses,
-    params={
-        'unique_id': 'The unique ID of the output.',
-        'duty_cycle': 'The duty cycle (percent, %) to set.'
-    }
-)
-class OutputPWM(Resource):
-    """Manipulates a PWM Output"""
-
-    @accept('application/vnd.mycodo.v1+json')
-    @flask_login.login_required
-    def post(self, unique_id, duty_cycle):
-        """Set the Duty Cycle of a PWM output"""
-        if not utils_general.user_has_permission('edit_controllers'):
-            abort(403)
-
-        try:
-            duty_cycle = float(duty_cycle)
-        except:
-            abort(422, custom='duty_cycle does not represent float value')
-
-        if duty_cycle < 0 or duty_cycle > 100:
-            abort(422, custom='Required: 0 <= duty_cycle <= 100')
-
-        try:
-            control = DaemonControl()
-            return_ = control.output_on(
-                unique_id, duty_cycle=float(duty_cycle))
-            return return_handler(return_)
-        except Exception:
-            abort(500, custom=traceback.format_exc())
-
-
-@ns_output.route('/state/<string:unique_id>/<string:state>')
-@ns_output.doc(
-    security='apikey',
-    responses=default_responses,
-    params={
-        'unique_id': 'The unique ID of the output.',
-        'state': 'The state to set ("on" or "off").',
-        'duration': 'The duration (seconds) to keep the output on before turning off.'
-    }
-)
-class OutputState(Resource):
-    """Manipulates an Output"""
-
-    @accept('application/vnd.mycodo.v1+json')
-    @ns_output.expect(set_state_fields)
-    @flask_login.login_required
-    def post(self, unique_id, state):
-        """Change the state of an on/off output"""
-        if not utils_general.user_has_permission('edit_controllers'):
-            abort(403)
-
-        duration = request.args.get("duration")
-        if duration is not None:
-            try:
-                duration = float(request.args.get("duration"))
-            except:
-                abort(422, custom='duration does not represent a number')
-        else:
-            duration = 0
-
-        try:
-            control = DaemonControl()
-            return_ = control.output_on_off(
-                unique_id, state, amount=float(duration))
-            return return_handler(return_)
-        except Exception:
-            abort(500, custom=traceback.format_exc())
-
-
-@ns_output.route('/status/<string:unique_id>')
-@ns_output.doc(
-    security='apikey',
-    responses=default_responses,
-    params={
-        'unique_id': 'The unique ID of the output.'
-    }
+    params={'unique_id': 'The unique ID of the output.'}
 )
 class OutputPWM(Resource):
     """Output status"""
 
     @accept('application/vnd.mycodo.v1+json')
+    @ns_output.marshal_with(output_status_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Activate a controller"""
+        """Get the state of an output"""
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
 
@@ -147,3 +83,62 @@ class OutputPWM(Resource):
             return {'state': output_state}, 200
         except Exception:
             abort(500, custom=traceback.format_exc())
+
+    @accept('application/vnd.mycodo.v1+json')
+    @ns_output.expect(output_set_fields)
+    @flask_login.login_required
+    def put(self, unique_id):
+        """Change the state of an output"""
+        if not utils_general.user_has_permission('edit_controllers'):
+            abort(403)
+
+        control = DaemonControl()
+
+        state = None
+        if 'state' in ns_output.payload:
+            state = ns_output.payload["state"]
+            if state is not None:
+                try:
+                    state = bool(state)
+                except Exception:
+                    abort(422, message='state must represent a bool value')
+
+        duration = None
+        if 'duration' in ns_output.payload:
+            duration = ns_output.payload["duration"]
+            if duration is not None:
+                try:
+                    duration = float(duration)
+                except Exception:
+                    abort(422, message='duration does not represent a number')
+            else:
+                duration = 0
+
+        duty_cycle = None
+        if 'duty_cycle' in ns_output.payload:
+            duty_cycle = ns_output.payload["duty_cycle"]
+            if duty_cycle is not None:
+                try:
+                    duty_cycle = float(duty_cycle)
+                    if duty_cycle < 0 or duty_cycle > 100:
+                        abort(422, message='Required: 0 <= duty_cycle <= 100')
+                except Exception:
+                    abort(422, message='duty_cycle does not represent float value')
+
+        try:
+            if state is not None and duration is not None:
+                return_ = control.output_on_off(
+                    unique_id, state, amount=duration)
+            elif state is not None:
+                return_ = control.output_on_off(unique_id, state)
+            elif duty_cycle is not None:
+                return_ = control.output_duty_cycle(
+                    unique_id, duty_cycle=duty_cycle)
+            else:
+                return {'message': 'Insufficient payload'}, 460
+
+            logger.error("TEST01: {}".format(return_))
+
+            return return_handler(return_)
+        except Exception:
+            abort(500, message=traceback.format_exc())

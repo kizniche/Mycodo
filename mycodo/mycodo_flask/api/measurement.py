@@ -17,7 +17,7 @@ from mycodo.utils.influx import write_influxdb_value
 logger = logging.getLogger(__name__)
 
 ns_measurement = Namespace(
-    'measurement', description='Measurement operations')
+    'measurements', description='Measurement operations')
 
 default_responses = {
     200: 'Success',

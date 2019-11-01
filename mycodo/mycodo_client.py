@@ -206,6 +206,10 @@ class DaemonControl:
     # Output Controller
     #
 
+    def output_duty_cycle(self, output_id, duty_cycle, trigger_conditionals=True):
+        return self.proxy().output_duty_cycle(
+            output_id, duty_cycle, trigger_conditionals)
+
     def output_off(self, output_id, trigger_conditionals=True):
         return self.proxy().output_off(output_id, trigger_conditionals)
 

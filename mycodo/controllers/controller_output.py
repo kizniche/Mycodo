@@ -330,6 +330,31 @@ class OutputController(AbstractController, threading.Thread):
                     'off',
                     trigger_conditionals=False)
 
+    def output_duty_cycle(self, output_id, duty_cycle, trigger_conditionals):
+        """
+        Sets the output duty_cycle
+        :param output_id:
+        :param duty_cycle:
+        :param trigger_conditionals:
+        :return:
+        """
+
+        # Check if output exists
+        if output_id not in self.output_id:
+            self.logger.warning(
+                "Cannot set duty cycle of output with ID {id}. "
+                "It doesn't exist".format(id=output_id))
+            return 1, 'output doe not exist'
+
+        if self.output_type[output_id] not in OUTPUTS_PWM:
+            return 1, 'Output is not a PWM output. Can only set a duty cycle for PWM outputs.'
+        else:
+            return self.output_on_off(
+                output_id,
+                'on',
+                duty_cycle=duty_cycle,
+                trigger_conditionals=trigger_conditionals)
+
     def output_on_off(self, output_id, state,
                       amount=0.0,
                       min_off=0.0,

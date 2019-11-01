@@ -683,6 +683,23 @@ class DaemonController:
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
 
+    def output_duty_cycle(self, output_id, duty_cycle, trigger_conditionals=True):
+        """
+        Set the output duty cycle
+
+        :param output_id: Unique ID for output
+        :param duty_cycle: pwm duty cycle, in percent
+        :return:
+        """
+        try:
+            return self.controller['Output'].output_duty_cycle(
+                output_id, duty_cycle, trigger_conditionals)
+        except Exception as except_msg:
+            message = "Could set output duty cycle:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+            return 1, message
+
     def output_off(self, output_id, trigger_conditionals=True):
         """
         Turn output off using default output controller
@@ -1139,9 +1156,12 @@ class PyroServer(object):
         """Return the output state (not pin but whether output is on or off)"""
         return self.mycodo.output_state(output_id)
 
-    def output_on(self,
-            output_id, amount=0.0, min_off=0.0,
-            duty_cycle=0.0, trigger_conditionals=True):
+    def output_duty_cycle(self, output_id, duty_cycle, trigger_conditionals=True):
+        """Sets the output duty cycle"""
+        return self.mycodo.output_duty_cycle(output_id, duty_cycle, trigger_conditionals)
+
+    def output_on(self, output_id, amount=0.0, min_off=0.0,
+                  duty_cycle=0.0, trigger_conditionals=True):
         """Turns output on from the client"""
         return self.mycodo.output_on(
             output_id,

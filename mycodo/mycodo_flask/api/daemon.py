@@ -38,7 +38,7 @@ daemon_terminate_fields = ns_daemon.model('Daemon Terminate Fields', {
 })
 
 
-@ns_daemon.route('/status')
+@ns_daemon.route('/')
 @ns_daemon.doc(security='apikey', responses=default_responses)
 class OutputPWM(Resource):
     """Checks information about the daemon"""
@@ -47,7 +47,7 @@ class OutputPWM(Resource):
     @ns_daemon.marshal_with(daemon_status_fields)
     @flask_login.login_required
     def get(self):
-        """Check the status of the daemon"""
+        """Get the status of the daemon"""
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
 
@@ -61,13 +61,13 @@ class OutputPWM(Resource):
                    'is_running': True,
                    'RAM': ram,
                    'python_virtual_env': virtualenv
-               }, 200
+                }, 200
         except Exception:
             return {
                'is_running': False,
                'RAM': None,
                'python_virtual_env': None
-           }, 200
+            }, 200
 
 
 @ns_daemon.route('/terminate')
@@ -78,8 +78,8 @@ class OutputPWM(Resource):
     @accept('application/vnd.mycodo.v1+json')
     @ns_daemon.marshal_with(daemon_terminate_fields)
     @flask_login.login_required
-    def post(self):
-        """Check the status of the daemon"""
+    def put(self):
+        """Shut down the daemon"""
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
 
