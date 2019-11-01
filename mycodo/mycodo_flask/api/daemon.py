@@ -78,7 +78,7 @@ class OutputPWM(Resource):
     @accept('application/vnd.mycodo.v1+json')
     @ns_daemon.marshal_with(daemon_terminate_fields)
     @flask_login.login_required
-    def put(self):
+    def post(self):
         """Shut down the daemon"""
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
@@ -89,4 +89,6 @@ class OutputPWM(Resource):
             if terminate:
                 return {'terminated': terminate}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())

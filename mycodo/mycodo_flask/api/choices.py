@@ -50,7 +50,9 @@ class ChoicesInputs(Resource):
             if input_choices:
                 return {'choices controllers': input_choices}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_choices_measurement.route('/input/measurements/')
@@ -74,7 +76,9 @@ class ChoicesInputs(Resource):
             if input_choices:
                 return {'choices input measurements': input_choices}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_choices_measurement.route('/output/devices/')
@@ -98,7 +102,9 @@ class ChoicesOutputDevices(Resource):
             if output_choices:
                 return {'choices output devices': output_choices}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_choices_measurement.route('/output/measurements/')
@@ -122,7 +128,9 @@ class ChoicesOutputMeasurements(Resource):
             if output_choices:
                 return {'choices output measurements': output_choices}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_choices_measurement.route('/pid/measurements/')
@@ -146,4 +154,6 @@ class ChoicesPIDs(Resource):
             if pid_choices:
                 return {'choices pid measurements': pid_choices}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())

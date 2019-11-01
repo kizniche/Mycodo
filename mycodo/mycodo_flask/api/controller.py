@@ -38,35 +38,6 @@ controller_set_fields = ns_controller.model('Controller Modulation Fields', {
 })
 
 
-# @ns_controller.route('/activate/<string:unique_id>')
-# @ns_controller.doc(
-#     security='apikey',
-#     responses=default_responses,
-#     params={
-#         'unique_id': 'The unique ID of the controller.'
-#     }
-# )
-# class ControllerActivate(Resource):
-#     """Controller activate"""
-#
-#     @accept('application/vnd.mycodo.v1+json')
-#     @flask_login.login_required
-#     def put(self, unique_id):
-#         """Activate a controller"""
-#         if not utils_general.user_has_permission('edit_controllers'):
-#             abort(403)
-#
-#         try:
-#             control = DaemonControl()
-#             activate = control.controller_activate(unique_id)
-#             if activate[0]:
-#                 return {'message': activate[1]}, 460
-#             else:
-#                 return {'message': activate[1]}, 200
-#         except Exception:
-#             abort(500, custom=traceback.format_exc())
-
-
 @ns_controller.route('/<string:unique_id>')
 @ns_controller.doc(
     security='apikey',
@@ -96,7 +67,7 @@ class ControllerStatus(Resource):
     @accept('application/vnd.mycodo.v1+json')
     @ns_controller.expect(controller_set_fields)
     @flask_login.login_required
-    def put(self, unique_id):
+    def post(self, unique_id):
         """Activate or deactivate a controller"""
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)

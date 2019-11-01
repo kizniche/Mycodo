@@ -23,7 +23,7 @@ from mycodo.databases.models.measurement import UnitSchema
 from mycodo.databases.models.output import OutputSchema
 from mycodo.databases.models.pid import PIDSchema
 from mycodo.databases.models.user import UserSchema
-from mycodo.mycodo_flask.api.utils import return_dictionary
+from mycodo.mycodo_flask.api.utils import get_from_db
 from mycodo.mycodo_flask.api.utils import return_list_of_dictionaries
 from mycodo.mycodo_flask.utils import utils_general
 
@@ -260,13 +260,13 @@ class InputDump(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            input_schema = InputSchema()
-            list_data = return_list_of_dictionaries(
-                input_schema.dump(Input.query.all(), many=True))
+            list_data = get_from_db(InputSchema, Input)
             if list_data:
-                return list_data, 200
+                return {'inputs': list_data}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/inputs/<string:unique_id>')
@@ -286,13 +286,13 @@ class InputSingle(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            input_schema = InputSchema()
-            dict_data = return_dictionary(input_schema.dump(
-                Input.query.filter_by(unique_id=unique_id).first()))
+            dict_data = get_from_db(InputSchema, Input, unique_id=unique_id)
             if dict_data:
                 return dict_data, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/device_measurements/')
@@ -308,14 +308,14 @@ class Measurements(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            measure_schema = DeviceMeasurementsSchema()
-            list_data = return_list_of_dictionaries(
-                measure_schema.dump(
-                    DeviceMeasurements.query.all(), many=True))
+            list_data = get_from_db(
+                DeviceMeasurementsSchema, DeviceMeasurements)
             if list_data:
                 return {'device measurements': list_data}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/device_measurements/<string:unique_id>')
@@ -335,14 +335,16 @@ class MeasurementsUniqueID(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            measure_schema = DeviceMeasurementsSchema()
-            dict_data = return_dictionary(measure_schema.dump(
-                DeviceMeasurements.query.filter_by(
-                    unique_id=unique_id).first()))
+            dict_data = get_from_db(
+                DeviceMeasurementsSchema,
+                DeviceMeasurements,
+                unique_id=unique_id)
             if dict_data:
                 return dict_data, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/device_measurements/by_device_id/<string:device_id>')
@@ -371,7 +373,9 @@ class MeasurementsDeviceID(Resource):
             if list_data:
                 return {'device measurements': list_data}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/measurements/')
@@ -387,14 +391,13 @@ class Measurements(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            measure_schema = MeasurementSchema()
-            list_data = return_list_of_dictionaries(
-                measure_schema.dump(
-                    Measurement.query.all(), many=True))
+            list_data = get_from_db(MeasurementSchema, Measurement)
             if list_data:
                 return {'device measurements': list_data}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/measurements/<string:unique_id>')
@@ -414,14 +417,14 @@ class MeasurementsUniqueID(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            measure_schema = MeasurementSchema()
-            dict_data = return_dictionary(measure_schema.dump(
-                Measurement.query.filter_by(
-                    unique_id=unique_id).first()))
+            dict_data = get_from_db(
+                MeasurementSchema, Measurement, unique_id=unique_id)
             if dict_data:
                 return dict_data, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/outputs/')
@@ -437,13 +440,13 @@ class OutputDump(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            output_schema = OutputSchema()
-            list_data = return_list_of_dictionaries(
-                output_schema.dump(Output.query.all(), many=True))
+            list_data = get_from_db(OutputSchema, Output)
             if list_data:
                 return {'outputs': list_data}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/outputs/<string:unique_id>')
@@ -463,13 +466,13 @@ class OutputSingle(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            output_schema = OutputSchema()
-            dict_data = return_dictionary(output_schema.dump(
-                Output.query.filter_by(unique_id=unique_id).first()))
+            dict_data = get_from_db(OutputSchema, Output, unique_id=unique_id)
             if dict_data:
                 return dict_data, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/pids/')
@@ -485,13 +488,13 @@ class PIDDump(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            pid_schema = PIDSchema()
-            list_data = return_list_of_dictionaries(
-                pid_schema.dump(PID.query.all(), many=True))
+            list_data = get_from_db(PIDSchema, PID)
             if list_data:
                 return {'pids': list_data}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/pids/<string:unique_id>')
@@ -511,13 +514,13 @@ class PIDSingle(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            pid_schema = PIDSchema()
-            dict_data = return_dictionary(pid_schema.dump(
-                PID.query.filter_by(unique_id=unique_id).first()))
+            dict_data = get_from_db(PIDSchema, PID, unique_id=unique_id)
             if dict_data:
                 return dict_data, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/units/')
@@ -533,13 +536,13 @@ class UnitDump(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            unit_schema = UnitSchema()
-            list_data = return_list_of_dictionaries(
-                unit_schema.dump(Unit.query.all(), many=True))
+            list_data = get_from_db(UnitSchema, Unit)
             if list_data:
                 return {'units': list_data}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/units/<string:unique_id>')
@@ -559,13 +562,13 @@ class UnitSingle(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            unit_schema = UnitSchema()
-            dict_data = return_dictionary(unit_schema.dump(
-                Unit.query.filter_by(unique_id=unique_id).first()))
+            dict_data = get_from_db(UnitSchema, Unit, unique_id=unique_id)
             if dict_data:
                 return dict_data, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/users/')
@@ -581,13 +584,13 @@ class UserDump(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            user_schema = UserSchema()
-            list_data = return_list_of_dictionaries(
-                user_schema.dump(User.query.all(), many=True))
+            list_data = get_from_db(UserSchema, User)
             if list_data:
                 return {'users': list_data}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_settings.route('/users/<string:unique_id>')
@@ -606,11 +609,12 @@ class UserSingle(Resource):
         """Show the settings for a user with the unique_id"""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
+
         try:
-            user_schema = UserSchema()
-            dict_data = return_dictionary(user_schema.dump(
-                User.query.filter_by(unique_id=unique_id).first()))
+            dict_data = get_from_db(UserSchema, User, unique_id=unique_id)
             if dict_data:
                 return dict_data, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())

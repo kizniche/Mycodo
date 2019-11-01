@@ -3,6 +3,15 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+def get_from_db(schema, table, unique_id=None):
+    table_schema = schema()
+    if unique_id:
+        data = return_dictionary(table_schema.dump(
+            table.query.filter_by(unique_id=unique_id).first()))
+    else:
+        data = return_list_of_dictionaries(
+            table_schema.dump(table.query.all(), many=True))
+    return data
 
 def return_list_of_dictionaries(data):
     """
@@ -28,6 +37,8 @@ def return_dictionary(data):
     dictionary.
     """
     return_dict = {}
+    if hasattr(data, 'data'):
+        data = data.data
     if isinstance(data, dict):
         return_dict = data
     elif isinstance(data, list):

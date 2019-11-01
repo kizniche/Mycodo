@@ -72,7 +72,9 @@ class MeasurementsCreate(Resource):
             return_ = write_influxdb_value(
                 unique_id, unit, value, channel=channel)
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
         if return_:
             abort(500)
@@ -115,7 +117,9 @@ class MeasurementsLast(Resource):
             else:
                 return return_, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
 
 @ns_measurement.route('/past/<string:unique_id>/<string:unit>/<int:channel>/<int:past_seconds>')
@@ -157,4 +161,6 @@ class MeasurementsPast(Resource):
             else:
                 return return_, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())

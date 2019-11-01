@@ -28,7 +28,7 @@ api = Api(
     api_blueprint,
     version='1.0',
     title='Mycodo API',
-    description='An API for Mycodo',
+    description='A REST API for Mycodo',
     authorizations=authorizations,
     default_mediatype='application/vnd.mycodo.v1+json'
 )

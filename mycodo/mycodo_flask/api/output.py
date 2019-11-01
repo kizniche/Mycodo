@@ -82,12 +82,14 @@ class OutputPWM(Resource):
             output_state = control.output_state(unique_id)
             return {'state': output_state}, 200
         except Exception:
-            abort(500, custom=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_output.expect(output_set_fields)
     @flask_login.login_required
-    def put(self, unique_id):
+    def post(self, unique_id):
         """Change the state of an output"""
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
@@ -141,4 +143,6 @@ class OutputPWM(Resource):
 
             return return_handler(return_)
         except Exception:
-            abort(500, message=traceback.format_exc())
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())

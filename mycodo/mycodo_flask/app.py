@@ -70,7 +70,7 @@ def register_extensions(app):
 
     db.init_app(app)  # Influx db time-series database
 
-    app = extension_babal(app)  # Language translations
+    app = extension_babel(app)  # Language translations
     app = extension_compress(app)  # Compress app responses with gzip
     app = extension_limiter(app)  # Limit authentication blueprint requests to 200 per minute
     app = extension_login_manager(app)  # User login management
@@ -109,7 +109,7 @@ def register_blueprints(app):
     app.register_blueprint(routes_static.blueprint)  # register static routes
 
 
-def extension_babal(app):
+def extension_babel(app):
     babel = Babel(app)
 
     @babel.localeselector
