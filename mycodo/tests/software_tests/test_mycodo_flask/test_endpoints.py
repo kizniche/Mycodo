@@ -115,13 +115,13 @@ def test_api_when_not_logged_in(testapp):
         'choices/output/devices',
         'choices/output/measurements',
         'choices/pid/measurements',
-        'settings/device_measurements/',
-        'settings/inputs/',
-        'settings/measurements/',
-        'settings/outputs/',
-        'settings/pids/',
-        'settings/units/',
-        'settings/users/'
+        'settings/device_measurements',
+        'settings/inputs',
+        'settings/measurements',
+        'settings/outputs',
+        'settings/pids',
+        'settings/units',
+        'settings/users'
     ]
     for route in routes:
         returns_401_unauthorized(testapp=testapp, endpoint='/api/{add}'.format(add=route))
