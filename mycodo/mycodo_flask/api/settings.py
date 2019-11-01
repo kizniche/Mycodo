@@ -247,57 +247,9 @@ user_list_fields = ns_settings.model('User Settings Fields List', {
 })
 
 
-@ns_settings.route('/inputs/')
-@ns_settings.doc(security='apikey', responses=default_responses)
-class InputDump(Resource):
-    """Interacts with Input settings in the SQL database"""
-
-    @accept('application/vnd.mycodo.v1+json')
-    @ns_settings.marshal_with(input_list_fields)
-    @flask_login.login_required
-    def get(self):
-        """Show all input settings"""
-        if not utils_general.user_has_permission('view_settings'):
-            abort(403)
-        try:
-            list_data = get_from_db(InputSchema, Input)
-            if list_data:
-                return {'inputs': list_data}, 200
-        except Exception:
-            abort(500,
-                  message='An exception occurred',
-                  error=traceback.format_exc())
-
-
-@ns_settings.route('/inputs/<string:unique_id>')
-@ns_settings.doc(
-    security='apikey',
-    responses=default_responses,
-    params={'unique_id': 'The unique ID of the input'}
-)
-class InputSingle(Resource):
-    """Interacts with Input settings in the SQL database"""
-
-    @accept('application/vnd.mycodo.v1+json')
-    @ns_settings.marshal_with(input_fields)
-    @flask_login.login_required
-    def get(self, unique_id):
-        """Show the settings for an input"""
-        if not utils_general.user_has_permission('view_settings'):
-            abort(403)
-        try:
-            dict_data = get_from_db(InputSchema, Input, unique_id=unique_id)
-            if dict_data:
-                return dict_data, 200
-        except Exception:
-            abort(500,
-                  message='An exception occurred',
-                  error=traceback.format_exc())
-
-
 @ns_settings.route('/device_measurements/')
 @ns_settings.doc(security='apikey', responses=default_responses)
-class Measurements(Resource):
+class DeviceMeasurements(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -324,7 +276,7 @@ class Measurements(Resource):
     responses=default_responses,
     params={'unique_id': 'The unique ID of the measurement'}
 )
-class MeasurementsUniqueID(Resource):
+class DeviceMeasurementsUniqueID(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -354,7 +306,7 @@ class MeasurementsUniqueID(Resource):
     params={'device_id': 'The unique ID of the controller (Input, Math, '
                          'etc.) for which the measurement belongs.'}
 )
-class MeasurementsDeviceID(Resource):
+class DeviceMeasurementsDeviceID(Resource):
     """Interacts with Measurement settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -372,6 +324,54 @@ class MeasurementsDeviceID(Resource):
                         device_id=device_id).all(), many=True))
             if list_data:
                 return {'device measurements': list_data}, 200
+        except Exception:
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
+
+
+@ns_settings.route('/inputs/')
+@ns_settings.doc(security='apikey', responses=default_responses)
+class Inputs(Resource):
+    """Interacts with Input settings in the SQL database"""
+
+    @accept('application/vnd.mycodo.v1+json')
+    @ns_settings.marshal_with(input_list_fields)
+    @flask_login.login_required
+    def get(self):
+        """Show all input settings"""
+        if not utils_general.user_has_permission('view_settings'):
+            abort(403)
+        try:
+            list_data = get_from_db(InputSchema, Input)
+            if list_data:
+                return {'inputs': list_data}, 200
+        except Exception:
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
+
+
+@ns_settings.route('/inputs/<string:unique_id>')
+@ns_settings.doc(
+    security='apikey',
+    responses=default_responses,
+    params={'unique_id': 'The unique ID of the input'}
+)
+class InputsUniqueID(Resource):
+    """Interacts with Input settings in the SQL database"""
+
+    @accept('application/vnd.mycodo.v1+json')
+    @ns_settings.marshal_with(input_fields)
+    @flask_login.login_required
+    def get(self, unique_id):
+        """Show the settings for an input"""
+        if not utils_general.user_has_permission('view_settings'):
+            abort(403)
+        try:
+            dict_data = get_from_db(InputSchema, Input, unique_id=unique_id)
+            if dict_data:
+                return dict_data, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
@@ -429,7 +429,7 @@ class MeasurementsUniqueID(Resource):
 
 @ns_settings.route('/outputs/')
 @ns_settings.doc(security='apikey', responses=default_responses)
-class OutputDump(Resource):
+class Outputs(Resource):
     """Interacts with output settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -455,7 +455,7 @@ class OutputDump(Resource):
     responses=default_responses,
     params={'unique_id': 'The unique ID of the output'}
 )
-class OutputSingle(Resource):
+class OutputsUniqueID(Resource):
     """Interacts with Output settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -477,7 +477,7 @@ class OutputSingle(Resource):
 
 @ns_settings.route('/pids/')
 @ns_settings.doc(security='apikey', responses=default_responses)
-class PIDDump(Resource):
+class PIDs(Resource):
     """Interacts with PID settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -503,7 +503,7 @@ class PIDDump(Resource):
     responses=default_responses,
     params={'unique_id': 'The unique ID of the pid'}
 )
-class PIDSingle(Resource):
+class PIDsUniqueID(Resource):
     """Interacts with PID settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -525,7 +525,7 @@ class PIDSingle(Resource):
 
 @ns_settings.route('/units/')
 @ns_settings.doc(security='apikey', responses=default_responses)
-class UnitDump(Resource):
+class Units(Resource):
     """Interacts with Unit settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -551,7 +551,7 @@ class UnitDump(Resource):
     responses=default_responses,
     params={'unique_id': 'The unique ID of the unit'}
 )
-class UnitSingle(Resource):
+class UnitsUniqueID(Resource):
     """Interacts with unit settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -573,7 +573,7 @@ class UnitSingle(Resource):
 
 @ns_settings.route('/users/')
 @ns_settings.doc(security='apikey', responses=default_responses)
-class UserDump(Resource):
+class Users(Resource):
     """Interacts with User settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -599,7 +599,7 @@ class UserDump(Resource):
     responses=default_responses,
     params={'unique_id': 'The unique ID of the user'}
 )
-class UserSingle(Resource):
+class UsersUniqueID(Resource):
     """Interacts with user settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')

@@ -203,11 +203,18 @@ def test_api_logged_in_as_admin(_, testapp):
 
     # Test all endpoints
     routes = [
-        ('inputs/', '"inputs":'),
-        ('measurements/', '"measurements":'),
-        ('outputs/', '"outputs":'),
-        ('pids/', '"pids":'),
-        ('users/', '"users":'),
+        ('choices/controllers', '"choices controllers":'),
+        ('choices/inputs/measurements', '"choices inputs measurements":'),
+        ('choices/outputs/devices', '"choices outputs devices":'),
+        ('choices/outputs/measurements', '"choices outputs measurements":'),
+        ('choices/pids/measurements', '"choices pids measurements":'),
+        ('settings/device_measurements', '"device measurements":'),
+        ('settings/inputs', '"inputs":'),
+        ('settings/measurements', '"measurements":'),
+        ('settings/outputs', '"outputs":'),
+        ('settings/pids', '"pids":'),
+        ('settings/units', '"units":'),
+        ('settings/users', '"users":'),
     ]
 
     for index, route in enumerate(routes):

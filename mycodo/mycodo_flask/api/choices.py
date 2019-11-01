@@ -35,7 +35,7 @@ default_responses = {
 
 @ns_choices_measurement.route('/controllers/')
 @ns_choices_measurement.doc(security='apikey', responses=default_responses)
-class ChoicesInputs(Resource):
+class ChoicesControllers(Resource):
     """Form choices for controllers"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -55,9 +55,9 @@ class ChoicesInputs(Resource):
                   error=traceback.format_exc())
 
 
-@ns_choices_measurement.route('/input/measurements/')
+@ns_choices_measurement.route('/inputs/measurements/')
 @ns_choices_measurement.doc(security='apikey', responses=default_responses)
-class ChoicesInputs(Resource):
+class ChoicesInputMeasurements(Resource):
     """Form choices for input measurements"""
 
     @accept('application/vnd.mycodo.v1+json')
@@ -74,14 +74,14 @@ class ChoicesInputs(Resource):
                 input_dev, dict_units, dict_measurements)
 
             if input_choices:
-                return {'choices input measurements': input_choices}, 200
+                return {'choices inputs measurements': input_choices}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
                   error=traceback.format_exc())
 
 
-@ns_choices_measurement.route('/output/devices/')
+@ns_choices_measurement.route('/outputs/devices/')
 @ns_choices_measurement.doc(security='apikey', responses=default_responses)
 class ChoicesOutputDevices(Resource):
     """Form choices for output devices"""
@@ -100,14 +100,14 @@ class ChoicesOutputDevices(Resource):
                 output, dict_units, dict_measurements)
 
             if output_choices:
-                return {'choices output devices': output_choices}, 200
+                return {'choices outputs devices': output_choices}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
                   error=traceback.format_exc())
 
 
-@ns_choices_measurement.route('/output/measurements/')
+@ns_choices_measurement.route('/outputs/measurements/')
 @ns_choices_measurement.doc(security='apikey', responses=default_responses)
 class ChoicesOutputMeasurements(Resource):
     """Form choices for output measurements"""
@@ -126,14 +126,14 @@ class ChoicesOutputMeasurements(Resource):
                 output, dict_units, dict_measurements)
 
             if output_choices:
-                return {'choices output measurements': output_choices}, 200
+                return {'choices outputs measurements': output_choices}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
                   error=traceback.format_exc())
 
 
-@ns_choices_measurement.route('/pid/measurements/')
+@ns_choices_measurement.route('/pids/measurements/')
 @ns_choices_measurement.doc(security='apikey', responses=default_responses)
 class ChoicesPIDs(Resource):
     """Form choices for pid measurements"""
@@ -152,7 +152,7 @@ class ChoicesPIDs(Resource):
                 pid, dict_units, dict_measurements)
 
             if pid_choices:
-                return {'choices pid measurements': pid_choices}, 200
+                return {'choices pids measurements': pid_choices}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
