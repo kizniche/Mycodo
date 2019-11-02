@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-01 19:22-0400\n"
+"POT-Creation-Date: 2019-11-01 22:55-0400\n"
 "PO-Revision-Date: 2018-08-10 15:59-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -367,7 +367,7 @@ msgstr "湿度"
 msgid "Humidity Ratio"
 msgstr "湿度比"
 
-#: config_devices_units.py:109
+#: config_devices_units.py:109 config_devices_units.py:317
 msgid "Ion Concentration"
 msgstr "离子浓度"
 
@@ -582,10 +582,6 @@ msgstr "帕斯卡尔"
 #: config_devices_units.py:314
 msgid "Percent"
 msgstr "百分"
-
-#: config_devices_units.py:317
-msgid "pH"
-msgstr "pH值"
 
 #: config_devices_units.py:320
 msgid "PID values"
@@ -4149,21 +4145,21 @@ msgstr ""
 msgid "Manage Methods"
 msgstr "管理方法"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:277
+#: mycodo_flask/templates/pages/function_options/pid.html:276
 msgid "Maximum allowable measurement age"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:311
+#: mycodo_flask/templates/pages/function_options/pid.html:310
 msgid "Autotune"
 msgstr "自动调谐"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:316
+#: mycodo_flask/templates/pages/function_options/pid.html:315
 msgid ""
 "Autotune Only: How much above and below the setpoint the process variable"
 " must reach before changing direction."
 msgstr "仅自动调谐：在更改方向之前，过程变量必须达到设定值的上下几度。"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:322
+#: mycodo_flask/templates/pages/function_options/pid.html:321
 #, python-format
 msgid ""
 "Autotune Only: How many seconds to turn the output on each PID cycle. For"
@@ -5221,16 +5217,16 @@ msgstr "执行全部"
 msgid "Error: %(err)s"
 msgstr "错误: %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:792
-#: mycodo_flask/utils/utils_general.py:807
-#: mycodo_flask/utils/utils_general.py:827
-#: mycodo_flask/utils/utils_general.py:832 mycodo_flask/utils/utils_lcd.py:225
+#: mycodo_flask/utils/utils_general.py:782
+#: mycodo_flask/utils/utils_general.py:797
+#: mycodo_flask/utils/utils_general.py:817
+#: mycodo_flask/utils/utils_general.py:822 mycodo_flask/utils/utils_lcd.py:225
 #: mycodo_flask/utils/utils_lcd.py:227
 #, python-format
 msgid "%(msg)s"
 msgstr "%(msg)s"
 
-#: mycodo_flask/utils/utils_general.py:799
+#: mycodo_flask/utils/utils_general.py:789
 #: mycodo_flask/utils/utils_output.py:327
 #: mycodo_flask/utils/utils_output.py:334
 #: mycodo_flask/utils/utils_output.py:339
@@ -5238,21 +5234,21 @@ msgstr "%(msg)s"
 msgid "%(err)s"
 msgstr "%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:800
+#: mycodo_flask/utils/utils_general.py:790
 #, python-format
 msgid "Entry with ID %(id)s not found"
 msgstr "未找到ID为 %(id)s 的条目"
 
-#: mycodo_flask/utils/utils_general.py:818
+#: mycodo_flask/utils/utils_general.py:808
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "%(field)s 字段中的错误 - %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:866
+#: mycodo_flask/utils/utils_general.py:856
 msgid "Cannot move above the first item in the list"
 msgstr "无法移动到列表中的第一个项目之上"
 
-#: mycodo_flask/utils/utils_general.py:870
+#: mycodo_flask/utils/utils_general.py:860
 msgid "Cannot move below the last item in the list"
 msgstr "无法移动到列表中的最后一项之下"
 
@@ -5721,4 +5717,7 @@ msgstr ""
 
 #~ msgid "Camera Settings"
 #~ msgstr "相机设置"
+
+#~ msgid "pH"
+#~ msgstr "pH值"
 

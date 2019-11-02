@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-01 19:22-0400\n"
+"POT-Creation-Date: 2019-11-01 22:55-0400\n"
 "PO-Revision-Date: 2019-01-29 14:54-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: nl\n"
@@ -367,7 +367,7 @@ msgstr "Vochtigheid"
 msgid "Humidity Ratio"
 msgstr "Luchtvochtigheid"
 
-#: config_devices_units.py:109
+#: config_devices_units.py:109 config_devices_units.py:317
 msgid "Ion Concentration"
 msgstr "Ionenconcentratie"
 
@@ -582,10 +582,6 @@ msgstr "Pascal"
 #: config_devices_units.py:314
 msgid "Percent"
 msgstr "procent"
-
-#: config_devices_units.py:317
-msgid "pH"
-msgstr "pH"
 
 #: config_devices_units.py:320
 msgid "PID values"
@@ -4273,15 +4269,15 @@ msgstr ""
 msgid "Manage Methods"
 msgstr "Methoden beheren"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:277
+#: mycodo_flask/templates/pages/function_options/pid.html:276
 msgid "Maximum allowable measurement age"
 msgstr ""
 
-#: mycodo_flask/templates/pages/function_options/pid.html:311
+#: mycodo_flask/templates/pages/function_options/pid.html:310
 msgid "Autotune"
 msgstr "Autotune"
 
-#: mycodo_flask/templates/pages/function_options/pid.html:316
+#: mycodo_flask/templates/pages/function_options/pid.html:315
 msgid ""
 "Autotune Only: How much above and below the setpoint the process variable"
 " must reach before changing direction."
@@ -4289,7 +4285,7 @@ msgstr ""
 "Alleen Autotune: hoeveel boven en onder het setpoint de procesvariabele "
 "moet bereiken voordat van richting wordt veranderd."
 
-#: mycodo_flask/templates/pages/function_options/pid.html:322
+#: mycodo_flask/templates/pages/function_options/pid.html:321
 #, python-format
 msgid ""
 "Autotune Only: How many seconds to turn the output on each PID cycle. For"
@@ -5446,16 +5442,16 @@ msgstr "Alles uitvoeren"
 msgid "Error: %(err)s"
 msgstr "Fout: %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:792
-#: mycodo_flask/utils/utils_general.py:807
-#: mycodo_flask/utils/utils_general.py:827
-#: mycodo_flask/utils/utils_general.py:832 mycodo_flask/utils/utils_lcd.py:225
+#: mycodo_flask/utils/utils_general.py:782
+#: mycodo_flask/utils/utils_general.py:797
+#: mycodo_flask/utils/utils_general.py:817
+#: mycodo_flask/utils/utils_general.py:822 mycodo_flask/utils/utils_lcd.py:225
 #: mycodo_flask/utils/utils_lcd.py:227
 #, python-format
 msgid "%(msg)s"
 msgstr "%(msg)s"
 
-#: mycodo_flask/utils/utils_general.py:799
+#: mycodo_flask/utils/utils_general.py:789
 #: mycodo_flask/utils/utils_output.py:327
 #: mycodo_flask/utils/utils_output.py:334
 #: mycodo_flask/utils/utils_output.py:339
@@ -5463,21 +5459,21 @@ msgstr "%(msg)s"
 msgid "%(err)s"
 msgstr "%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:800
+#: mycodo_flask/utils/utils_general.py:790
 #, python-format
 msgid "Entry with ID %(id)s not found"
 msgstr "Vermelding met ID %(id)s niet gevonden"
 
-#: mycodo_flask/utils/utils_general.py:818
+#: mycodo_flask/utils/utils_general.py:808
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "Fout in veld %(field)s - %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:866
+#: mycodo_flask/utils/utils_general.py:856
 msgid "Cannot move above the first item in the list"
 msgstr "Kan niet boven het eerste item in de lijst komen"
 
-#: mycodo_flask/utils/utils_general.py:870
+#: mycodo_flask/utils/utils_general.py:860
 msgid "Cannot move below the last item in the list"
 msgstr "Kan niet onder het laatste item in de lijst komen"
 
@@ -5977,4 +5973,7 @@ msgstr ""
 
 #~ msgid "Camera Settings"
 #~ msgstr "Camera instellingen"
+
+#~ msgid "pH"
+#~ msgstr "pH"
 
