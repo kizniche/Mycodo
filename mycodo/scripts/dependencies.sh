@@ -12,28 +12,28 @@ fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
-cd ${INSTALL_DIRECTORY}
+cd "${INSTALL_DIRECTORY}" || return
 
-printf "\n#### Installing/updating ${2} (${1})\n"
+printf "\n#### Installing/updating %s (%s)\n" "${2}" "${1}"
 
 case "${1}" in
     'apt')
-        apt-get install -y ${2}
+        apt-get install -y "${2}"
     ;;
     'pip-pypi')
-        if [ ! -e ${INSTALL_DIRECTORY}/env/bin/python3 ]; then
+        if [ ! -e "${INSTALL_DIRECTORY}"/env/bin/python3 ]; then
             printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
-            /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+            /bin/bash "${INSTALL_DIRECTORY}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
         else
-            ${INSTALL_DIRECTORY}/env/bin/pip3 install --upgrade ${2}
+            "${INSTALL_DIRECTORY}"/env/bin/pip3 install --upgrade "${2}"
         fi
     ;;
     'pip-git')
-        if [ ! -e ${INSTALL_DIRECTORY}/env/bin/python3 ]; then
+        if [ ! -e "${INSTALL_DIRECTORY}"/env/bin/python3 ]; then
             printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
-            /bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+            /bin/bash "${INSTALL_DIRECTORY}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
         else
-            ${INSTALL_DIRECTORY}/env/bin/pip3 install --upgrade -e ${2}
+            "${INSTALL_DIRECTORY}"/env/bin/pip3 install --upgrade -e "${2}"
         fi
     ;;
     'pigpio')
@@ -43,6 +43,6 @@ case "${1}" in
         ${INSTALL_CMD} install-bcm2835
     ;;
     *)
-        printf "\nUnrecognized dependency: ${1}"
+        printf "\nUnrecognized dependency: %s" "${1}"
     ;;
 esac

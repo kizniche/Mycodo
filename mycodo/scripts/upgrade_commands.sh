@@ -30,7 +30,7 @@ done
 
 MYCODO_PATH="$( cd -P "$( dirname "${SOURCE}" )/../.." && pwd )"
 
-cd ${MYCODO_PATH}
+cd "${MYCODO_PATH}" || return
 
 HELP_OPTIONS="upgrade_commands.sh [option] - Program to execute various mycodo commands
 
@@ -84,27 +84,27 @@ Options:
 
 case "${1:-''}" in
     'backup-create')
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/mycodo_backup_create.sh
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/mycodo_backup_create.sh
     ;;
     'backup-restore')
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/mycodo_backup_restore.sh ${2}
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/mycodo_backup_restore.sh "${2}"
     ;;
     'compile-mycodo-wrapper')
         printf "\n#### Compiling mycodo_wrapper\n"
-        gcc ${MYCODO_PATH}/mycodo/scripts/mycodo_wrapper.c -o ${MYCODO_PATH}/mycodo/scripts/mycodo_wrapper
-        chown root:mycodo ${MYCODO_PATH}/mycodo/scripts/mycodo_wrapper
-        chmod 4770 ${MYCODO_PATH}/mycodo/scripts/mycodo_wrapper
+        gcc "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper.c -o "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper
+        chown root:mycodo "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper
+        chmod 4770 "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper
     ;;
     'compile-translations')
         printf "\n#### Compiling Translations\n"
-        cd ${MYCODO_PATH}/mycodo
-        ${MYCODO_PATH}/env/bin/pybabel compile -d mycodo_flask/translations
+        cd "${MYCODO_PATH}"/mycodo || return
+        "${MYCODO_PATH}"/env/bin/pybabel compile -d mycodo_flask/translations
     ;;
     'create-files-directories')
         printf "\n#### Creating files and directories\n"
         mkdir -p /var/log/mycodo
         mkdir -p /var/Mycodo-backups
-        mkdir -p ${MYCODO_PATH}/note_attachments
+        mkdir -p "${MYCODO_PATH}"/note_attachments
 
         if [[ ! -e /var/log/mycodo/mycodo.log ]]; then
             touch /var/log/mycodo/mycodo.log
@@ -130,21 +130,21 @@ case "${1:-''}" in
 
         # Create empty mycodo database file if it doesn't exist
         if [[ ! -e ${MYCODO_PATH}/databases/mycodo.db ]]; then
-            touch ${MYCODO_PATH}/databases/mycodo.db
+            touch "${MYCODO_PATH}"/databases/mycodo.db
         fi
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh update-permissions
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-permissions
     ;;
     'create-symlinks')
         printf "\n#### Creating symlinks to Mycodo executables\n"
-        ln -sfn ${MYCODO_PATH} /var/mycodo-root
-        ln -sfn ${MYCODO_PATH}/mycodo/mycodo_daemon.py /usr/bin/mycodo-daemon
-        ln -sfn ${MYCODO_PATH}/mycodo/mycodo_client.py /usr/bin/mycodo-client
-        ln -sfn ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh /usr/bin/mycodo-commands
-        ln -sfn ${MYCODO_PATH}/mycodo/scripts/mycodo_backup_create.sh /usr/bin/mycodo-backup
-        ln -sfn ${MYCODO_PATH}/mycodo/scripts/mycodo_backup_restore.sh /usr/bin/mycodo-restore
-        ln -sfn ${MYCODO_PATH}/mycodo/scripts/mycodo_wrapper /usr/bin/mycodo-wrapper
-        ln -sfn ${MYCODO_PATH}/env/bin/pip3 /usr/bin/mycodo-pip
-        ln -sfn ${MYCODO_PATH}/env/bin/python3 /usr/bin/mycodo-python
+        ln -sfn "${MYCODO_PATH}" /var/mycodo-root
+        ln -sfn "${MYCODO_PATH}"/mycodo/mycodo_daemon.py /usr/bin/mycodo-daemon
+        ln -sfn "${MYCODO_PATH}"/mycodo/mycodo_client.py /usr/bin/mycodo-client
+        ln -sfn "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh /usr/bin/mycodo-commands
+        ln -sfn "${MYCODO_PATH}"/mycodo/scripts/mycodo_backup_create.sh /usr/bin/mycodo-backup
+        ln -sfn "${MYCODO_PATH}"/mycodo/scripts/mycodo_backup_restore.sh /usr/bin/mycodo-restore
+        ln -sfn "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper /usr/bin/mycodo-wrapper
+        ln -sfn "${MYCODO_PATH}"/env/bin/pip3 /usr/bin/mycodo-pip
+        ln -sfn "${MYCODO_PATH}"/env/bin/python3 /usr/bin/mycodo-python
     ;;
     'create-user')
         printf "\n#### Creating mycodo user\n"
@@ -160,17 +160,17 @@ case "${1:-''}" in
     ;;
     'initialize')
         printf "\n#### Running initialization\n"
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh create-user
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh compile-mycodo-wrapper
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh create-symlinks
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh create-files-directories
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh create-user
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh compile-mycodo-wrapper
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh create-symlinks
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh create-files-directories
         systemctl daemon-reload
     ;;
     'restart-daemon')
         printf "\n#### Restarting the Mycodo daemon\n"
         service mycodo stop
         sleep 2
-        ${MYCODO_PATH}/env/bin/python ${MYCODO_PATH}/mycodo/scripts/restart_daemon.py
+        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/mycodo/scripts/restart_daemon.py
         service mycodo start
     ;;
     'setup-virtualenv')
@@ -178,16 +178,16 @@ case "${1:-''}" in
         if [[ ! -e ${MYCODO_PATH}/env/bin/python3 ]]; then
             printf "#### Virtualenv doesn't exist. Creating...\n"
             pip install virtualenv --upgrade
-            rm -rf ${MYCODO_PATH}/env
-            virtualenv --system-site-packages -p ${PYTHON_BINARY_SYS_LOC} ${MYCODO_PATH}/env
+            rm -rf "${MYCODO_PATH}"/env
+            virtualenv --system-site-packages -p "${PYTHON_BINARY_SYS_LOC}" "${MYCODO_PATH}"/env
         else
             printf "#### Virtualenv already exists, skipping creation\n"
         fi
     ;;
     'ssl-certs-generate')
-        printf "\n#### Generating SSL certificates at ${MYCODO_PATH}/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n"
-        mkdir -p ${MYCODO_PATH}/mycodo/mycodo_flask/ssl_certs
-        cd ${MYCODO_PATH}/mycodo/mycodo_flask/ssl_certs/
+        printf "\n#### Generating SSL certificates at %s/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n" "${MYCODO_PATH}"
+        mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/ssl_certs
+        cd "${MYCODO_PATH}"/mycodo/mycodo_flask/ssl_certs/ || return
         rm -f ./*.pem ./*.csr ./*.crt ./*.key
 
         openssl genrsa -out server.pass.key 4096
@@ -202,10 +202,10 @@ case "${1:-''}" in
             -out server.crt
     ;;
     'ssl-certs-regenerate')
-        printf "\n#### Regenerating SSL certificates at ${MYCODO_PATH}/mycodo/mycodo_flask/ssl_certs\n"
-        rm -rf ${MYCODO_PATH}/mycodo/mycodo_flask/ssl_certs/*.pem
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh ssl-certs-generate
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh initialize
+        printf "\n#### Regenerating SSL certificates at %s/mycodo/mycodo_flask/ssl_certs\n" "${MYCODO_PATH}"
+        rm -rf "${MYCODO_PATH}"/mycodo/mycodo_flask/ssl_certs/*.pem
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh ssl-certs-generate
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh initialize
         sudo service nginx restart
         sudo service mycodoflask restart
     ;;
@@ -215,12 +215,12 @@ case "${1:-''}" in
     ;;
     'update-alembic')
         printf "\n#### Upgrading Mycodo database with alembic (if needed)\n"
-        cd ${MYCODO_PATH}/databases
-        ${MYCODO_PATH}/env/bin/alembic upgrade head
+        cd "${MYCODO_PATH}"/databases || return
+        "${MYCODO_PATH}"/env/bin/alembic upgrade head
     ;;
     'update-alembic-post')
         printf "\n#### Executing post-alembic script\n"
-        ${MYCODO_PATH}/env/bin/python ${MYCODO_PATH}/databases/alembic_post.py
+        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/databases/alembic_post.py
     ;;
     'update-apt')
         printf "\n\n#### Updating apt repositories\n"
@@ -228,57 +228,57 @@ case "${1:-''}" in
     ;;
     'update-cron')
         printf "\n#### Updating Mycodo restart monitor crontab entry\n"
-        /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon --remove
-        /bin/bash ${MYCODO_PATH}/install/crontab.sh restart_daemon
+        /bin/bash "${MYCODO_PATH}"/install/crontab.sh restart_daemon --remove
+        /bin/bash "${MYCODO_PATH}"/install/crontab.sh restart_daemon
     ;;
     'update-dependencies')
         printf "\n#### Checking for updates to dependencies\n"
-        ${MYCODO_PATH}/env/bin/python ${MYCODO_PATH}/mycodo/utils/update_installed_dependencies.py
+        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/mycodo/utils/update_installed_dependencies.py
     ;;
     'install-bcm2835')
         printf "\n#### Installing bcm2835\n"
-        cd ${MYCODO_PATH}/install
+        cd "${MYCODO_PATH}"/install || return
         apt-get install -y automake libtool
         wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz
         tar zxvf bcm2835-1.50.tar.gz
-        cd bcm2835-1.50
+        cd bcm2835-1.50 || return
         autoreconf -vfi
         ./configure
         make
         sudo make check
         sudo make install
-        cd ${MYCODO_PATH}/install
+        cd "${MYCODO_PATH}"/install || return
         rm -rf ./bcm2835-1.50
     ;;
     'install-wiringpi')
-        cd ${MYCODO_PATH}/install
+        cd "${MYCODO_PATH}"/install || return
         dpkg -i wiringpi-latest.deb
     ;;
     'install-pigpiod')
         printf "\n#### Installing pigpiod\n"
         apt-get install -y python3-pigpio
-        cd ${MYCODO_PATH}/install
-        # wget --quiet -P ${MYCODO_PATH}/install abyz.co.uk/rpi/pigpio/pigpio.zip
+        cd "${MYCODO_PATH}"/install || return
+        # wget --quiet -P "${MYCODO_PATH}"/install abyz.co.uk/rpi/pigpio/pigpio.zip
         tar xf pigpio.tar
-        cd ${MYCODO_PATH}/install/PIGPIO
+        cd "${MYCODO_PATH}"/install/PIGPIO || return
         make -j4
         make install
-        cd ${MYCODO_PATH}/install
+        cd "${MYCODO_PATH}"/install || return
         rm -rf ./PIGPIO
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh disable-pigpiod
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh disable-pigpiod
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh enable-pigpiod-high
         mkdir -p /opt/mycodo
         touch /opt/mycodo/pigpio_installed
     ;;
     'uninstall-pigpiod')
         printf "\n#### Uninstalling pigpiod\n"
         apt-get remove -y python3-pigpio
-        cd ${MYCODO_PATH}/install
-        # wget --quiet -P ${MYCODO_PATH}/install abyz.co.uk/rpi/pigpio/pigpio.zip
+        cd "${MYCODO_PATH}"/install || return
+        # wget --quiet -P "${MYCODO_PATH}"/install abyz.co.uk/rpi/pigpio/pigpio.zip
         tar xf pigpio.tar
-        cd ${MYCODO_PATH}/install/PIGPIO
+        cd "${MYCODO_PATH}"/install/PIGPIO || return
         make uninstall
-        cd ${MYCODO_PATH}/install
+        cd "${MYCODO_PATH}"/install || return
         rm -rf ./PIGPIO
         touch /etc/systemd/system/pigpiod_uninstalled.service
         rm -f /opt/mycodo/pigpio_installed
@@ -297,12 +297,12 @@ case "${1:-''}" in
     ;;
     'enable-pigpiod-low')
         printf "\n#### Enabling pigpiod startup script (1 ms sample rate)\n"
-        systemctl enable ${MYCODO_PATH}/install/pigpiod_low.service
+        systemctl enable "${MYCODO_PATH}"/install/pigpiod_low.service
         service pigpiod restart
     ;;
     'enable-pigpiod-high')
         printf "\n#### Enabling pigpiod startup script (5 ms sample rate)\n"
-        systemctl enable ${MYCODO_PATH}/install/pigpiod_high.service
+        systemctl enable "${MYCODO_PATH}"/install/pigpiod_high.service
         service pigpiod restart
     ;;
     'enable-pigpiod-disabled')
@@ -320,17 +320,17 @@ case "${1:-''}" in
             GPIOD_SAMPLE_RATE=100
         fi
 
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh disable-pigpiod
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh disable-pigpiod
 
         if [[ "$GPIOD_SAMPLE_RATE" -eq "1" ]]; then
-            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
+            /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
         elif [[ "$GPIOD_SAMPLE_RATE" -eq "5" ]]; then
-            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-high
+            /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh enable-pigpiod-high
         elif [[ "$GPIOD_SAMPLE_RATE" -eq "100" ]]; then
-            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-disabled
+            /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh enable-pigpiod-disabled
         else
             printf "#### Could not determine pgiod sample rate. Setting up pigpiod with 1 ms sample rate\n"
-            /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
+            /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh enable-pigpiod-low
         fi
     ;;
     'update-influxdb')
@@ -372,7 +372,7 @@ case "${1:-''}" in
             printf "logrotate execution moved from cron.daily to cron.hourly\n"
             mv -f /etc/cron.daily/logrotate /etc/cron.hourly/
         fi
-        cp -f ${MYCODO_PATH}/install/logrotate_mycodo /etc/logrotate.d/mycodo
+        cp -f "${MYCODO_PATH}"/install/logrotate_mycodo /etc/logrotate.d/mycodo
         printf "Mycodo logrotate script installed\n"
     ;;
     'update-mycodo-startup-script')
@@ -380,40 +380,40 @@ case "${1:-''}" in
         systemctl disable mycodo.service
         rm -rf /etc/systemd/system/mycodo.service
         printf "#### Enabling current mycodo startup script\n"
-        systemctl enable ${MYCODO_PATH}/install/mycodo.service
+        systemctl enable "${MYCODO_PATH}"/install/mycodo.service
     ;;
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
         apt-get update -y
         apt-get remove -y apache2
-        apt-get install -y ${APT_PKGS}
+        apt-get install -y "${APT_PKGS}"
         python3 /usr/lib/python3/dist-packages/easy_install.py pip
         pip install --upgrade pip
     ;;
     'update-permissions')
         printf "\n#### Setting permissions\n"
-        chown -LR mycodo.mycodo ${MYCODO_PATH}
+        chown -LR mycodo.mycodo "${MYCODO_PATH}"
         chown -R mycodo.mycodo /var/log/mycodo
         chown -R mycodo.mycodo /var/Mycodo-backups
         chown -R influxdb.influxdb /var/lib/influxdb/data/
 
-        find ${MYCODO_PATH} -type d -exec chmod u+wx,g+wx {} +
-        find ${MYCODO_PATH} -type f -exec chmod u+w,g+w,o+r {} +
+        find "${MYCODO_PATH}" -type d -exec chmod u+wx,g+wx {} +
+        find "${MYCODO_PATH}" -type f -exec chmod u+w,g+w,o+r {} +
 
-        chown root:mycodo ${MYCODO_PATH}/mycodo/scripts/mycodo_wrapper
-        chmod 4770 ${MYCODO_PATH}/mycodo/scripts/mycodo_wrapper
+        chown root:mycodo "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper
+        chmod 4770 "${MYCODO_PATH}"/mycodo/scripts/mycodo_wrapper
     ;;
     'update-pip3')
         printf "\n#### Updating pip\n"
-        ${MYCODO_PATH}/env/bin/pip3 install --upgrade pip
+        "${MYCODO_PATH}"/env/bin/pip3 install --upgrade pip
     ;;
     'update-pip3-packages')
         printf "\n#### Installing pip requirements from requirements.txt\n"
         if [[ ! -d ${MYCODO_PATH}/env ]]; then
-            printf "\n## Error: Virtualenv doesn't exist. Create with $0 setup-virtualenv\n"
+            printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
         else
-            ${MYCODO_PATH}/env/bin/pip3 install --upgrade pip setuptools
-            ${MYCODO_PATH}/env/bin/pip3 install --upgrade -r ${MYCODO_PATH}/install/requirements.txt
+            "${MYCODO_PATH}"/env/bin/pip3 install --upgrade pip setuptools
+            "${MYCODO_PATH}"/env/bin/pip3 install --upgrade -r "${MYCODO_PATH}"/install/requirements.txt
         fi
     ;;
     'update-swap-size')
@@ -428,16 +428,16 @@ case "${1:-''}" in
         fi
     ;;
     'upgrade')
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_mycodo_release.sh
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_mycodo_release.sh
     ;;
     'upgrade-master')
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_mycodo_release.sh force-upgrade-master
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_mycodo_release.sh force-upgrade-master
     ;;
     'upgrade-release-major')
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_mycodo_release_maj.sh ${2}
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_mycodo_release_maj.sh "${2}"
     ;;
     'upgrade-post')
-        /bin/bash ${MYCODO_PATH}/mycodo/scripts/upgrade_post.sh
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_post.sh
     ;;
     'web-server-connect')
         printf "\n#### Connecting to http://localhost (creates Mycodo database if it doesn't exist)\n"
@@ -471,11 +471,11 @@ case "${1:-''}" in
         printf "\n#### Installing and configuring nginx web server\n"
         systemctl disable mycodoflask.service
         rm -rf /etc/systemd/system/mycodoflask.service
-        ln -sf ${MYCODO_PATH}/install/mycodoflask_nginx.conf /etc/nginx/sites-enabled/default
+        ln -sf "${MYCODO_PATH}"/install/mycodoflask_nginx.conf /etc/nginx/sites-enabled/default
         systemctl enable nginx
-        systemctl enable ${MYCODO_PATH}/install/mycodoflask.service
+        systemctl enable "${MYCODO_PATH}"/install/mycodoflask.service
     ;;
     *)
-        printf "Error: Unrecognized command: ${1}\n${HELP_OPTIONS}"
+        printf "Error: Unrecognized command: %s\n%s" "${1}" "${HELP_OPTIONS}"
     ;;
 esac

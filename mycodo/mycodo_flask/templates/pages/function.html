@@ -36,7 +36,7 @@
             </optgroup>
             <optgroup label="{{_('Custom')}} {{_('Controllers')}}">
             {% for each_controller in choices_custom_controllers -%}
-              <option value="{{each_controller[0]}}">{{each_controller[1]}}</option>
+              <option value="{{each_controller['value']}}">{{each_controller['item']}}</option>
             {% endfor -%}
             </optgroup>
           {% endif %}

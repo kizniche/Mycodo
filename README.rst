@@ -88,9 +88,7 @@ Prerequisites
 -  `Raspbian OS <https://www.raspberrypi.org/downloads/raspbian/>`__ flashed to a micro SD card
 -  An active internet connection
 
-Mycodo been tested to work with the Raspberry Pi (versions Zero, 1, 2,
-3, and 4) following a fresh install of Raspbian Buster (2019-06-20)
-Lite version, with an active internet connection.
+Mycodo has been tested to work with Raspbian Buster Lite (2019-09-26).
 
 Install
 ~~~~~~~

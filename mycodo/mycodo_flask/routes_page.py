@@ -1429,17 +1429,9 @@ def page_function():
     for each_function in FUNCTIONS:
         choices_functions.append((each_function[0], each_function[1]))
 
-    choices_custom_controllers = []
-
     dict_controllers = parse_controller_information()
-    list_controllers_sorted = generate_form_controller_list(dict_controllers)
 
-    for each_controller in list_controllers_sorted:
-        value = '{inp}'.format(inp=each_controller)
-        name = '{name}'.format(
-            name=dict_controllers[each_controller]['controller_name'])
-        choices_custom_controllers.append((value, name))
-
+    choices_custom_controllers = utils_general.choices_custom_controllers()
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     choices_math = utils_general.choices_maths(

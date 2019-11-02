@@ -10,7 +10,7 @@
 # 3. To install the crontab, run ./crontab.sh <nameOfCronTabfile>
 # 4. To remove the crontab, run ./crontab.sh <nameOfCronTabfile> --remove
 
-cd $(dirname "$0")
+cd "$(dirname "$0")" || return
 
 test "$2" = --remove && mode=remove || mode=add
 
@@ -18,7 +18,7 @@ cron_unique_label="# cmID:$1 #"
 
 crontab="$1".crontab
 crontab_bak=${crontab}.bak
-test -f ${crontab} || cp ${crontab}.sample ${crontab}
+test -f "${crontab}" || cp "${crontab}".sample "${crontab}"
 
 crontab_exists() {
     crontab -l 2>/dev/null | grep -x "$cron_unique_label" >/dev/null 2>/dev/null
@@ -28,11 +28,11 @@ crontab_exists() {
 if type crontab >/dev/null 2>/dev/null; then
     if test ${mode} = add; then
         if ! crontab_exists; then
-            crontab -l > ${crontab_bak}
+            crontab -l > "${crontab_bak}"
             echo 'Appending to crontab:'
             echo '-----------------------------------------------'
-            cat ${crontab}
-            crontab -l 2>/dev/null | { cat; echo ${cron_unique_label}; cat ${crontab}; echo "# cm~$1 #"; } | crontab -
+            cat "${crontab}"
+            crontab -l 2>/dev/null | { cat; echo "${cron_unique_label}"; cat "${crontab}"; echo "# cm~$1 #"; } | crontab -
         else
             echo 'Crontab entry already exists, skipping ...'
             echo

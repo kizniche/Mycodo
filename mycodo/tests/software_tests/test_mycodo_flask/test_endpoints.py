@@ -99,7 +99,9 @@ def test_routes_when_not_logged_in(testapp):
         'usage',
         'video_feed/0'
     ]
-    for route in routes:
+    for index, route in enumerate(routes):
+        print("test_routes_when_not_logged_in: Test Route ({}/{}): testapp.get('/{}').maybe_follow()".format(
+            index + 1, len(routes), route[0]))
         redirects_to_login_page(testapp=testapp, endpoint='/{add}'.format(add=route))
 
 
@@ -123,7 +125,9 @@ def test_api_when_not_logged_in(testapp):
         'settings/units',
         'settings/users'
     ]
-    for route in routes:
+    for index, route in enumerate(routes):
+        print("test_api_when_not_logged_in: Test Route ({}/{}): testapp.get('/api/{}').maybe_follow()".format(
+            index + 1, len(routes), route[0]))
         returns_401_unauthorized(testapp=testapp, endpoint='/api/{add}'.format(add=route))
 
 

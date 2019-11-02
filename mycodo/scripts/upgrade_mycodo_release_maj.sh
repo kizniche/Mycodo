@@ -11,14 +11,14 @@ if [ "$EUID" -ne 0 ] ; then
 fi
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
-cd ${INSTALL_DIRECTORY}
+cd "${INSTALL_DIRECTORY}" || return
 
 runSelfUpgrade() {
   INSTALL_DIRECTORY=$( cd -P /var/mycodo-root/.. && pwd -P )
-  echo '1' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
+  echo '1' > "${INSTALL_DIRECTORY}"/Mycodo/.upgrade
 
   function error_found {
-    echo '2' > ${INSTALL_DIRECTORY}/Mycodo/.upgrade
+    echo '2' > "${INSTALL_DIRECTORY}"/Mycodo/.upgrade
     printf "\n\n"
     printf "#### ERROR ####\n"
     printf "There was an error detected during the upgrade. Please review the log at /var/log/mycodo/mycodoupgrade.log"
@@ -26,11 +26,11 @@ runSelfUpgrade() {
   }
 
   NOW=$(date +"%Y-%m-%d_%H-%M-%S")
-  CURRENT_VERSION=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
+  CURRENT_VERSION=$("${INSTALL_DIRECTORY}"/Mycodo/env/bin/python3 "${INSTALL_DIRECTORY}"/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
   BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
-  UPDATE_VERSION=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m ${1} -v 2>&1)
+  UPDATE_VERSION=$("${INSTALL_DIRECTORY}"/Mycodo/env/bin/python3 "${INSTALL_DIRECTORY}"/Mycodo/mycodo/utils/github_release_info.py -m "${1}" -v 2>&1)
   MYCODO_NEW_TMP_DIR="/tmp/Mycodo-${UPDATE_VERSION}"
-  UPDATE_URL=$(${INSTALL_DIRECTORY}/Mycodo/env/bin/python3 ${INSTALL_DIRECTORY}/Mycodo/mycodo/utils/github_release_info.py -m ${1} 2>&1)
+  UPDATE_URL=$("${INSTALL_DIRECTORY}"/Mycodo/env/bin/python3 "${INSTALL_DIRECTORY}"/Mycodo/mycodo/utils/github_release_info.py -m "${1}" 2>&1)
   TARBALL_FILE="mycodo-${UPDATE_VERSION}"
 
   printf "\n"
@@ -43,8 +43,8 @@ runSelfUpgrade() {
     printf "Unable to upgrade. You currently have the latest release installed.\n"
     error_found
   else
-    printf "\nInstalled version: ${CURRENT_VERSION}\n"
-    printf "Latest version: ${UPDATE_VERSION}\n"
+    printf "\nInstalled version: %s\n" "${CURRENT_VERSION}"
+    printf "Latest version: %s\n" "${UPDATE_VERSION}"
   fi
 
   if [ "${UPDATE_URL}" == "None" ] ; then
@@ -52,7 +52,7 @@ runSelfUpgrade() {
     error_found
   fi
 
-  printf "\n#### Upgrade to v${UPDATE_VERSION} initiated ${NOW} ####\n"
+  printf "\n#### Upgrade to v%s initiated %s ####\n" "${UPDATE_VERSION}" "${NOW}"
   printf "\n#### Beginning Upgrade: Stage 1 of 2 ####\n"
 
   printf "Stopping the Mycodo daemon..."
@@ -61,67 +61,68 @@ runSelfUpgrade() {
   fi
   printf "Done.\n"
 
-  printf "Downloading latest Mycodo version to ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz..."
-  if ! wget --quiet -O ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz ${UPDATE_URL} ; then
+  printf "Downloading latest Mycodo version to %s/%s.tar.gz..." "${INSTALL_DIRECTORY}" "${TARBALL_FILE}"
+  if ! wget --quiet -O "${INSTALL_DIRECTORY}"/"${TARBALL_FILE}".tar.gz "${UPDATE_URL}" ; then
     printf "Failed: Error while trying to wget new version.\n"
-    printf "File requested: ${UPDATE_URL} -> ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz\n"
+    printf "File requested: %s -> %s/%s.tar.gz\n" "${UPDATE_URL}" "${INSTALL_DIRECTORY}" "${TARBALL_FILE}"
     error_found
   fi
   printf "Done.\n"
 
   if [ -d "${MYCODO_NEW_TMP_DIR}" ] ; then
-    printf "The tmp directory ${MYCODO_NEW_TMP_DIR} already exists. Removing..."
-    if ! rm -Rf ${MYCODO_NEW_TMP_DIR} ; then
-      printf "Failed: Error while trying to delete tmp directory ${MYCODO_NEW_TMP_DIR}.\n"
+    printf "The tmp directory %s already exists. Removing..." "${MYCODO_NEW_TMP_DIR}"
+    if ! rm -Rf "${MYCODO_NEW_TMP_DIR}" ; then
+      printf "Failed: Error while trying to delete tmp directory %s.\n" "${MYCODO_NEW_TMP_DIR}"
       error_found
     fi
     printf "Done.\n"
   fi
 
-  printf "Creating ${MYCODO_NEW_TMP_DIR}..."
-  if ! mkdir ${MYCODO_NEW_TMP_DIR} ; then
-    printf "Failed: Error while trying to create ${MYCODO_NEW_TMP_DIR}.\n"
+  printf "Creating %s..." "${MYCODO_NEW_TMP_DIR}"
+  if ! mkdir "${MYCODO_NEW_TMP_DIR}" ; then
+    printf "Failed: Error while trying to create %s.\n" "${MYCODO_NEW_TMP_DIR}"
     error_found
   fi
   printf "Done.\n"
 
-  printf "Extracting ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz to ${MYCODO_NEW_TMP_DIR}..."
-  if ! tar xzf ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz -C ${MYCODO_NEW_TMP_DIR} --strip-components=1 ; then
-    printf "Failed: Error while trying to extract files from ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz to ${MYCODO_NEW_TMP_DIR}.\n"
+  printf "Extracting %s/%s.tar.gz to %s..." "${INSTALL_DIRECTORY}" "${TARBALL_FILE}" "${MYCODO_NEW_TMP_DIR}"
+  if ! tar xzf "${INSTALL_DIRECTORY}"/"${TARBALL_FILE}".tar.gz -C "${MYCODO_NEW_TMP_DIR}" --strip-components=1 ; then
+    printf "Failed: Error while trying to extract files from %s/%s.tar.gz to %s.\n" "${INSTALL_DIRECTORY}" "${TARBALL_FILE}" "${MYCODO_NEW_TMP_DIR}"
     error_found
   fi
   printf "Done.\n"
 
   if [ -d "${MYCODO_NEW_TMP_DIR}/old" ] ; then
-    printf "The archive directory ${MYCODO_NEW_TMP_DIR}/old exists. Removing..."
-    if ! rm -Rf ${MYCODO_NEW_TMP_DIR}/old ; then
-      printf "Failed: Error while trying to delete archive directory ${MYCODO_NEW_TMP_DIR}/old.\n"
+    printf "The archive directory %s/old exists. Removing..." "${MYCODO_NEW_TMP_DIR}"
+    if ! rm -Rf "${MYCODO_NEW_TMP_DIR}"/old ; then
+      printf "Failed: Error while trying to delete archive directory %s/old.\n" "${MYCODO_NEW_TMP_DIR}"
       error_found
     fi
     printf "Done.\n"
   fi
 
-  printf "Removing ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz..."
-  if ! rm -rf ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz ; then
-    printf "Failed: Error while removing ${INSTALL_DIRECTORY}/${TARBALL_FILE}.tar.gz.\n"
+  printf "Removing %s/%s.tar.gz..." "${INSTALL_DIRECTORY}" "${TARBALL_FILE}"
+  if ! rm -rf "${INSTALL_DIRECTORY}"/"${TARBALL_FILE}".tar.gz ; then
+    printf "Failed: Error while removing %s/%s.tar.gz.\n" "${INSTALL_DIRECTORY}" "${TARBALL_FILE}"
   fi
   printf "Done.\n"
 
-  printf "Copying ${MYCODO_NEW_TMP_DIR}/.upgrade status file to ${MYCODO_NEW_TMP_DIR}..."
-  if ! cp ${INSTALL_DIRECTORY}/Mycodo/.upgrade ${MYCODO_NEW_TMP_DIR} ; then
+  printf "Copying %s/.upgrade status file to %s..." "${MYCODO_NEW_TMP_DIR}" "${MYCODO_NEW_TMP_DIR}"
+  if ! cp "${INSTALL_DIRECTORY}"/Mycodo/.upgrade "${MYCODO_NEW_TMP_DIR}" ; then
     printf "Failed: Error while trying to copy .upgrade status file.\n"
   fi
   printf "Done.\n"
 
-  if [ -d ${INSTALL_DIRECTORY}/Mycodo/env ] ; then
+  if [ -d "${INSTALL_DIRECTORY}"/Mycodo/env ] ; then
     printf "Moving env directory..."
-    if ! mv ${INSTALL_DIRECTORY}/Mycodo/env ${MYCODO_NEW_TMP_DIR} ; then
+    if ! mv "${INSTALL_DIRECTORY}"/Mycodo/env "${MYCODO_NEW_TMP_DIR}" ; then
       printf "Failed: Error while trying to move env directory.\n"
       error_found
     fi
     printf "Done.\n"
   fi
 
+# We don't copy the database during a major release because the database schema has changed and we need to generate a new one.
 #  printf "Copying databases from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
 #  if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/*.db ${MYCODO_NEW_TMP_DIR}/databases ; then
 #    printf "Failed: Error while trying to copy databases."
@@ -129,75 +130,75 @@ runSelfUpgrade() {
 #  fi
 #  printf "Done.\n"
 
-  printf "Copying flask_secret_key from ${INSTALL_DIRECTORY}/Mycodo/databases/ to ${MYCODO_NEW_TMP_DIR}/databases..."
-  if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/flask_secret_key ${MYCODO_NEW_TMP_DIR}/databases ; then
+  printf "Copying flask_secret_key from %s/Mycodo/databases/ to %s/databases..." "${INSTALL_DIRECTORY}" "${MYCODO_NEW_TMP_DIR}"
+  if ! cp "${INSTALL_DIRECTORY}"/Mycodo/databases/flask_secret_key "${MYCODO_NEW_TMP_DIR}"/databases ; then
     printf "Failed: Error while trying to copy flask_secret_key."
   fi
   printf "Done.\n"
 
-  if [ -e ${INSTALL_DIRECTORY}/Mycodo/databases/statistics.id ]; then
+  if [ -e "${INSTALL_DIRECTORY}"/Mycodo/databases/statistics.id ]; then
     printf "Copying statistics ID..."
-    if ! cp ${INSTALL_DIRECTORY}/Mycodo/databases/statistics.id ${MYCODO_NEW_TMP_DIR}/databases ; then
+    if ! cp "${INSTALL_DIRECTORY}"/Mycodo/databases/statistics.id "${MYCODO_NEW_TMP_DIR}/"databases ; then
       printf "Failed: Error while trying to copy statistics ID."
     fi
     printf "Done.\n"
   fi
 
-  if [ -d ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs ] ; then
+  if [ -d "${INSTALL_DIRECTORY}"/Mycodo/mycodo/mycodo_flask/ssl_certs ] ; then
     printf "Copying SSL certificates..."
-    if ! cp -R ${INSTALL_DIRECTORY}/Mycodo/mycodo/mycodo_flask/ssl_certs ${MYCODO_NEW_TMP_DIR}/mycodo/mycodo_flask/ssl_certs ; then
+    if ! cp -R "${INSTALL_DIRECTORY}"/Mycodo/mycodo/mycodo_flask/ssl_certs "${MYCODO_NEW_TMP_DIR}"/mycodo/mycodo_flask/ssl_certs ; then
       printf "Failed: Error while trying to copy SSL certificates."
       error_found
     fi
     printf "Done.\n"
   fi
 
-  if [ -d ${INSTALL_DIRECTORY}/Mycodo/mycodo/controllers/custom_controllers ] ; then
+  if [ -d "${INSTALL_DIRECTORY}"/Mycodo/mycodo/controllers/custom_controllers ] ; then
     printf "Copying mycodo/controllers/custom_controllers..."
-    if ! cp ${INSTALL_DIRECTORY}/Mycodo/mycodo/controllers/custom_controllers/*.py ${MYCODO_NEW_TMP_DIR}/mycodo/controllers/custom_controllers/ ; then
+    if ! cp "${INSTALL_DIRECTORY}"/Mycodo/mycodo/controllers/custom_controllers/*.py "${MYCODO_NEW_TMP_DIR}"/mycodo/controllers/custom_controllers/ ; then
       printf "Failed: Error while trying to copy mycodo/controllers/custom_controllers"
       error_found
     fi
     printf "Done.\n"
   fi
 
-  if [ -d ${INSTALL_DIRECTORY}/Mycodo/mycodo/inputs/custom_inputs ] ; then
+  if [ -d "${INSTALL_DIRECTORY}"/Mycodo/mycodo/inputs/custom_inputs ] ; then
     printf "Copying mycodo/inputs/custom_inputs..."
-    if ! cp -R ${INSTALL_DIRECTORY}/Mycodo/mycodo/inputs/custom_inputs ${MYCODO_NEW_TMP_DIR}/mycodo/inputs/custom_inputs/ ; then
+    if ! cp -R "${INSTALL_DIRECTORY}"/Mycodo/mycodo/inputs/custom_inputs "${MYCODO_NEW_TMP_DIR}"/mycodo/inputs/custom_inputs/ ; then
       printf "Failed: Error while trying to copy mycodo/inputs/custom_inputs"
       error_found
     fi
     printf "Done.\n"
   fi
 
-  if [ -d ${INSTALL_DIRECTORY}/Mycodo/mycodo/user_python_code ] ; then
+  if [ -d "${INSTALL_DIRECTORY}"/Mycodo/mycodo/user_python_code ] ; then
     printf "Copying mycodo/user_python_code..."
-    if ! cp ${INSTALL_DIRECTORY}/Mycodo/mycodo/user_python_code/*.py ${MYCODO_NEW_TMP_DIR}/mycodo/user_python_code/ ; then
+    if ! cp "${INSTALL_DIRECTORY}"/Mycodo/mycodo/user_python_code/*.py "${MYCODO_NEW_TMP_DIR}"/mycodo/user_python_code/ ; then
       printf "Failed: Error while trying to copy mycodo/user_python_code"
       error_found
     fi
     printf "Done.\n"
   fi
 
-  if [ -d ${INSTALL_DIRECTORY}/Mycodo/output_usage_reports ] ; then
+  if [ -d "${INSTALL_DIRECTORY}"/Mycodo/output_usage_reports ] ; then
     printf "Moving output_usage_reports directory..."
-    if ! mv ${INSTALL_DIRECTORY}/Mycodo/output_usage_reports ${MYCODO_NEW_TMP_DIR} ; then
+    if ! mv "${INSTALL_DIRECTORY}"/Mycodo/output_usage_reports "${MYCODO_NEW_TMP_DIR}" ; then
       printf "Failed: Error while trying to move output_usage_reports directory.\n"
     fi
     printf "Done.\n"
   fi
 
-  if [ -d ${INSTALL_DIRECTORY}/Mycodo/cameras ] ; then
+  if [ -d "${INSTALL_DIRECTORY}"/Mycodo/cameras ] ; then
     printf "Moving cameras directory..."
-    if ! mv ${INSTALL_DIRECTORY}/Mycodo/cameras ${MYCODO_NEW_TMP_DIR} ; then
+    if ! mv "${INSTALL_DIRECTORY}"/Mycodo/cameras "${MYCODO_NEW_TMP_DIR}" ; then
       printf "Failed: Error while trying to move cameras directory.\n"
     fi
     printf "Done.\n"
   fi
 
-  if [ -d ${INSTALL_DIRECTORY}/Mycodo/.upgrade ] ; then
+  if [ -d "${INSTALL_DIRECTORY}"/Mycodo/.upgrade ] ; then
     printf "Moving .upgrade file..."
-    if ! mv ${INSTALL_DIRECTORY}/Mycodo/.upgrade ${MYCODO_NEW_TMP_DIR} ; then
+    if ! mv "${INSTALL_DIRECTORY}"/Mycodo/.upgrade "${MYCODO_NEW_TMP_DIR}" ; then
       printf "Failed: Error while trying to move .upgrade file.\n"
     fi
     printf "Done.\n"

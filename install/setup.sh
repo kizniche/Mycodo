@@ -7,11 +7,10 @@
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P )
 INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
-INSTALL_DEP="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/dependencies.sh"
 LOG_LOCATION=${INSTALL_DIRECTORY}/install/setup.log
 
 if [ "$EUID" -ne 0 ]; then
-    printf "Please run as root: \"sudo /bin/bash ${INSTALL_DIRECTORY}/install/setup.sh\"\n";
+    printf "Please run as root: \"sudo /bin/bash %s/install/setup.sh\"\n" "${INSTALL_DIRECTORY}";
     exit 1
 fi
 
@@ -23,7 +22,7 @@ if [ $exitstatus != 0 ]; then
 fi
 
 NOW=$(date)
-printf "### Mycodo installation initiated $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
+printf "### Mycodo installation initiated %s\n" "${NOW}" 2>&1 | tee -a "${LOG_LOCATION}"
 
 clear
 LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
@@ -34,7 +33,7 @@ LICENSE=$(whiptail --title "Mycodo Installer: License Agreement" \
 
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
-    printf "Mycodo install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
+    printf "Mycodo install canceled by user" 2>&1 | tee -a "${LOG_LOCATION}"
     exit 1
 fi
 
@@ -46,7 +45,7 @@ INSTALL=$(whiptail --title "Mycodo Installer: Install" \
                    3>&1 1>&2 2>&3)
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
-    printf "Mycodo install canceled by user" 2>&1 | tee -a ${LOG_LOCATION}
+    printf "Mycodo install canceled by user" 2>&1 | tee -a "${LOG_LOCATION}"
     exit 1
 fi
 
@@ -61,13 +60,13 @@ An error occurred that may have prevented Mycodo from
 being installed properly!
 
 Open to the end of the setup log to view the full error:
-${INSTALL_DIRECTORY}/install/setup.log
+%s/install/setup.log
 
 Please contact the developer by submitting a bug report
 at https://github.com/kizniche/Mycodo/issues with the
 pertinent excerpts from the setup log located at:
-${INSTALL_DIRECTORY}/install/setup.log
-" 2>&1 | tee -a ${LOG_LOCATION}
+%s/install/setup.log
+" "${INSTALL_DIRECTORY}" "${INSTALL_DIRECTORY}" 2>&1 | tee -a "${LOG_LOCATION}"
     exit 1
 }
 
@@ -78,30 +77,30 @@ set -e
 clear
 SECONDS=0
 NOW=$(date)
-printf "#### Mycodo installation began $NOW\n" 2>&1 | tee -a ${LOG_LOCATION}
+printf "#### Mycodo installation began %s\n" "${NOW}" 2>&1 | tee -a "${LOG_LOCATION}"
 
-${INSTALL_CMD} update-swap-size 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} update-apt 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} uninstall-apt-pip 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} update-packages 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} setup-virtualenv 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} update-pip3 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} update-pip3-packages 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} install-wiringpi 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} update-influxdb 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} update-influxdb-db-user 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} initialize 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} update-logrotate 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} ssl-certs-generate 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} update-mycodo-startup-script 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} compile-translations 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} update-cron 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} initialize 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} web-server-update 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} web-server-restart 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} web-server-connect 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} update-permissions 2>&1 | tee -a ${LOG_LOCATION}
-${INSTALL_CMD} restart-daemon 2>&1 | tee -a ${LOG_LOCATION}
+${INSTALL_CMD} update-swap-size 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} update-apt 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} uninstall-apt-pip 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} update-packages 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} setup-virtualenv 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} update-pip3 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} update-pip3-packages 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} install-wiringpi 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} update-influxdb 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} update-influxdb-db-user 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} initialize 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} update-logrotate 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} ssl-certs-generate 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} update-mycodo-startup-script 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} compile-translations 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} update-cron 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} initialize 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} web-server-update 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} web-server-restart 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} web-server-connect 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} update-permissions 2>&1 | tee -a "${LOG_LOCATION}"
+${INSTALL_CMD} restart-daemon 2>&1 | tee -a "${LOG_LOCATION}"
 
 trap : 0
 
@@ -112,10 +111,10 @@ if [[ -z ${IP} ]]; then
 fi
 
 CURRENT_DATE=$(date)
-printf "#### Mycodo Installer finished ${CURRENT_DATE}\n" 2>&1 | tee -a ${LOG_LOCATION}
+printf "#### Mycodo Installer finished %s\n" "${CURRENT_DATE}" 2>&1 | tee -a "${LOG_LOCATION}"
 
 DURATION=$SECONDS
-printf "#### Total install time: $((DURATION / 60)) minutes and $((DURATION % 60)) seconds\n" 2>&1 | tee -a ${LOG_LOCATION}
+printf "#### Total install time: %d minutes and %d seconds\n" "$((DURATION / 60))" "$((DURATION % 60))" 2>&1 | tee -a "${LOG_LOCATION}"
 
 printf "
 ************************************
@@ -123,8 +122,8 @@ printf "
 ************************************
 
 The full install log is located at:
-${INSTALL_DIRECTORY}/install/setup.log
+%s/install/setup.log
 
-Go to https://${IP}/, or whatever your Raspberry Pi's
+Go to https://%s/, or whatever your Raspberry Pi's
 IP address is, to create an admin user and log in.
-" 2>&1 | tee -a ${LOG_LOCATION}
+" "${INSTALL_DIRECTORY}" "${IP}" 2>&1 | tee -a "${LOG_LOCATION}"

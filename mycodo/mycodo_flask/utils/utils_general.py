@@ -361,6 +361,19 @@ def choices_units(units):
     return choices
 
 
+def choices_custom_controllers():
+    """ populate form multi-select choices from Input entries """
+    choices = []
+    dict_controllers = parse_controller_information()
+    list_controllers_sorted = generate_form_controller_list(dict_controllers)
+    for each_custom in list_controllers_sorted:
+        value = '{inp}'.format(inp=each_custom)
+        display = '{name}'.format(
+            name=dict_controllers[each_custom]['controller_name'])
+        choices.append({'value': value, 'item': display})
+    return choices
+
+
 def choices_inputs(inputs, dict_units, dict_measurements):
     """ populate form multi-select choices from Input entries """
     choices = []
@@ -416,6 +429,11 @@ def choices_controller_ids():
             id=each_trigger.id,
             name=each_trigger.name)
         choices.append({'value': each_trigger.unique_id, 'item': display})
+    for each_custom in CustomController.query.all():
+        display = '[Custom Controller {id:02d}] {name}'.format(
+            id=each_custom.id,
+            name=each_custom.name)
+        choices.append({'value': each_custom.unique_id, 'item': display})
     for each_lcd in LCD.query.all():
         display = '[LCD {id:02d}] {name}'.format(
             id=each_lcd.id,
@@ -460,12 +478,11 @@ def choices_tags(tags):
 
 
 def choices_lcd(inputs, maths, pids, outputs, dict_units, dict_measurements):
-    choices = []
-
-    # Display IP address
-    choices.append({'value': '0000,BLANK', 'item': 'Blank Line'})
-    choices.append({'value': '0000,IP', 'item': 'IP Address of Raspberry Pi'})
-    choices.append({'value': '0000,TEXT', 'item': 'Custom Text'})
+    choices = [
+        {'value': '0000,BLANK', 'item': 'Blank Line'},
+        {'value': '0000,IP', 'item': 'IP Address of Raspberry Pi'},
+        {'value': '0000,TEXT', 'item': 'Custom Text'}
+    ]
 
     # Inputs
     for each_input in inputs:

@@ -26,7 +26,7 @@ fi
 
 function on {
     if [ "$USBPORT" != "X" ]; then
-        /usr/local/sbin/hub-ctrl -h 0 -P ${USBPORT} -p 1
+        /usr/local/sbin/hub-ctrl -h 0 -P "${USBPORT}" -p 1
     fi
 
     /opt/vc/bin/tvservice --preferred
@@ -38,14 +38,14 @@ function on {
 
 function off {
     if [ "$USBPORT" != "X" ]; then
-        /usr/local/sbin/hub-ctrl -h 0 -P ${USBPORT} -p 0
+        /usr/local/sbin/hub-ctrl -h 0 -P "${USBPORT}" -p 0
     fi
 
     /opt/vc/bin/tvservice --off
 }
 
 function must_be_root {
-    if [ ${USER} != root ]; then
+    if [ "${USER}" != root ]; then
         echo "ERROR: Script must be executed as the root user"
         exit 1
     fi
