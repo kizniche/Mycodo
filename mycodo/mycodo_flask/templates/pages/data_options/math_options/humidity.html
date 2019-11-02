@@ -8,11 +8,11 @@
       <select class="form-control" id="dry_bulb_temperature" name="dry_bulb_temperature">
         <option value="">{{dict_translation['select_one']['title']}}</option>
       {% if choices_input or choices_math %}
-        {% for each_choice, value in choices_input.items() -%}
-        <option value="{{each_choice}}"{%- if each_math.dry_bulb_t_id == each_choice.split(',')[0] and each_math.dry_bulb_t_measure_id == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
+        {% for each_input_form in choices_input -%}
+        <option value="{{each_input_form['value']}}"{%- if each_math.dry_bulb_t_id == each_input_form['value'].split(',')[0] and each_math.dry_bulb_t_measure_id == each_input_form['value'].split(',')[1] %} selected{%- endif -%}>{{each_input_form['item']}}</option>
         {% endfor -%}
-        {% for each_choice, value in choices_math.items() -%}
-        <option value="{{each_choice}}"{%- if each_math.dry_bulb_t_id == each_choice.split(',')[0] and each_math.dry_bulb_t_measure_id == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
+        {% for each_math_form in choices_math -%}
+        <option value="{{each_math_form['value']}}"{%- if each_math.dry_bulb_t_id == each_math_form['value'].split(',')[0] and each_math.dry_bulb_t_measure_id == each_math_form['value'].split(',')[1] %} selected{%- endif -%}>{{each_math_form['item']}}</option>
         {% endfor -%}
       {% else %}
         <option value="">{{dict_translation['none_available']['title']}}</option>
@@ -26,11 +26,11 @@
       <select class="form-control" id="wet_bulb_temperature" name="wet_bulb_temperature">
         <option value="">{{dict_translation['select_one']['title']}}</option>
       {% if choices_input or choices_math %}
-        {% for each_choice, value in choices_input.items() -%}
-        <option value="{{each_choice}}"{%- if each_math.wet_bulb_t_id == each_choice.split(',')[0] and each_math.wet_bulb_t_measure_id == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
+        {% for each_input_form in choices_input -%}
+        <option value="{{each_input_form['value']}}"{%- if each_math.wet_bulb_t_id == each_input_form['value'].split(',')[0] and each_math.wet_bulb_t_measure_id == each_input_form['value'].split(',')[1] %} selected{%- endif -%}>{{each_input_form['item']}}</option>
         {% endfor -%}
-        {% for each_choice, value in choices_math.items() -%}
-        <option value="{{each_choice}}"{%- if each_math.wet_bulb_t_id == each_choice.split(',')[0] and each_math.wet_bulb_t_measure_id == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
+        {% for each_math_form in choices_math -%}
+        <option value="{{each_math_form['value']}}"{%- if each_math.wet_bulb_t_id == each_math_form['value'].split(',')[0] and each_math.wet_bulb_t_measure_id == each_math_form['value'].split(',')[1] %} selected{%- endif -%}>{{each_math_form['item']}}</option>
         {% endfor -%}
       {% else %}
         <option value="">{{dict_translation['none_available']['title']}}</option>
@@ -44,11 +44,11 @@
       <select class="form-control" id="pressure" name="pressure">
         <option value="">{{_('Disabled')}}</option>
       {% if choices_input or choices_math %}
-        {% for each_choice, value in choices_input.items() -%}
-        <option value="{{each_choice}}"{%- if each_math.pressure_pa_id == each_choice.split(',')[0] and each_math.pressure_pa_measure_id == each_choice.split(',')[1] %} selected{%- endif -%}>{{value}}</option>
+        {% for each_input_form in choices_input -%}
+        <option value="{{each_input_form['value']}}"{%- if each_math.pressure_pa_id == each_input_form['value'].split(',')[0] and each_math.pressure_pa_measure_id == each_input_form['value'].split(',')[1] %} selected{%- endif -%}>{{each_input_form['item']}}</option>
         {% endfor -%}
-        {% for each_choice, value in choices_math.items() -%}
-        <option value="{{each_choice}}"{%- if each_math.inputs and each_choice|string in each_math.inputs %} selected{%- endif -%}>{{value}}</option>
+        {% for each_math_form in choices_math -%}
+        <option value="{{each_math_form['value']}}"{%- if each_math.pressure_pa_id == each_math_form['value'].split(',')[0] and each_math.pressure_pa_measure_id == each_math_form['value'].split(',')[1] %} selected{%- endif -%}>{{each_math_form['item']}}</option>
         {% endfor -%}
       {% else %}
         <option value="">{{dict_translation['none_available']['title']}}</option>

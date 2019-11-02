@@ -30,14 +30,14 @@
       {{form_export_measurements.measurement.label(class_='control-label')}}
       <div>
         <select class="selectpicker" id="measurement" name="measurement">
-        {% for each_choice, value in input_choices.items() -%}
-          <option value="{{each_choice}}">{{value}}</option>
+        {% for each_input_form in choices_input -%}
+          <option value="{{each_input_form['value']}}">{{each_input_form['item']}}</option>
         {% endfor -%}
-        {% for each_choice, value in math_choices.items() -%}
-          <option value="{{each_choice}}">{{value}}</option>
+        {% for each_math_form in choices_math -%}
+          <option value="{{each_math_form['value']}}">{{each_math_form['item']}}</option>
         {% endfor -%}
-        {% for each_choice, value in output_choices.items()  -%}
-          <option value="{{each_choice}}">{{value}}</option>
+        {% for each_output_form in choices_output  -%}
+          <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
         {% endfor -%}
         </select>
       </div>

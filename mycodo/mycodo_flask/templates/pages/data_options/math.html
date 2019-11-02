@@ -109,8 +109,8 @@
                 and_(table_device_measurements.device_id == each_math.unique_id,
                      table_device_measurements.channel == 0)).first() -%}
     {%- if each_measurement -%}
-      {% for each_submit, each_display in choices_measurements_units.items() %}
-            <option value="{{each_submit}}"{% if each_submit == each_measurement.measurement + ',' + each_measurement.unit %} selected{% endif %}>{{each_display}}</option>
+      {% for each_measure_unit in choices_measurements_units %}
+            <option value="{{each_measure_unit['value']}}"{% if each_measure_unit['value'] == each_measurement.measurement + ',' + each_measurement.unit %} selected{% endif %}>{{each_measure_unit['item']}}</option>
       {% endfor %}
     {% endif %}
           </select>

@@ -81,8 +81,8 @@
           <select class="form-control" id="output_id" name="output_id" style="width: 100%;">
           {% if choices_output %}
             <option value="">{{dict_translation['select_one']['title']}}</option>
-            {% for each_choice, value in choices_output_pwm.items() -%}
-              <option value="{{each_choice}}" {% if each_dashboard.output_ids == each_choice %}selected{% endif %}>{{value}}</option>
+            {% for each_output_form in choices_output_pwm -%}
+              <option value="{{each_output_form['value']}}" {% if each_dashboard.output_ids == each_output_form['value'] %}selected{% endif %}>{{each_output_form['item']}}</option>
             {% endfor -%}
           {% else %}
             <option value="">{{dict_translation['none_available']['title']}}</option>

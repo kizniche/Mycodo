@@ -26,8 +26,8 @@
         {{form_add_measurement.units.label(class_='control-label')}}
         <div>
           <select class="form-control" id="units" name="units" multiple>
-            {% for each_unit, each_display in choices_units.items() %}
-            <option value="{{each_unit}}">{{each_display}}</option>
+            {% for each_unit_form in choices_units %}
+            <option value="{{each_unit_form['value']}}">{{each_unit_form['item']}}</option>
             {% endfor %}
           </select>
         </div>
@@ -78,8 +78,8 @@
         {{form_add_conversion.convert_unit_from.label(class_='control-label')}}
         <div>
           <select class="form-control" id="convert_unit_from" name="convert_unit_from">
-            {% for each_unit, each_display in choices_units.items() %}
-            <option value="{{each_unit}}">{{each_display}}</option>
+            {% for each_unit_form in choices_units %}
+            <option value="{{each_unit_form['value']}}">{{each_unit_form['item']}}</option>
             {% endfor %}
           </select>
         </div>
@@ -88,8 +88,8 @@
         {{form_add_conversion.convert_unit_to.label(class_='control-label')}}
         <div>
           <select class="form-control" id="convert_unit_to" name="convert_unit_to">
-            {% for each_unit, each_display in choices_units.items() %}
-            <option value="{{each_unit}}">{{each_display}}</option>
+            {% for each_unit_form in choices_units %}
+            <option value="{{each_unit_form['value']}}">{{each_unit_form['item']}}</option>
             {% endfor %}
           </select>
         </div>
@@ -136,11 +136,11 @@
           <td>{{form_mod_measurement.name(class_='form-control', value=each_measurement.name)}}</td>
           <td>
             <select class="form-control" id="units" name="units" multiple>
-              {% if not choices_units.items() %}
+              {% if not choices_units %}
               <option value="">{{dict_translation['none_available']['title']}}</option>
               {% else %}
-                {% for each_unit, each_display in choices_units.items() %}
-              <option value="{{each_unit}}"{% if each_unit in each_measurement.units.split(',') %} selected{% endif %}>{{each_display}}</option>
+                {% for each_unit_form in choices_units %}
+              <option value="{{each_unit_form['value']}}"{% if each_unit_form['value'] in each_measurement.units.split(',') %} selected{% endif %}>{{each_unit_form['item']}}</option>
                 {% endfor %}
               {% endif %}
             </select>
@@ -243,26 +243,26 @@
           {% if not each_conversion.protected %}
             <select class="form-control" id="convert_unit_from" name="convert_unit_from">
               <option value=""></option>
-              {% for each_unit, each_display in choices_units.items() %}
-              <option value="{{each_unit}}"{% if each_unit == each_conversion.convert_unit_from %} selected{% endif %}>{{each_display}}</option>
+              {% for each_unit_form in choices_units %}
+              <option value="{{each_unit_form['value']}}"{% if each_unit_form['value'] == each_conversion.convert_unit_from %} selected{% endif %}>{{each_unit_form['item']}}</option>
               {% endfor %}
             </select>
           {% else %}
-            {% for each_unit, each_display in choices_units.items() if each_unit == each_conversion.convert_unit_from %}
-            {{each_display}}
+            {% for each_unit_form in choices_units if each_unit == each_conversion.convert_unit_from %}
+            {{each_unit_form['item']}}
             {% endfor %}
           {% endif %}
           <td>
           {% if not each_conversion.protected %}
             <select class="form-control" id="convert_unit_to" name="convert_unit_to">
               <option value=""></option>
-              {% for each_unit, each_display in choices_units.items() %}
-              <option value="{{each_unit}}"{% if each_unit == each_conversion.convert_unit_to %} selected{% endif %}>{{each_display}}</option>
+              {% for each_unit_form in choices_units %}
+              <option value="{{each_unit_form['value']}}"{% if each_unit_form['value'] == each_conversion.convert_unit_to %} selected{% endif %}>{{each_unit_form['item']}}</option>
               {% endfor %}
             </select>
           {% else %}
-            {% for each_unit, each_display in choices_units.items() if each_unit == each_conversion.convert_unit_to %}
-            {{each_display}}
+            {% for each_unit_form in choices_units if each_unit == each_conversion.convert_unit_to %}
+            {{each_unit_form['item']}}
             {% endfor %}
           {% endif %}
           </td>

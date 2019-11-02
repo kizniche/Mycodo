@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-01 17:30-0400\n"
+"POT-Creation-Date: 2019-11-01 19:22-0400\n"
 "PO-Revision-Date: 2018-08-21 15:03-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: it\n"
@@ -24,7 +24,6 @@ msgstr "Aggiungi elemento dashboard"
 
 #: config.py:51
 #: mycodo_flask/templates/pages/dashboard_options/add_graph.html:10
-#: mycodo_flask/templates/pages/test.html:5
 msgid "Graph"
 msgstr "Grafico"
 
@@ -748,9 +747,9 @@ msgid "Energy Usage"
 msgstr "Uso di energia"
 
 #: config_translations.py:67 mycodo_flask/templates/flash_messages.html:33
-#: mycodo_flask/templates/pages/dashboard.html:489
-#: mycodo_flask/templates/pages/dashboard.html:495
-#: mycodo_flask/templates/pages/dashboard.html:543
+#: mycodo_flask/templates/pages/dashboard.html:494
+#: mycodo_flask/templates/pages/dashboard.html:500
+#: mycodo_flask/templates/pages/dashboard.html:548
 msgid "Error"
 msgstr "Errore"
 
@@ -863,11 +862,11 @@ msgstr "Nessuno disponibile"
 msgid "Note"
 msgstr "Nota"
 
-#: config_translations.py:109 mycodo_flask/templates/pages/dashboard.html:478
+#: config_translations.py:109 mycodo_flask/templates/pages/dashboard.html:483
 msgid "Off"
 msgstr "via"
 
-#: config_translations.py:111 mycodo_flask/templates/pages/dashboard.html:476
+#: config_translations.py:111 mycodo_flask/templates/pages/dashboard.html:481
 msgid "On"
 msgstr "Sopra"
 
@@ -2579,8 +2578,8 @@ msgstr "Stato del relè"
 #: mycodo_flask/templates/pages/dashboard_options/mod_output.html:104
 #: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:60
 #: mycodo_flask/templates/pages/method-build.html:294
-#: mycodo_flask/templates/pages/output.html:253
-#: mycodo_flask/templates/pages/output.html:289
+#: mycodo_flask/templates/pages/output.html:258
+#: mycodo_flask/templates/pages/output.html:294
 msgid "Turn On"
 msgstr "Accendere"
 
@@ -2736,7 +2735,7 @@ msgid "Import Notes"
 msgstr "Note di importazione"
 
 #: mycodo_flask/forms/forms_output.py:34
-#: mycodo_flask/templates/pages/output.html:155
+#: mycodo_flask/templates/pages/output.html:160
 msgid "Quantity"
 msgstr "Quantità"
 
@@ -3415,8 +3414,8 @@ msgid "Cannot Check Daemon Status"
 msgstr "Impossibile controllare lo stato del daemon"
 
 #: mycodo_flask/templates/layout.html:124
-#: mycodo_flask/templates/pages/dashboard.html:394
-#: mycodo_flask/templates/pages/output.html:122
+#: mycodo_flask/templates/pages/dashboard.html:399
+#: mycodo_flask/templates/pages/output.html:127
 msgid "No Connection"
 msgstr "Nessuna connessione"
 
@@ -3770,29 +3769,29 @@ msgstr "Ultimo Timelapse"
 msgid "Last Still"
 msgstr "Ultima foto"
 
-#: mycodo_flask/templates/pages/dashboard.html:381
-#: mycodo_flask/templates/pages/dashboard.html:383
+#: mycodo_flask/templates/pages/dashboard.html:386
+#: mycodo_flask/templates/pages/dashboard.html:388
 #: mycodo_flask/templates/pages/function_options/conditional.html:23
 #: mycodo_flask/templates/pages/function_options/custom_controller.html:25
 #: mycodo_flask/templates/pages/function_options/pid.html:26
 #: mycodo_flask/templates/pages/function_options/trigger.html:24
 #: mycodo_flask/templates/pages/lcd.html:58
-#: mycodo_flask/templates/pages/output.html:106
-#: mycodo_flask/templates/pages/output.html:108
+#: mycodo_flask/templates/pages/output.html:111
+#: mycodo_flask/templates/pages/output.html:113
 msgid "Active"
 msgstr "Attivo"
 
-#: mycodo_flask/templates/pages/dashboard.html:388
+#: mycodo_flask/templates/pages/dashboard.html:393
 #: mycodo_flask/templates/pages/function_options/conditional.html:24
 #: mycodo_flask/templates/pages/function_options/custom_controller.html:26
 #: mycodo_flask/templates/pages/function_options/pid.html:29
 #: mycodo_flask/templates/pages/function_options/trigger.html:25
 #: mycodo_flask/templates/pages/lcd.html:59
-#: mycodo_flask/templates/pages/output.html:113
+#: mycodo_flask/templates/pages/output.html:118
 msgid "Inactive"
 msgstr "Inattivo"
 
-#: mycodo_flask/templates/pages/dashboard.html:524
+#: mycodo_flask/templates/pages/dashboard.html:529
 msgid "Value"
 msgstr "Valore"
 
@@ -3967,7 +3966,7 @@ msgstr "Non esistono metodi salvati"
 msgid "Saved Methods"
 msgstr "Metodi salvati"
 
-#: mycodo_flask/templates/pages/output.html:146
+#: mycodo_flask/templates/pages/output.html:151
 msgid ""
 "Output devices enable Mycodo to manipulate things through the use of "
 "outputs (wired and wireless), PWM signals, and executing commands. When "
@@ -3980,11 +3979,11 @@ msgstr ""
 "dispositivi di output possono essere utilizzati per la regolazione del "
 "feedback."
 
-#: mycodo_flask/templates/pages/output.html:190
+#: mycodo_flask/templates/pages/output.html:195
 msgid "Unconfigured"
 msgstr "Non configurato"
 
-#: mycodo_flask/templates/pages/output.html:271
+#: mycodo_flask/templates/pages/output.html:276
 msgid "Pump Volume"
 msgstr "Volume della pompa"
 

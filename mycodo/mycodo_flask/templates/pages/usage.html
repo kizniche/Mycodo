@@ -45,12 +45,12 @@
         <div>
           <select class="form-control form-tooltip form-dropdown" id="energy_usage_select" name="energy_usage_select" style="width: 100%;" title="" data-original-title="{{_('Select a measurement with the unit:') + ' ' +_('Amps')}}">
             <option value="">{{dict_translation['select_one']['title']}}</option>
-          {% for each_choice, value in choices_input.items() -%}
-            <option value="{{each_choice}}">{{value}}</option>
-          {% endfor -%}
-          {% for each_choice, value in choices_math.items() -%}
-            <option value="{{each_choice}}">{{value}}</option>
-          {% endfor -%}
+            {% for each_input_form in choices_input -%}
+            <option value="{{each_input_form['value']}}">{{each_input_form['item']}}</option>
+            {% endfor -%}
+            {% for each_math_form in choices_math -%}
+            <option value="{{each_math_form['value']}}">{{each_math_form['item']}}</option>
+            {% endfor -%}
           </select>
         </div>
       </div>
@@ -100,11 +100,11 @@
           <div>
             <select class="form-control form-tooltip form-dropdown" id="selection_device_measure_ids" name="selection_device_measure_ids" style="width: 100%;" title="" data-original-title="{{_('Select a measurement with the unit:') + ' ' +_('Amps')}}">
               <option value="">None Selected</option>
-            {% for each_choice, value in choices_input.items() -%}
-              <option value="{{each_choice}}"{% if each_choice == each_energy.device_id + ',' + each_energy.measurement_id %} selected{% endif %}>{{value}}</option>
+            {% for each_input_form in choices_input -%}
+              <option value="{{each_input_form['value']}}"{% if each_input_form['value'] == each_energy.device_id + ',' + each_energy.measurement_id %} selected{% endif %}>{{each_input_form['item']}}</option>
             {% endfor -%}
-            {% for each_choice, value in choices_math.items() -%}
-              <option value="{{each_choice}}"{% if each_choice == each_energy.device_id + ',' + each_energy.measurement_id %} selected{% endif %}>{{value}}</option>
+            {% for each_math_form in choices_math -%}
+              <option value="{{each_math_form['value']}}"{% if each_math_form['value'] == each_energy.device_id + ',' + each_energy.measurement_id %} selected{% endif %}>{{each_math_form['item']}}</option>
             {% endfor -%}
             </select>
           </div>

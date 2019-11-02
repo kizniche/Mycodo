@@ -48,8 +48,8 @@
         <select class="form-control" id="camera_id" name="camera_id" style="width: 100%;">
           <option value="">{{dict_translation['select_one']['title']}}</option>
         {% if choices_camera %}
-          {% for each_choice, value in choices_camera.items() -%}
-          <option value="{{each_choice}}">{{value}}</option>
+          {% for each_camera_form in choices_camera -%}
+          <option value="{{each_camera_form['value']}}">{{each_camera_form['item']}}</option>
           {% endfor -%}
         {% else %}
           <option value="">{{dict_translation['none_available']['title']}}</option>

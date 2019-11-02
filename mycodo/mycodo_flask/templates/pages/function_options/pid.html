@@ -76,11 +76,11 @@
         <div>
           <select class="form-control form-tooltip form-dropdown" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
             <option value="">None Selected</option>
-          {% for each_choice, value in choices_input.items() -%}
-            <option value="{{each_choice}}"{% if each_pid.measurement == each_choice %} selected{% endif %}>{{value}}</option>
+          {% for each_input_form in choices_input -%}
+            <option value="{{each_input_form['value']}}"{% if each_pid.measurement == each_input_form['value'] %} selected{% endif %}>{{each_input_form['item']}}</option>
           {% endfor -%}
-          {% for each_choice, value in choices_math.items() -%}
-            <option value="{{each_choice}}"{% if each_pid.measurement == each_choice %} selected{% endif %}>{{value}}</option>
+          {% for each_math_form in choices_math -%}
+            <option value="{{each_math_form['value']}}"{% if each_pid.measurement == each_math_form['value'] %} selected{% endif %}>{{each_math_form['item']}}</option>
           {% endfor -%}
           </select>
         </div>
@@ -262,12 +262,11 @@
         </div>
         <select class="form-control form-tooltip form-dropdown" id="setpoint_tracking_input_math_id" name="setpoint_tracking_input_math_id" title="" data-original-title="{{_('Select one for calculating the setpoint. When enabled, measurements override the PID setpoint.')}}">
           <option value="">{{_('Select One')}}</option>
-
-          {% for each_choice, value in choices_input.items() -%}
-            <option value="{{each_choice}}"{% if each_pid.setpoint_tracking_id == each_choice %} selected{% endif %}>{{value}}</option>
+          {% for each_input_form in choices_input -%}
+            <option value="{{each_input_form['value']}}"{% if each_pid.setpoint_tracking_id == each_input_form['value'] %} selected{% endif %}>{{each_input_form['item']}}</option>
           {% endfor -%}
-          {% for each_choice, value in choices_math.items() -%}
-            <option value="{{each_choice}}"{% if each_pid.setpoint_tracking_id == each_choice %} selected{% endif %}>{{value}}</option>
+          {% for each_math_form in choices_math -%}
+            <option value="{{each_math_form['value']}}"{% if each_pid.setpoint_tracking_id == each_math_form['value'] %} selected{% endif %}>{{each_math_form['item']}}</option>
           {% endfor -%}
         </select>
       </div>

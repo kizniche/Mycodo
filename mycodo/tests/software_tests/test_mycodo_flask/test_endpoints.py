@@ -110,18 +110,18 @@ def test_api_when_not_logged_in(testapp):
     """
     print("\nTest: test_api_when_not_logged_in")
     routes = [
-        'choices/controllers',
-        'choices/inputs/measurements',
-        'choices/output/devices',
-        'choices/output/measurements',
-        'choices/pid/measurements',
-        'settings/device_measurements',
-        'settings/inputs',
-        'settings/measurements',
-        'settings/outputs',
-        'settings/pids',
-        'settings/units',
-        'settings/users'
+        'choices/controllers/',
+        'choices/inputs/measurements/',
+        'choices/output/devices/',
+        'choices/output/measurements/',
+        'choices/pid/measurements/',
+        'settings/device_measurements/',
+        'settings/inputs/',
+        'settings/measurements/',
+        'settings/outputs/',
+        'settings/pids/',
+        'settings/units/',
+        'settings/users/'
     ]
     for route in routes:
         returns_401_unauthorized(testapp=testapp, endpoint='/api/{add}'.format(add=route))
@@ -203,7 +203,7 @@ def test_api_logged_in_as_admin(_, testapp):
 
     # Test all endpoints
     routes = [
-        ('choices/controllers', '"choices controllers":'),
+        ('choices/controllers', 'choices controllers'),
         ('choices/inputs/measurements', '"choices inputs measurements":'),
         ('choices/outputs/devices', '"choices outputs devices":'),
         ('choices/outputs/measurements', '"choices outputs measurements":'),
@@ -218,7 +218,7 @@ def test_api_logged_in_as_admin(_, testapp):
     ]
 
     for index, route in enumerate(routes):
-        print("test_routes_logged_in_as_admin: Test Route ({}/{}): testapp.get('/api/{}').maybe_follow()".format(
+        print("test_routes_logged_in_as_admin: Test Route ({}/{}): testapp.get('/api/{}')".format(
             index + 1, len(routes), route[0]))
         response = testapp.get(
             '/api/{add}'.format(add=route[0]),

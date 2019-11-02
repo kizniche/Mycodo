@@ -71,8 +71,8 @@
         <select class="form-control" id="output_id" name="output_id" style="width: 100%;">
         {% if choices_output %}
           <option value="">{{dict_translation['select_one']['title']}}</option>
-          {% for each_choice, value in choices_output.items() -%}
-          <option value="{{each_choice}}">{{value}}</option>
+          {% for each_output_form in choices_output -%}
+          <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
           {% endfor -%}
         {% else %}
           <option value="">{{dict_translation['none_available']['title']}}</option>

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-01 17:30-0400\n"
+"POT-Creation-Date: 2019-11-01 19:22-0400\n"
 "PO-Revision-Date: 2018-08-10 15:59-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -24,7 +24,6 @@ msgstr "添加仪表板元素"
 
 #: config.py:51
 #: mycodo_flask/templates/pages/dashboard_options/add_graph.html:10
-#: mycodo_flask/templates/pages/test.html:5
 msgid "Graph"
 msgstr "图形"
 
@@ -748,9 +747,9 @@ msgid "Energy Usage"
 msgstr "能源使用"
 
 #: config_translations.py:67 mycodo_flask/templates/flash_messages.html:33
-#: mycodo_flask/templates/pages/dashboard.html:489
-#: mycodo_flask/templates/pages/dashboard.html:495
-#: mycodo_flask/templates/pages/dashboard.html:543
+#: mycodo_flask/templates/pages/dashboard.html:494
+#: mycodo_flask/templates/pages/dashboard.html:500
+#: mycodo_flask/templates/pages/dashboard.html:548
 msgid "Error"
 msgstr "错误"
 
@@ -863,11 +862,11 @@ msgstr "没有可用"
 msgid "Note"
 msgstr "注意"
 
-#: config_translations.py:109 mycodo_flask/templates/pages/dashboard.html:478
+#: config_translations.py:109 mycodo_flask/templates/pages/dashboard.html:483
 msgid "Off"
 msgstr "离"
 
-#: config_translations.py:111 mycodo_flask/templates/pages/dashboard.html:476
+#: config_translations.py:111 mycodo_flask/templates/pages/dashboard.html:481
 msgid "On"
 msgstr "上"
 
@@ -2520,8 +2519,8 @@ msgstr "继电器状态"
 #: mycodo_flask/templates/pages/dashboard_options/mod_output.html:104
 #: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:60
 #: mycodo_flask/templates/pages/method-build.html:294
-#: mycodo_flask/templates/pages/output.html:253
-#: mycodo_flask/templates/pages/output.html:289
+#: mycodo_flask/templates/pages/output.html:258
+#: mycodo_flask/templates/pages/output.html:294
 msgid "Turn On"
 msgstr "打开"
 
@@ -2677,7 +2676,7 @@ msgid "Import Notes"
 msgstr "导入便笺"
 
 #: mycodo_flask/forms/forms_output.py:34
-#: mycodo_flask/templates/pages/output.html:155
+#: mycodo_flask/templates/pages/output.html:160
 msgid "Quantity"
 msgstr "数量"
 
@@ -3354,8 +3353,8 @@ msgid "Cannot Check Daemon Status"
 msgstr "无法检查守护程序状态"
 
 #: mycodo_flask/templates/layout.html:124
-#: mycodo_flask/templates/pages/dashboard.html:394
-#: mycodo_flask/templates/pages/output.html:122
+#: mycodo_flask/templates/pages/dashboard.html:399
+#: mycodo_flask/templates/pages/output.html:127
 msgid "No Connection"
 msgstr "无连接"
 
@@ -3664,29 +3663,29 @@ msgstr "最后一次游戏中"
 msgid "Last Still"
 msgstr "最后还是"
 
-#: mycodo_flask/templates/pages/dashboard.html:381
-#: mycodo_flask/templates/pages/dashboard.html:383
+#: mycodo_flask/templates/pages/dashboard.html:386
+#: mycodo_flask/templates/pages/dashboard.html:388
 #: mycodo_flask/templates/pages/function_options/conditional.html:23
 #: mycodo_flask/templates/pages/function_options/custom_controller.html:25
 #: mycodo_flask/templates/pages/function_options/pid.html:26
 #: mycodo_flask/templates/pages/function_options/trigger.html:24
 #: mycodo_flask/templates/pages/lcd.html:58
-#: mycodo_flask/templates/pages/output.html:106
-#: mycodo_flask/templates/pages/output.html:108
+#: mycodo_flask/templates/pages/output.html:111
+#: mycodo_flask/templates/pages/output.html:113
 msgid "Active"
 msgstr "活性"
 
-#: mycodo_flask/templates/pages/dashboard.html:388
+#: mycodo_flask/templates/pages/dashboard.html:393
 #: mycodo_flask/templates/pages/function_options/conditional.html:24
 #: mycodo_flask/templates/pages/function_options/custom_controller.html:26
 #: mycodo_flask/templates/pages/function_options/pid.html:29
 #: mycodo_flask/templates/pages/function_options/trigger.html:25
 #: mycodo_flask/templates/pages/lcd.html:59
-#: mycodo_flask/templates/pages/output.html:113
+#: mycodo_flask/templates/pages/output.html:118
 msgid "Inactive"
 msgstr "待用"
 
-#: mycodo_flask/templates/pages/dashboard.html:524
+#: mycodo_flask/templates/pages/dashboard.html:529
 msgid "Value"
 msgstr "值"
 
@@ -3847,7 +3846,7 @@ msgstr "没有保存的方法存在"
 msgid "Saved Methods"
 msgstr "保存的方法"
 
-#: mycodo_flask/templates/pages/output.html:146
+#: mycodo_flask/templates/pages/output.html:151
 msgid ""
 "Output devices enable Mycodo to manipulate things through the use of "
 "outputs (wired and wireless), PWM signals, and executing commands. When "
@@ -3855,11 +3854,11 @@ msgid ""
 " feedback regulation."
 msgstr "输出设备使Mycodo能够通过使用输出（有线和无线），PWM信号和执行命令来操纵事物。当链接到带有输入的PID控制器时，输出设备可用于反馈调节。"
 
-#: mycodo_flask/templates/pages/output.html:190
+#: mycodo_flask/templates/pages/output.html:195
 msgid "Unconfigured"
 msgstr "未配置"
 
-#: mycodo_flask/templates/pages/output.html:271
+#: mycodo_flask/templates/pages/output.html:276
 msgid "Pump Volume"
 msgstr "泵容量"
 

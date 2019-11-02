@@ -3,14 +3,14 @@
   <div>
     <select class="form-control form-tooltip form-dropdown" id="measurement" name="measurement" style="width: 100%;" title="" data-original-title="{{_('Select the measurement to use as the input')}}">
         <option value="">{{dict_translation['select_one']['title']}}</option>
-      {% for each_choice, value in choices_input.items() if each_choice.split(',')[1] != 'edge' -%}
-        <option value="{{each_choice}}"{% if each_condition.measurement == each_choice %} selected{% endif %}>{{value}}</option>
+      {% for each_input_form in choices_input if each_input_form['value'].split(',')[1] != 'edge' -%}
+        <option value="{{each_input_form['value']}}"{% if each_condition.measurement == each_input_form['value'] %} selected{% endif %}>{{each_input_form['item']}}</option>
       {% endfor -%}
-      {% for each_choice, value in choices_math.items() -%}
-        <option value="{{each_choice}}"{% if each_condition.measurement == each_choice %} selected{% endif %}>{{value}}</option>
+      {% for each_math_form in choices_math -%}
+        <option value="{{each_math_form['value']}}"{% if each_condition.measurement == each_math_form['value'] %} selected{% endif %}>{{each_math_form['item']}}</option>
       {% endfor -%}
-      {% for each_choice, value in choices_pid.items() -%}
-        <option value="{{each_choice}}"{% if each_condition.measurement == each_choice %} selected{% endif %}>{{value}}</option>
+      {% for each_pid_form in choices_pid -%}
+        <option value="{{each_pid_form['value']}}"{% if each_condition.measurement == each_pid_form['value'] %} selected{% endif %}>{{each_pid_form['item']}}</option>
       {% endfor -%}
       </select>
   </div>

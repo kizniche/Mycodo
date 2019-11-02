@@ -422,11 +422,11 @@ def page_export():
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
-    output_choices = utils_general.choices_outputs(
+    choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
-    input_choices = utils_general.choices_inputs(
+    choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
-    math_choices = utils_general.choices_maths(
+    choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
 
     if request.method == 'POST':
@@ -473,9 +473,9 @@ def page_export():
                            form_export_settings=form_export_settings,
                            form_import_influxdb=form_import_influxdb,
                            form_import_settings=form_import_settings,
-                           output_choices=output_choices,
-                           input_choices=input_choices,
-                           math_choices=math_choices)
+                           choices_output=choices_output,
+                           choices_input=choices_input,
+                           choices_math=choices_math)
 
 
 @blueprint.route('/dashboard', methods=('GET', 'POST'))
@@ -611,8 +611,7 @@ def page_dashboard():
         math, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
-    choices_output_devices = utils_general.choices_output_devices(
-        output, dict_units, dict_measurements)
+    choices_output_devices = utils_general.choices_output_devices(output)
     choices_output_pwm = utils_general.choices_outputs_pwm(
         output, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
@@ -624,18 +623,23 @@ def page_dashboard():
         device_measurements_dict[meas.unique_id] = meas
 
     # Add multi-select values as form choices, for validation
-    form_graph.math_ids.choices = []
-    form_graph.pid_ids.choices = []
-    form_graph.output_ids.choices = []
     form_graph.input_ids.choices = []
-    for key, value in choices_math.items():
-        form_graph.math_ids.choices.append((key, value))
-    for key, value in choices_pid.items():
-        form_graph.pid_ids.choices.append((key, value))
-    for key, value in choices_output.items():
-        form_graph.output_ids.choices.append((key, value))
-    for key, value in choices_input.items():
-        form_graph.input_ids.choices.append((key, value))
+    form_graph.math_ids.choices = []
+    form_graph.output_ids.choices = []
+    form_graph.pid_ids.choices = []
+
+    for each_input in choices_input:
+        form_graph.input_ids.choices.append(
+            (each_input['value'], each_input['item']))
+    for each_math in choices_math:
+        form_graph.math_ids.choices.append(
+            (each_math['value'], each_math['item']))
+    for each_output in choices_output:
+        form_graph.output_ids.choices.append(
+            (each_output['value'], each_output['item']))
+    for each_pid in choices_pid:
+        form_graph.pid_ids.choices.append(
+            (each_pid['value'], each_pid['item']))
 
     # Generate dictionary of custom colors for each graph
     colors_graph = dict_custom_colors()
@@ -767,15 +771,15 @@ def page_graph_async():
     use_unit = utils_general.use_unit_generate(
         device_measurements, input_dev, output, math)
 
-    input_choices = utils_general.choices_inputs(
+    choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
-    math_choices = utils_general.choices_maths(
+    choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
-    output_choices = utils_general.choices_outputs(
+    choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
-    pid_choices = utils_general.choices_pids(
+    choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
-    tag_choices = utils_general.choices_tags(tag)
+    choices_tag = utils_general.choices_tags(tag)
 
     selected_ids_measures = []
     start_time_epoch = 0
@@ -835,11 +839,11 @@ def page_graph_async():
                            output=output,
                            pid=pid,
                            tag=tag,
-                           input_choices=input_choices,
-                           math_choices=math_choices,
-                           output_choices=output_choices,
-                           pid_choices=pid_choices,
-                           tag_choices=tag_choices,
+                           choices_input=choices_input,
+                           choices_math=choices_math,
+                           choices_output=choices_output,
+                           choices_pid=choices_pid,
+                           choices_tag=choices_tag,
                            selected_ids_measures=selected_ids_measures,
                            y_axes=y_axes)
 

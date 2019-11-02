@@ -139,8 +139,6 @@ class Outputs(Resource):
             else:
                 return {'message': 'Insufficient payload'}, 460
 
-            logger.error("TEST01: {}".format(return_))
-
             return return_handler(return_)
         except Exception:
             abort(500,

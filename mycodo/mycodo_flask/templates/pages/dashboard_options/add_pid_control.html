@@ -77,8 +77,8 @@
         <select class="form-control" id="pid_id" name="pid_id" style="width: 100%;">
         {% if pid %}
           <option value="">{{dict_translation['select_one']['title']}}</option>
-          {% for each_pid in pid -%}
-          <option value="{{each_pid.unique_id}}">[{{'%02d' % each_pid.id}}] {{each_pid.name}}</option>
+          {% for each_pid_form in choices_pid -%}
+          <option value="{{each_pid_form['value']}}">{{each_pid_form['item']}}</option>
           {% endfor -%}
         {% else %}
           <option value="">{{dict_translation['none_available']['title']}}</option>

@@ -60,8 +60,8 @@
       <div>
         <select class="form-control btn-sm" id="input_ids" name="input_ids" style="width: 100%;" size="{{choices_input|length}}" multiple>
         {% if choices_input %}
-          {% for each_choice, value in choices_input.items() -%}
-          <option value="{{each_choice}}">{{value}}</option>
+          {% for each_input_form in choices_input -%}
+          <option value="{{each_input_form['value']}}">{{each_input_form['item']}}</option>
           {% endfor -%}
         {% else %}
           <option value="">{{dict_translation['none_available']['title']}}</option>
@@ -74,8 +74,8 @@
       <div>
         <select class="form-control btn-sm" id="math_ids" name="math_ids" style="width: 100%;" size="{{choices_math|length}}" multiple>
         {% if choices_math %}
-          {% for each_choice, value in choices_math.items() -%}
-          <option value="{{each_choice}}">{{value}}</option>
+          {% for each_math_form in choices_math -%}
+          <option value="{{each_math_form['value']}}">{{each_math_form['item']}}</option>
           {% endfor -%}
         {% else %}
           <option value="">{{dict_translation['none_available']['title']}}</option>
@@ -88,8 +88,8 @@
       <div>
         <select class="form-control btn-sm" id="output_ids" name="output_ids" style="width: 100%;" size="{{choices_output|length}}" multiple>
         {% if choices_output %}
-          {% for each_choice, value in choices_output.items() -%}
-          <option value="{{each_choice}}">{{value}}</option>
+          {% for each_output_form in choices_output -%}
+          <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
           {% endfor -%}
         {% else %}
           <option value="">{{dict_translation['none_available']['title']}}</option>
@@ -102,8 +102,8 @@
       <div>
         <select class="form-control btn-sm" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{choices_pid|length}}" multiple>
         {% if choices_pid %}
-          {% for each_choice, value in choices_pid.items() -%}
-          <option value="{{each_choice}}">{{value}}</option>
+          {% for each_pid_form in choices_pid -%}
+          <option value="{{each_pid_form['value']}}">{{each_pid_form['item']}}</option>
           {% endfor -%}
         {% else %}
           <option value="">{{dict_translation['none_available']['title']}}</option>
@@ -116,8 +116,8 @@
       <div>
         <select class="form-control btn-sm" id="note_tag_ids" name="note_tag_ids" style="width: 100%;" size="{{choices_note_tag|length}}" multiple>
         {% if choices_note_tag %}
-          {% for each_choice, value in choices_note_tag.items() -%}
-          <option value="{{each_choice}}">{{value}}</option>
+          {% for each_tag_form in choices_tag -%}
+          <option value="{{each_tag_form['value']}}">{{each_tag_form['item']}}</option>
           {% endfor -%}
         {% else %}
           <option value="">{{dict_translation['none_available']['title']}}</option>

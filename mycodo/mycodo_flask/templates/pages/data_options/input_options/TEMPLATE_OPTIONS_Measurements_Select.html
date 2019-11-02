@@ -46,8 +46,8 @@
     <div>
       <select class="form-control" id="select_measurement_unit" name="select_measurement_unit">
         <option value="">{{dict_translation['select_one']['title']}}</option>
-        {% for each_submit, each_display in choices_measurements_units.items() %}
-        <option value="{{each_submit}}"{% if each_submit == each_measurement.measurement + ',' + each_measurement.unit %} selected{% endif %}>{{each_display}}</option>
+        {% for each_measure_unit in choices_measurements_units %}
+        <option value="{{each_measure_unit['value']}}"{% if each_measure_unit['value'] == each_measurement.measurement + ',' + each_measurement.unit %} selected{% endif %}>{{each_measure_unit['item']}}</option>
         {% endfor %}
       </select>
     </div>

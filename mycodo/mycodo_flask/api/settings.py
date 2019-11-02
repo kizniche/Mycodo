@@ -247,7 +247,7 @@ user_list_fields = ns_settings.model('User Settings Fields List', {
 })
 
 
-@ns_settings.route('/device_measurements/')
+@ns_settings.route('/device_measurements')
 @ns_settings.doc(security='apikey', responses=default_responses)
 class SettingsDeviceMeasurements(Resource):
     """Interacts with Measurement settings in the SQL database"""
@@ -330,7 +330,7 @@ class SettingsDeviceMeasurementsDeviceID(Resource):
                   error=traceback.format_exc())
 
 
-@ns_settings.route('/inputs/')
+@ns_settings.route('/inputs')
 @ns_settings.doc(security='apikey', responses=default_responses)
 class SettingsInputs(Resource):
     """Interacts with Input settings in the SQL database"""
@@ -378,7 +378,7 @@ class SettingsInputsUniqueID(Resource):
                   error=traceback.format_exc())
 
 
-@ns_settings.route('/measurements/')
+@ns_settings.route('/measurements')
 @ns_settings.doc(security='apikey', responses=default_responses)
 class SettingsMeasurements(Resource):
     """Interacts with Measurement settings in the SQL database"""
@@ -427,7 +427,7 @@ class SettingsMeasurementsUniqueID(Resource):
                   error=traceback.format_exc())
 
 
-@ns_settings.route('/outputs/')
+@ns_settings.route('/outputs')
 @ns_settings.doc(security='apikey', responses=default_responses)
 class SettingsOutputs(Resource):
     """Interacts with output settings in the SQL database"""
@@ -475,7 +475,7 @@ class SettingsOutputsUniqueID(Resource):
                   error=traceback.format_exc())
 
 
-@ns_settings.route('/pids/')
+@ns_settings.route('/pids')
 @ns_settings.doc(security='apikey', responses=default_responses)
 class SettingsPIDs(Resource):
     """Interacts with PID settings in the SQL database"""
@@ -523,7 +523,7 @@ class SettingsPIDsUniqueID(Resource):
                   error=traceback.format_exc())
 
 
-@ns_settings.route('/units/')
+@ns_settings.route('/units')
 @ns_settings.doc(security='apikey', responses=default_responses)
 class SettingsUnits(Resource):
     """Interacts with Unit settings in the SQL database"""
@@ -571,7 +571,7 @@ class SettingsUnitsUniqueID(Resource):
                   error=traceback.format_exc())
 
 
-@ns_settings.route('/users/')
+@ns_settings.route('/users')
 @ns_settings.doc(security='apikey', responses=default_responses)
 class SettingsUsers(Resource):
     """Interacts with User settings in the SQL database"""

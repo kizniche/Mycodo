@@ -314,7 +314,7 @@ UNITS = {
         'name': lazy_gettext('Percent'),
         'unit': '%'},
     'pH': {
-        'name': lazy_gettext('pH'),
+        'name': lazy_gettext('Ion Concentration'),
         'unit': 'pH'},
     'pid_value': {
         'name': lazy_gettext('PID values'),

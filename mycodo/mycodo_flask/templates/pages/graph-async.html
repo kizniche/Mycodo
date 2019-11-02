@@ -68,21 +68,21 @@
     </div>
     <div class="row">
       <div class="col-auto">
-        <select class="form-control" id="selected_measure" name="selected_measure" size="{{input_choices|length + math_choices|length + output_choices|length + pid_choices|length + tag_choices|length}}" multiple>
-        {% for each_choice, value in input_choices.items() -%}
-          <option value="{{each_choice}},input"{% if each_choice + ',input' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+        <select class="form-control" id="selected_measure" name="selected_measure" size="{{choices_input|length + choices_math|length + choices_output|length + choices_pid|length + choices_tag|length}}" multiple>
+        {% for each_input_form in choices_input -%}
+          <option value="{{each_input_form['value']}},input"{% if each_input_form['value'] + ',input' in selected_ids_measures %} selected{% endif %}>{{each_input_form['item']}}</option>
         {% endfor -%}
-        {% for each_choice, value in math_choices.items() -%}
-          <option value="{{each_choice}},math"{% if each_choice + ',math' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+        {% for each_math_form in choices_math -%}
+          <option value="{{each_math_form['value']}},math"{% if each_math_form['value'] + ',math' in selected_ids_measures %} selected{% endif %}>{{each_math_form['item']}}</option>
         {% endfor -%}
-        {% for each_choice, value in output_choices.items() -%}
-          <option value="{{each_choice}},output"{% if each_choice + ',output' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+        {% for each_output_form in choices_output -%}
+          <option value="{{each_output_form['value']}},output"{% if each_output_form['value'] + ',output' in selected_ids_measures %} selected{% endif %}>{{each_output_form['item']}}</option>
         {% endfor -%}
-        {% for each_choice, value in pid_choices.items() -%}
-          <option value="{{each_choice}},pid"{% if each_choice + ',pid' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+        {% for each_pid_form in choices_pid -%}
+          <option value="{{each_pid_form['value']}},pid"{% if each_pid_form['value'] + ',pid' in selected_ids_measures %} selected{% endif %}>{{each_pid_form['item']}}</option>
         {% endfor -%}
-        {% for each_choice, value in tag_choices.items() -%}
-          <option value="{{each_choice}},tag"{% if each_choice + ',tag' in selected_ids_measures %} selected{% endif %}>{{value}}</option>
+        {% for each_tag_form in choices_tag -%}
+          <option value="{{each_tag_form['value']}},tag"{% if each_tag_form['value'] + ',tag' in selected_ids_measures %} selected{% endif %}>{{each_tag_form['item']}}</option>
         {% endfor -%}
         </select>
       </div>

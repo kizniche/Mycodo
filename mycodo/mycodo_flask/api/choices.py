@@ -7,6 +7,7 @@ from flask_accept import accept
 from flask_restplus import Namespace
 from flask_restplus import Resource
 from flask_restplus import abort
+from flask_restplus import fields
 
 from mycodo.databases.models import Input
 from mycodo.databases.models import Measurement
@@ -19,7 +20,7 @@ from mycodo.utils.system_pi import add_custom_units
 
 logger = logging.getLogger(__name__)
 
-ns_choices_measurement = Namespace(
+ns_choices = Namespace(
     'choices', description='Form choice operations')
 
 default_responses = {
@@ -32,35 +33,62 @@ default_responses = {
     500: 'Internal Server Error'
 }
 
+choices_item_value_fields = ns_choices.model('Choices Controller Fields', {
+    'item': fields.String,
+    'value': fields.String
+})
 
-@ns_choices_measurement.route('/controllers/')
-@ns_choices_measurement.doc(security='apikey', responses=default_responses)
+choices_controllers_list_fields = ns_choices.model('Choices Controller Fields List', {
+    'choices controllers': fields.List(fields.Nested(choices_item_value_fields)),
+})
+
+choices_inputs_measurements_list_fields = ns_choices.model('Choices Inputs Measurements Fields List', {
+    'choices inputs measurements': fields.List(fields.Nested(choices_item_value_fields)),
+})
+
+choices_outputs_measurements_list_fields = ns_choices.model('Choices Outputs Measurements Fields List', {
+    'choices outputs measurements': fields.List(fields.Nested(choices_item_value_fields)),
+})
+
+choices_outputs_device_measurements_list_fields = ns_choices.model('Choices Outputs Device Measurements Fields List', {
+    'choices outputs devices': fields.List(fields.Nested(choices_item_value_fields)),
+})
+
+choices_pids_measurements_list_fields = ns_choices.model('Choices PIDs Measurements Fields List', {
+    'choices pids measurements': fields.List(fields.Nested(choices_item_value_fields)),
+})
+
+
+@ns_choices.route('/controllers')
+@ns_choices.doc(security='apikey', responses=default_responses)
 class ChoicesControllers(Resource):
     """Form choices for controllers"""
 
     @accept('application/vnd.mycodo.v1+json')
+    @ns_choices.marshal_with(choices_controllers_list_fields)
     @flask_login.login_required
     def get(self):
         """Show form choices for all controllers"""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            input_choices = utils_general.choices_controller_ids()
-
-            if input_choices:
-                return {'choices controllers': input_choices}, 200
+            controllers_choices = utils_general.choices_controller_ids()
+            print("controllers_choices: {}".format(controllers_choices))
+            if controllers_choices:
+                return {'choices controllers': controllers_choices}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
                   error=traceback.format_exc())
 
 
-@ns_choices_measurement.route('/inputs/measurements/')
-@ns_choices_measurement.doc(security='apikey', responses=default_responses)
+@ns_choices.route('/inputs/measurements')
+@ns_choices.doc(security='apikey', responses=default_responses)
 class ChoicesInputMeasurements(Resource):
     """Form choices for input measurements"""
 
     @accept('application/vnd.mycodo.v1+json')
+    @ns_choices.marshal_with(choices_inputs_measurements_list_fields)
     @flask_login.login_required
     def get(self):
         """Show form choices for all input measurements"""
@@ -81,23 +109,21 @@ class ChoicesInputMeasurements(Resource):
                   error=traceback.format_exc())
 
 
-@ns_choices_measurement.route('/outputs/devices/')
-@ns_choices_measurement.doc(security='apikey', responses=default_responses)
+@ns_choices.route('/outputs/devices')
+@ns_choices.doc(security='apikey', responses=default_responses)
 class ChoicesOutputDevices(Resource):
     """Form choices for output devices"""
 
     @accept('application/vnd.mycodo.v1+json')
+    @ns_choices.marshal_with(choices_outputs_device_measurements_list_fields)
     @flask_login.login_required
     def get(self):
         """Show form choices for all output devices"""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            output = Output.query.all()
-            dict_measurements = add_custom_measurements(Measurement.query.all())
-            dict_units = add_custom_units(Unit.query.all())
             output_choices = utils_general.choices_output_devices(
-                output, dict_units, dict_measurements)
+                Output.query.all())
 
             if output_choices:
                 return {'choices outputs devices': output_choices}, 200
@@ -107,12 +133,13 @@ class ChoicesOutputDevices(Resource):
                   error=traceback.format_exc())
 
 
-@ns_choices_measurement.route('/outputs/measurements/')
-@ns_choices_measurement.doc(security='apikey', responses=default_responses)
+@ns_choices.route('/outputs/measurements')
+@ns_choices.doc(security='apikey', responses=default_responses)
 class ChoicesOutputMeasurements(Resource):
     """Form choices for output measurements"""
 
     @accept('application/vnd.mycodo.v1+json')
+    @ns_choices.marshal_with(choices_outputs_measurements_list_fields)
     @flask_login.login_required
     def get(self):
         """Show form choices for all output measurements"""
@@ -133,12 +160,13 @@ class ChoicesOutputMeasurements(Resource):
                   error=traceback.format_exc())
 
 
-@ns_choices_measurement.route('/pids/measurements/')
-@ns_choices_measurement.doc(security='apikey', responses=default_responses)
+@ns_choices.route('/pids/measurements')
+@ns_choices.doc(security='apikey', responses=default_responses)
 class ChoicesPIDs(Resource):
     """Form choices for pid measurements"""
 
     @accept('application/vnd.mycodo.v1+json')
+    @ns_choices.marshal_with(choices_pids_measurements_list_fields)
     @flask_login.login_required
     def get(self):
         """Show form choices for all PID measurements"""

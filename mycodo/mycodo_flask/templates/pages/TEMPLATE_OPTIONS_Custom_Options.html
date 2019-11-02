@@ -32,23 +32,23 @@
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% if 'Input' in each_option['options_select'] %}
-        {% for each_choice, value in choices_input.items() -%}
-      <option value="{{each_choice}}"{% if each_choice == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{value}}</option>
+        {% for each_input_form in choices_input -%}
+      <option value="{{each_input_form['value']}}"{% if each_input_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_input_form['item']}}</option>
         {% endfor -%}
       {% endif %}
       {% if 'Math' in each_option['options_select'] %}
-        {% for each_choice, value in choices_math.items() -%}
-      <option value="{{each_choice}}"{% if each_choice == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{value}}</option>
+        {% for each_math_form in choices_math -%}
+      <option value="{{each_math_form['value']}}"{% if each_math_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_math_form['item']}}</option>
         {% endfor -%}
       {% endif %}
       {% if 'Output' in each_option['options_select'] %}
-        {% for each_choice, value in choices_output.items() -%}
-      <option value="{{each_choice}}"{% if each_choice == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{value}}</option>
+        {% for each_output_form in choices_output -%}
+      <option value="{{each_output_form['value']}}"{% if each_output_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>
         {% endfor -%}
       {% endif %}
       {% if 'PID' in each_option['options_select'] %}
-        {% for each_choice, value in choices_pid.items() -%}
-      <option value="{{each_choice}}"{% if each_choice == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{value}}</option>
+        {% for each_pid_form in choices_pid -%}
+      <option value="{{each_pid_form['value']}}"{% if each_pid_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_pid_form['item']}}</option>
         {% endfor -%}
       {% endif %}
     </select>
