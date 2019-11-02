@@ -687,7 +687,10 @@ def force_acquire_measurements(unique_id):
         if not error:
             control = DaemonControl()
             status = control.input_force_measurements(unique_id)
-            flash("Daemon response: {}".format(status), "success")
+            if status[0]:
+                flash("Force Input Measurement: {}".format(status[1]), "error")
+            else:
+                flash("Force Input Measurement: {}".format(status[1]), "success")
     except Exception as except_msg:
         error.append(except_msg)
     flash_success_errors(error, action, url_for('routes_page.page_data'))

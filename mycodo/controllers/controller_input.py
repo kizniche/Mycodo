@@ -501,9 +501,9 @@ class InputController(AbstractController, threading.Thread):
         return measurements_record
 
     def force_measurements(self):
-        # Signal that a measurement needs to be obtained
+        """ Signal that a measurement needs to be obtained """
         self.next_measurement = time.time()
-        return "Input instructed to begin acquiring measurements"
+        return 0, "Input instructed to begin acquiring measurements"
 
     def pre_stop(self):
         # Execute stop_input() if not EDGE or ADC

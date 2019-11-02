@@ -145,18 +145,6 @@ Parameters:
 
 --------------
 
-**input_information_get**\ ()
-
-Gets the information about an Input.
-
---------------
-
-**input_information_update**\ ()
-
-Updates the information about an update from the Input module file.
-
---------------
-
 **lcd_backlight**\ (*lcd_id*, *state*)
 
 Turn the backlight of an LCD on or off, if the LCD supports that functionality.

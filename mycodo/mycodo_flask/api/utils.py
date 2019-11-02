@@ -3,6 +3,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def get_from_db(schema, table, unique_id=None):
     table_schema = schema()
     if unique_id:
@@ -12,6 +13,7 @@ def get_from_db(schema, table, unique_id=None):
         data = return_list_of_dictionaries(
             table_schema.dump(table.query.all(), many=True))
     return data
+
 
 def return_list_of_dictionaries(data):
     """
@@ -29,6 +31,7 @@ def return_list_of_dictionaries(data):
     if return_list is None:
         return_list = []
     return return_list
+
 
 def return_dictionary(data):
     """

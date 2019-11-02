@@ -38,13 +38,7 @@ from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 
 logger = logging.getLogger(__name__)
 
-# Test enabling API (should not work with Raspbian OS version < 10)
 ENABLE_API = False
-try:
-    from mycodo.mycodo_flask.api import api_blueprint
-    ENABLE_API = True
-except:
-    logger.exception("API")
 
 
 def create_app(config=ProdConfig):
@@ -69,6 +63,13 @@ def register_extensions(app):
     app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
 
     db.init_app(app)  # Influx db time-series database
+
+    # Test enabling API (should not work with Raspbian OS version < 10)
+    try:
+        from mycodo.mycodo_flask.api import init_api
+        init_api(app)
+    except:
+        logger.exception("API")
 
     app = extension_babel(app)  # Language translations
     app = extension_compress(app)  # Compress app responses with gzip
@@ -95,9 +96,6 @@ def register_extensions(app):
 
 def register_blueprints(app):
     """ register blueprints to the app """
-    if ENABLE_API:
-        app.register_blueprint(api_blueprint)  # API
-
     app.register_blueprint(routes_admin.blueprint)  # register admin views
     app.register_blueprint(routes_authentication.blueprint)  # register login/logout views
     app.register_blueprint(routes_calibration.blueprint)  # register calibration views
@@ -150,8 +148,11 @@ def extension_limiter(app):
     limiter = Limiter(app, key_func=get_key_func, headers_enabled=True)
     limiter.limit("300/hour")(routes_authentication.blueprint)
 
-    if ENABLE_API:
-        limiter.limit("200/minute")(api_blueprint)
+    try:
+        from mycodo.mycodo_flask.api import api
+        limiter.limit("200/minute")(api)
+    except:
+        pass
 
     return app
 

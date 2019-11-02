@@ -4,24 +4,24 @@ import traceback
 
 import flask_login
 from flask_accept import accept
-from flask_restplus import Namespace
 from flask_restplus import Resource
 from flask_restplus import abort
 from flask_restplus import fields
 
 from mycodo.databases.models import Input
-from mycodo.databases.models import Measurement
 from mycodo.databases.models import Math
+from mycodo.databases.models import Measurement
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Unit
+from mycodo.mycodo_flask.api import api
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 
 logger = logging.getLogger(__name__)
 
-ns_choices = Namespace(
+ns_choices = api.namespace(
     'choices', description='Form choice operations')
 
 default_responses = {
@@ -77,10 +77,8 @@ class ChoicesControllers(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            controllers_choices = utils_general.choices_controller_ids()
-            print("controllers_choices: {}".format(controllers_choices))
-            if controllers_choices:
-                return {'choices controllers': controllers_choices}, 200
+            choices_controllers = utils_general.choices_controller_ids()
+            return {'choices controllers': choices_controllers}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
@@ -154,11 +152,9 @@ class ChoicesOutputDevices(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
-            output_choices = utils_general.choices_output_devices(
+            choices_output_devices = utils_general.choices_output_devices(
                 Output.query.all())
-
-            if output_choices:
-                return {'choices outputs devices': output_choices}, 200
+            return {'choices outputs devices': choices_output_devices}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',

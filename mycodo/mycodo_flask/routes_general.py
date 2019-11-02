@@ -11,10 +11,8 @@ import os
 from RPi import GPIO
 from dateutil.parser import parse as date_parse
 from flask import Response
-from flask import current_app
 from flask import flash
 from flask import jsonify
-from flask import make_response
 from flask import redirect
 from flask import send_file
 from flask import send_from_directory
@@ -49,6 +47,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
+from mycodo.mycodo_flask.utils.utils_output import get_all_output_states
 from mycodo.utils.image import generate_thermal_image_from_pixels
 from mycodo.utils.influx import influx_time_str_to_milliseconds
 from mycodo.utils.influx import query_string
@@ -188,31 +187,12 @@ def video_feed(unique_id):
 @flask_login.login_required
 def gpio_state():
     """Return the GPIO state, for output page status"""
-    output = Output.query.all()
-    daemon_control = DaemonControl()
-    state = {}
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-    for each_output in output:
-        if each_output.output_type == 'wired' and each_output.pin and -1 < each_output.pin < 40:
-            GPIO.setup(each_output.pin, GPIO.OUT)
-            if GPIO.input(each_output.pin) == each_output.on_state:
-                state[each_output.unique_id] = 'on'
-            else:
-                state[each_output.unique_id] = 'off'
-        elif (each_output.output_type in ['command',
-                                          'command_pwm',
-                                          'python',
-                                          'python_pwm',
-                                          'atlas_ezo_pmp'] or
-                (each_output.output_type in ['pwm', 'wireless_rpi_rf'] and
-                 each_output.pin and
-                 -1 < each_output.pin < 40)):
-            state[each_output.unique_id] = daemon_control.output_state(each_output.unique_id)
-        else:
-            state[each_output.unique_id] = None
-
-    return jsonify(state)
+    states = get_all_output_states()
+    # Convert list of dictionaries to dictionary of key/value pairs
+    states_dict = {}
+    for each_state in states:
+        states_dict[each_state['unique_id']] = each_state['state']
+    return jsonify(states_dict)
 
 
 @blueprint.route('/outputstate_unique_id/<unique_id>')

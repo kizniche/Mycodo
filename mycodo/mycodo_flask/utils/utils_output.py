@@ -2,12 +2,13 @@
 import logging
 
 import sqlalchemy
+from RPi import GPIO
 from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config import OUTPUT_INFO
 from mycodo.config import OUTPUTS_PWM
+from mycodo.config import OUTPUT_INFO
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
@@ -405,3 +406,32 @@ def output_on_off(form_output):
         error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_output'))
+
+
+def get_all_output_states():
+    output = Output.query.all()
+    daemon_control = DaemonControl()
+    states = []
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    for each_output in output:
+        each_state = {'unique_id': each_output.unique_id}
+        if each_output.output_type == 'wired' and each_output.pin and -1 < each_output.pin < 40:
+            GPIO.setup(each_output.pin, GPIO.OUT)
+            if GPIO.input(each_output.pin) == each_output.on_state:
+                each_state['state'] = 'on'
+            else:
+                each_state['state'] = 'off'
+        elif (each_output.output_type in ['command',
+                                          'command_pwm',
+                                          'python',
+                                          'python_pwm',
+                                          'atlas_ezo_pmp'] or
+              (each_output.output_type in ['pwm', 'wireless_rpi_rf'] and
+               each_output.pin and
+               -1 < each_output.pin < 40)):
+            each_state['state'] = daemon_control.output_state(each_output.unique_id)
+        else:
+            each_state['state'] = None
+        states.append(each_state)
+    return states

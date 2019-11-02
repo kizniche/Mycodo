@@ -4,11 +4,11 @@ import traceback
 
 import flask_login
 from flask_accept import accept
-from flask_restplus import Namespace
 from flask_restplus import Resource
 from flask_restplus import abort
 from flask_restplus import fields
 
+from mycodo.mycodo_flask.api import api
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import read_past_influxdb
@@ -16,7 +16,7 @@ from mycodo.utils.influx import write_influxdb_value
 
 logger = logging.getLogger(__name__)
 
-ns_measurement = Namespace(
+ns_measurement = api.namespace(
     'measurements', description='Measurement operations')
 
 default_responses = {

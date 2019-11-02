@@ -4,17 +4,17 @@ import traceback
 
 import flask_login
 from flask_accept import accept
-from flask_restplus import Namespace
 from flask_restplus import Resource
 from flask_restplus import abort
 from flask_restplus import fields
 
 from mycodo.mycodo_client import DaemonControl
+from mycodo.mycodo_flask.api import api
 from mycodo.mycodo_flask.utils import utils_general
 
 logger = logging.getLogger(__name__)
 
-ns_daemon = Namespace('daemon', description='Daemon operations')
+ns_daemon = api.namespace('daemon', description='Daemon operations')
 
 default_responses = {
     200: 'Success',

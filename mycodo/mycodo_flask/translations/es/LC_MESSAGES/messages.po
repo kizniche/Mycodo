@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-01 22:55-0400\n"
+"POT-Creation-Date: 2019-11-02 17:01-0400\n"
 "PO-Revision-Date: 2018-08-10 15:21-0400\n"
 "Last-Translator: \n"
 "Language: es\n"
@@ -1805,7 +1805,7 @@ msgstr ""
 msgid "The serial device to write to"
 msgstr ""
 
-#: mycodo_flask/app.py:210
+#: mycodo_flask/app.py:211
 msgid "Please log in to access this page"
 msgstr "Inicie sesión para acceder a esta página"
 
@@ -1923,19 +1923,19 @@ msgstr "Cerrado con éxito"
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "Se requiere una temperatura válida: %(temp)s no es válido."
 
-#: mycodo_flask/routes_general.py:1005
+#: mycodo_flask/routes_general.py:985
 msgid "System rebooting in 10 seconds"
 msgstr "Reinicio del sistema en 10 segundos"
 
-#: mycodo_flask/routes_general.py:1007
+#: mycodo_flask/routes_general.py:987
 msgid "System shutting down in 10 seconds"
 msgstr "El sistema se apaga en 10 segundos"
 
-#: mycodo_flask/routes_general.py:1009
+#: mycodo_flask/routes_general.py:989
 msgid "Command to restart the daemon sent"
 msgstr "Comando para reiniciar el daemon enviado"
 
-#: mycodo_flask/routes_general.py:1011
+#: mycodo_flask/routes_general.py:991
 msgid "Command to reload the frontend sent"
 msgstr "Comando para volver a cargar la interfaz enviada"
 
@@ -5451,38 +5451,38 @@ msgstr "Ejecutar todo"
 msgid "Error: %(err)s"
 msgstr "Error: %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:782
-#: mycodo_flask/utils/utils_general.py:797
-#: mycodo_flask/utils/utils_general.py:817
-#: mycodo_flask/utils/utils_general.py:822 mycodo_flask/utils/utils_lcd.py:225
+#: mycodo_flask/utils/utils_general.py:799
+#: mycodo_flask/utils/utils_general.py:814
+#: mycodo_flask/utils/utils_general.py:834
+#: mycodo_flask/utils/utils_general.py:839 mycodo_flask/utils/utils_lcd.py:225
 #: mycodo_flask/utils/utils_lcd.py:227
 #, python-format
 msgid "%(msg)s"
 msgstr "%(msg)s"
 
-#: mycodo_flask/utils/utils_general.py:789
-#: mycodo_flask/utils/utils_output.py:327
-#: mycodo_flask/utils/utils_output.py:334
-#: mycodo_flask/utils/utils_output.py:339
+#: mycodo_flask/utils/utils_general.py:806
+#: mycodo_flask/utils/utils_output.py:328
+#: mycodo_flask/utils/utils_output.py:335
+#: mycodo_flask/utils/utils_output.py:340
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:790
+#: mycodo_flask/utils/utils_general.py:807
 #, python-format
 msgid "Entry with ID %(id)s not found"
 msgstr "Entrada con ID %(id)s no encontrada"
 
-#: mycodo_flask/utils/utils_general.py:808
+#: mycodo_flask/utils/utils_general.py:825
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "Error en el campo %(field)s - %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:856
+#: mycodo_flask/utils/utils_general.py:873
 msgid "Cannot move above the first item in the list"
 msgstr "No se puede mover por encima del primer elemento de la lista"
 
-#: mycodo_flask/utils/utils_general.py:860
+#: mycodo_flask/utils/utils_general.py:877
 msgid "Cannot move below the last item in the list"
 msgstr "No se puede mover por debajo del último elemento de la lista"
 
@@ -5681,61 +5681,61 @@ msgstr ""
 msgid "File"
 msgstr "Expediente"
 
-#: mycodo_flask/utils/utils_output.py:54
+#: mycodo_flask/utils/utils_output.py:55
 msgid "Invalid quantity"
 msgstr "Cantidad no válida"
 
-#: mycodo_flask/utils/utils_output.py:55
+#: mycodo_flask/utils/utils_output.py:56
 msgid "Acceptable values"
 msgstr "Valores aceptables"
 
-#: mycodo_flask/utils/utils_output.py:351
+#: mycodo_flask/utils/utils_output.py:352
 msgid "Actuate"
 msgstr "Accionar"
 
-#: mycodo_flask/utils/utils_output.py:359
+#: mycodo_flask/utils/utils_output.py:360
 msgid "Cannot modulate output with a GPIO of 0"
 msgstr ""
 "39/5000\n"
 "No se puede modular la salida con un GPIO de 0"
 
-#: mycodo_flask/utils/utils_output.py:365
+#: mycodo_flask/utils/utils_output.py:366
 msgid "Value must be greater than 0"
 msgstr "El valor debe ser mayor que 0"
 
-#: mycodo_flask/utils/utils_output.py:370
+#: mycodo_flask/utils/utils_output.py:371
 #, python-format
 msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
 msgstr "Salida activada por %(sec)s segundos: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:376
+#: mycodo_flask/utils/utils_output.py:377
 msgid "Invalid pin"
 msgstr "Pin inválido"
 
-#: mycodo_flask/utils/utils_output.py:378
+#: mycodo_flask/utils/utils_output.py:379
 msgid "PWM Hertz must be a positive value"
 msgstr "PWM Hertz debe ser un valor positivo"
 
-#: mycodo_flask/utils/utils_output.py:380
+#: mycodo_flask/utils/utils_output.py:381
 msgid "PWM duty cycle must be a positive value"
 msgstr "El ciclo de trabajo de PWM debe ser un valor positivo"
 
-#: mycodo_flask/utils/utils_output.py:386
+#: mycodo_flask/utils/utils_output.py:387
 #, python-format
 msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 msgstr "PWM establecido en %(dc)s %% en %(hertz)s Hz: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:393
+#: mycodo_flask/utils/utils_output.py:394
 #, python-format
 msgid "Output turned on: %(rvalue)s"
 msgstr "Salida activada: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:398
+#: mycodo_flask/utils/utils_output.py:399
 #, python-format
 msgid "Output turned off: %(rvalue)s"
 msgstr "Salida desactivada: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:402
+#: mycodo_flask/utils/utils_output.py:403
 msgid "Invalid value"
 msgstr "Valor no válido"
 

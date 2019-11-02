@@ -26,6 +26,7 @@ import argparse
 import datetime
 import logging
 import sys
+import traceback
 
 import Pyro5.errors
 import os
@@ -170,14 +171,11 @@ class DaemonControl:
     # Input Controller
     #
 
-    def input_information_get(self):
-        return self.proxy().input_information_get()
-
-    def input_information_update(self):
-        return self.proxy().input_information_update()
-
     def input_force_measurements(self, input_id):
-        return self.proxy().input_force_measurements(input_id)
+        try:
+            return self.proxy().input_force_measurements(input_id)
+        except Exception:
+            return 0, traceback.format_exc()
 
     #
     # LCD Controller
@@ -432,7 +430,7 @@ if __name__ == "__main__":
             "[Remote command] Force acquiring measurements for Input with "
             "ID '{id}': Server returned: {msg}".format(
                 id=args.input_force_measurements,
-                msg=return_msg))
+                msg=return_msg[1]))
 
     elif args.get_measurement:
         client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,

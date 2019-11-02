@@ -120,9 +120,6 @@ class DaemonController:
         self.terminated = False
         self.debug = debug
 
-        self.dict_input_information = {}
-        self.input_information_update()
-
         # Controller object that will store the thread objects for each
         # controller
         self.controller = {
@@ -457,15 +454,6 @@ class DaemonController:
             self.logger.exception(message)
             return "Exception: {msg}".format(msg=except_msg)
 
-    def input_information_get(self):
-        return self.dict_input_information
-
-    def input_information_update(self):
-        try:
-            self.dict_input_information = parse_input_information()
-        except Exception:
-            self.logger.exception("Exception while parsing inputs")
-
     def input_force_measurements(self, input_id):
         """
         Force Input measurements to be acquired
@@ -483,6 +471,7 @@ class DaemonController:
             message = "Cannot force acquisition of Input measurements:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
+            return 1, message
 
     def lcd_reset(self, lcd_id):
         """
@@ -1099,14 +1088,6 @@ class PyroServer(object):
     def check_daemon(self):
         """Check if all active controllers respond"""
         return self.mycodo.check_daemon()
-
-    def input_information_get(self):
-        """Gets all input information"""
-        return self.mycodo.input_information_get()
-
-    def input_information_update(self):
-        """Updates all input information"""
-        return self.mycodo.input_information_update()
 
     def input_force_measurements(self, input_id):
         """Updates all input information"""

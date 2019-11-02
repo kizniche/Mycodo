@@ -5,13 +5,6 @@ from flask import Blueprint
 from flask import make_response
 from flask_restplus import Api
 
-from mycodo.mycodo_flask.api.choices import ns_choices
-from mycodo.mycodo_flask.api.controller import ns_controller
-from mycodo.mycodo_flask.api.daemon import ns_daemon
-from mycodo.mycodo_flask.api.measurement import ns_measurement
-from mycodo.mycodo_flask.api.output import ns_output
-from mycodo.mycodo_flask.api.settings import ns_settings
-
 logger = logging.getLogger(__name__)
 
 api_blueprint = Blueprint('api', __name__, url_prefix='/api')
@@ -33,13 +26,6 @@ api = Api(
     default_mediatype='application/vnd.mycodo.v1+json'
 )
 
-api.add_namespace(ns_choices)
-api.add_namespace(ns_controller)
-api.add_namespace(ns_daemon)
-api.add_namespace(ns_measurement)
-api.add_namespace(ns_output)
-api.add_namespace(ns_settings)
-
 # Remove default accept header content type
 if 'application/json' in api.representations:
     del api.representations['application/json']
@@ -59,3 +45,15 @@ def api_v1(data, code, headers):
 #     resp = make_response(data, code)
 #     resp.headers.extend(headers)
 #     return resp
+
+
+def init_api(app):
+    import mycodo.mycodo_flask.api.choices
+    import mycodo.mycodo_flask.api.controller
+    import mycodo.mycodo_flask.api.daemon
+    import mycodo.mycodo_flask.api.input
+    import mycodo.mycodo_flask.api.measurement
+    import mycodo.mycodo_flask.api.output
+    import mycodo.mycodo_flask.api.settings
+
+    app.register_blueprint(api_blueprint)

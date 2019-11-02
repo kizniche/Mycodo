@@ -4,7 +4,6 @@ import traceback
 
 import flask_login
 from flask_accept import accept
-from flask_restplus import Namespace
 from flask_restplus import Resource
 from flask_restplus import abort
 from flask_restplus import fields
@@ -23,13 +22,21 @@ from mycodo.databases.models.measurement import UnitSchema
 from mycodo.databases.models.output import OutputSchema
 from mycodo.databases.models.pid import PIDSchema
 from mycodo.databases.models.user import UserSchema
+from mycodo.mycodo_flask.api import api
+from mycodo.mycodo_flask.api.sql_schema_fields import device_measurement_fields
+from mycodo.mycodo_flask.api.sql_schema_fields import input_fields
+from mycodo.mycodo_flask.api.sql_schema_fields import measurement_fields
+from mycodo.mycodo_flask.api.sql_schema_fields import output_fields
+from mycodo.mycodo_flask.api.sql_schema_fields import pid_fields
+from mycodo.mycodo_flask.api.sql_schema_fields import unit_fields
+from mycodo.mycodo_flask.api.sql_schema_fields import user_fields
 from mycodo.mycodo_flask.api.utils import get_from_db
 from mycodo.mycodo_flask.api.utils import return_list_of_dictionaries
 from mycodo.mycodo_flask.utils import utils_general
 
 logger = logging.getLogger(__name__)
 
-ns_settings = Namespace('settings', description='Settings operations')
+ns_settings = api.namespace('settings', description='Settings operations')
 
 default_responses = {
     200: 'Success',
@@ -40,206 +47,28 @@ default_responses = {
     500: 'Internal Server Error'
 }
 
-input_fields = ns_settings.model('Input Settings Fields', {
-    'id': fields.Integer,
-    'unique_id': fields.String,
-    'name': fields.String,
-    'is_activated': fields.Boolean,
-    'log_level_debug': fields.Boolean,
-    'is_preset': fields.Boolean,
-    'preset_name': fields.String,
-    'device': fields.String,
-    'interface': fields.String,
-    'period': fields.Float,
-    'start_offset': fields.Float,
-    'power_output_id': fields.String,
-    'resolution': fields.Integer,
-    'resolution_2': fields.Integer,
-    'sensitivity': fields.Integer,
-    'thermocouple_type': fields.String,
-    'ref_ohm': fields.Integer,
-    'calibrate_sensor_measure': fields.String,
-    'location': fields.String,
-    'gpio_location': fields.Integer,
-    'i2c_location': fields.String,
-    'i2c_bus': fields.Integer,
-    'ftdi_location': fields.String,
-    'uart_location': fields.String,
-    'baud_rate': fields.Integer,
-    'pin_clock': fields.Integer,
-    'pin_cs': fields.Integer,
-    'pin_mosi': fields.Integer,
-    'pin_miso': fields.Integer,
-    'bt_adapter': fields.String,
-    'switch_edge': fields.String,
-    'switch_bouncetime': fields.Integer,
-    'switch_reset_period': fields.Integer,
-    'pre_output_id': fields.String,
-    'pre_output_duration': fields.Float,
-    'pre_output_during_measure': fields.Boolean,
-    'sht_voltage': fields.String,
-    'adc_gain': fields.Integer,
-    'adc_resolution': fields.Integer,
-    'adc_sample_speed': fields.String,
-    'cmd_command': fields.String,
-    'weighting': fields.Float,
-    'rpm_pulses_per_rev': fields.Float,
-    'sample_time': fields.Float,
-    'port': fields.Integer,
-    'times_check': fields.Integer,
-    'deadline': fields.Integer,
-    'datetime': fields.DateTime,
-    'custom_options': fields.String
-})
-
 input_list_fields = ns_settings.model('Input Settings Fields List', {
     'inputs': fields.List(fields.Nested(input_fields)),
-})
-
-device_measurement_fields = ns_settings.model('Device Measurement Settings Fields', {
-    'id': fields.Integer,
-    'unique_id': fields.String,
-    'name': fields.String,
-    'device_type': fields.String,
-    'device_id': fields.String,
-    'is_enabled': fields.Boolean,
-    'measurement': fields.String,
-    'measurement_type': fields.String,
-    'unit': fields.String,
-    'channel': fields.Integer,
-    'invert_scale': fields.Boolean,
-    'rescaled_measurement': fields.String,
-    'rescaled_unit': fields.String,
-    'scale_from_min': fields.Float,
-    'scale_from_max': fields.Float,
-    'scale_to_min': fields.Float,
-    'scale_to_max': fields.Float,
-    'conversion_id': fields.String,
 })
 
 device_measurement_list_fields = ns_settings.model('Device Measurement Settings Fields List', {
     'device measurements': fields.List(fields.Nested(device_measurement_fields)),
 })
 
-measurement_fields = ns_settings.model('Measurement Settings Fields', {
-    'id': fields.Integer,
-    'unique_id': fields.String,
-    'name_safe': fields.String,
-    'name': fields.String,
-    'units': fields.String
-})
-
 measurement_list_fields = ns_settings.model('Measurement Settings Fields List', {
     'measurements': fields.List(fields.Nested(device_measurement_fields)),
-})
-
-output_fields = ns_settings.model('Output Settings Fields', {
-    'id': fields.Integer,
-    'unique_id': fields.String,
-    'output_type': fields.String,
-    'output_mode': fields.String,
-    'interface': fields.String,
-    'location': fields.String,
-    'i2c_bus': fields.Integer,
-    'baud_rate': fields.Integer,
-    'name': fields.String,
-    'measurement': fields.String,
-    'unit': fields.String,
-    'conversion_id': fields.String,
-    'channel': fields.Integer,
-    'pin': fields.Integer,
-    'on_state': fields.Boolean,
-    'amps': fields.Float,
-    'on_until': fields.DateTime,
-    'off_until': fields.DateTime,
-    'last_duration': fields.Float,
-    'on_duration': fields.Boolean,
-    'protocol': fields.Integer,
-    'pulse_length': fields.Integer,
-    'on_command': fields.String,
-    'off_command': fields.String,
-    'pwm_command': fields.String,
-    'trigger_functions_at_start': fields.Boolean,
-    'state_startup': fields.String,
-    'startup_value': fields.Float,
-    'state_shutdown': fields.String,
-    'shutdown_value': fields.Float,
-    'pwm_hertz': fields.Integer,
-    'pwm_library': fields.String,
-    'pwm_invert_signal': fields.Boolean,
-    'flow_rate': fields.Float
 })
 
 output_list_fields = ns_settings.model('Output Settings Fields List', {
     'outputs': fields.List(fields.Nested(output_fields)),
 })
 
-pid_fields = ns_settings.model('PID Settings Fields', {
-    'id': fields.Integer,
-    'unique_id': fields.String,
-    'name': fields.String,
-    'is_activated': fields.Boolean,
-    'is_held': fields.Boolean,
-    'is_paused': fields.Boolean,
-    'is_preset': fields.Boolean,
-    'log_level_debug': fields.Boolean,
-    'preset_name': fields.String,
-    'period': fields.Float,
-    'start_offset': fields.Float,
-    'max_measure_age': fields.Float,
-    'measurement': fields.String,
-    'direction': fields.String,
-    'setpoint': fields.Float,
-    'band': fields.Float,
-    'p': fields.Float,
-    'i': fields.Float,
-    'd': fields.Float,
-    'integrator_min': fields.Float,
-    'integrator_max': fields.Float,
-    'raise_output_id': fields.String,
-    'raise_min_duration': fields.Float,
-    'raise_max_duration': fields.Float,
-    'raise_min_off_duration': fields.Float,
-    'lower_output_id': fields.String,
-    'lower_min_duration': fields.Float,
-    'lower_max_duration': fields.Float,
-    'lower_min_off_duration': fields.Float,
-    'store_lower_as_negative': fields.Boolean,
-    'setpoint_tracking_type': fields.String,
-    'setpoint_tracking_id': fields.String,
-    'setpoint_tracking_max_age': fields.Float,
-    'method_start_time': fields.String,
-    'method_end_time': fields.String,
-    'autotune_activated': fields.Boolean,
-    'autotune_noiseband': fields.Float,
-    'autotune_outstep': fields.Float
-})
-
 pid_list_fields = ns_settings.model('PID Settings Fields List', {
     'pids': fields.List(fields.Nested(pid_fields)),
 })
 
-unit_fields = ns_settings.model('User Settings Fields', {
-    'id': fields.Integer,
-    'unique_id': fields.String,
-    'name_safe': fields.String,
-    'name': fields.String,
-    'unit': fields.String
-})
-
 unit_list_fields = ns_settings.model('User Settings Fields List', {
     'units': fields.List(fields.Nested(unit_fields)),
-})
-
-user_fields = ns_settings.model('User Settings Fields', {
-    "id": fields.Integer,
-    "unique_id": fields.String,
-    "name": fields.String,
-    "email": fields.String,
-    "role_id": fields.Integer,
-    "theme": fields.String,
-    "landing_page": fields.String,
-    "language": fields.String
 })
 
 user_list_fields = ns_settings.model('User Settings Fields List', {
