@@ -76,6 +76,35 @@ input_fields = api.model('Input Settings Fields', {
     'custom_options': fields.String
 })
 
+math_fields = api.model('Math Settings Fields', {
+    'id': fields.Integer,
+    'unique_id': fields.String,
+    'name': fields.String,
+    'math_type': fields.String,
+    'is_activated': fields.Boolean,
+    'log_level_debug': fields.Boolean,
+    'period': fields.Float,
+    'start_offset': fields.Float,
+    'max_measure_age': fields.Integer,
+    'order_of_use': fields.String,
+    'difference_reverse_order': fields.Boolean,
+    'difference_absolute': fields.Boolean,
+    'equation_input': fields.String,
+    'equation': fields.String,
+    'max_difference': fields.Float,
+    'inputs': fields.String,
+    'dry_bulb_t_id': fields.String,
+    'dry_bulb_t_measure_id': fields.String,
+    'wet_bulb_t_id': fields.String,
+    'wet_bulb_t_measure_id': fields.String,
+    'pressure_pa_id': fields.String,
+    'pressure_pa_measure_id': fields.String,
+    'unique_id_1': fields.String,
+    'unique_measurement_id_1': fields.String,
+    'unique_id_2': fields.String,
+    'unique_measurement_id_2': fields.String,
+})
+
 measurement_fields = api.model('Measurement Settings Fields', {
     'id': fields.Integer,
     'unique_id': fields.String,
@@ -162,7 +191,39 @@ pid_fields = api.model('PID Settings Fields', {
     'autotune_outstep': fields.Float
 })
 
-unit_fields = api.model('User Settings Fields', {
+trigger_fields = api.model('Trigger Settings Fields', {
+    'id': fields.Integer,
+    'unique_id': fields.String,
+    'trigger_type': fields.String,
+    'name': fields.String,
+    'is_activated': fields.Boolean,
+    'log_level_debug': fields.Boolean,
+    'unique_id_1': fields.String,
+    'unique_id_2': fields.String,
+    'output_state': fields.String,
+    'output_duration': fields.Float,
+    'output_duty_cycle': fields.Float,
+    'rise_or_set': fields.String,
+    'latitude': fields.Float,
+    'longitude': fields.Float,
+    'zenith': fields.Float,
+    'date_offset_days': fields.Integer,
+    'time_offset_minutes': fields.Integer,
+    'period': fields.Float,
+    'timer_start_offset': fields.Integer,
+    'timer_start_time': fields.String,
+    'timer_end_time': fields.String,
+    'program': fields.String,
+    'word': fields.String,
+    'method_start_time': fields.String,
+    'method_end_time': fields.String,
+    'trigger_actions_at_period': fields.Boolean,
+    'trigger_actions_at_start': fields.Boolean,
+    'measurement': fields.String,
+    'edge_detected': fields.String,
+})
+
+unit_fields = api.model('Unit Settings Fields', {
     'id': fields.Integer,
     'unique_id': fields.String,
     'name_safe': fields.String,

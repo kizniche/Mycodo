@@ -2,6 +2,7 @@
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.extensions import ma
 
 
 class Function(CRUDMixin, db.Model):
@@ -103,6 +104,11 @@ class Trigger(CRUDMixin, db.Model):
     # Edge
     measurement = db.Column(db.Text, default='')
     edge_detected = db.Column(db.Text, default='')
+
+
+class TriggerSchema(ma.ModelSchema):
+    class Meta:
+        model = Trigger
 
 
 class Actions(CRUDMixin, db.Model):

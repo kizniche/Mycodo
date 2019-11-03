@@ -15,6 +15,7 @@ from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Unit
 from mycodo.mycodo_flask.api import api
+from mycodo.mycodo_flask.api import default_responses
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
@@ -24,44 +25,52 @@ logger = logging.getLogger(__name__)
 ns_choices = api.namespace(
     'choices', description='Form choice operations')
 
-default_responses = {
-    200: 'Success',
-    401: 'Invalid API Key',
-    403: 'Insufficient Permissions',
-    404: 'Not Found',
-    422: 'Unprocessable Entity',
-    429: 'Too Many Requests',
-    500: 'Internal Server Error'
-}
-
 choices_item_value_fields = ns_choices.model('Choices Controller Fields', {
     'item': fields.String,
     'value': fields.String
 })
 
-choices_controllers_list_fields = ns_choices.model('Choices Controller Fields List', {
-    'choices controllers': fields.List(fields.Nested(choices_item_value_fields)),
-})
+choices_controllers_list_fields = ns_choices.model(
+    'Choices Controller Fields List', {
+        'choices controllers': fields.List(
+            fields.Nested(choices_item_value_fields)),
+    }
+)
 
-choices_inputs_measurements_list_fields = ns_choices.model('Choices Inputs Measurements Fields List', {
-    'choices inputs measurements': fields.List(fields.Nested(choices_item_value_fields)),
-})
+choices_inputs_measurements_list_fields = ns_choices.model(
+    'Choices Inputs Measurements Fields List', {
+        'choices inputs measurements': fields.List(
+            fields.Nested(choices_item_value_fields)),
+    }
+)
 
-choices_maths_measurements_list_fields = ns_choices.model('Choices Maths Measurements Fields List', {
-    'choices maths measurements': fields.List(fields.Nested(choices_item_value_fields)),
-})
+choices_maths_measurements_list_fields = ns_choices.model(
+    'Choices Maths Measurements Fields List', {
+        'choices maths measurements': fields.List(
+            fields.Nested(choices_item_value_fields)),
+    }
+)
 
-choices_outputs_measurements_list_fields = ns_choices.model('Choices Outputs Measurements Fields List', {
-    'choices outputs measurements': fields.List(fields.Nested(choices_item_value_fields)),
-})
+choices_outputs_measurements_list_fields = ns_choices.model(
+    'Choices Outputs Measurements Fields List', {
+        'choices outputs measurements': fields.List(
+            fields.Nested(choices_item_value_fields)),
+    }
+)
 
-choices_outputs_device_measurements_list_fields = ns_choices.model('Choices Outputs Device Measurements Fields List', {
-    'choices outputs devices': fields.List(fields.Nested(choices_item_value_fields)),
-})
+choices_outputs_device_measurements_list_fields = ns_choices.model(
+    'Choices Outputs Device Measurements Fields List', {
+        'choices outputs devices': fields.List(
+            fields.Nested(choices_item_value_fields)),
+    }
+)
 
-choices_pids_measurements_list_fields = ns_choices.model('Choices PIDs Measurements Fields List', {
-    'choices pids measurements': fields.List(fields.Nested(choices_item_value_fields)),
-})
+choices_pids_measurements_list_fields = ns_choices.model(
+    'Choices PIDs Measurements Fields List', {
+        'choices pids measurements': fields.List(
+            fields.Nested(choices_item_value_fields)),
+    }
+)
 
 
 @ns_choices.route('/controllers')
@@ -99,7 +108,8 @@ class ChoicesInputMeasurements(Resource):
             abort(403)
         try:
             input_dev = Input.query.all()
-            dict_measurements = add_custom_measurements(Measurement.query.all())
+            dict_measurements = add_custom_measurements(
+                Measurement.query.all())
             dict_units = add_custom_units(Unit.query.all())
             input_choices = utils_general.choices_inputs(
                 input_dev, dict_units, dict_measurements)
@@ -126,7 +136,8 @@ class ChoicesMaths(Resource):
             abort(403)
         try:
             math = Math.query.all()
-            dict_measurements = add_custom_measurements(Measurement.query.all())
+            dict_measurements = add_custom_measurements(
+                Measurement.query.all())
             dict_units = add_custom_units(Unit.query.all())
             math_choices = utils_general.choices_maths(
                 math, dict_units, dict_measurements)
@@ -175,7 +186,8 @@ class ChoicesOutputMeasurements(Resource):
             abort(403)
         try:
             output = Output.query.all()
-            dict_measurements = add_custom_measurements(Measurement.query.all())
+            dict_measurements = add_custom_measurements(
+                Measurement.query.all())
             dict_units = add_custom_units(Unit.query.all())
             output_choices = utils_general.choices_outputs(
                 output, dict_units, dict_measurements)
@@ -202,7 +214,8 @@ class ChoicesPIDs(Resource):
             abort(403)
         try:
             pid = PID.query.all()
-            dict_measurements = add_custom_measurements(Measurement.query.all())
+            dict_measurements = add_custom_measurements(
+                Measurement.query.all())
             dict_units = add_custom_units(Unit.query.all())
             pid_choices = utils_general.choices_pids(
                 pid, dict_units, dict_measurements)

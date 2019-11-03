@@ -84,7 +84,7 @@ def create_admin_user():
         user = UserFactory()
         user.name = 'admin'
         user.set_password('53CR3t_p4zZW0rD')
-        user.api_key = secrets.token_bytes(12)
+        user.api_key = b'secret_admin_api_key'
         user.language = 'en'
         user.save()
         user.role_id = Role.query.filter_by(name='Admin').first().id
@@ -98,7 +98,7 @@ def create_guest_user():
         user.name = 'guest'
         user.email = 'guest@email.com'
         user.set_password('53CR3t_p4zZW0rD')
-        user.api_key = secrets.token_bytes(12)
+        user.api_key = b'secret_guest_api_key'
         user.role_id = Role.query.filter_by(name='Guest').first().id
         user.language = 'en'
         user.save()

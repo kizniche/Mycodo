@@ -10,22 +10,13 @@ from flask_restplus import fields
 
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.api import api
+from mycodo.mycodo_flask.api import default_responses
 from mycodo.mycodo_flask.utils import utils_general
 
 logger = logging.getLogger(__name__)
 
-ns_controller = api.namespace('controllers', description='Controller operations')
-
-default_responses = {
-    200: 'Success',
-    401: 'Invalid API Key',
-    403: 'Insufficient Permissions',
-    404: 'Not Found',
-    422: 'Unprocessable Entity',
-    429: 'Too Many Requests',
-    460: 'Fail',
-    500: 'Internal Server Error'
-}
+ns_controller = api.namespace(
+    'controllers', description='Controller operations')
 
 controller_status_fields = ns_controller.model('Controller Status Fields', {
     'is_active': fields.Boolean
@@ -33,7 +24,7 @@ controller_status_fields = ns_controller.model('Controller Status Fields', {
 
 controller_set_fields = ns_controller.model('Controller Modulation Fields', {
     'activate': fields.Boolean(
-        description='Set the state to activate (1) or deactivate (0).',
+        description='Activate (1) or deactivate (0) a controller.',
         required=True)
 })
 

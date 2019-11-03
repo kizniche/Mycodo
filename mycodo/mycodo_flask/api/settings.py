@@ -10,12 +10,16 @@ from flask_restplus import fields
 
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
+from mycodo.databases.models import Math
 from mycodo.databases.models import Measurement
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
+from mycodo.databases.models import Trigger
 from mycodo.databases.models import Unit
 from mycodo.databases.models import User
+from mycodo.databases.models.function import TriggerSchema
 from mycodo.databases.models.input import InputSchema
+from mycodo.databases.models.math import MathSchema
 from mycodo.databases.models.measurement import DeviceMeasurementsSchema
 from mycodo.databases.models.measurement import MeasurementSchema
 from mycodo.databases.models.measurement import UnitSchema
@@ -23,11 +27,14 @@ from mycodo.databases.models.output import OutputSchema
 from mycodo.databases.models.pid import PIDSchema
 from mycodo.databases.models.user import UserSchema
 from mycodo.mycodo_flask.api import api
+from mycodo.mycodo_flask.api import default_responses
 from mycodo.mycodo_flask.api.sql_schema_fields import device_measurement_fields
 from mycodo.mycodo_flask.api.sql_schema_fields import input_fields
+from mycodo.mycodo_flask.api.sql_schema_fields import math_fields
 from mycodo.mycodo_flask.api.sql_schema_fields import measurement_fields
 from mycodo.mycodo_flask.api.sql_schema_fields import output_fields
 from mycodo.mycodo_flask.api.sql_schema_fields import pid_fields
+from mycodo.mycodo_flask.api.sql_schema_fields import trigger_fields
 from mycodo.mycodo_flask.api.sql_schema_fields import unit_fields
 from mycodo.mycodo_flask.api.sql_schema_fields import user_fields
 from mycodo.mycodo_flask.api.utils import get_from_db
@@ -38,48 +45,53 @@ logger = logging.getLogger(__name__)
 
 ns_settings = api.namespace('settings', description='Settings operations')
 
-default_responses = {
-    200: 'Success',
-    401: 'Invalid API Key',
-    403: 'Insufficient Permissions',
-    404: 'Not Found',
-    429: 'Too Many Requests',
-    500: 'Internal Server Error'
-}
+device_measurement_list_fields = ns_settings.model(
+    'Device Measurement Settings Fields List', {
+        'device measurement settings': fields.List(fields.Nested(
+            device_measurement_fields)),
+    }
+)
 
 input_list_fields = ns_settings.model('Input Settings Fields List', {
-    'inputs': fields.List(fields.Nested(input_fields)),
+    'input settings': fields.List(fields.Nested(input_fields)),
 })
 
-device_measurement_list_fields = ns_settings.model('Device Measurement Settings Fields List', {
-    'device measurements': fields.List(fields.Nested(device_measurement_fields)),
+math_list_fields = ns_settings.model('Math Settings Fields List', {
+    'math settings': fields.List(fields.Nested(math_fields)),
 })
 
-measurement_list_fields = ns_settings.model('Measurement Settings Fields List', {
-    'measurements': fields.List(fields.Nested(device_measurement_fields)),
-})
+measurement_list_fields = ns_settings.model(
+    'Measurement Settings Fields List', {
+        'measurement settings': fields.List(
+            fields.Nested(device_measurement_fields)),
+    }
+)
 
 output_list_fields = ns_settings.model('Output Settings Fields List', {
-    'outputs': fields.List(fields.Nested(output_fields)),
+    'output settings': fields.List(fields.Nested(output_fields)),
 })
 
 pid_list_fields = ns_settings.model('PID Settings Fields List', {
-    'pids': fields.List(fields.Nested(pid_fields)),
+    'pid settings': fields.List(fields.Nested(pid_fields)),
 })
 
-unit_list_fields = ns_settings.model('User Settings Fields List', {
-    'units': fields.List(fields.Nested(unit_fields)),
+trigger_list_fields = ns_settings.model('Trigger Settings Fields List', {
+    'trigger settings': fields.List(fields.Nested(trigger_fields)),
+})
+
+unit_list_fields = ns_settings.model('Unit Settings Fields List', {
+    'unit settings': fields.List(fields.Nested(unit_fields)),
 })
 
 user_list_fields = ns_settings.model('User Settings Fields List', {
-    'users': fields.List(fields.Nested(user_fields)),
+    'user settings': fields.List(fields.Nested(user_fields)),
 })
 
 
 @ns_settings.route('/device_measurements')
 @ns_settings.doc(security='apikey', responses=default_responses)
 class SettingsDeviceMeasurements(Resource):
-    """Interacts with Measurement settings in the SQL database"""
+    """Interacts with device measurement settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_settings.marshal_with(device_measurement_list_fields)
@@ -92,7 +104,7 @@ class SettingsDeviceMeasurements(Resource):
             list_data = get_from_db(
                 DeviceMeasurementsSchema, DeviceMeasurements)
             if list_data:
-                return {'device measurements': list_data}, 200
+                return {'device measurement settings': list_data}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
@@ -106,7 +118,7 @@ class SettingsDeviceMeasurements(Resource):
     params={'unique_id': 'The unique ID of the measurement'}
 )
 class SettingsDeviceMeasurementsUniqueID(Resource):
-    """Interacts with Measurement settings in the SQL database"""
+    """Interacts with device measurement settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_settings.marshal_with(device_measurement_fields)
@@ -136,7 +148,7 @@ class SettingsDeviceMeasurementsUniqueID(Resource):
                          'etc.) for which the measurement belongs.'}
 )
 class SettingsDeviceMeasurementsDeviceID(Resource):
-    """Interacts with Measurement settings in the SQL database"""
+    """Interacts with device measurement settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_settings.marshal_with(device_measurement_list_fields)
@@ -152,7 +164,7 @@ class SettingsDeviceMeasurementsDeviceID(Resource):
                     DeviceMeasurements.query.filter_by(
                         device_id=device_id).all(), many=True))
             if list_data:
-                return {'device measurements': list_data}, 200
+                return {'device measurement settings': list_data}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
@@ -162,7 +174,7 @@ class SettingsDeviceMeasurementsDeviceID(Resource):
 @ns_settings.route('/inputs')
 @ns_settings.doc(security='apikey', responses=default_responses)
 class SettingsInputs(Resource):
-    """Interacts with Input settings in the SQL database"""
+    """Interacts with input settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_settings.marshal_with(input_list_fields)
@@ -174,7 +186,7 @@ class SettingsInputs(Resource):
         try:
             list_data = get_from_db(InputSchema, Input)
             if list_data:
-                return {'inputs': list_data}, 200
+                return {'input settings': list_data}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
@@ -188,7 +200,7 @@ class SettingsInputs(Resource):
     params={'unique_id': 'The unique ID of the input'}
 )
 class SettingsInputsUniqueID(Resource):
-    """Interacts with Input settings in the SQL database"""
+    """Interacts with input settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_settings.marshal_with(input_fields)
@@ -207,10 +219,58 @@ class SettingsInputsUniqueID(Resource):
                   error=traceback.format_exc())
 
 
+@ns_settings.route('/maths')
+@ns_settings.doc(security='apikey', responses=default_responses)
+class SettingsMaths(Resource):
+    """Interacts with math settings in the SQL database"""
+
+    @accept('application/vnd.mycodo.v1+json')
+    @ns_settings.marshal_with(math_list_fields)
+    @flask_login.login_required
+    def get(self):
+        """Show all math settings"""
+        if not utils_general.user_has_permission('view_settings'):
+            abort(403)
+        try:
+            list_data = get_from_db(MathSchema, Math)
+            if list_data:
+                return {'math settings': list_data}, 200
+        except Exception:
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
+
+
+@ns_settings.route('/maths/<string:unique_id>')
+@ns_settings.doc(
+    security='apikey',
+    responses=default_responses,
+    params={'unique_id': 'The unique ID of the math'}
+)
+class SettingsMathsUniqueID(Resource):
+    """Interacts with math settings in the SQL database"""
+
+    @accept('application/vnd.mycodo.v1+json')
+    @ns_settings.marshal_with(math_fields)
+    @flask_login.login_required
+    def get(self, unique_id):
+        """Show the settings for an math"""
+        if not utils_general.user_has_permission('view_settings'):
+            abort(403)
+        try:
+            dict_data = get_from_db(MathSchema, Math, unique_id=unique_id)
+            if dict_data:
+                return dict_data, 200
+        except Exception:
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
+
+
 @ns_settings.route('/measurements')
 @ns_settings.doc(security='apikey', responses=default_responses)
 class SettingsMeasurements(Resource):
-    """Interacts with Measurement settings in the SQL database"""
+    """Interacts with measurement settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_settings.marshal_with(measurement_list_fields)
@@ -222,7 +282,7 @@ class SettingsMeasurements(Resource):
         try:
             list_data = get_from_db(MeasurementSchema, Measurement)
             if list_data:
-                return {'device measurements': list_data}, 200
+                return {'measurement settings': list_data}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
@@ -236,7 +296,7 @@ class SettingsMeasurements(Resource):
     params={'unique_id': 'The unique ID of the measurement'}
 )
 class SettingsMeasurementsUniqueID(Resource):
-    """Interacts with Measurement settings in the SQL database"""
+    """Interacts with measurement settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_settings.marshal_with(measurement_fields)
@@ -271,7 +331,7 @@ class SettingsOutputs(Resource):
         try:
             list_data = get_from_db(OutputSchema, Output)
             if list_data:
-                return {'outputs': list_data}, 200
+                return {'output settings': list_data}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
@@ -285,7 +345,7 @@ class SettingsOutputs(Resource):
     params={'unique_id': 'The unique ID of the output'}
 )
 class SettingsOutputsUniqueID(Resource):
-    """Interacts with Output settings in the SQL database"""
+    """Interacts with output settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_settings.marshal_with(output_fields)
@@ -319,7 +379,7 @@ class SettingsPIDs(Resource):
         try:
             list_data = get_from_db(PIDSchema, PID)
             if list_data:
-                return {'pids': list_data}, 200
+                return {'pid settings': list_data}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
@@ -352,6 +412,54 @@ class SettingsPIDsUniqueID(Resource):
                   error=traceback.format_exc())
 
 
+@ns_settings.route('/triggers')
+@ns_settings.doc(security='apikey', responses=default_responses)
+class SettingsTriggers(Resource):
+    """Interacts with Trigger settings in the SQL database"""
+
+    @accept('application/vnd.mycodo.v1+json')
+    @ns_settings.marshal_with(trigger_list_fields)
+    @flask_login.login_required
+    def get(self):
+        """Show all trigger settings"""
+        if not utils_general.user_has_permission('view_settings'):
+            abort(403)
+        try:
+            list_data = get_from_db(TriggerSchema, Trigger)
+            if list_data:
+                return {'trigger settings': list_data}, 200
+        except Exception:
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
+
+
+@ns_settings.route('/triggers/<string:unique_id>')
+@ns_settings.doc(
+    security='apikey',
+    responses=default_responses,
+    params={'unique_id': 'The unique ID of the trigger'}
+)
+class SettingsTriggersUniqueID(Resource):
+    """Interacts with Trigger settings in the SQL database"""
+
+    @accept('application/vnd.mycodo.v1+json')
+    @ns_settings.marshal_with(trigger_fields)
+    @flask_login.login_required
+    def get(self, unique_id):
+        """Show the settings for a trigger with the unique_id"""
+        if not utils_general.user_has_permission('view_settings'):
+            abort(403)
+        try:
+            dict_data = get_from_db(TriggerSchema, Trigger, unique_id=unique_id)
+            if dict_data:
+                return dict_data, 200
+        except Exception:
+            abort(500,
+                  message='An exception occurred',
+                  error=traceback.format_exc())
+
+
 @ns_settings.route('/units')
 @ns_settings.doc(security='apikey', responses=default_responses)
 class SettingsUnits(Resource):
@@ -367,7 +475,7 @@ class SettingsUnits(Resource):
         try:
             list_data = get_from_db(UnitSchema, Unit)
             if list_data:
-                return {'units': list_data}, 200
+                return {'unit settings': list_data}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
@@ -415,7 +523,7 @@ class SettingsUsers(Resource):
         try:
             list_data = get_from_db(UserSchema, User)
             if list_data:
-                return {'users': list_data}, 200
+                return {'user settings': list_data}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',

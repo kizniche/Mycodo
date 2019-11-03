@@ -14,6 +14,7 @@ from mycodo.databases.models.measurement import DeviceMeasurementsSchema
 from mycodo.databases.models.output import OutputSchema
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.api import api
+from mycodo.mycodo_flask.api import default_responses
 from mycodo.mycodo_flask.api.sql_schema_fields import device_measurement_fields
 from mycodo.mycodo_flask.api.sql_schema_fields import output_fields
 from mycodo.mycodo_flask.api.utils import get_from_db
@@ -24,17 +25,6 @@ from mycodo.mycodo_flask.utils.utils_output import get_all_output_states
 logger = logging.getLogger(__name__)
 
 ns_output = api.namespace('outputs', description='Output operations')
-
-default_responses = {
-    200: 'Success',
-    401: 'Invalid API Key',
-    403: 'Insufficient Permissions',
-    404: 'Not Found',
-    422: 'Unprocessable Entity',
-    429: 'Too Many Requests',
-    460: 'Fail',
-    500: 'Internal Server Error'
-}
 
 output_states_fields = ns_output.model('Output States Fields', {
     'unique_id': fields.String,
@@ -48,7 +38,8 @@ output_list_fields = api.model('Output Fields List', {
 
 output_unique_id_fields = ns_output.model('Output Status Fields', {
     'output settings': fields.Nested(output_fields),
-    'output device measurements': fields.List(fields.Nested(device_measurement_fields)),
+    'output device measurements': fields.List(
+        fields.Nested(device_measurement_fields)),
     'output state': fields.String
 })
 
@@ -89,7 +80,7 @@ class Inputs(Resource):
     @ns_output.marshal_with(output_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all output settings"""
+        """Show all output settings and statuses"""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -117,7 +108,7 @@ class Outputs(Resource):
     @ns_output.marshal_with(output_unique_id_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Get the state of an output"""
+        """Show the settings and status for an output"""
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
 
@@ -179,7 +170,8 @@ class Outputs(Resource):
                     if duty_cycle < 0 or duty_cycle > 100:
                         abort(422, message='Required: 0 <= duty_cycle <= 100')
                 except Exception:
-                    abort(422, message='duty_cycle does not represent float value')
+                    abort(422,
+                          message='duty_cycle does not represent float value')
 
         try:
             if state is not None and duration is not None:

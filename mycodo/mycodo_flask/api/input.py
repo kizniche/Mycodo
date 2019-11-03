@@ -14,6 +14,7 @@ from mycodo.databases.models.input import InputSchema
 from mycodo.databases.models.measurement import DeviceMeasurementsSchema
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.api import api
+from mycodo.mycodo_flask.api import default_responses
 from mycodo.mycodo_flask.api.sql_schema_fields import device_measurement_fields
 from mycodo.mycodo_flask.api.sql_schema_fields import input_fields
 from mycodo.mycodo_flask.api.utils import get_from_db
@@ -24,20 +25,10 @@ logger = logging.getLogger(__name__)
 
 ns_input = api.namespace('inputs', description='Input operations')
 
-default_responses = {
-    200: 'Success',
-    401: 'Invalid API Key',
-    403: 'Insufficient Permissions',
-    404: 'Not Found',
-    422: 'Unprocessable Entity',
-    429: 'Too Many Requests',
-    460: 'Fail',
-    500: 'Internal Server Error'
-}
-
 input_single_fields = api.model('Input Status Fields', {
     'input settings': fields.Nested(input_fields),
-    'device measurements': fields.List(fields.Nested(device_measurement_fields)),
+    'device measurements': fields.List(
+        fields.Nested(device_measurement_fields)),
 })
 
 input_list_fields = api.model('Input Fields List', {
@@ -74,7 +65,7 @@ class Inputs(Resource):
     params={'unique_id': 'The unique ID of the input'}
 )
 class SettingsInputsUniqueID(Resource):
-    """Interacts with Input settings in the SQL database"""
+    """Interacts with input settings in the SQL database"""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_input.marshal_with(input_single_fields)

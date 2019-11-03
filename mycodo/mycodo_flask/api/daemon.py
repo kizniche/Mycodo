@@ -10,22 +10,12 @@ from flask_restplus import fields
 
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.api import api
+from mycodo.mycodo_flask.api import default_responses
 from mycodo.mycodo_flask.utils import utils_general
 
 logger = logging.getLogger(__name__)
 
 ns_daemon = api.namespace('daemon', description='Daemon operations')
-
-default_responses = {
-    200: 'Success',
-    401: 'Invalid API Key',
-    403: 'Insufficient Permissions',
-    404: 'Not Found',
-    422: 'Unprocessable Entity',
-    429: 'Too Many Requests',
-    460: 'Fail',
-    500: 'Internal Server Error'
-}
 
 daemon_status_fields = ns_daemon.model('Daemon Status Fields', {
     'is_running': fields.Boolean,

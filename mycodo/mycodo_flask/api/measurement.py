@@ -9,6 +9,7 @@ from flask_restplus import abort
 from flask_restplus import fields
 
 from mycodo.mycodo_flask.api import api
+from mycodo.mycodo_flask.api import default_responses
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import read_past_influxdb
@@ -18,16 +19,6 @@ logger = logging.getLogger(__name__)
 
 ns_measurement = api.namespace(
     'measurements', description='Measurement operations')
-
-default_responses = {
-    200: 'Success',
-    401: 'Invalid API Key',
-    403: 'Insufficient Permissions',
-    404: 'Not Found',
-    422: 'Unprocessable Entity',
-    429: 'Too Many Requests',
-    500: 'Internal Server Error'
-}
 
 measurement_fields = ns_measurement.model('Measurement Fields', {
     'time': fields.DateTime(dt_format='iso8601'),

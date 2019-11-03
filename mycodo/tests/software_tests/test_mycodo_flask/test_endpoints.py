@@ -29,15 +29,6 @@ def redirects_to_admin_creation_page(testapp, endpoint):
     assert "<!-- Route: /create_admin -->" in response
 
 
-def returns_401_unauthorized(testapp, endpoint):
-    """ helper function that verifies 401 is returned """
-    response = testapp.get(
-        endpoint,
-        headers={'Accept': 'application/vnd.mycodo.v1+json'},
-        expect_errors=True).maybe_follow()
-    assert response.status_code == 401, "Response Status Failure: {}".format(endpoint)
-
-
 def test_sees_admin_creation_form(testapp):
     """ No Admin user exists: user sees the admin creation page """
     print("\nTest: test_sees_admin_creation_form")
@@ -105,6 +96,88 @@ def test_routes_when_not_logged_in(testapp):
         redirects_to_login_page(testapp=testapp, endpoint='/{add}'.format(add=route))
 
 
+# ---------------
+#   API Endpoints
+# ---------------
+api_endpoints = [
+    ('choices/controllers', 'choices controllers'),
+    ('choices/inputs/measurements', '"choices inputs measurements":'),
+    ('choices/outputs/devices', '"choices outputs devices":'),
+    ('choices/outputs/measurements', '"choices outputs measurements":'),
+    ('choices/pids/measurements', '"choices pids measurements":'),
+    ('settings/device_measurements', '"device measurement settings":'),
+    ('settings/inputs', '"input settings":'),
+    ('settings/maths', '"math settings":'),
+    ('settings/measurements', '"measurement settings":'),
+    ('settings/outputs', '"output settings":'),
+    ('settings/pids', '"pid settings":'),
+    ('settings/triggers', '"trigger settings":'),
+    ('settings/units', '"unit settings":'),
+    ('settings/users', '"user settings":'),
+]
+
+
+@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
+def test_api_logged_in_as_admin(_, testapp):
+    """ Verifies behavior of these API endpoints for a logged in admin user """
+    print("\nTest: test_api_logged_in_as_admin")
+
+    print("test_routes_logged_in_as_admin: login_user(testapp, 'admin', '53CR3t_p4zZW0rD')")
+    login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
+
+    # Test all endpoints
+    for index, route in enumerate(api_endpoints):
+        print("test_routes_logged_in_as_admin: Test Route ({}/{}): testapp.get('/api/{}')".format(
+            index + 1, len(api_endpoints), route[0]))
+        response = testapp.get(
+            '/api/{add}'.format(add=route[0]),
+            headers={'Accept': 'application/vnd.mycodo.v1+json'})
+        assert response.status_code == 200, "Endpoint Tested: {page}".format(page=route[0])
+        assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
+
+
+@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
+def test_api_with_admin_apikey_in_header(_, testapp):
+    """ Verifies behavior of these API endpoints with an apikey in the header """
+    print("\nTest: test_api_with_admin_apikey_in_header")
+
+    # Test all endpoints
+    for index, route in enumerate(api_endpoints):
+        print("test_api_with_admin_apikey_in_header: Test Route ({}/{}): testapp.get('/api/{}')".format(
+            index + 1, len(api_endpoints), route[0]))
+        import base64
+        response = testapp.get(
+            '/api/{add}'.format(add=route[0]),
+            headers={
+                'Accept': 'application/vnd.mycodo.v1+json',
+                'X-API-KEY': base64.b64encode(b'secret_admin_api_key')
+            }
+        )
+        assert response.status_code == 200, "Endpoint Tested: {page}".format(page=route[0])
+        assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
+
+
+@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
+def test_api_with_guest_apikey_in_header_403_forbidden(_, testapp):
+    """ Verifies behavior of these API endpoints with an apikey in the header """
+    print("\nTest: test_api_with_guest_apikey_in_header_403_forbidden")
+
+    # Test all endpoints
+    for index, route in enumerate(api_endpoints):
+        print("test_api_with_guest_apikey_in_header_403_forbidden: Test Route ({}/{}): testapp.get('/api/{}')".format(
+            index + 1, len(api_endpoints), route[0]))
+        import base64
+        response = testapp.get(
+            '/api/{add}'.format(add=route[0]),
+            headers={
+                'Accept': 'application/vnd.mycodo.v1+json',
+                'X-API-KEY': base64.b64encode(b'secret_guest_api_key')
+            },
+            expect_errors=True
+        ).maybe_follow()
+        assert response.status_code == 403, "Endpoint Tested: {page}".format(page=route[0])
+
+
 def test_api_when_not_logged_in(testapp):
     """
     Verifies behavior of these API endpoints when not logged in.
@@ -120,16 +193,22 @@ def test_api_when_not_logged_in(testapp):
         'choices/pids/measurements',
         'settings/device_measurements',
         'settings/inputs',
+        'settings/maths',
         'settings/measurements',
         'settings/outputs',
         'settings/pids',
+        'settings/triggers',
         'settings/units',
         'settings/users'
     ]
     for index, route in enumerate(routes):
         print("test_api_when_not_logged_in: Test Route ({}/{}): testapp.get('/api/{}').maybe_follow()".format(
             index + 1, len(routes), route))
-        returns_401_unauthorized(testapp=testapp, endpoint='/api/{add}'.format(add=route))
+        response = testapp.get(
+            '/api/{add}'.format(add=route),
+            headers={'Accept': 'application/vnd.mycodo.v1+json'},
+            expect_errors=True).maybe_follow()
+        assert response.status_code == 401, "Response Status Failure: {}".format('/api/{add}'.format(add=route))
 
 
 def test_api_docs_when_not_logged_in(testapp):
@@ -194,40 +273,6 @@ def test_routes_logged_in_as_admin(_, testapp):
         print("test_routes_logged_in_as_admin: Test Route ({}/{}): testapp.get('/{}').maybe_follow()".format(
             index + 1, len(routes), route[0]))
         response = testapp.get('/{add}'.format(add=route[0])).maybe_follow()
-        assert response.status_code == 200, "Endpoint Tested: {page}".format(page=route[0])
-        assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
-
-
-@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
-def test_api_logged_in_as_admin(_, testapp):
-    """ Verifies behavior of these API endpoints for a logged in admin user """
-    print("\nTest: test_api_logged_in_as_admin")
-
-    print("test_routes_logged_in_as_admin: login_user(testapp, 'admin', '53CR3t_p4zZW0rD')")
-    login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
-
-    # Test all endpoints
-    routes = [
-        ('choices/controllers', 'choices controllers'),
-        ('choices/inputs/measurements', '"choices inputs measurements":'),
-        ('choices/outputs/devices', '"choices outputs devices":'),
-        ('choices/outputs/measurements', '"choices outputs measurements":'),
-        ('choices/pids/measurements', '"choices pids measurements":'),
-        ('settings/device_measurements', '"device measurements":'),
-        ('settings/inputs', '"inputs":'),
-        ('settings/measurements', '"measurements":'),
-        ('settings/outputs', '"outputs":'),
-        ('settings/pids', '"pids":'),
-        ('settings/units', '"units":'),
-        ('settings/users', '"users":'),
-    ]
-
-    for index, route in enumerate(routes):
-        print("test_routes_logged_in_as_admin: Test Route ({}/{}): testapp.get('/api/{}')".format(
-            index + 1, len(routes), route[0]))
-        response = testapp.get(
-            '/api/{add}'.format(add=route[0]),
-            headers={'Accept': 'application/vnd.mycodo.v1+json'})
         assert response.status_code == 200, "Endpoint Tested: {page}".format(page=route[0])
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
 

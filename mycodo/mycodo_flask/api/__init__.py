@@ -17,6 +17,16 @@ authorizations = {
     }
 }
 
+default_responses = {
+    200: 'Success',
+    401: 'Invalid API Key',
+    403: 'Insufficient Permissions',
+    404: 'Not Found',
+    422: 'Unprocessable Entity',
+    429: 'Too Many Requests',
+    500: 'Internal Server Error'
+}
+
 api = Api(
     api_blueprint,
     version='1.0',
@@ -52,8 +62,10 @@ def init_api(app):
     import mycodo.mycodo_flask.api.controller
     import mycodo.mycodo_flask.api.daemon
     import mycodo.mycodo_flask.api.input
+    import mycodo.mycodo_flask.api.math
     import mycodo.mycodo_flask.api.measurement
     import mycodo.mycodo_flask.api.output
+    import mycodo.mycodo_flask.api.pid
     import mycodo.mycodo_flask.api.settings
 
     app.register_blueprint(api_blueprint)
