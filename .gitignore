@@ -1,6 +1,5 @@
 # Mycodo files
 env/
-camera/
 /databases/flask_secret_key
 *.db
 *.pem

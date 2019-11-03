@@ -28,7 +28,7 @@ from sqlalchemy import and_
 
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import BACKUP_LOG_FILE
-from mycodo.config import CAMERA_LIBRARIES
+from mycodo.config import CAMERA_INFO
 from mycodo.config import CONDITIONAL_CONDITIONS
 from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DAEMON_PID_FILE
@@ -110,7 +110,6 @@ from mycodo.mycodo_flask.utils import utils_notes
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_trigger
-from mycodo.mycodo_flask.utils.utils_general import generate_form_controller_list
 from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.influx import average_past_seconds
 from mycodo.utils.influx import average_start_end_seconds
@@ -176,6 +175,12 @@ def page_camera():
     camera = Camera.query.all()
     output = Output.query.all()
 
+    try:
+        from mycodo.devices.camera import count_cameras_opencv
+        opencv_devices = count_cameras_opencv()
+    except Exception:
+        opencv_devices = 0
+
     pi_camera_enabled = False
     try:
         if (not current_app.config['TESTING'] and
@@ -186,6 +191,7 @@ def page_camera():
                      "{err}".format(err=e))
 
     if request.method == 'POST':
+        unmet_dependencies = None
         if not utils_general.user_has_permission('edit_settings'):
             return redirect(url_for('routes_page.page_camera'))
 
@@ -193,7 +199,7 @@ def page_camera():
         mod_camera = Camera.query.filter(
             Camera.unique_id == form_camera.camera_id.data).first()
         if form_camera.camera_add.data:
-            utils_camera.camera_add(form_camera)
+            unmet_dependencies = utils_camera.camera_add(form_camera)
         elif form_camera.camera_mod.data:
             utils_camera.camera_mod(form_camera)
         elif form_camera.camera_del.data:
@@ -255,7 +261,11 @@ def page_camera():
             mod_camera.stream_started = False
             db.session.commit()
 
-        return redirect(url_for('routes_page.page_camera'))
+        if unmet_dependencies:
+            return redirect(url_for('routes_admin.admin_dependencies',
+                                    device=form_camera.library.data))
+        else:
+            return redirect(url_for('routes_page.page_camera'))
 
     # Get the full path and timestamps of latest still and time-lapse images
     (latest_img_still_ts,
@@ -267,12 +277,13 @@ def page_camera():
 
     return render_template('pages/camera.html',
                            camera=camera,
-                           camera_libraries=CAMERA_LIBRARIES,
+                           camera_info=CAMERA_INFO,
                            form_camera=form_camera,
                            latest_img_still=latest_img_still,
                            latest_img_still_ts=latest_img_still_ts,
                            latest_img_tl=latest_img_tl,
                            latest_img_tl_ts=latest_img_tl_ts,
+                           opencv_devices=opencv_devices,
                            output=output,
                            pi_camera_enabled=pi_camera_enabled,
                            time_now=time_now)

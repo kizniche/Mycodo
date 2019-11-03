@@ -59,6 +59,29 @@ DASHBOARD_WIDGETS = [
     ('camera', TRANSLATIONS['camera']['title'])
 ]
 
+# Camera info
+CAMERA_INFO = {
+    'fswebcam': {
+        'name': 'fswebcam',
+        'dependencies_module': [
+            ('apt', 'fswebcam', 'fswebcam')
+        ]
+    },
+    'opencv': {
+        'name': 'OpenCV',
+        'dependencies_module': [
+            ('pip-pypi', 'imutils', 'imutils'),
+            ('apt', 'python3-opencv', 'python3-opencv'),
+        ]
+    },
+    'picamera': {
+        'name': 'PiCamera',
+        'dependencies_module': [
+            ('pip-pypi', 'picamera', 'picamera')
+        ]
+    },
+}
+
 # LCD info
 LCD_INFO = {
     '16x2_generic': {
@@ -820,11 +843,6 @@ DAEMON_PID_FILE = os.path.join(RUN_PATH, 'mycodo.pid')
 STORED_SSL_CERTIFICATE_PATH = os.path.join(
     INSTALL_DIRECTORY, 'mycodo/mycodo_flask/ssl_certs/remote_admin')
 
-# Camera
-CAMERA_LIBRARIES = [
-    'picamera',
-    'fswebcam'
-]
 PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')
 
 # Notes

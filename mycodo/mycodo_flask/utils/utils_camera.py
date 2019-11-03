@@ -12,6 +12,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.database import db_retrieve_table
 
 logger = logging.getLogger(__name__)
@@ -22,6 +23,16 @@ def camera_add(form_camera):
         action=TRANSLATIONS['add']['title'],
         controller=TRANSLATIONS['camera']['title'])
     error = []
+
+    dep_unmet, _ = return_dependencies(form_camera.library.data)
+    if dep_unmet:
+        list_unmet_deps = []
+        for each_dep in dep_unmet:
+            list_unmet_deps.append(each_dep[0])
+        error.append(
+            "The {dev} device you're trying to add has unmet dependencies: "
+            "{dep}".format(dev=form_camera.library.data,
+                           dep=', '.join(list_unmet_deps)))
 
     new_camera = Camera()
     if Camera.query.filter(Camera.name == form_camera.name.data).count():
@@ -36,6 +47,15 @@ def camera_add(form_camera):
         new_camera.contrast = 0.0
         new_camera.exposure = 0.0
         new_camera.saturation = 0.0
+    elif form_camera.library.data == 'opencv':
+        new_camera.device = '0'
+        new_camera.brightness = 0.6
+        new_camera.contrast = 0.15
+        new_camera.exposure = 0.0
+        new_camera.gain = 0
+        new_camera.hue = -1.0
+        new_camera.saturation = 0.1
+        new_camera.white_balance = 0.0
     if not error:
         try:
             new_camera.save()
@@ -45,6 +65,9 @@ def camera_add(form_camera):
             error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_camera'))
+
+    if dep_unmet:
+        return 1
 
 
 def camera_mod(form_camera):
@@ -94,6 +117,20 @@ def camera_mod(form_camera):
             mod_camera.picamera_exposure_mode = form_camera.picamera_exposure_mode.data
             mod_camera.picamera_meter_mode = form_camera.picamera_meter_mode.data
             mod_camera.picamera_image_effect = form_camera.picamera_image_effect.data
+        elif mod_camera.library == 'opencv':
+            mod_camera.opencv_device = form_camera.opencv_device.data
+            mod_camera.hflip = form_camera.hflip.data
+            mod_camera.vflip = form_camera.vflip.data
+            mod_camera.rotation = form_camera.rotation.data
+            mod_camera.height = form_camera.height.data
+            mod_camera.width = form_camera.width.data
+            mod_camera.brightness = form_camera.brightness.data
+            mod_camera.contrast = form_camera.contrast.data
+            mod_camera.exposure = form_camera.exposure.data
+            mod_camera.gain = form_camera.gain.data
+            mod_camera.hue = form_camera.hue.data
+            mod_camera.saturation = form_camera.saturation.data
+            mod_camera.white_balance = form_camera.white_balance.data
         else:
             error.append("Unknown camera library")
 

@@ -21,6 +21,7 @@ from pkg_resources import parse_version
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
 from mycodo.config import CALIBRATION_INFO
+from mycodo.config import CAMERA_INFO
 from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import FINAL_RELEASES
@@ -43,6 +44,7 @@ from mycodo.mycodo_flask.forms import forms_dependencies
 from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
+from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.github_release_info import github_latest_release
 from mycodo.utils.github_release_info import github_releases
 from mycodo.utils.inputs import parse_input_information
@@ -233,17 +235,17 @@ def admin_dependencies(device):
     if dep:
         install_in_progress = True
 
-    dict_inputs = parse_input_information()
-
     list_dependencies = [
-        dict_inputs,
+        parse_controller_information(),
+        parse_input_information(),
+        CALIBRATION_INFO,
+        CAMERA_INFO,
         FUNCTION_ACTION_INFO,
         FUNCTION_INFO,
         LCD_INFO,
         MATH_INFO,
         METHOD_INFO,
-        OUTPUT_INFO,
-        CALIBRATION_INFO
+        OUTPUT_INFO
     ]
     for each_section in list_dependencies:
         for each_device in each_section:

@@ -18,8 +18,8 @@
           </div>
           <div class="col-auto">
             <select class="form-control form-tooltip form-dropdown" id="library" name="library" title="" data-original-title="Select the library used to communicate">
-              {%- for each_library in camera_libraries -%}
-                <option value="{{each_library}}">{{each_library}}</option>
+              {%- for each_library in camera_info -%}
+                <option value="{{each_library}}">{{camera_info[each_library]['name']}}</option>
               {%- endfor -%}
             </select>
           </div>
@@ -30,7 +30,7 @@
       </form>
     </div>
 
-  {% for each_camera in camera if each_camera.library != 'opencv' %}
+  {% for each_camera in camera %}
 
   <div class="container" style="width: 95%; border: 2px solid #ddd; border-radius: 5px;">
     <form method="post" action="/camera">
@@ -49,7 +49,7 @@
         {{form_camera.capture_still(class_='form-control btn')}}
       </div>
 
-      {% if each_camera.library in ['picamera'] and
+      {% if each_camera.library in ['opencv', 'picamera'] and
             not each_camera.timelapse_started %}
         <div class="col-12 col-sm-3 col-lg-2">
           {% if each_camera.stream_started -%}
@@ -129,7 +129,11 @@
         {% endif  %}
       {% elif each_camera.library == 'fswebcam' %}
         <div class="col-12" style="color: red">
-          {{_("Different options are available to fswebcam depending on the camera being used. Execute 'fswebcam --device /dev/video0 --list-controls' to see available options to use in 'Custom Options'.")}}
+          {{_("Different options are available depending on the camera being used.")}} {{_("Execute 'fswebcam --device /dev/video0 --list-controls' to see available options to use in 'Custom Options'.")}}
+        </div>
+      {% elif each_camera.library == 'opencv' %}
+        <div class="col-12" style="color: red">
+          {{_("Different options are available depending on the camera being used.")}}
         </div>
       {% endif %}
 
@@ -230,7 +234,7 @@
 
     <div class="row small-gutters">
 
-    {%- if each_camera.library in ['picamera'] and
+    {%- if each_camera.library in ['opencv', 'picamera'] and
            each_camera.stream_started -%}
       <div>
         {{_('Video Stream')}}:

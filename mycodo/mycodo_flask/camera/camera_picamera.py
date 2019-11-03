@@ -51,7 +51,7 @@ class Camera(BaseCamera):
                     stream, 'jpeg', use_video_port=True):
                 # return current frame
                 stream.seek(0)
-                time.sleep(0.3)
+                time.sleep(0.05)
                 yield stream.read()
 
                 # reset stream for next frame

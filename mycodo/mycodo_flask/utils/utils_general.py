@@ -15,6 +15,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import CALIBRATION_INFO
+from mycodo.config import CAMERA_INFO
 from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import LCD_INFO
@@ -971,20 +972,19 @@ def return_dependencies(device_type):
     unmet_deps = []
     met_deps = False
 
-    dict_controllers = parse_controller_information()
-    dict_inputs = parse_input_information()
-
     list_dependencies = [
-        dict_controllers,
-        dict_inputs,
+        parse_controller_information(),
+        parse_input_information(),
+        CALIBRATION_INFO,
+        CAMERA_INFO,
         FUNCTION_ACTION_INFO,
         FUNCTION_INFO,
         LCD_INFO,
         MATH_INFO,
         METHOD_INFO,
-        OUTPUT_INFO,
-        CALIBRATION_INFO
+        OUTPUT_INFO
     ]
+
     for each_section in list_dependencies:
         if device_type in each_section:
             for each_device, each_dict in each_section[device_type].items():

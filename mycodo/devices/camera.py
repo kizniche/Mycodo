@@ -4,7 +4,6 @@ import logging
 import time
 
 import os
-import picamera
 
 from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import Camera
@@ -88,6 +87,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         time.sleep(settings.output_duration)
 
     if settings.library == 'picamera':
+        import picamera
         # Try 5 times to access the pi camera (in case another process is accessing it)
         for _ in range(5):
             try:
@@ -149,6 +149,90 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             "cmd: {}; out: {}; error: {}; status: {}".format(
                 cmd, out, err, status))
 
+    elif settings.library == 'opencv':
+        import cv2
+        import imutils
+        cap = cv2.VideoCapture(settings.opencv_device)
+
+        # Check if image can be read
+        if not cap.read():
+            logger.error(
+                "Cannot detect USB camera with device '{dev}'".format(
+                    dev=settings.opencv_device))
+            return
+
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, settings.width)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, settings.height)
+        cap.set(cv2.CAP_PROP_EXPOSURE, settings.exposure)
+        cap.set(cv2.CAP_PROP_GAIN, settings.gain)
+        cap.set(cv2.CAP_PROP_BRIGHTNESS, settings.brightness)
+        cap.set(cv2.CAP_PROP_CONTRAST, settings.contrast)
+        cap.set(cv2.CAP_PROP_HUE, settings.hue)
+        cap.set(cv2.CAP_PROP_SATURATION, settings.saturation)
+
+        # Discard a few frames to allow camera to adjust to settings
+        for _ in range(2):
+            cap.read()
+
+        if record_type in ['photo', 'timelapse']:
+            edited = False
+            _, img_orig = cap.read()
+            cap.release()
+
+            img_edited = img_orig.copy()
+
+            if any((settings.hflip, settings.vflip, settings.rotation)):
+                edited = True
+
+            if settings.hflip and settings.vflip:
+                img_edited = cv2.flip(img_orig, -1)
+            elif settings.hflip:
+                img_edited = cv2.flip(img_orig, 1)
+            elif settings.vflip:
+                img_edited = cv2.flip(img_orig, 0)
+
+            if settings.rotation:
+                img_edited = imutils.rotate_bound(img_orig, settings.rotation)
+
+            if edited:
+                cv2.imwrite(path_file, img_edited)
+            else:
+                cv2.imwrite(path_file, img_orig)
+
+        elif record_type == 'video':
+            # TODO: opencv video recording is currently not working. No idea why. Try to fix later.
+            try:
+                cap = cv2.VideoCapture(settings.opencv_device)
+                fourcc = cv2.CV_FOURCC('X', 'V', 'I', 'D')
+                resolution = (settings.width, settings.height)
+                out = cv2.VideoWriter(path_file, fourcc, 20.0, resolution)
+
+                time_end = time.time() + duration_sec
+                while cap.isOpened() and time.time() < time_end:
+                    ret, frame = cap.read()
+                    if ret:
+                        # write the frame
+                        out.write(frame)
+                        if cv2.waitKey(1) & 0xFF == ord('q'):
+                            break
+                    else:
+                        break
+                cap.release()
+                out.release()
+                cv2.destroyAllWindows()
+            except Exception as e:
+                logger.exception(
+                    "Exception raised while recording video: "
+                    "{err}".format(err=e))
+        else:
+            return
+    try:
+        set_user_grp(path_file, 'mycodo', 'mycodo')
+    except Exception as e:
+        logger.exception(
+            "Exception raised in 'camera_record' when setting user grp: "
+            "{err}".format(err=e))
+
     # Turn off output, if configured
     if settings.output_id and daemon_control:
         daemon_control.output_off(settings.output_id)
@@ -160,3 +244,15 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         logger.exception(
             "Exception raised in 'camera_record' when setting user grp: "
             "{err}".format(err=e))
+
+
+def count_cameras_opencv():
+    """ Returns how many cameras are detected with opencv (cv2) """
+    import cv2
+    max_tested = 100
+    for i in range(max_tested):
+        temp_camera = cv2.VideoCapture(i)
+        if temp_camera.isOpened():
+            temp_camera.release()
+            continue
+        return i
