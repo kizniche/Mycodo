@@ -21,7 +21,17 @@ class Camera(BaseCamera):
     @staticmethod
     def frames():
         settings = Camera.camera_options
+
         camera = cv2.VideoCapture(settings.opencv_device)
+        camera.set(cv2.CAP_PROP_FRAME_WIDTH, settings.resolution_stream_width)
+        camera.set(cv2.CAP_PROP_FRAME_HEIGHT, settings.resolution_stream_height)
+        camera.set(cv2.CAP_PROP_EXPOSURE, settings.exposure)
+        camera.set(cv2.CAP_PROP_GAIN, settings.gain)
+        camera.set(cv2.CAP_PROP_BRIGHTNESS, settings.brightness)
+        camera.set(cv2.CAP_PROP_CONTRAST, settings.contrast)
+        camera.set(cv2.CAP_PROP_HUE, settings.hue)
+        camera.set(cv2.CAP_PROP_SATURATION, settings.saturation)
+
         if not camera.isOpened():
             raise RuntimeError('Could not start camera.')
 

@@ -153,14 +153,6 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         import cv2
         import imutils
         cap = cv2.VideoCapture(settings.opencv_device)
-
-        # Check if image can be read
-        if not cap.read():
-            logger.error(
-                "Cannot detect USB camera with device '{dev}'".format(
-                    dev=settings.opencv_device))
-            return
-
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, settings.width)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, settings.height)
         cap.set(cv2.CAP_PROP_EXPOSURE, settings.exposure)
@@ -169,6 +161,13 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         cap.set(cv2.CAP_PROP_CONTRAST, settings.contrast)
         cap.set(cv2.CAP_PROP_HUE, settings.hue)
         cap.set(cv2.CAP_PROP_SATURATION, settings.saturation)
+
+        # Check if image can be read
+        if not cap.read():
+            logger.error(
+                "Cannot detect USB camera with device '{dev}'".format(
+                    dev=settings.opencv_device))
+            return
 
         # Discard a few frames to allow camera to adjust to settings
         for _ in range(2):
