@@ -388,8 +388,13 @@ class LCDController(AbstractController, threading.Thread):
     def create_lcd_line(self, last_measurement_success, display_id, i):
         try:
             if last_measurement_success:
-                if self.lcd_line[display_id][i]['unit']:
-                    unit_length = len(self.lcd_line[display_id][i]['unit'].replace('°', u''))
+                if self.lcd_line[display_id][i]['unit'] in self.dict_units:
+                    unit_display = self.dict_units[self.lcd_line[display_id][i]['unit']]['unit']
+                else:
+                    unit_display = ''
+
+                if unit_display:
+                    unit_length = len(unit_display.replace('°', u''))
                 else:
                     unit_length = 0
 
@@ -410,7 +415,7 @@ class LCDController(AbstractController, threading.Thread):
                     self.lcd_string_line[display_id][i] = '{name} {value} {unit}'.format(
                         name=name_cropped,
                         value=self.lcd_line[display_id][i]['measure_val'],
-                        unit=self.lcd_line[display_id][i]['unit'].replace('°', u''))
+                        unit=unit_display.replace('°', u''))
                 else:
                     value_length = len(str(
                         self.lcd_line[display_id][i]['measure_val']))

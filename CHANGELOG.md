@@ -4,6 +4,7 @@
 
  - Fix Output control toaster always displaying error
  - Fix translations not working ([#708](https://github.com/kizniche/mycodo/issues/708))
+ - Fix display of units on LCDs
 
 ### Features
 
