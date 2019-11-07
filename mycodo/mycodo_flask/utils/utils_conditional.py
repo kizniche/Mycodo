@@ -47,7 +47,6 @@ def conditional_mod(form):
         cond_mod.period = form.period.data
         cond_mod.log_level_debug = form.log_level_debug.data
         cond_mod.start_offset = form.start_offset.data
-        cond_mod.refractory_period = form.refractory_period.data
 
         if not error:
             db.session.commit()

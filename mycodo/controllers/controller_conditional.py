@@ -63,10 +63,8 @@ class ConditionalController(AbstractController, threading.Thread):
         self.timer_period = None
         self.period = None
         self.start_offset = None
-        self.refractory_period = None
         self.log_level_debug = None
         self.conditional_statement = None
-        self.timer_refractory_period = None
         self.smtp_wait_timer = None
         self.timer_period = None
         self.timer_start_time = None
@@ -78,6 +76,9 @@ class ConditionalController(AbstractController, threading.Thread):
         self.method_start_time = None
         self.method_end_time = None
         self.method_start_act = None
+
+        self.file_run = None
+        self.conditional_run = None
 
     def loop(self):
         # Pause loop to modify conditional statements.
@@ -91,8 +92,7 @@ class ConditionalController(AbstractController, threading.Thread):
         self.time_conditional = time.time()
         # Check if the conditional period has elapsed
         if (self.is_activated and self.timer_period and
-                self.timer_period < self.time_conditional and
-                self.timer_refractory_period < self.time_conditional):
+                self.timer_period < self.time_conditional):
 
             while self.timer_period < self.time_conditional:
                 self.timer_period += self.period
@@ -103,7 +103,6 @@ class ConditionalController(AbstractController, threading.Thread):
         """ Define all settings """
         self.email_count = 0
         self.allowed_to_send_notice = True
-        self.timer_refractory_period = 0
 
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_conditional
@@ -117,7 +116,6 @@ class ConditionalController(AbstractController, threading.Thread):
         self.conditional_statement = cond.conditional_statement
         self.period = cond.period
         self.start_offset = cond.start_offset
-        self.refractory_period = cond.refractory_period
         self.log_level_debug = cond.log_level_debug
 
         self.set_log_level_debug(self.log_level_debug)
@@ -125,6 +123,18 @@ class ConditionalController(AbstractController, threading.Thread):
         now = time.time()
         self.smtp_wait_timer = now + 3600
         self.timer_period = now + self.start_offset
+
+        self.file_run = '{}/conditional_{}.py'.format(
+            PATH_PYTHON_CODE_USER, self.unique_id)
+
+        module_name = "mycodo.conditional.{}".format(
+            os.path.basename(self.file_run).split('.')[0])
+        spec = importlib.util.spec_from_file_location(
+            module_name, self.file_run)
+        conditional_run = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(conditional_run)
+        self.conditional_run = conditional_run.ConditionalRun(
+            self.logger, self.unique_id, '')
 
     def refresh_settings(self):
         """ Signal to pause the main loop and wait for verification, the refresh settings """
@@ -143,9 +153,6 @@ class ConditionalController(AbstractController, threading.Thread):
         """
         Check if any Conditionals are activated and execute their code
         """
-        file_run = '{}/conditional_{}.py'.format(
-            PATH_PYTHON_CODE_USER, self.unique_id)
-
         cond = db_retrieve_table_daemon(
             Conditional, unique_id=self.unique_id, entry='first')
 
@@ -158,7 +165,7 @@ class ConditionalController(AbstractController, threading.Thread):
 
         self.logger.debug("Conditional Statement (pre-replacement):\n{}".format(self.conditional_statement))
 
-        with open(file_run, 'r') as file:
+        with open(self.file_run, 'r') as file:
             self.logger.debug("Conditional Statement (post-replacement):\n{}".format(file.read()))
 
         message += '\n[Conditional Statement Code Executed]:' \
@@ -169,13 +176,5 @@ class ConditionalController(AbstractController, threading.Thread):
                    '\n'.format(
             statement=cond.conditional_statement)
 
-        # Set the refractory period
-        if self.refractory_period:
-            self.timer_refractory_period = self.time_conditional + self.refractory_period
-
-        module_name = "mycodo.conditional.{}".format(os.path.basename(file_run).split('.')[0])
-        spec = importlib.util.spec_from_file_location(module_name, file_run)
-        conditional_run = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(conditional_run)
-        run = conditional_run.ConditionalRun(self.logger, self.unique_id, message)
-        run.conditional_code_run()
+        self.conditional_run.message = message
+        self.conditional_run.conditional_code_run()

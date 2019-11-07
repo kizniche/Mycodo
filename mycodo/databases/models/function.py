@@ -27,7 +27,6 @@ class Conditional(CRUDMixin, db.Model):
     log_level_debug = db.Column(db.Boolean, default=False)
     conditional_statement = db.Column(db.Text, default='')
     period = db.Column(db.Float, default=60.0)
-    refractory_period = db.Column(db.Float, default=0.0)
     start_offset = db.Column(db.Float, default=10.0)
 
 

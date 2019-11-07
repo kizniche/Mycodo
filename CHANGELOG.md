@@ -12,6 +12,7 @@
  - Add button to copy device UUID to clipboard
  - Add ability to set IP, port, and timeout for upgrade internet check
  - Add new Camera library: opencv
+ - Add ability for variables to persist in Conditional statements
 
 
 ## 7.9.1 (2019.10.26)
