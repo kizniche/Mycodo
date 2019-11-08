@@ -1,4 +1,6 @@
 # coding=utf-8
+import traceback
+
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -91,27 +93,30 @@ class InputModule(AbstractInput):
         if self.command_timeout:
             timeout = self.command_timeout
 
-        out, err, status = cmd_output(
-            self.command,
-            timeout=timeout,
-            user=self.execute_as_user,
-            cwd=self.current_working_dir)
+        try:
+            out, err, status = cmd_output(
+                self.command,
+                timeout=timeout,
+                user=self.execute_as_user,
+                cwd=self.current_working_dir)
 
-        self.logger.debug("Command returned: {}, Status: {}, Error: {}".format(out, err, status))
+            self.logger.debug("Command returned: {}, Status: {}, Error: {}".format(out, err, status))
 
-        if str_is_float(out):
-            measurement_value = float(out)
-        else:
-            self.logger.debug(
-                "The command returned a non-numerical value. "
-                "Ensure only one numerical value is returned "
-                "by the command. Value returned: '{}'".format(out))
-            return
+            if str_is_float(out):
+                measurement_value = float(out)
+            else:
+                self.logger.debug(
+                    "The command returned a non-numerical value. "
+                    "Ensure only one numerical value is returned "
+                    "by the command. Value returned: '{}'".format(out))
+                return
 
-        for channel in self.channels_measurement:
-            if self.is_enabled(channel):
-                self.return_dict[channel]['unit'] = self.channels_measurement[channel].unit
-                self.return_dict[channel]['measurement'] = self.channels_measurement[channel].measurement
-                self.return_dict[channel]['value'] = measurement_value
+            for channel in self.channels_measurement:
+                if self.is_enabled(channel):
+                    self.return_dict[channel]['unit'] = self.channels_measurement[channel].unit
+                    self.return_dict[channel]['measurement'] = self.channels_measurement[channel].measurement
+                    self.return_dict[channel]['value'] = measurement_value
 
-        return self.return_dict
+            return self.return_dict
+        except:
+            self.logger.debug("Exception: {}".format(traceback.format_exc()))
