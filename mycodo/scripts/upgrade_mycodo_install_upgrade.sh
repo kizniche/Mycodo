@@ -52,10 +52,10 @@ runSelfUpgrade() {
   # Begin tests prior to upgrade #
   ################################
 
-#  if (( "$MAJOR" < 8 )); then
-#    printf "Cannot upgrade from Mycodo versions < 8.0.0. A new installation is required to be performed.\n"
-#    exit 1
-#  fi
+  if (( "$MAJOR" < 8 )) && [ "$RELEASE_WIPE" != true ]; then
+    printf "Cannot upgrade from Mycodo versions < 8.0.0. A new installation is required to be performed.\n"
+    exit 1
+  fi
 
   ##############################
   # End tests prior to upgrade #

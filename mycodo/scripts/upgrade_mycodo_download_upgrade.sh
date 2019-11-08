@@ -38,10 +38,10 @@ runDownloadMycodo() {
       UPDATE_URL=$("${INSTALL_DIRECTORY}"/Mycodo/env/bin/python3 "${INSTALL_DIRECTORY}"/Mycodo/mycodo/utils/github_release_info.py -m "$UPGRADE_MAJ_VERSION" 2>&1)
 
       if [ "${CURRENT_VERSION}" == "${UPDATE_VERSION}" ] ; then
-        printf "Unable to upgrade. You currently have the latest release installed.\n"
+        printf "\n\nUnable to upgrade. You currently have the latest release installed.\n"
         error_found
       else
-        printf "\nInstalled version: %s\n" "${CURRENT_VERSION}"
+        printf "\n\nInstalled version: %s\n" "${CURRENT_VERSION}"
         printf "Latest version: %s\n" "${UPDATE_VERSION}"
       fi
 
@@ -58,7 +58,7 @@ runDownloadMycodo() {
     # master instead of the release version
 
     UPDATE_VERSION="master"
-    printf "\nUpgrade script executed with the 'force-upgrade-master' argument. Upgrading from github repo master.\n"
+    printf "\n\nUpgrade script executed with the 'force-upgrade-master' argument. Upgrading from github repo master.\n"
     UPDATE_URL="https://github.com/kizniche/Mycodo/archive/master.tar.gz"
     TARBALL_FILE="Mycodo-master"
 
@@ -66,8 +66,6 @@ runDownloadMycodo() {
 
   MYCODO_NEW_TMP_DIR="/tmp/Mycodo-${UPDATE_VERSION}"
   TARBALL_FILE="mycodo-${UPDATE_VERSION}"
-
-  printf "\n"
 
   if [ "${UPDATE_URL}" == "None" ] ; then
     printf "\nUnable to upgrade. A URL of the latest release was not able to be obtained.\n"
