@@ -6,6 +6,8 @@
 
 exec 2>&1
 
+RELEASE_WIPE=$1
+
 if [ "$EUID" -ne 0 ] ; then
   printf "Please run as root.\n"
   exit 1
@@ -162,14 +164,14 @@ runSelfUpgrade() {
 
   BACKUP_DIR="/var/Mycodo-backups/Mycodo-backup-${NOW}-${CURRENT_VERSION}"
 
-  printf "Backing up current Mycodo intstall from %s to %s..." "${CURRENT_MYCODO_DIRECTORY}" "${BACKUP_DIR}"
+  printf "Moving current Mycodo intstall from %s to %s..." "${CURRENT_MYCODO_DIRECTORY}" "${BACKUP_DIR}"
   if ! mv "${CURRENT_MYCODO_DIRECTORY}" "${BACKUP_DIR}" ; then
     printf "Failed: Error while trying to move old Mycodo install from %s to %s.\n" "${CURRENT_MYCODO_DIRECTORY}" "${BACKUP_DIR}"
     error_found
   fi
   printf "Done.\n"
 
-  printf "Moving this new Mycodo version from %s to %s/Mycodo..." "${THIS_MYCODO_DIRECTORY}" "${CURRENT_MYCODO_INSTALL_DIRECTORY}"
+  printf "Moving downloaded Mycodo version from %s to %s/Mycodo..." "${THIS_MYCODO_DIRECTORY}" "${CURRENT_MYCODO_INSTALL_DIRECTORY}"
   if ! mv "${THIS_MYCODO_DIRECTORY}" "${CURRENT_MYCODO_INSTALL_DIRECTORY}"/Mycodo ; then
     printf "Failed: Error while trying to move new Mycodo install from %s to %s/Mycodo.\n" "${THIS_MYCODO_DIRECTORY}" "${CURRENT_MYCODO_INSTALL_DIRECTORY}"
     error_found
@@ -178,20 +180,40 @@ runSelfUpgrade() {
 
   sleep 30
 
+  CURRENT_MYCODO_DIRECTORY=$( cd -P /var/mycodo-root && pwd -P )
+  cd "${CURRENT_MYCODO_DIRECTORY}" || return
+
   ############################################
   # Begin tests prior to post-upgrade script #
   ############################################
 
+  if [ "$RELEASE_WIPE" = true ] ; then
 
+    # Instructed to wipe configuration files (database, virtualenv)
+
+    if [ -d "${CURRENT_MYCODO_DIRECTORY}"/env ] ; then
+      printf "Removing virtaulenv at %s/env..." "${CURRENT_MYCODO_DIRECTORY}"
+      if ! rm -rf "${CURRENT_MYCODO_DIRECTORY}"/env ; then
+        printf "Failed: Error while trying to delete virtaulenv.\n"
+      fi
+      printf "Done.\n"
+    fi
+
+    if [ -d "${CURRENT_MYCODO_DIRECTORY}"/databases/mycodo.db ] ; then
+      printf "Removing database at %s/databases/mycodo.db..." "${CURRENT_MYCODO_DIRECTORY}"
+      if ! rm -f "${CURRENT_MYCODO_DIRECTORY}"/databases/mycodo.db ; then
+        printf "Failed: Error while trying to delete database.\n"
+      fi
+      printf "Done.\n"
+    fi
+
+  fi
 
   ##########################################
   # End tests prior to post-upgrade script #
   ##########################################
 
   printf "\n#### Beginning Upgrade Stage 3 of 3 ####\n"
-
-  CURRENT_MYCODO_DIRECTORY=$( cd -P /var/mycodo-root && pwd -P )
-  cd "${CURRENT_MYCODO_DIRECTORY}" || return
 
   printf "Running post-upgrade script...\n"
   if ! "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/upgrade_post.sh ; then

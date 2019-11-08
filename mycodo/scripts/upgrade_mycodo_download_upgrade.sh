@@ -5,6 +5,7 @@ exec 2>&1
 
 UPGRADE_TYPE=$1
 UPGRADE_MAJ_VERSION=$2
+RELEASE_WIPE=$3
 
 if [ "$EUID" -ne 0 ] ; then
   printf "Please run as root.\n"
@@ -28,17 +29,26 @@ runDownloadMycodo() {
   
   CURRENT_VERSION=$("${INSTALL_DIRECTORY}"/Mycodo/env/bin/python3 "${INSTALL_DIRECTORY}"/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
 
-  if [ "$UPGRADE_TYPE" == "upgrade-release-major" ] && [ -n "$UPGRADE_MAJ_VERSION" ]; then
+  RELEASE_WIPE=false
 
-    UPDATE_VERSION=$("${INSTALL_DIRECTORY}"/Mycodo/env/bin/python3 "${INSTALL_DIRECTORY}"/Mycodo/mycodo/utils/github_release_info.py -m "$UPGRADE_MAJ_VERSION" -v 2>&1)
-    UPDATE_URL=$("${INSTALL_DIRECTORY}"/Mycodo/env/bin/python3 "${INSTALL_DIRECTORY}"/Mycodo/mycodo/utils/github_release_info.py -m "$UPGRADE_MAJ_VERSION" 2>&1)
+  if [ "$UPGRADE_TYPE" == "upgrade-release-major" ] || [ "$UPGRADE_TYPE" == "upgrade-release-wipe" ] ; then
+    if [ -n "$UPGRADE_MAJ_VERSION" ]; then
 
-    if [ "${CURRENT_VERSION}" == "${UPDATE_VERSION}" ] ; then
-      printf "Unable to upgrade. You currently have the latest release installed.\n"
-      error_found
-    else
-      printf "\nInstalled version: %s\n" "${CURRENT_VERSION}"
-      printf "Latest version: %s\n" "${UPDATE_VERSION}"
+      UPDATE_VERSION=$("${INSTALL_DIRECTORY}"/Mycodo/env/bin/python3 "${INSTALL_DIRECTORY}"/Mycodo/mycodo/utils/github_release_info.py -m "$UPGRADE_MAJ_VERSION" -v 2>&1)
+      UPDATE_URL=$("${INSTALL_DIRECTORY}"/Mycodo/env/bin/python3 "${INSTALL_DIRECTORY}"/Mycodo/mycodo/utils/github_release_info.py -m "$UPGRADE_MAJ_VERSION" 2>&1)
+
+      if [ "${CURRENT_VERSION}" == "${UPDATE_VERSION}" ] ; then
+        printf "Unable to upgrade. You currently have the latest release installed.\n"
+        error_found
+      else
+        printf "\nInstalled version: %s\n" "${CURRENT_VERSION}"
+        printf "Latest version: %s\n" "${UPDATE_VERSION}"
+      fi
+
+      if [ "$UPGRADE_TYPE" == "upgrade-release-wipe" ] ; then
+        RELEASE_WIPE=true
+      fi
+
     fi
 
   elif [ "$UPGRADE_TYPE" == "force-upgrade-master" ]; then
@@ -105,7 +115,7 @@ runDownloadMycodo() {
   fi
   printf "Done.\n"
 
-  exec /bin/bash "${MYCODO_NEW_TMP_DIR}"/mycodo/scripts/upgrade_mycodo_install_upgrade.sh
+  exec /bin/bash "${MYCODO_NEW_TMP_DIR}"/mycodo/scripts/upgrade_mycodo_install_upgrade.sh "$RELEASE_WIPE"
 }
 
-runDownloadMycodo "$UPGRADE_TYPE" "$UPGRADE_MAJ_VERSION"
+runDownloadMycodo "$UPGRADE_TYPE" "$UPGRADE_MAJ_VERSION" "$RELEASE_WIPE"

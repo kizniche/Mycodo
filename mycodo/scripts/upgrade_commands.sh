@@ -430,6 +430,9 @@ case "${1:-''}" in
     'upgrade-release-major')
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_mycodo_download_upgrade.sh upgrade-release-major "${2}"
     ;;
+    'upgrade-release-wipe')
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_mycodo_download_upgrade.sh upgrade-release-major "${2}"
+    ;;
     'upgrade-master')
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_mycodo_download_upgrade.sh force-upgrade-master
     ;;

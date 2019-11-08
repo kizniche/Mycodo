@@ -474,7 +474,6 @@ def admin_upgrade():
                 upgrade = 1
                 flash(gettext("The upgrade (from master branch) has started"), "success")
             else:
-                from mycodo.config import MYCODO_VERSION
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-release-major {current_maj_version}" \
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
                       " >> {log} 2>&1".format(current_maj_version=MYCODO_VERSION.split('.')[0],
@@ -490,7 +489,7 @@ def admin_upgrade():
         elif (form_upgrade.upgrade_next_major_version.data and
                 upgrade_available):
             if not not_enough_space_upgrade():
-                cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-release-major {ver}" \
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-release-wipe {ver}" \
                       " | ts '[%Y-%m-%d %H:%M:%S]'" \
                       " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                               ver=current_latest_major_version,
