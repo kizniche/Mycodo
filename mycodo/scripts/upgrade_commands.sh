@@ -427,14 +427,11 @@ case "${1:-''}" in
             printf "#### Swap not currently set to 100 MB. Not changing.\n"
         fi
     ;;
-    'upgrade')
-        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_mycodo_download_upgrade.sh
+    'upgrade-release-major')
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_mycodo_download_upgrade.sh upgrade-release-major "${2}"
     ;;
     'upgrade-master')
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_mycodo_download_upgrade.sh force-upgrade-master
-    ;;
-    'upgrade-release-major')
-        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_mycodo_download_upgrade.sh upgrade-release-major "${2}"
     ;;
     'upgrade-post')
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_post.sh
