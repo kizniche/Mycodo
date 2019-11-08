@@ -92,15 +92,6 @@ runSelfUpgrade() {
   fi
   printf "Done.\n"
 
-  if [ -d "${MYCODO_NEW_TMP_DIR}/old" ] ; then
-    printf "The archive directory %s/old exists. Removing..." "${MYCODO_NEW_TMP_DIR}"
-    if ! rm -Rf "${MYCODO_NEW_TMP_DIR}"/old ; then
-      printf "Failed: Error while trying to delete archive directory %s/old.\n" "${MYCODO_NEW_TMP_DIR}"
-      error_found
-    fi
-    printf "Done.\n"
-  fi
-
   printf "Removing %s/%s.tar.gz..." "${INSTALL_DIRECTORY}" "${TARBALL_FILE}"
   if ! rm -rf "${INSTALL_DIRECTORY}"/"${TARBALL_FILE}".tar.gz ; then
     printf "Failed: Error while removing %s/%s.tar.gz.\n" "${INSTALL_DIRECTORY}" "${TARBALL_FILE}"

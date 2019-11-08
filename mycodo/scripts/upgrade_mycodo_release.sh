@@ -113,12 +113,6 @@ runSelfUpgrade() {
   fi
   printf "Done.\n"
 
-  printf "Copying %s/.upgrade status file to %s..." "${MYCODO_NEW_TMP_DIR}" "${MYCODO_NEW_TMP_DIR}"
-  if ! cp "${INSTALL_DIRECTORY}"/Mycodo/.upgrade "${MYCODO_NEW_TMP_DIR}" ; then
-    printf "Failed: Error while trying to copy .upgrade status file.\n"
-  fi
-  printf "Done.\n"
-
   if [ -d "${INSTALL_DIRECTORY}"/Mycodo/env ] ; then
     printf "Moving env directory..."
     if ! mv "${INSTALL_DIRECTORY}"/Mycodo/env "${MYCODO_NEW_TMP_DIR}" ; then
