@@ -23,7 +23,6 @@ runSelfUpgrade() {
   CURRENT_MYCODO_DIRECTORY=$( cd -P /var/mycodo-root && pwd -P )
   CURRENT_MYCODO_INSTALL_DIRECTORY=$( cd -P /var/mycodo-root/.. && pwd -P )
   THIS_MYCODO_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd -P )
-  THIS_MYCODO_INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../.." && pwd -P )
 
   if [ "$CURRENT_MYCODO_DIRECTORY" == "$THIS_MYCODO_DIRECTORY" ] ; then
     printf "Cannot perform upgrade to the Mycodo instance already intalled. Halting upgrade.\n"
@@ -60,7 +59,7 @@ runSelfUpgrade() {
   # End tests prior to upgrade #
   ##############################
 
-  THIS_VERSION=$("${CURRENT_MYCODO_INSTALL_DIRECTORY}"/Mycodo/env/bin/python3 "${THIS_MYCODO_INSTALL_DIRECTORY}"/Mycodo/mycodo/utils/github_release_info.py -c 2>&1)
+  THIS_VERSION=$("${CURRENT_MYCODO_DIRECTORY}"/env/bin/python3 "${THIS_MYCODO_DIRECTORY}"/mycodo/utils/github_release_info.py -c 2>&1)
   printf "Upgrading Mycodo to version %s\n" "$THIS_VERSION"
 
   NOW=$(date +"%Y-%m-%d_%H-%M-%S")

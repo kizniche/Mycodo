@@ -65,7 +65,7 @@ runDownloadMycodo() {
     error_found
   fi
 
-  printf "\n#### Downloading v%s ####\n" "${UPDATE_VERSION}" "${NOW}"
+  printf "\n#### Downloading v%s ####\n" "${UPDATE_VERSION}"
 
   printf "\n#### Beginning Upgrade: Stage 1 of 3 ####\n"
 
