@@ -9,6 +9,7 @@ This version introduces a REST API for communicating with Mycodo. There is an [A
  - Fix Output control toaster always displaying error
  - Fix translations not working ([#708](https://github.com/kizniche/mycodo/issues/708))
  - Fix display of units on LCDs
+ - Fix inability of Graph Range Selector option to stay checked
 
 ### Features
 

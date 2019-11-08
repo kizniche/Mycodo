@@ -78,7 +78,7 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.enable_xaxis_reset = form_object.enable_xaxis_reset.data
         new_graph.enable_title = form_object.enable_title.data
         new_graph.enable_navbar = form_object.enable_navbar.data
-        new_graph.enable_rangeselect = form_object.enable_range.data
+        new_graph.enable_rangeselect = form_object.enable_rangeselect.data
         new_graph.enable_export = form_object.enable_export.data
         new_graph.enable_graph_shift = form_object.enable_graph_shift.data
         new_graph.enable_manual_y_axis = form_object.enable_manual_y_axis.data
@@ -284,7 +284,7 @@ def dashboard_mod(form_base, form_object, request_form):
         mod_graph.enable_title = form_object.enable_title.data
         mod_graph.enable_navbar = form_object.enable_navbar.data
         mod_graph.enable_export = form_object.enable_export.data
-        mod_graph.enable_rangeselect = form_object.enable_range.data
+        mod_graph.enable_rangeselect = form_object.enable_rangeselect.data
         mod_graph.enable_graph_shift = form_object.enable_graph_shift.data
 
     # If a gauge type is changed, the color format must change
