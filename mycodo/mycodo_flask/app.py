@@ -33,6 +33,8 @@ from mycodo.mycodo_flask import routes_page
 from mycodo.mycodo_flask import routes_remote_admin
 from mycodo.mycodo_flask import routes_settings
 from mycodo.mycodo_flask import routes_static
+from mycodo.mycodo_flask.api import api_blueprint
+from mycodo.mycodo_flask.api import init_api
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 
@@ -64,12 +66,7 @@ def register_extensions(app):
 
     db.init_app(app)  # Influx db time-series database
 
-    # Test enabling API (should not work with Raspbian OS version < 10)
-    try:
-        from mycodo.mycodo_flask.api import init_api
-        init_api(app)
-    except:
-        logger.exception("API")
+    init_api(app)
 
     app = extension_babel(app)  # Language translations
     app = extension_compress(app)  # Compress app responses with gzip
@@ -147,13 +144,7 @@ def get_key_func():
 def extension_limiter(app):
     limiter = Limiter(app, key_func=get_key_func, headers_enabled=True)
     limiter.limit("300/hour")(routes_authentication.blueprint)
-
-    try:
-        from mycodo.mycodo_flask.api import api
-        limiter.limit("200/minute")(api)
-    except:
-        pass
-
+    limiter.limit("200/minute")(api_blueprint)
     return app
 
 

@@ -1,5 +1,9 @@
 ## 7.10.0 (Unreleased)
 
+Warning: This version will not work with Raspbian Stretch. Only upgrade if you are running Raspbian Buster.
+
+This version introduces a REST API for communicating with Mycodo. There is an [API Manual](https://kizniche.github.io/Mycodo/mycodo-api.html) (which is likely to change as the release date is approached).
+
 ### Bugfixes
 
  - Fix Output control toaster always displaying error
