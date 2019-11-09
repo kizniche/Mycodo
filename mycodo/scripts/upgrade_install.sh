@@ -26,10 +26,6 @@ runSelfUpgrade() {
   CURRENT_MYCODO_INSTALL_DIRECTORY=$( cd -P /var/mycodo-root/.. && pwd -P )
   THIS_MYCODO_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd -P )
 
-  if ! python3 "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/required_python_version.py; then
-    printf "Incorrect Python version. Mycodo requires Python >= 3.7"
-  fi
-
   if [ "$CURRENT_MYCODO_DIRECTORY" == "$THIS_MYCODO_DIRECTORY" ] ; then
     printf "Cannot perform upgrade to the Mycodo instance already intalled. Halting upgrade.\n"
     exit 1
@@ -56,10 +52,30 @@ runSelfUpgrade() {
   # Begin tests prior to upgrade #
   ################################
 
-#  if (( "$MAJOR" < 8 )) && [ "$RELEASE_WIPE" == false ]; then
-#    printf "Cannot upgrade from Mycodo versions < 8.0.0. A new installation is required to be performed.\n"
-#    exit 1
-#  fi
+  printf "#### Beginning pre-upgrade checks ####\n"
+
+  # Upgrade requires Python >= 3.6
+  printf "Checking Python version...\n"
+  if hash python3 2>/dev/null; then
+    if ! python3 "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/meets_python_version.py --version "3.6"; then
+      printf "Incorrect Python version found. Mycodo requires Python >= 3.6.\n"
+      printf "If you're running Raspbian 9 (Stretch, Python 3.5), you will need to upgrade to at least Raspbian 10 (Buster, Python 3.7) to use the latest version of Mycodo\n"
+      exit 1
+    else
+      printf "Python >= 3.6 found."
+    fi
+  else
+    printf "Error: python3 not found. Cannot proceed with upgrade without python3.\n"
+    exit 1
+  fi
+
+  # If upgrading from version 7 and Python >= 3.6 found (from previous check), upgrade without wiping database
+  if [[ "$MAJOR" == 7 ]] && [[ "$RELEASE_WIPE" = true ]]; then
+    printf "Your system was found to have Python >= 3.6 installed. Proceeding with upgrade without wiping database.\n"
+    RELEASE_WIPE=false
+  fi
+
+  printf "All pre-upgrade checks passed. Proceeding with upgrade.\n"
 
   ##############################
   # End tests prior to upgrade #
@@ -192,7 +208,6 @@ runSelfUpgrade() {
   ############################################
 
   if [ "$RELEASE_WIPE" = true ] ; then
-
     # Instructed to wipe configuration files (database, virtualenv)
 
     if [ -d "${CURRENT_MYCODO_DIRECTORY}"/env ] ; then

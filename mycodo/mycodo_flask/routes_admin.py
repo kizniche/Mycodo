@@ -499,10 +499,12 @@ def admin_upgrade():
                 mod_misc = Misc.query.first()
                 mod_misc.mycodo_upgrade_available = False
                 db.session.commit()
-            flash(gettext("The major version upgrade has started"), "success")
+                flash(gettext(
+                    "The major version upgrade has started"), "success")
         else:
-            flash(gettext("You cannot upgrade if an upgrade is not available"),
-                  "error")
+            flash(gettext(
+                "You cannot upgrade if an upgrade is not available"),
+                "error")
 
     return render_template('admin/upgrade.html',
                            final_releases=FINAL_RELEASES,
