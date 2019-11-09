@@ -226,19 +226,21 @@ def import_settings(form):
                 elif extension != correct_extension:
                     error.append("Extension not 'zip'")
                 elif name_split[1] != MYCODO_VERSION:
-                    error.append("Invalid Mycodo version: {fv} != {mv}. "
-                                 "This database can only be imported to "
-                                 "Mycodo version {mver}".format(
-                        fv=name_split[1],
-                        mv=MYCODO_VERSION,
-                        mver=name_split[1]))
+                    error.append(
+                        "Invalid Mycodo version: {fv} != {mv}. "
+                        "This database can only be imported to "
+                        "Mycodo version {mver}".format(
+                            fv=name_split[1],
+                            mv=MYCODO_VERSION,
+                            mver=name_split[1]))
                 elif name_split[3] != ALEMBIC_VERSION:
-                    error.append("Invalid database version: {fv} != {dv}."
-                                 " This database can only be imported to"
-                                 " Mycodo version {mver}".format(
-                        fv=name_split[3],
-                        dv=ALEMBIC_VERSION,
-                        mver=name_split[1]))
+                    error.append(
+                        "Invalid database version: {fv} != {dv}."
+                        " This database can only be imported to"
+                        " Mycodo version {mver}".format(
+                            fv=name_split[3],
+                            dv=ALEMBIC_VERSION,
+                            mver=name_split[1]))
             except Exception as err:
                 error.append(
                     "Exception while verifying file name: {err}".format(err=err))
@@ -292,6 +294,24 @@ def import_settings(form):
                         datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
                 os.rename(SQL_DATABASE_MYCODO, backup_name)
                 os.rename(imported_database, SQL_DATABASE_MYCODO)
+
+                # Upgrade database
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+                      "upgrade_database".format(
+                        pth=INSTALL_DIRECTORY)
+                _, _, _ = cmd_output(cmd)
+
+                # Install/update dependencies (could take a while)
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+                      "update_dependencies".format(
+                        pth=INSTALL_DIRECTORY)
+                _, _, _ = cmd_output(cmd)
+
+                # Initialize
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+                      "initialize".format(
+                        pth=INSTALL_DIRECTORY)
+                _, _, _ = cmd_output(cmd)
 
                 # Start Mycodo daemon (backend)
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \

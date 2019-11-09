@@ -75,7 +75,6 @@ from mycodo.utils.function_actions import get_condition_value_dict
 from mycodo.utils.function_actions import trigger_action
 from mycodo.utils.function_actions import trigger_function_actions
 from mycodo.utils.github_release_info import github_releases
-from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.statistics import add_update_csv
 from mycodo.utils.statistics import recreate_stat_file

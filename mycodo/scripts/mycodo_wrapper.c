@@ -80,8 +80,12 @@ int main(int argc, char *argv[]) {
 		} else if (strcmp(argv[1], "influxdb_restore_mycodo_db") == 0 && (argc > 2)) {
 			sprintf(cmd, "influxd restore -portable -db mycodo_db -newdb mycodo_db_bak %s", argv[2]);
 			system(cmd);
+		} else if (strcmp(argv[1], "upgrade_database") == 0) {
+      upgrade_commands(argv[0], "update-alembic");
 		} else if (strcmp(argv[1], "initialize") == 0) {
-            upgrade_commands(argv[0], "initialize");
+      upgrade_commands(argv[0], "initialize");
+    } else if (strcmp(argv[1], "update_dependencies") == 0) {
+      upgrade_commands(argv[0], "update-dependencies");
 		} else if (strcmp(argv[1], "update_permissions") == 0) {
 			upgrade_commands(argv[0], "update-permissions");
 		} else if (strcmp(argv[1], "install_dependency") == 0 && strcmp(argv[2], "pip-pypi") == 0 && (argc == 4)) {
@@ -164,13 +168,14 @@ int main(int argc, char *argv[]) {
 		printf("                to perform superuser actions.\n\n");
 		printf("Usage: mycodo_wrapper [command]\n\n");
 		printf("Commands:\n");
-        printf("   backup-create:              Create Mycodo backup\n");
+    printf("   backup-create:              Create Mycodo backup\n");
 		printf("   backup-delete [DIRECTORY]:  Delete Mycodo backup [DIRECTORY]\n");
 		printf("   backup-restore [DIRECTORY]: Restore Mycodo from backup [DIRECTORY]\n");
 		printf("   daemon_restart:             Restart the mycodo daemon in normal mode\n");
 		printf("   daemon_restart_debug:       Restart the mycodo daemon in debug mode\n");
 		printf("   daemon_start:               Start the mycodo daemon\n");
 		printf("   daemon_stop:                Stop the mycodo daemon\n");
+		printf("   database_upgrade:           Upgrade the database\n");
 		printf("   frontend_reload:            Reload the mycodo frontend\n");
 		printf("   frontend_restart:           Restart the mycodo frontend\n");
 		printf("   influxdb_start:             Start influxdb\n");
@@ -178,11 +183,12 @@ int main(int argc, char *argv[]) {
 		printf("   influxdb_restart:           Restart influxdb\n");
 		printf("   influxdb_restore_mycodo_db  Restore influxdb database mycodo_db to mycodo_db_bak\n");
 		printf("   initialize:                 Run the Mycodo initialization sequence\n");
+		printf("   update_dependencies:        Install unmet dependencies and update installed dependencies\n");
 		printf("   update_permissions:         Set the Mycodo file/folder permissions\n");
 		printf("   restart:                    Restart the computer after a 10 second pause\n");
 		printf("   shutdown:                   Shutdown the computer after a 10 second pause\n");
-		printf("   upgrade:                    Upgrade Mycodo to the latest version on github\n");
-		printf("   upgrade-release-major:      Upgrade Mycodo to the latest of a major version on github\n");
+		printf("   upgrade-release-wipe:       Upgrade Mycodo to the latest major version on github and wipe database and virtualenv\n");
+		printf("   upgrade-release-major:      Upgrade Mycodo to the latest major version on github\n");
 		printf("   upgrade-master:             Upgrade Mycodo to the latest master branch on github\n");
 	}
 

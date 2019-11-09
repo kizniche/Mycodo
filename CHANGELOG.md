@@ -25,6 +25,8 @@ This version introduces an improved upgrade system and a REST API for communicat
  - Add ability to set IP, port, and timeout for upgrade internet check
  - Add new Camera library: opencv
  - Add ability for variables to persist in Conditional statements
+ - Add ability to import any database <= the current Mycodo version (database upgrade will be performed)
+ - Add ability to install all unmet dependencies when importing a database
 
 
 ## 7.9.1 (2019.10.26)

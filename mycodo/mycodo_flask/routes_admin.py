@@ -153,9 +153,9 @@ def install_dependencies(dependencies):
     for each_dep in dependencies:
         cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_dependency {dep}" \
               " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
-            pth=INSTALL_DIRECTORY,
-            log=DEPENDENCY_LOG_FILE,
-            dep=each_dep[1])
+                pth=INSTALL_DIRECTORY,
+                log=DEPENDENCY_LOG_FILE,
+                dep=each_dep[1])
         dep = subprocess.Popen(cmd, shell=True)
         dep.wait()
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -165,8 +165,8 @@ def install_dependencies(dependencies):
 
     cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_permissions" \
           " | ts '[%Y-%m-%d %H:%M:%S]' >> {log}  2>&1".format(
-        pth=INSTALL_DIRECTORY,
-        log=DEPENDENCY_LOG_FILE)
+            pth=INSTALL_DIRECTORY,
+            log=DEPENDENCY_LOG_FILE)
     init = subprocess.Popen(cmd, shell=True)
     init.wait()
 
@@ -179,15 +179,15 @@ def install_dependencies(dependencies):
 
     cmd = "{pth}/mycodo/scripts/mycodo_wrapper daemon_restart" \
           " | ts '[%Y-%m-%d %H:%M:%S]' >> {log}  2>&1".format(
-        pth=INSTALL_DIRECTORY,
-        log=DEPENDENCY_LOG_FILE)
+            pth=INSTALL_DIRECTORY,
+            log=DEPENDENCY_LOG_FILE)
     init = subprocess.Popen(cmd, shell=True)
     init.wait()
 
     cmd = "{pth}/mycodo/scripts/mycodo_wrapper frontend_restart" \
           " | ts '[%Y-%m-%d %H:%M:%S]' >> {log}  2>&1".format(
-        pth=INSTALL_DIRECTORY,
-        log=DEPENDENCY_LOG_FILE)
+            pth=INSTALL_DIRECTORY,
+            log=DEPENDENCY_LOG_FILE)
     init = subprocess.Popen(cmd, shell=True)
     init.wait()
 
@@ -285,7 +285,6 @@ def admin_dependencies(device):
             return redirect(url_for('routes_admin.admin_dependencies', device=device))
 
         if form_dependencies.install.data:
-            install_in_progress = True
             with open(DEPENDENCY_INIT_FILE, 'w') as f:
                 f.write('1')
             install_deps = threading.Thread(

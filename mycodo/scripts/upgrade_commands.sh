@@ -12,10 +12,7 @@ fi
 
 # Required apt packages. This has only been tested with Raspbian for the
 # Raspberry Pi but should work with most Debian-based systems.
-APT_PKGS="gawk gcc git libffi-dev libi2c-dev logrotate \
-          moreutils nginx python-setuptools sqlite3 wget \
-          python3 python3-dev python3-smbus python3-pylint-common \
-          rng-tools"
+APT_PKGS="gawk gcc git libffi-dev libi2c-dev logrotate moreutils nginx sqlite3 wget python3 python3-dev python3-setuptools python3-smbus python3-pylint-common rng-tools"
 
 PYTHON_BINARY_SYS_LOC="$(python3 -c "import os; print(os.environ['_'])")"
 
@@ -72,10 +69,10 @@ Options:
   update-pip3                   Update pip
   update-pip3-packages          Update required pip packages
   update-swap-size              Ensure sqap size is sufficiently large (512 MB)
-  upgrade                       Upgrade Mycodo to the latest release
-  upgrade-major-release         Upgrade Mycodo to a major version release
-  upgrade-master                Upgrade Mycodo to the master branch of the Mycodo github repository
-  upgrade-post                  Post-Upgrade commands
+  upgrade-release-major {ver}   Upgrade Mycodo to a major version release {ver} and preserve database and virtualenv
+  upgrade-release-wipe {ver}    Upgrade Mycodo to a major version release {ver} and wipe database and virtualenv
+  upgrade-master                Upgrade Mycodo to the master branch at https://github.com/kizniche/Mycodo
+  upgrade-post                  Execute post-upgrade script
   web-server-connect            Attampt to connect to the web server
   web-server-reload             Reload the web server
   web-server-restart            Restart the web server
@@ -233,7 +230,7 @@ case "${1:-''}" in
     ;;
     'update-dependencies')
         printf "\n#### Checking for updates to dependencies\n"
-        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/mycodo/utils/update_installed_dependencies.py
+        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/mycodo/utils/update_dependencies.py
     ;;
     'install-bcm2835')
         printf "\n#### Installing bcm2835\n"
@@ -386,7 +383,7 @@ case "${1:-''}" in
         printf "\n#### Installing prerequisite apt packages and update pip\n"
         apt-get update -y
         apt-get remove -y apache2
-        apt-get install -y "${APT_PKGS}"
+        apt-get install -y ${APT_PKGS}
         python3 /usr/lib/python3/dist-packages/easy_install.py pip
         pip install --upgrade pip
     ;;
@@ -431,7 +428,7 @@ case "${1:-''}" in
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh upgrade-release-major "${2}"
     ;;
     'upgrade-release-wipe')
-        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh upgrade-release-major "${2}"
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh upgrade-release-wipe "${2}"
     ;;
     'upgrade-master')
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh force-upgrade-master

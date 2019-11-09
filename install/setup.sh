@@ -14,10 +14,6 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-if ! python3 "${INSTALL_DIRECTORY}"/mycodo/scripts/required_python_version.py; then
-    printf "Incorrect Python version. Mycodo requires Python >= 3.7"
-fi
-
 WHIPTAIL=$(command -v whiptail)
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
