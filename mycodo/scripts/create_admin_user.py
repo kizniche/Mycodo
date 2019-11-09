@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Create admin user"""
 import sys
 import traceback

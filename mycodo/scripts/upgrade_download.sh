@@ -113,7 +113,7 @@ runDownloadMycodo() {
   fi
   printf "Done.\n"
 
-  exec /bin/bash "${MYCODO_NEW_TMP_DIR}"/mycodo/scripts/upgrade_mycodo_install_upgrade.sh "$RELEASE_WIPE"
+  exec /bin/bash "${MYCODO_NEW_TMP_DIR}"/mycodo/scripts/upgrade_install.sh "$RELEASE_WIPE"
 }
 
 runDownloadMycodo "$UPGRADE_TYPE" "$UPGRADE_MAJ_VERSION" "$RELEASE_WIPE"

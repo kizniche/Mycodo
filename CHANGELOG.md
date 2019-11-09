@@ -1,8 +1,16 @@
+## 8.0.0 (Unreleased)
+
+Warning: This version will not work with Python 3.5 (Raspbian Stretch). Only upgrade if you have Python 3.7 installed (Raspbian Buster).
+
+This version introduces an improved upgrade system and a REST API for communicating with Mycodo ([API Info](https://github.com/kizniche/Mycodo/blob/master/mycodo-api.rst) and [API Manual](https://kizniche.github.io/Mycodo/mycodo-api.html)).
+
+### Features
+
+ - Add REST API access, API endpoints, and API manual section ([#705](https://github.com/kizniche/mycodo/issues/705))
+ - Improve upgrade system
+
+
 ## 7.10.0 (Unreleased)
-
-Warning: This version will not work with Raspbian Stretch. Only upgrade if you are running Raspbian Buster.
-
-This version introduces a REST API for communicating with Mycodo. There is an [API Manual](https://kizniche.github.io/Mycodo/mycodo-api.html) (which is likely to change as the release date is approached).
 
 ### Bugfixes
 
@@ -13,12 +21,10 @@ This version introduces a REST API for communicating with Mycodo. There is an [A
 
 ### Features
 
- - Add REST API access, API endpoints, and API manual section ([#705](https://github.com/kizniche/mycodo/issues/705))
  - Add button to copy device UUID to clipboard
  - Add ability to set IP, port, and timeout for upgrade internet check
  - Add new Camera library: opencv
  - Add ability for variables to persist in Conditional statements
- - Improve upgrade system
 
 
 ## 7.9.1 (2019.10.26)

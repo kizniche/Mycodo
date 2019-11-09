@@ -428,13 +428,13 @@ case "${1:-''}" in
         fi
     ;;
     'upgrade-release-major')
-        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_mycodo_download_upgrade.sh upgrade-release-major "${2}"
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh upgrade-release-major "${2}"
     ;;
     'upgrade-release-wipe')
-        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_mycodo_download_upgrade.sh upgrade-release-major "${2}"
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh upgrade-release-major "${2}"
     ;;
     'upgrade-master')
-        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_mycodo_download_upgrade.sh force-upgrade-master
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh force-upgrade-master
     ;;
     'upgrade-post')
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_post.sh

@@ -13,6 +13,10 @@ if [ "$EUID" -ne 0 ] ; then
   exit 1
 fi
 
+if ! python3 "${INSTALL_DIRECTORY}"/mycodo/scripts/required_python_version.py; then
+    printf "Incorrect Python version. Mycodo requires Python >= 3.7"
+fi
+
 runSelfUpgrade() {
   function error_found {
     echo '2' > "${INSTALL_DIRECTORY}"/Mycodo/.upgrade
@@ -52,7 +56,7 @@ runSelfUpgrade() {
   # Begin tests prior to upgrade #
   ################################
 
-  if (( "$MAJOR" < 8 )) && [ "$RELEASE_WIPE" != true ]; then
+  if (( "$MAJOR" < 8 )) && [ "$RELEASE_WIPE" == false ]; then
     printf "Cannot upgrade from Mycodo versions < 8.0.0. A new installation is required to be performed.\n"
     exit 1
   fi

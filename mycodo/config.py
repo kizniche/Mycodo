@@ -13,7 +13,7 @@ from flask_babel import lazy_gettext
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
-MYCODO_VERSION = '7.9.1'
+MYCODO_VERSION = '7.10.0'
 ALEMBIC_VERSION = 'f4bd467eb5fe'
 
 #  FORCE_UPGRADE_MASTER
@@ -29,7 +29,7 @@ ENABLE_FLASK_PROFILER = False
 
 # Final release for each major version number
 # Used to determine proper upgrade page to display
-FINAL_RELEASES = ['5.7.3', '6.4.7']
+FINAL_RELEASES = ['5.7.3', '6.4.7', '7.10.0']
 
 LANGUAGES = {
     'en': 'English',
