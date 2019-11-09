@@ -1347,8 +1347,10 @@ if __name__ == '__main__':
     logger.addHandler(fh)
     keep_fds = [fh.stream.fileno()]
 
+    debug = False
     misc = db_retrieve_table_daemon(Misc, entry='first')
-    debug = misc.daemon_debug_mode
+    if misc:
+        debug = misc.daemon_debug_mode
     if args.debug:
         debug = args.debug
 

@@ -86,7 +86,7 @@ runDownloadMycodo() {
 
   if [ -d "${MYCODO_NEW_TMP_DIR}" ] ; then
     printf "The tmp directory %s already exists. Removing..." "${MYCODO_NEW_TMP_DIR}"
-    if ! rm -Rf "${MYCODO_NEW_TMP_DIR}" ; then
+    if ! rm -rf "${MYCODO_NEW_TMP_DIR}" ; then
       printf "Failed: Error while trying to delete tmp directory %s.\n" "${MYCODO_NEW_TMP_DIR}"
       error_found
     fi
