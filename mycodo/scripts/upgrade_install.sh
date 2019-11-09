@@ -26,9 +26,9 @@ runSelfUpgrade() {
   CURRENT_MYCODO_INSTALL_DIRECTORY=$( cd -P /var/mycodo-root/.. && pwd -P )
   THIS_MYCODO_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd -P )
 
-#  if ! python3 "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/required_python_version.py; then
-#    printf "Incorrect Python version. Mycodo requires Python >= 3.7"
-#  fi
+  if ! python3 "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/required_python_version.py; then
+    printf "Incorrect Python version. Mycodo requires Python >= 3.7"
+  fi
 
   if [ "$CURRENT_MYCODO_DIRECTORY" == "$THIS_MYCODO_DIRECTORY" ] ; then
     printf "Cannot perform upgrade to the Mycodo instance already intalled. Halting upgrade.\n"

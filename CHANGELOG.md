@@ -2,12 +2,11 @@
 
 Warning: This version will not work with Python 3.5 (Raspbian Stretch). Only upgrade if you have Python 3.7 installed (Raspbian Buster).
 
-This version introduces an improved upgrade system and a REST API for communicating with Mycodo ([API Info](https://github.com/kizniche/Mycodo/blob/master/mycodo-api.rst) and [API Manual](https://kizniche.github.io/Mycodo/mycodo-api.html)).
+This version introduces an improved upgrade system and a REST API (requiring Python >= 3.6) for communicating with Mycodo ([API Info](https://github.com/kizniche/Mycodo/blob/master/mycodo-api.rst) and [API Manual](https://kizniche.github.io/Mycodo/mycodo-api.html)).
 
 ### Features
 
  - Add REST API access, API endpoints, and API manual section ([#705](https://github.com/kizniche/mycodo/issues/705))
- - Improve upgrade system
 
 
 ## 7.10.0 (Unreleased)
@@ -27,6 +26,7 @@ This version introduces an improved upgrade system and a REST API for communicat
  - Add ability for variables to persist in Conditional statements
  - Add ability to import any database <= the current Mycodo version (database upgrade will be performed)
  - Add ability to install all unmet dependencies when importing a database
+ - Improve upgrade system
 
 
 ## 7.9.1 (2019.10.26)

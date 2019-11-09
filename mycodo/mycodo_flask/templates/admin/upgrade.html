@@ -52,8 +52,10 @@
       <br>Refer to the <a href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md" target="_blank">Changelog</a> for a list of all changes.
     </div>
       <p>Major version upgrade: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_latest_major_version}}.0.0" target="_blank">{{current_latest_major_version}}.0.0</a></p>
-      <p>Version incompatibility detected! Your current version, {{current_latest_major_version}}.x, is not compatible with <= {{current_release}} versions. If you choose to upgrade, no settings or configurations will be transferred to v{{current_latest_release}}, so it is advisable to backup these settings by either saving the settings database (~/Mycodo/databases/mycodo.db) or writing down information (GPIO pins, PID settings, etc.).</p>
-    <p>If you would like to upgrade to Mycodo v{{current_latest_release}}, select the button below.</p>
+      <p style="font-weight: bold; color: red">Version incompatibility detected!</p>
+      <p>Your current version, {{current_release}}, is not compatible with an upgrade to {{current_latest_major_version}}.x. If you choose to upgrade, no settings or configurations will be transferred to v{{current_latest_release}}, so it is advisable to backup these settings by either saving the settings database (~/Mycodo/databases/mycodo.db) or writing down information (GPIO pins, PID settings, etc.).</p>
+      <p>In come cases, there may be extenuating circumstances preventing an upgrade, even if the settings database is wiped. If this is the case, the upgrade script will inform you of the issue upon attempting to perform the upgrade.</p>
+      <p>If you would like to attempt to upgrade Mycodo to v{{current_latest_release}}, select the button below.</p>
     <div class="form-inline" style="padding-bottom: 1em">
       <form method="post" action="/admin/upgrade">
         <input type="hidden" name="form-name" value="upgrade">
