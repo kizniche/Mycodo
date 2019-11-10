@@ -1,3 +1,10 @@
+## 8.0.1 (Unreleased)
+
+### Features
+
+ - Allow any database <= the Mycodo version to be imported
+
+
 ## 8.0.0 (2019.11.09)
 
 Warning: This version will not work with Python 3.5 (Raspbian Stretch). Only upgrade if you have Python 3.7 installed (Raspbian Buster).

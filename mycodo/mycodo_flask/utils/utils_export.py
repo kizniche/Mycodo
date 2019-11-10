@@ -225,21 +225,12 @@ def import_settings(form):
                         fmt=correct_format))
                 elif extension != correct_extension:
                     error.append("Extension not 'zip'")
-                elif name_split[1] != MYCODO_VERSION:
+                elif name_split[1] > MYCODO_VERSION:
                     error.append(
-                        "Invalid Mycodo version: {fv} != {mv}. "
-                        "This database can only be imported to "
-                        "Mycodo version {mver}".format(
+                        "Invalid Mycodo version: {fv} > {mv}. "
+                        "Only databases <= {mver} can only be imported".format(
                             fv=name_split[1],
                             mv=MYCODO_VERSION,
-                            mver=name_split[1]))
-                elif name_split[3] != ALEMBIC_VERSION:
-                    error.append(
-                        "Invalid database version: {fv} != {dv}."
-                        " This database can only be imported to"
-                        " Mycodo version {mver}".format(
-                            fv=name_split[3],
-                            dv=ALEMBIC_VERSION,
                             mver=name_split[1]))
             except Exception as err:
                 error.append(
