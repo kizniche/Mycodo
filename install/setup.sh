@@ -5,9 +5,6 @@
 #  Usage: sudo /bin/bash ~/Mycodo/install/setup.sh
 #
 
-printf "Mycodo installation is currently disabled while the upgrade system is tested"
-exit 1
-
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd -P )
 INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
 LOG_LOCATION=${INSTALL_DIRECTORY}/install/setup.log
