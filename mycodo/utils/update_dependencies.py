@@ -145,13 +145,17 @@ if __name__ == "__main__":
 
     # Update installed dependencies
     installed_deps = get_installed_dependencies()
+    apt_deps = ''
     for each_dep in installed_deps:
         if each_dep.split(' ')[0] == 'apt':
-            update_cmd = '{home}/mycodo/scripts/dependencies.sh {dep}'.format(
-                home=INSTALL_DIRECTORY, dep=each_dep)
-            output, err, stat = cmd_output(update_cmd, user='root')
-            formatted_output = output.decode("utf-8").replace('\\n', '\n')
-            print("{}".format(formatted_output))
+            apt_deps += ' {}'.format(each_dep.split(' ')[1])
+
+    if apt_deps:
+        update_cmd = 'apt-get install -y {dep}'.format(
+            home=INSTALL_DIRECTORY, dep=apt_deps)
+        output, err, stat = cmd_output(update_cmd, user='root')
+        formatted_output = output.decode("utf-8").replace('\\n', '\n')
+        print("{}".format(formatted_output))
 
     tmp_req_file = '{home}/install/requirements-generated.txt'.format(home=INSTALL_DIRECTORY)
     with open(tmp_req_file, "w") as f:
