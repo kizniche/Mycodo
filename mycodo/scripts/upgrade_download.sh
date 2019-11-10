@@ -1,5 +1,5 @@
 #!/bin/bash
-# Downloads the upgrade file
+# Downloads the version of Mycodo to upgrade to
 
 exec 2>&1
 

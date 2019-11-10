@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#  config_units.py - Mycodo unit settings
+#  config_devices_units.py - Mycodo device unit settings
 #
 
 from flask_babel import lazy_gettext

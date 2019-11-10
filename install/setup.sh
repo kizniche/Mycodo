@@ -17,6 +17,21 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Maintenance mode
+# This is a temporary state so the developer can test a version release before users can install.
+# Creating the file ~/Mycodo/.maintenance will override maintenece mode.
+if python "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/upgrade_check.py --maintenance_mode; then
+  if [[ ! -e $INSTALL_DIRECTORY/.maintenance ]]; then
+    printf "The Mycodo upgrade system is currently in maintenance mode so the developer can test the latest code.\n"
+    printf "Please wait and attempt the install later.\n"
+    printf "Note: You will need to delete the ~/Mycodo directory that was just downloaded and re-run the install command:\n"
+    printf "cd ~\n"
+    printf "rm -rf ~/Mycodo\n"
+    printf "curl -L https://raw.githubusercontent.com/kizniche/Mycodo/master/install/install | bash\n"
+    exit 1
+  fi
+fi
+
 WHIPTAIL=$(command -v whiptail)
 exitstatus=$?
 if [ $exitstatus != 0 ]; then

@@ -1,8 +1,6 @@
 #!/bin/bash
 # Upgrade from a previous release to this current release.
 # Check currently-installed version for the ability to upgrade to this release version.
-# If not in the list of versions able to upgrade from, present error to the user.
-# If in the list of versions able to upgrade from, proceed with upgrade.
 
 exec 2>&1
 
@@ -54,10 +52,21 @@ runSelfUpgrade() {
 
   printf "#### Beginning pre-upgrade checks ####\n"
 
+  # Maintenance mode
+  # This is a temporary state so the developer can test a version release before users can upgrade.
+  # Creating the file ~/Mycodo/.maintenance will override maintenece mode.
+  if python "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/upgrade_check.py --maintenance_mode; then
+    if [[ ! -e $CURRENT_MYCODO_DIRECTORY/.maintenance ]]; then
+      printf "The Mycodo upgrade system is currently in maintenance mode so the developer can test the latest upgrade.\n"
+      printf "Please wait and attempt the upgrade later.\n"
+      exit 1
+    fi
+  fi
+
   # Upgrade requires Python >= 3.6
   printf "Checking Python version...\n"
   if hash python3 2>/dev/null; then
-    if ! python3 "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/meets_python_version.py --version "3.6"; then
+    if ! python3 "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/upgrade_check.py --min_python_version "3.6"; then
       printf "Incorrect Python version found. Mycodo requires Python >= 3.6.\n"
       printf "If you're running Raspbian 9 (Stretch, Python 3.5), you will need to upgrade to at least Raspbian 10 (Buster, Python 3.7) to use the latest version of Mycodo\n"
       exit 1
@@ -65,7 +74,7 @@ runSelfUpgrade() {
       printf "Python >= 3.6 found."
     fi
   else
-    printf "Error: python3 not found. Cannot proceed with upgrade without python3.\n"
+    printf "Error: python3 not found. Cannot proceed with upgrade without python3 (Python >= 3.6).\n"
     exit 1
   fi
 

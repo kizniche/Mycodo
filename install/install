@@ -12,12 +12,9 @@
 #  curl -L https://raw.githubusercontent.com/kizniche/Mycodo/master/install/install | bash
 #
 
-printf "Mycodo installation is currently disabled while the upgrade system is tested"
-exit 1
-
 if [ -d ~/Mycodo ]; then
-    printf "\n## Error: Install aborted. Cause: The ~/Mycodo directory already exists. The install cannot continue because a previous Mycodo install was detected. Please either move or delete the ~/Mycodo directory and rerun this script to initiate the install.\n"
-    exit 1
+  printf "\n## Error: Install aborted. Cause: The ~/Mycodo directory already exists. The install cannot continue because a previous Mycodo install was detected. Please either move or delete the ~/Mycodo directory and rerun this script to initiate the install or run ~/Mycodo/install/setup.sh.\n"
+  exit 1
 fi
 
 sudo apt-get install -y jq whiptail

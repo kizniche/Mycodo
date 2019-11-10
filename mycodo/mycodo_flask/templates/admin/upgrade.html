@@ -44,25 +44,25 @@
           current_latest_release != '0.0.0' and
           upgrade != 1 %}
 
-    <div style="padding: 0.5em 0">
+    <p style="padding-top: 0.5em">
       Installed version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_release}}" target="_blank">{{current_release}}</a>
       <br>Latest version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_latest_release}}" target="_blank">{{current_latest_release}}</a>
-    </div>
-    <div style="padding: 0.5em 0">
-      <br>Refer to the <a href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md" target="_blank">Changelog</a> for a list of all changes.
-    </div>
-      <p>Major version upgrade: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_latest_major_version}}.0.0" target="_blank">{{current_latest_major_version}}.0.0</a></p>
-      <p style="font-weight: bold; color: red">Version incompatibility detected!</p>
-      <p>Your current version, {{current_release}}, is not compatible with an upgrade to {{current_latest_major_version}}.x. If you choose to upgrade, no settings or configurations will be transferred to v{{current_latest_release}}, so it is advisable to backup these settings by either saving the settings database (~/Mycodo/databases/mycodo.db) or writing down information (GPIO pins, PID settings, etc.).</p>
-      <p>In come cases, there may be extenuating circumstances preventing an upgrade, even if the settings database is wiped. If this is the case, the upgrade script will inform you of the issue upon attempting to perform the upgrade.</p>
-      <p>If you would like to attempt to upgrade Mycodo to v{{current_latest_release}}, select the button below.</p>
+    </p>
+    <p>
+      Refer to the <a href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md" target="_blank">Changelog</a> for a full list of changes.
+      <br>Major version changes: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_latest_major_version}}.0.0" target="_blank">{{current_latest_major_version}}.0.0</a>
+    </p>
+    <p style="font-weight: bold; color: red">Major version change detected!</p>
+    <p>A new major version has been released on GitHub: v{{current_latest_major_version}} (currently at v{{current_latest_release}}). This usually means there are system-breaking changes for some or all users, and if you choose to upgrade, your system settings may not be able to be preserved. It is advisable to backup these settings by either <a href="/export">exporting</a> the settings database (~/Mycodo/databases/mycodo.db) or making note of important information (GPIO pins, PID settings, etc.).</p>
+    <p>However, there may be cases where the settings database can be preserved during the upgrade. There may be other cases that an upgrade is not possible, even if the settings database is wiped. This will be dependent on both your currently installed version and the current version available for upgrade and won't be known until an upgrade is attempted. The upgrade script will inform you of any of these situations after the upgrade is initiated.</p>
+    <p>If you would like to attempt to upgrade Mycodo to v{{current_latest_release}}, select the button below.</p>
     <div class="form-inline" style="padding-bottom: 1em">
       <form method="post" action="/admin/upgrade">
         <input type="hidden" name="form-name" value="upgrade">
         {{form_upgrade.csrf_token}}
         <div>
           <div class="form-group">
-            {{form_upgrade.upgrade_next_major_version(class_='btn btn-primary', **{'onclick':'return confirm("Your settings database will not be transfered if you choose to upgrade. IT WILL BE DELETED. Confirm that you really want to do this.")'})}}
+            {{form_upgrade.upgrade_next_major_version(class_='btn btn-primary', **{'onclick':'return confirm("Your settings database may not be preserved if you choose to upgrade. Confirm that you really want to do this.")'})}}
           </div>
         </div>
       </form>
