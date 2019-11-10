@@ -24,7 +24,6 @@ from mycodo.config import CALIBRATION_INFO
 from mycodo.config import CAMERA_INFO
 from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
-from mycodo.config import FINAL_RELEASES
 from mycodo.config import FORCE_UPGRADE_MASTER
 from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import FUNCTION_INFO
@@ -507,7 +506,6 @@ def admin_upgrade():
                 "error")
 
     return render_template('admin/upgrade.html',
-                           final_releases=FINAL_RELEASES,
                            force_upgrade_master=FORCE_UPGRADE_MASTER,
                            form_backup=form_backup,
                            form_upgrade=form_upgrade,

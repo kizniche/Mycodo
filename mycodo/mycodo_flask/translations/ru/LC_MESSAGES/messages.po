@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-02 17:01-0400\n"
+"POT-Creation-Date: 2019-11-09 19:56-0500\n"
 "PO-Revision-Date: 2018-08-10 15:43-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -19,256 +19,256 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
-#: config.py:50
+#: config.py:46
 msgid "Add Dashboard Element"
 msgstr "Добавить элемент панели мониторинга"
 
-#: config.py:51
+#: config.py:47
 #: mycodo_flask/templates/pages/dashboard_options/add_graph.html:10
 msgid "Graph"
 msgstr "график"
 
-#: config.py:52
+#: config.py:48
 #: mycodo_flask/templates/pages/dashboard_options/add_gauge.html:16
 msgid "Gauge"
 msgstr "измерительный прибор"
 
-#: config.py:57
+#: config.py:53
 msgid "PWM Slider"
 msgstr ""
 
-#: config.py:58
+#: config.py:54
 msgid "PID Control"
 msgstr "ПИД-регулирование"
 
-#: config.py:105
+#: config.py:124
 msgid "Average (Last, Multiple Channels)"
 msgstr ""
 
-#: config.py:111
+#: config.py:130
 msgid "Average (Past, Single Channel)"
 msgstr ""
 
-#: config.py:118
+#: config.py:137
 msgid "Sum (Last, Multiple Channels)"
 msgstr ""
 
-#: config.py:124
+#: config.py:143
 msgid "Sum (Past, Single Channel)"
 msgstr ""
 
-#: config.py:131
+#: config.py:150
 msgid "Difference"
 msgstr "разница"
 
-#: config.py:137 mycodo_flask/forms/forms_math.py:75
+#: config.py:156 mycodo_flask/forms/forms_math.py:75
 #: mycodo_flask/forms/forms_settings.py:198
 #: mycodo_flask/forms/forms_settings.py:206
 msgid "Equation"
 msgstr "Уравнение"
 
-#: config.py:143
+#: config.py:162
 msgid "Humidity (Wet/Dry-Bulb)"
 msgstr "Влажность (мокрая / сухая лампа)"
 
-#: config.py:166
+#: config.py:185
 msgid "Redundancy"
 msgstr "избыточность"
 
-#: config.py:172 mycodo_flask/templates/admin/statistics.html:6
+#: config.py:191 mycodo_flask/templates/admin/statistics.html:6
 msgid "Statistics"
 msgstr "Статистика"
 
-#: config.py:214
+#: config.py:233
 msgid "Verification"
 msgstr "верификация"
 
-#: config.py:220 config_devices_units.py:193
+#: config.py:239 config_devices_units.py:193
 msgid "Vapor Pressure Deficit"
 msgstr "Дефицит давления пара"
 
-#: config.py:250
+#: config.py:269
 msgid "Time/Date"
 msgstr "Дата / время"
 
-#: config.py:254 config_devices_units.py:69 config_translations.py:57
+#: config.py:273 config_devices_units.py:69 config_translations.py:57
 #: mycodo_flask/templates/pages/function_options/action_options/output.html:27
 #: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:37
 msgid "Duration"
 msgstr "продолжительность"
 
-#: config.py:258
+#: config.py:277
 msgid "Daily (Time-Based)"
 msgstr "Ежедневно (по времени)"
 
-#: config.py:262
+#: config.py:281
 msgid "Daily (Sine Wave)"
 msgstr "Ежедневно (Синусоида)"
 
-#: config.py:266
+#: config.py:285
 msgid "Daily (Bezier Curve)"
 msgstr "Ежедневно (Кривая Безье)"
 
-#: config.py:285
+#: config.py:304
 msgid "On/Off (GPIO)"
 msgstr "Вкл / Выкл (GPIO)"
 
-#: config.py:291
+#: config.py:310
 msgid "PWM (GPIO)"
 msgstr "ШИМ (GPIO)"
 
-#: config.py:299
+#: config.py:318
 msgid "Wireless 315/433MHz LPD/SRD (rpi-rf)"
 msgstr "Беспроводной LPD / SRD 315/433 МГц (rpi-rf)"
 
-#: config.py:308
+#: config.py:327
 msgid "On/Off (Linux Command)"
 msgstr "Вкл / Выкл (команда Linux)"
 
-#: config.py:314
+#: config.py:333
 msgid "PWM (Linux Command)"
 msgstr "ШИМ (команда Linux)"
 
-#: config.py:320
+#: config.py:339
 msgid "On/Off (Python Command)"
 msgstr "Вкл / Выкл (команда Python)"
 
-#: config.py:326
+#: config.py:345
 msgid "PWM (Python Command)"
 msgstr "ШИМ (команда Python)"
 
-#: config.py:332
+#: config.py:351
 msgid "Atlas EZO-PMP"
 msgstr "Атлас ЭЗО-ПМП"
 
-#: config.py:350
+#: config.py:369
 msgid "FTDI"
 msgstr ""
 
-#: config.py:352
+#: config.py:371
 msgid "I2C"
 msgstr "I2C"
 
-#: config.py:354
+#: config.py:373
 msgid "UART"
 msgstr "УАПП"
 
-#: config.py:417
+#: config.py:436
 msgid "DS-Type Sensor Calibration"
 msgstr "Калибровка датчика типа DS"
 
-#: config.py:444 config_devices_units.py:97
+#: config.py:463 config_devices_units.py:97
 #: mycodo_flask/templates/pages/function_options/conditional_options/gpio_state.html:8
 msgid "GPIO State"
 msgstr "Состояние GPIO"
 
-#: config.py:445
+#: config.py:464
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:13
 msgid "Output State"
 msgstr ""
 
-#: config.py:446
+#: config.py:465
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_duration_on.html:13
 msgid "Output Duration On"
 msgstr ""
 
-#: config.py:447
+#: config.py:466
 #: mycodo_flask/templates/pages/function_options/conditional_options/controller_status.html:13
 msgid "Controller Running"
 msgstr ""
 
-#: config.py:454
+#: config.py:473
 msgid "Spacer"
 msgstr "распорка"
 
-#: config.py:460
+#: config.py:479
 msgid "Execute Actions"
 msgstr "Выполнить действия"
 
-#: config.py:497
+#: config.py:516
 msgid "Trigger: Timer (Daily Point)"
 msgstr "Триггер: Таймер (Дневная точка)"
 
-#: config.py:504
+#: config.py:523
 msgid "Daily Span"
 msgstr "Дневной промежуток"
 
-#: config.py:517
+#: config.py:536
 msgid "Infrared Receive"
 msgstr ""
 
-#: config.py:527
+#: config.py:546
 msgid "Run PWM Method"
 msgstr "Запустить метод ШИМ"
 
-#: config.py:533
+#: config.py:552
 msgid "Sunrise/Sunset"
 msgstr "Восход закат"
 
-#: config.py:563
+#: config.py:582
 #: mycodo_flask/templates/pages/function_options/action_options/photo.html:11
 msgid "Camera: Capture Photo"
 msgstr "Камера: захват фото"
 
-#: config.py:593
+#: config.py:612
 #: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:20
 msgid "Email with Photo Attachment"
 msgstr "Электронная почта с приложением фотографии"
 
-#: config.py:597
+#: config.py:616
 #: mycodo_flask/templates/pages/function_options/action_options/video_email.html:20
 msgid "Email with Video Attachment"
 msgstr "Электронная почта с вложением видео"
 
-#: config.py:601
+#: config.py:620
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:6
 msgid "Execute Command"
 msgstr "Выполнять команду"
 
-#: config.py:605
+#: config.py:624
 #: mycodo_flask/templates/pages/function_options/action_options/infrared_send.html:32
 msgid "Infrared Send"
 msgstr ""
 
-#: config.py:616
+#: config.py:635
 #: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_off.html:11
 msgid "Backlight Off"
 msgstr "Подсветка выключена"
 
-#: config.py:622
+#: config.py:641
 #: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_on.html:11
 msgid "Backlight On"
 msgstr ""
 
-#: config.py:628
+#: config.py:647
 #: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_off.html:11
 msgid "Flashing Off"
 msgstr ""
 
-#: config.py:634
+#: config.py:653
 #: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_on.html:11
 msgid "Flashing On"
 msgstr ""
 
-#: config.py:670
+#: config.py:689
 #: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:20
 msgid "Set Method"
 msgstr "Задать метод"
 
-#: config.py:676
+#: config.py:695
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:62
 #: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:92
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:15
 msgid "Set Setpoint"
 msgstr "Установить заданное значение"
 
-#: config.py:682
+#: config.py:701
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:11
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:15
 msgid "Raise Setpoint"
 msgstr ""
 
-#: config.py:688
+#: config.py:707
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:11
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:15
 msgid "Lower Setpoint"
@@ -618,7 +618,7 @@ msgstr "вольт"
 
 #: config_translations.py:15
 #: mycodo_flask/templates/pages/function_options/action_options/pause_actions.html:8
-#: mycodo_flask/templates/pages/function_options/conditional.html:157
+#: mycodo_flask/templates/pages/function_options/conditional.html:151
 #: mycodo_flask/templates/pages/function_options/trigger.html:103
 msgid "Actions"
 msgstr "действия"
@@ -991,7 +991,7 @@ msgstr "вверх"
 msgid "Upload"
 msgstr "Загрузить"
 
-#: config_translations.py:163 inputs/linux_command.py:52
+#: config_translations.py:163 inputs/linux_command.py:54
 msgid "User"
 msgstr "пользователь"
 
@@ -1633,23 +1633,23 @@ msgstr ""
 msgid "Select the library used to communicate"
 msgstr "Выберите библиотеку для общения"
 
-#: inputs/linux_command.py:44
+#: inputs/linux_command.py:46
 msgid "Command Timeout"
 msgstr ""
 
-#: inputs/linux_command.py:45
+#: inputs/linux_command.py:47
 msgid "How long to wait for the command to finish before killing the process."
 msgstr ""
 
-#: inputs/linux_command.py:53
+#: inputs/linux_command.py:55
 msgid "The user to execute the command."
 msgstr ""
 
-#: inputs/linux_command.py:60
+#: inputs/linux_command.py:62
 msgid "CWD"
 msgstr ""
 
-#: inputs/linux_command.py:61
+#: inputs/linux_command.py:63
 msgid "The current working directory of the shell environment."
 msgstr ""
 
@@ -1805,19 +1805,19 @@ msgstr ""
 msgid "The serial device to write to"
 msgstr ""
 
-#: mycodo_flask/app.py:211
+#: mycodo_flask/app.py:202
 msgid "Please log in to access this page"
 msgstr "Пожалуйста, войдите, чтобы получить доступ к этой странице"
 
-#: mycodo_flask/routes_admin.py:103
+#: mycodo_flask/routes_admin.py:104
 msgid "Backup in progress"
 msgstr "Выполняется резервное копирование"
 
-#: mycodo_flask/routes_admin.py:122
+#: mycodo_flask/routes_admin.py:123
 msgid "Deletion of backup in progress"
 msgstr "Выполняется удаление резервной копии"
 
-#: mycodo_flask/routes_admin.py:132
+#: mycodo_flask/routes_admin.py:133
 msgid "Restore in progress"
 msgstr "Восстановление в процессе"
 
@@ -1845,15 +1845,15 @@ msgstr ""
 msgid "The upgrade (from master branch) has started"
 msgstr "Началось обновление (от ведущей ветки)"
 
-#: mycodo_flask/routes_admin.py:485
+#: mycodo_flask/routes_admin.py:486
 msgid "The upgrade has started"
 msgstr "Началось обновление"
 
-#: mycodo_flask/routes_admin.py:500
+#: mycodo_flask/routes_admin.py:501
 msgid "The major version upgrade has started"
 msgstr "Началось обновление основной версии"
 
-#: mycodo_flask/routes_admin.py:502
+#: mycodo_flask/routes_admin.py:504
 msgid "You cannot upgrade if an upgrade is not available"
 msgstr "Вы не можете обновить, если обновление недоступно"
 
@@ -1935,11 +1935,11 @@ msgstr "Команда для перезапуска отправленного 
 msgid "Command to reload the frontend sent"
 msgstr "Команда для перезагрузки отправленного интерфейса"
 
-#: mycodo_flask/routes_page.py:213
+#: mycodo_flask/routes_page.py:219
 msgid "Cannot start time-lapse if stream is active."
 msgstr "Невозможно запустить провал времени, если поток активен."
 
-#: mycodo_flask/routes_page.py:243
+#: mycodo_flask/routes_page.py:249
 msgid "Cannot start stream if time-lapse is active."
 msgstr "Невозможно запустить поток, если активен временной интервал."
 
@@ -3442,14 +3442,6 @@ msgstr "Помогите"
 msgid "Mycodo Manual"
 msgstr "Руководство пользователя Mycodo"
 
-#: mycodo_flask/templates/layout.html:229
-msgid "Mycodo API Docs"
-msgstr ""
-
-#: mycodo_flask/templates/layout.html:230
-msgid "Mycodo API"
-msgstr ""
-
 #: mycodo_flask/templates/layout.html:232
 msgid "Discussion Forum"
 msgstr ""
@@ -3569,11 +3561,11 @@ msgstr ""
 msgid "Collected Statistics"
 msgstr "Сбор статистики"
 
-#: mycodo_flask/templates/admin/upgrade.html:72
+#: mycodo_flask/templates/admin/upgrade.html:74
 msgid "Mycodo is currently in the process of an upgrade"
 msgstr "В настоящее время Mycodo находится в процессе обновления"
 
-#: mycodo_flask/templates/admin/upgrade.html:73
+#: mycodo_flask/templates/admin/upgrade.html:75
 msgid ""
 "If an upgrade is not currently in progress, you may delete the "
 "~/Mycodo/.upgrade file to be able to reinitiate the upgrade process."
@@ -3581,7 +3573,7 @@ msgstr ""
 "Если обновление не выполняется, вы можете удалить файл ~ / Mycodo / "
 ".upgrade, чтобы возобновить процесс обновления."
 
-#: mycodo_flask/templates/admin/upgrade.html:74
+#: mycodo_flask/templates/admin/upgrade.html:76
 msgid ""
 "An upgrade often takes several minutes, and in some cases longer, to "
 "complete. Give the process ample time to run before doing anything. When "
@@ -3598,7 +3590,7 @@ msgstr ""
 " столкнулись с ошибкой, попробуйте перезапустить серверную часть перед "
 "созданием новой проблемы с github."
 
-#: mycodo_flask/templates/admin/upgrade.html:75
+#: mycodo_flask/templates/admin/upgrade.html:77
 msgid ""
 "You can monitor the upgrade progress with the live log view, below, by "
 "navigating to Configure -> Mycodo Logs -> Upgrade Log, or by opening "
@@ -3613,15 +3605,15 @@ msgstr ""
 "возникает ошибка, рекомендуется проверить весь журнал, чтобы "
 "диагностировать проблему."
 
-#: mycodo_flask/templates/admin/upgrade.html:82
+#: mycodo_flask/templates/admin/upgrade.html:84
 msgid "There was an error that occurred during the upgrade"
 msgstr "Произошла ошибка во время обновления"
 
-#: mycodo_flask/templates/admin/upgrade.html:83
+#: mycodo_flask/templates/admin/upgrade.html:85
 msgid "View the upgrade log at /var/log/mycodo/mycodoupgrade.log."
 msgstr "Просмотрите журнал обновлений на /var/log/mycodo/mycodoupgrade.log."
 
-#: mycodo_flask/templates/admin/upgrade.html:84
+#: mycodo_flask/templates/admin/upgrade.html:86
 msgid ""
 "Delete ~/Mycodo/.upgrade to acknowledge this message and restore upgrade "
 "functionality."
@@ -3629,7 +3621,7 @@ msgstr ""
 "Удалите ~ / Mycodo / .upgrade, чтобы подтвердить это сообщение и "
 "восстановить функциональность обновления."
 
-#: mycodo_flask/templates/admin/upgrade.html:110
+#: mycodo_flask/templates/admin/upgrade.html:112
 msgid ""
 "No internet connection detected. To upgrade Mycodo automatically, you "
 "will need an internet connection. Refresh the page when one is connected."
@@ -3638,11 +3630,11 @@ msgstr ""
 "вам понадобится подключение к Интернету. Обновите страницу при "
 "подключении."
 
-#: mycodo_flask/templates/admin/upgrade.html:116
+#: mycodo_flask/templates/admin/upgrade.html:118
 msgid "No upgrade is available. You are running the latest release, version"
 msgstr "Обновление не доступно. Вы используете последнюю версию, версию"
 
-#: mycodo_flask/templates/admin/upgrade.html:130
+#: mycodo_flask/templates/admin/upgrade.html:132
 msgid ""
 "Click the button below to begin the upgrade process. Note: An upgrade "
 "often takes several minutes, and in rare cases hours, to complete. During"
@@ -3660,15 +3652,15 @@ msgstr ""
 "машине (т. Е. Проверка прав на покупку: считать новую версию "
 "нестабильной, пока вы не проверите ее работу, как ожидалось)."
 
-#: mycodo_flask/templates/admin/upgrade.html:149
+#: mycodo_flask/templates/admin/upgrade.html:151
 msgid "Current to latest versions"
 msgstr "Текущие к последним версиям"
 
-#: mycodo_flask/templates/admin/upgrade.html:157
+#: mycodo_flask/templates/admin/upgrade.html:159
 msgid "current"
 msgstr "текущий"
 
-#: mycodo_flask/templates/admin/upgrade.html:157
+#: mycodo_flask/templates/admin/upgrade.html:159
 msgid "latest"
 msgstr "последний"
 
@@ -3690,62 +3682,66 @@ msgstr ""
 "используя конфигурацию Raspberry Pi или команду 'sudo raspi-config'"
 
 #: mycodo_flask/templates/pages/camera.html:132
-msgid ""
-"Different options are available to fswebcam depending on the camera being"
-" used. Execute 'fswebcam --device /dev/video0 --list-controls' to see "
-"available options to use in 'Custom Options'."
+#: mycodo_flask/templates/pages/camera.html:136
+msgid "Different options are available depending on the camera being used."
 msgstr ""
 
-#: mycodo_flask/templates/pages/camera.html:139
+#: mycodo_flask/templates/pages/camera.html:132
+msgid ""
+"Execute 'fswebcam --device /dev/video0 --list-controls' to see available "
+"options to use in 'Custom Options'."
+msgstr ""
+
+#: mycodo_flask/templates/pages/camera.html:143
 msgid "Name for this Camera"
 msgstr "Имя для этой камеры"
 
-#: mycodo_flask/templates/pages/camera.html:145
+#: mycodo_flask/templates/pages/camera.html:149
 msgid "Linux shell command to execute prior to acquiring a still image."
 msgstr ""
 
-#: mycodo_flask/templates/pages/camera.html:151
+#: mycodo_flask/templates/pages/camera.html:155
 msgid "Linux shell command to execute after acquiring a still image."
 msgstr ""
 
-#: mycodo_flask/templates/pages/camera.html:172
+#: mycodo_flask/templates/pages/camera.html:176
 msgid ""
 "The duration to keep the output on prior to acquiring a still image. FOr "
 "example, useful for fluorescent lights that take a few seconds to turn "
 "on."
 msgstr ""
 
-#: mycodo_flask/templates/pages/camera.html:178
+#: mycodo_flask/templates/pages/camera.html:182
 msgid "Path to save still image files. Leave blank to use default location."
 msgstr ""
 "Путь для сохранения файлов неподвижных изображений. Оставьте пустым, "
 "чтобы использовать местоположение по умолчанию."
 
-#: mycodo_flask/templates/pages/camera.html:184
+#: mycodo_flask/templates/pages/camera.html:188
 msgid "Path to save timelapse image files. Leave blank to use default location."
 msgstr ""
 "Путь для сохранения файлов изображений с интервальной съемкой. Оставьте "
 "пустым, чтобы использовать местоположение по умолчанию."
 
-#: mycodo_flask/templates/pages/camera.html:190
+#: mycodo_flask/templates/pages/camera.html:194
 msgid "Path to save video files. Leave blank to use default location."
 msgstr ""
 "Путь для сохранения видео файлов. Оставьте пустым, чтобы использовать "
 "местоположение по умолчанию."
 
-#: mycodo_flask/templates/pages/camera.html:236
+#: mycodo_flask/templates/pages/camera.html:240
 msgid "Video Stream"
 msgstr "Видеопоток"
 
-#: mycodo_flask/templates/pages/camera.html:243
+#: mycodo_flask/templates/pages/camera.html:247
 msgid "Timelapse Parameters"
 msgstr "Параметры Timelapse"
 
-#: mycodo_flask/templates/pages/camera.html:255
+#: mycodo_flask/templates/pages/camera.html:259
 msgid "Last Timelapse"
 msgstr "Последний разворот"
 
-#: mycodo_flask/templates/pages/camera.html:262
+#: mycodo_flask/templates/pages/camera.html:266
 msgid "Last Still"
 msgstr "Последний раз"
 
@@ -4149,19 +4145,11 @@ msgstr "Максимально разрешенная разница между 
 msgid "The duration between checking whether the conditional is true"
 msgstr "Продолжительность проверки между истинным условием"
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:83
-msgid ""
-"The minimum duration after a conditional trigger to wait before beggining"
-" monitoring again"
-msgstr ""
-"Минимальная продолжительность после условного триггера до ожидания "
-"повторного мониторинга"
-
-#: mycodo_flask/templates/pages/function_options/conditional.html:97
+#: mycodo_flask/templates/pages/function_options/conditional.html:91
 msgid "Conditions"
 msgstr "условия"
 
-#: mycodo_flask/templates/pages/function_options/conditional.html:197
+#: mycodo_flask/templates/pages/function_options/conditional.html:191
 msgid ""
 "will execute only this action. <strong>self.run_all_actions()</strong> "
 "will execute all actions sequentially."
@@ -5395,16 +5383,16 @@ msgstr "Выберите датчик DS18B20"
 msgid "Select a resolution"
 msgstr "Выберите разрешение"
 
-#: mycodo_flask/utils/utils_conditional.py:59
-#: mycodo_flask/utils/utils_conditional.py:204
+#: mycodo_flask/utils/utils_conditional.py:58
+#: mycodo_flask/utils/utils_conditional.py:203
 #: mycodo_flask/utils/utils_trigger.py:100
 #, python-format
 msgid "Daemon response: %(resp)s"
 msgstr "Реакция демона: %(resp)s"
 
-#: mycodo_flask/utils/utils_conditional.py:134
-#: mycodo_flask/utils/utils_conditional.py:170
-#: mycodo_flask/utils/utils_conditional.py:224
+#: mycodo_flask/utils/utils_conditional.py:133
+#: mycodo_flask/utils/utils_conditional.py:169
+#: mycodo_flask/utils/utils_conditional.py:223
 msgid "Condition"
 msgstr "Состояние"
 
@@ -5423,7 +5411,7 @@ msgstr "{dev} с успешным добавлением ID %(id)s"
 msgid "Execute All"
 msgstr "Выполнить все"
 
-#: mycodo_flask/utils/utils_general.py:258
+#: mycodo_flask/utils/utils_general.py:259
 #: mycodo_flask/utils/utils_remote_host.py:160
 #: mycodo_flask/utils/utils_remote_host.py:164
 #: mycodo_flask/utils/utils_remote_host.py:168
@@ -5432,16 +5420,16 @@ msgstr "Выполнить все"
 msgid "Error: %(err)s"
 msgstr "Ошибка: %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:799
-#: mycodo_flask/utils/utils_general.py:814
-#: mycodo_flask/utils/utils_general.py:834
-#: mycodo_flask/utils/utils_general.py:839 mycodo_flask/utils/utils_lcd.py:225
+#: mycodo_flask/utils/utils_general.py:800
+#: mycodo_flask/utils/utils_general.py:815
+#: mycodo_flask/utils/utils_general.py:835
+#: mycodo_flask/utils/utils_general.py:840 mycodo_flask/utils/utils_lcd.py:225
 #: mycodo_flask/utils/utils_lcd.py:227
 #, python-format
 msgid "%(msg)s"
 msgstr "%(msg)s"
 
-#: mycodo_flask/utils/utils_general.py:806
+#: mycodo_flask/utils/utils_general.py:807
 #: mycodo_flask/utils/utils_output.py:328
 #: mycodo_flask/utils/utils_output.py:335
 #: mycodo_flask/utils/utils_output.py:340
@@ -5449,21 +5437,21 @@ msgstr "%(msg)s"
 msgid "%(err)s"
 msgstr "%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:807
+#: mycodo_flask/utils/utils_general.py:808
 #, python-format
 msgid "Entry with ID %(id)s not found"
 msgstr "Запись с ID %(id)s не найдена"
 
-#: mycodo_flask/utils/utils_general.py:825
+#: mycodo_flask/utils/utils_general.py:826
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "Ошибка в поле %(field)s - %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:873
+#: mycodo_flask/utils/utils_general.py:874
 msgid "Cannot move above the first item in the list"
 msgstr "Не может перемещаться над первым элементом в списке"
 
-#: mycodo_flask/utils/utils_general.py:877
+#: mycodo_flask/utils/utils_general.py:878
 msgid "Cannot move below the last item in the list"
 msgstr "Нельзя перемещаться ниже последнего элемента в списке"
 
@@ -5970,4 +5958,27 @@ msgstr ""
 
 #~ msgid "pH"
 #~ msgstr "pH"
+
+#~ msgid "Mycodo API Docs"
+#~ msgstr ""
+
+#~ msgid "Mycodo API"
+#~ msgstr ""
+
+#~ msgid ""
+#~ "Different options are available to "
+#~ "fswebcam depending on the camera being"
+#~ " used. Execute 'fswebcam --device "
+#~ "/dev/video0 --list-controls' to see "
+#~ "available options to use in 'Custom "
+#~ "Options'."
+#~ msgstr ""
+
+#~ msgid ""
+#~ "The minimum duration after a conditional"
+#~ " trigger to wait before beggining "
+#~ "monitoring again"
+#~ msgstr ""
+#~ "Минимальная продолжительность после условного "
+#~ "триггера до ожидания повторного мониторинга"
 

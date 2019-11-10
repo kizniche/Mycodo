@@ -27,10 +27,6 @@ FORCE_UPGRADE_MASTER = False
 # Accessed at https://127.0.0.1/mycodo-flask-profiler
 ENABLE_FLASK_PROFILER = False
 
-# Final release for each major version number
-# Used to determine proper upgrade page to display
-FINAL_RELEASES = ['5.7.3', '6.4.7', '7.10.0']
-
 LANGUAGES = {
     'en': 'English',
     'de': 'Deutsche (German)',

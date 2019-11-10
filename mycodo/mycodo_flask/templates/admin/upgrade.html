@@ -39,7 +39,7 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    {% if current_release in final_releases and
+    {% if current_latest_major_version != current_release.split('.')[0] and
           current_release != current_latest_release and
           current_latest_release != '0.0.0' and
           upgrade != 1 %}
@@ -53,7 +53,7 @@
       <br>Major version changes: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_latest_major_version}}.0.0" target="_blank">{{current_latest_major_version}}.0.0</a>
     </p>
     <p style="font-weight: bold; color: red">Major version change detected!</p>
-    <p>A new major version has been released on GitHub: v{{current_latest_major_version}} (currently at v{{current_latest_release}}). This usually means there are system-breaking changes for some or all users, and if you choose to upgrade, your system settings may not be able to be preserved. It is advisable to backup these settings by either <a href="/export">exporting</a> the settings database (~/Mycodo/databases/mycodo.db) or making note of important information (GPIO pins, PID settings, etc.).</p>
+    <p>A new major version has been released on GitHub: v{{current_latest_major_version}}.x.x (currently at v{{current_latest_release}}). This usually means there are system-breaking changes for some or all users, and if you choose to upgrade, your system settings may not be able to be preserved. It is advisable to backup these settings by either <a href="/export">exporting</a> the settings database (~/Mycodo/databases/mycodo.db) or making note of important information (GPIO pins, PID settings, etc.).</p>
     <p>However, there may be cases where the settings database can be preserved during the upgrade. There may be other cases that an upgrade is not possible, even if the settings database is wiped. This will be dependent on both your currently installed version and the current version available for upgrade and won't be known until an upgrade is attempted. The upgrade script will inform you of any of these situations after the upgrade is initiated.</p>
     <p>If you would like to attempt to upgrade Mycodo to v{{current_latest_release}}, select the button below.</p>
     <div class="form-inline" style="padding-bottom: 1em">

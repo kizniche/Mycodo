@@ -2038,7 +2038,16 @@ measure_1 <span class="op">=</span> <span class="va">self</span>.condition(<span
 measure_2 <span class="op">=</span> <span class="va">self</span>.condition(<span class="st">&quot;</span><span class="sc">{hjkl5678}</span><span class="st">&quot;</span>)
 <span class="cf">if</span> <span class="va">None</span> <span class="kw">not</span> <span class="kw">in</span> [measure_1, measure_2]:
     <span class="cf">if</span> measure_1 <span class="op">&gt;</span> <span class="dv">20</span> <span class="kw">or</span> <span class="bu">int</span>(<span class="bu">round</span>(measure_2)) <span class="kw">in</span> [<span class="dv">20</span>, <span class="dv">21</span>, <span class="dv">22</span>]:
-        <span class="va">self</span>.run_all_actions()</code></pre></div>
+        <span class="va">self</span>.run_all_actions()
+
+<span class="co"># Example 7, use self to store variables</span>
+measurement <span class="op">=</span> <span class="va">self</span>.condition(<span class="st">&quot;</span><span class="sc">{asdf1234}</span><span class="st">&quot;</span>)
+<span class="cf">if</span> <span class="kw">not</span> <span class="bu">hasattr</span>(<span class="va">self</span>, <span class="st">&quot;stored_measurement&quot;</span>):  <span class="co"># Initialize variable</span>
+    <span class="va">self</span>.stored_measurement <span class="op">=</span> measurement
+<span class="cf">if</span> measurement <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:
+    <span class="cf">if</span> <span class="bu">abs</span>(measurement <span class="op">-</span> <span class="va">self</span>.stored_measurement) <span class="op">&gt;</span> <span class="dv">10</span>:
+        <span class="va">self</span>.run_all_actions()  <span class="co"># if difference is greater than 10</span>
+    <span class="va">self</span>.stored_measurement <span class="op">=</span> measurement  <span class="co"># Store measurement</span></code></pre></div>
 <p>“Measurement (Multiple)” is useful if you need to check if a particular value has been stored in any of the past measurements (within the set Max Age), not just the last measurement. This is useful if you have an alert system that each numerical value represents a different alert that you need to check each past value if it occurred. Here is an example that retrieves all measurements from the past 30 minutes and checks if each measurement value is equal to “119”. If “119” exists, the Actions are executed and <code>break</code> is used to exit the <code>for</code> loop. each_measure[‘time’] may also be used to retrieve the timestamp for the particular measurement.</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="co"># Example 1, find a particular measurement in the past 30 minutes (set Max Age to 1800 seconds)</span>
 measurements <span class="op">=</span> <span class="va">self</span>.condition_dict(<span class="st">&quot;</span><span class="sc">{asdf1234}</span><span class="st">&quot;</span>)

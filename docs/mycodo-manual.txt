@@ -2208,6 +2208,15 @@ of the Conditional, as long as it’s within the set Max Age.
         if measure_1 > 20 or int(round(measure_2)) in [20, 21, 22]:
             self.run_all_actions()
 
+    # Example 7, use self to store variables
+    measurement = self.condition("{asdf1234}")
+    if not hasattr(self, "stored_measurement"):  # Initialize variable
+        self.stored_measurement = measurement
+    if measurement is not None:
+        if abs(measurement - self.stored_measurement) > 10:
+            self.run_all_actions()  # if difference is greater than 10
+        self.stored_measurement = measurement  # Store measurement
+
 “Measurement (Multiple)” is useful if you need to check if a particular
 value has been stored in any of the past measurements (within the set
 Max Age), not just the last measurement. This is useful if you have an

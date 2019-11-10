@@ -9,7 +9,7 @@ This version introduces an improved upgrade system and a REST API (requiring Pyt
  - Add REST API access, API endpoints, and API manual section ([#705](https://github.com/kizniche/mycodo/issues/705))
 
 
-## 7.10.0 (Unreleased)
+## 7.10.0 (2019.11.09)
 
 ### Bugfixes
 
