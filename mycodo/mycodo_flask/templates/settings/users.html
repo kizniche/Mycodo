@@ -106,16 +106,16 @@
             {% endfor -%}
           </select>
         </div>
-{#        <div class="col-6 col-sm-3 col-md-3">#}
-{#          {% if user.api_key %}#}
-{#            {{form_mod_user.api_key(class_='form-control', value=base64_encode_bytes(user.api_key), **{'title': 'API Key (Base64)'})}}#}
-{#          {% else %}#}
-{#            {{form_mod_user.api_key(class_='form-control', **{'title': 'API Key (Base64)'})}}#}
-{#          {% endif %}#}
-{#        </div>#}
-{#        <div class="col-sm-6 col-md-3 small-gutters">#}
-{#          {{form_mod_user.generate_api_key(class_='btn btn-primary btn-block')}}#}
-{#        </div>#}
+        <div class="col-6 col-sm-3 col-md-3">
+          {% if user.api_key %}
+            {{form_mod_user.api_key(class_='form-control', value=base64_encode_bytes(user.api_key), **{'title': 'API Key (Base64)'})}}
+          {% else %}
+            {{form_mod_user.api_key(class_='form-control', **{'title': 'API Key (Base64)'})}}
+          {% endif %}
+        </div>
+        <div class="col-sm-6 col-md-3 small-gutters">
+          {{form_mod_user.generate_api_key(class_='btn btn-primary btn-block')}}
+        </div>
         <div class="col-sm-6 col-md-3 small-gutters">
           {{form_mod_user.save(class_='btn btn-primary btn-block')}}
         </div>
