@@ -73,7 +73,7 @@ runSelfUpgrade() {
       echo '0' > "${CURRENT_MYCODO_DIRECTORY}"/.upgrade
       exit 1
     else
-      printf "Python >= 3.6 found."
+      printf "Python >= 3.6 found.\n"
     fi
   else
     printf "\npython3 not found. Cannot proceed with upgrade without python3 (Python >= 3.6).\n"
