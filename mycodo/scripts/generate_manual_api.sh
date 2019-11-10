@@ -9,6 +9,13 @@
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 cd "${INSTALL_DIRECTORY}" || return
 
+# check if pandoc is installed
+if [[ $(command -v pandoc) ]]
+then
+  # Generate HTML (HTML5) file
+  pandoc --table-of-contents -H "${INSTALL_DIRECTORY}"/mycodo/scripts/pandoc.css_style --self-contained -s -S -t html5 -o "${INSTALL_DIRECTORY}"/mycodo/mycodo_flask/static/manual/mycodo-api-info.html "${INSTALL_DIRECTORY}"/mycodo-api.rst
+fi
+
 if curl -k -s --head --request GET https://192.168.0.9/api/swagger.json | grep "200 OK" > /dev/null; then
   if [[ $(command -v redoc-cli) ]]
   then
