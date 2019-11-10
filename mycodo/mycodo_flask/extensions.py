@@ -8,9 +8,9 @@ that require them.  The extensions themselves are configured at run
 time when the application factory in mycodo_flask initializes them
 and adds it's configuration to them.
 """
-# from flask import app
+from flask import app
 from flask_sqlalchemy import SQLAlchemy
-# from flask_marshmallow import Marshmallow  # must be imported after SQLAlchemy
+from flask_marshmallow import Marshmallow  # must be imported after SQLAlchemy
 
 db = SQLAlchemy()
-# ma = Marshmallow(app)
+ma = Marshmallow(app)
