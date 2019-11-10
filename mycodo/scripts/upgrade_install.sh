@@ -20,6 +20,8 @@ runSelfUpgrade() {
     exit 1
   }
 
+  printf "RELEASE_WIPE = %s\n" "$RELEASE_WIPE"
+
   CURRENT_MYCODO_DIRECTORY=$( cd -P /var/mycodo-root && pwd -P )
   CURRENT_MYCODO_INSTALL_DIRECTORY=$( cd -P /var/mycodo-root/.. && pwd -P )
   THIS_MYCODO_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd -P )

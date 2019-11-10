@@ -147,7 +147,7 @@ int main(int argc, char *argv[]) {
 			char restoreScript[255];
 			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
 			strncat(restoreScript, path, sizeof(restoreScript));
-			sprintf(cmd, "/upgrade_commands.sh upgrade-release-major %s true", argv[2]);
+			sprintf(cmd, "/upgrade_commands.sh upgrade-release-wipe %s", argv[2]);
 			strncat(restoreScript, cmd, sizeof(restoreScript));
 			system(restoreScript);
     } else if (strcmp(argv[1], "upgrade-release-major") == 0 && (argc > 2)) {
@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
 			char restoreScript[255];
 			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
 			strncat(restoreScript, path, sizeof(restoreScript));
-			sprintf(cmd, "/upgrade_commands.sh upgrade-release-major %s false", argv[2]);
+			sprintf(cmd, "/upgrade_commands.sh upgrade-release-major %s", argv[2]);
 			strncat(restoreScript, cmd, sizeof(restoreScript));
 			system(restoreScript);
     } else if (strcmp(argv[1], "upgrade-master") == 0) {

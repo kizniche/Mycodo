@@ -5,7 +5,6 @@ exec 2>&1
 
 UPGRADE_TYPE=$1
 UPGRADE_MAJ_VERSION=$2
-RELEASE_WIPE=$3
 
 if [ "$EUID" -ne 0 ] ; then
   printf "Please run as root.\n"
@@ -113,7 +112,7 @@ runDownloadMycodo() {
   fi
   printf "Done.\n"
 
-  exec /bin/bash "${MYCODO_NEW_TMP_DIR}"/mycodo/scripts/upgrade_install.sh "$RELEASE_WIPE"
+  exec /bin/bash "${MYCODO_NEW_TMP_DIR}"/mycodo/scripts/upgrade_install.sh $RELEASE_WIPE
 }
 
-runDownloadMycodo "$UPGRADE_TYPE" "$UPGRADE_MAJ_VERSION" "$RELEASE_WIPE"
+runDownloadMycodo "$UPGRADE_TYPE" "$UPGRADE_MAJ_VERSION"
