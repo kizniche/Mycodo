@@ -59,13 +59,13 @@ from mycodo.controllers.controller_pid import PIDController
 from mycodo.controllers.controller_trigger import TriggerController
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
 from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
-from mycodo.databases.models import CustomController
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.utils.controllers import parse_controller_information
@@ -74,6 +74,7 @@ from mycodo.utils.function_actions import get_condition_value
 from mycodo.utils.function_actions import get_condition_value_dict
 from mycodo.utils.function_actions import trigger_action
 from mycodo.utils.function_actions import trigger_function_actions
+from mycodo.utils.github_release_info import github_latest_release
 from mycodo.utils.github_release_info import github_releases
 from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.statistics import add_update_csv
@@ -941,6 +942,7 @@ class DaemonController:
         """Check for any new Mycodo releases on github"""
         releases = []
         upgrade_available = False
+        current_latest_release = github_latest_release()
         try:
             maj_version = int(MYCODO_VERSION.split('.')[0])
             releases = github_releases(maj_version)
@@ -951,7 +953,8 @@ class DaemonController:
 
         try:
             if len(releases):
-                if parse_version(releases[0]) > parse_version(MYCODO_VERSION):
+                if (parse_version(releases[0]) > parse_version(MYCODO_VERSION) or
+                        parse_version(current_latest_release[0]) > parse_version(MYCODO_VERSION)):
                     upgrade_available = True
                     if now > self.timer_upgrade_message:
                         # Only display message in log every 10 days
