@@ -1,4 +1,4 @@
-## 8.0.0 (Unreleased)
+## 8.0.0 (2019.11.09)
 
 Warning: This version will not work with Python 3.5 (Raspbian Stretch). Only upgrade if you have Python 3.7 installed (Raspbian Buster).
 
@@ -6,7 +6,7 @@ This version introduces an improved upgrade system and a REST API (requiring Pyt
 
 ### Features
 
- - Add REST API access, API endpoints, and API manual section ([#705](https://github.com/kizniche/mycodo/issues/705))
+ - Add REST API ([#705](https://github.com/kizniche/mycodo/issues/705))
 
 
 ## 7.10.0 (2019.11.09)

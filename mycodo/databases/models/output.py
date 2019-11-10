@@ -4,7 +4,7 @@ from RPi import GPIO
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
-# from mycodo.mycodo_flask.extensions import ma
+from mycodo.mycodo_flask.extensions import ma
 
 
 class Output(CRUDMixin, db.Model):
@@ -87,6 +87,6 @@ class Output(CRUDMixin, db.Model):
             return self.on_state == GPIO.input(self.pin)
 
 
-# class OutputSchema(ma.ModelSchema):
-#     class Meta:
-#         model = Output
+class OutputSchema(ma.ModelSchema):
+    class Meta:
+        model = Output
