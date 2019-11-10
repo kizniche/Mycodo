@@ -23,6 +23,10 @@ ALEMBIC_VERSION = 'f4bd467eb5fe'
 #  instructed to do so, as it can really mess up your system.
 FORCE_UPGRADE_MASTER = False
 
+# Final release for each major version number
+# Used to determine proper upgrade page to display
+FINAL_RELEASES = ['5.7.3', '6.4.7', '7.10.0']
+
 # ENABLE FLASK PROFILER
 # Accessed at https://127.0.0.1/mycodo-flask-profiler
 ENABLE_FLASK_PROFILER = False

@@ -18,6 +18,7 @@ from flask import url_for
 from flask_babel import gettext
 from pkg_resources import parse_version
 
+from mycodo.config import FINAL_RELEASES
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
 from mycodo.config import CALIBRATION_INFO
@@ -506,6 +507,7 @@ def admin_upgrade():
                 "error")
 
     return render_template('admin/upgrade.html',
+                           final_releases=FINAL_RELEASES,
                            force_upgrade_master=FORCE_UPGRADE_MASTER,
                            form_backup=form_backup,
                            form_upgrade=form_upgrade,

@@ -50,6 +50,7 @@
     <pre style="overflow:auto; resize: vertical; height:400px" id="upgrade_status"></pre>
 
     {% elif current_latest_major_version != current_release.split('.')[0] and
+          current_release in final_releases and
           current_release != current_latest_release and
           current_latest_release != '0.0.0' and
           upgrade != 1 %}
