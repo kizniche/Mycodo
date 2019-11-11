@@ -281,6 +281,15 @@ it will not be verified when visiting the web interface using the
 message about the security of your site, unless you add the certificate
 to your browser's trusted list.
 
+REST API
+========
+
+As of version 8, Mycodo has a REST API. Documentation is available here:
+`API
+Information <https://github.com/kizniche/Mycodo/blob/master/mycodo-api.rst>`__
+and `API Endpoint
+Documentation <https://kizniche.github.io/Mycodo/mycodo-api.html>`__.
+
 Data Viewing
 ============
 

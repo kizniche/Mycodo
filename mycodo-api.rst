@@ -6,8 +6,6 @@ Mycodo APIs
    :depth: 2
 ..
 
-**Note: Not Fully Implemented**
-
 REST API
 ========
 
@@ -18,11 +16,12 @@ REST stands for Representational State Transfer. This is an architectural patter
 Authentication
 --------------
 
-An API Key can be generated from the User Settings page (Configuration -> Users). This is stored as a 128-bit bytes object in the database, but will be presented as a base64-encoded string. This can be used to access HTTPS endpoints. The API Key is presented to the user as a base64-encoded string.
+An API Key can be generated from the User Settings page (Configuration -> Users). This is stored as a 128-bit bytes object in the database, but will be presented to the user as a base64-encoded string. This can be used to access HTTPS endpoints.
 
 Mycodo supports several authentication methods. All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will fail.
 
-Here are a few methods using your API Key:
+Bash Examples
+~~~~~~~~~~~~~
 
 .. code:: bash
 
@@ -36,6 +35,9 @@ Here are a few methods using your API Key:
 
     curl -k -v -x GET "https://127.0.0.1/users?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=" -H "accept: application/vnd.mycodo.v1+json"
 
+Python Example
+~~~~~~~~~~~~~~
+
 .. code:: python
 
     import json
@@ -45,10 +47,8 @@ Here are a few methods using your API Key:
     api_key = 'YOUR_API_KEY'
     endpoint = 'settings/inputs'
     url = 'https://{ip}/api/{ep}'.format(ip=ip_address, ep=endpoint)
-    headers = {
-        'Accept': 'application/vnd.mycodo.v1+json',
-        'X-API-KEY': api_key
-    }
+    headers = {'Accept': 'application/vnd.mycodo.v1+json',
+               'X-API-KEY': api_key}
     response = requests.get(url, headers=headers, verify=False)
     response_dict = json.loads(response.text)
     print(response_dict)
@@ -65,7 +65,7 @@ Endpoints
 
 A vendor-specific content type header must be included to determine which API version to use. For version 1, this is "application/vnd.mycodo.v1+json", as can be seen in the examples, above.
 
-Visit https://127.0.0.1/api for documentation of the current API endpoints of your Mycodo install.
+Visit https://{RASPBERRY_PI_IP_ADDRESS}/api for documentation of the current API endpoints of your Mycodo install.
 
 Documentation for the latest API version is also available in HTML format: `Mycodo API Docs <https://kizniche.github.io/Mycodo/mycodo-api.html>`__
 

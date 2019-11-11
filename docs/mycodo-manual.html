@@ -385,6 +385,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#upgrading">Upgrading</a></li>
 <li><a href="#backup-restore">Backup-Restore</a></li>
 <li><a href="#web-interface">Web Interface</a></li>
+<li><a href="#rest-api">REST API</a></li>
 <li><a href="#data-viewing">Data Viewing</a><ul>
 <li><a href="#live-measurements">Live Measurements</a></li>
 <li><a href="#asynchronous-graphs">Asynchronous Graphs</a></li>
@@ -590,6 +591,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>The main frontend of Mycodo is a web interface that allows any device with a web browser to view collected data and configure the backend, or the daemon, of the system. The web interface supports an authentication system with user/password credentials, user roles that grant/deny access to parts of the system, and SSL for encrypted browsing.</p>
 <p>An SSL certificate will be generated (expires in 10 years) and stored at <code>~/Mycodo/mycodo/mycodo_flask/ssl_certs/</code> during the install process to allow SSL to be used to securely connect to the web interface. If you want to use your own SSL certificates, replace them with your own.</p>
 <p>If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web interface using the <code>https://</code> address prefix. You may continually receive a warning message about the security of your site, unless you add the certificate to your browser’s trusted list.</p>
+<h1 id="rest-api">REST API</h1>
+<p>As of version 8, Mycodo has a REST API. Documentation is available here: <a href="https://github.com/kizniche/Mycodo/blob/master/mycodo-api.rst">API Information</a> and <a href="https://kizniche.github.io/Mycodo/mycodo-api.html">API Endpoint Documentation</a>.</p>
 <h1 id="data-viewing">Data Viewing</h1>
 <p>There are several ways to visualize collected data. Additionally, the dashboard can be used for both viewing data and manipulating the system, thanks to the numerous dashboard widgets available.</p>
 <h2 id="live-measurements">Live Measurements</h2>

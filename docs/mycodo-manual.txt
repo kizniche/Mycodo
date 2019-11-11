@@ -6,6 +6,7 @@ Mycodo Manual
 -   [Upgrading](#upgrading)
 -   [Backup-Restore](#backup-restore)
 -   [Web Interface](#web-interface)
+-   [REST API](#rest-api)
 -   [Data Viewing](#data-viewing)
     -   [Live Measurements](#live-measurements)
     -   [Asynchronous Graphs](#asynchronous-graphs)
@@ -399,6 +400,14 @@ it will not be verified when visiting the web interface using the
 https:// address prefix. You may continually receive a warning message
 about the security of your site, unless you add the certificate to your
 browser’s trusted list.
+
+
+
+REST API
+
+
+As of version 8, Mycodo has a REST API. Documentation is available here:
+API Information and API Endpoint Documentation.
 
 
 

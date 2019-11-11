@@ -111,7 +111,8 @@ class DaemonController:
         if not debug:
             self.logger.setLevel(logging.INFO)
 
-        self.logger.info("Mycodo daemon v{ver} starting".format(ver=MYCODO_VERSION))
+        self.logger.info(
+            "Mycodo daemon v{ver} starting".format(ver=MYCODO_VERSION))
 
         self.log_level_debug = debug
         self.startup_timer = timeit.default_timer()
@@ -220,8 +221,9 @@ class DaemonController:
         self.logger.debug("Stopping all running controllers")
         self.stop_all_controllers()
 
-        self.logger.info("Mycodo daemon terminated in {:.3f} seconds\n\n".format(
-            timeit.default_timer() - self.thread_shutdown_timer))
+        self.logger.info(
+            "Mycodo daemon terminated in {:.3f} seconds\n\n".format(
+                timeit.default_timer() - self.thread_shutdown_timer))
         self.terminated = True
 
         # Wait for the client to receive the response before it disconnects
@@ -338,8 +340,7 @@ class DaemonController:
 
         except Exception as except_msg:
             message = "Could not activate {type} controller with ID {id}:" \
-                      " {err}".format(type=cont_type, id=cont_id,
-                                      err=except_msg)
+                      " {e}".format(type=cont_type, id=cont_id, e=except_msg)
             self.logger.exception(message)
             return 1, message
 
@@ -385,8 +386,7 @@ class DaemonController:
                 return 1, message
         except Exception as except_msg:
             message = "Could not deactivate {type} controller with ID {id}:" \
-                      " {err}".format(type=cont_type, id=cont_id,
-                                      err=except_msg)
+                      " {e}".format(type=cont_type, id=cont_id, e=except_msg)
             self.logger.exception(message)
             return 1, message
 
@@ -408,7 +408,7 @@ class DaemonController:
                 else:
                     message = "{type} controller with ID " \
                               "{id} is not active.".format(
-                        type=cont_type, id=cont_id)
+                                type=cont_type, id=cont_id)
                     self.logger.debug(message)
                     return False
             else:
@@ -449,8 +449,8 @@ class DaemonController:
             if not self.controller['Output'].is_running():
                 return "Error: Output controller"
         except Exception as except_msg:
-            message = "Could not check running threads:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not check running threads: {e}".format(
+                e=except_msg)
             self.logger.exception(message)
             return "Exception: {msg}".format(msg=except_msg)
 
@@ -491,8 +491,7 @@ class DaemonController:
             self.logger.exception(message)
             return 0, message
         except Exception as except_msg:
-            message = "Could not reset LCD:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not reset LCD: {e}".format(e=except_msg)
             self.logger.exception(message)
 
     def lcd_backlight(self, lcd_id, state):
@@ -515,8 +514,7 @@ class DaemonController:
             self.logger.exception(message)
             return 0, message
         except Exception as except_msg:
-            message = "Could not flash LCD:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not flash LCD: {e}".format(e=except_msg)
             self.logger.exception(message)
 
     def lcd_flash(self, lcd_id, state):
@@ -540,40 +538,36 @@ class DaemonController:
             self.logger.exception(message)
             return 0, message
         except Exception as except_msg:
-            message = "Could not flash LCD ({state}):" \
-                      " {err}".format(state=state, err=except_msg)
+            message = "Could not flash LCD ({state}): {e}".format(
+                state=state, e=except_msg)
             self.logger.exception(message)
 
     def pid_hold(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_hold()
         except Exception as except_msg:
-            message = "Could not hold PID:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not hold PID: {e}".format(e=except_msg)
             self.logger.exception(message)
 
     def pid_mod(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_mod()
         except Exception as except_msg:
-            message = "Could not modify PID:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not modify PID: {e}".format(e=except_msg)
             self.logger.exception(message)
 
     def pid_pause(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_pause()
         except Exception as except_msg:
-            message = "Could not pause PID:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not pause PID: {e}".format(e=except_msg)
             self.logger.exception(message)
 
     def pid_resume(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_resume()
         except Exception as except_msg:
-            message = "Could not resume PID:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not resume PID: {e}".format(e=except_msg)
             self.logger.exception(message)
 
     def pid_get(self, pid_id, setting):
@@ -593,8 +587,8 @@ class DaemonController:
             elif setting == 'kd':
                 return self.controller['PID'][pid_id].get_kd()
         except Exception as except_msg:
-            message = "Could not set PID {option}:" \
-                      " {err}".format(option=setting, err=except_msg)
+            message = "Could not set PID {opt}: {e}".format(
+                opt=setting, e=except_msg)
             self.logger.exception(message)
 
     def pid_set(self, pid_id, setting, value):
@@ -614,8 +608,8 @@ class DaemonController:
             elif setting == 'kd':
                 return self.controller['PID'][pid_id].set_kd(value)
         except Exception as except_msg:
-            message = "Could not set PID {option}:" \
-                      " {err}".format(option=setting, err=except_msg)
+            message = "Could not set PID {opt}: {e}".format(
+                opt=setting, e=except_msg)
             self.logger.exception(message)
 
     def refresh_daemon_camera_settings(self):
@@ -633,8 +627,8 @@ class DaemonController:
         try:
             return self.controller['Conditional'][unique_id].refresh_settings()
         except Exception as except_msg:
-            message = "Could not refresh conditional settings:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not refresh conditional settings: {e}".format(
+                e=except_msg)
             self.logger.exception(message)
 
     def refresh_daemon_misc_settings(self):
@@ -660,16 +654,16 @@ class DaemonController:
                     "Generating next output usage report {time_date}".format(
                         time_date=str_next_report))
         except Exception as except_msg:
-            message = "Could not refresh misc settings:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not refresh misc settings: {e}".format(
+                e=except_msg)
             self.logger.exception(message)
 
     def refresh_daemon_trigger_settings(self, unique_id):
         try:
             return self.controller['Trigger'][unique_id].refresh_settings()
         except Exception as except_msg:
-            message = "Could not refresh trigger settings:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not refresh trigger settings: {e}".format(
+                e=except_msg)
             self.logger.exception(message)
 
     def output_duty_cycle(self, output_id, duty_cycle, trigger_conditionals=True):
@@ -678,14 +672,14 @@ class DaemonController:
 
         :param output_id: Unique ID for output
         :param duty_cycle: pwm duty cycle, in percent
+        :param trigger_conditionals: allow triggers to respond to a duty cycle change
         :return:
         """
         try:
             return self.controller['Output'].output_duty_cycle(
                 output_id, duty_cycle, trigger_conditionals)
         except Exception as except_msg:
-            message = "Could set output duty cycle:" \
-                      " {err}".format(err=except_msg)
+            message = "Could set output duty cycle: {e}".format(e=except_msg)
             self.logger.exception(message)
             return 1, message
 
@@ -704,8 +698,7 @@ class DaemonController:
                 'off',
                 trigger_conditionals=trigger_conditionals)
         except Exception as except_msg:
-            message = "Could not turn output off:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not turn output off: {e}".format(e=except_msg)
             self.logger.exception(message)
             return 1, message
 
@@ -738,8 +731,7 @@ class DaemonController:
                     duty_cycle=duty_cycle,
                     trigger_conditionals=trigger_conditionals)
         except Exception as except_msg:
-            message = "Could not turn output on:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not turn output on: {e}".format(e=except_msg)
             self.logger.exception(message)
             return 1, message
 
@@ -758,8 +750,7 @@ class DaemonController:
         try:
             return self.controller['Output'].output_setup(action, output_id)
         except Exception as except_msg:
-            message = "Could not set up output:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not set up output: {e}".format(e=except_msg)
             self.logger.exception(message)
 
     def output_state(self, output_id):
@@ -772,8 +763,7 @@ class DaemonController:
         try:
             return self.controller['Output'].output_state(output_id)
         except Exception as except_msg:
-            message = "Could not query output state:" \
-                      " {err}".format(err=except_msg)
+            message = "Could not query output state: {e}".format(e=except_msg)
             self.logger.exception(message)
 
     def startup_stats(self):
@@ -785,11 +775,11 @@ class DaemonController:
                     "Statistics file doesn't exist, creating {file}".format(
                         file=STATS_CSV))
                 recreate_stat_file()
-            add_update_csv(STATS_CSV, 'daemon_startup_seconds',
-                           self.daemon_startup_time)
+            add_update_csv(
+                STATS_CSV, 'daemon_startup_seconds', self.daemon_startup_time)
         except Exception as msg:
             self.logger.exception(
-                "Statistics initialization Error: {err}".format(err=msg))
+                "Statistics initialization Error: {e}".format(e=msg))
 
     def start_all_controllers(self, debug):
         """
@@ -925,7 +915,6 @@ class DaemonController:
             time.sleep(0.1)
         return 1
 
-
     #
     # Timed functions
     #
@@ -985,7 +974,7 @@ class DaemonController:
         """ If time-lapses are active, take photo at predefined periods """
         try:
             if (camera.timelapse_started and
-                        now > camera.timelapse_end_time):
+                    now > camera.timelapse_end_time):
                 with session_scope(MYCODO_DB_PATH) as new_session:
                     mod_camera = new_session.query(Camera).filter(
                         Camera.unique_id == camera.unique_id).first()
@@ -1001,7 +990,7 @@ class DaemonController:
                 self.logger.debug(
                     "Camera {id}: End of time-lapse.".format(id=camera.id))
             elif ((camera.timelapse_started and not camera.timelapse_paused) and
-                          now > camera.timelapse_next_capture):
+                    now > camera.timelapse_next_capture):
                 # Ensure next capture is greater than now (in case of power failure/reboot)
                 next_capture = camera.timelapse_next_capture
                 capture_number = camera.timelapse_capture_number
@@ -1254,7 +1243,7 @@ class PyroMonitor(threading.Thread):
             self.logger.setLevel(logging.DEBUG)
         else:
             self.logger.setLevel(logging.WARNING)
-        self.timer_sec =  1800
+        self.timer_sec = 1800
 
     def run(self):
         try:
