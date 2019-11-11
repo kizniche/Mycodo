@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Mycodo APIs</title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <style>
+    html {
+      font-size: 100%;
+      overflow-y: scroll;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+  
+    body {
+      color: #444;
+      font-family: Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif;
+      font-size: 12px;
+      line-height: 1.7;
+      padding: 1em;
+      margin: auto;
+      max-width: 90%;
+      background: #fefefe;
+    }
+  
+    a {
+      color: #0645ad;
+      text-decoration: none;
+    }
+  
+    a:visited {
+      color: #0b0080;
+    }
+  
+    a:hover {
+      color: #06e;
+    }
+  
+    a:active {
+      color: #faa700;
+    }
+  
+    a:focus {
+      outline: thin dotted;
+    }
+  
+    *::-moz-selection {
+      background: rgba(255, 255, 0, 0.3);
+      color: #000;
+    }
+  
+    *::selection {
+      background: rgba(255, 255, 0, 0.3);
+      color: #000;
+    }
+  
+    a::-moz-selection {
+      background: rgba(255, 255, 0, 0.3);
+      color: #0645ad;
+    }
+  
+    a::selection {
+      background: rgba(255, 255, 0, 0.3);
+      color: #0645ad;
+    }
+  
+    p {
+      margin: 1em 0;
+    }
+  
+    img {
+      max-width: 100%;
+    }
+  
+    h1, h2, h3, h4, h5, h6 {
+      color: #111;
+      line-height: 125%;
+      margin-top: 2em;
+      font-weight: normal;
+    }
+  
+    h4, h5, h6 {
+      font-weight: bold;
+    }
+  
+    h1 {
+      font-size: 2.5em;
+    }
+  
+    h2 {
+      font-size: 2em;
+    }
+  
+    h3 {
+      font-size: 1.5em;
+    }
+  
+    h4 {
+      font-size: 1.2em;
+    }
+  
+    h5 {
+      font-size: 1em;
+    }
+  
+    h6 {
+      font-size: 0.9em;
+    }
+  
+    blockquote {
+      color: #666666;
+      margin: 0;
+      padding-left: 3em;
+      border-left: 0.5em #EEE solid;
+    }
+  
+    hr {
+      display: block;
+      height: 2px;
+      border: 0;
+      border-top: 1px solid #aaa;
+      border-bottom: 1px solid #eee;
+      margin: 1em 0;
+      padding: 0;
+    }
+  
+    pre, code, kbd, samp {
+      color: #000;
+      font-family: monospace, monospace;
+      _font-family: 'courier new', monospace;
+      font-size: 0.98em;
+    }
+  
+    pre {
+      white-space: pre;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  
+    b, strong {
+      font-weight: bold;
+    }
+  
+    dfn {
+      font-style: italic;
+    }
+  
+    ins {
+      background: #ff9;
+      color: #000;
+      text-decoration: none;
+    }
+  
+    mark {
+      background: #ff0;
+      color: #000;
+      font-style: italic;
+      font-weight: bold;
+    }
+  
+    sub, sup {
+      font-size: 75%;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+    }
+  
+    sup {
+      top: -0.5em;
+    }
+  
+    sub {
+      bottom: -0.25em;
+    }
+  
+    ul, ol {
+      margin: 1em 0;
+      padding: 0 0 0 2em;
+    }
+  
+    li p:last-child {
+      margin-bottom: 0;
+    }
+  
+    ul ul, ol ol {
+      margin: .3em 0;
+    }
+  
+    dl {
+      margin-bottom: 1em;
+    }
+  
+    dt {
+      font-weight: bold;
+      margin-bottom: .8em;
+    }
+  
+    dd {
+      margin: 0 0 .8em 2em;
+    }
+  
+    dd:last-child {
+      margin-bottom: 0;
+    }
+  
+    img {
+      border: 0;
+      -ms-interpolation-mode: bicubic;
+      vertical-align: middle;
+    }
+  
+    figure {
+      display: block;
+      text-align: center;
+      margin: 1em 0;
+    }
+  
+    figure img {
+      border: none;
+      margin: 0 auto;
+    }
+  
+    figcaption {
+      font-size: 0.8em;
+      font-style: italic;
+      margin: 0 0 .8em;
+    }
+  
+    table {
+      margin-bottom: 2em;
+      border-bottom: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+      border-spacing: 0;
+      border-collapse: collapse;
+    }
+  
+    table th {
+      padding: .2em 1em;
+      background-color: #eee;
+      border-top: 1px solid #ddd;
+      border-left: 1px solid #ddd;
+    }
+  
+    table td {
+      padding: .2em 1em;
+      border-top: 1px solid #ddd;
+      border-left: 1px solid #ddd;
+      vertical-align: top;
+    }
+  
+    .author {
+      font-size: 1.2em;
+      text-align: center;
+    }
+  
+    @media only screen and (min-width: 480px) {
+      body {
+        font-size: 14px;
+      }
+    }
+    @media only screen and (min-width: 768px) {
+      body {
+        font-size: 16px;
+      }
+    }
+    @media print {
+      * {
+        background: transparent !important;
+        color: black !important;
+        filter: none !important;
+        -ms-filter: none !important;
+      }
+  
+      body {
+        font-size: 12pt;
+        max-width: 100%;
+      }
+  
+      a, a:visited {
+        text-decoration: underline;
+      }
+  
+      hr {
+        height: 1px;
+        border: 0;
+        border-bottom: 1px solid black;
+      }
+  
+      a[href]:after {
+        content: " (" attr(href) ")";
+      }
+  
+      abbr[title]:after {
+        content: " (" attr(title) ")";
+      }
+  
+      .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after {
+        content: "";
+      }
+  
+      pre, blockquote {
+        border: 1px solid #999;
+        padding-right: 1em;
+        page-break-inside: avoid;
+      }
+  
+      tr, img {
+        page-break-inside: avoid;
+      }
+  
+      img {
+        max-width: 100% !important;
+      }
+  
+      @page :left {
+        margin: 15mm 20mm 15mm 10mm;
+    }
+  
+      @page :right {
+        margin: 15mm 10mm 15mm 20mm;
+    }
+  
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+  
+      h2, h3 {
+        page-break-after: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+<h1 class="title">Mycodo APIs</h1>
+</header>
+<nav id="TOC">
+<ul>
+<li><a href="#rest-api">REST API</a><ul>
+<li><a href="#authentication">Authentication</a><ul>
+<li><a href="#bash-examples">Bash Examples</a></li>
+<li><a href="#python-example">Python Example</a></li>
+</ul></li>
+<li><a href="#errors">Errors</a></li>
+<li><a href="#endpoints">Endpoints</a></li>
+</ul></li>
+<li><a href="#daemon-control-object">Daemon Control Object</a></li>
+</ul>
+</nav>
+<h1 id="rest-api">REST API</h1>
+<p>An API is an application programming interface - in short, it’s a set of rules that lets programs talk to each other, exposing data and functionality across the internet in a consistent format.</p>
+<p>REST stands for Representational State Transfer. This is an architectural pattern that describes how distributed systems can expose a consistent interface. When people use the term ‘REST API,’ they are generally referring to an API accessed via HTTP protocol at a predefined set of URLs. These URLs represent various resources - any information or content accessed at that location, which can be returned as JSON, HTML, audio files, or images. Often, resources have one or more methods that can be performed on them over HTTP, like GET, POST, PUT and DELETE.</p>
+<h2 id="authentication">Authentication</h2>
+<p>An API Key can be generated from the User Settings page (Configuration -&gt; Users). This is stored as a 128-bit bytes object in the database, but will be presented to the user as a base64-encoded string. This can be used to access HTTPS endpoints.</p>
+<p>Mycodo supports several authentication methods. All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will fail.</p>
+<h3 id="bash-examples">Bash Examples</h3>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">curl</span> -k -v -X GET <span class="st">&quot;https://127.0.0.1/users&quot;</span> -H <span class="st">&quot;authorization: Basic 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=&quot;</span> -H <span class="st">&quot;accept: application/vnd.mycodo.v1+json&quot;</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">curl</span> -k -v -x GET <span class="st">&quot;https://127.0.0.1/users -H &quot;</span>X-API-KEY: 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=<span class="st">&quot; -H &quot;</span>accept: application/vnd.mycodo.v1+json<span class="st">&quot;</span></code></pre></div>
+<div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">curl</span> -k -v -x GET <span class="st">&quot;https://127.0.0.1/users?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=&quot;</span> -H <span class="st">&quot;accept: application/vnd.mycodo.v1+json&quot;</span></code></pre></div>
+<h3 id="python-example">Python Example</h3>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">import</span> json
+<span class="im">import</span> requests
+
+ip_address <span class="op">=</span> <span class="st">'127.0.0.1'</span>
+api_key <span class="op">=</span> <span class="st">'YOUR_API_KEY'</span>
+endpoint <span class="op">=</span> <span class="st">'settings/inputs'</span>
+url <span class="op">=</span> <span class="st">'https://</span><span class="sc">{ip}</span><span class="st">/api/</span><span class="sc">{ep}</span><span class="st">'</span>.<span class="bu">format</span>(ip<span class="op">=</span>ip_address, ep<span class="op">=</span>endpoint)
+headers <span class="op">=</span> {<span class="st">'Accept'</span>: <span class="st">'application/vnd.mycodo.v1+json'</span>,
+           <span class="st">'X-API-KEY'</span>: api_key}
+response <span class="op">=</span> requests.get(url, headers<span class="op">=</span>headers, verify<span class="op">=</span><span class="va">False</span>)
+response_dict <span class="op">=</span> json.loads(response.text)
+<span class="bu">print</span>(response_dict)</code></pre></div>
+<h2 id="errors">Errors</h2>
+<p>Mycodo uses conventional HTTP response codes to indicate the success or failure of an API request. In general: Codes in the 2xx range indicate success. Codes in the 4xx range indicate an error that failed given the information provided (e.g., a required parameter was omitted, a charge failed, etc.). Codes in the 5xx range indicate an error with Mycodo’s servers (these are rare).</p>
+<p>Some 4xx errors that could be handled programmatically (e.g., a card is declined) include an error code that briefly explains the error reported.</p>
+<h2 id="endpoints">Endpoints</h2>
+<p>A vendor-specific content type header must be included to determine which API version to use. For version 1, this is “application/vnd.mycodo.v1+json”, as can be seen in the examples, above.</p>
+<p>Visit <a href="https://%7BRASPBERRY_PI_IP_ADDRESS%7D/api" class="uri">https://{RASPBERRY_PI_IP_ADDRESS}/api</a> for documentation of the current API endpoints of your Mycodo install.</p>
+<p>Documentation for the latest API version is also available in HTML format: <a href="https://kizniche.github.io/Mycodo/mycodo-api.html">Mycodo API Docs</a></p>
+<hr />
+<h1 id="daemon-control-object">Daemon Control Object</h1>
+<p><strong>class mycodo_client.DaemonControl</strong>(<em>pyro_uri=’PYRO:<a href="mailto:mycodo.pyro_server@127.0.0.1">mycodo.pyro_server@127.0.0.1</a>:9090’</em>, <em>pyro_timeout=None</em>)</p>
+<p>The mycodo client object implements a way to communicate with a mycodo daemon and query information from the influxdb database.</p>
+<p>Example usage:</p>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> mycodo.mycodo_client <span class="im">import</span> DaemonControl
+control <span class="op">=</span> DaemonControl()
+control.terminate_daemon()</code></pre></div>
+<p>Parameters:</p>
+<ul>
+<li><strong>pyro_uri</strong> - the Pyro5 uri to use to connect to the daemon.</li>
+<li><strong>pyro_timeout</strong> - the Pyro5 timeout period.</li>
+</ul>
+<hr />
+<p><strong>controller_activate</strong>(<em>controller_id</em>)</p>
+<p>Activates a controller.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>controller_type</strong> - the type of controller being activated. Options are: “Conditional”, “LCD”, “Input”, “Math”, “Output”, “PID”, “Trigger”, or “Custom”.</li>
+<li><strong>controller_id</strong> - the unique ID of the controller to activate.</li>
+</ul>
+<hr />
+<p><strong>controller_deactivate</strong>(<em>controller_id</em>)</p>
+<p>Deactivates a controller.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>controller_type</strong> - the type of controller being deactivated. Options are: “Conditional”, “LCD”, “Input”, “Math”, “Output”, “PID”, “Trigger”, or “Custom”.</li>
+<li><strong>controller_id</strong> - the unique ID of the controller to deactivate.</li>
+</ul>
+<hr />
+<p><strong>get_condition_measurement</strong>(<em>condition_id</em>)</p>
+<p>Gets the measurement from a Condition of a Conditional Controller.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>condition_id</strong> - The unique ID of the controller.</li>
+</ul>
+<hr />
+<p><strong>get_condition_measurement_dict</strong>(<em>condition_id</em>)</p>
+<p>Gets the measurement dictionary from a Condition of a Conditional Controller.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>condition_id</strong> - The unique ID of the controller.</li>
+</ul>
+<hr />
+<p><strong>input_force_measurements</strong>(<em>input_id</em>)</p>
+<p>Induce an Input to conduct a measurement.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>input_id</strong> - The unique ID of the controller.</li>
+</ul>
+<hr />
+<p><strong>lcd_backlight</strong>(<em>lcd_id</em>, <em>state</em>)</p>
+<p>Turn the backlight of an LCD on or off, if the LCD supports that functionality.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>lcd_id</strong> - The unique ID of the controller.</li>
+<li><strong>state</strong> - The state of the LCD backlight. Options are: False for off, True for on.</li>
+</ul>
+<hr />
+<p><strong>lcd_flash</strong>(<em>lcd_id</em>, <em>state</em>)</p>
+<p>Cause the LCD backlight to start or stop flashing, if the LCD supports that functionality.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>lcd_id</strong> - The unique ID of the controller.</li>
+<li><strong>state</strong> - The state of the LCD flashing. Options are: False for off, True for on.</li>
+</ul>
+<hr />
+<p><strong>lcd_reset</strong>(<em>lcd_id</em>)</p>
+<p>Reset an LCD to it’s default startup state. This can be used to clear the screen, fix display issues, or turn off flashing.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>lcd_id</strong> - The unique ID of the controller.</li>
+</ul>
+<hr />
+<p><strong>output_off</strong>(<em>output_id</em>, <em>trigger_conditionals=True</em>)</p>
+<p>Turn an Output off.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>output_id</strong> - The unique ID of the Output.</li>
+<li><strong>trigger_conditionals</strong> - Whether to trigger controllers that may be monitoring Outputs for state changes.</li>
+</ul>
+<hr />
+<p><strong>output_on</strong>(<em>output_id</em>, <em>amount=0.0</em>, <em>min_off=0.0</em>, <em>duty_cycle=0.0</em>, <em>trigger_conditionals=True</em>)</p>
+<p>Turn an Output on.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>output_id</strong> - The unique ID of the Output.</li>
+<li><strong>amount</strong> - If on for a duration, this is the float value in seconds.</li>
+<li><strong>min_off</strong> - How long to keep the Output off after turning on, if on for a duration.</li>
+<li><strong>duty_cycle</strong> - If the Output generates a PWM signal, this is the duty cycle to set, in percent.</li>
+<li><strong>trigger_conditionals</strong> - Whether to trigger controllers that may be monitoring Outputs for state changes.</li>
+</ul>
+<hr />
+<p><strong>output_on_off</strong>(<em>output_id</em>, <em>state</em>, <em>amount=0.0</em>)</p>
+<p>Turn an Output on or off.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>output_id</strong> - The unique ID of the Output.</li>
+<li><strong>state</strong> - The state to turn the Output. Options are: “on”, “off”</li>
+<li><strong>amount</strong> - If turning on for a duration, provide a float value in seconds.</li>
+</ul>
+<hr />
+<p><strong>output_sec_currently_on</strong>(<em>output_id</em>)</p>
+<p>Get how many seconds an Output has been on.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>output_id</strong> - The unique ID of the Output.</li>
+</ul>
+<hr />
+<p><strong>output_setup</strong>(<em>action</em>, <em>output_id</em>)</p>
+<p>Set up an Output (i.e. load/reload settings from database, initialize any pins/classes, etc.).</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>action</strong> - What action to instruct for the Output. Options are: “Add”, “Delete”, or “Modify”.</li>
+<li><strong>output_id</strong> - The unique ID of the Output.</li>
+</ul>
+<hr />
+<p><strong>output_state</strong>(<em>output_id</em>)</p>
+<p>Gets the state of an Output. Returns “on” or “off”.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>output_id</strong> - The unique ID of the Output.</li>
+</ul>
+<hr />
+<p><strong>pid_get</strong>(<em>pid_id</em>, <em>setting</em>)</p>
+<p>Get a parameter of a PID controller.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>pid_id</strong> - The unique ID of the controller.</li>
+<li><strong>setting</strong> - Which option to get. Options are: “setpoint”, “error”, “integrator”, “derivator”, “kp”, “ki”, or “kd”.</li>
+</ul>
+<hr />
+<p><strong>pid_hold</strong>(<em>pid_id</em>)</p>
+<p>Set a PID Controller to Hold.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>pid_id</strong> - The unique ID of the controller.</li>
+</ul>
+<hr />
+<p><strong>pid_mod</strong>(<em>pid_id</em>)</p>
+<p>Refresh/Initialize the variables of a running PID controller.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>pid_id</strong> - The unique ID of the controller.</li>
+</ul>
+<hr />
+<p><strong>pid_pause</strong>(<em>pid_id</em>)</p>
+<p>Set a PID Controller to Pause.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>pid_id</strong> - The unique ID of the controller.</li>
+</ul>
+<hr />
+<p><strong>pid_resume</strong>(<em>pid_id</em>)</p>
+<p>Set a PID Controller to Resume.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>pid_id</strong> - The unique ID of the controller.</li>
+</ul>
+<hr />
+<p><strong>pid_set</strong>(<em>pid_id</em>, <em>setting</em>, <em>value</em>)</p>
+<p>Set a parameter of a running PID controller.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>pid_id</strong> - The unique ID of the controller.</li>
+<li><strong>setting</strong> - Which option to set. Options are: “setpoint”, “method”, “integrator”, “derivator”, “kp”, “ki”, or “kd”.</li>
+<li><strong>value</strong> - The value to set.</li>
+</ul>
+<hr />
+<p><strong>refresh_daemon_camera_settings</strong>()</p>
+<p>Refresh the camera settings stored in the running daemon from the database values.</p>
+<hr />
+<p><strong>refresh_daemon_conditional_settings</strong>(<em>unique_id</em>)</p>
+<p>Refresh the Conditional Controller settings of a running Conditional Controller.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>unique_id</strong> - The unique ID of the controller.</li>
+</ul>
+<hr />
+<p><strong>refresh_daemon_misc_settings</strong>()</p>
+<p>Refresh the miscellaneous settings stored in the running daemon from the database values.</p>
+<hr />
+<p><strong>refresh_daemon_trigger_settings</strong>(<em>unique_id</em>)</p>
+<p>Refresh the Trigger Controller settings of a running Trigger Controller.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>unique_id</strong> - The unique ID of the controller.</li>
+</ul>
+<hr />
+<p><strong>send_infrared_code_broadcast</strong>(<em>code</em>)</p>
+<p>Send an infrared command code.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>code</strong> - The infrared code to send.</li>
+</ul>
+<hr />
+<p><strong>terminate_daemon</strong>()</p>
+<p>Instruct the daemon to shut down.</p>
+<hr />
+<p><strong>trigger_action</strong>(<em>action_id</em>, <em>message=’’</em>, <em>single_action=True</em>, <em>debug=False</em>)</p>
+<p>Instruct a Function Action to be executed.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>action_id</strong> - The unique ID of the Function Action.</li>
+<li><strong>message</strong> - A message to send with the action that may be used by the action.</li>
+<li><strong>single_action</strong> - True if only executing a single action.</li>
+<li><strong>debug</strong> - Whether to show debug logging messages.</li>
+</ul>
+<hr />
+<p><strong>trigger_all_actions</strong>(<em>function_id</em>, <em>message=’’</em>, <em>debug=False</em>)</p>
+<p>Instruct all Function Actions of a Function Controller to be executed sequentially.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>function_id</strong> - The unique ID of the controller.</li>
+<li><strong>message</strong> - A message to send with the action that may be used by the action.</li>
+<li><strong>debug</strong> - Whether to show debug logging messages.</li>
+</ul>
+</body>
+</html>
