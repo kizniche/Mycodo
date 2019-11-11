@@ -71,14 +71,14 @@ runSelfUpgrade() {
   if hash python3 2>/dev/null; then
     if ! python3 "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/upgrade_check.py --min_python_version "3.6"; then
       printf "\nIncorrect Python version found. Mycodo requires Python >= 3.6.\n"
-      printf "If you're running Raspbian 9 (Stretch, Python 3.5), you will need to install at least Raspbian 10 (Buster, Python 3.7) to use the latest version of Mycodo.\n"
+      printf "If you're running Raspbian 9 (Stretch) with Python 3.5, you will need to install at least Raspbian 10 (Buster) with Python 3.7 to upgrade to the latest version of Mycodo.\n"
       echo '0' > "${CURRENT_MYCODO_DIRECTORY}"/.upgrade
       exit 1
     else
-      printf "Python >= 3.6 found.\n"
+      printf "Python >= 3.6 found. Continuing with the upgrade.\n"
     fi
   else
-    printf "\npython3 not found. Cannot proceed with upgrade without python3 (Python >= 3.6).\n"
+    printf "\npython3 was not found. Cannot proceed with upgrade without python3 (Python >= 3.6).\n"
     echo '0' > "${CURRENT_MYCODO_DIRECTORY}"/.upgrade
     exit 1
   fi

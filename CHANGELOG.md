@@ -1,5 +1,9 @@
 ## 8.0.1 (Unreleased)
 
+### Bugfixes
+
+ - Add Python version check to Mycodo installer ([#712](https://github.com/kizniche/mycodo/issues/712))
+
 ### Features
 
  - Allow any database <= the Mycodo version to be imported
