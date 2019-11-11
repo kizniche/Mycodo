@@ -31,7 +31,7 @@ if hash python3 2>/dev/null; then
     printf "Python >= 3.6 found. Continuing with the install.\n"
   fi
 else
-  printf "\npython3 was not found. Cannot proceed with upgrade without python3 (Python >= 3.6).\n"
+  printf "\npython3 was not found. Cannot proceed with the install without python3 (Python >= 3.6).\n"
   exit 1
 fi
 

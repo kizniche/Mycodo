@@ -6,7 +6,7 @@
 
 ### Features
 
- - Allow any database <= the Mycodo version to be imported
+ - Allow any database version <= the currently-installed Mycodo version to be imported
 
 
 ## 8.0.0 (2019.11.09)
