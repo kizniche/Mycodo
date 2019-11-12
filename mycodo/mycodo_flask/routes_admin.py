@@ -47,6 +47,7 @@ from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.github_release_info import github_latest_release
 from mycodo.utils.github_release_info import github_releases
+from mycodo.utils.github_release_info import github_upgrade_exists
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.system_pi import can_perform_backup
@@ -424,8 +425,7 @@ def admin_upgrade():
                 current_releases.append(each_release)
             if parse_version(each_release) == parse_version(MYCODO_VERSION):
                 releases_behind = index
-        if (parse_version(releases[0]) > parse_version(MYCODO_VERSION) or
-                parse_version(current_latest_release[0]) > parse_version(MYCODO_VERSION)):
+        if github_upgrade_exists():
             upgrade_available = True
     else:
         current_releases = []

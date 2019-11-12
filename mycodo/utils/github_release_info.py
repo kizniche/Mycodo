@@ -7,9 +7,11 @@ from urllib.request import urlopen
 
 import os
 import re
+from pkg_resources import parse_version
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+
 from config import MYCODO_VERSION
 
 logger = logging.getLogger("mycodo.release_info")
@@ -51,6 +53,20 @@ def github_latest_release():
         if re.match('v.*(\d\.\d\.\d)', each_release['name']):
             all_versions.append(each_release['name'][1:])
     return sort_reverse_list(all_versions)[0]
+
+
+def github_upgrade_exists():
+    current_latest_release = github_latest_release()
+    try:
+        maj_version = int(MYCODO_VERSION.split('.')[0])
+        releases = github_releases(maj_version)
+        if releases:
+            if parse_version(current_latest_release[0]) > parse_version(MYCODO_VERSION):
+                return True
+    except Exception:
+        logger.error("Could not determine local mycodo version or "
+                     "online release versions. Upgrade checks can "
+                     "be disabled in the Mycodo configuration.")
 
 
 def is_latest_installed(major_number):
