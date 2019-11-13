@@ -405,6 +405,8 @@ class OutputController(AbstractController, threading.Thread):
 
         current_time = datetime.datetime.now()
 
+        output_is_on = self.is_on(output_id)
+
         # Check if output exists
         if output_id not in self.output_id:
             self.logger.warning(
@@ -501,13 +503,16 @@ class OutputController(AbstractController, threading.Thread):
                 self.logger.warning(msg)
                 return 1, msg
 
-            # Check if max amperage will be exceeded
-            if self.output_type[output_id] in ['command',
-                                               'python',
-                                               'wired',
-                                               'wireless_rpi_rf']:
+            # Checks if device is not on and instructed to turn on
+            if (self.output_type[output_id] in ['command',
+                                                'python',
+                                                'wired',
+                                                'wireless_rpi_rf'] and
+                    not output_is_on):
+                # Check if max amperage will be exceeded
                 current_amps = self.current_amp_load()
-                max_amps = db_retrieve_table_daemon(Misc, entry='first').max_amps
+                max_amps = db_retrieve_table_daemon(
+                    Misc, entry='first').max_amps
                 if current_amps + self.output_amps[output_id] > max_amps:
                     msg = "Cannot turn output {} ({}) On. If this output " \
                           "turns on, there will be {} amps being drawn, " \
@@ -521,7 +526,7 @@ class OutputController(AbstractController, threading.Thread):
                     return 1, msg
 
                 # Check if time is greater than off_until to allow an output on
-                if off_until_datetime and off_until_datetime > current_time and not self.is_on(output_id):
+                if off_until_datetime and off_until_datetime > current_time:
                     off_seconds = (
                         off_until_datetime - current_time).total_seconds()
                     msg = "Output {id} ({name}) instructed to turn on, " \
@@ -546,7 +551,7 @@ class OutputController(AbstractController, threading.Thread):
                     self.set_off_until(dt_off_until, output_id)
 
                 # Output is already on for an amount
-                if self.is_on(output_id) and self.output_on_duration[output_id]:
+                if output_is_on and self.output_on_duration[output_id]:
 
                     if self.output_on_until[output_id] > current_time:
                         remaining_time = (self.output_on_until[output_id] -
@@ -597,7 +602,7 @@ class OutputController(AbstractController, threading.Thread):
                     return 0, msg
 
                 # Output is on, but not for an amount
-                elif self.is_on(output_id) and not self.output_on_duration:
+                elif output_is_on and not self.output_on_duration:
 
                     self.output_on_duration[output_id] = True
                     self.output_on_until[output_id] = (
@@ -634,7 +639,7 @@ class OutputController(AbstractController, threading.Thread):
                                                  'wireless_rpi_rf']:
 
                 # Don't turn on if already on, except if it's a radio frequency output
-                if self.is_on(output_id) and self.output_type[output_id] != 'wireless_rpi_rf':
+                if output_is_on and self.output_type[output_id] != 'wireless_rpi_rf':
                     msg = "Output {id} ({name}) is already on.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id])
