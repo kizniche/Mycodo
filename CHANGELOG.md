@@ -1,10 +1,16 @@
+## 8.0.2 (Unreleased)
+
+### Bugfixes
+
+ - Fix doubling the amount used to calculate Amp draw during an output being turned on
+
+
 ## 8.0.1 (2019.11.11)
 
 ### Bugfixes
 
  - Add Python version check to Mycodo installer ([#712](https://github.com/kizniche/mycodo/issues/712))
  - Daemon now checks for any newer version during upgrade check
- - Fix doubling the amount used to calculate Amp draw during an output being turned on
 
 ### Features
 
