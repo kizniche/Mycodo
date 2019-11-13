@@ -2,6 +2,7 @@
 import datetime
 import logging
 import socket
+import threading
 import time
 import zipfile
 
@@ -171,6 +172,37 @@ def export_influxdb(form):
 # Import
 #
 
+def thread_import_settings(tmp_folder):
+    # Upgrade database
+    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+          "upgrade_database".format(
+        pth=INSTALL_DIRECTORY)
+    _, _, _ = cmd_output(cmd)
+
+    # Install/update dependencies (could take a while)
+    cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_dependencies" \
+          " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
+        pth=INSTALL_DIRECTORY,
+        log=DEPENDENCY_LOG_FILE)
+    _, _, _ = cmd_output(cmd)
+
+    # Initialize
+    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+          "initialize".format(
+        pth=INSTALL_DIRECTORY)
+    _, _, _ = cmd_output(cmd)
+
+    # Start Mycodo daemon (backend)
+    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+          "daemon_start".format(
+        pth=INSTALL_DIRECTORY)
+    _, _, _ = cmd_output(cmd)
+
+    # Delete tmp directory if it exists
+    if os.path.isdir(tmp_folder):
+        shutil.rmtree(tmp_folder)
+
+
 def import_settings(form):
     """
     Receive a zip file containing a Mycodo settings database that was
@@ -275,56 +307,64 @@ def import_settings(form):
                 # Stop Mycodo daemon (backend)
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
                       "daemon_stop".format(
-                        pth=INSTALL_DIRECTORY)
+                    pth=INSTALL_DIRECTORY)
                 _, _, _ = cmd_output(cmd)
 
                 # Backup current database and replace with extracted mycodo.db
                 imported_database = os.path.join(
                     tmp_folder, mycodo_database_name)
                 backup_name = (
-                        SQL_DATABASE_MYCODO + '.backup_' +
-                        datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+                    SQL_DATABASE_MYCODO + '.backup_' +
+                    datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
                 os.rename(SQL_DATABASE_MYCODO, backup_name)
                 os.rename(imported_database, SQL_DATABASE_MYCODO)
 
-                # Upgrade database
-                cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                      "upgrade_database".format(
-                        pth=INSTALL_DIRECTORY)
-                _, _, _ = cmd_output(cmd)
+                import_settings_db = threading.Thread(
+                    target=thread_import_settings,
+                    args=(tmp_folder,))
+                import_settings_db.start()
 
-                # Install/update dependencies (could take a while)
-                cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_dependencies" \
-                      " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
-                        pth=INSTALL_DIRECTORY,
-                        log=DEPENDENCY_LOG_FILE)
-                _, _, _ = cmd_output(cmd)
-
-                # Initialize
-                cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                      "initialize".format(
-                        pth=INSTALL_DIRECTORY)
-                _, _, _ = cmd_output(cmd)
-
-                # Start Mycodo daemon (backend)
-                cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                      "daemon_start".format(
-                        pth=INSTALL_DIRECTORY)
-                _, _, _ = cmd_output(cmd)
-
-                # Delete tmp directory if it exists
-                if os.path.isdir(tmp_folder):
-                    shutil.rmtree(tmp_folder)
-
-                return backup_name  # Success!
+                return backup_name
             except Exception as err:
                 error.append("Exception while replacing database: "
                              "{err}".format(err=err))
+                return None
 
     except Exception as err:
         error.append("Exception: {}".format(err))
 
     flash_success_errors(error, action, url_for('routes_page.page_export'))
+
+
+def thread_import_influxdb(tmp_folder):
+    # Restore the backup to new database mycodo_db_bak
+    output_successes = []
+    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
+          "influxdb_restore_mycodo_db {dir}".format(
+        pth=INSTALL_DIRECTORY, dir=tmp_folder)
+    out, _, _ = cmd_output(cmd)
+    if out:
+        output_successes.append(out.decode('utf-8'))
+
+    # Copy all measurements from backup to current database
+    mycodo_db_backup = 'mycodo_db_bak'
+    client = InfluxDBClient(
+        INFLUXDB_HOST,
+        INFLUXDB_PORT,
+        INFLUXDB_USER,
+        INFLUXDB_PASSWORD,
+        mycodo_db_backup,
+        timeout=5)
+    query_str = "SELECT * INTO {}..:MEASUREMENT FROM /.*/ GROUP BY *".format(
+        INFLUXDB_DATABASE)
+    client.query(query_str)
+
+    # Delete backup database
+    client.drop_database(mycodo_db_backup)
+
+    # Delete tmp directory if it exists
+    if os.path.isdir(tmp_folder):
+        shutil.rmtree(tmp_folder)
 
 
 def import_influxdb(form):
@@ -418,43 +458,16 @@ def import_influxdb(form):
 
         if not error:
             try:
-                # Restore the backup to new database mycodo_db_bak
-                output_successes = []
-                cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                      "influxdb_restore_mycodo_db {dir}".format(
-                        pth=INSTALL_DIRECTORY, dir=tmp_folder)
-                out, _, _ = cmd_output(cmd)
-                if out:
-                    output_successes.append(out.decode('utf-8'))
-
-                # Copy all measurements from backup to current database
-                mycodo_db_backup = 'mycodo_db_bak'
-                client = InfluxDBClient(
-                    INFLUXDB_HOST,
-                    INFLUXDB_PORT,
-                    INFLUXDB_USER,
-                    INFLUXDB_PASSWORD,
-                    mycodo_db_backup,
-                    timeout=5)
-                query_str = "SELECT * INTO {}..:MEASUREMENT FROM /.*/ GROUP BY *".format(
-                    INFLUXDB_DATABASE)
-                client.query(query_str)
-
-                # Delete backup database
-                client.drop_database(mycodo_db_backup)
-
-                # Delete tmp directory if it exists
-                if os.path.isdir(tmp_folder):
-                    shutil.rmtree(tmp_folder)
-
-                if all(output_successes):  # Success!
-                    output_successes.append(
-                        "InfluxDB database successfully imported")
-                    return output_successes
+                import_settings_db = threading.Thread(
+                    target=thread_import_influxdb,
+                    args=(tmp_folder,))
+                import_settings_db.start()
+                return "Initiated"
             except Exception as err:
                 error.append(
                     "Exception while importing database: "
                     "{err}".format(err=err))
+                return None
 
     except Exception as err:
         error.append("Exception: {}".format(err))

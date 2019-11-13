@@ -453,11 +453,21 @@ def page_export():
             if file_send:
                 return file_send
             else:
-                flash('Unknown error creating zipped settings database', 'error')
+                flash('Unknown error creating zipped settings database',
+                      'error')
         elif form_import_settings.settings_import_upload.data:
             backup_file = utils_export.import_settings(form_import_settings)
             if backup_file:
+                flash('The settings database import has been initialized. '
+                      'This process may take an extended time to complete, '
+                      'as any unmet dependencies will be installed. '
+                      'Additionally, the daemon will be stopped during this '
+                      'process and all users will be logged out at the '
+                      'completion of the import.', 'success')
                 return redirect(url_for('routes_authentication.logout'))
+            else:
+                flash('An error occurred during the settingsdatabase import.',
+                      'error')
         elif form_export_influxdb.export_influxdb_zip.data:
             file_send = utils_export.export_influxdb(form_export_influxdb)
             if file_send:
@@ -466,10 +476,19 @@ def page_export():
                 flash('Unknown error creating zipped influxdb database '
                       'and metastore', 'error')
         elif form_import_influxdb.influxdb_import_upload.data:
-            restore_output_list = utils_export.import_influxdb(form_import_influxdb)
-            if restore_output_list:
-                for each_out in restore_output_list:
-                    flash(each_out, 'success')
+            restore_influxdb = utils_export.import_influxdb(
+                form_import_influxdb)
+            if restore_influxdb:
+                flash('The influxdb database import has been initialized. '
+                      'This process may take an extended time to complete '
+                      'if there is a lot of data. Please allow ample time '
+                      'for it to complete.',
+                      'success')
+                return redirect(url_for('routes_authentication.logout'))
+            else:
+                flash(
+                    'An error occurred during the influxdb database import.',
+                    'error')
 
     # Generate start end end times for date/time picker
     end_picker = datetime.datetime.now().strftime('%m/%d/%Y %H:%M')

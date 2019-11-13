@@ -1,3 +1,10 @@
+## 8.0.3 (Unreleased)
+
+### Bugfixes
+
+ - Fix timeout errors during settings/influxdb database import
+ 
+
 ## 8.0.2 (2019.11.13)
 
 ### Bugfixes
