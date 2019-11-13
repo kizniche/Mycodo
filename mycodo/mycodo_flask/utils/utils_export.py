@@ -14,6 +14,7 @@ from influxdb import InfluxDBClient
 from werkzeug.utils import secure_filename
 
 from mycodo.config import ALEMBIC_VERSION
+from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import INFLUXDB_DATABASE
 from mycodo.config import INFLUXDB_HOST
 from mycodo.config import INFLUXDB_PASSWORD
@@ -293,9 +294,10 @@ def import_settings(form):
                 _, _, _ = cmd_output(cmd)
 
                 # Install/update dependencies (could take a while)
-                cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                      "update_dependencies".format(
-                        pth=INSTALL_DIRECTORY)
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_dependencies" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
+                        pth=INSTALL_DIRECTORY,
+                        log=DEPENDENCY_LOG_FILE)
                 _, _, _ = cmd_output(cmd)
 
                 # Initialize
