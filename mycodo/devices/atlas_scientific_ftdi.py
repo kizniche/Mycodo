@@ -1,6 +1,5 @@
 # coding=utf-8
 import logging
-import string
 import time
 
 import pylibftdi
