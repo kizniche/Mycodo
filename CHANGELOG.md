@@ -4,6 +4,7 @@
 
  - Fix timeout errors during settings/influxdb database import
  - Fix python3 version check during install ([#714](https://github.com/kizniche/mycodo/issues/714))
+ - Fix upgrade checking
  
 
 ## 8.0.2 (2019.11.13)

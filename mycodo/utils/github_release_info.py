@@ -61,7 +61,7 @@ def github_upgrade_exists():
         maj_version = int(MYCODO_VERSION.split('.')[0])
         releases = github_releases(maj_version)
         if releases:
-            if parse_version(current_latest_release[0]) > parse_version(MYCODO_VERSION):
+            if parse_version(releases[0]) > parse_version(MYCODO_VERSION):
                 return True
     except Exception:
         logger.error("Could not determine local mycodo version or "
