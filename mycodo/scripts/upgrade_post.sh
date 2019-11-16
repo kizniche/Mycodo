@@ -6,7 +6,7 @@
 exec 2>&1
 
 if [ "$EUID" -ne 0 ]; then
-    printf "Please run as root\n";
+    printf "Must be run as root\n";
     exit
 fi
 

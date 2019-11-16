@@ -10,7 +10,7 @@ INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
 LOG_LOCATION=${INSTALL_DIRECTORY}/install/setup.log
 
 if [ "$EUID" -ne 0 ]; then
-    printf "Please run as root: \"sudo /bin/bash %s/install/setup.sh\"\n" "${INSTALL_DIRECTORY}"
+    printf "Must be run as root: \"sudo /bin/bash %s/install/setup.sh\"\n" "${INSTALL_DIRECTORY}"
     exit 1
 fi
 

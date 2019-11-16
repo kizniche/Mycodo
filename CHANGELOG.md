@@ -1,3 +1,11 @@
+## 8.0.4 (Unreleased)
+
+### Features
+
+ - Add API endpoints: /measurements/historical and /measurements/historical_function
+ - Add ability to set timestamp with /measurements/create API endpoint
+
+
 ## 8.0.3 (2019.11.15)
 
 ### Bugfixes

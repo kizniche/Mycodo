@@ -54,7 +54,7 @@ def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
 
     write_db = threading.Thread(
         target=write_influxdb_list,
-        args=(data,unique_id,))
+        args=(data, unique_id,))
     write_db.start()
 
 
@@ -203,17 +203,21 @@ def rescale_measurements(measurement, measurement_value):
 
 
 def query_string(unit, unique_id,
-                 value=None, measure=None, channel=None,
-                 ts_str=None, start_str=None, end_str=None,
-                 past_sec=None, group_sec=None, limit=None):
+                 value=None, measure=None, channel=None, ts_str=None,
+                 start_str=None, end_str=None, past_sec=None, group_sec=None,
+                 limit=None, function=None):
     """Generate influxdb query string"""
     query = "SELECT "
 
-    if value:
+    if function:
+        query += "{func}(value)".format(func=function)
+
+    elif value:  # value is deprecated. Use function instead.
         if value in ['COUNT', 'LAST', 'MEAN', 'MAX', 'MIN', 'SUM']:
             query += "{value}(value)".format(value=value)
         else:
             return 1
+
     else:
         query += "value"
 
@@ -239,12 +243,17 @@ def query_string(unit, unique_id,
     return query
 
 
-def read_last_influxdb(unique_id, unit, channel, measure=None, duration_sec=None):
+def read_influxdb_function(
+        unique_id, unit, channel, function,
+        measure=None,
+        duration_sec=None,
+        start_str=None,
+        end_str=None):
     """
-    Query Influxdb for the last entry.
+    Query Influxdb for a single entry/value
 
     example:
-        read_last_influxdb('00000001', 'C', 0)
+        read_influxdb_single('00000001', 'C', duration_sec=0, value='LAST')
 
     :return: list of time and value
     :rtype: list
@@ -255,94 +264,36 @@ def read_last_influxdb(unique_id, unit, channel, measure=None, duration_sec=None
     :param unit: What unit to query in the Influxdb
         database (eg. 'C', 's')
     :type unit: str
+    :param channel: Channel
+    :type channel: int or None
+    :param function: What kind of function to perform on the data (e.g. LAST, SUM, MIN, MAX, etc.)
+    :type function: str
     :param measure: What measurement to query in the Influxdb
         database (eg. 'temperature', 'duration_time')
     :type measure: str or None
-    :param channel: Channel
-    :type channel: int or None
     :param duration_sec: How many seconds to look for a past measurement
     :type duration_sec: int or None
+    :param start_str: Start time, in influxdb format
+    :type start_str: str
+    :param end_str: End time, in influxdb format
+    :type end_str: str
     """
-    last_measurement = read_single_influxdb(
-        unique_id, unit, channel,
-        measure=measure, duration_sec=duration_sec, value='LAST')
-    return last_measurement
-
-
-def read_past_influxdb(unique_id, unit, channel, past_seconds, measure=None):
-    raw_data = None
     client = InfluxDBClient(
-        INFLUXDB_HOST,
-        INFLUXDB_PORT,
-        INFLUXDB_USER,
-        INFLUXDB_PASSWORD,
-        INFLUXDB_DATABASE,
-        timeout=5)
-    query_str = query_string(
+        INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_PASSWORD,
+        INFLUXDB_DATABASE, timeout=5)
+
+    query = query_string(
         unit,
         unique_id,
         measure=measure,
         channel=channel,
-        past_sec=past_seconds)
-    if query_str == 1:
+        start_str=start_str,
+        end_str=end_str,
+        past_sec=duration_sec,
+        function=function)
+
+    if query == 1:
         return '', 204
-    try:
-        raw_data = client.query(query_str).raw
-    except:
-        logger.debug(
-            "Could not read form influxdb for ID {}, channel {}. "
-            "waiting 15 seconds and trying again.".format(unique_id, channel))
-        time.sleep(15)
-        try:
-            raw_data = client.query(query_str).raw
-        except:
-            logger.debug("Could not read form influxdb after waiting 15 seconds.")
-
-    if raw_data and 'series' in raw_data:
-        return raw_data['series'][0]['values']
-
-
-def read_single_influxdb(unique_id, unit, channel, measure=None, duration_sec=None, value='LAST'):
-    """
-    Query Influxdb for the last entry.
-
-    example:
-        read_single_influxdb('00000001', 'C', duration_sec=0, value='LAST')
-
-    :return: list of time and value
-    :rtype: list
-
-    :param unique_id: What unique_id tag to query in the Influxdb
-        database (eg. '00000001')
-    :type unique_id: str
-    :param unit: What unit to query in the Influxdb
-        database (eg. 'C', 's')
-    :type unit: str
-    :param measure: What measurement to query in the Influxdb
-        database (eg. 'temperature', 'duration_time')
-    :type measure: str or None
-    :param channel: Channel
-    :type channel: int or None
-    :param duration_sec: How many seconds to look for a past measurement
-    :type duration_sec: int or None
-    :param value: What kind of measurement to return (e.g. LAST, SUM, MIN, MAX, etc.)
-    :type value: str
-    """
-    client = InfluxDBClient(
-        INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-        INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
-
-    if duration_sec:
-        query = query_string(unit, unique_id,
-                             measure=measure,
-                             channel=channel,
-                             value=value,
-                             past_sec=int(duration_sec))
-    else:
-        query = query_string(unit, unique_id,
-                             measure=measure,
-                             channel=channel,
-                             value=value)
 
     try:
         last_measurement = client.query(query).raw
@@ -365,6 +316,166 @@ def read_single_influxdb(unique_id, unit, channel, measure=None, duration_sec=No
             return [last_time, last_measurement]
         except Exception:
             logger.exception("Error parsing the last influx measurement")
+
+
+def read_influxdb_list(unique_id, unit, channel,
+                       measure=None,
+                       duration_sec=None,
+                       start_str=None,
+                       end_str=None):
+    """
+    Query Influxdb for a list of entries
+
+    example:
+        read_influxdb_list('00000001', 'C', duration_sec=0)
+
+    :return: list of time and value
+    :rtype: list
+
+    :param unique_id: What unique_id tag to query in the Influxdb
+        database (eg. '00000001')
+    :type unique_id: str
+    :param unit: What unit to query in the Influxdb
+        database (eg. 'C', 's')
+    :type unit: str
+    :param measure: What measurement to query in the Influxdb
+        database (eg. 'temperature', 'duration_time')
+    :type measure: str or None
+    :param channel: Channel
+    :type channel: int or None
+    :param duration_sec: How many seconds to look for a past measurement
+    :type duration_sec: int or None
+    :param start_str: Start time, in influxdb format
+    :type start_str: str
+    :param end_str: End time, in influxdb format
+    :type end_str: str
+    """
+    raw_data = None
+
+    client = InfluxDBClient(
+        INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_PASSWORD,
+        INFLUXDB_DATABASE, timeout=5)
+
+    query = query_string(
+        unit, unique_id,
+        measure=measure,
+        channel=channel,
+        start_str=start_str,
+        end_str=end_str,
+        past_sec=duration_sec)
+
+    if query == 1:
+        return '', 204
+
+    try:
+        raw_data = client.query(query).raw
+    except:
+        logger.debug(
+            "Could not read form influxdb for ID {}, channel {}. "
+            "waiting 15 seconds and trying again.".format(unique_id, channel))
+        time.sleep(15)
+        try:
+            raw_data = client.query(query).raw
+        except:
+            logger.debug("Could not read form influxdb after waiting 15 seconds.")
+
+    if raw_data and 'series' in raw_data:
+        return raw_data['series'][0]['values']
+
+
+def read_influxdb_single(unique_id, unit, channel,
+                         measure=None,
+                         duration_sec=None,
+                         start_str=None,
+                         end_str=None,
+                         value='LAST'):
+    """
+    Query Influxdb for a single entry/value
+
+    example:
+        read_influxdb_single('00000001', 'C', duration_sec=0, value='LAST')
+
+    :return: list of time and value
+    :rtype: list
+
+    :param unique_id: What unique_id tag to query in the Influxdb
+        database (eg. '00000001')
+    :type unique_id: str
+    :param unit: What unit to query in the Influxdb
+        database (eg. 'C', 's')
+    :type unit: str
+    :param measure: What measurement to query in the Influxdb
+        database (eg. 'temperature', 'duration_time')
+    :type measure: str or None
+    :param channel: Channel
+    :type channel: int or None
+    :param duration_sec: How many seconds to look for a past measurement
+    :type duration_sec: int or None
+    :param start_str: Start time, in influxdb format
+    :type start_str: str
+    :param end_str: End time, in influxdb format
+    :type end_str: str
+    :param value: What kind of measurement to return (e.g. LAST, SUM, MIN, MAX, etc.)
+    :type value: str
+    """
+    client = InfluxDBClient(
+        INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_PASSWORD,
+        INFLUXDB_DATABASE, timeout=5)
+
+    query = query_string(
+        unit,
+        unique_id,
+        measure=measure,
+        channel=channel,
+        value=value,
+        start_str=start_str,
+        end_str=end_str,
+        past_sec=int(duration_sec))
+
+    if query == 1:
+        return '', 204
+
+    try:
+        last_measurement = client.query(query).raw
+    except requests.exceptions.ConnectionError:
+        logger.debug(
+            "Could not read form influxdb for ID {}, channel {}. "
+            "waiting 15 seconds and trying again.".format(unique_id, channel))
+        time.sleep(15)
+        try:
+            last_measurement = client.query(query).raw
+        except requests.exceptions.ConnectionError:
+            logger.debug("Failed to establish a new influxdb connection. Ensure influxdb is running.")
+            last_measurement = None
+
+    if last_measurement and 'series' in last_measurement:
+        try:
+            number = len(last_measurement['series'][0]['values'])
+            last_time = last_measurement['series'][0]['values'][number - 1][0]
+            last_measurement = last_measurement['series'][0]['values'][number - 1][1]
+            return [last_time, last_measurement]
+        except Exception:
+            logger.exception("Error parsing the last influx measurement")
+
+
+def read_last_influxdb(unique_id, unit, channel, measure=None, duration_sec=None):
+    """
+    DEPRECATED: use read_influxdb_single()
+    """
+    last_measurement = read_influxdb_single(
+        unique_id, unit, channel,
+        measure=measure, duration_sec=duration_sec, value='LAST')
+    return last_measurement
+
+
+def read_past_influxdb(unique_id, unit, channel, past_seconds, measure=None):
+    """
+    DEPRECATED: use read_influxdb_list()
+    """
+    last_measurement = read_influxdb_list(
+        unique_id, unit, channel,
+        measure=measure, duration_sec=past_seconds)
+    return last_measurement
 
 
 def output_sec_on(output_id, past_seconds):
@@ -502,14 +613,17 @@ def write_influxdb_value(
     :param timestamp: If supplied, this timestamp will be used in the influxdb
     :type timestamp: datetime object
     """
-    client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
-    data = [format_influxdb_data(unique_id,
-                                 unit,
-                                 value,
-                                 channel=channel,
-                                 measure=measure,
-                                 timestamp=timestamp)]
+    client = InfluxDBClient(
+        INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
+        INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
+
+    data = [
+        format_influxdb_data(
+            unique_id, unit, value,
+            channel=channel,
+            measure=measure,
+            timestamp=timestamp)
+    ]
 
     try:
         client.write_points(data)

@@ -7,7 +7,7 @@ UPGRADE_TYPE=$1
 UPGRADE_MAJ_VERSION=$2
 
 if [ "$EUID" -ne 0 ] ; then
-  printf "Please run as root.\n"
+  printf "Must be run as root.\n"
   exit 1
 fi
 
@@ -67,15 +67,13 @@ runDownloadMycodo() {
   TARBALL_FILE="mycodo-${UPDATE_VERSION}"
 
   if [ "${UPDATE_URL}" == "None" ] ; then
-    printf "\nUnable to upgrade. A URL of the latest release was not able to be obtained.\n"
+    printf "\nUnable to upgrade. The URL for a tar.gz archive of the latest release was not able to be obtained.\n"
     error_found
   fi
 
-  printf "\n#### Downloading %s ####\n" "${UPDATE_VERSION}"
-
   printf "\n#### Beginning Upgrade: Stage 1 of 3 ####\n"
 
-  printf "Downloading latest Mycodo version to %s/%s.tar.gz..." "${INSTALL_DIRECTORY}" "${TARBALL_FILE}"
+  printf "Downloading latest Mycodo version %s to %s/%s.tar.gz..." "${UPDATE_VERSION}" "${INSTALL_DIRECTORY}" "${TARBALL_FILE}"
   if ! wget --quiet -O "${INSTALL_DIRECTORY}"/"${TARBALL_FILE}".tar.gz ${UPDATE_URL} ; then
     printf "Failed: Error while trying to wget new version.\n"
     printf "File requested: %s -> %s/%s.tar.gz\n" "${UPDATE_URL}" "${INSTALL_DIRECTORY}" "${TARBALL_FILE}"

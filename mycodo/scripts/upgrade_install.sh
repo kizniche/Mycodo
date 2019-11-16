@@ -7,7 +7,7 @@ exec 2>&1
 RELEASE_WIPE=$1
 
 if [ "$EUID" -ne 0 ] ; then
-  printf "Please run as root.\n"
+  printf "Must be run as root.\n"
   exit 1
 fi
 
@@ -99,8 +99,6 @@ runSelfUpgrade() {
   printf "Upgrading Mycodo to version %s\n" "$THIS_VERSION"
 
   NOW=$(date +"%Y-%m-%d_%H-%M-%S")
-
-  printf "\n#### Upgrade from v%s to v%s initiated %s ####\n" "$CURRENT_VERSION" "$THIS_VERSION" "$NOW"
 
   printf "\n#### Beginning Upgrade Stage 2 of 3 ####\n\n"
 
