@@ -210,7 +210,7 @@ def query_string(unit, unique_id,
     query = "SELECT "
 
     if value:
-        if value in ['COUNT', 'LAST', 'MEAN', 'SUM']:
+        if value in ['COUNT', 'LAST', 'MEAN', 'MAX', 'MIN', 'SUM']:
             query += "{value}(value)".format(value=value)
         else:
             return 1
@@ -237,6 +237,36 @@ def query_string(unit, unique_id,
     if limit:
         query += " GROUP BY * LIMIT {lim}".format(lim=limit)
     return query
+
+
+def read_last_influxdb(unique_id, unit, channel, measure=None, duration_sec=None):
+    """
+    Query Influxdb for the last entry.
+
+    example:
+        read_last_influxdb('00000001', 'C', 0)
+
+    :return: list of time and value
+    :rtype: list
+
+    :param unique_id: What unique_id tag to query in the Influxdb
+        database (eg. '00000001')
+    :type unique_id: str
+    :param unit: What unit to query in the Influxdb
+        database (eg. 'C', 's')
+    :type unit: str
+    :param measure: What measurement to query in the Influxdb
+        database (eg. 'temperature', 'duration_time')
+    :type measure: str or None
+    :param channel: Channel
+    :type channel: int or None
+    :param duration_sec: How many seconds to look for a past measurement
+    :type duration_sec: int or None
+    """
+    last_measurement = read_single_influxdb(
+        unique_id, unit, channel,
+        measure=measure, duration_sec=duration_sec, value='LAST')
+    return last_measurement
 
 
 def read_past_influxdb(unique_id, unit, channel, past_seconds, measure=None):
@@ -272,12 +302,12 @@ def read_past_influxdb(unique_id, unit, channel, past_seconds, measure=None):
         return raw_data['series'][0]['values']
 
 
-def read_last_influxdb(unique_id, unit, channel, measure=None, duration_sec=None):
+def read_single_influxdb(unique_id, unit, channel, measure=None, duration_sec=None, value='LAST'):
     """
     Query Influxdb for the last entry.
 
     example:
-        read_last_influxdb('00000001', 'C', 0)
+        read_single_influxdb('00000001', 'C', duration_sec=0, value='LAST')
 
     :return: list of time and value
     :rtype: list
@@ -295,20 +325,24 @@ def read_last_influxdb(unique_id, unit, channel, measure=None, duration_sec=None
     :type channel: int or None
     :param duration_sec: How many seconds to look for a past measurement
     :type duration_sec: int or None
+    :param value: What kind of measurement to return (e.g. LAST, SUM, MIN, MAX, etc.)
+    :type value: str
     """
-    client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
-                            INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
+    client = InfluxDBClient(
+        INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
+        INFLUXDB_PASSWORD, INFLUXDB_DATABASE, timeout=5)
 
     if duration_sec:
         query = query_string(unit, unique_id,
                              measure=measure,
                              channel=channel,
+                             value=value,
                              past_sec=int(duration_sec))
     else:
         query = query_string(unit, unique_id,
                              measure=measure,
                              channel=channel,
-                             value='LAST')
+                             value=value)
 
     try:
         last_measurement = client.query(query).raw

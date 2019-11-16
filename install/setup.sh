@@ -29,6 +29,20 @@ if python "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/upgrade_check.py --mainte
   fi
 fi
 
+printf "Checking Python version...\n"
+if hash python3 2>/dev/null; then
+  if ! python3 "${INSTALL_DIRECTORY}"/mycodo/scripts/upgrade_check.py --min_python_version "3.6"; then
+    printf "Incorrect Python version found. Mycodo requires Python >= 3.6.\n"
+    printf "If you're running Raspbian 9 (Stretch) with Python 3.5, you will need to install at least Raspbian 10 (Buster) with Python 3.7 to install the latest version of Mycodo.\n"
+    exit 1
+  else
+    printf "Python >= 3.6 found. Continuing with the install.\n"
+  fi
+else
+  printf "\npython3 was not found. Cannot proceed with the install without python3 (Python >= 3.6).\n"
+  exit 1
+fi
+
 WHIPTAIL=$(command -v whiptail)
 exitstatus=$?
 if [ $exitstatus != 0 ]; then
