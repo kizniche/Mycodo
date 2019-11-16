@@ -63,12 +63,12 @@ class ControllerStatus(Resource):
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
 
-        if 'activate' not in ns_controller.payload:
+        if not ns_controller.payload or 'activate' not in ns_controller.payload:
             abort(422, message='missing "activate" in payload')
 
         try:
             control = DaemonControl()
-            if ns_controller.payload['activate']:
+            if ns_controller.payload and ns_controller.payload['activate']:
                 activate = control.controller_activate(unique_id)
             else:
                 activate = control.controller_deactivate(unique_id)

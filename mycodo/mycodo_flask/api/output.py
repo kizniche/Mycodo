@@ -142,36 +142,38 @@ class Outputs(Resource):
         control = DaemonControl()
 
         state = None
-        if 'state' in ns_output.payload:
-            state = ns_output.payload["state"]
-            if state is not None:
-                try:
-                    state = bool(state)
-                except Exception:
-                    abort(422, message='state must represent a bool value')
-
         duration = None
-        if 'duration' in ns_output.payload:
-            duration = ns_output.payload["duration"]
-            if duration is not None:
-                try:
-                    duration = float(duration)
-                except Exception:
-                    abort(422, message='duration does not represent a number')
-            else:
-                duration = 0
-
         duty_cycle = None
-        if 'duty_cycle' in ns_output.payload:
-            duty_cycle = ns_output.payload["duty_cycle"]
-            if duty_cycle is not None:
-                try:
-                    duty_cycle = float(duty_cycle)
-                    if duty_cycle < 0 or duty_cycle > 100:
-                        abort(422, message='Required: 0 <= duty_cycle <= 100')
-                except Exception:
-                    abort(422,
-                          message='duty_cycle does not represent float value')
+
+        if ns_output.payload:
+            if 'state' in ns_output.payload:
+                state = ns_output.payload["state"]
+                if state is not None:
+                    try:
+                        state = bool(state)
+                    except Exception:
+                        abort(422, message='state must represent a bool value')
+
+            if 'duration' in ns_output.payload:
+                duration = ns_output.payload["duration"]
+                if duration is not None:
+                    try:
+                        duration = float(duration)
+                    except Exception:
+                        abort(422, message='duration does not represent a number')
+                else:
+                    duration = 0
+
+            if 'duty_cycle' in ns_output.payload:
+                duty_cycle = ns_output.payload["duty_cycle"]
+                if duty_cycle is not None:
+                    try:
+                        duty_cycle = float(duty_cycle)
+                        if duty_cycle < 0 or duty_cycle > 100:
+                            abort(422, message='Required: 0 <= duty_cycle <= 100')
+                    except Exception:
+                        abort(422,
+                              message='duty_cycle does not represent float value')
 
         try:
             if state is not None and duration is not None:

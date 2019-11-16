@@ -1,6 +1,10 @@
 # coding=utf-8
 """ functional tests for flask endpoints """
+import json
+
+import base64
 import mock
+import random
 
 from mycodo.config import MATH_INFO
 from mycodo.databases.models import Input
@@ -155,6 +159,34 @@ def test_api_with_admin_apikey_in_header(_, testapp):
         )
         assert response.status_code == 200, "Endpoint Tested: {page}".format(page=route[0])
         assert route[1] in response, "Unexpected HTTP Response: \n{body}".format(body=response.body)
+
+
+@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
+def test_api_measurement_post_get(_, testapp):
+    """ Verifies behavior of these API endpoints with an apikey in the header to post and get a measurement """
+    print("\nTest: test_api_measurement_post_get")
+
+    # Add measurement
+    headers = {
+        'Accept': 'application/vnd.mycodo.v1+json',
+        'X-API-KEY': base64.b64encode(b'secret_admin_api_key')
+    }
+    measurement_random = random.uniform(0.0, 100000.0)
+    endpoint = 'measurements/create/testuniqueid/unit/0/{val}'.format(val=measurement_random)
+    print("test_api_measurement_post_get: testapp.post('/api/{ep}')".format(ep=endpoint))
+
+    response = testapp.post('/api/{ep}'.format(ep=endpoint), headers=headers)
+    assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
+    assert {"message": "Success"} == json.loads(response.text), "Unexpected HTTP Response: \n{body}".format(
+        body=response.body)
+
+    # Read last stored measurement
+    endpoint = 'measurements/last/testuniqueid/unit/0/1000'
+    print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
+    response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
+    assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
+    assert measurement_random == json.loads(response.text)['value'], "Unexpected HTTP Response: \n{body}".format(
+        body=response.body)
 
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')

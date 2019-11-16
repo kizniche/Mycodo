@@ -77,7 +77,7 @@ class MeasurementsCreate(Resource):
             abort(422, custom='value does not represent a float')
 
         timestamp = None
-        if 'timestamp' in ns_measurement.payload:
+        if ns_measurement.payload and 'timestamp' in ns_measurement.payload:
             ts = ns_measurement.payload["timestamp"]
             if ts is not None:
                 if valid_date_str(ts):
