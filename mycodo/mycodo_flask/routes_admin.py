@@ -396,6 +396,7 @@ def admin_upgrade():
                           " process. Check the upgrade log for details."),
                   "error")
         return render_template('admin/upgrade.html',
+                               current_release=MYCODO_VERSION,
                                upgrade=upgrade)
 
     form_backup = forms_misc.Backup()

@@ -116,7 +116,7 @@
     {% elif not upgrade_available %}
 
     <div style="padding: 0.5em 0">
-      {{_('No upgrade is available. You are running the latest release, version')}} <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{ current_release }}" target="_blank">{{ current_release }}</a>
+      {{_('No upgrade is available. You are running the latest release, version')}} <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_release}}" target="_blank">{{ current_release }}</a>
     </div>
 
     {% elif upgrade_available %}
