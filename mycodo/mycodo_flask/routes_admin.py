@@ -18,13 +18,13 @@ from flask import url_for
 from flask_babel import gettext
 from pkg_resources import parse_version
 
-from mycodo.config import FINAL_RELEASES
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
 from mycodo.config import CALIBRATION_INFO
 from mycodo.config import CAMERA_INFO
 from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
+from mycodo.config import FINAL_RELEASES
 from mycodo.config import FORCE_UPGRADE_MASTER
 from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import FUNCTION_INFO
@@ -46,7 +46,6 @@ from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.github_release_info import github_latest_release
-from mycodo.utils.github_release_info import github_releases
 from mycodo.utils.github_release_info import github_upgrade_exists
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.statistics import return_stat_file_dict
@@ -406,16 +405,17 @@ def admin_upgrade():
     upgrade_available = False
 
     # Check for any new Mycodo releases on github
-    releases = []
-    try:
-        current_maj_version = int(MYCODO_VERSION.split('.')[0])
-        releases = github_releases(current_maj_version)
-    except Exception as err:
-        flash(gettext("Could not determine local mycodo version or "
-                      "online release versions: {err}".format(err=err)),
-              "error")
-    if len(releases):
-        current_latest_release = github_latest_release()
+    (upgrade_exists,
+     releases,
+     mycodo_releases,
+     errors) = github_upgrade_exists()
+
+    if errors:
+        for each_error in errors:
+            flash(each_error, 'error')
+
+    if releases:
+        current_latest_release = github_latest_release(mycodo_releases)
         current_latest_major_version = current_latest_release.split('.')[0]
         current_major_release = releases[0]
         current_releases = []
@@ -425,7 +425,7 @@ def admin_upgrade():
                 current_releases.append(each_release)
             if parse_version(each_release) == parse_version(MYCODO_VERSION):
                 releases_behind = index
-        if github_upgrade_exists():
+        if upgrade_exists:
             upgrade_available = True
     else:
         current_releases = []

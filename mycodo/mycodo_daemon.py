@@ -73,8 +73,6 @@ from mycodo.utils.function_actions import get_condition_value
 from mycodo.utils.function_actions import get_condition_value_dict
 from mycodo.utils.function_actions import trigger_action
 from mycodo.utils.function_actions import trigger_function_actions
-from mycodo.utils.github_release_info import github_latest_release
-from mycodo.utils.github_release_info import github_releases
 from mycodo.utils.github_release_info import github_upgrade_exists
 from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.statistics import add_update_csv
@@ -929,19 +927,25 @@ class DaemonController:
 
     def check_mycodo_upgrade_exists(self, now):
         """Check for any new Mycodo releases on github"""
-        upgrade_available = False
-
         try:
-            if github_upgrade_exists():
+            upgrade_exists, _, _, errors = github_upgrade_exists()
+
+            if errors:
+                for each_error in errors:
+                    self.logger.debug(each_error)
+
+            if upgrade_exists:
                 upgrade_available = True
                 if now > self.timer_upgrade_message:
                     # Only display message in log every 10 days
-                    self.timer_upgrade_message = time.time() + 864000
+                    self.timer_upgrade_message += 864000
                     self.logger.info(
                         "A new version of Mycodo is available. Upgrade "
                         "through the web interface under Config -> Upgrade. "
                         "This message will repeat every 10 days unless "
                         "Mycodo is upgraded or upgrade checks are disabled.")
+            else:
+                upgrade_available = False
 
             with session_scope(MYCODO_DB_PATH) as new_session:
                 mod_misc = new_session.query(Misc).first()

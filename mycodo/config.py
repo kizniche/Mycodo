@@ -13,7 +13,7 @@ from flask_babel import lazy_gettext
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
-MYCODO_VERSION = '8.0.3'
+MYCODO_VERSION = '8.0.1'
 ALEMBIC_VERSION = 'f4bd467eb5fe'
 
 #  FORCE_UPGRADE_MASTER
@@ -871,6 +871,8 @@ LOGIN_BAN_SECONDS = 600  # 10 minutes
 
 # Check for upgrade every 2 days (if enabled)
 UPGRADE_CHECK_INTERVAL = 172800
+
+RELEASE_URL = 'https://api.github.com/repos/kizniche/Mycodo/tags'
 
 
 class ProdConfig(object):

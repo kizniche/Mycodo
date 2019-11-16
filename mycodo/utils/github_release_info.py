@@ -13,10 +13,9 @@ sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
 
 from config import MYCODO_VERSION
+from config import RELEASE_URL
 
 logger = logging.getLogger("mycodo.release_info")
-
-release_url = 'https://api.github.com/repos/kizniche/Mycodo/tags'
 
 
 def json_to_dict(url):
@@ -34,9 +33,8 @@ def json_to_dict(url):
     return json.loads(data)
 
 
-def github_releases(major_version):
+def github_releases(mycodo_releases, major_version):
     """ Return the tarball URL for the latest Mycodo release version """
-    mycodo_releases = json_to_dict(release_url)
     all_versions = []
     for each_release in mycodo_releases:
         if re.match('v{maj}.*(\d\.\d)'.format(maj=major_version),
@@ -45,9 +43,8 @@ def github_releases(major_version):
     return sort_reverse_list(all_versions)
 
 
-def github_latest_release():
+def github_latest_release(mycodo_releases):
     """ Return the latest Mycodo release version """
-    mycodo_releases = json_to_dict(release_url)
     all_versions = []
     for each_release in mycodo_releases:
         if re.match('v.*(\d\.\d\.\d)', each_release['name']):
@@ -56,17 +53,27 @@ def github_latest_release():
 
 
 def github_upgrade_exists():
-    current_latest_release = github_latest_release()
+    errors = []
+    upgrade_exists = False
+    releases = []
+    mycodo_releases = {}
     try:
-        maj_version = int(MYCODO_VERSION.split('.')[0])
-        releases = github_releases(maj_version)
+        mycodo_releases = json_to_dict(RELEASE_URL)
+        current_latest_release = github_latest_release(mycodo_releases)
+        current_maj_version = int(MYCODO_VERSION.split('.')[0])
+        releases = github_releases(mycodo_releases, current_maj_version)
+
         if releases:
-            if parse_version(releases[0]) > parse_version(MYCODO_VERSION):
-                return True
+            if (parse_version(releases[0]) > parse_version(MYCODO_VERSION) or
+                    parse_version(current_latest_release[0]) > parse_version(MYCODO_VERSION)):
+                upgrade_exists = True
     except Exception:
-        logger.error("Could not determine local mycodo version or "
-                     "online release versions. Upgrade checks can "
-                     "be disabled in the Mycodo configuration.")
+        logger.exception("github_upgrade_exists()")
+        errors.append(
+            "Could not determine local mycodo version or "
+            "online release versions. Upgrade checks can "
+            "be disabled in the Mycodo configuration.")
+    return upgrade_exists, releases, mycodo_releases, errors
 
 
 def is_latest_installed(major_number):
