@@ -1,6 +1,7 @@
 # coding=utf-8
 """ functional tests for flask endpoints """
 import json
+import time
 
 import base64
 import mock
@@ -166,26 +167,70 @@ def test_api_measurement_post_get(_, testapp):
     """ Verifies behavior of these API endpoints with an apikey in the header to post and get a measurement """
     print("\nTest: test_api_measurement_post_get")
 
-    # Add measurement
-    headers = {
-        'Accept': 'application/vnd.mycodo.v1+json',
-        'X-API-KEY': base64.b64encode(b'secret_admin_api_key')
-    }
-    measurement_random = random.uniform(0.0, 100000.0)
-    endpoint = 'measurements/create/testuniqueid/unit/0/{val}'.format(val=measurement_random)
-    print("test_api_measurement_post_get: testapp.post('/api/{ep}')".format(ep=endpoint))
-
-    response = testapp.post('/api/{ep}'.format(ep=endpoint), headers=headers)
-    assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
-    assert {"message": "Success"} == json.loads(response.text), "Unexpected HTTP Response: \n{body}".format(
-        body=response.body)
+    # Add two measurements
+    measurements_random = [random.uniform(0.0, 100000.0), random.uniform(0.0, 100000.0)]
+    headers = {'Accept': 'application/vnd.mycodo.v1+json',
+               'X-API-KEY': base64.b64encode(b'secret_admin_api_key')}
+    for each_measurement in measurements_random:
+        endpoint = 'measurements/create/testuniqueid/unit/0/{val}'.format(val=each_measurement)
+        print("test_api_measurement_post_get: testapp.post('/api/{ep}')".format(ep=endpoint))
+        response = testapp.post('/api/{ep}'.format(ep=endpoint), headers=headers)
+        assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
+        assert {"message": "Success"} == json.loads(response.text), "Unexpected HTTP Response: \n{body}".format(
+            body=response.body)
 
     # Read last stored measurement
     endpoint = 'measurements/last/testuniqueid/unit/0/1000'
     print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
     response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
     assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
-    assert measurement_random == json.loads(response.text)['value'], "Unexpected HTTP Response: \n{body}".format(
+    assert measurements_random[1] == json.loads(response.text)['value'], "Unexpected HTTP Response: \n{body}".format(
+        body=response.body)
+
+    epoch_end = int(time.time()) + 1
+    epoch_start = epoch_end - 5
+
+    # Read historical stored measurements
+    endpoint = 'measurements/historical/testuniqueid/unit/0/{start}/{end}'.format(start=epoch_start, end=epoch_end)
+    print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
+    response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
+    assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
+    measurement_found_first = False
+    measurement_found_second = False
+    measurements_sum = 0
+    for each_set in json.loads(response.text)['measurements']:
+        if each_set['value'] == measurements_random[0]:
+            measurement_found_first = True
+            measurements_sum += each_set['value']
+        if each_set['value'] == measurements_random[1]:
+            measurement_found_second = True
+            measurements_sum += each_set['value']
+    assert measurement_found_first and measurement_found_second, "Unexpected HTTP Response: \n{body}".format(
+        body=response.body)
+
+    # Read past stored measurements
+    endpoint = 'measurements/past/testuniqueid/unit/0/5'.format()
+    print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
+    response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
+    print("TEST00: {}".format(response))
+    assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
+    measurement_found_first = False
+    measurement_found_second = False
+    for each_set in json.loads(response.text)['measurements']:
+        if each_set['value'] == measurements_random[0]:
+            measurement_found_first = True
+        if each_set['value'] == measurements_random[1]:
+            measurement_found_second = True
+    assert measurement_found_first and measurement_found_second, "Unexpected HTTP Response: \n{body}".format(
+        body=response.body)
+
+    # Use historical stored measurement with SUM function
+    endpoint = 'measurements/historical_function/testuniqueid/unit/0/{start}/{end}/SUM'.format(
+        start=epoch_start, end=epoch_end)
+    print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
+    response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
+    assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
+    assert measurements_sum == json.loads(response.text)['value'], "Unexpected HTTP Response: \n{body}".format(
         body=response.body)
 
 

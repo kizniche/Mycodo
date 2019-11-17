@@ -298,7 +298,7 @@ class MeasurementsPast(Resource):
 
         try:
             return_ = read_influxdb_list(
-                unique_id, unit, channel, past_seconds)
+                unique_id, unit, channel, duration_sec=past_seconds)
             if return_ and len(return_) > 0:
                 dict_return = {'measurements': []}
                 for each_set in return_:
