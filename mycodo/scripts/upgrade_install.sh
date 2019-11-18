@@ -52,7 +52,7 @@ runSelfUpgrade() {
   # Begin tests prior to upgrade #
   ################################
 
-  printf "#### Beginning pre-upgrade checks ####\n"
+  printf "\n#### Beginning pre-upgrade checks ####\n"
 
   # Maintenance mode
   # This is a temporary state so the developer can test a version release before users can upgrade.
@@ -244,7 +244,7 @@ runSelfUpgrade() {
   # End tests prior to post-upgrade script #
   ##########################################
 
-  printf "\n#### Beginning Upgrade Stage 3 of 3 ####\n"
+  printf "\n#### Beginning Upgrade Stage 3 of 3 ####\n\n"
 
   printf "Running post-upgrade script...\n"
   if ! "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/upgrade_post.sh ; then

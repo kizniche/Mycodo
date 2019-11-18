@@ -71,7 +71,7 @@ runDownloadMycodo() {
     error_found
   fi
 
-  printf "\n#### Beginning Upgrade: Stage 1 of 3 ####\n"
+  printf "\n#### Beginning Upgrade: Stage 1 of 3 ####\n\n"
 
   printf "Downloading latest Mycodo version %s to %s/%s.tar.gz..." "${UPDATE_VERSION}" "${INSTALL_DIRECTORY}" "${TARBALL_FILE}"
   if ! wget --quiet -O "${INSTALL_DIRECTORY}"/"${TARBALL_FILE}".tar.gz ${UPDATE_URL} ; then
