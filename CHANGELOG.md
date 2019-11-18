@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix Atlas Scientific UART interfaces
+ - Fix display of units in conversion list on Measurement Settings page
 
 ### Features
 
@@ -10,6 +11,7 @@
  - Add ability to set timestamp with /measurements/create API endpoint
  - Display the entire log for the ongoing upgrade rather than only the last 40 lines
  - Add Calibration: Atlas Scientific Electrical Conductivity Sensor ([#710](https://github.com/kizniche/mycodo/issues/710))
+ - Add Input: Mycodo Version (mainly for testing)
 
 
 ## 8.0.3 (2019.11.15)

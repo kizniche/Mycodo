@@ -248,7 +248,7 @@
               {% endfor %}
             </select>
           {% else %}
-            {% for each_unit_form in choices_units if each_unit == each_conversion.convert_unit_from %}
+            {% for each_unit_form in choices_units if each_unit_form['value'] == each_conversion.convert_unit_from %}
             {{each_unit_form['item']}}
             {% endfor %}
           {% endif %}
@@ -261,7 +261,7 @@
               {% endfor %}
             </select>
           {% else %}
-            {% for each_unit_form in choices_units if each_unit == each_conversion.convert_unit_to %}
+            {% for each_unit_form in choices_units if each_unit_form['value'] == each_conversion.convert_unit_to %}
             {{each_unit_form['item']}}
             {% endfor %}
           {% endif %}
