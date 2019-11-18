@@ -192,6 +192,187 @@ def setup_atlas_ezo_pump():
                            ui_stage=ui_stage)
 
 
+@blueprint.route('/setup_atlas_ec', methods=('GET', 'POST'))
+@flask_login.login_required
+def setup_atlas_ec():
+    """
+    Step-by-step tool for calibrating the Atlas Scientific pH sensor
+    """
+    if not utils_general.user_has_permission('edit_controllers'):
+        return redirect(url_for('routes_general.home'))
+
+    form_ec_calibrate = forms_calibration.CalibrationAtlasEC()
+
+    input_dev = Input.query.filter(Input.device == 'ATLAS_EC').all()
+
+    ui_stage = 'start'
+    backend_stage = None
+    next_stage = None
+    selected_input = None
+    selected_point_calibration = None
+    input_device_name = None
+    complete_with_error = None
+
+    if form_ec_calibrate.hidden_current_stage.data:
+        backend_stage = form_ec_calibrate.hidden_current_stage.data
+
+    if form_ec_calibrate.hidden_selected_point_calibration.data:
+        selected_point_calibration = form_ec_calibrate.hidden_selected_point_calibration.data
+    elif form_ec_calibrate.point_calibration.data:
+        selected_point_calibration = form_ec_calibrate.point_calibration.data
+
+    if selected_point_calibration:
+        list_point_calibrations = selected_point_calibration.split(',')
+    else:
+        list_point_calibrations = []
+
+    if form_ec_calibrate.point_low_uS.data:
+        point_low_uS = form_ec_calibrate.point_low_uS.data
+    else:
+        point_low_uS = form_ec_calibrate.hidden_point_low_uS.data
+
+    if form_ec_calibrate.point_high_uS.data:
+        point_high_uS = form_ec_calibrate.point_high_uS.data
+    else:
+        point_high_uS = form_ec_calibrate.hidden_point_high_uS.data
+
+    # Begin calibration from Selected input
+    if form_ec_calibrate.start_calibration.data:
+        ui_stage = 'point_enter_uS'
+        selected_input = Input.query.filter_by(
+            unique_id=form_ec_calibrate.selected_input_id.data).first()
+        dict_inputs = parse_input_information()
+        list_inputs_sorted = generate_form_input_list(dict_inputs)
+        if not selected_input:
+            flash('Input not found: {}'.format(
+                form_ec_calibrate.selected_input_id.data), 'error')
+        else:
+            for each_input in list_inputs_sorted:
+                if selected_input.device == each_input[0]:
+                    input_device_name = each_input[1]
+
+    # Continue calibration from selected input
+    elif (form_ec_calibrate.go_to_next_stage.data or
+          form_ec_calibrate.go_to_last_stage.data or
+          (backend_stage is not None and backend_stage not in ['start', 'point_enter_uS'])):
+        selected_input = Input.query.filter_by(
+            unique_id=form_ec_calibrate.hidden_input_id.data).first()
+        dict_inputs = parse_input_information()
+        list_inputs_sorted = generate_form_input_list(dict_inputs)
+        for each_input in list_inputs_sorted:
+            if selected_input.device == each_input[0]:
+                input_device_name = each_input[1]
+
+    if backend_stage in ['point_enter_uS', 'dry', 'low', 'high']:
+        time.sleep(2)  # Sleep makes querying sensor more stable
+
+        # Determine next ui_stage
+        if backend_stage == 'point_enter_uS':
+            next_stage = 'dry'
+            logger.error("next_stage: {}".format(next_stage))
+        elif backend_stage == 'dry':
+            next_stage = list_point_calibrations[0]
+            logger.error("next_stage: {}".format(next_stage))
+        else:
+            current_stage_index = list_point_calibrations.index(backend_stage)
+            if current_stage_index == len(list_point_calibrations) - 1:
+                next_stage = 'complete'
+            else:
+                next_stage = list_point_calibrations[current_stage_index + 1]
+
+    if backend_stage == 'point_enter_uS':
+        ui_stage = next_stage
+        complete_with_error = None
+    elif backend_stage == 'dry':
+        ui_stage, complete_with_error = dual_commands_to_sensor(
+            selected_input, 'ec_dry', None, 'continuous',
+            current_stage='dry', next_stage=next_stage)
+    elif backend_stage == 'low':
+        ui_stage, complete_with_error = dual_commands_to_sensor(
+            selected_input, 'ec_low', point_low_uS, 'continuous',
+            current_stage='low', next_stage=next_stage)
+    elif backend_stage == 'high':
+        ui_stage, complete_with_error = dual_commands_to_sensor(
+            selected_input, 'ec_high', point_high_uS, 'end',
+            current_stage='high', next_stage=next_stage)
+
+    return render_template('tools/calibration_options/atlas_ec.html',
+                           complete_with_error=complete_with_error,
+                           form_ec_calibrate=form_ec_calibrate,
+                           input=input_dev,
+                           input_device_name=input_device_name,
+                           point_high_uS=point_high_uS,
+                           point_low_uS=point_low_uS,
+                           selected_input=selected_input,
+                           selected_point_calibration=selected_point_calibration,
+                           ui_stage=ui_stage)
+
+
+@blueprint.route('/setup_atlas_ec_measure/<input_id>')
+@flask_login.login_required
+def setup_atlas_ec_measure(input_id):
+    """
+    Acquire a measurement from the Atlas Scientific pH input and return it
+    Used during calibration to display the current pH to the user
+    """
+    if not utils_general.user_has_permission('edit_controllers'):
+        return redirect(url_for('routes_page.page_atlas_ec_calibrate'))
+
+    selected_input = Input.query.filter_by(unique_id=input_id).first()
+
+    ec = None
+    error = None
+
+    if selected_input.interface == 'FTDI':
+        ec_input_ftdi = AtlasScientificFTDI(selected_input.ftdi_location)
+        lines = ec_input_ftdi.query('R')
+        logger.debug("All Lines: {lines}".format(lines=lines))
+
+        if 'check probe' in lines:
+            error = '"check probe" returned from input'
+        elif not lines:
+            error = 'Nothing returned from input'
+        elif str_is_float(lines[0]):
+            ec = lines[0]
+            logger.debug('Value[0] is float: {val}'.format(val=ec))
+        else:
+            error = 'Value[0] is not float or "check probe": {val}'.format(
+                val=lines[0])
+
+    elif selected_input.interface == 'UART':
+        ec_input_uart = AtlasScientificUART(
+            selected_input.uart_location, baudrate=selected_input.baud_rate)
+        lines = ec_input_uart.query('R')
+        logger.debug("All Lines: {lines}".format(lines=lines))
+
+        if 'check probe' in lines:
+            error = '"check probe" returned from input'
+        elif not lines:
+            error = 'Nothing returned from input'
+        elif str_is_float(lines[0]):
+            ec = lines[0]
+            logger.debug('Value[0] is float: {val}'.format(val=ec))
+        else:
+            error = 'Value[0] is not float or "check probe": {val}'.format(
+                val=lines[0])
+
+    elif selected_input.interface == 'I2C':
+        ec_input_i2c = AtlasScientificI2C(
+            i2c_address=int(str(selected_input.i2c_location), 16),
+            i2c_bus=selected_input.i2c_bus)
+        ec_status, ec_str = ec_input_i2c.query('R')
+        if ec_status == 'error':
+            error = "Input read unsuccessful: {err}".format(err=ec_str)
+        elif ec_status == 'success':
+            ec = ec_str
+
+    if error:
+        logger.error(error)
+        return error, 204
+    else:
+        return ec
+
+
 @blueprint.route('/setup_atlas_ph', methods=('GET', 'POST'))
 @flask_login.login_required
 def setup_atlas_ph():
@@ -287,7 +468,7 @@ def setup_atlas_ph():
         # Determine next ui_stage
         if backend_stage == 'temperature':
             next_stage = list_point_calibrations[0]
-            logger.error("next_stage1: {}".format(next_stage))
+            logger.error("next_stage: {}".format(next_stage))
         else:
             current_stage_index = list_point_calibrations.index(backend_stage)
             if current_stage_index == len(list_point_calibrations) - 1:
@@ -407,11 +588,14 @@ def dual_commands_to_sensor(input_sel, first_cmd, amount,
     Prints any errors or successes
     """
     return_error = None
-    set_temp = None
+    set_amount = None
 
     if first_cmd == 'temperature':
         unit = '°C'
-        set_temp = amount
+        set_amount = amount
+    elif first_cmd in ['ec_dry', 'ec_low', 'ec_high']:
+        unit = 'μS'
+        set_amount = amount
     else:
         unit = 'pH'
 
@@ -419,7 +603,8 @@ def dual_commands_to_sensor(input_sel, first_cmd, amount,
 
     sensor_measurement = atlas_command.get_sensor_measurement()
 
-    first_status, first_return_str = atlas_command.calibrate(first_cmd, temperature=set_temp)
+    first_status, first_return_str = atlas_command.calibrate(
+        first_cmd, set_amount=set_amount)
 
     if isinstance(first_return_str, tuple):
         message_status = first_return_str[0]
@@ -497,8 +682,9 @@ def setup_ds_resolution():
             list_unmet_deps = []
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
-            flash("The device you're trying to calibrate has unmet dependencies: {dep}".format(
-                dep=', '.join(list_unmet_deps)))
+            flash("The device you're trying to calibrate has unmet "
+                  "dependencies: {dep}".format(
+                    dep=', '.join(list_unmet_deps)), 'error')
             return redirect(url_for('routes_admin.admin_dependencies',
                                     device='CALIBRATE_DS_TYPE'))
 

@@ -1,10 +1,15 @@
 ## 8.0.4 (Unreleased)
 
+### Bugfixes
+
+ - Fix Atlas Scientific UART interfaces
+
 ### Features
 
  - Add API endpoints: /measurements/historical and /measurements/historical_function
  - Add ability to set timestamp with /measurements/create API endpoint
  - Display the entire log for the ongoing upgrade rather than only the last 40 lines
+ - Add Calibration: Atlas Scientific Electrical Conductivity Sensor ([#710](https://github.com/kizniche/mycodo/issues/710))
 
 
 ## 8.0.3 (2019.11.15)

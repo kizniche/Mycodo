@@ -41,6 +41,25 @@ class CalibrationAtlasEZOPump(FlaskForm):
     go_to_last_stage = SubmitField(lazy_gettext('Continue to Next Stage'))
 
 
+# Atlas Scientific EC sensor
+class CalibrationAtlasEC(FlaskForm):
+    hidden_input_id = StringField('Input ID', widget=widgets.HiddenInput())
+    hidden_current_stage = StringField('Stage', widget=widgets.HiddenInput())
+    hidden_selected_point_calibration = StringField(
+        'EC Points to Calibrate', widget=widgets.HiddenInput())
+    hidden_point_low_uS = StringField(
+        'Low Solution (μS)', widget=widgets.HiddenInput())
+    hidden_point_high_uS = StringField(
+        'High Solution (μS)', widget=widgets.HiddenInput())
+    selected_input_id = StringField(lazy_gettext('Atlas EC Sensor'))
+    point_calibration = StringField(lazy_gettext('EC Points to Calibrate'))
+    point_low_uS = IntegerField(lazy_gettext('Low Solution (μS)'))
+    point_high_uS = IntegerField(lazy_gettext('High Solution (μS)'))
+    start_calibration = SubmitField(lazy_gettext('Begin Calibration'))
+    go_to_next_stage = SubmitField(lazy_gettext('Continue to Next Stage'))
+    go_to_last_stage = SubmitField(lazy_gettext('Continue to Next Stage'))
+
+
 # Atlas Scientific pH sensor
 class CalibrationAtlasph(FlaskForm):
     hidden_input_id = StringField('Input ID', widget=widgets.HiddenInput())

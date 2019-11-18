@@ -15,6 +15,7 @@ class AtlasScientificCommand:
         self.ph_sensor_uart = None
         self.ph_sensor_i2c = None
         self.interface = input_dev.interface
+        self.init_error = None
 
         if self.interface == 'FTDI':
             from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
@@ -31,16 +32,18 @@ class AtlasScientificCommand:
                 i2c_address=int(str(input_dev.i2c_location), 16),
                 i2c_bus=input_dev.i2c_bus)
 
-        self.measurement, self.board_version, self.firmware_version = self.get_board_version()
+        (self.measurement,
+         self.board_version,
+         self.firmware_version) = self.get_board_version()
 
         if self.board_version == 0:
-            logger.error(
-                "Atlas Scientific board initialization unsuccessful. "
-                "Unable to retrieve device info (this indicates the "
-                "device was not properly initialized or connected)")
+            error_msg = "Atlas Scientific board initialization unsuccessful. " \
+                        "Unable to retrieve device info (this indicates the " \
+                        "device was not properly initialized or connected)"
+            logger.error(error_msg)
+            self.init_error = error_msg
         else:
-            # TODO: Change back to debug
-            logger.info(
+            logger.debug(
                 "Atlas Scientific board initialization success. "
                 "Measurement: {meas}, Board: {brd}, Firmware: {fw}".format(
                     meas=self.measurement,
@@ -63,13 +66,15 @@ class AtlasScientificCommand:
                 info = self.ph_sensor_i2c.query('i')
         except TypeError:
             logger.exception("Unable to determine board version of Atlas sensor")
-            return 0, None
+            return None, 0, None
 
         # Check first letter of info response
         # "P" indicates a legacy board version
         if info is None:
-            return 0, None, None
+            return None, 0, None
         elif isinstance(info, tuple):
+            if info[0] == 'error':
+                return None, 0, None
             for each_line in info:
                 if each_line == 'P':
                     return 'NA', 1, each_line  # Older board version
@@ -78,9 +83,9 @@ class AtlasScientificCommand:
                     measurement = info_split[1]
                     firmware = info_split[2]
                     return measurement, 2, firmware  # Newer board version
-        return 0, None, None
+        return None, 0, None
 
-    def calibrate(self, command, temperature=None, custom_cmd=None):
+    def calibrate(self, command, set_amount=None, custom_cmd=None):
         """
         Determine and send the correct command to an Atlas Scientific sensor,
         based on the board version
@@ -91,11 +96,27 @@ class AtlasScientificCommand:
         # generate a response.
         err = 1
         msg = "Default message"
-        if command == 'temperature' and temperature is not None:
+
+        if self.init_error:
+            msg = self.init_error
+
+        # Atlas EC
+        if command == 'ec_dry':
+            if self.board_version == 2:
+                err, msg = self.send_command('cal,dry')
+        elif command == 'ec_low':
+            if self.board_version == 2:
+                err, msg = self.send_command('cal,low,{uS}'.format(uS=set_amount))
+        elif command == 'ec_high':
+            if self.board_version == 2:
+                err, msg = self.send_command('cal,high,{uS}'.format(uS=set_amount))
+
+        # Atlas pH
+        elif command == 'temperature' and set_amount is not None:
             if self.board_version == 1:
-                err, msg = self.send_command(temperature)
+                err, msg = self.send_command(set_amount)
             elif self.board_version == 2:
-                err, msg = self.send_command('T,{temp}'.format(temp=temperature))
+                err, msg = self.send_command('T,{temp}'.format(temp=set_amount))
         elif command == 'clear_calibration':
             if self.board_version == 1:
                 err, msg = self.send_command('X')
@@ -135,6 +156,7 @@ class AtlasScientificCommand:
                 err, msg = self.send_command('C,0')
         elif custom_cmd:
             err, msg = self.send_command(custom_cmd)
+
         return err, msg
 
     def send_command(self, cmd_send):
