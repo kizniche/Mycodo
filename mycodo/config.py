@@ -746,6 +746,7 @@ FUNCTION_ACTIONS = [
 
 # Calibration
 CALIBRATION_DEVICES = [
+    ('setup_atlas_ec', 'Atlas Scientific Electrical Conductivity Sensor'),
     ('setup_atlas_ezo_pump', 'Atlas Scientific EZO Pump'),
     ('setup_atlas_ph', 'Atlas Scientific pH Sensor'),
     ('setup_ds_resolution', 'DS-Type Temperature Sensors (e.g. DS18B20)')
@@ -825,6 +826,7 @@ KEEPUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodokeepup.log')
 BACKUP_LOG_FILE = os.path.join(LOG_PATH, 'mycodobackup.log')
 DEPENDENCY_LOG_FILE = os.path.join(LOG_PATH, 'mycododependency.log')
 UPGRADE_LOG_FILE = os.path.join(LOG_PATH, 'mycodoupgrade.log')
+UPGRADE_TMP_LOG_FILE = '/tmp/mycodoupgrade.log'
 RESTORE_LOG_FILE = os.path.join(LOG_PATH, 'mycodorestore.log')
 HTTP_ACCESS_LOG_FILE = '/var/log/nginx/access.log'
 HTTP_ERROR_LOG_FILE = '/var/log/nginx/error.log'

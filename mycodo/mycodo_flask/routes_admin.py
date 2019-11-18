@@ -38,6 +38,7 @@ from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import STATS_CSV
 from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config import UPGRADE_LOG_FILE
+from mycodo.config import UPGRADE_TMP_LOG_FILE
 from mycodo.databases.models import Misc
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_dependencies
@@ -346,8 +347,8 @@ def admin_statistics():
 @flask_login.login_required
 def admin_upgrade_status():
     """ Return the last 30 lines of the upgrade log """
-    if os.path.isfile(UPGRADE_LOG_FILE):
-        command = 'tail -n 40 {log}'.format(log=UPGRADE_LOG_FILE)
+    if os.path.isfile(UPGRADE_TMP_LOG_FILE):
+        command = 'cat {log}'.format(log=UPGRADE_TMP_LOG_FILE)
         log = subprocess.Popen(
             command, stdout=subprocess.PIPE, shell=True)
         (log_output, _) = log.communicate()
@@ -465,20 +466,24 @@ def admin_upgrade():
             if not_enough_space_upgrade():
                 pass
             elif FORCE_UPGRADE_MASTER:
+                os.remove(UPGRADE_TMP_LOG_FILE)
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-master" \
-                      " | ts '[%Y-%m-%d %H:%M:%S]'" \
-                      " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
-                                              log=UPGRADE_LOG_FILE)
+                      " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1 | tee -a {log} {tmp_log}".format(
+                    pth=INSTALL_DIRECTORY,
+                    log=UPGRADE_LOG_FILE,
+                    tmp_log=UPGRADE_TMP_LOG_FILE)
                 subprocess.Popen(cmd, shell=True)
 
                 upgrade = 1
                 flash(gettext("The upgrade (from master branch) has started"), "success")
             else:
+                os.remove(UPGRADE_TMP_LOG_FILE)
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-release-major {current_maj_version}" \
-                      " | ts '[%Y-%m-%d %H:%M:%S]'" \
-                      " >> {log} 2>&1".format(current_maj_version=MYCODO_VERSION.split('.')[0],
-                                              pth=INSTALL_DIRECTORY,
-                                              log=UPGRADE_LOG_FILE)
+                      " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1 | tee -a {log} {tmp_log}".format(
+                    current_maj_version=MYCODO_VERSION.split('.')[0],
+                    pth=INSTALL_DIRECTORY,
+                    log=UPGRADE_LOG_FILE,
+                    tmp_log=UPGRADE_TMP_LOG_FILE)
                 subprocess.Popen(cmd, shell=True)
 
                 upgrade = 1
@@ -489,11 +494,13 @@ def admin_upgrade():
         elif (form_upgrade.upgrade_next_major_version.data and
                 upgrade_available):
             if not not_enough_space_upgrade():
+                os.remove(UPGRADE_TMP_LOG_FILE)
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-release-wipe {ver}" \
-                      " | ts '[%Y-%m-%d %H:%M:%S]'" \
-                      " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
-                                              ver=current_latest_major_version,
-                                              log=UPGRADE_LOG_FILE)
+                      " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1 | tee -a {log} {tmp_log}".format(
+                    pth=INSTALL_DIRECTORY,
+                    ver=current_latest_major_version,
+                    log=UPGRADE_LOG_FILE,
+                    tmp_log=UPGRADE_TMP_LOG_FILE)
                 subprocess.Popen(cmd, shell=True)
 
                 upgrade = 1
