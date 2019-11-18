@@ -466,7 +466,10 @@ def admin_upgrade():
             if not_enough_space_upgrade():
                 pass
             elif FORCE_UPGRADE_MASTER:
-                os.remove(UPGRADE_TMP_LOG_FILE)
+                try:
+                    os.remove(UPGRADE_TMP_LOG_FILE)
+                except FileNotFoundError:
+                    pass
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-master" \
                       " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1 | tee -a {log} {tmp_log}".format(
                     pth=INSTALL_DIRECTORY,
@@ -477,7 +480,10 @@ def admin_upgrade():
                 upgrade = 1
                 flash(gettext("The upgrade (from master branch) has started"), "success")
             else:
-                os.remove(UPGRADE_TMP_LOG_FILE)
+                try:
+                    os.remove(UPGRADE_TMP_LOG_FILE)
+                except FileNotFoundError:
+                    pass
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-release-major {current_maj_version}" \
                       " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1 | tee -a {log} {tmp_log}".format(
                     current_maj_version=MYCODO_VERSION.split('.')[0],
@@ -494,7 +500,10 @@ def admin_upgrade():
         elif (form_upgrade.upgrade_next_major_version.data and
                 upgrade_available):
             if not not_enough_space_upgrade():
-                os.remove(UPGRADE_TMP_LOG_FILE)
+                try:
+                    os.remove(UPGRADE_TMP_LOG_FILE)
+                except FileNotFoundError:
+                    pass
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper upgrade-release-wipe {ver}" \
                       " | ts '[%Y-%m-%d %H:%M:%S]' 2>&1 | tee -a {log} {tmp_log}".format(
                     pth=INSTALL_DIRECTORY,
