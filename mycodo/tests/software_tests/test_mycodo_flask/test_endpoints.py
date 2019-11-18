@@ -189,6 +189,7 @@ def test_api_measurement_post_get(_, testapp):
 
     epoch_end = int(time.time()) + 1
     epoch_start = epoch_end - 5
+    measurements_sum = 0
 
     # Read historical stored measurements
     endpoint = 'measurements/historical/testuniqueid/unit/0/{start}/{end}'.format(start=epoch_start, end=epoch_end)
@@ -197,7 +198,6 @@ def test_api_measurement_post_get(_, testapp):
     assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
     measurement_found_first = False
     measurement_found_second = False
-    measurements_sum = 0
     for each_set in json.loads(response.text)['measurements']:
         if each_set['value'] == measurements_random[0]:
             measurement_found_first = True
@@ -208,11 +208,25 @@ def test_api_measurement_post_get(_, testapp):
     assert measurement_found_first and measurement_found_second, "Unexpected HTTP Response: \n{body}".format(
         body=response.body)
 
+    # Read historical stored measurements (epoch_end = 0)
+    endpoint = 'measurements/historical/testuniqueid/unit/0/{start}/{end}'.format(start=epoch_start, end=0)
+    print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
+    response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
+    assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
+    measurement_found_first = False
+    measurement_found_second = False
+    for each_set in json.loads(response.text)['measurements']:
+        if each_set['value'] == measurements_random[0]:
+            measurement_found_first = True
+        if each_set['value'] == measurements_random[1]:
+            measurement_found_second = True
+    assert measurement_found_first and measurement_found_second, "Unexpected HTTP Response: \n{body}".format(
+        body=response.body)
+
     # Read past stored measurements
     endpoint = 'measurements/past/testuniqueid/unit/0/5'.format()
     print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
     response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
-    print("TEST00: {}".format(response))
     assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
     measurement_found_first = False
     measurement_found_second = False
@@ -227,6 +241,15 @@ def test_api_measurement_post_get(_, testapp):
     # Use historical stored measurement with SUM function
     endpoint = 'measurements/historical_function/testuniqueid/unit/0/{start}/{end}/SUM'.format(
         start=epoch_start, end=epoch_end)
+    print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
+    response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
+    assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
+    assert measurements_sum == json.loads(response.text)['value'], "Unexpected HTTP Response: \n{body}".format(
+        body=response.body)
+
+    # Use historical stored measurement with SUM function (epoch_end = 0)
+    endpoint = 'measurements/historical_function/testuniqueid/unit/0/{start}/{end}/SUM'.format(
+        start=epoch_start, end=0)
     print("test_api_measurement_post_get: testapp.get('/api/{ep}')".format(ep=endpoint))
     response = testapp.get('/api/{ep}'.format(ep=endpoint), headers=headers)
     assert response.status_code == 200, "Endpoint Tested: {page}".format(page=endpoint)
