@@ -714,19 +714,23 @@ class MathController(AbstractController, threading.Thread):
     def is_measurement_unit(self, unit_from, unit_to, value):
         """ Converts value from one measurement to another """
         if unit_from != unit_to:
+            conversion_id = None
             for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
                 if (each_conv.convert_unit_from == unit_from and
                         each_conv.convert_unit_to == unit_to):
-                    return_value = convert_units(
-                        each_conv.unique_id, value)
-                    return return_value, 'success'
-                else:
-                    self.logger.error(
-                        "Could not find conversion for unit "
-                        "{unit_from} to {unit_to}".format(
-                            unit_from=unit_from,
-                            unit_to=unit_to))
-                    return None, 'error'
+                    conversion_id = each_conv.unique_id
+
+            if conversion_id:
+                return_value = convert_units(
+                    conversion_id, value)
+                return return_value, 'success'
+            else:
+                self.logger.error(
+                    "Could not find conversion for unit "
+                    "{unit_from} to {unit_to}".format(
+                        unit_from=unit_from,
+                        unit_to=unit_to))
+                return None, 'error'
 
     def error_not_within_max_age(self):
         self.logger.debug(
