@@ -635,10 +635,10 @@ class MathController(AbstractController, threading.Thread):
                         rh=humidity))
 
                 list_measurement = [
-                    specific_enthalpy,
                     humidity,
-                    specific_volume,
-                    humidity_ratio
+                    humidity_ratio,
+                    specific_enthalpy,
+                    specific_volume
                 ]
 
                 for each_measurement in self.device_measurements.all():
