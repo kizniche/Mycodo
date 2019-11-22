@@ -13,6 +13,7 @@
  - Display the entire log for the ongoing upgrade rather than only the last 40 lines
  - Add Calibration: Atlas Scientific Electrical Conductivity Sensor ([#710](https://github.com/kizniche/mycodo/issues/710))
  - Add Input: Mycodo Version (mainly for testing)
+ - Allow timestamp to be specified for Python 3 Code Input measurement creation ([#716](https://github.com/kizniche/mycodo/issues/716))
 
 
 ## 8.0.3 (2019.11.15)

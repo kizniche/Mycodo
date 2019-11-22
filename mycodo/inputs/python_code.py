@@ -57,13 +57,15 @@ class PythonInputRun:
         self.input_id = input_id
         self.measurement_info = measurement_info
 
-    def store_measurement(self, channel=None, measurement=None):
+    def store_measurement(self, channel=None, measurement=None, timestamp=None):
         if None in [channel, measurement]:
             return
         measure = {channel: {}}
         measure[channel]['measurement'] = self.measurement_info[channel]['measurement']
         measure[channel]['unit'] = self.measurement_info[channel]['unit']
         measure[channel]['value'] = measurement
+        if timestamp:
+            measure[channel]['timestamp_utc'] = timestamp
         add_measurements_influxdb(self.input_id, measure)
 
     def python_code_run(self):
