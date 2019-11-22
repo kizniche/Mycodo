@@ -620,6 +620,20 @@ class MathController(AbstractController, threading.Thread):
                 specific_volume = float(psypi[3])
                 humidity_ratio = float(psypi[4])
 
+                self.logger.debug(
+                    "Dry Temp: ({dtu}: {dtv}, K: {dtk}), "
+                    "Wet Temp: ({wtu}: {wtv}, K: {wtk}), "
+                    "Pressure: {pres},"
+                    "Humidity: {rh}".format(
+                        dtu=measurement_db_temp.unit,
+                        dtv=float(dry_bulb_t[1]),
+                        dtk=dbt_kelvin,
+                        wtu=measurement_wb_temp.unit,
+                        wtv=float(wet_bulb_t[1]),
+                        wtk=wbt_kelvin,
+                        pres=pressure_pa,
+                        rh=humidity))
+
                 list_measurement = [
                     specific_enthalpy,
                     humidity,

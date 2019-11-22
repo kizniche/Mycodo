@@ -212,7 +212,7 @@ def __Pws(DBT):
         C13=6.5459673
         return m.exp(C8/DBT+C9+C10*DBT+C11*DBT**2+C12*DBT**3+C13*m.log(DBT))
 
-def state(prop1, prop1val, prop2, prop2val,P):
+def state(prop1, prop1val, prop2, prop2val, P):
     if prop1==prop2:
         print("Properties must be independent.")
         return
