@@ -6,6 +6,7 @@
  - Fix display of units in conversion list on Measurement Settings page
  - Fix unit conversions for Math controllers ([#716](https://github.com/kizniche/mycodo/issues/716))
  - Fix Wet-Bulb Humidity calculation in Math controller ([#716](https://github.com/kizniche/mycodo/issues/716))
+ - Fix disabled measurements not appearing for math controllers ([#716](https://github.com/kizniche/mycodo/issues/716))
 
 ### Features
 
