@@ -481,16 +481,17 @@ class MathController(AbstractController, threading.Thread):
             ]
 
             for each_measurement in self.device_measurements.all():
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=each_measurement.conversion_id)
-                channel, unit, measurement = return_measurement_info(
-                    each_measurement, conversion)
+                if each_measurement.is_enabled:
+                    conversion = db_retrieve_table_daemon(
+                        Conversion, unique_id=each_measurement.conversion_id)
+                    channel, unit, measurement = return_measurement_info(
+                        each_measurement, conversion)
 
-                measurement_dict[channel] = {
-                    'measurement': measurement,
-                    'unit': unit,
-                    'value': list_measurement[channel]
-                }
+                    measurement_dict[channel] = {
+                        'measurement': measurement,
+                        'unit': unit,
+                        'value': list_measurement[channel]
+                    }
 
         elif measure:
             self.logger.error(measure)
@@ -642,17 +643,18 @@ class MathController(AbstractController, threading.Thread):
                 ]
 
                 for each_measurement in self.device_measurements.all():
-                    conversion = db_retrieve_table_daemon(
-                        Conversion,
-                        unique_id=each_measurement.conversion_id)
-                    channel, unit, measurement = return_measurement_info(
-                        each_measurement, conversion)
+                    if each_measurement.is_enabled:
+                        conversion = db_retrieve_table_daemon(
+                            Conversion,
+                            unique_id=each_measurement.conversion_id)
+                        channel, unit, measurement = return_measurement_info(
+                            each_measurement, conversion)
 
-                    measurement_dict[channel] = {
-                        'measurement': measurement,
-                        'unit': unit,
-                        'value': list_measurement[channel]
-                    }
+                        measurement_dict[channel] = {
+                            'measurement': measurement,
+                            'unit': unit,
+                            'value': list_measurement[channel]
+                        }
         else:
             self.error_not_within_max_age()
         return measurement_dict
