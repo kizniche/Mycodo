@@ -8,6 +8,7 @@
  - Fix Wet-Bulb Humidity calculation in Math controller ([#716](https://github.com/kizniche/mycodo/issues/716))
  - Fix disabled measurements not appearing for math controllers ([#716](https://github.com/kizniche/mycodo/issues/716))
  - Fix disabled measurements from Math controllers still being recorded in influxdb
+ - Fix inability to select PID Controller with PID Control Widget ([#718](https://github.com/kizniche/mycodo/issues/718))
 
 ### Features
 

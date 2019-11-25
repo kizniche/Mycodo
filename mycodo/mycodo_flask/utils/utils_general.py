@@ -283,124 +283,6 @@ def controller_activate_deactivate(controller_action,
 # Choices
 #
 
-def choices_measurements_units(measurements, units):
-    dict_measurements = add_custom_measurements(measurements)
-    dict_units = add_custom_units(units)
-
-    # Sort dictionary by keys
-    sorted_keys = sorted(list(dict_measurements), key=lambda s: s.casefold())
-    sorted_dict_measurements = []
-    for each_key in sorted_keys:
-        sorted_dict_measurements.append(
-            {'key': each_key, 'measurement': dict_measurements[each_key]})
-
-    choices = []
-    for each_meas in sorted_dict_measurements:
-        for each_unit in each_meas['measurement']['units']:
-            try:
-                value = '{meas},{unit}'.format(
-                    meas=each_meas['key'], unit=each_unit)
-                display = '{meas}: {unit_name}'.format(
-                    meas=each_meas['measurement']['name'],
-                    unit_name=dict_units[each_unit]['name'])
-                if dict_units[each_unit]['unit']:
-                    display += ' ({unit})'.format(
-                        unit=dict_units[each_unit]['unit'])
-                choices.append({'value': value, 'item': display})
-            except Exception as e:
-                logger.exception(
-                    "Error in choices_measurements_units(): {}".format(e))
-
-    return choices
-
-
-def choices_measurements(measurements):
-    """ populate form multi-select choices from Measurement entries """
-    choices = []
-    for each_meas in measurements:
-        value = '{meas}'.format(
-            meas=each_meas.name_safe)
-        display = '{name} ({units})'.format(
-            name=each_meas.name,
-            units=each_meas.units)
-        choices.append({'value': value, 'item': display})
-    for each_meas, each_info in MEASUREMENTS.items():
-        value = '{meas}'.format(
-            meas=each_meas)
-        display = '{name} ({units})'.format(
-            name=each_info['name'],
-            units=",".join(each_info['units']))
-        choices.append({'value': value, 'item': display})
-
-    return choices
-
-
-def choices_units(units):
-    """ populate form multi-select choices from Units entries """
-    choices = []
-    for each_unit, each_info in UNITS.items():
-        if each_info['name']:
-            value = '{unit}'.format(
-                unit=each_unit)
-            unit = ''
-            if each_info['unit']:
-                unit = ' ({})'.format(each_info['unit'])
-            display = '{name}{unit}'.format(
-                name=each_info['name'],
-                unit=unit)
-            choices.append({'value': value, 'item': display})
-    for each_unit in units:
-        value = '{unit}'.format(
-            unit=each_unit.name_safe)
-        display = '{name} ({unit})'.format(
-            name=each_unit.name,
-            unit=each_unit.unit)
-        choices.append({'value': value, 'item': display})
-
-    choices.sort(key=lambda item: item.get("item"))
-
-    return choices
-
-
-def choices_custom_controllers():
-    """ populate form multi-select choices from Input entries """
-    choices = []
-    dict_controllers = parse_controller_information()
-    list_controllers_sorted = generate_form_controller_list(dict_controllers)
-    for each_custom in list_controllers_sorted:
-        value = '{inp}'.format(inp=each_custom)
-        display = '{name}'.format(
-            name=dict_controllers[each_custom]['controller_name'])
-        choices.append({'value': value, 'item': display})
-    return choices
-
-
-def choices_inputs(inputs, dict_units, dict_measurements):
-    """ populate form multi-select choices from Input entries """
-    choices = []
-    for each_input in inputs:
-        choices = form_input_choices(
-            choices, each_input, dict_units, dict_measurements)
-    return choices
-
-
-def choices_maths(maths, dict_units, dict_measurements):
-    """ populate form multi-select choices from Math entries """
-    choices = []
-    for each_math in maths:
-        choices = form_math_choices(
-            choices, each_math, dict_units, dict_measurements)
-    return choices
-
-
-def choices_pids(pid, dict_units, dict_measurements):
-    """ populate form multi-select choices from PID entries """
-    choices = []
-    for each_pid in pid:
-        choices = form_pid_choices(
-            choices, each_pid, dict_units, dict_measurements)
-    return choices
-
 
 def choices_controller_ids():
     """ populate form multi-select choices from Controller IDS """
@@ -443,38 +325,25 @@ def choices_controller_ids():
     return choices
 
 
-def choices_outputs(output, dict_units, dict_measurements):
-    """ populate form multi-select choices from Output entries """
+def choices_custom_controllers():
+    """ populate form multi-select choices from Input entries """
     choices = []
-    for each_output in output:
-        choices = form_output_choices(
-            choices, each_output, dict_units, dict_measurements)
+    dict_controllers = parse_controller_information()
+    list_controllers_sorted = generate_form_controller_list(dict_controllers)
+    for each_custom in list_controllers_sorted:
+        value = '{inp}'.format(inp=each_custom)
+        display = '{name}'.format(
+            name=dict_controllers[each_custom]['controller_name'])
+        choices.append({'value': value, 'item': display})
     return choices
 
 
-def choices_output_devices(output):
-    """ populate form multi-select choices from Output entries """
+def choices_inputs(inputs, dict_units, dict_measurements):
+    """ populate form multi-select choices from Input entries """
     choices = []
-    for each_output in output:
-        choices = form_output_choices_devices(choices, each_output)
-    return choices
-
-
-def choices_outputs_pwm(output, dict_units, dict_measurements):
-    """ populate form multi-select choices from Output entries """
-    choices = []
-    for each_output in output:
-        if each_output.output_type in OUTPUTS_PWM:
-            choices = form_output_choices(
-                choices, each_output, dict_units, dict_measurements)
-    return choices
-
-
-def choices_tags(tags):
-    """ populate form multi-select choices from Tag entries """
-    choices = []
-    for each_tag in tags:
-        choices = form_tag_choices(choices, each_tag)
+    for each_input in inputs:
+        choices = form_input_choices(
+            choices, each_input, dict_units, dict_measurements)
     return choices
 
 
@@ -528,6 +397,146 @@ def choices_lcd(inputs, maths, pids, outputs, dict_units, dict_measurements):
         choices.append({'value': value, 'item': display})
         choices = form_output_choices(
             choices, each_output, dict_units, dict_measurements)
+
+    return choices
+
+
+def choices_maths(maths, dict_units, dict_measurements):
+    """ populate form multi-select choices from Math entries """
+    choices = []
+    for each_math in maths:
+        choices = form_math_choices(
+            choices, each_math, dict_units, dict_measurements)
+    return choices
+
+
+def choices_measurements(measurements):
+    """ populate form multi-select choices from Measurement entries """
+    choices = []
+    for each_meas in measurements:
+        value = '{meas}'.format(
+            meas=each_meas.name_safe)
+        display = '{name} ({units})'.format(
+            name=each_meas.name,
+            units=each_meas.units)
+        choices.append({'value': value, 'item': display})
+    for each_meas, each_info in MEASUREMENTS.items():
+        value = '{meas}'.format(
+            meas=each_meas)
+        display = '{name} ({units})'.format(
+            name=each_info['name'],
+            units=",".join(each_info['units']))
+        choices.append({'value': value, 'item': display})
+
+    return choices
+
+
+def choices_measurements_units(measurements, units):
+    dict_measurements = add_custom_measurements(measurements)
+    dict_units = add_custom_units(units)
+
+    # Sort dictionary by keys
+    sorted_keys = sorted(list(dict_measurements), key=lambda s: s.casefold())
+    sorted_dict_measurements = []
+    for each_key in sorted_keys:
+        sorted_dict_measurements.append(
+            {'key': each_key, 'measurement': dict_measurements[each_key]})
+
+    choices = []
+    for each_meas in sorted_dict_measurements:
+        for each_unit in each_meas['measurement']['units']:
+            try:
+                value = '{meas},{unit}'.format(
+                    meas=each_meas['key'], unit=each_unit)
+                display = '{meas}: {unit_name}'.format(
+                    meas=each_meas['measurement']['name'],
+                    unit_name=dict_units[each_unit]['name'])
+                if dict_units[each_unit]['unit']:
+                    display += ' ({unit})'.format(
+                        unit=dict_units[each_unit]['unit'])
+                choices.append({'value': value, 'item': display})
+            except Exception as e:
+                logger.exception(
+                    "Error in choices_measurements_units(): {}".format(e))
+
+    return choices
+
+
+def choices_outputs(output, dict_units, dict_measurements):
+    """ populate form multi-select choices from Output entries """
+    choices = []
+    for each_output in output:
+        choices = form_output_choices(
+            choices, each_output, dict_units, dict_measurements)
+    return choices
+
+
+def choices_output_devices(output):
+    """ populate form multi-select choices from Output entries """
+    choices = []
+    for each_output in output:
+        choices = form_output_choices_devices(choices, each_output)
+    return choices
+
+
+def choices_outputs_pwm(output, dict_units, dict_measurements):
+    """ populate form multi-select choices from Output entries """
+    choices = []
+    for each_output in output:
+        if each_output.output_type in OUTPUTS_PWM:
+            choices = form_output_choices(
+                choices, each_output, dict_units, dict_measurements)
+    return choices
+
+
+def choices_pids(pid, dict_units, dict_measurements):
+    """ populate form multi-select choices from PID entries """
+    choices = []
+    for each_pid in pid:
+        choices = form_pid_choices(
+            choices, each_pid, dict_units, dict_measurements)
+    return choices
+
+
+def choices_pids_devices(pid):
+    """ populate form multi-select choices from Output entries """
+    choices = []
+    for each_pid in pid:
+        choices = form_pid_choices_devices(choices, each_pid)
+    return choices
+
+
+def choices_tags(tags):
+    """ populate form multi-select choices from Tag entries """
+    choices = []
+    for each_tag in tags:
+        choices = form_tag_choices(choices, each_tag)
+    return choices
+
+
+def choices_units(units):
+    """ populate form multi-select choices from Units entries """
+    choices = []
+    for each_unit, each_info in UNITS.items():
+        if each_info['name']:
+            value = '{unit}'.format(
+                unit=each_unit)
+            unit = ''
+            if each_info['unit']:
+                unit = ' ({})'.format(each_info['unit'])
+            display = '{name}{unit}'.format(
+                name=each_info['name'],
+                unit=unit)
+            choices.append({'value': value, 'item': display})
+    for each_unit in units:
+        value = '{unit}'.format(
+            unit=each_unit.name_safe)
+        display = '{name} ({unit})'.format(
+            name=each_unit.name,
+            unit=each_unit.unit)
+        choices.append({'value': value, 'item': display})
+
+    choices.sort(key=lambda item: item.get("item"))
 
     return choices
 
@@ -628,57 +637,6 @@ def form_math_choices(choices, each_math, dict_units, dict_measurements):
     return choices
 
 
-def form_pid_choices(choices, each_pid, dict_units, dict_measurements):
-    device_measurements = DeviceMeasurements.query.filter(
-        DeviceMeasurements.device_id == each_pid.unique_id).all()
-
-    for each_measure in device_measurements:
-        conversion = Conversion.query.filter(
-            Conversion.unique_id == each_measure.conversion_id).first()
-        channel, unit, measurement = return_measurement_info(
-            each_measure, conversion)
-
-        value = '{input_id},{meas_id}'.format(
-            input_id=each_pid.unique_id,
-            meas_id=each_measure.unique_id)
-
-        if unit:
-            display_unit = find_name_unit(
-                dict_units, unit)
-            display_measurement = find_name_measurement(
-                dict_measurements, measurement)
-        elif each_measure.measurement_type == 'setpoint':
-            display_unit = None
-            display_measurement = 'Setpoint'
-        else:
-            display_unit = None
-            display_measurement = None
-
-        if each_measure.name:
-            channel_info = 'CH{cnum} ({cname})'.format(
-                cnum=channel, cname=each_measure.name)
-        else:
-            channel_info = 'CH{cnum}'.format(cnum=channel)
-
-        if display_measurement and display_unit:
-            measurement_unit = '{meas} ({unit})'.format(
-                meas=display_measurement, unit=display_unit)
-        elif display_measurement:
-            measurement_unit = '{meas}'.format(
-                meas=display_measurement)
-        else:
-            measurement_unit = '({unit})'.format(unit=display_unit)
-
-        display = '[PID {id:02d}] {i_name} {chan} {meas}'.format(
-            id=each_pid.id,
-            i_name=each_pid.name,
-            chan=channel_info,
-            meas=measurement_unit)
-        choices.append({'value': value, 'item': display})
-
-    return choices
-
-
 def form_output_choices(choices, each_output, dict_units, dict_measurements):
     device_measurements = DeviceMeasurements.query.filter(
         DeviceMeasurements.device_id == each_output.unique_id).all()
@@ -735,6 +693,67 @@ def form_output_choices_devices(choices, each_output):
     display = '[Output {id:02d}] {name}'.format(
         id=each_output.id,
         name=each_output.name)
+    choices.append({'value': value, 'item': display})
+    return choices
+
+
+
+def form_pid_choices(choices, each_pid, dict_units, dict_measurements):
+    device_measurements = DeviceMeasurements.query.filter(
+        DeviceMeasurements.device_id == each_pid.unique_id).all()
+
+    for each_measure in device_measurements:
+        conversion = Conversion.query.filter(
+            Conversion.unique_id == each_measure.conversion_id).first()
+        channel, unit, measurement = return_measurement_info(
+            each_measure, conversion)
+
+        value = '{input_id},{meas_id}'.format(
+            input_id=each_pid.unique_id,
+            meas_id=each_measure.unique_id)
+
+        if unit:
+            display_unit = find_name_unit(
+                dict_units, unit)
+            display_measurement = find_name_measurement(
+                dict_measurements, measurement)
+        elif each_measure.measurement_type == 'setpoint':
+            display_unit = None
+            display_measurement = 'Setpoint'
+        else:
+            display_unit = None
+            display_measurement = None
+
+        if each_measure.name:
+            channel_info = 'CH{cnum} ({cname})'.format(
+                cnum=channel, cname=each_measure.name)
+        else:
+            channel_info = 'CH{cnum}'.format(cnum=channel)
+
+        if display_measurement and display_unit:
+            measurement_unit = '{meas} ({unit})'.format(
+                meas=display_measurement, unit=display_unit)
+        elif display_measurement:
+            measurement_unit = '{meas}'.format(
+                meas=display_measurement)
+        else:
+            measurement_unit = '({unit})'.format(unit=display_unit)
+
+        display = '[PID {id:02d}] {i_name} {chan} {meas}'.format(
+            id=each_pid.id,
+            i_name=each_pid.name,
+            chan=channel_info,
+            meas=measurement_unit)
+        choices.append({'value': value, 'item': display})
+
+    return choices
+
+
+def form_pid_choices_devices(choices, each_pid):
+    value = '{id}'.format(id=each_pid.unique_id)
+    display = '[PID {id:02d}] {name}'.format(
+        id=each_pid.id,
+        name=each_pid.name)
     choices.append({'value': value, 'item': display})
     return choices
 

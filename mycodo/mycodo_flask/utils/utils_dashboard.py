@@ -36,11 +36,7 @@ logger = logging.getLogger(__name__)
 #
 
 def dashboard_add(form_base, form_object, display_order):
-    """
-    Add an item to the dashboard
-
-    Either Graph, Gauge, or Camera
-    """
+    """Add a widget to the dashboard"""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['add']['title'],
         controller=TRANSLATIONS['dashboard']['title'])

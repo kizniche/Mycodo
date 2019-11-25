@@ -646,6 +646,7 @@ def page_dashboard():
         output, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
+    choices_pid_devices = utils_general.choices_pids_devices(pid)
     choices_note_tag = utils_general.choices_tags(tags)
 
     device_measurements_dict = {}
@@ -749,6 +750,7 @@ def page_dashboard():
                            choices_output_devices=choices_output_devices,
                            choices_output_pwm=choices_output_pwm,
                            choices_pid=choices_pid,
+                           choices_pid_devices=choices_pid_devices,
                            choices_note_tag=choices_note_tag,
                            custom_yaxes=custom_yaxes,
                            dashboard_element_names=dashboard_element_names,
