@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-09 19:56-0500\n"
+"POT-Creation-Date: 2019-11-26 16:39-0500\n"
 "PO-Revision-Date: 2018-08-10 15:59-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -18,256 +18,255 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.7.0\n"
 
-#: config.py:46
-msgid "Add Dashboard Element"
-msgstr "添加仪表板元素"
+#: config.py:50
+msgid "Add Dashboard Widget"
+msgstr ""
 
-#: config.py:47
-#: mycodo_flask/templates/pages/dashboard_options/add_graph.html:10
+#: config.py:51 mycodo_flask/templates/pages/dashboard_options/add_graph.html:9
 msgid "Graph"
 msgstr "图形"
 
-#: config.py:48
+#: config.py:52
 #: mycodo_flask/templates/pages/dashboard_options/add_gauge.html:16
 msgid "Gauge"
 msgstr "测量"
 
-#: config.py:53
+#: config.py:57
 msgid "PWM Slider"
 msgstr ""
 
-#: config.py:54
+#: config.py:58
 msgid "PID Control"
 msgstr "PID控制"
 
-#: config.py:124
+#: config.py:128
 msgid "Average (Last, Multiple Channels)"
 msgstr ""
 
-#: config.py:130
+#: config.py:134
 msgid "Average (Past, Single Channel)"
 msgstr ""
 
-#: config.py:137
+#: config.py:141
 msgid "Sum (Last, Multiple Channels)"
 msgstr ""
 
-#: config.py:143
+#: config.py:147
 msgid "Sum (Past, Single Channel)"
 msgstr ""
 
-#: config.py:150
+#: config.py:154
 msgid "Difference"
 msgstr "区别"
 
-#: config.py:156 mycodo_flask/forms/forms_math.py:75
+#: config.py:160 mycodo_flask/forms/forms_math.py:75
 #: mycodo_flask/forms/forms_settings.py:198
 #: mycodo_flask/forms/forms_settings.py:206
 msgid "Equation"
 msgstr "方程"
 
-#: config.py:162
+#: config.py:166
 msgid "Humidity (Wet/Dry-Bulb)"
 msgstr "湿度（湿/干灯泡）"
 
-#: config.py:185
+#: config.py:189
 msgid "Redundancy"
 msgstr "冗余"
 
-#: config.py:191 mycodo_flask/templates/admin/statistics.html:6
+#: config.py:195 mycodo_flask/templates/admin/statistics.html:6
 msgid "Statistics"
 msgstr "统计"
 
-#: config.py:233
+#: config.py:237
 msgid "Verification"
 msgstr "验证"
 
-#: config.py:239 config_devices_units.py:193
+#: config.py:243 config_devices_units.py:193
 msgid "Vapor Pressure Deficit"
 msgstr "蒸汽压力不足"
 
-#: config.py:269
+#: config.py:273
 msgid "Time/Date"
 msgstr "时间/日期"
 
-#: config.py:273 config_devices_units.py:69 config_translations.py:57
+#: config.py:277 config_devices_units.py:69 config_translations.py:57
 #: mycodo_flask/templates/pages/function_options/action_options/output.html:27
 #: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:37
 msgid "Duration"
 msgstr "持续时间"
 
-#: config.py:277
+#: config.py:281
 msgid "Daily (Time-Based)"
 msgstr "每日（基于时间）"
 
-#: config.py:281
+#: config.py:285
 msgid "Daily (Sine Wave)"
 msgstr "每日（正弦波）"
 
-#: config.py:285
+#: config.py:289
 msgid "Daily (Bezier Curve)"
 msgstr "每日（贝塞尔曲线）"
 
-#: config.py:304
+#: config.py:308
 msgid "On/Off (GPIO)"
 msgstr "开/关（GPIO）"
 
-#: config.py:310
+#: config.py:314
 msgid "PWM (GPIO)"
 msgstr "PWM（GPIO）"
 
-#: config.py:318
+#: config.py:322
 msgid "Wireless 315/433MHz LPD/SRD (rpi-rf)"
 msgstr "无线315 / 433MHz LPD / SRD（rpi-rf）"
 
-#: config.py:327
+#: config.py:331
 msgid "On/Off (Linux Command)"
 msgstr "开/关（Linux命令）"
 
-#: config.py:333
+#: config.py:337
 msgid "PWM (Linux Command)"
 msgstr "PWM（Linux命令）"
 
-#: config.py:339
+#: config.py:343
 msgid "On/Off (Python Command)"
 msgstr "开/关（Python命令）"
 
-#: config.py:345
+#: config.py:349
 msgid "PWM (Python Command)"
 msgstr "PWM（Python命令）"
 
-#: config.py:351
+#: config.py:355
 msgid "Atlas EZO-PMP"
 msgstr "Atlas EZO-PMP"
 
-#: config.py:369
+#: config.py:373
 msgid "FTDI"
 msgstr ""
 
-#: config.py:371
+#: config.py:375
 msgid "I2C"
 msgstr "I2C"
 
-#: config.py:373
+#: config.py:377
 msgid "UART"
 msgstr "UART"
 
-#: config.py:436
+#: config.py:440
 msgid "DS-Type Sensor Calibration"
 msgstr "DS型传感器校准"
 
-#: config.py:463 config_devices_units.py:97
+#: config.py:467 config_devices_units.py:97
 #: mycodo_flask/templates/pages/function_options/conditional_options/gpio_state.html:8
 msgid "GPIO State"
 msgstr "GPIO国家"
 
-#: config.py:464
+#: config.py:468
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:13
 msgid "Output State"
 msgstr ""
 
-#: config.py:465
+#: config.py:469
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_duration_on.html:13
 msgid "Output Duration On"
 msgstr ""
 
-#: config.py:466
+#: config.py:470
 #: mycodo_flask/templates/pages/function_options/conditional_options/controller_status.html:13
 msgid "Controller Running"
 msgstr ""
 
-#: config.py:473
+#: config.py:477
 msgid "Spacer"
 msgstr "间隔"
 
-#: config.py:479
+#: config.py:483
 msgid "Execute Actions"
 msgstr "执行动作"
 
-#: config.py:516
+#: config.py:520
 msgid "Trigger: Timer (Daily Point)"
 msgstr "触发：定时器（每日点）"
 
-#: config.py:523
+#: config.py:527
 msgid "Daily Span"
 msgstr "每日跨度"
 
-#: config.py:536
+#: config.py:540
 msgid "Infrared Receive"
 msgstr ""
 
-#: config.py:546
+#: config.py:550
 msgid "Run PWM Method"
 msgstr "运行PWM方法"
 
-#: config.py:552
+#: config.py:556
 msgid "Sunrise/Sunset"
 msgstr "日出日落"
 
-#: config.py:582
+#: config.py:586
 #: mycodo_flask/templates/pages/function_options/action_options/photo.html:11
 msgid "Camera: Capture Photo"
 msgstr "相机：拍摄照片"
 
-#: config.py:612
+#: config.py:616
 #: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:20
 msgid "Email with Photo Attachment"
 msgstr "带照片附件的电子邮件"
 
-#: config.py:616
+#: config.py:620
 #: mycodo_flask/templates/pages/function_options/action_options/video_email.html:20
 msgid "Email with Video Attachment"
 msgstr "带视频附件的电子邮件"
 
-#: config.py:620
+#: config.py:624
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:6
 msgid "Execute Command"
 msgstr "执行命令"
 
-#: config.py:624
+#: config.py:628
 #: mycodo_flask/templates/pages/function_options/action_options/infrared_send.html:32
 msgid "Infrared Send"
 msgstr ""
 
-#: config.py:635
+#: config.py:639
 #: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_off.html:11
 msgid "Backlight Off"
 msgstr "背光关闭"
 
-#: config.py:641
+#: config.py:645
 #: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_on.html:11
 msgid "Backlight On"
 msgstr ""
 
-#: config.py:647
+#: config.py:651
 #: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_off.html:11
 msgid "Flashing Off"
 msgstr ""
 
-#: config.py:653
+#: config.py:657
 #: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_on.html:11
 msgid "Flashing On"
 msgstr ""
 
-#: config.py:689
+#: config.py:693
 #: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:20
 msgid "Set Method"
 msgstr "设置方法"
 
-#: config.py:695
-#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:62
-#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:92
+#: config.py:699
+#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:65
+#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:100
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:15
 msgid "Set Setpoint"
 msgstr "设定设定值"
 
-#: config.py:701
+#: config.py:705
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:11
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:15
 msgid "Raise Setpoint"
 msgstr ""
 
-#: config.py:707
+#: config.py:711
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:11
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:15
 msgid "Lower Setpoint"
@@ -297,7 +296,7 @@ msgstr "高度"
 msgid "Battery"
 msgstr "电池"
 
-#: config_devices_units.py:37 config_devices_units.py:224
+#: config_devices_units.py:37 config_devices_units.py:228
 msgid "Boolean"
 msgstr "布尔"
 
@@ -367,7 +366,7 @@ msgstr "湿度"
 msgid "Humidity Ratio"
 msgstr "湿度比"
 
-#: config_devices_units.py:109 config_devices_units.py:317
+#: config_devices_units.py:109 config_devices_units.py:321
 msgid "Ion Concentration"
 msgstr "离子浓度"
 
@@ -411,7 +410,7 @@ msgstr ""
 msgid "Revolutions"
 msgstr "革命"
 
-#: config_devices_units.py:165 config_devices_units.py:338
+#: config_devices_units.py:165 config_devices_units.py:342
 #: config_translations.py:143
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:11
 msgid "Setpoint"
@@ -433,185 +432,189 @@ msgstr "具体焓"
 msgid "Specific Volume"
 msgstr "比容"
 
-#: config_devices_units.py:185 mycodo_flask/forms/forms_calibration.py:53
+#: config_devices_units.py:185 mycodo_flask/forms/forms_calibration.py:72
 #: mycodo_flask/templates/pages/data_options/math_options/vapor_pressure_deficit.html:6
 msgid "Temperature"
 msgstr "温度"
 
-#: config_devices_units.py:189 config_devices_units.py:308
+#: config_devices_units.py:189 config_devices_units.py:312
 msgid "Unitless"
 msgstr ""
 
 #: config_devices_units.py:197
+msgid "Version"
+msgstr ""
+
+#: config_devices_units.py:201
 msgid "VOC"
 msgstr "VOC"
 
-#: config_devices_units.py:201
+#: config_devices_units.py:205
 msgid "Volume"
 msgstr "体积"
 
-#: config_devices_units.py:212
+#: config_devices_units.py:216
 msgid "Microsecond"
 msgstr "微秒"
 
-#: config_devices_units.py:215
+#: config_devices_units.py:219
 msgid "Microsiemens per centimeter"
 msgstr "每厘米微米门"
 
-#: config_devices_units.py:218
+#: config_devices_units.py:222
 msgid "Microsieverts per hour"
 msgstr ""
 
-#: config_devices_units.py:221 mycodo_flask/forms/forms_misc.py:27
+#: config_devices_units.py:225 mycodo_flask/forms/forms_misc.py:27
 #: mycodo_flask/forms/forms_misc.py:35
 msgid "Amp"
 msgstr "安培"
 
-#: config_devices_units.py:227
+#: config_devices_units.py:231
 msgid "Celsius"
 msgstr "摄氏"
 
-#: config_devices_units.py:230
+#: config_devices_units.py:234
 msgid "Counts per minute"
 msgstr ""
 
-#: config_devices_units.py:233
+#: config_devices_units.py:237
 msgid "CPU Load"
 msgstr "CPU负载"
 
-#: config_devices_units.py:236
+#: config_devices_units.py:240
 msgid "Decimal"
 msgstr "十进制"
 
-#: config_devices_units.py:239
+#: config_devices_units.py:243
 msgid "Fahrenheit"
 msgstr "飞轮海"
 
-#: config_devices_units.py:242
+#: config_devices_units.py:246
 msgid "Foot"
 msgstr "脚丫子"
 
-#: config_devices_units.py:245
+#: config_devices_units.py:249
 msgid "Full"
 msgstr "充分"
 
-#: config_devices_units.py:248
+#: config_devices_units.py:252
 msgid "G-Force"
 msgstr ""
 
-#: config_devices_units.py:251
+#: config_devices_units.py:255
 msgid "Gigabyte"
 msgstr "技嘉"
 
-#: config_devices_units.py:254
+#: config_devices_units.py:258
 msgid "Hour"
 msgstr ""
 
-#: config_devices_units.py:257
+#: config_devices_units.py:261
 msgid "Hertz"
 msgstr "赫兹"
 
-#: config_devices_units.py:260
+#: config_devices_units.py:264
 msgid "Infrared"
 msgstr "红外线"
 
-#: config_devices_units.py:263
+#: config_devices_units.py:267
 msgid "Kelvin"
 msgstr "开"
 
-#: config_devices_units.py:266
+#: config_devices_units.py:270
 msgid "Kilobyte"
 msgstr "千字节"
 
-#: config_devices_units.py:269
+#: config_devices_units.py:273
 msgid "Kilogram per kilogram"
 msgstr "公斤每公斤"
 
-#: config_devices_units.py:272
+#: config_devices_units.py:276
 msgid "Kilohertz"
 msgstr "千赫"
 
-#: config_devices_units.py:275
+#: config_devices_units.py:279
 msgid "Kilojoule per kilogram"
 msgstr "Kilojoule每公斤"
 
-#: config_devices_units.py:278
+#: config_devices_units.py:282
 msgid "Kilopascal"
 msgstr "千帕"
 
-#: config_devices_units.py:281
+#: config_devices_units.py:285
 msgid "Lux"
 msgstr "勒克司"
 
-#: config_devices_units.py:284
+#: config_devices_units.py:288
 msgid "Meter"
 msgstr "仪表"
 
-#: config_devices_units.py:287
+#: config_devices_units.py:291
 msgid "Milligram per Liter"
 msgstr ""
 
-#: config_devices_units.py:290
+#: config_devices_units.py:294
 msgid "Minute"
 msgstr "分钟"
 
-#: config_devices_units.py:293
+#: config_devices_units.py:297
 msgid "Milliliter"
 msgstr "毫升"
 
-#: config_devices_units.py:296
+#: config_devices_units.py:300
 msgid "Millivolt"
 msgstr ""
 
-#: config_devices_units.py:299
+#: config_devices_units.py:303
 msgid "Cubic meters per kilogram"
 msgstr "每公斤立方米"
 
-#: config_devices_units.py:302
+#: config_devices_units.py:306
 msgid "Megahertz"
 msgstr "兆赫"
 
-#: config_devices_units.py:305
+#: config_devices_units.py:309
 msgid "Megabyte"
 msgstr "兆字节"
 
-#: config_devices_units.py:311
+#: config_devices_units.py:315
 msgid "Pascal"
 msgstr "帕斯卡尔"
 
-#: config_devices_units.py:314
+#: config_devices_units.py:318
 msgid "Percent"
 msgstr "百分"
 
-#: config_devices_units.py:320
+#: config_devices_units.py:324
 msgid "PID values"
 msgstr "PID值"
 
-#: config_devices_units.py:323
+#: config_devices_units.py:327
 msgid "Parts per billion"
 msgstr "十亿分之一"
 
-#: config_devices_units.py:326
+#: config_devices_units.py:330
 msgid "Parts per million"
 msgstr "百万分之一"
 
-#: config_devices_units.py:329
+#: config_devices_units.py:333
 msgid "Pounds per square inch"
 msgstr ""
 
-#: config_devices_units.py:332
+#: config_devices_units.py:336
 msgid "Revolutions per minute"
 msgstr "每分钟转数"
 
-#: config_devices_units.py:335
+#: config_devices_units.py:339
 msgid "Second"
 msgstr "第二"
 
-#: config_devices_units.py:341
+#: config_devices_units.py:345
 msgid "Microgram per cubic meter"
 msgstr "每立方米的微克数"
 
-#: config_devices_units.py:344
+#: config_devices_units.py:348
 msgid "Volt"
 msgstr "伏特"
 
@@ -648,10 +651,10 @@ msgstr "校准"
 msgid "Calculate"
 msgstr ""
 
-#: config_translations.py:29 mycodo_flask/forms/forms_dashboard.py:188
+#: config_translations.py:29 mycodo_flask/forms/forms_dashboard.py:172
 #: mycodo_flask/templates/layout.html:210
 #: mycodo_flask/templates/pages/camera.html:5
-#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:10
+#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:9
 #: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:11
 #: mycodo_flask/templates/pages/function_options/action_options/video_email.html:11
 msgid "Camera"
@@ -743,9 +746,9 @@ msgid "Energy Usage"
 msgstr "能源使用"
 
 #: config_translations.py:67 mycodo_flask/templates/flash_messages.html:33
-#: mycodo_flask/templates/pages/dashboard.html:494
-#: mycodo_flask/templates/pages/dashboard.html:500
-#: mycodo_flask/templates/pages/dashboard.html:548
+#: mycodo_flask/templates/pages/dashboard.html:463
+#: mycodo_flask/templates/pages/dashboard.html:469
+#: mycodo_flask/templates/pages/dashboard.html:517
 msgid "Error"
 msgstr "错误"
 
@@ -858,11 +861,11 @@ msgstr "没有可用"
 msgid "Note"
 msgstr "注意"
 
-#: config_translations.py:109 mycodo_flask/templates/pages/dashboard.html:483
+#: config_translations.py:109 mycodo_flask/templates/pages/dashboard.html:452
 msgid "Off"
 msgstr "离"
 
-#: config_translations.py:111 mycodo_flask/templates/pages/dashboard.html:481
+#: config_translations.py:111 mycodo_flask/templates/pages/dashboard.html:450
 msgid "On"
 msgstr "上"
 
@@ -891,7 +894,7 @@ msgstr "密码"
 msgid "Pause"
 msgstr "暂停"
 
-#: config_translations.py:121 mycodo_flask/forms/forms_dashboard.py:167
+#: config_translations.py:121 mycodo_flask/forms/forms_dashboard.py:151
 #: mycodo_flask/templates/pages/dashboard_options/add_pid_control.html:10
 #: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:20
 #: mycodo_flask/templates/pages/function_options/action_options/pause_pid.html:11
@@ -1013,7 +1016,7 @@ msgid ""
 msgstr "调整增益以改变可测量的电压范围。有关详情，请参阅ADC文档。"
 
 #: config_translations.py:173 config_translations.py:321
-#: config_translations.py:324 mycodo_flask/forms/forms_calibration.py:64
+#: config_translations.py:324 mycodo_flask/forms/forms_calibration.py:83
 msgid "Resolution"
 msgstr "解析度"
 
@@ -1061,7 +1064,7 @@ msgstr "BT适配器"
 msgid "The Bluetooth adapter of the input"
 msgstr "输入的蓝牙适配器"
 
-#: config_translations.py:191 mycodo_flask/routes_calibration.py:463
+#: config_translations.py:191 mycodo_flask/routes_calibration.py:648
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "命令"
@@ -1588,11 +1591,11 @@ msgstr "前一次测量对当前测量的加权。范围：0.0  -  1.0。用于�
 msgid "Set the calibration method to perform during Input activation"
 msgstr "设置校准方法以在输入激活期间执行"
 
-#: inputs/atlas_do.py:71 inputs/atlas_orp.py:71 inputs/atlas_ph.py:80
+#: inputs/atlas_do.py:72 inputs/atlas_orp.py:72 inputs/atlas_ph.py:80
 msgid "Calibration Max Age"
 msgstr "校准最大年龄"
 
-#: inputs/atlas_do.py:72 inputs/atlas_orp.py:72 inputs/atlas_ph.py:81
+#: inputs/atlas_do.py:73 inputs/atlas_orp.py:73 inputs/atlas_ph.py:81
 msgid "The Max Age (seconds) of the Input/Math to use for calibration"
 msgstr "用于校准的输入/数学的最大年龄（秒）"
 
@@ -1772,47 +1775,43 @@ msgstr ""
 msgid "Please log in to access this page"
 msgstr "请登录访问此页"
 
-#: mycodo_flask/routes_admin.py:104
+#: mycodo_flask/routes_admin.py:106
 msgid "Backup in progress"
 msgstr "正在备份"
 
-#: mycodo_flask/routes_admin.py:123
+#: mycodo_flask/routes_admin.py:125
 msgid "Deletion of backup in progress"
 msgstr "删除正在进行的备份"
 
-#: mycodo_flask/routes_admin.py:133
+#: mycodo_flask/routes_admin.py:135
 msgid "Restore in progress"
 msgstr "正在恢复"
 
-#: mycodo_flask/routes_admin.py:374
+#: mycodo_flask/routes_admin.py:376
 msgid ""
 "Upgrade functionality is disabled because an internet connection was "
 "unable to be detected"
 msgstr "由于无法检测到Internet连接，因此禁用了升级功能"
 
-#: mycodo_flask/routes_admin.py:394
+#: mycodo_flask/routes_admin.py:396
 msgid ""
 "There was an error encountered during the upgrade process. Check the "
 "upgrade log for details."
 msgstr "升级过程中遇到错误。检查升级日志以获取详细信息。"
 
-#: mycodo_flask/routes_admin.py:413
-msgid "Could not determine local mycodo version or online release versions: {err}"
-msgstr "无法确定本地mycodo版本或在线发布版本：{err}"
-
-#: mycodo_flask/routes_admin.py:473
+#: mycodo_flask/routes_admin.py:481
 msgid "The upgrade (from master branch) has started"
 msgstr "升级（来自主分支）已启动"
 
-#: mycodo_flask/routes_admin.py:486
+#: mycodo_flask/routes_admin.py:499
 msgid "The upgrade has started"
 msgstr "升级已经开始"
 
-#: mycodo_flask/routes_admin.py:501
+#: mycodo_flask/routes_admin.py:519
 msgid "The major version upgrade has started"
 msgstr "主要版本升级已经开始"
 
-#: mycodo_flask/routes_admin.py:504
+#: mycodo_flask/routes_admin.py:522
 msgid "You cannot upgrade if an upgrade is not available"
 msgstr "如果升级不可用，则无法升级"
 
@@ -1865,7 +1864,7 @@ msgstr "登录尝试失败次数过多。请等待 %(min)s 分钟，然后再尝
 msgid "Successfully logged out"
 msgstr "成功退出"
 
-#: mycodo_flask/routes_calibration.py:302
+#: mycodo_flask/routes_calibration.py:483
 #, python-format
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "需要有效温度: %(temp)s 无效。"
@@ -1931,36 +1930,55 @@ msgid "Atlas EZO Pump"
 msgstr ""
 
 #: mycodo_flask/forms/forms_calibration.py:34
-#: mycodo_flask/forms/forms_calibration.py:55
+#: mycodo_flask/forms/forms_calibration.py:58
+#: mycodo_flask/forms/forms_calibration.py:74
 msgid "Begin Calibration"
 msgstr "开始校准"
 
 #: mycodo_flask/forms/forms_calibration.py:35
-#: mycodo_flask/forms/forms_calibration.py:51
+#: mycodo_flask/forms/forms_calibration.py:70
 msgid "Clear Calibration"
 msgstr "清除校准"
 
 #: mycodo_flask/forms/forms_calibration.py:40
 #: mycodo_flask/forms/forms_calibration.py:41
-#: mycodo_flask/forms/forms_calibration.py:56
-#: mycodo_flask/forms/forms_calibration.py:57
+#: mycodo_flask/forms/forms_calibration.py:59
+#: mycodo_flask/forms/forms_calibration.py:60
+#: mycodo_flask/forms/forms_calibration.py:75
+#: mycodo_flask/forms/forms_calibration.py:76
 msgid "Continue to Next Stage"
 msgstr "继续下一阶段"
 
-#: mycodo_flask/forms/forms_calibration.py:50
+#: mycodo_flask/forms/forms_calibration.py:54
+msgid "Atlas EC Sensor"
+msgstr ""
+
+#: mycodo_flask/forms/forms_calibration.py:55
+msgid "EC Points to Calibrate"
+msgstr ""
+
+#: mycodo_flask/forms/forms_calibration.py:56
+msgid "Low Solution (μS)"
+msgstr ""
+
+#: mycodo_flask/forms/forms_calibration.py:57
+msgid "High Solution (μS)"
+msgstr ""
+
+#: mycodo_flask/forms/forms_calibration.py:69
 msgid "Atlas pH Sensor"
 msgstr "Atlas pH传感器"
 
-#: mycodo_flask/forms/forms_calibration.py:54
+#: mycodo_flask/forms/forms_calibration.py:73
 msgid "pH Points to Calibrate"
 msgstr ""
 
-#: mycodo_flask/forms/forms_calibration.py:62
+#: mycodo_flask/forms/forms_calibration.py:81
 #: mycodo_flask/forms/forms_camera.py:24
 msgid "Device"
 msgstr "设备"
 
-#: mycodo_flask/forms/forms_calibration.py:65
+#: mycodo_flask/forms/forms_calibration.py:84
 msgid "Set Resolution"
 msgstr "设置分辨率"
 
@@ -2160,143 +2178,135 @@ msgid "GPIO Pin (BCM)"
 msgstr "GPIO引脚（BCM）"
 
 #: mycodo_flask/forms/forms_dashboard.py:35
-msgid "Width"
-msgstr "宽度"
-
-#: mycodo_flask/forms/forms_dashboard.py:43
-msgid "Height (pixels)"
-msgstr "高度（像素）"
-
-#: mycodo_flask/forms/forms_dashboard.py:51
 msgid "Refresh (seconds)"
 msgstr "刷新（秒）"
 
-#: mycodo_flask/forms/forms_dashboard.py:54
+#: mycodo_flask/forms/forms_dashboard.py:38
 msgid "Number of seconds to wait between acquiring any new measurements."
 msgstr "获取任何新测量值之间等待的秒数。"
 
-#: mycodo_flask/forms/forms_dashboard.py:59
+#: mycodo_flask/forms/forms_dashboard.py:43
 msgid "Visible Elements"
 msgstr "可见元素"
 
-#: mycodo_flask/forms/forms_dashboard.py:69
+#: mycodo_flask/forms/forms_dashboard.py:53
 msgid "Maths"
 msgstr "数学"
 
-#: mycodo_flask/forms/forms_dashboard.py:70
+#: mycodo_flask/forms/forms_dashboard.py:54
 msgid "Note Tags"
 msgstr "注意标签"
 
-#: mycodo_flask/forms/forms_dashboard.py:71
+#: mycodo_flask/forms/forms_dashboard.py:55
 msgid "PIDs"
 msgstr "的PID"
 
-#: mycodo_flask/forms/forms_dashboard.py:72
+#: mycodo_flask/forms/forms_dashboard.py:56
 msgid "Outputs"
 msgstr "输出"
 
-#: mycodo_flask/forms/forms_dashboard.py:73 mycodo_flask/forms/forms_math.py:49
+#: mycodo_flask/forms/forms_dashboard.py:57 mycodo_flask/forms/forms_math.py:49
 #: mycodo_flask/templates/layout-settings.html:35
 msgid "Inputs"
 msgstr "输入"
 
-#: mycodo_flask/forms/forms_dashboard.py:75
+#: mycodo_flask/forms/forms_dashboard.py:59
 msgid "X-Axis (minutes)"
 msgstr "X轴（分钟）"
 
-#: mycodo_flask/forms/forms_dashboard.py:78
+#: mycodo_flask/forms/forms_dashboard.py:62
 msgid "Number of minutes to display of past measurements."
 msgstr "显示过去测量的分钟数。"
 
-#: mycodo_flask/forms/forms_dashboard.py:83
+#: mycodo_flask/forms/forms_dashboard.py:67
 msgid "Enable Auto Refresh"
 msgstr "启用自动刷新"
 
-#: mycodo_flask/forms/forms_dashboard.py:84
+#: mycodo_flask/forms/forms_dashboard.py:68
 msgid "Enable X-Axis Reset"
 msgstr "启用X轴重置"
 
-#: mycodo_flask/forms/forms_dashboard.py:85
+#: mycodo_flask/forms/forms_dashboard.py:69
 msgid "Enable Title"
 msgstr "启用标题"
 
-#: mycodo_flask/forms/forms_dashboard.py:86
+#: mycodo_flask/forms/forms_dashboard.py:70
 msgid "Enable Navbar"
 msgstr "启用Navbar"
 
-#: mycodo_flask/forms/forms_dashboard.py:87
+#: mycodo_flask/forms/forms_dashboard.py:71
 msgid "Enable Export"
 msgstr "启用导出"
 
-#: mycodo_flask/forms/forms_dashboard.py:88
+#: mycodo_flask/forms/forms_dashboard.py:72
 msgid "Enable Range Selector"
 msgstr "启用范围选择器"
 
-#: mycodo_flask/forms/forms_dashboard.py:89
+#: mycodo_flask/forms/forms_dashboard.py:73
 msgid "Enable Graph Shift"
 msgstr "启用图表移位"
 
-#: mycodo_flask/forms/forms_dashboard.py:90
+#: mycodo_flask/forms/forms_dashboard.py:74
 msgid "Enable Manual Y-Axis Min/Max"
 msgstr "启用手动Y轴最小/最大"
 
-#: mycodo_flask/forms/forms_dashboard.py:91
+#: mycodo_flask/forms/forms_dashboard.py:75
 msgid "Enable Y-Axis Align Ticks"
 msgstr "启用Y轴对齐刻度"
 
-#: mycodo_flask/forms/forms_dashboard.py:92
+#: mycodo_flask/forms/forms_dashboard.py:76
 msgid "Enable Y-Axis Start On Tick"
 msgstr "启用Y轴启动勾选"
 
-#: mycodo_flask/forms/forms_dashboard.py:93
+#: mycodo_flask/forms/forms_dashboard.py:77
 msgid "Enable Y-Axis End On Tick"
 msgstr "在刻度线上启用Y轴结束"
 
-#: mycodo_flask/forms/forms_dashboard.py:94
+#: mycodo_flask/forms/forms_dashboard.py:78
 msgid "Enable Custom Colors"
 msgstr "启用自定义颜色"
 
-#: mycodo_flask/forms/forms_dashboard.py:99
+#: mycodo_flask/forms/forms_dashboard.py:83
 msgid "Gauge Type"
 msgstr "仪表类型"
 
-#: mycodo_flask/forms/forms_dashboard.py:101
+#: mycodo_flask/forms/forms_dashboard.py:85
 msgid "Angular Gauge"
 msgstr "角度计"
 
-#: mycodo_flask/forms/forms_dashboard.py:102
+#: mycodo_flask/forms/forms_dashboard.py:86
 msgid "Solid Gauge"
 msgstr "实心仪​​表"
 
-#: mycodo_flask/forms/forms_dashboard.py:108
+#: mycodo_flask/forms/forms_dashboard.py:92
 msgid "Gauge Min"
 msgstr "Gauge Min"
 
-#: mycodo_flask/forms/forms_dashboard.py:111
+#: mycodo_flask/forms/forms_dashboard.py:95
 msgid "Gauge Max"
 msgstr "Gauge Max"
 
-#: mycodo_flask/forms/forms_dashboard.py:116
+#: mycodo_flask/forms/forms_dashboard.py:100
 msgid "Show Timestamp"
 msgstr "显示时间戳"
 
-#: mycodo_flask/forms/forms_dashboard.py:125
+#: mycodo_flask/forms/forms_dashboard.py:109
+#: mycodo_flask/forms/forms_dashboard.py:123
 #: mycodo_flask/forms/forms_dashboard.py:139
-#: mycodo_flask/forms/forms_dashboard.py:155
-#: mycodo_flask/forms/forms_dashboard.py:172
+#: mycodo_flask/forms/forms_dashboard.py:156
 msgid "Value Font (em)"
 msgstr "值字体（em）"
 
-#: mycodo_flask/forms/forms_dashboard.py:128
+#: mycodo_flask/forms/forms_dashboard.py:112
+#: mycodo_flask/forms/forms_dashboard.py:126
 #: mycodo_flask/forms/forms_dashboard.py:142
-#: mycodo_flask/forms/forms_dashboard.py:158
-#: mycodo_flask/forms/forms_dashboard.py:175
+#: mycodo_flask/forms/forms_dashboard.py:159
 msgid "Timestamp Font (em)"
 msgstr "时间戳字体（em）"
 
+#: mycodo_flask/forms/forms_dashboard.py:129
 #: mycodo_flask/forms/forms_dashboard.py:145
-#: mycodo_flask/forms/forms_dashboard.py:161
-#: mycodo_flask/forms/forms_dashboard.py:181 mycodo_flask/forms/forms_lcd.py:90
+#: mycodo_flask/forms/forms_dashboard.py:165 mycodo_flask/forms/forms_lcd.py:90
 #: mycodo_flask/forms/forms_lcd.py:105 mycodo_flask/forms/forms_lcd.py:120
 #: mycodo_flask/forms/forms_lcd.py:135 mycodo_flask/forms/forms_lcd.py:150
 #: mycodo_flask/forms/forms_lcd.py:165 mycodo_flask/forms/forms_lcd.py:180
@@ -2304,19 +2314,19 @@ msgstr "时间戳字体（em）"
 msgid "Decimal Places"
 msgstr "小数位"
 
-#: mycodo_flask/forms/forms_dashboard.py:163
+#: mycodo_flask/forms/forms_dashboard.py:147
 msgid "Feature Output Controls"
 msgstr "功能输出控件"
 
-#: mycodo_flask/forms/forms_dashboard.py:183
+#: mycodo_flask/forms/forms_dashboard.py:167
 msgid "Show PID Information"
 msgstr "显示PID信息"
 
-#: mycodo_flask/forms/forms_dashboard.py:184
+#: mycodo_flask/forms/forms_dashboard.py:168
 msgid "Show Set Setpoint"
 msgstr "显示设定值"
 
-#: mycodo_flask/forms/forms_dashboard.py:189
+#: mycodo_flask/forms/forms_dashboard.py:173
 msgid "Image Display Type"
 msgstr "图像显示类型"
 
@@ -2512,8 +2522,8 @@ msgid "Relay State"
 msgstr "继电器状态"
 
 #: mycodo_flask/forms/forms_method.py:98 mycodo_flask/forms/forms_output.py:99
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:104
-#: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:60
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:112
+#: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:68
 #: mycodo_flask/templates/pages/method-build.html:294
 #: mycodo_flask/templates/pages/output.html:258
 #: mycodo_flask/templates/pages/output.html:294
@@ -3349,7 +3359,7 @@ msgid "Cannot Check Daemon Status"
 msgstr "无法检查守护程序状态"
 
 #: mycodo_flask/templates/layout.html:124
-#: mycodo_flask/templates/pages/dashboard.html:399
+#: mycodo_flask/templates/pages/dashboard.html:368
 #: mycodo_flask/templates/pages/output.html:127
 msgid "No Connection"
 msgstr "无连接"
@@ -3367,6 +3377,7 @@ msgstr "异步"
 
 #: mycodo_flask/templates/layout.html:203
 #: mycodo_flask/templates/tools/calibration.html:3
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:3
 #: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:3
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:3
 #: mycodo_flask/templates/tools/calibration_options/ds_resolution.html:3
@@ -3390,6 +3401,14 @@ msgstr "帮帮我"
 #: mycodo_flask/templates/layout.html:228
 msgid "Mycodo Manual"
 msgstr "Mycodo手册"
+
+#: mycodo_flask/templates/layout.html:229
+msgid "Mycodo API Info"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:230
+msgid "Mycodo API Docs"
+msgstr ""
 
 #: mycodo_flask/templates/layout.html:232
 msgid "Discussion Forum"
@@ -3502,17 +3521,17 @@ msgstr "可能会禁用Mycodo功能使用的几个软件依赖项。这样做是
 msgid "Collected Statistics"
 msgstr "收集的统计数据"
 
-#: mycodo_flask/templates/admin/upgrade.html:74
+#: mycodo_flask/templates/admin/upgrade.html:45
 msgid "Mycodo is currently in the process of an upgrade"
 msgstr "Mycodo目前正在升级"
 
-#: mycodo_flask/templates/admin/upgrade.html:75
+#: mycodo_flask/templates/admin/upgrade.html:46
 msgid ""
 "If an upgrade is not currently in progress, you may delete the "
 "~/Mycodo/.upgrade file to be able to reinitiate the upgrade process."
 msgstr "如果当前未进行升级，则可以删除〜/ Mycodo / .upgrade文件以重新启动升级过程。"
 
-#: mycodo_flask/templates/admin/upgrade.html:76
+#: mycodo_flask/templates/admin/upgrade.html:47
 msgid ""
 "An upgrade often takes several minutes, and in some cases longer, to "
 "complete. Give the process ample time to run before doing anything. When "
@@ -3522,42 +3541,40 @@ msgid ""
 "attempt to restart the backend before creating a new github issue."
 msgstr "升级通常需要几分钟，在某些情况下需要更长时间才能完成。在做任何事情之前给这个过程充足的时间来运行。升级成功完成后，左上角的守护程序状态指示器将从红色变为绿色。某些驱动程序需要重新启动后端才能使它们变为活动状态。如果遇到erorr，请在创建新的github问题之前尝试重新启动后端。"
 
-#: mycodo_flask/templates/admin/upgrade.html:77
+#: mycodo_flask/templates/admin/upgrade.html:48
 msgid ""
 "You can monitor the upgrade progress with the live log view, below, by "
 "navigating to Configure -> Mycodo Logs -> Upgrade Log, or by opening "
-"/var/log/mycodo/mycodoupgrade.log. Below are the last 40 lines of the "
-"upgrade log, updated every 5 seconds. If an error occurs, it is advisable"
-" to inspect the entire log in order to diagnose the issue."
+"/var/log/mycodo/mycodoupgrade.log. Below is the upgrade log, updated "
+"every 5 seconds. If an error occurs, it is advisable to inspect the "
+"entire log in order to diagnose the issue."
 msgstr ""
-"您可以使用下面的实时日志视图，通过导航到Configure  - > Mycodo Logs  - > Upgrade "
-"Log，或打开/var/log/mycodo/mycodoupgrade.log来监控升级进度。以下是升级日志的最后40行，每5秒更新一次。如果发生错误，建议检查整个日志以诊断问题。"
 
-#: mycodo_flask/templates/admin/upgrade.html:84
+#: mycodo_flask/templates/admin/upgrade.html:85
 msgid "There was an error that occurred during the upgrade"
 msgstr "升级期间发生错误"
 
-#: mycodo_flask/templates/admin/upgrade.html:85
+#: mycodo_flask/templates/admin/upgrade.html:86
 msgid "View the upgrade log at /var/log/mycodo/mycodoupgrade.log."
 msgstr "在/var/log/mycodo/mycodoupgrade.log中查看升级日志。"
 
-#: mycodo_flask/templates/admin/upgrade.html:86
+#: mycodo_flask/templates/admin/upgrade.html:87
 msgid ""
 "Delete ~/Mycodo/.upgrade to acknowledge this message and restore upgrade "
 "functionality."
 msgstr "删除〜/ Mycodo / .upgrade以确认此消息并恢复升级功能。"
 
-#: mycodo_flask/templates/admin/upgrade.html:112
+#: mycodo_flask/templates/admin/upgrade.html:113
 msgid ""
 "No internet connection detected. To upgrade Mycodo automatically, you "
 "will need an internet connection. Refresh the page when one is connected."
 msgstr "未检测到互联网连接。要自动升级Mycodo，您需要连接互联网。连接一个页面时刷新页面。"
 
-#: mycodo_flask/templates/admin/upgrade.html:118
+#: mycodo_flask/templates/admin/upgrade.html:119
 msgid "No upgrade is available. You are running the latest release, version"
 msgstr "没有升级可用。您正在运行最新版本的版本"
 
-#: mycodo_flask/templates/admin/upgrade.html:132
+#: mycodo_flask/templates/admin/upgrade.html:133
 msgid ""
 "Click the button below to begin the upgrade process. Note: An upgrade "
 "often takes several minutes, and in rare cases hours, to complete. During"
@@ -3570,15 +3587,15 @@ msgstr ""
 "单击下面的按钮开始升级过程。注意：升级通常需要几分钟，在极少数情况下需要几小时才能完成。在此期间，Mycodo "
 "Web界面和服务器记录传感器和操作输出（以及其他服务）将完全关闭。建议不要在生产计算机上执行升级（即信任购买验证：将新版本视为不稳定，直到您验证其按预期工作为止）。"
 
-#: mycodo_flask/templates/admin/upgrade.html:151
+#: mycodo_flask/templates/admin/upgrade.html:152
 msgid "Current to latest versions"
 msgstr "当前到最新版本"
 
-#: mycodo_flask/templates/admin/upgrade.html:159
+#: mycodo_flask/templates/admin/upgrade.html:160
 msgid "current"
 msgstr "当前"
 
-#: mycodo_flask/templates/admin/upgrade.html:159
+#: mycodo_flask/templates/admin/upgrade.html:160
 msgid "latest"
 msgstr "最新"
 
@@ -3655,8 +3672,8 @@ msgstr "最后一次游戏中"
 msgid "Last Still"
 msgstr "最后还是"
 
-#: mycodo_flask/templates/pages/dashboard.html:386
-#: mycodo_flask/templates/pages/dashboard.html:388
+#: mycodo_flask/templates/pages/dashboard.html:355
+#: mycodo_flask/templates/pages/dashboard.html:357
 #: mycodo_flask/templates/pages/function_options/conditional.html:23
 #: mycodo_flask/templates/pages/function_options/custom_controller.html:25
 #: mycodo_flask/templates/pages/function_options/pid.html:26
@@ -3667,7 +3684,7 @@ msgstr "最后还是"
 msgid "Active"
 msgstr "活性"
 
-#: mycodo_flask/templates/pages/dashboard.html:393
+#: mycodo_flask/templates/pages/dashboard.html:362
 #: mycodo_flask/templates/pages/function_options/conditional.html:24
 #: mycodo_flask/templates/pages/function_options/custom_controller.html:26
 #: mycodo_flask/templates/pages/function_options/pid.html:29
@@ -3677,7 +3694,7 @@ msgstr "活性"
 msgid "Inactive"
 msgstr "待用"
 
-#: mycodo_flask/templates/pages/dashboard.html:529
+#: mycodo_flask/templates/pages/dashboard.html:498
 msgid "Value"
 msgstr "值"
 
@@ -3699,8 +3716,8 @@ msgstr ""
 msgid "Asynchronous Graph"
 msgstr "异步图"
 
-#: mycodo_flask/templates/pages/dashboard_options/add_graph.html:133
-#: mycodo_flask/templates/pages/dashboard_options/mod_graph.html:180
+#: mycodo_flask/templates/pages/dashboard_options/add_graph.html:107
+#: mycodo_flask/templates/pages/dashboard_options/mod_graph.html:173
 #: mycodo_flask/templates/pages/data_options/math_options/form_options/inputs.html:21
 #: mycodo_flask/templates/pages/graph-async.html:93
 #: mycodo_flask/templates/tools/note_edit.html:18
@@ -3794,6 +3811,7 @@ msgstr "时间戳"
 
 #: mycodo_flask/templates/pages/live.html:126
 #: mycodo_flask/templates/pages/live.html:175
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:29
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:29
 msgid "Please wait"
 msgstr "请稍候"
@@ -3928,56 +3946,56 @@ msgid ""
 " a report to be generated."
 msgstr ""
 
-#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:64
-#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:47
+#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:46
+#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:55
 msgid "Acquire Image (and save new file)"
 msgstr "获取图像（并保存新文件）"
 
-#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:65
-#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:48
+#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:47
+#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:56
 msgid "Acquire Image (and erase last file)"
 msgstr "获取图像（并删除最后一个文件）"
 
-#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:66
-#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:49
+#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:48
+#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:57
 msgid "Display Live Video Stream"
 msgstr "显示实时视频流"
 
-#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:67
-#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:50
+#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:49
+#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:58
 msgid "Display Latest Timelapse Image"
 msgstr "显示最新的间隔拍摄图像"
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_graph.html:185
+#: mycodo_flask/templates/pages/dashboard_options/mod_graph.html:178
 msgid "Series Options"
 msgstr ""
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_graph.html:232
+#: mycodo_flask/templates/pages/dashboard_options/mod_graph.html:225
 msgid "Y-Axis Options"
 msgstr ""
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:52
-#: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:38
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:55
+#: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:41
 msgid "PWM On"
 msgstr "PWM开"
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:64
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:118
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:67
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:126
 msgid "Out"
 msgstr ""
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:67
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:121
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:70
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:129
 msgid "Sec On"
 msgstr "Sec On"
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:59
-#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:89
+#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:62
+#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:97
 msgid "A numerical value to set the PID setpoint"
 msgstr "用于设置PID设定值的数值"
 
 #: mycodo_flask/templates/pages/data_options/input.html:141
-#: mycodo_flask/templates/pages/data_options/math.html:134
+#: mycodo_flask/templates/pages/data_options/math.html:132
 #: mycodo_flask/templates/settings/measurement.html:4
 #: mycodo_flask/templates/settings/measurement.html:6
 #: mycodo_flask/templates/settings/measurement.html:11
@@ -5039,6 +5057,131 @@ msgstr "搜索"
 msgid "Found"
 msgstr "发现"
 
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:13
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:16
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:29
+msgid "Latest EC measurement"
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:13
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:13
+msgid "Error acquiring measurement"
+msgstr "获取测量时出错"
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:43
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:43
+msgid "Please wait for the sensor measurements to equilibrate"
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:43
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:43
+msgid "seconds"
+msgstr "秒"
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:76
+msgid ""
+"This guide will walk you through the calibration procedure for the Atlas "
+"Scientific EC Sensor. To complete this procedure, you will need at least "
+"one standard EC solution. Instructions will be provided at each step."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:78
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:76
+msgid ""
+"To begin calibration, have your probe properly connected to Mycodo, "
+"select the probe from the dropdown list, and click Begin Calibration."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:80
+msgid ""
+"NOTE: It is recommended to deactivate the EC Sensor Input prior to "
+"performing a calibration."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:98
+msgid "One Point (low)"
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:99
+msgid "Two Point (low and high)"
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:111
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:150
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:178
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:214
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:246
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:51
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:75
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:119
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:145
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:177
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:209
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:240
+msgid "Calibration Failed"
+msgstr "校准失败"
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:112
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:151
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:179
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:215
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:253
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:52
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:82
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:120
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:146
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:178
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:210
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:247
+msgid "Refer to the logs for details"
+msgstr "有关详细信息，请参阅日志"
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:116
+msgid ""
+"Enter the μS value(s) for the solution(s) you will be calibrating with, "
+"then click Continue."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:155
+msgid ""
+"Remove the EC probe from solution so the probe is exposed to the air (dry"
+" calibration), then click Continue To Next Stage"
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:183
+msgid ""
+"Rinse the EC probe with distilled water, place it into the Low EC "
+"solution, shake the probe to remove trapped air, then click Ready. Ensure"
+" the measurements have stabilized before clicking Continue to Next Stage."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:203
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:236
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:166
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:198
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:230
+msgid "Ready"
+msgstr "准备"
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:219
+msgid ""
+"Rinse the EC probe with distilled water, place it into the High EC "
+"solution, shake the probe to remove trapped air, then click Ready. Ensure"
+" the measurements have stabilized before clicking Continue to Next Stage."
+msgstr ""
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:246
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:75
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:240
+msgid "Calibration Succeeded"
+msgstr "校准成功"
+
+#: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:255
+#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:84
+#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:249
+msgid "Calibration Complete"
+msgstr "校准完成"
+
 #: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:14
 msgid ""
 "This guide will walk you through the calibration procedure for the Atlas "
@@ -5067,41 +5210,11 @@ msgid ""
 "the pump so it doesn't interfere with the calibration."
 msgstr ""
 
-#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:51
-#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:75
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:119
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:145
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:177
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:209
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:240
-msgid "Calibration Failed"
-msgstr "校准失败"
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:52
-#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:82
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:120
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:146
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:178
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:210
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:247
-msgid "Refer to the logs for details"
-msgstr "有关详细信息，请参阅日志"
-
 #: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:56
 msgid ""
 "Measure how much fluid (ml) was actually dispensed from the pump, enter "
 "that value in the input field, then click Continue."
 msgstr ""
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:75
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:240
-msgid "Calibration Succeeded"
-msgstr "校准成功"
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:84
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:249
-msgid "Calibration Complete"
-msgstr "校准完成"
 
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:13
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:16
@@ -5109,30 +5222,12 @@ msgstr "校准完成"
 msgid "Latest pH measurement"
 msgstr "最新的pH测量"
 
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:13
-msgid "Error acquiring measurement"
-msgstr "获取测量时出错"
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:43
-msgid "Please wait for the sensor measurements to equilibrate"
-msgstr ""
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:43
-msgid "seconds"
-msgstr "秒"
-
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:74
 msgid ""
 "This guide will walk you through the calibration procedure for the Atlas "
 "Scientific pH Sensor. To complete this procedure, you will need at least "
 "one of the standard pH solutions (pH 4.0, pH 7.0, and pH 10.0). "
 "Instructions will be provided at each step."
-msgstr ""
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:76
-msgid ""
-"To begin calibration, have your probe properly connected to Mycodo, "
-"select the probe from the dropdown list, and click Begin Calibration."
 msgstr ""
 
 #: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:80
@@ -5155,12 +5250,6 @@ msgid ""
 "Rinse the pH probe with distilled water, place it into the pH %(ph)s "
 "solution, then click Ready"
 msgstr ""
-
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:166
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:198
-#: mycodo_flask/templates/tools/calibration_options/atlas_ph.html:230
-msgid "Ready"
-msgstr "准备"
 
 #: mycodo_flask/templates/tools/calibration_options/ds_resolution.html:23
 msgid "Select a DS18B20 sensor"
@@ -5189,7 +5278,7 @@ msgstr "条件"
 msgid "Deactivate controller before modifying its settings"
 msgstr "在修改其设置之前停用控制器"
 
-#: mycodo_flask/utils/utils_dashboard.py:208
+#: mycodo_flask/utils/utils_dashboard.py:211
 #, python-format
 msgid "{dev} with ID %(id)s successfully added"
 msgstr "已成功添加ID为 %(id)s 的{dev}"
@@ -5207,16 +5296,16 @@ msgstr "执行全部"
 msgid "Error: %(err)s"
 msgstr "错误: %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:800
-#: mycodo_flask/utils/utils_general.py:815
-#: mycodo_flask/utils/utils_general.py:835
-#: mycodo_flask/utils/utils_general.py:840 mycodo_flask/utils/utils_lcd.py:225
+#: mycodo_flask/utils/utils_general.py:819
+#: mycodo_flask/utils/utils_general.py:834
+#: mycodo_flask/utils/utils_general.py:854
+#: mycodo_flask/utils/utils_general.py:859 mycodo_flask/utils/utils_lcd.py:225
 #: mycodo_flask/utils/utils_lcd.py:227
 #, python-format
 msgid "%(msg)s"
 msgstr "%(msg)s"
 
-#: mycodo_flask/utils/utils_general.py:807
+#: mycodo_flask/utils/utils_general.py:826
 #: mycodo_flask/utils/utils_output.py:328
 #: mycodo_flask/utils/utils_output.py:335
 #: mycodo_flask/utils/utils_output.py:340
@@ -5224,21 +5313,21 @@ msgstr "%(msg)s"
 msgid "%(err)s"
 msgstr "%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:808
+#: mycodo_flask/utils/utils_general.py:827
 #, python-format
 msgid "Entry with ID %(id)s not found"
 msgstr "未找到ID为 %(id)s 的条目"
 
-#: mycodo_flask/utils/utils_general.py:826
+#: mycodo_flask/utils/utils_general.py:845
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "%(field)s 字段中的错误 - %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:874
+#: mycodo_flask/utils/utils_general.py:893
 msgid "Cannot move above the first item in the list"
 msgstr "无法移动到列表中的第一个项目之上"
 
-#: mycodo_flask/utils/utils_general.py:878
+#: mycodo_flask/utils/utils_general.py:897
 msgid "Cannot move below the last item in the list"
 msgstr "无法移动到列表中的最后一项之下"
 
@@ -5731,4 +5820,34 @@ msgstr ""
 #~ " trigger to wait before beggining "
 #~ "monitoring again"
 #~ msgstr "条件触发器在再次开始监视之前等待的最短持续时间"
+
+#~ msgid "Add Dashboard Element"
+#~ msgstr "添加仪表板元素"
+
+#~ msgid ""
+#~ "Could not determine local mycodo version"
+#~ " or online release versions: {err}"
+#~ msgstr "无法确定本地mycodo版本或在线发布版本：{err}"
+
+#~ msgid "Width"
+#~ msgstr "宽度"
+
+#~ msgid "Height (pixels)"
+#~ msgstr "高度（像素）"
+
+#~ msgid ""
+#~ "You can monitor the upgrade progress "
+#~ "with the live log view, below, by"
+#~ " navigating to Configure -> Mycodo "
+#~ "Logs -> Upgrade Log, or by opening"
+#~ " /var/log/mycodo/mycodoupgrade.log. Below are the"
+#~ " last 40 lines of the upgrade "
+#~ "log, updated every 5 seconds. If "
+#~ "an error occurs, it is advisable "
+#~ "to inspect the entire log in order"
+#~ " to diagnose the issue."
+#~ msgstr ""
+#~ "您可以使用下面的实时日志视图，通过导航到Configure  - > Mycodo Logs"
+#~ "  - > Upgrade "
+#~ "Log，或打开/var/log/mycodo/mycodoupgrade.log来监控升级进度。以下是升级日志的最后40行，每5秒更新一次。如果发生错误，建议检查整个日志以诊断问题。"
 
