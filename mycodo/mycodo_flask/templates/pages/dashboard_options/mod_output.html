@@ -1,9 +1,12 @@
-<div style="padding-right: 0.2em;">
-  <div class="text-right align-items-center">
-    (<span id="text-output-state-{{chart_number}}"></span>) <span style="padding-right: 0.5em">{{each_dashboard.name}} [{{'%02d' % each_dashboard.id}}]</span>
-    <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
-      <span class="collapse-button fa fa-2x fa-plus-square"></span>
-    </a>
+<div class="d-flex justify-content-between panel-heading" style="flex: 0 1 auto;">
+  <div class="my-auto" style="padding-left: 0.4em">
+    <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="Drag"></i>
+  </div>
+  <div class="my-auto">
+    (<span id="text-output-state-{{chart_number}}"></span>) <span style="padding-right: 0.5em">{{each_dashboard.name}}</span>
+    <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
+      <i style="font-size: 1.5em" class="fas fa-cog"></i>
+    </button>
   </div>
 </div>
 
@@ -20,7 +23,7 @@
   {% endif %}
 {% endfor %}
 
-<div class="pause-background" id="container-output-{{chart_number}}" style="height: {{each_dashboard.height}}px; text-align: center">
+<div class="pause-background" id="container-output-{{chart_number}}" style="height: 100%; text-align: center">
   <span style="font-size: {{each_dashboard.font_em_value}}em" id="value-{{chart_number}}"></span>
 {%- if dict_measure_units[measurement_id] in dict_units and
        dict_units[dict_measure_units[measurement_id]]['unit'] -%}
@@ -34,13 +37,13 @@
     {% if not is_pwm and not is_ezo_pump -%}
 
     <div class="col-auto">
-      <input class="btn btn-sm turn_on" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
+      <input class="btn btn-sm btn-primary turn_on" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
     </div>
 
     {%- endif %}
 
     <div class="col-auto">
-      <input class="btn btn-sm turn_off" id="turn_off" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
+      <input class="btn btn-sm btn-primary turn_off" id="turn_off" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
     </div>
 
     {% if is_pwm %}
@@ -49,7 +52,7 @@
       <input class="form-control-sm" id="duty_cycle_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{chart_number}}?{{each_dashboard.output_ids.split(',')[0]}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
     </div>
     <div class="col-auto">
-      <input class="btn btn-sm duty_cycle_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('PWM On')}}">
+      <input class="btn btn-sm btn-primary duty_cycle_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('PWM On')}}">
     </div>
 
     {% else %}
@@ -61,10 +64,10 @@
     {% if is_ezo_pump %}
       {%- if dict_measure_units[measurement_id] in dict_units and
              dict_units[dict_measure_units[measurement_id]]['name'] -%}
-      <input class="btn btn-sm output_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{dict_units[dict_measure_units[measurement_id]]['name'] + ' ' + _('Out')}}">
+      <input class="btn btn-sm btn-primary output_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{dict_units[dict_measure_units[measurement_id]]['name'] + ' ' + _('Out')}}">
       {% endif %}
     {% else %}
-      <input class="btn btn-sm output_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Sec On')}}">
+      <input class="btn btn-sm btn-primary output_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Sec On')}}">
     {% endif %}
     </div>
 
@@ -76,150 +79,156 @@
 
 </div>
 
-<div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
-
-  {% if not each_dashboard.enable_output_controls %}
-
-    <div class="form-row">
-      {% if not is_pwm and not is_ezo_pump -%}
-
-      <div class="col-auto">
-        <input class="form-control btn btn-sm turn_on" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
+<div class="modal fade" id="modal_config_{{chart_number}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="padding: 1em">
+      <div class="modal-header">
+        <h5 class="modal-title">Output Widget Configuration</h5>
       </div>
 
-      {%- endif %}
+      {% if not each_dashboard.enable_output_controls %}
 
-      <div class="col-auto">
-        <input class="form-control btn btn-sm turn_off" id="turn_off" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
-      </div>
-    </div>
+        <div class="form-row">
+          {% if not is_pwm and not is_ezo_pump -%}
 
-    {% if is_pwm %}
+          <div class="col-auto">
+            <input class="form-control btn btn-sm btn-primary turn_on" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
+          </div>
 
-    <div class="form-row">
-      <div class="col-auto">
-        <input class="form-control" id="duty_cycle_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
-      </div>
-      <div class="col-auto">
-        <input class="form-control btn btn-sm duty_cycle_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('Turn On')}}">
-      </div>
-    </div>
+          {%- endif %}
 
-    {% else %}
-
-    <div class="form-row">
-      <div class="col-auto">
-        <input class="form-control" id="sec_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" name="sec_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" title="Turn this output on for this value (seconds, ml, etc.)" type="number" step="any" value="">
-      </div>
-      <div class="col-auto">
-      {% if is_ezo_pump %}
-        {%- if dict_measure_units[measurement_id] in dict_units and
-               dict_units[dict_measure_units[measurement_id]]['name'] -%}
-        <input class="btn btn-sm output_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{dict_units[dict_measure_units[measurement_id]]['name'] + ' ' + _('Out')}}">
-        {% endif %}
-      {% else %}
-        <input class="btn btn-sm output_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Sec On')}}">
-      {% endif %}
-      </div>
-    </div>
-
-    {% endif %}
-
-  {% endif %}
-
-  <form method="post" action="/dashboard">
-    {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
-    <input type="hidden" name="dashboard_type" value="output">
-
-    <div class="form-row">
-      <div class="col-auto">
-        {{form_base.name.label(class_='control-label')}}
-        <div>
-          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': dict_translation['name']['phrase']})}}
+          <div class="col-auto">
+            <input class="form-control btn btn-sm btn-primary turn_off" id="turn_off" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
+          </div>
         </div>
-      </div>
-      <div class="col-auto">
-        {{form_output.output_id.label(class_='control-label')}}
-        <div>
-          <select class="form-control" id="output_id" name="output_id" style="width: 100%;">
-          {% if choices_output %}
-            <option value="">{{dict_translation['select_one']['title']}}</option>
-            {% for each_output_form in choices_output -%}
-              <option value="{{each_output_form['value']}}" {% if each_dashboard.output_ids == each_output_form['value'] %}selected{% endif %}>{{each_output_form['item']}}</option>
-            {% endfor -%}
+
+        {% if is_pwm %}
+
+        <div class="form-row">
+          <div class="col-auto">
+            <input class="form-control" id="duty_cycle_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" name="duty_cycle_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" title="Select the duty cycle for the PWM when turned on (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
+          </div>
+          <div class="col-auto">
+            <input class="form-control btn btn-sm btn-primary duty_cycle_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/pwm/" type="button" value="{{_('Turn On')}}">
+          </div>
+        </div>
+
+        {% else %}
+
+        <div class="form-row">
+          <div class="col-auto">
+            <input class="form-control" id="sec_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" name="sec_on_amt_{{chart_number}}_{{each_dashboard.output_ids.split(',')[0]}}" title="Turn this output on for this value (seconds, ml, etc.)" type="number" step="any" value="">
+          </div>
+          <div class="col-auto">
+          {% if is_ezo_pump %}
+            {%- if dict_measure_units[measurement_id] in dict_units and
+                   dict_units[dict_measure_units[measurement_id]]['name'] -%}
+            <input class="btn btn-sm btn-primary output_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{dict_units[dict_measure_units[measurement_id]]['name'] + ' ' + _('Out')}}">
+            {% endif %}
           {% else %}
-            <option value="">{{dict_translation['none_available']['title']}}</option>
+            <input class="btn btn-sm btn-primary output_on_amt" id="turn_on" name="{{chart_number}}/{{each_dashboard.output_ids.split(',')[0]}}/on/sec/" type="button" value="{{_('Sec On')}}">
           {% endif %}
-          </select>
+          </div>
         </div>
-      </div>
-      <div class="col-auto">
-        {{form_base.width.label(class_='control-label')}}
-        <div>
-          <select class="form-control" id="width" name="width">
-            {% for n in range(1, 13) %}
-              <option value="{{n}}"{% if n == each_dashboard.width %} selected{% endif %}>{{n}}/12</option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_base.height.label(class_='control-label')}}
-        <div>
-          {{form_base.height(class_='form-control', value=each_dashboard.height)}}
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_output.max_measure_age.label(class_='control-label')}}
-        <div>
-          {{form_output.max_measure_age(class_='form-control', value=each_dashboard.max_measure_age)}}
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_base.refresh_duration.label(class_='control-label')}}
-        <div>
-          {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_output.font_em_value.label(class_='control-label')}}
-        <div>
-          {{form_output.font_em_value(class_='form-control', value=each_dashboard.font_em_value)}}
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_output.font_em_timestamp.label(class_='control-label')}}
-        <div>
-          {{form_output.font_em_timestamp(class_='form-control', value=each_dashboard.font_em_timestamp)}}
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_output.decimal_places.label(class_='control-label')}}
-        <div>
-          {{form_output.decimal_places(class_='form-control', value=each_dashboard.decimal_places)}}
-        </div>
-      </div>
-      <div class="form-check form-check-inline">
-        <input class="form-check-input" id="enable_output_controls" name="enable_output_controls" type="checkbox" value="y"{% if each_dashboard.enable_output_controls %} checked{% endif %}>
-        {{form_output.enable_output_controls.label(class_='control-label')}}
-      </div>
-    </div>
 
-    <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
-      <div class="col-auto">
-        {{form_base.modify(class_='btn btn-primary')}}
-      </div>
-      <div class="col-auto">
-        {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-      </div>
-      <div class="col-auto">
-        {{form_base.order_up(class_='btn btn-primary')}}
-      </div>
-      <div class="col-auto">
-        {{form_base.order_down(class_='btn btn-primary')}}
-      </div>
-    </div>
-  </form>
+        {% endif %}
 
+      {% endif %}
+
+      <form method="post" action="/dashboard">
+        {{form_base.csrf_token}}
+        {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
+        <input type="hidden" name="dashboard_type" value="output">
+
+        <div class="form-row">
+          <div class="col-auto">
+            {{form_base.name.label(class_='control-label')}}
+            <div>
+              {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': dict_translation['name']['phrase']})}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_output.output_id.label(class_='control-label')}}
+            <div>
+              <select class="form-control" id="output_id" name="output_id" style="width: 100%;">
+              {% if choices_output %}
+                <option value="">{{dict_translation['select_one']['title']}}</option>
+                {% for each_output_form in choices_output -%}
+                  <option value="{{each_output_form['value']}}" {% if each_dashboard.output_ids == each_output_form['value'] %}selected{% endif %}>{{each_output_form['item']}}</option>
+                {% endfor -%}
+              {% else %}
+                <option value="">{{dict_translation['none_available']['title']}}</option>
+              {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_base.width.label(class_='control-label')}}
+            <div>
+              <select class="form-control" id="width" name="width">
+                {% for n in range(1, 13) %}
+                  <option value="{{n}}"{% if n == each_dashboard.width %} selected{% endif %}>{{n}}/12</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_base.height.label(class_='control-label')}}
+            <div>
+              {{form_base.height(class_='form-control', value=each_dashboard.height)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_output.max_measure_age.label(class_='control-label')}}
+            <div>
+              {{form_output.max_measure_age(class_='form-control', value=each_dashboard.max_measure_age)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_base.refresh_duration.label(class_='control-label')}}
+            <div>
+              {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_output.font_em_value.label(class_='control-label')}}
+            <div>
+              {{form_output.font_em_value(class_='form-control', value=each_dashboard.font_em_value)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_output.font_em_timestamp.label(class_='control-label')}}
+            <div>
+              {{form_output.font_em_timestamp(class_='form-control', value=each_dashboard.font_em_timestamp)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_output.decimal_places.label(class_='control-label')}}
+            <div>
+              {{form_output.decimal_places(class_='form-control', value=each_dashboard.decimal_places)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_output.enable_output_controls.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_output_controls" name="enable_output_controls" type="checkbox" value="y"{% if each_dashboard.enable_output_controls %} checked{% endif %}>
+            </div>
+          </div>
+        </div>
+
+        <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
+          <div class="col-auto">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+          <div class="col-auto">
+            {{form_base.modify(class_='btn btn-primary')}}
+          </div>
+          <div class="col-auto">
+            {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
 </div>

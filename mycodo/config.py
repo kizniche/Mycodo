@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.0.3'
-ALEMBIC_VERSION = 'f4bd467eb5fe'
+ALEMBIC_VERSION = '7f4c173f644d'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -47,7 +47,7 @@ LANGUAGES = {
 }
 
 DASHBOARD_WIDGETS = [
-    ('', lazy_gettext('Add Dashboard Element')),
+    ('', lazy_gettext('Add Dashboard Widget')),
     ('graph', lazy_gettext('Graph')),
     ('gauge', lazy_gettext('Gauge')),
     ('indicator', TRANSLATIONS['indicator']['title']),

@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 # Dashboard
 #
 
-def dashboard_add(form_base, form_object, display_order):
+def dashboard_add(form_base, form_object):
     """Add a widget to the dashboard"""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['add']['title'],
@@ -79,6 +79,9 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.enable_graph_shift = form_object.enable_graph_shift.data
         new_graph.enable_manual_y_axis = form_object.enable_manual_y_axis.data
 
+        new_graph.size_x = 12
+        new_graph.size_y = 7
+
     # Gauge
     elif form_base.dashboard_type.data == 'gauge':
 
@@ -98,6 +101,9 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.input_ids_measurements = form_object.input_ids.data
         new_graph.enable_timestamp = form_object.enable_timestamp.data
 
+        new_graph.size_x = 2
+        new_graph.size_y = 3
+
     # Indicator
     elif form_base.dashboard_type.data == 'indicator':
 
@@ -110,6 +116,9 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.refresh_duration = form_base.refresh_duration.data
         new_graph.font_em_timestamp = form_object.font_em_timestamp.data
         new_graph.input_ids_measurements = form_object.measurement_id.data
+
+        new_graph.size_x = 2
+        new_graph.size_y = 3
 
     # Measurement
     elif form_base.dashboard_type.data == 'measurement':
@@ -125,6 +134,9 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.font_em_timestamp = form_object.font_em_timestamp.data
         new_graph.decimal_places = form_object.decimal_places.data
         new_graph.input_ids_measurements = form_object.measurement_id.data
+
+        new_graph.size_x = 3
+        new_graph.size_y = 3
 
     # Output
     elif form_base.dashboard_type.data == 'output':
@@ -142,6 +154,9 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.decimal_places = form_object.decimal_places.data
         new_graph.output_ids = form_object.output_id.data
 
+        new_graph.size_x = 3
+        new_graph.size_y = 3
+
     # Output Range Slider
     elif form_base.dashboard_type.data == 'output_pwm_slider':
 
@@ -157,6 +172,9 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.enable_output_controls = form_object.enable_output_controls.data
         new_graph.decimal_places = form_object.decimal_places.data
         new_graph.output_ids = form_object.output_id.data
+
+        new_graph.size_x = 3
+        new_graph.size_y = 3
 
     # PID Control
     elif form_base.dashboard_type.data == 'pid_control':
@@ -174,6 +192,9 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.show_pid_info = form_object.show_pid_info.data
         new_graph.show_set_setpoint = form_object.show_set_setpoint.data
         new_graph.pid_ids = form_object.pid_id.data
+
+        new_graph.size_x = 4
+        new_graph.size_y = 4
 
     # Camera
     elif (form_base.dashboard_type.data == 'camera' and
@@ -193,6 +214,10 @@ def dashboard_add(form_base, form_object, display_order):
         new_graph.camera_max_age = form_object.camera_max_age.data
         new_graph.camera_id = form_object.camera_id.data
         new_graph.camera_image_type = form_object.camera_image_type.data
+
+        new_graph.size_x = 4
+        new_graph.size_y = 5
+
     else:
         flash_form_errors(form_base)
         return
@@ -204,8 +229,6 @@ def dashboard_add(form_base, form_object, display_order):
                 "{dev} with ID %(id)s successfully added".format(dev=dashboard_type),
                 id=new_graph.id),
                 "success")
-            DisplayOrder.query.first().dashboard = add_display_order(
-                display_order, new_graph.unique_id)
             db.session.commit()
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
@@ -404,32 +427,7 @@ def dashboard_del(form_base):
     error = []
 
     try:
-        delete_entry_with_id(Dashboard,
-                             form_base.dashboard_id.data)
-        display_order = csv_to_list_of_str(DisplayOrder.query.first().dashboard)
-        display_order.remove(form_base.dashboard_id.data)
-        DisplayOrder.query.first().dashboard = list_to_csv(display_order)
-        db.session.commit()
-    except Exception as except_msg:
-        error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
-
-
-def dashboard_reorder(dashboard_id, display_order, direction):
-    """reorder something on the dashboard"""
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['reorder']['title'],
-        controller=TRANSLATIONS['dashboard']['title'])
-    error = []
-    try:
-        status, reord_list = reorder(display_order,
-                                     dashboard_id,
-                                     direction)
-        if status == 'success':
-            DisplayOrder.query.first().dashboard = ','.join(map(str, reord_list))
-            db.session.commit()
-        else:
-            error.append(reord_list)
+        delete_entry_with_id(Dashboard, form_base.dashboard_id.data)
     except Exception as except_msg:
         error.append(except_msg)
     flash_success_errors(error, action, url_for('routes_page.page_dashboard'))

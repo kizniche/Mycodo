@@ -1,7 +1,7 @@
-{% set measure_name = '' %}
+{% set measure = { 'measurement_id': None } %}
   chart_gauge[{{chart_number}}] = new Highcharts.chart({
     chart: {
-      renderTo: 'container-gauge-{{each_dashboard.id}}',
+      renderTo: 'container-gauge-{{each_dashboard.unique_id}}',
       type: 'gauge',
       plotBackgroundColor: null,
       plotBackgroundImage: null,
@@ -11,24 +11,25 @@
         load: function () {
         {% for each_input in input -%}
           {%- for device_and_measurement_ids in graph_input_ids if each_input.unique_id == device_and_measurement_ids.split(',')[0] %}
-            {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
-        getLastData({{chart_number}}, 'gauge', '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{each_dashboard.max_measure_age}});
-        repeatLastData({{chart_number}}, 'gauge', '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
+            {% if measure.update({'measurement_id': device_and_measurement_ids.split(',')[1]}) %}{% endif %}
+        getLastData({{chart_number}}, 'gauge', '{{each_input.unique_id}}', 'input', '{{measure.measurement_id}}', {{each_dashboard.max_measure_age}});
+        repeatLastData({{chart_number}}, 'gauge', '{{each_input.unique_id}}', 'input', '{{measure.measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
           {%- endfor -%}
         {%- endfor -%}
 
         {% for each_math in math -%}
           {%- for device_and_measurement_ids in graph_input_ids if each_math.unique_id == device_and_measurement_ids.split(',')[0] %}
-            {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
-        getLastData({{chart_number}}, 'gauge', '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{each_dashboard.max_measure_age}});
-        repeatLastData({{chart_number}}, 'gauge', '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
+            {% if measure.update({'measurement_id': device_and_measurement_ids.split(',')[1]}) %}{% endif %}
+        getLastData({{chart_number}}, 'gauge', '{{each_math.unique_id}}', 'math', '{{measure.measurement_id}}', {{each_dashboard.max_measure_age}});
+        repeatLastData({{chart_number}}, 'gauge', '{{each_math.unique_id}}', 'math', '{{measure.measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
           {%- endfor -%}
         {%- endfor -%}
 
         {%- for each_pid in pid -%}
-          {%- for each_id_and_measure in graph_input_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
-        getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_dashboard.max_measure_age}});
-        repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{each_id_and_measure.split(',')[1]}}', 'gauge', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
+          {%- for device_and_measurement_ids in graph_input_ids if each_pid.unique_id == device_and_measurement_ids.split(',')[0] %}
+            {% if measure.update({'measurement_id': device_and_measurement_ids.split(',')[1]}) %}{% endif %}
+        getLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{measure.measurement_id}}', 'gauge', {{each_dashboard.max_measure_age}});
+        repeatLastData({{chart_number}}, '{{each_id_and_measure.split(',')[0]}}', '{{measure.measurement_id}}', 'gauge', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
           {%- endfor -%}
         {%- endfor -%}
         }
@@ -61,7 +62,12 @@
         min: {{each_dashboard.y_axis_min}},
         max: {{each_dashboard.y_axis_max}},
         title: {
-          text: '{{measure_name}} ({{measure_unit}})',
+      {%- if dict_measure_units[measure.measurement_id] in dict_units and
+             dict_units[dict_measure_units[measure.measurement_id]]['unit'] -%}
+          text: '{{dict_units[dict_measure_units[measure.measurement_id]]['unit']}}',
+      {% else %}
+          text: '',
+      {%- endif -%}
           y: 20
         },
 
@@ -171,4 +177,8 @@
       href: "https://github.com/kizniche/Mycodo",
       text: "Mycodo"
     }
+  });
+
+  $('.grid-stack').on('gsresizestop', function(event, elem) {
+    chart_gauge[{{chart_number}}].reflow();
   });

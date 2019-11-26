@@ -1,30 +1,31 @@
+{% set measure = { 'measurement_id': None } %}
   chart_gauge[{{chart_number}}] = new Highcharts.chart({
     chart: {
-      renderTo: 'container-gauge-{{each_dashboard.id}}',
+      renderTo: 'container-gauge-{{each_dashboard.unique_id}}',
       type: 'solidgauge',
       events: {
         load: function () {
           {% for each_input in input -%}
             {%- for device_and_measurement_ids in graph_input_ids if each_input.unique_id == device_and_measurement_ids.split(',')[0] %}
-            {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
-          getLastData({{chart_number}}, 'gauge', '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{each_dashboard.max_measure_age}});
-          repeatLastData({{chart_number}}, 'gauge', '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
+              {% if measure.update({'measurement_id': device_and_measurement_ids.split(',')[1]}) %}{% endif %}
+          getLastData({{chart_number}}, 'gauge', '{{each_input.unique_id}}', 'input', '{{measure.measurement_id}}', {{each_dashboard.max_measure_age}});
+          repeatLastData({{chart_number}}, 'gauge', '{{each_input.unique_id}}', 'input', '{{measure.measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
             {%- endfor -%}
           {%- endfor -%}
 
           {% for each_math in math -%}
             {%- for device_and_measurement_ids in graph_input_ids if each_math.unique_id == device_and_measurement_ids.split(',')[0] %}
-            {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
-          getLastData({{chart_number}}, 'gauge', '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{each_dashboard.max_measure_age}});
-          repeatLastData({{chart_number}}, 'gauge', '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
+              {% if measure.update({'measurement_id': device_and_measurement_ids.split(',')[1]}) %}{% endif %}
+          getLastData({{chart_number}}, 'gauge', '{{each_math.unique_id}}', 'math', '{{measure.measurement_id}}', {{each_dashboard.max_measure_age}});
+          repeatLastData({{chart_number}}, 'gauge', '{{each_math.unique_id}}', 'math', '{{measure.measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
             {%- endfor -%}
           {%- endfor -%}
 
           {%- for each_pid in pid -%}
             {%- for device_and_measurement_ids in graph_input_ids if each_pid.unique_id == device_and_measurement_ids.split(',')[0] %}
-            {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
-          getLastData({{chart_number}}, 'gauge', '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{each_dashboard.max_measure_age}});
-          repeatLastData({{chart_number}}, 'gauge', '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
+              {% if measure.update({'measurement_id': device_and_measurement_ids.split(',')[1]}) %}{% endif %}
+          getLastData({{chart_number}}, 'gauge', '{{each_pid.unique_id}}', 'pid', '{{measure.measurement_id}}', {{each_dashboard.max_measure_age}});
+          repeatLastData({{chart_number}}, 'gauge', '{{each_pid.unique_id}}', 'pid', '{{measure.measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
             {%- endfor -%}
           {%- endfor -%}
         }
@@ -71,7 +72,12 @@
       minorTickInterval: null,
       tickAmount: 2,
       title: {
-        text: '',
+      {%- if dict_measure_units[measure.measurement_id] in dict_units and
+             dict_units[dict_measure_units[measure.measurement_id]]['unit'] -%}
+          text: '{{dict_units[dict_measure_units[measure.measurement_id]]['unit']}}',
+      {% else %}
+          text: '',
+      {%- endif -%}
         y: -80
       },
       labels: {
@@ -180,4 +186,8 @@
       href: "https://github.com/kizniche/Mycodo",
       text: "Mycodo"
     }
+  });
+
+  $('.grid-stack').on('gsresizestop', function(event, elem) {
+    chart_gauge[{{chart_number}}].reflow();
   });

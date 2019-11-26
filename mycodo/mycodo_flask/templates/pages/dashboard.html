@@ -30,6 +30,11 @@
   <link href="/static/css/toastr.min.css" rel="stylesheet"/>
   <script type="text/javascript" src="/static/js/toastr.min.js"></script>
 
+  <!-- gridstack.js -->
+  <script src="/static/js/jquery-ui.min.js"></script>
+  <script src="/static/js/gridstack.all.js"></script>
+  <link rel="stylesheet" href="/static/css/gridstack.min.css" />
+
 {% endblock %}
 
 {% block body %}
@@ -40,19 +45,16 @@
 
   <div class="container-fluid">
 
-    <div class="row small-gutters">
+    <div class="grid-stack">
 
-    {%- for each_dashboard_id in display_order_dashboard -%}
+    {%- for each_dashboard in dashboard -%}
       {%- set chart_number = loop.index -%}
-      {%- set each_dashboard = table_dashboard.query.filter(table_dashboard.unique_id == each_dashboard_id).first() -%}
-        {%- if each_dashboard -%}
 
-      <div class="col-12 col-sm-
-      {%- if 0 < each_dashboard.width < 13 -%}
-        {{each_dashboard.width}}
-      {%- else -%}
-        12
-      {%- endif %} mb-1" style="border: 1px solid #ddd; border-radius: 5px;">
+      <div class="grid-stack-item" data-custom-id="{{each_dashboard.unique_id}}" data-name="{{each_dashboard.name}}"
+           data-gs-x="{{each_dashboard.position_x}}" data-gs-y="{{each_dashboard.position_y}}"
+           data-gs-width="{{each_dashboard.size_x}}" data-gs-height="{{each_dashboard.size_y}}">
+
+        <div class="grid-stack-item-content" style="display: flex; flex-flow: column; height: 100%; padding: 0.2em; border: 1px solid #ddd; border-radius: 5px">
 
         {% for id, axes in y_axes.items() if id == each_dashboard.unique_id and
                                              each_dashboard.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
@@ -77,81 +79,24 @@
           {% include 'pages/dashboard_options/mod_camera.html' %}
         {% endif %}
 
+        </div>
       </div>
 
-      {%- endif -%}
     {%- endfor -%}
 
     </div>
+    <hr/>
 
   </div>
 
   <div style="clear: both"></div>
 
-  <div class="container-fluid">
+  <div class="container-fluid" style="padding-bottom: 1em">
 
     <div class="form-inline" style="padding-bottom: 1em;">
       <div class="form-group">
-        {{form_base.dashboard_type(class_='selectpicker', **{'data-style': 'btn-sm'})}}
+        {{form_base.dashboard_type(class_='selectpicker', **{'data-style': 'btn btn-sm btn-primary'})}}
       </div>
-      <div class="form-group">
-        <a data-toggle="collapse" href="#collapseContainerReorder" aria-expanded="false" aria-controls="collapseContainerReorder" class="btn btn-sm btn-primary" role="button">{{dict_translation['reorder']['title']}}</a>
-      </div>
-    </div>
-
-    <div class="collapse" id="collapseContainerReorder" style="padding-bottom: 1em">
-
-      <form method="post" action="/dashboard">
-      {{form_base.csrf_token}}
-
-      <div class="row" style="padding-bottom: 0.5em">
-        <div class="col-auto">
-          {{form_base.reorder(class_='btn btn-primary')}}
-        </div>
-      </div>
-
-      <div class="row align-items-end">
-        <div class="col-sm-5">
-          Hidden Elements
-          <div>
-            <select name="from[]" id="multiselect" class="form-control" size="8" multiple="multiple">
-              {% for each_hidden in dashboard_elements_hidden %}
-                <option value="{{each_hidden}}">{{dashboard_element_names[each_hidden]}}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-
-        <div class="col-sm-2">
-          <button type="button" id="multiselect_rightAll" class="btn btn-sm btn-block btn-primary"><i class="fa fa-forward"></i></button>
-          <button type="button" id="multiselect_rightSelected" class="btn btn-sm btn-block btn-primary"><i class="fa fa-chevron-right"></i></button>
-          <button type="button" id="multiselect_leftSelected" class="btn btn-sm btn-block btn-primary"><i class="fa fa-chevron-left"></i></button>
-          <button type="button" id="multiselect_leftAll" class="btn btn-sm btn-block btn-primary"><i class="fa fa-backward"></i></button>
-        </div>
-
-        <div class="col-sm-5">
-          Visible Elements
-          <div>
-            <select name="list_visible_elements" id="multiselect_to" class="form-control" size="8" multiple="multiple">
-            {% if display_order_dashboard -%}
-              {% for each_visible in display_order_dashboard %}
-                <option value="{{each_visible}}">{{dashboard_element_names[each_visible]}}</option>
-              {% endfor %}
-            {% endif %}
-            </select>
-            <div class="row">
-              <div class="col-sm-6">
-                <button type="button" id="multiselect_move_up" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-up"></i></button>
-              </div>
-              <div class="col-sm-6">
-                <button type="button" id="multiselect_move_down" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-down"></i></button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      </form>
     </div>
 
     <div class="add_dashboard_object" style="display: none" id="graph">
@@ -182,15 +127,46 @@
   </div>
 
 <script type="text/javascript">
-jQuery(document).ready(function($) {
-    $('#multiselect').multiselect({
-        sort: false,
-        keepRenderingSort: true
-    });
-});
-</script>
 
-<script>
+var options = {
+  resizable: {
+    handles: 'se, sw'
+  },
+  draggable: {
+    handle: '.panel-heading'
+  },
+  {#float: true#}
+};
+var grid = $('.grid-stack').gridstack(options);
+
+grid.on('change', function (event, items) {
+  var res = $('.grid-stack > .grid-stack-item:visible').map(function (i, el) {
+    el = $(el);
+    node = el.data('_gridstack_node');
+    return {
+      name: el.attr('data-name'),
+      unique_id: el.attr('data-custom-id'),
+      x: node.x,
+      y: node.y,
+      width: node.width,
+      height: node.height
+    };
+  });
+  $.ajax({
+    url: "/save_dashboard_layout",
+    type: "POST",
+    data: JSON.stringify(res.toArray()),
+    contentType: "application/json; charset=utf-8",
+    success: function(dat) { console.log(dat); }
+  });
+});
+
+jQuery(document).ready(function($) {
+  $('#multiselect').multiselect({
+    sort: false,
+    keepRenderingSort: true
+  });
+});
 
 function showVal(chart, duty_cycle){
   document.getElementById("range_val_" + chart).innerHTML = duty_cycle;
@@ -201,16 +177,6 @@ function sendVal(chart, output_id, duty_cycle){
   var cmd_send = output_id + '/on/pwm/' + duty_cycle;
   modOutput(cmd_send);
 }
-
-$('.collapse').on('show.bs.collapse', function(){
-  $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
-}).on('hide.bs.collapse', function(){
-  $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
-});
-
-$('#collapseContainerReorder').on('shown.bs.collapse', function () {
-  this.scrollIntoView();
-});
 
 $('#dashboard_type').on('change', function () {
   var x = document.getElementsByClassName("add_dashboard_object");  // Find the elements
@@ -823,12 +789,13 @@ $(document).ready(function() {
 
   // Capture image and update the image
   function get_image_cam(dashboard_id, camera_unique_id, image_type, max_age) {
+    console.log("TEST: ", dashboard_id, ",", camera_unique_id, ",", image_type, ",", max_age)
     var url = '';
     var image_type_str = '';
     if (image_type === 'tmp_img') {
       url = '/camera_acquire_image/tmp/' + camera_unique_id + '/' + max_age;
       image_type_str = 'still'
-    } else if (image_type === 'new_img') {
+    } else if (image_type === 'new_image') {
       url = '/camera_acquire_image/new/' + camera_unique_id + '/' + max_age;
       image_type_str = 'still'
     } else if (image_type === 'timelapse') {
@@ -895,34 +862,30 @@ $(document).ready(function() {
     return Highcharts.Color(color).setOpacity(0.6).get('rgba');
   });
 
-{%- for each_dashboard_id in display_order_dashboard -%}
+{%- for each_dashboard in dashboard -%}
   {%- set chart_number = loop.index -%}
-  {%- set each_dashboard = table_dashboard.query.filter(table_dashboard.unique_id == each_dashboard_id).first() -%}
-    {%- if each_dashboard -%}
+  {% set graph_input_ids = each_dashboard.input_ids_measurements.split(';') %}
 
-      {% set graph_input_ids = each_dashboard.input_ids_measurements.split(';') %}
+  {% if each_dashboard.graph_type == 'graph' %}
+    {% include 'pages/dashboard_options/display_graph.html' %}
+  {% elif each_dashboard.graph_type == 'gauge_solid' %}
+    {% include 'pages/dashboard_options/display_gauge_solid.html' %}
+  {% elif each_dashboard.graph_type == 'gauge_angular' %}
+    {% include 'pages/dashboard_options/display_gauge_angular.html' %}
+  {% elif each_dashboard.graph_type == 'indicator' %}
+    {% include 'pages/dashboard_options/display_indicator.html' %}
+  {% elif each_dashboard.graph_type == 'measurement' %}
+    {% include 'pages/dashboard_options/display_measurement.html' %}
+  {% elif each_dashboard.graph_type == 'output' %}
+    {% include 'pages/dashboard_options/display_output.html' %}
+  {% elif each_dashboard.graph_type == 'output_pwm_slider' %}
+    {% include 'pages/dashboard_options/display_output_pwm_slider.html' %}
+  {% elif each_dashboard.graph_type == 'pid_control' %}
+    {% include 'pages/dashboard_options/display_pid_control.html' %}
+  {% elif each_dashboard.graph_type == 'camera' %}
+    {% include 'pages/dashboard_options/display_camera.html' %}
+  {% endif %}
 
-      {% if each_dashboard.graph_type == 'graph' %}
-        {% include 'pages/dashboard_options/display_graph.html' %}
-      {% elif each_dashboard.graph_type == 'gauge_solid' %}
-        {% include 'pages/dashboard_options/display_gauge_solid.html' %}
-      {% elif each_dashboard.graph_type == 'gauge_angular' %}
-        {% include 'pages/dashboard_options/display_gauge_angular.html' %}
-      {% elif each_dashboard.graph_type == 'indicator' %}
-        {% include 'pages/dashboard_options/display_indicator.html' %}
-      {% elif each_dashboard.graph_type == 'measurement' %}
-        {% include 'pages/dashboard_options/display_measurement.html' %}
-      {% elif each_dashboard.graph_type == 'output' %}
-        {% include 'pages/dashboard_options/display_output.html' %}
-      {% elif each_dashboard.graph_type == 'output_pwm_slider' %}
-        {% include 'pages/dashboard_options/display_output_pwm_slider.html' %}
-      {% elif each_dashboard.graph_type == 'pid_control' %}
-        {% include 'pages/dashboard_options/display_pid_control.html' %}
-      {% elif each_dashboard.graph_type == 'camera' %}
-        {% include 'pages/dashboard_options/display_camera.html' %}
-      {% endif %}
-
-  {%- endif -%}
 {%- endfor -%}
 
 });

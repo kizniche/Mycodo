@@ -607,3 +607,7 @@
       chart.redraw();
     }
   });
+
+  $('.grid-stack').on('gsresizestop', function(event, elem) {
+    chart_graph[{{chart_number}}].reflow();
+  });

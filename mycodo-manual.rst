@@ -340,23 +340,11 @@ Dashboard
 
 ``Data -> Dashboard``
 
-The dashboard is where you can add pieces of data for easy viewing. It
+The dashboard is where you can add pieces of data for easy viewing using widgets. It
 is highly customizable and provides an easy way to see exactly what data
-you want to see on one screen.
-
-+------------------------------+---------------------------------------------+
-| Setting                      | Description                                 |
-+==============================+=============================================+
-| Width                        | The width of the dashboard object on the    |
-|                              | page, in 1/12th increments. Multiple        |
-|                              | dashboard object can share the sme row if   |
-|                              | their combined fraction doesn't exceed      |
-|                              | 12/12.                                      |
-+------------------------------+---------------------------------------------+
-| Height (pixels)              | The height of the dashboard object.         |
-+------------------------------+---------------------------------------------+
-
-Specific options for each Dashboard element are below.
+you want to see on one screen. Widgets can be moved and arranged on the dashboard
+by dragging the top header and can be resized by dragging the bottom-left or bottom-right
+side of the widget. Specific options for widgets are below.
 
 Graph Widget
 ~~~~~~~~~~~~

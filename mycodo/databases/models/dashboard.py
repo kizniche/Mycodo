@@ -23,6 +23,12 @@ class Dashboard(CRUDMixin, db.Model):
     note_tag_ids = db.Column(db.Text, default='')  # store Note Tag IDs to display
     input_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
 
+    # position and size
+    position_x = db.Column(db.Integer, default=0)
+    position_y = db.Column(db.Integer, default=999)
+    size_x = db.Column(db.Integer, default=6)
+    size_y = db.Column(db.Integer, default=6)
+
     x_axis_duration = db.Column(db.Integer, default=1440)  # X-axis duration (in minutes)
     use_custom_colors = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
     enable_navbar = db.Column(db.Boolean, default=False)  # Show navigation bar

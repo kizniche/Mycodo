@@ -508,6 +508,27 @@ def page_export():
                            choices_math=choices_math)
 
 
+@blueprint.route('/save_dashboard_layout', methods=['POST'])
+def pie():
+    data = request.get_json()
+    keys = ('unique_id', 'x', 'y', 'width', 'height')
+    for each_widget in data:
+        logger.error("Saved: {}".format(each_widget))
+        if all(k in each_widget for k in keys):
+            mod_dash = Dashboard.query.filter(
+                Dashboard.unique_id == each_widget['unique_id']).first()
+            if mod_dash:
+                mod_dash.position_x = each_widget['x']
+                mod_dash.position_y = each_widget['y']
+                mod_dash.size_x = each_widget['width']
+                mod_dash.size_y = each_widget['height']
+                db.session.commit()
+            else:
+                logger.error("TEST33")
+    logger.error("//")
+    return "success"
+
+
 @blueprint.route('/dashboard', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_dashboard():
@@ -525,10 +546,6 @@ def page_dashboard():
     pid = PID.query.all()
     tags = NoteTags.query.all()
 
-    # Retrieve the order to display graphs
-    display_order_dashboard = csv_to_list_of_str(
-        DisplayOrder.query.first().dashboard)
-
     # Create form objects
     form_base = forms_dashboard.DashboardBase()
     form_camera = forms_dashboard.DashboardCamera()
@@ -543,16 +560,6 @@ def page_dashboard():
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_general.home'))
-
-        # Reorder
-        if form_base.reorder.data:
-            mod_order = DisplayOrder.query.first()
-            mod_order.dashboard = list_to_csv(
-                form_base.list_visible_elements.data)
-            db.session.commit()
-            # Retrieve the order to display graphs
-            display_order_dashboard = csv_to_list_of_str(
-                DisplayOrder.query.first().dashboard)
 
         # Determine which form was submitted
         form_dashboard_object = None
@@ -578,30 +585,14 @@ def page_dashboard():
 
         if form_base.create.data:
             utils_dashboard.dashboard_add(
-                form_base, form_dashboard_object, display_order_dashboard)
+                form_base, form_dashboard_object)
         elif form_base.modify.data:
             utils_dashboard.dashboard_mod(
                 form_base, form_dashboard_object, request.form)
         elif form_base.delete.data:
             utils_dashboard.dashboard_del(form_base)
-        elif form_base.order_up.data:
-            utils_dashboard.dashboard_reorder(
-                form_base.dashboard_id.data, display_order_dashboard, 'up')
-        elif form_base.order_down.data:
-            utils_dashboard.dashboard_reorder(
-                form_base.dashboard_id.data, display_order_dashboard, 'down')
 
         return redirect(url_for('routes_page.page_dashboard'))
-
-    # Create list of hidden dashboard element IDs and dict of names
-    dashboard_element_names = {}
-    dashboard_elements_hidden = []
-    for each_element in dashboard:
-        dashboard_element_names[each_element.unique_id] = '[{id}] {name}'.format(
-            id=each_element.id, name=each_element.name)
-        if (not display_order_dashboard or
-                each_element.unique_id not in display_order_dashboard):
-            dashboard_elements_hidden.append(each_element.unique_id)
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
@@ -753,14 +744,12 @@ def page_dashboard():
                            choices_pid_devices=choices_pid_devices,
                            choices_note_tag=choices_note_tag,
                            custom_yaxes=custom_yaxes,
-                           dashboard_element_names=dashboard_element_names,
-                           dashboard_elements_hidden=dashboard_elements_hidden,
+                           dashboard=dashboard,
                            device_measurements_dict=device_measurements_dict,
                            dict_measure_measurements=dict_measure_measurements,
                            dict_measure_units=dict_measure_units,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
-                           display_order_dashboard=display_order_dashboard,
                            math=math,
                            misc=misc,
                            pid=pid,

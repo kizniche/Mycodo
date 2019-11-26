@@ -1,302 +1,311 @@
-<div class="col-12 text-right small-gutters" style="padding-right: 0.2em;">
-  <span style="padding-right: 0.5em">{{each_dashboard.name}} [{{'%02d' % each_dashboard.id}}]</span>
-  <button style="margin-bottom: 1em" class="btn btn-sm" id="updateData{{chart_number}}">Update</button>
-  <button style="margin-bottom: 1em" class="btn btn-sm" id="resetZoom{{chart_number}}">Reset</button>
-  <button style="margin-bottom: 1em" class="btn btn-sm" id="showhidebutton{{chart_number}}">Show/Hide</button>
-  <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
-    <span style="font-size: 2em" class="collapse-button{{chart_number}} fas fa-plus-square"></span>
-  </a>
+<div class="d-flex justify-content-between panel-heading" style="flex: 0 1 auto;">
+  <div class="my-auto" style="padding-left: 0.4em">
+    <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="Drag"></i>
+  </div>
+  <div class="my-auto">
+    <span style="padding-right: 0.5em">{{each_dashboard.name}}</span>
+    <button class="btn btn-sm btn-primary" id="updateData{{chart_number}}">Update</button>
+    <button class="btn btn-sm btn-primary" id="resetZoom{{chart_number}}">Reset</button>
+    <button class="btn btn-sm btn-primary" id="showhidebutton{{chart_number}}">Show/Hide</button>
+    <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
+      <i style="font-size: 1.5em" class="fas fa-cog"></i>
+    </button>
+  </div>
 </div>
 
-<div class="col-12 small-gutters">
-  <div id="container-graph-{{each_dashboard.unique_id}}" style="padding-bottom: 0.1em; height: {{each_dashboard.height}}px;"></div>
+<div id="chart-container-outer" style="position: relative; flex-grow: 1">
+  <div class="not-draggable" id="container-graph-{{each_dashboard.unique_id}}" style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; overflow: hidden;"></div>
 </div>
 
-<div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em;">
-
-  <form method="post" action="/dashboard">
-    {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
-    <input type="hidden" name="dashboard_type" value="{{each_dashboard.graph_type}}">
-
-    <div class="form-row">
-      <div class="col-auto">
-        {{form_base.name.label(class_='control-label')}}
-        <div>
-          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': dict_translation['name']['phrase']})}}
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_base.width.label(class_='control-label')}}
-        <div>
-          <select class="form-control" id="width" name="width">
-            {% for n in range(1, 12) %}
-              <option value="{{n}}"{%- if each_dashboard.width == n %} selected{%- endif -%}>{{n}}/12</option>
-            {% endfor %}
-            <option value="12"{%- if each_dashboard.width == 12 or each_dashboard.width > 12 or each_dashboard.width < 1 %} selected{%- endif -%}>12/12</option>
-          </select>
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_base.height.label(class_='control-label')}}
-        <div>
-          {{form_base.height(class_='form-control', value=each_dashboard.height)}}
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_graph.xaxis_duration.label(class_='control-label')}}
-        <div>
-          {{form_graph.xaxis_duration(class_='form-control', value=each_dashboard.x_axis_duration)}}
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_base.refresh_duration.label(class_='control-label')}}
-        <div>
-          {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
-        </div>
-      </div>
-      <div class="col-auto">
-        <label class="control-label">{{form_graph.enable_auto_refresh.label.text}}</label>
-        <div class="input-group-text">
-          <input id="enable_auto_refresh" name="enable_auto_refresh" type="checkbox" value="y"{% if each_dashboard.enable_auto_refresh %} checked{% endif %}>
-        </div>
-      </div>
-      <div class="col-auto">
-        <label class="control-label">{{form_graph.enable_xaxis_reset.label.text}}</label>
-        <div class="input-group-text">
-          <input id="enable_xaxis_reset" name="enable_xaxis_reset" type="checkbox" value="y"{% if each_dashboard.enable_xaxis_reset %} checked{% endif %}>
-        </div>
-      </div>
-      <div class="col-auto">
-        <label class="control-label">{{form_graph.enable_title.label.text}}</label>
-        <div class="input-group-text">
-          <input id="enable_title" name="enable_title" type="checkbox" value="y"{% if each_dashboard.enable_title %} checked{% endif %}>
-        </div>
-      </div>
-      <div class="col-auto">
-        <label class="control-label">{{form_graph.enable_navbar.label.text}}</label>
-        <div class="input-group-text">
-          <input id="enable_navbar" name="enable_navbar" type="checkbox" value="y"{% if each_dashboard.enable_navbar %} checked{% endif %}>
-        </div>
-      </div>
-      <div class="col-auto">
-        <label class="control-label">{{form_graph.enable_export.label.text}}</label>
-        <div class="input-group-text">
-          <input id="enable_export" name="enable_export" type="checkbox" value="y"{% if each_dashboard.enable_export %} checked{% endif %}>
-        </div>
-      </div>
-      <div class="col-auto">
-        <label class="control-label">{{form_graph.enable_rangeselect.label.text}}</label>
-        <div class="input-group-text">
-          <input id="enable_rangeselect" name="enable_rangeselect" type="checkbox" value="y"{% if each_dashboard.enable_rangeselect %} checked{% endif %}>
-        </div>
-      </div>
-      <div class="col-auto">
-        <label class="control-label">{{form_graph.enable_graph_shift.label.text}}</label>
-        <div class="input-group-text">
-          <input id="enable_graph_shift" name="enable_graph_shift" type="checkbox" value="y"{% if each_dashboard.enable_graph_shift %} checked{% endif %}>
-        </div>
-      </div>
-    </div>
-
-    <div style="clear: both"></div>
-
-    <div class="form-row">
-
-      <div class="col-auto">
-        {{form_graph.input_ids.label(class_='control-label')}}
-        <div>
-          <select class="form-control btn-sm" id="input_ids" name="input_ids" style="width: 100%;" size="{{[choices_input|length, 20]|min}}" multiple>
-          {% if choices_input %}
-            {% for each_input_form in choices_input -%}
-            <option value="{{each_input_form['value']}}"{%- if each_input_form['value'] in each_dashboard.input_ids_measurements %} selected{%- endif -%}>{{each_input_form['item']}}</option>
-            {% endfor -%}
-          {% else %}
-            <option value="">{{dict_translation['none_available']['title']}}</option>
-          {% endif %}
-          </select>
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_graph.math_ids.label(class_='control-label')}}
-        <div>
-          <select class="form-control btn-sm" id="math_ids" name="math_ids" style="width: 100%;" size="{{[choices_math|length, 20]|min}}" multiple>
-          {% if choices_math %}
-            {% for each_math_form in choices_math -%}
-            <option value="{{each_math_form['value']}}"{%- if each_math_form['value'] in each_dashboard.math_ids %} selected{%- endif -%}>{{each_math_form['item']}}</option>
-            {% endfor -%}
-          {% else %}
-            <option value="">{{dict_translation['none_available']['title']}}</option>
-          {% endif %}
-          </select>
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_graph.output_ids.label(class_='control-label')}}
-        <div>
-          <select class="form-control btn-sm" id="output_ids" name="output_ids" style="width: 100%;" size="{{[choices_output|length, 20]|min}}" multiple>
-          {% if choices_output %}
-            {% for each_output_form in choices_output -%}
-            <option value="{{each_output_form['value']}}"{%- if each_output_form['value'] in each_dashboard.output_ids %} selected{%- endif -%}>{{each_output_form['item']}}</option>
-            {% endfor -%}
-          {% else %}
-            <option value="">{{dict_translation['none_available']['title']}}</option>
-          {% endif %}
-          </select>
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_graph.pid_ids.label(class_='control-label')}}
-        <div>
-          <select class="form-control btn-sm" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{[choices_pid|length, 20]|min}}" multiple>
-          {% if choices_pid %}
-            {% for each_pid_form in choices_pid -%}
-              <option value="{{each_pid_form['value']}}"{%- if each_pid_form['value'] in each_dashboard.pid_ids %} selected{%- endif -%}>{{each_pid_form['item']}}</option>
-            {% endfor -%}
-          {% else %}
-            <option value="">{{dict_translation['none_available']['title']}}</option>
-          {% endif %}
-          </select>
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_graph.note_tag_ids.label(class_='control-label')}}
-        <div>
-          <select class="form-control btn-sm" id="note_tag_ids" name="note_tag_ids" style="width: 100%;" size="{{[choices_note_tag|length, 20]|min}}" multiple>
-          {% if choices_note_tag %}
-            {% for each_tag_form in choices_tag -%}
-              <option value="{{each_tag_form['value']}}"{%- if each_tag_form['value'] in each_dashboard.note_tag_ids %} selected{%- endif -%}>{{each_tag_form['item']}}</option>
-            {% endfor -%}
-          {% else %}
-            <option value="">{{dict_translation['none_available']['title']}}</option>
-          {% endif %}
-          </select>
-        </div>
+<div class="modal fade" id="modal_config_{{chart_number}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="padding: 1em">
+      <div class="modal-header">
+        <h5 class="modal-title">Graph Widget Configuration</h5>
       </div>
 
-    </div>
+      <form method="post" action="/dashboard">
+        {{form_base.csrf_token}}
+        {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
+        <input type="hidden" name="dashboard_type" value="{{each_dashboard.graph_type}}">
 
-    <div class="form-row">
-      {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.
-    </div>
+        <div class="form-row">
+          <div class="col-auto">
+            {{form_base.name.label(class_='control-label')}}
+            <div>
+              {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': dict_translation['name']['phrase']})}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_base.width.label(class_='control-label')}}
+            <div>
+              <select class="form-control" id="width" name="width">
+                {% for n in range(1, 12) %}
+                  <option value="{{n}}"{%- if each_dashboard.width == n %} selected{%- endif -%}>{{n}}/12</option>
+                {% endfor %}
+                <option value="12"{%- if each_dashboard.width == 12 or each_dashboard.width > 12 or each_dashboard.width < 1 %} selected{%- endif -%}>12/12</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_base.height.label(class_='control-label')}}
+            <div>
+              {{form_base.height(class_='form-control', value=each_dashboard.height)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_graph.xaxis_duration.label(class_='control-label')}}
+            <div>
+              {{form_graph.xaxis_duration(class_='form-control', value=each_dashboard.x_axis_duration)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_base.refresh_duration.label(class_='control-label')}}
+            <div>
+              {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_graph.enable_auto_refresh.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_auto_refresh" name="enable_auto_refresh" type="checkbox" value="y"{% if each_dashboard.enable_auto_refresh %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_graph.enable_xaxis_reset.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_xaxis_reset" name="enable_xaxis_reset" type="checkbox" value="y"{% if each_dashboard.enable_xaxis_reset %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_graph.enable_title.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_title" name="enable_title" type="checkbox" value="y"{% if each_dashboard.enable_title %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_graph.enable_navbar.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_navbar" name="enable_navbar" type="checkbox" value="y"{% if each_dashboard.enable_navbar %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_graph.enable_export.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_export" name="enable_export" type="checkbox" value="y"{% if each_dashboard.enable_export %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_graph.enable_rangeselect.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_rangeselect" name="enable_rangeselect" type="checkbox" value="y"{% if each_dashboard.enable_rangeselect %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_graph.enable_graph_shift.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_graph_shift" name="enable_graph_shift" type="checkbox" value="y"{% if each_dashboard.enable_graph_shift %} checked{% endif %}>
+            </div>
+          </div>
+        </div>
 
-    <div class="form-row" style="padding-left: 0.5em; padding-top: 1em">
-      <div class="col-12" style="font-weight: bold">
-        {{_('Series Options')}}
-      </div>
-      <div class="col-auto">
-        <label class="control-label">{{form_graph.use_custom_colors.label.text}}</label>
-        <div class="input-group-text">
-          <input id="use_custom_colors" name="use_custom_colors" type="checkbox" value="y"{% if each_dashboard.use_custom_colors %} checked{% endif %}>
-        </div>
-      </div>
-    </div>
+        <div style="clear: both"></div>
 
-      {% for n in range(colors_graph[each_dashboard.unique_id]|length) %}
-    <div class="form-row">
-      <div class="col-12">
-        {%- if 'type' in colors_graph[each_dashboard.unique_id][n] -%}
-            {{colors_graph[each_dashboard.unique_id][n]['type'] + ': '}}
-        {%- endif -%}
-         {{colors_graph[each_dashboard.unique_id][n]['name']}}
-        {%- if 'channel' in colors_graph[each_dashboard.unique_id][n] and colors_graph[each_dashboard.unique_id][n]['channel'] != '' -%}
-          {{', CH' + colors_graph[each_dashboard.unique_id][n]['channel']|string}}
-        {%- endif -%}
-        {%- if colors_graph[each_dashboard.unique_id][n]['measure_name'] -%}
-          {{', ' + colors_graph[each_dashboard.unique_id][n]['measure_name']}}
-        {%- endif -%}
-        {%- if colors_graph[each_dashboard.unique_id][n]['unit'] in dict_units -%}
-          {{' (' + dict_units[colors_graph[each_dashboard.unique_id][n]['unit']]['name'] + ')'}}
-        {%- endif -%}
-      </div>
-      <div class="form-check">
-        {% set index = '{0:0>2}'.format(n) %}
-        <label class="control-label" for="color_number{{index}}">Color</label>
-        <div>
-          <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{colors_graph[each_dashboard.unique_id][n]['color']}}">
+        <div class="form-row">
+
+          <div class="col-auto">
+            {{form_graph.input_ids.label(class_='control-label')}}
+            <div>
+              <select class="form-control btn-sm" id="input_ids" name="input_ids" style="width: 100%;" size="{{[choices_input|length, 20]|min}}" multiple>
+              {% if choices_input %}
+                {% for each_input_form in choices_input -%}
+                <option value="{{each_input_form['value']}}"{%- if each_input_form['value'] in each_dashboard.input_ids_measurements %} selected{%- endif -%}>{{each_input_form['item']}}</option>
+                {% endfor -%}
+              {% else %}
+                <option value="">{{dict_translation['none_available']['title']}}</option>
+              {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_graph.math_ids.label(class_='control-label')}}
+            <div>
+              <select class="form-control btn-sm" id="math_ids" name="math_ids" style="width: 100%;" size="{{[choices_math|length, 20]|min}}" multiple>
+              {% if choices_math %}
+                {% for each_math_form in choices_math -%}
+                <option value="{{each_math_form['value']}}"{%- if each_math_form['value'] in each_dashboard.math_ids %} selected{%- endif -%}>{{each_math_form['item']}}</option>
+                {% endfor -%}
+              {% else %}
+                <option value="">{{dict_translation['none_available']['title']}}</option>
+              {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_graph.output_ids.label(class_='control-label')}}
+            <div>
+              <select class="form-control btn-sm" id="output_ids" name="output_ids" style="width: 100%;" size="{{[choices_output|length, 20]|min}}" multiple>
+              {% if choices_output %}
+                {% for each_output_form in choices_output -%}
+                <option value="{{each_output_form['value']}}"{%- if each_output_form['value'] in each_dashboard.output_ids %} selected{%- endif -%}>{{each_output_form['item']}}</option>
+                {% endfor -%}
+              {% else %}
+                <option value="">{{dict_translation['none_available']['title']}}</option>
+              {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_graph.pid_ids.label(class_='control-label')}}
+            <div>
+              <select class="form-control btn-sm" id="pid_ids" name="pid_ids" style="width: 100%;" size="{{[choices_pid|length, 20]|min}}" multiple>
+              {% if choices_pid %}
+                {% for each_pid_form in choices_pid -%}
+                  <option value="{{each_pid_form['value']}}"{%- if each_pid_form['value'] in each_dashboard.pid_ids %} selected{%- endif -%}>{{each_pid_form['item']}}</option>
+                {% endfor -%}
+              {% else %}
+                <option value="">{{dict_translation['none_available']['title']}}</option>
+              {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_graph.note_tag_ids.label(class_='control-label')}}
+            <div>
+              <select class="form-control btn-sm" id="note_tag_ids" name="note_tag_ids" style="width: 100%;" size="{{[choices_note_tag|length, 20]|min}}" multiple>
+              {% if choices_note_tag %}
+                {% for each_tag_form in choices_tag -%}
+                  <option value="{{each_tag_form['value']}}"{%- if each_tag_form['value'] in each_dashboard.note_tag_ids %} selected{%- endif -%}>{{each_tag_form['item']}}</option>
+                {% endfor -%}
+              {% else %}
+                <option value="">{{dict_translation['none_available']['title']}}</option>
+              {% endif %}
+              </select>
+            </div>
+          </div>
+
         </div>
-      </div>
-        {% if colors_graph[each_dashboard.unique_id][n]['type'] != 'Tag' %}
-      <div class="col-auto">
-        <label class="control-label">Disable Data Grouping</label>
-        <div class="input-group-text">
-          <input id="disable_data_grouping-{{colors_graph[each_dashboard.unique_id][n]['measure_id']}}" name="disable_data_grouping-{{colors_graph[each_dashboard.unique_id][n]['measure_id']}}" type="checkbox" value="y"{% if colors_graph[each_dashboard.unique_id][n]['disable_data_grouping'] %} checked{% endif %}>
+
+        <div class="form-row">
+          {{_('Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one')}}.
         </div>
-      </div>
-        {% endif %}
-    </div>
+
+        <div class="form-row" style="padding-left: 0.5em; padding-top: 1em">
+          <div class="col-12" style="font-weight: bold">
+            {{_('Series Options')}}
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_graph.use_custom_colors.label.text}}</label>
+            <div class="input-group-text">
+              <input id="use_custom_colors" name="use_custom_colors" type="checkbox" value="y"{% if each_dashboard.use_custom_colors %} checked{% endif %}>
+            </div>
+          </div>
+        </div>
+
+          {% for n in range(colors_graph[each_dashboard.unique_id]|length) %}
+        <div class="form-row">
+          <div class="col-12">
+            {%- if 'type' in colors_graph[each_dashboard.unique_id][n] -%}
+                {{colors_graph[each_dashboard.unique_id][n]['type'] + ': '}}
+            {%- endif -%}
+             {{colors_graph[each_dashboard.unique_id][n]['name']}}
+            {%- if 'channel' in colors_graph[each_dashboard.unique_id][n] and colors_graph[each_dashboard.unique_id][n]['channel'] != '' -%}
+              {{', CH' + colors_graph[each_dashboard.unique_id][n]['channel']|string}}
+            {%- endif -%}
+            {%- if colors_graph[each_dashboard.unique_id][n]['measure_name'] -%}
+              {{', ' + colors_graph[each_dashboard.unique_id][n]['measure_name']}}
+            {%- endif -%}
+            {%- if colors_graph[each_dashboard.unique_id][n]['unit'] in dict_units -%}
+              {{' (' + dict_units[colors_graph[each_dashboard.unique_id][n]['unit']]['name'] + ')'}}
+            {%- endif -%}
+          </div>
+          <div class="form-check">
+            {% set index = '{0:0>2}'.format(n) %}
+            <label class="control-label" for="color_number{{index}}">Color</label>
+            <div>
+              <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{colors_graph[each_dashboard.unique_id][n]['color']}}">
+            </div>
+          </div>
+            {% if colors_graph[each_dashboard.unique_id][n]['type'] != 'Tag' %}
+          <div class="col-auto">
+            <label class="control-label">Disable Data Grouping</label>
+            <div class="input-group-text">
+              <input id="disable_data_grouping-{{colors_graph[each_dashboard.unique_id][n]['measure_id']}}" name="disable_data_grouping-{{colors_graph[each_dashboard.unique_id][n]['measure_id']}}" type="checkbox" value="y"{% if colors_graph[each_dashboard.unique_id][n]['disable_data_grouping'] %} checked{% endif %}>
+            </div>
+          </div>
+            {% endif %}
+        </div>
+          {% endfor %}
+
+        <div class="form-row" style="padding-left: 0.5em; padding-top: 1em">
+          <div class="col-12" style="font-weight: bold">
+            {{_('Y-Axis Options')}}
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_graph.enable_manual_y_axis.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_manual_y_axis" name="enable_manual_y_axis" type="checkbox" value="y"{% if each_dashboard.enable_manual_y_axis %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_graph.enable_align_ticks.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_align_ticks" name="enable_align_ticks" type="checkbox" value="y"{% if each_dashboard.enable_align_ticks %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_graph.enable_start_on_tick.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_start_on_tick" name="enable_start_on_tick" type="checkbox" value="y"{% if each_dashboard.enable_start_on_tick %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_graph.enable_end_on_tick.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_end_on_tick" name="enable_end_on_tick" type="checkbox" value="y"{% if each_dashboard.enable_end_on_tick %} checked{% endif %}>
+            </div>
+          </div>
+        </div>
+
+      {% for each_yaxis in y_axes[each_dashboard.unique_id] if each_yaxis in dict_units %}
+        {% set index = '{0:0>2}'.format(loop.index) %}
+        <div class="row" style="padding-top: 0.5em">
+          <div class="col-auto">
+            {{dict_units[each_yaxis]['name']}}{% if dict_units[each_yaxis]['unit'] != '' %} ({{dict_units[each_yaxis]['unit']}}){% endif %}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <input type="hidden" name="custom_yaxis_name_{{index}}" value="{{each_yaxis}}">
+          <div class="col-auto">
+            <label class="form-check-label" for="custom_yaxis_min_{{index}}">Y-Axis Minimum</label>
+            <div>
+              <input id="yaxis_min_{{index}}" class="form-control" name="custom_yaxis_min_{{index}}" type="number" value="{% if custom_yaxes[each_dashboard.unique_id][each_yaxis] %}{{custom_yaxes[each_dashboard.unique_id][each_yaxis]['minimum']}}{% endif %}">
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="form-check-label" for="custom_yaxis_max_{{index}}">Y-Axis Maximum</label>
+            <div>
+              <input id="yaxis_max_{{index}}" class="form-control" name="custom_yaxis_max_{{index}}" type="number" value="{% if custom_yaxes[each_dashboard.unique_id][each_yaxis] %}{{custom_yaxes[each_dashboard.unique_id][each_yaxis]['maximum']}}{% endif %}">
+            </div>
+          </div>
+        </div>
       {% endfor %}
 
-    <div class="form-row" style="padding-left: 0.5em; padding-top: 1em">
-      <div class="col-12" style="font-weight: bold">
-        {{_('Y-Axis Options')}}
-      </div>
-      <div class="col-auto">
-        <label class="control-label">{{form_graph.enable_manual_y_axis.label.text}}</label>
-        <div class="input-group-text">
-          <input id="enable_manual_y_axis" name="enable_manual_y_axis" type="checkbox" value="y"{% if each_dashboard.enable_manual_y_axis %} checked{% endif %}>
+        <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
+          <div class="col-auto">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+          <div class="col-auto">
+            {{form_base.modify(class_='btn btn-primary')}}
+          </div>
+          <div class="col-auto">
+            {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+          </div>
         </div>
-      </div>
-      <div class="col-auto">
-        <label class="control-label">{{form_graph.enable_align_ticks.label.text}}</label>
-        <div class="input-group-text">
-          <input id="enable_align_ticks" name="enable_align_ticks" type="checkbox" value="y"{% if each_dashboard.enable_align_ticks %} checked{% endif %}>
-        </div>
-      </div>
-      <div class="col-auto">
-        <label class="control-label">{{form_graph.enable_start_on_tick.label.text}}</label>
-        <div class="input-group-text">
-          <input id="enable_start_on_tick" name="enable_start_on_tick" type="checkbox" value="y"{% if each_dashboard.enable_start_on_tick %} checked{% endif %}>
-        </div>
-      </div>
-      <div class="col-auto">
-        <label class="control-label">{{form_graph.enable_end_on_tick.label.text}}</label>
-        <div class="input-group-text">
-          <input id="enable_end_on_tick" name="enable_end_on_tick" type="checkbox" value="y"{% if each_dashboard.enable_end_on_tick %} checked{% endif %}>
-        </div>
-      </div>
+
+      </form>
+
     </div>
-
-  {% for each_yaxis in y_axes[each_dashboard.unique_id] if each_yaxis in dict_units %}
-    {% set index = '{0:0>2}'.format(loop.index) %}
-    <div class="row" style="padding-top: 0.5em">
-      <div class="col-auto">
-        {{dict_units[each_yaxis]['name']}}{% if dict_units[each_yaxis]['unit'] != '' %} ({{dict_units[each_yaxis]['unit']}}){% endif %}
-      </div>
-    </div>
-
-    <div class="form-row">
-      <input type="hidden" name="custom_yaxis_name_{{index}}" value="{{each_yaxis}}">
-      <div class="col-auto">
-        <label class="form-check-label" for="custom_yaxis_min_{{index}}">Y-Axis Minimum</label>
-        <div>
-          <input id="yaxis_min_{{index}}" class="form-control" name="custom_yaxis_min_{{index}}" type="number" value="{% if custom_yaxes[each_dashboard.unique_id][each_yaxis] %}{{custom_yaxes[each_dashboard.unique_id][each_yaxis]['minimum']}}{% endif %}">
-        </div>
-      </div>
-      <div class="col-auto">
-        <label class="form-check-label" for="custom_yaxis_max_{{index}}">Y-Axis Maximum</label>
-        <div>
-          <input id="yaxis_max_{{index}}" class="form-control" name="custom_yaxis_max_{{index}}" type="number" value="{% if custom_yaxes[each_dashboard.unique_id][each_yaxis] %}{{custom_yaxes[each_dashboard.unique_id][each_yaxis]['maximum']}}{% endif %}">
-        </div>
-      </div>
-    </div>
-  {% endfor %}
-
-    <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
-      <div class="col-auto">
-        {{form_base.modify(class_='btn btn-primary')}}
-      </div>
-      <div class="col-auto">
-        {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-      </div>
-      <div class="col-auto">
-        {{form_base.order_up(class_='btn btn-primary')}}
-      </div>
-      <div class="col-auto">
-        {{form_base.order_down(class_='btn btn-primary')}}
-      </div>
-    </div>
-
-  </form>
-
+  </div>
 </div>

@@ -23,7 +23,7 @@ from mycodo.config import DASHBOARD_WIDGETS
 
 class DashboardBase(FlaskForm):
     dashboard_id = StringField('Dashboard Object ID', widget=widgets.HiddenInput())
-    dashboard_type = SelectField('Dashboard Element Type',
+    dashboard_type = SelectField('Dashboard Widget Type',
         choices=DASHBOARD_WIDGETS,
         validators=[DataRequired()]
     )

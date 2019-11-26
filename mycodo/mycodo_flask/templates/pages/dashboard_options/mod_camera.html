@@ -1,104 +1,111 @@
-<div style="padding-right: 0.2em;">
-  <div class="text-right align-items-center">
-    <span style="padding-right: 0.5em"><span id="{{each_dashboard.id}}-timestamp"></span> {{each_dashboard.name}} [{{'%02d' % each_dashboard.id}}]</span>
-    <a data-toggle="collapse" href="#collapseContainer{{chart_number}}" aria-expanded="false" aria-controls="collapseContainer{{chart_number}}">
-      <span class="collapse-button{{chart_number}} fa fa-2x fa-plus-square"></span>
-    </a>
+<div class="d-flex justify-content-between panel-heading" style="flex: 0 1 auto;">
+  <div class="my-auto" style="padding-left: 0.4em">
+    <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="Drag"></i>
+  </div>
+  <div class="my-auto">
+    <span style="padding-right: 0.5em"><span id="{{each_dashboard.id}}-timestamp"></span> {{each_dashboard.name}}</span>
+    <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
+      <i style="font-size: 1.5em" class="fas fa-cog"></i>
+    </button>
   </div>
 </div>
 
-<div id="container-graph-{{each_dashboard.id}}" style="height: {{each_dashboard.height}}px;">
-  <a id="{{each_dashboard.id}}-image-href" href="" target="_blank"><img id="{{each_dashboard.id}}-image-src" style="max-height: 100%; max-width: 100%" src=""></a>
+<div id="container-graph-{{each_dashboard.id}}" style="position: relative; flex-grow: 1">
+  <a id="{{each_dashboard.id}}-image-href" href="" target="_blank"><img id="{{each_dashboard.id}}-image-src" style="height: 100%; width: 100%" src=""></a>
 </div>
 
-<div class="collapse" id="collapseContainer{{chart_number}}" style="padding: 0.5em; width: calc(100% - 1em)">
+<div class="modal fade" id="modal_config_{{chart_number}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="padding: 1em">
+      <div class="modal-header">
+        <h5 class="modal-title">Camera Widget Configuration</h5>
+      </div>
 
-  <form method="post" action="/dashboard">
-    {{form_base.csrf_token}}
-    {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
-    <input type="hidden" name="dashboard_type" value="{{each_dashboard.graph_type}}">
+      <form method="post" action="/dashboard">
+        {{form_base.csrf_token}}
+        {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
+        <input type="hidden" name="dashboard_type" value="{{each_dashboard.graph_type}}">
 
-    <div class="form-row">
-      <div class="col-auto">
-        {{form_base.name.label(class_='control-label')}}
-        <div>
-          {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': dict_translation['name']['phrase']})}}
+        <div class="form-row">
+          <div class="col-auto">
+            {{form_base.name.label(class_='control-label')}}
+            <div>
+              {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': dict_translation['name']['phrase']})}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.camera_id.label(class_='control-label')}}
+            <div>
+              <select class="form-control" id="camera_id" name="camera_id" style="width: 100%;">
+                <option value="">{{dict_translation['select_one']['title']}}</option>
+              {% if choices_camera %}
+              {% for each_camera_form in choices_camera -%}
+                <option value="{{each_camera_form['value']}}" {% if each_dashboard.camera_id == each_camera_form['value'] %}selected{% endif %}>{{each_camera_form['item']}}</option>
+              {% endfor -%}
+              {% else %}
+                <option value="">{{dict_translation['none_available']['title']}}</option>
+              {% endif %}
+              </select>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.camera_image_type.label(class_='control-label')}}
+            <div>
+              <select class="form-control" id="camera_image_type" name="camera_image_type">
+                <option value="new_img"{% if each_dashboard.camera_image_type == 'new_image' %} selected{% endif %}>{{_('Acquire Image (and save new file)')}}</option>
+                <option value="tmp_img"{% if each_dashboard.camera_image_type == 'tmp_img' %} selected{% endif %}>{{_('Acquire Image (and erase last file)')}}</option>
+                <option value="stream"{% if each_dashboard.camera_image_type == 'stream' %} selected{% endif %}>{{_('Display Live Video Stream')}}</option>
+                <option value="timelapse"{% if each_dashboard.camera_image_type == 'timelapse' %} selected{% endif %}>{{_('Display Latest Timelapse Image')}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_base.width.label(class_='control-label')}}
+            <div>
+              <select class="form-control" id="width" name="width">
+                {% for n in range(1, 12) %}
+                  <option value="{{n}}"{%- if each_dashboard.width == n %} selected{%- endif -%}>{{n}}/12</option>
+                {% endfor %}
+                <option value="12"{%- if each_dashboard.width == 12 or each_dashboard.width > 12 or each_dashboard.width < 1 %} selected{%- endif -%}>12/12</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_base.height.label(class_='control-label')}}
+            <div>
+              {{form_base.height(class_='form-control', value=each_dashboard.height)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_base.refresh_duration.label(class_='control-label')}}
+            <div>
+              {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.camera_max_age.label(class_='control-label')}}
+            <div>
+              {{form_camera.camera_max_age(class_='form-control', value=each_dashboard.camera_max_age)}}
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="col-auto">
-        {{form_camera.camera_id.label(class_='control-label')}}
-        <div>
-          <select class="form-control" id="camera_id" name="camera_id" style="width: 100%;">
-            <option value="">{{dict_translation['select_one']['title']}}</option>
-          {% if choices_camera %}
-          {% for each_camera_form in choices_camera -%}
-            <option value="{{each_camera_form['value']}}" {% if each_dashboard.camera_id == each_camera_form['value'] %}selected{% endif %}>{{each_camera_form['item']}}</option>
-          {% endfor -%}
-          {% else %}
-            <option value="">{{dict_translation['none_available']['title']}}</option>
-          {% endif %}
-          </select>
+
+        <div style="clear: both"></div>
+
+        <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
+          <div class="col-auto">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+          <div class="col-auto">
+            {{form_base.modify(class_='btn btn-primary')}}
+          </div>
+          <div class="col-auto">
+            {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+          </div>
         </div>
-      </div>
-      <div class="col-auto">
-        {{form_camera.camera_image_type.label(class_='control-label')}}
-        <div>
-          <select class="form-control" id="camera_image_type" name="camera_image_type">
-            <option value="new_img"{% if each_dashboard.camera_image_type == 'new_image' %} selected{% endif %}>{{_('Acquire Image (and save new file)')}}</option>
-            <option value="tmp_img"{% if each_dashboard.camera_image_type == 'tmp_img' %} selected{% endif %}>{{_('Acquire Image (and erase last file)')}}</option>
-            <option value="stream"{% if each_dashboard.camera_image_type == 'stream' %} selected{% endif %}>{{_('Display Live Video Stream')}}</option>
-            <option value="timelapse"{% if each_dashboard.camera_image_type == 'timelapse' %} selected{% endif %}>{{_('Display Latest Timelapse Image')}}</option>
-          </select>
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_base.width.label(class_='control-label')}}
-        <div>
-          <select class="form-control" id="width" name="width">
-            {% for n in range(1, 12) %}
-              <option value="{{n}}"{%- if each_dashboard.width == n %} selected{%- endif -%}>{{n}}/12</option>
-            {% endfor %}
-            <option value="12"{%- if each_dashboard.width == 12 or each_dashboard.width > 12 or each_dashboard.width < 1 %} selected{%- endif -%}>12/12</option>
-          </select>
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_base.height.label(class_='control-label')}}
-        <div>
-          {{form_base.height(class_='form-control', value=each_dashboard.height)}}
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_base.refresh_duration.label(class_='control-label')}}
-        <div>
-          {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
-        </div>
-      </div>
-      <div class="col-auto">
-        {{form_camera.camera_max_age.label(class_='control-label')}}
-        <div>
-          {{form_camera.camera_max_age(class_='form-control', value=each_dashboard.camera_max_age)}}
-        </div>
-      </div>
+
+      </form>
+
     </div>
-
-    <div style="clear: both"></div>
-
-    <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
-      <div class="col-auto">
-        {{form_base.modify(class_='btn btn-primary')}}
-      </div>
-      <div class="col-auto">
-        {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-      </div>
-      <div class="col-auto">
-        {{form_base.order_up(class_='btn btn-primary')}}
-      </div>
-      <div class="col-auto">
-        {{form_base.order_down(class_='btn btn-primary')}}
-      </div>
-    </div>
-
-  </form>
-
+  </div>
 </div>

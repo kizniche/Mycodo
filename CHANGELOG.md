@@ -1,5 +1,7 @@
 ## 8.0.4 (Unreleased)
 
+This update brings a new Dashboard organization method, allowing drag-and drop placement and resizing of widgets using gridstack.js.
+
 ### Bugfixes
 
  - Fix Atlas Scientific UART interfaces
@@ -9,15 +11,22 @@
  - Fix disabled measurements not appearing for math controllers ([#716](https://github.com/kizniche/mycodo/issues/716))
  - Fix disabled measurements from Math controllers still being recorded in influxdb
  - Fix inability to select PID Controller with PID Control Widget ([#718](https://github.com/kizniche/mycodo/issues/718))
+ - Fix displaying image in Camera Widget
 
 ### Features
 
+ - Implement new method for arranging and sizing Dashboard Widgets
  - Add API endpoints: /measurements/historical and /measurements/historical_function
  - Add ability to set timestamp with /measurements/create API endpoint
  - Display the entire log for the ongoing upgrade rather than only the last 40 lines
  - Add Calibration: Atlas Scientific Electrical Conductivity Sensor ([#710](https://github.com/kizniche/mycodo/issues/710))
  - Add Input: Mycodo Version (mainly for testing)
  - Allow timestamp to be specified for Python 3 Code Input measurement creation ([#716](https://github.com/kizniche/mycodo/issues/716))
+
+### Miscellaneous
+
+ - Update Bootstrap to 4.3.1
+ - Update FontAwesome to 5.11.2
 
 
 ## 8.0.3 (2019.11.15)
