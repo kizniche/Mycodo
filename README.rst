@@ -551,3 +551,27 @@ Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更�
    :target: https://doi.org/10.5281/zenodo.824199
 .. |Mycodo| image:: http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/05/Mycodo-3.6.0-tango-Graph-2016-05-21-11-15-26.png
    :target: http://kylegabriel.com/projects/
+
+Thanks
+------
+
+[Raspberry Pi](https://www.raspberrypi.org/)
+
+[alembic](https://alembic.sqlalchemy.org)
+[Bootstrap](https://getbootstrap.com)
+[Date Range Picker](https://github.com/dangrossman/daterangepicker)
+[Flask](http://flask.palletsprojects.com)
+[Flask-Babel](https://github.com/python-babel/flask-babel)
+[Flask-Limiter](https://github.com/alisaifee/flask-limiter)
+[Flask-RestPlus](https://github.com/noirbizarre/flask-restplus)
+[Flask-WTF](https://github.com/lepture/flask-wtf)
+[FontAwesome](https://fontawesome.com)
+[gridstack.js](https://github.com/gridstack/gridstack.js)
+[Gunicorn](https://gunicorn.org)
+[Highcharts](https://www.highcharts.com)
+[InfluxDB](https://github.com/influxdata/influxdb)
+[jQuery](https://jquery.com)
+[Pyro5](https://github.com/irmen/Pyro5)
+[SQLAlchemy](https://www.sqlalchemy.org)
+[SQLite](https://www.sqlite.org)
+[toastr](https://github.com/CodeSeven/toastr)

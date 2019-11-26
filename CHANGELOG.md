@@ -1,4 +1,4 @@
-## 8.0.4 (Unreleased)
+## 8.1.0 (Unreleased)
 
 This update brings a new Dashboard organization method, allowing drag-and drop placement and resizing of widgets using gridstack.js.
 
@@ -15,7 +15,7 @@ This update brings a new Dashboard organization method, allowing drag-and drop p
 
 ### Features
 
- - Implement new method for arranging and sizing Dashboard Widgets
+ - Implement new method for arranging and sizing Dashboard Widgets ([#717](https://github.com/kizniche/mycodo/issues/717))
  - Add API endpoints: /measurements/historical and /measurements/historical_function
  - Add ability to set timestamp with /measurements/create API endpoint
  - Display the entire log for the ongoing upgrade rather than only the last 40 lines
