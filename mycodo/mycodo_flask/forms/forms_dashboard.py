@@ -31,22 +31,6 @@ class DashboardBase(FlaskForm):
         TRANSLATIONS['name']['title'],
         validators=[DataRequired()]
     )
-    width = IntegerField(
-        lazy_gettext('Width'),
-        validators=[validators.NumberRange(
-            min=1,
-            max=12
-        )],
-        widget=NumberInput()
-    )
-    height = IntegerField(
-        lazy_gettext('Height (pixels)'),
-        validators=[validators.NumberRange(
-            min=100,
-            max=10000
-        )],
-        widget=NumberInput()
-    )
     refresh_duration = IntegerField(
         lazy_gettext('Refresh (seconds)'),
         validators=[validators.NumberRange(
