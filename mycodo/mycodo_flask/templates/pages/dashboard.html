@@ -32,6 +32,7 @@
 
   <!-- gridstack.js -->
   <script src="/static/js/jquery-ui.min.js"></script>
+  <script src="/static/js/jquery.ui.touch-punch.min.js"></script>
   <script src="/static/js/gridstack.all.js"></script>
   <link rel="stylesheet" href="/static/css/gridstack.min.css" />
 
@@ -135,11 +136,12 @@ var options = {
   draggable: {
     handle: '.panel-heading'
   },
+  alwaysShowResizeHandle: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
   {#float: true#}
 };
-var grid = $('.grid-stack').gridstack(options);
+$('.grid-stack').gridstack(options);
 
-grid.on('change', function (event, items) {
+$('.grid-stack').on('change', function (event, items) {
   var res = $('.grid-stack > .grid-stack-item:visible').map(function (i, el) {
     el = $(el);
     node = el.data('_gridstack_node');

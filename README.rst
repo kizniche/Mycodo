@@ -555,7 +555,7 @@ Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更�
 Thanks
 ------
 
--  `alembic <https://alembic.sqlalchemy.org>`__
+-  `Alembic <https://alembic.sqlalchemy.org>`__
 -  `Bootstrap <https://getbootstrap.com>`__
 -  `Date Range Picker <https://github.com/dangrossman/daterangepicker>`__
 -  `Flask <http://flask.palletsprojects.com>`__
