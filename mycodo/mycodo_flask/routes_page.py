@@ -513,19 +513,15 @@ def pie():
     data = request.get_json()
     keys = ('unique_id', 'x', 'y', 'width', 'height')
     for each_widget in data:
-        logger.error("Saved: {}".format(each_widget))
         if all(k in each_widget for k in keys):
             mod_dash = Dashboard.query.filter(
                 Dashboard.unique_id == each_widget['unique_id']).first()
             if mod_dash:
                 mod_dash.position_x = each_widget['x']
                 mod_dash.position_y = each_widget['y']
-                mod_dash.size_x = each_widget['width']
-                mod_dash.size_y = each_widget['height']
+                mod_dash.width = each_widget['width']
+                mod_dash.height = each_widget['height']
                 db.session.commit()
-            else:
-                logger.error("TEST33")
-    logger.error("//")
     return "success"
 
 

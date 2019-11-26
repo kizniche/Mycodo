@@ -51,9 +51,12 @@
     {%- for each_dashboard in dashboard -%}
       {%- set chart_number = loop.index -%}
 
-      <div class="grid-stack-item" data-custom-id="{{each_dashboard.unique_id}}" data-name="{{each_dashboard.name}}"
+      <div class="grid-stack-item"
+           data-custom-chart-number="{{chart_number}}"
+           data-custom-id="{{each_dashboard.unique_id}}"
+           data-name="{{each_dashboard.name}}"
            data-gs-x="{{each_dashboard.position_x}}" data-gs-y="{{each_dashboard.position_y}}"
-           data-gs-width="{{each_dashboard.size_x}}" data-gs-height="{{each_dashboard.size_y}}">
+           data-gs-width="{{each_dashboard.width}}" data-gs-height="{{each_dashboard.height}}">
 
         <div class="grid-stack-item-content" style="display: flex; flex-flow: column; height: 100%; padding: 0.2em; border: 1px solid #ddd; border-radius: 5px">
 
@@ -159,7 +162,7 @@ $('.grid-stack').on('change', function (event, items) {
     type: "POST",
     data: JSON.stringify(res.toArray()),
     contentType: "application/json; charset=utf-8",
-    success: function(dat) { console.log(dat); }
+    success: function(dat) {}
   });
 });
 
@@ -338,9 +341,8 @@ Highcharts.setOptions({
 var last_output_time_mil = {};
 
 $(document).ready(function() {
-  var chart_graph = [];
-  var chart_gauge = [];
-  var note_timestmaps = []
+  var chart = [];
+  var note_timestmaps = [];
 
   function getGPIOState(chart_number, unique_id) {
     var url = '/outputstate_unique_id/' + unique_id;
@@ -413,9 +415,9 @@ $(document).ready(function() {
               }
             }
           }
-          chart_graph[chart_number].series[series].isDirty = true;
-          chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (past_seconds / 60)), new Date().getTime());
-          chart_graph[chart_number].series[series].setData(past_data, true, false);
+          chart[chart_number].series[series].isDirty = true;
+          chart[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (past_seconds / 60)), new Date().getTime());
+          chart[chart_number].series[series].setData(past_data, true, false);
         }
       }
     );
@@ -474,7 +476,7 @@ $(document).ready(function() {
         success: function(data, responseText, jqXHR) {
           if (jqXHR.status === 204) {
             if (dash_type === "gauge") {
-              var null_point = chart_gauge[chart_number].series[0].points[0];
+              var null_point = chart[chart_number].series[0].points[0];
               null_point.update(null);
             } else if (['indicator', 'measurement', 'output', 'pid_control'].indexOf(dash_type) >= 0) {
               document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
@@ -486,7 +488,7 @@ $(document).ready(function() {
             var measurement = data[1];
 
             if (dash_type === "gauge") {
-              var new_point = chart_gauge[chart_number].series[0].points[0];
+              var new_point = chart[chart_number].series[0].points[0];
               new_point.update(measurement);
             } else if (dash_type === "indicator") {
               if ((measurement && !extra) || (!measurement && extra)) {
@@ -509,7 +511,7 @@ $(document).ready(function() {
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
           if (dash_type === "gauge") {
-            var point = chart_gauge[chart_number].series[0].points[0];
+            var point = chart[chart_number].series[0].points[0];
             point.update(null);
           } else if (['indicator', 'measurement', 'output', 'pid_control'].indexOf(dash_type) >= 0) {
             document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
@@ -701,14 +703,14 @@ $(document).ready(function() {
 
   // Redraw a particular chart
   function redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset) {
-    chart_graph[chart_number].redraw();
+    chart[chart_number].redraw();
     if (xaxis_reset) {
       // Ensure Reset Zoom button resets to the proper start and end times
-      chart_graph[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)))}, false);
-      chart_graph[chart_number].xAxis[0].update({max: new Date().getTime()}, false);
+      chart[chart_number].xAxis[0].update({min: new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)))}, false);
+      chart[chart_number].xAxis[0].update({max: new Date().getTime()}, false);
       // Update the new data time frame and redraw the chart
-      chart_graph[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min))), new Date().getTime(), true);
-      chart_graph[chart_number].xAxis[0].isDirty = true;
+      chart[chart_number].xAxis[0].setExtremes(new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min))), new Date().getTime(), true);
+      chart[chart_number].xAxis[0].isDirty = true;
     }
   }
 
@@ -742,7 +744,7 @@ $(document).ready(function() {
 
             if (measure_type === 'tag') {
               if (!note_timestmaps.includes(new_time)) {
-                chart_graph[chart_number].series[series].addPoint({
+                chart[chart_number].series[series].addPoint({
                   x: new_time,
                   title: data[i][1],
                   text: data[i][2]
@@ -751,7 +753,7 @@ $(document).ready(function() {
               }
             }
             else {
-              chart_graph[chart_number].series[series].addPoint([new_time, data[i][1]], false, graph_shift);
+              chart[chart_number].series[series].addPoint([new_time, data[i][1]], false, graph_shift);
             }
           }
           if (measure_type === 'tag') {
@@ -791,7 +793,6 @@ $(document).ready(function() {
 
   // Capture image and update the image
   function get_image_cam(dashboard_id, camera_unique_id, image_type, max_age) {
-    console.log("TEST: ", dashboard_id, ",", camera_unique_id, ",", image_type, ",", max_age)
     var url = '';
     var image_type_str = '';
     if (image_type === 'tmp_img') {
@@ -889,6 +890,11 @@ $(document).ready(function() {
   {% endif %}
 
 {%- endfor -%}
+
+  $('.grid-stack').on('gsresizestop', function(event, elem) {
+    var chart_number = $(elem).attr('data-custom-chart-number');
+    chart[chart_number].reflow();
+  });
 
 });
 </script>

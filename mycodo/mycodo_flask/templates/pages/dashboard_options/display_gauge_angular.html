@@ -1,5 +1,5 @@
 {% set measure = { 'measurement_id': None } %}
-  chart_gauge[{{chart_number}}] = new Highcharts.chart({
+  chart[{{chart_number}}] = new Highcharts.chart({
     chart: {
       renderTo: 'container-gauge-{{each_dashboard.unique_id}}',
       type: 'gauge',
@@ -177,8 +177,4 @@
       href: "https://github.com/kizniche/Mycodo",
       text: "Mycodo"
     }
-  });
-
-  $('.grid-stack').on('gsresizestop', function(event, elem) {
-    chart_gauge[{{chart_number}}].reflow();
   });

@@ -26,8 +26,6 @@ def upgrade():
     with op.batch_alter_table("dashboard") as batch_op:
         batch_op.add_column(sa.Column('position_x', sa.Integer))
         batch_op.add_column(sa.Column('position_y', sa.Integer))
-        batch_op.add_column(sa.Column('size_x', sa.Integer))
-        batch_op.add_column(sa.Column('size_y', sa.Integer))
 
     op.execute(
         '''
@@ -46,14 +44,14 @@ def upgrade():
     op.execute(
         '''
         UPDATE dashboard
-        SET size_x=6
+        SET width=6
         '''
     )
 
     op.execute(
         '''
         UPDATE dashboard
-        SET size_y=6
+        SET height=6
         '''
     )
 
@@ -62,5 +60,3 @@ def downgrade():
     with op.batch_alter_table("dashboard") as batch_op:
         batch_op.drop_column('position_x')
         batch_op.drop_column('position_y')
-        batch_op.drop_column('size_x')
-        batch_op.drop_column('size_y')

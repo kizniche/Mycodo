@@ -3,7 +3,7 @@
 {% set graph_pid_ids = each_dashboard.pid_ids.split(';') %}
 {% set graph_note_tag_ids = each_dashboard.note_tag_ids.split(';') %}
 
-  chart_graph[{{chart_number}}] = new Highcharts.StockChart({
+  chart[{{chart_number}}] = new Highcharts.StockChart({
     chart : {
       renderTo: 'container-graph-{{each_dashboard.unique_id}}',
       zoomType: 'x',
@@ -606,8 +606,4 @@
       });
       chart.redraw();
     }
-  });
-
-  $('.grid-stack').on('gsresizestop', function(event, elem) {
-    chart_graph[{{chart_number}}].reflow();
   });

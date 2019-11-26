@@ -163,22 +163,6 @@
             </div>
           </div>
           <div class="col-auto">
-            {{form_base.width.label(class_='control-label')}}
-            <div>
-              <select class="form-control" id="width" name="width">
-                {% for n in range(1, 13) %}
-                  <option value="{{n}}"{% if n == each_dashboard.width %} selected{% endif %}>{{n}}/12</option>
-                {% endfor %}
-              </select>
-            </div>
-          </div>
-          <div class="col-auto">
-            {{form_base.height.label(class_='control-label')}}
-            <div>
-              {{form_base.height(class_='form-control', value=each_dashboard.height)}}
-            </div>
-          </div>
-          <div class="col-auto">
             {{form_output.max_measure_age.label(class_='control-label')}}
             <div>
               {{form_output.max_measure_age(class_='form-control', value=each_dashboard.max_measure_age)}}

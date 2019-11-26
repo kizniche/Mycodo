@@ -13,8 +13,6 @@ class Dashboard(CRUDMixin, db.Model):
     graph_type = db.Column(db.Text, default=None)
     name = db.Column(db.Text, default='Dashboard Element')
     refresh_duration = db.Column(db.Integer, default=120)  # How often to add new data and redraw, refresh camera
-    width = db.Column(db.Integer, default=12)  # Width of page (1-12, bootstrap col widths)
-    height = db.Column(db.Integer, default=400)  # Height (in pixels)
 
     # Graph options
     pid_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
@@ -26,8 +24,8 @@ class Dashboard(CRUDMixin, db.Model):
     # position and size
     position_x = db.Column(db.Integer, default=0)
     position_y = db.Column(db.Integer, default=999)
-    size_x = db.Column(db.Integer, default=6)
-    size_y = db.Column(db.Integer, default=6)
+    width = db.Column(db.Integer, default=6)
+    height = db.Column(db.Integer, default=6)
 
     x_axis_duration = db.Column(db.Integer, default=1440)  # X-axis duration (in minutes)
     use_custom_colors = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
