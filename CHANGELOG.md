@@ -1,4 +1,4 @@
-## 8.1.0 (2019.11..26)
+## 8.1.0 (2019.11.26)
 
 This update brings a new Dashboard organization method, allowing drag-and drop placement and resizing of widgets using gridstack.js. This new system is not comparable to the old; and after upgrading, all widgets will lose their size and position and will need to be repositioned on your dashboard.
 
