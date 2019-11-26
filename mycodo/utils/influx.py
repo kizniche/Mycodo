@@ -431,7 +431,7 @@ def read_influxdb_single(unique_id, unit, channel,
         value=value,
         start_str=start_str,
         end_str=end_str,
-        past_sec=int(duration_sec))
+        past_sec=duration_sec)
 
     if query == 1:
         return '', 204
