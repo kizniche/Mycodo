@@ -4,7 +4,7 @@
 
  - Add Dashboard Widget: Spacer ([#717](https://github.com/kizniche/mycodo/issues/717))
  - Add ability to hide Widget drag handle, set Widget name font size, and hide Graph Widget buttons ([#717](https://github.com/kizniche/mycodo/issues/717))
- - Add ability to set Dashboard gid cell height
+ - Add ability to set Dashboard grid cell height
 
 ## 8.1.1 (2019.11.26)
 

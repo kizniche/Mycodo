@@ -6,26 +6,22 @@ import sqlalchemy
 from flask import flash
 from flask import url_for
 from flask_babel import gettext
+from sqlalchemy import func
 
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
-from mycodo.utils.system_pi import csv_to_list_of_str
-from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import return_measurement_info
 
 logger = logging.getLogger(__name__)
@@ -46,6 +42,15 @@ def dashboard_add(form_base, form_object):
     new_graph.name = form_base.name.data
     new_graph.font_em_name = form_base.font_em_name.data
     new_graph.enable_drag_handle = form_base.enable_drag_handle.data
+
+    # Find where the next widget should be placed on the grid
+    # Finds the lowest position to create as the new Widget's starting position
+    position_y_start = 0
+    for each_widget in Dashboard.query.all():
+        highest_position = each_widget.position_y + each_widget.height
+        if highest_position > position_y_start:
+            position_y_start = highest_position
+    new_graph.position_y = position_y_start
 
     # Spacer
     if form_base.dashboard_type.data == 'spacer':
@@ -169,7 +174,7 @@ def dashboard_add(form_base, form_object):
         new_graph.output_ids = form_object.output_id.data
 
         new_graph.width = 3
-        new_graph.height = 3
+        new_graph.height = 2
 
     # Output Range Slider
     elif form_base.dashboard_type.data == 'output_pwm_slider':

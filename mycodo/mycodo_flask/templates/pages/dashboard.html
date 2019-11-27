@@ -136,6 +136,8 @@
 
 <script type="text/javascript">
 
+// Dashboard Grid
+
 var options = {
   cellHeight: {{misc.grid_cell_height}},
   resizable: {
@@ -145,11 +147,11 @@ var options = {
     handle: '.panel-heading'
   },
   alwaysShowResizeHandle: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-  {#float: true#}
+  float: true
 };
-$('.grid-stack').gridstack(options);
+var grid = $('.grid-stack').gridstack(options);
 
-$('.grid-stack').on('change', function (event, items) {
+grid.on('change', function (event, items) {
   var res = $('.grid-stack > .grid-stack-item:visible').map(function (i, el) {
     el = $(el);
     node = el.data('_gridstack_node');
@@ -178,6 +180,9 @@ jQuery(document).ready(function($) {
   });
 });
 
+
+// Output PWM Slider Widget
+
 function showVal(chart, duty_cycle){
   document.getElementById("range_val_" + chart).innerHTML = duty_cycle;
 }
@@ -188,8 +193,11 @@ function sendVal(chart, output_id, duty_cycle){
   modOutput(cmd_send);
 }
 
+
+// Add Dashboard Widget content selector
+
 $('#dashboard_type').on('change', function () {
-  var x = document.getElementsByClassName("add_dashboard_object");  // Find the elements
+  var x = document.getElementsByClassName("add_dashboard_object");  // Find the widgets
   for(var i = 0; i < x.length; i++){
     x[i].style.display = "none";    // Change the content
   }
@@ -198,6 +206,9 @@ $('#dashboard_type').on('change', function () {
     document.getElementById(this.value).scrollIntoView();
   }
 });
+
+
+// Turn Output on or off
 
 function modOutput(btn_val) {
   $.ajax({
@@ -261,6 +272,9 @@ $(document).ready(function() {
     modOutput(send_cmd + dc);
   });
 });
+
+
+// Modify PID Controller
 
 function modPID(btn_val) {
   $.ajax({
@@ -332,6 +346,9 @@ $(document).ready(function() {
     }
   });
 });
+
+
+// Graph Widget
 
 Highcharts.setOptions({
   global: {
@@ -902,6 +919,7 @@ $(document).ready(function() {
   });
 
 });
+
 </script>
 
 {% endblock %}
