@@ -210,6 +210,9 @@ TRANSLATIONS = {
     'flow_rate': {
         'title': lazy_gettext('Flow Rate (ml/min)'),
         'phrase': lazy_gettext('Flow rate in ml/minute (0.5 min, 105 max)')},
+    'font_em_name': {
+        'title': lazy_gettext('Name Font Size (em)'),
+        'phrase': lazy_gettext('The font size of the Name text')},
     'ftdi_location': {
         'title': lazy_gettext('FTDI Device'),
         'phrase': lazy_gettext('The FTDI device (e.g. /dev/ttyUSB1)')},
@@ -249,6 +252,9 @@ TRANSLATIONS = {
     'off_command': {
         'title': lazy_gettext('Off Command'),
         'phrase': lazy_gettext('Command to execute (as user mycodo) when the output is instructed to turn off')},
+    'on_state': {
+        'title': lazy_gettext('On State'),
+        'phrase': lazy_gettext('What state triggers the output to turn on? High or Low?')},
     'output_mode': {
         'title': lazy_gettext('Output Mode'),
         'phrase': lazy_gettext('Mode to run the output')},
@@ -317,6 +323,9 @@ TRANSLATIONS = {
     'ref_ohm': {
         'title': lazy_gettext('Reference Resistance'),
         'phrase': lazy_gettext('Reference resistance (Ohm)')},
+    'refresh_duration': {
+        'title': lazy_gettext('Refresh (seconds)'),
+        'phrase': lazy_gettext('Number of seconds to wait between acquiring any new measurements.')},
     'resolution': {
         'title': lazy_gettext('Resolution'),
         'phrase': lazy_gettext('Measurement resolution')},
@@ -371,9 +380,6 @@ TRANSLATIONS = {
     'times_check': {
         'title': lazy_gettext('Times Check'),
         'phrase': lazy_gettext('Number of times to check')},
-    'on_state': {
-        'title': lazy_gettext('On State'),
-        'phrase': lazy_gettext('What state triggers the output to turn on? High or Low?')},
     'trigger_functions_at_start': {
         'title': lazy_gettext('Trigger at Startup'),
         'phrase': lazy_gettext('Whether or not to trigger Functions when Mycodo starts')},

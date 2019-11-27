@@ -4,43 +4,38 @@
 
   <div class="form-row small-gutters">
 
-    <div class="col-sm-6 col-md-3 col-lg-2">
-      {{form_base.name.label(class_='control-label')}}
+    {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_ADD.html' %}
+    <div class="col-auto">
+      {{form_base.refresh_duration.label(class_='control-label')}}
       <div>
-        {{form_base.name(class_='form-control', value=_('Output'))}}
+        {{form_base.refresh_duration(class_='form-control', value=30)}}
       </div>
     </div>
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_output.max_measure_age.label(class_='control-label')}}
       <div>
         {{form_output.max_measure_age(class_='form-control', value=3600)}}
       </div>
     </div>
-    <div class="col-sm-6 col-md-3 col-lg-2">
-      {{form_base.refresh_duration.label(class_='control-label')}}
-      <div>
-        {{form_base.refresh_duration(class_='form-control', value=15)}}
-      </div>
-    </div>
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_output.font_em_value.label(class_='control-label')}}
       <div>
         {{form_output.font_em_value(class_='form-control', value=2)}}
       </div>
     </div>
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_output.font_em_timestamp.label(class_='control-label')}}
       <div>
         {{form_output.font_em_timestamp(class_='form-control', value=1)}}
       </div>
     </div>
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_output.decimal_places.label(class_='control-label')}}
       <div>
         {{form_output.decimal_places(class_='form-control', value=1)}}
       </div>
     </div>
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_output.enable_output_controls.label(class_='control-label')}}
       <div class="input-group-text">
         <input id="enable_output_controls" name="enable_output_controls" type="checkbox" value="y" checked>
@@ -49,7 +44,7 @@
 
     <div style="clear: both"></div>
 
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-auto">
       {{form_output.output_id.label(class_='control-label')}}
       <div>
         <select class="form-control" id="output_id" name="output_id" style="width: 100%;">

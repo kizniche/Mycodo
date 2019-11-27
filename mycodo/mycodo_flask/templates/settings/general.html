@@ -118,6 +118,17 @@
       </div>
       <div class="form-group">
         <div class="col-sm-12">
+          <h3>Dashboard Options</h3>
+        </div>
+      </div>
+      <div class="form-group">
+        {{form_settings_general.grid_cell_height.label(class_='col-sm-12 control-label checkbox-nopad')}}
+        <div class="col-sm-12">
+          {{form_settings_general.grid_cell_height(class_='form-control', value=misc.grid_cell_height, **{'title':_("The heigth of the grid cell, in pixels.")})}}
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-12">
           <h3>Upgrade Options</h3>
         </div>
       </div>

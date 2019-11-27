@@ -1,9 +1,11 @@
 <div class="d-flex justify-content-between panel-heading" style="flex: 0 1 auto;">
   <div class="my-auto" style="padding-left: 0.4em">
+    {% if each_dashboard.enable_drag_handle -%}
     <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="Drag"></i>
+    {%- endif %}
   </div>
-  <div class="my-auto">
-    <span id="text-output-state-{{chart_number}}"></span> <span style="padding-right: 0.5em"> {{each_dashboard.name}} [{{'%02d' % each_dashboard.id}}]</span>
+  <div class="my-auto" style="font-size: {{each_dashboard.font_em_name}}em">
+    <span id="text-output-state-{{chart_number}}"></span> <span style="padding-right: 0.5em"> {{each_dashboard.name}}</span>
     <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
       <i style="font-size: 1.5em" class="fas fa-cog"></i>
     </button>
@@ -103,12 +105,7 @@
         {% endif %}
 
         <div class="form-row">
-          <div class="col-auto">
-            {{form_base.name.label(class_='control-label')}}
-            <div>
-              {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': dict_translation['name']['phrase']})}}
-            </div>
-          </div>
+          {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_MOD.html' %}
           <div class="col-auto">
             {{form_pid.pid_id.label(class_='control-label')}}
             <div>

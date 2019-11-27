@@ -48,6 +48,7 @@ LANGUAGES = {
 
 DASHBOARD_WIDGETS = [
     ('', lazy_gettext('Add Dashboard Widget')),
+    ('spacer', lazy_gettext('Spacer')),
     ('graph', lazy_gettext('Graph')),
     ('gauge', lazy_gettext('Gauge')),
     ('indicator', TRANSLATIONS['indicator']['title']),

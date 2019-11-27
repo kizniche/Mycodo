@@ -1,0 +1,49 @@
+<div class="d-flex justify-content-between panel-heading" style="flex: 0 1 auto;">
+  <div class="my-auto" style="padding-left: 0.4em">
+    {% if each_dashboard.enable_drag_handle -%}
+    <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="Drag"></i>
+    {%- endif %}
+  </div>
+  <div class="my-auto">
+    <span style="padding-right: 0.5em; font-size: {{each_dashboard.font_em_name}}em">{{each_dashboard.name}}</span>
+    <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
+      <i style="font-size: 1.5em" class="fas fa-cog"></i>
+    </button>
+  </div>
+</div>
+
+<div class="modal fade" id="modal_config_{{chart_number}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="padding: 1em">
+      <div class="modal-header">
+        <h5 class="modal-title">Camera Widget Configuration</h5>
+      </div>
+
+      <form method="post" action="/dashboard">
+        {{form_base.csrf_token}}
+        {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
+        <input type="hidden" name="dashboard_type" value="{{each_dashboard.graph_type}}">
+
+        <div class="form-row">
+          {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_MOD.html' %}
+        </div>
+
+        <div style="clear: both"></div>
+
+        <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
+          <div class="col-auto">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+          <div class="col-auto">
+            {{form_base.modify(class_='btn btn-primary')}}
+          </div>
+          <div class="col-auto">
+            {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>

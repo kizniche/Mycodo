@@ -44,15 +44,29 @@ def dashboard_add(form_base, form_object):
 
     new_graph = Dashboard()
     new_graph.name = form_base.name.data
+    new_graph.font_em_name = form_base.font_em_name.data
+    new_graph.enable_drag_handle = form_base.enable_drag_handle.data
+
+    # Spacer
+    if form_base.dashboard_type.data == 'spacer':
+
+        dashboard_type = 'Spacer'
+
+        new_graph.graph_type = form_base.dashboard_type.data
+
+        new_graph.width = 12
+        new_graph.height = 1
 
     # Graph
-    if (form_base.dashboard_type.data == 'graph' and
+    elif (form_base.dashboard_type.data == 'graph' and
             (form_base.name.data and
              form_object.xaxis_duration.data and
              form_base.refresh_duration.data)):
 
         dashboard_type = 'Graph'
+
         error = graph_error_check(form_object, error)
+
         new_graph.graph_type = form_base.dashboard_type.data
         if form_object.math_ids.data:
             new_graph.math_ids = ";".join(form_object.math_ids.data)
@@ -64,8 +78,10 @@ def dashboard_add(form_base, form_object):
             new_graph.input_ids_measurements = ";".join(form_object.input_ids.data)
         if form_object.note_tag_ids.data:
             new_graph.note_tag_ids = ";".join(form_object.note_tag_ids.data)
-        new_graph.x_axis_duration = form_object.xaxis_duration.data
+
         new_graph.refresh_duration = form_base.refresh_duration.data
+        new_graph.enable_header_buttons = form_object.enable_header_buttons.data
+        new_graph.x_axis_duration = form_object.xaxis_duration.data
         new_graph.enable_auto_refresh = form_object.enable_auto_refresh.data
         new_graph.enable_xaxis_reset = form_object.enable_xaxis_reset.data
         new_graph.enable_title = form_object.enable_title.data
@@ -82,12 +98,16 @@ def dashboard_add(form_base, form_object):
     elif form_base.dashboard_type.data == 'gauge':
 
         dashboard_type = 'Gauge'
+
         error = gauge_error_check(form_object, error)
+
         new_graph.graph_type = form_object.gauge_type.data
         if form_object.gauge_type.data == 'gauge_solid':
             new_graph.range_colors = '20,#33CCFF;40,#55BF3B;60,#DDDF0D;80,#DF5353'
         elif form_object.gauge_type.data == 'gauge_angular':
             new_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
+
+        new_graph.refresh_duration = form_base.refresh_duration.data
         new_graph.max_measure_age = form_object.max_measure_age.data
         new_graph.refresh_duration = form_base.refresh_duration.data
         new_graph.y_axis_min = form_object.y_axis_min.data
@@ -102,10 +122,12 @@ def dashboard_add(form_base, form_object):
     elif form_base.dashboard_type.data == 'indicator':
 
         dashboard_type = 'Indicator'
+
         error = measurement_error_check(form_object, error)
+
         new_graph.graph_type = 'indicator'
-        new_graph.max_measure_age = form_object.max_measure_age.data
         new_graph.refresh_duration = form_base.refresh_duration.data
+        new_graph.max_measure_age = form_object.max_measure_age.data
         new_graph.font_em_timestamp = form_object.font_em_timestamp.data
         new_graph.input_ids_measurements = form_object.measurement_id.data
 
@@ -116,7 +138,9 @@ def dashboard_add(form_base, form_object):
     elif form_base.dashboard_type.data == 'measurement':
 
         dashboard_type = 'Measurement'
+
         error = measurement_error_check(form_object, error)
+
         new_graph.graph_type = 'measurement'
         new_graph.max_measure_age = form_object.max_measure_age.data
         new_graph.refresh_duration = form_base.refresh_duration.data
@@ -132,7 +156,9 @@ def dashboard_add(form_base, form_object):
     elif form_base.dashboard_type.data == 'output':
 
         dashboard_type = 'Output'
+
         error = output_error_check(form_object, error)
+
         new_graph.graph_type = 'output'
         new_graph.max_measure_age = form_object.max_measure_age.data
         new_graph.refresh_duration = form_base.refresh_duration.data
@@ -149,7 +175,9 @@ def dashboard_add(form_base, form_object):
     elif form_base.dashboard_type.data == 'output_pwm_slider':
 
         dashboard_type = 'Output Range Slider'
+
         error = output_error_check(form_object, error)
+
         new_graph.graph_type = 'output_pwm_slider'
         new_graph.max_measure_age = form_object.max_measure_age.data
         new_graph.refresh_duration = form_base.refresh_duration.data
@@ -166,7 +194,9 @@ def dashboard_add(form_base, form_object):
     elif form_base.dashboard_type.data == 'pid_control':
 
         dashboard_type = 'PID Control'
+
         error = pid_error_check(form_object, error)
+
         new_graph.graph_type = 'pid_control'
         new_graph.max_measure_age = form_object.max_measure_age.data
         new_graph.refresh_duration = form_base.refresh_duration.data
@@ -184,13 +214,15 @@ def dashboard_add(form_base, form_object):
     elif (form_base.dashboard_type.data == 'camera' and
           form_object.camera_id.data):
 
-        camera = Camera.query.filter(Camera.unique_id == form_object.camera_id.data).first()
+        dashboard_type = 'Camera'
+
+        camera = Camera.query.filter(
+            Camera.unique_id == form_object.camera_id.data).first()
         if not camera:
             error.append("Invalid Camera ID. Check your camera settings.")
         elif form_object.camera_image_type.data == 'stream' and camera.library != 'picamera':
             error.append("Only cameras that use the 'picamera' library may be used for streaming")
 
-        dashboard_type = 'Camera'
         new_graph.graph_type = form_base.dashboard_type.data
         new_graph.refresh_duration = form_base.refresh_duration.data
         new_graph.camera_max_age = form_object.camera_max_age.data
@@ -230,6 +262,8 @@ def dashboard_mod(form_base, form_object, request_form):
     mod_graph = Dashboard.query.filter(
         Dashboard.unique_id == form_base.dashboard_id.data).first()
     mod_graph.name = form_base.name.data
+    mod_graph.font_em_name = form_base.font_em_name.data
+    mod_graph.enable_drag_handle = form_base.enable_drag_handle.data
 
     # Graph Mod
     if form_base.dashboard_type.data == 'graph':
@@ -276,8 +310,9 @@ def dashboard_mod(form_base, form_object, request_form):
         else:
             mod_graph.note_tag_ids = ''
 
-        mod_graph.x_axis_duration = form_object.xaxis_duration.data
         mod_graph.refresh_duration = form_base.refresh_duration.data
+        mod_graph.enable_header_buttons = form_object.enable_header_buttons.data
+        mod_graph.x_axis_duration = form_object.xaxis_duration.data
         mod_graph.enable_auto_refresh = form_object.enable_auto_refresh.data
         mod_graph.enable_xaxis_reset = form_object.enable_xaxis_reset.data
         mod_graph.enable_title = form_object.enable_title.data
@@ -305,8 +340,8 @@ def dashboard_mod(form_base, form_object, request_form):
         sorted_colors_string, error = custom_colors_gauge_str(
             request_form, form_object.gauge_type.data, error)
 
-        mod_graph.range_colors = sorted_colors_string
         mod_graph.refresh_duration = form_base.refresh_duration.data
+        mod_graph.range_colors = sorted_colors_string
         mod_graph.y_axis_min = form_object.y_axis_min.data
         mod_graph.y_axis_max = form_object.y_axis_max.data
         mod_graph.max_measure_age = form_object.max_measure_age.data
@@ -320,6 +355,7 @@ def dashboard_mod(form_base, form_object, request_form):
     elif form_base.dashboard_type.data == 'indicator':
 
         error = indicator_error_check(form_object, error)
+
         mod_graph.refresh_duration = form_base.refresh_duration.data
         mod_graph.max_measure_age = form_object.max_measure_age.data
         mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
@@ -331,6 +367,7 @@ def dashboard_mod(form_base, form_object, request_form):
     elif form_base.dashboard_type.data == 'measurement':
 
         error = measurement_error_check(form_object, error)
+
         mod_graph.refresh_duration = form_base.refresh_duration.data
         mod_graph.max_measure_age = form_object.max_measure_age.data
         mod_graph.font_em_value = form_object.font_em_value.data
@@ -343,6 +380,7 @@ def dashboard_mod(form_base, form_object, request_form):
     elif form_base.dashboard_type.data in ['output', 'output_pwm_slider']:
 
         error = output_error_check(form_object, error)
+
         mod_graph.refresh_duration = form_base.refresh_duration.data
         mod_graph.max_measure_age = form_object.max_measure_age.data
         mod_graph.font_em_value = form_object.font_em_value.data
@@ -356,6 +394,7 @@ def dashboard_mod(form_base, form_object, request_form):
     elif form_base.dashboard_type.data == 'pid_control':
 
         error = pid_error_check(form_object, error)
+
         mod_graph.refresh_duration = form_base.refresh_duration.data
         mod_graph.max_measure_age = form_object.max_measure_age.data
         mod_graph.font_em_value = form_object.font_em_value.data
@@ -368,6 +407,7 @@ def dashboard_mod(form_base, form_object, request_form):
 
     # Camera Mod
     elif form_base.dashboard_type.data == 'camera':
+
         mod_graph.refresh_duration = form_base.refresh_duration.data
         mod_graph.camera_max_age = form_object.camera_max_age.data
         mod_graph.camera_id = form_object.camera_id.data

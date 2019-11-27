@@ -31,17 +31,16 @@ class DashboardBase(FlaskForm):
         TRANSLATIONS['name']['title'],
         validators=[DataRequired()]
     )
+    font_em_name = DecimalField(TRANSLATIONS['font_em_name']['title'])
     refresh_duration = IntegerField(
-        lazy_gettext('Refresh (seconds)'),
+        TRANSLATIONS['refresh_duration']['title'],
         validators=[validators.NumberRange(
             min=1,
-            message=lazy_gettext("Number of seconds to wait between acquiring"
-                                 " any new measurements.")
+            message=TRANSLATIONS['refresh_duration']['title']
         )],
         widget=NumberInput()
     )
-    list_visible_elements = SelectMultipleField(lazy_gettext('Visible Elements'))
-    reorder = SubmitField(TRANSLATIONS['save_order']['title'])
+    enable_drag_handle = BooleanField(lazy_gettext('Enable Drag Handle'))
     create = SubmitField(TRANSLATIONS['create']['title'])
     modify = SubmitField(TRANSLATIONS['save']['title'])
     delete = SubmitField(TRANSLATIONS['delete']['title'])
@@ -64,6 +63,7 @@ class DashboardGraph(FlaskForm):
         )],
         widget=NumberInput()
     )
+    enable_header_buttons = BooleanField(lazy_gettext('Enable Header Buttons'))
     enable_auto_refresh = BooleanField(lazy_gettext('Enable Auto Refresh'))
     enable_xaxis_reset = BooleanField(lazy_gettext('Enable X-Axis Reset'))
     enable_title = BooleanField(lazy_gettext('Enable Title'))

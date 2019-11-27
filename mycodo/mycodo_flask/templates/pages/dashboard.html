@@ -32,8 +32,8 @@
 
   <!-- gridstack.js -->
   <script src="/static/js/jquery.ui.touch-punch.min.js"></script>
-  <script src="/static/js/gridstack.all.js"></script>
   <link rel="stylesheet" href="/static/css/gridstack.min.css" />
+  <script src="/static/js/gridstack.all.js"></script>
 
 {% endblock %}
 
@@ -64,7 +64,9 @@
           <!--Dashboard {{each_dashboard.unique_id}} y-axes: {{axes|safe}}-->
         {% endfor %}
 
-        {% if each_dashboard.graph_type == 'graph' %}
+        {% if each_dashboard.graph_type == 'spacer' %}
+          {% include 'pages/dashboard_options/mod_spacer.html' %}
+        {% elif each_dashboard.graph_type == 'graph' %}
           {% include 'pages/dashboard_options/mod_graph.html' %}
         {% elif each_dashboard.graph_type in ['gauge_angular', 'gauge_solid'] %}
           {% include 'pages/dashboard_options/mod_gauge.html' %}
@@ -102,6 +104,9 @@
       </div>
     </div>
 
+    <div class="add_dashboard_object" style="display: none" id="spacer">
+      {% include 'pages/dashboard_options/add_spacer.html' %}
+    </div>
     <div class="add_dashboard_object" style="display: none" id="graph">
       {% include 'pages/dashboard_options/add_graph.html' %}
     </div>
@@ -132,6 +137,7 @@
 <script type="text/javascript">
 
 var options = {
+  cellHeight: {{misc.grid_cell_height}},
   resizable: {
     handles: 'se, sw'
   },

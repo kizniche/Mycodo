@@ -1,12 +1,16 @@
 <div class="d-flex justify-content-between panel-heading" style="flex: 0 1 auto;">
   <div class="my-auto" style="padding-left: 0.4em">
+    {% if each_dashboard.enable_drag_handle -%}
     <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="Drag"></i>
+    {%- endif %}
   </div>
   <div class="my-auto">
-    <span style="padding-right: 0.5em">{{each_dashboard.name}}</span>
+    <span style="padding-right: 0.5em; font-size: {{each_dashboard.font_em_name}}em">{{each_dashboard.name}}</span>
+    {% if each_dashboard.enable_header_buttons -%}
     <button class="btn btn-sm btn-primary" id="updateData{{chart_number}}">Update</button>
     <button class="btn btn-sm btn-primary" id="resetZoom{{chart_number}}">Reset</button>
     <button class="btn btn-sm btn-primary" id="showhidebutton{{chart_number}}">Hide</button>
+    {% endif %}
     <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
       <i style="font-size: 1.5em" class="fas fa-cog"></i>
     </button>
@@ -30,22 +34,17 @@
         <input type="hidden" name="dashboard_type" value="{{each_dashboard.graph_type}}">
 
         <div class="form-row">
+          {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_MOD.html' %}
           <div class="col-auto">
-            {{form_base.name.label(class_='control-label')}}
+            {{form_base.refresh_duration.label(class_='control-label')}}
             <div>
-              {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': dict_translation['name']['phrase']})}}
+              {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration, **{'title': dict_translation['refresh_duration']['phrase']})}}
             </div>
           </div>
           <div class="col-auto">
             {{form_graph.xaxis_duration.label(class_='control-label')}}
             <div>
               {{form_graph.xaxis_duration(class_='form-control', value=each_dashboard.x_axis_duration)}}
-            </div>
-          </div>
-          <div class="col-auto">
-            {{form_base.refresh_duration.label(class_='control-label')}}
-            <div>
-              {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
             </div>
           </div>
           <div class="col-auto">
@@ -58,6 +57,12 @@
             <label class="control-label">{{form_graph.enable_xaxis_reset.label.text}}</label>
             <div class="input-group-text">
               <input id="enable_xaxis_reset" name="enable_xaxis_reset" type="checkbox" value="y"{% if each_dashboard.enable_xaxis_reset %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_graph.enable_header_buttons.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_header_buttons" name="enable_header_buttons" type="checkbox" value="y"{% if each_dashboard.enable_header_buttons %} checked{% endif %}>
             </div>
           </div>
           <div class="col-auto">

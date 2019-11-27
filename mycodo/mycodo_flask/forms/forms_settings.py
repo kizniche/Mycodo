@@ -96,6 +96,8 @@ class SettingsGeneral(FlaskForm):
     hide_info = BooleanField(lazy_gettext('Hide info messages'))
     hide_warning = BooleanField(lazy_gettext('Hide warning messages'))
     hide_tooltips = BooleanField(lazy_gettext('Hide Form Tooltips'))
+    grid_cell_height = IntegerField(
+        lazy_gettext('Grid Cell Height (px)'), widget=NumberInput())
     max_amps = DecimalField(
         lazy_gettext('Max Amps'), widget=NumberInput(step='any'))
     output_stats_volts = IntegerField(

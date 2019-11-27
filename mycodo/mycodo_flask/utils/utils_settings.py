@@ -298,6 +298,7 @@ def settings_general_mod(form):
                 mod_misc.hide_alert_info = form.hide_info.data
                 mod_misc.hide_alert_warning = form.hide_warning.data
                 mod_misc.hide_tooltips = form.hide_tooltips.data
+                mod_misc.grid_cell_height = form.grid_cell_height.data
                 mod_misc.max_amps = form.max_amps.data
                 mod_misc.output_usage_volts = form.output_stats_volts.data
                 mod_misc.output_usage_cost = form.output_stats_cost.data

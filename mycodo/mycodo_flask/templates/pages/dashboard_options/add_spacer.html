@@ -1,0 +1,15 @@
+<form method="post" action="/dashboard">
+  {{form_base.csrf_token}}
+  <input type="hidden" name="dashboard_type" value="spacer">
+
+  <div class="form-row small-gutters">
+    {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_ADD.html' %}
+  </div>
+
+  <div class="form-inline btn-group" style="padding: 1em 0 1em 0">
+    <div class="form-group">
+      {{form_base.create(class_='btn btn-primary')}}
+    </div>
+  </div>
+
+</form>

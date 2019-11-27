@@ -4,49 +4,44 @@
 
   <div class="form-row small-gutters">
 
-    <div class="col-sm-6 col-md-3 col-lg-2">
-      {{form_base.name.label(class_='control-label')}}
+    {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_ADD.html' %}
+    <div class="col-auto">
+      {{form_base.refresh_duration.label(class_='control-label')}}
       <div>
-        {{form_base.name(class_='form-control', value=_('PID'))}}
+        {{form_base.refresh_duration(class_='form-control', value=30)}}
       </div>
     </div>
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_pid.max_measure_age.label(class_='control-label')}}
       <div>
         {{form_pid.max_measure_age(class_='form-control', value=3600)}}
       </div>
     </div>
-    <div class="col-sm-6 col-md-3 col-lg-2">
-      {{form_base.refresh_duration.label(class_='control-label')}}
-      <div>
-        {{form_base.refresh_duration(class_='form-control', value=15)}}
-      </div>
-    </div>
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_pid.font_em_value.label(class_='control-label')}}
       <div>
         {{form_pid.font_em_value(class_='form-control', value=1.4)}}
       </div>
     </div>
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_pid.font_em_timestamp.label(class_='control-label')}}
       <div>
         {{form_pid.font_em_timestamp(class_='form-control', value=1)}}
       </div>
     </div>
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_pid.decimal_places.label(class_='control-label')}}
       <div>
         {{form_pid.decimal_places(class_='form-control', value=1)}}
       </div>
     </div>
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_pid.show_pid_info.label(class_='control-label')}}
       <div class="input-group-text">
         <input id="show_pid_info" name="show_pid_info" type="checkbox" value="y" checked>
       </div>
     </div>
-    <div class="col-sm-6 col-md-3 col-lg-2">
+    <div class="col-auto">
       {{form_pid.show_set_setpoint.label(class_='control-label')}}
       <div class="input-group-text">
         <input id="show_set_setpoint" name="show_set_setpoint" type="checkbox" value="y" checked>
@@ -55,7 +50,7 @@
 
     <div style="clear: both"></div>
 
-    <div class="col-sm-6 col-lg-3">
+    <div class="col-auto">
       {{form_pid.pid_id.label(class_='control-label')}}
       <div>
         <select class="form-control" id="pid_id" name="pid_id" style="width: 100%;">

@@ -560,7 +560,9 @@ def page_dashboard():
         # Determine which form was submitted
         form_dashboard_object = None
         if form_base.create.data or form_base.modify.data:
-            if form_base.dashboard_type.data == 'graph':
+            if form_base.dashboard_type.data == 'spacer':
+                form_dashboard_object = None
+            elif form_base.dashboard_type.data == 'graph':
                 form_dashboard_object = form_graph
             elif form_base.dashboard_type.data == 'gauge':
                 form_dashboard_object = form_gauge

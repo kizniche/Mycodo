@@ -11,8 +11,22 @@ class Dashboard(CRUDMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     graph_type = db.Column(db.Text, default=None)
-    name = db.Column(db.Text, default='Dashboard Element')
+
+    # Global Options
+    name = db.Column(db.Text, default='Widget')
+    font_em_name = db.Column(db.Float, default=1.0)
+    enable_drag_handle = db.Column(db.Boolean, default=True)
+    enable_header_buttons = db.Column(db.Boolean, default=True)
+    position_x = db.Column(db.Integer, default=0)
+    position_y = db.Column(db.Integer, default=999)
+    width = db.Column(db.Integer, default=6)
+    height = db.Column(db.Integer, default=6)
+
+    # Multi-widget options
     refresh_duration = db.Column(db.Integer, default=120)  # How often to add new data and redraw, refresh camera
+    x_axis_duration = db.Column(db.Integer, default=1440)  # X-axis duration (in minutes)
+    custom_yaxes = db.Column(db.Text, default='')  # Custom minimum and maximum y-axes
+    decimal_places = db.Column(db.Integer, default=1)  # Number of decimal places for displayed value
 
     # Graph options
     pid_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
@@ -21,14 +35,7 @@ class Dashboard(CRUDMixin, db.Model):
     note_tag_ids = db.Column(db.Text, default='')  # store Note Tag IDs to display
     input_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
 
-    # position and size
-    position_x = db.Column(db.Integer, default=0)
-    position_y = db.Column(db.Integer, default=999)
-    width = db.Column(db.Integer, default=6)
-    height = db.Column(db.Integer, default=6)
-
-    x_axis_duration = db.Column(db.Integer, default=1440)  # X-axis duration (in minutes)
-    use_custom_colors = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
+    # Checkboxes
     enable_navbar = db.Column(db.Boolean, default=False)  # Show navigation bar
     enable_rangeselect = db.Column(db.Boolean, default=False)  # Show range selection buttons
     enable_export = db.Column(db.Boolean, default=False)  # Show export menu
@@ -40,10 +47,9 @@ class Dashboard(CRUDMixin, db.Model):
     enable_start_on_tick = db.Column(db.Boolean, default=True)  # Enable HighCharts startOnTick
     enable_end_on_tick = db.Column(db.Boolean, default=True)  # Enable HighCharts endOnTick
     enable_align_ticks = db.Column(db.Boolean, default=True)  # Enable HighCharts alignTicks
-    custom_yaxes = db.Column(db.Text, default='')  # Custom minimum and maximum y-axes
-    decimal_places = db.Column(db.Integer, default=1)  # Number of decimal places for displayed value
 
     # Series-specific options
+    use_custom_colors = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
     custom_colors = db.Column(db.Text, default='')  # Custom hex color values (csv)
     disable_data_grouping = db.Column(db.Text, default='')  # Disable data grouping for measurement IDs
 
