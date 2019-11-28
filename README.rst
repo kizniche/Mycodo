@@ -17,11 +17,13 @@ and outputs in interesting ways to sense and manipulate the environment.
 
 `Mycodo API <https://kizniche.github.io/Mycodo/mycodo-api.html>`__ (Latest Version: v1)
 
-`Mycodo Support <https://play.google.com/store/apps/details?id=com.mycodo.mycododocs>`__ (Android App)
+`Mycodo Support Android App <https://play.google.com/store/apps/details?id=com.mycodo.mycododocs>`__
 
 `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__
 
 `Mycodo on GitHub.io <https://kizniche.github.io/Mycodo/>`__
+
+For technical support discussion, use the `Mycodo Forum <https://kylegabriel.com/forum>`__ and `mycodo.slack.com <https://mycodo.slack.com>`__
 
 .. contents:: Table of Contents
    :depth: 1
@@ -135,7 +137,7 @@ opt out from the General Settings page.
 Support
 -------
 
-Before making a post on the forum or issue on github, please read the
+Before making a post to the forum, slack, or issue tracker on github, please read the
 `Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__.
 
 Need assistance with Mycodo
@@ -145,6 +147,9 @@ If you Mycodo is supposedly operating correctly and you would like assistance wi
 configure the system or to merely discuss something related to Mycodo, do a search on the
 `Mycodo Forum <https://kylegabriel.com/forum/mycodo/>`__ for a similar discussion. If a pertinent
 topic doesn't already exist on the forum, create a new post in the appropriate subforum.
+
+You can also find Mycodo on slack at `mycodo.slack.com <https://mycodo.slack.com>`__.
+
 
 Bug in the Mycodo Software
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
