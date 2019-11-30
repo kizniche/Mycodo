@@ -68,25 +68,25 @@ services:
     depends_on:
       - influxdb
 
-#  telegraf:
-#    image: telegraf:latest
-#    container_name: telegraf
-#    volumes:
-#      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
-#    depends_on:
-#      - influxdb
-#
-#  grafana:
-#    image: grafana/grafana:latest
-#    container_name: grafana
-#    ports:
-#      - "3000:3000"
-#    env_file:
-#      - 'grafana/env.grafana'
-#    volumes:
-#      - grafana-volume:/var/lib/grafana
-#    depends_on:
-#      - influxdb
+  telegraf:
+    image: telegraf:latest
+    container_name: telegraf
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    depends_on:
+      - influxdb
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    env_file:
+      - 'grafana/env.grafana'
+    volumes:
+      - grafana-volume:/var/lib/grafana
+    depends_on:
+      - influxdb
 
 volumes:
   home:

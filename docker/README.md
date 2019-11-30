@@ -104,6 +104,10 @@ For reference, this is the guide used to implement Grafana and Telegraf: https:/
 
 After logging in and changing the admin password, select "Add data source", then "InfluxDB". Enter the following information:
 
+Name: InfluxDB-mycodo
+
+Default: Checked
+
 URL: http://influxdb:8086
 
 Database: mycodo_db
@@ -116,4 +120,4 @@ Click "Save and Test"
 
 ### Add Telegraf plugin
 
-Click the plus icon at the top-left, then Import. Enter 914 in the Grafana.com Dashboard field, then click Load. Select any of the InfluxDBs listed for InfluxDB telegraf field, then click Import.
+Click the plus icon at the top-left, then Import. Enter 928 in the Grafana.com Dashboard field, then click Load. Select InfluxDB-mycodo as the data source for the ```InfluxDB telegraf``` field, then click Import. Once the dashboard has loaded, click ```Save dashboard``` at the top of the dashboard.
