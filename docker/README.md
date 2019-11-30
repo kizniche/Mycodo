@@ -68,9 +68,13 @@ cd ~/Mycodo/docker
 make clean
 ```
 
-### Disable Grafana and Telegraf
+## Grafana
 
-To disable these features (prior to building), just delete or comment out their lines in docker-compose.yml. For example:
+For reference, this is the guide used to implement Grafana and Telegraf: https://towardsdatascience.com/get-system-metrics-for-5-min-with-docker-telegraf-influxdb-and-grafana-97cfd957f0ac
+
+### Enable Grafana and Telegraf
+
+Grafana and Telegraf is disabled by default. To enable these features (prior to building), uncomment these lines in docker-compose.yml:
 
 ```
 #  telegraf:
@@ -93,12 +97,6 @@ To disable these features (prior to building), just delete or comment out their 
 #    depends_on:
 #      - influxdb
 ```
-
-As this part of Mycodo develops, a more elegant solution to disabling these options will form.
-
-## Grafana
-
-For reference, this is the guide used to implement Grafana and Telegraf: https://towardsdatascience.com/get-system-metrics-for-5-min-with-docker-telegraf-influxdb-and-grafana-97cfd957f0ac
 
 ### Add Mycodo as a data source
 

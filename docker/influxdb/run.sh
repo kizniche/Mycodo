@@ -8,14 +8,13 @@ API_URL="http://${INFLUX_HOST}:${INFLUX_API_PORT}"
 echo "=> Starting InfluxDB ..."
 exec influxd &
 
-
 # Pre create database on the initiation of the container
 if [ -n "${PRE_CREATE_DB}" ]; then
     echo "=> About to create the following database: ${PRE_CREATE_DB}"
     if [ -f "/var/lib/influxdb/.pre_db_created" ]; then
         echo "=> Database had been created before, skipping ..."
     else
-        arr=$(echo ${PRE_CREATE_DB} | tr ";" "\n")
+        arr=$(echo "${PRE_CREATE_DB}" | tr ";" "\n")
 
         #wait for the startup of influxdb
         RET=1
@@ -34,8 +33,8 @@ if [ -n "${PRE_CREATE_DB}" ]; then
           for x in $arr
           do
               echo "=> Creating database: ${x}"
-              influx -host=${INFLUX_HOST} -port=${INFLUX_API_PORT} -username=${ADMIN_USER} -password="${PASS}" -execute="create database ${x}"
-              influx -host=${INFLUX_HOST} -port=${INFLUX_API_PORT} -username=${ADMIN_USER} -password="${PASS}" -execute="grant all PRIVILEGES on ${x} to ${ADMIN_USER}"
+              influx -host=${INFLUX_HOST} -port=${INFLUX_API_PORT} -username="${ADMIN_USER}" -password="${PASS}" -execute="create database ${x}"
+              influx -host=${INFLUX_HOST} -port=${INFLUX_API_PORT} -username="${ADMIN_USER}" -password="${PASS}" -execute="grant all PRIVILEGES on ${x} to ${ADMIN_USER}"
           done
           echo ""
         else
