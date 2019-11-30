@@ -44,6 +44,7 @@ from daemonize import Daemonize
 
 from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DAEMON_PID_FILE
+from mycodo.config import DOCKER_CONTAINER
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import STATS_CSV
@@ -143,6 +144,7 @@ class DaemonController:
             'LCD',
             'Custom'
         ]
+
         self.thread_shutdown_timer = None
         self.start_time = time.time()
         self.timer_ram_use = time.time()
@@ -1311,10 +1313,10 @@ if __name__ == '__main__':
         sys.exit("Script must be executed as root")
 
     # Check if lock file already exists
-    if os.path.isfile(DAEMON_PID_FILE):
-        sys.exit(
-            "Daemon PID file present. Ensure the daemon isn't already "
-            "running and delete {file}".format(file=DAEMON_PID_FILE))
+    # if os.path.isfile(DAEMON_PID_FILE):
+    #     sys.exit(
+    #         "Daemon PID file present. Ensure the daemon isn't already "
+    #         "running and delete {file}".format(file=DAEMON_PID_FILE))
 
     # Parse commandline arguments
     args = parse_args()
@@ -1341,9 +1343,12 @@ if __name__ == '__main__':
     daemon_controller = DaemonController(debug)
     mycodo_daemon = MycodoDaemon(daemon_controller, debug)
 
-    # Set up daemon and start it
-    daemon = Daemonize(app="mycodo_daemon",
-                       pid=DAEMON_PID_FILE,
-                       action=mycodo_daemon.start_daemon,
-                       keep_fds=keep_fds)
-    daemon.start()
+    if DOCKER_CONTAINER:
+        mycodo_daemon.start_daemon()
+    else:
+        # Set up daemon and start it
+        daemon = Daemonize(app="mycodo_daemon",
+                           pid=DAEMON_PID_FILE,
+                           action=mycodo_daemon.start_daemon,
+                           keep_fds=keep_fds)
+        daemon.start()

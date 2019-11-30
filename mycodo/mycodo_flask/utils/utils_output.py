@@ -2,7 +2,6 @@
 import logging
 
 import sqlalchemy
-from RPi import GPIO
 from flask import flash
 from flask import url_for
 from flask_babel import gettext
@@ -412,16 +411,22 @@ def get_all_output_states():
     output = Output.query.all()
     daemon_control = DaemonControl()
     states = []
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
+
     for each_output in output:
         each_state = {'unique_id': each_output.unique_id}
         if each_output.output_type == 'wired' and each_output.pin and -1 < each_output.pin < 40:
-            GPIO.setup(each_output.pin, GPIO.OUT)
-            if GPIO.input(each_output.pin) == each_output.on_state:
-                each_state['state'] = 'on'
-            else:
-                each_state['state'] = 'off'
+            try:
+                from RPi import GPIO
+                GPIO.setmode(GPIO.BCM)
+                GPIO.setwarnings(False)
+                GPIO.setup(each_output.pin, GPIO.OUT)
+                if GPIO.input(each_output.pin) == each_output.on_state:
+                    each_state['state'] = 'on'
+                else:
+                    each_state['state'] = 'off'
+            except:
+                logger.error(
+                    "RPi.GPIO and Raspberry Pi required for this action")
         elif (each_output.output_type in ['command',
                                           'command_pwm',
                                           'python',

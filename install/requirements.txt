@@ -1,10 +1,3 @@
-# Testing
-testfixtures==6.10.1
-mock==3.0.5
-pytest==5.2.2
-factory_boy==2.12.0
-webtest==2.0.33
-
 # Mycodo base
 alembic==1.3.1
 argparse==1.4.0
@@ -24,7 +17,7 @@ Flask_SQLAlchemy==2.4.1
 Flask_SSLify==0.1.5
 Flask_WTF==0.14.2
 geocoder==1.38.1
-gunicorn==20.0.0
+gunicorn==20.0.4
 influxdb==5.2.3
 marshmallow_sqlalchemy==0.19.0
 pyro5==5.6
@@ -33,8 +26,3 @@ python-dateutil==2.8.1
 requests
 SQLAlchemy==1.3.11
 WTForms==2.2.1
-
-# For Raspberry pi devices and Sensors
-pylibftdi==0.18.0
-RPi.GPIO
-smbus2==0.3.0

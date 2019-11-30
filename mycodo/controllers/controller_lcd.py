@@ -53,8 +53,6 @@ import datetime
 import threading
 import time
 
-import RPi.GPIO as GPIO
-
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.config import MYCODO_VERSION
 from mycodo.databases.models import Conversion
@@ -482,15 +480,19 @@ class LCDController(AbstractController, threading.Thread):
                                          message_line_7=line_7,
                                          message_line_8=line_8)
 
-    @staticmethod
-    def output_state(output_id):
+    def output_state(self, output_id):
         output = db_retrieve_table_daemon(Output, unique_id=output_id)
-        GPIO.setmode(GPIO.BCM)
-        if GPIO.input(output.pin) == output.on_state:
-            gpio_state = 'On'
-        else:
-            gpio_state = 'Off'
-        return gpio_state
+        try:
+            import RPi.GPIO as GPIO
+            GPIO.setmode(GPIO.BCM)
+            if GPIO.input(output.pin) == output.on_state:
+                gpio_state = 'On'
+            else:
+                gpio_state = 'Off'
+            return gpio_state
+        except:
+            self.logger.error(
+                "RPi.GPIO and Raspberry Pi required for this action")
 
     def setup_lcd_line(self, display_id, line, device_id, measurement_id):
         if measurement_id == 'output':

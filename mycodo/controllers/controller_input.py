@@ -26,7 +26,6 @@ import datetime
 import threading
 import time
 
-import RPi.GPIO as GPIO
 import filelock
 import os
 
@@ -236,8 +235,13 @@ class InputController(AbstractController, threading.Thread):
 
     def run_finally(self):
         if self.device == 'EDGE':
-            GPIO.setmode(GPIO.BCM)
-            GPIO.cleanup(int(self.gpio_location))
+            try:
+                import RPi.GPIO as GPIO
+                GPIO.setmode(GPIO.BCM)
+                GPIO.cleanup(int(self.gpio_location))
+            except:
+                self.logger.error(
+                    "RPi.GPIO and Raspberry Pi required for this action")
 
     def initialize_variables(self):
         self.dict_inputs = parse_input_information()
@@ -308,12 +312,17 @@ class InputController(AbstractController, threading.Thread):
 
         # Set up edge detection of a GPIO pin
         if self.device == 'EDGE':
-            if self.switch_edge == 'rising':
-                self.switch_edge_gpio = GPIO.RISING
-            elif self.switch_edge == 'falling':
-                self.switch_edge_gpio = GPIO.FALLING
-            else:
-                self.switch_edge_gpio = GPIO.BOTH
+            try:
+                import RPi.GPIO as GPIO
+                if self.switch_edge == 'rising':
+                    self.switch_edge_gpio = GPIO.RISING
+                elif self.switch_edge == 'falling':
+                    self.switch_edge_gpio = GPIO.FALLING
+                else:
+                    self.switch_edge_gpio = GPIO.BOTH
+            except:
+                self.logger.error(
+                    "RPi.GPIO and Raspberry Pi required for this action")
 
         self.device_recognized = True
 
@@ -341,12 +350,18 @@ class InputController(AbstractController, threading.Thread):
 
         # Set up edge detection
         if self.device == 'EDGE':
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setup(int(self.gpio_location), GPIO.IN)
-            GPIO.add_event_detect(int(self.gpio_location),
-                                  self.switch_edge_gpio,
-                                  callback=self.edge_detected,
-                                  bouncetime=self.switch_bouncetime)
+            try:
+                import RPi.GPIO as GPIO
+                GPIO.setmode(GPIO.BCM)
+                GPIO.setup(int(self.gpio_location), GPIO.IN)
+                GPIO.add_event_detect(
+                    int(self.gpio_location),
+                    self.switch_edge_gpio,
+                    callback=self.edge_detected,
+                    bouncetime=self.switch_bouncetime)
+            except:
+                self.logger.error(
+                    "RPi.GPIO and Raspberry Pi required for this action")
 
         # Set up MQTT listener
         elif ('listener' in self.dict_inputs[self.device] and
@@ -434,8 +449,15 @@ class InputController(AbstractController, threading.Thread):
         :param bcm_pin: BMC pin of rising/falling edge (required parameter)
         :return: None
         """
-        gpio_state = GPIO.input(int(self.gpio_location))
-        if time.time() > self.edge_reset_timer:
+        try:
+            import RPi.GPIO as GPIO
+            gpio_state = GPIO.input(int(self.gpio_location))
+        except:
+            self.logger.error(
+                "RPi.GPIO and Raspberry Pi required for this action")
+            gpio_state = None
+
+        if gpio_state is not None and time.time() > self.edge_reset_timer:
             self.edge_reset_timer = time.time()+self.switch_reset_period
 
             if (self.switch_edge == 'rising' or

@@ -52,8 +52,8 @@ Options:
   update-cron                   Update cron entries
   update-dependencies           Check for updates to dependencies and update
   install-bcm2835               Install bcm2835
-  install-pigpiod               Install pigpiod
   install-wiringpi              Install wiringpi
+  install-pigpiod               Install pigpiod
   uninstall-pigpiod             Uninstall pigpiod
   disable-pigpiod               Disable pigpiod
   enable-pigpiod-low            Enable pigpiod with 1 ms sample rate
@@ -77,6 +77,11 @@ Options:
   web-server-reload             Reload the web server
   web-server-restart            Restart the web server
   web-server-update             Update the web server configuration files
+
+Docker-specific Commands:
+  docker-update-pip             Update pip
+  docker-update-pip-packages    Update required pip packages
+  install-docker-ce-cli         Install Docker Client
 "
 
 case "${1:-''}" in
@@ -129,7 +134,6 @@ case "${1:-''}" in
         if [[ ! -e ${MYCODO_PATH}/databases/mycodo.db ]]; then
             touch "${MYCODO_PATH}"/databases/mycodo.db
         fi
-        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-permissions
     ;;
     'create-symlinks')
         printf "\n#### Creating symlinks to Mycodo executables\n"
@@ -161,6 +165,7 @@ case "${1:-''}" in
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh compile-mycodo-wrapper
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh create-symlinks
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh create-files-directories
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-permissions
         systemctl daemon-reload
     ;;
     'restart-daemon')
@@ -405,12 +410,14 @@ case "${1:-''}" in
         "${MYCODO_PATH}"/env/bin/pip3 install --upgrade pip
     ;;
     'update-pip3-packages')
-        printf "\n#### Installing pip requirements from requirements.txt\n"
+        printf "\n#### Installing pip requirements\n"
         if [[ ! -d ${MYCODO_PATH}/env ]]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
         else
             "${MYCODO_PATH}"/env/bin/pip3 install --upgrade pip setuptools
             "${MYCODO_PATH}"/env/bin/pip3 install --upgrade -r "${MYCODO_PATH}"/install/requirements.txt
+            "${MYCODO_PATH}"/env/bin/pip3 install --upgrade -r "${MYCODO_PATH}"/install/requirements-rpi.txt
+            "${MYCODO_PATH}"/env/bin/pip3 install --upgrade -r "${MYCODO_PATH}"/install/requirements-testing.txt
         fi
     ;;
     'update-swap-size')
@@ -471,6 +478,61 @@ case "${1:-''}" in
         ln -sf "${MYCODO_PATH}"/install/mycodoflask_nginx.conf /etc/nginx/sites-enabled/default
         systemctl enable nginx
         systemctl enable "${MYCODO_PATH}"/install/mycodoflask.service
+    ;;
+
+
+    #
+    # Docker-specific commands
+    #
+
+    'docker-compile-translations')
+        printf "\n#### Compiling Translations\n"
+        cd "${MYCODO_PATH}"/mycodo || exit
+        pybabel compile -d mycodo_flask/translations
+    ;;
+    'docker-update-pip')
+        printf "\n#### Updating pip\n"
+        pip install --upgrade pip
+    ;;
+    'docker-update-pip-packages')
+        printf "\n#### Installing pip requirements\n"
+        pip install --upgrade pip setuptools
+        pip install --no-cache-dir -r /home/mycodo/install/requirements.txt
+        pip install --no-cache-dir -r /home/mycodo/install/requirements-rpi.txt
+    ;;
+    'install-docker-ce-cli')
+        printf "\n#### Installing Docker Client\n"
+        apt-get -y install \
+            apt-transport-https \
+            ca-certificates \
+            curl \
+            gnupg2 \
+            software-properties-common
+        curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
+
+        UNAME_TYPE=$(uname -m)
+        MACHINE_TYPE=$(dpkg --print-architecture)
+        if [[ ${UNAME_TYPE} == 'x86_64' ]]; then
+            add-apt-repository -y \
+               "deb [arch=amd64] https://download.docker.com/linux/debian \
+               $(lsb_release -cs) \
+               stable"
+        elif [[ ${MACHINE_TYPE} == 'armhf' ]]; then
+            add-apt-repository -y \
+               "deb [arch=armhf] https://download.docker.com/linux/debian \
+               $(lsb_release -cs) \
+               stable"
+        elif [[ ${MACHINE_TYPE} == 'arm64' ]]; then
+            add-apt-repository -y \
+               "deb [arch=arm64] https://download.docker.com/linux/debian \
+               $(lsb_release -cs) \
+               stable"
+        else
+            printf "\nCould not detect architecture\n"
+            exit 1
+        fi
+        apt-get update
+        apt-get -y install docker-ce-cli
     ;;
     *)
         printf "Error: Unrecognized command: %s\n%s" "${1}" "${HELP_OPTIONS}"

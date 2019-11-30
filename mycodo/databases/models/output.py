@@ -1,6 +1,4 @@
 # coding=utf-8
-from RPi import GPIO
-
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
@@ -74,9 +72,13 @@ class Output(CRUDMixin, db.Model):
 
         :rtype: None
         """
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setwarnings(True)
-        GPIO.setup(self.pin, GPIO.OUT)
+        try:
+            from RPi import GPIO
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setwarnings(True)
+            GPIO.setup(self.pin, GPIO.OUT)
+        except:
+            print("RPi.GPIO and Raspberry Pi required for this action")
 
     def is_on(self):
         """

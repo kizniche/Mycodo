@@ -13,8 +13,8 @@ from flask_babel import lazy_gettext
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
-MYCODO_VERSION = '8.1.1'
-ALEMBIC_VERSION = '7f4c173f644d'
+MYCODO_VERSION = '8.2.0'
+ALEMBIC_VERSION = 'c1cb0775f7ce'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -798,7 +798,7 @@ THEMES = [
 
 THEMES_DARK = ['cyborg', 'darkly', 'slate', 'solar', 'superhero']
 
-# Install path, the parent directory this script resides
+# Install path (the parent directory of this script)
 INSTALL_DIRECTORY = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/..')
 
 # Database
@@ -837,7 +837,7 @@ LOCK_PATH = '/var/lock'
 ATLAS_PH_LOCK_FILE = os.path.join(LOCK_PATH, 'sensor-atlas-ph.pid')
 LOCK_FILE_STREAM = os.path.join(LOCK_PATH, 'mycodo-camera-stream.pid')
 
-# PID files
+# Run files
 RUN_PATH = '/var/run'
 FRONTEND_PID_FILE = os.path.join(RUN_PATH, 'mycodoflask.pid')
 DAEMON_PID_FILE = os.path.join(RUN_PATH, 'mycodo.pid')
@@ -846,13 +846,26 @@ DAEMON_PID_FILE = os.path.join(RUN_PATH, 'mycodo.pid')
 STORED_SSL_CERTIFICATE_PATH = os.path.join(
     INSTALL_DIRECTORY, 'mycodo/mycodo_flask/ssl_certs/remote_admin')
 
+# Cameras
 PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')
 
 # Notes
 PATH_NOTE_ATTACHMENTS = os.path.join(INSTALL_DIRECTORY, 'note_attachments')
 
+# Determine if running in a Docker container
+if os.environ.get('DOCKER_CONTAINER', False) == 'TRUE':
+    DOCKER_CONTAINER = True
+else:
+    DOCKER_CONTAINER = False
+
+# Pyro5 URI/host, used by mycodo_client.py
+if DOCKER_CONTAINER:
+    PYRO_URI = 'PYRO:mycodo.pyro_server@mycodo_daemon:9090'
+else:
+    PYRO_URI = 'PYRO:mycodo.pyro_server@127.0.0.1:9090'
+
 # Influx sensor/device measurement database
-INFLUXDB_HOST = 'localhost'
+INFLUXDB_HOST = 'localhost' if not DOCKER_CONTAINER else 'influxdb'
 INFLUXDB_PORT = 8086
 INFLUXDB_USER = 'mycodo'
 INFLUXDB_PASSWORD = 'mmdu77sj3nIoiajjs'

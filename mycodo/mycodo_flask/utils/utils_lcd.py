@@ -2,7 +2,6 @@
 import logging
 
 import sqlalchemy
-from RPi import GPIO
 from flask import current_app
 from flask import flash
 from flask import redirect
@@ -53,10 +52,17 @@ def lcd_add(form):
     try:
         new_lcd = LCD()
         new_lcd_data = LCDData()
-        if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
-            new_lcd.i2c_bus = 1
-        else:
-            new_lcd.i2c_bus = 0
+
+        try:
+            from RPi import GPIO
+            if GPIO.RPI_REVISION == 2 or GPIO.RPI_REVISION == 3:
+                new_lcd.i2c_bus = 1
+            else:
+                new_lcd.i2c_bus = 0
+        except:
+            logger.error(
+                "RPi.GPIO and Raspberry Pi required for this action")
+
         new_lcd.lcd_type = form.lcd_type.data
         new_lcd.name = str(LCD_INFO[form.lcd_type.data]['name'])
 

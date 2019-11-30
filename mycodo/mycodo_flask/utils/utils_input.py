@@ -3,7 +3,6 @@ import logging
 
 import os
 import sqlalchemy
-from RPi import GPIO
 from flask import current_app
 from flask import flash
 from flask import url_for
@@ -76,10 +75,15 @@ def input_add(form_add):
         if input_interface:
             new_input.interface = input_interface
 
-        if GPIO.RPI_INFO['P1_REVISION'] == 1:
-            new_input.i2c_bus = 0
-        else:
-            new_input.i2c_bus = 1
+        try:
+            from RPi import GPIO
+            if GPIO.RPI_INFO['P1_REVISION'] == 1:
+                new_input.i2c_bus = 0
+            else:
+                new_input.i2c_bus = 1
+        except:
+            logger.error(
+                "RPi.GPIO and Raspberry Pi required for this action")
 
         if 'input_name' in dict_inputs[input_name]:
             new_input.name = dict_inputs[input_name]['input_name']

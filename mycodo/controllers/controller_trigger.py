@@ -26,8 +26,6 @@ import datetime
 import threading
 import time
 
-import RPi.GPIO as GPIO
-
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Input
@@ -395,6 +393,7 @@ class TriggerController(AbstractController, threading.Thread):
         # message based on the edge detection settings.
         elif trigger.trigger_type == 'trigger_edge':
             try:
+                import RPi.GPIO as GPIO
                 GPIO.setmode(GPIO.BCM)
                 GPIO.setup(int(input_dev.pin), GPIO.IN)
                 gpio_state = GPIO.input(int(input_dev.pin))

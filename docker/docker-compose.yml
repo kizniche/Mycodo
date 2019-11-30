@@ -1,0 +1,95 @@
+version: "3.7"
+
+services:
+
+  influxdb:
+    container_name: influxdb
+    build:
+      context: ../
+      dockerfile: docker/influxdb/Dockerfile
+    ports:
+      - "8083:8083"
+      - "8086:8086"
+      - "8090:8090"
+    env_file:
+      - 'influxdb/env.influxdb'
+    volumes:
+      - influxdb-volume:/var/lib/influxdb
+      - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
+
+  nginx:
+    container_name: nginx
+    restart: always
+    build:
+      context: ../
+      dockerfile: docker/nginx/Dockerfile
+    volumes:
+      - home:/home/mycodo
+      - log:/var/log/mycodo
+      - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - mycodo_flask
+
+  mycodo_daemon:
+    container_name: mycodo_daemon
+    image: app
+    restart: always
+    volumes:
+      - /dev:/dev
+      - home:/home/mycodo
+      - log:/var/log/mycodo
+      - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
+    privileged: true
+    ports:
+      - "9090:9090"
+    command: bash -c "PYTHONPATH=/home/mycodo python mycodo_daemon.py"
+    depends_on:
+      - mycodo_flask
+      - influxdb
+
+  mycodo_flask:
+    container_name: mycodo_flask
+    image: app
+    restart: always
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    volumes:
+      - /dev:/dev
+      - home:/home/mycodo
+      - log:/var/log/mycodo
+      - /var/run/docker.sock:/var/run/docker.sock:ro  # Permits container to restart itself
+      - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
+    privileged: true
+    command: gunicorn --workers 1 --bind unix:/home/mycodo/mycodoflask.sock start_flask_ui:app
+    depends_on:
+      - influxdb
+
+#  telegraf:
+#    image: telegraf:latest
+#    container_name: telegraf
+#    volumes:
+#      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+#    depends_on:
+#      - influxdb
+#
+#  grafana:
+#    image: grafana/grafana:latest
+#    container_name: grafana
+#    ports:
+#      - "3000:3000"
+#    env_file:
+#      - 'grafana/env.grafana'
+#    volumes:
+#      - grafana-volume:/var/lib/grafana
+#    depends_on:
+#      - influxdb
+
+volumes:
+  home:
+  log:
+  influxdb-volume:
+  grafana-volume:

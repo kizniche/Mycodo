@@ -8,7 +8,6 @@ from importlib import import_module
 
 import flask_login
 import os
-from RPi import GPIO
 from dateutil.parser import parse as date_parse
 from flask import Response
 from flask import flash
@@ -23,6 +22,7 @@ from flask_limiter import Limiter
 from influxdb import InfluxDBClient
 from sqlalchemy import and_
 
+from mycodo.config import DOCKER_CONTAINER
 from mycodo.config import INFLUXDB_DATABASE
 from mycodo.config import INFLUXDB_HOST
 from mycodo.config import INFLUXDB_PASSWORD
@@ -204,13 +204,18 @@ def gpio_state_unique_id(unique_id):
     daemon_control = DaemonControl()
 
     if output.output_type == 'wired' and output.pin and -1 < output.pin < 40:
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setwarnings(False)
-        GPIO.setup(output.pin, GPIO.OUT)
-        if GPIO.input(output.pin) == output.on_state:
-            state = 'on'
-        else:
-            state = 'off'
+        try:
+            from RPi import GPIO
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setwarnings(False)
+            GPIO.setup(output.pin, GPIO.OUT)
+            if GPIO.input(output.pin) == output.on_state:
+                state = 'on'
+            else:
+                state = 'off'
+        except:
+            logger.error(
+                "RPi.GPIO and Raspberry Pi required for this action")
     elif (output.output_type in ['command',
                                  'command_pwm',
                                  'python',
@@ -978,9 +983,20 @@ def computer_command(action):
             flash("Unrecognized command: {action}".format(
                 action=action), "success")
             return redirect('/settings')
-        cmd = '{path}/mycodo/scripts/mycodo_wrapper {action} 2>&1'.format(
-                path=INSTALL_DIRECTORY, action=action)
-        subprocess.Popen(cmd, shell=True)
+
+        if DOCKER_CONTAINER:
+            if action == 'daemon_restart':
+                control = DaemonControl()
+                control.terminate_daemon()
+                flash(gettext("Command to restart the daemon sent"), "success")
+            elif action == 'frontend_reload':
+                subprocess.Popen('docker restart flask 2>&1', shell=True)
+                flash(gettext("Command to reload the frontend sent"), "success")
+        else:
+            cmd = '{path}/mycodo/scripts/mycodo_wrapper {action} 2>&1'.format(
+                    path=INSTALL_DIRECTORY, action=action)
+            subprocess.Popen(cmd, shell=True)
+
         if action == 'restart':
             flash(gettext("System rebooting in 10 seconds"), "success")
         elif action == 'shutdown':
@@ -989,7 +1005,9 @@ def computer_command(action):
             flash(gettext("Command to restart the daemon sent"), "success")
         elif action == 'frontend_reload':
             flash(gettext("Command to reload the frontend sent"), "success")
+
         return redirect('/settings')
+
     except Exception as e:
         logger.error("System command '{cmd}' raised and error: "
                      "{err}".format(cmd=action, err=e))

@@ -3,7 +3,6 @@ import logging
 import threading
 import time
 
-import RPi.GPIO as GPIO
 import os
 
 from mycodo.config import FUNCTION_ACTION_INFO
@@ -123,6 +122,7 @@ def get_condition_value(condition_id):
     # Return GPIO state
     elif sql_condition.condition_type == 'gpio_state':
         try:
+            import RPi.GPIO as GPIO
             GPIO.setmode(GPIO.BCM)
             GPIO.setup(int(sql_condition.gpio_pin), GPIO.IN)
             gpio_state = GPIO.input(int(sql_condition.gpio_pin))

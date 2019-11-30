@@ -26,7 +26,6 @@ import sys
 import threading
 import time
 
-import RPi.GPIO as GPIO
 from io import StringIO
 from sqlalchemy import and_
 from sqlalchemy import or_
@@ -804,12 +803,17 @@ class OutputController(AbstractController, threading.Thread):
             state = 'off'
 
         if self.output_type[output_id] == 'wired':
-            if state == 'on':
-                GPIO.output(self.output_pin[output_id],
-                            self.output_on_state[output_id])
-            elif state == 'off':
-                GPIO.output(self.output_pin[output_id],
-                            not self.output_on_state[output_id])
+            try:
+                import RPi.GPIO as GPIO
+                if state == 'on':
+                    GPIO.output(self.output_pin[output_id],
+                                self.output_on_state[output_id])
+                elif state == 'off':
+                    GPIO.output(self.output_pin[output_id],
+                                not self.output_on_state[output_id])
+            except:
+                self.logger.error(
+                    "RPi.GPIO and Raspberry Pi required for this action")
 
         elif self.output_type[output_id] == 'wireless_rpi_rf':
             if state == 'on':
@@ -1108,8 +1112,12 @@ output_id = '{}'
                 each_trigger.unique_id, message=message)
 
     def cleanup_gpio(self):
-        for each_output_pin in self.output_pin:
-            GPIO.cleanup(each_output_pin)
+        try:
+            import RPi.GPIO as GPIO
+            for each_output_pin in self.output_pin:
+                GPIO.cleanup(each_output_pin)
+        except:
+            self.logger.error("RPi.GPIO and Raspberry Pi required for this action")
 
     def add_mod_output(self, output_id):
         """
@@ -1321,11 +1329,16 @@ output_id = '{}'
         """
         if self.output_type[output_id] == 'wired':
             try:
-                GPIO.setmode(GPIO.BCM)
-                GPIO.setwarnings(True)
-                GPIO.setup(self.output_pin[output_id], GPIO.OUT)
-                GPIO.output(self.output_pin[output_id],
-                            not self.output_on_state[output_id])
+                try:
+                    import RPi.GPIO as GPIO
+                    GPIO.setmode(GPIO.BCM)
+                    GPIO.setwarnings(True)
+                    GPIO.setup(self.output_pin[output_id], GPIO.OUT)
+                    GPIO.output(self.output_pin[output_id],
+                                not self.output_on_state[output_id])
+                except:
+                    self.logger.error(
+                        "RPi.GPIO and Raspberry Pi required for this action")
                 state = 'LOW' if self.output_on_state[output_id] else 'HIGH'
                 self.logger.info(
                     "Output {id} (GPIO) setup on pin {pin} and turned OFF "
@@ -1408,8 +1421,13 @@ output_id = '{}'
         """
         if (self.output_type[output_id] == 'wired' and
                 self._is_setup(output_id)):
-            return self.output_on_state[output_id] == GPIO.input(
-                self.output_pin[output_id])
+            try:
+                import RPi.GPIO as GPIO
+                return self.output_on_state[output_id] == GPIO.input(
+                    self.output_pin[output_id])
+            except:
+                self.logger.error(
+                    "RPi.GPIO and Raspberry Pi required for this action")
         elif self.output_type[output_id] in ['command',
                                              'python',
                                              'wireless_rpi_rf']:
@@ -1453,9 +1471,14 @@ output_id = '{}'
         """
         if (self.output_type[output_id] == 'wired' and
                 self.output_pin[output_id]):
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setup(self.output_pin[output_id], GPIO.OUT)
-            return True
+            try:
+                import RPi.GPIO as GPIO
+                GPIO.setmode(GPIO.BCM)
+                GPIO.setup(self.output_pin[output_id], GPIO.OUT)
+                return True
+            except:
+                self.logger.error(
+                    "RPi.GPIO and Raspberry Pi required for this action")
 
         elif self.output_type[output_id] in ['command',
                                              'command_pwm',

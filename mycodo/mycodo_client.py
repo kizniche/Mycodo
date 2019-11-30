@@ -41,6 +41,7 @@ from mycodo.config import INFLUXDB_HOST
 from mycodo.config import INFLUXDB_PASSWORD
 from mycodo.config import INFLUXDB_PORT
 from mycodo.config import INFLUXDB_USER
+from mycodo.config import PYRO_URI
 from mycodo.databases.models import Misc
 from mycodo.utils.database import db_retrieve_table_daemon
 
@@ -57,7 +58,7 @@ class DaemonControl:
     """
     Communicate with the daemon to execute commands or retrieve information.
     """
-    def __init__(self, pyro_uri='PYRO:mycodo.pyro_server@127.0.0.1:9090', pyro_timeout=None):
+    def __init__(self, pyro_uri=PYRO_URI, pyro_timeout=None):
         self.pyro_timeout = 30
         try:
             misc = db_retrieve_table_daemon(Misc, entry='first')
