@@ -20,11 +20,15 @@ runSelfUpgrade() {
     exit 1
   }
 
+  printf "\n#### Beginning Upgrade Stage 2 of 3 ####\n\n"
+  TIMER_START_stage_two=$SECONDS
+
   printf "RELEASE_WIPE = %s\n" "$RELEASE_WIPE"
 
   CURRENT_MYCODO_DIRECTORY=$( cd -P /var/mycodo-root && pwd -P )
   CURRENT_MYCODO_INSTALL_DIRECTORY=$( cd -P /var/mycodo-root/.. && pwd -P )
   THIS_MYCODO_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../.." && pwd -P )
+  NOW=$(date +"%Y-%m-%d_%H-%M-%S")
 
   if [ "$CURRENT_MYCODO_DIRECTORY" == "$THIS_MYCODO_DIRECTORY" ] ; then
     printf "Cannot perform upgrade to the Mycodo instance already intalled. Halting upgrade.\n"
@@ -97,11 +101,6 @@ runSelfUpgrade() {
 
   THIS_VERSION=$("${CURRENT_MYCODO_DIRECTORY}"/env/bin/python3 "${THIS_MYCODO_DIRECTORY}"/mycodo/utils/github_release_info.py -c 2>&1)
   printf "Upgrading Mycodo to version %s\n" "$THIS_VERSION"
-
-  NOW=$(date +"%Y-%m-%d_%H-%M-%S")
-
-  printf "\n#### Beginning Upgrade Stage 2 of 3 ####\n\n"
-  TIMER_START_stage_two=$SECONDS
 
   printf "Stopping the Mycodo daemon..."
   if ! service mycodo stop ; then
@@ -241,7 +240,7 @@ runSelfUpgrade() {
 
   fi
 
-  printf "\n#### Stage 2 of 3 completed in %s seconds ####\n" "$((SECONDS - TIMER_START_stage_two))"
+  printf "\n#### Completed Upgrade Stage 2 of 3 in %s seconds ####\n" "$((SECONDS - TIMER_START_stage_two))"
 
   ##########################################
   # End tests prior to post-upgrade script #
@@ -256,7 +255,7 @@ runSelfUpgrade() {
     error_found
   fi
 
-  printf "\n#### Stage 3 of 3 completed in %s seconds ####\n\n" "$((SECONDS - TIMER_START_stage_three))"
+  printf "\n#### Completed Upgrade Stage 3 of 3 in %s seconds ####\n\n" "$((SECONDS - TIMER_START_stage_three))"
 
   printf "Upgrade completed successfully without errors.\n"
 

@@ -225,7 +225,7 @@ case "${1:-''}" in
         "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/databases/alembic_post.py
     ;;
     'update-apt')
-        printf "\n\n#### Updating apt repositories\n"
+        printf "\n#### Updating apt repositories\n"
         apt-get update -y
     ;;
     'update-cron')
