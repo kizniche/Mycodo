@@ -5,7 +5,7 @@ if [ "$EUID" -ne 0 ] ; then
   exit 1
 fi
 
-INSTALL_PATH="$( cd -P "$( dirname "${SOURCE}" )" && pwd )"
+INSTALL_PATH="$( cd -P "$( dirname "${SOURCE}" )../" && pwd )"
 LOG_LOCATION="${INSTALL_PATH}"/docker/docker.log
 touch "${LOG_LOCATION}"
 
@@ -15,7 +15,6 @@ case "${1:-''}" in
     "install-dependencies")
         apt-get update -y
         apt-get install -y python3 python3-dev python3-setuptools libffi-dev libssl-dev
-        easy_install3 pip
         pip install --upgrade pip
 
         "${INSTALL_PATH}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
