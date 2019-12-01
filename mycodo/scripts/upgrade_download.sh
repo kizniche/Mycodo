@@ -111,7 +111,7 @@ runDownloadMycodo() {
   fi
   printf "Done.\n"
 
-  printf "\n#### Completed Upgrade Stage 1 of 3 in %s seconds ####\n\n" "$((SECONDS - TIMER_START_stage_one))"
+  printf "\n#### Completed Upgrade Stage 1 of 3 in %s seconds ####\n" "$((SECONDS - TIMER_START_stage_one))"
 
   exec /bin/bash "${MYCODO_NEW_TMP_DIR}"/mycodo/scripts/upgrade_install.sh $RELEASE_WIPE
 }

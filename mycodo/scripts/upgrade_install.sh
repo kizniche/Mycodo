@@ -93,14 +93,14 @@ runSelfUpgrade() {
     RELEASE_WIPE=false
   fi
 
-  printf "All pre-upgrade checks passed. Proceeding with upgrade.\n"
+  printf "All pre-upgrade checks passed. Proceeding with upgrade.\n\n"
 
   ##############################
   # End tests prior to upgrade #
   ##############################
 
   THIS_VERSION=$("${CURRENT_MYCODO_DIRECTORY}"/env/bin/python3 "${THIS_MYCODO_DIRECTORY}"/mycodo/utils/github_release_info.py -c 2>&1)
-  printf "Upgrading Mycodo to version %s\n" "$THIS_VERSION"
+  printf "Upgrading Mycodo to version %s\n\n" "$THIS_VERSION"
 
   printf "Stopping the Mycodo daemon..."
   if ! service mycodo stop ; then
