@@ -226,7 +226,7 @@ case "${1:-''}" in
     ;;
     'update-apt')
         printf "\n\n#### Updating apt repositories\n"
-        apt-get update
+        apt-get update -y
     ;;
     'update-cron')
         printf "\n#### Updating Mycodo restart monitor crontab entry\n"
@@ -386,7 +386,6 @@ case "${1:-''}" in
     ;;
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
-        apt-get update -y
         apt-get remove -y apache2
         apt-get install -y ${APT_PKGS}
         python3 /usr/lib/python3/dist-packages/easy_install.py pip

@@ -52,7 +52,7 @@ runSelfUpgrade() {
   # Begin tests prior to upgrade #
   ################################
 
-  printf "\n#### Beginning pre-upgrade checks ####\n"
+  printf "\n#### Beginning pre-upgrade checks ####\n\n"
 
   # Maintenance mode
   # This is a temporary state so the developer can test a version release before users can upgrade.
@@ -251,9 +251,8 @@ runSelfUpgrade() {
     printf "Failed: Error while running post-upgrade script.\n"
     error_found
   fi
-  printf "Done.\n\n"
 
-  printf "Upgrade completed successfully without errors.\n"
+  printf "\n\nUpgrade completed successfully without errors.\n"
 
   #############################
   # Begin tests after upgrade #

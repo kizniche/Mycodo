@@ -10,6 +10,7 @@ COPY . /home/mycodo
 WORKDIR /home/mycodo/mycodo
 
 RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh create-files-directories
+RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh update-apt
 RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh update-packages
 RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh install-docker-ce-cli
 RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh docker-update-pip

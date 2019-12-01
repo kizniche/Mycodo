@@ -101,7 +101,7 @@ ${INSTALL_CMD} web-server-connect
 TIMER_TOTAL_web_server_connect=$((SECONDS - TIMER_START_web_server_connect))
 
 printf "\nupgrade_post.sh completed in %s s" "$((SECONDS - TIMER_START_upgrade_post))"
-printf "\n\nDetails:"
+printf "\nDetailed summary:"
 printf "\ninitialize:                   %s s" "${TIMER_TOTAL_initialize}"
 printf "\nupdate-swap-size:             %s s" "${TIMER_TOTAL_update_swap_size}"
 printf "\nsetup-virtualenv:             %s s" "${TIMER_TOTAL_setup_virtualenv}"
@@ -121,4 +121,4 @@ printf "\nupdate-cron:                  %s s" "${TIMER_TOTAL_update_cron}"
 printf "\nupdate-permissions:           %s s" "${TIMER_TOTAL_update_permissions}"
 printf "\nrestart-daemon:               %s s" "${TIMER_TOTAL_restart_daemon}"
 printf "\nweb-server_reload:            %s s" "${TIMER_TOTAL_web_server_reload}"
-printf "\nweb-server-connect:           %s s" "${TIMER_TOTAL_web_server_connect}"
+printf "\nweb-server-connect:           %s s\n\n" "${TIMER_TOTAL_web_server_connect}"
