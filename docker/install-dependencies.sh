@@ -5,7 +5,7 @@ if [ "$EUID" -ne 0 ] ; then
   exit 1
 fi
 
-INSTALL_PATH="$( cd -P "$( dirname "${SOURCE}" )../" && pwd )"
+INSTALL_PATH="$( cd -P "$( dirname "${SOURCE}" )/.." && pwd )"
 LOG_LOCATION="${INSTALL_PATH}"/docker/docker.log
 touch "${LOG_LOCATION}"
 
@@ -15,6 +15,8 @@ case "${1:-''}" in
     "install-dependencies")
         apt-get update -y
         apt-get install -y python3 python3-dev python3-setuptools libffi-dev libssl-dev
+        apt remove -y python3-cffi-backend
+
         pip install --upgrade pip
 
         "${INSTALL_PATH}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
@@ -38,7 +40,7 @@ case "${1:-''}" in
         fi
 
         printf "#### Dependencies installed\n" 2>&1 | tee -a "${LOG_LOCATION}"
-        printf "#### You must log out then back in before running 'make build'\n" 2>&1 | tee -a "${LOG_LOCATION}"
+        printf "#### You must log out then back in before running 'make build'. If you are not running Raspbian under the user 'pi', then you need to add your user to the 'docker group with the command 'usermod -aG docker pi', substitutung 'pi' with your user, then log out for the changes to take effect.\n" 2>&1 | tee -a "${LOG_LOCATION}"
     ;;
     "test")
         docker exec -ti flask "${INSTALL_PATH}"/env/bin/pip install --upgrade -r /home/mycodo/mycodo/install/requirements-testing.txt
