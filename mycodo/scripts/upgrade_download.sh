@@ -72,6 +72,7 @@ runDownloadMycodo() {
   fi
 
   printf "\n#### Beginning Upgrade: Stage 1 of 3 ####\n\n"
+  TIMER_START_stage_one=$SECONDS
 
   printf "Downloading latest Mycodo version %s to %s/%s.tar.gz..." "${UPDATE_VERSION}" "${INSTALL_DIRECTORY}" "${TARBALL_FILE}"
   if ! wget --quiet -O "${INSTALL_DIRECTORY}"/"${TARBALL_FILE}".tar.gz ${UPDATE_URL} ; then
@@ -109,6 +110,8 @@ runDownloadMycodo() {
     printf "Failed: Error while removing %s/%s.tar.gz.\n" "${INSTALL_DIRECTORY}" "${TARBALL_FILE}"
   fi
   printf "Done.\n"
+
+  printf "\n#### Stage 1 of 3 completed in %s seconds ####\n\n" "$((SECONDS - TIMER_START_stage_one))"
 
   exec /bin/bash "${MYCODO_NEW_TMP_DIR}"/mycodo/scripts/upgrade_install.sh $RELEASE_WIPE
 }

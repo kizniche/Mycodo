@@ -15,8 +15,6 @@ INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
 
 cd "${INSTALL_DIRECTORY}" || exit
 
-TIMER_START_upgrade_post=$SECONDS
-
 rm -f "${INSTALL_DIRECTORY}"/databases/statistics.csv
 rm -f "${INSTALL_DIRECTORY}"/databases/statistics.id
 
@@ -100,8 +98,7 @@ TIMER_START_web_server_connect=$SECONDS
 ${INSTALL_CMD} web-server-connect
 TIMER_TOTAL_web_server_connect=$((SECONDS - TIMER_START_web_server_connect))
 
-printf "\nupgrade_post.sh completed in %s s" "$((SECONDS - TIMER_START_upgrade_post))"
-printf "\nDetailed summary:"
+printf "\nStage 3 execution time summary:"
 printf "\ninitialize:                   %s s" "${TIMER_TOTAL_initialize}"
 printf "\nupdate-swap-size:             %s s" "${TIMER_TOTAL_update_swap_size}"
 printf "\nsetup-virtualenv:             %s s" "${TIMER_TOTAL_setup_virtualenv}"

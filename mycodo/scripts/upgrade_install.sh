@@ -101,6 +101,7 @@ runSelfUpgrade() {
   NOW=$(date +"%Y-%m-%d_%H-%M-%S")
 
   printf "\n#### Beginning Upgrade Stage 2 of 3 ####\n\n"
+  TIMER_START_stage_two=$SECONDS
 
   printf "Stopping the Mycodo daemon..."
   if ! service mycodo stop ; then
@@ -240,11 +241,14 @@ runSelfUpgrade() {
 
   fi
 
+  printf "\n#### Stage 2 of 3 completed in %s seconds ####\n" "$((SECONDS - TIMER_START_stage_two))"
+
   ##########################################
   # End tests prior to post-upgrade script #
   ##########################################
 
   printf "\n#### Beginning Upgrade Stage 3 of 3 ####\n\n"
+  TIMER_START_stage_three=$SECONDS
 
   printf "Running post-upgrade script...\n"
   if ! "${CURRENT_MYCODO_DIRECTORY}"/mycodo/scripts/upgrade_post.sh ; then
@@ -252,7 +256,9 @@ runSelfUpgrade() {
     error_found
   fi
 
-  printf "\n\nUpgrade completed successfully without errors.\n"
+  printf "\n#### Stage 3 of 3 completed in %s seconds ####\n\n" "$((SECONDS - TIMER_START_stage_three))"
+
+  printf "Upgrade completed successfully without errors.\n"
 
   #############################
   # Begin tests after upgrade #
