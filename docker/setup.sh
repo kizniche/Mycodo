@@ -12,7 +12,7 @@ touch "${LOG_LOCATION}"
 cd "${INSTALL_PATH}" || exit
 
 case "${1:-''}" in
-    "install-dependencies")
+    "dependencies")
         apt-get update -y
         apt-get install -y python3 python3-dev python3-setuptools libffi-dev libssl-dev
         apt remove -y python3-cffi-backend
@@ -21,6 +21,7 @@ case "${1:-''}" in
 
         "${INSTALL_PATH}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
         "${INSTALL_PATH}"/mycodo/scripts/upgrade_commands.sh install-docker-ce-cli
+        apt install -y docker-ce containerd.io
 
         usermod -aG docker pi
 

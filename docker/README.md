@@ -30,7 +30,8 @@ sudo service nginx stop
 Install prerequisites with the following command.
 
 ```shell script
-sudo /bin/bash ~/Mycodo/docker/install-dependencies.sh install-dependencies
+cd ~/Mycodo/docker
+sudo /bin/bash ./setup.sh dependencies
 ```
 
 Log out then back in to make the group changes go into effect before attempting to build.
@@ -103,7 +104,7 @@ Install prerequisites
 
 ```shell script
 cd ~/Mycodo/docker
-sudo /bin/bash ./install-prerequisites.sh install-prerequisites
+sudo /bin/bash ./setup.sh dependencies
 ```
 
 Finally, build with docker-compose
