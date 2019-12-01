@@ -40,7 +40,8 @@ case "${1:-''}" in
             printf "#### logrotate already installed. Skipping install.\n" 2>&1 | tee -a "${LOG_LOCATION}"
         fi
 
-        printf "#### Dependencies installed\n" 2>&1 | tee -a "${LOG_LOCATION}"
+        printf "\n#### All dependencies installed\n\n" 2>&1 | tee -a "${LOG_LOCATION}"
+
         printf "#### You must log out then back in before running 'make build'. If you are not running Raspbian under the user 'pi', then you need to add your user to the 'docker group with the command 'usermod -aG docker pi', substitutung 'pi' with your user, then log out for the changes to take effect.\n" 2>&1 | tee -a "${LOG_LOCATION}"
     ;;
     "test")

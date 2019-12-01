@@ -44,6 +44,7 @@ make build
 ```
 
 
+
 ## Virtual Machine
 
 For consistency, I will now go through the steps to installing Mycodo in Docker containers with the use of a virtual machine that can be run from Windows, Mac, or Linux. This ensures a consistent platform to test from and reduces the issues that can occur with the use of different Linux distributions. If you're having issues with the above installation steps, try the method below.
@@ -86,9 +87,11 @@ Download the [Debian Buster with Raspberry Pi Desktop ISO](https://www.raspberry
 -  Once the virtual machine reboots, the Raspbian desktop should load and present a graphical setup to finish installing Raspbian. Follow the prompts to complete the install.
 -  At this point is is recommended to open a terminal and run ```sudo apt update && sudo apt upgrade``` to upgrade your system software to the latest version (if you haven't already done this in the graphical setup).
 
-#### Installing Mycodo with Docker
+#### Install Mycodo in Docker containers
 
-Open a terminal in Raspbian and run the following commands to retrieve and extract the latest Mycodo release.
+Open a terminal in Raspbian and run the following commands.
+
+##### Retrieve and extract the latest Mycodo release
 
 ```shell script
 sudo apt-get install -y jq
@@ -100,18 +103,23 @@ tar xzf mycodo-latest.tar.gz -C Mycodo --strip-components=1
 rm -f mycodo-latest.tar.gz
 ```
 
-Install prerequisites 
+##### Install dependencies
 
 ```shell script
 cd ~/Mycodo/docker
 sudo /bin/bash ./setup.sh dependencies
 ```
 
-Finally, build with docker-compose
+Log out then back in for the group addition to take effect.
+
+##### Build with docker-compose
 
 ```shell script
 make build
 ```
+
+If all goes as planned, you should have all containers build and start without issue.
+
 
 
 ## Access
@@ -187,17 +195,12 @@ Grafana and Telegraf are disabled by default. To enable either or both of these 
 
 After logging in and changing the admin password, select "Add data source", then "InfluxDB". Enter the following information:
 
-Name: InfluxDB-mycodo
-
-Default: Checked
-
-URL: http://influxdb:8086
-
-Database: mycodo_db
-
-User: mycodo
-
-Password: mmdu77sj3nIoiajjs
+-  Name: InfluxDB-mycodo
+-  Default: Checked
+-  URL: http://influxdb:8086
+-  Database: mycodo_db
+-  User: mycodo
+-  Password: mmdu77sj3nIoiajjs
 
 Click "Save and Test"
 
