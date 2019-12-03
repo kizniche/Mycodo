@@ -58,6 +58,33 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == '55aca47c2362':
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from mycodo.databases.models import Dashboard
+                from mycodo.databases.models import DashboardLayout
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    new_dash = DashboardLayout()
+                    new_dash.name = 'Default Dashboard'
+                    session.add(new_dash)
+
+                    for each_widget in session.query(Dashboard).all():
+                        each_widget.dashboard_id = new_dash.unique_id
+                        session.commit()
+
+                    if not error:
+                        session.commit()
+                    else:
+                        for each_error in error:
+                            print("Error: {}".format(each_error))
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == '895ddcdef4ce':
             # Add PID setpoint_tracking_type and setpoint_tracking_id
             # If method_id set, set setpoint_tracking_type to 'method;

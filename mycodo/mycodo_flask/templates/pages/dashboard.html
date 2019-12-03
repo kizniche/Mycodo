@@ -47,15 +47,17 @@
 
     <div class="grid-stack">
 
-    {%- for each_dashboard in dashboard -%}
+    {%- for each_dashboard in table_dashboard.query.filter(table_dashboard.dashboard_id == dashboard_id).all() -%}
       {%- set chart_number = loop.index -%}
 
       <div class="grid-stack-item"
-           data-custom-chart-number="{{chart_number}}"
-           data-custom-id="{{each_dashboard.unique_id}}"
-           data-name="{{each_dashboard.name}}"
-           data-gs-x="{{each_dashboard.position_x}}" data-gs-y="{{each_dashboard.position_y}}"
-           data-gs-width="{{each_dashboard.width}}" data-gs-height="{{each_dashboard.height}}">
+         data-custom-chart-number="{{chart_number}}"
+         data-custom-id="{{each_dashboard.unique_id}}"
+         data-name="{{each_dashboard.name}}"
+         data-gs-x="{{each_dashboard.position_x}}"
+         data-gs-y="{{each_dashboard.position_y}}"
+         data-gs-width="{{each_dashboard.width}}"
+         data-gs-height="{{each_dashboard.height}}">
 
         <div class="grid-stack-item-content" style="display: flex; flex-flow: column; height: 100%; padding: 0.2em; border: 1px solid #ddd; border-radius: 5px">
 
@@ -100,7 +102,7 @@
 
     <div class="form-inline" style="padding-bottom: 1em;">
       <div class="form-group">
-        {{form_base.dashboard_type(class_='selectpicker', **{'data-style': 'btn btn-sm btn-primary'})}}
+        {{form_base.widget_type(class_='selectpicker', **{'data-style': 'btn btn-sm btn-primary'})}}
       </div>
     </div>
 
@@ -152,25 +154,28 @@ var options = {
 var grid = $('.grid-stack').gridstack(options);
 
 grid.on('change', function (event, items) {
-  var res = $('.grid-stack > .grid-stack-item:visible').map(function (i, el) {
-    el = $(el);
-    node = el.data('_gridstack_node');
-    return {
-      name: el.attr('data-name'),
-      unique_id: el.attr('data-custom-id'),
-      x: node.x,
-      y: node.y,
-      width: node.width,
-      height: node.height
-    };
-  });
-  $.ajax({
-    url: "/save_dashboard_layout",
-    type: "POST",
-    data: JSON.stringify(res.toArray()),
-    contentType: "application/json; charset=utf-8",
-    success: function(dat) {}
-  });
+  if ($(items)) {
+    var res = $('.grid-stack > .grid-stack-item:visible').map(function (i, el) {
+      el = $(el);
+      node = el.data('_gridstack_node');
+      return {
+        name: el.attr('data-name'),
+        widget_id: el.attr('data-custom-id'),
+        position_x: node.x,
+        position_y: node.y,
+        width: node.width,
+        height: node.height
+      };
+    });
+    $.ajax({
+      url: "/save_dashboard_layout",
+      type: "POST",
+      data: JSON.stringify(res.toArray()),
+      contentType: "application/json; charset=utf-8",
+      success: function (dat) {
+      }
+    });
+  }
 });
 
 jQuery(document).ready(function($) {
@@ -196,7 +201,7 @@ function sendVal(chart, output_id, duty_cycle){
 
 // Add Dashboard Widget content selector
 
-$('#dashboard_type').on('change', function () {
+$('#widget_type').on('change', function () {
   var x = document.getElementsByClassName("add_dashboard_object");  // Find the widgets
   for(var i = 0; i < x.length; i++){
     x[i].style.display = "none";    // Change the content
@@ -370,6 +375,11 @@ $(document).ready(function() {
     var url = '/outputstate_unique_id/' + unique_id;
     $.getJSON(url,
       function(state, responseText, jqXHR) {
+        console.log(chart_number);
+        console.log(document.getElementById("container-output-" + chart_number).className);
+        console.log(document.getElementById("text-output-state-" + chart_number).innerHTML);
+        console.log('end');
+
         if (jqXHR.status !== 204) {
           if (state !== null) {
             document.getElementById("container-output-" + chart_number).className = "active-background";
@@ -887,7 +897,7 @@ $(document).ready(function() {
     return Highcharts.Color(color).setOpacity(0.6).get('rgba');
   });
 
-{%- for each_dashboard in dashboard -%}
+{%- for each_dashboard in table_dashboard.query.filter(table_dashboard.dashboard_id == dashboard_id).all() -%}
   {%- set chart_number = loop.index -%}
   {% set graph_input_ids = each_dashboard.input_ids_measurements.split(';') %}
 

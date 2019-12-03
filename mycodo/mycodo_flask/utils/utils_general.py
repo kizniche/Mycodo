@@ -31,6 +31,8 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import CustomController
+from mycodo.databases.models import Dashboard
+from mycodo.databases.models import DashboardLayout
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
@@ -282,7 +284,6 @@ def controller_activate_deactivate(controller_action,
 #
 # Choices
 #
-
 
 def choices_controller_ids():
     """ populate form multi-select choices from Controller IDS """
@@ -697,7 +698,6 @@ def form_output_choices_devices(choices, each_output):
     return choices
 
 
-
 def form_pid_choices(choices, each_pid, dict_units, dict_measurements):
     device_measurements = DeviceMeasurements.query.filter(
         DeviceMeasurements.device_id == each_pid.unique_id).all()
@@ -806,6 +806,69 @@ def user_has_permission(permission):
         return True
     flash("You don't have permission to do that", "error")
     return False
+
+
+def dashboard_widget_get_info(dashboard_id=None):
+    """Generate a dictionary of information of all dashboard widgets"""
+    dashboards = {}
+
+    if dashboard_id:
+        dashboard_table = DashboardLayout.query.filter(
+            DashboardLayout.unique_id == dashboard_id).all()
+        widgets = Dashboard.query.filter(Dashboard.dashboard_id == dashboard_id).all()
+    else:
+        dashboard_table = DashboardLayout.query.all()
+        widgets = Dashboard.query.all()
+
+    for each_dash in dashboard_table:
+        dashboards[each_dash.unique_id] = {
+            'name': each_dash.name,
+            'widgets': {}
+        }
+
+        if not widgets:
+            break
+
+        for each_widget in widgets:
+            this_widget = dashboards[each_dash.unique_id]['widgets'][each_widget.unique_id]
+            this_widget['position_x'] = each_widget.position_x
+            this_widget['position_y'] = each_widget.position_y
+            this_widget['width'] = each_widget.width
+            this_widget['height'] = each_widget.height
+
+        position_x = each_dash.position_x.split(';')
+        for each_pos in position_x:
+            split_pos = each_pos.split(',')
+            widget_id = split_pos[0]
+            if widget_id not in dashboards[each_dash.unique_id]['widgets']:
+                dashboards[each_dash.unique_id]['widgets'][widget_id] = {}
+            dashboards[each_dash.unique_id]['widgets'][widget_id]['position_x'] = int(split_pos[1])
+
+        position_y = each_dash.position_y.split(';')
+        for each_pos in position_y:
+            split_pos = each_pos.split(',')
+            widget_id = split_pos[0]
+            if widget_id not in dashboards[each_dash.unique_id]['widgets']:
+                dashboards[each_dash.unique_id]['widgets'][widget_id] = {}
+            dashboards[each_dash.unique_id]['widgets'][widget_id]['position_y'] = int(split_pos[1])
+
+        width = each_dash.width.split(';')
+        for each_size in width:
+            split_size = each_size.split(',')
+            widget_id = split_size[0]
+            if widget_id not in dashboards[each_dash.unique_id]['widgets']:
+                dashboards[each_dash.unique_id]['widgets'][widget_id] = {}
+            dashboards[each_dash.unique_id]['widgets'][widget_id]['width'] = int(split_size[1])
+
+        height = each_dash.height.split(';')
+        for each_size in height:
+            split_size = each_size.split(',')
+            widget_id = split_size[0]
+            if widget_id not in dashboards[each_dash.unique_id]['widgets']:
+                dashboards[each_dash.unique_id]['widgets'][widget_id] = {}
+            dashboards[each_dash.unique_id]['widgets'][widget_id]['height'] = int(split_size[1])
+
+    return dashboards
 
 
 def delete_entry_with_id(table, entry_id):

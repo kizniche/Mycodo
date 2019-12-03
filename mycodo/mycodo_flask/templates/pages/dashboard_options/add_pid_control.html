@@ -1,6 +1,7 @@
-<form method="post" action="/dashboard">
+<form method="post" action="/dashboard/{{dashboard_id}}">
   {{form_base.csrf_token}}
-  <input type="hidden" name="dashboard_type" value="pid_control">
+  <input type="hidden" name="dashboard_id" value="{{dashboard_id}}">
+  <input type="hidden" name="widget_type" value="pid_control">
 
   <div class="form-row small-gutters">
 

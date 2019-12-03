@@ -1,6 +1,7 @@
-<form method="post" action="/dashboard">
+<form method="post" action="/dashboard/{{dashboard_id}}">
   {{form_base.csrf_token}}
-  <input type="hidden" name="dashboard_type" value="gauge">
+  <input type="hidden" name="dashboard_id" value="{{dashboard_id}}">
+  <input type="hidden" name="widget_type" value="gauge">
 
   <div class="form-row small-gutters">
     <div class="col-auto">

@@ -6,12 +6,12 @@ import sqlalchemy
 from flask import flash
 from flask import url_for
 from flask_babel import gettext
-from sqlalchemy import func
 
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Dashboard
+from mycodo.databases.models import DashboardLayout
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
@@ -28,198 +28,267 @@ logger = logging.getLogger(__name__)
 
 
 #
-# Dashboard
+# Dashboards
 #
 
-def dashboard_add(form_base, form_object):
-    """Add a widget to the dashboard"""
+def dashboard_add():
+    """Add a dashboard"""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['add']['title'],
         controller=TRANSLATIONS['dashboard']['title'])
     error = []
 
-    new_graph = Dashboard()
-    new_graph.name = form_base.name.data
-    new_graph.font_em_name = form_base.font_em_name.data
-    new_graph.enable_drag_handle = form_base.enable_drag_handle.data
+    last_dashboard = DashboardLayout.query.order_by(
+        DashboardLayout.id.desc()).first()
+
+    new_dash = DashboardLayout()
+    new_dash.name = '{} {}'.format(TRANSLATIONS['dashboard']['title'], last_dashboard.id + 1)
+
+    if not error:
+        new_dash.save()
+
+        flash(gettext(
+            "Dashboard with ID %(id)s successfully added", id=new_dash.id),
+            "success")
+
+    return new_dash.unique_id
+
+
+def dashboard_mod(form):
+    """Modify a dashboard"""
+    action = '{action} {controller}'.format(
+        action=TRANSLATIONS['modify']['title'],
+        controller=TRANSLATIONS['dashboard']['title'])
+    error = []
+
+    dashboard_mod = DashboardLayout.query.filter(
+        DashboardLayout.unique_id == form.dashboard_id.data).first()
+    dashboard_mod.name = form.name.data
+
+    db.session.commit()
+
+    flash_success_errors(
+        error, action, url_for('routes_page.page_dashboard_default'))
+
+
+def dashboard_del(form):
+    """Delete a dashboard"""
+    action = '{action} {controller}'.format(
+        action=TRANSLATIONS['delete']['title'],
+        controller=TRANSLATIONS['dashboard']['title'])
+    error = []
+
+    dashboards = DashboardLayout.query.all()
+    if len(dashboards) == 1:
+        flash('Cannot delete the only remaining dashboard.', 'error')
+        return
+
+    widgets = Dashboard.query.filter(
+        Dashboard.dashboard_id == form.dashboard_id.data).all()
+    for each_widget in widgets:
+        delete_entry_with_id(Dashboard, each_widget.unique_id)
+
+    delete_entry_with_id(DashboardLayout, form.dashboard_id.data)
+
+    flash_success_errors(
+        error, action, url_for('routes_page.page_dashboard_default'))
+
+
+#
+# Widgets
+#
+
+def widget_add(form_base, form_object):
+    """Add a widget to the dashboard"""
+    action = '{action} {controller}'.format(
+        action=TRANSLATIONS['add']['title'],
+        controller=TRANSLATIONS['widget']['title'])
+    error = []
+
+    new_widget = Dashboard()
+    new_widget.dashboard_id = form_base.dashboard_id.data
+    new_widget.name = form_base.name.data
+    new_widget.font_em_name = form_base.font_em_name.data
+    new_widget.enable_drag_handle = form_base.enable_drag_handle.data
 
     # Find where the next widget should be placed on the grid
     # Finds the lowest position to create as the new Widget's starting position
     position_y_start = 0
-    for each_widget in Dashboard.query.all():
+    for each_widget in Dashboard.query.filter(
+            Dashboard.dashboard_id == form_base.dashboard_id.data).all():
         highest_position = each_widget.position_y + each_widget.height
         if highest_position > position_y_start:
             position_y_start = highest_position
-    new_graph.position_y = position_y_start
+    new_widget.position_y = position_y_start
 
     # Spacer
-    if form_base.dashboard_type.data == 'spacer':
+    if form_base.widget_type.data == 'spacer':
 
-        dashboard_type = 'Spacer'
+        widget_type = 'Spacer'
 
-        new_graph.graph_type = form_base.dashboard_type.data
+        new_widget.graph_type = form_base.widget_type.data
 
-        new_graph.width = 12
-        new_graph.height = 1
+        new_widget.width = 12
+        new_widget.height = 1
 
     # Graph
-    elif (form_base.dashboard_type.data == 'graph' and
+    elif (form_base.widget_type.data == 'graph' and
             (form_base.name.data and
              form_object.xaxis_duration.data and
              form_base.refresh_duration.data)):
 
-        dashboard_type = 'Graph'
+        widget_type = 'Graph'
 
         error = graph_error_check(form_object, error)
 
-        new_graph.graph_type = form_base.dashboard_type.data
+        new_widget.graph_type = form_base.widget_type.data
         if form_object.math_ids.data:
-            new_graph.math_ids = ";".join(form_object.math_ids.data)
+            new_widget.math_ids = ";".join(form_object.math_ids.data)
         if form_object.pid_ids.data:
-            new_graph.pid_ids = ";".join(form_object.pid_ids.data)
+            new_widget.pid_ids = ";".join(form_object.pid_ids.data)
         if form_object.output_ids.data:
-            new_graph.output_ids = ";".join(form_object.output_ids.data)
+            new_widget.output_ids = ";".join(form_object.output_ids.data)
         if form_object.input_ids.data:
-            new_graph.input_ids_measurements = ";".join(form_object.input_ids.data)
+            new_widget.input_ids_measurements = ";".join(form_object.input_ids.data)
         if form_object.note_tag_ids.data:
-            new_graph.note_tag_ids = ";".join(form_object.note_tag_ids.data)
+            new_widget.note_tag_ids = ";".join(form_object.note_tag_ids.data)
 
-        new_graph.refresh_duration = form_base.refresh_duration.data
-        new_graph.enable_header_buttons = form_object.enable_header_buttons.data
-        new_graph.x_axis_duration = form_object.xaxis_duration.data
-        new_graph.enable_auto_refresh = form_object.enable_auto_refresh.data
-        new_graph.enable_xaxis_reset = form_object.enable_xaxis_reset.data
-        new_graph.enable_title = form_object.enable_title.data
-        new_graph.enable_navbar = form_object.enable_navbar.data
-        new_graph.enable_rangeselect = form_object.enable_rangeselect.data
-        new_graph.enable_export = form_object.enable_export.data
-        new_graph.enable_graph_shift = form_object.enable_graph_shift.data
-        new_graph.enable_manual_y_axis = form_object.enable_manual_y_axis.data
+        new_widget.refresh_duration = form_base.refresh_duration.data
+        new_widget.enable_header_buttons = form_object.enable_header_buttons.data
+        new_widget.x_axis_duration = form_object.xaxis_duration.data
+        new_widget.enable_auto_refresh = form_object.enable_auto_refresh.data
+        new_widget.enable_xaxis_reset = form_object.enable_xaxis_reset.data
+        new_widget.enable_title = form_object.enable_title.data
+        new_widget.enable_navbar = form_object.enable_navbar.data
+        new_widget.enable_rangeselect = form_object.enable_rangeselect.data
+        new_widget.enable_export = form_object.enable_export.data
+        new_widget.enable_graph_shift = form_object.enable_graph_shift.data
+        new_widget.enable_manual_y_axis = form_object.enable_manual_y_axis.data
 
-        new_graph.width = 12
-        new_graph.height = 7
+        new_widget.width = 12
+        new_widget.height = 7
 
     # Gauge
-    elif form_base.dashboard_type.data == 'gauge':
+    elif form_base.widget_type.data == 'gauge':
 
-        dashboard_type = 'Gauge'
+        widget_type = 'Gauge'
 
         error = gauge_error_check(form_object, error)
 
-        new_graph.graph_type = form_object.gauge_type.data
+        new_widget.graph_type = form_object.gauge_type.data
         if form_object.gauge_type.data == 'gauge_solid':
-            new_graph.range_colors = '20,#33CCFF;40,#55BF3B;60,#DDDF0D;80,#DF5353'
+            new_widget.range_colors = '20,#33CCFF;40,#55BF3B;60,#DDDF0D;80,#DF5353'
         elif form_object.gauge_type.data == 'gauge_angular':
-            new_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
+            new_widget.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
 
-        new_graph.refresh_duration = form_base.refresh_duration.data
-        new_graph.max_measure_age = form_object.max_measure_age.data
-        new_graph.refresh_duration = form_base.refresh_duration.data
-        new_graph.y_axis_min = form_object.y_axis_min.data
-        new_graph.y_axis_max = form_object.y_axis_max.data
-        new_graph.input_ids_measurements = form_object.input_ids.data
-        new_graph.enable_timestamp = form_object.enable_timestamp.data
+        new_widget.refresh_duration = form_base.refresh_duration.data
+        new_widget.max_measure_age = form_object.max_measure_age.data
+        new_widget.refresh_duration = form_base.refresh_duration.data
+        new_widget.y_axis_min = form_object.y_axis_min.data
+        new_widget.y_axis_max = form_object.y_axis_max.data
+        new_widget.input_ids_measurements = form_object.input_ids.data
+        new_widget.enable_timestamp = form_object.enable_timestamp.data
 
-        new_graph.width = 2
-        new_graph.height = 3
+        new_widget.width = 2
+        new_widget.height = 3
 
     # Indicator
-    elif form_base.dashboard_type.data == 'indicator':
+    elif form_base.widget_type.data == 'indicator':
 
-        dashboard_type = 'Indicator'
+        widget_type = 'Indicator'
 
         error = measurement_error_check(form_object, error)
 
-        new_graph.graph_type = 'indicator'
-        new_graph.refresh_duration = form_base.refresh_duration.data
-        new_graph.max_measure_age = form_object.max_measure_age.data
-        new_graph.font_em_timestamp = form_object.font_em_timestamp.data
-        new_graph.input_ids_measurements = form_object.measurement_id.data
+        new_widget.graph_type = 'indicator'
+        new_widget.refresh_duration = form_base.refresh_duration.data
+        new_widget.max_measure_age = form_object.max_measure_age.data
+        new_widget.font_em_timestamp = form_object.font_em_timestamp.data
+        new_widget.input_ids_measurements = form_object.measurement_id.data
 
-        new_graph.width = 2
-        new_graph.height = 3
+        new_widget.new_widget.width = 2
+        new_widget.new_widget.height = 3
 
     # Measurement
-    elif form_base.dashboard_type.data == 'measurement':
+    elif form_base.widget_type.data == 'measurement':
 
-        dashboard_type = 'Measurement'
+        widget_type = 'Measurement'
 
         error = measurement_error_check(form_object, error)
 
-        new_graph.graph_type = 'measurement'
-        new_graph.max_measure_age = form_object.max_measure_age.data
-        new_graph.refresh_duration = form_base.refresh_duration.data
-        new_graph.font_em_value = form_object.font_em_value.data
-        new_graph.font_em_timestamp = form_object.font_em_timestamp.data
-        new_graph.decimal_places = form_object.decimal_places.data
-        new_graph.input_ids_measurements = form_object.measurement_id.data
+        new_widget.graph_type = 'measurement'
+        new_widget.max_measure_age = form_object.max_measure_age.data
+        new_widget.refresh_duration = form_base.refresh_duration.data
+        new_widget.font_em_value = form_object.font_em_value.data
+        new_widget.font_em_timestamp = form_object.font_em_timestamp.data
+        new_widget.decimal_places = form_object.decimal_places.data
+        new_widget.input_ids_measurements = form_object.measurement_id.data
 
-        new_graph.width = 3
-        new_graph.height = 3
+        new_widget.width = 3
+        new_widget.height = 3
 
     # Output
-    elif form_base.dashboard_type.data == 'output':
+    elif form_base.widget_type.data == 'output':
 
-        dashboard_type = 'Output'
+        widget_type = 'Output'
 
         error = output_error_check(form_object, error)
 
-        new_graph.graph_type = 'output'
-        new_graph.max_measure_age = form_object.max_measure_age.data
-        new_graph.refresh_duration = form_base.refresh_duration.data
-        new_graph.font_em_value = form_object.font_em_value.data
-        new_graph.font_em_timestamp = form_object.font_em_timestamp.data
-        new_graph.enable_output_controls = form_object.enable_output_controls.data
-        new_graph.decimal_places = form_object.decimal_places.data
-        new_graph.output_ids = form_object.output_id.data
+        new_widget.graph_type = 'output'
+        new_widget.max_measure_age = form_object.max_measure_age.data
+        new_widget.refresh_duration = form_base.refresh_duration.data
+        new_widget.font_em_value = form_object.font_em_value.data
+        new_widget.font_em_timestamp = form_object.font_em_timestamp.data
+        new_widget.enable_output_controls = form_object.enable_output_controls.data
+        new_widget.decimal_places = form_object.decimal_places.data
+        new_widget.output_ids = form_object.output_id.data
 
-        new_graph.width = 3
-        new_graph.height = 2
+        new_widget.width = 3
+        new_widget.height = 2
 
     # Output Range Slider
-    elif form_base.dashboard_type.data == 'output_pwm_slider':
+    elif form_base.widget_type.data == 'output_pwm_slider':
 
-        dashboard_type = 'Output Range Slider'
+        widget_type = 'Output Range Slider'
 
         error = output_error_check(form_object, error)
 
-        new_graph.graph_type = 'output_pwm_slider'
-        new_graph.max_measure_age = form_object.max_measure_age.data
-        new_graph.refresh_duration = form_base.refresh_duration.data
-        new_graph.font_em_value = form_object.font_em_value.data
-        new_graph.font_em_timestamp = form_object.font_em_timestamp.data
-        new_graph.enable_output_controls = form_object.enable_output_controls.data
-        new_graph.decimal_places = form_object.decimal_places.data
-        new_graph.output_ids = form_object.output_id.data
+        new_widget.graph_type = 'output_pwm_slider'
+        new_widget.max_measure_age = form_object.max_measure_age.data
+        new_widget.refresh_duration = form_base.refresh_duration.data
+        new_widget.font_em_value = form_object.font_em_value.data
+        new_widget.font_em_timestamp = form_object.font_em_timestamp.data
+        new_widget.enable_output_controls = form_object.enable_output_controls.data
+        new_widget.decimal_places = form_object.decimal_places.data
+        new_widget.output_ids = form_object.output_id.data
 
-        new_graph.width = 3
-        new_graph.height = 3
+        new_widget.new_widget.width = 3
+        new_widget.new_widget.height = 3
 
     # PID Control
-    elif form_base.dashboard_type.data == 'pid_control':
+    elif form_base.widget_type.data == 'pid_control':
 
-        dashboard_type = 'PID Control'
+        widget_type = 'PID Control'
 
         error = pid_error_check(form_object, error)
 
-        new_graph.graph_type = 'pid_control'
-        new_graph.max_measure_age = form_object.max_measure_age.data
-        new_graph.refresh_duration = form_base.refresh_duration.data
-        new_graph.font_em_value = form_object.font_em_value.data
-        new_graph.font_em_timestamp = form_object.font_em_timestamp.data
-        new_graph.decimal_places = form_object.decimal_places.data
-        new_graph.show_pid_info = form_object.show_pid_info.data
-        new_graph.show_set_setpoint = form_object.show_set_setpoint.data
-        new_graph.pid_ids = form_object.pid_id.data
+        new_widget.graph_type = 'pid_control'
+        new_widget.max_measure_age = form_object.max_measure_age.data
+        new_widget.refresh_duration = form_base.refresh_duration.data
+        new_widget.font_em_value = form_object.font_em_value.data
+        new_widget.font_em_timestamp = form_object.font_em_timestamp.data
+        new_widget.decimal_places = form_object.decimal_places.data
+        new_widget.show_pid_info = form_object.show_pid_info.data
+        new_widget.show_set_setpoint = form_object.show_set_setpoint.data
+        new_widget.pid_ids = form_object.pid_id.data
 
-        new_graph.width = 4
-        new_graph.height = 4
+        new_widget.width = 4
+        new_widget.height = 4
 
     # Camera
-    elif (form_base.dashboard_type.data == 'camera' and
+    elif (form_base.widget_type.data == 'camera' and
           form_object.camera_id.data):
 
-        dashboard_type = 'Camera'
+        widget_type = 'Camera'
 
         camera = Camera.query.filter(
             Camera.unique_id == form_object.camera_id.data).first()
@@ -228,14 +297,14 @@ def dashboard_add(form_base, form_object):
         elif form_object.camera_image_type.data == 'stream' and camera.library != 'picamera':
             error.append("Only cameras that use the 'picamera' library may be used for streaming")
 
-        new_graph.graph_type = form_base.dashboard_type.data
-        new_graph.refresh_duration = form_base.refresh_duration.data
-        new_graph.camera_max_age = form_object.camera_max_age.data
-        new_graph.camera_id = form_object.camera_id.data
-        new_graph.camera_image_type = form_object.camera_image_type.data
+        new_widget.graph_type = form_base.widget_type.data
+        new_widget.refresh_duration = form_base.refresh_duration.data
+        new_widget.camera_max_age = form_object.camera_max_age.data
+        new_widget.camera_id = form_object.camera_id.data
+        new_widget.camera_image_type = form_object.camera_image_type.data
 
-        new_graph.width = 4
-        new_graph.height = 5
+        new_widget.width = 4
+        new_widget.height = 5
 
     else:
         flash_form_errors(form_base)
@@ -243,101 +312,101 @@ def dashboard_add(form_base, form_object):
 
     try:
         if not error:
-            new_graph.save()
+            new_widget.save()
             flash(gettext(
-                "{dev} with ID %(id)s successfully added".format(dev=dashboard_type),
-                id=new_graph.id),
+                "{dev} with ID %(id)s successfully added".format(dev=widget_type),
+                id=new_widget.id),
                 "success")
-            db.session.commit()
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
     except sqlalchemy.exc.IntegrityError as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
+    flash_success_errors(error, action, url_for(
+        'routes_page.page_dashboard', dashboard_id=form_base.dashboard_id.data))
 
 
-def dashboard_mod(form_base, form_object, request_form):
+def widget_mod(form_base, form_object, request_form):
     """Modify the settings of an item on the dashboard"""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['modify']['title'],
-        controller=TRANSLATIONS['dashboard']['title'])
+        controller=TRANSLATIONS['widget']['title'])
     error = []
 
-    mod_graph = Dashboard.query.filter(
-        Dashboard.unique_id == form_base.dashboard_id.data).first()
-    mod_graph.name = form_base.name.data
-    mod_graph.font_em_name = form_base.font_em_name.data
-    mod_graph.enable_drag_handle = form_base.enable_drag_handle.data
+    mod_widget = Dashboard.query.filter(
+        Dashboard.unique_id == form_base.widget_id.data).first()
+    mod_widget.name = form_base.name.data
+    mod_widget.font_em_name = form_base.font_em_name.data
+    mod_widget.enable_drag_handle = form_base.enable_drag_handle.data
 
     # Graph Mod
-    if form_base.dashboard_type.data == 'graph':
+    if form_base.widget_type.data == 'graph':
 
         error = graph_error_check(form_object, error)
 
         # Generate color option string from form inputs
         sorted_colors_string, error = custom_colors_graph_str(request_form, error)
-        mod_graph.custom_colors = sorted_colors_string
+        mod_widget.custom_colors = sorted_colors_string
         disable_data_grouping_string, error = data_grouping_graph_str(request_form, error)
-        mod_graph.disable_data_grouping = disable_data_grouping_string
-        mod_graph.use_custom_colors = form_object.use_custom_colors.data
+        mod_widget.disable_data_grouping = disable_data_grouping_string
+        mod_widget.use_custom_colors = form_object.use_custom_colors.data
 
         # Generate y-axis option string from form inputs
         yaxes_string = custom_yaxes_str_from_form(request_form)
-        mod_graph.custom_yaxes = yaxes_string
-        mod_graph.enable_manual_y_axis = form_object.enable_manual_y_axis.data
-        mod_graph.enable_align_ticks = form_object.enable_align_ticks.data
-        mod_graph.enable_start_on_tick = form_object.enable_start_on_tick.data
-        mod_graph.enable_end_on_tick = form_object.enable_end_on_tick.data
+        mod_widget.custom_yaxes = yaxes_string
+        mod_widget.enable_manual_y_axis = form_object.enable_manual_y_axis.data
+        mod_widget.enable_align_ticks = form_object.enable_align_ticks.data
+        mod_widget.enable_start_on_tick = form_object.enable_start_on_tick.data
+        mod_widget.enable_end_on_tick = form_object.enable_end_on_tick.data
 
         if form_object.math_ids.data:
-            mod_graph.math_ids = ";".join(form_object.math_ids.data)
+            mod_widget.math_ids = ";".join(form_object.math_ids.data)
         else:
-            mod_graph.math_ids = ''
+            mod_widget.math_ids = ''
 
         if form_object.pid_ids.data:
-            mod_graph.pid_ids = ";".join(form_object.pid_ids.data)
+            mod_widget.pid_ids = ";".join(form_object.pid_ids.data)
         else:
-            mod_graph.pid_ids = ''
+            mod_widget.pid_ids = ''
 
         if form_object.output_ids.data:
-            mod_graph.output_ids = ";".join(form_object.output_ids.data)
+            mod_widget.output_ids = ";".join(form_object.output_ids.data)
         else:
-            mod_graph.output_ids = ''
+            mod_widget.output_ids = ''
 
         if form_object.input_ids.data:
-            mod_graph.input_ids_measurements = ";".join(form_object.input_ids.data)
+            mod_widget.input_ids_measurements = ";".join(form_object.input_ids.data)
         else:
-            mod_graph.input_ids_measurements = ''
+            mod_widget.input_ids_measurements = ''
 
         if form_object.note_tag_ids.data:
-            mod_graph.note_tag_ids = ";".join(form_object.note_tag_ids.data)
+            mod_widget.note_tag_ids = ";".join(form_object.note_tag_ids.data)
         else:
-            mod_graph.note_tag_ids = ''
+            mod_widget.note_tag_ids = ''
 
-        mod_graph.refresh_duration = form_base.refresh_duration.data
-        mod_graph.enable_header_buttons = form_object.enable_header_buttons.data
-        mod_graph.x_axis_duration = form_object.xaxis_duration.data
-        mod_graph.enable_auto_refresh = form_object.enable_auto_refresh.data
-        mod_graph.enable_xaxis_reset = form_object.enable_xaxis_reset.data
-        mod_graph.enable_title = form_object.enable_title.data
-        mod_graph.enable_navbar = form_object.enable_navbar.data
-        mod_graph.enable_export = form_object.enable_export.data
-        mod_graph.enable_rangeselect = form_object.enable_rangeselect.data
-        mod_graph.enable_graph_shift = form_object.enable_graph_shift.data
+        mod_widget.refresh_duration = form_base.refresh_duration.data
+        mod_widget.enable_header_buttons = form_object.enable_header_buttons.data
+        mod_widget.x_axis_duration = form_object.xaxis_duration.data
+        mod_widget.enable_auto_refresh = form_object.enable_auto_refresh.data
+        mod_widget.enable_xaxis_reset = form_object.enable_xaxis_reset.data
+        mod_widget.enable_title = form_object.enable_title.data
+        mod_widget.enable_navbar = form_object.enable_navbar.data
+        mod_widget.enable_export = form_object.enable_export.data
+        mod_widget.enable_rangeselect = form_object.enable_rangeselect.data
+        mod_widget.enable_graph_shift = form_object.enable_graph_shift.data
 
     # If a gauge type is changed, the color format must change
-    elif (form_base.dashboard_type.data == 'gauge' and
-            mod_graph.graph_type != form_object.gauge_type.data):
+    elif (form_base.widget_type.data == 'gauge' and
+            mod_widget.graph_type != form_object.gauge_type.data):
 
-        mod_graph.graph_type = form_object.gauge_type.data
+        mod_widget.graph_type = form_object.gauge_type.data
         if form_object.gauge_type.data == 'gauge_solid':
-            mod_graph.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
+            mod_widget.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
         elif form_object.gauge_type.data == 'gauge_angular':
-            mod_graph.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
+            mod_widget.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
 
     # Gauge Mod
-    elif form_base.dashboard_type.data == 'gauge':
+    elif form_base.widget_type.data == 'gauge':
 
         error = gauge_error_check(form_object, error)
 
@@ -345,78 +414,78 @@ def dashboard_mod(form_base, form_object, request_form):
         sorted_colors_string, error = custom_colors_gauge_str(
             request_form, form_object.gauge_type.data, error)
 
-        mod_graph.refresh_duration = form_base.refresh_duration.data
-        mod_graph.range_colors = sorted_colors_string
-        mod_graph.y_axis_min = form_object.y_axis_min.data
-        mod_graph.y_axis_max = form_object.y_axis_max.data
-        mod_graph.max_measure_age = form_object.max_measure_age.data
-        mod_graph.enable_timestamp = form_object.enable_timestamp.data
+        mod_widget.refresh_duration = form_base.refresh_duration.data
+        mod_widget.range_colors = sorted_colors_string
+        mod_widget.y_axis_min = form_object.y_axis_min.data
+        mod_widget.y_axis_max = form_object.y_axis_max.data
+        mod_widget.max_measure_age = form_object.max_measure_age.data
+        mod_widget.enable_timestamp = form_object.enable_timestamp.data
         if form_object.input_ids.data:
-            mod_graph.input_ids_measurements = form_object.input_ids.data
+            mod_widget.input_ids_measurements = form_object.input_ids.data
         else:
             error.append("A valid Measurement must be selected")
 
     # Indicator Mod
-    elif form_base.dashboard_type.data == 'indicator':
+    elif form_base.widget_type.data == 'indicator':
 
         error = indicator_error_check(form_object, error)
 
-        mod_graph.refresh_duration = form_base.refresh_duration.data
-        mod_graph.max_measure_age = form_object.max_measure_age.data
-        mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
-        mod_graph.option_invert = form_object.option_invert.data
+        mod_widget.refresh_duration = form_base.refresh_duration.data
+        mod_widget.max_measure_age = form_object.max_measure_age.data
+        mod_widget.font_em_timestamp = form_object.font_em_timestamp.data
+        mod_widget.option_invert = form_object.option_invert.data
         if form_object.measurement_id.data:
-            mod_graph.input_ids_measurements = form_object.measurement_id.data
+            mod_widget.input_ids_measurements = form_object.measurement_id.data
 
     # Measurement Mod
-    elif form_base.dashboard_type.data == 'measurement':
+    elif form_base.widget_type.data == 'measurement':
 
         error = measurement_error_check(form_object, error)
 
-        mod_graph.refresh_duration = form_base.refresh_duration.data
-        mod_graph.max_measure_age = form_object.max_measure_age.data
-        mod_graph.font_em_value = form_object.font_em_value.data
-        mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
-        mod_graph.decimal_places = form_object.decimal_places.data
+        mod_widget.refresh_duration = form_base.refresh_duration.data
+        mod_widget.max_measure_age = form_object.max_measure_age.data
+        mod_widget.font_em_value = form_object.font_em_value.data
+        mod_widget.font_em_timestamp = form_object.font_em_timestamp.data
+        mod_widget.decimal_places = form_object.decimal_places.data
         if form_object.measurement_id.data:
-            mod_graph.input_ids_measurements = form_object.measurement_id.data
+            mod_widget.input_ids_measurements = form_object.measurement_id.data
 
     # Output Mod
-    elif form_base.dashboard_type.data in ['output', 'output_pwm_slider']:
+    elif form_base.widget_type.data in ['output', 'output_pwm_slider']:
 
         error = output_error_check(form_object, error)
 
-        mod_graph.refresh_duration = form_base.refresh_duration.data
-        mod_graph.max_measure_age = form_object.max_measure_age.data
-        mod_graph.font_em_value = form_object.font_em_value.data
-        mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
-        mod_graph.decimal_places = form_object.decimal_places.data
-        mod_graph.enable_output_controls = form_object.enable_output_controls.data
+        mod_widget.refresh_duration = form_base.refresh_duration.data
+        mod_widget.max_measure_age = form_object.max_measure_age.data
+        mod_widget.font_em_value = form_object.font_em_value.data
+        mod_widget.font_em_timestamp = form_object.font_em_timestamp.data
+        mod_widget.decimal_places = form_object.decimal_places.data
+        mod_widget.enable_output_controls = form_object.enable_output_controls.data
         if form_object.output_id.data:
-            mod_graph.output_ids = form_object.output_id.data
+            mod_widget.output_ids = form_object.output_id.data
 
     # PID Control Mod
-    elif form_base.dashboard_type.data == 'pid_control':
+    elif form_base.widget_type.data == 'pid_control':
 
         error = pid_error_check(form_object, error)
 
-        mod_graph.refresh_duration = form_base.refresh_duration.data
-        mod_graph.max_measure_age = form_object.max_measure_age.data
-        mod_graph.font_em_value = form_object.font_em_value.data
-        mod_graph.font_em_timestamp = form_object.font_em_timestamp.data
-        mod_graph.decimal_places = form_object.decimal_places.data
-        mod_graph.show_pid_info = form_object.show_pid_info.data
-        mod_graph.show_set_setpoint = form_object.show_set_setpoint.data
+        mod_widget.refresh_duration = form_base.refresh_duration.data
+        mod_widget.max_measure_age = form_object.max_measure_age.data
+        mod_widget.font_em_value = form_object.font_em_value.data
+        mod_widget.font_em_timestamp = form_object.font_em_timestamp.data
+        mod_widget.decimal_places = form_object.decimal_places.data
+        mod_widget.show_pid_info = form_object.show_pid_info.data
+        mod_widget.show_set_setpoint = form_object.show_set_setpoint.data
         if form_object.pid_id.data:
-            mod_graph.pid_ids = form_object.pid_id.data
+            mod_widget.pid_ids = form_object.pid_id.data
 
     # Camera Mod
-    elif form_base.dashboard_type.data == 'camera':
+    elif form_base.widget_type.data == 'camera':
 
-        mod_graph.refresh_duration = form_base.refresh_duration.data
-        mod_graph.camera_max_age = form_object.camera_max_age.data
-        mod_graph.camera_id = form_object.camera_id.data
-        mod_graph.camera_image_type = form_object.camera_image_type.data
+        mod_widget.refresh_duration = form_base.refresh_duration.data
+        mod_widget.camera_max_age = form_object.camera_max_age.data
+        mod_widget.camera_id = form_object.camera_id.data
+        mod_widget.camera_image_type = form_object.camera_image_type.data
 
     else:
         flash_form_errors(form_base)
@@ -429,21 +498,26 @@ def dashboard_mod(form_base, form_object, request_form):
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
+    flash_success_errors(error, action, url_for(
+        'routes_page.page_dashboard',
+        dashboard_id=form_base.dashboard_id.data))
 
 
-def dashboard_del(form_base):
-    """Delete an item on the dashboard"""
+def widget_del(form_base):
+    """Delete a widget from a dashboard"""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['delete']['title'],
-        controller=TRANSLATIONS['dashboard']['title'])
+        controller=TRANSLATIONS['widget']['title'])
     error = []
 
     try:
-        delete_entry_with_id(Dashboard, form_base.dashboard_id.data)
+        delete_entry_with_id(Dashboard, form_base.widget_id.data)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_dashboard'))
+
+    flash_success_errors(
+        error, action, url_for('routes_page.page_dashboard',
+                               dashboard_id=form_base.dashboard_id.data))
 
 
 def graph_error_check(form, error):

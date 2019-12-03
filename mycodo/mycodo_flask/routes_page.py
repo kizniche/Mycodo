@@ -59,6 +59,7 @@ from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import Dashboard
+from mycodo.databases.models import DashboardLayout
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import EnergyUsage
@@ -509,25 +510,44 @@ def page_export():
 
 
 @blueprint.route('/save_dashboard_layout', methods=['POST'])
-def pie():
+def save_dashboard_layout():
+    """Save positions and sizes of widgets of a particular dashboard"""
     data = request.get_json()
-    keys = ('unique_id', 'x', 'y', 'width', 'height')
-    for each_widget in data:
+    keys = ('widget_id', 'position_x', 'position_y', 'width', 'height')
+    for index, each_widget in enumerate(data):
         if all(k in each_widget for k in keys):
-            mod_dash = Dashboard.query.filter(
-                Dashboard.unique_id == each_widget['unique_id']).first()
-            if mod_dash:
-                mod_dash.position_x = each_widget['x']
-                mod_dash.position_y = each_widget['y']
-                mod_dash.width = each_widget['width']
-                mod_dash.height = each_widget['height']
-                db.session.commit()
+            widget_mod = Dashboard.query.filter(
+                Dashboard.unique_id == each_widget['widget_id']).first()
+            if widget_mod:
+                widget_mod.position_x = each_widget['position_x']
+                widget_mod.position_y = each_widget['position_y']
+                widget_mod.width = each_widget['width']
+                widget_mod.height = each_widget['height']
+    db.session.commit()
     return "success"
 
 
 @blueprint.route('/dashboard', methods=('GET', 'POST'))
 @flask_login.login_required
-def page_dashboard():
+def page_dashboard_default():
+    """Load default dashboard"""
+    dashboard = DashboardLayout.query.first()
+    return redirect(url_for(
+        'routes_page.page_dashboard', dashboard_id=dashboard.unique_id))
+
+
+@blueprint.route('/dashboard-add', methods=('GET', 'POST'))
+@flask_login.login_required
+def page_dashboard_add():
+    """Load default dashboard"""
+    dashboard_id = utils_dashboard.dashboard_add()
+    return redirect(url_for(
+        'routes_page.page_dashboard', dashboard_id=dashboard_id))
+
+
+@blueprint.route('/dashboard/<dashboard_id>', methods=('GET', 'POST'))
+@flask_login.login_required
+def page_dashboard(dashboard_id):
     """
     Generate custom dashboard with various data
     """
@@ -545,6 +565,7 @@ def page_dashboard():
     # Create form objects
     form_base = forms_dashboard.DashboardBase()
     form_camera = forms_dashboard.DashboardCamera()
+    form_dashboard = forms_dashboard.DashboardConfig()
     form_graph = forms_dashboard.DashboardGraph()
     form_gauge = forms_dashboard.DashboardGauge()
     form_indicator = forms_dashboard.DashboardIndicator()
@@ -560,37 +581,47 @@ def page_dashboard():
         # Determine which form was submitted
         form_dashboard_object = None
         if form_base.create.data or form_base.modify.data:
-            if form_base.dashboard_type.data == 'spacer':
+            if form_base.widget_type.data == 'spacer':
                 form_dashboard_object = None
-            elif form_base.dashboard_type.data == 'graph':
+            elif form_base.widget_type.data == 'graph':
                 form_dashboard_object = form_graph
-            elif form_base.dashboard_type.data == 'gauge':
+            elif form_base.widget_type.data == 'gauge':
                 form_dashboard_object = form_gauge
-            elif form_base.dashboard_type.data == 'indicator':
+            elif form_base.widget_type.data == 'indicator':
                 form_dashboard_object = form_indicator
-            elif form_base.dashboard_type.data == 'measurement':
+            elif form_base.widget_type.data == 'measurement':
                 form_dashboard_object = form_measurement
-            elif form_base.dashboard_type.data in ['output', 'output_pwm_slider']:
+            elif form_base.widget_type.data in ['output', 'output_pwm_slider']:
                 form_dashboard_object = form_output
-            elif form_base.dashboard_type.data == 'pid_control':
+            elif form_base.widget_type.data == 'pid_control':
                 form_dashboard_object = form_pid
-            elif form_base.dashboard_type.data == 'camera':
+            elif form_base.widget_type.data == 'camera':
                 form_dashboard_object = form_camera
             else:
                 flash("Unknown Dashboard Object type: {type}".format(
-                    type=form_base.dashboard_type.data), "error")
-                return redirect(url_for('routes_page.page_dashboard'))
+                    type=form_base.widget_type.data), "error")
+                return redirect(url_for(
+                    'routes_page.page_dashboard', dashboard_id=dashboard_id))
 
-        if form_base.create.data:
-            utils_dashboard.dashboard_add(
+        # Dashboards
+        if form_dashboard.dash_modify.data:
+            utils_dashboard.dashboard_mod(form_dashboard)
+        elif form_dashboard.dash_delete.data:
+            utils_dashboard.dashboard_del(form_dashboard)
+            return redirect(url_for('routes_page.page_dashboard_default'))
+
+        # Widgets
+        elif form_base.create.data:
+            utils_dashboard.widget_add(
                 form_base, form_dashboard_object)
         elif form_base.modify.data:
-            utils_dashboard.dashboard_mod(
+            utils_dashboard.widget_mod(
                 form_base, form_dashboard_object, request.form)
         elif form_base.delete.data:
-            utils_dashboard.dashboard_del(form_base)
+            utils_dashboard.widget_del(form_base)
 
-        return redirect(url_for('routes_page.page_dashboard'))
+        return redirect(url_for(
+            'routes_page.page_dashboard', dashboard_id=dashboard_id))
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
@@ -743,6 +774,7 @@ def page_dashboard():
                            choices_note_tag=choices_note_tag,
                            custom_yaxes=custom_yaxes,
                            dashboard=dashboard,
+                           dashboard_id=dashboard_id,
                            device_measurements_dict=device_measurements_dict,
                            dict_measure_measurements=dict_measure_measurements,
                            dict_measure_units=dict_measure_units,
@@ -762,6 +794,7 @@ def page_dashboard():
                            use_unit=use_unit,
                            form_base=form_base,
                            form_camera=form_camera,
+                           form_dashboard=form_dashboard,
                            form_graph=form_graph,
                            form_gauge=form_gauge,
                            form_indicator=form_indicator,

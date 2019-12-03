@@ -161,6 +161,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Upload')},
     'user': {
         'title': lazy_gettext('User')},
+    'widget': {
+        'title': lazy_gettext('Widget')},
 
     # Phrases
     '1wire_id': {

@@ -78,10 +78,11 @@
         <h5 class="modal-title">PID Widget Configuration</h5>
       </div>
 
-      <form method="post" action="/dashboard">
-      {{form_base.csrf_token}}
-      {{form_base.dashboard_id(value=each_dashboard.unique_id)}}
-      <input type="hidden" name="dashboard_type" value="pid_control">
+      <form method="post" action="/dashboard/{{dashboard_id}}">
+        {{form_base.csrf_token}}
+        {{form_base.dashboard_id(value=dashboard_id)}}
+        {{form_base.widget_id(value=each_widget_id)}}
+      <input type="hidden" name="widget_type" value="pid_control">
 
       {% if not each_dashboard.show_pid_info %}
       <div class="row" style="padding-top: 0.7em">

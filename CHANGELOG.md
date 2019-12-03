@@ -5,6 +5,7 @@ This update brings the ability to run Mycodo/Influxdb in Docker containers, enab
 ### Features
 
  - Add ability to run Mycodo in Docker containers ([#637](https://github.com/kizniche/mycodo/issues/637))
+ - Add ability to create multiple dashboards ([#717](https://github.com/kizniche/mycodo/issues/717))
  - Add Dashboard Widget: Spacer ([#717](https://github.com/kizniche/mycodo/issues/717))
  - Add ability to hide Widget drag handle, set Widget name font size, and hide Graph Widget buttons ([#717](https://github.com/kizniche/mycodo/issues/717))
  - Add ability to set Dashboard grid cell height

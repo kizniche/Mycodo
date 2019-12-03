@@ -22,8 +22,9 @@ from mycodo.config import DASHBOARD_WIDGETS
 
 
 class DashboardBase(FlaskForm):
-    dashboard_id = StringField('Dashboard Object ID', widget=widgets.HiddenInput())
-    dashboard_type = SelectField('Dashboard Widget Type',
+    dashboard_id = StringField('Dashboard ID', widget=widgets.HiddenInput())
+    widget_id = StringField('Widget ID', widget=widgets.HiddenInput())
+    widget_type = SelectField('Dashboard Widget Type',
         choices=DASHBOARD_WIDGETS,
         validators=[DataRequired()]
     )
@@ -44,8 +45,16 @@ class DashboardBase(FlaskForm):
     create = SubmitField(TRANSLATIONS['create']['title'])
     modify = SubmitField(TRANSLATIONS['save']['title'])
     delete = SubmitField(TRANSLATIONS['delete']['title'])
-    order_up = SubmitField(TRANSLATIONS['up']['title'])
-    order_down = SubmitField(TRANSLATIONS['down']['title'])
+
+
+class DashboardConfig(FlaskForm):
+    dashboard_id = StringField('Dashboard ID', widget=widgets.HiddenInput())
+    name = StringField(
+        TRANSLATIONS['name']['title'],
+        validators=[DataRequired()]
+    )
+    dash_modify = SubmitField(TRANSLATIONS['save']['title'])
+    dash_delete = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 class DashboardGraph(FlaskForm):
