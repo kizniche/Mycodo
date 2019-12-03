@@ -61,6 +61,12 @@ def dashboard_mod(form):
         controller=TRANSLATIONS['dashboard']['title'])
     error = []
 
+    name_exists = DashboardLayout.query.filter(
+        DashboardLayout.name == form.name.data).first()
+    if name_exists:
+        flash('Dashboard name already is use', 'error')
+        return
+
     dashboard_mod = DashboardLayout.query.filter(
         DashboardLayout.unique_id == form.dashboard_id.data).first()
     dashboard_mod.name = form.name.data

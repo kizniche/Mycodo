@@ -155,6 +155,8 @@ def populate_db():
         Misc(id=1).save()
     if not SMTP.query.count():
         SMTP(id=1).save()
+    if not DashboardLayout.query.count():
+        DashboardLayout(id=1, name='Default').save()
 
     # Populate conversion tables
     for (conv_from, conv_to, equation) in UNIT_CONVERSIONS:

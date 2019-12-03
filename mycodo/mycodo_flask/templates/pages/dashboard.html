@@ -2,7 +2,7 @@
 {% set active_page = "dashboard" %}
 {% set help_page = ["dashboard", dict_translation['dashboard']['title']] %}
 
-{% block title %} - {{dict_translation['dashboard']['title']}}{% endblock %}
+{% block title %} - {% for each_dash in dashboards if each_dash['dashboard_id'] == dashboard_id %}{{each_dash['name']}}{% endfor %} {{dict_translation['dashboard']['title']}}{% endblock %}
 
 {% block head %}
 
