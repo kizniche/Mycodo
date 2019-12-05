@@ -10,8 +10,8 @@ from flask_babel import gettext
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
+from mycodo.databases.models import Widget
 from mycodo.databases.models import Dashboard
-from mycodo.databases.models import DashboardLayout
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
@@ -33,15 +33,12 @@ logger = logging.getLogger(__name__)
 
 def dashboard_add():
     """Add a dashboard"""
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['add']['title'],
-        controller=TRANSLATIONS['dashboard']['title'])
     error = []
 
-    last_dashboard = DashboardLayout.query.order_by(
-        DashboardLayout.id.desc()).first()
+    last_dashboard = Dashboard.query.order_by(
+        Dashboard.id.desc()).first()
 
-    new_dash = DashboardLayout()
+    new_dash = Dashboard()
     new_dash.name = '{} {}'.format(TRANSLATIONS['dashboard']['title'], last_dashboard.id + 1)
 
     if not error:
@@ -61,15 +58,15 @@ def dashboard_mod(form):
         controller=TRANSLATIONS['dashboard']['title'])
     error = []
 
-    name_exists = DashboardLayout.query.filter(
-        DashboardLayout.name == form.name.data).first()
+    name_exists = Dashboard.query.filter(
+        Dashboard.name == form.name.data).first()
     if name_exists:
         flash('Dashboard name already is use', 'error')
         return
 
-    dashboard_mod = DashboardLayout.query.filter(
-        DashboardLayout.unique_id == form.dashboard_id.data).first()
-    dashboard_mod.name = form.name.data
+    dash_mod = Dashboard.query.filter(
+        Dashboard.unique_id == form.dashboard_id.data).first()
+    dash_mod.name = form.name.data
 
     db.session.commit()
 
@@ -84,17 +81,17 @@ def dashboard_del(form):
         controller=TRANSLATIONS['dashboard']['title'])
     error = []
 
-    dashboards = DashboardLayout.query.all()
+    dashboards = Dashboard.query.all()
     if len(dashboards) == 1:
         flash('Cannot delete the only remaining dashboard.', 'error')
         return
 
-    widgets = Dashboard.query.filter(
-        Dashboard.dashboard_id == form.dashboard_id.data).all()
+    widgets = Widget.query.filter(
+        Widget.dashboard_id == form.dashboard_id.data).all()
     for each_widget in widgets:
-        delete_entry_with_id(Dashboard, each_widget.unique_id)
+        delete_entry_with_id(Widget, each_widget.unique_id)
 
-    delete_entry_with_id(DashboardLayout, form.dashboard_id.data)
+    delete_entry_with_id(Dashboard, form.dashboard_id.data)
 
     flash_success_errors(
         error, action, url_for('routes_page.page_dashboard_default'))
@@ -111,7 +108,7 @@ def widget_add(form_base, form_object):
         controller=TRANSLATIONS['widget']['title'])
     error = []
 
-    new_widget = Dashboard()
+    new_widget = Widget()
     new_widget.dashboard_id = form_base.dashboard_id.data
     new_widget.name = form_base.name.data
     new_widget.font_em_name = form_base.font_em_name.data
@@ -120,8 +117,8 @@ def widget_add(form_base, form_object):
     # Find where the next widget should be placed on the grid
     # Finds the lowest position to create as the new Widget's starting position
     position_y_start = 0
-    for each_widget in Dashboard.query.filter(
-            Dashboard.dashboard_id == form_base.dashboard_id.data).all():
+    for each_widget in Widget.query.filter(
+            Widget.dashboard_id == form_base.dashboard_id.data).all():
         highest_position = each_widget.position_y + each_widget.height
         if highest_position > position_y_start:
             position_y_start = highest_position
@@ -134,7 +131,7 @@ def widget_add(form_base, form_object):
 
         new_widget.graph_type = form_base.widget_type.data
 
-        new_widget.width = 12
+        new_widget.width = 20
         new_widget.height = 1
 
     # Graph
@@ -171,8 +168,8 @@ def widget_add(form_base, form_object):
         new_widget.enable_graph_shift = form_object.enable_graph_shift.data
         new_widget.enable_manual_y_axis = form_object.enable_manual_y_axis.data
 
-        new_widget.width = 12
-        new_widget.height = 7
+        new_widget.width = 20
+        new_widget.height = 9
 
     # Gauge
     elif form_base.widget_type.data == 'gauge':
@@ -189,14 +186,13 @@ def widget_add(form_base, form_object):
 
         new_widget.refresh_duration = form_base.refresh_duration.data
         new_widget.max_measure_age = form_object.max_measure_age.data
-        new_widget.refresh_duration = form_base.refresh_duration.data
         new_widget.y_axis_min = form_object.y_axis_min.data
         new_widget.y_axis_max = form_object.y_axis_max.data
         new_widget.input_ids_measurements = form_object.input_ids.data
         new_widget.enable_timestamp = form_object.enable_timestamp.data
 
-        new_widget.width = 2
-        new_widget.height = 3
+        new_widget.width = 3
+        new_widget.height = 4
 
     # Indicator
     elif form_base.widget_type.data == 'indicator':
@@ -211,8 +207,8 @@ def widget_add(form_base, form_object):
         new_widget.font_em_timestamp = form_object.font_em_timestamp.data
         new_widget.input_ids_measurements = form_object.measurement_id.data
 
-        new_widget.new_widget.width = 2
-        new_widget.new_widget.height = 3
+        new_widget.width = 3
+        new_widget.height = 4
 
     # Measurement
     elif form_base.widget_type.data == 'measurement':
@@ -229,8 +225,8 @@ def widget_add(form_base, form_object):
         new_widget.decimal_places = form_object.decimal_places.data
         new_widget.input_ids_measurements = form_object.measurement_id.data
 
-        new_widget.width = 3
-        new_widget.height = 3
+        new_widget.width = 4
+        new_widget.height = 4
 
     # Output
     elif form_base.widget_type.data == 'output':
@@ -248,8 +244,8 @@ def widget_add(form_base, form_object):
         new_widget.decimal_places = form_object.decimal_places.data
         new_widget.output_ids = form_object.output_id.data
 
-        new_widget.width = 3
-        new_widget.height = 2
+        new_widget.width = 5
+        new_widget.height = 4
 
     # Output Range Slider
     elif form_base.widget_type.data == 'output_pwm_slider':
@@ -267,8 +263,8 @@ def widget_add(form_base, form_object):
         new_widget.decimal_places = form_object.decimal_places.data
         new_widget.output_ids = form_object.output_id.data
 
-        new_widget.new_widget.width = 3
-        new_widget.new_widget.height = 3
+        new_widget.width = 5
+        new_widget.height = 4
 
     # PID Control
     elif form_base.widget_type.data == 'pid_control':
@@ -287,21 +283,22 @@ def widget_add(form_base, form_object):
         new_widget.show_set_setpoint = form_object.show_set_setpoint.data
         new_widget.pid_ids = form_object.pid_id.data
 
-        new_widget.width = 4
-        new_widget.height = 4
+        new_widget.width = 6
+        new_widget.height = 5
 
     # Camera
-    elif (form_base.widget_type.data == 'camera' and
-          form_object.camera_id.data):
+    elif form_base.widget_type.data == 'camera':
 
         widget_type = 'Camera'
 
         camera = Camera.query.filter(
             Camera.unique_id == form_object.camera_id.data).first()
         if not camera:
-            error.append("Invalid Camera ID. Check your camera settings.")
-        elif form_object.camera_image_type.data == 'stream' and camera.library != 'picamera':
-            error.append("Only cameras that use the 'picamera' library may be used for streaming")
+            error.append("Invalid Camera ID.")
+        elif (form_object.camera_image_type.data == 'stream' and
+                camera.library not in ['opencv', 'picamera']):
+            error.append("Only cameras that use the 'picamera' or "
+                         "'opencv' library may be used for streaming")
 
         new_widget.graph_type = form_base.widget_type.data
         new_widget.refresh_duration = form_base.refresh_duration.data
@@ -309,8 +306,8 @@ def widget_add(form_base, form_object):
         new_widget.camera_id = form_object.camera_id.data
         new_widget.camera_image_type = form_object.camera_image_type.data
 
-        new_widget.width = 4
-        new_widget.height = 5
+        new_widget.width = 7
+        new_widget.height = 8
 
     else:
         flash_form_errors(form_base)
@@ -339,8 +336,8 @@ def widget_mod(form_base, form_object, request_form):
         controller=TRANSLATIONS['widget']['title'])
     error = []
 
-    mod_widget = Dashboard.query.filter(
-        Dashboard.unique_id == form_base.widget_id.data).first()
+    mod_widget = Widget.query.filter(
+        Widget.unique_id == form_base.widget_id.data).first()
     mod_widget.name = form_base.name.data
     mod_widget.font_em_name = form_base.font_em_name.data
     mod_widget.enable_drag_handle = form_base.enable_drag_handle.data
@@ -517,7 +514,7 @@ def widget_del(form_base):
     error = []
 
     try:
-        delete_entry_with_id(Dashboard, form_base.widget_id.data)
+        delete_entry_with_id(Widget, form_base.widget_id.data)
     except Exception as except_msg:
         error.append(except_msg)
 
@@ -572,7 +569,7 @@ def graph_y_axes(dict_measurements):
     y_axes = {}
 
     device_measurements = DeviceMeasurements.query.all()
-    graph = Dashboard.query.all()
+    graph = Widget.query.all()
     input_dev = Input.query.all()
     math = Math.query.all()
     output = Output.query.all()
@@ -580,7 +577,7 @@ def graph_y_axes(dict_measurements):
 
     devices_list = [input_dev, math, output, pid]
 
-    # Iterate through each Dashboard object
+    # Iterate through each Widget
     for each_graph in graph:
 
         # Iterate through device tables

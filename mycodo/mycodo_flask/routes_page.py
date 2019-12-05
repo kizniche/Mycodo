@@ -58,8 +58,8 @@ from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import CustomController
+from mycodo.databases.models import Widget
 from mycodo.databases.models import Dashboard
-from mycodo.databases.models import DashboardLayout
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import EnergyUsage
@@ -516,8 +516,8 @@ def save_dashboard_layout():
     keys = ('widget_id', 'position_x', 'position_y', 'width', 'height')
     for index, each_widget in enumerate(data):
         if all(k in each_widget for k in keys):
-            widget_mod = Dashboard.query.filter(
-                Dashboard.unique_id == each_widget['widget_id']).first()
+            widget_mod = Widget.query.filter(
+                Widget.unique_id == each_widget['widget_id']).first()
             if widget_mod:
                 widget_mod.position_x = each_widget['position_x']
                 widget_mod.position_y = each_widget['position_y']
@@ -531,7 +531,7 @@ def save_dashboard_layout():
 @flask_login.login_required
 def page_dashboard_default():
     """Load default dashboard"""
-    dashboard = DashboardLayout.query.first()
+    dashboard = Dashboard.query.first()
     return redirect(url_for(
         'routes_page.page_dashboard', dashboard_id=dashboard.unique_id))
 
@@ -553,7 +553,7 @@ def page_dashboard(dashboard_id):
     """
     # Retrieve tables from SQL database
     camera = Camera.query.all()
-    dashboard = Dashboard.query.all()
+    dashboard = Widget.query.all()
     input_dev = Input.query.all()
     device_measurements = DeviceMeasurements.query.all()
     math = Math.query.all()
@@ -598,7 +598,7 @@ def page_dashboard(dashboard_id):
             elif form_base.widget_type.data == 'camera':
                 form_dashboard_object = form_camera
             else:
-                flash("Unknown Dashboard Object type: {type}".format(
+                flash("Unknown widget type: {type}".format(
                     type=form_base.widget_type.data), "error")
                 return redirect(url_for(
                     'routes_page.page_dashboard', dashboard_id=dashboard_id))
@@ -758,7 +758,7 @@ def page_dashboard(dashboard_id):
 
     return render_template('pages/dashboard.html',
                            table_conversion=Conversion,
-                           table_dashboard=Dashboard,
+                           table_widget=Widget,
                            table_input=Input,
                            table_math=Math,
                            table_output=Output,
@@ -2214,7 +2214,7 @@ def dict_custom_colors():
 
     color_count = OrderedDict()
     try:
-        graph = Dashboard.query.all()
+        graph = Widget.query.all()
         for each_graph in graph:
             # Get current saved colors
             if each_graph.custom_colors:  # Split into list

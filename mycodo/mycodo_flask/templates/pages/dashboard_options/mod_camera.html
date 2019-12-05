@@ -1,19 +1,19 @@
 <div class="d-flex justify-content-between panel-heading" style="flex: 0 1 auto;">
   <div class="my-auto" style="padding-left: 0.4em">
-    {% if each_dashboard.enable_drag_handle -%}
+    {% if each_widget.enable_drag_handle -%}
     <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="Drag"></i>
     {%- endif %}
   </div>
   <div class="my-auto">
-    <span style="padding-right: 0.5em; font-size: {{each_dashboard.font_em_name}}em"><span id="{{each_dashboard.id}}-timestamp"></span> {{each_dashboard.name}}</span>
+    <span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em"><span id="{{each_widget.id}}-timestamp"></span> {{each_widget.name}}</span>
     <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
       <i style="font-size: 1.5em" class="fas fa-cog"></i>
     </button>
   </div>
 </div>
 
-<div id="container-graph-{{each_dashboard.id}}" style="position: relative; flex-grow: 1">
-  <a id="{{each_dashboard.id}}-image-href" href="" target="_blank"><img id="{{each_dashboard.id}}-image-src" style="height: 100%; width: 100%" src=""></a>
+<div id="container-graph-{{each_widget.id}}" style="position: relative; flex-grow: 1">
+  <a id="{{each_widget.id}}-image-href" href="" target="_blank"><img id="{{each_widget.id}}-image-src" style="height: 100%; width: 100%" src=""></a>
 </div>
 
 <div class="modal fade" id="modal_config_{{chart_number}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
@@ -26,8 +26,8 @@
       <form method="post" action="/dashboard/{{dashboard_id}}">
         {{form_base.csrf_token}}
         {{form_base.dashboard_id(value=dashboard_id)}}
-        {{form_base.widget_id(value=each_dashboard.unique_id)}}
-        <input type="hidden" name="widget_type" value="{{each_dashboard.graph_type}}">
+        {{form_base.widget_id(value=each_widget.unique_id)}}
+        <input type="hidden" name="widget_type" value="{{each_widget.graph_type}}">
 
         <div class="form-row">
           {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_MOD.html' %}
@@ -38,7 +38,7 @@
                 <option value="">{{dict_translation['select_one']['title']}}</option>
               {% if choices_camera %}
               {% for each_camera_form in choices_camera -%}
-                <option value="{{each_camera_form['value']}}" {% if each_dashboard.camera_id == each_camera_form['value'] %}selected{% endif %}>{{each_camera_form['item']}}</option>
+                <option value="{{each_camera_form['value']}}" {% if each_widget.camera_id == each_camera_form['value'] %}selected{% endif %}>{{each_camera_form['item']}}</option>
               {% endfor -%}
               {% else %}
                 <option value="">{{dict_translation['none_available']['title']}}</option>
@@ -50,23 +50,23 @@
             {{form_camera.camera_image_type.label(class_='control-label')}}
             <div>
               <select class="form-control" id="camera_image_type" name="camera_image_type">
-                <option value="new_img"{% if each_dashboard.camera_image_type == 'new_image' %} selected{% endif %}>{{_('Acquire Image (and save new file)')}}</option>
-                <option value="tmp_img"{% if each_dashboard.camera_image_type == 'tmp_img' %} selected{% endif %}>{{_('Acquire Image (and erase last file)')}}</option>
-                <option value="stream"{% if each_dashboard.camera_image_type == 'stream' %} selected{% endif %}>{{_('Display Live Video Stream')}}</option>
-                <option value="timelapse"{% if each_dashboard.camera_image_type == 'timelapse' %} selected{% endif %}>{{_('Display Latest Timelapse Image')}}</option>
+                <option value="new_img"{% if each_widget.camera_image_type == 'new_image' %} selected{% endif %}>{{_('Acquire Image (and save new file)')}}</option>
+                <option value="tmp_img"{% if each_widget.camera_image_type == 'tmp_img' %} selected{% endif %}>{{_('Acquire Image (and erase last file)')}}</option>
+                <option value="stream"{% if each_widget.camera_image_type == 'stream' %} selected{% endif %}>{{_('Display Live Video Stream')}}</option>
+                <option value="timelapse"{% if each_widget.camera_image_type == 'timelapse' %} selected{% endif %}>{{_('Display Latest Timelapse Image')}}</option>
               </select>
             </div>
           </div>
           <div class="col-auto">
             {{form_base.refresh_duration.label(class_='control-label')}}
             <div>
-              {{form_base.refresh_duration(class_='form-control', value=each_dashboard.refresh_duration)}}
+              {{form_base.refresh_duration(class_='form-control', value=each_widget.refresh_duration)}}
             </div>
           </div>
           <div class="col-auto">
             {{form_camera.camera_max_age.label(class_='control-label')}}
             <div>
-              {{form_camera.camera_max_age(class_='form-control', value=each_dashboard.camera_max_age)}}
+              {{form_camera.camera_max_age(class_='form-control', value=each_widget.camera_max_age)}}
             </div>
           </div>
         </div>

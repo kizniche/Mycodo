@@ -28,8 +28,8 @@
         {{form_settings_general.landing_page.label(class_='col-sm-12 control-label')}}
         <div class="col-sm-12">
           <select class="form-control form-tooltip form-dropdown" data-placement="top" id="landing_page" name="landing_page" title="{{_('Which page to land on after logging in')}}">
-            <option value="dashboard"{% if current_user.landing_page == 'dashboard' %} selected{% endif %}>Dashboard</option>
-            <option value="live"{% if current_user.landing_page == 'live' %} selected{% endif %}>Live</option>
+            <option value="dashboard"{% if current_user.landing_page == 'dashboard' %} selected{% endif %}>{{_('Dashboard')}}</option>
+            <option value="live"{% if current_user.landing_page == 'live' %} selected{% endif %}>{{_('Live')}}</option>
           </select>
         </div>
       </div>

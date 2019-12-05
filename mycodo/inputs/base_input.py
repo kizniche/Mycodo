@@ -35,7 +35,7 @@ class AbstractInput(object):
         self.channels_measurement = {}
         self.lock = {}
         self.lock_file = None
-        self.locked = False
+        self.locked = {}
         self.return_dict = {}
         self.avg_max = {}
         self.avg_index = {}
@@ -144,7 +144,7 @@ class AbstractInput(object):
                 self.logger.error(msg)
         finally:
             # Clean up
-            if self.locked:
+            if self.lock_file in self.locked and self.locked[self.lock_file]:
                 self.lock_release(self.lock_file)
         return 1
 
@@ -340,7 +340,7 @@ class AbstractInput(object):
     def lock_acquire(self, lockfile, timeout):
         """ Non-blocking locking method """
         self.lock[lockfile] = filelock.FileLock(lockfile, timeout=1)
-        self.locked = False
+        self.locked[lockfile] = False
         timer = time.time() + timeout
         self.logger.debug("Acquiring lock for {} ({} sec timeout)".format(
             lockfile, timeout))
@@ -351,12 +351,12 @@ class AbstractInput(object):
                 self.logger.debug(
                     "Lock acquired for {} in {:.3f} seconds".format(
                         lockfile, seconds))
-                self.locked = True
+                self.locked[lockfile] = True
                 break
             except:
                 pass
             time.sleep(0.05)
-        if not self.locked:
+        if not self.locked[lockfile]:
             self.logger.debug(
                 "Lock unable to be acquired after {:.3f} seconds. "
                 "Breaking for future lock.".format(timeout))
@@ -371,7 +371,7 @@ class AbstractInput(object):
         except Exception:
             pass
         finally:
-            self.locked = False
+            self.locked[lockfile] = False
 
     def is_acquiring_measurement(self):
         return self.acquiring_measurement

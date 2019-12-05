@@ -31,8 +31,8 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import CustomController
+from mycodo.databases.models import Widget
 from mycodo.databases.models import Dashboard
-from mycodo.databases.models import DashboardLayout
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
@@ -813,12 +813,12 @@ def dashboard_widget_get_info(dashboard_id=None):
     dashboards = {}
 
     if dashboard_id:
-        dashboard_table = DashboardLayout.query.filter(
-            DashboardLayout.unique_id == dashboard_id).all()
-        widgets = Dashboard.query.filter(Dashboard.dashboard_id == dashboard_id).all()
+        dashboard_table = Dashboard.query.filter(
+            Dashboard.unique_id == dashboard_id).all()
+        widgets = Widget.query.filter(Widget.dashboard_id == dashboard_id).all()
     else:
-        dashboard_table = DashboardLayout.query.all()
-        widgets = Dashboard.query.all()
+        dashboard_table = Dashboard.query.all()
+        widgets = Widget.query.all()
 
     for each_dash in dashboard_table:
         dashboards[each_dash.unique_id] = {

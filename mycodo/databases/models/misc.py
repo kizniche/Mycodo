@@ -15,7 +15,7 @@ class Misc(CRUDMixin, db.Model):
     hide_alert_success = db.Column(db.Boolean, default=False)
     hide_alert_warning = db.Column(db.Boolean, default=False)
     hide_tooltips = db.Column(db.Boolean, default=False)
-    grid_cell_height = db.Column(db.Integer, default=60)
+    grid_cell_height = db.Column(db.Integer, default=30)
     login_message = db.Column(db.Text, default='')  # Put a message on the login screen
     max_amps = db.Column(db.Float, default=15.0)  # Maximum allowed current to be drawn
     output_usage_cost = db.Column(db.Float, default=0.05)  # Energy cost per kWh

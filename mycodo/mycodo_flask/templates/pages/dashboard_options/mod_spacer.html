@@ -1,11 +1,11 @@
 <div class="d-flex justify-content-between panel-heading" style="flex: 0 1 auto;">
   <div class="my-auto" style="padding-left: 0.4em">
-    {% if each_dashboard.enable_drag_handle -%}
+    {% if each_widget.enable_drag_handle -%}
     <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="Drag"></i>
     {%- endif %}
   </div>
   <div class="my-auto">
-    <span style="padding-right: 0.5em; font-size: {{each_dashboard.font_em_name}}em">{{each_dashboard.name}}</span>
+    <span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>
     <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
       <i style="font-size: 1.5em" class="fas fa-cog"></i>
     </button>
@@ -22,8 +22,8 @@
       <form method="post" action="/dashboard/{{dashboard_id}}">
         {{form_base.csrf_token}}
         {{form_base.dashboard_id(value=dashboard_id)}}
-        {{form_base.widget_id(value=each_dashboard.unique_id)}}
-        <input type="hidden" name="widget_type" value="{{each_dashboard.graph_type}}">
+        {{form_base.widget_id(value=each_widget.unique_id)}}
+        <input type="hidden" name="widget_type" value="{{each_widget.graph_type}}">
 
         <div class="form-row">
           {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_MOD.html' %}

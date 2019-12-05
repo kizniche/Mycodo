@@ -1,19 +1,19 @@
 <div class="col-auto">
   {{form_base.name.label(class_='control-label')}}
   <div>
-    {{form_base.name(class_='form-control', value=each_dashboard.name, **{'title': dict_translation['name']['phrase']})}}
+    {{form_base.name(class_='form-control', value=each_widget.name, **{'title': dict_translation['name']['phrase']})}}
   </div>
 </div>
 <div class="col-auto">
   {{form_base.font_em_name.label(class_='control-label')}}
   <div>
-    {{form_base.font_em_name(class_='form-control', value=each_dashboard.font_em_name, **{'title': dict_translation['font_em_name']['phrase']})}}
+    {{form_base.font_em_name(class_='form-control', value=each_widget.font_em_name, **{'title': dict_translation['font_em_name']['phrase']})}}
   </div>
 </div>
 <div class="col-auto">
   <label class="control-label">{{form_base.enable_drag_handle.label.text}}</label>
   <div class="input-group-text">
-    <input id="enable_drag_handle" name="enable_drag_handle" type="checkbox" value="y"{% if each_dashboard.enable_drag_handle %} checked{% endif %}>
+    <input id="enable_drag_handle" name="enable_drag_handle" type="checkbox" value="y"{% if each_widget.enable_drag_handle %} checked{% endif %}>
   </div>
 </div>
 

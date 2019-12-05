@@ -33,8 +33,8 @@ from mycodo.mycodo_flask.extensions import db
 from .alembic_version import AlembicVersion
 from .camera import Camera
 from .controller import CustomController
+from .dashboard import Widget
 from .dashboard import Dashboard
-from .dashboard import DashboardLayout
 from .display_order import DisplayOrder
 from .function import Actions
 from .function import Conditional
@@ -155,8 +155,8 @@ def populate_db():
         Misc(id=1).save()
     if not SMTP.query.count():
         SMTP(id=1).save()
-    if not DashboardLayout.query.count():
-        DashboardLayout(id=1, name='Default').save()
+    if not Dashboard.query.count():
+        Dashboard(id=1, name='Default').save()
 
     # Populate conversion tables
     for (conv_from, conv_to, equation) in UNIT_CONVERSIONS:

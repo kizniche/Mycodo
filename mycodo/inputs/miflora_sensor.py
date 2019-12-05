@@ -88,7 +88,7 @@ class InputModule(AbstractInput):
         self.return_dict = measurements_dict.copy()
 
         self.lock_acquire(self.lock_file, timeout=3600)
-        if self.locked:
+        if self.locked[self.lock_file]:
             try:
                 if self.is_enabled(0):
                     self.value_set(0, self.poller.parameter_value(MI_BATTERY))

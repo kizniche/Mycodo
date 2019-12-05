@@ -15,7 +15,7 @@ from flask.blueprints import Blueprint
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import THEMES_DARK
 from mycodo.config_translations import TRANSLATIONS
-from mycodo.databases.models import DashboardLayout
+from mycodo.databases.models import Dashboard
 from mycodo.databases.models import Misc
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.forms import forms_dashboard
@@ -57,7 +57,7 @@ def inject_variables():
         daemon_status = '0'
 
     dashboards = []
-    for each_dash in DashboardLayout.query.all():
+    for each_dash in Dashboard.query.all():
         dashboards.append({
             'dashboard_id': each_dash.unique_id,
             'name': each_dash.name

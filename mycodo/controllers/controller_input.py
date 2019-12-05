@@ -122,9 +122,10 @@ class InputController(AbstractController, threading.Thread):
         self.email_count = None
         self.allowed_to_send_notice = None
 
-        # Set up input lock
-        self.input_lock = None
+        # Set up lock
+        self.lock = {}
         self.lock_file = None
+        self.locked = {}
 
         self.i2c_address = None
         self.switch_edge_gpio = None
@@ -168,7 +169,7 @@ class InputController(AbstractController, threading.Thread):
                     self.pre_output_setup and
                     not self.pre_output_activated):
 
-                self.lock_setup()
+                self.lock_acquire(self.lock_file, 30)
 
                 self.pre_output_timer = time.time() + self.pre_output_duration
                 self.pre_output_activated = True
@@ -212,7 +213,7 @@ class InputController(AbstractController, threading.Thread):
                     self.pre_output_activated = False
                     self.get_new_measurement = False
 
-                    self.lock_release()
+                    self.lock_release(self.lock_file)
 
                 elif not self.pre_output_setup:
                     # Pre-output not enabled, just measure
@@ -302,7 +303,6 @@ class InputController(AbstractController, threading.Thread):
         self.allowed_to_send_notice = True
 
         # Set up input lock
-        self.input_lock = None
         self.lock_file = '/var/lock/input_pre_output_{id}'.format(
             id=self.pre_output_id)
 
@@ -371,28 +371,41 @@ class InputController(AbstractController, threading.Thread):
             input_listener.daemon = True
             input_listener.start()
 
-    def lock_setup(self):
-        # Set up lock
-        self.input_lock = filelock.FileLock(self.lock_file, timeout=30)
-        try:
-            self.input_lock.acquire()
-            self.pre_output_locked = True
-        except filelock.Timeout:
-            self.logger.error("Could not acquire input lock. Breaking for future locking.")
+    def lock_acquire(self, lockfile, timeout):
+        """ Non-blocking locking method """
+        self.lock[lockfile] = filelock.FileLock(lockfile, timeout=1)
+        self.locked[lockfile] = False
+        timer = time.time() + timeout
+        self.logger.debug("Acquiring lock for {} ({} sec timeout)".format(
+            lockfile, timeout))
+        while self.running and time.time() < timer:
             try:
-                os.remove(self.lock_file)
-            except OSError:
-                self.logger.error("Can't delete lock file: Lock file doesn't exist.")
+                self.lock[lockfile].acquire()
+                seconds = time.time() - (timer - timeout)
+                self.logger.debug(
+                    "Lock acquired for {} in {:.3f} seconds".format(
+                        lockfile, seconds))
+                self.locked[lockfile] = True
+                break
+            except:
+                pass
+            time.sleep(0.05)
+        if not self.locked[lockfile]:
+            self.logger.debug(
+                "Lock unable to be acquired after {:.3f} seconds. "
+                "Breaking for future lock.".format(timeout))
+            self.lock_release(self.lock_file)
 
-    def lock_release(self):
-        # release pre-output lock
+    def lock_release(self, lockfile):
+        """ Release lock and force deletion of lock file """
         try:
-            if self.pre_output_locked:
-                self.input_lock.release()
-                self.pre_output_locked = False
-        except AttributeError:
-            self.logger.error("Can't release lock: "
-                              "Lock file not present.")
+            self.logger.debug("Releasing lock for {}".format(lockfile))
+            self.lock[lockfile].release(force=True)
+            os.remove(lockfile)
+        except Exception:
+            pass
+        finally:
+            self.locked[lockfile] = False
 
     def update_measure(self):
         """

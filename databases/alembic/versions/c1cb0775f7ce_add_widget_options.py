@@ -55,7 +55,7 @@ def upgrade():
     op.execute(
         '''
         UPDATE misc
-        SET grid_cell_height=60
+        SET grid_cell_height=30
         '''
     )
 

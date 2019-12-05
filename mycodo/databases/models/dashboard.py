@@ -4,17 +4,17 @@ from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
 
 
-class DashboardLayout(CRUDMixin, db.Model):  # TODO: Rename to dashboard (and below info)
-    __tablename__ = "dashboard_layout"
+class Dashboard(CRUDMixin, db.Model):
+    __tablename__ = "dashboard"
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
-    name = db.Column(db.Text, unique=True)
+    name = db.Column(db.Text, nullable=False, unique=True)
 
 
-class Dashboard(CRUDMixin, db.Model):  # TODO: Rename to widget (and below info)
-    __tablename__ = "dashboard"
+class Widget(CRUDMixin, db.Model):
+    __tablename__ = "widget"
     __table_args__ = {'extend_existing': True}
 
     id = db.Column(db.Integer, unique=True, primary_key=True)

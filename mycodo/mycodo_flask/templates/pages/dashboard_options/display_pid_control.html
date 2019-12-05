@@ -1,7 +1,7 @@
   {%- for each_pid in pid -%}
-    {%- if each_pid.unique_id == each_dashboard.pid_ids and each_pid.measurement.split(',')|length == 2 %}
+    {%- if each_pid.unique_id == each_widget.pid_ids and each_pid.measurement.split(',')|length == 2 %}
 
-  getLastDataPID({{chart_number}}, '{{each_dashboard.pid_ids}}', {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}}, '
+  getLastDataPID({{chart_number}}, '{{each_widget.pid_ids}}', {{each_widget.max_measure_age}}, {{each_widget.decimal_places}}, '
 
       {%- set measurement_id = each_pid.measurement.split(',')[1] -%}
       {%- set device_measurement = table_device_measurements.query.filter(table_device_measurements.unique_id == measurement_id).first() -%}
@@ -17,7 +17,7 @@
       {%- endif -%}
       ');
 
-  repeatLastDataPID({{chart_number}}, '{{each_dashboard.pid_ids}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}}, '
+  repeatLastDataPID({{chart_number}}, '{{each_widget.pid_ids}}', {{each_widget.refresh_duration}}, {{each_widget.max_measure_age}}, {{each_widget.decimal_places}}, '
 
       {%- set measurement_id = each_pid.measurement.split(',')[1] -%}
       {%- set device_measurement = table_device_measurements.query.filter(table_device_measurements.unique_id == measurement_id).first() -%}
@@ -35,7 +35,7 @@
 
     {% else %}
 
-    getLastDataPID({{chart_number}}, '{{each_dashboard.pid_ids}}', {{each_dashboard.max_measure_age}}, {{each_dashboard.decimal_places}}, '');
+    getLastDataPID({{chart_number}}, '{{each_widget.pid_ids}}', {{each_widget.max_measure_age}}, {{each_widget.decimal_places}}, '');
 
     {%- endif -%}
   {%- endfor -%}

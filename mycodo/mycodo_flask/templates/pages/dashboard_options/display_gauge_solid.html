@@ -1,31 +1,31 @@
 {% set measure = { 'measurement_id': None } %}
   chart[{{chart_number}}] = new Highcharts.chart({
     chart: {
-      renderTo: 'container-gauge-{{each_dashboard.unique_id}}',
+      renderTo: 'container-gauge-{{each_widget.unique_id}}',
       type: 'solidgauge',
       events: {
         load: function () {
           {% for each_input in input -%}
             {%- for device_and_measurement_ids in graph_input_ids if each_input.unique_id == device_and_measurement_ids.split(',')[0] %}
               {% if measure.update({'measurement_id': device_and_measurement_ids.split(',')[1]}) %}{% endif %}
-          getLastData({{chart_number}}, 'gauge', '{{each_input.unique_id}}', 'input', '{{measure.measurement_id}}', {{each_dashboard.max_measure_age}});
-          repeatLastData({{chart_number}}, 'gauge', '{{each_input.unique_id}}', 'input', '{{measure.measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
+          getLastData({{chart_number}}, 'gauge', '{{each_input.unique_id}}', 'input', '{{measure.measurement_id}}', {{each_widget.max_measure_age}});
+          repeatLastData({{chart_number}}, 'gauge', '{{each_input.unique_id}}', 'input', '{{measure.measurement_id}}', {{each_widget.refresh_duration}}, {{each_widget.max_measure_age}});
             {%- endfor -%}
           {%- endfor -%}
 
           {% for each_math in math -%}
             {%- for device_and_measurement_ids in graph_input_ids if each_math.unique_id == device_and_measurement_ids.split(',')[0] %}
               {% if measure.update({'measurement_id': device_and_measurement_ids.split(',')[1]}) %}{% endif %}
-          getLastData({{chart_number}}, 'gauge', '{{each_math.unique_id}}', 'math', '{{measure.measurement_id}}', {{each_dashboard.max_measure_age}});
-          repeatLastData({{chart_number}}, 'gauge', '{{each_math.unique_id}}', 'math', '{{measure.measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
+          getLastData({{chart_number}}, 'gauge', '{{each_math.unique_id}}', 'math', '{{measure.measurement_id}}', {{each_widget.max_measure_age}});
+          repeatLastData({{chart_number}}, 'gauge', '{{each_math.unique_id}}', 'math', '{{measure.measurement_id}}', {{each_widget.refresh_duration}}, {{each_widget.max_measure_age}});
             {%- endfor -%}
           {%- endfor -%}
 
           {%- for each_pid in pid -%}
             {%- for device_and_measurement_ids in graph_input_ids if each_pid.unique_id == device_and_measurement_ids.split(',')[0] %}
               {% if measure.update({'measurement_id': device_and_measurement_ids.split(',')[1]}) %}{% endif %}
-          getLastData({{chart_number}}, 'gauge', '{{each_pid.unique_id}}', 'pid', '{{measure.measurement_id}}', {{each_dashboard.max_measure_age}});
-          repeatLastData({{chart_number}}, 'gauge', '{{each_pid.unique_id}}', 'pid', '{{measure.measurement_id}}', {{each_dashboard.refresh_duration}}, {{each_dashboard.max_measure_age}});
+          getLastData({{chart_number}}, 'gauge', '{{each_pid.unique_id}}', 'pid', '{{measure.measurement_id}}', {{each_widget.max_measure_age}});
+          repeatLastData({{chart_number}}, 'gauge', '{{each_pid.unique_id}}', 'pid', '{{measure.measurement_id}}', {{each_widget.refresh_duration}}, {{each_widget.max_measure_age}});
             {%- endfor -%}
           {%- endfor -%}
         }
@@ -60,12 +60,12 @@
 
     // the value axis
     yAxis: {
-      min: {{each_dashboard.y_axis_min}},
-      max: {{each_dashboard.y_axis_max}},
+      min: {{each_widget.y_axis_min}},
+      max: {{each_widget.y_axis_max}},
       stops: [
-          {% for n in range(colors_gauge_solid[each_dashboard.unique_id]|length) %}
+          {% for n in range(colors_gauge_solid[each_widget.unique_id]|length) %}
               {% set index = '{0:0>2}'.format(n) %}
-        [{{colors_gauge_solid[each_dashboard.unique_id][n]['stop']}}, '{{colors_gauge_solid[each_dashboard.unique_id][n]['hex']}}'],
+        [{{colors_gauge_solid[each_widget.unique_id][n]['stop']}}, '{{colors_gauge_solid[each_widget.unique_id][n]['hex']}}'],
           {% endfor %}
       ],
       lineWidth: 0,

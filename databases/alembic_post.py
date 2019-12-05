@@ -62,15 +62,15 @@ if __name__ == "__main__":
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
             try:
+                from mycodo.databases.models import Widget
                 from mycodo.databases.models import Dashboard
-                from mycodo.databases.models import DashboardLayout
 
                 with session_scope(MYCODO_DB_PATH) as session:
-                    new_dash = DashboardLayout()
+                    new_dash = Dashboard()
                     new_dash.name = 'Default Dashboard'
                     session.add(new_dash)
 
-                    for each_widget in session.query(Dashboard).all():
+                    for each_widget in session.query(Widget).all():
                         each_widget.dashboard_id = new_dash.unique_id
                         session.commit()
 
