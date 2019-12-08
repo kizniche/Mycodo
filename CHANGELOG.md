@@ -1,6 +1,8 @@
-## 8.2.0 (Unreleased)
+## 8.2.1 (2019.12.08)
 
-This update brings the ability to run Mycodo/Influxdb in Docker containers, enabling Mycodo to run outside the Raspberry Pi and Raspbian environment. For instance, I currently have Mycodo running on my 64-bit PC in Ubuntu 18.04. This is currently an experimental feature and is not recommended to be used in a production environment. See the [Docker README](https://github.com/kizniche/Mycodo/blob/master/docker/README.md) for more information.
+This update brings the ability to create multiple dashboards. The dashboard grid spacing has also changed, so you will need to resize your widgets.
+
+This update also brings the ability to run Mycodo/Influxdb in Docker containers, enabling Mycodo to run outside the Raspberry Pi and Raspbian environment. For instance, I currently have Mycodo running on my 64-bit PC in Ubuntu 18.04. This is an experimental feature and is not yet recommended to be used in a production environment. See the [Docker README](https://github.com/kizniche/Mycodo/blob/master/docker/README.md) for more information.
 
 ### Features
 
@@ -9,6 +11,12 @@ This update brings the ability to run Mycodo/Influxdb in Docker containers, enab
  - Add Dashboard Widget: Spacer ([#717](https://github.com/kizniche/mycodo/issues/717))
  - Add ability to hide Widget drag handle, set Widget name font size, and hide Graph Widget buttons ([#717](https://github.com/kizniche/mycodo/issues/717))
  - Add ability to set Dashboard grid cell height
+
+### Miscellaneous
+
+ - Change grid width from 12 to 20 columns
+ - Update InfluxDB from 1.7.8 to 1.7.9
+
 
 ## 8.1.1 (2019.11.26)
 

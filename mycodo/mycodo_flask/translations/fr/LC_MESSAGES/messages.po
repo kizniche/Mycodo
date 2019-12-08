@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-11-26 16:39-0500\n"
+"POT-Creation-Date: 2019-12-08 17:41-0500\n"
 "PO-Revision-Date: 2017-01-05 00:55-0500\n"
 "Last-Translator: \n"
 "Language: fr\n"
@@ -20,251 +20,250 @@ msgstr ""
 msgid "Add Dashboard Widget"
 msgstr ""
 
-#: config.py:51 mycodo_flask/templates/pages/dashboard_options/add_graph.html:9
+#: config.py:51 config.py:478
+msgid "Spacer"
+msgstr "Spacer"
+
+#: config.py:52
 msgid "Graph"
 msgstr "Graphique"
 
-#: config.py:52
-#: mycodo_flask/templates/pages/dashboard_options/add_gauge.html:16
+#: config.py:53
 msgid "Gauge"
 msgstr "Jauge"
 
-#: config.py:57
+#: config.py:58
 msgid "PWM Slider"
 msgstr ""
 
-#: config.py:58
+#: config.py:59
 msgid "PID Control"
 msgstr "Contrôle PID"
 
-#: config.py:128
+#: config.py:129
 msgid "Average (Last, Multiple Channels)"
 msgstr ""
 
-#: config.py:134
+#: config.py:135
 msgid "Average (Past, Single Channel)"
 msgstr ""
 
-#: config.py:141
+#: config.py:142
 msgid "Sum (Last, Multiple Channels)"
 msgstr ""
 
-#: config.py:147
+#: config.py:148
 msgid "Sum (Past, Single Channel)"
 msgstr ""
 
-#: config.py:154
+#: config.py:155
 msgid "Difference"
 msgstr "Différence"
 
-#: config.py:160 mycodo_flask/forms/forms_math.py:75
-#: mycodo_flask/forms/forms_settings.py:198
-#: mycodo_flask/forms/forms_settings.py:206
+#: config.py:161 mycodo_flask/forms/forms_math.py:75
+#: mycodo_flask/forms/forms_settings.py:200
+#: mycodo_flask/forms/forms_settings.py:208
 msgid "Equation"
 msgstr "Équation"
 
-#: config.py:166
+#: config.py:167
 msgid "Humidity (Wet/Dry-Bulb)"
 msgstr "Humidité (humide / sèche)"
 
-#: config.py:189
+#: config.py:190
 msgid "Redundancy"
 msgstr "Redondance"
 
-#: config.py:195 mycodo_flask/templates/admin/statistics.html:6
+#: config.py:196 mycodo_flask/templates/admin/statistics.html:6
 msgid "Statistics"
 msgstr "Statistiques"
 
-#: config.py:237
+#: config.py:238
 msgid "Verification"
 msgstr "Vérification"
 
-#: config.py:243 config_devices_units.py:193
+#: config.py:244 config_devices_units.py:193
 msgid "Vapor Pressure Deficit"
 msgstr "Déficit de pression de vapeur"
 
-#: config.py:273
+#: config.py:274
 msgid "Time/Date"
 msgstr "Heure Date"
 
-#: config.py:277 config_devices_units.py:69 config_translations.py:57
+#: config.py:278 config_devices_units.py:69 config_translations.py:57
 #: mycodo_flask/templates/pages/function_options/action_options/output.html:27
 #: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:37
 msgid "Duration"
 msgstr "Durée"
 
-#: config.py:281
+#: config.py:282
 msgid "Daily (Time-Based)"
 msgstr "Quotidien (basé sur le temps)"
 
-#: config.py:285
+#: config.py:286
 msgid "Daily (Sine Wave)"
 msgstr "Quotidien (onde sinusoïdale)"
 
-#: config.py:289
+#: config.py:290
 msgid "Daily (Bezier Curve)"
 msgstr "Quotidien (courbe de Bézier)"
 
-#: config.py:308
+#: config.py:309
 msgid "On/Off (GPIO)"
 msgstr "On / Off (GPIO)"
 
-#: config.py:314
+#: config.py:315
 msgid "PWM (GPIO)"
 msgstr "PWM (GPIO)"
 
-#: config.py:322
+#: config.py:323
 msgid "Wireless 315/433MHz LPD/SRD (rpi-rf)"
 msgstr "LPD / SRD sans fil à 315/433 MHz (rpi-rf)"
 
-#: config.py:331
+#: config.py:332
 msgid "On/Off (Linux Command)"
 msgstr "On / Off (commande Linux)"
 
-#: config.py:337
+#: config.py:338
 msgid "PWM (Linux Command)"
 msgstr "PWM (commande Linux)"
 
-#: config.py:343
+#: config.py:344
 msgid "On/Off (Python Command)"
 msgstr "Activé / Désactivé (commande Python)"
 
-#: config.py:349
+#: config.py:350
 msgid "PWM (Python Command)"
 msgstr "PWM (Commande Python)"
 
-#: config.py:355
+#: config.py:356
 msgid "Atlas EZO-PMP"
 msgstr "Atlas EZO-PMP"
 
-#: config.py:373
+#: config.py:374
 msgid "FTDI"
 msgstr ""
 
-#: config.py:375
+#: config.py:376
 msgid "I2C"
 msgstr "I2C"
 
-#: config.py:377
+#: config.py:378
 msgid "UART"
 msgstr "UART"
 
-#: config.py:440
+#: config.py:441
 msgid "DS-Type Sensor Calibration"
 msgstr "Calibrage du capteur de type DS"
 
-#: config.py:467 config_devices_units.py:97
+#: config.py:468 config_devices_units.py:97
 #: mycodo_flask/templates/pages/function_options/conditional_options/gpio_state.html:8
 msgid "GPIO State"
 msgstr "État GPIO"
 
-#: config.py:468
+#: config.py:469
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:13
 msgid "Output State"
 msgstr ""
 
-#: config.py:469
+#: config.py:470
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_duration_on.html:13
 msgid "Output Duration On"
 msgstr ""
 
-#: config.py:470
+#: config.py:471
 #: mycodo_flask/templates/pages/function_options/conditional_options/controller_status.html:13
 msgid "Controller Running"
 msgstr ""
 
-#: config.py:477
-msgid "Spacer"
-msgstr "Spacer"
-
-#: config.py:483
+#: config.py:484
 msgid "Execute Actions"
 msgstr "Exécuter des actions"
 
-#: config.py:520
+#: config.py:521
 msgid "Trigger: Timer (Daily Point)"
 msgstr "Déclencheur: minuterie (point quotidien)"
 
-#: config.py:527
+#: config.py:528
 msgid "Daily Span"
 msgstr "Portée journalière"
 
-#: config.py:540
+#: config.py:541
 msgid "Infrared Receive"
 msgstr ""
 
-#: config.py:550
+#: config.py:551
 msgid "Run PWM Method"
 msgstr "Exécuter la méthode PWM"
 
-#: config.py:556
+#: config.py:557
 msgid "Sunrise/Sunset"
 msgstr "Lever du soleil"
 
-#: config.py:586
+#: config.py:587
 #: mycodo_flask/templates/pages/function_options/action_options/photo.html:11
 msgid "Camera: Capture Photo"
 msgstr "Appareil photo: capturer une photo"
 
-#: config.py:616
+#: config.py:617
 #: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:20
 msgid "Email with Photo Attachment"
 msgstr "Email avec photo jointe"
 
-#: config.py:620
+#: config.py:621
 #: mycodo_flask/templates/pages/function_options/action_options/video_email.html:20
 msgid "Email with Video Attachment"
 msgstr "Email avec pièce jointe vidéo"
 
-#: config.py:624
+#: config.py:625
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:6
 msgid "Execute Command"
 msgstr "Exécuter la commande"
 
-#: config.py:628
+#: config.py:629
 #: mycodo_flask/templates/pages/function_options/action_options/infrared_send.html:32
 msgid "Infrared Send"
 msgstr ""
 
-#: config.py:639
+#: config.py:640
 #: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_off.html:11
 msgid "Backlight Off"
 msgstr "Rétro-éclairage éteint"
 
-#: config.py:645
+#: config.py:646
 #: mycodo_flask/templates/pages/function_options/action_options/lcd_backlight_on.html:11
 msgid "Backlight On"
 msgstr ""
 
-#: config.py:651
+#: config.py:652
 #: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_off.html:11
 msgid "Flashing Off"
 msgstr ""
 
-#: config.py:657
+#: config.py:658
 #: mycodo_flask/templates/pages/function_options/action_options/flash_lcd_on.html:11
 msgid "Flashing On"
 msgstr ""
 
-#: config.py:693
+#: config.py:694
 #: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:20
 msgid "Set Method"
 msgstr "Définir la méthode"
 
-#: config.py:699
-#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:65
-#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:100
+#: config.py:700
+#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:67
+#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:103
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:15
 msgid "Set Setpoint"
 msgstr "Définir le point de consigne"
 
-#: config.py:705
+#: config.py:706
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:11
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_raise.html:15
 msgid "Raise Setpoint"
 msgstr ""
 
-#: config.py:711
+#: config.py:712
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:11
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid_lower.html:15
 msgid "Lower Setpoint"
@@ -326,7 +325,7 @@ msgstr "Disque"
 msgid "Dissolved Oxygen"
 msgstr ""
 
-#: config_devices_units.py:73 config_translations.py:208
+#: config_devices_units.py:73 config_translations.py:210
 #: mycodo_flask/templates/pages/function_options/action_options/output_pwm.html:19
 #: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:13
 #: mycodo_flask/templates/pages/function_options/action_options/output_ramp_pwm.html:19
@@ -649,10 +648,9 @@ msgstr "Étalonnage"
 msgid "Calculate"
 msgstr ""
 
-#: config_translations.py:29 mycodo_flask/forms/forms_dashboard.py:172
-#: mycodo_flask/templates/layout.html:210
+#: config_translations.py:29 mycodo_flask/forms/forms_dashboard.py:181
+#: mycodo_flask/templates/layout.html:219
 #: mycodo_flask/templates/pages/camera.html:5
-#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:9
 #: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:11
 #: mycodo_flask/templates/pages/function_options/action_options/video_email.html:11
 msgid "Camera"
@@ -683,7 +681,7 @@ msgstr "Créer"
 msgid "Custom"
 msgstr "Douane"
 
-#: config_translations.py:41 mycodo_flask/templates/layout.html:189
+#: config_translations.py:41 mycodo_flask/templates/settings/general.html:31
 msgid "Dashboard"
 msgstr "Tableau de bord"
 
@@ -716,7 +714,7 @@ msgstr "Afficher"
 msgid "Down"
 msgstr "Vers le bas"
 
-#: config_translations.py:59 config_translations.py:360
+#: config_translations.py:59 config_translations.py:371
 #: mycodo_flask/forms/forms_input.py:144
 msgid "Edge"
 msgstr "Bord"
@@ -731,7 +729,7 @@ msgstr "modifier"
 msgid "E-Mail"
 msgstr "Email"
 
-#: config_translations.py:65 mycodo_flask/templates/layout.html:213
+#: config_translations.py:65 mycodo_flask/templates/layout.html:222
 #: mycodo_flask/templates/pages/usage.html:3
 #: mycodo_flask/templates/pages/usage.html:5
 #: mycodo_flask/templates/pages/usage.html:35
@@ -744,9 +742,9 @@ msgid "Energy Usage"
 msgstr "La consommation d'énergie"
 
 #: config_translations.py:67 mycodo_flask/templates/flash_messages.html:33
-#: mycodo_flask/templates/pages/dashboard.html:463
-#: mycodo_flask/templates/pages/dashboard.html:469
-#: mycodo_flask/templates/pages/dashboard.html:517
+#: mycodo_flask/templates/pages/dashboard.html:499
+#: mycodo_flask/templates/pages/dashboard.html:505
+#: mycodo_flask/templates/pages/dashboard.html:553
 msgid "Error"
 msgstr "Erreur"
 
@@ -767,7 +765,6 @@ msgid "Hold"
 msgstr "Tenir"
 
 #: config_translations.py:77
-#: mycodo_flask/templates/pages/dashboard_options/add_indicator.html:10
 msgid "Indicator"
 msgstr "Indicateur"
 
@@ -777,10 +774,10 @@ msgstr "Inverser"
 
 #: config_translations.py:81 mycodo_flask/templates/tools/notes.html:138
 #: mycodo_flask/utils/utils_notes.py:453
-#: mycodo_flask/utils/utils_settings.py:347
-#: mycodo_flask/utils/utils_settings.py:447
-#: mycodo_flask/utils/utils_settings.py:482
-#: mycodo_flask/utils/utils_settings.py:607
+#: mycodo_flask/utils/utils_settings.py:348
+#: mycodo_flask/utils/utils_settings.py:448
+#: mycodo_flask/utils/utils_settings.py:483
+#: mycodo_flask/utils/utils_settings.py:608
 msgid "Import"
 msgstr "Importer"
 
@@ -822,7 +819,6 @@ msgstr "Math"
 
 #: config_translations.py:97 mycodo_flask/forms/forms_misc.py:27
 #: mycodo_flask/forms/forms_misc.py:35
-#: mycodo_flask/templates/pages/dashboard_options/add_measurement.html:10
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement.html:25
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:25
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_average.html:25
@@ -859,17 +855,15 @@ msgstr "Aucun disponible"
 msgid "Note"
 msgstr "Remarque"
 
-#: config_translations.py:109 mycodo_flask/templates/pages/dashboard.html:452
+#: config_translations.py:109 mycodo_flask/templates/pages/dashboard.html:488
 msgid "Off"
 msgstr "De"
 
-#: config_translations.py:111 mycodo_flask/templates/pages/dashboard.html:450
+#: config_translations.py:111 mycodo_flask/templates/pages/dashboard.html:486
 msgid "On"
 msgstr "Sur"
 
 #: config_translations.py:113 mycodo_flask/forms/forms_method.py:93
-#: mycodo_flask/templates/pages/dashboard_options/add_output.html:10
-#: mycodo_flask/templates/pages/dashboard_options/add_output_pwm_slider.html:10
 #: mycodo_flask/templates/pages/function_options/action_options/output.html:27
 #: mycodo_flask/templates/pages/function_options/action_options/output_pwm.html:19
 msgid "Output"
@@ -892,8 +886,7 @@ msgstr "Mot de passe"
 msgid "Pause"
 msgstr "Pause"
 
-#: config_translations.py:121 mycodo_flask/forms/forms_dashboard.py:151
-#: mycodo_flask/templates/pages/dashboard_options/add_pid_control.html:10
+#: config_translations.py:121 mycodo_flask/forms/forms_dashboard.py:160
 #: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:20
 #: mycodo_flask/templates/pages/function_options/action_options/pause_pid.html:11
 #: mycodo_flask/templates/pages/function_options/action_options/resume_pid.html:11
@@ -986,8 +979,8 @@ msgstr "Déclencheur"
 msgid "Up"
 msgstr "Vers le haut"
 
-#: config_translations.py:161 mycodo_flask/forms/forms_settings.py:135
-#: mycodo_flask/forms/forms_settings.py:149
+#: config_translations.py:161 mycodo_flask/forms/forms_settings.py:137
+#: mycodo_flask/forms/forms_settings.py:151
 msgid "Upload"
 msgstr "Télécharger"
 
@@ -995,19 +988,23 @@ msgstr "Télécharger"
 msgid "User"
 msgstr "Utilisateur"
 
-#: config_translations.py:167
+#: config_translations.py:165
+msgid "Widget"
+msgstr ""
+
+#: config_translations.py:169
 msgid "1-Wire Device ID"
 msgstr "ID d'appareil 1 fil"
 
-#: config_translations.py:168
+#: config_translations.py:170
 msgid "Select the 1-wire device ID"
 msgstr "Sélectionnez l'ID de périphérique à 1 fil"
 
-#: config_translations.py:170 mycodo_flask/forms/forms_camera.py:63
+#: config_translations.py:172 mycodo_flask/forms/forms_camera.py:63
 msgid "Gain"
 msgstr "Gain"
 
-#: config_translations.py:171
+#: config_translations.py:173
 msgid ""
 "Adjust the gain to change the measurable voltage range. See ADC "
 "documentation for details."
@@ -1015,213 +1012,221 @@ msgstr ""
 "Ajustez le gain pour changer la plage de tension mesurable. Voir la "
 "documentation ADC pour plus de détails."
 
-#: config_translations.py:173 config_translations.py:321
-#: config_translations.py:324 mycodo_flask/forms/forms_calibration.py:83
+#: config_translations.py:175 config_translations.py:332
+#: config_translations.py:335 mycodo_flask/forms/forms_calibration.py:83
 msgid "Resolution"
 msgstr "Résolution"
 
-#: config_translations.py:174
+#: config_translations.py:176
 msgid "ADC Resolution (see ADC documentation)"
 msgstr "Résolution ADC (voir documentation ADC)"
 
-#: config_translations.py:176
+#: config_translations.py:178
 msgid "Sample Speed"
 msgstr "Vitesse d'échantillon"
 
-#: config_translations.py:177
+#: config_translations.py:179
 msgid "ADC Sample Speed (see ADC documentation)"
 msgstr "Vitesse d'échantillon ADC (voir la documentation ADC)"
 
-#: config_translations.py:179
+#: config_translations.py:181
 msgid "Current Draw (amps)"
 msgstr "Tirage courant (ampères)"
 
-#: config_translations.py:180
+#: config_translations.py:182
 msgid "The number of amps the output device draws (at 120/240 VAC)"
 msgstr "Le nombre d'ampères que le périphérique de sortie dessine (à 120/240 VCA)"
 
-#: config_translations.py:182
+#: config_translations.py:184
 msgid "Baud Rate"
 msgstr "Débit en bauds"
 
-#: config_translations.py:183
+#: config_translations.py:185
 msgid "The UART baud rate"
 msgstr "Le débit en bauds UART"
 
-#: config_translations.py:185
+#: config_translations.py:187
 msgid "MAC (XX:XX:XX:XX:XX:XX)"
 msgstr "MAC (XX: XX: XX: XX: XX: XX)"
 
-#: config_translations.py:186
+#: config_translations.py:188
 msgid "The MAC address of the input"
 msgstr "L'adresse MAC de l'entrée"
 
-#: config_translations.py:188
+#: config_translations.py:190
 msgid "BT Adapter"
 msgstr "Adaptateur BT"
 
-#: config_translations.py:189
+#: config_translations.py:191
 msgid "The Bluetooth adapter of the input"
 msgstr "L'adaptateur Bluetooth de l'entrée"
 
-#: config_translations.py:191 mycodo_flask/routes_calibration.py:648
+#: config_translations.py:193 mycodo_flask/routes_calibration.py:648
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "Commander"
 
-#: config_translations.py:192
+#: config_translations.py:194
 msgid "The command to executed (as user mycodo) to return a measurement value"
 msgstr ""
 "La commande à exécuter (en tant qu'utilisateur mycodo) pour renvoyer une "
 "valeur de mesure"
 
-#: config_translations.py:195
+#: config_translations.py:197
 msgid "Select the unit of the measurement to be stored in the database"
 msgstr "Sélectionnez l'unité de mesure à stocker dans la base de données"
 
-#: config_translations.py:197
+#: config_translations.py:199
 msgid "Convert to Unit"
 msgstr "Convertir en unité"
 
-#: config_translations.py:198
+#: config_translations.py:200
 msgid "Convert the measurement to a different unit"
 msgstr "Convertir la mesure dans une autre unité"
 
-#: config_translations.py:200
+#: config_translations.py:202
 msgid "click to copy to the clipboard"
 msgstr ""
 
-#: config_translations.py:202
+#: config_translations.py:204
 msgid "Deadline"
 msgstr "Date limite"
 
-#: config_translations.py:203
+#: config_translations.py:205
 msgid "Time (seconds) to wait until failure"
 msgstr "Temps (en secondes) à attendre jusqu'à l'échec"
 
-#: config_translations.py:205
+#: config_translations.py:207
 msgid "Duration On (seconds)"
 msgstr "Durée On (secondes)"
 
-#: config_translations.py:206
+#: config_translations.py:208
 msgid "Turn on for a duration of time (seconds)"
 msgstr "Activer pendant une durée (secondes)"
 
-#: config_translations.py:209
+#: config_translations.py:211
 msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
 msgstr "Cycle de service pour le PWM (pourcentage, 0.0 - 100.0)"
 
-#: config_translations.py:211
+#: config_translations.py:213
 msgid "Flow Rate (ml/min)"
 msgstr "Débit (ml / min)"
 
-#: config_translations.py:212
+#: config_translations.py:214
 msgid "Flow rate in ml/minute (0.5 min, 105 max)"
 msgstr ""
 
-#: config_translations.py:214
+#: config_translations.py:216
+msgid "Name Font Size (em)"
+msgstr ""
+
+#: config_translations.py:217
+msgid "The font size of the Name text"
+msgstr ""
+
+#: config_translations.py:219
 msgid "FTDI Device"
 msgstr "Dispositif FTDI"
 
-#: config_translations.py:215
+#: config_translations.py:220
 msgid "The FTDI device (e.g. /dev/ttyUSB1)"
 msgstr "Le périphérique FTDI (par exemple / dev / ttyUSB1)"
 
-#: config_translations.py:217
+#: config_translations.py:222
 msgid "Pin (GPIO)"
 msgstr "Pin (GPIO)"
 
-#: config_translations.py:218
+#: config_translations.py:223
 msgid "The GPIO pin using BCM numbering"
 msgstr "La broche GPIO utilisant la numérotation BCM"
 
-#: config_translations.py:220
+#: config_translations.py:225
 msgid "Host"
 msgstr "Hôte"
 
-#: config_translations.py:221
+#: config_translations.py:226
 msgid "Host address or IP"
 msgstr "Adresse d'hôte ou IP"
 
-#: config_translations.py:223
+#: config_translations.py:228
 msgid "I<sup>2</sup>C Bus"
 msgstr "I <sup> 2 </ sup> C Bus"
 
-#: config_translations.py:224
+#: config_translations.py:229
 msgid "The I2C bus the device is connected to"
 msgstr "Le bus I2C auquel l'appareil est connecté"
 
-#: config_translations.py:226
+#: config_translations.py:231
 msgid "I<sup>2</sup>C Address"
 msgstr "I <sup> 2 </ sup> C Adresse"
 
-#: config_translations.py:227
+#: config_translations.py:232
 msgid "The I2C address of the device"
 msgstr "L'adresse I2C de l'appareil"
 
-#: config_translations.py:229
+#: config_translations.py:234
 msgid "Interface"
 msgstr "Interface"
 
-#: config_translations.py:230
+#: config_translations.py:235
 msgid "The interface used to communicate"
 msgstr "L'interface utilisée pour communiquer"
 
-#: config_translations.py:232
+#: config_translations.py:237
 msgid "Invert Scale"
 msgstr "Inverser l'échelle"
 
-#: config_translations.py:233
+#: config_translations.py:238
 msgid "Invert the scale"
 msgstr "Inverser la balance"
 
-#: config_translations.py:235
+#: config_translations.py:240
 msgid "Log Level: Debug"
 msgstr ""
 
-#: config_translations.py:236
+#: config_translations.py:241
 msgid "Show debug lines in the Daemon Log"
 msgstr ""
 
-#: config_translations.py:238
+#: config_translations.py:243
 msgid "Max Age (seconds)"
 msgstr "Max Age (secondes)"
 
-#: config_translations.py:239
+#: config_translations.py:244
 msgid "The maximum allowable measurement age"
 msgstr "L'âge maximum de mesure autorisé"
 
-#: config_translations.py:241
+#: config_translations.py:246
 msgid "Unit Measurement"
 msgstr "Mesure d'unité"
 
-#: config_translations.py:242
+#: config_translations.py:247
 msgid "Select a unit for the stored value"
 msgstr "Sélectionnez une unité pour la valeur stockée"
 
-#: config_translations.py:244
+#: config_translations.py:249
 msgid "Measurements Enabled"
 msgstr "Mesures activées"
 
-#: config_translations.py:245
+#: config_translations.py:250
 msgid "The measurements to record"
 msgstr "Les mesures à enregistrer"
 
-#: config_translations.py:247 mycodo_flask/templates/pages/usage.html:209
+#: config_translations.py:252 mycodo_flask/templates/pages/usage.html:209
 #: mycodo_flask/templates/settings/controller.html:39
 #: mycodo_flask/templates/settings/input.html:40
 msgid "Name"
 msgstr "prénom"
 
-#: config_translations.py:248
+#: config_translations.py:253
 msgid "A name to distinguish this from others"
 msgstr "Un nom pour le distinguer des autres"
 
-#: config_translations.py:250
+#: config_translations.py:255
 msgid "Off Command"
 msgstr "Off Command"
 
-#: config_translations.py:251
+#: config_translations.py:256
 #: mycodo_flask/templates/pages/output_options/python.html:10
 msgid ""
 "Command to execute (as user mycodo) when the output is instructed to turn"
@@ -1230,51 +1235,59 @@ msgstr ""
 "Commande à exécuter (en tant qu'utilisateur mycodo) lorsque la sortie "
 "reçoit l'ordre de désactiver"
 
-#: config_translations.py:253
-msgid "Output Mode"
-msgstr ""
-
-#: config_translations.py:254
-msgid "Mode to run the output"
-msgstr ""
-
-#: config_translations.py:256
-msgid "Shutdown Value"
-msgstr ""
-
-#: config_translations.py:257
-msgid "The output value to set when Mycodo shuts down"
+#: config_translations.py:258
+msgid "On State"
 msgstr ""
 
 #: config_translations.py:259
-msgid "Startup Value"
-msgstr ""
+msgid "What state triggers the output to turn on? High or Low?"
+msgstr "Quel état déclenche l'activation de la sortie? Haut ou bas?"
 
-#: config_translations.py:260
-msgid "The output value to set when Mycodo starts up"
+#: config_translations.py:261
+msgid "Output Mode"
 msgstr ""
 
 #: config_translations.py:262
-msgid "Shutdown State"
+msgid "Mode to run the output"
 msgstr ""
 
-#: config_translations.py:263
-msgid "When Mycodo shuts down, set the output state"
+#: config_translations.py:264
+msgid "Shutdown Value"
 msgstr ""
 
 #: config_translations.py:265
+msgid "The output value to set when Mycodo shuts down"
+msgstr ""
+
+#: config_translations.py:267
+msgid "Startup Value"
+msgstr ""
+
+#: config_translations.py:268
+msgid "The output value to set when Mycodo starts up"
+msgstr ""
+
+#: config_translations.py:270
+msgid "Shutdown State"
+msgstr ""
+
+#: config_translations.py:271
+msgid "When Mycodo shuts down, set the output state"
+msgstr ""
+
+#: config_translations.py:273
 msgid "Startup State"
 msgstr "Etat de départ"
 
-#: config_translations.py:266
+#: config_translations.py:274
 msgid "When Mycodo starts, set the output state"
 msgstr "Lorsque Mycodo démarre, définissez l'état de sortie"
 
-#: config_translations.py:268
+#: config_translations.py:276
 msgid "On Command"
 msgstr "Sur commande"
 
-#: config_translations.py:269
+#: config_translations.py:277
 #: mycodo_flask/templates/pages/output_options/python.html:4
 msgid ""
 "Command to execute (as user mycodo) when the output is instructed to turn"
@@ -1283,61 +1296,61 @@ msgstr ""
 "Commande à exécuter (en tant qu'utilisateur mycodo) lorsque la sortie est"
 " chargée de s'allumer"
 
-#: config_translations.py:271 mycodo_flask/forms/forms_conditional.py:32
+#: config_translations.py:279 mycodo_flask/forms/forms_conditional.py:32
 #: mycodo_flask/forms/forms_lcd.py:55 mycodo_flask/forms/forms_math.py:37
 #: mycodo_flask/forms/forms_trigger.py:58
 msgid "Period (seconds)"
 msgstr "Période (secondes)"
 
-#: config_translations.py:272
+#: config_translations.py:280
 msgid "The duration (seconds) between measurements or actions"
 msgstr ""
 
-#: config_translations.py:274
+#: config_translations.py:282
 msgid "Clock Pin"
 msgstr "Pin de l'horloge"
 
-#: config_translations.py:275
+#: config_translations.py:283
 msgid "The GPIO (using BCM numbering) connected to the Clock pin"
 msgstr "Le GPIO (utilisant la numérotation BCM) connecté à la broche de l'horloge"
 
-#: config_translations.py:277
+#: config_translations.py:285
 msgid "CS Pin"
 msgstr "Pin CS"
 
-#: config_translations.py:278
+#: config_translations.py:286
 msgid "The GPIO (using BCM numbering) connected to the Cable Select pin"
 msgstr "Le GPIO (utilisant la numérotation BCM) connecté à la broche Cable Select"
 
-#: config_translations.py:280
+#: config_translations.py:288
 msgid "MISO Pin"
 msgstr "MISO Pin"
 
-#: config_translations.py:281
+#: config_translations.py:289
 msgid "The GPIO (using BCM numbering) connected to the MISO pin"
 msgstr "Le GPIO (utilisant la numérotation BCM) connecté à la broche MISO"
 
-#: config_translations.py:283
+#: config_translations.py:291
 msgid "MOSI Pin"
 msgstr "Pin MOSI"
 
-#: config_translations.py:284
+#: config_translations.py:292
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr "Le GPIO (utilisant la numérotation BCM) connecté à la broche MOSI"
 
-#: config_translations.py:286 inputs/mqtt_paho.py:52
+#: config_translations.py:294 inputs/mqtt_paho.py:52
 msgid "Port"
 msgstr "Port"
 
-#: config_translations.py:287
+#: config_translations.py:295
 msgid "Host port number"
 msgstr "Numéro de port de l'hôte"
 
-#: config_translations.py:289
+#: config_translations.py:297
 msgid "Pre Out Duration"
 msgstr "Durée pré-sortie"
 
-#: config_translations.py:290
+#: config_translations.py:298
 msgid ""
 "If a Pre Output is selected, set the duration (seconds) to turn the Pre "
 "Output on for before every measurement is acquired."
@@ -1345,11 +1358,11 @@ msgstr ""
 "Si une pré-sortie est sélectionnée, définissez la durée (en secondes) "
 "pour activer la sortie avant chaque acquisition de mesure."
 
-#: config_translations.py:294
+#: config_translations.py:302
 msgid "Pre During Measure"
 msgstr "Pré pendant la mesure"
 
-#: config_translations.py:295
+#: config_translations.py:303
 msgid ""
 "Check to turn the output off after (opposed to before) the measurement is"
 " complete"
@@ -1357,63 +1370,63 @@ msgstr ""
 "Cochez pour désactiver la sortie après (opposé à avant) la mesure est "
 "terminée"
 
-#: config_translations.py:297
+#: config_translations.py:305
 msgid "Pre Output"
 msgstr "Pré-sortie"
 
-#: config_translations.py:298
+#: config_translations.py:306
 msgid "Turn the selected output on before taking every measurement"
 msgstr "Activer la sortie sélectionnée avant de prendre chaque mesure"
 
-#: config_translations.py:300
+#: config_translations.py:308
 msgid "Protocol"
 msgstr "Protocole"
 
-#: config_translations.py:301
+#: config_translations.py:309
 msgid "Wireless 433 MHz protocol"
 msgstr "Protocole sans fil 433 MHz"
 
-#: config_translations.py:303
+#: config_translations.py:311
 msgid "Pulse Length"
 msgstr "Longueur d'impulsion"
 
-#: config_translations.py:304
+#: config_translations.py:312
 msgid "Wireless 433 MHz pulse length"
 msgstr "Longueur d'impulsion sans fil 433 MHz"
 
-#: config_translations.py:306
+#: config_translations.py:314
 msgid "Amount to Dispense (ml)"
 msgstr "Quantité à distribuer (ml)"
 
-#: config_translations.py:307
+#: config_translations.py:315
 msgid "Volume in ml to pump"
 msgstr "Volume en ml à pomper"
 
-#: config_translations.py:309
+#: config_translations.py:317
 msgid "PWM Command"
 msgstr "Commande PWM"
 
-#: config_translations.py:310
+#: config_translations.py:318
 #, python-format
 msgid "Command to execute (as user mycodo) to set the PWM duty cycle (%%)"
 msgstr ""
 "Commande à exécuter (en tant qu'utilisateur mycodo) pour définir le cycle"
 " de service PWM (%%)"
 
-#: config_translations.py:312
+#: config_translations.py:320
 msgid "Frequency (Hertz)"
 msgstr "Fréquence (Hertz)"
 
-#: config_translations.py:313
+#: config_translations.py:321
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr "Le Hertz pour sortir le signal PWM (0 - 70 000)"
 
-#: config_translations.py:315 inputs/ds18b20.py:77 inputs/ds18s20.py:69
+#: config_translations.py:323 inputs/ds18b20.py:77 inputs/ds18s20.py:69
 #: mycodo_flask/forms/forms_camera.py:23
 msgid "Library"
 msgstr "Bibliothèque"
 
-#: config_translations.py:316
+#: config_translations.py:324
 msgid ""
 "Which method to produce the PWM signal (hardware pins can produce higher "
 "frequencies)"
@@ -1421,33 +1434,41 @@ msgstr ""
 "Quelle méthode pour produire le signal PWM (les broches matérielles "
 "peuvent produire des fréquences plus élevées)"
 
-#: config_translations.py:318
+#: config_translations.py:326
 msgid "Reference Resistance"
 msgstr "Résistance de référence"
 
-#: config_translations.py:319
+#: config_translations.py:327
 msgid "Reference resistance (Ohm)"
 msgstr "Résistance de référence (Ohm)"
 
-#: config_translations.py:322 config_translations.py:325
+#: config_translations.py:329
+msgid "Refresh (seconds)"
+msgstr "Actualiser (secondes)"
+
+#: config_translations.py:330
+msgid "Number of seconds to wait between acquiring any new measurements."
+msgstr "Nombre de secondes à attendre entre l'acquisition de nouvelles mesures."
+
+#: config_translations.py:333 config_translations.py:336
 msgid "Measurement resolution"
 msgstr "Résolution de mesure"
 
-#: config_translations.py:327
+#: config_translations.py:338
 msgid "Pulses Per Rev"
 msgstr "Impulsions par rév"
 
-#: config_translations.py:328
+#: config_translations.py:339
 msgid ""
 "The number of pulses per revolution to calculate revolutions per minute "
 "(RPM)"
 msgstr "Le nombre d'impulsions par tour pour calculer les tours par minute (RPM)"
 
-#: config_translations.py:330
+#: config_translations.py:341
 msgid "Sample Time"
 msgstr "Temps d'échantillonnage"
 
-#: config_translations.py:331
+#: config_translations.py:342
 msgid ""
 "The amount of time (seconds) to sample the input before caluclating the "
 "measurement"
@@ -1455,104 +1476,104 @@ msgstr ""
 "La durée (en secondes) nécessaire pour échantillonner l'entrée avant de "
 "calculer la mesure"
 
-#: config_translations.py:333
+#: config_translations.py:344
 msgid "Unscaled Unit Min"
 msgstr "Unité non calibrée"
 
-#: config_translations.py:334
+#: config_translations.py:345
 msgid "Unscaled minimum unit"
 msgstr "Unité minimum non calibrée"
 
-#: config_translations.py:336
+#: config_translations.py:347
 msgid "Unscaled Unit Max"
 msgstr "Unité max. Non mise à l'échelle"
 
-#: config_translations.py:337
+#: config_translations.py:348
 msgid "Unscaled maximum unit"
 msgstr "Unité maximale non calibrée"
 
-#: config_translations.py:339
+#: config_translations.py:350
 msgid "Rescaled Unit Min"
 msgstr "Unité redimensionnée"
 
-#: config_translations.py:340
+#: config_translations.py:351
 msgid "Rescaled minimum unit"
 msgstr "Unité minimum redimensionnée"
 
-#: config_translations.py:342
+#: config_translations.py:353
 msgid "Rescaled Unit Max"
 msgstr "Unité redimensionnée Max"
 
-#: config_translations.py:343
+#: config_translations.py:354
 msgid "Rescaled maximum unit"
 msgstr "Unité maximale remise à l'échelle"
 
-#: config_translations.py:345
+#: config_translations.py:356
 msgid "Measurement Unit"
 msgstr "Unité de mesure"
 
-#: config_translations.py:346
+#: config_translations.py:357
 msgid "Select the measurement and unit to store this measurement in the database"
 msgstr ""
 "Sélectionnez la mesure et l'unité pour stocker cette mesure dans la base "
 "de données"
 
-#: config_translations.py:348
+#: config_translations.py:359
 msgid "Sensitivity"
 msgstr "Sensibilité"
 
-#: config_translations.py:349
+#: config_translations.py:360
 msgid "Measurement sensitivity"
 msgstr "Sensibilité de mesure"
 
-#: config_translations.py:351
+#: config_translations.py:362
 msgid "Setpoint Tracking Type"
 msgstr ""
 
-#: config_translations.py:352
+#: config_translations.py:363
 msgid "Select the type of setpoint tracking"
 msgstr ""
 
-#: config_translations.py:354 mycodo_flask/forms/forms_settings.py:102
+#: config_translations.py:365 mycodo_flask/forms/forms_settings.py:104
 msgid "Voltage"
 msgstr "Tension"
 
-#: config_translations.py:355
+#: config_translations.py:366
 msgid "The input voltage to the sensor"
 msgstr "La tension d'entrée au capteur"
 
-#: config_translations.py:357 mycodo_flask/forms/forms_conditional.py:40
+#: config_translations.py:368 mycodo_flask/forms/forms_conditional.py:40
 #: mycodo_flask/forms/forms_math.py:47 mycodo_flask/forms/forms_trigger.py:60
 msgid "Start Offset (seconds)"
 msgstr "Commencer le décalage (secondes)"
 
-#: config_translations.py:358
+#: config_translations.py:369
 #: mycodo_flask/templates/pages/data_options/math.html:68
 #: mycodo_flask/templates/pages/function_options/conditional.html:77
 msgid "The duration (seconds) to wait before the first operation"
 msgstr "La durée (secondes) à attendre avant la première opération"
 
-#: config_translations.py:361
+#: config_translations.py:372
 msgid "Edge detection: low to high (rising), high to low (falling), or both"
 msgstr ""
 "Détection des bords: faible à élevé (en hausse), élevé à faible (en "
 "baisse) ou les deux"
 
-#: config_translations.py:363 mycodo_flask/forms/forms_input.py:146
+#: config_translations.py:374 mycodo_flask/forms/forms_input.py:146
 msgid "Bounce Time (ms)"
 msgstr "Temps de rebond (ms)"
 
-#: config_translations.py:364
+#: config_translations.py:375
 msgid "The amount of time (miliseconds) to bounce the input signal"
 msgstr ""
 "La quantité de temps (millisecondes) pour faire rebondir le signal "
 "d'entrée"
 
-#: config_translations.py:366 mycodo_flask/forms/forms_input.py:148
+#: config_translations.py:377 mycodo_flask/forms/forms_input.py:148
 msgid "Reset Period"
 msgstr "Période de réinitialisation"
 
-#: config_translations.py:367
+#: config_translations.py:378
 msgid ""
 "Wait a period of time (seconds) after the first edge detection to begin "
 "detecting again"
@@ -1560,51 +1581,43 @@ msgstr ""
 "Attendez une période de temps (secondes) après la détection du premier "
 "bord pour recommencer à détecter"
 
-#: config_translations.py:369
+#: config_translations.py:380
 msgid "RTD Probe Type"
 msgstr "Type de sonde RTD"
 
-#: config_translations.py:370
+#: config_translations.py:381
 msgid "The type of thermocouple connected"
 msgstr "Le type de thermocouple connecté"
 
-#: config_translations.py:372
+#: config_translations.py:383
 msgid "Times Check"
 msgstr "Vérification des temps"
 
-#: config_translations.py:373
+#: config_translations.py:384
 msgid "Number of times to check"
 msgstr "Nombre de fois à vérifier"
 
-#: config_translations.py:375
-msgid "On State"
-msgstr ""
-
-#: config_translations.py:376
-msgid "What state triggers the output to turn on? High or Low?"
-msgstr "Quel état déclenche l'activation de la sortie? Haut ou bas?"
-
-#: config_translations.py:378
+#: config_translations.py:386
 msgid "Trigger at Startup"
 msgstr "Déclencheur au démarrage"
 
-#: config_translations.py:379
+#: config_translations.py:387
 msgid "Whether or not to trigger Functions when Mycodo starts"
 msgstr "Activer ou non les fonctions au démarrage de Mycodo"
 
-#: config_translations.py:381
+#: config_translations.py:389
 msgid "UART Device"
 msgstr "Dispositif UART"
 
-#: config_translations.py:382
+#: config_translations.py:390
 msgid "The UART device location (e.g. /dev/ttyUSB1)"
 msgstr "L'emplacement du périphérique UART (par exemple / dev / ttyUSB1)"
 
-#: config_translations.py:384
+#: config_translations.py:392
 msgid "Weighting"
 msgstr "Pondération"
 
-#: config_translations.py:385
+#: config_translations.py:393
 msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
@@ -1667,7 +1680,7 @@ msgstr "Plage de mesure"
 msgid "Set the measuring range of the sensor"
 msgstr "Définir la plage de mesure du capteur"
 
-#: inputs/mqtt_paho.py:44 mycodo_flask/forms/forms_settings.py:318
+#: inputs/mqtt_paho.py:44 mycodo_flask/forms/forms_settings.py:320
 msgid "Hostname"
 msgstr "Nom d'hôte"
 
@@ -1921,35 +1934,35 @@ msgstr "Déconnecté avec succès"
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "Une température valide est requise:%(temp)s n'est pas valide."
 
-#: mycodo_flask/routes_general.py:985
-msgid "System rebooting in 10 seconds"
-msgstr "Système de redémarrage en 10 secondes"
-
-#: mycodo_flask/routes_general.py:987
-msgid "System shutting down in 10 seconds"
-msgstr "Système d'arrêt en 10 secondes"
-
-#: mycodo_flask/routes_general.py:989
+#: mycodo_flask/routes_general.py:991 mycodo_flask/routes_general.py:1005
 msgid "Command to restart the daemon sent"
 msgstr "Commande pour redémarrer le démon envoyé"
 
-#: mycodo_flask/routes_general.py:991
+#: mycodo_flask/routes_general.py:994 mycodo_flask/routes_general.py:1007
 msgid "Command to reload the frontend sent"
 msgstr "Commande pour recharger le frontend envoyé"
 
-#: mycodo_flask/routes_page.py:219
+#: mycodo_flask/routes_general.py:1001
+msgid "System rebooting in 10 seconds"
+msgstr "Système de redémarrage en 10 secondes"
+
+#: mycodo_flask/routes_general.py:1003
+msgid "System shutting down in 10 seconds"
+msgstr "Système d'arrêt en 10 secondes"
+
+#: mycodo_flask/routes_page.py:220
 msgid "Cannot start time-lapse if stream is active."
 msgstr "Impossible de démarrer time-lapse si le flux est actif."
 
-#: mycodo_flask/routes_page.py:249
+#: mycodo_flask/routes_page.py:250
 msgid "Cannot start stream if time-lapse is active."
 msgstr "Impossible de démarrer le flux si time-lapse est actif."
 
 #: mycodo_flask/forms/forms_authentication.py:36
 #: mycodo_flask/forms/forms_authentication.py:37
-#: mycodo_flask/forms/forms_settings.py:254
-#: mycodo_flask/forms/forms_settings.py:286
-#: mycodo_flask/forms/forms_settings.py:287
+#: mycodo_flask/forms/forms_settings.py:256
+#: mycodo_flask/forms/forms_settings.py:288
+#: mycodo_flask/forms/forms_settings.py:289
 msgid "Repeat Password"
 msgstr "Répéter le mot de passe"
 
@@ -2229,136 +2242,132 @@ msgstr "Tester toutes les actions"
 msgid "GPIO Pin (BCM)"
 msgstr "Broche GPIO (BCM)"
 
-#: mycodo_flask/forms/forms_dashboard.py:35
-msgid "Refresh (seconds)"
-msgstr "Actualiser (secondes)"
+#: mycodo_flask/forms/forms_dashboard.py:44
+msgid "Enable Drag Handle"
+msgstr ""
 
-#: mycodo_flask/forms/forms_dashboard.py:38
-msgid "Number of seconds to wait between acquiring any new measurements."
-msgstr "Nombre de secondes à attendre entre l'acquisition de nouvelles mesures."
-
-#: mycodo_flask/forms/forms_dashboard.py:43
-msgid "Visible Elements"
-msgstr "Éléments visibles"
-
-#: mycodo_flask/forms/forms_dashboard.py:53
+#: mycodo_flask/forms/forms_dashboard.py:61
 msgid "Maths"
 msgstr "Mathématiques"
 
-#: mycodo_flask/forms/forms_dashboard.py:54
+#: mycodo_flask/forms/forms_dashboard.py:62
 msgid "Note Tags"
 msgstr "Étiquettes de note"
 
-#: mycodo_flask/forms/forms_dashboard.py:55
+#: mycodo_flask/forms/forms_dashboard.py:63
 msgid "PIDs"
 msgstr "PID"
 
-#: mycodo_flask/forms/forms_dashboard.py:56
+#: mycodo_flask/forms/forms_dashboard.py:64
 msgid "Outputs"
 msgstr "Les sorties"
 
-#: mycodo_flask/forms/forms_dashboard.py:57 mycodo_flask/forms/forms_math.py:49
+#: mycodo_flask/forms/forms_dashboard.py:65 mycodo_flask/forms/forms_math.py:49
 #: mycodo_flask/templates/layout-settings.html:35
 msgid "Inputs"
 msgstr "Contributions"
 
-#: mycodo_flask/forms/forms_dashboard.py:59
+#: mycodo_flask/forms/forms_dashboard.py:67
 msgid "X-Axis (minutes)"
 msgstr "Axe X (minutes)"
 
-#: mycodo_flask/forms/forms_dashboard.py:62
+#: mycodo_flask/forms/forms_dashboard.py:70
 msgid "Number of minutes to display of past measurements."
 msgstr "Nombre de minutes pour afficher les mesures passées."
 
-#: mycodo_flask/forms/forms_dashboard.py:67
+#: mycodo_flask/forms/forms_dashboard.py:75
+msgid "Enable Header Buttons"
+msgstr ""
+
+#: mycodo_flask/forms/forms_dashboard.py:76
 msgid "Enable Auto Refresh"
 msgstr "Activer le rafraîchissement automatique"
 
-#: mycodo_flask/forms/forms_dashboard.py:68
+#: mycodo_flask/forms/forms_dashboard.py:77
 msgid "Enable X-Axis Reset"
 msgstr "Activer la réinitialisation de l'axe X"
 
-#: mycodo_flask/forms/forms_dashboard.py:69
+#: mycodo_flask/forms/forms_dashboard.py:78
 msgid "Enable Title"
 msgstr "Activer le titre"
 
-#: mycodo_flask/forms/forms_dashboard.py:70
+#: mycodo_flask/forms/forms_dashboard.py:79
 msgid "Enable Navbar"
 msgstr "Activer la barre de navigation"
 
-#: mycodo_flask/forms/forms_dashboard.py:71
+#: mycodo_flask/forms/forms_dashboard.py:80
 msgid "Enable Export"
 msgstr "Activer l'exportation"
 
-#: mycodo_flask/forms/forms_dashboard.py:72
+#: mycodo_flask/forms/forms_dashboard.py:81
 msgid "Enable Range Selector"
 msgstr "Activer le sélecteur de plage"
 
-#: mycodo_flask/forms/forms_dashboard.py:73
+#: mycodo_flask/forms/forms_dashboard.py:82
 msgid "Enable Graph Shift"
 msgstr "Activer le décalage graphique"
 
-#: mycodo_flask/forms/forms_dashboard.py:74
+#: mycodo_flask/forms/forms_dashboard.py:83
 msgid "Enable Manual Y-Axis Min/Max"
 msgstr "Activer le min / max de l'axe Y manuel"
 
-#: mycodo_flask/forms/forms_dashboard.py:75
+#: mycodo_flask/forms/forms_dashboard.py:84
 msgid "Enable Y-Axis Align Ticks"
 msgstr "Activer les repères d'alignement de l'axe Y"
 
-#: mycodo_flask/forms/forms_dashboard.py:76
+#: mycodo_flask/forms/forms_dashboard.py:85
 msgid "Enable Y-Axis Start On Tick"
 msgstr "Activer le démarrage de l'axe Y sur Tick"
 
-#: mycodo_flask/forms/forms_dashboard.py:77
+#: mycodo_flask/forms/forms_dashboard.py:86
 msgid "Enable Y-Axis End On Tick"
 msgstr "Activer la fin de l'axe Y sur Tick"
 
-#: mycodo_flask/forms/forms_dashboard.py:78
+#: mycodo_flask/forms/forms_dashboard.py:87
 msgid "Enable Custom Colors"
 msgstr "Activer les couleurs personnalisées"
 
-#: mycodo_flask/forms/forms_dashboard.py:83
+#: mycodo_flask/forms/forms_dashboard.py:92
 msgid "Gauge Type"
 msgstr "Type de jauge"
 
-#: mycodo_flask/forms/forms_dashboard.py:85
+#: mycodo_flask/forms/forms_dashboard.py:94
 msgid "Angular Gauge"
 msgstr "Jauge angulaire"
 
-#: mycodo_flask/forms/forms_dashboard.py:86
+#: mycodo_flask/forms/forms_dashboard.py:95
 msgid "Solid Gauge"
 msgstr "Jauge solide"
 
-#: mycodo_flask/forms/forms_dashboard.py:92
+#: mycodo_flask/forms/forms_dashboard.py:101
 msgid "Gauge Min"
 msgstr "Jauge Min"
 
-#: mycodo_flask/forms/forms_dashboard.py:95
+#: mycodo_flask/forms/forms_dashboard.py:104
 msgid "Gauge Max"
 msgstr "Jauge max"
 
-#: mycodo_flask/forms/forms_dashboard.py:100
+#: mycodo_flask/forms/forms_dashboard.py:109
 msgid "Show Timestamp"
 msgstr "Afficher l'horodatage"
 
-#: mycodo_flask/forms/forms_dashboard.py:109
-#: mycodo_flask/forms/forms_dashboard.py:123
-#: mycodo_flask/forms/forms_dashboard.py:139
-#: mycodo_flask/forms/forms_dashboard.py:156
+#: mycodo_flask/forms/forms_dashboard.py:118
+#: mycodo_flask/forms/forms_dashboard.py:132
+#: mycodo_flask/forms/forms_dashboard.py:148
+#: mycodo_flask/forms/forms_dashboard.py:165
 msgid "Value Font (em)"
 msgstr "Valeur Police (em)"
 
-#: mycodo_flask/forms/forms_dashboard.py:112
-#: mycodo_flask/forms/forms_dashboard.py:126
-#: mycodo_flask/forms/forms_dashboard.py:142
-#: mycodo_flask/forms/forms_dashboard.py:159
+#: mycodo_flask/forms/forms_dashboard.py:121
+#: mycodo_flask/forms/forms_dashboard.py:135
+#: mycodo_flask/forms/forms_dashboard.py:151
+#: mycodo_flask/forms/forms_dashboard.py:168
 msgid "Timestamp Font (em)"
 msgstr "Horodatage Police (em)"
 
-#: mycodo_flask/forms/forms_dashboard.py:129
-#: mycodo_flask/forms/forms_dashboard.py:145
-#: mycodo_flask/forms/forms_dashboard.py:165 mycodo_flask/forms/forms_lcd.py:90
+#: mycodo_flask/forms/forms_dashboard.py:138
+#: mycodo_flask/forms/forms_dashboard.py:154
+#: mycodo_flask/forms/forms_dashboard.py:174 mycodo_flask/forms/forms_lcd.py:90
 #: mycodo_flask/forms/forms_lcd.py:105 mycodo_flask/forms/forms_lcd.py:120
 #: mycodo_flask/forms/forms_lcd.py:135 mycodo_flask/forms/forms_lcd.py:150
 #: mycodo_flask/forms/forms_lcd.py:165 mycodo_flask/forms/forms_lcd.py:180
@@ -2366,19 +2375,19 @@ msgstr "Horodatage Police (em)"
 msgid "Decimal Places"
 msgstr "Décimales"
 
-#: mycodo_flask/forms/forms_dashboard.py:147
+#: mycodo_flask/forms/forms_dashboard.py:156
 msgid "Feature Output Controls"
 msgstr "Contrôles de sortie de fonctionnalité"
 
-#: mycodo_flask/forms/forms_dashboard.py:167
+#: mycodo_flask/forms/forms_dashboard.py:176
 msgid "Show PID Information"
 msgstr "Afficher les informations PID"
 
-#: mycodo_flask/forms/forms_dashboard.py:168
+#: mycodo_flask/forms/forms_dashboard.py:177
 msgid "Show Set Setpoint"
 msgstr "Afficher le point de consigne"
 
-#: mycodo_flask/forms/forms_dashboard.py:173
+#: mycodo_flask/forms/forms_dashboard.py:182
 msgid "Image Display Type"
 msgstr "Type d'affichage d'image"
 
@@ -2576,8 +2585,8 @@ msgid "Relay State"
 msgstr "État du relais"
 
 #: mycodo_flask/forms/forms_method.py:98 mycodo_flask/forms/forms_output.py:99
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:112
-#: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:68
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:114
+#: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:70
 #: mycodo_flask/templates/pages/method-build.html:294
 #: mycodo_flask/templates/pages/output.html:258
 #: mycodo_flask/templates/pages/output.html:294
@@ -2956,303 +2965,307 @@ msgid "Hide Form Tooltips"
 msgstr "Masquer les info-bulles du formulaire"
 
 #: mycodo_flask/forms/forms_settings.py:100
+msgid "Grid Cell Height (px)"
+msgstr ""
+
+#: mycodo_flask/forms/forms_settings.py:102
 msgid "Max Amps"
 msgstr "Max Amps"
 
-#: mycodo_flask/forms/forms_settings.py:104
+#: mycodo_flask/forms/forms_settings.py:106
 msgid "Cost per kWh"
 msgstr "Coût par kWh"
 
-#: mycodo_flask/forms/forms_settings.py:105
+#: mycodo_flask/forms/forms_settings.py:107
 msgid "Currency Unit"
 msgstr "Unité monétaire"
 
-#: mycodo_flask/forms/forms_settings.py:106
+#: mycodo_flask/forms/forms_settings.py:108
 msgid "Day of Month"
 msgstr "Jour du mois"
 
-#: mycodo_flask/forms/forms_settings.py:107
+#: mycodo_flask/forms/forms_settings.py:109
 msgid "Generate Usage/Cost Report"
 msgstr "Générer un rapport d'utilisation / coût"
 
-#: mycodo_flask/forms/forms_settings.py:108
+#: mycodo_flask/forms/forms_settings.py:110
 msgid "Time Span to Generate"
 msgstr "Temps nécessaire pour générer"
 
-#: mycodo_flask/forms/forms_settings.py:110
+#: mycodo_flask/forms/forms_settings.py:112
 msgid "Day of Week/Month to Generate"
 msgstr "Jour de la semaine / mois à générer"
 
-#: mycodo_flask/forms/forms_settings.py:112
+#: mycodo_flask/forms/forms_settings.py:114
 msgid "Hour of Day to Generate"
 msgstr "Heure du jour pour générer"
 
-#: mycodo_flask/forms/forms_settings.py:116
-#: mycodo_flask/templates/settings/general.html:218
+#: mycodo_flask/forms/forms_settings.py:118
+#: mycodo_flask/templates/settings/general.html:229
 msgid "Hour Options: 0-23"
 msgstr "Options de l'heure: 0-23"
 
-#: mycodo_flask/forms/forms_settings.py:120
+#: mycodo_flask/forms/forms_settings.py:122
 msgid "Opt-out of statistics"
 msgstr "Désactivation des statistiques"
 
-#: mycodo_flask/forms/forms_settings.py:121
+#: mycodo_flask/forms/forms_settings.py:123
 msgid "Check for Updates"
 msgstr "Vérifier les mises à jour"
 
-#: mycodo_flask/forms/forms_settings.py:122
+#: mycodo_flask/forms/forms_settings.py:124
 msgid "Internet Test IP Address"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:124
+#: mycodo_flask/forms/forms_settings.py:126
 msgid "Internet Test Port"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:126
+#: mycodo_flask/forms/forms_settings.py:128
 msgid "Internet Test Timeout"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:136
+#: mycodo_flask/forms/forms_settings.py:138
 #: mycodo_flask/templates/settings/controller.html:13
 msgid "Import Controller Module"
 msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:150
+#: mycodo_flask/forms/forms_settings.py:152
 #: mycodo_flask/templates/settings/input.html:13
 msgid "Import Input Module"
 msgstr "Module d'entrée d'importation"
 
-#: mycodo_flask/forms/forms_settings.py:163
-#: mycodo_flask/forms/forms_settings.py:170
+#: mycodo_flask/forms/forms_settings.py:165
+#: mycodo_flask/forms/forms_settings.py:172
 msgid "Measurement Name"
 msgstr "Nom de la mesure"
 
-#: mycodo_flask/forms/forms_settings.py:164
-#: mycodo_flask/forms/forms_settings.py:171
+#: mycodo_flask/forms/forms_settings.py:166
+#: mycodo_flask/forms/forms_settings.py:173
 msgid "Measurement Units"
 msgstr "Unités de mesure"
 
-#: mycodo_flask/forms/forms_settings.py:165
+#: mycodo_flask/forms/forms_settings.py:167
 #: mycodo_flask/templates/settings/measurement.html:13
 msgid "Add Measurement"
 msgstr "Ajouter une mesure"
 
-#: mycodo_flask/forms/forms_settings.py:178
-#: mycodo_flask/forms/forms_settings.py:186
+#: mycodo_flask/forms/forms_settings.py:180
+#: mycodo_flask/forms/forms_settings.py:188
 msgid "Unit Name"
 msgstr "Nom de l'unité"
 
-#: mycodo_flask/forms/forms_settings.py:180
-#: mycodo_flask/forms/forms_settings.py:187
+#: mycodo_flask/forms/forms_settings.py:182
+#: mycodo_flask/forms/forms_settings.py:189
 msgid "Unit Abbreviation"
 msgstr "Unité Abréviation"
 
-#: mycodo_flask/forms/forms_settings.py:181
+#: mycodo_flask/forms/forms_settings.py:183
 #: mycodo_flask/templates/settings/measurement.html:44
 msgid "Add Unit"
 msgstr "Ajouter une unité"
 
-#: mycodo_flask/forms/forms_settings.py:194
-#: mycodo_flask/forms/forms_settings.py:204
+#: mycodo_flask/forms/forms_settings.py:196
+#: mycodo_flask/forms/forms_settings.py:206
 msgid "Convert From Unit"
 msgstr "Convertir de l'unité"
 
-#: mycodo_flask/forms/forms_settings.py:196
+#: mycodo_flask/forms/forms_settings.py:198
 msgid "Convert To Measurement"
 msgstr "Convertir en mesure"
 
-#: mycodo_flask/forms/forms_settings.py:199
+#: mycodo_flask/forms/forms_settings.py:201
 #: mycodo_flask/templates/settings/measurement.html:71
 msgid "Add Conversion"
 msgstr "Ajouter une conversion"
 
-#: mycodo_flask/forms/forms_settings.py:205
+#: mycodo_flask/forms/forms_settings.py:207
 msgid "Convert To Unit"
 msgstr "Convertir en unité"
 
-#: mycodo_flask/forms/forms_settings.py:217
+#: mycodo_flask/forms/forms_settings.py:219
 msgid "Role Name"
 msgstr "Nom de rôle"
 
-#: mycodo_flask/forms/forms_settings.py:218
+#: mycodo_flask/forms/forms_settings.py:220
 #: mycodo_flask/templates/tools/logview.html:3
 msgid "View Logs"
 msgstr "Regardes les connexions"
 
-#: mycodo_flask/forms/forms_settings.py:219
+#: mycodo_flask/forms/forms_settings.py:221
 msgid "View Stats"
 msgstr "Afficher les statistiques"
 
-#: mycodo_flask/forms/forms_settings.py:220
+#: mycodo_flask/forms/forms_settings.py:222
 msgid "View Camera"
 msgstr "Voir la caméra"
 
-#: mycodo_flask/forms/forms_settings.py:221
+#: mycodo_flask/forms/forms_settings.py:223
 msgid "View Settings"
 msgstr "Paramètres d'affichage"
 
-#: mycodo_flask/forms/forms_settings.py:222
+#: mycodo_flask/forms/forms_settings.py:224
 msgid "Edit Users"
 msgstr "Modifier les utilisateurs"
 
-#: mycodo_flask/forms/forms_settings.py:223
+#: mycodo_flask/forms/forms_settings.py:225
 msgid "Edit Controllers"
 msgstr "Modifier les contrôleurs"
 
-#: mycodo_flask/forms/forms_settings.py:224
+#: mycodo_flask/forms/forms_settings.py:226
 msgid "Edit Settings"
 msgstr "Modifier les paramètres"
 
-#: mycodo_flask/forms/forms_settings.py:226
+#: mycodo_flask/forms/forms_settings.py:228
 msgid "Add Role"
 msgstr "Ajouter un rôle"
 
-#: mycodo_flask/forms/forms_settings.py:246
-#: mycodo_flask/forms/forms_settings.py:277
+#: mycodo_flask/forms/forms_settings.py:248
+#: mycodo_flask/forms/forms_settings.py:279
 msgid "Passwords must match"
 msgstr "les mots de passe doivent correspondre"
 
-#: mycodo_flask/forms/forms_settings.py:249
-#: mycodo_flask/forms/forms_settings.py:281
+#: mycodo_flask/forms/forms_settings.py:251
+#: mycodo_flask/forms/forms_settings.py:283
 msgid "Password must be 6 or more characters"
 msgstr "Le mot de passe doit comporter 6 caractères ou plus"
 
-#: mycodo_flask/forms/forms_settings.py:256
+#: mycodo_flask/forms/forms_settings.py:258
 msgid "Role"
 msgstr "Rôle"
 
-#: mycodo_flask/forms/forms_settings.py:258
-#: mycodo_flask/forms/forms_settings.py:294
+#: mycodo_flask/forms/forms_settings.py:260
+#: mycodo_flask/forms/forms_settings.py:296
 msgid "Theme"
 msgstr "Thème"
 
-#: mycodo_flask/forms/forms_settings.py:259
+#: mycodo_flask/forms/forms_settings.py:261
 #: mycodo_flask/templates/settings/users.html:13
 msgid "Add User"
 msgstr "Ajouter un utilisateur"
 
-#: mycodo_flask/forms/forms_settings.py:272
+#: mycodo_flask/forms/forms_settings.py:274
 msgid "New Password"
 msgstr "nouveau mot de passe"
 
-#: mycodo_flask/forms/forms_settings.py:290
+#: mycodo_flask/forms/forms_settings.py:292
 msgid "Role ID"
 msgstr "ID de rôle"
 
-#: mycodo_flask/forms/forms_settings.py:306
+#: mycodo_flask/forms/forms_settings.py:308
 msgid "Enable I2C"
 msgstr "Activer I2C"
 
-#: mycodo_flask/forms/forms_settings.py:307
+#: mycodo_flask/forms/forms_settings.py:309
 msgid "Disable I2C"
 msgstr "Désactiver I2C"
 
-#: mycodo_flask/forms/forms_settings.py:308
+#: mycodo_flask/forms/forms_settings.py:310
 msgid "Enable 1-Wire"
 msgstr "Activer 1-Wire"
 
-#: mycodo_flask/forms/forms_settings.py:309
+#: mycodo_flask/forms/forms_settings.py:311
 msgid "Disable 1-Wire"
 msgstr "Désactiver 1-Wire"
 
-#: mycodo_flask/forms/forms_settings.py:310
+#: mycodo_flask/forms/forms_settings.py:312
 msgid "Enable Serial"
 msgstr "Activer série"
 
-#: mycodo_flask/forms/forms_settings.py:311
+#: mycodo_flask/forms/forms_settings.py:313
 msgid "Disable Serial"
 msgstr "Désactiver série"
 
-#: mycodo_flask/forms/forms_settings.py:312
+#: mycodo_flask/forms/forms_settings.py:314
 msgid "Enable SPI"
 msgstr "Activer SPI"
 
-#: mycodo_flask/forms/forms_settings.py:313
+#: mycodo_flask/forms/forms_settings.py:315
 msgid "Disable SPI"
 msgstr "Désactiver SPI"
 
-#: mycodo_flask/forms/forms_settings.py:314
+#: mycodo_flask/forms/forms_settings.py:316
 msgid "Enable SSH"
 msgstr "Activer SSH"
 
-#: mycodo_flask/forms/forms_settings.py:315
+#: mycodo_flask/forms/forms_settings.py:317
 msgid "Disable SSH"
 msgstr "Désactiver SSH"
 
-#: mycodo_flask/forms/forms_settings.py:316
+#: mycodo_flask/forms/forms_settings.py:318
 msgid "Enable Pi Camera"
 msgstr "Activer la caméra Pi"
 
-#: mycodo_flask/forms/forms_settings.py:317
+#: mycodo_flask/forms/forms_settings.py:319
 msgid "Disable Pi Camera"
 msgstr "Désactiver la caméra Pi"
 
-#: mycodo_flask/forms/forms_settings.py:319
+#: mycodo_flask/forms/forms_settings.py:321
 msgid "Change Hostname"
 msgstr "Changer le nom de l'hôte"
 
-#: mycodo_flask/forms/forms_settings.py:320
+#: mycodo_flask/forms/forms_settings.py:322
 msgid "Configure pigpiod"
 msgstr "Configurez pigpiod"
 
-#: mycodo_flask/forms/forms_settings.py:321
+#: mycodo_flask/forms/forms_settings.py:323
 msgid "Reconfigure"
 msgstr "Reconfigurer"
 
-#: mycodo_flask/forms/forms_settings.py:324
+#: mycodo_flask/forms/forms_settings.py:326
 msgid "Conditional Sample Rate (seconds)"
 msgstr "Taux d'échantillonnage conditionnel (secondes)"
 
-#: mycodo_flask/forms/forms_settings.py:327
+#: mycodo_flask/forms/forms_settings.py:329
 msgid "Input Sample Rate (seconds)"
 msgstr "Taux d'échantillonnage d'entrée (secondes)"
 
-#: mycodo_flask/forms/forms_settings.py:330
+#: mycodo_flask/forms/forms_settings.py:332
 msgid "Math Sample Rate (seconds)"
 msgstr "Taux d'échantillonnage mathématique (secondes)"
 
-#: mycodo_flask/forms/forms_settings.py:333
+#: mycodo_flask/forms/forms_settings.py:335
 msgid "Output Sample Rate (seconds)"
 msgstr "Taux d'échantillonnage de sortie (secondes)"
 
-#: mycodo_flask/forms/forms_settings.py:336
+#: mycodo_flask/forms/forms_settings.py:338
 msgid "PID Sample Rate (seconds)"
 msgstr "Taux d'échantillonnage PID (secondes)"
 
-#: mycodo_flask/forms/forms_settings.py:338
+#: mycodo_flask/forms/forms_settings.py:340
 msgid "Save Sample Rates"
 msgstr "Enregistrer les taux d'échantillonnage"
 
-#: mycodo_flask/forms/forms_settings.py:346
+#: mycodo_flask/forms/forms_settings.py:348
 msgid "Delete All Dashboard Elements"
 msgstr "Supprimer tous les éléments du tableau de bord"
 
-#: mycodo_flask/forms/forms_settings.py:347
+#: mycodo_flask/forms/forms_settings.py:349
 msgid "Delete All Inputs"
 msgstr "Supprimer toutes les entrées"
 
-#: mycodo_flask/forms/forms_settings.py:348
+#: mycodo_flask/forms/forms_settings.py:350
 msgid "Delete All Maths"
 msgstr "Supprimer toutes les maths"
 
-#: mycodo_flask/forms/forms_settings.py:349
+#: mycodo_flask/forms/forms_settings.py:351
 msgid "Delete All Notes and Note Tags"
 msgstr "Supprimer toutes les notes et balises de note"
 
-#: mycodo_flask/forms/forms_settings.py:350
+#: mycodo_flask/forms/forms_settings.py:352
 msgid "Delete All Outputs"
 msgstr "Supprimer toutes les sorties"
 
-#: mycodo_flask/forms/forms_settings.py:351
+#: mycodo_flask/forms/forms_settings.py:353
 msgid "Delete Settings Database"
 msgstr "Supprimer la base de données de paramètres"
 
-#: mycodo_flask/forms/forms_settings.py:352
-#: mycodo_flask/forms/forms_settings.py:353
+#: mycodo_flask/forms/forms_settings.py:354
+#: mycodo_flask/forms/forms_settings.py:355
 msgid "Delete File"
 msgstr "Supprimer le fichier"
 
-#: mycodo_flask/forms/forms_settings.py:354
+#: mycodo_flask/forms/forms_settings.py:356
 msgid "Reset Email Counter"
 msgstr ""
 
@@ -3359,7 +3372,7 @@ msgid "Info"
 msgstr "Info"
 
 #: mycodo_flask/templates/layout-remote.html:47
-#: mycodo_flask/templates/layout.html:196
+#: mycodo_flask/templates/layout.html:205
 msgid "Setup"
 msgstr "Installer"
 
@@ -3413,23 +3426,32 @@ msgid "Cannot Check Daemon Status"
 msgstr "Impossible de vérifier l'état du démon"
 
 #: mycodo_flask/templates/layout.html:124
-#: mycodo_flask/templates/pages/dashboard.html:368
+#: mycodo_flask/templates/pages/dashboard.html:404
 #: mycodo_flask/templates/pages/output.html:127
 msgid "No Connection"
 msgstr "Pas de connection"
 
-#: mycodo_flask/templates/layout.html:190
+#: mycodo_flask/templates/layout.html:189
 #: mycodo_flask/templates/pages/live.html:5
+#: mycodo_flask/templates/settings/general.html:32
 msgid "Live"
 msgstr "Vivant"
 
-#: mycodo_flask/templates/layout.html:191
+#: mycodo_flask/templates/layout.html:190
 #: mycodo_flask/templates/pages/graph-async.html:3
 #: mycodo_flask/templates/pages/graph-async.html:30
 msgid "Asynchronous Graphs"
 msgstr "Asynchronous Graphs"
 
-#: mycodo_flask/templates/layout.html:203
+#: mycodo_flask/templates/layout.html:192
+msgid "Dashboards"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:193
+msgid "Add Dashboard"
+msgstr ""
+
+#: mycodo_flask/templates/layout.html:212
 #: mycodo_flask/templates/tools/calibration.html:3
 #: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:3
 #: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:3
@@ -3438,57 +3460,57 @@ msgstr "Asynchronous Graphs"
 msgid "Calibration & Setup"
 msgstr "Etalonnage et configuration"
 
-#: mycodo_flask/templates/layout.html:208
+#: mycodo_flask/templates/layout.html:217
 msgid "More"
 msgstr "Plus"
 
-#: mycodo_flask/templates/layout.html:214
+#: mycodo_flask/templates/layout.html:223
 #: mycodo_flask/templates/pages/usage_reports.html:12
 msgid "Energy Usage Reports"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:226
+#: mycodo_flask/templates/layout.html:241
 #: mycodo_flask/templates/pages/function_options/conditional.html:57
 msgid "Help"
 msgstr "Aidez-moi"
 
-#: mycodo_flask/templates/layout.html:228
+#: mycodo_flask/templates/layout.html:243
 msgid "Mycodo Manual"
 msgstr "Mycodo Manual"
 
-#: mycodo_flask/templates/layout.html:229
+#: mycodo_flask/templates/layout.html:244
 msgid "Mycodo API Info"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:230
+#: mycodo_flask/templates/layout.html:245
 msgid "Mycodo API Docs"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:232
+#: mycodo_flask/templates/layout.html:247
 msgid "Discussion Forum"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:233
+#: mycodo_flask/templates/layout.html:248
 msgid "Submit an Issue"
 msgstr "Soumettre un problème"
 
-#: mycodo_flask/templates/layout.html:234
+#: mycodo_flask/templates/layout.html:249
 msgid "Mycodo on Github"
 msgstr "Mycodo sur Github"
 
-#: mycodo_flask/templates/layout.html:235
+#: mycodo_flask/templates/layout.html:250
 msgid "Changelog"
 msgstr "Changelog"
 
-#: mycodo_flask/templates/layout.html:242
+#: mycodo_flask/templates/layout.html:257
 msgid "Configure"
 msgstr "Configurer"
 
-#: mycodo_flask/templates/layout.html:243
+#: mycodo_flask/templates/layout.html:258
 msgid "Mycodo Logs"
 msgstr "Mycodo Logs"
 
-#: mycodo_flask/templates/layout.html:244
+#: mycodo_flask/templates/layout.html:259
 #: mycodo_flask/templates/pages/info.html:3
 #: mycodo_flask/templates/pages/info.html:5
 msgid "System Information"
@@ -3497,42 +3519,42 @@ msgstr "Informations système"
 #: mycodo_flask/templates/admin/dependencies.html:3
 #: mycodo_flask/templates/admin/dependencies.html:5
 #: mycodo_flask/templates/admin/dependencies.html:44
-#: mycodo_flask/templates/layout.html:246
+#: mycodo_flask/templates/layout.html:261
 msgid "Dependencies"
 msgstr "Les dépendances"
 
-#: mycodo_flask/templates/layout.html:248
+#: mycodo_flask/templates/layout.html:263
 msgid "Upgrade"
 msgstr "Surclassement"
 
 #: mycodo_flask/templates/admin/backup.html:3
 #: mycodo_flask/templates/admin/backup.html:5
 #: mycodo_flask/templates/admin/backup.html:12
-#: mycodo_flask/templates/layout.html:249
+#: mycodo_flask/templates/layout.html:264
 msgid "Backup Restore"
 msgstr "Restauration de sauvegarde"
 
-#: mycodo_flask/templates/layout.html:251
+#: mycodo_flask/templates/layout.html:266
 msgid "Restart Backend"
 msgstr "Redémarrer le backend"
 
-#: mycodo_flask/templates/layout.html:252
+#: mycodo_flask/templates/layout.html:267
 msgid "Restart Frontend"
 msgstr "Redémarrer le frontend"
 
-#: mycodo_flask/templates/layout.html:254
+#: mycodo_flask/templates/layout.html:269
 msgid "Restart System"
 msgstr "Redémarrer le système"
 
-#: mycodo_flask/templates/layout.html:255
+#: mycodo_flask/templates/layout.html:270
 msgid "Shutdown System"
 msgstr "Système d'arrêt"
 
-#: mycodo_flask/templates/layout.html:257
+#: mycodo_flask/templates/layout.html:272
 msgid "Remote Admin"
 msgstr "Admin à distance"
 
-#: mycodo_flask/templates/layout.html:259
+#: mycodo_flask/templates/layout.html:274
 msgid "Logout"
 msgstr "Se déconnecter"
 
@@ -3769,8 +3791,8 @@ msgstr "Dernier Timelapse"
 msgid "Last Still"
 msgstr "Dernier encore"
 
-#: mycodo_flask/templates/pages/dashboard.html:355
-#: mycodo_flask/templates/pages/dashboard.html:357
+#: mycodo_flask/templates/pages/dashboard.html:391
+#: mycodo_flask/templates/pages/dashboard.html:393
 #: mycodo_flask/templates/pages/function_options/conditional.html:23
 #: mycodo_flask/templates/pages/function_options/custom_controller.html:25
 #: mycodo_flask/templates/pages/function_options/pid.html:26
@@ -3781,7 +3803,7 @@ msgstr "Dernier encore"
 msgid "Active"
 msgstr "actif"
 
-#: mycodo_flask/templates/pages/dashboard.html:362
+#: mycodo_flask/templates/pages/dashboard.html:398
 #: mycodo_flask/templates/pages/function_options/conditional.html:24
 #: mycodo_flask/templates/pages/function_options/custom_controller.html:26
 #: mycodo_flask/templates/pages/function_options/pid.html:29
@@ -3791,7 +3813,7 @@ msgstr "actif"
 msgid "Inactive"
 msgstr "Inactif"
 
-#: mycodo_flask/templates/pages/dashboard.html:498
+#: mycodo_flask/templates/pages/dashboard.html:534
 msgid "Value"
 msgstr "Valeur"
 
@@ -3816,8 +3838,8 @@ msgstr ""
 msgid "Asynchronous Graph"
 msgstr "Graphique asynchrone"
 
-#: mycodo_flask/templates/pages/dashboard_options/add_graph.html:107
-#: mycodo_flask/templates/pages/dashboard_options/mod_graph.html:173
+#: mycodo_flask/templates/pages/dashboard_options/add_graph.html:103
+#: mycodo_flask/templates/pages/dashboard_options/mod_graph.html:179
 #: mycodo_flask/templates/pages/data_options/math_options/form_options/inputs.html:21
 #: mycodo_flask/templates/pages/graph-async.html:93
 #: mycodo_flask/templates/tools/note_edit.html:18
@@ -4064,51 +4086,51 @@ msgid ""
 " a report to be generated."
 msgstr ""
 
-#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:46
-#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:55
+#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:42
+#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:53
 msgid "Acquire Image (and save new file)"
 msgstr "Acquérir une image (et enregistrer un nouveau fichier)"
 
-#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:47
-#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:56
+#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:43
+#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:54
 msgid "Acquire Image (and erase last file)"
 msgstr "Acquérir une image (et effacer le dernier fichier)"
 
-#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:48
-#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:57
+#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:44
+#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:55
 msgid "Display Live Video Stream"
 msgstr "Afficher le flux vidéo en direct"
 
-#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:49
-#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:58
+#: mycodo_flask/templates/pages/dashboard_options/add_camera.html:45
+#: mycodo_flask/templates/pages/dashboard_options/mod_camera.html:56
 msgid "Display Latest Timelapse Image"
 msgstr "Afficher la dernière image Timelapse"
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_graph.html:178
+#: mycodo_flask/templates/pages/dashboard_options/mod_graph.html:184
 msgid "Series Options"
 msgstr ""
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_graph.html:225
+#: mycodo_flask/templates/pages/dashboard_options/mod_graph.html:231
 msgid "Y-Axis Options"
 msgstr ""
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:55
-#: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:41
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:57
+#: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:43
 msgid "PWM On"
 msgstr "PWM On"
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:67
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:126
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:69
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:128
 msgid "Out"
 msgstr ""
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:70
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:129
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:72
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:131
 msgid "Sec On"
 msgstr "Sec on"
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:62
-#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:97
+#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:64
+#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:100
 msgid "A numerical value to set the PID setpoint"
 msgstr "Une valeur numérique pour définir le point de consigne PID"
 
@@ -5144,48 +5166,52 @@ msgid "View collected statistics"
 msgstr "Voir les statistiques collectées"
 
 #: mycodo_flask/templates/settings/general.html:127
+msgid "The heigth of the grid cell, in pixels."
+msgstr ""
+
+#: mycodo_flask/templates/settings/general.html:138
 msgid ""
 "The IP address to test if there is an active internet connection required"
 " to allow upgrading."
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:133
+#: mycodo_flask/templates/settings/general.html:144
 msgid "The port of the internet test IP address."
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:139
+#: mycodo_flask/templates/settings/general.html:150
 msgid "The timeout period (seconds) for testing the internet connection."
 msgstr ""
 
-#: mycodo_flask/templates/settings/general.html:150
+#: mycodo_flask/templates/settings/general.html:161
 msgid "Check if you would like Mycodo to automatically check for upgrades."
 msgstr ""
 "Vérifiez si vous souhaitez que Mycodo vérifie automatiquement les mises à"
 " niveau."
 
-#: mycodo_flask/templates/settings/general.html:161
+#: mycodo_flask/templates/settings/general.html:172
 msgid "Set the maximum allowed amperage to be switched on at any given time"
 msgstr "Définir l'intensité maximale autorisée à activer à un moment donné"
 
-#: mycodo_flask/templates/settings/general.html:167
+#: mycodo_flask/templates/settings/general.html:178
 msgid "Set the voltage used to power the devices powered by the outputs"
 msgstr ""
 "Définir la tension utilisée pour alimenter les appareils alimentés par "
 "les sorties"
 
-#: mycodo_flask/templates/settings/general.html:173
+#: mycodo_flask/templates/settings/general.html:184
 msgid "Set the cost per kilowatt-hour"
 msgstr "Définir le coût par kilowattheure"
 
-#: mycodo_flask/templates/settings/general.html:179
+#: mycodo_flask/templates/settings/general.html:190
 msgid "Set the unit of currency used to pay for the electricity"
 msgstr "Définir l'unité de devise utilisée pour payer l'électricité"
 
-#: mycodo_flask/templates/settings/general.html:185
+#: mycodo_flask/templates/settings/general.html:196
 msgid "Set a day of the month to calculate monthly power usage"
 msgstr "Définir un jour du mois pour calculer la consommation mensuelle"
 
-#: mycodo_flask/templates/settings/general.html:196
+#: mycodo_flask/templates/settings/general.html:207
 msgid ""
 "Automatically generate output usage reports on a daily/weekly/monthly "
 "schedule"
@@ -5193,11 +5219,11 @@ msgstr ""
 "Générer automatiquement des rapports d'utilisation de sortie sur un "
 "calendrier quotidien / hebdomadaire / mensuel"
 
-#: mycodo_flask/templates/settings/general.html:202
+#: mycodo_flask/templates/settings/general.html:213
 msgid "How often to generate a report"
 msgstr "À quelle fréquence générer un rapport"
 
-#: mycodo_flask/templates/settings/general.html:212
+#: mycodo_flask/templates/settings/general.html:223
 msgid "Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28"
 msgstr "Options du jour: Quotidien: 1-7 (1 = lundi), mensuel: 1-28"
 
@@ -5500,12 +5526,17 @@ msgid "Condition"
 msgstr "État"
 
 #: mycodo_flask/utils/utils_controller.py:39
-#: mycodo_flask/utils/utils_input.py:319 mycodo_flask/utils/utils_input.py:488
+#: mycodo_flask/utils/utils_input.py:323 mycodo_flask/utils/utils_input.py:492
 #: mycodo_flask/utils/utils_math.py:304
 msgid "Deactivate controller before modifying its settings"
 msgstr "Désactiver le contrôleur avant de modifier ses paramètres"
 
-#: mycodo_flask/utils/utils_dashboard.py:211
+#: mycodo_flask/utils/utils_dashboard.py:47
+#, python-format
+msgid "Dashboard with ID %(id)s successfully added"
+msgstr ""
+
+#: mycodo_flask/utils/utils_dashboard.py:320
 #, python-format
 msgid "{dev} with ID %(id)s successfully added"
 msgstr "{dev} avec l'ID %(id)s ajouté avec succès"
@@ -5514,7 +5545,7 @@ msgstr "{dev} avec l'ID %(id)s ajouté avec succès"
 msgid "Execute All"
 msgstr "Exécuter tout"
 
-#: mycodo_flask/utils/utils_general.py:259
+#: mycodo_flask/utils/utils_general.py:261
 #: mycodo_flask/utils/utils_remote_host.py:160
 #: mycodo_flask/utils/utils_remote_host.py:164
 #: mycodo_flask/utils/utils_remote_host.py:168
@@ -5523,47 +5554,47 @@ msgstr "Exécuter tout"
 msgid "Error: %(err)s"
 msgstr "Erreur: %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:819
-#: mycodo_flask/utils/utils_general.py:834
-#: mycodo_flask/utils/utils_general.py:854
-#: mycodo_flask/utils/utils_general.py:859 mycodo_flask/utils/utils_lcd.py:225
-#: mycodo_flask/utils/utils_lcd.py:227
+#: mycodo_flask/utils/utils_general.py:882
+#: mycodo_flask/utils/utils_general.py:897
+#: mycodo_flask/utils/utils_general.py:917
+#: mycodo_flask/utils/utils_general.py:922 mycodo_flask/utils/utils_lcd.py:231
+#: mycodo_flask/utils/utils_lcd.py:233
 #, python-format
 msgid "%(msg)s"
 msgstr "%(msg)s"
 
-#: mycodo_flask/utils/utils_general.py:826
-#: mycodo_flask/utils/utils_output.py:328
-#: mycodo_flask/utils/utils_output.py:335
-#: mycodo_flask/utils/utils_output.py:340
+#: mycodo_flask/utils/utils_general.py:889
+#: mycodo_flask/utils/utils_output.py:327
+#: mycodo_flask/utils/utils_output.py:334
+#: mycodo_flask/utils/utils_output.py:339
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
 
-#: mycodo_flask/utils/utils_general.py:827
+#: mycodo_flask/utils/utils_general.py:890
 #, python-format
 msgid "Entry with ID %(id)s not found"
 msgstr "Entrée avec ID %(id)s introuvable"
 
-#: mycodo_flask/utils/utils_general.py:845
+#: mycodo_flask/utils/utils_general.py:908
 #, python-format
 msgid "Error in the %(field)s field - %(err)s"
 msgstr "Erreur dans le champ %(field)s - %(err)s"
 
-#: mycodo_flask/utils/utils_general.py:893
+#: mycodo_flask/utils/utils_general.py:956
 msgid "Cannot move above the first item in the list"
 msgstr "Ne peut pas bouger au-dessus du premier élément de la liste"
 
-#: mycodo_flask/utils/utils_general.py:897
+#: mycodo_flask/utils/utils_general.py:960
 msgid "Cannot move below the last item in the list"
 msgstr "Ne peut pas bouger sous le dernier article de la liste"
 
-#: mycodo_flask/utils/utils_input.py:287
+#: mycodo_flask/utils/utils_input.py:291
 #, python-format
 msgid "%(type)s Input with ID %(id)s (%(uuid)s) successfully added"
 msgstr "%(type)s Entrée avec l'ID %(id)s (%(uuid)s) ajouté avec succès"
 
-#: mycodo_flask/utils/utils_input.py:324
+#: mycodo_flask/utils/utils_input.py:328
 msgid ""
 "Choose a Read Period equal to or greater than 7. The AM2315 may become "
 "unresponsive if the period is below 7."
@@ -5571,45 +5602,45 @@ msgstr ""
 "Choisissez une période de lecture égale ou supérieure à 7. L'AM2315 peut "
 "ne plus répondre si la période est inférieure à 7."
 
-#: mycodo_flask/utils/utils_input.py:332
+#: mycodo_flask/utils/utils_input.py:336
 msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr "La période de lecture ne peut pas être inférieure à la durée de pré-sortie"
 
-#: mycodo_flask/utils/utils_input.py:338
+#: mycodo_flask/utils/utils_input.py:342
 msgid "Invalid device or improper permissions to read device"
 msgstr ""
 "Périphérique non valide ou autorisations incorrectes pour lire le "
 "périphérique"
 
-#: mycodo_flask/utils/utils_input.py:343
+#: mycodo_flask/utils/utils_input.py:347
 msgid "Pin (GPIO) must be set"
 msgstr ""
 
-#: mycodo_flask/utils/utils_input.py:675
+#: mycodo_flask/utils/utils_input.py:679
 msgid "Force Measurements"
 msgstr "Mesures de force"
 
-#: mycodo_flask/utils/utils_input.py:684
+#: mycodo_flask/utils/utils_input.py:688
 msgid ""
 "Activate controller before attempting to force the acquisition of "
 "measurements"
 msgstr "Activer le contrôleur avant d'essayer de forcer l'acquisition de mesures"
 
-#: mycodo_flask/utils/utils_lcd.py:107 mycodo_flask/utils/utils_lcd.py:139
-#: mycodo_flask/utils/utils_lcd.py:239 mycodo_flask/utils/utils_lcd.py:264
-#: mycodo_flask/utils/utils_lcd.py:272
+#: mycodo_flask/utils/utils_lcd.py:113 mycodo_flask/utils/utils_lcd.py:145
+#: mycodo_flask/utils/utils_lcd.py:245 mycodo_flask/utils/utils_lcd.py:270
+#: mycodo_flask/utils/utils_lcd.py:278
 msgid "Deactivate LCD controller before modifying its settings."
 msgstr "Désactivez le contrôleur LCD avant de modifier ses paramètres."
 
-#: mycodo_flask/utils/utils_lcd.py:207
+#: mycodo_flask/utils/utils_lcd.py:213
 msgid "Cannot activate LCD if there are blank lines"
 msgstr "Impossible d'activer le LCD s'il y a des lignes vides"
 
-#: mycodo_flask/utils/utils_lcd.py:387
+#: mycodo_flask/utils/utils_lcd.py:393
 msgid "Deactivate LCD controller before modifying its settings"
 msgstr "Désactiver le contrôleur LCD avant de modifier ses paramètres"
 
-#: mycodo_flask/utils/utils_lcd.py:390
+#: mycodo_flask/utils/utils_lcd.py:396
 msgid "The last display cannot be deleted"
 msgstr "Le dernier affichage ne peut pas être supprimé"
 
@@ -5753,63 +5784,63 @@ msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
 #: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
-#: mycodo_flask/utils/utils_settings.py:1319
+#: mycodo_flask/utils/utils_settings.py:1320
 msgid "File"
 msgstr "Fichier"
 
-#: mycodo_flask/utils/utils_output.py:55
+#: mycodo_flask/utils/utils_output.py:54
 msgid "Invalid quantity"
 msgstr "Quantité invalide"
 
-#: mycodo_flask/utils/utils_output.py:56
+#: mycodo_flask/utils/utils_output.py:55
 msgid "Acceptable values"
 msgstr "Valeurs acceptables"
 
-#: mycodo_flask/utils/utils_output.py:352
+#: mycodo_flask/utils/utils_output.py:351
 msgid "Actuate"
 msgstr "Agir"
 
-#: mycodo_flask/utils/utils_output.py:360
+#: mycodo_flask/utils/utils_output.py:359
 msgid "Cannot modulate output with a GPIO of 0"
 msgstr "Impossible de moduler la sortie avec un GPIO de 0"
 
-#: mycodo_flask/utils/utils_output.py:366
+#: mycodo_flask/utils/utils_output.py:365
 msgid "Value must be greater than 0"
 msgstr "La valeur doit être supérieure à 0"
 
-#: mycodo_flask/utils/utils_output.py:371
+#: mycodo_flask/utils/utils_output.py:370
 #, python-format
 msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
 msgstr "Sortie activée pour les secondes %(sec)s: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:377
+#: mycodo_flask/utils/utils_output.py:376
 msgid "Invalid pin"
 msgstr "Goupille invalide"
 
-#: mycodo_flask/utils/utils_output.py:379
+#: mycodo_flask/utils/utils_output.py:378
 msgid "PWM Hertz must be a positive value"
 msgstr "PWM Hertz doit être une valeur positive"
 
-#: mycodo_flask/utils/utils_output.py:381
+#: mycodo_flask/utils/utils_output.py:380
 msgid "PWM duty cycle must be a positive value"
 msgstr "Le cycle de service PWM doit être une valeur positive"
 
-#: mycodo_flask/utils/utils_output.py:387
+#: mycodo_flask/utils/utils_output.py:386
 #, python-format
 msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 msgstr "PWM défini sur %(dc)s %% à %(hertz)s Hz: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:394
+#: mycodo_flask/utils/utils_output.py:393
 #, python-format
 msgid "Output turned on: %(rvalue)s"
 msgstr "Sortie activée: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:399
+#: mycodo_flask/utils/utils_output.py:398
 #, python-format
 msgid "Output turned off: %(rvalue)s"
 msgstr "Sortie désactivée: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:403
+#: mycodo_flask/utils/utils_output.py:402
 msgid "Invalid value"
 msgstr "valeur invalide"
 
@@ -5858,42 +5889,42 @@ msgstr "Un autre utilisateur a déjà cette adresse e-mail."
 msgid "Invalid password"
 msgstr "Mot de passe incorrect"
 
-#: mycodo_flask/utils/utils_settings.py:660
+#: mycodo_flask/utils/utils_settings.py:661
 #, python-format
 msgid "Measurement with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Mesure avec ID %(id)s (%(uuid)s) ajouté avec succès"
 
-#: mycodo_flask/utils/utils_settings.py:724
-#: mycodo_flask/utils/utils_settings.py:765
-#: mycodo_flask/utils/utils_settings.py:807
+#: mycodo_flask/utils/utils_settings.py:725
+#: mycodo_flask/utils/utils_settings.py:766
+#: mycodo_flask/utils/utils_settings.py:808
 msgid "Unit"
 msgstr "Unité"
 
-#: mycodo_flask/utils/utils_settings.py:746
+#: mycodo_flask/utils/utils_settings.py:747
 #, python-format
 msgid "Unit with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Unité avec ID %(id)s (%(uuid)s) ajouté avec succès"
 
-#: mycodo_flask/utils/utils_settings.py:836
-#: mycodo_flask/utils/utils_settings.py:878
-#: mycodo_flask/utils/utils_settings.py:911
+#: mycodo_flask/utils/utils_settings.py:837
+#: mycodo_flask/utils/utils_settings.py:879
+#: mycodo_flask/utils/utils_settings.py:912
 msgid "Conversion"
 msgstr "Conversion"
 
-#: mycodo_flask/utils/utils_settings.py:859
+#: mycodo_flask/utils/utils_settings.py:860
 #, python-format
 msgid "Conversion with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Conversion avec ID %(id)s (%(uuid)s) ajouté avec succès"
 
-#: mycodo_flask/utils/utils_settings.py:1123
+#: mycodo_flask/utils/utils_settings.py:1124
 msgid "Pi Settings"
 msgstr "Paramètres Pi"
 
-#: mycodo_flask/utils/utils_settings.py:1133
+#: mycodo_flask/utils/utils_settings.py:1134
 msgid "Alert Settings"
 msgstr "Paramètres d'alerte"
 
-#: mycodo_flask/utils/utils_settings.py:1145
+#: mycodo_flask/utils/utils_settings.py:1146
 #, python-format
 msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
@@ -5902,7 +5933,7 @@ msgstr ""
 "E-mail de test envoyé à %(recip)s. Vérifiez votre boîte de réception pour"
 " voir si elle a réussi."
 
-#: mycodo_flask/utils/utils_settings.py:1343
+#: mycodo_flask/utils/utils_settings.py:1344
 msgid "Reset email counter"
 msgstr ""
 
@@ -6132,4 +6163,7 @@ msgstr ""
 #~ " cas d'erreur, il est conseillé "
 #~ "d'inspecter l'intégralité du journal afin "
 #~ "de diagnostiquer le problème."
+
+#~ msgid "Visible Elements"
+#~ msgstr "Éléments visibles"
 

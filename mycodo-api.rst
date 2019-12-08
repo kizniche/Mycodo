@@ -23,17 +23,19 @@ Mycodo supports several authentication methods. All API requests must be made ov
 Bash Examples
 ~~~~~~~~~~~~~
 
-.. code:: bash
-
-    curl -k -v -X GET "https://127.0.0.1/users" -H "authorization: Basic 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=" -H "accept: application/vnd.mycodo.v1+json"
+``curl`` can be used, but you must either use``-k`` to allow the use of an unsigned certificate, or use your own certificate and domain.
 
 .. code:: bash
 
-    curl -k -v -x GET "https://127.0.0.1/users -H "X-API-KEY: 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=" -H "accept: application/vnd.mycodo.v1+json"
+    curl -k -v -X GET "https://127.0.0.1/api/settings/users" -H "authorization: Basic 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=" -H "accept: application/vnd.mycodo.v1+json"
 
 .. code:: bash
 
-    curl -k -v -x GET "https://127.0.0.1/users?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=" -H "accept: application/vnd.mycodo.v1+json"
+    curl -k -v -x GET "https://127.0.0.1/api/settings/users -H "X-API-KEY: 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=" -H "accept: application/vnd.mycodo.v1+json"
+
+.. code:: bash
+
+    curl -k -v -x GET "https://127.0.0.1/api/settings/users?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=" -H "accept: application/vnd.mycodo.v1+json"
 
 Python Example
 ~~~~~~~~~~~~~~

@@ -4,7 +4,7 @@ This effort is to get Mycodo running in Docker containers with all features work
 
 ***This is currently experimental***
 
-Please do not submit github issues for Docker-related problems.
+Please do not submit github issues for Docker-related problems. Also do not expect this feature to remain consistent (i.e. previous builds may not be compatible with future builds). 
 
 
 

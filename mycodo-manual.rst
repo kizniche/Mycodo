@@ -340,12 +340,11 @@ Dashboard
 
 ``Data -> Dashboard``
 
-The dashboard is where you can add pieces of data for easy viewing using
-widgets. It is highly customizable and provides an easy way to see
-exactly what data you want to see on one screen. Widgets can be moved
-and arranged on the dashboard by dragging the top header and can be
-resized by dragging the bottom-left or bottom-right side of the widget.
-Specific options for widgets are below.
+Dashboards are where you can add widgets to display data and interact
+with the system. Multiple dashboards can be created. Widgets can be
+moved and arranged on the dashboards by dragging the top header and can
+be resized by dragging the bottom-left or bottom-right side of the
+widget. Specific options for widgets are below.
 
 Graph Widget
 ~~~~~~~~~~~~

@@ -14,7 +14,7 @@ services:
     env_file:
       - 'influxdb/env.influxdb'
     volumes:
-      - influxdb-volume:/var/lib/influxdb
+      - influxdb:/var/lib/influxdb
       - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
 
   nginx:
@@ -38,9 +38,9 @@ services:
     image: app
     restart: always
     volumes:
-      - /dev:/dev
       - home:/home/mycodo
       - log:/var/log/mycodo
+      - /dev:/dev
       - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
     privileged: true
     ports:
@@ -58,9 +58,9 @@ services:
       context: ../
       dockerfile: docker/Dockerfile
     volumes:
-      - /dev:/dev
       - home:/home/mycodo
       - log:/var/log/mycodo
+      - /dev:/dev
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Permits container to restart itself
       - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
     privileged: true
@@ -84,12 +84,12 @@ services:
 #    env_file:
 #      - 'grafana/env.grafana'
 #    volumes:
-#      - grafana-volume:/var/lib/grafana
+#      - grafana:/var/lib/grafana
 #    depends_on:
 #      - influxdb
 
 volumes:
   home:
   log:
-  influxdb-volume:
-  grafana-volume:
+  influxdb:
+  grafana:
