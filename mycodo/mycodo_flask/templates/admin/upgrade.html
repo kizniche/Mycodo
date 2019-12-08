@@ -126,7 +126,7 @@
       <br>Latest version: <a href="https://github.com/kizniche/Mycodo/releases/tag/v{{current_major_release}}" target="_blank">{{current_major_release}}</a>
     </div>
     <div style="padding: 0.5em 0">
-      You are {{releases_behind}} release{% if releases_behind > 1 %}s{% endif %} behind the latest version.
+      You are {{releases_behind}} release{% if releases_behind is not none and releases_behind > 1 %}s{% endif %} behind the latest version.
       <br>Refer to the <a href="https://github.com/kizniche/Mycodo/blob/master/CHANGELOG.md" target="_blank">Changelog</a> for a list of all changes.
     </div>
     <div style="padding: 1em 0 1.5em 0">
@@ -144,7 +144,7 @@
       </form>
     </div>
 
-      {% if releases_behind > 1 %}
+      {% if releases_behind is not none and releases_behind > 1 %}
 
     <div style="font-family: 'Courier New', monospace;">
       <table class="table" style="width: auto">
