@@ -378,11 +378,6 @@ $(document).ready(function() {
     var url = '/outputstate_unique_id/' + unique_id;
     $.getJSON(url,
       function(state, responseText, jqXHR) {
-        console.log(chart_number);
-        console.log(document.getElementById("container-output-" + chart_number).className);
-        console.log(document.getElementById("text-output-state-" + chart_number).innerHTML);
-        console.log('end');
-
         if (jqXHR.status !== 204) {
           if (state !== null) {
             document.getElementById("container-output-" + chart_number).className = "active-background";
@@ -390,7 +385,7 @@ $(document).ready(function() {
               if (state === 'on') {
                 document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Active')}}';
               } else {
-                document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Active')}} (' + state.toFixed(1) + '%)';
+                document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Active')}}, ' + state.toFixed(1) + '%';
               }
             }
             else {
@@ -602,6 +597,7 @@ $(document).ready(function() {
         else {
           if (data['activated']) {
             if (data['paused']) {
+              document.getElementById('text-pid-state-' + chart_number).innerHTML = 'Paused';
               document.getElementById('container-pid-' + chart_number).className = "pause-background";
               document.getElementById('button-activate-' + chart_number).style.display = "none";
               document.getElementById('button-deactivate-' + chart_number).style.display = "block";
@@ -637,6 +633,7 @@ $(document).ready(function() {
               }
 
             } else if (data['held']) {
+              document.getElementById('text-pid-state-' + chart_number).innerHTML = 'Held';
               document.getElementById('container-pid-' + chart_number).className = "pause-background";
               document.getElementById('button-activate-' + chart_number).style.display = "none";
               document.getElementById('button-deactivate-' + chart_number).style.display = "block";
@@ -671,6 +668,7 @@ $(document).ready(function() {
                 document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
               }
             } else {
+              document.getElementById('text-pid-state-' + chart_number).innerHTML = 'Active';
               document.getElementById('container-pid-' + chart_number).className = "active-background";
               document.getElementById('button-activate-' + chart_number).style.display = "none";
               document.getElementById('button-deactivate-' + chart_number).style.display = "block";
@@ -705,6 +703,7 @@ $(document).ready(function() {
               }
             }
           } else {
+            document.getElementById('text-pid-state-' + chart_number).innerHTML = 'Inactive';
             document.getElementById('container-pid-' + chart_number).className = "inactive-background";
             document.getElementById('button-activate-' + chart_number).style.display = "block";
             document.getElementById('button-deactivate-' + chart_number).style.display = "none";

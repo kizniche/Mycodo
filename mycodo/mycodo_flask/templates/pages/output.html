@@ -110,7 +110,7 @@
                   if (state === 'on') {
                     document.getElementById(output_id + "-input-output-state").value = '{{_('Active')}}';
                   } else {
-                    document.getElementById(output_id + "-input-output-state").value = '{{_('Active')}} (' + state.toFixed(1) + '%)';
+                    document.getElementById(output_id + "-input-output-state").value = '{{_('Active')}}, ' + state.toFixed(1) + '%';
                   }
                 }
                 else {

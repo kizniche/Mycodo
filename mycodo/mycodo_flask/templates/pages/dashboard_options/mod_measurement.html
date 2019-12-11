@@ -21,16 +21,33 @@
 
   <span style="font-size: {{each_widget.font_em_value}}em" id="value-{{chart_number}}"></span>
         {%- if dict_measure_units[measurement_id] in dict_units and
-               dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+               dict_units[dict_measure_units[measurement_id]]['unit'] and
+               each_widget.enable_unit -%}
           {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
         {%- endif -%}
-  <br/><span style="font-size: {{each_widget.font_em_timestamp}}em">
-      {{each_input.name}} (
-        {%- if not device_measurements_dict[measurement_id].single_channel -%}
-          {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string + ', '}}
-        {%- endif -%}
-      {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}})
 
+        {%- if each_widget.enable_name or each_widget.enable_channel or each_widget.enable_measurement -%}
+  <br/><span style="font-size: {{each_widget.font_em_timestamp}}em">
+        {%- endif -%}
+
+        {%- if each_widget.enable_name -%}
+          {{each_input.name + ' '}}
+        {%- endif -%}
+        {%- if each_widget.enable_channel or each_widget.enable_measurement -%}
+          {{'('}}
+        {%- endif -%}
+        {%- if not device_measurements_dict[measurement_id].single_channel and each_widget.enable_channel -%}
+          {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string}}
+        {%- endif -%}
+        {%- if each_widget.enable_channel and each_widget.enable_measurement -%}
+          {{', '}}
+        {%- endif -%}
+        {%- if each_widget.enable_measurement -%}
+          {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+        {%- endif -%}
+        {%- if each_widget.enable_channel or each_widget.enable_measurement -%}
+          {{')'}}
+        {%- endif -%}
       {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
@@ -42,16 +59,33 @@
 
   <span style="font-size: {{each_widget.font_em_value}}em" id="value-{{chart_number}}"></span>
         {%- if dict_measure_units[measurement_id] in dict_units and
-               dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+               dict_units[dict_measure_units[measurement_id]]['unit'] and
+               each_widget.enable_unit -%}
           {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
         {%- endif -%}
-  <br/><span style="font-size: {{each_widget.font_em_timestamp}}em">
-      {{each_math.name}} (
-        {%- if not device_measurements_dict[measurement_id].single_channel -%}
-          {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string + ', '}}
-        {%- endif -%}
-      {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}})
 
+        {%- if each_widget.enable_name or each_widget.enable_channel or each_widget.enable_measurement -%}
+  <br/><span style="font-size: {{each_widget.font_em_timestamp}}em">
+        {%- endif -%}
+
+        {%- if each_widget.enable_name -%}
+          {{each_math.name + ' '}}
+        {%- endif -%}
+        {%- if each_widget.enable_channel or each_widget.enable_measurement -%}
+          {{'('}}
+        {%- endif -%}
+        {%- if not device_measurements_dict[measurement_id].single_channel and each_widget.enable_channel -%}
+          {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string}}
+        {%- endif -%}
+        {%- if each_widget.enable_channel and each_widget.enable_measurement -%}
+          {{', '}}
+        {%- endif -%}
+        {%- if each_widget.enable_measurement -%}
+          {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+        {%- endif -%}
+        {%- if each_widget.enable_channel or each_widget.enable_measurement -%}
+          {{')'}}
+        {%- endif -%}
       {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
@@ -63,16 +97,33 @@
 
   <span style="font-size: {{each_widget.font_em_value}}em" id="value-{{chart_number}}"></span>
         {%- if dict_measure_units[measurement_id] in dict_units and
-               dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+               dict_units[dict_measure_units[measurement_id]]['unit'] and
+               each_widget.enable_unit -%}
           {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
         {%- endif -%}
-  <br/><span style="font-size: {{each_widget.font_em_timestamp}}em">
-      {{each_output.name}} (
-        {%- if not device_measurements_dict[measurement_id].single_channel -%}
-          {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string + ', '}}
-        {%- endif -%}
-      {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}})
 
+        {%- if each_widget.enable_name or each_widget.enable_channel or each_widget.enable_measurement -%}
+  <br/><span style="font-size: {{each_widget.font_em_timestamp}}em">
+        {%- endif -%}
+
+        {%- if each_widget.enable_name -%}
+          {{each_output.name + ' '}}
+        {%- endif -%}
+        {%- if each_widget.enable_channel or each_widget.enable_measurement -%}
+          {{'('}}
+        {%- endif -%}
+        {%- if not device_measurements_dict[measurement_id].single_channel and each_widget.enable_channel -%}
+          {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string}}
+        {%- endif -%}
+        {%- if each_widget.enable_channel and each_widget.enable_measurement -%}
+          {{', '}}
+        {%- endif -%}
+        {%- if each_widget.enable_measurement -%}
+          {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+        {%- endif -%}
+        {%- if each_widget.enable_channel or each_widget.enable_measurement -%}
+          {{')'}}
+        {%- endif -%}
       {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
@@ -84,22 +135,44 @@
 
   <span style="font-size: {{each_widget.font_em_value}}em" id="value-{{chart_number}}"></span>
         {%- if dict_measure_units[measurement_id] in dict_units and
-               dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+               dict_units[dict_measure_units[measurement_id]]['unit'] and
+               each_widget.enable_unit -%}
           {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
         {%- endif -%}
-  <br/><span style="font-size: {{each_widget.font_em_timestamp}}em">
-      {{each_pid.name}} (
-        {%- if not device_measurements_dict[measurement_id].single_channel -%}
-          {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string + ', '}}
-        {%- endif -%}
-      {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}})
 
+        {%- if each_widget.enable_name or each_widget.enable_channel or each_widget.enable_measurement -%}
+  <br/><span style="font-size: {{each_widget.font_em_timestamp}}em">
+        {%- endif -%}
+
+        {%- if each_widget.enable_name -%}
+          {{each_pid.name + ' '}}
+        {%- endif -%}
+        {%- if each_widget.enable_channel or each_widget.enable_measurement -%}
+          {{'('}}
+        {%- endif -%}
+        {%- if not device_measurements_dict[measurement_id].single_channel and each_widget.enable_channel -%}
+          {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string}}
+        {%- endif -%}
+        {%- if each_widget.enable_channel and each_widget.enable_measurement -%}
+          {{', '}}
+        {%- endif -%}
+        {%- if each_widget.enable_measurement -%}
+          {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+        {%- endif -%}
+        {%- if each_widget.enable_channel or each_widget.enable_measurement -%}
+          {{')'}}
+        {%- endif -%}
       {%- endif -%}
     {%- endif -%}
   {%- endfor -%}
 
-  </span>
+  {%- if each_widget.enable_name or each_widget.enable_channel or each_widget.enable_measurement -%}
+    </span>
+  {%- endif -%}
+
+  {%- if each_widget.enable_timestamp -%}
   <br/><span style="font-size: {{each_widget.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span>
+  {%- endif -%}
 
 </div>
 
@@ -154,7 +227,7 @@
               {{form_base.refresh_duration(class_='form-control', value=each_widget.refresh_duration)}}
             </div>
           </div>
-         <div class="col-auto">
+          <div class="col-auto">
             {{form_measurement.font_em_value.label(class_='control-label')}}
             <div>
               {{form_measurement.font_em_value(class_='form-control', value=each_widget.font_em_value)}}
@@ -170,6 +243,36 @@
             {{form_measurement.decimal_places.label(class_='control-label')}}
             <div>
               {{form_measurement.decimal_places(class_='form-control', value=each_widget.decimal_places)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_measurement.enable_unit.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_unit" name="enable_unit" type="checkbox" value="y"{% if each_widget.enable_unit %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_measurement.enable_name.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_name" name="enable_name" type="checkbox" value="y"{% if each_widget.enable_name %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_measurement.enable_channel.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_channel" name="enable_channel" type="checkbox" value="y"{% if each_widget.enable_channel %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_measurement.enable_measurement.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_measurement" name="enable_measurement" type="checkbox" value="y"{% if each_widget.enable_measurement %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_measurement.enable_timestamp.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_timestamp" name="enable_timestamp" type="checkbox" value="y"{% if each_widget.enable_timestamp %} checked{% endif %}>
             </div>
           </div>
         </div>

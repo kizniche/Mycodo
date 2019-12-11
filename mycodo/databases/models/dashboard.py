@@ -38,6 +38,14 @@ class Widget(CRUDMixin, db.Model):
     custom_yaxes = db.Column(db.Text, default='')  # Custom minimum and maximum y-axes
     decimal_places = db.Column(db.Integer, default=1)  # Number of decimal places for displayed value
 
+    enable_status = db.Column(db.Boolean, default=True)
+    enable_value = db.Column(db.Boolean, default=True)
+    enable_name = db.Column(db.Boolean, default=True)
+    enable_unit = db.Column(db.Boolean, default=True)
+    enable_measurement = db.Column(db.Boolean, default=True)
+    enable_channel = db.Column(db.Boolean, default=True)
+    enable_timestamp = db.Column(db.Boolean, default=True)  # Show timestamp for displayed gauge value
+
     # Graph options
     pid_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
     output_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
@@ -66,7 +74,6 @@ class Widget(CRUDMixin, db.Model):
     # Gauge options
     max_measure_age = db.Column(db.Integer, default=120.0)  # Only show measurements if they are younger than this age
     range_colors = db.Column(db.Text, default='')  # Custom hex color values and gauge range
-    enable_timestamp = db.Column(db.Boolean, default=True)  # Show timestamp for displayed gauge value
 
     # Graph and Gauge options
     y_axis_min = db.Column(db.Float, default=None)  # y-axis minimum

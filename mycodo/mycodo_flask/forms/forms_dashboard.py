@@ -120,6 +120,7 @@ class DashboardIndicator(FlaskForm):
     font_em_timestamp = DecimalField(
         lazy_gettext('Timestamp Font (em)'),
         widget=NumberInput(step='any'))
+    enable_timestamp = BooleanField(lazy_gettext('Show Timestamp'))
     option_invert = BooleanField(TRANSLATIONS['invert']['title'])
 
 
@@ -137,6 +138,11 @@ class DashboardMeasurement(FlaskForm):
     decimal_places = IntegerField(
         lazy_gettext('Decimal Places'),
         widget=NumberInput())
+    enable_name = BooleanField(lazy_gettext('Show Name'))
+    enable_channel = BooleanField(lazy_gettext('Show Channel'))
+    enable_unit = BooleanField(lazy_gettext('Show Unit'))
+    enable_measurement = BooleanField(lazy_gettext('Show Measurement'))
+    enable_timestamp = BooleanField(lazy_gettext('Show Timestamp'))
 
 
 class DashboardOutput(FlaskForm):
@@ -153,6 +159,10 @@ class DashboardOutput(FlaskForm):
     decimal_places = IntegerField(
         lazy_gettext('Decimal Places'),
         widget=NumberInput())
+    enable_status = BooleanField(lazy_gettext('Show Status'))
+    enable_value = BooleanField(lazy_gettext('Show Value'))
+    enable_unit = BooleanField(lazy_gettext('Show Unit'))
+    enable_timestamp = BooleanField(lazy_gettext('Show Timestamp'))
     enable_output_controls = BooleanField(lazy_gettext('Feature Output Controls'))
 
 
@@ -173,6 +183,8 @@ class DashboardPIDControl(FlaskForm):
     decimal_places = IntegerField(
         lazy_gettext('Decimal Places'),
         widget=NumberInput())
+    enable_status = BooleanField(lazy_gettext('Show Status'))
+    enable_timestamp = BooleanField(lazy_gettext('Show Timestamp'))
     show_pid_info = BooleanField(lazy_gettext('Show PID Information'))
     show_set_setpoint = BooleanField(lazy_gettext('Show Set Setpoint'))
 

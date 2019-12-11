@@ -206,6 +206,7 @@ def widget_add(form_base, form_object):
         new_widget.max_measure_age = form_object.max_measure_age.data
         new_widget.font_em_timestamp = form_object.font_em_timestamp.data
         new_widget.input_ids_measurements = form_object.measurement_id.data
+        new_widget.enable_timestamp = form_object.enable_timestamp.data
 
         new_widget.width = 3
         new_widget.height = 4
@@ -224,6 +225,11 @@ def widget_add(form_base, form_object):
         new_widget.font_em_timestamp = form_object.font_em_timestamp.data
         new_widget.decimal_places = form_object.decimal_places.data
         new_widget.input_ids_measurements = form_object.measurement_id.data
+        new_widget.enable_name = form_object.enable_name.data
+        new_widget.enable_unit = form_object.enable_unit.data
+        new_widget.enable_measurement = form_object.enable_measurement.data
+        new_widget.enable_channel = form_object.enable_channel.data
+        new_widget.enable_timestamp = form_object.enable_timestamp.data
 
         new_widget.width = 4
         new_widget.height = 4
@@ -243,6 +249,10 @@ def widget_add(form_base, form_object):
         new_widget.enable_output_controls = form_object.enable_output_controls.data
         new_widget.decimal_places = form_object.decimal_places.data
         new_widget.output_ids = form_object.output_id.data
+        new_widget.enable_status = form_object.enable_status.data
+        new_widget.enable_value = form_object.enable_value.data
+        new_widget.enable_unit = form_object.enable_unit.data
+        new_widget.enable_timestamp = form_object.enable_timestamp.data
 
         new_widget.width = 5
         new_widget.height = 4
@@ -262,6 +272,10 @@ def widget_add(form_base, form_object):
         new_widget.enable_output_controls = form_object.enable_output_controls.data
         new_widget.decimal_places = form_object.decimal_places.data
         new_widget.output_ids = form_object.output_id.data
+        new_widget.enable_status = form_object.enable_status.data
+        new_widget.enable_value = form_object.enable_value.data
+        new_widget.enable_unit = form_object.enable_unit.data
+        new_widget.enable_timestamp = form_object.enable_timestamp.data
 
         new_widget.width = 5
         new_widget.height = 4
@@ -280,6 +294,8 @@ def widget_add(form_base, form_object):
         new_widget.font_em_timestamp = form_object.font_em_timestamp.data
         new_widget.decimal_places = form_object.decimal_places.data
         new_widget.show_pid_info = form_object.show_pid_info.data
+        new_widget.enable_status = form_object.enable_status.data
+        new_widget.enable_timestamp = form_object.enable_timestamp.data
         new_widget.show_set_setpoint = form_object.show_set_setpoint.data
         new_widget.pid_ids = form_object.pid_id.data
 
@@ -437,6 +453,7 @@ def widget_mod(form_base, form_object, request_form):
         mod_widget.max_measure_age = form_object.max_measure_age.data
         mod_widget.font_em_timestamp = form_object.font_em_timestamp.data
         mod_widget.option_invert = form_object.option_invert.data
+        mod_widget.enable_timestamp = form_object.enable_timestamp.data
         if form_object.measurement_id.data:
             mod_widget.input_ids_measurements = form_object.measurement_id.data
 
@@ -450,6 +467,11 @@ def widget_mod(form_base, form_object, request_form):
         mod_widget.font_em_value = form_object.font_em_value.data
         mod_widget.font_em_timestamp = form_object.font_em_timestamp.data
         mod_widget.decimal_places = form_object.decimal_places.data
+        mod_widget.enable_name = form_object.enable_name.data
+        mod_widget.enable_unit = form_object.enable_unit.data
+        mod_widget.enable_measurement = form_object.enable_measurement.data
+        mod_widget.enable_channel = form_object.enable_channel.data
+        mod_widget.enable_timestamp = form_object.enable_timestamp.data
         if form_object.measurement_id.data:
             mod_widget.input_ids_measurements = form_object.measurement_id.data
 
@@ -464,6 +486,10 @@ def widget_mod(form_base, form_object, request_form):
         mod_widget.font_em_timestamp = form_object.font_em_timestamp.data
         mod_widget.decimal_places = form_object.decimal_places.data
         mod_widget.enable_output_controls = form_object.enable_output_controls.data
+        mod_widget.enable_status = form_object.enable_status.data
+        mod_widget.enable_value = form_object.enable_value.data
+        mod_widget.enable_unit = form_object.enable_unit.data
+        mod_widget.enable_timestamp = form_object.enable_timestamp.data
         if form_object.output_id.data:
             mod_widget.output_ids = form_object.output_id.data
 
@@ -477,6 +503,8 @@ def widget_mod(form_base, form_object, request_form):
         mod_widget.font_em_value = form_object.font_em_value.data
         mod_widget.font_em_timestamp = form_object.font_em_timestamp.data
         mod_widget.decimal_places = form_object.decimal_places.data
+        mod_widget.enable_status = form_object.enable_status.data
+        mod_widget.enable_timestamp = form_object.enable_timestamp.data
         mod_widget.show_pid_info = form_object.show_pid_info.data
         mod_widget.show_set_setpoint = form_object.show_set_setpoint.data
         if form_object.pid_id.data:

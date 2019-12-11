@@ -14,7 +14,7 @@
 
 <div id="container-output-{{chart_number}}" style="text-align: center">
   <img style="max-width: 60%; max-height: 60%" id="value-{{chart_number}}" src="" alt="">
-  <br/><span style="font-size: {{each_widget.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span>
+  {% if each_widget.enable_timestamp %}<br/><span style="font-size: {{each_widget.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span>{% endif %}
 </div>
 
 <div class="modal fade" id="modal_config_{{chart_number}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
@@ -72,6 +72,12 @@
             {{form_indicator.font_em_timestamp.label(class_='control-label')}}
             <div>
               {{form_indicator.font_em_timestamp(class_='form-control', value=each_widget.font_em_timestamp)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_indicator.enable_timestamp.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_timestamp" name="enable_timestamp" type="checkbox" value="y"{% if each_widget.enable_timestamp %} checked{% endif %}>
             </div>
           </div>
           <div class="col-auto">

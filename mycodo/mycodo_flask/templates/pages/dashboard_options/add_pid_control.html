@@ -37,6 +37,18 @@
       </div>
     </div>
     <div class="col-auto">
+      {{form_pid.enable_status.label(class_='control-label')}}
+      <div class="input-group-text">
+        <input id="enable_status" name="enable_status" type="checkbox" value="y" checked>
+      </div>
+    </div>
+    <div class="col-auto">
+      {{form_pid.enable_timestamp.label(class_='control-label')}}
+      <div class="input-group-text">
+        <input id="enable_timestamp" name="enable_timestamp" type="checkbox" value="y" checked>
+      </div>
+    </div>
+    <div class="col-auto">
       {{form_pid.show_pid_info.label(class_='control-label')}}
       <div class="input-group-text">
         <input id="show_pid_info" name="show_pid_info" type="checkbox" value="y" checked>

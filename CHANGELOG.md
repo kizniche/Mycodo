@@ -1,3 +1,10 @@
+## 8.2.2 (Unreleased)
+
+### Features
+
+ - Add options to show/hide various widget info ([#717](https://github.com/kizniche/mycodo/issues/717))
+
+
 ## 8.2.1 (2019.12.08)
 
 This update brings the ability to create multiple dashboards. The dashboard grid spacing has also changed, so you will need to resize your widgets.

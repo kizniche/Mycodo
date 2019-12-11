@@ -5,7 +5,14 @@
     {%- endif %}
   </div>
   <div class="my-auto" style="font-size: {{each_widget.font_em_name}}em">
-    (<span id="text-output-state-{{chart_number}}"></span>) <span style="padding-right: 0.5em">{{each_widget.name}}</span>
+    {%- if each_widget.enable_status -%}
+      (<span id="text-output-state-{{chart_number}}"></span>{{') '}}
+    {%- else -%}
+      <span style="display: none" id="text-output-state-{{chart_number}}"></span>
+    {%- endif -%}
+
+    <span style="padding-right: 0.5em"> {{each_widget.name}}</span>
+
     <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
       <i style="font-size: 1.5em" class="fas fa-cog"></i>
     </button>
@@ -26,8 +33,26 @@
 {% endfor %}
 
 <div class="pause-background" id="container-output-{{chart_number}}" style="height: 100%; text-align: center">
-  <span style="font-size: {{each_widget.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span> - <span style="font-size: {{each_widget.font_em_value}}em" id="value-{{chart_number}}"></span> %
-<br/>
+  {%- if each_widget.enable_timestamp -%}
+  <span style="font-size: {{each_widget.font_em_timestamp}}em" id="timestamp-{{chart_number}}"></span>
+  {%- else -%}
+  <span style="display: none" id="timestamp-{{chart_number}}"></span>
+  {%- endif -%}
+
+  {%- if each_widget.enable_value and each_widget.enable_timestamp -%}
+    {{' - '}}
+  {%- endif -%}
+
+  {%- if each_widget.enable_value -%}
+  <span style="font-size: {{each_widget.font_em_value}}em" id="value-{{chart_number}}"></span> %
+  {%- else -%}
+  <span style="display: none" id="value-{{chart_number}}"></span>
+  {%- endif -%}
+
+  {%- if each_widget.enable_timestamp or each_widget.enable_value -%}
+  <br/>
+  {%- endif -%}
+
 <span id="range_val_{{chart_number}}" style="font-size: {{each_widget.font_em_value}}em"></span> <input id="range_{{chart_number}}" type="range" min="0" max="100" step="1" value="0" style="width:80%;" oninput="showVal({{chart_number}}, this.value)" onchange="sendVal({{chart_number}}, '{{each_widget.output_ids.split(',')[0]}}', this.value)">
 
   {% if each_widget.enable_output_controls %}
@@ -124,6 +149,30 @@
             {{form_output.decimal_places.label(class_='control-label')}}
             <div>
               {{form_output.decimal_places(class_='form-control', value=each_widget.decimal_places)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_output.enable_status.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_status" name="enable_status" type="checkbox" value="y"{% if each_widget.enable_status %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_output.enable_value.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_value" name="enable_value" type="checkbox" value="y"{% if each_widget.enable_value %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_output.enable_unit.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_unit" name="enable_unit" type="checkbox" value="y"{% if each_widget.enable_unit %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label">{{form_output.enable_timestamp.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_timestamp" name="enable_timestamp" type="checkbox" value="y"{% if each_widget.enable_timestamp %} checked{% endif %}>
             </div>
           </div>
           <div class="col-auto">
