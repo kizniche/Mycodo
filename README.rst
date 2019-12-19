@@ -217,11 +217,16 @@ Supported Inputs
 
 All supported Inputs can be found under the
 `Input Devices <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input-devices>`__
-and `Input Device Details <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input-device-details>`__
-sections of the manual.
+section of the manual.
 
-Additionally, I have another github repository devoted to Custom Inputs that are not included in
-the built-in set. These can be found at `kizniche/Mycodo-custom-inputs <https://github.com/kizniche/Mycodo-custom-inputs>`__.
+If you would like to add to the list of supported Inputs, submit a pull request with a
+`new Input Module you created <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-inputs>`__
+or start a
+`New Issue <https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=>`__.
+
+Additionally, I have another github repository devoted to Custom Inputs that do not
+necessarily fit with the built-in set and are not included by default with Mycodo.
+These can be found at `kizniche/Mycodo-custom-inputs <https://github.com/kizniche/Mycodo-custom-inputs>`__.
 
 Donate
 ------
