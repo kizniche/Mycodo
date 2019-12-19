@@ -3706,15 +3706,17 @@ Built-In Inputs
    `link <https://www.adafruit.com/product/3263>`__
 -  MAX31865: Temperature
    `link <https://www.adafruit.com/product/3328>`__
--  Miflora: Battery, electrical conductivity, light, moisture,
-   temperature
-   `link <https://gadget-freakz.com/product/xiaomi-mi-flora-plant-sensor/>`__
 -  MCP9808: Temperature
    `link <http://ww1.microchip.com/downloads/en/DeviceDoc/25095A.pdf>`__
 -  MH-Z16: Carbon dioxide (CO2) in ppmv
    `link <https://www.winsen-sensor.com/sensors/co2-sensor/mh-z16.html>`__
 -  MH-Z19: Carbon dioxide (CO2) in ppmv
    `link <http://www.winsen-sensor.com/products/ndir-co2-sensor/mh-z19.html>`__
+-  Miflora: Battery, electrical conductivity, light, moisture,
+   temperature
+   `link <https://gadget-freakz.com/product/xiaomi-mi-flora-plant-sensor/>`__
+-  MLX90614: Non-contact infrared temperature
+   `link <https://www.melexis.com/en/product/MLX90614/Digital-Plug-Play-Infrared-Thermometer-TO-Can>`__
 -  Ruuvitag: Relative humidity, temperature, pressure, battery,
    acceleration (g, x, y, and z) `link <https://ruuvi.com/>`__
 -  SHT1x/SHT2x/SHT3x/SHT7x/SHT31 Smart Gadget: Relative humidity and
@@ -3740,6 +3742,7 @@ Other Built-In Inputs
 -  Mycodo: Daemon RAM use
 -  Mycodo: Network ping response
 -  Mycodo: Network port open
+-  Mycodo: Software Version
 -  The Things Network: Receive measurements from Data Storage
    Integration
 -  MTQQ: Subscribe to MQTT channels

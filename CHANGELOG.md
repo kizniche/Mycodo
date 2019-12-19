@@ -3,6 +3,7 @@
 ### Features
 
  - Add options to show/hide various widget info ([#717](https://github.com/kizniche/mycodo/issues/717))
+ - Add Input: MLX90614 ([#723](https://github.com/kizniche/mycodo/pull/723))
 
 
 ## 8.2.1 (2019.12.08)

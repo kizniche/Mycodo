@@ -1,31 +1,53 @@
 # coding=utf-8
-from flask_babel import lazy_gettext
+#
+# From https://github.com/CRImier/python-MLX90614
+#
+# MIT License
+#
+# Copyright (c) 2016 Arsenijs
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 from mycodo.inputs.base_input import AbstractInput
+
 
 # Measurements
 measurements_dict = {
     0: {
         'measurement': 'temperature',
-        'unit': 'C'
+        'unit': 'C',
+        'name': 'Ambient'
     },
     1: {
         'measurement': 'temperature',
-        'unit': 'C'
+        'unit': 'C',
+        'name': 'Object'
     }
 }
 
 # Input information
 INPUT_INFORMATION = {
-    #
-    # Required options
-    #
-
     # Unique name (must be unique from all other inputs)
     'input_name_unique': 'MLX90614',
 
     # Descriptive information
-    'input_manufacturer': 'MELEXIS',
+    'input_manufacturer': 'Melexis',
     'input_name': 'MLX90614',
 
     # Measurement information
@@ -34,7 +56,7 @@ INPUT_INFORMATION = {
 
     # Add a message that the user can see when they view the options of the Input.
     # This will be displayed at the top of the options when the user expands the input with the "+" icon.
-    'message': "Note: Don't forget to enable I2C before activating this Input",
+    # 'message': "Note: Don't forget to enable I2C before activating this Input",
 
     # Web User Interface display options
     # Options that are enabled will be editable from the input options page.
@@ -50,11 +72,6 @@ INPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-
-    #
-    # Non-required options
-    #
-
     # Python module dependencies
     # This must be a module that is able to be installed with pip or apt (pypi, git, and apt examples below)
     # Leave the list empty if there are no dependencies
@@ -64,9 +81,8 @@ INPUT_INFORMATION = {
 
     'interfaces': ['I2C'],
     'i2c_location': ['0x5a'],
-    'i2c_address_editable': False,
+    'i2c_address_editable': True,
 
-    # Miscellaneous options
     'period': 15,  # Float
 
 }
@@ -79,10 +95,6 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
-
-        #
-        # Set variables to custom options
-        #
 
         self.MLX90614_RAWIR1=0x04
         self.MLX90614_RAWIR2=0x05
@@ -127,25 +139,13 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the ambient (ch0) and object (ch1) temperature"""
-        #
-        # Copy measurements dictionary
-        #
-
         self.return_dict = measurements_dict.copy()
-
-        #
-        # Begin sensor measurement code
-        #
 
         if self.is_enabled(0):
             self.value_set(0, self.get_amb_temp())
 
         if self.is_enabled(1):
             self.value_set(1, self.get_obj_temp())
-
-        #
-        # End sensor measurement code
-        #
 
         self.logger.info("MLX90614 measurement taken.")
 
