@@ -1,9 +1,18 @@
 ## 8.2.2 (Unreleased)
 
+### Bugfixes
+
+ - Fix table colors ([#724](https://github.com/kizniche/mycodo/issues/724))
+
 ### Features
 
  - Add options to show/hide various widget info ([#717](https://github.com/kizniche/mycodo/issues/717))
  - Add Input: MLX90614 ([#723](https://github.com/kizniche/mycodo/pull/723))
+
+### Miscellaneous
+
+ - Update Bootstrap to 4.4.1
+ - Update Bootstrap themes
 
 
 ## 8.2.1 (2019.12.08)
