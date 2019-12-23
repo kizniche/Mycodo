@@ -27,7 +27,7 @@
   <div class="d-flex" id="wrapper">
 
     <!-- Sidebar -->
-    <div class="bg-dark" id="sidebar-wrapper" style="border-right: 1px solid #343434">
+    <div id="sidebar-wrapper" style="border-right: 1px solid #343434">
       <div class="sidebar-heading">Configuration</div>
       <div class="list-group list-group-flush">
         <a class="list-group-item collapsed{% if active_settings == 'general' %} active{% endif %}" href="{{url_for('routes_settings.settings_general')}}"><i class="fas fa-globe"></i>&nbsp;&nbsp;{{_('General')}}</a>
