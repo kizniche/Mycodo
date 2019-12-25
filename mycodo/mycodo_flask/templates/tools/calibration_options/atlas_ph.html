@@ -132,7 +132,7 @@ function startTimer() {
         {{form_ph_calibrate.temperature(class_='form-control')}}
       </div>
       <div class="col-auto small-gutters">
-        {{form_ph_calibrate.go_to_next_stage(class_='form-control btn btn-sm')}}
+        {{form_ph_calibrate.go_to_next_stage(class_='form-control btn btn-primary btn-sm')}}
       </div>
     </div>
     </form>
@@ -157,13 +157,13 @@ function startTimer() {
       {{form_ph_calibrate.hidden_input_id(value=selected_input.unique_id)}}
       <div id="proceed_stage_2">
         <div id="go_to_next_stage" style="display: none" class="col-auto small-gutters">
-          {{form_ph_calibrate.go_to_next_stage(class_='form-control btn btn-sm')}}
+          {{form_ph_calibrate.go_to_next_stage(class_='form-control btn btn-primary btn-sm')}}
         </div>
       </div>
     </div>
     <div class="row small-gutters">
       <div class="col-auto small-gutters">
-        <input class="form-control btn btn-sm" id="timer" type="button" onclick="startTimer()" value="{{_('Ready')}}"/>
+        <input class="form-control btn btn-primary btn-sm" id="timer" type="button" onclick="startTimer()" value="{{_('Ready')}}"/>
       </div>
     </div>
     <div id="countdown"></div>
@@ -189,13 +189,13 @@ function startTimer() {
       {{form_ph_calibrate.hidden_input_id(value=selected_input.unique_id)}}
       <div id="proceed_stage_2">
         <div class="col-auto small-gutters" id="go_to_next_stage" style="display: none">
-          {{form_ph_calibrate.go_to_next_stage(class_='form-control btn btn-sm')}}
+          {{form_ph_calibrate.go_to_next_stage(class_='form-control btn btn-primary btn-sm')}}
         </div>
       </div>
     </div>
     <div class="row small-gutters">
       <div class="col-auto small-gutters">
-        <input class="form-control btn btn-sm" id="timer" type="button" onclick="startTimer()" value="{{_('Ready')}}"/>
+        <input class="form-control btn btn-primary btn-sm" id="timer" type="button" onclick="startTimer()" value="{{_('Ready')}}"/>
       </div>
     </div>
     <div id="countdown"></div>
@@ -221,13 +221,13 @@ function startTimer() {
       {{form_ph_calibrate.hidden_input_id(value=selected_input.unique_id)}}
       <div id="proceed_stage_2">
         <div id="go_to_next_stage" style="display: none" class="col-auto small-gutters">
-          {{form_ph_calibrate.go_to_last_stage(class_='form-control btn btn-sm')}}
+          {{form_ph_calibrate.go_to_last_stage(class_='form-control btn btn-primary btn-sm')}}
         </div>
       </div>
     </div>
     <div class="row small-gutters">
       <div class="col-auto small-gutters">
-        <input class="form-control btn btn-sm" id="timer" type="button" onclick="startTimer()" value="{{_('Ready')}}"/>
+        <input class="form-control btn btn-primary btn-sm" id="timer" type="button" onclick="startTimer()" value="{{_('Ready')}}"/>
       </div>
     </div>
     <div id="countdown"></div>

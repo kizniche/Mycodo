@@ -19,8 +19,8 @@
       {{form_trigger.name(class_='form-control', value=each_trigger.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
     <div class="col-5 col-sm-4 col-md-4 col-lg-4">
-      <input class="form-control btn btn-sm" type="button" onclick="setClipboard('{{each_trigger.unique_id}}')" title="UUID: {{each_trigger.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="
-        {% for each_function in function_types if each_trigger.trigger_type == each_function[0] %}{{each_function[1]}}{% endfor %}
+      <input class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_trigger.unique_id}}')" title="UUID: {{each_trigger.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="
+        {%- for each_function in function_types if each_trigger.trigger_type == each_function[0] -%}{{each_function[1]}}{%- endfor -%}
         {%- if each_trigger.is_activated %} [{{_('Active')}}]
         {%- else %} [{{_('Inactive')}}]
         {%-endif -%}
@@ -29,9 +29,9 @@
 
     <div class="col-6 col-sm-4 col-md-4 col-lg-4">
       {%- if each_trigger.is_activated %}
-        {{form_trigger.deactivate_trigger(class_='form-control btn btn-sm')}}
+        {{form_trigger.deactivate_trigger(class_='form-control btn btn-primary btn-sm')}}
       {%- else %}
-        {{form_trigger.activate_trigger(class_='form-control btn btn-sm')}}
+        {{form_trigger.activate_trigger(class_='form-control btn btn-primary btn-sm')}}
       {%- endif -%}
     </div>
   </div>
@@ -40,19 +40,19 @@
 
     <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em;">
       <div class="col-auto">
-        {{form_trigger.save_trigger(class_='form-control btn btn-sm')}}
+        {{form_trigger.save_trigger(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto">
-        {{form_trigger.delete_trigger(class_='form-control btn btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_trigger.delete_trigger(class_='form-control btn btn-primary btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
       <div class="col-auto">
-        {{form_trigger.test_all_actions(class_='form-control btn btn-sm')}}
+        {{form_trigger.test_all_actions(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto">
-        {{form_trigger.order_up(class_='form-control btn btn-sm')}}
+        {{form_trigger.order_up(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto">
-        {{form_trigger.order_down(class_='form-control btn btn-sm')}}
+        {{form_trigger.order_down(class_='form-control btn btn-primary btn-sm')}}
       </div>
     </div>
 
@@ -92,7 +92,7 @@
         {{form_trigger.action_type(class_='form-control')}}
       </div>
       <div class="col-auto">
-        {{form_trigger.add_action(class_='form-control btn btn-sm')}}
+        {{form_trigger.add_action(class_='form-control btn btn-primary btn-sm')}}
       </div>
     </div>
 
@@ -114,10 +114,10 @@
 
     <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.3em">
       <div class="col-auto">
-        {{form_actions.save_action(class_='form-control btn btn-sm')}}
+        {{form_actions.save_action(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto">
-        {{form_actions.delete_action(class_='form-control btn btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_actions.delete_action(class_='form-control btn btn-primary btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
 
       {% include 'pages/function_options/action_options/'+each_action.action_type+'.html' %}

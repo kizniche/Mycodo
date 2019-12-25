@@ -55,7 +55,7 @@
         </div>
       </div>
       <div class="col-auto small-gutters">
-        {{form_energy_usage_add.energy_usage_add(class_='form-control btn btn-sm')}}
+        {{form_energy_usage_add.energy_usage_add(class_='form-control btn btn-primary btn-sm')}}
       </div>
     </div>
 
@@ -87,10 +87,10 @@
     <div class="collapse" id="collapseContainer-input-{{each_energy.id}}">
       <div class="row small-gutters" style="padding: 0.5em">
         <div class="col-auto small-gutters">
-          {{form_energy_usage_mod.energy_usage_mod(class_='form-control btn btn-sm btn-block')}}
+          {{form_energy_usage_mod.energy_usage_mod(class_='form-control btn btn-primary btn-sm btn-block')}}
         </div>
         <div class="col-auto small-gutters">
-          {{form_energy_usage_mod.energy_usage_delete(class_='form-control btn btn-sm btn-block',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+          {{form_energy_usage_mod.energy_usage_delete(class_='form-control btn btn-primary btn-sm btn-block',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
         </div>
       </div>
 
@@ -157,7 +157,7 @@
         </div>
       </div>
       <div class="col-auto small-gutters">
-        {{form_energy_usage_mod.energy_usage_range_calc(class_='form-control btn btn-sm btn-block')}}
+        {{form_energy_usage_mod.energy_usage_range_calc(class_='form-control btn btn-primary btn-sm btn-block')}}
       </div>
       {% if calculate_usage[each_energy.unique_id] %}
 

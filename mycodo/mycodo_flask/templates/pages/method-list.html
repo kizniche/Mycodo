@@ -65,7 +65,7 @@
       <div style="margin-bottom: 1em; border: 2px solid #ddd; border-radius: 5px;">
         <div class="row small-gutters" style="padding: 0 1em">
           <div class="col-12 col-sm-6">
-            <input class="form-control btn btn-sm" type="button" onclick="setClipboard('{{each_method.unique_id}}')" title="[{{'%02d' % each_method.id}} UUID: {{each_method.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="[{{method_info[each_method.method_type]['name']}}] {{each_method.name}}" type="text">
+            <input class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_method.unique_id}}')" title="[{{'%02d' % each_method.id}} UUID: {{each_method.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="[{{method_info[each_method.method_type]['name']}}] {{each_method.name}}" type="text">
           </div>
           <div class="col-auto">
             <a href="/method-delete/{{each_method.unique_id}}" class="btn btn-primary" role="button" onclick="return confirm('Are you sure you want to delete this?')">{{dict_translation['delete']['title']}}</a>

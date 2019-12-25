@@ -25,21 +25,21 @@
       {{form_mod_math.name(class_='form-control', value=each_math.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
     <div class="col-5 col-sm-3">
-      <input class="form-control btn btn-sm btn-block" type="button" onclick="setClipboard('{{each_math.unique_id}}')" title="UUID: {{each_math.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="[{{'%02d' % each_math.id}}] {% if each_math.math_type in math_info %}{{math_info[each_math.math_type]['name']}}{% endif %}">
+      <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_math.unique_id}}')" title="UUID: {{each_math.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="[{{'%02d' % each_math.id}}] {% if each_math.math_type in math_info %}{{math_info[each_math.math_type]['name']}}{% endif %}">
     </div>
     <div class="col-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
     {% if each_math.is_activated -%}
-      {{form_mod_math.math_deactivate(class_='form-control btn btn-sm btn-block')}}
+      {{form_mod_math.math_deactivate(class_='form-control btn btn-primary btn-sm btn-block')}}
     {% else -%}
-      {{form_mod_math.math_activate(class_='form-control btn btn-sm btn-block')}}
+      {{form_mod_math.math_activate(class_='form-control btn btn-primary btn-sm btn-block')}}
     {% endif -%}
     </div>
 
     <div class="col-4 col-sm-2">
-      {{form_mod_math.math_order_up(class_='form-control btn btn-sm btn-block')}}
+      {{form_mod_math.math_order_up(class_='form-control btn btn-primary btn-sm btn-block')}}
     </div>
     <div class="col-4 col-sm-2">
-      {{form_mod_math.math_order_down(class_='form-control btn btn-sm btn-block')}}
+      {{form_mod_math.math_order_down(class_='form-control btn btn-primary btn-sm btn-block')}}
     </div>
 
   </div>
@@ -48,10 +48,10 @@
 
     <div style="padding: 0.5em;" class="row small-gutters">
       <div class="col-auto">
-        {{form_mod_math.math_mod(class_='form-control btn btn-sm')}}
+        {{form_mod_math.math_mod(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto">
-        {{form_mod_math.math_delete(class_='form-control btn btn-sm',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_mod_math.math_delete(class_='form-control btn btn-primary btn-sm',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
     </div>
 

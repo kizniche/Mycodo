@@ -19,7 +19,7 @@
       {{form_conditional.name(class_='form-control', value=each_cond.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
     <div class="col-5 col-sm-4 col-md-4 col-lg-4">
-      <input class="form-control btn btn-sm" type="button" onclick="setClipboard('{{each_cond.unique_id}}')" title="UUID: {{each_cond.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{dict_translation['conditional']['title']}}
+      <input class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_cond.unique_id}}')" title="UUID: {{each_cond.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{dict_translation['conditional']['title']}}
         {%- if each_cond.is_activated %} [{{_('Active')}}]
         {%- else %} [{{_('Inactive')}}]
         {%- endif -%}
@@ -28,9 +28,9 @@
 
     <div class="col-6 col-sm-4 col-md-4 col-lg-4">
       {%- if each_cond.is_activated %}
-        {{form_conditional.deactivate_cond(class_='form-control btn btn-sm')}}
+        {{form_conditional.deactivate_cond(class_='form-control btn btn-primary btn-sm')}}
       {%- else %}
-        {{form_conditional.activate_cond(class_='form-control btn btn-sm')}}
+        {{form_conditional.activate_cond(class_='form-control btn btn-primary btn-sm')}}
       {%- endif -%}
     </div>
   </div>
@@ -39,19 +39,19 @@
 
     <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em;">
       <div class="col-auto">
-        {{form_conditional.save_conditional(class_='form-control btn btn-sm')}}
+        {{form_conditional.save_conditional(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto">
-        {{form_conditional.delete_conditional(class_='form-control btn btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_conditional.delete_conditional(class_='form-control btn btn-primary btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
       <div class="col-auto">
-        {{form_conditional.test_all_actions(class_='form-control btn btn-sm')}}
+        {{form_conditional.test_all_actions(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto">
-        {{form_conditional.order_up(class_='form-control btn btn-sm')}}
+        {{form_conditional.order_up(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto">
-        {{form_conditional.order_down(class_='form-control btn btn-sm')}}
+        {{form_conditional.order_down(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto my-auto">
         <h5>{{_('Help')}} <a href="/help#conditional" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
@@ -102,7 +102,7 @@
           {{form_conditional.condition_type(class_='form-control')}}
         </div>
         <div class="col-auto">
-          {{form_conditional.add_condition(class_='form-control btn btn-sm')}}
+          {{form_conditional.add_condition(class_='form-control btn btn-primary btn-sm')}}
         </div>
       </div>
       </form>
@@ -117,10 +117,10 @@
 
     <div class="row align-items-end small-gutters" style="padding-bottom: 0.3em; border-top: 1px dashed #ddd">
       <div class="col-auto">
-        {{form_conditional_conditions.save_condition(class_='form-control btn btn-sm')}}
+        {{form_conditional_conditions.save_condition(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto">
-        {{form_conditional_conditions.delete_condition(class_='form-control btn btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_conditional_conditions.delete_condition(class_='form-control btn btn-primary btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
 
     {% if each_condition.condition_type == 'measurement' %}
@@ -162,7 +162,7 @@
           {{form_conditional.action_type(class_='form-control')}}
         </div>
         <div class="col-auto">
-          {{form_conditional.add_action(class_='form-control btn btn-sm')}}
+          {{form_conditional.add_action(class_='form-control btn btn-primary btn-sm')}}
         </div>
       </div>
 
@@ -179,10 +179,10 @@
 
     <div class="row align-items-end small-gutters" style="padding-bottom: 0.3em; border-top: 1px dashed #ddd">
       <div class="col-auto">
-        {{form_actions.save_action(class_='form-control btn btn-sm')}}
+        {{form_actions.save_action(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto">
-        {{form_actions.delete_action(class_='form-control btn btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_actions.delete_action(class_='form-control btn btn-primary btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
 
       {% include 'pages/function_options/action_options/'+each_action.action_type+'.html' %}

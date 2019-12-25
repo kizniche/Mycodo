@@ -14,7 +14,7 @@
       </a>
     </div>
     <div class="col-10 col-sm-11">
-      <input class="form-control btn btn-sm" disabled="" title="UUID: {{each_function.unique_id}}" value="{{each_function.name}}" type="text">
+      <input class="form-control btn btn-primary btn-sm" disabled="" title="UUID: {{each_function.unique_id}}" value="{{each_function.name}}" type="text">
     </div>
   </div>
 
@@ -22,16 +22,16 @@
 
     <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em;">
       <div class="col-auto">
-        {{form_function.save_function(class_='form-control btn btn-sm')}}
+        {{form_function.save_function(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto">
-        {{form_function.delete_function(class_='form-control btn btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_function.delete_function(class_='form-control btn btn-primary btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
       <div class="col-auto">
-      {{form_function.order_up(class_='form-control btn btn-sm')}}
+      {{form_function.order_up(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto">
-        {{form_function.order_down(class_='form-control btn btn-sm')}}
+        {{form_function.order_down(class_='form-control btn btn-primary btn-sm')}}
       </div>
     </div>
 

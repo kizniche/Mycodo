@@ -22,7 +22,7 @@
       {{form_mod_pid_base.name(class_='form-control', value=each_pid.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
     <div class="col-5 col-sm-4 col-md-2 col-lg-4">
-      <input class="form-control btn btn-sm" type="button" onclick="setClipboard('{{each_pid.unique_id}}')" title="UUID: {{each_pid.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="PID Controller
+      <input class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_pid.unique_id}}')" title="UUID: {{each_pid.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="PID Controller
       {%- if each_pid.is_activated and not each_pid.is_paused %} [{{_('Active')}}]
       {%- elif each_pid.is_activated and each_pid.is_paused %} [{{_('Paused')}}]
       {%- elif each_pid.is_held %} [{{_('On Hold')}}]
@@ -32,23 +32,23 @@
     </div>
   {%- if each_pid.is_activated %}
     <div class="col-6 col-sm-4 col-md-2 col-lg-2">
-      {{form_mod_pid_base.pid_deactivate(class_='form-control btn btn-sm')}}
+      {{form_mod_pid_base.pid_deactivate(class_='form-control btn btn-primary btn-sm')}}
     </div>
     {%- if each_pid.is_paused or each_pid.is_held %}
     <div class="col-6 col-sm-12 col-md-4 col-lg-2">
-      {{form_mod_pid_base.pid_resume(class_='form-control btn btn-sm')}}
+      {{form_mod_pid_base.pid_resume(class_='form-control btn btn-primary btn-sm')}}
     </div>
     {%- else %}
     <div class="col-6 col-sm-6 col-md-2 col-lg-1">
-      {{form_mod_pid_base.pid_pause(class_='form-control btn btn-sm')}}
+      {{form_mod_pid_base.pid_pause(class_='form-control btn btn-primary btn-sm')}}
     </div>
     <div class="col-6 col-sm-6 col-md-2 col-lg-1">
-      {{form_mod_pid_base.pid_hold(class_='form-control btn btn-sm')}}
+      {{form_mod_pid_base.pid_hold(class_='form-control btn btn-primary btn-sm')}}
     </div>
     {%- endif -%}
   {%- else %}
     <div class="col-6 col-sm-4 col-md-6 col-lg-4">
-      {{form_mod_pid_base.pid_activate(class_='form-control btn btn-sm')}}
+      {{form_mod_pid_base.pid_activate(class_='form-control btn btn-primary btn-sm')}}
     </div>
   {%- endif -%}
   </div>
@@ -57,16 +57,16 @@
 
     <div class="row small-gutters" style="padding: 0.5em;">
       <div class="col-auto small-gutters">
-        {{form_mod_pid_base.pid_mod(class_='form-control btn btn-sm')}}
+        {{form_mod_pid_base.pid_mod(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto small-gutters">
-        {{form_mod_pid_base.pid_delete(class_='form-control btn btn-sm',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_mod_pid_base.pid_delete(class_='form-control btn btn-primary btn-sm',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
       <div class="col-auto small-gutters">
-        {{form_mod_pid_base.order_up(class_='form-control btn btn-sm')}}
+        {{form_mod_pid_base.order_up(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto small-gutters">
-        {{form_mod_pid_base.order_down(class_='form-control btn btn-sm')}}
+        {{form_mod_pid_base.order_down(class_='form-control btn btn-primary btn-sm')}}
       </div>
     </div>
 
@@ -322,7 +322,7 @@
         </div>
       </div>
       <div class="col-auto small-gutters">
-        {{form_mod_pid_base.pid_autotune(class_='form-control btn btn-sm')}}
+        {{form_mod_pid_base.pid_autotune(class_='form-control btn btn-primary btn-sm')}}
       </div>
     </div>
 

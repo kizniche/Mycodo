@@ -21,7 +21,7 @@
       {{form_custom_controller.name(class_='form-control', value=each_controller.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
     <div class="col-5 col-sm-4 col-md-4 col-lg-4">
-      <input class="form-control btn btn-sm" type="button" onclick="setClipboard('{{each_controller.unique_id}}')" title="UUID: {{each_controller.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{dict_translation['controller']['title']}}
+      <input class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_controller.unique_id}}')" title="UUID: {{each_controller.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{dict_translation['controller']['title']}}
         {%- if each_controller.is_activated %} [{{_('Active')}}]
         {%- else %} [{{_('Inactive')}}]
         {%- endif -%}
@@ -30,9 +30,9 @@
 
     <div class="col-6 col-sm-4 col-md-4 col-lg-4">
       {%- if each_controller.is_activated %}
-        {{form_custom_controller.deactivate_controller(class_='form-control btn btn-sm')}}
+        {{form_custom_controller.deactivate_controller(class_='form-control btn btn-primary btn-sm')}}
       {%- else %}
-        {{form_custom_controller.activate_controller(class_='form-control btn btn-sm')}}
+        {{form_custom_controller.activate_controller(class_='form-control btn btn-primary btn-sm')}}
       {%- endif -%}
     </div>
   </div>
@@ -41,16 +41,16 @@
 
     <div class="row small-gutters" style="padding: 0.5em;">
       <div class="col-auto small-gutters">
-        {{form_custom_controller.save_controller(class_='form-control btn btn-sm')}}
+        {{form_custom_controller.save_controller(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto small-gutters">
-        {{form_custom_controller.delete_controller(class_='form-control btn btn-sm',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_custom_controller.delete_controller(class_='form-control btn btn-primary btn-sm',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
       <div class="col-auto small-gutters">
-        {{form_custom_controller.order_up(class_='form-control btn btn-sm')}}
+        {{form_custom_controller.order_up(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto small-gutters">
-        {{form_custom_controller.order_down(class_='form-control btn btn-sm')}}
+        {{form_custom_controller.order_down(class_='form-control btn btn-primary btn-sm')}}
       </div>
     </div>
 
