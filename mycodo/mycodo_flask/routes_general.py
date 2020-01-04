@@ -72,7 +72,7 @@ def home():
         if flask_login.current_user.landing_page == 'live':
             return redirect(url_for('routes_page.page_live'))
         elif flask_login.current_user.landing_page == 'dashboard':
-            return redirect(url_for('routes_page.page_dashboard'))
+            return redirect(url_for('routes_page.page_dashboard_default'))
         return redirect(url_for('routes_page.page_live'))
     return clear_cookie_auth()
 
