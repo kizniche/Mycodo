@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix table colors ([#724](https://github.com/kizniche/mycodo/issues/724))
+ - Fix error when dashboard is set to default landing page ([#727](https://github.com/kizniche/mycodo/issues/727))
 
 ### Features
 
