@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2019-12-08 17:41-0500\n"
+"POT-Creation-Date: 2020-01-06 21:02-0500\n"
 "PO-Revision-Date: 2018-08-21 10:41-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt\n"
@@ -253,8 +253,8 @@ msgid "Set Method"
 msgstr "Definir método"
 
 #: config.py:700
-#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:67
-#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:103
+#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:91
+#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:127
 #: mycodo_flask/templates/pages/function_options/action_options/setpoint_pid.html:15
 msgid "Set Setpoint"
 msgstr "Definir ponto de ajuste"
@@ -650,7 +650,7 @@ msgstr "Calibração"
 msgid "Calculate"
 msgstr ""
 
-#: config_translations.py:29 mycodo_flask/forms/forms_dashboard.py:181
+#: config_translations.py:29 mycodo_flask/forms/forms_dashboard.py:193
 #: mycodo_flask/templates/layout.html:219
 #: mycodo_flask/templates/pages/camera.html:5
 #: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:11
@@ -744,9 +744,9 @@ msgid "Energy Usage"
 msgstr "Uso de energia"
 
 #: config_translations.py:67 mycodo_flask/templates/flash_messages.html:33
-#: mycodo_flask/templates/pages/dashboard.html:499
-#: mycodo_flask/templates/pages/dashboard.html:505
-#: mycodo_flask/templates/pages/dashboard.html:553
+#: mycodo_flask/templates/pages/dashboard.html:494
+#: mycodo_flask/templates/pages/dashboard.html:500
+#: mycodo_flask/templates/pages/dashboard.html:548
 msgid "Error"
 msgstr "Erro"
 
@@ -857,11 +857,11 @@ msgstr "Não disponível"
 msgid "Note"
 msgstr "Nota"
 
-#: config_translations.py:109 mycodo_flask/templates/pages/dashboard.html:488
+#: config_translations.py:109 mycodo_flask/templates/pages/dashboard.html:483
 msgid "Off"
 msgstr "Fora"
 
-#: config_translations.py:111 mycodo_flask/templates/pages/dashboard.html:486
+#: config_translations.py:111 mycodo_flask/templates/pages/dashboard.html:481
 msgid "On"
 msgstr "Em"
 
@@ -888,7 +888,7 @@ msgstr "Senha"
 msgid "Pause"
 msgstr "Pausa"
 
-#: config_translations.py:121 mycodo_flask/forms/forms_dashboard.py:160
+#: config_translations.py:121 mycodo_flask/forms/forms_dashboard.py:170
 #: mycodo_flask/templates/pages/function_options/action_options/method_pid.html:20
 #: mycodo_flask/templates/pages/function_options/action_options/pause_pid.html:11
 #: mycodo_flask/templates/pages/function_options/action_options/resume_pid.html:11
@@ -2340,26 +2340,30 @@ msgid "Gauge Max"
 msgstr "Calibre Máximo"
 
 #: mycodo_flask/forms/forms_dashboard.py:109
+#: mycodo_flask/forms/forms_dashboard.py:123
+#: mycodo_flask/forms/forms_dashboard.py:145
+#: mycodo_flask/forms/forms_dashboard.py:165
+#: mycodo_flask/forms/forms_dashboard.py:187
 msgid "Show Timestamp"
 msgstr "Mostrar data e hora"
 
 #: mycodo_flask/forms/forms_dashboard.py:118
-#: mycodo_flask/forms/forms_dashboard.py:132
-#: mycodo_flask/forms/forms_dashboard.py:148
-#: mycodo_flask/forms/forms_dashboard.py:165
+#: mycodo_flask/forms/forms_dashboard.py:133
+#: mycodo_flask/forms/forms_dashboard.py:154
+#: mycodo_flask/forms/forms_dashboard.py:175
 msgid "Value Font (em)"
 msgstr "Fonte de valor (em)"
 
 #: mycodo_flask/forms/forms_dashboard.py:121
-#: mycodo_flask/forms/forms_dashboard.py:135
-#: mycodo_flask/forms/forms_dashboard.py:151
-#: mycodo_flask/forms/forms_dashboard.py:168
+#: mycodo_flask/forms/forms_dashboard.py:136
+#: mycodo_flask/forms/forms_dashboard.py:157
+#: mycodo_flask/forms/forms_dashboard.py:178
 msgid "Timestamp Font (em)"
 msgstr "Timestamp Font (em)"
 
-#: mycodo_flask/forms/forms_dashboard.py:138
-#: mycodo_flask/forms/forms_dashboard.py:154
-#: mycodo_flask/forms/forms_dashboard.py:174 mycodo_flask/forms/forms_lcd.py:90
+#: mycodo_flask/forms/forms_dashboard.py:139
+#: mycodo_flask/forms/forms_dashboard.py:160
+#: mycodo_flask/forms/forms_dashboard.py:184 mycodo_flask/forms/forms_lcd.py:90
 #: mycodo_flask/forms/forms_lcd.py:105 mycodo_flask/forms/forms_lcd.py:120
 #: mycodo_flask/forms/forms_lcd.py:135 mycodo_flask/forms/forms_lcd.py:150
 #: mycodo_flask/forms/forms_lcd.py:165 mycodo_flask/forms/forms_lcd.py:180
@@ -2367,19 +2371,45 @@ msgstr "Timestamp Font (em)"
 msgid "Decimal Places"
 msgstr "Casas decimais"
 
-#: mycodo_flask/forms/forms_dashboard.py:156
+#: mycodo_flask/forms/forms_dashboard.py:141
+msgid "Show Name"
+msgstr ""
+
+#: mycodo_flask/forms/forms_dashboard.py:142
+msgid "Show Channel"
+msgstr ""
+
+#: mycodo_flask/forms/forms_dashboard.py:143
+#: mycodo_flask/forms/forms_dashboard.py:164
+msgid "Show Unit"
+msgstr ""
+
+#: mycodo_flask/forms/forms_dashboard.py:144
+msgid "Show Measurement"
+msgstr ""
+
+#: mycodo_flask/forms/forms_dashboard.py:162
+#: mycodo_flask/forms/forms_dashboard.py:186
+msgid "Show Status"
+msgstr ""
+
+#: mycodo_flask/forms/forms_dashboard.py:163
+msgid "Show Value"
+msgstr ""
+
+#: mycodo_flask/forms/forms_dashboard.py:166
 msgid "Feature Output Controls"
 msgstr "Controles de saída de recurso"
 
-#: mycodo_flask/forms/forms_dashboard.py:176
+#: mycodo_flask/forms/forms_dashboard.py:188
 msgid "Show PID Information"
 msgstr "Mostrar informações do PID"
 
-#: mycodo_flask/forms/forms_dashboard.py:177
+#: mycodo_flask/forms/forms_dashboard.py:189
 msgid "Show Set Setpoint"
 msgstr "Mostrar Set Setpoint"
 
-#: mycodo_flask/forms/forms_dashboard.py:182
+#: mycodo_flask/forms/forms_dashboard.py:194
 msgid "Image Display Type"
 msgstr "Tipo de exibição de imagem"
 
@@ -2577,8 +2607,8 @@ msgid "Relay State"
 msgstr "Estado do Relé"
 
 #: mycodo_flask/forms/forms_method.py:98 mycodo_flask/forms/forms_output.py:99
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:114
-#: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:70
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:136
+#: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:95
 #: mycodo_flask/templates/pages/method-build.html:294
 #: mycodo_flask/templates/pages/output.html:258
 #: mycodo_flask/templates/pages/output.html:294
@@ -3418,7 +3448,7 @@ msgid "Cannot Check Daemon Status"
 msgstr "Não é possível verificar o status do daemon"
 
 #: mycodo_flask/templates/layout.html:124
-#: mycodo_flask/templates/pages/dashboard.html:404
+#: mycodo_flask/templates/pages/dashboard.html:399
 #: mycodo_flask/templates/pages/output.html:127
 msgid "No Connection"
 msgstr "Sem conexão"
@@ -3780,8 +3810,8 @@ msgstr "Último Timelapse"
 msgid "Last Still"
 msgstr "Último ainda"
 
-#: mycodo_flask/templates/pages/dashboard.html:391
-#: mycodo_flask/templates/pages/dashboard.html:393
+#: mycodo_flask/templates/pages/dashboard.html:386
+#: mycodo_flask/templates/pages/dashboard.html:388
 #: mycodo_flask/templates/pages/function_options/conditional.html:23
 #: mycodo_flask/templates/pages/function_options/custom_controller.html:25
 #: mycodo_flask/templates/pages/function_options/pid.html:26
@@ -3792,7 +3822,7 @@ msgstr "Último ainda"
 msgid "Active"
 msgstr "Ativo"
 
-#: mycodo_flask/templates/pages/dashboard.html:398
+#: mycodo_flask/templates/pages/dashboard.html:393
 #: mycodo_flask/templates/pages/function_options/conditional.html:24
 #: mycodo_flask/templates/pages/function_options/custom_controller.html:26
 #: mycodo_flask/templates/pages/function_options/pid.html:29
@@ -3802,7 +3832,7 @@ msgstr "Ativo"
 msgid "Inactive"
 msgstr "Inativo"
 
-#: mycodo_flask/templates/pages/dashboard.html:534
+#: mycodo_flask/templates/pages/dashboard.html:529
 msgid "Value"
 msgstr "Valor"
 
@@ -4100,23 +4130,23 @@ msgstr ""
 msgid "Y-Axis Options"
 msgstr ""
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:57
-#: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:43
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:79
+#: mycodo_flask/templates/pages/dashboard_options/mod_output_pwm_slider.html:68
 msgid "PWM On"
 msgstr "PWM On"
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:69
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:128
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:91
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:150
 msgid "Out"
 msgstr ""
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:72
-#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:131
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:94
+#: mycodo_flask/templates/pages/dashboard_options/mod_output.html:153
 msgid "Sec On"
 msgstr "Segundo em"
 
-#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:64
-#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:100
+#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:88
+#: mycodo_flask/templates/pages/dashboard_options/mod_pid_control.html:124
 msgid "A numerical value to set the PID setpoint"
 msgstr "Um valor numérico para definir o setpoint do PID"
 
@@ -5504,7 +5534,7 @@ msgstr "Desativar o controlador antes de modificar suas configurações"
 msgid "Dashboard with ID %(id)s successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_dashboard.py:320
+#: mycodo_flask/utils/utils_dashboard.py:336
 #, python-format
 msgid "{dev} with ID %(id)s successfully added"
 msgstr "{dev} com ID %(id)s adicionado com sucesso"

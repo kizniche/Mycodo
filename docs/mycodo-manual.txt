@@ -3688,11 +3688,12 @@ Built-In Inputs
 -   MAX31855K: Temperature link
 -   MAX31856: Temperature link
 -   MAX31865: Temperature link
--   Miflora: Battery, electrical conductivity, light, moisture,
-    temperature link
 -   MCP9808: Temperature link
 -   MH-Z16: Carbon dioxide (CO2) in ppmv link
 -   MH-Z19: Carbon dioxide (CO2) in ppmv link
+-   Miflora: Battery, electrical conductivity, light, moisture,
+    temperature link
+-   MLX90614: Non-contact infrared temperature link
 -   Ruuvitag: Relative humidity, temperature, pressure, battery,
     acceleration (g, x, y, and z) link
 -   SHT1x/SHT2x/SHT3x/SHT7x/SHT31 Smart Gadget: Relative humidity and
@@ -3715,6 +3716,7 @@ Other Built-In Inputs
 -   Mycodo: Daemon RAM use
 -   Mycodo: Network ping response
 -   Mycodo: Network port open
+-   Mycodo: Software Version
 -   The Things Network: Receive measurements from Data Storage
     Integration
 -   MTQQ: Subscribe to MQTT channels
