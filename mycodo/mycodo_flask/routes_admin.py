@@ -46,8 +46,7 @@ from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.controllers import parse_controller_information
-from mycodo.utils.github_release_info import github_latest_release
-from mycodo.utils.github_release_info import github_upgrade_exists
+from mycodo.utils.github_release_info import MycodoRelease
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.system_pi import can_perform_backup
@@ -407,17 +406,18 @@ def admin_upgrade():
     upgrade_available = False
 
     # Check for any new Mycodo releases on github
+    mycodo_releases = MycodoRelease()
     (upgrade_exists,
      releases,
      mycodo_releases,
-     errors) = github_upgrade_exists()
+     current_latest_release,
+     errors) = mycodo_releases.github_upgrade_exists()
 
     if errors:
         for each_error in errors:
             flash(each_error, 'error')
 
     if releases:
-        current_latest_release = github_latest_release(mycodo_releases)
         current_latest_major_version = current_latest_release.split('.')[0]
         current_major_release = releases[0]
         current_releases = []
@@ -431,7 +431,6 @@ def admin_upgrade():
             upgrade_available = True
     else:
         current_releases = []
-        current_latest_release = '0.0.0'
         current_latest_major_version = '0'
         current_major_release = '0.0.0'
         releases_behind = 0

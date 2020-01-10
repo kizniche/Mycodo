@@ -4,6 +4,10 @@
 
  - Fix error during upgrade check if there is no internet connection
 
+### Miscellaneous
+
+ - Refactor upgrade check code into class to reduce the number of hits to github.com
+ - Rearrange dashboard dropdown menu
 
 ## 8.2.2 (2020-01-06)
 

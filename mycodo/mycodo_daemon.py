@@ -74,7 +74,7 @@ from mycodo.utils.function_actions import get_condition_value
 from mycodo.utils.function_actions import get_condition_value_dict
 from mycodo.utils.function_actions import trigger_action
 from mycodo.utils.function_actions import trigger_function_actions
-from mycodo.utils.github_release_info import github_upgrade_exists
+from mycodo.utils.github_release_info import MycodoRelease
 from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.statistics import add_update_csv
 from mycodo.utils.statistics import recreate_stat_file
@@ -930,7 +930,9 @@ class DaemonController:
     def check_mycodo_upgrade_exists(self, now):
         """Check for any new Mycodo releases on github"""
         try:
-            upgrade_exists, _, _, errors = github_upgrade_exists()
+            mycodo_releases = MycodoRelease()
+            (upgrade_exists,
+             _, _, _, errors) = mycodo_releases.github_upgrade_exists()
 
             if errors:
                 for each_error in errors:

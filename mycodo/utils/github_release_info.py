@@ -18,148 +18,144 @@ from config import RELEASE_URL
 logger = logging.getLogger("mycodo.release_info")
 
 
-def mycodo_releases_dict(url):
-    """
-    Receive the content of ``url``, parse it as JSON and return the object.
+class MycodoRelease:
+    def __init__(self):
+        self.update_mycodo_reelases()
 
-    :return: dictionary of json data
-    :rtype: dict
+    def update_mycodo_reelases(self):
+        self.mycodo_releases = self.mycodo_releases_dict(RELEASE_URL)
 
-    :param url: website address
-    :type url: str
-    """
-    try:
-        response = urlopen(url)
-        data = response.read().decode("utf-8")
-        return json.loads(data)
-    except Exception:
-        return {}
+    @staticmethod
+    def mycodo_releases_dict(url):
+        """
+        Receive the content of ``url``, parse it as JSON and return the object.
 
+        :return: dictionary of json data
+        :rtype: dict
 
-def github_releases(mycodo_releases, major_version):
-    """ Return the tarball URL for the latest Mycodo release version """
-    all_versions = []
-    for each_release in mycodo_releases:
-        if re.match('v{maj}.*(\d\.\d)'.format(maj=major_version),
-                    each_release['name']):
-            all_versions.append(each_release['name'][1:])
-    return sort_reverse_list(all_versions)
+        :param url: website address
+        :type url: str
+        """
+        try:
+            response = urlopen(url)
+            data = response.read().decode("utf-8")
+            return json.loads(data)
+        except Exception:
+            return {}
 
+    def github_releases(self, mycodo_releases, major_version):
+        """ Return the tarball URL for the latest Mycodo release version """
+        all_versions = []
+        for each_release in mycodo_releases:
+            if re.match('v{maj}.*(\d\.\d)'.format(maj=major_version),
+                        each_release['name']):
+                all_versions.append(each_release['name'][1:])
+        return self.sort_reverse_list(all_versions)
 
-def github_latest_release(mycodo_releases):
-    """ Return the latest Mycodo release version """
-    all_versions = []
-    for each_release in mycodo_releases:
-        if re.match('v.*(\d\.\d\.\d)', each_release['name']):
-            all_versions.append(each_release['name'][1:])
-    return sort_reverse_list(all_versions)[0]
+    def github_latest_release(self, mycodo_releases):
+        """ Return the latest Mycodo release version """
+        all_versions = []
+        for each_release in mycodo_releases:
+            if re.match('v.*(\d\.\d\.\d)', each_release['name']):
+                all_versions.append(each_release['name'][1:])
+        return self.sort_reverse_list(all_versions)[0]
 
+    def github_upgrade_exists(self):
+        errors = []
+        upgrade_exists = False
+        releases = []
+        current_latest_release = '0.0.0'
+        try:
+            current_latest_release = self.github_latest_release(self.mycodo_releases)
+            current_maj_version = int(MYCODO_VERSION.split('.')[0])
+            releases = self.github_releases(self.mycodo_releases, current_maj_version)
 
-def github_upgrade_exists():
-    errors = []
-    upgrade_exists = False
-    releases = []
-    mycodo_releases = {}
-    try:
-        mycodo_releases = mycodo_releases_dict(RELEASE_URL)
-        current_latest_release = github_latest_release(mycodo_releases)
-        current_maj_version = int(MYCODO_VERSION.split('.')[0])
-        releases = github_releases(mycodo_releases, current_maj_version)
+            if releases:
+                if (parse_version(releases[0]) > parse_version(MYCODO_VERSION) or
+                        parse_version(current_latest_release[0]) > parse_version(MYCODO_VERSION)):
+                    upgrade_exists = True
+        except Exception:
+            logger.exception("github_upgrade_exists()")
+            errors.append(
+                "Could not determine local mycodo version or "
+                "online release versions. Upgrade checks can "
+                "be disabled in the Mycodo configuration.")
+        return upgrade_exists, releases, self.mycodo_releases, current_latest_release, errors
 
-        if releases:
-            if (parse_version(releases[0]) > parse_version(MYCODO_VERSION) or
-                    parse_version(current_latest_release[0]) > parse_version(MYCODO_VERSION)):
-                upgrade_exists = True
-    except Exception:
-        logger.exception("github_upgrade_exists()")
-        errors.append(
-            "Could not determine local mycodo version or "
-            "online release versions. Upgrade checks can "
-            "be disabled in the Mycodo configuration.")
-    return upgrade_exists, releases, mycodo_releases, errors
+    def is_latest_installed(self, major_number):
+        """
+        Check if the latest Mycodo release version is installed.
+        Return True if yes, False if no.
+        """
+        latest_version = self.return_maj_version_url(True, major_number)
+        if latest_version == MYCODO_VERSION:
+            return True
+        return False
 
+    def sort_reverse_list(self, versions_unsorted):
+        """
+        Sort and reverse a list of strings representing Mycodo release version
+        numbers in the format "x.x.x"
 
-def is_latest_installed(major_number):
-    """
-    Check if the latest Mycodo release version is installed.
-    Return True if yes, False if no.
-    """
-    latest_version = return_maj_version_url(True, major_number)
-    if latest_version == MYCODO_VERSION:
-        return True
-    return False
+        :return: list of sorted version strings
+        :rtype: list
 
+        :param versions_unsorted: list of unsorted version strings
+        :type versions_unsorted: list
+        """
+        versions_sorted = []
+        for each_ver in versions_unsorted:
+            versions_sorted.append(each_ver)
+        versions_sorted.sort(key=lambda s: list(map(int, s.split('.'))))
+        versions_sorted.reverse()
+        return versions_sorted
 
-def sort_reverse_list(versions_unsorted):
-    """
-    Sort and reverse a list of strings representing Mycodo release version
-    numbers in the format "x.x.x"
+    def return_latest_version_url(self, version_only):
+        """ Return the tarball URL for the latest Mycodo release version """
+        all_versions = []
+        for each_release in self.mycodo_releases:
+            if re.match('v.*(\d\.\d\.\d)', each_release['name']):
+                all_versions.append(each_release['name'][1:])
 
-    :return: list of sorted version strings
-    :rtype: list
+        for each_release in self.mycodo_releases:
+            if (re.match('v.*(\d\.\d\.\d)', each_release['name']) and
+                    each_release['name'][1:] == self.sort_reverse_list(all_versions)[0]):
+                if version_only:
+                    return each_release['name'][1:]
+                else:
+                    return each_release['tarball_url']
 
-    :param versions_unsorted: list of unsorted version strings
-    :type versions_unsorted: list
-    """
-    versions_sorted = []
-    for each_ver in versions_unsorted:
-        versions_sorted.append(each_ver)
-    versions_sorted.sort(key=lambda s: list(map(int, s.split('.'))))
-    versions_sorted.reverse()
-    return versions_sorted
+    def return_maj_version_url(self, version_only, major_version):
+        """
+        Return the tarball URL for the Mycodo release version with the
+        specified major number
+        """
+        maj_versions = []
+        for each_release in self.mycodo_releases:
+            if re.match('v{maj}.*(\d\.\d)'.format(maj=major_version),
+                        each_release['name']):
+                maj_versions.append(each_release['name'][1:])
 
+        for each_release in self.mycodo_releases:
+            if (re.match('v{maj}.*(\d\.\d)'.format(maj=major_version), each_release['name']) and
+                    each_release['name'][1:] == self.sort_reverse_list(maj_versions)[0]):
+                if version_only:
+                    return each_release['name'][1:]
+                else:
+                    return each_release['tarball_url']
 
-def return_latest_version_url(version_only):
-    """ Return the tarball URL for the latest Mycodo release version """
-    mycodo_releases = mycodo_releases_dict(RELEASE_URL)
-    all_versions = []
-    for each_release in mycodo_releases:
-        if re.match('v.*(\d\.\d\.\d)', each_release['name']):
-            all_versions.append(each_release['name'][1:])
+    def version_information(self, version_only, major_version):
+        """
+        Print all Mycodo releases, and specific info about
+        latest and major releases
+        """
+        print("List of all Mycodo Releases:")
 
-    for each_release in mycodo_releases:
-        if (re.match('v.*(\d\.\d\.\d)', each_release['name']) and
-                each_release['name'][1:] == sort_reverse_list(all_versions)[0]):
-            if version_only:
-                return each_release['name'][1:]
-            else:
-                return each_release['tarball_url']
+        for each_release in self.mycodo_releases:
+            print("{ver} ".format(ver=each_release['name']))
 
-
-def return_maj_version_url(version_only, major_version):
-    """
-    Return the tarball URL for the Mycodo release version with the
-    specified major number
-    """
-    mycodo_releases = mycodo_releases_dict(RELEASE_URL)
-    maj_versions = []
-    for each_release in mycodo_releases:
-        if re.match('v{maj}.*(\d\.\d)'.format(maj=major_version),
-                    each_release['name']):
-            maj_versions.append(each_release['name'][1:])
-
-    for each_release in mycodo_releases:
-        if (re.match('v{maj}.*(\d\.\d)'.format(maj=major_version), each_release['name']) and
-                each_release['name'][1:] == sort_reverse_list(maj_versions)[0]):
-            if version_only:
-                return each_release['name'][1:]
-            else:
-                return each_release['tarball_url']
-
-
-def version_information(version_only, major_version):
-    """
-    Print all Mycodo releases, and specific info about
-    latest and major releases
-    """
-    mycodo_releases = mycodo_releases_dict(RELEASE_URL)
-    print("List of all Mycodo Releases:")
-
-    for each_release in mycodo_releases:
-        print("{ver} ".format(ver=each_release['name']))
-
-    print(return_latest_version_url(version_only))
-    print(return_maj_version_url(version_only, major_version))
+        print(self.return_latest_version_url(version_only))
+        print(self.return_maj_version_url(version_only, major_version))
 
 
 def parseargs(p):
@@ -182,8 +178,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Returns information about Mycodo releases.')
     args = parseargs(parser)
+
+    mycodo_release = MycodoRelease()
+
     if args.islatest:
-        print(is_latest_installed(args.majornumber))
+        print(mycodo_release.is_latest_installed(args.majornumber))
     elif args.currentversion:
         print(MYCODO_VERSION)
     elif args.latest or args.majornumber:
@@ -192,8 +191,8 @@ if __name__ == "__main__":
             parser.print_help()
         else:
             if args.latest:
-                print(return_latest_version_url(args.version))
+                print(mycodo_release.return_latest_version_url(args.version))
             elif args.majornumber:
-                print(return_maj_version_url(args.version, args.majornumber))
+                print(mycodo_release.return_maj_version_url(args.version, args.majornumber))
     else:
         parser.print_help()
