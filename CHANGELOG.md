@@ -1,3 +1,10 @@
+## 8.2.3 (Unreleased)
+
+### Bugfixes
+
+ - Fix error during upgrade check if there is no internet connection
+
+
 ## 8.2.2 (2020-01-06)
 
 ### Bugfixes

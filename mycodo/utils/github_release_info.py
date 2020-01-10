@@ -18,7 +18,7 @@ from config import RELEASE_URL
 logger = logging.getLogger("mycodo.release_info")
 
 
-def json_to_dict(url):
+def mycodo_releases_dict(url):
     """
     Receive the content of ``url``, parse it as JSON and return the object.
 
@@ -28,9 +28,12 @@ def json_to_dict(url):
     :param url: website address
     :type url: str
     """
-    response = urlopen(url)
-    data = response.read().decode("utf-8")
-    return json.loads(data)
+    try:
+        response = urlopen(url)
+        data = response.read().decode("utf-8")
+        return json.loads(data)
+    except Exception:
+        return {}
 
 
 def github_releases(mycodo_releases, major_version):
@@ -58,7 +61,7 @@ def github_upgrade_exists():
     releases = []
     mycodo_releases = {}
     try:
-        mycodo_releases = json_to_dict(RELEASE_URL)
+        mycodo_releases = mycodo_releases_dict(RELEASE_URL)
         current_latest_release = github_latest_release(mycodo_releases)
         current_maj_version = int(MYCODO_VERSION.split('.')[0])
         releases = github_releases(mycodo_releases, current_maj_version)
@@ -108,7 +111,7 @@ def sort_reverse_list(versions_unsorted):
 
 def return_latest_version_url(version_only):
     """ Return the tarball URL for the latest Mycodo release version """
-    mycodo_releases = json_to_dict(RELEASE_URL)
+    mycodo_releases = mycodo_releases_dict(RELEASE_URL)
     all_versions = []
     for each_release in mycodo_releases:
         if re.match('v.*(\d\.\d\.\d)', each_release['name']):
@@ -128,7 +131,7 @@ def return_maj_version_url(version_only, major_version):
     Return the tarball URL for the Mycodo release version with the
     specified major number
     """
-    mycodo_releases = json_to_dict(RELEASE_URL)
+    mycodo_releases = mycodo_releases_dict(RELEASE_URL)
     maj_versions = []
     for each_release in mycodo_releases:
         if re.match('v{maj}.*(\d\.\d)'.format(maj=major_version),
@@ -149,7 +152,7 @@ def version_information(version_only, major_version):
     Print all Mycodo releases, and specific info about
     latest and major releases
     """
-    mycodo_releases = json_to_dict(RELEASE_URL)
+    mycodo_releases = mycodo_releases_dict(RELEASE_URL)
     print("List of all Mycodo Releases:")
 
     for each_release in mycodo_releases:
