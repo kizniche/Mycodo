@@ -9,6 +9,21 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import parse_measurement
 
+def constraints_pass_positive_value(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: float or int
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure value is positive
+    if value <= 0:
+        all_passed = False
+        errors.append("Must be a positive value")
+    return all_passed, errors, mod_input
+
 # Measurements
 measurements_dict = {}
 
@@ -55,8 +70,9 @@ INPUT_INFORMATION = {
         {
             'id': 'mqtt_keepalive',
             'type': 'integer',
-            'default_value': 0,
+            'default_value': 60,
             'required': True,
+            'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Keep Alive'),
             'phrase': lazy_gettext('Maximum amount of time between received signals. Set to 0 to disable.')
         },
