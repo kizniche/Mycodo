@@ -16,7 +16,7 @@ from flask_babel import gettext
 from sqlalchemy import and_
 from sqlalchemy import or_
 
-from mycodo.config import BACKUP_LOG_FILE
+from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_CONTROLLERS_CUSTOM
@@ -1306,7 +1306,7 @@ def settings_diagnostic_delete_settings_database():
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper frontend_restart" \
                   " | ts '[%Y-%m-%d %H:%M:%S]'" \
                   " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
-                                          log=BACKUP_LOG_FILE)
+                                          log=DAEMON_LOG_FILE)
             subprocess.Popen(cmd, shell=True)
         except Exception as except_msg:
             error.append(except_msg)

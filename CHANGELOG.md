@@ -4,6 +4,7 @@
 
  - Fix error during upgrade check if there is no internet connection
  - Fix MQTT input, prevent keepalive from being <= 0 ([#733](https://github.com/kizniche/mycodo/issues/733))
+ - Fix issue restarting frontend using diagnostic database delete feature
 
 ### Miscellaneous
 

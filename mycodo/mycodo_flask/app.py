@@ -154,10 +154,13 @@ def extension_login_manager(app):
 
     @login_manager.user_loader
     def user_loader(user_id):
-        user = User.query.filter(User.id == user_id).first()
-        if not user:
+        try:
+            user = User.query.filter(User.id == user_id).first()
+            if not user:
+                return
+            return user
+        except Exception:
             return
-        return user
 
     @login_manager.request_loader
     def load_user_from_request(req):
