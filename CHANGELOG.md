@@ -13,6 +13,7 @@
 
  - Refactor upgrade check code into class to reduce the number of hits to github.com
  - Rearrange dashboard dropdown menu
+ - Allow creation of measurement/unit IDs with upper-case letters ([#735](https://github.com/kizniche/mycodo/issues/735))
 
 ## 8.2.2 (2020-01-06)
 

@@ -162,13 +162,17 @@ class InputDel(FlaskForm):
 #
 
 class MeasurementAdd(FlaskForm):
-    name = StringField(lazy_gettext('Measurement Name'))
+    id = StringField(
+        lazy_gettext('Measurement ID'), validators=[DataRequired()])
+    name = StringField(
+        lazy_gettext('Measurement Name'), validators=[DataRequired()])
     units = SelectMultipleField(lazy_gettext('Measurement Units'))
     add_measurement = SubmitField(lazy_gettext('Add Measurement'))
 
 
 class MeasurementMod(FlaskForm):
     measurement_id = StringField('Measurement ID', widget=widgets.HiddenInput())
+    id = StringField(lazy_gettext('Measurement ID'))
     name = StringField(lazy_gettext('Measurement Name'))
     units = SelectMultipleField(lazy_gettext('Measurement Units'))
     save_measurement = SubmitField(TRANSLATIONS['save']['title'])
@@ -176,6 +180,7 @@ class MeasurementMod(FlaskForm):
 
 
 class UnitAdd(FlaskForm):
+    id = StringField(lazy_gettext('Unit ID'), validators=[DataRequired()])
     name = StringField(
         lazy_gettext('Unit Name'), validators=[DataRequired()])
     unit = StringField(
@@ -185,6 +190,7 @@ class UnitAdd(FlaskForm):
 
 class UnitMod(FlaskForm):
     unit_id = StringField('Unit ID', widget=widgets.HiddenInput())
+    id = StringField(lazy_gettext('Unit ID'))
     name = StringField(lazy_gettext('Unit Name'))
     unit = StringField(lazy_gettext('Unit Abbreviation'))
     save_unit = SubmitField(TRANSLATIONS['save']['title'])
