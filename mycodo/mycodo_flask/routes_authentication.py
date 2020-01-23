@@ -106,10 +106,7 @@ def create_admin():
         else:
             utils_general.flash_form_errors(form_create_admin)
 
-    try:
-        dismiss_notification = Misc.query.first().dismiss_notification
-    except Exception:
-        dismiss_notification = False
+    dismiss_notification = Misc.query.first().dismiss_notification
 
     return render_template('create_admin.html',
                            dict_translation=TRANSLATIONS,

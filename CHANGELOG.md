@@ -5,6 +5,9 @@
  - Fix error during upgrade check if there is no internet connection
  - Fix MQTT input, prevent keepalive from being <= 0 ([#733](https://github.com/kizniche/mycodo/issues/733))
  - Fix issue restarting frontend using diagnostic database delete feature
+ - Fix ability to import Inputs with measurements/units that don't exist in database ([#735](https://github.com/kizniche/mycodo/issues/735))
+ - Fix ability to modify measurement/unit names that Inputs rely on
+ - Fix inability to modify custom measurements
 
 ### Miscellaneous
 

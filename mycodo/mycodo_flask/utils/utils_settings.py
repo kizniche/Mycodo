@@ -559,6 +559,21 @@ def settings_input_import(form):
                     pass
                 else:
                     error.append("'measurements_dict' list is empty")
+            else:
+                # Check that units and measurements exist in database
+                for _, each_unit_measure in input_info.INPUT_INFORMATION['measurements_dict'].items():
+                    if (each_unit_measure['unit'] not in UNITS and
+                            not Unit.query.filter(Unit.name_safe == each_unit_measure['unit']).count()):
+                        error.append(
+                            "Unit not found in database. "
+                            "Add the unit '{}' to the database before importing.".format(
+                                each_unit_measure['unit']))
+                    if (each_unit_measure['measurement'] not in MEASUREMENTS and
+                            not Measurement.query.filter(Measurement.name_safe == each_unit_measure['measurement']).count()):
+                        error.append(
+                            "Measurement not found in database. "
+                            "Add the measurement '{}' to the database before importing.".format(
+                                each_unit_measure['measurement']))
 
             if 'dependencies_module' in input_info.INPUT_INFORMATION:
                 if not isinstance(input_info.INPUT_INFORMATION['dependencies_module'], list):
@@ -686,14 +701,26 @@ def settings_measurement_mod(form):
         name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
         if name_safe.endswith('_'):
             name_safe = name_safe[:-1]
-        if (Measurement.query.filter(
-                and_(Measurement.name_safe == name_safe,
-                     Measurement.unique_id != mod_measurement.unique_id)).count() or
-                name_safe in MEASUREMENTS):
-            error.append("Measurement name already exists: {name}".format(
-                name=name_safe))
-        else:
-            mod_measurement.name_safe = name_safe
+
+        if name_safe != mod_measurement.name_safe:  # Change measurement name
+            # Ensure no Inputs depend on this measurement
+            for _, each_data in parse_input_information().items():
+                if 'measurements_dict' in each_data:
+                    for _, each_channel_data in each_data['measurements_dict'].items():
+                        if ('measurement' in each_channel_data and
+                                each_channel_data['measurement'] == mod_measurement.name_safe):
+                            error.append(
+                                "Cannot change the name of this measurement "
+                                "because an Input depends on it.")
+            # Ensure a measurement doesn't already exist with the new name
+            if (Measurement.query.filter(
+                    and_(Measurement.name_safe == name_safe,
+                         Measurement.unique_id != mod_measurement.unique_id)).count() or
+                    name_safe in MEASUREMENTS):
+                error.append("Measurement name already exists: {name}".format(
+                    name=name_safe))
+            else:
+                mod_measurement.name_safe = name_safe
 
         if not error:
             db.session.commit()
@@ -710,8 +737,21 @@ def settings_measurement_del(unique_id):
         controller=TRANSLATIONS['measurement']['title'])
     error = []
 
+    measurement = Measurement.query.filter(
+        Measurement.unique_id == unique_id).first()
+
+    # Ensure no Inputs depend on this measurement
+    for _, each_data in parse_input_information().items():
+        if 'measurements_dict' in each_data:
+            for _, each_channel_data in each_data['measurements_dict'].items():
+                if ('measurement' in each_channel_data and
+                        each_channel_data['measurement'] == measurement.name_safe):
+                    error.append("Cannot delete this measurement because "
+                                 "an Input depends on it.")
+
     try:
-        delete_entry_with_id(Measurement, unique_id)
+        if not error:
+            delete_entry_with_id(Measurement, unique_id)
     except Exception as except_msg:
         error.append(except_msg)
 
@@ -724,8 +764,7 @@ def settings_unit_add(form):
         action=TRANSLATIONS['add']['title'],
         controller=gettext("Unit"))
     error = []
-    units = Unit.query.all()
-    choices_unit = choices_units(units)
+    choices_unit = choices_units(Unit.query.all())
 
     if form.validate():
         name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.name.data).lower()
@@ -784,14 +823,25 @@ def settings_unit_mod(form):
                 name_safe in UNITS):
             error.append("Unit name already exists: {name}".format(
                 name=name_safe))
-        elif mod_unit.name_safe != name_safe and conversions:
-            error.append(
-                "Unit belongs to a conversion."
-                "Delete conversion(s) before changing unit.")
-        else:
-            mod_unit.name = form.name.data
-            mod_unit.unit = form.unit.data
-            mod_unit.name_safe = name_safe
+        elif mod_unit.name_safe != name_safe:
+            if conversions:
+                error.append(
+                    "Unit belongs to a conversion."
+                    "Delete conversion(s) before changing unit.")
+            else:
+                # Ensure no Inputs depend on this measurement
+                for _, each_data in parse_input_information().items():
+                    if 'measurements_dict' in each_data:
+                        for _, each_channel_data in each_data['measurements_dict'].items():
+                            if ('unit' in each_channel_data and
+                                    each_channel_data['unit'] == mod_unit.name_safe):
+                                error.append(
+                                    "Cannot change the name of this unit "
+                                    "because an Input depends on it.")
+
+        mod_unit.name = form.name.data
+        mod_unit.unit = form.unit.data
+        mod_unit.name_safe = name_safe
 
         if not error:
             db.session.commit()
@@ -820,6 +870,15 @@ def settings_unit_del(unique_id):
         error.append(
             "Unit belongs to a conversion."
             "Delete conversion(s) before deleting unit.")
+
+    # Ensure no Inputs depend on this unit
+    for _, each_data in parse_input_information().items():
+        if 'measurements_dict' in each_data:
+            for _, each_channel_data in each_data['measurements_dict'].items():
+                if ('unit' in each_channel_data and
+                        each_channel_data['unit'] == del_unit.name_safe):
+                    error.append("Cannot delete this unit because an "
+                                 "Input depends on it.")
 
     try:
         if not error:
