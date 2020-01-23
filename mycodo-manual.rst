@@ -3355,13 +3355,21 @@ measurement is added).
 +------------------------------+---------------------------------------------+
 | Setting                      | Description                                 |
 +==============================+=============================================+
-| Measurement Name             | Name for the measurement (e.g. "Weight",    |
-|                              | "Length").                                  |
+| Measurement ID               | ID for the measurement to use in the        |
+|                              | measurements_dict of input modules (e.g.    |
+|                              | "length", "width", "speed").                |
++------------------------------+---------------------------------------------+
+| Measurement Name             | Common name for the measurement (e.g.       |
+|                              | "Length", "Weight", "Speed").               |
 +------------------------------+---------------------------------------------+
 | Measurement Units            | Select all the units that are associated    |
 |                              | with the measurement.                       |
 +------------------------------+---------------------------------------------+
-| Unit Name                    | Name for the unit (e.g. "Kilogram",         |
+| Unit ID                      | ID for the unit to use in the               |
+|                              | measurements_dict of input modules (e.g.    |
+|                              | "K", "g", "m").                             |
++------------------------------+---------------------------------------------+
+| Unit Name                    | Common name for the unit (e.g. "Kilogram",  |
 |                              | "Meter").                                   |
 +------------------------------+---------------------------------------------+
 | Unit Abbreviation            | Abbreviation for the unit (e.g. "kg", "m"). |
