@@ -5,8 +5,8 @@ from mycodo.inputs.sensorutils import calculate_dewpoint
 # Measurements
 measurements_dict = {
     0: {
-        'measurement': 'temperature',
-        'unit': 'C'
+        'measurement': 'temperature',  # Note: This is the "Measurement ID" on the measurements configuration page
+        'unit': 'C'  # Note: This is the "Unit ID" on the measurements configuration page
     },
     1: {
         'measurement': 'humidity',
