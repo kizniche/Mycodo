@@ -106,9 +106,8 @@ CONTROLLER_INFORMATION = {
         {
             'id': 'select_1',
             'type': 'select',
-            'default_value': '',
+            'default_value': 'SECOND',
             'options_select': [
-                ('', 'No Option Selected'),
                 ('FIRST', 'First Option Selected'),
                 ('SECOND', 'Second Option Selected'),
                 ('THIRD', 'Third Option Selected'),
