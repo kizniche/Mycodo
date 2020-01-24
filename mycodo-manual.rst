@@ -813,16 +813,18 @@ Custom Inputs
 
 There is a Custom Input import system in Mycodo that allows user-created
 Inputs to be created an used in the Mycodo system. Custom Inputs can be
-uploaded on the ``Configure -> Inputs`` page. After import, they will be
+uploaded and imported from the ``Configure -> Inputs`` page. After import, they will be
 available to use on the ``Setup -> Data`` page.
 
 If you have a sensor that is not currently supported by Mycodo, you can
 build your own input module and import it into Mycodo. All information
 about an input is contained within the input module, set in the
-dictionary 'INPUT\_INFORMATION'. Each module will requires at a minimum
-for these variables to be set: 'input\_name\_unique',
+dictionaries 'INPUT\_INFORMATION' and 'measurements\_dict'. Each module will requires at a minimum
+for these variables to be set in INPUT\_INFORMATION: 'input\_name\_unique',
 'input\_manufacturer', 'input\_name', 'measurements\_name', and
-'measurements\_dict'.
+'measurements\_dict'. The measurements\_dict dictionary contains the measurements
+that are acquired and stored, and require both the units and measurements to exist in
+the measurement/unit database (Add missing measurements/units on the ``Configure -> Measurements`` page).
 
 Open any of the built-in modules located in the inputs directory
 (https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for
@@ -833,14 +835,13 @@ an example:
 
 https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py
 
-The following link provides the full list of available
+There's also an input module that includes all available
 INPUT\_INFORMATION options along with descriptions:
 
 https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py
 
 Additionally, I have another github repository devoted to Custom Inputs
-and Controllers that are not included in the built-in set. These can be
-found at
+and Controllers that are not included in the built-in set, at
 `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
 
 The Things Network
