@@ -88,6 +88,15 @@ CONTROLLER_INFORMATION = {
             'phrase': lazy_gettext('Integer 1 Description')
         },
         {
+            'id': 'float_1',
+            'type': 'float',
+            'default_value': 50.2,
+            'required': True,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': lazy_gettext('Float 1'),
+            'phrase': lazy_gettext('Float 1 Description')
+        },
+        {
             'id': 'bool_1',
             'type': 'bool',
             'default_value': True,
@@ -165,6 +174,7 @@ class CustomModule(AbstractController, threading.Thread):
         # Initialize custom options
         self.text_1 = None
         self.integer_1 = None
+        self.float_1 = None
         self.bool_1 = None
         self.select_1 = None
         self.select_measurement_1_device_id = None
@@ -194,9 +204,10 @@ class CustomModule(AbstractController, threading.Thread):
             # messages to appear in the daemon log.
             self.logger.debug(
                 "Custom controller started with options: "
-                "{}, {}, {}, {}, {}, {}, {}".format(
+                "{}, {}, {}, {}, {}, {}, {}, {}".format(
                     self.text_1,
                     self.integer_1,
+                    self.float_1,
                     self.bool_1,
                     self.select_1,
                     self.select_measurement_1_device_id,
