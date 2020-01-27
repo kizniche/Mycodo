@@ -8,6 +8,7 @@
  - Fix ability to import Inputs with measurements/units that don't exist in database ([#735](https://github.com/kizniche/mycodo/issues/735))
  - Fix ability to modify measurement/unit names that Inputs rely on
  - Fix inability to modify custom measurements
+ - Fix error when deleting dashboards from the Config->Diagnostics menu ([#737](https://github.com/kizniche/mycodo/issues/737))
 
 ### Miscellaneous
 

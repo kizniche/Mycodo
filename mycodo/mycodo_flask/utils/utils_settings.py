@@ -43,6 +43,7 @@ from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Unit
 from mycodo.databases.models import User
+from mycodo.databases.models import Widget
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import choices_measurements
@@ -1295,15 +1296,19 @@ def settings_diagnostic_delete_dashboard_elements():
     error = []
 
     dashboard = db_retrieve_table(Dashboard)
-    display_order = db_retrieve_table(DisplayOrder, entry='first')
+    widget = db_retrieve_table(Widget)
 
     if not error:
         try:
             for each_dash in dashboard:
                 db.session.delete(each_dash)
                 db.session.commit()
-            display_order.dashboard = ''
-            db.session.commit()
+
+            for each_widget in widget:
+                db.session.delete(each_widget)
+                db.session.commit()
+
+            Dashboard(id=1, name='Default').save()
         except Exception as except_msg:
             error.append(except_msg)
 
