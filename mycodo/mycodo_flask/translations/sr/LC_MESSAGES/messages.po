@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-01-06 21:02-0500\n"
+"POT-Creation-Date: 2020-01-27 17:12-0500\n"
 "PO-Revision-Date: 2019-01-29 14:08-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sr\n"
@@ -64,8 +64,8 @@ msgid "Difference"
 msgstr "Разлика"
 
 #: config.py:161 mycodo_flask/forms/forms_math.py:75
-#: mycodo_flask/forms/forms_settings.py:200
-#: mycodo_flask/forms/forms_settings.py:208
+#: mycodo_flask/forms/forms_settings.py:206
+#: mycodo_flask/forms/forms_settings.py:214
 msgid "Equation"
 msgstr "Екуатион"
 
@@ -652,7 +652,7 @@ msgid "Calculate"
 msgstr ""
 
 #: config_translations.py:29 mycodo_flask/forms/forms_dashboard.py:193
-#: mycodo_flask/templates/layout.html:219
+#: mycodo_flask/templates/layout.html:216
 #: mycodo_flask/templates/pages/camera.html:5
 #: mycodo_flask/templates/pages/function_options/action_options/photo_email.html:11
 #: mycodo_flask/templates/pages/function_options/action_options/video_email.html:11
@@ -678,9 +678,9 @@ msgid "Create"
 msgstr "Цреате"
 
 #: config_translations.py:39 mycodo_flask/templates/pages/function.html:37
-#: mycodo_flask/templates/settings/measurement.html:116
-#: mycodo_flask/templates/settings/measurement.html:173
-#: mycodo_flask/templates/settings/measurement.html:219
+#: mycodo_flask/templates/settings/measurement.html:128
+#: mycodo_flask/templates/settings/measurement.html:185
+#: mycodo_flask/templates/settings/measurement.html:231
 msgid "Custom"
 msgstr "Обичај"
 
@@ -732,7 +732,7 @@ msgstr "Уредити"
 msgid "E-Mail"
 msgstr "Е-Маил"
 
-#: config_translations.py:65 mycodo_flask/templates/layout.html:222
+#: config_translations.py:65 mycodo_flask/templates/layout.html:219
 #: mycodo_flask/templates/pages/usage.html:3
 #: mycodo_flask/templates/pages/usage.html:5
 #: mycodo_flask/templates/pages/usage.html:35
@@ -777,10 +777,10 @@ msgstr "Инверт"
 
 #: config_translations.py:81 mycodo_flask/templates/tools/notes.html:138
 #: mycodo_flask/utils/utils_notes.py:453
-#: mycodo_flask/utils/utils_settings.py:348
-#: mycodo_flask/utils/utils_settings.py:448
-#: mycodo_flask/utils/utils_settings.py:483
-#: mycodo_flask/utils/utils_settings.py:608
+#: mycodo_flask/utils/utils_settings.py:349
+#: mycodo_flask/utils/utils_settings.py:449
+#: mycodo_flask/utils/utils_settings.py:484
+#: mycodo_flask/utils/utils_settings.py:624
 msgid "Import"
 msgstr "Увоз"
 
@@ -1339,7 +1339,7 @@ msgstr "МОСИ Пин"
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr "ГПИО (користећи БЦМ нумерисање) повезан је са МОСИ пин-ом"
 
-#: config_translations.py:294 inputs/mqtt_paho.py:52
+#: config_translations.py:294 inputs/mqtt_paho.py:67
 msgid "Port"
 msgstr "Порт"
 
@@ -1661,39 +1661,39 @@ msgstr "Омогући АБЦ"
 msgid "Enable automatic baseline correction (ABC)"
 msgstr "Омогући аутоматску корекцију основне линије (АБЦ)"
 
-#: inputs/examples/example_all_options_temperature.py:228 inputs/mh_z19.py:76
+#: inputs/examples/example_all_options_temperature.py:227 inputs/mh_z19.py:76
 msgid "Measurement Range"
 msgstr "Раздаљина"
 
-#: inputs/examples/example_all_options_temperature.py:229 inputs/mh_z19.py:77
+#: inputs/examples/example_all_options_temperature.py:228 inputs/mh_z19.py:77
 msgid "Set the measuring range of the sensor"
 msgstr "Подесите мерни опсег сензора"
 
-#: inputs/mqtt_paho.py:44 mycodo_flask/forms/forms_settings.py:320
+#: inputs/mqtt_paho.py:59 mycodo_flask/forms/forms_settings.py:326
 msgid "Hostname"
 msgstr "Хостнаме"
 
-#: inputs/mqtt_paho.py:45
+#: inputs/mqtt_paho.py:60
 msgid "The hostname of the MQTT server"
 msgstr ""
 
-#: inputs/mqtt_paho.py:53
+#: inputs/mqtt_paho.py:68
 msgid "The port of the MQTT server"
 msgstr ""
 
-#: inputs/mqtt_paho.py:60
+#: inputs/mqtt_paho.py:76
 msgid "Keep Alive"
 msgstr ""
 
-#: inputs/mqtt_paho.py:61
+#: inputs/mqtt_paho.py:77
 msgid "Maximum amount of time between received signals. Set to 0 to disable."
 msgstr ""
 
-#: inputs/mqtt_paho.py:68
+#: inputs/mqtt_paho.py:84
 msgid "Client ID"
 msgstr ""
 
-#: inputs/mqtt_paho.py:69
+#: inputs/mqtt_paho.py:85
 msgid "Unique client ID for connecting to the MQTT server"
 msgstr ""
 
@@ -1777,22 +1777,22 @@ msgstr ""
 msgid "The Things Network Device ID"
 msgstr ""
 
-#: inputs/examples/example_all_options_temperature.py:206
+#: inputs/examples/example_all_options_temperature.py:205
 #: inputs/winsen_zh03b.py:73
 msgid "Fan Off After Measure"
 msgstr "Фан Офф Афтер Меасуре"
 
-#: inputs/examples/example_all_options_temperature.py:207
+#: inputs/examples/example_all_options_temperature.py:206
 #: inputs/winsen_zh03b.py:74
 msgid "Turn the fan on only during the measurement"
 msgstr "Укључите вентилатор само током мерења"
 
-#: inputs/examples/example_all_options_temperature.py:214
+#: inputs/examples/example_all_options_temperature.py:213
 #: inputs/winsen_zh03b.py:81
 msgid "Fan On Duration"
 msgstr "Фан Он Дуратион"
 
-#: inputs/examples/example_all_options_temperature.py:215
+#: inputs/examples/example_all_options_temperature.py:214
 #: inputs/winsen_zh03b.py:82
 msgid "How long to turn the fan on (seconds) before acquiring measurements"
 msgstr "Колико дуго треба укључити вентилатор (секунде) пре добијања мерења"
@@ -1809,19 +1809,19 @@ msgstr ""
 msgid "Please log in to access this page"
 msgstr "Молимо пријавите се за приступ овој страници"
 
-#: mycodo_flask/routes_admin.py:106
+#: mycodo_flask/routes_admin.py:105
 msgid "Backup in progress"
 msgstr "Бацкуп у току"
 
-#: mycodo_flask/routes_admin.py:125
+#: mycodo_flask/routes_admin.py:124
 msgid "Deletion of backup in progress"
 msgstr "Брисање резервне копије у току"
 
-#: mycodo_flask/routes_admin.py:135
+#: mycodo_flask/routes_admin.py:134
 msgid "Restore in progress"
 msgstr "Враћање у току"
 
-#: mycodo_flask/routes_admin.py:376
+#: mycodo_flask/routes_admin.py:375
 msgid ""
 "Upgrade functionality is disabled because an internet connection was "
 "unable to be detected"
@@ -1829,7 +1829,7 @@ msgstr ""
 "Функција надоградње је онемогућена јер није било могуће открити интернет "
 "везу"
 
-#: mycodo_flask/routes_admin.py:396
+#: mycodo_flask/routes_admin.py:395
 msgid ""
 "There was an error encountered during the upgrade process. Check the "
 "upgrade log for details."
@@ -1837,19 +1837,19 @@ msgstr ""
 "Дошло је до грешке током процеса надоградње. Проверите дневник надоградње"
 " за детаље."
 
-#: mycodo_flask/routes_admin.py:481
+#: mycodo_flask/routes_admin.py:480
 msgid "The upgrade (from master branch) has started"
 msgstr "Покренута је надоградња (од главне гране)"
 
-#: mycodo_flask/routes_admin.py:499
+#: mycodo_flask/routes_admin.py:498
 msgid "The upgrade has started"
 msgstr "Надоградња је почела"
 
-#: mycodo_flask/routes_admin.py:519
+#: mycodo_flask/routes_admin.py:518
 msgid "The major version upgrade has started"
 msgstr "Почела је надоградња главне верзије"
 
-#: mycodo_flask/routes_admin.py:522
+#: mycodo_flask/routes_admin.py:521
 msgid "You cannot upgrade if an upgrade is not available"
 msgstr "Не можете надоградити ако надоградња није доступна"
 
@@ -1860,13 +1860,13 @@ msgstr ""
 "администратор већ постоји."
 
 #: mycodo_flask/routes_authentication.py:71
-#: mycodo_flask/utils/utils_settings.py:155
-#: mycodo_flask/utils/utils_settings.py:216
+#: mycodo_flask/utils/utils_settings.py:156
+#: mycodo_flask/utils/utils_settings.py:217
 msgid "Passwords do not match. Please try again."
 msgstr "Лозинке се не поклапају. Молим вас, покушајте поново."
 
 #: mycodo_flask/routes_authentication.py:75
-#: mycodo_flask/utils/utils_settings.py:140
+#: mycodo_flask/utils/utils_settings.py:141
 msgid ""
 "Invalid user name. Must be between 2 and 64 characters and only contain "
 "letters and numbers."
@@ -1875,7 +1875,7 @@ msgstr ""
 "слова и бројеве."
 
 #: mycodo_flask/routes_authentication.py:81
-#: mycodo_flask/utils/utils_settings.py:150
+#: mycodo_flask/utils/utils_settings.py:151
 msgid ""
 "Invalid password. Must be between 6 and 64 characters and only contain "
 "letters, numbers, and symbols."
@@ -1941,9 +1941,9 @@ msgstr "Није могуће покренути ток ако је актива
 
 #: mycodo_flask/forms/forms_authentication.py:36
 #: mycodo_flask/forms/forms_authentication.py:37
-#: mycodo_flask/forms/forms_settings.py:256
-#: mycodo_flask/forms/forms_settings.py:288
-#: mycodo_flask/forms/forms_settings.py:289
+#: mycodo_flask/forms/forms_settings.py:262
+#: mycodo_flask/forms/forms_settings.py:294
+#: mycodo_flask/forms/forms_settings.py:295
 msgid "Repeat Password"
 msgstr "Поновите лозинку"
 
@@ -3046,237 +3046,247 @@ msgstr ""
 msgid "Import Input Module"
 msgstr "Импорт Инпут Модуле"
 
-#: mycodo_flask/forms/forms_settings.py:165
-#: mycodo_flask/forms/forms_settings.py:172
+#: mycodo_flask/forms/forms_settings.py:166
+#: mycodo_flask/forms/forms_settings.py:175
+msgid "Measurement ID"
+msgstr ""
+
+#: mycodo_flask/forms/forms_settings.py:168
+#: mycodo_flask/forms/forms_settings.py:176
 msgid "Measurement Name"
 msgstr "Име мере"
 
-#: mycodo_flask/forms/forms_settings.py:166
-#: mycodo_flask/forms/forms_settings.py:173
+#: mycodo_flask/forms/forms_settings.py:169
+#: mycodo_flask/forms/forms_settings.py:177
 msgid "Measurement Units"
 msgstr "Мјерне јединице"
 
-#: mycodo_flask/forms/forms_settings.py:167
+#: mycodo_flask/forms/forms_settings.py:170
 #: mycodo_flask/templates/settings/measurement.html:13
 msgid "Add Measurement"
 msgstr "Адд Меасуремент"
 
-#: mycodo_flask/forms/forms_settings.py:180
-#: mycodo_flask/forms/forms_settings.py:188
+#: mycodo_flask/forms/forms_settings.py:183
+#: mycodo_flask/forms/forms_settings.py:193
+msgid "Unit ID"
+msgstr ""
+
+#: mycodo_flask/forms/forms_settings.py:185
+#: mycodo_flask/forms/forms_settings.py:194
 msgid "Unit Name"
 msgstr "Назив јединице"
 
-#: mycodo_flask/forms/forms_settings.py:182
-#: mycodo_flask/forms/forms_settings.py:189
+#: mycodo_flask/forms/forms_settings.py:187
+#: mycodo_flask/forms/forms_settings.py:195
 msgid "Unit Abbreviation"
 msgstr "Скраћеница јединице"
 
-#: mycodo_flask/forms/forms_settings.py:183
-#: mycodo_flask/templates/settings/measurement.html:44
+#: mycodo_flask/forms/forms_settings.py:188
+#: mycodo_flask/templates/settings/measurement.html:50
 msgid "Add Unit"
 msgstr "Адд Унит"
 
-#: mycodo_flask/forms/forms_settings.py:196
-#: mycodo_flask/forms/forms_settings.py:206
+#: mycodo_flask/forms/forms_settings.py:202
+#: mycodo_flask/forms/forms_settings.py:212
 msgid "Convert From Unit"
 msgstr "Претвори из јединице"
 
-#: mycodo_flask/forms/forms_settings.py:198
+#: mycodo_flask/forms/forms_settings.py:204
 msgid "Convert To Measurement"
 msgstr "Претвори у мерење"
 
-#: mycodo_flask/forms/forms_settings.py:201
-#: mycodo_flask/templates/settings/measurement.html:71
+#: mycodo_flask/forms/forms_settings.py:207
+#: mycodo_flask/templates/settings/measurement.html:83
 msgid "Add Conversion"
 msgstr "Додај конверзију"
 
-#: mycodo_flask/forms/forms_settings.py:207
+#: mycodo_flask/forms/forms_settings.py:213
 msgid "Convert To Unit"
 msgstr "Претвори у јединицу"
 
-#: mycodo_flask/forms/forms_settings.py:219
+#: mycodo_flask/forms/forms_settings.py:225
 msgid "Role Name"
 msgstr "Име улоге"
 
-#: mycodo_flask/forms/forms_settings.py:220
+#: mycodo_flask/forms/forms_settings.py:226
 #: mycodo_flask/templates/tools/logview.html:3
 msgid "View Logs"
 msgstr "Виев Логс"
 
-#: mycodo_flask/forms/forms_settings.py:221
+#: mycodo_flask/forms/forms_settings.py:227
 msgid "View Stats"
 msgstr "Виев Статс"
 
-#: mycodo_flask/forms/forms_settings.py:222
+#: mycodo_flask/forms/forms_settings.py:228
 msgid "View Camera"
 msgstr "Виев Цамера"
 
-#: mycodo_flask/forms/forms_settings.py:223
+#: mycodo_flask/forms/forms_settings.py:229
 msgid "View Settings"
 msgstr "Прикажи поставке"
 
-#: mycodo_flask/forms/forms_settings.py:224
+#: mycodo_flask/forms/forms_settings.py:230
 msgid "Edit Users"
 msgstr "Измени кориснике"
 
-#: mycodo_flask/forms/forms_settings.py:225
+#: mycodo_flask/forms/forms_settings.py:231
 msgid "Edit Controllers"
 msgstr "Едит Цонтроллерс"
 
-#: mycodo_flask/forms/forms_settings.py:226
+#: mycodo_flask/forms/forms_settings.py:232
 msgid "Edit Settings"
 msgstr "Измена подешавања"
 
-#: mycodo_flask/forms/forms_settings.py:228
+#: mycodo_flask/forms/forms_settings.py:234
 msgid "Add Role"
 msgstr "Адд Роле"
 
-#: mycodo_flask/forms/forms_settings.py:248
-#: mycodo_flask/forms/forms_settings.py:279
+#: mycodo_flask/forms/forms_settings.py:254
+#: mycodo_flask/forms/forms_settings.py:285
 msgid "Passwords must match"
 msgstr "шифре морају да се подударају"
 
-#: mycodo_flask/forms/forms_settings.py:251
-#: mycodo_flask/forms/forms_settings.py:283
+#: mycodo_flask/forms/forms_settings.py:257
+#: mycodo_flask/forms/forms_settings.py:289
 msgid "Password must be 6 or more characters"
 msgstr "Лозинка мора бити 6 или више знакова"
 
-#: mycodo_flask/forms/forms_settings.py:258
+#: mycodo_flask/forms/forms_settings.py:264
 msgid "Role"
 msgstr "Улога"
 
-#: mycodo_flask/forms/forms_settings.py:260
-#: mycodo_flask/forms/forms_settings.py:296
+#: mycodo_flask/forms/forms_settings.py:266
+#: mycodo_flask/forms/forms_settings.py:302
 msgid "Theme"
 msgstr "Тхеме"
 
-#: mycodo_flask/forms/forms_settings.py:261
+#: mycodo_flask/forms/forms_settings.py:267
 #: mycodo_flask/templates/settings/users.html:13
 msgid "Add User"
 msgstr "Додати корисника"
 
-#: mycodo_flask/forms/forms_settings.py:274
+#: mycodo_flask/forms/forms_settings.py:280
 msgid "New Password"
 msgstr "Нев Пассворд"
 
-#: mycodo_flask/forms/forms_settings.py:292
+#: mycodo_flask/forms/forms_settings.py:298
 msgid "Role ID"
 msgstr "ИД улоге"
 
-#: mycodo_flask/forms/forms_settings.py:308
+#: mycodo_flask/forms/forms_settings.py:314
 msgid "Enable I2C"
 msgstr "Енабле И2Ц"
 
-#: mycodo_flask/forms/forms_settings.py:309
+#: mycodo_flask/forms/forms_settings.py:315
 msgid "Disable I2C"
 msgstr "Онемогући И2Ц"
 
-#: mycodo_flask/forms/forms_settings.py:310
+#: mycodo_flask/forms/forms_settings.py:316
 msgid "Enable 1-Wire"
 msgstr "Омогући 1-Вире"
 
-#: mycodo_flask/forms/forms_settings.py:311
+#: mycodo_flask/forms/forms_settings.py:317
 msgid "Disable 1-Wire"
 msgstr "Онемогући 1-Вире"
 
-#: mycodo_flask/forms/forms_settings.py:312
+#: mycodo_flask/forms/forms_settings.py:318
 msgid "Enable Serial"
 msgstr "Енабле Сериал"
 
-#: mycodo_flask/forms/forms_settings.py:313
+#: mycodo_flask/forms/forms_settings.py:319
 msgid "Disable Serial"
 msgstr "Онемогући серијски"
 
-#: mycodo_flask/forms/forms_settings.py:314
+#: mycodo_flask/forms/forms_settings.py:320
 msgid "Enable SPI"
 msgstr "Омогући СПИ"
 
-#: mycodo_flask/forms/forms_settings.py:315
+#: mycodo_flask/forms/forms_settings.py:321
 msgid "Disable SPI"
 msgstr "Онемогући СПИ"
 
-#: mycodo_flask/forms/forms_settings.py:316
+#: mycodo_flask/forms/forms_settings.py:322
 msgid "Enable SSH"
 msgstr "Омогући ССХ"
 
-#: mycodo_flask/forms/forms_settings.py:317
+#: mycodo_flask/forms/forms_settings.py:323
 msgid "Disable SSH"
 msgstr "Онемогући ССХ"
 
-#: mycodo_flask/forms/forms_settings.py:318
+#: mycodo_flask/forms/forms_settings.py:324
 msgid "Enable Pi Camera"
 msgstr "Енабле Пи Цамера"
 
-#: mycodo_flask/forms/forms_settings.py:319
+#: mycodo_flask/forms/forms_settings.py:325
 msgid "Disable Pi Camera"
 msgstr "Дисабле Пи Цамера"
 
-#: mycodo_flask/forms/forms_settings.py:321
+#: mycodo_flask/forms/forms_settings.py:327
 msgid "Change Hostname"
 msgstr "Цханге Хостнаме"
 
-#: mycodo_flask/forms/forms_settings.py:322
+#: mycodo_flask/forms/forms_settings.py:328
 msgid "Configure pigpiod"
 msgstr "Цонфигуре пигпиод"
 
-#: mycodo_flask/forms/forms_settings.py:323
+#: mycodo_flask/forms/forms_settings.py:329
 msgid "Reconfigure"
 msgstr "Рецонфигуре"
 
-#: mycodo_flask/forms/forms_settings.py:326
+#: mycodo_flask/forms/forms_settings.py:332
 msgid "Conditional Sample Rate (seconds)"
 msgstr "Условна стопа узорковања (у секундама)"
 
-#: mycodo_flask/forms/forms_settings.py:329
+#: mycodo_flask/forms/forms_settings.py:335
 msgid "Input Sample Rate (seconds)"
 msgstr "Улазна стопа узорковања (у секундама)"
 
-#: mycodo_flask/forms/forms_settings.py:332
+#: mycodo_flask/forms/forms_settings.py:338
 msgid "Math Sample Rate (seconds)"
 msgstr "Стопа узорковања математике (у секундама)"
 
-#: mycodo_flask/forms/forms_settings.py:335
+#: mycodo_flask/forms/forms_settings.py:341
 msgid "Output Sample Rate (seconds)"
 msgstr "Излазна брзина узорковања (у секундама)"
 
-#: mycodo_flask/forms/forms_settings.py:338
+#: mycodo_flask/forms/forms_settings.py:344
 msgid "PID Sample Rate (seconds)"
 msgstr "ПИД стопа узорковања (у секундама)"
 
-#: mycodo_flask/forms/forms_settings.py:340
+#: mycodo_flask/forms/forms_settings.py:346
 msgid "Save Sample Rates"
 msgstr "Саве Сампле Ратес"
 
-#: mycodo_flask/forms/forms_settings.py:348
-msgid "Delete All Dashboard Elements"
-msgstr "Избришите све елементе контролне табле"
+#: mycodo_flask/forms/forms_settings.py:354
+msgid "Delete All Dashboards"
+msgstr ""
 
-#: mycodo_flask/forms/forms_settings.py:349
+#: mycodo_flask/forms/forms_settings.py:355
 msgid "Delete All Inputs"
 msgstr "Избриши све улазе"
 
-#: mycodo_flask/forms/forms_settings.py:350
+#: mycodo_flask/forms/forms_settings.py:356
 msgid "Delete All Maths"
 msgstr "Избриши све математике"
 
-#: mycodo_flask/forms/forms_settings.py:351
+#: mycodo_flask/forms/forms_settings.py:357
 msgid "Delete All Notes and Note Tags"
 msgstr "Избриши све напомене и напомене"
 
-#: mycodo_flask/forms/forms_settings.py:352
+#: mycodo_flask/forms/forms_settings.py:358
 msgid "Delete All Outputs"
 msgstr "Избриши све излазе"
 
-#: mycodo_flask/forms/forms_settings.py:353
+#: mycodo_flask/forms/forms_settings.py:359
 msgid "Delete Settings Database"
 msgstr "Избриши базу података поставки"
 
-#: mycodo_flask/forms/forms_settings.py:354
-#: mycodo_flask/forms/forms_settings.py:355
+#: mycodo_flask/forms/forms_settings.py:360
+#: mycodo_flask/forms/forms_settings.py:361
 msgid "Delete File"
 msgstr "Делете Филе"
 
-#: mycodo_flask/forms/forms_settings.py:356
+#: mycodo_flask/forms/forms_settings.py:362
 msgid "Reset Email Counter"
 msgstr ""
 
@@ -3383,7 +3393,7 @@ msgid "Info"
 msgstr "Инфо"
 
 #: mycodo_flask/templates/layout-remote.html:47
-#: mycodo_flask/templates/layout.html:205
+#: mycodo_flask/templates/layout.html:202
 msgid "Setup"
 msgstr "Поставити"
 
@@ -3398,8 +3408,8 @@ msgstr ""
 
 #: mycodo_flask/templates/layout-settings.html:36
 #: mycodo_flask/templates/settings/input.html:41
-#: mycodo_flask/templates/settings/measurement.html:116
-#: mycodo_flask/templates/settings/measurement.html:293
+#: mycodo_flask/templates/settings/measurement.html:128
+#: mycodo_flask/templates/settings/measurement.html:305
 msgid "Measurements"
 msgstr "Меасурементс"
 
@@ -3458,11 +3468,11 @@ msgstr "Асинц"
 msgid "Dashboards"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:193
+#: mycodo_flask/templates/layout.html:197
 msgid "Add Dashboard"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:212
+#: mycodo_flask/templates/layout.html:209
 #: mycodo_flask/templates/tools/calibration.html:3
 #: mycodo_flask/templates/tools/calibration_options/atlas_ec.html:3
 #: mycodo_flask/templates/tools/calibration_options/atlas_ezo_pump.html:3
@@ -3471,57 +3481,57 @@ msgstr ""
 msgid "Calibration & Setup"
 msgstr "Калибрација и подешавање"
 
-#: mycodo_flask/templates/layout.html:217
+#: mycodo_flask/templates/layout.html:214
 msgid "More"
 msgstr "Више"
 
-#: mycodo_flask/templates/layout.html:223
+#: mycodo_flask/templates/layout.html:220
 #: mycodo_flask/templates/pages/usage_reports.html:12
 msgid "Energy Usage Reports"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:241
+#: mycodo_flask/templates/layout.html:238
 #: mycodo_flask/templates/pages/function_options/conditional.html:57
 msgid "Help"
 msgstr "Помоћ"
 
-#: mycodo_flask/templates/layout.html:243
+#: mycodo_flask/templates/layout.html:240
 msgid "Mycodo Manual"
 msgstr "Мицодо Мануал"
 
-#: mycodo_flask/templates/layout.html:244
+#: mycodo_flask/templates/layout.html:241
 msgid "Mycodo API Info"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:245
+#: mycodo_flask/templates/layout.html:242
 msgid "Mycodo API Docs"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:247
+#: mycodo_flask/templates/layout.html:244
 msgid "Discussion Forum"
 msgstr ""
 
-#: mycodo_flask/templates/layout.html:248
+#: mycodo_flask/templates/layout.html:245
 msgid "Submit an Issue"
 msgstr "Субмит а Иссуе"
 
-#: mycodo_flask/templates/layout.html:249
+#: mycodo_flask/templates/layout.html:246
 msgid "Mycodo on Github"
 msgstr "Мицодо на Гитхубу"
 
-#: mycodo_flask/templates/layout.html:250
+#: mycodo_flask/templates/layout.html:247
 msgid "Changelog"
 msgstr "Цхангелог"
 
-#: mycodo_flask/templates/layout.html:257
+#: mycodo_flask/templates/layout.html:254
 msgid "Configure"
 msgstr "Цонфигуре"
 
-#: mycodo_flask/templates/layout.html:258
+#: mycodo_flask/templates/layout.html:255
 msgid "Mycodo Logs"
 msgstr "Мицодо Логс"
 
-#: mycodo_flask/templates/layout.html:259
+#: mycodo_flask/templates/layout.html:256
 #: mycodo_flask/templates/pages/info.html:3
 #: mycodo_flask/templates/pages/info.html:5
 msgid "System Information"
@@ -3530,42 +3540,42 @@ msgstr "Информациони систем"
 #: mycodo_flask/templates/admin/dependencies.html:3
 #: mycodo_flask/templates/admin/dependencies.html:5
 #: mycodo_flask/templates/admin/dependencies.html:44
-#: mycodo_flask/templates/layout.html:261
+#: mycodo_flask/templates/layout.html:258
 msgid "Dependencies"
 msgstr "Зависности"
 
-#: mycodo_flask/templates/layout.html:263
+#: mycodo_flask/templates/layout.html:260
 msgid "Upgrade"
 msgstr "Упграде"
 
 #: mycodo_flask/templates/admin/backup.html:3
 #: mycodo_flask/templates/admin/backup.html:5
 #: mycodo_flask/templates/admin/backup.html:12
-#: mycodo_flask/templates/layout.html:264
+#: mycodo_flask/templates/layout.html:261
 msgid "Backup Restore"
 msgstr "Бацкуп Ресторе"
 
-#: mycodo_flask/templates/layout.html:266
+#: mycodo_flask/templates/layout.html:263
 msgid "Restart Backend"
 msgstr "Рестарт Бацкенд"
 
-#: mycodo_flask/templates/layout.html:267
+#: mycodo_flask/templates/layout.html:264
 msgid "Restart Frontend"
 msgstr "Рестарт Фронтенд"
 
-#: mycodo_flask/templates/layout.html:269
+#: mycodo_flask/templates/layout.html:266
 msgid "Restart System"
 msgstr "Рестарт Систем"
 
-#: mycodo_flask/templates/layout.html:270
+#: mycodo_flask/templates/layout.html:267
 msgid "Shutdown System"
 msgstr "Схутдовн Систем"
 
-#: mycodo_flask/templates/layout.html:272
+#: mycodo_flask/templates/layout.html:269
 msgid "Remote Admin"
 msgstr "Ремоте Админ"
 
-#: mycodo_flask/templates/layout.html:274
+#: mycodo_flask/templates/layout.html:271
 msgid "Logout"
 msgstr "Одјавити се"
 
@@ -4051,7 +4061,7 @@ msgstr "Цост"
 
 #: mycodo_flask/templates/pages/usage.html:208
 #: mycodo_flask/templates/settings/input.html:38
-#: mycodo_flask/templates/settings/measurement.html:224
+#: mycodo_flask/templates/settings/measurement.html:236
 msgid "ID"
 msgstr "ИД"
 
@@ -5068,7 +5078,7 @@ msgid "Imported Controller Modules"
 msgstr ""
 
 #: mycodo_flask/templates/settings/general.html:11
-#: mycodo_flask/utils/utils_settings.py:278
+#: mycodo_flask/utils/utils_settings.py:279
 msgid "General Settings"
 msgstr "Генерал Сеттингс"
 
@@ -5206,17 +5216,17 @@ msgstr "Увезени улазни модули"
 msgid "Manufacturer"
 msgstr ""
 
-#: mycodo_flask/templates/settings/measurement.html:173
-#: mycodo_flask/templates/settings/measurement.html:320
+#: mycodo_flask/templates/settings/measurement.html:185
+#: mycodo_flask/templates/settings/measurement.html:332
 msgid "Units"
 msgstr "Јединице"
 
-#: mycodo_flask/templates/settings/measurement.html:219
+#: mycodo_flask/templates/settings/measurement.html:231
 msgid "Conversions"
 msgstr "Конверзије"
 
-#: mycodo_flask/templates/settings/measurement.html:293
-#: mycodo_flask/templates/settings/measurement.html:320
+#: mycodo_flask/templates/settings/measurement.html:305
+#: mycodo_flask/templates/settings/measurement.html:332
 msgid "All"
 msgstr "Све"
 
@@ -5503,7 +5513,7 @@ msgstr "Деактивирајте контролер пре мењања њег
 msgid "Dashboard with ID %(id)s successfully added"
 msgstr ""
 
-#: mycodo_flask/utils/utils_dashboard.py:336
+#: mycodo_flask/utils/utils_dashboard.py:339
 #, python-format
 msgid "{dev} with ID %(id)s successfully added"
 msgstr "{dev} са ИД %(id)s успешно додато"
@@ -5744,7 +5754,7 @@ msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
 msgstr ""
 
 #: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
-#: mycodo_flask/utils/utils_settings.py:1320
+#: mycodo_flask/utils/utils_settings.py:1384
 msgid "File"
 msgstr "Филе"
 
@@ -5837,54 +5847,54 @@ msgstr ""
 msgid "Remote Host %(host)s with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Удаљени хост %(host)s са ИД %(id)s (%(uuid)s) је успјешно додан"
 
-#: mycodo_flask/utils/utils_settings.py:84
+#: mycodo_flask/utils/utils_settings.py:85
 msgid "User Role"
 msgstr "Корисничка улога"
 
-#: mycodo_flask/utils/utils_settings.py:146
+#: mycodo_flask/utils/utils_settings.py:147
 msgid "Another user already has that email address."
 msgstr "Други корисник већ има ту адресу е-поште."
 
-#: mycodo_flask/utils/utils_settings.py:214
+#: mycodo_flask/utils/utils_settings.py:215
 msgid "Invalid password"
 msgstr "Неважећа лозинка"
 
-#: mycodo_flask/utils/utils_settings.py:661
+#: mycodo_flask/utils/utils_settings.py:677
 #, python-format
 msgid "Measurement with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Мерење са ИД %(id)s (%(uuid)s) је успешно додато"
 
-#: mycodo_flask/utils/utils_settings.py:725
 #: mycodo_flask/utils/utils_settings.py:766
-#: mycodo_flask/utils/utils_settings.py:808
+#: mycodo_flask/utils/utils_settings.py:806
+#: mycodo_flask/utils/utils_settings.py:859
 msgid "Unit"
 msgstr "Јединица"
 
-#: mycodo_flask/utils/utils_settings.py:747
+#: mycodo_flask/utils/utils_settings.py:787
 #, python-format
 msgid "Unit with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Јединица са ИД %(id)s (%(uuid)s) је успешно додата"
 
-#: mycodo_flask/utils/utils_settings.py:837
-#: mycodo_flask/utils/utils_settings.py:879
-#: mycodo_flask/utils/utils_settings.py:912
+#: mycodo_flask/utils/utils_settings.py:897
+#: mycodo_flask/utils/utils_settings.py:939
+#: mycodo_flask/utils/utils_settings.py:972
 msgid "Conversion"
 msgstr "Конверзија"
 
-#: mycodo_flask/utils/utils_settings.py:860
+#: mycodo_flask/utils/utils_settings.py:920
 #, python-format
 msgid "Conversion with ID %(id)s (%(uuid)s) successfully added"
 msgstr "Конверзија са ИД %(id)s (%(uuid)s) је успешно додата"
 
-#: mycodo_flask/utils/utils_settings.py:1124
+#: mycodo_flask/utils/utils_settings.py:1184
 msgid "Pi Settings"
 msgstr "Пи Сеттингс"
 
-#: mycodo_flask/utils/utils_settings.py:1134
+#: mycodo_flask/utils/utils_settings.py:1194
 msgid "Alert Settings"
 msgstr "Поставке упозорења"
 
-#: mycodo_flask/utils/utils_settings.py:1146
+#: mycodo_flask/utils/utils_settings.py:1206
 #, python-format
 msgid ""
 "Test email sent to %(recip)s. Check your inbox to see if it was "
@@ -5893,7 +5903,7 @@ msgstr ""
 "Е-пошта теста послата на %(recip)s. Проверите своју пристиглу пошту да "
 "бисте видели да ли је била успешна."
 
-#: mycodo_flask/utils/utils_settings.py:1344
+#: mycodo_flask/utils/utils_settings.py:1408
 msgid "Reset email counter"
 msgstr ""
 
@@ -6114,4 +6124,7 @@ msgstr ""
 
 #~ msgid "Visible Elements"
 #~ msgstr "Висибле Елементс"
+
+#~ msgid "Delete All Dashboard Elements"
+#~ msgstr "Избришите све елементе контролне табле"
 

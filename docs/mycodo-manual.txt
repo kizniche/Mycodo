@@ -923,16 +923,20 @@ Custom Inputs
 
 There is a Custom Input import system in Mycodo that allows user-created
 Inputs to be created an used in the Mycodo system. Custom Inputs can be
-uploaded on the Configure -> Inputs page. After import, they will be
-available to use on the Setup -> Data page.
+uploaded and imported from the Configure -> Inputs page. After import,
+they will be available to use on the Setup -> Data page.
 
 If you have a sensor that is not currently supported by Mycodo, you can
 build your own input module and import it into Mycodo. All information
 about an input is contained within the input module, set in the
-dictionary ‘INPUT_INFORMATION’. Each module will requires at a minimum
-for these variables to be set: ‘input_name_unique’,
-‘input_manufacturer’, ‘input_name’, ‘measurements_name’, and
-‘measurements_dict’.
+dictionaries ‘INPUT_INFORMATION’ and ‘measurements_dict’. Each module
+will requires at a minimum for these variables to be set in
+INPUT_INFORMATION: ‘input_name_unique’, ‘input_manufacturer’,
+‘input_name’, ‘measurements_name’, and ‘measurements_dict’. The
+measurements_dict dictionary contains the measurements that are acquired
+and stored, and require both the units and measurements to exist in the
+measurement/unit database (Add missing measurements/units on the
+Configure -> Measurements page).
 
 Open any of the built-in modules located in the inputs directory
 (https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for
@@ -943,14 +947,14 @@ an example:
 
 https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py
 
-The following link provides the full list of available INPUT_INFORMATION
-options along with descriptions:
+There’s also an input module that includes all available
+INPUT_INFORMATION options along with descriptions:
 
 https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py
 
 Additionally, I have another github repository devoted to Custom Inputs
-and Controllers that are not included in the built-in set. These can be
-found at kizniche/Mycodo-custom.
+and Controllers that are not included in the built-in set, at
+kizniche/Mycodo-custom.
 
 The Things Network
 
@@ -3373,13 +3377,21 @@ measurement is added).
   ------------------------------------------------------------------------
   Setting                      Description
   ---------------------------- -------------------------------------------
-  Measurement Name             Name for the measurement (e.g. “Weight”,
-                               “Length”).
+  Measurement ID               ID for the measurement to use in the
+                               measurements_dict of input modules (e.g.
+                               “length”, “width”, “speed”).
+
+  Measurement Name             Common name for the measurement (e.g.
+                               “Length”, “Weight”, “Speed”).
 
   Measurement Units            Select all the units that are associated
                                with the measurement.
 
-  Unit Name                    Name for the unit (e.g. “Kilogram”,
+  Unit ID                      ID for the unit to use in the
+                               measurements_dict of input modules (e.g.
+                               “K”, “g”, “m”).
+
+  Unit Name                    Common name for the unit (e.g. “Kilogram”,
                                “Meter”).
 
   Unit Abbreviation            Abbreviation for the unit (e.g. “kg”, “m”).

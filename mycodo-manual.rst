@@ -813,18 +813,20 @@ Custom Inputs
 
 There is a Custom Input import system in Mycodo that allows user-created
 Inputs to be created an used in the Mycodo system. Custom Inputs can be
-uploaded and imported from the ``Configure -> Inputs`` page. After import, they will be
-available to use on the ``Setup -> Data`` page.
+uploaded and imported from the ``Configure -> Inputs`` page. After
+import, they will be available to use on the ``Setup -> Data`` page.
 
 If you have a sensor that is not currently supported by Mycodo, you can
 build your own input module and import it into Mycodo. All information
 about an input is contained within the input module, set in the
-dictionaries 'INPUT\_INFORMATION' and 'measurements\_dict'. Each module will requires at a minimum
-for these variables to be set in INPUT\_INFORMATION: 'input\_name\_unique',
-'input\_manufacturer', 'input\_name', 'measurements\_name', and
-'measurements\_dict'. The measurements\_dict dictionary contains the measurements
-that are acquired and stored, and require both the units and measurements to exist in
-the measurement/unit database (Add missing measurements/units on the ``Configure -> Measurements`` page).
+dictionaries 'INPUT\_INFORMATION' and 'measurements\_dict'. Each module
+will requires at a minimum for these variables to be set in
+INPUT\_INFORMATION: 'input\_name\_unique', 'input\_manufacturer',
+'input\_name', 'measurements\_name', and 'measurements\_dict'. The
+measurements\_dict dictionary contains the measurements that are
+acquired and stored, and require both the units and measurements to
+exist in the measurement/unit database (Add missing measurements/units
+on the ``Configure -> Measurements`` page).
 
 Open any of the built-in modules located in the inputs directory
 (https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for
@@ -3357,7 +3359,7 @@ measurement is added).
 | Setting                      | Description                                 |
 +==============================+=============================================+
 | Measurement ID               | ID for the measurement to use in the        |
-|                              | measurements_dict of input modules (e.g.    |
+|                              | measurements\_dict of input modules (e.g.   |
 |                              | "length", "width", "speed").                |
 +------------------------------+---------------------------------------------+
 | Measurement Name             | Common name for the measurement (e.g.       |
@@ -3367,7 +3369,7 @@ measurement is added).
 |                              | with the measurement.                       |
 +------------------------------+---------------------------------------------+
 | Unit ID                      | ID for the unit to use in the               |
-|                              | measurements_dict of input modules (e.g.    |
+|                              | measurements\_dict of input modules (e.g.   |
 |                              | "K", "g", "m").                             |
 +------------------------------+---------------------------------------------+
 | Unit Name                    | Common name for the unit (e.g. "Kilogram",  |

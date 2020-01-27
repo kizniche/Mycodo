@@ -1125,14 +1125,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing">Debouncing a signal</a></li>
 </ol>
 <h3 id="custom-inputs">Custom Inputs</h3>
-<p>There is a Custom Input import system in Mycodo that allows user-created Inputs to be created an used in the Mycodo system. Custom Inputs can be uploaded on the <code>Configure -&gt; Inputs</code> page. After import, they will be available to use on the <code>Setup -&gt; Data</code> page.</p>
-<p>If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo. All information about an input is contained within the input module, set in the dictionary ‘INPUT_INFORMATION’. Each module will requires at a minimum for these variables to be set: ‘input_name_unique’, ‘input_manufacturer’, ‘input_name’, ‘measurements_name’, and ‘measurements_dict’.</p>
+<p>There is a Custom Input import system in Mycodo that allows user-created Inputs to be created an used in the Mycodo system. Custom Inputs can be uploaded and imported from the <code>Configure -&gt; Inputs</code> page. After import, they will be available to use on the <code>Setup -&gt; Data</code> page.</p>
+<p>If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo. All information about an input is contained within the input module, set in the dictionaries ‘INPUT_INFORMATION’ and ‘measurements_dict’. Each module will requires at a minimum for these variables to be set in INPUT_INFORMATION: ‘input_name_unique’, ‘input_manufacturer’, ‘input_name’, ‘measurements_name’, and ‘measurements_dict’. The measurements_dict dictionary contains the measurements that are acquired and stored, and require both the units and measurements to exist in the measurement/unit database (Add missing measurements/units on the <code>Configure -&gt; Measurements</code> page).</p>
 <p>Open any of the built-in modules located in the inputs directory (<a href="https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/" class="uri">https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/</a>) for examples of the proper formatting.</p>
 <p>There’s also minimal input module template that generates random data as an example:</p>
 <p><a href="https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py" class="uri">https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py</a></p>
-<p>The following link provides the full list of available INPUT_INFORMATION options along with descriptions:</p>
+<p>There’s also an input module that includes all available INPUT_INFORMATION options along with descriptions:</p>
 <p><a href="https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py" class="uri">https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py</a></p>
-<p>Additionally, I have another github repository devoted to Custom Inputs and Controllers that are not included in the built-in set. These can be found at <a href="https://github.com/kizniche/Mycodo-custom">kizniche/Mycodo-custom</a>.</p>
+<p>Additionally, I have another github repository devoted to Custom Inputs and Controllers that are not included in the built-in set, at <a href="https://github.com/kizniche/Mycodo-custom">kizniche/Mycodo-custom</a>.</p>
 <h3 id="the-things-network">The Things Network</h3>
 <p><a href="https://www.thethingsnetwork.org/">The Things Network</a> (TTN) Input module enables downloading of data from TTN if the Data Storage Integration is enabled in your TTN Application. The Data Storage Integration will store data for up to 7 days. Mycodo will download this data periodically and store the measurements locally.</p>
 <p>The payload on TTN must be properly decoded to variables that correspond to the “Name” option under “Select Measurements”, in the lower section of the Input options. For instance, in your TTN Application, if a custom Payload Format is selected, the decoder code may look like this:</p>
@@ -3008,16 +3008,24 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 </thead>
 <tbody>
 <tr class="odd">
-<td>Measurement Name</td>
-<td>Name for the measurement (e.g. “Weight”, “Length”).</td>
+<td>Measurement ID</td>
+<td>ID for the measurement to use in the measurements_dict of input modules (e.g. “length”, “width”, “speed”).</td>
 </tr>
 <tr class="even">
+<td>Measurement Name</td>
+<td>Common name for the measurement (e.g. “Length”, “Weight”, “Speed”).</td>
+</tr>
+<tr class="odd">
 <td>Measurement Units</td>
 <td>Select all the units that are associated with the measurement.</td>
 </tr>
+<tr class="even">
+<td>Unit ID</td>
+<td>ID for the unit to use in the measurements_dict of input modules (e.g. “K”, “g”, “m”).</td>
+</tr>
 <tr class="odd">
 <td>Unit Name</td>
-<td>Name for the unit (e.g. “Kilogram”, “Meter”).</td>
+<td>Common name for the unit (e.g. “Kilogram”, “Meter”).</td>
 </tr>
 <tr class="even">
 <td>Unit Abbreviation</td>
