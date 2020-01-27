@@ -191,8 +191,11 @@ def widget_add(form_base, form_object):
         new_widget.input_ids_measurements = form_object.input_ids.data
         new_widget.enable_timestamp = form_object.enable_timestamp.data
 
-        new_widget.width = 3
-        new_widget.height = 4
+        new_widget.width = 4
+        if form_object.gauge_type.data == 'gauge_solid':
+            new_widget.height = 4
+        elif form_object.gauge_type.data == 'gauge_angular':
+            new_widget.height = 5
 
     # Indicator
     elif form_base.widget_type.data == 'indicator':
@@ -232,7 +235,7 @@ def widget_add(form_base, form_object):
         new_widget.enable_timestamp = form_object.enable_timestamp.data
 
         new_widget.width = 4
-        new_widget.height = 4
+        new_widget.height = 5
 
     # Output
     elif form_base.widget_type.data == 'output':

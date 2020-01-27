@@ -128,8 +128,17 @@
         {%- endfor -%}
 
         {%- for each_pid in pid -%}
-          {%- for each_id_and_measure in graph_input_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] -%}
-            {{each_id_and_measure.split(',')[1]|safe}}
+          {%- for device_and_measurement_ids in graph_pid_ids if each_pid.unique_id == device_and_measurement_ids.split(',')[0] -%}
+            {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
+            {%- if measurement_id in device_measurements_dict -%}
+
+            {{each_pid.name}} (
+              {%- if not device_measurements_dict[measurement_id].single_channel -%}
+                {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string + ', '}}
+              {%- endif -%}
+            {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+
+            {%- endif -%}
           {%- endfor -%}
         {%- endfor -%})',
       data: [null],
@@ -174,8 +183,9 @@
         {%- endfor -%}
 
         {%- for each_pid in pid -%}
-          {%- for each_id_and_measure in graph_input_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
-            {{' ' + dict_measurements[each_id_and_measure.split(',')[1]]['unit']|safe}}
+          {%- for device_and_measurement_ids in graph_pid_ids if each_pid.unique_id == device_and_measurement_ids.split(',')[0] -%}
+            {%- set measurement_id = device_and_measurement_ids.split(',')[1] -%}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
           {%- endfor -%}
         {%- endfor -%}'
       }

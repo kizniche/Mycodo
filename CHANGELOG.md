@@ -9,6 +9,7 @@
  - Fix ability to modify measurement/unit names that Inputs rely on
  - Fix inability to modify custom measurements
  - Fix error when deleting dashboards from the Config->Diagnostics menu ([#737](https://github.com/kizniche/mycodo/issues/737))
+ - Fix dashboard gauges causing the dashboard to crash ([#736](https://github.com/kizniche/mycodo/issues/736))
 
 ### Miscellaneous
 
