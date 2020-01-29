@@ -1,3 +1,10 @@
+## 8.2.4 (Unreleased)
+
+### Bugfixes
+
+ - Fix logs appearing blank after logrotate runs ([#734](https://github.com/kizniche/mycodo/issues/734))
+
+
 ## 8.2.3 (2020-01-27)
 
 ### Bugfixes

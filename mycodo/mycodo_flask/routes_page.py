@@ -1206,33 +1206,28 @@ def page_logview():
         if form_log_view.lines.data:
             lines = form_log_view.lines.data
 
-        # Get contents from file
+        # Log fie requested
         if form_log_view.log_view.data:
+            command = None
             log_field = form_log_view.log.data
+
+            # Find which log file was requested, generate command to execute
             if form_log_view.log.data == 'log_pid_settings':
-                command = 'grep -a "PID Settings" {log} | tail -n {lines}'.format(
-                    lines=lines, log=DAEMON_LOG_FILE)
-                log = subprocess.Popen(
-                    command, stdout=subprocess.PIPE, shell=True)
-                (log_output, _) = log.communicate()
-                log.wait()
-                log_output = str(log_output, 'latin-1')
+                logfile = DAEMON_LOG_FILE
+                logrotate_file = logfile + '.1'
+                if (logrotate_file and os.path.exists(logrotate_file) and
+                        logfile and os.path.isfile(logfile)):
+                    command = 'cat {lrlog} {log} | grep -a "PID Settings" | tail -n {lines}'.format(
+                        lrlog=logrotate_file, log=logfile, lines=lines)
+                else:
+                    command = 'grep -a "PID Settings" {log} | tail -n {lines}'.format(
+                        lines=lines, log=logfile)
             elif form_log_view.log.data == 'log_nginx':
                 command = 'journalctl -u nginx | tail -n {lines}'.format(
                     lines=lines)
-                log = subprocess.Popen(
-                    command, stdout=subprocess.PIPE, shell=True)
-                (log_output, _) = log.communicate()
-                log.wait()
-                log_output = str(log_output, 'latin-1')
             elif form_log_view.log.data == 'log_flask':
                 command = 'journalctl -u mycodoflask | tail -n {lines}'.format(
                     lines=lines)
-                log = subprocess.Popen(
-                    command, stdout=subprocess.PIPE, shell=True)
-                (log_output, _) = log.communicate()
-                log.wait()
-                log_output = str(log_output, 'latin-1')
             else:
                 if form_log_view.log.data == 'log_login':
                     logfile = LOGIN_LOG_FILE
@@ -1240,10 +1235,10 @@ def page_logview():
                     logfile = HTTP_ACCESS_LOG_FILE
                 elif form_log_view.log.data == 'log_http_error':
                     logfile = HTTP_ERROR_LOG_FILE
-                elif form_log_view.log.data == 'log_dependency':
-                    logfile = DEPENDENCY_LOG_FILE
                 elif form_log_view.log.data == 'log_daemon':
                     logfile = DAEMON_LOG_FILE
+                elif form_log_view.log.data == 'log_dependency':
+                    logfile = DEPENDENCY_LOG_FILE
                 elif form_log_view.log.data == 'log_keepup':
                     logfile = KEEPUP_LOG_FILE
                 elif form_log_view.log.data == 'log_backup':
@@ -1253,16 +1248,24 @@ def page_logview():
                 elif form_log_view.log.data == 'log_upgrade':
                     logfile = UPGRADE_LOG_FILE
 
-                if os.path.isfile(logfile):
+                logrotate_file = logfile + '.1'
+                if (logrotate_file and os.path.exists(logrotate_file) and
+                        logfile and os.path.isfile(logfile)):
+                    command = 'cat {lrlog} {log} | tail -n {lines}'.format(
+                        lrlog=logrotate_file, log=logfile, lines=lines)
+                elif os.path.isfile(logfile):
                     command = 'tail -n {lines} {log}'.format(lines=lines,
                                                              log=logfile)
-                    log = subprocess.Popen(
-                        command, stdout=subprocess.PIPE, shell=True)
-                    (log_output, _) = log.communicate()
-                    log.wait()
-                    log_output = str(log_output, 'latin-1')
-                else:
-                    log_output = 404
+
+            # Execute command and generate the output to display to the user
+            if command:
+                log = subprocess.Popen(
+                    command, stdout=subprocess.PIPE, shell=True)
+                (log_output, _) = log.communicate()
+                log.wait()
+                log_output = str(log_output, 'latin-1')
+            else:
+                log_output = 404
 
     return render_template('tools/logview.html',
                            form_log_view=form_log_view,
