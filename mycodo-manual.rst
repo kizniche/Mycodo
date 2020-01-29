@@ -1599,21 +1599,11 @@ PID Output Calculation
 
 PID Controllers can output as a duration or a duty cycle.
 
-When outputting a duration, it is calculated as follows:
+When outputting a duration, Duration = Control_Variable
 
-Duration = Control_Variable
+When outputting a duty cycle, Duty Cycle = (Control_Variable / Period) * 100
 
-Note: Duration is limited by the set Min On Duration and Max On Duration.
-
---------------
-
-When outputting a duty cycle, it is calculated as follows:
-
-Duty Cycle = (Control_Variable / Period) * 100
-
-Where Control_Variable = P_Output + I_Output + D_Output
-
-Note: Duty cycle is limited within the 0 - 100 % range and the set Min Duty Cycle and Max Duty Cycle.
+Note: Control_Variable = P_Output + I_Output + D_Output. Duty cycle is limited within the 0 - 100 % range and the set Min Duty Cycle and Max Duty Cycle. Duration is limited by the set Min On Duration and Max On Duration.
 
 PID Tuning
 ~~~~~~~~~~
