@@ -10,7 +10,7 @@ def constraints_pass_oversample(mod_input, value):
     """
     Check if the user input is acceptable
     :param mod_input: SQL object with user-saved Input options
-    :param value: float
+    :param value: string
     :return: tuple: (bool, list of strings)
     """
     errors = []
@@ -26,7 +26,7 @@ def constraints_pass_iir_filter(mod_input, value):
     """
     Check if the user input is acceptable
     :param mod_input: SQL object with user-saved Input options
-    :param value: float
+    :param value: string
     :return: tuple: (bool, list of strings)
     """
     errors = []
@@ -51,7 +51,7 @@ def constraints_pass_gas_heater_temperature(mod_input, value):
     """
     Check if the user input is acceptable
     :param mod_input: SQL object with user-saved Input options
-    :param value: value
+    :param value: integer
     :return: tuple: (bool, list of strings)
     """
     errors = []
@@ -66,7 +66,7 @@ def constraints_pass_gas_heater_duration(mod_input, value):
     """
     Check if the user input is acceptable
     :param mod_input: SQL object with user-saved Input options
-    :param value: value
+    :param value: integer
     :return: tuple: (bool, list of strings)
     """
     errors = []
@@ -81,7 +81,7 @@ def constraints_pass_gas_heater_profile(mod_input, value):
     """
     Check if the user input is acceptable
     :param mod_input: SQL object with user-saved Input options
-    :param value: float
+    :param value: integer
     :return: tuple: (bool, list of strings)
     """
     errors = []
@@ -174,22 +174,6 @@ INPUT_INFORMATION = {
             'phrase': lazy_gettext('A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.')
         },
         {
-            'id': 'pressure_oversample',
-            'type': 'select',
-            'default_value': 'OS_NONE',
-            'options_select': [
-                ('OS_NONE', 'OS_NONE'),
-                ('OS_1X', 'OS_1X'),
-                ('OS_2X', 'OS_2X'),
-                ('OS_4X', 'OS_4X'),
-                ('OS_8X', 'OS_8X'),
-                ('OS_16X', 'OS_16X')
-            ],
-            'constraints_pass': constraints_pass_oversample,
-            'name': lazy_gettext('Pressure Oversampling'),
-            'phrase': lazy_gettext('A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.')
-        },
-        {
             'id': 'temperature_oversample',
             'type': 'select',
             'default_value': 'OS_NONE',
@@ -203,6 +187,22 @@ INPUT_INFORMATION = {
             ],
             'constraints_pass': constraints_pass_oversample,
             'name': lazy_gettext('Temperature Oversampling'),
+            'phrase': lazy_gettext('A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.')
+        },
+        {
+            'id': 'pressure_oversample',
+            'type': 'select',
+            'default_value': 'OS_NONE',
+            'options_select': [
+                ('OS_NONE', 'OS_NONE'),
+                ('OS_1X', 'OS_1X'),
+                ('OS_2X', 'OS_2X'),
+                ('OS_4X', 'OS_4X'),
+                ('OS_8X', 'OS_8X'),
+                ('OS_16X', 'OS_16X')
+            ],
+            'constraints_pass': constraints_pass_oversample,
+            'name': lazy_gettext('Pressure Oversampling'),
             'phrase': lazy_gettext('A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.')
         },
         {
@@ -276,6 +276,7 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.humidity_oversample = None
+        self.temperature_oversample = None
         self.pressure_oversample = None
         self.iir_filter = None
         self.gas_heater_temperature = None
@@ -303,19 +304,6 @@ class InputModule(AbstractInput):
             elif self.humidity_oversample == 'OS_16X':
                 self.humidity_oversample = bme680.OS_16X
 
-            if self.pressure_oversample == 'OS_NONE':
-                self.pressure_oversample = bme680.OS_NONE
-            elif self.pressure_oversample == 'OS_1X':
-                self.pressure_oversample = bme680.OS_1X
-            elif self.pressure_oversample == 'OS_2X':
-                self.pressure_oversample = bme680.OS_2X
-            elif self.pressure_oversample == 'OS_4X':
-                self.pressure_oversample = bme680.OS_4X
-            elif self.pressure_oversample == 'OS_8X':
-                self.pressure_oversample = bme680.OS_8X
-            elif self.pressure_oversample == 'OS_16X':
-                self.pressure_oversample = bme680.OS_16X
-
             if self.temperature_oversample == 'OS_NONE':
                 self.temperature_oversample = bme680.OS_NONE
             elif self.temperature_oversample == 'OS_1X':
@@ -328,6 +316,19 @@ class InputModule(AbstractInput):
                 self.temperature_oversample = bme680.OS_8X
             elif self.temperature_oversample == 'OS_16X':
                 self.temperature_oversample = bme680.OS_16X
+
+            if self.pressure_oversample == 'OS_NONE':
+                self.pressure_oversample = bme680.OS_NONE
+            elif self.pressure_oversample == 'OS_1X':
+                self.pressure_oversample = bme680.OS_1X
+            elif self.pressure_oversample == 'OS_2X':
+                self.pressure_oversample = bme680.OS_2X
+            elif self.pressure_oversample == 'OS_4X':
+                self.pressure_oversample = bme680.OS_4X
+            elif self.pressure_oversample == 'OS_8X':
+                self.pressure_oversample = bme680.OS_8X
+            elif self.pressure_oversample == 'OS_16X':
+                self.pressure_oversample = bme680.OS_16X
 
             if self.iir_filter == 'FILTER_SIZE_0':
                 self.iir_filter = bme680.FILTER_SIZE_0
@@ -354,8 +355,8 @@ class InputModule(AbstractInput):
 
             # Set oversampling settings (can be tweaked to balance accuracy and noise in data
             self.sensor.set_humidity_oversample(self.humidity_oversample)
-            self.sensor.set_pressure_oversample(self.pressure_oversample)
             self.sensor.set_temperature_oversample(self.temperature_oversample)
+            self.sensor.set_pressure_oversample(self.pressure_oversample)
             self.sensor.set_filter(self.iir_filter)
 
             if self.is_enabled(3):
