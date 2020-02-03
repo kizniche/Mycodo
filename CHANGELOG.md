@@ -4,6 +4,16 @@
 
  - Fix logs appearing blank after logrotate runs ([#734](https://github.com/kizniche/mycodo/issues/734))
 
+### Features
+
+ - Add BME680 temperature/humidity/pressure/VOC sensor ([#735](https://github.com/kizniche/mycodo/issues/735))
+ - Add measurement: resistance
+ - Add unit: Ohm
+
+### Miscellaneous
+
+ - Improve sanity-checking of Input custom_options
+
 
 ## 8.2.3 (2020-01-27)
 

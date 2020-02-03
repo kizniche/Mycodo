@@ -30,9 +30,10 @@ def constraints_pass_measure_range(mod_input, value):
     errors = []
     all_passed = True
     # Ensure valid range is selected
-    if value not in ['1000', '2000', '3000', '5000']:
+    range_pass = ['1000', '2000', '3000', '5000']
+    if value not in range_pass:
         all_passed = False
-        errors.append("Invalid rage")
+        errors.append("Invalid range. Need one of {}".format(range_pass))
     return all_passed, errors, mod_input
 
 
@@ -227,7 +228,6 @@ INPUT_INFORMATION = {
             'name': lazy_gettext('Measurement Range'),
             'phrase': lazy_gettext('Set the measuring range of the sensor')
         }
-
     ]
 }
 

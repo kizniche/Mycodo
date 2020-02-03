@@ -168,7 +168,10 @@ class AbstractInput(object):
             try:
                 required = False
                 custom_option_set = False
+
                 error = []
+                if not hasattr(input_dev, 'custom_options'):
+                    error.append("input_dev missing attribute custom_options")
                 if 'type' not in each_option_default:
                     error.append("'type' not found in custom_options")
                 if 'id' not in each_option_default:
@@ -176,9 +179,11 @@ class AbstractInput(object):
                 if 'default_value' not in each_option_default:
                     error.append(
                         "'default_value' not found in custom_options")
-                for each_error in error:
-                    self.logger.error(each_error)
                 if error:
+                    for each_error in error:
+                        self.logger.error(each_error)
+                    self.logger.error("Critical error(s) detected. "
+                                      "Halting custom_options parsing.")
                     return
 
                 if ('required' in each_option_default and
@@ -186,10 +191,6 @@ class AbstractInput(object):
                     required = True
 
                 option_value = each_option_default['default_value']
-
-                if not hasattr(input_dev, 'custom_options'):
-                    self.logger.error("input_dev missing attribute custom_options")
-                    return
 
                 if input_dev.custom_options:
                     for each_option in input_dev.custom_options.split(';'):
@@ -202,8 +203,9 @@ class AbstractInput(object):
 
                 if required and not custom_option_set:
                     self.logger.error(
-                        "Custom option '{}' required but was not found to be "
-                        "set by the user".format(each_option_default['id']))
+                        "Custom option '{o}' required but was not found to be"
+                        " set by the user. Setting to default of {d}.".format(
+                            o=each_option_default['id'], d=option_value))
 
                 if each_option_default['type'] == 'integer':
                     setattr(
@@ -224,8 +226,14 @@ class AbstractInput(object):
                     self.logger.error(
                         "Unknown custom_option type '{}'".format(
                             each_option_default['type']))
+                    self.logger.error("Critical error(s) detected. "
+                                      "Halting custom_options parsing.")
+                    return
             except Exception:
                 self.logger.exception("Error parsing custom_options")
+                self.logger.error("Critical error(s) detected. "
+                                  "Halting custom_options parsing.")
+                return
 
     def setup_device_measurement(self):
         # Make 5 attempts to access database

@@ -157,6 +157,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Radiation Dose Rate'),
         'meas': 'radiation_dose_rate',
         'units': ['cpm', 'uSv_hr']},
+    'resistance': {
+        'name': lazy_gettext('Resistance'),
+        'meas': 'resistance',
+        'units': ['Ohm']},
     'revolutions': {
         'name': lazy_gettext('Revolutions'),
         'meas': 'revolutions',
@@ -311,6 +315,9 @@ UNITS = {
     'none': {
         'name': lazy_gettext('Unitless'),
         'unit': ''},
+    'Ohm': {
+        'name': lazy_gettext('Ohm'),
+        'unit': 'Ω'},
     'Pa': {
         'name': lazy_gettext('Pascal'),
         'unit': 'Pa'},
