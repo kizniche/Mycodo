@@ -13,6 +13,7 @@
 ### Miscellaneous
 
  - Improve sanity-checking of Input custom_options
+ - Improve sanity-checking of API endpoints ([#741](https://github.com/kizniche/mycodo/issues/741))
 
 
 ## 8.2.3 (2020-01-27)
