@@ -371,7 +371,10 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
         self.return_dict = measurements_dict.copy()
-        self.sensor.get_sensor_data()
+
+        if not self.sensor.get_sensor_data():
+            self.logger.error("Sensor get_sensor_data() returned False.")
+            return
 
         if self.is_enabled(0):
             self.value_set(0, self.sensor.data.temperature)
@@ -385,6 +388,8 @@ class InputModule(AbstractInput):
         if self.is_enabled(3):
             if self.sensor.data.heat_stable:
                 self.value_set(3, self.sensor.data.gas_resistance)
+            else:
+                self.logger.error("Sensor heat unstable")
 
         self.logger.debug("Temp: {t}, Hum: {h}, Press: {p}, Gas: {g}".format(
             t=self.value_get(0),
