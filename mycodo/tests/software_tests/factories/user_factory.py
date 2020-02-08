@@ -17,4 +17,3 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
 
     name = faker.name()
     email = faker.email()
-

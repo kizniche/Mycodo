@@ -9,6 +9,7 @@ from flask_restx import Resource
 from flask_restx import abort
 from flask_restx import fields
 
+from mycodo.databases.models import Unit
 from mycodo.mycodo_flask.api import api
 from mycodo.mycodo_flask.api import default_responses
 from mycodo.mycodo_flask.utils import utils_general
@@ -17,6 +18,7 @@ from mycodo.utils.influx import read_influxdb_list
 from mycodo.utils.influx import read_influxdb_single
 from mycodo.utils.influx import valid_date_str
 from mycodo.utils.influx import write_influxdb_value
+from mycodo.utils.system_pi import add_custom_units
 
 logger = logging.getLogger(__name__)
 
@@ -68,6 +70,8 @@ class MeasurementsCreate(Resource):
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
 
+        if unit not in add_custom_units(Unit.query.all()):
+            abort(422, custom='Unit ID not found')
         if channel < 0:
             abort(422, custom='channel must be >= 0')
 
@@ -125,6 +129,8 @@ class MeasurementsHistorical(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
 
+        if unit not in add_custom_units(Unit.query.all()):
+            abort(422, custom='Unit ID not found')
         if channel < 0:
             abort(422, custom='channel must be >= 0')
         if epoch_start < 0 or epoch_end < 0:
@@ -191,6 +197,8 @@ class MeasurementsHistoricalFunction(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
 
+        if unit not in add_custom_units(Unit.query.all()):
+            abort(422, custom='Unit ID not found')
         if channel < 0:
             abort(422, custom='channel must be >= 0')
         if epoch_start < 0 or epoch_end < 0:
@@ -249,6 +257,8 @@ class MeasurementsLast(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
 
+        if unit not in add_custom_units(Unit.query.all()):
+            abort(422, custom='Unit ID not found')
         if channel < 0:
             abort(422, custom='channel must be >= 0')
         if past_seconds < 1:
@@ -291,6 +301,8 @@ class MeasurementsPast(Resource):
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
 
+        if unit not in add_custom_units(Unit.query.all()):
+            abort(422, custom='Unit ID not found')
         if channel < 0:
             abort(422, custom='channel must be >= 0')
         if past_seconds < 1:

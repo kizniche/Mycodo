@@ -16,4 +16,3 @@ class RoleFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = db.session
 
     name = faker.name()
-
