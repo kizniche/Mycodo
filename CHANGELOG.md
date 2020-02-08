@@ -3,6 +3,8 @@
 ### Bugfixes
 
  - Fix logs appearing blank after logrotate runs ([#734](https://github.com/kizniche/mycodo/issues/734))
+ - Update Flask-Babel to 1.0.0 to fix broken werkzeug ([#742](https://github.com/kizniche/mycodo/issues/742))
+ - Increase install wait times to prevent timeouts ([#742](https://github.com/kizniche/mycodo/issues/742))
 
 ### Features
 
@@ -14,6 +16,7 @@
 
  - Improve sanity-checking of Input custom_options
  - Improve sanity-checking of API endpoints ([#741](https://github.com/kizniche/mycodo/issues/741))
+ - Update pip requirements
 
 
 ## 8.2.3 (2020-01-27)

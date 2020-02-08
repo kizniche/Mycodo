@@ -353,8 +353,8 @@ case "${1:-''}" in
     ;;
     'update-influxdb-db-user')
         printf "\n#### Creating InfluxDB database and user\n"
-        # Attempt to connect to influxdb 3 times, sleeping 60 seconds every fail
-        for _ in {1..3}; do
+        # Attempt to connect to influxdb 10 times, sleeping 60 seconds every fail
+        for _ in {1..10}; do
             # Check if influxdb has successfully started and be connected to
             printf "#### Attempting to connect...\n" &&
             curl -sL -I localhost:8086/ping > /dev/null &&
@@ -362,10 +362,10 @@ case "${1:-''}" in
             influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'" &&
             printf "#### Influxdb database and user successfully created\n" &&
             break ||
-            # Else wait 30 seconds if the influxd port is not accepting connections
+            # Else wait 60 seconds if the influxd port is not accepting connections
             # Everything below will begin executing if an error occurs before the break
             printf "#### Could not connect to Influxdb. Waiting 30 seconds then trying again...\n" &&
-            sleep 30
+            sleep 60
         done
     ;;
     'update-logrotate')
@@ -444,8 +444,8 @@ case "${1:-''}" in
     ;;
     'web-server-connect')
         printf "\n#### Connecting to http://localhost (creates Mycodo database if it doesn't exist)\n"
-        # Attempt to connect to localhost 5 times, sleeping 60 seconds every fail
-        for _ in {1..5}; do
+        # Attempt to connect to localhost 10 times, sleeping 60 seconds every fail
+        for _ in {1..10}; do
             wget --quiet --no-check-certificate -p http://localhost/ -O /dev/null &&
             printf "#### Successfully connected to http://localhost\n" &&
             break ||
