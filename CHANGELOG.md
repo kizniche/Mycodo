@@ -11,6 +11,7 @@
  - Add BME680 temperature/humidity/pressure/VOC sensor ([#735](https://github.com/kizniche/mycodo/issues/735))
  - Add measurement: resistance
  - Add unit: Ohm
+ - Merge from [Flask-RESTPlus](https://github.com/noirbizarre/flask-restplus/issues/770) to [Flask-RESTX](https://github.com/python-restx/flask-restx) ([#742](https://github.com/kizniche/mycodo/issues/742))
 
 ### Miscellaneous
 

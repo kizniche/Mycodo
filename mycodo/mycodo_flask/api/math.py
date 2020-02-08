@@ -4,9 +4,9 @@ import traceback
 
 import flask_login
 from flask_accept import accept
-from flask_restplus import Resource
-from flask_restplus import abort
-from flask_restplus import fields
+from flask_restx import Resource
+from flask_restx import abort
+from flask_restx import fields
 
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Math

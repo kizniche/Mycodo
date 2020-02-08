@@ -3,7 +3,7 @@ import logging
 
 from flask import Blueprint
 from flask import make_response
-from flask_restplus import Api
+from flask_restx import Api
 
 logger = logging.getLogger(__name__)
 
