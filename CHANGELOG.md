@@ -1,3 +1,10 @@
+## 8.2.5 (2020-02-09)
+
+### Bugfixes
+
+ - Fix daemon not being able to read measurements ([#743](https://github.com/kizniche/mycodo/issues/743))
+
+
 ## 8.2.4 (2020-02-08)
 
 ### Bugfixes

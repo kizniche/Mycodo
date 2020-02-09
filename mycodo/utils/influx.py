@@ -281,8 +281,6 @@ def read_influxdb_function(
     :param end_str: End time, in influxdb format
     :type end_str: str
     """
-    test_unit_channel(unit, channel)
-
     client = InfluxDBClient(
         INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_PASSWORD,
         INFLUXDB_DATABASE, timeout=5)
@@ -355,8 +353,6 @@ def read_influxdb_list(unique_id, unit, channel,
     :param end_str: End time, in influxdb format
     :type end_str: str
     """
-    test_unit_channel(unit, channel)
-
     raw_data = None
 
     client = InfluxDBClient(
@@ -425,8 +421,6 @@ def read_influxdb_single(unique_id, unit, channel,
     :param value: What kind of measurement to return (e.g. LAST, SUM, MIN, MAX, etc.)
     :type value: str
     """
-    test_unit_channel(unit, channel)
-
     client = InfluxDBClient(
         INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_PASSWORD,
         INFLUXDB_DATABASE, timeout=5)
@@ -634,8 +628,6 @@ def write_influxdb_value(
     :param timestamp: If supplied, this timestamp will be used in the influxdb
     :type timestamp: datetime object
     """
-    test_unit_channel(unit, None)
-
     client = InfluxDBClient(
         INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_PASSWORD,
         INFLUXDB_DATABASE, timeout=5)
@@ -710,12 +702,3 @@ def write_influxdb_list(data, unique_id):
                 "submitted for writing: {data}. Exception: {err}".format(
                     data=data, err=e))
             return 1
-
-
-def test_unit_channel(unit, channel):
-    """ Test if unit and channel exists """
-    if unit not in add_custom_units(Unit.query.all()):
-        raise Exception("Unit ID not found")
-    if channel is not None:
-        if not isinstance(channel, int) or channel < 0:
-            raise Exception("Channel must be an integer greater or equal to 0")
