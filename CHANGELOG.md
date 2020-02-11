@@ -1,5 +1,9 @@
 ## 8.2.6 (Unreleased)
 
+### Bugfixes
+
+ - Fix determining frontend/backend virtualenv status
+
 ### Features
 
  - Add Temperature Offset option for BME680 Input ([#735](https://github.com/kizniche/mycodo/issues/735))

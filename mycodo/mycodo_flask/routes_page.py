@@ -987,7 +987,7 @@ def page_info():
     database_version = AlembicVersion.query.first().version_num
     correct_database_version = ALEMBIC_VERSION
 
-    if hasattr(sys, 'real_prefix'):
+    if hasattr(sys, 'real_prefix') or sys.base_prefix != sys.prefix:
         virtualenv_flask = True
 
     if os.path.exists(DAEMON_PID_FILE):

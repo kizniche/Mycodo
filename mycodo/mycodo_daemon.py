@@ -1186,9 +1186,7 @@ class PyroServer(object):
     @staticmethod
     def is_in_virtualenv():
         """Returns True if this script is running in a virtualenv"""
-        if hasattr(sys, 'real_prefix'):
-            return True
-        return False
+        return hasattr(sys, 'real_prefix') or sys.base_prefix != sys.prefix
 
     @staticmethod
     def ram_use():
