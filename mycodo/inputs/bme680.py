@@ -259,7 +259,14 @@ INPUT_INFORMATION = {
             'constraints_pass': constraints_pass_gas_heater_profile,
             'name': lazy_gettext('Gas Heater Profile'),
             'phrase': lazy_gettext('Select one of the 10 configured heating durations/set points')
-        }
+        },
+        {
+            'id': 'temp_offset',
+            'type': 'float',
+            'default_value': 0,
+            'name': lazy_gettext('Temperature Offset'),
+            'phrase': lazy_gettext('The amount to offset the temperature, either negative or positive')
+        },
     ],
 }
 
@@ -282,6 +289,7 @@ class InputModule(AbstractInput):
         self.gas_heater_temperature = None
         self.gas_heater_duration = None
         self.gas_heater_profile = None
+        self.temp_offset = None
 
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
@@ -358,6 +366,9 @@ class InputModule(AbstractInput):
             self.sensor.set_temperature_oversample(self.temperature_oversample)
             self.sensor.set_pressure_oversample(self.pressure_oversample)
             self.sensor.set_filter(self.iir_filter)
+
+            if self.temp_offset is not None:
+                self.sensor.set_temp_offset(self.temp_offset)
 
             if self.is_enabled(3):
                 self.sensor.set_gas_status(bme680.ENABLE_GAS_MEAS)
