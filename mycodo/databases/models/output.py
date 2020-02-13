@@ -80,14 +80,6 @@ class Output(CRUDMixin, db.Model):
         except:
             print("RPi.GPIO and Raspberry Pi required for this action")
 
-    def is_on(self):
-        """
-        :return: Whether the output is currently "ON"
-        :rtype: bool
-        """
-        if self.output_type == 'wired' and self._is_setup():
-            return self.on_state == GPIO.input(self.pin)
-
 
 class OutputSchema(ma.ModelSchema):
     class Meta:
