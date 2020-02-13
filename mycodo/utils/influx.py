@@ -492,9 +492,12 @@ def output_sec_on(output_id, past_seconds):
 
     # Get the number of seconds not stored in the database (if currently on)
     output_time_on = 0
-    if output.is_on():
+    try:
         control = DaemonControl()
-        output_time_on = control.output_sec_currently_on(output_id)
+        if control.output_state(output_id) == 'on':
+            output_time_on = control.output_sec_currently_on(output_id)
+    except Exception:
+        logger.exception("output_sec_on()")
 
     query = query_string('s', output.unique_id,
                          measure='duration_time',
