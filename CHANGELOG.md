@@ -8,7 +8,7 @@
  - Fix Atlas Scientific EZO-PMP flow mode not taking effect immediately upon saving
  - Change deprecated w1thermsensor set_precision() to set_resolution()
  - Fix setting DS sensor resolution ([#747](https://github.com/kizniche/mycodo/issues/747))
- - Split DS18B20 Input into two files (one using w1thermsensor and another using ow-shell) ([#747](https://github.com/kizniche/mycodo/issues/747))
+ - Split DS18B20 Input into two files (one using w1thermsensor and another using ow-shell) ([#746](https://github.com/kizniche/mycodo/issues/746))
 
 ### Features
 
