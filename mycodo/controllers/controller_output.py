@@ -1145,6 +1145,7 @@ output_id = '{}'
             self.output_id[output_id] = output.id
             self.output_unique_id[output_id] = output.unique_id
             self.output_type[output_id] = output.output_type
+            self.output_mode[output_id] = output.output_mode
             self.output_interface[output_id] = output.interface
             self.output_i2c_bus[output_id] = output.i2c_bus
             self.output_location[output_id] = output.location

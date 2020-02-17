@@ -5,6 +5,7 @@
  - Fix determining frontend/backend virtualenv status
  - Fix error detecting GPIO state during energy usage report generation ([#745](https://github.com/kizniche/mycodo/issues/745))
  - Fix Atlas Scientific pH Input temperature calibration measurement
+ - Fix Atlas Scientific EZO-PMP flow mode not taking effect immediately upon saving
 
 ### Features
 
