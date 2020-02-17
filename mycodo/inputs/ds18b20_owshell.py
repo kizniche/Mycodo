@@ -1,4 +1,5 @@
 # coding=utf-8
+import subprocess
 import time
 
 from mycodo.inputs.base_input import AbstractInput
@@ -14,10 +15,10 @@ measurements_dict = {
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'DS18B20',
+    'input_name_unique': 'DS18B20_OWS',
     'input_manufacturer': 'MAXIM',
     'input_name': 'DS18B20',
-    'input_library': 'w1thermsensor',
+    'input_library': 'ow-shell',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
 
@@ -31,7 +32,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'w1thermsensor', 'w1thermsensor'),
+        ('apt', 'ow-shell', 'ow-shell')
     ],
 
     'interfaces': ['1WIRE'],
@@ -52,15 +53,8 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         if not testing:
-            from w1thermsensor import W1ThermSensor
-
             self.location = input_dev.location
             self.resolution = input_dev.resolution
-
-            self.sensor = W1ThermSensor(
-                W1ThermSensor.THERM_SENSOR_DS18B20, self.location)
-            if self.resolution:
-                self.sensor.set_resolution(self.resolution)
 
     def get_measurement(self):
         """ Gets the DS18B20's temperature in Celsius """
@@ -70,7 +64,27 @@ class InputModule(AbstractInput):
         n = 2
         for i in range(n):
             try:
-                temperature = self.sensor.get_temperature()
+                str_temperature = 'temperature'
+                if self.resolution == 9:
+                    str_temperature = 'temperature9'
+                if self.resolution == 10:
+                    str_temperature = 'temperature10'
+                if self.resolution == 11:
+                    str_temperature = 'temperature11'
+                if self.resolution == 12:
+                    str_temperature = 'temperature12'
+                try:
+                    command = 'owread /{id}/{temp}; echo'.format(
+                        id=self.location,
+                        temp=str_temperature)
+                    owread = subprocess.Popen(
+                        command, stdout=subprocess.PIPE, shell=True)
+                    (owread_output, _) = owread.communicate()
+                    owread.wait()
+                    if owread_output:
+                        temperature = float(owread_output.decode("latin1"))
+                except Exception:
+                    self.logger.exception(1)
             except Exception as e:
                 if i == n:
                     self.logger.exception(

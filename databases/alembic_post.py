@@ -58,6 +58,29 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == '0a8a5eb1be4b':
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from mycodo.databases.models import Input
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    for each_input in session.query(Input).all():
+                        error = []
+                        if each_input.device == 'DS18B20' and 'library,ow_shell' in each_input.custom_options:
+                            each_input.device = 'DS18B20_OWS'
+                        each_input.custom_options = ''
+                        if not error:
+                            session.commit()
+                        else:
+                            for each_error in error:
+                                print("Error: {}".format(each_error))
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == '55aca47c2362':
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
