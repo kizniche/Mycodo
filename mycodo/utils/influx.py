@@ -14,11 +14,9 @@ from mycodo.config import INFLUXDB_PASSWORD
 from mycodo.config import INFLUXDB_PORT
 from mycodo.config import INFLUXDB_USER
 from mycodo.databases.models import Output
-from mycodo.databases.models import Unit
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.system_pi import add_custom_units
 
 logger = logging.getLogger("mycodo.influxdb")
 

@@ -46,6 +46,8 @@ INPUT_INFORMATION = {
     'measurements_name': 'Ion Concentration',
     'measurements_dict': measurements_dict,
 
+    'message': 'Note: Calibration Measurement is an optional setting that provides a temperature measurement (in Celsius) of the water that the pH is being measured from.',
+
     'options_enabled': [
         'ftdi_location',
         'i2c_location',
@@ -168,7 +170,7 @@ class InputModule(AbstractInput):
 
                 atlas_command = AtlasScientificCommand(self.input_dev)
                 ret_value, ret_msg = atlas_command.calibrate(
-                    'temperature', temperature=last_measurement[1])
+                    'temperature', set_amount=last_measurement[1])
                 time.sleep(0.5)
 
                 self.logger.debug(

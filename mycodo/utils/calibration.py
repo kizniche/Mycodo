@@ -4,6 +4,9 @@ import time
 
 logger = logging.getLogger("mycodo.atlas_scientific")
 
+if logging.getLevelName(logging.getLogger().getEffectiveLevel()) == 'INFO':
+    logger.setLevel(logging.INFO)
+
 
 class AtlasScientificCommand:
     """

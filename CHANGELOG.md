@@ -3,10 +3,16 @@
 ### Bugfixes
 
  - Fix determining frontend/backend virtualenv status
+ - Fix error detecting GPIO state during energy usage report generation ([#745](https://github.com/kizniche/mycodo/issues/745))
+ - Fix Atlas Scientific pH Input temperature calibration measurement
 
 ### Features
 
  - Add Temperature Offset option for BME680 Input ([#735](https://github.com/kizniche/mycodo/issues/735))
+
+### Miscellaneous
+
+ - Fix logging level of calibration functions
 
 
 ## 8.2.5 (2020-02-09)
