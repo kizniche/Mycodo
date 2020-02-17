@@ -102,10 +102,9 @@ class InputModule(AbstractInput):
 
             if self.library == 'w1thermsensor':
                 self.sensor = W1ThermSensor(
-                    W1ThermSensor.THERM_SENSOR_DS18B20,
-                    self.location)
+                    W1ThermSensor.THERM_SENSOR_DS18B20, self.location)
                 if self.resolution:
-                    self.sensor.set_precision(self.resolution)
+                    self.sensor.set_resolution(self.resolution)
             elif self.library == 'ow_shell':
                 pass
 

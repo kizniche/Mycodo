@@ -23,7 +23,7 @@
           <select class="selectpicker" id="device_id" name="device_id" title="" data-original-title="{{_('Select a DS18B20 sensor')}}">
           {% if ds_inputs %}
             {% for each_ds in ds_inputs %}
-              <option value="{{each_ds}}">{{each_ds}}</option>
+              <option value="{{each_ds[0]}},{{each_ds[1]}}">{{each_ds[0]}}: {{each_ds[1]}}</option>
             {% endfor %}
           {% else %}
             <option value="">None Detected</option>

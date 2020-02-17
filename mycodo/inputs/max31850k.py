@@ -46,8 +46,7 @@ class InputModule(AbstractInput):
 
             self.location = input_dev.location
             self.sensor = W1ThermSensor(
-                W1ThermSensor.THERM_SENSOR_MAX31850K,
-                self.location)
+                W1ThermSensor.THERM_SENSOR_MAX31850K, self.location)
 
     def get_measurement(self):
         """ Gets the MAX31850K's temperature in Celsius """

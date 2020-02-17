@@ -92,8 +92,7 @@ class InputModule(AbstractInput):
 
             if self.library == 'w1thermsensor':
                 self.sensor = W1ThermSensor(
-                    W1ThermSensor.THERM_SENSOR_DS18S20,
-                    self.location)
+                    W1ThermSensor.THERM_SENSOR_DS18S20, self.location)
             elif self.library == 'ow_shell':
                 pass
 

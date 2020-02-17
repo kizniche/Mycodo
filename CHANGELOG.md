@@ -6,6 +6,8 @@
  - Fix error detecting GPIO state during energy usage report generation ([#745](https://github.com/kizniche/mycodo/issues/745))
  - Fix Atlas Scientific pH Input temperature calibration measurement
  - Fix Atlas Scientific EZO-PMP flow mode not taking effect immediately upon saving
+ - Change deprecated w1thermsensor set_precision() to set_resolution()
+ - Fix setting DS sensor resolution ([#747](https://github.com/kizniche/mycodo/issues/747))
 
 ### Features
 

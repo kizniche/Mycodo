@@ -55,10 +55,9 @@ class InputModule(AbstractInput):
             self.location = input_dev.location
             self.resolution = input_dev.resolution
             self.sensor = W1ThermSensor(
-                W1ThermSensor.THERM_SENSOR_DS1825,
-                self.location)
+                W1ThermSensor.THERM_SENSOR_DS1825, self.location)
             if self.resolution:
-                self.sensor.set_precision(self.resolution)
+                self.sensor.set_resolution(self.resolution)
 
     def get_measurement(self):
         """ Gets the DS1825's temperature in Celsius """
