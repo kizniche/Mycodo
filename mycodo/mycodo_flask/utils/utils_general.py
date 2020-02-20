@@ -789,7 +789,7 @@ def choices_id_name(table):
     return choices
 
 
-def user_has_permission(permission):
+def user_has_permission(permission, silent=False):
     """
     Determine if the currently-logged-in user has permission to perform a
     specific action.
@@ -804,7 +804,8 @@ def user_has_permission(permission):
             (permission == 'view_stats' and role.view_stats) or
             (permission == 'view_logs' and role.view_logs)):
         return True
-    flash("You don't have permission to do that", "error")
+    if not silent:
+        flash("You don't have permission to do that", "error")
     return False
 
 

@@ -20,6 +20,7 @@ from mycodo.databases.models import Misc
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.forms import forms_dashboard
 from mycodo.mycodo_flask.routes_authentication import admin_exists
+from mycodo.mycodo_flask.utils.utils_general import user_has_permission
 
 blueprint = Blueprint('routes_static',
                       __name__,
@@ -73,6 +74,7 @@ def inject_variables():
                 hide_tooltips=misc.hide_tooltips,
                 host=socket.gethostname(),
                 mycodo_version=MYCODO_VERSION,
+                permission_view_settings=user_has_permission('view_settings', silent=True),
                 dict_translation=TRANSLATIONS,
                 upgrade_available=misc.mycodo_upgrade_available,
                 username=flask_login.current_user.name)

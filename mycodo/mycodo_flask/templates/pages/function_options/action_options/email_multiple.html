@@ -1,7 +1,11 @@
 <div class="col-auto">
   <label class='control-label'>{{_('Email Address')}} ({{_('Multiple')}})</label>
   <div>
+    {% if not permission_view_settings %}
+    {{form_actions.do_action_string(class_='form-control', value='*Insufficient permissions to view email*', **{'title': _('Email address to notify')})}}
+    {% else %}
     {{form_actions.do_action_string(class_='form-control', value=each_action.do_action_string, **{'title': _('Email address to notify')})}}
+    {% endif %}
   </div>
 </div>
 <div class="col-12">
