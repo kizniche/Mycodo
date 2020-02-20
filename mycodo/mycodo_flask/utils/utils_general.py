@@ -805,7 +805,7 @@ def user_has_permission(permission, silent=False):
             (permission == 'view_logs' and role.view_logs)):
         return True
     if not silent:
-        flash("You don't have permission to do that", "error")
+        flash("Insufficient permissions: {}".format(permission), "error")
     return False
 
 
