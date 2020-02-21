@@ -188,7 +188,7 @@ def page_camera():
                 'start_x=1' in open('/boot/config.txt').read()):
             pi_camera_enabled = True
     except IOError as e:
-        logger.error("Camera IOError raised in '/settings/camera' endpoint: "
+        logger.error("Camera IOError raised in '/camera' endpoint: "
                      "{err}".format(err=e))
 
     if request.method == 'POST':

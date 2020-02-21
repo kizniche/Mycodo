@@ -431,6 +431,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#custom-controllers">Custom Controllers</a></li>
 <li><a href="#pid-controller">PID Controller</a><ul>
 <li><a href="#pid-controller-options">PID Controller Options</a></li>
+<li><a href="#pid-output-calculation">PID Output Calculation</a></li>
 <li><a href="#pid-tuning">PID Tuning</a></li>
 <li><a href="#pid-autotune">PID Autotune</a></li>
 </ul></li>
@@ -712,6 +713,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td>The highest value of the gauge.</td>
 </tr>
 <tr class="odd">
+<td>Stops</td>
+<td>The number of color ranges on the gauge.</td>
+</tr>
+<tr class="even">
 <td>Show Timestamp</td>
 <td>Show the timestamp of the current gauge measurement.</td>
 </tr>
@@ -1686,6 +1691,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </tr>
 </tbody>
 </table>
+<h3 id="pid-output-calculation">PID Output Calculation</h3>
+<p>PID Controllers can output as a duration or a duty cycle.</p>
+<p>When outputting a duration, Duration = Control_Variable</p>
+<p>When outputting a duty cycle, Duty Cycle = (Control_Variable / Period) * 100</p>
+<p>Note: Control_Variable = P_Output + I_Output + D_Output. Duty cycle is limited within the 0 - 100 % range and the set Min Duty Cycle and Max Duty Cycle. Duration is limited by the set Min On Duration and Max On Duration.</p>
 <h3 id="pid-tuning">PID Tuning</h3>
 <p>PID tuning is a complex process, but not unattainable if enough time and effort is invested to learn how a PID operates. Below is a primer for understanding how a PID controller operates and a few examples of how to tune a PID controller. For further discussion, join the <a href="https://kylegabriel.com/forum/pid-tuning/">Mycodo PID Tuning</a> forum.</p>
 <h4 id="pid-control-theory">PID Control Theory</h4>
