@@ -32,6 +32,12 @@
         <div class="form-row">
           {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_MOD.html' %}
           <div class="col-auto">
+            <label class="control-label">{{form_gauge.enable_timestamp.label.text}}</label>
+            <div class="input-group-text">
+              <input id="enable_timestamp" name="enable_timestamp" type="checkbox" value="y"{% if each_widget.enable_timestamp %} checked{% endif %}>
+            </div>
+          </div>
+          <div class="col-auto">
             {{form_gauge.gauge_type.label(class_='control-label')}}
             <div>
               <select class="form-control" id="gauge_type" name="gauge_type">
@@ -86,9 +92,9 @@
             </div>
           </div>
           <div class="col-auto">
-            <label class="control-label">{{form_gauge.enable_timestamp.label.text}}</label>
-            <div class="input-group-text">
-              <input id="enable_timestamp" name="enable_timestamp" type="checkbox" value="y"{% if each_widget.enable_timestamp %} checked{% endif %}>
+            {{form_gauge.stops.label(class_='control-label')}}
+            <div>
+              {{form_gauge.stops(class_='form-control', value=each_widget.stops)}}
             </div>
           </div>
         </div>

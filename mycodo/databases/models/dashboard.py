@@ -73,6 +73,7 @@ class Widget(CRUDMixin, db.Model):
 
     # Gauge options
     max_measure_age = db.Column(db.Integer, default=120.0)  # Only show measurements if they are younger than this age
+    stops = db.Column(db.Integer, default=None)
     range_colors = db.Column(db.Text, default='')  # Custom hex color values and gauge range
 
     # Graph and Gauge options

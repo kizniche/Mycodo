@@ -145,6 +145,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Settings')},
     'single': {
         'title': lazy_gettext('Single')},
+    'stops': {
+        'title': lazy_gettext('Stops')},
     'sum': {
         'title': lazy_gettext('Sum')},
     'tag': {

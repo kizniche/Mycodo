@@ -179,23 +179,24 @@ def widget_add(form_base, form_object):
         error = gauge_error_check(form_object, error)
 
         new_widget.graph_type = form_object.gauge_type.data
-        if form_object.gauge_type.data == 'gauge_solid':
-            new_widget.range_colors = '20,#33CCFF;40,#55BF3B;60,#DDDF0D;80,#DF5353'
-        elif form_object.gauge_type.data == 'gauge_angular':
-            new_widget.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
-
         new_widget.refresh_duration = form_base.refresh_duration.data
         new_widget.max_measure_age = form_object.max_measure_age.data
         new_widget.y_axis_min = form_object.y_axis_min.data
         new_widget.y_axis_max = form_object.y_axis_max.data
         new_widget.input_ids_measurements = form_object.input_ids.data
         new_widget.enable_timestamp = form_object.enable_timestamp.data
-
+        new_widget.stops = form_object.stops.data
         new_widget.width = 4
+
         if form_object.gauge_type.data == 'gauge_solid':
             new_widget.height = 4
         elif form_object.gauge_type.data == 'gauge_angular':
             new_widget.height = 5
+
+        if form_object.stops.data < 2:
+            error.append("Must be at least 2 stops")
+        else:
+            new_widget.range_colors = gauge_reformat_stops(form_object.gauge_type.data, 4, new_widget.stops, current_colors=None)
 
     # Indicator
     elif form_base.widget_type.data == 'indicator':
@@ -422,10 +423,12 @@ def widget_mod(form_base, form_object, request_form):
             mod_widget.graph_type != form_object.gauge_type.data):
 
         mod_widget.graph_type = form_object.gauge_type.data
-        if form_object.gauge_type.data == 'gauge_solid':
-            mod_widget.range_colors = '0.2,#33CCFF;0.4,#55BF3B;0.6,#DDDF0D;0.8,#DF5353'
-        elif form_object.gauge_type.data == 'gauge_angular':
-            mod_widget.range_colors = '0,25,#33CCFF;25,50,#55BF3B;50,75,#DDDF0D;75,100,#DF5353'
+        mod_widget.range_colors = gauge_reformat_stops(
+            form_object.gauge_type.data,
+            4,
+            form_object.stops.data,
+            current_colors=None)
+        mod_widget.stops = form_object.stops.data
 
     # Gauge Mod
     elif form_base.widget_type.data == 'gauge':
@@ -442,6 +445,13 @@ def widget_mod(form_base, form_object, request_form):
         mod_widget.y_axis_max = form_object.y_axis_max.data
         mod_widget.max_measure_age = form_object.max_measure_age.data
         mod_widget.enable_timestamp = form_object.enable_timestamp.data
+        mod_widget.range_colors = gauge_reformat_stops(
+            form_object.gauge_type.data,
+            mod_widget.stops,
+            form_object.stops.data,
+            current_colors=mod_widget.range_colors)
+        mod_widget.stops = form_object.stops.data
+
         if form_object.input_ids.data:
             mod_widget.input_ids_measurements = form_object.input_ids.data
         else:
@@ -1048,6 +1058,32 @@ def custom_yaxes_str_from_form(form):
         yaxes_list.append('{},{},{}'.format(yaxis_type['name'], yaxis_type['minimum'], yaxis_type['maximum']))
     # Join the list of CSV sets with ';'
     return ';'.join(yaxes_list)
+
+
+def gauge_reformat_stops(gauge_type, current_stops, new_stops, current_colors=None):
+    """Generate stops and colors for new and modified gauges"""
+    if current_colors:
+        colors = current_colors
+    else:  # Default colors (adding new gauge)
+        if gauge_type == 'gauge_solid':
+            colors = '20,#33CCFF;40,#55BF3B;60,#DDDF0D;80,#DF5353'
+        elif gauge_type == 'gauge_angular':
+            colors = '0,20,#33CCFF;20,40,#55BF3B;40,60,#DDDF0D;60,80,#DF5353'
+
+    if new_stops > current_stops:
+        stop = 80
+        for _ in range(new_stops - current_stops):
+            stop += 20
+            if gauge_type == 'gauge_solid':
+                colors += ';{},#DF5353'.format(stop)
+            elif gauge_type == 'gauge_angular':
+                colors += ';{low},{high},#DF5353'.format(low=stop - 20, high=stop)
+    elif new_stops < current_stops:
+        colors_list = colors.split(';')
+        colors = ';'.join(colors_list[: len(colors_list) - (current_stops - new_stops)])
+    new_colors = colors
+
+    return new_colors
 
 
 def is_rgb_color(color_hex):

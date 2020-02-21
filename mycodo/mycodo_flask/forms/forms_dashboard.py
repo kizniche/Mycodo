@@ -107,6 +107,9 @@ class DashboardGauge(FlaskForm):
         TRANSLATIONS['max_age']['title'],
         widget=NumberInput())
     enable_timestamp = BooleanField(lazy_gettext('Show Timestamp'))
+    stops = IntegerField(
+        TRANSLATIONS['stops']['title'],
+        widget=NumberInput())
 
 
 class DashboardIndicator(FlaskForm):

@@ -1,4 +1,4 @@
-## 8.2.6 (Unreleased)
+## 8.3.0 (Unreleased)
 
 ### Bugfixes
 
@@ -14,6 +14,7 @@
 ### Features
 
  - Add Temperature Offset option for BME680 Input ([#735](https://github.com/kizniche/mycodo/issues/735))
+ - Add ability to change number of stops for Gauge Widgets ([#749](https://github.com/kizniche/mycodo/issues/749))
 
 ### Miscellaneous
 
