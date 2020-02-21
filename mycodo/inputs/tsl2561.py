@@ -62,6 +62,19 @@ class InputModule(AbstractInput):
                 address=self.i2c_address,
                 busnum=self.i2c_bus)
 
+    def get_lux(self):
+        self.return_dict = measurements_dict.copy()
+        full, ir = self.tsl._get_luminosity()
+
+        if self.is_enabled(0):
+            self.value_set(0, full)
+
+        if self.is_enabled(1):
+            self.value_set(1, ir)
+
+        if self.is_enabled(2):
+            self.value_set(2, self.tsl.lux())
+
     def get_measurement(self):
         """ Gets the TSL2561's lux """
         self.return_dict = measurements_dict.copy()
@@ -70,20 +83,7 @@ class InputModule(AbstractInput):
         self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_402MS)
         saturated = False
         try:
-            full, ir = self.tsl._get_luminosity()
-
-            if self.is_enabled(0):
-                self.value_set(0, full)
-
-            if self.is_enabled(1):
-                self.value_set(1, ir)
-
-            if (self.is_enabled(2) and
-                    self.is_enabled(0) and
-                    self.is_enabled(1)):
-                self.value_set(2, self.tsl._calculate_lux(
-                    self.value_get(0), self.value_get(1)))
-
+            self.get_lux()
             return self.return_dict
         except Exception as err:
             if 'saturated' in repr(err):
@@ -92,28 +92,15 @@ class InputModule(AbstractInput):
                     "Setting integration time to 101 ms and trying again")
                 saturated = True
             else:
-                self.logger.exception("Error: {}".format(err))
+                self.logger.exception("get_measurement() Error")
 
         if saturated:
             from tsl2561.constants import TSL2561_INTEGRATIONTIME_101MS
             self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_101MS)
             saturated = False
             try:
-                full, ir = self.tsl._get_luminosity()
-
-                if self.is_enabled(0):
-                    return_dict[0]['value'] = full
-
-                if self.is_enabled(1):
-                    return_dict[1]['value'] = ir
-
-                if (self.is_enabled(2) and
-                        self.is_enabled(0) and
-                        self.is_enabled(1)):
-                    return_dict[2]['value'] = self.tsl._calculate_lux(
-                        return_dict[0]['value'], return_dict[1]['value'])
-
-                return return_dict
+                self.get_lux()
+                return self.return_dict
             except Exception as err:
                 if 'saturated' in repr(err):
                     self.logger.error(
@@ -121,36 +108,23 @@ class InputModule(AbstractInput):
                         "Setting integration time to 13 ms and trying again")
                     saturated = True
                 else:
-                    self.logger.exception("Error: {}".format(err))
+                    self.logger.exception("get_measurement() Error")
 
         if saturated:
             from tsl2561.constants import TSL2561_INTEGRATIONTIME_13MS
             self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_13MS)
             try:
-                full, ir = self.tsl._get_luminosity()
-
-                if self.is_enabled(0):
-                    return_dict[0]['value'] = full
-
-                if self.is_enabled(1):
-                    return_dict[1]['value'] = ir
-
-                if (self.is_enabled(2) and
-                        self.is_enabled(0) and
-                        self.is_enabled(1)):
-                    return_dict[2]['value'] = self.tsl._calculate_lux(
-                        return_dict[0]['value'], return_dict[1]['value'])
-
-                return return_dict
+                self.get_lux()
+                return self.return_dict
             except Exception as err:
                 if 'saturated' in repr(err):
                     self.logger.error(
                         "Could not obtain measurement: Sensor is saturated. "
                         "Recording value as 65536.")
-                    return_dict[0]['value'] = 65536.0
-                    return return_dict
+                    self.value_set(0, 65536.0)
+                    return self.return_dict
                 else:
-                    self.logger.exception("Error: {}".format(err))
+                    self.logger.exception("get_measurement() Error")
 
 
 if __name__ == "__main__":

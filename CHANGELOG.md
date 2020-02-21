@@ -10,6 +10,7 @@
  - Fix setting DS sensor resolution ([#747](https://github.com/kizniche/mycodo/issues/747))
  - Split DS18B20 Input into two files (one using w1thermsensor and another using ow-shell) ([#746](https://github.com/kizniche/mycodo/issues/746))
  - Prevent users without "view settings" permission from viewing email addresses
+ - Fix TSL2561 input ([#750](https://github.com/kizniche/mycodo/issues/750))
 
 ### Features
 
