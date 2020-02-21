@@ -762,6 +762,7 @@ def page_dashboard(dashboard_id):
                            table_input=Input,
                            table_math=Math,
                            table_output=Output,
+                           table_pid=PID,
                            table_device_measurements=DeviceMeasurements,
                            choices_camera=choices_camera,
                            choices_input=choices_input,

@@ -19,6 +19,7 @@
 ### Miscellaneous
 
  - Fix logging level of calibration functions
+ - Populate setpoint in field of PID dashboard widget ([#748](https://github.com/kizniche/mycodo/issues/748))
 
 
 ## 8.2.5 (2020-02-09)

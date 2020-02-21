@@ -1,3 +1,5 @@
+{% set this_pid = table_pid.query.filter(table_pid.unique_id == each_widget.pid_ids).first() %}
+
 <div class="d-flex justify-content-between panel-heading" style="flex: 0 1 auto;">
   <div class="my-auto" style="padding-left: 0.4em">
     {% if each_widget.enable_drag_handle -%}
@@ -47,10 +49,8 @@
   {% if each_widget.show_pid_info %}
   <div class="row">
     <div class="col-sm-12 text-center">
-    {% for each_pid in pid if each_pid.unique_id == each_widget.pid_ids %}
     P <span id="pid_p_value-{{chart_number}}"></span> + I <span id="pid_i_value-{{chart_number}}"></span> + D <span id="pid_d_value-{{chart_number}}"></span> = <span id="pid_pid_value-{{chart_number}}"></span>
     <br/>Last Out: <span id="duration_time-{{chart_number}}"></span><span id="duty_cycle-{{chart_number}}"></span>, <span style="font-size: {{each_widget.font_em_timestamp}}em" id="duration_time-timestamp-{{chart_number}}"></span><span style="font-size: {{each_widget.font_em_timestamp}}em" id="duty_cycle-timestamp-{{chart_number}}"></span>
-    {% endfor %}
     </div>
   </div>
   {% else %}
@@ -85,7 +85,7 @@
   {% if each_widget.show_set_setpoint %}
   <div class="row small-gutters" style="padding: 0.5em 1.5em 0.5em 1.5em">
     <div class="col-6">
-      <input class="form-control form-control-sm" id="setpoint_pid_{{each_widget.pid_ids}}" name="setpoint_pid_{{each_widget.pid_ids}}" type="number" value="" title="{{_('A numerical value to set the PID setpoint')}}">
+      <input class="form-control form-control-sm" id="setpoint_pid_{{each_widget.pid_ids}}" name="setpoint_pid_{{each_widget.pid_ids}}" type="number" value="{% if this_pid %}{{this_pid.setpoint}}{% endif %}" title="{{_('A numerical value to set the PID setpoint')}}">
     </div>
     <div class="col-6">
       <input class="btn btn-block btn-sm btn-primary set_setpoint" id="set_setpoint" name="{{each_widget.pid_ids}}/set_setpoint_pid|" type="button" value="{{_('Set Setpoint')}}">
@@ -111,9 +111,7 @@
       {% if not each_widget.show_pid_info %}
       <div class="row" style="padding-top: 0.7em">
         <div class="col-12 small-gutters" style="text-align: center">
-        {% for each_pid in pid if each_pid.unique_id == each_widget.pid_ids %}
         (P: <span id="pid_p_value-{{chart_number}}"></span>) + (I: <span id="pid_i_value-{{chart_number}}"></span>) + (D: <span id="pid_d_value-{{chart_number}}"></span>) = Out: <span id="duration_time-{{chart_number}}"></span><span id="duty_cycle-{{chart_number}}"></span>
-        {% endfor %}
         </div>
       </div>
       {% endif %}
@@ -121,7 +119,7 @@
         {% if not each_widget.show_set_setpoint %}
         <div class="form-row">
           <div class="col-6">
-            <input class="form-control" id="setpoint_pid_{{each_widget.pid_ids}}" name="setpoint_pid_{{each_widget.pid_ids}}" type="number" value="" title="{{_('A numerical value to set the PID setpoint')}}">
+            <input class="form-control" id="setpoint_pid_{{each_widget.pid_ids}}" name="setpoint_pid_{{each_widget.pid_ids}}" type="number" value="{% if this_pid %}{{this_pid.setpoint}}{% endif %}" title="{{_('A numerical value to set the PID setpoint')}}">
           </div>
           <div class="col-6">
             <input class="form-control btn btn-primary btn-sm set_setpoint" id="set_setpoint" name="{{each_widget.pid_ids}}/set_setpoint_pid|" type="button" value="{{_('Set Setpoint')}}">
