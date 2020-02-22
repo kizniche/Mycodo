@@ -3,13 +3,8 @@ import time
 
 from flask_babel import lazy_gettext
 
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.calibration import AtlasScientificCommand
-from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import read_last_influxdb
-from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
 
 
@@ -54,7 +49,6 @@ INPUT_INFORMATION = {
         'uart_location',
         'uart_baud_rate',
         'period',
-        'single_input_math',
         'custom_options',
         'pre_output',
         'log_level_debug'
@@ -74,13 +68,24 @@ INPUT_INFORMATION = {
 
     'custom_options': [
         {
+            'id': 'temperature_comp_meas',
+            'type': 'select_measurement',
+            'default_value': '',
+            'options_select': [
+                'Input',
+                'Math'
+            ],
+            'name': lazy_gettext('Temperature Compensation Measurement'),
+            'phrase': lazy_gettext('Select a measurement for temperature compensation')
+        },
+        {
             'id': 'max_age',
             'type': 'integer',
             'default_value': 120,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Calibration Max Age'),
-            'phrase': lazy_gettext('The Max Age (seconds) of the Input/Math to use for calibration')
+            'name': lazy_gettext('Temperature Compensation Max Age'),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use for temperature compensation')
         }
     ]
 }
@@ -99,8 +104,11 @@ class InputModule(AbstractInput):
         self.uart_location = None
         self.i2c_address = None
         self.i2c_bus = None
+        self.atlas_command = None
 
         # Initialize custom options
+        self.temperature_comp_meas_device_id = None
+        self.temperature_comp_meas_measurement_id = None
         self.max_age = None
         # Set custom options
         self.setup_custom_options(
@@ -109,7 +117,9 @@ class InputModule(AbstractInput):
         if not testing:
             self.input_dev = input_dev
             self.interface = input_dev.interface
-            self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure
+
+            if self.temperature_comp_meas_measurement_id:
+                self.atlas_command = AtlasScientificCommand(self.input_dev)
 
             try:
                 self.initialize_sensor()
@@ -133,43 +143,25 @@ class InputModule(AbstractInput):
                 i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
 
     def get_measurement(self):
-        """ Gets the sensor's pH measurement via UART/I2C """
+        """ Gets the sensor's pH measurement """
         ph = None
         self.return_dict = measurements_dict.copy()
 
-        # Calibrate the pH measurement based on a temperature measurement
-        if (self.calibrate_sensor_measure and
-                ',' in self.calibrate_sensor_measure):
+        # Compensate measurement based on a temperature measurement
+        if self.temperature_comp_meas_measurement_id and self.atlas_command:
             self.logger.debug("pH sensor set to calibrate temperature")
 
-            device_id = self.calibrate_sensor_measure.split(',')[0]
-            measurement_id = self.calibrate_sensor_measure.split(',')[1]
-
-            device_measurement = db_retrieve_table_daemon(
-                DeviceMeasurements).filter(
-                DeviceMeasurements.unique_id == measurement_id).first()
-            if device_measurement:
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=device_measurement.conversion_id)
-            else:
-                conversion = None
-            channel, unit, measurement = return_measurement_info(
-                device_measurement, conversion)
-
-            last_measurement = read_last_influxdb(
-                device_id,
-                unit,
-                channel,
-                measure=measurement,
-                duration_sec=self.max_age)
+            last_measurement = self.get_last_measurement(
+                self.temperature_comp_meas_device_id,
+                self.temperature_comp_meas_measurement_id,
+                max_age=self.max_age)
 
             if last_measurement:
                 self.logger.debug(
                     "Latest temperature used to calibrate: {temp}".format(
                         temp=last_measurement[1]))
 
-                atlas_command = AtlasScientificCommand(self.input_dev)
-                ret_value, ret_msg = atlas_command.calibrate(
+                ret_value, ret_msg = self.atlas_command.calibrate(
                     'temperature', set_amount=last_measurement[1])
                 time.sleep(0.5)
 

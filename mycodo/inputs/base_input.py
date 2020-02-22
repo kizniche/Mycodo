@@ -15,17 +15,19 @@ import time
 import filelock
 import os
 
+from mycodo.abstract_base_controller import AbstractBaseController
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.utils.database import db_retrieve_table_daemon
 
 
-class AbstractInput(object):
+class AbstractInput(AbstractBaseController):
     """
     Base Input class that ensures certain methods and values are present
     in inputs.
     """
     def __init__(self, input_dev, testing=False, name=__name__):
+        super(AbstractInput, self).__init__(input_dev.unique_id, name=__name__)
 
         self.logger = None
         self.setup_logger(testing=testing, name=name, input_dev=input_dev)
@@ -162,78 +164,6 @@ class AbstractInput(object):
         except:
             self.setup_device_measurement()
             return self.channels_measurement[channel].is_enabled
-
-    def setup_custom_options(self, custom_options, input_dev):
-        for each_option_default in custom_options:
-            try:
-                required = False
-                custom_option_set = False
-
-                error = []
-                if not hasattr(input_dev, 'custom_options'):
-                    error.append("input_dev missing attribute custom_options")
-                if 'type' not in each_option_default:
-                    error.append("'type' not found in custom_options")
-                if 'id' not in each_option_default:
-                    error.append("'id' not found in custom_options")
-                if 'default_value' not in each_option_default:
-                    error.append(
-                        "'default_value' not found in custom_options")
-                if error:
-                    for each_error in error:
-                        self.logger.error(each_error)
-                    self.logger.error("Critical error(s) detected. "
-                                      "Halting custom_options parsing.")
-                    return
-
-                if ('required' in each_option_default and
-                        each_option_default['required']):
-                    required = True
-
-                option_value = each_option_default['default_value']
-
-                if input_dev.custom_options:
-                    for each_option in input_dev.custom_options.split(';'):
-                        option = each_option.split(',')[0]
-                        value = each_option.split(',')[1]
-
-                        if option == each_option_default['id']:
-                            custom_option_set = True
-                            option_value = value
-
-                if required and not custom_option_set:
-                    self.logger.error(
-                        "Custom option '{o}' required but was not found to be"
-                        " set by the user. Setting to default of {d}.".format(
-                            o=each_option_default['id'], d=option_value))
-
-                if each_option_default['type'] == 'integer':
-                    setattr(
-                        self, each_option_default['id'], int(option_value))
-                elif each_option_default['type'] == 'float':
-                    setattr(
-                        self, each_option_default['id'], float(option_value))
-                elif each_option_default['type'] == 'bool':
-                    setattr(
-                        self, each_option_default['id'], bool(option_value))
-                elif each_option_default['type'] == 'text':
-                    setattr(
-                        self, each_option_default['id'], str(option_value))
-                elif each_option_default['type'] == 'select':
-                    setattr(
-                        self, each_option_default['id'], str(option_value))
-                else:
-                    self.logger.error(
-                        "Unknown custom_option type '{}'".format(
-                            each_option_default['type']))
-                    self.logger.error("Critical error(s) detected. "
-                                      "Halting custom_options parsing.")
-                    return
-            except Exception:
-                self.logger.exception("Error parsing custom_options")
-                self.logger.error("Critical error(s) detected. "
-                                  "Halting custom_options parsing.")
-                return
 
     def setup_device_measurement(self):
         # Make 5 attempts to access database

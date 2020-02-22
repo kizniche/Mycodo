@@ -1,6 +1,28 @@
 # coding=utf-8
+import time
+
+from flask_babel import lazy_gettext
+
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.system_pi import str_is_float
+
+
+def constraints_pass_positive_value(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: float or int
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure value is positive
+    if value <= 0:
+        all_passed = False
+        errors.append("Must be a positive value")
+    return all_passed, errors, mod_input
+
 
 # Measurements
 measurements_dict = {
@@ -9,6 +31,7 @@ measurements_dict = {
         'unit': 'uS_cm'
     }
 }
+
 
 # Input information
 INPUT_INFORMATION = {
@@ -24,6 +47,7 @@ INPUT_INFORMATION = {
         'uart_location',
         'uart_baud_rate',
         'period',
+        'custom_options',
         'pre_output',
         'log_level_debug'
     ],
@@ -39,6 +63,29 @@ INPUT_INFORMATION = {
     'ftdi_location': '/dev/ttyUSB0',
     'uart_location': '/dev/ttyAMA0',
     'uart_baud_rate': 9600,
+
+    'custom_options': [
+        {
+            'id': 'temperature_comp_meas',
+            'type': 'select_measurement',
+            'default_value': '',
+            'options_select': [
+                'Input',
+                'Math'
+            ],
+            'name': lazy_gettext('Temperature Compensation Measurement'),
+            'phrase': lazy_gettext('Select a measurement for temperature compensation')
+        },
+        {
+            'id': 'max_age',
+            'type': 'integer',
+            'default_value': 120,
+            'required': True,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': lazy_gettext('Temperature Compensation Max Age'),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use for temperature compensation')
+        }
+    ]
 }
 
 
@@ -51,15 +98,21 @@ class InputModule(AbstractInput):
         self.atlas_sensor_uart = None
         self.atlas_sensor_i2c = None
 
+        # Initialize custom options
+        self.temperature_comp_meas_device_id = None
+        self.temperature_comp_meas_measurement_id = None
+        self.max_age = None
+        # Set custom options
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
+
         if not testing:
+            self.input_dev = input_dev
             self.interface = input_dev.interface
-            if self.interface == 'FTDI':
-                self.ftdi_location = input_dev.ftdi_location
-            elif self.interface == 'UART':
-                self.uart_location = input_dev.uart_location
-            elif self.interface == 'I2C':
-                self.i2c_address = int(str(input_dev.i2c_location), 16)
-                self.i2c_bus = input_dev.i2c_bus
+
+            if self.temperature_comp_meas_measurement_id:
+                self.atlas_command = AtlasScientificCommand(self.input_dev)
+
             try:
                 self.initialize_sensor()
             except Exception:
@@ -70,10 +123,14 @@ class InputModule(AbstractInput):
         from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
         from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         if self.interface == 'FTDI':
+            self.ftdi_location = self.input_dev.ftdi_location
             self.atlas_sensor_ftdi = AtlasScientificFTDI(self.ftdi_location)
         elif self.interface == 'UART':
+            self.uart_location = self.input_dev.uart_location
             self.atlas_sensor_uart = AtlasScientificUART(self.uart_location)
         elif self.interface == 'I2C':
+            self.i2c_address = int(str(self.input_dev.i2c_location), 16)
+            self.i2c_bus = self.input_dev.i2c_bus
             self.atlas_sensor_i2c = AtlasScientificI2C(
                 i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
 
@@ -82,7 +139,33 @@ class InputModule(AbstractInput):
         electrical_conductivity = None
         self.return_dict = measurements_dict.copy()
 
-        # Read sensor via UART
+        # Compensate measurement based on a temperature measurement
+        if self.temperature_comp_meas_measurement_id and self.atlas_command:
+            self.logger.debug("pH sensor set to calibrate temperature")
+
+            last_measurement = self.get_last_measurement(
+                self.temperature_comp_meas_device_id,
+                self.temperature_comp_meas_measurement_id,
+                max_age=self.max_age)
+
+            if last_measurement:
+                self.logger.debug(
+                    "Latest temperature used to calibrate: {temp}".format(
+                        temp=last_measurement[1]))
+
+                ret_value, ret_msg = self.atlas_command.calibrate(
+                    'temperature', set_amount=last_measurement[1])
+                time.sleep(0.5)
+
+                self.logger.debug(
+                    "Calibration returned: {val}, {msg}".format(
+                        val=ret_value, msg=ret_msg))
+            else:
+                self.logger.error(
+                    "Calibration measurement not found within the past "
+                    "{} seconds".format(self.max_age))
+
+        # Read sensor via FTDI
         if self.interface == 'FTDI':
             if self.atlas_sensor_ftdi.setup:
                 lines = self.atlas_sensor_ftdi.query('R')

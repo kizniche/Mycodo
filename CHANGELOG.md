@@ -1,3 +1,10 @@
+## 8.3.1 (Unreleased)
+
+### Features
+
+ - Add temperature compensation option for the Atlas Scientific Electrical Conductivity and Dissolved Oxygen Inputs
+
+
 ## 8.3.0 (2020-02-21)
 
 ### Bugfixes
