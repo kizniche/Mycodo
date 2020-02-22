@@ -25,10 +25,10 @@ class AbstractBaseController(object):
     Base Controller class that ensures certain methods and values are present
     in controllers.
     """
-    def __init__(self, unique_id=None, name=__name__):
+    def __init__(self, unique_id=None, testing=False, name=__name__):
 
         logger_name = "{}".format(name)
-        if unique_id:
+        if not testing and unique_id:
             logger_name += "_{}".format(unique_id.split('-')[0])
         self.logger = logging.getLogger(logger_name)
 
