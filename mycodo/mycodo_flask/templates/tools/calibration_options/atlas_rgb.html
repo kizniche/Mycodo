@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% set active_page = "calibration" %}
+{% block title %} - {{_('Calibration & Setup')}}: Atlas Scientific RGB Sensor{% endblock %}
+
+{% block body %}
+  <!-- Route: /setup_atlas_ph -->
+  <div class="container"> 
+    {% include 'flash_messages.html' %}
+
+    <h2>Atlas Scientific RGB Sensor</h2>
+
+    {% if ui_stage == 'start' %}
+
+    <p>{{_('This guide will walk you through the calibration procedure for the Atlas Scientific RG Color Sensor. To complete this procedure, you will need a white object such as a piece fo paper.')}}</p>
+
+    <p>{{_('To begin calibration, have your sensor properly connected to Mycodo and deactivated, place the white object in front of the sensor, then click Begin Calibration.')}}</p>
+
+    <form method="post" action="/setup_atlas_rgb">
+    <div class="row small-gutters">
+      <div class="col-auto small-gutters">
+        <select class="selectpicker" id="selected_input_id" name="selected_input_id" title="" data-original-title="Select which Atlas Scientific RGB sensor to calibrate">
+          {% if input %}
+            {%- for each_input in input -%}
+              <option value="{{each_input.unique_id}}">{{each_input.id}} ({{each_input.name}})</option>
+            {%- endfor -%}
+          {% else %}
+            <option value="">{{dict_translation['none_available']['title']}}</option>
+          {% endif %}
+        </select>
+      </div>
+      <div class="col-auto small-gutters">
+        {{form_rgb_calibrate.start_calibration(class_='form-control btn-default')}}
+      </div>
+    </div>
+    </form>
+
+    {% elif ui_stage == 'complete' %}
+
+    <p>{{dict_translation['calibration']['title']}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}}): {% if complete_with_error %}{{_('Calibration Failed')}}{% else %}{{_('Calibration Succeeded')}}{% endif %}</p>
+
+      {% if complete_with_error %}
+    <p>
+      {{dict_translation['error']['title']}}:
+      <br>{{complete_with_error}}
+    </p>
+    <p>{{_('Refer to the logs for details')}}</p>
+      {% else %}
+    <p>{{_('Calibration Complete')}}</p>
+      {% endif %}
+
+    {% endif %}
+
+  </div>
+
+{% endblock %}

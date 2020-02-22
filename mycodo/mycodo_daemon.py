@@ -473,6 +473,25 @@ class DaemonController:
             self.logger.exception(message)
             return 1, message
 
+    def input_atlas_flow_clear_total_volume(self, input_id):
+        """
+        Force Input to clear the total flow amount
+
+        :return: success or error message
+        :rtype: str
+
+        :param input_id: Which Input controller ID is to be affected?
+        :type input_id: str
+
+        """
+        try:
+            return self.controller['Input'][input_id].clear_total_volume()
+        except Exception as except_msg:
+            message = "Could not clear total volume:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+            return 1, message
+
     def lcd_reset(self, lcd_id):
         """
         Resets an LCD
@@ -1080,6 +1099,10 @@ class PyroServer(object):
     def input_force_measurements(self, input_id):
         """Updates all input information"""
         return self.mycodo.input_force_measurements(input_id)
+
+    def input_atlas_flow_clear_total_volume(self, input_id):
+        """Updates all input information"""
+        return self.mycodo.input_atlas_flow_clear_total_volume(input_id)
 
     def pid_hold(self, pid_id):
         """Hold PID Controller operation"""

@@ -178,6 +178,12 @@ class DaemonControl:
         except Exception:
             return 0, traceback.format_exc()
 
+    def input_atlas_flow_clear_total_volume(self, input_id):
+        try:
+            return self.proxy().input_atlas_flow_clear_total_volume(input_id)
+        except Exception:
+            return 1, traceback.format_exc()
+
     #
     # LCD Controller
     #

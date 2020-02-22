@@ -29,6 +29,10 @@ TRANSLATIONS = {
         'title': lazy_gettext('Camera')},
     'cancel': {
         'title': lazy_gettext('Cancel')},
+    'clear': {
+        'title': lazy_gettext('Clear')},
+    'completed': {
+        'title': lazy_gettext('Completed')},
     'conditional': {
         'title': lazy_gettext('Conditional')},
     'controller': {
@@ -67,6 +71,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Error')},
     'export': {
         'title': lazy_gettext('Export')},
+    'fail': {
+        'title': lazy_gettext('Fail')},
     'function': {
         'title': lazy_gettext('Function')},
     'general': {
@@ -147,6 +153,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Single')},
     'stops': {
         'title': lazy_gettext('Stops')},
+    'success': {
+        'title': lazy_gettext('Success')},
     'sum': {
         'title': lazy_gettext('Sum')},
     'tag': {

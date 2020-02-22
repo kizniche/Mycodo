@@ -76,6 +76,20 @@ class CalibrationAtlasph(FlaskForm):
     go_to_last_stage = SubmitField(lazy_gettext('Continue to Next Stage'))
 
 
+# Atlas Scientific RGB sensor
+class CalibrationAtlasRGB(FlaskForm):
+    hidden_input_id = StringField('Input ID', widget=widgets.HiddenInput())
+    selected_input_id = StringField(lazy_gettext('Atlas RGB Sensor'))
+    start_calibration = SubmitField(lazy_gettext('Begin Calibration'))
+
+
+# Atlas Scientific Flow sensor
+class CalibrationAtlasFlow(FlaskForm):
+    hidden_input_id = StringField('Input ID', widget=widgets.HiddenInput())
+    selected_input_id = StringField(lazy_gettext('Atlas RGB Sensor'))
+    clear_calibration = SubmitField(lazy_gettext('Clear Calibration'))
+
+
 # DS18B20 Temperature sensor
 class SetupDS18B20(FlaskForm):
     device_id = StringField(lazy_gettext('Device'))

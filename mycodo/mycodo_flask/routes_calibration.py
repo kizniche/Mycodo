@@ -20,6 +20,7 @@ from mycodo.databases.models import Output
 from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
 from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
 from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.forms import forms_calibration
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
@@ -189,6 +190,103 @@ def setup_atlas_ezo_pump():
                            output=output,
                            output_device_name=output_device_name,
                            selected_output=selected_output,
+                           ui_stage=ui_stage)
+
+
+@blueprint.route('/setup_atlas_rgb', methods=('GET', 'POST'))
+@flask_login.login_required
+def setup_atlas_rgb():
+    """
+    Step-by-step tool for calibrating the Atlas Scientific RGB sensor
+    """
+    if not utils_general.user_has_permission('edit_controllers'):
+        return redirect(url_for('routes_general.home'))
+
+    form_rgb_calibrate = forms_calibration.CalibrationAtlasRGB()
+
+    input_dev = Input.query.filter(Input.device == 'ATLAS_RGB').all()
+
+    ui_stage = 'start'
+    selected_input = None
+    input_device_name = None
+    complete_with_error = None
+
+    # Begin calibration from Selected input
+    if form_rgb_calibrate.start_calibration.data:
+        selected_input = Input.query.filter_by(
+            unique_id=form_rgb_calibrate.selected_input_id.data).first()
+        dict_inputs = parse_input_information()
+        list_inputs_sorted = generate_form_input_list(dict_inputs)
+        if not selected_input:
+            flash('Input not found: {}'.format(
+                form_rgb_calibrate.selected_input_id.data), 'error')
+        else:
+            for each_input in list_inputs_sorted:
+                if selected_input.device == each_input[0]:
+                    input_device_name = each_input[1]
+        atlas_command = AtlasScientificCommand(selected_input)
+        return_status, return_string = atlas_command.send_command('Cal')
+        if return_status:
+            complete_with_error = return_string
+        ui_stage = 'complete'
+
+    return render_template('tools/calibration_options/atlas_rgb.html',
+                           complete_with_error=complete_with_error,
+                           form_rgb_calibrate=form_rgb_calibrate,
+                           input=input_dev,
+                           input_device_name=input_device_name,
+                           selected_input=selected_input,
+                           ui_stage=ui_stage)
+
+
+@blueprint.route('/setup_atlas_flow', methods=('GET', 'POST'))
+@flask_login.login_required
+def setup_atlas_flow():
+    """
+    Step-by-step tool for calibrating the Atlas Scientific RGB sensor
+    """
+    if not utils_general.user_has_permission('edit_controllers'):
+        return redirect(url_for('routes_general.home'))
+
+    form_flow_calibrate = forms_calibration.CalibrationAtlasFlow()
+
+    input_dev = Input.query.filter(Input.device == 'ATLAS_FLOW').all()
+
+    ui_stage = 'start'
+    selected_input = None
+    input_device_name = None
+    complete_with_error = None
+
+    # Begin calibration from Selected input
+    if form_flow_calibrate.clear_calibration.data:
+        selected_input = Input.query.filter_by(
+            unique_id=form_flow_calibrate.selected_input_id.data).first()
+        dict_inputs = parse_input_information()
+        list_inputs_sorted = generate_form_input_list(dict_inputs)
+        if not selected_input:
+            flash('Input not found: {}'.format(
+                form_flow_calibrate.selected_input_id.data), 'error')
+        else:
+            for each_input in list_inputs_sorted:
+                if selected_input.device == each_input[0]:
+                    input_device_name = each_input[1]
+        if selected_input.is_activated:
+            control = DaemonControl()
+            return_status, return_string = control.input_atlas_flow_clear_total_volume(
+                selected_input.unique_id)
+        else:
+            atlas_command = AtlasScientificCommand(selected_input)
+            return_status, return_string = atlas_command.send_command('Clear')
+        if return_status:
+            complete_with_error = return_string
+        ui_stage = 'complete'
+
+    return render_template('tools/calibration_options/atlas_flow.html',
+                           complete_with_error=complete_with_error,
+                           form_flow_calibrate=form_flow_calibrate,
+                           input=input_dev,
+                           input_device_name=input_device_name,
+                           selected_input=selected_input,
                            ui_stage=ui_stage)
 
 

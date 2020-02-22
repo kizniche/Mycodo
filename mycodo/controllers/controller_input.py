@@ -540,6 +540,10 @@ class InputController(AbstractController, threading.Thread):
         self.next_measurement = time.time()
         return 0, "Input instructed to begin acquiring measurements"
 
+    def clear_total_volume(self):
+        """Only for Atlas Scientific Flow sensor"""
+        return self.measure_input.clear_total_volume()
+
     def pre_stop(self):
         # Execute stop_input() if not EDGE or ADC
         if self.device != 'EDGE':

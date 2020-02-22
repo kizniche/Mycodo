@@ -41,6 +41,30 @@ MEASUREMENTS = {
         'name': lazy_gettext('CO2'),
         'meas': 'co2',
         'units': ['ppm', 'ppb', 'percent']},
+    'color_red': {
+        'name': lazy_gettext('Color (Red)'),
+        'meas': 'color_red',
+        'units': ['eight_bit_color']},
+    'color_green': {
+        'name': lazy_gettext('Color (Green)'),
+        'meas': 'color_green',
+        'units': ['eight_bit_color']},
+    'color_blue': {
+        'name': lazy_gettext('Color (Blue)'),
+        'meas': 'color_blue',
+        'units': ['eight_bit_color']},
+    'color_x': {
+        'name': lazy_gettext('Color (x)'),
+        'meas': 'color_x',
+        'units': ['cie']},
+    'color_y': {
+        'name': lazy_gettext('Color (y)'),
+        'meas': 'color_y',
+        'units': ['cie']},
+    'color_Y': {
+        'name': lazy_gettext('Color (Y)'),
+        'meas': 'color_Y',
+        'units': ['cie']},
     'cpu_load_1m': {
         'name': lazy_gettext('CPU Load 1 min'),
         'meas': 'cpu_load',
@@ -109,6 +133,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Ion Concentration'),
         'meas': 'ion_concentration',
         'units': ['pH']},
+    'length': {
+        'name': lazy_gettext('Length'),
+        'meas': 'length',
+        'units': ['f', 'cm', 'm']},
     'light': {
         'name': lazy_gettext('Light'),
         'meas': 'light',
@@ -157,6 +185,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Radiation Dose Rate'),
         'meas': 'radiation_dose_rate',
         'units': ['cpm', 'uSv_hr']},
+    'rate_volume': {
+        'name': lazy_gettext('Volume per Time'),
+        'meas': 'rate_volume',
+        'units': ['l_h', 'l_m', 'l_s']},
     'resistance': {
         'name': lazy_gettext('Resistance'),
         'meas': 'resistance',
@@ -208,7 +240,7 @@ MEASUREMENTS = {
     'volume': {
         'name': lazy_gettext('Volume'),
         'meas': 'volume',
-        'units': ['ml']},
+        'units': ['l', 'ml']},
 }
 
 # Measurement units
@@ -234,6 +266,12 @@ UNITS = {
     'C': {
         'name': lazy_gettext('Celsius'),
         'unit': '°C'},
+    'cie': {
+        'name': lazy_gettext('CIE'),
+        'unit': 'cie'},
+    'cm': {
+        'name': lazy_gettext('Centimeter'),
+        'unit': 'cm'},
     'cpm': {
         'name': lazy_gettext('Counts per minute'),
         'unit': 'cpm'},
@@ -243,6 +281,9 @@ UNITS = {
     'decimal': {
         'name': lazy_gettext('Decimal'),
         'unit': ''},
+    'eight_bit_color': {
+        'name': lazy_gettext('8-Bit Color'),
+        'unit': '8-bit'},
     'F': {
         'name': lazy_gettext('Fahrenheit'),
         'unit': '°F'},
@@ -285,6 +326,18 @@ UNITS = {
     'kPa': {
         'name': lazy_gettext('Kilopascal'),
         'unit': 'kPa'},
+    'l': {
+        'name': lazy_gettext('Liter'),
+        'unit': 'l'},
+    'l_h': {
+        'name': lazy_gettext('Liters per Hour'),
+        'unit': 'l/h'},
+    'l_m': {
+        'name': lazy_gettext('Liters per Minute'),
+        'unit': 'l/min'},
+    'l_s': {
+        'name': lazy_gettext('Liters Per Second'),
+        'unit': 'l/s'},
     'lux': {
         'name': lazy_gettext('Lux'),
         'unit': 'lx'},
@@ -403,6 +456,14 @@ UNIT_CONVERSIONS = [
     # Pressure
     ('Pa', 'kPa', 'x/1000'),
     ('kPa', 'Pa', 'x*1000'),
+
+    # Rate - Volume
+    ('l_s', 'l_m', 'x*60'),
+    ('l_s', 'l_h', 'x*60*60'),
+    ('l_m', 'l_s', 'x/60'),
+    ('l_m', 'l_h', 'x*60'),
+    ('l_h', 'l_s', 'x/60/60'),
+    ('l_h', 'l_m', 'x/60'),
 
     # Time
     ('s', 'minute', 'x/60'),

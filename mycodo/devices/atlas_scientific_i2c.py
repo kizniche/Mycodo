@@ -50,7 +50,7 @@ class AtlasScientificI2C:
         # self.logger.error("Atlas Scientific command being sent: '{}'".format(cmd))
         self.file_write.write(cmd.encode('latin-1'))
 
-    def read(self, num_of_bytes=31):
+    def read(self, num_of_bytes=50):
         """ Read a specified number of bytes from I2C, then parse and display the result """
         res = self.file_read.read(num_of_bytes)  # read from the board
         if res[0] == 1:  # if the response isn't an error

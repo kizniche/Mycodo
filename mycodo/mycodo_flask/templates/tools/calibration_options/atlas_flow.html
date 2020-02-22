@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% set active_page = "calibration" %}
+{% block title %} - {{_('Calibration & Setup')}}: Atlas Scientific Flow Sensor{% endblock %}
+
+{% block body %}
+  <!-- Route: /setup_atlas_ph -->
+  <div class="container"> 
+    {% include 'flash_messages.html' %}
+
+    <h2>Atlas Scientific Flow Sensor</h2>
+
+    {% if ui_stage == 'start' %}
+
+    <p>{{_('This will clear the total volume stored on the Atlas Scientific Flow Sensor.')}}</p>
+
+    <p>{{_('To clear the total volume, have your sensor properly connected to Mycodo, then click Clear Total Volume.')}}</p>
+
+    <form method="post" action="/setup_atlas_flow">
+    <div class="row small-gutters">
+      <div class="col-auto small-gutters">
+        <select class="selectpicker" id="selected_input_id" name="selected_input_id" title="" data-original-title="Select which Atlas Scientific RGB sensor to calibrate">
+          {% if input %}
+            {%- for each_input in input -%}
+              <option value="{{each_input.unique_id}}">{{each_input.id}} ({{each_input.name}})</option>
+            {%- endfor -%}
+          {% else %}
+            <option value="">{{dict_translation['none_available']['title']}}</option>
+          {% endif %}
+        </select>
+      </div>
+      <div class="col-auto small-gutters">
+        {{form_flow_calibrate.clear_calibration(class_='form-control btn-default', value=_("Clear Total Volume"))}}
+      </div>
+    </div>
+    </form>
+
+    {% elif ui_stage == 'complete' %}
+
+    <p>{{dict_translation['clear']['title']}}{% if input_device_name %}: {{input_device_name}}{% endif %} {{selected_input.id}} ({{selected_input.name}}): {% if complete_with_error %}{{_('Fail')}}{% else %}{{_('Success')}}{% endif %}</p>
+
+      {% if complete_with_error %}
+    <p>
+      {{dict_translation['error']['title']}}:
+      <br>{{complete_with_error}}
+    </p>
+    <p>{{_('Refer to the logs for details')}}</p>
+      {% else %}
+    <p>{{_('Completed')}}</p>
+      {% endif %}
+
+    {% endif %}
+
+  </div>
+
+{% endblock %}
