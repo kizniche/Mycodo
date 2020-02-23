@@ -40,9 +40,9 @@ INPUT_INFORMATION = {
     'i2c_location': ['0x48', '0x49', '0x4A', '0x4B'],
     'i2c_address_editable': False,
 
-    'adc_gain': [(1, '1'),
+    'adc_gain': [(0, '2/3'),
+                 (1, '1'),
                  (2, '2'),
-                 (3, '3'),
                  (4, '4'),
                  (8, '8'),
                  (16, '16')]
@@ -65,12 +65,23 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False,):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.dict_gains = {
+            2/3: 0.1875,
+            1: 0.125,
+            2: 0.0625,
+            4: 0.03125,
+            8: 0.015625,
+            16: 0.0078125,
+        }
+
         if not testing:
             import Adafruit_ADS1x15
 
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.adc_gain = input_dev.adc_gain
+            if self.adc_gain == 0:
+                self.adc_gain = 2/3
             self.adc = Adafruit_ADS1x15.ADS1115(
                 address=self.i2c_address,
                 busnum=self.i2c_bus)
@@ -82,6 +93,6 @@ class InputModule(AbstractInput):
             if self.is_enabled(channel):
                 self.value_set(
                     channel,
-                    self.adc.read_adc(channel, gain=self.adc_gain) / 10000.0)
+                    self.adc.read_adc(channel, gain=self.adc_gain) * self.dict_gains[self.adc_gain] / 1000.0)
 
         return self.return_dict

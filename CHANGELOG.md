@@ -4,6 +4,7 @@
 
  - Fix invalid links to Help pages
  - Prevent unstoppable Conditional Controller by adding self.running bool variable
+ - Fix calculation error causing inaccuracy with ADS1115 analog-to-digital converter Input
 
 ### Features
 
