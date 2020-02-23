@@ -3689,12 +3689,16 @@ Built-In Inputs
    `link <https://www.atlas-scientific.com/dissolved-oxygen.html>`__
 -  Atlas Scientific EC: Electrical Conductivity
    `link <https://www.atlas-scientific.com/conductivity.html>`__
+-  Atlas Scientific Flow Meter: Total volume, volume flow rate
+   `link <https://www.atlas-scientific.com/flow-meters.html>`__
 -  Atlas Scientific ORP: Oxidation-Reduction Potential
    `link <https://www.atlas-scientific.com/orp.html>`__
 -  Atlas Scientific pH: Potential hydrogen
    `link <https://www.atlas-scientific.com/ph.html>`__
 -  Atlas Scientific PT-1000: Temperature
    `link <https://www.atlas-scientific.com/temperature.html>`__
+-  Atlas Scientific RGB Color Sensor: RGB, CIE, Lux, Proximity
+   `link <https://www.atlas-scientific.com/product_pages/probes/ezo-rgb.html>`__
 -  BH1750: Light `link <https://www.dfrobot.com/product-531.html>`__
 -  BME280: Barometric pressure, humidity, temperature
    `link <https://www.bosch-sensortec.com/bst/products/all_products/bme280>`__
