@@ -25,6 +25,7 @@ import datetime
 import importlib.util
 import threading
 import time
+import timeit
 
 import os
 
@@ -178,3 +179,12 @@ class ConditionalController(AbstractController, threading.Thread):
 
         self.conditional_run.message = message
         self.conditional_run.conditional_code_run()
+
+    def stop_controller(self):
+        self.thread_shutdown_timer = timeit.default_timer()
+        self.pre_stop()
+        try:
+            self.conditional_run.stop_conditional()
+        except Exception:
+            pass
+        self.running = False

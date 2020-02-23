@@ -438,6 +438,7 @@ class InputModule(AbstractInput):
         while self.sensor_is_measuring:
             time.sleep(0.1)
         self.sensor_is_clearing = True
+        self.logger.debug("Clearing total volume")
         return_status, return_string = self.atlas_sensor.query('Clear')
         self.sensor_is_clearing = False
         if return_status == 'error':

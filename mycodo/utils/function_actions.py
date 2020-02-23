@@ -268,7 +268,10 @@ def action_clear_flow_meter_total_volume(cond_action, message):
         unique_id=unique_id,
         id=this_input.id,
         name=this_input.name)
-    control.input_atlas_flow_clear_total_volume(this_input.unique_id)
+    clear_volume = threading.Thread(
+        target=control.input_atlas_flow_clear_total_volume,
+        args=(this_input.unique_id,))
+    clear_volume.start()
     return message
 
 
@@ -282,7 +285,10 @@ def action_input_force_measurements(cond_action, message):
         unique_id=unique_id,
         id=this_input.id,
         name=this_input.name)
-    control.input_force_measurements(this_input.unique_id)
+    clear_volume = threading.Thread(
+        target=control.input_force_measurements,
+        args=(this_input.unique_id,))
+    clear_volume.start()
     return message
 
 
@@ -944,6 +950,10 @@ def trigger_action(
         elif cond_action.action_type == 'create_note':
             message, note_tags = action_create_note(
                 cond_action, message, single_action, note_tags)
+        elif cond_action.action_type == 'clear_total_volume':
+            message = action_clear_flow_meter_total_volume(cond_action, message)
+        elif cond_action.action_type == 'input_force_measurements':
+            message = action_input_force_measurements(cond_action, message)
         elif cond_action.action_type in ['photo', 'photo_email']:
             message, attachment_file = action_photo(cond_action, message)
         elif cond_action.action_type in ['video', 'video_email']:

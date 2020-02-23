@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix invalid links to Help pages
+ - Prevent unstoppable Conditional Controller by adding self.running bool variable
 
 ### Features
 

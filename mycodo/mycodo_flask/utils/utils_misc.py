@@ -38,6 +38,7 @@ class ConditionalRun:
         self.logger = logger
         self.function_id = function_id
         self.message = message
+        self.running = True
 
     def run_all_actions(self, message=None):
         if message is None:
@@ -63,6 +64,9 @@ class ConditionalRun:
                 list_ts_values.append({'time': ts_value[0], 'value': float(ts_value[1])})
             return list_ts_values
         return None
+
+    def stop_conditional(self):
+        self.running = False
 
     def conditional_code_run(self):
 """
