@@ -1490,6 +1490,7 @@ def page_function():
     choices_custom_controllers = utils_general.choices_custom_controllers()
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
+    choices_input_devices = utils_general.choices_input_devices(input_dev)
     choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(
@@ -1600,6 +1601,7 @@ def page_function():
                            choices_custom_controllers=choices_custom_controllers,
                            choices_functions=choices_functions,
                            choices_input=choices_input,
+                           choices_input_devices=choices_input_devices,
                            choices_math=choices_math,
                            choices_output=choices_output,
                            choices_pid=choices_pid,

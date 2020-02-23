@@ -599,6 +599,11 @@ FUNCTION_ACTION_INFO = {
             TRANSLATIONS['deactivate']['title']),
         'dependencies_module': []
     },
+    'clear_total_volume': {
+        'name': "{}: {}".format(lazy_gettext('Flow Meter'),
+                                lazy_gettext('Clear Total Volume')),
+        'dependencies_module': []
+    },
     'create_note': {
         'name': TRANSLATIONS['note']['title'],
         'dependencies_module': []
@@ -633,6 +638,11 @@ FUNCTION_ACTION_INFO = {
             ('pip-pypi', 'lirc', 'python-lirc'),
             ('pip-pypi', 'py_irsend', 'py-irsend')
         ]
+    },
+    'input_force_measurements': {
+        'name': "{}: {}".format(lazy_gettext('Input'),
+                                lazy_gettext('Force Measurements')),
+        'dependencies_module': []
     },
     'lcd_backlight_off': {
         'name': '{}: {}'.format(
@@ -723,9 +733,11 @@ FUNCTION_ACTIONS = [
     ('photo', FUNCTION_ACTION_INFO['photo']['name']),
     ('activate_controller', FUNCTION_ACTION_INFO['activate_controller']['name']),
     ('deactivate_controller', FUNCTION_ACTION_INFO['deactivate_controller']['name']),
+    ('clear_total_volume', FUNCTION_ACTION_INFO['clear_total_volume']['name']),
     ('create_note', FUNCTION_ACTION_INFO['create_note']['name']),
     ('email', FUNCTION_ACTION_INFO['email']['name']),
     ('email_multiple', FUNCTION_ACTION_INFO['email_multiple']['name']),
+    ('input_force_measurements', FUNCTION_ACTION_INFO['input_force_measurements']['name']),
     ('photo_email', FUNCTION_ACTION_INFO['photo_email']['name']),
     ('video_email', FUNCTION_ACTION_INFO['video_email']['name']),
     ('command', FUNCTION_ACTION_INFO['command']['name']),

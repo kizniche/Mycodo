@@ -1,0 +1,12 @@
+<div class="col-auto">
+  {{form_actions.do_unique_id.label(class_='control-label')}}
+  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('Controller to affect')}}">
+    <option value=""></option>
+    {% for each_input_form in choices_input_devices -%}
+      <option value="{{each_input_form['value']}}"{% if each_action.do_unique_id == each_input_form['value'] %} selected{% endif %}>{{each_input_form['item']}}</option>
+    {% endfor -%}
+  </select>
+</div>
+<div class="col-12">
+  <strong>{{_('Input')}}: {{_('Force Measurements')}}</strong>: {{_('Force measurements to be conducted for an input')}}
+</div>

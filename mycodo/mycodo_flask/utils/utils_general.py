@@ -348,6 +348,14 @@ def choices_inputs(inputs, dict_units, dict_measurements):
     return choices
 
 
+def choices_input_devices(input_dev):
+    """ populate form multi-select choices from Output entries """
+    choices = []
+    for each_input in input_dev:
+        choices = form_input_choices_devices(choices, each_input)
+    return choices
+
+
 def choices_lcd(inputs, maths, pids, outputs, dict_units, dict_measurements):
     choices = [
         {'value': '0000,BLANK', 'item': 'Blank Line'},
@@ -590,6 +598,15 @@ def form_input_choices(choices, each_input, dict_units, dict_measurements):
 
             choices.append({'value': value, 'item': display})
 
+    return choices
+
+
+def form_input_choices_devices(choices, each_input):
+    value = '{id},input'.format(id=each_input.unique_id)
+    display = '[Input {id:02d}] {name}'.format(
+        id=each_input.id,
+        name=each_input.name)
+    choices.append({'value': value, 'item': display})
     return choices
 
 

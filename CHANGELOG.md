@@ -8,6 +8,7 @@
 
  - Add temperature compensation option for the Atlas Scientific Electrical Conductivity and Dissolved Oxygen Inputs
  - Add Inputs: Atlas Scientific Flow Sensor, Atlas Scientific RGB Color Sensor
+ - Add Function Action: Clear Total Volume of Flow Meter, Force Input Measurements
 
 
 ## 8.3.0 (2020-02-21)

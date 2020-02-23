@@ -326,17 +326,15 @@ def action_mod(form):
             mod_action.do_output_duration = form.do_output_duration.data
 
         elif mod_action.action_type in ['activate_controller',
-                                        'deactivate_controller']:
-            mod_action.do_unique_id = form.do_unique_id.data
-
-        elif mod_action.action_type in ['activate_pid',
+                                        'deactivate_controller',
+                                        'activate_pid',
                                         'deactivate_pid',
                                         'resume_pid',
-                                        'pause_pid']:
-            mod_action.do_unique_id = form.do_unique_id.data
-
-        elif mod_action.action_type in ['activate_timer',
-                                        'deactivate_timer']:
+                                        'pause_pid'
+                                        'activate_timer',
+                                        'deactivate_timer',
+                                        'clear_total_volume',
+                                        'input_force_measurements']:
             mod_action.do_unique_id = form.do_unique_id.data
 
         elif mod_action.action_type in ['setpoint_pid',

@@ -258,6 +258,34 @@ def get_past_measurements(unique_id, unit, measurement, channel, duration_sec):
         return string_ts_values
 
 
+def action_clear_flow_meter_total_volume(cond_action, message):
+    """Clears the total volume of a flow meter input"""
+    control = DaemonControl()
+    unique_id = cond_action.do_unique_id.split(",")[0]
+    this_input = db_retrieve_table_daemon(
+        Input, unique_id=unique_id, entry='first')
+    message += " Clear total volume of Input {unique_id} ({id}, {name}).".format(
+        unique_id=unique_id,
+        id=this_input.id,
+        name=this_input.name)
+    control.input_atlas_flow_clear_total_volume(this_input.unique_id)
+    return message
+
+
+def action_input_force_measurements(cond_action, message):
+    """Forces measurements to be conducted for an input"""
+    control = DaemonControl()
+    unique_id = cond_action.do_unique_id.split(",")[0]
+    this_input = db_retrieve_table_daemon(
+        Input, unique_id=unique_id, entry='first')
+    message += " Force measuring from Input {unique_id} ({id}, {name}).".format(
+        unique_id=unique_id,
+        id=this_input.id,
+        name=this_input.name)
+    control.input_force_measurements(this_input.unique_id)
+    return message
+
+
 def action_pause(cond_action, message):
     message += " [{id}] Pause actions for {sec} seconds.".format(
         id=cond_action.id,
