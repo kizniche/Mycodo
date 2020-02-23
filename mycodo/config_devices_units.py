@@ -186,9 +186,9 @@ MEASUREMENTS = {
         'meas': 'radiation_dose_rate',
         'units': ['cpm', 'uSv_hr']},
     'rate_volume': {
-        'name': lazy_gettext('Volume per Time'),
+        'name': lazy_gettext('Volume Flow Rate'),
         'meas': 'rate_volume',
-        'units': ['l_h', 'l_m', 'l_s']},
+        'units': ['l_hr', 'l_min', 'l_s']},
     'resistance': {
         'name': lazy_gettext('Resistance'),
         'meas': 'resistance',
@@ -329,10 +329,10 @@ UNITS = {
     'l': {
         'name': lazy_gettext('Liter'),
         'unit': 'l'},
-    'l_h': {
+    'l_hr': {
         'name': lazy_gettext('Liters per Hour'),
-        'unit': 'l/h'},
-    'l_m': {
+        'unit': 'l/hr'},
+    'l_min': {
         'name': lazy_gettext('Liters per Minute'),
         'unit': 'l/min'},
     'l_s': {
@@ -458,12 +458,12 @@ UNIT_CONVERSIONS = [
     ('kPa', 'Pa', 'x*1000'),
 
     # Rate - Volume
-    ('l_s', 'l_m', 'x*60'),
-    ('l_s', 'l_h', 'x*60*60'),
-    ('l_m', 'l_s', 'x/60'),
-    ('l_m', 'l_h', 'x*60'),
-    ('l_h', 'l_s', 'x/60/60'),
-    ('l_h', 'l_m', 'x/60'),
+    ('l_s', 'l_min', 'x*60'),
+    ('l_s', 'l_hr', 'x*60*60'),
+    ('l_min', 'l_s', 'x/60'),
+    ('l_min', 'l_hr', 'x*60'),
+    ('l_hr', 'l_s', 'x/60/60'),
+    ('l_hr', 'l_min', 'x/60'),
 
     # Time
     ('s', 'minute', 'x/60'),
@@ -471,5 +471,9 @@ UNIT_CONVERSIONS = [
 
     # Volt
     ('V', 'mV', 'x*1000'),
-    ('mV', 'V', 'x/1000')
+    ('mV', 'V', 'x/1000'),
+
+    # Volume
+    ('l', 'ml', 'x*1000'),
+    ('ml', 'l', 'x/1000')
 ]

@@ -58,7 +58,7 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['I2C', 'UART', 'FTDI'],
-    'i2c_location': ['0x66'],
+    'i2c_location': ['0x64'],
     'i2c_address_editable': True,
     'ftdi_location': '/dev/ttyUSB0',
     'uart_location': '/dev/ttyAMA0',
