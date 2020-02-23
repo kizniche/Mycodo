@@ -34,7 +34,41 @@ def constraints_pass_meter_type(mod_input, value):
     errors = []
     all_passed = True
     # Ensure valid range is selected
-    range_pass = ['3/8', '1/4', '1/2', '3/4']
+    range_pass = ['3/8', '1/4', '1/2', '3/4', 'non-atlas']
+    if value not in range_pass:
+        all_passed = False
+        errors.append("Invalid range. Need one of {}".format(range_pass))
+    return all_passed, errors, mod_input
+
+
+def constraints_pass_resistor(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: float
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure valid range is selected
+    range_pass = ['atlas', '0', '1', '-1', '10', '-10', '100', '-100']
+    if value not in range_pass:
+        all_passed = False
+        errors.append("Invalid range. Need one of {}".format(range_pass))
+    return all_passed, errors, mod_input
+
+
+def constraints_pass_custom_k_value_time_base(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: float
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure valid range is selected
+    range_pass = ['disabled', 'h', 'm', 's']
     if value not in range_pass:
         all_passed = False
         errors.append("Invalid range. Need one of {}".format(range_pass))
@@ -49,7 +83,7 @@ measurements_dict = {
     },
     1: {
         'measurement': 'rate_volume',
-        'unit': 'l_m'
+        'unit': 'l_min'
     }
 }
 
@@ -58,11 +92,11 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_FLOW',
     'input_manufacturer': 'Atlas Scientific',
-    'input_name': 'Flow',
-    'measurements_name': 'Liquid Flow',
+    'input_name': 'Flow Meter',
+    'measurements_name': 'Total Volume, Flow Rate',
     'measurements_dict': measurements_dict,
 
-    'message': 'Note: Set the flow rate to a value that will make the sensor the most accurate. The flow rate amount that is returned from the sensor will be converted to liters per minute, which is the default unit for this input module. If you desire a different rate to be stored in the database (such as l/s or l/h), then use the Convert to Unit option.',
+    'message': 'Note: Set the Measurement Time Base to a value most appropriate for your anticipated flow (it will affect accuracy). This flow rate time base that is set and returned from the sensor will be converted to liters per minute, which is the default unit for this input module. If you desire a different rate to be stored in the database (such as liters per second or hour), then use the Convert to Unit option.',
 
     'options_enabled': [
         'ftdi_location',
@@ -94,28 +128,68 @@ INPUT_INFORMATION = {
             'type': 'select',
             'default_value': '3/8',
             'options_select': [
-                ('3/8', '3/8" Flow Meter'),
-                ('1/4', '1/4" Flow Meter'),
-                ('1/2', '1/2" Flow Meter'),
-                ('3/4', '3/4" Flow Meter'),
+                ('3/8', 'Atlas Scientific 3/8" Flow Meter'),
+                ('1/4', 'Atlas Scientific 1/4" Flow Meter'),
+                ('1/2', 'Atlas Scientific 1/2" Flow Meter'),
+                ('3/4', 'Atlas Scientific 3/4" Flow Meter'),
+                ('non-atlas', 'Non-Atlas Scientific Flow Meter')
             ],
             'constraints_pass': constraints_pass_meter_type,
-            'name': lazy_gettext('Measurement Range'),
-            'phrase': lazy_gettext('Set the measuring range of the sensor')
+            'name': lazy_gettext('Flow Meter Type'),
+            'phrase': lazy_gettext('Set the type of flow meter used')
         },
         {
             'id': 'flow_rate_unit',
             'type': 'select',
             'default_value': 'm',
             'options_select': [
-                ('s', 'Per Second'),
-                ('m', 'Per Minute'),
-                ('h', 'Per Hour'),
+                ('s', 'Liters per Second'),
+                ('m', 'Liters per Minute'),
+                ('h', 'Liters per Hour')
             ],
             'constraints_pass': constraints_pass_rate,
-            'name': lazy_gettext('Measurement Range'),
-            'phrase': lazy_gettext('Set the measuring range of the sensor')
-        }
+            'name': lazy_gettext('Atlas Meter Time Base'),
+            'phrase': lazy_gettext('If using an Atlas Scientific flow meter, set the flow rate/time base')
+        },
+        {
+            'id': 'internal_resistor',
+            'type': 'select',
+            'default_value': 'atlas',
+            'options_select': [
+                ('atlas', 'Use Atlas Scientific Flow Meter'),
+                ('0', 'Disable Internal Resistor'),
+                ('1', '1 K Ω Pull-Up'),
+                ('-1', '1 K Ω Pull-Down'),
+                ('10', '10 K Ω Pull-Up'),
+                ('-10', '10 K Ω Pull-Down'),
+                ('100', '100 K Ω Pull-Up'),
+                ('-100', '100 K Ω Pull-Down')
+            ],
+            'constraints_pass': constraints_pass_resistor,
+            'name': lazy_gettext('Internal Resistor'),
+            'phrase': lazy_gettext('Set an internal resistor for the flow meter')
+        },
+        {
+            'id': 'custom_k_values',
+            'type': 'text',
+            'default_value': '',
+            'name': lazy_gettext('Custom K Value(s)'),
+            'phrase': lazy_gettext("If using a non-Atlas Scientific flow meter, enter the meter's K value(s). For a single K value, enter '[volume per pulse],[number of pulses]'. For multiple K values (up to 16), enter '[volume at frequency],[frequency in Hz];[volume at frequency],[frequency in Hz];...'. Leave blank to disable.")
+        },
+        {
+            'id': 'custom_k_value_time_base',
+            'type': 'select',
+            'default_value': 'disabled',
+            'options_select': [
+                ('disabled', 'Use Atlas Scientific Flow Meter'),
+                ('s', 'Liters per Second'),
+                ('m', 'Liters per Minute'),
+                ('h', 'Liters per Hour')
+            ],
+            'constraints_pass': constraints_pass_custom_k_value_time_base,
+            'name': lazy_gettext('K Value Time Base'),
+            'phrase': lazy_gettext('If using a non-Atlas Scientific flow meter, set the flow rate/time base for the custom K values entered.')
+        },
     ]
 }
 
@@ -132,6 +206,9 @@ class InputModule(AbstractInput):
         # Initialize custom options
         self.flow_meter_type = None
         self.flow_rate_unit = None
+        self.internal_resistor = None
+        self.custom_k_values = None
+        self.custom_k_value_time_base = None
         # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
@@ -144,22 +221,6 @@ class InputModule(AbstractInput):
                 self.initialize_sensor()
             except Exception:
                 self.logger.exception("Exception while initializing sensor")
-
-            if self.is_enabled(0):
-                self.atlas_sensor.query('O,TV,1')
-            else:
-                self.atlas_sensor.query('O,TV,0')
-
-            if self.is_enabled(1):
-                self.atlas_sensor.query('O,FR,1')
-            else:
-                self.atlas_sensor.query('O,FR,0')
-
-            if self.flow_meter_type:
-                self.atlas_sensor.query('Set,{}'.format(self.flow_meter_type))
-
-            if self.flow_rate_unit:
-                self.atlas_sensor.query('Frp,{}'.format(self.flow_rate_unit))
 
     def initialize_sensor(self):
         from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
@@ -176,6 +237,70 @@ class InputModule(AbstractInput):
             self.i2c_bus = self.input_dev.i2c_bus
             self.atlas_sensor = AtlasScientificI2C(
                 i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
+
+        if self.is_enabled(0):
+            self.atlas_sensor.query('O,TV,1')
+            self.logger.debug("Enabling Total Volume measurement")
+        else:
+            self.atlas_sensor.query('O,TV,0')
+            self.logger.debug("Disabling Total Volume measurement")
+
+        if self.is_enabled(1):
+            self.atlas_sensor.query('O,FR,1')
+            self.logger.debug("Enabling Flow Rate measurement")
+        else:
+            self.atlas_sensor.query('O,FR,0')
+            self.logger.debug("Disabling Flow Rate measurement")
+
+        if self.flow_meter_type:
+            if self.flow_meter_type == 'non-atlas':
+                if ';' in self.custom_k_values:
+                    list_k_values = self.custom_k_values.split(';')
+                    self.atlas_sensor.query('K,clear')
+                    self.logger.debug("Cleared K Values")
+                    for each_k in list_k_values:
+                        if ',' in each_k:
+                            self.atlas_sensor.query('K,{}'.format(each_k))
+                            self.logger.debug("Set K Value: {}".format(each_k))
+                        else:
+                            self.logger.error(
+                                "Improperly-formatted K-value: {}".format(
+                                    each_k))
+                elif ',' in self.custom_k_values:
+                    self.atlas_sensor.query('K,clear')
+                    self.logger.debug("Cleared K Values")
+                    self.atlas_sensor.query('K,{}'.format(
+                        self.custom_k_values))
+                    self.logger.debug("Set K Value: {}".format(
+                        self.custom_k_values))
+                else:
+                    self.logger.error(
+                        "Improperly-formatted K-value: {}".format(
+                            self.custom_k_values))
+                self.atlas_sensor.query('Vp,{}'.format(
+                    self.custom_k_value_time_base))
+                self.logger.debug("Set Custom Time Base: {}".format(
+                    self.custom_k_value_time_base))
+            else:
+                self.atlas_sensor.query('Set,{}'.format(
+                    self.flow_meter_type))
+                self.logger.debug("Set Flow Meter: {}".format(
+                    self.flow_meter_type))
+
+        if self.flow_rate_unit:
+            self.atlas_sensor.query('Frp,{}'.format(
+                self.flow_rate_unit))
+            self.logger.debug("Set Flow Rate: l/{}".format(
+                self.flow_rate_unit))
+
+        if self.internal_resistor and self.internal_resistor != 'atlas':
+            self.atlas_sensor.query('P,{}'.format(
+                int(self.internal_resistor)))
+            if self.internal_resistor == '0':
+                self.logger.debug("Internal Resistor disabled")
+            else:
+                self.logger.debug("Internal Resistor set: {} K".format(
+                    self.internal_resistor))
 
     def get_measurement(self):
         """ Gets the sensor's Electrical Conductivity measurement via UART/I2C """
@@ -321,9 +446,18 @@ class InputModule(AbstractInput):
             return 0, "Success"
 
     def convert_to_l_m(self, amount):
-        if self.flow_rate_unit == 'h':
+        if (self.custom_k_value_time_base and
+                self.custom_k_value_time_base != 'disabled'):
+            # Custom K values used for non-Atlas Scientific meter
+            # use the custom time base
+            time_base_unit = self.custom_k_value_time_base
+        else:
+            # Use time base set for Atlas Scientific meter
+            time_base_unit = self.flow_rate_unit
+
+        if time_base_unit == 'h':
             return amount / 60
-        elif self.flow_rate_unit == 'm':
+        elif time_base_unit == 'm':
             return amount
-        elif self.flow_rate_unit == 's':
+        elif time_base_unit == 's':
             return amount * 60

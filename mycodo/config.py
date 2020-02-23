@@ -751,7 +751,7 @@ CALIBRATION_DEVICES = [
     ('setup_atlas_ezo_pump', 'Atlas Scientific EZO Pump'),
     ('setup_atlas_ph', 'Atlas Scientific pH Sensor'),
     ('setup_atlas_rgb', 'Atlas Scientific RGB Sensor'),
-    ('setup_atlas_flow', 'Atlas Scientific Flow Sensor'),
+    ('setup_atlas_flow', 'Atlas Scientific Flow Meter'),
     ('setup_ds_resolution', 'DS-Type Temperature Sensors (e.g. DS18B20)')
 ]
 
