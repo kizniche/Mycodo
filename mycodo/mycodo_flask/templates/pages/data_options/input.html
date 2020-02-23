@@ -1,4 +1,4 @@
-<h4>{{_('Input')}} <a href="/help#input" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+<h4>{{_('Input')}} <a href="/static/manual/mycodo-manual.html#input" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
 
 {% for each_order_input_id in display_order_input -%}
   {%- set all_input = table_input.query.filter(table_input.unique_id == each_order_input_id).all() -%}

@@ -15,7 +15,7 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>{{dict_translation['function']['title']}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+    <h4>{{dict_translation['function']['title']}} <a href="/static/manual/mycodo-manual.html#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
     <p>{{_('Functions conduct complex tasks, often coupling one or more <a href="/data">Data</a> sources with <a href="/output">Outputs</a>. For example, this could be using a PID Controller to create a feedback loop with a temperature sensor and heater in order to regulate temperature.')}}</p>
 
     <div style="clear: both; padding: 0.5em 0;"></div>

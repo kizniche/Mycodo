@@ -1,4 +1,4 @@
-<h4>{{_('Math')}} <a href="/help#math" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+<h4>{{_('Math')}} <a href="/static/manual/mycodo-manual.html#math" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
 
 {% for each_order_math_id in display_order_math -%}
   {% set channels = table_device_measurements.query.filter(table_device_measurements.device_id == each_order_math_id).count() %}

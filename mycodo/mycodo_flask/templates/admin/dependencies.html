@@ -41,7 +41,7 @@
   <div class="container" style="padding-bottom: 1.7em">
     {% include 'flash_messages.html' %}
 
-    <h4>{{_('Dependencies')}} <a href="/help#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+    <h4>{{_('Dependencies')}} <a href="/static/manual/mycodo-manual.html#{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
     <p>{{_('Several software dependencies used by Mycodo features may be disabled. This is done to speed up the initial installation process. This page can be used to determine which dependencies are installed and the ability to install currently unmet dependencies.')}}</p>
 
   {% if device != '0' %}

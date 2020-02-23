@@ -8,7 +8,7 @@
 {% block settings %}
   <!-- Route: /settings/users -->
   <div class="container">
-    <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/help#users" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('User Settings')}}</h3>
+    <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="/static/manual/mycodo-manual.html#users" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('User Settings')}}</h3>
 
     <h3>{{_('Add User')}}</h3>
 
@@ -132,7 +132,7 @@
 
     <hr>
 
-    <h3>{{_('Roles')}} <a href="/help#settings-user-roles"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h3>
+    <h3>{{_('Roles')}} <a href="/static/manual/mycodo-manual.html#settings-user-roles"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h3>
 
     <form method="post" action="/settings/users">
     {{form_user_roles.csrf_token}}
