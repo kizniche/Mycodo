@@ -1,7 +1,27 @@
 # coding=utf-8
+import timeit
 from collections import OrderedDict
 
+from flask_babel import lazy_gettext
+
 from mycodo.inputs.base_input import AbstractInput
+
+
+def constraints_pass_measurement_repetitions(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: integer
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure 1 <= value <= 1000
+    if value < 1 or value > 1000:
+        all_passed = False
+        errors.append("Must be a positive value between 1 and 1000")
+    return all_passed, errors, mod_input
+
 
 # Measurements
 measurements_dict = OrderedDict()
@@ -10,6 +30,7 @@ for each_channel in range(4):
         'measurement': 'electrical_potential',
         'unit': 'V'
     }
+
 
 # Input information
 INPUT_INFORMATION = {
@@ -28,7 +49,8 @@ INPUT_INFORMATION = {
         'adc_gain',
         'period',
         'pre_output',
-        'log_level_debug'
+        'log_level_debug',
+        'custom_options'
     ],
     'options_disabled': ['interface', 'i2c_location'],
 
@@ -45,7 +67,19 @@ INPUT_INFORMATION = {
                  (2, '2'),
                  (4, '4'),
                  (8, '8'),
-                 (16, '16')]
+                 (16, '16')],
+
+    'custom_options': [
+        {
+            'id': 'measurements_for_average',
+            'type': 'integer',
+            'default_value': 5,
+            'constraints_pass': constraints_pass_measurement_repetitions,
+            'name': lazy_gettext('Measurements to Average'),
+            'phrase': lazy_gettext(
+                'The number of times to measure each channel. An average of the measurements will be stored.')
+        },
+    ]
 }
 
 
@@ -74,6 +108,11 @@ class InputModule(AbstractInput):
             16: 0.0078125,
         }
 
+        self.measurements_for_average = None
+
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
+
         if not testing:
             import Adafruit_ADS1x15
 
@@ -89,10 +128,29 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         self.return_dict = measurements_dict.copy()
 
+        measurement_range = 1
+        if self.measurements_for_average:
+            measurement_range = self.measurements_for_average
+
+        # Conduct multiple measurements for averaging
+        measurement_totals = {}
+        time_start = timeit.default_timer()
+        for _ in range(measurement_range):
+            for channel in self.channels_measurement:
+                if self.is_enabled(channel):
+                    if channel not in measurement_totals:
+                        measurement_totals[channel] = 0
+                    measurement_totals[channel] += (
+                        self.adc.read_adc(channel, gain=self.adc_gain) * self.dict_gains[self.adc_gain] / 1000.0)
+
+        self.logger.debug("All measurements completed in {:.3f} seconds".format(
+            timeit.default_timer() - time_start))
+
+        # Store average measurement for each channel
         for channel in self.channels_measurement:
             if self.is_enabled(channel):
                 self.value_set(
                     channel,
-                    self.adc.read_adc(channel, gain=self.adc_gain) * self.dict_gains[self.adc_gain] / 1000.0)
+                    measurement_totals[channel] / measurement_range)
 
         return self.return_dict

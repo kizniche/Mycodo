@@ -4,13 +4,14 @@
 
  - Fix invalid links to Help pages
  - Prevent unstoppable Conditional Controller by adding self.running bool variable
- - Fix calculation error causing inaccuracy with ADS1115 analog-to-digital converter Input
+ - Fix calculation error causing inaccuracy with ADS1x15 analog-to-digital converter Input
 
 ### Features
 
  - Add temperature compensation option for the Atlas Scientific Electrical Conductivity and Dissolved Oxygen Inputs
  - Add Inputs: Atlas Scientific Flow Sensor, Atlas Scientific RGB Color Sensor
  - Add Function Action: Clear Total Volume of Flow Meter, Force Input Measurements
+ - Add option to repeat measurements and store average for ADS1x15 analog-to-digital converter Input
 
 
 ## 8.3.0 (2020-02-21)
