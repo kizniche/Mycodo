@@ -94,7 +94,7 @@ def return_output_usage(table_misc, table_outputs):
     output_stats = OrderedDict()
 
     for each_output in table_outputs:
-        if each_output.output_type not in OUTPUTS_PWM + ['output_stats']:
+        if each_output.output_type not in OUTPUTS_PWM + ['atlas_ezo_pmp']:
             output_stats[each_output.unique_id] = None
 
     # Calculate output on duration for different time periods
