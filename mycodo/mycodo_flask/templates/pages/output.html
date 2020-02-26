@@ -235,12 +235,16 @@
             {% include 'pages/output_options/'+each_output_template %}
           {% endfor %}
 
+          {% if each_output.output_type not in OUTPUTS_PWM + ['atlas_ezo_pmp'] %}
+
             <div class="col-6 col-sm-4 col-md-3">
               {{form_mod_output.amps.label(class_='control-label')}}
               <div>
                 {{form_mod_output.amps(class_='form-control', value=each_output.amps, **{'title': dict_translation['amps']['phrase']})}}
                </div>
             </div>
+
+          {% endif %}
 
           </div>
 

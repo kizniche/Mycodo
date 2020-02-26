@@ -8,6 +8,7 @@ from collections import OrderedDict
 import os
 from dateutil import relativedelta
 
+from mycodo.config import OUTPUTS_PWM
 from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
@@ -93,7 +94,7 @@ def return_output_usage(table_misc, table_outputs):
     output_stats = OrderedDict()
 
     for each_output in table_outputs:
-        if each_output.output_type != 'pwm':
+        if each_output.output_type not in OUTPUTS_PWM + ['output_stats']:
             output_stats[each_output.unique_id] = None
 
     # Calculate output on duration for different time periods
