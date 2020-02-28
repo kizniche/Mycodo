@@ -226,7 +226,7 @@
         <div>
           {{form_mod_pid_base.setpoint_tracking_type.label(class_='control-label')}}
         </div>
-        <select class="form-control form-tooltip form-dropdown" id="setpoint_tracking_type_{{each_pid.unique_id}}" name="setpoint_tracking_type" title="" data-original-title="{{dict_translation['start_offset']['phrase']}}">
+        <select class="form-control form-tooltip form-dropdown" id="setpoint_tracking_type_{{each_pid.unique_id}}" name="setpoint_tracking_type" title="" data-original-title="{{dict_translation['setpoint_tracking_type']['phrase']}}">
           <option value="">{{_('Disabled')}}</option>
           <option value="method"{% if each_pid.setpoint_tracking_type == 'method' %} selected{% endif %}>{{_('Method')}}</option>
           <option value="input-math"{% if each_pid.setpoint_tracking_type == 'input-math' %} selected{% endif %}>{{_('Input/Math')}}</option>
