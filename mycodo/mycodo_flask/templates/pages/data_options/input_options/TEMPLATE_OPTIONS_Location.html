@@ -11,7 +11,7 @@
   <label class="control-label">{{dict_translation['1wire_id']['title']}}</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{dict_translation['1wire_id']['phrase']}}">
-      {% if custom_options_values_inputs[each_input.unique_id]['library'] == 'w1thermsensor' %}
+      {% if custom_options_values_inputs[each_input.unique_id]['input_library'] == 'w1thermsensor' %}
         {% if devices_1wire_w1thermsensor != [] %}
         <option value=""></option>
           {% for each_1wire_dev in devices_1wire_w1thermsensor %}
@@ -20,7 +20,7 @@
         {% else %}
         <option value="">None Detected</option>
         {% endif %}
-      {% elif custom_options_values_inputs[each_input.unique_id]['library'] == 'ow_shell' %}
+      {% elif custom_options_values_inputs[each_input.unique_id]['input_library'] == 'ow_shell' %}
         {% if devices_1wire_ow_shell != [] %}
         <option value=""></option>
           {% for each_1wire_dev in devices_1wire_ow_shell %}

@@ -7,6 +7,7 @@
  - Fix calculation error causing inaccuracy with ADS1x15 analog-to-digital converter Input
  - Remove PWM and Pump Outputs from Energy Usage calculations
  - Fix links to camera widget error images
+ - Fix reference to input library to properly display 1Wire device IDs ([#752](https://github.com/kizniche/mycodo/issues/752))
 
 ### Features
 
