@@ -842,8 +842,8 @@ $(document).ready(function() {
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
-          document.getElementById(dashboard_id + "-image-src").src = "static/img/image_error.png";
-          document.getElementById(dashboard_id + "-image-href").href = "static/img/image_error.png";
+          document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
+          document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
         }
         else {
           var timestamp_str = '';
@@ -855,13 +855,13 @@ $(document).ready(function() {
           var filename = data[0];
           if (filename === 'max_age_exceeded') {
             // The image timestamp is older than the maximum allowable age
-            document.getElementById(dashboard_id + "-image-src").src = "static/img/image_max_age.png";
-            document.getElementById(dashboard_id + "-image-href").href = "static/img/image_max_age.png";
+            document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_max_age.png";
+            document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_max_age.png";
             document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + "Max Age Exceeded";
           } else if (filename === 'file_not_found') {
             // No image was found in the directory
-            document.getElementById(dashboard_id + "-image-src").src = "static/img/image_error.png";
-            document.getElementById(dashboard_id + "-image-href").href = "static/img/image_error.png";
+            document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
+            document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
             document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + "File Not Found";
           } else {
             // The image is available and younger than the max age
@@ -874,8 +874,8 @@ $(document).ready(function() {
         }
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
-        document.getElementById(dashboard_id + "-image-src").src = "static/img/image_error.png";
-        document.getElementById(dashboard_id + "-image-href").href = "static/img/image_error.png";
+        document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
+        document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
         document.getElementById(dashboard_id + "-timestamp").innerHTML = "Error Getting Image";
       }
     });
