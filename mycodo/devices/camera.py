@@ -78,7 +78,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     output_already_on = False
     if settings.output_id:
         daemon_control = DaemonControl()
-        if daemon_control.output_state == "on":
+        if daemon_control.output_state(settings.output_id) == "on":
             output_already_on = True
         else:
             daemon_control.output_on(
