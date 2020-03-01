@@ -104,6 +104,9 @@ class InputModule(AbstractInput):
             except Exception:
                 self.logger.exception("Exception while initializing sensor")
 
+            # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
+            self.get_measurement()
+
     def initialize_sensor(self):
         from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
         from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C

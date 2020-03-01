@@ -49,25 +49,30 @@ class InputModule(AbstractInput):
         self.atlas_sensor_i2c = None
 
         if not testing:
+            self.input_dev = input_dev
             self.interface = input_dev.interface
-            if self.interface == 'FTDI':
-                self.ftdi_location = input_dev.ftdi_location
-            elif self.interface == 'UART':
-                self.uart_location = input_dev.uart_location
-            elif self.interface == 'I2C':
-                self.i2c_address = int(str(input_dev.i2c_location), 16)
-                self.i2c_bus = input_dev.i2c_bus
-            self.initialize_sensor()
+
+            try:
+                self.initialize_sensor()
+            except Exception:
+                self.logger.exception("Exception while initializing sensor")
+
+            # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
+            self.get_measurement()
 
     def initialize_sensor(self):
         from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
         from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
         from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         if self.interface == 'FTDI':
+            self.ftdi_location = self.input_dev.ftdi_location
             self.atlas_sensor_ftdi = AtlasScientificFTDI(self.ftdi_location)
         elif self.interface == 'UART':
+            self.uart_location = self.input_dev.uart_location
             self.atlas_sensor_uart = AtlasScientificUART(self.uart_location)
         elif self.interface == 'I2C':
+            self.i2c_address = int(str(self.input_dev.i2c_location), 16)
+            self.i2c_bus = self.input_dev.i2c_bus
             self.atlas_sensor_i2c = AtlasScientificI2C(
                 i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
 
@@ -130,6 +135,9 @@ class InputModule(AbstractInput):
             else:
                 self.logger.error('I2C device is not set up.'
                                   'Check the log for errors.')
+
+        if temp == -1023:  # Erroneous measurement
+            return
 
         self.value_set(0, temp)
 
