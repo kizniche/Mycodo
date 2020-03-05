@@ -141,6 +141,7 @@ class PIDController(AbstractController, threading.Thread):
         self.max_measure_age = None
         self.default_setpoint = None
         self.setpoint = 0
+        self.setpoint_band = None
         self.store_lower_as_negative = None
         self.first_start = None
         self.timer = None
@@ -510,6 +511,11 @@ class PIDController(AbstractController, threading.Thread):
         # Determine if hysteresis is enabled and if the PID should be applied
         setpoint = self.check_hysteresis(current_value)
 
+        if setpoint != self.setpoint:
+            self.setpoint_band = setpoint
+        else:
+            self.setpoint_band = None
+
         if setpoint is None:
             # Prevent PID variables form being manipulated and
             # restrict PID from operating.
@@ -570,6 +576,7 @@ class PIDController(AbstractController, threading.Thread):
         """
         if self.band == 0:
             # If band is disabled, return setpoint
+            self.setpoint_band = None
             return self.setpoint
 
         band_min = self.setpoint - self.band
@@ -1049,6 +1056,9 @@ class PIDController(AbstractController, threading.Thread):
 
     def get_setpoint(self):
         return self.setpoint
+
+    def get_setpoint_band(self):
+        return self.setpoint_band
 
     def get_error(self):
         return self.error

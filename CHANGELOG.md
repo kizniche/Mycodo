@@ -10,6 +10,7 @@
  - Fix reference to input library to properly display 1-Wire device IDs ([#752](https://github.com/kizniche/mycodo/issues/752))
  - If a camera output is already on when capturing an image, dont' turn it off after capture
  - Discard first measurement of Atlas Scientific Inputs to prevent some erroneous measurements
+ - Fix display of setpoint on PID widget if a band is in use ([#744](https://github.com/kizniche/mycodo/issues/744))
 
 ### Features
 

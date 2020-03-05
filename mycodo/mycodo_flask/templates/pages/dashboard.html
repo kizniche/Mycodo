@@ -560,6 +560,10 @@ $(document).ready(function() {
   }
 
   function print_pid_value(data, name, chart_number, decimal_places, units) {
+    if (name === 'setpoint' && data['setpoint_band']) {
+      data[name][1] = data['setpoint_band']
+    }
+
     if (data[name][0] && document.getElementById(name + '-timestamp-' + chart_number)) {
       document.getElementById(name + '-timestamp-' + chart_number).innerHTML = epoch_to_timestamp(data[name][0]);
     } else if (document.getElementById(name + '-timestamp-' + chart_number)) {

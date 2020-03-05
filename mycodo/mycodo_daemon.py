@@ -593,6 +593,8 @@ class DaemonController:
         try:
             if setting == 'setpoint':
                 return self.controller['PID'][pid_id].get_setpoint()
+            elif setting == 'setpoint_band':
+                return self.controller['PID'][pid_id].get_setpoint_band()
             elif setting == 'error':
                 return self.controller['PID'][pid_id].get_error()
             elif setting == 'integrator':

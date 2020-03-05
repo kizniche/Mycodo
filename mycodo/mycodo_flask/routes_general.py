@@ -1084,11 +1084,9 @@ def last_data_pid(pid_id, input_period):
          actual_measurement) = return_measurement_info(
             actual_measurement, actual_conversion)
 
-        setpoint_measurement = None
         setpoint_unit = None
-        setpoint_pid = PID.query.filter(PID.unique_id == pid_id).first()
-        if setpoint_pid and ',' in setpoint_pid.measurement:
-            pid_measurement = setpoint_pid.measurement.split(',')[1]
+        if pid and ',' in pid.measurement:
+            pid_measurement = pid.measurement.split(',')[1]
             setpoint_measurement = DeviceMeasurements.query.filter(
                 DeviceMeasurements.unique_id == pid_measurement).first()
             if setpoint_measurement:
@@ -1107,17 +1105,21 @@ def last_data_pid(pid_id, input_period):
         else:
             pid_value = None
 
-        if setpoint_measurement:
-            setpoint_measurement_display = setpoint_measurement.measurement
-        else:
-            setpoint_measurement_display = None
+        setpoint_band = None
+        if pid.band:
+            try:
+                daemon = DaemonControl()
+                setpoint_band = daemon.pid_get(pid.unique_id, 'setpoint_band')
+            except:
+                logger.debug("Couldn't get setpoint")
 
         live_data = {
             'activated': pid.is_activated,
             'paused': pid.is_paused,
             'held': pid.is_held,
             'setpoint': return_point_timestamp(
-                pid_id, setpoint_unit, input_period, measurement=setpoint_measurement_display),
+                pid_id, setpoint_unit, input_period, channel=0),
+            'setpoint_band': setpoint_band,
             'pid_p_value': p_value,
             'pid_i_value': i_value,
             'pid_d_value': d_value,
