@@ -353,7 +353,7 @@ OUTPUT_INFO = {
             'duty_cycle': {'percent': {0: {}}}
         }},
     'atlas_ezo_pmp': {
-        'name': lazy_gettext('Atlas EZO-PMP'),
+        'name': lazy_gettext('Atlas Scientific Pump'),
         'dependencies_module': [],
         'measure': {
             'volume': {'ml': {0: {}}},
