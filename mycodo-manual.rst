@@ -3786,6 +3786,8 @@ Other Built-In Inputs
 I2C Multiplexers
 ~~~~~~~~~~~~~~~~
 
+NOTE: As of March, 2020, it has been discovered that the device tree overlay technique for using I2C multiplexers does not work with Raspbian Buster. It will work for Raspbian Stretch, but Mycodo will not work properly with this old version of Raspbian and will disable the API. If you do not need access to the API and do require the use of a multiplexer, it is recommended to install Raspbian Stretch prior to installing Mycodo, until a fix for Buater can be developed. For more information, see [issue #755](https://github.com/kizniche/Mycodo/issues/755). Alternatively, you will need to write your own Python script (or other language) to switch to the specific multiplexer channel and acquire a measurement for use with Mycodo. This script can then be executed by the Linux Command Input to store the measurement. This workaround isn't ideal, but is all there is at this point.
+
 All devices that connected to the Raspberry Pi by the I2C bus need to
 have a unique address in order to communicate. Some inputs may have the
 same address (such as the AM2315), which prevents more than one from
