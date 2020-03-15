@@ -19,6 +19,10 @@
  - Add Function Action: Clear Total Volume of Flow Meter, Force Input Measurements
  - Add option to repeat measurements and store average for ADS1x15 analog-to-digital converter Input
 
+### Miscellaneous
+
+ - Add prefix to device IDs when using w1thermsensor ([#752](https://github.com/kizniche/mycodo/issues/752))
+
 
 ## 8.3.0 (2020-02-21)
 

@@ -1919,7 +1919,9 @@ def page_data():
     if os.path.isdir(PATH_1WIRE):
         for each_name in os.listdir(PATH_1WIRE):
             if 'bus' not in each_name and '-' in each_name:
-                devices_1wire_w1thermsensor.append(each_name.split('-')[1])
+                devices_1wire_w1thermsensor.append(
+                    {'name': each_name, 'value': each_name.split('-')[1]}
+                )
 
     # Add 1-wire devices from ow-shell (if installed)
     devices_1wire_ow_shell = []

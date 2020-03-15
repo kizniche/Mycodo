@@ -15,7 +15,7 @@
         {% if devices_1wire_w1thermsensor != [] %}
         <option value=""></option>
           {% for each_1wire_dev in devices_1wire_w1thermsensor %}
-          <option value="{{each_1wire_dev}}"{% if each_input.location == each_1wire_dev %} selected{% endif %}>{{each_1wire_dev}}</option>
+          <option value="{{each_1wire_dev['value']}}"{% if each_input.location == each_1wire_dev['value'] %} selected{% endif %}>{{each_1wire_dev['name']}}</option>
           {% endfor %}
         {% else %}
         <option value="">None Detected</option>
