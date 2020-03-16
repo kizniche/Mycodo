@@ -889,7 +889,6 @@ class PIDController(AbstractController, threading.Thread):
                             's', 'duration_time', 6,
                             stored_control_variable)
 
-
                 elif self.lower_output_type in OUTPUTS_PWM and not self.lower_always_min_pwm:
                     # Turn PWM Off if PWM Output and not instructed to always be at least min
                     self.control.output_on(

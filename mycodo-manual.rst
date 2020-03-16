@@ -1563,34 +1563,42 @@ PID Controller Options
 |                              | In the case of raising the temperature,     |
 |                              | this may be a heating pad or coil.          |
 +------------------------------+---------------------------------------------+
-| Min Duration (raise)         | This is the minimum that the PID output     |
-|                              | must be before the Up Output turns on. If   |
-|                              | the PID output exceeds this minimum, the Up |
-|                              | Output will turn on for the PID output      |
-|                              | number of seconds.                          |
+| Min Duration (Raise)         | This is the minimum value that the PID      |
+| Min Duty Cycle (Raise)       | output must be before Output (Lower) turns  |
+|                              | on. If the PID output is below this value,  |
+|                              | Duration Outputs will not turn on, and PWM  |
+|                              | Outputs will be turned off unless Always    |
+|                              | Min is enabled.                             |
 +------------------------------+---------------------------------------------+
-| Max Duration (raise)         | This is the maximum duration the Up Output  |
-|                              | is allowed to turn on for. If the PID       |
-|                              | output exceeds this number, the Up Output   |
-|                              | will turn on for no greater than this       |
-|                              | duration of time.                           |
+| Max Duration (Raise)         | This is the maximum duration or duty cycle  |
+| Max Duty Cycle (Raise)       | the Output (Raise) can be set to. If the    |
+|                              | PID output exceeds this number, the Max     |
+|                              | value set here will be used.                |
++------------------------------+---------------------------------------------+
+| Always Min (Raise)           | For PWM Outputs only. If enabled, the duty  |
+|                              | cycle will never be set below the Min       |
+|                              | value.                                      |
 +------------------------------+---------------------------------------------+
 | Output (Lower)               | This is the output that will cause the      |
 |                              | particular environmental condition to       |
 |                              | lower. In the case of lowering the CO2,     |
 |                              | this may be an exhaust fan.                 |
 +------------------------------+---------------------------------------------+
-| Min Duration (lower)         | This is the minimum that the PID output     |
-|                              | must be before the Down Output turns on. If |
-|                              | the PID output exceeds this minimum, the    |
-|                              | Down Output will turn on for the PID output |
-|                              | number of seconds.                          |
+| Min Duration (Lower)         | This is the minimum value that the PID      |
+| Min Duty Cycle (Lower)       | output must be before Output (Lower) turns  |
+|                              | on. If the PID output is below this value,  |
+|                              | Duration Outputs will not turn on, and PWM  |
+|                              | Outputs will be turned off unless Always    |
+|                              | Min is enabled.                             |
 +------------------------------+---------------------------------------------+
-| Max Duration (lower)         | This is the maximum duration the Down       |
-|                              | Output is allowed to turn on for. if the    |
-|                              | PID output exceeds this number, the Down    |
-|                              | Output will turn on for no greater than     |
-|                              | this duration of time.                      |
+| Max Duration (Lower)         | This is the maximum duration or duty cycle  |
+| Max Duty Cycle (Lower)       | the Output (Raise) can be set to. If the    |
+|                              | PID output exceeds this number, the Max     |
+|                              | value set here will be used.                |
++------------------------------+---------------------------------------------+
+| Always Min (Lower)           | For PWM Outputs only. If enabled, the duty  |
+|                              | cycle will never be set below the Min       |
+|                              | value.                                      |
 +------------------------------+---------------------------------------------+
 | Setpoint Tracking Method     | Set a method to change the setpoint over    |
 |                              | time.                                       |
