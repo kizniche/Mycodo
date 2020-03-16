@@ -195,6 +195,8 @@ class PIDModPWMRaise(FlaskForm):
         )],
         widget=NumberInput(step='any')
     )
+    raise_always_min_pwm = BooleanField(
+        TRANSLATIONS['raise_always_min_pwm']['title'])
 
 
 class PIDModPWMLower(FlaskForm):
@@ -214,3 +216,5 @@ class PIDModPWMLower(FlaskForm):
         )],
         widget=NumberInput(step='any')
     )
+    lower_always_min_pwm = BooleanField(
+        TRANSLATIONS['lower_always_min_pwm']['title'])

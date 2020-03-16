@@ -36,10 +36,12 @@ class PID(CRUDMixin, db.Model):
     raise_min_duration = db.Column(db.Float, default=0.0)
     raise_max_duration = db.Column(db.Float, default=0.0)
     raise_min_off_duration = db.Column(db.Float, default=0.0)
+    raise_always_min_pwm = db.Column(db.Boolean, default=False)
     lower_output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Output to lower the condition
     lower_min_duration = db.Column(db.Float, default=0.0)
     lower_max_duration = db.Column(db.Float, default=0.0)
     lower_min_off_duration = db.Column(db.Float, default=0.0)
+    lower_always_min_pwm = db.Column(db.Boolean, default=False)
     store_lower_as_negative = db.Column(db.Boolean, default=True)
 
     # Setpoint tracking

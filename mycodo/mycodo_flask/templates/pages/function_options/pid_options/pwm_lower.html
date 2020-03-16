@@ -11,3 +11,9 @@
     {{form_mod_pid_pwm_lower.lower_max_duty_cycle(class_='form-control', value=each_pid.lower_max_duration, **{'title':_('The maximum duty cycle (in %%). If a duty cycle is below this value, this is the value that will be used.')})}}
   </div>
 </div>
+<div class="col-auto">
+  {{form_mod_pid_pwm_lower.lower_always_min_pwm.label(class_='control-label')}}
+  <div class="input-group-text">
+    <input id="lower_always_min_pwm" name="lower_always_min_pwm" type="checkbox" title="{{dict_translation['lower_always_min_pwm']['phrase']}}" value="y"{% if each_pid.lower_always_min_pwm %} checked{% endif %}>
+  </div>
+</div>

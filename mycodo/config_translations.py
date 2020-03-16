@@ -404,6 +404,14 @@ TRANSLATIONS = {
             'The weighting of the previous measurement on the current measurement. '
             'Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no weighting.')},
 
+    # PID
+    'raise_always_min_pwm': {
+        'title': lazy_gettext('Always Min (Raise)'),
+        'phrase': lazy_gettext('Never allow duty cycle to go below Min.')},
+    'lower_always_min_pwm': {
+        'title': lazy_gettext('Always Min (Lower)'),
+        'phrase': lazy_gettext('Never allow duty cycle to go below Min.')},
+
     # '': {
     #     'title': lazy_gettext(''),
     #     'phrase': lazy_gettext('')},

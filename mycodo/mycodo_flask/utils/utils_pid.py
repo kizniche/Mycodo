@@ -92,6 +92,9 @@ def pid_mod(form_mod_pid_base,
     if form_mod_pid_base.raise_output_id.data:
         raise_output_type = Output.query.filter(
             Output.unique_id == form_mod_pid_base.raise_output_id.data).first().output_type
+        if raise_output_type in OUTPUTS_PWM:
+            mod_pid.raise_always_min_pwm = form_mod_pid_pwm_raise.raise_always_min_pwm.data
+
         if mod_pid.raise_output_id == form_mod_pid_base.raise_output_id.data:
             if raise_output_type in OUTPUTS_PWM:
                 if not form_mod_pid_pwm_raise.validate():
@@ -123,6 +126,9 @@ def pid_mod(form_mod_pid_base,
     if form_mod_pid_base.lower_output_id.data:
         lower_output_type = Output.query.filter(
             Output.unique_id == form_mod_pid_base.lower_output_id.data).first().output_type
+        if lower_output_type in OUTPUTS_PWM:
+            mod_pid.lower_always_min_pwm = form_mod_pid_pwm_lower.lower_always_min_pwm.data
+
         if mod_pid.lower_output_id == form_mod_pid_base.lower_output_id.data:
             if lower_output_type in OUTPUTS_PWM:
                 if not form_mod_pid_pwm_lower.validate():

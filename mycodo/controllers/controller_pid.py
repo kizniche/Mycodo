@@ -127,10 +127,12 @@ class PIDController(AbstractController, threading.Thread):
         self.raise_min_duration = None
         self.raise_max_duration = None
         self.raise_min_off_duration = None
+        self.raise_always_min_pwm = None
         self.lower_output_id = None
         self.lower_min_duration = None
         self.lower_max_duration = None
         self.lower_min_off_duration = None
+        self.lower_always_min_pwm = None
         self.Kp = 0
         self.Ki = 0
         self.Kd = 0
@@ -214,10 +216,12 @@ class PIDController(AbstractController, threading.Thread):
         self.raise_min_duration = pid.raise_min_duration
         self.raise_max_duration = pid.raise_max_duration
         self.raise_min_off_duration = pid.raise_min_off_duration
+        self.raise_always_min_pwm = pid.raise_always_min_pwm
         self.lower_output_id = pid.lower_output_id
         self.lower_min_duration = pid.lower_min_duration
         self.lower_max_duration = pid.lower_max_duration
         self.lower_min_off_duration = pid.lower_min_off_duration
+        self.lower_always_min_pwm = pid.lower_always_min_pwm
         self.Kp = pid.p
         self.Ki = pid.i
         self.Kd = pid.d
@@ -775,12 +779,11 @@ class PIDController(AbstractController, threading.Thread):
                         's', 'duration_time', 6,
                         self.control_variable)
 
-                else:
-                    # Turn PWM Off if PWM Output
-                    if self.raise_output_type in OUTPUTS_PWM:
-                        self.control.output_on(
-                            self.raise_output_id,
-                            duty_cycle=0)
+                elif self.raise_output_type in OUTPUTS_PWM and not self.raise_always_min_pwm:
+                    # Turn PWM Off if PWM Output and not instructed to always be at least min
+                    self.control.output_on(
+                        self.raise_output_id,
+                        duty_cycle=0)
 
             #
             # PID control variable is negative, indicating a desire to lower
@@ -886,12 +889,12 @@ class PIDController(AbstractController, threading.Thread):
                             's', 'duration_time', 6,
                             stored_control_variable)
 
-                else:
-                    # Turn PWM Off if PWM Output
-                    if self.lower_output_type in OUTPUTS_PWM:
-                        self.control.output_on(
-                            self.lower_output_id,
-                            duty_cycle=0)
+
+                elif self.lower_output_type in OUTPUTS_PWM and not self.lower_always_min_pwm:
+                    # Turn PWM Off if PWM Output and not instructed to always be at least min
+                    self.control.output_on(
+                        self.lower_output_id,
+                        duty_cycle=0)
 
         else:
             self.logger.debug("Last measurement unsuccessful. Turning outputs off.")
@@ -918,10 +921,12 @@ class PIDController(AbstractController, threading.Thread):
                "Output Raise Min On: {oprmnon}, " \
                "Output Raise Max On: {oprmxon}, " \
                "Output Raise Min Off: {oprmnoff}, " \
+               "Output Raise Always Min: {opramn}, " \
                "Output Lower: {opl}, " \
                "Output Lower Min On: {oplmnon}, " \
                "Output Lower Max On: {oplmxon}, " \
                "Output Lower Min Off: {oplmnoff}, " \
+               "Output Lower Always Min: {oplamn}, " \
                "Setpoint Tracking Type: {sptt}, " \
                "Setpoint Tracking ID: {spt}".format(
             did=self.device_id,
@@ -939,10 +944,12 @@ class PIDController(AbstractController, threading.Thread):
             oprmnon=self.raise_min_duration,
             oprmxon=self.raise_max_duration,
             oprmnoff=self.raise_min_off_duration,
+            opramn=self.raise_always_min_pwm,
             opl=self.lower_output_id,
             oplmnon=self.lower_min_duration,
             oplmxon=self.lower_max_duration,
             oplmnoff=self.lower_min_off_duration,
+            oplamn=self.lower_always_min_pwm,
             sptt=self.setpoint_tracking_type,
             spt=self.setpoint_tracking_id)
 
