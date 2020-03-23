@@ -1,3 +1,11 @@
+## 8.4.1 (Unreleased)
+
+### Bugfixes
+
+ - Fix PID widget preventing graph custom colors from being editable
+ - Fix graph widget custom color issues ([#760](https://github.com/kizniche/mycodo/issues/760))
+
+
 ## 8.4.0 (2020-03-23)
 
 ### Bugfixes
