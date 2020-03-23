@@ -1079,8 +1079,12 @@ output_id = '{}'
             duty_cycle = self.output_state(output_id)
 
             if duty_cycle == 'off':
-                if (each_trigger.output_state == 'equal' and
-                        each_trigger.output_duty_cycle == 0):
+                if (
+                        (each_trigger.output_state == 'equal' and
+                         each_trigger.output_duty_cycle == 0) or
+                        (each_trigger.output_state == 'below' and
+                         each_trigger.output_duty_cycle != 0)
+                        ):
                     trigger_trigger = True
             elif (
                     (each_trigger.output_state == 'above' and
