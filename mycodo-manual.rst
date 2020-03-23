@@ -1563,15 +1563,15 @@ PID Controller Options
 |                              | In the case of raising the temperature,     |
 |                              | this may be a heating pad or coil.          |
 +------------------------------+---------------------------------------------+
-| Min Duration (Raise)         | This is the minimum value that the PID      |
-| Min Duty Cycle (Raise)       | output must be before Output (Lower) turns  |
+| Min Duration (Raise) Min     | This is the minimum value that the PID      |
+| Duty Cycle (Raise)           | output must be before Output (Lower) turns  |
 |                              | on. If the PID output is below this value,  |
 |                              | Duration Outputs will not turn on, and PWM  |
 |                              | Outputs will be turned off unless Always    |
 |                              | Min is enabled.                             |
 +------------------------------+---------------------------------------------+
-| Max Duration (Raise)         | This is the maximum duration or duty cycle  |
-| Max Duty Cycle (Raise)       | the Output (Raise) can be set to. If the    |
+| Max Duration (Raise) Max     | This is the maximum duration or duty cycle  |
+| Duty Cycle (Raise)           | the Output (Raise) can be set to. If the    |
 |                              | PID output exceeds this number, the Max     |
 |                              | value set here will be used.                |
 +------------------------------+---------------------------------------------+
@@ -1584,15 +1584,15 @@ PID Controller Options
 |                              | lower. In the case of lowering the CO2,     |
 |                              | this may be an exhaust fan.                 |
 +------------------------------+---------------------------------------------+
-| Min Duration (Lower)         | This is the minimum value that the PID      |
-| Min Duty Cycle (Lower)       | output must be before Output (Lower) turns  |
+| Min Duration (Lower) Min     | This is the minimum value that the PID      |
+| Duty Cycle (Lower)           | output must be before Output (Lower) turns  |
 |                              | on. If the PID output is below this value,  |
 |                              | Duration Outputs will not turn on, and PWM  |
 |                              | Outputs will be turned off unless Always    |
 |                              | Min is enabled.                             |
 +------------------------------+---------------------------------------------+
-| Max Duration (Lower)         | This is the maximum duration or duty cycle  |
-| Max Duty Cycle (Lower)       | the Output (Raise) can be set to. If the    |
+| Max Duration (Lower) Max     | This is the maximum duration or duty cycle  |
+| Duty Cycle (Lower)           | the Output (Raise) can be set to. If the    |
 |                              | PID output exceeds this number, the Max     |
 |                              | value set here will be used.                |
 +------------------------------+---------------------------------------------+
@@ -3794,7 +3794,20 @@ Other Built-In Inputs
 I2C Multiplexers
 ~~~~~~~~~~~~~~~~
 
-NOTE: As of March, 2020, it has been discovered that the device tree overlay technique for using I2C multiplexers does not work with Raspbian Buster. It will work for Raspbian Stretch, but Mycodo will not work properly with this old version of Raspbian and will disable the API. If you do not need access to the API and do require the use of a multiplexer, it is recommended to install Raspbian Stretch prior to installing Mycodo, until a fix for Buater can be developed. For more information, see [issue #755](https://github.com/kizniche/Mycodo/issues/755). Alternatively, you will need to write your own Python script (or other language) to switch to the specific multiplexer channel and acquire a measurement for use with Mycodo. This script can then be executed by either the Linux Command or Python Code Input to store the measurement(s). This workaround isn't ideal, but is all there is at this point.
+NOTE: As of March, 2020, it has been discovered that the device tree
+overlay technique for using I2C multiplexers does not work with Raspbian
+Buster. It will work for Raspbian Stretch, but Mycodo will not work
+properly with this old version of Raspbian and will disable the API. If
+you do not need access to the API and do require the use of a
+multiplexer, it is recommended to install Raspbian Stretch prior to
+installing Mycodo, until a fix for Buater can be developed. For more
+information, see [issue
+#755](\ https://github.com/kizniche/Mycodo/issues/755). Alternatively,
+you will need to write your own Python script (or other language) to
+switch to the specific multiplexer channel and acquire a measurement for
+use with Mycodo. This script can then be executed by either the Linux
+Command or Python Code Input to store the measurement(s). This
+workaround isn't ideal, but is all there is at this point.
 
 All devices that connected to the Raspberry Pi by the I2C bus need to
 have a unique address in order to communicate. Some inputs may have the

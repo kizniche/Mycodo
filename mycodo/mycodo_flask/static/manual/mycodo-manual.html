@@ -1666,24 +1666,32 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td>This is the output that will cause the particular environmental condition to rise. In the case of raising the temperature, this may be a heating pad or coil.</td>
 </tr>
 <tr class="even">
-<td>Min Duration (raise)</td>
-<td>This is the minimum that the PID output must be before the Up Output turns on. If the PID output exceeds this minimum, the Up Output will turn on for the PID output number of seconds.</td>
+<td>Min Duration (Raise) Min Duty Cycle (Raise)</td>
+<td>This is the minimum value that the PID output must be before Output (Lower) turns on. If the PID output is below this value, Duration Outputs will not turn on, and PWM Outputs will be turned off unless Always Min is enabled.</td>
 </tr>
 <tr class="odd">
-<td>Max Duration (raise)</td>
-<td>This is the maximum duration the Up Output is allowed to turn on for. If the PID output exceeds this number, the Up Output will turn on for no greater than this duration of time.</td>
+<td>Max Duration (Raise) Max Duty Cycle (Raise)</td>
+<td>This is the maximum duration or duty cycle the Output (Raise) can be set to. If the PID output exceeds this number, the Max value set here will be used.</td>
 </tr>
 <tr class="even">
+<td>Always Min (Raise)</td>
+<td>For PWM Outputs only. If enabled, the duty cycle will never be set below the Min value.</td>
+</tr>
+<tr class="odd">
 <td>Output (Lower)</td>
 <td>This is the output that will cause the particular environmental condition to lower. In the case of lowering the CO2, this may be an exhaust fan.</td>
 </tr>
+<tr class="even">
+<td>Min Duration (Lower) Min Duty Cycle (Lower)</td>
+<td>This is the minimum value that the PID output must be before Output (Lower) turns on. If the PID output is below this value, Duration Outputs will not turn on, and PWM Outputs will be turned off unless Always Min is enabled.</td>
+</tr>
 <tr class="odd">
-<td>Min Duration (lower)</td>
-<td>This is the minimum that the PID output must be before the Down Output turns on. If the PID output exceeds this minimum, the Down Output will turn on for the PID output number of seconds.</td>
+<td>Max Duration (Lower) Max Duty Cycle (Lower)</td>
+<td>This is the maximum duration or duty cycle the Output (Raise) can be set to. If the PID output exceeds this number, the Max value set here will be used.</td>
 </tr>
 <tr class="even">
-<td>Max Duration (lower)</td>
-<td>This is the maximum duration the Down Output is allowed to turn on for. if the PID output exceeds this number, the Down Output will turn on for no greater than this duration of time.</td>
+<td>Always Min (Lower)</td>
+<td>For PWM Outputs only. If enabled, the duty cycle will never be set below the Min value.</td>
 </tr>
 <tr class="odd">
 <td>Setpoint Tracking Method</td>
@@ -3353,9 +3361,11 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 <li>AM2320: Relative humidity, temperature <a href="https://www.adafruit.com/product/3721">link</a></li>
 <li>Atlas Scientific DO: Dissolved Oxygen <a href="https://www.atlas-scientific.com/dissolved-oxygen.html">link</a></li>
 <li>Atlas Scientific EC: Electrical Conductivity <a href="https://www.atlas-scientific.com/conductivity.html">link</a></li>
+<li>Atlas Scientific Flow Meter: Total volume, volume flow rate <a href="https://www.atlas-scientific.com/flow-meters.html">link</a></li>
 <li>Atlas Scientific ORP: Oxidation-Reduction Potential <a href="https://www.atlas-scientific.com/orp.html">link</a></li>
 <li>Atlas Scientific pH: Potential hydrogen <a href="https://www.atlas-scientific.com/ph.html">link</a></li>
 <li>Atlas Scientific PT-1000: Temperature <a href="https://www.atlas-scientific.com/temperature.html">link</a></li>
+<li>Atlas Scientific RGB Color Sensor: RGB, CIE, Lux, Proximity <a href="https://www.atlas-scientific.com/product_pages/probes/ezo-rgb.html">link</a></li>
 <li>BH1750: Light <a href="https://www.dfrobot.com/product-531.html">link</a></li>
 <li>BME280: Barometric pressure, humidity, temperature <a href="https://www.bosch-sensortec.com/bst/products/all_products/bme280">link</a></li>
 <li>BMP085, BMP180: Barometric pressure, temperature <a href="https://learn.adafruit.com/using-the-bmp085-with-raspberry-pi">link</a></li>
@@ -3409,6 +3419,7 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 <li><a href="#custom-inputs">Custom Input</a>: Create your own custom input</li>
 </ul>
 <h3 id="i2c-multiplexers">I2C Multiplexers</h3>
+<p>NOTE: As of March, 2020, it has been discovered that the device tree overlay technique for using I2C multiplexers does not work with Raspbian Buster. It will work for Raspbian Stretch, but Mycodo will not work properly with this old version of Raspbian and will disable the API. If you do not need access to the API and do require the use of a multiplexer, it is recommended to install Raspbian Stretch prior to installing Mycodo, until a fix for Buater can be developed. For more information, see [issue #755](<a href="https://github.com/kizniche/Mycodo/issues/755" class="uri">https://github.com/kizniche/Mycodo/issues/755</a>). Alternatively, you will need to write your own Python script (or other language) to switch to the specific multiplexer channel and acquire a measurement for use with Mycodo. This script can then be executed by either the Linux Command or Python Code Input to store the measurement(s). This workaround isn’t ideal, but is all there is at this point.</p>
 <p>All devices that connected to the Raspberry Pi by the I2C bus need to have a unique address in order to communicate. Some inputs may have the same address (such as the AM2315), which prevents more than one from being connected at the same time. Others may provide the ability to change the address, however the address range may be limited, which limits by how many you can use at the same time. I2C multiplexers are extremely clever and useful in these scenarios because they allow multiple sensors with the same I2C address to be connected.</p>
 <p>For instance, the TCA9548A/PCA9548A: I2C Multiplexer has 8 selectable addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each multiplexer has 8 channels, allowing up to 8 devices/sensors with the same address to be connected to each multiplexer. 8 multiplexers x 8 channels = 64 devices/sensors with the same I2C address.</p>
 <p>Multiplexers can be set up by loading a kernel driver to handle the communication, producing a new I2C bus device for each multiplexer channel. To enable the driver for the TCA9548A/PCA9548A, visit <a href="https://github.com/Theoi-Meteoroi/GPIO-pca9548">GPIO-pca9548</a> to get the code and latest install instructions. If successfully set up, there will be 8 new I2C buses on the <code>[Gear Icon] -&gt; System Information</code> page.</p>
