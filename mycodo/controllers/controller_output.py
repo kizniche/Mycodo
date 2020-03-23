@@ -1315,7 +1315,7 @@ output_id = '{}'
         """
         amp_load = 0.0
         for each_output_id, each_output_amps in self.output_amps.items():
-            if self.is_on(each_output_id):
+            if self.is_on(each_output_id) and each_output_amps:
                 amp_load += each_output_amps
         return amp_load
 

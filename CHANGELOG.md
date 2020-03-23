@@ -1,4 +1,4 @@
-## 8.3.1 (Unreleased)
+## 8.4.0 (Unreleased)
 
 ### Bugfixes
 
@@ -11,6 +11,7 @@
  - If a camera output is already on when capturing an image, dont' turn it off after capture
  - Discard first measurement of Atlas Scientific Inputs to prevent some erroneous measurements
  - Fix display of setpoint on PID widget if a band is in use ([#744](https://github.com/kizniche/mycodo/issues/744))
+ - Fix Amp calculation ([#758](https://github.com/kizniche/mycodo/issues/758))
 
 ### Features
 
