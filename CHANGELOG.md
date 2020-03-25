@@ -6,6 +6,10 @@
  - Fix graph Widget custom color issues ([#760](https://github.com/kizniche/mycodo/issues/760))
  - Fix PWM Trigger Functions reacting to 0 % duty cycle being set ([#761](https://github.com/kizniche/mycodo/issues/761))
 
+### Miscellaneous
+
+ - Update Werkzeug to 1.0.0 and Flask-RESTX to 0.2.0 ([#742](https://github.com/kizniche/mycodo/issues/742))
+
 
 ## 8.4.0 (2020-03-23)
 
