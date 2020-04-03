@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.4.0'
-ALEMBIC_VERSION = 'dc9eddfc845d'
+ALEMBIC_VERSION = '267dc913a062'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -721,6 +721,18 @@ FUNCTION_ACTION_INFO = {
             TRANSLATIONS['pid']['title'],
             lazy_gettext('Lower Setpoint')),
         'dependencies_module': []
+    },
+    'system_restart': {
+        'name': '{}: {}'.format(
+            TRANSLATIONS['system']['title'],
+            lazy_gettext('Restart')),
+        'dependencies_module': []
+    },
+    'system_shutdown': {
+        'name': '{}: {}'.format(
+            TRANSLATIONS['system']['title'],
+            lazy_gettext('Shutdown')),
+        'dependencies_module': []
     }
 
     # TODO: These have been disabled until they can be properly tested
@@ -754,7 +766,9 @@ FUNCTION_ACTIONS = [
     ('method_pid', FUNCTION_ACTION_INFO['method_pid']['name']),
     ('setpoint_pid', FUNCTION_ACTION_INFO['setpoint_pid']['name']),
     ('setpoint_pid_raise', FUNCTION_ACTION_INFO['setpoint_pid_raise']['name']),
-    ('setpoint_pid_lower', FUNCTION_ACTION_INFO['setpoint_pid_lower']['name'])
+    ('setpoint_pid_lower', FUNCTION_ACTION_INFO['setpoint_pid_lower']['name']),
+    ('system_restart', FUNCTION_ACTION_INFO['system_restart']['name']),
+    ('system_shutdown', FUNCTION_ACTION_INFO['system_shutdown']['name'])
 ]
 
 # Calibration

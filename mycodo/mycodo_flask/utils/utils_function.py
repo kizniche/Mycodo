@@ -193,6 +193,7 @@ def function_mod(form):
             Function.unique_id == form.function_id.data).first()
 
         func_mod.name = form.name.data
+        func_mod.log_level_debug = form.log_level_debug.data
 
         if not error:
             db.session.commit()
@@ -381,6 +382,10 @@ def action_mod(form):
                                         'create_note']:
             mod_action.do_action_string = form.do_action_string.data
 
+        elif mod_action.action_type in ['system_restart',
+                                        'system_shutdown']:
+            pass  # No options
+
         if not error:
             db.session.commit()
 
@@ -459,11 +464,19 @@ def action_execute_all(form):
 
     try:
         if not error:
+            if hasattr(form, 'log_level_debug') and form.log_level_debug.data:
+                debug = True
+            else:
+                debug = False
             control = DaemonControl()
             trigger_all_actions = threading.Thread(
                 target=control.trigger_all_actions,
                 args=(form.function_id.data,),
-                kwargs={'message': "Triggering all actions of function {}".format(form.function_id.data)})
+                kwargs={
+                    'message': "Triggering all actions of function {}".format(form.function_id.data),
+                    'debug': debug
+                }
+            )
             trigger_all_actions.start()
     except Exception as except_msg:
         error.append(except_msg)

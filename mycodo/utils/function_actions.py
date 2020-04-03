@@ -1,11 +1,12 @@
 # coding=utf-8
 import logging
+import os
+import subprocess
 import threading
 import time
 
-import os
-
 from mycodo.config import FUNCTION_ACTION_INFO
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
@@ -874,6 +875,22 @@ def action_lcd_backlight_on(cond_action, message):
     return message
 
 
+def action_system_restart(message):
+    message += " System restarting in 10 seconds."
+    cmd = '{path}/mycodo/scripts/mycodo_wrapper restart 2>&1'.format(
+        path=INSTALL_DIRECTORY)
+    subprocess.Popen(cmd, shell=True)
+    return message
+
+
+def action_system_shutdown(message):
+    message += " System shutting down in 10 seconds."
+    cmd = '{path}/mycodo/scripts/mycodo_wrapper shutdown 2>&1'.format(
+        path=INSTALL_DIRECTORY)
+    subprocess.Popen(cmd, shell=True)
+    return message
+
+
 def trigger_action(
         cond_action_id,
         message='',
@@ -993,6 +1010,10 @@ def trigger_action(
             message = action_lcd_backlight_off(cond_action, message)
         elif cond_action.action_type == 'lcd_backlight_on':
             message = action_lcd_backlight_on(cond_action, message)
+        elif cond_action.action_type == 'system_restart':
+            message = action_system_restart(message)
+        elif cond_action.action_type == 'system_shutdown':
+            message = action_system_shutdown(message)
 
     except Exception:
         logger_actions.exception("Error triggering action:")

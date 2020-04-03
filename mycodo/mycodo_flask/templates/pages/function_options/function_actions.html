@@ -47,6 +47,12 @@
           {{form_function.name(class_='form-control', value=each_function.name, **{'title': dict_translation['name']['phrase']})}}
         </div>
       </div>
+      <div class="col-auto">
+        {{form_function.log_level_debug.label(class_='control-label')}}
+        <div class="input-group-text">
+          <input id="log_level_debug" name="log_level_debug" type="checkbox" title="{{dict_translation['log_level_debug']['phrase']}}" value="y"{% if each_function.log_level_debug %} checked{% endif %}>
+        </div>
+      </div>
     </div>
 
     <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding: 1.5em 0 0.2em 0.1em">

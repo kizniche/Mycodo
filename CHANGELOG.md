@@ -10,6 +10,7 @@
 ### Features
 
  - Add 'tail dmesg' to System Information page
+ - Add Function Actions: System Restart and System Shutdown ([#763](https://github.com/kizniche/mycodo/issues/763))
 
 ### Miscellaneous
 

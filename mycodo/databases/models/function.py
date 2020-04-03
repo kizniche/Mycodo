@@ -13,6 +13,7 @@ class Function(CRUDMixin, db.Model):
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     function_type = db.Column(db.Text, default='')
     name = db.Column(db.Text, default='Function Name')
+    log_level_debug = db.Column(db.Boolean, default=False)
 
 
 class Conditional(CRUDMixin, db.Model):
