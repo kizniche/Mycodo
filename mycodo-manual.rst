@@ -2581,6 +2581,10 @@ Conditional, Trigger).
 | PID: Set Setpoint            | Set the Setpoint of a particular PID        |
 |                              | controller.                                 |
 +------------------------------+---------------------------------------------+
+| System: Restart              | Restart the System.                         |
++------------------------------+---------------------------------------------+
+| System: Shutdown             | Shutdown the System.                        |
++------------------------------+---------------------------------------------+
 
 Methods
 =======
