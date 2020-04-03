@@ -5,10 +5,15 @@
  - Fix PID Widget preventing graph custom colors from being editable
  - Fix graph Widget custom color issues ([#760](https://github.com/kizniche/mycodo/issues/760))
  - Fix PWM Trigger Functions reacting to 0 % duty cycle being set ([#761](https://github.com/kizniche/mycodo/issues/761))
+ - Fix KeyError if missing options when saving Input
+
+### Features
+
+ - Add 'tail dmesg' to System Information page
 
 ### Miscellaneous
 
- - Update Werkzeug to 1.0.0 ([#742](https://github.com/kizniche/mycodo/issues/742)), Flask-RESTX to 0.2.0, alembic to 1.4.2, pyro5 to 5.8, and SQLAlchemy to 1.3.15
+ - Update Werkzeug to 1.0.1 ([#742](https://github.com/kizniche/mycodo/issues/742)), Flask-RESTX to 0.2.0, alembic to 1.4.2, pyro5 to 5.8, SQLAlchemy to 1.3.15, distro to 1.5.0, 
 
 
 ## 8.4.0 (2020-03-23)

@@ -916,6 +916,7 @@ def page_info():
     frontend_pid = None
     pstree_frontend_output = None
     top_frontend_output = None
+    dmesg_output = None
 
     uptime = subprocess.Popen(
         "uptime", stdout=subprocess.PIPE, shell=True)
@@ -978,6 +979,13 @@ def page_info():
     if free_output:
         free_output = free_output.decode("latin1")
 
+    dmesg = subprocess.Popen(
+        "dmesg | tail -n 20", stdout=subprocess.PIPE, shell=True)
+    (dmesg_output, _) = dmesg.communicate()
+    dmesg.wait()
+    if dmesg_output:
+        dmesg_output = dmesg_output.decode("latin1")
+
     ifconfig = subprocess.Popen(
         "ifconfig -a", stdout=subprocess.PIPE, shell=True)
     (ifconfig_output, _) = ifconfig.communicate()
@@ -1028,6 +1036,7 @@ def page_info():
                            database_version=database_version,
                            correct_database_version=correct_database_version,
                            df=df_output,
+                           dmesg_output=dmesg_output,
                            free=free_output,
                            frontend_pid=frontend_pid,
                            i2c_devices_sorted=i2c_devices_sorted,
