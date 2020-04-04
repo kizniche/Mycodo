@@ -260,6 +260,9 @@ TRANSLATIONS = {
     'measurements_enabled': {
         'title': lazy_gettext('Measurements Enabled'),
         'phrase': lazy_gettext('The measurements to record')},
+    'message_include_code': {
+        'title': lazy_gettext('Message Includes Code'),
+        'phrase': lazy_gettext('Include the code in the message variable')},
     'name': {
         'title': lazy_gettext('Name'),
         'phrase': lazy_gettext('A name to distinguish this from others')},

@@ -26,7 +26,13 @@ def upgrade():
     with op.batch_alter_table("function") as batch_op:
         batch_op.add_column(sa.Column('log_level_debug', sa.Boolean))
 
+    with op.batch_alter_table("conditional") as batch_op:
+        batch_op.add_column(sa.Column('message_include_code', sa.Boolean))
+
 
 def downgrade():
     with op.batch_alter_table("function") as batch_op:
         batch_op.drop_column('log_level_debug')
+
+    with op.batch_alter_table("conditional") as batch_op:
+        batch_op.drop_column('message_include_code')

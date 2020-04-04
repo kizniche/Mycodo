@@ -1985,11 +1985,14 @@ Check if the latest measurement is above or below the set value.
 | Period (seconds)             | The period (seconds) between conditional    |
 |                              | checks.                                     |
 +------------------------------+---------------------------------------------+
-| Refractory Period (seconds)  | The minimum duration (seconds) to wait      |
-|                              | after a conditional has been triggered to   |
-|                              | begin evaluating the conditional again.     |
+| Start Offset (seconds)       | The duration (seconds) to wait before       |
+|                              | executing the Conditional for the first     |
+|                              | after it is activated.                      |
 +------------------------------+---------------------------------------------+
 | Log Level: Debug             | Show debug lines in the daemon log.         |
++------------------------------+---------------------------------------------+
+| Message Includes Code        | Include Conditional Statement code in the   |
+|                              | message that is passed to actions.          |
 +------------------------------+---------------------------------------------+
 
 Conditions are variables that can be used within the Conditional

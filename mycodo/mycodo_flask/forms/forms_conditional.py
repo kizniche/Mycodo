@@ -33,6 +33,8 @@ class Conditional(FlaskForm):
         widget=NumberInput(step='any'))
     log_level_debug = BooleanField(
         TRANSLATIONS['log_level_debug']['title'])
+    message_include_code = BooleanField(
+        TRANSLATIONS['message_include_code']['title'])
     refractory_period = DecimalField(
         lazy_gettext('Refractory Period (seconds)'),
         widget=NumberInput(step='any'))

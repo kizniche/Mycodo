@@ -65,6 +65,7 @@ class ConditionalController(AbstractController, threading.Thread):
         self.period = None
         self.start_offset = None
         self.log_level_debug = None
+        self.message_include_code = None
         self.conditional_statement = None
         self.smtp_wait_timer = None
         self.timer_period = None
@@ -118,6 +119,7 @@ class ConditionalController(AbstractController, threading.Thread):
         self.period = cond.period
         self.start_offset = cond.start_offset
         self.log_level_debug = cond.log_level_debug
+        self.message_include_code = cond.message_include_code
 
         self.set_log_level_debug(self.log_level_debug)
 
@@ -169,13 +171,15 @@ class ConditionalController(AbstractController, threading.Thread):
         with open(self.file_run, 'r') as file:
             self.logger.debug("Conditional Statement (post-replacement):\n{}".format(file.read()))
 
-        message += '\n[Conditional Statement Code Executed]:' \
-                   '\n--------------------' \
-                   '\n{statement}' \
-                   '\n--------------------' \
-                   '\n\n[Messages]:' \
-                   '\n'.format(
-            statement=cond.conditional_statement)
+        if self.message_include_code:
+            message += '\n[Conditional Statement Code Executed]:' \
+                       '\n--------------------' \
+                       '\n{statement}' \
+                       '\n--------------------' \
+                       '\n'.format(
+                statement=cond.conditional_statement)
+
+        message += '\n[Messages]:\n'
 
         self.conditional_run.message = message
         self.conditional_run.conditional_code_run()

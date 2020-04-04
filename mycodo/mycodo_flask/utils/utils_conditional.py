@@ -46,6 +46,7 @@ def conditional_mod(form):
         cond_mod.conditional_statement = form.conditional_statement.data
         cond_mod.period = form.period.data
         cond_mod.log_level_debug = form.log_level_debug.data
+        cond_mod.message_include_code = form.message_include_code.data
         cond_mod.start_offset = form.start_offset.data
 
         if not error:

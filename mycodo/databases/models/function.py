@@ -29,6 +29,7 @@ class Conditional(CRUDMixin, db.Model):
     conditional_statement = db.Column(db.Text, default='')
     period = db.Column(db.Float, default=60.0)
     start_offset = db.Column(db.Float, default=10.0)
+    message_include_code = db.Column(db.Boolean, default=False)
 
 
 class ConditionalConditions(CRUDMixin, db.Model):

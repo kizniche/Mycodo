@@ -83,6 +83,12 @@
           <input id="log_level_debug" name="log_level_debug" type="checkbox" title="{{dict_translation['log_level_debug']['phrase']}}" value="y"{% if each_cond.log_level_debug %} checked{% endif %}>
         </div>
       </div>
+      <div class="col-auto">
+        {{form_conditional.message_include_code.label(class_='control-label')}}
+        <div class="input-group-text">
+          <input id="message_include_code" name="message_include_code" type="checkbox" title="{{dict_translation['message_include_code']['phrase']}}" value="y"{% if each_cond.message_include_code %} checked{% endif %}>
+        </div>
+      </div>
     </div>
 
     </form>
