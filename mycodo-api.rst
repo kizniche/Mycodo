@@ -60,6 +60,8 @@ Python Example (GET)
 Python Example (POST)
 ~~~~~~~~~~~~~~~~~~~~~
 
+.. code:: python
+
     import json
     import requests
     import urllib3
