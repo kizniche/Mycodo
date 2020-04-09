@@ -37,8 +37,8 @@ Bash Examples
 
     curl -k -v -x GET "https://127.0.0.1/api/settings/users?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=" -H "accept: application/vnd.mycodo.v1+json"
 
-Python Example
-~~~~~~~~~~~~~~
+Python Example (GET)
+~~~~~~~~~~~~~~~~~~~~
 
 .. code:: python
 
@@ -52,6 +52,30 @@ Python Example
     headers = {'Accept': 'application/vnd.mycodo.v1+json',
                'X-API-KEY': api_key}
     response = requests.get(url, headers=headers, verify=False)
+    print(response.status_code)
+    print(response.headers)
+    response_dict = json.loads(response.text)
+    print(response_dict)
+
+Python Example (POST)
+~~~~~~~~~~~~~~~~~~~~~
+
+    import json
+    import requests
+    import urllib3
+
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+    ip_address = '127.0.0.1'
+    api_key = 'YOUR_API_KEY'
+    endpoint = 'outputs/3f5a4806-c830-432d-b329-7821da8336e4'
+    url = 'https://{ip}/api/{ep}'.format(ip=ip_address, ep=endpoint)
+    data = {"state": True}  # Turn Output On
+    headers = {'Accept': 'application/vnd.mycodo.v1+json',
+               'X-API-KEY': api_key}
+    response = requests.post(url, json=data, headers=headers, verify=False)
+    print(response.status_code)
+    print(response.headers)
     response_dict = json.loads(response.text)
     print(response_dict)
 
