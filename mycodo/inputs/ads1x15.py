@@ -62,12 +62,12 @@ INPUT_INFORMATION = {
     'i2c_location': ['0x48', '0x49', '0x4A', '0x4B'],
     'i2c_address_editable': False,
 
-    'adc_gain': [(0, '2/3'),
-                 (1, '1'),
-                 (2, '2'),
-                 (4, '4'),
-                 (8, '8'),
-                 (16, '16')],
+    'adc_gain': [(0, '2/3 (±6.144 V)'),
+                 (1, '1 (±4.096 V)'),
+                 (2, '2 (±2.048 V)'),
+                 (4, '4 (±1.024 V)'),
+                 (8, '8 (±0.512 V)'),
+                 (16, '16 (±0.256 V)')],
 
     'custom_options': [
         {
@@ -88,12 +88,12 @@ class InputModule(AbstractInput):
 
         Choose a gain of 1 for reading measurements from 0 to 4.09V.
         Or pick a different gain to change the range of measurements that are read:
-         - 2/3 = +/-6.144V
-         -   1 = +/-4.096V
-         -   2 = +/-2.048V
-         -   4 = +/-1.024V
-         -   8 = +/-0.512V
-         -  16 = +/-0.
+         - 2/3 = ±6.144 V
+         -   1 = ±4.096 V
+         -   2 = ±2.048 V
+         -   4 = ±1.024 V
+         -   8 = ±0.512 V
+         -  16 = ±0.256 V
         See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
         """
     def __init__(self, input_dev, testing=False,):
