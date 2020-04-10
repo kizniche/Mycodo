@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
-
 import os
+
 import sqlalchemy
+from flask import Markup
 from flask import flash
 from flask import url_for
 from flask_babel import gettext
@@ -19,7 +20,7 @@ from mycodo.mycodo_flask.utils.utils_function import check_actions
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.mycodo_flask.utils.utils_misc import save_conditional_code
+from mycodo.utils.conditional import save_conditional_code
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
@@ -34,11 +35,20 @@ def conditional_mod(form):
         controller=TRANSLATIONS['conditional']['title'])
 
     try:
-        error = save_conditional_code(
+        error, lines_code, cmd_out = save_conditional_code(
             error,
             form.conditional_statement.data,
             form.function_id.data,
+            ConditionalConditions.query.all(),
+            Actions.query.all(),
             test=True)
+
+        message = Markup(
+            '<pre>\n\n'
+            'Full Conditional Statement code:\n\n{code}\n\n'
+            'Conditional Statement code analysis:\n\n{report}'
+            '</pre>'.format(
+                code=lines_code, report=cmd_out.decode("utf-8")))
 
         cond_mod = Conditional.query.filter(
             Conditional.unique_id == form.function_id.data).first()
@@ -49,7 +59,19 @@ def conditional_mod(form):
         cond_mod.message_include_code = form.message_include_code.data
         cond_mod.start_offset = form.start_offset.data
 
-        if not error:
+        if error:
+            flash('Error(s) were found while evaluating your code. Review '
+                  'the error(s), below, and fix them before activating your '
+                  'Conditional.', 'error')
+            flash(message, 'error')
+        else:
+            flash(
+                "No errors were found while evaluating your code. However, "
+                "this doesn't mean your code will perform as expected. "
+                "Review your code for issues and test your Conditional "
+                "before putting it into a production environment.", 'success')
+            flash(message, 'success')
+
             db.session.commit()
 
             if cond_mod.is_activated:

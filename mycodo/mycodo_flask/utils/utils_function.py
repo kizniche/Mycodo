@@ -14,6 +14,7 @@ from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
@@ -27,7 +28,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
-from mycodo.mycodo_flask.utils.utils_misc import save_conditional_code
+from mycodo.utils.conditional import save_conditional_code
 from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
@@ -96,6 +97,8 @@ if measurement is not None:  # If a measurement exists
                     error,
                     new_func.conditional_statement,
                     new_func.unique_id,
+                    ConditionalConditions.query.all(),
+                    Actions.query.all(),
                     test=False)
 
         elif function_name.startswith('pid_'):
