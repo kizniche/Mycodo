@@ -23,7 +23,7 @@ Mycodo supports several authentication methods. All API requests must be made ov
 Bash Examples
 ~~~~~~~~~~~~~
 
-``curl`` can be used, but you must either use``-k`` to allow the use of an unsigned certificate, or use your own certificate and domain.
+``curl`` can be used, but you must either use ``-k`` to allow the use of an unsigned SSL certificate, or use your own certificate and domain.
 
 .. code:: bash
 
@@ -52,10 +52,10 @@ Python Example (GET)
     headers = {'Accept': 'application/vnd.mycodo.v1+json',
                'X-API-KEY': api_key}
     response = requests.get(url, headers=headers, verify=False)
-    print(response.status_code)
-    print(response.headers)
+    print("Response Status: {}".format(response.status_code))
+    print("Response Headers: {}".format(response.headers))
     response_dict = json.loads(response.text)
-    print(response_dict)
+    print("Response Dictionary: {}".format(response_dict))
 
 Python Example (POST)
 ~~~~~~~~~~~~~~~~~~~~~
@@ -76,10 +76,10 @@ Python Example (POST)
     headers = {'Accept': 'application/vnd.mycodo.v1+json',
                'X-API-KEY': api_key}
     response = requests.post(url, json=data, headers=headers, verify=False)
-    print(response.status_code)
-    print(response.headers)
+    print("Response Status: {}".format(response.status_code))
+    print("Response Headers: {}".format(response.headers))
     response_dict = json.loads(response.text)
-    print(response_dict)
+    print("Response Dictionary: {}".format(response_dict))
 
 Errors
 ------
