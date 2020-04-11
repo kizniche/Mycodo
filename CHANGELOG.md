@@ -13,6 +13,7 @@
  - Add 'tail dmesg' to System Information page
  - Add Function Actions: System Restart and System Shutdown ([#763](https://github.com/kizniche/mycodo/issues/763))
  - Add Conditional options: Log Level Debug and Message Includes Code
+ - Add Force Command option for Command/Python/Wireless Outputs ([#728](https://github.com/kizniche/mycodo/issues/728))
 
 ### Miscellaneous
 

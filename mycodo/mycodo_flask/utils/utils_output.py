@@ -89,10 +89,12 @@ def output_add(form_add):
                     new_output.pulse_length = 189
                     new_output.on_command = '22559'
                     new_output.off_command = '22558'
+                    new_output.force_command = True
 
                 elif output_type == 'command':
                     new_output.on_command = '/home/pi/script_on.sh'
                     new_output.off_command = '/home/pi/script_off.sh'
+                    new_output.force_command = True
 
                 elif output_type == 'command_pwm':
                     new_output.pwm_command = '/home/pi/script_pwm.sh ((duty_cycle))'
@@ -112,6 +114,7 @@ timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 write_string = "{ts}: ID: {id}: OFF\\n".format(id=output_id, ts=timestamp)
 with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
     myfile.write(write_string)"""
+                    new_output.force_command = True
 
                 elif output_type == 'python_pwm':
                     new_output.pwm_command = """
@@ -203,11 +206,13 @@ def output_mod(form_output):
             mod_output.pulse_length = form_output.pulse_length.data
             mod_output.on_command = form_output.on_command.data
             mod_output.off_command = form_output.off_command.data
+            mod_output.force_command = form_output.force_command.data
 
         elif mod_output.output_type in ['command',
                                         'python']:
             mod_output.on_command = form_output.on_command.data
             mod_output.off_command = form_output.off_command.data
+            mod_output.force_command = form_output.force_command.data
 
         elif mod_output.output_type in ['command_pwm',
                                         'python_pwm']:

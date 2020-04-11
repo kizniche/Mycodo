@@ -103,6 +103,7 @@ class OutputController(AbstractController, threading.Thread):
         self.output_on_command = {}
         self.output_off_command = {}
         self.output_pwm_command = {}
+        self.output_force_command = {}
         self.wireless_pi_switch = {}
 
         # PWM
@@ -123,8 +124,7 @@ class OutputController(AbstractController, threading.Thread):
     def loop(self):
         """ Main loop of the output controller """
         for output_id in self.output_id:
-            # Is the current time past the time the output was supposed
-            # to turn off?
+            # Execute if past the time the output was supposed to turn off
             if (self.output_on_until[output_id] < datetime.datetime.now() and
                     self.output_on_duration[output_id] and
                     not self.output_off_triggered[output_id] and
@@ -141,6 +141,7 @@ class OutputController(AbstractController, threading.Thread):
                     args=(output_id,
                           'off',))
                 turn_output_off.start()
+
 
     def run_finally(self):
         """ Run when the controller is shutting down """
@@ -226,6 +227,7 @@ class OutputController(AbstractController, threading.Thread):
             self.output_on_command[each_output.unique_id] = each_output.on_command
             self.output_off_command[each_output.unique_id] = each_output.off_command
             self.output_pwm_command[each_output.unique_id] = each_output.pwm_command
+            self.output_force_command[each_output.unique_id] = each_output.force_command
             self.output_flow_rate[each_output.unique_id] = each_output.flow_rate
             self.trigger_functions_at_start[each_output.unique_id] = each_output.trigger_functions_at_start
 
@@ -637,8 +639,8 @@ class OutputController(AbstractController, threading.Thread):
                                                  'wired',
                                                  'wireless_rpi_rf']:
 
-                # Don't turn on if already on, except if it's a radio frequency output
-                if output_is_on and self.output_type[output_id] != 'wireless_rpi_rf':
+                # Don't turn on if already on, except if it can be forced on
+                if output_is_on and not self.output_force_command[output_id]:
                     msg = "Output {id} ({name}) is already on.".format(
                             id=self.output_id[output_id],
                             name=self.output_name[output_id])
@@ -1172,6 +1174,7 @@ output_id = '{}'
             self.output_on_command[output_id] = output.on_command
             self.output_off_command[output_id] = output.off_command
             self.output_pwm_command[output_id] = output.pwm_command
+            self.output_force_command[output_id] = output.force_command
             self.output_flow_rate[output_id] = output.flow_rate
             self.trigger_functions_at_start[output_id] = output.trigger_functions_at_start
 
@@ -1244,6 +1247,7 @@ output_id = '{}'
             self.output_on_command.pop(output_id, None)
             self.output_off_command.pop(output_id, None)
             self.output_pwm_command.pop(output_id, None)
+            self.output_force_command.pop(output_id, None)
             self.wireless_pi_switch.pop(output_id, None)
             self.trigger_functions_at_start.pop(output_id, None)
 

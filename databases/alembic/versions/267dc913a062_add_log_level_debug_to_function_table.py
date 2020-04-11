@@ -1,4 +1,4 @@
-"""Add log_level_debug to Function table
+"""Add log_level_debug, message_include_code, force_command
 
 Revision ID: 267dc913a062
 Revises: dc9eddfc845d
@@ -29,6 +29,9 @@ def upgrade():
     with op.batch_alter_table("conditional") as batch_op:
         batch_op.add_column(sa.Column('message_include_code', sa.Boolean))
 
+    with op.batch_alter_table("output") as batch_op:
+        batch_op.add_column(sa.Column('force_command', sa.Boolean))
+
 
 def downgrade():
     with op.batch_alter_table("function") as batch_op:
@@ -36,3 +39,6 @@ def downgrade():
 
     with op.batch_alter_table("conditional") as batch_op:
         batch_op.drop_column('message_include_code')
+
+    with op.batch_alter_table("output") as batch_op:
+        batch_op.drop_column('force_command')

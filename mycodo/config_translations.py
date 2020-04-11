@@ -227,6 +227,9 @@ TRANSLATIONS = {
     'font_em_name': {
         'title': lazy_gettext('Name Font Size (em)'),
         'phrase': lazy_gettext('The font size of the Name text')},
+    'force_command': {
+        'title': lazy_gettext('Force Command'),
+        'phrase': lazy_gettext('Always send the command if instructed, regardless of the current state')},
     'ftdi_location': {
         'title': lazy_gettext('FTDI Device'),
         'phrase': lazy_gettext('The FTDI device (e.g. /dev/ttyUSB1)')},

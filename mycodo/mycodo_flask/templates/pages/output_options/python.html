@@ -11,6 +11,12 @@
    </div>
 </div>
 <div class="col-auto">
+  {{form_mod_output.force_command.label(class_='control-label')}}
+  <div class="input-group-text">
+    <input id="force_command" name="force_command" type="checkbox" title="{{dict_translation['force_command']['phrase']}}" value="y"{% if each_output.force_command %} checked{% endif %}>
+  </div>
+</div>
+<div class="col-auto">
   {{form_mod_output.state_startup.label(class_='control-label')}}
   <div>
     <select class="form-control form-tooltip form-dropdown" id="state_startup" name="state_startup" data-placement="top" title="{{dict_translation['state_startup']['phrase']}}">

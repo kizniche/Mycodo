@@ -54,6 +54,7 @@ class OutputMod(FlaskForm):
     on_command = StringField(TRANSLATIONS['on_command']['title'])
     off_command = StringField(TRANSLATIONS['off_command']['title'])
     pwm_command = StringField(TRANSLATIONS['pwm_command']['title'])
+    force_command = BooleanField(TRANSLATIONS['force_command']['title'])
     pwm_invert_signal = BooleanField(lazy_gettext('Invert Signal'))
     amps = DecimalField(
         TRANSLATIONS['amps']['title'],
