@@ -35,7 +35,7 @@ def conditional_mod(form):
         controller=TRANSLATIONS['conditional']['title'])
 
     try:
-        error, lines_code, cmd_out = save_conditional_code(
+        error, lines_code, cmd_status, cmd_out = save_conditional_code(
             error,
             form.conditional_statement.data,
             form.function_id.data,
@@ -59,7 +59,7 @@ def conditional_mod(form):
         cond_mod.message_include_code = form.message_include_code.data
         cond_mod.start_offset = form.start_offset.data
 
-        if error:
+        if cmd_status:
             flash('Error(s) were found while evaluating your code. Review '
                   'the error(s), below, and fix them before activating your '
                   'Conditional.', 'error')
@@ -72,6 +72,7 @@ def conditional_mod(form):
                 "before putting it into a production environment.", 'success')
             flash(message, 'success')
 
+        if not error:
             db.session.commit()
 
             if cond_mod.is_activated:

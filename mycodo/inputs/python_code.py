@@ -186,6 +186,7 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         if not testing:
+            self.unique_id = input_dev.unique_id
             self.python_code = input_dev.cmd_command
 
             self.measure_info = {}
@@ -203,6 +204,11 @@ class InputModule(AbstractInput):
 
         file_run = '{}/input_python_code_{}.py'.format(
             PATH_PYTHON_CODE_USER, self.unique_id)
+
+        # If the file to execute doesn't exist, generate it
+        if not os.path.exists(file_run):
+            execute_at_creation(
+                self.unique_id, self.python_code, None)
 
         with open(file_run, 'r') as file:
             self.logger.debug("Python Code:\n{}".format(file.read()))

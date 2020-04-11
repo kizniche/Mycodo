@@ -103,6 +103,7 @@ def save_conditional_code(
         error.append("Too many lines in code. Reduce code to less than 1000 lines.")
 
     lines_code = None
+    cmd_status = None
     cmd_out = None
     if test:
         lines_code = ''
@@ -125,4 +126,4 @@ def save_conditional_code(
             path=file_run)
         cmd_out, _, cmd_status = cmd_output(cmd_test)
 
-    return error, lines_code, cmd_out
+    return error, lines_code, cmd_status, cmd_out

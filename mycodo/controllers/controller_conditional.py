@@ -33,8 +33,11 @@ from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Conditional
+from mycodo.databases.models import Actions
+from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP
+from mycodo.utils.conditional import save_conditional_code
 from mycodo.utils.database import db_retrieve_table_daemon
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -130,6 +133,15 @@ class ConditionalController(AbstractController, threading.Thread):
         self.file_run = '{}/conditional_{}.py'.format(
             PATH_PYTHON_CODE_USER, self.unique_id)
 
+        # If the file to execute doesn't exist, generate it
+        if not os.path.exists(self.file_run):
+            save_conditional_code(
+                [],
+                self.conditional_statement,
+                self.unique_id,
+                db_retrieve_table_daemon(ConditionalConditions, entry='all'),
+                db_retrieve_table_daemon(Actions, entry='all'))
+
         module_name = "mycodo.conditional.{}".format(
             os.path.basename(self.file_run).split('.')[0])
         spec = importlib.util.spec_from_file_location(
@@ -166,10 +178,14 @@ class ConditionalController(AbstractController, threading.Thread):
             name=cond.name,
             id=self.unique_id)
 
-        self.logger.debug("Conditional Statement (pre-replacement):\n{}".format(self.conditional_statement))
+        self.logger.debug(
+            "Conditional Statement (pre-replacement):\n{}".format(
+                self.conditional_statement))
 
         with open(self.file_run, 'r') as file:
-            self.logger.debug("Conditional Statement (post-replacement):\n{}".format(file.read()))
+            self.logger.debug(
+                "Conditional Statement (post-replacement):\n{}".format(
+                    file.read()))
 
         if self.message_include_code:
             message += '\n[Conditional Statement Code Executed]:' \

@@ -138,8 +138,12 @@ if __name__ == "__main__":
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
             try:
+                from mycodo.databases.models import Actions
                 from mycodo.databases.models import Conditional
-                from databases.alembic_post_utils import save_conditional_code
+                from mycodo.utils.conditional import save_conditional_code
+
+                conditions = conditional_sess.query(ConditionalConditions).all()
+                actions = conditional_sess.query(Actions).all()
 
                 with session_scope(MYCODO_DB_PATH) as cond_sess:
                     for each_cond in cond_sess.query(Conditional).all():
@@ -154,7 +158,12 @@ if __name__ == "__main__":
                             for each_error in error:
                                 print("Error: {}".format(each_error))
 
-                save_conditional_code()
+                        save_conditional_code(
+                            [],
+                            each_cond.conditional_statement,
+                            each_cond.unique_is,
+                            conditions,
+                            actions)
             except Exception:
                 msg = "ERROR: post-alembic revision {}: {}".format(
                     each_revision, traceback.format_exc())
@@ -257,12 +266,23 @@ if __name__ == "__main__":
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
             try:
+                from mycodo.databases.models import Actions
                 from mycodo.databases.models import Conditional
                 from mycodo.databases.models import Input
                 from mycodo.inputs.python_code import execute_at_creation
-                from databases.alembic_post_utils import save_conditional_code
+                from mycodo.utils.conditional import save_conditional_code
 
-                save_conditional_code()
+                conditions = conditional_sess.query(ConditionalConditions).all()
+                actions = conditional_sess.query(Actions).all()
+
+                with session_scope(MYCODO_DB_PATH) as conditional_sess:
+                    for each_conditional in conditional_sess.query(Conditional).all():
+                        save_conditional_code(
+                            [],
+                            each_conditional.conditional_statement,
+                            each_conditional.unique_is,
+                            conditions,
+                            actions)
 
                 with session_scope(MYCODO_DB_PATH) as conditional_sess:
                     with session_scope(MYCODO_DB_PATH) as input_sess:
@@ -284,10 +304,14 @@ if __name__ == "__main__":
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
             try:
+                from mycodo.databases.models import Actions
                 from mycodo.databases.models import Conditional
                 from mycodo.databases.models import Input
                 from mycodo.inputs.python_code import execute_at_creation
-                from databases.alembic_post_utils import save_conditional_code
+                from mycodo.utils.conditional import save_conditional_code
+
+                conditions = conditional_sess.query(ConditionalConditions).all()
+                actions = conditional_sess.query(Actions).all()
 
                 # Conditionals
                 with session_scope(MYCODO_DB_PATH) as conditional_sess:
@@ -312,9 +336,14 @@ if __name__ == "__main__":
                             except Exception as msg:
                                 print("Exception: {}".format(msg))
 
-                    conditional_sess.commit()
+                        conditional_sess.commit()
 
-                    save_conditional_code()
+                        save_conditional_code(
+                            [],
+                            each_conditional.conditional_statement,
+                            each_conditional.unique_is,
+                            conditions,
+                            actions)
 
                 # Inputs
                 with session_scope(MYCODO_DB_PATH) as input_sess:
