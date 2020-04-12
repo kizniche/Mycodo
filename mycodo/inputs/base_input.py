@@ -234,7 +234,13 @@ class AbstractInput(AbstractBaseController):
         :type timestamp: datetime.datetime
         :return:
         """
+        if value is None:
+            self.logger.error("Cannot set a value of None. Must be a float or string representing a float. "
+                              "Check the sensor and Input module is working correctly.")
+            return
+
         self.return_dict[chan]['value'] = float(value)
+
         if timestamp:
             self.return_dict[chan]['timestamp_utc'] = timestamp
         else:
