@@ -1150,6 +1150,11 @@ General Output Options
 |                              | terminal or Python 3 (depending on which    |
 |                              | output type selected).                      |
 +------------------------------+---------------------------------------------+
+| Force Command                | If an Output is already on, enabling this   |
+|                              | option will allow the On command to be      |
+|                              | executed rather than returning "Output is   |
+|                              | already On".                                |
++------------------------------+---------------------------------------------+
 | PWM Command                  | This is the command used to set the duty    |
 |                              | cycle. The string "((duty\_cycle))" in the  |
 |                              | command will be replaced with the actual    |
