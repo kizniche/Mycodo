@@ -58,7 +58,10 @@ class MycodoRelease:
         for each_release in mycodo_releases:
             if re.match('v.*(\d\.\d\.\d)', each_release['name']):
                 all_versions.append(each_release['name'][1:])
-        return self.sort_reverse_list(all_versions)[0]
+        try:
+            return self.sort_reverse_list(all_versions)[0]
+        except IndexError:
+            return None
 
     def github_upgrade_exists(self):
         errors = []

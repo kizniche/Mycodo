@@ -1,4 +1,4 @@
-## 8.4.1 (Unreleased)
+## 8.5.0 (Unreleased)
 
 ### Bugfixes
 
@@ -7,6 +7,7 @@
  - Fix PWM Trigger Functions reacting to 0 % duty cycle being set ([#761](https://github.com/kizniche/mycodo/issues/761))
  - Fix KeyError if missing options when saving Input
  - Fix ZH03B Input: add repeat measurement option and discard erroneous measurements
+ - Fix update check IndexError if there's no internet connection
 
 ### Features
 
