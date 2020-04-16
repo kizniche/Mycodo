@@ -23,17 +23,16 @@
 #
 import datetime
 import importlib.util
+import os
 import threading
 import time
 import timeit
 
-import os
-
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.controllers.base_controller import AbstractController
-from mycodo.databases.models import Conditional
 from mycodo.databases.models import Actions
+from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP

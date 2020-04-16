@@ -22,15 +22,19 @@
 #  Contact at kylegabriel.com
 
 import datetime
+import importlib.util
+import os
 import sys
+import textwrap
 import threading
 import time
-
 from io import StringIO
+
 from sqlalchemy import and_
 from sqlalchemy import or_
 
 from mycodo.config import OUTPUTS_PWM
+from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import DeviceMeasurements
@@ -47,8 +51,10 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import write_influxdb_value
+from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import return_measurement_info
+from mycodo.utils.system_pi import set_user_grp
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -102,6 +108,9 @@ class OutputController(AbstractController, threading.Thread):
         self.output_pulse_length = {}
         self.output_on_command = {}
         self.output_off_command = {}
+        self.output_run_python_on = {}
+        self.output_run_python_off = {}
+        self.output_run_python_pwm = {}
         self.output_pwm_command = {}
         self.output_force_command = {}
         self.wireless_pi_switch = {}
@@ -141,7 +150,6 @@ class OutputController(AbstractController, threading.Thread):
                     args=(output_id,
                           'off',))
                 turn_output_off.start()
-
 
     def run_finally(self):
         """ Run when the controller is shutting down """
@@ -243,8 +251,234 @@ class OutputController(AbstractController, threading.Thread):
             if self.output_type[each_output.unique_id] == 'atlas_ezo_pmp':
                 self.setup_atlas_command(each_output.unique_id)
 
+            elif self.output_type[each_output.unique_id] == 'python':
+                self.save_output_python_code(each_output.unique_id)
+                file_run_on = '{}/output_on_{}.py'.format(
+                    PATH_PYTHON_CODE_USER, each_output.unique_id)
+                file_run_off = '{}/output_off_{}.py'.format(
+                    PATH_PYTHON_CODE_USER, each_output.unique_id)
+
+                module_name = "mycodo.output.{}".format(
+                    os.path.basename(file_run_on).split('.')[0])
+                spec = importlib.util.spec_from_file_location(
+                    module_name, file_run_on)
+                output_run_on = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(output_run_on)
+                self.output_run_python_on[each_output.unique_id] = output_run_on.OutputRun(
+                    self.logger, each_output.unique_id)
+
+                module_name = "mycodo.output.{}".format(
+                    os.path.basename(file_run_off).split('.')[0])
+                spec = importlib.util.spec_from_file_location(
+                    module_name, file_run_off)
+                output_run_off = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(output_run_off)
+                self.output_run_python_off[each_output.unique_id] = output_run_off.OutputRun(
+                    self.logger, each_output.unique_id)
+
+            elif self.output_type[each_output.unique_id] == 'python_pwm':
+                self.save_output_python_pwm_code(each_output.unique_id)
+                file_run_pwm = '{}/output_pwm_{}.py'.format(
+                    PATH_PYTHON_CODE_USER, each_output.unique_id)
+
+                module_name = "mycodo.output.{}".format(
+                    os.path.basename(file_run_pwm).split('.')[0])
+                spec = importlib.util.spec_from_file_location(
+                    module_name, file_run_pwm)
+                output_run_pwm = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(output_run_pwm)
+                self.output_run_python_pwm[each_output.unique_id] = output_run_pwm.OutputRun(
+                    self.logger, each_output.unique_id)
+
             self.logger.debug("{id} ({name}) Initialized".format(
                 id=each_output.unique_id.split('-')[0], name=each_output.name))
+
+    def add_mod_output(self, output_id):
+        """
+        Add or modify local dictionary of output settings form SQL database
+
+        When a output is added or modified while the output controller is
+        running, these local variables need to also be modified to
+        maintain consistency between the SQL database and running controller.
+
+        :param output_id: Unique ID for each output
+        :type output_id: str
+
+        :return: 0 for success, 1 for fail, with success for fail message
+        :rtype: int, str
+        """
+        try:
+            output = db_retrieve_table_daemon(Output, unique_id=output_id)
+
+            self.output_type[output_id] = output.output_type
+
+            # Turn current pin off
+            if output_id in self.output_pin and self.output_state(output_id) != 'off':
+                self.output_on_off(output_id, 'off')
+
+            self.output_id[output_id] = output.id
+            self.output_unique_id[output_id] = output.unique_id
+            self.output_type[output_id] = output.output_type
+            self.output_mode[output_id] = output.output_mode
+            self.output_interface[output_id] = output.interface
+            self.output_i2c_bus[output_id] = output.i2c_bus
+            self.output_location[output_id] = output.location
+            self.output_baud_rate[output_id] = output.baud_rate
+            self.output_name[output_id] = output.name
+            self.output_pin[output_id] = output.pin
+            self.output_amps[output_id] = output.amps
+            self.output_on_state[output_id] = output.on_state
+            self.output_state_startup[output_id] = output.state_startup
+            self.output_startup_value[output_id] = output.startup_value
+            self.output_state_shutdown[output_id] = output.state_shutdown
+            self.output_shutdown_value[output_id] = output.shutdown_value
+            self.output_on_until[output_id] = datetime.datetime.now()
+            self.output_time_turned_on[output_id] = None
+            self.output_last_duration[output_id] = 0
+            self.output_on_duration[output_id] = False
+            self.output_off_triggered[output_id] = False
+            self.output_protocol[output_id] = output.protocol
+            self.output_pulse_length[output_id] = output.pulse_length
+            self.output_on_command[output_id] = output.on_command
+            self.output_off_command[output_id] = output.off_command
+            self.output_pwm_command[output_id] = output.pwm_command
+            self.output_force_command[output_id] = output.force_command
+            self.output_flow_rate[output_id] = output.flow_rate
+            self.trigger_functions_at_start[output_id] = output.trigger_functions_at_start
+
+            self.pwm_hertz[output_id] = output.pwm_hertz
+            self.pwm_library[output_id] = output.pwm_library
+            self.pwm_invert_signal[output_id] = output.pwm_invert_signal
+            self.pwm_time_turned_on[output_id] = None
+
+            if self.output_pin[output_id]:
+                self.setup_pin(output.unique_id)
+
+            if self.output_type[output.unique_id] == 'atlas_ezo_pmp':
+                self.setup_atlas_command(output.unique_id)
+
+            elif self.output_type[output.unique_id] == 'python':
+                self.save_output_python_code(output.unique_id)
+                file_run_on = '{}/output_on_{}.py'.format(
+                    PATH_PYTHON_CODE_USER, output.unique_id)
+                file_run_off = '{}/output_off_{}.py'.format(
+                    PATH_PYTHON_CODE_USER, output.unique_id)
+
+                module_name = "mycodo.output.{}".format(
+                    os.path.basename(file_run_on).split('.')[0])
+                spec = importlib.util.spec_from_file_location(
+                    module_name, file_run_on)
+                output_run_on = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(output_run_on)
+                self.output_run_python_on[output.unique_id] = output_run_on.OutputRun(
+                    self.logger, output.unique_id)
+
+                module_name = "mycodo.output.{}".format(
+                    os.path.basename(file_run_off).split('.')[0])
+                spec = importlib.util.spec_from_file_location(
+                    module_name, file_run_off)
+                output_run_off = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(output_run_off)
+                self.output_run_python_off[output.unique_id] = output_run_off.OutputRun(
+                    self.logger, output.unique_id)
+
+            elif self.output_type[output.unique_id] == 'python_pwm':
+                self.save_output_python_pwm_code(output.unique_id)
+                file_run_pwm = '{}/output_pwm_{}.py'.format(
+                    PATH_PYTHON_CODE_USER, output.unique_id)
+
+                module_name = "mycodo.output.{}".format(
+                    os.path.basename(file_run_pwm).split('.')[0])
+                spec = importlib.util.spec_from_file_location(
+                    module_name, file_run_pwm)
+                output_run_pwm = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(output_run_pwm)
+                self.output_run_python_pwm[output.unique_id] = output_run_pwm.OutputRun(
+                    self.logger, output.unique_id)
+
+            message = "Output {id} ({name}) initialized".format(
+                id=self.output_unique_id[output_id].split('-')[0],
+                name=self.output_name[output_id])
+            self.logger.debug(message)
+
+            return 0, "success"
+        except Exception as except_msg:
+            self.logger.exception(1)
+            return 1, "Add_Mod_Output Error: ID {id}: {err}".format(
+                id=output_id, err=except_msg)
+
+    def del_output(self, output_id):
+        """
+        Delete local variables
+
+        The controller local variables must match the SQL database settings.
+        Therefore, this is called when a output has been removed from the SQL
+        database.
+
+        :param output_id: Unique ID for each output
+        :type output_id: str
+
+        :return: 0 for success, 1 for fail (with error message)
+        :rtype: int, str
+        """
+
+        # Turn current pin off
+        if output_id in self.output_pin and self.output_state(output_id) != 'off':
+            self.output_switch(output_id, 'off')
+
+        try:
+            self.logger.debug("Output {id} ({name}) Deleted.".format(
+                id=self.output_id[output_id], name=self.output_name[output_id]))
+            self.output_id.pop(output_id, None)
+            self.output_unique_id.pop(output_id, None)
+            self.output_mode.pop(output_id, None)
+            self.output_interface.pop(output_id, None)
+            self.output_location.pop(output_id, None)
+            self.output_i2c_bus.pop(output_id, None)
+            self.output_baud_rate.pop(output_id, None)
+            self.output_name.pop(output_id, None)
+            self.output_pin.pop(output_id, None)
+            self.output_amps.pop(output_id, None)
+            self.output_on_state.pop(output_id, None)
+            self.output_state_startup.pop(output_id, None)
+            self.output_startup_value.pop(output_id, None)
+            self.output_state_shutdown.pop(output_id, None)
+            self.output_shutdown_value.pop(output_id, None)
+            self.output_on_until.pop(output_id, None)
+            self.output_last_duration.pop(output_id, None)
+            self.output_on_duration.pop(output_id, None)
+            self.output_off_triggered.pop(output_id, None)
+            self.output_protocol.pop(output_id, None)
+            self.output_pulse_length.pop(output_id, None)
+            self.output_on_command.pop(output_id, None)
+            self.output_off_command.pop(output_id, None)
+            self.output_pwm_command.pop(output_id, None)
+            self.output_force_command.pop(output_id, None)
+            self.wireless_pi_switch.pop(output_id, None)
+            self.trigger_functions_at_start.pop(output_id, None)
+
+            self.pwm_hertz.pop(output_id, None)
+            self.pwm_library.pop(output_id, None)
+            self.pwm_invert_signal.pop(output_id, None)
+            self.pwm_output.pop(output_id, None)
+            self.pwm_state.pop(output_id, None)
+            self.pwm_time_turned_on.pop(output_id, None)
+
+            self.output_flow_rate.pop(output_id, None)
+            self.atlas_command.pop(output_id, None)
+
+            if self.output_type[output_id] == 'python':
+                self.output_run_python_on.pop(output_id, None)
+                self.output_run_python_on.pop(output_id, None)
+            elif self.output_type[output_id] == 'python_pwm':
+                self.output_run_python_pwm.pop(output_id, None)
+
+            self.output_type.pop(output_id, None)
+
+            return 0, "success"
+        except Exception as msg:
+            return 1, "Del_Output Error: ID {id}: {msg}".format(
+                id=output_id, msg=msg)
 
     def all_outputs_set_state(self):
         """Turn all outputs on that are set to be on at startup"""
@@ -894,85 +1128,24 @@ class OutputController(AbstractController, threading.Thread):
                 self.pwm_state[output_id] = None
 
         elif self.output_type[output_id] == 'python':
-            # create file-like string to capture output
-            codeOut = StringIO()
-            codeErr = StringIO()
-            # capture output and errors
-            sys.stdout = codeOut
-            sys.stderr = codeErr
-
-            pre_command = """
-output_id = '{}'
-""".format(output_id)
-
             if state == 'on' and self.output_on_command[output_id]:
-                full_command = pre_command + self.output_on_command[output_id]
-                exec(full_command, globals())
+                self.output_run_python_on[output_id].output_code_run()
             elif state == 'off' and self.output_off_command[output_id]:
-                full_command = pre_command + self.output_off_command[output_id]
-                exec(full_command, globals())
+                self.output_run_python_off[output_id].output_code_run()
             else:
                 return
 
-            # restore stdout and stderr
-            sys.stdout = sys.__stdout__
-            sys.stderr = sys.__stderr__
-            py_error = codeErr.getvalue()
-            py_output = codeOut.getvalue()
-
-            self.logger.debug(
-                "Output {state} command returned: "
-                "Error: {err}, Output: {out}".format(
-                    state=state,
-                    err=py_error,
-                    out=py_output))
-
-            codeOut.close()
-            codeErr.close()
-
         elif self.output_type[output_id] == 'python_pwm':
+
             if self.output_pwm_command[output_id]:
-                # create file-like string to capture output
-                codeOut = StringIO()
-                codeErr = StringIO()
-                # capture output and errors
-                sys.stdout = codeOut
-                sys.stderr = codeErr
-
-                pre_command = """
-output_id = '{}'
-""".format(output_id)
-
                 if state == 'on' and 100 >= duty_cycle >= 0:
-                    full_command = (pre_command +
-                                    self.output_pwm_command[output_id].replace(
-                                        '((duty_cycle))', str(duty_cycle)))
-                    exec(full_command, globals())
+                    self.output_run_python_pwm[output_id].output_code_run(duty_cycle)
                     self.pwm_state[output_id] = abs(duty_cycle)
                 elif state == 'off' or duty_cycle == 0:
-                    full_command = (pre_command +
-                                    self.output_pwm_command[output_id].replace(
-                                        '((duty_cycle))', str(0.0)))
-                    exec(full_command, globals())
+                    self.output_run_python_pwm[output_id].output_code_run(0)
                     self.pwm_state[output_id] = None
                 else:
                     return
-
-                # restore stdout and stderr
-                sys.stdout = sys.__stdout__
-                sys.stderr = sys.__stderr__
-                py_error = codeErr.getvalue()
-                py_output = codeOut.getvalue()
-
-                self.logger.debug(
-                    "Output duty cycle {duty_cycle} command returned: "
-                    "Error: {err}, Output: {out}".format(
-                        duty_cycle=duty_cycle,
-                        err=py_error,
-                        out=py_output))
-
-                codeOut.close()
-                codeErr.close()
 
     def check_triggers(self, output_id, on_duration=None):
         """
@@ -1124,147 +1297,6 @@ output_id = '{}'
                 GPIO.cleanup(each_output_pin)
         except:
             self.logger.error("RPi.GPIO and Raspberry Pi required for this action")
-
-    def add_mod_output(self, output_id):
-        """
-        Add or modify local dictionary of output settings form SQL database
-
-        When a output is added or modified while the output controller is
-        running, these local variables need to also be modified to
-        maintain consistency between the SQL database and running controller.
-
-        :param output_id: Unique ID for each output
-        :type output_id: str
-
-        :return: 0 for success, 1 for fail, with success for fail message
-        :rtype: int, str
-        """
-        try:
-            output = db_retrieve_table_daemon(Output, unique_id=output_id)
-
-            self.output_type[output_id] = output.output_type
-
-            # Turn current pin off
-            if output_id in self.output_pin and self.output_state(output_id) != 'off':
-                self.output_on_off(output_id, 'off')
-
-            self.output_id[output_id] = output.id
-            self.output_unique_id[output_id] = output.unique_id
-            self.output_type[output_id] = output.output_type
-            self.output_mode[output_id] = output.output_mode
-            self.output_interface[output_id] = output.interface
-            self.output_i2c_bus[output_id] = output.i2c_bus
-            self.output_location[output_id] = output.location
-            self.output_baud_rate[output_id] = output.baud_rate
-            self.output_name[output_id] = output.name
-            self.output_pin[output_id] = output.pin
-            self.output_amps[output_id] = output.amps
-            self.output_on_state[output_id] = output.on_state
-            self.output_state_startup[output_id] = output.state_startup
-            self.output_startup_value[output_id] = output.startup_value
-            self.output_state_shutdown[output_id] = output.state_shutdown
-            self.output_shutdown_value[output_id] = output.shutdown_value
-            self.output_on_until[output_id] = datetime.datetime.now()
-            self.output_time_turned_on[output_id] = None
-            self.output_last_duration[output_id] = 0
-            self.output_on_duration[output_id] = False
-            self.output_off_triggered[output_id] = False
-            self.output_protocol[output_id] = output.protocol
-            self.output_pulse_length[output_id] = output.pulse_length
-            self.output_on_command[output_id] = output.on_command
-            self.output_off_command[output_id] = output.off_command
-            self.output_pwm_command[output_id] = output.pwm_command
-            self.output_force_command[output_id] = output.force_command
-            self.output_flow_rate[output_id] = output.flow_rate
-            self.trigger_functions_at_start[output_id] = output.trigger_functions_at_start
-
-            self.pwm_hertz[output_id] = output.pwm_hertz
-            self.pwm_library[output_id] = output.pwm_library
-            self.pwm_invert_signal[output_id] = output.pwm_invert_signal
-            self.pwm_time_turned_on[output_id] = None
-
-            if self.output_pin[output_id]:
-                self.setup_pin(output.unique_id)
-
-            if self.output_type[output.unique_id] == 'atlas_ezo_pmp':
-                self.setup_atlas_command(output.unique_id)
-
-            message = "Output {id} ({name}) initialized".format(
-                id=self.output_unique_id[output_id].split('-')[0],
-                name=self.output_name[output_id])
-            self.logger.debug(message)
-
-            return 0, "success"
-        except Exception as except_msg:
-            self.logger.exception(1)
-            return 1, "Add_Mod_Output Error: ID {id}: {err}".format(
-                id=output_id, err=except_msg)
-
-    def del_output(self, output_id):
-        """
-        Delete local variables
-
-        The controller local variables must match the SQL database settings.
-        Therefore, this is called when a output has been removed from the SQL
-        database.
-
-        :param output_id: Unique ID for each output
-        :type output_id: str
-
-        :return: 0 for success, 1 for fail (with error message)
-        :rtype: int, str
-        """
-
-        # Turn current pin off
-        if output_id in self.output_pin and self.output_state(output_id) != 'off':
-            self.output_switch(output_id, 'off')
-
-        try:
-            self.logger.debug("Output {id} ({name}) Deleted.".format(
-                id=self.output_id[output_id], name=self.output_name[output_id]))
-            self.output_id.pop(output_id, None)
-            self.output_unique_id.pop(output_id, None)
-            self.output_type.pop(output_id, None)
-            self.output_mode.pop(output_id, None)
-            self.output_interface.pop(output_id, None)
-            self.output_location.pop(output_id, None)
-            self.output_i2c_bus.pop(output_id, None)
-            self.output_baud_rate.pop(output_id, None)
-            self.output_name.pop(output_id, None)
-            self.output_pin.pop(output_id, None)
-            self.output_amps.pop(output_id, None)
-            self.output_on_state.pop(output_id, None)
-            self.output_state_startup.pop(output_id, None)
-            self.output_startup_value.pop(output_id, None)
-            self.output_state_shutdown.pop(output_id, None)
-            self.output_shutdown_value.pop(output_id, None)
-            self.output_on_until.pop(output_id, None)
-            self.output_last_duration.pop(output_id, None)
-            self.output_on_duration.pop(output_id, None)
-            self.output_off_triggered.pop(output_id, None)
-            self.output_protocol.pop(output_id, None)
-            self.output_pulse_length.pop(output_id, None)
-            self.output_on_command.pop(output_id, None)
-            self.output_off_command.pop(output_id, None)
-            self.output_pwm_command.pop(output_id, None)
-            self.output_force_command.pop(output_id, None)
-            self.wireless_pi_switch.pop(output_id, None)
-            self.trigger_functions_at_start.pop(output_id, None)
-
-            self.pwm_hertz.pop(output_id, None)
-            self.pwm_library.pop(output_id, None)
-            self.pwm_invert_signal.pop(output_id, None)
-            self.pwm_output.pop(output_id, None)
-            self.pwm_state.pop(output_id, None)
-            self.pwm_time_turned_on.pop(output_id, None)
-
-            self.output_flow_rate.pop(output_id, None)
-            self.atlas_command.pop(output_id, None)
-
-            return 0, "success"
-        except Exception as msg:
-            return 1, "Del_Output Error: ID {id}: {msg}".format(
-                id=output_id, msg=msg)
 
     def setup_atlas_command(self, output_id):
         """ Initialize the appropriate Atlas Scientific class for th einterface type """
@@ -1502,3 +1534,81 @@ output_id = '{}'
                 return True
 
         return False
+
+    def save_output_python_code(self, unique_id):
+        """Save python code to files"""
+        pre_statement_run = f"""import os
+import sys
+sys.path.append(os.path.abspath('/var/mycodo-root'))
+from mycodo.mycodo_client import DaemonControl
+control = DaemonControl()
+output_id = '{unique_id}'
+
+class OutputRun:
+    def __init__(self, logger, output_id):
+        self.logger = logger
+        self.output_id = output_id
+        self.variables = {{}}
+        self.running = True
+
+    def stop_output(self):
+        self.running = False
+
+    def output_code_run(self):
+"""
+
+        code_on_indented = textwrap.indent(self.output_on_command[unique_id], ' ' * 8)
+        full_command_on = pre_statement_run + code_on_indented
+
+        code_off_indented = textwrap.indent(self.output_off_command[unique_id], ' ' * 8)
+        full_command_off = pre_statement_run + code_off_indented
+
+        assure_path_exists(PATH_PYTHON_CODE_USER)
+        file_run = '{}/output_on_{}.py'.format(
+            PATH_PYTHON_CODE_USER, unique_id)
+        with open(file_run, 'w') as fw:
+            fw.write('{}\n'.format(full_command_on))
+            fw.close()
+        set_user_grp(file_run, 'mycodo', 'mycodo')
+
+        file_run = '{}/output_off_{}.py'.format(
+            PATH_PYTHON_CODE_USER, unique_id)
+        with open(file_run, 'w') as fw:
+            fw.write('{}\n'.format(full_command_off))
+            fw.close()
+        set_user_grp(file_run, 'mycodo', 'mycodo')
+
+    def save_output_python_pwm_code(self, unique_id):
+        """Save python PWM code to files"""
+        pre_statement_run = f"""import os
+import sys
+sys.path.append(os.path.abspath('/var/mycodo-root'))
+from mycodo.mycodo_client import DaemonControl
+control = DaemonControl()
+output_id = '{unique_id}'
+
+class OutputRun:
+    def __init__(self, logger, output_id):
+        self.logger = logger
+        self.output_id = output_id
+        self.variables = {{}}
+        self.running = True
+        self.duty_cycle = None
+
+    def stop_output(self):
+        self.running = False
+
+    def output_code_run(self, duty_cycle):
+"""
+
+        code_replaced = self.output_pwm_command[unique_id].replace('((duty_cycle))', 'duty_cycle')
+        indented_code = textwrap.indent(code_replaced, ' ' * 8)
+        full_command_pwm = pre_statement_run + indented_code
+
+        assure_path_exists(PATH_PYTHON_CODE_USER)
+        file_run = '{}/output_pwm_{}.py'.format(
+            PATH_PYTHON_CODE_USER, unique_id)
+        with open(file_run, 'w') as fw:
+            fw.write('{}\n'.format(full_command_pwm))
+            fw.close()
+        set_user_grp(file_run, 'mycodo', 'mycodo')
