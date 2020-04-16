@@ -25,6 +25,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Acceleration (G-Force, Z)'),
         'meas': 'g_force',
         'units': ['g_force']},
+    'adc': {
+        'name': lazy_gettext('ADC'),
+        'meas': 'adc',
+        'units': ['unitless']},
     'altitude': {
         'name': lazy_gettext('Altitude'),
         'meas': 'altitude',
@@ -240,7 +244,7 @@ MEASUREMENTS = {
     'volume': {
         'name': lazy_gettext('Volume'),
         'meas': 'volume',
-        'units': ['l', 'ml']},
+        'units': ['l', 'ml']}
 }
 
 # Measurement units

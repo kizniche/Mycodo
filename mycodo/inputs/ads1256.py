@@ -77,7 +77,7 @@ INPUT_INFORMATION = {
             'options_select': [
                 ('', 'No Calibration'),
                 ('SELFOCAL', 'Self Offset'),
-                ('SELFGCAL', 'Self Gain)'),
+                ('SELFGCAL', 'Self Gain'),
                 ('SELFCAL', 'Self Offset + Self Gain'),
                 ('SYSOCAL', 'System Offset'),
                 ('SYSGCAL', 'System Gain')

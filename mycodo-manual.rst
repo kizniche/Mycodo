@@ -3705,6 +3705,8 @@ Built-In Inputs
    `link <https://www.adafruit.com/product/1293>`__
 -  AM2320: Relative humidity, temperature
    `link <https://www.adafruit.com/product/3721>`__
+-  AS7262: Visible Light (450, 500, 550, 570, 600, and 650 nm wavelengths)
+   `link <https://www.sparkfun.com/products/14347>`__
 -  Atlas Scientific DO: Dissolved Oxygen
    `link <https://www.atlas-scientific.com/dissolved-oxygen.html>`__
 -  Atlas Scientific EC: Electrical Conductivity

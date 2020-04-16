@@ -15,6 +15,7 @@
  - Add Function Actions: System Restart and System Shutdown ([#763](https://github.com/kizniche/mycodo/issues/763))
  - Add Conditional options: Log Level Debug and Message Includes Code
  - Add Force Command option for Command/Python/Wireless Outputs ([#728](https://github.com/kizniche/mycodo/issues/728))
+ - Add Input: AS7262 Spectral Sensor (measures 450, 500, 550, 570, 600, and 650 nm wavelengths)
 
 ### Miscellaneous
 
