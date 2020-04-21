@@ -25,6 +25,7 @@ With this release comes a new method of switching Outputs that use Python code (
  - Upon controller activation, generate Input and Conditional code files if they don't exist
  - Update Werkzeug to 1.0.1 ([#742](https://github.com/kizniche/mycodo/issues/742)), Flask-RESTX to 0.2.0, alembic to 1.4.2, pyro5 to 5.8, SQLAlchemy to 1.3.15, distro to 1.5.0,
  - Refactor Python Output code 
+ - Update all translations (all complete)
 
 
 ## 8.4.0 (2020-03-23)

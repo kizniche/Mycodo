@@ -1,8 +1,11 @@
 #!/bin/bash
 #
-# Generates the Mycodo translation .mo files
+# Generates the Mycodo translation .po files
 #
 # Requires: pybabel in virtualenv
+#
+# Note: The following tool is useful for rapid translation of po files
+# https://github.com/naskio/po-auto-translation
 #
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
