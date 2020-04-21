@@ -62,8 +62,6 @@ class ConditionalController(AbstractController, threading.Thread):
         self.smtp_max_count = None
         self.email_count = None
         self.allowed_to_send_notice = None
-        self.smtp_wait_timer = None
-        self.timer_period = None
         self.period = None
         self.start_offset = None
         self.log_level_debug = None

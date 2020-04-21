@@ -10,6 +10,7 @@ With this release comes a new method of switching Outputs that use Python code (
  - Fix KeyError if missing options when saving Input
  - Fix ZH03B Input: add repeat measurement option and discard erroneous measurements
  - Fix update check IndexError if there's no internet connection
+ - Fix parsing API api_key from requests
 
 ### Features
 
