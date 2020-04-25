@@ -101,7 +101,7 @@ Mycodo install:
 
 .. code:: bash
 
-    curl -L https://raw.githubusercontent.com/kizniche/Mycodo/master/install/install | bash
+    curl -L https://kizniche.github.io/Mycodo/install | bash
 
 
 Install Notes

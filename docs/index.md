@@ -38,7 +38,7 @@ See the [README](https://github.com/kizniche/Mycodo#uses) for more information.
 Once you have the Raspberry Pi booted into Raspbian with an internet connection, run the following command in a terminal to initiate the Mycodo install:
 
 ```bash
-curl -L https://raw.githubusercontent.com/kizniche/Mycodo/master/install/install | bash
+curl -L https://kizniche.github.io/Mycodo/install | bash
 ```
 
 If the install is successful, open a web browser to the Raspberry Pi's IP address and you will be greeted with a screen to create an Admin user and password.
