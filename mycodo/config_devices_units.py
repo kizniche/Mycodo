@@ -140,7 +140,7 @@ MEASUREMENTS = {
     'length': {
         'name': lazy_gettext('Length'),
         'meas': 'length',
-        'units': ['f', 'cm', 'm']},
+        'units': ['ft', 'cm', 'm']},
     'light': {
         'name': lazy_gettext('Light'),
         'meas': 'light',
