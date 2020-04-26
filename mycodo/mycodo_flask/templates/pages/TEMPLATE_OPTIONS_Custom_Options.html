@@ -1,12 +1,12 @@
-{% if 'custom_options' in dict_options['options_enabled'] %}
-  {% for each_option in dict_options['custom_options'] %}
-
     {% if each_option['type'] in ['float', 'integer', 'text'] %}
 
 <div class="col-auto">
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <input class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="text" value="{{custom_options_values[unique_id][each_option['id']]}}">
+    <input class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="text" value="
+    {%- if custom_options_values[unique_id][each_option['id']] -%}{{custom_options_values[unique_id][each_option['id']]}}
+    {%- elif running_custom_action and 'default_value' in each_option -%}{{each_option['default_value']}}
+    {%- endif -%}">
   </div>
 </div>
 
@@ -105,7 +105,10 @@
   </div>
 </div>
 
-    {% endif %}
+    {% elif each_option['type'] == 'button' %}
 
-  {% endfor %}
-{% endif %}
+  <div class="col-auto small-gutters">
+    <input class="form-control btn btn-primary btn-sm btn-block" id="custom_button_{{each_option['id']}}" name="custom_button_{{each_option['id']}}" title="{{each_option['phrase']}}" type="submit" value="{{each_option['name']}}">
+  </div>
+
+    {% endif %}

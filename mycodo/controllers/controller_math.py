@@ -761,17 +761,23 @@ class MathController(AbstractController, threading.Thread):
                 device_id = each_device_set.split(',')[0]
                 device_measure_id = each_device_set.split(',')[1]
 
-                measurement = get_measurement(
+                device_measurement = get_measurement(
                     device_measure_id)
-                if not measurement:
+                if not device_measurement:
                     return False, None
+
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=device_measurement.conversion_id)
+                channel, unit, measurement = return_measurement_info(
+                    device_measurement, conversion)
 
                 last_measurement = read_last_influxdb(
                     device_id,
-                    measurement.unit,
-                    measurement.channel,
-                    measure=measurement.measurement,
+                    unit,
+                    channel,
+                    measure=measurement,
                     duration_sec=self.max_measure_age)
+
                 if not last_measurement:
                     return False, None
                 else:
@@ -783,17 +789,24 @@ class MathController(AbstractController, threading.Thread):
             return False, "Influxdb: Unknown Error: {err}".format(err=msg)
 
     def get_measurements_from_id(self, device_id, measure_id):
-        measurement = get_measurement(measure_id)
-
-        measurement = read_last_influxdb(
-            device_id,
-            measurement.unit,
-            measurement.channel,
-            measure=measurement.measurement,
-            duration_sec=self.max_measure_age)
-        if not measurement:
+        device_measurement = get_measurement(measure_id)
+        if not device_measurement:
             return False, None
-        return True, measurement
+
+        conversion = db_retrieve_table_daemon(
+            Conversion, unique_id=device_measurement.conversion_id)
+        channel, unit, measurement = return_measurement_info(
+            device_measurement, conversion)
+
+        measure = read_last_influxdb(
+            device_id,
+            unit,
+            channel,
+            measure=measurement,
+            duration_sec=self.max_measure_age)
+        if not measure:
+            return False, None
+        return True, measure
 
     def return_single_conversion_info(self):
         """ Return channel, unit, and measurement of a math device measurement """

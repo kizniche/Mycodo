@@ -704,3 +704,38 @@ def force_acquire_measurements(unique_id):
     except Exception as except_msg:
         error.append(except_msg)
     flash_success_errors(error, action, url_for('routes_page.page_data'))
+
+
+def custom_action(unique_id, form):
+    action = '{action}, {controller}'.format(
+        action=gettext("Custom Button"),
+        controller=TRANSLATIONS['input']['title'])
+    error = []
+
+    try:
+        mod_input = Input.query.filter(
+            Input.unique_id == unique_id).first()
+
+        if not mod_input.is_activated:
+            error.append(gettext(
+                "Activate controller before attempting to use custom button"))
+
+        args_dict = {}
+        button_id = None
+        for key in form.keys():
+            if key.startswith('custom_button_'):
+                button_id = key[14:]
+            else:
+                for value in form.getlist(key):
+                    args_dict[key] = value
+
+        if not error and button_id:
+            control = DaemonControl()
+            status = control.input_custom_button(unique_id, button_id, args_dict)
+            if status[0]:
+                flash("Custom Button: {}".format(status[1]), "error")
+            else:
+                flash("Custom Button: {}".format(status[1]), "success")
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('routes_page.page_data'))

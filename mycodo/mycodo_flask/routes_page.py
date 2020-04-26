@@ -1861,6 +1861,9 @@ def page_data():
         elif form_mod_math.math_deactivate.data:
             utils_math.math_deactivate(form_mod_math)
 
+        # Custom buttons
+        utils_input.custom_action(form_mod_input.input_id.data, request.form)
+
         if unmet_dependencies:
             return redirect(url_for('routes_admin.admin_dependencies',
                                     device=form_add_input.input_type.data.split(',')[0]))
@@ -1869,6 +1872,11 @@ def page_data():
 
     dict_inputs = parse_input_information()
     custom_options_values_inputs = parse_custom_option_values(input_dev)
+
+    custom_actions = {}
+    for each_input in input_dev:
+        if 'custom_actions' in dict_inputs[each_input.device]:
+            custom_actions[each_input.device] = True
 
     # Generate dict that incorporate user-added measurements/units
     dict_units = add_custom_units(unit)
@@ -1957,6 +1965,7 @@ def page_data():
                            choices_measurement=choices_measurement,
                            choices_measurements_units=choices_measurements_units,
                            choices_unit=choices_unit,
+                           custom_actions=custom_actions,
                            custom_options_values_inputs=custom_options_values_inputs,
                            device_info=parse_input_information(),
                            dict_inputs=dict_inputs,

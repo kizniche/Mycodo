@@ -1,4 +1,6 @@
 # coding=utf-8
+from flask_babel import lazy_gettext
+
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 
@@ -37,7 +39,8 @@ INPUT_INFORMATION = {
         'measurements_select',
         'period',
         'pre_output',
-        'log_level_debug'
+        'log_level_debug',
+        'custom_actions'
     ],
     'options_disabled': [
         'interface',
@@ -50,7 +53,36 @@ INPUT_INFORMATION = {
 
     'interfaces': ['I2C'],
     'i2c_location': ['0x5c'],
-    'i2c_address_editable': False
+    'i2c_address_editable': False,
+
+    'custom_actions': [
+        {
+            'id': 'button_one_value',
+            'type': 'integer',
+            'default_value': 650,
+            'name': lazy_gettext('Button One Value'),
+            'phrase': 'Value for button one.'
+        },
+        {
+            'id': 'button_one',
+            'type': 'button',
+            'name': lazy_gettext('Button One'),
+            'phrase': "This is button one"
+        },
+        {
+            'id': 'button_two_value',
+            'type': 'integer',
+            'default_value': 1500,
+            'name': lazy_gettext('Button Two Value'),
+            'phrase': 'Value for button two.'
+        },
+        {
+            'id': 'button_two',
+            'type': 'button',
+            'name': lazy_gettext('Button Two'),
+            'phrase': "This is button two"
+        }
+    ]
 }
 
 
@@ -105,3 +137,9 @@ class InputModule(AbstractInput):
             return self.return_dict
         except Exception as msg:
             self.logger.error("Exception: {}".format(msg))
+
+    def button_one(self, args_dict):
+        self.logger.error("Button One Pressed!: {}".format(int(args_dict['button_one_value'])))
+
+    def button_two(self, args_dict):
+        self.logger.error("Button Two Pressed!: {}".format(int(args_dict['button_two_value'])))

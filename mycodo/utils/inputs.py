@@ -189,5 +189,6 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'test_before_saving')
 
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_options')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_actions')
 
     return dict_inputs

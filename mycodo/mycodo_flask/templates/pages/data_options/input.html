@@ -74,65 +74,84 @@
       </div>
     </div>
 
-    <div class="row small-gutters" style="padding: 0.5em">
+    {% if each_input.device in dict_inputs %}
 
-      {% if each_input.device in dict_inputs %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Message.html' %}
+      {% set dict_options = dict_inputs[each_input.device] %}
+      {% set unique_id = each_input.unique_id %}
+      {% set custom_options_values = custom_options_values_inputs %}
 
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Interface.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_GPIO.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_BT.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_I2C.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_FTDI.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_UART.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Baud_Rate.html' %}
-
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Location.html' %}
-
-        {% if each_input.device != 'EDGE' -%}
-          {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Period.html' %}
-          {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Start_Offset.html' %}
-          {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Pre_Output.html' %}
+      {% if each_input.device in custom_actions and custom_actions[each_input.device] %}
+        {% set running_custom_action = true %}
+    <div class="row small-gutters align-items-end" style="padding: 0.5em">
+      <div class="col-12">
+        <h4>Custom Actions</h4>
+      </div>
+        {% if 'custom_actions' in dict_options['options_enabled'] %}
+          {% for each_option in dict_options['custom_actions'] %}
+      {% include 'pages/TEMPLATE_OPTIONS_Custom_Options.html' %}
+          {% endfor %}
         {% endif %}
-
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_log_level_debug.html' %}
-
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Num_channels.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Enabled.html' %}
-
-        {% set dict_options = dict_inputs[each_input.device] %}
-        {% set unique_id = each_input.unique_id %}
-        {% set custom_options_values = custom_options_values_inputs %}
-        {% include 'pages/TEMPLATE_OPTIONS_Custom_Options.html' %}
-
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Single_Input_Math.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_EDGE.html' %}
-
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Times_Check.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Deadline.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Port.html' %}
-
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_RPM_Pulses_Rev.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Weighting.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Sample_Time.html' %}
-
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_SHT_Voltage.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Pin_Clock.html' %}
-
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Ref_Ohm.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Thermocouple_Type.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Resolution.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Resolution_2.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Sensitivity.html' %}
-
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Gain.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Resolution.html' %}
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Sample_Speed.html' %}
-
-        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Cmd_Command.html' %}
+    </div>
       {% endif %}
 
+    <div class="row small-gutters" style="padding: 0.5em">
+
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Message.html' %}
+
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Interface.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_GPIO.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_BT.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_I2C.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_FTDI.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_UART.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Baud_Rate.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Location.html' %}
+
+      {% if each_input.device != 'EDGE' -%}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Period.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Start_Offset.html' %}
+        {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Pre_Output.html' %}
+      {% endif %}
+
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_log_level_debug.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Num_channels.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Enabled.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Single_Input_Math.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_EDGE.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Times_Check.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Deadline.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Port.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_RPM_Pulses_Rev.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Weighting.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Sample_Time.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_SHT_Voltage.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Pin_Clock.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Ref_Ohm.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Thermocouple_Type.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Resolution.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Resolution_2.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Sensitivity.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Gain.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Resolution.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_ADC_Sample_Speed.html' %}
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Cmd_Command.html' %}
+
     </div>
+
+      {% if custom_options_values[unique_id] %}
+    <div class="row small-gutters" style="padding: 0.5em">
+      <div class="col-12">
+        <h4>Custom Options</h4>
+      </div>
+        {% if 'custom_options' in dict_options['options_enabled'] %}
+          {% for each_option in dict_options['custom_options'] %}
+      {% include 'pages/TEMPLATE_OPTIONS_Custom_Options.html' %}
+          {% endfor %}
+        {% endif %}
+    </div>
+      {% endif %}
+
+    {% endif %}
 
     </form>
 

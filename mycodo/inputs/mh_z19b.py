@@ -34,14 +34,14 @@ measurements_dict = {
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'MH_Z19',
+    'input_name_unique': 'MH_Z19B',
     'input_manufacturer': 'Winsen',
-    'input_name': 'MH-Z19',
+    'input_name': 'MH-Z19B',
     'measurements_name': 'CO2',
     'measurements_dict': measurements_dict,
 
-    'message': 'Note: This is the version of the sensor that does not include the ability to conduct '
-               'automatic baseline correction (ABC). See the B version of the sensor if you wish to use ABC.',
+    'message': 'Note: This is the B version of the sensor that includes the ability to conduct '
+               'automatic baseline correction.',
 
     'options_enabled': [
         'uart_location',
@@ -59,6 +59,13 @@ INPUT_INFORMATION = {
     'uart_baud_rate': 9600,
 
     'custom_options': [
+        {
+            'id': 'abc_enable',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Enable ABC'),
+            'phrase': lazy_gettext('Enable automatic baseline correction (ABC)')
+        },
         {
             'id': 'measure_range',
             'type': 'select',
@@ -110,6 +117,7 @@ class InputModule(AbstractInput):
 
         # Initialize custom options
         self.measure_range = None
+        self.abc_enable = False
         # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
@@ -135,6 +143,11 @@ class InputModule(AbstractInput):
                     'Could not open "{dev}". '
                     'Check the device location is correct.'.format(
                         dev=self.uart_location))
+
+            if self.abc_enable:
+                self.abcon()
+            else:
+                self.abcoff()
 
             if self.measure_range:
                 self.set_measure_range(self.measure_range)
@@ -167,6 +180,19 @@ class InputModule(AbstractInput):
         self.value_set(0, co2)
 
         return self.return_dict
+
+    def abcoff(self):
+        """
+        Turns off Automatic Baseline Correction feature of "B" type sensor.
+        Should be run once at the beginning of every activation.
+        """
+        self.ser.write(bytearray([0xff, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00, 0x86]))
+
+    def abcon(self):
+        """
+        Turns on Automatic Baseline Correction feature of "B" type sensor.
+        """
+        self.ser.write(bytearray([0xff, 0x01, 0x79, 0xa0, 0x00, 0x00, 0x00, 0x00, 0xe6]))
 
     def set_measure_range(self, measure_range):
         """
@@ -217,10 +243,12 @@ class InputModule(AbstractInput):
         """
         self.logger.info("Conducting zero point calibration")
         self.ser.write(bytearray([0xff, 0x01, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00, 0x78]))
+
         # request = b"\xff\x01\x87\x00\x00\x00\x00\x00\x78"
         # self.ser.write(request)
 
     @staticmethod
     def checksum(array):
         return 0xff - (sum(array) % 0x100) + 1
+
         # return struct.pack('B', 0xff - (sum(array) % 0x100) + 1)

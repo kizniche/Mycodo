@@ -75,6 +75,9 @@ class InputController(AbstractController, threading.Thread):
         threading.Thread.__init__(self)
         super(InputController, self).__init__(ready, unique_id=unique_id, name=__name__)
 
+        self.button_pressed = None
+        self.button_args_dict = None
+
         self.unique_id = unique_id
         self.sample_rate = None
 
@@ -147,6 +150,15 @@ class InputController(AbstractController, threading.Thread):
             self.verify_pause_loop = True
             while self.pause_loop:
                 time.sleep(0.1)
+
+        if self.button_pressed:
+            try:
+                getattr(self.measure_input, self.button_pressed)(self.button_args_dict)
+            except:
+                self.logger.exception("Error executing button press function '{}'".format(
+                    self.button_pressed))
+            self.button_args_dict = None
+            self.button_pressed = None
 
         if self.device not in ['EDGE', 'MQTT_PAHO']:
             now = time.time()
@@ -536,9 +548,15 @@ class InputController(AbstractController, threading.Thread):
         return measurements_record
 
     def force_measurements(self):
-        """ Signal that a measurement needs to be obtained """
+        """Signal that a measurement needs to be obtained"""
         self.next_measurement = time.time()
         return 0, "Input instructed to begin acquiring measurements"
+
+    def custom_button_exec_function(self, button_id, args_dict):
+        """Execute function from custom button press"""
+        self.button_args_dict = args_dict
+        self.button_pressed = button_id
+        return 0, "Button press sent to Input Controller"
 
     def clear_total_volume(self):
         """Only for Atlas Scientific Flow sensor"""

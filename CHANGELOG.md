@@ -11,6 +11,7 @@ With this release comes a new method of switching Outputs that use Python code (
  - Fix ZH03B Input: add repeat measurement option and discard erroneous measurements
  - Fix update check IndexError if there's no internet connection
  - Fix parsing API api_key from requests
+ - Fix the inability of Math Controllers to use converted measurements
 
 ### Features
 
@@ -19,6 +20,8 @@ With this release comes a new method of switching Outputs that use Python code (
  - Add Conditional options: Log Level Debug and Message Includes Code
  - Add Force Command option for Command/Python/Wireless Outputs ([#728](https://github.com/kizniche/mycodo/issues/728))
  - Add Input: AS7262 Spectral Sensor (measures 450, 500, 550, 570, 600, and 650 nm wavelengths)
+ - Add ability to create custom Input actions
+ - Add custom MH-Z19/MH-Z19B Input actions: zero and span point calibrations 
 
 ### Miscellaneous
 
@@ -26,6 +29,7 @@ With this release comes a new method of switching Outputs that use Python code (
  - Update Werkzeug to 1.0.1 ([#742](https://github.com/kizniche/mycodo/issues/742)), Flask-RESTX to 0.2.0, alembic to 1.4.2, pyro5 to 5.8, SQLAlchemy to 1.3.15, distro to 1.5.0,
  - Refactor Python Output code 
  - Update all translations (all complete)
+ - Rename MH-Z19 Input to MH-Z19B (and add MH-Z19 Input)
 
 
 ## 8.4.0 (2020-03-23)

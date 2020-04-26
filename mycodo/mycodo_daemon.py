@@ -473,6 +473,27 @@ class DaemonController:
             self.logger.exception(message)
             return 1, message
 
+    def input_custom_button(self, input_id, button_id, args_dict):
+        """
+        Force Input function to be executed
+
+        :return: success or error message
+        :rtype: str
+
+        :param input_id: Which Input controller ID is to be affected?
+        :type input_id: str
+        :param button_id: ID of button pressed
+        :type button_id: str
+
+        """
+        try:
+            return self.controller['Input'][input_id].custom_button_exec_function(button_id, args_dict)
+        except Exception as except_msg:
+            message = "Cannot execute Input function from custom button:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+            return 1, message
+
     def input_atlas_flow_clear_total_volume(self, input_id):
         """
         Force Input to clear the total flow amount
@@ -1101,6 +1122,10 @@ class PyroServer(object):
     def input_force_measurements(self, input_id):
         """Updates all input information"""
         return self.mycodo.input_force_measurements(input_id)
+
+    def input_custom_button(self, input_id, button_id, args_dict):
+        """execute input function"""
+        return self.mycodo.input_custom_button(input_id, button_id, args_dict)
 
     def input_atlas_flow_clear_total_volume(self, input_id):
         """Updates all input information"""

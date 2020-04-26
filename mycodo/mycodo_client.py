@@ -178,6 +178,12 @@ class DaemonControl:
         except Exception:
             return 0, traceback.format_exc()
 
+    def input_custom_button(self, input_id, button_id, args_dict):
+        try:
+            return self.proxy().input_custom_button(input_id, button_id, args_dict)
+        except Exception:
+            return 0, traceback.format_exc()
+
     def input_atlas_flow_clear_total_volume(self, input_id):
         try:
             return self.proxy().input_atlas_flow_clear_total_volume(input_id)
