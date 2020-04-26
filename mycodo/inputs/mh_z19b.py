@@ -41,7 +41,7 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
 
     'message': 'Note: This is the B version of the sensor that includes the ability to conduct '
-               'automatic baseline correction.',
+               'automatic baseline correction (ABC).',
 
     'options_enabled': [
         'uart_location',
@@ -63,7 +63,7 @@ INPUT_INFORMATION = {
             'id': 'abc_enable',
             'type': 'bool',
             'default_value': False,
-            'name': lazy_gettext('Enable ABC'),
+            'name': lazy_gettext('Automatic Baseline Correction'),
             'phrase': lazy_gettext('Enable automatic baseline correction (ABC)')
         },
         {
@@ -82,28 +82,30 @@ INPUT_INFORMATION = {
             'phrase': lazy_gettext('Set the measuring range of the sensor')
         }
     ],
+
+    'custom_actions_message': 'Zero point calibration: activate the sensor in a 400 ppmv CO2 environment, allow to run '
+                              'for 20 minutes, then press the Calibrate Zero Point button.<br>Span point calibration: '
+                              'activate the sensor in an environment with a stable CO2 concentration in the 1000 to '
+                              '2000 ppmv range, allow to run for 20 minutes, enter the ppmv value in the Span Point '
+                              '(ppmv) input field, then press the Calibrate Span Point button. If running a span '
+                              'point calibration, run a zero point calibration first.',
     'custom_actions': [
         {
             'id': 'calibrate_zero_point',
             'type': 'button',
-            'name': lazy_gettext('Calibrate Zero Point'),
-            'phrase': 'Execute zero point calibration. '
-                      'Must be at 400 ppmv for over 20 minutes before executing.'
+            'name': lazy_gettext('Calibrate Zero Point')
         },
         {
             'id': 'span_point_value_ppmv',
             'type': 'integer',
             'default_value': 1500,
             'name': lazy_gettext('Span Point (ppmv)'),
-            'phrase': 'The ppmv concentration to conduct a span point calibration with.'
+            'phrase': 'The ppmv concentration for a span point calibration'
         },
         {
             'id': 'calibrate_span_point',
             'type': 'button',
-            'name': lazy_gettext('Calibrate Span Point'),
-            'phrase': 'Execute span point calibration. '
-                      'Do zero calibration before span calibration. '
-                      'Must be between 1000 to 2000 ppmv for over 20 minutes before executing.'
+            'name': lazy_gettext('Calibrate Span Point')
         }
     ]
 }

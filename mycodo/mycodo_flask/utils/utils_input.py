@@ -708,7 +708,7 @@ def force_acquire_measurements(unique_id):
 
 def custom_action(unique_id, form):
     action = '{action}, {controller}'.format(
-        action=gettext("Custom Button"),
+        action=gettext("Action"),
         controller=TRANSLATIONS['input']['title'])
     error = []
 
@@ -721,7 +721,7 @@ def custom_action(unique_id, form):
 
         if not mod_input.is_activated:
             error.append(gettext(
-                "Activate controller before attempting to use custom button"))
+                "Activate controller before attempting to use action"))
 
         args_dict = {}
         button_id = None

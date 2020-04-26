@@ -198,6 +198,7 @@ INPUT_INFORMATION = {
     # cast it as such in the "Load custom options" section in __init__
     # Example: self.another_option = int(value)
     # Make sure your string represents the type you're attempting to cast
+    'custom_options_message': 'This is a message displayed for custom options.',
     'custom_options': [
         {
             'id': 'fan_modulate',
@@ -227,6 +228,39 @@ INPUT_INFORMATION = {
             'constraints_pass': constraints_pass_measure_range,
             'name': lazy_gettext('Measurement Range'),
             'phrase': lazy_gettext('Set the measuring range of the sensor')
+        }
+    ],
+
+    # Custom actions are buttons and input fields that appear on the web UI for users to execute functions within
+    # the Input class, such as to perform calibration. See the button_one() and button_two() functions at the end
+    # of the class.
+    'custom_actions_message': 'This is a message displayed for custom actions.',
+    'custom_actions': [
+        {
+            'id': 'button_one_value',
+            'type': 'integer',
+            'default_value': 650,
+            'name': lazy_gettext('Button One Value'),
+            'phrase': 'Value for button one.'
+        },
+        {
+            'id': 'button_one',
+            'type': 'button',
+            'name': lazy_gettext('Button One'),
+            'phrase': "This is button one"
+        },
+        {
+            'id': 'button_two_value',
+            'type': 'integer',
+            'default_value': 1500,
+            'name': lazy_gettext('Button Two Value'),
+            'phrase': 'Value for button two.'
+        },
+        {
+            'id': 'button_two',
+            'type': 'button',
+            'name': lazy_gettext('Button Two'),
+            'phrase': "This is button two"
         }
     ]
 }
@@ -313,3 +347,9 @@ class InputModule(AbstractInput):
             "Debug option is enabled.")
 
         return self.return_dict
+
+    def button_one(self, args_dict):
+        self.logger.error("Button One Pressed!: {}".format(int(args_dict['button_one_value'])))
+
+    def button_two(self, args_dict):
+        self.logger.error("Button Two Pressed!: {}".format(int(args_dict['button_two_value'])))

@@ -1,0 +1,7 @@
+{% if 'custom_actions_message' in dict_inputs[each_input.device] %}
+
+<div class="col-12" style="padding-bottom: 0.5em">
+  {{dict_inputs[each_input.device]['custom_actions_message']|safe}}
+</div>
+
+{% endif %}

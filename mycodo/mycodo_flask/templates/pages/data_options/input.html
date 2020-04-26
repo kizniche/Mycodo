@@ -76,6 +76,10 @@
 
     {% if each_input.device in dict_inputs %}
 
+    <div class="row small-gutters" style="padding: 0.5em">
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Message.html' %}
+    </div>
+
       {% set dict_options = dict_inputs[each_input.device] %}
       {% set unique_id = each_input.unique_id %}
       {% set custom_options_values = custom_options_values_inputs %}
@@ -84,8 +88,9 @@
         {% set running_custom_action = true %}
     <div class="row small-gutters align-items-end" style="padding: 0.5em">
       <div class="col-12">
-        <h4>Custom Actions</h4>
+        <h5>{{_('Actions')}}</h5>
       </div>
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Custom_Actions_Message.html' %}
         {% if 'custom_actions' in dict_options['options_enabled'] %}
           {% for each_option in dict_options['custom_actions'] %}
       {% include 'pages/TEMPLATE_OPTIONS_Custom_Options.html' %}
@@ -96,7 +101,9 @@
 
     <div class="row small-gutters" style="padding: 0.5em">
 
-      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Message.html' %}
+      <div class="col-12">
+        <h5>{{_('Options')}}</h5>
+      </div>
 
       {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Interface.html' %}
       {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_GPIO.html' %}
@@ -114,6 +121,9 @@
       {% endif %}
 
       {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_log_level_debug.html' %}
+
+      {# TODO: move many of the below options from database columns to custom options at next major revision #}
+
       {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Num_channels.html' %}
       {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Measurements_Enabled.html' %}
       {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Single_Input_Math.html' %}
@@ -141,8 +151,9 @@
       {% if custom_options_values[unique_id] %}
     <div class="row small-gutters" style="padding: 0.5em">
       <div class="col-12">
-        <h4>Custom Options</h4>
+        <h5>{{_('Custom Options')}}</h5>
       </div>
+      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Custom_Options_Message.html' %}
         {% if 'custom_options' in dict_options['options_enabled'] %}
           {% for each_option in dict_options['custom_options'] %}
       {% include 'pages/TEMPLATE_OPTIONS_Custom_Options.html' %}
@@ -155,7 +166,7 @@
 
     </form>
 
-    <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.5em">
+    <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.5em 0.5em 0 0.5em">
       <div class="col-12">
         <h5>{{_('Measurement Settings')}}</h5>
       </div>

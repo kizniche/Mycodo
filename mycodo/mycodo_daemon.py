@@ -489,7 +489,7 @@ class DaemonController:
         try:
             return self.controller['Input'][input_id].custom_button_exec_function(button_id, args_dict)
         except Exception as except_msg:
-            message = "Cannot execute Input function from custom button:" \
+            message = "Cannot execute Input function from custom action:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
             return 1, message

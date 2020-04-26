@@ -55,6 +55,18 @@ INPUT_INFORMATION = {
     'i2c_location': ['0x5c'],
     'i2c_address_editable': False,
 
+    'custom_options_message': 'This is a message for custom actions.',
+    'custom_options': [
+        {
+            'id': 'option_one',
+            'type': 'integer',
+            'default_value': 999,
+            'name': lazy_gettext('Option One Value'),
+            'phrase': 'Value for option one.'
+        },
+    ],
+
+    'custom_actions_message': 'This is a message for custom actions.',
     'custom_actions': [
         {
             'id': 'button_one_value',
@@ -91,6 +103,12 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        # Initialize custom options
+        self.option_one = False
+        # Set custom options
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
+
         if not testing:
             # Load dependent modules
             import random
@@ -112,6 +130,8 @@ class InputModule(AbstractInput):
         try:
             humidity = self.random.randint(0, 100)
             temperature = self.random.randint(0, 50)
+
+            self.logger.info("Option one value is {}".format(self.option_one))
 
             self.logger.info(
                 "This INFO message will always be displayed. "

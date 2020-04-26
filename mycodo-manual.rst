@@ -989,16 +989,11 @@ Types of math controllers.
 |                               | Difference, and if so, stores the average  |
 |                               | of the selected measurements.              |
 +-------------------------------+--------------------------------------------+
-| Median                        | Stores the statistical median from the     |
-|                               | selected measurements.                     |
+| Statistics                    | Calculates mean, median, minimum, maximum, |
+|                               | standard deviation (SD), SD upper, and SD  |
+|                               | lower for a set of measurements.           |
 +-------------------------------+--------------------------------------------+
-| Maximum                       | Stores the largest measurement from the    |
-|                               | selected measurements.                     |
-+-------------------------------+--------------------------------------------+
-| Minimum                       | Stores the smallest measurement from the   |
-|                               | selected measurements.                     |
-+-------------------------------+--------------------------------------------+
-| Humidity                      | Calculates and stores the percent relative |
+| Humidity (Wet/Dry-Bulb)       | Calculates and stores the percent relative |
 |                               | humidity from the dry-bulb and wet-bulb    |
 |                               | temperatures, and optional pressure.       |
 +-------------------------------+--------------------------------------------+

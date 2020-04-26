@@ -553,7 +553,7 @@ class InputController(AbstractController, threading.Thread):
         return 0, "Input instructed to begin acquiring measurements"
 
     def custom_button_exec_function(self, button_id, args_dict):
-        """Execute function from custom button press"""
+        """Execute function from custom action button press"""
         self.button_args_dict = args_dict
         self.button_pressed = button_id
         return 0, "Button press sent to Input Controller"
