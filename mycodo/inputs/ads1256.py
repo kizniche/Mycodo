@@ -28,7 +28,6 @@ INPUT_INFORMATION = {
         'measurements_select',
         'adc_gain',
         'adc_sample_speed',
-        'custom_options',
         'period',
         'pre_output',
         'log_level_debug'

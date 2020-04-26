@@ -91,7 +91,7 @@
         <h5>{{_('Actions')}}</h5>
       </div>
       {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Custom_Actions_Message.html' %}
-        {% if 'custom_actions' in dict_options['options_enabled'] %}
+        {% if 'custom_actions' in dict_options %}
           {% for each_option in dict_options['custom_actions'] %}
       {% include 'pages/TEMPLATE_OPTIONS_Custom_Options.html' %}
           {% endfor %}
@@ -154,7 +154,7 @@
         <h5>{{_('Custom Options')}}</h5>
       </div>
       {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Custom_Options_Message.html' %}
-        {% if 'custom_options' in dict_options['options_enabled'] %}
+        {% if 'custom_options' in dict_options %}
           {% for each_option in dict_options['custom_options'] %}
       {% include 'pages/TEMPLATE_OPTIONS_Custom_Options.html' %}
           {% endfor %}

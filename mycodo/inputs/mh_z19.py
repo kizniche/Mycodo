@@ -46,8 +46,6 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'uart_location',
         'uart_baud_rate',
-        'custom_options',
-        'custom_actions',
         'period',
         'pre_output',
         'log_level_debug'

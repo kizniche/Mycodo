@@ -45,7 +45,6 @@ INPUT_INFORMATION = {
         'uart_baud_rate',
         'period',
         'single_input_math',
-        'custom_options',
         'pre_output',
         'log_level_debug'
     ],

@@ -49,8 +49,7 @@ INPUT_INFORMATION = {
         'adc_gain',
         'period',
         'pre_output',
-        'log_level_debug',
-        'custom_options'
+        'log_level_debug'
     ],
     'options_disabled': ['interface', 'i2c_location'],
 

@@ -77,7 +77,6 @@ INPUT_INFORMATION = {
         'i2c_location',
         'ftdi_location',
         'uart_location',
-        'custom_options',
         'period',
         'pre_output',
         'log_level_debug'

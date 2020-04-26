@@ -78,7 +78,6 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'bt_location',
         'measurements_select',
-        'custom_options',
         'period',
         'pre_output',
         'log_level_debug'

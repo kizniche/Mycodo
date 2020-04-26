@@ -54,7 +54,6 @@ INPUT_INFORMATION = {
         'measurements_select',
         'uart_location',
         'uart_baud_rate',
-        'custom_options',
         'period',
         'pre_output',
         'log_level_debug'

@@ -46,8 +46,6 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'uart_location',
         'uart_baud_rate',
-        'custom_options',
-        'custom_actions',
         'period',
         'pre_output',
         'log_level_debug'
@@ -221,15 +219,15 @@ class InputModule(AbstractInput):
         if 'span_point_value_ppmv' not in args_dict:
             self.logger.error("Cannot conduct span point calibration without a ppmv value")
             return
-        try:
-            span_value_ppmv = int(args_dict['span_point_value_ppmv'])
-        except:
-            self.logger.exception("ppmv value does not represent an integer")
+        if not isinstance(args_dict['span_point_value_ppmv'], int):
+            self.logger.error("ppmv value does not represent an integer: '{}', type: {}".format(
+                args_dict['span_point_value_ppmv'], type(args_dict['span_point_value_ppmv'])))
             return
 
-        self.logger.info("Conducting span point calibration with a value of {} ppmv".format(span_value_ppmv))
-        b3 = span_value_ppmv // 256
-        b4 = span_value_ppmv % 256
+        self.logger.info("Conducting span point calibration with a value of {} ppmv".format(
+            args_dict['span_point_value_ppmv']))
+        b3 = args_dict['span_point_value_ppmv'] // 256
+        b4 = args_dict['span_point_value_ppmv'] % 256
         c = self.checksum([0x01, 0x88, b3, b4])
         self.ser.write(bytearray([0xff, 0x01, 0x88, b3, b4, 0x00, 0x0b, 0xb8, c]))
 

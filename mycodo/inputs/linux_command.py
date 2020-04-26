@@ -24,7 +24,6 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
 
     'options_enabled': [
-        'custom_options',
         'measurements_select_measurement_unit',
         'period',
         'cmd_command',

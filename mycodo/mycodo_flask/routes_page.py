@@ -1772,6 +1772,8 @@ def page_data():
     form_mod_verification = forms_math.MathModVerification()
     form_mod_misc = forms_math.MathModMisc()
 
+    dict_inputs = parse_input_information()
+
     if request.method == 'POST':
         unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):
@@ -1863,7 +1865,7 @@ def page_data():
 
         # Custom action
         else:
-            utils_input.custom_action(form_mod_input.input_id.data, request.form)
+            utils_input.custom_action(dict_inputs, form_mod_input.input_id.data, request.form)
 
         if unmet_dependencies:
             return redirect(url_for('routes_admin.admin_dependencies',
@@ -1871,7 +1873,6 @@ def page_data():
         else:
             return redirect(url_for('routes_page.page_data'))
 
-    dict_inputs = parse_input_information()
     custom_options_values_inputs = parse_custom_option_values(input_dev)
 
     custom_actions = {}
@@ -1968,7 +1969,6 @@ def page_data():
                            choices_unit=choices_unit,
                            custom_actions=custom_actions,
                            custom_options_values_inputs=custom_options_values_inputs,
-                           device_info=parse_input_information(),
                            dict_inputs=dict_inputs,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,

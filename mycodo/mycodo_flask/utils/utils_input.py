@@ -706,22 +706,27 @@ def force_acquire_measurements(unique_id):
     flash_success_errors(error, action, url_for('routes_page.page_data'))
 
 
-def custom_action(unique_id, form):
+def custom_action(dict_inputs, unique_id, form):
     action = '{action}, {controller}'.format(
         action=gettext("Action"),
         controller=TRANSLATIONS['input']['title'])
     error = []
 
     try:
-        mod_input = Input.query.filter(
+        input_dev = Input.query.filter(
             Input.unique_id == unique_id).first()
 
-        if not mod_input:
+        if not input_dev:
             return
-
-        if not mod_input.is_activated:
+        elif not input_dev.is_activated:
             error.append(gettext(
                 "Activate controller before attempting to use action"))
+
+        option_types = {}
+        if 'custom_actions' in dict_inputs[input_dev.device]:
+            for each_option in dict_inputs[input_dev.device]['custom_actions']:
+                if 'id' in each_option and 'type' in each_option:
+                    option_types[each_option['id']] = each_option['type']
 
         args_dict = {}
         button_id = None
@@ -730,7 +735,24 @@ def custom_action(unique_id, form):
                 button_id = key[14:]
             else:
                 for value in form.getlist(key):
-                    args_dict[key] = value
+                    if key in option_types:
+                        if option_types[key] == 'integer':
+                            try:
+                                args_dict[key] = int(value)
+                            except:
+                                logger.error("Value of option '{}' doesn't represent integer: '{}'".format(key, value))
+                        elif option_types[key] == 'float':
+                            try:
+                                args_dict[key] = float(value)
+                            except:
+                                logger.error("Value of option '{}' doesn't represent float: '{}'".format(key, value))
+                        elif option_types[key] == 'bool':
+                            try:
+                                args_dict[key] = bool(value)
+                            except:
+                                logger.error("Value of option '{}' doesn't represent bool: '{}'".format(key, value))
+                        else:
+                            args_dict[key] = float(value)
 
         if not button_id:
             return

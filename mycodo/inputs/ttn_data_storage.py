@@ -49,7 +49,6 @@ INPUT_INFORMATION = {
     'measurements_use_same_timestamp': False,
 
     'options_enabled': [
-        'custom_options',
         'measurements_select',
         'period',
         'start_offset',

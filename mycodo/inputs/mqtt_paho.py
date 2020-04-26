@@ -39,7 +39,6 @@ INPUT_INFORMATION = {
     'listener': True,
 
     'options_enabled': [
-        'custom_options',
         'measurements_select',
         'log_level_debug'
     ],
