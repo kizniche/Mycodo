@@ -23,6 +23,8 @@ and outputs in interesting ways to sense and manipulate the environment.
 
 `Mycodo on GitHub.io <https://kizniche.github.io/Mycodo/>`__
 
+`Mycodo Custom Inputs and Controllers (github.com/kizniche/Mycodo-custom) <https://github.com/kizniche/Mycodo-custom>`__.
+
 For technical support discussion, use the `Mycodo Forum <https://kylegabriel.com/forum>`__ and `mycodo.slack.com <https://mycodo.slack.com>`__
 
 .. contents:: Table of Contents
@@ -224,9 +226,9 @@ If you would like to add to the list of supported Inputs, submit a pull request 
 or start a
 `New Issue <https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=>`__.
 
-Additionally, I have another github repository devoted to Custom Inputs that do not
+Additionally, I have another github repository devoted to custom Inputs and Controllers that do not
 necessarily fit with the built-in set and are not included by default with Mycodo.
-These can be found at `kizniche/Mycodo-custom-inputs <https://github.com/kizniche/Mycodo-custom-inputs>`__.
+These can be found at `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
 
 Donate
 ------
