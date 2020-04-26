@@ -25,7 +25,7 @@ and outputs in interesting ways to sense and manipulate the environment.
 
 `Mycodo Custom Inputs and Controllers <https://github.com/kizniche/Mycodo-custom>`__.
 
-For technical support discussion, use the `Mycodo Forum <https://kylegabriel.com/forum>`__ and `mycodo.slack.com <https://mycodo.slack.com>`__
+For technical support discussion, use the `Mycodo Forum <https://kylegabriel.com/forum>`__
 
 .. contents:: Table of Contents
    :depth: 1
