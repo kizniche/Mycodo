@@ -716,6 +716,9 @@ def custom_action(unique_id, form):
         mod_input = Input.query.filter(
             Input.unique_id == unique_id).first()
 
+        if not mod_input:
+            return
+
         if not mod_input.is_activated:
             error.append(gettext(
                 "Activate controller before attempting to use custom button"))
@@ -728,6 +731,9 @@ def custom_action(unique_id, form):
             else:
                 for value in form.getlist(key):
                     args_dict[key] = value
+
+        if not button_id:
+            return
 
         if not error and button_id:
             control = DaemonControl()

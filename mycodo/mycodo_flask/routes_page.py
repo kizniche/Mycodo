@@ -1861,8 +1861,9 @@ def page_data():
         elif form_mod_math.math_deactivate.data:
             utils_math.math_deactivate(form_mod_math)
 
-        # Custom buttons
-        utils_input.custom_action(form_mod_input.input_id.data, request.form)
+        # Custom action
+        else:
+            utils_input.custom_action(form_mod_input.input_id.data, request.form)
 
         if unmet_dependencies:
             return redirect(url_for('routes_admin.admin_dependencies',
