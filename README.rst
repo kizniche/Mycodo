@@ -23,7 +23,7 @@ and outputs in interesting ways to sense and manipulate the environment.
 
 `Mycodo on GitHub.io <https://kizniche.github.io/Mycodo/>`__
 
-`Mycodo Custom Inputs and Controllers (github.com/kizniche/Mycodo-custom) <https://github.com/kizniche/Mycodo-custom>`__.
+`Mycodo Custom Inputs and Controllers <https://github.com/kizniche/Mycodo-custom>`__.
 
 For technical support discussion, use the `Mycodo Forum <https://kylegabriel.com/forum>`__ and `mycodo.slack.com <https://mycodo.slack.com>`__
 
