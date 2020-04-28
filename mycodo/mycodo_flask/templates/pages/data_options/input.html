@@ -69,38 +69,42 @@
           {{form_mod_input.input_delete(class_='form-control btn btn-primary btn-sm btn-block',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
         {% endif -%}
       </div>
-      <div class="col-auto small-gutters">
-        {{form_mod_input.input_acquire_measurements(class_='form-control btn btn-primary btn-sm btn-block')}}
-      </div>
     </div>
 
     {% if each_input.device in dict_inputs %}
 
+      {% if 'message' in dict_inputs[each_input.device] %}
     <div class="row small-gutters" style="padding: 0.5em">
-      {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Message.html' %}
+      <div class="col-12">
+        {{dict_inputs[each_input.device]['message']|safe}}
+      </div>
     </div>
+      {% endif %}
 
       {% set dict_options = dict_inputs[each_input.device] %}
       {% set unique_id = each_input.unique_id %}
       {% set custom_options_values = custom_options_values_inputs %}
 
-      {% if each_input.device in custom_actions and custom_actions[each_input.device] %}
-        {% set running_custom_action = true %}
+
     <div class="row small-gutters align-items-end" style="padding: 0.5em">
       <div class="col-12">
         <h5>{{_('Actions')}}</h5>
       </div>
       {% include 'pages/data_options/input_options/TEMPLATE_OPTIONS_Custom_Actions_Message.html' %}
+      <div class="col-auto small-gutters">
+        {{form_mod_input.input_acquire_measurements(class_='form-control btn btn-primary btn-sm btn-block')}}
+      </div>
+      {% if each_input.device in custom_actions and custom_actions[each_input.device] %}
+        {% set running_custom_action = true %}
         {% if 'custom_actions' in dict_options %}
           {% for each_option in dict_options['custom_actions'] %}
-      {% include 'pages/TEMPLATE_OPTIONS_Custom_Options.html' %}
+            {% include 'pages/TEMPLATE_OPTIONS_Custom_Options.html' %}
           {% endfor %}
         {% endif %}
-    </div>
       {% endif %}
+    </div>
 
     <div class="row small-gutters" style="padding: 0.5em">
-
       <div class="col-12">
         <h5>{{_('Options')}}</h5>
       </div>

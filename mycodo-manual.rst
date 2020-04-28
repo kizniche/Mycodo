@@ -593,6 +593,11 @@ operate from. Add, configure, and activate inputs to begin recording
 measurements to the database and allow them to be used throughout
 Mycodo.
 
+Input Actions
+~~~~~~~~~~~~~
+
+Input Actions are functions within the Input module that can be executed from the Web UI. This is useful for things such as calibration or other functionality specific to the input. By default there is at least one action, Acquire Measurements Now, which will cause the input to acquire measurements rather than waiting until the next Period has elapsed. Note, actions can only be executed while the Input is active.
+
 Input Options
 ~~~~~~~~~~~~~
 

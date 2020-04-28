@@ -131,6 +131,23 @@ INPUT_INFORMATION = {
             'name': lazy_gettext('Gamma Correction'),
             'phrase': lazy_gettext('Gamma correction between 0.01 and 4.99 (default is 1.0)')
         },
+    ],
+
+    'custom_actions_message':
+        'The EZO-RGB color sensor is designed to be calibrated to a white object at the maximum brightness the object '
+        'will be viewed under. In order to get the best results, Atlas Scientific strongly recommends that the sensor '
+        'is mounted into a fixed location. Holding the sensor in your hand during calibration will decrease '
+        'performance.'
+        '<br>1. Embed the EZO-RGB color sensor into its intended use location.'
+        '<br>2. Set LED brightness to the desired level.'
+        '<br>3. Place a white object in front of the target object and press the Calibration button.'
+        '<br>4. A single color reading will be taken and the device will be fully calibrated.',
+    'custom_actions': [
+        {
+            'id': 'calibrate',
+            'type': 'button',
+            'name': lazy_gettext('Calibrate')
+        },
     ]
 }
 
@@ -334,3 +351,6 @@ class InputModule(AbstractInput):
                     self.value_set(5, int(return_list[index_place + 3]))
 
         return self.return_dict
+
+    def calibrate(self):
+        self.atlas_sensor.query('Cal')

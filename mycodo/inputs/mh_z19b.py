@@ -1,5 +1,4 @@
 # coding=utf-8
-import struct
 import time
 
 from flask_babel import lazy_gettext
@@ -115,6 +114,9 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.measuring = None
+        self.calibrating = None
+
         # Initialize custom options
         self.measure_range = None
         self.abc_enable = False
@@ -156,26 +158,34 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the MH-Z19's CO2 concentration in ppmv via UART"""
-        self.return_dict = measurements_dict.copy()
-
         co2 = None
+        self.return_dict = measurements_dict.copy()
 
         if not self.serial_device:  # Don't measure if device isn't validated
             return None
 
-        self.ser.flushInput()
-        self.ser.write(bytearray([0xff, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79]))
-        time.sleep(.01)
-        resp = self.ser.read(9)
+        while self.calibrating:
+            time.sleep(0.1)
+        self.measuring = True
 
-        if resp[0] != 0xff or resp[1] != 0x86:
-            self.logger.error("Bad checksum")
-        elif len(resp) >= 4:
-            high = resp[2]
-            low = resp[3]
-            co2 = (high * 256) + low
-        else:
-            self.logger.error("Bad response")
+        try:
+            self.ser.flushInput()
+            self.ser.write(bytearray([0xff, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79]))
+            time.sleep(.01)
+            resp = self.ser.read(9)
+
+            if resp[0] != 0xff or resp[1] != 0x86:
+                self.logger.error("Bad checksum")
+            elif len(resp) >= 4:
+                high = resp[2]
+                low = resp[3]
+                co2 = (high * 256) + low
+            else:
+                self.logger.error("Bad response")
+        except:
+            self.logger.exception()
+        finally:
+            self.measuring = False
 
         self.value_set(0, co2)
 
@@ -224,13 +234,22 @@ class InputModule(AbstractInput):
                 args_dict['span_point_value_ppmv'], type(args_dict['span_point_value_ppmv'])))
             return
 
-        self.logger.info("Conducting span point calibration with a value of {} ppmv".format(
-            args_dict['span_point_value_ppmv']))
-        b3 = args_dict['span_point_value_ppmv'] // 256
-        b4 = args_dict['span_point_value_ppmv'] % 256
-        c = self.checksum([0x01, 0x88, b3, b4])
-        self.ser.write(bytearray([0xff, 0x01, 0x88, b3, b4, 0x00, 0x0b, 0xb8, c]))
+        while self.measuring:
+            time.sleep(0.1)
+        self.calibrating = True
 
+        try:
+            self.logger.info("Conducting span point calibration with a value of {} ppmv".format(
+                args_dict['span_point_value_ppmv']))
+            b3 = args_dict['span_point_value_ppmv'] // 256
+            b4 = args_dict['span_point_value_ppmv'] % 256
+            c = self.checksum([0x01, 0x88, b3, b4])
+            self.ser.write(bytearray([0xff, 0x01, 0x88, b3, b4, 0x00, 0x0b, 0xb8, c]))
+            time.sleep(0.1)
+        except:
+            self.logger.exception()
+        finally:
+            self.calibrating = False
         # byte3 = struct.pack('B', b3)
         # byte4 = struct.pack('B', b4)
         # request = b"\xff\x01\x88" + byte3 + byte4 + b"\x00\x00\x00" + c
@@ -241,14 +260,22 @@ class InputModule(AbstractInput):
         Zero Point Calibration
         from https://github.com/UedaTakeyuki/mh-z19
         """
-        self.logger.info("Conducting zero point calibration")
-        self.ser.write(bytearray([0xff, 0x01, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00, 0x78]))
+        while self.measuring:
+            time.sleep(0.1)
+        self.calibrating = True
 
+        try:
+            self.logger.info("Conducting zero point calibration")
+            self.ser.write(bytearray([0xff, 0x01, 0x87, 0x00, 0x00, 0x00, 0x00, 0x00, 0x78]))
+            time.sleep(0.1)
+        except:
+            self.logger.exception()
+        finally:
+            self.calibrating = False
         # request = b"\xff\x01\x87\x00\x00\x00\x00\x00\x78"
         # self.ser.write(request)
 
     @staticmethod
     def checksum(array):
         return 0xff - (sum(array) % 0x100) + 1
-
         # return struct.pack('B', 0xff - (sum(array) % 0x100) + 1)
