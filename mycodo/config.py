@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.4.0'
-ALEMBIC_VERSION = '267dc913a062'
+ALEMBIC_VERSION = '4b5f6207cbdf'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -66,20 +66,35 @@ CAMERA_INFO = {
         'name': 'fswebcam',
         'dependencies_module': [
             ('apt', 'fswebcam', 'fswebcam')
-        ]
+        ],
+        'capable_image': True,
+        'capable_stream': True
     },
     'opencv': {
         'name': 'OpenCV',
         'dependencies_module': [
             ('pip-pypi', 'imutils', 'imutils'),
             ('apt', 'python3-opencv', 'python3-opencv'),
-        ]
+        ],
+        'capable_image': True,
+        'capable_stream': True
     },
     'picamera': {
         'name': 'PiCamera',
         'dependencies_module': [
             ('pip-pypi', 'picamera', 'picamera')
-        ]
+        ],
+        'capable_image': True,
+        'capable_stream': True
+    },
+    'http_address': {
+        'name': 'HTTP Address',
+        'dependencies_module': [
+            ('pip-pypi', 'imutils', 'imutils'),
+            ('apt', 'python3-opencv', 'python3-opencv'),
+        ],
+        'capable_image': True,
+        'capable_stream': False
     },
 }
 

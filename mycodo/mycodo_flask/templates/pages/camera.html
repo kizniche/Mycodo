@@ -49,7 +49,7 @@
         {{form_camera.capture_still(class_='form-control btn btn-primary')}}
       </div>
 
-      {% if each_camera.library in ['opencv', 'picamera'] and
+      {% if camera_info[each_camera.library]['capable_stream'] and
             not each_camera.timelapse_started %}
         <div class="col-12 col-sm-3 col-lg-2">
           {% if each_camera.stream_started -%}
@@ -188,12 +188,14 @@
             {{form_camera.path_timelapse(class_='form-control', value=each_camera.path_timelapse, **{'title':_('Path to save timelapse image files. Leave blank to use default location.')})}}
            </div>
         </div>
+      {% if camera_info[each_camera.library]['capable_stream'] %}
         <div class="col-auto">
           {{form_camera.path_video.label(class_='control-label')}}
           <div>
             {{form_camera.path_video(class_='form-control', value=each_camera.path_video, **{'title':_('Path to save video files. Leave blank to use default location.')})}}
            </div>
         </div>
+      {% endif %}
         <div class="col-auto">
           {{form_camera.hflip.label(class_='control-label')}}
           <div class="input-group-text">
@@ -225,6 +227,8 @@
         {% include 'pages/camera_options/opencv.html' %}
       {% elif each_camera.library == 'fswebcam' %}
         {% include 'pages/camera_options/fswebcam.html' %}
+      {% elif each_camera.library == 'http_address' %}
+        {% include 'pages/camera_options/http_address.html' %}
       {% endif %}
 
       </div>
@@ -234,7 +238,7 @@
 
     <div class="row small-gutters">
 
-    {%- if each_camera.library in ['opencv', 'picamera'] and
+    {%- if camera_info[each_camera.library]['capable_stream'] and
            each_camera.stream_started -%}
       <div>
         {{_('Video Stream')}}:

@@ -56,6 +56,8 @@ def camera_add(form_camera):
         new_camera.hue = -1.0
         new_camera.saturation = 0.1
         new_camera.white_balance = 0.0
+    elif form_camera.library.data == 'http_address':
+        new_camera.url = 'http://s.w-x.co/staticmaps/wu/wu/wxtype1200_cur/uscsg/current.png'
     if not error:
         try:
             new_camera.save()
@@ -131,6 +133,8 @@ def camera_mod(form_camera):
             mod_camera.hue = form_camera.hue.data
             mod_camera.saturation = form_camera.saturation.data
             mod_camera.white_balance = form_camera.white_balance.data
+        elif mod_camera.library == 'http_address':
+            mod_camera.url = form_camera.url.data
         else:
             error.append("Unknown camera library")
 

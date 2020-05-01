@@ -21,7 +21,8 @@ With this release comes a new method of switching Outputs that use Python code (
  - Add Force Command option for Command/Python/Wireless Outputs ([#728](https://github.com/kizniche/mycodo/issues/728))
  - Add Input: AS7262 Spectral Sensor (measures 450, 500, 550, 570, 600, and 650 nm wavelengths)
  - Add ability to create custom Input actions
- - Add MH-Z19/MH-Z19B Input actions: zero and span point calibrations 
+ - Add MH-Z19/MH-Z19B Input actions: zero and span point calibrations
+ - Add Camera: HTTP Address ([Feature Request - IP Camera/Network Camera](https://kylegabriel.com/forum/general-discussion/feature-request-ip-camera-network-camera-stream))
 
 ### Miscellaneous
 

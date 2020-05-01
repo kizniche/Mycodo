@@ -32,6 +32,7 @@ class Camera(CRUDMixin, db.Model):
     stream_started = db.Column(db.Boolean, default=False)
     hide_still = db.Column(db.Boolean, default=False)
     hide_timelapse = db.Column(db.Boolean, default=False)
+    url = db.Column(db.Text, default='')
 
     # Timelapse
     timelapse_started = db.Column(db.Boolean, default=False)

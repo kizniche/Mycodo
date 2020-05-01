@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import datetime
 import logging
-import time
-
 import os
+import time
+from urllib.error import HTTPError
+from urllib.request import urlretrieve
 
 from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import Camera
@@ -229,6 +230,37 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                     "{err}".format(err=e))
         else:
             return
+
+    elif settings.library == 'http_address':
+        import cv2
+        import imutils
+
+        if record_type in ['photo', 'timelapse']:
+            try:
+                urlretrieve(settings.url, path_file)
+            except HTTPError as err:
+                logger.error(err)
+            except Exception as err:
+                logger.exception(err)
+
+            if any((settings.hflip, settings.vflip, settings.rotation)):
+                img_orig = cv2.imread(path_file)
+
+                if settings.hflip and settings.vflip:
+                    img_edited = cv2.flip(img_orig, -1)
+                elif settings.hflip:
+                    img_edited = cv2.flip(img_orig, 1)
+                elif settings.vflip:
+                    img_edited = cv2.flip(img_orig, 0)
+
+                if settings.rotation:
+                    img_edited = imutils.rotate_bound(img_orig, settings.rotation)
+
+                cv2.imwrite(path_file, img_edited)
+
+        elif record_type == 'video':
+            pass  # No video (yet)
+
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')
     except Exception as e:

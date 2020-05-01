@@ -106,3 +106,6 @@ class Camera(FlaskForm):
     picamera_exposure_mode = StringField(lazy_gettext('Exposure Mode'))
     picamera_meter_mode = StringField(lazy_gettext('Meter Mode'))
     picamera_image_effect = StringField(lazy_gettext('Image Effect'))
+
+    # HTTP Address
+    url = StringField(lazy_gettext('HTTP Address'))
