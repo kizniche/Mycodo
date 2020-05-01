@@ -108,4 +108,5 @@ class Camera(FlaskForm):
     picamera_image_effect = StringField(lazy_gettext('Image Effect'))
 
     # HTTP Address
-    url = StringField(lazy_gettext('HTTP Address'))
+    url_still = StringField(lazy_gettext('Still HTTP Address'))
+    url_stream = StringField(lazy_gettext('Stream HTTP Address'))

@@ -3,8 +3,6 @@ import datetime
 import logging
 import os
 import time
-from urllib.error import HTTPError
-from urllib.request import urlretrieve
 
 from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import Camera
@@ -234,29 +232,48 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     elif settings.library == 'http_address':
         import cv2
         import imutils
+        from urllib.error import HTTPError
+        from urllib.parse import urlparse
+        from urllib.request import urlretrieve
 
         if record_type in ['photo', 'timelapse']:
+            # Images can be of different extensions
+            # Find extension, convert to jpg
+            a = urlparse(settings.url_still)
+            # print(a.path)  # Output: /kyle/09-09-201315-47-571378756077.jpg
+            filename = os.path.basename(a.path)  # Output: 09-09-201315-47-571378756077.jpg
+            path_tmp = "/tmp/{}".format(filename)
+
             try:
-                urlretrieve(settings.url, path_file)
+                urlretrieve(settings.url_still, path_tmp)
             except HTTPError as err:
                 logger.error(err)
             except Exception as err:
                 logger.exception(err)
 
-            if any((settings.hflip, settings.vflip, settings.rotation)):
-                img_orig = cv2.imread(path_file)
+            try:
+                img_orig = cv2.imread(path_tmp)
 
-                if settings.hflip and settings.vflip:
-                    img_edited = cv2.flip(img_orig, -1)
-                elif settings.hflip:
-                    img_edited = cv2.flip(img_orig, 1)
-                elif settings.vflip:
-                    img_edited = cv2.flip(img_orig, 0)
+                if img_orig is not None and img_orig.shape is not None:
+                    if any((settings.hflip, settings.vflip, settings.rotation)):
+                        if settings.hflip and settings.vflip:
+                            img_edited = cv2.flip(img_orig, -1)
+                        elif settings.hflip:
+                            img_edited = cv2.flip(img_orig, 1)
+                        elif settings.vflip:
+                            img_edited = cv2.flip(img_orig, 0)
 
-                if settings.rotation:
-                    img_edited = imutils.rotate_bound(img_orig, settings.rotation)
+                        if settings.rotation:
+                            img_edited = imutils.rotate_bound(img_orig, settings.rotation)
 
-                cv2.imwrite(path_file, img_edited)
+                        cv2.imwrite(path_file, img_edited)
+                    else:
+                        cv2.imwrite(path_file, img_orig)
+                else:
+                    os.rename(path_tmp, path_file)
+            except Exception as err:
+                logger.error("Could not convert, rotate, or invert image: {}".format(err))
+                os.rename(path_tmp, path_file)
 
         elif record_type == 'video':
             pass  # No video (yet)

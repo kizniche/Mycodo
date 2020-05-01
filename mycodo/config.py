@@ -94,7 +94,7 @@ CAMERA_INFO = {
             ('apt', 'python3-opencv', 'python3-opencv'),
         ],
         'capable_image': True,
-        'capable_stream': False
+        'capable_stream': True
     },
 }
 

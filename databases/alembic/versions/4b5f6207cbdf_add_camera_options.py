@@ -24,9 +24,11 @@ def upgrade():
     # write_revision_post_alembic(revision)
 
     with op.batch_alter_table("camera") as batch_op:
-        batch_op.add_column(sa.Column('url', sa.Text))
+        batch_op.add_column(sa.Column('url_still', sa.Text))
+        batch_op.add_column(sa.Column('url_stream', sa.Text))
 
 
 def downgrade():
     with op.batch_alter_table("camera") as batch_op:
-        batch_op.drop_column('url')
+        batch_op.drop_column('url_still')
+        batch_op.drop_column('url_stream')
