@@ -4018,7 +4018,7 @@ USB Device Persistence Across Reboots
 From `(#547) Theoi-Meteoroi on
 Github <https://github.com/kizniche/Mycodo/issues/547#issuecomment-428752904>`__:
 
-Using USB devices, such as USB-to-serial interfaces to connect a sensor,
+Using USB devices, such as USB-to-serial interfaces (CP210x) to connect a sensor,
 while convenient, poses an issue if there are multiple devices when the
 system reboots. After a reboot, there is no guarantee the device will
 persist with the same name. For instance, if Sensor A is /dev/ttyUSB0
@@ -4063,6 +4063,8 @@ First - find the VID and PID for the USB device:
     Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 
 In this case the Vendor ID is 10c4 The Product ID is ea60
+
+Note: If you have multiple devices and you find your IDs to be the same, you can change IDs with the Simplicity Studio Xpress Configurator tool (discussed starting on page 6 of the `AN721: USBXpress™ Device Configuration and Programming Guide <https://www.silabs.com/documents/public/application-notes/AN721.pdf>`__).
 
 Since I changed the serial number field - this will be unique.
 
