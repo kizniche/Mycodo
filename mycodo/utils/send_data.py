@@ -92,6 +92,8 @@ def send_email(smtp_host, smtp_protocol, smtp_port, smtp_user, smtp_pass,
             port = 465
         elif smtp_protocol == 'tls':
             port = 587
+        elif smtp_protocol == 'unencrypted':
+            port = 25
         else:
             logger.error("Could not determine port to use to send email. Not sending.")
             return 1
