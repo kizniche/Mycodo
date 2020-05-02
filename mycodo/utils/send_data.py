@@ -92,25 +92,24 @@ def send_email(smtp_host, smtp_protocol, smtp_port, smtp_user, smtp_pass,
             port = 465
         elif smtp_protocol == 'tls':
             port = 587
+        else:
+            logger.error("Could not determine port to use to send email. Not sending.")
+            return 1
 
         # select encryption protocol
         if smtp_protocol == 'ssl':
             server = smtplib.SMTP_SSL(smtp_host, port)
-            server.ehlo()
         elif smtp_protocol == 'tls':
             server = smtplib.SMTP(smtp_host, port)
-            server.ehlo()
             server.starttls()
         else:
             server = smtplib.SMTP(smtp_host, port)
-            server.ehlo()
 
         # Send the email
-        server.ehlo()
         response_login = server.login(smtp_user, smtp_pass)
-        logger.info("Email login reponse: {}".format(response_login))
+        logger.info("Email login response: {}".format(response_login))
         response_send = server.sendmail(smtp_user, recipients, composed)
-        logger.info("Email send reponse: {}".format(response_send))
+        logger.info("Email send response: {}".format(response_send))
         server.close()
 
         return 0
