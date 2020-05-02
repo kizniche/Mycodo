@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import datetime
 import logging
 import os
 import subprocess
@@ -197,8 +198,10 @@ def camera_timelapse_video(form_camera):
         os.path.join(PATH_CAMERAS, '{uid}'.format(uid=camera.unique_id)))
     timelapse_path = assure_path_exists(os.path.join(camera_path, 'timelapse'))
     video_path = assure_path_exists(os.path.join(camera_path, 'timelapse_video'))
+    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     path_file = os.path.join(
-        video_path, "Video_{}.mp4".format(form_camera.timelapse_image_set.data))
+        video_path, "Video_{name}_{ts}.mp4".format(
+            name=form_camera.timelapse_image_set.data, ts=timestamp))
 
     if not error:
         try:
@@ -214,8 +217,8 @@ def camera_timelapse_video(form_camera):
                         codec=form_camera.timelapse_codec.data,
                         save=path_file)
             subprocess.Popen(cmd, shell=True)
-            flash("The time-lapse video is being generated in the background and saved in "
-                  "~/Mycodo/cameras/ID/timelapse_video/", "success")
+            flash("The time-lapse video is being generated in the background at "
+                  "{}".format(path_file), "success")
         except Exception as except_msg:
             error.append(except_msg)
 
