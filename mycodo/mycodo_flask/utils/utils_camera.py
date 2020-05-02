@@ -217,7 +217,9 @@ def camera_timelapse_video(form_camera):
                         codec=form_camera.timelapse_codec.data,
                         save=path_file)
             subprocess.Popen(cmd, shell=True)
-            flash("The time-lapse video is being generated in the background at "
+            flash("The time-lapse video is being generated in the background with the command:\n"
+                  "{}".format(cmd), "success")
+            flash("The video will be saved at "
                   "{}".format(path_file), "success")
         except Exception as except_msg:
             error.append(except_msg)
