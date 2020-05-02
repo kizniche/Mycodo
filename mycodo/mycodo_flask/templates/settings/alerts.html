@@ -35,6 +35,7 @@
             <option value="ssl"{%- if smtp.protocol == 'ssl' %} selected{%- endif -%}>SSL</option>
             <option value="tls"{%- if smtp.protocol == 'tls' %} selected{%- endif -%}>TLS</option>
             <option value="unencrypted"{%- if smtp.protocol == 'unencrypted' %} selected{%- endif -%}>Unencrypted</option>
+            <option value="unencrypted_no_login"{%- if smtp.protocol == 'unencrypted' %} selected{%- endif -%}>Unencrypted (no login)</option>
           </select>
         </div>
       </div>

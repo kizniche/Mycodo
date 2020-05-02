@@ -92,24 +92,33 @@ def send_email(smtp_host, smtp_protocol, smtp_port, smtp_user, smtp_pass,
             port = 465
         elif smtp_protocol == 'tls':
             port = 587
-        elif smtp_protocol == 'unencrypted':
+        elif smtp_protocol in ['unencrypted', 'unencrypted_no_login']:
             port = 25
         else:
             logger.error("Could not determine port to use to send email. Not sending.")
             return 1
 
         # select encryption protocol
+        response_login = None
         if smtp_protocol == 'ssl':
             server = smtplib.SMTP_SSL(smtp_host, port)
+            response_login = server.login(smtp_user, smtp_pass)
         elif smtp_protocol == 'tls':
             server = smtplib.SMTP(smtp_host, port)
             server.starttls()
-        else:
+            response_login = server.login(smtp_user, smtp_pass)
+        elif smtp_protocol == 'unencrypted':
             server = smtplib.SMTP(smtp_host, port)
+            response_login = server.login(smtp_user, smtp_pass)
+        elif smtp_protocol == 'unencrypted_no_login':
+            server = smtplib.SMTP(smtp_host, port)
+        else:
+            logger.error("Unrecognized protocol: {}".format(smtp_protocol))
+            return 1
+        if response_login:
+            logger.info("Email login response: {}".format(response_login))
 
         # Send the email
-        response_login = server.login(smtp_user, smtp_pass)
-        logger.info("Email login response: {}".format(response_login))
         response_send = server.sendmail(smtp_user, recipients, composed)
         logger.info("Email send response: {}".format(response_send))
         server.close()
