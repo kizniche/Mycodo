@@ -187,9 +187,7 @@ def camera_del(form_camera):
 
 
 def camera_timelapse_video(form_camera):
-    action = '{action} {controller}'.format(
-        action="Generate Timelapse Video",
-        controller=TRANSLATIONS['camera']['title'])
+    action = "Generate Timelapse Video"
     error = []
 
     camera = db_retrieve_table(

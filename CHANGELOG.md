@@ -32,6 +32,7 @@ With this release comes a new method of switching Outputs that use Python code (
  - Refactor Python Output code 
  - Update all translations (all complete)
  - Rename MH-Z19 Input to MH-Z19B (and add MH-Z19 Input)
+ - Change Email Notification options to allow unencrypted sending (port 25)
 
 
 ## 8.4.0 (2020-03-23)

@@ -17,6 +17,7 @@ from wtforms import validators
 from wtforms import widgets
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired
+from wtforms.validators import Optional
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config_translations import TRANSLATIONS
@@ -34,13 +35,11 @@ class SettingsEmail(FlaskForm):
     )
     smtp_port = IntegerField(
         lazy_gettext('SMTP Port'),
-        render_kw={"placeholder": lazy_gettext('SMTP Port')},
-        validators=[validators.NumberRange(
-            min=1,
-            max=65535,
-            message=lazy_gettext('Port should be between 1 and 65535')
-        )],
-        widget=NumberInput()
+        validators=[Optional()]
+    )
+    smtp_protocol = StringField(
+        lazy_gettext('SMTP Protocol'),
+        validators=[DataRequired()]
     )
     smtp_ssl = BooleanField('Enable SSL')
     smtp_user = StringField(

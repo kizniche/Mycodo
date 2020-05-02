@@ -559,7 +559,7 @@ def action_email(logger_actions,
         smtp_wait_timer, allowed_to_send_notice = check_allowed_to_email()
         if allowed_to_send_notice and cond_action.do_action_string:
             smtp = db_retrieve_table_daemon(SMTP, entry='first')
-            send_email(smtp.host, smtp.ssl, smtp.port,
+            send_email(smtp.host, smtp.protocol, smtp.port,
                        smtp.user, smtp.passw, smtp.email_from,
                        [cond_action.do_action_string], message,
                        attachment_file, attachment_type)
@@ -590,7 +590,7 @@ def action_email(logger_actions,
             smtp_wait_timer, allowed_to_send_notice = check_allowed_to_email()
             if allowed_to_send_notice and cond_action.do_action_string:
                 smtp = db_retrieve_table_daemon(SMTP, entry='first')
-                send_email(smtp.host, smtp.ssl, smtp.port,
+                send_email(smtp.host, smtp.protocol, smtp.port,
                            smtp.user, smtp.passw, smtp.email_from,
                            cond_action.do_action_string.split(','), message,
                            attachment_file, attachment_type)
@@ -1090,7 +1090,7 @@ def trigger_function_actions(function_id, message='', debug=False):
         smtp_wait_timer, allowed_to_send_notice = check_allowed_to_email()
         if allowed_to_send_notice:
             smtp = db_retrieve_table_daemon(SMTP, entry='first')
-            send_email(smtp.host, smtp.ssl, smtp.port,
+            send_email(smtp.host, smtp.protocol, smtp.port,
                        smtp.user, smtp.passw, smtp.email_from,
                        email_recipients, message,
                        attachment_file, attachment_type)

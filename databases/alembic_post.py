@@ -58,6 +58,36 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == 'f5b77ef5f17c':
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from mycodo.databases.models import SMTP
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    for smtp in session.query(SMTP).all():
+                        error = []
+                        if smtp.ssl:
+                            smtp.protocol = 'ssl'
+                            if smtp.port == 465:
+                                smtp.port = None
+                        elif not smtp.ssl:
+                            smtp.protocol = 'tls'
+                            if smtp.port == 587:
+                                smtp.port = None
+                        else:
+                            smtp.protocol = 'unencrypted'
+                        if not error:
+                            session.commit()
+                        else:
+                            for each_error in error:
+                                print("Error: {}".format(each_error))
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == '0a8a5eb1be4b':
             print("Executing post-alembic code for revision {}".format(
                 each_revision))

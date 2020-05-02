@@ -14,6 +14,9 @@
       <input type="hidden" name="form-name" value="EmailAlert">
       {{form_email_alert.hidden_tag()}}
       <div class="form-group">
+        If a port is not specified, the default port for SSL (465), TLS (587), or unencrypted (23) will be used. If you require a non-standard port, enter it in the port field.
+      </div>
+      <div class="form-group">
         {{form_email_alert.smtp_host.label(class_='control-label')}}
         <div>
           {{form_email_alert.smtp_host(class_='form-control', value=smtp.host)}}
@@ -22,18 +25,17 @@
       <div class="form-group">
         {{form_email_alert.smtp_port.label(class_='control-label')}}
         <div>
-          {{form_email_alert.smtp_port(class_='form-control',type="number", value=smtp.port,**{'title':_('465 for SSL, 587 for TSL')})}}
+          {{form_email_alert.smtp_port(class_='form-control',type="number", value=smtp.port,**{'title':_('Leave blank to use default port for protocol')})}}
         </div>
       </div>
       <div class="form-group">
-        {{form_email_alert.smtp_ssl.label(class_='control-label checkbox-nopad')}}
+        {{form_email_alert.smtp_protocol.label(class_='control-label')}}
         <div>
-          {%- if smtp.ssl == 1 -%}
-            {{form_email_alert.smtp_ssl(checked=True)}}
-          {%- else -%}
-            {{form_email_alert.smtp_ssl()}}
-          {%- endif -%}
-          &nbsp;&nbsp;(unchecked for TSL)
+          <select class="form-control form-tooltip form-dropdown" id="smtp_protocol" name="smtp_protocol" data-placement="top" title="{{_("Email protocol to send with")}}">
+            <option value="ssl"{%- if smtp.protocol == 'ssl' %} selected{%- endif -%}>SSL</option>
+            <option value="tls"{%- if smtp.protocol == 'tls' %} selected{%- endif -%}>TLS</option>
+            <option value="unencrypted"{%- if smtp.protocol == 'unencrypted' %} selected{%- endif -%}>Unencrypted</option>
+          </select>
         </div>
       </div>
       <div class="form-group">

@@ -1199,7 +1199,7 @@ def settings_alert_mod(form_mod_alert):
             mod_smtp = SMTP.query.one()
             if form_mod_alert.send_test.data:
                 send_email(
-                    mod_smtp.host, mod_smtp.ssl, mod_smtp.port,
+                    mod_smtp.host, mod_smtp.protocol, mod_smtp.port,
                     mod_smtp.user, mod_smtp.passw, mod_smtp.email_from,
                     form_mod_alert.send_test_to_email.data,
                     "This is a test email from Mycodo")
@@ -1210,8 +1210,11 @@ def settings_alert_mod(form_mod_alert):
                 return redirect(url_for('routes_settings.settings_alerts'))
             else:
                 mod_smtp.host = form_mod_alert.smtp_host.data
-                mod_smtp.port = form_mod_alert.smtp_port.data
-                mod_smtp.ssl = form_mod_alert.smtp_ssl.data
+                if form_mod_alert.smtp_port.data:
+                    mod_smtp.port = form_mod_alert.smtp_port.data
+                else:
+                    mod_smtp.port = None
+                mod_smtp.protocol = form_mod_alert.smtp_protocol.data
                 mod_smtp.user = form_mod_alert.smtp_user.data
                 if form_mod_alert.smtp_password.data:
                     mod_smtp.passw = form_mod_alert.smtp_password.data

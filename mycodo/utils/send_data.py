@@ -20,7 +20,7 @@ logger = logging.getLogger("mycodo.notification")
 # Email notification
 #
 
-def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
+def send_email(smtp_host, smtp_protocol, smtp_port, smtp_user, smtp_pass,
                smtp_email_from, email_to, message_body,
                attachment_file=None, attachment_type=False):
     """
@@ -28,8 +28,8 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
 
     :param smtp_host: Email server hostname
     :type smtp_host: str
-    :param smtp_ssl: Use SSL?
-    :type smtp_ssl: bool
+    :param smtp_protocol: encryption protocol
+    :type smtp_protocol: str
     :param smtp_port: Email server port
     :type smtp_port: int
     :param smtp_user: Email server user name
@@ -84,18 +84,33 @@ def send_email(smtp_host, smtp_ssl, smtp_port, smtp_user, smtp_pass,
 
         composed = outer.as_string()
 
-        # Send the email
-        if smtp_ssl:
-            server = smtplib.SMTP_SSL(smtp_host, smtp_port)
+        # determine port
+        port = None
+        if smtp_port:
+            port = smtp_port
+        elif smtp_protocol == 'ssl':
+            port = 465
+        elif smtp_protocol == 'tls':
+            port = 587
+
+        # select encryption protocol
+        if smtp_protocol == 'ssl':
+            server = smtplib.SMTP_SSL(smtp_host, port)
             server.ehlo()
-        else:
-            server = smtplib.SMTP(smtp_host, smtp_port)
+        elif smtp_protocol == 'tls':
+            server = smtplib.SMTP(smtp_host, port)
             server.ehlo()
             server.starttls()
+        else:
+            server = smtplib.SMTP(smtp_host, port)
+            server.ehlo()
 
+        # Send the email
         server.ehlo()
-        server.login(smtp_user, smtp_pass)
-        server.sendmail(smtp_user, recipients, composed)
+        response_login = server.login(smtp_user, smtp_pass)
+        logger.info("Email login reponse: {}".format(response_login))
+        response_send = server.sendmail(smtp_user, recipients, composed)
+        logger.info("Email send reponse: {}".format(response_send))
         server.close()
 
         return 0
