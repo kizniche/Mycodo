@@ -261,6 +261,8 @@ def page_camera():
                 camera_stream(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
             mod_camera.stream_started = False
             db.session.commit()
+        elif form_camera.timelapse_generate.data:
+            utils_camera.camera_timelapse_video(form_camera)
 
         if unmet_dependencies:
             return redirect(url_for('routes_admin.admin_dependencies',
@@ -272,7 +274,8 @@ def page_camera():
     (latest_img_still_ts,
      latest_img_still,
      latest_img_tl_ts,
-     latest_img_tl) = utils_general.get_camera_image_info()
+     latest_img_tl,
+     time_lapse_imgs) = utils_general.get_camera_image_info()
 
     time_now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
@@ -287,6 +290,7 @@ def page_camera():
                            opencv_devices=opencv_devices,
                            output=output,
                            pi_camera_enabled=pi_camera_enabled,
+                           time_lapse_imgs=time_lapse_imgs,
                            time_now=time_now)
 
 

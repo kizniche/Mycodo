@@ -1026,6 +1026,7 @@ def get_camera_image_info():
     latest_img_still = {}
     latest_img_tl_ts = {}
     latest_img_tl = {}
+    time_lapse_imgs = {}
 
     camera = Camera.query.all()
 
@@ -1048,11 +1049,22 @@ def get_camera_image_info():
             latest_img_still[each_camera.unique_id] = None
 
         try:
+            # Get list of timelapse filename sets for generating a video from images
+            time_lapse_imgs[each_camera.unique_id] = []
+            timelapse_path = os.path.join(camera_path, 'timelapse')
+            for i in os.listdir(timelapse_path):
+                if (os.path.isfile(os.path.join(timelapse_path, i)) and
+                        i[:-10] not in time_lapse_imgs[each_camera.unique_id]):
+                    time_lapse_imgs[each_camera.unique_id].append(i[:-10])
+            time_lapse_imgs[each_camera.unique_id].sort()
+        except Exception:
+            pass
+
+        try:
             latest_time_lapse_img_full_path = max(glob.iglob(
                 '{path}/timelapse/Timelapse-{cam_id}-*.jpg'.format(
                     path=camera_path,
-                    cam_id=each_camera.id)),
-                key=os.path.getmtime)
+                    cam_id=each_camera.id)), key=os.path.getmtime)
         except ValueError:
             latest_time_lapse_img_full_path = None
         if latest_time_lapse_img_full_path:
@@ -1065,7 +1077,7 @@ def get_camera_image_info():
             latest_img_tl[each_camera.unique_id] = None
 
     return (latest_img_still_ts, latest_img_still,
-            latest_img_tl_ts, latest_img_tl)
+            latest_img_tl_ts, latest_img_tl, time_lapse_imgs)
 
 
 def return_dependencies(device_type):

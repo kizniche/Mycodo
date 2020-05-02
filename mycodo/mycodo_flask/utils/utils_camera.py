@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 import logging
+import os
+import subprocess
 
 import sqlalchemy
 from flask import flash
 from flask import redirect
 from flask import url_for
 
+from mycodo.config import PATH_CAMERAS
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Camera
 from mycodo.mycodo_client import DaemonControl
@@ -14,6 +17,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.database import db_retrieve_table
+from mycodo.utils.system_pi import assure_path_exists
 
 logger = logging.getLogger(__name__)
 
@@ -175,6 +179,43 @@ def camera_del(form_camera):
         try:
             delete_entry_with_id(
                 Camera, form_camera.camera_id.data)
+        except Exception as except_msg:
+            error.append(except_msg)
+
+    flash_success_errors(error, action, url_for('routes_page.page_camera'))
+
+
+def camera_timelapse_video(form_camera):
+    action = '{action} {controller}'.format(
+        action="Generate Timelapse Video",
+        controller=TRANSLATIONS['camera']['title'])
+    error = []
+
+    camera = db_retrieve_table(
+        Camera, unique_id=form_camera.camera_id.data)
+    camera_path = assure_path_exists(
+        os.path.join(PATH_CAMERAS, '{uid}'.format(uid=camera.unique_id)))
+    timelapse_path = assure_path_exists(os.path.join(camera_path, 'timelapse'))
+    video_path = assure_path_exists(os.path.join(camera_path, 'timelapse_video'))
+    path_file = os.path.join(
+        video_path, "Video_{}.mp4".format(form_camera.timelapse_image_set.data))
+
+    if not error:
+        try:
+            cmd =  "/usr/bin/ffmpeg " \
+                   "-f image2 " \
+                   "-r {fps} " \
+                   "-i {path}/{seq}-%05d.jpg " \
+                   "-vcodec {codec} " \
+                   "-y {save}".format(
+                        seq=form_camera.timelapse_image_set.data,
+                        fps=form_camera.timelapse_fps.data,
+                        path=timelapse_path,
+                        codec=form_camera.timelapse_codec.data,
+                        save=path_file)
+            subprocess.Popen(cmd, shell=True)
+            flash("The time-lapse video is being generated in the background and saved in "
+                  "~/Mycodo/cameras/ID/timelapse_video/", "success")
         except Exception as except_msg:
             error.append(except_msg)
 

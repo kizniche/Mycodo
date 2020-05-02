@@ -23,6 +23,7 @@ With this release comes a new method of switching Outputs that use Python code (
  - Add ability to create custom Input actions
  - Add MH-Z19/MH-Z19B Input actions: zero and span point calibrations
  - Add Camera: HTTP Address ([Feature Request - IP Camera/Network Camera](https://kylegabriel.com/forum/general-discussion/feature-request-ip-camera-network-camera-stream))
+ - Add ability to encode videos from time-lapse image sets
 
 ### Miscellaneous
 

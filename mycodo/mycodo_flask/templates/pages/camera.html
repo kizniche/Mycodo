@@ -5,30 +5,30 @@
 {% block title %} - {{_('Camera')}}{% endblock %}
 
 {% block body %}
-  <!-- Route: /camera -->
-  <div class="container">
-    {% include 'flash_messages.html' %}
+<!-- Route: /camera -->
+<div class="container">
+  {% include 'flash_messages.html' %}
 
-    <div class="container" style="width: 95%; padding: 1em">
-      <form method="post" action="/camera">
-        <div class="row align-items-end small-gutters">
-          {{form_camera.csrf_token}}
-          <div class="col-auto">
-            {{form_camera.name(class_='form-control', value='Camera Name')}}
-          </div>
-          <div class="col-auto">
-            <select class="form-control form-tooltip form-dropdown" id="library" name="library" title="" data-original-title="Select the library used to communicate">
-              {%- for each_library in camera_info -%}
-                <option value="{{each_library}}">{{camera_info[each_library]['name']}}</option>
-              {%- endfor -%}
-            </select>
-          </div>
-          <div class="col-auto">
-            {{form_camera.camera_add(class_='btn btn-primary btn-block')}}
-          </div>
+  <div class="container" style="width: 95%; padding: 1em">
+    <form method="post" action="/camera">
+      <div class="row align-items-end small-gutters">
+        {{form_camera.csrf_token}}
+        <div class="col-auto">
+          {{form_camera.name(class_='form-control', value='Camera Name')}}
         </div>
-      </form>
-    </div>
+        <div class="col-auto">
+          <select class="form-control form-tooltip form-dropdown" id="library" name="library" title="" data-original-title="Select the library used to communicate">
+            {%- for each_library in camera_info -%}
+              <option value="{{each_library}}">{{camera_info[each_library]['name']}}</option>
+            {%- endfor -%}
+          </select>
+        </div>
+        <div class="col-auto">
+          {{form_camera.camera_add(class_='btn btn-primary btn-block')}}
+        </div>
+      </div>
+    </form>
+  </div>
 
   {% for each_camera in camera %}
 
@@ -107,9 +107,6 @@
     </div>
 
     <div class="collapse" id="collapseContainer-camera-{{each_camera.unique_id}}">
-      <form method="post" action="/camera">
-      {{form_camera.csrf_token}}
-      {{form_camera.camera_id(value=each_camera.unique_id)}}
       <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0">
         <div class="col-auto">
           {{form_camera.camera_mod(class_='btn btn-primary btn-block')}}
@@ -232,8 +229,6 @@
       {% endif %}
 
       </div>
-
-      </form>
     </div>
 
     <div class="row small-gutters">
@@ -247,7 +242,7 @@
     {%- endif -%}
 
     {% if each_camera.timelapse_started and not each_camera.hide_timelapse %}
-      <div>
+      <div class="col-12">
         {{_('Timelapse Parameters')}}:
         <br>Time-lapse: {% if each_camera.timelapse_paused %}Paused{% else %}Running{% endif %}
         <br/>Start time: {{epoch_to_time_string(each_camera.timelapse_start_time)}}
@@ -259,6 +254,45 @@
     {% endif %}
 
     {% if latest_img_tl[each_camera.unique_id] and not each_camera.hide_timelapse %}
+
+      <div class="col-12 col-sm-4 col-lg-2">
+        <a data-toggle="collapse" href="#collapseContainerTimelapseVideo-{{each_camera.unique_id}}" aria-expanded="false" aria-controls="collapseContainerTimelapse-{{each_camera.unique_id}}" class="form-control btn btn-primary" role="button">{{_('Generate')}}</a>
+      </div>
+      <div class="collapse" id="collapseContainerTimelapseVideo-{{each_camera.unique_id}}" style="padding: 0.5em">
+        <div class="row align-items-end small-gutters">
+          <div class="col-12">
+            Time-lapse Video Generation Options:
+          </div>
+          <div class="col-auto">
+            {{form_camera.timelapse_image_set.label(class_='control-label')}}
+            <div>
+              <select class="form-control form-tooltip form-dropdown" id="timelapse_image_set" name="timelapse_image_set" title="" data-original-title="Select the set of time-lapse images to turn into a video (name is time-lapse start time)">
+              {% for each_set in time_lapse_imgs[each_camera.unique_id] %}
+                <option value="{{each_set}}">{{each_set}}</option>
+              {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.timelapse_codec.label(class_='control-label')}}
+            <div>
+              <select class="form-control form-tooltip form-dropdown" id="timelapse_codec" name="timelapse_codec" title="" data-original-title="Select the codec to encode the video">
+                <option value="mpeg4">mpeg4</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.timelapse_fps.label(class_='control-label')}}
+            <div>
+              {{form_camera.timelapse_fps(class_='form-control', value=24)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_camera.timelapse_generate(class_='form-control btn btn-primary')}}
+          </div>
+        </div>
+      </div>
+
       <div class="container-timelapse-{{each_camera.unique_id}}">
         {{_('Last Timelapse')}}: {{latest_img_tl_ts[each_camera.unique_id]}}
         <br/><a href="/camera/{{each_camera.unique_id}}/timelapse/{{latest_img_tl[each_camera.unique_id]}}" target="_blank"><img style="max-width: 100%" src="/camera/{{each_camera.unique_id}}/timelapse/{{latest_img_tl[each_camera.unique_id]}}"></a>
@@ -271,6 +305,7 @@
         <br/><a href="/camera/{{each_camera.unique_id}}/still/{{latest_img_still[each_camera.unique_id]}}" target="_blank"><img style="max-width: 100%" src="/camera/{{each_camera.unique_id}}/still/{{latest_img_still[each_camera.unique_id]}}"></a>
       </div>
     {% endif %}
+
     </div>
 
     </form>
