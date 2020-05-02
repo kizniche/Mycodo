@@ -55,7 +55,7 @@ Originally developed to cultivate edible mushrooms, Mycodo has evolved to do muc
 
 My projects
 
--  `Growing mushrooms <http://kylegabriel.com/projects/2015/04/mushroom-cultivation-revisited.html>`__
+-  `Growing mushrooms <https://kylegabriel.com/projects/2015/04/mushroom-cultivation-revisited.html>`__
 -  `Growing plants <https://www.youtube.com/watch?v=QNCx_VE7D-8>`__
 -  `Maintaining honey bee apiary homeostasis <https://kylegabriel.com/projects/2015/12/environmentally-controlled-apiary.html>`__
 -  `Maintaining humidity in an underground artificial bat cave <https://kylegabriel.com/projects/2015/10/artificial-bat-cave.html>`__
@@ -236,7 +236,7 @@ Donate
 I have always made Mycodo free, and I don't intend on changing that to
 make a profit. However, if you would like to make a donation, you can
 find several options to do so at
-`KyleGabriel.com/donate <http://kylegabriel.com/donate>`__
+`KyleGabriel.com/donate <https://kylegabriel.com/donate>`__
 
 Links
 -----
@@ -248,7 +248,7 @@ github or my web site.
 
 https://github.com/kizniche/Mycodo
 
-http://KyleGabriel.com
+https://KyleGabriel.com
 
 License
 -------
@@ -561,8 +561,8 @@ Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更�
    :target: https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&utm_medium=referral&utm_content=kizniche/Mycodo&utm_campaign=Badge_Grade
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.824199.svg
    :target: https://doi.org/10.5281/zenodo.824199
-.. |Mycodo| image:: http://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/05/Mycodo-3.6.0-tango-Graph-2016-05-21-11-15-26.png
-   :target: http://kylegabriel.com/projects/
+.. |Mycodo| image:: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/05/Mycodo-3.6.0-tango-Graph-2016-05-21-11-15-26.png
+   :target: https://kylegabriel.com/projects/
 
 Thanks
 ------

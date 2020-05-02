@@ -813,7 +813,7 @@ the measurement database to be used throughout the Mycodo system.
 +------------------------------+---------------------------------------------+
 
 1. `Debouncing a
-   signal <http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing>`__
+   signal <https://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing>`__
 
 Custom Inputs
 ~~~~~~~~~~~~~
@@ -3010,7 +3010,7 @@ Mycodo Client
 Infrared Remote
 ===============
 
-This functionality may or may not work. Since Raspbian upgraded to
+NOTE: This functionality may or may not work. Since Raspbian upgraded to
 Buster, I have not been able to get it to work. I will try to restore
 functionality.
 
