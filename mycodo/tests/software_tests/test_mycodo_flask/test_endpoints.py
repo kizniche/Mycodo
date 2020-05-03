@@ -401,7 +401,7 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
 
     for index, each_input in enumerate(choices_input):
         choice_name = each_input.split(',')[0]
-        print("test_add_all_data_devices_logged_in_as_admin: Adding Input ({}/{}): {}".format(
+        print("test_add_all_data_devices_logged_in_as_admin: Adding and deleting Input ({}/{}): {}".format(
             index + 1, len(choices_input), each_input))
         response = add_data(testapp, data_type='input', input_type=each_input)
 
@@ -418,7 +418,7 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
 
         # Delete input (speeds up further input addition checking)
         response = delete_data(testapp, data_type='input', device_dev=input_dev)
-        assert "Delete input with ID {}".format(input_dev.unique_id) in response
+        assert "Delete input with ID: {}".format(input_dev.unique_id) in response
         input_count -= 1
 
     # Add All Maths
@@ -442,7 +442,7 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
 
         # Delete input (speeds up further input addition checking)
         response = delete_data(testapp, data_type='math', device_dev=math_dev)
-        assert "Delete math with ID {}".format(math_dev.unique_id) in response
+        assert "Delete math with ID: {}".format(math_dev.unique_id) in response
         math_count -= 1
 
 
@@ -513,12 +513,10 @@ def delete_data(testapp, data_type='input', device_dev=None):
     response = None
     if data_type == 'input':
         form = testapp.get('/data').maybe_follow().forms['mod_input_form']
-        # form.select(name='input_id', value=device_dev.unique_id)
         form['input_id'].force_value(device_dev.unique_id)
         response = form.submit(name='input_delete', value='Delete').maybe_follow()
     elif data_type == 'math':
         form = testapp.get('/data').maybe_follow().forms['mod_math_form']
-        # form.select(name='math_id', value=device_dev.unique_id)
         form['math_id'].force_value(device_dev.unique_id)
         response = form.submit(name='math_delete', value='Delete').maybe_follow()
     # response.showbrowser()
