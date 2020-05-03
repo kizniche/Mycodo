@@ -416,6 +416,11 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
         input_dev = Input.query.filter(Input.id == input_count).first()
         assert dict_inputs[choice_name]['input_name'] in input_dev.name, "Input name doesn't match: {}".format(choice_name)
 
+        # Delete input (speeds up further input addition checking)
+        response = delete_data(testapp, data_type='input', device_dev=input_dev)
+        assert "Delete input with ID {}".format(input_dev.unique_id) in response
+        input_count -= 1
+
     # Add All Maths
     math_count = 0
     for index, each_math in enumerate(MATH_INFO.keys()):
@@ -434,6 +439,11 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
 
         math_dev = Math.query.filter(Math.id == math_count).first()
         assert each_math in math_dev.math_type, "Math type doesn't match: {}".format(each_math)
+
+        # Delete input (speeds up further input addition checking)
+        response = delete_data(testapp, data_type='math', device_dev=math_dev)
+        assert "Delete math with ID {}".format(math_dev.unique_id) in response
+        math_count -= 1
 
 
 # ---------------------------
@@ -484,7 +494,7 @@ def create_user(mycodo_db, role_id, name, password):
 
 
 def add_data(testapp, data_type='input', input_type='RPi'):
-    """ Go to the data page and create one or more inputs """
+    """ Go to the data page and create input/math """
     response = None
     if data_type == 'input':
         form = testapp.get('/data').maybe_follow().forms['new_input_form']
@@ -494,6 +504,21 @@ def add_data(testapp, data_type='input', input_type='RPi'):
         form = testapp.get('/data').maybe_follow().forms['new_math_form']
         form.select(name='math_type', value=input_type)
         response = form.submit(name='math_add', value='Add').maybe_follow()
+    # response.showbrowser()
+    return response
+
+
+def delete_data(testapp, data_type='input', device_dev=None):
+    """ Go to the data page and delete input/math """
+    response = None
+    if data_type == 'input':
+        form = testapp.get('/data').maybe_follow().forms['mod_input_form']
+        form.select(name='input_id', value=device_dev.unique_id)
+        response = form.submit(name='input_delete', value='Delete').maybe_follow()
+    elif data_type == 'math':
+        form = testapp.get('/data').maybe_follow().forms['mod_math_form']
+        form.select(name='math_id', value=device_dev.unique_id)
+        response = form.submit(name='math_delete', value='Delete').maybe_follow()
     # response.showbrowser()
     return response
 

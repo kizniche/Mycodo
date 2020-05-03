@@ -7,7 +7,7 @@
 
 <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
 
-  <form method="post" action="/data">
+  <form id="mod_input_form" method="post" action="/data">
     {{form_mod_input.csrf_token}}
     {{form_mod_input.input_id(value=each_input.unique_id)}}
 
