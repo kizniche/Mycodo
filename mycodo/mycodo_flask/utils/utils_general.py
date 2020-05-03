@@ -819,7 +819,7 @@ def user_has_permission(permission, silent=False):
             (permission == 'view_settings' and role.view_settings) or
             (permission == 'view_camera' and role.view_camera) or
             (permission == 'view_stats' and role.view_stats) or
-            (permission == 'view_logs' and role.view_logs)or
+            (permission == 'view_logs' and role.view_logs) or
             (permission == 'reset_password' and role.reset_password)):
         return True
     if not silent:

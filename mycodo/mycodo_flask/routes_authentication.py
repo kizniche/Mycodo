@@ -137,7 +137,7 @@ def do_login():
             min=int((LOGIN_BAN_SECONDS - session['ban_time_left']) / 60) + 1),
                 "info")
     else:
-        if request.method == 'POST' and form_login.login.data:
+        if request.method == 'POST':
             username = form_login.username.data.lower()
             user_ip = request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')
             user = User.query.filter(

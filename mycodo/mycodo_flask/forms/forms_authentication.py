@@ -54,7 +54,6 @@ class Login(FlaskForm):
         validators=[DataRequired()]
     )
     remember = BooleanField(lazy_gettext('remember'))
-    login = SubmitField(lazy_gettext('Log In'))
 
 
 #
