@@ -442,7 +442,7 @@ def test_routes_logged_in_as_guest(_, testapp):
     """ Verifies behavior of these endpoints for a logged in guest user """
     print("\nTest: test_routes_logged_in_as_guest")
 
-    print("test_routes_logged_in_as_admin: login_user(testapp, 'guest', '53CR3t_p4zZW0rD')")
+    print("test_routes_logged_in_as_guest: login_user(testapp, 'guest', '53CR3t_p4zZW0rD')")
     login_user(testapp, 'guest', '53CR3t_p4zZW0rD')
 
     # Test if the navigation bar is seen on the main page
