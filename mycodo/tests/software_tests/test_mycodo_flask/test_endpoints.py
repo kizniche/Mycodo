@@ -513,11 +513,13 @@ def delete_data(testapp, data_type='input', device_dev=None):
     response = None
     if data_type == 'input':
         form = testapp.get('/data').maybe_follow().forms['mod_input_form']
-        form.select(name='input_id', value=device_dev.unique_id)
+        # form.select(name='input_id', value=device_dev.unique_id)
+        form['input_id'].force_value(device_dev.unique_id)
         response = form.submit(name='input_delete', value='Delete').maybe_follow()
     elif data_type == 'math':
         form = testapp.get('/data').maybe_follow().forms['mod_math_form']
-        form.select(name='math_id', value=device_dev.unique_id)
+        # form.select(name='math_id', value=device_dev.unique_id)
+        form['math_id'].force_value(device_dev.unique_id)
         response = form.submit(name='math_delete', value='Delete').maybe_follow()
     # response.showbrowser()
     return response
