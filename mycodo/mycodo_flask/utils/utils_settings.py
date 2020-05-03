@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
+import os
+import re
 import subprocess
 import time
 import traceback
 
 import bcrypt
 import flask_login
-import os
-import re
 import sqlalchemy
 from flask import flash
 from flask import redirect
@@ -46,6 +46,7 @@ from mycodo.databases.models import User
 from mycodo.databases.models import Widget
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils.utils_general import choices_measurements
 from mycodo.mycodo_flask.utils.utils_general import choices_units
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
@@ -96,6 +97,7 @@ def user_roles(form):
             new_role.edit_users = form.edit_users.data
             new_role.edit_settings = form.edit_settings.data
             new_role.edit_controllers = form.edit_controllers.data
+            new_role.reset_password = form.reset_password.data
             try:
                 new_role.save()
             except sqlalchemy.exc.OperationalError as except_msg:
@@ -112,6 +114,7 @@ def user_roles(form):
             mod_role.edit_users = form.edit_users.data
             mod_role.edit_settings = form.edit_settings.data
             mod_role.edit_controllers = form.edit_controllers.data
+            mod_role.reset_password = form.reset_password.data
             db.session.commit()
         elif form.delete_role.data:
             user = User().query.filter(User.role_id == form.role_id.data)
@@ -211,6 +214,8 @@ def user_mod(form):
         # Only change the password if it's entered in the form
         logout_user = False
         if form.password_new.data != '':
+            if not utils_general.user_has_permission('reset_password'):
+                error.append("Cannot change user password")
             if not test_password(form.password_new.data):
                 error.append(gettext("Invalid password"))
             if form.password_new.data != form.password_repeat.data:

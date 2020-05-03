@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.4.0'
-ALEMBIC_VERSION = 'f5b77ef5f17c'
+ALEMBIC_VERSION = '61a0d0568d24'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -800,19 +800,24 @@ CALIBRATION_DEVICES = [
 USER_ROLES = [
     dict(id=1, name='Admin',
          edit_settings=True, edit_controllers=True, edit_users=True,
-         view_settings=True, view_camera=True, view_stats=True, view_logs=True),
+         view_settings=True, view_camera=True, view_stats=True, view_logs=True,
+         reset_password=True),
     dict(id=2, name='Editor',
          edit_settings=True, edit_controllers=True, edit_users=False,
-         view_settings=True, view_camera=True, view_stats=True, view_logs=True),
+         view_settings=True, view_camera=True, view_stats=True, view_logs=True,
+         reset_password=True),
     dict(id=3, name='Monitor',
          edit_settings=False, edit_controllers=False, edit_users=False,
-         view_settings=True, view_camera=True, view_stats=True, view_logs=True),
+         view_settings=True, view_camera=True, view_stats=True, view_logs=True,
+         reset_password=True),
     dict(id=4, name='Guest',
          edit_settings=False, edit_controllers=False, edit_users=False,
-         view_settings=False, view_camera=False, view_stats=False, view_logs=False),
+         view_settings=False, view_camera=False, view_stats=False, view_logs=False,
+         reset_password=False),
     dict(id=5, name='Kiosk',
          edit_settings=False, edit_controllers=False, edit_users=False,
-         view_settings=False, view_camera=True, view_stats=True, view_logs=False)
+         view_settings=False, view_camera=True, view_stats=True, view_logs=False,
+         reset_password=False)
 ]
 
 # Web UI themes

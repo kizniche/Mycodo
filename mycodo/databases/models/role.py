@@ -19,6 +19,7 @@ class Role(CRUDMixin, db.Model):
     view_camera = db.Column(db.Boolean, nullable=False, default=False)
     view_stats = db.Column(db.Boolean, nullable=False, default=False)
     view_logs = db.Column(db.Boolean, nullable=False, default=False)
+    reset_password = db.Column(db.Boolean, nullable=False, default=False)
 
     # user = db.relationship("User", back_populates="roles")
 

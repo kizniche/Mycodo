@@ -3,6 +3,7 @@
 
 import datetime
 import logging
+import socket
 import time
 
 import flask_login
@@ -136,7 +137,7 @@ def do_login():
             min=int((LOGIN_BAN_SECONDS - session['ban_time_left']) / 60) + 1),
                 "info")
     else:
-        if request.method == 'POST':
+        if request.method == 'POST' and form_login.login.data:
             username = form_login.username.data.lower()
             user_ip = request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')
             user = User.query.filter(
@@ -179,7 +180,8 @@ def do_login():
 
     return render_template('login.html',
                            dict_translation=TRANSLATIONS,
-                           form_login=form_login)
+                           form_login=form_login,
+                           host=socket.gethostname())
 
 
 @blueprint.route("/logout")
@@ -199,12 +201,6 @@ def logout():
 
     flash(gettext("Successfully logged out"), 'success')
     return response
-
-
-@blueprint.route('/forgot_password')
-def forgot_password():
-    """Load the default landing page"""
-    return render_template('forgot_password.html')
 
 
 @blueprint.route('/newremote/')

@@ -3448,13 +3448,17 @@ additional users may be created from the User Settings page.
 | Email                        | The email associated with the new account.  |
 +------------------------------+---------------------------------------------+
 | Password/Repeat              | Choose a password that is between 6 and 64  |
-|                              | characters and only contain letters,        |
+|                              | characters and only contains letters,       |
 |                              | numbers, and symbols.                       |
 +------------------------------+---------------------------------------------+
 | Role                         | Roles are a way of imposing access          |
 |                              | restrictions on users, to either allow or   |
 |                              | deny actions. See the table below for       |
 |                              | explanations of the four default Roles.     |
++------------------------------+---------------------------------------------+
+| Theme                        | The web user interface theme to apply,      |
+|                              | including colors, themes, and other design  |
+|                              | elements.                                   |
 +------------------------------+---------------------------------------------+
 
 User Roles

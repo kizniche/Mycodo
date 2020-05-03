@@ -178,6 +178,10 @@
         {{form_user_roles.edit_settings(class_='form-control')}}
         <label>{{form_user_roles.edit_settings.label.text}}</label>
       </div>
+      <div class="form-check form-check-inline">
+        {{form_user_roles.reset_password(class_='form-control')}}
+        <label>{{form_user_roles.reset_password.label.text}}</label>
+      </div>
     </div>
 
     </form>
@@ -260,6 +264,14 @@
               {{form_user_roles.edit_settings(class_='form-control')}}
             {%- endif %}
             <label>{{form_user_roles.edit_settings.label.text}}</label>
+          </div>
+          <div class="form-check form-check-inline">
+            {%- if each_role.reset_password == true -%}
+              {{form_user_roles.reset_password(class_='form-control', checked=True)}}
+            {%- else -%}
+              {{form_user_roles.reset_password(class_='form-control')}}
+            {%- endif %}
+            <label>{{form_user_roles.reset_password.label.text}}</label>
           </div>
         </div>
 

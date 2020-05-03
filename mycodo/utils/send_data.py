@@ -21,7 +21,7 @@ logger = logging.getLogger("mycodo.notification")
 #
 
 def send_email(smtp_host, smtp_protocol, smtp_port, smtp_user, smtp_pass,
-               smtp_email_from, email_to, message_body,
+               smtp_email_from, email_to, message_body, subject=None,
                attachment_file=None, attachment_type=False):
     """
     Email a specific recipient or recipients a message.
@@ -42,6 +42,8 @@ def send_email(smtp_host, smtp_protocol, smtp_port, smtp_user, smtp_pass,
     :type email_to: str or list
     :param message_body: Message in the body of the email
     :type message_body: unicode
+    :param subject: Message subject of the email
+    :type subject: str
     :param attachment_file: location of file attachment
     :type attachment_file: str
     :param attachment_type: type of attachment ('still' or 'video')
@@ -55,8 +57,11 @@ def send_email(smtp_host, smtp_protocol, smtp_port, smtp_user, smtp_pass,
 
         # Create the enclosing (outer) message
         outer = MIMEMultipart()
-        outer['Subject'] = "Mycodo Notification ({})".format(
-            socket.gethostname())
+        if subject:
+            outer['Subject'] = subject
+        else:
+            outer['Subject'] = "Mycodo Notification ({})".format(
+                socket.gethostname())
         outer['To'] = ', '.join(recipients)
         outer['From'] = smtp_email_from
         outer.preamble = 'You will not see this in a MIME-aware mail reader.\n'

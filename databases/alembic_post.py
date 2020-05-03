@@ -58,6 +58,25 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == '61a0d0568d24':
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from mycodo.databases.models import Role
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    for role in session.query(Role).all():
+                        if role.name in ['Kiosk', 'Guest']:
+                            role.reset_password = False
+                        else:
+                            role.reset_password = True
+                        session.commit()
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == 'f5b77ef5f17c':
             print("Executing post-alembic code for revision {}".format(
                 each_revision))

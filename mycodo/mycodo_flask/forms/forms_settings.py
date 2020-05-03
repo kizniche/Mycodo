@@ -229,6 +229,7 @@ class UserRoles(FlaskForm):
     edit_users = BooleanField(lazy_gettext('Edit Users'))
     edit_controllers = BooleanField(lazy_gettext('Edit Controllers'))
     edit_settings = BooleanField(lazy_gettext('Edit Settings'))
+    reset_password = BooleanField(lazy_gettext('Reset Password'))
     role_id = StringField('Role ID', widget=widgets.HiddenInput())
     add_role = SubmitField(lazy_gettext('Add Role'))
     save_role = SubmitField(TRANSLATIONS['save']['title'])

@@ -45,10 +45,10 @@
       <div class="checkbox" style="padding-top: 0.5em">
         {{ form_login.remember() }} {{_('Remember me') + ' (' + _('90 days') + ')'}}
       </div>
-      <button class="btn btn-lg btn-primary btn-block" type="submit">{{_('Sign in')}}</button>
+      {{form_login.login(class_='btn btn-lg btn-primary btn-block')}}
     </form>
     <div style="text-align: center;">
-      <a href="/forgot_password" target="_blank">{{_('Forgot password?')}}</a>
+      <a href="/forgot_password">{{_('Forgot password?')}}</a>
     </div>
   </div>
 

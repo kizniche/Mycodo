@@ -2,9 +2,9 @@
 #
 #  app.py - Flask web server for Mycodo
 #
+import base64
 import logging
 
-import base64
 import flask_login
 from flask import Flask
 from flask import flash
@@ -30,6 +30,7 @@ from mycodo.mycodo_flask import routes_calibration
 from mycodo.mycodo_flask import routes_general
 from mycodo.mycodo_flask import routes_method
 from mycodo.mycodo_flask import routes_page
+from mycodo.mycodo_flask import routes_password_reset
 from mycodo.mycodo_flask import routes_remote_admin
 from mycodo.mycodo_flask import routes_settings
 from mycodo.mycodo_flask import routes_static
@@ -95,6 +96,7 @@ def register_blueprints(app):
     """ register blueprints to the app """
     app.register_blueprint(routes_admin.blueprint)  # register admin views
     app.register_blueprint(routes_authentication.blueprint)  # register login/logout views
+    app.register_blueprint(routes_password_reset.blueprint)  # register password reset views
     app.register_blueprint(routes_calibration.blueprint)  # register calibration views
     app.register_blueprint(routes_general.blueprint)  # register general routes
     app.register_blueprint(routes_method.blueprint)  # register method views
@@ -144,6 +146,7 @@ def get_key_func():
 def extension_limiter(app):
     limiter = Limiter(app, key_func=get_key_func, headers_enabled=True)
     limiter.limit("300/hour")(routes_authentication.blueprint)
+    limiter.limit("20/hour")(routes_password_reset.blueprint)
     limiter.limit("200/minute")(api_blueprint)
     return app
 

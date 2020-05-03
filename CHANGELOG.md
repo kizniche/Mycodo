@@ -57,6 +57,7 @@ With this release comes a new method of switching Outputs that use Python code (
  - Add Function Action: Clear Total Volume of Flow Meter, Force Input Measurements
  - Add option to repeat measurements and store average for ADS1x15 analog-to-digital converter Input
  - Add PID option Always Min for PWM outputs to always use at least the min duty cycle ([#757](https://github.com/kizniche/mycodo/issues/757))
+ - Add email password reset
 
 ### Miscellaneous
 

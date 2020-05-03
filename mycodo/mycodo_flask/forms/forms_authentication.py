@@ -54,6 +54,31 @@ class Login(FlaskForm):
         validators=[DataRequired()]
     )
     remember = BooleanField(lazy_gettext('remember'))
+    login = SubmitField(lazy_gettext('Log In'))
+
+
+#
+# Forgot Password
+#
+
+class ForgotPassword(FlaskForm):
+    username = StringField(
+        TRANSLATIONS['user']['title'],
+        render_kw={"placeholder": TRANSLATIONS['user']['title']})
+    submit = SubmitField(lazy_gettext('Submit'))
+
+
+class ResetPassword(FlaskForm):
+    password_reset_code = StringField(
+        "Password Reset Code",
+        render_kw={"placeholder": "Reset Code"})
+    password = PasswordField(
+        TRANSLATIONS['password']['title'],
+        render_kw={"placeholder": TRANSLATIONS['password']['title']})
+    password_repeat = PasswordField(
+        lazy_gettext('Repeat Password'),
+        render_kw={"placeholder": lazy_gettext('Repeat Password')})
+    submit = SubmitField(lazy_gettext('Change Password'))
 
 
 #
