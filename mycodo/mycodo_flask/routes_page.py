@@ -218,7 +218,7 @@ def page_camera():
         elif form_camera.start_timelapse.data:
             if mod_camera.stream_started:
                 flash(gettext("Cannot start time-lapse if stream is active."), "error")
-                return redirect('/camera')
+                return redirect(url_for('routes_page.page_camera'))
             now = time.time()
             mod_camera.timelapse_started = True
             mod_camera.timelapse_start_time = now
@@ -249,7 +249,7 @@ def page_camera():
             if mod_camera.timelapse_started:
                 flash(gettext(
                     "Cannot start stream if time-lapse is active."), "error")
-                return redirect('/camera')
+                return redirect(url_for('routes_page.page_camera'))
             else:
                 mod_camera.stream_started = True
                 db.session.commit()

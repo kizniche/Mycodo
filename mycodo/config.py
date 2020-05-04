@@ -88,7 +88,16 @@ CAMERA_INFO = {
         'capable_stream': True
     },
     'http_address': {
-        'name': 'HTTP Address',
+        'name': 'URL (urllib)',
+        'dependencies_module': [
+            ('pip-pypi', 'imutils', 'imutils'),
+            ('apt', 'python3-opencv', 'python3-opencv'),
+        ],
+        'capable_image': True,
+        'capable_stream': True
+    },
+    'http_address_requests': {
+        'name': 'URL (requests)',
         'dependencies_module': [
             ('pip-pypi', 'imutils', 'imutils'),
             ('apt', 'python3-opencv', 'python3-opencv'),

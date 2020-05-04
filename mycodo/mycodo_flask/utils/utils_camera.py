@@ -139,7 +139,7 @@ def camera_mod(form_camera):
             mod_camera.hue = form_camera.hue.data
             mod_camera.saturation = form_camera.saturation.data
             mod_camera.white_balance = form_camera.white_balance.data
-        elif mod_camera.library == 'http_address':
+        elif mod_camera.library in ['http_address', 'http_address_requests']:
             mod_camera.url_still = form_camera.url_still.data
             mod_camera.url_stream = form_camera.url_stream.data
         else:

@@ -273,7 +273,63 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                     os.rename(path_tmp, path_file)
             except Exception as err:
                 logger.error("Could not convert, rotate, or invert image: {}".format(err))
-                os.rename(path_tmp, path_file)
+                try:
+                    os.rename(path_tmp, path_file)
+                except FileNotFoundError:
+                    logger.error("Camera image not found")
+
+        elif record_type == 'video':
+            pass  # No video (yet)
+
+    elif settings.library == 'http_address_requests':
+        import cv2
+        import imutils
+        import requests
+
+        if record_type in ['photo', 'timelapse']:
+            path_tmp = "/tmp/tmpimg.jpg"
+            try:
+                os.remove(path_tmp)
+            except FileNotFoundError:
+                pass
+
+            try:
+                r = requests.get(settings.url_still)
+                if r.status_code == 200:
+                    open(path_tmp, 'wb').write(r.content)
+                else:
+                    logger.error("Could not download image. Status code: {}".format(r.status_code))
+            except requests.HTTPError as err:
+                logger.error("HTTPError: {}".format(err))
+            except Exception as err:
+                logger.exception(err)
+
+            try:
+                img_orig = cv2.imread(path_tmp)
+
+                if img_orig is not None and img_orig.shape is not None:
+                    if any((settings.hflip, settings.vflip, settings.rotation)):
+                        if settings.hflip and settings.vflip:
+                            img_edited = cv2.flip(img_orig, -1)
+                        elif settings.hflip:
+                            img_edited = cv2.flip(img_orig, 1)
+                        elif settings.vflip:
+                            img_edited = cv2.flip(img_orig, 0)
+
+                        if settings.rotation:
+                            img_edited = imutils.rotate_bound(img_orig, settings.rotation)
+
+                        cv2.imwrite(path_file, img_edited)
+                    else:
+                        cv2.imwrite(path_file, img_orig)
+                else:
+                    os.rename(path_tmp, path_file)
+            except Exception as err:
+                logger.error("Could not convert, rotate, or invert image: {}".format(err))
+                try:
+                    os.rename(path_tmp, path_file)
+                except FileNotFoundError:
+                    logger.error("Camera image not found")
 
         elif record_type == 'video':
             pass  # No video (yet)

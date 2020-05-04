@@ -43,7 +43,7 @@
       </a>
     </div>
       <div class="col-12 col-sm-5 col-lg-3">
-        <input class="form-control" disabled="" title="UUID: {{each_camera.unique_id}}" value="[{{'%02d' % each_camera.id}}] ({{each_camera.library}}) {{each_camera.name}}" type="text">
+        <input class="form-control" disabled="" title="UUID: {{each_camera.unique_id}}" value="[{{'%02d' % each_camera.id}}] ({{camera_info[each_camera.library]['name']}}) {{each_camera.name}}" type="text">
       </div>
       <div class="col-12 col-sm-3 col-lg-2">
         {{form_camera.capture_still(class_='form-control btn btn-primary')}}
@@ -218,15 +218,7 @@
           </div>
         </div>
 
-       {% if each_camera.library == 'picamera' %}
-        {% include 'pages/camera_options/picamera.html' %}
-      {% elif each_camera.library == 'opencv' %}
-        {% include 'pages/camera_options/opencv.html' %}
-      {% elif each_camera.library == 'fswebcam' %}
-        {% include 'pages/camera_options/fswebcam.html' %}
-      {% elif each_camera.library == 'http_address' %}
-        {% include 'pages/camera_options/http_address.html' %}
-      {% endif %}
+      {% include 'pages/camera_options/' + each_camera.library + '.html' %}
 
       </div>
     </div>
