@@ -751,6 +751,11 @@ def custom_action(dict_inputs, unique_id, form):
                                 args_dict[key] = bool(value)
                             except:
                                 logger.error("Value of option '{}' doesn't represent bool: '{}'".format(key, value))
+                        elif option_types[key] == 'text':
+                            try:
+                                args_dict[key] = str(value)
+                            except:
+                                logger.error("Value of option '{}' doesn't represent string: '{}'".format(key, value))
                         else:
                             args_dict[key] = float(value)
 

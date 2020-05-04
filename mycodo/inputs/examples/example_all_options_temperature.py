@@ -63,6 +63,14 @@ INPUT_INFORMATION = {
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
 
+    # Links to documentation. Can be a URL string or a list of URL strings
+    'url_manufacturer': 'https://www.st.com/en/imaging-and-photonics-solutions/vl53l0x.html',
+    'url_datasheet': 'https://www.st.com/resource/en/datasheet/vl53l0x.pdf',
+    'url_product_purchase': [
+        'https://www.adafruit.com/product/3317',
+        'https://www.pololu.com/product/2490'
+    ],
+
     # For use with Inputs that store multiple measurements.
     # Set True if all measurements should be stored in the database with the same timestamp.
     # Set False to use the timestamp generated when self.value_set() is used to save measurement.

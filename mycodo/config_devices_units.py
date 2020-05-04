@@ -140,7 +140,7 @@ MEASUREMENTS = {
     'length': {
         'name': lazy_gettext('Length'),
         'meas': 'length',
-        'units': ['ft', 'cm', 'm']},
+        'units': ['ft', 'cm', 'm', 'mm']},
     'light': {
         'name': lazy_gettext('Light'),
         'meas': 'light',
@@ -348,6 +348,7 @@ UNITS = {
     'm': {
         'name': lazy_gettext('Meter'),
         'unit': 'm'},
+
     'mg_L': {
         'name': lazy_gettext('Milligram per Liter'),
         'unit': 'mg/L'},
@@ -357,6 +358,9 @@ UNITS = {
     'ml': {
         'name': lazy_gettext('Milliliter'),
         'unit': 'ml'},
+    'mm': {
+        'name': lazy_gettext('Millimeter'),
+        'unit': 'mm'},
     'mV': {
         'name': lazy_gettext('Millivolt'),
         'unit': 'mV'},
@@ -434,8 +438,14 @@ UNIT_CONVERSIONS = [
     ('MHz', 'kHz', 'x*1000'),
 
     # Length
-    ('m', 'ft', 'x*3.2808399'),
     ('ft', 'm', 'x/3.2808399'),
+    ('m', 'ft', 'x*3.2808399'),
+    ('m', 'cm', 'x*100'),
+    ('m', 'mm', 'x*1000'),
+    ('mm', 'cm', 'x/10'),
+    ('mm', 'm', 'x/1000'),
+    ('cm', 'mm', 'x*10'),
+    ('cm', 'm', 'x/100'),
 
     # Disk size
     ('kB', 'MB', 'x/1000'),

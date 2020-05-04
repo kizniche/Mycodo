@@ -74,7 +74,12 @@
     {% set dict_options = dict_controllers[each_controller.device] %}
     {% set unique_id = each_controller.unique_id %}
     {% set custom_options_values = custom_options_values_controllers %}
+
+    {% if 'custom_options' in dict_options %}
+      {% for each_option in dict_options['custom_options'] %}
     {% include 'pages/TEMPLATE_OPTIONS_Custom_Options.html' %}
+      {% endfor %}
+    {% endif %}
 
     </div>
 

@@ -257,11 +257,11 @@ class PIDController(AbstractController, threading.Thread):
             self.lower_output_type = None
 
         # Initialize PID Controller
-        self.PID_Controller = PIDControl(
-            self.period,
-            self.Kp, self.Ki, self.Kd,
-            integrator_min=self.integrator_min,
-            integrator_max=self.integrator_max)
+        # self.PID_Controller = PIDControl(
+        #     self.period,
+        #     self.Kp, self.Ki, self.Kd,
+        #     integrator_min=self.integrator_min,
+        #     integrator_max=self.integrator_max)
 
         # If activated, initialize PID Autotune
         if self.autotune_activated:

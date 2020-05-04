@@ -81,10 +81,32 @@
     </div>
       {% endif %}
 
+      {% set manufacturer_url = 'url_manufacturer' in dict_inputs[each_input.device] and dict_inputs[each_input.device]['url_manufacturer'] %}
+      {% set datasheet_url = 'url_datasheet' in dict_inputs[each_input.device] and dict_inputs[each_input.device]['url_datasheet'] %}
+      {% set product_purchase_url = 'url_product_purchase' in dict_inputs[each_input.device] and dict_inputs[each_input.device]['url_product_purchase'] %}
+
+      {% if manufacturer_url or datasheet_url or product_purchase_url %}
+    <div class="row small-gutters" style="padding: 0.5em">
+      <div class="col-12">
+        {{'Literature: '}}
+      {%- if manufacturer_url -%}
+        Manufacturer {% for each_url in dict_inputs[each_input.device]['url_manufacturer'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
+      {%- endif -%}
+      {%- if datasheet_url -%}
+        {% if manufacturer_url %}; {% endif -%}
+        Datasheet {% for each_url in dict_inputs[each_input.device]['url_datasheet'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
+      {%- endif -%}
+      {%- if product_purchase_url -%}
+        {% if manufacturer_url or datasheet_url %}; {% endif -%}
+        Product {% for each_url in dict_inputs[each_input.device]['url_product_purchase'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
+      {%- endif -%}.
+      </div>
+    </div>
+      {% endif %}
+
       {% set dict_options = dict_inputs[each_input.device] %}
       {% set unique_id = each_input.unique_id %}
       {% set custom_options_values = custom_options_values_inputs %}
-
 
     <div class="row small-gutters align-items-end" style="padding: 0.5em">
       <div class="col-12">

@@ -70,6 +70,10 @@ certain events based on the truth of custom user conditional statements
 Frequently Asked Questions
 ==========================
 
+Here are a few frequently asked questions about Mycodo. There is also an `Question & Answer Forum <https://kylegabriel.com/forum/questions-answers-mycodo>`__ that you can pose a question. However, do ensure it's relevant to the topic by reading the `stickied Q&A Post <https://kylegabriel.com/forum/questions-answers-mycodo/when-should-you-post-in-this-forum>`__ to determine if it may be better suited for the `General Discussion Forum <https://kylegabriel.com/forum/general-discussion>`__.
+
+--------------
+
 *What should I do if I have an issue?*
 
 First, read though this manual to make sure you understand how the
@@ -3786,6 +3790,8 @@ Built-In Inputs
    `link <https://www.sparkfun.com/products/11859>`__
 -  TSL2561: Light `link <https://www.sparkfun.com/products/12055>`__
 -  TSL2591: Light `link <https://www.adafruit.com/product/1980>`__
+-  VL53L0X: Distance (laser time-of-flight)
+   `link <https://www.st.com/en/imaging-and-photonics-solutions/vl53l0x.html>`__
 -  ZH03B: Particle sensor
    `link <https://www.winsen-sensor.com/sensors/dust-sensor/zh3b.html>`__
 

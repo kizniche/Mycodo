@@ -68,12 +68,20 @@ def list_analog_to_digital_converters():
 
 def parse_input_information():
     """Parses the variables assigned in each Input and return a dictionary of IDs and values"""
-    def dict_has_value(dict_inp, input_cus, key):
+    def dict_has_value(dict_inp, input_cus, key, force_type=None):
         if (key in input_cus.INPUT_INFORMATION and
                 (input_cus.INPUT_INFORMATION[key] or
                  input_cus.INPUT_INFORMATION[key] == 0)):
-            dict_inp[input_cus.INPUT_INFORMATION['input_name_unique']][key] = \
-                input_cus.INPUT_INFORMATION[key]
+            if force_type == 'list':
+                if isinstance(input_cus.INPUT_INFORMATION[key], list):
+                    dict_inp[input_cus.INPUT_INFORMATION['input_name_unique']][key] = \
+                        input_cus.INPUT_INFORMATION[key]
+                else:
+                    dict_inp[input_cus.INPUT_INFORMATION['input_name_unique']][key] = \
+                        [input_cus.INPUT_INFORMATION[key]]
+            else:
+                dict_inp[input_cus.INPUT_INFORMATION['input_name_unique']][key] = \
+                    input_cus.INPUT_INFORMATION[key]
         return dict_inp
 
     excluded_files = [
@@ -126,6 +134,10 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_rescale')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'listener')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'message')
+
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'url_datasheet', force_type='list')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'url_manufacturer', force_type='list')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'url_product_purchase', force_type='list')
 
                 # Dependencies
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_module')

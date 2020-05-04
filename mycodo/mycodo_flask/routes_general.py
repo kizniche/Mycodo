@@ -142,7 +142,7 @@ def camera_img_acquire(image_type, camera_unique_id, max_age):
 @blueprint.route('/camera_latest_timelapse/<camera_unique_id>/<max_age>')
 @flask_login.login_required
 def camera_img_latest_timelapse(camera_unique_id, max_age):
-    """Capture an image and resturn the filename"""
+    """Capture an image and/or return a filename"""
     _, _, tl_ts, tl_path, _ = utils_general.get_camera_image_info()
     if camera_unique_id in tl_path and tl_path[camera_unique_id]:
         camera_path = assure_path_exists(

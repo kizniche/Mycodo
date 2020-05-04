@@ -12,6 +12,8 @@ With this release comes a new method of switching Outputs that use Python code (
  - Fix update check IndexError if there's no internet connection
  - Fix parsing API api_key from requests
  - Fix the inability of Math Controllers to use converted measurements
+ - Fix Redundancy Math controller ([#768](https://github.com/kizniche/mycodo/issues/768))
+ - Fix display of Custom Controller options
 
 ### Features
 
@@ -24,6 +26,8 @@ With this release comes a new method of switching Outputs that use Python code (
  - Add MH-Z19/MH-Z19B Input actions: zero and span point calibrations
  - Add Cameras: URL (urllib), URL (requests) ([Feature Request - IP Camera/Network Camera](https://kylegabriel.com/forum/general-discussion/feature-request-ip-camera-network-camera-stream))
  - Add ability to encode videos from time-lapse image sets
+ - Add Input: VL53L0X (Laser-Range Measurement) ([#769](https://github.com/kizniche/mycodo/issues/769))
+ - Add literature links to Input options: Manufacturer, Datasheet, Product
 
 ### Miscellaneous
 
@@ -33,6 +37,7 @@ With this release comes a new method of switching Outputs that use Python code (
  - Update all translations (all complete)
  - Rename MH-Z19 Input to MH-Z19B (and add MH-Z19 Input)
  - Change Email Notification options to allow unencrypted sending (port 25)
+ - Add conversions: m <-> cm <-> mm
 
 
 ## 8.4.0 (2020-03-23)

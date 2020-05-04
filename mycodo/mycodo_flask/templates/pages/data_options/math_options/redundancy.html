@@ -8,13 +8,13 @@
         <select name="order_of_use" id="multiselect{{each_math.id + 2}}_to" class="form-control" size="8" multiple="multiple">
         {% for each_in_order in each_math.order_of_use.split(';') %}
           {% if choices_input or choices_math %}
-            {% for each_input_form in choices_input if each_choice == each_in_order -%}
+            {% for each_input_form in choices_input if each_input_form['value'] == each_in_order -%}
             <option value="{{each_input_form['value']}}">{{each_input_form['item']}}</option>
             {% endfor -%}
-            {% for each_math_form in choices_math if each_choice == each_in_order -%}
+            {% for each_math_form in choices_math if each_math_form['value'] == each_in_order -%}
             <option value="{{each_math_form['value']}}">{{each_math_form['item']}}</option>
             {% endfor -%}
-            {% for each_output_form in choices_output if each_choice == each_in_order -%}
+            {% for each_output_form in choices_output if each_output_form['value'] == each_in_order -%}
             <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
             {% endfor -%}
           {% endif %}
