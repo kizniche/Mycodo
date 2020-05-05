@@ -38,7 +38,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-git', 'VL53L0X', 'git://github.com/pimoroni/VL53L0X-python.git#egg=VL53L0X')
+        ('pip-pypi', 'VL53L0X', 'git+https://github.com/grantramsay/VL53L0X_rasp_python.git')
     ],
 
     'interfaces': ['I2C'],
