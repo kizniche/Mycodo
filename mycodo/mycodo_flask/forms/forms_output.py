@@ -51,6 +51,7 @@ class OutputMod(FlaskForm):
     gpio_location = IntegerField(TRANSLATIONS['gpio_location']['title'], widget=NumberInput())
     protocol = IntegerField(TRANSLATIONS['protocol']['title'], widget=NumberInput())
     pulse_length = IntegerField(TRANSLATIONS['pulse_length']['title'], widget=NumberInput())
+    linux_command_user = StringField(TRANSLATIONS['linux_command_user']['title'])
     on_command = StringField(TRANSLATIONS['on_command']['title'])
     off_command = StringField(TRANSLATIONS['off_command']['title'])
     pwm_command = StringField(TRANSLATIONS['pwm_command']['title'])

@@ -106,6 +106,7 @@ class OutputController(AbstractController, threading.Thread):
 
         self.output_protocol = {}
         self.output_pulse_length = {}
+        self.output_linux_command_user = {}
         self.output_on_command = {}
         self.output_off_command = {}
         self.output_run_python_on = {}
@@ -339,6 +340,7 @@ class OutputController(AbstractController, threading.Thread):
             self.output_off_triggered[output_id] = False
             self.output_protocol[output_id] = output.protocol
             self.output_pulse_length[output_id] = output.pulse_length
+            self.output_linux_command_user[output_id] = output.linux_command_user
             self.output_on_command[output_id] = output.on_command
             self.output_off_command[output_id] = output.off_command
             self.output_pwm_command[output_id] = output.pwm_command
@@ -450,6 +452,7 @@ class OutputController(AbstractController, threading.Thread):
             self.output_off_triggered.pop(output_id, None)
             self.output_protocol.pop(output_id, None)
             self.output_pulse_length.pop(output_id, None)
+            self.output_linux_command_user.pop(output_id, None)
             self.output_on_command.pop(output_id, None)
             self.output_off_command.pop(output_id, None)
             self.output_pwm_command.pop(output_id, None)
@@ -1062,10 +1065,12 @@ class OutputController(AbstractController, threading.Thread):
         elif self.output_type[output_id] == 'command':
             if state == 'on' and self.output_on_command[output_id]:
                 cmd_return, _, cmd_status = cmd_output(
-                    self.output_on_command[output_id])
+                    self.output_on_command[output_id],
+                    user=self.output_linux_command_user[output_id])
             elif state == 'off' and self.output_off_command[output_id]:
                 cmd_return, _, cmd_status = cmd_output(
-                    self.output_off_command[output_id])
+                    self.output_off_command[output_id],
+                    user=self.output_linux_command_user[output_id])
             else:
                 return
             self.logger.debug(
@@ -1078,12 +1083,16 @@ class OutputController(AbstractController, threading.Thread):
         elif self.output_type[output_id] == 'command_pwm':
             if self.output_pwm_command[output_id]:
                 if state == 'on' and 100 >= duty_cycle >= 0:
-                    cmd = self.output_pwm_command[output_id].replace('((duty_cycle))', str(duty_cycle))
-                    cmd_return, _, cmd_status = cmd_output(cmd)
+                    cmd = self.output_pwm_command[output_id].replace(
+                        '((duty_cycle))', str(duty_cycle))
+                    cmd_return, _, cmd_status = cmd_output(
+                        cmd, user=self.output_linux_command_user[output_id])
                     self.pwm_state[output_id] = abs(duty_cycle)
                 elif state == 'off':
-                    cmd = self.output_pwm_command[output_id].replace('((duty_cycle))', str(0))
-                    cmd_return, _, cmd_status = cmd_output(cmd)
+                    cmd = self.output_pwm_command[output_id].replace(
+                        '((duty_cycle))', str(0))
+                    cmd_return, _, cmd_status = cmd_output(
+                        cmd, user=self.output_linux_command_user[output_id])
                     self.pwm_state[output_id] = None
                 else:
                     return

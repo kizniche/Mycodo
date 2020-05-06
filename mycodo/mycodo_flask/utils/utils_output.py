@@ -92,11 +92,13 @@ def output_add(form_add):
                     new_output.force_command = True
 
                 elif output_type == 'command':
+                    new_output.linux_command_user = 'pi'
                     new_output.on_command = '/home/pi/script_on.sh'
                     new_output.off_command = '/home/pi/script_off.sh'
                     new_output.force_command = True
 
                 elif output_type == 'command_pwm':
+                    new_output.linux_command_user = 'pi'
                     new_output.pwm_command = '/home/pi/script_pwm.sh ((duty_cycle))'
 
                 elif output_type == 'pwm':
@@ -211,17 +213,6 @@ def output_mod(form_output):
             mod_output.off_command = form_output.off_command.data
             mod_output.force_command = form_output.force_command.data
 
-        elif mod_output.output_type in ['command',
-                                        'python']:
-            mod_output.on_command = form_output.on_command.data
-            mod_output.off_command = form_output.off_command.data
-            mod_output.force_command = form_output.force_command.data
-
-        elif mod_output.output_type in ['command_pwm',
-                                        'python_pwm']:
-            mod_output.pwm_command = form_output.pwm_command.data
-            mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
-
         elif mod_output.output_type == 'pwm':
             mod_output.pin = form_output.gpio_location.data
             mod_output.pwm_hertz = form_output.pwm_hertz.data
@@ -239,6 +230,21 @@ def output_mod(form_output):
                 mod_output.i2c_bus = form_output.i2c_bus.data
             if form_output.baud_rate.data:
                 mod_output.baud_rate = form_output.baud_rate.data
+
+        if mod_output.output_type in ['command',
+                                      'python']:
+            mod_output.on_command = form_output.on_command.data
+            mod_output.off_command = form_output.off_command.data
+            mod_output.force_command = form_output.force_command.data
+
+        if mod_output.output_type in ['command_pwm',
+                                      'python_pwm']:
+            mod_output.pwm_command = form_output.pwm_command.data
+            mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
+
+        if mod_output.output_type in ['command',
+                                      'command_pwm']:
+            mod_output.linux_command_user = form_output.linux_command_user.data
 
         if form_output.state_startup.data == '-1':
             mod_output.state_startup = None

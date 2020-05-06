@@ -28,6 +28,7 @@ With this release comes a new method of switching Outputs that use Python code (
  - Add ability to encode videos from time-lapse image sets
  - Add Input: VL53L0X (Laser-Range Measurement) ([#769](https://github.com/kizniche/mycodo/issues/769))
  - Add literature links to Input options: Manufacturer, Datasheet, Product
+ - Add ability to select which user executes Linux Output commands ([#719](https://github.com/kizniche/mycodo/issues/719))
 
 ### Miscellaneous
 

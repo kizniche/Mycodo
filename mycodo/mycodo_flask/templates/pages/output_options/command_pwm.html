@@ -4,7 +4,16 @@
     {{form_mod_output.pwm_command(class_='form-control', value=each_output.pwm_command, **{'title': dict_translation['pwm_command']['phrase']})}}
    </div>
 </div>
-
+<div class="col-auto">
+  {{form_mod_output.linux_command_user.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="linux_command_user" name="linux_command_user" data-placement="top" title="{{dict_translation['linux_command_user']['phrase']}}">
+      <option value="pi"{% if each_output.linux_command_user == 'pi' %} selected{% endif %}>pi</option>
+      <option value="mycodo"{% if each_output.linux_command_user == 'mycodo' %} selected{% endif %}>mycodo</option>
+      <option value="root"{% if each_output.linux_command_user == 'root' %} selected{% endif %}>root</option>
+    </select>
+  </div>
+</div>
 <div class="col-auto">
   {{form_mod_output.state_startup.label(class_='control-label')}}
   <div>

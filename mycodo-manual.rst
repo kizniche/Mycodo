@@ -1138,6 +1138,8 @@ General Output Options
 | Bit Length                   | This is the bit length to transmit via      |
 |                              | 315/433 MHz. Default is 24-bit.             |
 +------------------------------+---------------------------------------------+
+| Execute as User              | Select which user executes Linux Commands.  |
++------------------------------+---------------------------------------------+
 | On Command                   | This is the command used to turn the output |
 |                              | on. For wireless relays, this is the        |
 |                              | numerical command to be transmitted, and    |
