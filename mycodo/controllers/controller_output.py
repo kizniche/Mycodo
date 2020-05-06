@@ -233,6 +233,7 @@ class OutputController(AbstractController, threading.Thread):
             self.output_time_turned_on[each_output.unique_id] = None
             self.output_protocol[each_output.unique_id] = each_output.protocol
             self.output_pulse_length[each_output.unique_id] = each_output.pulse_length
+            self.output_linux_command_user[each_output.unique_id] = each_output.linux_command_user
             self.output_on_command[each_output.unique_id] = each_output.on_command
             self.output_off_command[each_output.unique_id] = each_output.off_command
             self.output_pwm_command[each_output.unique_id] = each_output.pwm_command

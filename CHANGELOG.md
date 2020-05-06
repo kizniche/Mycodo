@@ -39,6 +39,7 @@ With this release comes a new method of switching Outputs that use Python code (
  - Rename MH-Z19 Input to MH-Z19B (and add MH-Z19 Input)
  - Change Email Notification options to allow unencrypted sending (port 25)
  - Add conversions: m <-> cm <-> mm
+ - Make PID Controller a class
 
 
 ## 8.4.0 (2020-03-23)
