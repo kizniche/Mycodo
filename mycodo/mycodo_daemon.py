@@ -573,18 +573,22 @@ class DaemonController:
         try:
             return self.controller['LCD'][lcd_id].lcd_flash(state)
         except KeyError:
-            message = "Cannot modulate flashing ({state}): " \
-                      "LCD not running".format(state=state)
-            self.logger.exception(message)
+            message = "LCD not running"
+            self.logger.error(message)
             return 0, message
         except Exception as except_msg:
             message = "Could not flash LCD ({state}): {e}".format(
                 state=state, e=except_msg)
             self.logger.exception(message)
+            return 0, message
 
     def pid_hold(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_hold()
+        except KeyError:
+            message = "PID not running"
+            self.logger.error(message)
+            return message
         except Exception as except_msg:
             message = "Could not hold PID: {e}".format(e=except_msg)
             self.logger.exception(message)
@@ -592,6 +596,10 @@ class DaemonController:
     def pid_mod(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_mod()
+        except KeyError:
+            message = "PID not running"
+            self.logger.error(message)
+            return message
         except Exception as except_msg:
             message = "Could not modify PID: {e}".format(e=except_msg)
             self.logger.exception(message)
@@ -599,6 +607,10 @@ class DaemonController:
     def pid_pause(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_pause()
+        except KeyError:
+            message = "PID not running"
+            self.logger.error(message)
+            return message
         except Exception as except_msg:
             message = "Could not pause PID: {e}".format(e=except_msg)
             self.logger.exception(message)
@@ -606,6 +618,10 @@ class DaemonController:
     def pid_resume(self, pid_id):
         try:
             return self.controller['PID'][pid_id].pid_resume()
+        except KeyError:
+            message = "PID not running"
+            self.logger.error(message)
+            return message
         except Exception as except_msg:
             message = "Could not resume PID: {e}".format(e=except_msg)
             self.logger.exception(message)
