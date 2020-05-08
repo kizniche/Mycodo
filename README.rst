@@ -68,11 +68,11 @@ Projects of others
 -  Maintaining terrarium, herpetarium, and vivarium environments
 -  Incubating young animals and eggs
 -  Aging cheese
--  Dry-aging, curing, and smoking meat
+-  Dry-aging, curing, and smoking meat (`1 <http://archive.is/NHKqp>`__)
 -  Fermenting beer, food, and tobacco
 -  Controlling reflow ovens
 -  Culturing microorganisms
--  Treating agricultural waste water
+-  Treating agricultural waste water (`1 <http://archive.is/enJQs>`__)
 -  ...and more
 
 `Let me know <https://kylegabriel.com/contact/>`__ how you use Mycodo, and I may include it on this list.

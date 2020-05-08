@@ -46,8 +46,10 @@ def lcd_add(form):
             list_unmet_deps = []
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
-            error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
-                dev=form.lcd_type.data, dep=', '.join(list_unmet_deps)))
+            error.append(
+                "The {dev} device you're trying to add has unmet "
+                "dependencies: {dep}".format(
+                    dev=form.lcd_type.data, dep=', '.join(list_unmet_deps)))
 
     try:
         new_lcd = LCD()
@@ -60,8 +62,7 @@ def lcd_add(form):
             else:
                 new_lcd.i2c_bus = 0
         except:
-            logger.error(
-                "RPi.GPIO and Raspberry Pi required for this action")
+            logger.error("RPi.GPIO and Raspberry Pi required for this action")
 
         new_lcd.lcd_type = form.lcd_type.data
         new_lcd.name = str(LCD_INFO[form.lcd_type.data]['name'])
@@ -110,8 +111,8 @@ def lcd_mod(form_mod_lcd):
     mod_lcd = LCD.query.filter(
         LCD.unique_id == form_mod_lcd.lcd_id.data).first()
     if mod_lcd.is_activated:
-        error.append(gettext("Deactivate LCD controller before modifying"
-                             " its settings."))
+        error.append(gettext(
+            "Deactivate LCD controller before modifying its settings."))
 
     if not error:
         if form_mod_lcd.validate():
@@ -139,17 +140,15 @@ def lcd_del(lcd_id):
         controller=TRANSLATIONS['lcd']['title'])
     error = []
 
-    lcd = LCD.query.filter(
-        LCD.unique_id == lcd_id).first()
+    lcd = LCD.query.filter(LCD.unique_id == lcd_id).first()
     if lcd.is_activated:
-        error.append(gettext("Deactivate LCD controller before modifying "
-                             "its settings."))
+        error.append(gettext(
+            "Deactivate LCD controller before modifying its settings."))
 
     if not error:
         try:
             # Delete all LCD Displays
-            lcd_displays = LCDData.query.filter(
-                LCDData.lcd_id == lcd_id).all()
+            lcd_displays = LCDData.query.filter(LCDData.lcd_id == lcd_id).all()
             for each_lcd_display in lcd_displays:
                 lcd_display_del(each_lcd_display.unique_id, delete_last=True)
 
@@ -170,9 +169,7 @@ def lcd_reorder(lcd_id, display_order, direction):
         controller=TRANSLATIONS['lcd']['title'])
     error = []
     try:
-        status, reord_list = reorder(display_order,
-                                     lcd_id,
-                                     direction)
+        status, reord_list = reorder(display_order, lcd_id, direction)
         if status == 'success':
             DisplayOrder.query.first().lcd = ','.join(map(str, reord_list))
             db.session.commit()
@@ -191,21 +188,25 @@ def lcd_activate(lcd_id):
 
     try:
         # All display lines must be filled to activate display
-        lcd = LCD.query.filter(
-            LCD.unique_id == lcd_id).first()
-        lcd_data = LCDData.query.filter(
-            LCDData.lcd_id == lcd_id).all()
+        lcd = LCD.query.filter(LCD.unique_id == lcd_id).first()
+        lcd_data = LCDData.query.filter(LCDData.lcd_id == lcd_id).all()
         blank_line_detected = False
 
         for each_lcd_data in lcd_data:
             if (
-                    (lcd.y_lines in [2, 4] and
+                    (lcd.y_lines in [2, 4, 8] and
                         (not each_lcd_data.line_1_id or
                          not each_lcd_data.line_2_id)
                      ) or
-                    (lcd.y_lines == 4 and
+                    (lcd.y_lines in [4, 8] and
                         (not each_lcd_data.line_3_id or
-                         not each_lcd_data.line_4_id))
+                         not each_lcd_data.line_4_id)
+                    ) or
+                    (lcd.y_lines == 8 and
+                        (not each_lcd_data.line_5_id or
+                         not each_lcd_data.line_6_id or
+                         not each_lcd_data.line_7_id or
+                         not each_lcd_data.line_8_id))
                     ):
                 blank_line_detected = True
 
@@ -239,11 +240,10 @@ def lcd_display_add(form):
         controller=TRANSLATIONS['display']['title'])
     error = []
 
-    lcd = LCD.query.filter(
-        LCD.unique_id == form.lcd_id.data).first()
+    lcd = LCD.query.filter(LCD.unique_id == form.lcd_id.data).first()
     if lcd.is_activated:
-        error.append(gettext("Deactivate LCD controller before modifying"
-                             " its settings."))
+        error.append(gettext(
+            "Deactivate LCD controller before modifying its settings."))
 
     if not error:
         try:
@@ -264,20 +264,20 @@ def lcd_display_mod(form):
         controller=TRANSLATIONS['display']['title'])
     error = []
 
-    lcd = LCD.query.filter(
-        LCD.unique_id == form.lcd_id.data).first()
+    lcd = LCD.query.filter(LCD.unique_id == form.lcd_id.data).first()
     if lcd.is_activated:
-        error.append(gettext("Deactivate LCD controller before modifying"
-                             " its settings."))
+        error.append(gettext(
+            "Deactivate LCD controller before modifying its settings."))
 
     if not error:
         try:
             mod_lcd = LCD.query.filter(
                 LCD.unique_id == form.lcd_id.data).first()
             if mod_lcd.is_activated:
-                flash(gettext("Deactivate LCD controller before modifying"
-                              " its settings."), "error")
-                return redirect('/lcd')
+                flash(gettext(
+                    "Deactivate LCD controller before modifying its settings."),
+                    "error")
+                return redirect(url_for('routes_page.page_lcd'))
 
             mod_lcd_data = LCDData.query.filter(
                 LCDData.unique_id == form.lcd_data_id.data).first()
@@ -390,15 +390,14 @@ def lcd_display_del(lcd_data_id, delete_last=False):
         LCD.unique_id == lcd_data_this.lcd_id).first()
 
     if lcd.is_activated:
-        error.append(gettext("Deactivate LCD controller before modifying"
-                             " its settings"))
+        error.append(gettext(
+            "Deactivate LCD controller before modifying its settings"))
     if not delete_last and len(lcd_data_all) < 2:
         error.append(gettext("The last display cannot be deleted"))
 
     if not error:
         try:
-            delete_entry_with_id(LCDData,
-                                 lcd_data_id)
+            delete_entry_with_id(LCDData, lcd_data_id)
             db.session.commit()
         except Exception as except_msg:
             error.append(except_msg)
