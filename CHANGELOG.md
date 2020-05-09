@@ -14,6 +14,7 @@ With this release comes a new method of switching Outputs that use Python code (
  - Fix the inability of Math Controllers to use converted measurements
  - Fix Redundancy Math controller ([#768](https://github.com/kizniche/mycodo/issues/768))
  - Fix display of Custom Controller options
+ - Fix hostname display on login page
  - Fix missing blank line check for LCDs with 8 lines ([#771](https://github.com/kizniche/mycodo/issues/771))
 
 ### Features
