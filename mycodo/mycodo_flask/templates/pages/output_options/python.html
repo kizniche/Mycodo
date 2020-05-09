@@ -1,15 +1,19 @@
-<div class="col-md-12 col-lg-6">
+</div>
+<div class="row small-gutters">
+<div class="col-12">
   {{form_mod_output.on_command.label(class_='control-label')}}
   <div>
     <textarea class="form-control" id="on_command" name="on_command" rows="5" type="text" title="{{_('Command to execute (as user mycodo) when the output is instructed to turn on')}}">{{each_output.on_command}}</textarea>
    </div>
 </div>
-<div class="col-md-12 col-lg-6">
+<div class="col-12">
   {{form_mod_output.off_command.label(class_='control-label')}}
   <div>
     <textarea class="form-control" id="off_command" name="off_command" rows="5" type="text" title="{{_('Command to execute (as user mycodo) when the output is instructed to turn off')}}">{{each_output.off_command}}</textarea>
    </div>
 </div>
+</div>
+<div class="row small-gutters">
 <div class="col-auto">
   {{form_mod_output.force_command.label(class_='control-label')}}
   <div class="input-group-text">

@@ -1670,9 +1670,6 @@ def page_output():
     output = Output.query.all()
     user = User.query.all()
 
-    display_order_output = csv_to_list_of_str(
-        DisplayOrder.query.first().output)
-
     form_base = forms_output.DataBase()
     form_add_output = forms_output.OutputAdd()
     form_mod_output = forms_output.OutputMod()
@@ -1684,28 +1681,21 @@ def page_output():
 
         # Reorder
         if form_base.reorder.data:
-            if form_base.reorder_type.data == 'input':
-                mod_order = DisplayOrder.query.first()
-                mod_order.output = list_to_csv(form_base.list_visible_elements.data)
-                db.session.commit()
-                display_order_output = csv_to_list_of_str(DisplayOrder.query.first().output)
+            mod_order = DisplayOrder.query.first()
+            mod_order.output = list_to_csv(form_base.list_visible_elements.data)
+            db.session.commit()
 
-        if form_add_output.output_add.data:
+        elif form_add_output.output_add.data:
             unmet_dependencies = utils_output.output_add(form_add_output)
         elif form_mod_output.save.data:
             utils_output.output_mod(form_mod_output)
         elif form_mod_output.delete.data:
             utils_output.output_del(form_mod_output)
-        elif form_mod_output.order_up.data:
-            utils_output.output_reorder(form_mod_output.output_id.data,
-                                        display_order_output, 'up')
-        elif form_mod_output.order_down.data:
-            utils_output.output_reorder(form_mod_output.output_id.data,
-                                        display_order_output, 'down')
 
         if unmet_dependencies:
-            return redirect(url_for('routes_admin.admin_dependencies',
-                                    device=form_add_output.output_type.data.split(',')[0]))
+            return redirect(url_for(
+                'routes_admin.admin_dependencies',
+                device=form_add_output.output_type.data.split(',')[0]))
         else:
             return redirect(url_for('routes_page.page_output'))
 
@@ -1725,6 +1715,9 @@ def page_output():
     for (_, _, file_names) in os.walk(output_path):
         output_templates.extend(file_names)
         break
+
+    display_order_output = csv_to_list_of_str(
+        DisplayOrder.query.first().output)
 
     return render_template('pages/output.html',
                            camera=camera,

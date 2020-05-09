@@ -17,7 +17,6 @@ from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import is_int
@@ -62,7 +61,7 @@ def output_add(form_add):
                 interface = form_add.output_type.data.split(',')[1]
 
                 new_output = Output()
-                new_output.name = str(OUTPUT_INFO[output_type]['name'])
+                new_output.name = "Name"
                 new_output.output_type = output_type
                 new_output.interface = interface
 
@@ -295,25 +294,6 @@ def output_del(form_output):
         db.session.commit()
 
         manipulate_output('Delete', form_output.output_id.data)
-    except Exception as except_msg:
-        error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_output'))
-
-
-def output_reorder(output_id, display_order, direction):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['reorder']['title'],
-        controller=TRANSLATIONS['output']['title'])
-    error = []
-    try:
-        status, reord_list = reorder(display_order,
-                                     output_id,
-                                     direction)
-        if status == 'success':
-            DisplayOrder.query.first().output = ','.join(map(str, reord_list))
-            db.session.commit()
-        else:
-            error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
     flash_success_errors(error, action, url_for('routes_page.page_output'))

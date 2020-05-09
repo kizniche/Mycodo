@@ -336,7 +336,7 @@ TRANSLATIONS = {
         'phrase': lazy_gettext('Volume in ml to pump')},
     'pwm_command': {
         'title': lazy_gettext('PWM Command'),
-        'phrase': lazy_gettext('Command to execute (as user mycodo) to set the PWM duty cycle (%%)')},
+        'phrase': lazy_gettext('Command to execute (as user mycodo) to set the PWM duty cycle (%)')},
     'pwm_hertz': {
         'title': lazy_gettext('Frequency (Hertz)'),
         'phrase': lazy_gettext('The Hertz to output the PWM signal (0 - 70,000)')},

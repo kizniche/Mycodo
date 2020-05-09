@@ -96,6 +96,4 @@ class OutputMod(FlaskForm):
         widget=NumberInput(step='any'))
     save = SubmitField(TRANSLATIONS['save']['title'])
     delete = SubmitField(TRANSLATIONS['delete']['title'])
-    order_up = SubmitField(TRANSLATIONS['up']['title'])
-    order_down = SubmitField(TRANSLATIONS['down']['title'])
     on_submit = SubmitField(lazy_gettext('Turn On'))

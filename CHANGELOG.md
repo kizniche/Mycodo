@@ -39,9 +39,10 @@ With this release comes a new method of switching Outputs that use Python code (
  - Refactor Python Output code 
  - Update all translations (all complete)
  - Rename MH-Z19 Input to MH-Z19B (and add MH-Z19 Input)
- - Change Email Notification options to allow unencrypted sending (port 25)
+ - Change Email Notification options to allow unauthenticated sending
  - Add conversions: m <-> cm <-> mm
  - Make PID Controller a class
+ - Restyle Output page ([#732](https://github.com/kizniche/mycodo/issues/732))
 
 
 ## 8.4.0 (2020-03-23)

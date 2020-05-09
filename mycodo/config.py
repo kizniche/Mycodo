@@ -344,7 +344,7 @@ OUTPUT_INFO = {
             'duty_cycle': {'percent': {0: {}}}
         }},
     'wireless_rpi_rf': {
-        'name': lazy_gettext('Wireless 315/433MHz LPD/SRD (rpi-rf)'),
+        'name': lazy_gettext('Wireless 315/433MHz (rpi-rf)'),
         'dependencies_module': [
             ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO'),
             ('pip-pypi', 'rpi_rf', 'rpi_rf')
