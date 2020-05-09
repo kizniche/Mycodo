@@ -188,10 +188,13 @@
             </a>
           </div>
 
-          <div class="col-6 col-md-4 col-lg-4 small-gutters">
-            <input class="form-control" disabled="" value="{{each_output.name}} ({{output_info[each_output.output_type]['name']}})" type="text">
+          <div class="col-3 col-md-2 small-gutters">
+            <input class="form-control" disabled="" value="{{each_output.name}}" type="text">
           </div>
           <div class="col-4 col-md-3 small-gutters">
+            <input class="form-control" disabled="" value="{{output_info[each_output.output_type]['name']}}" type="text">
+          </div>
+          <div class="col-3 col-md-2 small-gutters">
             <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">
           </div>
 
