@@ -1,6 +1,6 @@
 ## 8.5.0 (Unreleased)
 
-With this release comes the ability to import custom Outputs. If you want to utilize an output that Mycodo doesn't currently support, you can now create your own Output module and import it to be used within the system. See `Custom Outputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-outputs>`__ in the manual for more information.``
+With this release comes the ability to import custom Outputs. If you want to utilize an output that Mycodo doesn't currently support, you can now create your own Output module and import it to be used within the system. See [Custom Outputs](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-outputs) in the manual for more information.``
 
 This update also brings a new method of switching Outputs that use Python code (On, Off, and PWM). If you use these types of Outputs, it's advised to test whether they're still working after the upgrade and update your code accordingly if not.
 
