@@ -414,7 +414,7 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
         assert Input.query.count() == input_count, "Number of Inputs doesn't match: In DB {}, Should be: {}".format(Input.query.count(), input_count)
 
         input_dev = Input.query.filter(Input.id == input_count).first()
-        assert dict_inputs[choice_name]['input_name'] in input_dev.name, "Input name doesn't match: {}".format(choice_name)
+        assert choice_name == input_dev.device, "Input name doesn't match: {}".format(choice_name)
 
         # Delete input (speeds up further input addition checking)
         response = delete_data(testapp, data_type='input', device_dev=input_dev)
