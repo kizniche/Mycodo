@@ -14,6 +14,7 @@ from flask.blueprints import Blueprint
 from mycodo.config import LANGUAGES
 from mycodo.config import PATH_CONTROLLERS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
+from mycodo.config import PATH_OUTPUTS_CUSTOM
 from mycodo.config import THEMES
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Measurement
@@ -200,6 +201,58 @@ def settings_input():
                            dict_units=dict_units,
                            form_input=form_input,
                            form_input_delete=form_input_delete)
+
+
+@blueprint.route('/settings/output', methods=('GET', 'POST'))
+@flask_login.login_required
+def settings_output():
+    """ Display measurement settings """
+    if not utils_general.user_has_permission('view_settings'):
+        return redirect(url_for('routes_general.home'))
+
+    form_output = forms_settings.Output()
+    form_output_delete = forms_settings.OutputDel()
+
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
+
+    # Get list of custom outputs
+    excluded_files = ['__init__.py', '__pycache__']
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('routes_general.home'))
+
+        if form_output.import_output_upload.data:
+            utils_settings.settings_output_import(form_output)
+        elif form_output_delete.delete_output.data:
+            utils_settings.settings_output_delete(form_output_delete)
+
+        return redirect(url_for('routes_settings.settings_output'))
+
+    dict_outputs = {}
+
+    for each_file in os.listdir(PATH_OUTPUTS_CUSTOM):
+        if each_file not in excluded_files:
+            try:
+                full_path_file = os.path.join(PATH_OUTPUTS_CUSTOM, each_file)
+                output_info = load_module_from_file(full_path_file, 'outputs')
+                dict_outputs[output_info.OUTPUT_INFORMATION['output_name_unique']] = {}
+                dict_outputs[output_info.OUTPUT_INFORMATION['output_name_unique']]['output_name'] = \
+                    output_info.OUTPUT_INFORMATION['output_name']
+                dict_outputs[output_info.OUTPUT_INFORMATION['output_name_unique']]['measurements_name'] = \
+                    output_info.OUTPUT_INFORMATION['measurements_name']
+            except:
+                pass
+
+    # dict_outputs = parse_output_information()
+
+    return render_template('settings/output.html',
+                           dict_outputs=dict_outputs,
+                           dict_measurements=dict_measurements,
+                           dict_units=dict_units,
+                           form_output=form_output,
+                           form_output_delete=form_output_delete)
 
 
 @blueprint.route('/settings/measurement', methods=('GET', 'POST'))

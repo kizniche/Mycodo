@@ -7,9 +7,9 @@ from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import BooleanField
 from wtforms import DecimalField
+from wtforms import FloatField
 from wtforms import HiddenField
 from wtforms import IntegerField
-from wtforms import FloatField
 from wtforms import SelectField
 from wtforms import SelectMultipleField
 from wtforms import StringField
@@ -20,8 +20,9 @@ from wtforms.validators import DataRequired
 from wtforms.validators import Optional
 from wtforms.widgets.html5 import NumberInput
 
-from mycodo.config import OUTPUTS
 from mycodo.config_translations import TRANSLATIONS
+from mycodo.mycodo_flask.utils.utils_general import generate_form_output_list
+from mycodo.utils.outputs import parse_output_information
 
 
 class DataBase(FlaskForm):
@@ -31,10 +32,26 @@ class DataBase(FlaskForm):
 
 
 class OutputAdd(FlaskForm):
-    output_quantity = IntegerField(lazy_gettext('Quantity'))
+    choices_outputs = []
+    dict_outputs = parse_output_information()
+    list_outputs_sorted = generate_form_output_list(dict_outputs)
+    for each_output in list_outputs_sorted:
+        value = '{inp},'.format(inp=each_output)
+        name = '{name}'.format(name=dict_outputs[each_output]['output_name'])
+
+        if 'interfaces' in dict_outputs[each_output]:
+            for each_interface in dict_outputs[each_output]['interfaces']:
+                tmp_value = '{val}{int}'.format(val=value, int=each_interface)
+                tmp_name = '{name} ({int})'.format(name=name, int=each_interface)
+                choices_outputs.append((tmp_value, tmp_name))
+        else:
+            choices_outputs.append((value, name))
+
     output_type = SelectField(
-        choices=OUTPUTS,
-        validators=[DataRequired()])
+        choices=choices_outputs,
+        validators=[DataRequired()]
+    )
+    output_quantity = IntegerField(lazy_gettext('Quantity'))
     output_add = SubmitField(TRANSLATIONS['add']['title'])
 
 

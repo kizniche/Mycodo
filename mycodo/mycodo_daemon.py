@@ -813,13 +813,23 @@ class DaemonController:
 
     def output_state(self, output_id):
         """
-        Return the output state, wither "on" or "off"
+        Return the output state, whether "on" or "off"
 
         :param output_id: Unique ID for output
         :type output_id: str
         """
         try:
             return self.controller['Output'].output_state(output_id)
+        except Exception as except_msg:
+            message = "Could not query output state: {e}".format(e=except_msg)
+            self.logger.exception(message)
+
+    def output_states_all(self):
+        """
+        Return all output states, whether "on" or "off"
+        """
+        try:
+            return self.controller['Output'].output_states_all()
         except Exception as except_msg:
             message = "Could not query output state: {e}".format(e=except_msg)
             self.logger.exception(message)
@@ -1190,6 +1200,10 @@ class PyroServer(object):
     def output_state(self, output_id):
         """Return the output state (not pin but whether output is on or off)"""
         return self.mycodo.output_state(output_id)
+
+    def output_states_all(self):
+        """Return all output states"""
+        return self.mycodo.output_states_all()
 
     def output_duty_cycle(self, output_id, duty_cycle, trigger_conditionals=True):
         """Sets the output duty cycle"""

@@ -17,7 +17,6 @@ from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LCD_INFO
 from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
-from mycodo.config import OUTPUT_INFO
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
 from mycodo.databases.models import CustomController
@@ -30,6 +29,7 @@ from mycodo.databases.models import Output
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import cmd_output
 
@@ -42,6 +42,7 @@ def get_installed_dependencies():
     list_dependencies = [
         parse_controller_information(),
         parse_input_information(),
+        parse_output_information(),
         CALIBRATION_INFO,
         CAMERA_INFO,
         FUNCTION_ACTION_INFO,
@@ -49,7 +50,6 @@ def get_installed_dependencies():
         LCD_INFO,
         MATH_INFO,
         METHOD_INFO,
-        OUTPUT_INFO
     ]
 
     for each_section in list_dependencies:

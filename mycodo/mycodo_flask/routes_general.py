@@ -30,7 +30,6 @@ from mycodo.config import INFLUXDB_PORT
 from mycodo.config import INFLUXDB_USER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LOG_PATH
-from mycodo.config import OUTPUTS_PWM
 from mycodo.config import PATH_CAMERAS
 from mycodo.config import PATH_NOTE_ATTACHMENTS
 from mycodo.databases.models import Camera
@@ -51,6 +50,8 @@ from mycodo.mycodo_flask.utils.utils_output import get_all_output_states
 from mycodo.utils.image import generate_thermal_image_from_pixels
 from mycodo.utils.influx import influx_time_str_to_milliseconds
 from mycodo.utils.influx import query_string
+from mycodo.utils.outputs import outputs_pwm
+from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
@@ -939,6 +940,8 @@ def output_mod(output_id, state, out_type, amount):
     if not utils_general.user_has_permission('edit_controllers'):
         return 'Insufficient user permissions to manipulate outputs'
 
+    dict_outputs = parse_output_information()
+
     daemon = DaemonControl()
     if (state in ['on', 'off'] and out_type == 'sec' and
             (str_is_float(amount) and float(amount) >= 0)):
@@ -947,7 +950,8 @@ def output_mod(output_id, state, out_type, amount):
             return 'ERROR: {}'.format(out_status[1])
         else:
             return 'SUCCESS: {}'.format(out_status[1])
-    elif (state == 'on' and out_type in OUTPUTS_PWM and
+
+    elif (state == 'on' and out_type in outputs_pwm() and
             (str_is_float(amount) and float(amount) >= 0)):
         out_status = daemon.output_on(
             output_id,

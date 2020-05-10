@@ -6,8 +6,8 @@ Mycodo is open source software for the Raspberry Pi that couples inputs and outp
 
 ## Features
 
-*   **[Inputs](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input)** that record measurements from a number of places, including sensors, GPIO pin states, analog-to-digital converters, and custom input modules.
-*   **[Outputs](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output)** that perform actions such as switching GPIO pins high/low, generating pulse-width-modulation, sending information to LCD displays, and executing Linux shell commands and Python code.
+*   **[Inputs](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input)** that record measurements from a number of places, including sensors, GPIO pin states, analog-to-digital converters, etc. (or write your own custom input module).
+*   **[Outputs](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output)** that perform actions such as switching GPIO pins high/low, generating PWM signals, executing Linux shell commands and Python code, etc. (or write your own custom output module).
 *   **[Web Interface](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#web-interface)** for securely accessing the system using a web browser on your local network or anywhere in the world with an internet connection.
 *   **[Dashboards](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#dashboard)** that display configurable widgets, including interactive live and historical graphs, gauges, output state indicators, text measurements.
 *   **[Proportional Integral Derivative (PID) controllers](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-controller)** that regulate environmental conditions with feedback loops utilizing Inputs and Outputs.

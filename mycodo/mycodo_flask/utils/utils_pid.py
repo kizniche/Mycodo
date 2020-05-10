@@ -7,7 +7,6 @@ from flask import redirect
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config import OUTPUTS_PWM
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
@@ -22,6 +21,7 @@ from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactiva
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import list_to_csv
@@ -41,6 +41,8 @@ def pid_mod(form_mod_pid_base,
         action=TRANSLATIONS['modify']['title'],
         controller=TRANSLATIONS['pid']['title'])
     error = []
+
+    dict_outputs = parse_output_information()
 
     if not form_mod_pid_base.validate():
         error.append(TRANSLATIONS['error']['title'])
@@ -92,11 +94,14 @@ def pid_mod(form_mod_pid_base,
     if form_mod_pid_base.raise_output_id.data:
         raise_output_type = Output.query.filter(
             Output.unique_id == form_mod_pid_base.raise_output_id.data).first().output_type
-        if raise_output_type in OUTPUTS_PWM:
+
+        if ('output_types' in dict_outputs[raise_output_type] and
+                'pwm' in dict_outputs[raise_output_type]['output_types']):
             mod_pid.raise_always_min_pwm = form_mod_pid_pwm_raise.raise_always_min_pwm.data
 
         if mod_pid.raise_output_id == form_mod_pid_base.raise_output_id.data:
-            if raise_output_type in OUTPUTS_PWM:
+            if ('output_types' in dict_outputs[raise_output_type] and
+                    'pwm' in dict_outputs[raise_output_type]['output_types']):
                 if not form_mod_pid_pwm_raise.validate():
                     error.append(TRANSLATIONS['error']['title'])
                     flash_form_errors(form_mod_pid_pwm_raise)
@@ -112,7 +117,8 @@ def pid_mod(form_mod_pid_base,
                     mod_pid.raise_max_duration = form_mod_pid_output_raise.raise_max_duration.data
                     mod_pid.raise_min_off_duration = form_mod_pid_output_raise.raise_min_off_duration.data
         else:
-            if raise_output_type in OUTPUTS_PWM:
+            if ('output_types' in dict_outputs[raise_output_type] and
+                    'pwm' in dict_outputs[raise_output_type]['output_types']):
                 mod_pid.raise_min_duration = 2
                 mod_pid.raise_max_duration = 98
             else:
@@ -126,11 +132,14 @@ def pid_mod(form_mod_pid_base,
     if form_mod_pid_base.lower_output_id.data:
         lower_output_type = Output.query.filter(
             Output.unique_id == form_mod_pid_base.lower_output_id.data).first().output_type
-        if lower_output_type in OUTPUTS_PWM:
+
+        if ('output_types' in dict_outputs[lower_output_type] and
+                'pwm' in dict_outputs[lower_output_type]['output_types']):
             mod_pid.lower_always_min_pwm = form_mod_pid_pwm_lower.lower_always_min_pwm.data
 
         if mod_pid.lower_output_id == form_mod_pid_base.lower_output_id.data:
-            if lower_output_type in OUTPUTS_PWM:
+            if ('output_types' in dict_outputs[lower_output_type] and
+                    'pwm' in dict_outputs[lower_output_type]['output_types']):
                 if not form_mod_pid_pwm_lower.validate():
                     error.append(gettext("Error in form field(s)"))
                     flash_form_errors(form_mod_pid_pwm_lower)
@@ -146,7 +155,8 @@ def pid_mod(form_mod_pid_base,
                     mod_pid.lower_max_duration = form_mod_pid_output_lower.lower_max_duration.data
                     mod_pid.lower_min_off_duration = form_mod_pid_output_lower.lower_min_off_duration.data
         else:
-            if lower_output_type in OUTPUTS_PWM:
+            if ('output_types' in dict_outputs[lower_output_type] and
+                    'pwm' in dict_outputs[lower_output_type]['output_types']):
                 mod_pid.lower_min_duration = 2
                 mod_pid.lower_max_duration = 98
             else:

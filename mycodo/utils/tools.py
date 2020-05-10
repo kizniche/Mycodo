@@ -8,12 +8,12 @@ from collections import OrderedDict
 import os
 from dateutil import relativedelta
 
-from mycodo.config import OUTPUTS_PWM
 from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import output_sec_on
+from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import set_user_grp
 
@@ -41,7 +41,10 @@ def next_schedule(time_span='daily', set_day=None, set_hour=None):
         new_month = current_month
         new_year = current_year
         future_time_test = time.mktime(datetime.datetime(
-            year=current_year, month=current_month, day=set_day, hour=set_hour).timetuple())
+            year=current_year,
+            month=current_month,
+            day=set_day,
+            hour=set_hour).timetuple())
         if future_time_test < now:
             if current_month == 12:
                 new_month = 1
@@ -49,7 +52,10 @@ def next_schedule(time_span='daily', set_day=None, set_hour=None):
             else:
                 new_month += 1
             future_time_test = time.mktime(datetime.datetime(
-                year=new_year, month=new_month, day=set_day, hour=set_hour).timetuple())
+                year=new_year,
+                month=new_month,
+                day=set_day,
+                hour=set_hour).timetuple())
         return future_time_test
 
     elif time_span == 'weekly':
@@ -60,21 +66,27 @@ def next_schedule(time_span='daily', set_day=None, set_hour=None):
             days_to_add = 7 - (today_weekday - (set_day - 1))
 
         future_time_test = time.mktime(
-            (datetime.date.today() + relativedelta.relativedelta(days=days_to_add)).timetuple()) + (3600 * set_hour)
+            (datetime.date.today() +
+             relativedelta.relativedelta(days=days_to_add)).timetuple()) + (3600 * set_hour)
         return future_time_test
 
     elif time_span == 'daily':
         future_time_test = time.mktime(datetime.datetime(
-            year=current_year, month=current_month, day=current_day, hour=set_hour).timetuple())
+            year=current_year,
+            month=current_month,
+            day=current_day,
+            hour=set_hour).timetuple())
         if future_time_test < now:
             future_time_test = time.mktime(
-                (datetime.date.today() + relativedelta.relativedelta(days=1)).timetuple()) + (3600 * set_hour)
+                (datetime.date.today() +
+                 relativedelta.relativedelta(days=1)).timetuple()) + (3600 * set_hour)
 
         return future_time_test
 
 
 def return_output_usage(table_misc, table_outputs):
     """ Return output usage and cost """
+    dict_outputs = parse_output_information()
     date_now = datetime.date.today()
     time_now = datetime.datetime.now()
     past_month_seconds = 0
@@ -93,10 +105,6 @@ def return_output_usage(table_misc, table_outputs):
 
     output_stats = OrderedDict()
 
-    for each_output in table_outputs:
-        if each_output.output_type not in OUTPUTS_PWM + ['atlas_ezo_pmp']:
-            output_stats[each_output.unique_id] = None
-
     # Calculate output on duration for different time periods
     # Use OrderedDict to ensure proper order when saved to csv file
     output_stats['total_duration'] = dict.fromkeys(['1d', '1w', '1m', '1m_date', '1y'], 0)
@@ -104,7 +112,8 @@ def return_output_usage(table_misc, table_outputs):
     output_stats['total_cost'] = dict.fromkeys(['1d', '1w', '1m', '1m_date', '1y'], 0)
 
     for each_output in table_outputs:
-        if each_output.output_type != 'pwm':
+        if ('output_types' in dict_outputs[each_output.output_type] and
+                'on_off' in dict_outputs[each_output.output_type]['output_types']):
             past_1d_hours = output_sec_on(each_output.unique_id, 86400) / 3600
             past_1w_hours = output_sec_on(each_output.unique_id, 604800) / 3600
             past_1m_hours = output_sec_on(each_output.unique_id, 2629743) / 3600

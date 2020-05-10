@@ -43,9 +43,6 @@ from mycodo.config import KEEPUP_LOG_FILE
 from mycodo.config import LOGIN_LOG_FILE
 from mycodo.config import MATH_INFO
 from mycodo.config import MYCODO_VERSION
-from mycodo.config import OUTPUTS
-from mycodo.config import OUTPUTS_PWM
-from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_1WIRE
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
@@ -58,7 +55,6 @@ from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import CustomController
-from mycodo.databases.models import Widget
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
@@ -78,6 +74,7 @@ from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
 from mycodo.databases.models import Unit
 from mycodo.databases.models import User
+from mycodo.databases.models import Widget
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_client import daemon_active
@@ -116,6 +113,8 @@ from mycodo.utils.influx import average_past_seconds
 from mycodo.utils.influx import average_start_end_seconds
 from mycodo.utils.inputs import list_analog_to_digital_converters
 from mycodo.utils.inputs import parse_input_information
+from mycodo.utils.outputs import outputs_pwm
+from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
@@ -657,6 +656,8 @@ def page_dashboard(dashboard_id):
             dict_measure_measurements[each_measurement.unique_id] = measurement
             dict_measure_units[each_measurement.unique_id] = unit
 
+    dict_outputs = parse_output_information()
+
     # Retrieve all choices to populate form drop-down menu
     choices_camera = utils_general.choices_id_name(camera)
     choices_input = utils_general.choices_inputs(
@@ -667,7 +668,7 @@ def page_dashboard(dashboard_id):
         output, dict_units, dict_measurements)
     choices_output_devices = utils_general.choices_output_devices(output)
     choices_output_pwm = utils_general.choices_outputs_pwm(
-        output, dict_units, dict_measurements)
+        output, dict_units, dict_measurements, dict_outputs)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
     choices_pid_devices = utils_general.choices_pids_devices(pid)
@@ -789,7 +790,7 @@ def page_dashboard(dashboard_id):
                            misc=misc,
                            pid=pid,
                            output=output,
-                           OUTPUTS_PWM=OUTPUTS_PWM,
+                           outputs_pwm=outputs_pwm(),
                            input=input_dev,
                            tags=tags,
                            colors_graph=colors_graph,
@@ -1650,7 +1651,7 @@ def page_function():
                            method=method,
                            names_function=names_function,
                            output=output,
-                           OUTPUTS_PWM=OUTPUTS_PWM,
+                           outputs_pwm=outputs_pwm(),
                            pid=pid,
                            sunrise_set_calc=sunrise_set_calc,
                            table_input=Input,
@@ -1669,6 +1670,8 @@ def page_output():
     misc = Misc.query.first()
     output = Output.query.all()
     user = User.query.all()
+
+    dict_outputs = parse_output_information()
 
     form_base = forms_output.DataBase()
     form_add_output = forms_output.OutputAdd()
@@ -1721,6 +1724,7 @@ def page_output():
 
     return render_template('pages/output.html',
                            camera=camera,
+                           dict_outputs=dict_outputs,
                            display_order_output=display_order_output,
                            form_base=form_base,
                            form_add_output=form_add_output,
@@ -1728,10 +1732,8 @@ def page_output():
                            lcd=lcd,
                            misc=misc,
                            names_output=names_output,
-                           outputs=OUTPUTS,
-                           output_info=OUTPUT_INFO,
                            output=output,
-                           OUTPUTS_PWM=OUTPUTS_PWM,
+                           outputs_pwm=outputs_pwm(),
                            output_templates=output_templates,
                            user=user)
 
@@ -1992,7 +1994,7 @@ def page_data():
                            names_input=names_input,
                            names_math=names_math,
                            output=output,
-                           OUTPUTS_PWM=OUTPUTS_PWM,
+                           outputs_pwm=outputs_pwm(),
                            pid=pid,
                            table_conversion=Conversion,
                            table_device_measurements=DeviceMeasurements,
@@ -2195,7 +2197,7 @@ def page_usage():
                            misc=misc,
                            output=output,
                            output_stats=output_stats,
-                           OUTPUTS_PWM=OUTPUTS_PWM,
+                           outputs_pwm=outputs_pwm(),
                            picker_end=picker_end,
                            picker_start=picker_start,
                            timestamp=time.strftime("%c"))

@@ -192,19 +192,19 @@
             <input class="form-control" disabled="" value="{{each_output.name}}" type="text">
           </div>
           <div class="col-4 col-md-3 small-gutters">
-            <input class="form-control" disabled="" value="{{output_info[each_output.output_type]['name']}}" type="text">
+            <input class="form-control" disabled="" value="{{dict_outputs[each_output.output_type]['output_name']}}" type="text">
           </div>
           <div class="col-3 col-md-2 small-gutters">
             <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">
           </div>
 
-        {% if each_output.output_type not in OUTPUTS_PWM + ['atlas_ezo_pmp'] -%}
+        {% if each_output.output_type not in outputs_pwm + ['atlas_ezo_pmp'] -%}
           <div class="col-6 col-md-2 small-gutters">
             <input class="form-control btn btn-primary btn-sm btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
           </div>
         {%- endif %}
 
-        {% if each_output.output_type not in OUTPUTS_PWM + ['atlas_ezo_pmp'] -%}
+        {% if each_output.output_type not in outputs_pwm + ['atlas_ezo_pmp'] -%}
           <div class="col-6 col-md-2 small-gutters">
         {% else %}
           <div class="col-12 col-md-4 small-gutters">
@@ -237,7 +237,7 @@
             {% include 'pages/output_options/'+each_output_template %}
           {% endfor %}
 
-          {% if each_output.output_type not in OUTPUTS_PWM + ['atlas_ezo_pmp'] %}
+          {% if each_output.output_type not in outputs_pwm + ['atlas_ezo_pmp'] %}
 
             <div class="col-6 col-sm-4 col-md-3">
               {{form_mod_output.amps.label(class_='control-label')}}
@@ -286,7 +286,7 @@
             </div>
           </div>
 
-          {% elif each_output.output_type in OUTPUTS_PWM %}
+          {% elif each_output.output_type in outputs_pwm %}
 
           <div class="row">
             <div class="col">

@@ -33,7 +33,6 @@ from mycodo.config import LCD_INFO
 from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
 from mycodo.config import MYCODO_VERSION
-from mycodo.config import OUTPUT_INFO
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import STATS_CSV
 from mycodo.config import UPGRADE_INIT_FILE
@@ -48,6 +47,7 @@ from mycodo.mycodo_flask.utils import utils_general
 from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.github_release_info import MycodoRelease
 from mycodo.utils.inputs import parse_input_information
+from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.statistics import return_stat_file_dict
 from mycodo.utils.system_pi import can_perform_backup
 from mycodo.utils.system_pi import get_directory_size
@@ -238,6 +238,7 @@ def admin_dependencies(device):
     list_dependencies = [
         parse_controller_information(),
         parse_input_information(),
+        parse_output_information(),
         CALIBRATION_INFO,
         CAMERA_INFO,
         FUNCTION_ACTION_INFO,
@@ -245,7 +246,6 @@ def admin_dependencies(device):
         LCD_INFO,
         MATH_INFO,
         METHOD_INFO,
-        OUTPUT_INFO
     ]
     for each_section in list_dependencies:
         for each_device in each_section:

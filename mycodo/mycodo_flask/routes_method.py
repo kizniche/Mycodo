@@ -15,7 +15,6 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import METHOD_INFO
-from mycodo.config import OUTPUTS_PWM
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Method
@@ -28,6 +27,7 @@ from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_method
 from mycodo.utils.method import bezier_curve_y_out
 from mycodo.utils.method import sine_wave_y_out
+from mycodo.utils.outputs import outputs_pwm
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import get_sec
 from mycodo.utils.system_pi import list_to_csv
@@ -294,7 +294,7 @@ def method_builder(method_id):
                                last_sine_method=last_sine_method,
                                last_setpoint_method=last_setpoint_method,
                                last_setpoint=last_setpoint,
-                               OUTPUTS_PWM=OUTPUTS_PWM,
+                               outputs_pwm=outputs_pwm(),
                                form_create_method=form_create_method,
                                form_add_method=form_add_method,
                                form_mod_method=form_mod_method)

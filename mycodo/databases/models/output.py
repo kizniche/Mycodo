@@ -12,6 +12,7 @@ class Output(CRUDMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     output_type = db.Column(db.Text, default='wired')  # Options: 'command', 'wired', 'wireless_rpi_rf', 'pwm'
+    log_level_debug = db.Column(db.Boolean, default=False)
     output_mode = db.Column(db.Text, default=None)
     interface = db.Column(db.Text, default='')
     location = db.Column(db.Text, default='')

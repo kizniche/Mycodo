@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.4.0'
-ALEMBIC_VERSION = 'e5bd30e798b8'
+ALEMBIC_VERSION = 'caf50eb4f236'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -325,86 +325,6 @@ METHODS = [
     ('Daily', METHOD_INFO['Daily']['name']),
     ('DailySine', METHOD_INFO['DailySine']['name']),
     ('DailyBezier', METHOD_INFO['DailyBezier']['name'])
-]
-
-# Outputs
-OUTPUT_INFO = {
-    'wired': {
-        'name': lazy_gettext('On/Off (GPIO)'),
-        'dependencies_module': [],
-        'measure': {
-            'duration_time': {'s': {0: {}}}
-        }},
-    'pwm': {
-        'name': lazy_gettext('PWM (GPIO)'),
-        'dependencies_module': [
-            ('internal', 'file-exists /opt/mycodo/pigpio_installed', 'pigpio')
-        ],
-        'measure': {
-            'duty_cycle': {'percent': {0: {}}}
-        }},
-    'wireless_rpi_rf': {
-        'name': lazy_gettext('Wireless 315/433MHz (rpi-rf)'),
-        'dependencies_module': [
-            ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO'),
-            ('pip-pypi', 'rpi_rf', 'rpi_rf')
-        ],
-        'measure': {
-            'duration_time': {'s': {0: {}}}
-        }},
-    'command': {
-        'name': lazy_gettext('On/Off (Linux Command)'),
-        'dependencies_module': [],
-        'measure': {
-            'duration_time': {'s': {0: {}}}
-        }},
-    'command_pwm': {
-        'name': lazy_gettext('PWM (Linux Command)'),
-        'dependencies_module': [],
-        'measure': {
-            'duty_cycle': {'percent': {0: {}}}
-        }},
-    'python': {
-        'name': lazy_gettext('On/Off (Python Command)'),
-        'dependencies_module': [],
-        'measure': {
-            'duration_time': {'s': {0: {}}}
-        }},
-    'python_pwm': {
-        'name': lazy_gettext('PWM (Python Command)'),
-        'dependencies_module': [],
-        'measure': {
-            'duty_cycle': {'percent': {0: {}}}
-        }},
-    'atlas_ezo_pmp': {
-        'name': lazy_gettext('Atlas Scientific Pump'),
-        'dependencies_module': [],
-        'measure': {
-            'volume': {'ml': {0: {}}},
-            'duration_time': {'minute': {1: {}}}
-        }}
-}
-
-# Output form dropdown
-OUTPUTS = [
-    ('wired,GPIO', OUTPUT_INFO['wired']['name']),
-    ('pwm,GPIO', OUTPUT_INFO['pwm']['name']),
-    ('command,GPIO', OUTPUT_INFO['command']['name']),
-    ('command_pwm,GPIO', OUTPUT_INFO['command_pwm']['name']),
-    ('python,GPIO', OUTPUT_INFO['python']['name']),
-    ('python_pwm,GPIO', OUTPUT_INFO['python_pwm']['name']),
-    ('wireless_rpi_rf,GPIO', OUTPUT_INFO['wireless_rpi_rf']['name']),
-    ('atlas_ezo_pmp,FTDI', '{} ({})'.format(
-        OUTPUT_INFO['atlas_ezo_pmp']['name'], lazy_gettext('FTDI'))),
-    ('atlas_ezo_pmp,I2C', '{} ({})'.format(
-        OUTPUT_INFO['atlas_ezo_pmp']['name'], lazy_gettext('I2C'))),
-    ('atlas_ezo_pmp,UART', '{} ({})'.format(
-        OUTPUT_INFO['atlas_ezo_pmp']['name'], lazy_gettext('UART')))
-]
-
-# Defines which Outputs are PWM
-OUTPUTS_PWM = [
-    'pwm', 'command_pwm', 'python_pwm'
 ]
 
 PID_INFO = {
@@ -868,8 +788,10 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 PATH_1WIRE = '/sys/bus/w1/devices/'
 PATH_CONTROLLERS = os.path.join(INSTALL_DIRECTORY, 'mycodo/controllers')
 PATH_INPUTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/inputs')
+PATH_OUTPUTS = os.path.join(INSTALL_DIRECTORY, 'mycodo/outputs')
 PATH_CONTROLLERS_CUSTOM = os.path.join(PATH_CONTROLLERS, 'custom_controllers')
 PATH_INPUTS_CUSTOM = os.path.join(PATH_INPUTS, 'custom_inputs')
+PATH_OUTPUTS_CUSTOM = os.path.join(PATH_OUTPUTS, 'custom_outputs')
 PATH_PYTHON_CODE_USER = os.path.join(INSTALL_DIRECTORY, 'mycodo/user_python_code')
 USAGE_REPORTS_PATH = os.path.join(INSTALL_DIRECTORY, 'output_usage_reports')
 DEPENDENCY_INIT_FILE = os.path.join(INSTALL_DIRECTORY, '.dependency')

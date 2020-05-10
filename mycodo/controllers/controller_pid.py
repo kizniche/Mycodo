@@ -55,7 +55,6 @@ import timeit
 
 import requests
 
-from mycodo.config import OUTPUTS_PWM
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Conversion
@@ -67,12 +66,13 @@ from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
+from mycodo.utils.PID_hirschmann.pid_autotune import PIDAutotune
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.method import calculate_method_setpoint
-from mycodo.utils.PID_hirschmann.pid_autotune import PIDAutotune
+from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.pid_controller_default import PIDControl
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import return_measurement_info
@@ -90,6 +90,7 @@ class PIDController(AbstractController, threading.Thread):
 
         self.unique_id = unique_id
         self.sample_rate = None
+        self.dict_outputs = None
 
         self.control = DaemonControl()
 
@@ -171,6 +172,8 @@ class PIDController(AbstractController, threading.Thread):
     def initialize_variables(self):
         """Set PID parameters"""
         self.set_log_level_debug(self.log_level_debug)
+
+        self.dict_outputs = parse_output_information()
 
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_pid
@@ -549,7 +552,8 @@ class PIDController(AbstractController, threading.Thread):
 
                 if self.PID_Controller.control_variable > 0:
                     # Determine if the output should be PWM or a duration
-                    if self.raise_output_type in OUTPUTS_PWM:
+                    if ('output_types' in self.dict_outputs[self.raise_output_type] and
+                            'pwm' in self.dict_outputs[self.raise_output_type]['output_types']):
                         self.raise_duty_cycle = float("{0:.1f}".format(
                             self.control_var_to_duty_cycle(self.PID_Controller.control_variable)))
 
@@ -624,7 +628,9 @@ class PIDController(AbstractController, threading.Thread):
                         's', 'duration_time', 6,
                         self.PID_Controller.control_variable)
 
-                elif self.raise_output_type in OUTPUTS_PWM and not self.raise_always_min_pwm:
+                elif (('output_types' in self.dict_outputs[self.raise_output_type] and
+                        'pwm' in self.dict_outputs[self.raise_output_type]['output_types']) and
+                        not self.raise_always_min_pwm):
                     # Turn PWM Off if PWM Output and not instructed to always be at least min
                     self.control.output_on(self.raise_output_id, duty_cycle=0)
 
@@ -636,7 +642,8 @@ class PIDController(AbstractController, threading.Thread):
 
                 if self.PID_Controller.control_variable < 0:
                     # Determine if the output should be PWM or a duration
-                    if self.lower_output_type in OUTPUTS_PWM:
+                    if ('output_types' in self.dict_outputs[self.lower_output_type] and
+                         'pwm' in self.dict_outputs[self.lower_output_type]['output_types']):
                         self.lower_duty_cycle = float("{0:.1f}".format(
                             self.control_var_to_duty_cycle(abs(self.PID_Controller.control_variable))))
 
@@ -730,7 +737,9 @@ class PIDController(AbstractController, threading.Thread):
                         self.write_pid_output_influxdb(
                             's', 'duration_time', 6, stored_control_variable)
 
-                elif self.lower_output_type in OUTPUTS_PWM and not self.lower_always_min_pwm:
+                elif (('output_types' in self.dict_outputs[self.lower_output_type] and
+                       'pwm' in self.dict_outputs[self.lower_output_type]['output_types']) and
+                       not self.lower_always_min_pwm):
                     # Turn PWM Off if PWM Output and not instructed to always be at least min
                     self.control.output_on(self.lower_output_id, duty_cycle=0)
 

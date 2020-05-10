@@ -1094,8 +1094,8 @@ relay, a 315/433 MHz signal to switch a radio frequency-operated relay,
 driving of pumps and motors, or an execution of a linux or Python
 command, to name a few.
 
-General Output Options
-----------------------
+Output Options
+--------------
 
 +------------------------------+---------------------------------------------+
 | Setting                      | Description                                 |
@@ -1203,6 +1203,36 @@ General Output Options
 |                              | devices or the measured effects a device    |
 |                              | may have on an environmental condition.     |
 +------------------------------+---------------------------------------------+
+
+Custom Outputs
+~~~~~~~~~~~~~~
+
+Note: This is a work in progress!
+
+There is a Custom Output import system in Mycodo that allows user-created
+Outputs to be created an used in the Mycodo system. Custom Outputs can be
+uploaded and imported from the ``Configure -> Outputs`` page. After
+import, they will be available to use on the ``Setup -> Output`` page.
+
+If you desire an output that is not currently supported by Mycodo, you can
+build your own output module and import it into Mycodo. All information
+about an output is contained within the output module, set in the
+dictionaries 'OUTPUT\_INFORMATION' and 'measurements\_dict'. Each module
+will requires at a minimum for these variables to be set in
+OUTPUT\_INFORMATION: 'output\_name\_unique',
+'output\_name', and 'measurements\_dict'. The
+measurements\_dict dictionary contains the measurements that are
+acquired and stored, and require both the units and measurements to
+exist in the measurement/unit database (Add missing measurements/units
+on the ``Configure -> Measurements`` page).
+
+Open any of the built-in modules located in the outputs directory
+(https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/) for
+examples of the proper formatting.
+
+There's also minimal output module template as an example:
+
+https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/examples/example_dummy_output.py
 
 On/Off (GPIO)
 -------------
@@ -3373,13 +3403,27 @@ Input Settings
 ``[Gear Icon] -> Configure -> Inputs``
 
 Input modules may be imported and used within Mycodo. These modules must
-follow a specific format. See `Create an Input
-Module <#create-an-input-module>`__ for more details.
+follow a specific format. See `Custom Inputs <#custom-inputs>`__ for more details.
 
 +------------------------------+---------------------------------------------+
 | Setting                      | Description                                 |
 +==============================+=============================================+
 | Import Input Module          | Select your input module file, then click   |
+|                              | this button to begin the import.            |
++------------------------------+---------------------------------------------+
+
+Output Settings
+---------------
+
+``[Gear Icon] -> Configure -> Outputs``
+
+Output modules may be imported and used within Mycodo. These modules must
+follow a specific format. See `Custom Outputs <#custom-outputs>`__ for more details.
+
++------------------------------+---------------------------------------------+
+| Setting                      | Description                                 |
++==============================+=============================================+
+| Import Output Module         | Select your output module file, then click  |
 |                              | this button to begin the import.            |
 +------------------------------+---------------------------------------------+
 

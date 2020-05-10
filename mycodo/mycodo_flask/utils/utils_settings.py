@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
-import os
-import re
 import subprocess
 import time
 import traceback
 
 import bcrypt
 import flask_login
+import os
+import re
 import sqlalchemy
 from flask import flash
 from flask import redirect
@@ -21,6 +21,7 @@ from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_CONTROLLERS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
+from mycodo.config import PATH_OUTPUTS_CUSTOM
 from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
@@ -58,6 +59,7 @@ from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.modules import load_module_from_file
+from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.send_data import send_email
 from mycodo.utils.system_pi import all_conversions
 from mycodo.utils.system_pi import assure_path_exists
@@ -654,6 +656,166 @@ def settings_input_delete(form):
         flash('Frontend reloaded to scan for new Input Modules', 'success')
 
     flash_success_errors(error, action, url_for('routes_settings.settings_input'))
+
+
+def settings_output_import(form):
+    """
+    Receive an output module file, check it for errors, add it to Mycodo output list
+    """
+    action = '{action} {controller}'.format(
+        action=gettext("Import"),
+        controller=TRANSLATIONS['output']['title'])
+    error = []
+
+    output_info = None
+
+    try:
+        # correct_format = 'Mycodo_MYCODOVERSION_Settings_DBVERSION_HOST_DATETIME.zip'
+        install_dir = os.path.abspath(INSTALL_DIRECTORY)
+        tmp_directory = os.path.join(install_dir, 'mycodo/outputs/tmp_outputs')
+        assure_path_exists(tmp_directory)
+        assure_path_exists(PATH_OUTPUTS_CUSTOM)
+        tmp_name = 'tmp_output_testing.py'
+        full_path_tmp = os.path.join(tmp_directory, tmp_name)
+
+        if not form.import_output_file.data:
+            error.append('No file present')
+        elif form.import_output_file.data.filename == '':
+            error.append('No file name')
+        else:
+            form.import_output_file.data.save(full_path_tmp)
+
+        try:
+            output_info = load_module_from_file(full_path_tmp, 'outputs')
+            if not hasattr(output_info, 'OUTPUT_INFORMATION'):
+                error.append("Could not load OUTPUT_INFORMATION dictionary from "
+                             "the uploaded output module")
+        except Exception:
+            error.append("Could not load uploaded file as a python module:\n"
+                         "{}".format(traceback.format_exc()))
+
+        dict_outputs = parse_output_information()
+        list_outputs = []
+        for each_key in dict_outputs.keys():
+            list_outputs.append(each_key.lower())
+
+        if not error:
+            if 'output_name_unique' not in output_info.OUTPUT_INFORMATION:
+                error.append(
+                    "'output_name_unique' not found in "
+                    "OUTPUT_INFORMATION dictionary")
+            elif output_info.OUTPUT_INFORMATION['output_name_unique'] == '':
+                error.append("'output_name_unique' is empty")
+            elif output_info.OUTPUT_INFORMATION['output_name_unique'].lower() in list_outputs:
+                error.append(
+                    "'output_name_unique' is not unique, there "
+                    "is already an output with that name ({})".format(
+                        output_info.OUTPUT_INFORMATION['output_name_unique']))
+
+            if 'output_name' not in output_info.OUTPUT_INFORMATION:
+                error.append(
+                    "'output_name' not found in OUTPUT_INFORMATION dictionary")
+            elif output_info.OUTPUT_INFORMATION['output_name'] == '':
+                error.append("'output_name' is empty")
+
+            if 'measurements_dict' not in output_info.OUTPUT_INFORMATION:
+                error.append(
+                    "'measurements_dict' not found in "
+                    "OUTPUT_INFORMATION dictionary")
+            elif not output_info.OUTPUT_INFORMATION['measurements_dict']:
+                if ('measurements_variable_amount' in output_info.OUTPUT_INFORMATION and
+                   output_info.OUTPUT_INFORMATION['measurements_variable_amount']):
+                    pass
+                else:
+                    error.append("'measurements_dict' list is empty")
+            else:
+                # Check that units and measurements exist in database
+                for _, each_unit_measure in output_info.OUTPUT_INFORMATION['measurements_dict'].items():
+                    if (each_unit_measure['unit'] not in UNITS and
+                            not Unit.query.filter(Unit.name_safe == each_unit_measure['unit']).count()):
+                        error.append(
+                            "Unit not found in database. "
+                            "Add the unit '{}' to the database before importing.".format(
+                                each_unit_measure['unit']))
+                    if (each_unit_measure['measurement'] not in MEASUREMENTS and
+                            not Measurement.query.filter(Measurement.name_safe == each_unit_measure['measurement']).count()):
+                        error.append(
+                            "Measurement not found in database. "
+                            "Add the measurement '{}' to the database before importing.".format(
+                                each_unit_measure['measurement']))
+
+            if 'dependencies_module' in output_info.OUTPUT_INFORMATION:
+                if not isinstance(output_info.OUTPUT_INFORMATION['dependencies_module'], list):
+                    error.append("'dependencies_module' must be a list of tuples")
+                else:
+                    for each_dep in output_info.OUTPUT_INFORMATION['dependencies_module']:
+                        if not isinstance(each_dep, tuple):
+                            error.append(
+                                "'dependencies_module' must be a list of "
+                                "tuples")
+                        elif len(each_dep) != 3:
+                            error.append(
+                                "'dependencies_module': tuples in list must "
+                                "have 3 items")
+                        elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
+                            error.append(
+                                "'dependencies_module': tuples in list must "
+                                "not be empty")
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'pip-git', 'apt']:
+                            error.append(
+                                "'dependencies_module': first in tuple "
+                                "must be 'internal', 'pip-pypi', 'pip-git', "
+                                "or 'apt'")
+
+        if not error:
+            # Determine filename
+            unique_name = '{}.py'.format(output_info.OUTPUT_INFORMATION['output_name_unique'].lower())
+
+            # Move module from temp directory to custom_output directory
+            full_path_final = os.path.join(PATH_OUTPUTS_CUSTOM, unique_name)
+            os.rename(full_path_tmp, full_path_final)
+
+            # Reload frontend to refresh the outputs
+            cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+                path=install_dir)
+            subprocess.Popen(cmd, shell=True)
+            flash('Frontend reloaded to scan for new Output Modules', 'success')
+
+    except Exception as err:
+        error.append("Exception: {}".format(err))
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_output'))
+
+
+def settings_output_delete(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Import"),
+        controller=TRANSLATIONS['output']['title'])
+    error = []
+
+    output_device_name = form.output_id.data
+    file_name = '{}.py'.format(form.output_id.data.lower())
+    full_path_file = os.path.join(PATH_OUTPUTS_CUSTOM, file_name)
+
+    if not error:
+        # Check if any Output entries exist
+        output_dev = Output.query.filter(
+            Output.output_type == output_device_name).count()
+        if output_dev:
+            error.append("Cannot delete Output Module if there are still "
+                         "Output entries using it. Delete all Output entries "
+                         "that use this module before deleting the module.")
+
+    if not error:
+        os.remove(full_path_file)
+
+        # Reload frontend to refresh the outputs
+        cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+            path=os.path.abspath(INSTALL_DIRECTORY))
+        subprocess.Popen(cmd, shell=True)
+        flash('Frontend reloaded to scan for new Output Modules', 'success')
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_output'))
 
 
 def settings_measurement_add(form):

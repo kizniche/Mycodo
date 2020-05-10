@@ -21,8 +21,6 @@ from mycodo.config import FUNCTION_INFO
 from mycodo.config import LCD_INFO
 from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
-from mycodo.config import OUTPUTS_PWM
-from mycodo.config import OUTPUT_INFO
 from mycodo.config import PATH_CAMERAS
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
@@ -31,7 +29,6 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import CustomController
-from mycodo.databases.models import Widget
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
@@ -41,9 +38,11 @@ from mycodo.databases.models import PID
 from mycodo.databases.models import Role
 from mycodo.databases.models import Trigger
 from mycodo.databases.models import User
+from mycodo.databases.models import Widget
 from mycodo.mycodo_flask.extensions import db
 from mycodo.utils.controllers import parse_controller_information
 from mycodo.utils.inputs import parse_input_information
+from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import dpkg_package_exists
@@ -488,11 +487,12 @@ def choices_output_devices(output):
     return choices
 
 
-def choices_outputs_pwm(output, dict_units, dict_measurements):
+def choices_outputs_pwm(output, dict_units, dict_measurements, dict_outputs):
     """ populate form multi-select choices from Output entries """
     choices = []
     for each_output in output:
-        if each_output.output_type in OUTPUTS_PWM:
+        if ('output_types' in dict_outputs[each_output.output_type] and
+                'pwm' in dict_outputs[each_output.output_type]['output_types']):
             choices = form_output_choices(
                 choices, each_output, dict_units, dict_measurements)
     return choices
@@ -1088,6 +1088,7 @@ def return_dependencies(device_type):
     list_dependencies = [
         parse_controller_information(),
         parse_input_information(),
+        parse_output_information(),
         CALIBRATION_INFO,
         CAMERA_INFO,
         FUNCTION_ACTION_INFO,
@@ -1095,7 +1096,6 @@ def return_dependencies(device_type):
         LCD_INFO,
         MATH_INFO,
         METHOD_INFO,
-        OUTPUT_INFO
     ]
 
     for each_section in list_dependencies:
@@ -1208,3 +1208,13 @@ def generate_form_input_list(dict_inputs):
     for each_input in list_tuples_sorted:
         list_inputs_sorted.append(each_input[0])
     return list_inputs_sorted
+
+
+def generate_form_output_list(dict_outputs):
+    # Sort dictionary entries by output_name
+    # Results in list of sorted dictionary keys
+    list_tuples_sorted = sorted(dict_outputs.items(), key=lambda x: (x[1]['output_name']))
+    list_outputs_sorted = []
+    for each_output in list_tuples_sorted:
+        list_outputs_sorted.append(each_output[0])
+    return list_outputs_sorted

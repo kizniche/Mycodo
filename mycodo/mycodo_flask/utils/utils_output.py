@@ -6,8 +6,6 @@ from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config import OUTPUTS_PWM
-from mycodo.config import OUTPUT_INFO
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
@@ -18,6 +16,8 @@ from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
+from mycodo.utils.outputs import outputs_pwm
+from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import list_to_csv
@@ -35,6 +35,21 @@ def output_add(form_add):
         controller=TRANSLATIONS['output']['title'])
     error = []
 
+    dict_outputs = parse_output_information()
+
+    # only one comma should be in the output_type string
+    if form_add.output_type.data.count(',') > 1:
+        error.append("Invalid output module formatting. It appears there is "
+                     "a comma in either 'output_name_unique' or 'interfaces'.")
+
+    if form_add.output_type.data.count(',') == 1:
+        output_type = form_add.output_type.data.split(',')[0]
+        output_interface = form_add.output_type.data.split(',')[1]
+    else:
+        output_type = ''
+        output_interface = ''
+        error.append("Invalid output string (must be a comma-separated string)")
+
     dep_unmet, _ = return_dependencies(form_add.output_type.data.split(',')[0])
     if dep_unmet:
         list_unmet_deps = []
@@ -45,9 +60,6 @@ def output_add(form_add):
             "{dep}".format(dev=form_add.output_type.data,
                            dep=', '.join(list_unmet_deps)))
 
-    if len(form_add.output_type.data.split(',')) < 2:
-        error.append("Must select an Output type")
-
     if not is_int(form_add.output_quantity.data, check_range=[1, 20]):
         error.append("{error}. {accepted_values}: 1-20".format(
             error=gettext("Invalid quantity"),
@@ -57,13 +69,10 @@ def output_add(form_add):
     if not error:
         for _ in range(0, form_add.output_quantity.data):
             try:
-                output_type = form_add.output_type.data.split(',')[0]
-                interface = form_add.output_type.data.split(',')[1]
-
                 new_output = Output()
                 new_output.name = "Name"
                 new_output.output_type = output_type
-                new_output.interface = interface
+                new_output.interface = output_interface
 
                 if output_type in ['wired',
                                    'wireless_rpi_rf',
@@ -72,7 +81,7 @@ def output_add(form_add):
                     new_output.measurement = 'duration_time'
                     new_output.unit = 's'
 
-                elif output_type in OUTPUTS_PWM:
+                elif output_type in outputs_pwm():
                     new_output.measurement = 'duty_cycle'
                     new_output.unit = 'percent'
 
@@ -131,12 +140,12 @@ with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
                 elif output_type == 'atlas_ezo_pmp':
                     new_output.output_mode = 'fastest_flow_rate'
                     new_output.flow_rate = 10
-                    if interface == 'FTDI':
+                    if output_interface == 'FTDI':
                         new_output.location = '/dev/ttyUSB0'
-                    elif interface == 'I2C':
+                    elif output_interface == 'I2C':
                         new_output.location = '0x67'
                         new_output.i2c_bus = 1
-                    elif interface == 'UART':
+                    elif output_interface == 'UART':
                         new_output.location = '/dev/ttyAMA0'
                         new_output.baud_rate = 9600
 
@@ -148,18 +157,22 @@ with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
                         display_order, new_output.unique_id)
                     db.session.commit()
 
-                    # Add device measurements
-                    for measurement, measure_data in OUTPUT_INFO[new_output.output_type]['measure'].items():
-                        for unit, unit_data in measure_data.items():
-                            for channel, _ in unit_data.items():
-                                new_measurement = DeviceMeasurements()
-                                new_measurement.device_id = new_output.unique_id
-                                new_measurement.name = ''
-                                new_measurement.is_enabled = True
-                                new_measurement.measurement = measurement
-                                new_measurement.unit = unit
-                                new_measurement.channel = channel
-                                new_measurement.save()
+                    #
+                    # If measurements defined in the Output Module
+                    #
+
+                    if ('measurements_dict' in dict_outputs[output_type] and
+                            dict_outputs[output_type]['measurements_dict'] != []):
+                        for each_channel in dict_outputs[output_type]['measurements_dict']:
+                            measure_info = dict_outputs[output_type]['measurements_dict'][each_channel]
+                            new_measurement = DeviceMeasurements()
+                            if 'name' in measure_info:
+                                new_measurement.name = measure_info['name']
+                            new_measurement.device_id = new_output.unique_id
+                            new_measurement.measurement = measure_info['measurement']
+                            new_measurement.unit = measure_info['unit']
+                            new_measurement.channel = each_channel
+                            new_measurement.save()
 
                     manipulate_output('Add', new_output.unique_id)
             except sqlalchemy.exc.OperationalError as except_msg:
@@ -402,35 +415,5 @@ def output_on_off(form_output):
 
 
 def get_all_output_states():
-    output = Output.query.all()
     daemon_control = DaemonControl()
-    states = []
-
-    for each_output in output:
-        each_state = {'unique_id': each_output.unique_id}
-        if each_output.output_type == 'wired' and each_output.pin and -1 < each_output.pin < 40:
-            try:
-                from RPi import GPIO
-                GPIO.setmode(GPIO.BCM)
-                GPIO.setwarnings(False)
-                GPIO.setup(each_output.pin, GPIO.OUT)
-                if GPIO.input(each_output.pin) == each_output.on_state:
-                    each_state['state'] = 'on'
-                else:
-                    each_state['state'] = 'off'
-            except:
-                logger.error(
-                    "RPi.GPIO and Raspberry Pi required for this action")
-        elif (each_output.output_type in ['command',
-                                          'command_pwm',
-                                          'python',
-                                          'python_pwm',
-                                          'atlas_ezo_pmp'] or
-              (each_output.output_type in ['pwm', 'wireless_rpi_rf'] and
-               each_output.pin and
-               -1 < each_output.pin < 40)):
-            each_state['state'] = daemon_control.output_state(each_output.unique_id)
-        else:
-            each_state['state'] = None
-        states.append(each_state)
-    return states
+    return daemon_control.output_states_all()

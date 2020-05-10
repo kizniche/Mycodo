@@ -5,7 +5,7 @@
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="pre_output_id" name="pre_output_id" title="{{dict_translation['pre_output_id']['phrase']}}.">
       <option value="">Disabled</option>
-      {% for each_output in output if each_output.output_type not in OUTPUTS_PWM -%}
+      {% for each_output in output if each_output.output_type not in outputs_pwm -%}
         <option value="{{each_output.unique_id}}"{% if each_input.pre_output_id == each_output.unique_id %} selected{% endif %}>{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
       {% endfor -%}
     </select>

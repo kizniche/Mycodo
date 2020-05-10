@@ -25,7 +25,7 @@
 {% set is_pwm = [] -%}
 {% set is_ezo_pump = [] -%}
 {% for each_output in output if each_output.unique_id == device_id %}
-  {% if each_output.output_type in OUTPUTS_PWM %}
+  {% if each_output.output_type in outputs_pwm %}
     {%- do is_pwm.append(1) %}
   {% elif each_output.output_type in ['atlas_ezo_pmp'] %}
     {%- do is_ezo_pump.append(1) %}

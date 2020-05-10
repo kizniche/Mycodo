@@ -33,8 +33,8 @@ For technical support discussion, use the `Mycodo Forum <https://kylegabriel.com
 Features
 --------
 
--  `Inputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input>`__ that record measurements from a number of places, including sensors, GPIO pin states, analog-to-digital converters, and custom input modules.
--  `Outputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output>`__ that perform actions such as switching GPIO pins high/low, generating pulse-width-modulation, sending information to LCD displays, and executing Linux shell commands and Python code.
+-  `Inputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input>`__ that record measurements from a number of places, including sensors, GPIO pin states, analog-to-digital converters, etc. (or write your own custom input module).
+-  `Outputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output>`__ that perform actions such as switching GPIO pins high/low, generating PWM signals, executing Linux shell commands and Python code, etc. (or write your own custom output module).
 -  `Web Interface <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#web-interface>`__ for securely accessing the system using a web browser on your local network or anywhere in the world with an internet connection.
 -  `Dashboard <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#dashboard>`__ that display configurable widgets, including interactive live and historical graphs, gauges, output state indicators, text measurements.
 -  `Proportional Integral Derivative (PID) controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-controller>`__ that regulate environmental conditions with feedback loops utilizing Inputs and Outputs.

@@ -249,6 +249,9 @@ class DaemonControl:
     def output_state(self, output_id):
         return self.proxy().output_state(output_id)
 
+    def output_states_all(self):
+        return self.proxy().output_states_all()
+
     #
     # PID Controller
     #
