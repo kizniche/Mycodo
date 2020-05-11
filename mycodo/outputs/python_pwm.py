@@ -66,7 +66,7 @@ class OutputModule(AbstractOutput):
             return self.pwm_state
         return False
 
-    def _is_setup(self):
+    def is_setup(self):
         if self.output_run_python_pwm:
             return True
         return False

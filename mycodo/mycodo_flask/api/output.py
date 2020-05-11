@@ -177,13 +177,11 @@ class Outputs(Resource):
 
         try:
             if state is not None and duration is not None:
-                return_ = control.output_on_off(
-                    unique_id, state, amount=duration)
+                return_ = control.output_on_off(unique_id, state, amount=duration)
             elif state is not None:
                 return_ = control.output_on_off(unique_id, state)
             elif duty_cycle is not None:
-                return_ = control.output_duty_cycle(
-                    unique_id, duty_cycle=duty_cycle)
+                return_ = control.output_on(unique_id, duty_cycle=duty_cycle)
             else:
                 return {'message': 'Insufficient payload'}, 460
 

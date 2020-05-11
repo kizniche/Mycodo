@@ -1205,7 +1205,7 @@ Output Options
 +------------------------------+---------------------------------------------+
 
 Custom Outputs
-~~~~~~~~~~~~~~
+--------------
 
 Note: This is a work in progress!
 
@@ -1230,7 +1230,7 @@ Open any of the built-in modules located in the outputs directory
 (https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/) for
 examples of the proper formatting.
 
-There's also minimal output module template as an example:
+There's also a minimal output module template as an example:
 
 https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/examples/example_dummy_output.py
 

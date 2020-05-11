@@ -20,7 +20,7 @@ OUTPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
 
     'on_state_internally_handled': False,
-    'output_types': ['on_off', 'duration'],
+    'output_types': ['on_off'],
 
     'message': 'Information about this output.',
 
@@ -58,7 +58,7 @@ class OutputModule(AbstractOutput):
             self.logger.error(
                 "RPi.GPIO and Raspberry Pi required for this action")
 
-    def _is_setup(self):
+    def is_setup(self):
         try:
             self.GPIO.setmode(self.GPIO.BCM)
             self.GPIO.setup(self.output_pin, self.GPIO.OUT)

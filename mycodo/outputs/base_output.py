@@ -8,15 +8,14 @@ Output.
 All Outputs should inherit from this class and overwrite methods that raise
 NotImplementedErrors
 """
-import datetime
 import logging
 import time
+import timeit
 
 import filelock
 import os
 
 from mycodo.abstract_base_controller import AbstractBaseController
-from mycodo.utils.database import db_retrieve_table_daemon
 
 
 class AbstractOutput(AbstractBaseController):
@@ -30,8 +29,11 @@ class AbstractOutput(AbstractBaseController):
         else:
             super(AbstractOutput, self).__init__(None, testing=testing, name=__name__)
 
+        self.startup_timer = timeit.default_timer()
+
         self.logger = None
         self.setup_logger(testing=testing, name=name, output_dev=output)
+
         self.output = output
         self.lock = {}
         self.lock_file = None
@@ -70,9 +72,9 @@ class AbstractOutput(AbstractBaseController):
             "this method".format(cls=type(self).__name__))
         raise NotImplementedError
 
-    def _is_setup(self):
+    def is_setup(self):
         self.logger.error(
-            "{cls} did not overwrite the _is_setup() method. All "
+            "{cls} did not overwrite the is_setup() method. All "
             "subclasses of the AbstractOutput class are required to overwrite "
             "this method".format(cls=type(self).__name__))
         raise NotImplementedError
@@ -83,6 +85,23 @@ class AbstractOutput(AbstractBaseController):
             "subclasses of the AbstractOutput class are required to overwrite "
             "this method".format(cls=type(self).__name__))
         raise NotImplementedError
+
+    def stop_output(self):
+        """ Called when Output is stopped """
+        self.running = False
+        try:
+            if self.lock_file:
+                self.lock_release(self.lock_file)
+        except:
+            pass
+
+    #
+    # Do not overwrite the function below
+    #
+
+    def init_post(self):
+        self.logger.info("Initialized in {:.1f} ms".format(
+            (timeit.default_timer() - self.startup_timer) * 1000))
 
     def setup_logger(self, testing=None, name=None, output_dev=None):
         name = name if name else __name__
@@ -97,18 +116,10 @@ class AbstractOutput(AbstractBaseController):
             else:
                 self.logger.setLevel(logging.INFO)
 
-    def start_output(self):
-        """ Not used yet """
-        self.running = True
-
-    def stop_output(self):
-        """ Called when Output is deactivated """
-        self.running = False
-        try:
-            if self.lock_file:
-                self.lock_release(self.lock_file)
-        except:
-            pass
+    def shutdown(self, shutdown_timer):
+        self.stop_output()
+        self.logger.info("Stopped in {:.1f} ms".format(
+            (timeit.default_timer() - shutdown_timer) * 1000))
 
     def lock_acquire(self, lockfile, timeout):
         """ Non-blocking locking method """

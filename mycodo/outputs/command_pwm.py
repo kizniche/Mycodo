@@ -68,7 +68,7 @@ class OutputModule(AbstractOutput):
     def is_on(self):
         return self.pwm_state
 
-    def _is_setup(self):
+    def is_setup(self):
         return True
 
     def setup_output(self):

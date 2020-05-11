@@ -55,7 +55,7 @@ class Output(CRUDMixin, db.Model):
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
-    def _is_setup(self):
+    def is_setup(self):
         """
         This function checks to see if the GPIO pin is setup and ready to use.  This is for safety
         and to make sure we don't blow anything.

@@ -142,7 +142,7 @@ class OutputModule(AbstractOutput):
                     if is_on:
                         return True
 
-    def _is_setup(self):
+    def is_setup(self):
         if self.atlas_command:
             return True
         return False

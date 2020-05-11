@@ -28,7 +28,7 @@ OUTPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
 
     'on_state_internally_handled': True,
-    'output_types': ['on_off', 'duration'],
+    'output_types': ['on_off'],
 
     'message': 'Information about this output.',
 
@@ -61,7 +61,7 @@ class OutputModule(AbstractOutput):
     def is_on(self):
         pass
 
-    def _is_setup(self):
+    def is_setup(self):
         if self.output_run_python_on and self.output_run_python_off:
             return True
         return False

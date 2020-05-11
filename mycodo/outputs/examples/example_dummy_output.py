@@ -15,15 +15,21 @@ measurements_dict = {
 
 # Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'example_output_dummy',
-    'output_name': lazy_gettext('Example Dummy Output'),
+    'output_name_unique': 'example_output_dummy',  # a unique output name used to distinguish it from others
+    'output_name': lazy_gettext('Example Dummy Output'),  # A friendly/common name for the output
     'measurements_dict': measurements_dict,
 
+    # Should the output controller handle storing whether the output is on or off?
+    # If this output module should handle determining the output state, choose False
     'on_state_internally_handled': False,
-    'output_types': ['on_off', 'duration'],
 
+    # Type of output. Options: "on_off", "pwm", "volume"
+    'output_types': ['on_off'],
+
+    # A message to display at the top of the output options
     'message': 'Information about this output.',
 
+    # Any dependencies required by the output module
     'dependencies_module': []
 }
 
@@ -36,8 +42,12 @@ class OutputModule(AbstractOutput):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
         if not testing:
+            # Variable to store whether the output has been successfully set up
             self.output_setup = None
+
+            # Since on_state_internally_handled is False, we will store the state of the output
             self.output_state = False
+
             self.logger.info("Output class initialized")
 
     def output_switch(self, state, amount=None, duty_cycle=None):
@@ -58,7 +68,7 @@ class OutputModule(AbstractOutput):
             return self.output_state
         return False
 
-    def _is_setup(self):
+    def is_setup(self):
         """Returns whether the output has successfully been set up"""
         if self.output_setup:
             return True

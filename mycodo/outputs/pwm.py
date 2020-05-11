@@ -85,7 +85,7 @@ class OutputModule(AbstractOutput):
             self.pwm_output.get_PWM_dutycycle(self.output_pin)
         return False
 
-    def _is_setup(self):
+    def is_setup(self):
         if self.pwm_output:
             return True
         return False
