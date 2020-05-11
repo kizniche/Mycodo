@@ -940,12 +940,11 @@ def output_mod(output_id, state, out_type, amount):
     if not utils_general.user_has_permission('edit_controllers'):
         return 'Insufficient user permissions to manipulate outputs'
 
-    dict_outputs = parse_output_information()
-
     daemon = DaemonControl()
     if (state in ['on', 'off'] and out_type == 'sec' and
             (str_is_float(amount) and float(amount) >= 0)):
-        out_status = daemon.output_on_off(output_id, state, float(amount))
+        out_status = daemon.output_on_off(
+            output_id, state, amount=float(amount))
         if out_status[0]:
             return 'ERROR: {}'.format(out_status[1])
         else:
@@ -954,8 +953,7 @@ def output_mod(output_id, state, out_type, amount):
     elif (state == 'on' and out_type in outputs_pwm() and
             (str_is_float(amount) and float(amount) >= 0)):
         out_status = daemon.output_on(
-            output_id,
-            duty_cycle=float(amount))
+            output_id, duty_cycle=float(amount))
         if out_status[0]:
             return 'ERROR: {}'.format(out_status[1])
         else:

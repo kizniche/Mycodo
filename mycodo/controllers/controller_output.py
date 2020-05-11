@@ -614,12 +614,10 @@ class OutputController(AbstractController, threading.Thread):
                     duty_cycle = 100.0 - abs(duty_cycle)
 
                 self.output_switch(output_id, 'on', duty_cycle=duty_cycle)
-                msg = "PWM {id} ({name}) set to a duty cycle of {dc:.2f}% " \
-                      "at {hertz} Hz".format(
+                msg = "Output {id} ({name}) set to a duty cycle of {dc:.2f}%".format(
                         id=self.output_unique_id[output_id],
                         name=self.output_name[output_id],
-                        dc=abs(duty_cycle),
-                        hertz=self.pwm_hertz[output_id])
+                        dc=abs(duty_cycle))
                 self.logger.debug(msg)
 
                 # Record the time the PWM was turned on

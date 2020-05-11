@@ -27,7 +27,7 @@ OUTPUT_INFORMATION = {
     'output_name': lazy_gettext('PWM (Python Command)'),
     'measurements_dict': measurements_dict,
 
-    'on_state_internally_handled': True,
+    'on_state_internally_handled': False,
     'output_types': ['pwm'],
 
     'message': 'Information about this output.',
