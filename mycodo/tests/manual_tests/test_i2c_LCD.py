@@ -11,7 +11,7 @@ import RPi.GPIO as GPIO
 import os
 from smbus2 import SMBus
 
-# Check for root priveileges
+# Check for root privileges
 if not os.geteuid() == 0:
     sys.exit("Script must be executed as root")
 

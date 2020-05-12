@@ -196,6 +196,7 @@ def output_mod(form_output):
         mod_output = Output.query.filter(
             Output.unique_id == form_output.output_id.data).first()
         mod_output.name = form_output.name.data
+        mod_output.log_level_debug = form_output.log_level_debug.data
         mod_output.amps = form_output.amps.data
 
         if form_output.trigger_functions_at_start.data:

@@ -5,6 +5,7 @@
 from flask_babel import lazy_gettext
 
 from mycodo.outputs.base_output import AbstractOutput
+from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.system_pi import cmd_output
 
 # Measurements
@@ -24,7 +25,9 @@ OUTPUT_INFORMATION = {
     'on_state_internally_handled': False,
     'output_types': ['pwm'],
 
-    'message': 'Information about this output.',
+    'message': 'Commands will be executed in the Linux shell by the specified user when the duty cycle '
+               'is set for this output. The string "((duty_cycle))" in the command will be replaced with '
+               'the duty cycle being set prior to execution.',
 
     'dependencies_module': []
 }
@@ -40,25 +43,37 @@ class OutputModule(AbstractOutput):
         self.pwm_state = None
 
         if not testing:
+            self.output_unique_id = output.unique_id
             self.output_pwm_command = output.pwm_command
             self.output_linux_command_user = output.linux_command_user
+            self.pwm_invert_signal = output.pwm_invert_signal
 
     def output_switch(self, state, amount=None, duty_cycle=None):
+        measure_dict = measurements_dict.copy()
+
         if self.output_pwm_command:
-            if state == 'on' and 100 >= duty_cycle >= 0:
-                cmd = self.output_pwm_command.replace(
-                    '((duty_cycle))', str(duty_cycle))
-                cmd_return, _, cmd_status = cmd_output(
-                    cmd, user=self.output_linux_command_user)
-                self.pwm_state = abs(duty_cycle)
+            if state == 'on' and 0 <= duty_cycle <= 100:
+                if self.pwm_invert_signal:
+                    duty_cycle = 100.0 - abs(duty_cycle)
             elif state == 'off':
-                cmd = self.output_pwm_command.replace(
-                    '((duty_cycle))', str(0))
-                cmd_return, _, cmd_status = cmd_output(
-                    cmd, user=self.output_linux_command_user)
-                self.pwm_state = None
+                if self.pwm_invert_signal:
+                    duty_cycle = 100
+                else:
+                    duty_cycle = 0
             else:
                 return
+
+            self.pwm_state = duty_cycle
+
+            cmd = self.output_pwm_command.replace(
+                '((duty_cycle))', str(duty_cycle))
+            cmd_return, _, cmd_status = cmd_output(
+                cmd, user=self.output_linux_command_user)
+
+            measure_dict[0]['value'] = self.pwm_state
+            add_measurements_influxdb(self.output_unique_id, measure_dict)
+
+            self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=duty_cycle))
             self.logger.debug(
                 "Output duty cycle {duty_cycle} command returned: "
                 "{stat}: '{ret}'".format(
@@ -67,7 +82,9 @@ class OutputModule(AbstractOutput):
                     ret=cmd_return))
 
     def is_on(self):
-        return self.pwm_state
+        if self.pwm_state:
+            return self.pwm_state
+        return False
 
     def is_setup(self):
         return True

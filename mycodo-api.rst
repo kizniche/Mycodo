@@ -366,6 +366,19 @@ Parameters:
 
 -  **unique_id** - The unique ID of the controller.
 
+
+--------------
+
+**send_email**\ (*recipients*, *message*, *subject*)
+
+Send an email with the credentials configured for alert notifications.
+
+Parameters:
+
+-  **recipients** - The email address (string) or addresses (list of strings) to send the email.
+-  **message** - The body of the email.
+-  **subject** - The subject of the email.
+
 --------------
 
 **send_infrared_code_broadcast**\ (*code*)

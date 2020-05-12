@@ -5,7 +5,7 @@
 from flask_babel import lazy_gettext
 
 from mycodo.outputs.base_output import AbstractOutput
-from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.influx import add_measurements_influxdb
 
 # Measurements
 measurements_dict = {
@@ -23,7 +23,7 @@ OUTPUT_INFORMATION = {
 
     'output_types': ['pwm'],
 
-    'message': 'Information about this output.',
+    'message': 'See the PWM section of the manual for PWM information and determining which pins may be used for each library option. ',
 
     'dependencies_module': []
 }
@@ -43,46 +43,48 @@ class OutputModule(AbstractOutput):
             import pigpio
             self.pigpio = pigpio
 
+            self.output_unique_id = output.unique_id
             self.pwm_library = output.pwm_library
             self.output_pin = output.pin
             self.pwm_hertz = output.pwm_hertz
+            self.pwm_invert_signal = output.pwm_invert_signal
 
     def output_switch(self, state, amount=None, duty_cycle=None):
+        measure_dict = measurements_dict.copy()
+
         if state == 'on':
-            if self.pwm_library == 'pigpio_hardware':
-                self.pwm_output.hardware_PWM(
-                    self.output_pin,
-                    self.pwm_hertz,
-                    int(abs(duty_cycle) * 10000))
-            elif self.pwm_library == 'pigpio_any':
-                self.pwm_output.set_PWM_frequency(
-                    self.output_pin,
-                    self.pwm_hertz)
-                calc_duty_cycle = int((abs(duty_cycle) / 100.0) * 255)
-                if calc_duty_cycle > 255:
-                    calc_duty_cycle = 255
-                if calc_duty_cycle < 0:
-                    calc_duty_cycle = 0
-                self.pwm_output.set_PWM_dutycycle(
-                    self.output_pin,
-                    calc_duty_cycle)
-            self.pwm_state = abs(duty_cycle)
+            if self.pwm_invert_signal:
+                duty_cycle = 100.0 - abs(duty_cycle)
         elif state == 'off':
-            if self.pwm_library == 'pigpio_hardware':
-                self.pwm_output.hardware_PWM(
-                    self.output_pin,
-                    self.pwm_hertz, 0)
-            elif self.pwm_library == 'pigpio_any':
-                self.pwm_output.set_PWM_frequency(
-                    self.output_pin,
-                    self.pwm_hertz)
-                self.pwm_output.set_PWM_dutycycle(
-                    self.output_pin, 0)
-            self.pwm_state = None
+            if self.pwm_invert_signal:
+                duty_cycle = 100
+            else:
+                duty_cycle = 0
+
+        self.pwm_state = duty_cycle
+
+        if self.pwm_library == 'pigpio_hardware':
+            self.pwm_output.hardware_PWM(
+                self.output_pin, self.pwm_hertz, int(abs(duty_cycle) * 10000))
+        elif self.pwm_library == 'pigpio_any':
+            self.pwm_output.set_PWM_frequency(self.output_pin, self.pwm_hertz)
+            self.pwm_output.set_PWM_range(self.output_pin, 1000)
+            self.pwm_output.set_PWM_dutycycle(
+                self.output_pin, self.duty_cycle_to_pigpio_value(duty_cycle))
+            self.pwm_state = abs(duty_cycle)
+
+        measure_dict[0]['value'] = duty_cycle
+        add_measurements_influxdb(self.output_unique_id, measure_dict)
+
+        self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=duty_cycle))
 
     def is_on(self):
         if self.pwm_output:
-            self.pwm_output.get_PWM_dutycycle(self.output_pin)
+            response = self.pwm_output.get_PWM_dutycycle(self.output_pin)
+            if self.pwm_library == 'pigpio_hardware':
+                return response / 10000
+            elif self.pwm_library == 'pigpio_any':
+                return self.pigpio_value_to_duty_cycle(response)
         return False
 
     def is_setup(self):
@@ -91,14 +93,14 @@ class OutputModule(AbstractOutput):
         return False
 
     def setup_output(self):
+        error = []
         if self.output_pin is None:
-            self.logger.error("Invalid pin for output: {}.".format(
-                self.output_pin))
-            return
-
+            error.append("Pin must be set")
         if self.pwm_hertz <= 0:
-            msg = "PWM Hertz must be a positive value"
-            self.logger.error(msg)
+            error.append("PWM Hertz must be a positive value")
+        if error:
+            for each_error in error:
+                self.logger.error(each_error)
             return
 
         try:
@@ -121,3 +123,21 @@ class OutputModule(AbstractOutput):
             self.logger.exception(
                 "Output was unable to be setup on pin {pin}: {err}".format(
                     pin=self.output_pin, err=except_msg))
+
+    @staticmethod
+    def duty_cycle_to_pigpio_value(duty_cycle):
+        pigpio_value = int((abs(duty_cycle) / 100.0) * 1000)
+        if pigpio_value > 1000:
+            pigpio_value = 1000
+        elif pigpio_value < 0:
+            pigpio_value = 0
+        return pigpio_value
+
+    @staticmethod
+    def pigpio_value_to_duty_cycle(pigpio_value):
+        duty_cycle = (abs(pigpio_value) / 1000.0) * 100
+        if duty_cycle > 100:
+            duty_cycle = 100
+        elif duty_cycle < 0:
+            duty_cycle = 0
+        return duty_cycle

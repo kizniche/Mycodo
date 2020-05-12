@@ -22,7 +22,8 @@ OUTPUT_INFORMATION = {
     'on_state_internally_handled': False,
     'output_types': ['on_off'],
 
-    'message': 'Information about this output.',
+    'message': 'The specified GPIO pin will be set high (3.3 volts) when turned on, and low (0 volts) '
+               'when turned off.',
 
     'dependencies_module': []
 }
@@ -34,6 +35,8 @@ class OutputModule(AbstractOutput):
     """
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
+
+        self.output_setup = False
 
         if not testing:
             import RPi.GPIO as GPIO
@@ -59,13 +62,7 @@ class OutputModule(AbstractOutput):
                 "RPi.GPIO and Raspberry Pi required for this action")
 
     def is_setup(self):
-        try:
-            self.GPIO.setmode(self.GPIO.BCM)
-            self.GPIO.setup(self.output_pin, self.GPIO.OUT)
-            return True
-        except:
-            self.logger.error(
-                "RPi.GPIO and Raspberry Pi required for this action")
+        return self.output_setup
 
     def setup_output(self):
         if self.output_pin is None:
@@ -79,6 +76,7 @@ class OutputModule(AbstractOutput):
                 self.GPIO.setwarnings(True)
                 self.GPIO.setup(self.output_pin, self.GPIO.OUT)
                 self.GPIO.output(self.output_pin, not self.output_on_state)
+                self.output_setup = True
             except:
                 self.logger.error(
                     "RPi.GPIO and Raspberry Pi required for this action")

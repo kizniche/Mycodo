@@ -1100,7 +1100,7 @@ Output Options
 +------------------------------+---------------------------------------------+
 | Setting                      | Description                                 |
 +==============================+=============================================+
-| Pin                          | This is the GPIO that will be the signal to |
+| Pin (GPIO)                   | This is the GPIO that will be the signal to |
 |                              | the output, using BCM numbering.            |
 +------------------------------+---------------------------------------------+
 | WiringPi Pin                 | This is the GPIO that will be the signal to |
@@ -1282,10 +1282,8 @@ greatly depending on load and application, for example
 The term duty cycle describes the proportion of 'on' time to the regular
 interval or 'period' of time; a low duty cycle corresponds to low power,
 because the power is off for most of the time. Duty cycle is expressed
-in percent, 100% being fully on.
-
-PWM pins can be set up on the ``Setup -> Output``\ \` page, then it may
-be used by a PWM PID Controller.
+in percent, with 0% being always off, 50% being off for half of the time
+and on for half of the time, and 100% being always on.
 
 PWM (GPIO) Options
 ------------------
@@ -1300,20 +1298,17 @@ PWM (GPIO) Options
 |                              | 40 kHz PWM signal. See the table, below,    |
 |                              | for the hardware pins on various Pi boards. |
 +------------------------------+---------------------------------------------+
-| BCM Pin                      | This is the GPIO that will output the PWM   |
-|                              | signal, using BCM numbering.                |
+| Pin (GPIO)                   | This is the GPIO pin that will output the   |
+|                              | PWM signal, using BCM numbering.            |
 +------------------------------+---------------------------------------------+
-| Hertz                        | This is frequency of the PWM signal.        |
+| Frequency (Hertz)            | This is frequency of the PWM signal.        |
++------------------------------+---------------------------------------------+
+| Invert Signal                | Send an inverted duty cycle to the output   |
+|                              | controller.                                 |
 +------------------------------+---------------------------------------------+
 | Duty Cycle                   | This is the proportion of the time on to    |
 |                              | the time off, expressed in percent (0       |
 |                              | -100).                                      |
-+------------------------------+---------------------------------------------+
-| Current Draw (amps)          | This is the current draw, in amps, when the |
-|                              | duty cycle is 100%. Note: this value should |
-|                              | be calculated based on the voltage set in   |
-|                              | the `Energy Usage                           |
-|                              | Settings <#energy-usage-settings>`__.       |
 +------------------------------+---------------------------------------------+
 
 Non-hardware PWM Pins
@@ -1872,7 +1867,7 @@ It will take several cycles to determine the gains according to several
 rules. In order to use this feature, the PID controller must be properly
 configured, and a Noise Band and Outstep selected, then select "Start
 Autotune". The output of the autotuner will appear in the daemon log
-(Config -> Mycodo Logs -> Daemon). While the autotune is being
+(``Config -> Mycodo Logs -> Daemon``). While the autotune is being
 performed, it is recommended to create a graph that includes the Input,
 Output, and PID Setpoint/Output in order to see what the PID Autotuner
 is doing and to notice any issues. If your autotune is taking a long
@@ -3721,8 +3716,7 @@ Incorrect Database Version
    upgrade during the Mycodo upgrade process.
 -  Check the Upgrade Log for any issues that may have occurred. The log
    is located at ``/var/log/mycodo/mycodoupgrade.log`` but may also be
-   accessed from the web UI (if you're able to): select [Gear Icon] ->
-   Mycodo Logs -> Upgrade Log.
+   accessed from the web UI (if you're able to): select ``[Gear Icon] -> Mycodo Logs -> Upgrade Log``.
 -  Sometimes issues may not immediately present themselves. It is not
    uncommon to be experiencing a database issue that was actually
    introduced several Mycodo versions ago, before the latest upgrade.
@@ -3963,7 +3957,7 @@ Run raspi-config
 
 ``sudo raspi-config``
 
-Go to ``Advanced Options`` -> ``Serial`` and disable. Then edit
+Go to ``Advanced Options -> Serial`` and disable. Then edit
 ``/boot/config.txt``
 
 ``sudo vi /boot/config.txt``

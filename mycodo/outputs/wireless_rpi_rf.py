@@ -22,7 +22,9 @@ OUTPUT_INFORMATION = {
     'on_state_internally_handled': True,
     'output_types': ['on_off', 'duration'],
 
-    'message': 'Information about this output.',
+    'message': 'This output uses a 315 or 433 MHz transmitter to turn wireless power outlets on or off. '
+               'Run ~/Mycodo/mycodo/devices/wireless_rpi_rf.py with a receiver to discover the codes '
+               'produced from your remote.',
 
     'dependencies_module': [
         ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO'),

@@ -43,7 +43,9 @@ from mycodo.config import INFLUXDB_PORT
 from mycodo.config import INFLUXDB_USER
 from mycodo.config import PYRO_URI
 from mycodo.databases.models import Misc
+from mycodo.databases.models import SMTP
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.send_data import send_email as send_email_notification
 
 
 logging.basicConfig(
@@ -268,6 +270,17 @@ class DaemonControl:
 
     def pid_set(self, pid_id, setting, value):
         return self.proxy().pid_set(pid_id, setting, value)
+
+    #
+    # Miscellaneous
+    #
+
+    def send_email(self, recipients, message, subject=''):
+        smtp = db_retrieve_table_daemon(SMTP, entry='first')
+        send_email_notification(
+            smtp.host, smtp.protocol, smtp.port,
+            smtp.user, smtp.passw, smtp.email_from,
+            recipients, message, subject=subject)
 
 
 def daemon_active():

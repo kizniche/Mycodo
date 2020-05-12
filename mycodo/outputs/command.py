@@ -24,7 +24,8 @@ OUTPUT_INFORMATION = {
     'on_state_internally_handled': True,
     'output_types': ['on_off'],
 
-    'message': 'Information about this output.',
+    'message': 'Commands will be executed in the Linux shell by the specified user when this output is '
+               'turned on or off.',
 
     'dependencies_module': []
 }

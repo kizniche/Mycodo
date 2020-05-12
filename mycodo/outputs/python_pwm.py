@@ -10,6 +10,7 @@ from flask_babel import lazy_gettext
 
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.outputs.base_output import AbstractOutput
+from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import set_user_grp
 
@@ -30,7 +31,8 @@ OUTPUT_INFORMATION = {
     'on_state_internally_handled': False,
     'output_types': ['pwm'],
 
-    'message': 'Information about this output.',
+    'message': 'Python 3 code will be executed when this output is turned on or off. The "duty_cycle" '
+               'object is a float value that represents the duty cycle that has been set.',
 
     'dependencies_module': []
 }
@@ -44,22 +46,35 @@ class OutputModule(AbstractOutput):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
         self.pwm_state = None
+        self.output_run_python_pwm = None
 
         if not testing:
-            self.output_run_python_pwm = None
             self.output_unique_id = output.unique_id
             self.output_pwm_command = output.pwm_command
+            self.pwm_invert_signal = output.pwm_invert_signal
 
     def output_switch(self, state, amount=None, duty_cycle=None):
+        measure_dict = measurements_dict.copy()
+
         if self.output_pwm_command:
             if state == 'on' and 100 >= duty_cycle >= 0:
-                self.output_run_python_pwm.output_code_run(duty_cycle)
-                self.pwm_state = abs(duty_cycle)
+                if self.pwm_invert_signal:
+                    duty_cycle = 100.0 - abs(duty_cycle)
             elif state == 'off' or duty_cycle == 0:
-                self.output_run_python_pwm.output_code_run(0)
-                self.pwm_state = None
+                if self.pwm_invert_signal:
+                    duty_cycle = 100
+                else:
+                    duty_cycle = 0
             else:
                 return
+
+            self.output_run_python_pwm.output_code_run(duty_cycle)
+            self.pwm_state = duty_cycle
+
+            measure_dict[0]['value'] = duty_cycle
+            add_measurements_influxdb(self.output_unique_id, measure_dict)
+
+            self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=duty_cycle))
 
     def is_on(self):
         if self.pwm_state:

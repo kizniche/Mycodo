@@ -58,9 +58,8 @@ class OutputAdd(FlaskForm):
 class OutputMod(FlaskForm):
     output_id = StringField('Output ID', widget=widgets.HiddenInput())
     output_pin = HiddenField('Output Pin')
-    name = StringField(
-        TRANSLATIONS['name']['title'],
-        validators=[DataRequired()])
+    name = StringField(TRANSLATIONS['name']['title'], validators=[DataRequired()])
+    log_level_debug = BooleanField(TRANSLATIONS['log_level_debug']['title'])
     output_mode = StringField(TRANSLATIONS['output_mode']['title'])
     location = StringField(lazy_gettext('Location'))
     i2c_bus = IntegerField(TRANSLATIONS['i2c_bus']['title'])

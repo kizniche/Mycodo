@@ -226,10 +226,21 @@
           </div>
 
           <div class="row small-gutters">
+            {% if each_output.output_type in dict_outputs and 'message' in dict_outputs[each_output.output_type] %}
+            <div class="col-12" style="padding-top: 0.5em; padding-bottom: 0.5em">
+              {{dict_outputs[each_output.output_type]['message']}}
+            </div>
+            {% endif %}
             <div class="col-auto">
               {{form_mod_output.name.label(class_='control-label')}}
               <div>
                 {{form_mod_output.name(class_='form-control', value=each_output.name, **{'title': dict_translation['name']['phrase']})}}
+              </div>
+            </div>
+            <div class="col-auto">
+              {{form_mod_output.log_level_debug.label(class_='control-label')}}
+              <div class="input-group-text">
+                <input id="log_level_debug" name="log_level_debug" type="checkbox" value="y"{% if each_output.log_level_debug %} checked{% endif %}>
               </div>
             </div>
 

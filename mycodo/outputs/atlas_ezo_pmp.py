@@ -31,7 +31,8 @@ OUTPUT_INFORMATION = {
     'on_state_internally_handled': False,
     'output_types': ['volume'],
 
-    'message': 'Information about this output.',
+    'message': 'Atlas Scientific peristaltic pumps can be set to dispense at their maximum rate or a '
+               'rate can be specified.',
 
     'dependencies_module': [],
     'interfaces': ['I2C', 'UART', 'FTDI'],
@@ -55,71 +56,39 @@ class OutputModule(AbstractOutput):
             self.output_flow_rate = output.flow_rate
 
     def output_switch(self, state, amount=None, duty_cycle=None):
-        volume_ml = amount
-        if state == 'on' and volume_ml > 0:
+        measure_dict = measurements_dict.copy()
+
+        if state == 'on' and amount > 0:
             if self.output_mode == 'fastest_flow_rate':
-                minutes_to_run = volume_ml * 105
-                write_cmd = 'D,{ml:.2f}'.format(ml=volume_ml)
+                minutes_to_run = amount * 105
+                write_cmd = 'D,{ml:.2f}'.format(ml=amount)
             elif self.output_mode == 'specify_flow_rate':
-                # Calculate command, given flow rate
-                minutes_to_run = volume_ml / self.output_flow_rate
+                minutes_to_run = amount / self.output_flow_rate
                 write_cmd = 'D,{ml:.2f},{min:.2f}'.format(
-                    ml=volume_ml, min=minutes_to_run)
+                    ml=amount, min=minutes_to_run)
             else:
-                msg = "Invalid output_mode: '{}'".format(
-                    self.output_mode)
-                self.logger.error(msg)
-                return 1, msg
+                self.logger.error("Invalid output_mode: '{}'".format(
+                    self.output_mode))
+                return
 
-            self.logger.debug("EZO-PMP command: {}".format(write_cmd))
-            self.atlas_command.write(write_cmd)
-
-            msg = 'pump turned on'
-
-            measurement_dict = {
-                0: {
-                    'measurement': 'volume',
-                    'unit': 'ml',
-                    'value': volume_ml
-                },
-                1: {
-                    'measurement': 'time',
-                    'unit': 'minute',
-                    'value': minutes_to_run
-                }
-            }
-            add_measurements_influxdb(
-                self.output_unique_id, measurement_dict)
-
-        elif state == 'off' or volume_ml <= 0:
+        elif state == 'off' or amount <= 0:
             write_cmd = 'X'
-            self.logger.debug("EZO-PMP command: {}".format(write_cmd))
-            self.atlas_command.write(write_cmd)
-            measurement_dict = {
-                0: {
-                    'measurement': 'volume',
-                    'unit': 'ml',
-                    'value': 0
-                },
-                1: {
-                    'measurement': 'time',
-                    'unit': 'minute',
-                    'value': 0
-                }
-            }
-            add_measurements_influxdb(
-                self.output_unique_id, measurement_dict)
+            amount = 0
+            minutes_to_run = 0
 
         else:
-            msg = "Invalid parameters: " \
-                  "State: {state}, " \
-                  "Volume: {vol}, " \
-                  "Flow Rate: {fr}".format(
-                state=state,
-                vol=volume_ml,
-                fr=self.output_flow_rate)
-            self.logger.error(msg)
-            return 1, msg
+            self.logger.error(
+                "Invalid parameters: State: {state}, Volume: {vol}, "
+                "Flow Rate: {fr}".format(
+                    state=state, vol=amount, fr=self.output_flow_rate))
+            return
+
+        self.atlas_command.write(write_cmd)
+        self.logger.debug("EZO-PMP command: {}".format(write_cmd))
+
+        measure_dict[0]['value'] = amount
+        measure_dict[1]['value'] = minutes_to_run
+        add_measurements_influxdb(self.output_unique_id, measure_dict)
 
     def is_on(self):
         device_measurements = db_retrieve_table_daemon(
@@ -141,6 +110,7 @@ class OutputModule(AbstractOutput):
                     is_on = bool(now < ts_pmp_off)
                     if is_on:
                         return True
+        return False
 
     def is_setup(self):
         if self.atlas_command:

@@ -299,8 +299,8 @@ class DaemonController:
             elif cont_type == 'Custom':
                 controller_manage['type'] = CustomController
 
-                custom_controller = db_retrieve_table_daemon(controller_manage['type'],
-                                                             unique_id=cont_id)
+                custom_controller = db_retrieve_table_daemon(
+                    controller_manage['type'], unique_id=cont_id)
                 dict_controllers = parse_controller_information()
                 if custom_controller and custom_controller.device in dict_controllers:
                     input_loaded = load_module_from_file(
