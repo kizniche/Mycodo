@@ -120,13 +120,15 @@ def send_email(smtp_host, smtp_protocol, smtp_port, smtp_user, smtp_pass,
         else:
             logger.error("Unrecognized protocol: {}".format(smtp_protocol))
             return 1
+
         if response_login:
-            logger.info("Email login response: {}".format(response_login))
+            logger.debug("Email login response: {}".format(response_login))
 
         # Send the email
         response_send = server.sendmail(smtp_user, recipients, composed)
-        logger.info("Email send response: {}".format(response_send))
         server.close()
+
+        logger.debug("Email send response: {}".format(response_send))
 
         return 0
 
