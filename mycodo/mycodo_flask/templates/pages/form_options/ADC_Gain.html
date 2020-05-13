@@ -1,0 +1,15 @@
+{% if 'adc_gain' in dict_options['options_enabled'] %}
+
+<div class="col-auto">
+  {{form.adc_gain.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_gain" name="adc_gain" title="{{dict_translation['adc_gain']['phrase']}}">
+      <option value=""></option>
+      {% for each_value, each_name in dict_options['adc_gain'] %}
+        <option value="{{each_value}}"{% if each_device.adc_gain == each_value %} selected{% endif %}>{{each_name}}</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
+{% endif %}

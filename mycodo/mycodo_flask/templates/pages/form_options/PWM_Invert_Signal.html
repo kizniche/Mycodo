@@ -1,0 +1,12 @@
+{% if 'pwm_invert_signal' in dict_options['options_disabled'] or
+      'pwm_invert_signal' in dict_options['options_enabled']
+  %}
+
+<div class="col-auto">
+  {{form.pwm_invert_signal.label(class_='control-label')}}
+  <div class="input-group-text">
+    <input id="pwm_invert_signal" name="pwm_invert_signal" type="checkbox" value="y"{% if each_device.pwm_invert_signal %} checked{% endif %}>
+  </div>
+</div>
+
+{% endif %}

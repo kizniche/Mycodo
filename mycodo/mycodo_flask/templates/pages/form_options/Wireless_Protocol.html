@@ -1,0 +1,16 @@
+{% if 'wireless_protocol' in dict_options['options_enabled'] %}
+    
+<div class="col-auto">
+  {{form.protocol.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="protocol" name="protocol" data-placement="top" title="{{dict_translation['protocol']['phrase']}}">
+      <option value="1"{% if each_device.protocol == 1 %} selected{% endif %}>1</option>
+      <option value="2"{% if each_device.protocol == 2 %} selected{% endif %}>2</option>
+      <option value="3"{% if each_device.protocol == 3 %} selected{% endif %}>3</option>
+      <option value="4"{% if each_device.protocol == 4 %} selected{% endif %}>4</option>
+      <option value="5"{% if each_device.protocol == 5 %} selected{% endif %}>5</option>
+    </select>
+  </div>
+</div>
+
+{% endif %}

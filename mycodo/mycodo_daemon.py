@@ -817,6 +817,28 @@ class DaemonController:
             message = "Could not query output state: {e}".format(e=except_msg)
             self.logger.exception(message)
 
+    def output_custom_button(self, output_id, button_id, args_dict):
+        """
+        Force Output function to be executed
+
+        :return: success or error message
+        :rtype: str
+
+        :param output_id: Which Input controller ID is to be affected?
+        :type output_id: str
+        :param button_id: ID of button pressed
+        :type button_id: str
+
+        """
+        try:
+            return self.controller['Output'].custom_button_exec_function(
+                output_id, button_id, args_dict)
+        except Exception as except_msg:
+            message = "Cannot execute Input function from custom action:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+            return 1, message
+
     def startup_stats(self):
         """Ensure existence of statistics file and save daemon startup time"""
         try:
@@ -1209,6 +1231,10 @@ class PyroServer(object):
     def output_setup(self, action, output_id):
         """Add, delete, or modify a output in the running output controller"""
         return self.mycodo.output_setup(action, output_id)
+
+    def output_custom_button(self, output_id, button_id, args_dict):
+        """execute output function"""
+        return self.mycodo.output_custom_button(output_id, button_id, args_dict)
 
     def send_infrared_code_broadcast(self, code):
         """Broadcast infrared code to all IR Triggers"""

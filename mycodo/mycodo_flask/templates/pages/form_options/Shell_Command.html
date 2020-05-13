@@ -1,0 +1,29 @@
+{% if 'cmd_command' in dict_options['options_disabled'] or
+      'cmd_command' in dict_options['options_enabled']
+  %}
+
+  {% if each_device.device == 'PythonCode' %}
+
+<div class="col-12">
+  {{form.cmd_command.label(class_='control-label')}}
+  <div>
+    <textarea class="form-control" id="cmd_command" name="cmd_command" rows="8" type="text" title="{{_('The Python 3 code to execute')}}">{{each_device.cmd_command}}</textarea>
+  </div>
+</div>
+
+  {% else %}
+
+<div class="col-12">
+  {{form.cmd_command.label(class_='control-label')}}
+  <div>
+  {%- if 'cmd_command' in dict_options['options_disabled'] -%}
+    {{form.cmd_command(class_='form-control', value=each_device.cmd_command, disabled=True, **{'title': dict_translation['cmd_command']['phrase']})}}
+  {% else %}
+    {{form.cmd_command(class_='form-control', value=each_device.cmd_command, **{'title': dict_translation['cmd_command']['phrase']})}}
+  {%- endif -%}
+  </div>
+</div>
+
+  {% endif %}
+
+{% endif %}

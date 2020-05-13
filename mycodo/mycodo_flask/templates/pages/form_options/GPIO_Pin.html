@@ -1,0 +1,16 @@
+{% if 'gpio_pin' in dict_options['options_enabled'] or
+      'gpio_pin' in dict_options['options_disabled']
+  %}
+
+<div class="col-auto">
+  {{form.gpio_location.label(class_='control-label')}}
+  <div>
+    {%- if 'period' in dict_options['gpio_location'] -%}
+      {{form.gpio_location(class_='form-control', value=each_device.pin, disabled=True, **{'title': dict_translation['gpio_location']['phrase']})}}
+    {% else %}
+      {{form.gpio_location(class_='form-control', value=each_device.pin, **{'title': dict_translation['gpio_location']['phrase']})}}
+    {%- endif -%}
+  </div>
+</div>
+
+{% endif %}

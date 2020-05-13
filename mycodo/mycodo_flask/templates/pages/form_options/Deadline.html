@@ -1,0 +1,16 @@
+{% if 'deadline' in dict_options['options_disabled'] or
+      'deadline' in dict_options['options_enabled']
+  %}
+
+<div class="col-auto">
+  {{form.deadline.label(class_='control-label')}}
+  <div>
+  {%- if 'deadline' in dict_options['options_disabled'] -%}
+    {{form.deadline(class_='form-control', value=each_device.deadline, disabled=True, **{'title': dict_translation['deadline']['phrase']})}}
+  {% else %}
+    {{form.deadline(class_='form-control', value=each_device.deadline, **{'title': dict_translation['deadline']['phrase']})}}
+  {%- endif -%}
+  </div>
+</div>
+
+{% endif %}

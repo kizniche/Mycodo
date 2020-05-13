@@ -1,0 +1,58 @@
+{% if each_device.interface == 'I2C' %}
+
+  {% if 'i2c_location' in dict_options['options_enabled'] or
+        'i2c_location' in dict_options['options_disabled'] %}
+
+    {% if 'i2c_location' in dict_options['options_disabled'] or
+
+          ('i2c_location' in dict_options['options_enabled'] and
+           not dict_options['i2c_address_editable'] and
+           dict_options['i2c_location']|length == 1)
+    %}
+
+    <div class="col-auto">
+      {{form.i2c_location.label(class_='control-label')}}
+      <div>
+        {{form.i2c_location(class_='form-control', value=each_device.i2c_location, disabled=True, **{'title': dict_translation['i2c_location']['phrase']})}}
+      </div>
+    </div>
+
+    {% elif 'i2c_location' in dict_options['options_enabled'] %}
+
+      {% if dict_options['i2c_address_editable'] %}
+
+      <div class="col-auto">
+        {{form.i2c_location.label(class_='control-label')}}
+        <div>
+          {{form.i2c_location(class_='form-control', value=each_device.i2c_location, **{'title': dict_translation['i2c_location']['phrase']})}}
+        </div>
+      </div>
+
+      {% elif dict_options['i2c_location']|length > 1 %}
+
+      <div class="col-auto">
+      {{form.i2c_location.label(class_='control-label')}}
+      <div>
+        <select class="form-control form-tooltip form-dropdown" data-placement="top" id="i2c_location" name="i2c_location" title="{{dict_translation['i2c_location']['phrase']}}">
+          <option value=""></option>
+        {% for each_address in dict_options['i2c_location'] %}
+          <option value="{{each_address}}"{% if each_device.i2c_location == each_address %} selected{% endif %}>{{_('Address')}} {{each_address}}</option>
+        {% endfor %}
+        </select>
+      </div>
+      </div>
+
+      {% endif %}
+
+    {% endif %}
+
+    <div class="col-auto">
+      {{form.i2c_bus.label(class_='control-label')}}
+      <div>
+        {{form.i2c_bus(class_='form-control', value=each_device.i2c_bus, **{'title': dict_translation['i2c_bus']['phrase']})}}
+      </div>
+    </div>
+
+  {% endif %}
+
+{% endif %}

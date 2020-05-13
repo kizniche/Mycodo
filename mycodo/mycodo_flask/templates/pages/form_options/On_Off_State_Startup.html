@@ -1,0 +1,13 @@
+{% if 'on_off_state_startup' in dict_options['options_enabled'] %}
+
+<div class="col-auto">
+  {{form.state_startup.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="state_startup" name="state_startup" data-placement="top" title="{{dict_translation['state_startup']['phrase']}}">
+      <option value="1"{% if each_device.state_startup == '1' %} selected{% endif %}>{{dict_translation['on']['title']}}</option>
+      <option value="0"{% if each_device.state_startup == '0' %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
+    </select>
+  </div>
+</div>
+
+{% endif %}

@@ -27,8 +27,7 @@ INPUT_INFORMATION = {
         'measurements_select_measurement_unit',
         'period',
         'cmd_command',
-        'pre_output',
-        'log_level_debug'
+        'pre_output'
     ],
     'options_disabled': ['interface'],
 

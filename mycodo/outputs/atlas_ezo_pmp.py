@@ -34,8 +34,26 @@ OUTPUT_INFORMATION = {
     'message': 'Atlas Scientific peristaltic pumps can be set to dispense at their maximum rate or a '
                'rate can be specified.',
 
-    'dependencies_module': [],
+    'options_enabled': [
+        'ftdi_location',
+        'i2c_location',
+        'uart_location',
+        'uart_baud_rate',
+        'pump_output_mode',
+        'pump_flow_rate'
+    ],
+    'options_disabled': ['interface'],
+
+    'dependencies_module': [
+        ('pip-pypi', 'pylibftdi', 'pylibftdi')
+    ],
+
     'interfaces': ['I2C', 'UART', 'FTDI'],
+    'i2c_location': ['0x67'],
+    'i2c_address_editable': True,
+    'ftdi_location': '/dev/ttyUSB0',
+    'uart_location': '/dev/ttyAMA0',
+    'uart_baud_rate': 9600
 }
 
 
@@ -46,12 +64,16 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
+        self.ftdi_location = None
+        self.uart_location = None
+        self.uart_baud_rate = None
+        self.i2c_address = None
+        self.i2c_bus = None
+
         if not testing:
+            self.output = output
             self.output_unique_id = output.unique_id
             self.output_interface = output.interface
-            self.output_location = output.location
-            self.output_i2c_bus = output.i2c_bus
-            self.output_baud_rate = output.baud_rate
             self.output_mode = output.output_mode
             self.output_flow_rate = output.flow_rate
 
@@ -91,26 +113,27 @@ class OutputModule(AbstractOutput):
         add_measurements_influxdb(self.output_unique_id, measure_dict)
 
     def is_on(self):
-        device_measurements = db_retrieve_table_daemon(
-            DeviceMeasurements).filter(
-            DeviceMeasurements.device_id == self.output_unique_id)
-        for each_dev_meas in device_measurements:
-            if each_dev_meas.unit == 'minute':
-                last_measurement = read_last_influxdb(
-                    self.output_unique_id,
-                    each_dev_meas.unit,
-                    each_dev_meas.channel,
-                    measure=each_dev_meas.measurement, )
-                if last_measurement:
-                    datetime_ts = datetime.datetime.strptime(
-                        last_measurement[0][:-7], '%Y-%m-%dT%H:%M:%S.%f')
-                    minutes_on = last_measurement[1]
-                    ts_pmp_off = datetime_ts + datetime.timedelta(minutes=minutes_on)
-                    now = datetime.datetime.utcnow()
-                    is_on = bool(now < ts_pmp_off)
-                    if is_on:
-                        return True
-        return False
+        if self.is_setup():
+            device_measurements = db_retrieve_table_daemon(
+                DeviceMeasurements).filter(
+                DeviceMeasurements.device_id == self.output_unique_id)
+            for each_dev_meas in device_measurements:
+                if each_dev_meas.unit == 'minute':
+                    last_measurement = read_last_influxdb(
+                        self.output_unique_id,
+                        each_dev_meas.unit,
+                        each_dev_meas.channel,
+                        measure=each_dev_meas.measurement, )
+                    if last_measurement:
+                        datetime_ts = datetime.datetime.strptime(
+                            last_measurement[0][:-7], '%Y-%m-%dT%H:%M:%S.%f')
+                        minutes_on = last_measurement[1]
+                        ts_pmp_off = datetime_ts + datetime.timedelta(minutes=minutes_on)
+                        now = datetime.datetime.utcnow()
+                        is_on = bool(now < ts_pmp_off)
+                        if is_on:
+                            return True
+            return False
 
     def is_setup(self):
         if self.atlas_command:
@@ -120,15 +143,17 @@ class OutputModule(AbstractOutput):
     def setup_output(self):
         if self.output_interface == 'FTDI':
             from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.atlas_command = AtlasScientificFTDI(
-                self.output_location)
+            self.ftdi_location = self.output.ftdi_location
+            self.atlas_command = AtlasScientificFTDI(self.ftdi_location)
         elif self.output_interface == 'I2C':
             from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
+            self.i2c_address = int(str(self.output.i2c_location), 16)
+            self.i2c_bus = self.output.i2c_bus
             self.atlas_command = AtlasScientificI2C(
-                i2c_address=int(str(self.output_location), 16),
-                i2c_bus=self.output_i2c_bus)
+                i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
         elif self.output_interface == 'UART':
             from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+            self.uart_location = self.output.uart_location
+            self.output_baud_rate = self.output.baud_rate
             self.atlas_command = AtlasScientificUART(
-                self.output_location,
-                baudrate=self.output_baud_rate)
+                self.uart_location, baudrate=self.output_baud_rate)

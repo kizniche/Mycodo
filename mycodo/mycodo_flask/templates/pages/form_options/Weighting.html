@@ -1,0 +1,16 @@
+{% if 'weighting' in dict_options['options_disabled'] or 'weighting' in dict_options['options_enabled'] %}
+
+<div class="col-auto">
+  {{form.weighting.label(class_='control-label')}}
+  <div>
+
+  {%- if 'weighting' in dict_options['options_disabled'] -%}
+    {{form.weighting(class_='form-control', value=each_device.weighting, disabled=True, **{'title': dict_translation['weighting']['phrase']})}}
+  {% else %}
+    {{form.weighting(class_='form-control', value=each_device.weighting, **{'title': dict_translation['weighting']['phrase']})}}
+  {%- endif -%}
+
+  </div>
+</div>
+
+{% endif %}

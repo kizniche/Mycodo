@@ -1,0 +1,18 @@
+{% if 'pin_clock' in dict_options['options_disabled'] or
+      'pin_clock' in dict_options['options_enabled']
+  %}
+
+<div class="col-auto">
+  {{form.pin_clock.label(class_='control-label')}}
+  <div>
+
+  {%- if 'pin_clock' in dict_options['options_disabled'] -%}
+    {{form.pin_clock(class_='form-control', value=each_device.pin_clock, disabled=True, **{'title': dict_translation['pin_clock']['phrase']})}}
+  {% else %}
+    {{form.pin_clock(class_='form-control', value=each_device.pin_clock, **{'title': dict_translation['pin_clock']['phrase']})}}
+  {%- endif -%}
+
+  </div>
+</div>
+
+{% endif %}

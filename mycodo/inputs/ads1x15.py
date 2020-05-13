@@ -48,8 +48,7 @@ INPUT_INFORMATION = {
         'channels_convert',
         'adc_gain',
         'period',
-        'pre_output',
-        'log_level_debug'
+        'pre_output'
     ],
     'options_disabled': ['interface', 'i2c_location'],
 

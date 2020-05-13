@@ -180,6 +180,12 @@
         {{form_mod_output.output_id(class_='form-control', value=each_output.unique_id)}}
         {{form_mod_output.output_pin(class_='form-control', value=each_output.pin)}}
 
+        {% set form = form_mod_output %}
+        {% set dict_options = dict_outputs[each_output.output_type] %}
+        {% set each_device = each_output %}
+        {% set unique_id = each_output.unique_id %}
+        {% set custom_options_values = custom_options_values_outputs %}
+
         <div class="row small-gutters pause-background" style="border-bottom: 1px solid #ddd; padding: 0.4em 0.2em 0.4em 0;" id="{{each_output.unique_id}}-output-state">
 
           <div class="col-2 col-md-1 text-center icon-fh">
@@ -192,7 +198,7 @@
             <input class="form-control" disabled="" value="{{each_output.name}}" type="text">
           </div>
           <div class="col-4 col-md-3 small-gutters">
-            <input class="form-control" disabled="" value="{{dict_outputs[each_output.output_type]['output_name']}}" type="text">
+            <input class="form-control" disabled="" value="{{dict_outputs[each_output.output_type]['output_name']}} ({{each_output.interface}})" type="text">
           </div>
           <div class="col-3 col-md-2 small-gutters">
             <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">
@@ -231,6 +237,28 @@
               {{dict_outputs[each_output.output_type]['message']}}
             </div>
             {% endif %}
+          </div>
+
+        {% if each_output.output_type in custom_actions and custom_actions[each_output.output_type] %}
+          <div class="row small-gutters align-items-end" style="padding: 0.5em">
+            <div class="col-12">
+              <h5>{{_('Actions')}}</h5>
+            </div>
+            {% include 'pages/form_options/Custom_Actions_Message.html' %}
+              {% set running_custom_action = true %}
+              {% if 'custom_actions' in dict_options %}
+                {% for each_option in dict_options['custom_actions'] %}
+                  {% include 'pages/form_options/Custom_Options.html' %}
+                {% endfor %}
+            {% endif %}
+          </div>
+        {% endif %}
+
+          <div class="row small-gutters" style="padding: 0.5em">
+            <div class="col-12">
+              <h5>{{_('Options')}}</h5>
+            </div>
+
             <div class="col-auto">
               {{form_mod_output.name.label(class_='control-label')}}
               <div>
@@ -244,22 +272,60 @@
               </div>
             </div>
 
-          {% for each_output_template in output_templates if each_output_template[:-5] == each_output.output_type %}
-            {% include 'pages/output_options/'+each_output_template %}
-          {% endfor %}
+      {% include 'pages/form_options/Interface.html' %}
+      {% include 'pages/form_options/GPIO.html' %}
+      {% include 'pages/form_options/GPIO_Pin.html' %}
+      {% include 'pages/form_options/Bluetooth.html' %}
+      {% include 'pages/form_options/I2C.html' %}
+      {% include 'pages/form_options/FTDI.html' %}
+      {% include 'pages/form_options/UART.html' %}
+      {% include 'pages/form_options/Baud_Rate.html' %}
+      {% include 'pages/form_options/Location.html' %}
+      {% include 'pages/form_options/Period.html' %}
 
-          {% if each_output.output_type not in outputs_pwm + ['atlas_ezo_pmp'] %}
-
-            <div class="col-6 col-sm-4 col-md-3">
-              {{form_mod_output.amps.label(class_='control-label')}}
-              <div>
-                {{form_mod_output.amps(class_='form-control', value=each_output.amps, **{'title': dict_translation['amps']['phrase']})}}
-               </div>
-            </div>
-
-          {% endif %}
+      {% include 'pages/form_options/Wireless_Protocol.html' %}
+      {% include 'pages/form_options/Wireless_Pulse_Length.html' %}
+      {% include 'pages/form_options/Wireless_Command_On.html' %}
+      {% include 'pages/form_options/Wireless_Command_Off.html' %}
+      {% include 'pages/form_options/Pump_Output_Mode.html' %}
+      {% include 'pages/form_options/Pump_Flow_Rate.html' %}
+      {% include 'pages/form_options/Command_On.html' %}
+      {% include 'pages/form_options/Command_Off.html' %}
+      {% include 'pages/form_options/Python_PWM.html' %}
+      {% include 'pages/form_options/Python_On.html' %}
+      {% include 'pages/form_options/Python_Off.html' %}
+      {% include 'pages/form_options/PWM_Command.html' %}
+      {% include 'pages/form_options/PWM_Library.html' %}
+      {% include 'pages/form_options/PWM_Frequency.html' %}
+      {% include 'pages/form_options/PWM_Invert_Signal.html' %}
+      {% include 'pages/form_options/Command_Execute_User.html' %}
+      {% include 'pages/form_options/Command_Force.html' %}
+      {% include 'pages/form_options/PWM_State_Startup.html' %}
+      {% include 'pages/form_options/PWM_State_Shutdown.html' %}
+      {% include 'pages/form_options/On_Off_State_On.html' %}
+      {% include 'pages/form_options/On_Off_State_Startup.html' %}
+      {% include 'pages/form_options/On_Off_State_Shutdown.html' %}
+      {% include 'pages/form_options/On_Off_None_State_Startup.html' %}
+      {% include 'pages/form_options/On_Off_None_State_Shutdown.html' %}
+      {% include 'pages/form_options/Trigger_Functions_Startup.html' %}
+      {% include 'pages/form_options/Current_Draw.html' %}
 
           </div>
+
+      {% if custom_options_values[unique_id] %}
+          <div class="row small-gutters" style="padding: 0.5em">
+            <div class="col-12">
+              <h5>{{_('Custom Options')}}</h5>
+            </div>
+            {% include 'pages/form_options/Custom_Options_Message.html' %}
+              {% if 'custom_options' in dict_options %}
+                {% for each_option in dict_options['custom_options'] %}
+            {% include 'pages/form_options/Custom_Options.html' %}
+                {% endfor %}
+              {% endif %}
+          </div>
+      {% endif %}
+
 
           {% if each_output.output_type in ['wired', 'wireless_rpi_rf', 'command', 'python'] %}
 

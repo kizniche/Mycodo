@@ -1,0 +1,67 @@
+{% if each_device.interface == 'UART' %}
+  {% if 'uart_location' in dict_options['options_disabled'] %}
+
+<div class="col-auto">
+  {{form.uart_location.label(class_='control-label')}}
+  <div>
+    {{form.uart_location(class_='form-control', value=each_device.uart_location, disabled=True)}}
+  </div>
+</div>
+
+  {% endif %}
+
+  {% if 'uart_location' in dict_options['options_enabled']  %}
+
+<div class="col-auto">
+  {{form.uart_location.label(class_='control-label')}}
+  <div>
+    {{form.uart_location(class_='form-control', value=each_device.uart_location, **{'title': dict_translation['uart_location']['phrase']})}}
+  </div>
+</div>
+
+  {% endif %}
+
+  {% if 'pin_cs' in dict_options['options_enabled']  %}
+
+<div class="col-auto">
+  {{form.pin_cs.label(class_='control-label')}}
+  <div>
+    {{form.pin_cs(class_='form-control', value=each_device.pin_cs, **{'title': dict_translation['pin_cs']['phrase']})}}
+  </div>
+</div>
+
+  {% endif %}
+
+  {% if 'pin_miso' in dict_options['options_enabled']  %}
+
+<div class="col-auto">
+  {{form.pin_miso.label(class_='control-label')}}
+  <div>
+    {{form.pin_miso(class_='form-control', value=each_device.pin_miso, **{'title': dict_translation['pin_miso']['phrase']})}}
+  </div>
+</div>
+
+  {% endif %}
+
+  {% if 'pin_mosi' in dict_options['options_enabled']  %}
+
+<div class="col-auto">
+  {{form.pin_mosi.label(class_='control-label')}}
+  <div>
+    {{form.pin_mosi(class_='form-control', value=each_device.pin_mosi, **{'title': dict_translation['pin_mosi']['phrase']})}}
+  </div>
+</div>
+
+  {% endif %}
+
+  {% if 'pin_clock' in dict_options['options_enabled']  %}
+
+<div class="col-auto">
+  {{form.pin_clock.label(class_='control-label')}}
+  <div>
+    {{form.pin_clock(class_='form-control', value=each_device.pin_clock, **{'title': dict_translation['pin_clock']['phrase']})}}
+  </div>
+</div>
+
+  {% endif %}
+{% endif %}

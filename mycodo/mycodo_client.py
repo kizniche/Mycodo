@@ -218,6 +218,7 @@ class DaemonControl:
     #
     # Output Controller
     #
+
     def output_off(self, output_id, trigger_conditionals=True):
         return self.proxy().output_off(output_id, trigger_conditionals)
 
@@ -248,6 +249,12 @@ class DaemonControl:
 
     def output_states_all(self):
         return self.proxy().output_states_all()
+
+    def output_custom_button(self, output_id, button_id, args_dict):
+        try:
+            return self.proxy().output_custom_button(output_id, button_id, args_dict)
+        except Exception:
+            return 0, traceback.format_exc()
 
     #
     # PID Controller

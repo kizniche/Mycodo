@@ -24,8 +24,7 @@ INPUT_INFORMATION = {
         'times_check',
         'deadline',
         'period',
-        'pre_output',
-        'log_level_debug'
+        'pre_output'
     ],
     'options_disabled': ['interface'],
 

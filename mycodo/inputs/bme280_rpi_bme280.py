@@ -46,8 +46,7 @@ INPUT_INFORMATION = {
         'i2c_location',
         'measurements_select',
         'period',
-        'pre_output',
-        'log_level_debug'
+        'pre_output'
     ],
     'options_disabled': ['interface'],
 

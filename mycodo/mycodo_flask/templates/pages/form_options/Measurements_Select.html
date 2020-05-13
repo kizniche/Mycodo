@@ -1,0 +1,62 @@
+{% if each_device.device in ['TTN_DATA_STORAGE', 'MQTT_PAHO', 'PythonCode'] %}
+
+{% set all_measurements = table_device_measurements.query.filter(
+                          and_(table_device_measurements.device_id == each_device.unique_id,
+                               table_device_measurements.is_enabled)).all() %}
+{% if all_measurements %}
+
+  <h5>Select Measurements (required)</h5>
+
+  {% for each_measurement in all_measurements %}
+
+<form method="post" action="/data">
+{{form_mod_input_measurement.csrf_token}}
+{{form_mod_input_measurement.input_id(value=each_device.unique_id)}}
+{{form_mod_input_measurement.input_measurement_id(value=each_measurement.unique_id)}}
+{{form_mod_input_measurement.input_type(value='measurement_select')}}
+
+<div class="row small-gutters align-items-end" style="border-bottom: 1px solid #ddd; padding: 0.5em">
+  <div class="col-auto small-gutters">
+    {{form_mod_input_measurement.input_measurement_mod(class_='form-control btn btn-primary btn-sm btn-block')}}
+  </div>
+
+    {% if each_measurement.unit %}
+
+  <div class="col-auto">
+    <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_measurement.unique_id}}')" title="UUID: {{each_measurement.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel}} {% endif %}{{dict_measurements[each_measurement.measurement]['name']}} ({{dict_units[each_measurement.unit]['unit']}})">
+  </div>
+
+    {% else %}
+
+  <div class="col-auto">
+    <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_measurement.unique_id}}')" title="UUID: {{each_measurement.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel}} {% endif %}">
+  </div>
+
+    {% endif %}
+
+  <div class="col-auto">
+    {{form_mod_input_measurement.name.label(class_='control-label')}}
+    <div>
+      {{form_mod_input_measurement.name(class_='form-control', value=each_measurement.name, **{'title': dict_translation['name']['phrase']})}}
+    </div>
+  </div>
+
+  <div class="col-auto">
+    {{form_mod_input_measurement.select_measurement_unit.label(class_='control-label')}}
+    <div>
+      <select class="form-control" id="select_measurement_unit" name="select_measurement_unit">
+        <option value="">{{dict_translation['select_one']['title']}}</option>
+        {% for each_measure_unit in choices_measurements_units %}
+        <option value="{{each_measure_unit['value']}}"{% if each_measure_unit['value'] == each_measurement.measurement + ',' + each_measurement.unit %} selected{% endif %}>{{each_measure_unit['item']}}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+</div>
+
+</form>
+
+  {% endfor %}
+{% endif %}
+{% endif %}

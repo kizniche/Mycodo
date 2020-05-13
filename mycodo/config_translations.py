@@ -197,13 +197,13 @@ TRANSLATIONS = {
         'phrase': lazy_gettext('The UART baud rate')},
     'bt_location': {
         'title': lazy_gettext('MAC (XX:XX:XX:XX:XX:XX)'),
-        'phrase': lazy_gettext('The MAC address of the input')},
+        'phrase': lazy_gettext('The MAC address of the Bluetooth device')},
     'bt_adapter': {
-        'title': lazy_gettext('BT Adapter'),
-        'phrase': lazy_gettext('The Bluetooth adapter of the input')},
+        'title': lazy_gettext('BT Adapter (hci[X])'),
+        'phrase': lazy_gettext('The adapter of the Bluetooth device')},
     'cmd_command': {
         'title': lazy_gettext('Command'),
-        'phrase': lazy_gettext('The command to executed (as user mycodo) to return a measurement value')},
+        'phrase': lazy_gettext('The command to be executed to return a measurement value')},
     'convert_unit': {
         'title': None,
         'phrase': lazy_gettext('Select the unit of the measurement to be stored in the database')},
@@ -274,7 +274,7 @@ TRANSLATIONS = {
         'phrase': lazy_gettext('A name to distinguish this from others')},
     'off_command': {
         'title': lazy_gettext('Off Command'),
-        'phrase': lazy_gettext('Command to execute (as user mycodo) when the output is instructed to turn off')},
+        'phrase': lazy_gettext('Command to execute when the output is instructed to turn off')},
     'on_state': {
         'title': lazy_gettext('On State'),
         'phrase': lazy_gettext('What state triggers the output to turn on? High or Low?')},
@@ -295,7 +295,7 @@ TRANSLATIONS = {
         'phrase': lazy_gettext('When Mycodo starts, set the output state')},
     'on_command': {
         'title': lazy_gettext('On Command'),
-        'phrase': lazy_gettext('Command to execute (as user mycodo) when the output is instructed to turn on')},
+        'phrase': lazy_gettext('Command to execute when the output is instructed to turn on')},
     'period': {
         'title': lazy_gettext('Period (seconds)'),
         'phrase': lazy_gettext('The duration (seconds) between measurements or actions')},
@@ -336,7 +336,7 @@ TRANSLATIONS = {
         'phrase': lazy_gettext('Volume in ml to pump')},
     'pwm_command': {
         'title': lazy_gettext('PWM Command'),
-        'phrase': lazy_gettext('Command to execute (as user mycodo) to set the PWM duty cycle (%)')},
+        'phrase': lazy_gettext('Command to execute to set the PWM duty cycle (%)')},
     'pwm_hertz': {
         'title': lazy_gettext('Frequency (Hertz)'),
         'phrase': lazy_gettext('The Hertz to output the PWM signal (0 - 70,000)')},

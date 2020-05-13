@@ -1,0 +1,15 @@
+{% if 'adc_resolution' in dict_options['options_enabled'] %}
+
+<div class="col-auto">
+  {{form.adc_resolution.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_resolution" name="adc_resolution" title="{{dict_translation['adc_resolution']['phrase']}}">
+      <option value=""></option>
+      {% for each_value, each_name in dict_options['adc_resolution'] %}
+        <option value="{{each_value}}"{% if each_device.adc_resolution == each_value %} selected{% endif %}>{{each_name}}</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
+{% endif %}

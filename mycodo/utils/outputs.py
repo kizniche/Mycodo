@@ -104,7 +104,35 @@ def parse_output_information():
 
                 # Dependencies
                 dict_outputs = dict_has_value(dict_outputs, output_custom, 'dependencies_module')
+                
+                # Interface
                 dict_outputs = dict_has_value(dict_outputs, output_custom, 'interfaces')
+
+                # Nonstandard (I2C, UART, etc.) location
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'location')
+
+                # I2C
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'i2c_location')
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'i2c_address_editable')
+
+                # FTDI
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'ftdi_location')
+
+                # UART
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'uart_location')
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'uart_baud_rate')
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'pin_cs')
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'pin_miso')
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'pin_mosi')
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'pin_clock')
+
+                # Bluetooth (BT)
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'bt_location')
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'bt_adapter')
+
+                # Which form options to display and whether each option is enabled
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'options_enabled')
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'options_disabled')
 
                 dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_options_message')
                 dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_options')

@@ -1,0 +1,15 @@
+{% if 'pwm_library' in dict_options['options_disabled'] or
+      'pwm_library' in dict_options['options_enabled']
+  %}
+
+<div class="col-auto">
+  {{form.pwm_library.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="pwm_library" name="pwm_library" data-placement="top" title="{{dict_translation['pwm_library']['phrase']}}">
+      <option value="pigpio_any"{% if each_device.pwm_library == 'pigpio_any' %} selected{% endif %}>{{_('Any Pin, <= 40kHz')}}</option>
+      <option value="pigpio_hardware"{% if each_device.pwm_library == 'pigpio_hardware' %} selected{% endif %}>{{_('Hardware Pin, <= 30MHz')}}</option>
+    </select>
+  </div>
+</div>
+
+{% endif %}

@@ -1,0 +1,72 @@
+{% if 'location' in dict_options['options_disabled'] or
+      'location' in dict_options['options_enabled']
+  %}
+
+<div class="col-auto">
+
+  {% if 'location' in dict_options['options_enabled'] %}
+
+    {% if each_device.interface == '1WIRE' %}
+
+  <label class="control-label">{{dict_translation['1wire_id']['title']}}</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{dict_translation['1wire_id']['phrase']}}">
+      {% if dict_options['input_library'] == 'w1thermsensor' %}
+        {% if devices_1wire_w1thermsensor != [] %}
+        <option value=""></option>
+          {% for each_1wire_dev in devices_1wire_w1thermsensor %}
+          <option value="{{each_1wire_dev['value']}}"{% if each_device.location == each_1wire_dev['value'] %} selected{% endif %}>{{each_1wire_dev['name']}}</option>
+          {% endfor %}
+        {% else %}
+        <option value="">None Detected</option>
+        {% endif %}
+      {% elif dict_options['input_library'] == 'ow_shell' %}
+        {% if devices_1wire_ow_shell != [] %}
+        <option value=""></option>
+          {% for each_1wire_dev in devices_1wire_ow_shell %}
+          <option value="{{each_1wire_dev}}"{% if each_device.location == each_1wire_dev %} selected{% endif %}>{{each_1wire_dev}}</option>
+          {% endfor %}
+        {% else %}
+        <option value="">None Detected</option>
+        {% endif %}
+      {% endif %}
+    </select>
+  </div>
+
+    {% elif 'location' in dict_options %}
+
+      {% if dict_options['location']['options']|length > 1 %}
+
+  {{form.location.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="location" name="location" title="{{dict_options['location']['phrase']}}">
+      <option value=""></option>
+      {% for each_value, each_name in dict_options['location']['options'] %}
+        <option value="{{each_value}}"{% if each_device.location == each_value %} selected{% endif %}>{{each_name}}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+      {% else %}
+
+  <label class="control-label">{{dict_options['location']['title']}}</label>
+  <div>
+    {{form.location(class_='form-control', value=each_device.location, **{'title': _(dict_options['location']['phrase'])})}}
+  </div>
+
+      {% endif %}
+
+    {% endif %}
+
+  {% else %}
+
+  {{form.location.label(class_='control-label')}}
+  <div>
+    {{form.location(class_='form-control', value=each_device.location, disabled=True, **{'title': dict_options['location']['phrase']})}}
+  </div>
+
+  {% endif %}
+
+</div>
+
+{% endif %}

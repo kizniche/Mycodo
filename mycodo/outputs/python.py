@@ -24,15 +24,28 @@ measurements_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'python',
-    'output_name': lazy_gettext('On/Off (Python Command)'),
+    'output_name': lazy_gettext('On/Off'),
     'measurements_dict': measurements_dict,
 
-    'on_state_internally_handled': True,
+    'on_state_internally_handled': False,
     'output_types': ['on_off'],
 
     'message': 'Python 3 code will be executed when this output is turned on or off.',
 
-    'dependencies_module': []
+    'options_enabled': [
+        'python_on',
+        'python_off',
+        'command_force',
+        'on_off_none_state_startup',
+        'on_off_none_state_shutdown',
+        'trigger_functions_startup',
+        'current_draw'
+    ],
+    'options_disabled': ['interface'],
+
+    'dependencies_module': [],
+
+    'interfaces': ['PYTHON']
 }
 
 
@@ -42,6 +55,9 @@ class OutputModule(AbstractOutput):
     """
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
+
+        self.output_setup = None
+        self.output_state = None
 
         if not testing:
             self.output_run_python_on = None
@@ -53,43 +69,57 @@ class OutputModule(AbstractOutput):
     def output_switch(self, state, amount=None, duty_cycle=None):
         if state == 'on' and self.output_on_command:
             self.output_run_python_on.output_code_run()
+            self.output_state = True
         elif state == 'off' and self.output_off_command:
             self.output_run_python_off.output_code_run()
+            self.output_state = False
         else:
             return
 
     def is_on(self):
-        pass
+        if self.is_setup():
+            if self.output_state:
+                return True
+            return False
 
     def is_setup(self):
-        if self.output_run_python_on and self.output_run_python_off:
+        if self.output_setup:
             return True
         return False
 
     def setup_output(self):
-        self.save_output_python_code(self.output_unique_id)
-        file_run_on = '{}/output_on_{}.py'.format(
-            PATH_PYTHON_CODE_USER, self.output_unique_id)
-        file_run_off = '{}/output_off_{}.py'.format(
-            PATH_PYTHON_CODE_USER, self.output_unique_id)
+        if not self.output_on_command or not self.output_off_command:
+            self.logger.error("Output must have both On and Off Python Code set")
+            return
 
-        module_name = "mycodo.output.{}".format(
-            os.path.basename(file_run_on).split('.')[0])
-        spec = importlib.util.spec_from_file_location(
-            module_name, file_run_on)
-        output_run_on = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(output_run_on)
-        self.output_run_python_on = output_run_on.OutputRun(
-            self.logger, self.output_unique_id)
+        try:
+            self.save_output_python_code(self.output_unique_id)
+            file_run_on = '{}/output_on_{}.py'.format(
+                PATH_PYTHON_CODE_USER, self.output_unique_id)
+            file_run_off = '{}/output_off_{}.py'.format(
+                PATH_PYTHON_CODE_USER, self.output_unique_id)
 
-        module_name = "mycodo.output.{}".format(
-            os.path.basename(file_run_off).split('.')[0])
-        spec = importlib.util.spec_from_file_location(
-            module_name, file_run_off)
-        output_run_off = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(output_run_off)
-        self.output_run_python_off = output_run_off.OutputRun(
-            self.logger, self.output_unique_id)
+            module_name = "mycodo.output.{}".format(
+                os.path.basename(file_run_on).split('.')[0])
+            spec = importlib.util.spec_from_file_location(
+                module_name, file_run_on)
+            output_run_on = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(output_run_on)
+            self.output_run_python_on = output_run_on.OutputRun(
+                self.logger, self.output_unique_id)
+
+            module_name = "mycodo.output.{}".format(
+                os.path.basename(file_run_off).split('.')[0])
+            spec = importlib.util.spec_from_file_location(
+                module_name, file_run_off)
+            output_run_off = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(output_run_off)
+            self.output_run_python_off = output_run_off.OutputRun(
+                self.logger, self.output_unique_id)
+
+            self.output_setup = True
+        except Exception:
+            self.logger.exception("Could not set up output")
 
     def save_output_python_code(self, unique_id):
         """Save python code to files"""

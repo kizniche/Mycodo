@@ -21,8 +21,7 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
 
     'options_enabled': [
-        'period',
-        'log_level_debug'
+        'period'
     ],
     'options_disabled': ['interface'],
 

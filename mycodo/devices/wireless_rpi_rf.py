@@ -18,10 +18,10 @@ class Transmit433MHz:
         self.pulse_length = pulse_length
         self.num = 0
         self.timestamp = None
+        self.device = RFDevice(self.pin)
 
     def enable_receive(self):
         try:
-            self.device = RFDevice(self.pin)
             self.device.enable_rx()
             self.num = 0
         except Exception as err:
@@ -45,10 +45,8 @@ class Transmit433MHz:
 
     def transmit(self, cmd):
         try:
-            self.device = RFDevice(self.pin)
             self.device.enable_tx()
             self.device.tx_code(cmd, self.protocol, self.pulse_length)
-            self.cleanup()
         except Exception as err:
             logger.exception(
                 "{cls} raised an exception when transmitting: "

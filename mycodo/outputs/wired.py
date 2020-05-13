@@ -16,7 +16,7 @@ measurements_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'wired',
-    'output_name': lazy_gettext('On/Off (GPIO)'),
+    'output_name': lazy_gettext('On/Off'),
     'measurements_dict': measurements_dict,
 
     'on_state_internally_handled': False,
@@ -25,7 +25,21 @@ OUTPUT_INFORMATION = {
     'message': 'The specified GPIO pin will be set high (3.3 volts) when turned on, and low (0 volts) '
                'when turned off.',
 
-    'dependencies_module': []
+    'options_enabled': [
+        'gpio_pin',
+        'on_off_state_on',
+        'on_off_state_startup',
+        'on_off_state_shutdown',
+        'trigger_functions_startup',
+        'current_draw'
+    ],
+    'options_disabled': ['interface'],
+
+    'dependencies_module': [
+        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO')
+    ],
+
+    'interfaces': ['GPIO']
 }
 
 
@@ -50,16 +64,17 @@ class OutputModule(AbstractOutput):
                 self.GPIO.output(self.output_pin, self.output_on_state)
             elif state == 'off':
                 self.GPIO.output(self.output_pin, not self.output_on_state)
-        except:
+        except Exception as e:
             self.logger.error(
-                "RPi.GPIO and Raspberry Pi required for this action")
+                "State change error: {}".format(e))
 
     def is_on(self):
-        try:
-            return self.output_on_state == self.GPIO.input(self.output_pin)
-        except:
-            self.logger.error(
-                "RPi.GPIO and Raspberry Pi required for this action")
+        if self.is_setup():
+            try:
+                return self.output_on_state == self.GPIO.input(self.output_pin)
+            except Exception as e:
+                self.logger.error(
+                    "Status check error: {}".format(e))
 
     def is_setup(self):
         return self.output_setup
@@ -77,9 +92,9 @@ class OutputModule(AbstractOutput):
                 self.GPIO.setup(self.output_pin, self.GPIO.OUT)
                 self.GPIO.output(self.output_pin, not self.output_on_state)
                 self.output_setup = True
-            except:
+            except Exception as e:
                 self.logger.error(
-                    "RPi.GPIO and Raspberry Pi required for this action")
+                    "Setup error: {}".format(e))
             state = 'LOW' if self.output_on_state else 'HIGH'
             self.logger.info(
                 "Output setup on pin {pin} and turned OFF (OFF={state})".format(

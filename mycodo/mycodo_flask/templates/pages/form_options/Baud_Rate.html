@@ -1,0 +1,22 @@
+{% if each_device.interface == 'UART' %}
+
+  {% if 'uart_baud_rate' in dict_options['options_disabled'] or
+        'uart_baud_rate' in dict_options['options_enabled']
+  %}
+
+  <div class="col-auto">
+    {{form.baud_rate.label(class_='control-label')}}
+    <div>
+
+    {%- if 'uart_baud_rate' in dict_options['options_disabled'] -%}
+      {{form.baud_rate(class_='form-control', value=each_device.baud_rate, disabled=True, **{'title': dict_translation['baud_rate']['phrase']})}}
+    {% else %}
+      {{form.baud_rate(class_='form-control', value=each_device.baud_rate, **{'title': dict_translation['baud_rate']['phrase']})}}
+    {%- endif -%}
+
+    </div>
+  </div>
+
+  {% endif %}
+
+{% endif %}

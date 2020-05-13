@@ -60,8 +60,18 @@ logger = logging.getLogger(__name__)
 def custom_options_return_string(error, dict_options, mod_dev, request_form):
     # Custom options
     list_options = []
-    if 'custom_options' in dict_options[mod_dev.device]:
-        for each_option in dict_options[mod_dev.device]['custom_options']:
+
+    # TODO: name same name in next major release
+    if hasattr(mod_dev, 'device'):
+        device = mod_dev.device
+    elif hasattr(mod_dev, 'output_type'):
+        device = mod_dev.output_type
+    else:
+        logger.error("Unknown device")
+        return
+
+    if 'custom_options' in dict_options[device]:
+        for each_option in dict_options[device]['custom_options']:
             null_value = True
             for key in request_form.keys():
                 if each_option['id'] == key:

@@ -16,8 +16,6 @@ class Output(CRUDMixin, db.Model):
     output_mode = db.Column(db.Text, default=None)
     interface = db.Column(db.Text, default='')
     location = db.Column(db.Text, default='')
-    i2c_bus = db.Column(db.Integer, default=None)
-    baud_rate = db.Column(db.Integer, default=None)
     name = db.Column(db.Text, default='Output')
     measurement = db.Column(db.Text, default=None)
     unit = db.Column(db.Text, default=None)
@@ -44,6 +42,17 @@ class Output(CRUDMixin, db.Model):
     state_shutdown = db.Column(db.Text, default=None)
     shutdown_value = db.Column(db.Float, default=0)
 
+    # I2C
+    i2c_location = db.Column(db.Text, default=None)  # Address location for I2C communication
+    i2c_bus = db.Column(db.Integer, default='')  # I2C bus the sensor is connected to
+
+    # FTDI
+    ftdi_location = db.Column(db.Text, default=None)  # Device location for FTDI communication
+
+    # Communication (SPI)
+    uart_location = db.Column(db.Text, default=None)  # Device location for UART communication
+    baud_rate = db.Column(db.Integer, default=None)  # Baud rate for UART communication
+
     # PWM
     pwm_hertz = db.Column(db.Integer, default=None)  # PWM Hertz
     pwm_library = db.Column(db.Text, default=None)  # Library to produce PWM
@@ -51,6 +60,8 @@ class Output(CRUDMixin, db.Model):
 
     # Atlas EZO-PMP
     flow_rate = db.Column(db.Float, default=None)  # example: ml per minute
+
+    custom_options = db.Column(db.Text, default='')
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

@@ -1,0 +1,27 @@
+{% if 'sensitivity' in dict_options['options_enabled'] %}
+
+  {% if dict_options['sensitivity']|length == 1 %}
+
+<div class="col-auto">
+  {{form.sensitivity.label(class_='control-label')}}
+  <div>
+    {{form.sensitivity(class_='form-control', value=each_device.sensitivity, **{'title': dict_translation['sensitivity']['phrase']})}}
+  </div>
+</div>
+
+  {% elif dict_options['sensitivity']|length > 1 %}
+
+<div class="col-auto">
+  {{form.sensitivity.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="sensitivity" name="sensitivity" title="{{dict_translation['sensitivity']['phrase']}}">
+    {% for each_value, each_name in dict_options['sensitivity'] %}
+      <option value="{{each_value}}"{% if each_device.sensitivity == each_value %} selected{% endif %}>{{each_name}}</option>
+    {% endfor %}
+    </select>
+  </div>
+</div>
+
+  {% endif %}
+
+{% endif %}

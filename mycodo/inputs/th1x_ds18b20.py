@@ -31,8 +31,7 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'measurements_select',
         'period',
-        'pre_output',
-        'log_level_debug'
+        'pre_output'
     ],
 
     'custom_options': [

@@ -25,7 +25,7 @@ measurements_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'python_pwm',
-    'output_name': lazy_gettext('PWM (Python Command)'),
+    'output_name': lazy_gettext('PWM'),
     'measurements_dict': measurements_dict,
 
     'on_state_internally_handled': False,
@@ -34,7 +34,17 @@ OUTPUT_INFORMATION = {
     'message': 'Python 3 code will be executed when this output is turned on or off. The "duty_cycle" '
                'object is a float value that represents the duty cycle that has been set.',
 
-    'dependencies_module': []
+    'options_enabled': [
+        'python_pwm',
+        'pwm_state_startup',
+        'pwm_state_shutdown',
+        'trigger_functions_startup'
+    ],
+    'options_disabled': ['interface'],
+
+    'dependencies_module': [],
+
+    'interfaces': ['PYTHON']
 }
 
 
@@ -45,6 +55,7 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
+        self.output_setup = None
         self.pwm_state = None
         self.output_run_python_pwm = None
 
@@ -77,28 +88,38 @@ class OutputModule(AbstractOutput):
             self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=duty_cycle))
 
     def is_on(self):
-        if self.pwm_state:
-            return self.pwm_state
-        return False
+        if self.is_setup():
+            if self.pwm_state:
+                return self.pwm_state
+            return False
 
     def is_setup(self):
-        if self.output_run_python_pwm:
+        if self.output_setup:
             return True
         return False
 
     def setup_output(self):
-        self.save_output_python_pwm_code(self.output_unique_id)
-        file_run_pwm = '{}/output_pwm_{}.py'.format(
-            PATH_PYTHON_CODE_USER, self.output_unique_id)
+        if not self.output_pwm_command:
+            self.logger.error("Output must have Python Code set")
+            return
 
-        module_name = "mycodo.output.{}".format(
-            os.path.basename(file_run_pwm).split('.')[0])
-        spec = importlib.util.spec_from_file_location(
-            module_name, file_run_pwm)
-        output_run_pwm = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(output_run_pwm)
-        self.output_run_python_pwm = output_run_pwm.OutputRun(
-            self.logger, self.output_unique_id)
+        try:
+            self.save_output_python_pwm_code(self.output_unique_id)
+            file_run_pwm = '{}/output_pwm_{}.py'.format(
+                PATH_PYTHON_CODE_USER, self.output_unique_id)
+
+            module_name = "mycodo.output.{}".format(
+                os.path.basename(file_run_pwm).split('.')[0])
+            spec = importlib.util.spec_from_file_location(
+                module_name, file_run_pwm)
+            output_run_pwm = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(output_run_pwm)
+            self.output_run_python_pwm = output_run_pwm.OutputRun(
+                self.logger, self.output_unique_id)
+
+            self.output_setup = True
+        except Exception:
+            self.logger.exception("Could not set up output")
 
     def save_output_python_pwm_code(self, unique_id):
         """Save python PWM code to files"""
@@ -123,7 +144,8 @@ class OutputRun:
     def output_code_run(self, duty_cycle):
 """
 
-        code_replaced = self.output_pwm_command.replace('((duty_cycle))', 'duty_cycle')
+        code_replaced = self.output_pwm_command.replace(
+            '((duty_cycle))', 'duty_cycle')
         indented_code = textwrap.indent(code_replaced, ' ' * 8)
         full_command_pwm = pre_statement_run + indented_code
 

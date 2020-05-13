@@ -1,0 +1,10 @@
+{% if 'trigger_functions_startup' in dict_options['options_enabled'] %}
+
+<div class="col-auto">
+  {{form.trigger_functions_at_start.label(class_='control-label')}}
+  <div class="input-group-text">
+    <input id="trigger_functions_at_start" name="trigger_functions_at_start" type="checkbox" title="{{dict_translation['trigger_functions_at_start']['phrase']}}" value="y"{% if each_device.trigger_functions_at_start %} checked{% endif %}>
+  </div>
+</div>
+
+{% endif %}

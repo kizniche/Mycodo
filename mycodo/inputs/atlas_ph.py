@@ -49,8 +49,7 @@ INPUT_INFORMATION = {
         'uart_location',
         'uart_baud_rate',
         'period',
-        'pre_output',
-        'log_level_debug'
+        'pre_output'
     ],
     'options_disabled': ['interface'],
 
@@ -96,11 +95,10 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        self.atlas_sensor_ftdi = None
-        self.atlas_sensor_uart = None
-        self.atlas_sensor_i2c = None
+        self.atlas_sensor = None
         self.ftdi_location = None
         self.uart_location = None
+        self.uart_baud_rate = None
         self.i2c_address = None
         self.i2c_bus = None
         self.atlas_command = None
@@ -129,19 +127,20 @@ class InputModule(AbstractInput):
             self.get_measurement()
 
     def initialize_sensor(self):
-        from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-        from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-        from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         if self.interface == 'FTDI':
+            from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
             self.ftdi_location = self.input_dev.ftdi_location
-            self.atlas_sensor_ftdi = AtlasScientificFTDI(self.ftdi_location)
+            self.atlas_sensor = AtlasScientificFTDI(self.ftdi_location)
         elif self.interface == 'UART':
+            from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
             self.uart_location = self.input_dev.uart_location
-            self.atlas_sensor_uart = AtlasScientificUART(self.uart_location)
+            self.atlas_sensor = AtlasScientificUART(
+                self.uart_location, baudrate=self.uart_baud_rate)
         elif self.interface == 'I2C':
+            from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
             self.i2c_address = int(str(self.input_dev.i2c_location), 16)
             self.i2c_bus = self.input_dev.i2c_bus
-            self.atlas_sensor_i2c = AtlasScientificI2C(
+            self.atlas_sensor = AtlasScientificI2C(
                 i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
 
     def get_measurement(self):
@@ -177,8 +176,8 @@ class InputModule(AbstractInput):
 
         # Read sensor via FTDI
         if self.interface == 'FTDI':
-            if self.atlas_sensor_ftdi.setup:
-                lines = self.atlas_sensor_ftdi.query('R')
+            if self.atlas_sensor.setup:
+                lines = self.atlas_sensor.query('R')
                 if lines:
                     self.logger.debug(
                         "All Lines: {lines}".format(lines=lines))
@@ -216,8 +215,8 @@ class InputModule(AbstractInput):
 
         # Read sensor via UART
         elif self.interface == 'UART':
-            if self.atlas_sensor_uart.setup:
-                lines = self.atlas_sensor_uart.query('R')
+            if self.atlas_sensor.setup:
+                lines = self.atlas_sensor.query('R')
                 if lines:
                     self.logger.debug(
                         "All Lines: {lines}".format(lines=lines))
@@ -255,8 +254,8 @@ class InputModule(AbstractInput):
 
         # Read sensor via I2C
         elif self.interface == 'I2C':
-            if self.atlas_sensor_i2c.setup:
-                ph_status, ph_str = self.atlas_sensor_i2c.query('R')
+            if self.atlas_sensor.setup:
+                ph_status, ph_str = self.atlas_sensor.query('R')
                 if ph_status == 'error':
                     self.logger.error(
                         "Sensor read unsuccessful: {err}".format(

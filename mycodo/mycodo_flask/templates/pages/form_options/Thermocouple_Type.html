@@ -1,0 +1,27 @@
+{% if 'thermocouple_type' in dict_options['options_enabled'] %}
+
+  {% if dict_options['thermocouple_type']|length == 1 %}
+
+<div class="col-auto">
+  {{form.thermocouple_type.label(class_='control-label')}}
+  <div>
+    {{form.thermocouple_type(class_='form-control', value=each_device.thermocouple_type, **{'title': dict_translation['thermocouple_type']['phrase']})}}
+  </div>
+</div>
+
+  {% elif dict_options['thermocouple_type']|length > 1 %}
+
+<div class="col-auto">
+  {{form.thermocouple_type.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="thermocouple_type" name="thermocouple_type" title="{{dict_translation['thermocouple_type']['phrase']}}">
+    {% for each_value, each_name in dict_options['thermocouple_type'] %}
+      <option value="{{each_value}}"{% if each_device.thermocouple_type == each_value %} selected{% endif %}>{{each_name}}</option>
+    {% endfor %}
+    </select>
+  </div>
+</div>
+
+  {% endif %}
+
+{% endif %}

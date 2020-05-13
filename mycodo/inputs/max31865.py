@@ -52,8 +52,7 @@ INPUT_INFORMATION = {
         'pin_clock',
         'ref_ohm',
         'period',
-        'pre_output',
-        'log_level_debug'
+        'pre_output'
     ],
     'options_disabled': ['interface'],
 

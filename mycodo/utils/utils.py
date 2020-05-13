@@ -212,3 +212,15 @@ def query_yes_no(question, default="yes"):
             return valid[choice]
         else:
             sys.stdout.write("Please respond with 'y' or 'n').\n")
+
+
+def sort_tuple(tup):
+    """sort a list of tuples by its second item"""
+    lst = len(tup)
+    for i in range(0, lst):
+        for j in range(0, lst - i - 1):
+            if (tup[j][1] > tup[j + 1][1]):
+                temp = tup[j]
+                tup[j] = tup[j + 1]
+                tup[j + 1] = temp
+    return tup

@@ -29,8 +29,33 @@ OUTPUT_INFORMATION = {
     # A message to display at the top of the output options
     'message': 'Information about this output.',
 
+    # Form input options that are enabled or disabled
+    'options_enabled': [
+        'gpio_pin',
+        'current_draw'
+    ],
+    'options_disabled': ['interface'],
+
     # Any dependencies required by the output module
-    'dependencies_module': []
+    'dependencies_module': [],
+
+    # THe interface or interfaces that can be used with this module
+    'interfaces': ['GPIO'],
+
+    # Custom actions that will appear at the top of the options in the user interface
+    'custom_actions': [
+        {
+            'id': 'input_value',
+            'type': 'float',
+            'name': lazy_gettext('Value Name'),
+            'phrase': 'A description for this input'
+        },
+        {
+            'id': 'input_button',
+            'type': 'button',
+            'name': lazy_gettext('Button Name')
+        }
+    ]
 }
 
 
@@ -48,7 +73,12 @@ class OutputModule(AbstractOutput):
             # Since on_state_internally_handled is False, we will store the state of the output
             self.output_state = False
 
-            self.logger.info("Output class initialized")
+            # Variables set by the user interface
+            self.gpio_pin = output.pin
+
+            self.logger.info(
+                "Output class initialized with GPIO pin {}".format(
+                    self.gpio_pin))
 
     def output_switch(self, state, amount=None, duty_cycle=None):
         """Turn the output on, off, on for an amount, or set a duty cycle"""
@@ -64,9 +94,13 @@ class OutputModule(AbstractOutput):
         Code to return the state of the output.
         This can also be handled internally by the output controller
         """
-        if self.output_state:
-            return self.output_state
-        return False
+        if self.is_setup():
+            if self.output_state:
+                return self.output_state  # Output is on
+            else:
+                return False  # Output is off
+        else:
+            return None  # Indicate output is unconfigured
 
     def is_setup(self):
         """Returns whether the output has successfully been set up"""
@@ -78,3 +112,21 @@ class OutputModule(AbstractOutput):
         """Code executed when Mycodo starts up to initialize the output"""
         self.logger.info("Output set up")
         self.output_setup = True
+
+    def input_button(self, args_dict):
+        """
+        Executed when custom action button pressed
+        """
+        if 'input_value' not in args_dict:
+            self.logger.error("Cannot execute function without an input value")
+            return
+        if not isinstance(args_dict['input_value'], float):
+            self.logger.error("Input value does not represent a float: '{}', type: {}".format(
+                args_dict['input_value'], type(args_dict['input_value'])))
+            return
+
+        try:
+            self.logger.info("Received your input of {} and executing this log write".format(
+                args_dict['input_value']))
+        except:
+            self.logger.exception("Could not execute code")

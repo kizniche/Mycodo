@@ -60,6 +60,10 @@ class OutputController(AbstractController, threading.Thread):
         self.set_log_level_debug(debug)
         self.control = DaemonControl()
 
+        self.button_pressed = None
+        self.button_args_dict = None
+        self.button_output_id = None
+
         # SMTP options
         self.smtp_max_count = None
         self.smtp_wait_time = None
@@ -89,6 +93,16 @@ class OutputController(AbstractController, threading.Thread):
 
     def loop(self):
         """ Main loop of the output controller """
+        if self.button_pressed:
+            try:
+                getattr(self.output[self.button_output_id], self.button_pressed)(self.button_args_dict)
+            except:
+                self.logger.exception("Error executing button press function '{}'".format(
+                    self.button_pressed))
+            self.button_args_dict = None
+            self.button_output_id = None
+            self.button_pressed = None
+
         for output_id in self.output_unique_id:
             # Execute if past the time the output was supposed to turn off
             if (self.output_on_until[output_id] < datetime.datetime.now() and
@@ -257,6 +271,10 @@ class OutputController(AbstractController, threading.Thread):
             self.logger.debug("Output {id} ({name}) Deleted.".format(
                 id=self.output_unique_id[output_id],
                 name=self.output_name[output_id]))
+
+            # instruct output to shutdown
+            shutdown_timer = timeit.default_timer()
+            self.output[output_id].shutdown(shutdown_timer)
 
             self.output_unique_id.pop(output_id, None)
             self.output_name.pop(output_id, None)
@@ -868,13 +886,16 @@ class OutputController(AbstractController, threading.Thread):
         """
         if output_id in self.output_type:
             state = self.is_on(output_id)
-            if state:
+            if state is not None:
                 if self.output_type[output_id] in self.outputs_pwm:
-                    return state
-                else:
+                    if state:
+                        return state
+                    elif state == 0 or state is False:
+                        return 'off'
+                elif state:
                     return 'on'
-            else:
-                return 'off'
+                else:
+                    return 'off'
 
     def output_states_all(self):
         """
@@ -927,3 +948,10 @@ class OutputController(AbstractController, threading.Thread):
                 Output.unique_id == self.output_unique_id[output_id]).first()
             mod_cont.off_until = dt_off_until
             new_session.commit()
+
+    def custom_button_exec_function(self, output_id, button_id, args_dict):
+        """Execute function from custom action button press"""
+        self.button_args_dict = args_dict
+        self.button_output_id = output_id
+        self.button_pressed = button_id
+        return 0, "Button press sent to Output Controller"

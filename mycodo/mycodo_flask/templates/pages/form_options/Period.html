@@ -1,0 +1,18 @@
+{% if 'period' in dict_options['options_disabled'] or
+      'period' in dict_options['options_enabled']
+  %}
+
+<div class="col-auto">
+  {{form.period.label(class_='control-label')}}
+  <div>
+
+  {%- if 'period' in dict_options['options_disabled'] -%}
+    {{form.period(class_='form-control', value=each_device.period, disabled=True, **{'title': dict_translation['period']['phrase']})}}
+  {% else %}
+    {{form.period(class_='form-control', value=each_device.period, **{'title': dict_translation['period']['phrase']})}}
+  {%- endif -%}
+
+  </div>
+</div>
+
+{% endif %}

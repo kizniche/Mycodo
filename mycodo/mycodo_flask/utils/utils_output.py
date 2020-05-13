@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 
+import os
 import sqlalchemy
 from flask import flash
 from flask import url_for
@@ -13,6 +14,7 @@ from mycodo.databases.models import Output
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
+from mycodo.mycodo_flask.utils.utils_general import custom_options_return_string
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
@@ -73,6 +75,78 @@ def output_add(form_add):
                 new_output.name = "Name"
                 new_output.output_type = output_type
                 new_output.interface = output_interface
+
+                #
+                # Set default values for new input being added
+                #
+
+                # input add options
+                if output_type in dict_outputs:
+                    def dict_has_value(key):
+                        if (key in dict_outputs[output_type] and
+                                (dict_outputs[output_type][key] or dict_outputs[output_type][key] == 0)):
+                            return True
+
+                    #
+                    # Interfacing options
+                    #
+
+                    if output_interface == 'I2C':
+                        if dict_has_value('i2c_location'):
+                            new_output.i2c_location = dict_outputs[output_type]['i2c_location'][0]  # First entry in list
+
+                    if output_interface == 'FTDI':
+                        if dict_has_value('ftdi_location'):
+                            new_output.ftdi_location = dict_outputs[output_type]['ftdi_location']
+
+                    if output_interface == 'UART':
+                        if dict_has_value('uart_location'):
+                            new_output.uart_location = dict_outputs[output_type]['uart_location']
+
+                    # UART options
+                    if dict_has_value('uart_baud_rate'):
+                        new_output.baud_rate = dict_outputs[output_type]['uart_baud_rate']
+                    if dict_has_value('pin_cs'):
+                        new_output.pin_cs = dict_outputs[output_type]['pin_cs']
+                    if dict_has_value('pin_miso'):
+                        new_output.pin_miso = dict_outputs[output_type]['pin_miso']
+                    if dict_has_value('pin_mosi'):
+                        new_output.pin_mosi = dict_outputs[output_type]['pin_mosi']
+                    if dict_has_value('pin_clock'):
+                        new_output.pin_clock = dict_outputs[output_type]['pin_clock']
+
+                    # Bluetooth (BT) options
+                    elif output_interface == 'BT':
+                        if dict_has_value('bt_location'):
+                            new_output.location = dict_outputs[output_type]['bt_location']
+                        if dict_has_value('bt_adapter'):
+                            new_output.bt_adapter = dict_outputs[output_type]['bt_adapter']
+
+                    # GPIO options
+                    elif output_interface == 'GPIO':
+                        if dict_has_value('gpio_pin'):
+                            new_output.pin = dict_outputs[output_type]['gpio_pin']
+
+                    # Custom location location
+                    elif dict_has_value('location'):
+                        new_output.location = dict_outputs[output_type]['location']['options'][0][0]  # First entry in list
+
+                #
+                # Custom Options
+                #
+
+                list_options = []
+                if 'custom_options' in dict_outputs[output_type]:
+                    for each_option in dict_outputs[output_type]['custom_options']:
+                        if each_option['default_value'] is False:
+                            default_value = ''
+                        else:
+                            default_value = each_option['default_value']
+                        option = '{id},{value}'.format(
+                            id=each_option['id'],
+                            value=default_value)
+                        list_options.append(option)
+                new_output.custom_options = ';'.join(list_options)
 
                 if output_type in ['wired',
                                    'wireless_rpi_rf',
@@ -186,78 +260,75 @@ with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
         return 1
 
 
-def output_mod(form_output):
+def output_mod(form_output, request_form):
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['modify']['title'],
         controller=TRANSLATIONS['output']['title'])
     error = []
 
+    dict_outputs = parse_output_information()
+
     try:
         mod_output = Output.query.filter(
             Output.unique_id == form_output.output_id.data).first()
+
+        if (form_output.uart_location.data and
+                not os.path.exists(form_output.uart_location.data)):
+            error.append(gettext(
+                "Invalid device or improper permissions to read device"))
+
         mod_output.name = form_output.name.data
-        mod_output.log_level_debug = form_output.log_level_debug.data
-        mod_output.amps = form_output.amps.data
 
-        if form_output.trigger_functions_at_start.data:
-            mod_output.trigger_functions_at_start = form_output.trigger_functions_at_start.data
-
-        if mod_output.output_type == 'wired':
+        if form_output.location.data:
+            mod_output.location = form_output.location.data
+        if form_output.i2c_location.data:
+            mod_output.i2c_location = form_output.i2c_location.data
+        if form_output.ftdi_location.data:
+            mod_output.ftdi_location = form_output.ftdi_location.data
+        if form_output.uart_location.data:
+            mod_output.uart_location = form_output.uart_location.data
+        if form_output.gpio_location.data:
             if not is_int(form_output.gpio_location.data):
                 error.append("BCM GPIO Pin must be an integer")
-            mod_output.pin = form_output.gpio_location.data
+            else:
+                mod_output.pin = form_output.gpio_location.data
+
+        mod_output.i2c_bus = form_output.i2c_bus.data
+        mod_output.baud_rate = form_output.baud_rate.data
+        mod_output.log_level_debug = form_output.log_level_debug.data
+        mod_output.amps = form_output.amps.data
+        mod_output.trigger_functions_at_start = form_output.trigger_functions_at_start.data
+        mod_output.location = form_output.location.data
+        mod_output.output_mode = form_output.output_mode.data
+
+        if form_output.on_state.data in ["0", "1"]:
             mod_output.on_state = bool(int(form_output.on_state.data))
 
-        elif mod_output.output_type == 'wireless_rpi_rf':
-            if not is_int(form_output.gpio_location.data):
-                error.append("Pin must be an integer")
-            if not is_int(form_output.protocol.data):
-                error.append("Protocol must be an integer")
-            if not is_int(form_output.pulse_length.data):
-                error.append("Pulse Length must be an integer")
-            if not is_int(form_output.on_command.data):
-                error.append("On Command must be an integer")
-            if not is_int(form_output.off_command.data):
-                error.append("Off Command must be an integer")
-            mod_output.pin = form_output.gpio_location.data
-            mod_output.protocol = form_output.protocol.data
-            mod_output.pulse_length = form_output.pulse_length.data
-            mod_output.on_command = form_output.on_command.data
-            mod_output.off_command = form_output.off_command.data
-            mod_output.force_command = form_output.force_command.data
+        # Wireless options
+        mod_output.protocol = form_output.protocol.data
+        mod_output.pulse_length = form_output.pulse_length.data
 
-        elif mod_output.output_type == 'pwm':
-            mod_output.pin = form_output.gpio_location.data
-            mod_output.pwm_hertz = form_output.pwm_hertz.data
-            mod_output.pwm_library = form_output.pwm_library.data
-            mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
+        # Command options
+        mod_output.on_command = form_output.on_command.data
+        mod_output.off_command = form_output.off_command.data
+        mod_output.force_command = form_output.force_command.data
 
-        elif mod_output.output_type.startswith('atlas_ezo_pmp'):
-            mod_output.location = form_output.location.data
-            mod_output.output_mode = form_output.output_mode.data
+        # PWM options
+        mod_output.pwm_hertz = form_output.pwm_hertz.data
+        mod_output.pwm_library = form_output.pwm_library.data
+        mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
+
+        # Pump options
+        if form_output.flow_rate.data:
             if form_output.flow_rate.data > 105 or form_output.flow_rate.data < 0.5:
                 error.append("Flow Rate must be between 0.5 and 105 ml/min")
             else:
                 mod_output.flow_rate = form_output.flow_rate.data
-            if form_output.i2c_bus.data:
-                mod_output.i2c_bus = form_output.i2c_bus.data
-            if form_output.baud_rate.data:
-                mod_output.baud_rate = form_output.baud_rate.data
 
-        if mod_output.output_type in ['command',
-                                      'python']:
-            mod_output.on_command = form_output.on_command.data
-            mod_output.off_command = form_output.off_command.data
-            mod_output.force_command = form_output.force_command.data
+        mod_output.pwm_command = form_output.pwm_command.data
+        mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
 
-        if mod_output.output_type in ['command_pwm',
-                                      'python_pwm']:
-            mod_output.pwm_command = form_output.pwm_command.data
-            mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
-
-        if mod_output.output_type in ['command',
-                                      'command_pwm']:
-            mod_output.linux_command_user = form_output.linux_command_user.data
+        mod_output.linux_command_user = form_output.linux_command_user.data
 
         if form_output.state_startup.data == '-1':
             mod_output.state_startup = None
@@ -277,10 +348,28 @@ def output_mod(form_output):
                 form_output.shutdown_value.data):
             mod_output.shutdown_value = form_output.shutdown_value.data
 
+        if 'test_before_saving' in dict_outputs[mod_output.output_type]:
+            (constraints_pass,
+             constraints_errors,
+             mod_input) = dict_outputs[mod_output.output_type]['test_before_saving'](
+                mod_output, request_form)
+            if constraints_pass:
+                pass
+            elif constraints_errors:
+                for each_error in constraints_errors:
+                    flash(each_error, 'error')
+
+        # Generate string to save from custom options
+        error, custom_options = custom_options_return_string(
+            error, dict_outputs, mod_output, request_form)
+
         if not error:
+            mod_output.custom_options = custom_options
+
             db.session.commit()
             manipulate_output('Modify', form_output.output_id.data)
     except Exception as except_msg:
+        logger.exception(1)
         error.append(except_msg)
     flash_success_errors(error, action, url_for('routes_page.page_output'))
 
@@ -418,3 +507,68 @@ def output_on_off(form_output):
 def get_all_output_states():
     daemon_control = DaemonControl()
     return daemon_control.output_states_all()
+
+
+def custom_action(dict_outputs, unique_id, form):
+    action = '{action}, {controller}'.format(
+        action=gettext("Action"),
+        controller=TRANSLATIONS['output']['title'])
+    error = []
+
+    try:
+        output = Output.query.filter(
+            Output.unique_id == unique_id).first()
+
+        if not output:
+            return
+
+        option_types = {}
+        if 'custom_actions' in dict_outputs[output.output_type]:
+            for each_option in dict_outputs[output.output_type]['custom_actions']:
+                if 'id' in each_option and 'type' in each_option:
+                    option_types[each_option['id']] = each_option['type']
+
+        args_dict = {}
+        button_id = None
+        for key in form.keys():
+            if key.startswith('custom_button_'):
+                button_id = key[14:]
+            else:
+                for value in form.getlist(key):
+                    if key in option_types:
+                        if option_types[key] == 'integer':
+                            try:
+                                args_dict[key] = int(value)
+                            except:
+                                logger.error("Value of option '{}' doesn't represent integer: '{}'".format(key, value))
+                        elif option_types[key] == 'float':
+                            try:
+                                args_dict[key] = float(value)
+                            except:
+                                logger.error("Value of option '{}' doesn't represent float: '{}'".format(key, value))
+                        elif option_types[key] == 'bool':
+                            try:
+                                args_dict[key] = bool(value)
+                            except:
+                                logger.error("Value of option '{}' doesn't represent bool: '{}'".format(key, value))
+                        elif option_types[key] == 'text':
+                            try:
+                                args_dict[key] = str(value)
+                            except:
+                                logger.error("Value of option '{}' doesn't represent string: '{}'".format(key, value))
+                        else:
+                            args_dict[key] = float(value)
+
+        if not button_id:
+            return
+
+        if not error and button_id:
+            control = DaemonControl()
+            status = control.output_custom_button(unique_id, button_id, args_dict)
+            if status[0]:
+                flash("Custom Button: {}".format(status[1]), "error")
+            else:
+                flash("Custom Button: {}".format(status[1]), "success")
+    except Exception as except_msg:
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('routes_page.page_data'))

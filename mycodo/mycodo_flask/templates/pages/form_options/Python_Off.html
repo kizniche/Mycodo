@@ -1,0 +1,10 @@
+{% if 'python_off' in dict_options['options_enabled'] %}
+
+<div class="col-12">
+  <label class="control-label">{{_('Off Python Code')}}</label>
+  <div>
+    <textarea class="form-control" id="off_command" name="off_command" rows="5" type="text" title="{{_('Python code to execute when the output is instructed to turn off')}}">{{each_device.off_command}}</textarea>
+   </div>
+</div>
+
+{% endif %}

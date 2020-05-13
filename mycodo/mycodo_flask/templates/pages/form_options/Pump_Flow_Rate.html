@@ -1,0 +1,10 @@
+{% if 'pump_flow_rate' in dict_options['options_enabled'] %}
+
+<div class="col-auto">
+  {{form.flow_rate.label(class_='control-label')}}
+  <div>
+    {{form.flow_rate(class_='form-control', value=each_device.flow_rate, **{'title': dict_translation['flow_rate']['phrase']})}}
+  </div>
+</div>
+
+{% endif %}

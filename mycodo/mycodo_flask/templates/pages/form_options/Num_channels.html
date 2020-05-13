@@ -1,0 +1,10 @@
+{% if each_device.device in ['TTN_DATA_STORAGE', 'MQTT_PAHO', 'PythonCode'] %}
+
+<div class="col-auto">
+  {{form.num_channels.label(class_='control-label')}}
+  <div>
+    {{form.num_channels(class_='form-control', value=table_device_measurements.query.filter(table_device_measurements.device_id == each_device.unique_id).count(), **{'title': _('Number of measurements')})}}
+  </div>
+</div>
+
+{% endif %}

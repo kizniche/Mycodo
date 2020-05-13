@@ -1,0 +1,15 @@
+{% if 'adc_sample_speed' in dict_options['options_enabled'] %}
+
+<div class="col-auto">
+  {{form.adc_sample_speed.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="adc_sample_speed" name="adc_sample_speed" title="{{dict_translation['adc_sample_speed']['phrase']}}">
+      <option value=""></option>
+      {% for each_value, each_name in dict_options['adc_sample_speed'] %}
+        <option value="{{each_value}}"{% if each_device.adc_sample_speed == each_value %} selected{% endif %}>{{each_name}}</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
+{% endif %}

@@ -1,0 +1,27 @@
+{% if each_device.device == 'EDGE' %}
+
+<div class="col-auto">
+  {{form.switch_edge.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="switch_edge" name="switch_edge" title="{{dict_translation['switch_edge']['phrase']}}">
+      <option value="rising"{% if each_device.switch_edge == "rising" %} selected{% endif %}>Rising</option>
+      <option value="falling"{% if each_device.switch_edge == "falling" %} selected{% endif %}>Falling</option>
+      <option value="both"{% if each_device.switch_edge == "both" %} selected{% endif %}>Both</option>
+    </select>
+  </div>
+</div>
+<div class="col-auto">
+  {{form.switch_bouncetime.label(class_='control-label')}}
+  <div>
+    {{form.switch_bouncetime(class_='form-control', value=each_device.switch_bouncetime, **{'title': dict_translation['switch_bouncetime']['phrase']})}}
+  </div>
+</div>
+<div class="col-auto">
+  {{form.switch_reset_period.label(class_='control-label')}}
+  <div>
+    {{form.switch_reset_period(class_='form-control', value=each_device.switch_reset_period, **{'title': dict_translation['switch_reset_period']['phrase']})}}
+  </div>
+</div>
+<input id="period" name="period" type="hidden" value="10">
+
+{% endif %}

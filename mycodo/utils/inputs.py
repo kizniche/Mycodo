@@ -144,7 +144,7 @@ def parse_input_information():
 
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'enable_channel_unit_select')
 
-                # Interface
+                # Interfaces
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'interfaces')
 
                 # Nonstandard (I2C, UART, etc.) location

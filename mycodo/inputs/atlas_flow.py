@@ -105,8 +105,7 @@ INPUT_INFORMATION = {
         'uart_baud_rate',
         'period',
         'measurements_select',
-        'pre_output',
-        'log_level_debug'
+        'pre_output'
     ],
     'options_disabled': ['interface'],
 

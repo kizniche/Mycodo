@@ -1,0 +1,12 @@
+{% if 'pwm_frequency' in dict_options['options_disabled'] or
+      'pwm_frequency' in dict_options['options_enabled']
+  %}
+
+<div class="col-auto">
+  {{form.pwm_hertz.label(class_='control-label')}}
+  <div>
+    {{form.pwm_hertz(class_='form-control', value=each_device.pwm_hertz, **{'title': dict_translation['pwm_hertz']['phrase']})}}
+  </div>
+</div>
+
+{% endif %}

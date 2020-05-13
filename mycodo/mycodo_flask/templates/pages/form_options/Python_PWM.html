@@ -1,0 +1,10 @@
+{% if 'python_pwm' in dict_options['options_enabled'] %}
+
+<div class="col-12">
+  <label class="control-label">{{_('PWM Python Code')}}</label>
+  <div>
+    <textarea class="form-control" id="pwm_command" name="pwm_command" rows="5" title="{{dict_translation['pwm_command']['phrase']}}">{{each_device.pwm_command}}</textarea>
+   </div>
+</div>
+
+{% endif %}

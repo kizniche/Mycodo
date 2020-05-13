@@ -46,8 +46,7 @@ INPUT_INFORMATION = {
         'period',
         'resolution',
         'resolution_2',
-        'pre_output',
-        'log_level_debug'
+        'pre_output'
     ],
     'options_disabled': ['interface'],
 

@@ -1,0 +1,16 @@
+{% if 'pump_output_mode' in dict_options['options_enabled'] %}
+
+<div class="col-auto">
+  {{form.output_mode.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="output_mode" name="output_mode" data-placement="top" title="{{dict_translation['output_mode']['phrase']}}">
+    {% if not each_device.output_mode %}
+      <option value="" selected>{{dict_translation['select_one']['title']}}</option>
+    {% endif %}
+      <option value="fastest_flow_rate"{% if each_device.output_mode == 'fastest_flow_rate' %} selected{% endif %}>{{_('Fastest Flow Rate')}}</option>
+      <option value="specify_flow_rate"{% if each_device.output_mode == 'specify_flow_rate' %} selected{% endif %}>{{_('Specify Flow Rate')}}</option>
+    </select>
+  </div>
+</div>
+
+{% endif %}

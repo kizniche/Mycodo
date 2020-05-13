@@ -1,0 +1,27 @@
+{% if 'resolution_2' in dict_options['options_enabled'] %}
+
+  {% if dict_options['resolution']|length == 1 %}
+
+<div class="col-auto">
+  {{form.resolution_2.label(class_='control-label')}}
+  <div>
+    {{form.resolution_2(class_='form-control', value=each_device.resolution, **{'title': dict_translation['resolution_2']['phrase']})}}
+  </div>
+</div>
+
+  {% elif dict_options['resolution']|length > 1 %}
+
+<div class="col-auto">
+  {{form.resolution_2.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="resolution_2" name="resolution_2" title="{{dict_translation['resolution_2']['phrase']}}">
+    {% for each_value, each_name in dict_options['resolution_2'] %}
+      <option value="{{each_value}}"{% if each_device.resolution_2 == each_value %} selected{% endif %}>{{each_name}}</option>
+    {% endfor %}
+    </select>
+  </div>
+</div>
+
+  {% endif %}
+
+{% endif %}

@@ -1,0 +1,18 @@
+{% if 'times_check' in dict_options['options_disabled'] or
+      'times_check' in dict_options['options_enabled']
+  %}
+
+<div class="col-auto">
+  {{form.times_check.label(class_='control-label')}}
+  <div>
+
+  {%- if 'times_check' in dict_options['options_disabled'] -%}
+    {{form.times_check(class_='form-control', value=each_device.times_check, disabled=True, **{'title': dict_translation['times_check']['phrase']})}}
+  {% else %}
+    {{form.times_check(class_='form-control', value=each_device.times_check, **{'title': dict_translation['times_check']['phrase']})}}
+  {%- endif -%}
+
+  </div>
+</div>
+
+{% endif %}

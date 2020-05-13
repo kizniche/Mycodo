@@ -19,7 +19,7 @@ measurements_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'command_pwm',
-    'output_name': lazy_gettext('PWM (Linux Command)'),
+    'output_name': lazy_gettext('PWM'),
     'measurements_dict': measurements_dict,
 
     'on_state_internally_handled': False,
@@ -29,7 +29,18 @@ OUTPUT_INFORMATION = {
                'is set for this output. The string "((duty_cycle))" in the command will be replaced with '
                'the duty cycle being set prior to execution.',
 
-    'dependencies_module': []
+    'options_enabled': [
+        'command_pwm',
+        'command_execute_user',
+        'pwm_state_startup',
+        'pwm_state_shutdown',
+        'trigger_functions_startup'
+    ],
+    'options_disabled': ['interface'],
+
+    'dependencies_module': [],
+
+    'interfaces': ['SHELL']
 }
 
 
@@ -40,6 +51,7 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
+        self.output_setup = None
         self.pwm_state = None
 
         if not testing:
@@ -82,12 +94,18 @@ class OutputModule(AbstractOutput):
                     ret=cmd_return))
 
     def is_on(self):
-        if self.pwm_state:
-            return self.pwm_state
-        return False
+        if self.is_setup():
+            if self.pwm_state:
+                return self.pwm_state
+            return False
 
     def is_setup(self):
-        return True
+        if self.output_setup:
+            return True
 
     def setup_output(self):
-        pass
+        if self.output_pwm_command:
+            self.output_setup = True
+        else:
+            self.output_setup = False
+            self.logger.error("Output must have command set")

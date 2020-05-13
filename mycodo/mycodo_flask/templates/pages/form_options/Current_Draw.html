@@ -1,0 +1,10 @@
+{% if 'current_draw' in dict_options['options_enabled'] %}
+
+<div class="col-6 col-sm-4 col-md-3">
+  {{form.amps.label(class_='control-label')}}
+  <div>
+    {{form.amps(class_='form-control', value=each_device.amps, **{'title': dict_translation['amps']['phrase']})}}
+   </div>
+</div>
+
+{% endif %}

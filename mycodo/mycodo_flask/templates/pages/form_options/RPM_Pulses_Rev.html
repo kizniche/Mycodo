@@ -1,0 +1,18 @@
+{% if 'rpm_pulses_per_rev' in dict_options['options_disabled'] or
+      'rpm_pulses_per_rev' in dict_options['options_enabled']
+  %}
+
+<div class="col-auto">
+  {{form.rpm_pulses_per_rev.label(class_='control-label')}}
+  <div>
+
+  {%- if 'rpm_pulses_per_rev' in dict_options['options_disabled'] -%}
+    {{form.rpm_pulses_per_rev(class_='form-control', value=each_device.rpm_pulses_per_rev, disabled=True, **{'title': dict_translation['rpm_pulses_per_rev']['phrase']})}}
+  {% else %}
+    {{form.rpm_pulses_per_rev(class_='form-control', value=each_device.rpm_pulses_per_rev, **{'title': dict_translation['rpm_pulses_per_rev']['phrase']})}}
+  {%- endif -%}
+
+  </div>
+</div>
+
+{% endif %}

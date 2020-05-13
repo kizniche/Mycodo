@@ -1,0 +1,10 @@
+{% if 'interface' in dict_options['options_disabled'] %}
+
+<div class="col-auto">
+  <label class="control-label">{{dict_translation['interface']['title']}}</label>
+  <div>
+    {{form.location(class_='form-control', value=each_device.interface, disabled=True, **{'title': dict_translation['interface']['phrase']})}}
+  </div>
+</div>
+
+{% endif %}

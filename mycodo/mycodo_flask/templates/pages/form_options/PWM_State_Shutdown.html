@@ -1,0 +1,20 @@
+{% if 'pwm_state_shutdown' in dict_options['options_enabled'] %}
+
+<div class="col-auto">
+  {{form.state_shutdown.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="state_shutdown" name="state_shutdown" data-placement="top" title="{{dict_translation['state_shutdown']['phrase']}}">
+      <option value="-1"{% if each_device.state_startup == None %} selected{% endif %}>{{_('Do Nothing')}}</option>
+      <option value="0"{% if each_device.state_startup == '0' %} selected{% endif %}>{{dict_translation['off']['title']}}</option>
+      <option value="set_duty_cycle"{% if each_device.state_startup == 'set_duty_cycle' %} selected{% endif %}>{{_('User Set Value')}}</option>
+    </select>
+  </div>
+</div>
+<div class="col-auto">
+  {{form.shutdown_value.label(class_='control-label')}}
+  <div>
+    {{form.shutdown_value(class_='form-control', value=each_device.shutdown_value, **{'title': dict_translation['shutdown_value']['phrase']})}}
+  </div>
+</div>
+
+{% endif %}

@@ -1,0 +1,26 @@
+{% if each_device.interface == 'FTDI' %}
+
+  {% if 'ftdi_location' in dict_options['options_disabled'] %}
+
+<div class="col-auto">
+  {{form.ftdi_location.label(class_='control-label')}}
+  <div>
+    {{form.ftdi_location(class_='form-control', value=each_device.ftdi_location, disabled=True)}}
+  </div>
+</div>
+
+  {% endif %}
+
+  {% if 'ftdi_location' in dict_options['options_enabled']  %}
+
+<div class="col-auto">
+  {{form.ftdi_location.label(class_='control-label')}}
+  <div>
+    {{form.ftdi_location(class_='form-control', value=each_device.ftdi_location, **{'title': dict_translation['ftdi_location']['phrase']})}}
+  </div>
+</div>
+
+  {% endif %}
+
+{% endif %}
+

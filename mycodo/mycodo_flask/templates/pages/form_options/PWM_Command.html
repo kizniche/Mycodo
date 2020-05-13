@@ -1,0 +1,12 @@
+{% if 'command_pwm' in dict_options['options_disabled'] or
+      'command_pwm' in dict_options['options_enabled']
+  %}
+
+<div class="col-12">
+  {{form.pwm_command.label(class_='control-label')}}
+  <div>
+    {{form.pwm_command(class_='form-control', value=each_device.pwm_command, **{'title': dict_translation['pwm_command']['phrase']})}}
+   </div>
+</div>
+
+{% endif %}

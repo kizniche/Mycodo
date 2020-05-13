@@ -1,0 +1,10 @@
+{% if 'wireless_pulse_length' in dict_options['options_enabled'] %}
+
+<div class="col-auto">
+  {{form.pulse_length.label(class_='control-label')}}
+  <div>
+    {{form.pulse_length(class_='form-control', value=each_device.pulse_length, **{'title': dict_translation['pulse_length']['phrase']})}}
+   </div>
+</div>
+
+{% endif %}

@@ -23,6 +23,7 @@ from wtforms.widgets.html5 import NumberInput
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.mycodo_flask.utils.utils_general import generate_form_output_list
 from mycodo.utils.outputs import parse_output_information
+from mycodo.utils.utils import sort_tuple
 
 
 class DataBase(FlaskForm):
@@ -38,14 +39,16 @@ class OutputAdd(FlaskForm):
     for each_output in list_outputs_sorted:
         value = '{inp},'.format(inp=each_output)
         name = '{name}'.format(name=dict_outputs[each_output]['output_name'])
-
-        if 'interfaces' in dict_outputs[each_output]:
+        if ('interfaces' in dict_outputs[each_output] and
+                dict_outputs[each_output]['interfaces']):
             for each_interface in dict_outputs[each_output]['interfaces']:
                 tmp_value = '{val}{int}'.format(val=value, int=each_interface)
                 tmp_name = '{name} ({int})'.format(name=name, int=each_interface)
                 choices_outputs.append((tmp_value, tmp_name))
         else:
             choices_outputs.append((value, name))
+
+    choices_outputs = sort_tuple(choices_outputs)
 
     output_type = SelectField(
         choices=choices_outputs,
@@ -62,9 +65,12 @@ class OutputMod(FlaskForm):
     log_level_debug = BooleanField(TRANSLATIONS['log_level_debug']['title'])
     output_mode = StringField(TRANSLATIONS['output_mode']['title'])
     location = StringField(lazy_gettext('Location'))
-    i2c_bus = IntegerField(TRANSLATIONS['i2c_bus']['title'])
+    ftdi_location = StringField(TRANSLATIONS['ftdi_location']['title'])
+    uart_location = StringField(TRANSLATIONS['uart_location']['title'])
     baud_rate = IntegerField(TRANSLATIONS['baud_rate']['title'])
     gpio_location = IntegerField(TRANSLATIONS['gpio_location']['title'], widget=NumberInput())
+    i2c_location = StringField(TRANSLATIONS['i2c_location']['title'])
+    i2c_bus = IntegerField(TRANSLATIONS['i2c_bus']['title'])
     protocol = IntegerField(TRANSLATIONS['protocol']['title'], widget=NumberInput())
     pulse_length = IntegerField(TRANSLATIONS['pulse_length']['title'], widget=NumberInput())
     linux_command_user = StringField(TRANSLATIONS['linux_command_user']['title'])

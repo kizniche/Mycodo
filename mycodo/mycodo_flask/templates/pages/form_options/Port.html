@@ -1,0 +1,18 @@
+{% if 'port' in dict_options['options_disabled'] or
+      'port' in dict_options['options_enabled']
+  %}
+
+<div class="col-auto">
+  {{form.port.label(class_='control-label')}}
+  <div>
+
+  {%- if 'port' in dict_options['options_disabled'] -%}
+    {{form.port(class_='form-control', value=each_device.port, disabled=True, **{'title': dict_translation['port']['phrase']})}}
+  {% else %}
+    {{form.port(class_='form-control', value=each_device.port, **{'title': dict_translation['port']['phrase']})}}
+  {%- endif -%}
+
+  </div>
+</div>
+
+{% endif %}

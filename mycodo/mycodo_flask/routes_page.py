@@ -1691,9 +1691,14 @@ def page_output():
         elif form_add_output.output_add.data:
             unmet_dependencies = utils_output.output_add(form_add_output)
         elif form_mod_output.save.data:
-            utils_output.output_mod(form_mod_output)
+            utils_output.output_mod(form_mod_output, request.form)
         elif form_mod_output.delete.data:
             utils_output.output_del(form_mod_output)
+
+        # Custom action
+        else:
+            utils_output.custom_action(
+                dict_outputs, form_mod_output.output_id.data, request.form)
 
         if unmet_dependencies:
             return redirect(url_for(
@@ -1701,6 +1706,13 @@ def page_output():
                 device=form_add_output.output_type.data.split(',')[0]))
         else:
             return redirect(url_for('routes_page.page_output'))
+
+    custom_options_values_outputs = parse_custom_option_values(output)
+
+    custom_actions = {}
+    for each_output in output:
+        if 'custom_actions' in dict_outputs[each_output.output_type]:
+            custom_actions[each_output.output_type] = True
 
     # Create dict of Input names
     names_output = {}
@@ -1724,6 +1736,8 @@ def page_output():
 
     return render_template('pages/output.html',
                            camera=camera,
+                           custom_actions=custom_actions,
+                           custom_options_values_outputs=custom_options_values_outputs,
                            dict_outputs=dict_outputs,
                            display_order_output=display_order_output,
                            form_base=form_base,

@@ -21,8 +21,7 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'location',
-        'period',
-        'log_level_debug'
+        'period'
     ],
     'options_disabled': ['interface'],
 

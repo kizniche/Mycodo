@@ -28,8 +28,7 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'measurements_select',
-        'period',
-        'log_level_debug'
+        'period'
     ],
     'options_disabled': ['interface'],
 

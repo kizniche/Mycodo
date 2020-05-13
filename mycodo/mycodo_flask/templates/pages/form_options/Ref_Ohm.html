@@ -1,0 +1,18 @@
+{% if 'ref_ohm' in dict_options['options_disabled'] or
+      'ref_ohm' in dict_options['options_enabled']
+  %}
+
+<div class="col-auto">
+  {{form.ref_ohm.label(class_='control-label')}}
+  <div>
+
+  {%- if 'ref_ohm' in dict_options['options_disabled'] -%}
+    {{form.ref_ohm(class_='form-control', value=each_device.ref_ohm, disabled=True, **{'title': dict_translation['ref_ohm']['phrase']})}}
+  {% else %}
+    {{form.ref_ohm(class_='form-control', value=each_device.ref_ohm, **{'title': dict_translation['ref_ohm']['phrase']})}}
+  {%- endif -%}
+
+  </div>
+</div>
+
+{% endif %}

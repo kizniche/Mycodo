@@ -1,0 +1,18 @@
+{% if 'start_offset' in dict_options['options_disabled'] or
+      'start_offset' in dict_options['options_enabled']
+  %}
+
+<div class="col-auto">
+  {{form.start_offset.label(class_='control-label')}}
+  <div>
+
+  {%- if 'start_offset' in dict_options['options_disabled'] -%}
+    {{form.start_offset(class_='form-control', value=each_device.start_offset, disabled=True, **{'title': dict_translation['start_offset']['phrase']})}}
+  {% else %}
+    {{form.start_offset(class_='form-control', value=each_device.start_offset, **{'title': dict_translation['start_offset']['phrase']})}}
+  {%- endif -%}
+
+  </div>
+</div>
+
+{% endif %}
