@@ -34,6 +34,7 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
+from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Role
 from mycodo.databases.models import Trigger
@@ -1228,3 +1229,75 @@ def generate_form_output_list(dict_outputs):
     for each_output in list_tuples_sorted:
         list_outputs_sorted.append(each_output[0])
     return list_outputs_sorted
+
+
+def custom_action(controller, dict_device, unique_id, form):
+    action = '{action}, {controller}'.format(
+        action=gettext("Action"),
+        controller=TRANSLATIONS['controller']['title'])
+    error = []
+
+    if controller == "Output":
+        controller_type = Output.query.filter(
+            Output.unique_id == unique_id).first().output_type
+    elif controller == "Input":
+        controller_type = Input.query.filter(
+            Input.unique_id == unique_id).first().device
+    else:
+        logger.error("Unknown controller: {}".format(controller))
+        return
+
+    try:
+        option_types = {}
+        if 'custom_actions' in dict_device[controller_type]:
+            for each_option in dict_device[controller_type]['custom_actions']:
+                if 'id' in each_option and 'type' in each_option:
+                    option_types[each_option['id']] = each_option['type']
+
+        args_dict = {}
+        button_id = None
+        for key in form.keys():
+            if key.startswith('custom_button_'):
+                button_id = key[14:]
+            else:
+                for value in form.getlist(key):
+                    if key in option_types:
+                        if option_types[key] == 'integer':
+                            try:
+                                args_dict[key] = int(value)
+                            except:
+                                logger.error("Value of option '{}' doesn't represent integer: '{}'".format(key, value))
+                        elif option_types[key] == 'float':
+                            try:
+                                args_dict[key] = float(value)
+                            except:
+                                logger.error("Value of option '{}' doesn't represent float: '{}'".format(key, value))
+                        elif option_types[key] == 'bool':
+                            try:
+                                args_dict[key] = bool(value)
+                            except:
+                                logger.error("Value of option '{}' doesn't represent bool: '{}'".format(key, value))
+                        elif option_types[key] == 'text':
+                            try:
+                                args_dict[key] = str(value)
+                            except:
+                                logger.error("Value of option '{}' doesn't represent string: '{}'".format(key, value))
+                        else:
+                            args_dict[key] = float(value)
+
+        if not button_id:
+            return
+
+        if not error and button_id:
+            from mycodo.mycodo_client import DaemonControl
+            control = DaemonControl()
+            status = control.custom_button(
+                controller, unique_id, button_id, args_dict)
+            if status[0]:
+                flash("Custom Button: {}".format(status[1]), "error")
+            else:
+                flash("Custom Button: {}".format(status[1]), "success")
+    except Exception as except_msg:
+        logger.exception(1)
+        error.append(except_msg)
+    flash_success_errors(error, action, url_for('routes_page.page_data'))

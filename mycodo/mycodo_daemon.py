@@ -454,6 +454,38 @@ class DaemonController:
             self.logger.exception(message)
             return "Exception: {msg}".format(msg=except_msg)
 
+    def custom_button(self, controller_type, unique_id, button_id, args_dict):
+        """
+        Force function to be executed from UI
+
+        :return: success or error message
+        :rtype: str
+
+        :param controller_type: Which controller is to be affected. Options: "Input", "Output"
+        :type controller_type: str
+        :param unique_id: Which controller ID is to be affected?
+        :type unique_id: str
+        :param button_id: ID of button pressed
+        :type button_id: str
+
+        """
+        try:
+            if controller_type == "Input":
+                return self.controller["Input"][unique_id].custom_button_exec_function(
+                    button_id, args_dict)
+            elif controller_type == "Output":
+                return self.controller["Output"].custom_button_exec_function(
+                    unique_id, button_id, args_dict)
+            else:
+                msg = "Unknown controller: {}".format(controller_type)
+                self.logger.error(msg)
+                return 1, msg
+        except Exception as except_msg:
+            message = "Cannot execute Input function from custom action:" \
+                      " {err}".format(err=except_msg)
+            self.logger.exception(message)
+            return 1, message
+
     def input_force_measurements(self, input_id):
         """
         Force Input measurements to be acquired
@@ -469,27 +501,6 @@ class DaemonController:
             return self.controller['Input'][input_id].force_measurements()
         except Exception as except_msg:
             message = "Cannot force acquisition of Input measurements:" \
-                      " {err}".format(err=except_msg)
-            self.logger.exception(message)
-            return 1, message
-
-    def input_custom_button(self, input_id, button_id, args_dict):
-        """
-        Force Input function to be executed
-
-        :return: success or error message
-        :rtype: str
-
-        :param input_id: Which Input controller ID is to be affected?
-        :type input_id: str
-        :param button_id: ID of button pressed
-        :type button_id: str
-
-        """
-        try:
-            return self.controller['Input'][input_id].custom_button_exec_function(button_id, args_dict)
-        except Exception as except_msg:
-            message = "Cannot execute Input function from custom action:" \
                       " {err}".format(err=except_msg)
             self.logger.exception(message)
             return 1, message
@@ -817,28 +828,6 @@ class DaemonController:
             message = "Could not query output state: {e}".format(e=except_msg)
             self.logger.exception(message)
 
-    def output_custom_button(self, output_id, button_id, args_dict):
-        """
-        Force Output function to be executed
-
-        :return: success or error message
-        :rtype: str
-
-        :param output_id: Which Input controller ID is to be affected?
-        :type output_id: str
-        :param button_id: ID of button pressed
-        :type button_id: str
-
-        """
-        try:
-            return self.controller['Output'].custom_button_exec_function(
-                output_id, button_id, args_dict)
-        except Exception as except_msg:
-            message = "Cannot execute Input function from custom action:" \
-                      " {err}".format(err=except_msg)
-            self.logger.exception(message)
-            return 1, message
-
     def startup_stats(self):
         """Ensure existence of statistics file and save daemon startup time"""
         try:
@@ -1134,6 +1123,11 @@ class PyroServer(object):
     def get_condition_measurement_dict(self, condition_id):
         return self.mycodo.get_condition_measurement_dict(condition_id)
 
+    def custom_button(self, controller_type, unique_id, button_id, args_dict):
+        """execute custom button function"""
+        return self.mycodo.custom_button(
+            controller_type, unique_id, button_id, args_dict)
+
     def controller_activate(self, cont_id):
         """Activates a controller"""
         return self.mycodo.controller_activate(cont_id)
@@ -1153,10 +1147,6 @@ class PyroServer(object):
     def input_force_measurements(self, input_id):
         """Updates all input information"""
         return self.mycodo.input_force_measurements(input_id)
-
-    def input_custom_button(self, input_id, button_id, args_dict):
-        """execute input function"""
-        return self.mycodo.input_custom_button(input_id, button_id, args_dict)
 
     def input_atlas_flow_clear_total_volume(self, input_id):
         """Updates all input information"""
@@ -1231,10 +1221,6 @@ class PyroServer(object):
     def output_setup(self, action, output_id):
         """Add, delete, or modify a output in the running output controller"""
         return self.mycodo.output_setup(action, output_id)
-
-    def output_custom_button(self, output_id, button_id, args_dict):
-        """execute output function"""
-        return self.mycodo.output_custom_button(output_id, button_id, args_dict)
 
     def send_infrared_code_broadcast(self, code):
         """Broadcast infrared code to all IR Triggers"""

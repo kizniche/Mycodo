@@ -1697,8 +1697,8 @@ def page_output():
 
         # Custom action
         else:
-            utils_output.custom_action(
-                dict_outputs, form_mod_output.output_id.data, request.form)
+            utils_general.custom_action(
+                "Output", dict_outputs, form_mod_output.output_id.data, request.form)
 
         if unmet_dependencies:
             return redirect(url_for(
@@ -1878,7 +1878,8 @@ def page_data():
 
         # Custom action
         else:
-            utils_input.custom_action(dict_inputs, form_mod_input.input_id.data, request.form)
+            utils_general.custom_action(
+                "Input", dict_inputs, form_mod_input.input_id.data, request.form)
 
         if unmet_dependencies:
             return redirect(url_for('routes_admin.admin_dependencies',

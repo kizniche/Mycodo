@@ -180,12 +180,6 @@ class DaemonControl:
         except Exception:
             return 0, traceback.format_exc()
 
-    def input_custom_button(self, input_id, button_id, args_dict):
-        try:
-            return self.proxy().input_custom_button(input_id, button_id, args_dict)
-        except Exception:
-            return 0, traceback.format_exc()
-
     def input_atlas_flow_clear_total_volume(self, input_id):
         try:
             return self.proxy().input_atlas_flow_clear_total_volume(input_id)
@@ -250,12 +244,6 @@ class DaemonControl:
     def output_states_all(self):
         return self.proxy().output_states_all()
 
-    def output_custom_button(self, output_id, button_id, args_dict):
-        try:
-            return self.proxy().output_custom_button(output_id, button_id, args_dict)
-        except Exception:
-            return 0, traceback.format_exc()
-
     #
     # PID Controller
     #
@@ -288,6 +276,13 @@ class DaemonControl:
             smtp.host, smtp.protocol, smtp.port,
             smtp.user, smtp.passw, smtp.email_from,
             recipients, message, subject=subject)
+
+    def custom_button(self, controller_type, unique_id, button_id, args_dict):
+        try:
+            return self.proxy().custom_button(
+                controller_type, unique_id, button_id, args_dict)
+        except Exception:
+            return 0, traceback.format_exc()
 
 
 def daemon_active():
