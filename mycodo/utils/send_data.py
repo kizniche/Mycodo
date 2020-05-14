@@ -173,9 +173,8 @@ def send_email(smtp_host, smtp_protocol, smtp_port, smtp_user, smtp_pass,
         # server.sendmail(msg['From'], msg['To'].split(","), msg.as_string())
         # server.quit()
 
-    except Exception as error:
-        if logging:
-            logging.exception(
-                "Could not send email to {add} with message: {msg}. Error: "
-                "{err}".format(add=email_to, msg=message_body, err=error))
+    except Exception:
+        logger.exception(
+            "Could not send email to {add} with subject {sub}".format(
+                add=email_to, sub=subject))
         return 1

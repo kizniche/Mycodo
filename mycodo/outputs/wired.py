@@ -22,8 +22,8 @@ OUTPUT_INFORMATION = {
     'on_state_internally_handled': False,
     'output_types': ['on_off'],
 
-    'message': 'The specified GPIO pin will be set high (3.3 volts) when turned on, and low (0 volts) '
-               'when turned off.',
+    'message': 'The specified GPIO pin will be set HIGH (3.3 volts) or LOW (0 volts) when turned '
+               'on or off, depending on the On State option.',
 
     'options_enabled': [
         'gpio_pin',
@@ -31,7 +31,9 @@ OUTPUT_INFORMATION = {
         'on_off_state_startup',
         'on_off_state_shutdown',
         'trigger_functions_startup',
-        'current_draw'
+        'current_draw',
+        'button_on',
+        'button_send_duration'
     ],
     'options_disabled': ['interface'],
 

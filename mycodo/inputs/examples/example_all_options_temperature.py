@@ -199,11 +199,7 @@ INPUT_INFORMATION = {
         ('5.0', '5.0V')
     ],
 
-    # Custom options
-    # Values are stored as text, therefore if you require a float or integer,
-    # cast it as such in the "Load custom options" section in __init__
-    # Example: self.another_option = int(value)
-    # Make sure your string represents the type you're attempting to cast
+    # Custom options that can be set by the user in the web interface.
     'custom_options_message': 'This is a message displayed for custom options.',
     'custom_options': [
         {
@@ -237,9 +233,9 @@ INPUT_INFORMATION = {
         }
     ],
 
-    # Custom actions are buttons and input fields that appear on the web UI for users to execute functions within
-    # the Input class, such as to perform calibration. See the button_one() and button_two() functions at the end
-    # of the class.
+    # Custom actions are buttons and input fields that appear on the web UI for users to
+    # execute functions within the Input class, such as to perform calibration. See the
+    # button_one() and button_two() functions at the end of the class.
     'custom_actions_message': 'This is a message displayed for custom actions.',
     'custom_actions': [
         {

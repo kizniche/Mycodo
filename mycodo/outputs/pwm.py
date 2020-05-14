@@ -34,7 +34,8 @@ OUTPUT_INFORMATION = {
         'pwm_invert_signal',
         'pwm_state_startup',
         'pwm_state_shutdown',
-        'trigger_functions_startup'
+        'trigger_functions_startup',
+        'button_send_duty_cycle'
     ],
     'options_disabled': ['interface'],
 

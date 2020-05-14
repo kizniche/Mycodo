@@ -40,7 +40,8 @@ OUTPUT_INFORMATION = {
         'uart_location',
         'uart_baud_rate',
         'pump_output_mode',
-        'pump_flow_rate'
+        'pump_flow_rate',
+        'button_send_volume'
     ],
     'options_disabled': ['interface'],
 
@@ -108,9 +109,10 @@ class OutputModule(AbstractOutput):
         self.atlas_command.write(write_cmd)
         self.logger.debug("EZO-PMP command: {}".format(write_cmd))
 
-        measure_dict[0]['value'] = amount
-        measure_dict[1]['value'] = minutes_to_run
-        add_measurements_influxdb(self.output_unique_id, measure_dict)
+        if amount and minutes_to_run:
+            measure_dict[0]['value'] = amount
+            measure_dict[1]['value'] = minutes_to_run
+            add_measurements_influxdb(self.output_unique_id, measure_dict)
 
     def is_on(self):
         if self.is_setup():

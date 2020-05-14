@@ -35,7 +35,9 @@ OUTPUT_INFORMATION = {
         'on_off_none_state_startup',
         'on_off_none_state_shutdown',
         'trigger_functions_startup',
-        'current_draw'
+        'current_draw',
+        'button_on',
+        'button_send_duration'
     ],
     'options_disabled': ['interface'],
 

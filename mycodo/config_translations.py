@@ -215,9 +215,6 @@ TRANSLATIONS = {
     'deadline': {
         'title': lazy_gettext('Deadline'),
         'phrase': lazy_gettext('Time (seconds) to wait until failure')},
-    'duration_on_seconds': {
-        'title': lazy_gettext('Duration On (seconds)'),
-        'phrase': lazy_gettext('Turn on for a duration of time (seconds)')},
     'duty_cycle': {
         'title': lazy_gettext('Duty Cycle'),
         'phrase': lazy_gettext('Duty cycle for the PWM (percent, 0.0 - 100.0)')},
@@ -278,21 +275,15 @@ TRANSLATIONS = {
     'on_state': {
         'title': lazy_gettext('On State'),
         'phrase': lazy_gettext('What state triggers the output to turn on? High or Low?')},
+    'output_amount_duration': {
+        'title': lazy_gettext('Duration'),
+        'phrase': lazy_gettext('Duration to send to output controller')},
+    'output_amount_volume': {
+        'title': lazy_gettext('Volume'),
+        'phrase': lazy_gettext('Volume to send to output controller')},
     'output_mode': {
         'title': lazy_gettext('Output Mode'),
         'phrase': lazy_gettext('Mode to run the output')},
-    'shutdown_value': {
-        'title': lazy_gettext('Shutdown Value'),
-        'phrase': lazy_gettext('The output value to set when Mycodo shuts down')},
-    'startup_value': {
-        'title': lazy_gettext('Startup Value'),
-        'phrase': lazy_gettext('The output value to set when Mycodo starts up')},
-    'state_shutdown': {
-        'title': lazy_gettext('Shutdown State'),
-        'phrase': lazy_gettext('When Mycodo shuts down, set the output state')},
-    'state_startup': {
-        'title': lazy_gettext('Startup State'),
-        'phrase': lazy_gettext('When Mycodo starts, set the output state')},
     'on_command': {
         'title': lazy_gettext('On Command'),
         'phrase': lazy_gettext('Command to execute when the output is instructed to turn on')},
@@ -331,9 +322,6 @@ TRANSLATIONS = {
     'pulse_length': {
         'title': lazy_gettext('Pulse Length'),
         'phrase': lazy_gettext('Wireless 433 MHz pulse length')},
-    'pump_amount': {
-        'title': lazy_gettext('Amount to Dispense (ml)'),
-        'phrase': lazy_gettext('Volume in ml to pump')},
     'pwm_command': {
         'title': lazy_gettext('PWM Command'),
         'phrase': lazy_gettext('Command to execute to set the PWM duty cycle (%)')},
@@ -385,9 +373,21 @@ TRANSLATIONS = {
     'sht_voltage': {
         'title': lazy_gettext('Voltage'),
         'phrase': lazy_gettext('The input voltage to the sensor')},
+    'shutdown_value': {
+        'title': lazy_gettext('Shutdown Value'),
+        'phrase': lazy_gettext('The output value to set when Mycodo shuts down')},
     'start_offset': {
         'title': lazy_gettext('Start Offset (seconds)'),
         'phrase': lazy_gettext('The duration (seconds) to wait before the first operation')},
+    'startup_value': {
+        'title': lazy_gettext('Startup Value'),
+        'phrase': lazy_gettext('The output value to set when Mycodo starts up')},
+    'state_shutdown': {
+        'title': lazy_gettext('Shutdown State'),
+        'phrase': lazy_gettext('When Mycodo shuts down, set the output state')},
+    'state_startup': {
+        'title': lazy_gettext('Startup State'),
+        'phrase': lazy_gettext('When Mycodo starts, set the output state')},
     'switch_edge': {
         'title': lazy_gettext('Edge'),
         'phrase': lazy_gettext('Edge detection: low to high (rising), high to low (falling), or both')},

@@ -194,26 +194,26 @@
             </a>
           </div>
 
-          <div class="col-3 col-md-2 small-gutters">
+          <div class="col-5 col-md-2 small-gutters">
             <input class="form-control" disabled="" value="{{each_output.name}}" type="text">
           </div>
-          <div class="col-4 col-md-3 small-gutters">
+          <div class="col-5 col-md-3 small-gutters">
             <input class="form-control" disabled="" value="{{dict_outputs[each_output.output_type]['output_name']}} ({{each_output.interface}})" type="text">
           </div>
-          <div class="col-3 col-md-2 small-gutters">
+          <div class="col-4 col-md-2 small-gutters">
             <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">
           </div>
 
-        {% if each_output.output_type not in outputs_pwm + ['atlas_ezo_pmp'] -%}
-          <div class="col-6 col-md-2 small-gutters">
+        {% if 'button_on' in dict_options['options_enabled'] -%}
+          <div class="col-4 col-md-2 small-gutters">
             <input class="form-control btn btn-primary btn-sm btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
           </div>
         {%- endif %}
 
-        {% if each_output.output_type not in outputs_pwm + ['atlas_ezo_pmp'] -%}
-          <div class="col-6 col-md-2 small-gutters">
+        {% if 'button_on' in dict_options['options_enabled'] -%}
+          <div class="col-4 col-md-2 small-gutters">
         {% else %}
-          <div class="col-12 col-md-4 small-gutters">
+          <div class="col-8 col-md-4 small-gutters">
         {% endif %}
             <input class="form-control btn btn-primary btn-sm btn-danger btn-block turn_off" id="turn_off" name="{{each_output.unique_id}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
           </div>
@@ -232,9 +232,9 @@
           </div>
 
           <div class="row small-gutters">
-            {% if each_output.output_type in dict_outputs and 'message' in dict_outputs[each_output.output_type] %}
+            {% if 'message' in dict_outputs[each_output.output_type] %}
             <div class="col-12" style="padding-top: 0.5em; padding-bottom: 0.5em">
-              {{dict_outputs[each_output.output_type]['message']}}
+              {{dict_outputs[each_output.output_type]['message']|safe}}
             </div>
             {% endif %}
           </div>
@@ -312,7 +312,7 @@
 
           </div>
 
-      {% if custom_options_values[unique_id] %}
+        {% if custom_options_values[unique_id] %}
           <div class="row small-gutters" style="padding: 0.5em">
             <div class="col-12">
               <h5>{{_('Custom Options')}}</h5>
@@ -324,46 +324,49 @@
                 {% endfor %}
               {% endif %}
           </div>
-      {% endif %}
+        {% endif %}
 
-
-          {% if each_output.output_type in ['wired', 'wireless_rpi_rf', 'command', 'python'] %}
+        {% if 'button_send_duration' in dict_options['options_enabled'] %}
 
           <div class="row">
             <div class="col">
-              <label class='control-label'>{{dict_translation['duration_on_seconds']['title']}}</label>
+              <label class='control-label'>{{dict_translation['output_amount_duration']['title']}}</label>
               <div>
                 <div class="row small-gutters">
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="{{dict_translation['duration_on_seconds']['phrase']}}" type="text" value="">
+                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="{{dict_translation['output_amount_duration']['phrase']}}" type="text" value="">
                   </div>
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Turn On')}}">
+                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Send')}}">
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {% elif each_output.output_type == 'atlas_ezo_pmp' %}
+        {% endif %}
+
+        {% if 'button_send_volume' in dict_options['options_enabled'] %}
 
           <div class="row">
             <div class="col">
-              <label class='control-label'>{{dict_translation['pump_amount']['title']}}</label>
+              <label class='control-label'>{{dict_translation['output_amount_volume']['title']}}</label>
               <div>
                 <div class="row small-gutters">
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="{{dict_translation['pump_amount']['phrase']}}" type="text" value="">
+                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="{{dict_translation['output_amount_volume']['phrase']}}" type="text" value="">
                   </div>
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Pump Volume')}}">
+                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Send')}}">
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {% elif each_output.output_type in outputs_pwm %}
+        {% endif %}
+
+        {% if 'button_send_duty_cycle' in dict_options['options_enabled'] %}
 
           <div class="row">
             <div class="col">
@@ -374,14 +377,14 @@
                   <input class="form-control" id="duty_cycle_on_amt_{{each_output.unique_id}}" name="duty_cycle_on_amt_{{each_output.unique_id}}" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
                   </div>
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                  <input class="btn btn-success btn-block duty_cycle_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/pwm/" type="button" value="{{_('Turn On')}}">
+                  <input class="btn btn-success btn-block duty_cycle_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/pwm/" type="button" value="{{_('Send')}}">
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-        {% endif %}
+      {% endif %}
 
         </div>
 

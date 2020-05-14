@@ -93,7 +93,7 @@ def output_add(form_add):
 
                     if output_interface == 'I2C':
                         if dict_has_value('i2c_location'):
-                            new_output.i2c_location = dict_outputs[output_type]['i2c_location'][0]  # First entry in list
+                            new_output.i2c_location = dict_outputs[output_type]['i2c_location'][0]  # First list entry
 
                     if output_interface == 'FTDI':
                         if dict_has_value('ftdi_location'):
@@ -191,25 +191,22 @@ def output_add(form_add):
                     new_output.on_command = """
 import datetime
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-write_string = "{ts}: ID: {id}: ON\\n".format(id=output_id, ts=timestamp)
-with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
-    myfile.write(write_string)"""
+log_string = "{ts}: ID: {id}: ON".format(id=output_id, ts=timestamp)
+self.logger.info(log_string)"""
                     new_output.off_command = """
 import datetime
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-write_string = "{ts}: ID: {id}: OFF\\n".format(id=output_id, ts=timestamp)
-with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
-    myfile.write(write_string)"""
+log_string = "{ts}: ID: {id}: OFF".format(id=output_id, ts=timestamp)
+self.logger.info(log_string)"""
                     new_output.force_command = True
 
                 elif output_type == 'python_pwm':
                     new_output.pwm_command = """
 import datetime
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-write_string = "{ts}: ID: {id}: Duty Cycle: {dc} %\\n".format(
+log_string = "{ts}: ID: {id}: {dc} % Duty Cycle".format(
     dc=duty_cycle, id=output_id, ts=timestamp)
-with open("/home/pi/Mycodo/OutputTest.txt", "a") as myfile:
-    myfile.write(write_string)"""
+self.logger.info(log_string)"""
 
                 elif output_type == 'atlas_ezo_pmp':
                     new_output.output_mode = 'fastest_flow_rate'
