@@ -53,7 +53,6 @@ class OutputModule(AbstractOutput):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
         self.output_setup = None
-        self.pwm_state = None
         self.pwm_output = None
 
         if not testing:
@@ -86,8 +85,6 @@ class OutputModule(AbstractOutput):
             self.pwm_output.set_PWM_range(self.output_pin, 1000)
             self.pwm_output.set_PWM_dutycycle(
                 self.output_pin, self.duty_cycle_to_pigpio_value(duty_cycle))
-
-        self.pwm_state = duty_cycle
 
         measure_dict[0]['value'] = duty_cycle
         add_measurements_influxdb(self.output_unique_id, measure_dict)
@@ -140,7 +137,6 @@ class OutputModule(AbstractOutput):
                 self.pwm_output.set_PWM_dutycycle(
                     self.output_pin, 0)
 
-            self.pwm_state = None
             self.output_setup = True
             self.logger.info("Output setup on pin {}".format(self.output_pin))
         except Exception as except_msg:

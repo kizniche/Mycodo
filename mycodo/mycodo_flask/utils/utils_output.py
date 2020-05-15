@@ -148,16 +148,15 @@ def output_add(form_add):
                         list_options.append(option)
                 new_output.custom_options = ';'.join(list_options)
 
-                if output_type in ['wired',
-                                   'wireless_rpi_rf',
-                                   'command',
-                                   'python']:
+                if 'on_off' in dict_outputs[output_type]['output_types']:
                     new_output.measurement = 'duration_time'
                     new_output.unit = 's'
 
                 elif output_type in outputs_pwm():
                     new_output.measurement = 'duty_cycle'
                     new_output.unit = 'percent'
+                    new_output.pwm_hertz = 22000
+                    new_output.pwm_library = 'pigpio_any'
 
                 new_output.channel = 0
 
@@ -182,10 +181,6 @@ def output_add(form_add):
                 elif output_type == 'command_pwm':
                     new_output.linux_command_user = 'pi'
                     new_output.pwm_command = '/home/pi/script_pwm.sh ((duty_cycle))'
-
-                elif output_type == 'pwm':
-                    new_output.pwm_hertz = 22000
-                    new_output.pwm_library = 'pigpio_any'
 
                 elif output_type == 'python':
                     new_output.on_command = """
