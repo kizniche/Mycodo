@@ -38,8 +38,6 @@ def output_add(form_add):
         controller=TRANSLATIONS['output']['title'])
     error = []
 
-    print("Adding 01")
-
     dict_outputs = parse_output_information()
 
     # only one comma should be in the output_type string
@@ -54,8 +52,6 @@ def output_add(form_add):
         output_type = ''
         output_interface = ''
         error.append("Invalid output string (must be a comma-separated string)")
-
-    print("Adding 02")
 
     if current_app.config['TESTING']:
         dep_unmet = False
@@ -78,7 +74,6 @@ def output_add(form_add):
 
     if not error:
         for _ in range(0, form_add.output_quantity.data):
-            print("Adding 03")
             try:
                 new_output = Output()
                 new_output.name = "Name"
@@ -225,15 +220,12 @@ self.logger.info(log_string)"""
                         new_output.baud_rate = 9600
 
                 if not error:
-                    print("Adding 04")
                     new_output.save()
                     display_order = csv_to_list_of_str(
                         DisplayOrder.query.first().output)
                     DisplayOrder.query.first().output = add_display_order(
                         display_order, new_output.unique_id)
                     db.session.commit()
-
-                    print("Adding 05")
 
                     #
                     # If measurements defined in the Output Module
@@ -252,11 +244,8 @@ self.logger.info(log_string)"""
                             new_measurement.channel = each_channel
                             new_measurement.save()
 
-                    print("Adding 06")
-
-                    manipulate_output('Add', new_output.unique_id)
-
-                    print("Adding 07")
+                    if not current_app.config['TESTING']:
+                        manipulate_output('Add', new_output.unique_id)
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
