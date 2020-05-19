@@ -1697,6 +1697,7 @@ def page_output():
 
         elif form_add_output.output_add.data:
             unmet_dependencies = utils_output.output_add(form_add_output)
+            print("Adding 06")
         elif form_mod_output.save.data:
             utils_output.output_mod(form_mod_output, request.form)
         elif form_mod_output.delete.data:
@@ -1740,6 +1741,8 @@ def page_output():
 
     display_order_output = csv_to_list_of_str(
         DisplayOrder.query.first().output)
+
+    print("Adding 07")
 
     return render_template('pages/output.html',
                            camera=camera,
