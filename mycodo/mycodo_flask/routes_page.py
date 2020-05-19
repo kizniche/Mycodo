@@ -1669,6 +1669,7 @@ def page_output():
     lcd = LCD.query.all()
     print("Is this where the error occurs?...")
     misc = Misc.query.first()
+    print("Error should be right before this. Strange this error doesn't occur when I run tests locally.")
     output = Output.query.all()
     user = User.query.all()
 
