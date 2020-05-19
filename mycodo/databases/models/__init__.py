@@ -151,7 +151,9 @@ def populate_db():
         AlembicVersion().save()
     if not DisplayOrder.query.count():
         DisplayOrder(id=1).save()
+    print("Checking if Misc entry exists")
     if not Misc.query.count():
+        print("Misc entry doesn't exist. Creating...")
         Misc(id=1).save()
     if not SMTP.query.count():
         SMTP(id=1).save()

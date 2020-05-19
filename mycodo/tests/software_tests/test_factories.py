@@ -6,9 +6,10 @@ from mycodo.tests.software_tests.factories import RoleFactory
 
 
 # (Factory, kwargs)
-known_factories = [(UserFactory, dict()),
-                   (RoleFactory, dict()),
-                   ]
+known_factories = [
+    (UserFactory, dict()),
+    (RoleFactory, dict()),
+]
 
 
 @pytest.mark.usefixtures('db')

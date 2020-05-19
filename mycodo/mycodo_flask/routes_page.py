@@ -1667,9 +1667,15 @@ def page_output():
     """ Display output status and config """
     camera = Camera.query.all()
     lcd = LCD.query.all()
+    print("Is this where the error occurs?...")
     misc = Misc.query.first()
     output = Output.query.all()
     user = User.query.all()
+
+    # if current_app.config['TESTING']:
+    #     misc = None
+    # else:
+    #     misc = Misc.query.first()
 
     dict_outputs = parse_output_information()
 
