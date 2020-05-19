@@ -233,6 +233,8 @@ self.logger.info(log_string)"""
                         display_order, new_output.unique_id)
                     db.session.commit()
 
+                    print("Adding 05")
+
                     #
                     # If measurements defined in the Output Module
                     #
@@ -250,15 +252,17 @@ self.logger.info(log_string)"""
                             new_measurement.channel = each_channel
                             new_measurement.save()
 
+                    print("Adding 06")
+
                     manipulate_output('Add', new_output.unique_id)
+
+                    print("Adding 07")
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
                 error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_output'))
-
-    print("Adding 05")
 
     if dep_unmet:
         return 1
