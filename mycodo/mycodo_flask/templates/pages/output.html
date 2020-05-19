@@ -152,7 +152,7 @@
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
-    <form method="post" action="/output">
+    <form id="new_output_form" method="post" action="/output">
       {{form_add_output.hidden_tag()}}
 
       <div class="row small-gutters" style="padding-left: 0.75em">
@@ -175,7 +175,7 @@
         {%- for each_output in output if each_output.unique_id == order -%}
 
       <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
-        <form method="post" action="/output">
+        <form id="mod_output_form" method="post" action="/output">
         {{form_mod_output.csrf_token}}
         {{form_mod_output.output_id(class_='form-control', value=each_output.unique_id)}}
         {{form_mod_output.output_pin(class_='form-control', value=each_output.pin)}}

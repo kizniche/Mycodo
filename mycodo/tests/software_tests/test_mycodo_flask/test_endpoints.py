@@ -10,11 +10,14 @@ import random
 from mycodo.config import MATH_INFO
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
+from mycodo.databases.models import Output
 from mycodo.databases.models import User
 from mycodo.mycodo_flask.utils.utils_general import generate_form_input_list
+from mycodo.mycodo_flask.utils.utils_general import generate_form_output_list
 from mycodo.tests.software_tests.conftest import login_user
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.utils.inputs import parse_input_information
+from mycodo.utils.outputs import parse_output_information
 
 
 # ----------------------
@@ -411,7 +414,8 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
 
         # Verify data was entered into the database
         input_count += 1
-        assert Input.query.count() == input_count, "Number of Inputs doesn't match: In DB {}, Should be: {}".format(Input.query.count(), input_count)
+        assert Input.query.count() == input_count, "Number of Inputs doesn't match: In DB {}, Should be: {}".format(
+            Input.query.count(), input_count)
 
         input_dev = Input.query.filter(Input.id == input_count).first()
         assert choice_name == input_dev.device, "Input name doesn't match: {}".format(choice_name)
@@ -435,7 +439,8 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
         # Verify data was entered into the database
         math_count += 1
         actual_count = Math.query.count()
-        assert actual_count == math_count, "Number of Maths don't match: In DB {}, Should be: {}".format(actual_count, math_count)
+        assert actual_count == math_count, "Number of Maths don't match: In DB {}, Should be: {}".format(
+            actual_count, math_count)
 
         math_dev = Math.query.filter(Math.id == math_count).first()
         assert each_math in math_dev.math_type, "Math type doesn't match: {}".format(each_math)
@@ -444,6 +449,46 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
         response = delete_data(testapp, data_type='math', device_dev=math_dev)
         assert "Delete math with ID: {}".format(math_dev.unique_id) in response
         math_count -= 1
+
+
+@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
+def test_add_all_output_devices_logged_in_as_admin(_, testapp):
+    """ Verifies adding all outputs as a logged in admin user """
+    print("\nTest: test_add_all_output_devices_logged_in_as_admin")
+    login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
+
+    # Add All Inputs
+    output_count = 0
+
+    dict_outputs = parse_output_information()
+    list_outputs_sorted = generate_form_output_list(dict_outputs)
+
+    choices_output = []
+    for each_output in list_outputs_sorted:
+        if 'interfaces' not in dict_outputs[each_output]:
+            choices_output.append('{inp},'.format(inp=each_output))
+        else:
+            for each_interface in dict_outputs[each_output]['interfaces']:
+                choices_output.append('{inp},{int}'.format(inp=each_output, int=each_interface))
+
+    for index, each_output in enumerate(choices_output):
+        print("test_add_all_data_devices_logged_in_as_admin: Adding and deleting Output ({}/{}): {}".format(
+            index + 1, len(choices_output), each_output))
+        response = add_output(testapp, output_type=each_output)
+
+        # Verify success message flashed
+        assert "Success: Add Output" in response
+
+        # Verify data was entered into the database
+        output_count += 1
+        assert Output.query.count() == output_count, "Number of Outputs doesn't match: In DB {}, Should be: {}".format(
+            Output.query.count(), output_count)
+
+        # Delete output (speeds up further output addition checking)
+        output = Output.query.filter(Output.id == output_count).first()
+        response = delete_data(testapp, data_type='output', device_dev=output)
+        assert "Success: Delete output with ID: {}".format(output.unique_id) in response
+        output_count -= 1
 
 
 # ---------------------------
@@ -508,6 +553,16 @@ def add_data(testapp, data_type='input', input_type='RPi'):
     return response
 
 
+def add_output(testapp, output_type='wired'):
+    """ Go to the data page and create output/math """
+    form = testapp.get('/output').maybe_follow().forms['new_output_form']
+    form.set(name='output_quantity', value=1)
+    form.select(name='output_type', value=output_type)
+    response = form.submit(name='output_add', value='Add').maybe_follow()
+    # response.showbrowser()
+    return response
+
+
 def delete_data(testapp, data_type='input', device_dev=None):
     """ Go to the data page and delete input/math """
     response = None
@@ -519,6 +574,10 @@ def delete_data(testapp, data_type='input', device_dev=None):
         form = testapp.get('/data').maybe_follow().forms['mod_math_form']
         form['math_id'].force_value(device_dev.unique_id)
         response = form.submit(name='math_delete', value='Delete').maybe_follow()
+    elif data_type == 'output':
+        form = testapp.get('/output').maybe_follow().forms['mod_output_form']
+        form['output_id'].force_value(device_dev.unique_id)
+        response = form.submit(name='delete', value='Delete').maybe_follow()
     # response.showbrowser()
     return response
 
