@@ -474,26 +474,19 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
     for index, each_output in enumerate(choices_output):
         print("test_add_all_data_devices_logged_in_as_admin: Adding and deleting Output ({}/{}): {}".format(
             index + 1, len(choices_output), each_output))
-        print("adding output")
         response = add_output(testapp, output_type=each_output)
-
         # Verify success message flashed
         assert "Success: Add Output" in response
-
-        print("output added")
 
         # Verify data was entered into the database
         output_count += 1
         assert Output.query.count() == output_count, "Number of Outputs doesn't match: In DB {}, Should be: {}".format(
             Output.query.count(), output_count)
 
-        print("deleting output")
         # Delete output (speeds up further output addition checking)
         output = Output.query.filter(Output.id == output_count).first()
         response = delete_data(testapp, data_type='output', device_dev=output)
         assert "Success: Delete output with ID: {}".format(output.unique_id) in response
-        print("output deleted")
-
         output_count -= 1
 
 

@@ -393,7 +393,8 @@ def output_del(form_output):
         DisplayOrder.query.first().output = list_to_csv(display_order)
         db.session.commit()
 
-        manipulate_output('Delete', form_output.output_id.data)
+        if not current_app.config['TESTING']:
+            manipulate_output('Delete', form_output.output_id.data)
     except Exception as except_msg:
         error.append(except_msg)
     flash_success_errors(error, action, url_for('routes_page.page_output'))

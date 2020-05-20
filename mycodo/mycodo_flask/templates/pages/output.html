@@ -35,7 +35,7 @@
     $.ajax({
       type: 'GET',
       url: '/output_mod/' + btn_val,
-    {% if misc and not misc.hide_alert_success %}
+    {% if not misc.hide_alert_success %}
       success: function(data) {
         if (data.startsWith("SUCCESS")) {
           toastr['success']("Output " + btn_val.split("/")[0] + ": " + data);
@@ -45,7 +45,7 @@
         }
       },
     {% endif %}
-    {% if misc and not misc.hide_alert_warning %}
+    {% if not misc.hide_alert_warning %}
       error: function(data) {
         toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
       }
@@ -57,7 +57,7 @@
     $('.turn_on').click(function() {
       var btn_val = this.name;
       var id = btn_val.split('/')[0];
-      {% if misc and not misc.hide_alert_info %}
+      {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to turn output ' + id + ' On');
       {% endif %}
       getAjax(btn_val);
@@ -65,7 +65,7 @@
     $('.turn_off').click(function() {
       var btn_val = this.name;
       var id = btn_val.split('/')[0];
-      {% if misc and not misc.hide_alert_info %}
+      {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to turn output ' + id + ' Off');
       {% endif %}
       getAjax(btn_val);
@@ -74,7 +74,7 @@
       var btn_val = this.name;
       var id = btn_val.split('/')[0];
       var on_amt = $('#sec_on_amt_' + id).val();
-      {% if misc and not misc.hide_alert_info %}
+      {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to turn output ' + id + ' On for ' + on_amt);
       {% endif %}
       getAjax(btn_val + on_amt);
@@ -83,7 +83,7 @@
       var btn_val = this.name;
       var id = btn_val.split('/')[0];
       var dc = $('#duty_cycle_on_amt_' + id).val();
-      {% if misc and not misc.hide_alert_info %}
+      {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to turn output ' + id + ' on with a duty cycle of ' + dc + '%');
       {% endif %}
       getAjax(btn_val + dc);
