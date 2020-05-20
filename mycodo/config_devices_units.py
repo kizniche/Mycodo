@@ -180,7 +180,7 @@ MEASUREMENTS = {
     'pressure': {
         'name': lazy_gettext('Pressure'),
         'meas': 'pressure',
-        'units': ['psi', 'Pa', 'kPa']},
+        'units': ['cm_water', 'psi', 'Pa', 'kPa']},
     'pulse_width': {
         'name': lazy_gettext('Pulse Width'),
         'meas': 'pulse_width',
@@ -276,6 +276,9 @@ UNITS = {
     'cm': {
         'name': lazy_gettext('Centimeter'),
         'unit': 'cm'},
+    'cm_water': {
+        'name': lazy_gettext('Centimeters of water'),
+        'unit': 'cm_water'},
     'cpm': {
         'name': lazy_gettext('Counts per minute'),
         'unit': 'cpm'},
@@ -470,6 +473,9 @@ UNIT_CONVERSIONS = [
     # Pressure
     ('Pa', 'kPa', 'x/1000'),
     ('kPa', 'Pa', 'x*1000'),
+    ('psi', 'cm_water', 'x*70.306957964239'),
+    ('psi', 'kPa', 'x*6.8947572932'),
+    ('kPa', 'psi', 'x/6.8947572932'),
 
     # Rate - Volume
     ('l_s', 'l_min', 'x*60'),

@@ -3767,6 +3767,8 @@ Built-In Inputs
    `link <https://www.atlas-scientific.com/orp.html>`__
 -  Atlas Scientific pH: Potential hydrogen
    `link <https://www.atlas-scientific.com/ph.html>`__
+-  Atlas Scientific Pressure: Pressure
+   `link <https://www.atlas-scientific.com/probes/ezo-prs-embedded-pressure-sensor>`__
 -  Atlas Scientific PT-1000: Temperature
    `link <https://www.atlas-scientific.com/temperature.html>`__
 -  Atlas Scientific RGB Color Sensor: RGB, CIE, Lux, Proximity

@@ -22,18 +22,20 @@ WARNING: There are changes with this version that may cause issues with your cur
 ### Features
 
  - Add ability to write and import your own Custom Output Modules
+ - Add Input: VL53L0X (Laser-Range Measurement) ([#769](https://github.com/kizniche/mycodo/issues/769))
+ - Add Input: AS7262 Spectral Sensor (measures 450, 500, 550, 570, 600, and 650 nm wavelengths)
+ - Add Input: Atlas Scientific EZO Pressure Sensor
+ - Add ability to create custom Input actions
+ - Add MH-Z19/MH-Z19B Input actions: zero and span point calibrations
+ - Add unit conversions: PSI to kPa, PSI to cm H2O, kPa to PSI
+ - Add literature links to Input options: Manufacturer, Datasheet, Product
  - Add 'tail dmesg' to System Information page
  - Add Function Actions: System Restart and System Shutdown ([#763](https://github.com/kizniche/mycodo/issues/763))
  - Add Conditional options: Log Level Debug and Message Includes Code
  - Add Force Command option for Command/Python/Wireless Outputs ([#728](https://github.com/kizniche/mycodo/issues/728))
- - Add Input: AS7262 Spectral Sensor (measures 450, 500, 550, 570, 600, and 650 nm wavelengths)
- - Add ability to create custom Input actions
- - Add MH-Z19/MH-Z19B Input actions: zero and span point calibrations
+ - Add ability to select which user executes Linux Output commands ([#719](https://github.com/kizniche/mycodo/issues/719))
  - Add Cameras: URL (urllib), URL (requests) ([Feature Request - IP Camera/Network Camera](https://kylegabriel.com/forum/general-discussion/feature-request-ip-camera-network-camera-stream))
  - Add ability to encode videos from time-lapse image sets
- - Add Input: VL53L0X (Laser-Range Measurement) ([#769](https://github.com/kizniche/mycodo/issues/769))
- - Add literature links to Input options: Manufacturer, Datasheet, Product
- - Add ability to select which user executes Linux Output commands ([#719](https://github.com/kizniche/mycodo/issues/719))
  - Add send_email() to Daemon Control object
 
 ### Miscellaneous

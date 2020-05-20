@@ -1,10 +1,7 @@
 # coding=utf-8
-import time
-
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.calibration import AtlasScientificCommand
 from mycodo.utils.system_pi import str_is_float
 
 

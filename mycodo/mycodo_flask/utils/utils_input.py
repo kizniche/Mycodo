@@ -85,7 +85,10 @@ def input_add(form_add):
             logger.error(
                 "RPi.GPIO and Raspberry Pi required for this action")
 
-        new_input.name = 'Name'
+        if 'input_name' in dict_inputs[input_name]:
+            new_input.name = dict_inputs[input_name]['input_name']
+        else:
+            new_input.name = 'Name'
 
         #
         # Set default values for new input being added

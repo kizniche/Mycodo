@@ -1,21 +1,24 @@
 # coding=utf-8
+from flask_babel import lazy_gettext
+
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.system_pi import str_is_float
 
 # Measurements
 measurements_dict = {
     0: {
-        'measurement': 'temperature',
-        'unit': 'C'
+        'measurement': 'pressure',
+        'unit': 'psi'
     }
 }
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'ATLAS_PT1000',
+    'input_name_unique': 'ATLAS_EZO_PRESS',
     'input_manufacturer': 'Atlas Scientific',
-    'input_name': 'PT-1000',
-    'measurements_name': 'Temperature',
+    'input_name': 'Pressure',
+    'input_library': 'EZO',
+    'measurements_name': 'Pressure',
     'measurements_dict': measurements_dict,
 
     'options_enabled': [
@@ -32,18 +35,38 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['I2C', 'UART', 'FTDI'],
-    'i2c_location': ['0x66'],
+    'i2c_location': ['0x6a'],
     'i2c_address_editable': True,
-    'uart_location': '/dev/ttyAMA0'
+    'uart_location': '/dev/ttyAMA0',
+
+    'custom_options': [
+        {
+            'id': 'led',
+            'type': 'select',
+            'default_value': 'on',
+            'options_select': [
+                ('on', 'Always On'),
+                ('off', 'Always Off'),
+                ('measure', 'Only On During Measure')
+            ],
+            'name': lazy_gettext('LED Mode'),
+            'phrase': lazy_gettext('When to turn the LED on')
+        }
+    ]
 }
 
 
 class InputModule(AbstractInput):
-    """ A sensor support class that monitors the PT1000's temperature """
+    """ A sensor support class that acquires measurements from the sensor """
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
         self.atlas_sensor = None
+        self.led = None
+
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
             self.input_dev = input_dev
@@ -54,8 +77,11 @@ class InputModule(AbstractInput):
             except Exception:
                 self.logger.exception("Exception while initializing sensor")
 
-            # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
-            self.get_measurement()
+            if self.atlas_sensor:
+                if self.led == 'on':
+                    self.atlas_sensor.query('L,1')
+                elif self.led == 'off':
+                    self.atlas_sensor.query('L,0')
 
     def initialize_sensor(self):
         if self.interface == 'FTDI':
@@ -74,9 +100,12 @@ class InputModule(AbstractInput):
                 i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
 
     def get_measurement(self):
-        """ Gets the Atlas PT1000's temperature in Celsius """
-        temp = None
+        """ Gets the Atlas Scientific pressure sensor measurement """
+        pressure = None
         self.return_dict = measurements_dict.copy()
+
+        if self.led == 'measure':
+            self.atlas_sensor.query('L,1')
 
         if self.interface == 'FTDI':
             if self.atlas_sensor.setup:
@@ -87,13 +116,13 @@ class InputModule(AbstractInput):
                     self.logger.error('"check probe" returned from sensor')
                 elif isinstance(lines, list):
                     if str_is_float(lines[0]):
-                        temp = float(lines[0])
+                        pressure = float(lines[0])
                         self.logger.debug(
-                            'Value[0] is float: {val}'.format(val=temp))
+                            'Value[0] is float: {val}'.format(val=pressure))
                 elif str_is_float(lines):
-                    temp = float(lines)
+                    pressure = float(lines)
                     self.logger.debug(
-                        'Value is float: {val}'.format(val=temp))
+                        'Value is float: {val}'.format(val=pressure))
                 else:
                     self.logger.error(
                         'Unknown value: {val}'.format(val=lines))
@@ -109,9 +138,9 @@ class InputModule(AbstractInput):
                 if 'check probe' in lines:
                     self.logger.error('"check probe" returned from sensor')
                 elif str_is_float(lines[0]):
-                    temp = float(lines[0])
+                    pressure = float(lines[0])
                     self.logger.debug(
-                        'Value[0] is float: {val}'.format(val=temp))
+                        'Value[0] is float: {val}'.format(val=pressure))
                 else:
                     self.logger.error(
                         'Value[0] is not float or "check probe": '
@@ -122,20 +151,20 @@ class InputModule(AbstractInput):
 
         elif self.interface == 'I2C':
             if self.atlas_sensor.setup:
-                temp_status, temp_str = self.atlas_sensor.query('R')
-                if temp_status == 'error':
+                pressure_status, pressure_str = self.atlas_sensor.query('R')
+                if pressure_status == 'error':
                     self.logger.error(
                         "Sensor read unsuccessful: {err}".format(
-                            err=temp_str))
-                elif temp_status == 'success':
-                    temp = float(temp_str)
+                            err=pressure_str))
+                elif pressure_status == 'success':
+                    pressure = float(pressure_str)
             else:
                 self.logger.error('I2C device is not set up.'
                                   'Check the log for errors.')
 
-        if temp == -1023:  # Erroneous measurement
-            return
+        if self.led == 'measure':
+            self.atlas_sensor.query('L,0')
 
-        self.value_set(0, temp)
+        self.value_set(0, pressure)
 
         return self.return_dict
