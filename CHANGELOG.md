@@ -49,6 +49,7 @@ WARNING: There are changes with this version that may cause issues with your cur
  - Add conversions: m <-> cm <-> mm
  - Make PID Controller a class
  - Restyle Output page ([#732](https://github.com/kizniche/mycodo/issues/732))
+ - Include error response in PWM/On-Off Command Output debug logging line
 
 
 ## 8.4.0 (2020-03-23)

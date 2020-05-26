@@ -80,7 +80,7 @@ class OutputModule(AbstractOutput):
 
             cmd = self.output_pwm_command.replace(
                 '((duty_cycle))', str(duty_cycle))
-            cmd_return, _, cmd_status = cmd_output(
+            cmd_return, cmd_error, cmd_status = cmd_output(
                 cmd, user=self.output_linux_command_user)
 
             measure_dict[0]['value'] = self.pwm_state
@@ -89,10 +89,13 @@ class OutputModule(AbstractOutput):
             self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=duty_cycle))
             self.logger.debug(
                 "Output duty cycle {duty_cycle} command returned: "
-                "{stat}: '{ret}'".format(
+                "Status: {stat}, "
+                "Output: '{ret}', "
+                "Error: '{err}'".format(
                     duty_cycle=duty_cycle,
                     stat=cmd_status,
-                    ret=cmd_return))
+                    ret=cmd_return,
+                    err=cmd_error))
 
     def is_on(self):
         if self.is_setup():
