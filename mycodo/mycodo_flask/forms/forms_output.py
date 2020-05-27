@@ -39,6 +39,10 @@ class OutputAdd(FlaskForm):
     for each_output in list_outputs_sorted:
         value = '{inp},'.format(inp=each_output)
         name = '{name}'.format(name=dict_outputs[each_output]['output_name'])
+
+        if 'output_library' in dict_outputs[each_output]:
+            name += ' ({lib})'.format(lib=dict_outputs[each_output]['output_library'])
+
         if ('interfaces' in dict_outputs[each_output] and
                 dict_outputs[each_output]['interfaces']):
             for each_interface in dict_outputs[each_output]['interfaces']:

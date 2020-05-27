@@ -198,7 +198,7 @@
             <input class="form-control" disabled="" value="{{each_output.name}}" type="text">
           </div>
           <div class="col-5 col-md-3 small-gutters">
-            <input class="form-control" disabled="" value="{{dict_outputs[each_output.output_type]['output_name']}} ({{each_output.interface}})" type="text">
+            <input class="form-control" disabled="" value="{{dict_outputs[each_output.output_type]['output_name']}}{% if dict_outputs[each_output.output_type]['output_library'] %} ({{dict_outputs[each_output.output_type]['output_library']}}){% endif %} ({{each_output.interface}})" type="text">
           </div>
           <div class="col-4 col-md-2 small-gutters">
             <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">

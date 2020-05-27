@@ -16,7 +16,8 @@ measurements_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'wireless_rpi_rf',
-    'output_name': lazy_gettext('Wireless (rpi-rf)'),
+    'output_name': lazy_gettext('315/433 MHz Wireless'),
+    'output_library': 'rpi-rf',
     'measurements_dict': measurements_dict,
 
     'on_state_internally_handled': False,

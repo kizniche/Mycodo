@@ -20,6 +20,7 @@ measurements_dict = {
 OUTPUT_INFORMATION = {
     'output_name_unique': 'command_pwm',
     'output_name': lazy_gettext('PWM'),
+    'output_library': 'subprocess.Popen',
     'measurements_dict': measurements_dict,
 
     'on_state_internally_handled': False,

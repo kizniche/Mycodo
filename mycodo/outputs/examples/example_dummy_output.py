@@ -55,6 +55,9 @@ OUTPUT_INFORMATION = {
     # A friendly/common name for the output to display to the user
     'output_name': lazy_gettext('Example Dummy Output'),
 
+    # Optional library name (for outputs that are named the same but use different libraries)
+    'output_library': 'library_name',
+
     # The dictionary of measurements for this output. Don't edit this.
     'measurements_dict': measurements_dict,
 

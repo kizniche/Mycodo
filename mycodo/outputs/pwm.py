@@ -19,6 +19,7 @@ measurements_dict = {
 OUTPUT_INFORMATION = {
     'output_name_unique': 'pwm',
     'output_name': lazy_gettext('PWM'),
+    'output_library': 'pigpio',
     'measurements_dict': measurements_dict,
 
     'on_state_internally_handled': False,
