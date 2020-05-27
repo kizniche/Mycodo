@@ -227,11 +227,20 @@ def cmd_output(command, stdout_pipe=True, timeout=360, user='pi', cwd='/home/pi'
     cmd_success = True
 
     def report_ids(msg):
-        logger.debug('uid, gid = {}, {}; {}'.format(os.getuid(), os.getgid(), msg))
+        logger.debug('{msg}: uid={uid}, gid={gid}, groups={grp}'.format(
+            msg=msg, uid=os.getuid(), gid=os.getgid(), grp=os.getgroups()))
 
-    def demote(user_uid, user_gid):
+    def getgroups(user):
+        gids = [g.gr_gid for g in grp.getgrall() if user in g.gr_mem]
+        gid = pwd.getpwnam(user).pw_gid
+        if grp.getgrgid(gid).gr_gid not in gids:
+            gids.append(int(grp.getgrgid(gid).gr_gid))
+        return gids
+
+    def demote(user_uid, user_gid, user_groups):
         def result():
             report_ids('starting demotion')
+            os.setgroups(user_groups)
             os.setgid(user_gid)
             os.setuid(user_uid)
             report_ids('finished demotion')
@@ -242,6 +251,7 @@ def cmd_output(command, stdout_pipe=True, timeout=360, user='pi', cwd='/home/pi'
     user_home_dir = pw_record.pw_dir
     user_uid = pw_record.pw_uid
     user_gid = pw_record.pw_gid
+    user_groups = getgroups(user)
     env = os.environ.copy()
     env['HOME'] = user_home_dir
     env['LOGNAME'] = user_name
@@ -252,13 +262,13 @@ def cmd_output(command, stdout_pipe=True, timeout=360, user='pi', cwd='/home/pi'
         cmd = subprocess.Popen(command,
                                stdout=subprocess.PIPE,
                                shell=True,
-                               preexec_fn=demote(user_uid, user_gid),
+                               preexec_fn=demote(user_uid, user_gid, user_groups),
                                cwd=cwd,
                                env=env)
     else:
         cmd = subprocess.Popen(command,
                                shell=True,
-                               preexec_fn=demote(user_uid, user_gid),
+                               preexec_fn=demote(user_uid, user_gid, user_groups),
                                cwd=cwd,
                                env=env)
 
