@@ -193,7 +193,7 @@ temperature, to a desired state (setpoint). A well-tuned PID controller
 can raise to a setpoint quickly, have minimal overshoot, and maintain
 the setpoint with little oscillation.
 
-.. figure:: manual_images/PID-animation.gif
+.. figure:: manual_images/PID-Animation.gif
    :alt: PID Animation
 
 
