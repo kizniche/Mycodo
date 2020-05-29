@@ -37,7 +37,7 @@ import time
 import timeit
 
 import resource
-from Pyro5.api import Daemon
+from Pyro5.api import serve
 from Pyro5.api import Proxy
 from Pyro5.api import expose
 from daemonize import Daemonize
@@ -1288,9 +1288,9 @@ class PyroDaemon(threading.Thread):
     def run(self):
         try:
             self.logger.info("Starting Pyro5 daemon")
-            Daemon.serveSimple({
+            serve({
                 PyroServer(self.mycodo): 'mycodo.pyro_server',
-            }, host="0.0.0.0", port=9090, ns=False)
+            }, host="0.0.0.0", port=9090, use_ns=False)
         except Exception as err:
             self.logger.exception(
                 "ERROR: PyroDaemon: {msg}".format(msg=err))

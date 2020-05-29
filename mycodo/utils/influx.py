@@ -309,7 +309,7 @@ def read_influxdb_function(
             logger.debug("Failed to establish a new influxdb connection. Ensure influxdb is running.")
             last_measurement = None
 
-    if last_measurement and 'series' in last_measurement:
+    if last_measurement and 'series' in last_measurement and last_measurement['series']:
         try:
             number = len(last_measurement['series'][0]['values'])
             last_time = last_measurement['series'][0]['values'][number - 1][0]
@@ -380,7 +380,7 @@ def read_influxdb_list(unique_id, unit, channel,
         except:
             logger.debug("Could not read form influxdb after waiting 15 seconds.")
 
-    if raw_data and 'series' in raw_data:
+    if raw_data and 'series' in raw_data and raw_data['series']:
         return raw_data['series'][0]['values']
 
 
@@ -449,7 +449,7 @@ def read_influxdb_single(unique_id, unit, channel,
             logger.debug("Failed to establish a new influxdb connection. Ensure influxdb is running.")
             last_measurement = None
 
-    if last_measurement and 'series' in last_measurement:
+    if last_measurement and 'series' in last_measurement and last_measurement['series']:
         try:
             number = len(last_measurement['series'][0]['values'])
             last_time = last_measurement['series'][0]['values'][number - 1][0]

@@ -396,7 +396,7 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
 
             raw_data = dbcon.query(query_str).raw
 
-            if 'series' in raw_data:
+            if 'series' in raw_data and raw_data['series']:
                 return jsonify(raw_data['series'][0]['values'])
             else:
                 return '', 204
@@ -448,7 +448,7 @@ def generate_thermal_image_from_timestamp(unique_id, timestamp):
             success = False
         else:
             raw_data = dbcon.query(query_str).raw
-            if not raw_data or 'series' not in raw_data:
+            if not raw_data or 'series' not in raw_data or not raw_data['series']:
                 logger.error('No measurements to export in this time period')
                 success = False
             else:
@@ -517,7 +517,7 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
         return redirect(url_for('routes_page.page_export'))
     raw_data = dbcon.query(query_str).raw
 
-    if not raw_data or 'series' not in raw_data:
+    if not raw_data or 'series' not in raw_data or not raw_data['series']:
         flash('No measurements to export in this time period', 'error')
         return redirect(url_for('routes_page.page_export'))
 

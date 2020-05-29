@@ -475,7 +475,7 @@ if __name__ == "__main__":
                          "connection. Ensure influxdb is running.")
             last_measurement = None
 
-        if last_measurement and 'series' in last_measurement:
+        if last_measurement and 'series' in last_measurement and last_measurement['series']:
             try:
                 number = len(last_measurement['series'][0]['values'])
                 last_time = last_measurement['series'][0]['values'][number - 1][0]
