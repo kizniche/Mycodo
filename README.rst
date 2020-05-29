@@ -221,22 +221,23 @@ All supported Inputs can be found under the
 `Input Devices <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input-devices>`__
 section of the manual.
 
-If you would like to add to the list of supported Inputs, submit a pull request with a
-`new Input Module you created <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-inputs>`__
-or start a
+Custom Inputs, Outputs, and Controllers
+---------------------------------------
+
+Mycodo supports importing custom Input, Output, and Controller modules. you can find more information about each in the manual under `Custom Inputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-inputs>`__, `Custom Outputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-outputs>`__, and `Custom Controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-controllers>`__.
+
+If you would like to add to the list of supported Inputs, Outputs, and Controllers, submit a pull request with the module you created or start a
 `New Issue <https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=>`__.
 
-Additionally, I have another github repository devoted to custom Inputs and Controllers that do not
-necessarily fit with the built-in set and are not included by default with Mycodo.
+Additionally, I have another github repository devoted to custom Inputs, Outputs, and Controllers that do not
+necessarily fit with the built-in set and are not included by default with Mycodo, but can be imported.
 These can be found at `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
 
 Donate
 ------
 
-I have always made Mycodo free, and I don't intend on changing that to
-make a profit. However, if you would like to make a donation, you can
-find several options to do so at
-`KyleGabriel.com/donate <https://kylegabriel.com/donate>`__
+I have always made Mycodo free, and I don't intend on changing that. However, if you would like to make a donation, you can
+find several options to do so at `KyleGabriel.com/donate <https://kylegabriel.com/donate>`__
 
 Links
 -----
