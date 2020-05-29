@@ -19,6 +19,7 @@ WARNING: There are changes with this version that may cause issues with your cur
  - Fix hostname display on login page
  - Fix missing blank line check for LCDs with 8 lines ([#771](https://github.com/kizniche/mycodo/issues/771))
  - Fix unset user groups when executing shell commands
+ - Fix guest users being able to create dashboards
 
 ### Features
 

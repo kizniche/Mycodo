@@ -542,7 +542,9 @@ def page_dashboard_default():
 @blueprint.route('/dashboard-add', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_dashboard_add():
-    """Load default dashboard"""
+    """Add a dashboard"""
+    if not utils_general.user_has_permission('edit_controllers'):
+        return redirect(url_for('routes_general.home'))
     dashboard_id = utils_dashboard.dashboard_add()
     return redirect(url_for(
         'routes_page.page_dashboard', dashboard_id=dashboard_id))
