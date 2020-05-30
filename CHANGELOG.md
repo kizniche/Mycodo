@@ -4,6 +4,7 @@
 
  - Fix translations
  - Fix dependency check during upgrade
+ - Fix Atlas Scientific Pump Output
 
 
 ## 8.5.0 (2020-05-30)

@@ -65,6 +65,7 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
+        self.atlas_command = None
         self.ftdi_location = None
         self.uart_location = None
         self.uart_baud_rate = None
@@ -159,3 +160,5 @@ class OutputModule(AbstractOutput):
             self.output_baud_rate = self.output.baud_rate
             self.atlas_command = AtlasScientificUART(
                 self.uart_location, baudrate=self.output_baud_rate)
+        else:
+            self.logger.error("Unknown interface: {}".format(self.output_interface))
