@@ -382,7 +382,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#rest-api">REST API</a><ul>
 <li><a href="#authentication">Authentication</a><ul>
 <li><a href="#bash-examples">Bash Examples</a></li>
-<li><a href="#python-example">Python Example</a></li>
+<li><a href="#python-example-get">Python Example (GET)</a></li>
+<li><a href="#python-example-post">Python Example (POST)</a></li>
 </ul></li>
 <li><a href="#errors">Errors</a></li>
 <li><a href="#endpoints">Endpoints</a></li>
@@ -397,11 +398,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>An API Key can be generated from the User Settings page (Configuration -&gt; Users). This is stored as a 128-bit bytes object in the database, but will be presented to the user as a base64-encoded string. This can be used to access HTTPS endpoints.</p>
 <p>Mycodo supports several authentication methods. All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will fail.</p>
 <h3 id="bash-examples">Bash Examples</h3>
-<p><code>curl</code> can be used, but you must either use<code>-k</code> to allow the use of an unsigned certificate, or use your own certificate and domain.</p>
+<p><code>curl</code> can be used, but you must either use <code>-k</code> to allow the use of an unsigned SSL certificate, or use your own certificate and domain.</p>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">curl</span> -k -v -X GET <span class="st">&quot;https://127.0.0.1/api/settings/users&quot;</span> -H <span class="st">&quot;authorization: Basic 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=&quot;</span> -H <span class="st">&quot;accept: application/vnd.mycodo.v1+json&quot;</span></code></pre></div>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">curl</span> -k -v -x GET <span class="st">&quot;https://127.0.0.1/api/settings/users -H &quot;</span>X-API-KEY: 0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=<span class="st">&quot; -H &quot;</span>accept: application/vnd.mycodo.v1+json<span class="st">&quot;</span></code></pre></div>
 <div class="sourceCode"><pre class="sourceCode bash"><code class="sourceCode bash"><span class="ex">curl</span> -k -v -x GET <span class="st">&quot;https://127.0.0.1/api/settings/users?api_key=0scjVcxRGi0XczregANBRXG3VMMro+oolPYdauadLblaNThd79bzFPITJjYneU1yK/Ikc9ahHXmll9JiKZO9+hogKoIp2Q8a2cMFBGevgJSd5jYVYz5D83dFE5+OBvvKKaN1U5TvPOXXcj3lkjvPzgxOnEF0CZUsKfU3MA3cFEs=&quot;</span> -H <span class="st">&quot;accept: application/vnd.mycodo.v1+json&quot;</span></code></pre></div>
-<h3 id="python-example">Python Example</h3>
+<h3 id="python-example-get">Python Example (GET)</h3>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">import</span> json
 <span class="im">import</span> requests
 
@@ -412,8 +413,29 @@ url <span class="op">=</span> <span class="st">'https://</span><span class="sc">
 headers <span class="op">=</span> {<span class="st">'Accept'</span>: <span class="st">'application/vnd.mycodo.v1+json'</span>,
            <span class="st">'X-API-KEY'</span>: api_key}
 response <span class="op">=</span> requests.get(url, headers<span class="op">=</span>headers, verify<span class="op">=</span><span class="va">False</span>)
+<span class="bu">print</span>(<span class="st">&quot;Response Status: </span><span class="sc">{}</span><span class="st">&quot;</span>.<span class="bu">format</span>(response.status_code))
+<span class="bu">print</span>(<span class="st">&quot;Response Headers: </span><span class="sc">{}</span><span class="st">&quot;</span>.<span class="bu">format</span>(response.headers))
 response_dict <span class="op">=</span> json.loads(response.text)
-<span class="bu">print</span>(response_dict)</code></pre></div>
+<span class="bu">print</span>(<span class="st">&quot;Response Dictionary: </span><span class="sc">{}</span><span class="st">&quot;</span>.<span class="bu">format</span>(response_dict))</code></pre></div>
+<h3 id="python-example-post">Python Example (POST)</h3>
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">import</span> json
+<span class="im">import</span> requests
+<span class="im">import</span> urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+ip_address <span class="op">=</span> <span class="st">'127.0.0.1'</span>
+api_key <span class="op">=</span> <span class="st">'YOUR_API_KEY'</span>
+endpoint <span class="op">=</span> <span class="st">'outputs/3f5a4806-c830-432d-b329-7821da8336e4'</span>
+url <span class="op">=</span> <span class="st">'https://</span><span class="sc">{ip}</span><span class="st">/api/</span><span class="sc">{ep}</span><span class="st">'</span>.<span class="bu">format</span>(ip<span class="op">=</span>ip_address, ep<span class="op">=</span>endpoint)
+data <span class="op">=</span> {<span class="st">&quot;state&quot;</span>: <span class="va">True</span>}  <span class="co"># Turn Output On</span>
+headers <span class="op">=</span> {<span class="st">'Accept'</span>: <span class="st">'application/vnd.mycodo.v1+json'</span>,
+           <span class="st">'X-API-KEY'</span>: api_key}
+response <span class="op">=</span> requests.post(url, json<span class="op">=</span>data, headers<span class="op">=</span>headers, verify<span class="op">=</span><span class="va">False</span>)
+<span class="bu">print</span>(<span class="st">&quot;Response Status: </span><span class="sc">{}</span><span class="st">&quot;</span>.<span class="bu">format</span>(response.status_code))
+<span class="bu">print</span>(<span class="st">&quot;Response Headers: </span><span class="sc">{}</span><span class="st">&quot;</span>.<span class="bu">format</span>(response.headers))
+response_dict <span class="op">=</span> json.loads(response.text)
+<span class="bu">print</span>(<span class="st">&quot;Response Dictionary: </span><span class="sc">{}</span><span class="st">&quot;</span>.<span class="bu">format</span>(response_dict))</code></pre></div>
 <h2 id="errors">Errors</h2>
 <p>Mycodo uses conventional HTTP response codes to indicate the success or failure of an API request. In general: Codes in the 2xx range indicate success. Codes in the 4xx range indicate an error that failed given the information provided (e.g., a required parameter was omitted, a charge failed, etc.). Codes in the 5xx range indicate an error with Mycodo’s servers (these are rare).</p>
 <p>Some 4xx errors that could be handled programmatically (e.g., a card is declined) include an error code that briefly explains the error reported.</p>
@@ -608,6 +630,15 @@ control.terminate_daemon()</code></pre></div>
 <p>Parameters:</p>
 <ul>
 <li><strong>unique_id</strong> - The unique ID of the controller.</li>
+</ul>
+<hr />
+<p><strong>send_email</strong>(<em>recipients</em>, <em>message</em>, <em>subject</em>)</p>
+<p>Send an email with the credentials configured for alert notifications.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>recipients</strong> - The email address (string) or addresses (list of strings) to send the email.</li>
+<li><strong>message</strong> - The body of the email.</li>
+<li><strong>subject</strong> - The subject of the email.</li>
 </ul>
 <hr />
 <p><strong>send_infrared_code_broadcast</strong>(<em>code</em>)</p>

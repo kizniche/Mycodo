@@ -20,13 +20,15 @@ Mycodo Manual
         -   [PID Control Widget](#pid-control-widget)
 -   [Data Acquisition](#data-acquisition)
     -   [Input](#input)
+        -   [Input Actions](#input-actions)
         -   [Input Options](#input-options)
         -   [Custom Inputs](#custom-inputs)
         -   [The Things Network](#the-things-network)
     -   [Math](#math)
         -   [Math Options](#math-options)
 -   [Output](#output)
-    -   [General Output Options](#general-output-options)
+    -   [Output Options](#output-options)
+    -   [Custom Outputs](#custom-outputs)
     -   [On/Off (GPIO)](#onoff-gpio)
     -   [PWM (GPIO)](#pwm-gpio)
     -   [PWM (GPIO) Options](#pwm-gpio-options)
@@ -90,6 +92,7 @@ Mycodo Manual
     -   [General Settings](#general-settings)
     -   [Energy Usage Settings](#energy-usage-settings)
     -   [Input Settings](#input-settings)
+    -   [Output Settings](#output-settings)
     -   [Measurement Settings](#measurement-settings)
     -   [Users](#users)
     -   [User Roles](#user-roles)
@@ -194,6 +197,13 @@ certain events based on the truth of custom user conditional statements
 
 FREQUENTLY ASKED QUESTIONS
 
+
+Here are a few frequently asked questions about Mycodo. There is also an
+Question & Answer Forum that you can pose a question. However, do ensure
+it’s relevant to the topic by reading the stickied Q&A Post to determine
+if it may be better suited for the General Discussion Forum.
+
+------------------------------------------------------------------------
 
 _What should I do if I have an issue?_
 
@@ -707,6 +717,15 @@ Statements, and other parts of Mycodo to operate from. Add, configure,
 and activate inputs to begin recording measurements to the database and
 allow them to be used throughout Mycodo.
 
+Input Actions
+
+Input Actions are functions within the Input module that can be executed
+from the Web UI. This is useful for things such as calibration or other
+functionality specific to the input. By default there is at least one
+action, Acquire Measurements Now, which will cause the input to acquire
+measurements rather than waiting until the next Period has elapsed.
+Note, actions can only be executed while the Input is active.
+
 Input Options
 
 In addition to several supported sensors and devices, a Linux command
@@ -1093,16 +1112,11 @@ Types of math controllers.
                                 Difference, and if so, stores the average
                                 of the selected measurements.
 
-  Median                        Stores the statistical median from the
-                                selected measurements.
+  Statistics                    Calculates mean, median, minimum, maximum,
+                                standard deviation (SD), SD upper, and SD
+                                lower for a set of measurements.
 
-  Maximum                       Stores the largest measurement from the
-                                selected measurements.
-
-  Minimum                       Stores the smallest measurement from the
-                                selected measurements.
-
-  Humidity                      Calculates and stores the percent relative
+  Humidity (Wet/Dry-Bulb)       Calculates and stores the percent relative
                                 humidity from the dry-bulb and wet-bulb
                                 temperatures, and optional pressure.
   ------------------------------------------------------------------------
@@ -1196,12 +1210,12 @@ driving of pumps and motors, or an execution of a linux or Python
 command, to name a few.
 
 
-General Output Options
+Output Options
 
   ------------------------------------------------------------------------
   Setting                      Description
   ---------------------------- -------------------------------------------
-  Pin                          This is the GPIO that will be the signal to
+  Pin (GPIO)                   This is the GPIO that will be the signal to
                                the output, using BCM numbering.
 
   WiringPi Pin                 This is the GPIO that will be the signal to
@@ -1239,6 +1253,8 @@ General Output Options
   Bit Length                   This is the bit length to transmit via
                                315/433 MHz. Default is 24-bit.
 
+  Execute as User              Select which user executes Linux Commands.
+
   On Command                   This is the command used to turn the output
                                on. For wireless relays, this is the
                                numerical command to be transmitted, and
@@ -1254,6 +1270,11 @@ General Output Options
                                be executed. Commands may be for the linux
                                terminal or Python 3 (depending on which
                                output type selected).
+
+  Force Command                If an Output is already on, enabling this
+                               option will allow the On command to be
+                               executed rather than returning “Output is
+                               already On”.
 
   PWM Command                  This is the command used to set the duty
                                cycle. The string “((duty_cycle))” in the
@@ -1296,6 +1317,35 @@ General Output Options
                                devices or the measured effects a device
                                may have on an environmental condition.
   ------------------------------------------------------------------------
+
+
+Custom Outputs
+
+Note: This is a work in progress!
+
+There is a Custom Output import system in Mycodo that allows
+user-created Outputs to be created an used in the Mycodo system. Custom
+Outputs can be uploaded and imported from the Configure -> Outputs page.
+After import, they will be available to use on the Setup -> Output page.
+
+If you desire an output that is not currently supported by Mycodo, you
+can build your own output module and import it into Mycodo. All
+information about an output is contained within the output module, set
+in the dictionaries ‘OUTPUT_INFORMATION’ and ‘measurements_dict’. Each
+module will requires at a minimum for these variables to be set in
+OUTPUT_INFORMATION: ‘output_name_unique’, ‘output_name’, and
+‘measurements_dict’. The measurements_dict dictionary contains the
+measurements that are acquired and stored, and require both the units
+and measurements to exist in the measurement/unit database (Add missing
+measurements/units on the Configure -> Measurements page).
+
+Open any of the built-in modules located in the outputs directory
+(https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/) for
+examples of the proper formatting.
+
+There’s also a minimal output module template as an example:
+
+https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/examples/example_dummy_output.py
 
 
 On/Off (GPIO)
@@ -1345,10 +1395,8 @@ greatly depending on load and application, for example
 The term duty cycle describes the proportion of ‘on’ time to the regular
 interval or ‘period’ of time; a low duty cycle corresponds to low power,
 because the power is off for most of the time. Duty cycle is expressed
-in percent, 100% being fully on.
-
-PWM pins can be set up on the Setup -> Output` page, then it may be used
-by a PWM PID Controller.
+in percent, with 0% being always off, 50% being off for half of the time
+and on for half of the time, and 100% being always on.
 
 
 PWM (GPIO) Options
@@ -1363,19 +1411,17 @@ PWM (GPIO) Options
                                40 kHz PWM signal. See the table, below,
                                for the hardware pins on various Pi boards.
 
-  BCM Pin                      This is the GPIO that will output the PWM
-                               signal, using BCM numbering.
+  Pin (GPIO)                   This is the GPIO pin that will output the
+                               PWM signal, using BCM numbering.
 
-  Hertz                        This is frequency of the PWM signal.
+  Frequency (Hertz)            This is frequency of the PWM signal.
+
+  Invert Signal                Send an inverted duty cycle to the output
+                               controller.
 
   Duty Cycle                   This is the proportion of the time on to
                                the time off, expressed in percent (0
                                -100).
-
-  Current Draw (amps)          This is the current draw, in amps, when the
-                               duty cycle is 100%. Note: this value should
-                               be calculated based on the voltage set in
-                               the Energy Usage Settings.
   ------------------------------------------------------------------------
 
 Non-hardware PWM Pins
@@ -2041,11 +2087,14 @@ Check if the latest measurement is above or below the set value.
   Period (seconds)             The period (seconds) between conditional
                                checks.
 
-  Refractory Period (seconds)  The minimum duration (seconds) to wait
-                               after a conditional has been triggered to
-                               begin evaluating the conditional again.
+  Start Offset (seconds)       The duration (seconds) to wait before
+                               executing the Conditional for the first
+                               after it is activated.
 
   Log Level: Debug             Show debug lines in the daemon log.
+
+  Message Includes Code        Include Conditional Statement code in the
+                               message that is passed to actions.
   ------------------------------------------------------------------------
 
 Conditions are variables that can be used within the Conditional
@@ -2608,6 +2657,10 @@ Conditional, Trigger).
 
   PID: Set Setpoint            Set the Setpoint of a particular PID
                                controller.
+
+  System: Restart              Restart the System.
+
+  System: Shutdown             Shutdown the System.
   ------------------------------------------------------------------------
 
 
@@ -2852,11 +2905,18 @@ CAMERA
 
 More -> Camera
 
-Once a cameras has been set up (in the Camera Settings), it may be used
-to capture still images, create time-lapses, and stream video. Cameras
-may also be used by Conditional Statements to trigger a camera image or
-video capture (as well as the ability to email the image/video with a
-notification).
+Cameras can be used to capture still images, create time-lapses, and
+stream video. Cameras may also be used by Functions to trigger a camera
+image or video capture (as well as the ability to email the image/video
+with a notification).
+
+Cameras can be accessed by the following libraries: picamera (Raspberry
+Pi Camera), fswebcam, opencv, urllib, and requests.
+
+This enables images to be acquired from the Raspberry Pi camera, USB
+cameras and webcams, and IP cameras that are accessible by a URL.
+Furthermore, using the urllib and request libraries, any image URL can
+be used to acquire images.
 
 
 
@@ -3042,7 +3102,7 @@ MYCODO CLIENT
 INFRARED REMOTE
 
 
-This functionality may or may not work. Since Raspbian upgraded to
+NOTE: This functionality may or may not work. Since Raspbian upgraded to
 Buster, I have not been able to get it to work. I will try to restore
 functionality.
 
@@ -3373,12 +3433,27 @@ Input Settings
 [Gear Icon] -> Configure -> Inputs
 
 Input modules may be imported and used within Mycodo. These modules must
-follow a specific format. See Create an Input Module for more details.
+follow a specific format. See Custom Inputs for more details.
 
   ------------------------------------------------------------------------
   Setting                      Description
   ---------------------------- -------------------------------------------
   Import Input Module          Select your input module file, then click
+                               this button to begin the import.
+  ------------------------------------------------------------------------
+
+
+Output Settings
+
+[Gear Icon] -> Configure -> Outputs
+
+Output modules may be imported and used within Mycodo. These modules
+must follow a specific format. See Custom Outputs for more details.
+
+  ------------------------------------------------------------------------
+  Setting                      Description
+  ---------------------------- -------------------------------------------
+  Import Output Module         Select your output module file, then click
                                this button to begin the import.
   ------------------------------------------------------------------------
 
@@ -3455,13 +3530,17 @@ additional users may be created from the User Settings page.
   Email                        The email associated with the new account.
 
   Password/Repeat              Choose a password that is between 6 and 64
-                               characters and only contain letters,
+                               characters and only contains letters,
                                numbers, and symbols.
 
   Role                         Roles are a way of imposing access
                                restrictions on users, to either allow or
                                deny actions. See the table below for
                                explanations of the four default Roles.
+
+  Theme                        The web user interface theme to apply,
+                               including colors, themes, and other design
+                               elements.
   ------------------------------------------------------------------------
 
 
@@ -3664,8 +3743,8 @@ Incorrect Database Version
     upgrade during the Mycodo upgrade process.
 -   Check the Upgrade Log for any issues that may have occurred. The log
     is located at /var/log/mycodo/mycodoupgrade.log but may also be
-    accessed from the web UI (if you’re able to): select [Gear Icon] ->
-    Mycodo Logs -> Upgrade Log.
+    accessed from the web UI (if you’re able to): select
+    [Gear Icon] -> Mycodo Logs -> Upgrade Log.
 -   Sometimes issues may not immediately present themselves. It is not
     uncommon to be experiencing a database issue that was actually
     introduced several Mycodo versions ago, before the latest upgrade.
@@ -3700,11 +3779,14 @@ Built-In Inputs
 
 -   AM2315: Relative humidity, temperature link
 -   AM2320: Relative humidity, temperature link
+-   AS7262: Visible Light (450, 500, 550, 570, 600, and 650 nm
+    wavelengths) link
 -   Atlas Scientific DO: Dissolved Oxygen link
 -   Atlas Scientific EC: Electrical Conductivity link
 -   Atlas Scientific Flow Meter: Total volume, volume flow rate link
 -   Atlas Scientific ORP: Oxidation-Reduction Potential link
 -   Atlas Scientific pH: Potential hydrogen link
+-   Atlas Scientific Pressure: Pressure link
 -   Atlas Scientific PT-1000: Temperature link
 -   Atlas Scientific RGB Color Sensor: RGB, CIE, Lux, Proximity link
 -   BH1750: Light link
@@ -3741,6 +3823,7 @@ Built-In Inputs
 -   TMP006, TMP007: Contactless temperature link
 -   TSL2561: Light link
 -   TSL2591: Light link
+-   VL53L0X: Distance (laser time-of-flight) link
 -   ZH03B: Particle sensor link
 
 Other Built-In Inputs
@@ -3952,13 +4035,13 @@ USB Device Persistence Across Reboots
 
 From (#547) Theoi-Meteoroi on Github:
 
-Using USB devices, such as USB-to-serial interfaces to connect a sensor,
-while convenient, poses an issue if there are multiple devices when the
-system reboots. After a reboot, there is no guarantee the device will
-persist with the same name. For instance, if Sensor A is /dev/ttyUSB0
-and Sensor B is /dev/ttyUSB1, after a reboot Sensor A may be
-/dev/ttyUSB1 and Sensor B may be /dev/ttyUSB0. This will cause Mycodo to
-query the wrong device for a measurement, potentially causing a
+Using USB devices, such as USB-to-serial interfaces (CP210x) to connect
+a sensor, while convenient, poses an issue if there are multiple devices
+when the system reboots. After a reboot, there is no guarantee the
+device will persist with the same name. For instance, if Sensor A is
+/dev/ttyUSB0 and Sensor B is /dev/ttyUSB1, after a reboot Sensor A may
+be /dev/ttyUSB1 and Sensor B may be /dev/ttyUSB0. This will cause Mycodo
+to query the wrong device for a measurement, potentially causing a
 mis-measurement, or worse, an incorrect measurement because the response
 is not from the correct sensor (I’ve seen my temperature sensor read
 700+ degrees celsius because of this!). Follow the instructions below to
@@ -3995,6 +4078,11 @@ First - find the VID and PID for the USB device:
     Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 
 In this case the Vendor ID is 10c4 The Product ID is ea60
+
+Note: If you have multiple devices and you find your IDs to be the same,
+you can change IDs with the Simplicity Studio Xpress Configurator tool
+(discussed starting on page 6 of the AN721: USBXpress™ Device
+Configuration and Programming Guide).
 
 Since I changed the serial number field - this will be unique.
 

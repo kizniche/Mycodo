@@ -401,6 +401,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li><a href="#data-acquisition">Data Acquisition</a><ul>
 <li><a href="#input">Input</a><ul>
+<li><a href="#input-actions">Input Actions</a></li>
 <li><a href="#input-options">Input Options</a></li>
 <li><a href="#custom-inputs">Custom Inputs</a></li>
 <li><a href="#the-things-network">The Things Network</a></li>
@@ -410,7 +411,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 </ul></li>
 <li><a href="#output">Output</a><ul>
-<li><a href="#general-output-options">General Output Options</a></li>
+<li><a href="#output-options">Output Options</a></li>
+<li><a href="#custom-outputs">Custom Outputs</a></li>
 <li><a href="#onoff-gpio">On/Off (GPIO)</a></li>
 <li><a href="#pwm-gpio">PWM (GPIO)</a></li>
 <li><a href="#pwm-gpio-options">PWM (GPIO) Options</a><ul>
@@ -478,6 +480,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="#general-settings">General Settings</a></li>
 <li><a href="#energy-usage-settings">Energy Usage Settings</a></li>
 <li><a href="#input-settings">Input Settings</a></li>
+<li><a href="#output-settings">Output Settings</a></li>
 <li><a href="#measurement-settings">Measurement Settings</a></li>
 <li><a href="#users">Users</a></li>
 <li><a href="#user-roles">User Roles</a></li>
@@ -531,6 +534,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>When Inputs and Outputs are combined, PID controllers may be used to create a feedback loop that uses the Output device to modulate an environmental condition the Input measures. Certain Inputs may be coupled with certain Outputs to create a variety of different control and regulation applications. Beyond simple regulation, Methods may be used to create a changing setpoint over time, enabling such things as thermal cyclers, reflow ovens, environmental simulation for terrariums, food and beverage fermentation or curing, and cooking food (<a href="https://en.wikipedia.org/wiki/Sous-vide">sous-vide</a>), to name a few.</p>
 <p>Triggers can be set to activate events based on specific dates and times, according to durations of time, or the sunrise/sunset at a specific latitude and longitude. Conditionals are used to activates certain events based on the truth of custom user conditional statements (e.g. “Sensor1 &gt; 23 and 10 &lt; Sensor2 &lt; 30”).</p>
 <h1 id="frequently-asked-questions">Frequently Asked Questions</h1>
+<p>Here are a few frequently asked questions about Mycodo. There is also an <a href="https://kylegabriel.com/forum/questions-answers-mycodo">Question &amp; Answer Forum</a> that you can pose a question. However, do ensure it’s relevant to the topic by reading the <a href="https://kylegabriel.com/forum/questions-answers-mycodo/when-should-you-post-in-this-forum">stickied Q&amp;A Post</a> to determine if it may be better suited for the <a href="https://kylegabriel.com/forum/general-discussion">General Discussion Forum</a>.</p>
+<hr />
 <p><em>What should I do if I have an issue?</em></p>
 <p>First, read though this manual to make sure you understand how the system works and you’re using the system properly. Also check out the <a href="https://github.com/kizniche/Mycodo/wiki">Mycodo Wiki</a>. You may even want to look through recent <a href="https://github.com/kizniche/Mycodo/issues">GitHub Issues</a>. If you haven’t resolved your issue by this point, make a <a href="https://github.com/kizniche/Mycodo/issues/new">New GitHub Issue</a> describing the issue and attaching a sufficient amount of evidence (screenshots, log files, etc.) to aid in diagnosing the issue.</p>
 <hr />
@@ -934,6 +939,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1 id="data-acquisition">Data Acquisition</h1>
 <h2 id="input">Input</h2>
 <p>Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere, which will be stored in a time-series database (InfluxDB). This database will provide measurements for <a href="#graphs">Graphs</a>, <a href="#lcds">LCDs</a>, <a href="#pid-controllers">PID Controllers</a>, <a href="#conditional-statements">Conditional Statements</a>, and other parts of Mycodo to operate from. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.</p>
+<h3 id="input-actions">Input Actions</h3>
+<p>Input Actions are functions within the Input module that can be executed from the Web UI. This is useful for things such as calibration or other functionality specific to the input. By default there is at least one action, Acquire Measurements Now, which will cause the input to acquire measurements rather than waiting until the next Period has elapsed. Note, actions can only be executed while the Input is active.</p>
 <h3 id="input-options">Input Options</h3>
 <p>In addition to several supported sensors and devices, a Linux command may be specified that will be executed and the return value stored in the measurement database to be used throughout the Mycodo system.</p>
 <table>
@@ -1127,7 +1134,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </tbody>
 </table>
 <ol type="1">
-<li><a href="http://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing">Debouncing a signal</a></li>
+<li><a href="https://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing">Debouncing a signal</a></li>
 </ol>
 <h3 id="custom-inputs">Custom Inputs</h3>
 <p>There is a Custom Input import system in Mycodo that allows user-created Inputs to be created an used in the Mycodo system. Custom Inputs can be uploaded and imported from the <code>Configure -&gt; Inputs</code> page. After import, they will be available to use on the <code>Setup -&gt; Data</code> page.</p>
@@ -1222,19 +1229,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td>Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected measurements.</td>
 </tr>
 <tr class="odd">
-<td>Median</td>
-<td>Stores the statistical median from the selected measurements.</td>
+<td>Statistics</td>
+<td>Calculates mean, median, minimum, maximum, standard deviation (SD), SD upper, and SD lower for a set of measurements.</td>
 </tr>
 <tr class="even">
-<td>Maximum</td>
-<td>Stores the largest measurement from the selected measurements.</td>
-</tr>
-<tr class="odd">
-<td>Minimum</td>
-<td>Stores the smallest measurement from the selected measurements.</td>
-</tr>
-<tr class="even">
-<td>Humidity</td>
+<td>Humidity (Wet/Dry-Bulb)</td>
 <td>Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure.</td>
 </tr>
 </tbody>
@@ -1313,7 +1312,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h1 id="output">Output</h1>
 <p><code>Setup -&gt; Output</code></p>
 <p>Outputs are various signals that can be generated that operate devices. An output can be a PWM signal, a simple HIGH/LOW signal to operate a relay, a 315/433 MHz signal to switch a radio frequency-operated relay, driving of pumps and motors, or an execution of a linux or Python command, to name a few.</p>
-<h2 id="general-output-options">General Output Options</h2>
+<h2 id="output-options">Output Options</h2>
 <table>
 <colgroup>
 <col style="width: 40%"></col>
@@ -1327,7 +1326,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </thead>
 <tbody>
 <tr class="odd">
-<td>Pin</td>
+<td>Pin (GPIO)</td>
 <td>This is the GPIO that will be the signal to the output, using BCM numbering.</td>
 </tr>
 <tr class="even">
@@ -1375,12 +1374,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td>This is the bit length to transmit via 315/433 MHz. Default is 24-bit.</td>
 </tr>
 <tr class="odd">
+<td>Execute as User</td>
+<td>Select which user executes Linux Commands.</td>
+</tr>
+<tr class="even">
 <td>On Command</td>
 <td>This is the command used to turn the output on. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>Off Command</td>
 <td>This is the command used to turn the output off. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
+</tr>
+<tr class="even">
+<td>Force Command</td>
+<td>If an Output is already on, enabling this option will allow the On command to be executed rather than returning “Output is already On”.</td>
 </tr>
 <tr class="odd">
 <td>PWM Command</td>
@@ -1416,6 +1423,13 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </tr>
 </tbody>
 </table>
+<h2 id="custom-outputs">Custom Outputs</h2>
+<p>Note: This is a work in progress!</p>
+<p>There is a Custom Output import system in Mycodo that allows user-created Outputs to be created an used in the Mycodo system. Custom Outputs can be uploaded and imported from the <code>Configure -&gt; Outputs</code> page. After import, they will be available to use on the <code>Setup -&gt; Output</code> page.</p>
+<p>If you desire an output that is not currently supported by Mycodo, you can build your own output module and import it into Mycodo. All information about an output is contained within the output module, set in the dictionaries ‘OUTPUT_INFORMATION’ and ‘measurements_dict’. Each module will requires at a minimum for these variables to be set in OUTPUT_INFORMATION: ‘output_name_unique’, ‘output_name’, and ‘measurements_dict’. The measurements_dict dictionary contains the measurements that are acquired and stored, and require both the units and measurements to exist in the measurement/unit database (Add missing measurements/units on the <code>Configure -&gt; Measurements</code> page).</p>
+<p>Open any of the built-in modules located in the outputs directory (<a href="https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/" class="uri">https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/</a>) for examples of the proper formatting.</p>
+<p>There’s also a minimal output module template as an example:</p>
+<p><a href="https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/examples/example_dummy_output.py" class="uri">https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/examples/example_dummy_output.py</a></p>
 <h2 id="onoff-gpio">On/Off (GPIO)</h2>
 <p>The On/Off (GPIO) output merely turns a GPIO pin High (3.3 volts) or Low (0 volts). This is useful for controlling things like electromechanical switches, such as relays, to turn electrical devices on and off.</p>
 <p>Relays are electromechanical or solid-state devices that enable a small voltage signal (such as from a microprocessor) to activate a much larger voltage, without exposing the low-voltage system to the dangers of the higher voltage.</p>
@@ -1427,8 +1441,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <blockquote>
 <p>Switching has to be done several times a minute in an electric stove; 120 Hz in a lamp dimmer; between a few kilohertz (kHz) to tens of kHz for a motor drive; and well into the tens or hundreds of kHz in audio amplifiers and computer power supplies.</p>
 </blockquote>
-<p>The term duty cycle describes the proportion of ‘on’ time to the regular interval or ‘period’ of time; a low duty cycle corresponds to low power, because the power is off for most of the time. Duty cycle is expressed in percent, 100% being fully on.</p>
-<p>PWM pins can be set up on the <code>Setup -&gt; Output</code>` page, then it may be used by a PWM PID Controller.</p>
+<p>The term duty cycle describes the proportion of ‘on’ time to the regular interval or ‘period’ of time; a low duty cycle corresponds to low power, because the power is off for most of the time. Duty cycle is expressed in percent, with 0% being always off, 50% being off for half of the time and on for half of the time, and 100% being always on.</p>
 <h2 id="pwm-gpio-options">PWM (GPIO) Options</h2>
 <table>
 <colgroup>
@@ -1447,20 +1460,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td>Select the method for producing the PWM signal. Hardware pins can produce up to a 30 MHz PWM signal, while any other (non-hardware PWM) pin can produce up to a 40 kHz PWM signal. See the table, below, for the hardware pins on various Pi boards.</td>
 </tr>
 <tr class="even">
-<td>BCM Pin</td>
-<td>This is the GPIO that will output the PWM signal, using BCM numbering.</td>
+<td>Pin (GPIO)</td>
+<td>This is the GPIO pin that will output the PWM signal, using BCM numbering.</td>
 </tr>
 <tr class="odd">
-<td>Hertz</td>
+<td>Frequency (Hertz)</td>
 <td>This is frequency of the PWM signal.</td>
 </tr>
 <tr class="even">
-<td>Duty Cycle</td>
-<td>This is the proportion of the time on to the time off, expressed in percent (0 -100).</td>
+<td>Invert Signal</td>
+<td>Send an inverted duty cycle to the output controller.</td>
 </tr>
 <tr class="odd">
-<td>Current Draw (amps)</td>
-<td>This is the current draw, in amps, when the duty cycle is 100%. Note: this value should be calculated based on the voltage set in the <a href="#energy-usage-settings">Energy Usage Settings</a>.</td>
+<td>Duty Cycle</td>
+<td>This is the proportion of the time on to the time off, expressed in percent (0 -100).</td>
 </tr>
 </tbody>
 </table>
@@ -1737,7 +1750,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>Use the same configuration as the <a href="#exact-temperature-regulation">Exact Temperature Regulation</a> example, except change <em>Regulate Direction</em> to “Raise” and do not touch the “Down Relay” section.</p>
 <h3 id="pid-autotune">PID Autotune</h3>
 <p>Note: This is an experimental feature. It is best nto used until you are familiar with the operation and tuning of a PID.</p>
-<p>The Autotune feature is useful for determining appropriate Kp, Ki, and Kd gains of a PID controller. The autotuner will manipulate an output and measure the response in the environment being measured by a sensor. It will take several cycles to determine the gains according to several rules. In order to use this feature, the PID controller must be properly configured, and a Noise Band and Outstep selected, then select “Start Autotune”. The output of the autotuner will appear in the daemon log (Config -&gt; Mycodo Logs -&gt; Daemon). While the autotune is being performed, it is recommended to create a graph that includes the Input, Output, and PID Setpoint/Output in order to see what the PID Autotuner is doing and to notice any issues. If your autotune is taking a long time to complete, there may not be enough stability in the system being manipulated to calculate a reliable set of PID gains. This may be because there are too many disturbances to the system, or conditions are changing too rapidly to acquire consistent measurement oscillations. If this is the case, try modifying your system to reduce disturbances. Once the autotune successfully completes, disturbances may be reintroduced in order to further tune the PID controller to handle them.</p>
+<p>The Autotune feature is useful for determining appropriate Kp, Ki, and Kd gains of a PID controller. The autotuner will manipulate an output and measure the response in the environment being measured by a sensor. It will take several cycles to determine the gains according to several rules. In order to use this feature, the PID controller must be properly configured, and a Noise Band and Outstep selected, then select “Start Autotune”. The output of the autotuner will appear in the daemon log (<code>Config -&gt; Mycodo Logs -&gt; Daemon</code>). While the autotune is being performed, it is recommended to create a graph that includes the Input, Output, and PID Setpoint/Output in order to see what the PID Autotuner is doing and to notice any issues. If your autotune is taking a long time to complete, there may not be enough stability in the system being manipulated to calculate a reliable set of PID gains. This may be because there are too many disturbances to the system, or conditions are changing too rapidly to acquire consistent measurement oscillations. If this is the case, try modifying your system to reduce disturbances. Once the autotune successfully completes, disturbances may be reintroduced in order to further tune the PID controller to handle them.</p>
 <table>
 <colgroup>
 <col style="width: 40%"></col>
@@ -1881,12 +1894,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td>The period (seconds) between conditional checks.</td>
 </tr>
 <tr class="odd">
-<td>Refractory Period (seconds)</td>
-<td>The minimum duration (seconds) to wait after a conditional has been triggered to begin evaluating the conditional again.</td>
+<td>Start Offset (seconds)</td>
+<td>The duration (seconds) to wait before executing the Conditional for the first after it is activated.</td>
 </tr>
 <tr class="even">
 <td>Log Level: Debug</td>
 <td>Show debug lines in the daemon log.</td>
+</tr>
+<tr class="odd">
+<td>Message Includes Code</td>
+<td>Include Conditional Statement code in the message that is passed to actions.</td>
 </tr>
 </tbody>
 </table>
@@ -2467,6 +2484,14 @@ measurement <span class="op">=</span> <span class="va">self</span>.measure(<span
 <td>PID: Set Setpoint</td>
 <td>Set the Setpoint of a particular PID controller.</td>
 </tr>
+<tr class="even">
+<td>System: Restart</td>
+<td>Restart the System.</td>
+</tr>
+<tr class="odd">
+<td>System: Shutdown</td>
+<td>Shutdown the System.</td>
+</tr>
 </tbody>
 </table>
 <h1 id="methods">Methods</h1>
@@ -2640,7 +2665,9 @@ measurement <span class="op">=</span> <span class="va">self</span>.measure(<span
 <p>During the installation of Mycodo, there is an option to select which dependencies to install. If “Minimal Install” or “Custom Install” was selected (rather than “Full Install”), there may be unmet dependencies on your system. Don’t worry, this isn’t necessarily a problem. These optional dependencies only need to be installed when there’s a particular feature you want to use. When a user attempts to use a feature that has an unmet dependency, the user will be forwarded to the Dependency page in order to install it.</p>
 <h1 id="camera">Camera</h1>
 <p><code>More -&gt; Camera</code></p>
-<p>Once a cameras has been set up (in the <a href="#camera-settings">Camera Settings</a>), it may be used to capture still images, create time-lapses, and stream video. Cameras may also be used by <a href="#conditional-statements">Conditional Statements</a> to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
+<p>Cameras can be used to capture still images, create time-lapses, and stream video. Cameras may also be used by Functions to trigger a camera image or video capture (as well as the ability to email the image/video with a notification).</p>
+<p>Cameras can be accessed by the following libraries: picamera (Raspberry Pi Camera), fswebcam, opencv, urllib, and requests.</p>
+<p>This enables images to be acquired from the Raspberry Pi camera, USB cameras and webcams, and IP cameras that are accessible by a URL. Furthermore, using the urllib and request libraries, any image URL can be used to acquire images.</p>
 <h1 id="energy-usage">Energy Usage</h1>
 <p><code>More -&gt; Energy Usage</code></p>
 <p>There are two methods for calculating energy usage. The first relies on determining how long Outputs have been on. Based on this, if the number of Amps the output draws has been set in the output Settings, then the kWh and cost can be calculated. Discovering the number of amps the device draws can be accomplished by calculating this from the output typically given as watts on the device label, or with the use of a current clamp while the device is operating. The limitation of this method is PWM Outputs are not currently used to calculate these figures due to the difficulty determining the current consumption of devices driven by PWM signals.</p>
@@ -2780,7 +2807,7 @@ optional arguments:
                         Trigger all actions belonging to Function with ID
   -t, --terminate       Terminate the daemon</code></pre>
 <h1 id="infrared-remote">Infrared Remote</h1>
-<p>This functionality may or may not work. Since Raspbian upgraded to Buster, I have not been able to get it to work. I will try to restore functionality.</p>
+<p>NOTE: This functionality may or may not work. Since Raspbian upgraded to Buster, I have not been able to get it to work. I will try to restore functionality.</p>
 <p>Note 1: As of 4/8/2019, the Raspberry Pi kernel no longer supports <code>lirc-rpi</code> as an overlay in <code>/boot/config.txt</code> (use <code>gpio-ir</code>, details below). To ensure the below instructions work, make sure you are using the latest kernel by running <code>sudo rpi-update</code></p>
 <p>Note 2: Currently only receiving IR commands is working. IR sending is not working. When I get time to test and develop an implementation of this feature that both sends and receives IR signals, I will remove this note.</p>
 <p>Infrared (IR) light is a common way to send and receive signals across distances. This is typically done with IR remotes with several buttons configured to send different signals. These signals can be detected by the Raspberry Pi with the use of an <a href="https://www.sparkfun.com/products/10266">IR receiver diode</a> and used to perform actions within the linux environment and Mycodo. This is done with <a href="http://lirc.org/">lirc</a>, and needs to be properly configured before IR signals can be detected and interpreted.</p>
@@ -2991,7 +3018,7 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 </table>
 <h2 id="input-settings">Input Settings</h2>
 <p><code>[Gear Icon] -&gt; Configure -&gt; Inputs</code></p>
-<p>Input modules may be imported and used within Mycodo. These modules must follow a specific format. See <a href="#create-an-input-module">Create an Input Module</a> for more details.</p>
+<p>Input modules may be imported and used within Mycodo. These modules must follow a specific format. See <a href="#custom-inputs">Custom Inputs</a> for more details.</p>
 <table>
 <colgroup>
 <col style="width: 40%"></col>
@@ -3007,6 +3034,27 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 <tr class="odd">
 <td>Import Input Module</td>
 <td>Select your input module file, then click this button to begin the import.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="output-settings">Output Settings</h2>
+<p><code>[Gear Icon] -&gt; Configure -&gt; Outputs</code></p>
+<p>Output modules may be imported and used within Mycodo. These modules must follow a specific format. See <a href="#custom-outputs">Custom Outputs</a> for more details.</p>
+<table>
+<colgroup>
+<col style="width: 40%"></col>
+<col style="width: 59%"></col>
+</colgroup>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Import Output Module</td>
+<td>Select your output module file, then click this button to begin the import.</td>
 </tr>
 </tbody>
 </table>
@@ -3088,11 +3136,15 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 </tr>
 <tr class="odd">
 <td>Password/Repeat</td>
-<td>Choose a password that is between 6 and 64 characters and only contain letters, numbers, and symbols.</td>
+<td>Choose a password that is between 6 and 64 characters and only contains letters, numbers, and symbols.</td>
 </tr>
 <tr class="even">
 <td>Role</td>
 <td>Roles are a way of imposing access restrictions on users, to either allow or deny actions. See the table below for explanations of the four default Roles.</td>
+</tr>
+<tr class="odd">
+<td>Theme</td>
+<td>The web user interface theme to apply, including colors, themes, and other design elements.</td>
 </tr>
 </tbody>
 </table>
@@ -3343,7 +3395,7 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 <li>Check the <code>[Gear Icon] -&gt; System Information</code> page or select the mycodo logo in the top-left.</li>
 <li>An incorrect database version error means the version stored in the Mycodo settings database (<code>~/Mycodo/databases/mycodo.db</code>) is not correct for the latest version of Mycodo, determined in the Mycodo config file (<code>~/Mycodo/mycodo/config.py</code>).</li>
 <li>This can be caused by an error in the upgrade process from an older database version to a newer version, or from a database that did not upgrade during the Mycodo upgrade process.</li>
-<li>Check the Upgrade Log for any issues that may have occurred. The log is located at <code>/var/log/mycodo/mycodoupgrade.log</code> but may also be accessed from the web UI (if you’re able to): select [Gear Icon] -&gt; Mycodo Logs -&gt; Upgrade Log.</li>
+<li>Check the Upgrade Log for any issues that may have occurred. The log is located at <code>/var/log/mycodo/mycodoupgrade.log</code> but may also be accessed from the web UI (if you’re able to): select <code>[Gear Icon] -&gt; Mycodo Logs -&gt; Upgrade Log</code>.</li>
 <li>Sometimes issues may not immediately present themselves. It is not uncommon to be experiencing a database issue that was actually introduced several Mycodo versions ago, before the latest upgrade.</li>
 <li>Because of the nature of how many versions the database can be in, correcting a database issue may be very difficult. It may be much easier to delete your database and let Mycodo generate a new one.</li>
 <li>Use the following commands to rename your database and restart the web UI. If both commands are successful, refresh your web UI page in your browser in order to generate a new database and create a new Admin user.</li>
@@ -3359,11 +3411,13 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 <ul>
 <li>AM2315: Relative humidity, temperature <a href="https://www.adafruit.com/product/1293">link</a></li>
 <li>AM2320: Relative humidity, temperature <a href="https://www.adafruit.com/product/3721">link</a></li>
+<li>AS7262: Visible Light (450, 500, 550, 570, 600, and 650 nm wavelengths) <a href="https://www.sparkfun.com/products/14347">link</a></li>
 <li>Atlas Scientific DO: Dissolved Oxygen <a href="https://www.atlas-scientific.com/dissolved-oxygen.html">link</a></li>
 <li>Atlas Scientific EC: Electrical Conductivity <a href="https://www.atlas-scientific.com/conductivity.html">link</a></li>
 <li>Atlas Scientific Flow Meter: Total volume, volume flow rate <a href="https://www.atlas-scientific.com/flow-meters.html">link</a></li>
 <li>Atlas Scientific ORP: Oxidation-Reduction Potential <a href="https://www.atlas-scientific.com/orp.html">link</a></li>
 <li>Atlas Scientific pH: Potential hydrogen <a href="https://www.atlas-scientific.com/ph.html">link</a></li>
+<li>Atlas Scientific Pressure: Pressure <a href="https://www.atlas-scientific.com/probes/ezo-prs-embedded-pressure-sensor">link</a></li>
 <li>Atlas Scientific PT-1000: Temperature <a href="https://www.atlas-scientific.com/temperature.html">link</a></li>
 <li>Atlas Scientific RGB Color Sensor: RGB, CIE, Lux, Proximity <a href="https://www.atlas-scientific.com/product_pages/probes/ezo-rgb.html">link</a></li>
 <li>BH1750: Light <a href="https://www.dfrobot.com/product-531.html">link</a></li>
@@ -3397,6 +3451,7 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 <li>TMP006, TMP007: Contactless temperature <a href="https://www.sparkfun.com/products/11859">link</a></li>
 <li>TSL2561: Light <a href="https://www.sparkfun.com/products/12055">link</a></li>
 <li>TSL2591: Light <a href="https://www.adafruit.com/product/1980">link</a></li>
+<li>VL53L0X: Distance (laser time-of-flight) <a href="https://www.st.com/en/imaging-and-photonics-solutions/vl53l0x.html">link</a></li>
 <li>ZH03B: Particle sensor <a href="https://www.winsen-sensor.com/sensors/dust-sensor/zh3b.html">link</a></li>
 </ul>
 <h3 id="other-built-in-inputs">Other Built-In Inputs</h3>
@@ -3443,7 +3498,7 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 <p>Because the UART is handled differently higher after the Raspberry Pi 2 (due to the addition of bluetooth), there are a different set of instructions. If installing Mycodo on a Raspberry Pi 3 or above, you only need to perform these steps to configure UART:</p>
 <p>Run raspi-config</p>
 <p><code>sudo raspi-config</code></p>
-<p>Go to <code>Advanced Options</code> -&gt; <code>Serial</code> and disable. Then edit <code>/boot/config.txt</code></p>
+<p>Go to <code>Advanced Options -&gt; Serial</code> and disable. Then edit <code>/boot/config.txt</code></p>
 <p><code>sudo vi /boot/config.txt</code></p>
 <p>Find the line “enable_uart=0” and change it to “enable_uart=1”, then reboot.</p>
 <h2 id="output-devices">Output Devices</h2>
@@ -3481,7 +3536,7 @@ GPIO.setup(pin, GPIO.OUT, initial<span class="op">=</span>GPIO.LOW)
 <p>Wiring instructions for the Raspberry Pi can be found <a href="https://www.co2meter.com/blogs/news/8307094-using-co2meter-com-sensors-with-raspberry-pi">here</a>.</p>
 <h2 id="usb-device-persistence-across-reboots">USB Device Persistence Across Reboots</h2>
 <p>From <a href="https://github.com/kizniche/Mycodo/issues/547#issuecomment-428752904">(#547) Theoi-Meteoroi on Github</a>:</p>
-<p>Using USB devices, such as USB-to-serial interfaces to connect a sensor, while convenient, poses an issue if there are multiple devices when the system reboots. After a reboot, there is no guarantee the device will persist with the same name. For instance, if Sensor A is /dev/ttyUSB0 and Sensor B is /dev/ttyUSB1, after a reboot Sensor A may be /dev/ttyUSB1 and Sensor B may be /dev/ttyUSB0. This will cause Mycodo to query the wrong device for a measurement, potentially causing a mis-measurement, or worse, an incorrect measurement because the response is not from the correct sensor (I’ve seen my temperature sensor read 700+ degrees celsius because of this!). Follow the instructions below to alleviate this issue.</p>
+<p>Using USB devices, such as USB-to-serial interfaces (CP210x) to connect a sensor, while convenient, poses an issue if there are multiple devices when the system reboots. After a reboot, there is no guarantee the device will persist with the same name. For instance, if Sensor A is /dev/ttyUSB0 and Sensor B is /dev/ttyUSB1, after a reboot Sensor A may be /dev/ttyUSB1 and Sensor B may be /dev/ttyUSB0. This will cause Mycodo to query the wrong device for a measurement, potentially causing a mis-measurement, or worse, an incorrect measurement because the response is not from the correct sensor (I’ve seen my temperature sensor read 700+ degrees celsius because of this!). Follow the instructions below to alleviate this issue.</p>
 <p>I use udev to create a persistent device name (‘/dev/dust-sensor’) that will be linked to the /dev/ttyUSBn that is chosen at device arrival in the kernel. The only requirement is some attribute returned from the USB device that is unique. The common circumstance is that none of the attributes are unique and you get stuck with just VID and PID, which is ok as long as you don’t have any other adapters that report the same VID and PID. If you have multiple adapters with the same VID and PID, then hopefully they have some unique attribute. This command will walk the attributes. Run on each USB device and then compare differences to possibly find some attribute to use.</p>
 <p><code>udevadm info --name=/dev/ttyUSB0 --attribute-walk</code></p>
 <p>I ended up using the serial number on the ZH03B to program the USB adapter serial field. This way guarantees unique serial numbers rather than me trying to remember what was the last serial number I used to increment by 1.</p>
@@ -3493,6 +3548,7 @@ Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp. SMSC9512/9514 Fast 
 Bus 001 Device 002: ID 0424:9514 Standard Microsystems Corp. SMC9514 Hub
 Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub</code></pre>
 <p>In this case the Vendor ID is 10c4 The Product ID is ea60</p>
+<p>Note: If you have multiple devices and you find your IDs to be the same, you can change IDs with the Simplicity Studio Xpress Configurator tool (discussed starting on page 6 of the <a href="https://www.silabs.com/documents/public/application-notes/AN721.pdf">AN721: USBXpress™ Device Configuration and Programming Guide</a>).</p>
 <p>Since I changed the serial number field - this will be unique.</p>
 <pre><code>pi@raspberry:~ $ udevadm info --name=/dev/ttyUSB0 --attribute-walk | grep serial
 SUBSYSTEMS==&quot;usb-serial&quot;

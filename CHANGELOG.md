@@ -1,4 +1,4 @@
-## 8.5.0 (Unreleased)
+## 8.5.0 (2020-05-30)
 
 With this release comes the ability to write and import custom Outputs. If you want to utilize an output that Mycodo doesn't currently support, you can now create your own Output module and import it to be used within the system. See [Custom Outputs](https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-outputs) in the manual for more information.
 

@@ -70,7 +70,14 @@ certain events based on the truth of custom user conditional statements
 Frequently Asked Questions
 ==========================
 
-Here are a few frequently asked questions about Mycodo. There is also an `Question & Answer Forum <https://kylegabriel.com/forum/questions-answers-mycodo>`__ that you can pose a question. However, do ensure it's relevant to the topic by reading the `stickied Q&A Post <https://kylegabriel.com/forum/questions-answers-mycodo/when-should-you-post-in-this-forum>`__ to determine if it may be better suited for the `General Discussion Forum <https://kylegabriel.com/forum/general-discussion>`__.
+Here are a few frequently asked questions about Mycodo. There is also an
+`Question & Answer
+Forum <https://kylegabriel.com/forum/questions-answers-mycodo>`__ that
+you can pose a question. However, do ensure it's relevant to the topic
+by reading the `stickied Q&A
+Post <https://kylegabriel.com/forum/questions-answers-mycodo/when-should-you-post-in-this-forum>`__
+to determine if it may be better suited for the `General Discussion
+Forum <https://kylegabriel.com/forum/general-discussion>`__.
 
 --------------
 
@@ -600,7 +607,12 @@ Mycodo.
 Input Actions
 ~~~~~~~~~~~~~
 
-Input Actions are functions within the Input module that can be executed from the Web UI. This is useful for things such as calibration or other functionality specific to the input. By default there is at least one action, Acquire Measurements Now, which will cause the input to acquire measurements rather than waiting until the next Period has elapsed. Note, actions can only be executed while the Input is active.
+Input Actions are functions within the Input module that can be executed
+from the Web UI. This is useful for things such as calibration or other
+functionality specific to the input. By default there is at least one
+action, Acquire Measurements Now, which will cause the input to acquire
+measurements rather than waiting until the next Period has elapsed.
+Note, actions can only be executed while the Input is active.
 
 Input Options
 ~~~~~~~~~~~~~
@@ -1209,22 +1221,22 @@ Custom Outputs
 
 Note: This is a work in progress!
 
-There is a Custom Output import system in Mycodo that allows user-created
-Outputs to be created an used in the Mycodo system. Custom Outputs can be
-uploaded and imported from the ``Configure -> Outputs`` page. After
-import, they will be available to use on the ``Setup -> Output`` page.
+There is a Custom Output import system in Mycodo that allows
+user-created Outputs to be created an used in the Mycodo system. Custom
+Outputs can be uploaded and imported from the ``Configure -> Outputs``
+page. After import, they will be available to use on the
+``Setup -> Output`` page.
 
-If you desire an output that is not currently supported by Mycodo, you can
-build your own output module and import it into Mycodo. All information
-about an output is contained within the output module, set in the
-dictionaries 'OUTPUT\_INFORMATION' and 'measurements\_dict'. Each module
-will requires at a minimum for these variables to be set in
-OUTPUT\_INFORMATION: 'output\_name\_unique',
-'output\_name', and 'measurements\_dict'. The
-measurements\_dict dictionary contains the measurements that are
-acquired and stored, and require both the units and measurements to
-exist in the measurement/unit database (Add missing measurements/units
-on the ``Configure -> Measurements`` page).
+If you desire an output that is not currently supported by Mycodo, you
+can build your own output module and import it into Mycodo. All
+information about an output is contained within the output module, set
+in the dictionaries 'OUTPUT\_INFORMATION' and 'measurements\_dict'. Each
+module will requires at a minimum for these variables to be set in
+OUTPUT\_INFORMATION: 'output\_name\_unique', 'output\_name', and
+'measurements\_dict'. The measurements\_dict dictionary contains the
+measurements that are acquired and stored, and require both the units
+and measurements to exist in the measurement/unit database (Add missing
+measurements/units on the ``Configure -> Measurements`` page).
 
 Open any of the built-in modules located in the outputs directory
 (https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/) for
@@ -2855,14 +2867,18 @@ Camera
 
 ``More -> Camera``
 
-Cameras can be used to capture still images,
-create time-lapses, and stream video. Cameras may also be used by
-Functions to trigger a camera image or video capture (as well as the ability to email the image/video
+Cameras can be used to capture still images, create time-lapses, and
+stream video. Cameras may also be used by Functions to trigger a camera
+image or video capture (as well as the ability to email the image/video
 with a notification).
 
-Cameras can be accessed by the following libraries: picamera (Raspberry Pi Camera), fswebcam, opencv, urllib, and requests.
+Cameras can be accessed by the following libraries: picamera (Raspberry
+Pi Camera), fswebcam, opencv, urllib, and requests.
 
-This enables images to be acquired from the Raspberry Pi camera, USB cameras and webcams, and IP cameras that are accessible by a URL. Furthermore, using the urllib and request libraries, any image URL can be used to acquire images.
+This enables images to be acquired from the Raspberry Pi camera, USB
+cameras and webcams, and IP cameras that are accessible by a URL.
+Furthermore, using the urllib and request libraries, any image URL can
+be used to acquire images.
 
 Energy Usage
 ============
@@ -3398,7 +3414,8 @@ Input Settings
 ``[Gear Icon] -> Configure -> Inputs``
 
 Input modules may be imported and used within Mycodo. These modules must
-follow a specific format. See `Custom Inputs <#custom-inputs>`__ for more details.
+follow a specific format. See `Custom Inputs <#custom-inputs>`__ for
+more details.
 
 +------------------------------+---------------------------------------------+
 | Setting                      | Description                                 |
@@ -3412,8 +3429,9 @@ Output Settings
 
 ``[Gear Icon] -> Configure -> Outputs``
 
-Output modules may be imported and used within Mycodo. These modules must
-follow a specific format. See `Custom Outputs <#custom-outputs>`__ for more details.
+Output modules may be imported and used within Mycodo. These modules
+must follow a specific format. See `Custom Outputs <#custom-outputs>`__
+for more details.
 
 +------------------------------+---------------------------------------------+
 | Setting                      | Description                                 |
@@ -3716,7 +3734,8 @@ Incorrect Database Version
    upgrade during the Mycodo upgrade process.
 -  Check the Upgrade Log for any issues that may have occurred. The log
    is located at ``/var/log/mycodo/mycodoupgrade.log`` but may also be
-   accessed from the web UI (if you're able to): select ``[Gear Icon] -> Mycodo Logs -> Upgrade Log``.
+   accessed from the web UI (if you're able to): select
+   ``[Gear Icon] -> Mycodo Logs -> Upgrade Log``.
 -  Sometimes issues may not immediately present themselves. It is not
    uncommon to be experiencing a database issue that was actually
    introduced several Mycodo versions ago, before the latest upgrade.
@@ -3755,8 +3774,8 @@ Built-In Inputs
    `link <https://www.adafruit.com/product/1293>`__
 -  AM2320: Relative humidity, temperature
    `link <https://www.adafruit.com/product/3721>`__
--  AS7262: Visible Light (450, 500, 550, 570, 600, and 650 nm wavelengths)
-   `link <https://www.sparkfun.com/products/14347>`__
+-  AS7262: Visible Light (450, 500, 550, 570, 600, and 650 nm
+   wavelengths) `link <https://www.sparkfun.com/products/14347>`__
 -  Atlas Scientific DO: Dissolved Oxygen
    `link <https://www.atlas-scientific.com/dissolved-oxygen.html>`__
 -  Atlas Scientific EC: Electrical Conductivity
@@ -4072,13 +4091,13 @@ USB Device Persistence Across Reboots
 From `(#547) Theoi-Meteoroi on
 Github <https://github.com/kizniche/Mycodo/issues/547#issuecomment-428752904>`__:
 
-Using USB devices, such as USB-to-serial interfaces (CP210x) to connect a sensor,
-while convenient, poses an issue if there are multiple devices when the
-system reboots. After a reboot, there is no guarantee the device will
-persist with the same name. For instance, if Sensor A is /dev/ttyUSB0
-and Sensor B is /dev/ttyUSB1, after a reboot Sensor A may be
-/dev/ttyUSB1 and Sensor B may be /dev/ttyUSB0. This will cause Mycodo to
-query the wrong device for a measurement, potentially causing a
+Using USB devices, such as USB-to-serial interfaces (CP210x) to connect
+a sensor, while convenient, poses an issue if there are multiple devices
+when the system reboots. After a reboot, there is no guarantee the
+device will persist with the same name. For instance, if Sensor A is
+/dev/ttyUSB0 and Sensor B is /dev/ttyUSB1, after a reboot Sensor A may
+be /dev/ttyUSB1 and Sensor B may be /dev/ttyUSB0. This will cause Mycodo
+to query the wrong device for a measurement, potentially causing a
 mis-measurement, or worse, an incorrect measurement because the response
 is not from the correct sensor (I've seen my temperature sensor read
 700+ degrees celsius because of this!). Follow the instructions below to
@@ -4118,7 +4137,11 @@ First - find the VID and PID for the USB device:
 
 In this case the Vendor ID is 10c4 The Product ID is ea60
 
-Note: If you have multiple devices and you find your IDs to be the same, you can change IDs with the Simplicity Studio Xpress Configurator tool (discussed starting on page 6 of the `AN721: USBXpress™ Device Configuration and Programming Guide <https://www.silabs.com/documents/public/application-notes/AN721.pdf>`__).
+Note: If you have multiple devices and you find your IDs to be the same,
+you can change IDs with the Simplicity Studio Xpress Configurator tool
+(discussed starting on page 6 of the `AN721: USBXpress™ Device
+Configuration and Programming
+Guide <https://www.silabs.com/documents/public/application-notes/AN721.pdf>`__).
 
 Since I changed the serial number field - this will be unique.
 
