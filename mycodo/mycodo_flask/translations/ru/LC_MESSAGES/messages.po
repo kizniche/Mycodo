@@ -6169,7 +6169,7 @@ msgid ""
 "Rinse the pH probe with distilled water, place it into the pH %(ph)s "
 "solution, then click Ready"
 msgstr ""
-"Ополосните рН зонд дистиллированной водой, поместить его в рН %(рН)s "
+"Ополосните рН зонд дистиллированной водой, поместить его в рН %(рh)s "
 "раствором, а затем нажмите Готово"
 
 #: mycodo_flask/templates/tools/calibration_options/atlas_rgb.html:14
@@ -6468,7 +6468,7 @@ msgstr ""
 #: mycodo_flask/utils/utils_misc.py:36
 #, python-format
 msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
-msgstr "Энергия Использование с идентификатором %(ID)s (%(UUID)s) успешно добавлен"
+msgstr "Энергия Использование с идентификатором %(id)s (%(uuid)s) успешно добавлен"
 
 #: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
 #: mycodo_flask/utils/utils_settings.py:1554

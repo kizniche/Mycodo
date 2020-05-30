@@ -6130,7 +6130,7 @@ msgstr "输入结束时间 (%(et)s) 不能与下一个条目的开始时间 (%(s
 #: mycodo_flask/utils/utils_misc.py:36
 #, python-format
 msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
-msgstr "用ID %(id)s (%uuid)s 或多个）能量使用成功添加"
+msgstr "用ID %(id)s %(uuid)s 或多个）能量使用成功添加"
 
 #: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
 #: mycodo_flask/utils/utils_settings.py:1554

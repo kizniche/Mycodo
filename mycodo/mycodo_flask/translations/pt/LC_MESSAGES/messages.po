@@ -6153,7 +6153,7 @@ msgid ""
 "Rinse the pH probe with distilled water, place it into the pH %(ph)s "
 "solution, then click Ready"
 msgstr ""
-"Lavar a sonda de pH com água destilada, colocá-lo no pH %(pH)s solução, "
+"Lavar a sonda de pH com água destilada, colocá-lo no pH %(ph)s solução, "
 "então clique Pronto"
 
 #: mycodo_flask/templates/tools/calibration_options/atlas_rgb.html:14

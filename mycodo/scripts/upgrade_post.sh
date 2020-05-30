@@ -54,10 +54,6 @@ TIMER_START_update_pip3_packages=$SECONDS
 ${INSTALL_CMD} update-pip3-packages
 TIMER_TOTAL_update_pip3_packages=$((SECONDS - TIMER_START_update_pip3_packages))
 
-TIMER_START_update_dependencies=$SECONDS
-${INSTALL_CMD} update-dependencies
-TIMER_TOTAL_update_dependencies=$((SECONDS - TIMER_START_update_dependencies))
-
 TIMER_START_update_influxdb=$SECONDS
 ${INSTALL_CMD} update-influxdb
 TIMER_TOTAL_update_influxdb=$((SECONDS - TIMER_START_update_influxdb))
@@ -69,6 +65,10 @@ TIMER_TOTAL_update_alembic=$((SECONDS - TIMER_START_update_alembic))
 TIMER_START_update_alembic_post=$SECONDS
 ${INSTALL_CMD} update-alembic-post
 TIMER_TOTAL_update_alembic_post=$((SECONDS - TIMER_START_update_alembic_post))
+
+TIMER_START_update_dependencies=$SECONDS
+${INSTALL_CMD} update-dependencies
+TIMER_TOTAL_update_dependencies=$((SECONDS - TIMER_START_update_dependencies))
 
 TIMER_START_update_mycodo_startup_script=$SECONDS
 ${INSTALL_CMD} update-mycodo-startup-script

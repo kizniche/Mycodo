@@ -6159,7 +6159,7 @@ msgstr "Деактивирајте контролер пре мењања њег
 #: mycodo_flask/utils/utils_dashboard.py:47
 #, python-format
 msgid "Dashboard with ID %(id)s successfully added"
-msgstr "Контролна табла са ИД %(ph)s успешно додат"
+msgstr "Контролна табла са ИД %(id)s успешно додат"
 
 #: mycodo_flask/utils/utils_dashboard.py:340
 #, python-format
@@ -6399,7 +6399,7 @@ msgstr ""
 #: mycodo_flask/utils/utils_misc.py:36
 #, python-format
 msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
-msgstr "Енергија Употреба са ИД %(ph)s (%(uuid)s) је успешно додат"
+msgstr "Енергија Употреба са ИД %(id)s (%(uuid)s) је успешно додат"
 
 #: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
 #: mycodo_flask/utils/utils_settings.py:1554

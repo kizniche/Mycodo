@@ -6426,7 +6426,7 @@ msgstr "Ingångstiden (%(et)s) kan inte överlappa nästa ingångs starttid (%(s
 #: mycodo_flask/utils/utils_misc.py:36
 #, python-format
 msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
-msgstr "Energi Användande med ID %(id)s (%(UUID)s) har lagts"
+msgstr "Energi Användande med ID %(id)s (%(uuid)s) har lagts"
 
 #: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
 #: mycodo_flask/utils/utils_settings.py:1554

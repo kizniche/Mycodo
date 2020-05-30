@@ -6194,7 +6194,7 @@ msgid ""
 "solution, then click Ready"
 msgstr ""
 "Rincer la sonde de pH avec de l'eau distillée, le placer dans une "
-"solution de pH %(pH)s, puis cliquez sur Prêt"
+"solution de pH %(ph)s, puis cliquez sur Prêt"
 
 #: mycodo_flask/templates/tools/calibration_options/atlas_rgb.html:14
 msgid ""
@@ -6493,7 +6493,7 @@ msgstr ""
 #: mycodo_flask/utils/utils_misc.py:36
 #, python-format
 msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
-msgstr "Utilisation de l'énergie avec l'ID %(id)s (%(UUID)s) ajouté avec succès"
+msgstr "Utilisation de l'énergie avec l'ID %(id)s (%(uuid)s) ajouté avec succès"
 
 #: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
 #: mycodo_flask/utils/utils_settings.py:1554

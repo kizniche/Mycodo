@@ -6483,7 +6483,7 @@ msgstr ""
 #: mycodo_flask/utils/utils_misc.py:36
 #, python-format
 msgid "Energy Usage with ID %(id)s (%(uuid)s) successfully added"
-msgstr "Energie-Verbrauch mit der ID %(id)s (%(UUID)s) erfolgreich hinzugefügt"
+msgstr "Energie-Verbrauch mit der ID %(id)s (%(uuid)s) erfolgreich hinzugefügt"
 
 #: mycodo_flask/utils/utils_notes.py:217 mycodo_flask/utils/utils_notes.py:258
 #: mycodo_flask/utils/utils_settings.py:1554
