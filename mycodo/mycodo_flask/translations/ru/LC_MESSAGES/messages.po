@@ -6169,7 +6169,7 @@ msgid ""
 "Rinse the pH probe with distilled water, place it into the pH %(ph)s "
 "solution, then click Ready"
 msgstr ""
-"Ополосните рН зонд дистиллированной водой, поместить его в рН %(рh)s "
+"Ополосните рН зонд дистиллированной водой, поместить его в рН %(ph)s "
 "раствором, а затем нажмите Готово"
 
 #: mycodo_flask/templates/tools/calibration_options/atlas_rgb.html:14
