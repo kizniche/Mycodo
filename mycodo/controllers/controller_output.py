@@ -920,14 +920,17 @@ class OutputController(AbstractController, threading.Thread):
         :return: Whether the output is currently On (True) or Off (False)
         :rtype: bool
         """
-        if ('on_state_internally_handled' in self.dict_outputs[self.output_type[output_id]] and
-                self.dict_outputs[self.output_type[output_id]]['on_state_internally_handled']):
-            if self.output_time_turned_on[output_id] or self.output_on_duration[output_id]:
-                return True
+        try:
+            if ('on_state_internally_handled' in self.dict_outputs[self.output_type[output_id]] and
+                    self.dict_outputs[self.output_type[output_id]]['on_state_internally_handled']):
+                if self.output_time_turned_on[output_id] or self.output_on_duration[output_id]:
+                    return True
+                else:
+                    return False
             else:
-                return False
-        else:
-            return self.output[output_id].is_on()
+                return self.output[output_id].is_on()
+        except Exception:
+            self.logger.exception("is_on() exception")
 
     def is_setup(self, output_id):
         """
@@ -939,7 +942,10 @@ class OutputController(AbstractController, threading.Thread):
         :return: Is it safe to manipulate this output?
         :rtype: bool
         """
-        return self.output[output_id].is_setup()
+        try:
+            return self.output[output_id].is_setup()
+        except Exception:
+            self.logger.exception("is_setup() exception")
 
     def set_off_until(self, dt_off_until, output_id):
         """ Save the datetime of when the output is supposed to stay off until """

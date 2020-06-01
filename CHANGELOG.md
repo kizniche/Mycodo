@@ -1,3 +1,10 @@
+## 8.5.2 (2020-06-01)
+
+### Bugfixes
+
+ - Fix Atlas Scientific Pump Output timestamp parsing
+
+
 ## 8.5.1 (2020-05-30)
 
 ### Bugfixes

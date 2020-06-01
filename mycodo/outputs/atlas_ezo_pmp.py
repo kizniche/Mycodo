@@ -128,8 +128,15 @@ class OutputModule(AbstractOutput):
                         each_dev_meas.channel,
                         measure=each_dev_meas.measurement, )
                     if last_measurement:
-                        datetime_ts = datetime.datetime.strptime(
-                            last_measurement[0][:-7], '%Y-%m-%dT%H:%M:%S.%f')
+                        try:
+                            datetime_ts = datetime.datetime.strptime(
+                                last_measurement[0][:-7], '%Y-%m-%dT%H:%M:%S.%f')
+                        except:
+                            # Sometimes the original timestamp is in milliseconds
+                            # instead of nanoseconds. Therefore, remove 3 less digits
+                            # past the decimal and try again to parse.
+                            datetime_ts = datetime.datetime.strptime(
+                                last_measurement[0][:-4], '%Y-%m-%dT%H:%M:%S.%f')
                         minutes_on = last_measurement[1]
                         ts_pmp_off = datetime_ts + datetime.timedelta(minutes=minutes_on)
                         now = datetime.datetime.utcnow()
