@@ -237,10 +237,10 @@ TRANSLATIONS = {
         'title': lazy_gettext('Host'),
         'phrase': lazy_gettext('Host address or IP')},
     'i2c_bus': {
-        'title': lazy_gettext('I<sup>2</sup>C Bus'),
+        'title': lazy_gettext('I2C Bus'),
         'phrase': lazy_gettext('The I2C bus the device is connected to')},
     'i2c_location': {
-        'title': lazy_gettext('I<sup>2</sup>C Address'),
+        'title': lazy_gettext('I2C Address'),
         'phrase': lazy_gettext('The I2C address of the device')},
     'interface': {
         'title': lazy_gettext('Interface'),
