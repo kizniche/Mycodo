@@ -63,6 +63,10 @@ My projects
 -  `Remote radiation monitoring and mapping <https://kylegabriel.com/projects/2019/08/remote-radiation-monitoring.html>`__
 -  `Cooking sous-vide <https://hackaday.io/project/11997-mycodo-environmental-regulation-system/log/45733-sous-vide-pid-tuning-and-the-unexpected-electrical-fire>`__
 
+Featured
+
+[![Automated Hydroponic System Build](https://img.youtube.com/vi/nyqykZK2Ev4/0.jpg)](https://www.youtube.com/watch?v=nyqykZK2Ev4)
+
 Projects of others
 
 -  Maintaining aquatic systems (e.g. fish, hydroponic, aquaponic)
