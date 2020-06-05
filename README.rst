@@ -65,7 +65,8 @@ My projects
 
 Featured
 
-[![Automated Hydroponic System Build](https://img.youtube.com/vi/nyqykZK2Ev4/0.jpg)](https://www.youtube.com/watch?v=nyqykZK2Ev4)
+.. image:: https://img.youtube.com/vi/nyqykZK2Ev4/0.jpg
+   :target: https://www.youtube.com/watch?v=nyqykZK2Ev4
 
 Projects of others
 
