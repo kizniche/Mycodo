@@ -55,8 +55,9 @@ Originally developed to cultivate edible mushrooms, Mycodo has evolved to do muc
 
 My projects
 
--  `Growing mushrooms <https://kylegabriel.com/projects/2015/04/mushroom-cultivation-revisited.html>`__
--  `Growing plants <https://www.youtube.com/watch?v=QNCx_VE7D-8>`__
+-  `Hydroponic System Automation <https://kylegabriel.com/projects/2020/06/automated-hydroponic-system-build.html>`__
+-  `Mushroom cultivation <https://kylegabriel.com/projects/2015/04/mushroom-cultivation-revisited.html>`__
+-  `Ground-based plant cultivation <https://www.youtube.com/watch?v=QNCx_VE7D-8>`__
 -  `Maintaining honey bee apiary homeostasis <https://kylegabriel.com/projects/2015/12/environmentally-controlled-apiary.html>`__
 -  `Maintaining humidity in an underground artificial bat cave <https://kylegabriel.com/projects/2015/10/artificial-bat-cave.html>`__
 -  `Remote radiation monitoring and mapping <https://kylegabriel.com/projects/2019/08/remote-radiation-monitoring.html>`__
