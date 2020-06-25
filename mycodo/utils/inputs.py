@@ -66,7 +66,7 @@ def list_analog_to_digital_converters():
     return list_adc
 
 
-def parse_input_information():
+def parse_input_information(exclude_custom=False):
     """Parses the variables assigned in each Input and return a dictionary of IDs and values"""
     def dict_has_value(dict_inp, input_cus, key, force_type=None):
         if (key in input_cus.INPUT_INFORMATION and
@@ -89,7 +89,10 @@ def parse_input_information():
         'examples', 'scripts', 'tmp_inputs', 'sensorutils.py'
     ]
 
-    input_paths = [PATH_INPUTS, PATH_INPUTS_CUSTOM]
+    input_paths = [PATH_INPUTS]
+
+    if not exclude_custom:
+        input_paths.append(PATH_INPUTS_CUSTOM)
 
     dict_inputs = {}
 
@@ -138,6 +141,7 @@ def parse_input_information():
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'url_datasheet', force_type='list')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'url_manufacturer', force_type='list')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'url_product_purchase', force_type='list')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'url_additional', force_type='list')
 
                 # Dependencies
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_module')

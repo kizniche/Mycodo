@@ -38,10 +38,13 @@ INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_PH',
     'input_manufacturer': 'Atlas Scientific',
     'input_name': 'pH',
+    'input_library': 'pylibftdi/fcntl/io/serial',
     'measurements_name': 'Ion Concentration',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.atlas-scientific.com/ph/',
+    'url_datasheet': 'https://www.atlas-scientific.com/files/pH_EZO_Datasheet.pdf',
 
-    'message': 'Note: Calibration Measurement is an optional setting that provides a temperature measurement (in Celsius) of the water that the pH is being measured from.',
+    'message': 'Calibration Measurement is an optional setting that provides a temperature measurement (in Celsius) of the water that the pH is being measured from.',
 
     'options_enabled': [
         'ftdi_location',

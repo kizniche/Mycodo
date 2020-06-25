@@ -43,6 +43,7 @@ Options:
   initialize                    Issues several commands to set up directories/files/permissions
   restart-daemon                Restart the Mycodo daemon
   setup-virtualenv              Create a Python virtual environment
+  setup-virtualenv-full         Create a Python virtual environment and installs dependencies
   ssl-certs-generate            Generate SSL certificates for the web user interface
   ssl-certs-regenerate          Regenerate SSL certificates
   uninstall-apt-pip             Uninstall the apt version of pip
@@ -185,6 +186,12 @@ case "${1:-''}" in
         else
             printf "#### Virtualenv already exists, skipping creation\n"
         fi
+    ;;
+    'setup-virtualenv-full')
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-pip3-packages
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-dependencies
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh update-permissions
     ;;
     'ssl-certs-generate')
         printf "\n#### Generating SSL certificates at %s/mycodo/mycodo_flask/ssl_certs (replace with your own if desired)\n" "${MYCODO_PATH}"

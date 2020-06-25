@@ -47,8 +47,12 @@ INPUT_INFORMATION = {
     'input_name_unique': 'WINSEN_ZH03B',
     'input_manufacturer': 'Winsen',
     'input_name': 'ZH03B',
+    'input_library': 'serial',
     'measurements_name': 'Particulates',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.winsen-sensor.com/sensors/dust-sensor/zh3b.html',
+    'url_datasheet': 'https://www.winsen-sensor.com/d/files/ZH03B.pdf',
+    'url_product_purchase': '',
 
     'options_enabled': [
         'measurements_select',

@@ -32,8 +32,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'DHT11',
     'input_manufacturer': 'AOSONG',
     'input_name': 'DHT11',
+    'input_library': 'pigpio',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
+    'url_datasheet': 'http://www.adafruit.com/datasheets/DHT11-chinese.pdf',
+    'url_product_purchase': 'https://www.adafruit.com/product/386',
 
     'options_enabled': [
         'gpio_location',

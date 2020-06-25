@@ -38,8 +38,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_EC',
     'input_manufacturer': 'Atlas Scientific',
     'input_name': 'EC',
+    'input_library': 'pylibftdi/fcntl/io/serial',
     'measurements_name': 'Electrical Conductivity',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.atlas-scientific.com/conductivity/',
+    'url_datasheet': 'https://www.atlas-scientific.com/files/EC_EZO_Datasheet.pdf',
 
     'options_enabled': [
         'ftdi_location',

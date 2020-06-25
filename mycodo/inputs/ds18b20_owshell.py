@@ -21,6 +21,13 @@ INPUT_INFORMATION = {
     'input_library': 'ow-shell',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.maximintegrated.com/en/products/sensors/DS18B20.html',
+    'url_datasheet': 'https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf',
+    'url_product_purchase': [
+        'https://www.adafruit.com/product/374',
+        'https://www.adafruit.com/product/381',
+        'https://www.sparkfun.com/products/245'
+    ],
 
     'options_enabled': [
         'location',
@@ -31,7 +38,8 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('apt', 'ow-shell', 'ow-shell')
+        ('apt', 'ow-shell', 'ow-shell'),
+        ('pip-pypi', 'subprocess', 'subprocess')
     ],
 
     'interfaces': ['1WIRE'],

@@ -133,6 +133,12 @@ INPUT_INFORMATION = {
     'input_library': 'bme680',
     'measurements_name': 'Temperature/Humidity/Pressure/Gas',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.bosch-sensortec.com/products/environmental-sensors/gas-sensors-bme680/',
+    'url_datasheet': 'https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme680-ds001.pdf',
+    'url_product_purchase': [
+        'https://www.adafruit.com/product/3660',
+        'https://www.sparkfun.com/products/16466'
+    ],
 
     'options_enabled': [
         'i2c_location',

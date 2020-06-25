@@ -16,6 +16,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'SIGNAL_RPM',
     'input_manufacturer': 'Raspberry Pi',
     'input_name': 'Signal (Revolutions)',
+    'input_library': 'pigpio',
     'measurements_name': 'RPM',
     'measurements_dict': measurements_dict,
 

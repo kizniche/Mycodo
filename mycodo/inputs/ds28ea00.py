@@ -16,8 +16,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'DS28EA00',
     'input_manufacturer': 'MAXIM',
     'input_name': 'DS28EA00',
+    'input_library': 'w1thermsensor',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.maximintegrated.com/en/products/interface/sensor-interface/DS28EA00.html',
+    'url_datasheet': 'https://datasheets.maximintegrated.com/en/ds/DS28EA00.pdf',
 
     'options_enabled': [
         'location',

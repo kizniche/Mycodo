@@ -27,8 +27,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'COZIR_CO2',
     'input_manufacturer': 'Cozir',
     'input_name': 'Cozir CO2',
+    'input_library': 'pierre-haessig/pycozir',
     'measurements_name': 'CO2/Humidity/Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.co2meter.com/products/cozir-2000-ppm-co2-sensor',
+    'url_datasheet': 'https://cdn.shopify.com/s/files/1/0019/5952/files/Datasheet_COZIR_A_CO2Meter_4_15.pdf',
 
     'options_enabled': [
         'uart_location',

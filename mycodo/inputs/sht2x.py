@@ -31,8 +31,10 @@ INPUT_INFORMATION = {
     'input_name_unique': 'SHT2x',
     'input_manufacturer': 'Sensirion',
     'input_name': 'SHT2x',
+    'input_library': 'smbus2',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.sensirion.com/en/environmental-sensors/humidity-sensors/humidity-temperature-sensor-sht2x-digital-i2c-accurate/',
 
     'options_enabled': [
         'measurements_select',

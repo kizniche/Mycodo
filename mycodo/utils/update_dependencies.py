@@ -141,7 +141,6 @@ if __name__ == "__main__":
                 dep=each_dep[1])
             output, err, stat = cmd_output(intsall_cmd, user='root')
             formatted_output = output.decode("utf-8").replace('\\n', '\n')
-            print("{}".format(formatted_output))
 
     # Update installed dependencies
     installed_deps = get_installed_dependencies()

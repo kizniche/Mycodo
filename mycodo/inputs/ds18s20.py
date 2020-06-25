@@ -36,8 +36,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'DS18S20',
     'input_manufacturer': 'MAXIM',
     'input_name': 'DS18S20',
+    'input_library': 'w1thermsensor',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.maximintegrated.com/en/products/sensors/DS18S20.html',
+    'url_datasheet': 'https://datasheets.maximintegrated.com/en/ds/DS18S20.pdf',
 
     'options_enabled': [
         'location',
@@ -48,26 +51,9 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'w1thermsensor', 'w1thermsensor'),
-        ('apt', 'ow-shell', 'ow-shell')
     ],
 
-    'interfaces': ['1WIRE'],
-
-    'custom_options': [
-        {
-            'id': 'library',
-            'type': 'select',
-            'default_value': 'w1thermsensor',
-            'options_select': [
-                ('w1thermsensor', 'w1thermsensor'),
-                ('ow_shell', 'ow-shell')
-            ],
-            'required': True,
-            'constraints_pass': constraints_pass_measure_range,
-            'name': lazy_gettext('Library'),
-            'phrase': lazy_gettext('Select the library used to communicate')
-        }
-    ]
+    'interfaces': ['1WIRE']
 }
 
 
@@ -92,6 +78,7 @@ class InputModule(AbstractInput):
                 self.sensor = W1ThermSensor(
                     W1ThermSensor.THERM_SENSOR_DS18S20, self.location)
             elif self.library == 'ow_shell':
+                # TODO: Remove ow-shell from this module as a new module for ow-shell has been created.
                 pass
 
     def get_measurement(self):

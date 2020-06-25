@@ -20,8 +20,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'BH1750',
     'input_manufacturer': 'ROHM',
     'input_name': 'BH1750',
+    'input_library': 'smbus2',
     'measurements_name': 'Light',
     'measurements_dict': measurements_dict,
+    'url_datasheet': 'http://rohmfs.rohm.com/en/products/databook/datasheet/ic/sensor/light/bh1721fvc-e.pdf',
+    'url_product_purchase': 'https://www.dfrobot.com/product-531.html',
 
     'options_enabled': [
         'i2c_location',

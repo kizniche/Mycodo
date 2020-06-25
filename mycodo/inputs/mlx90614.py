@@ -43,26 +43,16 @@ measurements_dict = {
 
 # Input information
 INPUT_INFORMATION = {
-    # Unique name (must be unique from all other inputs)
     'input_name_unique': 'MLX90614',
-
-    # Descriptive information
     'input_manufacturer': 'Melexis',
     'input_name': 'MLX90614',
-
-    # Measurement information
+    'input_library': 'smbus2',
     'measurements_name': 'Temperature (Ambient/Object)',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.melexis.com/en/product/MLX90614/Digital-Plug-Play-Infrared-Thermometer-TO-Can',
+    'url_datasheet': 'https://www.melexis.com/-/media/files/documents/datasheets/mlx90614-datasheet-melexis.pdf',
+    'url_product_purchase': 'https://www.sparkfun.com/products/9570',
 
-    # Add a message that the user can see when they view the options of the Input.
-    # This will be displayed at the top of the options when the user expands the input with the "+" icon.
-    # 'message': "Note: Don't forget to enable I2C before activating this Input",
-
-    # Web User Interface display options
-    # Options that are enabled will be editable from the input options page.
-    # Options that are disabled will appear on the input options page but not be editable.
-    # There are several location options available for use:
-    # 'location', 'gpio_location', 'i2c_location', 'bt_location', 'ftdi_location', and 'uart_location'
     'options_enabled': [
         'i2c_location',
         'measurements_select',
@@ -71,19 +61,13 @@ INPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-    # Python module dependencies
-    # This must be a module that is able to be installed with pip or apt (pypi, git, and apt examples below)
-    # Leave the list empty if there are no dependencies
-    'dependencies_module': [  # List of tuples
+    'dependencies_module': [
         ('pip-pypi', 'smbus2', 'smbus2')
     ],
 
     'interfaces': ['I2C'],
     'i2c_location': ['0x5a'],
     'i2c_address_editable': True,
-
-    'period': 15,  # Float
-
 }
 
 

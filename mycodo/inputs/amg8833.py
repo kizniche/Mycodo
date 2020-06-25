@@ -23,6 +23,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'AMG8833',
     'input_manufacturer': 'Panasonic',
     'input_name': 'AMG8833',
+    'input_library': 'Adafruit_AMG88xx/Pillow/colour',
     'measurements_name': '8x8 Temperature Grid',
     'measurements_dict': measurements_dict,
     'measurements_rescale': True,

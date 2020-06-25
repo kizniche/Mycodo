@@ -14,6 +14,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'GPIO_STATE',
     'input_manufacturer': 'Raspberry Pi',
     'input_name': 'GPIO State',
+    'input_library': 'RPi.GPIO',
     'measurements_name': 'GPIO State',
     'measurements_dict': measurements_dict,
 

@@ -37,8 +37,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MH_Z16',
     'input_manufacturer': 'Winsen',
     'input_name': 'MH-Z16',
+    'input_library': 'smbus2/serial',
     'measurements_name': 'CO2',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.winsen-sensor.com/sensors/co2-sensor/mh-z16.html',
+    'url_datasheet': 'https://www.winsen-sensor.com/d/files/MH-Z16.pdf',
 
     'options_enabled': [
         'i2c_location',

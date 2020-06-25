@@ -26,11 +26,17 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
     'measurements_use_same_timestamp': True,
 
+    'message': 'The internal CPU and GPU temperature of the Raspberry Pi.',
+
     'options_enabled': [
         'measurements_select',
         'period'
     ],
     'options_disabled': ['interface'],
+
+    'dependencies_module': [
+        ('pip-pypi', 'subprocess', 'subprocess')
+    ],
 
     'interfaces': ['RPi']
 }

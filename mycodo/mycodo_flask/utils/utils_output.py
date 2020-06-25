@@ -225,7 +225,6 @@ self.logger.info(log_string)"""
                         DisplayOrder.query.first().output)
                     DisplayOrder.query.first().output = add_display_order(
                         display_order, new_output.unique_id)
-                    db.session.commit()
 
                     #
                     # If measurements defined in the Output Module
@@ -243,6 +242,8 @@ self.logger.info(log_string)"""
                             new_measurement.unit = measure_info['unit']
                             new_measurement.channel = each_channel
                             new_measurement.save()
+
+                    db.session.commit()
 
                     if not current_app.config['TESTING']:
                         manipulate_output('Add', new_output.unique_id)

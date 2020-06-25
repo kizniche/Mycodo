@@ -27,8 +27,12 @@ INPUT_INFORMATION = {
     'input_name_unique': 'BMP280',
     'input_manufacturer': 'BOSCH',
     'input_name': 'BMP280',
+    'input_library': 'Adafruit_GPIO',
     'measurements_name': 'Pressure/Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/pressure-sensors-bmp280-1.html',
+    'url_datasheet': 'https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf',
+    'url_product_purchase': 'https://www.adafruit.com/product/2651',
 
     'options_enabled': [
         'i2c_location',

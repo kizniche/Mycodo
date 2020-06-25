@@ -72,8 +72,10 @@ INPUT_INFORMATION = {
     'input_name_unique': 'SHT31_SMART_GADGET',
     'input_manufacturer': 'Sensorion',
     'input_name': 'SHT31 Smart Gadget',
+    'input_library': 'bluepy',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.sensirion.com/en/environmental-sensors/humidity-sensors/development-kit/',
 
     'options_enabled': [
         'bt_location',

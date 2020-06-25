@@ -2,6 +2,7 @@
 import datetime
 import logging
 import socket
+import subprocess
 import threading
 import time
 import zipfile
@@ -337,34 +338,71 @@ def import_settings(form):
 
 
 def thread_import_influxdb(tmp_folder):
-    # Restore the backup to new database mycodo_db_bak
-    output_successes = []
-    cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
-          "influxdb_restore_mycodo_db {dir}".format(
-        pth=INSTALL_DIRECTORY, dir=tmp_folder)
-    out, _, _ = cmd_output(cmd)
-    if out:
-        output_successes.append(out.decode('utf-8'))
-
-    # Copy all measurements from backup to current database
     mycodo_db_backup = 'mycodo_db_bak'
     client = InfluxDBClient(
         INFLUXDB_HOST,
         INFLUXDB_PORT,
         INFLUXDB_USER,
         INFLUXDB_PASSWORD,
-        mycodo_db_backup,
-        timeout=5)
-    query_str = "SELECT * INTO {}..:MEASUREMENT FROM /.*/ GROUP BY *".format(
-        INFLUXDB_DATABASE)
-    client.query(query_str)
+        mycodo_db_backup)
+
+    # Delete any backup database that may exist (can't copy over a current db)
+    try:
+        client.drop_database(mycodo_db_backup)
+    except Exception as msg:
+        print("Error while deleting db prior to restore: {}".format(msg))
+
+    # Restore the backup to new database mycodo_db_bak
+    try:
+        logger.info("Creating tmp db with restore data")
+        output_successes = []
+        command = "{pth}/mycodo/scripts/mycodo_wrapper " \
+                  "influxdb_restore_mycodo_db {dir}".format(
+            pth=INSTALL_DIRECTORY, dir=tmp_folder)
+        cmd = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            shell=True)
+        cmd_out, cmd_err = cmd.communicate()
+        cmd_status = cmd.wait()
+        logger.info("command output: {}\nErrors: {}\nStatus: {}".format(
+            cmd_out.decode('utf-8'), cmd_err, cmd_status))
+    except Exception as msg:
+        logger.info("Error during restore of data to backup db: {}".format(msg))
+
+    # Copy all measurements from backup to current database
+    try:
+        logger.info("Beginning restore of data from tmp db to main db. This could take a while...")
+        query_str = "SELECT * INTO {}..:MEASUREMENT FROM /.*/ GROUP BY *".format(
+            INFLUXDB_DATABASE)
+        client.query(query_str)
+        logger.info("Restore of data from tmp db complete.")
+    except Exception as msg:
+        logger.info("Error during copy of measurements from backup db to production db: {}".format(msg))
 
     # Delete backup database
-    client.drop_database(mycodo_db_backup)
+    try:
+        logger.info("Deleting tmp db")
+        client.drop_database(mycodo_db_backup)
+    except Exception as msg:
+        logger.info("Error while deleting db after restore: {}".format(msg))
 
     # Delete tmp directory if it exists
-    if os.path.isdir(tmp_folder):
-        shutil.rmtree(tmp_folder)
+    try:
+        logger.info("Deleting influxdb restore tmp directory...")
+        command = "{pth}/mycodo/scripts/mycodo_wrapper " \
+                  "influxdb_delete_restore_tmp_dir {dir}".format(
+            pth=INSTALL_DIRECTORY, dir=tmp_folder)
+        cmd = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            shell=True)
+        cmd_out, cmd_err = cmd.communicate()
+        cmd_status = cmd.wait()
+        logger.info("Command output: {}\nErrors: {}\nStatus: {}".format(
+            cmd_out.decode('utf-8'), cmd_err, cmd_status))
+    except Exception as msg:
+        logger.info("Error while deleting tmp file directory: {}".format(msg))
 
 
 def import_influxdb(form):
@@ -462,12 +500,11 @@ def import_influxdb(form):
                     target=thread_import_influxdb,
                     args=(tmp_folder,))
                 import_settings_db.start()
-                return "Initiated"
+                return "success"
             except Exception as err:
-                error.append(
-                    "Exception while importing database: "
-                    "{err}".format(err=err))
-                return None
+                error.append("Exception while importing database: "
+                             "{err}".format(err=err))
+                return 'error'
 
     except Exception as err:
         error.append("Exception: {}".format(err))

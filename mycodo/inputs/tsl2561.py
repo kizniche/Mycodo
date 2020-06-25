@@ -21,10 +21,14 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'TSL2561',
-    'input_manufacturer': 'TAOS',
+    'input_manufacturer': 'AMS',
     'input_name': 'TSL2561',
+    'input_library': 'tsl2561',
     'measurements_name': 'Light',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://ams.com/tsl2561',
+    'url_datasheet': 'https://ams.com/documents/20143/36005/TSL2561_DS000110_3-00.pdf/18a41097-2035-4333-c70e-bfa544c0a98b',
+    'url_product_purchase': 'https://www.adafruit.com/product/439',
 
     'options_enabled': [
         'i2c_location',

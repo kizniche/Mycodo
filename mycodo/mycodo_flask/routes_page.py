@@ -482,17 +482,15 @@ def page_export():
         elif form_import_influxdb.influxdb_import_upload.data:
             restore_influxdb = utils_export.import_influxdb(
                 form_import_influxdb)
-            if restore_influxdb:
+            if restore_influxdb == 'success':
                 flash('The influxdb database import has been initialized. '
                       'This process may take an extended time to complete '
                       'if there is a lot of data. Please allow ample time '
                       'for it to complete.',
                       'success')
-                return redirect(url_for('routes_authentication.logout'))
             else:
-                flash(
-                    'An error occurred during the influxdb database import.',
-                    'error')
+                flash('Errors occurred during the influxdb database import.',
+                      'error')
 
     # Generate start end end times for date/time picker
     end_picker = datetime.datetime.now().strftime('%m/%d/%Y %H:%M')
@@ -515,6 +513,8 @@ def page_export():
 @blueprint.route('/save_dashboard_layout', methods=['POST'])
 def save_dashboard_layout():
     """Save positions and sizes of widgets of a particular dashboard"""
+    if not utils_general.user_has_permission('edit_controllers'):
+        return redirect(url_for('routes_general.home'))
     data = request.get_json()
     keys = ('widget_id', 'position_x', 'position_y', 'width', 'height')
     for index, each_widget in enumerate(data):

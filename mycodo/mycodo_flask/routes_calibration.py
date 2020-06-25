@@ -685,6 +685,9 @@ def dual_commands_to_sensor(input_sel, first_cmd, amount,
     Permits advancement to the next stage if all commands succeed
     Prints any errors or successes
     """
+    if not utils_general.user_has_permission('edit_settings'):
+        return redirect(url_for('routes_general.home'))
+
     return_error = None
     set_amount = None
 
@@ -769,6 +772,9 @@ def setup_ds_resolution():
     """
     Set DS Sensor resolution
     """
+    if not utils_general.user_has_permission('edit_settings'):
+        return redirect(url_for('routes_general.home'))
+
     form_ds = forms_calibration.SetupDS18B20()
 
     inputs = Input.query.all()

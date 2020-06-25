@@ -84,7 +84,7 @@ class OutputModule(AbstractOutput):
 
         if state == 'on' and amount > 0:
             if self.output_mode == 'fastest_flow_rate':
-                minutes_to_run = amount * 105
+                minutes_to_run = amount / 105
                 write_cmd = 'D,{ml:.2f}'.format(ml=amount)
             elif self.output_mode == 'specify_flow_rate':
                 minutes_to_run = amount / self.output_flow_rate
@@ -126,7 +126,7 @@ class OutputModule(AbstractOutput):
                         self.output_unique_id,
                         each_dev_meas.unit,
                         each_dev_meas.channel,
-                        measure=each_dev_meas.measurement, )
+                        measure=each_dev_meas.measurement)
                     if last_measurement:
                         try:
                             datetime_ts = datetime.datetime.strptime(

@@ -58,6 +58,42 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == '561621f634cb':
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from mycodo.databases.models import DeviceMeasurements
+                from mycodo.databases.models import Output
+                from mycodo.utils.outputs import parse_output_information
+
+                dict_outputs = parse_output_information()
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    for each_output in session.query(Output).all():
+
+                        if not session.query(DeviceMeasurements).filter(
+                                DeviceMeasurements.device_id == each_output.unique_id).first():
+                            # No output device measurements exist. Need to create them.
+                            if ('measurements_dict' in dict_outputs[each_output.output_type] and
+                                    dict_outputs[each_output.output_type]['measurements_dict'] != []):
+                                for each_channel in dict_outputs[each_output.output_type]['measurements_dict']:
+                                    measure_info = dict_outputs[each_output.output_type]['measurements_dict'][each_channel]
+                                    new_measurement = DeviceMeasurements()
+                                    if 'name' in measure_info:
+                                        new_measurement.name = measure_info['name']
+                                    new_measurement.device_id = each_output.unique_id
+                                    new_measurement.measurement = measure_info['measurement']
+                                    new_measurement.unit = measure_info['unit']
+                                    new_measurement.channel = each_channel
+                                    session.add(new_measurement)
+
+                        session.commit()
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == '61a0d0568d24':
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
@@ -333,16 +369,15 @@ if __name__ == "__main__":
                             conditions,
                             actions)
 
-                with session_scope(MYCODO_DB_PATH) as conditional_sess:
-                    with session_scope(MYCODO_DB_PATH) as input_sess:
-                        for each_input in input_sess.query(Input).all():
-                            if each_input.device == 'PythonCode' and each_input.cmd_command:
-                                try:
-                                    execute_at_creation(each_input.unique_id,
-                                                        each_input.cmd_command,
-                                                        None)
-                                except Exception as msg:
-                                    print("Exception: {}".format(msg))
+                with session_scope(MYCODO_DB_PATH) as input_sess:
+                    for each_input in input_sess.query(Input).all():
+                        if each_input.device == 'PythonCode' and each_input.cmd_command:
+                            try:
+                                execute_at_creation(each_input.unique_id,
+                                                    each_input.cmd_command,
+                                                    None)
+                            except Exception as msg:
+                                print("Exception: {}".format(msg))
             except Exception:
                 msg = "ERROR: post-alembic revision {}: {}".format(
                     each_revision, traceback.format_exc())

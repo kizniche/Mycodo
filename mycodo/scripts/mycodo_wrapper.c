@@ -80,6 +80,9 @@ int main(int argc, char *argv[]) {
 		} else if (strcmp(argv[1], "influxdb_restore_mycodo_db") == 0 && (argc > 2)) {
 			sprintf(cmd, "influxd restore -portable -db mycodo_db -newdb mycodo_db_bak %s", argv[2]);
 			system(cmd);
+		} else if (strcmp(argv[1], "influxdb_delete_restore_tmp_dir") == 0) {
+			sprintf(cmd, "rm -rf /var/mycodo-root/upload", argv[2]);
+			system(cmd);
 		} else if (strcmp(argv[1], "upgrade_database") == 0) {
       upgrade_commands(argv[0], "update-alembic");
 		} else if (strcmp(argv[1], "initialize") == 0) {

@@ -14,8 +14,12 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MCP9808',
     'input_manufacturer': 'Microchip',
     'input_name': 'MCP9808',
+    'input_library': 'Adafruit_MCP9808',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.microchip.com/wwwproducts/en/en556182',
+    'url_datasheet': 'http://ww1.microchip.com/downloads/en/DeviceDoc/MCP9808-0.5C-Maximum-Accuracy-Digital-Temperature-Sensor-Data-Sheet-DS20005095B.pdf',
+    'url_product_purchase': 'https://www.adafruit.com/product/1782',
 
     'options_enabled': [
         'i2c_location',

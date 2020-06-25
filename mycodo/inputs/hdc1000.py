@@ -37,8 +37,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'HDC1000',
     'input_manufacturer': 'Texas Instruments',
     'input_name': 'HDC1000',
+    'input_library': 'fcntl/io',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.ti.com/product/HDC1000',
+    'url_datasheet': 'https://www.ti.com/lit/ds/symlink/hdc1000.pdf',
 
     'options_enabled': [
         'i2c_location',

@@ -23,6 +23,8 @@ INPUT_INFORMATION = {
     'measurements_name': 'Return Value',
     'measurements_dict': measurements_dict,
 
+    'message': 'This Input will execute a command in the shell and store the output as a float value. Perform any unit conversions within your script or command. A measurement/unit is required to be selected.',
+
     'options_enabled': [
         'measurements_select_measurement_unit',
         'period',

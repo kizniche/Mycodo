@@ -20,8 +20,12 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MAX31855',
     'input_manufacturer': 'MAXIM',
     'input_name': 'MAX31855',
+    'input_library': 'Adafruit_MAX31855',
     'measurements_name': 'Temperature (Object/Die)',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.maximintegrated.com/en/products/interface/sensor-interface/MAX31855.html',
+    'url_datasheet': 'https://datasheets.maximintegrated.com/en/ds/MAX31855.pdf',
+    'url_product_purchase': 'https://www.adafruit.com/product/269',
 
     'options_enabled': [
         'pin_clock',

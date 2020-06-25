@@ -49,10 +49,14 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'HTU21D',
-    'input_manufacturer': 'Measurement Specialties',
+    'input_manufacturer': 'TE Connectivity',
     'input_name': 'HTU21D',
+    'input_library': 'pigpio',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.te.com/usa-en/product-CAT-HSC0004.html',
+    'url_datasheet': 'https://www.te.com/commerce/DocumentDelivery/DDEController?Action=showdoc&DocId=Data+Sheet%7FHPC199_6%7FA6%7Fpdf%7FEnglish%7FENG_DS_HPC199_6_A6.pdf%7FCAT-HSC0004',
+    'url_product_purchase': 'https://www.adafruit.com/product/1899',
 
     'options_enabled': [
         'i2c_location',

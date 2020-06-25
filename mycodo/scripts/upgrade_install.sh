@@ -157,6 +157,15 @@ runSelfUpgrade() {
     printf "Done.\n"
   fi
 
+  if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/outputs/custom_outputs ] ; then
+    printf "Copying mycodo/inputs/custom_outputs..."
+    if ! cp "${CURRENT_MYCODO_DIRECTORY}"/mycodo/outputs/custom_outputs/*.py "${THIS_MYCODO_DIRECTORY}"/mycodo/outputs/custom_outputs/ ; then
+      printf "Failed: Error while trying to copy mycodo/outputs/custom_outputs"
+      error_found
+    fi
+    printf "Done.\n"
+  fi
+
   if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/user_python_code ] ; then
     printf "Copying mycodo/user_python_code..."
     if ! cp "${CURRENT_MYCODO_DIRECTORY}"/mycodo/user_python_code/*.py "${THIS_MYCODO_DIRECTORY}"/mycodo/user_python_code/ ; then

@@ -36,10 +36,13 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MH_Z19B',
     'input_manufacturer': 'Winsen',
     'input_name': 'MH-Z19B',
+    'input_library': 'serial',
     'measurements_name': 'CO2',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.winsen-sensor.com/sensors/co2-sensor/mh-z19b.html',
+    'url_datasheet': 'https://www.winsen-sensor.com/d/files/MH-Z19B.pdf',
 
-    'message': 'Note: This is the B version of the sensor that includes the ability to conduct '
+    'message': 'This is the B version of the sensor that includes the ability to conduct '
                'automatic baseline correction (ABC).',
 
     'options_enabled': [
@@ -182,7 +185,7 @@ class InputModule(AbstractInput):
             else:
                 self.logger.error("Bad response")
         except:
-            self.logger.exception()
+            self.logger.exception("get_measurement()")
         finally:
             self.measuring = False
 

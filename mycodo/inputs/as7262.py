@@ -62,6 +62,9 @@ INPUT_INFORMATION = {
     'input_library': 'as7262',
     'measurements_name': 'Light at 450, 500, 550, 570, 600, 650 nm',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://ams.com/as7262',
+    'url_datasheet': 'https://ams.com/documents/20143/36005/AS7262_DS000486_2-00.pdf/0031f605-5629-e030-73b2-f365fd36a43b',
+    'url_product_purchase': 'https://www.sparkfun.com/products/14347',
 
     'options_enabled': [
         'location',

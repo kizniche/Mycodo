@@ -38,8 +38,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_ORP',
     'input_manufacturer': 'Atlas Scientific',
     'input_name': 'ORP',
+    'input_library': 'pylibftdi/fcntl/io/serial',
     'measurements_name': 'Oxidation Reduction Potential',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.atlas-scientific.com/orp/',
+    'url_datasheet': 'https://www.atlas-scientific.com/files/ORP_EZO_Datasheet.pdf',
 
     'options_enabled': [
         'ftdi_location',

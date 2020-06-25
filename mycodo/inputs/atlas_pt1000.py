@@ -15,8 +15,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_PT1000',
     'input_manufacturer': 'Atlas Scientific',
     'input_name': 'PT-1000',
+    'input_library': 'pylibftdi/fcntl/io/serial',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.atlas-scientific.com/temperature/',
+    'url_datasheet': 'https://www.atlas-scientific.com/files/EZO_RTD_Datasheet.pdf',
 
     'options_enabled': [
         'ftdi_location',

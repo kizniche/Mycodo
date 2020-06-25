@@ -1,3 +1,36 @@
+## 8.5.5 (Unreleased)
+
+### Bugfixes
+
+ - Prevent user with insufficient permissions from rearranging dashboard widgets
+ - Fix installing internal dependencies
+ - Fix restore of influxdb measurement data from import/Export page
+ - Fix Gauge Widget Measurement options from being selected after saving
+
+### Features
+
+ - Create scripts to automatically generate Input section of manual
+
+### Miscellaneous
+
+ - Add URLs to Input information
+
+
+## 8.5.4 (2020-06-06)
+
+### Bugfixes
+
+ - Fix Atlas Scientific pump on duration calculation
+
+
+## 8.5.3 (2020-06-06)
+
+### Bugfixes
+
+ - Fix upgrade not preserving custom outputs
+ - Fix missing output device measurements in database ([#779](https://github.com/kizniche/mycodo/issues/779))
+
+
 ## 8.5.2 (2020-06-01)
 
 ### Bugfixes

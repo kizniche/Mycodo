@@ -17,8 +17,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'K30',
     'input_manufacturer': 'CO2Meter',
     'input_name': 'K30',
+    'input_library': 'serial',
     'measurements_name': 'CO2',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.co2meter.com/products/k-30-co2-sensor-module',
+    'url_datasheet': 'http://co2meters.com/Documentation/Datasheets/DS_SE_0118_CM_0024_Revised9%20(1).pdf',
 
     'options_enabled': [
         'uart_location',

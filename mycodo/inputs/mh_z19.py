@@ -37,10 +37,12 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MH_Z19',
     'input_manufacturer': 'Winsen',
     'input_name': 'MH-Z19',
+    'input_library': 'serial',
     'measurements_name': 'CO2',
     'measurements_dict': measurements_dict,
+    'url_datasheet': 'https://www.winsen-sensor.com/d/files/PDF/Infrared%20Gas%20Sensor/NDIR%20CO2%20SENSOR/MH-Z19%20CO2%20Ver1.0.pdf',
 
-    'message': 'Note: This is the version of the sensor that does not include the ability to conduct '
+    'message': 'This is the version of the sensor that does not include the ability to conduct '
                'automatic baseline correction (ABC). See the B version of the sensor if you wish to use ABC.',
 
     'options_enabled': [
@@ -170,7 +172,7 @@ class InputModule(AbstractInput):
             else:
                 self.logger.error("Bad response")
         except:
-            self.logger.exception()
+            self.logger.exception("get_measurement()")
         finally:
             self.measuring = False
 

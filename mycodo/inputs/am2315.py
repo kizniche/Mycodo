@@ -58,8 +58,12 @@ INPUT_INFORMATION = {
     'input_name_unique': 'AM2315',
     'input_manufacturer': 'AOSONG',
     'input_name': 'AM2315/AM2320',
+    'input_library': 'quick2wire-api',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
+    'url_datasheet': 'https://cdn-shop.adafruit.com/datasheets/AM2315.pdf',
+    'url_product_purchase': 'https://www.adafruit.com/product/1293',
+
     'measurements_rescale': False,
 
     'options_enabled': [

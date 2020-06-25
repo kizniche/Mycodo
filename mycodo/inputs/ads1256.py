@@ -18,6 +18,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'ADS1256',
     'input_manufacturer': 'Texas Instruments',
     'input_name': 'ADS1256',
+    'input_library': 'wiringpi, kizniche/PiPyADC-py3',
     'measurements_name': 'Voltage (Waveshare, Analog-to-Digital Converter)',
     'measurements_dict': measurements_dict,
     'measurements_rescale': True,

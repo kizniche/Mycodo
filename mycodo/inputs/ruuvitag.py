@@ -56,8 +56,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'RUUVITAG',
     'input_manufacturer': 'Ruuvi',
     'input_name': 'RuuviTag',
+    'input_library': 'ruuvitag_sensor',
     'measurements_name': 'Acceleration/Humidity/Pressure/Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://ruuvi.com/',
+    'url_datasheet': 'https://ruuvi.com/files/ruuvitag-tech-spec-2019-7.pdf',
 
     'options_enabled': [
         'bt_location',
@@ -73,6 +76,7 @@ INPUT_INFORMATION = {
         ('apt', 'bluez', 'bluez'),
         ('apt', 'bluez-hcidump', 'bluez-hcidump'),
         ('pip-pypi', 'ruuvitag_sensor', 'ruuvitag_sensor'),
+        ('pip-pypi', 'subprocess', 'subprocess')
     ],
 
     'interfaces': ['BT'],

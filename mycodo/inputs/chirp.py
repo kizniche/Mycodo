@@ -26,8 +26,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'CHIRP',
     'input_manufacturer': 'Catnip Electronics',
     'input_name': 'Chirp',
+    'input_library': 'smbus2',
     'measurements_name': 'Light/Moisture/Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://wemakethings.net/chirp/',
+    'url_product_purchase': 'https://www.tindie.com/products/miceuz/chirp-plant-watering-alarm/',
 
     'options_enabled': [
         'i2c_location',

@@ -41,8 +41,12 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MAX31865',
     'input_manufacturer': 'MAXIM',
     'input_name': 'MAX31865',
+    'input_library': 'RPi.GPIO',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.maximintegrated.com/en/products/interface/sensor-interface/MAX31865.html',
+    'url_datasheet': 'https://datasheets.maximintegrated.com/en/ds/MAX31865.pdf',
+    'url_product_purchase': 'https://www.adafruit.com/product/3328',
 
     'options_enabled': [
         'thermocouple_type',

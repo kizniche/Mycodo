@@ -16,6 +16,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'RPiFreeSpace',
     'input_manufacturer': 'System',
     'input_name': 'Free Space',
+    'input_library': 'os.statvfs()',
     'measurements_name': 'Unallocated Disk Space',
     'measurements_dict': measurements_dict,
 

@@ -32,8 +32,10 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MQTT_PAHO',
     'input_manufacturer': 'Mycodo',
     'input_name': 'MQTT Protocol (paho)',
+    'input_library': 'paho-mqtt',
     'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,
+
     'measurements_variable_amount': True,
     'measurements_use_same_timestamp': False,
     'listener': True,

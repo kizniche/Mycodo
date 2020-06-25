@@ -26,6 +26,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'RPiCPULoad',
     'input_manufacturer': 'System',
     'input_name': 'CPU Load',
+    'input_library': 'os.getloadavg()',
     'measurements_name': 'CPULoad',
     'measurements_dict': measurements_dict,
 

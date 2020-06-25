@@ -20,10 +20,17 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'CCS811',
-    'input_manufacturer': 'Ams',
+    'input_manufacturer': 'AMS',
     'input_name': 'CCS811',
+    'input_library': 'Adafruit_CCS811',
     'measurements_name': 'CO2/VOC/Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.sciosense.com/products/environmental-sensors/ccs811-gas-sensor-solution/',
+    'url_datasheet': 'https://www.sciosense.com/wp-content/uploads/2020/01/CCS811-Datasheet.pdf',
+    'url_product_purchase': [
+        'https://www.adafruit.com/product/3566',
+        'https://www.sparkfun.com/products/14193'
+    ],
 
     'options_enabled': [
         'i2c_location',
@@ -77,9 +84,6 @@ class InputModule(AbstractInput):
 
             temp = self.sensor.calculateTemperature()
 
-            if self.is_enabled(2):
-                self.value_set(2, temp)
-
             if not self.sensor.readData():
 
                 if self.is_enabled(0):
@@ -87,6 +91,9 @@ class InputModule(AbstractInput):
 
                 if self.is_enabled(1):
                     self.value_set(1, self.sensor.getTVOC())
+
+                if self.is_enabled(2):
+                    self.value_set(2, temp)
 
             else:
                 self.logger.error("Sensor error")

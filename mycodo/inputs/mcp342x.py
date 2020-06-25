@@ -15,9 +15,23 @@ for each_channel in range(4):
 INPUT_INFORMATION = {
     'input_name_unique': 'MCP342x',
     'input_manufacturer': 'Microchip',
-    'input_name': 'MCP342x',
+    'input_name': 'MCP342x (x=2,3,4,6,7,8)',
+    'input_library': 'MCP342x',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': [
+        'https://www.microchip.com/wwwproducts/en/MCP3422',
+        'https://www.microchip.com/wwwproducts/en/MCP3423',
+        'https://www.microchip.com/wwwproducts/en/MCP3424',
+        'https://www.microchip.com/wwwproducts/en/MCP3426'
+        'https://www.microchip.com/wwwproducts/en/MCP3427',
+        'https://www.microchip.com/wwwproducts/en/MCP3428',
+    ],
+    'url_datasheet': [
+        'http://ww1.microchip.com/downloads/en/DeviceDoc/22088c.pdf',
+        'http://ww1.microchip.com/downloads/en/DeviceDoc/22226a.pdf'
+    ],
+
     'measurements_rescale': True,
     'scale_from_min': -4.096,
     'scale_from_max': 4.096,

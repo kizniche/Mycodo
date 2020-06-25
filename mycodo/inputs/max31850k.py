@@ -16,8 +16,12 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MAX31850K',
     'input_manufacturer': 'MAXIM',
     'input_name': 'MAX31850K',
+    'input_library': 'w1thermsensor',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.maximintegrated.com/en/products/sensors/MAX31850EVKIT.html',
+    'url_datasheet': 'https://datasheets.maximintegrated.com/en/ds/MAX31850-MAX31851.pdf',
+    'url_product_purchase': 'https://www.adafruit.com/product/1727',
 
     'options_enabled': [
         'location',

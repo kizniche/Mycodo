@@ -16,8 +16,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'SERVER_PORT_OPEN',
     'input_manufacturer': 'System',
     'input_name': 'Server Port Open',
+    'input_library': 'nc',
     'measurements_name': 'Boolean',
     'measurements_dict': measurements_dict,
+
+    'message': 'This Input executes the bash command "nc -zv [host] [port]" to determine if the host at a particular port is accessible.',
 
     'options_enabled': [
         'location',

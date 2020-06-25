@@ -41,10 +41,14 @@ measurements_dict = {}
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'TTN_DATA_STORAGE',
-    'input_manufacturer': 'The Things Network',
+    'input_manufacturer': 'Mycodo',
     'input_name': 'TTN Integration: Data Storage',
+    'input_library': 'requests',
     'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,
+
+    'message': 'This Input receives and stores measurements from the Data Storage Integration on The Things Network.',
+
     'measurements_variable_amount': True,
     'measurements_use_same_timestamp': False,
 
@@ -55,6 +59,10 @@ INPUT_INFORMATION = {
         'pre_output'
     ],
     'options_disabled': ['interface'],
+
+    'dependencies_module': [
+        ('pip-pypi', 'requests', 'requests'),
+    ],
 
     'interfaces': ['Mycodo'],
 

@@ -25,8 +25,10 @@ INPUT_INFORMATION = {
     'input_name_unique': 'BMP180',
     'input_manufacturer': 'BOSCH',
     'input_name': 'BMP180',
+    'input_library': 'Adafruit_BMP',
     'measurements_name': 'Pressure/Temperature',
     'measurements_dict': measurements_dict,
+    'url_datasheet': 'https://ae-bst.resource.bosch.com/media/_tech/media/product_flyer/BST-BMP180-FL000.pdf',
 
     'options_enabled': [
         'measurements_select',

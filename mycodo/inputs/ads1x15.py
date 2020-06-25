@@ -37,6 +37,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'ADS1x15',
     'input_manufacturer': 'Texas Instruments',
     'input_name': 'ADS1x15',
+    'input_library': 'Adafruit_ADS1x15',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
     'measurements_dict': measurements_dict,
     'measurements_rescale': True,

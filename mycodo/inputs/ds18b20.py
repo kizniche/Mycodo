@@ -20,6 +20,14 @@ INPUT_INFORMATION = {
     'input_library': 'w1thermsensor',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.maximintegrated.com/en/products/sensors/DS18B20.html',
+    'url_datasheet': 'https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf',
+    'url_product_purchase': [
+        'https://www.adafruit.com/product/374',
+        'https://www.adafruit.com/product/381',
+        'https://www.sparkfun.com/products/245'
+    ],
+    'url_additional': 'https://github.com/cpetrich/counterfeit_DS18B20',
 
     'options_enabled': [
         'location',

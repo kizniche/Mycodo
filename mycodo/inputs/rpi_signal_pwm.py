@@ -24,6 +24,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'SIGNAL_PWM',
     'input_manufacturer': 'Raspberry Pi',
     'input_name': 'Signal (PWM)',
+    'input_library': 'pigpio',
     'measurements_name': 'Frequency/Pulse Width/Duty Cycle',
     'measurements_dict': measurements_dict,
 

@@ -20,8 +20,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'TMP006',
     'input_manufacturer': 'Texas Instruments',
     'input_name': 'TMP006',
+    'input_library': 'Adafruit_TMP',
     'measurements_name': 'Temperature (Object/Die)',
     'measurements_dict': measurements_dict,
+    'url_datasheet': 'http://www.adafruit.com/datasheets/tmp006.pdf',
+    'url_product_purchase': 'https://www.adafruit.com/product/1296',
 
     'options_enabled': [
         'i2c_location',

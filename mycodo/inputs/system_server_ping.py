@@ -16,8 +16,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'SERVER_PING',
     'input_manufacturer': 'System',
     'input_name': 'Server Ping',
+    'input_library': 'ping',
     'measurements_name': 'Boolean',
     'measurements_dict': measurements_dict,
+
+    'message': 'This Input executes the bash command "ping -c [times] -w [deadline] [host]" to determine if the host can be pinged.',
 
     'options_enabled': [
         'location',

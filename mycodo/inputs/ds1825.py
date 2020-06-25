@@ -16,8 +16,11 @@ INPUT_INFORMATION = {
     'input_name_unique': 'DS1825',
     'input_manufacturer': 'MAXIM',
     'input_name': 'DS1825',
+    'input_library': 'w1thermsensor',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.maximintegrated.com/en/products/sensors/DS1825.html',
+    'url_datasheet': 'https://datasheets.maximintegrated.com/en/ds/DS1825.pdf',
 
     'options_enabled': [
         'location',

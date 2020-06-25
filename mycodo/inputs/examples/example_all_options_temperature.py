@@ -96,7 +96,7 @@ INPUT_INFORMATION = {
 
     # Add a message that the user can see when they view the options of the Input.
     # This will be displayed at the top of the options when the user expands the input with the "+" icon.
-    'message': "Note: Don't forget to do x and y before activating this Input",
+    'message': "Don't forget to do x and y before activating this Input",
 
     # Python module dependencies
     # This must be a module that is able to be installed with pip or apt (pypi, git, and apt examples below)

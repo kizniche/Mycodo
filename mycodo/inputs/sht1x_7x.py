@@ -28,8 +28,13 @@ INPUT_INFORMATION = {
     'input_name_unique': 'SHT1x_7x',
     'input_manufacturer': 'Sensirion',
     'input_name': 'SHT1x/7x',
+    'input_library': 'sht_sensor',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': [
+        'https://www.sensirion.com/en/environmental-sensors/humidity-sensors/digital-humidity-sensors-for-accurate-measurements/',
+        'https://www.sensirion.com/en/environmental-sensors/humidity-sensors/pintype-digital-humidity-sensors/'
+    ],
 
     'options_enabled': [
         'gpio_location',

@@ -24,14 +24,21 @@ INPUT_INFORMATION = {
     'input_name_unique': 'TH16_10_DS18B20',
     'input_manufacturer': 'Sonoff',
     'input_name': 'TH16/10 (Tasmota firmware) with DS18B20',
+    'input_library': 'requests',
     'measurements_name': 'Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://sonoff.tech/product/wifi-diy-smart-switches/th10-th16',
+
     'measurements_use_same_timestamp': False,
 
     'options_enabled': [
         'measurements_select',
         'period',
         'pre_output'
+    ],
+
+    'dependencies_module': [
+        ('pip-pypi', 'requests', 'requests'),
     ],
 
     'custom_options': [

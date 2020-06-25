@@ -42,15 +42,15 @@ class InputAdd(FlaskForm):
             manuf=dict_inputs[each_input]['input_manufacturer'],
             name=dict_inputs[each_input]['input_name'])
 
+        name += ': {meas}'.format(meas=dict_inputs[each_input]['measurements_name'])
+
         if 'input_library' in dict_inputs[each_input]:
             name += ' ({lib})'.format(lib=dict_inputs[each_input]['input_library'])
-
-        name += ': {meas}'.format(meas=dict_inputs[each_input]['measurements_name'])
 
         if 'interfaces' in dict_inputs[each_input]:
             for each_interface in dict_inputs[each_input]['interfaces']:
                 tmp_value = '{val}{int}'.format(val=value, int=each_interface)
-                tmp_name = '{name} ({int})'.format(name=name, int=each_interface)
+                tmp_name = '{name} [{int}]'.format(name=name, int=each_interface)
                 choices_inputs.append((tmp_value, tmp_name))
         else:
             choices_inputs.append((value, name))

@@ -18,8 +18,13 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MCP3008',
     'input_manufacturer': 'Microchip',
     'input_name': 'MCP3008',
+    'input_library': 'Adafruit_MCP3008',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.microchip.com/wwwproducts/en/en010530',
+    'url_datasheet': 'http://ww1.microchip.com/downloads/en/DeviceDoc/21295d.pdf',
+    'url_product_purchase': 'https://www.adafruit.com/product/856',
+
     'measurements_rescale': True,
     'scale_from_min': -4.096,
     'scale_from_max': 4.096,

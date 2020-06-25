@@ -13,6 +13,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'EDGE',
     'input_manufacturer': 'Raspberry Pi',
     'input_name': 'Edge',
+    'input_library': 'RPi.GPIO',
     'measurements_name': 'Rising/Falling Edge',
     'measurements_dict': measurements_dict,
 

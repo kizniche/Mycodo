@@ -41,6 +41,12 @@ INPUT_INFORMATION = {
     'input_library': 'RPi.bme280',
     'measurements_name': 'Pressure/Humidity/Temperature',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.bosch-sensortec.com/bst/products/all_products/bme280',
+    'url_datasheet': 'https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf',
+    'url_product_purchase': [
+        'https://www.adafruit.com/product/2652',
+        'https://www.sparkfun.com/products/13676'
+    ],
 
     'options_enabled': [
         'i2c_location',

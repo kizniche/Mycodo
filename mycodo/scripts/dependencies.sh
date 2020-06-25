@@ -36,12 +36,19 @@ case "${1}" in
             "${INSTALL_DIRECTORY}"/env/bin/pip3 install --upgrade -e "${2}"
         fi
     ;;
-    'pigpio')
-        ${INSTALL_CMD} install-pigpiod
-    ;;
-    'bcm2835')
-        ${INSTALL_CMD} install-bcm2835
-    ;;
+    'internal')
+        case "${2}" in
+            'pigpio')
+                ${INSTALL_CMD} install-pigpiod
+            ;;
+            'bcm2835')
+                ${INSTALL_CMD} install-bcm2835
+            ;;
+            *)
+                printf "\nUnrecognized internal dependency: %s" "${2}"
+            ;;
+        esac
+        ;;
     *)
         printf "\nUnrecognized dependency: %s" "${1}"
     ;;
