@@ -14,6 +14,7 @@
 ### Miscellaneous
 
  - Add URLs to Input information
+ - Switch from deprecated SSLify to Talisman
 
 
 ## 8.5.4 (2020-06-06)

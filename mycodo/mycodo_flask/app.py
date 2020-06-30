@@ -16,7 +16,7 @@ from flask_babel import gettext
 from flask_compress import Compress
 from flask_limiter import Limiter
 from flask_login import current_user
-from flask_sslify import SSLify
+from flask_talisman import Talisman
 
 from mycodo.config import LANGUAGES
 from mycodo.config import ProdConfig
@@ -89,7 +89,8 @@ def register_extensions(app):
         with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
             misc = new_session.query(Misc).first()
             if misc and misc.force_https:
-                SSLify(app)
+                csp = {'default-src': ['*', '\'unsafe-inline\'']}
+                Talisman(app, content_security_policy=csp)
 
 
 def register_blueprints(app):
