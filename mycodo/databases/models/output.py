@@ -1,8 +1,9 @@
 # coding=utf-8
+from marshmallow_sqlalchemy import ModelSchema
+
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.extensions import ma
 
 
 class Output(CRUDMixin, db.Model):
@@ -95,6 +96,6 @@ class Output(CRUDMixin, db.Model):
             print("RPi.GPIO and Raspberry Pi required for this action")
 
 
-class OutputSchema(ma.SQLAlchemySchema):
+class OutputSchema(ModelSchema):
     class Meta:
         model = Output

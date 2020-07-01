@@ -1,11 +1,11 @@
 # coding=utf-8
 import bcrypt
 from flask_login import UserMixin
+from marshmallow_sqlalchemy import ModelSchema
 
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.extensions import ma
 
 
 class User(UserMixin, CRUDMixin, db.Model):
@@ -52,7 +52,7 @@ class User(UserMixin, CRUDMixin, db.Model):
         return hashes_match
 
 
-class UserSchema(ma.SQLAlchemySchema):
+class UserSchema(ModelSchema):
     class Meta:
         model = User
         exclude = ('api_key', 'password_hash',)

@@ -1,3 +1,10 @@
+## 8.5.6 (2020-06-30)
+
+### Bugfixes
+
+- Fix API database schema issue
+
+
 ## 8.5.5 (2020-06-30)
 
 ### Bugfixes
