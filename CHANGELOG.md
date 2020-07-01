@@ -1,4 +1,4 @@
-## 8.5.5 (Unreleased)
+## 8.5.5 (2020-06-30)
 
 ### Bugfixes
 
@@ -15,6 +15,7 @@
 
  - Add URLs to Input information
  - Switch from deprecated SSLify to Talisman
+ - Update Python dependencies
 
 
 ## 8.5.4 (2020-06-06)

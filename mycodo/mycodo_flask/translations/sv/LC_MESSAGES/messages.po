@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-30 11:49-0400\n"
+"POT-Creation-Date: 2020-06-30 20:39-0400\n"
 "PO-Revision-Date: 2019-01-29 14:25-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sv\n"
@@ -16,7 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 #: config.py:50
 msgid "Add Dashboard Widget"
@@ -690,11 +690,11 @@ msgid "Volt"
 msgstr "Volt"
 
 #: config_translations.py:15
-#: mycodo_flask/templates/pages/data_options/input.html:115
+#: mycodo_flask/templates/pages/data_options/input.html:141
 #: mycodo_flask/templates/pages/function_options/action_options/pause_actions.html:8
 #: mycodo_flask/templates/pages/function_options/conditional.html:157
 #: mycodo_flask/templates/pages/function_options/trigger.html:103
-#: mycodo_flask/templates/pages/output.html:245
+#: mycodo_flask/templates/pages/output.html:273
 msgid "Actions"
 msgstr "Åtgärder"
 
@@ -716,7 +716,7 @@ msgstr "Varna"
 msgid "Average"
 msgstr "Medel"
 
-#: config_translations.py:25 inputs/ads1256.py:83
+#: config_translations.py:25 inputs/ads1256.py:84
 msgid "Calibration"
 msgstr "Kalibrering"
 
@@ -1087,7 +1087,7 @@ msgstr "Upp"
 msgid "Upload"
 msgstr "Ladda upp"
 
-#: config_translations.py:175 inputs/linux_command.py:52
+#: config_translations.py:175 inputs/linux_command.py:54
 msgid "User"
 msgstr "Användare"
 
@@ -1103,7 +1103,7 @@ msgstr "1-tråds-ID"
 msgid "Select the 1-wire device ID"
 msgstr "Välj 1-tråds-enhetens ID"
 
-#: config_translations.py:184 inputs/as7262.py:92
+#: config_translations.py:184 inputs/as7262.py:95
 #: mycodo_flask/forms/forms_camera.py:63
 msgid "Gain"
 msgstr "Få"
@@ -1165,7 +1165,7 @@ msgstr "BT-adapter (hci [X])"
 msgid "The adapter of the Bluetooth device"
 msgstr ""
 
-#: config_translations.py:205 mycodo_flask/routes_calibration.py:746
+#: config_translations.py:205 mycodo_flask/routes_calibration.py:749
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "Kommando"
@@ -1251,16 +1251,16 @@ msgid "Host address or IP"
 msgstr "Värdadress eller IP"
 
 #: config_translations.py:240
-msgid "I<sup>2</sup>C Bus"
-msgstr "Jag <sup> 2 </ sup> C Bus"
+msgid "I2C Bus"
+msgstr ""
 
 #: config_translations.py:241
 msgid "The I2C bus the device is connected to"
 msgstr "Den I2C-buss som enheten är ansluten till"
 
 #: config_translations.py:243
-msgid "I<sup>2</sup>C Address"
-msgstr "Jag <sup> 2 </ sup> C Adress"
+msgid "I2C Address"
+msgstr ""
 
 #: config_translations.py:244
 msgid "The I2C address of the device"
@@ -1423,7 +1423,7 @@ msgstr "MOSI-pin"
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr "GPIO (med BCM-nummerering) ansluten till MOSI-stiftet"
 
-#: config_translations.py:306 inputs/mqtt_paho.py:65
+#: config_translations.py:306 inputs/mqtt_paho.py:67
 msgid "Port"
 msgstr "Hamn"
 
@@ -1495,8 +1495,7 @@ msgstr "Frekvens (Hertz)"
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr "Hertz för att mata ut PWM-signalen (0 - 70 000)"
 
-#: config_translations.py:332 inputs/ds18s20.py:67
-#: mycodo_flask/forms/forms_camera.py:23
+#: config_translations.py:332 mycodo_flask/forms/forms_camera.py:23
 msgid "Library"
 msgstr "Bibliotek"
 
@@ -1738,15 +1737,15 @@ msgstr "tillåter aldrig duty cycle att gå under Min."
 msgid "Always Min (Lower)"
 msgstr "Alltid Min (lägre)"
 
-#: inputs/ads1256.py:84
+#: inputs/ads1256.py:85
 msgid "Set the calibration method to perform during Input activation"
 msgstr "Ställ in kalibreringsmetoden för att utföra under Input-aktivering"
 
-#: inputs/ads1x15.py:76
+#: inputs/ads1x15.py:77
 msgid "Measurements to Average"
 msgstr "Mätningar genomsnittet"
 
-#: inputs/ads1x15.py:77
+#: inputs/ads1x15.py:78
 msgid ""
 "The number of times to measure each channel. An average of the "
 "measurements will be stored."
@@ -1754,71 +1753,71 @@ msgstr ""
 "Antalet gånger för att mäta varje kanal. Ett genomsnitt av mätningarna "
 "kommer att lagras."
 
-#: inputs/as7262.py:93
+#: inputs/as7262.py:96
 msgid "Set the sensor gain"
 msgstr "Ställ in sensorförstärkningen"
 
-#: inputs/as7262.py:105
+#: inputs/as7262.py:108
 msgid "Illumination LED Current"
 msgstr "Belysning LED Current"
 
-#: inputs/as7262.py:106
+#: inputs/as7262.py:109
 msgid "Set the illumination LED current (milliamps)"
 msgstr "Ställa belysningen LED-strömmen (milliampere)"
 
-#: inputs/as7262.py:116
+#: inputs/as7262.py:119
 msgid "Illumination LED Mode"
 msgstr "Belysning LED-läge"
 
-#: inputs/as7262.py:117
+#: inputs/as7262.py:120
 msgid "Turn the illumination LED on or off during a measurement"
 msgstr "Vrid belysningen lysdioden på eller av under en mätning"
 
-#: inputs/as7262.py:129
+#: inputs/as7262.py:132
 msgid "Indicator LED Current"
 msgstr "Indikator LED Current"
 
-#: inputs/as7262.py:130
+#: inputs/as7262.py:133
 msgid "Set the indicator LED current (milliamps)"
 msgstr "Ställa indikatorn LED-strömmen (milliampere)"
 
-#: inputs/as7262.py:140
+#: inputs/as7262.py:143
 msgid "Indicator LED Mode"
 msgstr "Indikatorn LED-läge"
 
-#: inputs/as7262.py:141
+#: inputs/as7262.py:144
 msgid "Turn the indicator LED on or off during a measurement"
 msgstr "Vrid lysdiod på eller av under en mätning"
 
-#: inputs/as7262.py:149
+#: inputs/as7262.py:152
 msgid "Integration Time"
 msgstr "integration Time"
 
-#: inputs/as7262.py:150
+#: inputs/as7262.py:153
 msgid "The integration time (0 - ~91 ms)"
 msgstr "Tiden integration (0 - ~ 91 ms)"
 
-#: inputs/atlas_do.py:70
+#: inputs/atlas_do.py:73
 msgid "Calibration Max Age"
 msgstr "Kalibrering Maximal ålder"
 
-#: inputs/atlas_do.py:71
+#: inputs/atlas_do.py:74
 msgid "The Max Age (seconds) of the Input/Math to use for calibration"
 msgstr "Maximal ålder (sekunder) för Input / Math som ska användas för kalibrering"
 
-#: inputs/atlas_ec.py:74 inputs/atlas_orp.py:74 inputs/atlas_ph.py:76
+#: inputs/atlas_ec.py:77 inputs/atlas_orp.py:77 inputs/atlas_ph.py:79
 msgid "Temperature Compensation Measurement"
 msgstr "Temperaturkompensation Mätning"
 
-#: inputs/atlas_ec.py:75 inputs/atlas_orp.py:75 inputs/atlas_ph.py:77
+#: inputs/atlas_ec.py:78 inputs/atlas_orp.py:78 inputs/atlas_ph.py:80
 msgid "Select a measurement for temperature compensation"
 msgstr "Välja en mätning för temperaturkompensation"
 
-#: inputs/atlas_ec.py:83 inputs/atlas_orp.py:83 inputs/atlas_ph.py:85
+#: inputs/atlas_ec.py:86 inputs/atlas_orp.py:86 inputs/atlas_ph.py:88
 msgid "Temperature Compensation Max Age"
 msgstr "Temperaturkompensation Max Age"
 
-#: inputs/atlas_ec.py:84 inputs/atlas_orp.py:84 inputs/atlas_ph.py:86
+#: inputs/atlas_ec.py:87 inputs/atlas_orp.py:87 inputs/atlas_ph.py:89
 msgid ""
 "The maximum age (seconds) of the measurement to use for temperature "
 "compensation"
@@ -1826,37 +1825,37 @@ msgstr ""
 "Den maximala ålder (sekunder) av mätningen som ska användas för "
 "temperaturkompensation"
 
-#: inputs/atlas_flow.py:136
+#: inputs/atlas_flow.py:139
 msgid "Flow Meter Type"
 msgstr "Flow Meter Typ"
 
-#: inputs/atlas_flow.py:137
+#: inputs/atlas_flow.py:140
 msgid "Set the type of flow meter used"
 msgstr "Ställa in typ av flödesmätare som används"
 
-#: inputs/atlas_flow.py:149
+#: inputs/atlas_flow.py:152
 msgid "Atlas Meter Time Base"
 msgstr "Atlas Meter Time Base"
 
-#: inputs/atlas_flow.py:150
+#: inputs/atlas_flow.py:153
 msgid "If using an Atlas Scientific flow meter, set the flow rate/time base"
 msgstr ""
 "Om användning av en Atlas Scientific flödesmätare, ställa in "
 "flödeshastigheten / tidsbas"
 
-#: inputs/atlas_flow.py:167
+#: inputs/atlas_flow.py:170
 msgid "Internal Resistor"
 msgstr "internt motstånd"
 
-#: inputs/atlas_flow.py:168
+#: inputs/atlas_flow.py:171
 msgid "Set an internal resistor for the flow meter"
 msgstr "Ställa en intern resistor för flödesmätaren"
 
-#: inputs/atlas_flow.py:174
+#: inputs/atlas_flow.py:177
 msgid "Custom K Value(s)"
 msgstr "Beställnings K Value (s)"
 
-#: inputs/atlas_flow.py:175
+#: inputs/atlas_flow.py:178
 msgid ""
 "If using a non-Atlas Scientific flow meter, enter the meter's K value(s)."
 " For a single K value, enter '[volume per pulse],[number of pulses]'. For"
@@ -1870,11 +1869,11 @@ msgstr ""
 " [frekvens i Hz]; [volym vid frekvensen], [frekvens i Hz], ...'. Lämna "
 "tomt för att inaktivera."
 
-#: inputs/atlas_flow.py:188
+#: inputs/atlas_flow.py:191
 msgid "K Value Time Base"
 msgstr "K Value Time Base"
 
-#: inputs/atlas_flow.py:189
+#: inputs/atlas_flow.py:192
 msgid ""
 "If using a non-Atlas Scientific flow meter, set the flow rate/time base "
 "for the custom K values entered."
@@ -1882,47 +1881,47 @@ msgstr ""
 "Om användning av en icke-Atlas Scientific flödesmätare, ställ in "
 "flödeshastighet / tidsbasen för de anpassade K-värden inmatade."
 
-#: inputs/atlas_pressure.py:52
+#: inputs/atlas_pressure.py:54
 msgid "LED Mode"
 msgstr ""
 
-#: inputs/atlas_pressure.py:53
+#: inputs/atlas_pressure.py:55
 msgid "When to turn the LED on"
 msgstr ""
 
-#: inputs/atlas_rgb.py:111
+#: inputs/atlas_rgb.py:114
 msgid "LED Only For Measure"
 msgstr "LED endast för Measure"
 
-#: inputs/atlas_rgb.py:112
+#: inputs/atlas_rgb.py:115
 msgid "Turn the LED on only during the measurement"
 msgstr "Slå LED på endast under mätningen"
 
-#: inputs/atlas_rgb.py:119
+#: inputs/atlas_rgb.py:122
 msgid "LED Percentage"
 msgstr "LED Procent"
 
-#: inputs/atlas_rgb.py:120
+#: inputs/atlas_rgb.py:123
 msgid "What percentage of power to supply to the LEDs during measurement"
 msgstr "Hur stor andel av makt att leverera till lysdioderna under mätning"
 
-#: inputs/atlas_rgb.py:127
+#: inputs/atlas_rgb.py:130
 msgid "Gamma Correction"
 msgstr "gamma-korrigering"
 
-#: inputs/atlas_rgb.py:128
+#: inputs/atlas_rgb.py:131
 msgid "Gamma correction between 0.01 and 4.99 (default is 1.0)"
 msgstr "Gammakorrigering mellan 0,01 och 4,99 (standard är 1,0)"
 
-#: inputs/atlas_rgb.py:145
+#: inputs/atlas_rgb.py:148
 msgid "Calibrate"
 msgstr ""
 
-#: inputs/bme680.py:171
+#: inputs/bme680.py:177
 msgid "Humidity Oversampling"
 msgstr "luftfuktighet Sampling"
 
-#: inputs/bme680.py:172 inputs/bme680.py:188 inputs/bme680.py:204
+#: inputs/bme680.py:178 inputs/bme680.py:194 inputs/bme680.py:210
 msgid ""
 "A higher oversampling value means more stable readings with less noise "
 "and jitter. However each step of oversampling adds ~2 ms latency, causing"
@@ -1932,19 +1931,19 @@ msgstr ""
 "brus och jitter. Emellertid varje steg i översampling adderar ~ 2 ms "
 "latency, vilket orsakar en långsammare svarstid till snabba transienter."
 
-#: inputs/bme680.py:187
+#: inputs/bme680.py:193
 msgid "Temperature Oversampling"
 msgstr "Temperaturöversampling"
 
-#: inputs/bme680.py:203
+#: inputs/bme680.py:209
 msgid "Pressure Oversampling"
 msgstr "Trycköversampling"
 
-#: inputs/bme680.py:221
+#: inputs/bme680.py:227
 msgid "IIR Filter Size"
 msgstr "IIR Filter Storlek"
 
-#: inputs/bme680.py:222
+#: inputs/bme680.py:228
 msgid ""
 "Optionally remove short term fluctuations from the temperature and "
 "pressure readings, increasing their resolution but reducing their "
@@ -1953,19 +1952,19 @@ msgstr ""
 "Eventuellt avlägsna kortsiktiga fluktuationer från de temperatur- och "
 "tryckavläsningar, öka deras upplösning men minska deras bandbredd."
 
-#: inputs/bme680.py:229
+#: inputs/bme680.py:235
 msgid "Gas Heater Temperature (°C)"
 msgstr "Gas Heater Temperatur (° C)"
 
-#: inputs/bme680.py:230
+#: inputs/bme680.py:236
 msgid "What temperature to set"
 msgstr "Vilken temperatur för att ställa"
 
-#: inputs/bme680.py:237
+#: inputs/bme680.py:243
 msgid "Gas Heater Duration (ms)"
 msgstr "Gas Heater Varaktighet (ms)"
 
-#: inputs/bme680.py:238
+#: inputs/bme680.py:244
 msgid ""
 "How long of a duration to heat. 20-30 ms are necessary for the heater to "
 "reach the intended target temperature."
@@ -1973,119 +1972,115 @@ msgstr ""
 "Hur länge en varaktighet för värme. 20-30 ms är nödvändigt för värmaren "
 "att nå den avsedda måltemperaturen."
 
-#: inputs/bme680.py:258
+#: inputs/bme680.py:264
 msgid "Gas Heater Profile"
 msgstr "Gas Heater Profile"
 
-#: inputs/bme680.py:259
+#: inputs/bme680.py:265
 msgid "Select one of the 10 configured heating durations/set points"
 msgstr "Välja en av de 10 konfigurerade uppvärmningsvaraktig / börvärden"
 
-#: inputs/bme680.py:265
+#: inputs/bme680.py:271
 msgid "Temperature Offset"
 msgstr "temperatur Offset"
 
-#: inputs/bme680.py:266
+#: inputs/bme680.py:272
 msgid "The amount to offset the temperature, either negative or positive"
 msgstr ""
 "Det belopp för att kompensera av temperaturen, antingen negativt eller "
 "positivt"
 
-#: inputs/ds18s20.py:68
-msgid "Select the library used to communicate"
-msgstr "Välj biblioteket som används för att kommunicera"
-
-#: inputs/linux_command.py:44
+#: inputs/linux_command.py:46
 msgid "Command Timeout"
 msgstr "Timeout Command"
 
-#: inputs/linux_command.py:45
+#: inputs/linux_command.py:47
 msgid "How long to wait for the command to finish before killing the process."
 msgstr "Hur lång tid att vänta på kommandot till slut innan döda processen."
 
-#: inputs/linux_command.py:53
+#: inputs/linux_command.py:55
 msgid "The user to execute the command."
 msgstr "Användaren att utföra kommandot."
 
-#: inputs/linux_command.py:60
+#: inputs/linux_command.py:62
 msgid "CWD"
 msgstr "CWD"
 
-#: inputs/linux_command.py:61
+#: inputs/linux_command.py:63
 msgid "The current working directory of the shell environment."
 msgstr "Den aktuella arbetskatalogen av skalet miljön."
 
-#: inputs/examples/example_all_options_temperature.py:231 inputs/mh_z19.py:71
-#: inputs/mh_z19b.py:77
+#: inputs/examples/example_all_options_temperature.py:231 inputs/mh_z19.py:73
+#: inputs/mh_z19b.py:80
 msgid "Measurement Range"
 msgstr "Mätområde"
 
-#: inputs/examples/example_all_options_temperature.py:232 inputs/mh_z19.py:72
-#: inputs/mh_z19b.py:78
+#: inputs/examples/example_all_options_temperature.py:232 inputs/mh_z19.py:74
+#: inputs/mh_z19b.py:81
 msgid "Set the measuring range of the sensor"
 msgstr "Ställ in sensorns mätområde"
 
-#: inputs/mh_z19.py:86 inputs/mh_z19b.py:92
+#: inputs/mh_z19.py:88 inputs/mh_z19b.py:95
 msgid "Calibrate Zero Point"
 msgstr ""
 
-#: inputs/mh_z19.py:92 inputs/mh_z19b.py:98
+#: inputs/mh_z19.py:94 inputs/mh_z19b.py:101
 msgid "Span Point (ppmv)"
 msgstr ""
 
-#: inputs/mh_z19.py:98 inputs/mh_z19b.py:104
+#: inputs/mh_z19.py:100 inputs/mh_z19b.py:107
 msgid "Calibrate Span Point"
 msgstr ""
 
-#: inputs/mh_z19b.py:62
+#: inputs/mh_z19b.py:65
 msgid "Automatic Baseline Correction"
 msgstr ""
 
-#: inputs/mh_z19b.py:63
+#: inputs/mh_z19b.py:66
 msgid "Enable automatic baseline correction (ABC)"
 msgstr "Aktivera automatisk baslinjekorrigering (ABC)"
 
-#: inputs/mqtt_paho.py:57 mycodo_flask/forms/forms_settings.py:340
+#: inputs/mqtt_paho.py:59 mycodo_flask/forms/forms_settings.py:340
 msgid "Hostname"
 msgstr "Värdnamn"
 
-#: inputs/mqtt_paho.py:58
+#: inputs/mqtt_paho.py:60
 msgid "The hostname of the MQTT server"
 msgstr "Värdnamnet för MQTT server"
 
-#: inputs/mqtt_paho.py:66
+#: inputs/mqtt_paho.py:68
 msgid "The port of the MQTT server"
 msgstr "Hamnen i MQTT server"
 
-#: inputs/mqtt_paho.py:74
+#: inputs/mqtt_paho.py:76
 msgid "Keep Alive"
 msgstr "Håll vid liv"
 
-#: inputs/mqtt_paho.py:75
+#: inputs/mqtt_paho.py:77
 msgid "Maximum amount of time between received signals. Set to 0 to disable."
 msgstr "Maximala tiden mellan mottagna signaler. Sätt till 0 för att inaktivera."
 
-#: inputs/mqtt_paho.py:82
+#: inputs/mqtt_paho.py:84
 msgid "Client ID"
 msgstr "Klient ID"
 
-#: inputs/mqtt_paho.py:83
+#: inputs/mqtt_paho.py:85
 msgid "Unique client ID for connecting to the MQTT server"
 msgstr "Unikt klient-ID för att ansluta till servern MQTT"
 
-#: inputs/sht31_smart_gadget.py:102
+#: inputs/sht31_smart_gadget.py:104
 msgid "Download Stored Data"
 msgstr "Hämta lagrade data"
 
-#: inputs/sht31_smart_gadget.py:103
+#: inputs/sht31_smart_gadget.py:105
 msgid "Download the data logged to the device."
 msgstr "Ladda ner data som är loggad till enheten."
 
-#: inputs/sht31_smart_gadget.py:111
+#: inputs/sht31_smart_gadget.py:113
 msgid "Set Logging Interval"
 msgstr "Ställ in loggintervall"
 
-#: inputs/sht31_smart_gadget.py:112
+#: inputs/sht31_smart_gadget.py:114
 msgid ""
 "Set the logging interval (seconds) the device will store measurements on "
 "its internal memory."
@@ -2093,11 +2088,11 @@ msgstr ""
 "Ställ in loggintervallet (sekunder) enheten lagrar mätningar på "
 "internminnet."
 
-#: inputs/sht3x.py:85
+#: inputs/sht3x.py:87
 msgid "Enable Heater"
 msgstr "Aktivera värmare"
 
-#: inputs/sht3x.py:86
+#: inputs/sht3x.py:88
 msgid ""
 "Enable heater to evaporate condensation. Turn on heater x seconds every y"
 " measurements."
@@ -2105,53 +2100,53 @@ msgstr ""
 "Aktivera värmaren för att förånga kondens. Slå på värmaren x sekunder "
 "varje y-mätning."
 
-#: inputs/sht3x.py:94
+#: inputs/sht3x.py:96
 msgid "Heater On Seconds"
 msgstr "Värmare på sekunder"
 
-#: inputs/sht3x.py:95
+#: inputs/sht3x.py:97
 msgid "How long to turn the heater on (seconds)."
 msgstr "Hur länge ska du slå på värmaren (sekunder)."
 
-#: inputs/sht3x.py:102
+#: inputs/sht3x.py:104
 msgid "Heater On Period"
 msgstr "Värmare på period"
 
-#: inputs/sht3x.py:103
+#: inputs/sht3x.py:105
 msgid "After how many measurements to turn the heater on. This will repeat."
 msgstr ""
 "Efter hur många mätningar ska du slå på värmaren. Detta kommer att "
 "upprepas."
 
-#: inputs/th1x_am2301.py:57 inputs/th1x_ds18b20.py:43
+#: inputs/th1x_am2301.py:64 inputs/th1x_ds18b20.py:50
 msgid "IP Address"
 msgstr "IP-adress"
 
-#: inputs/th1x_am2301.py:58 inputs/th1x_ds18b20.py:44
+#: inputs/th1x_am2301.py:65 inputs/th1x_ds18b20.py:51
 msgid "The IP address of the device"
 msgstr "Enhets IP-adress"
 
-#: inputs/ttn_data_storage.py:67
+#: inputs/ttn_data_storage.py:75
 msgid "Application ID"
 msgstr "ansöknings-ID"
 
-#: inputs/ttn_data_storage.py:68
+#: inputs/ttn_data_storage.py:76
 msgid "The Things Network Application ID"
 msgstr "Sakerna Network Application ID"
 
-#: inputs/ttn_data_storage.py:75
+#: inputs/ttn_data_storage.py:83
 msgid "App API Key"
 msgstr "App API-nyckel"
 
-#: inputs/ttn_data_storage.py:76
+#: inputs/ttn_data_storage.py:84
 msgid "The Things Network Application API Key"
 msgstr "Sakerna Network Application API-nyckel"
 
-#: inputs/ttn_data_storage.py:83
+#: inputs/ttn_data_storage.py:91
 msgid "Device ID"
 msgstr "Enhets-ID"
 
-#: inputs/ttn_data_storage.py:84
+#: inputs/ttn_data_storage.py:92
 msgid "The Things Network Device ID"
 msgstr "Sakerna nätverksenhet ID"
 
@@ -2176,30 +2171,30 @@ msgid "Set I2C Address"
 msgstr ""
 
 #: inputs/examples/example_all_options_temperature.py:209
-#: inputs/winsen_zh03b.py:71
+#: inputs/winsen_zh03b.py:75
 msgid "Fan Off After Measure"
 msgstr "Fläkt av efter åtgärd"
 
 #: inputs/examples/example_all_options_temperature.py:210
-#: inputs/winsen_zh03b.py:72
+#: inputs/winsen_zh03b.py:76
 msgid "Turn the fan on only during the measurement"
 msgstr "Slå på fläkten endast under mätningen"
 
 #: inputs/examples/example_all_options_temperature.py:217
-#: inputs/winsen_zh03b.py:79
+#: inputs/winsen_zh03b.py:83
 msgid "Fan On Duration"
 msgstr "Fan på varaktighet"
 
 #: inputs/examples/example_all_options_temperature.py:218
-#: inputs/winsen_zh03b.py:80
+#: inputs/winsen_zh03b.py:84
 msgid "How long to turn the fan on (seconds) before acquiring measurements"
 msgstr "Hur länge ska du slå på fläkten (sekunder) innan du får mätningar"
 
-#: inputs/winsen_zh03b.py:87 mycodo_flask/forms/forms_input.py:91
+#: inputs/winsen_zh03b.py:91 mycodo_flask/forms/forms_input.py:91
 msgid "Number of Measurements"
 msgstr "Antal mätningar"
 
-#: inputs/winsen_zh03b.py:88
+#: inputs/winsen_zh03b.py:92
 msgid ""
 "How many measurements to acquire. If more than 1 are acquired that are "
 "less than 1001, the average of the measurements will be stored."
@@ -2207,11 +2202,11 @@ msgstr ""
 "Hur många mätningar för att förvärva. Om mer än en förvärvas som är "
 "mindre än 1001, kommer genomsnittet av mätningarna lagras."
 
-#: inputs/examples/bme280_ttn.py:92 inputs/examples/k30_ttn.py:65
+#: inputs/examples/bme280_ttn.py:99 inputs/examples/k30_ttn.py:65
 msgid "Serial Device"
 msgstr "Serial Device"
 
-#: inputs/examples/bme280_ttn.py:93 inputs/examples/k30_ttn.py:66
+#: inputs/examples/bme280_ttn.py:100 inputs/examples/k30_ttn.py:66
 msgid "The serial device to write to"
 msgstr "Den seriell enhet att skriva till"
 
@@ -2239,7 +2234,7 @@ msgstr ""
 msgid "Option One Value"
 msgstr ""
 
-#: mycodo_flask/app.py:205
+#: mycodo_flask/app.py:206
 msgid "Please log in to access this page"
 msgstr "Logga in för att komma åt den här sidan"
 
@@ -2350,19 +2345,19 @@ msgstr "Utloggad framgångsrikt"
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "En giltig temperatur krävs: %(temp)s är ogiltig."
 
-#: mycodo_flask/routes_general.py:993 mycodo_flask/routes_general.py:1007
+#: mycodo_flask/routes_general.py:996 mycodo_flask/routes_general.py:1010
 msgid "Command to restart the daemon sent"
 msgstr "Kommandot att starta om den skickade demonen"
 
-#: mycodo_flask/routes_general.py:996 mycodo_flask/routes_general.py:1009
+#: mycodo_flask/routes_general.py:999 mycodo_flask/routes_general.py:1012
 msgid "Command to reload the frontend sent"
 msgstr "Kommandot att ladda om frontänden skickad"
 
-#: mycodo_flask/routes_general.py:1003
+#: mycodo_flask/routes_general.py:1006
 msgid "System rebooting in 10 seconds"
 msgstr "Systemstart om 10 sekunder"
 
-#: mycodo_flask/routes_general.py:1005
+#: mycodo_flask/routes_general.py:1008
 msgid "System shutting down in 10 seconds"
 msgstr "Systemet stängs av om 10 sekunder"
 
@@ -2576,8 +2571,8 @@ msgid "White Balance"
 msgstr "Vitbalans"
 
 #: mycodo_flask/forms/forms_camera.py:70
-#: mycodo_flask/templates/pages/data_options/input.html:190
-#: mycodo_flask/templates/pages/output.html:318
+#: mycodo_flask/templates/pages/data_options/input.html:216
+#: mycodo_flask/templates/pages/output.html:346
 msgid "Custom Options"
 msgstr "Anpassade alternativ"
 
@@ -2966,8 +2961,8 @@ msgid "Address"
 msgstr "Adress"
 
 #: mycodo_flask/forms/forms_lcd.py:41 mycodo_flask/forms/forms_lcd.py:45
-msgid "I<sup>2</sup>C"
-msgstr "I <sup> 2 </ sup> C"
+msgid "I2C"
+msgstr ""
 
 #: mycodo_flask/forms/forms_lcd.py:44
 msgid "Bus"
@@ -3896,6 +3891,7 @@ msgid "Controllers"
 msgstr "controllers"
 
 #: mycodo_flask/templates/layout-settings.html:37
+#: mycodo_flask/templates/pages/data_options/input.html:91
 #: mycodo_flask/templates/settings/input.html:41
 #: mycodo_flask/templates/settings/measurement.html:128
 #: mycodo_flask/templates/settings/measurement.html:305
@@ -4525,14 +4521,35 @@ msgstr ""
 msgid "Unconfigured"
 msgstr "okonfigurerat"
 
-#: mycodo_flask/templates/pages/data_options/input.html:133
-#: mycodo_flask/templates/pages/output.html:259
+#: mycodo_flask/templates/pages/data_options/input.html:113
+#: mycodo_flask/templates/pages/output.html:252
+#: mycodo_flask/templates/settings/input.html:39
+msgid "Manufacturer"
+msgstr "Tillverkare"
+
+#: mycodo_flask/templates/pages/data_options/input.html:117
+#: mycodo_flask/templates/pages/output.html:256
+msgid "Datasheet"
+msgstr ""
+
+#: mycodo_flask/templates/pages/data_options/input.html:121
+#: mycodo_flask/templates/pages/output.html:260
+msgid "Product"
+msgstr ""
+
+#: mycodo_flask/templates/pages/data_options/input.html:125
+#: mycodo_flask/templates/pages/output.html:264
+msgid "Additional"
+msgstr ""
+
+#: mycodo_flask/templates/pages/data_options/input.html:159
+#: mycodo_flask/templates/pages/output.html:287
 msgid "Options"
 msgstr ""
 
-#: mycodo_flask/templates/pages/output.html:340
-#: mycodo_flask/templates/pages/output.html:360
-#: mycodo_flask/templates/pages/output.html:380
+#: mycodo_flask/templates/pages/output.html:368
+#: mycodo_flask/templates/pages/output.html:388
+#: mycodo_flask/templates/pages/output.html:408
 msgid "Send"
 msgstr ""
 
@@ -4661,7 +4678,11 @@ msgstr "Sec On"
 msgid "A numerical value to set the PID setpoint"
 msgstr "Ett numeriskt värde för att ställa in PID börvärdet"
 
-#: mycodo_flask/templates/pages/data_options/input.html:207
+#: mycodo_flask/templates/pages/data_options/input.html:111
+msgid "Literature"
+msgstr ""
+
+#: mycodo_flask/templates/pages/data_options/input.html:233
 #: mycodo_flask/templates/pages/data_options/math.html:132
 #: mycodo_flask/templates/settings/measurement.html:4
 #: mycodo_flask/templates/settings/measurement.html:6
@@ -5799,10 +5820,6 @@ msgstr "Ingångsinställningar"
 msgid "Imported Input Modules"
 msgstr "Importerade ingångsmoduler"
 
-#: mycodo_flask/templates/settings/input.html:39
-msgid "Manufacturer"
-msgstr "Tillverkare"
-
 #: mycodo_flask/templates/settings/measurement.html:185
 #: mycodo_flask/templates/settings/measurement.html:332
 msgid "Units"
@@ -6218,9 +6235,9 @@ msgid "%(msg)s"
 msgstr "%(msg)s"
 
 #: mycodo_flask/utils/utils_general.py:919
-#: mycodo_flask/utils/utils_output.py:422
-#: mycodo_flask/utils/utils_output.py:429
-#: mycodo_flask/utils/utils_output.py:434
+#: mycodo_flask/utils/utils_output.py:423
+#: mycodo_flask/utils/utils_output.py:430
+#: mycodo_flask/utils/utils_output.py:435
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
@@ -6264,7 +6281,7 @@ msgstr ""
 msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr "Läsperioden kan inte vara mindre än Pre Output Duration"
 
-#: mycodo_flask/utils/utils_input.py:342 mycodo_flask/utils/utils_output.py:274
+#: mycodo_flask/utils/utils_input.py:342 mycodo_flask/utils/utils_output.py:275
 msgid "Invalid device or improper permissions to read device"
 msgstr "Ogiltig enhet eller felaktiga behörigheter för att läsa enheten"
 
@@ -6441,51 +6458,51 @@ msgstr "Ogiltig mängd"
 msgid "Acceptable values"
 msgstr "Godtagbara värden"
 
-#: mycodo_flask/utils/utils_output.py:446
+#: mycodo_flask/utils/utils_output.py:447
 msgid "Actuate"
 msgstr "aktivera"
 
-#: mycodo_flask/utils/utils_output.py:454
+#: mycodo_flask/utils/utils_output.py:455
 msgid "Cannot modulate output with a GPIO of 0"
 msgstr "Kan inte modulera utgången med en GPIO på 0"
 
-#: mycodo_flask/utils/utils_output.py:460
+#: mycodo_flask/utils/utils_output.py:461
 msgid "Value must be greater than 0"
 msgstr "Värdet måste vara större än 0"
 
-#: mycodo_flask/utils/utils_output.py:465
+#: mycodo_flask/utils/utils_output.py:466
 #, python-format
 msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
 msgstr "Utgången aktiverad för %(sec)s sekunder: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:471
+#: mycodo_flask/utils/utils_output.py:472
 msgid "Invalid pin"
 msgstr "Ogiltig PIN"
 
-#: mycodo_flask/utils/utils_output.py:473
+#: mycodo_flask/utils/utils_output.py:474
 msgid "PWM Hertz must be a positive value"
 msgstr "PWM Hertz måste vara ett positivt värde"
 
-#: mycodo_flask/utils/utils_output.py:475
+#: mycodo_flask/utils/utils_output.py:476
 msgid "PWM duty cycle must be a positive value"
 msgstr "PWM-arbetscykeln måste vara ett positivt värde"
 
-#: mycodo_flask/utils/utils_output.py:481
+#: mycodo_flask/utils/utils_output.py:482
 #, python-format
 msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 msgstr "PWM satt till %(dc)s %% vid %(hertz)s Hz: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:488
+#: mycodo_flask/utils/utils_output.py:489
 #, python-format
 msgid "Output turned on: %(rvalue)s"
 msgstr "Utgången aktiverad: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:493
+#: mycodo_flask/utils/utils_output.py:494
 #, python-format
 msgid "Output turned off: %(rvalue)s"
 msgstr "Utgången avstängd: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:497
+#: mycodo_flask/utils/utils_output.py:498
 msgid "Invalid value"
 msgstr "ogiltigt värde"
 
@@ -6728,4 +6745,16 @@ msgstr ""
 
 #~ msgid "465 for SSL, 587 for TSL"
 #~ msgstr "465 för SSL, 587 för TSL"
+
+#~ msgid "I<sup>2</sup>C Bus"
+#~ msgstr "Jag <sup> 2 </ sup> C Bus"
+
+#~ msgid "I<sup>2</sup>C Address"
+#~ msgstr "Jag <sup> 2 </ sup> C Adress"
+
+#~ msgid "Select the library used to communicate"
+#~ msgstr "Välj biblioteket som används för att kommunicera"
+
+#~ msgid "I<sup>2</sup>C"
+#~ msgstr "I <sup> 2 </ sup> C"
 

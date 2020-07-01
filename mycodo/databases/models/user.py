@@ -52,7 +52,7 @@ class User(UserMixin, CRUDMixin, db.Model):
         return hashes_match
 
 
-class UserSchema(ma.ModelSchema):
+class UserSchema(ma.SQLAlchemySchema):
     class Meta:
         model = User
         exclude = ('api_key', 'password_hash',)

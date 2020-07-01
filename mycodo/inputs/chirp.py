@@ -1,8 +1,6 @@
 # coding=utf-8
 import time
 
-from smbus2 import SMBus
-
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
@@ -61,6 +59,7 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         if not testing:
+            from smbus2 import SMBus
             self.i2c_address = int(str(input_dev.i2c_location), 16)
             self.i2c_bus = input_dev.i2c_bus
             self.bus = SMBus(self.i2c_bus)

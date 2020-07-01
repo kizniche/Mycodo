@@ -13,7 +13,7 @@ from flask_babel import lazy_gettext
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
-MYCODO_VERSION = '8.5.4'
+MYCODO_VERSION = '8.5.5'
 ALEMBIC_VERSION = '561621f634cb'
 
 #  FORCE_UPGRADE_MASTER

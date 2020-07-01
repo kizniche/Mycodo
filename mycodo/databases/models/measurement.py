@@ -19,7 +19,7 @@ class Measurement(CRUDMixin, db.Model):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
 
-class MeasurementSchema(ma.ModelSchema):
+class MeasurementSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Measurement
 
@@ -38,7 +38,7 @@ class Unit(CRUDMixin, db.Model):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
 
-class UnitSchema(ma.ModelSchema):
+class UnitSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Unit
 
@@ -58,7 +58,7 @@ class Conversion(CRUDMixin, db.Model):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
 
-class ConversionSchema(ma.ModelSchema):
+class ConversionSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Conversion
 
@@ -93,6 +93,6 @@ class DeviceMeasurements(CRUDMixin, db.Model):
     conversion_id = db.Column(db.Text, db.ForeignKey('conversion.unique_id'), default='')
 
 
-class DeviceMeasurementsSchema(ma.ModelSchema):
+class DeviceMeasurementsSchema(ma.SQLAlchemySchema):
     class Meta:
         model = DeviceMeasurements

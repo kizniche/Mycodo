@@ -95,6 +95,6 @@ class Output(CRUDMixin, db.Model):
             print("RPi.GPIO and Raspberry Pi required for this action")
 
 
-class OutputSchema(ma.ModelSchema):
+class OutputSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Output

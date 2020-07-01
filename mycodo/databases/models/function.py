@@ -107,7 +107,7 @@ class Trigger(CRUDMixin, db.Model):
     edge_detected = db.Column(db.Text, default='')
 
 
-class TriggerSchema(ma.ModelSchema):
+class TriggerSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Trigger
 

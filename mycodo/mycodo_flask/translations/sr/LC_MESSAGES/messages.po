@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-30 11:49-0400\n"
+"POT-Creation-Date: 2020-06-30 20:39-0400\n"
 "PO-Revision-Date: 2019-01-29 14:08-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 #: config.py:50
 msgid "Add Dashboard Widget"
@@ -691,11 +691,11 @@ msgid "Volt"
 msgstr "Волт"
 
 #: config_translations.py:15
-#: mycodo_flask/templates/pages/data_options/input.html:115
+#: mycodo_flask/templates/pages/data_options/input.html:141
 #: mycodo_flask/templates/pages/function_options/action_options/pause_actions.html:8
 #: mycodo_flask/templates/pages/function_options/conditional.html:157
 #: mycodo_flask/templates/pages/function_options/trigger.html:103
-#: mycodo_flask/templates/pages/output.html:245
+#: mycodo_flask/templates/pages/output.html:273
 msgid "Actions"
 msgstr "Акције"
 
@@ -717,7 +717,7 @@ msgstr "Алерт"
 msgid "Average"
 msgstr "Просек"
 
-#: config_translations.py:25 inputs/ads1256.py:83
+#: config_translations.py:25 inputs/ads1256.py:84
 msgid "Calibration"
 msgstr "Калибрација"
 
@@ -1088,7 +1088,7 @@ msgstr "Горе"
 msgid "Upload"
 msgstr "Отпремити"
 
-#: config_translations.py:175 inputs/linux_command.py:52
+#: config_translations.py:175 inputs/linux_command.py:54
 msgid "User"
 msgstr "Усер"
 
@@ -1104,7 +1104,7 @@ msgstr "1-Вире Девице ИД"
 msgid "Select the 1-wire device ID"
 msgstr "Изаберите ИД уређаја са 1 жицом"
 
-#: config_translations.py:184 inputs/as7262.py:92
+#: config_translations.py:184 inputs/as7262.py:95
 #: mycodo_flask/forms/forms_camera.py:63
 msgid "Gain"
 msgstr "Гаин"
@@ -1166,7 +1166,7 @@ msgstr "БТ Адаптер (хци [Кс])"
 msgid "The adapter of the Bluetooth device"
 msgstr ""
 
-#: config_translations.py:205 mycodo_flask/routes_calibration.py:746
+#: config_translations.py:205 mycodo_flask/routes_calibration.py:749
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "Цомманд"
@@ -1252,16 +1252,16 @@ msgid "Host address or IP"
 msgstr "Адреса хоста или ИП адреса"
 
 #: config_translations.py:240
-msgid "I<sup>2</sup>C Bus"
-msgstr "И <суп> 2 </суп> Ц Бус"
+msgid "I2C Bus"
+msgstr ""
 
 #: config_translations.py:241
 msgid "The I2C bus the device is connected to"
 msgstr "И2Ц сабирница на коју је уређај повезан"
 
 #: config_translations.py:243
-msgid "I<sup>2</sup>C Address"
-msgstr "И <суп> 2 </суп> Ц Адреса"
+msgid "I2C Address"
+msgstr ""
 
 #: config_translations.py:244
 msgid "The I2C address of the device"
@@ -1424,7 +1424,7 @@ msgstr "МОСИ Пин"
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr "ГПИО (користећи БЦМ нумерисање) повезан је са МОСИ пин-ом"
 
-#: config_translations.py:306 inputs/mqtt_paho.py:65
+#: config_translations.py:306 inputs/mqtt_paho.py:67
 msgid "Port"
 msgstr "Порт"
 
@@ -1494,8 +1494,7 @@ msgstr "Фреквенција (Хертз)"
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr "Хертз за излаз ПВМ сигнала (0 - 70,000)"
 
-#: config_translations.py:332 inputs/ds18s20.py:67
-#: mycodo_flask/forms/forms_camera.py:23
+#: config_translations.py:332 mycodo_flask/forms/forms_camera.py:23
 msgid "Library"
 msgstr "Либрари"
 
@@ -1737,121 +1736,121 @@ msgstr "Никада немојте дозволити да радни цикл�
 msgid "Always Min (Lower)"
 msgstr "Увек минимум (Доња)"
 
-#: inputs/ads1256.py:84
+#: inputs/ads1256.py:85
 msgid "Set the calibration method to perform during Input activation"
 msgstr "Подесите метод калибрације да се изврши током активације улаза"
 
-#: inputs/ads1x15.py:76
+#: inputs/ads1x15.py:77
 msgid "Measurements to Average"
 msgstr "Мерења на просечне"
 
-#: inputs/ads1x15.py:77
+#: inputs/ads1x15.py:78
 msgid ""
 "The number of times to measure each channel. An average of the "
 "measurements will be stored."
 msgstr "Број пута за мерење сваки канал. У просеку мерења ће бити сачувана."
 
-#: inputs/as7262.py:93
+#: inputs/as7262.py:96
 msgid "Set the sensor gain"
 msgstr "Подесите сензора добитак"
 
-#: inputs/as7262.py:105
+#: inputs/as7262.py:108
 msgid "Illumination LED Current"
 msgstr "Осветљење Лед Тренутни"
 
-#: inputs/as7262.py:106
+#: inputs/as7262.py:109
 msgid "Set the illumination LED current (milliamps)"
 msgstr "Подесите осветљења ЛЕД струја (милиампера)"
 
-#: inputs/as7262.py:116
+#: inputs/as7262.py:119
 msgid "Illumination LED Mode"
 msgstr "Осветљење Лед режим"
 
-#: inputs/as7262.py:117
+#: inputs/as7262.py:120
 msgid "Turn the illumination LED on or off during a measurement"
 msgstr "Укључите осветљење ЛЕД или искључити у току мерења"
 
-#: inputs/as7262.py:129
+#: inputs/as7262.py:132
 msgid "Indicator LED Current"
 msgstr "ЛЕД индикатор Тренутни"
 
-#: inputs/as7262.py:130
+#: inputs/as7262.py:133
 msgid "Set the indicator LED current (milliamps)"
 msgstr "Сет индикатора ЛЕД струја (милиампера)"
 
-#: inputs/as7262.py:140
+#: inputs/as7262.py:143
 msgid "Indicator LED Mode"
 msgstr "ЛЕД индикатор режим"
 
-#: inputs/as7262.py:141
+#: inputs/as7262.py:144
 msgid "Turn the indicator LED on or off during a measurement"
 msgstr "Окрените индикатор ЛЕД или искључити у току мерења"
 
-#: inputs/as7262.py:149
+#: inputs/as7262.py:152
 msgid "Integration Time"
 msgstr "integracija Време"
 
-#: inputs/as7262.py:150
+#: inputs/as7262.py:153
 msgid "The integration time (0 - ~91 ms)"
 msgstr "Време интеграције (0 - ~ 91 Мс)"
 
-#: inputs/atlas_do.py:70
+#: inputs/atlas_do.py:73
 msgid "Calibration Max Age"
 msgstr "Калибрација Мак Аге"
 
-#: inputs/atlas_do.py:71
+#: inputs/atlas_do.py:74
 msgid "The Max Age (seconds) of the Input/Math to use for calibration"
 msgstr "Мак Аге (секунде) Инпут / Матх за употребу за калибрацију"
 
-#: inputs/atlas_ec.py:74 inputs/atlas_orp.py:74 inputs/atlas_ph.py:76
+#: inputs/atlas_ec.py:77 inputs/atlas_orp.py:77 inputs/atlas_ph.py:79
 msgid "Temperature Compensation Measurement"
 msgstr "Температура Накнада за мерење"
 
-#: inputs/atlas_ec.py:75 inputs/atlas_orp.py:75 inputs/atlas_ph.py:77
+#: inputs/atlas_ec.py:78 inputs/atlas_orp.py:78 inputs/atlas_ph.py:80
 msgid "Select a measurement for temperature compensation"
 msgstr "Изаберите мерење за компензацију температуре"
 
-#: inputs/atlas_ec.py:83 inputs/atlas_orp.py:83 inputs/atlas_ph.py:85
+#: inputs/atlas_ec.py:86 inputs/atlas_orp.py:86 inputs/atlas_ph.py:88
 msgid "Temperature Compensation Max Age"
 msgstr "Температура Накнада Макс Године"
 
-#: inputs/atlas_ec.py:84 inputs/atlas_orp.py:84 inputs/atlas_ph.py:86
+#: inputs/atlas_ec.py:87 inputs/atlas_orp.py:87 inputs/atlas_ph.py:89
 msgid ""
 "The maximum age (seconds) of the measurement to use for temperature "
 "compensation"
 msgstr "Максималан аге (секунди) мерења користити за температурне компензације"
 
-#: inputs/atlas_flow.py:136
+#: inputs/atlas_flow.py:139
 msgid "Flow Meter Type"
 msgstr "Флов метра Тип"
 
-#: inputs/atlas_flow.py:137
+#: inputs/atlas_flow.py:140
 msgid "Set the type of flow meter used"
 msgstr "Подесите врсту мерача протока користи"
 
-#: inputs/atlas_flow.py:149
+#: inputs/atlas_flow.py:152
 msgid "Atlas Meter Time Base"
 msgstr "Атлас метра Време база"
 
-#: inputs/atlas_flow.py:150
+#: inputs/atlas_flow.py:153
 msgid "If using an Atlas Scientific flow meter, set the flow rate/time base"
 msgstr ""
 "Ако користите метра атлас Сциентифиц протока, подесите протока / "
 "временске основе"
 
-#: inputs/atlas_flow.py:167
+#: inputs/atlas_flow.py:170
 msgid "Internal Resistor"
 msgstr "Интерна Отпорник"
 
-#: inputs/atlas_flow.py:168
+#: inputs/atlas_flow.py:171
 msgid "Set an internal resistor for the flow meter"
 msgstr "Сет интерни отпорник за мерач протока"
 
-#: inputs/atlas_flow.py:174
+#: inputs/atlas_flow.py:177
 msgid "Custom K Value(s)"
 msgstr "Цустом к Вредност (и)"
 
-#: inputs/atlas_flow.py:175
+#: inputs/atlas_flow.py:178
 msgid ""
 "If using a non-Atlas Scientific flow meter, enter the meter's K value(s)."
 " For a single K value, enter '[volume per pulse],[number of pulses]'. For"
@@ -1865,11 +1864,11 @@ msgstr ""
 "фреквенцији], [фреквенција у Хз]; [волуме на фреквенцији], [фреквенција у"
 " Хз]; ... \". Оставите празно да онемогући."
 
-#: inputs/atlas_flow.py:188
+#: inputs/atlas_flow.py:191
 msgid "K Value Time Base"
 msgstr "К вредност Време база"
 
-#: inputs/atlas_flow.py:189
+#: inputs/atlas_flow.py:192
 msgid ""
 "If using a non-Atlas Scientific flow meter, set the flow rate/time base "
 "for the custom K values entered."
@@ -1877,47 +1876,47 @@ msgstr ""
 "Ако користите мерач не-атлас Сциентифиц протока, подесите базу проток / "
 "време за вредности прилагођене К ушли."
 
-#: inputs/atlas_pressure.py:52
+#: inputs/atlas_pressure.py:54
 msgid "LED Mode"
 msgstr ""
 
-#: inputs/atlas_pressure.py:53
+#: inputs/atlas_pressure.py:55
 msgid "When to turn the LED on"
 msgstr ""
 
-#: inputs/atlas_rgb.py:111
+#: inputs/atlas_rgb.py:114
 msgid "LED Only For Measure"
 msgstr "ЛЕД Само за меру"
 
-#: inputs/atlas_rgb.py:112
+#: inputs/atlas_rgb.py:115
 msgid "Turn the LED on only during the measurement"
 msgstr "Укључите ЛЕД на само током мерења"
 
-#: inputs/atlas_rgb.py:119
+#: inputs/atlas_rgb.py:122
 msgid "LED Percentage"
 msgstr "ЛЕД Проценат"
 
-#: inputs/atlas_rgb.py:120
+#: inputs/atlas_rgb.py:123
 msgid "What percentage of power to supply to the LEDs during measurement"
 msgstr "Који проценат снаге да достави ЛЕД током мерења"
 
-#: inputs/atlas_rgb.py:127
+#: inputs/atlas_rgb.py:130
 msgid "Gamma Correction"
 msgstr "Гама корекција"
 
-#: inputs/atlas_rgb.py:128
+#: inputs/atlas_rgb.py:131
 msgid "Gamma correction between 0.01 and 4.99 (default is 1.0)"
 msgstr "Гамма корекција између 0,01 и 4,99 (дефаулт је 1.0)"
 
-#: inputs/atlas_rgb.py:145
+#: inputs/atlas_rgb.py:148
 msgid "Calibrate"
 msgstr ""
 
-#: inputs/bme680.py:171
+#: inputs/bme680.py:177
 msgid "Humidity Oversampling"
 msgstr "Влажност Оверсамплинг"
 
-#: inputs/bme680.py:172 inputs/bme680.py:188 inputs/bme680.py:204
+#: inputs/bme680.py:178 inputs/bme680.py:194 inputs/bme680.py:210
 msgid ""
 "A higher oversampling value means more stable readings with less noise "
 "and jitter. However each step of oversampling adds ~2 ms latency, causing"
@@ -1927,19 +1926,19 @@ msgstr ""
 "јиттер. Међутим сваки корак оверсамплинг додаје ~ 2 мс латенци, "
 "узрокујући спорији одзив на брзе прелазне појаве."
 
-#: inputs/bme680.py:187
+#: inputs/bme680.py:193
 msgid "Temperature Oversampling"
 msgstr "temperatura Оверсамплинг"
 
-#: inputs/bme680.py:203
+#: inputs/bme680.py:209
 msgid "Pressure Oversampling"
 msgstr "pritisak Оверсамплинг"
 
-#: inputs/bme680.py:221
+#: inputs/bme680.py:227
 msgid "IIR Filter Size"
 msgstr "ИИР филтера величина"
 
-#: inputs/bme680.py:222
+#: inputs/bme680.py:228
 msgid ""
 "Optionally remove short term fluctuations from the temperature and "
 "pressure readings, increasing their resolution but reducing their "
@@ -1948,19 +1947,19 @@ msgstr ""
 "Опционо уклањање краткорочне осцилације од температуре и притиска "
 "очитавања, повећавајући њихову резолуцију али смањује њихову пропусност."
 
-#: inputs/bme680.py:229
+#: inputs/bme680.py:235
 msgid "Gas Heater Temperature (°C)"
 msgstr "Гас Грејач Температура (° Ц)"
 
-#: inputs/bme680.py:230
+#: inputs/bme680.py:236
 msgid "What temperature to set"
 msgstr "Шта температура у сету"
 
-#: inputs/bme680.py:237
+#: inputs/bme680.py:243
 msgid "Gas Heater Duration (ms)"
 msgstr "Гас Грејач Трајање (МС)"
 
-#: inputs/bme680.py:238
+#: inputs/bme680.py:244
 msgid ""
 "How long of a duration to heat. 20-30 ms are necessary for the heater to "
 "reach the intended target temperature."
@@ -1968,119 +1967,115 @@ msgstr ""
 "Колико од трајања на топлоту. 20-30 мс су неопходни за грејач да достигне"
 " жељено температуру."
 
-#: inputs/bme680.py:258
+#: inputs/bme680.py:264
 msgid "Gas Heater Profile"
 msgstr "Гас Грејач Профил"
 
-#: inputs/bme680.py:259
+#: inputs/bme680.py:265
 msgid "Select one of the 10 configured heating durations/set points"
 msgstr "Изаберите једну од 10 подесио за грејање трајања / Сет бодова"
 
-#: inputs/bme680.py:265
+#: inputs/bme680.py:271
 msgid "Temperature Offset"
 msgstr "temperatura Оффсет"
 
-#: inputs/bme680.py:266
+#: inputs/bme680.py:272
 msgid "The amount to offset the temperature, either negative or positive"
 msgstr "Износ који офсет температуре, или негативна или позитивна"
 
-#: inputs/ds18s20.py:68
-msgid "Select the library used to communicate"
-msgstr "Изаберите библиотеку која се користи за комуникацију"
-
-#: inputs/linux_command.py:44
+#: inputs/linux_command.py:46
 msgid "Command Timeout"
 msgstr "команда Истекло"
 
-#: inputs/linux_command.py:45
+#: inputs/linux_command.py:47
 msgid "How long to wait for the command to finish before killing the process."
 msgstr "Колико дуго да чекају команду до краја пре убиства процес."
 
-#: inputs/linux_command.py:53
+#: inputs/linux_command.py:55
 msgid "The user to execute the command."
 msgstr "Кориснику да изврши наредбу."
 
-#: inputs/linux_command.py:60
+#: inputs/linux_command.py:62
 msgid "CWD"
 msgstr "ЦВД"
 
-#: inputs/linux_command.py:61
+#: inputs/linux_command.py:63
 msgid "The current working directory of the shell environment."
 msgstr "Садашњи радни директоријум шкољке животне средине."
 
-#: inputs/examples/example_all_options_temperature.py:231 inputs/mh_z19.py:71
-#: inputs/mh_z19b.py:77
+#: inputs/examples/example_all_options_temperature.py:231 inputs/mh_z19.py:73
+#: inputs/mh_z19b.py:80
 msgid "Measurement Range"
 msgstr "Раздаљина"
 
-#: inputs/examples/example_all_options_temperature.py:232 inputs/mh_z19.py:72
-#: inputs/mh_z19b.py:78
+#: inputs/examples/example_all_options_temperature.py:232 inputs/mh_z19.py:74
+#: inputs/mh_z19b.py:81
 msgid "Set the measuring range of the sensor"
 msgstr "Подесите мерни опсег сензора"
 
-#: inputs/mh_z19.py:86 inputs/mh_z19b.py:92
+#: inputs/mh_z19.py:88 inputs/mh_z19b.py:95
 msgid "Calibrate Zero Point"
 msgstr ""
 
-#: inputs/mh_z19.py:92 inputs/mh_z19b.py:98
+#: inputs/mh_z19.py:94 inputs/mh_z19b.py:101
 msgid "Span Point (ppmv)"
 msgstr ""
 
-#: inputs/mh_z19.py:98 inputs/mh_z19b.py:104
+#: inputs/mh_z19.py:100 inputs/mh_z19b.py:107
 msgid "Calibrate Span Point"
 msgstr ""
 
-#: inputs/mh_z19b.py:62
+#: inputs/mh_z19b.py:65
 msgid "Automatic Baseline Correction"
 msgstr ""
 
-#: inputs/mh_z19b.py:63
+#: inputs/mh_z19b.py:66
 msgid "Enable automatic baseline correction (ABC)"
 msgstr "Омогући аутоматску корекцију основне линије (АБЦ)"
 
-#: inputs/mqtt_paho.py:57 mycodo_flask/forms/forms_settings.py:340
+#: inputs/mqtt_paho.py:59 mycodo_flask/forms/forms_settings.py:340
 msgid "Hostname"
 msgstr "Хостнаме"
 
-#: inputs/mqtt_paho.py:58
+#: inputs/mqtt_paho.py:60
 msgid "The hostname of the MQTT server"
 msgstr "Име хоста МКТТ сервера"
 
-#: inputs/mqtt_paho.py:66
+#: inputs/mqtt_paho.py:68
 msgid "The port of the MQTT server"
 msgstr "Порт оф тхе МКТТ сервера"
 
-#: inputs/mqtt_paho.py:74
+#: inputs/mqtt_paho.py:76
 msgid "Keep Alive"
 msgstr "Одржи у животу"
 
-#: inputs/mqtt_paho.py:75
+#: inputs/mqtt_paho.py:77
 msgid "Maximum amount of time between received signals. Set to 0 to disable."
 msgstr ""
 "Максимални износ времена између примљених сигнала. Подесите на 0 до "
 "искључити."
 
-#: inputs/mqtt_paho.py:82
+#: inputs/mqtt_paho.py:84
 msgid "Client ID"
 msgstr "ИД клијента"
 
-#: inputs/mqtt_paho.py:83
+#: inputs/mqtt_paho.py:85
 msgid "Unique client ID for connecting to the MQTT server"
 msgstr "Јединствени клијент ИД за повезивање са МКТТ сервер"
 
-#: inputs/sht31_smart_gadget.py:102
+#: inputs/sht31_smart_gadget.py:104
 msgid "Download Stored Data"
 msgstr "Преузмите сачуване податке"
 
-#: inputs/sht31_smart_gadget.py:103
+#: inputs/sht31_smart_gadget.py:105
 msgid "Download the data logged to the device."
 msgstr "Преузмите податке евидентиране на уређају."
 
-#: inputs/sht31_smart_gadget.py:111
+#: inputs/sht31_smart_gadget.py:113
 msgid "Set Logging Interval"
 msgstr "Подесите Интервал записивања"
 
-#: inputs/sht31_smart_gadget.py:112
+#: inputs/sht31_smart_gadget.py:114
 msgid ""
 "Set the logging interval (seconds) the device will store measurements on "
 "its internal memory."
@@ -2088,11 +2083,11 @@ msgstr ""
 "Подесите интервале за бележење (секунде) који уређај чува на интерној "
 "меморији."
 
-#: inputs/sht3x.py:85
+#: inputs/sht3x.py:87
 msgid "Enable Heater"
 msgstr "Енабле Хеатер"
 
-#: inputs/sht3x.py:86
+#: inputs/sht3x.py:88
 msgid ""
 "Enable heater to evaporate condensation. Turn on heater x seconds every y"
 " measurements."
@@ -2100,51 +2095,51 @@ msgstr ""
 "Омогућите грејање да испари кондензацију. Укључите грејач к секунди "
 "сваког и мерења."
 
-#: inputs/sht3x.py:94
+#: inputs/sht3x.py:96
 msgid "Heater On Seconds"
 msgstr "Хеатер Он Сецондс"
 
-#: inputs/sht3x.py:95
+#: inputs/sht3x.py:97
 msgid "How long to turn the heater on (seconds)."
 msgstr "Колико дуго треба укључити грејач (секунде)."
 
-#: inputs/sht3x.py:102
+#: inputs/sht3x.py:104
 msgid "Heater On Period"
 msgstr "Период грејања"
 
-#: inputs/sht3x.py:103
+#: inputs/sht3x.py:105
 msgid "After how many measurements to turn the heater on. This will repeat."
 msgstr "Након колико мерења укључите грејач. Ово ће се поновити."
 
-#: inputs/th1x_am2301.py:57 inputs/th1x_ds18b20.py:43
+#: inputs/th1x_am2301.py:64 inputs/th1x_ds18b20.py:50
 msgid "IP Address"
 msgstr "ИП адреса"
 
-#: inputs/th1x_am2301.py:58 inputs/th1x_ds18b20.py:44
+#: inputs/th1x_am2301.py:65 inputs/th1x_ds18b20.py:51
 msgid "The IP address of the device"
 msgstr "ИП адресу уређаја"
 
-#: inputs/ttn_data_storage.py:67
+#: inputs/ttn_data_storage.py:75
 msgid "Application ID"
 msgstr "ИД апликације"
 
-#: inputs/ttn_data_storage.py:68
+#: inputs/ttn_data_storage.py:76
 msgid "The Things Network Application ID"
 msgstr "Ствари Мрежа ИД апликације"
 
-#: inputs/ttn_data_storage.py:75
+#: inputs/ttn_data_storage.py:83
 msgid "App API Key"
 msgstr "Апп АПИ кључ"
 
-#: inputs/ttn_data_storage.py:76
+#: inputs/ttn_data_storage.py:84
 msgid "The Things Network Application API Key"
 msgstr "Ствари Мрежа апликација АПИ кључ"
 
-#: inputs/ttn_data_storage.py:83
+#: inputs/ttn_data_storage.py:91
 msgid "Device ID"
 msgstr "ИД уређаја"
 
-#: inputs/ttn_data_storage.py:84
+#: inputs/ttn_data_storage.py:92
 msgid "The Things Network Device ID"
 msgstr "Ствари Мрежа ИД уређаја"
 
@@ -2169,30 +2164,30 @@ msgid "Set I2C Address"
 msgstr ""
 
 #: inputs/examples/example_all_options_temperature.py:209
-#: inputs/winsen_zh03b.py:71
+#: inputs/winsen_zh03b.py:75
 msgid "Fan Off After Measure"
 msgstr "Фан Офф Афтер Меасуре"
 
 #: inputs/examples/example_all_options_temperature.py:210
-#: inputs/winsen_zh03b.py:72
+#: inputs/winsen_zh03b.py:76
 msgid "Turn the fan on only during the measurement"
 msgstr "Укључите вентилатор само током мерења"
 
 #: inputs/examples/example_all_options_temperature.py:217
-#: inputs/winsen_zh03b.py:79
+#: inputs/winsen_zh03b.py:83
 msgid "Fan On Duration"
 msgstr "Фан Он Дуратион"
 
 #: inputs/examples/example_all_options_temperature.py:218
-#: inputs/winsen_zh03b.py:80
+#: inputs/winsen_zh03b.py:84
 msgid "How long to turn the fan on (seconds) before acquiring measurements"
 msgstr "Колико дуго треба укључити вентилатор (секунде) пре добијања мерења"
 
-#: inputs/winsen_zh03b.py:87 mycodo_flask/forms/forms_input.py:91
+#: inputs/winsen_zh03b.py:91 mycodo_flask/forms/forms_input.py:91
 msgid "Number of Measurements"
 msgstr "Број мерења"
 
-#: inputs/winsen_zh03b.py:88
+#: inputs/winsen_zh03b.py:92
 msgid ""
 "How many measurements to acquire. If more than 1 are acquired that are "
 "less than 1001, the average of the measurements will be stored."
@@ -2200,11 +2195,11 @@ msgstr ""
 "Колико мерења да стекну. Уколико више од 1 стичу које су мање него 1001, "
 "просек мерења ће бити сачувана."
 
-#: inputs/examples/bme280_ttn.py:92 inputs/examples/k30_ttn.py:65
+#: inputs/examples/bme280_ttn.py:99 inputs/examples/k30_ttn.py:65
 msgid "Serial Device"
 msgstr "портов"
 
-#: inputs/examples/bme280_ttn.py:93 inputs/examples/k30_ttn.py:66
+#: inputs/examples/bme280_ttn.py:100 inputs/examples/k30_ttn.py:66
 msgid "The serial device to write to"
 msgstr "Серијски уређај да писати на"
 
@@ -2232,7 +2227,7 @@ msgstr ""
 msgid "Option One Value"
 msgstr ""
 
-#: mycodo_flask/app.py:205
+#: mycodo_flask/app.py:206
 msgid "Please log in to access this page"
 msgstr "Молимо пријавите се за приступ овој страници"
 
@@ -2343,19 +2338,19 @@ msgstr "Успешно одјављен"
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "Потребна је важећа температура: %(temp)s је неважећа."
 
-#: mycodo_flask/routes_general.py:993 mycodo_flask/routes_general.py:1007
+#: mycodo_flask/routes_general.py:996 mycodo_flask/routes_general.py:1010
 msgid "Command to restart the daemon sent"
 msgstr "Наредба за поновно покретање посланог демона"
 
-#: mycodo_flask/routes_general.py:996 mycodo_flask/routes_general.py:1009
+#: mycodo_flask/routes_general.py:999 mycodo_flask/routes_general.py:1012
 msgid "Command to reload the frontend sent"
 msgstr "Наредба за поновно учитавање послате фронтенде"
 
-#: mycodo_flask/routes_general.py:1003
+#: mycodo_flask/routes_general.py:1006
 msgid "System rebooting in 10 seconds"
 msgstr "Систем се поново покреће за 10 секунди"
 
-#: mycodo_flask/routes_general.py:1005
+#: mycodo_flask/routes_general.py:1008
 msgid "System shutting down in 10 seconds"
 msgstr "Систем се гаси за 10 секунди"
 
@@ -2569,8 +2564,8 @@ msgid "White Balance"
 msgstr "Баланс беле"
 
 #: mycodo_flask/forms/forms_camera.py:70
-#: mycodo_flask/templates/pages/data_options/input.html:190
-#: mycodo_flask/templates/pages/output.html:318
+#: mycodo_flask/templates/pages/data_options/input.html:216
+#: mycodo_flask/templates/pages/output.html:346
 msgid "Custom Options"
 msgstr "Прилагођене опције"
 
@@ -2959,8 +2954,8 @@ msgid "Address"
 msgstr "Адреса"
 
 #: mycodo_flask/forms/forms_lcd.py:41 mycodo_flask/forms/forms_lcd.py:45
-msgid "I<sup>2</sup>C"
-msgstr "И <суп> 2 </суп> Ц"
+msgid "I2C"
+msgstr ""
 
 #: mycodo_flask/forms/forms_lcd.py:44
 msgid "Bus"
@@ -3889,6 +3884,7 @@ msgid "Controllers"
 msgstr "контролери"
 
 #: mycodo_flask/templates/layout-settings.html:37
+#: mycodo_flask/templates/pages/data_options/input.html:91
 #: mycodo_flask/templates/settings/input.html:41
 #: mycodo_flask/templates/settings/measurement.html:128
 #: mycodo_flask/templates/settings/measurement.html:305
@@ -4511,14 +4507,35 @@ msgstr ""
 msgid "Unconfigured"
 msgstr "Унцонфигуред"
 
-#: mycodo_flask/templates/pages/data_options/input.html:133
-#: mycodo_flask/templates/pages/output.html:259
+#: mycodo_flask/templates/pages/data_options/input.html:113
+#: mycodo_flask/templates/pages/output.html:252
+#: mycodo_flask/templates/settings/input.html:39
+msgid "Manufacturer"
+msgstr "Произвођач"
+
+#: mycodo_flask/templates/pages/data_options/input.html:117
+#: mycodo_flask/templates/pages/output.html:256
+msgid "Datasheet"
+msgstr ""
+
+#: mycodo_flask/templates/pages/data_options/input.html:121
+#: mycodo_flask/templates/pages/output.html:260
+msgid "Product"
+msgstr ""
+
+#: mycodo_flask/templates/pages/data_options/input.html:125
+#: mycodo_flask/templates/pages/output.html:264
+msgid "Additional"
+msgstr ""
+
+#: mycodo_flask/templates/pages/data_options/input.html:159
+#: mycodo_flask/templates/pages/output.html:287
 msgid "Options"
 msgstr ""
 
-#: mycodo_flask/templates/pages/output.html:340
-#: mycodo_flask/templates/pages/output.html:360
-#: mycodo_flask/templates/pages/output.html:380
+#: mycodo_flask/templates/pages/output.html:368
+#: mycodo_flask/templates/pages/output.html:388
+#: mycodo_flask/templates/pages/output.html:408
 msgid "Send"
 msgstr ""
 
@@ -4647,7 +4664,11 @@ msgstr "Сец Он"
 msgid "A numerical value to set the PID setpoint"
 msgstr "Нумеричка вредност за подешавање ПИД задате вредности"
 
-#: mycodo_flask/templates/pages/data_options/input.html:207
+#: mycodo_flask/templates/pages/data_options/input.html:111
+msgid "Literature"
+msgstr ""
+
+#: mycodo_flask/templates/pages/data_options/input.html:233
 #: mycodo_flask/templates/pages/data_options/math.html:132
 #: mycodo_flask/templates/settings/measurement.html:4
 #: mycodo_flask/templates/settings/measurement.html:6
@@ -5770,10 +5791,6 @@ msgstr "Поставке уноса"
 msgid "Imported Input Modules"
 msgstr "Увезени улазни модули"
 
-#: mycodo_flask/templates/settings/input.html:39
-msgid "Manufacturer"
-msgstr "Произвођач"
-
 #: mycodo_flask/templates/settings/measurement.html:185
 #: mycodo_flask/templates/settings/measurement.html:332
 msgid "Units"
@@ -6189,9 +6206,9 @@ msgid "%(msg)s"
 msgstr "%(msg)s"
 
 #: mycodo_flask/utils/utils_general.py:919
-#: mycodo_flask/utils/utils_output.py:422
-#: mycodo_flask/utils/utils_output.py:429
-#: mycodo_flask/utils/utils_output.py:434
+#: mycodo_flask/utils/utils_output.py:423
+#: mycodo_flask/utils/utils_output.py:430
+#: mycodo_flask/utils/utils_output.py:435
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
@@ -6235,7 +6252,7 @@ msgstr ""
 msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr "Период читања не може бити мањи од Пре Оутпут Дуратион"
 
-#: mycodo_flask/utils/utils_input.py:342 mycodo_flask/utils/utils_output.py:274
+#: mycodo_flask/utils/utils_input.py:342 mycodo_flask/utils/utils_output.py:275
 msgid "Invalid device or improper permissions to read device"
 msgstr "Неважећи уређај или неприкладне дозволе за читање уређаја"
 
@@ -6414,51 +6431,51 @@ msgstr "Неважећа количина"
 msgid "Acceptable values"
 msgstr "Прихватљиве вредности"
 
-#: mycodo_flask/utils/utils_output.py:446
+#: mycodo_flask/utils/utils_output.py:447
 msgid "Actuate"
 msgstr "Ацтуате"
 
-#: mycodo_flask/utils/utils_output.py:454
+#: mycodo_flask/utils/utils_output.py:455
 msgid "Cannot modulate output with a GPIO of 0"
 msgstr "Није могуће модулисати излаз са ГПИО од 0"
 
-#: mycodo_flask/utils/utils_output.py:460
+#: mycodo_flask/utils/utils_output.py:461
 msgid "Value must be greater than 0"
 msgstr "Вредност мора бити већа од 0"
 
-#: mycodo_flask/utils/utils_output.py:465
+#: mycodo_flask/utils/utils_output.py:466
 #, python-format
 msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
 msgstr "Излаз је укључен за %(sec)s секунди: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:471
+#: mycodo_flask/utils/utils_output.py:472
 msgid "Invalid pin"
 msgstr "Неважећи пин"
 
-#: mycodo_flask/utils/utils_output.py:473
+#: mycodo_flask/utils/utils_output.py:474
 msgid "PWM Hertz must be a positive value"
 msgstr "ПВМ Хертз мора бити позитивна вриједност"
 
-#: mycodo_flask/utils/utils_output.py:475
+#: mycodo_flask/utils/utils_output.py:476
 msgid "PWM duty cycle must be a positive value"
 msgstr "ПВМ радни циклус мора бити позитивна вриједност"
 
-#: mycodo_flask/utils/utils_output.py:481
+#: mycodo_flask/utils/utils_output.py:482
 #, python-format
 msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 msgstr "ПВМ постављен на %(dc)s %% у %(hertz)s Хз: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:488
+#: mycodo_flask/utils/utils_output.py:489
 #, python-format
 msgid "Output turned on: %(rvalue)s"
 msgstr "Излаз је укључен: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:493
+#: mycodo_flask/utils/utils_output.py:494
 #, python-format
 msgid "Output turned off: %(rvalue)s"
 msgstr "Искључен излаз: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:497
+#: mycodo_flask/utils/utils_output.py:498
 msgid "Invalid value"
 msgstr "Погрешна вредност"
 
@@ -6699,4 +6716,16 @@ msgstr ""
 
 #~ msgid "465 for SSL, 587 for TSL"
 #~ msgstr "465 за ССЛ, 587 за ТСЛ"
+
+#~ msgid "I<sup>2</sup>C Bus"
+#~ msgstr "И <суп> 2 </суп> Ц Бус"
+
+#~ msgid "I<sup>2</sup>C Address"
+#~ msgstr "И <суп> 2 </суп> Ц Адреса"
+
+#~ msgid "Select the library used to communicate"
+#~ msgstr "Изаберите библиотеку која се користи за комуникацију"
+
+#~ msgid "I<sup>2</sup>C"
+#~ msgstr "И <суп> 2 </суп> Ц"
 

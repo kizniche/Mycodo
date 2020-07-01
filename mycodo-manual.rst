@@ -3876,15 +3876,21 @@ Mycodo: Mycodo Version
 
 | Measurements: Version as Major.Minor.Revision
 
-Mycodo: The Things Network Integration: Data Storage
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Mycodo: TTN Integration: Data Storage
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 | Measurements: Variable measurements
+| Dependencies: `requests <https://pypi.org/project/requests>`__
+
+This Input receives and stores measurements from the Data Storage Integration on The Things Network.
 
 Raspberry Pi: CPU/GPU Temperature
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 | Measurements: Temperature
+| Dependencies: `subprocess <https://pypi.org/project/subprocess>`__
+
+The internal CPU and GPU temperature of the Raspberry Pi.
 
 Raspberry Pi: Edge
 ^^^^^^^^^^^^^^^^^^
@@ -4073,6 +4079,7 @@ BOSCH: BME280
 | Manufacturer URL: `Link <https://www.bosch-sensortec.com/bst/products/all_products/bme280>`__
 | Datasheet URL: `Link <https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf>`__
 | Product URL(s): `Link 1 <https://www.adafruit.com/product/2652>`__, `Link 2 <https://www.sparkfun.com/products/13676>`__
+| Additional URL: `Link <https://github.com/cpetrich/counterfeit_DS18B20>`__
 
 BOSCH: BME680
 ^^^^^^^^^^^^^
@@ -4142,7 +4149,7 @@ MAXIM: DS18B20
 ^^^^^^^^^^^^^^
 
 | Measurements: Temperature
-| Dependencies: Input Variant 1: `ow-shell <https://packages.debian.org/buster/ow-shell>`__; Input Variant 2: `w1thermsensor <https://pypi.org/project/w1thermsensor>`__
+| Dependencies: Input Variant 1: `ow-shell <https://packages.debian.org/buster/ow-shell>`__, `subprocess <https://pypi.org/project/subprocess>`__; Input Variant 2: `w1thermsensor <https://pypi.org/project/w1thermsensor>`__
 | Manufacturer URL: `Link <https://www.maximintegrated.com/en/products/sensors/DS18B20.html>`__
 | Datasheet URL: `Link <https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf>`__
 | Product URL(s): `Link 1 <https://www.adafruit.com/product/374>`__, `Link 2 <https://www.adafruit.com/product/381>`__, `Link 3 <https://www.sparkfun.com/products/245>`__
@@ -4252,7 +4259,7 @@ Ruuvi: RuuviTag
 ^^^^^^^^^^^^^^^
 
 | Measurements: Acceleration/Humidity/Pressure/Temperature
-| Dependencies: `python3-dev <https://packages.debian.org/buster/python3-dev>`__, `python3-psutil <https://packages.debian.org/buster/python3-psutil>`__, `bluez <https://packages.debian.org/buster/bluez>`__, `bluez-hcidump <https://packages.debian.org/buster/bluez-hcidump>`__, `ruuvitag_sensor <https://pypi.org/project/ruuvitag_sensor>`__
+| Dependencies: `python3-dev <https://packages.debian.org/buster/python3-dev>`__, `python3-psutil <https://packages.debian.org/buster/python3-psutil>`__, `bluez <https://packages.debian.org/buster/bluez>`__, `bluez-hcidump <https://packages.debian.org/buster/bluez-hcidump>`__, `ruuvitag_sensor <https://pypi.org/project/ruuvitag_sensor>`__, `subprocess <https://pypi.org/project/subprocess>`__
 | Manufacturer URL: `Link <https://ruuvi.com/>`__
 | Datasheet URL: `Link <https://ruuvi.com/files/ruuvitag-tech-spec-2019-7.pdf>`__
 
@@ -4297,12 +4304,14 @@ Sonoff: TH16/10 (Tasmota firmware) with AM2301
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 | Measurements: Humidity/Temperature
+| Dependencies: `requests <https://pypi.org/project/requests>`__
 | Manufacturer URL: `Link <https://sonoff.tech/product/wifi-diy-smart-switches/th10-th16>`__
 
 Sonoff: TH16/10 (Tasmota firmware) with DS18B20
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 | Measurements: Temperature
+| Dependencies: `requests <https://pypi.org/project/requests>`__
 | Manufacturer URL: `Link <https://sonoff.tech/product/wifi-diy-smart-switches/th10-th16>`__
 
 TE Connectivity: HTU21D

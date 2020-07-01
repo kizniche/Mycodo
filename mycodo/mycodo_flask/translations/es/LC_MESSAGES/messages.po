@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2020-05-30 11:49-0400\n"
+"POT-Creation-Date: 2020-06-30 20:39-0400\n"
 "PO-Revision-Date: 2018-08-10 15:21-0400\n"
 "Last-Translator: \n"
 "Language: es\n"
@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.7.0\n"
+"Generated-By: Babel 2.8.0\n"
 
 #: config.py:50
 msgid "Add Dashboard Widget"
@@ -688,11 +688,11 @@ msgid "Volt"
 msgstr "Voltio"
 
 #: config_translations.py:15
-#: mycodo_flask/templates/pages/data_options/input.html:115
+#: mycodo_flask/templates/pages/data_options/input.html:141
 #: mycodo_flask/templates/pages/function_options/action_options/pause_actions.html:8
 #: mycodo_flask/templates/pages/function_options/conditional.html:157
 #: mycodo_flask/templates/pages/function_options/trigger.html:103
-#: mycodo_flask/templates/pages/output.html:245
+#: mycodo_flask/templates/pages/output.html:273
 msgid "Actions"
 msgstr "Comportamiento"
 
@@ -714,7 +714,7 @@ msgstr "Alerta"
 msgid "Average"
 msgstr "Promedio"
 
-#: config_translations.py:25 inputs/ads1256.py:83
+#: config_translations.py:25 inputs/ads1256.py:84
 msgid "Calibration"
 msgstr "Calibración"
 
@@ -1085,7 +1085,7 @@ msgstr "Arriba"
 msgid "Upload"
 msgstr "Subir"
 
-#: config_translations.py:175 inputs/linux_command.py:52
+#: config_translations.py:175 inputs/linux_command.py:54
 msgid "User"
 msgstr "Usuario"
 
@@ -1101,7 +1101,7 @@ msgstr "ID de dispositivo de 1 cable"
 msgid "Select the 1-wire device ID"
 msgstr "Seleccione la ID del dispositivo de 1 cable"
 
-#: config_translations.py:184 inputs/as7262.py:92
+#: config_translations.py:184 inputs/as7262.py:95
 #: mycodo_flask/forms/forms_camera.py:63
 msgid "Gain"
 msgstr "Ganancia"
@@ -1165,7 +1165,7 @@ msgstr "Adaptador BT (hci [X])"
 msgid "The adapter of the Bluetooth device"
 msgstr ""
 
-#: config_translations.py:205 mycodo_flask/routes_calibration.py:746
+#: config_translations.py:205 mycodo_flask/routes_calibration.py:749
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:2
 msgid "Command"
 msgstr "Ordenador"
@@ -1253,16 +1253,16 @@ msgid "Host address or IP"
 msgstr "Dirección de host o IP"
 
 #: config_translations.py:240
-msgid "I<sup>2</sup>C Bus"
-msgstr "I<sup>2</sup>C Bus"
+msgid "I2C Bus"
+msgstr ""
 
 #: config_translations.py:241
 msgid "The I2C bus the device is connected to"
 msgstr "El bus I2C al que está conectado el dispositivo."
 
 #: config_translations.py:243
-msgid "I<sup>2</sup>C Address"
-msgstr "I<sup>2</sup>C Dirección"
+msgid "I2C Address"
+msgstr ""
 
 #: config_translations.py:244
 msgid "The I2C address of the device"
@@ -1425,7 +1425,7 @@ msgstr "Pin MOSI"
 msgid "The GPIO (using BCM numbering) connected to the MOSI pin"
 msgstr "El GPIO (usando numeración BCM) conectado al pin MOSI"
 
-#: config_translations.py:306 inputs/mqtt_paho.py:65
+#: config_translations.py:306 inputs/mqtt_paho.py:67
 msgid "Port"
 msgstr "Puerto"
 
@@ -1497,8 +1497,7 @@ msgstr "Frecuencia (Hertz)"
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
 msgstr "Hertz para emitir la señal PWM (0 - 70,000)"
 
-#: config_translations.py:332 inputs/ds18s20.py:67
-#: mycodo_flask/forms/forms_camera.py:23
+#: config_translations.py:332 mycodo_flask/forms/forms_camera.py:23
 msgid "Library"
 msgstr "Catálogo"
 
@@ -1745,17 +1744,17 @@ msgstr "Nunca permita que el ciclo de trabajo para ir por debajo Min."
 msgid "Always Min (Lower)"
 msgstr "Siempre Min (Baja)"
 
-#: inputs/ads1256.py:84
+#: inputs/ads1256.py:85
 msgid "Set the calibration method to perform during Input activation"
 msgstr ""
 "Configure el método de calibración para realizar durante la activación de"
 " entrada"
 
-#: inputs/ads1x15.py:76
+#: inputs/ads1x15.py:77
 msgid "Measurements to Average"
 msgstr "Las mediciones para promediar"
 
-#: inputs/ads1x15.py:77
+#: inputs/ads1x15.py:78
 msgid ""
 "The number of times to measure each channel. An average of the "
 "measurements will be stored."
@@ -1763,73 +1762,73 @@ msgstr ""
 "El número de veces para medir cada canal. Un promedio de las mediciones "
 "se almacenará."
 
-#: inputs/as7262.py:93
+#: inputs/as7262.py:96
 msgid "Set the sensor gain"
 msgstr "Ajuste la ganancia del sensor"
 
-#: inputs/as7262.py:105
+#: inputs/as7262.py:108
 msgid "Illumination LED Current"
 msgstr "Corriente iluminación LED"
 
-#: inputs/as7262.py:106
+#: inputs/as7262.py:109
 msgid "Set the illumination LED current (milliamps)"
 msgstr "Ajuste la corriente de LED de iluminación (miliamperios)"
 
-#: inputs/as7262.py:116
+#: inputs/as7262.py:119
 msgid "Illumination LED Mode"
 msgstr "Modo de iluminación LED"
 
-#: inputs/as7262.py:117
+#: inputs/as7262.py:120
 msgid "Turn the illumination LED on or off during a measurement"
 msgstr "Girar la iluminación LED encendido o apagado durante una medición"
 
-#: inputs/as7262.py:129
+#: inputs/as7262.py:132
 msgid "Indicator LED Current"
 msgstr "Corriente Indicador LED"
 
-#: inputs/as7262.py:130
+#: inputs/as7262.py:133
 msgid "Set the indicator LED current (milliamps)"
 msgstr "Ajuste la corriente de LED indicador (miliamperios)"
 
-#: inputs/as7262.py:140
+#: inputs/as7262.py:143
 msgid "Indicator LED Mode"
 msgstr "Modo LED indicador"
 
-#: inputs/as7262.py:141
+#: inputs/as7262.py:144
 msgid "Turn the indicator LED on or off during a measurement"
 msgstr "Girar el indicador LED encendido o apagado durante una medición"
 
-#: inputs/as7262.py:149
+#: inputs/as7262.py:152
 msgid "Integration Time"
 msgstr "Tiempo de integración"
 
-#: inputs/as7262.py:150
+#: inputs/as7262.py:153
 msgid "The integration time (0 - ~91 ms)"
 msgstr "El tiempo de integración (0 - ~ 91 ms)"
 
-#: inputs/atlas_do.py:70
+#: inputs/atlas_do.py:73
 msgid "Calibration Max Age"
 msgstr "Calibracion Max Edad"
 
-#: inputs/atlas_do.py:71
+#: inputs/atlas_do.py:74
 msgid "The Max Age (seconds) of the Input/Math to use for calibration"
 msgstr ""
 "La edad máxima (segundos) de la entrada / matemática a usar para la "
 "calibración"
 
-#: inputs/atlas_ec.py:74 inputs/atlas_orp.py:74 inputs/atlas_ph.py:76
+#: inputs/atlas_ec.py:77 inputs/atlas_orp.py:77 inputs/atlas_ph.py:79
 msgid "Temperature Compensation Measurement"
 msgstr "Compensación de temperatura Medición"
 
-#: inputs/atlas_ec.py:75 inputs/atlas_orp.py:75 inputs/atlas_ph.py:77
+#: inputs/atlas_ec.py:78 inputs/atlas_orp.py:78 inputs/atlas_ph.py:80
 msgid "Select a measurement for temperature compensation"
 msgstr "Seleccionar una medida para la compensación de temperatura"
 
-#: inputs/atlas_ec.py:83 inputs/atlas_orp.py:83 inputs/atlas_ph.py:85
+#: inputs/atlas_ec.py:86 inputs/atlas_orp.py:86 inputs/atlas_ph.py:88
 msgid "Temperature Compensation Max Age"
 msgstr "Compensación de temperatura Max Edad"
 
-#: inputs/atlas_ec.py:84 inputs/atlas_orp.py:84 inputs/atlas_ph.py:86
+#: inputs/atlas_ec.py:87 inputs/atlas_orp.py:87 inputs/atlas_ph.py:89
 msgid ""
 "The maximum age (seconds) of the measurement to use for temperature "
 "compensation"
@@ -1837,37 +1836,37 @@ msgstr ""
 "La edad máxima (segundos) de la medición a utilizar para la compensación "
 "de temperatura"
 
-#: inputs/atlas_flow.py:136
+#: inputs/atlas_flow.py:139
 msgid "Flow Meter Type"
 msgstr "Flujo Tipo de medidor"
 
-#: inputs/atlas_flow.py:137
+#: inputs/atlas_flow.py:140
 msgid "Set the type of flow meter used"
 msgstr "Establecer el tipo de medidor de flujo utilizado"
 
-#: inputs/atlas_flow.py:149
+#: inputs/atlas_flow.py:152
 msgid "Atlas Meter Time Base"
 msgstr "Atlas Meter Base Tiempo"
 
-#: inputs/atlas_flow.py:150
+#: inputs/atlas_flow.py:153
 msgid "If using an Atlas Scientific flow meter, set the flow rate/time base"
 msgstr ""
 "Si se utiliza un medidor de flujo Atlas Scientific, establecer la base de"
 " caudal / hora"
 
-#: inputs/atlas_flow.py:167
+#: inputs/atlas_flow.py:170
 msgid "Internal Resistor"
 msgstr "La resistencia interna"
 
-#: inputs/atlas_flow.py:168
+#: inputs/atlas_flow.py:171
 msgid "Set an internal resistor for the flow meter"
 msgstr "Establecer una resistencia interna para el medidor de flujo"
 
-#: inputs/atlas_flow.py:174
+#: inputs/atlas_flow.py:177
 msgid "Custom K Value(s)"
 msgstr "Costumbre K Valor (s)"
 
-#: inputs/atlas_flow.py:175
+#: inputs/atlas_flow.py:178
 msgid ""
 "If using a non-Atlas Scientific flow meter, enter the meter's K value(s)."
 " For a single K value, enter '[volume per pulse],[number of pulses]'. For"
@@ -1881,11 +1880,11 @@ msgstr ""
 "introduzca '[volumen en frecuencia], [frecuencia en Hz]; [volumen en "
 "frecuencia], [frecuencia en Hz]; ...'. Dejar en blanco para desactivar."
 
-#: inputs/atlas_flow.py:188
+#: inputs/atlas_flow.py:191
 msgid "K Value Time Base"
 msgstr "K Base de tiempo Valor"
 
-#: inputs/atlas_flow.py:189
+#: inputs/atlas_flow.py:192
 msgid ""
 "If using a non-Atlas Scientific flow meter, set the flow rate/time base "
 "for the custom K values entered."
@@ -1893,47 +1892,47 @@ msgstr ""
 "Si se utiliza un medidor de flujo no-Atlas científica, establecer la base"
 " caudal / hora para los valores a medida K introducidos."
 
-#: inputs/atlas_pressure.py:52
+#: inputs/atlas_pressure.py:54
 msgid "LED Mode"
 msgstr ""
 
-#: inputs/atlas_pressure.py:53
+#: inputs/atlas_pressure.py:55
 msgid "When to turn the LED on"
 msgstr ""
 
-#: inputs/atlas_rgb.py:111
+#: inputs/atlas_rgb.py:114
 msgid "LED Only For Measure"
 msgstr "LED sólo para la medida"
 
-#: inputs/atlas_rgb.py:112
+#: inputs/atlas_rgb.py:115
 msgid "Turn the LED on only during the measurement"
 msgstr "Encender el LED sólo durante la medición"
 
-#: inputs/atlas_rgb.py:119
+#: inputs/atlas_rgb.py:122
 msgid "LED Percentage"
 msgstr "Porcentaje LED"
 
-#: inputs/atlas_rgb.py:120
+#: inputs/atlas_rgb.py:123
 msgid "What percentage of power to supply to the LEDs during measurement"
 msgstr "¿Qué porcentaje de energía para suministrar a los LED durante la medición"
 
-#: inputs/atlas_rgb.py:127
+#: inputs/atlas_rgb.py:130
 msgid "Gamma Correction"
 msgstr "Corrección gamma"
 
-#: inputs/atlas_rgb.py:128
+#: inputs/atlas_rgb.py:131
 msgid "Gamma correction between 0.01 and 4.99 (default is 1.0)"
 msgstr "corrección Gamma entre 0,01 y 4,99 (por defecto es 1.0)"
 
-#: inputs/atlas_rgb.py:145
+#: inputs/atlas_rgb.py:148
 msgid "Calibrate"
 msgstr ""
 
-#: inputs/bme680.py:171
+#: inputs/bme680.py:177
 msgid "Humidity Oversampling"
 msgstr "humedad sobremuestreo"
 
-#: inputs/bme680.py:172 inputs/bme680.py:188 inputs/bme680.py:204
+#: inputs/bme680.py:178 inputs/bme680.py:194 inputs/bme680.py:210
 msgid ""
 "A higher oversampling value means more stable readings with less noise "
 "and jitter. However each step of oversampling adds ~2 ms latency, causing"
@@ -1944,19 +1943,19 @@ msgstr ""
 "sobremuestreo añade ~ 2 ms de latencia, causando un tiempo de respuesta "
 "más lenta a transitorios rápidos."
 
-#: inputs/bme680.py:187
+#: inputs/bme680.py:193
 msgid "Temperature Oversampling"
 msgstr "sobremuestreo temperatura"
 
-#: inputs/bme680.py:203
+#: inputs/bme680.py:209
 msgid "Pressure Oversampling"
 msgstr "sobremuestreo presión"
 
-#: inputs/bme680.py:221
+#: inputs/bme680.py:227
 msgid "IIR Filter Size"
 msgstr "Tamaño del filtro IIR"
 
-#: inputs/bme680.py:222
+#: inputs/bme680.py:228
 msgid ""
 "Optionally remove short term fluctuations from the temperature and "
 "pressure readings, increasing their resolution but reducing their "
@@ -1966,19 +1965,19 @@ msgstr ""
 "temperatura y de presión, el aumento de su resolución, pero la reducción "
 "de su ancho de banda."
 
-#: inputs/bme680.py:229
+#: inputs/bme680.py:235
 msgid "Gas Heater Temperature (°C)"
 msgstr "Calentador de gas de temperatura (° C)"
 
-#: inputs/bme680.py:230
+#: inputs/bme680.py:236
 msgid "What temperature to set"
 msgstr "¿Qué temperatura de conjunto"
 
-#: inputs/bme680.py:237
+#: inputs/bme680.py:243
 msgid "Gas Heater Duration (ms)"
 msgstr "Calentador de gas Duración (ms)"
 
-#: inputs/bme680.py:238
+#: inputs/bme680.py:244
 msgid ""
 "How long of a duration to heat. 20-30 ms are necessary for the heater to "
 "reach the intended target temperature."
@@ -1986,123 +1985,119 @@ msgstr ""
 "¿Cuánto tiempo de duración para calentar. 20-30 ms son necesarios para el"
 " calentador alcance la temperatura objetivo previsto."
 
-#: inputs/bme680.py:258
+#: inputs/bme680.py:264
 msgid "Gas Heater Profile"
 msgstr "Calentador de gas Perfil"
 
-#: inputs/bme680.py:259
+#: inputs/bme680.py:265
 msgid "Select one of the 10 configured heating durations/set points"
 msgstr ""
 "Seleccione una de las 10 duraciones de calentamiento configurados / "
 "puntos de ajuste"
 
-#: inputs/bme680.py:265
+#: inputs/bme680.py:271
 msgid "Temperature Offset"
 msgstr "compensación de temperatura"
 
-#: inputs/bme680.py:266
+#: inputs/bme680.py:272
 msgid "The amount to offset the temperature, either negative or positive"
 msgstr "La cantidad para compensar la temperatura, ya sea negativo o positivo"
 
-#: inputs/ds18s20.py:68
-msgid "Select the library used to communicate"
-msgstr "Seleccione la biblioteca utilizada para comunicarse"
-
-#: inputs/linux_command.py:44
+#: inputs/linux_command.py:46
 msgid "Command Timeout"
 msgstr "Tiempo de espera de comandos"
 
-#: inputs/linux_command.py:45
+#: inputs/linux_command.py:47
 msgid "How long to wait for the command to finish before killing the process."
 msgstr ""
 "¿Cuánto tiempo para esperar a que el comando termine antes de matar el "
 "proceso."
 
-#: inputs/linux_command.py:53
+#: inputs/linux_command.py:55
 msgid "The user to execute the command."
 msgstr "El usuario ejecutar el comando."
 
-#: inputs/linux_command.py:60
+#: inputs/linux_command.py:62
 msgid "CWD"
 msgstr "CWD"
 
-#: inputs/linux_command.py:61
+#: inputs/linux_command.py:63
 msgid "The current working directory of the shell environment."
 msgstr "El directorio de trabajo actual del entorno de shell."
 
-#: inputs/examples/example_all_options_temperature.py:231 inputs/mh_z19.py:71
-#: inputs/mh_z19b.py:77
+#: inputs/examples/example_all_options_temperature.py:231 inputs/mh_z19.py:73
+#: inputs/mh_z19b.py:80
 msgid "Measurement Range"
 msgstr "Rango de medicion"
 
-#: inputs/examples/example_all_options_temperature.py:232 inputs/mh_z19.py:72
-#: inputs/mh_z19b.py:78
+#: inputs/examples/example_all_options_temperature.py:232 inputs/mh_z19.py:74
+#: inputs/mh_z19b.py:81
 msgid "Set the measuring range of the sensor"
 msgstr "Ajuste el rango de medición del sensor"
 
-#: inputs/mh_z19.py:86 inputs/mh_z19b.py:92
+#: inputs/mh_z19.py:88 inputs/mh_z19b.py:95
 msgid "Calibrate Zero Point"
 msgstr ""
 
-#: inputs/mh_z19.py:92 inputs/mh_z19b.py:98
+#: inputs/mh_z19.py:94 inputs/mh_z19b.py:101
 msgid "Span Point (ppmv)"
 msgstr ""
 
-#: inputs/mh_z19.py:98 inputs/mh_z19b.py:104
+#: inputs/mh_z19.py:100 inputs/mh_z19b.py:107
 msgid "Calibrate Span Point"
 msgstr ""
 
-#: inputs/mh_z19b.py:62
+#: inputs/mh_z19b.py:65
 msgid "Automatic Baseline Correction"
 msgstr ""
 
-#: inputs/mh_z19b.py:63
+#: inputs/mh_z19b.py:66
 msgid "Enable automatic baseline correction (ABC)"
 msgstr "Habilitar la corrección de línea de base automática (ABC)"
 
-#: inputs/mqtt_paho.py:57 mycodo_flask/forms/forms_settings.py:340
+#: inputs/mqtt_paho.py:59 mycodo_flask/forms/forms_settings.py:340
 msgid "Hostname"
 msgstr "Nombre de host"
 
-#: inputs/mqtt_paho.py:58
+#: inputs/mqtt_paho.py:60
 msgid "The hostname of the MQTT server"
 msgstr "El nombre de host del servidor de MQTT"
 
-#: inputs/mqtt_paho.py:66
+#: inputs/mqtt_paho.py:68
 msgid "The port of the MQTT server"
 msgstr "El puerto del servidor MQTT"
 
-#: inputs/mqtt_paho.py:74
+#: inputs/mqtt_paho.py:76
 msgid "Keep Alive"
 msgstr "Mantener viva"
 
-#: inputs/mqtt_paho.py:75
+#: inputs/mqtt_paho.py:77
 msgid "Maximum amount of time between received signals. Set to 0 to disable."
 msgstr ""
 "Cantidad máxima de tiempo entre las señales recibidas. Se establece en 0 "
 "para desactivar."
 
-#: inputs/mqtt_paho.py:82
+#: inputs/mqtt_paho.py:84
 msgid "Client ID"
 msgstr "Identificación del cliente"
 
-#: inputs/mqtt_paho.py:83
+#: inputs/mqtt_paho.py:85
 msgid "Unique client ID for connecting to the MQTT server"
 msgstr "ID de cliente único para la conexión con el servidor MQTT"
 
-#: inputs/sht31_smart_gadget.py:102
+#: inputs/sht31_smart_gadget.py:104
 msgid "Download Stored Data"
 msgstr "Descargar datos almacenados"
 
-#: inputs/sht31_smart_gadget.py:103
+#: inputs/sht31_smart_gadget.py:105
 msgid "Download the data logged to the device."
 msgstr "Descargue los datos registrados en el dispositivo."
 
-#: inputs/sht31_smart_gadget.py:111
+#: inputs/sht31_smart_gadget.py:113
 msgid "Set Logging Interval"
 msgstr "Establecer intervalo de registro"
 
-#: inputs/sht31_smart_gadget.py:112
+#: inputs/sht31_smart_gadget.py:114
 msgid ""
 "Set the logging interval (seconds) the device will store measurements on "
 "its internal memory."
@@ -2110,11 +2105,11 @@ msgstr ""
 "Establezca el intervalo de registro (segundos) que el dispositivo "
 "almacenará las mediciones en su memoria interna."
 
-#: inputs/sht3x.py:85
+#: inputs/sht3x.py:87
 msgid "Enable Heater"
 msgstr "Habilitar el calentador"
 
-#: inputs/sht3x.py:86
+#: inputs/sht3x.py:88
 msgid ""
 "Enable heater to evaporate condensation. Turn on heater x seconds every y"
 " measurements."
@@ -2122,51 +2117,51 @@ msgstr ""
 "Habilitar el calentador para evaporar la condensación. Encienda el "
 "calentador x segundos cada y medidas."
 
-#: inputs/sht3x.py:94
+#: inputs/sht3x.py:96
 msgid "Heater On Seconds"
 msgstr "Calentador en segundos"
 
-#: inputs/sht3x.py:95
+#: inputs/sht3x.py:97
 msgid "How long to turn the heater on (seconds)."
 msgstr "Cuánto tiempo se debe encender el calentador (segundos)."
 
-#: inputs/sht3x.py:102
+#: inputs/sht3x.py:104
 msgid "Heater On Period"
 msgstr "Calentador en el período"
 
-#: inputs/sht3x.py:103
+#: inputs/sht3x.py:105
 msgid "After how many measurements to turn the heater on. This will repeat."
 msgstr "Después de cuántas medidas para encender el calentador. Esto se repetirá."
 
-#: inputs/th1x_am2301.py:57 inputs/th1x_ds18b20.py:43
+#: inputs/th1x_am2301.py:64 inputs/th1x_ds18b20.py:50
 msgid "IP Address"
 msgstr "Dirección IP"
 
-#: inputs/th1x_am2301.py:58 inputs/th1x_ds18b20.py:44
+#: inputs/th1x_am2301.py:65 inputs/th1x_ds18b20.py:51
 msgid "The IP address of the device"
 msgstr "La dirección IP del dispositivo."
 
-#: inputs/ttn_data_storage.py:67
+#: inputs/ttn_data_storage.py:75
 msgid "Application ID"
 msgstr "ID de aplicación"
 
-#: inputs/ttn_data_storage.py:68
+#: inputs/ttn_data_storage.py:76
 msgid "The Things Network Application ID"
 msgstr "El ID de aplicación Cosas Red"
 
-#: inputs/ttn_data_storage.py:75
+#: inputs/ttn_data_storage.py:83
 msgid "App API Key"
 msgstr "Aplicación clave de API"
 
-#: inputs/ttn_data_storage.py:76
+#: inputs/ttn_data_storage.py:84
 msgid "The Things Network Application API Key"
 msgstr "La aplicación API Key Cosas Red"
 
-#: inputs/ttn_data_storage.py:83
+#: inputs/ttn_data_storage.py:91
 msgid "Device ID"
 msgstr "ID del dispositivo"
 
-#: inputs/ttn_data_storage.py:84
+#: inputs/ttn_data_storage.py:92
 msgid "The Things Network Device ID"
 msgstr "El ID de dispositivo de red Cosas"
 
@@ -2191,32 +2186,32 @@ msgid "Set I2C Address"
 msgstr ""
 
 #: inputs/examples/example_all_options_temperature.py:209
-#: inputs/winsen_zh03b.py:71
+#: inputs/winsen_zh03b.py:75
 msgid "Fan Off After Measure"
 msgstr "Ventilador apagado después de la medida"
 
 #: inputs/examples/example_all_options_temperature.py:210
-#: inputs/winsen_zh03b.py:72
+#: inputs/winsen_zh03b.py:76
 msgid "Turn the fan on only during the measurement"
 msgstr "Encienda el ventilador solo durante la medición"
 
 #: inputs/examples/example_all_options_temperature.py:217
-#: inputs/winsen_zh03b.py:79
+#: inputs/winsen_zh03b.py:83
 msgid "Fan On Duration"
 msgstr "Duración del ventilador"
 
 #: inputs/examples/example_all_options_temperature.py:218
-#: inputs/winsen_zh03b.py:80
+#: inputs/winsen_zh03b.py:84
 msgid "How long to turn the fan on (seconds) before acquiring measurements"
 msgstr ""
 "Cuánto tiempo se debe encender el ventilador (segundos) antes de adquirir"
 " mediciones"
 
-#: inputs/winsen_zh03b.py:87 mycodo_flask/forms/forms_input.py:91
+#: inputs/winsen_zh03b.py:91 mycodo_flask/forms/forms_input.py:91
 msgid "Number of Measurements"
 msgstr "Número de mediciones"
 
-#: inputs/winsen_zh03b.py:88
+#: inputs/winsen_zh03b.py:92
 msgid ""
 "How many measurements to acquire. If more than 1 are acquired that are "
 "less than 1001, the average of the measurements will be stored."
@@ -2224,11 +2219,11 @@ msgstr ""
 "¿Cuántas mediciones de adquirir. Si hay más de 1 son adquiridas que son "
 "de menos de 1001, el promedio de las mediciones se almacenará."
 
-#: inputs/examples/bme280_ttn.py:92 inputs/examples/k30_ttn.py:65
+#: inputs/examples/bme280_ttn.py:99 inputs/examples/k30_ttn.py:65
 msgid "Serial Device"
 msgstr "dispositivo de serie"
 
-#: inputs/examples/bme280_ttn.py:93 inputs/examples/k30_ttn.py:66
+#: inputs/examples/bme280_ttn.py:100 inputs/examples/k30_ttn.py:66
 msgid "The serial device to write to"
 msgstr "El dispositivo serie escribir en"
 
@@ -2256,7 +2251,7 @@ msgstr ""
 msgid "Option One Value"
 msgstr ""
 
-#: mycodo_flask/app.py:205
+#: mycodo_flask/app.py:206
 msgid "Please log in to access this page"
 msgstr "Inicie sesión para acceder a esta página"
 
@@ -2369,19 +2364,19 @@ msgstr "Cerrado con éxito"
 msgid "A valid temperature is required: %(temp)s is invalid."
 msgstr "Se requiere una temperatura válida: %(temp)s no es válido."
 
-#: mycodo_flask/routes_general.py:993 mycodo_flask/routes_general.py:1007
+#: mycodo_flask/routes_general.py:996 mycodo_flask/routes_general.py:1010
 msgid "Command to restart the daemon sent"
 msgstr "Comando para reiniciar el daemon enviado"
 
-#: mycodo_flask/routes_general.py:996 mycodo_flask/routes_general.py:1009
+#: mycodo_flask/routes_general.py:999 mycodo_flask/routes_general.py:1012
 msgid "Command to reload the frontend sent"
 msgstr "Comando para volver a cargar la interfaz enviada"
 
-#: mycodo_flask/routes_general.py:1003
+#: mycodo_flask/routes_general.py:1006
 msgid "System rebooting in 10 seconds"
 msgstr "Reinicio del sistema en 10 segundos"
 
-#: mycodo_flask/routes_general.py:1005
+#: mycodo_flask/routes_general.py:1008
 msgid "System shutting down in 10 seconds"
 msgstr "El sistema se apaga en 10 segundos"
 
@@ -2595,8 +2590,8 @@ msgid "White Balance"
 msgstr "Balance de Blancos"
 
 #: mycodo_flask/forms/forms_camera.py:70
-#: mycodo_flask/templates/pages/data_options/input.html:190
-#: mycodo_flask/templates/pages/output.html:318
+#: mycodo_flask/templates/pages/data_options/input.html:216
+#: mycodo_flask/templates/pages/output.html:346
 msgid "Custom Options"
 msgstr "Opciones personalizadas"
 
@@ -2985,8 +2980,8 @@ msgid "Address"
 msgstr "Dirección"
 
 #: mycodo_flask/forms/forms_lcd.py:41 mycodo_flask/forms/forms_lcd.py:45
-msgid "I<sup>2</sup>C"
-msgstr "I <sup> 2 </sup> C"
+msgid "I2C"
+msgstr ""
 
 #: mycodo_flask/forms/forms_lcd.py:44
 msgid "Bus"
@@ -3917,6 +3912,7 @@ msgid "Controllers"
 msgstr "controladores"
 
 #: mycodo_flask/templates/layout-settings.html:37
+#: mycodo_flask/templates/pages/data_options/input.html:91
 #: mycodo_flask/templates/settings/input.html:41
 #: mycodo_flask/templates/settings/measurement.html:128
 #: mycodo_flask/templates/settings/measurement.html:305
@@ -4557,14 +4553,35 @@ msgstr ""
 msgid "Unconfigured"
 msgstr "Desconfigurado"
 
-#: mycodo_flask/templates/pages/data_options/input.html:133
-#: mycodo_flask/templates/pages/output.html:259
+#: mycodo_flask/templates/pages/data_options/input.html:113
+#: mycodo_flask/templates/pages/output.html:252
+#: mycodo_flask/templates/settings/input.html:39
+msgid "Manufacturer"
+msgstr "Fabricante"
+
+#: mycodo_flask/templates/pages/data_options/input.html:117
+#: mycodo_flask/templates/pages/output.html:256
+msgid "Datasheet"
+msgstr ""
+
+#: mycodo_flask/templates/pages/data_options/input.html:121
+#: mycodo_flask/templates/pages/output.html:260
+msgid "Product"
+msgstr ""
+
+#: mycodo_flask/templates/pages/data_options/input.html:125
+#: mycodo_flask/templates/pages/output.html:264
+msgid "Additional"
+msgstr ""
+
+#: mycodo_flask/templates/pages/data_options/input.html:159
+#: mycodo_flask/templates/pages/output.html:287
 msgid "Options"
 msgstr ""
 
-#: mycodo_flask/templates/pages/output.html:340
-#: mycodo_flask/templates/pages/output.html:360
-#: mycodo_flask/templates/pages/output.html:380
+#: mycodo_flask/templates/pages/output.html:368
+#: mycodo_flask/templates/pages/output.html:388
+#: mycodo_flask/templates/pages/output.html:408
 msgid "Send"
 msgstr ""
 
@@ -4693,7 +4710,11 @@ msgstr "Sec en"
 msgid "A numerical value to set the PID setpoint"
 msgstr "Un valor numérico para establecer el punto de ajuste PID"
 
-#: mycodo_flask/templates/pages/data_options/input.html:207
+#: mycodo_flask/templates/pages/data_options/input.html:111
+msgid "Literature"
+msgstr ""
+
+#: mycodo_flask/templates/pages/data_options/input.html:233
 #: mycodo_flask/templates/pages/data_options/math.html:132
 #: mycodo_flask/templates/settings/measurement.html:4
 #: mycodo_flask/templates/settings/measurement.html:6
@@ -5861,10 +5882,6 @@ msgstr "Ajustes de entrada"
 msgid "Imported Input Modules"
 msgstr "Módulos de entrada importados"
 
-#: mycodo_flask/templates/settings/input.html:39
-msgid "Manufacturer"
-msgstr "Fabricante"
-
 #: mycodo_flask/templates/settings/measurement.html:185
 #: mycodo_flask/templates/settings/measurement.html:332
 msgid "Units"
@@ -6286,9 +6303,9 @@ msgid "%(msg)s"
 msgstr "%(msg)s"
 
 #: mycodo_flask/utils/utils_general.py:919
-#: mycodo_flask/utils/utils_output.py:422
-#: mycodo_flask/utils/utils_output.py:429
-#: mycodo_flask/utils/utils_output.py:434
+#: mycodo_flask/utils/utils_output.py:423
+#: mycodo_flask/utils/utils_output.py:430
+#: mycodo_flask/utils/utils_output.py:435
 #, python-format
 msgid "%(err)s"
 msgstr "%(err)s"
@@ -6332,7 +6349,7 @@ msgstr ""
 msgid "The Read Period cannot be less than the Pre Output Duration"
 msgstr "El período de lectura no puede ser menor que la duración de pre salida"
 
-#: mycodo_flask/utils/utils_input.py:342 mycodo_flask/utils/utils_output.py:274
+#: mycodo_flask/utils/utils_input.py:342 mycodo_flask/utils/utils_output.py:275
 msgid "Invalid device or improper permissions to read device"
 msgstr "Dispositivo no válido o permisos incorrectos para leer el dispositivo"
 
@@ -6514,53 +6531,53 @@ msgstr "Cantidad no válida"
 msgid "Acceptable values"
 msgstr "Valores aceptables"
 
-#: mycodo_flask/utils/utils_output.py:446
+#: mycodo_flask/utils/utils_output.py:447
 msgid "Actuate"
 msgstr "Accionar"
 
-#: mycodo_flask/utils/utils_output.py:454
+#: mycodo_flask/utils/utils_output.py:455
 msgid "Cannot modulate output with a GPIO of 0"
 msgstr ""
 "39/5000\n"
 "No se puede modular la salida con un GPIO de 0"
 
-#: mycodo_flask/utils/utils_output.py:460
+#: mycodo_flask/utils/utils_output.py:461
 msgid "Value must be greater than 0"
 msgstr "El valor debe ser mayor que 0"
 
-#: mycodo_flask/utils/utils_output.py:465
+#: mycodo_flask/utils/utils_output.py:466
 #, python-format
 msgid "Output turned on for %(sec)s seconds: %(rvalue)s"
 msgstr "Salida activada por %(sec)s segundos: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:471
+#: mycodo_flask/utils/utils_output.py:472
 msgid "Invalid pin"
 msgstr "Pin inválido"
 
-#: mycodo_flask/utils/utils_output.py:473
+#: mycodo_flask/utils/utils_output.py:474
 msgid "PWM Hertz must be a positive value"
 msgstr "PWM Hertz debe ser un valor positivo"
 
-#: mycodo_flask/utils/utils_output.py:475
+#: mycodo_flask/utils/utils_output.py:476
 msgid "PWM duty cycle must be a positive value"
 msgstr "El ciclo de trabajo de PWM debe ser un valor positivo"
 
-#: mycodo_flask/utils/utils_output.py:481
+#: mycodo_flask/utils/utils_output.py:482
 #, python-format
 msgid "PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s"
 msgstr "PWM establecido en %(dc)s %% en %(hertz)s Hz: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:488
+#: mycodo_flask/utils/utils_output.py:489
 #, python-format
 msgid "Output turned on: %(rvalue)s"
 msgstr "Salida activada: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:493
+#: mycodo_flask/utils/utils_output.py:494
 #, python-format
 msgid "Output turned off: %(rvalue)s"
 msgstr "Salida desactivada: %(rvalue)s"
 
-#: mycodo_flask/utils/utils_output.py:497
+#: mycodo_flask/utils/utils_output.py:498
 msgid "Invalid value"
 msgstr "Valor no válido"
 
@@ -6803,4 +6820,16 @@ msgstr ""
 
 #~ msgid "465 for SSL, 587 for TSL"
 #~ msgstr "465 para SSL, 587 para TSL"
+
+#~ msgid "I<sup>2</sup>C Bus"
+#~ msgstr "I<sup>2</sup>C Bus"
+
+#~ msgid "I<sup>2</sup>C Address"
+#~ msgstr "I<sup>2</sup>C Dirección"
+
+#~ msgid "Select the library used to communicate"
+#~ msgstr "Seleccione la biblioteca utilizada para comunicarse"
+
+#~ msgid "I<sup>2</sup>C"
+#~ msgstr "I <sup> 2 </sup> C"
 

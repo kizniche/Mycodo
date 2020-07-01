@@ -96,6 +96,6 @@ class Input(CRUDMixin, db.Model):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
 
-class InputSchema(ma.ModelSchema):
+class InputSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Input

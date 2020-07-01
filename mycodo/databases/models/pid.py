@@ -60,6 +60,6 @@ class PID(CRUDMixin, db.Model):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
 
-class PIDSchema(ma.ModelSchema):
+class PIDSchema(ma.SQLAlchemySchema):
     class Meta:
         model = PID
