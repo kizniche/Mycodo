@@ -29,6 +29,7 @@
             {%- else -%}<span style="color: #F70D1A; font-weight: bold;">{{_('No')}}</span>
             {%- endif -%}
         {% endif %}
+        <br>{{_('Frontend Process ID')}}: <span style="color: #4E9258; font-weight: bold;">{{frontend_pid}}</span>
         <br>{{_('Frontend RAM Usage')}}: <span style="color: #4E9258; font-weight: bold;">{{ram_use_flask}} MB</span>
         <br>{{_('Frontend Virtualenv')}}:&nbsp
         {%- if virtualenv_flask -%}<span style="color: #4E9258; font-weight: bold;">{{_('Yes')}}</span>
