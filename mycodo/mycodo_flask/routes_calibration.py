@@ -272,8 +272,8 @@ def setup_atlas_flow():
                     input_device_name = each_input[1]
         if selected_input.is_activated:
             control = DaemonControl()
-            return_status, return_string = control.input_atlas_flow_clear_total_volume(
-                selected_input.unique_id)
+            return_status, return_string = control.custom_button(
+                "Input", selected_input.unique_id, "clear_total_volume", {})
         else:
             atlas_command = AtlasScientificCommand(selected_input)
             return_status, return_string = atlas_command.send_command('Clear')

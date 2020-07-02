@@ -1,3 +1,10 @@
+## 8.5.7 (Unreleased)
+
+### Miscellaneous
+
+ - Move clear total volume function for Atlas Scientific Flow Meter to Input Module
+
+
 ## 8.5.6 (2020-06-30)
 
 ### Bugfixes

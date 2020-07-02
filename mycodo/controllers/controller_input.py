@@ -556,11 +556,7 @@ class InputController(AbstractController, threading.Thread):
         """Execute function from custom action button press"""
         self.button_args_dict = args_dict
         self.button_pressed = button_id
-        return 0, "Button press sent to Input Controller"
-
-    def clear_total_volume(self):
-        """Only for Atlas Scientific Flow sensor"""
-        return self.measure_input.clear_total_volume()
+        return 0, "Command sent to Input Controller"
 
     def pre_stop(self):
         # Execute stop_input() if not EDGE or ADC

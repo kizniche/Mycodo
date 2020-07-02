@@ -351,5 +351,5 @@ class InputModule(AbstractInput):
 
         return self.return_dict
 
-    def calibrate(self):
+    def calibrate(self, args_dict):
         self.atlas_sensor.query('Cal')

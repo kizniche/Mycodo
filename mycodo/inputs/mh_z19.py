@@ -231,7 +231,7 @@ class InputModule(AbstractInput):
         # request = b"\xff\x01\x88" + byte3 + byte4 + b"\x00\x00\x00" + c
         # self.ser.write(request)
 
-    def calibrate_zero_point(self):
+    def calibrate_zero_point(self, args_dict):
         """
         Zero Point Calibration
         from https://github.com/UedaTakeyuki/mh-z19

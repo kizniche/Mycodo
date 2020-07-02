@@ -191,6 +191,15 @@ INPUT_INFORMATION = {
             'name': lazy_gettext('K Value Time Base'),
             'phrase': lazy_gettext('If using a non-Atlas Scientific flow meter, set the flow rate/time base for the custom K values entered.')
         },
+    ],
+
+    'custom_actions_message': 'The total volume can be cleared with the following button or as a Function Action.',
+    'custom_actions': [
+        {
+            'id': 'clear_total_volume',
+            'type': 'button',
+            'name': lazy_gettext('Clear Total Volume')
+        }
     ]
 }
 
@@ -435,7 +444,7 @@ class InputModule(AbstractInput):
 
         return self.return_dict
 
-    def clear_total_volume(self):
+    def clear_total_volume(self, args_dict):
         while self.sensor_is_measuring:
             time.sleep(0.1)
         self.sensor_is_clearing = True

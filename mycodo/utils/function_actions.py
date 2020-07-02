@@ -270,8 +270,8 @@ def action_clear_flow_meter_total_volume(cond_action, message):
         id=this_input.id,
         name=this_input.name)
     clear_volume = threading.Thread(
-        target=control.input_atlas_flow_clear_total_volume,
-        args=(this_input.unique_id,))
+        target=control.custom_button,
+        args=("Input", this_input.unique_id, "clear_total_volume", {},))
     clear_volume.start()
     return message
 

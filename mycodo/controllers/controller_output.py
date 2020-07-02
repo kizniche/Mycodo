@@ -960,4 +960,4 @@ class OutputController(AbstractController, threading.Thread):
         self.button_args_dict = args_dict
         self.button_output_id = output_id
         self.button_pressed = button_id
-        return 0, "Button press sent to Output Controller"
+        return 0, "Command sent to Output Controller"
