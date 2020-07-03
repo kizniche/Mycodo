@@ -47,7 +47,6 @@ INPUT_INFORMATION = {
         'https://www.adafruit.com/product/2652',
         'https://www.sparkfun.com/products/13676'
     ],
-    'url_additional': 'https://github.com/cpetrich/counterfeit_DS18B20',
 
     'options_enabled': [
         'i2c_location',

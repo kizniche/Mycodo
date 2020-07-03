@@ -112,10 +112,11 @@ if __name__ == "__main__":
                             out_file.write("\n")
 
                 if 'url_manufacturer' in each_data and each_data['url_manufacturer']:
+                    out_file.write("| Manufacturer URL")
                     if len(each_data['url_manufacturer']) == 1:
-                        out_file.write("| Manufacturer URL: ")
+                        out_file.write(": ")
                     else:
-                        out_file.write("| Manufacturer URL(s): ")
+                        out_file.write("s: ")
                     for i, each_url in enumerate(each_data['url_manufacturer']):
                         if len(each_data['url_manufacturer']) == 1:
                             out_file.write("`Link <{}>`__".format(each_url))
@@ -127,10 +128,11 @@ if __name__ == "__main__":
                             out_file.write("\n")
 
                 if 'url_datasheet' in each_data and each_data['url_datasheet']:
+                    out_file.write("| Datasheet URL")
                     if len(each_data['url_datasheet']) == 1:
-                        out_file.write("| Datasheet URL: ")
+                        out_file.write(": ")
                     else:
-                        out_file.write("| Datasheet URL(s): ")
+                        out_file.write("s: ")
                     for i, each_url in enumerate(each_data['url_datasheet']):
                         if len(each_data['url_datasheet']) == 1:
                             out_file.write("`Link <{}>`__".format(each_url))
@@ -142,10 +144,11 @@ if __name__ == "__main__":
                             out_file.write("\n")
 
                 if 'url_product_purchase' in each_data and each_data['url_product_purchase']:
+                    out_file.write("| Product URL")
                     if len(each_data['url_product_purchase']) == 1:
-                        out_file.write("| Product URL: ")
+                        out_file.write(": ")
                     else:
-                        out_file.write("| Product URL(s): ")
+                        out_file.write("s: ")
                     for i, each_url in enumerate(each_data['url_product_purchase']):
                         if len(each_data['url_product_purchase']) == 1:
                             out_file.write("`Link <{}>`__".format(each_url))
