@@ -3959,7 +3959,7 @@ AMS: CCS811
 | Dependencies: `Adafruit_CCS811 <https://pypi.org/project/Adafruit_CCS811>`__, `Adafruit_GPIO <https://pypi.org/project/Adafruit_GPIO>`__
 | Manufacturer URL: `Link <https://www.sciosense.com/products/environmental-sensors/ccs811-gas-sensor-solution/>`__
 | Datasheet URL: `Link <https://www.sciosense.com/wp-content/uploads/2020/01/CCS811-Datasheet.pdf>`__
-| Product URL(s): `Link 1 <https://www.adafruit.com/product/3566>`__, `Link 2 <https://www.sparkfun.com/products/14193>`__
+| Product URLs: `Link 1 <https://www.adafruit.com/product/3566>`__, `Link 2 <https://www.sparkfun.com/products/14193>`__
 
 AMS: TSL2561
 ^^^^^^^^^^^^
@@ -4078,8 +4078,7 @@ BOSCH: BME280
 | Dependencies: Input Variant 1: `Adafruit_GPIO <https://pypi.org/project/Adafruit_GPIO>`__, `Adafruit_BME280 <https://github.com/adafruit/Adafruit_Python_BME280>`__; Input Variant 2: `RPi.bme280 <https://pypi.org/project/RPi.bme280>`__
 | Manufacturer URL: `Link <https://www.bosch-sensortec.com/bst/products/all_products/bme280>`__
 | Datasheet URL: `Link <https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf>`__
-| Product URL(s): `Link 1 <https://www.adafruit.com/product/2652>`__, `Link 2 <https://www.sparkfun.com/products/13676>`__
-| Additional URL: `Link <https://github.com/cpetrich/counterfeit_DS18B20>`__
+| Product URLs: `Link 1 <https://www.adafruit.com/product/2652>`__, `Link 2 <https://www.sparkfun.com/products/13676>`__
 
 BOSCH: BME680
 ^^^^^^^^^^^^^
@@ -4088,7 +4087,7 @@ BOSCH: BME680
 | Dependencies: `bme680 <https://pypi.org/project/bme680>`__, `smbus2 <https://pypi.org/project/smbus2>`__
 | Manufacturer URL: `Link <https://www.bosch-sensortec.com/products/environmental-sensors/gas-sensors-bme680/>`__
 | Datasheet URL: `Link <https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme680-ds001.pdf>`__
-| Product URL(s): `Link 1 <https://www.adafruit.com/product/3660>`__, `Link 2 <https://www.sparkfun.com/products/16466>`__
+| Product URLs: `Link 1 <https://www.adafruit.com/product/3660>`__, `Link 2 <https://www.sparkfun.com/products/16466>`__
 
 BOSCH: BMP180
 ^^^^^^^^^^^^^
@@ -4152,7 +4151,10 @@ MAXIM: DS18B20
 | Dependencies: Input Variant 1: `ow-shell <https://packages.debian.org/buster/ow-shell>`__, `subprocess <https://pypi.org/project/subprocess>`__; Input Variant 2: `w1thermsensor <https://pypi.org/project/w1thermsensor>`__
 | Manufacturer URL: `Link <https://www.maximintegrated.com/en/products/sensors/DS18B20.html>`__
 | Datasheet URL: `Link <https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf>`__
-| Product URL(s): `Link 1 <https://www.adafruit.com/product/374>`__, `Link 2 <https://www.adafruit.com/product/381>`__, `Link 3 <https://www.sparkfun.com/products/245>`__
+| Product URLs: `Link 1 <https://www.adafruit.com/product/374>`__, `Link 2 <https://www.adafruit.com/product/381>`__, `Link 3 <https://www.sparkfun.com/products/245>`__
+| Additional URL: `Link <https://github.com/cpetrich/counterfeit_DS18B20>`__
+
+Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. Review the Additional URL for more information about how to determine if your sensor is authentic.
 
 MAXIM: DS18S20
 ^^^^^^^^^^^^^^
@@ -4229,8 +4231,8 @@ Microchip: MCP342x (x=2,3,4,6,7,8)
 
 | Measurements: Voltage (Analog-to-Digital Converter)
 | Dependencies: `smbus2 <https://pypi.org/project/smbus2>`__, `MCP342x <https://pypi.org/project/MCP342x>`__
-| Manufacturer URL(s): `Link 1 <https://www.microchip.com/wwwproducts/en/MCP3422>`__, `Link 2 <https://www.microchip.com/wwwproducts/en/MCP3423>`__, `Link 3 <https://www.microchip.com/wwwproducts/en/MCP3424>`__, `Link 4 <https://www.microchip.com/wwwproducts/en/MCP3426https://www.microchip.com/wwwproducts/en/MCP3427>`__, `Link 5 <https://www.microchip.com/wwwproducts/en/MCP3428>`__
-| Datasheet URL(s): `Link 1 <http://ww1.microchip.com/downloads/en/DeviceDoc/22088c.pdf>`__, `Link 2 <http://ww1.microchip.com/downloads/en/DeviceDoc/22226a.pdf>`__
+| Manufacturer URLs: `Link 1 <https://www.microchip.com/wwwproducts/en/MCP3422>`__, `Link 2 <https://www.microchip.com/wwwproducts/en/MCP3423>`__, `Link 3 <https://www.microchip.com/wwwproducts/en/MCP3424>`__, `Link 4 <https://www.microchip.com/wwwproducts/en/MCP3426https://www.microchip.com/wwwproducts/en/MCP3427>`__, `Link 5 <https://www.microchip.com/wwwproducts/en/MCP3428>`__
+| Datasheet URLs: `Link 1 <http://ww1.microchip.com/downloads/en/DeviceDoc/22088c.pdf>`__, `Link 2 <http://ww1.microchip.com/downloads/en/DeviceDoc/22226a.pdf>`__
 
 Microchip: MCP9808
 ^^^^^^^^^^^^^^^^^^
@@ -4270,14 +4272,14 @@ STMicroelectronics: VL53L0X
 | Dependencies: `VL53L0X <https://github.com/grantramsay/VL53L0X_rasp_python>`__
 | Manufacturer URL: `Link <https://www.st.com/en/imaging-and-photonics-solutions/vl53l0x.html>`__
 | Datasheet URL: `Link <https://www.st.com/resource/en/datasheet/vl53l0x.pdf>`__
-| Product URL(s): `Link 1 <https://www.adafruit.com/product/3317>`__, `Link 2 <https://www.pololu.com/product/2490>`__
+| Product URLs: `Link 1 <https://www.adafruit.com/product/3317>`__, `Link 2 <https://www.pololu.com/product/2490>`__
 
 Sensirion: SHT1x/7x
 ^^^^^^^^^^^^^^^^^^^
 
 | Measurements: Humidity/Temperature
 | Dependencies: `sht_sensor <https://pypi.org/project/sht_sensor>`__
-| Manufacturer URL(s): `Link 1 <https://www.sensirion.com/en/environmental-sensors/humidity-sensors/digital-humidity-sensors-for-accurate-measurements/>`__, `Link 2 <https://www.sensirion.com/en/environmental-sensors/humidity-sensors/pintype-digital-humidity-sensors/>`__
+| Manufacturer URLs: `Link 1 <https://www.sensirion.com/en/environmental-sensors/humidity-sensors/digital-humidity-sensors-for-accurate-measurements/>`__, `Link 2 <https://www.sensirion.com/en/environmental-sensors/humidity-sensors/pintype-digital-humidity-sensors/>`__
 
 Sensirion: SHT2x
 ^^^^^^^^^^^^^^^^

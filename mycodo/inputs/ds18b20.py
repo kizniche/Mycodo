@@ -29,6 +29,9 @@ INPUT_INFORMATION = {
     ],
     'url_additional': 'https://github.com/cpetrich/counterfeit_DS18B20',
 
+    'message': 'Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. Review the Additional '
+               'URL for more information about how to determine if your sensor is authentic.',
+
     'options_enabled': [
         'location',
         'resolution',

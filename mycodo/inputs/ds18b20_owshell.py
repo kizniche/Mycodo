@@ -28,6 +28,10 @@ INPUT_INFORMATION = {
         'https://www.adafruit.com/product/381',
         'https://www.sparkfun.com/products/245'
     ],
+    'url_additional': 'https://github.com/cpetrich/counterfeit_DS18B20',
+
+    'message': 'Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. Review the Additional '
+               'URL for more information about how to determine if your sensor is authentic.',
 
     'options_enabled': [
         'location',
