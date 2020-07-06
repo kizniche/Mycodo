@@ -128,7 +128,7 @@ int main(int argc, char *argv[]) {
 			char restoreScript[1024];
 			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
 			strncat(restoreScript, path, sizeof(restoreScript));
-			sprintf(cmd, "/dependencies.sh %s", argv[3]);
+			sprintf(cmd, "/dependencies.sh internal %s", argv[3]);
 			strncat(restoreScript, cmd, sizeof(restoreScript));
 			system(restoreScript);
         } else if (strcmp(argv[1], "install_pigpiod") == 0) {
