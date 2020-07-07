@@ -1,8 +1,25 @@
-## 8.5.7 (Unreleased)
+## 8.6.0 (Unreleased)
+
+This update adds a Generic Peristaltic Pump Output to compliment the Atlas Scientific (AS) Peristaltic Pump Output. Generic peristaltic pumps are significantly less expensive yet can have just as accurate dispensing. Once your pump's flow rate has been measured, your generic peristaltic pump can be used to dispense specific volumes if liquid just like the AS pumps.
+
+WARNING: As a result of how this new output operates, a potentially breaking change has been introduced. If you use any custom Output modules, you will need to add the parameter output_type=None to the output_switch() function of all of your custom Output controllers. If you do not, the Mycodo daemon/backend will fail to start after upgrading to or beyond this version. It is advised to modify your custom Output modules prior to upgrading to ensure the daemon successfully starts after the upgrade.
+
+### Features
+
+ - Add Output: Generic Peristaltic Pump
+ - Add ability to turn Atlas Scientific peristaltic pumps on for durations
+ - Add Function Action: Output (Volume)
 
 ### Miscellaneous
 
  - Move clear total volume function for Atlas Scientific Flow Meter to Input Module
+
+
+## 8.5.7 (2020-07-07)
+
+### Bugfixes
+
+ - Fix inability to install internal dependencies (pigpio, bcm2835, etc.) ([#783](https://github.com/kizniche/mycodo/issues/783))
 
 
 ## 8.5.6 (2020-06-30)
