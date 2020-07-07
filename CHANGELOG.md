@@ -15,6 +15,13 @@ WARNING: As a result of how this new output operates, a potentially breaking cha
  - Move clear total volume function for Atlas Scientific Flow Meter to Input Module
 
 
+## 8.5.8 (2020-07-07)
+
+### Bugfixes
+
+ - Fix inability to install pigpio ([#783](https://github.com/kizniche/mycodo/issues/783))
+
+
 ## 8.5.7 (2020-07-07)
 
 ### Bugfixes

@@ -10,6 +10,12 @@ if [[ "$EUID" -ne 0 ]]; then
     exit 1
 fi
 
+# Dependency versions/URLs
+PIGPIO_URL="https://github.com/joan2937/pigpio/archive/v77.tar.gz"
+MCB2835_URL="http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz"
+WIRINGPI_URL="https://project-downloads.drogon.net/wiringpi-latest.deb"
+INFLUXDB_VERSION="1.8.0"
+
 # Required apt packages. This has only been tested with Raspbian for the
 # Raspberry Pi but should work with most Debian-based systems.
 APT_PKGS="gawk gcc git libffi-dev libi2c-dev logrotate moreutils nginx sqlite3 wget python3 python3-dev python3-setuptools python3-smbus python3-pylint-common rng-tools"
@@ -248,19 +254,21 @@ case "${1:-''}" in
         printf "\n#### Installing bcm2835\n"
         cd "${MYCODO_PATH}"/install || return
         apt-get install -y automake libtool
-        wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz
-        tar zxvf bcm2835-1.50.tar.gz
-        cd bcm2835-1.50 || return
+        wget ${MCB2835_URL} -O bcm2835.tar.gz
+        mkdir bcm2835
+        tar xzf bcm2835.tar.gz -C bcm2835 --strip-components=1
+        cd bcm2835 || return
         autoreconf -vfi
         ./configure
         make
         sudo make check
         sudo make install
         cd "${MYCODO_PATH}"/install || return
-        rm -rf ./bcm2835-1.50
+        rm -rf ./bcm2835
     ;;
     'install-wiringpi')
         cd "${MYCODO_PATH}"/install || return
+        wget ${WIRINGPI_URL} -O wiringpi-latest.deb
         dpkg -i wiringpi-latest.deb
     ;;
     'install-pigpiod')
@@ -268,12 +276,15 @@ case "${1:-''}" in
         apt-get install -y python3-pigpio
         cd "${MYCODO_PATH}"/install || return
         # wget --quiet -P "${MYCODO_PATH}"/install abyz.co.uk/rpi/pigpio/pigpio.zip
-        tar xf pigpio.tar
+        wget ${PIGPIO_URL} -O pigpio.tar.gz
+        mkdir PIGPIO
+        tar xzf pigpio.tar.gz -C PIGPIO --strip-components=1
         cd "${MYCODO_PATH}"/install/PIGPIO || return
         make -j4
         make install
         cd "${MYCODO_PATH}"/install || return
         rm -rf ./PIGPIO
+        rm -rf pigpio-latest.tar.gz
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh disable-pigpiod
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh enable-pigpiod-high
         mkdir -p /opt/mycodo
@@ -282,13 +293,17 @@ case "${1:-''}" in
     'uninstall-pigpiod')
         printf "\n#### Uninstalling pigpiod\n"
         apt-get remove -y python3-pigpio
+        apt-get install -y jq
         cd "${MYCODO_PATH}"/install || return
         # wget --quiet -P "${MYCODO_PATH}"/install abyz.co.uk/rpi/pigpio/pigpio.zip
-        tar xf pigpio.tar
+        wget ${PIGPIO_URL}.tar.gz -O pigpio.tar.gz
+        mkdir PIGPIO
+        tar xzf pigpio.tar.gz -C PIGPIO --strip-components=1
         cd "${MYCODO_PATH}"/install/PIGPIO || return
         make uninstall
         cd "${MYCODO_PATH}"/install || return
         rm -rf ./PIGPIO
+        rm -rf pigpio-latest.tar.gz
         touch /etc/systemd/system/pigpiod_uninstalled.service
         rm -f /opt/mycodo/pigpio_installed
     ;;
@@ -345,8 +360,8 @@ case "${1:-''}" in
     'update-influxdb')
         printf "\n#### Ensuring compatible version of influxdb is installed ####\n"
         INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
-        INSTALL_FILE="influxdb_1.8.0_armhf.deb"
-        CORRECT_VERSION="1.8.0-1"
+        INSTALL_FILE="influxdb_${INFLUXDB_VERSION}_armhf.deb"
+        CORRECT_VERSION="${INFLUXDB_VERSION}-1"
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
         if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
             echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Installing v${CORRECT_VERSION}..."
