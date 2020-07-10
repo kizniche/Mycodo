@@ -813,7 +813,6 @@ HTTP_ERROR_LOG_FILE = '/var/log/nginx/error.log'
 
 # Lock files
 LOCK_PATH = '/var/lock'
-ATLAS_PH_LOCK_FILE = os.path.join(LOCK_PATH, 'sensor-atlas-ph.pid')
 LOCK_FILE_STREAM = os.path.join(LOCK_PATH, 'mycodo-camera-stream.pid')
 
 # Run files

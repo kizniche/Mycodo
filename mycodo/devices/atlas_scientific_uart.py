@@ -6,8 +6,6 @@ import filelock
 import serial
 from serial import SerialException
 
-from mycodo.config import ATLAS_PH_LOCK_FILE
-
 
 class AtlasScientificUART:
     """A Class to communicate with Atlas Scientific sensors via UART"""
@@ -21,6 +19,7 @@ class AtlasScientificUART:
             self.ser = serial.Serial(port=serial_device,
                                      baudrate=baudrate,
                                      timeout=5)
+            self.send_cmd('C,0')  # Disable continuous measurements
             self.setup = True
         except serial.SerialException as err:
             self.logger.exception(
@@ -37,7 +36,7 @@ class AtlasScientificUART:
         line_buffer = []
         while True:
             next_char = self.ser.read(1)
-            if next_char == b'':
+            if next_char in [b'', b'\r', '']:
                 break
             line_buffer.append(next_char)
             if (len(line_buffer) >= lsl and
@@ -47,8 +46,7 @@ class AtlasScientificUART:
 
     def query(self, query_str):
         """ Send command and return reply """
-        lock_file_amend = '{lf}.{dev}'.format(
-            lf=ATLAS_PH_LOCK_FILE,
+        lock_file_amend = '/var/lock/sensor-atlas.{dev}'.format(
             dev=self.serial_device.replace("/", "-"))
 
         try:
@@ -73,7 +71,7 @@ class AtlasScientificUART:
         lines = []
         try:
             while True:
-                line = self.read_line()
+                line = self.read_line().decode()
                 if not line:
                     break
                     # self.ser.flush_input()

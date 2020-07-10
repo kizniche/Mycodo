@@ -211,41 +211,35 @@ class InputModule(AbstractInput):
         # Read sensor via UART
         elif self.interface == 'UART':
             if self.atlas_sensor_uart.setup:
-                lines = self.atlas_sensor_uart.query('R')
-                if lines:
+                ec_status, ec_list = self.atlas_sensor_uart.query('R')
+                if ec_list:
                     self.logger.debug(
-                        "All Lines: {lines}".format(lines=lines))
+                        "Returned list: {lines}".format(lines=ec_list))
+
+                    # Find float value in list
+                    float_value = None
+                    for each_split in ec_list:
+                        if str_is_float(each_split):
+                            float_value = each_split
+                            break
 
                     # 'check probe' indicates an error reading the sensor
-                    if 'check probe' in lines:
+                    if 'check probe' in ec_list:
                         self.logger.error(
                             '"check probe" returned from sensor')
                     # if a string resembling a float value is returned, this
-                    # is out measurement value
-                    elif str_is_float(lines[0]):
-                        electrical_conductivity = float(lines[0])
+                    # is our measurement value
+                    elif str_is_float(float_value):
+                        electrical_conductivity = float(float_value)
                         self.logger.debug(
-                            'Value[0] is float: {val}'.format(val=electrical_conductivity))
+                            'Found float value: {val}'.format(val=electrical_conductivity))
                     else:
-                        # During calibration, the sensor is put into
-                        # continuous mode, which causes a return of several
-                        # values in one string. If the return value does
-                        # not represent a float value, it is likely to be a
-                        # string of several values. This parses and returns
-                        # the first value.
-                        if str_is_float(lines[0].split(b'\r')[0]):
-                            electrical_conductivity = lines[0].split(b'\r')[0]
-                        # Lastly, this is called if the return value cannot
-                        # be determined. Watchthe output in the GUI to see
-                        # what it is.
-                        else:
-                            electrical_conductivity = lines[0]
-                            self.logger.error(
-                                'Value[0] is not float or "check probe": '
-                                '{val}'.format(val=electrical_conductivity))
+                        self.logger.error(
+                            'Value or "check probe" not found in list: '
+                            '{val}'.format(val=ec_list))
             else:
-                self.logger.error('UART device is not set up.'
-                                  'Check the log for errors.')
+                self.logger.error(
+                    'UART device is not set up. Check the log for errors.')
 
         # Read sensor via I2C
         elif self.interface == 'I2C':
