@@ -156,7 +156,7 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
-        self.atlas_sensor = None
+        self.atlas_device = None
         self.enabled_rgb = False
 
         # Initialize custom option variables to None
@@ -178,31 +178,31 @@ class InputModule(AbstractInput):
                 self.logger.exception("Exception while initializing sensor")
 
             if self.led_only_while_reading and self.led_percentage:
-                self.atlas_sensor.query('L,{},T'.format(self.led_percentage))
+                self.atlas_device.query('L,{},T'.format(self.led_percentage))
 
             if self.gamma_correction:
-                self.atlas_sensor.query('G,{}'.format(self.gamma_correction))
+                self.atlas_device.query('G,{}'.format(self.gamma_correction))
 
             if self.is_enabled(0) or self.is_enabled(1) or self.is_enabled(2):
                 self.enabled_rgb = True
-                self.atlas_sensor.query('O,RGB,1')
+                self.atlas_device.query('O,RGB,1')
             else:
-                self.atlas_sensor.query('O,RGB,0')
+                self.atlas_device.query('O,RGB,0')
 
             if self.is_enabled(3) or self.is_enabled(4) or self.is_enabled(5):
-                self.atlas_sensor.query('O,CIE,1')
+                self.atlas_device.query('O,CIE,1')
             else:
-                self.atlas_sensor.query('O,CIE,0')
+                self.atlas_device.query('O,CIE,0')
 
             if self.is_enabled(6):
-                self.atlas_sensor.query('O,LUX,1')
+                self.atlas_device.query('O,LUX,1')
             else:
-                self.atlas_sensor.query('O,LUX,0')
+                self.atlas_device.query('O,LUX,0')
 
             if self.is_enabled(7):
-                self.atlas_sensor.query('O,PROX,1')
+                self.atlas_device.query('O,PROX,1')
             else:
-                self.atlas_sensor.query('O,PROX,0')
+                self.atlas_device.query('O,PROX,0')
 
             # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
             self.get_measurement()
@@ -210,13 +210,13 @@ class InputModule(AbstractInput):
     def initialize_sensor(self):
         if self.interface == 'FTDI':
             from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.atlas_sensor = AtlasScientificFTDI(self.input_dev.ftdi_location)
+            self.atlas_device = AtlasScientificFTDI(self.input_dev.ftdi_location)
         elif self.interface == 'UART':
             from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-            self.atlas_sensor = AtlasScientificUART(self.input_dev.uart_location)
+            self.atlas_device = AtlasScientificUART(self.input_dev.uart_location)
         elif self.interface == 'I2C':
             from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-            self.atlas_sensor = AtlasScientificI2C(
+            self.atlas_device = AtlasScientificI2C(
                 i2c_address=int(str(self.input_dev.i2c_location), 16),
                 i2c_bus=self.input_dev.i2c_bus)
 
@@ -225,13 +225,13 @@ class InputModule(AbstractInput):
         return_string = None
         self.return_dict = measurements_dict.copy()
 
-        if not self.atlas_sensor.setup:
+        if not self.atlas_device.setup:
             self.logger.error("Sensor not set up")
             return
 
         # Read sensor via FTDI or UART
         if self.interface in ['FTDI', 'UART']:
-            rgb_status, rgb_list = self.atlas_sensor.query('R')
+            rgb_status, rgb_list = self.atlas_device.query('R')
             if rgb_list:
                 self.logger.debug(
                     "Returned list: {lines}".format(lines=rgb_list))
@@ -250,7 +250,7 @@ class InputModule(AbstractInput):
 
         # Read sensor via I2C
         elif self.interface == 'I2C':
-            ec_status, return_string = self.atlas_sensor.query('R')
+            ec_status, return_string = self.atlas_device.query('R')
             if ec_status == 'error':
                 self.logger.error(
                     "Sensor read unsuccessful: {err}".format(
@@ -290,4 +290,4 @@ class InputModule(AbstractInput):
         return self.return_dict
 
     def calibrate(self, args_dict):
-        self.atlas_sensor.query('Cal')
+        self.atlas_device.query('Cal')

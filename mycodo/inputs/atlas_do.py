@@ -82,7 +82,7 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
-        self.atlas_sensor = None
+        self.atlas_device = None
         self.ftdi_location = None
         self.uart_location = None
         self.i2c_address = None
@@ -109,13 +109,13 @@ class InputModule(AbstractInput):
     def initialize_sensor(self):
         if self.interface == 'FTDI':
             from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.atlas_sensor = AtlasScientificFTDI(self.input_dev.ftdi_location)
+            self.atlas_device = AtlasScientificFTDI(self.input_dev.ftdi_location)
         elif self.interface == 'UART':
             from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-            self.atlas_sensor = AtlasScientificUART(self.input_dev.uart_location)
+            self.atlas_device = AtlasScientificUART(self.input_dev.uart_location)
         elif self.interface == 'I2C':
             from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-            self.atlas_sensor = AtlasScientificI2C(
+            self.atlas_device = AtlasScientificI2C(
                 i2c_address=int(str(self.input_dev.i2c_location), 16),
                 i2c_bus=self.input_dev.i2c_bus)
 
@@ -124,12 +124,12 @@ class InputModule(AbstractInput):
         do = None
         self.return_dict = measurements_dict.copy()
 
-        if not self.atlas_sensor.setup:
+        if not self.atlas_device.setup:
             return
 
         # Read sensor via FTDI or UART
         if self.interface in ['FTDI', 'UART']:
-            do_status, do_list = self.atlas_sensor.query('R')
+            do_status, do_list = self.atlas_device.query('R')
             if do_list:
                 self.logger.debug(
                     "Returned list: {lines}".format(lines=do_list))
@@ -154,7 +154,7 @@ class InputModule(AbstractInput):
 
         # Read sensor via I2C
         elif self.interface == 'I2C':
-            ec_status, ec_str = self.atlas_sensor.query('R')
+            ec_status, ec_str = self.atlas_device.query('R')
             if ec_status == 'error':
                 self.logger.error(
                     "Sensor read unsuccessful: {err}".format(

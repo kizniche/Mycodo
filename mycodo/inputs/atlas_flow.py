@@ -209,7 +209,7 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
-        self.atlas_sensor = None
+        self.atlas_device = None
         self.sensor_is_measuring = False
         self.sensor_is_clearing = False
 
@@ -235,48 +235,48 @@ class InputModule(AbstractInput):
     def initialize_sensor(self):
         if self.interface == 'FTDI':
             from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.atlas_sensor = AtlasScientificFTDI(self.input_dev.ftdi_location)
+            self.atlas_device = AtlasScientificFTDI(self.input_dev.ftdi_location)
         elif self.interface == 'UART':
             from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-            self.atlas_sensor = AtlasScientificUART(self.input_dev.uart_location)
+            self.atlas_device = AtlasScientificUART(self.input_dev.uart_location)
         elif self.interface == 'I2C':
             from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-            self.atlas_sensor = AtlasScientificI2C(
+            self.atlas_device = AtlasScientificI2C(
                 i2c_address=int(str(self.input_dev.i2c_location), 16),
                 i2c_bus=self.input_dev.i2c_bus)
 
         if self.is_enabled(0):
-            self.atlas_sensor.query('O,TV,1')
+            self.atlas_device.query('O,TV,1')
             self.logger.debug("Enabling Total Volume measurement")
         else:
-            self.atlas_sensor.query('O,TV,0')
+            self.atlas_device.query('O,TV,0')
             self.logger.debug("Disabling Total Volume measurement")
 
         if self.is_enabled(1):
-            self.atlas_sensor.query('O,FR,1')
+            self.atlas_device.query('O,FR,1')
             self.logger.debug("Enabling Flow Rate measurement")
         else:
-            self.atlas_sensor.query('O,FR,0')
+            self.atlas_device.query('O,FR,0')
             self.logger.debug("Disabling Flow Rate measurement")
 
         if self.flow_meter_type:
             if self.flow_meter_type == 'non-atlas':
                 if ';' in self.custom_k_values:
                     list_k_values = self.custom_k_values.split(';')
-                    self.atlas_sensor.query('K,clear')
+                    self.atlas_device.query('K,clear')
                     self.logger.debug("Cleared K Values")
                     for each_k in list_k_values:
                         if ',' in each_k:
-                            self.atlas_sensor.query('K,{}'.format(each_k))
+                            self.atlas_device.query('K,{}'.format(each_k))
                             self.logger.debug("Set K Value: {}".format(each_k))
                         else:
                             self.logger.error(
                                 "Improperly-formatted K-value: {}".format(
                                     each_k))
                 elif ',' in self.custom_k_values:
-                    self.atlas_sensor.query('K,clear')
+                    self.atlas_device.query('K,clear')
                     self.logger.debug("Cleared K Values")
-                    self.atlas_sensor.query('K,{}'.format(
+                    self.atlas_device.query('K,{}'.format(
                         self.custom_k_values))
                     self.logger.debug("Set K Value: {}".format(
                         self.custom_k_values))
@@ -284,24 +284,24 @@ class InputModule(AbstractInput):
                     self.logger.error(
                         "Improperly-formatted K-value: {}".format(
                             self.custom_k_values))
-                self.atlas_sensor.query('Vp,{}'.format(
+                self.atlas_device.query('Vp,{}'.format(
                     self.custom_k_value_time_base))
                 self.logger.debug("Set Custom Time Base: {}".format(
                     self.custom_k_value_time_base))
             else:
-                self.atlas_sensor.query('Set,{}'.format(
+                self.atlas_device.query('Set,{}'.format(
                     self.flow_meter_type))
                 self.logger.debug("Set Flow Meter: {}".format(
                     self.flow_meter_type))
 
         if self.flow_rate_unit:
-            self.atlas_sensor.query('Frp,{}'.format(
+            self.atlas_device.query('Frp,{}'.format(
                 self.flow_rate_unit))
             self.logger.debug("Set Flow Rate: l/{}".format(
                 self.flow_rate_unit))
 
         if self.internal_resistor and self.internal_resistor != 'atlas':
-            self.atlas_sensor.query('P,{}'.format(
+            self.atlas_device.query('P,{}'.format(
                 int(self.internal_resistor)))
             if self.internal_resistor == '0':
                 self.logger.debug("Internal Resistor disabled")
@@ -314,7 +314,7 @@ class InputModule(AbstractInput):
         return_string = None
         self.return_dict = measurements_dict.copy()
 
-        if not self.atlas_sensor.setup:
+        if not self.atlas_device.setup:
             self.logger.error("Sensor not set up")
             return
 
@@ -324,7 +324,7 @@ class InputModule(AbstractInput):
 
         # Read sensor via FTDI or UART
         if self.interface in ['FTDI', 'UART']:
-            flow_status, flow_list = self.atlas_sensor.query('R')
+            flow_status, flow_list = self.atlas_device.query('R')
             if flow_list:
                 self.logger.debug(
                     "Returned list: {lines}".format(lines=flow_list))
@@ -343,7 +343,7 @@ class InputModule(AbstractInput):
 
         # Read sensor via I2C
         elif self.interface == 'I2C':
-            return_status, return_string = self.atlas_sensor.query('R')
+            return_status, return_string = self.atlas_device.query('R')
             if return_status == 'error':
                 self.logger.error(
                     "Sensor read unsuccessful: {err}".format(
@@ -387,7 +387,7 @@ class InputModule(AbstractInput):
             time.sleep(0.1)
         self.sensor_is_clearing = True
         self.logger.debug("Clearing total volume")
-        return_status, return_string = self.atlas_sensor.query('Clear')
+        return_status, return_string = self.atlas_device.query('Clear')
         self.sensor_is_clearing = False
         if return_status == 'error':
             return 1, "Error: {}".format(return_string)

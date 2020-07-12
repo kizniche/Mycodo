@@ -149,7 +149,7 @@ class InputModule(AbstractInput):
         ph = None
         self.return_dict = measurements_dict.copy()
 
-        if self.atlas_device.setup:
+        if not self.atlas_device.setup:
             self.logger.error("Sensor not set up")
             return
 

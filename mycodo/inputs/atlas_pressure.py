@@ -66,7 +66,7 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        self.atlas_sensor = None
+        self.atlas_device = None
         self.led = None
 
         self.setup_custom_options(
@@ -81,11 +81,11 @@ class InputModule(AbstractInput):
             except Exception:
                 self.logger.exception("Exception while initializing sensor")
 
-            if self.atlas_sensor:
+            if self.atlas_device:
                 if self.led == 'on':
-                    self.atlas_sensor.query('L,1')
+                    self.atlas_device.query('L,1')
                 elif self.led == 'off':
-                    self.atlas_sensor.query('L,0')
+                    self.atlas_device.query('L,0')
 
     def initialize_sensor(self):
         if self.interface == 'FTDI':
@@ -105,12 +105,12 @@ class InputModule(AbstractInput):
         pressure = None
         self.return_dict = measurements_dict.copy()
 
-        if self.atlas_device.setup:
+        if not self.atlas_device.setup:
             self.logger.error("Sensor not set up")
             return
 
         if self.led == 'measure':
-            self.atlas_sensor.query('L,1')
+            self.atlas_device.query('L,1')
 
         # Read sensor via FTDI or UART
         if self.interface in ['FTDI', 'UART']:
@@ -138,7 +138,7 @@ class InputModule(AbstractInput):
                     '{val}'.format(val=press_list))
 
         elif self.interface == 'I2C':
-            pressure_status, pressure_str = self.atlas_sensor.query('R')
+            pressure_status, pressure_str = self.atlas_device.query('R')
             if pressure_status == 'error':
                 self.logger.error(
                     "Sensor read unsuccessful: {err}".format(
@@ -147,7 +147,7 @@ class InputModule(AbstractInput):
                 pressure = float(pressure_str)
 
         if self.led == 'measure':
-            self.atlas_sensor.query('L,0')
+            self.atlas_device.query('L,0')
 
         self.value_set(0, pressure)
 

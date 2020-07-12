@@ -30,13 +30,14 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
         self.logger = logging.getLogger(
             "{}_{}_{}".format(__name__, i2c_address, i2c_bus))
         self.current_addr = i2c_address
-        self.setup = True
+        self.setup = False
         try:
             self.file_read = io.open("/dev/i2c-" + str(i2c_bus), "rb", buffering=0)
             self.file_write = io.open("/dev/i2c-" + str(i2c_bus), "wb", buffering=0)
 
             # initializes I2C to either a user specified or default address
             self.set_i2c_address(i2c_address)
+            self.setup = True
 
             (board,
              revision,
@@ -51,7 +52,6 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
             self.logger.exception(
                 "{cls} raised an exception when initializing: "
                 "{err}".format(cls=type(self).__name__, err=err))
-            self.setup = False
 
     def set_i2c_address(self, addr):
         # set the I2C communications to the slave specified by the address
