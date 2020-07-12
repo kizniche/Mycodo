@@ -208,118 +208,56 @@ class InputModule(AbstractInput):
             self.get_measurement()
 
     def initialize_sensor(self):
-        from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-        from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-        from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
         if self.interface == 'FTDI':
-            self.ftdi_location = self.input_dev.ftdi_location
-            self.atlas_sensor = AtlasScientificFTDI(self.ftdi_location)
+            from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
+            self.atlas_sensor = AtlasScientificFTDI(self.input_dev.ftdi_location)
         elif self.interface == 'UART':
-            self.uart_location = self.input_dev.uart_location
-            self.atlas_sensor = AtlasScientificUART(self.uart_location)
+            from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+            self.atlas_sensor = AtlasScientificUART(self.input_dev.uart_location)
         elif self.interface == 'I2C':
-            self.i2c_address = int(str(self.input_dev.i2c_location), 16)
-            self.i2c_bus = self.input_dev.i2c_bus
+            from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
             self.atlas_sensor = AtlasScientificI2C(
-                i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
+                i2c_address=int(str(self.input_dev.i2c_location), 16),
+                i2c_bus=self.input_dev.i2c_bus)
 
     def get_measurement(self):
         """ Gets the sensor's Electrical Conductivity measurement via UART/I2C """
         return_string = None
         self.return_dict = measurements_dict.copy()
 
-        # Read sensor via FTDI
-        if self.interface == 'FTDI':
-            if self.atlas_sensor.setup:
-                lines = self.atlas_sensor.query('R')
-                if lines:
-                    self.logger.debug(
-                        "All Lines: {lines}".format(lines=lines))
+        if not self.atlas_sensor.setup:
+            self.logger.error("Sensor not set up")
+            return
 
-                    # 'check probe' indicates an error reading the sensor
-                    if 'check probe' in lines:
-                        self.logger.error(
-                            '"check probe" returned from sensor')
-                    # if a string resembling a float value is returned, this
-                    # is out measurement value
-                    elif str_is_float(lines[0]):
-                        return_string = lines[0]
-                        self.logger.debug(
-                            'Value[0] is float: {val}'.format(val=return_string))
-                    else:
-                        # During calibration, the sensor is put into
-                        # continuous mode, which causes a return of several
-                        # values in one string. If the return value does
-                        # not represent a float value, it is likely to be a
-                        # string of several values. This parses and returns
-                        # the first value.
-                        if str_is_float(lines[0].split(b'\r')[0]):
-                            return_string = lines[0].split(b'\r')[0]
-                        # Lastly, this is called if the return value cannot
-                        # be determined. Watchthe output in the GUI to see
-                        # what it is.
-                        else:
-                            return_string = lines[0]
-                            self.logger.error(
-                                'Value[0] is not float or "check probe": '
-                                '{val}'.format(val=return_string))
-            else:
-                self.logger.error('FTDI device is not set up.'
-                                  'Check the log for errors.')
+        # Read sensor via FTDI or UART
+        if self.interface in ['FTDI', 'UART']:
+            rgb_status, rgb_list = self.atlas_sensor.query('R')
+            if rgb_list:
+                self.logger.debug(
+                    "Returned list: {lines}".format(lines=rgb_list))
 
-        # Read sensor via UART
-        elif self.interface == 'UART':
-            if self.atlas_sensor.setup:
-                lines = self.atlas_sensor.query('R')
-                if lines:
-                    self.logger.debug(
-                        "All Lines: {lines}".format(lines=lines))
+            # Check for "check probe"
+            for each_split in rgb_list:
+                if 'check probe' in each_split:
+                    self.logger.error('"check probe" returned from sensor')
+                    return
 
-                    # 'check probe' indicates an error reading the sensor
-                    if 'check probe' in lines:
-                        self.logger.error(
-                            '"check probe" returned from sensor')
-                    # if a string resembling a float value is returned, this
-                    # is out measurement value
-                    elif str_is_float(lines[0]):
-                        return_string = lines[0]
-                        self.logger.debug(
-                            'Value[0] is float: {val}'.format(val=return_string))
-                    else:
-                        # During calibration, the sensor is put into
-                        # continuous mode, which causes a return of several
-                        # values in one string. If the return value does
-                        # not represent a float value, it is likely to be a
-                        # string of several values. This parses and returns
-                        # the first value.
-                        if str_is_float(lines[0].split(b'\r')[0]):
-                            return_string = lines[0].split(b'\r')[0]
-                        # Lastly, this is called if the return value cannot
-                        # be determined. Watchthe output in the GUI to see
-                        # what it is.
-                        else:
-                            return_string = lines[0]
-                            self.logger.error(
-                                'Value[0] is not float or "check probe": '
-                                '{val}'.format(val=return_string))
-            else:
-                self.logger.error('UART device is not set up.'
-                                  'Check the log for errors.')
+            # Find float value in list
+            for each_split in rgb_list:
+                if "," in each_split:
+                    return_string = each_split
+                    break
 
         # Read sensor via I2C
         elif self.interface == 'I2C':
-            if self.atlas_sensor.setup:
-                ec_status, return_string = self.atlas_sensor.query('R')
-                if ec_status == 'error':
-                    self.logger.error(
-                        "Sensor read unsuccessful: {err}".format(
-                            err=return_string))
-                elif ec_status == 'success':
-                    self.logger.debug(
-                        'Value: {val}'.format(val=return_string))
-            else:
+            ec_status, return_string = self.atlas_sensor.query('R')
+            if ec_status == 'error':
                 self.logger.error(
-                    'I2C device is not set up. Check the log for errors.')
+                    "Sensor read unsuccessful: {err}".format(
+                        err=return_string))
+            elif ec_status == 'success':
+                self.logger.debug(
+                    'Value: {val}'.format(val=return_string))
 
         # Parse return string
         if ',' in return_string:

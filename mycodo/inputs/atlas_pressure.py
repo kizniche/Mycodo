@@ -27,6 +27,7 @@ INPUT_INFORMATION = {
         'ftdi_location',
         'i2c_location',
         'uart_location',
+        'uart_baud_rate',
         'period',
         'pre_output'
     ],
@@ -40,6 +41,7 @@ INPUT_INFORMATION = {
     'i2c_location': ['0x6a'],
     'i2c_address_editable': True,
     'uart_location': '/dev/ttyAMA0',
+    'uart_baud_rate': 9600,
 
     'custom_options': [
         {
@@ -88,81 +90,61 @@ class InputModule(AbstractInput):
     def initialize_sensor(self):
         if self.interface == 'FTDI':
             from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.ftdi_location = self.input_dev.ftdi_location
-            self.atlas_sensor = AtlasScientificFTDI(self.ftdi_location)
+            self.atlas_device = AtlasScientificFTDI(self.input_dev.ftdi_location)
         elif self.interface == 'UART':
             from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-            self.uart_location = self.input_dev.uart_location
-            self.atlas_sensor = AtlasScientificUART(self.uart_location)
+            self.atlas_device = AtlasScientificUART(self.input_dev.uart_location)
         elif self.interface == 'I2C':
             from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-            self.i2c_address = int(str(self.input_dev.i2c_location), 16)
-            self.i2c_bus = self.input_dev.i2c_bus
-            self.atlas_sensor = AtlasScientificI2C(
-                i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
+            self.atlas_device = AtlasScientificI2C(
+                i2c_address=int(str(self.input_dev.i2c_location), 16),
+                i2c_bus=self.input_dev.i2c_bus)
 
     def get_measurement(self):
         """ Gets the Atlas Scientific pressure sensor measurement """
         pressure = None
         self.return_dict = measurements_dict.copy()
 
+        if self.atlas_device.setup:
+            self.logger.error("Sensor not set up")
+            return
+
         if self.led == 'measure':
             self.atlas_sensor.query('L,1')
 
-        if self.interface == 'FTDI':
-            if self.atlas_sensor.setup:
-                lines = self.atlas_sensor.query('R')
-                self.logger.debug("All Lines: {lines}".format(lines=lines))
+        # Read sensor via FTDI or UART
+        if self.interface in ['FTDI', 'UART']:
+            press_status, press_list = self.atlas_device.query('R')
+            if press_list:
+                self.logger.debug(
+                    "Returned list: {lines}".format(lines=press_list))
 
-                if 'check probe' in lines:
-                    self.logger.error('"check probe" returned from sensor')
-                elif isinstance(lines, list):
-                    if str_is_float(lines[0]):
-                        pressure = float(lines[0])
-                        self.logger.debug(
-                            'Value[0] is float: {val}'.format(val=pressure))
-                elif str_is_float(lines):
-                    pressure = float(lines)
-                    self.logger.debug(
-                        'Value is float: {val}'.format(val=pressure))
-                else:
-                    self.logger.error(
-                        'Unknown value: {val}'.format(val=lines))
+            # Find float value in list
+            float_value = None
+            for each_split in press_list:
+                if str_is_float(each_split):
+                    float_value = each_split
+                    break
+
+            if 'check probe' in press_list:
+                self.logger.error('"check probe" returned from sensor')
+            elif str_is_float(float_value):
+                pressure = float(float_value)
+                self.logger.debug(
+                    'Found float value: {val}'.format(val=pressure))
             else:
-                self.logger.error('FTDI device is not set up. '
-                                  'Check the log for errors.')
-
-        elif self.interface == 'UART':
-            if self.atlas_sensor.setup:
-                lines = self.atlas_sensor.query('R')
-                self.logger.debug("All Lines: {lines}".format(lines=lines))
-
-                if 'check probe' in lines:
-                    self.logger.error('"check probe" returned from sensor')
-                elif str_is_float(lines[0]):
-                    pressure = float(lines[0])
-                    self.logger.debug(
-                        'Value[0] is float: {val}'.format(val=pressure))
-                else:
-                    self.logger.error(
-                        'Value[0] is not float or "check probe": '
-                        '{val}'.format(val=lines[0]))
-            else:
-                self.logger.error('UART device is not set up. '
-                                  'Check the log for errors.')
+                self.logger.error(
+                    'Value or "check probe" not found in list: '
+                    '{val}'.format(val=press_list))
 
         elif self.interface == 'I2C':
-            if self.atlas_sensor.setup:
-                pressure_status, pressure_str = self.atlas_sensor.query('R')
-                if pressure_status == 'error':
-                    self.logger.error(
-                        "Sensor read unsuccessful: {err}".format(
-                            err=pressure_str))
-                elif pressure_status == 'success':
-                    pressure = float(pressure_str)
-            else:
-                self.logger.error('I2C device is not set up.'
-                                  'Check the log for errors.')
+            pressure_status, pressure_str = self.atlas_sensor.query('R')
+            if pressure_status == 'error':
+                self.logger.error(
+                    "Sensor read unsuccessful: {err}".format(
+                        err=pressure_str))
+            elif pressure_status == 'success':
+                pressure = float(pressure_str)
 
         if self.led == 'measure':
             self.atlas_sensor.query('L,0')

@@ -1,12 +1,18 @@
 # coding=utf-8
-import fcntl  # used to access I2C parameters like addresses
+import fcntl
 import logging
-import time  # used for sleep delay and timestamps
+import os
+import sys
+import time
 
-import io  # used to create file streams
+import io
+
+sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../../..')))
+
+from mycodo.devices.base_atlas import AbstractBaseAtlasScientific
 
 
-class AtlasScientificI2C:
+class AtlasScientificI2C(AbstractBaseAtlasScientific):
     """Class for Atlas Scientific sensor communication via I2C"""
 
     long_timeout = 1.5  # the timeout needed to query readings and calibrations
@@ -15,6 +21,8 @@ class AtlasScientificI2C:
     default_address = 98  # the default address for the sensor
 
     def __init__(self, i2c_address=default_address, i2c_bus=default_bus):
+        super(AtlasScientificI2C, self).__init__(interface='I2C', name="_{}_{}".format(i2c_address, i2c_bus))
+
         # open two file streams, one for reading and one for writing
         # the specific I2C channel is selected with bus
         # it is usually 1, except for older revisions where its 0
@@ -29,6 +37,16 @@ class AtlasScientificI2C:
 
             # initializes I2C to either a user specified or default address
             self.set_i2c_address(i2c_address)
+
+            (board,
+             revision,
+             firmware_version) = self.get_board_version()
+
+            self.logger.info(
+                "Atlas Scientific Board: {brd}, Rev: {rev}, Firmware: {fw}".format(
+                    brd=board,
+                    rev=revision,
+                    fw=firmware_version))
         except Exception as err:
             self.logger.exception(
                 "{cls} raised an exception when initializing: "

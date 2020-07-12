@@ -13,36 +13,42 @@ class AtlasScientificCommand:
     Class to handle issuing commands to the Atlas Scientific sensor boards
     """
 
-    def __init__(self, input_dev):
+    def __init__(self, input_dev, sensor=None):
         self.cmd_send = None
         self.ph_sensor_uart = None
         self.ph_sensor_i2c = None
         self.interface = input_dev.interface
         self.init_error = None
 
-        if self.interface == 'FTDI':
+        if sensor:
+            self.atlas_device = sensor
+        elif self.interface == 'FTDI':
             from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.ph_sensor_ftdi = AtlasScientificFTDI(
+            self.atlas_device = AtlasScientificFTDI(
                 input_dev.ftdi_location)
         elif self.interface == 'UART':
             from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-            self.ph_sensor_uart = AtlasScientificUART(
+            self.atlas_device = AtlasScientificUART(
                 input_dev.uart_location,
                 baudrate=input_dev.baud_rate)
         elif self.interface == 'I2C':
             from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-            self.ph_sensor_i2c = AtlasScientificI2C(
+            self.atlas_device = AtlasScientificI2C(
                 i2c_address=int(str(input_dev.i2c_location), 16),
                 i2c_bus=input_dev.i2c_bus)
 
         (self.measurement,
          self.board_version,
-         self.firmware_version) = self.get_board_version()
+         self.firmware_version) = self.atlas_device.get_board_version()
 
         if self.board_version == 0:
             error_msg = "Atlas Scientific board initialization unsuccessful. " \
                         "Unable to retrieve device info (this indicates the " \
-                        "device was not properly initialized or connected)"
+                        "device was not properly initialized or connected). " \
+                        "Returned: {}, {}, {}".format(
+                 self.measurement,
+                 self.board_version,
+                 self.firmware_version)
             logger.error(error_msg)
             self.init_error = error_msg
         else:
@@ -55,38 +61,6 @@ class AtlasScientificCommand:
 
     def get_sensor_measurement(self):
         return self.measurement
-
-    def get_board_version(self):
-        """Return the board version of the Atlas Scientific pH sensor"""
-        info = None
-
-        try:
-            if self.interface == 'FTDI':
-                info = self.ph_sensor_ftdi.query('i')
-            elif self.interface == 'UART':
-                info = self.ph_sensor_uart.query('i')
-            elif self.interface == 'I2C':
-                info = self.ph_sensor_i2c.query('i')
-        except TypeError:
-            logger.exception("Unable to determine board version of Atlas sensor")
-            return None, 0, None
-
-        # Check first letter of info response
-        # "P" indicates a legacy board version
-        if info is None:
-            return None, 0, None
-        elif isinstance(info, tuple):
-            if info[0] == 'error':
-                return None, 0, None
-            for each_line in info:
-                if each_line == 'P':
-                    return 'NA', 1, each_line  # Older board version
-                elif ',' in each_line and len(each_line.split(',')) == 3:
-                    info_split = each_line.split(',')
-                    measurement = info_split[1]
-                    firmware = info_split[2]
-                    return measurement, 2, firmware  # Newer board version
-        return None, 0, None
 
     def calibrate(self, command, set_amount=None, custom_cmd=None):
         """

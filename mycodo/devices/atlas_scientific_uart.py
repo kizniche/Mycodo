@@ -1,25 +1,43 @@
 # coding=utf-8
 import logging
+import os
+import sys
 import time
 
 import filelock
 import serial
 from serial import SerialException
 
+sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../../..')))
 
-class AtlasScientificUART:
+from mycodo.devices.base_atlas import AbstractBaseAtlasScientific
+
+
+class AtlasScientificUART(AbstractBaseAtlasScientific):
     """A Class to communicate with Atlas Scientific sensors via UART"""
 
     def __init__(self, serial_device, baudrate=9600):
+        super(AtlasScientificUART, self).__init__(interface='UART', name=serial_device.replace("/", "_"))
+
         self.logger = logging.getLogger(
-            "{}_{}".format(__name__, serial_device))
+            "{}{}".format(__name__, serial_device.replace("/", "_")))
         self.setup = False
         self.serial_device = serial_device
         try:
-            self.ser = serial.Serial(port=serial_device,
-                                     baudrate=baudrate,
-                                     timeout=5)
+            self.atlas_device = serial.Serial(
+                port=serial_device, baudrate=baudrate, timeout=5)
+
             self.send_cmd('C,0')  # Disable continuous measurements
+
+            (board,
+             revision,
+             firmware_version) = self.get_board_version()
+
+            self.logger.info(
+                "Atlas Scientific Board: {brd}, Rev: {rev}, Firmware: {fw}".format(
+                    brd=board,
+                    rev=revision,
+                    fw=firmware_version))
             self.setup = True
         except serial.SerialException as err:
             self.logger.exception(
@@ -35,7 +53,7 @@ class AtlasScientificUART:
         lsl = len('\r')
         line_buffer = []
         while True:
-            next_char = self.ser.read(1)
+            next_char = self.atlas_device.read(1)
             if next_char in [b'', b'\r', '']:
                 break
             line_buffer.append(next_char)
@@ -74,7 +92,7 @@ class AtlasScientificUART:
                 line = self.read_line().decode()
                 if not line:
                     break
-                    # self.ser.flush_input()
+                    # self.atlas_device.flush_input()
                 lines.append(line)
             return lines
 
@@ -96,10 +114,8 @@ class AtlasScientificUART:
         :return:
         """
         buf = "{cmd}\r".format(cmd=cmd)  # add carriage return
-        if isinstance(buf, str):
-            buf = buf.encode()
         try:
-            self.ser.write(buf)
+            self.atlas_device.write(buf.encode())
             return True
         except SerialException:
             self.logger.exception('Send CMD')
@@ -110,7 +126,7 @@ class AtlasScientificUART:
 
 
 def main():
-    device_str = input("Device? (e.g. '/dev/ttyS0'): ")
+    device_str = input("Device? (e.g. '/dev/ttyAMA1'): ")
     baud_str = input("Baud rate? (e.g. '9600'): ")
 
     device = AtlasScientificUART(device_str, baudrate=int(baud_str))

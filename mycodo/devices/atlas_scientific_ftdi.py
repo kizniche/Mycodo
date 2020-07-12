@@ -1,5 +1,7 @@
 # coding=utf-8
 import logging
+import os
+import sys
 import time
 
 import pylibftdi
@@ -7,12 +9,18 @@ from pylibftdi import Driver
 from pylibftdi.device import Device
 from pylibftdi.driver import FtdiError
 
+sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../../..')))
 
-class AtlasScientificFTDI(Device):
+from mycodo.devices.base_atlas import AbstractBaseAtlasScientific
+
+
+class AtlasScientificFTDI(AbstractBaseAtlasScientific, Device):
     """A Class to communicate with Atlas Scientific sensors via FTDI"""
 
     def __init__(self, serial_device):
         Device.__init__(self, mode='t', device_id=serial_device)
+        super(AtlasScientificFTDI, self).__init__(interface='FTDI', name=serial_device.replace("/", "_"))
+
         self.logger = logging.getLogger(
             "{}_{}".format(__name__, serial_device))
 
