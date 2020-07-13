@@ -833,24 +833,18 @@ class MathController(AbstractController, threading.Thread):
         device_id = self.inputs.split(',')[0]
         measurement_id = self.inputs.split(',')[1]
 
-        if measurement_id == 'output':
-            output = db_retrieve_table_daemon(Output, unique_id=device_id)
-            measure_channel = output.channel
-            measure_unit = output.unit
-            measure_measurement = output.measurement
+        device_measurement = db_retrieve_table_daemon(
+            DeviceMeasurements, unique_id=measurement_id)
+        if device_measurement:
+            measure_conversion = db_retrieve_table_daemon(
+                Conversion,
+                unique_id=device_measurement.conversion_id)
         else:
-            device_measurement = db_retrieve_table_daemon(
-                DeviceMeasurements, unique_id=measurement_id)
-            if device_measurement:
-                measure_conversion = db_retrieve_table_daemon(
-                    Conversion,
-                    unique_id=device_measurement.conversion_id)
-            else:
-                measure_conversion = None
-            (measure_channel,
-             measure_unit,
-             measure_measurement) = return_measurement_info(
-                device_measurement, measure_conversion)
+            measure_conversion = None
+        (measure_channel,
+         measure_unit,
+         measure_measurement) = return_measurement_info(
+            device_measurement, measure_conversion)
 
         return (device_id,
                 math_dev_measurement,

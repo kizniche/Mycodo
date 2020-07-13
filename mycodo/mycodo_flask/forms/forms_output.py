@@ -67,7 +67,7 @@ class OutputMod(FlaskForm):
     output_pin = HiddenField('Output Pin')
     name = StringField(TRANSLATIONS['name']['title'], validators=[DataRequired()])
     log_level_debug = BooleanField(TRANSLATIONS['log_level_debug']['title'])
-    output_mode = StringField(TRANSLATIONS['output_mode']['title'])
+    output_mode = StringField(TRANSLATIONS['flow_rate_method']['title'])
     location = StringField(lazy_gettext('Location'))
     ftdi_location = StringField(TRANSLATIONS['ftdi_location']['title'])
     uart_location = StringField(TRANSLATIONS['uart_location']['title'])

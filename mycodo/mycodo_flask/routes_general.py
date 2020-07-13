@@ -51,7 +51,6 @@ from mycodo.utils.image import generate_thermal_image_from_pixels
 from mycodo.utils.influx import influx_time_str_to_milliseconds
 from mycodo.utils.influx import query_string
 from mycodo.utils.outputs import outputs_pwm
-from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
@@ -936,27 +935,27 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
 
-@blueprint.route('/output_mod/<output_id>/<state>/<out_type>/<amount>')
+@blueprint.route('/output_mod/<output_id>/<state>/<output_type>/<amount>')
 @flask_login.login_required
-def output_mod(output_id, state, out_type, amount):
+def output_mod(output_id, state, output_type, amount):
     """ Manipulate output (using non-unique ID) """
     if not utils_general.user_has_permission('edit_controllers'):
         return 'Insufficient user permissions to manipulate outputs'
 
     daemon = DaemonControl()
-    if (state in ['on', 'off'] and out_type == 'sec' and
+    if (state in ['on', 'off'] and output_type in ['sec', 'vol'] and
             (str_is_float(amount) and float(amount) >= 0)):
         out_status = daemon.output_on_off(
-            output_id, state, amount=float(amount))
+            output_id, state, output_type=output_type, amount=float(amount))
         if out_status[0]:
             return 'ERROR: {}'.format(out_status[1])
         else:
             return 'SUCCESS: {}'.format(out_status[1])
 
-    elif (state == 'on' and out_type in outputs_pwm() and
+    elif (state == 'on' and output_type in outputs_pwm() and
             (str_is_float(amount) and float(amount) >= 0)):
         out_status = daemon.output_on(
-            output_id, duty_cycle=float(amount))
+            output_id, output_type=output_type, duty_cycle=float(amount))
         if out_status[0]:
             return 'ERROR: {}'.format(out_status[1])
         else:

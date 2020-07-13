@@ -1,0 +1,13 @@
+{{form_mod_pid_volume_raise.csrf_token}}
+<div class="col-auto">
+  {{form_mod_pid_volume_raise.raise_min_amount.label(class_='control-label')}}
+  <div>
+    {{form_mod_pid_volume_raise.raise_min_amount(class_='form-control', value=each_pid.raise_min_duration, **{'title':_('The minimum volume (ml) required for the Raise Output to activate. If the volume is below this value, the Raise Output will not turn on.')})}}
+  </div>
+</div>
+<div class="col-auto">
+  {{form_mod_pid_volume_raise.raise_max_amount.label(class_='control-label')}}
+  <div>
+    {{form_mod_pid_volume_raise.raise_max_amount(class_='form-control', value=each_pid.raise_max_duration, **{'title':_('The maximum volume (ml) allowed for the Raise Output to be on for, per period. If a volume is above this value, the Raise Output will turn on for this amount. 0 is disabled.')})}}
+  </div>
+</div>

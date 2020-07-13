@@ -63,7 +63,7 @@ class OutputModule(AbstractOutput):
             self.output_off_command = output.off_command
             self.output_linux_command_user = output.linux_command_user
 
-    def output_switch(self, state, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
         if state == 'on':
             cmd_return, cmd_error, cmd_status = cmd_output(
                 self.output_on_command, user=self.output_linux_command_user)

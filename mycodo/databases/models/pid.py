@@ -34,11 +34,13 @@ class PID(CRUDMixin, db.Model):
     integrator_min = db.Column(db.Float, default=-100.0)
     integrator_max = db.Column(db.Float, default=100.0)
     raise_output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Output to raise the condition
+    raise_output_type = db.Column(db.String, default=None)
     raise_min_duration = db.Column(db.Float, default=0.0)
     raise_max_duration = db.Column(db.Float, default=0.0)
     raise_min_off_duration = db.Column(db.Float, default=0.0)
     raise_always_min_pwm = db.Column(db.Boolean, default=False)
     lower_output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Output to lower the condition
+    lower_output_type = db.Column(db.String, default=None)
     lower_min_duration = db.Column(db.Float, default=0.0)
     lower_max_duration = db.Column(db.Float, default=0.0)
     lower_min_off_duration = db.Column(db.Float, default=0.0)

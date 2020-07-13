@@ -14,14 +14,10 @@ class Output(CRUDMixin, db.Model):
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     output_type = db.Column(db.Text, default='wired')  # Options: 'command', 'wired', 'wireless_rpi_rf', 'pwm'
     log_level_debug = db.Column(db.Boolean, default=False)
-    output_mode = db.Column(db.Text, default=None)
+    output_mode = db.Column(db.Text, default=None)  # TODO: Rename to flow_rate_method
     interface = db.Column(db.Text, default='')
     location = db.Column(db.Text, default='')
     name = db.Column(db.Text, default='Output')
-    measurement = db.Column(db.Text, default=None)
-    unit = db.Column(db.Text, default=None)
-    conversion_id = db.Column(db.Text, db.ForeignKey('conversion.unique_id'), default='')
-    channel = db.Column(db.Integer, default=None)
     pin = db.Column(db.Integer, default=None)  # Pin connected to the device/output
     on_state = db.Column(db.Boolean, default=True)  # GPIO output to turn output on (True=HIGH, False=LOW)
     amps = db.Column(db.Float, default=0.0)  # The current drawn by the device connected to the output
@@ -63,6 +59,12 @@ class Output(CRUDMixin, db.Model):
     flow_rate = db.Column(db.Float, default=None)  # example: ml per minute
 
     custom_options = db.Column(db.Text, default='')
+
+    # TODO: Remove because no longer used
+    # measurement = db.Column(db.Text, default=None)
+    # unit = db.Column(db.Text, default=None)
+    # channel = db.Column(db.Integer, default=None)
+    # conversion_id = db.Column(db.Text, db.ForeignKey('conversion.unique_id'), default='')
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

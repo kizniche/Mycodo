@@ -3,7 +3,7 @@
 <div class="col-auto">
   {{form.output_mode.label(class_='control-label')}}
   <div>
-    <select class="form-control form-tooltip form-dropdown" id="output_mode" name="output_mode" data-placement="top" title="{{dict_translation['output_mode']['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" id="output_mode" name="output_mode" data-placement="top" title="{{dict_translation['flow_rate_method']['phrase']}}">
     {% if not each_device.output_mode %}
       <option value="" selected>{{dict_translation['select_one']['title']}}</option>
     {% endif %}

@@ -41,7 +41,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.modules import load_module_from_file
-from mycodo.utils.outputs import outputs_pwm
+from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import return_measurement_info
 
@@ -89,7 +89,7 @@ class OutputController(AbstractController, threading.Thread):
         self.output_off_triggered = {}
         self.output_force_command = {}
         self.output_time_turned_on = {}
-        self.outputs_pwm = []
+        self.output_types = []
 
     def loop(self):
         """ Main loop of the output controller """
@@ -176,7 +176,7 @@ class OutputController(AbstractController, threading.Thread):
     def all_outputs_initialize(self, outputs):
         """ Initialize all output variables and classes """
         self.dict_outputs = parse_output_information()
-        self.outputs_pwm = outputs_pwm()
+        self.output_types = output_types()
 
         for each_output in outputs:
             try:
@@ -304,7 +304,7 @@ class OutputController(AbstractController, threading.Thread):
                     pass  # Don't turn on or off
 
                 # PWM Outputs
-                elif self.output_type[each_output_id] in self.outputs_pwm:
+                elif self.output_type[each_output_id] in self.output_types['pwm']:
                     if self.output_state_startup[each_output_id] == '0':
                         self.logger.info(
                             "Setting Output {id} startup duty cycle to 0 %".format(
@@ -387,6 +387,7 @@ class OutputController(AbstractController, threading.Thread):
 
     def output_on_off(self, output_id, state,
                       amount=0.0,
+                      output_type=None,
                       min_off=0.0,
                       duty_cycle=0.0,
                       trigger_conditionals=True):
@@ -400,6 +401,8 @@ class OutputController(AbstractController, threading.Thread):
         :type state: str or int or bool
         :param amount: If state is 'on', an amount can be set (e.g. duration to stay on, volume to output, etc.)
         :type amount: float
+        :param output_type: The type of output ('sec', 'vol', 'pwm')
+        :type output_type: str
         :param min_off: Don't allow on again for at least this amount (0 = disabled)
         :type min_off: float
         :param duty_cycle: If state is 'on', set the duty cycle of PWM output
@@ -409,10 +412,11 @@ class OutputController(AbstractController, threading.Thread):
         """
         msg = ''
 
-        self.logger.debug("output_on_off({}, {}, {}, {}, {}, {})".format(
+        self.logger.debug("output_on_off({}, {}, {}, {}, {}, {}, {})".format(
             output_id,
             state,
             amount,
+            output_type,
             min_off,
             duty_cycle,
             trigger_conditionals))
@@ -452,7 +456,7 @@ class OutputController(AbstractController, threading.Thread):
 
             # Checks if device is not on and is instructed to turn on
             if ('output_types' in self.dict_outputs[self.output_type[output_id]] and
-                    'on_off' in self.dict_outputs[self.output_type[output_id]]['output_types'] and
+                    output_type == 'on_off' and
                     not output_is_on):
 
                 # Check if max amperage will be exceeded if turned on
@@ -489,9 +493,9 @@ class OutputController(AbstractController, threading.Thread):
                     return 1, msg
 
             # Output type: Volume, set amount
-            if ('output_types' in self.dict_outputs[self.output_type[output_id]] and
-                    'volume' in self.dict_outputs[self.output_type[output_id]]['output_types']):
-                self.output[output_id].output_switch(state, amount=amount)
+            if (self.output_type[output_id] in self.output_types['volume'] and
+                    output_type == 'vol'):
+                self.output[output_id].output_switch(state, output_type=output_type, amount=amount)
 
                 msg = "Command sent: Output {id} ({name}) volume: {v:.1f} ".format(
                     id=self.output_unique_id[output_id],
@@ -499,8 +503,8 @@ class OutputController(AbstractController, threading.Thread):
                     v=amount)
 
             # Output type: PWM, set duty cycle
-            elif self.output_type[output_id] in self.outputs_pwm:
-                self.output_switch(output_id, 'on', duty_cycle=duty_cycle)
+            elif self.output_type[output_id] in self.output_types['pwm'] and output_type == 'pwm':
+                self.output_switch(output_id, 'on', output_type=output_type, duty_cycle=duty_cycle)
 
                 msg = "Command sent: Output {id} ({name}) duty cycle: {dc:.2f} ".format(
                     id=self.output_unique_id[output_id],
@@ -508,9 +512,9 @@ class OutputController(AbstractController, threading.Thread):
                     dc=duty_cycle)
 
             # Output type: On/Off, set duration for on state
-            elif ('output_types' in self.dict_outputs[self.output_type[output_id]] and
-                    'on_off' in self.dict_outputs[self.output_type[output_id]]['output_types'] and
-                    amount != 0):
+            elif (self.output_type[output_id] in self.output_types['on_off'] and
+                    amount != 0 and
+                    output_type in ['sec', None]):
 
                 # If a minimum off duration is set, determine the time the output is allowed to turn on again
                 if min_off:
@@ -593,7 +597,7 @@ class OutputController(AbstractController, threading.Thread):
                             name=self.output_name[output_id],
                             dur=abs(amount))
                     self.logger.debug(msg)
-                    self.output_switch(output_id, 'on')
+                    self.output_switch(output_id, 'on', output_type=output_type)
                     self.output_on_until[output_id] = (
                         current_time + datetime.timedelta(seconds=abs(amount)))
                     self.output_last_duration[output_id] = amount
@@ -602,7 +606,8 @@ class OutputController(AbstractController, threading.Thread):
             # No duration specific, so just turn output on
             elif ('output_types' in self.dict_outputs[self.output_type[output_id]] and
                     'on_off' in self.dict_outputs[self.output_type[output_id]]['output_types'] and
-                    (amount is None or amount == 0)):
+                    (amount is None or amount == 0) and
+                    output_type in ['sec', None]):
 
                 # Don't turn on if already on, except if it can be forced on
                 if output_is_on and not self.output_force_command[output_id]:
@@ -622,14 +627,22 @@ class OutputController(AbstractController, threading.Thread):
                             name=self.output_name[output_id],
                             timeon=self.output_time_turned_on[output_id])
                     self.logger.debug(msg)
-                    self.output_switch(output_id, 'on')
+                    self.output_switch(output_id, 'on', output_type=output_type)
 
         #
         # Signaled to turn output off
         #
         elif state == 'off':
 
-            self.output_switch(output_id, 'off')
+            self.output_switch(output_id, 'off', output_type=output_type)
+
+            timestamp = datetime.datetime.fromtimestamp(
+                time.time()).strftime('%Y-%m-%d %H:%M:%S')
+            msg = "Output {id} ({name}) OFF at {timeoff}.".format(
+                id=self.output_unique_id[output_id],
+                name=self.output_name[output_id],
+                timeoff=timestamp)
+            self.logger.debug(msg)
 
             # Write output amount to database
             if (self.output_time_turned_on[output_id] is not None or
@@ -681,7 +694,7 @@ class OutputController(AbstractController, threading.Thread):
 
         return 0, msg
 
-    def output_switch(self, output_id, state, duty_cycle=None):
+    def output_switch(self, output_id, state, output_type=None, duty_cycle=None):
         """Instruct the output module to modulate the output"""
         if state not in ['on', 1, True, 'off', 0, False]:
             return 1, 'state not "on", 1, True, "off", 0, or False'
@@ -689,7 +702,7 @@ class OutputController(AbstractController, threading.Thread):
             state = 'on'
         elif state in ['off', 0, False]:
             state = 'off'
-        self.output[output_id].output_switch(state, duty_cycle=duty_cycle)
+        self.output[output_id].output_switch(state, output_type=output_type, duty_cycle=duty_cycle)
 
     def check_triggers(self, output_id, on_duration=None):
         """
@@ -887,7 +900,7 @@ class OutputController(AbstractController, threading.Thread):
         if output_id in self.output_type:
             state = self.is_on(output_id)
             if state is not None:
-                if self.output_type[output_id] in self.outputs_pwm:
+                if self.output_type[output_id] in self.output_types['pwm']:
                     if state:
                         return state
                     elif state == 0 or state is False:

@@ -1128,10 +1128,20 @@ Output
 ``Setup -> Output``
 
 Outputs are various signals that can be generated that operate devices.
-An output can be a PWM signal, a simple HIGH/LOW signal to operate a
-relay, a 315/433 MHz signal to switch a radio frequency-operated relay,
-driving of pumps and motors, or an execution of a linux or Python
-command, to name a few.
+An output can be a HIGH/LOW signal on a GPIO pin, a pulse-width modulated (PWM) signal, a 315/433 MHz signal to switch a radio frequency-operated relay, driving of pumps and motors, or an execution of a linux or Python command, to name a few.
+
+Custom Outputs
+--------------
+
+There is a Custom Output import system in Mycodo that allows
+user-created Outputs to be created an used in the Mycodo system. Custom
+Outputs can be uploaded and imported from the ``Configure -> Outputs``
+page. After import, they will be available to use on the
+``Setup -> Output`` page.
+
+If you desire an Output that is not currently supported by Mycodo, you
+can build your own Output module and import it into Mycodo. All
+information about an Output is contained within the Output module. Open any of the built-in modules located in the `outputs directory <https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/>`__ for examples of the proper formatting. There's also a `minimal output module template as an example <https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/examples/example_dummy_output.py>`__. For Outputs that require new measurements/units, they can be added on the ``Configure -> Measurements`` page.
 
 Output Options
 --------------
@@ -1253,36 +1263,6 @@ Output Options
 |                           | condition.                               |
 +---------------------------+------------------------------------------+
 
-Custom Outputs
---------------
-
-Note: This is a work in progress!
-
-There is a Custom Output import system in Mycodo that allows
-user-created Outputs to be created an used in the Mycodo system. Custom
-Outputs can be uploaded and imported from the ``Configure -> Outputs``
-page. After import, they will be available to use on the
-``Setup -> Output`` page.
-
-If you desire an output that is not currently supported by Mycodo, you
-can build your own output module and import it into Mycodo. All
-information about an output is contained within the output module, set
-in the dictionaries 'OUTPUT_INFORMATION' and 'measurements_dict'. Each
-module will requires at a minimum for these variables to be set in
-OUTPUT_INFORMATION: 'output_name_unique', 'output_name', and
-'measurements_dict'. The measurements_dict dictionary contains the
-measurements that are acquired and stored, and require both the units
-and measurements to exist in the measurement/unit database (Add missing
-measurements/units on the ``Configure -> Measurements`` page).
-
-Open any of the built-in modules located in the outputs directory
-(https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/) for
-examples of the proper formatting.
-
-There's also a minimal output module template as an example:
-
-https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/examples/example_dummy_output.py
-
 On/Off (GPIO)
 -------------
 
@@ -1296,19 +1276,14 @@ voltage, without exposing the low-voltage system to the dangers of the
 higher voltage.
 
 Add and configure outputs in the Output tab. Outputs must be properly
-set up before PID regulation can be achieved.
+set up before they can be used in the rest of the system.
 
-To set up a wired relay, set the "GPIO Pin" to the BCM GPIO number of
-each pin that activates each relay. *On Trigger* should be set to the
-signal that activates the relay (the device attached to the relay turns
-on). If your relay activates when the potential across the coil is
-0-volts, set *On Trigger* to "Low", otherwise if your relay activates
-when the potential across the coil is 3.3-volts (or whatever switching
-voltage you are using, if not being driven by the GPIO pin), set it to
-"High".
+To set up a wired relay, set the "GPIO Pin" (using BCM numbering) to
+the pin you would like to switch High (5 volts) and Low (0 volts), which can be used to activate relays and other devices. *On Trigger* should be set to the signal state (High or Low) that induces the device to turn on. For example, if your relay activates when the potential across the coil is 0-volts, set *On Trigger* to "Low", otherwise if your relay activates
+when the potential across the coil is 5 volts, set it to "High".
 
-PWM (GPIO)
-----------
+Pulse-Width Modulation (PWM)
+----------------------------
 
 Pulse-width modulation (PWM) is a modulation technique used to encode a
 message into a pulsing signal, at a specific frequency in Hertz (Hz).
@@ -1334,8 +1309,8 @@ because the power is off for most of the time. Duty cycle is expressed
 in percent, with 0% being always off, 50% being off for half of the time
 and on for half of the time, and 100% being always on.
 
-PWM (GPIO) Options
-------------------
+Pulse-Width Modulation (PWM) Options
+------------------------------------
 
 +---------------------------+------------------------------------------+
 | Setting                   | Description                              |
@@ -1431,14 +1406,27 @@ PWM output modulating alternating current (AC) at 99% duty cycle
 |Schematic: PWM output modulating alternating current (AC) at 99% duty
 cycle|
 
-Atlas EZO-PMP Pump
-------------------
+Peristaltic Pump
+----------------
 
-Currently, only one pump is supported, the Atlas Scientific EZO-PMP
-peristaltic pump.
+There are two peristaltic pump Output modules that Mycodo supports, a generic peristaltic pump Output, and the Atlas Scientific EZO-PMP peristaltic pump.
 
-Atlas EZO-PMP Pump Options
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+Generic Peristaltic Pump
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Any peristaltic pump can be used with the Generic Peristaltic Pump Output to dispense liquids. The most basic dispensing abilities are to start dispensing, stop dispensing, or dispense for a duration of time. If the pump rate has been measured, this value can be entered into the Fastest Rate (ml/min) setting and the Output controller will then be able to dispense specific volumes rather than merely for durations of time. In oder to dispense specific volumes, the Output Mode will also need to be set in addition to the Desired Flow Rate (ml/min), if the Output Mode has been set to Specify Flow Rate.
+
+To determine your pump's flow rate, first purge all air from your pump's hose. Next, instruct the pump to dispense for 60 seconds and collect the liquid it dispenses. Once finished, measure the amount of liquid and enter this value, in milliliters into the Fastest Rate (ml/min) setting. Once your pump's flow rate is set, you can now start dispensing specific volumes rather than durations.
+
+This Output module relies on switching a GPIO pin High and Low to switch the peristaltic pump on and off. This is most easily accomplished with the use of a relay in-line with your pump's power supply or using the GPIO as an input signal directly to the pump (if supported). When using a relay, it's important to develop your circuit to provide the fastest possible switching of the pump. Since the volume dispensed by the pump is dependent on time, the faster the pump switching can occur, the more accurate the dispensing will be. Many peristaltic pumps operate on DC voltage and require an AC-DC converter. These converters can take a significant amount of time to energize once power is applied as well as de-energize once power is removed, causing significant delays that can impact dispensing accuracy. To alleviate this issue, the DC power should be switched, rather than the AC power, which will remove this potential delay.
+
+Atlas Scientific Peristaltic Pump
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Atlas Scientific peristaltic pump is a peristaltic pump and microcontroller combined that allows it to be communicated with via I2C or Serial and can accurately dispense specific volumes of fluid. There are `several commands <https://www.atlas-scientific.com/files/EZO_PMP_Datasheet.pdf>`__ the pump can accept, including commands to calibrate, turn on, turn off, and dispense at a specific rate, among others. Atlas Scientific peristaltic pumps are good options, but are more expensive than generic peristaltic pumps.
+
+Peristaltic Pump Options
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 +---------------------------+------------------------------------------+
 | Setting                   | Description                              |
@@ -1446,12 +1434,21 @@ Atlas EZO-PMP Pump Options
 | Output Mode               | "Fastest low Rate" will pump liquid at   |
 |                           | the fastest rate the pump can perform.   |
 |                           | "Specify Flow Rate" will pump liquid at  |
-|                           | the rate with the "Flow Rate (ml/min)"   |
+|                           | the rate set by the "Flow Rate (ml/min)" |
 |                           | option.                                  |
 +---------------------------+------------------------------------------+
 | Flow Rate (ml/min)        | This is how fast liquid will be pumped   |
 |                           | if the "Specify Flow Rate" option is     |
 |                           | selected for the Output Mode option.     |
++---------------------------+------------------------------------------+
+| Fastest Rate (ml/min)     | This is the rate at which the pump       |
+|                           | dispenses liquid, in ml/min.             |
++---------------------------+------------------------------------------+
+| Minimum On (sec/min)      | This is the minimum duration (seconds)   |
+|                           | the pump should be turned on for every   |
+|                           | 60 second period of pumping. This option |
+|                           | is only used when Specify Flow Rate is   |
+|                           | selected as the output Mode.             |
 +---------------------------+------------------------------------------+
 
 Wireless 315/433 MHz
@@ -1652,46 +1649,33 @@ PID Controller Options
 |                           | \* integrator; and PID output = Kp_total |
 |                           | + Ki_total + Kd_total)                   |
 +---------------------------+------------------------------------------+
-| Output (Raise)            | This is the output that will cause the   |
+| Output (Raise/Lower)      | This is the output that will cause the   |
 |                           | particular environmental condition to    |
-|                           | rise. In the case of raising the         |
-|                           | temperature, this may be a heating pad   |
-|                           | or coil.                                 |
+|                           | rise or lower. In the case of raising    |
+|                           | the temperature, this may be a heating   |
+|                           | pad or coil.                             |
 +---------------------------+------------------------------------------+
-| Min Duration (Raise) Min  | This is the minimum value that the PID   |
-| Duty Cycle (Raise)        | output must be before Output (Lower)     |
-|                           | turns on. If the PID output is below     |
+| Min On Duration, Duty     | This is the minimum value that the PID   |
+| Cycle, or Amount          | output must be before Output (Lower)     |
+| (Raise/Lower)             | turns on. If the PID output is less than |
 |                           | this value, Duration Outputs will not    |
 |                           | turn on, and PWM Outputs will be turned  |
 |                           | off unless Always Min is enabled.        |
 +---------------------------+------------------------------------------+
-| Max Duration (Raise) Max  | This is the maximum duration or duty     |
-| Duty Cycle (Raise)        | cycle the Output (Raise) can be set to.  |
-|                           | If the PID output exceeds this number,   |
-|                           | the Max value set here will be used.     |
+| Max On Duration, Duty     | This is the maximum duration, volume, or |
+| Cycle, or Amount          | duty cycle the Output (Raise) can be set |
+| (Raise/Lower)             | to. If the PID output is greater than    |
+|                           | this value, the Max value set here will  |
+|                           | be used.                                 |
 +---------------------------+------------------------------------------+
-| Always Min (Raise)        | For PWM Outputs only. If enabled, the    |
-|                           | duty cycle will never be set below the   |
-|                           | Min value.                               |
+| Min Off Duration          | For On/Off (Duration) Outputs, this is   |
+| (Raise/Lower)             | the minimum amount of time the Output    |
+|                           | must have been off for before it is      |
+|                           | allowed to turn back on. Ths is useful   |
+|                           | for devices that can be damaged by rapid |
+|                           | power cycling (e.g. fridges).            |
 +---------------------------+------------------------------------------+
-| Output (Lower)            | This is the output that will cause the   |
-|                           | particular environmental condition to    |
-|                           | lower. In the case of lowering the CO2,  |
-|                           | this may be an exhaust fan.              |
-+---------------------------+------------------------------------------+
-| Min Duration (Lower) Min  | This is the minimum value that the PID   |
-| Duty Cycle (Lower)        | output must be before Output (Lower)     |
-|                           | turns on. If the PID output is below     |
-|                           | this value, Duration Outputs will not    |
-|                           | turn on, and PWM Outputs will be turned  |
-|                           | off unless Always Min is enabled.        |
-+---------------------------+------------------------------------------+
-| Max Duration (Lower) Max  | This is the maximum duration or duty     |
-| Duty Cycle (Lower)        | cycle the Output (Raise) can be set to.  |
-|                           | If the PID output exceeds this number,   |
-|                           | the Max value set here will be used.     |
-+---------------------------+------------------------------------------+
-| Always Min (Lower)        | For PWM Outputs only. If enabled, the    |
+| Always Min (Raise/Lower)  | For PWM Outputs only. If enabled, the    |
 |                           | duty cycle will never be set below the   |
 |                           | Min value.                               |
 +---------------------------+------------------------------------------+

@@ -16,7 +16,16 @@
 <div class="col-auto">
   {{form.ftdi_location.label(class_='control-label')}}
   <div>
-    {{form.ftdi_location(class_='form-control', value=each_device.ftdi_location, **{'title': dict_translation['ftdi_location']['phrase']})}}
+    <select class="form-control form-tooltip form-dropdown" id="ftdi_location" name="ftdi_location" data-placement="top" title="{{dict_translation['ftdi_location']['phrase']}}">
+    {% if not ftdi_devices %}
+      <option value="">{{_('None Found')}}</option>
+    {% else %}
+      <option value="">{{_('Select One')}}</option>
+      {% for each_dev in ftdi_devices %}
+      <option value="{{each_dev}}"{% if each_device.ftdi_location == each_dev %} selected{% endif %}>{{loop.index - 1}}: {{each_dev}}</option>
+      {% endfor %}
+    {% endif %}
+    </select>
   </div>
 </div>
 

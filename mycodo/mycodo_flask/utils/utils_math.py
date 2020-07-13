@@ -166,20 +166,14 @@ def math_mod(form_mod_math, form_mod_type=None):
             if form_mod_type.average_input.data and ',' in form_mod_type.average_input.data:
                 measurement_id = form_mod_type.average_input.data.split(',')[1]
 
-                if measurement_id == 'output':
-                    output = Output.query.filter(
-                        Output.unique_id == form_mod_type.sum_input.data.split(',')[0]).first()
-                    unit = output.unit
-                    measurement = output.measurement
+                selected_measurement = get_measurement(measurement_id)
+                if selected_measurement:
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == selected_measurement.conversion_id).first()
                 else:
-                    selected_measurement = get_measurement(measurement_id)
-                    if selected_measurement:
-                        conversion = Conversion.query.filter(
-                            Conversion.unique_id == selected_measurement.conversion_id).first()
-                    else:
-                        conversion = None
-                    _, unit, measurement = return_measurement_info(
-                        selected_measurement, conversion)
+                    conversion = None
+                _, unit, measurement = return_measurement_info(
+                    selected_measurement, conversion)
 
                 mod_measurement = DeviceMeasurements.query.filter(
                     DeviceMeasurements.device_id == form_mod_math.math_id.data).first()
@@ -193,20 +187,14 @@ def math_mod(form_mod_math, form_mod_type=None):
             if form_mod_type.sum_input.data and ',' in form_mod_type.sum_input.data:
                 measurement_id = form_mod_type.sum_input.data.split(',')[1]
 
-                if measurement_id == 'output':
-                    output = Output.query.filter(
-                        Output.unique_id == form_mod_type.sum_input.data.split(',')[0]).first()
-                    unit = output.unit
-                    measurement = output.measurement
+                selected_measurement = get_measurement(measurement_id)
+                if selected_measurement:
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == selected_measurement.conversion_id).first()
                 else:
-                    selected_measurement = get_measurement(measurement_id)
-                    if selected_measurement:
-                        conversion = Conversion.query.filter(
-                            Conversion.unique_id == selected_measurement.conversion_id).first()
-                    else:
-                        conversion = None
-                    _, unit, measurement = return_measurement_info(
-                        selected_measurement, conversion)
+                    conversion = None
+                _, unit, measurement = return_measurement_info(
+                    selected_measurement, conversion)
 
                 mod_measurement = DeviceMeasurements.query.filter(
                     DeviceMeasurements.device_id == form_mod_math.math_id.data).first()

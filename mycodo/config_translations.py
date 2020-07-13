@@ -173,6 +173,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Upload')},
     'user': {
         'title': lazy_gettext('User')},
+    'volume': {
+        'title': lazy_gettext('Volume')},
     'widget': {
         'title': lazy_gettext('Widget')},
 
@@ -219,8 +221,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Duty Cycle'),
         'phrase': lazy_gettext('Duty cycle for the PWM (percent, 0.0 - 100.0)')},
     'flow_rate': {
-        'title': lazy_gettext('Flow Rate (ml/min)'),
-        'phrase': lazy_gettext('Flow rate in ml/minute (0.5 min, 105 max)')},
+        'title': lazy_gettext('Desired Flow Rate (ml/min)'),
+        'phrase': lazy_gettext('Desired flow rate in ml/minute when Specify Flow Rate set')},
     'font_em_name': {
         'title': lazy_gettext('Name Font Size (em)'),
         'phrase': lazy_gettext('The font size of the Name text')},
@@ -229,10 +231,13 @@ TRANSLATIONS = {
         'phrase': lazy_gettext('Always send the command if instructed, regardless of the current state')},
     'ftdi_location': {
         'title': lazy_gettext('FTDI Device'),
-        'phrase': lazy_gettext('The FTDI device (e.g. /dev/ttyUSB1)')},
+        'phrase': lazy_gettext('The FTDI device connected to the input/output/etc.')},
     'gpio_location': {
         'title': lazy_gettext('Pin (GPIO)'),
         'phrase': lazy_gettext('The GPIO pin using BCM numbering')},
+    'flow_rate_method': {
+        'title': lazy_gettext('Flow Rate Method'),
+        'phrase': lazy_gettext('The flow rate to use when pumping a volume')},
     'host': {
         'title': lazy_gettext('Host'),
         'phrase': lazy_gettext('Host address or IP')},
@@ -281,9 +286,6 @@ TRANSLATIONS = {
     'output_amount_volume': {
         'title': lazy_gettext('Volume'),
         'phrase': lazy_gettext('Volume to send to output controller')},
-    'output_mode': {
-        'title': lazy_gettext('Output Mode'),
-        'phrase': lazy_gettext('Mode to run the output')},
     'on_command': {
         'title': lazy_gettext('On Command'),
         'phrase': lazy_gettext('Command to execute when the output is instructed to turn on')},

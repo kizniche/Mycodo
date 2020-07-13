@@ -24,8 +24,20 @@ class AtlasScientificFTDI(AbstractBaseAtlasScientific, Device):
         self.logger = logging.getLogger(
             "{}_{}".format(__name__, serial_device))
 
+        self.send_cmd("C,0")  # turn off continuous mode
         time.sleep(1)
         self.flush()
+
+        (board,
+         revision,
+         firmware_version) = self.get_board_version()
+
+        self.logger.info(
+            "Atlas Scientific Board: {brd}, Rev: {rev}, Firmware: {fw}".format(
+                brd=board,
+                rev=revision,
+                fw=firmware_version))
+
         self.setup = True
 
     def query(self, query_str):
@@ -34,12 +46,12 @@ class AtlasScientificFTDI(AbstractBaseAtlasScientific, Device):
             self.send_cmd(query_str)
             time.sleep(1.3)
             response = self.read_lines()
-            return response
+            return 'success', response
         except Exception as err:
             self.logger.exception(
                 "{cls} raised an exception when taking a reading: "
                 "{err}".format(cls=type(self).__name__, err=err))
-            return None
+            return 'error', err
 
     def read_line(self, size=0):
         """
@@ -102,7 +114,7 @@ def get_ftdi_device_list():
 
     for device in Driver().list_devices():
         # list_devices returns bytes rather than strings
-        dev_info = map(lambda x: x.decode('latin1'), device)
+        dev_info = map(lambda x: x, device)
         # device must always be this triple
         vendor, product, serial = dev_info
         dev_list.append(serial)

@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.5.8'
-ALEMBIC_VERSION = '561621f634cb'
+ALEMBIC_VERSION = 'af5891792291'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -375,6 +375,13 @@ PID_INFO = {
             'name': '{} ({})'.format(
                 TRANSLATIONS['output']['title'],
                 TRANSLATIONS['duty_cycle']['title'])
+        },
+        8: {
+            'measurement': 'volume',
+            'unit': 'ml',
+            'name': '{} ({})'.format(
+                TRANSLATIONS['output']['title'],
+                TRANSLATIONS['volume']['title'])
         }
     }
 }
@@ -625,9 +632,16 @@ FUNCTION_ACTION_INFO = {
         'dependencies_module': []
     },
     'output_ramp_pwm': {
-        'name': '{} {}'.format(
+        'name': '{} ({} {})'.format(
+            TRANSLATIONS['output']['title'],
             TRANSLATIONS['ramp']['title'],
             TRANSLATIONS['duty_cycle']['title']),
+        'dependencies_module': []
+    },
+    'output_volume': {
+        'name': '{} ({})'.format(
+            TRANSLATIONS['output']['title'],
+            TRANSLATIONS['volume']['title']),
         'dependencies_module': []
     },
     'pause_pid': {
@@ -705,6 +719,7 @@ FUNCTION_ACTIONS = [
     ('output', FUNCTION_ACTION_INFO['output']['name']),
     ('output_pwm', FUNCTION_ACTION_INFO['output_pwm']['name']),
     ('output_ramp_pwm', FUNCTION_ACTION_INFO['output_ramp_pwm']['name']),
+    ('output_volume', FUNCTION_ACTION_INFO['output_volume']['name']),
     ('pause_pid', FUNCTION_ACTION_INFO['pause_pid']['name']),
     ('resume_pid', FUNCTION_ACTION_INFO['resume_pid']['name']),
     ('method_pid', FUNCTION_ACTION_INFO['method_pid']['name']),

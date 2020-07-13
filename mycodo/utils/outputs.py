@@ -144,10 +144,30 @@ def parse_output_information():
 
     return dict_outputs
 
+def outputs_on_off():
+    outputs = []
+    for each_output_type, output_data in parse_output_information().items():
+        if 'output_types' in output_data and 'on_off' in output_data['output_types']:
+            outputs.append(each_output_type)
+    return outputs
 
 def outputs_pwm():
-    outputs_pwm = []
+    outputs = []
     for each_output_type, output_data in parse_output_information().items():
         if 'output_types' in output_data and 'pwm' in output_data['output_types']:
-            outputs_pwm.append(each_output_type)
-    return outputs_pwm
+            outputs.append(each_output_type)
+    return outputs
+
+def outputs_volume():
+    outputs = []
+    for each_output_type, output_data in parse_output_information().items():
+        if 'output_types' in output_data and 'volume' in output_data['output_types']:
+            outputs.append(each_output_type)
+    return outputs
+
+def output_types():
+    return {
+        'on_off': outputs_on_off(),
+        'pwm': outputs_pwm(),
+        'volume': outputs_volume()
+    }

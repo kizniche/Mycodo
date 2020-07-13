@@ -81,7 +81,7 @@ class AbstractBaseController(object):
                         "Custom option '{}' required but was not found to be "
                         "set by the user".format(each_option_default['id']))
 
-                if each_option_default['type'] == 'integer':
+                elif each_option_default['type'] == 'integer':
                     setattr(
                         self, each_option_default['id'], int(option_value))
 
@@ -102,20 +102,17 @@ class AbstractBaseController(object):
                         self, each_option_default['id'], str(option_value))
 
                 elif each_option_default['type'] == 'select_measurement':
-                    setattr(
-                        self,
-                        '{}_device_id'.format(each_option_default['id']),
-                        str(device_id))
-                    setattr(
-                        self,
-                        '{}_measurement_id'.format(each_option_default['id']),
-                        str(measurement_id))
+                    setattr(self,
+                            '{}_device_id'.format(each_option_default['id']),
+                            device_id)
+                    setattr(self,
+                            '{}_measurement_id'.format(each_option_default['id']),
+                            measurement_id)
 
                 elif each_option_default['type'] == 'select_device':
-                    setattr(
-                        self,
-                        '{}_id'.format(each_option_default['id']),
-                        str(option_value))
+                    setattr(self,
+                            '{}_id'.format(each_option_default['id']),
+                            str(option_value))
 
                 else:
                     self.logger.error(

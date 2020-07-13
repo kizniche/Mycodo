@@ -100,8 +100,6 @@ class PIDController(AbstractController, threading.Thread):
         self.device_measurements = None
         self.device_id = None
         self.measurement_id = None
-        self.raise_output_type = None
-        self.lower_output_type = None
         self.log_level_debug = None
         self.lower_seconds_on = 0.0
         self.raise_seconds_on = 0.0
@@ -118,11 +116,13 @@ class PIDController(AbstractController, threading.Thread):
         self.setpoint_tracking_id = None
         self.setpoint_tracking_max_age = None
         self.raise_output_id = None
+        self.raise_output_type = None
         self.raise_min_duration = None
         self.raise_max_duration = None
         self.raise_min_off_duration = None
         self.raise_always_min_pwm = None
         self.lower_output_id = None
+        self.lower_output_type = None
         self.lower_min_duration = None
         self.lower_max_duration = None
         self.lower_min_off_duration = None
@@ -194,11 +194,13 @@ class PIDController(AbstractController, threading.Thread):
         self.setpoint_tracking_id = pid.setpoint_tracking_id
         self.setpoint_tracking_max_age = pid.setpoint_tracking_max_age
         self.raise_output_id = pid.raise_output_id
+        self.raise_output_type = pid.raise_output_type
         self.raise_min_duration = pid.raise_min_duration
         self.raise_max_duration = pid.raise_max_duration
         self.raise_min_off_duration = pid.raise_min_off_duration
         self.raise_always_min_pwm = pid.raise_always_min_pwm
         self.lower_output_id = pid.lower_output_id
+        self.lower_output_type = pid.lower_output_type
         self.lower_min_duration = pid.lower_min_duration
         self.lower_max_duration = pid.lower_max_duration
         self.lower_min_off_duration = pid.lower_min_off_duration
@@ -231,18 +233,6 @@ class PIDController(AbstractController, threading.Thread):
         self.autotune_activated = pid.autotune_activated
         self.autotune_noiseband = pid.autotune_noiseband
         self.autotune_outstep = pid.autotune_outstep
-
-        try:
-            self.raise_output_type = db_retrieve_table_daemon(
-                Output, unique_id=self.raise_output_id).output_type
-        except AttributeError:
-            self.raise_output_type = None
-
-        try:
-            self.lower_output_type = db_retrieve_table_daemon(
-                Output, unique_id=self.lower_output_id).output_type
-        except AttributeError:
-            self.lower_output_type = None
 
         # If activated, initialize PID Autotune
         if self.autotune_activated:
@@ -552,8 +542,7 @@ class PIDController(AbstractController, threading.Thread):
 
                 if self.PID_Controller.control_variable > 0:
                     # Determine if the output should be PWM or a duration
-                    if ('output_types' in self.dict_outputs[self.raise_output_type] and
-                            'pwm' in self.dict_outputs[self.raise_output_type]['output_types']):
+                    if self.raise_output_type == 'pwm':
                         self.raise_duty_cycle = float("{0:.1f}".format(
                             self.control_var_to_duty_cycle(self.PID_Controller.control_variable)))
 
@@ -576,16 +565,14 @@ class PIDController(AbstractController, threading.Thread):
                         # Activate pwm with calculated duty cycle
                         self.control.output_on(
                             self.raise_output_id,
+                            output_type='pwm',
                             duty_cycle=self.raise_duty_cycle)
 
                         self.write_pid_output_influxdb(
                             'percent', 'duty_cycle', 7,
                             self.control_var_to_duty_cycle(self.PID_Controller.control_variable))
 
-                    elif self.raise_output_type in ['command',
-                                                    'python',
-                                                    'wired',
-                                                    'wireless_rpi_rf']:
+                    elif self.raise_output_type == 'on_off':
                         # Ensure the output on duration doesn't exceed the set maximum
                         if (self.raise_max_duration and
                                 self.PID_Controller.control_variable > self.raise_max_duration):
@@ -604,6 +591,7 @@ class PIDController(AbstractController, threading.Thread):
                                     id=self.raise_output_id))
                             self.control.output_on(
                                 self.raise_output_id,
+                                output_type='sec',
                                 amount=self.raise_seconds_on,
                                 min_off=self.raise_min_off_duration)
 
@@ -611,7 +599,7 @@ class PIDController(AbstractController, threading.Thread):
                             's', 'duration_time', 6,
                             self.PID_Controller.control_variable)
 
-                    elif self.raise_output_type == 'atlas_ezo_pmp':
+                    elif self.raise_output_type == 'volume':
                         # Activate raise_output for a volume (ml)
                         self.logger.debug(
                             "Setpoint: {sp} Output: {cv} ml to output "
@@ -621,16 +609,15 @@ class PIDController(AbstractController, threading.Thread):
                                 id=self.raise_output_id))
                         self.control.output_on(
                             self.raise_output_id,
+                            output_type='vol',
                             amount=self.PID_Controller.control_variable,
                             min_off=self.raise_min_off_duration)
 
-                    self.write_pid_output_influxdb(
-                        's', 'duration_time', 6,
-                        self.PID_Controller.control_variable)
+                        self.write_pid_output_influxdb(
+                            'ml', 'volume', 8,
+                            self.PID_Controller.control_variable)
 
-                elif (('output_types' in self.dict_outputs[self.raise_output_type] and
-                        'pwm' in self.dict_outputs[self.raise_output_type]['output_types']) and
-                        not self.raise_always_min_pwm):
+                elif self.raise_output_type == 'pwm' and not self.raise_always_min_pwm:
                     # Turn PWM Off if PWM Output and not instructed to always be at least min
                     self.control.output_on(self.raise_output_id, duty_cycle=0)
 
@@ -642,8 +629,7 @@ class PIDController(AbstractController, threading.Thread):
 
                 if self.PID_Controller.control_variable < 0:
                     # Determine if the output should be PWM or a duration
-                    if ('output_types' in self.dict_outputs[self.lower_output_type] and
-                         'pwm' in self.dict_outputs[self.lower_output_type]['output_types']):
+                    if self.lower_output_type == 'pwm':
                         self.lower_duty_cycle = float("{0:.1f}".format(
                             self.control_var_to_duty_cycle(abs(self.PID_Controller.control_variable))))
 
@@ -674,15 +660,14 @@ class PIDController(AbstractController, threading.Thread):
 
                         # Activate pwm with calculated duty cycle
                         self.control.output_on(
-                            self.lower_output_id, duty_cycle=stored_duty_cycle)
+                            self.lower_output_id,
+                            output_type='pwm',
+                            duty_cycle=stored_duty_cycle)
 
                         self.write_pid_output_influxdb(
                             'percent', 'duty_cycle', 7, stored_control_variable)
 
-                    elif self.lower_output_type in ['command',
-                                                    'python',
-                                                    'wired',
-                                                    'wireless_rpi_rf']:
+                    elif self.lower_output_type == 'on_off':
                         # Ensure the output on duration doesn't exceed the set maximum
                         if (self.lower_max_duration and
                                 abs(self.PID_Controller.control_variable) > self.lower_max_duration):
@@ -708,13 +693,14 @@ class PIDController(AbstractController, threading.Thread):
 
                             self.control.output_on(
                                 self.lower_output_id,
+                                output_type='sec',
                                 amount=stored_amount_on,
                                 min_off=self.lower_min_off_duration)
 
                         self.write_pid_output_influxdb(
                             's', 'duration_time', 6, stored_control_variable)
 
-                    elif self.lower_output_type == 'atlas_ezo_pmp':
+                    elif self.lower_output_type == 'volume':
                         if self.store_lower_as_negative:
                             stored_amount_on = -abs(self.lower_seconds_on)
                             stored_control_variable = -abs(self.PID_Controller.control_variable)
@@ -731,15 +717,14 @@ class PIDController(AbstractController, threading.Thread):
 
                         self.control.output_on(
                             self.lower_output_id,
+                            output_type='vol',
                             amount=stored_amount_on,
                             min_off=self.lower_min_off_duration)
 
                         self.write_pid_output_influxdb(
-                            's', 'duration_time', 6, stored_control_variable)
+                            'ml', 'volume', 8, stored_control_variable)
 
-                elif (('output_types' in self.dict_outputs[self.lower_output_type] and
-                       'pwm' in self.dict_outputs[self.lower_output_type]['output_types']) and
-                       not self.lower_always_min_pwm):
+                elif self.lower_output_type == 'pwm' and not self.lower_always_min_pwm:
                     # Turn PWM Off if PWM Output and not instructed to always be at least min
                     self.control.output_on(self.lower_output_id, duty_cycle=0)
 
@@ -763,11 +748,13 @@ class PIDController(AbstractController, threading.Thread):
                "Integrator Min: {imn}, " \
                "Integrator Max {imx}, " \
                "Output Raise: {opr}, " \
+               "Output Raise Type: {oprt}, " \
                "Output Raise Min On: {oprmnon}, " \
                "Output Raise Max On: {oprmxon}, " \
                "Output Raise Min Off: {oprmnoff}, " \
                "Output Raise Always Min: {opramn}, " \
                "Output Lower: {opl}, " \
+               "Output Lower Type: {oplt}, " \
                "Output Lower Min On: {oplmnon}, " \
                "Output Lower Max On: {oplmxon}, " \
                "Output Lower Min Off: {oplmnoff}, " \
@@ -786,11 +773,13 @@ class PIDController(AbstractController, threading.Thread):
                     imn=self.PID_Controller.integrator_min,
                     imx=self.PID_Controller.integrator_max,
                     opr=self.raise_output_id,
+                    oprt=self.raise_output_type,
                     oprmnon=self.raise_min_duration,
                     oprmxon=self.raise_max_duration,
                     oprmnoff=self.raise_min_off_duration,
                     opramn=self.raise_always_min_pwm,
                     opl=self.lower_output_id,
+                    oplt=self.lower_output_type,
                     oplmnon=self.lower_min_duration,
                     oplmxon=self.lower_max_duration,
                     oplmnoff=self.lower_min_off_duration,

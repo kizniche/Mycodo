@@ -68,7 +68,7 @@ class OutputModule(AbstractOutput):
             self.output_on_command = output.on_command
             self.output_off_command = output.off_command
 
-    def output_switch(self, state, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
         if state == 'on' and self.output_on_command:
             self.output_run_python_on.output_code_run()
             self.output_state = True

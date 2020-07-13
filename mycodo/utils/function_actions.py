@@ -347,7 +347,8 @@ def action_output(cond_action, message):
         target=control.output_on_off,
         args=(cond_action.do_unique_id,
               cond_action.do_output_state,),
-        kwargs={'amount': cond_action.do_output_duration})
+        kwargs={'output_type': 'sec',
+                'amount': cond_action.do_output_duration})
     output_on_off.start()
     return message
 
@@ -365,7 +366,8 @@ def action_output_pwm(cond_action, message):
     output_on = threading.Thread(
         target=control.output_on,
         args=(cond_action.do_unique_id,),
-        kwargs={'duty_cycle': cond_action.do_output_pwm})
+        kwargs={'output_type': 'pwm',
+                'duty_cycle': cond_action.do_output_pwm})
     output_on.start()
     return message
 
@@ -402,7 +404,8 @@ def action_output_ramp_pwm(cond_action, message):
     output_on = threading.Thread(
         target=control.output_on,
         args=(cond_action.do_unique_id,),
-        kwargs={'duty_cycle': start_duty_cycle})
+        kwargs={'output_type': 'pwm',
+                'duty_cycle': start_duty_cycle})
     output_on.start()
 
     loop_running = True
@@ -425,11 +428,31 @@ def action_output_ramp_pwm(cond_action, message):
             output_on = threading.Thread(
                 target=control.output_on,
                 args=(cond_action.do_unique_id,),
-                kwargs={'duty_cycle': current_duty_cycle})
+                kwargs={'output_type': 'pwm',
+                        'duty_cycle': current_duty_cycle})
             output_on.start()
 
             if not loop_running:
                 break
+    return message
+
+
+def action_output_volume(cond_action, message):
+    control = DaemonControl()
+    this_output = db_retrieve_table_daemon(
+        Output, unique_id=cond_action.do_unique_id, entry='first')
+    message += " Output {unique_id} ({id}, {name}) volume of {volume}.".format(
+        unique_id=cond_action.do_unique_id,
+        id=this_output.id,
+        name=this_output.name,
+        volume=cond_action.do_output_pwm)
+
+    output_on = threading.Thread(
+        target=control.output_on,
+        args=(cond_action.do_unique_id,),
+        kwargs={'output_type': 'vol',
+                'amount': cond_action.do_output_amount})
+    output_on.start()
     return message
 
 
@@ -962,6 +985,10 @@ def trigger_action(
                 0 <= cond_action.do_output_pwm2 <= 100 and
                 cond_action.do_output_duration > 0):
             message = action_output_ramp_pwm(cond_action, message)
+        elif (cond_action.action_type == 'output_volume' and
+                cond_action.do_unique_id and
+                cond_action.do_output_amount > 0):
+            message = action_output_volume(cond_action, message)
         elif cond_action.action_type == 'command':
             message = action_command(cond_action, message)
         elif cond_action.action_type == 'create_note':

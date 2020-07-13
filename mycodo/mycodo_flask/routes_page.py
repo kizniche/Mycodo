@@ -113,7 +113,7 @@ from mycodo.utils.influx import average_past_seconds
 from mycodo.utils.influx import average_start_end_seconds
 from mycodo.utils.inputs import list_analog_to_digital_converters
 from mycodo.utils.inputs import parse_input_information
-from mycodo.utils.outputs import outputs_pwm
+from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
@@ -792,7 +792,7 @@ def page_dashboard(dashboard_id):
                            misc=misc,
                            pid=pid,
                            output=output,
-                           outputs_pwm=outputs_pwm(),
+                           output_types=output_types(),
                            input=input_dev,
                            tags=tags,
                            colors_graph=colors_graph,
@@ -1322,6 +1322,8 @@ def page_function():
     form_mod_pid_output_lower = forms_pid.PIDModRelayLower()
     form_mod_pid_pwm_raise = forms_pid.PIDModPWMRaise()
     form_mod_pid_pwm_lower = forms_pid.PIDModPWMLower()
+    form_mod_pid_volume_raise = forms_pid.PIDModVolumeRaise()
+    form_mod_pid_volume_lower = forms_pid.PIDModVolumeLower()
     form_function = forms_function.FunctionMod()
     form_trigger = forms_trigger.Trigger()
     form_conditional = forms_conditional.Conditional()
@@ -1372,7 +1374,9 @@ def page_function():
                               form_mod_pid_pwm_raise,
                               form_mod_pid_pwm_lower,
                               form_mod_pid_output_raise,
-                              form_mod_pid_output_lower)
+                              form_mod_pid_output_lower,
+                              form_mod_pid_volume_raise,
+                              form_mod_pid_volume_lower                              )
         elif form_mod_pid_base.pid_delete.data:
             utils_pid.pid_del(form_mod_pid_base.function_id.data)
         elif form_mod_pid_base.order_up.data:
@@ -1502,6 +1506,7 @@ def page_function():
         choices_functions.append((each_function[0], each_function[1]))
 
     dict_controllers = parse_controller_information()
+    dict_outputs = parse_output_information()
 
     choices_custom_controllers = utils_general.choices_custom_controllers()
     choices_input = utils_general.choices_inputs(
@@ -1629,6 +1634,7 @@ def page_function():
                            custom_controllers=custom_controllers,
                            custom_options_values_controllers=custom_options_values_controllers,
                            dict_controllers=dict_controllers,
+                           dict_outputs=dict_outputs,
                            display_order_function=display_order_function,
                            form_base=form_base,
                            form_conditional=form_conditional,
@@ -1642,6 +1648,8 @@ def page_function():
                            form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
                            form_mod_pid_output_raise=form_mod_pid_output_raise,
                            form_mod_pid_output_lower=form_mod_pid_output_lower,
+                           form_mod_pid_volume_raise=form_mod_pid_volume_raise,
+                           form_mod_pid_volume_lower=form_mod_pid_volume_lower,
                            form_trigger=form_trigger,
                            function_action_info=FUNCTION_ACTION_INFO,
                            function_dev=function_dev,
@@ -1653,7 +1661,7 @@ def page_function():
                            method=method,
                            names_function=names_function,
                            output=output,
-                           outputs_pwm=outputs_pwm(),
+                           output_types=output_types(),
                            pid=pid,
                            sunrise_set_calc=sunrise_set_calc,
                            table_input=Input,
@@ -1749,7 +1757,7 @@ def page_output():
                            misc=misc,
                            names_output=names_output,
                            output=output,
-                           outputs_pwm=outputs_pwm(),
+                           output_types=output_types(),
                            output_templates=output_templates,
                            user=user)
 
@@ -1975,6 +1983,14 @@ def page_data():
         except Exception:
             logger.error("Error finding 1-wire devices with 'owdir'")
 
+    # Find FTDI devices
+    ftdi_devices = []
+    for each_input in input_dev:
+        if each_input.interface == "FTDI":
+            from mycodo.devices.atlas_scientific_ftdi import get_ftdi_device_list
+            ftdi_devices = get_ftdi_device_list()
+            break
+
     return render_template('pages/data.html',
                            and_=and_,
                            choices_input=choices_input,
@@ -2005,13 +2021,14 @@ def page_data():
                            form_mod_math_measurement=form_mod_math_measurement,
                            form_mod_verification=form_mod_verification,
                            form_mod_misc=form_mod_misc,
+                           ftdi_devices=ftdi_devices,
                            input_templates=input_templates,
                            math_info=MATH_INFO,
                            math_templates=math_templates,
                            names_input=names_input,
                            names_math=names_math,
                            output=output,
-                           outputs_pwm=outputs_pwm(),
+                           output_types=output_types(),
                            pid=pid,
                            table_conversion=Conversion,
                            table_device_measurements=DeviceMeasurements,
@@ -2214,7 +2231,7 @@ def page_usage():
                            misc=misc,
                            output=output,
                            output_stats=output_stats,
-                           outputs_pwm=outputs_pwm(),
+                           output_types=output_types(),
                            picker_end=picker_end,
                            picker_start=picker_start,
                            timestamp=time.strftime("%c"))

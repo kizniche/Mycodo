@@ -19,7 +19,7 @@ from mycodo.mycodo_flask.utils.utils_general import custom_options_return_string
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
-from mycodo.utils.outputs import outputs_pwm
+from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import is_int
@@ -39,6 +39,7 @@ def output_add(form_add):
     error = []
 
     dict_outputs = parse_output_information()
+    output_types_dict = output_types()
 
     # only one comma should be in the output_type string
     if form_add.output_type.data.count(',') > 1:
@@ -152,17 +153,22 @@ def output_add(form_add):
                         list_options.append(option)
                 new_output.custom_options = ';'.join(list_options)
 
-                if 'on_off' in dict_outputs[output_type]['output_types']:
-                    new_output.measurement = 'duration_time'
-                    new_output.unit = 's'
-
-                elif output_type in outputs_pwm():
-                    new_output.measurement = 'duty_cycle'
-                    new_output.unit = 'percent'
+                if output_type in output_types_dict['pwm']:
                     new_output.pwm_hertz = 22000
                     new_output.pwm_library = 'pigpio_any'
 
-                new_output.channel = 0
+                if output_type in output_types_dict['volume']:
+                    new_output.output_mode = 'fastest_flow_rate'
+                    new_output.flow_rate = 10
+                    if output_type == 'atlas_ezo_pmp':
+                        if output_interface == 'FTDI':
+                            new_output.location = '/dev/ttyUSB0'
+                        elif output_interface == 'I2C':
+                            new_output.location = '0x67'
+                            new_output.i2c_bus = 1
+                        elif output_interface == 'UART':
+                            new_output.location = '/dev/ttyAMA0'
+                            new_output.baud_rate = 9600
 
                 if output_type == 'wired':
                     new_output.state_startup = '0'
@@ -206,18 +212,6 @@ timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 log_string = "{ts}: ID: {id}: {dc} % Duty Cycle".format(
     dc=duty_cycle, id=output_id, ts=timestamp)
 self.logger.info(log_string)"""
-
-                elif output_type == 'atlas_ezo_pmp':
-                    new_output.output_mode = 'fastest_flow_rate'
-                    new_output.flow_rate = 10
-                    if output_interface == 'FTDI':
-                        new_output.location = '/dev/ttyUSB0'
-                    elif output_interface == 'I2C':
-                        new_output.location = '0x67'
-                        new_output.i2c_bus = 1
-                    elif output_interface == 'UART':
-                        new_output.location = '/dev/ttyAMA0'
-                        new_output.baud_rate = 9600
 
                 if not error:
                     new_output.save()
@@ -318,8 +312,11 @@ def output_mod(form_output, request_form):
 
         # Pump options
         if form_output.flow_rate.data:
-            if form_output.flow_rate.data > 105 or form_output.flow_rate.data < 0.5:
-                error.append("Flow Rate must be between 0.5 and 105 ml/min")
+            if (mod_output.output_type == 'atlas_ezo_pmp' and
+                    (form_output.flow_rate.data > 105 or form_output.flow_rate.data < 0.5)):
+                error.append("The Atlas Scientific Flow Rate must be between 0.5 and 105 ml/min")
+            elif form_output.flow_rate.data <= 0:
+                error.append("Flow Rate must be a positive value")
             else:
                 mod_output.flow_rate = form_output.flow_rate.data
 

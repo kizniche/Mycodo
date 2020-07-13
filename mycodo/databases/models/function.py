@@ -128,6 +128,7 @@ class Actions(CRUDMixin, db.Model):
     do_unique_id = db.Column(db.Text, default='')
     do_action_string = db.Column(db.Text, default='')  # string, such as the email address or command
     do_output_state = db.Column(db.Text, default='')  # 'on' or 'off'
+    do_output_amount = db.Column(db.Float, default=0.0)
     do_output_duration = db.Column(db.Float, default=0.0)
     do_output_pwm = db.Column(db.Float, default=0.0)
     do_output_pwm2 = db.Column(db.Float, default=0.0)

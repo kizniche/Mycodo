@@ -73,20 +73,12 @@
     $('.output_on_amt').click(function() {
       var btn_val = this.name;
       var id = btn_val.split('/')[0];
-      var on_amt = $('#sec_on_amt_' + id).val();
+      var on_type = btn_val.split('/')[2];
+      var on_amt = $('#' + on_type + '_on_amt_' + id).val();
       {% if not misc.hide_alert_info %}
-      toastr['info']('Command sent to turn output ' + id + ' On for ' + on_amt);
+      toastr['info']('Command sent to turn output ' + id + ' On for ' + on_amt + ' ' + on_type);
       {% endif %}
       getAjax(btn_val + on_amt);
-    });
-    $('.duty_cycle_on_amt').click(function() {
-      var btn_val = this.name;
-      var id = btn_val.split('/')[0];
-      var dc = $('#duty_cycle_on_amt_' + id).val();
-      {% if not misc.hide_alert_info %}
-      toastr['info']('Command sent to turn output ' + id + ' on with a duty cycle of ' + dc + '%');
-      {% endif %}
-      getAjax(btn_val + dc);
     });
   });
 </script>
@@ -340,17 +332,19 @@
 
           </div>
 
-        {% if custom_options_values[unique_id] %}
+        {% if 'custom_options' in dict_options or 'custom_options_message' in dict_options %}
           <div class="row small-gutters" style="padding: 0.5em">
             <div class="col-12">
               <h5>{{_('Custom Options')}}</h5>
             </div>
+          {% if 'custom_options_message' in dict_options %}
             {% include 'pages/form_options/Custom_Options_Message.html' %}
-              {% if 'custom_options' in dict_options %}
-                {% for each_option in dict_options['custom_options'] %}
-            {% include 'pages/form_options/Custom_Options.html' %}
-                {% endfor %}
-              {% endif %}
+          {% endif %}
+          {% if 'custom_options' in dict_options %}
+            {% for each_option in dict_options['custom_options'] %}
+              {% include 'pages/form_options/Custom_Options.html' %}
+            {% endfor %}
+          {% endif %}
           </div>
         {% endif %}
 
@@ -382,10 +376,10 @@
               <div>
                 <div class="row small-gutters">
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="{{dict_translation['output_amount_volume']['phrase']}}" type="text" value="">
+                    <input class="form-control" id="vol_on_amt_{{each_output.unique_id}}" name="vol_on_amt_{{each_output.unique_id}}" title="{{dict_translation['output_amount_volume']['phrase']}}" type="text" value="">
                   </div>
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Send')}}">
+                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/vol/" type="button" value="{{_('Send')}}">
                   </div>
                 </div>
               </div>
@@ -402,10 +396,10 @@
               <div>
                 <div class="row small-gutters">
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                  <input class="form-control" id="duty_cycle_on_amt_{{each_output.unique_id}}" name="duty_cycle_on_amt_{{each_output.unique_id}}" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
+                  <input class="form-control" id="pwm_on_amt_{{each_output.unique_id}}" name="pwm_on_amt_{{each_output.unique_id}}" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
                   </div>
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                  <input class="btn btn-success btn-block duty_cycle_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/pwm/" type="button" value="{{_('Send')}}">
+                  <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/pwm/" type="button" value="{{_('Send')}}">
                   </div>
                 </div>
               </div>

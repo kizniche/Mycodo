@@ -61,7 +61,7 @@ class OutputModule(AbstractOutput):
             self.output_pin = output.pin
             self.output_on_state = output.on_state
 
-    def output_switch(self, state, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
         try:
             if state == 'on':
                 self.GPIO.output(self.output_pin, self.output_on_state)

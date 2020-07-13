@@ -40,6 +40,7 @@ INPUT_INFORMATION = {
     'i2c_address_editable': True,
     'uart_location': '/dev/ttyAMA0',
     'uart_baud_rate': 9600,
+    'ftdi_location': '0'
 }
 
 

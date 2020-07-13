@@ -622,7 +622,9 @@ class DaemonController:
 
     def pid_get(self, pid_id, setting):
         try:
-            if setting == 'setpoint':
+            if pid_id not in self.controller['PID']:
+                return None
+            elif setting == 'setpoint':
                 return self.controller['PID'][pid_id].get_setpoint()
             elif setting == 'setpoint_band':
                 return self.controller['PID'][pid_id].get_setpoint_band()
@@ -737,7 +739,7 @@ class DaemonController:
             self.logger.exception(message)
             return 1, message
 
-    def output_on(self, output_id, amount=0.0, min_off=0.0,
+    def output_on(self, output_id, amount=0.0, output_type=None, min_off=0.0,
                   duty_cycle=0.0, trigger_conditionals=True):
         """
         Turn output on using default output controller
@@ -746,6 +748,8 @@ class DaemonController:
         :type output_id: str
         :param amount: How long to turn the output on or how much volume to dispense
         :type amount: float
+        :param output_type: The type of output ('sec', 'vol', 'pwm')
+        :type output_type: str
         :param min_off: Don't turn on if not off for at least this duration (0 = disabled)
         :type min_off: float
         :param duty_cycle: PWM duty cycle % (0-100)
@@ -762,6 +766,7 @@ class DaemonController:
                     output_id,
                     'on',
                     amount=amount,
+                    output_type=output_type,
                     min_off=min_off,
                     duty_cycle=duty_cycle,
                     trigger_conditionals=trigger_conditionals)
@@ -1179,12 +1184,13 @@ class PyroServer(object):
         """Return all output states"""
         return self.mycodo.output_states_all()
 
-    def output_on(self, output_id, amount=0.0, min_off=0.0,
+    def output_on(self, output_id, amount=0.0, output_type=None, min_off=0.0,
                   duty_cycle=0.0, trigger_conditionals=True):
         """Turns output on from the client"""
         return self.mycodo.output_on(
             output_id,
             amount=amount,
+            output_type=output_type,
             min_off=min_off,
             duty_cycle=duty_cycle,
             trigger_conditionals=trigger_conditionals)

@@ -4,15 +4,24 @@ This update adds a Generic Peristaltic Pump Output to compliment the Atlas Scien
 
 WARNING: As a result of how this new output operates, a potentially breaking change has been introduced. If you use any custom Output modules, you will need to add the parameter output_type=None to the output_switch() function of all of your custom Output controllers. If you do not, the Mycodo daemon/backend will fail to start after upgrading to or beyond this version. It is advised to modify your custom Output modules prior to upgrading to ensure the daemon successfully starts after the upgrade.
 
+### Bugfixes
+
+ - Fix UART communication with Atlas Scientific devices ([#785](https://github.com/kizniche/mycodo/issues/785))
+ - Fix FTDI communication with Atlas Scientific devices
+ - Fix PID Dashboard Widget error in log when PID inactive
+
 ### Features
 
  - Add Output: Generic Peristaltic Pump
- - Add ability to turn Atlas Scientific peristaltic pumps on for durations
+ - Add ability to turn peristaltic pumps on for durations (in addition to volumes)
  - Add Function Action: Output (Volume)
+ - Improve general compatibility with Atlas Scientific devices
+ - Add ability to utilize volume Outputs (pumps) with PID Controllers
 
 ### Miscellaneous
 
  - Move clear total volume function for Atlas Scientific Flow Meter to Input Module
+ - Add instruction for viewing the frontend web log on the web 502 error page ([#786](https://github.com/kizniche/mycodo/issues/786))
 
 
 ## 8.5.8 (2020-07-07)

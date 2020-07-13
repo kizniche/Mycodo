@@ -98,7 +98,9 @@ class PIDModBase(FlaskForm):
         lazy_gettext('Integrator Max'),
         widget=NumberInput(step='any'))
     raise_output_id = StringField(lazy_gettext('Output (Raise)'))
+    raise_output_type = StringField(lazy_gettext('Action (Raise)'))
     lower_output_id = StringField(lazy_gettext('Output (Lower)'))
+    lower_output_type = StringField(lazy_gettext('Action (Lower)'))
     setpoint_tracking_type = StringField(TRANSLATIONS['setpoint_tracking_type']['title'])
     setpoint_tracking_method_id = StringField('Setpoint Tracking Method')
     setpoint_tracking_input_math_id = StringField('Setpoint Tracking Input/Math')
@@ -170,6 +172,44 @@ class PIDModRelayLower(FlaskForm):
     )
     lower_min_off_duration = DecimalField(
         lazy_gettext('Min Off Duration (Lower)'),
+        validators=[validators.NumberRange(
+            min=0,
+            max=86400
+        )],
+        widget=NumberInput(step='any')
+    )
+
+
+class PIDModVolumeRaise(FlaskForm):
+    raise_min_amount = DecimalField(
+        lazy_gettext('Min On Amount (Raise)'),
+        validators=[validators.NumberRange(
+            min=0,
+            max=86400
+        )],
+        widget=NumberInput(step='any')
+    )
+    raise_max_amount = DecimalField(
+        lazy_gettext('Max On Amount (Raise)'),
+        validators=[validators.NumberRange(
+            min=0,
+            max=86400
+        )],
+        widget=NumberInput(step='any')
+    )
+
+
+class PIDModVolumeLower(FlaskForm):
+    lower_min_amount = DecimalField(
+        lazy_gettext('Min On Amount (Lower)'),
+        validators=[validators.NumberRange(
+            min=0,
+            max=86400
+        )],
+        widget=NumberInput(step='any')
+    )
+    lower_max_amount = DecimalField(
+        lazy_gettext('Max On Amount (Lower)'),
         validators=[validators.NumberRange(
             min=0,
             max=86400

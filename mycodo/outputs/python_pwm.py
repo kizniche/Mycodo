@@ -65,7 +65,7 @@ class OutputModule(AbstractOutput):
             self.output_pwm_command = output.pwm_command
             self.pwm_invert_signal = output.pwm_invert_signal
 
-    def output_switch(self, state, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
         measure_dict = measurements_dict.copy()
 
         if self.output_pwm_command:

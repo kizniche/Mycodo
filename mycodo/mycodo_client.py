@@ -210,16 +210,16 @@ class DaemonControl:
     def output_off(self, output_id, trigger_conditionals=True):
         return self.proxy().output_off(output_id, trigger_conditionals)
 
-    def output_on(self, output_id, amount=0.0, min_off=0.0,
+    def output_on(self, output_id, amount=0.0, output_type=None, min_off=0.0,
                   duty_cycle=0.0, trigger_conditionals=True):
         return self.proxy().output_on(
-            output_id, amount=amount, min_off=min_off,
+            output_id, output_type=output_type, amount=amount, min_off=min_off,
             duty_cycle=duty_cycle, trigger_conditionals=trigger_conditionals)
 
-    def output_on_off(self, output_id, state, amount=0.0):
+    def output_on_off(self, output_id, state, output_type=None, amount=0.0):
         """ Turn an output on or off """
         if state in ['on', 1, True]:
-            return self.output_on(output_id, amount)
+            return self.output_on(output_id, amount=amount, output_type=output_type)
         elif state in ['off', 0, False]:
             return self.output_off(output_id)
         else:

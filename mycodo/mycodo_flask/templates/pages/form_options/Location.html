@@ -18,7 +18,7 @@
           <option value="{{each_1wire_dev['value']}}"{% if each_device.location == each_1wire_dev['value'] %} selected{% endif %}>{{each_1wire_dev['name']}}</option>
           {% endfor %}
         {% else %}
-        <option value="">None Detected</option>
+        <option value="">{{_('None Found')}}</option>
         {% endif %}
       {% elif dict_options['input_library'] == 'ow_shell' %}
         {% if devices_1wire_ow_shell != [] %}
@@ -27,7 +27,7 @@
           <option value="{{each_1wire_dev}}"{% if each_device.location == each_1wire_dev %} selected{% endif %}>{{each_1wire_dev}}</option>
           {% endfor %}
         {% else %}
-        <option value="">None Detected</option>
+        <option value="">{{_('None Found')}}</option>
         {% endif %}
       {% endif %}
     </select>

@@ -3,11 +3,15 @@
 # atlas_ezo_pmp.py - Output for Atlas Scientific EZO Pump
 #
 import datetime
+import threading
+import time
+
 from flask_babel import lazy_gettext
-from mycodo.outputs.base_output import AbstractOutput
-from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.database import db_retrieve_table_daemon
+
 from mycodo.databases.models import DeviceMeasurements
+from mycodo.outputs.base_output import AbstractOutput
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import read_last_influxdb
 
 # Measurements
@@ -18,21 +22,21 @@ measurements_dict = {
     },
     1: {
         'measurement': 'duration_time',
-        'unit': 'minute'
+        'unit': 'minute'  # TODO: Change to seconds
     }
 }
 
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'atlas_ezo_pmp',
-    'output_name': lazy_gettext('Atlas Scientific Pump'),
+    'output_name': "{} (Atlas Scientific)".format(lazy_gettext('Peristaltic Pump')),
     'measurements_dict': measurements_dict,
 
     'on_state_internally_handled': False,
-    'output_types': ['volume'],
+    'output_types': ['volume', 'on_off'],
 
     'message': 'Atlas Scientific peristaltic pumps can be set to dispense at their maximum rate or a '
-               'rate can be specified.',
+               'rate can be specified. Their minimum flow rate is 0.5 ml/min and their maximum is 105 ml/min.',
 
     'options_enabled': [
         'ftdi_location',
@@ -41,7 +45,8 @@ OUTPUT_INFORMATION = {
         'uart_baud_rate',
         'pump_output_mode',
         'pump_flow_rate',
-        'button_send_volume'
+        'button_send_volume',
+        'button_send_duration'
     ],
     'options_disabled': ['interface'],
 
@@ -71,6 +76,7 @@ class OutputModule(AbstractOutput):
         self.uart_baud_rate = None
         self.i2c_address = None
         self.i2c_bus = None
+        self.currently_dispensing = False
 
         if not testing:
             self.output = output
@@ -79,10 +85,43 @@ class OutputModule(AbstractOutput):
             self.output_mode = output.output_mode
             self.output_flow_rate = output.flow_rate
 
-    def output_switch(self, state, amount=None, duty_cycle=None):
+    def record_dispersal(self, amount_ml=None, minutes_to_run=None):
         measure_dict = measurements_dict.copy()
+        if amount_ml:
+            measure_dict[0]['value'] = amount_ml
+        if minutes_to_run:
+            measure_dict[1]['value'] = minutes_to_run
+        add_measurements_influxdb(self.output_unique_id, measure_dict)
 
-        if state == 'on' and amount > 0:
+    def dispense_duration(self, seconds):
+        self.currently_dispensing = True
+        timer_dispense = time.time() + seconds
+
+        write_cmd = "D,*"
+        self.atlas_command.write(write_cmd)
+        self.logger.debug("EZO-PMP command: {}".format(write_cmd))
+
+        while time.time() < timer_dispense and self.currently_dispensing:
+            time.sleep(0.1)
+
+        write_cmd = 'X'
+        self.atlas_command.write(write_cmd)
+        self.logger.debug("EZO-PMP command: {}".format(write_cmd))
+        self.currently_dispensing = False
+
+        self.record_dispersal(minutes_to_run=seconds / 60)
+
+    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
+        if state == 'on' and output_type == 'sec' and amount:
+            # Only dispense for a duration if output_type is 'sec'
+            # Otherwise, refer to output_mode
+            write_db = threading.Thread(
+                target=self.dispense_duration,
+                args=(amount,))
+            write_db.start()
+            return
+
+        elif state == 'on' and output_type in ['vol', None] and amount:
             if self.output_mode == 'fastest_flow_rate':
                 minutes_to_run = amount / 105
                 write_cmd = 'D,{ml:.2f}'.format(ml=amount)
@@ -95,28 +134,29 @@ class OutputModule(AbstractOutput):
                     self.output_mode))
                 return
 
-        elif state == 'off' or amount <= 0:
+        elif state == 'off' or (amount is not None and amount <= 0):
+            self.currently_dispensing = False
             write_cmd = 'X'
             amount = 0
             minutes_to_run = 0
 
         else:
             self.logger.error(
-                "Invalid parameters: State: {state}, Volume: {vol}, "
-                "Flow Rate: {fr}".format(
-                    state=state, vol=amount, fr=self.output_flow_rate))
+                "Invalid parameters: State: {state}, Output Type: {ot}, Volume: {vol}, Flow Rate: {fr}".format(
+                    state=state, ot=output_type, vol=amount, fr=self.output_flow_rate))
             return
 
         self.atlas_command.write(write_cmd)
         self.logger.debug("EZO-PMP command: {}".format(write_cmd))
 
         if amount and minutes_to_run:
-            measure_dict[0]['value'] = amount
-            measure_dict[1]['value'] = minutes_to_run
-            add_measurements_influxdb(self.output_unique_id, measure_dict)
+            self.record_dispersal(amount_ml=amount, minutes_to_run=minutes_to_run)
 
     def is_on(self):
         if self.is_setup():
+            if self.currently_dispensing:
+                return True
+
             device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
                 DeviceMeasurements.device_id == self.output_unique_id)

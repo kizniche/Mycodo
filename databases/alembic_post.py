@@ -58,6 +58,51 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == 'af5891792291':
+            # Set the output_type for PID controller outputs
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from mycodo.utils.outputs import parse_output_information
+                from mycodo.databases.models import DeviceMeasurements
+                from mycodo.databases.models import Output
+                from mycodo.databases.models import PID
+
+                dict_outputs = parse_output_information()
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    for each_pid in session.query(PID).all():
+                        try:
+                            new_measurement = DeviceMeasurements()
+                            new_measurement.name = "Output (Volume)"
+                            new_measurement.device_id = each_pid.unique_id
+                            new_measurement.measurement = 'volume'
+                            new_measurement.unit = 'ml'
+                            new_measurement.channel = 8
+                            session.add(new_measurement)
+
+                            if each_pid.raise_output_id:
+                                output_raise = session.query(Output).filter(
+                                    Output.unique_id == each_pid.raise_output_id).first()
+                                if output_raise:  # Use first output type listed (default)
+                                    each_pid.raise_output_type = dict_outputs[output_raise.output_type]['output_types'][0]
+                            if each_pid.lower_output_id:
+                                output_lower = session.query(Output).filter(
+                                    Output.unique_id == each_pid.lower_output_id).first()
+                                if output_lower:  # Use first output type listed (default)
+                                    each_pid.lower_output_type = dict_outputs[output_lower.output_type]['output_types'][0]
+                        except:
+                            msg = "ERROR-1: post-alembic revision {}: {}".format(
+                                each_revision, traceback.format_exc())
+                            error.append(msg)
+                            print(msg)
+
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == '561621f634cb':
             print("Executing post-alembic code for revision {}".format(
                 each_revision))

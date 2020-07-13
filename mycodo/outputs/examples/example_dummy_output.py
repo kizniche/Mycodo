@@ -182,12 +182,10 @@ class OutputModule(AbstractOutput):
                     ft=type(self.float_value), fv=self.float_value,
                     rt=type(self.range_value), rv=self.range_value))
 
-    def output_switch(self, state, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
         """
         Set the output on, off, to an amount, or to a duty cycle
-        if output_types is 'on_off', state will represent the on or off state to set
-        if output_types is 'volume', amount will represent the volume to set
-        if output_types is 'pwm', duty_cycle will represent the duty cycle to set
+        output_type can be None, 'sec', 'vol', or 'pwm', and determines the amount's unit
         """
         if state == 'on':
             self.logger.info("Output turned on")
