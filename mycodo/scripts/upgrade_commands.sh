@@ -408,7 +408,7 @@ case "${1:-''}" in
     ;;
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
-        apt-get remove -y apache2
+        apt-get remove -y apache2 python-cffi-backend python3-cffi-backend
         apt-get install -y ${APT_PKGS}
         python3 /usr/lib/python3/dist-packages/easy_install.py pip
         pip install --upgrade pip
