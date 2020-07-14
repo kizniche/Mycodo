@@ -80,7 +80,7 @@ class AtlasScientificFTDI(AbstractBaseAtlasScientific, Device):
                 line = self.read_line()
                 if not line:
                     break
-                    self.flush_input()
+                    # self.flush_input()
                 lines.append(line)
             return lines
 
