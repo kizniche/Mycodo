@@ -1985,11 +1985,12 @@ def page_data():
 
     # Find FTDI devices
     ftdi_devices = []
-    for each_input in input_dev:
-        if each_input.interface == "FTDI":
-            from mycodo.devices.atlas_scientific_ftdi import get_ftdi_device_list
-            ftdi_devices = get_ftdi_device_list()
-            break
+    if not current_app.config['TESTING']:
+        for each_input in input_dev:
+            if each_input.interface == "FTDI":
+                from mycodo.devices.atlas_scientific_ftdi import get_ftdi_device_list
+                ftdi_devices = get_ftdi_device_list()
+                break
 
     return render_template('pages/data.html',
                            and_=and_,
