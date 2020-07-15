@@ -61,10 +61,7 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['I2C'],
-    'i2c_location': [
-        '0x76',
-        '0x77'
-    ],
+    'i2c_location': ['0x76', '0x77'],
     'i2c_address_editable': False
 }
 
