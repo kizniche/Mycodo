@@ -4,7 +4,7 @@ import time
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.system_pi import str_is_float
+from mycodo.utils.atlas_calibration import setup_atlas_device
 
 
 def constraints_pass_rate(mod_input, value):
@@ -233,17 +233,7 @@ class InputModule(AbstractInput):
                 self.logger.exception("Exception while initializing sensor")
 
     def initialize_sensor(self):
-        if self.interface == 'FTDI':
-            from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.atlas_device = AtlasScientificFTDI(self.input_dev.ftdi_location)
-        elif self.interface == 'UART':
-            from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-            self.atlas_device = AtlasScientificUART(self.input_dev.uart_location)
-        elif self.interface == 'I2C':
-            from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-            self.atlas_device = AtlasScientificI2C(
-                i2c_address=int(str(self.input_dev.i2c_location), 16),
-                i2c_bus=self.input_dev.i2c_bus)
+        self.atlas_device = setup_atlas_device(self.input_dev)
 
         if self.is_enabled(0):
             self.atlas_device.query('O,TV,1')

@@ -8,6 +8,27 @@ if logging.getLevelName(logging.getLogger().getEffectiveLevel()) == 'INFO':
     logger.setLevel(logging.INFO)
 
 
+def setup_atlas_device(atlas_device):
+    if atlas_device.interface == 'FTDI':
+        from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
+        atlas_device = AtlasScientificFTDI(
+            atlas_device.ftdi_location)
+    elif atlas_device.interface == 'UART':
+        from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+        atlas_device = AtlasScientificUART(
+            atlas_device.uart_location,
+            baudrate=atlas_device.baud_rate)
+    elif atlas_device.interface == 'I2C':
+        from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
+        atlas_device = AtlasScientificI2C(
+            i2c_address=int(str(atlas_device.i2c_location), 16),
+            i2c_bus=atlas_device.i2c_bus)
+    else:
+        logger.error("Unrecognized interface: {}".format(atlas_device.interface))
+        return
+    return atlas_device
+
+
 class AtlasScientificCommand:
     """
     Class to handle issuing commands to the Atlas Scientific sensor boards
@@ -15,27 +36,14 @@ class AtlasScientificCommand:
 
     def __init__(self, input_dev, sensor=None):
         self.cmd_send = None
-        self.ph_sensor_uart = None
-        self.ph_sensor_i2c = None
+        self.atlas_device = None
         self.interface = input_dev.interface
         self.init_error = None
 
         if sensor:
             self.atlas_device = sensor
-        elif self.interface == 'FTDI':
-            from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.atlas_device = AtlasScientificFTDI(
-                input_dev.ftdi_location)
-        elif self.interface == 'UART':
-            from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-            self.atlas_device = AtlasScientificUART(
-                input_dev.uart_location,
-                baudrate=input_dev.baud_rate)
-        elif self.interface == 'I2C':
-            from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-            self.atlas_device = AtlasScientificI2C(
-                i2c_address=int(str(input_dev.i2c_location), 16),
-                i2c_bus=input_dev.i2c_bus)
+        else:
+            self.atlas_device = setup_atlas_device(input_dev)
 
         (self.measurement,
          self.board_version,
@@ -139,18 +147,22 @@ class AtlasScientificCommand:
     def send_command(self, cmd_send):
         """ Send the command (if not None) and return the response """
         try:
-            return_value = "No message"
-            if cmd_send is not None:
-                if self.interface == 'FTDI':
-                    return_value = self.ph_sensor_ftdi.query(cmd_send)
-                elif self.interface == 'UART':
-                    return_value = self.ph_sensor_uart.query(cmd_send)
-                elif self.interface == 'I2C':
-                    return_value = self.ph_sensor_i2c.query(cmd_send)
-                time.sleep(0.1)
+            if not cmd_send:
+                return 1, "No command given"
+
+            if self.interface == 'FTDI':
+                return_status, return_value = self.atlas_device.query(cmd_send)
+            elif self.interface == 'UART':
+                return_status, return_value = self.atlas_device.query(cmd_send)
+            elif self.interface == 'I2C':
+                return_status, return_value = self.atlas_device.query(cmd_send)
+            else:
+                return 1, "Interface not recognized: {}".format(self.interface)
+
+            if return_status == 'success':
                 return 0, return_value
             else:
-                return 1, "No command given"
+                return 1, return_value
         except Exception as err:
             logger.error("{cls} raised an exception while communicating with "
                          "the board: {err}".format(cls=type(self).__name__,

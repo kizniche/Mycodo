@@ -2,6 +2,7 @@
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.atlas_calibration import setup_atlas_device
 from mycodo.utils.system_pi import str_is_float
 
 # Measurements
@@ -78,7 +79,7 @@ class InputModule(AbstractInput):
             self.interface = input_dev.interface
 
             try:
-                self.initialize_sensor()
+                self.atlas_device = setup_atlas_device(self.input_dev)
             except Exception:
                 self.logger.exception("Exception while initializing sensor")
 
@@ -87,19 +88,6 @@ class InputModule(AbstractInput):
                     self.atlas_device.query('L,1')
                 elif self.led == 'off':
                     self.atlas_device.query('L,0')
-
-    def initialize_sensor(self):
-        if self.interface == 'FTDI':
-            from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.atlas_device = AtlasScientificFTDI(self.input_dev.ftdi_location)
-        elif self.interface == 'UART':
-            from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-            self.atlas_device = AtlasScientificUART(self.input_dev.uart_location)
-        elif self.interface == 'I2C':
-            from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-            self.atlas_device = AtlasScientificI2C(
-                i2c_address=int(str(self.input_dev.i2c_location), 16),
-                i2c_bus=self.input_dev.i2c_bus)
 
     def get_measurement(self):
         """ Gets the Atlas Scientific pressure sensor measurement """

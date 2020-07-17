@@ -2,6 +2,7 @@
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.atlas_calibration import setup_atlas_device
 from mycodo.utils.system_pi import str_is_float
 
 
@@ -99,25 +100,12 @@ class InputModule(AbstractInput):
             self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure
 
             try:
-                self.initialize_sensor()
+                self.atlas_device = setup_atlas_device(self.input_dev)
             except Exception:
                 self.logger.exception("Exception while initializing sensor")
 
             # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
             self.get_measurement()
-
-    def initialize_sensor(self):
-        if self.interface == 'FTDI':
-            from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.atlas_device = AtlasScientificFTDI(self.input_dev.ftdi_location)
-        elif self.interface == 'UART':
-            from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-            self.atlas_device = AtlasScientificUART(self.input_dev.uart_location)
-        elif self.interface == 'I2C':
-            from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-            self.atlas_device = AtlasScientificI2C(
-                i2c_address=int(str(self.input_dev.i2c_location), 16),
-                i2c_bus=self.input_dev.i2c_bus)
 
     def get_measurement(self):
         """ Gets the sensor's DO measurement via UART/I2C """

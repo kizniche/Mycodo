@@ -11,6 +11,7 @@ WARNING: As a result of how this new output operates, a potentially breaking cha
  - Fix PID Dashboard Widget error in log when PID inactive
  - Fix install on Desktop version of Raspberry Pi OS by removing python3-cffi-backend
  - Fix inability to change I2C address of ADS1x15 Input ([#788](https://github.com/kizniche/mycodo/issues/788))
+ - Fix issues with calibrating Atlas Scientific devices ([#789](https://github.com/kizniche/mycodo/issues/789))
 
 ### Features
 

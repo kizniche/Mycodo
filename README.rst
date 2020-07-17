@@ -98,7 +98,7 @@ Prerequisites
 -  `Raspberry Pi Operating System <https://www.raspberrypi.org/downloads/raspberry-pi-os/>`__ flashed to a micro SD card
 -  An active internet connection
 
-Mycodo has been tested to work with Raspberry Pi OS Lite (2020-05-27).
+Mycodo has been tested to work with Raspberry Pi OS Lite (2020-05-27), and also the Desktop version if using Mycodo version => 8.6.0.
 
 Install
 ~~~~~~~

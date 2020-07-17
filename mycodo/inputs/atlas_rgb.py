@@ -2,7 +2,7 @@
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.system_pi import str_is_float
+from mycodo.utils.atlas_calibration import setup_atlas_device
 
 
 def constraints_pass_percentage(mod_input, value):
@@ -177,48 +177,38 @@ class InputModule(AbstractInput):
             except Exception:
                 self.logger.exception("Exception while initializing sensor")
 
-            if self.led_only_while_reading and self.led_percentage:
-                self.atlas_device.query('L,{},T'.format(self.led_percentage))
-
-            if self.gamma_correction:
-                self.atlas_device.query('G,{}'.format(self.gamma_correction))
-
-            if self.is_enabled(0) or self.is_enabled(1) or self.is_enabled(2):
-                self.enabled_rgb = True
-                self.atlas_device.query('O,RGB,1')
-            else:
-                self.atlas_device.query('O,RGB,0')
-
-            if self.is_enabled(3) or self.is_enabled(4) or self.is_enabled(5):
-                self.atlas_device.query('O,CIE,1')
-            else:
-                self.atlas_device.query('O,CIE,0')
-
-            if self.is_enabled(6):
-                self.atlas_device.query('O,LUX,1')
-            else:
-                self.atlas_device.query('O,LUX,0')
-
-            if self.is_enabled(7):
-                self.atlas_device.query('O,PROX,1')
-            else:
-                self.atlas_device.query('O,PROX,0')
-
-            # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
-            self.get_measurement()
-
     def initialize_sensor(self):
-        if self.interface == 'FTDI':
-            from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.atlas_device = AtlasScientificFTDI(self.input_dev.ftdi_location)
-        elif self.interface == 'UART':
-            from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-            self.atlas_device = AtlasScientificUART(self.input_dev.uart_location)
-        elif self.interface == 'I2C':
-            from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-            self.atlas_device = AtlasScientificI2C(
-                i2c_address=int(str(self.input_dev.i2c_location), 16),
-                i2c_bus=self.input_dev.i2c_bus)
+        self.atlas_device = setup_atlas_device(self.input_dev)
+
+        if self.led_only_while_reading and self.led_percentage:
+            self.atlas_device.query('L,{},T'.format(self.led_percentage))
+
+        if self.gamma_correction:
+            self.atlas_device.query('G,{}'.format(self.gamma_correction))
+
+        if self.is_enabled(0) or self.is_enabled(1) or self.is_enabled(2):
+            self.enabled_rgb = True
+            self.atlas_device.query('O,RGB,1')
+        else:
+            self.atlas_device.query('O,RGB,0')
+
+        if self.is_enabled(3) or self.is_enabled(4) or self.is_enabled(5):
+            self.atlas_device.query('O,CIE,1')
+        else:
+            self.atlas_device.query('O,CIE,0')
+
+        if self.is_enabled(6):
+            self.atlas_device.query('O,LUX,1')
+        else:
+            self.atlas_device.query('O,LUX,0')
+
+        if self.is_enabled(7):
+            self.atlas_device.query('O,PROX,1')
+        else:
+            self.atlas_device.query('O,PROX,0')
+
+        # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
+        self.get_measurement()
 
     def get_measurement(self):
         """ Gets the sensor's Electrical Conductivity measurement via UART/I2C """
