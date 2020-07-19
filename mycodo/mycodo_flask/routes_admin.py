@@ -184,7 +184,7 @@ def install_dependencies(dependencies):
     init = subprocess.Popen(cmd, shell=True)
     init.wait()
 
-    cmd = "{pth}/mycodo/scripts/mycodo_wrapper frontend_restart" \
+    cmd = "{pth}/mycodo/scripts/mycodo_wrapper frontend_reload" \
           " | ts '[%Y-%m-%d %H:%M:%S]' >> {log}  2>&1".format(
             pth=INSTALL_DIRECTORY,
             log=DEPENDENCY_LOG_FILE)

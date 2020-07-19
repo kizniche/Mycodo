@@ -9,6 +9,22 @@ from flask_babel import lazy_gettext
 # Measurement information
 # First unit in list is the default unit when Input is created
 MEASUREMENTS = {
+    'acceleration': {
+        'name': lazy_gettext('Acceleration'),
+        'meas': 'm_s_s',
+        'units': ['m_s_s']},
+    'acceleration_x': {
+        'name': lazy_gettext('Acceleration (X)'),
+        'meas': 'm_s_s',
+        'units': ['m_s_s']},
+    'acceleration_y': {
+        'name': lazy_gettext('Acceleration (Y)'),
+        'meas': 'm_s_s',
+        'units': ['m_s_s']},
+    'acceleration_z': {
+        'name': lazy_gettext('Acceleration (Z)'),
+        'meas': 'm_s_s',
+        'units': ['m_s_s']},
     'acceleration_g_force': {
         'name': lazy_gettext('Acceleration (G-Force)'),
         'meas': 'g_force',
@@ -351,7 +367,9 @@ UNITS = {
     'm': {
         'name': lazy_gettext('Meter'),
         'unit': 'm'},
-
+    'm_s_s': {
+        'name': lazy_gettext('Meters per second per second'),
+        'unit': 'm/s/s'},
     'mg_L': {
         'name': lazy_gettext('Milligram per Liter'),
         'unit': 'mg/L'},
@@ -424,6 +442,10 @@ UNITS = {
 # These are added to the SQLite database when it's created
 # Users may add or delete after that
 UNIT_CONVERSIONS = [
+    # Acceleration
+    ('g_force', 'm_s_s', 'x*9.8'),
+    ('m_s_s', 'g_force', 'x/9.8'),
+
     # Temperature
     ('C', 'F', 'x*(9/5)+32'),
     ('C', 'K', 'x+273.15'),

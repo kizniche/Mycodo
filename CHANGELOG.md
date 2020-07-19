@@ -12,14 +12,17 @@ WARNING: As a result of how this new output operates, a potentially breaking cha
  - Fix install on Desktop version of Raspberry Pi OS by removing python3-cffi-backend
  - Fix inability to change I2C address of ADS1x15 Input ([#788](https://github.com/kizniche/mycodo/issues/788))
  - Fix issues with calibrating Atlas Scientific devices ([#789](https://github.com/kizniche/mycodo/issues/789))
+ - Fix missing default input custom option values if not set in the database
 
 ### Features
 
+ - Add Inputs: ADXL34x, ADT7410 ([#791](https://github.com/kizniche/mycodo/issues/791))
  - Add Output: Generic Peristaltic Pump
  - Add ability to turn peristaltic pumps on for durations (in addition to volumes)
  - Add Function Action: Output (Volume)
  - Improve general compatibility with Atlas Scientific devices
  - Add ability to utilize volume Outputs (pumps) with PID Controllers
+ - Add pypi.org links to Input libraries in Input description information 
 
 ### Miscellaneous
 

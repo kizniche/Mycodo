@@ -1537,7 +1537,7 @@ def settings_diagnostic_delete_settings_database():
     if not error:
         try:
             os.remove('/var/mycodo-root/databases/mycodo.db')
-            cmd = "{pth}/mycodo/scripts/mycodo_wrapper frontend_restart" \
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper frontend_reload" \
                   " | ts '[%Y-%m-%d %H:%M:%S]'" \
                   " >> {log} 2>&1".format(pth=INSTALL_DIRECTORY,
                                           log=DAEMON_LOG_FILE)

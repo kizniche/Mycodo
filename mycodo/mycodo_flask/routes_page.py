@@ -1897,7 +1897,7 @@ def page_data():
         else:
             return redirect(url_for('routes_page.page_data'))
 
-    custom_options_values_inputs = parse_custom_option_values(input_dev)
+    custom_options_values_inputs = parse_custom_option_values(input_dev, dict_inputs)
 
     custom_actions = {}
     for each_input in input_dev:

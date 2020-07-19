@@ -84,7 +84,11 @@
     <div class="row small-gutters" style="padding: 0.5em">
 
       <div class="col-12">
-        {{dict_inputs[each_input.device]['input_manufacturer']}}: {{dict_inputs[each_input.device]['input_name']}}
+        {{_("Manufacturer")}}: {{dict_inputs[each_input.device]['input_manufacturer']}}
+      </div>
+
+      <div class="col-12">
+        {{_("Model")}}: {{dict_inputs[each_input.device]['input_name']}}
       </div>
 
       <div class="col-12">
@@ -93,9 +97,13 @@
 
       {% if 'dependencies_module' in dict_inputs[each_input.device] and dict_inputs[each_input.device]['dependencies_module'] %}
         <div class="col-12">
-        Libraries:
+        {{_("Library")}}:
         {% for each_lib in dict_inputs[each_input.device]['dependencies_module'] -%}
-          {{each_lib[1]}}
+          {% if each_lib[0] == 'pip-pypi' %}
+            <a href="https://pypi.org/project/{{each_lib[2]}}" target="_blank">{{each_lib[2]}}</a>
+          {% else %}
+            {{each_lib[1]}}
+          {% endif %}
           {%- if not loop.last %}, {% endif %}
         {% endfor %}
         </div>
