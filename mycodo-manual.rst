@@ -2906,15 +2906,6 @@ Dependencies
 The dependency page allows viewing of dependency information and the
 ability to initiate their installation.
 
-During the installation of Mycodo, there is an option to select which
-dependencies to install. If "Minimal Install" or "Custom Install" was
-selected (rather than "Full Install"), there may be unmet dependencies
-on your system. Don't worry, this isn't necessarily a problem. These
-optional dependencies only need to be installed when there's a
-particular feature you want to use. When a user attempts to use a
-feature that has an unmet dependency, the user will be forwarded to the
-Dependency page in order to install it.
-
 Camera
 ======
 

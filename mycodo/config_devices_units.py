@@ -443,8 +443,8 @@ UNITS = {
 # Users may add or delete after that
 UNIT_CONVERSIONS = [
     # Acceleration
-    ('g_force', 'm_s_s', 'x*9.8'),
-    ('m_s_s', 'g_force', 'x/9.8'),
+    ('g_force', 'm_s_s', 'x*9.80665'),
+    ('m_s_s', 'g_force', 'x/9.80665'),
 
     # Temperature
     ('C', 'F', 'x*(9/5)+32'),
