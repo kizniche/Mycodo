@@ -600,12 +600,15 @@ def input_activate(form_mod):
         action=TRANSLATIONS['activate']['title'],
         controller=TRANSLATIONS['input']['title'])
     error = []
+
     dict_inputs = parse_input_information()
     input_id = form_mod.input_id.data
     input_dev = Input.query.filter(Input.unique_id == input_id).first()
     device_measurements = DeviceMeasurements.query.filter(
         DeviceMeasurements.device_id == input_dev.unique_id)
-    custom_options_values_inputs = parse_custom_option_values(input_dev)
+
+    custom_options_values_inputs = parse_custom_option_values(
+        input_dev, dict_controller=dict_inputs)
 
     #
     # General Input checks

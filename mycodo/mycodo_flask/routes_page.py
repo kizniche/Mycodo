@@ -1498,15 +1498,16 @@ def page_function():
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
-    custom_options_values_controllers = parse_custom_option_values(custom_controllers)
+    dict_controllers = parse_controller_information()
+    dict_outputs = parse_output_information()
+
+    custom_options_values_controllers = parse_custom_option_values(
+        custom_controllers, dict_controller=dict_controllers)
 
     choices_functions = []
 
     for each_function in FUNCTIONS:
         choices_functions.append((each_function[0], each_function[1]))
-
-    dict_controllers = parse_controller_information()
-    dict_outputs = parse_output_information()
 
     choices_custom_controllers = utils_general.choices_custom_controllers()
     choices_input = utils_general.choices_inputs(
@@ -1717,7 +1718,8 @@ def page_output():
         else:
             return redirect(url_for('routes_page.page_output'))
 
-    custom_options_values_outputs = parse_custom_option_values(output)
+    custom_options_values_outputs = parse_custom_option_values(
+        output, dict_controller=dict_outputs)
 
     custom_actions = {}
     for each_output in output:
@@ -1897,7 +1899,8 @@ def page_data():
         else:
             return redirect(url_for('routes_page.page_data'))
 
-    custom_options_values_inputs = parse_custom_option_values(input_dev, dict_inputs)
+    custom_options_values_inputs = parse_custom_option_values(
+        input_dev, dict_controller=dict_inputs)
 
     custom_actions = {}
     for each_input in input_dev:

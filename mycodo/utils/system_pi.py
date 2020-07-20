@@ -27,7 +27,7 @@ if logging.getLevelName(logging.getLogger().getEffectiveLevel()) == 'INFO':
     logger.setLevel(logging.INFO)
 
 
-def parse_custom_option_values(controllers, dict_inputs):
+def parse_custom_option_values(controllers, dict_controller=None):
     # Check if controllers is iterable or a single controller
     try:
         _ = iter(controllers)
@@ -48,15 +48,25 @@ def parse_custom_option_values(controllers, dict_inputs):
                     value = each_option.split(',')[1]
                 custom_options_values[each_controller.unique_id][option] = value
 
-        if 'custom_options' in dict_inputs[each_controller.device]:
-            dict_custom_options = dict_inputs[each_controller.device]['custom_options']
-        else:
-            dict_custom_options = {}
-        for each_option in dict_custom_options:
-            if ('id' in each_option and
-                    'default_value' in each_option and
-                    each_option['id'] not in custom_options_values[each_controller.unique_id]):
-                custom_options_values[each_controller.unique_id][each_option['id']] = each_option['default_value']
+        if dict_controller:
+            # Set default values if option not saved in database entry
+            if each_controller.__tablename__ in ['custom_controller', 'input']:
+                dev_name = each_controller.device
+            elif each_controller.__tablename__ == 'output':
+                dev_name = each_controller.output_type
+            else:
+                logger.error("Table name not recognized: {}".format(each_controller.__tablename__))
+                continue
+
+            if 'custom_options' in dict_controller[dev_name]:
+                dict_custom_options = dict_controller[dev_name]['custom_options']
+            else:
+                dict_custom_options = {}
+            for each_option in dict_custom_options:
+                if ('id' in each_option and
+                        'default_value' in each_option and
+                        each_option['id'] not in custom_options_values[each_controller.unique_id]):
+                    custom_options_values[each_controller.unique_id][each_option['id']] = each_option['default_value']
 
     return custom_options_values
 
