@@ -296,7 +296,7 @@ case "${1:-''}" in
         apt-get install -y jq
         cd "${MYCODO_PATH}"/install || return
         # wget --quiet -P "${MYCODO_PATH}"/install abyz.co.uk/rpi/pigpio/pigpio.zip
-        wget ${PIGPIO_URL}.tar.gz -O pigpio.tar.gz
+        wget ${PIGPIO_URL} -O pigpio.tar.gz
         mkdir PIGPIO
         tar xzf pigpio.tar.gz -C PIGPIO --strip-components=1
         cd "${MYCODO_PATH}"/install/PIGPIO || return

@@ -92,9 +92,11 @@ class InputModule(AbstractInput):
             self.uart_location = is_device(self.uart_location)
             if self.uart_location:
                 try:
-                    self.ser = serial.Serial(self.uart_location,
-                                             baudrate=self.baud_rate,
-                                             timeout=1)
+                    self.ser = serial.Serial(
+                        port=self.uart_location,
+                        baudrate=self.baud_rate,
+                        timeout=1,
+                        writeTimeout=5)
                 except serial.SerialException:
                     self.logger.exception('Opening serial')
             else:
@@ -141,7 +143,11 @@ class InputModule(AbstractInput):
                 self.lock_acquire(self.lock_file, timeout=10)
                 if self.locked[self.lock_file]:
                     try:
-                        self.serial_send = self.serial.Serial(self.serial_device, 9600)
+                        self.serial_send = self.serial.Serial(
+                            port=self.serial_device,
+                            baudrate=9600,
+                            timeout=5,
+                            writeTimeout=5)
                         self.serial_send.write(string_send.encode())
                         time.sleep(4)
                     finally:

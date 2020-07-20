@@ -140,7 +140,7 @@ class OutputModule(AbstractOutput):
         self.GPIO.output(self.output_pin, self.output_on_state)
         timer_dispense = time.time() + total_dispense_seconds
 
-        while time.time() < timer_dispense and self.currently_dispensing:                
+        while time.time() < timer_dispense and self.currently_dispensing:
             time.sleep(0.01)
 
         self.GPIO.output(self.output_pin, not self.output_on_state)

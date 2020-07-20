@@ -1,12 +1,13 @@
 # coding=utf-8
 import logging
-import os
 import sys
 import time
 
 import filelock
+import os
 import serial
 from serial import SerialException
+from serial.serialutil import SerialTimeoutException
 
 sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../../..')))
 
@@ -25,20 +26,25 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
         self.serial_device = serial_device
         try:
             self.atlas_device = serial.Serial(
-                port=serial_device, baudrate=baudrate, timeout=5)
+                port=serial_device,
+                baudrate=baudrate,
+                timeout=5,
+                writeTimeout=5)
 
-            self.send_cmd('C,0')  # Disable continuous measurements
+            cmd_return = self.send_cmd('C,0')  # Disable continuous measurements
 
-            (board,
-             revision,
-             firmware_version) = self.get_board_version()
+            if cmd_return:
+                (board,
+                 revision,
+                 firmware_version) = self.get_board_version()
 
-            self.logger.info(
-                "Atlas Scientific Board: {brd}, Rev: {rev}, Firmware: {fw}".format(
-                    brd=board,
-                    rev=revision,
-                    fw=firmware_version))
-            self.setup = True
+                self.logger.info(
+                    "Atlas Scientific Board: {brd}, Rev: {rev}, Firmware: {fw}".format(
+                        brd=board,
+                        rev=revision,
+                        fw=firmware_version))
+                self.setup = True
+
         except serial.SerialException as err:
             self.logger.exception(
                 "{cls} raised an exception when initializing: "
@@ -95,7 +101,6 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
                     # self.atlas_device.flush_input()
                 lines.append(line)
             return lines
-
         except SerialException:
             self.logger.exception('Read Lines')
             return None
@@ -117,6 +122,9 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
         try:
             self.atlas_device.write(buf.encode())
             return True
+        except SerialTimeoutException:
+            self.logger.error("SerialTimeoutException: Write timeout. This indicates "
+                              "you may not have the correct device configured.")
         except SerialException:
             self.logger.exception('Send CMD')
             return None

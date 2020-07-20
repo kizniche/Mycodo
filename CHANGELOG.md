@@ -14,6 +14,8 @@ WARNING: As a result of how this new output operates, a potentially breaking cha
  - Fix issues with calibrating Atlas Scientific devices ([#789](https://github.com/kizniche/mycodo/issues/789))
  - Fix missing default input custom option values if not set in the database
  - Add missing TSL2561 I2C addresses
+ - Fix daemon hang on use of incorrect Atlas Scientific UART device (add writeTimeout to every serial.Serial())
+ - Fix uninstall of pigpiod
 
 ### Features
 

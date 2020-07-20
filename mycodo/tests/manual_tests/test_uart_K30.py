@@ -6,7 +6,7 @@ from datetime import datetime
 
 import serial
 
-ser = serial.Serial("/dev/ttyS0")
+ser = serial.Serial("/dev/ttyS0", baudrate=9600, timeout=5, writeTimeout=5)
 ser.flushInput()
 time.sleep(2)
 

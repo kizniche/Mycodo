@@ -131,7 +131,8 @@ class InputModule(AbstractInput):
                         parity=serial.PARITY_NONE,
                         stopbits=serial.STOPBITS_ONE,
                         bytesize=serial.EIGHTBITS,
-                        timeout=10
+                        timeout=10,
+                        writeTimeout=10
                     )
                     self.ser.flushInput()
                     self.set_qa()

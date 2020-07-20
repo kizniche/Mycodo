@@ -91,6 +91,28 @@ class OutputController(AbstractController, threading.Thread):
         self.output_time_turned_on = {}
         self.output_types = []
 
+    def initialize_variables(self):
+        """ Begin initializing output parameters """
+        self.sample_rate = db_retrieve_table_daemon(
+            Misc, entry='first').sample_rate_controller_output
+
+        self.logger.error("Initializing Outputs")
+        try:
+            smtp = db_retrieve_table_daemon(SMTP, entry='first')
+            self.smtp_max_count = smtp.hourly_max
+            self.smtp_wait_time = time.time() + 3600
+            self.smtp_timer = time.time()
+            self.email_count = 0
+            self.allowed_to_send_notice = True
+
+            outputs = db_retrieve_table_daemon(Output, entry='all')
+            self.all_outputs_initialize(outputs)
+            self.all_outputs_set_state()  # Turn outputs on that are set to be on at start
+            self.logger.debug("Outputs Initialized")
+        except Exception as except_msg:
+            self.logger.exception(
+                "Problem initializing outputs: {err}".format(err=except_msg))
+
     def loop(self):
         """ Main loop of the output controller """
         if self.button_pressed:
@@ -151,28 +173,6 @@ class OutputController(AbstractController, threading.Thread):
             # instruct each output to shutdown
             self.output[each_output_id].shutdown(shutdown_timer)
 
-    def initialize_variables(self):
-        """ Begin initializing output parameters """
-        self.sample_rate = db_retrieve_table_daemon(
-            Misc, entry='first').sample_rate_controller_output
-
-        self.logger.debug("Initializing Outputs")
-        try:
-            smtp = db_retrieve_table_daemon(SMTP, entry='first')
-            self.smtp_max_count = smtp.hourly_max
-            self.smtp_wait_time = time.time() + 3600
-            self.smtp_timer = time.time()
-            self.email_count = 0
-            self.allowed_to_send_notice = True
-
-            outputs = db_retrieve_table_daemon(Output, entry='all')
-            self.all_outputs_initialize(outputs)
-            self.all_outputs_set_state()  # Turn outputs on that are set to be on at start
-            self.logger.debug("Outputs Initialized")
-        except Exception as except_msg:
-            self.logger.exception(
-                "Problem initializing outputs: {err}".format(err=except_msg))
-
     def all_outputs_initialize(self, outputs):
         """ Initialize all output variables and classes """
         self.dict_outputs = parse_output_information()
@@ -203,12 +203,12 @@ class OutputController(AbstractController, threading.Thread):
                     self.output[each_output.unique_id] = output_loaded.OutputModule(each_output)
                     self.output[each_output.unique_id].setup_output()
                     self.output[each_output.unique_id].init_post()
-            except:
-                self.logger.error("Could not initialize output {}".format(
-                    each_output.unique_id))
 
-            self.logger.debug("{id} ({name}) Initialized".format(
-                id=each_output.unique_id.split('-')[0], name=each_output.name))
+                self.logger.debug("{id} ({name}) Initialized".format(
+                    id=each_output.unique_id.split('-')[0], name=each_output.name))
+            except:
+                self.logger.exception("Could not initialize output {}".format(
+                    each_output.unique_id))
 
     def add_mod_output(self, output_id):
         """
@@ -942,6 +942,9 @@ class OutputController(AbstractController, threading.Thread):
                     return False
             else:
                 return self.output[output_id].is_on()
+        except KeyError:
+            self.logger.error("Output not found. This indicates the output controller either didn't properly "
+                              "start or it experienced a fatal error.")
         except Exception:
             self.logger.exception("is_on() exception")
 

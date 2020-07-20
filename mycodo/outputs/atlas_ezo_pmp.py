@@ -85,6 +85,26 @@ class OutputModule(AbstractOutput):
             self.output_mode = output.output_mode
             self.output_flow_rate = output.flow_rate
 
+    def setup_output(self):
+        if self.output_interface == 'FTDI':
+            from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
+            self.ftdi_location = self.output.ftdi_location
+            self.atlas_command = AtlasScientificFTDI(self.ftdi_location)
+        elif self.output_interface == 'I2C':
+            from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
+            self.i2c_address = int(str(self.output.i2c_location), 16)
+            self.i2c_bus = self.output.i2c_bus
+            self.atlas_command = AtlasScientificI2C(
+                i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
+        elif self.output_interface == 'UART':
+            from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
+            self.uart_location = self.output.uart_location
+            self.output_baud_rate = self.output.baud_rate
+            self.atlas_command = AtlasScientificUART(
+                self.uart_location, baudrate=self.output_baud_rate)
+        else:
+            self.logger.error("Unknown interface: {}".format(self.output_interface))
+
     def record_dispersal(self, amount_ml=None, minutes_to_run=None):
         measure_dict = measurements_dict.copy()
         if amount_ml:
@@ -189,23 +209,3 @@ class OutputModule(AbstractOutput):
         if self.atlas_command:
             return True
         return False
-
-    def setup_output(self):
-        if self.output_interface == 'FTDI':
-            from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.ftdi_location = self.output.ftdi_location
-            self.atlas_command = AtlasScientificFTDI(self.ftdi_location)
-        elif self.output_interface == 'I2C':
-            from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-            self.i2c_address = int(str(self.output.i2c_location), 16)
-            self.i2c_bus = self.output.i2c_bus
-            self.atlas_command = AtlasScientificI2C(
-                i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
-        elif self.output_interface == 'UART':
-            from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-            self.uart_location = self.output.uart_location
-            self.output_baud_rate = self.output.baud_rate
-            self.atlas_command = AtlasScientificUART(
-                self.uart_location, baudrate=self.output_baud_rate)
-        else:
-            self.logger.error("Unknown interface: {}".format(self.output_interface))

@@ -78,7 +78,10 @@ class InputModule(AbstractInput):
                 self.serial_device = is_device(self.uart_location)
                 if self.serial_device:
                     try:
-                        self.ser = serial.Serial(self.serial_device, timeout=1)
+                        self.ser = serial.Serial(
+                            port=self.serial_device,
+                            timeout=1,
+                            writeTimeout=5)
                     except serial.SerialException:
                         self.logger.exception('Opening serial')
                 else:
