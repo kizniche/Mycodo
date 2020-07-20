@@ -16,6 +16,7 @@ WARNING: As a result of how this new output operates, a potentially breaking cha
  - Add missing TSL2561 I2C addresses
  - Fix daemon hang on use of incorrect Atlas Scientific UART device (add writeTimeout to every serial.Serial())
  - Fix uninstall of pigpiod
+ - Fix missing pigpio dependency for GPIO PWM Outputs
 
 ### Features
 
