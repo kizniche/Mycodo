@@ -23,7 +23,8 @@ WARNING: As a result of how this new output operates, a potentially breaking cha
  - Add Function Action: Output (Volume)
  - Improve general compatibility with Atlas Scientific devices
  - Add ability to utilize volume Outputs (pumps) with PID Controllers
- - Add pypi.org links to Input libraries in Input description information 
+ - Add pypi.org links to Input libraries in Input description information
+ - Add SPI interface as an option for SD1306 LEDs ([#793](https://github.com/kizniche/mycodo/issues/793))
 
 ### Miscellaneous
 

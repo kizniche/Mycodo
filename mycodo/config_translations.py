@@ -21,6 +21,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Alert')},
     'average': {
         'title': lazy_gettext('Average')},
+    'bus': {
+        'title': lazy_gettext('Bus')},
     'calibration': {
         'title': lazy_gettext('Calibration')},
     'calculate': {
@@ -51,6 +53,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Default')},
     'delete': {
         'title': lazy_gettext('Delete')},
+    'device': {
+        'title': lazy_gettext('Device')},
     'diagnostic': {
         'title': lazy_gettext('Diagnostic')},
     'display': {

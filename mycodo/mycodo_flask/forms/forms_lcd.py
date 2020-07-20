@@ -17,14 +17,28 @@ from wtforms.validators import DataRequired
 from wtforms.validators import Optional
 from wtforms.widgets.html5 import NumberInput
 
-from mycodo.config import LCDS
+from mycodo.config import LCD_INFO
 from mycodo.config_translations import TRANSLATIONS
 
 
 class LCDAdd(FlaskForm):
+    choices_lcds = []
+
+    for each_id, each_lcd in LCD_INFO.items():
+        value = each_id
+        name = each_lcd['name']
+
+        if 'interfaces' in each_lcd:
+            for each_interface in each_lcd['interfaces']:
+                tmp_value = '{val},{int}'.format(val=value, int=each_interface)
+                tmp_name = '{name} [{int}]'.format(name=name, int=each_interface)
+                choices_lcds.append((tmp_value, tmp_name))
+        else:
+            choices_lcds.append((value, name))
+
     lcd_type = SelectField(
         lazy_gettext('LCD Type'),
-        choices=LCDS,
+        choices=choices_lcds,
         validators=[DataRequired()]
     )
     add = SubmitField(TRANSLATIONS['add']['title'])
@@ -43,12 +57,26 @@ class LCDMod(FlaskForm):
     i2c_bus = IntegerField(
         "{op} ({unit})".format(op=lazy_gettext('Bus'),
                                unit=lazy_gettext('I2C')),
-        validators=[DataRequired()],
+        validators=[Optional()],
         widget=NumberInput()
     )
     pin_reset = IntegerField(
         "{pin}: {reset}".format(pin=TRANSLATIONS['pin']['title'],
                                 reset=TRANSLATIONS['reset']['title']),
+        validators=[Optional()]
+    )
+    pin_dc = IntegerField(
+        "{pin}: DC".format(pin=TRANSLATIONS['pin']['title']),
+        validators=[Optional()]
+    )
+    spi_device = IntegerField(
+        "{pin}: {device}".format(pin=TRANSLATIONS['pin']['title'],
+                                device=TRANSLATIONS['device']['title']),
+        validators=[Optional()]
+    )
+    spi_bus = IntegerField(
+        "{pin}: {bus}".format(pin=TRANSLATIONS['pin']['title'],
+                                bus=TRANSLATIONS['bus']['title']),
         validators=[Optional()]
     )
     period = DecimalField(

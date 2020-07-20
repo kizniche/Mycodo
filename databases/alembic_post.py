@@ -58,6 +58,25 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == '4ea0a59dee2b':
+            # Only LCDs with I2C interface were supported until this revision
+            # "interface" column added in this revision
+            # Sets all current interfaces to I2C
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from mycodo.databases.models import LCD
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    for lcd in session.query(LCD).all():
+                        lcd.interface = 'I2C'
+                        session.commit()
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == 'af5891792291':
             # Set the output_type for PID controller outputs
             print("Executing post-alembic code for revision {}".format(

@@ -17,25 +17,50 @@ class LCD_Pioled:
         self.logger = logging.getLogger(
             "{}_{}".format(__name__, lcd_dev.unique_id.split('-')[0]))
 
+        self.disp = None
+        self.interface = lcd_dev.interface
+
         self.i2c_address = int(str(lcd_dev.location), 16)
         self.i2c_bus = lcd_dev.i2c_bus
+
+        self.pin_reset = lcd_dev.pin_reset
+        self.pin_dc = lcd_dev.pin_dc
+        self.spi_device = lcd_dev.spi_device
+        self.spi_bus = lcd_dev.spi_bus
+
         self.lcd_x_characters = lcd_dev.x_characters
         self.lcd_y_lines = lcd_dev.y_lines
         self.lcd_type = lcd_dev.lcd_type
-        self.pin_reset = lcd_dev.pin_reset
 
         if self.lcd_type == '128x32_pioled':
-            self.disp = Adafruit_SSD1306.SSD1306_128_32(
-                rst=self.pin_reset,
-                i2c_address=self.i2c_address,
-                i2c_bus=self.i2c_bus)
+            if self.interface == 'I2C':
+                self.disp = Adafruit_SSD1306.SSD1306_128_32(
+                    rst=self.pin_reset,
+                    i2c_address=self.i2c_address,
+                    i2c_bus=self.i2c_bus)
+            elif self.interface == 'SPI':
+                import Adafruit_GPIO.SPI as SPI
+                self.disp = Adafruit_SSD1306.SSD1306_128_32(
+                    rst=self.pin_reset,
+                    dc=self.pin_dc,
+                    spi=SPI.SpiDev(self.spi_bus ,self.spi_device))
         elif self.lcd_type == '128x64_pioled':
-            self.disp = Adafruit_SSD1306.SSD1306_128_64(
-                rst=self.pin_reset,
-                i2c_address=self.i2c_address,
-                i2c_bus=self.i2c_bus)
+            if self.interface == 'I2C':
+                self.disp = Adafruit_SSD1306.SSD1306_128_64(
+                    rst=self.pin_reset,
+                    i2c_address=self.i2c_address,
+                    i2c_bus=self.i2c_bus)
+            elif self.interface == 'SPI':
+                import Adafruit_GPIO.SPI as SPI
+                self.disp = Adafruit_SSD1306.SSD1306_128_64(
+                    rst=self.pin_reset,
+                    dc=self.pin_dc,
+                    spi=SPI.SpiDev(self.spi_bus ,self.spi_device))
 
-        self.disp.begin()
+        if not self.disp:
+            self.logger.error("Unable to set up display. Check the LCD settings.")
+        else:
+            self.disp.begin()
 
     def lcd_init(self):
         """ Initialize LCD display """

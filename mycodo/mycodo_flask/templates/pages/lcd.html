@@ -93,7 +93,34 @@
       </div>
       <div class="row small-gutters">
 
-      {% if each_lcd.lcd_type in ['16x2_generic', '20x4_generic'] %}
+      {% if each_lcd.interface == 'SPI' %}
+
+        <div class="col-auto">
+          {{form_lcd_mod.pin_reset.label(class_='control-label')}}
+          <div>
+            {{form_lcd_mod.pin_reset(class_='form-control', value=each_lcd.pin_reset)}}
+          </div>
+        </div>
+        <div class="col-auto">
+          {{form_lcd_mod.pin_dc.label(class_='control-label')}}
+          <div>
+            {{form_lcd_mod.pin_dc(class_='form-control', value=each_lcd.pin_dc)}}
+          </div>
+        </div>
+        <div class="col-auto">
+          {{form_lcd_mod.spi_device.label(class_='control-label')}}
+          <div>
+            {{form_lcd_mod.spi_device(class_='form-control', value=each_lcd.spi_device)}}
+          </div>
+        </div>
+        <div class="col-auto">
+          {{form_lcd_mod.spi_bus.label(class_='control-label')}}
+          <div>
+            {{form_lcd_mod.spi_bus(class_='form-control', value=each_lcd.spi_bus)}}
+          </div>
+        </div>
+
+      {% elif each_lcd.interface == 'I2C' and each_lcd.lcd_type in ['16x2_generic', '20x4_generic'] %}
 
         <div class="col-auto">
           {{form_lcd_mod.location.label(class_='control-label')}}
@@ -120,7 +147,7 @@
           </div>
         </div>
 
-      {% elif each_lcd.lcd_type in ['128x32_pioled', '128x64_pioled'] %}
+      {% elif each_lcd.interface == 'I2C' and each_lcd.lcd_type in ['128x32_pioled', '128x64_pioled'] %}
 
         <div class="col-auto">
           {{form_lcd_mod.location.label(class_='control-label')}}
@@ -131,6 +158,8 @@
 
       {% endif %}
 
+      {% if each_lcd.interface == 'I2C' %}
+
         <div class="col-auto">
           {{form_lcd_mod.i2c_bus.label(class_='control-label')}}
           <div>
@@ -138,7 +167,9 @@
           </div>
         </div>
 
-      {% if each_lcd.lcd_type in ['128x32_pioled', '128x64_pioled'] %}
+      {% endif %}
+
+      {% if each_lcd.interface == 'I2C' and each_lcd.lcd_type in ['128x32_pioled', '128x64_pioled'] %}
 
         <div class="col-auto">
           {{form_lcd_mod.pin_reset.label(class_='control-label')}}

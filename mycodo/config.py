@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.5.8'
-ALEMBIC_VERSION = 'af5891792291'
+ALEMBIC_VERSION = '4ea0a59dee2b'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -111,11 +111,13 @@ CAMERA_INFO = {
 LCD_INFO = {
     '16x2_generic': {
         'name': '16x2 LCD',
-        'dependencies_module': []
+        'dependencies_module': [],
+        'interfaces': ['I2C']
     },
     '20x4_generic': {
         'name': '20x4 LCD',
-        'dependencies_module': []
+        'dependencies_module': [],
+        'interfaces': ['I2C']
     },
     '128x32_pioled': {
         'name': '128x32 OLED (SD1306)',
@@ -125,7 +127,8 @@ LCD_INFO = {
             ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
             ('pip-pypi', 'Adafruit_PureIO', 'Adafruit_PureIO'),
             ('pip-git', 'Adafruit_SSD1306', 'git://github.com/adafruit/Adafruit_Python_SSD1306.git#egg=adafruit-ssd1306')
-        ]
+        ],
+        'interfaces': ['I2C', 'SPI']
     },
     '128x64_pioled': {
         'name': '128x64 OLED (SD1306)',
@@ -135,7 +138,8 @@ LCD_INFO = {
             ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
             ('pip-pypi', 'Adafruit_PureIO', 'Adafruit_PureIO'),
             ('pip-git', 'Adafruit_SSD1306', 'git://github.com/adafruit/Adafruit_Python_SSD1306.git#egg=adafruit-ssd1306')
-        ]
+        ],
+        'interfaces': ['I2C', 'SPI']
     }
 }
 

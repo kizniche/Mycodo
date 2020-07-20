@@ -64,23 +64,34 @@ def lcd_add(form):
         except:
             logger.error("RPi.GPIO and Raspberry Pi required for this action")
 
-        new_lcd.lcd_type = form.lcd_type.data
-        new_lcd.name = str(LCD_INFO[form.lcd_type.data]['name'])
+        lcd_id = form.lcd_type.data.split(",")[0]
+        lcd_interface = form.lcd_type.data.split(",")[1]
 
-        if form.lcd_type.data == '128x32_pioled':
+        new_lcd.lcd_type = lcd_id
+        new_lcd.interface = lcd_interface
+        new_lcd.name = str(LCD_INFO[lcd_id]['name'])
+
+        if lcd_id in ['128x32_pioled', '128x64_pioled'] and lcd_interface == 'I2C':
             new_lcd.location = '0x3c'
+            new_lcd.pin_reset = 19
+        elif lcd_id in ['16x2_generic', '20x4_generic'] and lcd_interface == 'I2C':
+            new_lcd.location = '0x27'
+        elif lcd_interface == 'SPI':
+            new_lcd.pin_reset = 19
+            new_lcd.pin_dc = 16
+            new_lcd.spi_device = 0
+            new_lcd.spi_bus = 0
+
+        if lcd_id == '128x32_pioled':
             new_lcd.x_characters = 21
             new_lcd.y_lines = 4
-        elif form.lcd_type.data == '128x64_pioled':
-            new_lcd.location = '0x3c'
+        elif lcd_id == '128x64_pioled':
             new_lcd.x_characters = 21
             new_lcd.y_lines = 8
-        elif form.lcd_type.data == '16x2_generic':
-            new_lcd.location = '0x27'
+        elif lcd_id == '16x2_generic':
             new_lcd.x_characters = 16
             new_lcd.y_lines = 2
-        elif form.lcd_type.data == '20x4_generic':
-            new_lcd.location = '0x27'
+        elif lcd_id == '20x4_generic':
             new_lcd.x_characters = 20
             new_lcd.y_lines = 4
 
@@ -118,8 +129,16 @@ def lcd_mod(form_mod_lcd):
         if form_mod_lcd.validate():
             try:
                 mod_lcd.name = form_mod_lcd.name.data
-                mod_lcd.location = form_mod_lcd.location.data
-                mod_lcd.i2c_bus = form_mod_lcd.i2c_bus.data
+
+                if mod_lcd.interface == 'I2C':
+                    mod_lcd.location = form_mod_lcd.location.data
+                    mod_lcd.i2c_bus = form_mod_lcd.i2c_bus.data
+                elif mod_lcd.interface == 'SPI':
+                    mod_lcd.pin_reset = form_mod_lcd.pin_reset.data
+                    mod_lcd.pin_dc = form_mod_lcd.pin_dc.data
+                    mod_lcd.spi_device = form_mod_lcd.spi_device.data
+                    mod_lcd.spi_bus = form_mod_lcd.spi_bus.data
+
                 if form_mod_lcd.pin_reset.data is not None:
                     mod_lcd.pin_reset = form_mod_lcd.pin_reset.data
                 else:

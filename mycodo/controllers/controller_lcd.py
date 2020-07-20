@@ -94,8 +94,6 @@ class LCDController(AbstractController, threading.Thread):
         self.lcd_out = None
         self.lcd_type = None
         self.lcd_name = None
-        self.lcd_i2c_address = None
-        self.lcd_i2c_bus = None
         self.lcd_period = None
         self.lcd_x_characters = None
         self.lcd_y_lines = None
@@ -180,8 +178,6 @@ class LCDController(AbstractController, threading.Thread):
         lcd_dev = db_retrieve_table_daemon(LCD, unique_id=self.unique_id)
         self.lcd_type = lcd_dev.lcd_type
         self.lcd_name = lcd_dev.name
-        self.lcd_i2c_address = int(lcd_dev.location, 16)
-        self.lcd_i2c_bus = lcd_dev.i2c_bus
         self.lcd_period = lcd_dev.period
         self.lcd_x_characters = lcd_dev.x_characters
         self.lcd_y_lines = lcd_dev.y_lines

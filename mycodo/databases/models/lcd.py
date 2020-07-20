@@ -10,14 +10,23 @@ class LCD(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
-    pin_reset = db.Column(db.Integer, default=None)
     lcd_type = db.Column(db.Text, default=None)
     name = db.Column(db.Text, default='LCD')
+    interface = db.Column(db.Text, default=None)
     is_activated = db.Column(db.Boolean, default=False)
     log_level_debug = db.Column(db.Boolean, default=False)
     period = db.Column(db.Float, default=30.0)
+
+    # I2C
     location = db.Column(db.Text, default=None)
     i2c_bus = db.Column(db.Integer, default=1)
+
+    # SPI
+    pin_reset = db.Column(db.Integer, default=None)
+    pin_dc = db.Column(db.Integer, default=None)
+    spi_device = db.Column(db.Integer, default=None)
+    spi_bus = db.Column(db.Integer, default=None)
+
     x_characters = db.Column(db.Integer, default=16)
     y_lines = db.Column(db.Integer, default=2)
 
