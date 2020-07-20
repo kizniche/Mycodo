@@ -96,7 +96,7 @@ class OutputController(AbstractController, threading.Thread):
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_output
 
-        self.logger.error("Initializing Outputs")
+        self.logger.debug("Initializing Outputs")
         try:
             smtp = db_retrieve_table_daemon(SMTP, entry='first')
             self.smtp_max_count = smtp.hourly_max
