@@ -40,8 +40,7 @@ Figure: `Automated Hydroponic System Build <https://kylegabriel.com/projects/202
 Features
 --------
 
--  `Inputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input>`__ that record measurements from sensors, GPIO pin states, analog-to-digital converters, etc. (or create your own `Custom
-Inputs <#custom-inputs>`__).
+-  `Inputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input>`__ that record measurements from sensors, GPIO pin states, analog-to-digital converters, etc. (or create your own `Custom Inputs <#custom-inputs>`__).
 -  `Outputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output>`__ that perform actions such as switching GPIO pins high/low, generating PWM signals, executing shell scripts and Python code, etc. (or create your own `Custom
 Outputs <#custom-outputs>`__).
 -  `Functions <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#functions>`__ that perform tasks, such as coupling Inputs and Outputs in interesting ways, such as `PID controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-controller>`__, `Conditional Controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional>`__, `Trigger Controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#trigger>`__, to name a few (or create your own `Custom Controllers <#custom-controllers>`__).
@@ -70,7 +69,7 @@ My projects
 -  `Maintaining humidity in an underground artificial bat cave <https://kylegabriel.com/projects/2015/10/artificial-bat-cave.html>`__ (`Archive <http://archive.is/QIJ5G>`__)
 -  `Remote radiation monitoring and mapping <https://kylegabriel.com/projects/2019/08/remote-radiation-monitoring.html>`__ (`Archive <http://archive.is/PF44Z>`__)
 -  `Cooking sous-vide <https://hackaday.io/project/11997-mycodo-environmental-regulation-system/log/45733-sous-vide-pid-tuning-and-the-unexpected-electrical-fire>`__ (`Archive <http://archive.is/Mx52U>`__)
--  `Maintaining a light schedule and regulating humidity, ramping from 90 % to 50 % over a 4 week period to acclimatize micropropagated American chestnut plantlets from laboratory to ambient outdoor conditions <https://fieldstation.kennesaw.edu/summer-days-2020.php#2020_07_16_gabriel_chestnut>`__ (`Archive <http://archive.is/Jp60P>`__)
+-  `Maintaining a light schedule and regulating humidity <https://fieldstation.kennesaw.edu/summer-days-2020.php#2020_07_16_gabriel_chestnut>`__, ramping from 90 % to 50 % over a 4 week period to acclimatize micropropagated American chestnut plantlets from laboratory to ambient outdoor conditions (`Archive <http://archive.is/Jp60P>`__)
 
 Featured
 ~~~~~~~~

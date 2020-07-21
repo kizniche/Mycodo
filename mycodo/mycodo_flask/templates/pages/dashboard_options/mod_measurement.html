@@ -20,11 +20,13 @@
       {%- if measurement_id in device_measurements_dict -%}
 
   <span style="font-size: {{each_widget.font_em_value}}em" id="value-{{chart_number}}"></span>
+  <span style="font-size: {{each_widget.font_em_value}}em">
         {%- if dict_measure_units[measurement_id] in dict_units and
                dict_units[dict_measure_units[measurement_id]]['unit'] and
                each_widget.enable_unit -%}
           {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
         {%- endif -%}
+  </span>
 
         {%- if each_widget.enable_name or each_widget.enable_channel or each_widget.enable_measurement -%}
   <br/><span style="font-size: {{each_widget.font_em_timestamp}}em">
