@@ -194,12 +194,12 @@
           {% for n in range(colors_graph[each_widget.unique_id]|length) %}
         <div class="form-row">
           <div class="col-12">
-            {%- if 'type' in colors_graph[each_widget.unique_id][n] -%}
-                {{colors_graph[each_widget.unique_id][n]['type'] + ': '}}
-            {%- endif -%}
-             {{colors_graph[each_widget.unique_id][n]['name']}}
-            {%- if 'channel' in colors_graph[each_widget.unique_id][n] and colors_graph[each_widget.unique_id][n]['channel'] != '' -%}
+            {{colors_graph[each_widget.unique_id][n]['type']}}
+            {%- if 'channel' in colors_graph[each_widget.unique_id][n] -%}
               {{', CH' + colors_graph[each_widget.unique_id][n]['channel']|string}}
+            {%- endif -%}
+            {%- if colors_graph[each_widget.unique_id][n]['name'] -%}
+              {{', ' + colors_graph[each_widget.unique_id][n]['name']}}
             {%- endif -%}
             {%- if colors_graph[each_widget.unique_id][n]['measure_name'] -%}
               {{', ' + colors_graph[each_widget.unique_id][n]['measure_name']}}

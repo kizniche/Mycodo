@@ -2310,9 +2310,11 @@ def dict_custom_colors():
                     device_measurement = DeviceMeasurements.query.filter(
                         DeviceMeasurements.unique_id == input_measure_id).first()
                     if device_measurement:
+                        measurement_name = device_measurement.name
                         conversion = Conversion.query.filter(
                             Conversion.unique_id == device_measurement.conversion_id).first()
                     else:
+                        measurement_name = None
                         conversion = None
                     channel, unit, measurement = return_measurement_info(
                         device_measurement, conversion)
@@ -2341,7 +2343,7 @@ def dict_custom_colors():
                             'channel': channel,
                             'unit': unit,
                             'measure': measurement,
-                            'measure_name': device_measurement.name,
+                            'measure_name': measurement_name,
                             'color': color,
                             'disable_data_grouping': disable_data_grouping})
                         index += 1
@@ -2356,9 +2358,11 @@ def dict_custom_colors():
                     device_measurement = DeviceMeasurements.query.filter(
                         DeviceMeasurements.unique_id == math_measure_id).first()
                     if device_measurement:
+                        measurement_name = device_measurement.name
                         conversion = Conversion.query.filter(
                             Conversion.unique_id == device_measurement.conversion_id).first()
                     else:
+                        measurement_name = None
                         conversion = None
                     channel, unit, measurement = return_measurement_info(
                         device_measurement, conversion)
@@ -2387,7 +2391,7 @@ def dict_custom_colors():
                             'channel': channel,
                             'unit': unit,
                             'measure': measurement,
-                            'measure_name': device_measurement.name,
+                            'measure_name': measurement_name,
                             'color': color,
                             'disable_data_grouping': disable_data_grouping})
                         index += 1
@@ -2402,9 +2406,11 @@ def dict_custom_colors():
                     device_measurement = DeviceMeasurements.query.filter(
                         DeviceMeasurements.unique_id == output_measure_id).first()
                     if device_measurement:
+                        measurement_name = device_measurement.name
                         conversion = Conversion.query.filter(
                             Conversion.unique_id == device_measurement.conversion_id).first()
                     else:
+                        measurement_name = None
                         conversion = None
                     channel, unit, measurement = return_measurement_info(
                         device_measurement, conversion)
@@ -2432,6 +2438,7 @@ def dict_custom_colors():
                             'channel': channel,
                             'unit': unit,
                             'measure': measurement,
+                            'measure_name': measurement_name,
                             'color': color,
                             'disable_data_grouping': disable_data_grouping})
                         index += 1
@@ -2446,9 +2453,11 @@ def dict_custom_colors():
                     device_measurement = DeviceMeasurements.query.filter(
                         DeviceMeasurements.unique_id == pid_measure_id).first()
                     if device_measurement:
+                        measurement_name = device_measurement.name
                         conversion = Conversion.query.filter(
                             Conversion.unique_id == device_measurement.conversion_id).first()
                     else:
+                        measurement_name = None
                         conversion = None
                     channel, unit, measurement = return_measurement_info(
                         device_measurement, conversion)
@@ -2477,6 +2486,7 @@ def dict_custom_colors():
                             'channel': channel,
                             'unit': unit,
                             'measure': measurement,
+                            'measure_name': measurement_name,
                             'color': color,
                             'disable_data_grouping': disable_data_grouping})
                         index += 1
