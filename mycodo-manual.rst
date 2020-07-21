@@ -95,67 +95,53 @@ files, etc.) to aid in diagnosing the issue.
 
 --------------
 
-*How do I add an Input (like a sensor) to the system if it's not
-currently supported?*
+*How do I add an Input (like a sensor) or an Output (like a water pump), or custom functions (to do my bidding) to the system if they're not currently supported?*
 
-Yes, Mycodo supports adding custom Inputs. See the `Custom
-Inputs <#custom-inputs>`__ section for more information.
+Yes, Mycodo supports adding custom Inputs, Outputs, and Controllers. See the `Custom Inputs <#custom-inputs>`__, `Custom Outputs <#custom-outputs>`__, and `Custom Controllers <#custom-controllers>`__ sections for more information.
 
-The second way to add an Input is to create a script that obtains and
-returns a numerical value when executed in the linux system of the
+Another way to add an Input is to create a bash or Python script that obtains and
+returns a numerical value when executed from the linux command line on the
 Raspberry Pi. This script may be configured to be executed by a "Linux
-Command" Input type. This will periodically execute the command and
-store the returned value to the database for use with the rest of the
+Command" Input. The Input will periodically execute the command and
+store the returned measurement value to the database for use with the rest of the
 Mycodo system.
 
 --------------
 
-*Can I create a new controller like the PID, Trigger, and LCD
-functions?*
-
-Yes, Mycodo supports adding custom Controllers. See the `Custom
-Controllers <#custom-controllers>`__ section for more information.
-
---------------
-
-*How do I set up simple regulation?*
+*How do I set up simple environmental monitoring and regulation?*
 
 Here is how I generally set up Mycodo to monitor and regulate:
 
 1. Determine what environmental condition you want to measure or
    regulate. Consider the devices that must be coupled to achieve this.
-   For instance, temperature regulation require a temperature sensor as
-   the input and an electric heater (or cooler) as the output.
-2. Determine what relays you will need to power your electric devices.
-   The Raspberry Pi is capable of directly switching relays (using a
-   3.3-volt signal). Remember to select a relay that can handle the load
-   and doesn't exceed the maximum current draw from the Raspberry Pi
-   GPIO pins.
-3. See the `Device Specific
-   Information <#device-specific-information>`__ for information about
-   what sensors are supported. Acquire sensor(s) and relay(s) and
+   For instance, temperature regulation would require a temperature sensor input and an electric heater (or cooler) output.
+2. Determine what relays you will need to control power to your electric devices.
+   The Raspberry Pi is capable of directly switching relays (using a controllable
+   3.3-volt signal from the Pi's GPIO pins). Remember to select a relay that can handle the electrical current load from your switched device and won't exceed the maximum current draw from the Raspberry Pi GPIO pin the relay is connected to.
+3. See the `Input Devices <#input-devices>`__ section for information about
+   supported inputs. Acquire sensor(s) and relay(s) and
    connect them to the Raspberry Pi according to the manufacturer’s
-   instructions.
-4. On the ``Setup -> Data`` page, create a new input using the drop-down
-   to select the correct sensor or input device. Configure the input
+   instructions. For instance, a sensor that communicates via the I2C bus will connect the SDA, SCL, Power, and Ground pins of the sensor to the SDA, SCL, 3.3 volt, and Ground pins of the Raspberry Pi. Make sure to enable the I2C interface under ``Configure -> Raspberry Pi``. Additionally, the simplest way to connect a relay is to connect the controlling side of the relay to a GPIO pin and Ground of the Raspberry Pi (remember to select a relay that will not exceed the current limitation of the GPIO pin). Some relays require the proper polarity for the controlling voltage, so refer to the manufacturer's datasheet to determine if this is the case.
+4. On the ``Setup -> Data`` page, add a new input using the drop-down
+   menu. Configure the input
    with the correct communication pins and other options. Activate the
-   input to begin recording measurements to the database.
-5. Go to the ``Data -> Live`` page to ensure there is recent data being
+   input to begin recording measurements to the Mycodo measurement database.
+5. Go to the ``Data -> Live`` page to ensure there are measurements being
    acquired from the input.
-6. On the ``Setup -> Output`` page, add a relay and configure the GPIO
-   pin that switches it, whether the relay switches On when the signal
+6. On the ``Setup -> Output`` page, add an On/Off GPIO Output and configure the GPIO
+   pin that's connected to the relay, whether the relay switches On when the signal
    is HIGH or LOW, and what state (On or Off) to set the relay when
-   Mycodo starts. A pulse-width modulated (PWM) output may also be used,
-   among others.
-7. Test the relay by switching it On and Off or generating a PWM signal
+   Mycodo starts. There are a number of other Outputs to choose from, but this is the most basic to start with, that will simply switch the GPIO pin HIGH (3.3 volts) or LOW (0 volts) to switch the relay that's connected to the pin.
+7. Connect your device to the relay. This can be dont a number of ways, and will depend on a number of factors, including whether you're using DC or AC voltage, whether there are screw terminals or a connector/socket, etc. In the simplest scenario, AC mains voltage can be applied by cutting the live wire and connecting each of the newly-cut ends to each of the terminals on the switching side fo the relay. This enables the relay to short/connect or break/disconnect the connection, which will power and depower your device.
+8. Test the Output by switching it On and Off (or generating a PWM signal if it's a PWM Output)
    from the ``Setup -> Output`` page and make sure the device connected
    to the relay turns On when you select "On", and Off when you select
    "Off".
-8. On the ``Setup -> Function`` page, create a PID controller with the
-   appropriate input, output, and other parameters. Activate the PID
+9. On the ``Setup -> Function`` page, create a PID controller with the
+   appropriate input measurement, output, and other parameters. Activate the PID
    controller.
-9. On the ``Data -> Dashboard`` page, create a graph that includes the
-   input measurement, the output that is being used by the PID, and the
+10. On the ``Data -> Dashboard`` page, create a graph that includes the
+   input measurement, the output, and the
    PID output and setpoint. This provides a good visualization for
    tuning the PID. See `Quick Setup Examples <#quick-setup-examples>`__
    for a greater detail of this process and tuning tips.
@@ -177,44 +163,39 @@ PWM output signal from the PID?*
 
 Yes, as long as you have the proper hardware to do that. The PWM signal
 being produced by the PID should be handled appropriately, whether by a
-fast-switching solid state relay, an `AC modulation
-circuit <#schematics-for-ac-modulation>`__, `DC modulation
-circuit <#schematics-for-dc-fan-control>`__, or something else.
+fast-switching solid state relay, `AC modulation
+circuitry <#schematics-for-ac-modulation>`__, `DC modulation
+circuitry <#schematics-for-dc-fan-control>`__, or something else.
 
 --------------
 
 *I have a PID controller that uses one temperature sensor. If this
-sensor stops working, my entire PID controller stops working. Is there a
-way to prevent this by setting up a second sensor to be used in case the
+sensor stops working, my PID controller stops operating. Is there a
+way to prevent this by setting up a second sensor to be used as a backup in case the
 first one fails?*
 
 Yes, you can use as many sensors as you would like to create a redundant
-system so your PID doesn't stop working if one or more sensors fail. To
+system so your PID or other functions don't stop working if one or more sensors fail. To
 do this, follow the below instructions:
 
 1. Add and activate all your sensors. For this example, we will use
    three temperature sensors, Sensor1, Sensor2, and Sensor3, that return
    measurements in degrees Celsius.
-2. Go to the ``Setup -> Data`` page and add the Math controller
-   "Redundancy".
+2. Go to the ``Setup -> Data`` page and add the Redundancy Math controller.
 3. In the options of the Redundancy controller, set the Period, Start
-   Offset, and Max Age.
-4. In the options of the Redundancy controller, select Sensor1, Sensor2,
-   and Sensor3 for the Input option and click Save.
-5. In the options of the Redundancy controller, change the order you
+   Offset, and Max Age, then select Sensors 1, 2, and 3 for the Input option, then Save.
+4. In the options of the Redundancy controller, change the order you
    wish to use the sensors under Order of Use. For this example, we will
    use the default order (Sensor1, Sensor2, Sensor3).
-6. In the options of the Redundancy controller, under Measurement
-   Settings, select Celsius for the Measurement Unit and click Save
-   under Measurement Settings.
-7. Activate the Redundancy Math controller.
-8. Go to the ``Data -> Live`` page and verify the Redundancy Math
-   controller is working correctly by returning a value from one of the
-   three selected Inputs. If the first sensor is working correctly, it
-   should return this value. You can deactivate the first sensor
+5. In the options of the Redundancy controller, under Measurement
+   Settings, select Celsius for the Measurement Unit and click the Save
+   under Measurement Settings (a different Save button from the general options).
+6. Activate the Redundancy Math controller.
+7. Go to the ``Data -> Live`` page and verify the Redundancy Math
+   controller is working correctly by returning a value from the input you selected to be first. If the first sensor is working correctly, its value should be displayed. You can deactivate the first sensor
    (mimicking the first sensor stopped working) and see if the second
    sensor's value is then returned.
-9. Go to the ``Setup -> Function`` page and select the new Redundancy
+8. Go to the ``Setup -> Function`` page and select the new Redundancy
    Math controller for the PID Measurement option.
 
 The PID controller will now use the measurement returned from the
@@ -225,13 +206,13 @@ If a measurement can be found within the Max Age for Sensor1, the
 measurement for Sensor1 will be returned. If a measurement from Sensor1
 could not be acquired, and if a measurement can be found within the Max
 Age for Sensor2, the measurement for Sensor2 will be returned. If a
-measurement from Sensor2 could not be acquired, and if a measurement can
+measurement from Sensor1 or Sensor2 could not be acquired, and if a measurement can
 be found within the Max Age for Sensor3, the measurement for Sensor3
-will be returned. If a measurement from Sensor3 could not be acquired,
+will be returned. If a measurement from Sensor1, Sensor2, or Sensor3 could not be acquired,
 then the Redundancy Math controller will not return a measurement at all
 (indicating all three sensors are not working). It is advised to set up
-a Conditional to send a notification email to yourself if one or more
-measurements are unable to be acquired.
+a Conditional Controller to send a notification email to yourself if one or more
+measurements are unable to be acquired so you can investigate the issue.
 
 --------------
 
@@ -243,34 +224,29 @@ Upgrading
 If you already have Mycodo installed, you can perform an upgrade to the
 latest `Mycodo Release <https://github.com/kizniche/Mycodo/releases>`__
 by either using the Upgrade option in the web interface (recommended) or
-by issuing the following command in a terminal. A log of the upgrade
-process is created at ``/var/log/mycodo/mycodoupgrade.log``
+by issuing the following command in a terminal. A log of the upgrade process is created at ``/var/log/mycodo/mycodoupgrade.log`` and is also available from the ``Configure -> Mycodo Logs page``.
 
 .. code:: bash
 
-   sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
+   sudo mycodo-commands upgrade-mycodo
 
 Backup-Restore
 ==============
 
 ``[Gear Icon] -> Backup Restore``
 
-A backup is made to /var/Mycodo-backups when the system is upgraded or
-through the web interface on the ``[Gear Icon] -> Backup Restore`` page.
+A backup is made to /var/Mycodo-backups when the system is upgraded or instructed to do so
+from the web interface on the ``[Gear Icon] -> Backup Restore`` page.
 
 If you need to restore a backup, this can be done on the
-``[Gear Icon] -> Backup  Restore`` page. Find the backup you would like
-restored and press the Restore button beside it. A restore can also be
-initialized through the command line. Use the following commands to
-initialize a restore, changing the appropriate directory names, 'user'
-to your user name, and TIME and COMMIT to the appropriate text found as
-the directory names in /var/Mycodo-backups/
+``[Gear Icon] -> Backup  Restore`` page (recommended). Find the backup you would like
+restored and press the Restore button beside it. If you're unable to access the web interface, a restore can also be
+initialized through the command line. Use the following command to
+initialize a restore. The [backup_location] must be the full path to the backup to be restored (e.g. "/var/Mycodo-backups/Mycodo-backup-2018-03-11_21-19-15-5.6.4/" without quotes).
 
 .. code:: bash
 
-   sudo mv /home/user/Mycodo /home/user/Mycodo_old
-   sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
-   sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
+   sudo mycodo-commands backup-restore [backup_location]
 
 Web Interface
 =============
@@ -281,21 +257,20 @@ the daemon, of the system. The web interface supports an authentication
 system with user/password credentials, user roles that grant/deny access
 to parts of the system, and SSL for encrypted browsing.
 
-An SSL certificate will be generated (expires in 10 years) and stored at
+An SSL certificate with an expiration of 10 years will be generated and stored in
 ``~/Mycodo/mycodo/mycodo_flask/ssl_certs/`` during the install process
 to allow SSL to be used to securely connect to the web interface. If you
 want to use your own SSL certificates, replace them with your own.
 
 If using the auto-generated certificate from the install, be aware that
-it will not be verified when visiting the web interface using the
-``https://`` address prefix. You may continually receive a warning
-message about the security of your site, unless you add the certificate
+it will not be verified when visiting the web interface in your browser. You may continually receive a warning
+message about the security of your site unless you add the certificate
 to your browser's trusted list.
 
 REST API
 ========
 
-As of version 8, Mycodo has a REST API. Documentation is available here:
+As of version 8, Mycodo has a REST API. Documentation is available at
 `API
 Information <https://github.com/kizniche/Mycodo/blob/master/mycodo-api.rst>`__
 and `API Endpoint
@@ -4479,17 +4454,15 @@ Output Devices
 Built-In Outputs
 ~~~~~~~~~~~~~~~~
 
--  Atlas EZO-PMP Peristaltic Pump: Pump volumes in milliliters
-   `link <https://www.atlas-scientific.com/peristaltic.html>`__
-
-Other Built-In Outputs
-~~~~~~~~~~~~~~~~~~~~~~
-
--  GPIO Pin (High/Low)
--  GPIO PWM Signal generation
--  Python Command for On and Off actions
--  Linux Shell command for On and Off actions
--  Wireless 314/433 Mhz LPD/SRD (rpi-rf)
+-  On/Off (Python code)
+-  On/Off (GPIO)
+-  On/Off (Shell script)
+-  Pulse-Width-Modulation (Python code)
+-  Pulse-Width-Modulation (GPIO)
+-  Pulse-Width-Modulation (Shell script)
+-  Peristaltic Pump (Generic, GPIO)
+-  Peristaltic Pump (Atlas Scientific) `link <https://www.atlas-scientific.com/peristaltic.html>`__
+-  Wireless 315/433 MHz (rpi-rf, GPIO)
 
 Device Notes
 ============

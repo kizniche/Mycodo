@@ -10,6 +10,9 @@ if [[ "$EUID" -ne 0 ]]; then
     exit 1
 fi
 
+# Current Mycodo major version number
+MYCODO_MAJOR_VERSION="8"
+
 # Dependency versions/URLs
 PIGPIO_URL="https://github.com/joan2937/pigpio/archive/v77.tar.gz"
 MCB2835_URL="http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz"
@@ -76,6 +79,7 @@ Options:
   update-pip3                   Update pip
   update-pip3-packages          Update required pip packages
   update-swap-size              Ensure sqap size is sufficiently large (512 MB)
+  upgrade-mycodo                Upgrade Mycodo to latest compatible release and preserve database and virtualenv
   upgrade-release-major {ver}   Upgrade Mycodo to a major version release {ver} and preserve database and virtualenv
   upgrade-release-wipe {ver}    Upgrade Mycodo to a major version release {ver} and wipe database and virtualenv
   upgrade-master                Upgrade Mycodo to the master branch at https://github.com/kizniche/Mycodo
@@ -451,6 +455,9 @@ case "${1:-''}" in
         else
             printf "#### Swap not currently set to 100 MB. Not changing.\n"
         fi
+    ;;
+    'upgrade-mycodo')
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh upgrade-release-major "${MYCODO_MAJOR_VERSION}"
     ;;
     'upgrade-release-major')
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_download.sh upgrade-release-major "${2}"

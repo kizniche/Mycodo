@@ -1,8 +1,10 @@
 ## 8.6.0 (Unreleased)
 
-This update adds a Generic Peristaltic Pump Output to compliment the Atlas Scientific (AS) Peristaltic Pump Output. Generic peristaltic pumps are significantly less expensive yet can have just as accurate dispensing. Once your pump's flow rate has been measured, your generic peristaltic pump can be used to dispense specific volumes if liquid just like the AS pumps.
+This update adds a Generic Peristaltic Pump Output to compliment the Atlas Scientific Peristaltic Pump Output. Generic peristaltic pumps are less expensive but often have acceptable dispensing accuracy. Once your pump's flow rate has been measured and this rate set in the Output options, your pump can be used to dispense specific volumes of liquid just like the Atlas Scientific pumps. This release also enables pumps to dispense for durations of time in addition to specific volumes (once calibrated). So, you can now operate a PID controller or other functions/controllers that instruct a pump to dispense for a duration in seconds or a volume in milliliters.
 
-WARNING: As a result of how this new output operates, a potentially breaking change has been introduced. If you use any custom Output modules, you will need to add the parameter output_type=None to the output_switch() function of all of your custom Output controllers. If you do not, the Mycodo daemon/backend will fail to start after upgrading to or beyond this version. It is advised to modify your custom Output modules prior to upgrading to ensure the daemon successfully starts after the upgrade.
+In this update, the Atlas Scientific Peristaltic Pump Output duration units have been changed form minutes to seconds, to align with other Outputs that use the second SI unit.
+
+WARNING: As a result of how this new output operates, a potentially breaking change has been introduced. If you use any custom Output modules, you will need to add the parameter output_type=None to the output_switch() function of all of your custom Output module files. If you do not, the Mycodo daemon/backend will fail to start after upgrading to or beyond this version. It is advised to modify your custom Output modules prior to upgrading to ensure the daemon successfully starts after the upgrade. If you have not created or imported any custom Output modules, there is nothing that needs to be done.
 
 ### Bugfixes
 
@@ -31,6 +33,7 @@ WARNING: As a result of how this new output operates, a potentially breaking cha
 
 ### Miscellaneous
 
+ - Change Atlas Scientific Peristaltic Pump Output duration unit from minute to second
  - Move clear total volume function for Atlas Scientific Flow Meter to Input Module
  - Add instruction for viewing the frontend web log on the web 502 error page ([#786](https://github.com/kizniche/mycodo/issues/786))
 

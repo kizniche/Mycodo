@@ -59,18 +59,33 @@ if __name__ == "__main__":
         #         print(msg)
 
         elif each_revision == '4ea0a59dee2b':
-            # Only LCDs with I2C interface were supported until this revision
-            # "interface" column added in this revision
-            # Sets all current interfaces to I2C
+            # Only LCDs with I2C interface were supported until this revision.
+            # "interface" column added in this revision.
+            # Sets all current interfaces to I2C.
+            # Atlas Scientific pump output duration measurements are set to minute.
+            # Change unit minute to the SI unit second, like other outputs.
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
             try:
+                from mycodo.databases.models import DeviceMeasurements
                 from mycodo.databases.models import LCD
+                from mycodo.databases.models import Output
 
                 with session_scope(MYCODO_DB_PATH) as session:
+                    outputs = session.query(Output).filter(
+                        Output.output_type == 'atlas_ezo_pmp').all()
+                    for each_output in outputs:
+                        measurements = session.query(DeviceMeasurements).filter(
+                            DeviceMeasurements.device_id == each_output.unique_id).all()
+                        for meas in measurements:
+                            if meas.unit == 'minute':
+                                meas.unit = 's'
+                                session.commit()
+
                     for lcd in session.query(LCD).all():
                         lcd.interface = 'I2C'
                         session.commit()
+
             except Exception:
                 msg = "ERROR: post-alembic revision {}: {}".format(
                     each_revision, traceback.format_exc())
@@ -110,6 +125,7 @@ if __name__ == "__main__":
                                     Output.unique_id == each_pid.lower_output_id).first()
                                 if output_lower:  # Use first output type listed (default)
                                     each_pid.lower_output_type = dict_outputs[output_lower.output_type]['output_types'][0]
+                            session.commit()
                         except:
                             msg = "ERROR-1: post-alembic revision {}: {}".format(
                                 each_revision, traceback.format_exc())

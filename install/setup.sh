@@ -146,11 +146,12 @@ DURATION=$SECONDS
 printf "#### Total install time: %d minutes and %d seconds\n" "$((DURATION / 60))" "$((DURATION % 60))" 2>&1 | tee -a "${LOG_LOCATION}"
 
 printf "
-************************************
-** Mycodo successfully installed! **
-************************************
+*********************************
+** Mycodo finished installing! **
+*********************************
 
-The full install log is located at:
+Although the install finished, it doesn't necessarily mean it installed correctly.
+If you experience issues, review the full install log is located at:
 %s/install/setup.log
 
 Go to https://%s/, or whatever your Raspberry Pi's

@@ -22,7 +22,7 @@ measurements_dict = {
     },
     1: {
         'measurement': 'duration_time',
-        'unit': 'minute'  # TODO: Change to seconds
+        'unit': 's'
     }
 }
 
@@ -105,12 +105,12 @@ class OutputModule(AbstractOutput):
         else:
             self.logger.error("Unknown interface: {}".format(self.output_interface))
 
-    def record_dispersal(self, amount_ml=None, minutes_to_run=None):
+    def record_dispersal(self, amount_ml=None, seconds_to_run=None):
         measure_dict = measurements_dict.copy()
         if amount_ml:
             measure_dict[0]['value'] = amount_ml
-        if minutes_to_run:
-            measure_dict[1]['value'] = minutes_to_run
+        if seconds_to_run:
+            measure_dict[1]['value'] = seconds_to_run
         add_measurements_influxdb(self.output_unique_id, measure_dict)
 
     def dispense_duration(self, seconds):
@@ -129,7 +129,7 @@ class OutputModule(AbstractOutput):
         self.logger.debug("EZO-PMP command: {}".format(write_cmd))
         self.currently_dispensing = False
 
-        self.record_dispersal(minutes_to_run=seconds / 60)
+        self.record_dispersal(seconds_to_run=seconds)
 
     def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
         if state == 'on' and output_type == 'sec' and amount:
@@ -144,9 +144,11 @@ class OutputModule(AbstractOutput):
         elif state == 'on' and output_type in ['vol', None] and amount:
             if self.output_mode == 'fastest_flow_rate':
                 minutes_to_run = amount / 105
+                seconds_to_run = minutes_to_run * 60
                 write_cmd = 'D,{ml:.2f}'.format(ml=amount)
             elif self.output_mode == 'specify_flow_rate':
                 minutes_to_run = amount / self.output_flow_rate
+                seconds_to_run = minutes_to_run * 60
                 write_cmd = 'D,{ml:.2f},{min:.2f}'.format(
                     ml=amount, min=minutes_to_run)
             else:
@@ -158,7 +160,7 @@ class OutputModule(AbstractOutput):
             self.currently_dispensing = False
             write_cmd = 'X'
             amount = 0
-            minutes_to_run = 0
+            seconds_to_run = 0
 
         else:
             self.logger.error(
@@ -169,8 +171,8 @@ class OutputModule(AbstractOutput):
         self.atlas_command.write(write_cmd)
         self.logger.debug("EZO-PMP command: {}".format(write_cmd))
 
-        if amount and minutes_to_run:
-            self.record_dispersal(amount_ml=amount, minutes_to_run=minutes_to_run)
+        if amount and seconds_to_run:
+            self.record_dispersal(amount_ml=amount, seconds_to_run=seconds_to_run)
 
     def is_on(self):
         if self.is_setup():
