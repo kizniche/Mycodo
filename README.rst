@@ -41,8 +41,7 @@ Features
 --------
 
 -  `Inputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input>`__ that record measurements from sensors, GPIO pin states, analog-to-digital converters, etc. (or create your own `Custom Inputs <#custom-inputs>`__).
--  `Outputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output>`__ that perform actions such as switching GPIO pins high/low, generating PWM signals, executing shell scripts and Python code, etc. (or create your own `Custom
-Outputs <#custom-outputs>`__).
+-  `Outputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output>`__ that perform actions such as switching GPIO pins high/low, generating PWM signals, executing shell scripts and Python code, etc. (or create your own `Custom Outputs <#custom-outputs>`__).
 -  `Functions <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#functions>`__ that perform tasks, such as coupling Inputs and Outputs in interesting ways, such as `PID controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-controller>`__, `Conditional Controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional>`__, `Trigger Controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#trigger>`__, to name a few (or create your own `Custom Controllers <#custom-controllers>`__).
 -  `Web Interface <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#web-interface>`__ for securely accessing Mycodo using a web browser on your local network or anywhere in the world with an internet connection, to view and configure the system, which includes several light and dark themes to suit your style.
 -  `Dashboards <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#dashboard>`__ that display configurable widgets, including interactive live and historical graphs, gauges, output state indicators, text measurements, among others.
