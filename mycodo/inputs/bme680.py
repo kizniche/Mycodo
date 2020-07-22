@@ -1,10 +1,12 @@
 # coding=utf-8
+import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_altitude
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
+
 
 def constraints_pass_oversample(mod_input, value):
     """
@@ -382,7 +384,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         if not self.sensor.get_sensor_data():
             self.logger.error("Sensor get_sensor_data() returned False.")

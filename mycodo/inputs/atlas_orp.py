@@ -1,6 +1,7 @@
 # coding=utf-8
 import time
 
+import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -125,7 +126,7 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         """ Gets the sensor's ORP measurement via UART/I2C """
         orp = None
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         if not self.atlas_device.setup:
             self.logger.error("Sensor not set up")

@@ -1,6 +1,8 @@
 # coding=utf-8
 import subprocess
 
+import copy
+
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
@@ -60,7 +62,7 @@ class InputModule(AbstractInput):
         # soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
         # self.logger.info("LIMIT: Soft: {sft}, Hard: {hrd}".format(sft=soft, hrd=hard))
 
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         self.logger.debug("Acquiring Measurements...")
 

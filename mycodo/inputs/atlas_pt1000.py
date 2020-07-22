@@ -1,4 +1,6 @@
 # coding=utf-8
+import copy
+
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.atlas_calibration import setup_atlas_device
 from mycodo.utils.system_pi import str_is_float
@@ -67,7 +69,7 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         """ Gets the Atlas PT1000's temperature in Celsius """
         temp = None
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         if not self.atlas_device.setup:
             self.logger.error("Sensor not set up")

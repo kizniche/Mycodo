@@ -1,4 +1,6 @@
 # coding=utf-8
+import copy
+
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
@@ -85,7 +87,7 @@ class InputModule(AbstractInput):
         from miflora.miflora_poller import MI_TEMPERATURE
         from miflora.miflora_poller import MI_BATTERY
 
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         self.lock_acquire(self.lock_file, timeout=3600)
         if self.locked[self.lock_file]:

@@ -1,6 +1,8 @@
 # coding=utf-8
 import time
 
+import copy
+
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
@@ -67,7 +69,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.is_enabled(0):
             self.value_set(0, self.filter_average('lux', measurement=self.light()))

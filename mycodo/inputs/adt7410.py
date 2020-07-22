@@ -1,4 +1,6 @@
 # coding=utf-8
+import copy
+
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
@@ -58,7 +60,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the ADT7410 measurements and stores them in the database """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         temperature = self.sensor.temperature
 

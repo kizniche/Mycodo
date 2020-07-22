@@ -4,6 +4,7 @@
 #
 import time
 
+import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -159,7 +160,7 @@ class InputModule(AbstractInput):
         pm_2_5 = []
         pm_10_0 = []
 
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.fan_modulate and not self.fan_is_on:
             # Allow the fan to run for a duration before querying sensor

@@ -8,6 +8,7 @@ WARNING: As a result of how this new output operates, a potentially breaking cha
 
 ### Bugfixes
 
+ - Fix measurement being stored in database after sensor error ([#795](https://github.com/kizniche/mycodo/issues/795))
  - Fix UART communication with Atlas Scientific devices ([#785](https://github.com/kizniche/mycodo/issues/785))
  - Fix FTDI communication with Atlas Scientific devices
  - Fix PID Dashboard Widget error in log when PID inactive

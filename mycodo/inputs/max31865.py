@@ -20,9 +20,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
 import math
 import time
+
+import copy
 
 from mycodo.inputs.base_input import AbstractInput
 
@@ -102,7 +103,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         self.value_set(0, self.sensor.readTemp(
             self.thermocouple_type, self.ref_ohm))

@@ -1,8 +1,8 @@
 # coding=utf-8
-
 import importlib.util
 import textwrap
 
+import copy
 import os
 from flask import Markup
 from flask import flash
@@ -199,7 +199,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         file_run = '{}/input_python_code_{}.py'.format(
             PATH_PYTHON_CODE_USER, self.unique_id)

@@ -1,6 +1,8 @@
 # coding=utf-8
 from collections import OrderedDict
 
+import copy
+
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
@@ -88,7 +90,7 @@ class InputModule(AbstractInput):
             self.bus = SMBus(self.i2c_bus)
 
     def get_measurement(self):
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         for channel in self.channels_measurement:
             if self.is_enabled(channel):

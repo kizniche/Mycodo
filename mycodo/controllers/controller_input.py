@@ -437,6 +437,7 @@ class InputController(AbstractController, threading.Thread):
         try:
             # Get measurement from input
             measurements = self.measure_input.next()
+            self.logger.error("TEST11: {}".format(measurements))
             # Reset StopIteration counter on successful read
             if self.stop_iteration_counter:
                 self.stop_iteration_counter = 0

@@ -9,6 +9,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import parse_measurement
 
+
 def constraints_pass_positive_value(mod_input, value):
     """
     Check if the user input is acceptable

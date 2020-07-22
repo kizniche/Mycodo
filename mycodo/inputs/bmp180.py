@@ -1,6 +1,8 @@
 # coding=utf-8
 import time
 
+import copy
+
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_altitude
 
@@ -67,7 +69,7 @@ class InputModule(AbstractInput):
         """ Gets the measurement in units by reading the BMP180/085 """
         time.sleep(2)
 
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.is_enabled(0):
             self.value_set(0, self.bmp.read_pressure())

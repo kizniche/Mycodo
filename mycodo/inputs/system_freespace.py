@@ -1,4 +1,5 @@
 # coding=utf-8
+import copy
 import os
 
 from mycodo.inputs.base_input import AbstractInput
@@ -47,7 +48,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the free space """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         f = os.statvfs(self.path)
         self.value_set(0, (f.f_bsize * f.f_bavail) / 1000000.0)

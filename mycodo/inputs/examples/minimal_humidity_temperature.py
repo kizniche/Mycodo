@@ -1,4 +1,5 @@
 # coding=utf-8
+import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -134,7 +135,7 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         """ Measures temperature and humidity """
         # Resetting these values ensures old measurements aren't mistaken for new measurements
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         # Actual input measurement code
         try:

@@ -1,4 +1,5 @@
 # coding=utf-8
+import copy
 import os
 
 from mycodo.inputs.base_input import AbstractInput
@@ -55,7 +56,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         response = os.system(
             "nc -zv {host} {port} > /dev/null 2>&1".format(

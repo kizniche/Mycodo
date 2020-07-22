@@ -1,7 +1,6 @@
 # coding=utf-8
+import copy
 import os
-
-from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 
@@ -56,7 +55,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the cpu load averages """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         load_avg = os.getloadavg()
 

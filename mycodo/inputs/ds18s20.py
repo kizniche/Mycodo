@@ -2,7 +2,7 @@
 import subprocess
 import time
 
-from flask_babel import lazy_gettext
+import copy
 
 from mycodo.inputs.base_input import AbstractInput
 
@@ -83,7 +83,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the DS18S20's temperature in Celsius """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         n = 2
         for i in range(n):

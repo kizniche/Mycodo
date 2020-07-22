@@ -2,6 +2,8 @@
 # From https://github.com/ControlEverythingCommunity/SHT25/blob/master/Python/SHT25.py
 import time
 
+import copy
+
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
@@ -72,7 +74,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         for _ in range(2):
             try:

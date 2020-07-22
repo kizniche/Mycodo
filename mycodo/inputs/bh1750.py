@@ -1,6 +1,8 @@
 # coding=utf-8
 import time
 
+import copy
+
 from mycodo.inputs.base_input import AbstractInput
 
 list_sensitivity = []
@@ -95,7 +97,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the BH1750's lux """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.resolution == 0:
             lux = self.measure_low_res()

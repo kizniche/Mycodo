@@ -3,6 +3,7 @@ import time
 from collections import OrderedDict
 from datetime import datetime
 
+import copy
 import os
 
 from mycodo.config import PATH_CAMERAS
@@ -79,7 +80,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the AMG8833's measurements """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         pixels = self.sensor.readPixels()
 

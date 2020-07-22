@@ -11,6 +11,7 @@
 #
 import time
 
+import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -118,7 +119,7 @@ class InputModule(AbstractInput):
         if not self.uart_location:  # Don't measure if device isn't validated
             return None
 
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         co2 = None
 

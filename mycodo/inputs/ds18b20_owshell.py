@@ -2,8 +2,9 @@
 import subprocess
 import time
 
-from mycodo.inputs.base_input import AbstractInput
+import copy
 
+from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
 measurements_dict = {
@@ -69,7 +70,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the DS18B20's temperature in Celsius """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         temperature = None
         n = 2

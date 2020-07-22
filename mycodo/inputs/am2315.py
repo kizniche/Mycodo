@@ -27,6 +27,8 @@
 import math
 import time
 
+import copy
+
 from mycodo.databases.models import Output
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
@@ -104,7 +106,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         temperature = None
         humidity = None

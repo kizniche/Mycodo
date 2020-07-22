@@ -1,6 +1,8 @@
 # coding=utf-8
 import time
 
+import copy
+
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
 
@@ -70,7 +72,7 @@ class InputModule(AbstractInput):
         if not self.serial_device:  # Don't measure if device isn't validated
             return None
 
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         co2 = None
 

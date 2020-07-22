@@ -1,4 +1,6 @@
 # coding=utf-8
+import copy
+
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
@@ -66,7 +68,7 @@ class InputModule(AbstractInput):
                 busnum=self.i2c_bus)
 
     def get_lux(self):
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
         full, ir = self.tsl._get_luminosity()
 
         if self.is_enabled(0):
@@ -80,7 +82,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the TSL2561's lux """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         from tsl2561.constants import TSL2561_INTEGRATIONTIME_402MS
         self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_402MS)

@@ -1,6 +1,7 @@
 # coding=utf-8
 import time
 
+import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -131,7 +132,7 @@ class InputModule(AbstractInput):
             self.sensor.start_ranging(self.timing_budget)
 
     def get_measurement(self):
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
         length = None
 
         while self.setting_i2c:

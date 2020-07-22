@@ -1,6 +1,7 @@
 # coding=utf-8
 from collections import OrderedDict
 
+import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -153,7 +154,7 @@ class InputModule(AbstractInput):
         voltages_dict = {}
         count = 0
 
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         # 2 attempts to get valid measurement
         while (self.running and count < 2 and

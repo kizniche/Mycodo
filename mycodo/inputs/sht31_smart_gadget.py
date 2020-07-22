@@ -2,6 +2,7 @@
 import datetime
 import time
 
+import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -406,7 +407,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Obtain and return the measurements """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         self.lock_acquire(self.lock_file, timeout=3600)
         if self.locked[self.lock_file]:

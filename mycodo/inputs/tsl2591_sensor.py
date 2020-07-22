@@ -1,4 +1,6 @@
 # coding=utf-8
+import copy
+
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
@@ -64,7 +66,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the TSL2591's lux """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         full, ir = self.tsl.get_full_luminosity()  # read raw values (full spectrum and ir spectrum)
 

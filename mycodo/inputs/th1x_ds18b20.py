@@ -5,6 +5,7 @@
 import datetime
 import json
 
+import copy
 import requests
 from flask_babel import lazy_gettext
 
@@ -65,7 +66,7 @@ class InputModule(AbstractInput):
             INPUT_INFORMATION['custom_options'], input_dev)
 
     def get_measurement(self):
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         url = "http://{ip}/cm?cmnd=status%2010".format(ip=self.ip_address)
         r = requests.get(url)

@@ -2,6 +2,8 @@
 import subprocess
 import time
 
+import copy
+
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
@@ -116,7 +118,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Obtain and return the measurements """
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         self.lock_acquire(self.lock_file, timeout=3600)
         if self.locked[self.lock_file]:

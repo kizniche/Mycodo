@@ -1,4 +1,5 @@
 # coding=utf-8
+import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -330,7 +331,7 @@ class InputModule(AbstractInput):
         # Copy measurements dictionary
         #
 
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         #
         # Begin sensor measurement code

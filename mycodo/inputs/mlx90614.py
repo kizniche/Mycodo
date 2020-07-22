@@ -23,9 +23,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+import copy
 
 from mycodo.inputs.base_input import AbstractInput
-
 
 # Measurements
 measurements_dict = {
@@ -122,7 +122,7 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the ambient (ch0) and object (ch1) temperature"""
-        self.return_dict = measurements_dict.copy()
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.is_enabled(0):
             self.value_set(0, self.get_amb_temp())
