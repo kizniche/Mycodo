@@ -2508,9 +2508,16 @@ def dict_custom_colors():
                     if device_measurement is not None:
                         total.append({
                             'unique_id': tag_unique_id,
+                            'measure_id': None,
                             'type': 'Tag',
                             'name': device_measurement.name,
-                            'color': color})
+                            'channel': None,
+                            'unit': None,
+                            'measure': None,
+                            'measure_name': None,
+                            'color': color,
+                            'disable_data_grouping': None
+                        })
                         index += 1
                 index_sum += index
 
