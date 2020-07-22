@@ -19,6 +19,7 @@ WARNING: As a result of how this new output operates, a potentially breaking cha
  - Fix daemon hang on use of incorrect Atlas Scientific UART device (add writeTimeout to every serial.Serial())
  - Fix uninstall of pigpiod
  - Fix missing pigpio dependency for GPIO PWM Outputs
+ - Prevent LCD controllers from activating if Max Age or Decimal Places are unset ([#795](https://github.com/kizniche/mycodo/issues/795))
 
 ### Features
 

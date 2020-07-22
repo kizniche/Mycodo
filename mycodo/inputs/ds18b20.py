@@ -67,10 +67,13 @@ class InputModule(AbstractInput):
             self.location = input_dev.location
             self.resolution = input_dev.resolution
 
-            self.sensor = W1ThermSensor(
-                W1ThermSensor.THERM_SENSOR_DS18B20, self.location)
-            if self.resolution:
-                self.sensor.set_resolution(self.resolution)
+            try:
+                self.sensor = W1ThermSensor(
+                    W1ThermSensor.THERM_SENSOR_DS18B20, self.location)
+                if self.resolution:
+                    self.sensor.set_resolution(self.resolution)
+            except:
+                self.logger.exception("Input initialization")
 
     def get_measurement(self):
         """ Gets the DS18B20's temperature in Celsius """
@@ -86,6 +89,7 @@ class InputModule(AbstractInput):
                     self.logger.exception(
                         "{cls} raised an exception when taking a reading: "
                         "{err}".format(cls=type(self).__name__, err=e))
+                    return None
                 time.sleep(1)
 
         if temperature == 85:
@@ -98,7 +102,7 @@ class InputModule(AbstractInput):
                 "Measurement outside the expected range of -55 C to 125 C: "
                 "{temp} C".format(temp=temperature))
             return None
-
-        self.value_set(0, temperature)
+        elif temperature is not None:
+            self.value_set(0, temperature)
 
         return self.return_dict

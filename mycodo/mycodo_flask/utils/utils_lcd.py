@@ -229,9 +229,65 @@ def lcd_activate(lcd_id):
                     ):
                 blank_line_detected = True
 
+        def check_display_set(error, display_num, measurement, max_age, decimal_places):
+            if measurement not in ["BLANK", "IP", "TEXT"]:
+                if max_age is None:
+                    error.append(
+                        "Display Set {n}: {set}: {opt}".format(
+                            n=display_num, set=gettext("Must be set"), opt=TRANSLATIONS['max_age']['title']))
+                if decimal_places is None:
+                    error.append("Display Set {n}: {set}: {opt}".format(
+                        n=display_num, set=gettext("Must be set"), opt=gettext("Decimal Places")))
+            return error
+
+        for each_lcd_data in lcd_data:
+            if lcd.y_lines in [2, 4, 8]:
+                error = check_display_set(
+                    error, 1,
+                    each_lcd_data.line_1_measurement,
+                    each_lcd_data.line_1_max_age,
+                    each_lcd_data.line_1_decimal_places)
+                error = check_display_set(
+                    error, 2,
+                    each_lcd_data.line_2_measurement,
+                    each_lcd_data.line_2_max_age,
+                    each_lcd_data.line_2_decimal_places)
+            if lcd.y_lines in [4, 8]:
+                error = check_display_set(
+                    error, 3,
+                    each_lcd_data.line_3_measurement,
+                    each_lcd_data.line_3_max_age,
+                    each_lcd_data.line_3_decimal_places)
+                error = check_display_set(
+                    error, 4,
+                    each_lcd_data.line_4_measurement,
+                    each_lcd_data.line_4_max_age,
+                    each_lcd_data.line_4_decimal_places)
+            if lcd.y_lines == 8:
+                error = check_display_set(
+                    error, 5,
+                    each_lcd_data.line_5_measurement,
+                    each_lcd_data.line_5_max_age,
+                    each_lcd_data.line_5_decimal_places)
+                error = check_display_set(
+                    error, 6,
+                    each_lcd_data.line_6_measurement,
+                    each_lcd_data.line_6_max_age,
+                    each_lcd_data.line_6_decimal_places)
+                error = check_display_set(
+                    error, 7,
+                    each_lcd_data.line_7_measurement,
+                    each_lcd_data.line_7_max_age,
+                    each_lcd_data.line_7_decimal_places)
+                error = check_display_set(
+                    error, 8,
+                    each_lcd_data.line_8_measurement,
+                    each_lcd_data.line_8_max_age,
+                    each_lcd_data.line_8_decimal_places)
+
         if blank_line_detected:
             error.append(gettext(
-                "Cannot activate LCD if there are blank lines"))
+                'Detected at least one "Line" unset. Cannot activate LCD if there are unconfigured lines.'))
 
         if not error:
             controller_activate_deactivate('activate', 'LCD', lcd_id)
