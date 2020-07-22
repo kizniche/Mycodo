@@ -40,6 +40,7 @@ from mycodo.config import HTTP_ACCESS_LOG_FILE
 from mycodo.config import HTTP_ERROR_LOG_FILE
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import KEEPUP_LOG_FILE
+from mycodo.config import LCD_INFO
 from mycodo.config import LOGIN_LOG_FILE
 from mycodo.config import MATH_INFO
 from mycodo.config import MYCODO_VERSION
@@ -1142,6 +1143,7 @@ def page_lcd():
                            choices_lcd=choices_lcd,
                            lcd=lcd,
                            lcd_data=lcd_data,
+                           lcd_info=LCD_INFO,
                            math=math,
                            measurements=parse_input_information(),
                            pid=pid,
