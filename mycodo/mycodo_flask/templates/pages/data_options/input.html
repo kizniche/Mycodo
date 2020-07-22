@@ -156,7 +156,16 @@
         {% set running_custom_action = true %}
         {% if 'custom_actions' in dict_options %}
           {% for each_option in dict_options['custom_actions'] %}
-            {% include 'pages/form_options/Custom_Options.html' %}
+            {% if each_option['type'] == 'new_line' %}
+      </div>
+      <div class="row small-gutters" style="padding: 0.5em">
+            {% elif each_option['type'] == 'message' %}
+        <div class="col-12" style="padding-bottom: 0.5em">
+          {{each_option['default_value']|safe}}
+        </div>
+            {% else %}
+        {% include 'pages/form_options/Custom_Options.html' %}
+            {% endif %}
           {% endfor %}
         {% endif %}
       {% endif %}
@@ -226,7 +235,16 @@
       {% include 'pages/form_options/Custom_Options_Message.html' %}
         {% if 'custom_options' in dict_options %}
           {% for each_option in dict_options['custom_options'] %}
+            {% if each_option['type'] == 'new_line' %}
+    </div>
+    <div class="row small-gutters" style="padding: 0.5em">
+            {% elif each_option['type'] == 'message' %}
+      <div class="col-12" style="padding-bottom: 0.5em">
+        {{each_option['default_value']|safe}}
+      </div>
+            {% else %}
       {% include 'pages/form_options/Custom_Options.html' %}
+            {% endif %}
           {% endfor %}
         {% endif %}
     </div>

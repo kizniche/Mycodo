@@ -17,7 +17,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_EZO_PRESS',
     'input_manufacturer': 'Atlas Scientific',
-    'input_name': 'Pressure',
+    'input_name': 'Atlas Pressure',
     'input_library': 'pylibftdi/fcntl/io/serial',
     'measurements_name': 'Pressure',
     'measurements_dict': measurements_dict,

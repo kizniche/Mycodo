@@ -86,6 +86,11 @@ INPUT_INFORMATION = {
             'name': lazy_gettext('Button One'),
             'phrase': "This is button one"
         },
+        {'type': 'new_line'},  # This starts a new line for the next action
+        {
+            'type': 'message',
+            'default_value': 'Here is another action',  # This message will be displayed after the new line
+        },
         {
             'id': 'button_two_value',
             'type': 'integer',

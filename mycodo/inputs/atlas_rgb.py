@@ -77,7 +77,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_RGB',
     'input_manufacturer': 'Atlas Scientific',
-    'input_name': 'RGB Color',
+    'input_name': 'Atlas Color',
     'input_library': 'pylibftdi/fcntl/io/serial',
     'measurements_name': 'RGB, CIE, LUX, Proximity',
     'measurements_dict': measurements_dict,

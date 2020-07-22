@@ -217,6 +217,11 @@ INPUT_INFORMATION = {
             'name': lazy_gettext('Fan On Duration'),
             'phrase': lazy_gettext('How long to turn the fan on (seconds) before acquiring measurements')
         },
+        {'type': 'new_line'},  # This starts a new line for the next options
+        {
+            'type': 'message',
+            'default_value': 'Another message between options',  # This message will be displayed after the new line
+        },
         {
             'id': 'measure_range',
             'type': 'select',

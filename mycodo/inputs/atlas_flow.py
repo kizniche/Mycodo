@@ -92,7 +92,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_FLOW',
     'input_manufacturer': 'Atlas Scientific',
-    'input_name': 'Flow Meter',
+    'input_name': 'Atlas Flow Meter',
     'input_library': 'pylibftdi/fcntl/io/serial',
     'measurements_name': 'Total Volume, Flow Rate',
     'measurements_dict': measurements_dict,

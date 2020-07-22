@@ -38,7 +38,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'ATLAS_PH',
     'input_manufacturer': 'Atlas Scientific',
-    'input_name': 'pH',
+    'input_name': 'Atlas pH',
     'input_library': 'pylibftdi/fcntl/io/serial',
     'measurements_name': 'Ion Concentration',
     'measurements_dict': measurements_dict,
