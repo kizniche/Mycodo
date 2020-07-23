@@ -77,6 +77,17 @@ def output_add(form_add):
         for _ in range(0, form_add.output_quantity.data):
             try:
                 new_output = Output()
+
+                try:
+                    from RPi import GPIO
+                    if GPIO.RPI_INFO['P1_REVISION'] == 1:
+                        new_output.i2c_bus = 0
+                    else:
+                        new_output.i2c_bus = 1
+                except:
+                    logger.error(
+                        "RPi.GPIO and Raspberry Pi required for this action")
+
                 new_output.name = "Name"
                 new_output.output_type = output_type
                 new_output.interface = output_interface
@@ -89,7 +100,7 @@ def output_add(form_add):
                 if output_type in dict_outputs:
                     def dict_has_value(key):
                         if (key in dict_outputs[output_type] and
-                                (dict_outputs[output_type][key] or dict_outputs[output_type][key] == 0)):
+                                dict_outputs[output_type][key] is not None):
                             return True
 
                     #
@@ -97,7 +108,9 @@ def output_add(form_add):
                     #
 
                     if output_interface == 'I2C':
-                        if dict_has_value('i2c_location'):
+                        if dict_has_value('i2c_address_default'):
+                            new_output.i2c_location = dict_outputs[output_type]['i2c_address_default']
+                        elif dict_has_value('i2c_location'):
                             new_output.i2c_location = dict_outputs[output_type]['i2c_location'][0]  # First list entry
 
                     if output_interface == 'FTDI':

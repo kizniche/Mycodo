@@ -190,7 +190,7 @@
             <input class="form-control" disabled="" value="{{each_output.name}}" type="text">
           </div>
           <div class="col-5 col-md-3 small-gutters">
-            <input class="form-control" disabled="" value="{{dict_outputs[each_output.output_type]['output_name']}} ({{each_output.interface}}){% if dict_outputs[each_output.output_type]['output_library'] %} [{{dict_outputs[each_output.output_type]['output_library']}}]{% endif %}" type="text">
+            <input class="form-control" disabled="" value="[{{each_output.interface}}] {{dict_outputs[each_output.output_type]['output_name']}}{% if dict_outputs[each_output.output_type]['output_library'] %} ({{dict_outputs[each_output.output_type]['output_library']}}){% endif %}" type="text">
           </div>
           <div class="col-4 col-md-2 small-gutters">
             <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">
@@ -223,12 +223,24 @@
             </div>
           </div>
 
-        {% if 'message' in dict_outputs[each_output.output_type] %}
-          <div class="row small-gutters">
-            <div class="col-12" style="padding-top: 0.5em; padding-bottom: 0.5em">
-              {{dict_outputs[each_output.output_type]['message']|safe}}
+          <div class="row small-gutters" style="padding: 0.5em">
+
+            <div class="col-12">
+              {{_("Model")}}: {{dict_outputs[each_output.output_type]['output_name']}}
             </div>
-          </div>
+
+        {% if 'dependencies_module' in dict_outputs[each_output.output_type] and dict_outputs[each_output.output_type]['dependencies_module'] %}
+            <div class="col-12">
+          {{_("Library")}}:
+          {% for each_lib in dict_outputs[each_output.output_type]['dependencies_module'] -%}
+            {% if each_lib[0] == 'pip-pypi' %}
+              <a href="https://pypi.org/project/{{each_lib[2]}}" target="_blank">{{each_lib[2]}}</a>
+            {% else %}
+              {{each_lib[1]}}
+            {% endif %}
+            {%- if not loop.last %}, {% endif %}
+          {% endfor %}
+            </div>
         {% endif %}
         
         {% set manufacturer_url = 'url_manufacturer' in dict_outputs[each_output.output_type] and dict_outputs[each_output.output_type]['url_manufacturer'] %}
@@ -237,9 +249,8 @@
         {% set additional_url = 'url_additional' in dict_outputs[each_output.output_type] and dict_outputs[each_output.output_type]['url_additional'] %}
   
         {% if manufacturer_url or datasheet_url or product_purchase_url or additional_url %}
-          <div class="row small-gutters" style="padding: 0.5em">
             <div class="col-12">
-          {{'Literature: '}}
+          {{_('Literature') + ': '}}
         {%- if manufacturer_url -%}
           {{_("Manufacturer")}} {% for each_url in dict_outputs[each_output.output_type]['url_manufacturer'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
         {%- endif -%}
@@ -256,8 +267,15 @@
           {{_("Additional")}} {% for each_url in dict_outputs[each_output.output_type]['url_additional'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
         {%- endif -%}.
             </div>
-          </div>
         {% endif %}
+
+        {% if 'message' in dict_outputs[each_output.output_type] %}
+            <div class="col-12" style="padding-top: 0.3em">
+              {{dict_outputs[each_output.output_type]['message']|safe}}
+            </div>
+        {% endif %}
+
+          </div>
 
         {% if each_output.output_type in custom_actions and custom_actions[each_output.output_type] %}
           <div class="row small-gutters align-items-end" style="padding: 0.5em">

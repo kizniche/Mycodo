@@ -47,7 +47,7 @@ class OutputAdd(FlaskForm):
                 dict_outputs[each_output]['interfaces']):
             for each_interface in dict_outputs[each_output]['interfaces']:
                 tmp_value = '{val}{int}'.format(val=value, int=each_interface)
-                tmp_name = '{name} ({int})'.format(name=name, int=each_interface)
+                tmp_name = '{name} [{int}]'.format(name=name, int=each_interface)
                 choices_outputs.append((tmp_value, tmp_name))
         else:
             choices_outputs.append((value, name))

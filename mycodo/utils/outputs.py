@@ -36,8 +36,7 @@ def parse_output_information():
     """Parses the variables assigned in each Output and return a dictionary of IDs and values"""
     def dict_has_value(dict_inp, output_cus, key, force_type=None):
         if (key in output_cus.OUTPUT_INFORMATION and
-                (output_cus.OUTPUT_INFORMATION[key] or
-                 output_cus.OUTPUT_INFORMATION[key] == 0)):
+                (output_cus.OUTPUT_INFORMATION[key] is not None)):
             if force_type == 'list':
                 if isinstance(output_cus.OUTPUT_INFORMATION[key], list):
                     dict_inp[output_cus.OUTPUT_INFORMATION['output_name_unique']][key] = \
@@ -116,6 +115,7 @@ def parse_output_information():
                 # I2C
                 dict_outputs = dict_has_value(dict_outputs, output_custom, 'i2c_location')
                 dict_outputs = dict_has_value(dict_outputs, output_custom, 'i2c_address_editable')
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'i2c_address_default')
 
                 # FTDI
                 dict_outputs = dict_has_value(dict_outputs, output_custom, 'ftdi_location')

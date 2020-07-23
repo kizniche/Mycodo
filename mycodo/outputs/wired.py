@@ -16,7 +16,7 @@ measurements_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'wired',
-    'output_name': lazy_gettext('On/Off'),
+    'output_name': "{} GPIO".format(lazy_gettext('On/Off')),
     'output_library': 'RPi.GPIO',
     'measurements_dict': measurements_dict,
 

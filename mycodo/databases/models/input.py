@@ -34,7 +34,7 @@ class Input(CRUDMixin, db.Model):
 
     # I2C
     i2c_location = db.Column(db.Text, default=None)  # Address location for I2C communication
-    i2c_bus = db.Column(db.Integer, default='')  # I2C bus the sensor is connected to
+    i2c_bus = db.Column(db.Integer, default=1)  # I2C bus the sensor is connected to
 
     # FTDI
     ftdi_location = db.Column(db.Text, default=None)  # Device location for FTDI communication

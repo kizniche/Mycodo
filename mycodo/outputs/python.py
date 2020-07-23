@@ -24,7 +24,7 @@ measurements_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'python',
-    'output_name': lazy_gettext('On/Off'),
+    'output_name': "{} Python Code".format(lazy_gettext('On/Off')),
     'measurements_dict': measurements_dict,
 
     'on_state_internally_handled': False,

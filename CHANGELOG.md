@@ -1,3 +1,10 @@
+## 8.6.1 (Unreleased)
+
+### Miscellaneous
+
+ - Improve custom output framework
+
+
 ## 8.6.1 (2020-07-22)
 
 ### Bugfixes
