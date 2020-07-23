@@ -1,3 +1,10 @@
+## 8.6.1 (2020-07-22)
+
+### Bugfixes
+
+ - Fix Wireless 315/433 MHz Output module
+
+
 ## 8.6.0 (2020-07-22)
 
 This update adds a Generic Peristaltic Pump Output to compliment the Atlas Scientific Peristaltic Pump Output. Generic peristaltic pumps are less expensive but often have acceptable dispensing accuracy. Once your pump's flow rate has been measured and this rate set in the Output options, your pump can be used to dispense specific volumes of liquid just like the Atlas Scientific pumps. This release also enables pumps to dispense for durations of time in addition to specific volumes (once calibrated). So, you can now operate a PID controller or other functions/controllers that instruct a pump to dispense for a duration in seconds or a volume in milliliters.
