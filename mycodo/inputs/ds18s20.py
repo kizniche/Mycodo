@@ -63,23 +63,12 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        # Initialize custom options
-        self.library = None
-        # Set custom options
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
-
         if not testing:
             from w1thermsensor import W1ThermSensor
 
             self.location = input_dev.location
-
-            if self.library == 'w1thermsensor':
-                self.sensor = W1ThermSensor(
-                    W1ThermSensor.THERM_SENSOR_DS18S20, self.location)
-            elif self.library == 'ow_shell':
-                # TODO: Remove ow-shell from this module as a new module for ow-shell has been created.
-                pass
+            self.sensor = W1ThermSensor(
+                W1ThermSensor.THERM_SENSOR_DS18S20, self.location)
 
     def get_measurement(self):
         """ Gets the DS18S20's temperature in Celsius """
@@ -88,24 +77,13 @@ class InputModule(AbstractInput):
         n = 2
         for i in range(n):
             try:
-                if self.library == 'w1thermsensor':
-                    self.value_set(0, self.sensor.get_temperature())
-                elif self.library == 'ow_shell':
-                    try:
-                        command = 'owread /{id}/temperature; echo'.format(
-                            id=self.location)
-                        owread = subprocess.Popen(
-                            command, stdout=subprocess.PIPE, shell=True)
-                        (owread_output, _) = owread.communicate()
-                        owread.wait()
-                        if owread_output:
-                            self.value_set(0, float(owread_output.decode("latin1")))
-                    except Exception:
-                        self.logger.exception(1)
-                return self.return_dict
+                self.value_set(0, self.sensor.get_temperature())
+                break
             except Exception as e:
                 if i == n:
                     self.logger.exception(
                         "{cls} raised an exception when taking a reading: "
                         "{err}".format(cls=type(self).__name__, err=e))
                 time.sleep(1)
+
+        return self.return_dict

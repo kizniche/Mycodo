@@ -36,9 +36,7 @@ INPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-    'dependencies_module': [
-        ('pip-pypi', 'subprocess', 'subprocess')
-    ],
+    'dependencies_module': [],
 
     'interfaces': ['RPi']
 }

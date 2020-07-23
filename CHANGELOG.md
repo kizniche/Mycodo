@@ -1,5 +1,9 @@
 ## 8.6.1 (Unreleased)
 
+### Bugfixes
+
+ - Fix DS18S20 Input module ([#796](https://github.com/kizniche/mycodo/issues/796))
+
 ### Miscellaneous
 
  - Improve custom output framework

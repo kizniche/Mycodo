@@ -43,8 +43,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('apt', 'ow-shell', 'ow-shell'),
-        ('pip-pypi', 'subprocess', 'subprocess')
+        ('apt', 'ow-shell', 'ow-shell')
     ],
 
     'interfaces': ['1WIRE'],
