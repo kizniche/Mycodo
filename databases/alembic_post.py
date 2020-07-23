@@ -72,6 +72,17 @@ if __name__ == "__main__":
                 from mycodo.databases.models import Output
 
                 with session_scope(MYCODO_DB_PATH) as session:
+                    for meas in session.query(DeviceMeasurements).all():
+                        if meas.measurement == 'acceleration_g_force':
+                            meas.measurement = 'acceleration'
+                        elif meas.measurement == 'acceleration_x_g_force':
+                            meas.measurement = 'acceleration_x'
+                        elif meas.measurement == 'acceleration_y_g_force':
+                            meas.measurement = 'acceleration_y'
+                        elif meas.measurement == 'acceleration_z_g_force':
+                            meas.measurement = 'acceleration_z'
+                        session.commit()
+
                     outputs = session.query(Output).filter(
                         Output.output_type == 'atlas_ezo_pmp').all()
                     for each_output in outputs:

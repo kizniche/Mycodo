@@ -11,36 +11,20 @@ from flask_babel import lazy_gettext
 MEASUREMENTS = {
     'acceleration': {
         'name': lazy_gettext('Acceleration'),
-        'meas': 'm_s_s',
-        'units': ['m_s_s']},
+        'meas': 'acceleration',
+        'units': ['g_force', 'm_s_s']},
     'acceleration_x': {
         'name': lazy_gettext('Acceleration (X)'),
-        'meas': 'm_s_s',
-        'units': ['m_s_s']},
+        'meas': 'acceleration_x',
+        'units': ['g_force', 'm_s_s']},
     'acceleration_y': {
         'name': lazy_gettext('Acceleration (Y)'),
-        'meas': 'm_s_s',
-        'units': ['m_s_s']},
+        'meas': 'acceleration_y',
+        'units': ['g_force', 'm_s_s']},
     'acceleration_z': {
         'name': lazy_gettext('Acceleration (Z)'),
-        'meas': 'm_s_s',
-        'units': ['m_s_s']},
-    'acceleration_g_force': {
-        'name': lazy_gettext('Acceleration (G-Force)'),
-        'meas': 'g_force',
-        'units': ['g_force']},
-    'acceleration_x_g_force': {
-        'name': lazy_gettext('Acceleration (G-Force, X)'),
-        'meas': 'g_force',
-        'units': ['g_force']},
-    'acceleration_y_g_force': {
-        'name': lazy_gettext('Acceleration (G-Force, Y)'),
-        'meas': 'g_force',
-        'units': ['g_force']},
-    'acceleration_z_g_force': {
-        'name': lazy_gettext('Acceleration (G-Force, Z)'),
-        'meas': 'g_force',
-        'units': ['g_force']},
+        'meas': 'acceleration_z',
+        'units': ['g_force', 'm_s_s']},
     'adc': {
         'name': lazy_gettext('ADC'),
         'meas': 'adc',
@@ -318,7 +302,7 @@ UNITS = {
         'unit': 'full'},
     'g_force': {
         'name': lazy_gettext('G-Force'),
-        'unit': 'G'},
+        'unit': 'g'},
     'GB': {
         'name': lazy_gettext('Gigabyte'),
         'unit': 'GB'},

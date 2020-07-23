@@ -27,19 +27,23 @@ Mycodo Manual
     -   [Math](#math)
         -   [Math Options](#math-options)
 -   [Output](#output)
-    -   [Output Options](#output-options)
     -   [Custom Outputs](#custom-outputs)
+    -   [Output Options](#output-options)
     -   [On/Off (GPIO)](#onoff-gpio)
-    -   [PWM (GPIO)](#pwm-gpio)
-    -   [PWM (GPIO) Options](#pwm-gpio-options)
+    -   [Pulse-Width Modulation (PWM)](#pulse-width-modulation-pwm)
+    -   [Pulse-Width Modulation (PWM)
+        Options](#pulse-width-modulation-pwm-options)
         -   [Non-hardware PWM Pins](#non-hardware-pwm-pins)
         -   [Hardware PWM Pins](#hardware-pwm-pins)
         -   [Schematics for DC Fan
             Control](#schematics-for-dc-fan-control)
         -   [Schematics for AC
             Modulation](#schematics-for-ac-modulation)
-    -   [Atlas EZO-PMP Pump](#atlas-ezo-pmp-pump)
-        -   [Atlas EZO-PMP Pump Options](#atlas-ezo-pmp-pump-options)
+    -   [Peristaltic Pump](#peristaltic-pump)
+        -   [Generic Peristaltic Pump](#generic-peristaltic-pump)
+        -   [Atlas Scientific Peristaltic
+            Pump](#atlas-scientific-peristaltic-pump)
+        -   [Peristaltic Pump Options](#peristaltic-pump-options)
     -   [Wireless 315/433 MHz](#wireless-315433-mhz)
     -   [Linux Command](#linux-command)
     -   [Python Command](#python-command)
@@ -109,6 +113,27 @@ Mycodo Manual
         -   [Built-In Inputs
             (System-Specific)](#built-in-inputs-system-specific)
         -   [Built-In Inputs (Sensors)](#built-in-inputs-sensors)
+        -   [I2C Multiplexers](#i2c-multiplexers)
+        -   [Analog-to-Digital
+            Converters](#analog-to-digital-converters)
+        -   [I2C Information](#i2c-information)
+        -   [1-Wire Information](#wire-information)
+        -   [UART Information](#uart-information)
+    -   [Output Devices](#output-devices)
+        -   [Built-In Outputs](#built-in-outputs)
+-   [Device Notes](#device-notes)
+    -   [Edge Detection](#edge-detection)
+    -   [LCD Displays](#lcd-displays)
+    -   [Raspberry Pi](#raspberry-pi)
+    -   [AM2315](#am2315)
+    -   [K-30](#k-30)
+    -   [USB Device Persistence Across
+        Reboots](#usb-device-persistence-across-reboots)
+    -   [Diagrams](#diagrams)
+        -   [DHT11 Diagrams](#dht11-diagrams)
+        -   [DS18B20 Diagrams](#ds18b20-diagrams)
+        -   [Raspberry Pi and Relay
+            Diagrams](#raspberry-pi-and-relay-diagrams)
 
 
 
@@ -195,69 +220,83 @@ describing the issue and attaching a sufficient amount of evidence
 
 ------------------------------------------------------------------------
 
-_How do I add an Input (like a sensor) to the system if it's not
+_How do I add an Input (like a sensor) or an Output (like a water pump),
+or custom functions (to do my bidding) to the system if they're not
 currently supported?_
 
-Yes, Mycodo supports adding custom Inputs. See the Custom Inputs section
-for more information.
+Yes, Mycodo supports adding custom Inputs, Outputs, and Controllers. See
+the Custom Inputs, Custom Outputs, and Custom Controllers sections for
+more information.
 
-The second way to add an Input is to create a script that obtains and
-returns a numerical value when executed in the linux system of the
-Raspberry Pi. This script may be configured to be executed by a "Linux
-Command" Input type. This will periodically execute the command and
-store the returned value to the database for use with the rest of the
-Mycodo system.
-
-------------------------------------------------------------------------
-
-_Can I create a new controller like the PID, Trigger, and LCD
-functions?_
-
-Yes, Mycodo supports adding custom Controllers. See the Custom
-Controllers section for more information.
+Another way to add an Input is to create a bash or Python script that
+obtains and returns a numerical value when executed from the linux
+command line on the Raspberry Pi. This script may be configured to be
+executed by a "Linux Command" Input. The Input will periodically execute
+the command and store the returned measurement value to the database for
+use with the rest of the Mycodo system.
 
 ------------------------------------------------------------------------
 
-_How do I set up simple regulation?_
+_How do I set up simple environmental monitoring and regulation?_
 
 Here is how I generally set up Mycodo to monitor and regulate:
 
 1.  Determine what environmental condition you want to measure or
     regulate. Consider the devices that must be coupled to achieve this.
-    For instance, temperature regulation require a temperature sensor as
-    the input and an electric heater (or cooler) as the output.
-2.  Determine what relays you will need to power your electric devices.
-    The Raspberry Pi is capable of directly switching relays (using a
-    3.3-volt signal). Remember to select a relay that can handle the
-    load and doesn't exceed the maximum current draw from the Raspberry
-    Pi GPIO pins.
-3.  See the Device Specific Information for information about what
-    sensors are supported. Acquire sensor(s) and relay(s) and connect
-    them to the Raspberry Pi according to the manufacturer’s
-    instructions.
-4.  On the Setup -> Data page, create a new input using the drop-down to
-    select the correct sensor or input device. Configure the input with
-    the correct communication pins and other options. Activate the input
-    to begin recording measurements to the database.
-5.  Go to the Data -> Live page to ensure there is recent data being
+    For instance, temperature regulation would require a temperature
+    sensor input and an electric heater (or cooler) output.
+2.  Determine what relays you will need to control power to your
+    electric devices. The Raspberry Pi is capable of directly switching
+    relays (using a controllable 3.3-volt signal from the Pi's GPIO
+    pins). Remember to select a relay that can handle the electrical
+    current load from your switched device and won't exceed the maximum
+    current draw from the Raspberry Pi GPIO pin the relay is connected
+    to.
+3.  See the Input Devices section for information about supported
+    inputs. Acquire sensor(s) and relay(s) and connect them to the
+    Raspberry Pi according to the manufacturer’s instructions. For
+    instance, a sensor that communicates via the I2C bus will connect
+    the SDA, SCL, Power, and Ground pins of the sensor to the SDA, SCL,
+    3.3 volt, and Ground pins of the Raspberry Pi. Make sure to enable
+    the I2C interface under Configure -> Raspberry Pi. Additionally, the
+    simplest way to connect a relay is to connect the controlling side
+    of the relay to a GPIO pin and Ground of the Raspberry Pi (remember
+    to select a relay that will not exceed the current limitation of the
+    GPIO pin). Some relays require the proper polarity for the
+    controlling voltage, so refer to the manufacturer's datasheet to
+    determine if this is the case.
+4.  On the Setup -> Data page, add a new input using the drop-down menu.
+    Configure the input with the correct communication pins and other
+    options. Activate the input to begin recording measurements to the
+    Mycodo measurement database.
+5.  Go to the Data -> Live page to ensure there are measurements being
     acquired from the input.
-6.  On the Setup -> Output page, add a relay and configure the GPIO pin
-    that switches it, whether the relay switches On when the signal is
-    HIGH or LOW, and what state (On or Off) to set the relay when Mycodo
-    starts. A pulse-width modulated (PWM) output may also be used, among
-    others.
-7.  Test the relay by switching it On and Off or generating a PWM signal
-    from the Setup -> Output page and make sure the device connected to
-    the relay turns On when you select "On", and Off when you select
-    "Off".
-8.  On the Setup -> Function page, create a PID controller with the
-    appropriate input, output, and other parameters. Activate the PID
-    controller.
-9.  On the Data -> Dashboard page, create a graph that includes the
-    input measurement, the output that is being used by the PID, and the
-    PID output and setpoint. This provides a good visualization for
-    tuning the PID. See Quick Setup Examples for a greater detail of
-    this process and tuning tips.
+6.  On the Setup -> Output page, add an On/Off GPIO Output and configure
+    the GPIO pin that's connected to the relay, whether the relay
+    switches On when the signal is HIGH or LOW, and what state (On or
+    Off) to set the relay when Mycodo starts. There are a number of
+    other Outputs to choose from, but this is the most basic to start
+    with, that will simply switch the GPIO pin HIGH (3.3 volts) or LOW
+    (0 volts) to switch the relay that's connected to the pin.
+7.  Connect your device to the relay. This can be dont a number of ways,
+    and will depend on a number of factors, including whether you're
+    using DC or AC voltage, whether there are screw terminals or a
+    connector/socket, etc. In the simplest scenario, AC mains voltage
+    can be applied by cutting the live wire and connecting each of the
+    newly-cut ends to each of the terminals on the switching side fo the
+    relay. This enables the relay to short/connect or break/disconnect
+    the connection, which will power and depower your device.
+8.  Test the Output by switching it On and Off (or generating a PWM
+    signal if it's a PWM Output) from the Setup -> Output page and make
+    sure the device connected to the relay turns On when you select
+    "On", and Off when you select "Off".
+9.  On the Setup -> Function page, create a PID controller with the
+    appropriate input measurement, output, and other parameters.
+    Activate the PID controller.
+10. On the Data -> Dashboard page, create a graph that includes the
+    input measurement, the output, and the PID output and setpoint. This
+    provides a good visualization for tuning the PID. See Quick Setup
+    Examples for a greater detail of this process and tuning tips.
 
 ------------------------------------------------------------------------
 
@@ -275,43 +314,42 @@ PWM output signal from the PID?_
 
 Yes, as long as you have the proper hardware to do that. The PWM signal
 being produced by the PID should be handled appropriately, whether by a
-fast-switching solid state relay, an AC modulation circuit, DC
-modulation circuit, or something else.
+fast-switching solid state relay, AC modulation circuitry, DC modulation
+circuitry, or something else.
 
 ------------------------------------------------------------------------
 
 _I have a PID controller that uses one temperature sensor. If this
-sensor stops working, my entire PID controller stops working. Is there a
-way to prevent this by setting up a second sensor to be used in case the
-first one fails?_
+sensor stops working, my PID controller stops operating. Is there a way
+to prevent this by setting up a second sensor to be used as a backup in
+case the first one fails?_
 
 Yes, you can use as many sensors as you would like to create a redundant
-system so your PID doesn't stop working if one or more sensors fail. To
-do this, follow the below instructions:
+system so your PID or other functions don't stop working if one or more
+sensors fail. To do this, follow the below instructions:
 
 1.  Add and activate all your sensors. For this example, we will use
     three temperature sensors, Sensor1, Sensor2, and Sensor3, that
     return measurements in degrees Celsius.
-2.  Go to the Setup -> Data page and add the Math controller
-    "Redundancy".
+2.  Go to the Setup -> Data page and add the Redundancy Math controller.
 3.  In the options of the Redundancy controller, set the Period, Start
-    Offset, and Max Age.
-4.  In the options of the Redundancy controller, select Sensor1,
-    Sensor2, and Sensor3 for the Input option and click Save.
-5.  In the options of the Redundancy controller, change the order you
+    Offset, and Max Age, then select Sensors 1, 2, and 3 for the Input
+    option, then Save.
+4.  In the options of the Redundancy controller, change the order you
     wish to use the sensors under Order of Use. For this example, we
     will use the default order (Sensor1, Sensor2, Sensor3).
-6.  In the options of the Redundancy controller, under Measurement
-    Settings, select Celsius for the Measurement Unit and click Save
-    under Measurement Settings.
-7.  Activate the Redundancy Math controller.
-8.  Go to the Data -> Live page and verify the Redundancy Math
-    controller is working correctly by returning a value from one of the
-    three selected Inputs. If the first sensor is working correctly, it
-    should return this value. You can deactivate the first sensor
+5.  In the options of the Redundancy controller, under Measurement
+    Settings, select Celsius for the Measurement Unit and click the Save
+    under Measurement Settings (a different Save button from the general
+    options).
+6.  Activate the Redundancy Math controller.
+7.  Go to the Data -> Live page and verify the Redundancy Math
+    controller is working correctly by returning a value from the input
+    you selected to be first. If the first sensor is working correctly,
+    its value should be displayed. You can deactivate the first sensor
     (mimicking the first sensor stopped working) and see if the second
     sensor's value is then returned.
-9.  Go to the Setup -> Function page and select the new Redundancy Math
+8.  Go to the Setup -> Function page and select the new Redundancy Math
     controller for the PID Measurement option.
 
 The PID controller will now use the measurement returned from the
@@ -322,13 +360,14 @@ If a measurement can be found within the Max Age for Sensor1, the
 measurement for Sensor1 will be returned. If a measurement from Sensor1
 could not be acquired, and if a measurement can be found within the Max
 Age for Sensor2, the measurement for Sensor2 will be returned. If a
-measurement from Sensor2 could not be acquired, and if a measurement can
-be found within the Max Age for Sensor3, the measurement for Sensor3
-will be returned. If a measurement from Sensor3 could not be acquired,
-then the Redundancy Math controller will not return a measurement at all
-(indicating all three sensors are not working). It is advised to set up
-a Conditional to send a notification email to yourself if one or more
-measurements are unable to be acquired.
+measurement from Sensor1 or Sensor2 could not be acquired, and if a
+measurement can be found within the Max Age for Sensor3, the measurement
+for Sensor3 will be returned. If a measurement from Sensor1, Sensor2, or
+Sensor3 could not be acquired, then the Redundancy Math controller will
+not return a measurement at all (indicating all three sensors are not
+working). It is advised to set up a Conditional Controller to send a
+notification email to yourself if one or more measurements are unable to
+be acquired so you can investigate the issue.
 
 ------------------------------------------------------------------------
 
@@ -343,9 +382,10 @@ If you already have Mycodo installed, you can perform an upgrade to the
 latest Mycodo Release by either using the Upgrade option in the web
 interface (recommended) or by issuing the following command in a
 terminal. A log of the upgrade process is created at
-/var/log/mycodo/mycodoupgrade.log
+/var/log/mycodo/mycodoupgrade.log and is also available from the
+Configure -> Mycodo Logs page.
 
-    sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_commands.sh upgrade
+    sudo mycodo-commands upgrade-mycodo
 
 
 
@@ -355,19 +395,20 @@ BACKUP-RESTORE
 [Gear Icon] -> Backup Restore
 
 A backup is made to /var/Mycodo-backups when the system is upgraded or
-through the web interface on the [Gear Icon] -> Backup Restore page.
+instructed to do so from the web interface on the
+[Gear Icon] -> Backup Restore page.
 
 If you need to restore a backup, this can be done on the
-[Gear Icon] -> Backup  Restore page. Find the backup you would like
-restored and press the Restore button beside it. A restore can also be
-initialized through the command line. Use the following commands to
-initialize a restore, changing the appropriate directory names, 'user'
-to your user name, and TIME and COMMIT to the appropriate text found as
-the directory names in /var/Mycodo-backups/
+[Gear Icon] -> Backup  Restore page (recommended). Find the backup you
+would like restored and press the Restore button beside it. If you're
+unable to access the web interface, a restore can also be initialized
+through the command line. Use the following command to initialize a
+restore. The [backup_location] must be the full path to the backup to be
+restored (e.g.
+"/var/Mycodo-backups/Mycodo-backup-2018-03-11_21-19-15-5.6.4/" without
+quotes).
 
-    sudo mv /home/user/Mycodo /home/user/Mycodo_old
-    sudo cp -a /var/Mycodo-backups/Mycodo-TIME-COMMIT /home/user/Mycodo
-    sudo /bin/bash ~/Mycodo/mycodo/scripts/upgrade_post.sh
+    sudo mycodo-commands backup-restore [backup_location]
 
 
 
@@ -380,23 +421,23 @@ the daemon, of the system. The web interface supports an authentication
 system with user/password credentials, user roles that grant/deny access
 to parts of the system, and SSL for encrypted browsing.
 
-An SSL certificate will be generated (expires in 10 years) and stored at
-~/Mycodo/mycodo/mycodo_flask/ssl_certs/ during the install process to
-allow SSL to be used to securely connect to the web interface. If you
-want to use your own SSL certificates, replace them with your own.
+An SSL certificate with an expiration of 10 years will be generated and
+stored in ~/Mycodo/mycodo/mycodo_flask/ssl_certs/ during the install
+process to allow SSL to be used to securely connect to the web
+interface. If you want to use your own SSL certificates, replace them
+with your own.
 
 If using the auto-generated certificate from the install, be aware that
-it will not be verified when visiting the web interface using the
-https:// address prefix. You may continually receive a warning message
-about the security of your site, unless you add the certificate to your
-browser's trusted list.
+it will not be verified when visiting the web interface in your browser.
+You may continually receive a warning message about the security of your
+site unless you add the certificate to your browser's trusted list.
 
 
 
 REST API
 
 
-As of version 8, Mycodo has a REST API. Documentation is available here:
+As of version 8, Mycodo has a REST API. Documentation is available at
 API Information and API Endpoint Documentation.
 
 
@@ -1183,10 +1224,26 @@ OUTPUT
 Setup -> Output
 
 Outputs are various signals that can be generated that operate devices.
-An output can be a PWM signal, a simple HIGH/LOW signal to operate a
-relay, a 315/433 MHz signal to switch a radio frequency-operated relay,
-driving of pumps and motors, or an execution of a linux or Python
-command, to name a few.
+An output can be a HIGH/LOW signal on a GPIO pin, a pulse-width
+modulated (PWM) signal, a 315/433 MHz signal to switch a radio
+frequency-operated relay, driving of pumps and motors, or an execution
+of a linux or Python command, to name a few.
+
+
+Custom Outputs
+
+There is a Custom Output import system in Mycodo that allows
+user-created Outputs to be created an used in the Mycodo system. Custom
+Outputs can be uploaded and imported from the Configure -> Outputs page.
+After import, they will be available to use on the Setup -> Output page.
+
+If you desire an Output that is not currently supported by Mycodo, you
+can build your own Output module and import it into Mycodo. All
+information about an Output is contained within the Output module. Open
+any of the built-in modules located in the outputs directory for
+examples of the proper formatting. There's also a minimal output module
+template as an example. For Outputs that require new measurements/units,
+they can be added on the Configure -> Measurements page.
 
 
 Output Options
@@ -1298,35 +1355,6 @@ Output Options
   ------------------------------------------------------------------------
 
 
-Custom Outputs
-
-Note: This is a work in progress!
-
-There is a Custom Output import system in Mycodo that allows
-user-created Outputs to be created an used in the Mycodo system. Custom
-Outputs can be uploaded and imported from the Configure -> Outputs page.
-After import, they will be available to use on the Setup -> Output page.
-
-If you desire an output that is not currently supported by Mycodo, you
-can build your own output module and import it into Mycodo. All
-information about an output is contained within the output module, set
-in the dictionaries 'OUTPUT_INFORMATION' and 'measurements_dict'. Each
-module will requires at a minimum for these variables to be set in
-OUTPUT_INFORMATION: 'output_name_unique', 'output_name', and
-'measurements_dict'. The measurements_dict dictionary contains the
-measurements that are acquired and stored, and require both the units
-and measurements to exist in the measurement/unit database (Add missing
-measurements/units on the Configure -> Measurements page).
-
-Open any of the built-in modules located in the outputs directory
-(https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/) for
-examples of the proper formatting.
-
-There's also a minimal output module template as an example:
-
-https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/examples/example_dummy_output.py
-
-
 On/Off (GPIO)
 
 The On/Off (GPIO) output merely turns a GPIO pin High (3.3 volts) or Low
@@ -1339,19 +1367,18 @@ voltage, without exposing the low-voltage system to the dangers of the
 higher voltage.
 
 Add and configure outputs in the Output tab. Outputs must be properly
-set up before PID regulation can be achieved.
+set up before they can be used in the rest of the system.
 
-To set up a wired relay, set the "GPIO Pin" to the BCM GPIO number of
-each pin that activates each relay. _On Trigger_ should be set to the
-signal that activates the relay (the device attached to the relay turns
-on). If your relay activates when the potential across the coil is
-0-volts, set _On Trigger_ to "Low", otherwise if your relay activates
-when the potential across the coil is 3.3-volts (or whatever switching
-voltage you are using, if not being driven by the GPIO pin), set it to
-"High".
+To set up a wired relay, set the "GPIO Pin" (using BCM numbering) to the
+pin you would like to switch High (5 volts) and Low (0 volts), which can
+be used to activate relays and other devices. _On Trigger_ should be set
+to the signal state (High or Low) that induces the device to turn on.
+For example, if your relay activates when the potential across the coil
+is 0-volts, set _On Trigger_ to "Low", otherwise if your relay activates
+when the potential across the coil is 5 volts, set it to "High".
 
 
-PWM (GPIO)
+Pulse-Width Modulation (PWM)
 
 Pulse-width modulation (PWM) is a modulation technique used to encode a
 message into a pulsing signal, at a specific frequency in Hertz (Hz).
@@ -1378,7 +1405,7 @@ in percent, with 0% being always off, 50% being off for half of the time
 and on for half of the time, and 100% being always on.
 
 
-PWM (GPIO) Options
+Pulse-Width Modulation (PWM) Options
 
   ------------------------------------------------------------------------
   Setting                      Description
@@ -1436,7 +1463,8 @@ Below are hardware schematics that enable controlling direct current
 
 PWM output controlling a 12-volt DC fan (such as a PC fan)
 
- 
+[Schematic: PWM output modulating alternating current (AC) at 1% duty
+cycle (1of2)] 
 
 Schematics for AC Modulation
 
@@ -1445,33 +1473,92 @@ current (AC) from the PWM output from Mycodo.
 
 PWM output modulating alternating current (AC) at 1% duty cycle
 
- 
+[Schematic: PWM output modulating alternating current (AC) at 1% duty
+cycle (2of2)] 
 
 PWM output modulating alternating current (AC) at 50% duty cycle
 
- 
+[Schematic: PWM output modulating alternating current (AC) at 50% duty
+cycle] 
 
 PWM output modulating alternating current (AC) at 99% duty cycle
 
+[Schematic: PWM output modulating alternating current (AC) at 99% duty
+cycle]
 
-Atlas EZO-PMP Pump
 
-Currently, only one pump is supported, the Atlas Scientific EZO-PMP
+Peristaltic Pump
+
+There are two peristaltic pump Output modules that Mycodo supports, a
+generic peristaltic pump Output, and the Atlas Scientific EZO-PMP
 peristaltic pump.
 
-Atlas EZO-PMP Pump Options
+Generic Peristaltic Pump
+
+Any peristaltic pump can be used with the Generic Peristaltic Pump
+Output to dispense liquids. The most basic dispensing abilities are to
+start dispensing, stop dispensing, or dispense for a duration of time.
+If the pump rate has been measured, this value can be entered into the
+Fastest Rate (ml/min) setting and the Output controller will then be
+able to dispense specific volumes rather than merely for durations of
+time. In oder to dispense specific volumes, the Output Mode will also
+need to be set in addition to the Desired Flow Rate (ml/min), if the
+Output Mode has been set to Specify Flow Rate.
+
+To determine your pump's flow rate, first purge all air from your pump's
+hose. Next, instruct the pump to dispense for 60 seconds and collect the
+liquid it dispenses. Once finished, measure the amount of liquid and
+enter this value, in milliliters into the Fastest Rate (ml/min) setting.
+Once your pump's flow rate is set, you can now start dispensing specific
+volumes rather than durations.
+
+This Output module relies on switching a GPIO pin High and Low to switch
+the peristaltic pump on and off. This is most easily accomplished with
+the use of a relay in-line with your pump's power supply or using the
+GPIO as an input signal directly to the pump (if supported). When using
+a relay, it's important to develop your circuit to provide the fastest
+possible switching of the pump. Since the volume dispensed by the pump
+is dependent on time, the faster the pump switching can occur, the more
+accurate the dispensing will be. Many peristaltic pumps operate on DC
+voltage and require an AC-DC converter. These converters can take a
+significant amount of time to energize once power is applied as well as
+de-energize once power is removed, causing significant delays that can
+impact dispensing accuracy. To alleviate this issue, the DC power should
+be switched, rather than the AC power, which will remove this potential
+delay.
+
+Atlas Scientific Peristaltic Pump
+
+The Atlas Scientific peristaltic pump is a peristaltic pump and
+microcontroller combined that allows it to be communicated with via I2C
+or Serial and can accurately dispense specific volumes of fluid. There
+are several commands the pump can accept, including commands to
+calibrate, turn on, turn off, and dispense at a specific rate, among
+others. Atlas Scientific peristaltic pumps are good options, but are
+more expensive than generic peristaltic pumps.
+
+Peristaltic Pump Options
 
   ------------------------------------------------------------------------
   Setting                      Description
   ---------------------------- -------------------------------------------
   Output Mode                  "Fastest low Rate" will pump liquid at the
                                fastest rate the pump can perform. "Specify
-                               Flow Rate" will pump liquid at the rate
-                               with the "Flow Rate (ml/min)" option.
+                               Flow Rate" will pump liquid at the rate set
+                               by the "Flow Rate (ml/min)" option.
 
   Flow Rate (ml/min)           This is how fast liquid will be pumped if
                                the "Specify Flow Rate" option is selected
                                for the Output Mode option.
+
+  Fastest Rate (ml/min)        This is the rate at which the pump
+                               dispenses liquid, in ml/min.
+
+  Minimum On (sec/min)         This is the minimum duration (seconds) the
+                               pump should be turned on for every 60
+                               second period of pumping. This option is
+                               only used when Specify Flow Rate is
+                               selected as the output Mode.
   ------------------------------------------------------------------------
 
 
@@ -1657,45 +1744,32 @@ PID Controller Options
                                integrator; and PID output = Kp_total +
                                Ki_total + Kd_total)
 
-  Output (Raise)               This is the output that will cause the
-                               particular environmental condition to rise.
-                               In the case of raising the temperature,
-                               this may be a heating pad or coil.
+  Output (Raise/Lower)         This is the output that will cause the
+                               particular environmental condition to rise
+                               or lower. In the case of raising the
+                               temperature, this may be a heating pad or
+                               coil.
 
-  Min Duration (Raise) Min     This is the minimum value that the PID
-  Duty Cycle (Raise)           output must be before Output (Lower) turns
-                               on. If the PID output is below this value,
-                               Duration Outputs will not turn on, and PWM
-                               Outputs will be turned off unless Always
-                               Min is enabled.
+  Min On Duration, Duty Cycle, This is the minimum value that the PID
+  or Amount (Raise/Lower)      output must be before Output (Lower) turns
+                               on. If the PID output is less than this
+                               value, Duration Outputs will not turn on,
+                               and PWM Outputs will be turned off unless
+                               Always Min is enabled.
 
-  Max Duration (Raise) Max     This is the maximum duration or duty cycle
-  Duty Cycle (Raise)           the Output (Raise) can be set to. If the
-                               PID output exceeds this number, the Max
-                               value set here will be used.
+  Max On Duration, Duty Cycle, This is the maximum duration, volume, or
+  or Amount (Raise/Lower)      duty cycle the Output (Raise) can be set
+                               to. If the PID output is greater than this
+                               value, the Max value set here will be used.
 
-  Always Min (Raise)           For PWM Outputs only. If enabled, the duty
-                               cycle will never be set below the Min
-                               value.
+  Min Off Duration             For On/Off (Duration) Outputs, this is the
+  (Raise/Lower)                minimum amount of time the Output must have
+                               been off for before it is allowed to turn
+                               back on. Ths is useful for devices that can
+                               be damaged by rapid power cycling (e.g.
+                               fridges).
 
-  Output (Lower)               This is the output that will cause the
-                               particular environmental condition to
-                               lower. In the case of lowering the CO2,
-                               this may be an exhaust fan.
-
-  Min Duration (Lower) Min     This is the minimum value that the PID
-  Duty Cycle (Lower)           output must be before Output (Lower) turns
-                               on. If the PID output is below this value,
-                               Duration Outputs will not turn on, and PWM
-                               Outputs will be turned off unless Always
-                               Min is enabled.
-
-  Max Duration (Lower) Max     This is the maximum duration or duty cycle
-  Duty Cycle (Lower)           the Output (Raise) can be set to. If the
-                               PID output exceeds this number, the Max
-                               value set here will be used.
-
-  Always Min (Lower)           For PWM Outputs only. If enabled, the duty
+  Always Min (Raise/Lower)     For PWM Outputs only. If enabled, the duty
                                cycle will never be set below the Min
                                value.
 
@@ -1750,10 +1824,14 @@ change. The faster the change in error, the larger the derivative path
 becomes, decreasing the output rate of change. This has the effect of
 dampening overshoot and undershoot (oscillation) of the Set Point.
 
+[PID Animation]
+
 The KP, KI, and KD gains determine how much each of the P, I, and D
 variables influence the final PID output value. For instance, the
 greater the value of the gain, the more influence that variable has on
 the output.
+
+[PID Equation]
 
 The output from the PID controller can be used in a number of ways. A
 simple use is to use this value as the number of seconds an output is
@@ -1933,6 +2011,8 @@ order to further tune the PID controller to handle them.
   ------------------------------------------------------------------------
 
 Typical graph output will look like this:
+
+[PID Autotune Output]
 
 And typical Daemon Log output will look like this:
 
@@ -2203,6 +2283,8 @@ hopefully get you started to developing one that suits your needs.
 Note: Mycodo is constantly changing, so the screenshots below may not
 match what you see exactly. Be sure to read this entire section of the
 manual to understand how to use Conditionals.
+
+[Figure-Mycodo-Conditional-Setup]
 
 Simple Conditional Statement examples:
 
@@ -2854,15 +2936,6 @@ DEPENDENCIES
 The dependency page allows viewing of dependency information and the
 ability to initiate their installation.
 
-During the installation of Mycodo, there is an option to select which
-dependencies to install. If "Minimal Install" or "Custom Install" was
-selected (rather than "Full Install"), there may be unmet dependencies
-on your system. Don't worry, this isn't necessarily a problem. These
-optional dependencies only need to be installed when there's a
-particular feature you want to use. When a user attempts to use a
-feature that has an unmet dependency, the user will be forwarded to the
-Dependency page in order to install it.
-
 
 
 CAMERA
@@ -2921,6 +2994,8 @@ to the amperage measurements being averaged for this period prior to
 calculating kWh and cost. If there is any time turing this period where
 amp measurements aren't being acquired when in fact there are devices
 consuming current, the calculation is likely to not be accurate.
+
+[Current Sensor Transformer]
 
 Greystone CS-650-50 AC Solid Core Current Sensor (Transformer)
 
@@ -3736,7 +3811,7 @@ DEVICES
 
 Input Devices
 
-Supported Input devices are listed below. I2C Multiplexers
+Supported Input devices are listed below.
 
 Built-In Inputs (System-Specific)
 
@@ -3838,7 +3913,7 @@ Measurements: CO2/VOC/Temperature
 Dependencies: Adafruit_CCS811, Adafruit_GPIO
 Manufacturer URL: Link
 Datasheet URL: Link
-Product URL(s): Link 1, Link 2
+Product URLs: Link 1, Link 2
 
 AMS: TSL2561
 
@@ -3877,21 +3952,42 @@ Dependencies: pigpio
 Datasheet URL: Link
 Product URL: Link
 
-Atlas Scientific: DO
+Analog Devices: ADT7410
+
+Measurements: Temperature
+Dependencies: Adafruit_CircuitPython_ADT7410, Adafruit_Extended_Bus
+Datasheet URL: Link
+Product URL: Link
+
+Analog Devices: ADXL34x (343, 344, 345, 346)
+
+Measurements: Acceleration
+Dependencies: Adafruit_CircuitPython_ADXL34x, Adafruit_Extended_Bus
+Datasheet URLs: Link 1, Link 2, Link 3, Link 4
+Product URLs: Link 1, Link 2, Link 3, Link 4
+
+Atlas Scientific: Atlas Color
+
+Measurements: RGB, CIE, LUX, Proximity
+Dependencies: pylibftdi
+Manufacturer URL: Link
+Datasheet URL: Link
+
+Atlas Scientific: Atlas DO
 
 Measurements: Dissolved Oxygen
 Dependencies: pylibftdi
 Manufacturer URL: Link
 Datasheet URL: Link
 
-Atlas Scientific: EC
+Atlas Scientific: Atlas EC
 
 Measurements: Electrical Conductivity
 Dependencies: pylibftdi
 Manufacturer URL: Link
 Datasheet URL: Link
 
-Atlas Scientific: Flow Meter
+Atlas Scientific: Atlas Flow Meter
 
 Measurements: Total Volume, Flow Rate
 Dependencies: pylibftdi
@@ -3905,35 +4001,28 @@ minute, which is the default unit for this input module. If you desire a
 different rate to be stored in the database (such as liters per second
 or hour), then use the Convert to Unit option.
 
-Atlas Scientific: ORP
+Atlas Scientific: Atlas ORP
 
 Measurements: Oxidation Reduction Potential
 Dependencies: pylibftdi
 Manufacturer URL: Link
 Datasheet URL: Link
 
-Atlas Scientific: PT-1000
+Atlas Scientific: Atlas PT-1000
 
 Measurements: Temperature
 Dependencies: pylibftdi
 Manufacturer URL: Link
 Datasheet URL: Link
 
-Atlas Scientific: Pressure
+Atlas Scientific: Atlas Pressure
 
 Measurements: Pressure
 Dependencies: pylibftdi
 Manufacturer URL: Link
 Datasheet URL: Link
 
-Atlas Scientific: RGB Color
-
-Measurements: RGB, CIE, LUX, Proximity
-Dependencies: pylibftdi
-Manufacturer URL: Link
-Datasheet URL: Link
-
-Atlas Scientific: pH
+Atlas Scientific: Atlas pH
 
 Measurements: Ion Concentration
 Dependencies: pylibftdi
@@ -3951,8 +4040,7 @@ Dependencies: Input Variant 1: Adafruit_GPIO, Adafruit_BME280; Input
 Variant 2: RPi.bme280
 Manufacturer URL: Link
 Datasheet URL: Link
-Product URL(s): Link 1, Link 2
-Additional URL: Link
+Product URLs: Link 1, Link 2
 
 BOSCH: BME680
 
@@ -3960,7 +4048,7 @@ Measurements: Temperature/Humidity/Pressure/Gas
 Dependencies: bme680, smbus2
 Manufacturer URL: Link
 Datasheet URL: Link
-Product URL(s): Link 1, Link 2
+Product URLs: Link 1, Link 2
 
 BOSCH: BMP180
 
@@ -4017,7 +4105,12 @@ Dependencies: Input Variant 1: ow-shell, subprocess; Input Variant 2:
 w1thermsensor
 Manufacturer URL: Link
 Datasheet URL: Link
-Product URL(s): Link 1, Link 2, Link 3
+Product URLs: Link 1, Link 2, Link 3
+Additional URL: Link
+
+Warning: Counterfeit DS18B20 sensors are common and can cause a host of
+issues. Review the Additional URL for more information about how to
+determine if your sensor is authentic.
 
 MAXIM: DS18S20
 
@@ -4085,8 +4178,8 @@ Microchip: MCP342x (x=2,3,4,6,7,8)
 
 Measurements: Voltage (Analog-to-Digital Converter)
 Dependencies: smbus2, MCP342x
-Manufacturer URL(s): Link 1, Link 2, Link 3, Link 4, Link 5
-Datasheet URL(s): Link 1, Link 2
+Manufacturer URLs: Link 1, Link 2, Link 3, Link 4, Link 5
+Datasheet URLs: Link 1, Link 2
 
 Microchip: MCP9808
 
@@ -4122,13 +4215,13 @@ Measurements: Millimeter (Time-of-Flight Distance)
 Dependencies: VL53L0X
 Manufacturer URL: Link
 Datasheet URL: Link
-Product URL(s): Link 1, Link 2
+Product URLs: Link 1, Link 2
 
 Sensirion: SHT1x/7x
 
 Measurements: Humidity/Temperature
 Dependencies: sht_sensor
-Manufacturer URL(s): Link 1, Link 2
+Manufacturer URLs: Link 1, Link 2
 
 Sensirion: SHT2x
 
@@ -4226,3 +4319,289 @@ Xiaomi: Miflora
 
 Measurements: EC/Light/Moisture/Temperature
 Dependencies: libglib2.0-dev, miflora, btlewrap, bluepy
+
+I2C Multiplexers
+
+NOTE: As of March, 2020, it has been discovered that the device tree
+overlay technique for using I2C multiplexers does not work with Raspbian
+Buster. It will work for Raspbian Stretch, but Mycodo will not work
+properly with this old version of Raspbian and will disable the API. If
+you do not need access to the API and do require the use of a
+multiplexer, it is recommended to install Raspbian Stretch prior to
+installing Mycodo, until a fix for Buater can be developed. For more
+information, see [issue
+#755](https://github.com/kizniche/Mycodo/issues/755). Alternatively, you
+will need to write your own Python script (or other language) to switch
+to the specific multiplexer channel and acquire a measurement for use
+with Mycodo. This script can then be executed by either the Linux
+Command or Python Code Input to store the measurement(s). This
+workaround isn't ideal, but is all there is at this point.
+
+All devices that connected to the Raspberry Pi by the I2C bus need to
+have a unique address in order to communicate. Some inputs may have the
+same address (such as the AM2315), which prevents more than one from
+being connected at the same time. Others may provide the ability to
+change the address, however the address range may be limited, which
+limits by how many you can use at the same time. I2C multiplexers are
+extremely clever and useful in these scenarios because they allow
+multiple sensors with the same I2C address to be connected.
+
+For instance, the TCA9548A/PCA9548A: I2C Multiplexer has 8 selectable
+addresses, so 8 multiplexers can be connected to one Raspberry Pi. Each
+multiplexer has 8 channels, allowing up to 8 devices/sensors with the
+same address to be connected to each multiplexer. 8 multiplexers x 8
+channels = 64 devices/sensors with the same I2C address.
+
+Multiplexers can be set up by loading a kernel driver to handle the
+communication, producing a new I2C bus device for each multiplexer
+channel. To enable the driver for the TCA9548A/PCA9548A, visit
+GPIO-pca9548 to get the code and latest install instructions. If
+successfully set up, there will be 8 new I2C buses on the
+[Gear Icon] -> System Information page.
+
+The driver for the TCA9545A can be found at
+https://github.com/camrex/i2c-mux-pca9545a and other drivers are
+available elsewhere. See the manufacturer or user forums for details.
+Some multiplexers I've tested are below.
+
+- TCA9548A/PCA9548A: I2C Multiplexer link (I2C): 8 selectable addresses,
+8 channels
+
+- TCA9545A: I2C Bus Multiplexer link (I2C): The linked Grove board
+creates 4 new I2C buses, each with their own selectable voltage, either
+3.3 or 5.0 volts.
+
+Analog-to-Digital Converters
+
+An analog to digital converter (ADC) allows the use of any analog sensor
+that outputs a variable voltage. A voltage divider may be necessary to
+attain your desired range.
+
+-   ADS1x15: Analog-to-digital converter link
+-   ADS1256: Analog-to-digital converter link
+-   MCP3008: Analog-to-digital converter link
+-   MCP342x: Analog-to-digital converter link
+
+I2C Information
+
+The I2C interface should be enabled with raspi-config.
+
+1-Wire Information
+
+The 1-wire interface should be configured with these instructions.
+
+UART Information
+
+This documentation provides specific installation procedures for
+configuring UART with the Raspberry Pi version 1 or 2.
+
+Because the UART is handled differently higher after the Raspberry Pi 2
+(due to the addition of bluetooth), there are a different set of
+instructions. If installing Mycodo on a Raspberry Pi 3 or above, you
+only need to perform these steps to configure UART:
+
+Run raspi-config
+
+sudo raspi-config
+
+Go to Advanced Options -> Serial and disable. Then edit /boot/config.txt
+
+sudo vi /boot/config.txt
+
+Find the line "enable_uart=0" and change it to "enable_uart=1", then
+reboot.
+
+
+Output Devices
+
+Built-In Outputs
+
+-   On/Off (Python code)
+-   On/Off (GPIO)
+-   On/Off (Shell script)
+-   Pulse-Width-Modulation (Python code)
+-   Pulse-Width-Modulation (GPIO)
+-   Pulse-Width-Modulation (Shell script)
+-   Peristaltic Pump (Generic, GPIO)
+-   Peristaltic Pump (Atlas Scientific) link
+-   Wireless 315/433 MHz (rpi-rf, GPIO)
+
+
+
+DEVICE NOTES
+
+
+This information may not be current, so always reference and follow
+manufacturer recommendations for operating their devices.
+
+
+Edge Detection
+
+The detection of a changing signal, for instance a simple switch
+completing a circuit, requires the use of edge detection. By detecting a
+rising edge (LOW to HIGH), a falling edge (HIGH to LOW), or both,
+actions or events can be triggered. The GPIO chosen to detect the signal
+should be equipped with an appropriate resistor that either pulls the
+GPIO up [to 5-volts] or down [to ground]. The option to enable the
+internal pull-up or pull-down resistors is not available for safety
+reasons. Use your own resistor to pull the GPIO high or low.
+
+Examples of devices that can be used with edge detection: simple
+switches and buttons, PIR motion sensors, reed switches, hall effect
+sensors, float switches, and more.
+
+
+LCD Displays
+
+There are only a few number fo LCDs that are supported. 16x2 and 20x4
+character LCD displays with I2C backpacks and the 128x32 / 128x64 OLED
+displays are supported. The below image is the type of device with the
+I2C backpack that should be compatible.
+
+[image4] 
+
+
+Raspberry Pi
+
+The Raspberry Pi has an integrated temperature sensor on the BCM2835 SoC
+that measure the temperature of the CPU/GPU. This is the easiest sensor
+to set up in Mycodo, as it is immediately available to be used.
+
+
+AM2315
+
+From @Theoi-Meteoroi on GitHub:
+
+I figured out why this [AM2315] sensor is unreliable with Rpi3 hardware
+I2C. It is among a number of I2C devices that really hates the BCM2835
+clock stretching blunder (hardware bug: raspberrypi/linux#254). The
+wakeup attempts fail, consistently. I checked the bitstream with a
+sniffer, and see that the sensor may respond once out of 20 or so tries
+(or not at all) but only with a single byte returned. The solution is to
+use a software implementation of the I2C bus. You need to add pull-up
+resistors (4.7k is dandy) to 3.3v and install the i2c_gpio device
+overlay. Seems to work fine now, will run for a few days, but the CRC
+failures are gone and I get good readings, every time. And no twiddling
+the power for the sensor is required.
+
+To enable software I2C, add the following line to your /boot/config.txt
+
+dtoverlay=i2c-gpio,i2c_gpio_sda=23,i2c_gpio_scl=24,i2c_gpio_delay_us=4
+
+After rebooting, a new I2C bus at /dev/i2c-3 should exist with SDA on
+pin 23 (BCM) and SCL on pin 24 (BCM). Make sure you add the appropriate
+pull-up resistors before connecting any devices.
+
+
+K-30
+
+[image5] 
+
+Be very careful when connecting the K-30, as there is no reverse-voltage
+protection and improper connections could destroy your sensor.
+
+Wiring instructions for the Raspberry Pi can be found here.
+
+
+USB Device Persistence Across Reboots
+
+From (#547) Theoi-Meteoroi on Github:
+
+Using USB devices, such as USB-to-serial interfaces (CP210x) to connect
+a sensor, while convenient, poses an issue if there are multiple devices
+when the system reboots. After a reboot, there is no guarantee the
+device will persist with the same name. For instance, if Sensor A is
+/dev/ttyUSB0 and Sensor B is /dev/ttyUSB1, after a reboot Sensor A may
+be /dev/ttyUSB1 and Sensor B may be /dev/ttyUSB0. This will cause Mycodo
+to query the wrong device for a measurement, potentially causing a
+mis-measurement, or worse, an incorrect measurement because the response
+is not from the correct sensor (I've seen my temperature sensor read
+700+ degrees celsius because of this!). Follow the instructions below to
+alleviate this issue.
+
+I use udev to create a persistent device name ('/dev/dust-sensor') that
+will be linked to the /dev/ttyUSBn that is chosen at device arrival in
+the kernel. The only requirement is some attribute returned from the USB
+device that is unique. The common circumstance is that none of the
+attributes are unique and you get stuck with just VID and PID, which is
+ok as long as you don't have any other adapters that report the same VID
+and PID. If you have multiple adapters with the same VID and PID, then
+hopefully they have some unique attribute. This command will walk the
+attributes. Run on each USB device and then compare differences to
+possibly find some attribute to use.
+
+udevadm info --name=/dev/ttyUSB0 --attribute-walk
+
+I ended up using the serial number on the ZH03B to program the USB
+adapter serial field. This way guarantees unique serial numbers rather
+than me trying to remember what was the last serial number I used to
+increment by 1.
+
+When you plug a USB device in it can be enumerated to different device
+names by the operating system. To fix this problem for this sensor on
+linux, I changed attributes that make the connection unique.
+
+First - find the VID and PID for the USB device:
+
+    pi@raspberry:~ $ lsusb
+    Bus 001 Device 008: ID 10c4:ea60 Cygnal Integrated Products, Inc. CP210x UART Bridge / myAVR mySmartUSB light
+    Bus 001 Device 003: ID 0424:ec00 Standard Microsystems Corp. SMSC9512/9514 Fast Ethernet Adapter
+    Bus 001 Device 002: ID 0424:9514 Standard Microsystems Corp. SMC9514 Hub
+    Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+
+In this case the Vendor ID is 10c4 The Product ID is ea60
+
+Note: If you have multiple devices and you find your IDs to be the same,
+you can change IDs with the Simplicity Studio Xpress Configurator tool
+(discussed starting on page 6 of the AN721: USBXpress™ Device
+Configuration and Programming Guide).
+
+Since I changed the serial number field - this will be unique.
+
+    pi@raspberry:~ $ udevadm info --name=/dev/ttyUSB0 --attribute-walk | grep serial
+    SUBSYSTEMS=="usb-serial"
+    ATTRS{serial}=="ZH03B180904"
+    ATTRS{serial}=="3f980000.usb"
+
+Now I have an attribute to tell udev what to do. I create a file in
+/etc/udev/rules.d with a name like "99-dustsensor.rules". In that file I
+tell udev what device name to create when it sees this device plugged
+in:
+
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="ZH03B180904" SYMLINK+="dust-sensor"
+
+To test the new rule:
+
+    pi@raspberry:/dev $ sudo udevadm trigger
+    pi@raspberry:/dev $ ls -al dust-sensor
+    lrwxrwxrwx 1 root root 7 Oct 6 21:04 dust-sensor -> ttyUSB0
+
+Now, every time the dust sensor is plugged in, it shows up at
+/dev/dust-sensor
+
+
+Diagrams
+
+DHT11 Diagrams
+
+[Schematic-Sensor-DHT11-01] 
+
+[Schematic-Sensor-DHT11-02] 
+
+DS18B20 Diagrams
+
+[Schematic-Sensor-DS18B20-01] 
+
+[Schematic-Sensor-DS18B20-02] 
+
+[Schematic-Sensor-DS18B20-03] 
+
+Raspberry Pi and Relay Diagrams
+
+Raspberry Pi, 4 relays, 4 outlets, 1 DS18B20 sensor:
+
+[Schematic: Pi, 4 relays, 4 outlets, and 1 DS18B20 sensor] 
+
+Raspberry Pi, 8 relays, 8 outlets:
+
+[Schematic: Pi, 8 relays, and 8 outlets]

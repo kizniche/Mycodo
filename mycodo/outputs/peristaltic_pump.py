@@ -2,6 +2,7 @@
 #
 # atlas_ezo_pmp.py - Output for Atlas Scientific EZO Pump
 #
+import copy
 import threading
 import time
 
@@ -192,7 +193,7 @@ class OutputModule(AbstractOutput):
         self.record_dispersal(amount, total_seconds_on, total_dispense_seconds)
 
     def record_dispersal(self, amount, total_on_seconds, total_dispense_seconds):
-        measure_dict = measurements_dict.copy()
+        measure_dict = copy.deepcopy(measurements_dict)
         measure_dict[0]['value'] = total_on_seconds
         measure_dict[1]['value'] = amount
         measure_dict[2]['value'] = total_dispense_seconds

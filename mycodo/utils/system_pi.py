@@ -1,7 +1,10 @@
 # coding=utf-8
+import base64
+import copy
 import datetime
 import grp
 import logging
+import os
 import pwd
 import signal
 import socket
@@ -10,9 +13,6 @@ import time
 import traceback
 from collections import OrderedDict
 from threading import Timer
-
-import base64
-import os
 
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config_devices_units import MEASUREMENTS
@@ -72,7 +72,7 @@ def parse_custom_option_values(controllers, dict_controller=None):
 
 
 def add_custom_units(units):
-    return_units = UNITS.copy()
+    return_units = copy.deepcopy(UNITS)
 
     for each_unit in units:
         return_units.update(

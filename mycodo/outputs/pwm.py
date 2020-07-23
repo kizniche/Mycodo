@@ -2,6 +2,8 @@
 #
 # pwm.py - Output for GPIO PWM
 #
+import copy
+
 from flask_babel import lazy_gettext
 
 from mycodo.outputs.base_output import AbstractOutput
@@ -69,7 +71,7 @@ class OutputModule(AbstractOutput):
             self.pwm_invert_signal = output.pwm_invert_signal
 
     def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
-        measure_dict = measurements_dict.copy()
+        measure_dict = copy.deepcopy(measurements_dict)
 
         if state == 'on':
             if self.pwm_invert_signal:

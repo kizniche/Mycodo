@@ -2,6 +2,7 @@
 #
 # atlas_ezo_pmp.py - Output for Atlas Scientific EZO Pump
 #
+import copy
 import datetime
 import threading
 import time
@@ -106,7 +107,7 @@ class OutputModule(AbstractOutput):
             self.logger.error("Unknown interface: {}".format(self.output_interface))
 
     def record_dispersal(self, amount_ml=None, seconds_to_run=None):
-        measure_dict = measurements_dict.copy()
+        measure_dict = copy.deepcopy(measurements_dict)
         if amount_ml:
             measure_dict[0]['value'] = amount_ml
         if seconds_to_run:

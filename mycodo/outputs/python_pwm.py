@@ -2,10 +2,11 @@
 #
 # python_pwm.py - Output for Python code PWM
 #
+import copy
 import importlib.util
+import os
 import textwrap
 
-import os
 from flask_babel import lazy_gettext
 
 from mycodo.config import PATH_PYTHON_CODE_USER
@@ -66,7 +67,7 @@ class OutputModule(AbstractOutput):
             self.pwm_invert_signal = output.pwm_invert_signal
 
     def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
-        measure_dict = measurements_dict.copy()
+        measure_dict = copy.deepcopy(measurements_dict)
 
         if self.output_pwm_command:
             if state == 'on' and 100 >= duty_cycle >= 0:

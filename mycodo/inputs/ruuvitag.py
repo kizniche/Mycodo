@@ -28,19 +28,19 @@ measurements_dict = {
         'unit': 'V'
     },
     4: {
-        'measurement': 'acceleration_g_force',
+        'measurement': 'acceleration',
         'unit': 'g_force'
     },
     5: {
-        'measurement': 'acceleration_x_g_force',
+        'measurement': 'acceleration_x',
         'unit': 'g_force'
     },
     6: {
-        'measurement': 'acceleration_y_g_force',
+        'measurement': 'acceleration_y',
         'unit': 'g_force'
     },
     7: {
-        'measurement': 'acceleration_z_g_force',
+        'measurement': 'acceleration_z',
         'unit': 'g_force'
     },
     8: {
