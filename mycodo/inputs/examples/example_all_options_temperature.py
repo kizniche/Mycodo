@@ -281,6 +281,16 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         #
+        # Initialize variables (set to None)
+        #
+
+        self.random = None
+        self.interface = None
+        self.resolution = None
+        self.i2c_address = None
+        self.i2c_bus = None
+
+        #
         # Set variables to custom options
         #
 
@@ -293,37 +303,38 @@ class InputModule(AbstractInput):
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
-        if not testing:
-            self.interface = input_dev.interface
+    def initialize_input(self):
+        self.interface = self.input_dev.interface
 
-            #
-            # Begin dependent modules loading
-            #
+        #
+        # Begin dependent modules loading
+        #
 
-            import random
-            self.random = random
+        import random
+        self.random = random
 
-            #
-            # Load optional settings
-            #
+        #
+        # Load optional settings
+        #
 
-            self.resolution = input_dev.resolution
+        self.resolution = self.input_dev.resolution
 
-            #
-            # Initialize the sensor class
-            #
+        #
+        # Initialize the sensor class
+        #
 
-            if self.interface == 'I2C':
-                self.i2c_address = int(str(input_dev.i2c_location), 16)
-                self.i2c_bus = input_dev.i2c_bus
-                # self.sensor = dependent_module.MY_SENSOR_CLASS(
-                #     i2c_address=self.i2c_address,
-                #     i2c_bus=self.i2c_bus,
-                #     resolution=self.resolution)
+        if self.interface == 'I2C':
+            self.i2c_address = int(str(self.input_dev.i2c_location), 16)
+            self.i2c_bus = self.input_dev.i2c_bus
+            # Intitialize this particular interface for the Input
+            # self.sensor = dependent_module.MY_SENSOR_CLASS(
+            #     i2c_address=self.i2c_address,
+            #     i2c_bus=self.i2c_bus,
+            #     resolution=self.resolution)
 
-            elif self.interface == 'UART':
-                # No UART driver available for this input
-                pass
+        elif self.interface == 'UART':
+            # No UART driver available for this input
+            pass
 
     def get_measurement(self):
         """ Gets the temperature and humidity """

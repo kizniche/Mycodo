@@ -82,46 +82,44 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev,  testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        # Initialize custom options
+        self.sensor = None
+
         self.range = None
-        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            import adafruit_adxl34x
-            from adafruit_extended_bus import ExtendedI2C as I2C
+            self.initialize_input()
 
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
+    def initialize_input(self):
+        import adafruit_adxl34x
+        from adafruit_extended_bus import ExtendedI2C
 
-            self.sensor = adafruit_adxl34x.ADXL345(
-                I2C(self.i2c_bus), address=self.i2c_address)
+        self.sensor = adafruit_adxl34x.ADXL345(
+            ExtendedI2C(self.input_dev.i2c_bus),
+            address=int(str(self.input_dev.i2c_location), 16))
 
-            if self.range == '2':
-                self.sensor.range = adafruit_adxl34x.Range.RANGE_2_G
-            elif self.range == '4':
-                self.sensor.range = adafruit_adxl34x.Range.RANGE_4_G
-            elif self.range == '8':
-                self.sensor.range = adafruit_adxl34x.Range.RANGE_8_G
-            elif self.range == '16':
-                self.sensor.range = adafruit_adxl34x.Range.RANGE_16_G
+        if self.range == '2':
+            self.sensor.range = adafruit_adxl34x.Range.RANGE_2_G
+        elif self.range == '4':
+            self.sensor.range = adafruit_adxl34x.Range.RANGE_4_G
+        elif self.range == '8':
+            self.sensor.range = adafruit_adxl34x.Range.RANGE_8_G
+        elif self.range == '16':
+            self.sensor.range = adafruit_adxl34x.Range.RANGE_16_G
 
     def get_measurement(self):
         """ Gets the ADXL34x measurements and stores them in the database """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         acceleration = self.sensor.acceleration
-
         self.logger.debug("Acceleration measurements: {}".format(acceleration))
-
-        if self.is_enabled(0):
-            self.value_set(0, acceleration[0])
-
-        if self.is_enabled(1):
-            self.value_set(1, acceleration[1])
-
-        if self.is_enabled(2):
-            self.value_set(2, acceleration[2])
+        self.value_set(0, acceleration[0])
+        self.value_set(1, acceleration[1])
+        self.value_set(2, acceleration[2])
 
         return self.return_dict

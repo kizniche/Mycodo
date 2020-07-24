@@ -285,6 +285,8 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.sensor = None
+
         self.humidity_oversample = None
         self.temperature_oversample = None
         self.pressure_oversample = None
@@ -293,111 +295,109 @@ class InputModule(AbstractInput):
         self.gas_heater_duration = None
         self.gas_heater_profile = None
         self.temp_offset = None
-
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.initialize_input()
 
-            import bme680
-            from smbus2 import SMBus
+    def initialize_input(self):
+        import bme680
+        from smbus2 import SMBus
 
-            if self.humidity_oversample == 'OS_NONE':
-                self.humidity_oversample = bme680.OS_NONE
-            elif self.humidity_oversample == 'OS_1X':
-                self.humidity_oversample = bme680.OS_1X
-            elif self.humidity_oversample == 'OS_2X':
-                self.humidity_oversample = bme680.OS_2X
-            elif self.humidity_oversample == 'OS_4X':
-                self.humidity_oversample = bme680.OS_4X
-            elif self.humidity_oversample == 'OS_8X':
-                self.humidity_oversample = bme680.OS_8X
-            elif self.humidity_oversample == 'OS_16X':
-                self.humidity_oversample = bme680.OS_16X
+        if self.humidity_oversample == 'OS_NONE':
+            self.humidity_oversample = bme680.OS_NONE
+        elif self.humidity_oversample == 'OS_1X':
+            self.humidity_oversample = bme680.OS_1X
+        elif self.humidity_oversample == 'OS_2X':
+            self.humidity_oversample = bme680.OS_2X
+        elif self.humidity_oversample == 'OS_4X':
+            self.humidity_oversample = bme680.OS_4X
+        elif self.humidity_oversample == 'OS_8X':
+            self.humidity_oversample = bme680.OS_8X
+        elif self.humidity_oversample == 'OS_16X':
+            self.humidity_oversample = bme680.OS_16X
 
-            if self.temperature_oversample == 'OS_NONE':
-                self.temperature_oversample = bme680.OS_NONE
-            elif self.temperature_oversample == 'OS_1X':
-                self.temperature_oversample = bme680.OS_1X
-            elif self.temperature_oversample == 'OS_2X':
-                self.temperature_oversample = bme680.OS_2X
-            elif self.temperature_oversample == 'OS_4X':
-                self.temperature_oversample = bme680.OS_4X
-            elif self.temperature_oversample == 'OS_8X':
-                self.temperature_oversample = bme680.OS_8X
-            elif self.temperature_oversample == 'OS_16X':
-                self.temperature_oversample = bme680.OS_16X
+        if self.temperature_oversample == 'OS_NONE':
+            self.temperature_oversample = bme680.OS_NONE
+        elif self.temperature_oversample == 'OS_1X':
+            self.temperature_oversample = bme680.OS_1X
+        elif self.temperature_oversample == 'OS_2X':
+            self.temperature_oversample = bme680.OS_2X
+        elif self.temperature_oversample == 'OS_4X':
+            self.temperature_oversample = bme680.OS_4X
+        elif self.temperature_oversample == 'OS_8X':
+            self.temperature_oversample = bme680.OS_8X
+        elif self.temperature_oversample == 'OS_16X':
+            self.temperature_oversample = bme680.OS_16X
 
-            if self.pressure_oversample == 'OS_NONE':
-                self.pressure_oversample = bme680.OS_NONE
-            elif self.pressure_oversample == 'OS_1X':
-                self.pressure_oversample = bme680.OS_1X
-            elif self.pressure_oversample == 'OS_2X':
-                self.pressure_oversample = bme680.OS_2X
-            elif self.pressure_oversample == 'OS_4X':
-                self.pressure_oversample = bme680.OS_4X
-            elif self.pressure_oversample == 'OS_8X':
-                self.pressure_oversample = bme680.OS_8X
-            elif self.pressure_oversample == 'OS_16X':
-                self.pressure_oversample = bme680.OS_16X
+        if self.pressure_oversample == 'OS_NONE':
+            self.pressure_oversample = bme680.OS_NONE
+        elif self.pressure_oversample == 'OS_1X':
+            self.pressure_oversample = bme680.OS_1X
+        elif self.pressure_oversample == 'OS_2X':
+            self.pressure_oversample = bme680.OS_2X
+        elif self.pressure_oversample == 'OS_4X':
+            self.pressure_oversample = bme680.OS_4X
+        elif self.pressure_oversample == 'OS_8X':
+            self.pressure_oversample = bme680.OS_8X
+        elif self.pressure_oversample == 'OS_16X':
+            self.pressure_oversample = bme680.OS_16X
 
-            if self.iir_filter == 'FILTER_SIZE_0':
-                self.iir_filter = bme680.FILTER_SIZE_0
-            elif self.iir_filter == 'FILTER_SIZE_1':
-                self.iir_filter = bme680.FILTER_SIZE_1
-            elif self.iir_filter == 'FILTER_SIZE_3':
-                self.iir_filter = bme680.FILTER_SIZE_3
-            elif self.iir_filter == 'FILTER_SIZE_7':
-                self.iir_filter = bme680.FILTER_SIZE_7
-            elif self.iir_filter == 'FILTER_SIZE_15':
-                self.iir_filter = bme680.FILTER_SIZE_15
-            elif self.iir_filter == 'FILTER_SIZE_31':
-                self.iir_filter = bme680.FILTER_SIZE_31
-            elif self.iir_filter == 'FILTER_SIZE_63':
-                self.iir_filter = bme680.FILTER_SIZE_63
-            elif self.iir_filter == 'FILTER_SIZE_127':
-                self.iir_filter = bme680.FILTER_SIZE_127
+        if self.iir_filter == 'FILTER_SIZE_0':
+            self.iir_filter = bme680.FILTER_SIZE_0
+        elif self.iir_filter == 'FILTER_SIZE_1':
+            self.iir_filter = bme680.FILTER_SIZE_1
+        elif self.iir_filter == 'FILTER_SIZE_3':
+            self.iir_filter = bme680.FILTER_SIZE_3
+        elif self.iir_filter == 'FILTER_SIZE_7':
+            self.iir_filter = bme680.FILTER_SIZE_7
+        elif self.iir_filter == 'FILTER_SIZE_15':
+            self.iir_filter = bme680.FILTER_SIZE_15
+        elif self.iir_filter == 'FILTER_SIZE_31':
+            self.iir_filter = bme680.FILTER_SIZE_31
+        elif self.iir_filter == 'FILTER_SIZE_63':
+            self.iir_filter = bme680.FILTER_SIZE_63
+        elif self.iir_filter == 'FILTER_SIZE_127':
+            self.iir_filter = bme680.FILTER_SIZE_127
 
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
-            self.sensor = bme680.BME680(
-                i2c_addr=self.i2c_address,
-                i2c_device=SMBus(self.i2c_bus))
+        self.sensor = bme680.BME680(
+            i2c_addr=int(str(self.input_dev.i2c_location), 16),
+            i2c_device=SMBus(self.input_dev.i2c_bus))
 
-            # Set oversampling settings (can be tweaked to balance accuracy and noise in data
-            self.sensor.set_humidity_oversample(self.humidity_oversample)
-            self.sensor.set_temperature_oversample(self.temperature_oversample)
-            self.sensor.set_pressure_oversample(self.pressure_oversample)
-            self.sensor.set_filter(self.iir_filter)
+        # Set oversampling settings (can be tweaked to balance accuracy and noise in data
+        self.sensor.set_humidity_oversample(self.humidity_oversample)
+        self.sensor.set_temperature_oversample(self.temperature_oversample)
+        self.sensor.set_pressure_oversample(self.pressure_oversample)
+        self.sensor.set_filter(self.iir_filter)
 
-            if self.temp_offset is not None:
-                self.sensor.set_temp_offset(self.temp_offset)
+        if self.temp_offset is not None:
+            self.sensor.set_temp_offset(self.temp_offset)
 
-            if self.is_enabled(3):
-                self.sensor.set_gas_status(bme680.ENABLE_GAS_MEAS)
-                self.sensor.set_gas_heater_temperature(self.gas_heater_temperature)
-                self.sensor.set_gas_heater_duration(self.gas_heater_duration)
-                if self.gas_heater_profile:
-                    self.sensor.select_gas_heater_profile(int(self.gas_heater_profile))
-            else:
-                self.sensor.set_gas_status(bme680.DISABLE_GAS_MEAS)
+        if self.is_enabled(3):
+            self.sensor.set_gas_status(bme680.ENABLE_GAS_MEAS)
+            self.sensor.set_gas_heater_temperature(self.gas_heater_temperature)
+            self.sensor.set_gas_heater_duration(self.gas_heater_duration)
+            if self.gas_heater_profile:
+                self.sensor.select_gas_heater_profile(int(self.gas_heater_profile))
+        else:
+            self.sensor.set_gas_status(bme680.DISABLE_GAS_MEAS)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if not self.sensor.get_sensor_data():
             self.logger.error("Sensor get_sensor_data() returned False.")
             return
 
-        if self.is_enabled(0):
-            self.value_set(0, self.sensor.data.temperature)
-
-        if self.is_enabled(1):
-            self.value_set(1, self.sensor.data.humidity)
-
-        if self.is_enabled(2):
-            self.value_set(2, self.sensor.data.pressure)
+        self.value_set(0, self.sensor.data.temperature)
+        self.value_set(1, self.sensor.data.humidity)
+        self.value_set(2, self.sensor.data.pressure)
 
         if self.is_enabled(3):
             if self.sensor.data.heat_stable:
@@ -406,24 +406,15 @@ class InputModule(AbstractInput):
                 self.logger.error("Sensor heat unstable")
 
         self.logger.debug("Temp: {t}, Hum: {h}, Press: {p}, Gas: {g}".format(
-            t=self.value_get(0),
-            h=self.value_get(1),
-            p=self.value_get(2),
-            g=self.value_get(3)))
+            t=self.value_get(0), h=self.value_get(1), p=self.value_get(2), g=self.value_get(3)))
 
-        if (self.is_enabled(4) and
-                self.is_enabled(0) and
-                self.is_enabled(1)):
-            self.value_set(4, calculate_dewpoint(
-                self.value_get(0), self.value_get(1)))
+        if self.is_enabled(0) and self.is_enabled(1):
+            self.value_set(4, calculate_dewpoint(self.value_get(0), self.value_get(1)))
 
-        if self.is_enabled(5) and self.is_enabled(2):
+        if self.is_enabled(2):
             self.value_set(5, calculate_altitude(self.value_get(2)))
 
-        if (self.is_enabled(6) and
-                self.is_enabled(0) and
-                self.is_enabled(1)):
-            self.value_set(6, calculate_vapor_pressure_deficit(
-                self.value_get(0), self.value_get(1)))
+        if self.is_enabled(0) and self.is_enabled(1):
+            self.value_set(6, calculate_vapor_pressure_deficit(self.value_get(0), self.value_get(1)))
 
         return self.return_dict

@@ -57,17 +57,22 @@ class OutputModule(AbstractOutput):
 
         self.output_setup = None
         self.pwm_state = None
+        self.pwm_command = None
+        self.linux_command_user = None
+        self.pwm_invert_signal = None
 
         if not testing:
-            self.output_unique_id = output.unique_id
-            self.output_pwm_command = output.pwm_command
-            self.output_linux_command_user = output.linux_command_user
-            self.pwm_invert_signal = output.pwm_invert_signal
+            self.initialize_output()
+
+    def initialize_output(self):
+        self.pwm_command = self.output.pwm_command
+        self.linux_command_user = self.output.linux_command_user
+        self.pwm_invert_signal = self.output.pwm_invert_signal
 
     def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
         measure_dict = copy.deepcopy(measurements_dict)
 
-        if self.output_pwm_command:
+        if self.pwm_command:
             if state == 'on' and 0 <= duty_cycle <= 100:
                 if self.pwm_invert_signal:
                     duty_cycle = 100.0 - abs(duty_cycle)
@@ -81,13 +86,11 @@ class OutputModule(AbstractOutput):
 
             self.pwm_state = duty_cycle
 
-            cmd = self.output_pwm_command.replace(
-                '((duty_cycle))', str(duty_cycle))
-            cmd_return, cmd_error, cmd_status = cmd_output(
-                cmd, user=self.output_linux_command_user)
+            cmd = self.pwm_command.replace('((duty_cycle))', str(duty_cycle))
+            cmd_return, cmd_error, cmd_status = cmd_output(cmd, user=self.linux_command_user)
 
             measure_dict[0]['value'] = self.pwm_state
-            add_measurements_influxdb(self.output_unique_id, measure_dict)
+            add_measurements_influxdb(self.unique_id, measure_dict)
 
             self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=duty_cycle))
             self.logger.debug(
@@ -111,7 +114,7 @@ class OutputModule(AbstractOutput):
             return True
 
     def setup_output(self):
-        if self.output_pwm_command:
+        if self.pwm_command:
             self.output_setup = True
         else:
             self.output_setup = False

@@ -100,6 +100,9 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False,):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.adc = None
+        self.adc_gain = None
+
         self.dict_gains = {
             2/3: 0.1875,
             1: 0.125,
@@ -110,21 +113,23 @@ class InputModule(AbstractInput):
         }
 
         self.measurements_for_average = None
-
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            import Adafruit_ADS1x15
+            self.initialize_input()
 
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
-            self.adc_gain = input_dev.adc_gain
-            if self.adc_gain == 0:
-                self.adc_gain = 2/3
-            self.adc = Adafruit_ADS1x15.ADS1115(
-                address=self.i2c_address,
-                busnum=self.i2c_bus)
+    def initialize_input(self):
+        import Adafruit_ADS1x15
+
+        if self.input_dev.adc_gain == 0:
+            self.adc_gain = 2/3
+        else:
+            self.adc_gain = self.input_dev.adc_gain
+
+        self.adc = Adafruit_ADS1x15.ADS1115(
+            address=int(str(self.input_dev.i2c_location), 16),
+            busnum=self.input_dev.i2c_bus)
 
     def get_measurement(self):
         self.return_dict = copy.deepcopy(measurements_dict)
@@ -149,9 +154,8 @@ class InputModule(AbstractInput):
 
         # Store average measurement for each channel
         for channel in self.channels_measurement:
-            if self.is_enabled(channel):
-                self.value_set(
-                    channel,
-                    measurement_totals[channel] / measurement_range)
+            self.value_set(
+                channel,
+                measurement_totals[channel] / measurement_range)
 
         return self.return_dict

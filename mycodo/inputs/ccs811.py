@@ -1,4 +1,6 @@
 # coding=utf-8
+import time
+
 import copy
 
 from mycodo.inputs.base_input import AbstractInput
@@ -54,49 +56,42 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """
-    A sensor support class that measures the CC2811's voc, temperature
-    and co2
-
+    A sensor support class that measures the CC2811's voc, temperature, and co2
     """
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
-        self._co2 = None
-        self._voc = None
-        self._temperature = None
+
+        self.sensor = None
 
         if not testing:
-            from Adafruit_CCS811 import Adafruit_CCS811
+            self.initialize_input()
 
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
-            self.sensor = Adafruit_CCS811(
-                address=self.i2c_address,
-                busnum=self.i2c_bus)
-            while not self.sensor.available():
-                pass
-            temp = self.sensor.calculateTemperature()
-            self.sensor.tempOffset = temp - 25.0
+    def initialize_input(self):
+        from Adafruit_CCS811 import Adafruit_CCS811
+
+        self.sensor = Adafruit_CCS811(
+            address=int(str(self.input_dev.i2c_location), 16),
+            busnum=self.input_dev.i2c_bus)
+
+        while not self.sensor.available():
+            time.sleep(0.1)
+
+        self.sensor.tempOffset = self.sensor.calculateTemperature() - 25.0
 
     def get_measurement(self):
         """ Gets the CO2, VOC, and temperature """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.sensor.available():
-
             temp = self.sensor.calculateTemperature()
-
             if not self.sensor.readData():
-
-                if self.is_enabled(0):
-                    self.value_set(0, self.sensor.geteCO2())
-
-                if self.is_enabled(1):
-                    self.value_set(1, self.sensor.getTVOC())
-
-                if self.is_enabled(2):
-                    self.value_set(2, temp)
-
+                self.value_set(0, self.sensor.geteCO2())
+                self.value_set(1, self.sensor.getTVOC())
+                self.value_set(2, temp)
             else:
                 self.logger.error("Sensor error")
                 return

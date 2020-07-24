@@ -73,8 +73,7 @@ class InputModule(AbstractInput):
 
         if self.is_enabled(1):
             # GPU temperature
-            temperature_gpu = subprocess.check_output(
-                ('/opt/vc/bin/vcgencmd', 'measure_temp'))
+            temperature_gpu = subprocess.check_output(('/opt/vc/bin/vcgencmd', 'measure_temp'))
             temp_gpu = float(temperature_gpu.split(b'=')[1].split(b"'")[0])
             self.value_set(1, temp_gpu)
             self.logger.debug("GPU Temperature: {}".format(temp_gpu))

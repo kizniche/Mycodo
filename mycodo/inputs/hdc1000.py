@@ -104,54 +104,58 @@ class InputModule(AbstractInput):
     """
     A sensor support class that measures the HDC1000's humidity and temperature
     and calculates the dew point
-
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.HDC1000_fr = None
+        self.HDC1000_fw = None
+
         if not testing:
-            self.resolution_temperature = input_dev.resolution
-            self.resolution_humidity = input_dev.resolution_2
-            self.i2c_bus = input_dev.i2c_bus
-            self.i2c_address = 0x40  # HDC1000-F Address
+            self.initialize_input()
 
-            self.HDC1000_fr = io.open(
-                "/dev/i2c-" + str(self.i2c_bus), "rb", buffering=0)
-            self.HDC1000_fw = io.open(
-                "/dev/i2c-" + str(self.i2c_bus), "wb", buffering=0)
+    def initialize_input(self):
+        i2c_address = 0x40  # HDC1000-F Address
 
-            # set device address
-            fcntl.ioctl(self.HDC1000_fr, I2C_SLAVE, self.i2c_address)
-            fcntl.ioctl(self.HDC1000_fw, I2C_SLAVE, self.i2c_address)
-            time.sleep(0.015)  # 15ms startup time
+        self.HDC1000_fr = io.open("/dev/i2c-" + str(self.input_dev.i2c_bus), "rb", buffering=0)
+        self.HDC1000_fw = io.open("/dev/i2c-" + str(self.input_dev.i2c_bus), "wb", buffering=0)
 
-            config = HDC1000_CONFIG_ACQUISITION_MODE
+        # set device address
+        fcntl.ioctl(self.HDC1000_fr, I2C_SLAVE, i2c_address)
+        fcntl.ioctl(self.HDC1000_fw, I2C_SLAVE, i2c_address)
+        time.sleep(0.015)  # 15ms startup time
 
-            s = [HDC1000_CONFIGURATION_REGISTER, config >> 8, 0x00]
-            s2 = bytearray(s)
-            self.HDC1000_fw.write(s2)  # sending config register bytes
-            time.sleep(0.015)  # From the data sheet
+        config = HDC1000_CONFIG_ACQUISITION_MODE
 
-            # Set resolutions
-            if self.resolution_temperature == 11:
-                self.set_temperature_resolution(
-                    HDC1000_CONFIG_TEMPERATURE_RESOLUTION_11BIT)
-            elif self.resolution_temperature == 14:
-                self.set_temperature_resolution(
-                    HDC1000_CONFIG_TEMPERATURE_RESOLUTION_14BIT)
+        s = [HDC1000_CONFIGURATION_REGISTER, config >> 8, 0x00]
+        s2 = bytearray(s)
+        self.HDC1000_fw.write(s2)  # sending config register bytes
+        time.sleep(0.015)  # From the data sheet
 
-            if self.resolution_humidity == 8:
-                self.set_humidity_resolution(
-                    HDC1000_CONFIG_HUMIDITY_RESOLUTION_8BIT)
-            elif self.resolution_humidity == 11:
-                self.set_humidity_resolution(
-                    HDC1000_CONFIG_HUMIDITY_RESOLUTION_11BIT)
-            elif self.resolution_humidity == 14:
-                self.set_humidity_resolution(
-                    HDC1000_CONFIG_HUMIDITY_RESOLUTION_14BIT)
+        # Set resolutions
+        if self.input_dev.resolution == 11:
+            self.set_temperature_resolution(
+                HDC1000_CONFIG_TEMPERATURE_RESOLUTION_11BIT)
+        elif self.input_dev.resolution == 14:
+            self.set_temperature_resolution(
+                HDC1000_CONFIG_TEMPERATURE_RESOLUTION_14BIT)
+
+        if self.input_dev.resolution_2 == 8:
+            self.set_humidity_resolution(
+                HDC1000_CONFIG_HUMIDITY_RESOLUTION_8BIT)
+        elif self.input_dev.resolution_2 == 11:
+            self.set_humidity_resolution(
+                HDC1000_CONFIG_HUMIDITY_RESOLUTION_11BIT)
+        elif self.input_dev.resolution_2 == 14:
+            self.set_humidity_resolution(
+                HDC1000_CONFIG_HUMIDITY_RESOLUTION_14BIT)
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
+        if not self.HDC1000_fr or not self.HDC1000_fw:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.is_enabled(0):

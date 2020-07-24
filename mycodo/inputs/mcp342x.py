@@ -50,7 +50,7 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'smbus2', 'smbus2'),
-        ('pip-pypi', 'MCP342x', 'MCP342x==0.3.3')
+        ('pip-pypi', 'MCP342x', 'MCP342x==0.3.4')
     ],
 
     'interfaces': ['I2C'],
@@ -77,35 +77,36 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.sensor = None
+        self.bus = None
+        self.i2c_address = None
+        self.adc_gain = None
+        self.adc_resolution = None
+
         if not testing:
-            from smbus2 import SMBus
-            from MCP342x import MCP342x
+            self.initialize_input()
 
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
-            self.adc_gain = input_dev.adc_gain
-            self.adc_resolution = input_dev.adc_resolution
+    def initialize_input(self):
+        from smbus2 import SMBus
+        from MCP342x import MCP342x
 
-            self.MCP342x = MCP342x
-            self.bus = SMBus(self.i2c_bus)
+        self.sensor = MCP342x
+        self.bus = SMBus(self.input_dev.i2c_bus)
+
+        self.i2c_address = int(str(self.input_dev.i2c_location), 16)
+        self.adc_gain = self.input_dev.adc_gain
+        self.adc_resolution = self.input_dev.adc_resolution
 
     def get_measurement(self):
         self.return_dict = copy.deepcopy(measurements_dict)
 
         for channel in self.channels_measurement:
             if self.is_enabled(channel):
-                adc = self.MCP342x(self.bus,
-                                   self.i2c_address,
-                                   channel=channel,
-                                   gain=self.adc_gain,
-                                   resolution=self.adc_resolution)
+                adc = self.sensor(self.bus,
+                                  self.i2c_address,
+                                  channel=channel,
+                                  gain=self.adc_gain,
+                                  resolution=self.adc_resolution)
                 self.value_set(channel, adc.convert_and_read())
-
-        # Dummy data for testing
-        # import random
-        # return_dict[0]['value'] = random.uniform(1.5, 1.9)
-        # return_dict[1]['value'] = random.uniform(2.3, 2.5)
-        # return_dict[2]['value'] = random.uniform(0.5, 0.6)
-        # return_dict[3]['value'] = random.uniform(3.5, 6.2)
 
         return self.return_dict

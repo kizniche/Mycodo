@@ -59,21 +59,25 @@ class InputModule(AbstractInput):
     """
     A sensor support class that measures the SHT2x's humidity and temperature
     and calculates the dew point
-
     """
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         if not testing:
-            from smbus2 import SMBus
+            self.initialize_input()
 
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
-            self.sht2x = SMBus(self.i2c_bus)
+    def initialize_input(self):
+        from smbus2 import SMBus
+
+        self.i2c_address = int(str(self.input_dev.i2c_location), 16)
+        self.sht2x = SMBus(self.input_dev.i2c_bus)
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
+        if not self.sht2x:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         for _ in range(2):
@@ -103,22 +107,16 @@ class InputModule(AbstractInput):
                 if self.is_enabled(1):
                     self.value_set(1, humidity)
 
-                if (self.is_enabled(2) and
-                        self.is_enabled(0) and
-                        self.is_enabled(1)):
-                    self.value_set(2, calculate_dewpoint(
-                        self.value_get(0), self.value_get(1)))
+                if self.is_enabled(2) and self.is_enabled(0) and self.is_enabled(1):
+                    self.value_set(2, calculate_dewpoint(self.value_get(0), self.value_get(1)))
 
-                if (self.is_enabled(3) and
-                        self.is_enabled(0) and
-                        self.is_enabled(1)):
-                    self.value_set(3, calculate_vapor_pressure_deficit(
-                        self.value_get(0), self.value_get(1)))
+                if self.is_enabled(3) and self.is_enabled(0) and self.is_enabled(1):
+                    self.value_set(3, calculate_vapor_pressure_deficit(self.value_get(0), self.value_get(1)))
 
                 return self.return_dict
             except Exception as e:
-                self.logger.exception(
-                    "Exception when taking a reading: {err}".format(err=e))
+                self.logger.exception("Exception when taking a reading: {err}".format(err=e))
+
             # Send soft reset and try a second read
             self.sht2x.write_byte(self.i2c_address, 0xFE)
             time.sleep(0.1)

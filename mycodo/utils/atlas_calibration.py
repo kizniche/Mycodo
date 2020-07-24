@@ -164,7 +164,6 @@ class AtlasScientificCommand:
             else:
                 return 1, return_value
         except Exception as err:
-            logger.error("{cls} raised an exception while communicating with "
-                         "the board: {err}".format(cls=type(self).__name__,
-                                                   err=err))
+            logger.error("{cls} raised an exception while communicating with the board: {err}".format(
+                cls=type(self).__name__, err=err))
             return 1, err

@@ -87,45 +87,46 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """
-    A sensor support class that measures the MAX31856's temperature
-
-    """
-
+    """ A sensor support class that measures the MAX31856's temperature """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.sensor = None
+
         if not testing:
-            self.pin_clock = input_dev.pin_clock
-            self.pin_cs = input_dev.pin_cs
-            self.pin_miso = input_dev.pin_miso
-            self.pin_mosi = input_dev.pin_mosi
-            self.thermocouple_type = input_dev.thermocouple_type
-            self.sensor = max31856(
-                self.logger,
-                self.pin_cs,
-                self.pin_miso,
-                self.pin_mosi,
-                self.pin_clock)
-            if self.thermocouple_type == 'B':
-                self.sensor.writeRegister(1, 0x00)  # B Type
-            elif self.thermocouple_type == 'E':
-                self.sensor.writeRegister(1, 0x01)  # E Type
-            elif self.thermocouple_type == 'J':
-                self.sensor.writeRegister(1, 0x02)  # J Type
-            elif self.thermocouple_type == 'K':
-                self.sensor.writeRegister(1, 0x03)  # K Type
-            elif self.thermocouple_type == 'N':
-                self.sensor.writeRegister(1, 0x04)  # N Type
-            elif self.thermocouple_type == 'R':
-                self.sensor.writeRegister(1, 0x05)  # R Type
-            elif self.thermocouple_type == 'S':
-                self.sensor.writeRegister(1, 0x06)  # S Type
-            elif self.thermocouple_type == 'T':
-                self.sensor.writeRegister(1, 0x07)  # T Type
+            self.initialize_input()
+
+    def initialize_input(self):
+        self.sensor = MAX31856(
+            self.logger,
+            self.input_dev.pin_cs,
+            self.input_dev.pin_miso,
+            self.input_dev.pin_mosi,
+            self.input_dev.pin_clock)
+
+        if self.input_dev.thermocouple_type == 'B':
+            self.sensor.writeRegister(1, 0x00)  # B Type
+        elif self.input_dev.thermocouple_type == 'E':
+            self.sensor.writeRegister(1, 0x01)  # E Type
+        elif self.input_dev.thermocouple_type == 'J':
+            self.sensor.writeRegister(1, 0x02)  # J Type
+        elif self.input_dev.thermocouple_type == 'K':
+            self.sensor.writeRegister(1, 0x03)  # K Type
+        elif self.input_dev.thermocouple_type == 'N':
+            self.sensor.writeRegister(1, 0x04)  # N Type
+        elif self.input_dev.thermocouple_type == 'R':
+            self.sensor.writeRegister(1, 0x05)  # R Type
+        elif self.input_dev.thermocouple_type == 'S':
+            self.sensor.writeRegister(1, 0x06)  # S Type
+        elif self.input_dev.thermocouple_type == 'T':
+            self.sensor.writeRegister(1, 0x07)  # T Type
 
     def get_measurement(self):
-        """ Gets the measurement in units by reading the """
+        """ Get measurements and store in the database """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.is_enabled(0):
@@ -137,7 +138,7 @@ class InputModule(AbstractInput):
         return self.return_dict
 
 
-class max31856(object):
+class MAX31856(object):
     """Read Temperature on the Raspberry PI from the MAX31856 chip using GPIO
        Any pins can be used for CS (chip select), MISO, MOSI and CLK
     """

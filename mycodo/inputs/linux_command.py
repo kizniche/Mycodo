@@ -69,20 +69,22 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """ A sensor support class that returns a value from a command """
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        # Initialize custom options
+        self.command = None
+
         self.command_timeout = None
         self.execute_as_user = None
         self.current_working_dir = None
-        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            self.command = input_dev.cmd_command
+            self.initialize_input()
+
+    def initialize_input(self):
+        self.command = self.input_dev.cmd_command
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """

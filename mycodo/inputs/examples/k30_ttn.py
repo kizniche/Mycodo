@@ -76,6 +76,11 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.ser = None
+        self.serial = None
+        self.serial_send = None
+        self.lock_file = "/var/lock/mycodo_ttn.lock"
+        self.ttn_serial_error = False
         self.timer = 0
 
         # Initialize custom options
@@ -84,39 +89,34 @@ class InputModule(AbstractInput):
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
-        if not testing:
-            import serial
+    def initialize_input(self):
+        import serial
 
-            self.uart_location = input_dev.uart_location
-            self.baud_rate = input_dev.baud_rate
-            # Check if device is valid
-            self.uart_location = is_device(self.uart_location)
-            if self.uart_location:
-                try:
-                    self.ser = serial.Serial(
-                        port=self.uart_location,
-                        baudrate=self.baud_rate,
-                        timeout=1,
-                        writeTimeout=5)
-                except serial.SerialException:
-                    self.logger.exception('Opening serial')
-            else:
-                self.logger.error(
-                    'Could not open "{dev}". '
-                    'Check the device location is correct.'.format(
-                        dev=self.uart_location))
+        # Check if device is valid
+        if is_device(self.input_dev.uart_location):
+            try:
+                self.ser = serial.Serial(
+                    port=self.input_dev.uart_location,
+                    baudrate=self.input_dev.baud_rate,
+                    timeout=1,
+                    writeTimeout=5)
+            except serial.SerialException:
+                self.logger.exception('Opening serial')
+        else:
+            self.logger.error(
+                'Could not open "{dev}". '
+                'Check the device location is correct.'.format(
+                    dev=self.input_dev.uart_location))
 
-            self.serial = serial
-            self.serial_send = None
-            self.lock_file = "/var/lock/mycodo_ttn.lock"
-            self.ttn_serial_error = False
-            self.logger.debug(
-                "Min time between transmissions: {} seconds".format(
-                    min_seconds_between_transmissions))
+        self.serial = serial
+
+        self.logger.debug(
+            "Min time between transmissions: {} seconds".format(
+                min_seconds_between_transmissions))
 
     def get_measurement(self):
         """ Gets the K30's CO2 concentration in ppmv via UART"""
-        if not self.uart_location:  # Don't measure if device isn't validated
+        if not self.ser:  # Don't measure if device isn't validated
             return None
 
         self.return_dict = copy.deepcopy(measurements_dict)

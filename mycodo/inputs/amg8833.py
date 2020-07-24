@@ -58,6 +58,8 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
+        self.sensor = None
         self.save_image = False
         self.temp_max = None
         self.temp_min = None
@@ -67,19 +69,22 @@ class InputModule(AbstractInput):
         self.ny = 8
 
         if not testing:
-            from Adafruit_AMG88xx import Adafruit_AMG88xx
+            self.initialize_input()
 
-            self.Adafruit_AMG88xx = Adafruit_AMG88xx
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
-            self.input_dev = input_dev
-            self.sensor = self.Adafruit_AMG88xx(
-                address=self.i2c_address,
-                busnum=self.i2c_bus)
-            time.sleep(0.1)  # wait for it to boot
+    def initialize_input(self):
+        from Adafruit_AMG88xx import Adafruit_AMG88xx
+
+        self.sensor = Adafruit_AMG88xx(
+            address=int(str(self.input_dev.i2c_location), 16),
+            busnum=self.input_dev.i2c_bus)
+        time.sleep(0.1)  # wait for it to boot
 
     def get_measurement(self):
         """ Gets the AMG8833's measurements """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         pixels = self.sensor.readPixels()
@@ -90,8 +95,7 @@ class InputModule(AbstractInput):
             self.logger.error("Thermistor = {0} C".format(self.sensor.readThermistor()))
 
         for channel in self.channels_measurement:
-            if self.is_enabled(channel):
-                self.value_set(channel, pixels[channel])
+            self.value_set(channel, pixels[channel])
 
         if self.save_image:
             timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')

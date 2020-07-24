@@ -109,50 +109,45 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.ser = None
         self.measuring = None
         self.calibrating = None
 
-        # Initialize custom options
         self.measure_range = None
-        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            import serial
+            self.initialize_input()
 
-            self.uart_location = input_dev.uart_location
-            self.baud_rate = input_dev.baud_rate
+    def initialize_input(self):
+        import serial
 
-            # Check if device is valid
-            self.serial_device = is_device(self.uart_location)
-            if self.serial_device:
-                try:
-                    self.ser = serial.Serial(
-                        port=self.serial_device,
-                        baudrate=self.baud_rate,
-                        timeout=1,
-                        writeTimeout=5)
-                except serial.SerialException:
-                    self.logger.exception('Opening serial')
-            else:
-                self.logger.error(
-                    'Could not open "{dev}". '
-                    'Check the device location is correct.'.format(
-                        dev=self.uart_location))
+        if is_device(self.input_dev.uart_location):
+            try:
+                self.ser = serial.Serial(
+                    port=self.input_dev.uart_location,
+                    baudrate=self.input_dev.baud_rate,
+                    timeout=1,
+                    writeTimeout=5)
+            except serial.SerialException:
+                self.logger.exception('Opening serial')
+        else:
+            self.logger.error('Could not open "{dev}". Check the device location is correct.'.format(
+                dev=self.input_dev.uart_location))
 
-            if self.measure_range:
-                self.set_measure_range(self.measure_range)
+        if self.measure_range:
+            self.set_measure_range(self.measure_range)
 
-            time.sleep(0.1)
+        time.sleep(0.1)
 
     def get_measurement(self):
-        """ Gets the MH-Z19's CO2 concentration in ppmv via UART"""
-        co2 = None
-        self.return_dict = copy.deepcopy(measurements_dict)
+        """ Gets the MH-Z19's CO2 concentration in ppmv """
+        if not self.ser:
+            self.logger.error("Input not set up")
+            return
 
-        if not self.serial_device:  # Don't measure if device isn't validated
-            return None
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         while self.calibrating:
             time.sleep(0.1)
@@ -170,14 +165,13 @@ class InputModule(AbstractInput):
                 high = resp[2]
                 low = resp[3]
                 co2 = (high * 256) + low
+                self.value_set(0, co2)
             else:
                 self.logger.error("Bad response")
         except:
             self.logger.exception("get_measurement()")
         finally:
             self.measuring = False
-
-        self.value_set(0, co2)
 
         return self.return_dict
 

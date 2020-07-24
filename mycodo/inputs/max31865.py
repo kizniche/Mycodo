@@ -79,34 +79,37 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """
-    A sensor support class that measures the MAX31865's temperature
-
-    """
-
+    """ A sensor support class that measures the MAX31865's temperature """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.sensor = None
+        self.thermocouple_type = None
+        self.ref_ohm = None
+
         if not testing:
-            self.pin_clock = input_dev.pin_clock
-            self.pin_cs = input_dev.pin_cs
-            self.pin_miso = input_dev.pin_miso
-            self.pin_mosi = input_dev.pin_mosi
-            self.thermocouple_type = input_dev.thermocouple_type
-            self.ref_ohm = input_dev.ref_ohm
-            self.sensor = max31865_sen(
-                self.logger,
-                self.pin_cs,
-                self.pin_miso,
-                self.pin_mosi,
-                self.pin_clock)
+            self.initialize_input()
+
+    def initialize_input(self):
+        self.thermocouple_type = self.input_dev.thermocouple_type
+        self.ref_ohm = self.input_dev.ref_ohm
+
+        self.sensor = max31865_sen(
+            self.logger,
+            self.input_dev.pin_cs,
+            self.input_dev.pin_miso,
+            self.input_dev.pin_mosi,
+            self.input_dev.pin_clock)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        self.value_set(0, self.sensor.readTemp(
-            self.thermocouple_type, self.ref_ohm))
+        self.value_set(0, self.sensor.readTemp(self.thermocouple_type, self.ref_ohm))
 
         return self.return_dict
 

@@ -68,56 +68,57 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.ser = None
+        self.i2c = None
+
         if not testing:
-            self.interface = input_dev.interface
-            self.uart_location = input_dev.uart_location
+            self.initialize_input()
 
-            if self.interface == 'UART':
-                import serial
+    def initialize_input(self):
+        if self.input_dev.interface == 'UART':
+            import serial
 
-                # Check if device is valid
-                self.serial_device = is_device(self.uart_location)
-                if self.serial_device:
-                    try:
-                        self.ser = serial.Serial(
-                            port=self.serial_device,
-                            timeout=1,
-                            writeTimeout=5)
-                    except serial.SerialException:
-                        self.logger.exception('Opening serial')
-                else:
-                    self.logger.error(
-                        'Could not open "{dev}". '
-                        'Check the device location is correct.'.format(
-                            dev=self.uart_location))
+            if is_device(self.input_dev.uart_location):
+                try:
+                    self.ser = serial.Serial(
+                        port=self.input_dev.uart_location,
+                        timeout=1,
+                        writeTimeout=5)
+                except serial.SerialException:
+                    self.logger.exception('Opening serial')
+            else:
+                self.logger.error(
+                    'Could not open "{dev}". '
+                    'Check the device location is correct.'.format(
+                        dev=self.input_dev.uart_location))
 
-            elif self.interface == 'I2C':
-                from smbus2 import SMBus
+        elif self.input_dev.interface == 'I2C':
+            from smbus2 import SMBus
 
-                self.i2c_address = int(str(input_dev.i2c_location), 16)
-                self.i2c_bus = input_dev.i2c_bus
-                self.cmd_measure = [0xFF, 0x01, 0x9C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63]
-                self.IOCONTROL = 0X0E << 3
-                self.FCR = 0X02 << 3
-                self.LCR = 0X03 << 3
-                self.DLL = 0x00 << 3
-                self.DLH = 0X01 << 3
-                self.THR = 0X00 << 3
-                self.RHR = 0x00 << 3
-                self.TXLVL = 0X08 << 3
-                self.RXLVL = 0X09 << 3
-                self.i2c = SMBus(self.i2c_bus)
-                self.begin()
+            self.i2c_address = int(str(self.input_dev.i2c_location), 16)
+            self.cmd_measure = [0xFF, 0x01, 0x9C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x63]
+            self.IOCONTROL = 0X0E << 3
+            self.FCR = 0X02 << 3
+            self.LCR = 0X03 << 3
+            self.DLL = 0x00 << 3
+            self.DLH = 0X01 << 3
+            self.THR = 0X00 << 3
+            self.RHR = 0x00 << 3
+            self.TXLVL = 0X08 << 3
+            self.RXLVL = 0X09 << 3
+            self.i2c = SMBus(self.input_dev.i2c_bus)
+            self.begin()
 
     def get_measurement(self):
-        """ Gets the MH-Z16's CO2 concentration in ppmv via UART"""
+        """ Gets the MH-Z16's CO2 concentration in ppmv """
         self.return_dict = copy.deepcopy(measurements_dict)
 
         co2 = None
 
-        if self.interface == 'UART':
-            if not self.serial_device:  # Don't measure if device isn't validated
-                return None
+        if self.input_dev.interface == 'UART':
+            if not self.ser:
+                self.logger.error("Input not set up")
+                return
 
             self.ser.flushInput()
             time.sleep(1)
@@ -129,7 +130,11 @@ class InputModule(AbstractInput):
                 low = resp[3]
                 co2 = (high * 256) + low
 
-        elif self.interface == 'I2C':
+        elif self.input_dev.interface == 'I2C':
+            if not self.i2c:
+                self.logger.error("Input not set up")
+                return
+
             self.write_register(self.FCR, 0x07)
             self.send(self.cmd_measure)
             try:

@@ -59,26 +59,33 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        if not testing:
-            from Adafruit_BMP import BMP085
+        self.sensor = None
 
-            self.i2c_bus = input_dev.i2c_bus
-            self.bmp = BMP085.BMP085(busnum=self.i2c_bus)
+        if not testing:
+            self.initialize_input()
+
+    def initialize_input(self):
+        from Adafruit_BMP import BMP085
+
+        self.sensor = BMP085.BMP085(busnum=self.input_dev.i2c_bus)
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the BMP180/085 """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         time.sleep(2)
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.is_enabled(0):
-            self.value_set(0, self.bmp.read_pressure())
+            self.value_set(0, self.sensor.read_pressure())
 
         if self.is_enabled(1):
-            self.value_set(1, self.bmp.read_temperature())
+            self.value_set(1, self.sensor.read_temperature())
 
-        if self.is_enabled(2) and self.is_enabled(0):
-            self.value_set(2, calculate_altitude(
-                self.value_get(0)))
+        if self.is_enabled(0):
+            self.value_set(2, calculate_altitude(self.value_get(0)))
 
         return self.return_dict

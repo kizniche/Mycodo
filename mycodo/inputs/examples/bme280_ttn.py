@@ -111,6 +111,10 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.serial = None
+        self.serial_send = None
+        self.lock_file = "/var/lock/mycodo_ttn.lock"
+        self.ttn_serial_error = False
         self.timer = 0
 
         # Initialize custom options
@@ -119,18 +123,14 @@ class InputModule(AbstractInput):
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
-        if not testing:
-            from Adafruit_BME280 import BME280
-            import serial
+    def initialize_input(self):
+        from Adafruit_BME280 import BME280
+        import serial
 
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
-            self.sensor = BME280(address=self.i2c_address,
-                                 busnum=self.i2c_bus)
-            self.serial = serial
-            self.serial_send = None
-            self.lock_file = "/var/lock/mycodo_ttn.lock"
-            self.ttn_serial_error = False
+        self.sensor = BME280(
+            address=int(str(self.input_dev.i2c_location), 16),
+            busnum=self.input_dev.i2c_bus)
+        self.serial = serial
 
     def get_measurement(self):
         """ Gets the measurement in units by reading the """

@@ -72,39 +72,35 @@ class OutputModule(AbstractOutput):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
         self.atlas_command = None
-        self.ftdi_location = None
-        self.uart_location = None
-        self.uart_baud_rate = None
-        self.i2c_address = None
-        self.i2c_bus = None
         self.currently_dispensing = False
+        self.interface = None
+        self.mode = None
+        self.flow_rate = None
 
         if not testing:
-            self.output = output
-            self.output_unique_id = output.unique_id
-            self.output_interface = output.interface
-            self.output_mode = output.output_mode
-            self.output_flow_rate = output.flow_rate
+            self.initialize_output()
+
+    def initialize_output(self):
+        self.interface = self.output.interface
+        self.mode = self.output.output_mode
+        self.flow_rate = self.output.flow_rate
 
     def setup_output(self):
-        if self.output_interface == 'FTDI':
+        if self.interface == 'FTDI':
             from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.ftdi_location = self.output.ftdi_location
-            self.atlas_command = AtlasScientificFTDI(self.ftdi_location)
-        elif self.output_interface == 'I2C':
+            self.atlas_command = AtlasScientificFTDI(self.output.ftdi_location)
+        elif self.interface == 'I2C':
             from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-            self.i2c_address = int(str(self.output.i2c_location), 16)
-            self.i2c_bus = self.output.i2c_bus
             self.atlas_command = AtlasScientificI2C(
-                i2c_address=self.i2c_address, i2c_bus=self.i2c_bus)
-        elif self.output_interface == 'UART':
+                i2c_address=int(str(self.output.i2c_location), 16),
+                i2c_bus=self.output.i2c_bus)
+        elif self.interface == 'UART':
             from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-            self.uart_location = self.output.uart_location
-            self.output_baud_rate = self.output.baud_rate
             self.atlas_command = AtlasScientificUART(
-                self.uart_location, baudrate=self.output_baud_rate)
+                self.output.uart_location,
+                baudrate=self.output.baud_rate)
         else:
-            self.logger.error("Unknown interface: {}".format(self.output_interface))
+            self.logger.error("Unknown interface: {}".format(self.interface))
 
     def record_dispersal(self, amount_ml=None, seconds_to_run=None):
         measure_dict = copy.deepcopy(measurements_dict)
@@ -112,7 +108,7 @@ class OutputModule(AbstractOutput):
             measure_dict[0]['value'] = amount_ml
         if seconds_to_run:
             measure_dict[1]['value'] = seconds_to_run
-        add_measurements_influxdb(self.output_unique_id, measure_dict)
+        add_measurements_influxdb(self.unique_id, measure_dict)
 
     def dispense_duration(self, seconds):
         self.currently_dispensing = True
@@ -143,18 +139,18 @@ class OutputModule(AbstractOutput):
             return
 
         elif state == 'on' and output_type in ['vol', None] and amount:
-            if self.output_mode == 'fastest_flow_rate':
+            if self.mode == 'fastest_flow_rate':
                 minutes_to_run = amount / 105
                 seconds_to_run = minutes_to_run * 60
                 write_cmd = 'D,{ml:.2f}'.format(ml=amount)
-            elif self.output_mode == 'specify_flow_rate':
-                minutes_to_run = amount / self.output_flow_rate
+            elif self.mode == 'specify_flow_rate':
+                minutes_to_run = amount / self.flow_rate
                 seconds_to_run = minutes_to_run * 60
                 write_cmd = 'D,{ml:.2f},{min:.2f}'.format(
                     ml=amount, min=minutes_to_run)
             else:
                 self.logger.error("Invalid output_mode: '{}'".format(
-                    self.output_mode))
+                    self.mode))
                 return
 
         elif state == 'off' or (amount is not None and amount <= 0):
@@ -166,7 +162,7 @@ class OutputModule(AbstractOutput):
         else:
             self.logger.error(
                 "Invalid parameters: State: {state}, Output Type: {ot}, Volume: {vol}, Flow Rate: {fr}".format(
-                    state=state, ot=output_type, vol=amount, fr=self.output_flow_rate))
+                    state=state, ot=output_type, vol=amount, fr=self.flow_rate))
             return
 
         self.atlas_command.write(write_cmd)
@@ -182,11 +178,11 @@ class OutputModule(AbstractOutput):
 
             device_measurements = db_retrieve_table_daemon(
                 DeviceMeasurements).filter(
-                DeviceMeasurements.device_id == self.output_unique_id)
+                DeviceMeasurements.device_id == self.unique_id)
             for each_dev_meas in device_measurements:
                 if each_dev_meas.unit == 'minute':
                     last_measurement = read_last_influxdb(
-                        self.output_unique_id,
+                        self.unique_id,
                         each_dev_meas.unit,
                         each_dev_meas.channel,
                         measure=each_dev_meas.measurement)

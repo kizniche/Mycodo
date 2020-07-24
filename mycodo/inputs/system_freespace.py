@@ -41,13 +41,21 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
-        self._disk_space = None
+
+        self.path = None
 
         if not testing:
-            self.path = input_dev.location
+            self.initialize_input()
+
+    def initialize_input(self):
+        self.path = self.input_dev.location
 
     def get_measurement(self):
         """ Gets the free space """
+        if not self.path:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         f = os.statvfs(self.path)

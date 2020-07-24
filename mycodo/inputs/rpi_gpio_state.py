@@ -41,13 +41,19 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        if not testing:
-            import RPi.GPIO as GPIO
+        self.gpio = None
 
-            self.location = int(input_dev.gpio_location)
-            self.gpio = GPIO
-            self.gpio.setmode(self.gpio.BCM)
-            self.gpio.setup(self.location, self.gpio.IN)
+        if not testing:
+            self.initialize_input()
+
+    def initialize_input(self):
+        import RPi.GPIO as GPIO
+
+        self.gpio = GPIO
+
+        self.location = int(self.input_dev.gpio_location)
+        self.gpio.setmode(self.gpio.BCM)
+        self.gpio.setup(self.location, self.gpio.IN)
 
     def get_measurement(self):
         """ Gets the GPIO state via RPi.GPIO """

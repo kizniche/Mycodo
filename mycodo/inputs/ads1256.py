@@ -94,62 +94,69 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        # Initialize custom options
+        self.sensor = None
+        self.adc_gain = None
+        self.adc_sample_speed = None
+
         self.adc_calibration = None
-        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            from ADS1256_definitions import POS_AIN0
-            from ADS1256_definitions import POS_AIN1
-            from ADS1256_definitions import POS_AIN2
-            from ADS1256_definitions import POS_AIN3
-            from ADS1256_definitions import POS_AIN4
-            from ADS1256_definitions import POS_AIN5
-            from ADS1256_definitions import POS_AIN6
-            from ADS1256_definitions import POS_AIN7
-            from ADS1256_definitions import NEG_AINCOM
-            from pipyadc_py3 import ADS1256
-            import glob
+            self.initialize_input()
 
-            # Input pin for the potentiometer on the Waveshare Precision ADC board
-            POTI = POS_AIN0 | NEG_AINCOM
+    def initialize_input(self):
+        from ADS1256_definitions import POS_AIN0
+        from ADS1256_definitions import POS_AIN1
+        from ADS1256_definitions import POS_AIN2
+        from ADS1256_definitions import POS_AIN3
+        from ADS1256_definitions import POS_AIN4
+        from ADS1256_definitions import POS_AIN5
+        from ADS1256_definitions import POS_AIN6
+        from ADS1256_definitions import POS_AIN7
+        from ADS1256_definitions import NEG_AINCOM
+        from pipyadc_py3 import ADS1256
+        import glob
 
-            # Light dependant resistor
-            LDR = POS_AIN1 | NEG_AINCOM
+        # Input pin for the potentiometer on the Waveshare Precision ADC board
+        POTI = POS_AIN0 | NEG_AINCOM
 
-            # The other external input screw terminals of the Waveshare board
-            EXT2, EXT3, EXT4 = POS_AIN2 | NEG_AINCOM, POS_AIN3 | NEG_AINCOM, POS_AIN4 | NEG_AINCOM
-            EXT5, EXT6, EXT7 = POS_AIN5 | NEG_AINCOM, POS_AIN6 | NEG_AINCOM, POS_AIN7 | NEG_AINCOM
+        # Light dependant resistor
+        LDR = POS_AIN1 | NEG_AINCOM
 
-            self.CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT5, EXT6, EXT7)
+        # The other external input screw terminals of the Waveshare board
+        EXT2, EXT3, EXT4 = POS_AIN2 | NEG_AINCOM, POS_AIN3 | NEG_AINCOM, POS_AIN4 | NEG_AINCOM
+        EXT5, EXT6, EXT7 = POS_AIN5 | NEG_AINCOM, POS_AIN6 | NEG_AINCOM, POS_AIN7 | NEG_AINCOM
 
-            self.adc_gain = input_dev.adc_gain
-            self.adc_sample_speed = input_dev.adc_sample_speed
+        self.CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT5, EXT6, EXT7)
 
-            if glob.glob('/dev/spi*'):
-                self.ads = ADS1256()
+        self.adc_gain = self.input_dev.adc_gain
+        self.adc_sample_speed = self.input_dev.adc_sample_speed
 
-                # Perform selected calibration
-                if self.adc_calibration == 'SELFOCAL':
-                    self.ads.cal_self_offset()
-                elif self.adc_calibration == 'SELFGCAL':
-                    self.ads.cal_self_gain()
-                elif self.adc_calibration == 'SELFCAL':
-                    self.ads.cal_self()
-                elif self.adc_calibration == 'SYSOCAL':
-                    self.ads.cal_system_offset()
-                elif self.adc_calibration == 'SYSGCAL':
-                    self.ads.cal_system_gain()
+        if glob.glob('/dev/spi*'):
+            self.sensor = ADS1256()
 
-            else:
-                raise Exception(
-                    "SPI device /dev/spi* not found. Ensure SPI is enabled "
-                    "and the device is recognized/setup by linux.")
+            # Perform selected calibration
+            if self.adc_calibration == 'SELFOCAL':
+                self.sensor.cal_self_offset()
+            elif self.adc_calibration == 'SELFGCAL':
+                self.sensor.cal_self_gain()
+            elif self.adc_calibration == 'SELFCAL':
+                self.sensor.cal_self()
+            elif self.adc_calibration == 'SYSOCAL':
+                self.sensor.cal_system_offset()
+            elif self.adc_calibration == 'SYSGCAL':
+                self.sensor.cal_system_gain()
+
+        else:
+            raise Exception(
+                "SPI device /dev/spi* not found. Ensure SPI is enabled and the device is recognized/setup by linux.")
 
     def get_measurement(self):
-        self._measurements = {}
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         voltages_list = []
         voltages_dict = {}
         count = 0
@@ -159,18 +166,15 @@ class InputModule(AbstractInput):
         # 2 attempts to get valid measurement
         while (self.running and count < 2 and
                (not any(voltages_dict.values()) or 0 in voltages_dict.values())):
-            raw_channels = self.ads.read_sequence(self.CH_SEQUENCE)
-            voltages_list = [i * self.ads.v_per_digit for i in raw_channels]
+            raw_channels = self.sensor.read_sequence(self.CH_SEQUENCE)
+            voltages_list = [i * self.sensor.v_per_digit for i in raw_channels]
             count += 1
 
         if not voltages_list or 0 in voltages_list:
-            self.logger.error(
-                "ADC returned measurement of 0 (indicating "
-                "something is wrong).")
+            self.logger.error("ADC returned measurement of 0 (indicating something is wrong).")
             return
 
         for channel in self.channels_measurement:
-            if self.is_enabled(channel):
-                self.value_set(channel, voltages_list[channel])
+            self.value_set(channel, voltages_list[channel])
 
         return self.return_dict

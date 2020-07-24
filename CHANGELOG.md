@@ -4,6 +4,10 @@
 
  - Fix DS18S20 Input module ([#796](https://github.com/kizniche/mycodo/issues/796))
 
+### Features
+
+ - Add a ([Building a Custom Input Module wiki page](https://github.com/kizniche/Mycodo/wiki/Building-a-Custom-Input)
+
 ### Miscellaneous
 
  - Improve custom output framework

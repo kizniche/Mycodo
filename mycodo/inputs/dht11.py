@@ -81,6 +81,11 @@ class InputModule(AbstractInput):
 
         """
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
+        self.pi = None
+        self.pigpio = None
+        self.control = None
+
         self.temp_temperature = 0
         self.temp_humidity = 0
         self.temp_dew_point = None
@@ -89,30 +94,32 @@ class InputModule(AbstractInput):
         self.powered = False
 
         if not testing:
-            import pigpio
-            from mycodo.mycodo_client import DaemonControl
+            self.initialize_input()
 
-            self.gpio = int(input_dev.gpio_location)
-            self.power_output_id = input_dev.power_output_id
+    def initialize_input(self):
+        import pigpio
+        from mycodo.mycodo_client import DaemonControl
 
-            self.control = DaemonControl()
-            self.pigpio = pigpio
-            self.pi = self.pigpio.pi()
+        self.gpio = int(self.input_dev.gpio_location)
+        self.power_output_id = self.input_dev.power_output_id
 
-            self.high_tick = None
-            self.bit = None
-            self.either_edge_cb = None
+        self.control = DaemonControl()
+        self.pigpio = pigpio
+        self.pi = self.pigpio.pi()
+
+        self.high_tick = None
+        self.bit = None
+        self.either_edge_cb = None
 
         self.start_input()
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        self.return_dict = copy.deepcopy(measurements_dict)
-
         if not self.pi.connected:  # Check if pigpiod is running
-            self.logger.error("Could not connect to pigpiod."
-                              "Ensure it is running and try again.")
-            return None, None, None
+            self.logger.error("Could not connect to pigpiod. Ensure it is running and try again.")
+            return None
+
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         import pigpio
         self.pigpio = pigpio
@@ -122,8 +129,7 @@ class InputModule(AbstractInput):
                 db_retrieve_table_daemon(Output, unique_id=self.power_output_id) and
                 self.control.output_state(self.power_output_id) == 'off'):
             self.logger.error(
-                'Sensor power output {rel} detected as being off. '
-                'Turning on.'.format(rel=self.power_output_id))
+                'Sensor power output {rel} detected as being off. Turning on.'.format(rel=self.power_output_id))
             self.start_input()
             time.sleep(2)
 
@@ -133,18 +139,10 @@ class InputModule(AbstractInput):
         for _ in range(2):
             self.measure_sensor()
             if self.temp_dew_point is not None:
-                if self.is_enabled(0):
-                    self.value_set(0, self.temp_temperature)
-                if self.is_enabled(1):
-                    self.value_set(1, self.temp_humidity)
-                if (self.is_enabled(2) and
-                        self.is_enabled(0) and
-                        self.is_enabled(1)):
-                    self.value_set(2, self.temp_dew_point)
-                if (self.is_enabled(3) and
-                        self.is_enabled(0) and
-                        self.is_enabled(1)):
-                    self.value_set(3, self.temp_vpd)
+                self.value_set(0, self.temp_temperature)
+                self.value_set(1, self.temp_humidity)
+                self.value_set(2, self.temp_dew_point)
+                self.value_set(3, self.temp_vpd)
                 return self.return_dict  # success - no errors
             time.sleep(2)
 
@@ -157,18 +155,10 @@ class InputModule(AbstractInput):
             for _ in range(2):
                 self.measure_sensor()
                 if self.temp_dew_point is not None:
-                    if self.is_enabled(0):
-                        self.value_set(0, self.temp_temperature)
-                    if self.is_enabled(1):
-                        self.value_set(1, self.temp_humidity)
-                    if (self.is_enabled(2) and
-                            self.is_enabled(0) and
-                            self.is_enabled(1)):
-                        self.value_set(2, self.temp_dew_point)
-                    if (self.is_enabled(3) and
-                            self.is_enabled(0) and
-                            self.is_enabled(1)):
-                        self.value_set(3, self.temp_vpd)
+                    self.value_set(0, self.temp_temperature)
+                    self.value_set(1, self.temp_humidity)
+                    self.value_set(2, self.temp_dew_point)
+                    self.value_set(3, self.temp_vpd)
                     return self.return_dict  # success - no errors
                 time.sleep(2)
 
@@ -186,22 +176,17 @@ class InputModule(AbstractInput):
                 self.setup()
             except Exception as except_msg:
                 self.logger.error(
-                    'Could not initialize sensor. Check if gpiod is running. '
-                    'Error: {msg}'.format(msg=except_msg))
+                    'Could not initialize sensor. Check if gpiod is running. Error: {msg}'.format(msg=except_msg))
             self.pi.write(self.gpio, self.pigpio.LOW)
             time.sleep(0.017)  # 17 ms
             self.pi.set_mode(self.gpio, self.pigpio.INPUT)
             self.pi.set_watchdog(self.gpio, 200)
             time.sleep(0.2)
             if self.temp_humidity != 0:
-                self.temp_dew_point = calculate_dewpoint(
-                    self.temp_temperature, self.temp_humidity)
-                self.temp_vpd = calculate_vapor_pressure_deficit(
-                    self.temp_temperature, self.temp_humidity)
+                self.temp_dew_point = calculate_dewpoint(self.temp_temperature, self.temp_humidity)
+                self.temp_vpd = calculate_vapor_pressure_deficit(self.temp_temperature, self.temp_humidity)
         except Exception as e:
-            self.logger.error(
-                "Exception raised when taking a reading: {err}".format(
-                    err=e))
+            self.logger.error("Exception raised when taking a reading: {err}".format(err=e))
         finally:
             self.close()
             return (self.temp_dew_point,
@@ -262,9 +247,7 @@ class InputModule(AbstractInput):
                     # For some reason the port from python 2 to python 3 causes
                     # this bad checksum error to happen during every read
                     # TODO: Investigate how to properly check the checksum in python 3
-                    self.logger.debug(
-                        "Exception raised when taking a reading: "
-                        "Bad Checksum.")
+                    self.logger.debug("Exception raised when taking a reading: Bad Checksum.")
         elif 16 <= self.bit < 24:  # in temperature byte
             self.temp_temperature = (self.temp_temperature << 1) + val
         elif 0 <= self.bit < 8:  # in humidity byte

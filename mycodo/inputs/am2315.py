@@ -92,20 +92,29 @@ class InputModule(AbstractInput):
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
+        self.sensor = None
         self.powered = False
-        self.am = None
+        self.control = None
+        self.power_output_id = None
 
         if not testing:
-            from mycodo.mycodo_client import DaemonControl
+            self.initialize_input()
 
-            self.i2c_bus = input_dev.i2c_bus
-            self.power_output_id = input_dev.power_output_id
-            self.control = DaemonControl()
-            self.start_input()
-            self.am = AM2315(self.i2c_bus)
+    def initialize_input(self):
+        from mycodo.mycodo_client import DaemonControl
+
+        self.power_output_id = self.input_dev.power_output_id
+        self.control = DaemonControl()
+        self.start_input()
+        self.sensor = AM2315(self.input_dev.i2c_bus)
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         temperature = None
@@ -118,8 +127,7 @@ class InputModule(AbstractInput):
                 db_retrieve_table_daemon(Output, unique_id=self.power_output_id) and
                 self.control.output_state(self.power_output_id) == 'off'):
             self.logger.error(
-                'Sensor power output {rel} detected as being off. '
-                'Turning on.'.format(rel=self.power_output_id))
+                'Sensor power output {rel} detected as being off. Turning on.'.format(rel=self.power_output_id))
             self.start_input()
             time.sleep(2)
 
@@ -147,23 +155,12 @@ class InputModule(AbstractInput):
                 time.sleep(2)
 
         if measurements_success:
-            if self.is_enabled(0):
-                self.value_set(0, temperature)
+            self.value_set(0, temperature)
+            self.value_set(1, humidity)
 
-            if self.is_enabled(1):
-                self.value_set(1, humidity)
-
-            if (self.is_enabled(2) and
-                    self.is_enabled(0) and
-                    self.is_enabled(1)):
-                self.value_set(2, calculate_dewpoint(
-                    self.value_get(0), self.value_get(1)))
-
-            if (self.is_enabled(3) and
-                    self.is_enabled(0) and
-                    self.is_enabled(1)):
-                self.value_set(3, calculate_vapor_pressure_deficit(
-                    self.value_get(0), self.value_get(1)))
+            if self.is_enabled(0) and self.is_enabled(1):
+                self.value_set(2, calculate_dewpoint(self.value_get(0), self.value_get(1)))
+                self.value_set(3, calculate_vapor_pressure_deficit(self.value_get(0), self.value_get(1)))
 
             return self.return_dict
         else:
@@ -172,11 +169,9 @@ class InputModule(AbstractInput):
     def return_measurements(self):
         # Retry measurement if CRC fails
         for num_measure in range(3):
-            humidity, temperature = self.am.data()
+            humidity, temperature = self.sensor.data()
             if humidity is None:
-                self.logger.debug(
-                    "Measurement {num} returned failed CRC".format(
-                        num=num_measure))
+                self.logger.debug("Measurement {num} returned failed CRC".format(num=num_measure))
             else:
                 dew_pt = calculate_dewpoint(temperature, humidity)
                 return dew_pt, humidity, temperature

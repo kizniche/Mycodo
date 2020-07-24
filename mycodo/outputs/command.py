@@ -57,20 +57,26 @@ class OutputModule(AbstractOutput):
 
         self.output_setup = None
         self.output_state = None
+        self.on_command = None
+        self.off_command = None
+        self.linux_command_user = None
 
         if not testing:
-            self.output_on_command = output.on_command
-            self.output_off_command = output.off_command
-            self.output_linux_command_user = output.linux_command_user
+            self.initialize_output()
+
+    def initialize_output(self):
+        self.on_command = self.output.on_command
+        self.off_command = self.output.off_command
+        self.linux_command_user = self.output.linux_command_user
 
     def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
         if state == 'on':
             cmd_return, cmd_error, cmd_status = cmd_output(
-                self.output_on_command, user=self.output_linux_command_user)
+                self.on_command, user=self.linux_command_user)
             self.output_state = True
         elif state == 'off':
             cmd_return, cmd_error, cmd_status = cmd_output(
-                self.output_off_command, user=self.output_linux_command_user)
+                self.off_command, user=self.linux_command_user)
             self.output_state = False
         else:
             return
@@ -94,7 +100,7 @@ class OutputModule(AbstractOutput):
             return True
 
     def setup_output(self):
-        if self.output_on_command and self.output_off_command:
+        if self.on_command and self.off_command:
             self.output_setup = True
             self.output_state = False
         else:

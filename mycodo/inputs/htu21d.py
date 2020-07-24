@@ -87,21 +87,26 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        if not testing:
-            import pigpio
+        self.pi = None
+        self.i2c_bus = None
+        self.i2c_address = 0x40  # HTU21D-F Address
 
-            self.i2c_bus = input_dev.i2c_bus
-            self.i2c_address = 0x40  # HTU21D-F Address
-            self.pi = pigpio.pi()
+        if not testing:
+            self.initialize_input()
+
+    def initialize_input(self):
+        import pigpio
+
+        self.i2c_bus = self.input_dev.i2c_bus
+        self.pi = pigpio.pi()
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        self.return_dict = copy.deepcopy(measurements_dict)
+        if not self.pi.connected:
+            self.logger.error("Could not connect to pigpiod. Ensure it is running and try again.")
+            return None
 
-        if not self.pi.connected:  # Check if pigpiod is running
-            self.logger.error("Could not connect to pigpiod."
-                              "Ensure it is running and try again.")
-            return None, None, None
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         self.htu_reset()
         # wtreg = 0xE6
@@ -138,17 +143,11 @@ class InputModule(AbstractInput):
         if self.is_enabled(1):
             self.value_set(1, humidity)
 
-        if (self.is_enabled(2) and
-                self.is_enabled(0) and
-                self.is_enabled(1)):
-            self.value_set(2, calculate_dewpoint(
-                self.value_get(0), self.value_get(1)))
+        if (self.is_enabled(2) and self.is_enabled(0) and self.is_enabled(1)):
+            self.value_set(2, calculate_dewpoint(self.value_get(0), self.value_get(1)))
 
-        if (self.is_enabled(3) and
-                self.is_enabled(0) and
-                self.is_enabled(1)):
-            self.value_set(3, calculate_vapor_pressure_deficit(
-                self.value_get(0), self.value_get(1)))
+        if (self.is_enabled(3) and self.is_enabled(0) and self.is_enabled(1)):
+            self.value_set(3, calculate_vapor_pressure_deficit(self.value_get(0), self.value_get(1)))
 
         return self.return_dict
 

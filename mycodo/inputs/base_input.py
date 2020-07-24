@@ -239,6 +239,9 @@ class AbstractInput(AbstractBaseController):
                               "Check the sensor and Input module is working correctly.")
             return
 
+        if not self.is_enabled(chan):
+            return
+
         self.return_dict[chan]['value'] = float(value)
 
         if timestamp:

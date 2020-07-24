@@ -60,20 +60,24 @@ class OutputModule(AbstractOutput):
 
         self.output_setup = None
         self.output_state = None
+        self.on_command = None
+        self.off_command = None
+        self.run_python_on = None
+        self.run_python_off = None
 
         if not testing:
-            self.output_run_python_on = None
-            self.output_run_python_off = None
-            self.output_unique_id = output.unique_id
-            self.output_on_command = output.on_command
-            self.output_off_command = output.off_command
+            self.initialize_output()
+
+    def initialize_output(self):
+        self.on_command = self.output.on_command
+        self.off_command = self.output.off_command
 
     def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
-        if state == 'on' and self.output_on_command:
-            self.output_run_python_on.output_code_run()
+        if state == 'on' and self.on_command:
+            self.run_python_on.output_code_run()
             self.output_state = True
-        elif state == 'off' and self.output_off_command:
-            self.output_run_python_off.output_code_run()
+        elif state == 'off' and self.off_command:
+            self.run_python_off.output_code_run()
             self.output_state = False
         else:
             return
@@ -90,34 +94,26 @@ class OutputModule(AbstractOutput):
         return False
 
     def setup_output(self):
-        if not self.output_on_command or not self.output_off_command:
+        if not self.on_command or not self.off_command:
             self.logger.error("Output must have both On and Off Python Code set")
             return
 
         try:
-            self.save_output_python_code(self.output_unique_id)
-            file_run_on = '{}/output_on_{}.py'.format(
-                PATH_PYTHON_CODE_USER, self.output_unique_id)
-            file_run_off = '{}/output_off_{}.py'.format(
-                PATH_PYTHON_CODE_USER, self.output_unique_id)
+            self.save_output_python_code(self.unique_id)
+            file_run_on = '{}/output_on_{}.py'.format(PATH_PYTHON_CODE_USER, self.unique_id)
+            file_run_off = '{}/output_off_{}.py'.format(PATH_PYTHON_CODE_USER, self.unique_id)
 
-            module_name = "mycodo.output.{}".format(
-                os.path.basename(file_run_on).split('.')[0])
-            spec = importlib.util.spec_from_file_location(
-                module_name, file_run_on)
+            module_name = "mycodo.output.{}".format(os.path.basename(file_run_on).split('.')[0])
+            spec = importlib.util.spec_from_file_location(module_name, file_run_on)
             output_run_on = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(output_run_on)
-            self.output_run_python_on = output_run_on.OutputRun(
-                self.logger, self.output_unique_id)
+            self.run_python_on = output_run_on.OutputRun(self.logger, self.unique_id)
 
-            module_name = "mycodo.output.{}".format(
-                os.path.basename(file_run_off).split('.')[0])
-            spec = importlib.util.spec_from_file_location(
-                module_name, file_run_off)
+            module_name = "mycodo.output.{}".format(os.path.basename(file_run_off).split('.')[0])
+            spec = importlib.util.spec_from_file_location(module_name, file_run_off)
             output_run_off = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(output_run_off)
-            self.output_run_python_off = output_run_off.OutputRun(
-                self.logger, self.output_unique_id)
+            self.run_python_off = output_run_off.OutputRun(self.logger, self.unique_id)
 
             self.output_setup = True
         except Exception:
@@ -145,22 +141,20 @@ class OutputRun:
     def output_code_run(self):
 """
 
-        code_on_indented = textwrap.indent(self.output_on_command, ' ' * 8)
+        code_on_indented = textwrap.indent(self.on_command, ' ' * 8)
         full_command_on = pre_statement_run + code_on_indented
 
-        code_off_indented = textwrap.indent(self.output_off_command, ' ' * 8)
+        code_off_indented = textwrap.indent(self.off_command, ' ' * 8)
         full_command_off = pre_statement_run + code_off_indented
 
         assure_path_exists(PATH_PYTHON_CODE_USER)
-        file_run = '{}/output_on_{}.py'.format(
-            PATH_PYTHON_CODE_USER, unique_id)
+        file_run = '{}/output_on_{}.py'.format(PATH_PYTHON_CODE_USER, unique_id)
         with open(file_run, 'w') as fw:
             fw.write('{}\n'.format(full_command_on))
             fw.close()
         set_user_grp(file_run, 'mycodo', 'mycodo')
 
-        file_run = '{}/output_off_{}.py'.format(
-            PATH_PYTHON_CODE_USER, unique_id)
+        file_run = '{}/output_off_{}.py'.format(PATH_PYTHON_CODE_USER, unique_id)
         with open(file_run, 'w') as fw:
             fw.write('{}\n'.format(full_command_off))
             fw.close()

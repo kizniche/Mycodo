@@ -70,34 +70,35 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.atlas_device = None
-        self.led = None
+        self.interface = None
 
+        self.led = None
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            self.input_dev = input_dev
-            self.interface = input_dev.interface
+            self.initialize_input()
 
-            try:
-                self.atlas_device = setup_atlas_device(self.input_dev)
-            except Exception:
-                self.logger.exception("Exception while initializing sensor")
+    def initialize_input(self):
+        self.interface = self.input_dev.interface
 
-            if self.atlas_device:
-                if self.led == 'on':
-                    self.atlas_device.query('L,1')
-                elif self.led == 'off':
-                    self.atlas_device.query('L,0')
+        try:
+            self.atlas_device = setup_atlas_device(self.input_dev)
+            if self.led == 'on':
+                self.atlas_device.query('L,1')
+            elif self.led == 'off':
+                self.atlas_device.query('L,0')
+        except Exception:
+            self.logger.exception("Exception while initializing sensor")
 
     def get_measurement(self):
         """ Gets the Atlas Scientific pressure sensor measurement """
+        if not self.atlas_device.setup:
+            self.logger.error("Input not set up")
+            return
+
         pressure = None
         self.return_dict = copy.deepcopy(measurements_dict)
-
-        if not self.atlas_device.setup:
-            self.logger.error("Sensor not set up")
-            return
 
         if self.led == 'measure':
             self.atlas_device.query('L,1')
@@ -106,8 +107,7 @@ class InputModule(AbstractInput):
         if self.interface in ['FTDI', 'UART']:
             press_status, press_list = self.atlas_device.query('R')
             if press_list:
-                self.logger.debug(
-                    "Returned list: {lines}".format(lines=press_list))
+                self.logger.debug("Returned list: {lines}".format(lines=press_list))
 
             # Find float value in list
             float_value = None
@@ -120,19 +120,14 @@ class InputModule(AbstractInput):
                 self.logger.error('"check probe" returned from sensor')
             elif str_is_float(float_value):
                 pressure = float(float_value)
-                self.logger.debug(
-                    'Found float value: {val}'.format(val=pressure))
+                self.logger.debug('Found float value: {val}'.format(val=pressure))
             else:
-                self.logger.error(
-                    'Value or "check probe" not found in list: '
-                    '{val}'.format(val=press_list))
+                self.logger.error('Value or "check probe" not found in list: {val}'.format(val=press_list))
 
         elif self.interface == 'I2C':
             pressure_status, pressure_str = self.atlas_device.query('R')
             if pressure_status == 'error':
-                self.logger.error(
-                    "Sensor read unsuccessful: {err}".format(
-                        err=pressure_str))
+                self.logger.error("Sensor read unsuccessful: {err}".format(err=pressure_str))
             elif pressure_status == 'success':
                 pressure = float(pressure_str)
 

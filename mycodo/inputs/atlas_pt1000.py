@@ -52,35 +52,38 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
         self.atlas_device = None
+        self.interface = None
 
         if not testing:
-            self.input_dev = input_dev
-            self.interface = input_dev.interface
+            self.initialize_input()
 
-            try:
-                self.atlas_device = setup_atlas_device(self.input_dev)
-            except Exception:
-                self.logger.exception("Exception while initializing sensor")
+    def initialize_input(self):
+        self.interface = self.input_dev.interface
 
-            # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
-            self.get_measurement()
+        try:
+            self.atlas_device = setup_atlas_device(self.input_dev)
+        except Exception:
+            self.logger.exception("Exception while initializing sensor")
+
+        # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
+        self.get_measurement()
 
     def get_measurement(self):
         """ Gets the Atlas PT1000's temperature in Celsius """
+        if not self.atlas_device.setup:
+            self.logger.error("Input not set up")
+            return
+
         temp = None
         self.return_dict = copy.deepcopy(measurements_dict)
-
-        if not self.atlas_device.setup:
-            self.logger.error("Sensor not set up")
-            return
 
         # Read sensor via FTDI or UART
         if self.interface in ['FTDI', 'UART']:
             temp_status, temp_list = self.atlas_device.query('R')
             if temp_list:
-                self.logger.debug(
-                    "Returned list: {lines}".format(lines=temp_list))
+                self.logger.debug("Returned list: {lines}".format(lines=temp_list))
 
             # Find float value in list
             float_value = None
@@ -93,20 +96,15 @@ class InputModule(AbstractInput):
                 self.logger.error('"check probe" returned from sensor')
             elif str_is_float(float_value):
                 temp = float(float_value)
-                self.logger.debug(
-                    'Found float value: {val}'.format(val=temp))
+                self.logger.debug('Found float value: {val}'.format(val=temp))
             else:
-                self.logger.error(
-                    'Value or "check probe" not found in list: '
-                    '{val}'.format(val=temp_list))
+                self.logger.error('Value or "check probe" not found in list: {val}'.format(val=temp_list))
 
         # Read sensor via I2C
         elif self.interface == 'I2C':
             temp_status, temp_str = self.atlas_device.query('R')
             if temp_status == 'error':
-                self.logger.error(
-                    "Sensor read unsuccessful: {err}".format(
-                        err=temp_str))
+                self.logger.error("Sensor read unsuccessful: {err}".format(err=temp_str))
             elif temp_status == 'success':
                 temp = float(temp_str)
 

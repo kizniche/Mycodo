@@ -84,44 +84,44 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
-        self.atlas_device = None
-        self.ftdi_location = None
-        self.uart_location = None
-        self.i2c_address = None
-        self.i2c_bus = None
 
-        # Initialize custom options
+        self.atlas_device = None
+        self.interface = None
+        self.calibrate_sensor_measure = None
+
         self.max_age = None
-        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            self.interface = input_dev.interface
-            self.calibrate_sensor_measure = input_dev.calibrate_sensor_measure
+            self.initialize_input()
 
-            try:
-                self.atlas_device = setup_atlas_device(self.input_dev)
-            except Exception:
-                self.logger.exception("Exception while initializing sensor")
+    def initialize_input(self):
+        self.interface = self.input_dev.interface
+        self.calibrate_sensor_measure = self.input_dev.calibrate_sensor_measure
 
-            # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
-            self.get_measurement()
+        try:
+            self.atlas_device = setup_atlas_device(self.input_dev)
+        except Exception:
+            self.logger.exception("Exception while initializing sensor")
+
+        # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
+        self.get_measurement()
 
     def get_measurement(self):
-        """ Gets the sensor's DO measurement via UART/I2C """
+        """ Gets the sensor's DO measurement """
+        if not self.atlas_device.setup:
+            self.logger.error("Input not set up")
+            return
+
         do = None
         self.return_dict = copy.deepcopy(measurements_dict)
-
-        if not self.atlas_device.setup:
-            return
 
         # Read sensor via FTDI or UART
         if self.interface in ['FTDI', 'UART']:
             do_status, do_list = self.atlas_device.query('R')
             if do_list:
-                self.logger.debug(
-                    "Returned list: {lines}".format(lines=do_list))
+                self.logger.debug("Returned list: {lines}".format(lines=do_list))
 
             # Find float value in list
             float_value = None
@@ -134,20 +134,15 @@ class InputModule(AbstractInput):
                 self.logger.error('"check probe" returned from sensor')
             elif str_is_float(float_value):
                 do = float(float_value)
-                self.logger.debug(
-                    'Found float value: {val}'.format(val=do))
+                self.logger.debug('Found float value: {val}'.format(val=do))
             else:
-                self.logger.error(
-                    'Value or "check probe" not found in list: '
-                    '{val}'.format(val=do_list))
+                self.logger.error('Value or "check probe" not found in list: {val}'.format(val=do_list))
 
         # Read sensor via I2C
         elif self.interface == 'I2C':
             ec_status, ec_str = self.atlas_device.query('R')
             if ec_status == 'error':
-                self.logger.error(
-                    "Sensor read unsuccessful: {err}".format(
-                        err=ec_str))
+                self.logger.error("Sensor read unsuccessful: {err}".format(err=ec_str))
             elif ec_status == 'success':
                 do = float(ec_str)
 

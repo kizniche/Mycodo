@@ -45,14 +45,17 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     """
     A sensor support class that measures ram used by the Mycodo daemon
-
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
-        self._disk_space = None
+
+        self.control = None
 
         if not testing:
-            self.control = DaemonControl()
+            self.initialize_input()
+
+    def initialize_input(self):
+        self.control = DaemonControl()
 
     def get_measurement(self):
         """ Gets the measurement in units by reading resource """
@@ -60,15 +63,9 @@ class InputModule(AbstractInput):
 
         try:
             version = MYCODO_VERSION.split('.')
-
-            if self.is_enabled(0):
-                self.value_set(0, int(version[0]))
-
-            if self.is_enabled(1):
-                self.value_set(1, int(version[1]))
-
-            if self.is_enabled(2):
-                self.value_set(2, int(version[2]))
+            self.value_set(0, int(version[0]))
+            self.value_set(1, int(version[1]))
+            self.value_set(2, int(version[2]))
 
             return self.return_dict
         except Exception:

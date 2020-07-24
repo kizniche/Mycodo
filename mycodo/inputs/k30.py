@@ -41,40 +41,38 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """ A sensor support class that monitors the K30's CO2 concentration """
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        if not testing:
-            import serial
+        self.ser = None
 
-            self.uart_location = input_dev.uart_location
-            self.baud_rate = input_dev.baud_rate
-            # Check if device is valid
-            self.serial_device = is_device(self.uart_location)
-            if self.serial_device:
-                try:
-                    self.ser = serial.Serial(
-                        port=self.serial_device,
-                        baudrate=self.baud_rate,
-                        timeout=1,
-                        writeTimeout=5)
-                except serial.SerialException:
-                    self.logger.exception('Opening serial')
-            else:
-                self.logger.error(
-                    'Could not open "{dev}". '
-                    'Check the device location is correct.'.format(
-                        dev=self.uart_location))
+        if not testing:
+            self.initialize_input()
+
+    def initialize_input(self):
+        import serial
+
+        # Check if device is valid
+        if is_device(self.input_dev.uart_location):
+            try:
+                self.ser = serial.Serial(
+                    port=self.input_dev.uart_location,
+                    baudrate=self.input_dev.baud_rate,
+                    timeout=1,
+                    writeTimeout=5)
+            except serial.SerialException:
+                self.logger.exception('Opening serial')
+        else:
+            self.logger.error('Could not open "{dev}". Check the device location is correct.'.format(
+                dev=self.input_dev.uart_location))
 
     def get_measurement(self):
         """ Gets the K30's CO2 concentration in ppmv via UART"""
-        if not self.serial_device:  # Don't measure if device isn't validated
-            return None
+        if not self.ser:
+            self.logger.error("Input not set up")
+            return
 
         self.return_dict = copy.deepcopy(measurements_dict)
-
-        co2 = None
 
         self.ser.flushInput()
         time.sleep(1)
@@ -85,7 +83,6 @@ class InputModule(AbstractInput):
             high = resp[3]
             low = resp[4]
             co2 = (high * 256) + low
-
             self.value_set(0, co2)
 
         return self.return_dict

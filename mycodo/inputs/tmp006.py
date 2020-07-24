@@ -48,23 +48,27 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """ A sensor support class that monitors the TMP006's die and object temperatures """
-
     def __init__(self, input_dev,  testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
-        self._temperature_die = None
-        self._temperature_object = None
+
+        self.sensor = None
 
         if not testing:
-            from Adafruit_TMP import TMP006
+            self.initialize_input()
 
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
-            self.sensor = TMP006.TMP006(
-                address=self.i2c_address,
-                busnum=self.i2c_bus)
+    def initialize_input(self):
+        from Adafruit_TMP import TMP006
+
+        self.sensor = TMP006.TMP006(
+            address=int(str(self.input_dev.i2c_location), 16),
+            busnum=self.input_dev.i2c_bus)
 
     def get_measurement(self):
         """ Gets the TMP006's temperature in Celsius """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         self.sensor.begin()

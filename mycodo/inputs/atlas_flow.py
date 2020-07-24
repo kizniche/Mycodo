@@ -210,32 +210,33 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
         self.atlas_device = None
+        self.interface = None
         self.sensor_is_measuring = False
         self.sensor_is_clearing = False
 
-        # Initialize custom options
         self.flow_meter_type = None
         self.flow_rate_unit = None
         self.internal_resistor = None
         self.custom_k_values = None
         self.custom_k_value_time_base = None
-        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            self.input_dev = input_dev
-            self.interface = input_dev.interface
+            self.initialize_input()
 
-            try:
-                self.initialize_sensor()
-            except Exception:
-                self.logger.exception("Exception while initializing sensor")
+    def initialize_input(self):
+        self.interface = self.input_dev.interface
 
-    def initialize_sensor(self):
-        self.atlas_device = setup_atlas_device(self.input_dev)
+        try:
+            self.atlas_device = setup_atlas_device(self.input_dev)
+            self.set_sensor_settings()
+        except Exception:
+            self.logger.exception("Exception while initializing sensor")
 
+    def set_sensor_settings(self):
         if self.is_enabled(0):
             self.atlas_device.query('O,TV,1')
             self.logger.debug("Enabling Total Volume measurement")
@@ -261,53 +262,39 @@ class InputModule(AbstractInput):
                             self.atlas_device.query('K,{}'.format(each_k))
                             self.logger.debug("Set K Value: {}".format(each_k))
                         else:
-                            self.logger.error(
-                                "Improperly-formatted K-value: {}".format(
-                                    each_k))
+                            self.logger.error("Improperly-formatted K-value: {}".format(each_k))
                 elif ',' in self.custom_k_values:
                     self.atlas_device.query('K,clear')
                     self.logger.debug("Cleared K Values")
-                    self.atlas_device.query('K,{}'.format(
-                        self.custom_k_values))
-                    self.logger.debug("Set K Value: {}".format(
-                        self.custom_k_values))
+                    self.atlas_device.query('K,{}'.format(self.custom_k_values))
+                    self.logger.debug("Set K Value: {}".format(self.custom_k_values))
                 else:
-                    self.logger.error(
-                        "Improperly-formatted K-value: {}".format(
-                            self.custom_k_values))
-                self.atlas_device.query('Vp,{}'.format(
-                    self.custom_k_value_time_base))
-                self.logger.debug("Set Custom Time Base: {}".format(
-                    self.custom_k_value_time_base))
+                    self.logger.error("Improperly-formatted K-value: {}".format(self.custom_k_values))
+                self.atlas_device.query('Vp,{}'.format(self.custom_k_value_time_base))
+                self.logger.debug("Set Custom Time Base: {}".format(self.custom_k_value_time_base))
             else:
-                self.atlas_device.query('Set,{}'.format(
-                    self.flow_meter_type))
-                self.logger.debug("Set Flow Meter: {}".format(
-                    self.flow_meter_type))
+                self.atlas_device.query('Set,{}'.format(self.flow_meter_type))
+                self.logger.debug("Set Flow Meter: {}".format(self.flow_meter_type))
 
         if self.flow_rate_unit:
-            self.atlas_device.query('Frp,{}'.format(
-                self.flow_rate_unit))
-            self.logger.debug("Set Flow Rate: l/{}".format(
-                self.flow_rate_unit))
+            self.atlas_device.query('Frp,{}'.format(self.flow_rate_unit))
+            self.logger.debug("Set Flow Rate: l/{}".format(self.flow_rate_unit))
 
         if self.internal_resistor and self.internal_resistor != 'atlas':
-            self.atlas_device.query('P,{}'.format(
-                int(self.internal_resistor)))
+            self.atlas_device.query('P,{}'.format(int(self.internal_resistor)))
             if self.internal_resistor == '0':
                 self.logger.debug("Internal Resistor disabled")
             else:
-                self.logger.debug("Internal Resistor set: {} K".format(
-                    self.internal_resistor))
+                self.logger.debug("Internal Resistor set: {} K".format(self.internal_resistor))
 
     def get_measurement(self):
-        """ Gets the sensor's Electrical Conductivity measurement via UART/I2C """
+        """ Gets the sensor's Electrical Conductivity measurement """
+        if not self.atlas_device.setup:
+            self.logger.error("Input not set up")
+            return
+
         return_string = None
         self.return_dict = copy.deepcopy(measurements_dict)
-
-        if not self.atlas_device.setup:
-            self.logger.error("Sensor not set up")
-            return
 
         while self.sensor_is_clearing:
             time.sleep(0.1)
@@ -317,8 +304,7 @@ class InputModule(AbstractInput):
         if self.interface in ['FTDI', 'UART']:
             flow_status, flow_list = self.atlas_device.query('R')
             if flow_list:
-                self.logger.debug(
-                    "Returned list: {lines}".format(lines=flow_list))
+                self.logger.debug("Returned list: {lines}".format(lines=flow_list))
 
                 # Check for "check probe"
                 for each_split in flow_list:
@@ -336,9 +322,7 @@ class InputModule(AbstractInput):
         elif self.interface == 'I2C':
             return_status, return_string = self.atlas_device.query('R')
             if return_status == 'error':
-                self.logger.error(
-                    "Sensor read unsuccessful: {err}".format(
-                        err=return_string))
+                self.logger.error("Sensor read unsuccessful: {err}".format(err=return_string))
             elif return_status == 'success':
                 return_string = return_string
 

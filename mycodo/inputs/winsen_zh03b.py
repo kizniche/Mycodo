@@ -104,57 +104,53 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.ser = None
         self.fan_is_on = False
 
-        # Initialize custom options
         self.fan_modulate = None
         self.fan_seconds = None
         self.number_measurements = None
-        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            import serial
-            import binascii
+            self.initialize_input()
 
-            self.binascii = binascii
-            self.uart_location = input_dev.uart_location
-            self.baud_rate = input_dev.baud_rate
-            # Check if device is valid
-            self.serial_device = is_device(self.uart_location)
+    def initialize_input(self):
+        import serial
+        import binascii
 
-            if self.serial_device:
-                try:
-                    self.ser = serial.Serial(
-                        port=self.serial_device,
-                        baudrate=self.baud_rate,
-                        parity=serial.PARITY_NONE,
-                        stopbits=serial.STOPBITS_ONE,
-                        bytesize=serial.EIGHTBITS,
-                        timeout=10,
-                        writeTimeout=10
-                    )
-                    self.ser.flushInput()
-                    self.set_qa()
+        if is_device(self.input_dev.uart_location):
+            try:
+                self.binascii = binascii
+                self.ser = serial.Serial(
+                    port=self.input_dev.uart_location,
+                    baudrate=self.input_dev.baud_rate,
+                    parity=serial.PARITY_NONE,
+                    stopbits=serial.STOPBITS_ONE,
+                    bytesize=serial.EIGHTBITS,
+                    timeout=10,
+                    writeTimeout=10
+                )
+                self.ser.flushInput()
+                self.set_qa()
 
-                    if not self.fan_modulate:
-                        self.dormant_mode('run')
+                if not self.fan_modulate:
+                    self.dormant_mode('run')
 
-                    time.sleep(0.1)
+                time.sleep(0.1)
 
-                except serial.SerialException:
-                    self.logger.exception('Opening serial')
-            else:
-                self.logger.error(
-                    'Could not open "{dev}". '
-                    'Check the device location is correct.'.format(
-                        dev=self.uart_location))
+            except serial.SerialException:
+                self.logger.exception('Opening serial')
+        else:
+            self.logger.error('Could not open "{dev}". Check the device location is correct.'.format(
+                dev=self.input_dev.uart_location))
 
     def get_measurement(self):
-        """ Gets the WINSEN_ZH03B's Particulate concentration in μg/m^3 via UART """
-        if not self.serial_device:  # Don't measure if device isn't validated
-            return None
+        """ Gets the WINSEN_ZH03B's Particulate concentration in μg/m^3 """
+        if not self.ser:
+            self.logger.error("Input not set up")
+            return
 
         pm_1_0 = []
         pm_2_5 = []
@@ -166,36 +162,27 @@ class InputModule(AbstractInput):
             # Allow the fan to run for a duration before querying sensor
             self.dormant_mode('run')
             start_time = time.time()
-            while (self.running and
-                    time.time() - start_time < self.fan_seconds):
+            while self.running and time.time() - start_time < self.fan_seconds:
                 time.sleep(0.01)
 
         # Acquire measurements
         for i in range(self.number_measurements):
             self.logger.debug("Acquiring measurement {}".format(i + 1))
             pm_1_0_tmp, pm_2_5_tmp, pm_10_0_tmp = self.qa_read_sample()
-            self.logger.debug(
-                "Measurements: PM1 {}, PM2.5 {}, PM10 {}".format(
-                    pm_1_0_tmp, pm_2_5_tmp, pm_10_0_tmp))
+            self.logger.debug("Measurements: PM1 {}, PM2.5 {}, PM10 {}".format(pm_1_0_tmp, pm_2_5_tmp, pm_10_0_tmp))
 
             if pm_1_0_tmp > 1000:
-                self.logger.debug(
-                    "PM1 measurement out of range (over 1000 ug/m^3): {}. "
-                    "Discarding.".format(pm_1_0_tmp))
+                self.logger.debug("PM1 out of range (over 1000 ug/m^3): {}. Discarding.".format(pm_1_0_tmp))
             else:
                 pm_1_0.append(pm_1_0_tmp)
 
             if pm_2_5_tmp > 1000:
-                self.logger.debug(
-                    "PM2.5 measurement out of range (over 1000 ug/m^3): {}. "
-                    "Discarding.".format(pm_2_5_tmp))
+                self.logger.debug("PM2.5 out of range (over 1000 ug/m^3): {}. Discarding.".format(pm_2_5_tmp))
             else:
                 pm_2_5.append(pm_2_5_tmp)
 
             if pm_10_0_tmp > 1000:
-                self.logger.debug(
-                    "PM10 measurement out of range (over 1000 ug/m^3): {}. "
-                    "Discarding.".format(pm_10_0_tmp))
+                self.logger.debug("PM10 out of range (over 1000 ug/m^3): {}. Discarding.".format(pm_10_0_tmp))
             else:
                 pm_10_0.append(pm_10_0_tmp)
 
@@ -203,18 +190,11 @@ class InputModule(AbstractInput):
 
         # Store measurements
         if len(pm_1_0) < 1 or len(pm_2_5) < 1 or len(pm_10_0) < 1:
-            self.logger.debug(
-                "Error: Each particle size must have at least 1 valid "
-                "measurement to store.")
+            self.logger.debug("Error: Each particle size must have at least 1 valid measurement to store.")
         else:
-            if self.is_enabled(0):
-                self.value_set(0, sum(pm_1_0) / len(pm_1_0))
-
-            if self.is_enabled(1):
-                self.value_set(1, sum(pm_2_5) / len(pm_2_5))
-
-            if self.is_enabled(2):
-                self.value_set(2, sum(pm_10_0) / len(pm_10_0))
+            self.value_set(0, sum(pm_1_0) / len(pm_1_0))
+            self.value_set(1, sum(pm_2_5) / len(pm_2_5))
+            self.value_set(2, sum(pm_10_0) / len(pm_10_0))
 
         # Turn the fan off
         if self.fan_modulate:

@@ -42,19 +42,26 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """ A sensor support class that monitors the MAX31850K's temperature """
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        if not testing:
-            from w1thermsensor import W1ThermSensor
+        self.sensor = None
 
-            self.location = input_dev.location
-            self.sensor = W1ThermSensor(
-                W1ThermSensor.THERM_SENSOR_MAX31850K, self.location)
+        if not testing:
+            self.initialize_input()
+
+    def initialize_input(self):
+        from w1thermsensor import W1ThermSensor
+
+        self.sensor = W1ThermSensor(
+            W1ThermSensor.THERM_SENSOR_MAX31850K, self.input_dev.location)
 
     def get_measurement(self):
         """ Gets the MAX31850K's temperature in Celsius """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         n = 2
@@ -65,6 +72,5 @@ class InputModule(AbstractInput):
             except Exception as e:
                 if i == n:
                     self.logger.exception(
-                        "{cls} raised an exception when taking a reading: "
-                        "{err}".format(cls=type(self).__name__, err=e))
+                        "{cls} raised an exception when taking a reading: {err}".format(cls=type(self).__name__, err=e))
                 time.sleep(1)

@@ -43,24 +43,27 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """
-    A sensor support class that pings a server and returns 1 if it's up
-    and 0 if it's down.
+    A sensor support class that pings a server and returns 1 if it's up and 0 if it's down.
     """
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.location = None
+        self.port = None
+
         if not testing:
-            self.location = input_dev.location
-            self.port = input_dev.port
+            self.initialize_input()
+
+    def initialize_input(self):
+        self.location = self.input_dev.location
+        self.port = self.input_dev.port
 
     def get_measurement(self):
         """ Determine if the return value of the command is a number """
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        response = os.system(
-            "nc -zv {host} {port} > /dev/null 2>&1".format(
-                port=self.port,  host=self.location))
+        response = os.system("nc -zv {host} {port} > /dev/null 2>&1".format(
+            port=self.port,  host=self.location))
 
         if response == 0:
             self.value_set(0, 1)

@@ -114,23 +114,27 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        # Initialize custom options
+        # Initialize variables
+        self.random = None
+        self.interface = None
+        self.i2c_address = None
+        self.i2c_bus = None
+
+        # Initialize custom options from INPUT_INFORMATION
         self.option_one = False
         # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
-        if not testing:
-            # Load dependent modules
-            import random
-            self.random = random
+    def initialize_input(self):
+        # Load dependent modules
+        import random
+        self.random = random
 
-            self.interface = input_dev.interface
-
-            # Retrieve options
-            # These options can be used here to initialize an I2C device or elsewhere in this class
-            self.i2c_address = input_dev.i2c_location
-            self.i2c_bus = input_dev.i2c_bus
+        # Set options that be used elsewhere in this class
+        self.interface = self.input_dev.interface
+        self.i2c_address = self.input_dev.i2c_location
+        self.i2c_bus = self.input_dev.i2c_bus
 
     def get_measurement(self):
         """ Measures temperature and humidity """
@@ -148,12 +152,14 @@ class InputModule(AbstractInput):
                 "This INFO message will always be displayed. "
                 "Acquiring measurements...")
 
-            if self.is_enabled(0):
+            if self.is_enabled(0):  # Only store the measurement if it's enabled
                 self.value_set(0, temperature)
 
-            if self.is_enabled(1):
+            if self.is_enabled(1):  # Only store the measurement if it's enabled
                 self.value_set(1, humidity)
 
+            # Only store the measurement if measurements 0, 1, and 2 are enabled
+            # Since the calculation of measurement 2 depend on measurements 0 and 1
             if (self.is_enabled(2) and
                     self.is_enabled(0) and
                     self.is_enabled(1)):

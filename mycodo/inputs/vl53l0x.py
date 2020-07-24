@@ -93,56 +93,58 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.sensor = None
         self.setting_i2c = False
         self.measuring = False
 
-        # Initialize custom option variables to None
-        self.timing_budget = 0
-
-        # Set custom option variables to defaults or user-set values
+        self.timing_budget = None
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            import VL53L0X
-            self.VL53L0X = VL53L0X
+            self.initialize_input()
 
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
-            self.sensor = self.VL53L0X.VL53L0X(
-                i2c_bus=self.i2c_bus, i2c_address=self.i2c_address)
+    def initialize_input(self):
+        import VL53L0X
 
-            self.sensor.open()
+        self.VL53L0X = VL53L0X
+        self.i2c_bus = self.input_dev.i2c_bus
 
-            # GOOD = 0  # 33 ms timing budget 1.2m range
-            # BETTER = 1  # 66 ms timing budget 1.2m range
-            # BEST = 2  # 200 ms 1.2m range
-            # LONG_RANGE = 3  # 33 ms timing budget 2m range
-            # HIGH_SPEED = 4  # 20 ms timing budget 1.2m range
-            if self.timing_budget == '0':
-                self.timing_budget = VL53L0X.Vl53l0xAccuracyMode.GOOD
-            elif self.timing_budget == '1':
-                self.timing_budget = VL53L0X.Vl53l0xAccuracyMode.BETTER
-            elif self.timing_budget == '2':
-                self.timing_budget = VL53L0X.Vl53l0xAccuracyMode.BEST
-            elif self.timing_budget == '3':
-                self.timing_budget = VL53L0X.Vl53l0xAccuracyMode.LONG_RANGE
-            elif self.timing_budget == '4':
-                self.timing_budget = VL53L0X.Vl53l0xAccuracyMode.HIGH_SPEED
-            self.sensor.start_ranging(self.timing_budget)
+        self.sensor = self.VL53L0X.VL53L0X(
+            i2c_bus=self.i2c_bus,
+            i2c_address=int(str(self.input_dev.i2c_location), 16))
+        self.sensor.open()
+
+        # GOOD = 0  # 33 ms timing budget 1.2m range
+        # BETTER = 1  # 66 ms timing budget 1.2m range
+        # BEST = 2  # 200 ms 1.2m range
+        # LONG_RANGE = 3  # 33 ms timing budget 2m range
+        # HIGH_SPEED = 4  # 20 ms timing budget 1.2m range
+        if self.timing_budget == '0':
+            self.timing_budget = VL53L0X.Vl53l0xAccuracyMode.GOOD
+        elif self.timing_budget == '1':
+            self.timing_budget = VL53L0X.Vl53l0xAccuracyMode.BETTER
+        elif self.timing_budget == '2':
+            self.timing_budget = VL53L0X.Vl53l0xAccuracyMode.BEST
+        elif self.timing_budget == '3':
+            self.timing_budget = VL53L0X.Vl53l0xAccuracyMode.LONG_RANGE
+        elif self.timing_budget == '4':
+            self.timing_budget = VL53L0X.Vl53l0xAccuracyMode.HIGH_SPEED
+        self.sensor.start_ranging(self.timing_budget)
 
     def get_measurement(self):
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
-        length = None
 
         while self.setting_i2c:
             time.sleep(0.1)
         self.measuring = True
 
         length = self.sensor.get_distance()
-
-        if self.is_enabled(0):
-            self.value_set(0, length)
+        self.value_set(0, length)
 
         self.measuring = False
 
@@ -162,13 +164,12 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             self.sensor.change_address(i2c_address)
             self.sensor = self.VL53L0X.VL53L0X(
-                i2c_bus=self.i2c_bus, i2c_address=i2c_address)
-            self.logger.info(
-                "Sensor I2C address set to {add}. Command executed: sensor.change_address({a_int})".format(
+                i2c_bus=self.i2c_bus,
+                i2c_address=i2c_address)
+            self.logger.info("Sensor I2C address set to {add}. Command executed: sensor.change_address({a_int})".format(
                     add=args_dict['new_i2c_address'], a_int=i2c_address))
         except:
-            self.logger.error(
-                "Could not parse I2C address: {}. Ensure it's entered in the correct format.".format(
+            self.logger.error("Could not parse I2C address: {}. Ensure it's entered in the correct format.".format(
                     args_dict['new_i2c_address']))
         finally:
             self.sensor.open()

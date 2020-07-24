@@ -54,38 +54,41 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """ A sensor support class that monitors the TSL2561's lux """
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        if not testing:
-            from tsl2561 import TSL2561
+        self.sensor = None
 
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
-            self.tsl = TSL2561(
-                address=self.i2c_address,
-                busnum=self.i2c_bus)
+        if not testing:
+            self.initialize_input()
+
+    def initialize_input(self):
+        from tsl2561 import TSL2561
+
+        self.sensor = TSL2561(
+            address=int(str(self.input_dev.i2c_location), 16),
+            busnum=self.input_dev.i2c_bus)
 
     def get_lux(self):
         self.return_dict = copy.deepcopy(measurements_dict)
-        full, ir = self.tsl._get_luminosity()
+        full, ir = self.sensor._get_luminosity()
 
-        if self.is_enabled(0):
-            self.value_set(0, full)
-
-        if self.is_enabled(1):
-            self.value_set(1, ir)
+        self.value_set(0, full)
+        self.value_set(1, ir)
 
         if self.is_enabled(2):
-            self.value_set(2, self.tsl.lux())
+            self.value_set(2, self.sensor.lux())
 
     def get_measurement(self):
         """ Gets the TSL2561's lux """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         from tsl2561.constants import TSL2561_INTEGRATIONTIME_402MS
-        self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_402MS)
+        self.sensor.set_integration_time(TSL2561_INTEGRATIONTIME_402MS)
         saturated = False
         try:
             self.get_lux()
@@ -101,7 +104,7 @@ class InputModule(AbstractInput):
 
         if saturated:
             from tsl2561.constants import TSL2561_INTEGRATIONTIME_101MS
-            self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_101MS)
+            self.sensor.set_integration_time(TSL2561_INTEGRATIONTIME_101MS)
             saturated = False
             try:
                 self.get_lux()
@@ -117,7 +120,7 @@ class InputModule(AbstractInput):
 
         if saturated:
             from tsl2561.constants import TSL2561_INTEGRATIONTIME_13MS
-            self.tsl.set_integration_time(TSL2561_INTEGRATIONTIME_13MS)
+            self.sensor.set_integration_time(TSL2561_INTEGRATIONTIME_13MS)
             try:
                 self.get_lux()
                 return self.return_dict
@@ -130,15 +133,3 @@ class InputModule(AbstractInput):
                     return self.return_dict
                 else:
                     self.logger.exception("get_measurement() Error")
-
-
-if __name__ == "__main__":
-    from types import SimpleNamespace
-    settings = SimpleNamespace()
-    settings.id = 1
-    settings.unique_id = '0000-0000'
-    settings.i2c_location = '0x39'
-    settings.i2c_bus = 1
-
-    measurements = InputModule(settings).next()
-    print("Measurements: {}".format(measurements))

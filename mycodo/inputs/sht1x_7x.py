@@ -68,55 +68,49 @@ class InputModule(AbstractInput):
     """
     A sensor support class that measures the SHT1x7x's humidity and temperature
     and calculates the dew point
-
     """
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
-        self._dew_point = None
-        self._humidity = None
-        self._temperature = None
+
+        self.sensor = None
 
         if not testing:
-            from sht_sensor import Sht
-            from sht_sensor import ShtVDDLevel
+            self.initialize_input()
 
-            self.gpio = int(input_dev.gpio_location)
-            self.pin_clock = input_dev.pin_clock
-            sht_sensor_vdd_value = {
-                2.5: ShtVDDLevel.vdd_2_5,
-                3.0: ShtVDDLevel.vdd_3,
-                3.5: ShtVDDLevel.vdd_3_5,
-                4.0: ShtVDDLevel.vdd_4,
-                5.0: ShtVDDLevel.vdd_5
-            }
-            self.sht_voltage = sht_sensor_vdd_value[
-                round(float(input_dev.sht_voltage), 1)]
-            self.sht_sensor = Sht(
-                self.pin_clock,
-                self.gpio,
-                voltage=self.sht_voltage)
+    def initialize_input(self):
+        from sht_sensor import Sht
+        from sht_sensor import ShtVDDLevel
+
+        sht_vdd = {
+            2.5: ShtVDDLevel.vdd_2_5,
+            3.0: ShtVDDLevel.vdd_3,
+            3.5: ShtVDDLevel.vdd_3_5,
+            4.0: ShtVDDLevel.vdd_4,
+            5.0: ShtVDDLevel.vdd_5
+        }
+        self.sensor = Sht(
+            self.input_dev.pin_clock,
+            int(self.input_dev.gpio_location),
+            voltage=sht_vdd[round(float(self.input_dev.sht_voltage), 1)])
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.is_enabled(0):
-            self.value_set(0, self.sht_sensor.read_t())
+            self.value_set(0, self.sensor.read_t())
 
         if self.is_enabled(1):
-            self.value_set(1, self.sht_sensor.read_rh())
+            self.value_set(1, self.sensor.read_rh())
 
-        if (self.is_enabled(2) and
-                self.is_enabled(0) and
-                self.is_enabled(1)):
-            self.value_set(2, calculate_dewpoint(
-                self.value_get(0), self.value_get(1)))
+        if self.is_enabled(2) and self.is_enabled(0) and self.is_enabled(1):
+            self.value_set(2, calculate_dewpoint(self.value_get(0), self.value_get(1)))
 
-        if (self.is_enabled(3) and
-                self.is_enabled(0) and
-                self.is_enabled(1)):
-            self.value_set(3, calculate_vapor_pressure_deficit(
-                self.value_get(0), self.value_get(1)))
+        if self.is_enabled(3) and self.is_enabled(0) and self.is_enabled(1):
+            self.value_set(3, calculate_vapor_pressure_deficit(self.value_get(0), self.value_get(1)))
 
         return self.return_dict

@@ -62,22 +62,28 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.sensor = None
+
         if not testing:
-            from w1thermsensor import W1ThermSensor
+            self.initialize_input()
 
-            self.location = input_dev.location
-            self.resolution = input_dev.resolution
+    def initialize_input(self):
+        from w1thermsensor import W1ThermSensor
 
-            try:
-                self.sensor = W1ThermSensor(
-                    W1ThermSensor.THERM_SENSOR_DS18B20, self.location)
-                if self.resolution:
-                    self.sensor.set_resolution(self.resolution)
-            except:
-                self.logger.exception("Input initialization")
+        try:
+            self.sensor = W1ThermSensor(
+                W1ThermSensor.THERM_SENSOR_DS18B20, self.input_dev.location)
+            if self.input_dev.resolution:
+                self.sensor.set_resolution(self.input_dev.resolution)
+        except:
+            self.logger.exception("Input initialization")
 
     def get_measurement(self):
         """ Gets the DS18B20's temperature in Celsius """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         temperature = None
@@ -88,20 +94,16 @@ class InputModule(AbstractInput):
             except Exception as e:
                 if i == n:
                     self.logger.exception(
-                        "{cls} raised an exception when taking a reading: "
-                        "{err}".format(cls=type(self).__name__, err=e))
+                        "{cls} raised an exception when taking a reading: {err}".format(cls=type(self).__name__, err=e))
                     return None
                 time.sleep(1)
 
         if temperature == 85:
-            self.logger.error(
-                "Measurement returned 85 C, "
-                "indicating an issue communicating with the sensor.")
+            self.logger.error("Measurement returned 85 C, indicating an issue communicating with the sensor.")
             return None
         elif temperature is not None and not -55 < temperature < 125:
             self.logger.error(
-                "Measurement outside the expected range of -55 C to 125 C: "
-                "{temp} C".format(temp=temperature))
+                "Measurement outside the expected range of -55 C to 125 C: {temp} C".format(temp=temperature))
             return None
         elif temperature is not None:
             self.value_set(0, temperature)

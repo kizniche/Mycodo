@@ -68,11 +68,10 @@ INPUT_INFORMATION = {
     'url_product_purchase': 'https://www.sparkfun.com/products/14347',
 
     'options_enabled': [
-        'location',
         'period',
         'pre_output'
     ],
-    'options_disabled': ['interface'],
+    'options_disabled': ['interface', 'i2c_location'],
 
     'dependencies_module': [
         ('pip-pypi', 'as7262', 'as7262'),
@@ -163,38 +162,40 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.sensor = None
+
         self.gain = None
         self.illumination_led_current = None
         self.illumination_led_mode = None
         self.indicator_led_current = None
         self.indicator_led_mode = None
         self.integration_time = None
-
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            from as7262 import AS7262
+            self.initialize_input()
 
-            self.location = input_dev.location
+    def initialize_input(self):
+        from as7262 import AS7262
 
-            self.sensor = AS7262()
+        self.sensor = AS7262()
 
-            hw_type, hw_version, fw_version = self.sensor.get_version()
-            self.logger.info(
-                "AS7262: Hardware Type: {}, "
-                "Hardware Version: {}, "
-                "Firmware Version: {}".format(
-                    hw_type, hw_version, fw_version
-                ))
+        hw_type, hw_version, fw_version = self.sensor.get_version()
+        self.logger.info("AS7262: Hardware Type: {hwt}, Hardware Version: {hwv}, Firmware Version: {fwv}".format(
+            hwt=hw_type, hwv=hw_version, fwv=fw_version))
 
-            self.sensor.set_gain(float(self.gain))
-            self.sensor.set_indicator_led_current(float(self.indicator_led_current))
-            self.sensor.set_illumination_led_current(float(self.illumination_led_current))
-            self.sensor.set_integration_time(self.integration_time)
+        self.sensor.set_gain(float(self.gain))
+        self.sensor.set_indicator_led_current(float(self.indicator_led_current))
+        self.sensor.set_illumination_led_current(float(self.illumination_led_current))
+        self.sensor.set_integration_time(self.integration_time)
 
     def get_measurement(self):
-        """ Gets the DS18B20's temperature in Celsius """
+        """ Get measurements and store in the database """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         self.sensor.set_measurement_mode(2)
@@ -216,9 +217,7 @@ class InputModule(AbstractInput):
             "650 nm (Violet): {}".format(*values))
 
         for index, color_value in enumerate(values):
-
-            if self.is_enabled(index):
-                self.value_set(index, color_value)
+            self.value_set(index, color_value)
 
         return self.return_dict
 

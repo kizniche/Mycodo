@@ -97,40 +97,43 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
-        self.atlas_device = None
 
-        # Initialize custom options
+        self.atlas_device = None
+        self.interface = None
+        self.atlas_command = None
+
         self.temperature_comp_meas_device_id = None
         self.temperature_comp_meas_measurement_id = None
         self.max_age = None
-        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            self.input_dev = input_dev
-            self.interface = input_dev.interface
+            self.initialize_input()
 
-            try:
-                self.atlas_device = setup_atlas_device(self.input_dev)
+    def initialize_input(self):
+        self.interface = self.input_dev.interface
 
-                if self.temperature_comp_meas_measurement_id:
-                    self.atlas_command = AtlasScientificCommand(
-                        self.input_dev, sensor=self.atlas_device)
-            except Exception:
-                self.logger.exception("Exception while initializing sensor")
+        try:
+            self.atlas_device = setup_atlas_device(self.input_dev)
 
-            # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
-            self.get_measurement()
+            if self.temperature_comp_meas_measurement_id:
+                self.atlas_command = AtlasScientificCommand(
+                    self.input_dev, sensor=self.atlas_device)
+        except Exception:
+            self.logger.exception("Exception while initializing sensor")
+
+        # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
+        self.get_measurement()
 
     def get_measurement(self):
-        """ Gets the sensor's ORP measurement via UART/I2C """
+        """ Gets the sensor's ORP measurement """
+        if not self.atlas_device.setup:
+            self.logger.error("Input not set up")
+            return
+
         orp = None
         self.return_dict = copy.deepcopy(measurements_dict)
-
-        if not self.atlas_device.setup:
-            self.logger.error("Sensor not set up")
-            return
 
         # Compensate measurement based on a temperature measurement
         if self.temperature_comp_meas_measurement_id and self.atlas_command:
@@ -142,28 +145,18 @@ class InputModule(AbstractInput):
                 max_age=self.max_age)
 
             if last_measurement:
-                self.logger.debug(
-                    "Latest temperature used to calibrate: {temp}".format(
-                        temp=last_measurement[1]))
-
-                ret_value, ret_msg = self.atlas_command.calibrate(
-                    'temperature', set_amount=last_measurement[1])
+                self.logger.debug("Latest temperature used to calibrate: {temp}".format(temp=last_measurement[1]))
+                ret_value, ret_msg = self.atlas_command.calibrate('temperature', set_amount=last_measurement[1])
                 time.sleep(0.5)
-
-                self.logger.debug(
-                    "Calibration returned: {val}, {msg}".format(
-                        val=ret_value, msg=ret_msg))
+                self.logger.debug("Calibration returned: {val}, {msg}".format(val=ret_value, msg=ret_msg))
             else:
-                self.logger.error(
-                    "Calibration measurement not found within the past "
-                    "{} seconds".format(self.max_age))
+                self.logger.error("Calibration measurement not found within the past {} seconds".format(self.max_age))
 
         # Read sensor via FTDI or UART
         if self.interface in ['FTDI', 'UART']:
             orp_status, orp_list = self.atlas_device.query('R')
             if orp_list:
-                self.logger.debug(
-                    "Returned list: {lines}".format(lines=orp_list))
+                self.logger.debug("Returned list: {lines}".format(lines=orp_list))
 
             # Find float value in list
             float_value = None
@@ -176,20 +169,15 @@ class InputModule(AbstractInput):
                 self.logger.error('"check probe" returned from sensor')
             elif str_is_float(float_value):
                 orp = float(float_value)
-                self.logger.debug(
-                    'Found float value: {val}'.format(val=orp))
+                self.logger.debug('Found float value: {val}'.format(val=orp))
             else:
-                self.logger.error(
-                    'Value or "check probe" not found in list: '
-                    '{val}'.format(val=orp_list))
+                self.logger.error('Value or "check probe" not found in list: {val}'.format(val=orp_list))
 
         # Read sensor via I2C
         elif self.interface == 'I2C':
             ec_status, ec_str = self.atlas_device.query('R')
             if ec_status == 'error':
-                self.logger.error(
-                    "Sensor read unsuccessful: {err}".format(
-                        err=ec_str))
+                self.logger.error("Sensor read unsuccessful: {err}".format(err=ec_str))
             elif ec_status == 'success':
                 orp = float(ec_str)
 

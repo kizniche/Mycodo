@@ -123,7 +123,6 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     """
     A support class for Sensorion's SHT31 Smart Gadget
-
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -135,31 +134,32 @@ class InputModule(AbstractInput):
         self.initialized = False
         self.last_downloaded_timestamp = None
 
-        # Initialize custom options
         self.download_stored_data = None
         self.logging_interval_ms = None
         self.logging_interval = None
-        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
-        self.logging_interval_ms = self.logging_interval * 1000
 
         if not testing:
-            from mycodo.devices.sht31_smart_gadget import SHT31
-            from bluepy import btle
-            self.SHT31 = SHT31
-            self.btle = btle
+            self.initialize_input()
 
-            self.log_level_debug = input_dev.log_level_debug
-            self.location = input_dev.location
-            self.bt_adapter = input_dev.bt_adapter
-            self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(
-                self.bt_adapter)
+    def initialize_input(self):
+        from mycodo.devices.sht31_smart_gadget import SHT31
+        from bluepy import btle
+
+        self.SHT31 = SHT31
+        self.btle = btle
+
+        self.logging_interval_ms = self.logging_interval * 1000
+        self.log_level_debug = self.input_dev.log_level_debug
+        self.location = self.input_dev.location
+        self.bt_adapter = self.input_dev.bt_adapter
+        self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(self.bt_adapter)
 
     def initialize(self):
         """Initialize the device by obtaining sensor information"""
-        self.logger.debug(
-            "Input Initializing (Initialized: {})".format(self.initialized))
+        self.logger.debug("Input Initializing (Initialized: {})".format(self.initialized))
+
         if not self.initialized:
             for _ in range(3):
                 if not self.running:
@@ -176,8 +176,7 @@ class InputModule(AbstractInput):
                 time.sleep(0.1)
 
             if self.connect_error:
-                self.logger.error(
-                    "Initialize Error: {}".format(self.connect_error))
+                self.logger.error("Initialize Error: {}".format(self.connect_error))
 
         if self.connected:
             # Fill device information dictionary
@@ -210,8 +209,7 @@ class InputModule(AbstractInput):
             if not self.running:
                 break
             try:
-                self.gadget.connect(
-                    addr=self.location, iface=self.bt_adapter)
+                self.gadget.connect(addr=self.location, iface=self.bt_adapter)
                 self.connected = True
                 self.connect_error = None
                 self.logger.debug("Connected")
@@ -221,8 +219,7 @@ class InputModule(AbstractInput):
             time.sleep(0.1)
 
         if not self.connected:
-            self.logger.error(
-                "Could not connect: {}".format(self.connect_error))
+            self.logger.error("Could not connect: {}".format(self.connect_error))
 
     def disconnect(self):
         try:
@@ -257,8 +254,7 @@ class InputModule(AbstractInput):
         list_timestamps_humi = []
 
         # Store logged temperature
-        self.logger.debug("Storing {} temperatures".format(
-            len(self.gadget.loggedDataReadout['Temp'])))
+        self.logger.debug("Storing {} temperatures".format(len(self.gadget.loggedDataReadout['Temp'])))
         for each_ts, each_measure in self.gadget.loggedDataReadout['Temp'].items():
             if not self.running:
                 break
@@ -291,8 +287,7 @@ class InputModule(AbstractInput):
                     timestamp=datetime_ts)
 
         # Store logged humidity
-        self.logger.debug("Storing {} humidities".format(
-            len(self.gadget.loggedDataReadout['Humi'])))
+        self.logger.debug("Storing {} humidities".format(len(self.gadget.loggedDataReadout['Humi'])))
         for each_ts, each_measure in self.gadget.loggedDataReadout['Humi'].items():
             if not self.running:
                 break
@@ -325,11 +320,9 @@ class InputModule(AbstractInput):
                     timestamp=datetime_ts)
 
         # Find common timestamps from both temperature and humidity lists
-        list_timestamps_both = list(
-            set(list_timestamps_temp).intersection(list_timestamps_humi))
+        list_timestamps_both = list(set(list_timestamps_temp).intersection(list_timestamps_humi))
 
-        self.logger.debug("Calculating/storing {} dewpoint and vpd".format(
-            len(list_timestamps_both)))
+        self.logger.debug("Calculating/storing {} dewpoint and vpd".format(len(list_timestamps_both)))
         for each_ts in list_timestamps_both:
             if not self.running:
                 break
@@ -337,15 +330,12 @@ class InputModule(AbstractInput):
             temperature = self.gadget.loggedDataReadout['Temp'][each_ts]
             humidity = self.gadget.loggedDataReadout['Humi'][each_ts]
 
-            if ((-200 > temperature or temperature > 200) or
-                    (0 > humidity or humidity > 100)):
+            if (-200 > temperature or temperature > 200) or (0 > humidity or humidity > 100):
                 continue  # Measurement outside acceptable range
 
             datetime_ts = datetime.datetime.utcfromtimestamp(each_ts / 1000)
             # Calculate and store dew point
-            if (self.is_enabled(3) and
-                    self.is_enabled(0) and
-                    self.is_enabled(1)):
+            if self.is_enabled(3) and self.is_enabled(0) and self.is_enabled(1):
                 dewpoint = calculate_dewpoint(temperature, humidity)
                 measurement_single = {
                     3: {
@@ -369,9 +359,7 @@ class InputModule(AbstractInput):
                     timestamp=datetime_ts)
 
             # Calculate and store vapor pressure deficit
-            if (self.is_enabled(4) and
-                    self.is_enabled(0) and
-                    self.is_enabled(1)):
+            if self.is_enabled(4) and self.is_enabled(0) and self.is_enabled(1):
                 vpd = calculate_vapor_pressure_deficit(temperature, humidity)
                 measurement_single = {
                     4: {
@@ -489,5 +477,4 @@ class InputModule(AbstractInput):
             self.logger.debug("Setting Interval")
             self.gadget.setLoggerIntervalMs(self.logging_interval_ms)
             self.device_information['logger_interval_ms'] = self.logging_interval_ms
-            self.logger.info(
-                "Set log interval: {} sec".format(self.logging_interval_ms / 1000))
+            self.logger.info("Set log interval: {} sec".format(self.logging_interval_ms / 1000))

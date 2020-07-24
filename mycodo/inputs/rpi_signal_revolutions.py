@@ -49,30 +49,35 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        if not testing:
-            import pigpio
+        self.pigpio = None
+        self.gpio = None
+        self.weighting = None
+        self.rpm_pulses_per_rev = None
+        self.sample_time = None
 
-            self.gpio = int(input_dev.gpio_location)
-            self.weighting = input_dev.weighting
-            self.rpm_pulses_per_rev = input_dev.rpm_pulses_per_rev
-            self.sample_time = input_dev.sample_time
-            self.pigpio = pigpio
+        if not testing:
+            self.initialize_input()
+
+    def initialize_input(self):
+        import pigpio
+
+        self.pigpio = pigpio
+
+        self.gpio = int(self.input_dev.gpio_location)
+        self.weighting = self.input_dev.weighting
+        self.rpm_pulses_per_rev = self.input_dev.rpm_pulses_per_rev
+        self.sample_time = self.input_dev.sample_time
 
     def get_measurement(self):
         """ Gets the revolutions """
-        self.return_dict = copy.deepcopy(measurements_dict)
-
         pi = self.pigpio.pi()
         if not pi.connected:  # Check if pigpiod is running
-            self.logger.error("Could not connect to pigpiod."
-                              "Ensure it is running and try again.")
+            self.logger.error("Could not connect to pigpiod. Ensure it is running and try again.")
             return None
 
-        read_revolutions = ReadRPM(pi,
-                                   self.gpio,
-                                   self.pigpio,
-                                   self.rpm_pulses_per_rev,
-                                   self.weighting)
+        self.return_dict = copy.deepcopy(measurements_dict)
+
+        read_revolutions = ReadRPM(pi, self.gpio, self.pigpio, self.rpm_pulses_per_rev, self.weighting)
         time.sleep(self.sample_time)
 
         rpm = read_revolutions.RPM()

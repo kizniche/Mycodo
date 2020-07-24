@@ -53,58 +53,60 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
+        self.GPIO = None
+        self.pin = None
+        self.on_state = None
         self.output_setup = False
 
         if not testing:
-            import RPi.GPIO as GPIO
-            self.GPIO = GPIO
-            self.output_pin = output.pin
-            self.output_on_state = output.on_state
+            self.initialize_output()
+
+    def initialize_output(self):
+        import RPi.GPIO as GPIO
+
+        self.GPIO = GPIO
+
+        self.pin = self.output.pin
+        self.on_state = self.output.on_state
 
     def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
         try:
             if state == 'on':
-                self.GPIO.output(self.output_pin, self.output_on_state)
+                self.GPIO.output(self.pin, self.on_state)
             elif state == 'off':
-                self.GPIO.output(self.output_pin, not self.output_on_state)
+                self.GPIO.output(self.pin, not self.on_state)
         except Exception as e:
-            self.logger.error(
-                "State change error: {}".format(e))
+            self.logger.error("State change error: {}".format(e))
 
     def is_on(self):
         if self.is_setup():
             try:
-                return self.output_on_state == self.GPIO.input(self.output_pin)
+                return self.on_state == self.GPIO.input(self.pin)
             except Exception as e:
-                self.logger.error(
-                    "Status check error: {}".format(e))
+                self.logger.error("Status check error: {}".format(e))
 
     def is_setup(self):
         return self.output_setup
 
     def setup_output(self):
-        if self.output_pin is None:
+        if self.pin is None:
             self.logger.warning("Invalid pin for output: {}.".format(
-                self.output_pin))
+                self.pin))
             return
 
         try:
             try:
                 self.GPIO.setmode(self.GPIO.BCM)
                 self.GPIO.setwarnings(True)
-                self.GPIO.setup(self.output_pin, self.GPIO.OUT)
-                self.GPIO.output(self.output_pin, not self.output_on_state)
+                self.GPIO.setup(self.pin, self.GPIO.OUT)
+                self.GPIO.output(self.pin, not self.on_state)
                 self.output_setup = True
             except Exception as e:
-                self.logger.error(
-                    "Setup error: {}".format(e))
-            state = 'LOW' if self.output_on_state else 'HIGH'
-            self.logger.info(
-                "Output setup on pin {pin} and turned OFF (OFF={state})".format(
-                    pin=self.output_pin, state=state))
+                self.logger.error("Setup error: {}".format(e))
+            state = 'LOW' if self.on_state else 'HIGH'
+            self.logger.info("Output setup on pin {pin} and turned OFF (OFF={state})".format(pin=self.pin, state=state))
         except Exception as except_msg:
-            self.logger.exception(
-                "Output was unable to be setup on pin {pin} with trigger={trigger}: {err}".format(
-                    pin=self.output_pin,
-                    trigger=self.output_on_state,
-                    err=except_msg))
+            self.logger.exception("Output was unable to be setup on pin {pin} with trigger={trigger}: {err}".format(
+                pin=self.pin,
+                trigger=self.on_state,
+                err=except_msg))

@@ -157,7 +157,9 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
         self.atlas_device = None
+        self.interface = None
         self.enabled_rgb = False
 
         # Initialize custom option variables to None
@@ -170,17 +172,18 @@ class InputModule(AbstractInput):
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            self.input_dev = input_dev
-            self.interface = input_dev.interface
+            self.initialize_input()
 
-            try:
-                self.initialize_sensor()
-            except Exception:
-                self.logger.exception("Exception while initializing sensor")
+    def initialize_input(self):
+        self.interface = self.input_dev.interface
 
-    def initialize_sensor(self):
-        self.atlas_device = setup_atlas_device(self.input_dev)
+        try:
+            self.atlas_device = setup_atlas_device(self.input_dev)
+            self.set_sensor_settings()
+        except Exception:
+            self.logger.exception("Exception while initializing sensor")
 
+    def set_sensor_settings(self):
         if self.led_only_while_reading and self.led_percentage:
             self.atlas_device.query('L,{},T'.format(self.led_percentage))
 
@@ -212,20 +215,19 @@ class InputModule(AbstractInput):
         self.get_measurement()
 
     def get_measurement(self):
-        """ Gets the sensor's Electrical Conductivity measurement via UART/I2C """
+        """ Gets the sensor's Electrical Conductivity measurement """
+        if not self.atlas_device.setup:
+            self.logger.error("Input not set up")
+            return
+
         return_string = None
         self.return_dict = copy.deepcopy(measurements_dict)
-
-        if not self.atlas_device.setup:
-            self.logger.error("Sensor not set up")
-            return
 
         # Read sensor via FTDI or UART
         if self.interface in ['FTDI', 'UART']:
             rgb_status, rgb_list = self.atlas_device.query('R')
             if rgb_list:
-                self.logger.debug(
-                    "Returned list: {lines}".format(lines=rgb_list))
+                self.logger.debug("Returned list: {lines}".format(lines=rgb_list))
 
             # Check for "check probe"
             for each_split in rgb_list:
@@ -243,40 +245,29 @@ class InputModule(AbstractInput):
         elif self.interface == 'I2C':
             ec_status, return_string = self.atlas_device.query('R')
             if ec_status == 'error':
-                self.logger.error(
-                    "Sensor read unsuccessful: {err}".format(
-                        err=return_string))
+                self.logger.error("Sensor read unsuccessful: {err}".format(err=return_string))
             elif ec_status == 'success':
-                self.logger.debug(
-                    'Value: {val}'.format(val=return_string))
+                self.logger.debug('Value: {val}'.format(val=return_string))
 
         # Parse return string
         if ',' in return_string:
             index_place = 0
             return_list = return_string.split(',')
             if self.enabled_rgb:
-                if self.is_enabled(0):
-                    self.value_set(0, int(return_list[index_place + 0]))
-                if self.is_enabled(1):
-                    self.value_set(1, int(return_list[index_place + 1]))
-                if self.is_enabled(2):
-                    self.value_set(2, int(return_list[index_place + 2]))
+                self.value_set(0, int(return_list[index_place + 0]))
+                self.value_set(1, int(return_list[index_place + 1]))
+                self.value_set(2, int(return_list[index_place + 2]))
                 index_place += 3
             if return_list[index_place] == 'P':
-                if self.is_enabled(7):
-                    self.value_set(7, int(return_list[index_place + 1]))
+                self.value_set(7, int(return_list[index_place + 1]))
                 index_place += 2
             if return_list[index_place] == 'Lux':
-                if self.is_enabled(6):
-                    self.value_set(6, int(return_list[index_place + 1]))
+                self.value_set(6, int(return_list[index_place + 1]))
                 index_place += 2
             if return_list[index_place] == 'xyY':
-                if self.is_enabled(3):
-                    self.value_set(3, float(return_list[index_place + 1]))
-                if self.is_enabled(4):
-                    self.value_set(4, float(return_list[index_place + 2]))
-                if self.is_enabled(5):
-                    self.value_set(5, int(return_list[index_place + 3]))
+                self.value_set(3, float(return_list[index_place + 1]))
+                self.value_set(4, float(return_list[index_place + 2]))
+                self.value_set(5, int(return_list[index_place + 3]))
 
         return self.return_dict
 

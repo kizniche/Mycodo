@@ -47,25 +47,30 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev,  testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.sensor = None
+
         if not testing:
-            import adafruit_adt7410
-            from adafruit_extended_bus import ExtendedI2C as I2C
+            self.initialize_input()
 
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
+    def initialize_input(self):
+        import adafruit_adt7410
+        from adafruit_extended_bus import ExtendedI2C
 
-            self.sensor = adafruit_adt7410.ADT7410(
-                I2C(self.i2c_bus), address=self.i2c_address)
-            self.sensor.high_resolution = True
+        self.sensor = adafruit_adt7410.ADT7410(
+            ExtendedI2C(self.input_dev.i2c_bus),
+            address=int(str(self.input_dev.i2c_location), 16))
+        self.sensor.high_resolution = True
 
     def get_measurement(self):
         """ Gets the ADT7410 measurements and stores them in the database """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         temperature = self.sensor.temperature
-
         self.logger.debug("Temperature: {} C".format(temperature))
-
         self.value_set(0, temperature)
 
         return self.return_dict

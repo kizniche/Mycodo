@@ -62,14 +62,22 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        if not testing:
-            from cozir import Cozir
+        self.sensor = None
 
-            self.uart_location = input_dev.uart_location
-            self.sensor = Cozir(self.uart_location)
+        if not testing:
+            self.initialize_input()
+
+    def initialize_input(self):
+        from cozir import Cozir
+
+        self.sensor = Cozir(self.input_dev.uart_location)
 
     def get_measurement(self):
         """ Gets the measurements """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.is_enabled(0):
@@ -81,10 +89,7 @@ class InputModule(AbstractInput):
         if self.is_enabled(2):
             self.value_set(2, self.sensor.read_humidity())
 
-        if (self.is_enabled(3) and
-                self.is_enabled(1) and
-                self.is_enabled(2)):
-            self.value_set(3, calculate_dewpoint(
-                self.value_get(1), self.value_get(2)))
+        if self.is_enabled(1) and self.is_enabled(2):
+            self.value_set(3, calculate_dewpoint(self.value_get(1), self.value_get(2)))
 
         return self.return_dict

@@ -95,23 +95,30 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        # Initialize custom options
+        self.client = None
+
         self.mqtt_hostname = None
         self.mqtt_port = None
         self.mqtt_channel = None
         self.mqtt_keepalive = None
         self.mqtt_clientid = None
-        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            import paho.mqtt.client as mqtt
+            self.initialize_input()
 
-            # Create a client instance
-            self.logger.debug("Client created with ID {}".format(
-                self.mqtt_clientid))
-            self.client = mqtt.Client(self.mqtt_clientid)
+    def initialize_input(self):
+        import paho.mqtt.client as mqtt
+
+        self.client = mqtt.Client(self.mqtt_clientid)
+        self.logger.debug("Client created with ID {}".format(self.mqtt_clientid))
+
+    def listener(self):
+        self.callbacks_connect()
+        self.connect()
+        self.subscribe()
+        self.client.loop_start()
 
     def callbacks_connect(self):
         """ Connect the callback functions """
@@ -224,9 +231,3 @@ class InputModule(AbstractInput):
         self.running = False
         self.client.loop_stop()
         self.client.disconnect()
-
-    def listener(self):
-        self.callbacks_connect()
-        self.connect()
-        self.subscribe()
-        self.client.loop_start()

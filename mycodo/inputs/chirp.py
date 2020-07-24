@@ -56,16 +56,21 @@ class InputModule(AbstractInput):
     and light
 
     """
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.i2c_address = None
+        self.bus = None
+
         if not testing:
-            from smbus2 import SMBus
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
-            self.bus = SMBus(self.i2c_bus)
-            self.filter_average('lux', init_max=3)
+            self.initialize_input()
+
+    def initialize_input(self):
+        from smbus2 import SMBus
+
+        self.i2c_address = int(str(self.input_dev.i2c_location), 16)
+        self.bus = SMBus(self.input_dev.i2c_bus)
+        self.filter_average('lux', init_max=3)
 
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """

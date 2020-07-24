@@ -89,11 +89,12 @@ INPUT_INFORMATION = {
 class InputModule(AbstractInput):
     """
     A support class for the RuuviTag
-
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.sensor = None
+        self.ruuvitag = None
         self.download_stored_data = None
         self.logging_interval_ms = None
         self.gadget = None
@@ -104,19 +105,26 @@ class InputModule(AbstractInput):
         self.last_downloaded_timestamp = None
 
         if not testing:
-            from ruuvitag_sensor.ruuvitag import RuuviTag
-            self.ruuvitag = RuuviTag
+            self.initialize_input()
 
-            self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(
-                input_dev.bt_adapter)
-            self.location = input_dev.location
-            self.bt_adapter = input_dev.bt_adapter
-            self.sensor = self.ruuvitag(
-                self.location,
-                bt_device='hci{}'.format(self.bt_adapter))
+    def initialize_input(self):
+        from ruuvitag_sensor.ruuvitag import RuuviTag
+
+        self.ruuvitag = RuuviTag
+
+        self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(self.input_dev.bt_adapter)
+        self.location = self.input_dev.location
+        self.bt_adapter = self.input_dev.bt_adapter
+        self.sensor = self.ruuvitag(
+            self.location,
+            bt_device='hci{}'.format(self.bt_adapter))
 
     def get_measurement(self):
         """ Obtain and return the measurements """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         self.lock_acquire(self.lock_file, timeout=3600)
@@ -138,9 +146,7 @@ class InputModule(AbstractInput):
                 values = cmd_return.decode('ascii').split(',')
 
                 if not str_is_float(values[0]):
-                    self.logger.debug(
-                        "Error: Could not convert string to float: "
-                        "string '{}'".format(str(values[0])))
+                    self.logger.debug("Error: Could not convert string to float: string '{}'".format(str(values[0])))
                     return
 
                 temperature = float(str(values[0]))
@@ -155,8 +161,7 @@ class InputModule(AbstractInput):
                 if battery < 1 or battery > 4:
                     self.logger.debug(
                         "Not recording measurements: "
-                        "Battery outside expected range (1 < battery volts < 4): "
-                        "{bat}".format(bat=battery))
+                        "Battery outside expected range (1 < battery volts < 4): {bat}".format(bat=battery))
                     return
 
                 if self.is_enabled(0):

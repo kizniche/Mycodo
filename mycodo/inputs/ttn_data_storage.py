@@ -101,20 +101,21 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        # Initialize custom options
+        self.first_run = True
+
         self.application_id = None
         self.app_api_key = None
         self.device_id = None
-        # Set custom options
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
-            self.unique_id = input_dev.unique_id
-            self.interface = input_dev.interface
-            self.period = input_dev.period
-            self.first_run = True
-            self.latest_datetime = input_dev.datetime
+            self.initialize_input()
+
+    def initialize_input(self):
+        self.interface = self.input_dev.interface
+        self.period = self.input_dev.period
+        self.latest_datetime = self.input_dev.datetime
 
     def get_new_data(self, past_seconds):
         # Basic implementation. Future development may use more complex library to access API
@@ -136,18 +137,15 @@ class InputModule(AbstractInput):
                 break
 
             try:
-                datetime_utc = datetime.datetime.strptime(
-                    each_resp['time'][:-7], timestamp_format)
+                datetime_utc = datetime.datetime.strptime(each_resp['time'][:-7], timestamp_format)
             except Exception:
                 # Sometimes the original timestamp is in milliseconds
                 # instead of nanoseconds. Therefore, remove 3 less digits
                 # past the decimal and try again to parse.
                 try:
-                    datetime_utc = datetime.datetime.strptime(
-                        each_resp['time'][:-4], timestamp_format)
+                    datetime_utc = datetime.datetime.strptime(each_resp['time'][:-4], timestamp_format)
                 except Exception as e:
-                    self.logger.error("Could not parse timestamp '{}': {}".format(
-                        each_resp['time'], e))
+                    self.logger.error("Could not parse timestamp '{}': {}".format(each_resp['time'], e))
                     continue  # Malformed timestamp encountered. Discard measurement.
 
             if (not self.latest_datetime or
@@ -219,20 +217,15 @@ class InputModule(AbstractInput):
 
             if seconds_download == seconds_seven_days:
                 self.logger.info(
-                    "This appears to be the first data download. "
-                    "Downloading and parsing past 7 days of data...")
+                    "This appears to be the first data download. Downloading and parsing past 7 days of data...")
             else:
-                self.logger.info(
-                    "Downloading and parsing past {} seconds of data...".format(
-                        int(seconds_download)))
+                self.logger.info("Downloading and parsing past {} seconds of data...".format(int(seconds_download)))
 
             self.get_new_data(seconds_download)
 
             if seconds_download == seconds_seven_days:
                 elapsed = time.time() - start
-                self.logger.info(
-                    "Download and parsing completed in {} seconds.".format(
-                        int(elapsed)))
+                self.logger.info("Download and parsing completed in {} seconds.".format(int(elapsed)))
         else:
             self.get_new_data(self.period)
 

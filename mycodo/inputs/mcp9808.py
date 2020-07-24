@@ -43,27 +43,33 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """ A sensor support class that monitors the MCP9808's temperature """
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.sensor = None
+
         if not testing:
-            from Adafruit_MCP9808 import MCP9808
+            self.initialize_input()
 
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.i2c_bus = input_dev.i2c_bus
+    def initialize_input(self):
+        """ Initialize the MCP9808 sensor class """
+        from Adafruit_MCP9808 import MCP9808
 
-            self.sensor = MCP9808.MCP9808(
-                address=self.i2c_address,
-                busnum=self.i2c_bus)
-            self.sensor.begin()
+        self.sensor = MCP9808.MCP9808(
+            address=int(str(self.input_dev.i2c_location), 16),
+            busnum=self.input_dev.i2c_bus)
+        self.sensor.begin()
 
     def get_measurement(self):
-        """ Gets the MCP9808's temperature in Celsius """
+        """ Get measurements and store in the database """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         try:
             self.value_set(0, self.sensor.readTempC())
             return self.return_dict
         except Exception as msg:
-            self.logger.exception("Inout read failure: {}".format(msg))
+            self.logger.exception("Input read failure: {}".format(msg))

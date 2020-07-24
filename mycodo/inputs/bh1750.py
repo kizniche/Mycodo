@@ -78,15 +78,21 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        if not testing:
-            from smbus2 import SMBus
+        self.i2c_address = None
+        self.i2c_bus = None
+        self.resolution = None
 
-            self.i2c_address = int(str(input_dev.i2c_location), 16)
-            self.resolution = input_dev.resolution
-            self.sensitivity = input_dev.sensitivity
-            self.i2c_bus = SMBus(input_dev.i2c_bus)
-            self.power_down()
-            self.set_sensitivity(sensitivity=self.sensitivity)
+        if not testing:
+            self.initialize_input()
+
+    def initialize_input(self):
+        from smbus2 import SMBus
+
+        self.i2c_address = int(str(self.input_dev.i2c_location), 16)
+        self.resolution = self.input_dev.resolution
+        self.i2c_bus = SMBus(self.input_dev.i2c_bus)
+        self.power_down()
+        self.set_sensitivity(sensitivity=self.input_dev.sensitivity)
 
     @property
     def lux(self):

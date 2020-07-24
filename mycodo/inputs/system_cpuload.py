@@ -49,23 +49,14 @@ class InputModule(AbstractInput):
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
-        self._cpu_load_1m = None
-        self._cpu_load_5m = None
-        self._cpu_load_15m = None
 
     def get_measurement(self):
         """ Gets the cpu load averages """
         self.return_dict = copy.deepcopy(measurements_dict)
 
         load_avg = os.getloadavg()
-
-        if self.is_enabled(0):
-            self.value_set(0, load_avg[0])
-
-        if self.is_enabled(1):
-            self.value_set(1, load_avg[1])
-
-        if self.is_enabled(2):
-            self.value_set(2, load_avg[2])
+        self.value_set(0, load_avg[0])
+        self.value_set(1, load_avg[1])
+        self.value_set(2, load_avg[2])
 
         return self.return_dict

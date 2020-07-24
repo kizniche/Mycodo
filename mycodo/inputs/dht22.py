@@ -92,56 +92,61 @@ class InputModule(AbstractInput):
         eventually cause the DHT22 to hang.  A 3 second interval seems OK.
         """
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
+        self.pi = None
+        self.pigpio = None
+        self.control = None
+
         self.temp_temperature = None
         self.temp_humidity = None
         self.temp_dew_point = None
         self.temp_vpd = None
         self.power_output_id = None
         self.powered = False
-        self.pi = None
 
         if not testing:
-            import pigpio
-            from mycodo.mycodo_client import DaemonControl
+            self.initialize_input()
 
-            self.power_output_id = input_dev.power_output_id
+    def initialize_input(self):
+        import pigpio
+        from mycodo.mycodo_client import DaemonControl
 
-            self.control = DaemonControl()
-            self.pigpio = pigpio
-            self.pi = self.pigpio.pi()
+        self.power_output_id = self.input_dev.power_output_id
 
-            self.gpio = int(input_dev.gpio_location)
-            self.bad_CS = 0  # Bad checksum count
-            self.bad_SM = 0  # Short message count
-            self.bad_MM = 0  # Missing message count
-            self.bad_SR = 0  # Sensor reset count
+        self.control = DaemonControl()
+        self.pigpio = pigpio
+        self.pi = self.pigpio.pi()
 
-            # Power cycle if timeout > MAX_NO_RESPONSE
-            self.MAX_NO_RESPONSE = 3
-            self.no_response = None
-            self.tov = None
-            self.high_tick = None
-            self.bit = None
-            self.either_edge_cb = None
+        self.gpio = int(self.input_dev.gpio_location)
+        self.bad_CS = 0  # Bad checksum count
+        self.bad_SM = 0  # Short message count
+        self.bad_MM = 0  # Missing message count
+        self.bad_SR = 0  # Sensor reset count
+
+        # Power cycle if timeout > MAX_NO_RESPONSE
+        self.MAX_NO_RESPONSE = 3
+        self.no_response = None
+        self.tov = None
+        self.high_tick = None
+        self.bit = None
+        self.either_edge_cb = None
 
         self.start_input()
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
-        self.return_dict = copy.deepcopy(measurements_dict)
-
         if not self.pi.connected:  # Check if pigpiod is running
-            self.logger.error('Could not connect to pigpiod. '
-                              'Ensure it is running and try again.')
-            return None, None, None
+            self.logger.error('Could not connect to pigpiod. Ensure it is running and try again.')
+            return None
+
+        self.return_dict = copy.deepcopy(measurements_dict)
 
         # Ensure if the power pin turns off, it is turned back on
         if (self.power_output_id and
                 db_retrieve_table_daemon(Output, unique_id=self.power_output_id) and
                 self.control.output_state(self.power_output_id) == 'off'):
             self.logger.error(
-                'Sensor power output {rel} detected as being off. '
-                'Turning on.'.format(rel=self.power_output_id))
+                'Sensor power output {rel} detected as being off. Turning on.'.format(rel=self.power_output_id))
             self.start_input()
             time.sleep(2)
 
@@ -151,18 +156,10 @@ class InputModule(AbstractInput):
         for _ in range(4):
             self.measure_sensor()
             if self.temp_dew_point is not None:
-                if self.is_enabled(0):
-                    self.value_set(0, self.temp_temperature)
-                if self.is_enabled(1):
-                    self.value_set(1, self.temp_humidity)
-                if (self.is_enabled(2) and
-                        self.is_enabled(0) and
-                        self.is_enabled(1)):
-                    self.value_set(2, self.temp_dew_point)
-                if (self.is_enabled(3) and
-                        self.is_enabled(0) and
-                        self.is_enabled(1)):
-                    self.value_set(3, self.temp_vpd)
+                self.value_set(0, self.temp_temperature)
+                self.value_set(1, self.temp_humidity)
+                self.value_set(2, self.temp_dew_point)
+                self.value_set(3, self.temp_vpd)
                 return self.return_dict  # success - no errors
             time.sleep(2)
 
@@ -175,18 +172,10 @@ class InputModule(AbstractInput):
             for _ in range(2):
                 self.measure_sensor()
                 if self.temp_dew_point is not None:
-                    if self.is_enabled(0):
-                        self.value_set(0, self.temp_temperature)
-                    if self.is_enabled(1):
-                        self.value_set(1, self.temp_humidity)
-                    if (self.is_enabled(2) and
-                            self.is_enabled(0) and
-                            self.is_enabled(1)):
-                        self.value_set(2, self.temp_dew_point)
-                    if (self.is_enabled(3) and
-                            self.is_enabled(0) and
-                            self.is_enabled(1)):
-                        self.value_set(3, self.temp_vpd)
+                    self.value_set(0, self.temp_temperature)
+                    self.value_set(1, self.temp_humidity)
+                    self.value_set(2, self.temp_dew_point)
+                    self.value_set(3, self.temp_vpd)
                     return self.return_dict  # success - no errors
                 time.sleep(2)
 
@@ -208,10 +197,9 @@ class InputModule(AbstractInput):
             time.sleep(0.2)
             initialized = True
         except Exception as except_msg:
-            self.logger.error(
-                "Could not initialize sensor. Check if it's connected "
-                "properly and pigpiod is running. Error: {msg}".format(
-                    msg=except_msg))
+            self.logger.error("Could not initialize sensor. "
+                              "Check if it's connected properly and pigpiod is running. "
+                              "Error: {msg}".format( msg=except_msg))
 
         if initialized:
             try:
@@ -227,9 +215,7 @@ class InputModule(AbstractInput):
                     self.temp_vpd = calculate_vapor_pressure_deficit(
                         self.temp_temperature, self.temp_humidity)
             except Exception as e:
-                self.logger.exception(
-                    "Exception when taking a reading: {err}".format(
-                        err=e))
+                self.logger.exception("Exception when taking a reading: {err}".format(err=e))
             finally:
                 self.close()
 
@@ -250,9 +236,8 @@ class InputModule(AbstractInput):
 
     def register_callbacks(self):
         """ Monitors RISING_EDGE changes using callback """
-        self.either_edge_cb = self.pi.callback(self.gpio,
-                                               self.pigpio.EITHER_EDGE,
-                                               self.either_edge_callback)
+        self.either_edge_cb = self.pi.callback(
+            self.gpio, self.pigpio.EITHER_EDGE, self.either_edge_callback)
 
     def either_edge_callback(self, gpio, level, tick):
         """

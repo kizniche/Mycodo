@@ -59,17 +59,21 @@ class OutputModule(AbstractOutput):
 
         self.output_setup = None
         self.pwm_state = None
+        self.pwm_command = None
+        self.pwm_invert_signal = None
         self.output_run_python_pwm = None
 
         if not testing:
-            self.output_unique_id = output.unique_id
-            self.output_pwm_command = output.pwm_command
-            self.pwm_invert_signal = output.pwm_invert_signal
+            self.initialize_output()
+
+    def initialize_output(self):
+        self.pwm_command = self.output.pwm_command
+        self.pwm_invert_signal = self.output.pwm_invert_signal
 
     def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
         measure_dict = copy.deepcopy(measurements_dict)
 
-        if self.output_pwm_command:
+        if self.pwm_command:
             if state == 'on' and 100 >= duty_cycle >= 0:
                 if self.pwm_invert_signal:
                     duty_cycle = 100.0 - abs(duty_cycle)
@@ -85,7 +89,7 @@ class OutputModule(AbstractOutput):
             self.pwm_state = duty_cycle
 
             measure_dict[0]['value'] = duty_cycle
-            add_measurements_influxdb(self.output_unique_id, measure_dict)
+            add_measurements_influxdb(self.unique_id, measure_dict)
 
             self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=duty_cycle))
 
@@ -101,23 +105,19 @@ class OutputModule(AbstractOutput):
         return False
 
     def setup_output(self):
-        if not self.output_pwm_command:
+        if not self.pwm_command:
             self.logger.error("Output must have Python Code set")
             return
 
         try:
-            self.save_output_python_pwm_code(self.output_unique_id)
-            file_run_pwm = '{}/output_pwm_{}.py'.format(
-                PATH_PYTHON_CODE_USER, self.output_unique_id)
+            self.save_output_python_pwm_code(self.unique_id)
+            file_run_pwm = '{}/output_pwm_{}.py'.format(PATH_PYTHON_CODE_USER, self.unique_id)
 
-            module_name = "mycodo.output.{}".format(
-                os.path.basename(file_run_pwm).split('.')[0])
-            spec = importlib.util.spec_from_file_location(
-                module_name, file_run_pwm)
+            module_name = "mycodo.output.{}".format(os.path.basename(file_run_pwm).split('.')[0])
+            spec = importlib.util.spec_from_file_location(module_name, file_run_pwm)
             output_run_pwm = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(output_run_pwm)
-            self.output_run_python_pwm = output_run_pwm.OutputRun(
-                self.logger, self.output_unique_id)
+            self.output_run_python_pwm = output_run_pwm.OutputRun(self.logger, self.unique_id)
 
             self.output_setup = True
         except Exception:
@@ -146,14 +146,12 @@ class OutputRun:
     def output_code_run(self, duty_cycle):
 """
 
-        code_replaced = self.output_pwm_command.replace(
-            '((duty_cycle))', 'duty_cycle')
+        code_replaced = self.pwm_command.replace('((duty_cycle))', 'duty_cycle')
         indented_code = textwrap.indent(code_replaced, ' ' * 8)
         full_command_pwm = pre_statement_run + indented_code
 
         assure_path_exists(PATH_PYTHON_CODE_USER)
-        file_run = '{}/output_pwm_{}.py'.format(
-            PATH_PYTHON_CODE_USER, unique_id)
+        file_run = '{}/output_pwm_{}.py'.format(PATH_PYTHON_CODE_USER, unique_id)
         with open(file_run, 'w') as fw:
             fw.write('{}\n'.format(full_command_pwm))
             fw.close()
