@@ -23,29 +23,21 @@ INPUT_INFORMATION = {
     'url_datasheet': 'http://ww1.microchip.com/downloads/en/DeviceDoc/MCP9808-0.5C-Maximum-Accuracy-Digital-Temperature-Sensor-Data-Sheet-DS20005095B.pdf',
     'url_product_purchase': 'https://www.adafruit.com/product/1782',
 
+    'dependencies_module': [
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
+        ('pip-git', 'Adafruit_MCP9808', 'git://github.com/adafruit/Adafruit_Python_MCP9808.git#egg=adafruit-mcp9808'),
+    ],
+
+    'interfaces': ['I2C'],
+    'i2c_location': ['0x18', '0x19', '0x1a', '0x1b', '0x1c', '0x1d', '0x1e', '0x1f'],
+    'i2c_address_editable': False,
+
     'options_enabled': [
         'i2c_location',
         'period',
         'pre_output'
     ],
-    'options_disabled': ['interface'],
-
-    'dependencies_module': [
-        (
-            'pip-pypi',
-            'Adafruit_GPIO',
-            'Adafruit_GPIO'
-         ),
-        (
-            'pip-git',
-            'Adafruit_MCP9808',
-            'git://github.com/adafruit/Adafruit_Python_MCP9808.git#egg=adafruit-mcp9808'
-        ),
-    ],
-
-    'interfaces': ['I2C'],
-    'i2c_location': ['0x18', '0x19', '0x1a', '0x1b', '0x1c', '0x1d', '0x1e', '0x1f'],
-    'i2c_address_editable': False
+    'options_disabled': ['interface']
 }
 
 

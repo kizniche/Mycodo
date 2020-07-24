@@ -859,16 +859,7 @@ uploaded and imported from the ``Configure -> Inputs`` page. After
 import, they will be available to use on the ``Setup -> Data`` page.
 
 If you have a sensor that is not currently supported by Mycodo, you can
-build your own input module and import it into Mycodo. All information
-about an input is contained within the input module, set in the
-dictionaries 'INPUT\_INFORMATION' and 'measurements\_dict'. Each module
-will requires at a minimum for these variables to be set in
-INPUT\_INFORMATION: 'input\_name\_unique', 'input\_manufacturer',
-'input\_name', 'measurements\_name', and 'measurements\_dict'. The
-measurements\_dict dictionary contains the measurements that are
-acquired and stored, and require both the units and measurements to
-exist in the measurement/unit database (Add missing measurements/units
-on the ``Configure -> Measurements`` page).
+build your own input module and import it into Mycodo.
 
 Open any of the built-in modules located in the inputs directory
 (https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for
@@ -887,6 +878,135 @@ https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_al
 Additionally, I have another github repository devoted to Custom Inputs
 and Controllers that are not included in the built-in set, at
 `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
+
+Here is a brief explanation of the parts of an Input module to help develop your own. I'll be using the MCP9808 temperature sensor, with the input module located at Mycodo/mycodo/inputs/mcp9808.py, for this basic example.
+
+The first part of an input module is the ``measurements\_dict`` dictionary. The ``measurements\_dict`` contains all the possible measurements that the sensor can measure, in addition to any additional measurements that could be calculated. For the MCP9808, since only temperature is measured, ``measurements\_dict`` looks like this:
+
+.. code:: python
+
+    measurements_dict = {
+        0: {
+            'measurement': 'temperature',
+            'unit': 'C'
+        }
+    }
+
+Had this sensor been capable of measuring more than one condition, they could be added with an increasing integer key (0, 1, 2, etc.). For instance, a temperature/humidity sensor may be able to measure only temperature and humidity, but dew point could also be calculated from these two measurements. If dew point was desired to be stored in the measurement database, this would need to be included in ``measurements\_dict``, like so:
+
+.. code:: python
+
+    measurements_dict = {
+        0: {
+            'measurement': 'temperature',
+            'unit': 'C'
+        },
+        1: {
+            'measurement': 'humidity',
+            'unit': 'percent'
+        },
+        2: {
+            'measurement': 'dewpoint',
+            'unit': 'C'
+        }
+    }
+
+Additionally, ``measurements\_dict`` also requires both the units and measurements to exist in the measurement/unit database. You can view and add missing measurements/units on the ``Configure -> Measurements`` page.
+
+Next is the ``INPUT\_INFORMATION`` dictionary. All information about an input is contained within the ``INPUT\_INFORMATION`` dictionary. Let's take a look at the first keys of this dictionary to see what's required for it to operate:
+
+.. code:: python
+
+    INPUT_INFORMATION = {
+        'input_name_unique': 'MCP9808',
+        'input_manufacturer': 'Microchip',
+        'input_name': 'MCP9808',
+        'input_library': 'Adafruit_MCP9808',
+        'measurements_name': 'Temperature',
+        'measurements_dict': measurements_dict,
+
+``input_name_unique`` is an ID for the input that must be unique from all other inputs. This is what's used to differentiate it from others. If you're copying an input and using it as a template, you must change this name to something different for it to be able to be successfully imported.
+
+``input_manufacturer`` is the Input's manufacturer, ``input_name`` is the name of the Input, ``input_library`` is the library used to read the sensor, and ``measurements_name`` is the measurements the Input can obtain. These are all used to generate the Input name that's presented to the used in a sorted list on the Input page when searching for an Input to add. These names can be anything, but it's suggested to follow the format of the other Inputs.
+
+``measurements_dict`` merely points to our previously-created dictionary of measurements, ``measurements_dict``. This is required in INPUT\_INFORMATION.
+
+Next is ``dependencies_module``, which contains all the dependencies for the Input to properly operate. This is structured as a list of tuples, where the first item indicating how the dependency should be installed. This can be "pip-pypi" to install a package on pypi.org with pip, "pip-git" to install a package on github.org with pip, and "apt" to install via apt/apt-get. The second item is the Python library to attempt to import to determine if the dependency has been met. Last, is the name used to install the library, either via pip or apt. When a user attempts to add this Input, Mycodo will check if these libraries are installed. If they are not installed, the user will be prompted to install them. Mycodo will then automatically install the dependencies.
+
+.. code:: python
+
+    'dependencies_module': [
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
+        ('pip-git', 'Adafruit_MCP9808', 'git://github.com/adafruit/Adafruit_Python_MCP9808.git#egg=adafruit-mcp9808'),
+    ],
+
+In the above example, Adafruit_GPIO is a library available via pypi.org, and will be installed via pip with the command ``pip install Adafruit_GPIO``. Adafruit_MCP9808 is installed via pip as well, but uses a git repository instead of pypi, with the command ``pip install -e git://github.com/adafruit/Adafruit_Python_MCP9808.git#egg=adafruit-mcp9808``. See the other input modules as examples for how to properly format the dependencies list.
+
+Next is ``interface``, and is used to determine how to communicate with the Input.
+
+.. code:: python
+
+    'interfaces': ['I2C'],
+    'i2c_location': ['0x18', '0x19', '0x1a', '0x1b', '0x1c', '0x1d', '0x1e', '0x1f'],
+    'i2c_address_editable': False,
+
+Since this input communicated with the sensor via the I2C bus, we specify ``I2C`` as an interface. It's possible for some sensors to be able to communicate via multiple methods, such as ``UART``, ``1WIRE``, ``SPI``, ``FTDI``, among others. Add all communication methods to the ``interfaces`` list. In the above example, the sensor only has an I2C interface, and ``i2c_location`` defines a list of addresses that the sensor can be found at. If these are the only addresses that the sensor allows, ``i2c_address_editable`` should be set to False. However, if the sensor allows the user to reconfigure the address to something unique, this should be set to True to display an editable box for the user to define the I2C address rather than be presented with a dropdown of only the addresses listed in ``i2c_location``.
+
+Next is ``options_enabled`` and ``options_disabled``, which determine which Input options appear on the web interface with the Input options.
+
+.. code:: python
+
+    'options_enabled': [
+        'i2c_location',
+        'period',
+        'pre_output'
+    ],
+    'options_disabled': ['interface']
+
+Since we want to be able to set the I2C location (address and bus), we enable this to allow the option fields ``I2C Address`` and ``I2C Bus`` to appear as options the user can set. Additionally, the ``Period (seconds)`` and ``Pre Output`` options are enabled to allow them to be used with the Input as well. ``interface`` is disabled to merely indicate what interface has been selected for the Input and is not configurable after the Input has been added.
+
+There are other options that can be used within ``INPUT\_INFORMATION``, but this is typically the minimum that's used. Refer to other Input and example modules to see how they use the other options.
+
+Next, we come to the ``InputModule`` class. In __init__() we have a condition "if not testing:" that our initialization code is placed. This is where our dependency library (if there are any) is typically imported and the library class initialized.
+
+.. code:: python
+
+  class InputModule(AbstractInput):
+      """ A sensor support class that monitors the MCP9808's temperature """
+
+      def __init__(self, input_dev, testing=False):
+          super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
+          if not testing:
+              from Adafruit_MCP9808 import MCP9808
+
+              self.i2c_address = int(str(input_dev.i2c_location), 16)
+              self.i2c_bus = input_dev.i2c_bus
+
+              self.sensor = MCP9808.MCP9808(
+                  address=self.i2c_address,
+                  busnum=self.i2c_bus)
+              self.sensor.begin()
+
+In the above example code, we create a new instance of the class MCP9808 and assigns this object to the local variable self.sensor. We initialize the class with the parameters address and busnum, which are the I2C address and I2C bus. This particular library also requires begin() to be called to properly initialize the library/sensor prior to querying the sensor for a measurement.
+
+Next we have the ``get_measurement()`` function. This is called every ``Period (seconds)`` to acquire a measurement from the sensor and store it in the measurement database. This function contains the code to query the sensor itself and the function to store the measurement that was obtained.
+
+.. code:: python
+
+    def get_measurement(self):
+        """ Gets the MCP9808's temperature in Celsius """
+        self.return_dict = copy.deepcopy(measurements_dict)
+
+        try:
+            self.value_set(0, self.sensor.readTempC())
+            return self.return_dict
+        except Exception as msg:
+            self.logger.exception("Inout read failure: {}".format(msg))
+
+In the above code, we begin with ``self.return_dict = copy.deepcopy(measurements_dict)`` that creates a blank template of our measurement dictionary. Next, ``self.sensor.readTempC()`` returns the temperature measurement, and is passed as a parameter within ``self.value_set(0, self.sensor.readTempC())`` in order to store this measurement to our newly-created measurement template dictionary under the key 0, which is our temperature measurement. If we desired to store another measurement, such as humidity, under key 1 of our template, we would call ``self.value_set(1, humidity_value)``. Last, we ``return self.return_dict`` to indicate all measurements were successfully obtained and the Input module should save the measurements that were stored in the template.
+
+An Input module such as this can then be imported into Mycodo on the Configure -> Input page and will appear in the dropdown selection to add a new Input on the Input page.
 
 The Things Network
 ~~~~~~~~~~~~~~~~~~

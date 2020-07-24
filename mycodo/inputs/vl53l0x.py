@@ -19,7 +19,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'VL53L0X',
     'input_manufacturer': 'STMicroelectronics',
     'input_name': 'VL53L0X',
-    'input_library': 'grantramsay/VL53L0X_rasp_python',
+    'input_library': 'VL53L0X_rasp_python',
     'measurements_name': 'Millimeter (Time-of-Flight Distance)',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.st.com/en/imaging-and-photonics-solutions/vl53l0x.html',
