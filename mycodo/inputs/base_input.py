@@ -16,7 +16,6 @@ from mycodo.abstract_base_controller import AbstractBaseController
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.lockfile import LockFile
 
 
 class AbstractInput(AbstractBaseController):
@@ -36,7 +35,6 @@ class AbstractInput(AbstractBaseController):
         self._measurements = None
         self.channels_conversion = {}
         self.channels_measurement = {}
-        self.lockfile = LockFile()
         self.return_dict = {}
         self.filter_avg = {}
         self.avg_max = {}
@@ -282,12 +280,6 @@ class AbstractInput(AbstractBaseController):
             self.filter_avg[name]['index'] += 1
 
         return average
-
-    def lock_acquire(self, lockfile, timeout):
-        self.lockfile.lock_acquire(lockfile, timeout)
-
-    def lock_release(self, lockfile):
-        self.lockfile.lock_release(lockfile)
 
     def is_acquiring_measurement(self):
         return self.acquiring_measurement

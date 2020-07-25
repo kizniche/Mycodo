@@ -76,8 +76,7 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
         lock_file_amend = '/var/lock/sensor-atlas.{dev}'.format(
             dev=self.serial_device.replace("/", "-"))
 
-        self.lockfile.lock_acquire(lock_file_amend, timeout=3600)
-        if self.lockfile.locked[lock_file_amend]:
+        if self.lockfile.lock_acquire(lock_file_amend, timeout=3600):
             try:
                 self.send_cmd(query_str)
                 time.sleep(1.3)

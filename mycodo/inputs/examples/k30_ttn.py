@@ -141,8 +141,8 @@ class InputModule(AbstractInput):
                 self.timer = now + min_seconds_between_transmissions
                 # "K" designates this data belonging to the K30
                 string_send = 'K,{}'.format(self.value_get(0))
-                self.lock_acquire(self.lock_file, timeout=10)
-                if self.lockfile.locked[self.lock_file]:
+
+                if self.lock_acquire(self.lock_file, timeout=10):
                     try:
                         self.serial_send = self.serial.Serial(
                             port=self.serial_device,

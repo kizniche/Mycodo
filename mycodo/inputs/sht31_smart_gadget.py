@@ -397,8 +397,7 @@ class InputModule(AbstractInput):
         """ Obtain and return the measurements """
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        self.lock_acquire(self.lock_file, timeout=3600)
-        if self.lockfile.locked[self.lock_file]:
+        if self.lock_acquire(self.lock_file, timeout=3600):
             self.logger.debug("Starting measurement")
             try:
                 if not self.initialized:

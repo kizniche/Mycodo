@@ -17,6 +17,7 @@ from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.lockfile import LockFile
 from mycodo.utils.system_pi import return_measurement_info
 
 
@@ -31,6 +32,8 @@ class AbstractBaseController(object):
         if not testing and unique_id:
             logger_name += "_{}".format(unique_id.split('-')[0])
         self.logger = logging.getLogger(logger_name)
+
+        self.lockfile = LockFile()
 
     def setup_custom_options(self, custom_options, custom_controller):
         for each_option_default in custom_options:
@@ -142,3 +145,12 @@ class AbstractBaseController(object):
             duration_sec=max_age)
 
         return last_measurement
+
+    def lock_acquire(self, lockfile, timeout):
+        self.lockfile.lock_acquire(lockfile, timeout)
+
+    def lock_locked(self, lockfile):
+        return self.lockfile.lock_locked(lockfile)
+
+    def lock_release(self, lockfile):
+        self.lockfile.lock_release(lockfile)

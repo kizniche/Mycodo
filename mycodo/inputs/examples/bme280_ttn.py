@@ -172,8 +172,8 @@ class InputModule(AbstractInput):
                     self.value_get(1),
                     self.value_get(2),
                     self.value_get(0))
-                self.lock_acquire(self.lock_file, timeout=10)
-                if self.lockfile.locked[self.lock_file]:
+
+                if self.lock_acquire(self.lock_file, timeout=10):
                     try:
                         self.serial_send = self.serial.Serial(
                             port=self.serial_device,

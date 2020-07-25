@@ -12,7 +12,6 @@ import logging
 import timeit
 
 from mycodo.abstract_base_controller import AbstractBaseController
-from mycodo.utils.lockfile import LockFile
 
 
 class AbstractOutput(AbstractBaseController):
@@ -30,9 +29,7 @@ class AbstractOutput(AbstractBaseController):
 
         self.logger = None
         self.setup_logger(testing=testing, name=name, output_dev=output)
-
         self.output = output
-        self.lockfile = LockFile()
         self.running = True
 
         if not testing:
@@ -117,9 +114,3 @@ class AbstractOutput(AbstractBaseController):
         self.stop_output()
         self.logger.info("Stopped in {:.1f} ms".format(
             (timeit.default_timer() - shutdown_timer) * 1000))
-
-    def lock_acquire(self, lockfile, timeout):
-        self.lockfile.lock_acquire(lockfile, timeout)
-
-    def lock_release(self, lockfile):
-        self.lockfile.lock_release(lockfile)

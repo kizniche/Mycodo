@@ -94,8 +94,7 @@ class InputModule(AbstractInput):
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        self.lock_acquire(self.lock_file, timeout=3600)
-        if self.lockfile.locked[self.lock_file]:
+        if self.lock_acquire(self.lock_file, timeout=3600):
             try:
                 if self.is_enabled(0):
                     self.value_set(0, self.sensor.parameter_value(MI_BATTERY))

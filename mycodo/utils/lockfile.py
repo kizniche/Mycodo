@@ -35,6 +35,13 @@ class LockFile:
         if not self.locked[lockfile]:
             logger.debug("Lock unable to be acquired after {:.3f} seconds. Breaking lock.".format(timeout))
             self.lock_release(lockfile)
+        else:
+            return True
+
+    def lock_locked(self, lockfile):
+        if lockfile not in self.locked:
+            logger.error("Unknown lockfile: {}".format(lockfile))
+        return self.locked[lockfile]
 
     def lock_release(self, lockfile):
         """ Release lock and force deletion of lock file """

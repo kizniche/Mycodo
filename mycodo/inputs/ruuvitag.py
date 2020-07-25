@@ -127,8 +127,7 @@ class InputModule(AbstractInput):
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        self.lock_acquire(self.lock_file, timeout=3600)
-        if self.locked[self.lock_file]:
+        if self.lock_acquire(self.lock_file, timeout=3600):
             self.logger.debug("Starting measurement")
             try:
                 cmd = 'timeout -k 11 10 /var/mycodo-root/env/bin/python ' \
