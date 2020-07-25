@@ -1812,15 +1812,14 @@ def page_data():
                 mod_order = DisplayOrder.query.first()
                 mod_order.inputs = list_to_csv(form_base.list_visible_elements.data)
                 db.session.commit()
-                display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
             elif form_base.reorder_type.data == 'math':
                 mod_order = DisplayOrder.query.first()
                 mod_order.math = list_to_csv(form_base.list_visible_elements.data)
                 db.session.commit()
-                display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
+            flash("Reorder Complete", "success")
 
         # Misc Input
-        if form_mod_input.input_acquire_measurements.data:
+        elif form_mod_input.input_acquire_measurements.data:
             utils_input.force_acquire_measurements(form_mod_input.input_id.data)
 
         # Add Input

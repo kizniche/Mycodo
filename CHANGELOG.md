@@ -1,3 +1,11 @@
+## 8.6.2 (Unreleased)
+
+### Miscellaneous
+
+ - Deprecate Input using the Adafruit_ADS1x15 library
+ - Add Inputs: Ads1115 (Circuit Python library), ADS1015 (Circuit Python library)
+
+
 ## 8.6.3 (2020-07-25)
 
 ### Bugfixes

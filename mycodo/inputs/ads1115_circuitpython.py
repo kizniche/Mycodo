@@ -35,17 +35,15 @@ for each_channel in range(4):
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'ADS1x15',
+    'input_name_unique': 'ADS1115_CP',
     'input_manufacturer': 'Texas Instruments',
-    'input_name': 'ADS1x15',
-    'input_library': 'Adafruit_ADS1x15 [DEPRECATED]',
+    'input_name': 'ADS1115',
+    'input_library': 'Adafruit_CircuitPython',
     'measurements_name': 'Voltage (Analog-to-Digital Converter)',
     'measurements_dict': measurements_dict,
     'measurements_rescale': True,
     'scale_from_min': -4.096,
     'scale_from_max': 4.096,
-
-    'message': "The Adafruit_ADS1x15 is deprecated. It's advised to use The Circuit Python ADS1x15 Input.",
 
     'options_enabled': [
         'measurements_select',
@@ -58,8 +56,8 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
-        ('pip-pypi', 'Adafruit_ADS1x15', 'Adafruit_ADS1x15')
+        ('pip-pypi', 'adafruit_ads1x15', 'Adafruit_CircuitPython_ADS1x15'),
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x48', '0x49', '0x4A', '0x4B'],
@@ -122,16 +120,21 @@ class InputModule(AbstractInput):
             self.initialize_input()
 
     def initialize_input(self):
-        import Adafruit_ADS1x15
+        import adafruit_ads1x15.ads1115 as ADS
+        from adafruit_ads1x15.analog_in import AnalogIn
+        from adafruit_extended_bus import ExtendedI2C
+
+        self.analog_in = AnalogIn
+        self.ads = ADS
 
         if self.input_dev.adc_gain == 0:
             self.adc_gain = 2/3
         else:
             self.adc_gain = self.input_dev.adc_gain
 
-        self.adc = Adafruit_ADS1x15.ADS1115(
-            address=int(str(self.input_dev.i2c_location), 16),
-            busnum=self.input_dev.i2c_bus)
+        self.adc = ADS.ADS1115(
+            ExtendedI2C(self.input_dev.i2c_bus),
+            address=int(str(self.input_dev.i2c_location), 16))
 
     def get_measurement(self):
         self.return_dict = copy.deepcopy(measurements_dict)
@@ -148,8 +151,18 @@ class InputModule(AbstractInput):
                 if self.is_enabled(channel):
                     if channel not in measurement_totals:
                         measurement_totals[channel] = 0
-                    measurement_totals[channel] += (
-                        self.adc.read_adc(channel, gain=self.adc_gain) * self.dict_gains[self.adc_gain] / 1000.0)
+                    chan = self.analog_in(self.adc, self.ads.P0)
+                    self.adc.gain = self.adc_gain
+                    self.logger.debug("Channel {}: Gain {}, {} raw, {} volts".format(
+                        channel, self.adc_gain, chan.value, chan.voltage))
+                    measurement_totals[channel] += chan.voltage
+
+                    # FOr debugginf purposes to test other gains
+                    # for gain in self.dict_gains:
+                    #     if gain != self.adc_gain:
+                    #         self.adc.gain = gain
+                    #         self.logger.debug("Channel {}: Gain {}, {} raw, {} volts".format(
+                    #             channel, gain, chan.value, chan.voltage))
 
         self.logger.debug("All measurements completed in {:.3f} seconds".format(
             timeit.default_timer() - time_start))
