@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix issue displaying lines 5-8 on SD1306 LCDs ([#800](https://github.com/kizniche/mycodo/issues/800))
+ - Fix Atlas Scientific Pump duration unit issues ([#801](https://github.com/kizniche/mycodo/issues/801))
 
  ### Features
 

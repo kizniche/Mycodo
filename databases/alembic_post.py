@@ -58,6 +58,30 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == '4d3258ef5864':
+            # The post-script for 4ea0a59dee2b didn't work to change minute to s
+            # This one works
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from mycodo.databases.models import DeviceMeasurements
+                from mycodo.databases.models import Output
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    for each_output in session.query(Output).all():
+                        if each_output.output_type == 'atlas_ezo_pmp':
+                            measurements = session.query(DeviceMeasurements).filter(
+                                DeviceMeasurements.device_id == each_output.unique_id).all()
+                            for meas in measurements:
+                                if meas.unit == 'minute':
+                                    meas.unit = 's'
+                                    session.commit()
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == '4ea0a59dee2b':
             # Only LCDs with I2C interface were supported until this revision.
             # "interface" column added in this revision.
