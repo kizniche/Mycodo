@@ -87,10 +87,13 @@ class LCD_Pioled:
         draw.text((x, top + 16), message_line_3, font=font, fill=255)
         draw.text((x, top + 24), message_line_4, font=font, fill=255)
 
-        if all([message_line_5, message_line_6, message_line_7, message_line_8]):
+        if message_line_5 is not None:
             draw.text((x, top + 32), message_line_5, font=font, fill=255)
+        if message_line_6 is not None:
             draw.text((x, top + 40), message_line_6, font=font, fill=255)
+        if message_line_7 is not None:
             draw.text((x, top + 48), message_line_7, font=font, fill=255)
+        if message_line_8 is not None:
             draw.text((x, top + 54), message_line_8, font=font, fill=255)
 
         self.disp.image(image)

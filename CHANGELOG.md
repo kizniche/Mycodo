@@ -1,5 +1,9 @@
 ## 8.6.2 (Unreleased)
 
+### Bugfixes
+
+ - Fix issue displaying lines 5-8 on SD1306 LCDs ([#800](https://github.com/kizniche/mycodo/issues/800))
+
 ### Miscellaneous
 
  - Deprecate Input using the Adafruit_ADS1x15 library
