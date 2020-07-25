@@ -1,4 +1,4 @@
 # For Raspberry pi devices and Sensors
-pylibftdi==0.18.1
+pylibftdi==0.19.0
 RPi.GPIO
 smbus2==0.3.0

@@ -154,8 +154,9 @@ class InputModule(AbstractInput):
 
         # Store average measurement for each channel
         for channel in self.channels_measurement:
-            self.value_set(
-                channel,
-                measurement_totals[channel] / measurement_range)
+            if self.is_enabled(channel):
+                self.value_set(
+                    channel,
+                    measurement_totals[channel] / measurement_range)
 
         return self.return_dict
