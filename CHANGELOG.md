@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix DS18S20 Input module ([#796](https://github.com/kizniche/mycodo/issues/796))
+ - Fix Peristaltic Pump Outputs unable to turn on for durations ([#799](https://github.com/kizniche/mycodo/issues/799))
 
 ### Features
 

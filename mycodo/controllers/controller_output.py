@@ -515,7 +515,6 @@ class OutputController(AbstractController, threading.Thread):
             elif (self.output_type[output_id] in self.output_types['on_off'] and
                     amount != 0 and
                     output_type in ['sec', None]):
-
                 # If a minimum off duration is set, determine the time the output is allowed to turn on again
                 if min_off:
                     dt_off_until = current_time + datetime.timedelta(seconds=abs(amount) + min_off)
@@ -597,7 +596,7 @@ class OutputController(AbstractController, threading.Thread):
                             name=self.output_name[output_id],
                             dur=abs(amount))
                     self.logger.debug(msg)
-                    self.output_switch(output_id, 'on', output_type=output_type)
+                    self.output_switch(output_id, 'on', output_type=output_type, amount=amount)
                     self.output_on_until[output_id] = (
                         current_time + datetime.timedelta(seconds=abs(amount)))
                     self.output_last_duration[output_id] = amount
@@ -694,7 +693,7 @@ class OutputController(AbstractController, threading.Thread):
 
         return 0, msg
 
-    def output_switch(self, output_id, state, output_type=None, duty_cycle=None):
+    def output_switch(self, output_id, state, output_type=None, amount=None, duty_cycle=None):
         """Instruct the output module to modulate the output"""
         if state not in ['on', 1, True, 'off', 0, False]:
             return 1, 'state not "on", 1, True, "off", 0, or False'
@@ -702,7 +701,7 @@ class OutputController(AbstractController, threading.Thread):
             state = 'on'
         elif state in ['off', 0, False]:
             state = 'off'
-        self.output[output_id].output_switch(state, output_type=output_type, duty_cycle=duty_cycle)
+        self.output[output_id].output_switch(state, output_type=output_type, amount=amount, duty_cycle=duty_cycle)
 
     def check_triggers(self, output_id, on_duration=None):
         """
