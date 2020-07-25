@@ -4,10 +4,14 @@
 
  - Fix issue displaying lines 5-8 on SD1306 LCDs ([#800](https://github.com/kizniche/mycodo/issues/800))
 
+ ### Features
+
+ - Add Inputs: Ads1115 (Circuit Python library), ADS1015 (Circuit Python library)
+ - Add Input: BMP280 (bmp280-python library, includes ability to set forced mode) ([#608](https://github.com/kizniche/mycodo/issues/608))
+
 ### Miscellaneous
 
  - Deprecate Input using the Adafruit_ADS1x15 library
- - Add Inputs: Ads1115 (Circuit Python library), ADS1015 (Circuit Python library)
 
 
 ## 8.6.3 (2020-07-25)
