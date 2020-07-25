@@ -9,13 +9,10 @@ All Outputs should inherit from this class and overwrite methods that raise
 NotImplementedErrors
 """
 import logging
-import time
 import timeit
 
-import filelock
-import os
-
 from mycodo.abstract_base_controller import AbstractBaseController
+from mycodo.utils.lockfile import LockFile
 
 
 class AbstractOutput(AbstractBaseController):
@@ -35,9 +32,7 @@ class AbstractOutput(AbstractBaseController):
         self.setup_logger(testing=testing, name=name, output_dev=output)
 
         self.output = output
-        self.lock = {}
-        self.lock_file = None
-        self.locked = {}
+        self.lockfile = LockFile()
         self.running = True
 
         if not testing:
@@ -90,8 +85,10 @@ class AbstractOutput(AbstractBaseController):
         """ Called when Output is stopped """
         self.running = False
         try:
-            if self.lock_file:
-                self.lock_release(self.lock_file)
+            # Release all locks
+            for lockfile, lock_state in self.lockfile.locked.items():
+                if lock_state:
+                    self.lock_release(lockfile)
         except:
             pass
 
@@ -122,37 +119,7 @@ class AbstractOutput(AbstractBaseController):
             (timeit.default_timer() - shutdown_timer) * 1000))
 
     def lock_acquire(self, lockfile, timeout):
-        """ Non-blocking locking method """
-        self.lock[lockfile] = filelock.FileLock(lockfile, timeout=1)
-        self.locked[lockfile] = False
-        timer = time.time() + timeout
-        self.logger.debug("Acquiring lock for {} ({} sec timeout)".format(
-            lockfile, timeout))
-        while self.running and time.time() < timer:
-            try:
-                self.lock[lockfile].acquire()
-                seconds = time.time() - (timer - timeout)
-                self.logger.debug(
-                    "Lock acquired for {} in {:.3f} seconds".format(
-                        lockfile, seconds))
-                self.locked[lockfile] = True
-                break
-            except:
-                pass
-            time.sleep(0.05)
-        if not self.locked[lockfile]:
-            self.logger.debug(
-                "Lock unable to be acquired after {:.3f} seconds. "
-                "Breaking for future lock.".format(timeout))
-            self.lock_release(self.lock_file)
+        self.lockfile.lock_acquire(lockfile, timeout)
 
     def lock_release(self, lockfile):
-        """ Release lock and force deletion of lock file """
-        try:
-            self.logger.debug("Releasing lock for {}".format(lockfile))
-            self.lock[lockfile].release(force=True)
-            os.remove(lockfile)
-        except Exception:
-            pass
-        finally:
-            self.locked[lockfile] = False
+        self.lockfile.lock_release(lockfile)

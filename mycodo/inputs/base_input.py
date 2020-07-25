@@ -12,13 +12,11 @@ import datetime
 import logging
 import time
 
-import filelock
-import os
-
 from mycodo.abstract_base_controller import AbstractBaseController
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.lockfile import LockFile
 
 
 class AbstractInput(AbstractBaseController):
@@ -38,10 +36,9 @@ class AbstractInput(AbstractBaseController):
         self._measurements = None
         self.channels_conversion = {}
         self.channels_measurement = {}
-        self.lock = {}
-        self.lock_file = None
-        self.locked = {}
+        self.lockfile = LockFile()
         self.return_dict = {}
+        self.filter_avg = {}
         self.avg_max = {}
         self.avg_index = {}
         self.avg_meas = {}
@@ -147,10 +144,6 @@ class AbstractInput(AbstractBaseController):
                 self.logger.exception(msg)
             else:
                 self.logger.error(msg)
-        finally:
-            # Clean up
-            if self.lock_file in self.locked and self.locked[self.lock_file]:
-                self.lock_release(self.lock_file)
         return 1
 
     def initialize_measurements(self):
@@ -206,8 +199,10 @@ class AbstractInput(AbstractBaseController):
         """ Called when Input is deactivated """
         self.running = False
         try:
-            if self.lock_file:
-                self.lock_release(self.lock_file)
+            # Release all locks
+            for lockfile, lock_state in self.lockfile.locked.items():
+                if lock_state:
+                    self.lock_release(lockfile)
         except:
             pass
 
@@ -263,65 +258,36 @@ class AbstractInput(AbstractBaseController):
         :param measurement: add measurement to pool and return average of past init_max measurements
         :return: int or float, whichever measurements come in as
         """
-        if name not in self.avg_max:
-            if init_max != 0 and init_max < 2:
+        if name not in self.filter_avg:
+            self.filter_avg[name] = {}
+            if init_max < 2:
                 self.logger.error("init_max must be greater than 1")
-            elif init_max > 1:
-                self.avg_max[name] = init_max
-                self.avg_meas[name] = []
-                self.avg_index[name] = 0
+            else:
+                self.filter_avg[name]['max'] = init_max
+                self.filter_avg[name]['meas'] = []
+                self.filter_avg[name]['index'] = 0
 
         if measurement is None:
             return
 
-        if 0 <= self.avg_index[name] < len(self.avg_meas[name]):
-            self.avg_meas[name][self.avg_index[name]] = measurement
+        if 0 <= self.filter_avg[name]['index'] < len(self.filter_avg[name]['meas']):
+            self.filter_avg[name]['meas'][self.filter_avg[name]['index']] = measurement
         else:
-            self.avg_meas[name].append(measurement)
-        average = sum(self.avg_meas[name]) / float(len(self.avg_meas[name]))
+            self.filter_avg[name]['meas'].append(measurement)
+        average = sum(self.filter_avg[name]['meas']) / float(len(self.filter_avg[name]['meas']))
 
-        if self.avg_index[name] >= self.avg_max[name] - 1:
-            self.avg_index[name] = 0
+        if self.filter_avg[name]['index'] >= self.filter_avg[name]['max'] - 1:
+            self.filter_avg[name]['index'] = 0
         else:
-            self.avg_index[name] += 1
+            self.filter_avg[name]['index'] += 1
 
         return average
 
     def lock_acquire(self, lockfile, timeout):
-        """ Non-blocking locking method """
-        self.lock[lockfile] = filelock.FileLock(lockfile, timeout=1)
-        self.locked[lockfile] = False
-        timer = time.time() + timeout
-        self.logger.debug("Acquiring lock for {} ({} sec timeout)".format(
-            lockfile, timeout))
-        while self.running and time.time() < timer:
-            try:
-                self.lock[lockfile].acquire()
-                seconds = time.time() - (timer - timeout)
-                self.logger.debug(
-                    "Lock acquired for {} in {:.3f} seconds".format(
-                        lockfile, seconds))
-                self.locked[lockfile] = True
-                break
-            except:
-                pass
-            time.sleep(0.05)
-        if not self.locked[lockfile]:
-            self.logger.debug(
-                "Lock unable to be acquired after {:.3f} seconds. "
-                "Breaking for future lock.".format(timeout))
-            self.lock_release(self.lock_file)
+        self.lockfile.lock_acquire(lockfile, timeout)
 
     def lock_release(self, lockfile):
-        """ Release lock and force deletion of lock file """
-        try:
-            self.logger.debug("Releasing lock for {}".format(lockfile))
-            self.lock[lockfile].release(force=True)
-            os.remove(lockfile)
-        except Exception:
-            pass
-        finally:
-            self.locked[lockfile] = False
+        self.lockfile.lock_release(lockfile)
 
     def is_acquiring_measurement(self):
         return self.acquiring_measurement

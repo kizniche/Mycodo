@@ -1,16 +1,16 @@
 # coding=utf-8
 import logging
+import os
 import sys
 import time
 
-import filelock
-import os
 import serial
 from serial import SerialException
 from serial.serialutil import SerialTimeoutException
 
 sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../../..')))
 
+from mycodo.utils.lockfile import LockFile
 from mycodo.devices.base_atlas import AbstractBaseAtlasScientific
 
 
@@ -22,8 +22,11 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
 
         self.logger = logging.getLogger(
             "{}{}".format(__name__, serial_device.replace("/", "_")))
+
         self.setup = False
         self.serial_device = serial_device
+        self.lockfile = LockFile()
+
         try:
             self.atlas_device = serial.Serial(
                 port=serial_device,
@@ -73,20 +76,16 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
         lock_file_amend = '/var/lock/sensor-atlas.{dev}'.format(
             dev=self.serial_device.replace("/", "-"))
 
-        try:
-            with filelock.FileLock(lock_file_amend, timeout=3600):
+        self.lockfile.lock_acquire(lock_file_amend, timeout=3600)
+        if self.lockfile.locked[lock_file_amend]:
+            try:
                 self.send_cmd(query_str)
                 time.sleep(1.3)
                 response = self.read_lines()
                 return 'success', response
-        except filelock.Timeout:
-            self.logger.error("Lock timeout")
-            return None, None
-        except Exception as err:
-            self.logger.exception(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=err))
-            return None, None
+            finally:
+                self.lockfile.lock_release(lock_file_amend)
+        return None, None
 
     def read_lines(self):
         """

@@ -142,7 +142,7 @@ class InputModule(AbstractInput):
                 # "K" designates this data belonging to the K30
                 string_send = 'K,{}'.format(self.value_get(0))
                 self.lock_acquire(self.lock_file, timeout=10)
-                if self.locked[self.lock_file]:
+                if self.lockfile.locked[self.lock_file]:
                     try:
                         self.serial_send = self.serial.Serial(
                             port=self.serial_device,

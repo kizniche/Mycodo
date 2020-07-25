@@ -853,7 +853,7 @@ the measurement database to be used throughout the Mycodo system.
 Custom Inputs
 ~~~~~~~~~~~~~
 
-See `Building a Custom Input <https://github.com/kizniche/Mycodo/wiki/Building-a-Custom-Input>`__ Wiki page.
+See `Building a Custom Input Module <https://github.com/kizniche/Mycodo/wiki/Building-a-Custom-Input-Module>`__ Wiki page.
 
 There is a Custom Input import system in Mycodo that allows user-created
 Inputs to be created an used in the Mycodo system. Custom Inputs can be

@@ -181,8 +181,3 @@ class InputModule(AbstractInput):
         self.sensor.stop_ranging()
         self.sensor.close()
         self.running = False
-        try:
-            if self.lock_file:
-                self.lock_release(self.lock_file)
-        except:
-            pass

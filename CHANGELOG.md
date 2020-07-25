@@ -11,6 +11,7 @@
 ### Miscellaneous
 
  - Improve custom output framework
+ - Consolidate locking code to utils/lockfile.py
 
 
 ## 8.6.1 (2020-07-22)

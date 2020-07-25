@@ -15,6 +15,7 @@ import timeit
 import Pyro5
 
 from mycodo.abstract_base_controller import AbstractBaseController
+from mycodo.utils.lockfile import LockFile
 
 
 class AbstractController(AbstractBaseController):
@@ -29,6 +30,7 @@ class AbstractController(AbstractBaseController):
         self.running = False
         self.thread_shutdown_timer = 0
         self.sample_rate = 30
+        self.lockfile = LockFile
         self.ready = ready
 
         logger_name = "{}".format(name)
@@ -110,6 +112,12 @@ class AbstractController(AbstractBaseController):
         self.thread_shutdown_timer = timeit.default_timer()
         self.pre_stop()
         self.running = False
+
+    def lock_acquire(self, lockfile, timeout):
+        self.lockfile.lock_acquire(lockfile, timeout)
+
+    def lock_release(self, lockfile):
+        self.lockfile.lock_release(lockfile)
 
     def set_log_level_debug(self, log_level_debug):
         if log_level_debug:

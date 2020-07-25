@@ -90,8 +90,7 @@ class OutputModule(AbstractOutput):
 
     def setup_output(self):
         if self.pin is None:
-            self.logger.warning("Invalid pin for output: {}.".format(
-                self.pin))
+            self.logger.warning("Invalid pin for output: {}.".format(self.pin))
             return
 
         try:

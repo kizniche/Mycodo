@@ -26,9 +26,6 @@ import datetime
 import threading
 import time
 
-import filelock
-import os
-
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
@@ -84,7 +81,6 @@ class InputController(AbstractController, threading.Thread):
         self.control = DaemonControl()
 
         self.stop_iteration_counter = 0
-        self.lock = {}
         self.measurement = None
         self.measurement_success = False
         self.pause_loop = False
@@ -117,18 +113,12 @@ class InputController(AbstractController, threading.Thread):
         self.trigger_cond = None
         self.measurement_acquired = None
         self.pre_output_activated = None
-        self.pre_output_locked = None
         self.pre_output_timer = None
 
         # SMTP options
         self.smtp_max_count = None
         self.email_count = None
         self.allowed_to_send_notice = None
-
-        # Set up lock
-        self.lock = {}
-        self.lock_file = None
-        self.locked = {}
 
         self.i2c_address = None
         self.switch_edge_gpio = None
@@ -297,7 +287,6 @@ class InputController(AbstractController, threading.Thread):
         self.trigger_cond = False
         self.measurement_acquired = False
         self.pre_output_activated = False
-        self.pre_output_locked = False
         self.pre_output_timer = time.time()
 
         self.set_log_level_debug(self.log_level_debug)
@@ -315,8 +304,7 @@ class InputController(AbstractController, threading.Thread):
         self.allowed_to_send_notice = True
 
         # Set up input lock
-        self.lock_file = '/var/lock/input_pre_output_{id}'.format(
-            id=self.pre_output_id)
+        self.lock_file = '/var/lock/input_pre_output_{id}'.format(id=self.pre_output_id)
 
         # Convert string I2C address to base-16 int
         if self.interface == 'I2C':
@@ -382,42 +370,6 @@ class InputController(AbstractController, threading.Thread):
                 target=self.measure_input.listener())
             input_listener.daemon = True
             input_listener.start()
-
-    def lock_acquire(self, lockfile, timeout):
-        """ Non-blocking locking method """
-        self.lock[lockfile] = filelock.FileLock(lockfile, timeout=1)
-        self.locked[lockfile] = False
-        timer = time.time() + timeout
-        self.logger.debug("Acquiring lock for {} ({} sec timeout)".format(
-            lockfile, timeout))
-        while self.running and time.time() < timer:
-            try:
-                self.lock[lockfile].acquire()
-                seconds = time.time() - (timer - timeout)
-                self.logger.debug(
-                    "Lock acquired for {} in {:.3f} seconds".format(
-                        lockfile, seconds))
-                self.locked[lockfile] = True
-                break
-            except:
-                pass
-            time.sleep(0.05)
-        if not self.locked[lockfile]:
-            self.logger.debug(
-                "Lock unable to be acquired after {:.3f} seconds. "
-                "Breaking for future lock.".format(timeout))
-            self.lock_release(self.lock_file)
-
-    def lock_release(self, lockfile):
-        """ Release lock and force deletion of lock file """
-        try:
-            self.logger.debug("Releasing lock for {}".format(lockfile))
-            self.lock[lockfile].release(force=True)
-            os.remove(lockfile)
-        except Exception:
-            pass
-        finally:
-            self.locked[lockfile] = False
 
     def update_measure(self):
         """

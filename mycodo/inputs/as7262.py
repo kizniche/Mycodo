@@ -227,8 +227,3 @@ class InputModule(AbstractInput):
         self.sensor.set_indicator_led(0)
         self.sensor.set_illumination_led(0)
         self.running = False
-        try:
-            if self.lock_file:
-                self.lock_release(self.lock_file)
-        except:
-            pass
