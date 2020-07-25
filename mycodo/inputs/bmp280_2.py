@@ -92,7 +92,8 @@ class InputModule(AbstractInput):
             i2c_addr=int(str(self.input_dev.i2c_location), 16),
             i2c_dev=SMBus(self.input_dev.i2c_bus))
 
-        self.sensor.setup(mode="forced")
+        if self.forced:
+            self.sensor.setup(mode="forced")
 
     def get_measurement(self):
         """ Gets the measurement """
