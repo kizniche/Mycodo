@@ -41,6 +41,7 @@ class LockFile:
     def lock_locked(self, lockfile):
         if lockfile not in self.locked:
             logger.error("Unknown lockfile: {}".format(lockfile))
+            return False
         return self.locked[lockfile]
 
     def lock_release(self, lockfile):
