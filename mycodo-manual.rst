@@ -4545,8 +4545,27 @@ Xiaomi: Miflora
   `btlewrap <https://pypi.org/project/btlewrap>`__,
   `bluepy <https://pypi.org/project/bluepy>`__
 
-I2C Multiplexers
+Output Devices
+--------------
+
+Built-In Outputs
 ~~~~~~~~~~~~~~~~
+
+Supported Output devices are listed below.
+
+-  On/Off (Python code)
+-  On/Off (GPIO)
+-  On/Off (Shell script)
+-  Pulse-Width-Modulation (Python code)
+-  Pulse-Width-Modulation (GPIO)
+-  Pulse-Width-Modulation (Shell script)
+-  Peristaltic Pump (Generic, GPIO)
+-  Peristaltic Pump (Atlas Scientific)
+   `link <https://www.atlas-scientific.com/peristaltic.html>`__
+-  Wireless 315/433 MHz (rpi-rf, GPIO)
+
+I2C Multiplexers
+----------------
 
 NOTE: As of March, 2020, it has been discovered that the device tree
 overlay technique for using I2C multiplexers does not work with Raspbian
@@ -4601,7 +4620,7 @@ Some multiplexers I've tested are below.
 own selectable voltage, either 3.3 or 5.0 volts.
 
 Analog-to-Digital Converters
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 
 An analog to digital converter (ADC) allows the use of any analog sensor
 that outputs a variable voltage. A `voltage
@@ -4616,6 +4635,9 @@ be necessary to attain your desired range.
    `link <https://www.adafruit.com/product/856>`__
 -  MCP342x: Analog-to-digital converter
    `link <http://www.dfrobot.com/wiki/index.php/MCP3424_18-Bit_ADC-4_Channel_with_Programmable_Gain_Amplifier_(SKU:DFR0316)>`__
+
+Interfaces
+----------
 
 I2C Information
 ~~~~~~~~~~~~~~~
@@ -4652,23 +4674,6 @@ Go to ``Advanced Options -> Serial`` and disable. Then edit
 
 Find the line "enable\_uart=0" and change it to "enable\_uart=1", then
 reboot.
-
-Output Devices
---------------
-
-Built-In Outputs
-~~~~~~~~~~~~~~~~
-
--  On/Off (Python code)
--  On/Off (GPIO)
--  On/Off (Shell script)
--  Pulse-Width-Modulation (Python code)
--  Pulse-Width-Modulation (GPIO)
--  Pulse-Width-Modulation (Shell script)
--  Peristaltic Pump (Generic, GPIO)
--  Peristaltic Pump (Atlas Scientific)
-   `link <https://www.atlas-scientific.com/peristaltic.html>`__
--  Wireless 315/433 MHz (rpi-rf, GPIO)
 
 Device Notes
 ============

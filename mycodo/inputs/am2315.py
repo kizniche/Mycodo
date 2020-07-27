@@ -184,8 +184,7 @@ class InputModule(AbstractInput):
         """ Turn the sensor on """
         if self.power_output_id:
             self.logger.info("Turning on sensor")
-            self.control.output_on(
-                self.power_output_id, 0)
+            self.control.output_on(self.power_output_id)
             time.sleep(2)
             self.powered = True
 

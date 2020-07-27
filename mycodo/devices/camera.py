@@ -80,8 +80,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         if daemon_control.output_state(settings.output_id) == "on":
             output_already_on = True
         else:
-            daemon_control.output_on(
-                settings.output_id)
+            daemon_control.output_on(settings.output_id)
 
     # Pause while the output remains on for the specified duration.
     # Used for instance to allow fluorescent lights to fully turn on before

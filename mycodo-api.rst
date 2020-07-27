@@ -216,21 +216,21 @@ Parameters:
 
 --------------
 
-**output_on**\ (*output_id*, *amount=0.0*, *min_off=0.0*, *duty_cycle=0.0*, *trigger_conditionals=True*)
+**output_on**\ (*output_id*, *output_type='sec'*, *amount=0.0*, *min_off=0.0*, *trigger_conditionals=True*)
 
 Turn an Output on.
 
 Parameters:
 
 -  **output_id** - The unique ID of the Output.
--  **amount** - If on for a duration, this is the float value in seconds.
+-  **output_type** - The type of output to send to the output module (e.g. "sec", "pwm", "vol").
+-  **amount** - The amount to send to the output module.
 -  **min_off** - How long to keep the Output off after turning on, if on for a duration.
--  **duty_cycle** - If the Output generates a PWM signal, this is the duty cycle to set, in percent.
 -  **trigger_conditionals** - Whether to trigger controllers that may be monitoring Outputs for state changes.
 
 --------------
 
-**output_on_off**\ (*output_id*, *state*, *amount=0.0*)
+**output_on_off**\ (*output_id*, *state*, *output_type='sec'*, *amount=0.0*,)
 
 Turn an Output on or off.
 
@@ -238,7 +238,8 @@ Parameters:
 
 -  **output_id** - The unique ID of the Output.
 -  **state** - The state to turn the Output. Options are: "on", "off"
--  **amount** - If turning on for a duration, provide a float value in seconds.
+-  **output_type** - The type of output to send to the output module (e.g. "sec", "pwm", "vol").
+-  **amount** - The amount to send to the output module.
 
 --------------
 
@@ -265,7 +266,7 @@ Parameters:
 
 **output_state**\ (*output_id*)
 
-Gets the state of an Output. Returns "on" or "off".
+Gets the state of an Output. Returns "on" or "off" or duty cycle value.
 
 Parameters:
 

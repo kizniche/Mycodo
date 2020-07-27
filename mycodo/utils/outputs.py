@@ -32,7 +32,7 @@ from mycodo.utils.modules import load_module_from_file
 logger = logging.getLogger("mycodo.utils.outputs")
 
 
-def parse_output_information():
+def parse_output_information(exclude_custom=False):
     """Parses the variables assigned in each Output and return a dictionary of IDs and values"""
     def dict_has_value(dict_inp, output_cus, key, force_type=None):
         if (key in output_cus.OUTPUT_INFORMATION and
@@ -54,7 +54,10 @@ def parse_output_information():
         'examples', 'scripts', 'tmp_outputs'
     ]
 
-    output_paths = [PATH_OUTPUTS, PATH_OUTPUTS_CUSTOM]
+    output_paths = [PATH_OUTPUTS]
+
+    if not exclude_custom:
+        output_paths.append(PATH_OUTPUTS_CUSTOM)
 
     dict_outputs = {}
 

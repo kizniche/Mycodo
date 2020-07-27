@@ -411,10 +411,6 @@ def output_del(form_output):
     flash_success_errors(error, action, url_for('routes_page.page_output'))
 
 
-#
-# Manipulate output settings while daemon is running
-#
-
 def manipulate_output(action, output_id):
     """
     Add, delete, and modify output settings while the daemon is active
@@ -445,72 +441,6 @@ def manipulate_output(action, output_id):
                       err='{action} Output: Could not connect to Daemon: {error}'.format(
                           action=action, error=msg)),
               "error")
-
-
-#
-# Output manipulation
-#
-
-
-def output_on_off(form_output):
-    action = '{action} {controller}'.format(
-        action=gettext("Actuate"),
-        controller=TRANSLATIONS['output']['title'])
-    error = []
-
-    try:
-        control = DaemonControl()
-        output = Output.query.filter_by(unique_id=form_output.output_id.data).first()
-        if output.output_type == 'wired' and int(form_output.output_pin.data) == 0:
-            error.append(gettext("Cannot modulate output with a GPIO of 0"))
-        elif form_output.on_submit.data:
-            if output.output_type in ['wired',
-                                      'wireless_rpi_rf',
-                                      'command']:
-                if float(form_output.sec_on.data) <= 0:
-                    error.append(gettext("Value must be greater than 0"))
-                else:
-                    return_value = control.output_on(
-                        form_output.output_id.data,
-                        amount=float(form_output.sec_on.data))
-                    flash(gettext("Output turned on for %(sec)s seconds: %(rvalue)s",
-                                  sec=form_output.sec_on.data,
-                                  rvalue=return_value),
-                          "success")
-            if output.output_type == 'pwm':
-                if int(form_output.output_pin.data) == 0:
-                    error.append(gettext("Invalid pin"))
-                if output.pwm_hertz <= 0:
-                    error.append(gettext("PWM Hertz must be a positive value"))
-                if float(form_output.pwm_duty_cycle_on.data) <= 0:
-                    error.append(gettext("PWM duty cycle must be a positive value"))
-                if not error:
-                    return_value = control.output_on(
-                        form_output.output_id.data,
-                        duty_cycle=float(form_output.pwm_duty_cycle_on.data))
-                    flash(gettext("PWM set to %(dc)s %% at %(hertz)s Hz: %(rvalue)s",
-                                  dc=float(form_output.pwm_duty_cycle_on.data),
-                                  hertz=output.pwm_hertz,
-                                  rvalue=return_value),
-                          "success")
-        elif form_output.turn_on.data:
-            return_value = control.output_on(
-                form_output.output_id.data, 0)
-            flash(gettext("Output turned on: %(rvalue)s",
-                          rvalue=return_value), "success")
-        elif form_output.turn_off.data:
-            return_value = control.output_off(
-                form_output.output_id.data)
-            flash(gettext("Output turned off: %(rvalue)s",
-                          rvalue=return_value), "success")
-    except ValueError as except_msg:
-        error.append('{err}: {msg}'.format(
-            err=gettext("Invalid value"),
-            msg=except_msg))
-    except Exception as except_msg:
-        error.append(except_msg)
-
-    flash_success_errors(error, action, url_for('routes_page.page_output'))
 
 
 def get_all_output_states():

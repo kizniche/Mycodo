@@ -71,9 +71,7 @@ class AbstractController(AbstractBaseController):
             try:
                 self.initialize_variables()
             except Exception as except_msg:
-                self.logger.exception(
-                    "initialize_variables() Exception: {err}".format(
-                        err=except_msg))
+                self.logger.exception("initialize_variables() Exception: {err}".format(err=except_msg))
 
             self.logger.info("Activated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
@@ -126,11 +124,9 @@ class AbstractController(AbstractBaseController):
             except Exception:
                 if i < times:
                     self.logger.exception(
-                        "Exception executing {}() on attempt {} of {}. Waiting "
-                        "{} seconds and trying again.".format(
+                        "Exception executing {}() on attempt {} of {}. Waiting {} seconds and trying again.".format(
                             func.__name__, i, times, delay_sec))
                     time.sleep(delay_sec)
                 else:
                     self.logger.exception(
-                        "Exception executing {}() on attempt {} of {}.".format(
-                            func.__name__, i, times))
+                        "Exception executing {}() on attempt {} of {}.".format(func.__name__, i, times))

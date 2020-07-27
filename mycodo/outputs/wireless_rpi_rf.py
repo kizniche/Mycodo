@@ -81,7 +81,7 @@ class OutputModule(AbstractOutput):
         self.protocol = self.output.protocol
         self.pulse_length = self.output.pulse_length
 
-    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None):
         if state == 'on':
             self.wireless_pi_switch.transmit(int(self.on_command))
             self.output_state = True
@@ -104,7 +104,5 @@ class OutputModule(AbstractOutput):
             return
 
         self.wireless_pi_switch = self.Transmit433MHz(
-            self.pin,
-            protocol=int(self.protocol),
-            pulse_length=int(self.pulse_length))
+            self.pin, protocol=int(self.protocol), pulse_length=int(self.pulse_length))
         self.output_state = False

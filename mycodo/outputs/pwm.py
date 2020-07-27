@@ -77,29 +77,29 @@ class OutputModule(AbstractOutput):
         self.pwm_hertz = self.output.pwm_hertz
         self.pwm_invert_signal = self.output.pwm_invert_signal
 
-    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None):
         measure_dict = copy.deepcopy(measurements_dict)
 
         if state == 'on':
             if self.pwm_invert_signal:
-                duty_cycle = 100.0 - abs(duty_cycle)
+                amount = 100.0 - abs(amount)
         elif state == 'off':
             if self.pwm_invert_signal:
-                duty_cycle = 100
+                amount = 100
             else:
-                duty_cycle = 0
+                amount = 0
 
         if self.pwm_library == 'pigpio_hardware':
-            self.pwm_output.hardware_PWM(self.pin, self.pwm_hertz, int(duty_cycle * 10000))
+            self.pwm_output.hardware_PWM(self.pin, self.pwm_hertz, int(amount * 10000))
         elif self.pwm_library == 'pigpio_any':
             self.pwm_output.set_PWM_frequency(self.pin, self.pwm_hertz)
             self.pwm_output.set_PWM_range(self.pin, 1000)
-            self.pwm_output.set_PWM_dutycycle(self.pin, self.duty_cycle_to_pigpio_value(duty_cycle))
+            self.pwm_output.set_PWM_dutycycle(self.pin, self.duty_cycle_to_pigpio_value(amount))
 
-        measure_dict[0]['value'] = duty_cycle
+        measure_dict[0]['value'] = amount
         add_measurements_influxdb(self.unique_id, measure_dict)
 
-        self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=duty_cycle))
+        self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=amount))
 
     def is_on(self):
         if self.is_setup():

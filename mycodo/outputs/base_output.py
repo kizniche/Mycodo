@@ -50,7 +50,7 @@ class AbstractOutput(AbstractBaseController):
         return_str = ''
         return return_str
 
-    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None):
         self.logger.error(
             "{cls} did not overwrite the output_switch() method. All "
             "subclasses of the AbstractOutput class are required to overwrite "

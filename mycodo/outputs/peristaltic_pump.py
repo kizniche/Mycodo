@@ -207,9 +207,9 @@ class OutputModule(AbstractOutput):
         measure_dict[2]['value'] = total_dispense_seconds
         add_measurements_influxdb(self.unique_id, measure_dict)
 
-    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
-        self.logger.debug("state: {}, output_type: {}, amount: {}, duty_cycle: {}".format(
-            state, output_type, amount, duty_cycle))
+    def output_switch(self, state, output_type=None, amount=None):
+        self.logger.debug("state: {}, output_type: {}, amount: {}".format(
+            state, output_type, amount))
 
         if state == 'off':
             if self.currently_dispensing:
@@ -252,9 +252,8 @@ class OutputModule(AbstractOutput):
                 else:
                     dispense_rate = self.flow_rate
 
-                self.logger.debug(
-                    "Turning pump on to dispense {ml:.1f} ml at {rate:.1f} ml/min.".format(
-                        ml=amount, rate=dispense_rate))
+                self.logger.debug("Turning pump on to dispense {ml:.1f} ml at {rate:.1f} ml/min.".format(
+                    ml=amount, rate=dispense_rate))
 
                 write_db = threading.Thread(
                     target=self.dispense_volume_rate,
@@ -268,8 +267,9 @@ class OutputModule(AbstractOutput):
 
         elif state == 'on' and output_type == 'sec':
             if self.currently_dispensing:
-                self.logger.debug("Pump instructed to turn on while it's already dispensing. "
-                                  "Overriding current dispense with new instruction.")
+                self.logger.debug(
+                    "Pump instructed to turn on while it's already dispensing. "
+                    "Overriding current dispense with new instruction.")
             self.logger.debug("Output turned on")
             self.GPIO.output(self.pin, self.on_state)
 
@@ -293,8 +293,7 @@ class OutputModule(AbstractOutput):
 
     def setup_output(self):
         if self.pin is None:
-            self.logger.warning("Invalid pin for output: {}.".format(
-                self.pin))
+            self.logger.warning("Invalid pin for output: {}.".format(self.pin))
             return
 
         try:
@@ -307,10 +306,11 @@ class OutputModule(AbstractOutput):
             except Exception as e:
                 self.logger.error("Setup error: {}".format(e))
             state = 'LOW' if self.on_state else 'HIGH'
-            self.logger.info("Output setup on pin {pin} and turned OFF (OFF={state})".format(
-                pin=self.pin, state=state))
+            self.logger.info(
+                "Output setup on pin {pin} and turned OFF (OFF={state})".format(pin=self.pin, state=state))
         except Exception as except_msg:
-            self.logger.exception("Output was unable to be setup on pin {pin} with trigger={trigger}: {err}".format(
-                pin=self.pin,
-                trigger=self.on_state,
-                err=except_msg))
+            self.logger.exception(
+                "Output was unable to be setup on pin {pin} with trigger={trigger}: {err}".format(
+                    pin=self.pin,
+                    trigger=self.on_state,
+                    err=except_msg))

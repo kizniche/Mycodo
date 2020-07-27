@@ -56,6 +56,11 @@ output_set_fields = ns_output.model('Output Modulation Fields', {
         description='The duty cycle to set a PWM output, in percent (%).',
         required=False,
         example=50.0,
+        min=0),
+    'volume': fields.Float(
+        description='The volume to send to an output.',
+        required=False,
+        example=35.0,
         min=0)
 })
 
@@ -144,6 +149,7 @@ class Outputs(Resource):
         state = None
         duration = None
         duty_cycle = None
+        volume = None
 
         if ns_output.payload:
             if 'state' in ns_output.payload:
@@ -172,16 +178,25 @@ class Outputs(Resource):
                         if duty_cycle < 0 or duty_cycle > 100:
                             abort(422, message='Required: 0 <= duty_cycle <= 100')
                     except Exception:
-                        abort(422,
-                              message='duty_cycle does not represent float value')
+                        abort(422, message='duty_cycle does not represent float value')
+
+            if 'volume' in ns_output.payload:
+                volume = ns_output.payload["volume"]
+                if volume is not None:
+                    try:
+                        volume = float(volume)
+                    except Exception:
+                        abort(422, message='volume does not represent float value')
 
         try:
             if state is not None and duration is not None:
-                return_ = control.output_on_off(unique_id, state, amount=duration)
+                return_ = control.output_on_off(unique_id, state, output_type='sec', amount=duration)
+            elif duty_cycle is not None:
+                return_ = control.output_on(unique_id, output_type='pwm', amount=duty_cycle)
+            elif volume is not None:
+                return_ = control.output_on(unique_id, output_type='vol', amount=duty_cycle)
             elif state is not None:
                 return_ = control.output_on_off(unique_id, state)
-            elif duty_cycle is not None:
-                return_ = control.output_on(unique_id, duty_cycle=duty_cycle)
             else:
                 return {'message': 'Insufficient payload'}, 460
 

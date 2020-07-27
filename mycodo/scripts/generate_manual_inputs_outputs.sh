@@ -5,14 +5,24 @@
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 cd "${INSTALL_DIRECTORY}" || return
 
+# Generate Input information
 "${INSTALL_DIRECTORY}"/env/bin/python "${INSTALL_DIRECTORY}"/mycodo/scripts/generate_manual_inputs.py
-
 awk '
     BEGIN       {p=1}
     /^Supported Input devices are listed below./   {print;system("cat '${INSTALL_DIRECTORY}'/mycodo-inputs.rst");p=0}
+    /^Output Devices/     {p=1}
+    p' "${INSTALL_DIRECTORY}"/mycodo-manual.rst > "${INSTALL_DIRECTORY}"/mycodo-manual_2.rst
+
+mv "${INSTALL_DIRECTORY}"/mycodo-manual_2.rst "${INSTALL_DIRECTORY}"/mycodo-manual.rst
+rm -rf "${INSTALL_DIRECTORY}"/mycodo-inputs.rst
+
+# Generate Output information
+"${INSTALL_DIRECTORY}"/env/bin/python "${INSTALL_DIRECTORY}"/mycodo/scripts/generate_manual_outputs.py
+awk '
+    BEGIN       {p=1}
+    /^Supported Output devices are listed below./   {print;system("cat '${INSTALL_DIRECTORY}'/mycodo-outputs.rst");p=0}
     /^I2C Multiplexers/     {p=1}
     p' "${INSTALL_DIRECTORY}"/mycodo-manual.rst > "${INSTALL_DIRECTORY}"/mycodo-manual_2.rst
 
 mv "${INSTALL_DIRECTORY}"/mycodo-manual_2.rst "${INSTALL_DIRECTORY}"/mycodo-manual.rst
-
-rm -rf "${INSTALL_DIRECTORY}"/mycodo-inputs.rst
+rm -rf "${INSTALL_DIRECTORY}"/mycodo-outputs.rst

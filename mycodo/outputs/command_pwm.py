@@ -69,36 +69,36 @@ class OutputModule(AbstractOutput):
         self.linux_command_user = self.output.linux_command_user
         self.pwm_invert_signal = self.output.pwm_invert_signal
 
-    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None):
         measure_dict = copy.deepcopy(measurements_dict)
 
         if self.pwm_command:
-            if state == 'on' and 0 <= duty_cycle <= 100:
+            if state == 'on' and 0 <= amount <= 100:
                 if self.pwm_invert_signal:
-                    duty_cycle = 100.0 - abs(duty_cycle)
+                    amount = 100.0 - abs(amount)
             elif state == 'off':
                 if self.pwm_invert_signal:
-                    duty_cycle = 100
+                    amount = 100
                 else:
-                    duty_cycle = 0
+                    amount = 0
             else:
                 return
 
-            self.pwm_state = duty_cycle
+            self.pwm_state = amount
 
-            cmd = self.pwm_command.replace('((duty_cycle))', str(duty_cycle))
+            cmd = self.pwm_command.replace('((duty_cycle))', str(amount))
             cmd_return, cmd_error, cmd_status = cmd_output(cmd, user=self.linux_command_user)
 
             measure_dict[0]['value'] = self.pwm_state
             add_measurements_influxdb(self.unique_id, measure_dict)
 
-            self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=duty_cycle))
+            self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=amount))
             self.logger.debug(
                 "Output duty cycle {duty_cycle} command returned: "
                 "Status: {stat}, "
                 "Output: '{ret}', "
                 "Error: '{err}'".format(
-                    duty_cycle=duty_cycle,
+                    duty_cycle=amount,
                     stat=cmd_status,
                     ret=cmd_return,
                     err=cmd_error))

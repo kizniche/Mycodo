@@ -329,8 +329,7 @@ class TriggerController(AbstractController, threading.Thread):
 
     def set_output_duty_cycle(self, output_id, duty_cycle):
         """ Set PWM Output duty cycle """
-        self.control.output_on(
-            output_id, duty_cycle=duty_cycle)
+        self.control.output_on(output_id, output_type='pwm', amount=duty_cycle)
 
     def check_triggers(self):
         """

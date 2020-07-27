@@ -69,27 +69,19 @@ class OutputModule(AbstractOutput):
         self.off_command = self.output.off_command
         self.linux_command_user = self.output.linux_command_user
 
-    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None):
         if state == 'on':
-            cmd_return, cmd_error, cmd_status = cmd_output(
-                self.on_command, user=self.linux_command_user)
+            cmd_return, cmd_error, cmd_status = cmd_output(self.on_command, user=self.linux_command_user)
             self.output_state = True
         elif state == 'off':
-            cmd_return, cmd_error, cmd_status = cmd_output(
-                self.off_command, user=self.linux_command_user)
+            cmd_return, cmd_error, cmd_status = cmd_output(self.off_command, user=self.linux_command_user)
             self.output_state = False
         else:
             return
 
         self.logger.debug(
-            "Output on/off {state} command returned: "
-            "Status: {stat}, "
-            "Output: '{ret}', "
-            "Error: '{err}'".format(
-                state=state,
-                stat=cmd_status,
-                ret=cmd_return,
-                err=cmd_error))
+            "Output on/off {state} command returned: Status: {stat}, Output: '{ret}', Error: '{err}'".format(
+                state=state, stat=cmd_status, ret=cmd_return, err=cmd_error))
 
     def is_on(self):
         if self.is_setup():

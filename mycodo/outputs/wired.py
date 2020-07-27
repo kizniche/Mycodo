@@ -69,7 +69,7 @@ class OutputModule(AbstractOutput):
         self.pin = self.output.pin
         self.on_state = self.output.on_state
 
-    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None):
         try:
             if state == 'on':
                 self.GPIO.output(self.pin, self.on_state)
@@ -103,9 +103,11 @@ class OutputModule(AbstractOutput):
             except Exception as e:
                 self.logger.error("Setup error: {}".format(e))
             state = 'LOW' if self.on_state else 'HIGH'
-            self.logger.info("Output setup on pin {pin} and turned OFF (OFF={state})".format(pin=self.pin, state=state))
+            self.logger.info(
+                "Output setup on pin {pin} and turned OFF (OFF={state})".format(pin=self.pin, state=state))
         except Exception as except_msg:
-            self.logger.exception("Output was unable to be setup on pin {pin} with trigger={trigger}: {err}".format(
-                pin=self.pin,
-                trigger=self.on_state,
-                err=except_msg))
+            self.logger.exception(
+                "Output was unable to be setup on pin {pin} with trigger={trigger}: {err}".format(
+                    pin=self.pin,
+                    trigger=self.on_state,
+                    err=except_msg))

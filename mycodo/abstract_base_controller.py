@@ -9,7 +9,8 @@ All Controller templates should inherit from this class
 
 These base classes currently inherit this AbstractBaseController:
 controllers/base_controller.py
-input/base_inputs.py
+inputs/base_input.py
+outputs/base_output.py
 """
 import logging
 
@@ -46,15 +47,13 @@ class AbstractBaseController(object):
                 if 'id' not in each_option_default:
                     error.append("'id' not found in custom_options")
                 if 'default_value' not in each_option_default:
-                    error.append(
-                        "'default_value' not found in custom_options")
+                    error.append("'default_value' not found in custom_options")
                 for each_error in error:
                     self.logger.error(each_error)
                 if error:
                     return
 
-                if ('required' in each_option_default and
-                        each_option_default['required']):
+                if 'required' in each_option_default and each_option_default['required']:
                     required = True
 
                 option_value = each_option_default['default_value']
@@ -81,8 +80,8 @@ class AbstractBaseController(object):
 
                 if required and not custom_option_set:
                     self.logger.error(
-                        "Custom option '{}' required but was not found to be "
-                        "set by the user".format(each_option_default['id']))
+                        "Custom option '{}' required but was not found to be set by the user".format(
+                            each_option_default['id']))
 
                 elif each_option_default['type'] == 'integer':
                     setattr(
@@ -119,8 +118,7 @@ class AbstractBaseController(object):
 
                 else:
                     self.logger.error(
-                        "Unknown custom_option type '{}'".format(
-                            each_option_default['type']))
+                        "Unknown custom_option type '{}'".format(each_option_default['type']))
             except Exception:
                 self.logger.exception("Error parsing custom_options")
 
@@ -134,8 +132,7 @@ class AbstractBaseController(object):
                 Conversion, unique_id=device_measurement.conversion_id)
         else:
             conversion = None
-        channel, unit, measurement = return_measurement_info(
-            device_measurement, conversion)
+        channel, unit, measurement = return_measurement_info(device_measurement, conversion)
 
         last_measurement = read_last_influxdb(
             device_id,

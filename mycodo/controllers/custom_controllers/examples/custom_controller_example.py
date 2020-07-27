@@ -233,16 +233,13 @@ class CustomModule(AbstractController, threading.Thread):
                         self.select_measurement_1_measurement_id))
 
             # Turn Output select_device_1 on for 15 seconds
-            self.logger.debug(
-                "Turning select_device_1 with ID {} on for 15 "
-                "seconds...".format(
-                    self.select_device_1_id))
-            self.control.output_on(self.select_device_1_id, amount=15)
+            self.logger.debug("Turning select_device_1 with ID {} on for 15 seconds...".format(
+                self.select_device_1_id))
+            self.control.output_on(self.select_device_1_id, output_type='sec', amount=15)
 
             # Deactivate controller in the SQL database
             self.logger.debug(
-                "Deactivating (SQL) Custom controller select_device_2 with"
-                " ID {} ...".format(self.select_device_2_id))
+                "Deactivating (SQL) Custom controller select_device_2 with ID {}".format(self.select_device_2_id))
             from mycodo.databases.utils import session_scope
             from mycodo.config import SQL_DATABASE_MYCODO
             MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO

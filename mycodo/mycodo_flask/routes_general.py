@@ -943,19 +943,10 @@ def output_mod(output_id, state, output_type, amount):
         return 'Insufficient user permissions to manipulate outputs'
 
     daemon = DaemonControl()
-    if (state in ['on', 'off'] and output_type in ['sec', 'vol'] and
+    if (state in ['on', 'off'] and output_type in ['sec', 'pwm', 'vol'] and
             (str_is_float(amount) and float(amount) >= 0)):
         out_status = daemon.output_on_off(
             output_id, state, output_type=output_type, amount=float(amount))
-        if out_status[0]:
-            return 'ERROR: {}'.format(out_status[1])
-        else:
-            return 'SUCCESS: {}'.format(out_status[1])
-
-    elif (state == 'on' and output_type in outputs_pwm() and
-            (str_is_float(amount) and float(amount) >= 0)):
-        out_status = daemon.output_on(
-            output_id, output_type=output_type, duty_cycle=float(amount))
         if out_status[0]:
             return 'ERROR: {}'.format(out_status[1])
         else:

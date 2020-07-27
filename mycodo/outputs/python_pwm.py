@@ -70,28 +70,28 @@ class OutputModule(AbstractOutput):
         self.pwm_command = self.output.pwm_command
         self.pwm_invert_signal = self.output.pwm_invert_signal
 
-    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None):
         measure_dict = copy.deepcopy(measurements_dict)
 
         if self.pwm_command:
-            if state == 'on' and 100 >= duty_cycle >= 0:
+            if state == 'on' and 100 >= amount >= 0:
                 if self.pwm_invert_signal:
-                    duty_cycle = 100.0 - abs(duty_cycle)
-            elif state == 'off' or duty_cycle == 0:
+                    amount = 100.0 - abs(amount)
+            elif state == 'off' or amount == 0:
                 if self.pwm_invert_signal:
-                    duty_cycle = 100
+                    amount = 100
                 else:
-                    duty_cycle = 0
+                    amount = 0
             else:
                 return
 
-            self.output_run_python_pwm.output_code_run(duty_cycle)
-            self.pwm_state = duty_cycle
+            self.output_run_python_pwm.output_code_run(amount)
+            self.pwm_state = amount
 
-            measure_dict[0]['value'] = duty_cycle
+            measure_dict[0]['value'] = amount
             add_measurements_influxdb(self.unique_id, measure_dict)
 
-            self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=duty_cycle))
+            self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=amount))
 
     def is_on(self):
         if self.is_setup():

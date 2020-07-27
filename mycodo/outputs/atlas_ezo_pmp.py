@@ -32,6 +32,9 @@ OUTPUT_INFORMATION = {
     'output_name_unique': 'atlas_ezo_pmp',
     'output_name': "{} (Atlas Scientific)".format(lazy_gettext('Peristaltic Pump')),
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://atlas-scientific.com/peristaltic/',
+    'url_datasheet': 'https://www.atlas-scientific.com/files/EZO_PMP_Datasheet.pdf',
+    'url_product_purchase': 'https://atlas-scientific.com/peristaltic/ezo-pmp/',
 
     'on_state_internally_handled': False,
     'output_types': ['volume', 'on_off'],
@@ -128,7 +131,7 @@ class OutputModule(AbstractOutput):
 
         self.record_dispersal(seconds_to_run=seconds)
 
-    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None):
         if state == 'on' and output_type == 'sec' and amount:
             # Only dispense for a duration if output_type is 'sec'
             # Otherwise, refer to output_mode
