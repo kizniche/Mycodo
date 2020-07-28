@@ -1116,6 +1116,7 @@ def return_dependencies(device_type):
                     met_deps = True
                 elif each_device == 'dependencies_module':
                     for (install_type, package, install_id) in each_dict:
+                        logger.error("TEST00: {}, {}, {}".format(install_type, package, install_id))
                         entry = (
                             package, '{0} {1}'.format(install_type, install_id),
                             install_type,

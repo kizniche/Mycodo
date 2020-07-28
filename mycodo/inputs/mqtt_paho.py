@@ -32,7 +32,7 @@ measurements_dict = {}
 INPUT_INFORMATION = {
     'input_name_unique': 'MQTT_PAHO',
     'input_manufacturer': 'Mycodo',
-    'input_name': 'MQTT Protocol (paho)',
+    'input_name': 'MQTT Subscribe (paho)',
     'input_library': 'paho-mqtt',
     'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,

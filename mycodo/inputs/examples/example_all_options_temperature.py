@@ -105,7 +105,7 @@ INPUT_INFORMATION = {
     'dependencies_module': [  # List of tuples
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
         ('pip-pypi', 'bluepy', 'bluepy==1.1.4'),
-        ('pip-git', 'adafruit-bme280', 'git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280'),
+        ('pip-pypi', 'adafruit-bme280', 'git+https://github.com/adafruit/Adafruit_Python_BME280.git'),
         ('apt', 'whiptail', 'whiptail'),
         ('apt', 'zsh', 'zsh'),
         ('internal', 'file-exists /opt/mycodo/pigpio_installed', 'pigpio'),

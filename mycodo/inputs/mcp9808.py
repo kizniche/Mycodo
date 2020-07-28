@@ -25,7 +25,7 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
-        ('pip-git', 'Adafruit_MCP9808', 'git://github.com/adafruit/Adafruit_Python_MCP9808.git#egg=adafruit-mcp9808'),
+        ('pip-pypi', 'Adafruit_MCP9808', 'git+https://github.com/adafruit/Adafruit_Python_MCP9808.git'),
     ],
 
     'interfaces': ['I2C'],

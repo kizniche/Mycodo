@@ -60,7 +60,7 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
-        ('pip-git', 'Adafruit_BME280', 'git://github.com/adafruit/Adafruit_Python_BME280.git#egg=adafruit-bme280')
+        ('pip-pypi', 'Adafruit_BME280', 'git+https://github.com/adafruit/Adafruit_Python_BME280.git')
     ],
 
     'interfaces': ['I2C'],

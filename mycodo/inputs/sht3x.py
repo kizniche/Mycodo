@@ -70,7 +70,7 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
-        ('pip-git', 'Adafruit_SHT31', 'git://github.com/ralf1070/Adafruit_Python_SHT31.git#egg=adafruit-sht31')
+        ('pip-pypi', 'Adafruit_SHT31', 'Adafruit_SHT31')
     ],
 
     'interfaces': ['I2C'],

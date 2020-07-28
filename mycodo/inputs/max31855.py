@@ -40,7 +40,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-git', 'Adafruit_MAX31855', 'git://github.com/adafruit/Adafruit_Python_MAX31855.git#egg=adafruit-max31855'),
+        ('pip-pypi', 'Adafruit_MAX31855', 'git+https://github.com/adafruit/Adafruit_Python_MAX31855.git'),
         ('pip-pypi', 'Adafruit_GPIO','Adafruit_GPIO')
     ],
 

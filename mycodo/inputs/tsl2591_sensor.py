@@ -40,7 +40,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-git', 'tsl2591', 'git://github.com/maxlklaxl/python-tsl2591.git#egg=tsl2591')
+        ('pip-pypi', 'tsl2591', 'git+https://github.com/maxlklaxl/python-tsl2591.git')
     ],
 
     'interfaces': ['I2C'],

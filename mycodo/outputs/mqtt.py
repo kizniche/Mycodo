@@ -46,7 +46,6 @@ OUTPUT_INFORMATION = {
     ],
 
     'options_enabled': [
-        'on_off_state_on',
         'on_off_state_startup',
         'on_off_state_shutdown',
         'trigger_functions_startup',

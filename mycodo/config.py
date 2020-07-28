@@ -126,7 +126,7 @@ LCD_INFO = {
             ('pip-pypi', 'PIL', 'Pillow'),
             ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
             ('pip-pypi', 'Adafruit_PureIO', 'Adafruit_PureIO'),
-            ('pip-git', 'Adafruit_SSD1306', 'git://github.com/adafruit/Adafruit_Python_SSD1306.git#egg=adafruit-ssd1306')
+            ('pip-pypi', 'Adafruit_SSD1306', 'git+https://github.com/adafruit/Adafruit_Python_SSD1306.git')
         ],
         'interfaces': ['I2C', 'SPI']
     },
@@ -137,7 +137,7 @@ LCD_INFO = {
             ('pip-pypi', 'PIL', 'Pillow'),
             ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
             ('pip-pypi', 'Adafruit_PureIO', 'Adafruit_PureIO'),
-            ('pip-git', 'Adafruit_SSD1306', 'git://github.com/adafruit/Adafruit_Python_SSD1306.git#egg=adafruit-ssd1306')
+            ('pip-pypi', 'Adafruit_SSD1306', 'git+https://github.com/adafruit/Adafruit_Python_SSD1306.git')
         ],
         'interfaces': ['I2C', 'SPI']
     }

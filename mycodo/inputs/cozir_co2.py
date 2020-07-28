@@ -44,7 +44,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-git', 'cozir', 'git://github.com/pierre-haessig/pycozir.git#egg=pycozir')
+        ('pip-pypi', 'cozir', 'git+https://github.com/pierre-haessig/pycozir.git')
     ],
 
     'interfaces': ['UART'],
