@@ -35,9 +35,12 @@ logger = logging.getLogger(__name__)
 
 
 def pid_mod(form_mod_pid_base,
-            form_mod_pid_pwm_raise, form_mod_pid_pwm_lower,
-            form_mod_pid_output_raise, form_mod_pid_output_lower,
-            form_mod_pid_volume_raise, form_mod_pid_volume_lower):
+            form_mod_pid_pwm_raise,
+            form_mod_pid_pwm_lower,
+            form_mod_pid_output_raise,
+            form_mod_pid_output_lower,
+            form_mod_pid_volume_raise,
+            form_mod_pid_volume_lower):
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['modify']['title'],
         controller=TRANSLATIONS['pid']['title'])
@@ -147,7 +150,7 @@ def pid_mod(form_mod_pid_base,
                     else:
                         mod_pid.raise_min_duration = form_mod_pid_output_raise.raise_min_duration.data
                         mod_pid.raise_max_duration = form_mod_pid_output_raise.raise_max_duration.data
-                        mod_pid.raise_min_off_duration = form_mod_pid_output_lower.raise_min_off_duration.data
+                        mod_pid.raise_min_off_duration = form_mod_pid_output_raise.raise_min_off_duration.data
                 elif mod_pid.raise_output_type == 'pwm':
                     if not form_mod_pid_pwm_raise.validate():
                         error.append(TRANSLATIONS['error']['title'])
