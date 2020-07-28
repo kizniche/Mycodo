@@ -5,15 +5,18 @@ This update includes the final refactoring of the output system to accommodate o
 ### Bugfixes
 
  - Fix issue installing Python modules ([#804](https://github.com/kizniche/mycodo/issues/804))
+ - Fix graph shift memory leak
 
 ### Features
 
  - Add Output: On/Off MQTT Publish
  - Add Output information links
+ - Add ability to download Mycodo Backups ([#803](https://github.com/kizniche/mycodo/issues/803))
 
 ### Miscellaneous
 
  - Deprecate duty_cycle parameter of output functions
+ - Remove graph Shift X-Axis option
 
 
 ## 8.6.4 (2020-07-25)

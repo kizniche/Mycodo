@@ -274,8 +274,9 @@ class OutputModule(AbstractOutput):
             self.GPIO.output(self.pin, self.on_state)
 
         else:
-            self.logger.error("Invalid parameters: State: {state}, Volume: {vol}, Flow Rate: {fr}".format(
-                state=state, vol=amount, fr=self.flow_rate))
+            self.logger.error(
+                "Invalid parameters: State: {state}, Type: {ot}, Mode: {mod}, Amount: {amt}, Flow Rate: {fr}".format(
+                    state=state, ot=output_type, mod=self.mode, amt=amount, fr=self.flow_rate))
             return
 
     def is_on(self):

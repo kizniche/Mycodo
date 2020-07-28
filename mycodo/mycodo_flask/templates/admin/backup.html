@@ -37,6 +37,9 @@
             {{each_backup[0][14:33]}}<br><a href="https://github.com/kizniche/Mycodo/releases/tag/v{{each_backup[0][34:]}}" target="_blank">v{{each_backup[0][34:]}}</a>, {{"%.1f MB"|format(each_backup[1])}}
           </div>
           <div class="col-6 col-sm-3 small-gutters">
+            {{form_backup.download(class_='btn btn-primary btn-block', value='Download Backup')}}
+          </div>
+          <div class="col-6 col-sm-3 small-gutters">
             {{form_backup.restore(class_='btn btn-primary btn-block', value='Restore Backup')}}
           </div>
           <div class="col-6 col-sm-3 small-gutters">

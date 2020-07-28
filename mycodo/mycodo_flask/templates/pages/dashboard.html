@@ -142,7 +142,7 @@
 
 // Dashboard Grid
 
-var options = {
+let options = {
   cellHeight: {{misc.grid_cell_height}},
   column: 20,
   resizable: {
@@ -154,13 +154,13 @@ var options = {
   alwaysShowResizeHandle: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
   float: true
 };
-var grid = $('.grid-stack').gridstack(options);
+let grid = $('.grid-stack').gridstack(options);
 
 grid.on('change', function (event, items) {
   if ($(items)) {
-    var res = $('.grid-stack > .grid-stack-item:visible').map(function (i, el) {
+    let res = $('.grid-stack > .grid-stack-item:visible').map(function (i, el) {
       el = $(el);
-      node = el.data('_gridstack_node');
+      const node = el.data('_gridstack_node');
       return {
         name: el.attr('data-name'),
         widget_id: el.attr('data-custom-id'),
@@ -197,7 +197,7 @@ function showVal(chart, duty_cycle){
 
 function sendVal(chart, output_id, duty_cycle){
   document.getElementById("range_val_" + chart).innerHTML = duty_cycle;
-  var cmd_send = output_id + '/on/pwm/' + duty_cycle;
+  const cmd_send = output_id + '/on/pwm/' + duty_cycle;
   modOutput(cmd_send);
 }
 
@@ -205,8 +205,8 @@ function sendVal(chart, output_id, duty_cycle){
 // Add Dashboard Widget content selector
 
 $('#widget_type').on('change', function () {
-  var x = document.getElementsByClassName("add_dashboard_object");  // Find the widgets
-  for(var i = 0; i < x.length; i++){
+  let x = document.getElementsByClassName("add_dashboard_object");  // Find the widgets
+  for(let i = 0; i < x.length; i++){
     x[i].style.display = "none";    // Change the content
   }
   if (this.value !== '') {
@@ -242,38 +242,38 @@ function modOutput(btn_val) {
 
 $(document).ready(function() {
   $('.turn_on').click(function() {
-    var btn_val = this.name;
-    var send_cmd = btn_val.substring(btn_val.indexOf('/')+1);
+    const btn_val = this.name;
+    const send_cmd = btn_val.substring(btn_val.indexOf('/')+1);
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output On');
     {% endif %}
     modOutput(send_cmd);
   });
   $('.turn_off').click(function() {
-    var btn_val = this.name;
-    var send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
+    const btn_val = this.name;
+    const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output Off');
     {% endif %}
     modOutput(send_cmd);
   });
   $('.output_on_amt').click(function() {
-    var btn_val = this.name;
-    var chart = btn_val.split('/')[0];
-    var id = btn_val.split('/')[1];
-    var on_amt = $('#sec_on_amt_' + chart + '_' + id).val();
-    var send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
+    const btn_val = this.name;
+    const chart = btn_val.split('/')[0];
+    const id = btn_val.split('/')[1];
+    const on_amt = $('#sec_on_amt_' + chart + '_' + id).val();
+    const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output On for ' + on_amt);
     {% endif %}
     modOutput(send_cmd + on_amt);
   });
   $('.duty_cycle_on_amt').click(function() {
-    var btn_val = this.name;
-    var chart = btn_val.split('/')[0];
-    var id = btn_val.split('/')[1];
-    var dc = $('#duty_cycle_on_amt_' + chart + '_' + id).val();
-    var send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
+    const btn_val = this.name;
+    const chart = btn_val.split('/')[0];
+    const id = btn_val.split('/')[1];
+    const dc = $('#duty_cycle_on_amt_' + chart + '_' + id).val();
+    const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output On with a duty cycle of ' + dc + '%');
     {% endif %}
@@ -303,49 +303,49 @@ function modPID(btn_val) {
 
 $(document).ready(function() {
   $('.activate_pid').click(function() {
-    var btn_val = this.name;
-    var id = btn_val.split('/')[0];
+    const btn_val = this.name;
+    const id = btn_val.split('/')[0];
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to Activate PID');
     {% endif %}
     modPID(btn_val);
   });
   $('.deactivate_pid').click(function() {
-    var btn_val = this.name;
-    var id = btn_val.split('/')[0];
+    const btn_val = this.name;
+    const id = btn_val.split('/')[0];
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to Deactivate PID');
     {% endif %}
     modPID(btn_val);
   });
   $('.pause_pid').click(function() {
-    var btn_val = this.name;
-    var id = btn_val.split('/')[0];
+    const btn_val = this.name;
+    const id = btn_val.split('/')[0];
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to Pause PID');
     {% endif %}
     modPID(btn_val);
   });
   $('.hold_pid').click(function() {
-    var btn_val = this.name;
-    var id = btn_val.split('/')[0];
+    const btn_val = this.name;
+    const id = btn_val.split('/')[0];
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to Hold PID');
     {% endif %}
     modPID(btn_val);
   });
   $('.resume_pid').click(function() {
-    var btn_val = this.name;
-    var id = btn_val.split('/')[0];
+    const btn_val = this.name;
+    const id = btn_val.split('/')[0];
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to Resume PID');
     {% endif %}
     modPID(btn_val);
   });
   $('.set_setpoint').click(function() {
-    var btn_val = this.name;
-    var id = btn_val.split('/')[0];
-    var setpoint = $('#setpoint_pid_' + id).val();
+    const btn_val = this.name;
+    const id = btn_val.split('/')[0];
+    const setpoint = $('#setpoint_pid_' + id).val();
     if(setpoint) {
       {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to set PID setpoint');
@@ -368,14 +368,14 @@ Highcharts.setOptions({
 });
 
 // Store the time (epoch) of the last data point received, for every condition of every graph
-var last_output_time_mil = {};
+let last_output_time_mil = {};
 
 $(document).ready(function() {
-  var chart = [];
-  var note_timestmaps = [];
+  let chart = [];
+  let note_timestamps = [];
 
   function getGPIOState(chart_number, unique_id) {
-    var url = '/outputstate_unique_id/' + unique_id;
+    const url = '/outputstate_unique_id/' + unique_id;
     $.getJSON(url,
       function(state, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
@@ -410,25 +410,26 @@ $(document).ready(function() {
 
   // Retrieve initial graph data set from the past (duration set by user)
   function getPastData(chart_number, series, unique_id, measure_type, measurement_id, past_seconds) {
-    var url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + past_seconds;
-    var update_id = chart_number + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
+    const url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + past_seconds;
+    const update_id = chart_number + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
     $.getJSON(url,
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
-          var past_data = [];
-          for (i = 0; i < data.length; i++) {
+          let new_time;
+          let past_data = [];
+          for (let i = 0; i < data.length; i++) {
             // Push the received data to the graph
-            var new_date = new Date(data[i][0]);
-            var new_time = new_date.getTime();
+            let new_date = new Date(data[i][0]);
+            new_time = new_date.getTime();
 
             if (measure_type === 'tag') {
-              if (!note_timestmaps.includes(new_time)) {
+              if (!note_timestamps.includes(new_time)) {
                 past_data.push({
                   x: new_time,
                   title: data[i][1],
                   text: data[i][2].replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/  /g, '░░')
                 });
-                note_timestmaps.push(new_time);
+                note_timestamps.push(new_time);
               }
             }
             else {
@@ -455,13 +456,13 @@ $(document).ready(function() {
 
   // Return timestamp from epoch
   function epoch_to_timestamp(epoch) {
-    var date = new Date(parseFloat(epoch));
-    var year = date.getFullYear();
-    var month = date.getMonth() + 1;
-    var day = date.getDate();
-    var hours = date.getHours();
-    var minutes = "0" + date.getMinutes();
-    var seconds = "0" + date.getSeconds();
+    const date = new Date(parseFloat(epoch));
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = "0" + date.getMinutes();
+    const seconds = "0" + date.getSeconds();
     return month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
   }
 
@@ -471,7 +472,7 @@ $(document).ready(function() {
       decimal_places = 1;
     }
     if (dash_type === "indicator" && measure_type === "output") {
-      var url = '/outputstate_unique_id/' + unique_id;
+      const url = '/outputstate_unique_id/' + unique_id;
       $.ajax(url, {
         success: function (data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {
@@ -501,7 +502,7 @@ $(document).ready(function() {
         }
       });
     } else {
-      var url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + max_measure_age_sec.toString();
+      const url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + max_measure_age_sec.toString();
       $.ajax(url, {
         success: function(data, responseText, jqXHR) {
           if (jqXHR.status === 204) {
@@ -514,11 +515,11 @@ $(document).ready(function() {
             }
           }
           else {
-            var formattedTime = epoch_to_timestamp(data[0]);
-            var measurement = data[1];
+            const formattedTime = epoch_to_timestamp(data[0]);
+            const measurement = data[1];
 
             if (dash_type === "gauge") {
-              var new_point = chart[chart_number].series[0].points[0];
+              let new_point = chart[chart_number].series[0].points[0];
               new_point.update(measurement);
             } else if (dash_type === "indicator") {
               if ((measurement && !extra) || (!measurement && extra)) {
@@ -530,7 +531,7 @@ $(document).ready(function() {
             } else {
               document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(decimal_places);
 
-              var range_exists = document.getElementById("range_" + chart_number);
+              const range_exists = document.getElementById("range_" + chart_number);
               if (range_exists != null) {  // Update range slider value
                 document.getElementById("range_" + chart_number).value = measurement.toFixed(0);
                 document.getElementById("range_val_" + chart_number).innerHTML = measurement.toFixed(0);
@@ -541,7 +542,7 @@ $(document).ready(function() {
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
           if (dash_type === "gauge") {
-            var point = chart[chart_number].series[0].points[0];
+            let point = chart[chart_number].series[0].points[0];
             point.update(null);
           } else if (['indicator', 'measurement', 'output', 'pid_control'].indexOf(dash_type) >= 0) {
             document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
@@ -570,7 +571,7 @@ $(document).ready(function() {
       document.getElementById(name + '-timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
     }
     if (data[name][1] && document.getElementById(name + '-' + chart_number)) {
-      var value = parseFloat(data[name][1]).toFixed(decimal_places);
+      const value = parseFloat(data[name][1]).toFixed(decimal_places);
       document.getElementById(name + '-' + chart_number).innerHTML = value + units;
     } else if (document.getElementById(name + '-' + chart_number)) {
       document.getElementById(name + '-' + chart_number).innerHTML = 'NULL';
@@ -592,7 +593,7 @@ $(document).ready(function() {
 
   // Retrieve the latest/last measurement for gauges/outputs
   function getLastDataPID(chart_number, dev_id, max_measure_age_sec, decimal_places, units) {
-    var url = '/last_pid/' + dev_id + '/' + max_measure_age_sec.toString();
+    const url = '/last_pid/' + dev_id + '/' + max_measure_age_sec.toString();
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
@@ -760,15 +761,14 @@ $(document).ready(function() {
                             measurement_id,
                             xaxis_duration_min,
                             xaxis_reset,
-                            refresh_seconds,
-                            graph_shift) {
+                            refresh_seconds) {
     // Build the URL
     // Instruct only to return data since the time of the last received data point
-    var url = '';
-    var update_id = chart_number + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
+    let url = '';
+    let update_id = chart_number + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
     if (update_id in last_output_time_mil) {
-      var epoch_mil = (new Date).getTime();
-      var past_seconds = Math.floor((epoch_mil - last_output_time_mil[update_id]) / 1000);
+      const epoch_mil = (new Date).getTime();
+      const past_seconds = Math.floor((epoch_mil - last_output_time_mil[update_id]) / 1000);
       url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + past_seconds;
     } else {
       url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + refresh_seconds;
@@ -776,24 +776,45 @@ $(document).ready(function() {
     $.getJSON(url,
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
-          for (i = 0; i < data.length; i++) {
-            var new_date = new Date(data[i][0]);
-            var new_time = new_date.getTime();
+          let new_time;
 
+          // Add new data points to graph
+          for (let i = 0; i < data.length; i++) {
+            let new_date = new Date(data[i][0]);
+            new_time = new_date.getTime();
             if (measure_type === 'tag') {
-              if (!note_timestmaps.includes(new_time)) {
-                chart[chart_number].series[series].addPoint({
-                  x: new_time,
-                  title: data[i][1],
-                  text: data[i][2]
-                }, false, graph_shift);
-                note_timestmaps.push(new_time);
+              // Add note to graph
+              if (!note_timestamps.includes(new_time)) {
+                chart[chart_number].series[series].addPoint(
+                  {x: new_time, title: data[i][1], text: data[i][2]}, false, false);
+                note_timestamps.push(new_time);
               }
             }
             else {
-              chart[chart_number].series[series].addPoint([new_time, data[i][1]], false, graph_shift);
+              // Add measurement to graph
+              chart[chart_number].series[series].addPoint([new_time, data[i][1]], false, false);
             }
           }
+
+          // Determine the oldest timestamp allowed on the graph.
+          // This is determined by the user-defined x-axis range
+          const time_now = new Date().getTime();
+          const oldest_timestamp_allowed = time_now - (xaxis_duration_min * 60 * 1000);
+          // Iterate through graph data and remove points older than the oldest timestamp allowed
+          for (let i = 0; i < chart[chart_number].series[series].data.length; i++) {
+            // If a point timestamp is older than the oldest timestamp allowed on the graph, remove it
+            if (chart[chart_number].series[series].data[i].x < oldest_timestamp_allowed) {
+              chart[chart_number].series[series].data[i].remove(false);
+              if (measure_type === 'tag') {
+                note_timestamps.shift();  // Remove first element
+              }
+            } else {
+              // Exit for loop once the first data point is found within the user-defined x-axis range
+              // Assumes all data beyond that point are future timestamps that are within the range
+              break;
+            }
+          }
+
           if (measure_type === 'tag') {
             last_output_time_mil[update_id] = new_time + 3000;
           }
@@ -814,8 +835,7 @@ $(document).ready(function() {
                        measurement_id,
                        xaxis_duration_min,
                        xaxis_reset,
-                       refresh_seconds,
-                       graph_shift) {
+                       refresh_seconds) {
     setInterval(function () {
       retrieveLiveData(chart_number,
                        series,
@@ -824,15 +844,14 @@ $(document).ready(function() {
                        measurement_id,
                        xaxis_duration_min,
                        xaxis_reset,
-                       refresh_seconds,
-                       graph_shift);
+                       refresh_seconds);
     }, refresh_seconds * 1000);
   }
 
   // Capture image and update the image
   function get_image_cam(dashboard_id, camera_unique_id, image_type, max_age) {
-    var url = '';
-    var image_type_str = '';
+    let url = '';
+    let image_type_str = '';
     if (image_type === 'tmp_img') {
       url = '/camera_acquire_image/tmp/' + camera_unique_id + '/' + max_age;
       image_type_str = 'still'
@@ -850,13 +869,13 @@ $(document).ready(function() {
           document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
         }
         else {
-          var timestamp_str = '';
+          let timestamp_str = '';
           if (image_type_str === 'still') {
             timestamp_str = 'Still: '
           } else if (image_type_str === 'timelapse') {
             timestamp_str = 'Timelapse: '
           }
-          var filename = data[0];
+          const filename = data[0];
           if (filename === 'max_age_exceeded') {
             // The image timestamp is older than the maximum allowable age
             document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_max_age.png";
@@ -869,8 +888,8 @@ $(document).ready(function() {
             document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + "File Not Found";
           } else {
             // The image is available and younger than the max age
-            var timestamp = data[1];
-            var image_no_cache_timestamp = Date.now();
+            const timestamp = data[1];
+            const image_no_cache_timestamp = Date.now();
             document.getElementById(dashboard_id + "-image-src").src = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename + "?" + image_no_cache_timestamp;
             document.getElementById(dashboard_id + "-image-href").href = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename + "?" + image_no_cache_timestamp;
             document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + timestamp;
@@ -930,7 +949,7 @@ $(document).ready(function() {
 {%- endfor -%}
 
   $('.grid-stack').on('gsresizestop', function(event, elem) {
-    var chart_number = $(elem).attr('data-custom-chart-number');
+    const chart_number = $(elem).attr('data-custom-chart-number');
     chart[chart_number].reflow();
   });
 

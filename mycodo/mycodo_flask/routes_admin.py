@@ -2,11 +2,14 @@
 """ collection of Admin endpoints """
 import datetime
 import logging
+import socket
 import subprocess
 import threading
+import zipfile
 from collections import OrderedDict
 
 import flask_login
+import io
 import os
 from flask import Blueprint
 from flask import flash
@@ -14,6 +17,7 @@ from flask import make_response
 from flask import redirect
 from flask import render_template
 from flask import request
+from flask import send_file
 from flask import url_for
 from flask_babel import gettext
 from pkg_resources import parse_version
@@ -115,6 +119,46 @@ def admin_backup():
                                       size_free=free_before / 1000000,
                                       size_after=free_after / 1000000),
                     'error')
+
+        elif form_backup.download.data:
+            def get_all_file_paths(directory):
+                file_paths = []
+                for root, directories, files in os.walk(directory):
+                    for filename in files:
+                        # join the two strings in order to form the full filepath
+                        filepath = os.path.join(root, filename)
+                        file_paths.append(filepath)
+                return file_paths
+
+            try:
+                backup_date_version = form_backup.selected_dir.data
+                download_dir = os.path.join(BACKUP_PATH, 'Mycodo-backup-{}'.format(backup_date_version))
+                save_file = "Mycodo_Backup_{dv}_{host}_.zip".format(
+                    dv=backup_date_version, host=socket.gethostname().replace(' ', ''))
+                file_paths = get_all_file_paths(download_dir)
+                string_remove = "{}".format(os.path.join(BACKUP_PATH, download_dir))
+
+                if not os.path.isdir(download_dir):
+                    flash("Directory not found: {}".format(download_dir), "error")
+                else:
+                    # Zip all files in the_backup directory
+                    data = io.BytesIO()
+                    with zipfile.ZipFile(data, 'w') as zip:
+                        # writing each file one by one
+                        for file in file_paths:
+                            # Remove first two directory names from zip file, so the Mycodo root is the zip root
+                            zip.write(file, file.replace(string_remove, ""))
+                    data.seek(0)
+
+                    # Send zip file to user
+                    return send_file(
+                        data,
+                        mimetype='application/zip',
+                        as_attachment=True,
+                        attachment_filename=save_file
+                    )
+            except Exception as err:
+                flash("Error: {}".format(err), "error")
 
         elif form_backup.delete.data:
             cmd = "{pth}/mycodo/scripts/mycodo_wrapper backup-delete {dir}" \

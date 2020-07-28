@@ -111,6 +111,7 @@ class Upgrade(FlaskForm):
 #
 
 class Backup(FlaskForm):
+    download = SubmitField(lazy_gettext('Download Backup'))
     backup = SubmitField(lazy_gettext('Create Backup'))
     restore = SubmitField(lazy_gettext('Restore Backup'))
     delete = SubmitField(lazy_gettext('Delete Backup'))

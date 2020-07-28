@@ -165,7 +165,6 @@ def widget_add(form_base, form_object):
         new_widget.enable_navbar = form_object.enable_navbar.data
         new_widget.enable_rangeselect = form_object.enable_rangeselect.data
         new_widget.enable_export = form_object.enable_export.data
-        new_widget.enable_graph_shift = form_object.enable_graph_shift.data
         new_widget.enable_manual_y_axis = form_object.enable_manual_y_axis.data
 
         new_widget.width = 20
@@ -416,7 +415,6 @@ def widget_mod(form_base, form_object, request_form):
         mod_widget.enable_navbar = form_object.enable_navbar.data
         mod_widget.enable_export = form_object.enable_export.data
         mod_widget.enable_rangeselect = form_object.enable_rangeselect.data
-        mod_widget.enable_graph_shift = form_object.enable_graph_shift.data
 
     # If a gauge type is changed, the color format must change
     elif (form_base.widget_type.data == 'gauge' and

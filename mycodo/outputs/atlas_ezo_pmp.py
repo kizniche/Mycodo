@@ -164,8 +164,8 @@ class OutputModule(AbstractOutput):
 
         else:
             self.logger.error(
-                "Invalid parameters: State: {state}, Output Type: {ot}, Volume: {vol}, Flow Rate: {fr}".format(
-                    state=state, ot=output_type, vol=amount, fr=self.flow_rate))
+                "Invalid parameters: State: {state}, Type: {ot}, Mode: {mod}, Amount: {amt}, Flow Rate: {fr}".format(
+                    state=state, ot=output_type, mod=self.mode, amt=amount, fr=self.flow_rate))
             return
 
         self.atlas_command.write(write_cmd)
