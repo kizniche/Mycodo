@@ -761,7 +761,8 @@ $(document).ready(function() {
                             measurement_id,
                             xaxis_duration_min,
                             xaxis_reset,
-                            refresh_seconds) {
+                            refresh_seconds,
+                            graph_shift) {
     // Build the URL
     // Instruct only to return data since the time of the last received data point
     let url = '';
@@ -777,41 +778,25 @@ $(document).ready(function() {
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
           let new_time;
-
-          // Add new data points to graph
           for (let i = 0; i < data.length; i++) {
             let new_date = new Date(data[i][0]);
             new_time = new_date.getTime();
+
+            // Don't add points that are already present
+            // If the timestamp of the last point previously added is >= the new point TS, don't add
+            let index_last = chart[chart_number].series[series].options.data.length - 1;
+            let last_meas_time = chart[chart_number].series[series].options.data[index_last][0];
+            if (new_time <= last_meas_time) continue;
+
             if (measure_type === 'tag') {
-              // Add note to graph
               if (!note_timestamps.includes(new_time)) {
                 chart[chart_number].series[series].addPoint(
-                  {x: new_time, title: data[i][1], text: data[i][2]}, false, false);
+                    {x: new_time, title: data[i][1], text: data[i][2]}, false, graph_shift);
                 note_timestamps.push(new_time);
               }
             }
             else {
-              // Add measurement to graph
-              chart[chart_number].series[series].addPoint([new_time, data[i][1]], false, false);
-            }
-          }
-
-          // Determine the oldest timestamp allowed on the graph.
-          // This is determined by the user-defined x-axis range
-          const time_now = new Date().getTime();
-          const oldest_timestamp_allowed = time_now - (xaxis_duration_min * 60 * 1000);
-          // Iterate through graph data and remove points older than the oldest timestamp allowed
-          for (let i = 0; i < chart[chart_number].series[series].data.length; i++) {
-            // If a point timestamp is older than the oldest timestamp allowed on the graph, remove it
-            if (chart[chart_number].series[series].data[i].x < oldest_timestamp_allowed) {
-              chart[chart_number].series[series].data[i].remove(false);
-              if (measure_type === 'tag') {
-                note_timestamps.shift();  // Remove first element
-              }
-            } else {
-              // Exit for loop once the first data point is found within the user-defined x-axis range
-              // Assumes all data beyond that point are future timestamps that are within the range
-              break;
+              chart[chart_number].series[series].addPoint([new_time, data[i][1]], false, graph_shift);
             }
           }
 
@@ -835,7 +820,8 @@ $(document).ready(function() {
                        measurement_id,
                        xaxis_duration_min,
                        xaxis_reset,
-                       refresh_seconds) {
+                       refresh_seconds,
+                       graph_shift) {
     setInterval(function () {
       retrieveLiveData(chart_number,
                        series,
@@ -844,7 +830,8 @@ $(document).ready(function() {
                        measurement_id,
                        xaxis_duration_min,
                        xaxis_reset,
-                       refresh_seconds);
+                       refresh_seconds,
+                       graph_shift);
     }, refresh_seconds * 1000);
   }
 
