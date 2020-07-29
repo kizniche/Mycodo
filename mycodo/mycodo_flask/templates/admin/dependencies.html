@@ -7,16 +7,16 @@
 {% block head %}
   {% if install_in_progress == 1 %}
 <script>
-  var prev_string = '';
+  let prev_string = '';
   function check_dependency_status() {
-    var url = '/admin/dependency_status';
+    const url = '/admin/dependency_status';
     $.ajax(url, {
       success: function(new_string, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
           if (new_string !== prev_string) {
             prev_string = new_string;
             document.getElementById("dependency_status").innerHTML = new_string;
-            var objDiv = document.getElementById("dependency_status");
+            let objDiv = document.getElementById("dependency_status");
             objDiv.scrollTop = objDiv.scrollHeight;
           }
         }

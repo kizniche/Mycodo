@@ -5,16 +5,16 @@
 {% block head %}
 {% if upgrade == 1 %}
 <script>
-  var prev_string = '';
+  let prev_string = '';
   function check_upgrade_status() {
-    var url = '/admin/upgrade_status';
+    const url = '/admin/upgrade_status';
     $.ajax(url, {
       success: function(new_string, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
           if (new_string !== prev_string) {
             prev_string = new_string;
             document.getElementById("upgrade_status").innerHTML = new_string;
-            var objDiv = document.getElementById("upgrade_status");
+            let objDiv = document.getElementById("upgrade_status");
             objDiv.scrollTop = objDiv.scrollHeight;
           }
         }

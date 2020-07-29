@@ -6,6 +6,7 @@ This update includes the final refactoring of the output system to accommodate o
 
  - Fix issue installing Python modules ([#804](https://github.com/kizniche/mycodo/issues/804))
  - Fix inability to save PID options when On/Off output selected ([#805](https://github.com/kizniche/mycodo/issues/805))
+ - Fix graph shift issues
 
 ### Features
 
@@ -16,6 +17,7 @@ This update includes the final refactoring of the output system to accommodate o
 ### Miscellaneous
 
  - Deprecate duty_cycle parameter of output functions
+ - Remove graph Shift X-Axis option
 
 
 ## 8.6.4 (2020-07-25)

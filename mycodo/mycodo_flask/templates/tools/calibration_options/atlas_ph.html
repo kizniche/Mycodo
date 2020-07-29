@@ -6,7 +6,7 @@
 <script>
 {% if ui_stage in ['low', 'mid', 'high'] -%}
 function ph_status() {
-  var url = '/setup_atlas_ph_measure/{{selected_input.unique_id}}';
+  const url = '/setup_atlas_ph_measure/{{selected_input.unique_id}}';
   $.ajax(url, {
     success: function(data, responseText, jqXHR) {
       if (jqXHR.status === 204) {
@@ -29,13 +29,13 @@ function startTimer() {
     document.getElementById("ph_status").innerHTML = "{{_('Latest pH measurement')}}: &lt;{{_('Please wait')}}&gt;";
     document.getElementById("ph_status").style.display = "inline-block";
     ph_status();
-    var refreshIntervalId = setInterval(function () {
+    let refreshIntervalId = setInterval(function () {
       // Update pH every 5 seconds
       ph_status();
     }, 5000);
   {% endif %}
 
-  var timer = 120;  // 120 second wait for the measurements to equilibrate
+  const timer = 120;  // 120 second wait for the measurements to equilibrate
   function display(notifier, str) {
     document.getElementById(notifier).innerHTML = str;
   }
@@ -44,9 +44,9 @@ function startTimer() {
   }
   function setTimer(remain, actions) {
     (function countdown() {
-        display("countdown", toMinuteAndSecond(remain));
-        actions[remain] && actions[remain]();
-        (remain -= 1) >= 0 && setTimeout(countdown, 1000);
+      display("countdown", toMinuteAndSecond(remain));
+      actions[remain] && actions[remain]();
+      (remain -= 1) >= 0 && setTimeout(countdown, 1000);
     })();
   }
   setTimer(timer, {

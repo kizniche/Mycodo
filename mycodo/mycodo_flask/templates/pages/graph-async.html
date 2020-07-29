@@ -107,7 +107,7 @@ Highcharts.setOptions({
 });
 
 $(document).ready(function() {
-    var id_measure = [
+    const id_measure = [
     {% for each_id_meas in selected_ids_measures %}
     {
       device_id: '{{each_id_meas.split(',')[0]}}',
@@ -116,24 +116,22 @@ $(document).ready(function() {
     },
     {% endfor %}
     ];
-    var chart = [];
+    let chart = [];
 
     function getPastData(chart_number, series, device_id, device_type, measurement_id, start_time) {
-      var url = '/async/' + device_id + '/' + device_type + '/' + measurement_id + '/' + start_time + '/0';
+      const url = '/async/' + device_id + '/' + device_type + '/' + measurement_id + '/' + start_time + '/0';
       $.getJSON(url,
         function(data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {
-            var new_data = [];
-            for (i = 0; i < data.length; i++) {
-              var new_date = new Date(data[i][0]);
-              var new_time = new_date.getTime();
+
+            let new_data = [];
+            for (let i = 0; i < data.length; i++) {
+              let new_date = new Date(data[i][0]);
+              let new_time = new_date.getTime();
 
               if (device_type === 'tag') {
-                chart[chart_number].series[series].addPoint({
-                  x: new_time,
-                  title: data[i][1],
-                  text: data[i][2]
-                }, false, false);
+                chart[chart_number].series[series].addPoint(
+                  {x: new_time, title: data[i][1], text: data[i][2]}, false, false);
               }
               else {
                 new_data.push([new_time, data[i][1]]);
@@ -143,7 +141,7 @@ $(document).ready(function() {
             if (device_type !== 'tag') {
               new_data.push([new Date().getTime(), null]);
               chart[chart_number].series[series].setData(new_data, false, false);
-              var nav = chart[chart_number].get('navigator');
+              let nav = chart[chart_number].get('navigator');
               nav.setData(new_data, false, false);
             }
 
@@ -158,34 +156,29 @@ $(document).ready(function() {
     function set_data_from_url(url, series, device_type) {
       $.getJSON(url,
         function (data, responseText, jqXHR) {
+          let new_data = [];
           if (jqXHR.status !== 204) {
-            var new_data = [];
-            for (i = 0; i < data.length; i++) {
-              var new_date = new Date(data[i][0]);
-              var new_time = new_date.getTime();
+            for (let i = 0; i < data.length; i++) {
+              const new_date = new Date(data[i][0]);
+              const new_time = new_date.getTime();
               if (device_type === 'tag') {
-                chart[0].series[series].addPoint({
-                  x: new_time,
-                  title: data[i][1],
-                  text: data[i][2]
-                }, false, false);
+                chart[0].series[series].addPoint(
+                    {x: new_time, title: data[i][1], text: data[i][2]}, false, false);
               }
               else {
                 new_data.push([new_time, data[i][1]]);
               }
             }
           }
-          if (device_type !== 'tag') {
-            chart[0].series[series].setData(new_data);
-          }
+          if (device_type !== 'tag') chart[0].series[series].setData(new_data);
           chart[0].hideLoading();
         }
       );
     }
 
     function updateAllSeries(e) {
-      var min = null;
-      var max = null;
+      let min = null;
+      let max = null;
       if (e.xAxis == null) {
         min = e.min;
         max = e.max;
@@ -193,9 +186,9 @@ $(document).ready(function() {
         min = e.xAxis[0].min;
         max = e.xAxis[0].max;
       }
-      for (var each_series in id_measure) {
+      for (let each_series in id_measure) {
         if (id_measure[each_series]['device_type'] !== 'tag') {
-          var url = '/async/' + id_measure[each_series]['device_id'] + '/' + id_measure[each_series]['device_type'] + '/' + id_measure[each_series]['measurement_id'] + '/' + Math.round(min) / 1000 + '/' + Math.round(max) / 1000;
+          const url = '/async/' + id_measure[each_series]['device_id'] + '/' + id_measure[each_series]['device_type'] + '/' + id_measure[each_series]['measurement_id'] + '/' + Math.round(min) / 1000 + '/' + Math.round(max) / 1000;
           set_data_from_url(url, each_series, id_measure[each_series]['device_type'])
         }
       }
@@ -224,7 +217,7 @@ $(document).ready(function() {
         tooltip: {
           shared: true,
           formatter: function(){
-            var d = new Date(this.x);
+            const d = new Date(this.x);
             if (this.point) {
               return '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds()
                    + '</b><br/>' + this.series.name
@@ -232,7 +225,7 @@ $(document).ready(function() {
                    + '<br/>' + this.point.text;
             }
             else {
-              var s = '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds() + '</b>';
+              let s = '<b>'+ Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds() + '</b>';
               $.each(this.points, function(i, point) {
                   s += '<br/><span style="color:' + point.color + '">\u25CF</span> ' + point.series.name + ': ' + Highcharts.numberFormat(point.y, this.series.tooltipOptions.valueDecimals) + ' ' + this.series.tooltipOptions.valueSuffix;
               });
@@ -292,9 +285,7 @@ $(document).ready(function() {
         xAxis: {
           events: {
             setExtremes: function(e) {
-              if (typeof(e.rangeSelectorButton) !== 'undefined' || e.trigger === 'navigator') {
-                updateAllSeries(e);
-              }
+              if (typeof(e.rangeSelectorButton) !== 'undefined' || e.trigger === 'navigator') updateAllSeries(e);
             }
           },
           minRange: 1800 * 1000 // 30 minutes

@@ -91,18 +91,13 @@
 
   <script>
   $(document).ready(function() {
-    var chart = new Array();
+    let chart = [];
     // Retrieve initial chart data set from the past (duration set by user)
     function getPastData(chart_number, method_id) {
-      var url = '/method-data/' + method_id;
+      const url = '/method-data/' + method_id;
       $.getJSON(url,
         function(data, responseText, jqXHR) {
-          if (jqXHR.status != 204) {
-            chart[chart_number].addSeries({
-              name: 'Setpoint',
-              data: data
-            });
-          }
+          if (jqXHR.status !== 204) chart[chart_number].addSeries({name: 'Setpoint', data: data});
         }
       );
     }

@@ -37,12 +37,8 @@
       url: '/output_mod/' + btn_val,
     {% if not misc.hide_alert_success %}
       success: function(data) {
-        if (data.startsWith("SUCCESS")) {
-          toastr['success']("Output " + btn_val.split("/")[0] + ": " + data);
-        }
-        else {
-          toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
-        }
+        if (data.startsWith("SUCCESS")) toastr['success']("Output " + btn_val.split("/")[0] + ": " + data);
+        else toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
       },
     {% endif %}
     {% if not misc.hide_alert_warning %}
@@ -55,26 +51,26 @@
 
   $(document).ready(function() {
     $('.turn_on').click(function() {
-      var btn_val = this.name;
-      var id = btn_val.split('/')[0];
+      const btn_val = this.name;
+      const id = btn_val.split('/')[0];
       {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to turn output ' + id + ' On');
       {% endif %}
       getAjax(btn_val);
     });
     $('.turn_off').click(function() {
-      var btn_val = this.name;
-      var id = btn_val.split('/')[0];
+      const btn_val = this.name;
+      const id = btn_val.split('/')[0];
       {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to turn output ' + id + ' Off');
       {% endif %}
       getAjax(btn_val);
     });
     $('.output_on_amt').click(function() {
-      var btn_val = this.name;
-      var id = btn_val.split('/')[0];
-      var on_type = btn_val.split('/')[2];
-      var on_amt = $('#' + on_type + '_on_amt_' + id).val();
+      const btn_val = this.name;
+      const id = btn_val.split('/')[0];
+      const on_type = btn_val.split('/')[2];
+      const on_amt = $('#' + on_type + '_on_amt_' + id).val();
       {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to turn output ' + id + ' On for ' + on_amt + ' ' + on_type);
       {% endif %}
@@ -85,12 +81,12 @@
 
 <script>
   function pad(num, size) {
-    var s = num+"";
+    let s = num + "";
     while (s.length < size) s = "0" + s;
     return s;
   }
   function gpioState() {
-    var url = '/outputstate';
+    const url = '/outputstate';
     $.getJSON(url,
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
@@ -496,10 +492,10 @@
     });
 
     jQuery(document).ready(function($) {
-        $('#multiselect').multiselect({
-            sort: false,
-            keepRenderingSort: true
-        });
+      $('#multiselect').multiselect({
+          sort: false,
+          keepRenderingSort: true
+      });
     });
 
     $('#collapseContainerReorder').on('shown.bs.collapse', function () {

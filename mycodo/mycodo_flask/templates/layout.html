@@ -17,7 +17,7 @@
   <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png" />
   <script type="text/javascript">
     function setClipboard(value) {
-      var tempInput = document.createElement("input");
+      let tempInput = document.createElement("input");
       tempInput.style = "position: absolute; left: -1000px; top: -1000px";
       tempInput.value = value;
       document.body.appendChild(tempInput);
@@ -80,7 +80,7 @@
   <script>
 
   function check_daemon_status() {
-    var url = '/daemonactive';
+    const url = '/daemonactive';
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
@@ -114,7 +114,7 @@
   }
 
   function get_time() {
-    var url = '/time';
+    const url = '/time';
     $.getJSON(url,
       function(time, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
@@ -328,7 +328,7 @@
 
     window.onload = function() {
       set_navbar_classes();
-    }
+    };
 
     $('.selectpicker').selectpicker();
     </script>

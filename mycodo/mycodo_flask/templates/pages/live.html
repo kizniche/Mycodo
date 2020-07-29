@@ -7,8 +7,8 @@
 {% block head %}
   <script>
     function updateMeasurements(unique_id, measure_type, measurement_id, period) {
-      var url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + period.toString();
-      var measure_string = '';
+      const url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + period.toString();
+      let measure_string = '';
       measure_string = unique_id + '-' + measure_type + '-' + measurement_id;
       $.ajax(url, {
         success: function(data, responseText, jqXHR) {
@@ -17,15 +17,15 @@
             document.getElementById(measure_string + "-value").innerHTML = "0";
           }
           else {
-            var time = data[0];
-            var measurement_val = parseFloat(data[1].toFixed(3));
-            var date = new Date(parseFloat(time));
-            var year = date.getFullYear();
-            var month = date.getMonth() + 1;
-            var day = date.getDate();
-            var hours = date.getHours();
-            var minutes = "0" + date.getMinutes();
-            var seconds = "0" + date.getSeconds();
+            const time = data[0];
+            const measurement_val = parseFloat(data[1].toFixed(3)).toString();
+            const date = new Date(parseFloat(time));
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const hours = date.getHours();
+            const minutes = "0" + date.getMinutes();
+            const seconds = "0" + date.getSeconds();
             document.getElementById(measure_string + "-time").innerHTML = year + "/" + month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
             document.getElementById(measure_string + "-value").innerHTML = measurement_val;
           }
@@ -58,14 +58,11 @@
         {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_math.unique_id).all() if each_meas.is_enabled %}
 
           {%- if each_math.math_type == 'redundancy' -%}
-
           liveTextData('{{each_math.unique_id}}', 'math', '{{each_meas.unique_id}}', 14400);
-
           {%- else -%}
-
           liveTextData('{{each_math.unique_id}}', 'math', '{{each_meas.unique_id}}', {{each_math.period * 2}});
-
           {%- endif -%}
+
         {% endfor %}
       {%- endfor -%}
     });

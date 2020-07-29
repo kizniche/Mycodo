@@ -342,7 +342,7 @@
 
     <script>
     $(document).ready(function(){
-      var checkPattern = function () {
+      let checkPattern = function () {
         if ($('#setpoint_tracking_type_{{each_pid.unique_id}}').val() === 'method') {
           $("#method_id_{{each_pid.unique_id}}").show();
           $("#method_button_{{each_pid.unique_id}}").show();

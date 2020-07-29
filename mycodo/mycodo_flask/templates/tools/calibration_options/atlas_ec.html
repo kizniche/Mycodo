@@ -6,7 +6,7 @@
 <script>
 {% if ui_stage in ['low', 'high'] -%}
 function ec_status() {
-  var url = '/setup_atlas_ec_measure/{{selected_input.unique_id}}';
+  const url = '/setup_atlas_ec_measure/{{selected_input.unique_id}}';
   $.ajax(url, {
     success: function(data, responseText, jqXHR) {
       if (jqXHR.status === 204) {
@@ -29,13 +29,13 @@ function startTimer() {
     document.getElementById("ec_status").innerHTML = "{{_('Latest EC measurement')}}: &lt;{{_('Please wait')}}&gt;";
     document.getElementById("ec_status").style.display = "inline-block";
     ec_status();
-    var refreshIntervalId = setInterval(function () {
+    let refreshIntervalId = setInterval(function () {
       // Update EC every 5 seconds
       ec_status();
     }, 5000);
   {% endif %}
 
-  var timer = 10;  // 120 second wait for the measurements to equilibrate
+  const timer = 10;  // 120 second wait for the measurements to equilibrate
   function display(notifier, str) {
     document.getElementById(notifier).innerHTML = str;
   }
@@ -44,9 +44,9 @@ function startTimer() {
   }
   function setTimer(remain, actions) {
     (function countdown() {
-        display("countdown", toMinuteAndSecond(remain));
-        actions[remain] && actions[remain]();
-        (remain -= 1) >= 0 && setTimeout(countdown, 1000);
+      display("countdown", toMinuteAndSecond(remain));
+      actions[remain] && actions[remain]();
+      (remain -= 1) >= 0 && setTimeout(countdown, 1000);
     })();
   }
   setTimer(timer, {
