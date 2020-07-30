@@ -1,0 +1,53 @@
+<form method="post" action="/dashboard/{{dashboard_id}}">
+  {{form_base.csrf_token}}
+  <input type="hidden" name="dashboard_id" value="{{dashboard_id}}">
+  <input type="hidden" name="widget_type" value="python_code">
+
+  <div class="form-row small-gutters">
+    {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_ADD.html' %}
+    <div class="col-auto">
+      {{form_base.refresh_duration.label(class_='control-label')}}
+      <div>
+        {{form_base.refresh_duration(class_='form-control', value=30)}}
+      </div>
+    </div>
+    <div class="col-auto">
+      {{form_python_code.font_em_value.label(class_='control-label')}}
+      <div>
+        {{form_python_code.font_em_value(class_='form-control', value=2.5)}}
+      </div>
+    </div>
+    <div class="col-12">
+      <label class="control-label">{{_('Python Code (Loop)')}}</label>
+      <div>
+        <textarea class="form-control" id="code_execute_loop" name="code_execute_loop" rows="11" type="text" title="{{_('Python code to execute')}}"># This code is executed first and every controller refresh period.
+# This will be executed even after browser sessions have ended.
+from random import randint
+
+if not hasattr(self, "stored_value"):  # If the object doesn't exist
+    self.stored_value = None  # Initialize object saved across executions
+    self.return_string = None  # Initialize object saved across executions
+
+current_value = randint(0, 100)  # Generate a random integer between 0 and 100
+self.return_string = "Last: {last}<br>Random: {now}".format(last=self.stored_value, now=current_value)
+self.stored_value = current_value</textarea>
+      </div>
+    </div>
+    <div class="col-12">
+      <label class="control-label">{{_('Python Code (Refresh)')}}</label>
+      <div>
+        <textarea class="form-control" id="code_execute_single" name="code_execute_single" rows="11" type="text" title="{{_('Python code to execute')}}"># This code will only be executed when a browser session is open on the dashboard.
+# This code may be executed many times by different browser sessions viewing the dashboard.
+
+return self.return_string</textarea>
+       </div>
+    </div>
+  </div>
+
+  <div class="form-inline btn-group" style="padding: 1em 0 1em 0">
+    <div class="form-group">
+      {{form_base.create(class_='btn btn-primary')}}
+    </div>
+  </div>
+
+</form>

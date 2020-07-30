@@ -197,3 +197,10 @@ class DashboardCamera(FlaskForm):
     camera_max_age = IntegerField(
         TRANSLATIONS['max_age']['title'],
         widget=NumberInput())
+
+class DashboardCode(FlaskForm):
+    font_em_value = DecimalField(
+        lazy_gettext('Value Font (em)'),
+        widget=NumberInput(step='any'))
+    code_execute_loop = StringField(lazy_gettext('Python Code (Loop)'))
+    code_execute_single = StringField(lazy_gettext('Python Code (Refresh)'))

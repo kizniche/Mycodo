@@ -276,6 +276,14 @@ class DaemonControl:
         except Exception:
             return 0, traceback.format_exc()
 
+    def widget_add_refresh(self, unique_id):
+        return self.proxy().widget_add_refresh(unique_id)
+
+    def widget_remove(self, unique_id):
+        return self.proxy().widget_remove(unique_id)
+
+    def widget_execute(self, unique_id):
+        return self.proxy().widget_execute(unique_id)
 
 def daemon_active():
     """ Used to determine if the daemon is reachable to communicate """

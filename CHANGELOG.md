@@ -13,6 +13,8 @@ This update includes the final refactoring of the output system to accommodate o
  - Add Output: On/Off MQTT Publish
  - Add Output information links
  - Add ability to download Mycodo Backups ([#803](https://github.com/kizniche/mycodo/issues/803))
+ - Add Widget Controller for background widget processes
+ - Add Widget: Python Code ([#803](https://github.com/kizniche/mycodo/issues/803))
 
 ### Miscellaneous
 

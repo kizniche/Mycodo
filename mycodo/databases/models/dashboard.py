@@ -96,5 +96,9 @@ class Widget(CRUDMixin, db.Model):
     camera_image_type = db.Column(db.Text, default='')  # save new image, overwrite old, display last timelapse
     camera_max_age = db.Column(db.Integer, default=360)  # max camera image age before "No new image" shown
 
+    # Code widget options
+    code_execute_loop = db.Column(db.Text, default='')  # store code or command
+    code_execute_single = db.Column(db.Text, default='')  # store code or command
+
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

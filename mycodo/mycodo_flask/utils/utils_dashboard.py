@@ -1,27 +1,33 @@
 # -*- coding: utf-8 -*-
 import logging
+import textwrap
 
+import os
 import re
 import sqlalchemy
 from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
+from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conversion
-from mycodo.databases.models import Widget
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
+from mycodo.databases.models import Widget
+from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
+from mycodo.utils.code_verification import create_python_file
+from mycodo.utils.code_verification import test_python_code
 from mycodo.utils.system_pi import return_measurement_info
 
 logger = logging.getLogger(__name__)
@@ -328,6 +334,53 @@ def widget_add(form_base, form_object):
         new_widget.width = 7
         new_widget.height = 8
 
+    # Python code
+    elif form_base.widget_type.data == 'python_code':
+
+        widget_type = 'Python Code'
+
+        new_widget.graph_type = form_base.widget_type.data
+        new_widget.refresh_duration = form_base.refresh_duration.data
+        new_widget.font_em_value = form_object.font_em_value.data
+        new_widget.code_execute_loop = form_object.code_execute_loop.data
+        new_widget.code_execute_single = form_object.code_execute_single.data
+        new_widget.width = 4
+        new_widget.height = 4
+        new_widget.save()
+
+        pre_statement_loop = """import os
+import sys
+sys.path.append(os.path.abspath('/var/mycodo-root'))
+from mycodo.mycodo_client import DaemonControl
+control = DaemonControl()
+
+class PythonRun:
+    def __init__(self, logger, unique_id):
+        self.logger = logger
+        self.unique_id = unique_id
+
+    def python_code_loop(self):
+"""
+
+        pre_statement_single = """
+
+    def python_code_refresh(self):
+"""
+
+        indented_code_loop = textwrap.indent(form_object.code_execute_loop.data, ' ' * 8)
+        indented_code_single = textwrap.indent(form_object.code_execute_single.data, ' ' * 8)
+        input_python_code_run = pre_statement_loop + indented_code_loop + pre_statement_single + indented_code_single
+
+        file_run = '{}/python_code_{}.py'.format(PATH_PYTHON_CODE_USER, new_widget.unique_id)
+        create_python_file(input_python_code_run, file_run)
+        successes, errors = test_python_code(input_python_code_run, file_run)
+
+        for each_error in errors:
+            flash(each_error, "error")
+
+        for each_success in successes:
+            flash(each_success, "success")
+
     else:
         flash_form_errors(form_base)
         return
@@ -335,6 +388,11 @@ def widget_add(form_base, form_object):
     try:
         if not error:
             new_widget.save()
+
+            if form_base.widget_type.data == 'python_code':
+                control = DaemonControl()
+                control.widget_add_refresh(new_widget.unique_id)
+
             flash(gettext(
                 "{dev} with ID %(id)s successfully added".format(dev=widget_type),
                 id=new_widget.id),
@@ -529,6 +587,47 @@ def widget_mod(form_base, form_object, request_form):
         mod_widget.camera_id = form_object.camera_id.data
         mod_widget.camera_image_type = form_object.camera_image_type.data
 
+    # Python code Mod
+    elif form_base.widget_type.data == 'python_code':
+
+        pre_statement_loop = """import os
+import sys
+sys.path.append(os.path.abspath('/var/mycodo-root'))
+from mycodo.mycodo_client import DaemonControl
+control = DaemonControl()
+
+class PythonRun:
+    def __init__(self, logger, unique_id):
+        self.logger = logger
+        self.unique_id = unique_id
+
+    def python_code_loop(self):
+"""
+
+        pre_statement_single = """
+
+    def python_code_refresh(self):
+"""
+
+        indented_code_loop = textwrap.indent(form_object.code_execute_loop.data, ' ' * 8)
+        indented_code_single = textwrap.indent(form_object.code_execute_single.data, ' ' * 8)
+        input_python_code_run = pre_statement_loop + indented_code_loop + pre_statement_single + indented_code_single
+
+        file_run = '{}/python_code_{}.py'.format(PATH_PYTHON_CODE_USER, mod_widget.unique_id)
+        create_python_file(input_python_code_run, file_run)
+        successes, errors = test_python_code(input_python_code_run, file_run)
+
+        for each_error in errors:
+            flash(each_error, "error")
+
+        for each_success in successes:
+            flash(each_success, "success")
+
+        mod_widget.refresh_duration = form_base.refresh_duration.data
+        mod_widget.font_em_value = form_object.font_em_value.data
+        mod_widget.code_execute_loop = form_object.code_execute_loop.data
+        mod_widget.code_execute_single = form_object.code_execute_single.data
+
     else:
         flash_form_errors(form_base)
 
@@ -539,6 +638,10 @@ def widget_mod(form_base, form_object, request_form):
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
+
+        if form_base.widget_type.data == 'python_code':
+            control = DaemonControl()
+            control.widget_add_refresh(mod_widget.unique_id)
 
     flash_success_errors(error, action, url_for(
         'routes_page.page_dashboard',
@@ -554,6 +657,11 @@ def widget_del(form_base):
 
     try:
         delete_entry_with_id(Widget, form_base.widget_id.data)
+
+        if form_base.widget_type.data == 'python_code':
+            control = DaemonControl()
+            control.widget_remove(form_base.widget_id.data)
+            os.remove('{}/python_code_{}.py'.format(PATH_PYTHON_CODE_USER, form_base.widget_id.data))
     except Exception as except_msg:
         error.append(except_msg)
 

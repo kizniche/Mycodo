@@ -31,6 +31,7 @@ class Misc(CRUDMixin, db.Model):
     sample_rate_controller_math = db.Column(db.Float, default=0.25)
     sample_rate_controller_output = db.Column(db.Float, default=0.05)
     sample_rate_controller_pid = db.Column(db.Float, default=0.1)
+    sample_rate_controller_widget = db.Column(db.Float, default=0.25)
     stats_opt_out = db.Column(db.Boolean, default=False)  # Opt not to send anonymous usage statistics
     enable_upgrade_check = db.Column(db.Boolean, default=True)  # Periodically check for a Mycodo upgrade
     mycodo_upgrade_available = db.Column(db.Boolean, default=False)  # Stores if an upgrade is available

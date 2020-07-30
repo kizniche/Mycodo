@@ -61,7 +61,7 @@
          data-gs-width="{{each_widget.width}}"
          data-gs-height="{{each_widget.height}}">
 
-        <div class="grid-stack-item-content" style="display: flex; flex-flow: column; height: 100%; padding: 0.2em; border: 1px solid #ddd; border-radius: 5px">
+        <div class="grid-stack-item-content" style="display: flex; flex-flow: column; height: 100%; padding: 0.xm; border: 1px solid #ddd; border-radius: 5px">
 
         {% for id, axes in y_axes.items() if id == each_widget.unique_id and
                                              each_widget.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
@@ -84,6 +84,8 @@
           {% include 'pages/dashboard_options/mod_output_pwm_slider.html' %}
         {% elif each_widget.graph_type == 'pid_control' %}
           {% include 'pages/dashboard_options/mod_pid_control.html' %}
+        {% elif each_widget.graph_type == 'python_code' %}
+          {% include 'pages/dashboard_options/mod_python_code.html' %}
         {% elif each_widget.graph_type == 'camera' %}
           {% include 'pages/dashboard_options/mod_camera.html' %}
         {% endif %}
@@ -131,6 +133,9 @@
     </div>
     <div class="add_dashboard_object" style="display: none" id="pid_control">
       {% include 'pages/dashboard_options/add_pid_control.html' %}
+    </div>
+    <div class="add_dashboard_object" style="display: none" id="python_code">
+      {% include 'pages/dashboard_options/add_python_code.html' %}
     </div>
     <div class="add_dashboard_object" style="display: none" id="camera">
       {% include 'pages/dashboard_options/add_camera.html' %}
@@ -403,6 +408,32 @@ $(document).ready(function() {
     }, refresh_duration * 1000);  // Refresh duration in milliseconds
   }
 
+  function getPythonCodeResponse(chart_number, unique_id) {
+    const url = '/widget_execute/' + unique_id;
+    $.ajax(url, {
+      success: function (response, responseText, jqXHR) {
+        if (jqXHR.status !== 204) {
+          if (response !== null) {
+            document.getElementById("text-python-code-" + chart_number).innerHTML = response;
+          } else {
+            document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('NO DATA ERROR')}}';
+          }
+        } else {
+          document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('CONNECTION ERROR')}}';
+        }
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('CONNECTION ERROR')}}';
+      }
+    });
+  }
+
+  function repeatPythonCodeResponse(chart_number, unique_id, refresh_duration) {
+    setInterval(function () {
+      getPythonCodeResponse(chart_number, unique_id);
+    }, refresh_duration * 1000);  // Refresh duration in milliseconds
+  }
+
   // Retrieve initial graph data set from the past (duration set by user)
   function getPastData(chart_number,
                        series,
@@ -577,7 +608,7 @@ $(document).ready(function() {
             document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
           }
         },
-        error: function (XMLHttpRequest, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
           document.getElementById('value-' + chart_number).src = '';
           document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
           document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
@@ -623,7 +654,7 @@ $(document).ready(function() {
             document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
           }
         },
-        error: function(XMLHttpRequest, textStatus, errorThrown) {
+        error: function(jqXHR, textStatus, errorThrown) {
           if (dash_type === "gauge") {
             chart[chart_number].series[0].points[0].update(null);
           } else if (['indicator', 'measurement', 'output', 'pid_control'].indexOf(dash_type) >= 0) {
@@ -823,7 +854,7 @@ $(document).ready(function() {
           }
         }
       },
-      error: function(XMLHttpRequest, textStatus, errorThrown) {
+      error: function(jqXHR, textStatus, errorThrown) {
         print_pid_error(chart_number);
       }
     });
@@ -922,7 +953,7 @@ $(document).ready(function() {
           }
         }
       },
-      error: function(XMLHttpRequest, textStatus, errorThrown) {
+      error: function(jqXHR, textStatus, errorThrown) {
         document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
         document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
         document.getElementById(dashboard_id + "-timestamp").innerHTML = "Error Getting Image";
@@ -966,6 +997,8 @@ $(document).ready(function() {
     {% include 'pages/dashboard_options/display_output_pwm_slider.html' %}
   {% elif each_widget.graph_type == 'pid_control' %}
     {% include 'pages/dashboard_options/display_pid_control.html' %}
+  {% elif each_widget.graph_type == 'python_code' %}
+    {% include 'pages/dashboard_options/display_python_code.html' %}
   {% elif each_widget.graph_type == 'camera' %}
     {% include 'pages/dashboard_options/display_camera.html' %}
   {% endif %}

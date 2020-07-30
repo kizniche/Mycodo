@@ -578,6 +578,7 @@ def page_dashboard(dashboard_id):
     form_measurement = forms_dashboard.DashboardMeasurement()
     form_output = forms_dashboard.DashboardOutput()
     form_pid = forms_dashboard.DashboardPIDControl()
+    form_python_code = forms_dashboard.DashboardCode()
 
     # Detect which form on the page was submitted
     if request.method == 'POST':
@@ -601,6 +602,8 @@ def page_dashboard(dashboard_id):
                 form_dashboard_object = form_output
             elif form_base.widget_type.data == 'pid_control':
                 form_dashboard_object = form_pid
+            elif form_base.widget_type.data == 'python_code':
+                form_dashboard_object = form_python_code
             elif form_base.widget_type.data == 'camera':
                 form_dashboard_object = form_camera
             else:
@@ -810,6 +813,7 @@ def page_dashboard(dashboard_id):
                            form_measurement=form_measurement,
                            form_output=form_output,
                            form_pid=form_pid,
+                           form_python_code=form_python_code,
                            y_axes=y_axes)
 
 

@@ -1,0 +1,79 @@
+<div class="d-flex justify-content-between panel-heading" style="flex: 0 1 auto;">
+  <div class="my-auto" style="padding-left: 0.4em">
+    {% if each_widget.enable_drag_handle -%}
+    <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="Drag"></i>
+    {%- endif %}
+  </div>
+  <div class="my-auto">
+    <span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em"><span id="{{each_widget.id}}-timestamp"></span> {{each_widget.name}}</span>
+    <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
+      <i style="font-size: 1.5em" class="fas fa-cog"></i>
+    </button>
+  </div>
+</div>
+
+<div id="container-graph-{{each_widget.id}}" style="position: relative; flex-grow: 1; padding: 0.35em">
+  <span style="font-size: {{each_widget.font_em_value}}em" id="text-python-code-{{chart_number}}"></span>
+</div>
+
+<div class="modal fade" id="modal_config_{{chart_number}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="padding: 1em">
+      <div class="modal-header">
+        <h5 class="modal-title">Python Code Widget Configuration</h5>
+      </div>
+
+      <form method="post" action="/dashboard/{{dashboard_id}}">
+        {{form_base.csrf_token}}
+        {{form_base.dashboard_id(value=dashboard_id)}}
+        {{form_base.widget_id(value=each_widget.unique_id)}}
+        <input type="hidden" name="widget_type" value="{{each_widget.graph_type}}">
+
+        <div class="form-row">
+          {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_MOD.html' %}
+
+          <div class="col-auto">
+            {{form_base.refresh_duration.label(class_='control-label')}}
+            <div>
+              {{form_base.refresh_duration(class_='form-control', value=each_widget.refresh_duration)}}
+            </div>
+          </div>
+          <div class="col-auto">
+            {{form_python_code.font_em_value.label(class_='control-label')}}
+            <div>
+              {{form_python_code.font_em_value(class_='form-control', value=each_widget.font_em_value)}}
+            </div>
+          </div>
+          <div class="col-12">
+            <label class="control-label">{{_('Python Code (Loop)')}}</label>
+            <div>
+              <textarea class="form-control" id="code_execute_loop" name="code_execute_loop" rows="11" type="text" title="{{_('Python code to execute (loop)')}}">{{each_widget.code_execute_loop}}</textarea>
+             </div>
+          </div>
+          <div class="col-12">
+            <label class="control-label">{{_('Python Code (Refresh)')}}</label>
+            <div>
+              <textarea class="form-control" id="code_execute_single" name="code_execute_single" rows="11" type="text" title="{{_('Python code to execute (each refresh)')}}">{{each_widget.code_execute_single}}</textarea>
+             </div>
+          </div>
+        </div>
+
+        <div style="clear: both"></div>
+
+        <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
+          <div class="col-auto">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+          </div>
+          <div class="col-auto">
+            {{form_base.modify(class_='btn btn-primary')}}
+          </div>
+          <div class="col-auto">
+            {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+</div>

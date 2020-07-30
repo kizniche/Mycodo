@@ -230,6 +230,15 @@ def gpio_state_unique_id(unique_id):
     return jsonify(state)
 
 
+@blueprint.route('/widget_execute/<unique_id>')
+@flask_login.login_required
+def widget_execute(unique_id):
+    """Return the response from the execution of widget code """
+    daemon_control = DaemonControl()
+    return_value = daemon_control.widget_execute(unique_id)
+    return jsonify(return_value)
+
+
 @blueprint.route('/time')
 @flask_login.login_required
 def get_time():

@@ -357,6 +357,9 @@ class SettingsPi(FlaskForm):
     sample_rate_controller_pid = DecimalField(
         lazy_gettext('PID Sample Rate (seconds)'),
         widget=NumberInput(step='any'))
+    sample_rate_controller_widget = DecimalField(
+        lazy_gettext('Widget Sample Rate (seconds)'),
+        widget=NumberInput(step='any'))
     save_sample_rates = SubmitField(lazy_gettext('Save Sample Rates'))
 
 

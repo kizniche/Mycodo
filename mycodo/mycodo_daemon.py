@@ -57,6 +57,7 @@ from mycodo.controllers.controller_math import MathController
 from mycodo.controllers.controller_output import OutputController
 from mycodo.controllers.controller_pid import PIDController
 from mycodo.controllers.controller_trigger import TriggerController
+from mycodo.controllers.controller_widget import WidgetController
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import CustomController
@@ -124,6 +125,7 @@ class DaemonController:
         self.controller = {
             'Conditional': {},
             'Output': None,  # May only launch a single thread for this controller
+            'Widget': None,  # May only launch a single thread for this controller
             'Input': {},
             'LCD': {},
             'Math': {},
@@ -143,6 +145,9 @@ class DaemonController:
             'LCD',
             'Custom'
         ]
+
+        # Dashboard widgets
+        self.dashboard_widget = {}
 
         self.thread_shutdown_timer = None
         self.start_time = time.time()
@@ -848,11 +853,19 @@ class DaemonController:
                         self.controller_activate(each_entry.unique_id)
                 self.logger.info("All activated {type} controllers started".format(type=each_controller))
 
+            self.logger.debug("Starting Widget Controller")
+            ready = threading.Event()
+            self.controller['Widget'] = WidgetController(ready, debug)
+            self.controller['Widget'].daemon = True
+            self.controller['Widget'].start()
+            ready.wait()  # wait for thread to return ready
+
             time.sleep(0.5)
 
         except Exception as except_msg:
             message = "Could not start all controllers: {err}".format(err=except_msg)
             self.logger.exception(message)
+
 
     def stop_all_controllers(self):
         """Stop all running controllers"""
@@ -1172,6 +1185,18 @@ class PyroServer(object):
     def terminate_daemon(self):
         """Instruct the daemon to shut down"""
         return self.mycodo.terminate_daemon()
+
+    def widget_add_refresh(self, unique_id):
+        """Add or refresh widget object"""
+        return self.mycodo.controller['Widget'].widget_add_refresh(unique_id)
+
+    def widget_remove(self, unique_id):
+        """Remove widget object"""
+        return self.mycodo.controller['Widget'].widget_remove(unique_id)
+
+    def widget_execute(self, unique_id):
+        """Execute widget object"""
+        return self.mycodo.controller['Widget'].widget_execute(unique_id)
 
     @staticmethod
     def daemon_status():

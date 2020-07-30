@@ -1225,6 +1225,7 @@ def settings_pi_mod(form):
         mod_misc.sample_rate_controller_math = form.sample_rate_controller_math.data
         mod_misc.sample_rate_controller_output = form.sample_rate_controller_output.data
         mod_misc.sample_rate_controller_pid = form.sample_rate_controller_pid.data
+        mod_misc.sample_rate_controller_widget = form.sample_rate_controller_widget.data
         db.session.commit()
     elif form.enable_i2c.data:
         _, _, status = cmd_output("raspi-config nonint do_i2c 0", user='root')
