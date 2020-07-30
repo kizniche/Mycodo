@@ -190,7 +190,6 @@ jQuery(document).ready(function($) {
 
 
 // Output PWM Slider Widget
-
 function showVal(chart, duty_cycle){
   document.getElementById("range_val_" + chart).innerHTML = duty_cycle;
 }
@@ -203,7 +202,6 @@ function sendVal(chart, output_id, duty_cycle){
 
 
 // Add Dashboard Widget content selector
-
 $('#widget_type').on('change', function () {
   let x = document.getElementsByClassName("add_dashboard_object");  // Find the widgets
   for(let i = 0; i < x.length; i++){
@@ -217,7 +215,6 @@ $('#widget_type').on('change', function () {
 
 
 // Turn Output on or off
-
 function modOutput(btn_val) {
   $.ajax({
       type: 'GET',
@@ -283,7 +280,6 @@ $(document).ready(function() {
 
 
 // Modify PID Controller
-
 function modPID(btn_val) {
   $.ajax({
       type: 'GET',
@@ -357,7 +353,6 @@ $(document).ready(function() {
 
 
 // Graph Widget
-
 Highcharts.setOptions({
   global: {
     useUTC: false
@@ -453,7 +448,7 @@ $(document).ready(function() {
 
           // Set x-axis extremes, set graph data
           chart[chart_number].series[series].isDirty = true;  // Data may not be in order by timestamp
-          const epoch_min = new Date().setMinutes(epoch_mil - (past_seconds / 60));
+          const epoch_min = new Date().setMinutes(new Date().getMinutes() - (past_seconds / 60))
           chart[chart_number].xAxis[0].setExtremes(epoch_min, epoch_mil);
           chart[chart_number].series[series].setData(past_data, true, false);
         }
