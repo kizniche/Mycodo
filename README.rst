@@ -11,7 +11,6 @@ and outputs in interesting ways to sense and manipulate the environment.
 |Build Status| |Codacy Badge| |DOI|
 
 `Mycodo Manual <https://kizniche.github.io/Mycodo>`__
-(`PDF <https://kizniche.github.io/Mycodo/pdf/manual-mkdocs.pdf>`__)
 
 `Mycodo API <https://kizniche.github.io/Mycodo/mycodo-api.html>`__ (Latest Version: v1)
 
