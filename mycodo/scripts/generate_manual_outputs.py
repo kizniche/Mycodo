@@ -117,7 +117,7 @@ if __name__ == "__main__":
                         out_file.write("s: ")
                     for i, each_url in enumerate(each_data['url_manufacturer']):
                         if len(each_data['url_manufacturer']) == 1:
-                            out_file.write("[Link <{})".format(each_url))
+                            out_file.write("[Link]({})".format(each_url))
                         else:
                             out_file.write("[Link {num}]({url})".format(num=i + 1, url=each_url))
                         if i + 1 < len(each_data['url_manufacturer']):
@@ -133,7 +133,7 @@ if __name__ == "__main__":
                         out_file.write("s: ")
                     for i, each_url in enumerate(each_data['url_datasheet']):
                         if len(each_data['url_datasheet']) == 1:
-                            out_file.write("[Link <{})".format(each_url))
+                            out_file.write("[Link]({})".format(each_url))
                         else:
                             out_file.write("[Link {num}]({url})".format(num=i + 1, url=each_url))
                         if i + 1 < len(each_data['url_datasheet']):
@@ -149,7 +149,7 @@ if __name__ == "__main__":
                         out_file.write("s: ")
                     for i, each_url in enumerate(each_data['url_product_purchase']):
                         if len(each_data['url_product_purchase']) == 1:
-                            out_file.write("[Link <{})".format(each_url))
+                            out_file.write("[Link]({})".format(each_url))
                         else:
                             out_file.write("[Link {num}]({url})".format(num=i + 1, url=each_url))
                         if i + 1 < len(each_data['url_product_purchase']):
@@ -164,7 +164,7 @@ if __name__ == "__main__":
                         out_file.write("- Additional URL(s): ")
                     for i, each_url in enumerate(each_data['url_additional']):
                         if len(each_data['url_additional']) == 1:
-                            out_file.write("[Link <{})".format(each_url))
+                            out_file.write("[Link]({})".format(each_url))
                         else:
                             out_file.write("[Link {num}]({url})".format(num=i + 1, url=each_url))
                         if i + 1 < len(each_data['url_additional']):

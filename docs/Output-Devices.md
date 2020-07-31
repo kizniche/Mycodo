@@ -5,7 +5,7 @@ Supported Output devices are listed below.
 ### Mycodo On/Off MQTT Publish
 
 - Dependencies: [paho-mqtt](https://pypi.org/project/paho-mqtt)
-- Additional URL: [Link <http://www.eclipse.org/paho/)
+- Additional URL: [Link](http://www.eclipse.org/paho/)
 
 An output to publish "on" or "off" to an MQTT server.
 
@@ -50,9 +50,9 @@ Commands will be executed in the Linux shell by the specified user when the duty
 ###  Peristaltic Pump (Atlas Scientific)
 
 - Dependencies: [pylibftdi](https://pypi.org/project/pylibftdi)
-- Manufacturer URL: [Link <https://atlas-scientific.com/peristaltic/)
-- Datasheet URL: [Link <https://www.atlas-scientific.com/files/EZO_PMP_Datasheet.pdf)
-- Product URL: [Link <https://atlas-scientific.com/peristaltic/ezo-pmp/)
+- Manufacturer URL: [Link](https://atlas-scientific.com/peristaltic/)
+- Datasheet URL: [Link](https://www.atlas-scientific.com/files/EZO_PMP_Datasheet.pdf)
+- Product URL: [Link](https://atlas-scientific.com/peristaltic/ezo-pmp/)
 
 Atlas Scientific peristaltic pumps can be set to dispense at their maximum rate or a rate can be specified. Their minimum flow rate is 0.5 ml/min and their maximum is 105 ml/min.
 
