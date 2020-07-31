@@ -57,7 +57,7 @@ def test_python_code(python_code_run, filename):
         'Full Python Code Input code:\n\n{code}\n\n'
         'Python Code Input code analysis:\n\n{report}'
         '</pre>'.format(
-            code=lines_code, report=cmd_out.decode("utf-8")))
+            code=lines_code.replace("<", "&lt"), report=cmd_out.decode("utf-8")))
     if cmd_status:
         error.append(
             'Error(s) were found while evaluating your code. Review '

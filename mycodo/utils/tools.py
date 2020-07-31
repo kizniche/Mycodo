@@ -2,19 +2,25 @@
 import csv
 import datetime
 import logging
+import os
 import time
 from collections import OrderedDict
 
-import os
 from dateutil import relativedelta
 
 from mycodo.config import USAGE_REPORTS_PATH
+from mycodo.databases.models import Conversion
+from mycodo.databases.models import DeviceMeasurements
+from mycodo.databases.models import EnergyUsage
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import average_past_seconds
+from mycodo.utils.influx import average_start_end_seconds
 from mycodo.utils.influx import output_sec_on
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import assure_path_exists
+from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import set_user_grp
 
 logger = logging.getLogger("mycodo.tools")
@@ -84,6 +90,142 @@ def next_schedule(time_span='daily', set_day=None, set_hour=None):
         return future_time_test
 
 
+def return_energy_usage(energy_usage, device_measurements_all, conversion_all):
+    """ Calculate energy usage from Inputs/Maths measuring amps """
+    energy_usage_stats = {}
+    graph_info = {}
+    for each_energy in energy_usage:
+        graph_info[each_energy.unique_id] = {}
+        energy_usage_stats[each_energy.unique_id] = {}
+        energy_usage_stats[each_energy.unique_id]['hour'] = 0
+        energy_usage_stats[each_energy.unique_id]['day'] = 0
+        energy_usage_stats[each_energy.unique_id]['week'] = 0
+        energy_usage_stats[each_energy.unique_id]['month'] = 0
+
+        device_measurement = device_measurements_all.filter(
+            DeviceMeasurements.unique_id == each_energy.measurement_id).first()
+        if device_measurement:
+            conversion = conversion_all.filter(
+                Conversion.unique_id == device_measurement.conversion_id).first()
+        else:
+            conversion = None
+        channel, unit, measurement = return_measurement_info(
+            device_measurement, conversion)
+
+        graph_info[each_energy.unique_id]['main'] = {}
+        graph_info[each_energy.unique_id]['main']['device_id'] = each_energy.device_id
+        graph_info[each_energy.unique_id]['main']['measurement_id'] = each_energy.measurement_id
+        graph_info[each_energy.unique_id]['main']['channel'] = channel
+        graph_info[each_energy.unique_id]['main']['unit'] = unit
+        graph_info[each_energy.unique_id]['main']['measurement'] = measurement
+        graph_info[each_energy.unique_id]['main']['start_time_epoch'] = (
+            datetime.datetime.now() -
+            datetime.timedelta(seconds=2629800)).strftime('%s')
+
+        if unit == 'A':  # If unit is amps, proceed
+            hour = average_past_seconds(
+                each_energy.device_id, unit, channel, 3600,
+                measure=measurement)
+            if hour:
+                energy_usage_stats[each_energy.unique_id]['hour'] = hour
+            day = average_past_seconds(
+                each_energy.device_id, unit, channel, 86400,
+                measure=measurement)
+            if day:
+                energy_usage_stats[each_energy.unique_id]['day'] = day
+            week = average_past_seconds(
+                each_energy.device_id, unit, channel, 604800,
+                measure=measurement)
+            if week:
+                energy_usage_stats[each_energy.unique_id]['week'] = week
+            month = average_past_seconds(
+                each_energy.device_id, unit, channel, 2629800,
+                measure=measurement)
+            if month:
+                energy_usage_stats[each_energy.unique_id]['month'] = month
+
+    return energy_usage_stats, graph_info
+
+
+def calc_energy_usage(
+        energy_usage_id,
+        graph_info,
+        start_string,
+        end_string,
+        energy_usage,
+        device_measurements,
+        conversion,
+        volts):
+    calculate_usage = {}
+    picker_start = {}
+    picker_end = {}
+
+    start_seconds = int(time.mktime(
+        time.strptime(start_string, '%m/%d/%Y %H:%M')))
+    end_seconds = int(time.mktime(
+        time.strptime(end_string, '%m/%d/%Y %H:%M')))
+
+    utc_offset_timedelta = datetime.datetime.utcnow() - datetime.datetime.now()
+    start = datetime.datetime.fromtimestamp(float(start_seconds))
+    start += utc_offset_timedelta
+    start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+    end = datetime.datetime.fromtimestamp(float(end_seconds))
+    end += utc_offset_timedelta
+    end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+
+    energy_device = energy_usage.filter(
+        EnergyUsage.unique_id == energy_usage_id).first()
+    device_measurement = device_measurements.filter(
+        DeviceMeasurements.unique_id == energy_device.measurement_id).first()
+    if device_measurement:
+        conversion = conversion.filter(
+            Conversion.unique_id == device_measurement.conversion_id).first()
+    else:
+        conversion = None
+    channel, unit, measurement = return_measurement_info(
+        device_measurement, conversion)
+
+    picker_start[energy_device.unique_id] = start_string
+    picker_end[energy_device.unique_id] = end_string
+
+    if energy_device.unique_id not in graph_info:
+        graph_info[energy_device.unique_id] = {}
+
+    graph_info[energy_device.unique_id]['calculate'] = {}
+    graph_info[energy_device.unique_id]['calculate']['device_id'] = energy_device.device_id
+    graph_info[energy_device.unique_id]['calculate']['measurement_id'] = energy_device.measurement_id
+    graph_info[energy_device.unique_id]['calculate']['channel'] = channel
+    graph_info[energy_device.unique_id]['calculate']['unit'] = unit
+    graph_info[energy_device.unique_id]['calculate']['measurement'] = measurement
+    graph_info[energy_device.unique_id]['calculate']['start_time_epoch'] = start_seconds
+    graph_info[energy_device.unique_id]['calculate']['end_time_epoch'] = end_seconds
+
+    calculate_usage[energy_device.unique_id] = {}
+    calculate_usage[energy_device.unique_id]['average_amps'] = 0
+    calculate_usage[energy_device.unique_id]['kwh'] = 0
+
+    average_amps = average_start_end_seconds(
+        energy_device.device_id,
+        unit,
+        channel,
+        start_str,
+        end_str,
+        measure=measurement)
+
+    calculate_usage[energy_device.unique_id]['average_amps'] = 0
+    calculate_usage[energy_device.unique_id]['kwh'] = 0
+    calculate_usage[energy_device.unique_id]['hours'] = 0
+    if average_amps:
+        calculate_usage[energy_device.unique_id]['average_amps'] = average_amps
+        hours = ((end_seconds - start_seconds) / 3600)
+        if hours < 1:
+            hours = 1
+        calculate_usage[energy_device.unique_id]['kwh'] = volts * average_amps / 1000 * hours
+        calculate_usage[energy_device.unique_id]['hours'] = hours
+
+    return calculate_usage, graph_info, picker_start, picker_end
+
+
 def return_output_usage(table_misc, table_outputs):
     """ Return output usage and cost """
     dict_outputs = parse_output_information()
@@ -113,7 +255,8 @@ def return_output_usage(table_misc, table_outputs):
 
     for each_output in table_outputs:
         if ('output_types' in dict_outputs[each_output.output_type] and
-                'on_off' in dict_outputs[each_output.output_type]['output_types']):
+                'on_off' in dict_outputs[each_output.output_type]['output_types'] and
+                each_output.amps):
             past_1d_hours = output_sec_on(each_output.unique_id, 86400) / 3600
             past_1w_hours = output_sec_on(each_output.unique_id, 604800) / 3600
             past_1m_hours = output_sec_on(each_output.unique_id, 2629743) / 3600
