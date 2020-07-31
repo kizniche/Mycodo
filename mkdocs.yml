@@ -1,0 +1,74 @@
+site_name: Mycodo
+site_description: Documentation for Mycodo
+repo_name: 'kizniche/Mycodo'
+repo_url: 'https://github.com/kizniche/Mycodo'
+
+plugins:
+  - search:
+      lang:
+        - en
+  - minify:
+      minify_html: true
+  - mkpdfs:
+      author: Kyle Gabriel
+      company: "Mycodo"
+      toc_title: Table of contents
+      output_path: pdf/manual-mkdocs.pdf
+
+theme:
+  name: material
+  language: 'en'
+  palette:
+    primary: 'blue'
+    accent: 'indigo'
+    scheme: preference
+  features:
+    - tabs
+  font:
+    text: Barlow
+    code: Roboto Mono
+
+markdown_extensions:
+  - admonition
+  - toc:
+     permalink: "~"
+     toc_depth: 4
+  - pymdownx.mark
+  - pymdownx.tabbed
+  - pymdownx.emoji:
+  - pymdownx.betterem
+  - pymdownx.caret
+  - codehilite
+  - meta
+
+nav:
+  - Home: index.md
+  - About.md
+  - Frequently Asked Questions: Frequently-Asked-Questions.md
+  - Usage:
+    - Data Viewing: Data-Viewing.md
+    - Inputs.md
+    - Outputs.md
+    - Functions.md
+    - Methods.md
+    - LCDs.md
+    - Alerts.md
+    - Notes.md
+    - Camera.md
+    - Energy Usage: Energy-Usage.md
+  - Translations.md
+  - Troubleshooting.md
+  - Devices:
+    - Dependencies.md
+    - Input Devices: Input-Devices.md
+    - Output Devices: Output-Devices.md
+    - I2C Multiplexers: I2C-Multiplexers.md
+    - Analog-To-Digital Converters: Analog-To-Digital-Converters.md
+    - Interfaces.md
+    - Device Notes: Device-Notes.md
+  - System:
+    - System Information: System-Information.md
+    - System Configuration: Configuration-Settings.md
+    - Upgrade/Backup/Restore: Upgrade-Backup-Restore.md
+    - Export/Import: Export-Import.md
+    - Mycodo Client: Mycodo-Client.md

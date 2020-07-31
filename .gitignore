@@ -1,4 +1,5 @@
 # Mycodo files
+site/
 env/
 /databases/flask_secret_key
 *.db
@@ -224,7 +225,7 @@ coverage.xml
 *.log
 
 # Sphinx documentation
-docs/_build/
+docs-old/_build/
 
 # PyBuilder
 target/
