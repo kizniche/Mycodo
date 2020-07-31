@@ -10,7 +10,7 @@ Examples of devices that can be used with edge detection: simple switches and bu
 
 There are only a few number fo LCDs that are supported. 16x2 and 20x4 character LCD displays with I2C backpacks and the [128x32](https://www.adafruit.com/product/931) / [128x64](https://www.adafruit.com/product/931) OLED displays are supported. The below image is the type of device with the I2C backpack that should be compatible.
 
-![image4](manual_images/LCD-front-back.jpg) 
+![image4](images/LCD-front-back.jpg) 
 
 ## Raspberry Pi
 
@@ -30,7 +30,7 @@ After rebooting, a new I2C bus at /dev/i2c-3 should exist with SDA on pin 23 (BC
 
 ## K-30
 
-![image5](manual_images/Sensor-K30-01.jpg) 
+![image5](images/Sensor-K30-01.jpg) 
 
 Be very careful when connecting the K-30, as there is no reverse-voltage protection and improper connections could destroy your sensor.
 
@@ -91,24 +91,24 @@ Now, every time the dust sensor is plugged in, it shows up at /dev/dust-sensor
 
 ### DHT11 Diagrams
 
-![Schematic-Sensor-DHT11-01](manual_images/Schematic-Sensor-DHT11-01.jpg) 
+![Schematic-Sensor-DHT11-01](images/Schematic-Sensor-DHT11-01.jpg) 
 
-![Schematic-Sensor-DHT11-02](manual_images/Schematic-Sensor-DHT11-02.png) 
+![Schematic-Sensor-DHT11-02](images/Schematic-Sensor-DHT11-02.png) 
 
 ### DS18B20 Diagrams
 
-![Schematic-Sensor-DS18B20-01](manual_images/Schematic-Sensor-DS18B20-01.png) 
+![Schematic-Sensor-DS18B20-01](images/Schematic-Sensor-DS18B20-01.png) 
 
-![Schematic-Sensor-DS18B20-02](manual_images/Schematic-Sensor-DS18B20-02.jpg) 
+![Schematic-Sensor-DS18B20-02](images/Schematic-Sensor-DS18B20-02.jpg) 
 
-![Schematic-Sensor-DS18B20-03](manual_images/Schematic-Sensor-DS18B20-03.jpg) 
+![Schematic-Sensor-DS18B20-03](images/Schematic-Sensor-DS18B20-03.jpg) 
 
 ### Raspberry Pi and Relay Diagrams
 
 #### Raspberry Pi, 4 relays, 4 outlets, 1 DS18B20 sensor
 
-![Schematic: Pi, 4 relays, 4 outlets, and 1 DS18B20 sensor](manual_images/Schematic-Pi-4-relays.png) 
+![Schematic: Pi, 4 relays, 4 outlets, and 1 DS18B20 sensor](images/Schematic-Pi-4-relays.png) 
 
 #### Raspberry Pi, 8 relays, 8 outlets
 
-![Schematic: Pi, 8 relays, and 8 outlets](manual_images/Schematic-Pi-8-relays.png) 
+![Schematic: Pi, 8 relays, and 8 outlets](images/Schematic-Pi-8-relays.png) 

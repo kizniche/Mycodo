@@ -9,15 +9,12 @@ plugins:
         - en
   - minify:
       minify_html: true
-  - mkpdfs:
-      author: Kyle Gabriel
-      company: "Mycodo"
-      toc_title: Table of contents
-      output_path: pdf/manual-mkdocs.pdf
 
 theme:
   name: material
   language: 'en'
+  logo: images/favicon.png
+  favicon: images/favicon.png
   palette:
     primary: 'blue'
     accent: 'indigo'
@@ -59,12 +56,12 @@ nav:
   - Translations.md
   - Troubleshooting.md
   - Devices:
-    - Dependencies.md
     - Input Devices: Input-Devices.md
     - Output Devices: Output-Devices.md
     - I2C Multiplexers: I2C-Multiplexers.md
     - Analog-To-Digital Converters: Analog-To-Digital-Converters.md
     - Interfaces.md
+    - Dependencies.md
     - Device Notes: Device-Notes.md
   - System:
     - System Information: System-Information.md

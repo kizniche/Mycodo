@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% set active_page = "dashboard" %}
-{% set help_page = ["dashboard", dict_translation['dashboard']['title']] %}
+{% set help_page = ["https://kizniche.github.io/Mycodo/Data-Viewing/#dashboard", dict_translation['dashboard']['title']] %}
 
 {% block title %} - {% for each_dash in dashboards if each_dash['dashboard_id'] == dashboard_id %}{{each_dash['name']}}{% endfor %} {{dict_translation['dashboard']['title']}}{% endblock %}
 

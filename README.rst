@@ -10,18 +10,14 @@ and outputs in interesting ways to sense and manipulate the environment.
 
 |Build Status| |Codacy Badge| |DOI|
 
-`Mycodo Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__
-(`PDF <https://kizniche.github.io/Mycodo/mycodo-manual.pdf>`__,
-`HTML <https://kizniche.github.io/Mycodo/mycodo-manual.html>`__,
-`TEXT <https://kizniche.github.io/Mycodo/mycodo-manual.txt>`__)
+`Mycodo Manual <https://kizniche.github.io/Mycodo>`__
+(`PDF <https://kizniche.github.io/Mycodo/pdf/manual-mkdocs.pdf>`__)
 
 `Mycodo API <https://kizniche.github.io/Mycodo/mycodo-api.html>`__ (Latest Version: v1)
 
 `Mycodo Support Android App <https://play.google.com/store/apps/details?id=com.mycodo.mycododocs>`__
 
 `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__
-
-`Mycodo on GitHub.io <https://kizniche.github.io/Mycodo/>`__
 
 `Mycodo Custom Inputs and Controllers Repository <https://github.com/kizniche/Mycodo-custom>`__
 
@@ -40,18 +36,18 @@ Figure: `Automated Hydroponic System Build <https://kylegabriel.com/projects/202
 Features
 --------
 
--  `Inputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#input>`__ that record measurements from sensors, GPIO pin states, analog-to-digital converters, etc. (or create your own `Custom Inputs <#custom-inputs>`__).
--  `Outputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#output>`__ that perform actions such as switching GPIO pins high/low, generating PWM signals, executing shell scripts and Python code, etc. (or create your own `Custom Outputs <#custom-outputs>`__).
--  `Functions <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#functions>`__ that perform tasks, such as coupling Inputs and Outputs in interesting ways, such as `PID controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-controller>`__, `Conditional Controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#conditional>`__, `Trigger Controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#trigger>`__, to name a few (or create your own `Custom Controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-controllers>`__).
--  `Web Interface <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#web-interface>`__ for securely accessing Mycodo using a web browser on your local network or anywhere in the world with an internet connection, to view and configure the system, which includes several light and dark themes to suit your style.
--  `Dashboards <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#dashboard>`__ that display configurable widgets, including interactive live and historical graphs, gauges, output state indicators, text measurements, among others.
--  `Alert Notifications <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#alerts>`__ to send emails when measurements reach or exceed user-specified thresholds, important for knowing immediately when issues arise.
--  `Setpoint Tracking <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#methods>`__ for changing a PID controller setpoint over time, for use with things like terrariums, reflow ovens, thermal cyclers, sous-vide cooking, and more.
--  `Notes <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#notes>`__ to record events, alerts, and other important points in time, which can be overlaid on graphs to visualize events with your measurement data.
--  `Cameras <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#camera>`__ for remote live streaming, image capture, and time-lapse photography.
--  `Energy Usage Measurement <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#energy-usage>`__ for calculating and tracking power consumption and cost over time.
--  `Upgrade System <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#upgrading>`__ to easily upgrade the Mycodo system to the latest release to get the newest features or restore to a previously-backed up version.
--  `Translations <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#translations>`__ that enable the web interface to be presented in different `Languages <https://github.com/kizniche/Mycodo#features>`__.
+-  `Inputs <https://kizniche.github.io/Mycodo/Inputs/>`__ that record measurements from sensors, GPIO pin states, analog-to-digital converters, etc. (or create your own `Custom Inputs <#custom-inputs>`__).
+-  `Outputs <https://kizniche.github.io/Mycodo/Outputs/>`__ that perform actions such as switching GPIO pins high/low, generating PWM signals, executing shell scripts and Python code, etc. (or create your own `Custom Outputs <#custom-outputs>`__).
+-  `Functions <https://kizniche.github.io/Mycodo/Functions/>`__ that perform tasks, such as coupling Inputs and Outputs in interesting ways, such as `PID controllers <https://kizniche.github.io/Mycodo/Functions/#pid-controller>`__, `Conditional Controllers <https://kizniche.github.io/Mycodo/Functions/#conditional>`__, `Trigger Controllers <https://kizniche.github.io/Mycodo/Functions/#trigger>`__, to name a few (or create your own `Custom Controllers <https://kizniche.github.io/Mycodo/Functions/#custom-controllers>`__).
+-  `Web Interface <https://kizniche.github.io/Mycodo/About/#web-interface>`__ for securely accessing Mycodo using a web browser on your local network or anywhere in the world with an internet connection, to view and configure the system, which includes several light and dark themes to suit your style.
+-  `Dashboards <https://kizniche.github.io/Mycodo/Data-Viewing/#dashboard>`__ that display configurable widgets, including interactive live and historical graphs, gauges, output state indicators, text measurements, among others.
+-  `Alert Notifications <https://kizniche.github.io/Mycodo/Alerts/>`__ to send emails when measurements reach or exceed user-specified thresholds, important for knowing immediately when issues arise.
+-  `Setpoint Tracking <https://kizniche.github.io/Mycodo/Methods/>`__ for changing a PID controller setpoint over time, for use with things like terrariums, reflow ovens, thermal cyclers, sous-vide cooking, and more.
+-  `Notes <https://kizniche.github.io/Mycodo/Notes/>`__ to record events, alerts, and other important points in time, which can be overlaid on graphs to visualize events with your measurement data.
+-  `Cameras <https://kizniche.github.io/Mycodo/Camera/>`__ for remote live streaming, image capture, and time-lapse photography.
+-  `Energy Usage Measurement <https://kizniche.github.io/Mycodo/Energy-Usage/>`__ for calculating and tracking power consumption and cost over time.
+-  `Upgrade System <https://kizniche.github.io/Mycodo/Upgrade-Backup-Restore/>`__ to easily upgrade the Mycodo system to the latest release to get the newest features or restore to a previously-backed up version.
+-  `Translations <https://kizniche.github.io/Mycodo/Translations/>`__ that enable the web interface to be presented in different `Languages <https://github.com/kizniche/Mycodo#features>`__.
 
 Uses
 ----
@@ -152,7 +148,7 @@ Support
 -------
 
 Before making a post to the forum or issue tracker on github, please read the
-`Manual <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__.
+`Manual <https://kizniche.github.io/Mycodo>`__.
 
 Need assistance with Mycodo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -176,11 +172,7 @@ the issue" should be replaced with the actual steps to reproduce the issue). The
 Manual
 ------
 
-The Mycodo Manual may be viewed as
-`Markdown <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst>`__,
-`PDF <https://kizniche.github.io/Mycodo/mycodo-manual.pdf>`__,
-`HTML <https://kizniche.github.io/Mycodo/mycodo-manual.html>`__,
-or `Plain Text <https://kizniche.github.io/Mycodo/mycodo-manual.txt>`__
+The Mycodo Manual may be found at `https://kizniche.github.io/Mycodo <https://kizniche.github.io/Mycodo>`__
 
 The `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__ also contains useful information.
 
@@ -200,7 +192,7 @@ temperature, to a desired state (setpoint). A well-tuned PID controller
 can raise to a setpoint quickly, have minimal overshoot, and maintain
 the setpoint with little oscillation.
 
-.. figure:: manual_images/PID-Animation.gif
+.. figure:: docs/images/PID-Animation.gif
    :alt: PID Animation
 
 
@@ -216,22 +208,22 @@ the setpoint (±0.5° Celsius). Further tuning would reduce this
 variability further.
 
 See the
-`PID Controller <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-controller>`__
+`PID Controller <https://kizniche.github.io/Mycodo/Functions/#pid-controller>`__
 and
-`PID Tuning <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#pid-tuning>`__
+`PID Tuning <https://kizniche.github.io/Mycodo/Functions/#pid-tuning>`__
 sections of the manual for more information.
 
 Supported Inputs and Outputs
 ----------------------------
 
 All supported Inputs, Outputs, and other devices can be found under the
-`Devices <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#devices>`__
+`Devices <https://kizniche.github.io/Mycodo/Input-Devices/>`__
 section of the manual.
 
 Custom Inputs, Outputs, and Controllers
 ---------------------------------------
 
-Mycodo supports importing custom Input, Output, and Controller modules. you can find more information about each in the manual under `Custom Inputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-inputs>`__, `Custom Outputs <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-outputs>`__, and `Custom Controllers <https://github.com/kizniche/Mycodo/blob/master/mycodo-manual.rst#custom-controllers>`__.
+Mycodo supports importing custom Input, Output, and Controller modules. you can find more information about each in the manual under `Custom Inputs <https://kizniche.github.io/Mycodo/Inputs/#custom-inputs>`__, `Custom Outputs <https://kizniche.github.io/Mycodo/Outputs/#custom-outputs>`__, and `Custom Controllers <https://kizniche.github.io/Mycodo/Functions/#custom-controllers>`__.
 
 If you would like to add to the list of supported Inputs, Outputs, and Controllers, submit a pull request with the module you created or start a
 `New Issue <https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=>`__.

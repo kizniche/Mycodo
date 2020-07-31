@@ -17,9 +17,7 @@ sudo mycodo-commands upgrade-mycodo
 
 ``[Gear Icon] -> Backup Restore``
 
-A backup is made to /var/Mycodo-backups when the system is upgraded or
-instructed to do so from the web interface on the
-``[Gear Icon] -> Backup Restore`` page.
+A backup is made to /var/Mycodo-backups when the system is upgraded or instructed to do so from the web interface on the ``[Gear Icon] -> Backup Restore`` page.
 
 If you need to restore a backup, this can be done on the
 ``[Gear Icon] -> Backup  Restore`` page (recommended). Find the backup

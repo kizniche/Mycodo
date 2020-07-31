@@ -51,7 +51,7 @@ The settings menu, accessed by selecting the gear icon in the top-right, then th
 
 `[Gear Icon] -> Configure -> General`
 
-In order to calculate accurate energy usage statistics, a few characteristics of your electrical system needs to be know. These variables should describe the characteristics of the electrical system being used by the relays to operate electrical devices. Note: Proper energy usage calculations also rely on the correct current draw to be set for each output (see [Output Settings](#output)).
+In order to calculate accurate energy usage statistics, a few characteristics of your electrical system needs to be know. These variables should describe the characteristics of the electrical system being used by the relays to operate electrical devices. Note: Proper energy usage calculations also rely on the correct current draw to be set for each output (see [Output Settings](Outputs)).
 
 <table>
 <col width="40%" />
@@ -90,11 +90,17 @@ In order to calculate accurate energy usage statistics, a few characteristics of
 </tbody>
 </table>
 
+## Controller Settings
+
+`[Gear Icon] -> Configure -> Controllers`
+
+Controller modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Controllers](Functions/#custom-controllers) for more details.
+
 ## Input Settings
 
 `[Gear Icon] -> Configure -> Inputs`
 
-Input modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Inputs](#custom-inputs) for more details.
+Input modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Inputs](Inputs/#custom-inputs) for more details.
 
 <table>
 <col width="40%" />
@@ -117,7 +123,7 @@ Input modules may be imported and used within Mycodo. These modules must follow 
 
 `[Gear Icon] -> Configure -> Outputs`
 
-Output modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Outputs](#custom-outputs) for more details.
+Output modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Outputs](Outputs/#custom-outputs) for more details.
 
 <table>
 <col width="40%" />

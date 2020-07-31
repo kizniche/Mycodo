@@ -139,11 +139,11 @@ The **I**ntegral takes the error and multiplies it by K<sub>I</sub>, then integr
 
 The **D**erivative multiplies the error by K<sub>D</sub>, then differentiates it (K<sub>D</sub> · s). When the error rate changes over time, the output signal will change. The faster the change in error, the larger the derivative path becomes, decreasing the output rate of change. This has the effect of dampening overshoot and undershoot (oscillation) of the Set Point.
 
-![PID Animation](manual_images/PID-Animation.gif)
+![PID Animation](images/PID-Animation.gif)
 
 The K<sub>P</sub>, K<sub>I</sub>, and K<sub>D</sub> gains determine how much each of the P, I, and D variables influence the final PID output value. For instance, the greater the value of the gain, the more influence that variable has on the output.
 
-![PID Equation](manual_images/PID-Equation.jpg)
+![PID Equation](images/PID-Equation.jpg)
 
 The output from the PID controller can be used in a number of ways. A simple use is to use this value as the number of seconds an output is turned on during a periodic interval (Period). For instance, if the Period is set to 30 seconds, the PID equation has the desired measurement and the actual measurement used to calculate the PID output every 30 seconds. The more the output is on during this period, the more it will affect the system. For example, an output on for 15 seconds every 30 seconds is at a 50 % duty cycle, and would affect the system roughly half as much as when the output is on for 30 seconds every 30 seconds, or at at 100 % duty cycle. The PID controller will calculate the output based on the amount of error (how far the actual measurement is from the desired measurement). If the error increases or persists, the output increases, causing the output to turn on for a longer duration within the Period, which usually in term causes the measured condition to change and the error to reduce. When the error reduces, the control variable decreases, meaning the output is turned on for a shorter duration of time. The ultimate goal of a well-tuned PID controller is to bring the actual measurement to the desired measurement quickly, with little overshoot, and maintain the setpoint with minimal oscillation.
 
@@ -185,7 +185,7 @@ Once regulation is achieved, experiment by reducing K<sub>P</sub> slightly (~25%
 
 Often the system can be simplified if two-way regulation is not needed. For instance, if cooling is unnecessary, this can be removed from the system and only up-regulation can be used.
 
-Use the same configuration as the [Exact Temperature Regulation](#exact-temperature-regulation) example, except change *Regulate Direction* to "Raise" and do not touch the "Down Relay" section.
+Use the same configuration as the [Exact Temperature Regulation](Functions/#exact-temperature-regulation) example, except change *Regulate Direction* to "Raise" and do not touch the "Down Relay" section.
 
 ### PID Autotune
 
@@ -216,7 +216,7 @@ The Autotune feature is useful for determining appropriate Kp, Ki, and Kd gains 
 
 Typical graph output will look like this:
 
-![PID Autotune Output](manual_images/Autotune-Output-Example.png)
+![PID Autotune Output](images/Autotune-Output-Example.png)
 
 And typical Daemon Log output will look like this:
 
@@ -471,7 +471,7 @@ If your `Conditional Statement` has been formatted correctly, your Conditional w
 
 Note: Mycodo is constantly changing, so the screenshots below may not match what you see exactly. Be sure to read this entire section of the manual to understand how to use Conditionals.
 
-![Figure-Mycodo-Conditional-Setup](manual_images/Figure-Mycodo-Conditional-Setup.png)
+![Figure-Mycodo-Conditional-Setup](images/Figure-Mycodo-Conditional-Setup.png)
 
 Simple `Conditional Statement` examples:
 
@@ -625,7 +625,7 @@ Before activating any conditionals, it's advised to thoroughly explore all possi
 
 ## Trigger
 
-A Trigger Controller will execute actions when events are triggered, such as an output turning on or off, a GPIO pin changing it's voltage state, or timed events, including various timers (duration, time period, time point, etc), or the sunrise or sunset time at a specific latitude and longitude. One the trigger is defined, add any number of [Actions](#function-actions) to be executed when that event is triggered.
+A Trigger Controller will execute actions when events are triggered, such as an output turning on or off, a GPIO pin changing it's voltage state, or timed events, including various timers (duration, time period, time point, etc), or the sunrise or sunset time at a specific latitude and longitude. One the trigger is defined, add any number of [Actions](Functions/#function-actions) to be executed when that event is triggered.
 
 ### Output (On/Off) Options
 
@@ -739,33 +739,6 @@ Select a Duration Method and this will set the selected PWM Output to the duty c
 <tr class="odd">
 <td align="left">Trigger when Activated</td>
 <td align="left">Trigger Conditional Actions when the Conditional is activated.</td>
-</tr>
-</tbody>
-</table>
-
-### Infrared Remote Input Options
-
-Mycodo uses lirc to detect Infrared signals. Follow the [lirc setup guide](#infrared-remote) before using this feature.
-
-Note: Raspbian Buster broke this feature. Work is in progress to restore functionality.
-
-<table>
-<col width="40%" />
-<col width="59%" />
-<thead>
-<tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Program</td>
-<td align="left">This is the variable 'program' in ~/.lircrc</td>
-</tr>
-<tr class="even">
-<td align="left">Word</td>
-<td align="left">This is the variable 'config' in ~/.lircrc</td>
 </tr>
 </tbody>
 </table>

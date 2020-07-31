@@ -248,7 +248,7 @@ Below are hardware schematics that enable controlling direct current (DC) fans f
 
 PWM output controlling a 12-volt DC fan (such as a PC fan)
 
-![Schematic: PWM output modulating alternating current (AC) at 1% duty cycle (1of2)](manual_images/Schematic-PWM-DC-12-volt-fan-control.png) 
+![Schematic: PWM output modulating alternating current (AC) at 1% duty cycle (1of2)](images/Schematic-PWM-DC-12-volt-fan-control.png) 
 
 ### Schematics for AC Modulation
 
@@ -256,15 +256,15 @@ Below are hardware schematics that enable the modulation of alternating current 
 
 PWM output modulating alternating current (AC) at 1% duty cycle
 
-![Schematic: PWM output modulating alternating current (AC) at 1% duty cycle (2of2)](manual_images/Schematic-PWM-AC-1percent-duty-cycle.png) 
+![Schematic: PWM output modulating alternating current (AC) at 1% duty cycle (2of2)](images/Schematic-PWM-AC-1percent-duty-cycle.png) 
 
 PWM output modulating alternating current (AC) at 50% duty cycle
 
-![Schematic: PWM output modulating alternating current (AC) at 50% duty cycle](manual_images/Schematic-PWM-AC-50percent-duty-cycle.png) 
+![Schematic: PWM output modulating alternating current (AC) at 50% duty cycle](images/Schematic-PWM-AC-50percent-duty-cycle.png) 
 
 PWM output modulating alternating current (AC) at 99% duty cycle
 
-![Schematic: PWM output modulating alternating current (AC) at 99% duty cycle](manual_images/Schematic-PWM-AC-99percent-duty-cycle.png)
+![Schematic: PWM output modulating alternating current (AC) at 99% duty cycle](images/Schematic-PWM-AC-99percent-duty-cycle.png)
 
 ## Peristaltic Pump
 
@@ -317,7 +317,7 @@ The Atlas Scientific peristaltic pump is a peristaltic pump and microcontroller 
 
 Certain 315/433 MHz wireless relays may be used, however you will need to set the pin of the transmitter (using BCM numbering), pulse length, bit length, protocol, on command, and off command. To determine your On and Off commands, connect a 315/433 MHz receiver to your Pi, then run the receiver script, below, replacing 17 with the pin your receiver is connected to (using BCM numbering), and press one of the buttons on your remote (either on or off) to detect the numeric code associated with that button.
 
-``` {.sourceCode .python}
+```bash
 sudo ~/Mycodo/env/bin/python ~/Mycodo/mycodo/devices/wireless_rpi_rf.py -d 2 -g 17
 ```
 

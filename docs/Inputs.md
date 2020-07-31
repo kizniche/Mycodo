@@ -1,4 +1,4 @@
-Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere, which will be stored in a time-series database (InfluxDB). This database will provide measurements for [Graphs](#graphs), [LCDs](#lcds), [PID Controllers](#pid-controllers), [Conditional Statements](#conditional-statements), and other parts of Mycodo to operate from. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.
+Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere, which will be stored in a time-series database (InfluxDB). This database will provide measurements for [Dashboards](Data-Viewing/#dashboard), [LCDs](LCDs), [PID Controllers](Functions/#pid-controller), [Conditional Statements](Functions/#conditional), and other parts of Mycodo to operate from. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.
 
 ### Input Actions
 
@@ -213,7 +213,7 @@ There's also minimal input module template that generates random data as an exam
 
 <https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py>
 
-There's also an input module that includes all available INPUT\_INFORMATION options along with descriptions:
+There's also an input module that includes all available INPUT_INFORMATION options along with descriptions:
 
 <https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py>
 
@@ -225,7 +225,7 @@ Additionally, I have another github repository devoted to Custom Inputs and Cont
 
 The payload on TTN must be properly decoded to variables that correspond to the "Name" option under "Select Measurements", in the lower section of the Input options. For instance, in your TTN Application, if a custom Payload Format is selected, the decoder code may look like this:
 
-``` {.sourceCode .javascript}
+```javascript
 function Decoder(bytes, port) {
     var decoded = {};
     var rawTemp = bytes[0] + bytes[1] * 256;
@@ -256,7 +256,7 @@ There are several example Input modules that, in addition to storing the measure
 
 For example, the following excerpt from `bme_280.py` will write a set of comma-separated strings to the user-specified serial device with the first string (the letter "B") used to denote the sensor/measurements, followed by the actual measurements (humidity, pressure, and temperature, in this case).
 
-``` {.sourceCode .python}
+```python
 string_send = 'B,{},{},{}'.format(
     return_dict[1]['value'],
     return_dict[2]['value'],
