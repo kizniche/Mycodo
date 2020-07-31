@@ -93,6 +93,7 @@ def parse_output_information(exclude_custom=False):
                 dict_outputs[output_custom.OUTPUT_INFORMATION['output_name_unique']]['file_path'] = full_path
 
                 dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_name')
+                dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_manufacturer')
                 dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_library')
                 dict_outputs = dict_has_value(dict_outputs, output_custom, 'measurements_dict')
 
