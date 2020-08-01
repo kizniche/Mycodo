@@ -1,6 +1,6 @@
 ## REST API
 
-As of version 8, Mycodo has a REST API. Documentation is available at [API Information](https://github.com/kizniche/Mycodo/blob/master/mycodo-api.rst) and [API Endpoint Documentation](https://kizniche.github.io/Mycodo/mycodo-api.html).
+As of version 8, Mycodo has a REST API (See [API Endpoint Documentation](https://kizniche.github.io/Mycodo/mycodo-api.html)).
 
 An API is an application programming interface - in short, it’s a set of rules that lets programs talk to each other, exposing data and functionality across the internet in a consistent format.
 

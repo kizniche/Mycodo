@@ -150,7 +150,7 @@ The `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__ also contains usef
 REST API
 --------
 
-The latest API documentation can be found here: `API Information <https://github.com/kizniche/Mycodo/blob/master/mycodo-api.rst>`__ and `API Endpoint Documentation <https://kizniche.github.io/Mycodo/mycodo-api.html>`__.
+The latest API documentation can be found here: `API Information <https://kizniche.github.io/Mycodo/API/>`__ and `API Endpoint Documentation <https://kizniche.github.io/Mycodo/mycodo-api.html>`__.
 
 About PID Control
 -----------------

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Generate restructuredtext file of Input information to be inserted into the manual"""
+"""Generate markdown file of Output information to be inserted into the manual"""
 
 import sys
 

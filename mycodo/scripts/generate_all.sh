@@ -11,6 +11,5 @@ INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 
 "${INSTALL_DIRECTORY}"/env/bin/python "${INSTALL_DIRECTORY}"/mycodo/scripts/generate_manual_inputs.py
 "${INSTALL_DIRECTORY}"/env/bin/python "${INSTALL_DIRECTORY}"/mycodo/scripts/generate_manual_outputs.py
-/bin/bash "${INSTALL_DIRECTORY}"/mycodo/scripts/generate_manual.sh
 /bin/bash "${INSTALL_DIRECTORY}"/mycodo/scripts/generate_manual_api.sh
 /bin/bash "${INSTALL_DIRECTORY}"/mycodo/scripts/generate_translations_pybabel.sh
