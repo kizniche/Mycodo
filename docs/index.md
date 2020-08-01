@@ -1,8 +1,8 @@
-description: Documentation (Wiki) for Mycodo, an environmental monitoring and regulation system.
+description: Documentation for Mycodo, an open source environmental monitoring and regulation system.
 
 ## Mycodo Environmental Monitoring and Regulation System
 
-Mycodo is open source software for the Raspberry Pi that couples inputs and outputs in interesting ways to sense and manipulate the environment.
+Mycodo is open source software for the [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi) that couples inputs and outputs in interesting ways to sense and manipulate the environment.
 
 ### Features
 
@@ -27,12 +27,12 @@ See the [README](https://github.com/kizniche/Mycodo#uses) for more information.
 ### Prerequisites
 
 *   [Raspberry Pi](https://www.raspberrypi.org/) single-board computer (any version: Zero, 1, 2, 3, or 4)
-*   [Raspbian OS](https://www.raspberrypi.org/downloads/raspbian/) flashed to a micro SD card
+*   [Raspberry Pi Operating System](https://www.raspberrypi.org/downloads/raspbian/) flashed to a micro SD card
 *   An active internet connection
 
 ### Install
 
-Once you have the Raspberry Pi booted into Raspbian with an internet connection, run the following command in a terminal to initiate the Mycodo install:
+Once you have the Raspberry Pi booted into the Raspberry Pi OS with an internet connection, run the following command in a terminal to initiate the Mycodo install:
 
 ```bash
 curl -L https://kizniche.github.io/Mycodo/install | bash

@@ -266,7 +266,7 @@ runSelfUpgrade() {
 
   printf "\n#### Completed Upgrade Stage 3 of 3 in %s seconds ####\n\n" "$((SECONDS - TIMER_START_stage_three))"
 
-  printf "Upgrade completed successfully without errors.\n"
+  printf "Upgrade completed. Review the log to ensure no critical errors were encountered\n"
 
   #############################
   # Begin tests after upgrade #

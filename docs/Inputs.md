@@ -12,190 +12,188 @@ Input Actions are functions within the Input module that can be executed from th
 In addition to several supported sensors and devices, a Linux command may be specified that will be executed and the return value stored in the measurement database to be used throughout the Mycodo system.
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Activate</td>
-<td align="left">After the sensor has been properly configured, activation begins acquiring measurements from the sensor. Any activated conditional statements will now being operating.</td>
+<tr>
+<td>Activate</td>
+<td>After the sensor has been properly configured, activation begins acquiring measurements from the sensor. Any activated conditional statements will now being operating.</td>
 </tr>
-<tr class="even">
-<td align="left">Deactivate</td>
-<td align="left">Deactivation stops measurements from being acquired from the sensor. All associated conditional statements will cease to operate.</td>
+<tr>
+<td>Deactivate</td>
+<td>Deactivation stops measurements from being acquired from the sensor. All associated conditional statements will cease to operate.</td>
 </tr>
-<tr class="odd">
-<td align="left">Save</td>
-<td align="left">Save the current configuration entered into the input boxes for a particular sensor.</td>
+<tr>
+<td>Save</td>
+<td>Save the current configuration entered into the input boxes for a particular sensor.</td>
 </tr>
-<tr class="even">
-<td align="left">Delete</td>
-<td align="left">Delete a particular sensor.</td>
+<tr>
+<td>Delete</td>
+<td>Delete a particular sensor.</td>
 </tr>
-<tr class="odd">
-<td align="left">Acquire Measurements Now</td>
-<td align="left">Force the input to conduct measurements and them in the database.</td>
+<tr>
+<td>Acquire Measurements Now</td>
+<td>Force the input to conduct measurements and them in the database.</td>
 </tr>
-<tr class="even">
-<td align="left">Up/Down</td>
-<td align="left">Move a particular sensor up or down in the order displayed.</td>
+<tr>
+<td>Up/Down</td>
+<td>Move a particular sensor up or down in the order displayed.</td>
 </tr>
-<tr class="odd">
-<td align="left">Power Output</td>
-<td align="left">Select a output that powers the sensor. This enables powering cycling (turn off then on) when the sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead of a relay (note: NPN transistors are preferred over PNP for powering sensors).</td>
+<tr>
+<td>Power Output</td>
+<td>Select a output that powers the sensor. This enables powering cycling (turn off then on) when the sensor returns 3 consecutive errors to attempt to fix the issue. Transistors may also be used instead of a relay (note: NPN transistors are preferred over PNP for powering sensors).</td>
 </tr>
-<tr class="even">
-<td align="left">Location</td>
-<td align="left">Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I2C address. or other.</td>
+<tr>
+<td>Location</td>
+<td>Depending on what sensor is being used, you will need to either select a serial number (DS18B20 temperature sensor), a GPIO pin (in the case of sensors read by a GPIO), or an I2C address. or other.</td>
 </tr>
-<tr class="odd">
-<td align="left">I2C Bus</td>
-<td align="left">The bus to be used to communicate with the I2C address.</td>
+<tr>
+<td>I2C Bus</td>
+<td>The bus to be used to communicate with the I2C address.</td>
 </tr>
-<tr class="even">
-<td align="left">Period (seconds)</td>
-<td align="left">After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.</td>
+<tr>
+<td>Period (seconds)</td>
+<td>After the sensor is successfully read and a database entry is made, this is the duration of time waited until the sensor is measured again.</td>
 </tr>
-<tr class="odd">
-<td align="left">Measurement Unit</td>
-<td align="left">Select the unit to save the measurement as (only available for select measurements).</td>
+<tr>
+<td>Measurement Unit</td>
+<td>Select the unit to save the measurement as (only available for select measurements).</td>
 </tr>
-<tr class="even">
-<td align="left">Pre Output</td>
-<td align="left">If you require a output to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the output number that will be activated. The output will be activated for a duration defined by the Pre Duration, then once the output turns off, a measurement by the sensor is made.</td>
+<tr>
+<td>Pre Output</td>
+<td>If you require a output to be activated before a measurement is made (for instance, if you have a pump that extracts air to a chamber where the sensor resides), this is the output number that will be activated. The output will be activated for a duration defined by the Pre Duration, then once the output turns off, a measurement by the sensor is made.</td>
 </tr>
-<tr class="odd">
-<td align="left">Pre Output Duration (seconds)</td>
-<td align="left">This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.</td>
+<tr>
+<td>Pre Output Duration (seconds)</td>
+<td>This is the duration of time that the Pre Output runs for before the sensor measurement is obtained.</td>
 </tr>
-<tr class="even">
-<td align="left">Pre Output During Measurement</td>
-<td align="left">If enabled, the Pre Output stays on during the acquisition of a measurement. If disabled, the Pre Output is turned off directly before acquiring a measurement.</td>
+<tr>
+<td>Pre Output During Measurement</td>
+<td>If enabled, the Pre Output stays on during the acquisition of a measurement. If disabled, the Pre Output is turned off directly before acquiring a measurement.</td>
 </tr>
-<tr class="odd">
-<td align="left">Command</td>
-<td align="left">A linux command (executed as the user 'root') that the return value becomes the measurement</td>
+<tr>
+<td>Command</td>
+<td>A linux command (executed as the user 'root') that the return value becomes the measurement</td>
 </tr>
-<tr class="even">
-<td align="left">Command Measurement</td>
-<td align="left">The measured condition (e.g. temperature, humidity, etc.) from the linux command</td>
+<tr>
+<td>Command Measurement</td>
+<td>The measured condition (e.g. temperature, humidity, etc.) from the linux command</td>
 </tr>
-<tr class="odd">
-<td align="left">Command Units</td>
-<td align="left">The units of the measurement condition from the linux command</td>
+<tr>
+<td>Command Units</td>
+<td>The units of the measurement condition from the linux command</td>
 </tr>
-<tr class="even">
-<td align="left">Edge</td>
-<td align="left">Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion detector, and more.</td>
+<tr>
+<td>Edge</td>
+<td>Edge sensors only: Select whether the Rising or Falling (or both) edges of a changing voltage are detected. A number of devices to do this when in-line with a circuit supplying a 3.3-volt input signal to a GPIO, such as simple mechanical switch, a button, a magnet (reed/hall) sensor, a PIR motion detector, and more.</td>
 </tr>
-<tr class="odd">
-<td align="left">Bounce Time (ms)</td>
-<td align="left">Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called debouncing a signal [1] and may be necessary if using a mechanical circuit.</td>
+<tr>
+<td>Bounce Time (ms)</td>
+<td>Edge sensors only: This is the number of milliseconds to bounce the input signal. This is commonly called debouncing a signal [1] and may be necessary if using a mechanical circuit.</td>
 </tr>
-<tr class="even">
-<td align="left">Reset Period (seconds)</td>
-<td align="left">Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.</td>
+<tr>
+<td>Reset Period (seconds)</td>
+<td>Edge sensors only: This is the period of time after an edge detection that another edge will not be recorded. This enables devices such as PIR motion sensors that may stay activated for longer periods of time.</td>
 </tr>
-<tr class="odd">
-<td align="left">Measurement</td>
-<td align="left">Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be &quot;light&quot;.</td>
+<tr>
+<td>Measurement</td>
+<td>Analog-to-digital converter only: The type of measurement being acquired by the ADC. For instance, if the resistance of a photocell is being measured through a voltage divider, this measurement would be &quot;light&quot;.</td>
 </tr>
-<tr class="even">
-<td align="left">Units</td>
-<td align="left">Analog-to-digital converter only: This is the unit of the measurement. With the above example of &quot;light&quot; as the measurement, the unit may be &quot;lux&quot; or &quot;intensity&quot;.</td>
+<tr>
+<td>Units</td>
+<td>Analog-to-digital converter only: This is the unit of the measurement. With the above example of &quot;light&quot; as the measurement, the unit may be &quot;lux&quot; or &quot;intensity&quot;.</td>
 </tr>
-<tr class="odd">
-<td align="left">BT Adapter</td>
-<td align="left">The Bluetooth adapter to communicate with the input.</td>
+<tr>
+<td>BT Adapter</td>
+<td>The Bluetooth adapter to communicate with the input.</td>
 </tr>
-<tr class="even">
-<td align="left">Clock Pin</td>
-<td align="left">The GPIO (using BCM numbering) connected to the Clock pin of the ADC</td>
+<tr>
+<td>Clock Pin</td>
+<td>The GPIO (using BCM numbering) connected to the Clock pin of the ADC</td>
 </tr>
-<tr class="odd">
-<td align="left">CS Pin</td>
-<td align="left">The GPIO (using BCM numbering) connected to the CS pin of the ADC</td>
+<tr>
+<td>CS Pin</td>
+<td>The GPIO (using BCM numbering) connected to the CS pin of the ADC</td>
 </tr>
-<tr class="even">
-<td align="left">MISO Pin</td>
-<td align="left">The GPIO (using BCM numbering) connected to the MISO pin of the ADC</td>
+<tr>
+<td>MISO Pin</td>
+<td>The GPIO (using BCM numbering) connected to the MISO pin of the ADC</td>
 </tr>
-<tr class="odd">
-<td align="left">MOSI Pin</td>
-<td align="left">The GPIO (using BCM numbering) connected to the MOSI pin of the ADC</td>
+<tr>
+<td>MOSI Pin</td>
+<td>The GPIO (using BCM numbering) connected to the MOSI pin of the ADC</td>
 </tr>
-<tr class="even">
-<td align="left">RTD Probe Type</td>
-<td align="left">Select to measure from a PT100 or PT1000 probe.</td>
+<tr>
+<td>RTD Probe Type</td>
+<td>Select to measure from a PT100 or PT1000 probe.</td>
 </tr>
-<tr class="odd">
-<td align="left">Resistor Reference (Ohm)</td>
-<td align="left">If your reference resistor is not the default (400 Ohm for PT100, 4000 Ohm for PT1000), you can manually set this value. Several manufacturers now use 430 Ohm resistors on their circuit boards, therefore it's recommended to verify the accuracy of your measurements and adjust this value if necessary.</td>
+<tr>
+<td>Resistor Reference (Ohm)</td>
+<td>If your reference resistor is not the default (400 Ohm for PT100, 4000 Ohm for PT1000), you can manually set this value. Several manufacturers now use 430 Ohm resistors on their circuit boards, therefore it's recommended to verify the accuracy of your measurements and adjust this value if necessary.</td>
 </tr>
-<tr class="even">
-<td align="left">Channel</td>
-<td align="left">Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.</td>
+<tr>
+<td>Channel</td>
+<td>Analog-to-digital converter only: This is the channel to obtain the voltage measurement from the ADC.</td>
 </tr>
-<tr class="odd">
-<td align="left">Gain</td>
-<td align="left">Analog-to-digital converter only: set the gain when acquiring the measurement.</td>
+<tr>
+<td>Gain</td>
+<td>Analog-to-digital converter only: set the gain when acquiring the measurement.</td>
 </tr>
-<tr class="even">
-<td align="left">Sample Speed</td>
-<td align="left">Analog-to-digital converter only: set the sample speed (typically samples per second).</td>
+<tr>
+<td>Sample Speed</td>
+<td>Analog-to-digital converter only: set the sample speed (typically samples per second).</td>
 </tr>
-<tr class="odd">
-<td align="left">Volts Min</td>
-<td align="left">Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to &quot;0.2&quot;.</td>
+<tr>
+<td>Volts Min</td>
+<td>Analog-to-digital converter only: What is the minimum voltage to use when scaling to produce the unit value for the database. For instance, if your ADC is not expected to measure below 0.2 volts for your particular circuit, set this to &quot;0.2&quot;.</td>
 </tr>
-<tr class="even">
-<td align="left">Volts Max</td>
-<td align="left">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 -1.0 volts, and the unit range is 1 -60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.</td>
+<tr>
+<td>Volts Max</td>
+<td>Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the voltage range. Units Min Analog-to-digital converter only: This value will be the lower value of a range that will use the Min and Max Voltages, above, to produce a unit output. For instance, if your voltage range is 0.0 -1.0 volts, and the unit range is 1 -60, and a voltage of 0.5 is measured, in addition to 0.5 being stored in the database, 30 will be stored as well. This enables creating calibrated scales to use with your particular circuit.</td>
 </tr>
-<tr class="odd">
-<td align="left">Units Max</td>
-<td align="left">Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.</td>
+<tr>
+<td>Units Max</td>
+<td>Analog-to-digital converter only: This is similar to the Min option above, however it is setting the ceiling to the unit range.</td>
 </tr>
-<tr class="even">
-<td align="left">Weighting</td>
-<td align="left">The This is a number between 0 and 1 and indicates how much the old reading affects the new reading. It defaults to 0 which means the old reading has no effect. This may be used to smooth the data.</td>
+<tr>
+<td>Weighting</td>
+<td>The This is a number between 0 and 1 and indicates how much the old reading affects the new reading. It defaults to 0 which means the old reading has no effect. This may be used to smooth the data.</td>
 </tr>
-<tr class="odd">
-<td align="left">Pulses Per Rev</td>
-<td align="left">The number of pulses for a complete revolution.</td>
+<tr>
+<td>Pulses Per Rev</td>
+<td>The number of pulses for a complete revolution.</td>
 </tr>
-<tr class="even">
-<td align="left">Port</td>
-<td align="left">The server port to be queried (Server Port Open input).</td>
+<tr>
+<td>Port</td>
+<td>The server port to be queried (Server Port Open input).</td>
 </tr>
-<tr class="odd">
-<td align="left">Times to Check</td>
-<td align="left">The number of times to attempt to ping a server (Server Ping input).</td>
+<tr>
+<td>Times to Check</td>
+<td>The number of times to attempt to ping a server (Server Ping input).</td>
 </tr>
-<tr class="even">
-<td align="left">Deadline (seconds)</td>
-<td align="left">The maximum amount of time to wait for each ping attempt, after which 0 (offline) will be returned (Server Ping input).</td>
+<tr>
+<td>Deadline (seconds)</td>
+<td>The maximum amount of time to wait for each ping attempt, after which 0 (offline) will be returned (Server Ping input).</td>
 </tr>
-<tr class="odd">
-<td align="left">Number of Measurement</td>
-<td align="left">The number of unique measurements to store data for this input.</td>
+<tr>
+<td>Number of Measurement</td>
+<td>The number of unique measurements to store data for this input.</td>
 </tr>
-<tr class="even">
-<td align="left">Application ID</td>
-<td align="left">The Application ID on The Things Network.</td>
+<tr>
+<td>Application ID</td>
+<td>The Application ID on The Things Network.</td>
 </tr>
-<tr class="odd">
-<td align="left">App API Key</td>
-<td align="left">The Application API Key on The Things Network.</td>
+<tr>
+<td>App API Key</td>
+<td>The Application API Key on The Things Network.</td>
 </tr>
-<tr class="even">
-<td align="left">Device ID</td>
-<td align="left">The Device ID of the Application on The Things Network.</td>
+<tr>
+<td>Device ID</td>
+<td>The Device ID of the Application on The Things Network.</td>
 </tr>
 </tbody>
 </table>
@@ -206,7 +204,7 @@ In addition to several supported sensors and devices, a Linux command may be spe
 
 See [Building a Custom Input Module](https://github.com/kizniche/Mycodo/wiki/Building-a-Custom-Input-Module) Wiki page.
 
-There is a Custom Input import system in Mycodo that allows user-created Inputs to be created an used in the Mycodo system. Custom Inputs can be uploaded and imported from the `Configure -> Inputs` page. After import, they will be available to use on the `Setup -> Data` page.
+There is a Custom Input import system in Mycodo that allows user-created Inputs to be created an used in the Mycodo system. Custom Inputs can be uploaded and imported from the `[Gear Icon] -> Configure -> Inputs` page. After import, they will be available to use on the `Setup -> Data` page.
 
 If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo.
 
@@ -286,54 +284,52 @@ Math controllers allow one or more Inputs to have math applied to produce a new 
 Types of math controllers.
 
 <table>
-<col width="41%" />
-<col width="58%" />
 <thead>
 <tr class="header">
-<th align="left">Type</th>
-<th align="left">Description</th>
+<th>Type</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Average (Last, Multiple Channels)</td>
-<td align="left">Stores the statistical mean of the last measurement of multiple selected measurement channels.</td>
+<tr>
+<td>Average (Last, Multiple Channels)</td>
+<td>Stores the statistical mean of the last measurement of multiple selected measurement channels.</td>
 </tr>
-<tr class="even">
-<td align="left">Average (Past, Single Channel)</td>
-<td align="left">Stores the statistical mean of one selected measurement channel over a duration of time determined by the Max Age (seconds) option.</td>
+<tr>
+<td>Average (Past, Single Channel)</td>
+<td>Stores the statistical mean of one selected measurement channel over a duration of time determined by the Max Age (seconds) option.</td>
 </tr>
-<tr class="odd">
-<td align="left">Sum (Last, Multiple Channels)</td>
-<td align="left">Stores the sum of multiple selected measurement channels.</td>
+<tr>
+<td>Sum (Last, Multiple Channels)</td>
+<td>Stores the sum of multiple selected measurement channels.</td>
 </tr>
-<tr class="even">
-<td align="left">Sum (Past, Single Channel)</td>
-<td align="left">Stores the sum of one selected measurement channel over a duration of time determined by the Max Age(seconds) option.</td>
+<tr>
+<td>Sum (Past, Single Channel)</td>
+<td>Stores the sum of one selected measurement channel over a duration of time determined by the Max Age(seconds) option.</td>
 </tr>
-<tr class="odd">
-<td align="left">Difference</td>
-<td align="left">Stores the mathematical difference (value_1 - value_2).</td>
+<tr>
+<td>Difference</td>
+<td>Stores the mathematical difference (value_1 - value_2).</td>
 </tr>
-<tr class="even">
-<td align="left">Equation</td>
-<td align="left">Stores the calculated value of an equation.</td>
+<tr>
+<td>Equation</td>
+<td>Stores the calculated value of an equation.</td>
 </tr>
-<tr class="odd">
-<td align="left">Redundancy</td>
-<td align="left">Select multiple Inputs and if one input isn't available, the next measurement will be used. For example, this is useful if an Input stops but you don't want a PID controller to stop working if there is another measurement that can be used. More than one Input can be and the preferred Order of Use can be defined.</td>
+<tr>
+<td>Redundancy</td>
+<td>Select multiple Inputs and if one input isn't available, the next measurement will be used. For example, this is useful if an Input stops but you don't want a PID controller to stop working if there is another measurement that can be used. More than one Input can be and the preferred Order of Use can be defined.</td>
 </tr>
-<tr class="even">
-<td align="left">Verification</td>
-<td align="left">Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected measurements.</td>
+<tr>
+<td>Verification</td>
+<td>Ensures the greatest difference between any selected Inputs is less than Max Difference, and if so, stores the average of the selected measurements.</td>
 </tr>
-<tr class="odd">
-<td align="left">Statistics</td>
-<td align="left">Calculates mean, median, minimum, maximum, standard deviation (SD), SD upper, and SD lower for a set of measurements.</td>
+<tr>
+<td>Statistics</td>
+<td>Calculates mean, median, minimum, maximum, standard deviation (SD), SD upper, and SD lower for a set of measurements.</td>
 </tr>
-<tr class="even">
-<td align="left">Humidity (Wet/Dry-Bulb)</td>
-<td align="left">Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure.</td>
+<tr>
+<td>Humidity (Wet/Dry-Bulb)</td>
+<td>Calculates and stores the percent relative humidity from the dry-bulb and wet-bulb temperatures, and optional pressure.</td>
 </tr>
 </tbody>
 </table>
@@ -341,70 +337,68 @@ Types of math controllers.
 Math controller options.
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Input</td>
-<td align="left">Select the Inputs to use with the particular Math controller</td>
+<tr>
+<td>Input</td>
+<td>Select the Inputs to use with the particular Math controller</td>
 </tr>
-<tr class="even">
-<td align="left">Period (seconds)</td>
-<td align="left">The duration of time between calculating and storing a new value</td>
+<tr>
+<td>Period (seconds)</td>
+<td>The duration of time between calculating and storing a new value</td>
 </tr>
-<tr class="odd">
-<td align="left">Max Age (seconds)</td>
-<td align="left">The maximum allowed age of the Input measurements. If an Input measurement is older than this period, the calculation is cancelled and the new value is not stored in the database. Consequently, if another controller has a Max Age set and cannot retrieve a current Math value, it will cease functioning. A PID controller, for instance, may stop regulating if there is no new Math value created, preventing the PID controller from continuing to run when it should not.</td>
+<tr>
+<td>Max Age (seconds)</td>
+<td>The maximum allowed age of the Input measurements. If an Input measurement is older than this period, the calculation is cancelled and the new value is not stored in the database. Consequently, if another controller has a Max Age set and cannot retrieve a current Math value, it will cease functioning. A PID controller, for instance, may stop regulating if there is no new Math value created, preventing the PID controller from continuing to run when it should not.</td>
 </tr>
-<tr class="even">
-<td align="left">Start Offset (seconds)</td>
-<td align="left">Wait this duration before attempting the first calculation/measurement.</td>
+<tr>
+<td>Start Offset (seconds)</td>
+<td>Wait this duration before attempting the first calculation/measurement.</td>
 </tr>
-<tr class="odd">
-<td align="left">Measurement</td>
-<td align="left">This is the condition being measured. For instance, if all of the selected measurements are temperature, this should also be temperature. A list of the pre-defined measurements that may be used is below.</td>
+<tr>
+<td>Measurement</td>
+<td>This is the condition being measured. For instance, if all of the selected measurements are temperature, this should also be temperature. A list of the pre-defined measurements that may be used is below.</td>
 </tr>
-<tr class="even">
-<td align="left">Units</td>
-<td align="left">This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.</td>
+<tr>
+<td>Units</td>
+<td>This is the units to display along with the measurement, on Graphs. If a pre-defined measurement is used, this field will default to the units associated with that measurement.</td>
 </tr>
-<tr class="odd">
-<td align="left">Reverse Equation</td>
-<td align="left">For Difference calculations, this will reverse the equation order, from <code>value_1 - value_2</code> to <code>value_2 - value_1</code>.</td>
+<tr>
+<td>Reverse Equation</td>
+<td>For Difference calculations, this will reverse the equation order, from <code>value_1 - value_2</code> to <code>value_2 - value_1</code>.</td>
 </tr>
-<tr class="even">
-<td align="left">Absolute Value</td>
-<td align="left">For Difference calculations, this will yield an absolute value (positive number).</td>
+<tr>
+<td>Absolute Value</td>
+<td>For Difference calculations, this will yield an absolute value (positive number).</td>
 </tr>
-<tr class="odd">
-<td align="left">Max Difference</td>
-<td align="left">If the difference between any selected Input is greater than this value, no new value will be stored in the database.</td>
+<tr>
+<td>Max Difference</td>
+<td>If the difference between any selected Input is greater than this value, no new value will be stored in the database.</td>
 </tr>
-<tr class="even">
-<td align="left">Dry-Bulb Temperature</td>
-<td align="left">The measurement that will serve as the dry-bulb temperature (this is the warmer of the two temperature measurements)</td>
+<tr>
+<td>Dry-Bulb Temperature</td>
+<td>The measurement that will serve as the dry-bulb temperature (this is the warmer of the two temperature measurements)</td>
 </tr>
-<tr class="odd">
-<td align="left">Wet-Bulb Temperature</td>
-<td align="left">The measurement that will serve as the wet-bulb temperature (this is the colder of the two temperature measurements)</td>
+<tr>
+<td>Wet-Bulb Temperature</td>
+<td>The measurement that will serve as the wet-bulb temperature (this is the colder of the two temperature measurements)</td>
 </tr>
-<tr class="even">
-<td align="left">Pressure</td>
-<td align="left">This is an optional pressure measurement that can be used to calculate the percent relative humidity. If disabled, a default 101325 Pa will be used in the calculation.</td>
+<tr>
+<td>Pressure</td>
+<td>This is an optional pressure measurement that can be used to calculate the percent relative humidity. If disabled, a default 101325 Pa will be used in the calculation.</td>
 </tr>
-<tr class="odd">
-<td align="left">Equation</td>
-<td align="left">An equation that will be solved with Python's eval() function. Let &quot;x&quot; represent the input value. Valid equation symbols include: + - * / ^</td>
+<tr>
+<td>Equation</td>
+<td>An equation that will be solved with Python's eval() function. Let &quot;x&quot; represent the input value. Valid equation symbols include: + - * / ^</td>
 </tr>
-<tr class="even">
-<td align="left">Order of Use</td>
-<td align="left">This is the order in which the selected Inputs will be used. This must be a comma separated list of Input IDs (integers, not UUIDs).</td>
+<tr>
+<td>Order of Use</td>
+<td>This is the order in which the selected Inputs will be used. This must be a comma separated list of Input IDs (integers, not UUIDs).</td>
 </tr>
 </tbody>
 </table>

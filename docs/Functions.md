@@ -15,102 +15,100 @@ PID settings may be changed while the PID is activated and the new settings will
 ### PID Controller Options
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Activate/Deactivate</td>
-<td align="left">Turn a particular PID controller on or off.</td>
+<tr>
+<td>Activate/Deactivate</td>
+<td>Turn a particular PID controller on or off.</td>
 </tr>
-<tr class="even">
-<td align="left">Pause</td>
-<td align="left">When paused, the control variable will not be updated and the PID will not turn on the associated outputs. Settings can be changed without losing current PID output values.</td>
+<tr>
+<td>Pause</td>
+<td>When paused, the control variable will not be updated and the PID will not turn on the associated outputs. Settings can be changed without losing current PID output values.</td>
 </tr>
-<tr class="odd">
-<td align="left">Hold</td>
-<td align="left">When held, the control variable will not be updated but the PID will turn on the associated outputs, Settings can be changed without losing current PID output values.</td>
+<tr>
+<td>Hold</td>
+<td>When held, the control variable will not be updated but the PID will turn on the associated outputs, Settings can be changed without losing current PID output values.</td>
 </tr>
-<tr class="even">
-<td align="left">Resume</td>
-<td align="left">Resume a PID controller from being held or paused.</td>
+<tr>
+<td>Resume</td>
+<td>Resume a PID controller from being held or paused.</td>
 </tr>
-<tr class="odd">
-<td align="left">Direction</td>
-<td align="left">This is the direction that you wish to regulate. For example, if you only require the temperature to be raised, set this to &quot;Up,&quot; but if you require regulation up and down, set this to &quot;Both.&quot;</td>
+<tr>
+<td>Direction</td>
+<td>This is the direction that you wish to regulate. For example, if you only require the temperature to be raised, set this to &quot;Up,&quot; but if you require regulation up and down, set this to &quot;Both.&quot;</td>
 </tr>
-<tr class="even">
-<td align="left">Period</td>
-<td align="left">This is the duration between when the PID acquires a measurement, the PID is updated, and the output is modulated.</td>
+<tr>
+<td>Period</td>
+<td>This is the duration between when the PID acquires a measurement, the PID is updated, and the output is modulated.</td>
 </tr>
-<tr class="odd">
-<td align="left">Start Offset (seconds)</td>
-<td align="left">Wait this duration before attempting the first calculation/measurement.</td>
+<tr>
+<td>Start Offset (seconds)</td>
+<td>Wait this duration before attempting the first calculation/measurement.</td>
 </tr>
-<tr class="even">
-<td align="left">Max Age</td>
-<td align="left">The time (in seconds) that the sensor measurement age is required to be less than. If the measurement is not younger than this age, the measurement is thrown out and the PID will not actuate the output. This is a safety measure to ensure the PID is only using recent measurements.</td>
+<tr>
+<td>Max Age</td>
+<td>The time (in seconds) that the sensor measurement age is required to be less than. If the measurement is not younger than this age, the measurement is thrown out and the PID will not actuate the output. This is a safety measure to ensure the PID is only using recent measurements.</td>
 </tr>
-<tr class="odd">
-<td align="left">Setpoint</td>
-<td align="left">This is the specific point you would like the environment to be regulated at. For example, if you would like the humidity regulated to 60%, enter 60.</td>
+<tr>
+<td>Setpoint</td>
+<td>This is the specific point you would like the environment to be regulated at. For example, if you would like the humidity regulated to 60%, enter 60.</td>
 </tr>
-<tr class="even">
-<td align="left">Band (+/- Setpoint)</td>
-<td align="left">Hysteresis option. If set to a non-0 value, the setpoint will become a band, which will be between the band_max=setpoint+band and band_min=setpoint-band. If Raising, the PID will raise above band_max, then wait until the condition falls below band_min to resume regulation. If Lowering, the PID will lower below band_min, then wait until the condition rises above band_max to resume regulating. If set to Both, regulation will only occur to the outside min and max of the band, and cease when within the band. Set to 0 to disable Hysteresis.</td>
+<tr>
+<td>Band (+/- Setpoint)</td>
+<td>Hysteresis option. If set to a non-0 value, the setpoint will become a band, which will be between the band_max=setpoint+band and band_min=setpoint-band. If Raising, the PID will raise above band_max, then wait until the condition falls below band_min to resume regulation. If Lowering, the PID will lower below band_min, then wait until the condition rises above band_max to resume regulating. If set to Both, regulation will only occur to the outside min and max of the band, and cease when within the band. Set to 0 to disable Hysteresis.</td>
 </tr>
-<tr class="odd">
-<td align="left">Store Lower as Negative</td>
-<td align="left">Checking this will store all output variables (PID and output duration/duty cycle) as a negative values in the measurement database. This is useful for displaying graphs that indicate whether the PID is currently lowering or raising. Disable this if you desire all positive values to be stored in the measurement database.</td>
+<tr>
+<td>Store Lower as Negative</td>
+<td>Checking this will store all output variables (PID and output duration/duty cycle) as a negative values in the measurement database. This is useful for displaying graphs that indicate whether the PID is currently lowering or raising. Disable this if you desire all positive values to be stored in the measurement database.</td>
 </tr>
-<tr class="even">
-<td align="left">K<sub>P</sub> Gain</td>
-<td align="left">Proportional coefficient (non-negative). Accounts for present values of the error. For example, if the error is large and positive, the control output will also be large and positive.</td>
+<tr>
+<td>K<sub>P</sub> Gain</td>
+<td>Proportional coefficient (non-negative). Accounts for present values of the error. For example, if the error is large and positive, the control output will also be large and positive.</td>
 </tr>
-<tr class="odd">
-<td align="left">K<sub>I</sub> Gain</td>
-<td align="left">Integral coefficient (non-negative). Accounts for past values of the error. For example, if the current output is not sufficiently strong, the integral of the error will accumulate over time, and the controller will respond by applying a stronger action.</td>
+<tr>
+<td>K<sub>I</sub> Gain</td>
+<td>Integral coefficient (non-negative). Accounts for past values of the error. For example, if the current output is not sufficiently strong, the integral of the error will accumulate over time, and the controller will respond by applying a stronger action.</td>
 </tr>
-<tr class="even">
-<td align="left">K<sub>D</sub> Gain</td>
-<td align="left">Derivative coefficient (non-negative). Accounts for predicted future values of the error, based on its current rate of change.</td>
+<tr>
+<td>K<sub>D</sub> Gain</td>
+<td>Derivative coefficient (non-negative). Accounts for predicted future values of the error, based on its current rate of change.</td>
 </tr>
-<tr class="odd">
-<td align="left">Integrator Min</td>
-<td align="left">The minimum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)</td>
+<tr>
+<td>Integrator Min</td>
+<td>The minimum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)</td>
 </tr>
-<tr class="even">
-<td align="left">Integrator Max</td>
-<td align="left">The maximum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)</td>
+<tr>
+<td>Integrator Max</td>
+<td>The maximum allowed integrator value, for calculating Ki_total: (Ki_total = Ki * integrator; and PID output = Kp_total + Ki_total + Kd_total)</td>
 </tr>
-<tr class="odd">
-<td align="left">Output (Raise/Lower)</td>
-<td align="left">This is the output that will cause the particular environmental condition to rise or lower. In the case of raising the temperature, this may be a heating pad or coil.</td>
+<tr>
+<td>Output (Raise/Lower)</td>
+<td>This is the output that will cause the particular environmental condition to rise or lower. In the case of raising the temperature, this may be a heating pad or coil.</td>
 </tr>
-<tr class="even">
-<td align="left">Min On Duration, Duty Cycle, or Amount (Raise/Lower)</td>
-<td align="left">This is the minimum value that the PID output must be before Output (Lower) turns on. If the PID output is less than this value, Duration Outputs will not turn on, and PWM Outputs will be turned off unless Always Min is enabled.</td>
+<tr>
+<td>Min On Duration, Duty Cycle, or Amount (Raise/Lower)</td>
+<td>This is the minimum value that the PID output must be before Output (Lower) turns on. If the PID output is less than this value, Duration Outputs will not turn on, and PWM Outputs will be turned off unless Always Min is enabled.</td>
 </tr>
-<tr class="odd">
-<td align="left">Max On Duration, Duty Cycle, or Amount (Raise/Lower)</td>
-<td align="left">This is the maximum duration, volume, or duty cycle the Output (Raise) can be set to. If the PID output is greater than this value, the Max value set here will be used.</td>
+<tr>
+<td>Max On Duration, Duty Cycle, or Amount (Raise/Lower)</td>
+<td>This is the maximum duration, volume, or duty cycle the Output (Raise) can be set to. If the PID output is greater than this value, the Max value set here will be used.</td>
 </tr>
-<tr class="even">
-<td align="left">Min Off Duration (Raise/Lower)</td>
-<td align="left">For On/Off (Duration) Outputs, this is the minimum amount of time the Output must have been off for before it is allowed to turn back on. Ths is useful for devices that can be damaged by rapid power cycling (e.g. fridges).</td>
+<tr>
+<td>Min Off Duration (Raise/Lower)</td>
+<td>For On/Off (Duration) Outputs, this is the minimum amount of time the Output must have been off for before it is allowed to turn back on. Ths is useful for devices that can be damaged by rapid power cycling (e.g. fridges).</td>
 </tr>
-<tr class="odd">
-<td align="left">Always Min (Raise/Lower)</td>
-<td align="left">For PWM Outputs only. If enabled, the duty cycle will never be set below the Min value.</td>
+<tr>
+<td>Always Min (Raise/Lower)</td>
+<td>For PWM Outputs only. If enabled, the duty cycle will never be set below the Min value.</td>
 </tr>
-<tr class="even">
-<td align="left">Setpoint Tracking Method</td>
-<td align="left">Set a method to change the setpoint over time.</td>
+<tr>
+<td>Setpoint Tracking Method</td>
+<td>Set a method to change the setpoint over time.</td>
 </tr>
 </tbody>
 </table>
@@ -196,22 +194,20 @@ Use the same configuration as the [Exact Temperature Regulation](Functions.md/#e
 The Autotune feature is useful for determining appropriate Kp, Ki, and Kd gains of a PID controller. The autotuner will manipulate an output and measure the response in the environment being measured by a sensor. It will take several cycles to determine the gains according to several rules. In order to use this feature, the PID controller must be properly configured, and a Noise Band and Outstep selected, then select "Start Autotune". The output of the autotuner will appear in the daemon log (`Config -> Mycodo Logs -> Daemon`). While the autotune is being performed, it is recommended to create a graph that includes the Input, Output, and PID Setpoint/Output in order to see what the PID Autotuner is doing and to notice any issues. If your autotune is taking a long time to complete, there may not be enough stability in the system being manipulated to calculate a reliable set of PID gains. This may be because there are too many disturbances to the system, or conditions are changing too rapidly to acquire consistent measurement oscillations. If this is the case, try modifying your system to reduce disturbances. Once the autotune successfully completes, disturbances may be reintroduced in order to further tune the PID controller to handle them.
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Noise Band</td>
-<td align="left">This is the amount above the setpoint the measured condition must reach before the output turns off. This is also how much below the setpoint the measured condition must fall before the output turns back on.</td>
+<tr>
+<td>Noise Band</td>
+<td>This is the amount above the setpoint the measured condition must reach before the output turns off. This is also how much below the setpoint the measured condition must fall before the output turns back on.</td>
 </tr>
-<tr class="even">
-<td align="left">Outstep</td>
-<td align="left">This is how many seconds the output will turn on every PID Period. For instance, to autotune with 50% power, ensure the Outstep is half the value of the PID Period.</td>
+<tr>
+<td>Outstep</td>
+<td>This is how many seconds the output will turn on every PID Period. For instance, to autotune with 50% power, ensure the Outstep is half the value of the PID Period.</td>
 </tr>
 </tbody>
 </table>
@@ -222,243 +218,237 @@ Typical graph output will look like this:
 
 And typical Daemon Log output will look like this:
 
-    2018-08-04 23:32:20,876 - mycodo.pid_3b533dff - INFO - Activated in 187.2 ms
-    2018-08-04 23:32:20,877 - mycodo.pid_autotune - INFO - PID Autotune started
-    2018-08-04 23:33:50,823 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:33:50,830 - mycodo.pid_autotune - INFO - Cycle: 19
-    2018-08-04 23:33:50,831 - mycodo.pid_autotune - INFO - switched state: relay step down
-    2018-08-04 23:33:50,832 - mycodo.pid_autotune - INFO - input: 32.52
-    2018-08-04 23:36:00,854 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:36:00,860 - mycodo.pid_autotune - INFO - Cycle: 45
-    2018-08-04 23:36:00,862 - mycodo.pid_autotune - INFO - found peak: 34.03
-    2018-08-04 23:36:00,863 - mycodo.pid_autotune - INFO - peak count: 1
-    2018-08-04 23:37:20,802 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:37:20,809 - mycodo.pid_autotune - INFO - Cycle: 61
-    2018-08-04 23:37:20,810 - mycodo.pid_autotune - INFO - switched state: relay step up
-    2018-08-04 23:37:20,811 - mycodo.pid_autotune - INFO - input: 31.28
-    2018-08-04 23:38:30,867 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:38:30,874 - mycodo.pid_autotune - INFO - Cycle: 75
-    2018-08-04 23:38:30,876 - mycodo.pid_autotune - INFO - found peak: 32.17
-    2018-08-04 23:38:30,878 - mycodo.pid_autotune - INFO - peak count: 2
-    2018-08-04 23:38:40,852 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:38:40,858 - mycodo.pid_autotune - INFO - Cycle: 77
-    2018-08-04 23:38:40,860 - mycodo.pid_autotune - INFO - switched state: relay step down
-    2018-08-04 23:38:40,861 - mycodo.pid_autotune - INFO - input: 32.85
-    2018-08-04 23:40:50,834 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:40:50,835 - mycodo.pid_autotune - INFO - Cycle: 103
-    2018-08-04 23:40:50,836 - mycodo.pid_autotune - INFO - found peak: 33.93
-    2018-08-04 23:40:50,836 - mycodo.pid_autotune - INFO - peak count: 3
-    2018-08-04 23:42:05,799 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:42:05,805 - mycodo.pid_autotune - INFO - Cycle: 118
-    2018-08-04 23:42:05,806 - mycodo.pid_autotune - INFO - switched state: relay step up
-    2018-08-04 23:42:05,807 - mycodo.pid_autotune - INFO - input: 31.27
-    2018-08-04 23:43:15,816 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:43:15,822 - mycodo.pid_autotune - INFO - Cycle: 132
-    2018-08-04 23:43:15,824 - mycodo.pid_autotune - INFO - found peak: 32.09
-    2018-08-04 23:43:15,825 - mycodo.pid_autotune - INFO - peak count: 4
-    2018-08-04 23:43:25,790 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:43:25,796 - mycodo.pid_autotune - INFO - Cycle: 134
-    2018-08-04 23:43:25,797 - mycodo.pid_autotune - INFO - switched state: relay step down
-    2018-08-04 23:43:25,798 - mycodo.pid_autotune - INFO - input: 32.76
-    2018-08-04 23:45:30,802 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:45:30,808 - mycodo.pid_autotune - INFO - Cycle: 159
-    2018-08-04 23:45:30,810 - mycodo.pid_autotune - INFO - found peak: 33.98
-    2018-08-04 23:45:30,811 - mycodo.pid_autotune - INFO - peak count: 5
-    2018-08-04 23:45:30,812 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:45:30,814 - mycodo.pid_autotune - INFO - amplitude: 0.9099999999999989
-    2018-08-04 23:45:30,815 - mycodo.pid_autotune - INFO - amplitude deviation: 0.06593406593406595
-    2018-08-04 23:46:40,851 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:46:40,857 - mycodo.pid_autotune - INFO - Cycle: 173
-    2018-08-04 23:46:40,858 - mycodo.pid_autotune - INFO - switched state: relay step up
-    2018-08-04 23:46:40,859 - mycodo.pid_autotune - INFO - input: 31.37
-    2018-08-04 23:47:55,860 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:47:55,866 - mycodo.pid_autotune - INFO - Cycle: 188
-    2018-08-04 23:47:55,868 - mycodo.pid_autotune - INFO - found peak: 32.36
-    2018-08-04 23:47:55,869 - mycodo.pid_autotune - INFO - peak count: 6
-    2018-08-04 23:47:55,870 - mycodo.pid_autotune - INFO -
-    2018-08-04 23:47:55,871 - mycodo.pid_autotune - INFO - amplitude: 0.9149999999999979
-    2018-08-04 23:47:55,872 - mycodo.pid_autotune - INFO - amplitude deviation: 0.032786885245900406
-    2018-08-04 23:47:55,873 - mycodo.pid_3b533dff - INFO - time:  16 min
-    2018-08-04 23:47:55,874 - mycodo.pid_3b533dff - INFO - state: succeeded
-    2018-08-04 23:47:55,874 - mycodo.pid_3b533dff - INFO -
-    2018-08-04 23:47:55,875 - mycodo.pid_3b533dff - INFO - rule: ziegler-nichols
-    2018-08-04 23:47:55,876 - mycodo.pid_3b533dff - INFO - Kp: 0.40927018474290117
-    2018-08-04 23:47:55,877 - mycodo.pid_3b533dff - INFO - Ki: 0.05846588600007114
-    2018-08-04 23:47:55,879 - mycodo.pid_3b533dff - INFO - Kd: 0.7162385434443115
-    2018-08-04 23:47:55,880 - mycodo.pid_3b533dff - INFO -
-    2018-08-04 23:47:55,881 - mycodo.pid_3b533dff - INFO - rule: tyreus-luyben
-    2018-08-04 23:47:55,887 - mycodo.pid_3b533dff - INFO - Kp: 0.3162542336649691
-    2018-08-04 23:47:55,889 - mycodo.pid_3b533dff - INFO - Ki: 0.010165091543194185
-    2018-08-04 23:47:55,890 - mycodo.pid_3b533dff - INFO - Kd: 0.7028026111719073
-    2018-08-04 23:47:55,891 - mycodo.pid_3b533dff - INFO -
-    2018-08-04 23:47:55,892 - mycodo.pid_3b533dff - INFO - rule: ciancone-marlin
-    2018-08-04 23:47:55,892 - mycodo.pid_3b533dff - INFO - Kp: 0.21083615577664605
-    2018-08-04 23:47:55,893 - mycodo.pid_3b533dff - INFO - Ki: 0.06626133746674728
-    2018-08-04 23:47:55,893 - mycodo.pid_3b533dff - INFO - Kd: 0.3644161687558038
-    2018-08-04 23:47:55,894 - mycodo.pid_3b533dff - INFO -
-    2018-08-04 23:47:55,894 - mycodo.pid_3b533dff - INFO - rule: pessen-integral
-    2018-08-04 23:47:55,895 - mycodo.pid_3b533dff - INFO - Kp: 0.49697093861638
-    2018-08-04 23:47:55,895 - mycodo.pid_3b533dff - INFO - Ki: 0.0887428626786794
-    2018-08-04 23:47:55,896 - mycodo.pid_3b533dff - INFO - Kd: 1.04627757151908
-    2018-08-04 23:47:55,896 - mycodo.pid_3b533dff - INFO -
-    2018-08-04 23:47:55,897 - mycodo.pid_3b533dff - INFO - rule: some-overshoot
-    2018-08-04 23:47:55,898 - mycodo.pid_3b533dff - INFO - Kp: 0.23191977135431066
-    2018-08-04 23:47:55,898 - mycodo.pid_3b533dff - INFO - Ki: 0.03313066873337365
-    2018-08-04 23:47:55,899 - mycodo.pid_3b533dff - INFO - Kd: 1.0823160212047374
-    2018-08-04 23:47:55,899 - mycodo.pid_3b533dff - INFO -
-    2018-08-04 23:47:55,900 - mycodo.pid_3b533dff - INFO - rule: no-overshoot
-    2018-08-04 23:47:55,900 - mycodo.pid_3b533dff - INFO - Kp: 0.1391518628125864
-    2018-08-04 23:47:55,901 - mycodo.pid_3b533dff - INFO - Ki: 0.01987840124002419
-    2018-08-04 23:47:55,901 - mycodo.pid_3b533dff - INFO - Kd: 0.6493896127228425
-    2018-08-04 23:47:55,902 - mycodo.pid_3b533dff - INFO -
-    2018-08-04 23:47:55,902 - mycodo.pid_3b533dff - INFO - rule: brewing
-    2018-08-04 23:47:55,903 - mycodo.pid_3b533dff - INFO - Kp: 5.566074512503456
-    2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Ki: 0.11927040744014512
-    2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Kd: 4.101408080354794
+```console
+2018-08-04 23:32:20,876 - mycodo.pid_3b533dff - INFO - Activated in 187.2 ms
+2018-08-04 23:32:20,877 - mycodo.pid_autotune - INFO - PID Autotune started
+2018-08-04 23:33:50,823 - mycodo.pid_autotune - INFO -
+2018-08-04 23:33:50,830 - mycodo.pid_autotune - INFO - Cycle: 19
+2018-08-04 23:33:50,831 - mycodo.pid_autotune - INFO - switched state: relay step down
+2018-08-04 23:33:50,832 - mycodo.pid_autotune - INFO - input: 32.52
+2018-08-04 23:36:00,854 - mycodo.pid_autotune - INFO -
+2018-08-04 23:36:00,860 - mycodo.pid_autotune - INFO - Cycle: 45
+2018-08-04 23:36:00,862 - mycodo.pid_autotune - INFO - found peak: 34.03
+2018-08-04 23:36:00,863 - mycodo.pid_autotune - INFO - peak count: 1
+2018-08-04 23:37:20,802 - mycodo.pid_autotune - INFO -
+2018-08-04 23:37:20,809 - mycodo.pid_autotune - INFO - Cycle: 61
+2018-08-04 23:37:20,810 - mycodo.pid_autotune - INFO - switched state: relay step up
+2018-08-04 23:37:20,811 - mycodo.pid_autotune - INFO - input: 31.28
+2018-08-04 23:38:30,867 - mycodo.pid_autotune - INFO -
+2018-08-04 23:38:30,874 - mycodo.pid_autotune - INFO - Cycle: 75
+2018-08-04 23:38:30,876 - mycodo.pid_autotune - INFO - found peak: 32.17
+2018-08-04 23:38:30,878 - mycodo.pid_autotune - INFO - peak count: 2
+2018-08-04 23:38:40,852 - mycodo.pid_autotune - INFO -
+2018-08-04 23:38:40,858 - mycodo.pid_autotune - INFO - Cycle: 77
+2018-08-04 23:38:40,860 - mycodo.pid_autotune - INFO - switched state: relay step down
+2018-08-04 23:38:40,861 - mycodo.pid_autotune - INFO - input: 32.85
+2018-08-04 23:40:50,834 - mycodo.pid_autotune - INFO -
+2018-08-04 23:40:50,835 - mycodo.pid_autotune - INFO - Cycle: 103
+2018-08-04 23:40:50,836 - mycodo.pid_autotune - INFO - found peak: 33.93
+2018-08-04 23:40:50,836 - mycodo.pid_autotune - INFO - peak count: 3
+2018-08-04 23:42:05,799 - mycodo.pid_autotune - INFO -
+2018-08-04 23:42:05,805 - mycodo.pid_autotune - INFO - Cycle: 118
+2018-08-04 23:42:05,806 - mycodo.pid_autotune - INFO - switched state: relay step up
+2018-08-04 23:42:05,807 - mycodo.pid_autotune - INFO - input: 31.27
+2018-08-04 23:43:15,816 - mycodo.pid_autotune - INFO -
+2018-08-04 23:43:15,822 - mycodo.pid_autotune - INFO - Cycle: 132
+2018-08-04 23:43:15,824 - mycodo.pid_autotune - INFO - found peak: 32.09
+2018-08-04 23:43:15,825 - mycodo.pid_autotune - INFO - peak count: 4
+2018-08-04 23:43:25,790 - mycodo.pid_autotune - INFO -
+2018-08-04 23:43:25,796 - mycodo.pid_autotune - INFO - Cycle: 134
+2018-08-04 23:43:25,797 - mycodo.pid_autotune - INFO - switched state: relay step down
+2018-08-04 23:43:25,798 - mycodo.pid_autotune - INFO - input: 32.76
+2018-08-04 23:45:30,802 - mycodo.pid_autotune - INFO -
+2018-08-04 23:45:30,808 - mycodo.pid_autotune - INFO - Cycle: 159
+2018-08-04 23:45:30,810 - mycodo.pid_autotune - INFO - found peak: 33.98
+2018-08-04 23:45:30,811 - mycodo.pid_autotune - INFO - peak count: 5
+2018-08-04 23:45:30,812 - mycodo.pid_autotune - INFO -
+2018-08-04 23:45:30,814 - mycodo.pid_autotune - INFO - amplitude: 0.9099999999999989
+2018-08-04 23:45:30,815 - mycodo.pid_autotune - INFO - amplitude deviation: 0.06593406593406595
+2018-08-04 23:46:40,851 - mycodo.pid_autotune - INFO -
+2018-08-04 23:46:40,857 - mycodo.pid_autotune - INFO - Cycle: 173
+2018-08-04 23:46:40,858 - mycodo.pid_autotune - INFO - switched state: relay step up
+2018-08-04 23:46:40,859 - mycodo.pid_autotune - INFO - input: 31.37
+2018-08-04 23:47:55,860 - mycodo.pid_autotune - INFO -
+2018-08-04 23:47:55,866 - mycodo.pid_autotune - INFO - Cycle: 188
+2018-08-04 23:47:55,868 - mycodo.pid_autotune - INFO - found peak: 32.36
+2018-08-04 23:47:55,869 - mycodo.pid_autotune - INFO - peak count: 6
+2018-08-04 23:47:55,870 - mycodo.pid_autotune - INFO -
+2018-08-04 23:47:55,871 - mycodo.pid_autotune - INFO - amplitude: 0.9149999999999979
+2018-08-04 23:47:55,872 - mycodo.pid_autotune - INFO - amplitude deviation: 0.032786885245900406
+2018-08-04 23:47:55,873 - mycodo.pid_3b533dff - INFO - time:  16 min
+2018-08-04 23:47:55,874 - mycodo.pid_3b533dff - INFO - state: succeeded
+2018-08-04 23:47:55,874 - mycodo.pid_3b533dff - INFO -
+2018-08-04 23:47:55,875 - mycodo.pid_3b533dff - INFO - rule: ziegler-nichols
+2018-08-04 23:47:55,876 - mycodo.pid_3b533dff - INFO - Kp: 0.40927018474290117
+2018-08-04 23:47:55,877 - mycodo.pid_3b533dff - INFO - Ki: 0.05846588600007114
+2018-08-04 23:47:55,879 - mycodo.pid_3b533dff - INFO - Kd: 0.7162385434443115
+2018-08-04 23:47:55,880 - mycodo.pid_3b533dff - INFO -
+2018-08-04 23:47:55,881 - mycodo.pid_3b533dff - INFO - rule: tyreus-luyben
+2018-08-04 23:47:55,887 - mycodo.pid_3b533dff - INFO - Kp: 0.3162542336649691
+2018-08-04 23:47:55,889 - mycodo.pid_3b533dff - INFO - Ki: 0.010165091543194185
+2018-08-04 23:47:55,890 - mycodo.pid_3b533dff - INFO - Kd: 0.7028026111719073
+2018-08-04 23:47:55,891 - mycodo.pid_3b533dff - INFO -
+2018-08-04 23:47:55,892 - mycodo.pid_3b533dff - INFO - rule: ciancone-marlin
+2018-08-04 23:47:55,892 - mycodo.pid_3b533dff - INFO - Kp: 0.21083615577664605
+2018-08-04 23:47:55,893 - mycodo.pid_3b533dff - INFO - Ki: 0.06626133746674728
+2018-08-04 23:47:55,893 - mycodo.pid_3b533dff - INFO - Kd: 0.3644161687558038
+2018-08-04 23:47:55,894 - mycodo.pid_3b533dff - INFO -
+2018-08-04 23:47:55,894 - mycodo.pid_3b533dff - INFO - rule: pessen-integral
+2018-08-04 23:47:55,895 - mycodo.pid_3b533dff - INFO - Kp: 0.49697093861638
+2018-08-04 23:47:55,895 - mycodo.pid_3b533dff - INFO - Ki: 0.0887428626786794
+2018-08-04 23:47:55,896 - mycodo.pid_3b533dff - INFO - Kd: 1.04627757151908
+2018-08-04 23:47:55,896 - mycodo.pid_3b533dff - INFO -
+2018-08-04 23:47:55,897 - mycodo.pid_3b533dff - INFO - rule: some-overshoot
+2018-08-04 23:47:55,898 - mycodo.pid_3b533dff - INFO - Kp: 0.23191977135431066
+2018-08-04 23:47:55,898 - mycodo.pid_3b533dff - INFO - Ki: 0.03313066873337365
+2018-08-04 23:47:55,899 - mycodo.pid_3b533dff - INFO - Kd: 1.0823160212047374
+2018-08-04 23:47:55,899 - mycodo.pid_3b533dff - INFO -
+2018-08-04 23:47:55,900 - mycodo.pid_3b533dff - INFO - rule: no-overshoot
+2018-08-04 23:47:55,900 - mycodo.pid_3b533dff - INFO - Kp: 0.1391518628125864
+2018-08-04 23:47:55,901 - mycodo.pid_3b533dff - INFO - Ki: 0.01987840124002419
+2018-08-04 23:47:55,901 - mycodo.pid_3b533dff - INFO - Kd: 0.6493896127228425
+2018-08-04 23:47:55,902 - mycodo.pid_3b533dff - INFO -
+2018-08-04 23:47:55,902 - mycodo.pid_3b533dff - INFO - rule: brewing
+2018-08-04 23:47:55,903 - mycodo.pid_3b533dff - INFO - Kp: 5.566074512503456
+2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Ki: 0.11927040744014512
+2018-08-04 23:47:55,904 - mycodo.pid_3b533dff - INFO - Kd: 4.101408080354794
+```
 
 ## Conditional
 
-Conditional controllers are used to perform certain actions based on whether a conditional statement is true, which is typically based on a measurement or GPIO state.
+Conditional controllers are used to perform certain [Actions](Functions.md/#function-actions) based a user-generated Conditional Statement.
 
 ### Conditional Options
 
-Check if the latest measurement is above or below the set value.
-
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Conditional Statement</td>
-<td align="left">The text string that includes device IDs enclosed in curly brackets ({}) that will be converted to the actual measurement before being evaluated by python to determine if it is True or False. If True, the associated actions will be executed.</td>
+<tr>
+<td>Conditional Statement</td>
+<td>User-created Python 3 code that will be executed.</td>
 </tr>
-<tr class="even">
-<td align="left">Period (seconds)</td>
-<td align="left">The period (seconds) between conditional checks.</td>
+<tr>
+<td>Period (seconds)</td>
+<td>The period (seconds) that the Conditional Statement will be executed.</td>
 </tr>
-<tr class="odd">
-<td align="left">Start Offset (seconds)</td>
-<td align="left">The duration (seconds) to wait before executing the Conditional for the first after it is activated.</td>
+<tr>
+<td>Start Offset (seconds)</td>
+<td>The duration (seconds) to wait before executing the Conditional for the first after it is activated.</td>
 </tr>
-<tr class="even">
-<td align="left">Log Level: Debug</td>
-<td align="left">Show debug lines in the daemon log.</td>
+<tr>
+<td>Log Level: Debug</td>
+<td>Show debug lines in the daemon log.</td>
 </tr>
-<tr class="odd">
-<td align="left">Message Includes Code</td>
-<td align="left">Include Conditional Statement code in the message that is passed to actions.</td>
+<tr>
+<td>Message Includes Code</td>
+<td>Include the Conditional Statement code in the message (self.message) that is passed to Actions.</td>
 </tr>
 </tbody>
 </table>
 
-Conditions are variables that can be used within the Conditional Statement.
+Conditions are functions that can be used within the Conditional Statement, and return specific information.
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Condition</th>
-<th align="left">Description</th>
+<th>Condition</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Measurement (Single, Last)</td>
-<td align="left">Acquires the latest measurement from an Input or device. Set Max Age (seconds) to restrict how long to accept values. If the latest value is older than this duration, &quot;None&quot; is returned.</td>
+<tr>
+<td>Measurement (Single, Last)</td>
+<td>Acquires the latest measurement from an Input or device. Set Max Age (seconds) to restrict how long to accept values. If the latest value is older than this duration, &quot;None&quot; is returned.</td>
 </tr>
-<tr class="even">
-<td align="left">Measurement (Single, Past, Average)</td>
-<td align="left">Acquires the past measurements from an Input or device, then averages them. Set Max Age (seconds) to restrict how long to accept values. If all values are older than this duration, &quot;None&quot; is returned.</td>
+<tr>
+<td>Measurement (Single, Past, Average)</td>
+<td>Acquires the past measurements from an Input or device, then averages them. Set Max Age (seconds) to restrict how long to accept values. If all values are older than this duration, &quot;None&quot; is returned.</td>
 </tr>
-<tr class="odd">
-<td align="left">Measurement (Single, Past, Sum)</td>
-<td align="left">Acquires the past measurements from an Input or device, then sums them. Set Max Age (seconds) to restrict how long to accept values. If all values are older than this duration, &quot;None&quot; is returned.</td>
+<tr>
+<td>Measurement (Single, Past, Sum)</td>
+<td>Acquires the past measurements from an Input or device, then sums them. Set Max Age (seconds) to restrict how long to accept values. If all values are older than this duration, &quot;None&quot; is returned.</td>
 </tr>
-<tr class="even">
-<td align="left">Measurement (Multiple, Past)</td>
-<td align="left">Acquires the past measurements from an Input or device. Set Max Age (seconds) to restrict how long to accept values. If no values are found in this duration, &quot;None&quot; is returned. This differs from the &quot;Measurement (Single)&quot; Condition because it returns a list of dictionaries with 'time' and 'value' key pairs.</td>
+<tr>
+<td>Measurement (Multiple, Past)</td>
+<td>Acquires the past measurements from an Input or device. Set Max Age (seconds) to restrict how long to accept values. If no values are found in this duration, &quot;None&quot; is returned. This differs from the &quot;Measurement (Single)&quot; Condition because it returns a list of dictionaries with 'time' and 'value' key pairs.</td>
 </tr>
-<tr class="odd">
-<td align="left">GPIO State</td>
-<td align="left">Acquires the current GPIO state and returns 1 if HIGH or 0 if LOW. If the latest value is older than this duration, &quot;None&quot; is returned.</td>
+<tr>
+<td>GPIO State</td>
+<td>Acquires the current GPIO state and returns 1 if HIGH or 0 if LOW. If the latest value is older than this duration, &quot;None&quot; is returned.</td>
 </tr>
-<tr class="even">
-<td align="left">Output State</td>
-<td align="left">Returns 'on' if the output is currently on, and 'off' if it's currently off.</td>
+<tr>
+<td>Output State</td>
+<td>Returns 'on' if the output is currently on, and 'off' if it's currently off.</td>
 </tr>
-<tr class="odd">
-<td align="left">Output Duration On</td>
-<td align="left">Returns how long the output has currently been on, in seconds. Returns 0 if off.</td>
+<tr>
+<td>Output Duration On</td>
+<td>Returns how long the output has currently been on, in seconds. Returns 0 if off.</td>
 </tr>
-<tr class="even">
-<td align="left">Controller Running</td>
-<td align="left">Returns True if the controller is active, False if inactive.</td>
+<tr>
+<td>Controller Running</td>
+<td>Returns True if the controller is active, False if inactive.</td>
 </tr>
-<tr class="odd">
-<td align="left">Max Age (seconds)</td>
-<td align="left">The minimum age (seconds) the measurement can be. If the last measurement is older than this, &quot;None&quot; will be returned instead of a measurement.</td>
+<tr>
+<td>Max Age (seconds)</td>
+<td>The minimum age (seconds) the measurement can be. If the last measurement is older than this, &quot;None&quot; will be returned instead of a measurement.</td>
 </tr>
 </tbody>
 </table>
 
 ### Conditional Setup Guide
 
-Python 3 is the environment that these conditionals will be executed. The following functions can be used within your code.
+Python 3 is the environment that these conditionals will be executed. The following functions can be used within your Conditional Statement code.
 
 !!! note
-    Indentation must use 4 spaces (not 2 spaces, tabs, or other).
+    Python code indentations must use 4 spaces (not 2 spaces, tabs, or anything else).
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Function</th>
-<th align="left">Description</th>
+<th>Function</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">self.condition(&quot;{ID}&quot;)</td>
-<td align="left">Returns a measurement for the Condition with ID.</td>
+<tr>
+<td>self.condition(&quot;{ID}&quot;)</td>
+<td>Returns a measurement for the Condition with ID.</td>
 </tr>
-<tr class="even">
-<td align="left">self.condition_dict(&quot;{ID }&quot;)</td>
-<td align="left">Returns a dictionary of measurement for the Condition with ID.</td>
+<tr>
+<td>self.condition_dict(&quot;{ID}&quot;)</td>
+<td>Returns a dictionary of measurement for the Condition with ID.</td>
 </tr>
-<tr class="odd">
-<td align="left">self.run_action(&quot;{ID}&quot;)</td>
-<td align="left">Executes the Action with ID.</td>
+<tr>
+<td>self.run_action(&quot;{ID}&quot;)</td>
+<td>Executes the Action with ID.</td>
 </tr>
-<tr class="even">
-<td align="left">self.run_all_actions()</td>
-<td align="left">Executes all actions.</td>
+<tr>
+<td>self.run_all_actions()</td>
+<td>Executes all actions.</td>
 </tr>
-<tr class="odd">
-<td align="left">self.logger.info()</td>
-<td align="left">Writes a log line to the daemon log. 'info' may also be changed to 'error' or 'debug'.</td>
+<tr>
+<td>self.logger.info()</td>
+<td>Writes a log line to the Daemon log. "info" may also be changed to "warning", "error" or "debug". Debug log lines will only appear in the Daemon log when Logging Level: Debug is enabled for the Input.</td>
 </tr>
 </tbody>
 </table>
 
 There are additional functions that can be used, but these must use the full UUID (not an abridged version as the functions above). See /home/pi/Mycodo/mycodo/mycodo_client.py for the functions available for use. These may be accessed via the 'control' object. An example, below, will return how long the output has been on (or 0 if it's currently off):
 
-`output_on_seconds = control.output_sec_currently_on('1b6ada50-1e69-403a-9fa6-ec748b16dc23')`
+`output_on_seconds = control.output_sec_currently_on("1b6ada50-1e69-403a-9fa6-ec748b16dc23")`
 
 Since the Python code contained in the Conditional Statement must be formatted properly, it's best to familiarize yourself with the [basics of Python](https://realpython.com/python-conditional-statements/).
 
 !!! note
-    There are two different IDs in use here, one set of IDs are for the measurements, under the `Conditions` section of the Conditional, and one set of IDs are for the Actions, under the `Actions` section of the Conditional. Read all of this section, including the examples, below, to fully understand how to configure a conditional properly.
+    There are two different IDs in use here, one set of IDs are found under the `Conditions` section of the Conditional Controller, and one set of IDs are found under the `Actions` section of the Conditional Controller. Read all of this section, including the examples, below, to fully understand how to properly set up a Conditional Controller.
 
 !!! info
-    If a measurement hasn't been acquired within the Max Age that is set, "None" will be returned when self.condition("{ID}") is called in the code. It is very important that you account for this. All examples below incorporate a test for the measurement being None, and this should not be removed. If an error occurs (such as if the statement resolves to comparing None to a numerical value, such as "if None < 23"), then the code will stop there and an error will be logged in the daemon log. Accounting for None is useful for determining if an Input is no longer acquiring measurements (e.g. dead sensor, malfunction, etc.).
+    If a measurement hasn't been acquired within the set `Max Age`, "None" will be returned when self.condition("{ID}") is called in the code. It is very important that you account for this. All examples below incorporate a test for the measurement being None, and this should not be removed. If an error occurs (such as if the statement resolves to comparing None to a numerical value, such as "if None < 23"), then the code will stop there and an error will be logged in the daemon log. Accounting for None is useful for determining if an Input is no longer acquiring measurements (e.g. dead sensor, malfunction, etc.).
 
 To create a basic conditional, follow these steps, using the numbers in the screenshots, below, that correspond to the numbers in parentheses:
 
@@ -475,25 +465,28 @@ To create a basic conditional, follow these steps, using the numbers in the scre
 If your `Conditional Statement` has been formatted correctly, your Conditional will save and it will be ready to activate. If an error is returned, your options will not have been saved. Inspect the error for which line is causing the issue and read the error message itself to try to understand what the problem is and how to fix it. There are an unfathomable number of ways to configure a Conditional, but this should hopefully get you started to developing one that suits your needs.
 
 !!! note
-    Mycodo is constantly changing, so the screenshots below may not match what you see exactly. Be sure to read this entire section of the manual to understand how to use Conditionals.
+    Mycodo is constantly changing, so the screenshots below may not match what you see exactly. Be sure to read this entire section of the manual to understand how to use Conditional Controllers.
 
 ![Figure-Mycodo-Conditional-Setup](images/Figure-Mycodo-Conditional-Setup.png)
 
-Simple `Conditional Statement` examples:
+Beginner `Conditional Statement` examples:
 
-Each self.condition("{ID}") will return the most recent measurement obtained from that particular measurement under the `Conditions` section of the Conditional, as long as it's within the set Max Age.
+Each self.condition("{ID}") will return the most recent measurement obtained from that particular measurement under the `Conditions` section of the Conditional Controller, as long as it's within the set Max Age.
 
 ```python
-# Example 1, no measurement, useful to notify by email when an Input stops working
+# Example 1, no measurement (i.e. None) returned
+# useful with the Email Notify Action to email when an Input stops working
 if self.condition("{asdf1234}") is None:
-    self.run_all_actions()
+    self.run_all_actions()  # Execute all configured actions
 
-# Example 2, test two measurements
+# Example 2, test two measurement conditions
 measure_1 = self.condition("{asdf1234}")
 measure_2 = self.condition("{hjkl5678}")
 if None not in [measure_1, measure_2]:
+    # If neither measurement is None (both are working)
     if measure_1 < 20 and measure_2 > 10:
-        self.run_all_actions()
+        # If measure_1 is less than 20 and measure_2 is greater than 10
+        self.run_all_actions()  # Execute all configured actions
 
 # Example 3, test two measurements and sum of measurements
 measure_1 = self.condition("{asdf1234}")
@@ -505,10 +498,11 @@ if None not in [measure_1, measure_2]:
 
 # Example 4, combine into one conditional
 measurement = self.condition("{asdf1234}")
-if measurement != None and 20 < measurement < 30:
+if measurement != None and 20 < measurement < 30:  # combine conditions
     self.run_all_actions()
 
-# Example 5, test two measurements and convert Edge Input from 0 or 1 to True or False
+# Example 5, test two measurements
+# convert Edge Input from 0 or 1 to True or False
 measure_1 = self.condition("{asdf1234}")
 measure_2 = self.condition("{hjkl5678}")
 if None not in [measure_1, measure_2]:
@@ -522,7 +516,7 @@ if None not in [measure_1, measure_2]:
     if measure_1 > 20 or int(round(measure_2)) in [20, 21, 22]:
         self.run_all_actions()
 
-# Example 7, use self to store variables
+# Example 7, use self to store variables across multiple executions
 measurement = self.condition("{asdf1234}")
 if not hasattr(self, "stored_measurement"):  # Initialize variable
     self.stored_measurement = measurement
@@ -532,21 +526,23 @@ if measurement is not None:
     self.stored_measurement = measurement  # Store measurement
 ```
 
-"Measurement (Multiple)" is useful if you need to check if a particular value has been stored in any of the past measurements (within the set Max Age), not just the last measurement. This is useful if you have an alert system that each numerical value represents a different alert that you need to check each past value if it occurred. Here is an example that retrieves all measurements from the past 30 minutes and checks if each measurement value is equal to "119". If "119" exists, the Actions are executed and `break` is used to exit the `for` loop. each_measure['time'] may also be used to retrieve the timestamp for the particular measurement.
+The "Measurement (Multiple)" Condition is useful if you desire to check if a particular value has been stored in any of the past measurements (within the set Max Age), not just the last measurement. This is useful if you have an alert system that each numerical value represents a different alert that you need to check each past value if it occurred. Here is an example that retrieves all measurements from the past 30 minutes and checks if any of the measurements in the returned list is equal to "119". If "119" exists, the Actions are executed and `break` is used to exit the `for` loop.
 
 ```python
-# Example 1, find a particular measurement in the past 30 minutes (set Max Age to 1800 seconds)
+# Example 1, find a measurement in the past 30 minutes (Max Age: 1800 seconds)
 measurements = self.condition_dict("{asdf1234}")
-if measurements:
-    for each_measure in measurements:
+if measurements:  # If the list is not empty
+    for each_measure in measurements:  # Loop through each measurement in the list
         if each_measure['value'] == 119:
+            self.logger.info("Alert 119 found at timestamp {time}".format(
+                time=each_measure['time']))
             self.run_all_actions()
-            break
+            break  # Exit the for loop
 ```
 
 Advanced `Conditional Statement` examples:
 
-These examples expand on the simple examples, above, by activating specific actions. The following examples will reference actions with IDs that can be found under the `Actions` section of the Conditional. Two example action ID will be used: "qwer1234" and "uiop5678". Additionally, self.run_all_actions() is used here, which will run all actions in the order in which they appear in the Actions section of the Conditional.
+These examples expand on the beginner examples, above, by activating specific actions. The following examples will reference actions with IDs that can be found under the `Actions` section of the Conditional Controller. Two example action IDs will be used: "qwer1234" and "uiop5678". Additionally, self.run_all_actions() is used here, which will run all actions in the order in which they were created.
 
 ```python
 # Example 1
@@ -581,7 +577,7 @@ measurement = self.condition("{asdf1234}")
 if measurement != None and 20 < measurement < 30:
     self.run_action("{uiop5678}")
 
-# Example 5, test two measurements and convert Edge Input from 0 or 1 to True or False
+# Example 5, test two measurements, convert Edge Input from 0/1 to True/False
 measure_1 = self.condition("{asdf1234}")
 measure_2 = self.condition("{hjkl5678}")
 if None not in [measure_1, measure_2]:
@@ -598,7 +594,7 @@ if None not in [measure_1, measure_2]:
             self.run_action("{uiop5678}")
 ```
 
-If your action is a type that receives a message (E-Mail or Note), you can modify this message to include extra information before it is added to the Note or E-Mail. To do this, append a string to the variable `self.message` and add this to the `message` parameter of self.run_action() or self.run_all_actions(). Below are some examples. Note the use of "+=" instead of "=", which appends the string to the variable `self.message`.
+If your Action is a type that receives a message (E-Mail or Note), you can modify this message to include extra information before it is passed to the function (so the new information is passed to the Note, E-Mail, etc.). To do this, append a string to the variable `self.message` and add this to the `message` parameter of self.run_action() or self.run_all_actions(). Below are some examples. Note the use of "+=" instead of "=", which appends the string to the variable `self.message` instead of overwriting it.
 
 ```python
 # Example 1
@@ -612,11 +608,12 @@ measure_1 = self.measure("{asdf1234}")
 measure_2 = self.measure("{hjkl5678}")
 if None not in [measure_1, measure_2]:
     if measure_1 < 20 and measure_2 > 10:
-        self.message += "Measurement 1: {m1}, Measurement 2: {m2}".format(m1=measure_1, m2=measure_2)
+        self.message += "Measurement 1: {m1}, Measurement 2: {m2}".format(
+            m1=measure_1, m2=measure_2)
         self.run_all_actions(message=self.message)
 ```
 
-Logging can also be used to log messages to the daemon log using `self.logger`:
+Logging can also be used to log messages to the daemon log using `self.logger`. Logging levels include "info", "warning", "error" and "debug". Debug log lines will only appear in the Daemon log when Logging Level: Debug is enabled for the Input.
 
 ```python
 # Example 1
@@ -631,33 +628,31 @@ Before activating any conditionals, it's advised to thoroughly explore all possi
 
 ## Trigger
 
-A Trigger Controller will execute actions when events are triggered, such as an output turning on or off, a GPIO pin changing it's voltage state, or timed events, including various timers (duration, time period, time point, etc), or the sunrise or sunset time at a specific latitude and longitude. One the trigger is defined, add any number of [Actions](Functions.md/#function-actions) to be executed when that event is triggered.
+A Trigger Controller will execute actions when events are triggered, such as an output turning on or off, a GPIO pin changing it's voltage state (Edge detection, rising or falling), timed events that include various timers (duration, time period, time point, etc), or the sunrise/sunset time at a specific latitude and longitude. Once the trigger is configured, add any number of [Actions](Functions.md/#function-actions) to be executed when that event is triggered.
 
 ### Output (On/Off) Options
 
 Monitor the state of an output.
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">If Output</td>
-<td align="left">The Output to monitor for a change of state.</td>
+<tr>
+<td>If Output</td>
+<td>The Output to monitor for a change of state.</td>
 </tr>
-<tr class="even">
-<td align="left">If State</td>
-<td align="left">If the state of the output changes to On or Off the conditional will trigger. If &quot;On (any duration) is selected, th trigger will occur no matter how long the output turns on for, whereas if only &quot;On&quot; is selected, the conditional will trigger only when the output turns on for a duration of time equal to the set &quot;Duration (seconds)&quot;.</td>
+<tr>
+<td>If State</td>
+<td>If the state of the output changes to On or Off the conditional will trigger. If &quot;On (any duration) is selected, th trigger will occur no matter how long the output turns on for, whereas if only &quot;On&quot; is selected, the conditional will trigger only when the output turns on for a duration of time equal to the set &quot;Duration (seconds)&quot;.</td>
 </tr>
-<tr class="odd">
-<td align="left">If Duration (seconds)</td>
-<td align="left">If &quot;On&quot; is selected, an optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.</td>
+<tr>
+<td>If Duration (seconds)</td>
+<td>If &quot;On&quot; is selected, an optional duration (seconds) may be set that will trigger the conditional only if the Output is turned on for this specific duration.</td>
 </tr>
 </tbody>
 </table>
@@ -667,26 +662,24 @@ Monitor the state of an output.
 Monitor the state of a PWM output.
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">If Output</td>
-<td align="left">The Output to monitor for a change of state.</td>
+<tr>
+<td>If Output</td>
+<td>The Output to monitor for a change of state.</td>
 </tr>
-<tr class="even">
-<td align="left">If State</td>
-<td align="left">If the duty cycle of the output is greater than,less than, or equal to the set value, trigger the Conditional Actions.</td>
+<tr>
+<td>If State</td>
+<td>If the duty cycle of the output is greater than,less than, or equal to the set value, trigger the Conditional Actions.</td>
 </tr>
-<tr class="odd">
-<td align="left">If Duty Cycle (%)</td>
-<td align="left">The duty cycle for the Output to be checked against.</td>
+<tr>
+<td>If Duty Cycle (%)</td>
+<td>The duty cycle for the Output to be checked against.</td>
 </tr>
 </tbody>
 </table>
@@ -696,18 +689,16 @@ Monitor the state of a PWM output.
 Monitor the state of a pin for a rising and/or falling edge.
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">If Edge Detected</td>
-<td align="left">The conditional will be triggered if a change in state is detected, either Rising when the state changes from LOW (0 volts) to HIGH (3.5 volts) or Falling when the state changes from HIGH (3.3 volts) to LOW (0 volts), or Both (Rising and Falling).</td>
+<tr>
+<td>If Edge Detected</td>
+<td>The conditional will be triggered if a change in state is detected, either Rising when the state changes from LOW (0 volts) to HIGH (3.5 volts) or Falling when the state changes from HIGH (3.3 volts) to LOW (0 volts), or Both (Rising and Falling).</td>
 </tr>
 </tbody>
 </table>
@@ -717,34 +708,32 @@ Monitor the state of a pin for a rising and/or falling edge.
 Select a Duration Method and this will set the selected PWM Output to the duty cycle specified by the method.
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Duration Method</td>
-<td align="left">Select which Method to use.</td>
+<tr>
+<td>Duration Method</td>
+<td>Select which Method to use.</td>
 </tr>
-<tr class="even">
-<td align="left">PWM Output</td>
-<td align="left">Select which PWM Output to use.</td>
+<tr>
+<td>PWM Output</td>
+<td>Select which PWM Output to use.</td>
 </tr>
-<tr class="odd">
-<td align="left">Period (seconds)</td>
-<td align="left">Select the interval of time to calculate the duty cycle, then apply to the PWM Output.</td>
+<tr>
+<td>Period (seconds)</td>
+<td>Select the interval of time to calculate the duty cycle, then apply to the PWM Output.</td>
 </tr>
-<tr class="even">
-<td align="left">Trigger Every Period</td>
-<td align="left">Trigger Conditional Actions every period.</td>
+<tr>
+<td>Trigger Every Period</td>
+<td>Trigger Conditional Actions every period.</td>
 </tr>
-<tr class="odd">
-<td align="left">Trigger when Activated</td>
-<td align="left">Trigger Conditional Actions when the Conditional is activated.</td>
+<tr>
+<td>Trigger when Activated</td>
+<td>Trigger Conditional Actions when the Conditional is activated.</td>
 </tr>
 </tbody>
 </table>
@@ -754,38 +743,36 @@ Select a Duration Method and this will set the selected PWM Output to the duty c
 Trigger events at sunrise or sunset (or a time offset of those), based on latitude and longitude.
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Rise or Set</td>
-<td align="left">Select which to trigger the conditional, at sunrise or sunset.</td>
+<tr>
+<td>Rise or Set</td>
+<td>Select which to trigger the conditional, at sunrise or sunset.</td>
 </tr>
-<tr class="even">
-<td align="left">Latitude (decimal)</td>
-<td align="left">Latitude of the sunrise/sunset, using decimal format.</td>
+<tr>
+<td>Latitude (decimal)</td>
+<td>Latitude of the sunrise/sunset, using decimal format.</td>
 </tr>
-<tr class="odd">
-<td align="left">Longitude (decimal)</td>
-<td align="left">Longitude of the sunrise/sunset, using decimal format.</td>
+<tr>
+<td>Longitude (decimal)</td>
+<td>Longitude of the sunrise/sunset, using decimal format.</td>
 </tr>
-<tr class="even">
-<td align="left">Zenith</td>
-<td align="left">The Zenith angle of the sun.</td>
+<tr>
+<td>Zenith</td>
+<td>The Zenith angle of the sun.</td>
 </tr>
-<tr class="odd">
-<td align="left">Date Offset (days)</td>
-<td align="left">Set a sunrise/sunset offset in days (positive or negative).</td>
+<tr>
+<td>Date Offset (days)</td>
+<td>Set a sunrise/sunset offset in days (positive or negative).</td>
 </tr>
-<tr class="even">
-<td align="left">Time Offset (minutes)</td>
-<td align="left">Set a sunrise/sunset offset in minutes (positive or negative).</td>
+<tr>
+<td>Time Offset (minutes)</td>
+<td>Set a sunrise/sunset offset in minutes (positive or negative).</td>
 </tr>
 </tbody>
 </table>
@@ -795,22 +782,20 @@ Trigger events at sunrise or sunset (or a time offset of those), based on latitu
 Run a timer that triggers Conditional Actions every period.
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Period (seconds)</td>
-<td align="left">The period of time between triggering Conditional Actions.</td>
+<tr>
+<td>Period (seconds)</td>
+<td>The period of time between triggering Conditional Actions.</td>
 </tr>
-<tr class="even">
-<td align="left">Start Offset (seconds)</td>
-<td align="left">Set this to start the first trigger a number of seconds after the Conditional is activated.</td>
+<tr>
+<td>Start Offset (seconds)</td>
+<td>Set this to start the first trigger a number of seconds after the Conditional is activated.</td>
 </tr>
 </tbody>
 </table>
@@ -819,19 +804,17 @@ Run a timer that triggers Conditional Actions every period.
 
 Run a timer that triggers Conditional Actions at a specific time every day.
 
-<table>
-<col width="40%" />
-<col width="59%" />
+<table
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Start Time (HH:MM)</td>
-<td align="left">Set the time to trigger Conditional Actions, in the format &quot;HH:MM&quot;, with HH denoting hours, and MM denoting minutes. Time is in 24-hour format.</td>
+<tr>
+<td>Start Time (HH:MM)</td>
+<td>Set the time to trigger Conditional Actions, in the format &quot;HH:MM&quot;, with HH denoting hours, and MM denoting minutes. Time is in 24-hour format.</td>
 </tr>
 </tbody>
 </table>
@@ -843,127 +826,123 @@ Run a timer that triggers Conditional Actions at a specific period if it's betwe
 This may be useful, for instance, if you desire an Output to remain on during a particular time period and you want to prevent power outages from interrupting the cycle (which a simple Time Point Timer could not prevent against because it only triggers once at the Start Time). By setting an Output to turn the lights on every few minutes during the Start -> End period, it ensured the Output remains on during this period.
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Start Time (HH:MM)</td>
-<td align="left">Set the start time to trigger Conditional Actions, in the format &quot;HH:MM&quot;, with HH denoting hours, and MM denoting minutes. Time is in 24-hour format.</td>
+<tr>
+<td>Start Time (HH:MM)</td>
+<td>Set the start time to trigger Conditional Actions, in the format &quot;HH:MM&quot;, with HH denoting hours, and MM denoting minutes. Time is in 24-hour format.</td>
 </tr>
-<tr class="even">
-<td align="left">End Time (HH:MM)</td>
-<td align="left">Set the end time to trigger Conditional Actions, in the format &quot;HH:MM&quot;, with HH denoting hours, and MM denoting minutes. Time is in 24-hour format.</td>
+<tr>
+<td>End Time (HH:MM)</td>
+<td>Set the end time to trigger Conditional Actions, in the format &quot;HH:MM&quot;, with HH denoting hours, and MM denoting minutes. Time is in 24-hour format.</td>
 </tr>
-<tr class="odd">
-<td align="left">Period (seconds)</td>
-<td align="left">The period of time between triggering Conditional Actions.</td>
+<tr>
+<td>Period (seconds)</td>
+<td>The period of time between triggering Conditional Actions.</td>
 </tr>
 </tbody>
 </table>
 
 ## Function Actions
 
-These are the actions that can be added to Function controllers (i.e. Conditional, Trigger).
+These are the actions that can be added to Controllers (i.e. Conditional, Trigger).
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Actions: Pause</td>
-<td align="left">Pause executing actions for a duration of time (seconds).</td>
+<tr>
+<td>Actions: Pause</td>
+<td>Pause executing actions for a duration of time (seconds).</td>
 </tr>
-<tr class="even">
-<td align="left">Camera: Capture Photo</td>
-<td align="left">Capture a photo with the selected camera.</td>
+<tr>
+<td>Camera: Capture Photo</td>
+<td>Capture a photo with the selected camera.</td>
 </tr>
-<tr class="odd">
-<td align="left">Create Note</td>
-<td align="left">Create a note containing the conditional statement and actions, using a particular tag.</td>
+<tr>
+<td>Create Note</td>
+<td>Create a note containing the conditional statement and actions, using a particular tag.</td>
 </tr>
-<tr class="even">
-<td align="left">Controller: Activate</td>
-<td align="left">Activate a particular controller.</td>
+<tr>
+<td>Controller: Activate</td>
+<td>Activate a particular controller.</td>
 </tr>
-<tr class="odd">
-<td align="left">Controller: Deactivate</td>
-<td align="left">Deactivate a particular controller.</td>
+<tr>
+<td>Controller: Deactivate</td>
+<td>Deactivate a particular controller.</td>
 </tr>
-<tr class="even">
-<td align="left">E-Mail</td>
-<td align="left">Send an email containing the conditional statement and actions.</td>
+<tr>
+<td>E-Mail</td>
+<td>Send an email containing the conditional statement and actions.</td>
 </tr>
-<tr class="odd">
-<td align="left">E-Mail with Photo Attachment</td>
-<td align="left">Send an email containing the conditional statement, actions, and captured photo.</td>
+<tr>
+<td>E-Mail with Photo Attachment</td>
+<td>Send an email containing the conditional statement, actions, and captured photo.</td>
 </tr>
-<tr class="even">
-<td align="left">E-Mail with Video Attachment</td>
-<td align="left">Send an email containing the conditional statement, actions, and captured video.</td>
+<tr>
+<td>E-Mail with Video Attachment</td>
+<td>Send an email containing the conditional statement, actions, and captured video.</td>
 </tr>
-<tr class="odd">
-<td align="left">Execute Command</td>
-<td align="left">Execute a command in the linux shell (as user 'root').</td>
+<tr>
+<td>Execute Command</td>
+<td>Execute a command in the linux shell (as user 'root').</td>
 </tr>
-<tr class="even">
-<td align="left">Infrared Remote Send</td>
-<td align="left">Send an infrared signal. See <a href="#infrared-remote">Infrared Remote</a> for details.</td>
+<tr>
+<td>Infrared Remote Send</td>
+<td>Send an infrared signal.</td>
 </tr>
-<tr class="odd">
-<td align="left">LCD: Backlight</td>
-<td align="left">Turn the LCD backlight on or off. Note: Only some LCDs are supported.</td>
+<tr>
+<td>LCD: Backlight</td>
+<td>Turn the LCD backlight on or off. Note: Only some LCDs are supported.</td>
 </tr>
-<tr class="even">
-<td align="left">LCD: Flash</td>
-<td align="left">Start of stop the LCD flashing to indicate an alert. Note: Only some LCDs are supported.</td>
+<tr>
+<td>LCD: Flash</td>
+<td>Start of stop the LCD flashing to indicate an alert. Note: Only some LCDs are supported.</td>
 </tr>
-<tr class="odd">
-<td align="left">Output: Duration</td>
-<td align="left">Turn a output on, off, or on for a duration of time.</td>
+<tr>
+<td>Output: Duration</td>
+<td>Turn a output on, off, or on for a duration of time.</td>
 </tr>
-<tr class="even">
-<td align="left">Output: Duty Cycle</td>
-<td align="left">Turn a PWM output off or on for a duty cycle.</td>
+<tr>
+<td>Output: Duty Cycle</td>
+<td>Turn a PWM output off or on for a duty cycle.</td>
 </tr>
-<tr class="odd">
-<td align="left">PID: Pause</td>
-<td align="left">Pause a particular PID controller.</td>
+<tr>
+<td>PID: Pause</td>
+<td>Pause a particular PID controller.</td>
 </tr>
-<tr class="even">
-<td align="left">PID: Hold</td>
-<td align="left">Hold a particular PID controller.</td>
+<tr>
+<td>PID: Hold</td>
+<td>Hold a particular PID controller.</td>
 </tr>
-<tr class="odd">
-<td align="left">PID: Resume</td>
-<td align="left">Resume a particular PID controller.</td>
+<tr>
+<td>PID: Resume</td>
+<td>Resume a particular PID controller.</td>
 </tr>
-<tr class="even">
-<td align="left">PID: Set Method</td>
-<td align="left">Set the Method of a particular PID controller.</td>
+<tr>
+<td>PID: Set Method</td>
+<td>Set the Method of a particular PID controller.</td>
 </tr>
-<tr class="odd">
-<td align="left">PID: Set Setpoint</td>
-<td align="left">Set the Setpoint of a particular PID controller.</td>
+<tr>
+<td>PID: Set Setpoint</td>
+<td>Set the Setpoint of a particular PID controller.</td>
 </tr>
-<tr class="even">
-<td align="left">System: Restart</td>
-<td align="left">Restart the System.</td>
+<tr>
+<td>System: Restart</td>
+<td>Restart the System.</td>
 </tr>
-<tr class="odd">
-<td align="left">System: Shutdown</td>
-<td align="left">Shutdown the System.</td>
+<tr>
+<td>System: Shutdown</td>
+<td>Shutdown the System.</td>
 </tr>
 </tbody>
 </table>

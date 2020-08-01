@@ -1,4 +1,4 @@
-`More -> Export Import`
+Page\: `More -> Export Import`
 
 Measurements that fall within the selected date/time frame may be exported as CSV with their corresponding timestamps.
 

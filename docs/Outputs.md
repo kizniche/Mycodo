@@ -1,120 +1,118 @@
-`Setup -> Output`
+Page\: `Setup -> Output`
 
 Outputs are various signals that can be generated that operate devices. An output can be a HIGH/LOW signal on a GPIO pin, a pulse-width modulated (PWM) signal, a 315/433 MHz signal to switch a radio frequency-operated relay, driving of pumps and motors, or an execution of a linux or Python command, to name a few.
 
 ## Custom Outputs
 
-There is a Custom Output import system in Mycodo that allows user-created Outputs to be created an used in the Mycodo system. Custom Outputs can be uploaded and imported from the `Configure -> Outputs` page. After import, they will be available to use on the `Setup -> Output` page.
+There is a Custom Output import system in Mycodo that allows user-created Outputs to be created an used in the Mycodo system. Custom Outputs can be uploaded and imported from the `[Gear Icon] -> Configure -> Outputs` page. After import, they will be available to use on the `Setup -> Output` page.
 
-If you desire an Output that is not currently supported by Mycodo, you can build your own Output module and import it into Mycodo. All information about an Output is contained within the Output module. Open any of the built-in modules located in the [outputs directory](https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/) for examples of the proper formatting. There's also a [minimal output module template as an example](https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/examples/example_dummy_output.py). For Outputs that require new measurements/units, they can be added on the `Configure -> Measurements` page.
+If you desire an Output that is not currently supported by Mycodo, you can build your own Output module and import it into Mycodo. All information about an Output is contained within the Output module. Open any of the built-in modules located in the [outputs directory](https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/) for examples of the proper formatting. There's also a [minimal output module template as an example](https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/examples/example_dummy_output.py). For Outputs that require new measurements/units, they can be added on the `[Gear Icon] -> Configure -> Measurements` page.
 
 ## Output Options
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Pin (GPIO)</td>
-<td align="left">This is the GPIO that will be the signal to the output, using BCM numbering.</td>
+<tr>
+<td>Pin (GPIO)</td>
+<td>This is the GPIO that will be the signal to the output, using BCM numbering.</td>
 </tr>
-<tr class="even">
-<td align="left">WiringPi Pin</td>
-<td align="left">This is the GPIO that will be the signal to the output, using WiringPi numbering.</td>
+<tr>
+<td>WiringPi Pin</td>
+<td>This is the GPIO that will be the signal to the output, using WiringPi numbering.</td>
 </tr>
-<tr class="odd">
-<td align="left">On State</td>
-<td align="left">This is the state of the GPIO to signal the output to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you output completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.</td>
+<tr>
+<td>On State</td>
+<td>This is the state of the GPIO to signal the output to turn the device on. HIGH will send a 3.3-volt signal and LOW will send a 0-volt signal. If you output completes the circuit (and the device powers on) when a 3.3-volt signal is sent, then set this to HIGH. If the device powers when a 0-volt signal is sent, set this to LOW.</td>
 </tr>
-<tr class="even">
-<td align="left">Protocol</td>
-<td align="left">This is the protocol to use to transmit via 315/433 MHz. Default is 1, but if this doesn't work, increment the number.</td>
+<tr>
+<td>Protocol</td>
+<td>This is the protocol to use to transmit via 315/433 MHz. Default is 1, but if this doesn't work, increment the number.</td>
 </tr>
-<tr class="odd">
-<td align="left">UART Device</td>
-<td align="left">The UART device connected to the device.</td>
+<tr>
+<td>UART Device</td>
+<td>The UART device connected to the device.</td>
 </tr>
-<tr class="even">
-<td align="left">Baud Rate</td>
-<td align="left">The baud rate of the UART device.</td>
+<tr>
+<td>Baud Rate</td>
+<td>The baud rate of the UART device.</td>
 </tr>
-<tr class="odd">
-<td align="left">I2C Address</td>
-<td align="left">The I2C address of the device.</td>
+<tr>
+<td>I2C Address</td>
+<td>The I2C address of the device.</td>
 </tr>
-<tr class="even">
-<td align="left">I2C Bus</td>
-<td align="left">The I2C bus the device is connected to.</td>
+<tr>
+<td>I2C Bus</td>
+<td>The I2C bus the device is connected to.</td>
 </tr>
-<tr class="odd">
-<td align="left">Output Mode</td>
-<td align="left">The Output mode, if supported.</td>
+<tr>
+<td>Output Mode</td>
+<td>The Output mode, if supported.</td>
 </tr>
-<tr class="even">
-<td align="left">Flow Rate</td>
-<td align="left">The flow rate to dispense the volume (ml/min).</td>
+<tr>
+<td>Flow Rate</td>
+<td>The flow rate to dispense the volume (ml/min).</td>
 </tr>
-<tr class="odd">
-<td align="left">Pulse Length</td>
-<td align="left">This is the pulse length to transmit via 315/433 MHz. Default is 189 ms.</td>
+<tr>
+<td>Pulse Length</td>
+<td>This is the pulse length to transmit via 315/433 MHz. Default is 189 ms.</td>
 </tr>
-<tr class="even">
-<td align="left">Bit Length</td>
-<td align="left">This is the bit length to transmit via 315/433 MHz. Default is 24-bit.</td>
+<tr>
+<td>Bit Length</td>
+<td>This is the bit length to transmit via 315/433 MHz. Default is 24-bit.</td>
 </tr>
-<tr class="odd">
-<td align="left">Execute as User</td>
-<td align="left">Select which user executes Linux Commands.</td>
+<tr>
+<td>Execute as User</td>
+<td>Select which user executes Linux Commands.</td>
 </tr>
-<tr class="even">
-<td align="left">On Command</td>
-<td align="left">This is the command used to turn the output on. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
+<tr>
+<td>On Command</td>
+<td>This is the command used to turn the output on. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
 </tr>
-<tr class="odd">
-<td align="left">Off Command</td>
-<td align="left">This is the command used to turn the output off. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
+<tr>
+<td>Off Command</td>
+<td>This is the command used to turn the output off. For wireless relays, this is the numerical command to be transmitted, and for command outputs this is the command to be executed. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
 </tr>
-<tr class="even">
-<td align="left">Force Command</td>
-<td align="left">If an Output is already on, enabling this option will allow the On command to be executed rather than returning &quot;Output is already On&quot;.</td>
+<tr>
+<td>Force Command</td>
+<td>If an Output is already on, enabling this option will allow the On command to be executed rather than returning &quot;Output is already On&quot;.</td>
 </tr>
-<tr class="odd">
-<td align="left">PWM Command</td>
-<td align="left">This is the command used to set the duty cycle. The string &quot;((duty_cycle))&quot; in the command will be replaced with the actual duty cycle before the command is executed. Ensure &quot;((duty_cycle))&quot; is included in your command for this feature to work correctly. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
+<tr>
+<td>PWM Command</td>
+<td>This is the command used to set the duty cycle. The string &quot;((duty_cycle))&quot; in the command will be replaced with the actual duty cycle before the command is executed. Ensure &quot;((duty_cycle))&quot; is included in your command for this feature to work correctly. Commands may be for the linux terminal or Python 3 (depending on which output type selected).</td>
 </tr>
-<tr class="even">
-<td align="left">Current Draw (amps)</td>
-<td align="left">The is the amount of current the device powered by the output draws. Note: this value should be calculated based on the voltage set in the <a href="#energy-usage-settings">Energy Usage Settings</a>.</td>
+<tr>
+<td>Current Draw (amps)</td>
+<td>The is the amount of current the device powered by the output draws. Note: this value should be calculated based on the voltage set in the <a href="#energy-usage-settings">Energy Usage Settings</a>.</td>
 </tr>
-<tr class="odd">
-<td align="left">Startup State</td>
-<td align="left">This specifies whether the output should be ON or OFF when mycodo initially starts. Some outputs have an additional options.</td>
+<tr>
+<td>Startup State</td>
+<td>This specifies whether the output should be ON or OFF when mycodo initially starts. Some outputs have an additional options.</td>
 </tr>
-<tr class="even">
-<td align="left">Startup Value</td>
-<td align="left">If the Startup State is set to User Set Value (such as for PWM Outputs), then this value will be set when Mycodo starts up.</td>
+<tr>
+<td>Startup Value</td>
+<td>If the Startup State is set to User Set Value (such as for PWM Outputs), then this value will be set when Mycodo starts up.</td>
 </tr>
-<tr class="odd">
-<td align="left">Shutdown State</td>
-<td align="left">This specifies whether the output should be ON or OFF when mycodo initially shuts down. Some outputs have an additional options.</td>
+<tr>
+<td>Shutdown State</td>
+<td>This specifies whether the output should be ON or OFF when mycodo initially shuts down. Some outputs have an additional options.</td>
 </tr>
-<tr class="even">
-<td align="left">Shutdown Value</td>
-<td align="left">If the Shutdown State is set to User Set Value (such as for PWM Outputs), then this value will be set when Mycodo shuts down.</td>
+<tr>
+<td>Shutdown Value</td>
+<td>If the Shutdown State is set to User Set Value (such as for PWM Outputs), then this value will be set when Mycodo shuts down.</td>
 </tr>
-<tr class="odd">
-<td align="left">Trigger at Startup</td>
-<td align="left">Select to enable triggering Functions (such as Output Triggers) when Mycodo starts and if Start State is set to ON.</td>
+<tr>
+<td>Trigger at Startup</td>
+<td>Select to enable triggering Functions (such as Output Triggers) when Mycodo starts and if Start State is set to ON.</td>
 </tr>
-<tr class="even">
-<td align="left">Seconds to turn On</td>
-<td align="left">This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.</td>
+<tr>
+<td>Seconds to turn On</td>
+<td>This is a way to turn a output on for a specific duration of time. This can be useful for testing the outputs and powered devices or the measured effects a device may have on an environmental condition.</td>
 </tr>
 </tbody>
 </table>
@@ -142,34 +140,32 @@ The term duty cycle describes the proportion of 'on' time to the regular interva
 ## Pulse-Width Modulation (PWM) Options
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Library</td>
-<td align="left">Select the method for producing the PWM signal. Hardware pins can produce up to a 30 MHz PWM signal, while any other (non-hardware PWM) pin can produce up to a 40 kHz PWM signal. See the table, below, for the hardware pins on various Pi boards.</td>
+<tr>
+<td>Library</td>
+<td>Select the method for producing the PWM signal. Hardware pins can produce up to a 30 MHz PWM signal, while any other (non-hardware PWM) pin can produce up to a 40 kHz PWM signal. See the table, below, for the hardware pins on various Pi boards.</td>
 </tr>
-<tr class="even">
-<td align="left">Pin (GPIO)</td>
-<td align="left">This is the GPIO pin that will output the PWM signal, using BCM numbering.</td>
+<tr>
+<td>Pin (GPIO)</td>
+<td>This is the GPIO pin that will output the PWM signal, using BCM numbering.</td>
 </tr>
-<tr class="odd">
-<td align="left">Frequency (Hertz)</td>
-<td align="left">This is frequency of the PWM signal.</td>
+<tr>
+<td>Frequency (Hertz)</td>
+<td>This is frequency of the PWM signal.</td>
 </tr>
-<tr class="even">
-<td align="left">Invert Signal</td>
-<td align="left">Send an inverted duty cycle to the output controller.</td>
+<tr>
+<td>Invert Signal</td>
+<td>Send an inverted duty cycle to the output controller.</td>
 </tr>
-<tr class="odd">
-<td align="left">Duty Cycle</td>
-<td align="left">This is the proportion of the time on to the time off, expressed in percent (0 -100).</td>
+<tr>
+<td>Duty Cycle</td>
+<td>This is the proportion of the time on to the time off, expressed in percent (0 -100).</td>
 </tr>
 </tbody>
 </table>
@@ -183,61 +179,58 @@ When using non-hardware PWM pins, there are only certain frequencies that can be
 The exact frequency may be set when using hardware PWM pins. The same PWM channel is available on multiple GPIO. The latest frequency and duty cycle setting will be used by all GPIO pins which share a PWM channel.
 
 <table>
-<col width="29%" />
-<col width="29%" />
-<col width="41%" />
 <thead>
 <tr class="header">
-<th align="left">BCM Pin</th>
-<th align="left">PWM Channel</th>
-<th align="left">Raspberry Pi Version</th>
+<th>BCM Pin</th>
+<th>PWM Channel</th>
+<th>Raspberry Pi Version</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">12</td>
-<td align="left">0</td>
-<td align="left">All models except A and B</td>
+<tr>
+<td>12</td>
+<td>0</td>
+<td>All models except A and B</td>
 </tr>
-<tr class="even">
-<td align="left">13</td>
-<td align="left">1</td>
-<td align="left">All models except A and B</td>
+<tr>
+<td>13</td>
+<td>1</td>
+<td>All models except A and B</td>
 </tr>
-<tr class="odd">
-<td align="left">18</td>
-<td align="left">0</td>
-<td align="left">All models</td>
+<tr>
+<td>18</td>
+<td>0</td>
+<td>All models</td>
 </tr>
-<tr class="even">
-<td align="left">19</td>
-<td align="left">1</td>
-<td align="left">All models except A and B</td>
+<tr>
+<td>19</td>
+<td>1</td>
+<td>All models except A and B</td>
 </tr>
-<tr class="odd">
-<td align="left">40</td>
-<td align="left">0</td>
-<td align="left">Compute module only</td>
+<tr>
+<td>40</td>
+<td>0</td>
+<td>Compute module only</td>
 </tr>
-<tr class="even">
-<td align="left">41</td>
-<td align="left">1</td>
-<td align="left">Compute module only</td>
+<tr>
+<td>41</td>
+<td>1</td>
+<td>Compute module only</td>
 </tr>
-<tr class="odd">
-<td align="left">45</td>
-<td align="left">1</td>
-<td align="left">Compute module only</td>
+<tr>
+<td>45</td>
+<td>1</td>
+<td>Compute module only</td>
 </tr>
-<tr class="even">
-<td align="left">52</td>
-<td align="left">0</td>
-<td align="left">Compute module only</td>
+<tr>
+<td>52</td>
+<td>0</td>
+<td>Compute module only</td>
 </tr>
-<tr class="odd">
-<td align="left">53</td>
-<td align="left">1</td>
-<td align="left">Compute module only</td>
+<tr>
+<td>53</td>
+<td>1</td>
+<td>Compute module only</td>
 </tr>
 </tbody>
 </table>
@@ -285,30 +278,28 @@ The Atlas Scientific peristaltic pump is a peristaltic pump and microcontroller 
 ### Peristaltic Pump Options
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Output Mode</td>
-<td align="left">&quot;Fastest low Rate&quot; will pump liquid at the fastest rate the pump can perform. &quot;Specify Flow Rate&quot; will pump liquid at the rate set by the &quot;Flow Rate (ml/min)&quot; option.</td>
+<tr>
+<td>Output Mode</td>
+<td>&quot;Fastest low Rate&quot; will pump liquid at the fastest rate the pump can perform. &quot;Specify Flow Rate&quot; will pump liquid at the rate set by the &quot;Flow Rate (ml/min)&quot; option.</td>
 </tr>
-<tr class="even">
-<td align="left">Flow Rate (ml/min)</td>
-<td align="left">This is how fast liquid will be pumped if the &quot;Specify Flow Rate&quot; option is selected for the Output Mode option.</td>
+<tr>
+<td>Flow Rate (ml/min)</td>
+<td>This is how fast liquid will be pumped if the &quot;Specify Flow Rate&quot; option is selected for the Output Mode option.</td>
 </tr>
-<tr class="odd">
-<td align="left">Fastest Rate (ml/min)</td>
-<td align="left">This is the rate at which the pump dispenses liquid, in ml/min.</td>
+<tr>
+<td>Fastest Rate (ml/min)</td>
+<td>This is the rate at which the pump dispenses liquid, in ml/min.</td>
 </tr>
-<tr class="even">
-<td align="left">Minimum On (sec/min)</td>
-<td align="left">This is the minimum duration (seconds) the pump should be turned on for every 60 second period of pumping. This option is only used when Specify Flow Rate is selected as the output Mode.</td>
+<tr>
+<td>Minimum On (sec/min)</td>
+<td>This is the minimum duration (seconds) the pump should be turned on for every 60 second period of pumping. This option is only used when Specify Flow Rate is selected as the output Mode.</td>
 </tr>
 </tbody>
 </table>

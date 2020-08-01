@@ -1,4 +1,7 @@
-An analog to digital converter (ADC) allows the use of any analog sensor that outputs a variable voltage. A [voltage divider](https://learn.sparkfun.com/tutorials/voltage-dividers) may be necessary to attain your desired range.
+An analog-to-digital converter (ADC) allows the measurement of an analog voltage.
+
+!!! note
+    A [voltage divider](https://learn.sparkfun.com/tutorials/voltage-dividers) may be necessary to convert your source voltage to an acceptable range for the ADC.
 
 -   ADS1x15: Analog-to-digital converter [link](https://www.adafruit.com/product/1085)
 -   ADS1256: Analog-to-digital converter [link](http://www.ti.com/product/ADS1256)

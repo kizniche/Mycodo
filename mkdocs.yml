@@ -53,9 +53,7 @@ nav:
     - Notes.md
     - Camera.md
     - Energy Usage: Energy-Usage.md
-  - Translations.md
-  - Troubleshooting.md
-  - Devices:
+  - Supported Devices:
     - Input Devices: Input-Devices.md
     - Output Devices: Output-Devices.md
     - I2C Multiplexers: I2C-Multiplexers.md
@@ -69,3 +67,6 @@ nav:
     - Upgrade/Backup/Restore: Upgrade-Backup-Restore.md
     - Export/Import: Export-Import.md
     - Mycodo Client: Mycodo-Client.md
+    - API.md
+  - Troubleshooting.md
+  - Translations.md

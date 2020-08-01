@@ -1,4 +1,4 @@
-`More -> Energy Usage`
+Page\: `More -> Energy Usage`
 
 There are two methods for calculating energy usage. The first relies on determining how long Outputs have been on. Based on this, if the number of Amps the output draws has been set in the output Settings, then the kWh and cost can be calculated. Discovering the number of amps the device draws can be accomplished by calculating this from the output typically given as watts on the device label, or with the use of a current clamp while the device is operating. The limitation of this method is PWM Outputs are not currently used to calculate these figures due to the difficulty determining the current consumption of devices driven by PWM signals.
 
@@ -11,18 +11,16 @@ The second method for calculating energy consumption is more accurate and is the
 The following settings are for calculating energy usage from an amp measurement. For calculating based on Output duration, see [Energy Usage Settings](Configuration-Settings.md/#energy-usage-settings).
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Select Amp Measurement</td>
-<td align="left">This is a measurement with the amp (A) units that will be used to calculate energy usage.</td>
+<tr>
+<td>Select Amp Measurement</td>
+<td>This is a measurement with the amp (A) units that will be used to calculate energy usage.</td>
 </tr>
 </tbody>
 </table>

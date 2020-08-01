@@ -1,10 +1,10 @@
 ## I2C Information
 
-The I2C interface should be enabled with `raspi-config`.
+The I2C interface should be enabled with `raspi-config` or from the `[Gear Icon] -> Configure -> Raspberry Pi` page.
 
 ## 1-Wire Information
 
-The 1-wire interface should be configured with [these instructions](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing).
+The 1-Wire interface should be enabled with `raspi-config` or from the `[Gear Icon] -> Configure -> Raspberry Pi` page.
 
 ## UART Information
 
@@ -18,6 +18,6 @@ Run raspi-config
 
 Go to `Advanced Options -> Serial` and disable. Then edit `/boot/config.txt`
 
-`sudo vi /boot/config.txt`
+`sudo nano /boot/config.txt`
 
 Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.

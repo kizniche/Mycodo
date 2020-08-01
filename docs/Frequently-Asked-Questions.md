@@ -1,4 +1,4 @@
-Here are a few frequently asked questions about Mycodo. There is also an [Question & Answer Forum](https://kylegabriel.com/forum/questions-answers-mycodo) that you can pose a question. However, do ensure it's relevant to the topic by reading the [stickied Q&A Post](https://kylegabriel.com/forum/questions-answers-mycodo/when-should-you-post-in-this-forum) to determine if it may be better suited for the [General Discussion Forum](https://kylegabriel.com/forum/general-discussion).
+Here are a few frequently asked questions about Mycodo. There is also an [Question & Answer Forum](https://kylegabriel.com/forum/questions-answers-mycodo) that you can post new questions. However, to ensure it's relevant to the topic, read the [stickied Q&A Post](https://kylegabriel.com/forum/questions-answers-mycodo/when-should-you-post-in-this-forum) to determine if it may be better suited for the [General Discussion Forum](https://kylegabriel.com/forum/general-discussion).
 
 --------------
 
@@ -8,11 +8,17 @@ First, read though this manual to make sure you understand how the system works 
 
 --------------
 
-*How do I add an Input (like a sensor) or an Output (like a water pump), or custom functions (to do my bidding) to the system if they're not currently supported?*
+*Can I communicate with Mycodo from the command line?*
 
-Yes, Mycodo supports adding custom Inputs, Outputs, and Controllers. See the [Custom Inputs](Inputs.md/#custom-inputs), [Custom Outputs](Outputs.md/#custom-outputs), and [Custom Controllers](Functions.md/#custom-controllers) sections for more information.
+Yes, there is a [REST API](API.md) as well as the [Mycodo Client](Mycodo-Client.md).
 
-Another way to add an Input is to create a bash or Python script that obtains and returns a numerical value when executed from the linux command line on the Raspberry Pi. This script may be configured to be executed by a "Linux Command" Input. The Input will periodically execute the command and store the returned measurement value to the database for use with the rest of the Mycodo system.
+--------------
+
+*Can I add a new Input, Output, or custom functions to the system if they're not currently supported?*
+
+Yes, Mycodo supports importing [Custom Inputs](Inputs.md/#custom-inputs), [Custom Outputs](Outputs.md/#custom-outputs), and [Custom Controllers](Functions.md/#custom-controllers).
+
+Another way to add an Input is to create a bash or Python script that obtains and returns a numerical value when executed from the linux command line on the Raspberry Pi. This script may be configured to be executed by the "Linux Command" or "Python Code" Inputs. These Inputs will periodically execute the command(s) and store the returned measurement(s) to the database for use with the rest of the Mycodo system.
 
 --------------
 
@@ -22,28 +28,18 @@ Here is how I generally set up Mycodo to monitor and regulate:
 
 1.  Determine what environmental condition you want to measure or regulate. Consider the devices that must be coupled to achieve this. For instance, temperature regulation would require a temperature sensor input and an electric heater (or cooler) output.
 2.  Determine what relays you will need to control power to your electric devices. The Raspberry Pi is capable of directly switching relays (using a controllable 3.3-volt signal from the Pi's GPIO pins). Remember to select a relay that can handle the electrical current load from your switched device and won't exceed the maximum current draw from the Raspberry Pi GPIO pin the relay is connected to.
-3.  See the [Input Devices](Input-Devices) section for information about supported inputs. Acquire sensor(s) and relay(s) and connect them to the Raspberry Pi according to the manufacturer’s instructions. For instance, a sensor that communicates via the I2C bus will connect the SDA, SCL, Power, and Ground pins of the sensor to the SDA, SCL, 3.3 volt, and Ground pins of the Raspberry Pi. Make sure to enable the I2C interface under ``Configure -> Raspberry Pi``. Additionally, the simplest way to connect a relay is to connect the controlling side of the relay to a GPIO pin and Ground of the Raspberry Pi (remember to select a relay that will not exceed the current limitation of the GPIO pin). Some relays require the proper polarity for the controlling voltage, so refer to the manufacturer's datasheet to determine if this is the case.
+3.  See the [Input Devices](Input-Devices) section for information about supported inputs. Acquire sensor(s) and relay(s) and connect them to the Raspberry Pi according to the manufacturer’s instructions. For instance, a sensor that communicates via the I2C bus will connect the SDA, SCL, Power, and Ground pins of the sensor to the SDA, SCL, 3.3 volt, and Ground pins of the Raspberry Pi. Make sure to enable the I2C interface under `[Gear Icon] -> Configure -> Raspberry Pi`. Additionally, the simplest way to connect a relay is to connect the controlling side of the relay to a GPIO pin and Ground of the Raspberry Pi (remember to select a relay that will not exceed the current limitation of the GPIO pin). Some relays require the proper polarity for the controlling voltage, so refer to the manufacturer's datasheet to determine if this is the case.
 4.  On the ``Setup -> Data`` page, add a new input using the drop-down menu. Configure the input with the correct communication pins and other options. Activate the input to begin recording measurements to the Mycodo measurement database.
 5.  Go to the ``Data -> Live`` page to ensure there are measurements being acquired from the input.
 6.  On the ``Setup -> Output`` page, add an On/Off GPIO Output and configure the GPIO pin that's connected to the relay, whether the relay switches On when the signal is HIGH or LOW, and what state (On or Off) to set the relay when Mycodo starts. There are a number of other Outputs to choose from, but this is the most basic to start with, that will simply switch the GPIO pin HIGH (3.3 volts) or LOW (0 volts) to switch the relay that's connected to the pin.
 7.  Connect your device to the relay. This can be dont a number of ways, and will depend on a number of factors, including whether you're using DC or AC voltage, whether there are screw terminals or a connector/socket, etc. In the simplest scenario, AC mains voltage can be applied by cutting the live wire and connecting each of the newly-cut ends to each of the terminals on the switching side fo the relay. This enables the relay to short/connect or break/disconnect the connection, which will power and depower your device.
 8.  Test the Output by switching it On and Off (or generating a PWM signal if it's a PWM Output) from the ``Setup -> Output`` page and make sure the device connected to the relay turns On when you select "On", and Off when you select "Off".
 9.  On the ``Setup -> Function`` page, create a PID controller with the appropriate input measurement, output, and other parameters. Activate the PID controller.
-10. On the ``Data -> Dashboard`` page, create a graph that includes the input measurement, the output, and the PID output and setpoint. This provides a good visualization for tuning the PID. See [Quick Setup Examples](Functions/#quick-setup-examples) for a greater detail of this process and tuning tips.
+10. On the ``Data -> Dashboard`` page, create a graph that includes the input measurement, the output, and the PID output and setpoint. This provides a good visualization for tuning the PID. See [Quick Setup Examples](Functions.md/#quick-setup-examples) for a greater detail of this process and tuning tips.
 
 --------------
 
-*Can I communicate with Mycodo from the command line?*
-
-Yes, ~/Mycodo/mycodo/mycodo_client.py has this functionality, but there's a lot to be desired. See [Mycodo Client](Mycodo-Client.md).
- 
- !!! note
-     This may not be the most current list of commands, so it's recommended to execute ``mycodo-client --help`` to see a full list of current options.
-
---------------
-
-*Can I variably-control the speed of motors or other devices with the
-PWM output signal from the PID?*
+*Can I variably-control the speed of motors or other devices with the PWM output signal from the PID?*
 
 Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, [AC modulation circuitry](Outputs.md/#schematics-for-ac-modulation), [DC modulation circuitry](Outputs.md/#schematics-for-dc-fan-control), or something else.
 

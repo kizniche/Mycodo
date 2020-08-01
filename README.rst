@@ -5,8 +5,7 @@ Environmental Regulation System
 
 Latest version: 8.6.4
 
-Mycodo is open source software for the Raspberry Pi that couples inputs
-and outputs in interesting ways to sense and manipulate the environment.
+Mycodo is open source software for the Raspberry Pi that couples inputs and outputs in interesting ways to sense and manipulate the environment.
 
 |Build Status| |Codacy Badge| |DOI|
 
@@ -107,9 +106,7 @@ Mycodo has been tested to work with Raspberry Pi OS Lite (2020-05-27), and also 
 Install
 ~~~~~~~
 
-Once you have the Raspberry Pi booted into the Raspberry Pi OS with an internet
-connection, run the following command in a terminal to initiate the
-Mycodo install:
+Once you have the Raspberry Pi booted into the Raspberry Pi OS with an internet connection, run the following command in a terminal to initiate the Mycodo install:
 
 .. code:: bash
 
@@ -119,29 +116,13 @@ Mycodo install:
 Install Notes
 ~~~~~~~~~~~~~
 
-Make sure the install script finishes without errors. A log of the
-output will be created at ``~/Mycodo/install/setup.log``.
+Make sure the install script finishes without errors. A log of the output will be created at ``~/Mycodo/install/setup.log``.
 
-If the install is successful, the web user interface should be
-accessible by navigating a web browser to ``https://127.0.0.1/``,
-replacing ``127.0.0.1`` with your Raspberry Pi's IP address. Upon your first visit, you will be prompted to create an admin user before being redirected to the login page. Once logged in, check
-that the time is correct at the top left of the page. Incorrect time can cause a number of issues with measurement storage and retrieval, among others. Also ensure the host name and version number at the top left of the page is
-green, indicating the daemon is running. Red indicates the
-daemon is inactive or unresponsive. Last, ensure any java-blocking plugins of your browser are
-disabled for all parts of the web interface to function properly.
+If the install is successful, the web user interface should be accessible by navigating a web browser to ``https://127.0.0.1/``, replacing ``127.0.0.1`` with your Raspberry Pi's IP address. Upon your first visit, you will be prompted to create an admin user before being redirected to the login page. Once logged in, check that the time is correct at the top left of the page. Incorrect time can cause a number of issues with measurement storage and retrieval, among others. Also ensure the host name and version number at the top left of the page is green, indicating the daemon is running. Red indicates the daemon is inactive or unresponsive. Last, ensure any java-blocking plugins of your browser are disabled for all parts of the web interface to function properly.
 
-If you receive an error during the install that you believe is preventing your system from operating, please `create
-an issue <https://github.com/kizniche/Mycodo/issues>`__ with the install log attached. If you would first like to attempt to
-diagnose the issue yourself, see `Diagnosing Issues <#diagnosing-issues>`__.
+If you receive an error during the install that you believe is preventing your system from operating, please `create an issue <https://github.com/kizniche/Mycodo/issues>`__ with the install log attached. If you would first like to attempt to diagnose the issue yourself, see `Diagnosing Issues <#diagnosing-issues>`__.
 
-A minimal set of anonymous usage statistics are collected to help
-improve development. No identifying information is saved from the
-information that is collected and it is only used to improve Mycodo. No
-other sources will have access to this information. The data collected
-is mainly what and how many features are used, and other similar
-information. The data that's collected can be viewed from the 'View
-collected statistics' link in the ``Settings -> General`` page. There is an
-opt out option on the General Settings page.
+A minimal set of anonymous usage statistics are collected to help improve development. No identifying information is saved from the information that is collected and it is only used to improve Mycodo. No other sources will have access to this information. The data collected is mainly what and how many features are used, and other similar information. The data that's collected can be viewed from the 'View collected statistics' link in the ``Settings -> General`` page. There is an opt out option on the General Settings page.
 
 Support
 -------
@@ -152,21 +133,12 @@ Before making a post to the forum or issue tracker on github, please read the
 Need assistance with Mycodo
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If Mycodo is supposedly operating correctly and you would like assistance with how to
-configure the system or to merely discuss something related to Mycodo, do a search on the
-`Mycodo Forum <https://kylegabriel.com/forum/mycodo/>`__ for a similar discussion. If a similar
-topic doesn't already exist on the forum, create a new post in the appropriate subforum.
+If Mycodo is supposedly operating correctly and you would like assistance with how to configure the system or to merely discuss something related to Mycodo, do a search on the `Mycodo Forum <https://kylegabriel.com/forum/mycodo/>`__ for a similar discussion. If a similar topic doesn't already exist on the forum, create a new post in the appropriate subforum.
 
 Bug in the Mycodo Software
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you believe there is a bug in the Mycodo software, first search through the guthub
-`Issues <https://github.com/kizniche/Mycodo/issues>`__ and see if your issue has already recently
-been discussed or resolved. If your issue is novel or significantly mre recent than a similar one, you should create a
-`New Issue <https://github.com/kizniche/Mycodo/issues/new>`__. When creating a new issue,
-make sure to read all information in the issue template and follow the instructions. Replace
-the template text with the information being requested (e.g. "step 1" under "Steps to Reproduce
-the issue" should be replaced with the actual steps to reproduce the issue). The more information you provide, the easier it is to reproduce and diagnose the issue. If the issue is not able to reproduced because not enough information is provided, it may delay or prevent solving the issue.
+If you believe there is a bug in the Mycodo software, first search through the guthub `Issues <https://github.com/kizniche/Mycodo/issues>`__ and see if your issue has already recently been discussed or resolved. If your issue is novel or significantly mre recent than a similar one, you should create a `New Issue <https://github.com/kizniche/Mycodo/issues/new>`__. When creating a new issue, make sure to read all information in the issue template and follow the instructions. Replace the template text with the information being requested (e.g. "step 1" under "Steps to Reproduce the issue" should be replaced with the actual steps to reproduce the issue). The more information you provide, the easier it is to reproduce and diagnose the issue. If the issue is not able to reproduced because not enough information is provided, it may delay or prevent solving the issue.
 
 Manual
 ------
@@ -183,13 +155,7 @@ The latest API documentation can be found here: `API Information <https://github
 About PID Control
 -----------------
 
-A `proportional-derivative-integral (PID)
-controller <https://en.wikipedia.org/wiki/PID_controller>`__ is a
-control loop feedback mechanism used throughout industry for controlling
-systems. It efficiently brings a measurable condition, such as
-temperature, to a desired state (setpoint). A well-tuned PID controller
-can raise to a setpoint quickly, have minimal overshoot, and maintain
-the setpoint with little oscillation.
+A `proportional-derivative-integral (PID) controller <https://en.wikipedia.org/wiki/PID_controller>`__ is a control loop feedback mechanism used throughout industry for controlling systems. It efficiently brings a measurable condition, such as temperature, to a desired state (setpoint). A well-tuned PID controller can raise to a setpoint quickly, have minimal overshoot, and maintain the setpoint with little oscillation.
 
 .. figure:: docs/images/PID-Animation.gif
    :alt: PID Animation
@@ -197,53 +163,33 @@ the setpoint with little oscillation.
 
 |Mycodo|
 
-The top graph visualizes the regulation of temperature. The red line is
-the desired temperature (setpoint) that has been configured to change
-over the course of each day. The blue line is the actual recorded
-temperature. The green vertical bars represent how long a heater has
-been activated for every 20-second period. This regulation was achieved
-with minimal tuning, and already displays a very minimal deviation from
-the setpoint (±0.5° Celsius). Further tuning would reduce this
-variability further.
+The top graph visualizes the regulation of temperature. The red line is the desired temperature (setpoint) that has been configured to change over the course of each day. The blue line is the actual recorded temperature. The green vertical bars represent how long a heater has been activated for every 20-second period. This regulation was achieved with minimal tuning, and already displays a very minimal deviation from the setpoint (±0.5° Celsius). Further tuning would reduce this variability further.
 
-See the
-`PID Controller <https://kizniche.github.io/Mycodo/Functions/#pid-controller>`__
-and
-`PID Tuning <https://kizniche.github.io/Mycodo/Functions/#pid-tuning>`__
-sections of the manual for more information.
+See the `PID Controller <https://kizniche.github.io/Mycodo/Functions/#pid-controller>`__ and `PID Tuning <https://kizniche.github.io/Mycodo/Functions/#pid-tuning>`__ sections of the manual for more information.
 
 Supported Inputs and Outputs
 ----------------------------
 
-All supported Inputs, Outputs, and other devices can be found under the
-`Devices <https://kizniche.github.io/Mycodo/Input-Devices/>`__
-section of the manual.
+All supported Inputs, Outputs, and other devices can be found under the `Supported Devices <https://kizniche.github.io/Mycodo/Input-Devices/>`__ section of the manual.
 
 Custom Inputs, Outputs, and Controllers
 ---------------------------------------
 
 Mycodo supports importing custom Input, Output, and Controller modules. you can find more information about each in the manual under `Custom Inputs <https://kizniche.github.io/Mycodo/Inputs/#custom-inputs>`__, `Custom Outputs <https://kizniche.github.io/Mycodo/Outputs/#custom-outputs>`__, and `Custom Controllers <https://kizniche.github.io/Mycodo/Functions/#custom-controllers>`__.
 
-If you would like to add to the list of supported Inputs, Outputs, and Controllers, submit a pull request with the module you created or start a
-`New Issue <https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=>`__.
+If you would like to add to the list of supported Inputs, Outputs, and Controllers, submit a pull request with the module you created or start a `New Issue <https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=>`__.
 
-Additionally, I have another github repository devoted to custom Inputs, Outputs, and Controllers that do not
-necessarily fit with the built-in set and are not included by default with Mycodo, but can be imported.
-These can be found at `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
+Additionally, I have another github repository devoted to custom Inputs, Outputs, and Controllers that do not necessarily fit with the built-in set and are not included by default with Mycodo, but can be imported. These can be found at `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
 
 Donate
 ------
 
-I have always made Mycodo free and I don't intend on changing that. However, if you would like to make a donation, you can
-find several options to do so at `KyleGabriel.com/donate <https://kylegabriel.com/donate>`__.
+I have always made Mycodo free and I don't intend on changing that. However, if you would like to make a donation, you can find several options to do so at `KyleGabriel.com/donate <https://kylegabriel.com/donate>`__.
 
 Links
 -----
 
-Thanks for using and supporting Mycodo, however depending where you found this documentation, you may not have the latest
-version or it may have been altered, if not obtained through an official
-distribution site. You should be able to find the latest version on
-github or my web site at the following links.
+Thanks for using and supporting Mycodo, however depending where you found this documentation, you may not have the latest version or it may have been altered, if not obtained through an official distribution site. You should be able to find the latest version on github or my web site at the following links.
 
 https://github.com/kizniche/Mycodo
 
@@ -252,22 +198,15 @@ https://KyleGabriel.com
 License
 -------
 
-Mycodo is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free
-Software Foundation, either version 3 of the License, or (at your
-option) any later version.
+See `License.txt <https://github.com/kizniche/Mycodo/blob/master/LICENSE.txt>`__
 
-Mycodo is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE. See the `GNU General Public
-License <http://www.gnu.org/licenses/gpl-3.0.en.html>`__ for more
-details.
+Mycodo is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
-A full copy of the GNU General Public License can be found at
-http://www.gnu.org/licenses/gpl-3.0.en.html
+Mycodo is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the `GNU General Public License <http://www.gnu.org/licenses/gpl-3.0.en.html>`__ for more details.
 
-This software includes third party open source software components.
-Please see individual files for license information, if applicable.
+A full copy of the GNU General Public License can be found at http://www.gnu.org/licenses/gpl-3.0.en.html
+
+This software includes third party open source software components. Please see individual files for license information, if applicable.
 
 Languages
 ---------
@@ -285,12 +224,9 @@ Languages
    `Swedish <#swedish>`__,
    `Chinese <#chinese>`__.
 
-By default, mycodo will display the default language set by your browser. You may also
-force a language in the settings at ``[Gear Icon] -> Configure -> General -> Language``
+By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ``[Gear Icon] -> Configure -> General -> Language``
 
-If you would like to improve the translations, you can submit a pull request with an
-amended .po file from ~/Mycodo/mycodo/mycodo_flask/translations/ or start a
-`New Issue <https://github.com/kizniche/Mycodo/issues/new>`__ detailing the corrections.
+If you would like to improve the translations, you can submit a pull request with an amended .po file from ~/Mycodo/mycodo/mycodo_flask/translations/ or start a `New Issue <https://github.com/kizniche/Mycodo/issues/new>`__ detailing the corrections.
 
 English
 ~~~~~~~

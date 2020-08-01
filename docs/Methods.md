@@ -1,4 +1,4 @@
-`Setup -> Method`
+Page\: `Setup -> Method`
 
 Methods enable Setpoint Tracking in PIDs and time-based duty cycle changes in timers. Normally, a PID controller will regulate an environmental condition to a specific setpoint. If you would like the setpoint to change over time, this is called setpoint tracking. Setpoint Tracking is useful for applications such as reflow ovens, thermal cyclers (DNA replication), mimicking natural daily cycles, and more. Methods may also be used to change a duty cycle over time when used with a Run PWM Method Conditional.
 
@@ -7,30 +7,28 @@ Methods enable Setpoint Tracking in PIDs and time-based duty cycle changes in ti
 These options are shared with several method types.
 
 <table>
-<col width="40%" />
-<col width="59%" />
 <thead>
 <tr class="header">
-<th align="left">Setting</th>
-<th align="left">Description</th>
+<th>Setting</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Start Time/Date</td>
-<td align="left">This is the start time of a range of time.</td>
+<tr>
+<td>Start Time/Date</td>
+<td>This is the start time of a range of time.</td>
 </tr>
-<tr class="even">
-<td align="left">End Time/Date</td>
-<td align="left">This is the end time of a range of time.</td>
+<tr>
+<td>End Time/Date</td>
+<td>This is the end time of a range of time.</td>
 </tr>
-<tr class="odd">
-<td align="left">Start Setpoint</td>
-<td align="left">This is the start setpoint of a range of setpoints.</td>
+<tr>
+<td>Start Setpoint</td>
+<td>This is the start setpoint of a range of setpoints.</td>
 </tr>
-<tr class="even">
-<td align="left">End Setpoint</td>
-<td align="left">This is the end setpoint of a range of setpoints.</td>
+<tr>
+<td>End Setpoint</td>
+<td>This is the end setpoint of a range of setpoints.</td>
 </tr>
 </tbody>
 </table>
