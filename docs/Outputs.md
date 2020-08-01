@@ -248,7 +248,7 @@ Below are hardware schematics that enable controlling direct current (DC) fans f
 
 PWM output controlling a 12-volt DC fan (such as a PC fan)
 
-![Schematic: PWM output modulating alternating current (AC) at 1% duty cycle (1of2)](images/Schematic-PWM-DC-12-volt-fan-control.png) 
+![Schematic: PWM output modulating alternating current (AC) at 1% duty cycle (1of2)](images/Schematic-PWM-DC-12-volt-fan-control.png)
 
 ### Schematics for AC Modulation
 
@@ -256,11 +256,11 @@ Below are hardware schematics that enable the modulation of alternating current 
 
 PWM output modulating alternating current (AC) at 1% duty cycle
 
-![Schematic: PWM output modulating alternating current (AC) at 1% duty cycle (2of2)](images/Schematic-PWM-AC-1percent-duty-cycle.png) 
+![Schematic: PWM output modulating alternating current (AC) at 1% duty cycle (2of2)](images/Schematic-PWM-AC-1percent-duty-cycle.png)
 
 PWM output modulating alternating current (AC) at 50% duty cycle
 
-![Schematic: PWM output modulating alternating current (AC) at 50% duty cycle](images/Schematic-PWM-AC-50percent-duty-cycle.png) 
+![Schematic: PWM output modulating alternating current (AC) at 50% duty cycle](images/Schematic-PWM-AC-50percent-duty-cycle.png)
 
 PWM output modulating alternating current (AC) at 99% duty cycle
 

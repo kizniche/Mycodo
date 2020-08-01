@@ -8,7 +8,7 @@ The second method for calculating energy consumption is more accurate and is the
 
 [Greystone CS-650-50 AC Solid Core Current Sensor (Transformer)](https://shop.greystoneenergy.com/shop/cs-sensor-series-ac-solid-core-current-sensor)
 
-The following settings are for calculating energy usage from an amp measurement. For calculating based on Output duration, see [Energy Usage Settings](Configuration-Settings/#energy-usage-settings).
+The following settings are for calculating energy usage from an amp measurement. For calculating based on Output duration, see [Energy Usage Settings](Configuration-Settings.md/#energy-usage-settings).
 
 <table>
 <col width="40%" />

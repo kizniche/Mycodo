@@ -10,7 +10,7 @@ First, read though this manual to make sure you understand how the system works 
 
 *How do I add an Input (like a sensor) or an Output (like a water pump), or custom functions (to do my bidding) to the system if they're not currently supported?*
 
-Yes, Mycodo supports adding custom Inputs, Outputs, and Controllers. See the [Custom Inputs](Inputs/#custom-inputs), [Custom Outputs](Outputs/#custom-outputs), and [Custom Controllers](Functions/#custom-controllers) sections for more information.
+Yes, Mycodo supports adding custom Inputs, Outputs, and Controllers. See the [Custom Inputs](Inputs.md/#custom-inputs), [Custom Outputs](Outputs.md/#custom-outputs), and [Custom Controllers](Functions.md/#custom-controllers) sections for more information.
 
 Another way to add an Input is to create a bash or Python script that obtains and returns a numerical value when executed from the linux command line on the Raspberry Pi. This script may be configured to be executed by a "Linux Command" Input. The Input will periodically execute the command and store the returned measurement value to the database for use with the rest of the Mycodo system.
 
@@ -35,14 +35,17 @@ Here is how I generally set up Mycodo to monitor and regulate:
 
 *Can I communicate with Mycodo from the command line?*
 
-Yes, ~/Mycodo/mycodo/mycodo_client.py has this functionality, but there's a lot to be desired. See [Mycodo Client](Mycodo-Client), but note it may not be the most current list of commands, so it's recommended to execute ``mycodo-client --help`` to see a full list of current options.
+Yes, ~/Mycodo/mycodo/mycodo_client.py has this functionality, but there's a lot to be desired. See [Mycodo Client](Mycodo-Client.md).
+ 
+ !!! note
+     This may not be the most current list of commands, so it's recommended to execute ``mycodo-client --help`` to see a full list of current options.
 
 --------------
 
 *Can I variably-control the speed of motors or other devices with the
 PWM output signal from the PID?*
 
-Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, [AC modulation circuitry](Outputs/#schematics-for-ac-modulation), [DC modulation circuitry](Outputs/#schematics-for-dc-fan-control), or something else.
+Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, [AC modulation circuitry](Outputs.md/#schematics-for-ac-modulation), [DC modulation circuitry](Outputs.md/#schematics-for-dc-fan-control), or something else.
 
 --------------
 

@@ -280,7 +280,8 @@ Calibration Measurement is an optional setting that provides a temperature measu
 - Product URLs: [Link 1](https://www.adafruit.com/product/374), [Link 2](https://www.adafruit.com/product/381), [Link 3](https://www.sparkfun.com/products/245)
 - Additional URL: [Link](https://github.com/cpetrich/counterfeit_DS18B20)
 
-Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. Review the Additional URL for more information about how to determine if your sensor is authentic.
+!!! note
+    Counterfeit DS18B20 sensors are common and can cause a host of issues. Review the Additional URL for more information about how to determine if your sensor is authentic.
 
 ### MAXIM: DS18S20
 

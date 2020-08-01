@@ -1,8 +1,11 @@
-Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere, which will be stored in a time-series database (InfluxDB). This database will provide measurements for [Dashboards](Data-Viewing/#dashboard), [LCDs](LCDs), [PID Controllers](Functions/#pid-controller), [Conditional Statements](Functions/#conditional), and other parts of Mycodo to operate from. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.
+Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere, which will be stored in a time-series database (InfluxDB). This database will provide measurements for [Dashboards](Data-Viewing.md/#dashboard), [LCDs](LCDs.md), [PID Controllers](Functions.md/#pid-controller), [Conditional Statements](Functions.md/#conditional), and other parts of Mycodo to operate from. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.
 
 ### Input Actions
 
-Input Actions are functions within the Input module that can be executed from the Web UI. This is useful for things such as calibration or other functionality specific to the input. By default there is at least one action, Acquire Measurements Now, which will cause the input to acquire measurements rather than waiting until the next Period has elapsed. Note, actions can only be executed while the Input is active.
+Input Actions are functions within the Input module that can be executed from the Web UI. This is useful for things such as calibration or other functionality specific to the input. By default there is at least one action, Acquire Measurements Now, which will cause the input to acquire measurements rather than waiting until the next Period has elapsed.
+
+!!! note
+    Actions can only be executed while the Input is active.
 
 ### Input Options
 
@@ -275,7 +278,8 @@ These example Input modules may be modified to suit your needs and imported into
 
 Math controllers allow one or more Inputs to have math applied to produce a new value that may be used within Mycodo.
 
-Note: "Last" means the controller will only acquire the last (latest) measurement in the database for performing math with. "Past" means the controller will acquire all measurements from the present until the "Max Age (seconds)" set by the user (e.g. if measurements are acquired every 10 seconds, and a Max Age is set to 60 seconds, there will on average be 6 measurements returned to have math performed).
+!!! note
+    "Last" means the controller will only acquire the last (latest) measurement in the database for performing math with. "Past" means the controller will acquire all measurements from the present until the "Max Age (seconds)" set by the user (e.g. if measurements are acquired every 10 seconds, and a Max Age is set to 60 seconds, there will on average be 6 measurements returned to have math performed).
 
 ### Math Options
 

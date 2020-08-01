@@ -20,4 +20,4 @@ Go to `Advanced Options -> Serial` and disable. Then edit `/boot/config.txt`
 
 `sudo vi /boot/config.txt`
 
-Find the line "enable\_uart=0" and change it to "enable\_uart=1", then reboot.
+Find the line "enable_uart=0" and change it to "enable_uart=1", then reboot.

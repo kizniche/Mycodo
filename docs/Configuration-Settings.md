@@ -51,7 +51,10 @@ The settings menu, accessed by selecting the gear icon in the top-right, then th
 
 `[Gear Icon] -> Configure -> General`
 
-In order to calculate accurate energy usage statistics, a few characteristics of your electrical system needs to be know. These variables should describe the characteristics of the electrical system being used by the relays to operate electrical devices. Note: Proper energy usage calculations also rely on the correct current draw to be set for each output (see [Output Settings](Outputs)).
+In order to calculate accurate energy usage statistics, a few characteristics of your electrical system needs to be know. These variables should describe the characteristics of the electrical system being used by the relays to operate electrical devices.
+
+!!! note
+    Proper energy usage calculations also rely on the correct current draw to be set for each output (see [Output Settings](Outputs.md)).
 
 <table>
 <col width="40%" />
@@ -94,13 +97,13 @@ In order to calculate accurate energy usage statistics, a few characteristics of
 
 `[Gear Icon] -> Configure -> Controllers`
 
-Controller modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Controllers](Functions/#custom-controllers) for more details.
+Controller modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Controllers](Functions.md/#custom-controllers) for more details.
 
 ## Input Settings
 
 `[Gear Icon] -> Configure -> Inputs`
 
-Input modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Inputs](Inputs/#custom-inputs) for more details.
+Input modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Inputs](Inputs.md/#custom-inputs) for more details.
 
 <table>
 <col width="40%" />
@@ -123,7 +126,7 @@ Input modules may be imported and used within Mycodo. These modules must follow 
 
 `[Gear Icon] -> Configure -> Outputs`
 
-Output modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Outputs](Outputs/#custom-outputs) for more details.
+Output modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Outputs](Outputs.md/#custom-outputs) for more details.
 
 <table>
 <col width="40%" />
@@ -396,7 +399,10 @@ Alert settings set up the credentials for sending email notifications.
 
 `[Gear Icon] -> Configure -> Camera`
 
-Many cameras can be used simultaneously with Mycodo. Each camera needs to be set up in the camera settings, then may be used throughout the software. Note that not every option (such as Hue or White Balance) may be able to be used with your particular camera, due to manufacturer differences in hardware and software.
+Many cameras can be used simultaneously with Mycodo. Each camera needs to be set up in the camera settings, then may be used throughout the software.
+
+!!! note
+    Not every option (such as Hue or White Balance) may be able to be used with your particular camera, due to manufacturer differences in hardware and software.
 
 <table>
 <col width="40%" />

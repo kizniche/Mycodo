@@ -123,7 +123,8 @@ When outputting a duration, Duration = Control_Variable
 
 When outputting a duty cycle, Duty Cycle = (Control_Variable / Period) * 100
 
-Note: Control_Variable = P_Output + I_Output + D_Output. Duty cycle is limited within the 0 - 100 % range and the set Min Duty Cycle and Max Duty Cycle. Duration is limited by the set Min On Duration and Max On Duration.
+!!! note
+    Control_Variable = P_Output + I_Output + D_Output. Duty cycle is limited within the 0 - 100 % range and the set Min Duty Cycle and Max Duty Cycle. Duration is limited by the set Min On Duration and Max On Duration.
 
 ### PID Tuning
 
@@ -185,11 +186,12 @@ Once regulation is achieved, experiment by reducing K<sub>P</sub> slightly (~25%
 
 Often the system can be simplified if two-way regulation is not needed. For instance, if cooling is unnecessary, this can be removed from the system and only up-regulation can be used.
 
-Use the same configuration as the [Exact Temperature Regulation](Functions/#exact-temperature-regulation) example, except change *Regulate Direction* to "Raise" and do not touch the "Down Relay" section.
+Use the same configuration as the [Exact Temperature Regulation](Functions.md/#exact-temperature-regulation) example, except change *Regulate Direction* to "Raise" and do not touch the "Down Relay" section.
 
 ### PID Autotune
 
-Note: This is an experimental feature. It is best nto used until you are familiar with the operation and tuning of a PID.
+!!! warning
+    This is an experimental feature. It is best not used until you are familiar with the operation and tuning of a PID.
 
 The Autotune feature is useful for determining appropriate Kp, Ki, and Kd gains of a PID controller. The autotuner will manipulate an output and measure the response in the environment being measured by a sensor. It will take several cycles to determine the gains according to several rules. In order to use this feature, the PID controller must be properly configured, and a Noise Band and Outstep selected, then select "Start Autotune". The output of the autotuner will appear in the daemon log (`Config -> Mycodo Logs -> Daemon`). While the autotune is being performed, it is recommended to create a graph that includes the Input, Output, and PID Setpoint/Output in order to see what the PID Autotuner is doing and to notice any issues. If your autotune is taking a long time to complete, there may not be enough stability in the system being manipulated to calculate a reliable set of PID gains. This may be because there are too many disturbances to the system, or conditions are changing too rapidly to acquire consistent measurement oscillations. If this is the case, try modifying your system to reduce disturbances. Once the autotune successfully completes, disturbances may be reintroduced in order to further tune the PID controller to handle them.
 
@@ -410,7 +412,8 @@ Conditions are variables that can be used within the Conditional Statement.
 
 Python 3 is the environment that these conditionals will be executed. The following functions can be used within your code.
 
-Note: Indentation must use 4 spaces (not 2 spaces, tabs, or other).
+!!! note
+    Indentation must use 4 spaces (not 2 spaces, tabs, or other).
 
 <table>
 <col width="40%" />
@@ -451,9 +454,11 @@ There are additional functions that can be used, but these must use the full UUI
 
 Since the Python code contained in the Conditional Statement must be formatted properly, it's best to familiarize yourself with the [basics of Python](https://realpython.com/python-conditional-statements/).
 
-Note that there are two different IDs in use here, one set of IDs are for the measurements, under the `Conditions` section of the Conditional, and one set of IDs are for the Actions, under the `Actions` section of the Conditional. Read all of this section, including the examples, below, to fully understand how to configure a conditional properly.
+!!! note
+    There are two different IDs in use here, one set of IDs are for the measurements, under the `Conditions` section of the Conditional, and one set of IDs are for the Actions, under the `Actions` section of the Conditional. Read all of this section, including the examples, below, to fully understand how to configure a conditional properly.
 
-IMPORTANT: If a measurement hasn't been acquired within the Max Age that is set, "None" will be returned when self.condition("{ID}") is called in the code. It is very important that you account for this. All examples below incorporate a test for the measurement being None, and this should not be removed. If an error occurs (such as if the statement resolves to comparing None to a numerical value, such as "if None < 23"), then the code will stop there and an error will be logged in the daemon log. Accounting for None is useful for determining if an Input is no longer acquiring measurements (e.g. dead sensor, malfunction, etc.).
+!!! info
+    If a measurement hasn't been acquired within the Max Age that is set, "None" will be returned when self.condition("{ID}") is called in the code. It is very important that you account for this. All examples below incorporate a test for the measurement being None, and this should not be removed. If an error occurs (such as if the statement resolves to comparing None to a numerical value, such as "if None < 23"), then the code will stop there and an error will be logged in the daemon log. Accounting for None is useful for determining if an Input is no longer acquiring measurements (e.g. dead sensor, malfunction, etc.).
 
 To create a basic conditional, follow these steps, using the numbers in the screenshots, below, that correspond to the numbers in parentheses:
 
@@ -469,7 +474,8 @@ To create a basic conditional, follow these steps, using the numbers in the scre
 
 If your `Conditional Statement` has been formatted correctly, your Conditional will save and it will be ready to activate. If an error is returned, your options will not have been saved. Inspect the error for which line is causing the issue and read the error message itself to try to understand what the problem is and how to fix it. There are an unfathomable number of ways to configure a Conditional, but this should hopefully get you started to developing one that suits your needs.
 
-Note: Mycodo is constantly changing, so the screenshots below may not match what you see exactly. Be sure to read this entire section of the manual to understand how to use Conditionals.
+!!! note
+    Mycodo is constantly changing, so the screenshots below may not match what you see exactly. Be sure to read this entire section of the manual to understand how to use Conditionals.
 
 ![Figure-Mycodo-Conditional-Setup](images/Figure-Mycodo-Conditional-Setup.png)
 
@@ -625,7 +631,7 @@ Before activating any conditionals, it's advised to thoroughly explore all possi
 
 ## Trigger
 
-A Trigger Controller will execute actions when events are triggered, such as an output turning on or off, a GPIO pin changing it's voltage state, or timed events, including various timers (duration, time period, time point, etc), or the sunrise or sunset time at a specific latitude and longitude. One the trigger is defined, add any number of [Actions](Functions/#function-actions) to be executed when that event is triggered.
+A Trigger Controller will execute actions when events are triggered, such as an output turning on or off, a GPIO pin changing it's voltage state, or timed events, including various timers (duration, time period, time point, etc), or the sunrise or sunset time at a specific latitude and longitude. One the trigger is defined, add any number of [Actions](Functions.md/#function-actions) to be executed when that event is triggered.
 
 ### Output (On/Off) Options
 

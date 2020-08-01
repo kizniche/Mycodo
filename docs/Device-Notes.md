@@ -10,7 +10,7 @@ Examples of devices that can be used with edge detection: simple switches and bu
 
 There are only a few number fo LCDs that are supported. 16x2 and 20x4 character LCD displays with I2C backpacks and the [128x32](https://www.adafruit.com/product/931) / [128x64](https://www.adafruit.com/product/931) OLED displays are supported. The below image is the type of device with the I2C backpack that should be compatible.
 
-![image4](images/LCD-front-back.jpg) 
+![image4](images/LCD-front-back.jpg)
 
 ## Raspberry Pi
 
@@ -30,7 +30,7 @@ After rebooting, a new I2C bus at /dev/i2c-3 should exist with SDA on pin 23 (BC
 
 ## K-30
 
-![image5](images/Sensor-K30-01.jpg) 
+![image5](images/Sensor-K30-01.jpg)
 
 Be very careful when connecting the K-30, as there is no reverse-voltage protection and improper connections could destroy your sensor.
 
@@ -38,7 +38,7 @@ Wiring instructions for the Raspberry Pi can be found [here](https://www.co2mete
 
 ## USB Device Persistence Across Reboots
 
-From [(\#547) Theoi-Meteoroi on Github](https://github.com/kizniche/Mycodo/issues/547#issuecomment-428752904):
+From [(#547) Theoi-Meteoroi on Github](https://github.com/kizniche/Mycodo/issues/547#issuecomment-428752904):
 
 Using USB devices, such as USB-to-serial interfaces (CP210x) to connect a sensor, while convenient, poses an issue if there are multiple devices when the system reboots. After a reboot, there is no guarantee the device will persist with the same name. For instance, if Sensor A is /dev/ttyUSB0 and Sensor B is /dev/ttyUSB1, after a reboot Sensor A may be /dev/ttyUSB1 and Sensor B may be /dev/ttyUSB0. This will cause Mycodo to query the wrong device for a measurement, potentially causing a mis-measurement, or worse, an incorrect measurement because the response is not from the correct sensor (I've seen my temperature sensor read 700+ degrees celsius because of this!). Follow the instructions below to alleviate this issue.
 
@@ -62,7 +62,8 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 
 In this case the Vendor ID is 10c4 The Product ID is ea60
 
-Note: If you have multiple devices and you find your IDs to be the same, you can change IDs with the Simplicity Studio Xpress Configurator tool (discussed starting on page 6 of the [AN721: USBXpress™ Device Configuration and Programming Guide](https://www.silabs.com/documents/public/application-notes/AN721.pdf)).
+!!! note
+    If you have multiple devices and you find your IDs to be the same, you can change IDs with the Simplicity Studio Xpress Configurator tool (discussed starting on page 6 of the [AN721: USBXpress Device Configuration and Programming Guide](https://www.silabs.com/documents/public/application-notes/AN721.pdf)).
 
 Since I changed the serial number field - this will be unique.
 
@@ -91,24 +92,24 @@ Now, every time the dust sensor is plugged in, it shows up at /dev/dust-sensor
 
 ### DHT11 Diagrams
 
-![Schematic-Sensor-DHT11-01](images/Schematic-Sensor-DHT11-01.jpg) 
+![Schematic-Sensor-DHT11-01](images/Schematic-Sensor-DHT11-01.jpg)
 
-![Schematic-Sensor-DHT11-02](images/Schematic-Sensor-DHT11-02.png) 
+![Schematic-Sensor-DHT11-02](images/Schematic-Sensor-DHT11-02.png)
 
 ### DS18B20 Diagrams
 
-![Schematic-Sensor-DS18B20-01](images/Schematic-Sensor-DS18B20-01.png) 
+![Schematic-Sensor-DS18B20-01](images/Schematic-Sensor-DS18B20-01.png)
 
-![Schematic-Sensor-DS18B20-02](images/Schematic-Sensor-DS18B20-02.jpg) 
+![Schematic-Sensor-DS18B20-02](images/Schematic-Sensor-DS18B20-02.jpg)
 
-![Schematic-Sensor-DS18B20-03](images/Schematic-Sensor-DS18B20-03.jpg) 
+![Schematic-Sensor-DS18B20-03](images/Schematic-Sensor-DS18B20-03.jpg)
 
 ### Raspberry Pi and Relay Diagrams
 
 #### Raspberry Pi, 4 relays, 4 outlets, 1 DS18B20 sensor
 
-![Schematic: Pi, 4 relays, 4 outlets, and 1 DS18B20 sensor](images/Schematic-Pi-4-relays.png) 
+![Schematic: Pi, 4 relays, 4 outlets, and 1 DS18B20 sensor](images/Schematic-Pi-4-relays.png)
 
 #### Raspberry Pi, 8 relays, 8 outlets
 
-![Schematic: Pi, 8 relays, and 8 outlets](images/Schematic-Pi-8-relays.png) 
+![Schematic: Pi, 8 relays, and 8 outlets](images/Schematic-Pi-8-relays.png)
