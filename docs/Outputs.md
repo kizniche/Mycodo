@@ -1,5 +1,7 @@
 Page\: `Setup -> Output`
 
+For a full list of supported Outputs, see [Supported Outputs Devices](Output-Devices.md).
+
 Outputs are various signals that can be generated that operate devices. An output can be a HIGH/LOW signal on a GPIO pin, a pulse-width modulated (PWM) signal, a 315/433 MHz signal to switch a radio frequency-operated relay, driving of pumps and motors, or an execution of a linux or Python command, to name a few.
 
 ## Custom Outputs
@@ -133,7 +135,8 @@ Pulse-width modulation (PWM) is a modulation technique used to encode a message 
 
 The PWM switching frequency has to be much higher than what would affect the load (the device that uses the power), which is to say that the resultant waveform perceived by the load must be as smooth as possible. The rate (or frequency) at which the power supply must switch can vary greatly depending on load and application, for example
 
-> Switching has to be done several times a minute in an electric stove; 120 Hz in a lamp dimmer; between a few kilohertz (kHz) to tens of kHz for a motor drive; and well into the tens or hundreds of kHz in audio amplifiers and computer power supplies.
+!!! quote
+    Switching has to be done several times a minute in an electric stove; 120 Hz in a lamp dimmer; between a few kilohertz (kHz) to tens of kHz for a motor drive; and well into the tens or hundreds of kHz in audio amplifiers and computer power supplies.
 
 The term duty cycle describes the proportion of 'on' time to the regular interval or 'period' of time; a low duty cycle corresponds to low power, because the power is off for most of the time. Duty cycle is expressed in percent, with 0% being always off, 50% being off for half of the time and on for half of the time, and 100% being always on.
 

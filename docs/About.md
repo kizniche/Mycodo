@@ -1,4 +1,4 @@
-Mycodo is an automated monitoring and regulation system that was built to run on the [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi).
+Mycodo is an open-source environmental monitoring and regulation system that was built to run on the [Raspberry Pi](https://en.wikipedia.org/wiki/Raspberry_Pi).
 
 Originally developed for cultivating edible mushrooms, Mycodo has grown to do much more. The system is comprised of two parts: a backend (daemon) and a frontend (web server). The backend performs tasks such as acquiring measurements from sensors and devices and coordinating a diverse set of responses to those measurements, including the ability to modulate outputs (switch relays, generate PWM signals, operate pumps, switch wireless outlets, publish/subscribe to MQTT, among others), regulate environmental conditions with PID control, schedule timers, capture photos and stream video, trigger actions when measurements meet certain conditions, and more. The frontend hosts a web interface that enables viewing and configuration from any browser-enabled device.
 

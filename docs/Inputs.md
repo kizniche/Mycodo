@@ -1,3 +1,7 @@
+Page\: `Setup -> Data`
+
+For a full list of supported Inputs, see [Supported Input Devices](Input-Devices.md).
+
 Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere, which will be stored in a time-series database (InfluxDB). This database will provide measurements for [Dashboards](Data-Viewing.md/#dashboard), [LCDs](LCDs.md), [PID Controllers](Functions.md/#pid-controller), [Conditional Statements](Functions.md/#conditional), and other parts of Mycodo to operate from. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.
 
 ### Input Actions

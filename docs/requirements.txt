@@ -3,12 +3,5 @@ mkdocs-material==5.5.0
 mkdocs-minify-plugin>=0.3.0
 Pygments>=2.6.1  # syntax hilighting
 
-
-#markdown>=3.2
-#pymdown-extensions>=7.1
-#mkdocs-redirects==1.0.0
-#mkdocs-htmlproofer-plugin>=0.0.3
-#git+git://github.com/cmitu/mkdocs-altlink-plugin.git
-
 # Currently broken
 # mkpdfs-mkdocs-plugin

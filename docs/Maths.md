@@ -1,3 +1,5 @@
+Page\: `Setup -> Data`
+
 Math controllers allow one or more Inputs to have math applied to produce a new value that may be used within Mycodo.
 
 !!! note
