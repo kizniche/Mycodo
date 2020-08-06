@@ -16,33 +16,7 @@ from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
 
 
-def format_pre_statement(unique_id, measure_info):
-    """ Generate the code to place/execute before the user code """
-    pre_statement = """import os
-import sys
-sys.path.append(os.path.abspath('/var/mycodo-root'))
-
-from mycodo.mycodo_client import DaemonControl
-from mycodo.utils.influx import add_measurements_influxdb
-
-control = DaemonControl()
-
-measurement_info = {measure_info}
-
-def store_measurement(channel=None, measurement=None):
-    if None in [channel, measurement]:
-        return
-    measure = {{channel: {{}}}}
-    measure[channel]['measurement'] = measurement_info[channel]['measurement']
-    measure[channel]['unit'] = measurement_info[channel]['unit']
-    measure[channel]['value'] = measurement
-    add_measurements_influxdb('{unique_id}', measure)
-
-""".format(unique_id=unique_id, measure_info=measure_info)
-    return pre_statement
-
-
-def execute_at_creation(unique_id, cmd_command, dict_inputs):
+def execute_at_creation(unique_id, input_dev, dict_inputs):
     error = []
     pre_statement_run = """import os
 import sys
@@ -70,7 +44,7 @@ class PythonInputRun:
 
     def python_code_run(self):
 """
-    indented_code = textwrap.indent(cmd_command, ' ' * 8)
+    indented_code = textwrap.indent(input_dev.cmd_command, ' ' * 8)
     input_python_code_run = pre_statement_run + indented_code
 
     assure_path_exists(PATH_PYTHON_CODE_USER)
@@ -84,7 +58,7 @@ class PythonInputRun:
     return error, (input_python_code_run, file_run)
 
 
-def test_before_saving(mod_input, request_form):
+def execute_at_modification(mod_input, request_form):
     """
     Function to run when the Input is saved to evaluate the Python 3 code using pylint3
     :param mod_input: The WTForms object containing the form data submitted by the web GUI
@@ -165,7 +139,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'execute_at_creation': execute_at_creation,
-    'test_before_saving': test_before_saving,
+    'execute_at_modification': execute_at_modification,
 
     'interfaces': ['Mycodo'],
     'cmd_command': """import random  # Import any external libraries

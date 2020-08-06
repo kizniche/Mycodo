@@ -203,7 +203,7 @@ def parse_input_information(exclude_custom=False):
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'ref_ohm')
 
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'execute_at_creation')
-                dict_inputs = dict_has_value(dict_inputs, input_custom, 'test_before_saving')
+                dict_inputs = dict_has_value(dict_inputs, input_custom, 'execute_at_modification')
 
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_options_message')
                 dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_options')

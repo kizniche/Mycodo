@@ -251,7 +251,7 @@ def input_add(form_add):
                 if 'execute_at_creation' in dict_inputs[new_input.device] and not current_app.config['TESTING']:
                     (creation_errors,
                      tuple_code_filename) = dict_inputs[new_input.device]['execute_at_creation'](
-                        new_input.unique_id, new_input.cmd_command, dict_inputs[input_name])
+                        new_input.unique_id, new_input, dict_inputs[input_name])
                     if creation_errors:
                         for each_error in creation_errors:
                             flash(each_error, 'error')
@@ -425,10 +425,10 @@ def input_mod(form_mod, request_form):
         if form_mod.sht_voltage.data:
             mod_input.sht_voltage = form_mod.sht_voltage.data
 
-        if 'test_before_saving' in dict_inputs[mod_input.device]:
+        if 'execute_at_modification' in dict_inputs[mod_input.device]:
             (constraints_pass,
              constraints_errors,
-             mod_input) = dict_inputs[mod_input.device]['test_before_saving'](
+             mod_input) = dict_inputs[mod_input.device]['execute_at_modification'](
                 mod_input, request_form)
             if constraints_pass:
                 pass

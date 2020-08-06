@@ -19,8 +19,6 @@
   <script type="text/javascript" src="/static/js/modules/highslide.config.js"></script>
   <link href="/static/css/highslide.css" rel="stylesheet">
 
-  <script type="text/javascript" src="/static/js/modules/solid-gauge.js"></script>
-
   <script type="text/javascript" src="/static/js/multiselect.min.js"></script>
 
   {% if current_user.theme in dark_themes %}
@@ -36,6 +34,13 @@
   <link rel="stylesheet" href="/static/css/gridstack-custom.css" />
   <script src="/static/js/gridstack.all.js"></script>
 
+  <!-- Dashboard begin head (dashboard {{dashboard_id}}) -->
+  {% for widget_type, file_head in list_html_files_head.items() %}
+  <!-- Widget {{widget_type}} head template begin -->
+  {% include 'user_templates/{}'.format(file_head) %}
+  <!-- Widget {{widget_type}} head template end -->
+  {% endfor %}
+  <!-- Dashboard end head -->
 
 {% endblock %}
 
@@ -63,32 +68,99 @@
 
         <div class="grid-stack-item-content" style="display: flex; flex-flow: column; height: 100%; padding: 0.xm; border: 1px solid #ddd; border-radius: 5px">
 
-        {% for id, axes in y_axes.items() if id == each_widget.unique_id and
-                                             each_widget.graph_type in ['graph', 'gauge_angular', 'gauge_solid'] %}
-          <!--Dashboard {{each_widget.unique_id}} y-axes: {{axes|safe}}-->
-        {% endfor %}
+      {% if each_widget.graph_type in dict_widgets %}
 
-        {% if each_widget.graph_type == 'spacer' %}
-          {% include 'pages/dashboard_options/mod_spacer.html' %}
-        {% elif each_widget.graph_type == 'graph' %}
-          {% include 'pages/dashboard_options/mod_graph.html' %}
-        {% elif each_widget.graph_type in ['gauge_angular', 'gauge_solid'] %}
-          {% include 'pages/dashboard_options/mod_gauge.html' %}
-        {% elif each_widget.graph_type == 'indicator' %}
-          {% include 'pages/dashboard_options/mod_indicator.html' %}
-        {% elif each_widget.graph_type == 'measurement' %}
-          {% include 'pages/dashboard_options/mod_measurement.html' %}
-        {% elif each_widget.graph_type == 'output' %}
-          {% include 'pages/dashboard_options/mod_output.html' %}
-        {% elif each_widget.graph_type == 'output_pwm_slider' %}
-          {% include 'pages/dashboard_options/mod_output_pwm_slider.html' %}
-        {% elif each_widget.graph_type == 'pid_control' %}
-          {% include 'pages/dashboard_options/mod_pid_control.html' %}
-        {% elif each_widget.graph_type == 'python_code' %}
-          {% include 'pages/dashboard_options/mod_python_code.html' %}
-        {% elif each_widget.graph_type == 'camera' %}
-          {% include 'pages/dashboard_options/mod_camera.html' %}
-        {% endif %}
+        <div class="d-flex justify-content-between panel-heading" style="flex: 0 1 auto;">
+          <div class="my-auto" style="padding-left: 0.4em">
+            {% if each_widget.enable_drag_handle -%}
+            <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="Drag"></i>
+            {%- endif %}
+          </div>
+          <div class="my-auto">
+            <span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em"><span id="{{each_widget.id}}-timestamp"></span> {{each_widget.name}}</span>
+            <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
+              <i style="font-size: 1.5em" class="fas fa-cog"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="container-graph-{{each_widget.id}}" style="position: relative; flex-grow: 1; padding: 0.35em">
+          {% for widget_type, file_body in list_html_files_body.items() if widget_type == each_widget.graph_type %}
+          <!-- Widget {{widget_type}} body template begin -->
+          {% include 'user_templates/{}'.format(file_body) %}
+          <!-- Widget {{widget_type}} body template end -->
+          {% endfor %}
+        </div>
+
+        <div class="modal fade" id="modal_config_{{chart_number}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content" style="padding: 1em">
+              <div class="modal-header">
+                <h5 class="modal-title">{{dict_widgets[each_widget.graph_type]['widget_name']}} Widget Configuration</h5>
+              </div>
+
+              <form method="post" action="/dashboard/{{dashboard_id}}">
+                {{form_base.csrf_token}}
+                {{form_base.dashboard_id(value=dashboard_id)}}
+                {{form_base.widget_id(value=each_widget.unique_id)}}
+                <input type="hidden" name="widget_type" value="{{each_widget.graph_type}}">
+
+                <div class="form-row">
+                  {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_MOD.html' %}
+                </div>
+
+                  {% set dict_options = dict_widgets[each_widget.graph_type] %}
+                  {% set unique_id = each_widget.unique_id %}
+                  {% set custom_options_values = custom_options_values_widgets %}
+
+                  {% if custom_options_values[unique_id] %}
+                <div class="row small-gutters" style="padding: 0.5em">
+                  <div class="col-12">
+                    <h5>{{_('Custom Options')}}</h5>
+                  </div>
+                  {% include 'pages/form_options/Custom_Options_Message.html' %}
+                    {% if 'custom_options' in dict_options %}
+                      {% for each_option in dict_options['custom_options'] %}
+                        {% if each_option['type'] == 'new_line' %}
+                </div>
+                <div class="row small-gutters" style="padding: 0.5em">
+                        {% elif each_option['type'] == 'message' %}
+                  <div class="col-12" style="padding-bottom: 0.5em">
+                    {{each_option['default_value']|safe}}
+                  </div>
+                        {% else %}
+                  {% include 'pages/form_options/Custom_Options.html' %}
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+                </div>
+                  {% endif %}
+
+                  {% for widget_type, file_configure_options in list_html_files_configure_options.items() if widget_type == each_widget.graph_type %}
+                  <!-- Widget {{widget_type}} {{each_widget.unique_id}} configure_options template begin -->
+                  {% include 'user_templates/{}'.format(file_configure_options) %}
+                  <!-- Widget {{widget_type}} {{each_widget.unique_id}} configure_options template end -->
+                  {% endfor %}
+
+                <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
+                  <div class="col-auto">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                  </div>
+                  <div class="col-auto">
+                    {{form_base.modify(class_='btn btn-primary')}}
+                  </div>
+                  <div class="col-auto">
+                    {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+                  </div>
+                </div>
+
+              </form>
+
+            </div>
+          </div>
+        </div>
+
+      {% endif %}
 
         </div>
       </div>
@@ -110,40 +182,63 @@
       </div>
     </div>
 
-    <div class="add_dashboard_object" style="display: none" id="spacer">
-      {% include 'pages/dashboard_options/add_spacer.html' %}
+  {% for each_widget in dict_widgets %}
+
+  <div class="add_dashboard_widget" style="display: none" id="{{each_widget}}">
+
+    <form method="post" action="/dashboard/{{dashboard_id}}">
+    {{form_base.csrf_token}}
+    <input type="hidden" name="dashboard_id" value="{{dashboard_id}}">
+    <input type="hidden" name="widget_type" value="{{each_widget}}">
+
+    <div class="form-row small-gutters">
+      {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_ADD.html' %}
     </div>
-    <div class="add_dashboard_object" style="display: none" id="graph">
-      {% include 'pages/dashboard_options/add_graph.html' %}
+
+    {% set dict_options = dict_widgets[each_widget] %}
+
+    {% if 'custom_options' in dict_widgets[each_widget] %}
+    <div class="row small-gutters" style="padding: 0.5em">
+      <div class="col-12">
+        <h5>{{_('Custom Options')}}</h5>
+      </div>
+      {% include 'pages/form_options/Custom_Options_Message.html' %}
+          {% for each_option in dict_widgets[each_widget]['custom_options'] %}
+            {% if each_option['type'] == 'new_line' %}
     </div>
-    <div class="add_dashboard_object" style="display: none" id="gauge">
-      {% include 'pages/dashboard_options/add_gauge.html' %}
+    <div class="row small-gutters" style="padding: 0.5em">
+            {% elif each_option['type'] == 'message' %}
+      <div class="col-12" style="padding-bottom: 0.5em">
+        {{each_option['default_value']|safe}}
+      </div>
+            {% else %}
+      {% include 'pages/form_options_add/Custom_Options.html' %}
+            {% endif %}
+          {% endfor %}
     </div>
-    <div class="add_dashboard_object" style="display: none" id="indicator">
-      {% include 'pages/dashboard_options/add_indicator.html' %}
+    {% endif %}
+
+    <div class="form-inline btn-group" style="padding: 1em 0 1em 0">
+    <div class="form-group">
+      {{form_base.create(class_='btn btn-primary')}}
     </div>
-    <div class="add_dashboard_object" style="display: none" id="measurement">
-      {% include 'pages/dashboard_options/add_measurement.html' %}
     </div>
-    <div class="add_dashboard_object" style="display: none" id="output">
-      {% include 'pages/dashboard_options/add_output.html' %}
-    </div>
-    <div class="add_dashboard_object" style="display: none" id="output_pwm_slider">
-      {% include 'pages/dashboard_options/add_output_pwm_slider.html' %}
-    </div>
-    <div class="add_dashboard_object" style="display: none" id="pid_control">
-      {% include 'pages/dashboard_options/add_pid_control.html' %}
-    </div>
-    <div class="add_dashboard_object" style="display: none" id="python_code">
-      {% include 'pages/dashboard_options/add_python_code.html' %}
-    </div>
-    <div class="add_dashboard_object" style="display: none" id="camera">
-      {% include 'pages/dashboard_options/add_camera.html' %}
-    </div>
+
+    </form>
+  </div>
+  {% endfor %}
 
   </div>
 
 <script type="text/javascript">
+
+// Dashboard begin js
+{% for widget_type, file_js in list_html_files_js.items() %}
+// Widget {{widget_type}} js template begin
+{% include 'user_templates/{}'.format(file_js) %}
+// Widget {{widget_type}} js template end
+{% endfor %}
+// Dashboard end js
 
 // Dashboard Grid
 
@@ -205,10 +300,9 @@ function sendVal(chart, output_id, duty_cycle){
   modOutput(cmd_send);
 }
 
-
 // Add Dashboard Widget content selector
 $('#widget_type').on('change', function () {
-  let x = document.getElementsByClassName("add_dashboard_object");  // Find the widgets
+  let x = document.getElementsByClassName("add_dashboard_widget");  // Find the widgets
   for(let i = 0; i < x.length; i++){
     x[i].style.display = "none";    // Change the content
   }
@@ -374,6 +468,14 @@ $(document).ready(function() {
   let chart = [];
   let note_timestamps = [];
 
+  <!-- Dashboard begin js_ready (dashboard {{dashboard_id}}) -->
+  {% for widget_type, file_js_ready in list_html_files_js_ready.items() %}
+  <!-- Widget {{widget_type}} js_ready template begin -->
+  {% include 'user_templates/{}'.format(file_js_ready) %}
+  <!-- Widget {{widget_type}} js_ready template end -->
+  {% endfor %}
+  <!-- Dashboard end js_ready -->
+
   function getGPIOState(chart_number, unique_id) {
     const url = '/outputstate_unique_id/' + unique_id;
     $.getJSON(url,
@@ -408,31 +510,7 @@ $(document).ready(function() {
     }, refresh_duration * 1000);  // Refresh duration in milliseconds
   }
 
-  function getPythonCodeResponse(chart_number, unique_id) {
-    const url = '/widget_execute/' + unique_id;
-    $.ajax(url, {
-      success: function (response, responseText, jqXHR) {
-        if (jqXHR.status !== 204) {
-          if (response !== null) {
-            document.getElementById("text-python-code-" + chart_number).innerHTML = response;
-          } else {
-            document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('NO DATA ERROR')}}';
-          }
-        } else {
-          document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('CONNECTION ERROR')}}';
-        }
-      },
-      error: function (jqXHR, textStatus, errorThrown) {
-        document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('CONNECTION ERROR')}}';
-      }
-    });
-  }
 
-  function repeatPythonCodeResponse(chart_number, unique_id, refresh_duration) {
-    setInterval(function () {
-      getPythonCodeResponse(chart_number, unique_id);
-    }, refresh_duration * 1000);  // Refresh duration in milliseconds
-  }
 
   // Retrieve initial graph data set from the past (duration set by user)
   function getPastData(chart_number,
@@ -860,7 +938,7 @@ $(document).ready(function() {
     });
   }
 
-  // Repeat function for getLastData()
+  // Repeat function for getLastDataPID()
   function repeatLastDataPID(chart_number, dev_id, period_sec, max_measure_age_sec, decimal_places, units) {
     setInterval(function () {
       getLastDataPID(chart_number, dev_id, max_measure_age_sec, decimal_places, units)
@@ -977,33 +1055,17 @@ $(document).ready(function() {
     return Highcharts.Color(color).setOpacity(0.6).get('rgba');
   });
 
-{%- for each_widget in table_widget.query.filter(table_widget.dashboard_id == dashboard_id).all() -%}
+{% for each_widget in table_widget.query.filter(table_widget.dashboard_id == dashboard_id).all() -%}
   {%- set chart_number = loop.index -%}
   {% set graph_input_ids = each_widget.input_ids_measurements.split(';') %}
 
-  {% if each_widget.graph_type == 'graph' %}
-    {% include 'pages/dashboard_options/display_graph.html' %}
-  {% elif each_widget.graph_type == 'gauge_solid' %}
-    {% include 'pages/dashboard_options/display_gauge_solid.html' %}
-  {% elif each_widget.graph_type == 'gauge_angular' %}
-    {% include 'pages/dashboard_options/display_gauge_angular.html' %}
-  {% elif each_widget.graph_type == 'indicator' %}
-    {% include 'pages/dashboard_options/display_indicator.html' %}
-  {% elif each_widget.graph_type == 'measurement' %}
-    {% include 'pages/dashboard_options/display_measurement.html' %}
-  {% elif each_widget.graph_type == 'output' %}
-    {% include 'pages/dashboard_options/display_output.html' %}
-  {% elif each_widget.graph_type == 'output_pwm_slider' %}
-    {% include 'pages/dashboard_options/display_output_pwm_slider.html' %}
-  {% elif each_widget.graph_type == 'pid_control' %}
-    {% include 'pages/dashboard_options/display_pid_control.html' %}
-  {% elif each_widget.graph_type == 'python_code' %}
-    {% include 'pages/dashboard_options/display_python_code.html' %}
-  {% elif each_widget.graph_type == 'camera' %}
-    {% include 'pages/dashboard_options/display_camera.html' %}
-  {% endif %}
+  {% for widget_type, file_js_ready_end in list_html_files_js_ready_end.items() if widget_type == each_widget.graph_type %}
+  <!-- Widget {{widget_type}} {{each_widget.unique_id}} js_ready_end template begin -->
+  {% include 'user_templates/{}'.format(file_js_ready_end) %}
+  <!-- Widget {{widget_type}} {{each_widget.unique_id}} js_ready_end template end -->
+  {% endfor %}
 
-{%- endfor -%}
+{%- endfor %}
 
   $('.grid-stack').on('gsresizestop', function(event, elem) {
     const chart_number = $(elem).attr('data-custom-chart-number');

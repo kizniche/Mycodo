@@ -268,6 +268,7 @@
         {{form_mod_pid_base.lower_output_type.label(class_='control-label')}}
         <div>
           <input class="form-control" disabled="" value="{{dict_output_type[dict_outputs[each_output.output_type]['output_types'][0]]}}" type="text">
+          <input type="hidden" id="lower_output_type" name="lower_output_type" value="{{each_pid.lower_output_type}}">
         </div>
       </div>
     {% endif %}

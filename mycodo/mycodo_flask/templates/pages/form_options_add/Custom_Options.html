@@ -3,10 +3,7 @@
 <div class="col-auto">
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <input class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="text" value="
-    {%- if custom_options_values[unique_id][each_option['id']] is not none -%}{{custom_options_values[unique_id][each_option['id']]}}
-    {%- elif running_custom_action and 'default_value' in each_option -%}{{each_option['default_value']}}
-    {%- endif -%}">
+    <input class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="text" value="{{each_option['default_value']}}">
   </div>
 </div>
 
@@ -15,11 +12,7 @@
 <div class="col-12">
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <textarea class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" rows="{{each_option['lines']}}" type="text" title="{{each_option['phrase']}}">
-    {%- if custom_options_values[unique_id][each_option['id']] -%}{{custom_options_values[unique_id][each_option['id']]}}
-    {%- elif running_custom_action and 'default_value' in each_option -%}{{each_option['default_value']}}
-    {%- endif -%}
-    </textarea>
+    <textarea class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" rows="{{each_option['lines']}}" type="text" title="{{each_option['phrase']}}">{{each_option['default_value']}}</textarea>
   </div>
 </div>
 
@@ -31,13 +24,11 @@
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_set in each_option['options_select'] %}
-      <option value="{{each_set[0]}}"{% if each_set[0] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_set[1]}}</option>
+      <option value="{{each_set[0]}}"{% if each_set[0] == each_option['default_value'] %} selected{% endif %}>{{each_set[1]}}</option>
       {% endfor %}
     </select>
   </div>
 </div>
-
-
 
     {% elif each_option['type'] == 'select_measurement' %}
 
@@ -48,22 +39,22 @@
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% if 'Input' in each_option['options_select'] %}
         {% for each_input_form in choices_input -%}
-      <option value="{{each_input_form['value']}}"{% if each_input_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_input_form['item']}}</option>
+      <option value="{{each_input_form['value']}}">{{each_input_form['item']}}</option>
         {% endfor -%}
       {% endif %}
       {% if 'Math' in each_option['options_select'] %}
         {% for each_math_form in choices_math -%}
-      <option value="{{each_math_form['value']}}"{% if each_math_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_math_form['item']}}</option>
+      <option value="{{each_math_form['value']}}">{{each_math_form['item']}}</option>
         {% endfor -%}
       {% endif %}
       {% if 'Output' in each_option['options_select'] %}
         {% for each_output_form in choices_output -%}
-      <option value="{{each_output_form['value']}}"{% if each_output_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>
+      <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
         {% endfor -%}
       {% endif %}
       {% if 'PID' in each_option['options_select'] %}
         {% for each_pid_form in choices_pid -%}
-      <option value="{{each_pid_form['value']}}"{% if each_pid_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_pid_form['item']}}</option>
+      <option value="{{each_pid_form['value']}}">{{each_pid_form['item']}}</option>
         {% endfor -%}
       {% endif %}
     </select>
@@ -96,22 +87,22 @@
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% if 'Input' in each_option['options_select'] %}
         {% for each_input_form in choices_input -%}
-      <option value="{{each_input_form['value']}}"{% if each_input_form['value'] in custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_input_form['item']}}</option>
+      <option value="{{each_input_form['value']}}">{{each_input_form['item']}}</option>
         {% endfor -%}
       {% endif %}
       {% if 'Math' in each_option['options_select'] %}
         {% for each_math_form in choices_math -%}
-      <option value="{{each_math_form['value']}}"{% if each_math_form['value'] in custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_math_form['item']}}</option>
+      <option value="{{each_math_form['value']}}">{{each_math_form['item']}}</option>
         {% endfor -%}
       {% endif %}
       {% if 'Output' in each_option['options_select'] %}
         {% for each_output_form in choices_output -%}
-      <option value="{{each_output_form['value']}}"{% if each_output_form['value'] in custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>
+      <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
         {% endfor -%}
       {% endif %}
       {% if 'PID' in each_option['options_select'] %}
         {% for each_pid_form in choices_pid -%}
-      <option value="{{each_pid_form['value']}}"{% if each_pid_form['value'] in custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_pid_form['item']}}</option>
+      <option value="{{each_pid_form['value']}}">{{each_pid_form['item']}}</option>
         {% endfor -%}
       {% endif %}
     </select>
@@ -127,32 +118,32 @@
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% if 'Input' in each_option['options_select'] %}
         {%- for each_dev in input -%}
-      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[Input {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+      <option value="{{each_dev.unique_id}}">[Input {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
       {% if 'Output' in each_option['options_select'] %}
         {%- for each_dev in output -%}
-      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[Output {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+      <option value="{{each_dev.unique_id}}">[Output {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
       {% if 'Math' in each_option['options_select'] %}
         {%- for each_dev in math -%}
-      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[Math {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+      <option value="{{each_dev.unique_id}}">[Math {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
       {% if 'PID' in each_option['options_select'] %}
         {%- for each_dev in pid -%}
-      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[PID {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+      <option value="{{each_dev.unique_id}}">[PID {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
       {% if 'Trigger' in each_option['options_select'] %}
         {%- for each_dev in trigger -%}
-      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[Trigger {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+      <option value="{{each_dev.unique_id}}">[Trigger {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
       {% if 'Custom' in each_option['options_select'] %}
         {%- for each_dev in custom_controllers -%}
-      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[Custom {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+      <option value="{{each_dev.unique_id}}">[Custom {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
     </select>
@@ -164,7 +155,7 @@
 <div class="col-auto">
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div class="input-group-text">
-    <input id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="checkbox" value="y"{% if custom_options_values[unique_id][each_option['id']] %} checked{% endif %}>
+    <input id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="checkbox" value="y"{% if each_option['default_value'] %} checked{% endif %}>
   </div>
 </div>
 

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import glob
 import importlib
+import json
 import logging
+import os
 from collections import OrderedDict
 from datetime import datetime
 
 import flask_login
-import os
 import sqlalchemy
 from flask import flash
 from flask import redirect
@@ -50,6 +51,7 @@ from mycodo.utils.system_pi import dpkg_package_exists
 from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
+from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
 
@@ -146,6 +148,109 @@ def custom_options_return_string(error, dict_options, mod_dev, request_form):
                 list_options.append(option)
 
     return error, ';'.join(list_options)
+
+
+def custom_options_return_json(error, dict_options, request_form, mod_dev=None, device=None):
+    # Custom options
+    dict_options_return = {}
+
+    # TODO: name same name in next major release
+    if mod_dev is None:
+        pass
+    elif hasattr(mod_dev, 'graph_type'):
+        device = mod_dev.graph_type
+    elif hasattr(mod_dev, 'device'):
+        device = mod_dev.device
+    elif hasattr(mod_dev, 'output_type'):
+        device = mod_dev.output_type
+    else:
+        logger.error("Unknown device")
+        return None, None
+
+    if 'custom_options' in dict_options[device]:
+        for each_option in dict_options[device]['custom_options']:
+            null_value = True
+            for key in request_form.keys():
+                if 'id' in each_option and each_option['id'] == key:
+                    constraints_pass = True
+                    constraints_errors = []
+                    value = None
+
+                    if each_option['type'] == 'float':
+                        if str_is_float(request_form.get(key)):
+                            if 'constraints_pass' in each_option:
+                                (constraints_pass,
+                                 constraints_errors,
+                                 mod_dev) = each_option['constraints_pass'](
+                                    mod_dev, float(request_form.get(key)))
+                            if constraints_pass:
+                                value = float(request_form.get(key))
+                        else:
+                            error.append(
+                                "{name} must represent a float/decimal value "
+                                "(submitted '{value}')".format(
+                                    name=each_option['name'],
+                                    value=request_form.get(key)))
+
+                    elif each_option['type'] == 'integer':
+                        if is_int(request_form.get(key)):
+                            if 'constraints_pass' in each_option:
+                                (constraints_pass,
+                                 constraints_errors,
+                                 mod_dev) = each_option['constraints_pass'](
+                                    mod_dev, int(request_form.get(key)))
+                            if constraints_pass:
+                                value = int(request_form.get(key))
+                        else:
+                            error.append(
+                                "{name} must represent an integer value "
+                                "(submitted '{value}')".format(
+                                    name=each_option['name'],
+                                    value=request_form.get(key)))
+
+                    elif each_option['type'] in [
+                            'multiline_text',
+                            'text',
+                            'select',
+                            'select_measurement',
+                            'select_device']:
+                        if 'constraints_pass' in each_option:
+                            (constraints_pass,
+                             constraints_errors,
+                             mod_dev) = each_option['constraints_pass'](
+                                mod_dev, request_form.get(key))
+                        if constraints_pass:
+                            value = request_form.get(key)
+
+                    elif each_option['type'] == 'select_multi_measurement':
+                        if 'constraints_pass' in each_option:
+                            (constraints_pass,
+                             constraints_errors,
+                             mod_dev) = each_option['constraints_pass'](
+                                mod_dev, request_form.get(key))
+                        if constraints_pass:
+                            value = request_form.getlist(key)
+
+                    elif each_option['type'] == 'bool':
+                        value = bool(request_form.get(key))
+
+                    for each_error in constraints_errors:
+                        error.append(
+                            "Error: {name}: {error}".format(
+                                name=each_option['name'],
+                                error=each_error))
+
+                    if value is not None:
+                        null_value = False
+                        dict_options_return[key] = value
+
+            if null_value and 'id' in each_option:
+                if each_option['type'] == "select_multi_measurement":
+                    dict_options_return[each_option['id']] = ""
+                else:
+                    dict_options_return[each_option['id']] = None
+
+    return error, json.dumps(dict_options_return)
 
 
 #
@@ -1100,6 +1205,7 @@ def return_dependencies(device_type):
         parse_controller_information(),
         parse_input_information(),
         parse_output_information(),
+        parse_widget_information(),
         CALIBRATION_INFO,
         CAMERA_INFO,
         FUNCTION_ACTION_INFO,
@@ -1230,6 +1336,16 @@ def generate_form_output_list(dict_outputs):
     for each_output in list_tuples_sorted:
         list_outputs_sorted.append(each_output[0])
     return list_outputs_sorted
+
+
+def generate_form_widget_list(dict_widgets):
+    # Sort dictionary entries by input_manufacturer, then input_name
+    # Results in list of sorted dictionary keys
+    list_tuples_sorted = sorted(dict_widgets.items(), key=lambda x: (x[1]['widget_name']))
+    list_widgets_sorted = []
+    for each_widget in list_tuples_sorted:
+        list_widgets_sorted.append(each_widget[0])
+    return list_widgets_sorted
 
 
 def custom_action(controller, dict_device, unique_id, form):

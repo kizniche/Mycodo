@@ -24,6 +24,7 @@ class Widget(CRUDMixin, db.Model):
     # Global Options
     dashboard_id = db.Column(db.String, default=None)
     name = db.Column(db.Text, default='Widget')
+    log_level_debug = db.Column(db.Boolean, default=False)
     font_em_name = db.Column(db.Float, default=1.0)
     enable_drag_handle = db.Column(db.Boolean, default=True)
     enable_header_buttons = db.Column(db.Boolean, default=True)
@@ -31,6 +32,8 @@ class Widget(CRUDMixin, db.Model):
     position_y = db.Column(db.Integer, default=999)
     width = db.Column(db.Integer, default=6)
     height = db.Column(db.Integer, default=6)
+    period = db.Column(db.Float, default=30.0)
+    custom_options = db.Column(db.Text, default='')
 
     # Multi-widget options
     refresh_duration = db.Column(db.Integer, default=120)  # How often to add new data and redraw, refresh camera

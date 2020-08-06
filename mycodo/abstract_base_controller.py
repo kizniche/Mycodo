@@ -12,6 +12,7 @@ controllers/base_controller.py
 inputs/base_input.py
 outputs/base_output.py
 """
+import json
 import logging
 
 from mycodo.databases.models import Conversion
@@ -95,7 +96,91 @@ class AbstractBaseController(object):
                     setattr(
                         self, each_option_default['id'], bool(option_value))
 
-                elif each_option_default['type'] == 'text':
+                elif each_option_default['type'] in ['multiline_text', 'text']:
+                    setattr(
+                        self, each_option_default['id'], str(option_value))
+
+                elif each_option_default['type'] == 'select':
+                    setattr(
+                        self, each_option_default['id'], str(option_value))
+
+                elif each_option_default['type'] == 'select_measurement':
+                    setattr(self,
+                            '{}_device_id'.format(each_option_default['id']),
+                            device_id)
+                    setattr(self,
+                            '{}_measurement_id'.format(each_option_default['id']),
+                            measurement_id)
+
+                elif each_option_default['type'] == 'select_device':
+                    setattr(self,
+                            '{}_id'.format(each_option_default['id']),
+                            str(option_value))
+
+                else:
+                    self.logger.error(
+                        "Unknown custom_option type '{}'".format(each_option_default['type']))
+            except Exception:
+                self.logger.exception("Error parsing custom_options")
+
+    def setup_custom_options_json(self, custom_options, custom_controller):
+        for each_option_default in custom_options:
+            try:
+                required = False
+                custom_option_set = False
+                error = []
+                if 'type' not in each_option_default:
+                    error.append("'type' not found in custom_options")
+                if 'id' not in each_option_default:
+                    error.append("'id' not found in custom_options")
+                if 'default_value' not in each_option_default:
+                    error.append("'default_value' not found in custom_options")
+                for each_error in error:
+                    self.logger.error(each_error)
+                if error:
+                    return
+
+                if 'required' in each_option_default and each_option_default['required']:
+                    required = True
+
+                option_value = each_option_default['default_value']
+                device_id = None
+                measurement_id = None
+
+                if not hasattr(custom_controller, 'custom_options'):
+                    self.logger.error("custom_controller missing attribute custom_options")
+                    return
+
+                if custom_controller.custom_options:
+                    for each_option, each_value in json.loads(custom_controller.custom_options).items():
+                        if each_option == each_option_default['id']:
+                            custom_option_set = True
+
+                            if (each_option_default['type'] == 'select_measurement' and
+                                    len(each_value.split(',')) > 1):
+                                device_id = each_value.split(',')[0]
+                                measurement_id = each_value.split(',')[1]
+                            else:
+                                option_value = each_value
+
+                if required and not custom_option_set:
+                    self.logger.error(
+                        "Custom option '{}' required but was not found to be set by the user".format(
+                            each_option_default['id']))
+
+                elif each_option_default['type'] == 'integer':
+                    setattr(
+                        self, each_option_default['id'], int(option_value))
+
+                elif each_option_default['type'] == 'float':
+                    setattr(
+                        self, each_option_default['id'], float(option_value))
+
+                elif each_option_default['type'] == 'bool':
+                    setattr(
+                        self, each_option_default['id'], bool(option_value))
+
+                elif each_option_default['type'] in ['multiline_text', 'text']:
                     setattr(
                         self, each_option_default['id'], str(option_value))
 

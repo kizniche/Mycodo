@@ -2,7 +2,6 @@
 #
 # forms_dashboard.py - Dashboard Flask Forms
 #
-
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import BooleanField
@@ -17,17 +16,30 @@ from wtforms import widgets
 from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
-from mycodo.config_translations import TRANSLATIONS
 from mycodo.config import DASHBOARD_WIDGETS
+from mycodo.config_translations import TRANSLATIONS
+from mycodo.mycodo_flask.utils.utils_general import generate_form_widget_list
+from mycodo.utils.widgets import parse_widget_information
 
 
 class DashboardBase(FlaskForm):
-    dashboard_id = StringField('Dashboard ID', widget=widgets.HiddenInput())
-    widget_id = StringField('Widget ID', widget=widgets.HiddenInput())
-    widget_type = SelectField('Dashboard Widget Type',
-        choices=DASHBOARD_WIDGETS,
+    choices_widgets = []
+    dict_widgets = parse_widget_information()
+    list_widgets_sorted = generate_form_widget_list(dict_widgets)
+    choices_widgets.append(('', lazy_gettext('Add Dashboard Widget'))),
+
+    for each_widget in list_widgets_sorted:
+        choices_widgets.append((each_widget, dict_widgets[each_widget]['widget_name']))
+
+    widget_type = SelectField(
+        'Dashboard Widget Type TEST',
+        choices=choices_widgets,
         validators=[DataRequired()]
     )
+
+    dashboard_id = StringField('Dashboard ID', widget=widgets.HiddenInput())
+    widget_id = StringField('Widget ID', widget=widgets.HiddenInput())
+
     name = StringField(
         TRANSLATIONS['name']['title'],
         validators=[DataRequired()]

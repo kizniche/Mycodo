@@ -3,6 +3,7 @@ import base64
 import copy
 import datetime
 import grp
+import json
 import logging
 import os
 import pwd
@@ -59,6 +60,47 @@ def parse_custom_option_values(controllers, dict_controller=None):
                 continue
 
             if 'custom_options' in dict_controller[dev_name]:
+                dict_custom_options = dict_controller[dev_name]['custom_options']
+            else:
+                dict_custom_options = {}
+            for each_option in dict_custom_options:
+                if ('id' in each_option and
+                        'default_value' in each_option and
+                        each_option['id'] not in custom_options_values[each_controller.unique_id]):
+                    custom_options_values[each_controller.unique_id][each_option['id']] = each_option['default_value']
+
+    return custom_options_values
+
+
+def parse_custom_option_values_json(controllers, dict_controller=None):
+    # Check if controllers is iterable or a single controller
+    try:
+        _ = iter(controllers)
+    except TypeError:
+        iter_controller = [controllers]  # Not iterable
+    else:
+        iter_controller = controllers  # iterable
+
+    custom_options_values = {}
+    for each_controller in iter_controller:
+        custom_options_values[each_controller.unique_id] = {}
+        if each_controller.custom_options:
+            custom_options_values[each_controller.unique_id] = json.loads(
+                each_controller.custom_options)
+
+        if dict_controller:
+            # Set default values if option not saved in database entry
+            if each_controller.__tablename__ in ['custom_controller', 'input']:
+                dev_name = each_controller.device
+            elif each_controller.__tablename__ == 'output':
+                dev_name = each_controller.output_type
+            elif each_controller.__tablename__ == 'widget':
+                dev_name = each_controller.graph_type
+            else:
+                logger.error("Table name not recognized: {}".format(each_controller.__tablename__))
+                continue
+
+            if dev_name in dict_controller and 'custom_options' in dict_controller[dev_name]:
                 dict_custom_options = dict_controller[dev_name]['custom_options']
             else:
                 dict_custom_options = {}

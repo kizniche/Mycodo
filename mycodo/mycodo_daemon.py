@@ -442,6 +442,8 @@ class DaemonController:
                     return "Error: Custom ID {}".format(controller_id)
             if not self.controller['Output'].is_running():
                 return "Error: Output controller"
+            if not self.controller['Widget'].is_running():
+                return "Error: Widget controller"
         except Exception as except_msg:
             message = "Could not check running threads: {e}".format(e=except_msg)
             self.logger.exception(message)
@@ -866,7 +868,6 @@ class DaemonController:
             message = "Could not start all controllers: {err}".format(err=except_msg)
             self.logger.exception(message)
 
-
     def stop_all_controllers(self):
         """Stop all running controllers"""
         controller_running = {}
@@ -898,6 +899,12 @@ class DaemonController:
             self.controller['Output'].join(15)  # Give each thread 15 seconds to stop
         except Exception as err:
             self.logger.info("Output controller had an issue stopping: {err}".format(err=err))
+
+        try:
+            self.controller['Widget'].stop_controller()
+            self.controller['Widget'].join(15)  # Give each thread 15 seconds to stop
+        except Exception as err:
+            self.logger.info("Widget controller had an issue stopping: {err}".format(err=err))
 
     def send_infrared_code_broadcast(self, code):
         """Broadcast IR code to all active IR Triggers (thread for speed)"""

@@ -1,0 +1,498 @@
+# coding=utf-8
+#
+#  widget_gauge_solid.py - Solid Gauge dashboard widget
+#
+#  Copyright (C) 2017  Kyle T. Gabriel
+#
+#  This file is part of Mycodo
+#
+#  Mycodo is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  Mycodo is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
+#
+#  Contact at kylegabriel.com
+#
+import json
+import logging
+import re
+
+from flask import flash
+from flask_babel import lazy_gettext
+
+logger = logging.getLogger(__name__)
+
+
+def execute_at_creation(new_widget, dict_widget):
+    color_list = ["#33CCFF", "#55BF3B", "#DDDF0D", "#DF5353"]
+    custom_options_json = json.loads(new_widget.custom_options)
+
+    if custom_options_json['stops'] < 2:
+        custom_options_json['stops'] = 2
+
+    difference = int(custom_options_json['max'] - custom_options_json['min'])
+    stop_size = int(difference / custom_options_json['stops'])
+    stop = custom_options_json['min'] + stop_size
+    colors = '{stop},{color}'.format(stop=stop, color=color_list[0])
+    for i in range(custom_options_json['stops'] - 1):
+        stop += stop_size
+        if i < len(color_list):
+            color = color_list[i + 1]
+        else:
+            color = "#DF5353"
+        colors += ';{stop},{color}'.format(stop=stop, color=color)
+
+    custom_options_json['range_colors'] = colors
+    new_widget.custom_options = json.dumps(custom_options_json)
+    return new_widget
+
+
+def execute_at_modification(
+        mod_widget,
+        request_form,
+        custom_options_json_presave,
+        custom_options_json_postsave):
+    allow_saving = True
+    error = []
+
+    sorted_colors_string, error = custom_colors_gauge_str(request_form, error)
+    sorted_colors_string = gauge_reformat_stops(
+        custom_options_json_presave['stops'],
+        custom_options_json_postsave['stops'],
+        current_colors=sorted_colors_string)
+
+    custom_options_json_postsave['range_colors'] = sorted_colors_string
+    return allow_saving, mod_widget, custom_options_json_postsave
+
+
+def generate_page_variables(widget_unique_id, widget_options):
+    # Retrieve custom colors for gauges
+    colors_gauge_solid = []
+    colors_gauge_solid_form = []
+    try:
+        if 'range_colors' in widget_options and widget_options['range_colors']:
+            color_areas = widget_options['range_colors'].split(';')  # Split into list
+        else:  # Create empty list
+            color_areas = []
+        try:
+            gauge_low = widget_options['min']
+            gauge_high = widget_options['max']
+            gauge_difference = gauge_high - gauge_low
+            for each_range in color_areas:
+                percent_of_range = float((float(each_range.split(',')[0]) - gauge_low) /
+                                         gauge_difference)
+                colors_gauge_solid.append({
+                    'stop': '{:.2f}'.format(percent_of_range),
+                    'hex': each_range.split(',')[1]})
+                colors_gauge_solid_form.append({
+                    'stop': each_range.split(',')[0],
+                    'hex': each_range.split(',')[1]})
+        except:
+            # Prevent mathematical errors from preventing proper page render
+            for each_range in color_areas:
+                colors_gauge_solid.append({
+                    'stop': '0',
+                    'hex': each_range.split(',')[1]})
+                colors_gauge_solid_form.append({
+                    'stop': '0',
+                    'hex': each_range.split(',')[1]})
+    except IndexError:
+        flash("Colors Index Error", "error")
+
+    dict_return = {
+        "colors_gauge_solid": colors_gauge_solid,
+        "colors_gauge_solid_form": colors_gauge_solid_form,
+    }
+    return dict_return
+
+
+def constraints_pass_positive_value(mod_widget, value):
+    """
+    Check if the user widget is acceptable
+    :param mod_widget: SQL object with user-saved Input options
+    :param value: float or int
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure value is positive
+    if value <= 0:
+        all_passed = False
+        errors.append("Must be a positive value")
+    return all_passed, errors, mod_widget
+
+
+WIDGET_INFORMATION = {
+    'widget_name_unique': 'WIDGET_GAUGE_SOLID',
+    'widget_name': 'Gauge (Solid)',
+    'widget_library': '',
+    'no_class': True,
+
+    'message': 'This widget will display a solid gauge.',
+
+    'execute_at_creation': execute_at_creation,
+    'execute_at_modification': execute_at_modification,
+    'generate_page_variables': generate_page_variables,
+
+    'widget_width': 6,
+    'widget_height': 5,
+
+    'widget_dashboard_head': """<script type="text/javascript" src="/static/js/modules/solid-gauge.js"></script>""",
+
+    'widget_dashboard_body': """<div class="not-draggable" id="container-gauge-{{each_widget.unique_id}}" style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; overflow: hidden;"></div>""",
+
+    'widget_dashboard_configure_options': """
+            {% for n in range(widget_variables[each_widget.unique_id]['colors_gauge_solid_form']|length) %}
+              {% set index = '{0:0>2}'.format(n) %}
+        <div class="form-row">
+          <div class="col-auto">
+            <label class="control-label" for="color_stop_number{{index}}">[{{n}}] Stop</label>
+            <div>
+              <input class="form-control" id="color_stop_number{{index}}" name="color_stop_number{{index}}" type="text" value="{{widget_variables[each_widget.unique_id]['colors_gauge_solid_form'][n]['stop']}}">
+            </div>
+          </div>
+          <div class="col-auto">
+            <label class="control-label" for="color_hex_number{{index}}">[{{n}}] Color</label>
+            <div>
+              <input id="color_hex_number{{index}}" name="color_hex_number{{index}}" placeholder="#000000" type="color" value="{{widget_variables[each_widget.unique_id]['colors_gauge_solid_form'][n]['hex']}}">
+            </div>
+          </div>
+        </div>
+            {% endfor %}
+""",
+
+    'widget_dashboard_js': """<!-- No JS content -->""",
+
+    'widget_dashboard_js_ready': """
+  function getLastDataGaugeSolid(chart_number,
+                       unique_id,
+                       measure_type,
+                       measurement_id,
+                       max_measure_age_sec) {
+    if (decimal_places === null) {
+      decimal_places = 1;
+    }
+
+    const url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + max_measure_age_sec.toString();
+    $.ajax(url, {
+      success: function(data, responseText, jqXHR) {
+        if (jqXHR.status === 204) {
+          chart[chart_number].series[0].points[0].update(null);
+        }
+        else {
+          const formattedTime = epoch_to_timestamp(data[0]);
+          const measurement = data[1];
+          chart[chart_number].series[0].points[0].update(measurement);
+          document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        chart[chart_number].series[0].points[0].update(null);
+      }
+    });
+  }
+
+  // Repeat function for getLastDataGaugeSolid()
+  function repeatLastDataGaugeSolid(chart_number,
+                          dev_id,
+                          measure_type,
+                          measurement_id,
+                          period_sec,
+                          max_measure_age_sec) {
+    setInterval(function () {
+      getLastDataGaugeSolid(chart_number,
+                  dev_id,
+                  measure_type,
+                  measurement_id,
+                  max_measure_age_sec)
+    }, period_sec * 1000);
+  }
+""",
+
+    'widget_dashboard_js_ready_end': """
+{% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
+{%- set device_id = widget_options['measurement'].split(",")[0] -%}
+{%- set measurement_id = widget_options['measurement'].split(",")[1] -%}
+
+  chart[{{chart_number}}] = new Highcharts.chart({
+    chart: {
+      renderTo: 'container-gauge-{{each_widget.unique_id}}',
+      type: 'solidgauge',
+      events: {
+        load: function () {
+          {% for each_input in input if each_input.unique_id == device_id %}
+          getLastDataGaugeSolid({{chart_number}}, '{{device_id}}', 'input', '{{measurement_id}}', {{widget_options['max_measure_age']}});
+          repeatLastDataGaugeSolid({{chart_number}}, '{{device_id}}', 'input', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
+          {%- endfor -%}
+
+          {% for each_math in math if each_math.unique_id == device_id %}
+          getLastDataGaugeSolid({{chart_number}}, '{{device_id}}', 'math', '{{measurement_id}}', {{widget_options['max_measure_age']}});
+          repeatLastDataGaugeSolid({{chart_number}}, '{{device_id}}', 'math', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
+          {%- endfor -%}
+
+          {%- for each_pid in pid  if each_pid.unique_id == device_id %}
+          getLastDataGaugeSolid({{chart_number}}, '{{device_id}}', 'pid', '{{measurement_id}}', {{widget_options['max_measure_age']}});
+          repeatLastDataGaugeSolid({{chart_number}}, '{{device_id}}', 'pid', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
+          {%- endfor -%}
+        }
+      },
+      spacingTop: 0,
+      spacingLeft: 0,
+      spacingRight: 0,
+      spacingBottom: 0
+    },
+
+    title: null,
+
+    pane: {
+      center: ['50%', '85%'],
+      size: '140%',
+      startAngle: -90,
+      endAngle: 90,
+      background: {
+        backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+        innerRadius: '60%',
+        outerRadius: '100%',
+        shape: 'arc'
+      }
+    },
+
+    exporting: {
+      enabled: false
+    },
+    rangeSelector: {
+        enabled: false
+    },
+
+    // the value axis
+    yAxis: {
+      min: {{widget_options['min']}},
+      max: {{widget_options['max']}},
+      stops: [
+          {% for n in range(widget_variables[each_widget.unique_id]['colors_gauge_solid']|length) %}
+              {% set index = '{0:0>2}'.format(n) %}
+        [{{widget_variables[each_widget.unique_id]['colors_gauge_solid'][n]['stop']}}, '{{widget_variables[each_widget.unique_id]['colors_gauge_solid'][n]['hex']}}'],
+          {% endfor %}
+      ],
+      lineWidth: 0,
+      minorTickInterval: null,
+      tickAmount: 2,
+      title: {
+      {%- if dict_measure_units[measurement_id] in dict_units and
+             dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+          text: '{{dict_units[dict_measure_units[measurement_id]]['unit']}}',
+      {% else %}
+          text: '',
+      {%- endif -%}
+        y: -80
+      },
+      labels: {
+        y: 16
+      }
+    },
+
+    plotOptions: {
+      solidgauge: {
+        dataLabels: {
+          y: 5,
+          borderWidth: 0,
+          useHTML: true
+        }
+      }
+    },
+
+    series: [{
+      name: '
+        {%- for each_input in input if each_input.unique_id == device_id and measurement_id in device_measurements_dict -%}
+          {{each_input.name}} (
+            {%- if not device_measurements_dict[measurement_id].single_channel -%}
+              {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string + ', '}}
+            {%- endif -%}
+          {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+        {%- endfor -%}
+
+        {%- for each_math in math if each_math.unique_id == device_id and measurement_id in device_measurements_dict -%}
+          {{each_math.name}} (
+            {%- if not device_measurements_dict[measurement_id].single_channel -%}
+              {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string + ', '}}
+            {%- endif -%}
+          {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+        {%- endfor -%}
+
+        {%- for each_pid in pid if each_pid.unique_id == device_id and measurement_id in device_measurements_dict -%}
+          {{each_pid.name}} (
+            {%- if not device_measurements_dict[measurement_id].single_channel -%}
+              {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string + ', '}}
+            {%- endif -%}
+          {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+        {%- endfor -%})',
+      data: [null],
+      dataLabels: {
+        format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+          ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{point.y:,.1f}</span><br/>' +
+           '<span style="font-size:12px;color:silver">{{measure_unit}}</span></div>'
+      },
+      tooltip: {
+
+        {%- for each_input in input if each_input.unique_id == device_id %}
+        pointFormatter: function () {
+            return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ':<b> ' + Highcharts.numberFormat(this.y, 2) + ' {{dict_units[device_measurements_dict[measurement_id].unit]['unit']}}</b><br>';
+        },
+        {%- endfor -%}
+
+        {%- for each_math in math if each_math.unique_id == device_id %}
+        pointFormatter: function () {
+            return '<span style="color:'+ this.series.color + '"">\u25CF</span> ' + this.series.name + ':<b> ' + Highcharts.numberFormat(this.y, 2) + ' {{dict_units[device_measurements_dict[measurement_id].unit]['unit']}}</b><br>';
+        },
+        {%- endfor -%}
+
+        valueSuffix: '
+        {%- for each_input in input if each_input.unique_id == device_id -%}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
+        {%- endfor -%}
+
+        {%- for each_math in math if each_math.unique_id == device_id -%}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
+        {%- endfor -%}
+
+        {%- for each_pid in pid if each_pid.unique_id == device_id -%}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
+        {%- endfor -%}'
+      }
+    }],
+
+    credits: {
+      enabled: false,
+      href: "https://github.com/kizniche/Mycodo",
+      text: "Mycodo"
+    }
+  });
+""",
+
+    'custom_options': [
+        {
+            'id': 'measurement',
+            'type': 'select_measurement',
+            'default_value': '',
+            'options_select': [
+                'Input',
+                'Math',
+                'PID'
+            ],
+            'name': lazy_gettext('Measurement'),
+            'phrase': lazy_gettext('Select a measurement to display')
+        },
+        {
+            'id': 'max_measure_age',
+            'type': 'integer',
+            'default_value': 120,
+            'required': True,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': lazy_gettext('Measurement Max Age'),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement')
+        },
+        {
+            'id': 'refresh_seconds',
+            'type': 'float',
+            'default_value': 30.0,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Widget Refresh (seconds)',
+            'phrase': 'The period of time between refreshing the widget'
+        },
+        {
+            'id': 'min',
+            'type': 'float',
+            'default_value': 0,
+            'name': 'Minimum',
+            'phrase': 'The gauge minimum'
+        },
+        {
+            'id': 'max',
+            'type': 'float',
+            'default_value': 100,
+            'name': 'Maximum',
+            'phrase': 'The gauge maximum'
+        },
+        {
+            'id': 'stops',
+            'type': 'integer',
+            'default_value': 4,
+            'name': 'Stops',
+            'phrase': 'The number of color stops'
+        }
+    ]
+}
+
+
+def is_rgb_color(color_hex):
+    """
+    Check if string is a hex color value for the web UI
+    :param color_hex: string to check if it represents a hex color value
+    :return: bool
+    """
+    return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
+
+
+def custom_colors_gauge_str(form, error):
+    """ Get variable number of gauge color inputs, turn into CSV string """
+    sorted_colors_string = ''
+    colors_hex = {}
+    # Combine all color form inputs to dictionary
+    for key in form.keys():
+        if ('color_hex_number' in key or
+                'color_stop_number' in key):
+            if int(key[17:]) not in colors_hex:
+                colors_hex[int(key[17:])] = {}
+        if 'color_hex_number' in key:
+            for value in form.getlist(key):
+                if not is_rgb_color(value):
+                    error.append("Invalid hex color value")
+                colors_hex[int(key[17:])]['hex'] = value
+        elif 'color_stop_number' in key:
+            for value in form.getlist(key):
+                colors_hex[int(key[17:])]['stop'] = value
+
+    # Build string of colors and associated gauge values
+    for i, _ in enumerate(colors_hex):
+        try:
+            try:
+                sorted_colors_string += "{},{}".format(
+                    colors_hex[i]['stop'],
+                    colors_hex[i]['hex'])
+            except Exception as err_msg:
+                error.append(err_msg)
+                sorted_colors_string += "0,{}".format(
+                    colors_hex[i]['hex'])
+            if i < len(colors_hex) - 1:
+                sorted_colors_string += ";"
+        except Exception as err_msg:
+            error.append(err_msg)
+    return sorted_colors_string, error
+
+
+def gauge_reformat_stops(current_stops, new_stops, current_colors=None):
+    """Generate stops and colors for new and modified gauges"""
+    if current_colors:
+        colors = current_colors
+    else:  # Default colors (adding new gauge)
+        colors = '20,#33CCFF;40,#55BF3B;60,#DDDF0D;80,#DF5353'
+
+    if new_stops > current_stops:
+        stop = 80
+        for _ in range(new_stops - current_stops):
+            stop += 20
+            colors += ';{},#DF5353'.format(stop)
+    elif new_stops < current_stops:
+        colors_list = colors.split(';')
+        colors = ';'.join(colors_list[: len(colors_list) - (current_stops - new_stops)])
+    new_colors = colors
+
+    return new_colors

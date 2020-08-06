@@ -20,9 +20,33 @@ def upgrade():
     with op.batch_alter_table("widget") as batch_op:
         batch_op.add_column(sa.Column('code_execute_loop', sa.String))
         batch_op.add_column(sa.Column('code_execute_single', sa.String))
+        batch_op.add_column(sa.Column('period', sa.Float))
+        batch_op.add_column(sa.Column('custom_options', sa.String))
+        batch_op.add_column(sa.Column('log_level_debug', sa.Boolean))
 
     with op.batch_alter_table("misc") as batch_op:
         batch_op.add_column(sa.Column('sample_rate_controller_widget', sa.Float))
+
+    op.execute(
+        '''
+        UPDATE widget
+        SET period=30
+        '''
+    )
+
+    op.execute(
+        '''
+        UPDATE widget
+        SET custom_options=''
+        '''
+    )
+
+    op.execute(
+        '''
+        UPDATE widget
+        SET log_level_debug=0
+        '''
+    )
 
     op.execute(
         '''
@@ -36,6 +60,9 @@ def downgrade():
     with op.batch_alter_table("widget") as batch_op:
         batch_op.drop_column('code_execute_loop')
         batch_op.drop_column('code_execute_single')
+        batch_op.drop_column('period')
+        batch_op.drop_column('custom_options')
+        batch_op.drop_column('log_level_debug')
 
     with op.batch_alter_table("misc") as batch_op:
         batch_op.drop_column('sample_rate_controller_widget')

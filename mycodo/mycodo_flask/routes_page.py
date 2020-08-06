@@ -45,6 +45,7 @@ from mycodo.config import LOGIN_LOG_FILE
 from mycodo.config import MATH_INFO
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import PATH_1WIRE
+from mycodo.config import PATH_HTML_USER
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.config import USAGE_REPORTS_PATH
@@ -121,10 +122,12 @@ from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import dpkg_package_exists
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import parse_custom_option_values
+from mycodo.utils.system_pi import parse_custom_option_values_json
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.tools import calc_energy_usage
 from mycodo.utils.tools import return_energy_usage
 from mycodo.utils.tools import return_output_usage
+from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger('mycodo.mycodo_flask.routes_page')
 
@@ -582,35 +585,46 @@ def page_dashboard(dashboard_id):
 
     # Detect which form on the page was submitted
     if request.method == 'POST':
+        unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_general.home'))
 
         # Determine which form was submitted
         form_dashboard_object = None
-        if form_base.create.data or form_base.modify.data:
-            if form_base.widget_type.data == 'spacer':
-                form_dashboard_object = None
-            elif form_base.widget_type.data == 'graph':
-                form_dashboard_object = form_graph
-            elif form_base.widget_type.data == 'gauge':
-                form_dashboard_object = form_gauge
-            elif form_base.widget_type.data == 'indicator':
-                form_dashboard_object = form_indicator
-            elif form_base.widget_type.data == 'measurement':
-                form_dashboard_object = form_measurement
-            elif form_base.widget_type.data in ['output', 'output_pwm_slider']:
-                form_dashboard_object = form_output
-            elif form_base.widget_type.data == 'pid_control':
-                form_dashboard_object = form_pid
-            elif form_base.widget_type.data == 'python_code':
-                form_dashboard_object = form_python_code
-            elif form_base.widget_type.data == 'camera':
-                form_dashboard_object = form_camera
-            else:
-                flash("Unknown widget type: {type}".format(
-                    type=form_base.widget_type.data), "error")
-                return redirect(url_for(
-                    'routes_page.page_dashboard', dashboard_id=dashboard_id))
+        # if form_base.creoard', dashboard_id=dashboard_id))
+
+        # Dashboards
+        if form_dashboard.dash_modify.data:
+            utils_dashboard.dashboard_mod(form_dashboard)
+        elif form_dashboard.dash_delete.data:
+            utils_dashboard.dashboard_del(form_dashboard)
+            return redirect(url_for('routes_page.page_dashboard_default'))
+
+        # Widgets
+        # elif form_base.create_test.datate.data or form_base.modify.data:
+        #     if form_base.widget_type.data == 'spacer':
+        #         form_dashboard_object = None
+        #     elif form_base.widget_type.data == 'graph':
+        #         form_dashboard_object = form_graph
+        #     elif form_base.widget_type.data == 'gauge':
+        #         form_dashboard_object = form_gauge
+        #     elif form_base.widget_type.data == 'indicator':
+        #         form_dashboard_object = form_indicator
+        #     elif form_base.widget_type.data == 'measurement':
+        #         form_dashboard_object = form_measurement
+        #     elif form_base.widget_type.data in ['output', 'output_pwm_slider']:
+        #         form_dashboard_object = form_output
+        #     elif form_base.widget_type.data == 'pid_control':
+        #         form_dashboard_object = form_pid
+        #     elif form_base.widget_type.data == 'python_code':
+        #         form_dashboard_object = form_python_code
+        #     elif form_base.widget_type.data == 'camera':
+        #         form_dashboard_object = form_camera
+        #     else:
+        #         flash("Unknown widget type: {type}".format(
+        #             type=form_base.widget_type.data), "error")
+        #         return redirect(url_for(
+        #             'routes_page.page_dashboard', dashboard_id=dashboard_id))
 
         # Dashboards
         if form_dashboard.dash_modify.data:
@@ -621,13 +635,17 @@ def page_dashboard(dashboard_id):
 
         # Widgets
         elif form_base.create.data:
-            utils_dashboard.widget_add(
-                form_base, form_dashboard_object)
+            unmet_dependencies = utils_dashboard.widget_add(form_base, request.form)
+
         elif form_base.modify.data:
-            utils_dashboard.widget_mod(
-                form_base, form_dashboard_object, request.form)
+            utils_dashboard.widget_mod(form_base, request.form)
+
         elif form_base.delete.data:
             utils_dashboard.widget_del(form_base)
+
+        if unmet_dependencies:
+            return redirect(url_for('routes_admin.admin_dependencies',
+                                    device=form_base.graph_type.data))
 
         return redirect(url_for(
             'routes_page.page_dashboard', dashboard_id=dashboard_id))
@@ -663,6 +681,62 @@ def page_dashboard(dashboard_id):
             dict_measure_units[each_measurement.unique_id] = unit
 
     dict_outputs = parse_output_information()
+    dict_widgets = parse_widget_information()
+
+    custom_options_values_widgets = parse_custom_option_values_json(
+        dashboard, dict_controller=dict_widgets)
+
+    widget_types_on_dashboard = []
+    widget_variables = {}
+    widgets_dash = Widget.query.filter(Widget.dashboard_id == dashboard_id).all()
+    for each_widget in widgets_dash:
+        # Make list of widget types on this particular dashboard
+        if each_widget.graph_type not in widget_types_on_dashboard:
+            widget_types_on_dashboard.append(each_widget.graph_type)
+
+        # Generate dictionary of returned values from widget modules on this particular dashboard
+        if 'generate_page_variables' in dict_widgets[each_widget.graph_type]:
+            widget_variables[each_widget.unique_id] = dict_widgets[each_widget.graph_type]['generate_page_variables'](
+                each_widget.unique_id, custom_options_values_widgets[each_widget.unique_id])
+
+    # generate lists of html files to include in dashboard template
+    list_html_files_body = {}
+    list_html_files_head = {}
+    list_html_files_configure_options = {}
+    list_html_files_js = {}
+    list_html_files_js_ready = {}
+    list_html_files_js_ready_end = {}
+
+    for each_widget_type in widget_types_on_dashboard:
+        file_html_head = "widget_template_{}_head.html".format(each_widget_type)
+        path_html_head = os.path.join(PATH_HTML_USER, file_html_head)
+        if os.path.exists(path_html_head):
+            list_html_files_head[each_widget_type] = file_html_head
+
+        file_html_body = "widget_template_{}_body.html".format(each_widget_type)
+        path_html_body = os.path.join(PATH_HTML_USER, file_html_body)
+        if os.path.exists(path_html_body):
+            list_html_files_body[each_widget_type] = file_html_body
+
+        file_html_configure_options = "widget_template_{}_configure_options.html".format(each_widget_type)
+        path_html_configure_options = os.path.join(PATH_HTML_USER, file_html_configure_options)
+        if os.path.exists(path_html_configure_options):
+            list_html_files_configure_options[each_widget_type] = file_html_configure_options
+
+        file_html_js = "widget_template_{}_js.html".format(each_widget_type)
+        path_html_js = os.path.join(PATH_HTML_USER, file_html_js)
+        if os.path.exists(path_html_js):
+            list_html_files_js[each_widget_type] = file_html_js
+
+        file_html_js_ready = "widget_template_{}_js_ready.html".format(each_widget_type)
+        path_html_js_ready = os.path.join(PATH_HTML_USER, file_html_js_ready)
+        if os.path.exists(path_html_js_ready):
+            list_html_files_js_ready[each_widget_type] = file_html_js_ready
+
+        file_html_js_ready_end = "widget_template_{}_js_ready_end.html".format(each_widget_type)
+        path_html_js_ready_end = os.path.join(PATH_HTML_USER, file_html_js_ready_end)
+        if os.path.exists(path_html_js_ready_end):
+            list_html_files_js_ready_end[each_widget_type] = file_html_js_ready_end
 
     # Retrieve all choices to populate form drop-down menu
     choices_camera = utils_general.choices_id_name(camera)
@@ -703,71 +777,12 @@ def page_dashboard(dashboard_id):
         form_graph.pid_ids.choices.append(
             (each_pid['value'], each_pid['item']))
 
-    # Generate dictionary of custom colors for each graph
-    colors_graph = dict_custom_colors()
-
-    # Retrieve custom colors for gauges
-    colors_gauge_solid = OrderedDict()
-    colors_gauge_solid_form = OrderedDict()
-    colors_gauge_angular = OrderedDict()
-    try:
-        for each_graph in dashboard:
-            if each_graph.range_colors:  # Split into list
-                color_areas = each_graph.range_colors.split(';')
-            else:  # Create empty list
-                color_areas = []
-            colors_gauge_solid_total = []
-            colors_gauge_solid_form_total = []
-            colors_gauge_angular_total = []
-            if each_graph.graph_type == 'gauge_angular':
-                for each_range in color_areas:
-                    colors_gauge_angular_total.append({
-                        'low': each_range.split(',')[0],
-                        'high': each_range.split(',')[1],
-                        'hex': each_range.split(',')[2]})
-                colors_gauge_angular.update(
-                    {each_graph.unique_id: colors_gauge_angular_total})
-            elif each_graph.graph_type == 'gauge_solid':
-                try:
-                    gauge_low = each_graph.y_axis_min
-                    gauge_high = each_graph.y_axis_max
-                    gauge_difference = gauge_high - gauge_low
-                    for each_range in color_areas:
-                        percent_of_range = float((float(each_range.split(',')[0]) - gauge_low) /
-                                                 gauge_difference)
-                        colors_gauge_solid_total.append({
-                            'stop': '{:.2f}'.format(percent_of_range),
-                            'hex': each_range.split(',')[1]})
-                        colors_gauge_solid_form_total.append({
-                            'stop': each_range.split(',')[0],
-                            'hex': each_range.split(',')[1]})
-                except:
-                    # Prevent mathematical errors from preventing proper page render
-                    for each_range in color_areas:
-                        colors_gauge_solid_total.append({
-                            'stop': '0',
-                            'hex': each_range.split(',')[1]})
-                        colors_gauge_solid_form_total.append({
-                            'stop': '0',
-                            'hex': each_range.split(',')[1]})
-                colors_gauge_solid.update(
-                    {each_graph.unique_id: colors_gauge_solid_total})
-                colors_gauge_solid_form.update(
-                    {each_graph.unique_id: colors_gauge_solid_form_total})
-    except IndexError:
-        flash("Colors Index Error", "error")
-
-    # Generate a dictionary of lists of y-axes for each graph/gauge
-    y_axes = utils_dashboard.graph_y_axes(dict_measurements)
-
     # Get what each measurement uses for a unit
     use_unit = utils_general.use_unit_generate(
         device_measurements, input_dev, output, math)
 
-    # Generate a dictionary of each graph's y-axis minimum and maximum
-    custom_yaxes = dict_custom_yaxes_min_max(dashboard, y_axes)
-
     return render_template('pages/dashboard.html',
+                           custom_options_values_widgets=custom_options_values_widgets,
                            table_conversion=Conversion,
                            table_widget=Widget,
                            table_input=Input,
@@ -784,7 +799,6 @@ def page_dashboard(dashboard_id):
                            choices_pid=choices_pid,
                            choices_pid_devices=choices_pid_devices,
                            choices_note_tag=choices_note_tag,
-                           custom_yaxes=custom_yaxes,
                            dashboard=dashboard,
                            dashboard_id=dashboard_id,
                            device_measurements_dict=device_measurements_dict,
@@ -792,6 +806,13 @@ def page_dashboard(dashboard_id):
                            dict_measure_units=dict_measure_units,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
+                           dict_widgets=dict_widgets,
+                           list_html_files_head=list_html_files_head,
+                           list_html_files_body=list_html_files_body,
+                           list_html_files_configure_options=list_html_files_configure_options,
+                           list_html_files_js=list_html_files_js,
+                           list_html_files_js_ready=list_html_files_js_ready,
+                           list_html_files_js_ready_end=list_html_files_js_ready_end,
                            math=math,
                            misc=misc,
                            pid=pid,
@@ -799,10 +820,6 @@ def page_dashboard(dashboard_id):
                            output_types=output_types(),
                            input=input_dev,
                            tags=tags,
-                           colors_graph=colors_graph,
-                           colors_gauge_angular=colors_gauge_angular,
-                           colors_gauge_solid=colors_gauge_solid,
-                           colors_gauge_solid_form=colors_gauge_solid_form,
                            use_unit=use_unit,
                            form_base=form_base,
                            form_camera=form_camera,
@@ -814,7 +831,7 @@ def page_dashboard(dashboard_id):
                            form_output=form_output,
                            form_pid=form_pid,
                            form_python_code=form_python_code,
-                           y_axes=y_axes)
+                           widget_variables=widget_variables)
 
 
 @blueprint.route('/graph-async', methods=('GET', 'POST'))
@@ -2435,31 +2452,6 @@ def dict_custom_colors():
             logger.exception("Exception")
 
     return color_count
-
-
-def dict_custom_yaxes_min_max(graph, yaxes):
-    """
-    Generate a dictionary of the y-axis minimum and maximum for each graph
-    :param graph: iterable SQL object of all graph entries
-    :param yaxes: list of y-axis measurements
-    :return: dictionary of minimum and maximum y-axis values for each graph
-    """
-    dict_yaxes = {}
-    for each_graph in graph:
-        dict_yaxes[each_graph.unique_id] = {}
-
-        if each_graph.unique_id in yaxes:
-            for each_yaxis in yaxes[each_graph.unique_id]:
-                dict_yaxes[each_graph.unique_id][each_yaxis] = {}
-                dict_yaxes[each_graph.unique_id][each_yaxis]['minimum'] = 0
-                dict_yaxes[each_graph.unique_id][each_yaxis]['maximum'] = 0
-
-                for each_custom_yaxis in each_graph.custom_yaxes.split(';'):
-                    if each_custom_yaxis.split(',')[0] == each_yaxis:
-                        dict_yaxes[each_graph.unique_id][each_yaxis]['minimum'] = each_custom_yaxis.split(',')[1]
-                        dict_yaxes[each_graph.unique_id][each_yaxis]['maximum'] = each_custom_yaxis.split(',')[2]
-
-    return dict_yaxes
 
 
 def gen(camera):

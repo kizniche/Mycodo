@@ -356,10 +356,10 @@ def output_mod(form_output, request_form):
                 form_output.shutdown_value.data):
             mod_output.shutdown_value = form_output.shutdown_value.data
 
-        if 'test_before_saving' in dict_outputs[mod_output.output_type]:
+        if 'execute_at_modification' in dict_outputs[mod_output.output_type]:
             (constraints_pass,
              constraints_errors,
-             mod_input) = dict_outputs[mod_output.output_type]['test_before_saving'](
+             mod_input) = dict_outputs[mod_output.output_type]['execute_at_modification'](
                 mod_output, request_form)
             if constraints_pass:
                 pass
