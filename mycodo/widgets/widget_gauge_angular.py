@@ -300,7 +300,7 @@ WIDGET_INFORMATION = {
           const formattedTime = epoch_to_timestamp(data[0]);
           const measurement = data[1];
           chart[chart_number].series[0].points[0].update(measurement);
-          document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
+          //document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
         }
       },
       error: function(jqXHR, textStatus, errorThrown) {

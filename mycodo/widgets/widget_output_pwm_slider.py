@@ -348,7 +348,7 @@ $(document).ready(function() {
 
   function repeatGPIOStatePWMSlider(chart_number, unique_id, refresh_seconds) {
     setInterval(function () {
-      getGPIOState(chart_number, unique_id);
+      getGPIOStatePWMSlider(chart_number, unique_id);
     }, refresh_seconds * 1000);  // Refresh duration in milliseconds
   }
 """,

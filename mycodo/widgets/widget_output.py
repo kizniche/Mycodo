@@ -386,7 +386,7 @@ $(document).ready(function() {
 
   function repeatGPIOStateOutput(chart_number, unique_id, refresh_duration) {
     setInterval(function () {
-      getGPIOState(chart_number, unique_id);
+      getGPIOStateOutput(chart_number, unique_id);
     }, refresh_duration * 1000);  // Refresh duration in milliseconds
   }
 """,
