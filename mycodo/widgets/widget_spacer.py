@@ -68,14 +68,6 @@ WIDGET_INFORMATION = {
     'widget_width': 20,
     'widget_height': 2,
 
-    'dependencies_module': [],
-
-    'widget_dashboard_head': """<!-- No head content -->""",
-    'widget_dashboard_body': """<span style="font-size: {{custom_options_values_widgets[each_widget.unique_id]['font_em_body']}}em">{{custom_options_values_widgets[each_widget.unique_id]['body_text']}}</span>""",
-    'widget_dashboard_js': """<!-- No JS content -->""",
-    'widget_dashboard_js_ready': """<!-- No JS ready content -->""",
-    'widget_dashboard_js_ready_end': """<!-- No JS ready end content -->""",
-
     'custom_options': [
         {
             'id': 'font_em_body',
@@ -92,5 +84,12 @@ WIDGET_INFORMATION = {
             'name': 'Body Text',
             'phrase': 'The body text of the widget'
         },
-    ]
+    ],
+
+    'widget_dashboard_head': """<!-- No head content -->""",
+    'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
+    'widget_dashboard_body': """<span style="font-size: {{widget_options['font_em_body']}}em">{{widget_options['body_text']}}</span>""",
+    'widget_dashboard_js': """<!-- No JS content -->""",
+    'widget_dashboard_js_ready': """<!-- No JS ready content -->""",
+    'widget_dashboard_js_ready_end': """<!-- No JS ready end content -->"""
 }

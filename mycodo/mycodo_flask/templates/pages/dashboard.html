@@ -56,6 +56,8 @@
 
     {%- for each_widget in table_widget.query.filter(table_widget.dashboard_id == dashboard_id).all() -%}
       {%- set chart_number = loop.index -%}
+      {% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
+      {% set widget_variables = custom_widget_variables[each_widget.unique_id] %}
 
       <div class="grid-stack-item"
          data-custom-chart-number="{{chart_number}}"
@@ -77,7 +79,11 @@
             {%- endif %}
           </div>
           <div class="my-auto">
-            <span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em"><span id="{{each_widget.id}}-timestamp"></span> {{each_widget.name}}</span>
+        {% for widget_type, file_title_bar in list_html_files_title_bar.items() if widget_type == each_widget.graph_type %}
+            <!-- Widget {{widget_type}} title_bar template begin -->
+            {% include 'user_templates/{}'.format(file_title_bar) %}
+            <!-- Widget {{widget_type}} title_bar template end -->
+        {% endfor %}
             <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
               <i style="font-size: 1.5em" class="fas fa-cog"></i>
             </button>
@@ -288,18 +294,6 @@ jQuery(document).ready(function($) {
   });
 });
 
-
-// Output PWM Slider Widget
-function showVal(chart, duty_cycle){
-  document.getElementById("range_val_" + chart).innerHTML = duty_cycle;
-}
-
-function sendVal(chart, output_id, duty_cycle){
-  document.getElementById("range_val_" + chart).innerHTML = duty_cycle;
-  const cmd_send = output_id + '/on/pwm/' + duty_cycle;
-  modOutput(cmd_send);
-}
-
 // Add Dashboard Widget content selector
 $('#widget_type').on('change', function () {
   let x = document.getElementsByClassName("add_dashboard_widget");  // Find the widgets
@@ -311,72 +305,6 @@ $('#widget_type').on('change', function () {
     document.getElementById(this.value).scrollIntoView();
   }
 });
-
-
-// Turn Output on or off
-function modOutput(btn_val) {
-  $.ajax({
-      type: 'GET',
-      url: '/output_mod/' + btn_val,
-    {% if not misc.hide_alert_success %}
-      success: function(data) {
-        if (data.startsWith("SUCCESS")) {
-          toastr['success']("Output: " + data);
-        }
-        else {
-          toastr['error']("Output: " + data);
-        }
-      },
-    {% endif %}
-    {% if not misc.hide_alert_warning %}
-      error: function(data) {
-          toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
-      }
-    {% endif %}
-  });
-}
-
-$(document).ready(function() {
-  $('.turn_on').click(function() {
-    const btn_val = this.name;
-    const send_cmd = btn_val.substring(btn_val.indexOf('/')+1);
-    {% if not misc.hide_alert_info %}
-    toastr['info']('Command sent to turn output On');
-    {% endif %}
-    modOutput(send_cmd);
-  });
-  $('.turn_off').click(function() {
-    const btn_val = this.name;
-    const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
-    {% if not misc.hide_alert_info %}
-    toastr['info']('Command sent to turn output Off');
-    {% endif %}
-    modOutput(send_cmd);
-  });
-  $('.output_on_amt').click(function() {
-    const btn_val = this.name;
-    const chart = btn_val.split('/')[0];
-    const id = btn_val.split('/')[1];
-    const on_amt = $('#sec_on_amt_' + chart + '_' + id).val();
-    const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
-    {% if not misc.hide_alert_info %}
-    toastr['info']('Command sent to turn output On for ' + on_amt);
-    {% endif %}
-    modOutput(send_cmd + on_amt);
-  });
-  $('.duty_cycle_on_amt').click(function() {
-    const btn_val = this.name;
-    const chart = btn_val.split('/')[0];
-    const id = btn_val.split('/')[1];
-    const dc = $('#duty_cycle_on_amt_' + chart + '_' + id).val();
-    const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
-    {% if not misc.hide_alert_info %}
-    toastr['info']('Command sent to turn output On with a duty cycle of ' + dc + '%');
-    {% endif %}
-    modOutput(send_cmd + dc);
-  });
-});
-
 
 // Modify PID Controller
 function modPID(btn_val) {
@@ -396,61 +324,6 @@ function modPID(btn_val) {
   });
 }
 
-$(document).ready(function() {
-  $('.activate_pid').click(function() {
-    const btn_val = this.name;
-    const id = btn_val.split('/')[0];
-    {% if not misc.hide_alert_info %}
-    toastr['info']('Command sent to Activate PID');
-    {% endif %}
-    modPID(btn_val);
-  });
-  $('.deactivate_pid').click(function() {
-    const btn_val = this.name;
-    const id = btn_val.split('/')[0];
-    {% if not misc.hide_alert_info %}
-    toastr['info']('Command sent to Deactivate PID');
-    {% endif %}
-    modPID(btn_val);
-  });
-  $('.pause_pid').click(function() {
-    const btn_val = this.name;
-    const id = btn_val.split('/')[0];
-    {% if not misc.hide_alert_info %}
-    toastr['info']('Command sent to Pause PID');
-    {% endif %}
-    modPID(btn_val);
-  });
-  $('.hold_pid').click(function() {
-    const btn_val = this.name;
-    const id = btn_val.split('/')[0];
-    {% if not misc.hide_alert_info %}
-    toastr['info']('Command sent to Hold PID');
-    {% endif %}
-    modPID(btn_val);
-  });
-  $('.resume_pid').click(function() {
-    const btn_val = this.name;
-    const id = btn_val.split('/')[0];
-    {% if not misc.hide_alert_info %}
-    toastr['info']('Command sent to Resume PID');
-    {% endif %}
-    modPID(btn_val);
-  });
-  $('.set_setpoint').click(function() {
-    const btn_val = this.name;
-    const id = btn_val.split('/')[0];
-    const setpoint = $('#setpoint_pid_' + id).val();
-    if(setpoint) {
-      {% if not misc.hide_alert_info %}
-      toastr['info']('Command sent to set PID setpoint');
-      {% endif %}
-      modPID(btn_val + setpoint);
-    }
-  });
-});
-
-
 // Graph Widget
 Highcharts.setOptions({
   global: {
@@ -468,175 +341,7 @@ $(document).ready(function() {
   let chart = [];
   let note_timestamps = [];
 
-  <!-- Dashboard begin js_ready (dashboard {{dashboard_id}}) -->
-  {% for widget_type, file_js_ready in list_html_files_js_ready.items() %}
-  <!-- Widget {{widget_type}} js_ready template begin -->
-  {% include 'user_templates/{}'.format(file_js_ready) %}
-  <!-- Widget {{widget_type}} js_ready template end -->
-  {% endfor %}
-  <!-- Dashboard end js_ready -->
-
-  function getGPIOState(chart_number, unique_id) {
-    const url = '/outputstate_unique_id/' + unique_id;
-    $.getJSON(url,
-      function(state, responseText, jqXHR) {
-        if (jqXHR.status !== 204) {
-          if (state !== null) {
-            document.getElementById("container-output-" + chart_number).className = "active-background";
-            if (state !== 'off') {
-              if (state === 'on') {
-                document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Active')}}';
-              } else {
-                document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Active')}}, ' + state.toFixed(1) + '%';
-              }
-            }
-            else {
-              document.getElementById("container-output-" + chart_number).className = "inactive-background";
-              document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Inactive')}}';
-            }
-          }
-        }
-        else {
-          document.getElementById("container-output-" + chart_number).className = "pause-background";
-          document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('No Connection')}}';
-        }
-      }
-    );
-  }
-
-  function repeatGPIOState(chart_number, unique_id, refresh_duration) {
-    setInterval(function () {
-      getGPIOState(chart_number, unique_id);
-    }, refresh_duration * 1000);  // Refresh duration in milliseconds
-  }
-
-
-
-  // Retrieve initial graph data set from the past (duration set by user)
-  function getPastData(chart_number,
-                       series,
-                       unique_id,
-                       measure_type,
-                       measurement_id,
-                       past_seconds) {
-    const epoch_mil = new Date().getTime();
-    const url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + past_seconds;
-    const update_id = chart_number + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
-
-    $.getJSON(url,
-      function(data, responseText, jqXHR) {
-        if (jqXHR.status !== 204) {
-          let new_time;
-          let past_data = [];
-
-          for (let i = 0; i < data.length; i++) {
-            // Push the received data to the graph
-            let new_date = new Date(data[i][0]);
-            new_time = new_date.getTime();
-
-            if (measure_type === 'tag') {
-              if (!note_timestamps.includes(new_time)) {
-                past_data.push({
-                  x: new_time,
-                  title: data[i][1],
-                  text: data[i][2].replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/  /g, '░░')
-                });
-                note_timestamps.push(new_time);
-              }
-            }
-            else {
-              past_data.push([new_time, data[i][1]]);
-            }
-
-            // Store the epoch time of the last data point received
-            if (i === data.length - 1) {
-              if (measure_type === 'tag') last_output_time_mil[update_id] = new_time + 3000;
-              else last_output_time_mil[update_id] = new_time;
-            }
-          }
-
-          // Set x-axis extremes, set graph data
-          chart[chart_number].series[series].isDirty = true;  // Data may not be in order by timestamp
-          const epoch_min = new Date().setMinutes(new Date().getMinutes() - (past_seconds / 60))
-          chart[chart_number].xAxis[0].setExtremes(epoch_min, epoch_mil);
-          chart[chart_number].series[series].setData(past_data, true, false);
-        }
-      }
-    );
-  }
-
-  // Retrieve chart data for the period since the last data acquisition (refresh period set by user)
-  function retrieveLiveData(chart_number,
-                            series,
-                            unique_id,
-                            measure_type,
-                            measurement_id,
-                            xaxis_duration_min,
-                            xaxis_reset,
-                            refresh_seconds) {
-    const epoch_mil = new Date().getTime();
-
-    // Determine the timestamp of the last known measurement on the graph and
-    // calculate the number of seconds from then until now, then build the URL
-    // to query the measurements from that time period.
-    let url = '';
-    let update_id = chart_number + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
-    if (update_id in last_output_time_mil) {
-      const past_seconds = Math.floor((epoch_mil - last_output_time_mil[update_id]) / 1000);  // seconds (integer)
-      url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + past_seconds;
-    } else {
-      url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + refresh_seconds;
-    }
-
-    $.getJSON(url,
-      function(data, responseText, jqXHR) {
-        if (jqXHR.status !== 204) {
-
-          let time_point;
-          let graph_shift;
-          // The timestamp of the beginning of the graph (oldest timestamp allowed on the graph)
-          const oldest_timestamp_allowed = epoch_mil - (xaxis_duration_min * 60 * 1000);
-
-          for (let i = 0; i < data.length; i++) {
-            let time_point_raw = new Date(data[i][0]);
-            time_point = time_point_raw.getTime();
-
-            // If the timestamp of the last point previously added is >= the new point TS, don't add
-            let index_last = chart[chart_number].series[series].options.data.length - 1;
-            let last_meas_time = chart[chart_number].series[series].options.data[index_last][0];
-            if (time_point <= last_meas_time) continue;
-
-            // If the first data point is older than allowed, shift the graph
-            let first_meas_time = chart[chart_number].series[series].options.data[0][0];
-            graph_shift = first_meas_time < oldest_timestamp_allowed;
-
-            if (measure_type === 'tag') {
-              if (!note_timestamps.includes(time_point)) {
-                chart[chart_number].series[series].addPoint({
-                    x: time_point,
-                    title: data[i][1],
-                    text: data[i][2].replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/  /g, '░░')
-                }, false, graph_shift);
-                note_timestamps.push(time_point);
-              }
-            }
-            else {
-              chart[chart_number].series[series].addPoint([time_point, data[i][1]], false, graph_shift);
-            }
-          }
-
-          // Store latest point timestamp
-          if (measure_type === 'tag') last_output_time_mil[update_id] = time_point + 3000;
-          else last_output_time_mil[update_id] = time_point;
-
-          // Finally, redraw the graph
-          redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset);
-        }
-      }
-    );
-  }
-
-  // Return timestamp from epoch
+  // Return timestamp from epoch (used in multiple widgets)
   function epoch_to_timestamp(epoch) {
     const date = new Date(parseFloat(epoch));
     const year = date.getFullYear();
@@ -648,123 +353,13 @@ $(document).ready(function() {
     return month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
   }
 
-  // Retrieve the latest/last measurement for gauges/outputs
-  function getLastData(chart_number,
-                       dash_type,
-                       unique_id,
-                       measure_type,
-                       measurement_id,
-                       max_measure_age_sec,
-                       decimal_places,
-                       extra) {
-    if (decimal_places === null) {
-      decimal_places = 1;
-    }
-
-    // Get output state for indicator and output widgets
-    if (dash_type === "indicator" && measure_type === "output") {
-      const url = '/outputstate_unique_id/' + unique_id;
-      $.ajax(url, {
-        success: function (data, responseText, jqXHR) {
-          if (jqXHR.status !== 204) {
-            if (data !== null) {
-              document.getElementById('timestamp-' + chart_number).innerHTML = '';
-              if (data !== 'off') {
-                document.getElementById('value-' + chart_number).title = "{{_('On')}}";
-              } else {
-                document.getElementById('value-' + chart_number).title = "{{_('Off')}}";
-              }
-              if ((data !== 'off' && !extra) || (data === 'off' && extra)) {
-                document.getElementById('value-' + chart_number).src = '/static/img/button-green.png';
-              }
-              else {
-                document.getElementById('value-' + chart_number).src = '/static/img/button-red.png';
-              }
-            }
-          } else {
-            document.getElementById('value-' + chart_number).src = '/static/img/button-yellow.png';
-            document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
-          }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-          document.getElementById('value-' + chart_number).src = '';
-          document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-          document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
-        }
-      });
-    }
-
-    // Get last measurement
-    else {
-      const url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + max_measure_age_sec.toString();
-      $.ajax(url, {
-        success: function(data, responseText, jqXHR) {
-          if (jqXHR.status === 204) {
-            if (dash_type === "gauge") {
-              chart[chart_number].series[0].points[0].update(null);
-            } else if (['indicator', 'measurement', 'output', 'pid_control'].indexOf(dash_type) >= 0) {
-              document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-              document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
-            }
-          }
-          else {
-            const formattedTime = epoch_to_timestamp(data[0]);
-            const measurement = data[1];
-
-            if (dash_type === "gauge") {
-              chart[chart_number].series[0].points[0].update(measurement);
-            } else if (dash_type === "indicator") {
-              if ((measurement && !extra) || (!measurement && extra)) {
-                document.getElementById('value-' + chart_number).src = '/static/img/button-green.png';
-              } else {
-                document.getElementById('value-' + chart_number).src = '/static/img/button-red.png';
-              }
-              document.getElementById('value-' + chart_number).title = "{{_('Value')}}: " + measurement;
-            } else {
-              document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(decimal_places);
-
-              const range_exists = document.getElementById("range_" + chart_number);
-              if (range_exists != null) {  // Update range slider value
-                document.getElementById("range_" + chart_number).value = measurement.toFixed(0);
-                document.getElementById("range_val_" + chart_number).innerHTML = measurement.toFixed(0);
-              }
-            }
-            document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
-          }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-          if (dash_type === "gauge") {
-            chart[chart_number].series[0].points[0].update(null);
-          } else if (['indicator', 'measurement', 'output', 'pid_control'].indexOf(dash_type) >= 0) {
-            document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-            document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
-          }
-        }
-      });
-    }
-  }
-
-  // Repeat function for getLastData()
-  function repeatLastData(chart_number,
-                          dash_type,
-                          dev_id,
-                          measure_type,
-                          measurement_id,
-                          period_sec,
-                          max_measure_age_sec,
-                          decimal_places,
-                          extra) {
-    setInterval(function () {
-      getLastData(chart_number,
-                  dash_type,
-                  dev_id,
-                  measure_type,
-                  measurement_id,
-                  max_measure_age_sec,
-                  decimal_places,
-                  extra)
-    }, period_sec * 1000);
-  }
+  <!-- Dashboard begin js_ready (dashboard {{dashboard_id}}) -->
+  {% for widget_type, file_js_ready in list_html_files_js_ready.items() %}
+  <!-- Widget {{widget_type}} js_ready template begin -->
+  {% include 'user_templates/{}'.format(file_js_ready) %}
+  <!-- Widget {{widget_type}} js_ready template end -->
+  {% endfor %}
+  <!-- Dashboard end js_ready -->
 
   function print_pid_value(data, name, chart_number, decimal_places, units) {
     if (name === 'setpoint' && data['setpoint_band']) {
@@ -945,111 +540,6 @@ $(document).ready(function() {
     }, period_sec * 1000);
   }
 
-  // Redraw a particular chart
-  function redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset) {
-    chart[chart_number].redraw();
-
-    if (xaxis_reset) {
-      const epoch_min = new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)));
-      const epoch_max = new Date().getTime();
-
-      // Ensure Reset Zoom button resets to the proper start and end times
-      chart[chart_number].xAxis[0].update({min: epoch_min}, false);
-      chart[chart_number].xAxis[0].update({max: epoch_max}, false);
-
-      // Update the new data time frame and redraw the chart
-      chart[chart_number].xAxis[0].setExtremes(epoch_min, epoch_max, true);
-      chart[chart_number].xAxis[0].isDirty = true;
-    }
-  }
-
-  // Repeat function for retrieveLiveData()
-  function getLiveData(chart_number,
-                       series,
-                       unique_id,
-                       measure_type,
-                       measurement_id,
-                       xaxis_duration_min,
-                       xaxis_reset,
-                       refresh_seconds) {
-    setInterval(function () {
-      retrieveLiveData(chart_number,
-                       series,
-                       unique_id,
-                       measure_type,
-                       measurement_id,
-                       xaxis_duration_min,
-                       xaxis_reset,
-                       refresh_seconds);
-    }, refresh_seconds * 1000);
-  }
-
-  // Capture image and update the image
-  function get_image_cam(dashboard_id, camera_unique_id, image_type, max_age) {
-    let url = '';
-    let image_type_str = '';
-    if (image_type === 'tmp_img') {
-      url = '/camera_acquire_image/tmp/' + camera_unique_id + '/' + max_age;
-      image_type_str = 'still'
-    } else if (image_type === 'new_image') {
-      url = '/camera_acquire_image/new/' + camera_unique_id + '/' + max_age;
-      image_type_str = 'still'
-    } else if (image_type === 'timelapse') {
-      url = '/camera_latest_timelapse/' + camera_unique_id + '/' + max_age;
-      image_type_str = 'timelapse'
-    }
-
-    $.ajax(url, {
-      success: function(data, responseText, jqXHR) {
-        if (jqXHR.status === 204) {
-          document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
-          document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
-        }
-        else {
-          let timestamp_str = '';
-          if (image_type_str === 'still') timestamp_str = 'Still: ';
-          else if (image_type_str === 'timelapse') timestamp_str = 'Timelapse: ';
-
-          const filename = data[0];
-          if (filename === 'max_age_exceeded') {
-            // The image timestamp is older than the maximum allowable age
-            document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_max_age.png";
-            document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_max_age.png";
-            document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + "Max Age Exceeded";
-          } else if (filename === 'file_not_found') {
-            // No image was found in the directory
-            document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
-            document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
-            document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + "File Not Found";
-          } else {
-            // The image is available and younger than the max age
-            const timestamp = data[1];
-            const image_no_cache_timestamp = Date.now();
-            document.getElementById(dashboard_id + "-image-src").src = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename + "?" + image_no_cache_timestamp;
-            document.getElementById(dashboard_id + "-image-href").href = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename + "?" + image_no_cache_timestamp;
-            document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + timestamp;
-          }
-        }
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
-        document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
-        document.getElementById(dashboard_id + "-timestamp").innerHTML = "Error Getting Image";
-      }
-    });
-  }
-
-  // Repeat function for get_image_cam()
-  function repeat_get_image_cam(dashboard_id, camera_unique_id, period_sec, image_type, max_age) {
-    if (image_type === 'stream') {
-      document.getElementById(dashboard_id + "-image-src").src = "/video_feed/" + camera_unique_id;
-      document.getElementById(dashboard_id + "-timestamp").innerHTML = 'Live Stream';
-    } else {
-      get_image_cam(dashboard_id, camera_unique_id, image_type, max_age);
-      setInterval(function () {get_image_cam(dashboard_id, camera_unique_id, image_type, max_age)}, period_sec * 1000);
-    }
-  }
-
   // Change opacity of all chart colors
   Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
     return Highcharts.Color(color).setOpacity(0.6).get('rgba');
@@ -1057,6 +547,8 @@ $(document).ready(function() {
 
 {% for each_widget in table_widget.query.filter(table_widget.dashboard_id == dashboard_id).all() -%}
   {%- set chart_number = loop.index -%}
+  {% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
+  {% set widget_variables = custom_widget_variables[each_widget.unique_id] %}
   {% set graph_input_ids = each_widget.input_ids_measurements.split(';') %}
 
   {% for widget_type, file_js_ready_end in list_html_files_js_ready_end.items() if widget_type == each_widget.graph_type %}

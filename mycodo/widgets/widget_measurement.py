@@ -55,10 +55,103 @@ WIDGET_INFORMATION = {
     'widget_width': 4,
     'widget_height': 5,
 
+    'custom_options': [
+        {
+            'id': 'measurement',
+            'type': 'select_measurement',
+            'default_value': '',
+            'options_select': [
+                'Input',
+                'Math',
+                'Output',
+                'PID'
+            ],
+            'name': lazy_gettext('Measurement'),
+            'phrase': lazy_gettext('Select a measurement to display')
+        },
+        {
+            'id': 'measurement_max_age',
+            'type': 'integer',
+            'default_value': 120,
+            'required': True,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': lazy_gettext('Measurement Max Age'),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement')
+        },
+        {
+            'id': 'refresh_seconds',
+            'type': 'float',
+            'default_value': 30.0,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Widget Refresh (seconds)',
+            'phrase': 'The period of time between refreshing the widget'
+        },
+        {
+            'id': 'font_em_measurement',
+            'type': 'float',
+            'default_value': 1.5,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Body Font Size (em)',
+            'phrase': 'The font size of the measurement'
+        },
+        {
+            'id': 'font_em_timestamp',
+            'type': 'float',
+            'default_value': 1.5,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Body Font Size (em)',
+            'phrase': 'The font size of the timestamp'
+        },
+        {
+            'id': 'decimal_places',
+            'type': 'integer',
+            'default_value': 2,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Decimal Places',
+            'phrase': 'The number of measurement decimal places'
+        },
+        {
+            'id': 'enable_unit',
+            'type': 'bool',
+            'default_value': True,
+            'name': lazy_gettext('Show Unit'),
+            'phrase': lazy_gettext('Show the unit')
+        },
+        {
+            'id': 'enable_name',
+            'type': 'bool',
+            'default_value': True,
+            'name': lazy_gettext('Show Name'),
+            'phrase': lazy_gettext('Show the name')
+        },
+        {
+            'id': 'enable_channel',
+            'type': 'bool',
+            'default_value': True,
+            'name': lazy_gettext('Show Channel'),
+            'phrase': lazy_gettext('Show the channel')
+        },
+        {
+            'id': 'enable_measurement',
+            'type': 'bool',
+            'default_value': True,
+            'name': lazy_gettext('Show Measurement'),
+            'phrase': lazy_gettext('Show the measurement')
+        },
+        {
+            'id': 'enable_timestamp',
+            'type': 'bool',
+            'default_value': True,
+            'name': lazy_gettext('Show Timestamp'),
+            'phrase': lazy_gettext('Show the timestamp')
+        }
+    ],
+
     'widget_dashboard_head': """<!-- No head content -->""",
 
+    'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
+
     'widget_dashboard_body': """
-  {% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
   {%- set device_id = widget_options['measurement'].split(",")[0] -%}
   {%- set measurement_id = widget_options['measurement'].split(",")[1] -%}
   
@@ -266,7 +359,6 @@ WIDGET_INFORMATION = {
 """,
 
     'widget_dashboard_js_ready_end': """
-  {% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
   {%- set device_id = widget_options['measurement'].split(",")[0] -%}
   {%- set measurement_id = widget_options['measurement'].split(",")[1] -%}
   
@@ -289,97 +381,5 @@ WIDGET_INFORMATION = {
   getLastDataMeasurement({{chart_number}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['measurement_max_age']}}, {{widget_options['decimal_places']}});
   repeatLastDataMeasurement({{chart_number}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_max_age']}}, {{widget_options['decimal_places']}});
   {%- endfor -%}
-""",
-
-    'custom_options': [
-        {
-            'id': 'measurement',
-            'type': 'select_measurement',
-            'default_value': '',
-            'options_select': [
-                'Input',
-                'Math',
-                'Output',
-                'PID'
-            ],
-            'name': lazy_gettext('Measurement'),
-            'phrase': lazy_gettext('Select a measurement to display')
-        },
-        {
-            'id': 'measurement_max_age',
-            'type': 'integer',
-            'default_value': 120,
-            'required': True,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Measurement Max Age'),
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement')
-        },
-        {
-            'id': 'refresh_seconds',
-            'type': 'float',
-            'default_value': 30.0,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Widget Refresh (seconds)',
-            'phrase': 'The period of time between refreshing the widget'
-        },
-        {
-            'id': 'font_em_measurement',
-            'type': 'float',
-            'default_value': 1.5,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Body Font Size (em)',
-            'phrase': 'The font size of the measurement'
-        },
-        {
-            'id': 'font_em_timestamp',
-            'type': 'float',
-            'default_value': 1.5,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Body Font Size (em)',
-            'phrase': 'The font size of the timestamp'
-        },
-        {
-            'id': 'decimal_places',
-            'type': 'integer',
-            'default_value': 2,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Decimal Places',
-            'phrase': 'The number of measurement decimal places'
-        },
-        {
-            'id': 'enable_unit',
-            'type': 'bool',
-            'default_value': True,
-            'name': lazy_gettext('Show Unit'),
-            'phrase': lazy_gettext('Show the unit')
-        },
-        {
-            'id': 'enable_name',
-            'type': 'bool',
-            'default_value': True,
-            'name': lazy_gettext('Show Name'),
-            'phrase': lazy_gettext('Show the name')
-        },
-        {
-            'id': 'enable_channel',
-            'type': 'bool',
-            'default_value': True,
-            'name': lazy_gettext('Show Channel'),
-            'phrase': lazy_gettext('Show the channel')
-        },
-        {
-            'id': 'enable_measurement',
-            'type': 'bool',
-            'default_value': True,
-            'name': lazy_gettext('Show Measurement'),
-            'phrase': lazy_gettext('Show the measurement')
-        },
-        {
-            'id': 'enable_timestamp',
-            'type': 'bool',
-            'default_value': True,
-            'name': lazy_gettext('Show Timestamp'),
-            'phrase': lazy_gettext('Show the timestamp')
-        }
-    ]
+"""
 }

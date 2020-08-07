@@ -52,6 +52,11 @@
       <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
         {% endfor -%}
       {% endif %}
+      {% if 'Output_PWM' in each_option['options_select'] %}
+        {% for each_output_form in choices_output_pwm -%}
+          <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
       {% if 'PID' in each_option['options_select'] %}
         {% for each_pid_form in choices_pid -%}
       <option value="{{each_pid_form['value']}}">{{each_pid_form['item']}}</option>
@@ -139,6 +144,11 @@
       {% if 'Trigger' in each_option['options_select'] %}
         {%- for each_dev in trigger -%}
       <option value="{{each_dev.unique_id}}">[Trigger {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+        {%- endfor -%}
+      {% endif %}
+      {% if 'Camera' in each_option['options_select'] %}
+        {%- for each_dev in camera -%}
+      <option value="{{each_dev.unique_id}}">[Camera {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
       {% if 'Custom' in each_option['options_select'] %}

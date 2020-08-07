@@ -22,32 +22,30 @@
 #  Contact at kylegabriel.com
 #
 import importlib.util
+import json
 import logging
 import os
 import textwrap
 import threading
 import time
-from mycodo.databases import set_uuid
+
 from flask import flash
 from flask_babel import lazy_gettext
 
 from mycodo.config import PATH_PYTHON_CODE_USER
-from mycodo.widgets.base_widget import AbstractWidget
+from mycodo.databases import set_uuid
 from mycodo.databases.models import Widget
 from mycodo.utils.code_verification import create_python_file
 from mycodo.utils.code_verification import test_python_code
 from mycodo.utils.system_pi import parse_custom_option_values_json
 from mycodo.utils.widgets import parse_widget_information
+from mycodo.widgets.base_widget import AbstractWidget
 
 logger = logging.getLogger(__name__)
 
 
-def save_python_file(unique_id):
+def save_python_file(custom_options_json, unique_id):
     """ Save python file """
-    dict_widgets = parse_widget_information()
-    custom_options_values_widgets = parse_custom_option_values_json(
-        Widget.query.all(), dict_controller=dict_widgets)
-
     pre_statement_loop = """import os
 import sys
 sys.path.append(os.path.abspath('/var/mycodo-root'))
@@ -68,9 +66,9 @@ class PythonRun:
 """
 
     indented_code_loop = textwrap.indent(
-        custom_options_values_widgets[unique_id]['python_code_loop'], ' ' * 8)
+        custom_options_json['python_code_loop'], ' ' * 8)
     indented_code_single = textwrap.indent(
-        custom_options_values_widgets[unique_id]['python_code_refresh'], ' ' * 8)
+        custom_options_json['python_code_refresh'], ' ' * 8)
     widget_python_code_run = (
         pre_statement_loop +
         indented_code_loop +
@@ -85,9 +83,10 @@ class PythonRun:
 
 
 def execute_at_creation(new_widget, dict_widget):
+    custom_options_json = json.loads(new_widget.custom_options)
     uuid = set_uuid()
     new_widget.unique_id = uuid
-    success, error = save_python_file(uuid)
+    success, error = save_python_file(custom_options_json, uuid)
     for each_error in error:
         flash(each_error, 'error')
     for each_success in success:
@@ -150,49 +149,6 @@ WIDGET_INFORMATION = {
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
     'execute_at_deletion': execute_at_deletion,
-
-    'dependencies_module': [],
-
-    'widget_dashboard_head': """<!-- No head content -->""",
-
-    'widget_dashboard_body': """<span style="font-size: {{custom_options_values_widgets[each_widget.unique_id]['font_em_body']}}em" id="text-python-code-{{chart_number}}"></span>""",
-
-    'widget_dashboard_js': """<!-- No JS content -->""",
-
-    'widget_dashboard_js_ready': """
-  function getPythonCodeResponse(chart_number, unique_id) {
-    const url = '/widget_execute/' + unique_id;
-    $.ajax(url, {
-      success: function (response, responseText, jqXHR) {
-        if (jqXHR.status !== 204) {
-          if (response !== null) {
-            document.getElementById("text-python-code-" + chart_number).innerHTML = response;
-          } else {
-            document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('NO DATA ERROR')}}';
-          }
-        } else {
-          document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('CONNECTION ERROR')}}';
-        }
-      },
-      error: function (jqXHR, textStatus, errorThrown) {
-        document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('CONNECTION ERROR')}}';
-      }
-    });
-  }
-
-  function repeatPythonCodeResponse(chart_number, unique_id, refresh_duration) {
-    setInterval(function () {
-      getPythonCodeResponse(chart_number, unique_id);
-    }, refresh_duration * 1000);  // Refresh duration in milliseconds
-  }
-""",
-
-    'widget_dashboard_js_ready_end': """
-$(function() {
-  getPythonCodeResponse('{{chart_number}}', '{{each_widget.unique_id}}');
-  repeatPythonCodeResponse('{{chart_number}}', '{{each_widget.unique_id}}', {{custom_options_values_widgets[each_widget.unique_id]['refresh_seconds']}});
-});
-""",
 
     'custom_options': [
         {
@@ -260,7 +216,50 @@ return self.return_string""",
             'name': lazy_gettext('Python Code (Refresh)'),
             'phrase': lazy_gettext('Python code to execute every dashboard/widget refresh')
         },
-    ]
+    ],
+
+    'widget_dashboard_head': """<!-- No head content -->""",
+
+    'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
+
+    'widget_dashboard_body': """<span style="font-size: {{widget_options['font_em_body']}}em" id="text-python-code-{{chart_number}}"></span>""",
+
+    'widget_dashboard_js': """<!-- No JS content -->""",
+
+    'widget_dashboard_js_ready': """
+  function getPythonCodeResponse(chart_number, unique_id) {
+    const url = '/widget_execute/' + unique_id;
+    $.ajax(url, {
+      success: function (response, responseText, jqXHR) {
+        if (jqXHR.status !== 204) {
+          if (response !== null) {
+            document.getElementById("text-python-code-" + chart_number).innerHTML = response;
+          } else {
+            document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('NO DATA ERROR')}}';
+          }
+        } else {
+          document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('CONNECTION ERROR')}}';
+        }
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('CONNECTION ERROR')}}';
+      }
+    });
+  }
+
+  function repeatPythonCodeResponse(chart_number, unique_id, refresh_duration) {
+    setInterval(function () {
+      getPythonCodeResponse(chart_number, unique_id);
+    }, refresh_duration * 1000);  // Refresh duration in milliseconds
+  }
+""",
+
+    'widget_dashboard_js_ready_end': """
+$(function() {
+  getPythonCodeResponse('{{chart_number}}', '{{each_widget.unique_id}}');
+  repeatPythonCodeResponse('{{chart_number}}', '{{each_widget.unique_id}}', {{widget_options['refresh_seconds']}});
+});
+"""
 }
 
 

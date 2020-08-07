@@ -23,8 +23,10 @@
 #
 import json
 import logging
+import re
 
 import flask_login
+from flask import flash
 from flask_babel import lazy_gettext
 
 from mycodo.databases.models import Conversion
@@ -43,9 +45,8 @@ logger = logging.getLogger(__name__)
 
 
 def execute_at_creation(new_widget, dict_widget):
+    # Create initial default values
     custom_options_json = json.loads(new_widget.custom_options)
-    # Add initial default values
-    custom_options_json['use_custom_colors'] = False
     custom_options_json['enable_manual_y_axis'] = False
     custom_options_json['enable_align_ticks'] = False
     custom_options_json['enable_start_on_tick'] = False
@@ -63,31 +64,30 @@ def execute_at_modification(
         custom_options_json_presave,
         custom_options_json_postsave):
     allow_saving = True
+    error = []
 
-    logger.error("TEST00: {}".format(request_form))
+    for key in request_form.keys():
+        if key == 'use_custom_colors':
+            custom_options_json_postsave['use_custom_colors'] = request_form.get(key)
+        elif key == 'enable_manual_y_axis':
+            custom_options_json_postsave['enable_manual_y_axis'] = request_form.get(key)
+        elif key == 'enable_align_ticks':
+            custom_options_json_postsave['enable_align_ticks'] = request_form.get(key)
+        elif key == 'enable_start_on_tick':
+            custom_options_json_postsave['enable_start_on_tick'] = request_form.get(key)
+        elif key == 'enable_end_on_tick':
+            custom_options_json_postsave['enable_end_on_tick'] = request_form.get(key)
 
-    # measurements_input_string = ''
-    # measurements_math_string = ''
-    # measurements_output_string = ''
-    # measurements_pid_string = ''
-    # measurements_note_tag_string = ''
-    #
-    # if 'measurements_input' in request_form:
-    #     measurements_input_string = request_form.getlist('measurements_input')
-    # if 'measurements_math' in request_form:
-    #     measurements_math_string = request_form.getlist('measurements_math')
-    # if 'measurements_output' in request_form:
-    #     measurements_output_string = request_form.getlist('measurements_output')
-    # if 'measurements_pid' in request_form:
-    #     measurements_pid_string = request_form.getlist('measurements_pid')
-    # if 'measurements_note_tag' in request_form:
-    #     measurements_note_tag_string = request_form.getlist('measurements_note_tag')
-    #
-    # custom_options_json_postsave['measurements_input'] = measurements_input_string
-    # custom_options_json_postsave['measurements_math'] = measurements_math_string
-    # custom_options_json_postsave['measurements_output'] = measurements_output_string
-    # custom_options_json_postsave['measurements_pid'] = measurements_pid_string
-    # custom_options_json_postsave['measurements_note_tag'] = measurements_note_tag_string
+    custom_options_json_postsave['custom_yaxes'] = custom_yaxes_str_from_form(request_form)
+
+    sorted_colors_string, error = custom_colors_graph_str(request_form, error)
+    custom_options_json_postsave['custom_colors'] = sorted_colors_string
+
+    disable_data_grouping_string, error = data_grouping_graph_str(request_form, error)
+    custom_options_json_postsave['disable_data_grouping'] = disable_data_grouping_string
+
+    for each_error in error:
+        flash(each_error, "error")
 
     return allow_saving, mod_widget, custom_options_json_postsave
 
@@ -109,10 +109,6 @@ def generate_page_variables(widget_unique_id, widget_options):
         'y_axes': y_axes,
         'custom_yaxes': custom_yaxes
     }
-
-    logger.error("colors_graph: {}".format(colors_graph))
-    logger.error("y_axes: {}".format(y_axes))
-    logger.error("custom_yaxes: {}".format(custom_yaxes))
 
     return dict_return
 
@@ -148,52 +144,182 @@ WIDGET_INFORMATION = {
     'widget_width': 20,
     'widget_height': 9,
 
-    'widget_dashboard_head': """""",
+    'custom_options': [
+        {
+            'id': 'refresh_seconds',
+            'type': 'integer',
+            'default_value': 90,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Refresh (seconds)',
+            'phrase': 'The period of time between refreshing the widget'
+        },
+        {
+            'id': 'x_axis_minutes',
+            'type': 'integer',
+            'default_value': 1440,
+            'name': 'X-Axis Duration (minutes)',
+            'phrase': 'The x-axis duration'
+        },
+        {
+            'id': 'enable_auto_refresh',
+            'type': 'bool',
+            'default_value': True,
+            'name': 'Enable Auto Refresh',
+            'phrase': 'Enable the graph to automatically refresh with new data every Refresh period.'
+        },
+        {
+            'id': 'enable_xaxis_reset',
+            'type': 'bool',
+            'default_value': True,
+            'name': 'Enable X-Axis Reset',
+            'phrase': 'Enable the X-Axis to reset every Refresh period.'
+        },
+        {
+            'id': 'enable_header_buttons',
+            'type': 'bool',
+            'default_value': True,
+            'name': 'Enable Header Buttons',
+            'phrase': 'Enable buttons to control the graph on the widget header.'
+        },
+        {
+            'id': 'enable_title',
+            'type': 'bool',
+            'default_value': False,
+            'name': 'Enable Title',
+            'phrase': 'Enable the graph title.'
+        },
+        {
+            'id': 'enable_navbar',
+            'type': 'bool',
+            'default_value': False,
+            'name': 'Enable Navbar',
+            'phrase': 'Enable the graph navigation bar.'
+        },
+        {
+            'id': 'enable_export',
+            'type': 'bool',
+            'default_value': False,
+            'name': 'Enable Export',
+            'phrase': 'Enable the graph export button.'
+        },
+        {
+            'id': 'enable_range_selector',
+            'type': 'bool',
+            'default_value': False,
+            'name': 'Enable Range Selector',
+            'phrase': 'Enagle the graph range selector.'
+        },
+        {'type': 'new_line'},
+        {
+            'id': 'measurements_input',
+            'type': 'select_multi_measurement',
+            'default_value': '',
+            'options_select': [
+                'Input'
+            ],
+            'name': lazy_gettext('Inputs'),
+            'phrase': lazy_gettext('Select Input measurements to display')
+        },
+        {
+            'id': 'measurements_math',
+            'type': 'select_multi_measurement',
+            'default_value': '',
+            'options_select': [
+                'Math'
+            ],
+            'name': lazy_gettext('Maths'),
+            'phrase': lazy_gettext('Select Math measurements to display')
+        },
+        {
+            'id': 'measurements_output',
+            'type': 'select_multi_measurement',
+            'default_value': '',
+            'options_select': [
+                'Output'
+            ],
+            'name': lazy_gettext('Outputs'),
+            'phrase': lazy_gettext('Select Output measurements to display')
+        },
+        {
+            'id': 'measurements_pid',
+            'type': 'select_multi_measurement',
+            'default_value': '',
+            'options_select': [
+                'PID'
+            ],
+            'name': lazy_gettext('PIDs'),
+            'phrase': lazy_gettext('Select PID measurements to display')
+        },
+        {
+            'id': 'measurements_note_tag',
+            'type': 'select_multi_measurement',
+            'default_value': '',
+            'options_select': [
+                'Tag'
+            ],
+            'name': lazy_gettext('Note Tags'),
+            'phrase': lazy_gettext('Select Note Tags measurements to display')
+        },
+        {
+            'type': 'message',
+            'default_value': 'Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one',
+        }
+    ],
+
+    'widget_dashboard_head': """<!-- no head content -->""",
+
+    'widget_dashboard_title_bar': """
+    <span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>
+    {% if widget_options['enable_header_buttons'] -%}
+    <button class="btn btn-sm btn-primary" id="updateData{{chart_number}}">Update</button>
+    <button class="btn btn-sm btn-primary" id="resetZoom{{chart_number}}">Reset</button>
+    <button class="btn btn-sm btn-primary" id="showhidebutton{{chart_number}}">Hide</button>
+    {% endif %}
+""",
 
     'widget_dashboard_body': """<div class="not-draggable" id="container-synchronous-graph-{{each_widget.unique_id}}" style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; overflow: hidden;"></div>""",
 
     'widget_dashboard_configure_options': """
-        <div class="form-row" style="padding-left: 0.5em; padding-top: 1em">
+        <div class="form-row" style="padding-left: 0.5em; padding-top: 1em; padding-bottom: 0.5em">
           <div class="col-12" style="font-weight: bold">
             {{_('Series Options')}}
           </div>
           <div class="col-auto">
             <label class="control-label">Enable Custom Colors</label>
             <div class="input-group-text">
-              <input id="use_custom_colors" name="use_custom_colors" type="checkbox" value="y"{% if custom_options_values_widgets[each_widget.unique_id]['use_custom_colors'] %} checked{% endif %}>
+              <input id="use_custom_colors" name="use_custom_colors" type="checkbox" value="y"{% if widget_options['use_custom_colors'] %} checked{% endif %}>
             </div>
           </div>
         </div>
-
-          {% for n in range(widget_variables[each_widget.unique_id]['colors_graph']|length) %}
+          {% for n in range(widget_variables['colors_graph']|length) %}
         <div class="form-row">
           <div class="col-12">
-            {{widget_variables[each_widget.unique_id]['colors_graph'][n]['type']}}
-            {%- if 'channel' in widget_variables[each_widget.unique_id]['colors_graph'][n] -%}
-              {{', CH' + widget_variables[each_widget.unique_id]['colors_graph'][n]['channel']|string}}
+            {{widget_variables['colors_graph'][n]['type']}}
+            {%- if 'channel' in widget_variables['colors_graph'][n] -%}
+              {{', CH' + widget_variables['colors_graph'][n]['channel']|string}}
             {%- endif -%}
-            {%- if widget_variables[each_widget.unique_id]['colors_graph'][n]['name'] -%}
-              {{', ' + widget_variables[each_widget.unique_id]['colors_graph'][n]['name']}}
+            {%- if widget_variables['colors_graph'][n]['name'] -%}
+              {{', ' + widget_variables['colors_graph'][n]['name']}}
             {%- endif -%}
-            {%- if widget_variables[each_widget.unique_id]['colors_graph'][n]['measure_name'] -%}
-              {{', ' + widget_variables[each_widget.unique_id]['colors_graph'][n]['measure_name']}}
+            {%- if widget_variables['colors_graph'][n]['measure_name'] -%}
+              {{', ' + widget_variables['colors_graph'][n]['measure_name']}}
             {%- endif -%}
-            {%- if widget_variables[each_widget.unique_id]['colors_graph'][n]['unit'] in dict_units -%}
-              {{' (' + dict_units[widget_variables[each_widget.unique_id]['colors_graph'][n]['unit']]['name'] + ')'}}
+            {%- if widget_variables['colors_graph'][n]['unit'] in dict_units -%}
+              {{' (' + dict_units[widget_variables['colors_graph'][n]['unit']]['name'] + ')'}}
             {%- endif -%}
           </div>
           <div class="form-check">
             {% set index = '{0:0>2}'.format(n) %}
             <label class="control-label" for="color_number{{index}}">Color</label>
             <div>
-              <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{widget_variables[each_widget.unique_id]['colors_graph'][n]['color']}}">
+              <input id="color_number{{index}}" name="color_number{{index}}" placeholder="#000000" type="color" value="{{widget_variables['colors_graph'][n]['color']}}">
             </div>
           </div>
-            {% if widget_variables[each_widget.unique_id]['colors_graph'][n]['type'] != 'Tag' %}
+            {% if widget_variables['colors_graph'][n]['type'] != 'Tag' %}
           <div class="col-auto">
             <label class="control-label">Disable Data Grouping</label>
             <div class="input-group-text">
-              <input id="disable_data_grouping-{{widget_variables[each_widget.unique_id]['colors_graph'][n]['measure_id']}}" name="disable_data_grouping-{{widget_variables[each_widget.unique_id]['colors_graph'][n]['measure_id']}}" type="checkbox" value="y"{% if widget_variables[each_widget.unique_id]['colors_graph'][n]['disable_data_grouping'] %} checked{% endif %}>
+              <input id="disable_data_grouping-{{widget_variables['colors_graph'][n]['measure_id']}}" name="disable_data_grouping-{{widget_variables['colors_graph'][n]['measure_id']}}" type="checkbox" value="y"{% if widget_variables['colors_graph'][n]['disable_data_grouping'] %} checked{% endif %}>
             </div>
           </div>
             {% endif %}
@@ -207,30 +333,30 @@ WIDGET_INFORMATION = {
           <div class="col-auto">
             <label class="control-label">Enable Manual Y-Axis Min/Max</label>
             <div class="input-group-text">
-              <input id="enable_manual_y_axis" name="enable_manual_y_axis" type="checkbox" value="y"{% if custom_options_values_widgets[each_widget.unique_id]['enable_manual_y_axis'] %} checked{% endif %}>
+              <input id="enable_manual_y_axis" name="enable_manual_y_axis" type="checkbox" value="y"{% if widget_options['enable_manual_y_axis'] %} checked{% endif %}>
             </div>
           </div>
           <div class="col-auto">
             <label class="control-label">Enable Y-Axis Align Ticks</label>
             <div class="input-group-text">
-              <input id="enable_align_ticks" name="enable_align_ticks" type="checkbox" value="y"{% if custom_options_values_widgets[each_widget.unique_id]['enable_align_ticks'] %} checked{% endif %}>
+              <input id="enable_align_ticks" name="enable_align_ticks" type="checkbox" value="y"{% if widget_options['enable_align_ticks'] %} checked{% endif %}>
             </div>
           </div>
           <div class="col-auto">
             <label class="control-label">Enable Y-Axis Start On Tick</label>
             <div class="input-group-text">
-              <input id="enable_start_on_tick" name="enable_start_on_tick" type="checkbox" value="y"{% if custom_options_values_widgets[each_widget.unique_id]['enable_start_on_tick'] %} checked{% endif %}>
+              <input id="enable_start_on_tick" name="enable_start_on_tick" type="checkbox" value="y"{% if widget_options['enable_start_on_tick'] %} checked{% endif %}>
             </div>
           </div>
           <div class="col-auto">
             <label class="control-label">Enable Y-Axis End On Tick</label>
             <div class="input-group-text">
-              <input id="enable_end_on_tick" name="enable_end_on_tick" type="checkbox" value="y"{% if custom_options_values_widgets[each_widget.unique_id]['enable_end_on_tick'] %} checked{% endif %}>
+              <input id="enable_end_on_tick" name="enable_end_on_tick" type="checkbox" value="y"{% if widget_options['enable_end_on_tick'] %} checked{% endif %}>
             </div>
           </div>
         </div>
 
-      {% for each_yaxis in widget_variables[each_widget.unique_id]['y_axes'] if each_yaxis in dict_units %}
+      {% for each_yaxis in widget_variables['y_axes'] if each_yaxis in dict_units %}
         {% set index = '{0:0>2}'.format(loop.index) %}
         <div class="row" style="padding-top: 0.5em">
           <div class="col-auto">
@@ -243,13 +369,13 @@ WIDGET_INFORMATION = {
           <div class="col-auto">
             <label class="form-check-label" for="custom_yaxis_min_{{index}}">Y-Axis Minimum</label>
             <div>
-              <input id="yaxis_min_{{index}}" class="form-control" name="custom_yaxis_min_{{index}}" type="number" value="{% if widget_variables[each_widget.unique_id]['custom_yaxes'][each_yaxis] %}{{widget_variables[each_widget.unique_id]['custom_yaxes'][each_yaxis]['minimum']}}{% endif %}">
+              <input id="yaxis_min_{{index}}" class="form-control" name="custom_yaxis_min_{{index}}" type="number" value="{% if widget_variables['custom_yaxes'][each_yaxis] %}{{widget_variables['custom_yaxes'][each_yaxis]['minimum']}}{% endif %}">
             </div>
           </div>
           <div class="col-auto">
             <label class="form-check-label" for="custom_yaxis_max_{{index}}">Y-Axis Maximum</label>
             <div>
-              <input id="yaxis_max_{{index}}" class="form-control" name="custom_yaxis_max_{{index}}" type="number" value="{% if widget_variables[each_widget.unique_id]['custom_yaxes'][each_yaxis] %}{{widget_variables[each_widget.unique_id]['custom_yaxes'][each_yaxis]['maximum']}}{% endif %}">
+              <input id="yaxis_max_{{index}}" class="form-control" name="custom_yaxis_max_{{index}}" type="number" value="{% if widget_variables['custom_yaxes'][each_yaxis] %}{{widget_variables['custom_yaxes'][each_yaxis]['maximum']}}{% endif %}">
             </div>
           </div>
         </div>
@@ -259,6 +385,24 @@ WIDGET_INFORMATION = {
     'widget_dashboard_js': """<!-- No JS content -->""",
 
     'widget_dashboard_js_ready': """
+  // Redraw a particular chart
+  function redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset) {
+    chart[chart_number].redraw();
+
+    if (xaxis_reset) {
+      const epoch_min = new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)));
+      const epoch_max = new Date().getTime();
+
+      // Ensure Reset Zoom button resets to the proper start and end times
+      chart[chart_number].xAxis[0].update({min: epoch_min}, false);
+      chart[chart_number].xAxis[0].update({max: epoch_max}, false);
+
+      // Update the new data time frame and redraw the chart
+      chart[chart_number].xAxis[0].setExtremes(epoch_min, epoch_max, true);
+      chart[chart_number].xAxis[0].isDirty = true;
+    }
+  }
+  
   // Retrieve initial graph data set from the past (duration set by user)
   function getPastDataSynchronousGraph(chart_number,
                        series,
@@ -406,8 +550,6 @@ WIDGET_INFORMATION = {
 """,
 
     'widget_dashboard_js_ready_end': """
-{% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
-
 {% set graph_input_ids = widget_options['measurements_input'] %}
 {% set graph_math_ids = widget_options['measurements_math'] %}
 {% set graph_output_ids = widget_options['measurements_output'] %}
@@ -435,9 +577,9 @@ WIDGET_INFORMATION = {
             {%- set all_input = table_input.query.filter(table_input.unique_id == input_id).all() -%}
             {%- if all_input -%}
               {% for each_input in all_input %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
+          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
                 {% if widget_options['enable_auto_refresh'] -%}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
                 {%- endif -%}
                 {%- do count_series.append(1) -%}
               {%- endfor -%}
@@ -450,9 +592,9 @@ WIDGET_INFORMATION = {
             {%- set all_math = table_math.query.filter(table_math.unique_id == math_id).all() -%}
             {%- if all_math -%}
               {% for each_math in all_math %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
+          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
                 {% if widget_options['enable_auto_refresh'] %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
                 {% endif %}
                 {%- do count_series.append(1) %}
               {%- endfor -%}
@@ -465,9 +607,9 @@ WIDGET_INFORMATION = {
             {%- set all_output = table_output.query.filter(table_output.unique_id == output_id).all() -%}
             {%- if all_output -%}
               {% for each_output in all_output %}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
+          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
                 {% if widget_options['enable_auto_refresh'] -%}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
                 {%- endif -%}
                 {%- do count_series.append(1) -%}
               {%- endfor -%}
@@ -477,9 +619,9 @@ WIDGET_INFORMATION = {
           {%- for each_pid in pid -%}
             {%- for pid_and_measurement_id in graph_pid_ids if each_pid.unique_id == pid_and_measurement_id.split(',')[0] %}
               {%- set measurement_id = pid_and_measurement_id.split(',')[1] -%}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
+          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
           {% if widget_options['enable_auto_refresh'] %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -488,9 +630,9 @@ WIDGET_INFORMATION = {
           {%- for each_tag in tags -%}
             {%- for tag_and_measurement_id in graph_note_tag_ids if each_tag.unique_id == tag_and_measurement_id.split(',')[0] %}
               {%- set measurement_id = tag_and_measurement_id.split(',')[1] -%}
-          getPastData({{chart_number}}, {{count_series|count}}, '{{each_tag.unique_id}}', 'tag', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
+          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_tag.unique_id}}', 'tag', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
           {% if widget_options['enable_auto_refresh'] %}
-          getLiveData({{chart_number}}, {{count_series|count}}, '{{each_tag.unique_id}}', 'tag', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_tag.unique_id}}', 'tag', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -498,8 +640,8 @@ WIDGET_INFORMATION = {
         }
       }
     },
-  {% if widget_options['use_custom_colors'] and widget_variables[each_widget.unique_id]['custom_colors'] -%}
-    {% set color_list = widget_variables[each_widget.unique_id]['custom_colors'].split(',') %}
+  {% if widget_options['use_custom_colors'] and widget_options['custom_colors'] -%}
+    {% set color_list = widget_options['custom_colors'].split(',') %}
       colors: [
     {%- for each_color in color_list -%}
       "{{each_color}}",
@@ -520,12 +662,12 @@ WIDGET_INFORMATION = {
     },
 
     yAxis: [
-  {% for each_axis_meas in widget_variables[each_widget.unique_id]['y_axes'] if each_axis_meas in dict_units %}
+  {% for each_axis_meas in widget_variables['y_axes'] if each_axis_meas in dict_units %}
       {
     {% if widget_options['enable_manual_y_axis'] and
-          widget_variables[each_widget.unique_id]['custom_yaxes'][each_axis_meas]['minimum'] != widget_variables[each_widget.unique_id]['custom_yaxes'][each_axis_meas]['maximum'] %}
-        min: {{widget_variables[each_widget.unique_id]['custom_yaxes'][each_axis_meas]['minimum']}},
-        max: {{widget_variables[each_widget.unique_id]['custom_yaxes'][each_axis_meas]['maximum']}},
+          widget_variables['custom_yaxes'][each_axis_meas]['minimum'] != widget_variables['custom_yaxes'][each_axis_meas]['maximum'] %}
+        min: {{widget_variables['custom_yaxes'][each_axis_meas]['minimum']}},
+        max: {{widget_variables['custom_yaxes'][each_axis_meas]['maximum']}},
         startOnTick: {% if widget_options['enable_start_on_tick'] %}true{% else %}false{% endif %},
         endOnTick: {% if widget_options['enable_end_on_tick'] %}true{% else %}false{% endif %},
     {% endif %}
@@ -563,7 +705,7 @@ WIDGET_INFORMATION = {
     },
 
     rangeSelector: {
-      enabled: {% if widget_options['enable_rangeselect'] %}true{% else %}false{% endif %},
+      enabled: {% if widget_options['enable_range_selector'] %}true{% else %}false{% endif %},
       buttons: [{
         count: 1,
         type: 'minute',
@@ -693,7 +835,7 @@ WIDGET_INFORMATION = {
         {%- set measurement_id = input_and_measurement_ids.split(',')[1] -%}
 
         {% set disable_data_grouping = [] -%}
-        {% for each_series in widget_variables[each_widget.unique_id]['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
+        {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
           {%- do disable_data_grouping.append(1) %}
         {% endfor %}
 
@@ -758,7 +900,7 @@ WIDGET_INFORMATION = {
       {%- set measurement_id = math_and_measurement_ids.split(',')[1] -%}
 
       {% set disable_data_grouping = [] -%}
-      {% for each_series in widget_variables[each_widget.unique_id]['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
+      {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
         {%- do disable_data_grouping.append(1) %}
       {% endfor %}
 
@@ -826,7 +968,7 @@ WIDGET_INFORMATION = {
         {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
 
         {% set disable_data_grouping = [] -%}
-        {% for each_series in widget_variables[each_widget.unique_id]['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
+        {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
           {%- do disable_data_grouping.append(1) %}
         {% endfor %}
 
@@ -885,7 +1027,7 @@ WIDGET_INFORMATION = {
       {%- set measurement_id = pid_and_measurement_ids.split(',')[1] -%}
 
       {% set disable_data_grouping = [] -%}
-      {% for each_series in widget_variables[each_widget.unique_id]['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
+      {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
         {%- do disable_data_grouping.append(1) %}
       {% endfor %}
 
@@ -961,7 +1103,7 @@ WIDGET_INFORMATION = {
     {% for each_input in input -%}
       {% for input_and_measurement_ids in graph_input_ids if each_input.unique_id == input_and_measurement_ids.split(',')[0] %}
         {%- set measurement_id = input_and_measurement_ids.split(',')[1] -%}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
         {%- do count_series.append(1) %}
       {% endfor %}
     {%- endfor -%}
@@ -969,7 +1111,7 @@ WIDGET_INFORMATION = {
     {% for each_math in math -%}
       {% for math_and_measurement_id in graph_math_ids if each_math.unique_id == math_and_measurement_id.split(',')[0] %}
         {%- set measurement_id = math_and_measurement_id.split(',')[1] -%}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
         {%- do count_series.append(1) %}
       {% endfor %}
     {%- endfor -%}
@@ -977,7 +1119,7 @@ WIDGET_INFORMATION = {
     {% for each_output in output -%}
       {% for output_and_measurement_ids in graph_output_ids if each_output.unique_id == output_and_measurement_ids.split(',')[0] %}
         {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
         {%- do count_series.append(1) %}
       {% endfor %}
     {%- endfor -%}
@@ -985,14 +1127,14 @@ WIDGET_INFORMATION = {
     {% for each_pid in pid -%}
       {% for pid_and_measurement_id in graph_pid_ids if each_pid.unique_id == pid_and_measurement_id.split(',')[0] %}
         {%- set measurement_id = pid_and_measurement_id.split(',')[1] -%}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
         {%- do count_series.append(1) %}
       {% endfor %}
     {%- endfor -%}
 
     {%- for each_tag in tag -%}
       {% for each_id_and_measure in graph_note_tag_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
-    retrieveLiveData({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
         {%- do count_series.append(1) %}
       {% endfor %}
     {%- endfor -%}
@@ -1019,129 +1161,87 @@ WIDGET_INFORMATION = {
     }
   });
 """,
-
-    'custom_options': [
-        {
-            'id': 'refresh_seconds',
-            'type': 'integer',
-            'default_value': 90,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Refresh (seconds)',
-            'phrase': 'The period of time between refreshing the widget'
-        },
-        {
-            'id': 'x_axis_minutes',
-            'type': 'integer',
-            'default_value': 1440,
-            'name': 'X-Axis Duration (minutes)',
-            'phrase': 'The x-axis duration'
-        },
-        {
-            'id': 'enable_auto_refresh',
-            'type': 'bool',
-            'default_value': True,
-            'name': 'Enable Auto Refresh',
-            'phrase': 'Enable the graph to automatically refresh with new data every Refresh period.'
-        },
-        {
-            'id': 'enable_xaxis_reset',
-            'type': 'bool',
-            'default_value': True,
-            'name': 'Enable X-Axis Reset',
-            'phrase': 'Enable the X-Axis to reset every Refresh period.'
-        },
-        {
-            'id': 'enable_header_buttons',
-            'type': 'bool',
-            'default_value': True,
-            'name': 'Enable Header Buttons',
-            'phrase': 'Enable buttons to control the graph on the widget header.'
-        },
-        {
-            'id': 'enable_title',
-            'type': 'bool',
-            'default_value': False,
-            'name': 'Enable Title',
-            'phrase': 'Enable the graph title.'
-        },
-        {
-            'id': 'enable_navbar',
-            'type': 'bool',
-            'default_value': False,
-            'name': 'Enable Navbar',
-            'phrase': 'Enable the graph navigation bar.'
-        },
-        {
-            'id': 'enable_export',
-            'type': 'bool',
-            'default_value': False,
-            'name': 'Enable Export',
-            'phrase': 'Enable the graph export button.'
-        },
-        {
-            'id': 'enable_range_selector',
-            'type': 'bool',
-            'default_value': False,
-            'name': 'Enable Range Selector',
-            'phrase': 'Enagle the graph range selector.'
-        },
-        {'type': 'new_line'},
-        {
-            'id': 'measurements_input',
-            'type': 'select_multi_measurement',
-            'default_value': '',
-            'options_select': [
-                'Input'
-            ],
-            'name': lazy_gettext('Inputs'),
-            'phrase': lazy_gettext('Select Input measurements to display')
-        },
-        {
-            'id': 'measurements_math',
-            'type': 'select_multi_measurement',
-            'default_value': '',
-            'options_select': [
-                'Math'
-            ],
-            'name': lazy_gettext('Maths'),
-            'phrase': lazy_gettext('Select Math measurements to display')
-        },
-        {
-            'id': 'measurements_output',
-            'type': 'select_multi_measurement',
-            'default_value': '',
-            'options_select': [
-                'Output'
-            ],
-            'name': lazy_gettext('Outputs'),
-            'phrase': lazy_gettext('Select Output measurements to display')
-        },
-        {
-            'id': 'measurements_pid',
-            'type': 'select_multi_measurement',
-            'default_value': '',
-            'options_select': [
-                'PID'
-            ],
-            'name': lazy_gettext('PIDs'),
-            'phrase': lazy_gettext('Select PID measurements to display')
-        },
-        {
-            'id': 'measurements_note_tag',
-            'type': 'select_multi_measurement',
-            'default_value': '',
-            'options_select': [
-                'Tag'
-            ],
-            'name': lazy_gettext('Note Tags'),
-            'phrase': lazy_gettext('Select Note Tags measurements to display')
-        },
-        {
-            'type': 'message',
-            'default_value': 'Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more than one',
-        }
-    ]
 }
+
+
+def data_grouping_graph_str(form, error):
+    """
+    Get checkbox options for data grouping, turn into CSV string
+    :param form:
+    :return:
+    """
+    list_data_grouping = []
+    for key in form.keys():
+        if 'disable_data_grouping' in key:
+            list_data_grouping.append(key[22:])
+    return ','.join(list_data_grouping), error
+
+
+def custom_yaxes_str_from_form(form):
+    """
+    Parse several yaxis min/max inputs and turn them into CSV string to
+    save in the database
+    :param form: UI form submitted by mycodo
+    :return: string of CSV data sets separated by ';'
+    """
+    # Parse custom y-axis options from the UI form
+    yaxes = {}
+    for key in form.keys():
+        if 'custom_yaxis_name_' in key:
+            for value in form.getlist(key):
+                unique_number = key[18:]
+                if unique_number not in yaxes:
+                    yaxes[unique_number] = {}
+                yaxes[unique_number]['name'] = value
+        if 'custom_yaxis_min_' in key:
+            for value in form.getlist(key):
+                unique_number = key[17:]
+                if unique_number not in yaxes:
+                    yaxes[unique_number] = {}
+                yaxes[unique_number]['minimum'] = value
+        if 'custom_yaxis_max_' in key:
+            for value in form.getlist(key):
+                unique_number = key[17:]
+                if unique_number not in yaxes:
+                    yaxes[unique_number] = {}
+                yaxes[unique_number]['maximum'] = value
+    # Create a list of CSV sets in the format 'y-axis, minimum, maximum'
+    yaxes_list = []
+    for _, yaxis_type in yaxes.items():
+        yaxes_list.append('{},{},{}'.format(
+            yaxis_type['name'], yaxis_type['minimum'], yaxis_type['maximum']))
+    # Join the list of CSV sets with ';'
+    return ';'.join(yaxes_list)
+
+
+def is_rgb_color(color_hex):
+    """
+    Check if string is a hex color value for the web UI
+    :param color_hex: string to check if it represents a hex color value
+    :return: bool
+    """
+    return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
+
+
+def custom_colors_graph_str(form, error):
+    """
+    Get variable number of graph color inputs, turn into CSV string
+    :param form:
+    :return:
+    """
+    colors = {}
+    short_list = []
+    for key in form.keys():
+        if 'color_number' in key:
+            logger.error("TEST03: {}, {}".format(key, form.getlist(key)))
+            for value in form.getlist(key):
+                if not is_rgb_color(value):
+                    error.append("Invalid hex color value")
+                colors[key[12:]] = value
+    sorted_list = [(k, colors[k]) for k in sorted(colors)]
+    for each_color in sorted_list:
+        short_list.append(each_color[1])
+    return ','.join(short_list), error
 
 
 def dict_custom_colors(widget_options):

@@ -687,7 +687,7 @@ def page_dashboard(dashboard_id):
         dashboard, dict_controller=dict_widgets)
 
     widget_types_on_dashboard = []
-    widget_variables = {}
+    custom_widget_variables = {}
     widgets_dash = Widget.query.filter(Widget.dashboard_id == dashboard_id).all()
     for each_widget in widgets_dash:
         # Make list of widget types on this particular dashboard
@@ -696,11 +696,12 @@ def page_dashboard(dashboard_id):
 
         # Generate dictionary of returned values from widget modules on this particular dashboard
         if 'generate_page_variables' in dict_widgets[each_widget.graph_type]:
-            widget_variables[each_widget.unique_id] = dict_widgets[each_widget.graph_type]['generate_page_variables'](
+            custom_widget_variables[each_widget.unique_id] = dict_widgets[each_widget.graph_type]['generate_page_variables'](
                 each_widget.unique_id, custom_options_values_widgets[each_widget.unique_id])
 
     # generate lists of html files to include in dashboard template
     list_html_files_body = {}
+    list_html_files_title_bar = {}
     list_html_files_head = {}
     list_html_files_configure_options = {}
     list_html_files_js = {}
@@ -712,6 +713,11 @@ def page_dashboard(dashboard_id):
         path_html_head = os.path.join(PATH_HTML_USER, file_html_head)
         if os.path.exists(path_html_head):
             list_html_files_head[each_widget_type] = file_html_head
+
+        file_html_title_bar = "widget_template_{}_title_bar.html".format(each_widget_type)
+        path_html_title_bar = os.path.join(PATH_HTML_USER, file_html_title_bar)
+        if os.path.exists(path_html_title_bar):
+            list_html_files_title_bar[each_widget_type] = file_html_title_bar
 
         file_html_body = "widget_template_{}_body.html".format(each_widget_type)
         path_html_body = os.path.join(PATH_HTML_USER, file_html_body)
@@ -783,6 +789,7 @@ def page_dashboard(dashboard_id):
 
     return render_template('pages/dashboard.html',
                            custom_options_values_widgets=custom_options_values_widgets,
+                           custom_widget_variables=custom_widget_variables,
                            table_conversion=Conversion,
                            table_widget=Widget,
                            table_input=Input,
@@ -808,6 +815,7 @@ def page_dashboard(dashboard_id):
                            dict_units=dict_units,
                            dict_widgets=dict_widgets,
                            list_html_files_head=list_html_files_head,
+                           list_html_files_title_bar=list_html_files_title_bar,
                            list_html_files_body=list_html_files_body,
                            list_html_files_configure_options=list_html_files_configure_options,
                            list_html_files_js=list_html_files_js,
@@ -830,8 +838,7 @@ def page_dashboard(dashboard_id):
                            form_measurement=form_measurement,
                            form_output=form_output,
                            form_pid=form_pid,
-                           form_python_code=form_python_code,
-                           widget_variables=widget_variables)
+                           form_python_code=form_python_code)
 
 
 @blueprint.route('/graph-async', methods=('GET', 'POST'))

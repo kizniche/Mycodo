@@ -145,24 +145,79 @@ WIDGET_INFORMATION = {
     'widget_width': 6,
     'widget_height': 5,
 
+    'custom_options': [
+        {
+            'id': 'measurement',
+            'type': 'select_measurement',
+            'default_value': '',
+            'options_select': [
+                'Input',
+                'Math',
+                'PID'
+            ],
+            'name': lazy_gettext('Measurement'),
+            'phrase': lazy_gettext('Select a measurement to display')
+        },
+        {
+            'id': 'max_measure_age',
+            'type': 'integer',
+            'default_value': 120,
+            'required': True,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': lazy_gettext('Measurement Max Age'),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement')
+        },
+        {
+            'id': 'refresh_seconds',
+            'type': 'float',
+            'default_value': 30.0,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Widget Refresh (seconds)',
+            'phrase': 'The period of time between refreshing the widget'
+        },
+        {
+            'id': 'min',
+            'type': 'float',
+            'default_value': 0,
+            'name': 'Minimum',
+            'phrase': 'The gauge minimum'
+        },
+        {
+            'id': 'max',
+            'type': 'float',
+            'default_value': 100,
+            'name': 'Maximum',
+            'phrase': 'The gauge maximum'
+        },
+        {
+            'id': 'stops',
+            'type': 'integer',
+            'default_value': 4,
+            'name': 'Stops',
+            'phrase': 'The number of color stops'
+        }
+    ],
+
     'widget_dashboard_head': """<script type="text/javascript" src="/static/js/modules/solid-gauge.js"></script>""",
+
+    'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
 
     'widget_dashboard_body': """<div class="not-draggable" id="container-gauge-{{each_widget.unique_id}}" style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; overflow: hidden;"></div>""",
 
     'widget_dashboard_configure_options': """
-            {% for n in range(widget_variables[each_widget.unique_id]['colors_gauge_solid_form']|length) %}
+            {% for n in range(widget_variables['colors_gauge_solid_form']|length) %}
               {% set index = '{0:0>2}'.format(n) %}
         <div class="form-row">
           <div class="col-auto">
             <label class="control-label" for="color_stop_number{{index}}">[{{n}}] Stop</label>
             <div>
-              <input class="form-control" id="color_stop_number{{index}}" name="color_stop_number{{index}}" type="text" value="{{widget_variables[each_widget.unique_id]['colors_gauge_solid_form'][n]['stop']}}">
+              <input class="form-control" id="color_stop_number{{index}}" name="color_stop_number{{index}}" type="text" value="{{widget_variables['colors_gauge_solid_form'][n]['stop']}}">
             </div>
           </div>
           <div class="col-auto">
             <label class="control-label" for="color_hex_number{{index}}">[{{n}}] Color</label>
             <div>
-              <input id="color_hex_number{{index}}" name="color_hex_number{{index}}" placeholder="#000000" type="color" value="{{widget_variables[each_widget.unique_id]['colors_gauge_solid_form'][n]['hex']}}">
+              <input id="color_hex_number{{index}}" name="color_hex_number{{index}}" placeholder="#000000" type="color" value="{{widget_variables['colors_gauge_solid_form'][n]['hex']}}">
             </div>
           </div>
         </div>
@@ -218,7 +273,6 @@ WIDGET_INFORMATION = {
 """,
 
     'widget_dashboard_js_ready_end': """
-{% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
 {%- set device_id = widget_options['measurement'].split(",")[0] -%}
 {%- set measurement_id = widget_options['measurement'].split(",")[1] -%}
 
@@ -277,9 +331,9 @@ WIDGET_INFORMATION = {
       min: {{widget_options['min']}},
       max: {{widget_options['max']}},
       stops: [
-          {% for n in range(widget_variables[each_widget.unique_id]['colors_gauge_solid']|length) %}
+          {% for n in range(widget_variables['colors_gauge_solid']|length) %}
               {% set index = '{0:0>2}'.format(n) %}
-        [{{widget_variables[each_widget.unique_id]['colors_gauge_solid'][n]['stop']}}, '{{widget_variables[each_widget.unique_id]['colors_gauge_solid'][n]['hex']}}'],
+        [{{widget_variables['colors_gauge_solid'][n]['stop']}}, '{{widget_variables['colors_gauge_solid'][n]['hex']}}'],
           {% endfor %}
       ],
       lineWidth: 0,
@@ -375,60 +429,7 @@ WIDGET_INFORMATION = {
       text: "Mycodo"
     }
   });
-""",
-
-    'custom_options': [
-        {
-            'id': 'measurement',
-            'type': 'select_measurement',
-            'default_value': '',
-            'options_select': [
-                'Input',
-                'Math',
-                'PID'
-            ],
-            'name': lazy_gettext('Measurement'),
-            'phrase': lazy_gettext('Select a measurement to display')
-        },
-        {
-            'id': 'max_measure_age',
-            'type': 'integer',
-            'default_value': 120,
-            'required': True,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Measurement Max Age'),
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement')
-        },
-        {
-            'id': 'refresh_seconds',
-            'type': 'float',
-            'default_value': 30.0,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Widget Refresh (seconds)',
-            'phrase': 'The period of time between refreshing the widget'
-        },
-        {
-            'id': 'min',
-            'type': 'float',
-            'default_value': 0,
-            'name': 'Minimum',
-            'phrase': 'The gauge minimum'
-        },
-        {
-            'id': 'max',
-            'type': 'float',
-            'default_value': 100,
-            'name': 'Maximum',
-            'phrase': 'The gauge maximum'
-        },
-        {
-            'id': 'stops',
-            'type': 'integer',
-            'default_value': 4,
-            'name': 'Stops',
-            'phrase': 'The number of color stops'
-        }
-    ]
+"""
 }
 
 

@@ -130,6 +130,7 @@ def parse_widget_information(exclude_custom=False):
                 dict_widgets = dict_has_value(dict_widgets, widget_custom, 'custom_actions')
 
                 dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_head')
+                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_title_bar')
                 dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_body')
                 dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_configure_options')
                 dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_js')

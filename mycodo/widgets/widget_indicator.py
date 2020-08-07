@@ -69,10 +69,83 @@ WIDGET_INFORMATION = {
     'widget_width': 3,
     'widget_height': 4,
 
+    'custom_options': [
+        {
+            'id': 'refresh_seconds',
+            'type': 'float',
+            'default_value': 30.0,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Widget Refresh (seconds)',
+            'phrase': 'The period of time between refreshing the widget'
+        },
+        {
+            'id': 'font_em_measurement',
+            'type': 'float',
+            'default_value': 1.5,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Body Font Size (em)',
+            'phrase': 'The font size of the measurement'
+        },
+        {
+            'id': 'show_timestamp',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Show Timestamp'),
+            'phrase': lazy_gettext('Show the timestamp on the widget')
+        },
+        {
+            'id': 'font_em_timestamp',
+            'type': 'float',
+            'default_value': 1.5,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Timestamp Font Size (em)',
+            'phrase': 'The font size of the timestamp'
+        },
+        {
+            'id': 'measurement',
+            'type': 'select_measurement',
+            'default_value': '',
+            'options_select': [
+                'Input',
+                'Math',
+                'Output',
+                'PID'
+            ],
+            'name': lazy_gettext('Measurement'),
+            'phrase': lazy_gettext('Select a measurement to display')
+        },
+        {
+            'id': 'measurement_max_age',
+            'type': 'integer',
+            'default_value': 120,
+            'required': True,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': lazy_gettext('Measurement Max Age'),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement')
+        },
+        {
+            'id': 'decimal_places',
+            'type': 'integer',
+            'default_value': 2,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Decimal Places',
+            'phrase': 'The number of measurement decimal places'
+        },
+        {
+            'id': 'option_invert',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Invert Colors'),
+            'phrase': lazy_gettext('Invert the indicator colors')
+        }
+    ],
+
     'widget_dashboard_head': """<!-- No head content -->""",
 
+    'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
+
     'widget_dashboard_body': """<img style="max-width: 60%; max-height: 60%" id="value-{{chart_number}}" src="" alt="">
-  {% if custom_options_values_widgets[each_widget.unique_id]['show_timestamp'] %}<br/><span style="font-size: {{custom_options_values_widgets[each_widget.unique_id]['font_em_timestamp']}}em" id="timestamp-{{chart_number}}"></span>{% endif %}""",
+  {% if widget_options['show_timestamp'] %}<br/><span style="font-size: {{widget_options['font_em_timestamp']}}em" id="timestamp-{{chart_number}}"></span>{% endif %}""",
 
     'widget_dashboard_js': """<!-- No JS content -->""",
 
@@ -173,7 +246,6 @@ WIDGET_INFORMATION = {
 """,
 
     'widget_dashboard_js_ready_end': """
-  {% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
   {%- set device_id = widget_options['measurement'].split(",")[0] -%}
   {%- set measurement_id = widget_options['measurement'].split(",")[1] -%}
   
@@ -196,76 +268,5 @@ WIDGET_INFORMATION = {
   getLastDataIndicator({{chart_number}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['measurement_max_age']}}, {{widget_options['decimal_places']}}, {{widget_options['option_invert']|int}});
   repeatLastDataIndicator({{chart_number}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_max_age']}}, {{each_widget.decimal_places}}, {{widget_options['option_invert']|int}});
   {%- endfor -%}
-""",
-
-    'custom_options': [
-        {
-            'id': 'refresh_seconds',
-            'type': 'float',
-            'default_value': 30.0,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Widget Refresh (seconds)',
-            'phrase': 'The period of time between refreshing the widget'
-        },
-        {
-            'id': 'font_em_measurement',
-            'type': 'float',
-            'default_value': 1.5,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Body Font Size (em)',
-            'phrase': 'The font size of the measurement'
-        },
-        {
-            'id': 'show_timestamp',
-            'type': 'bool',
-            'default_value': False,
-            'name': lazy_gettext('Show Timestamp'),
-            'phrase': lazy_gettext('Show the timestamp on the widget')
-        },
-        {
-            'id': 'font_em_timestamp',
-            'type': 'float',
-            'default_value': 1.5,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Timestamp Font Size (em)',
-            'phrase': 'The font size of the timestamp'
-        },
-        {
-            'id': 'measurement',
-            'type': 'select_measurement',
-            'default_value': '',
-            'options_select': [
-                'Input',
-                'Math',
-                'Output',
-                'PID'
-            ],
-            'name': lazy_gettext('Measurement'),
-            'phrase': lazy_gettext('Select a measurement to display')
-        },
-        {
-            'id': 'measurement_max_age',
-            'type': 'integer',
-            'default_value': 120,
-            'required': True,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Measurement Max Age'),
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement')
-        },
-        {
-            'id': 'decimal_places',
-            'type': 'integer',
-            'default_value': 2,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Decimal Places',
-            'phrase': 'The number of measurement decimal places'
-        },
-        {
-            'id': 'option_invert',
-            'type': 'bool',
-            'default_value': False,
-            'name': lazy_gettext('Invert'),
-            'phrase': lazy_gettext('Invert the indicator colors')
-        }
-    ]
+"""
 }

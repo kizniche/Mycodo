@@ -197,6 +197,17 @@ def widget_add(form_base, request_form):
                 fw.close()
             set_user_grp(path_head, 'mycodo', 'mycodo')
 
+            filename_title_bar = "widget_template_{}_title_bar.html".format(widget_name)
+            path_title_bar = os.path.join(PATH_HTML_USER, filename_title_bar)
+            with open(path_title_bar, 'w') as fw:
+                if 'widget_dashboard_title_bar' in dict_widgets[widget_name]:
+                    html_title_bar = dict_widgets[widget_name]['widget_dashboard_title_bar']
+                else:
+                    html_title_bar = ""
+                fw.write(html_title_bar)
+                fw.close()
+            set_user_grp(path_title_bar, 'mycodo', 'mycodo')
+
             filename_body = "widget_template_{}_body.html".format(widget_name)
             path_body = os.path.join(PATH_HTML_USER, filename_body)
             with open(path_body, 'w') as fw:
