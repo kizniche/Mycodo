@@ -236,7 +236,7 @@ def query_string(unit, unique_id,
     if end_str:
         query += " AND time <= '{end}'".format(end=end_str)
     if past_sec:
-        query += " AND time > now() - {sec}s".format(sec=past_sec)
+        query += " AND time > now() - {sec}s".format(sec=int(past_sec))
     if group_sec:
         query += " GROUP BY TIME({sec}s)".format(sec=group_sec)
     if limit:

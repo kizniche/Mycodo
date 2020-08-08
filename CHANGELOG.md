@@ -7,6 +7,7 @@ This update includes the final refactoring of the output system to accommodate o
  - Fix issue installing Python modules ([#804](https://github.com/kizniche/mycodo/issues/804))
  - Fix inability to save PID options when On/Off output selected ([#805](https://github.com/kizniche/mycodo/issues/805))
  - Fix graph shift issues
+ - Fix PID Input/Math Setpoint Tracking unit and integer issue ([#811](https://github.com/kizniche/mycodo/issues/811))
 
 ### Features
 

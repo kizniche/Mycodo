@@ -289,11 +289,16 @@ class PIDController(AbstractController, threading.Thread):
                     if not measurement:
                         return False, None
 
+                    conversion = db_retrieve_table_daemon(
+                        Conversion, unique_id=measurement.conversion_id)
+                    channel, unit, measurement = return_measurement_info(
+                        measurement, conversion)
+
                     last_measurement = read_last_influxdb(
                         device_id,
-                        measurement.unit,
-                        measurement.channel,
-                        measure=measurement.measurement,
+                        unit,
+                        channel,
+                        measure=measurement,
                         duration_sec=self.setpoint_tracking_max_age)
 
                     if last_measurement[1] is not None:
