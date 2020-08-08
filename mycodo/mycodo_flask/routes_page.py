@@ -557,9 +557,7 @@ def page_dashboard_add():
 @blueprint.route('/dashboard/<dashboard_id>', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_dashboard(dashboard_id):
-    """
-    Generate custom dashboard with various data
-    """
+    """ Generate custom dashboard with various data """
     # Retrieve tables from SQL database
     camera = Camera.query.all()
     dashboard = Widget.query.all()
@@ -573,73 +571,25 @@ def page_dashboard(dashboard_id):
 
     # Create form objects
     form_base = forms_dashboard.DashboardBase()
-    form_camera = forms_dashboard.DashboardCamera()
     form_dashboard = forms_dashboard.DashboardConfig()
-    form_graph = forms_dashboard.DashboardGraph()
-    form_gauge = forms_dashboard.DashboardGauge()
-    form_indicator = forms_dashboard.DashboardIndicator()
-    form_measurement = forms_dashboard.DashboardMeasurement()
-    form_output = forms_dashboard.DashboardOutput()
-    form_pid = forms_dashboard.DashboardPIDControl()
-    form_python_code = forms_dashboard.DashboardCode()
 
-    # Detect which form on the page was submitted
     if request.method == 'POST':
         unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_general.home'))
 
-        # Determine which form was submitted
-        form_dashboard_object = None
-        # if form_base.creoard', dashboard_id=dashboard_id))
-
-        # Dashboards
+        # Dashboard
         if form_dashboard.dash_modify.data:
             utils_dashboard.dashboard_mod(form_dashboard)
         elif form_dashboard.dash_delete.data:
             utils_dashboard.dashboard_del(form_dashboard)
             return redirect(url_for('routes_page.page_dashboard_default'))
 
-        # Widgets
-        # elif form_base.create_test.datate.data or form_base.modify.data:
-        #     if form_base.widget_type.data == 'spacer':
-        #         form_dashboard_object = None
-        #     elif form_base.widget_type.data == 'graph':
-        #         form_dashboard_object = form_graph
-        #     elif form_base.widget_type.data == 'gauge':
-        #         form_dashboard_object = form_gauge
-        #     elif form_base.widget_type.data == 'indicator':
-        #         form_dashboard_object = form_indicator
-        #     elif form_base.widget_type.data == 'measurement':
-        #         form_dashboard_object = form_measurement
-        #     elif form_base.widget_type.data in ['output', 'output_pwm_slider']:
-        #         form_dashboard_object = form_output
-        #     elif form_base.widget_type.data == 'pid_control':
-        #         form_dashboard_object = form_pid
-        #     elif form_base.widget_type.data == 'python_code':
-        #         form_dashboard_object = form_python_code
-        #     elif form_base.widget_type.data == 'camera':
-        #         form_dashboard_object = form_camera
-        #     else:
-        #         flash("Unknown widget type: {type}".format(
-        #             type=form_base.widget_type.data), "error")
-        #         return redirect(url_for(
-        #             'routes_page.page_dashboard', dashboard_id=dashboard_id))
-
-        # Dashboards
-        if form_dashboard.dash_modify.data:
-            utils_dashboard.dashboard_mod(form_dashboard)
-        elif form_dashboard.dash_delete.data:
-            utils_dashboard.dashboard_del(form_dashboard)
-            return redirect(url_for('routes_page.page_dashboard_default'))
-
-        # Widgets
+        # Widget
         elif form_base.create.data:
             unmet_dependencies = utils_dashboard.widget_add(form_base, request.form)
-
         elif form_base.modify.data:
             utils_dashboard.widget_mod(form_base, request.form)
-
         elif form_base.delete.data:
             utils_dashboard.widget_del(form_base)
 
@@ -764,25 +714,6 @@ def page_dashboard(dashboard_id):
     for meas in device_measurements:
         device_measurements_dict[meas.unique_id] = meas
 
-    # Add multi-select values as form choices, for validation
-    form_graph.input_ids.choices = []
-    form_graph.math_ids.choices = []
-    form_graph.output_ids.choices = []
-    form_graph.pid_ids.choices = []
-
-    for each_input in choices_input:
-        form_graph.input_ids.choices.append(
-            (each_input['value'], each_input['item']))
-    for each_math in choices_math:
-        form_graph.math_ids.choices.append(
-            (each_math['value'], each_math['item']))
-    for each_output in choices_output:
-        form_graph.output_ids.choices.append(
-            (each_output['value'], each_output['item']))
-    for each_pid in choices_pid:
-        form_graph.pid_ids.choices.append(
-            (each_pid['value'], each_pid['item']))
-
     # Get what each measurement uses for a unit
     use_unit = utils_general.use_unit_generate(
         device_measurements, input_dev, output, math)
@@ -830,15 +761,7 @@ def page_dashboard(dashboard_id):
                            tags=tags,
                            use_unit=use_unit,
                            form_base=form_base,
-                           form_camera=form_camera,
-                           form_dashboard=form_dashboard,
-                           form_graph=form_graph,
-                           form_gauge=form_gauge,
-                           form_indicator=form_indicator,
-                           form_measurement=form_measurement,
-                           form_output=form_output,
-                           form_pid=form_pid,
-                           form_python_code=form_python_code)
+                           form_dashboard=form_dashboard)
 
 
 @blueprint.route('/graph-async', methods=('GET', 'POST'))

@@ -225,9 +225,9 @@
     {% endif %}
 
     <div class="form-inline btn-group" style="padding: 1em 0 1em 0">
-    <div class="form-group">
-      {{form_base.create(class_='btn btn-primary')}}
-    </div>
+      <div class="form-group">
+        {{form_base.create(class_='btn btn-primary')}}
+      </div>
     </div>
 
     </form>
@@ -247,7 +247,6 @@
 // Dashboard end js
 
 // Dashboard Grid
-
 let options = {
   cellHeight: {{misc.grid_cell_height}},
   column: 20,
@@ -306,24 +305,6 @@ $('#widget_type').on('change', function () {
   }
 });
 
-// Modify PID Controller
-function modPID(btn_val) {
-  $.ajax({
-      type: 'GET',
-      url: '/pid_mod_unique_id/' + btn_val,
-    {% if not misc.hide_alert_success %}
-      success: function(data) {
-          toastr['success'](data);
-      },
-    {% endif %}
-    {% if not misc.hide_alert_warning %}
-      error: function(data) {
-        toastr['error'](btn_val.split("/")[0] + ": " + data);
-      }
-    {% endif %}
-  });
-}
-
 // Graph Widget
 Highcharts.setOptions({
   global: {
@@ -361,185 +342,6 @@ $(document).ready(function() {
   {% endfor %}
   <!-- Dashboard end js_ready -->
 
-  function print_pid_value(data, name, chart_number, decimal_places, units) {
-    if (name === 'setpoint' && data['setpoint_band']) {
-      data[name][1] = data['setpoint_band']
-    }
-    if (data[name][0] && document.getElementById(name + '-timestamp-' + chart_number)) {
-      document.getElementById(name + '-timestamp-' + chart_number).innerHTML = epoch_to_timestamp(data[name][0]);
-    } else if (document.getElementById(name + '-timestamp-' + chart_number)) {
-      document.getElementById(name + '-timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
-    }
-    if (data[name][1] && document.getElementById(name + '-' + chart_number)) {
-      const value = parseFloat(data[name][1]).toFixed(decimal_places);
-      document.getElementById(name + '-' + chart_number).innerHTML = value + units;
-    } else if (document.getElementById(name + '-' + chart_number)) {
-      document.getElementById(name + '-' + chart_number).innerHTML = 'NULL';
-    }
-  }
-
-  function print_pid_error(chart_number) {
-    document.getElementById('container-pid-' + chart_number).className = "pause-background";
-    document.getElementById('setpoint-' + chart_number).innerHTML = 'ERR';
-    document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'ERR';
-    document.getElementById('pid_p_value-' + chart_number).innerHTML = 'ERR';
-    document.getElementById('pid_i_value-' + chart_number).innerHTML = 'ERR';
-    document.getElementById('pid_d_value-' + chart_number).innerHTML = 'ERR';
-    document.getElementById('pid_pid_value-' + chart_number).innerHTML = 'ERR';
-    document.getElementById('duration_time-' + chart_number).innerHTML = 'ERR';
-    document.getElementById('actual-' + chart_number).innerHTML = 'ERR';
-    document.getElementById('actual-timestamp-' + chart_number).innerHTML = 'ERR';
-  }
-
-  // Retrieve the latest/last measurement for gauges/outputs
-  function getLastDataPID(chart_number, dev_id, max_measure_age_sec, decimal_places, units) {
-    const url = '/last_pid/' + dev_id + '/' + max_measure_age_sec.toString();
-    $.ajax(url, {
-      success: function(data, responseText, jqXHR) {
-        if (jqXHR.status === 204) {
-          print_pid_error(chart_number);
-        }
-        else {
-          if (data['activated']) {
-            if (data['paused']) {
-              document.getElementById('text-pid-state-' + chart_number).innerHTML = 'Paused';
-              document.getElementById('container-pid-' + chart_number).className = "pause-background";
-              document.getElementById('button-activate-' + chart_number).style.display = "none";
-              document.getElementById('button-deactivate-' + chart_number).style.display = "block";
-              document.getElementById('button-pause-' + chart_number).style.display = "none";
-              document.getElementById('button-resume-' + chart_number).style.display = "block";
-              document.getElementById('button-hold-' + chart_number).style.display = "none";
-              print_pid_value(data, 'setpoint', chart_number, decimal_places, ' ' + units);
-              document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'PAUSED';
-              print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
-              print_pid_value(data, 'pid_p_value', chart_number, 1, '');
-              print_pid_value(data, 'pid_i_value', chart_number, 1, '');
-              print_pid_value(data, 'pid_d_value', chart_number, 1, '');
-              print_pid_value(data, 'pid_pid_value', chart_number, 1, '');
-
-              // Find which PID output is more recent, seconds on or duty cycle
-              if (data['duration_time'][1] !== null && data['duty_cycle'][1] !== null) {
-                if (data['duration_time'][0] > data['duty_cycle'][0]) {
-                  document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
-                  print_pid_value(data, 'duration_time', chart_number, 1, ' sec');
-                } else {
-                  document.getElementById('duration_time-' + chart_number).innerHTML = '';
-                  print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
-                }
-              } else if (data['duration_time'][1] !== null) {
-                document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
-                print_pid_value(data, 'duration_time', chart_number, 1, ' sec');
-              } else if (data['duty_cycle'][1] !== null) {
-                document.getElementById('duration_time-' + chart_number).innerHTML = '';
-                print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
-              } else {
-                document.getElementById('duration_time-' + chart_number).innerHTML = 'NULL';
-                document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
-              }
-
-            } else if (data['held']) {
-              document.getElementById('text-pid-state-' + chart_number).innerHTML = 'Held';
-              document.getElementById('container-pid-' + chart_number).className = "pause-background";
-              document.getElementById('button-activate-' + chart_number).style.display = "none";
-              document.getElementById('button-deactivate-' + chart_number).style.display = "block";
-              document.getElementById('button-pause-' + chart_number).style.display = "none";
-              document.getElementById('button-resume-' + chart_number).style.display = "block";
-              document.getElementById('button-hold-' + chart_number).style.display = "none";
-              print_pid_value(data, 'setpoint', chart_number, decimal_places, ' ' + units);
-              document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'HELD';
-              print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
-              print_pid_value(data, 'pid_p_value', chart_number, 1, '');
-              print_pid_value(data, 'pid_i_value', chart_number, 1, '');
-              print_pid_value(data, 'pid_d_value', chart_number, 1, '');
-              print_pid_value(data, 'pid_pid_value', chart_number, 1, '');
-
-              {#Find which PID output is more recent, seconds on or duty cycle#}
-              if (data['duration_time'][1] !== null && data['duty_cycle'][1] !== null) {
-                if (data['duration_time'][0] > data['duty_cycle'][0]) {
-                  document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
-                  print_pid_value(data, 'duration_time', chart_number, 1, ' sec');
-                } else {
-                  document.getElementById('duration_time-' + chart_number).innerHTML = '';
-                  print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
-                }
-              } else if (data['duration_time'][1] !== null) {
-                document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
-                print_pid_value(data, 'duration_time', chart_number, 1, ' sec');
-              } else if (data['duty_cycle'][1] !== null) {
-                document.getElementById('duration_time-' + chart_number).innerHTML = '';
-                print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
-              } else {
-                document.getElementById('duration_time-' + chart_number).innerHTML = 'NULL';
-                document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
-              }
-            } else {
-              document.getElementById('text-pid-state-' + chart_number).innerHTML = 'Active';
-              document.getElementById('container-pid-' + chart_number).className = "active-background";
-              document.getElementById('button-activate-' + chart_number).style.display = "none";
-              document.getElementById('button-deactivate-' + chart_number).style.display = "block";
-              document.getElementById('button-pause-' + chart_number).style.display = "block";
-              document.getElementById('button-resume-' + chart_number).style.display = "none";
-              document.getElementById('button-hold-' + chart_number).style.display = "block";
-              print_pid_value(data, 'setpoint', chart_number, decimal_places, ' ' + units);
-              print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
-              print_pid_value(data, 'pid_p_value', chart_number, 1, '');
-              print_pid_value(data, 'pid_i_value', chart_number, 1, '');
-              print_pid_value(data, 'pid_d_value', chart_number, 1, '');
-              print_pid_value(data, 'pid_pid_value', chart_number, 1, '');
-
-              {#Find which PID output is more recent, seconds on or duty cycle#}
-              if (data['duration_time'][1] !== null && data['duty_cycle'][1] !== null) {
-                if (data['duration_time'][0] > data['duty_cycle'][0]) {
-                  document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
-                  print_pid_value(data, 'duration_time', chart_number, 1, ' sec');
-                } else {
-                  document.getElementById('duration_time-' + chart_number).innerHTML = '';
-                  print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
-                }
-              } else if (data['duration_time'][1] !== null) {
-                document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
-                print_pid_value(data, 'duration_time', chart_number, 1, ' sec');
-              } else if (data['duty_cycle'][1] !== null) {
-                document.getElementById('duration_time-' + chart_number).innerHTML = '';
-                print_pid_value(data, 'duty_cycle', chart_number, 1, ' %');
-              } else {
-                document.getElementById('duration_time-' + chart_number).innerHTML = 'NULL';
-                document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
-              }
-            }
-          } else {
-            document.getElementById('text-pid-state-' + chart_number).innerHTML = 'Inactive';
-            document.getElementById('container-pid-' + chart_number).className = "inactive-background";
-            document.getElementById('button-activate-' + chart_number).style.display = "block";
-            document.getElementById('button-deactivate-' + chart_number).style.display = "none";
-            document.getElementById('button-pause-' + chart_number).style.display = "none";
-            document.getElementById('button-resume-' + chart_number).style.display = "none";
-            document.getElementById('button-hold-' + chart_number).style.display = "none";
-            document.getElementById('setpoint-' + chart_number).innerHTML = 'NONE';
-            document.getElementById('setpoint-timestamp-' + chart_number).innerHTML = 'INACTIVE';
-            document.getElementById('pid_p_value-' + chart_number).innerHTML = '0';
-            document.getElementById('pid_i_value-' + chart_number).innerHTML = '0';
-            document.getElementById('pid_d_value-' + chart_number).innerHTML = '0';
-            document.getElementById('pid_pid_value-' + chart_number).innerHTML = '0';
-            document.getElementById('duration_time-' + chart_number).innerHTML = '0';
-            document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
-            print_pid_value(data, 'actual', chart_number, decimal_places, ' ' + units);
-          }
-        }
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        print_pid_error(chart_number);
-      }
-    });
-  }
-
-  // Repeat function for getLastDataPID()
-  function repeatLastDataPID(chart_number, dev_id, period_sec, max_measure_age_sec, decimal_places, units) {
-    setInterval(function () {
-      getLastDataPID(chart_number, dev_id, max_measure_age_sec, decimal_places, units)
-    }, period_sec * 1000);
-  }
-
   // Change opacity of all chart colors
   Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
     return Highcharts.Color(color).setOpacity(0.6).get('rgba');
@@ -549,7 +351,6 @@ $(document).ready(function() {
   {%- set chart_number = loop.index -%}
   {% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
   {% set widget_variables = custom_widget_variables[each_widget.unique_id] %}
-  {% set graph_input_ids = each_widget.input_ids_measurements.split(';') %}
 
   {% for widget_type, file_js_ready_end in list_html_files_js_ready_end.items() if widget_type == each_widget.graph_type %}
   <!-- Widget {{widget_type}} {{each_widget.unique_id}} js_ready_end template begin -->

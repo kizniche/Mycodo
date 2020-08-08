@@ -21,23 +21,9 @@
 #
 #  Contact at kylegabriel.com
 #
-import importlib.util
 import logging
-import os
-import textwrap
-import threading
-import time
 
-from flask import flash
 from flask_babel import lazy_gettext
-
-from mycodo.config import PATH_PYTHON_CODE_USER
-from mycodo.widgets.base_widget import AbstractWidget
-from mycodo.databases.models import Widget
-from mycodo.utils.code_verification import create_python_file
-from mycodo.utils.code_verification import test_python_code
-from mycodo.utils.system_pi import parse_custom_option_values_json
-from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
 

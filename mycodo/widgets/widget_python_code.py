@@ -34,11 +34,8 @@ from flask_babel import lazy_gettext
 
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.databases import set_uuid
-from mycodo.databases.models import Widget
 from mycodo.utils.code_verification import create_python_file
 from mycodo.utils.code_verification import test_python_code
-from mycodo.utils.system_pi import parse_custom_option_values_json
-from mycodo.utils.widgets import parse_widget_information
 from mycodo.widgets.base_widget import AbstractWidget
 
 logger = logging.getLogger(__name__)

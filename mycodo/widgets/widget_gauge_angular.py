@@ -28,10 +28,6 @@ import re
 from flask import flash
 from flask_babel import lazy_gettext
 
-from mycodo.databases.models import Widget
-from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
-from mycodo.utils.widgets import parse_widget_information
-
 logger = logging.getLogger(__name__)
 
 
