@@ -166,6 +166,24 @@ runSelfUpgrade() {
     printf "Done.\n"
   fi
 
+  if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/widgets/custom_widgets ] ; then
+    printf "Copying mycodo/widgets/custom_widgets..."
+    if ! cp "${CURRENT_MYCODO_DIRECTORY}"/mycodo/widgets/custom_widgets/*.py "${THIS_MYCODO_DIRECTORY}"/mycodo/widgets/custom_widgets/ ; then
+      printf "Failed: Error while trying to copy mycodo/widgets/custom_widgets"
+      error_found
+    fi
+    printf "Done.\n"
+  fi
+
+  if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/templates/user_templates ] ; then
+    printf "Copying mycodo/mycodo_flask/templates/user_templates..."
+    if ! cp "${CURRENT_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/templates/user_templates/*.py "${THIS_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/templates/user_templates/ ; then
+      printf "Failed: Error while trying to copy mycodo/mycodo_flask/templates/user_templates"
+      error_found
+    fi
+    printf "Done.\n"
+  fi
+
   if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/user_python_code ] ; then
     printf "Copying mycodo/user_python_code..."
     if ! cp "${CURRENT_MYCODO_DIRECTORY}"/mycodo/user_python_code/*.py "${THIS_MYCODO_DIRECTORY}"/mycodo/user_python_code/ ; then
