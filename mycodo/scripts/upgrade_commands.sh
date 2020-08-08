@@ -170,6 +170,10 @@ case "${1:-''}" in
         adduser pi mycodo
         adduser mycodo pi
     ;;
+    'generate-widget-html')
+        printf "\n#### Generating widget HTML files\n"
+        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/mycodo/mycodo_client.py --gen_widget_html
+    ;;
     'initialize')
         printf "\n#### Running initialization\n"
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh create-user

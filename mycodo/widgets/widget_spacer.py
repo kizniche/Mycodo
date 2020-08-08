@@ -25,6 +25,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 def constraints_pass_positive_value(mod_widget, value):
     """
     Check if the user widget is acceptable

@@ -21,15 +21,14 @@
 #  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
 #
 #  Contact at kylegabriel.com
-
 import argparse
 import datetime
 import logging
+import os
 import sys
 import traceback
 
 import Pyro5.errors
-import os
 import requests
 from Pyro5.api import Proxy
 from influxdb import InfluxDBClient
@@ -46,6 +45,7 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.send_data import send_email as send_email_notification
+from mycodo.utils.widgets import generate_widget_html
 
 
 logging.basicConfig(
@@ -429,6 +429,10 @@ def parseargs(parser):
                         help='Set the Kd gain of the PID controller.',
                         required=False)
 
+    # Widgets
+    parser.add_argument('--gen_widget_html', action='store_true',
+                        help="Generate all widget HTML files")
+
     return parser.parse_args()
 
 
@@ -575,6 +579,9 @@ if __name__ == "__main__":
         print(daemon.trigger_action(args.trigger_action))
     elif args.trigger_all_actions:
         print(daemon.trigger_all_actions(args.trigger_all_actions))
+
+    elif args.gen_widget_html:
+        generate_widget_html()
 
     elif args.terminate:
         logger.info("[Remote command] Terminate daemon...")

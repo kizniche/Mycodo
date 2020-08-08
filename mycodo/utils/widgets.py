@@ -20,16 +20,101 @@
 #  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
 #
 #  Contact at kylegabriel.com
-
 import logging
-
 import os
 
+from mycodo.config import PATH_HTML_USER
 from mycodo.config import PATH_WIDGETS
 from mycodo.config import PATH_WIDGETS_CUSTOM
 from mycodo.utils.modules import load_module_from_file
+from mycodo.utils.system_pi import assure_path_exists
+from mycodo.utils.system_pi import set_user_grp
 
 logger = logging.getLogger("mycodo.utils.widgets")
+
+
+def generate_widget_html():
+    """Save HTML files"""
+    dict_widgets = parse_widget_information()
+    assure_path_exists(PATH_HTML_USER)
+
+    for widget_name in dict_widgets:
+        filename_head = "widget_template_{}_head.html".format(widget_name)
+        path_head = os.path.join(PATH_HTML_USER, filename_head)
+        with open(path_head, 'w') as fw:
+            if 'widget_dashboard_head' in dict_widgets[widget_name]:
+                html_head = dict_widgets[widget_name]['widget_dashboard_head']
+            else:
+                html_head = ""
+            fw.write(html_head)
+            fw.close()
+        set_user_grp(path_head, 'mycodo', 'mycodo')
+
+        filename_title_bar = "widget_template_{}_title_bar.html".format(widget_name)
+        path_title_bar = os.path.join(PATH_HTML_USER, filename_title_bar)
+        with open(path_title_bar, 'w') as fw:
+            if 'widget_dashboard_title_bar' in dict_widgets[widget_name]:
+                html_title_bar = dict_widgets[widget_name]['widget_dashboard_title_bar']
+            else:
+                html_title_bar = ""
+            fw.write(html_title_bar)
+            fw.close()
+        set_user_grp(path_title_bar, 'mycodo', 'mycodo')
+
+        filename_body = "widget_template_{}_body.html".format(widget_name)
+        path_body = os.path.join(PATH_HTML_USER, filename_body)
+        with open(path_body, 'w') as fw:
+            if 'widget_dashboard_body' in dict_widgets[widget_name]:
+                html_body = dict_widgets[widget_name]['widget_dashboard_body']
+            else:
+                html_body = ""
+            fw.write(html_body)
+            fw.close()
+        set_user_grp(path_body, 'mycodo', 'mycodo')
+
+        filename_configure_options = "widget_template_{}_configure_options.html".format(widget_name)
+        path_configure_options = os.path.join(PATH_HTML_USER, filename_configure_options)
+        with open(path_configure_options, 'w') as fw:
+            if 'widget_dashboard_configure_options' in dict_widgets[widget_name]:
+                html_configure_options = dict_widgets[widget_name]['widget_dashboard_configure_options']
+            else:
+                html_configure_options = ""
+            fw.write(html_configure_options)
+            fw.close()
+        set_user_grp(path_configure_options, 'mycodo', 'mycodo')
+
+        filename_js = "widget_template_{}_js.html".format(widget_name)
+        path_js = os.path.join(PATH_HTML_USER, filename_js)
+        with open(path_js, 'w') as fw:
+            if 'widget_dashboard_js' in dict_widgets[widget_name]:
+                html_js = dict_widgets[widget_name]['widget_dashboard_js']
+            else:
+                html_js = ""
+            fw.write(html_js)
+            fw.close()
+        set_user_grp(path_js, 'mycodo', 'mycodo')
+
+        filename_js_ready = "widget_template_{}_js_ready.html".format(widget_name)
+        path_js_ready = os.path.join(PATH_HTML_USER, filename_js_ready)
+        with open(path_js_ready, 'w') as fw:
+            if 'widget_dashboard_js_ready' in dict_widgets[widget_name]:
+                html_js_ready = dict_widgets[widget_name]['widget_dashboard_js_ready']
+            else:
+                html_js_ready = ""
+            fw.write(html_js_ready)
+            fw.close()
+        set_user_grp(path_js_ready, 'mycodo', 'mycodo')
+
+        filename_js_ready_end = "widget_template_{}_js_ready_end.html".format(widget_name)
+        path_js_ready_end = os.path.join(PATH_HTML_USER, filename_js_ready_end)
+        with open(path_js_ready_end, 'w') as fw:
+            if 'widget_dashboard_js_ready_end' in dict_widgets[widget_name]:
+                html_js_ready_end = dict_widgets[widget_name]['widget_dashboard_js_ready_end']
+            else:
+                html_js_ready_end = ""
+            fw.write(html_js_ready_end)
+            fw.close()
+        set_user_grp(path_js_ready_end, 'mycodo', 'mycodo')
 
 
 def parse_widget_information(exclude_custom=False):
@@ -52,7 +137,7 @@ def parse_widget_information(exclude_custom=False):
 
     excluded_files = [
         '__init__.py', '__pycache__', 'base_widget.py', 'custom_widgets',
-        'examples', 'scripts', 'tmp_widgets'
+        'examples', 'tmp_widgets'
     ]
 
     widget_paths = [PATH_WIDGETS]
