@@ -55,8 +55,9 @@ nav:
     - Camera.md
     - Energy Usage: Energy-Usage.md
   - Supported Devices:
-    - Input Devices: Input-Devices.md
-    - Output Devices: Output-Devices.md
+    - Supported Inputs: Supported-Inputs.md
+    - Supported Outputs: Supported-Outputs.md
+    - Supported Widgets: Supported-Widgets.md
     - I2C Multiplexers: I2C-Multiplexers.md
     - Analog-To-Digital Converters: Analog-To-Digital-Converters.md
     - Interfaces.md

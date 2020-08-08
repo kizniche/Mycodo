@@ -175,7 +175,7 @@ def constraints_pass_positive_value(mod_widget, value):
 
 
 WIDGET_INFORMATION = {
-    'widget_name_unique': 'WIDGET_GAUGE_ANGULAR',
+    'widget_name_unique': 'widget_gauge_angular',
     'widget_name': 'Gauge (Angular)',
     'widget_library': '',
     'no_class': True,

@@ -45,7 +45,7 @@ def constraints_pass_positive_value(mod_widget, value):
 
 
 WIDGET_INFORMATION = {
-    'widget_name_unique': 'WIDGET_OUTPUT_PWM_SLIDER',
+    'widget_name_unique': 'widget_output_pwm_slider',
     'widget_name': 'Output (PWM Slider)',
     'widget_library': '',
     'no_class': True,
@@ -56,14 +56,6 @@ WIDGET_INFORMATION = {
     'widget_height': 4,
 
     'custom_options': [
-        {
-            'id': 'refresh_seconds',
-            'type': 'float',
-            'default_value': 30.0,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Widget Refresh (seconds)',
-            'phrase': 'The period of time between refreshing the widget'
-        },
         {
             'id': 'output',
             'type': 'select_measurement',
@@ -81,6 +73,14 @@ WIDGET_INFORMATION = {
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Max Age (seconds)',
             'phrase': 'The maximum age of the camera image'
+        },
+        {
+            'id': 'refresh_seconds',
+            'type': 'float',
+            'default_value': 30.0,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Widget Refresh (seconds)',
+            'phrase': 'The period of time between refreshing the widget'
         },
         {
             'id': 'enable_timestamp',

@@ -45,7 +45,7 @@ def constraints_pass_positive_value(mod_widget, value):
 
 
 WIDGET_INFORMATION = {
-    'widget_name_unique': 'WIDGET_MEASUREMENT',
+    'widget_name_unique': 'widget_measurement',
     'widget_name': 'Measurement',
     'widget_library': '',
     'no_class': True,

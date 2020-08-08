@@ -13,7 +13,7 @@ from collections import OrderedDict
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.utils.inputs import parse_input_information
 
-save_path = os.path.join(INSTALL_DIRECTORY, "docs/Input-Devices.md")
+save_path = os.path.join(INSTALL_DIRECTORY, "docs/Supported-Inputs.md")
 
 inputs_info = OrderedDict()
 mycodo_info = OrderedDict()
@@ -63,7 +63,7 @@ if __name__ == "__main__":
     ]
 
     with open(save_path, 'w') as out_file:
-        out_file.write("Supported Input devices are listed below.\n\n")
+        out_file.write("Supported Inputs are listed below.\n\n")
         for each_list in list_inputs:
             out_file.write("## {}\n\n".format(each_list[1]))
 

@@ -134,7 +134,7 @@ def constraints_pass_positive_value(mod_widget, value):
 
 
 WIDGET_INFORMATION = {
-    'widget_name_unique': 'WIDGET_PYTHON_CODE',
+    'widget_name_unique': 'widget_python_code',
     'widget_name': 'Python Code',
     'widget_library': '',
 

@@ -47,7 +47,7 @@ if __name__ == "__main__":
         if not each_revision:
             print("Error: Revision ID empty")
 
-        # elif each_revision == 'REPLACE WITH ALEMBIC REVISION ID':
+        # elif each_revision == 'REPLACE_WITH_ALEMBIC_REVISION_ID':
         #     print("Executing post-alembic code for revision {}".format(
         #         each_revision))
         #     try:
@@ -57,6 +57,96 @@ if __name__ == "__main__":
         #             each_revision, traceback.format_exc())
         #         error.append(msg)
         #         print(msg)
+
+        elif each_revision == 'd66e33093e8e':
+            # convert database entries to JSON string for custom_options entry
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                import json
+                from mycodo.databases.models import Widget
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    for each_widget in session.query(Widget).all():
+                        if each_widget.graph_type == 'graph':
+                            each_widget.graph_type = 'WIDGET_GRAPH_SYNCHRONOUS'
+                            custom_options['measurements_math'] = each_widget.math_ids.split(";")
+                            custom_options['measurements_note_tag'] = each_widget.note_tag_ids.split(";")
+                            custom_options['measurements_input'] = each_widget.input_ids_measurements.split(";")
+                            custom_options['measurements_output'] = each_widget.output_ids.split(";")
+                            custom_options['measurements_pid'] = each_widget.pid_ids.split(";")
+                        elif each_widget.graph_type == 'spacer':
+                            each_widget.graph_type = 'WIDGET_SPACER'
+                        elif each_widget.graph_type == 'gauge_angular':
+                            each_widget.graph_type = 'WIDGET_GAUGE_ANGULAR'
+                            custom_options['measurement'] = each_widget.input_ids_measurements
+                        elif each_widget.graph_type == 'gauge_solid':
+                            each_widget.graph_type = 'WIDGET_GAUGE_SOLID'
+                            custom_options['measurement'] = each_widget.input_ids_measurements
+                        elif each_widget.graph_type == 'indicator':
+                            each_widget.graph_type = 'WIDGET_INDICATOR'
+                            custom_options['measurement'] = each_widget.input_ids_measurements
+                        elif each_widget.graph_type == 'measurement':
+                            each_widget.graph_type = 'WIDGET_MEASUREMENT'
+                            custom_options['measurement'] = each_widget.input_ids_measurements
+                        elif each_widget.graph_type == 'output':
+                            each_widget.graph_type = 'WIDGET_OUTPUT'
+                            custom_options['output'] = each_widget.output_ids
+                        elif each_widget.graph_type == 'output_pwm_slider':
+                            each_widget.graph_type = 'WIDGET_OUTPUT_PWM_SLIDER'
+                            custom_options['output'] = each_widget.output_ids
+                        elif each_widget.graph_type == 'pid_control':
+                            each_widget.graph_type = 'WIDGET_PID'
+                            custom_options['pid'] = each_widget.pid_ids
+                        elif each_widget.graph_type == 'camera':
+                            each_widget.graph_type = 'WIDGET_CAMERA'
+
+                        custom_options = {}
+                        custom_options['refresh_seconds'] = each_widget.refresh_duration
+                        custom_options['x_axis_minutes'] = each_widget.x_axis_duration
+                        custom_options['custom_yaxes'] = each_widget.custom_yaxes
+                        custom_options['decimal_places'] = each_widget.decimal_places
+                        custom_options['enable_status'] = each_widget.enable_status
+                        custom_options['enable_value'] = each_widget.enable_value
+                        custom_options['enable_name'] = each_widget.enable_name
+                        custom_options['enable_unit'] = each_widget.enable_unit
+                        custom_options['enable_measurement'] = each_widget.enable_measurement
+                        custom_options['enable_channel'] = each_widget.enable_channel
+                        custom_options['enable_timestamp'] = each_widget.enable_timestamp
+                        custom_options['enable_navbar'] = each_widget.enable_navbar
+                        custom_options['enable_rangeselect'] = each_widget.enable_rangeselect
+                        custom_options['enable_export'] = each_widget.enable_export
+                        custom_options['enable_title'] = each_widget.enable_title
+                        custom_options['enable_auto_refresh'] = each_widget.enable_auto_refresh
+                        custom_options['enable_xaxis_reset'] = each_widget.enable_xaxis_reset
+                        custom_options['enable_manual_y_axis'] = each_widget.enable_manual_y_axis
+                        custom_options['enable_start_on_tick'] = each_widget.enable_start_on_tick
+                        custom_options['enable_end_on_tick'] = each_widget.enable_end_on_tick
+                        custom_options['enable_align_ticks'] = each_widget.enable_align_ticks
+                        custom_options['use_custom_colors'] = each_widget.use_custom_colors
+                        custom_options['custom_colors'] = each_widget.custom_colors
+                        custom_options['disable_data_grouping'] = each_widget.disable_data_grouping
+                        custom_options['max_measure_age'] = each_widget.max_measure_age
+                        custom_options['stops'] = each_widget.stops
+                        custom_options['range_colors'] = each_widget.range_colors
+                        custom_options['min'] = each_widget.y_axis_min
+                        custom_options['max'] = each_widget.y_axis_max
+                        custom_options['option_invert'] = each_widget.option_invert
+                        custom_options['font_em_value'] = each_widget.font_em_value
+                        custom_options['font_em_timestamp'] = each_widget.font_em_timestamp
+                        custom_options['enable_output_controls'] = each_widget.enable_output_controls
+                        custom_options['show_pid_info'] = each_widget.show_pid_info
+                        custom_options['show_set_setpoint'] = each_widget.show_set_setpoint
+                        custom_options['camera_id'] = each_widget.camera_id
+                        custom_options['camera_image_type'] = each_widget.camera_image_type
+                        custom_options['max_age'] = each_widget.camera_max_age
+                        each_widget.custom_options = json.dumps(custom_options)
+                        session.commit()
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
 
         elif each_revision == '4d3258ef5864':
             # The post-script for 4ea0a59dee2b didn't work to change minute to s

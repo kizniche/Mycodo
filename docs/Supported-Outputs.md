@@ -1,4 +1,4 @@
-Supported Output devices are listed below.
+Supported Outputs are listed below.
 
 ## Built-In Inputs (System-Specific)
 

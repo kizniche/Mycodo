@@ -35,12 +35,11 @@ class Widget(CRUDMixin, db.Model):
     period = db.Column(db.Float, default=30.0)
     custom_options = db.Column(db.Text, default='')
 
-    # Multi-widget options
+    # TODO: next major revision: delete all below, no longer used
     refresh_duration = db.Column(db.Integer, default=120)  # How often to add new data and redraw, refresh camera
     x_axis_duration = db.Column(db.Integer, default=1440)  # X-axis duration (in minutes)
     custom_yaxes = db.Column(db.Text, default='')  # Custom minimum and maximum y-axes
     decimal_places = db.Column(db.Integer, default=1)  # Number of decimal places for displayed value
-
     enable_status = db.Column(db.Boolean, default=True)
     enable_value = db.Column(db.Boolean, default=True)
     enable_name = db.Column(db.Boolean, default=True)
@@ -48,15 +47,11 @@ class Widget(CRUDMixin, db.Model):
     enable_measurement = db.Column(db.Boolean, default=True)
     enable_channel = db.Column(db.Boolean, default=True)
     enable_timestamp = db.Column(db.Boolean, default=True)  # Show timestamp for displayed gauge value
-
-    # Graph options
     pid_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
     output_ids = db.Column(db.Text, default='')  # store IDs and measurements to display
     math_ids = db.Column(db.Text, default='')  # store Math IDs to display
     note_tag_ids = db.Column(db.Text, default='')  # store Note Tag IDs to display
     input_ids_measurements = db.Column(db.Text, default='')  # store IDs and measurements to display
-
-    # Checkboxes
     enable_navbar = db.Column(db.Boolean, default=False)  # Show navigation bar
     enable_rangeselect = db.Column(db.Boolean, default=False)  # Show range selection buttons
     enable_export = db.Column(db.Boolean, default=False)  # Show export menu
@@ -67,41 +62,23 @@ class Widget(CRUDMixin, db.Model):
     enable_start_on_tick = db.Column(db.Boolean, default=True)  # Enable HighCharts startOnTick
     enable_end_on_tick = db.Column(db.Boolean, default=True)  # Enable HighCharts endOnTick
     enable_align_ticks = db.Column(db.Boolean, default=True)  # Enable HighCharts alignTicks
-
-    # Series-specific options
     use_custom_colors = db.Column(db.Boolean, default=False)  # Enable custom colors of graph series
     custom_colors = db.Column(db.Text, default='')  # Custom hex color values (csv)
     disable_data_grouping = db.Column(db.Text, default='')  # Disable data grouping for measurement IDs
-
-    # Gauge options
     max_measure_age = db.Column(db.Integer, default=120.0)  # Only show measurements if they are younger than this age
     stops = db.Column(db.Integer, default=None)
     range_colors = db.Column(db.Text, default='')  # Custom hex color values and gauge range
-
-    # Graph and Gauge options
     y_axis_min = db.Column(db.Float, default=None)  # y-axis minimum
     y_axis_max = db.Column(db.Float, default=None)  # y-axis maximum
-
-    # Indicator options
     option_invert = db.Column(db.Boolean, default=False)
-
-    # Output options
     font_em_value = db.Column(db.Float, default=1.0)  # Font size of value
     font_em_timestamp = db.Column(db.Float, default=1.0)  # Font size of timestamp
     enable_output_controls = db.Column(db.Boolean, default=True)  # Show output controls on dashboard element
-
-    # PID options
     show_pid_info = db.Column(db.Boolean, default=True)  # Display detailed information about the PID
     show_set_setpoint = db.Column(db.Boolean, default=True)  # Display set PID setpoint
-
-    # Camera options
     camera_id = db.Column(db.Text, default='')  # store camera ID to display
     camera_image_type = db.Column(db.Text, default='')  # save new image, overwrite old, display last timelapse
     camera_max_age = db.Column(db.Integer, default=360)  # max camera image age before "No new image" shown
-
-    # Code widget options
-    code_execute_loop = db.Column(db.Text, default='')  # store code or command
-    code_execute_single = db.Column(db.Text, default='')  # store code or command
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

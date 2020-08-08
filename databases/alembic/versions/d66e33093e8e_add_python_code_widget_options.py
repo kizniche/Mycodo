@@ -18,8 +18,6 @@ depends_on = None
 
 def upgrade():
     with op.batch_alter_table("widget") as batch_op:
-        batch_op.add_column(sa.Column('code_execute_loop', sa.String))
-        batch_op.add_column(sa.Column('code_execute_single', sa.String))
         batch_op.add_column(sa.Column('period', sa.Float))
         batch_op.add_column(sa.Column('custom_options', sa.String))
         batch_op.add_column(sa.Column('log_level_debug', sa.Boolean))
@@ -58,8 +56,6 @@ def upgrade():
 
 def downgrade():
     with op.batch_alter_table("widget") as batch_op:
-        batch_op.drop_column('code_execute_loop')
-        batch_op.drop_column('code_execute_single')
         batch_op.drop_column('period')
         batch_op.drop_column('custom_options')
         batch_op.drop_column('log_level_debug')

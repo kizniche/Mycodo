@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Generate markdown file of Output information to be inserted into the manual"""
+"""Generate markdown file of Widget information to be inserted into the manual"""
 
 import sys
 
@@ -11,11 +11,11 @@ import re
 from collections import OrderedDict
 
 from mycodo.config import INSTALL_DIRECTORY
-from mycodo.utils.outputs import parse_output_information
+from mycodo.utils.widgets import parse_widget_information
 
-save_path = os.path.join(INSTALL_DIRECTORY, "docs/Supported-Outputs.md")
+save_path = os.path.join(INSTALL_DIRECTORY, "docs/Supported-Widgets.md")
 
-outputs_info = OrderedDict()
+widgets_info = OrderedDict()
 mycodo_info = OrderedDict()
 
 
@@ -24,60 +24,38 @@ def repeat_to_length(s, wanted):
 
 
 if __name__ == "__main__":
-    for output_id, output_data in parse_output_information(exclude_custom=True).items():
+    for widget_id, widget_data in parse_widget_information(exclude_custom=True).items():
         name_str = ""
-        if 'output_manufacturer' in output_data and output_data['output_manufacturer']:
-            name_str += "{}".format(output_data['output_manufacturer'])
-        if 'output_name' in output_data and output_data['output_name']:
-            name_str += ": {}".format(output_data['output_name'])
-        if 'measurements_name' in output_data and output_data['measurements_name']:
-            name_str += ": {}".format(output_data['measurements_name'])
+        if 'widget_name' in widget_data and widget_data['widget_name']:
+            name_str += ": {}".format(widget_data['widget_name'])
 
-        if ('output_manufacturer' in output_data and
-                output_data['output_manufacturer'] in ['Linux', 'Mycodo', 'Raspberry Pi', 'System']):
-
-            if name_str in mycodo_info and 'dependencies_module' in mycodo_info[name_str]:
-                # Multiple sets of dependencies, append library
-                mycodo_info[name_str]['dependencies_module'].append(output_data['dependencies_module'])
-            else:
-                # Only one set of dependencies
-                mycodo_info[name_str] = output_data
-                if 'dependencies_module' in output_data:
-                    mycodo_info[name_str]['dependencies_module'] = [output_data['dependencies_module']]  # turn into list
+        if name_str in widgets_info and 'dependencies_module' in widgets_info[name_str]:
+            # Multiple sets of dependencies, append library
+            widgets_info[name_str]['dependencies_module'].append(widget_data['dependencies_module'])
         else:
-            if name_str in outputs_info and 'dependencies_module' in outputs_info[name_str]:
-                # Multiple sets of dependencies, append library
-                outputs_info[name_str]['dependencies_module'].append(output_data['dependencies_module'])
-            else:
-                # Only one set of dependencies
-                outputs_info[name_str] = output_data
-                if 'dependencies_module' in output_data:
-                    outputs_info[name_str]['dependencies_module'] = [output_data['dependencies_module']]  # turn into list
+            # Only one set of dependencies
+            widgets_info[name_str] = widget_data
+            if 'dependencies_module' in widget_data:
+                widgets_info[name_str]['dependencies_module'] = [widget_data['dependencies_module']]  # turn into list
 
     mycodo_info = dict(OrderedDict(sorted(mycodo_info.items(), key = lambda t: t[0])))
-    outputs_info = dict(OrderedDict(sorted(outputs_info.items(), key = lambda t: t[0])))
+    widgets_info = dict(OrderedDict(sorted(widgets_info.items(), key = lambda t: t[0])))
 
-    list_outputs = [
+    list_widgets = [
         (mycodo_info, "Built-In Inputs (System-Specific)"),
-        (outputs_info, "Built-In Inputs (Devices)")
+        (widgets_info, "Built-In Inputs (Devices)")
     ]
 
     with open(save_path, 'w') as out_file:
-        out_file.write("Supported Outputs are listed below.\n\n")
-        for each_list in list_outputs:
+        out_file.write("Supported Widget devices are listed below.\n\n")
+        for each_list in list_widgets:
             out_file.write("## {}\n\n".format(each_list[1]))
 
             for each_id, each_data in each_list[0].items():
-                name_str = ""
-                if 'output_manufacturer' in each_data and each_data['output_manufacturer']:
-                    name_str += "{}".format(each_data['output_manufacturer'])
-                if 'output_name' in each_data and each_data['output_name']:
-                    name_str += " {}".format(each_data['output_name'])
+                if 'widget_name' in each_data and each_data['widget_name']:
+                    name_str = "{}".format(each_data['widget_name'])
 
                 out_file.write("### {}\n\n".format(name_str))
-
-                if 'measurements_name' in each_data and each_data['measurements_name']:
-                    out_file.write("- Measurements: {}\n".format(each_data['measurements_name']))
 
                 if 'dependencies_module' in each_data and each_data['dependencies_module']:
                     out_file.write("- Dependencies: ")

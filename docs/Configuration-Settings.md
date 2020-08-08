@@ -91,13 +91,13 @@ In order to calculate accurate energy usage statistics, a few characteristics of
 
 ## Controller Settings
 
-Page\: `[Gear Icon] -> Configure -> Controllers`
+Page\: `[Gear Icon] -> Configure -> Custom Controllers`
 
 Controller modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Controllers](Functions.md/#custom-controllers) for more details.
 
 ## Input Settings
 
-Page\: `[Gear Icon] -> Configure -> Inputs`
+Page\: `[Gear Icon] -> Configure -> Custom Inputs`
 
 Input modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Inputs](Inputs.md/#custom-inputs) for more details.
 
@@ -118,7 +118,7 @@ Input modules may be imported and used within Mycodo. These modules must follow 
 
 ## Output Settings
 
-Page\: `[Gear Icon] -> Configure -> Outputs`
+Page\: `[Gear Icon] -> Configure -> Custom Outputs`
 
 Output modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Outputs](Outputs.md/#custom-outputs) for more details.
 

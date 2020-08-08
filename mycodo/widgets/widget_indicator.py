@@ -45,7 +45,7 @@ def constraints_pass_positive_value(mod_widget, value):
 
 
 WIDGET_INFORMATION = {
-    'widget_name_unique': 'WIDGET_INDICATOR',
+    'widget_name_unique': 'widget_indicator',
     'widget_name': 'Indicator',
     'widget_library': '',
     'no_class': True,
@@ -56,6 +56,28 @@ WIDGET_INFORMATION = {
     'widget_height': 4,
 
     'custom_options': [
+        {
+            'id': 'measurement',
+            'type': 'select_measurement',
+            'default_value': '',
+            'options_select': [
+                'Input',
+                'Math',
+                'Output',
+                'PID'
+            ],
+            'name': lazy_gettext('Measurement'),
+            'phrase': lazy_gettext('Select a measurement to display')
+        },
+        {
+            'id': 'measurement_max_age',
+            'type': 'integer',
+            'default_value': 120,
+            'required': True,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': lazy_gettext('Measurement Max Age'),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement')
+        },
         {
             'id': 'refresh_seconds',
             'type': 'float',
@@ -86,28 +108,6 @@ WIDGET_INFORMATION = {
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Timestamp Font Size (em)',
             'phrase': 'The font size of the timestamp'
-        },
-        {
-            'id': 'measurement',
-            'type': 'select_measurement',
-            'default_value': '',
-            'options_select': [
-                'Input',
-                'Math',
-                'Output',
-                'PID'
-            ],
-            'name': lazy_gettext('Measurement'),
-            'phrase': lazy_gettext('Select a measurement to display')
-        },
-        {
-            'id': 'measurement_max_age',
-            'type': 'integer',
-            'default_value': 120,
-            'required': True,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Measurement Max Age'),
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement')
         },
         {
             'id': 'decimal_places',

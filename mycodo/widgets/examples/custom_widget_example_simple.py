@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  widget_spacer.py - Spacer dashboard widget
+#  custom_widget_example_simple.py - Simple example dashboard widget
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
 #
@@ -43,15 +43,23 @@ def constraints_pass_positive_value(mod_widget, value):
 
 
 WIDGET_INFORMATION = {
-    'widget_name_unique': 'widget_spacer',
-    'widget_name': 'Spacer',
+    'widget_name_unique': 'widget_example_simple',
+    'widget_name': 'Example Widget (Simple)',
     'widget_library': '',
     'no_class': True,
 
-    'message': 'This widget is a simple widget to use as a spacer, which includes the ability to set text in its contents.',
+    'url_manufacturer': 'https://www.hackaday.com',
+    'url_datasheet': 'https://www.digikey.com',
+    'url_product_purchase': [
+        'https://www.digikey.com',
+        'https://www.adafruit.com'
+    ],
+    'url_additional': 'https://github.com',
 
-    'widget_width': 20,
-    'widget_height': 2,
+    'message': 'This widget is an example widget, which includes the ability to set text in the widget body.',
+
+    'widget_width': 8,
+    'widget_height': 8,
 
     'custom_options': [
         {
@@ -65,7 +73,7 @@ WIDGET_INFORMATION = {
         {
             'id': 'body_text',
             'type': 'text',
-            'default_value': "",
+            'default_value': 'TEST',
             'name': 'Body Text',
             'phrase': 'The body text of the widget'
         },

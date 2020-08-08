@@ -14,6 +14,8 @@ from flask.blueprints import Blueprint
 from mycodo.config import LANGUAGES
 from mycodo.config import PATH_CONTROLLERS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
+from mycodo.config import PATH_WIDGETS_CUSTOM
+from mycodo.config import PATH_WIDGETS
 from mycodo.config import PATH_OUTPUTS_CUSTOM
 from mycodo.config import THEMES
 from mycodo.databases.models import Conversion
@@ -206,7 +208,7 @@ def settings_input():
 @blueprint.route('/settings/output', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_output():
-    """ Display measurement settings """
+    """ Display output settings """
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -245,14 +247,62 @@ def settings_output():
             except:
                 pass
 
-    # dict_outputs = parse_output_information()
-
     return render_template('settings/output.html',
                            dict_outputs=dict_outputs,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
                            form_output=form_output,
                            form_output_delete=form_output_delete)
+
+
+@blueprint.route('/settings/widget', methods=('GET', 'POST'))
+@flask_login.login_required
+def settings_widget():
+    """ Display widget settings """
+    if not utils_general.user_has_permission('view_settings'):
+        return redirect(url_for('routes_general.home'))
+
+    form_widget = forms_settings.Widget()
+    form_widget_delete = forms_settings.WidgetDel()
+
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
+
+    # Get list of custom widgets
+    excluded_files = ['__init__.py', '__pycache__']
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('routes_general.home'))
+
+        if form_widget.import_widget_upload.data:
+            utils_settings.settings_widget_import(form_widget)
+        elif form_widget_delete.delete_widget.data:
+            utils_settings.settings_widget_delete(form_widget_delete)
+
+        return redirect(url_for('routes_settings.settings_widget'))
+
+    dict_widgets = {}
+
+    for each_file in os.listdir(PATH_WIDGETS_CUSTOM):
+        if each_file not in excluded_files:
+            try:
+                full_path_file = os.path.join(PATH_WIDGETS_CUSTOM, each_file)
+                widget_info = load_module_from_file(full_path_file, 'widgets')
+                dict_widgets[widget_info.WIDGET_INFORMATION['widget_name_unique']] = {}
+                dict_widgets[widget_info.WIDGET_INFORMATION['widget_name_unique']]['widget_name'] = \
+                    widget_info.WIDGET_INFORMATION['widget_name']
+                dict_widgets[widget_info.WIDGET_INFORMATION['widget_name_unique']]['measurements_name'] = \
+                    widget_info.WIDGET_INFORMATION['measurements_name']
+            except:
+                pass
+
+    return render_template('settings/widget.html',
+                           dict_widgets=dict_widgets,
+                           dict_measurements=dict_measurements,
+                           dict_units=dict_units,
+                           form_widget=form_widget,
+                           form_widget_delete=form_widget_delete)
 
 
 @blueprint.route('/settings/measurement', methods=('GET', 'POST'))

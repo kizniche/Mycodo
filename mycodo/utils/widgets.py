@@ -34,7 +34,7 @@ logger = logging.getLogger("mycodo.utils.widgets")
 
 
 def generate_widget_html():
-    """Save HTML files"""
+    """ Generate all HTML files for all widgets """
     dict_widgets = parse_widget_information()
     assure_path_exists(PATH_HTML_USER)
 

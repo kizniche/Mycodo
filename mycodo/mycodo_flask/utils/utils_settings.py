@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
+import os
+import re
 import subprocess
 import time
 import traceback
 
 import bcrypt
 import flask_login
-import os
-import re
 import sqlalchemy
 from flask import flash
 from flask import redirect
@@ -22,6 +22,7 @@ from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_CONTROLLERS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import PATH_OUTPUTS_CUSTOM
+from mycodo.config import PATH_WIDGETS_CUSTOM
 from mycodo.config import UPGRADE_INIT_FILE
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
@@ -66,6 +67,8 @@ from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.utils import test_password
 from mycodo.utils.utils import test_username
+from mycodo.utils.widgets import generate_widget_html
+from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
 
@@ -400,11 +403,10 @@ def settings_controller_import(form):
                 error.append(
                     "'controller_name_unique' is not unique, there "
                     "is already an controller with that name ({})".format(
-                        controller_info.CONTROLLER_INFORMATION['controller_name_unique']))
+                        controller_info.CONTROLLER_INFORMATION['controller_name_unique'].lower()))
 
             if 'controller_name' not in controller_info.CONTROLLER_INFORMATION:
-                error.append(
-                    "'controller_name' not found in CONTROLLER_INFORMATION dictionary")
+                error.append("'controller_name' not found in CONTROLLER_INFORMATION dictionary")
             elif controller_info.CONTROLLER_INFORMATION['controller_name'] == '':
                 error.append("'controller_name' is empty")
 
@@ -414,13 +416,9 @@ def settings_controller_import(form):
                 else:
                     for each_dep in controller_info.CONTROLLER_INFORMATION['dependencies_module']:
                         if not isinstance(each_dep, tuple):
-                            error.append(
-                                "'dependencies_module' must be a list of "
-                                "tuples")
+                            error.append("'dependencies_module' must be a list of tuples")
                         elif len(each_dep) != 3:
-                            error.append(
-                                "'dependencies_module': tuples in list must "
-                                "have 3 items")
+                            error.append("'dependencies_module': tuples in list must have 3 items")
                         elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
                             error.append(
                                 "'dependencies_module': tuples in list must "
@@ -535,7 +533,7 @@ def settings_input_import(form):
                 error.append(
                     "'input_name_unique' is not unique, there "
                     "is already an input with that name ({})".format(
-                        input_info.INPUT_INFORMATION['input_name_unique']))
+                        input_info.INPUT_INFORMATION['input_name_unique'].lower()))
 
             if 'input_manufacturer' not in input_info.INPUT_INFORMATION:
                 error.append(
@@ -545,8 +543,7 @@ def settings_input_import(form):
                 error.append("'input_manufacturer' is empty")
 
             if 'input_name' not in input_info.INPUT_INFORMATION:
-                error.append(
-                    "'input_name' not found in INPUT_INFORMATION dictionary")
+                error.append("'input_name' not found in INPUT_INFORMATION dictionary")
             elif input_info.INPUT_INFORMATION['input_name'] == '':
                 error.append("'input_name' is empty")
 
@@ -589,17 +586,11 @@ def settings_input_import(form):
                 else:
                     for each_dep in input_info.INPUT_INFORMATION['dependencies_module']:
                         if not isinstance(each_dep, tuple):
-                            error.append(
-                                "'dependencies_module' must be a list of "
-                                "tuples")
+                            error.append("'dependencies_module' must be a list of tuples")
                         elif len(each_dep) != 3:
-                            error.append(
-                                "'dependencies_module': tuples in list must "
-                                "have 3 items")
+                            error.append("'dependencies_module': tuples in list must have 3 items")
                         elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
-                            error.append(
-                                "'dependencies_module': tuples in list must "
-                                "not be empty")
+                            error.append("'dependencies_module': tuples in list must not be empty")
                         elif each_dep[0] not in ['internal', 'pip-pypi', 'pip-git', 'apt']:
                             error.append(
                                 "'dependencies_module': first in tuple "
@@ -638,8 +629,7 @@ def settings_input_delete(form):
 
     if not error:
         # Check if any Input entries exist
-        input_dev = Input.query.filter(
-            Input.device == input_device_name).count()
+        input_dev = Input.query.filter(Input.device == input_device_name).count()
         if input_dev:
             error.append("Cannot delete Input Module if there are still "
                          "Input entries using it. Deactivate and delete all "
@@ -710,18 +700,15 @@ def settings_output_import(form):
                 error.append(
                     "'output_name_unique' is not unique, there "
                     "is already an output with that name ({})".format(
-                        output_info.OUTPUT_INFORMATION['output_name_unique']))
+                        output_info.OUTPUT_INFORMATION['output_name_unique'].lower()))
 
             if 'output_name' not in output_info.OUTPUT_INFORMATION:
-                error.append(
-                    "'output_name' not found in OUTPUT_INFORMATION dictionary")
+                error.append("'output_name' not found in OUTPUT_INFORMATION dictionary")
             elif output_info.OUTPUT_INFORMATION['output_name'] == '':
                 error.append("'output_name' is empty")
 
             if 'measurements_dict' not in output_info.OUTPUT_INFORMATION:
-                error.append(
-                    "'measurements_dict' not found in "
-                    "OUTPUT_INFORMATION dictionary")
+                error.append("'measurements_dict' not found in OUTPUT_INFORMATION dictionary")
             elif not output_info.OUTPUT_INFORMATION['measurements_dict']:
                 if ('measurements_variable_amount' in output_info.OUTPUT_INFORMATION and
                    output_info.OUTPUT_INFORMATION['measurements_variable_amount']):
@@ -750,17 +737,11 @@ def settings_output_import(form):
                 else:
                     for each_dep in output_info.OUTPUT_INFORMATION['dependencies_module']:
                         if not isinstance(each_dep, tuple):
-                            error.append(
-                                "'dependencies_module' must be a list of "
-                                "tuples")
+                            error.append("'dependencies_module' must be a list of tuples")
                         elif len(each_dep) != 3:
-                            error.append(
-                                "'dependencies_module': tuples in list must "
-                                "have 3 items")
+                            error.append("'dependencies_module': tuples in list must have 3 items")
                         elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
-                            error.append(
-                                "'dependencies_module': tuples in list must "
-                                "not be empty")
+                            error.append("'dependencies_module': tuples in list must not be empty")
                         elif each_dep[0] not in ['internal', 'pip-pypi', 'pip-git', 'apt']:
                             error.append(
                                 "'dependencies_module': first in tuple "
@@ -799,8 +780,7 @@ def settings_output_delete(form):
 
     if not error:
         # Check if any Output entries exist
-        output_dev = Output.query.filter(
-            Output.output_type == output_device_name).count()
+        output_dev = Output.query.filter(Output.output_type == output_device_name).count()
         if output_dev:
             error.append("Cannot delete Output Module if there are still "
                          "Output entries using it. Delete all Output entries "
@@ -816,6 +796,132 @@ def settings_output_delete(form):
         flash('Frontend reloaded to scan for new Output Modules', 'success')
 
     flash_success_errors(error, action, url_for('routes_settings.settings_output'))
+
+
+def settings_widget_import(form):
+    """
+    Receive an widget module file, check it for errors, add it to Mycodo widget list
+    """
+    action = '{action} {controller}'.format(
+        action=gettext("Import"),
+        controller=TRANSLATIONS['widget']['title'])
+    error = []
+
+    widget_info = None
+
+    try:
+        # correct_format = 'Mycodo_MYCODOVERSION_Settings_DBVERSION_HOST_DATETIME.zip'
+        install_dir = os.path.abspath(INSTALL_DIRECTORY)
+        tmp_directory = os.path.join(install_dir, 'mycodo/widgets/tmp_widgets')
+        assure_path_exists(tmp_directory)
+        assure_path_exists(PATH_WIDGETS_CUSTOM)
+        tmp_name = 'tmp_widget_testing.py'
+        full_path_tmp = os.path.join(tmp_directory, tmp_name)
+
+        if not form.import_widget_file.data:
+            error.append('No file present')
+        elif form.import_widget_file.data.filename == '':
+            error.append('No file name')
+        else:
+            form.import_widget_file.data.save(full_path_tmp)
+
+        try:
+            widget_info = load_module_from_file(full_path_tmp, 'widgets')
+            if not hasattr(widget_info, 'WIDGET_INFORMATION'):
+                error.append("Could not load WIDGET_INFORMATION dictionary from "
+                             "the uploaded widget module")
+        except Exception:
+            error.append("Could not load uploaded file as a python module:\n"
+                         "{}".format(traceback.format_exc()))
+
+        dict_widgets = parse_widget_information()
+        list_widgets = []
+        for each_key in dict_widgets.keys():
+            list_widgets.append(each_key.lower())
+
+        if not error:
+            if 'widget_name_unique' not in widget_info.WIDGET_INFORMATION:
+                error.append("'widget_name_unique' not found in WIDGET_INFORMATION dictionary")
+            elif widget_info.WIDGET_INFORMATION['widget_name_unique'] == '':
+                error.append("'widget_name_unique' is empty")
+            elif widget_info.WIDGET_INFORMATION['widget_name_unique'].lower() in list_widgets:
+                error.append(
+                    "'widget_name_unique' is not unique, there "
+                    "is already an widget with that name ({})".format(
+                        widget_info.WIDGET_INFORMATION['widget_name_unique'].lower()))
+
+            if 'widget_name' not in widget_info.WIDGET_INFORMATION:
+                error.append("'widget_name' not found in WIDGET_INFORMATION dictionary")
+            elif widget_info.WIDGET_INFORMATION['widget_name'] == '':
+                error.append("'widget_name' is empty")
+
+            if 'dependencies_module' in widget_info.WIDGET_INFORMATION:
+                if not isinstance(widget_info.WIDGET_INFORMATION['dependencies_module'], list):
+                    error.append("'dependencies_module' must be a list of tuples")
+                else:
+                    for each_dep in widget_info.WIDGET_INFORMATION['dependencies_module']:
+                        if not isinstance(each_dep, tuple):
+                            error.append("'dependencies_module' must be a list of tuples")
+                        elif len(each_dep) != 3:
+                            error.append("'dependencies_module': tuples in list must have 3 items")
+                        elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
+                            error.append("'dependencies_module': tuples in list must not be empty")
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'pip-git', 'apt']:
+                            error.append(
+                                "'dependencies_module': first in tuple "
+                                "must be 'internal', 'pip-pypi', 'pip-git', "
+                                "or 'apt'")
+
+        if not error:
+            # Determine filename
+            unique_name = '{}.py'.format(widget_info.WIDGET_INFORMATION['widget_name_unique'].lower())
+
+            # Move module from temp directory to custom_widget directory
+            full_path_final = os.path.join(PATH_WIDGETS_CUSTOM, unique_name)
+            os.rename(full_path_tmp, full_path_final)
+
+            generate_widget_html()
+
+            # Reload frontend to refresh the widgets
+            cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+                path=install_dir)
+            subprocess.Popen(cmd, shell=True)
+            flash('Frontend reloaded to scan for new Widget Modules', 'success')
+
+    except Exception as err:
+        error.append("Exception: {}".format(err))
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_widget'))
+
+
+def settings_widget_delete(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Import"),
+        controller=TRANSLATIONS['widget']['title'])
+    error = []
+
+    widget_device_name = form.widget_id.data
+    file_name = '{}.py'.format(form.widget_id.data.lower())
+    full_path_file = os.path.join(PATH_WIDGETS_CUSTOM, file_name)
+
+    if not error:
+        # Check if any Widget entries exist
+        widget_dev = Widget.query.filter(Widget.graph_type == widget_device_name).count()
+        if widget_dev:
+            error.append("Cannot delete Widget Module if there are still "
+                         "Widget entries using it. Delete all Widget entries "
+                         "that use this module before deleting the module.")
+
+    if not error:
+        os.remove(full_path_file)
+
+        # Reload frontend to refresh the widgets
+        cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+            path=os.path.abspath(INSTALL_DIRECTORY))
+        subprocess.Popen(cmd, shell=True)
+        flash('Frontend reloaded to scan for new Widget Modules', 'success')
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_widget'))
 
 
 def settings_measurement_add(form):

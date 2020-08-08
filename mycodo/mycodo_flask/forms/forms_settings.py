@@ -171,6 +171,20 @@ class OutputDel(FlaskForm):
 
 
 #
+# Settings (Widget)
+#
+
+class Widget(FlaskForm):
+    import_widget_file = FileField(lazy_gettext('Upload'))
+    import_widget_upload = SubmitField(lazy_gettext('Import Widget Module'))
+
+
+class WidgetDel(FlaskForm):
+    widget_id = StringField(widget=widgets.HiddenInput())
+    delete_widget = SubmitField(TRANSLATIONS['delete']['title'])
+
+
+#
 # Settings (Measurement)
 #
 

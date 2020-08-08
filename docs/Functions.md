@@ -4,7 +4,7 @@ Function controllers perform tasks that often involve the use of Inputs and Outp
 
 ## Custom Controllers
 
-There is a Custom Controller import system in Mycodo that allows user-created Controllers to be used in the Mycodo system. Custom Controllers can be uploaded on the `Configure -> Controllers` page. After import, they will be available to use on the `Setup -> Function` page.
+There is a Custom Controller import system in Mycodo that allows user-created Controllers to be used in the Mycodo system. Custom Controllers can be uploaded on the `Configure -> Custom Controllers` page. After import, they will be available to use on the `Setup -> Function` page.
 
 There are also example Custom Controller files in `Mycodo/mycodo/controllers/custom_controllers/examples`
 

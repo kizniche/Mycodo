@@ -79,11 +79,13 @@
             {%- endif %}
           </div>
           <div class="my-auto">
+
         {% for widget_type, file_title_bar in list_html_files_title_bar.items() if widget_type == each_widget.graph_type %}
             <!-- Widget {{widget_type}} title_bar template begin -->
             {% include 'user_templates/{}'.format(file_title_bar) %}
             <!-- Widget {{widget_type}} title_bar template end -->
         {% endfor %}
+
             <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
               <i style="font-size: 1.5em" class="fas fa-cog"></i>
             </button>
@@ -91,11 +93,13 @@
         </div>
 
         <div id="container-graph-{{each_widget.id}}" style="position: relative; flex-grow: 1; padding: 0.35em">
+
           {% for widget_type, file_body in list_html_files_body.items() if widget_type == each_widget.graph_type %}
           <!-- Widget {{widget_type}} body template begin -->
           {% include 'user_templates/{}'.format(file_body) %}
           <!-- Widget {{widget_type}} body template end -->
           {% endfor %}
+
         </div>
 
         <div class="modal fade" id="modal_config_{{chart_number}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
@@ -111,7 +115,13 @@
                 {{form_base.widget_id(value=each_widget.unique_id)}}
                 <input type="hidden" name="widget_type" value="{{each_widget.graph_type}}">
 
-                <div class="form-row">
+                <div class="row small-gutters" style="padding: 1em">
+                  {% if 'message' in dict_widgets[each_widget.graph_type] %}
+                  <div class="col-12" style="padding-top: 0.3em; padding-bottom: 1em">
+                    {{dict_widgets[each_widget.graph_type]['message']|safe}}
+                  </div>
+                  {% endif %}
+
                   {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_MOD.html' %}
                 </div>
 
@@ -120,16 +130,19 @@
                   {% set custom_options_values = custom_options_values_widgets %}
 
                   {% if custom_options_values[unique_id] %}
-                <div class="row small-gutters" style="padding: 0.5em">
-                  <div class="col-12">
-                    <h5>{{_('Custom Options')}}</h5>
-                  </div>
+
+                    {% if 'custom_options_message' in dict_options %}
+                <div class="row small-gutters" style="padding: 1em">
                   {% include 'pages/form_options/Custom_Options_Message.html' %}
+                </div>
+                    {% endif %}
+
                     {% if 'custom_options' in dict_options %}
+                <div class="row small-gutters" style="padding: 1em">
                       {% for each_option in dict_options['custom_options'] %}
                         {% if each_option['type'] == 'new_line' %}
                 </div>
-                <div class="row small-gutters" style="padding: 0.5em">
+                <div class="row small-gutters" style="padding: 1em">
                         {% elif each_option['type'] == 'message' %}
                   <div class="col-12" style="padding-bottom: 0.5em">
                     {{each_option['default_value']|safe}}
@@ -138,8 +151,8 @@
                   {% include 'pages/form_options/Custom_Options.html' %}
                         {% endif %}
                       {% endfor %}
-                    {% endif %}
                 </div>
+                    {% endif %}
                   {% endif %}
 
                   {% for widget_type, file_configure_options in list_html_files_configure_options.items() if widget_type == each_widget.graph_type %}
@@ -148,7 +161,7 @@
                   <!-- Widget {{widget_type}} {{each_widget.unique_id}} configure_options template end -->
                   {% endfor %}
 
-                <div class="row small-gutters" style="padding: 1em 1em 0 0.8em;">
+                <div class="row small-gutters" style="padding: 1em">
                   <div class="col-auto">
                     <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                   </div>

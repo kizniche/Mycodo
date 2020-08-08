@@ -1,6 +1,6 @@
 Page\: `Setup -> Data`
 
-For a full list of supported Inputs, see [Supported Input Devices](Input-Devices.md).
+For a full list of supported Inputs, see [Supported Input Devices](Supported-Inputs.md).
 
 Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere, which will be stored in a time-series database (InfluxDB). This database will provide measurements for [Dashboards](Data-Viewing.md/#dashboard), [LCDs](LCDs.md), [PID Controllers](Functions.md/#pid-controller), [Conditional Statements](Functions.md/#conditional), and other parts of Mycodo to operate from. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.
 
@@ -208,7 +208,7 @@ In addition to several supported sensors and devices, a Linux command may be spe
 
 See [Building a Custom Input Module](https://github.com/kizniche/Mycodo/wiki/Building-a-Custom-Input-Module) Wiki page.
 
-There is a Custom Input import system in Mycodo that allows user-created Inputs to be created an used in the Mycodo system. Custom Inputs can be uploaded and imported from the `[Gear Icon] -> Configure -> Inputs` page. After import, they will be available to use on the `Setup -> Data` page.
+There is a Custom Input import system in Mycodo that allows user-created Inputs to be created an used in the Mycodo system. Custom Inputs can be uploaded and imported from the `[Gear Icon] -> Configure -> Custom Inputs` page. After import, they will be available to use on the `Setup -> Data` page.
 
 If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo.
 
@@ -274,4 +274,4 @@ This is useful if multiple data strings are to be sent to the same serial device
 
 The full code used to decode both `bme280_ttn.py` and `k30_ttn.py`, with informative comments, is located at `~/Mycodo/mycodo/inputs/examples/ttn_data_storage_decoder_example.js`.
 
-These example Input modules may be modified to suit your needs and imported into Mycodo through the `Configure -> Inputs` page. After import, they will be available to use on the `Setup -> Data` page.
+These example Input modules may be modified to suit your needs and imported into Mycodo through the `Configure -> Custom Inputs` page. After import, they will be available to use on the `Setup -> Data` page.
