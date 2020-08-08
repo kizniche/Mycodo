@@ -165,8 +165,6 @@ class PIDController(AbstractController, threading.Thread):
 
     def initialize_variables(self):
         """Set PID parameters"""
-        self.set_log_level_debug(self.log_level_debug)
-
         self.dict_outputs = parse_output_information()
 
         self.sample_rate = db_retrieve_table_daemon(Misc, entry='first').sample_rate_controller_pid
@@ -175,13 +173,14 @@ class PIDController(AbstractController, threading.Thread):
 
         pid = db_retrieve_table_daemon(PID, unique_id=self.unique_id)
 
+        self.log_level_debug = pid.log_level_debug
+        self.set_log_level_debug(self.log_level_debug)
+
         self.device_id = pid.measurement.split(',')[0]
         self.measurement_id = pid.measurement.split(',')[1]
-
         self.is_activated = pid.is_activated
         self.is_held = pid.is_held
         self.is_paused = pid.is_paused
-        self.log_level_debug = pid.log_level_debug
         self.setpoint_tracking_type = pid.setpoint_tracking_type
         self.setpoint_tracking_id = pid.setpoint_tracking_id
         self.setpoint_tracking_max_age = pid.setpoint_tracking_max_age
