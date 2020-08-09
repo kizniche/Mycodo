@@ -292,27 +292,6 @@ def pid_del(pid_id):
     flash_success_errors(error, action, url_for('routes_page.page_function'))
 
 
-def pid_autotune(form_mod_pid_base):
-    action = '{action} {controller}'.format(
-        action=gettext("Start Autotune"),
-        controller=TRANSLATIONS['pid']['title'])
-    error = []
-    try:
-        # Activate autotune flag in PID config
-        mod_pid = PID.query.filter(
-            PID.unique_id == form_mod_pid_base.function_id.data).first()
-        mod_pid.autotune_activated = True
-        mod_pid.autotune_noiseband = form_mod_pid_base.pid_autotune_noiseband.data
-        mod_pid.autotune_outstep = form_mod_pid_base.pid_autotune_outstep.data
-        db.session.commit()
-
-        # Activate PID
-        pid_activate(form_mod_pid_base.function_id.data)
-    except Exception as except_msg:
-        error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
-
-
 # TODO: Add more settings-checks before allowing controller to be activated
 def has_required_pid_values(pid_id):
     pid = PID.query.filter(

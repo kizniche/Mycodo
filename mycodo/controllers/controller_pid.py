@@ -62,11 +62,9 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
 from mycodo.databases.models import Misc
-from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
-from mycodo.utils.PID_hirschmann.pid_autotune import PIDAutotune
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import read_last_influxdb
@@ -132,14 +130,6 @@ class PIDController(AbstractController, threading.Thread):
         self.max_measure_age = None
         self.store_lower_as_negative = None
         self.timer = None
-
-        # PID Autotune
-        self.autotune = None
-        self.autotune_activated = False
-        self.autotune_debug = False
-        self.autotune_noiseband = 0
-        self.autotune_outstep = 0
-        self.autotune_timestamp = None
 
         # Check if a method is set for this PID
         self.method_type = None
@@ -220,26 +210,6 @@ class PIDController(AbstractController, threading.Thread):
             self.PID_Controller.integrator_max = pid.integrator_max
             self.PID_Controller.first_start = True
 
-        # Autotune options
-        self.autotune_activated = pid.autotune_activated
-        self.autotune_noiseband = pid.autotune_noiseband
-        self.autotune_outstep = pid.autotune_outstep
-
-        # If activated, initialize PID Autotune
-        if self.autotune_activated:
-            self.autotune_timestamp = time.time()
-            try:
-                self.autotune = PIDAutotune(
-                    self.PID_Controller.setpoint,
-                    out_step=self.autotune_outstep,
-                    sampletime=self.period,
-                    out_min=0,
-                    out_max=self.period,
-                    noiseband=self.autotune_noiseband)
-            except Exception as msg:
-                self.logger.error(msg)
-                self.stop_controller(deactivate_pid=True)
-
         if self.setpoint_tracking_type == 'method' and self.setpoint_tracking_id != '':
             self.setup_method(self.setpoint_tracking_id)
 
@@ -312,35 +282,8 @@ class PIDController(AbstractController, threading.Thread):
                                 measurement_id))
                         self.PID_Controller.setpoint = None
 
-                # If autotune activated, determine control variable (output) from autotune
-                if self.autotune_activated:
-                    if not self.autotune.run(self.last_measurement):
-                        self.PID_Controller.control_variable = self.autotune.output
-
-                        if self.autotune_debug:
-                            self.logger.info('')
-                            self.logger.info("state: {}".format(self.autotune.state))
-                            self.logger.info("output: {}".format(self.autotune.output))
-                    else:
-                        # Autotune has finished
-                        timestamp = time.time() - self.autotune_timestamp
-                        self.logger.info('')
-                        self.logger.info('time:  {0} min'.format(round(timestamp / 60)))
-                        self.logger.info('state: {0}'.format(self.autotune.state))
-
-                        if self.autotune.state == PIDAutotune.STATE_SUCCEEDED:
-                            for rule in self.autotune.tuning_rules:
-                                params = self.autotune.get_pid_parameters(rule)
-                                self.logger.info('')
-                                self.logger.info('rule: {0}'.format(rule))
-                                self.logger.info('Kp: {0}'.format(params.Kp))
-                                self.logger.info('Ki: {0}'.format(params.Ki))
-                                self.logger.info('Kd: {0}'.format(params.Kd))
-
-                        self.stop_controller(deactivate_pid=True)
-                else:
-                    # Calculate new control variable (output) from PID Controller
-                    self.PID_Controller.update_pid_output(self.last_measurement)
+                # Calculate new control variable (output) from PID Controller
+                self.PID_Controller.update_pid_output(self.last_measurement)
 
                 self.write_pid_values()  # Write variables to database
 

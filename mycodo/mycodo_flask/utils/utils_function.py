@@ -67,7 +67,7 @@ def function_add(form_add_func):
     new_func = None
 
     try:
-        if function_name.startswith('conditional_'):
+        if function_name == 'conditional_conditional':
             new_func = Conditional()
             new_func.conditional_statement = '''
 # Example code for learning how to use a Conditional. See the manual for more information.
@@ -101,7 +101,7 @@ if measurement is not None:  # If a measurement exists
                     Actions.query.all(),
                     test=False)
 
-        elif function_name.startswith('pid_'):
+        elif function_name == 'pid_pid':
             new_func = PID().save()
 
             for each_channel, measure_info in PID_INFO['measure'].items():
@@ -119,14 +119,23 @@ if measurement is not None:  # If a measurement exists
                 if not error:
                     new_measurement.save()
 
-        elif function_name.startswith('trigger_'):
+        elif function_name in ['trigger_edge',
+                               'trigger_output',
+                               'trigger_output_pwm',
+                               'trigger_timer_daily_time_point',
+                               'trigger_timer_daily_time_span',
+                               'trigger_timer_duration',
+                               'trigger_infrared_remote_input',
+                               'trigger_run_pwm_method',
+                               'trigger_sunrise_sunset']:
             new_func = Trigger()
             new_func.name = '{}'.format(FUNCTION_INFO[function_name]['name'])
             new_func.trigger_type = function_name
             if not error:
                 new_func.save()
 
-        elif function_name.startswith('function_'):
+        elif function_name in ['function_spacer',
+                               'function_actions']:
             new_func = Function()
             if function_name == 'function_spacer':
                 new_func.name = 'Spacer'
@@ -135,17 +144,22 @@ if measurement is not None:  # If a measurement exists
                 new_func.save()
 
         elif function_name in dict_controllers:
+            # Custom Function Controller
             new_func = CustomController()
             new_func.device = function_name
 
             if 'function_name' in dict_controllers[function_name]:
                 new_func.name = dict_controllers[function_name]['function_name']
             else:
-                new_func.name = 'Controller Name'
+                new_func.name = 'Function Name'
 
+            # TODO: Switch to JSON function
             list_options = []
             if 'custom_options' in dict_controllers[function_name]:
                 for each_option in dict_controllers[function_name]['custom_options']:
+                    if 'id' not in each_option:
+                        continue
+
                     if each_option['default_value'] is False:
                         default_value = ''
                     else:

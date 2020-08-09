@@ -22,6 +22,7 @@ This update includes the final refactoring of the output system to accommodate o
 
  - Deprecate duty_cycle parameter of output functions
  - Remove graph Shift X-Axis option
+ - Move Autotune from PID Controller to Separate PID Autotune Controller ([#811](https://github.com/kizniche/mycodo/issues/811))
 
 
 ## 8.6.4 (2020-07-25)

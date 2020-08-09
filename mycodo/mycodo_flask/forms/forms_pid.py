@@ -117,14 +117,6 @@ class PIDModBase(FlaskForm):
     order_up = SubmitField(TRANSLATIONS['up']['title'])
     order_down = SubmitField(TRANSLATIONS['down']['title'])
 
-    pid_autotune_noiseband = DecimalField(
-        lazy_gettext('Noise Band'),
-        widget=NumberInput(step='any'))
-    pid_autotune_outstep = DecimalField(
-        lazy_gettext('Outstep'),
-        widget=NumberInput(step='any'))
-    pid_autotune = SubmitField(lazy_gettext('Start Autotune'))
-
 
 class PIDModRelayRaise(FlaskForm):
     raise_min_duration = DecimalField(

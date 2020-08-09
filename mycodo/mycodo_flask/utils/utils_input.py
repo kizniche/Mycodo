@@ -220,9 +220,13 @@ def input_add(form_add):
         # Custom Options
         #
 
+        # TODO: Switch to JSON function
         list_options = []
         if 'custom_options' in dict_inputs[input_name]:
             for each_option in dict_inputs[input_name]['custom_options']:
+                if 'id' not in each_option:
+                    continue
+
                 if each_option['default_value'] is False:
                     default_value = ''
                 else:

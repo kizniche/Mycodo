@@ -93,7 +93,7 @@ In order to calculate accurate energy usage statistics, a few characteristics of
 
 Page\: `[Gear Icon] -> Configure -> Custom Functions`
 
-Controller modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Functions](Functions.md/#custom-controllers) for more details.
+Controller modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Functions](Functions.md/#custom-functions) for more details.
 
 ## Input Settings
 

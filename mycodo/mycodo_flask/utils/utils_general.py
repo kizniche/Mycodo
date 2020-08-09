@@ -75,6 +75,9 @@ def custom_options_return_string(error, dict_options, mod_dev, request_form):
 
     if 'custom_options' in dict_options[device]:
         for each_option in dict_options[device]['custom_options']:
+            if 'id' not in each_option:
+                continue
+
             null_value = True
             for key in request_form.keys():
                 if each_option['id'] == key:
@@ -169,9 +172,12 @@ def custom_options_return_json(error, dict_options, request_form, mod_dev=None, 
 
     if 'custom_options' in dict_options[device]:
         for each_option in dict_options[device]['custom_options']:
+            if 'id' not in each_option:
+                continue
+
             null_value = True
             for key in request_form.keys():
-                if 'id' in each_option and each_option['id'] == key:
+                if each_option['id'] == key:
                     constraints_pass = True
                     constraints_errors = []
                     value = None
@@ -244,7 +250,7 @@ def custom_options_return_json(error, dict_options, request_form, mod_dev=None, 
                         null_value = False
                         dict_options_return[key] = value
 
-            if null_value and 'id' in each_option:
+            if null_value:
                 if each_option['type'] == "select_multi_measurement":
                     dict_options_return[each_option['id']] = ""
                 else:

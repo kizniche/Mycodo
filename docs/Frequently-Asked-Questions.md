@@ -16,7 +16,7 @@ Yes, there is a [REST API](API.md) as well as the [Mycodo Client](Mycodo-Client.
 
 *Can I add a new Input, Output, or custom functions to the system if they're not currently supported?*
 
-Yes, Mycodo supports importing [Custom Inputs](Inputs.md/#custom-inputs), [Custom Outputs](Outputs.md/#custom-outputs), and [Custom Functions](Functions.md/#custom-controllers).
+Yes, Mycodo supports importing [Custom Inputs](Inputs.md/#custom-inputs), [Custom Outputs](Outputs.md/#custom-outputs), and [Custom Functions](Functions.md/#custom-functions).
 
 Another way to add an Input is to create a bash or Python script that obtains and returns a numerical value when executed from the linux command line on the Raspberry Pi. This script may be configured to be executed by the "Linux Command" or "Python Code" Inputs. These Inputs will periodically execute the command(s) and store the returned measurement(s) to the database for use with the rest of the Mycodo system.
 

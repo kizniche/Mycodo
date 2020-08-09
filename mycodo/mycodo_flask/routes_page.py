@@ -1320,8 +1320,6 @@ def page_function():
             utils_function.action_execute_all(form_conditional)
 
         # PID
-        elif form_mod_pid_base.pid_autotune.data:
-            utils_pid.pid_autotune(form_mod_pid_base)
         elif form_mod_pid_base.pid_mod.data:
             utils_pid.pid_mod(form_mod_pid_base,
                               form_mod_pid_pwm_raise,
@@ -1329,7 +1327,7 @@ def page_function():
                               form_mod_pid_output_raise,
                               form_mod_pid_output_lower,
                               form_mod_pid_volume_raise,
-                              form_mod_pid_volume_lower                              )
+                              form_mod_pid_volume_lower)
         elif form_mod_pid_base.pid_delete.data:
             utils_pid.pid_del(form_mod_pid_base.function_id.data)
         elif form_mod_pid_base.order_up.data:
