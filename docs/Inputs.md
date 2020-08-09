@@ -4,6 +4,26 @@ For a full list of supported Inputs, see [Supported Input Devices](Supported-Inp
 
 Inputs, such as sensors, ADC signals, or even a response from a command, enable measuring conditions in the environment or elsewhere, which will be stored in a time-series database (InfluxDB). This database will provide measurements for [Dashboards](Data-Viewing.md/#dashboard), [LCDs](LCDs.md), [PID Controllers](Functions.md/#pid-controller), [Conditional Statements](Functions.md/#conditional), and other parts of Mycodo to operate from. Add, configure, and activate inputs to begin recording measurements to the database and allow them to be used throughout Mycodo.
 
+### Custom Inputs
+
+See [Building a Custom Input Module](https://github.com/kizniche/Mycodo/wiki/Building-a-Custom-Input-Module) Wiki page.
+
+There is a Custom Input import system in Mycodo that allows user-created Inputs to be created an used in the Mycodo system. Custom Inputs can be uploaded and imported from the `[Gear Icon] -> Configure -> Custom Inputs` page. After import, they will be available to use on the `Setup -> Data` page.
+
+If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo.
+
+Open any of the built-in modules located in the inputs directory (<https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/>) for examples of the proper formatting.
+
+There's also minimal input module template that generates random data as an example:
+
+<https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py>
+
+There's also an input module that includes all available INPUT_INFORMATION options along with descriptions:
+
+<https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py>
+
+Additionally, I have another github repository devoted to Custom Modules that are not included in the built-in set, at [kizniche/Mycodo-custom](https://github.com/kizniche/Mycodo-custom).
+
 ### Input Actions
 
 Input Actions are functions within the Input module that can be executed from the Web UI. This is useful for things such as calibration or other functionality specific to the input. By default there is at least one action, Acquire Measurements Now, which will cause the input to acquire measurements rather than waiting until the next Period has elapsed.
@@ -204,26 +224,6 @@ In addition to several supported sensors and devices, a Linux command may be spe
 
 1.  [Debouncing a signal](https://kylegabriel.com/projects/2016/02/morse-code-translator.html#debouncing)
 
-### Custom Inputs
-
-See [Building a Custom Input Module](https://github.com/kizniche/Mycodo/wiki/Building-a-Custom-Input-Module) Wiki page.
-
-There is a Custom Input import system in Mycodo that allows user-created Inputs to be created an used in the Mycodo system. Custom Inputs can be uploaded and imported from the `[Gear Icon] -> Configure -> Custom Inputs` page. After import, they will be available to use on the `Setup -> Data` page.
-
-If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo.
-
-Open any of the built-in modules located in the inputs directory (<https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/>) for examples of the proper formatting.
-
-There's also minimal input module template that generates random data as an example:
-
-<https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py>
-
-There's also an input module that includes all available INPUT_INFORMATION options along with descriptions:
-
-<https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py>
-
-Additionally, I have another github repository devoted to Custom Inputs and Controllers that are not included in the built-in set, at [kizniche/Mycodo-custom](https://github.com/kizniche/Mycodo-custom).
-
 ### The Things Network
 
 [The Things Network](https://www.thethingsnetwork.org/) (TTN) Input module enables downloading of data from TTN if the Data Storage Integration is enabled in your TTN Application. The Data Storage Integration will store data for up to 7 days. Mycodo will download this data periodically and store the measurements locally.
@@ -274,4 +274,4 @@ This is useful if multiple data strings are to be sent to the same serial device
 
 The full code used to decode both `bme280_ttn.py` and `k30_ttn.py`, with informative comments, is located at `~/Mycodo/mycodo/inputs/examples/ttn_data_storage_decoder_example.js`.
 
-These example Input modules may be modified to suit your needs and imported into Mycodo through the `Configure -> Custom Inputs` page. After import, they will be available to use on the `Setup -> Data` page.
+These example Input modules may be modified to suit your needs and imported into Mycodo through the `[Gear Icon] -> Configure -> Custom Inputs` page. After import, they will be available to use on the `Setup -> Data` page.

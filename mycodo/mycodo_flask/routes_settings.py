@@ -12,10 +12,9 @@ from flask import url_for
 from flask.blueprints import Blueprint
 
 from mycodo.config import LANGUAGES
-from mycodo.config import PATH_CONTROLLERS_CUSTOM
+from mycodo.config import PATH_FUNCTIONS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import PATH_WIDGETS_CUSTOM
-from mycodo.config import PATH_WIDGETS
 from mycodo.config import PATH_OUTPUTS_CUSTOM
 from mycodo.config import THEMES
 from mycodo.databases.models import Conversion
@@ -106,17 +105,17 @@ def settings_general():
                            form_settings_general=form_settings_general)
 
 
-@blueprint.route('/settings/controller', methods=('GET', 'POST'))
+@blueprint.route('/settings/function', methods=('GET', 'POST'))
 @flask_login.login_required
-def settings_controller():
-    """ Display controller settings """
+def settings_function():
+    """ Display function settings """
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
     form_controller = forms_settings.Controller()
     form_controller_delete = forms_settings.ControllerDel()
 
-    # Get list of custom controllers
+    # Get list of custom functions
     excluded_files = ['__init__.py', '__pycache__']
 
     if request.method == 'POST':
@@ -124,28 +123,26 @@ def settings_controller():
             return redirect(url_for('routes_general.home'))
 
         if form_controller.import_controller_upload.data:
-            utils_settings.settings_controller_import(form_controller)
+            utils_settings.settings_function_import(form_controller)
         elif form_controller_delete.delete_controller.data:
-            utils_settings.settings_controller_delete(form_controller_delete)
+            utils_settings.settings_function_delete(form_controller_delete)
 
-        return redirect(url_for('routes_settings.settings_controller'))
+        return redirect(url_for('routes_settings.settings_function'))
 
     dict_controllers = {}
 
-    for each_file in os.listdir(PATH_CONTROLLERS_CUSTOM):
+    for each_file in os.listdir(PATH_FUNCTIONS_CUSTOM):
         if each_file not in excluded_files:
             try:
-                full_path_file = os.path.join(PATH_CONTROLLERS_CUSTOM, each_file)
-                controller_info = load_module_from_file(full_path_file, 'controllers')
-                dict_controllers[controller_info.CONTROLLER_INFORMATION['controller_name_unique']] = {}
-                dict_controllers[controller_info.CONTROLLER_INFORMATION['controller_name_unique']]['controller_name'] = \
-                    controller_info.CONTROLLER_INFORMATION['controller_name']
+                full_path_file = os.path.join(PATH_FUNCTIONS_CUSTOM, each_file)
+                controller_info = load_module_from_file(full_path_file, 'functions')
+                func_info = controller_info.FUNCTION_INFORMATION
+                dict_controllers[func_info['function_name_unique']] = {}
+                dict_controllers[func_info['function_name_unique']]['function_name'] = func_info['function_name']
             except:
                 pass
 
-    # dict_controllers = parse_controller_information()
-
-    return render_template('settings/controller.html',
+    return render_template('settings/function.html',
                            dict_controllers=dict_controllers,
                            form_controller=form_controller,
                            form_controller_delete=form_controller_delete)
@@ -194,8 +191,6 @@ def settings_input():
                     input_info.INPUT_INFORMATION['measurements_name']
             except:
                 pass
-
-    # dict_inputs = parse_input_information()
 
     return render_template('settings/input.html',
                            dict_inputs=dict_inputs,

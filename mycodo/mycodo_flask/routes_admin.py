@@ -48,7 +48,7 @@ from mycodo.mycodo_flask.forms import forms_dependencies
 from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
-from mycodo.utils.controllers import parse_controller_information
+from mycodo.utils.functions import parse_function_information
 from mycodo.utils.github_release_info import MycodoRelease
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
@@ -280,7 +280,7 @@ def admin_dependencies(device):
         install_in_progress = True
 
     list_dependencies = [
-        parse_controller_information(),
+        parse_function_information(),
         parse_input_information(),
         parse_output_information(),
         CALIBRATION_INFO,

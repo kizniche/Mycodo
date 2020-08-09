@@ -69,7 +69,7 @@ from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
-from mycodo.utils.controllers import parse_controller_information
+from mycodo.utils.functions import parse_function_information
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.function_actions import get_condition_value
 from mycodo.utils.function_actions import get_condition_value_dict
@@ -88,24 +88,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class DaemonController:
-    """
-    Mycodo daemon
-
-    Read tables containing controller settings from SQLite database.
-    Start a thread for each controller.
-    Loop until the daemon is instructed to shut down.
-    Signal each thread to shut down and wait for each thread to shut down.
-
-    All output operations (turning on/off) is operated by one output controller.
-
-    Each connected input has its own controller to collect all measurements
-    that particular input can produce and put then into an influxdb database.
-
-    Each PID controller is associated with only one measurement from one
-    input controller.
-
-    """
-
+    """ Mycodo daemon """
     def __init__(self, debug):
         self.logger = logging.getLogger('mycodo.daemon')
         if not debug:
@@ -120,8 +103,7 @@ class DaemonController:
         self.terminated = False
         self.debug = debug
 
-        # Controller object that will store the thread objects for each
-        # controller
+        # Controller object that will store the thread objects for each controller
         self.controller = {
             'Conditional': {},
             'Output': None,  # May only launch a single thread for this controller
@@ -301,16 +283,14 @@ class DaemonController:
             elif cont_type == 'Custom':
                 controller_manage['type'] = CustomController
 
-                custom_controller = db_retrieve_table_daemon(controller_manage['type'], unique_id=cont_id)
-                dict_controllers = parse_controller_information()
-                if custom_controller and custom_controller.device in dict_controllers:
-                    input_loaded = load_module_from_file(
-                        dict_controllers[custom_controller.device]['file_path'],
-                        'controllers')
-                    controller_manage['function'] = input_loaded.CustomModule
+                custom_function = db_retrieve_table_daemon(controller_manage['type'], unique_id=cont_id)
+                dict_functions = parse_function_information()
+                if custom_function and custom_function.device in dict_functions:
+                    function_loaded = load_module_from_file(
+                        dict_functions[custom_function.device]['file_path'], 'functions')
+                    controller_manage['function'] = function_loaded.CustomModule
                 else:
-                    return 1, "Custom controller not found.".format(
-                        type=cont_type)
+                    return 1, "Custom function not found.".format(type=cont_type)
 
             else:
                 return 1, "'{type}' not a valid controller type.".format(type=cont_type)
@@ -318,8 +298,7 @@ class DaemonController:
             # Check if the controller actually exists
             controller = db_retrieve_table_daemon(controller_manage['type'], unique_id=cont_id)
             if not controller:
-                return 1, "{type} controller with ID {id} not found.".format(
-                    type=cont_type, id=cont_id)
+                return 1, "{type} controller with ID {id} not found.".format(type=cont_type, id=cont_id)
 
             # set as active in SQL database
             with session_scope(MYCODO_DB_PATH) as new_session:
@@ -407,8 +386,7 @@ class DaemonController:
                     self.logger.debug(message)
                     return False
             else:
-                message = "{type} controller with ID {id} not found".format(
-                    type=cont_type, id=cont_id)
+                message = "{type} controller with ID {id} not found".format(type=cont_type, id=cont_id)
                 self.logger.debug(message)
                 return False
         except Exception as except_msg:
@@ -861,6 +839,16 @@ class DaemonController:
             self.controller['Widget'].daemon = True
             self.controller['Widget'].start()
             ready.wait()  # wait for thread to return ready
+
+            # Ensure Widget controller has started before continuing
+            time.sleep(0.5)
+            widget_controller_timout = time.time() + 60
+            while not self.controller['Widget'].is_running():
+                if time.time() > widget_controller_timout:
+                    self.logger.error("Widget Controller timed out")
+                    break
+                time.sleep(0.1)
+            self.logger.debug("Widget Controller fully started")
 
             time.sleep(0.5)
 

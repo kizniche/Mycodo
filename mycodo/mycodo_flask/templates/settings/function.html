@@ -14,7 +14,7 @@
 
     <p>This will allow importing a controller module file.</p>
 
-    <form method="post" action="/settings/controller" enctype=multipart/form-data>
+    <form method="post" action="/settings/function" enctype=multipart/form-data>
     {{form_controller.csrf_token}}
     <div class="form-inline">
       <div class="form-group filecontroller filecontroller-new" data-provides="filecontroller">
@@ -30,7 +30,7 @@
 
     <hr>
 
-    <h3>{{_('Imported Controller Modules')}}</h3>
+    <h3>{{_('Imported Function Modules')}}</h3>
 
     <div class="table-responsive">
       <table class="table">
@@ -42,13 +42,13 @@
 
       {% for each_controller in dict_controllers %}
 
-      <form method="post" action="/settings/controller">
+      <form method="post" action="/settings/function">
       {{form_controller_delete.csrf_token}}
       {{form_controller_delete.controller_id(value=each_controller)}}
 
         <tr>
           <td>{{each_controller}}</td>
-          <td>{{dict_controllers[each_controller]['controller_name']}}</td>
+          <td>{{dict_controllers[each_controller]['function_name']}}</td>
           <td>
             <div class="col-12 small-gutters">
               {{form_controller_delete.delete_controller(class_='btn btn-primary btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}

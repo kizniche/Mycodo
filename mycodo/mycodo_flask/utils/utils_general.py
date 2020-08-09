@@ -42,7 +42,7 @@ from mycodo.databases.models import Trigger
 from mycodo.databases.models import User
 from mycodo.databases.models import Widget
 from mycodo.mycodo_flask.extensions import db
-from mycodo.utils.controllers import parse_controller_information
+from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import add_custom_measurements
@@ -429,7 +429,7 @@ def choices_controller_ids():
             name=each_trigger.name)
         choices.append({'value': each_trigger.unique_id, 'item': display})
     for each_custom in CustomController.query.all():
-        display = '[Custom Controller {id:02d}] {name}'.format(
+        display = '[Custom Function {id:02d}] {name}'.format(
             id=each_custom.id,
             name=each_custom.name)
         choices.append({'value': each_custom.unique_id, 'item': display})
@@ -444,12 +444,12 @@ def choices_controller_ids():
 def choices_custom_controllers():
     """ populate form multi-select choices from Input entries """
     choices = []
-    dict_controllers = parse_controller_information()
+    dict_controllers = parse_function_information()
     list_controllers_sorted = generate_form_controller_list(dict_controllers)
     for each_custom in list_controllers_sorted:
         value = '{inp}'.format(inp=each_custom)
         display = '{name}'.format(
-            name=dict_controllers[each_custom]['controller_name'])
+            name=dict_controllers[each_custom]['function_name'])
         choices.append({'value': value, 'item': display})
     return choices
 
@@ -1202,7 +1202,7 @@ def return_dependencies(device_type):
     met_deps = False
 
     list_dependencies = [
-        parse_controller_information(),
+        parse_function_information(),
         parse_input_information(),
         parse_output_information(),
         parse_widget_information(),
@@ -1309,9 +1309,9 @@ def get_ip_address():
 
 
 def generate_form_controller_list(dict_controllers):
-    # Sort dictionary entries by controller_name
+    # Sort dictionary entries by function_name
     # Results in list of sorted dictionary keys
-    list_tuples_sorted = sorted(dict_controllers.items(), key=lambda x: x[1]['controller_name'])
+    list_tuples_sorted = sorted(dict_controllers.items(), key=lambda x: x[1]['function_name'])
     list_controllers_sorted = []
     for each_controller in list_tuples_sorted:
         list_controllers_sorted.append(each_controller[0])

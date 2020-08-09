@@ -15,7 +15,7 @@ from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactiva
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_string
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.utils.controllers import parse_controller_information
+from mycodo.utils.functions import parse_function_information
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
@@ -23,13 +23,13 @@ logger = logging.getLogger(__name__)
 
 
 def controller_mod(form, request_form):
-    """Modify a Custom Controller"""
+    """Modify a Custom Function"""
     error = []
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['modify']['title'],
         controller=TRANSLATIONS['controller']['title'])
 
-    dict_controllers = parse_controller_information()
+    dict_controllers = parse_function_information()
 
     try:
         mod_controller = CustomController.query.filter(

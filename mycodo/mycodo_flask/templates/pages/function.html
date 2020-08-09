@@ -34,7 +34,7 @@
           {% endfor -%}
           {% if choices_custom_controllers %}
             </optgroup>
-            <optgroup label="{{_('Custom')}} {{_('Controllers')}}">
+            <optgroup label="{{_('Custom')}} {{_('Functions')}}">
             {% for each_controller in choices_custom_controllers -%}
               <option value="{{each_controller['value']}}">{{each_controller['item']}}</option>
             {% endfor -%}
@@ -60,7 +60,7 @@
       {% include 'pages/function_options/trigger.html' %}
       {% include 'pages/function_options/function_spacer.html' %}
       {% include 'pages/function_options/function_actions.html' %}
-      {% include 'pages/function_options/custom_controller.html' %}
+      {% include 'pages/function_options/custom_function.html' %}
 
     {% endfor %}
 

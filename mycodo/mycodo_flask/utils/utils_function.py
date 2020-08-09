@@ -29,7 +29,7 @@ from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.conditional import save_conditional_code
-from mycodo.utils.controllers import parse_controller_information
+from mycodo.utils.functions import parse_function_information
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import str_is_float
@@ -49,7 +49,7 @@ def function_add(form_add_func):
 
     function_name = form_add_func.function_type.data
 
-    dict_controllers = parse_controller_information()
+    dict_controllers = parse_function_information()
 
     if current_app.config['TESTING']:
         dep_unmet = False
@@ -138,8 +138,8 @@ if measurement is not None:  # If a measurement exists
             new_func = CustomController()
             new_func.device = function_name
 
-            if 'controller_name' in dict_controllers[function_name]:
-                new_func.name = dict_controllers[function_name]['controller_name']
+            if 'function_name' in dict_controllers[function_name]:
+                new_func.name = dict_controllers[function_name]['function_name']
             else:
                 new_func.name = 'Controller Name'
 

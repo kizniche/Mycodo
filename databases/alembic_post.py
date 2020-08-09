@@ -63,6 +63,18 @@ if __name__ == "__main__":
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
             try:
+                import shutil
+                import os
+                from mycodo.config import PATH_FUNCTIONS_CUSTOM
+                source = os.path.join(INSTALL_DIRECTORY, 'mycodo/controllers/custom_controllers')
+                dest = PATH_FUNCTIONS_CUSTOM
+                files = os.listdir(source)
+                for f in files:
+                    shutil.move(os.path.join(source, f), os.path.join(dest, f))
+            except Exception:
+                print("Error moving custom functions")
+
+            try:
                 import json
                 from mycodo.databases.models import Widget
 

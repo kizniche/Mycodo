@@ -2,13 +2,13 @@ Page\: `Setup -> Function`
 
 Function controllers perform tasks that often involve the use of Inputs and Outputs.
 
-## Custom Controllers
+## Custom Functions
 
-There is a Custom Controller import system in Mycodo that allows user-created Controllers to be used in the Mycodo system. Custom Controllers can be uploaded on the `Configure -> Custom Controllers` page. After import, they will be available to use on the `Setup -> Function` page.
+There is a Custom Function import system in Mycodo that allows user-created Controllers to be used in the Mycodo system. Custom Functions can be uploaded on the `[Gear Icon] -> Configure -> Custom Functions` page. After import, they will be available to use on the `Setup -> Function` page.
 
-There are also example Custom Controller files in `Mycodo/mycodo/controllers/custom_controllers/examples`
+There are also example Custom Function files in `Mycodo/mycodo/functions/examples`
 
-Additionally, I have another github repository devoted to Custom Inputs and Controllers that are not included in the built-in set. These can be found at [kizniche/Mycodo-custom](https://github.com/kizniche/Mycodo-custom).
+Additionally, I have another github repository devoted to Custom Modules that are not included in the built-in set, at [kizniche/Mycodo-custom](https://github.com/kizniche/Mycodo-custom).
 
 ## PID Controller
 

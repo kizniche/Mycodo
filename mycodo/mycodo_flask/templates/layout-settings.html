@@ -31,7 +31,7 @@
       <div class="sidebar-heading">Configuration</div>
       <div class="list-group list-group-flush">
         <a class="list-group-item collapsed{% if active_settings == 'general' %} active{% endif %}" href="{{url_for('routes_settings.settings_general')}}"><i class="fas fa-globe"></i>&nbsp;&nbsp;{{_('General')}}</a>
-        <a class="list-group-item collapsed{% if active_settings == 'controller' %} active{% endif %}" href="{{url_for('routes_settings.settings_controller')}}"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;{{_('Custom')}} {{_('Controllers')}}</a>
+        <a class="list-group-item collapsed{% if active_settings == 'controller' %} active{% endif %}" href="{{url_for('routes_settings.settings_function')}}"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;{{_('Custom')}} {{_('Functions')}}</a>
         <a class="list-group-item collapsed{% if active_settings == 'input' %} active{% endif %}" href="{{url_for('routes_settings.settings_input')}}"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;{{_('Custom')}} {{_('Inputs')}}</a>
         <a class="list-group-item collapsed{% if active_settings == 'output' %} active{% endif %}" href="{{url_for('routes_settings.settings_output')}}"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;{{_('Custom')}} {{_('Outputs')}}</a>
         <a class="list-group-item collapsed{% if active_settings == 'widget' %} active{% endif %}" href="{{url_for('routes_settings.settings_widget')}}"><i class="fas fa-sign-in-alt"></i>&nbsp;&nbsp;{{_('Custom')}} {{_('Widgets')}}</a>

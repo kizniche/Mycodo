@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  custom_controller_example.py - Custom controller example file for importing into Mycodo
+#  custom_function_example.py - Custom function example file for importing into Mycodo
 #
 #  Copyright (C) 2017  Kyle T. Gabriel
 #
@@ -49,11 +49,11 @@ def constraints_pass_positive_value(mod_controller, value):
     return all_passed, errors, mod_controller
 
 
-CONTROLLER_INFORMATION = {
-    'controller_name_unique': 'EXAMPLE_CONTROLLER',
-    'controller_name': 'Example Custom Controller',
+FUNCTION_INFORMATION = {
+    'function_name_unique': 'example_function',
+    'function_name': 'Example Custom Function',
 
-    'message': 'This is a custom message that will appear above the Controller options on the Function page. It merely demonstrates how to generate user option inputs. It will retrieve the last selected measurement, turn as selected output on for 15 seconds, then deactivate itself. Study the code to develop your own controller.',
+    'message': 'This is a custom message that will appear above the Function options. It merely demonstrates how to generate user options and manipulate them. It will retrieve the last selected measurement, turn the selected output on for 15 seconds, then deactivate itself. Study the code to develop your own Custom Function.',
 
     'options_enabled': [
         'custom_options'
@@ -182,10 +182,10 @@ class CustomModule(AbstractController, threading.Thread):
         self.select_device_2_id = None
 
         # Set custom options
-        custom_controller = db_retrieve_table_daemon(
+        custom_function = db_retrieve_table_daemon(
             CustomController, unique_id=unique_id)
         self.setup_custom_options(
-            CONTROLLER_INFORMATION['custom_options'], custom_controller)
+            FUNCTION_INFORMATION['custom_options'], custom_function)
 
         if not testing:
             pass

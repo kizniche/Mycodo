@@ -110,7 +110,7 @@ from mycodo.mycodo_flask.utils import utils_notes
 from mycodo.mycodo_flask.utils import utils_output
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_trigger
-from mycodo.utils.controllers import parse_controller_information
+from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import list_analog_to_digital_converters
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import output_types
@@ -1419,7 +1419,7 @@ def page_function():
         elif form_actions.delete_action.data:
             utils_function.action_del(form_actions)
 
-        # Custom Controllers
+        # Custom Functions
         elif form_custom_controller.save_controller.data:
             utils_controller.controller_mod(
                 form_custom_controller, request.form)
@@ -1451,7 +1451,7 @@ def page_function():
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
-    dict_controllers = parse_controller_information()
+    dict_controllers = parse_function_information()
     dict_outputs = parse_output_information()
 
     custom_options_values_controllers = parse_custom_option_values(

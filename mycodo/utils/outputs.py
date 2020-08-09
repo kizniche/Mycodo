@@ -66,87 +66,80 @@ def parse_output_information(exclude_custom=False):
         real_path = os.path.realpath(each_path)
 
         for each_file in os.listdir(real_path):
-            skip_file = False
-
             if each_file in excluded_files:
-                skip_file = True
+                continue
 
-            if not skip_file:
-                full_path = "{}/{}".format(real_path, each_file)
-                output_custom = load_module_from_file(full_path, 'outputs')
+            full_path = "{}/{}".format(real_path, each_file)
+            output_custom = load_module_from_file(full_path, 'outputs')
 
-                if not hasattr(output_custom, 'OUTPUT_INFORMATION'):
-                    skip_file = True
+            if not hasattr(output_custom, 'OUTPUT_INFORMATION'):
+                continue
 
-            if not skip_file:
-                # logger.info("Found output: {}, {}".format(
-                #     output_custom.OUTPUT_INFORMATION['output_name_unique'],
-                #     full_path))
+            # Populate dictionary of output information
+            if output_custom.OUTPUT_INFORMATION['output_name_unique'] in dict_outputs:
+                logger.error("Error: Cannot add output modules because it does not have a unique name: {name}".format(
+                    name=output_custom.OUTPUT_INFORMATION['output_name_unique']))
+            else:
+                dict_outputs[output_custom.OUTPUT_INFORMATION['output_name_unique']] = {}
 
-                # Populate dictionary of output information
-                if output_custom.OUTPUT_INFORMATION['output_name_unique'] in dict_outputs:
-                    logger.error("Error: Cannot add output modules because it does not have a unique name: {name}".format(
-                        name=output_custom.OUTPUT_INFORMATION['output_name_unique']))
-                else:
-                    dict_outputs[output_custom.OUTPUT_INFORMATION['output_name_unique']] = {}
+            dict_outputs[output_custom.OUTPUT_INFORMATION['output_name_unique']]['file_path'] = full_path
 
-                dict_outputs[output_custom.OUTPUT_INFORMATION['output_name_unique']]['file_path'] = full_path
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_name')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_manufacturer')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_library')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'measurements_dict')
 
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_name')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_manufacturer')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_library')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'measurements_dict')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'on_state_internally_handled')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_types')
 
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'on_state_internally_handled')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_types')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'message')
 
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'message')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'url_datasheet', force_type='list')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'url_manufacturer', force_type='list')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'url_product_purchase', force_type='list')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'url_additional', force_type='list')
 
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'url_datasheet', force_type='list')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'url_manufacturer', force_type='list')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'url_product_purchase', force_type='list')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'url_additional', force_type='list')
+            # Dependencies
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'dependencies_module')
 
-                # Dependencies
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'dependencies_module')
-                
-                # Interface
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'interfaces')
+            # Interface
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'interfaces')
 
-                # Nonstandard (I2C, UART, etc.) location
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'location')
+            # Nonstandard (I2C, UART, etc.) location
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'location')
 
-                # I2C
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'i2c_location')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'i2c_address_editable')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'i2c_address_default')
+            # I2C
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'i2c_location')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'i2c_address_editable')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'i2c_address_default')
 
-                # FTDI
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'ftdi_location')
+            # FTDI
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'ftdi_location')
 
-                # UART
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'uart_location')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'uart_baud_rate')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'pin_cs')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'pin_miso')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'pin_mosi')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'pin_clock')
+            # UART
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'uart_location')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'uart_baud_rate')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'pin_cs')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'pin_miso')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'pin_mosi')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'pin_clock')
 
-                # Bluetooth (BT)
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'bt_location')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'bt_adapter')
+            # Bluetooth (BT)
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'bt_location')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'bt_adapter')
 
-                # Which form options to display and whether each option is enabled
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'options_enabled')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'options_disabled')
+            # Which form options to display and whether each option is enabled
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'options_enabled')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'options_disabled')
 
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_options_message')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_options')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_options_message')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_options')
 
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_actions_message')
-                dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_actions')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_actions_message')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_actions')
 
     return dict_outputs
+
 
 def outputs_on_off():
     outputs = []

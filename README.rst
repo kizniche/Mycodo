@@ -36,7 +36,7 @@ Features
 
 -  `Inputs <https://kizniche.github.io/Mycodo/Inputs/>`__ that record measurements from sensors, GPIO pin states, analog-to-digital converters, etc. (or create your own `Custom Inputs <#custom-inputs>`__).
 -  `Outputs <https://kizniche.github.io/Mycodo/Outputs/>`__ that perform actions such as switching GPIO pins high/low, generating PWM signals, executing shell scripts and Python code, etc. (or create your own `Custom Outputs <#custom-outputs>`__).
--  `Functions <https://kizniche.github.io/Mycodo/Functions/>`__ that perform tasks, such as coupling Inputs and Outputs in interesting ways, such as `PID controllers <https://kizniche.github.io/Mycodo/Functions/#pid-controller>`__, `Conditional Controllers <https://kizniche.github.io/Mycodo/Functions/#conditional>`__, `Trigger Controllers <https://kizniche.github.io/Mycodo/Functions/#trigger>`__, to name a few (or create your own `Custom Controllers <https://kizniche.github.io/Mycodo/Functions/#custom-controllers>`__).
+-  `Functions <https://kizniche.github.io/Mycodo/Functions/>`__ that perform tasks, such as coupling Inputs and Outputs in interesting ways, such as `PID controllers <https://kizniche.github.io/Mycodo/Functions/#pid-controller>`__, `Conditional Controllers <https://kizniche.github.io/Mycodo/Functions/#conditional>`__, `Trigger Controllers <https://kizniche.github.io/Mycodo/Functions/#trigger>`__, to name a few (or create your own `Custom Functions <https://kizniche.github.io/Mycodo/Functions/#custom-controllers>`__).
 -  `Web Interface <https://kizniche.github.io/Mycodo/About/#web-interface>`__ for securely accessing Mycodo using a web browser on your local network or anywhere in the world with an internet connection, to view and configure the system, which includes several light and dark themes to suit your style.
 -  `Dashboards <https://kizniche.github.io/Mycodo/Data-Viewing/#dashboard>`__ that display configurable widgets, including interactive live and historical graphs, gauges, output state indicators, text measurements, among others.
 -  `Alert Notifications <https://kizniche.github.io/Mycodo/Alerts/>`__ to send emails when measurements reach or exceed user-specified thresholds, important for knowing immediately when issues arise.
@@ -175,7 +175,7 @@ All supported Inputs, Outputs, and other devices can be found under the `Support
 Custom Inputs, Outputs, and Controllers
 ---------------------------------------
 
-Mycodo supports importing custom Input, Output, and Controller modules. you can find more information about each in the manual under `Custom Inputs <https://kizniche.github.io/Mycodo/Inputs/#custom-inputs>`__, `Custom Outputs <https://kizniche.github.io/Mycodo/Outputs/#custom-outputs>`__, and `Custom Controllers <https://kizniche.github.io/Mycodo/Functions/#custom-controllers>`__.
+Mycodo supports importing custom Input, Output, and Controller modules. you can find more information about each in the manual under `Custom Inputs <https://kizniche.github.io/Mycodo/Inputs/#custom-inputs>`__, `Custom Outputs <https://kizniche.github.io/Mycodo/Outputs/#custom-outputs>`__, and `Custom Functions <https://kizniche.github.io/Mycodo/Functions/#custom-controllers>`__.
 
 If you would like to add to the list of supported Inputs, Outputs, and Controllers, submit a pull request with the module you created or start a `New Issue <https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=>`__.
 

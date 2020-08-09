@@ -155,74 +155,66 @@ def parse_widget_information(exclude_custom=False):
         real_path = os.path.realpath(each_path)
 
         for each_file in os.listdir(real_path):
-            skip_file = False
-
             if each_file in excluded_files:
-                skip_file = True
+                continue
 
-            if not skip_file:
-                full_path = "{}/{}".format(real_path, each_file)
-                widget_custom = load_module_from_file(full_path, 'widgets')
+            full_path = "{}/{}".format(real_path, each_file)
+            widget_custom = load_module_from_file(full_path, 'widgets')
 
-                if not hasattr(widget_custom, 'WIDGET_INFORMATION'):
-                    skip_file = True
+            if not hasattr(widget_custom, 'WIDGET_INFORMATION'):
+                continue
 
-            if not skip_file:
-                # logger.info("Found widget: {}, {}".format(
-                #     widget_custom.WIDGET_INFORMATION['widget_name_unique'],
-                #     full_path))
+            # Populate dictionary of widget information
+            if widget_custom.WIDGET_INFORMATION['widget_name_unique'] in dict_widgets:
+                logger.error("Error: Cannot add widget modules because it does not have a unique name: {name}".format(
+                    name=widget_custom.WIDGET_INFORMATION['widget_name_unique']))
+            else:
+                dict_widgets[widget_custom.WIDGET_INFORMATION['widget_name_unique']] = {}
 
-                # Populate dictionary of widget information
-                if widget_custom.WIDGET_INFORMATION['widget_name_unique'] in dict_widgets:
-                    logger.error("Error: Cannot add widget modules because it does not have a unique name: {name}".format(
-                        name=widget_custom.WIDGET_INFORMATION['widget_name_unique']))
-                else:
-                    dict_widgets[widget_custom.WIDGET_INFORMATION['widget_name_unique']] = {}
+            dict_widgets[widget_custom.WIDGET_INFORMATION['widget_name_unique']]['file_path'] = full_path
 
-                dict_widgets[widget_custom.WIDGET_INFORMATION['widget_name_unique']]['file_path'] = full_path
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_name')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_library')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'no_class')
 
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_name')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_library')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'no_class')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_height')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_width')
 
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_height')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_width')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'listener')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'message')
 
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'listener')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'message')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'url_datasheet', force_type='list')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'url_manufacturer', force_type='list')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'url_product_purchase', force_type='list')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'url_additional', force_type='list')
 
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'url_datasheet', force_type='list')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'url_manufacturer', force_type='list')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'url_product_purchase', force_type='list')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'url_additional', force_type='list')
+            # Dependencies
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'dependencies_module')
 
-                # Dependencies
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'dependencies_module')
+            # Which form options to display and whether each option is enabled
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'options_enabled')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'options_disabled')
 
-                # Which form options to display and whether each option is enabled
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'options_enabled')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'options_disabled')
+            # Misc
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'period')
 
-                # Misc
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'period')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'execute_at_creation')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'execute_at_modification')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'execute_at_deletion')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'generate_page_variables')
 
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'execute_at_creation')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'execute_at_modification')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'execute_at_deletion')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'generate_page_variables')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'custom_options_message')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'custom_options')
 
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'custom_options_message')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'custom_options')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'custom_actions_message')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'custom_actions')
 
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'custom_actions_message')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'custom_actions')
-
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_head')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_title_bar')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_body')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_configure_options')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_js')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_js_ready')
-                dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_js_ready_end')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_head')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_title_bar')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_body')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_configure_options')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_js')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_js_ready')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'widget_dashboard_js_ready_end')
 
     return dict_widgets
