@@ -447,7 +447,7 @@ def choices_controller_ids():
     return choices
 
 
-def choices_custom_controllers():
+def choices_custom_functions():
     """ populate form multi-select choices from Input entries """
     choices = []
     dict_controllers = parse_function_information()

@@ -1252,7 +1252,7 @@ def page_function():
     camera = Camera.query.all()
     conditional = Conditional.query.all()
     conditional_conditions = ConditionalConditions.query.all()
-    custom_controllers = CustomController.query.all()
+    custom_functions = CustomController.query.all()
     function_dev = Function.query.all()
     actions = Actions.query.all()
     input_dev = Input.query.all()
@@ -1453,14 +1453,18 @@ def page_function():
     dict_outputs = parse_output_information()
 
     custom_options_values_controllers = parse_custom_option_values(
-        custom_controllers, dict_controller=dict_controllers)
+        custom_functions, dict_controller=dict_controllers)
 
+    # Create lists of built-in and custom functions
     choices_functions = []
-
     for each_function in FUNCTIONS:
-        choices_functions.append((each_function[0], each_function[1]))
+        choices_functions.append({'value': each_function[0], 'item': each_function[1]})
+    choices_custom_functions = utils_general.choices_custom_functions()
+    # Combine function lists
+    choices_functions_add = choices_functions + choices_custom_functions
+    # Sort combined list
+    choices_functions_add = sorted(choices_functions_add, key=lambda i: i['item'])
 
-    choices_custom_controllers = utils_general.choices_custom_controllers()
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     choices_input_devices = utils_general.choices_input_devices(input_dev)
@@ -1492,7 +1496,7 @@ def page_function():
 
     controllers = []
     controllers_all = [('Conditional', conditional),
-                       ('Custom', custom_controllers),
+                       ('Custom', custom_functions),
                        ('Input', input_dev),
                        ('LCD', lcd),
                        ('Math', math),
@@ -1571,8 +1575,9 @@ def page_function():
                            actions_dict=actions_dict,
                            camera=camera,
                            choices_controller_ids=choices_controller_ids,
-                           choices_custom_controllers=choices_custom_controllers,
+                           choices_custom_functions=choices_custom_functions,
                            choices_functions=choices_functions,
+                           choices_functions_add=choices_functions_add,
                            choices_input=choices_input,
                            choices_input_devices=choices_input_devices,
                            choices_math=choices_math,
@@ -1583,7 +1588,7 @@ def page_function():
                            conditional_conditions=conditional_conditions,
                            conditions_dict=conditions_dict,
                            controllers=controllers,
-                           custom_controllers=custom_controllers,
+                           custom_functions=custom_functions,
                            custom_options_values_controllers=custom_options_values_controllers,
                            dict_controllers=dict_controllers,
                            dict_outputs=dict_outputs,

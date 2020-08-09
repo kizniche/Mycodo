@@ -37,8 +37,6 @@
   </div>
 </div>
 
-
-
     {% elif each_option['type'] == 'select_measurement' %}
 
 <div class="col-auto">
@@ -161,7 +159,7 @@
         {%- endfor -%}
       {% endif %}
       {% if 'Custom' in each_option['options_select'] %}
-        {%- for each_dev in custom_controllers -%}
+        {%- for each_dev in custom_functions -%}
       <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[Custom {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
