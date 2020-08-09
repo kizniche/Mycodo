@@ -4,7 +4,7 @@
 #  mycodo_daemon.py - Daemon for managing Mycodo controllers, such as sensors,
 #                     outputs, PID controllers, etc.
 #
-#  Copyright (C) 2017  Kyle T. Gabriel
+#  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
 #  This file is part of Mycodo
 #

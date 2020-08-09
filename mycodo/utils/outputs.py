@@ -2,7 +2,7 @@
 #
 #  outputs.py - Mycodo core utils
 #
-#  Copyright (C) 2020  Kyle T. Gabriel
+#  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
 #  This file is part of Mycodo
 #

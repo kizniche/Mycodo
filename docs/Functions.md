@@ -190,12 +190,12 @@ Often the system can be simplified if two-way regulation is not needed. For inst
 
 Use the same configuration as the [Exact Temperature Regulation](Functions.md/#exact-temperature-regulation) example, except change *Regulate Direction* to "Raise" and do not touch the "Down Relay" section.
 
-### PID Autotune
+## PID Autotune
 
 !!! warning
-    This is an experimental feature. It is best not used until you are familiar with the operation and tuning of a PID.
+    This is an experimental feature. It is best not used until you are familiar with the theory, operation, and tuning of a PID.
 
-The Autotune feature is useful for determining appropriate Kp, Ki, and Kd gains of a PID controller. The autotuner will manipulate an output and measure the response in the environment being measured by a sensor. It will take several cycles to determine the gains according to several rules. In order to use this feature, the PID controller must be properly configured, and a Noise Band and Outstep selected, then select "Start Autotune". The output of the autotuner will appear in the daemon log (`Config -> Mycodo Logs -> Daemon`). While the autotune is being performed, it is recommended to create a graph that includes the Input, Output, and PID Setpoint/Output in order to see what the PID Autotuner is doing and to notice any issues. If your autotune is taking a long time to complete, there may not be enough stability in the system being manipulated to calculate a reliable set of PID gains. This may be because there are too many disturbances to the system, or conditions are changing too rapidly to acquire consistent measurement oscillations. If this is the case, try modifying your system to reduce disturbances. Once the autotune successfully completes, disturbances may be reintroduced in order to further tune the PID controller to handle them.
+The Autotune function is useful for determining appropriate Kp, Ki, and Kd gains of a PID controller. The autotuner will manipulate an output and measure the response in the environment being measured by a sensor. It will take several cycles to determine the gains according to several rules. In order to use this feature, select a Measurement and an Output that can module the specific condition being measured. Then, configure the Noise Band and Outstep and activate the function. The output of the autotuner will appear in the daemon log (`[Gear Icon] -> Mycodo Logs -> Daemon Logs`). While the autotune is being performed, it is recommended to create a graph that includes the Measurement and Output in order to see what the PID Autotuner is doing and to notice any issues. If your autotune is taking a long time to complete, there may not be enough stability in the system being manipulated to calculate a reliable set of PID gains. This may be because there are too many disturbances to the system, or conditions are changing too rapidly to acquire consistent measurement oscillations. If this is the case, try modifying your system to reduce disturbances. Once the autotune successfully completes, disturbances may be reintroduced in order to further tune the PID controller to handle them.
 
 <table>
 <thead>
@@ -206,12 +206,32 @@ The Autotune feature is useful for determining appropriate Kp, Ki, and Kd gains 
 </thead>
 <tbody>
 <tr>
+<td>Measurement</td>
+<td>This is the Input or Math measurement that is measuring the specific condition that the Output will affect. For instance, this could be a temperature measurement and the output could be a heater.</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>This is the Output that will affect the measurement when it's activated. The autotune function will periodically turn this output on in order to raise the measurement beyond the setpoint.</td>
+</tr>
+<tr>
+<td>Period</td>
+<td>This is the period of time between the Output being turned on. This should be set to the same Period you wish to use for your PID controller. A different Period can significantly affect the PID gains that the autotune produces.</td>
+</tr>
+<tr>
+<td>Setpoint</td>
+<td>This is the desired measurement condition value. For instance, if temperature is being measured, this should be set a several degrees higher than the current temperature so the output, when activated, will cause the temperature to rise beyond the setpoint.</td>
+</tr>
+<tr>
 <td>Noise Band</td>
 <td>This is the amount above the setpoint the measured condition must reach before the output turns off. This is also how much below the setpoint the measured condition must fall before the output turns back on.</td>
 </tr>
 <tr>
 <td>Outstep</td>
 <td>This is how many seconds the output will turn on every PID Period. For instance, to autotune with 50% power, ensure the Outstep is half the value of the PID Period.</td>
+</tr>
+<tr>
+<td>Direction</td>
+<td>This is the direction for which the Output will push the Measurement. For instance, a heater will raise temperature, whereas a cooler will lower temperature.</td>
 </tr>
 </tbody>
 </table>

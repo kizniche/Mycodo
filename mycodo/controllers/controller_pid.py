@@ -3,7 +3,7 @@
 # controller_pid.py - PID controller that manages discrete control of a
 #                     regulation system of inputs, outputs, and devices
 #
-#  Copyright (C) 2017  Kyle T. Gabriel
+#  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
 #  This file is part of Mycodo
 #

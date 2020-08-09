@@ -3,7 +3,7 @@
 # controller_trigger.py - Trigger controller that checks measurements
 #                         and performs functions in response to events
 #
-#  Copyright (C) 2017  Kyle T. Gabriel
+#  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
 #  This file is part of Mycodo
 #

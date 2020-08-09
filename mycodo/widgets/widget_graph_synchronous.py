@@ -2,7 +2,7 @@
 #
 #  widget_graph_synchronous.py - Synchronous Graph dashboard widget
 #
-#  Copyright (C) 2017  Kyle T. Gabriel
+#  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
 #  This file is part of Mycodo
 #

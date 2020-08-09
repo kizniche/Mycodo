@@ -2,7 +2,7 @@
 #
 #  custom_function_example.py - Custom function example file for importing into Mycodo
 #
-#  Copyright (C) 2017  Kyle T. Gabriel
+#  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
 #  This file is part of Mycodo
 #
