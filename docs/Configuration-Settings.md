@@ -93,13 +93,13 @@ In order to calculate accurate energy usage statistics, a few characteristics of
 
 Page\: `[Gear Icon] -> Configure -> Custom Functions`
 
-Controller modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Functions](Functions/#custom-functions) for more details.
+Controller modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Functions](Functions.md#custom-functions) for more details.
 
 ## Input Settings
 
 Page\: `[Gear Icon] -> Configure -> Custom Inputs`
 
-Input modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Inputs](Inputs/#custom-inputs) for more details.
+Input modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Inputs](Inputs.md#custom-inputs) for more details.
 
 <table>
 <thead>
@@ -120,7 +120,7 @@ Input modules may be imported and used within Mycodo. These modules must follow 
 
 Page\: `[Gear Icon] -> Configure -> Custom Outputs`
 
-Output modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Outputs](Outputs/#custom-outputs) for more details.
+Output modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Outputs](Outputs.md#custom-outputs) for more details.
 
 <table>
 <thead>

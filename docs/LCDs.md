@@ -1,6 +1,6 @@
 Page\: `Setup -> LCD`
 
-Data may be output to a liquid crystal display (LCD) for easy viewing. Please see [LCD Displays](Device-Notes/#lcd-displays) for specific information regarding compatibility.
+Data may be output to a liquid crystal display (LCD) for easy viewing. Please see [LCD Displays](Device-Notes.md#lcd-displays) for specific information regarding compatibility.
 
 There may be multiple displays created for each LCD. If there is only one display created for the LCD, it will refresh at the set period. If there is more than one display, it will cycle from one display to the next every set period.
 
