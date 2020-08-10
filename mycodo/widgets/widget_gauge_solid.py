@@ -34,6 +34,7 @@ logger = logging.getLogger(__name__)
 def execute_at_creation(new_widget, dict_widget):
     color_list = ["#33CCFF", "#55BF3B", "#DDDF0D", "#DF5353"]
     custom_options_json = json.loads(new_widget.custom_options)
+    custom_options_json['range_colors'] = []
 
     if custom_options_json['stops'] < 2:
         custom_options_json['stops'] = 2
@@ -41,16 +42,15 @@ def execute_at_creation(new_widget, dict_widget):
     difference = int(custom_options_json['max'] - custom_options_json['min'])
     stop_size = int(difference / custom_options_json['stops'])
     stop = custom_options_json['min'] + stop_size
-    colors = '{stop},{color}'.format(stop=stop, color=color_list[0])
+    custom_options_json['range_colors'].append('{stop},{color}'.format(stop=stop, color=color_list[0]))
     for i in range(custom_options_json['stops'] - 1):
         stop += stop_size
         if i < len(color_list):
             color = color_list[i + 1]
         else:
             color = "#DF5353"
-        colors += ';{stop},{color}'.format(stop=stop, color=color)
+        custom_options_json['range_colors'].append('{stop},{color}'.format(stop=stop, color=color))
 
-    custom_options_json['range_colors'] = colors
     new_widget.custom_options = json.dumps(custom_options_json)
     return new_widget
 
@@ -63,13 +63,13 @@ def execute_at_modification(
     allow_saving = True
     error = []
 
-    sorted_colors_string, error = custom_colors_gauge_str(request_form, error)
-    sorted_colors_string = gauge_reformat_stops(
+    sorted_colors, error = custom_colors_gauge(request_form, error)
+    sorted_colors = gauge_reformat_stops(
         custom_options_json_presave['stops'],
         custom_options_json_postsave['stops'],
-        current_colors=sorted_colors_string)
+        current_colors=sorted_colors)
 
-    custom_options_json_postsave['range_colors'] = sorted_colors_string
+    custom_options_json_postsave['range_colors'] = sorted_colors
     return allow_saving, mod_widget, custom_options_json_postsave
 
 
@@ -79,16 +79,18 @@ def generate_page_variables(widget_unique_id, widget_options):
     colors_gauge_solid_form = []
     try:
         if 'range_colors' in widget_options and widget_options['range_colors']:
-            color_areas = widget_options['range_colors'].split(';')  # Split into list
+            color_areas = widget_options['range_colors']
         else:  # Create empty list
             color_areas = []
+
         try:
             gauge_low = widget_options['min']
             gauge_high = widget_options['max']
             gauge_difference = gauge_high - gauge_low
+            logger.error("TEST00: {}, {}".format(type(color_areas), color_areas))
             for each_range in color_areas:
-                percent_of_range = float((float(each_range.split(',')[0]) - gauge_low) /
-                                         gauge_difference)
+                logger.error("TEST01: {}, {}".format(type(each_range), each_range))
+                percent_of_range = float((float(each_range.split(',')[0]) - gauge_low) / gauge_difference)
                 colors_gauge_solid.append({
                     'stop': '{:.2f}'.format(percent_of_range),
                     'hex': each_range.split(',')[1]})
@@ -98,6 +100,7 @@ def generate_page_variables(widget_unique_id, widget_options):
         except:
             # Prevent mathematical errors from preventing proper page render
             for each_range in color_areas:
+                logger.error("TEST02: {}, {}".format(type(each_range), each_range))
                 colors_gauge_solid.append({
                     'stop': '0',
                     'hex': each_range.split(',')[1]})
@@ -105,6 +108,7 @@ def generate_page_variables(widget_unique_id, widget_options):
                     'stop': '0',
                     'hex': each_range.split(',')[1]})
     except IndexError:
+        logger.exception(1)
         flash("Colors Index Error", "error")
 
     dict_return = {
@@ -450,14 +454,13 @@ def is_rgb_color(color_hex):
     return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
 
 
-def custom_colors_gauge_str(form, error):
+def custom_colors_gauge(form, error):
     """ Get variable number of gauge color inputs, turn into CSV string """
-    sorted_colors_string = ''
+    sorted_colors = []
     colors_hex = {}
     # Combine all color form inputs to dictionary
     for key in form.keys():
-        if ('color_hex_number' in key or
-                'color_stop_number' in key):
+        if 'color_hex_number' in key or 'color_stop_number' in key:
             if int(key[17:]) not in colors_hex:
                 colors_hex[int(key[17:])] = {}
         if 'color_hex_number' in key:
@@ -473,18 +476,13 @@ def custom_colors_gauge_str(form, error):
     for i, _ in enumerate(colors_hex):
         try:
             try:
-                sorted_colors_string += "{},{}".format(
-                    colors_hex[i]['stop'],
-                    colors_hex[i]['hex'])
+                sorted_colors.append("{},{}".format(colors_hex[i]['stop'], colors_hex[i]['hex']))
             except Exception as err_msg:
                 error.append(err_msg)
-                sorted_colors_string += "0,{}".format(
-                    colors_hex[i]['hex'])
-            if i < len(colors_hex) - 1:
-                sorted_colors_string += ";"
+                sorted_colors.append("0,{}".format(colors_hex[i]['hex']))
         except Exception as err_msg:
             error.append(err_msg)
-    return sorted_colors_string, error
+    return sorted_colors, error
 
 
 def gauge_reformat_stops(current_stops, new_stops, current_colors=None):
@@ -492,16 +490,14 @@ def gauge_reformat_stops(current_stops, new_stops, current_colors=None):
     if current_colors:
         colors = current_colors
     else:  # Default colors (adding new gauge)
-        colors = '20,#33CCFF;40,#55BF3B;60,#DDDF0D;80,#DF5353'
+        colors = ['20,#33CCFF', '40,#55BF3B', '60,#DDDF0D', '80,#DF5353']
 
     if new_stops > current_stops:
         stop = 80
         for _ in range(new_stops - current_stops):
             stop += 20
-            colors += ';{},#DF5353'.format(stop)
+            colors.append('{},#DF5353'.format(stop))
     elif new_stops < current_stops:
-        colors_list = colors.split(';')
-        colors = ';'.join(colors_list[: len(colors_list) - (current_stops - new_stops)])
-    new_colors = colors
+        colors = colors[: len(colors) - (current_stops - new_stops)]
 
-    return new_colors
+    return colors

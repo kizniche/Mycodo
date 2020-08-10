@@ -80,11 +80,11 @@ def execute_at_modification(
 
     custom_options_json_postsave['custom_yaxes'] = custom_yaxes_str_from_form(request_form)
 
-    sorted_colors_string, error = custom_colors_graph_str(request_form, error)
-    custom_options_json_postsave['custom_colors'] = sorted_colors_string
+    sorted_colors, error = custom_colors_graph(request_form, error)
+    custom_options_json_postsave['custom_colors'] = sorted_colors
 
-    disable_data_grouping_string, error = data_grouping_graph_str(request_form, error)
-    custom_options_json_postsave['disable_data_grouping'] = disable_data_grouping_string
+    disable_data_grouping, error = data_grouping_graph(request_form, error)
+    custom_options_json_postsave['disable_data_grouping'] = disable_data_grouping
 
     for each_error in error:
         flash(each_error, "error")
@@ -649,7 +649,7 @@ WIDGET_INFORMATION = {
       }
     },
   {% if widget_options['use_custom_colors'] and widget_options['custom_colors'] -%}
-    {% set color_list = widget_options['custom_colors'].split(',') %}
+    {% set color_list = widget_options['custom_colors'] %}
       colors: [
     {%- for each_color in color_list -%}
       "{{each_color}}",
@@ -1172,9 +1172,9 @@ WIDGET_INFORMATION = {
 }
 
 
-def data_grouping_graph_str(form, error):
+def data_grouping_graph(form, error):
     """
-    Get checkbox options for data grouping, turn into CSV string
+    Get checkbox options for data grouping
     :param form:
     :return:
     """
@@ -1182,13 +1182,12 @@ def data_grouping_graph_str(form, error):
     for key in form.keys():
         if 'disable_data_grouping' in key:
             list_data_grouping.append(key[22:])
-    return ','.join(list_data_grouping), error
+    return list_data_grouping, error
 
 
 def custom_yaxes_str_from_form(form):
     """
-    Parse several yaxis min/max inputs and turn them into CSV string to
-    save in the database
+    Parse several yaxis min/max inputs
     :param form: UI form submitted by mycodo
     :return: string of CSV data sets separated by ';'
     """
@@ -1219,7 +1218,7 @@ def custom_yaxes_str_from_form(form):
         yaxes_list.append('{},{},{}'.format(
             yaxis_type['name'], yaxis_type['minimum'], yaxis_type['maximum']))
     # Join the list of CSV sets with ';'
-    return ';'.join(yaxes_list)
+    return yaxes_list
 
 
 def is_rgb_color(color_hex):
@@ -1231,7 +1230,7 @@ def is_rgb_color(color_hex):
     return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
 
 
-def custom_colors_graph_str(form, error):
+def custom_colors_graph(form, error):
     """
     Get variable number of graph color inputs, turn into CSV string
     :param form:
@@ -1248,7 +1247,7 @@ def custom_colors_graph_str(form, error):
     sorted_list = [(k, colors[k]) for k in sorted(colors)]
     for each_color in sorted_list:
         short_list.append(each_color[1])
-    return ','.join(short_list), error
+    return short_list, error
 
 
 def dict_custom_colors(widget_options):
@@ -1275,7 +1274,7 @@ def dict_custom_colors(widget_options):
     try:
         # Get current saved colors
         if widget_options['custom_colors']:  # Split into list
-            colors = widget_options['custom_colors'].split(',')
+            colors = widget_options['custom_colors']
         else:  # Create empty list
             colors = []
         # Fill end of list with empty strings
@@ -1728,7 +1727,7 @@ def dict_custom_yaxes_min_max(yaxes, widget_options):
         dict_yaxes[each_yaxis]['minimum'] = 0
         dict_yaxes[each_yaxis]['maximum'] = 0
 
-        for each_custom_yaxis in widget_options['custom_yaxes'].split(';'):
+        for each_custom_yaxis in widget_options['custom_yaxes']:
             if each_custom_yaxis.split(',')[0] == each_yaxis:
                 dict_yaxes[each_yaxis]['minimum'] = each_custom_yaxis.split(',')[1]
                 dict_yaxes[each_yaxis]['maximum'] = each_custom_yaxis.split(',')[2]

@@ -103,7 +103,7 @@ if __name__ == "__main__":
 
                         custom_options['refresh_seconds'] = each_widget.refresh_duration
                         custom_options['x_axis_minutes'] = each_widget.x_axis_duration
-                        custom_options['custom_yaxes'] = each_widget.custom_yaxes
+                        custom_options['custom_yaxes'] = each_widget.custom_yaxes.split(";")
                         custom_options['decimal_places'] = each_widget.decimal_places
                         custom_options['enable_status'] = each_widget.enable_status
                         custom_options['enable_value'] = each_widget.enable_value
@@ -123,11 +123,11 @@ if __name__ == "__main__":
                         custom_options['enable_end_on_tick'] = each_widget.enable_end_on_tick
                         custom_options['enable_align_ticks'] = each_widget.enable_align_ticks
                         custom_options['use_custom_colors'] = each_widget.use_custom_colors
-                        custom_options['custom_colors'] = each_widget.custom_colors
-                        custom_options['disable_data_grouping'] = each_widget.disable_data_grouping
+                        custom_options['custom_colors'] = each_widget.custom_colors.split(",")
+                        custom_options['range_colors'] = each_widget.range_colors.split(";")
+                        custom_options['disable_data_grouping'] = each_widget.disable_data_grouping.split(",")
                         custom_options['max_measure_age'] = each_widget.max_measure_age
                         custom_options['stops'] = each_widget.stops
-                        custom_options['range_colors'] = each_widget.range_colors
                         custom_options['min'] = each_widget.y_axis_min
                         custom_options['max'] = each_widget.y_axis_max
                         custom_options['option_invert'] = each_widget.option_invert

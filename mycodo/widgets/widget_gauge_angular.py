@@ -31,92 +31,29 @@ from flask_babel import lazy_gettext
 logger = logging.getLogger(__name__)
 
 
-def is_rgb_color(color_hex):
-    """
-    Check if string is a hex color value for the web UI
-    :param color_hex: string to check if it represents a hex color value
-    :return: bool
-    """
-    return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
-
-
-def custom_colors_gauge_str(form, error):
-    sorted_colors_string = ''
-    colors_hex = {}
-    # Combine all color form inputs to dictionary
-    for key in form.keys():
-        if ('color_hex_number' in key or
-                'color_low_number' in key or
-                'color_high_number' in key):
-            if int(key[17:]) not in colors_hex:
-                colors_hex[int(key[17:])] = {}
-        if 'color_hex_number' in key:
-            for value in form.getlist(key):
-                if not is_rgb_color(value):
-                    error.append('Invalid hex color value')
-                colors_hex[int(key[17:])]['hex'] = value
-        elif 'color_low_number' in key:
-            for value in form.getlist(key):
-                colors_hex[int(key[17:])]['low'] = value
-        elif 'color_high_number' in key:
-            for value in form.getlist(key):
-                colors_hex[int(key[17:])]['high'] = value
-
-    # Build string of colors and associated gauge values
-    for i, _ in enumerate(colors_hex):
-        try:
-            sorted_colors_string += "{},{},{}".format(
-                colors_hex[i]['low'],
-                colors_hex[i]['high'],
-                colors_hex[i]['hex'])
-            if i < len(colors_hex) - 1:
-                sorted_colors_string += ";"
-        except Exception as err_msg:
-            error.append(err_msg)
-    return sorted_colors_string, error
-
-
-def gauge_reformat_stops(current_stops, new_stops, current_colors=None):
-    """Generate stops and colors for new and modified gauges"""
-    if current_colors:
-        colors = current_colors
-    else:  # Default colors (adding new gauge)
-        colors = '0,20,#33CCFF;20,40,#55BF3B;40,60,#DDDF0D;60,80,#DF5353'
-
-    if new_stops > current_stops:
-        stop = 80
-        for _ in range(new_stops - current_stops):
-            stop += 20
-            colors += ';{low},{high},#DF5353'.format(low=stop - 20, high=stop)
-    elif new_stops < current_stops:
-        colors_list = colors.split(';')
-        colors = ';'.join(colors_list[: len(colors_list) - (current_stops - new_stops)])
-    new_colors = colors
-
-    return new_colors
-
-
 def execute_at_creation(new_widget, dict_widget):
     color_list = ["#33CCFF", "#55BF3B", "#DDDF0D", "#DF5353"]
     custom_options_json = json.loads(new_widget.custom_options)
+    custom_options_json['range_colors'] = []
 
     if custom_options_json['stops'] < 2:
         custom_options_json['stops'] = 2
 
     stop = custom_options_json['min']
-    max = custom_options_json['max']
-    difference = int(max - stop)
+    maximum = custom_options_json['max']
+    difference = int(maximum - stop)
     stop_size = int(difference / custom_options_json['stops'])
-    colors = '{low},{high},{color}'.format(low=stop, high=stop + stop_size, color=color_list[0])
+    custom_options_json['range_colors'].append(
+        '{low},{high},{color}'.format(low=stop, high=stop + stop_size, color=color_list[0]))
     for i in range(custom_options_json['stops'] - 1):
         stop += stop_size
         if i < len(color_list):
             color = color_list[i + 1]
         else:
             color = "#DF5353"
-        colors += ';{low},{high},{color}'.format(low=stop, high=stop + stop_size, color=color)
+        custom_options_json['range_colors'].append(
+            '{low},{high},{color}'.format(low=stop, high=stop + stop_size, color=color))
 
-    custom_options_json['range_colors'] = colors
     new_widget.custom_options = json.dumps(custom_options_json)
     return new_widget
 
@@ -129,13 +66,13 @@ def execute_at_modification(
     allow_saving = True
     error = []
 
-    sorted_colors_string, error = custom_colors_gauge_str(request_form, error)
-    sorted_colors_string = gauge_reformat_stops(
+    sorted_colors, error = custom_colors_gauge(request_form, error)
+    sorted_colors = gauge_reformat_stops(
         custom_options_json_presave['stops'],
         custom_options_json_postsave['stops'],
-        current_colors=sorted_colors_string)
+        current_colors=sorted_colors)
 
-    custom_options_json_postsave['range_colors'] = sorted_colors_string
+    custom_options_json_postsave['range_colors'] = sorted_colors
     return allow_saving, mod_widget, custom_options_json_postsave
 
 
@@ -144,15 +81,16 @@ def generate_page_variables(widget_unique_id, widget_options):
     colors_gauge_angular = []
     try:
         if 'range_colors' in widget_options and widget_options['range_colors']:  # Split into list
-            color_areas = widget_options['range_colors'].split(';')  # Split into list
-        else:  # Create empty list
-            color_areas = []
+            color_areas = widget_options['range_colors']
+        else:
+            color_areas = []  # Create empty list
         for each_range in color_areas:
             colors_gauge_angular.append({
                 'low': each_range.split(',')[0],
                 'high': each_range.split(',')[1],
                 'hex': each_range.split(',')[2]})
     except IndexError:
+        logger.exception(1)
         flash("Colors Index Error", "error")
 
     return {"colors_gauge_angular": colors_gauge_angular}
@@ -489,3 +427,63 @@ WIDGET_INFORMATION = {
   });
 """
 }
+
+def is_rgb_color(color_hex):
+    """
+    Check if string is a hex color value for the web UI
+    :param color_hex: string to check if it represents a hex color value
+    :return: bool
+    """
+    return bool(re.compile(r'#[a-fA-F0-9]{6}$').match(color_hex))
+
+
+def custom_colors_gauge(form, error):
+    sorted_colors = []
+    colors_hex = {}
+    # Combine all color form inputs to dictionary
+    for key in form.keys():
+        if ('color_hex_number' in key or
+                'color_low_number' in key or
+                'color_high_number' in key):
+            if int(key[17:]) not in colors_hex:
+                colors_hex[int(key[17:])] = {}
+        if 'color_hex_number' in key:
+            for value in form.getlist(key):
+                if not is_rgb_color(value):
+                    error.append('Invalid hex color value')
+                colors_hex[int(key[17:])]['hex'] = value
+        elif 'color_low_number' in key:
+            for value in form.getlist(key):
+                colors_hex[int(key[17:])]['low'] = value
+        elif 'color_high_number' in key:
+            for value in form.getlist(key):
+                colors_hex[int(key[17:])]['high'] = value
+
+    # Build string of colors and associated gauge values
+    for i, _ in enumerate(colors_hex):
+        try:
+            sorted_colors.append("{},{},{}".format(
+                colors_hex[i]['low'],
+                colors_hex[i]['high'],
+                colors_hex[i]['hex']))
+        except Exception as err_msg:
+            error.append(err_msg)
+    return sorted_colors, error
+
+
+def gauge_reformat_stops(current_stops, new_stops, current_colors=None):
+    """Generate stops and colors for new and modified gauges"""
+    if current_colors:
+        colors = current_colors
+    else:  # Default colors (adding new gauge)
+        colors = ['0,20,#33CCFF', '20,40,#55BF3B', '40,60,#DDDF0D', '60,80,#DF5353']
+
+    if new_stops > current_stops:
+        stop = 80
+        for _ in range(new_stops - current_stops):
+            stop += 20
+            colors.append('{low},{high},#DF5353'.format(low=stop - 20, high=stop))
+    elif new_stops < current_stops:
+        colors = colors[: len(colors) - (current_stops - new_stops)]
+
+    return colors
