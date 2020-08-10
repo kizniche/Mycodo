@@ -17,6 +17,12 @@ depends_on = None
 
 
 def upgrade():
+    import sys
+    import os
+    sys.path.append(os.path.abspath(os.path.join(__file__, "../../../..")))
+    from databases.alembic_post_utils import write_revision_post_alembic
+    write_revision_post_alembic(revision)
+
     with op.batch_alter_table("widget") as batch_op:
         batch_op.add_column(sa.Column('period', sa.Float))
         batch_op.add_column(sa.Column('custom_options', sa.String))
