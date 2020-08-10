@@ -119,18 +119,20 @@ PID settings may be changed while the PID is activated and the new settings will
 
 ### PID Output Calculation
 
-PID Controllers can output as a duration or a duty cycle.
-
-When outputting a duration, Duration = Control_Variable
-
-When outputting a duty cycle, Duty Cycle = (Control_Variable / Period) * 100
+PID Controllers can control a number of different output types (e.g. duration, volume, or PWM duty cycle). For most output types, the PID output (Control Variable) will be proportional (i.e. ``Output Duration = PID Control Variable``). However, when outputting a duty cycle, it will be calculated as ``Duty Cycle = (Control Variable / Period) * 100``.
 
 !!! note
-    Control_Variable = P_Output + I_Output + D_Output. Duty cycle is limited within the 0 - 100 % range and the set Min Duty Cycle and Max Duty Cycle. Duration is limited by the set Min On Duration and Max On Duration.
+    Control Variable = P Output + I Output + D Output. Duty cycle is limited within the 0 - 100 % range and the set Min Duty Cycle and Max Duty Cycle. An output duration is limited by the set Min On Duration and Max On Duration, and output volume similarly.
 
 ### PID Tuning
 
-PID tuning is a complex process, but not unattainable if enough time and effort is invested to learn how a PID operates. Below is a primer for understanding how a PID controller operates and a few examples of how to tune a PID controller. For further discussion, join the [Mycodo PID Tuning](https://kylegabriel.com/forum/pid-tuning/) forum.
+PID tuning can be a complex process, depending on the output device(s) used and the environment or system under control. A system with large perturbations will be more difficult to control than one that is stable. Similarly, output devices that are unsuitable may make PID tuning difficult or impossible. Learning how PID controllers operate and the theory behind their tuning will not only better prepare you to operate a PID controller, but also in the development of your system and selection and implementation of the output devices used to regulate your system. 
+
+#### PID Tuning Resources
+
+ - [Mycodo PID Tuning Forum](https://kylegabriel.com/forum/pid-tuning/).
+
+ - [Sous Vide PID Tuning and the Unexpected Electrical Fire](https://hackaday.io/project/11997-mycodo-environmental-regulation-system/log/45733-sous-vide-pid-tuning-and-the-unexpected-electrical-fire)
 
 #### PID Control Theory
 
@@ -195,7 +197,7 @@ Use the same configuration as the [Exact Temperature Regulation](Functions.md/#e
 !!! warning
     This is an experimental feature. It is best not used until you are familiar with the theory, operation, and tuning of a PID.
 
-The Autotune function is useful for determining appropriate Kp, Ki, and Kd gains of a PID controller. The autotuner will manipulate an output and measure the response in the environment being measured by a sensor. It will take several cycles to determine the gains according to several rules. In order to use this feature, select a Measurement and an Output that can module the specific condition being measured. Then, configure the Noise Band and Outstep and activate the function. The output of the autotuner will appear in the daemon log (`[Gear Icon] -> Mycodo Logs -> Daemon Logs`). While the autotune is being performed, it is recommended to create a graph that includes the Measurement and Output in order to see what the PID Autotuner is doing and to notice any issues. If your autotune is taking a long time to complete, there may not be enough stability in the system being manipulated to calculate a reliable set of PID gains. This may be because there are too many disturbances to the system, or conditions are changing too rapidly to acquire consistent measurement oscillations. If this is the case, try modifying your system to reduce disturbances. Once the autotune successfully completes, disturbances may be reintroduced in order to further tune the PID controller to handle them.
+The Autotune function is a standalone controller that is useful for determining appropriate Kp, Ki, and Kd gains for use in the a PID controller. The autotuner will manipulate an output and analyze the measured response in a particular environment/system. It will take several cycles of perturbing the system with the chosen output before enough data is available to calculate the PID gains. In order to use this feature, select a Measurement and an Output that can module the specific condition being measured. Then, configure the Noise Band and Outstep and activate the function. Log lines of the autotuner will appear in the daemon log (`[Gear Icon] -> Mycodo Logs -> Daemon Log`). While the autotune is being performed, it is recommended to create a dashboard graph that includes the Measurement and Output in order to see what the PID Autotuner is doing and to notice any potential issues with the autotune settings that have been configured. If the autotune is taking a long time to complete, there may not be enough stability in the system being manipulated to calculate a reliable set of PID gains. This may be because there are too many perturbations to the system, or conditions are changing too rapidly to acquire consistent measurement oscillations. If this is the case, try modifying your system to increase stability and yield consistent measurement oscillations. Once the autotune successfully completes, perturbations may be reintroduced in order to further tune the PID controller to handle them.
 
 <table>
 <thead>
