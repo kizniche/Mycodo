@@ -66,6 +66,7 @@ if __name__ == "__main__":
             import os
             import json
             from mycodo.databases.models import Widget
+            from mycodo.config import INSTALL_DIRECTORY
             from mycodo.config import PATH_FUNCTIONS_CUSTOM
             try:
                 source = os.path.join(INSTALL_DIRECTORY, 'mycodo/controllers/custom_controllers')
