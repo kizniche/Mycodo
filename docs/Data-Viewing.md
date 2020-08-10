@@ -1,12 +1,16 @@
-There are several ways to visualize collected data. Additionally, the dashboard can be used for both viewing data and manipulating the system, thanks to the numerous dashboard widgets available.
+There are several ways to visualize collected data.
 
-## Web Interface
+## Dashboard
 
-The main frontend of Mycodo is a web interface that allows any device with a web browser to view collected data and configure the backend, or the daemon, of the system. The web interface supports an authentication system with user/password credentials, user roles that grant/deny access to parts of the system, and SSL for encrypted browsing.
+Page\: `Data -> Dashboards`
 
-An SSL certificate with an expiration of 10 years will be generated and stored in ``~/Mycodo/mycodo/mycodo_flask/ssl_certs/`` during the install process to allow SSL to be used to securely connect to the web interface. If you want to use your own SSL certificates, replace them with your own.
+The dashboard can be used for both viewing data and manipulating the system, thanks to the numerous dashboard widgets available. Widgets are how data is presented to the user and how the user can control aspects of the system from the dashboard. These include graphs, gauges, indicators, and more. For a full list of supported Widgets, see [Supported Widgets](Supported-Widgets.md).
 
-If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web interface in your browser. You may continually receive a warning message about the security of your site unless you add the certificate to your browser's trusted list.
+### Custom Widgets
+
+There is a Custom Widget import system in Mycodo that allows user-created Widgets to be created an used in the Mycodo system. Custom Widgets can be uploaded and imported from the `[Gear Icon] -> Configure -> Custom Widgets` page. After import, they will be available to use on the `Data -> Dashboard` pages.
+
+If you desire an Widget that is not currently supported by Mycodo, you can build your own Widget module and import it into Mycodo. All information about an Widget is contained within the Widget module. Open any of the built-in modules located in the [widgets directory](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/) for examples of the proper formatting. There's also a [minimal widget module template as an example](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/examples/custom_widget_example_simple.py).
 
 ## Live Measurements
 
