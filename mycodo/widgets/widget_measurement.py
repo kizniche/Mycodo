@@ -87,11 +87,11 @@ WIDGET_INFORMATION = {
             'phrase': 'The period of time between refreshing the widget'
         },
         {
-            'id': 'font_em_measurement',
+            'id': 'font_em_value',
             'type': 'float',
             'default_value': 1.5,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Body Font Size (em)',
+            'name': 'Value Font Size (em)',
             'phrase': 'The font size of the measurement'
         },
         {
@@ -99,16 +99,23 @@ WIDGET_INFORMATION = {
             'type': 'float',
             'default_value': 1.5,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Body Font Size (em)',
+            'name': 'Timestamp Font Size (em)',
             'phrase': 'The font size of the timestamp'
         },
         {
             'id': 'decimal_places',
             'type': 'integer',
             'default_value': 2,
-            'constraints_pass': constraints_pass_positive_value,
             'name': 'Decimal Places',
             'phrase': 'The number of measurement decimal places'
+        },
+        {
+            'id': 'font_em_name',
+            'type': 'float',
+            'default_value': 1.5,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Name Font Size (em)',
+            'phrase': 'The font size of the measurement'
         },
         {
             'id': 'enable_unit',
@@ -156,9 +163,10 @@ WIDGET_INFORMATION = {
   {%- set measurement_id = widget_options['measurement'].split(",")[1] -%}
   
   {%- for each_input in input if each_input.unique_id == device_id and measurement_id in device_measurements_dict -%}
-    
-    <span style="font-size: {{widget_options['font_em_measurement']}}em" id="value-{{chart_number}}"></span>
-    <span style="font-size: {{widget_options['font_em_measurement']}}em">
+  
+    <div style="text-align: center">
+    <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span>
+    <span style="font-size: {{widget_options['font_em_value']}}em">
         {%- if dict_measure_units[measurement_id] in dict_units and
                dict_units[dict_measure_units[measurement_id]]['unit'] and
                widget_options['enable_unit'] -%}
@@ -192,7 +200,7 @@ WIDGET_INFORMATION = {
 
   {%- for each_math in math if each_math.unique_id == device_id and measurement_id in device_measurements_dict -%}
 
-  <span style="font-size: {{widget_options['font_em_measurement']}}em" id="value-{{chart_number}}"></span>
+  <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span>
         {%- if dict_measure_units[measurement_id] in dict_units and
                dict_units[dict_measure_units[measurement_id]]['unit'] and
                widget_options['enable_unit'] -%}
@@ -225,7 +233,7 @@ WIDGET_INFORMATION = {
 
   {%- for each_output in output  if each_output.unique_id == device_id and measurement_id in device_measurements_dict -%}
 
-  <span style="font-size: {{widget_options['font_em_measurement']}}em" id="value-{{chart_number}}"></span>
+  <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span>
         {%- if dict_measure_units[measurement_id] in dict_units and
                dict_units[dict_measure_units[measurement_id]]['unit'] and
                widget_options['enable_unit'] -%}
@@ -258,7 +266,7 @@ WIDGET_INFORMATION = {
 
   {%- for each_pid in pid  if each_pid.unique_id == device_id and measurement_id in device_measurements_dict -%}
 
-  <span style="font-size: {{widget_options['font_em_measurement']}}em" id="value-{{chart_number}}"></span>
+  <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span>
         {%- if dict_measure_units[measurement_id] in dict_units and
                dict_units[dict_measure_units[measurement_id]]['unit'] and
                widget_options['enable_unit'] -%}
@@ -296,6 +304,7 @@ WIDGET_INFORMATION = {
   {%- if widget_options['enable_timestamp'] -%}
   <br/><span style="font-size: {{widget_options['font_em_timestamp']}}em" id="timestamp-{{chart_number}}"></span>
   {%- endif -%}
+  </div>
 """,
 
     'widget_dashboard_js': """<!-- No JS content -->""",

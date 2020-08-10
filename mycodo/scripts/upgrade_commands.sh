@@ -50,6 +50,7 @@ Options:
   create-symlinks               Create required symlinks
   create-user                   Create 'mycodo' user and add to appropriate groups
   initialize                    Issues several commands to set up directories/files/permissions
+  generate-widget-html          Generate HTML templates for all widgets
   restart-daemon                Restart the Mycodo daemon
   setup-virtualenv              Create a Python virtual environment
   setup-virtualenv-full         Create a Python virtual environment and installs dependencies

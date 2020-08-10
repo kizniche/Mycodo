@@ -131,6 +131,7 @@ if __name__ == "__main__":
                         custom_options['min'] = each_widget.y_axis_min
                         custom_options['max'] = each_widget.y_axis_max
                         custom_options['option_invert'] = each_widget.option_invert
+                        custom_options['font_em_name'] = each_widget.font_em_name
                         custom_options['font_em_value'] = each_widget.font_em_value
                         custom_options['font_em_timestamp'] = each_widget.font_em_timestamp
                         custom_options['enable_output_controls'] = each_widget.enable_output_controls

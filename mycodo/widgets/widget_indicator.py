@@ -87,11 +87,11 @@ WIDGET_INFORMATION = {
             'phrase': 'The period of time between refreshing the widget'
         },
         {
-            'id': 'font_em_measurement',
+            'id': 'font_em_name',
             'type': 'float',
             'default_value': 1.5,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Body Font Size (em)',
+            'name': 'Name Font Size (em)',
             'phrase': 'The font size of the measurement'
         },
         {
@@ -130,8 +130,8 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
 
-    'widget_dashboard_body': """<img style="max-width: 60%; max-height: 60%" id="value-{{chart_number}}" src="" alt="">
-  {% if widget_options['enable_timestamp'] %}<br/><span style="font-size: {{widget_options['font_em_timestamp']}}em" id="timestamp-{{chart_number}}"></span>{% endif %}""",
+    'widget_dashboard_body': """<div style="text-align: center"><img style="max-width: 60%; max-height: 60%" id="value-{{chart_number}}" src="" alt="">
+  {% if widget_options['enable_timestamp'] %}<br/><span style="font-size: {{widget_options['font_em_timestamp']}}em" id="timestamp-{{chart_number}}"></span>{% endif %}</div>""",
 
     'widget_dashboard_js': """<!-- No JS content -->""",
 
