@@ -62,57 +62,59 @@ if __name__ == "__main__":
             # convert database entries to JSON string for custom_options entry
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
+            import shutil
+            import os
+            import json
+            from mycodo.databases.models import Widget
+            from mycodo.config import PATH_FUNCTIONS_CUSTOM
             try:
-                import shutil
-                import os
-                from mycodo.config import PATH_FUNCTIONS_CUSTOM
                 source = os.path.join(INSTALL_DIRECTORY, 'mycodo/controllers/custom_controllers')
                 dest = PATH_FUNCTIONS_CUSTOM
                 files = os.listdir(source)
                 for f in files:
                     shutil.move(os.path.join(source, f), os.path.join(dest, f))
             except Exception:
-                print("Error moving custom functions")
+                msg = "ERROR: moving files {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
 
             try:
-                import json
-                from mycodo.databases.models import Widget
-
                 with session_scope(MYCODO_DB_PATH) as session:
                     for each_widget in session.query(Widget).all():
                         custom_options = {}
                         if each_widget.graph_type == 'graph':
-                            each_widget.graph_type = 'WIDGET_GRAPH_SYNCHRONOUS'
+                            each_widget.graph_type = 'widget_graph_synchronous'
                             custom_options['measurements_math'] = each_widget.math_ids.split(";")
                             custom_options['measurements_note_tag'] = each_widget.note_tag_ids.split(";")
                             custom_options['measurements_input'] = each_widget.input_ids_measurements.split(";")
                             custom_options['measurements_output'] = each_widget.output_ids.split(";")
                             custom_options['measurements_pid'] = each_widget.pid_ids.split(";")
                         elif each_widget.graph_type == 'spacer':
-                            each_widget.graph_type = 'WIDGET_SPACER'
+                            each_widget.graph_type = 'widget_spacer'
                         elif each_widget.graph_type == 'gauge_angular':
-                            each_widget.graph_type = 'WIDGET_GAUGE_ANGULAR'
+                            each_widget.graph_type = 'widget_gauge_angular'
                             custom_options['measurement'] = each_widget.input_ids_measurements
                         elif each_widget.graph_type == 'gauge_solid':
-                            each_widget.graph_type = 'WIDGET_GAUGE_SOLID'
+                            each_widget.graph_type = 'widget_gauge_solid'
                             custom_options['measurement'] = each_widget.input_ids_measurements
                         elif each_widget.graph_type == 'indicator':
-                            each_widget.graph_type = 'WIDGET_INDICATOR'
+                            each_widget.graph_type = 'widget_indicator'
                             custom_options['measurement'] = each_widget.input_ids_measurements
                         elif each_widget.graph_type == 'measurement':
-                            each_widget.graph_type = 'WIDGET_MEASUREMENT'
+                            each_widget.graph_type = 'widget_measurement'
                             custom_options['measurement'] = each_widget.input_ids_measurements
                         elif each_widget.graph_type == 'output':
-                            each_widget.graph_type = 'WIDGET_OUTPUT'
+                            each_widget.graph_type = 'widget_output'
                             custom_options['output'] = each_widget.output_ids
                         elif each_widget.graph_type == 'output_pwm_slider':
-                            each_widget.graph_type = 'WIDGET_OUTPUT_PWM_SLIDER'
+                            each_widget.graph_type = 'widget_output_pwm_slider'
                             custom_options['output'] = each_widget.output_ids
                         elif each_widget.graph_type == 'pid_control':
-                            each_widget.graph_type = 'WIDGET_PID'
+                            each_widget.graph_type = 'widget_pid'
                             custom_options['pid'] = each_widget.pid_ids
                         elif each_widget.graph_type == 'camera':
-                            each_widget.graph_type = 'WIDGET_CAMERA'
+                            each_widget.graph_type = 'widget_camera'
 
                         custom_options['refresh_seconds'] = each_widget.refresh_duration
                         custom_options['x_axis_minutes'] = each_widget.x_axis_duration
