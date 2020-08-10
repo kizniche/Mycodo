@@ -58,8 +58,8 @@ if __name__ == "__main__":
     outputs_info = dict(OrderedDict(sorted(outputs_info.items(), key = lambda t: t[0])))
 
     list_outputs = [
-        (mycodo_info, "Built-In Inputs (System-Specific)"),
-        (outputs_info, "Built-In Inputs (Devices)")
+        (mycodo_info, "Built-In Outputs (System)"),
+        (outputs_info, "Built-In Outputs (Devices)")
     ]
 
     with open(save_path, 'w') as out_file:

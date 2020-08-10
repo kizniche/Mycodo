@@ -50,7 +50,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'This widget will display a camera image or stream.',
+    'message': 'Displays a camera image or stream.',
 
     'widget_width': 7,
     'widget_height': 8,

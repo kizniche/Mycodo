@@ -48,7 +48,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'This widget is a simple widget to use as a spacer, which includes the ability to set text in its contents.',
+    'message': 'A simple widget to use as a spacer, which includes the ability to set text in its contents.',
 
     'widget_width': 20,
     'widget_height': 2,

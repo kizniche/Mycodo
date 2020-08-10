@@ -50,7 +50,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'This widget will display and allow control of a PID Controller.',
+    'message': 'Displays and allows control of a PID Controller.',
 
     'widget_width': 6,
     'widget_height': 6,

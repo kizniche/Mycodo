@@ -1,6 +1,6 @@
 Supported Inputs are listed below.
 
-## Built-In Inputs (System-Specific)
+## Built-In Inputs (System)
 
 ### Linux: Bash Command
 
@@ -78,7 +78,7 @@ This Input executes the bash command "ping -c [times] -w [deadline] [host]" to d
 
 This Input executes the bash command "nc -zv [host] [port]" to determine if the host at a particular port is accessible.
 
-## Built-In Inputs (Sensors)
+## Built-In Inputs (Devices)
 
 ### AMS: AS7262
 
@@ -232,10 +232,12 @@ Calibration Measurement is an optional setting that provides a temperature measu
 ### BOSCH: BMP280
 
 - Measurements: Pressure/Temperature
-- Dependencies: Input Variant 1: [Adafruit_GPIO](https://pypi.org/project/Adafruit_GPIO); Input Variant 2: [smbus2](https://pypi.org/project/smbus2), [bmp280](https://pypi.org/project/bmp280)
+- Dependencies: Input Variant 1: [smbus2](https://pypi.org/project/smbus2), [bmp280](https://pypi.org/project/bmp280); Input Variant 2: [Adafruit_GPIO](https://pypi.org/project/Adafruit_GPIO)
 - Manufacturer URL: [Link](https://www.bosch-sensortec.com/products/environmental-sensors/pressure-sensors/pressure-sensors-bmp280-1.html)
 - Datasheet URL: [Link](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmp280-ds001.pdf)
 - Product URL: [Link](https://www.adafruit.com/product/2651)
+
+This is similar to the other BMP280 Input, except it uses a different library, whcih includes the ability to set forced mode.
 
 ### CO2Meter: K30
 
@@ -274,14 +276,13 @@ Calibration Measurement is an optional setting that provides a temperature measu
 ### MAXIM: DS18B20
 
 - Measurements: Temperature
-- Dependencies: Input Variant 1: [w1thermsensor](https://pypi.org/project/w1thermsensor); Input Variant 2: [ow-shell](https://packages.debian.org/buster/ow-shell)
+- Dependencies: Input Variant 1: [ow-shell](https://packages.debian.org/buster/ow-shell); Input Variant 2: [w1thermsensor](https://pypi.org/project/w1thermsensor)
 - Manufacturer URL: [Link](https://www.maximintegrated.com/en/products/sensors/DS18B20.html)
 - Datasheet URL: [Link](https://datasheets.maximintegrated.com/en/ds/DS18B20.pdf)
 - Product URLs: [Link 1](https://www.adafruit.com/product/374), [Link 2](https://www.adafruit.com/product/381), [Link 3](https://www.sparkfun.com/products/245)
 - Additional URL: [Link](https://github.com/cpetrich/counterfeit_DS18B20)
 
-!!! note
-    Counterfeit DS18B20 sensors are common and can cause a host of issues. Review the Additional URL for more information about how to determine if your sensor is authentic.
+Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. Review the Additional URL for more information about how to determine if your sensor is authentic.
 
 ### MAXIM: DS18S20
 
@@ -386,6 +387,16 @@ Calibration Measurement is an optional setting that provides a temperature measu
 - Manufacturer URL: [Link](https://www.st.com/en/imaging-and-photonics-solutions/vl53l0x.html)
 - Datasheet URL: [Link](https://www.st.com/resource/en/datasheet/vl53l0x.pdf)
 - Product URLs: [Link 1](https://www.adafruit.com/product/3317), [Link 2](https://www.pololu.com/product/2490)
+
+### STMicroelectronics: VL53L1X
+
+- Measurements: Millimeter (Time-of-Flight Distance)
+- Dependencies: [smbus2](https://pypi.org/project/smbus2), [vl53l1x](https://pypi.org/project/vl53l1x)
+- Manufacturer URL: [Link](https://www.st.com/en/imaging-and-photonics-solutions/vl53l0x.html)
+- Datasheet URL: [Link](https://www.st.com/resource/en/datasheet/vl53l0x.pdf)
+- Product URLs: [Link 1](https://www.adafruit.com/product/3317), [Link 2](https://www.pololu.com/product/2490)
+
+Notes when setting a custom timing budget: A higher timing budget results in greater measurement accuracy, but also a higher power consumption. The inter measurement period must be >= the timing budget, otherwise it will be double the expected value.
 
 ### Sensirion: SHT1x/7x
 

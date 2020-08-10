@@ -118,7 +118,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'This widget will display a angular gauge.',
+    'message': 'Displays an angular gauge.',
 
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,

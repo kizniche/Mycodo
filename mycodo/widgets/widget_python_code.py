@@ -138,7 +138,7 @@ WIDGET_INFORMATION = {
     'widget_name': 'Python Code',
     'widget_library': '',
 
-    'message': 'This widget will execute Python code.',
+    'message': 'Executes Python code and displays the output within the widget.',
 
     'widget_width': 5,
     'widget_height': 4,

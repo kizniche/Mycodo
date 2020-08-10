@@ -50,7 +50,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'This widget will display and allow control of a PWM output using a slider.',
+    'message': 'Displays and allows control of a PWM output using a slider.',
 
     'widget_width': 5,
     'widget_height': 4,

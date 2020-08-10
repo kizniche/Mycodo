@@ -50,7 +50,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'This widget will display and allow control of an output.',
+    'message': 'Displays and allows control of an output.',
 
     'widget_width': 5,
     'widget_height': 4,

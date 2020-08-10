@@ -140,7 +140,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'This widget will display a solid gauge.',
+    'message': 'Displays a solid gauge.',
 
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,

@@ -42,8 +42,7 @@ if __name__ == "__main__":
     widgets_info = dict(OrderedDict(sorted(widgets_info.items(), key = lambda t: t[0])))
 
     list_widgets = [
-        (mycodo_info, "Built-In Inputs (System-Specific)"),
-        (widgets_info, "Built-In Inputs (Devices)")
+        (widgets_info, "Built-In Widgets")
     ]
 
     with open(save_path, 'w') as out_file:

@@ -1,6 +1,6 @@
 Supported Outputs are listed below.
 
-## Built-In Inputs (System-Specific)
+## Built-In Outputs (System)
 
 ### Mycodo On/Off MQTT Publish
 
@@ -9,7 +9,7 @@ Supported Outputs are listed below.
 
 An output to publish "on" or "off" to an MQTT server.
 
-## Built-In Inputs (Devices)
+## Built-In Outputs (Devices)
 
 ###  On/Off GPIO
 

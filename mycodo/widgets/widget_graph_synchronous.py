@@ -135,7 +135,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'This widget will display a synchronous graph.',
+    'message': 'Displays a synchronous graph (all data is downloaded for the selected period on the x-axis).',
 
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,

@@ -50,7 +50,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'This widget will display a measurement value and timestamp.',
+    'message': 'Displays a red or green circular image based on a measurement value. Useful for showing if an Output is on or off.',
 
     'widget_width': 3,
     'widget_height': 4,

@@ -50,7 +50,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'This widget will display a measurement value and timestamp.',
+    'message': 'Displays a measurement value and timestamp.',
 
     'widget_width': 4,
     'widget_height': 5,
