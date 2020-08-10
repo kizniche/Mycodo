@@ -16,7 +16,7 @@ Yes, there is a [REST API](API.md) as well as the [Mycodo Client](Mycodo-Client.
 
 *Can I add a new Input, Output, or custom functions to the system if they're not currently supported?*
 
-Yes, Mycodo supports importing [Custom Inputs](Inputs.md/#custom-inputs), [Custom Outputs](Outputs.md/#custom-outputs), and [Custom Functions](Functions.md/#custom-functions).
+Yes, Mycodo supports importing [Custom Inputs](Inputs/#custom-inputs), [Custom Outputs](Outputs/#custom-outputs), and [Custom Functions](Functions/#custom-functions).
 
 Another way to add an Input is to create a bash or Python script that obtains and returns a numerical value when executed from the linux command line on the Raspberry Pi. This script may be configured to be executed by the "Linux Command" or "Python Code" Inputs. These Inputs will periodically execute the command(s) and store the returned measurement(s) to the database for use with the rest of the Mycodo system.
 
@@ -35,13 +35,13 @@ Here is how I generally set up Mycodo to monitor and regulate:
 7.  Connect your device to the relay. This can be dont a number of ways, and will depend on a number of factors, including whether you're using DC or AC voltage, whether there are screw terminals or a connector/socket, etc. In the simplest scenario, AC mains voltage can be applied by cutting the live wire and connecting each of the newly-cut ends to each of the terminals on the switching side fo the relay. This enables the relay to short/connect or break/disconnect the connection, which will power and depower your device.
 8.  Test the Output by switching it On and Off (or generating a PWM signal if it's a PWM Output) from the ``Setup -> Output`` page and make sure the device connected to the relay turns On when you select "On", and Off when you select "Off".
 9.  On the ``Setup -> Function`` page, create a PID controller with the appropriate input measurement, output, and other parameters. Activate the PID controller.
-10. On the ``Data -> Dashboard`` page, create a graph that includes the input measurement, the output, and the PID output and setpoint. This provides a good visualization for tuning the PID. See [Quick Setup Examples](Functions.md/#quick-setup-examples) for a greater detail of this process and tuning tips.
+10. On the ``Data -> Dashboard`` page, create a graph that includes the input measurement, the output, and the PID output and setpoint. This provides a good visualization for tuning the PID. See [Quick Setup Examples](Functions/#quick-setup-examples) for a greater detail of this process and tuning tips.
 
 --------------
 
 *Can I variably-control the speed of motors or other devices with the PWM output signal from the PID?*
 
-Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, [AC modulation circuitry](Outputs.md/#schematics-for-ac-modulation), [DC modulation circuitry](Outputs.md/#schematics-for-dc-fan-control), or something else.
+Yes, as long as you have the proper hardware to do that. The PWM signal being produced by the PID should be handled appropriately, whether by a fast-switching solid state relay, [AC modulation circuitry](Outputs/#schematics-for-ac-modulation), [DC modulation circuitry](Outputs/#schematics-for-dc-fan-control), or something else.
 
 --------------
 

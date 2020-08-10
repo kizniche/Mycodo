@@ -190,7 +190,7 @@ Once regulation is achieved, experiment by reducing K<sub>P</sub> slightly (~25%
 
 Often the system can be simplified if two-way regulation is not needed. For instance, if cooling is unnecessary, this can be removed from the system and only up-regulation can be used.
 
-Use the same configuration as the [Exact Temperature Regulation](Functions.md/#exact-temperature-regulation) example, except change *Regulate Direction* to "Raise" and do not touch the "Down Relay" section.
+Use the same configuration as the [Exact Temperature Regulation](Functions/#exact-temperature-regulation) example, except change *Regulate Direction* to "Raise" and do not touch the "Down Relay" section.
 
 ## PID Autotune
 
@@ -342,7 +342,7 @@ And typical Daemon Log output will look like this:
 
 ## Conditional
 
-Conditional controllers are used to perform certain [Actions](Functions.md/#function-actions) based a user-generated Conditional Statement.
+Conditional controllers are used to perform certain [Actions](Functions/#function-actions) based a user-generated Conditional Statement.
 
 ### Conditional Options
 
@@ -654,7 +654,7 @@ Before activating any conditionals, it's advised to thoroughly explore all possi
 
 ## Trigger
 
-A Trigger Controller will execute actions when events are triggered, such as an output turning on or off, a GPIO pin changing it's voltage state (Edge detection, rising or falling), timed events that include various timers (duration, time period, time point, etc), or the sunrise/sunset time at a specific latitude and longitude. Once the trigger is configured, add any number of [Actions](Functions.md/#function-actions) to be executed when that event is triggered.
+A Trigger Controller will execute actions when events are triggered, such as an output turning on or off, a GPIO pin changing it's voltage state (Edge detection, rising or falling), timed events that include various timers (duration, time period, time point, etc), or the sunrise/sunset time at a specific latitude and longitude. Once the trigger is configured, add any number of [Actions](Functions/#function-actions) to be executed when that event is triggered.
 
 ### Output (On/Off) Options
 
