@@ -130,7 +130,7 @@ def constraints_pass_positive_value(mod_widget, value):
 
 
 WIDGET_INFORMATION = {
-    'widget_name_unique': 'widget_graph_asynchronous',
+    'widget_name_unique': 'widget_graph_synchronous',
     'widget_name': 'Graph (Synchronous)',
     'widget_library': '',
     'no_class': True,
