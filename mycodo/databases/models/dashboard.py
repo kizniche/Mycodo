@@ -20,22 +20,20 @@ class Widget(CRUDMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     graph_type = db.Column(db.Text, default=None)
-
-    # Global Options
     dashboard_id = db.Column(db.String, default=None)
     name = db.Column(db.Text, default='Widget')
     log_level_debug = db.Column(db.Boolean, default=False)
     font_em_name = db.Column(db.Float, default=1.0)
     enable_drag_handle = db.Column(db.Boolean, default=True)
-    enable_header_buttons = db.Column(db.Boolean, default=True)
     position_x = db.Column(db.Integer, default=0)
     position_y = db.Column(db.Integer, default=999)
     width = db.Column(db.Integer, default=6)
     height = db.Column(db.Integer, default=6)
-    period = db.Column(db.Float, default=30.0)
     custom_options = db.Column(db.Text, default='')
 
     # TODO: next major revision: delete all below, no longer used
+    enable_header_buttons = db.Column(db.Boolean, default=True)
+    period = db.Column(db.Float, default=30.0)
     refresh_duration = db.Column(db.Integer, default=120)  # How often to add new data and redraw, refresh camera
     x_axis_duration = db.Column(db.Integer, default=1440)  # X-axis duration (in minutes)
     custom_yaxes = db.Column(db.Text, default='')  # Custom minimum and maximum y-axes

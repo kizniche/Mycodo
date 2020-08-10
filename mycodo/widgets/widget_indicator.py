@@ -87,14 +87,6 @@ WIDGET_INFORMATION = {
             'phrase': 'The period of time between refreshing the widget'
         },
         {
-            'id': 'font_em_name',
-            'type': 'float',
-            'default_value': 1.5,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Name Font Size (em)',
-            'phrase': 'The font size of the measurement'
-        },
-        {
             'id': 'enable_timestamp',
             'type': 'bool',
             'default_value': False,

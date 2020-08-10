@@ -161,14 +161,6 @@ WIDGET_INFORMATION = {
             'phrase': 'The x-axis duration'
         },
         {
-            'id': 'font_em_name',
-            'type': 'float',
-            'default_value': 1.5,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Name Font Size (em)',
-            'phrase': 'The font size of the measurement'
-        },
-        {
             'id': 'enable_auto_refresh',
             'type': 'bool',
             'default_value': True,

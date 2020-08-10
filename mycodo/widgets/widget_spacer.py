@@ -55,14 +55,6 @@ WIDGET_INFORMATION = {
 
     'custom_options': [
         {
-            'id': 'font_em_name',
-            'type': 'float',
-            'default_value': 1.5,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Name Font Size (em)',
-            'phrase': 'The font size of the measurement'
-        },
-        {
             'id': 'font_em_body',
             'type': 'float',
             'default_value': 1.5,

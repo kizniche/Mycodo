@@ -14,7 +14,7 @@ Notes to keep track of the steps involved in making a new release.
  - [ ] Update config.py variables: MYCODO_VERSION, ALEMBIC_VERSION (if applicable).
  - [ ] Update version in README.rst
  - [ ] Update changes in CHANGELOG.md
-   - Title in format "## 8.5.3 (2020-06-06)".
+   - Title in format "## 8.5.3 (2020-06-06)", with current date.
    - Section headers "### Bugfixes", "### Features", and "### Miscellaneous".
    - Changes as bullet list under each section header, with a link to issue(s) at the end of each short description (if applicable).
  - [ ] Commit changes and wait for TravisCI to finish running pytests and verify all were successful.
