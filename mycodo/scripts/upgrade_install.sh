@@ -139,6 +139,16 @@ runSelfUpgrade() {
     printf "Done.\n"
   fi
 
+  # TODO: Remove in next major release
+  if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/controllers/custom_controllers ] ; then
+    printf "Copying mycodo/controllers/custom_controllers..."
+    if ! cp "${CURRENT_MYCODO_DIRECTORY}"/mycodo/controllers/custom_controllers/*.py "${THIS_MYCODO_DIRECTORY}"/mycodo/functions/custom_functions/ ; then
+      printf "Failed: Error while trying to copy mycodo/controllers/custom_controllers"
+      error_found
+    fi
+    printf "Done.\n"
+  fi
+
   if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/functions/custom_functions ] ; then
     printf "Copying mycodo/functions/custom_functions..."
     if ! cp "${CURRENT_MYCODO_DIRECTORY}"/mycodo/functions/custom_functions/*.py "${THIS_MYCODO_DIRECTORY}"/mycodo/functions/custom_functions/ ; then

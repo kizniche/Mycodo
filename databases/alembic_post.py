@@ -62,24 +62,8 @@ if __name__ == "__main__":
             # convert database entries to JSON string for custom_options entry
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
-            import shutil
-            import os
             import json
             from mycodo.databases.models import Widget
-            from mycodo.config import INSTALL_DIRECTORY
-            from mycodo.config import PATH_FUNCTIONS_CUSTOM
-            try:
-                source = os.path.join(INSTALL_DIRECTORY, 'mycodo/controllers/custom_controllers')
-                dest = PATH_FUNCTIONS_CUSTOM
-                files = os.listdir(source)
-                for f in files:
-                    shutil.move(os.path.join(source, f), os.path.join(dest, f))
-            except Exception:
-                msg = "ERROR: moving files {}: {}".format(
-                    each_revision, traceback.format_exc())
-                error.append(msg)
-                print(msg)
-
             try:
                 with session_scope(MYCODO_DB_PATH) as session:
                     for each_widget in session.query(Widget).all():
