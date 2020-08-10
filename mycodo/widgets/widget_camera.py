@@ -96,7 +96,7 @@ WIDGET_INFORMATION = {
             'phrase': 'The period of time between refreshing the widget'
         },
         {
-            'id': 'show_timestamp',
+            'id': 'enable_timestamp',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Show Timestamp'),
@@ -106,7 +106,7 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_head': """<!-- No head content -->""",
 
-    'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{% if widget_options['show_timestamp'] %}<span id="{{each_widget.id}}-timestamp"></span> {% endif %}{{each_widget.name}}</span>""",
+    'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{% if widget_options['enable_timestamp'] %}<span id="{{each_widget.id}}-timestamp"></span> {% endif %}{{each_widget.name}}</span>""",
 
     'widget_dashboard_body': """<a id="{{each_widget.id}}-image-href" href="" target="_blank"><img id="{{each_widget.id}}-image-src" style="height: 100%; width: 100%" src=""></a>""",
 
@@ -144,26 +144,26 @@ WIDGET_INFORMATION = {
             // The image timestamp is older than the maximum allowable age
             document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_max_age.png";
             document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_max_age.png";
-            document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + "Max Age Exceeded";
+            if (document.getElementById(dashboard_id + "-timestamp")) document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + "Max Age Exceeded";
           } else if (filename === 'file_not_found') {
             // No image was found in the directory
             document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
             document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
-            document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + "File Not Found";
+            if (document.getElementById(dashboard_id + "-timestamp")) document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + "File Not Found";
           } else {
             // The image is available and younger than the max age
             const timestamp = data[1];
             const image_no_cache_timestamp = Date.now();
             document.getElementById(dashboard_id + "-image-src").src = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename + "?" + image_no_cache_timestamp;
             document.getElementById(dashboard_id + "-image-href").href = "/camera/" + camera_unique_id + "/" + image_type_str + "/" + filename + "?" + image_no_cache_timestamp;
-            document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + timestamp;
+            if (document.getElementById(dashboard_id + "-timestamp")) document.getElementById(dashboard_id + "-timestamp").innerHTML = timestamp_str + timestamp;
           }
         }
       },
       error: function(jqXHR, textStatus, errorThrown) {
         document.getElementById(dashboard_id + "-image-src").src = "/static/img/image_error.png";
         document.getElementById(dashboard_id + "-image-href").href = "/static/img/image_error.png";
-        document.getElementById(dashboard_id + "-timestamp").innerHTML = "Error Getting Image";
+        if (document.getElementById(dashboard_id + "-timestamp")) document.getElementById(dashboard_id + "-timestamp").innerHTML = "Error Getting Image";
       }
     });
   }
@@ -172,7 +172,7 @@ WIDGET_INFORMATION = {
   function repeat_get_image_cam(dashboard_id, camera_unique_id, period_sec, image_type, max_age) {
     if (image_type === 'stream') {
       document.getElementById(dashboard_id + "-image-src").src = "/video_feed/" + camera_unique_id;
-      document.getElementById(dashboard_id + "-timestamp").innerHTML = 'Live Stream';
+      if (document.getElementById(dashboard_id + "-timestamp")) document.getElementById(dashboard_id + "-timestamp").innerHTML = 'Live Stream';
     } else {
       get_image_cam(dashboard_id, camera_unique_id, image_type, max_age);
       setInterval(function () {get_image_cam(dashboard_id, camera_unique_id, image_type, max_age)}, period_sec * 1000);

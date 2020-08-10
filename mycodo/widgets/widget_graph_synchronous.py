@@ -1233,7 +1233,6 @@ def custom_colors_graph_str(form, error):
     short_list = []
     for key in form.keys():
         if 'color_number' in key:
-            logger.error("TEST03: {}, {}".format(key, form.getlist(key)))
             for value in form.getlist(key):
                 if not is_rgb_color(value):
                     error.append("Invalid hex color value")
@@ -1286,6 +1285,9 @@ def dict_custom_colors(widget_options):
 
         if widget_options['measurements_input']:
             for each_set in widget_options['measurements_input']:
+                if not each_set:
+                    continue
+
                 input_unique_id = each_set.split(',')[0]
                 input_measure_id = each_set.split(',')[1]
 
@@ -1333,6 +1335,9 @@ def dict_custom_colors(widget_options):
         if widget_options['measurements_math']:
             index = 0
             for each_set in widget_options['measurements_math']:
+                if not each_set:
+                    continue
+
                 math_unique_id = each_set.split(',')[0]
                 math_measure_id = each_set.split(',')[1]
 
@@ -1380,6 +1385,9 @@ def dict_custom_colors(widget_options):
         if widget_options['measurements_output']:
             index = 0
             for each_set in widget_options['measurements_output']:
+                if not each_set:
+                    continue
+
                 output_unique_id = each_set.split(',')[0]
                 output_measure_id = each_set.split(',')[1]
 
@@ -1426,6 +1434,9 @@ def dict_custom_colors(widget_options):
         if widget_options['measurements_pid']:
             index = 0
             for each_set in widget_options['measurements_pid']:
+                if not each_set:
+                    continue
+
                 pid_unique_id = each_set.split(',')[0]
                 pid_measure_id = each_set.split(',')[1]
 
@@ -1473,6 +1484,9 @@ def dict_custom_colors(widget_options):
         if widget_options['measurements_note_tag']:
             index = 0
             for each_set in widget_options['measurements_note_tag']:
+                if not each_set:
+                    continue
+
                 tag_unique_id = each_set.split(',')[0]
 
                 device_measurement = NoteTags.query.filter_by(unique_id=tag_unique_id).first()

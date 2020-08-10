@@ -95,7 +95,7 @@ WIDGET_INFORMATION = {
             'phrase': 'The font size of the measurement'
         },
         {
-            'id': 'show_timestamp',
+            'id': 'enable_timestamp',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Show Timestamp'),
@@ -131,7 +131,7 @@ WIDGET_INFORMATION = {
     'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
 
     'widget_dashboard_body': """<img style="max-width: 60%; max-height: 60%" id="value-{{chart_number}}" src="" alt="">
-  {% if widget_options['show_timestamp'] %}<br/><span style="font-size: {{widget_options['font_em_timestamp']}}em" id="timestamp-{{chart_number}}"></span>{% endif %}""",
+  {% if widget_options['enable_timestamp'] %}<br/><span style="font-size: {{widget_options['font_em_timestamp']}}em" id="timestamp-{{chart_number}}"></span>{% endif %}""",
 
     'widget_dashboard_js': """<!-- No JS content -->""",
 
@@ -155,7 +155,7 @@ WIDGET_INFORMATION = {
         success: function (data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {
             if (data !== null) {
-              document.getElementById('timestamp-' + chart_number).innerHTML = '';
+              if (document.getElementById('timestamp-' + chart_number)) document.getElementById('timestamp-' + chart_number).innerHTML = '';
               if (data !== 'off') {
                 document.getElementById('value-' + chart_number).title = "{{_('On')}}";
               } else {
@@ -170,13 +170,13 @@ WIDGET_INFORMATION = {
             }
           } else {
             document.getElementById('value-' + chart_number).src = '/static/img/button-yellow.png';
-            document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
+            if (document.getElementById('timestamp-' + chart_number)) document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
           }
         },
         error: function (jqXHR, textStatus, errorThrown) {
           document.getElementById('value-' + chart_number).src = '';
           document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-          document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
+          if (document.getElementById('timestamp-' + chart_number)) document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
         }
       });
     }
@@ -188,7 +188,7 @@ WIDGET_INFORMATION = {
         success: function(data, responseText, jqXHR) {
           if (jqXHR.status === 204) {
             document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-            document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
+            if (document.getElementById('timestamp-' + chart_number)) document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
           }
           else {
             const formattedTime = epoch_to_timestamp(data[0]);
@@ -199,12 +199,12 @@ WIDGET_INFORMATION = {
               document.getElementById('value-' + chart_number).src = '/static/img/button-red.png';
             }
             document.getElementById('value-' + chart_number).title = "{{_('Value')}}: " + measurement;
-            document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
+            if (document.getElementById('timestamp-' + chart_number)) document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
           }
         },
         error: function(jqXHR, textStatus, errorThrown) {
           document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-          document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
+          if (document.getElementById('timestamp-' + chart_number)) document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
         }
       });
     }
