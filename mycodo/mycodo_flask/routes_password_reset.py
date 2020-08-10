@@ -2,10 +2,11 @@
 """ flask views that deal with password reset """
 import datetime
 import logging
-import random
 import socket
 import string
 
+import os
+import random
 from flask import flash
 from flask import redirect
 from flask import render_template
@@ -14,6 +15,7 @@ from flask import url_for
 from flask.blueprints import Blueprint
 from flask_babel import gettext
 
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import User
@@ -60,32 +62,51 @@ def forgot_password():
                         error.append("Cannot reset password of this user")
 
             if not error:
-                user.password_reset_code = generate_reset_code(30)
-                user.password_reset_code_expiration = datetime.datetime.now() + datetime.timedelta(minutes=30)
-                db.session.commit()
+                if user:
+                    user.password_reset_code = generate_reset_code(30)
+                    user.password_reset_code_expiration = datetime.datetime.now() + datetime.timedelta(minutes=30)
+                    db.session.commit()
 
-                smtp = SMTP.query.one()
                 hostname = socket.gethostname()
-                subject = "Mycodo Password Reset ({})".format(hostname)
-                msg = "A password reset has been requested for user {user} on host {host} with your email " \
-                      "address.\n\nIf you did not initiate this, you can disregard this email.\n\nIf you would " \
-                      "like to reset your password, the password reset code below will be good for the next 30 " \
-                      "minutes.\n\n{code}".format(
-                        user=user.name, host=hostname, code=user.password_reset_code)
-                send_email(
-                    smtp.host, smtp.protocol, smtp.port,
-                    smtp.user, smtp.passw, smtp.email_from,
-                    user.email, msg, subject=subject)
+                now = datetime.datetime.now()
 
+                if form_forgot_password.reset_method.data == 'email':
+                    smtp = SMTP.query.first()
+                    if user and smtp.host and smtp.protocol and smtp.port and smtp.user and smtp.passw:
+                        subject = "Mycodo Password Reset ({})".format(hostname)
+                        msg = "A password reset has been requested for user {user} on host {host} at {time} " \
+                              "with your email address.\n\nIf you did not initiate this, you can disregard " \
+                              "this email.\n\nIf you would like to reset your password, the password reset " \
+                              "code below will be good for the next 30 minutes.\n\n{code}".format(
+                                user=user.name,
+                                host=hostname,
+                                time=now.strftime("%d/%m/%Y %H:%M"),
+                                code=user.password_reset_code)
+                        send_email(
+                            smtp.host, smtp.protocol, smtp.port,
+                            smtp.user, smtp.passw, smtp.email_from,
+                            user.email, msg, subject=subject)
+                    flash("If the user name exists, it has a valid email associated with it, and the email "
+                          "server settings are configured correctly, an email will be sent with instructions "
+                          "for resetting your password.", "success")
+                elif form_forgot_password.reset_method.data == 'file':
+                    save_path = os.path.join(INSTALL_DIRECTORY, "password_reset.txt")
+                    if user:
+                        with open(save_path, 'w') as out_file:
+                            msg = "A password reset has been requested for user {user} on host {host} at " \
+                                  "{time}.\n\nIf you would like to reset your password, the password reset " \
+                                  "code below will be good for the next 30 minutes.\n\n{code}\n".format(
+                                    user=user.name,
+                                    host=hostname,
+                                    time=now.strftime("%d/%m/%Y %H:%M"),
+                                    code=user.password_reset_code)
+                            out_file.write(msg)
+                    flash("If the user name exists, a file will be created at {} with instructions "
+                          "for resetting your password.".format(save_path), "success")
             if error:
                 for each_error in error:
                     flash(each_error, "error")
             else:
-                flash(gettext(
-                    "If the user name exists, it has a valid email associated with it, and the email "
-                    "server settings are configured correctly, an email will be sent with instructions "
-                    "for resetting your password."),
-                      "success")
                 return redirect(url_for('routes_password_reset.reset_password'))
 
     return render_template('forgot_password.html',

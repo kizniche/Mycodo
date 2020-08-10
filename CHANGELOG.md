@@ -9,6 +9,7 @@ This update includes the final refactoring of the output system to accommodate o
  - Fix graph shift issues
  - Fix PID Input/Math Setpoint Tracking unit and integer issue ([#811](https://github.com/kizniche/mycodo/issues/811))
  - Fix PID Controller debug logging ([#811](https://github.com/kizniche/mycodo/issues/811))
+ - Fix bug in password reset function that would allow an attacker to discover if a user name doesn't exist
 
 ### Features
 
@@ -17,6 +18,7 @@ This update includes the final refactoring of the output system to accommodate o
  - Add ability to download Mycodo Backups ([#803](https://github.com/kizniche/mycodo/issues/803))
  - Add Widget Controller for background widget processes
  - Add Widget: Python Code ([#803](https://github.com/kizniche/mycodo/issues/803))
+ - Add an option to the password reset function to save the reset code to a file
 
 ### Miscellaneous
 
