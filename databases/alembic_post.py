@@ -80,6 +80,7 @@ if __name__ == "__main__":
 
                 with session_scope(MYCODO_DB_PATH) as session:
                     for each_widget in session.query(Widget).all():
+                        custom_options = {}
                         if each_widget.graph_type == 'graph':
                             each_widget.graph_type = 'WIDGET_GRAPH_SYNCHRONOUS'
                             custom_options['measurements_math'] = each_widget.math_ids.split(";")
@@ -113,7 +114,6 @@ if __name__ == "__main__":
                         elif each_widget.graph_type == 'camera':
                             each_widget.graph_type = 'WIDGET_CAMERA'
 
-                        custom_options = {}
                         custom_options['refresh_seconds'] = each_widget.refresh_duration
                         custom_options['x_axis_minutes'] = each_widget.x_axis_duration
                         custom_options['custom_yaxes'] = each_widget.custom_yaxes
