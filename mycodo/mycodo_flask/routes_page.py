@@ -581,6 +581,8 @@ def page_dashboard(dashboard_id):
         # Dashboard
         if form_dashboard.dash_modify.data:
             utils_dashboard.dashboard_mod(form_dashboard)
+        elif form_dashboard.dash_duplicate.data:
+            utils_dashboard.dashboard_copy(form_dashboard)
         elif form_dashboard.dash_delete.data:
             utils_dashboard.dashboard_del(form_dashboard)
             return redirect(url_for('routes_page.page_dashboard_default'))

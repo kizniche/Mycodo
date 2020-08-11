@@ -9,6 +9,8 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config_translations import TRANSLATIONS
+from mycodo.databases import clone_model
+from mycodo.databases import set_uuid
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
@@ -27,7 +29,6 @@ from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
 from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
-
 
 #
 # Dashboards
@@ -71,6 +72,32 @@ def dashboard_mod(form):
     dash_mod.name = form.name.data
 
     db.session.commit()
+
+    flash_success_errors(
+        error, action, url_for('routes_page.page_dashboard_default'))
+
+
+def dashboard_copy(form):
+    """Duplicate a dashboard and its widgets"""
+    action = '{action} {controller}'.format(
+        action=TRANSLATIONS['duplicate']['title'],
+        controller=TRANSLATIONS['dashboard']['title'])
+    error = []
+
+    try:
+        # Get current dashboard and its widgets
+        dashboard = Dashboard.query.filter(Dashboard.unique_id == form.dashboard_id.data).first()
+        widgets = Widget.query.filter(Widget.dashboard_id == dashboard.unique_id).all()
+
+        # Duplicate dashboard with new unique_id and name
+        new_dashboard = clone_model(dashboard, unique_id=set_uuid(), name="TEST")
+
+        # Duplicate all widgets and assign them to the new dashboard
+        for each_widget in widgets:
+            clone_model(each_widget, unique_id=set_uuid(), dashboard_id=new_dashboard.unique_id)
+    except Exception as msg:
+        error.append(msg)
+        logger.exception("Duplicating dashboard")
 
     flash_success_errors(
         error, action, url_for('routes_page.page_dashboard_default'))

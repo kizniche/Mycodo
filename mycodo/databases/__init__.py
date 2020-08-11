@@ -40,3 +40,22 @@ def set_api_key(length):
 def set_uuid():
     """ returns a uuid string """
     return str(uuid.uuid4())
+
+
+def clone_model(model, **kwargs):
+    """Clone an arbitrary sqlalchemy model object without its primary key values."""
+    # Ensure the model’s data is loaded before copying.
+    try:
+        model.id
+    except Exception:
+        return
+
+    table = model.__table__
+    non_pk_columns = [k for k in table.columns.keys() if k not in table.primary_key]
+    data = {c: getattr(model, c) for c in non_pk_columns}
+    data.update(kwargs)
+
+    clone = model.__class__(**data)
+    db.session.add(clone)
+    db.session.commit()
+    return clone

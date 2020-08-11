@@ -1,3 +1,10 @@
+## 8.7.2 (Unreleased)
+
+### Features
+
+ - Add ability to duplicate a dashboard and its widgets ([#812](https://github.com/kizniche/mycodo/issues/812))
+
+
 ## 8.7.1 (2020-08-10)
 
 ### Bugfixes

@@ -61,6 +61,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Display')},
     'down': {
         'title': lazy_gettext('Down')},
+    'duplicate': {
+        'title': lazy_gettext('Duplicate')},
     'duration': {
         'title': lazy_gettext('Duration')},
     'edge': {
