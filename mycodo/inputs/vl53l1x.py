@@ -22,11 +22,11 @@ INPUT_INFORMATION = {
     'input_library': 'VL53L1X',
     'measurements_name': 'Millimeter (Time-of-Flight Distance)',
     'measurements_dict': measurements_dict,
-    'url_manufacturer': 'https://www.st.com/en/imaging-and-photonics-solutions/vl53l0x.html',
-    'url_datasheet': 'https://www.st.com/resource/en/datasheet/vl53l0x.pdf',
+    'url_manufacturer': 'https://www.st.com/en/imaging-and-photonics-solutions/vl53l1x.html',
+    'url_datasheet': 'https://www.st.com/resource/en/datasheet/vl53l1x.pdf',
     'url_product_purchase': [
-        'https://www.adafruit.com/product/3317',
-        'https://www.pololu.com/product/2490'
+        'https://www.pololu.com/product/3415',
+        'https://www.sparkfun.com/products/14722'
     ],
 
     'message': 'Notes when setting a custom timing budget: A higher timing budget results in greater measurement accuracy, but also a higher power consumption. The inter measurement period must be >= the timing budget, otherwise it will be double the expected value.',
@@ -45,7 +45,7 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['I2C'],
-    'i2c_location': ['0x52'],
+    'i2c_location': ['0x29'],
     'i2c_address_editable': True,
 
     'custom_options': [
@@ -75,26 +75,6 @@ INPUT_INFORMATION = {
             'default_value': 70,
             'name': lazy_gettext('Inter Measurement Period (milliseconds)'),
             'phrase': lazy_gettext('Set the Inter Measurement Period')
-        }
-    ],
-
-    'custom_actions_message':
-        'The I2C address of the sensor can be changed. Enter a new address in the 0xYY format '
-        '(e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate the Input and '
-        'change the I2C address option after setting the new address.',
-
-    'custom_actions': [
-        {
-            'id': 'new_i2c_address',
-            'type': 'text',
-            'default_value': '0x52',
-            'name': lazy_gettext('New I2C Address'),
-            'phrase': 'The new I2C to set the sensor to'
-        },
-        {
-            'id': 'set_i2c_address',
-            'type': 'button',
-            'name': lazy_gettext('Set I2C Address')
         }
     ]
 }
@@ -153,32 +133,6 @@ class InputModule(AbstractInput):
         self.measuring = False
 
         return self.return_dict
-
-    def set_i2c_address(self, args_dict):
-        while self.measuring:
-            time.sleep(0.1)
-        self.setting_i2c = True
-
-        self.sensor.stop_ranging()
-        self.sensor.close()
-        if 'new_i2c_address' not in args_dict:
-            self.logger.error("Cannot set new I2C address without an I2C address")
-            return
-        try:
-            i2c_address = int(str(args_dict['new_i2c_address']), 16)
-            self.sensor.change_address(i2c_address)
-            self.sensor = self.VL53L1X.VL53L1X(
-                i2c_bus=self.i2c_bus,
-                i2c_address=i2c_address)
-            self.logger.info("Sensor I2C address set to {add}. Command executed: sensor.change_address({a_int})".format(
-                    add=args_dict['new_i2c_address'], a_int=i2c_address))
-        except:
-            self.logger.error("Could not parse I2C address: {}. Ensure it's entered in the correct format.".format(
-                    args_dict['new_i2c_address']))
-        finally:
-            self.sensor.open()
-            self.sensor.start_ranging(self.timing_budget)
-            self.setting_i2c = False
 
     def stop_input(self):
         """ Called when Input is deactivated """

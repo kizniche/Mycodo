@@ -1,17 +1,5 @@
 There are several ways to visualize collected data.
 
-## Dashboard
-
-Page\: `Data -> Dashboards`
-
-The dashboard can be used for both viewing data and manipulating the system, thanks to the numerous dashboard widgets available. Widgets are how data is presented to the user and how the user can control aspects of the system from the dashboard. These include graphs, gauges, indicators, and more. For a full list of supported Widgets, see [Supported Widgets](Supported-Widgets.md).
-
-### Custom Widgets
-
-There is a Custom Widget import system in Mycodo that allows user-created Widgets to be created an used in the Mycodo system. Custom Widgets can be uploaded and imported from the `[Gear Icon] -> Configure -> Custom Widgets` page. After import, they will be available to use on the `Data -> Dashboard` pages.
-
-If you desire an Widget that is not currently supported by Mycodo, you can build your own Widget module and import it into Mycodo. All information about an Widget is contained within the Widget module. Open any of the built-in modules located in the [widgets directory](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/) for examples of the proper formatting. There's also a [minimal widget module template as an example](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/examples/custom_widget_example_simple.py).
-
 ## Live Measurements
 
 Page\: `Data -> Live`
@@ -31,7 +19,13 @@ A graphical data display that is useful for viewing data sets spanning relativel
 
 Page\: `Data -> Dashboard`
 
-Dashboards are where you can add widgets to display data and interact with the system. Multiple dashboards can be created. Widgets can be moved and arranged on the dashboards by dragging the top header and can be resized by dragging the bottom-left or bottom-right side of the widget. Specific options for widgets are below.
+The dashboard can be used for both viewing data and manipulating the system, thanks to the numerous dashboard widgets available. Widgets are how data is presented to the user and how the user can control aspects of the system from the dashboard. These include graphs, gauges, indicators, and more. For a full list of supported Widgets, see [Supported Widgets](Supported-Widgets.md). Multiple dashboards can be created. Widgets can be moved and arranged on the dashboards by dragging and can be resized by pulling the bottom-left or bottom-right side of the widget.
+
+### Custom Widgets
+
+There is a Custom Widget import system in Mycodo that allows user-created Widgets to be created an used in the Mycodo system. Custom Widgets can be uploaded and imported from the `[Gear Icon] -> Configure -> Custom Widgets` page. After import, they will be available to use on the `Data -> Dashboard` pages.
+
+If you desire an Widget that is not currently supported by Mycodo, you can build your own Widget module and import it into Mycodo. All information about an Widget is contained within the Widget module. Open any of the built-in modules located in the [widgets directory](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/) for examples of the proper formatting. There's also a [minimal widget module template as an example](https://github.com/kizniche/Mycodo/tree/master/mycodo/widgets/examples/custom_widget_example_simple.py).
 
 ### Graph Widget
 
