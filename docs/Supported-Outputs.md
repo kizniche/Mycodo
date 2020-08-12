@@ -19,13 +19,11 @@ The specified GPIO pin will be set HIGH (3.3 volts) or LOW (0 volts) when turned
 
 ###  On/Off Python Code
 
-- Dependencies: 
 
 Python 3 code will be executed when this output is turned on or off.
 
 ###  On/Off Shell Script
 
-- Dependencies: 
 
 Commands will be executed in the Linux shell by the specified user when this output is turned on or off.
 
@@ -37,13 +35,11 @@ See the PWM section of the manual for PWM information and determining which pins
 
 ###  PWM Python Code
 
-- Dependencies: 
 
 Python 3 code will be executed when this output is turned on or off. The "duty_cycle" object is a float value that represents the duty cycle that has been set.
 
 ###  PWM Shell Script
 
-- Dependencies: 
 
 Commands will be executed in the Linux shell by the specified user when the duty cycle is set for this output. The string "((duty_cycle))" in the command will be replaced with the duty cycle being set prior to execution.
 

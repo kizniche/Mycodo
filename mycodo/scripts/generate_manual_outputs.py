@@ -83,7 +83,7 @@ if __name__ == "__main__":
                     out_file.write("- Dependencies: ")
                     for i, each_dep_set in enumerate(each_data['dependencies_module']):
                         if len(each_data['dependencies_module']) > 1:
-                            out_file.write("Input Variant {}: ".format(i + 1))
+                            out_file.write("Output Variant {}: ".format(i + 1))
                         for i_d, each_dep in enumerate(each_dep_set):
                             if each_dep[0] == "apt":
                                 out_file.write("[{0}](https://packages.debian.org/buster/{0})".format(each_dep[2]))

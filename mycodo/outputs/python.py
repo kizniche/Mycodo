@@ -45,8 +45,6 @@ OUTPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-    'dependencies_module': [],
-
     'interfaces': ['PYTHON']
 }
 
