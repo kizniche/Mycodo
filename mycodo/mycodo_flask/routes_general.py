@@ -186,13 +186,8 @@ def video_feed(unique_id):
 @blueprint.route('/outputstate')
 @flask_login.login_required
 def gpio_state():
-    """Return the GPIO state, for output page status"""
-    states = get_all_output_states()
-    # Convert list of dictionaries to dictionary of key/value pairs
-    states_dict = {}
-    for each_state in states:
-        states_dict[each_state['unique_id']] = each_state['state']
-    return jsonify(states_dict)
+    """Return the GPIO states, for output page status"""
+    return jsonify(get_all_output_states())
 
 
 @blueprint.route('/outputstate_unique_id/<unique_id>')
@@ -944,9 +939,9 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
 
-@blueprint.route('/output_mod/<output_id>/<state>/<output_type>/<amount>')
+@blueprint.route('/output_mod/<output_id>/<output_channel>/<state>/<output_type>/<amount>')
 @flask_login.login_required
-def output_mod(output_id, state, output_type, amount):
+def output_mod(output_id, output_channel, state, output_type, amount):
     """ Manipulate output (using non-unique ID) """
     if not utils_general.user_has_permission('edit_controllers'):
         return 'Insufficient user permissions to manipulate outputs'
@@ -955,7 +950,11 @@ def output_mod(output_id, state, output_type, amount):
     if (state in ['on', 'off'] and output_type in ['sec', 'pwm', 'vol'] and
             (str_is_float(amount) and float(amount) >= 0)):
         out_status = daemon.output_on_off(
-            output_id, state, output_type=output_type, amount=float(amount))
+            output_id,
+            state,
+            output_type=output_type,
+            amount=float(amount),
+            output_channel=int(output_channel))
         if out_status[0]:
             return 'ERROR: {}'.format(out_status[1])
         else:

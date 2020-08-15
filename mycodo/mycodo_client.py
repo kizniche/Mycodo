@@ -206,20 +206,28 @@ class DaemonControl:
     # Output Controller
     #
 
-    def output_off(self, output_id, trigger_conditionals=True):
-        return self.proxy().output_off(output_id, trigger_conditionals)
+    def output_off(self, output_id, output_channel=None, trigger_conditionals=True):
+        return self.proxy().output_off(
+            output_id, output_channel=output_channel, trigger_conditionals=trigger_conditionals)
 
-    def output_on(self, output_id, output_type=None, amount=0.0, min_off=0.0, trigger_conditionals=True):
+    def output_on(self,
+                  output_id,
+                  output_type=None,
+                  amount=0.0,
+                  min_off=0.0,
+                  output_channel=None,
+                  trigger_conditionals=True):
         return self.proxy().output_on(
             output_id, output_type=output_type, amount=amount, min_off=min_off,
-            trigger_conditionals=trigger_conditionals)
+            output_channel=output_channel, trigger_conditionals=trigger_conditionals)
 
-    def output_on_off(self, output_id, state, output_type=None, amount=0.0):
+    def output_on_off(self, output_id, state, output_type=None, amount=0.0, output_channel=None):
         """ Turn an output on or off """
         if state in ['on', 1, True]:
-            return self.output_on(output_id, amount=amount, output_type=output_type)
+            return self.output_on(
+                output_id, amount=amount, output_type=output_type, output_channel=output_channel)
         elif state in ['off', 0, False]:
-            return self.output_off(output_id)
+            return self.output_off(output_id, output_channel=output_channel)
         else:
             return 1, 'state not "on", 1, True, "off", 0, or False. Found: "{}"'.format(state)
 
@@ -361,6 +369,9 @@ def parseargs(parser):
                         required=False)
     parser.add_argument('--dutycycle', metavar='DUTYCYCLE', type=float,
                         help='Turn on PWM output for a duty cycle (%%)',
+                        required=False)
+    parser.add_argument('--output_channel', metavar='OUTPUTCHANNEL', type=int,
+                        help='The output channel to modulate',
                         required=False)
 
     # PID Controller
@@ -518,9 +529,11 @@ if __name__ == "__main__":
 
     elif args.outputon:
         if args.duration:
-            return_msg = daemon.output_on(args.outputon, output_type='sec', amount=args.duration)
+            return_msg = daemon.output_on(
+                args.outputon, output_type='sec', amount=args.duration, output_channel=args.output_channel)
         elif args.dutycycle:
-            return_msg = daemon.output_on(args.outputon, output_type='pwm', amount=args.dutycycle)
+            return_msg = daemon.output_on(
+                args.outputon, output_type='pwm', amount=args.dutycycle, output_channel=args.output_channel)
         else:
             return_msg = daemon.output_on(args.outputon)
         logger.info("[Remote command] Turn on output with ID '{id}': Server returned:".format(

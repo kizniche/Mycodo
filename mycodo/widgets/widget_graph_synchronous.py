@@ -484,7 +484,7 @@ WIDGET_INFORMATION = {
         if (jqXHR.status !== 204) {
 
           let time_point;
-          let graph_shift;
+          let graph_shift = false;
           // The timestamp of the beginning of the graph (oldest timestamp allowed on the graph)
           const oldest_timestamp_allowed = epoch_mil - (xaxis_duration_min * 60 * 1000);
 
@@ -494,12 +494,16 @@ WIDGET_INFORMATION = {
 
             // If the timestamp of the last point previously added is >= the new point TS, don't add
             let index_last = chart[chart_number].series[series].options.data.length - 1;
-            let last_meas_time = chart[chart_number].series[series].options.data[index_last][0];
-            if (time_point <= last_meas_time) continue;
+            if (typeof chart[chart_number].series[series].options.data[index_last] !== 'undefined') {
+              let last_meas_time = chart[chart_number].series[series].options.data[index_last][0];
+              if (time_point <= last_meas_time) continue;
+            }
 
             // If the first data point is older than allowed, shift the graph
-            let first_meas_time = chart[chart_number].series[series].options.data[0][0];
-            graph_shift = first_meas_time < oldest_timestamp_allowed;
+            if (typeof chart[chart_number].series[series].options.data[0] !== 'undefined') {
+              let first_meas_time = chart[chart_number].series[series].options.data[0][0];
+              graph_shift = first_meas_time < oldest_timestamp_allowed;
+            }
 
             if (measure_type === 'tag') {
               if (!note_timestamps.includes(time_point)) {

@@ -69,8 +69,9 @@
     $('.output_on_amt').click(function() {
       const btn_val = this.name;
       const id = btn_val.split('/')[0];
-      const on_type = btn_val.split('/')[2];
-      const on_amt = $('#' + on_type + '_on_amt_' + id).val();
+      const chan = btn_val.split('/')[1];
+      const on_type = btn_val.split('/')[3];
+      const on_amt = $('#' + on_type + '_on_amt_' + id + '_' + chan).val();
       {% if not misc.hide_alert_info %}
       toastr['info']('Command sent to turn output ' + id + ' On for ' + on_amt + ' ' + on_type);
       {% endif %}
@@ -91,19 +92,20 @@
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
           $.each(data,
-            function(output_id, state) {
-              if (state !== null) {
-                document.getElementById(output_id + "-output-state").className = "row small-gutters active-background";
-                if (state !== 'off') {
-                  if (state === 'on') {
-                    document.getElementById(output_id + "-input-output-state").value = '{{_('Active')}}';
+            function(output_id, states) {
+              for (i = 0; i < Object.keys(states).length; i++) {
+                if (states[i] !== null) {
+                  document.getElementById(output_id + "-" + i + "-output-state").className = "row small-gutters active-background";
+                  if (states[i] !== 'off') {
+                    if (states[i] === 'on') {
+                      document.getElementById(output_id + "-" + i + "-input-output-state").value = '{{_('Active')}}';
+                    } else {
+                      document.getElementById(output_id + "-" + i + "-input-output-state").value = '{{_('Active')}}, ' + states[0].toFixed(1) + '%';
+                    }
                   } else {
-                    document.getElementById(output_id + "-input-output-state").value = '{{_('Active')}}, ' + state.toFixed(1) + '%';
+                    document.getElementById(output_id + "-" + i + "-output-state").className = "row small-gutters inactive-background";
+                    document.getElementById(output_id + "-" + i + "-input-output-state").value = '{{_('Inactive')}}';
                   }
-                }
-                else {
-                  document.getElementById(output_id + "-output-state").className = "row small-gutters inactive-background";
-                  document.getElementById(output_id + "-input-output-state").value = '{{_('Inactive')}}';
                 }
               }
             }
@@ -111,8 +113,10 @@
         }
         else {
           {% for each_output in output %}
-          document.getElementById("{{each_output.unique_id}}-output-state").className = "row small-gutters pause-background";
-          document.getElementById("{{each_output.unique_id}}-input-output-state").value = '{{_('No Connection')}}';
+            {% for each_output_channel in dict_outputs[each_output.output_type]['outputs_dict']  %}
+          document.getElementById("{{each_output.unique_id}}-{{each_output_channel}}-output-state").className = "row small-gutters pause-background";
+          document.getElementById("{{each_output.unique_id}}-{{each_output_channel}}-input-output-state").value = '{{_('No Connection')}}';
+            {% endfor %}
           {% endfor %}
         }
       }
@@ -174,14 +178,13 @@
         {% set unique_id = each_output.unique_id %}
         {% set custom_options_values = custom_options_values_outputs %}
 
-        <div class="row small-gutters pause-background" style="border-bottom: 1px solid #ddd; padding: 0.4em 0.2em 0.4em 0;" id="{{each_output.unique_id}}-output-state">
-
+        {% if dict_outputs[each_output.output_type]['outputs_dict']|length == 1 %}
+        <div class="row small-gutters pause-background" style="border-bottom: 1px solid #ddd; padding: 0.4em 0.2em 0.4em 0;" id="{{each_output.unique_id}}-0-output-state">
           <div class="col-2 col-md-1 text-center icon-fh">
             <a data-toggle="collapse" href="#collapseContainer{{each_output.unique_id}}" aria-expanded="false" aria-controls="collapseContainer{{each_output.unique_id}}">
               <span style="font-size: 3.6em" class="collapse-button{{each_output.unique_id}} fa fa-plus-square"></span>
             </a>
           </div>
-
           <div class="col-5 col-md-2 small-gutters">
             <input class="form-control" disabled="" value="{{each_output.name}}" type="text">
           </div>
@@ -189,12 +192,12 @@
             <input class="form-control" disabled="" value="[{{each_output.interface}}] {{dict_outputs[each_output.output_type]['output_name']}}{% if dict_outputs[each_output.output_type]['output_library'] %} ({{dict_outputs[each_output.output_type]['output_library']}}){% endif %}" type="text">
           </div>
           <div class="col-4 col-md-2 small-gutters">
-            <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">
+            <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-0-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">
           </div>
 
         {% if 'button_on' in dict_options['options_enabled'] -%}
           <div class="col-4 col-md-2 small-gutters">
-            <input class="form-control btn btn-primary btn-sm btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
+            <input class="form-control btn btn-primary btn-sm btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/0/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
           </div>
         {%- endif %}
 
@@ -203,10 +206,54 @@
         {% else %}
           <div class="col-8 col-md-4 small-gutters">
         {% endif %}
-            <input class="form-control btn btn-primary btn-sm btn-danger btn-block turn_off" id="turn_off" name="{{each_output.unique_id}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
+            <input class="form-control btn btn-primary btn-sm btn-danger btn-block turn_off" id="turn_off" name="{{each_output.unique_id}}/0/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
           </div>
 
         </div>
+        {% else %}
+
+        <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.4em 0.2em 0.4em 0;" id="">
+            <div class="col-2 col-md-1 text-center icon-fh">
+            <a data-toggle="collapse" href="#collapseContainer{{each_output.unique_id}}" aria-expanded="false" aria-controls="collapseContainer{{each_output.unique_id}}">
+              <span style="font-size: 3.6em" class="collapse-button{{each_output.unique_id}} fa fa-plus-square"></span>
+            </a>
+          </div>
+          <div class="col-5 col-md-2 small-gutters">
+            <input class="form-control" disabled="" value="{{each_output.name}}" type="text">
+          </div>
+          <div class="col-5 col-md-3 small-gutters">
+            <input class="form-control" disabled="" value="[{{each_output.interface}}] {{dict_outputs[each_output.output_type]['output_name']}}{% if dict_outputs[each_output.output_type]['output_library'] %} ({{dict_outputs[each_output.output_type]['output_library']}}){% endif %}" type="text">
+          </div>
+        </div>
+
+        {% for each_output_channel in dict_outputs[each_output.output_type]['outputs_dict'] %}
+        <div class="row small-gutters pause-background" style="border-bottom: 1px solid #ddd; padding: 0.4em 0.2em 0.4em 0;" id="{{each_output.unique_id}}-{{each_output_channel}}-output-state">
+          <div class="col-7 col-md-3 text-center icon-fh"></div>
+          <div class="col-5 col-md-3 small-gutters">
+            <input class="form-control" disabled="" value="Channel {{each_output_channel}}{% if 'name' in dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel] %}: {{dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel]['name']}}{% endif %}" type="text">
+          </div>
+          <div class="col-4 col-md-2 small-gutters">
+            <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-{{each_output_channel}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">
+          </div>
+
+        {% if 'button_on' in dict_options['options_enabled'] -%}
+          <div class="col-4 col-md-2 small-gutters">
+            <input class="form-control btn btn-primary btn-sm btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
+          </div>
+        {%- endif %}
+
+        {% if 'button_on' in dict_options['options_enabled'] -%}
+          <div class="col-4 col-md-2 small-gutters">
+        {% else %}
+          <div class="col-8 col-md-4 small-gutters">
+        {% endif %}
+            <input class="form-control btn btn-primary btn-sm btn-danger btn-block turn_off" id="turn_off" name="{{each_output.unique_id}}/{{each_output_channel}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
+          </div>
+
+        </div>
+        {% endfor %}
+
+        {% endif %}
 
         <div class="collapse" id="collapseContainer{{each_output.unique_id}}" style="padding: 0.5em">
 
@@ -222,7 +269,7 @@
           <div class="row small-gutters" style="padding: 0.5em">
 
             <div class="col-12">
-              {{_("Model")}}: {{dict_outputs[each_output.output_type]['output_name']}}
+              {{_("Output")}}: {{dict_outputs[each_output.output_type]['output_name']}}
             </div>
 
         {% if 'dependencies_module' in dict_outputs[each_output.output_type] and dict_outputs[each_output.output_type]['dependencies_module'] %}
@@ -362,65 +409,74 @@
           </div>
         {% endif %}
 
-        {% if 'button_send_duration' in dict_options['options_enabled'] %}
+        {% for each_output_channel in dict_outputs[each_output.output_type]['outputs_dict'] if 'button_send_duration' in dict_options['options_enabled'] %}
 
           <div class="row">
-            <div class="col">
+            <div class="col-auto">
+              Channel {{each_output_channel}}{% if 'name' in dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel] %}: {{dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel]['name']}}{% endif %}
+            </div>
+            <div class="col-auto">
               <label class='control-label'>{{dict_translation['output_amount_duration']['title']}}</label>
               <div>
                 <div class="row small-gutters">
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}" title="{{dict_translation['output_amount_duration']['phrase']}}" type="text" value="">
+                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" name="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" title="{{dict_translation['output_amount_duration']['phrase']}}" type="text" value="">
                   </div>
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/sec/" type="button" value="{{_('Send')}}">
+                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel}}/on/sec/" type="button" value="{{_('Send')}}">
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-        {% endif %}
+        {% endfor %}
 
-        {% if 'button_send_volume' in dict_options['options_enabled'] %}
+        {% for each_output_channel in dict_outputs[each_output.output_type]['outputs_dict'] if 'button_send_volume' in dict_options['options_enabled'] %}
 
           <div class="row">
-            <div class="col">
+            <div class="col-auto">
+              Channel {{each_output_channel}}{% if 'name' in dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel] %}: {{dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel]['name']}}{% endif %}
+            </div>
+            <div class="col-auto">
               <label class='control-label'>{{dict_translation['output_amount_volume']['title']}}</label>
               <div>
                 <div class="row small-gutters">
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="form-control" id="vol_on_amt_{{each_output.unique_id}}" name="vol_on_amt_{{each_output.unique_id}}" title="{{dict_translation['output_amount_volume']['phrase']}}" type="text" value="">
+                    <input class="form-control" id="vol_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" name="vol_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" title="{{dict_translation['output_amount_volume']['phrase']}}" type="text" value="">
                   </div>
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/vol/" type="button" value="{{_('Send')}}">
+                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel}}/on/vol/" type="button" value="{{_('Send')}}">
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-        {% endif %}
+        {% endfor %}
 
-        {% if 'button_send_duty_cycle' in dict_options['options_enabled'] %}
+        {% for each_output_channel in dict_outputs[each_output.output_type]['outputs_dict'] if 'button_send_duty_cycle' in dict_options['options_enabled'] %}
 
           <div class="row">
-            <div class="col">
+            <div class="col-auto">
+              Channel {{each_output_channel}}{% if 'name' in dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel] %}: {{dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel]['name']}}{% endif %}
+            </div>
+            <div class="col-auto">
               <label class='control-label'>{{dict_translation['duty_cycle']['title']}}</label>
               <div>
                 <div class="row small-gutters">
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                  <input class="form-control" id="pwm_on_amt_{{each_output.unique_id}}" name="pwm_on_amt_{{each_output.unique_id}}" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
+                  <input class="form-control" id="pwm_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" name="pwm_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
                   </div>
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                  <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/on/pwm/" type="button" value="{{_('Send')}}">
+                  <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel}}/on/pwm/" type="button" value="{{_('Send')}}">
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-      {% endif %}
+      {% endfor %}
 
         </div>
 

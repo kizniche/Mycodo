@@ -34,9 +34,9 @@ class Output(CRUDMixin, db.Model):
     force_command = db.Column(db.Boolean, default=False)
     trigger_functions_at_start = db.Column(db.Boolean, default=True)
 
-    state_startup = db.Column(db.Text, default=None)
+    state_startup = db.Column(db.Text, default=0)
     startup_value = db.Column(db.Float, default=0)
-    state_shutdown = db.Column(db.Text, default=None)
+    state_shutdown = db.Column(db.Text, default=0)
     shutdown_value = db.Column(db.Float, default=0)
 
     # I2C

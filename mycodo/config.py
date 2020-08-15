@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.7.1'
-ALEMBIC_VERSION = 'd66e33093e8e'
+ALEMBIC_VERSION = '0e150fb8020b'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.

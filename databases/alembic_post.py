@@ -58,6 +58,25 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == '0e150fb8020b':
+            # TODO: update database entries to include output channel
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                try:
+                    pass
+                except Exception:
+                    msg = "ERROR: post-alembic revision {}: {}".format(
+                        each_revision, traceback.format_exc())
+                    error.append(msg)
+                    print(msg)
+
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == 'd66e33093e8e':
             # convert database entries to JSON string for custom_options entry
             print("Executing post-alembic code for revision {}".format(

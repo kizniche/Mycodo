@@ -61,10 +61,6 @@ OUTPUT_INFORMATION = {
     # The dictionary of measurements for this output. Don't edit this.
     'measurements_dict': measurements_dict,
 
-    # Should the output controller handle storing whether the output is on or off?
-    # If this output module should handle determining the output state, choose False
-    'on_state_internally_handled': False,
-
     # Type of output. Options: "on_off", "pwm", "volume"
     'output_types': ['on_off'],
 
@@ -161,63 +157,51 @@ class OutputModule(AbstractOutput):
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
 
-        if not testing:
-            # Variable to store whether the output has been successfully set up
-            self.output_setup = None
+    def setup_output(self):
+        """Code executed when Mycodo starts up to initialize the output"""
+        # Variables set by the user interface
+        self.gpio_pin = self.output.pin
 
-            # Since on_state_internally_handled is False, we will store the state of the output
-            self.output_state = False
+        self.setup_on_off_output(OUTPUT_INFORMATION)
 
-            # Variables set by the user interface
-            self.gpio_pin = output.pin
+        self.logger.info(
+            "Output class initialized with: "
+            "gpio_pin: {gp}; "
+            "bool_value: {bt}, {bv}; "
+            "float_value: {ft}, {fv}; "
+            "range_value: {rt}, {rv}".format(
+                gp=self.gpio_pin,
+                bt=type(self.bool_value), bv=self.bool_value,
+                ft=type(self.float_value), fv=self.float_value,
+                rt=type(self.range_value), rv=self.range_value))
 
-            self.logger.info(
-                "Output class initialized with: "
-                "gpio_pin: {gp}; "
-                "bool_value: {bt}, {bv}; "
-                "float_value: {ft}, {fv}; "
-                "range_value: {rt}, {rv}".format(
-                    gp=self.gpio_pin,
-                    bt=type(self.bool_value), bv=self.bool_value,
-                    ft=type(self.float_value), fv=self.float_value,
-                    rt=type(self.range_value), rv=self.range_value))
+        # Variable to store whether the output has been successfully set up
+        self.logger.info("Output set up")
+        self.output_setup = True
 
-    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None):
+    def output_switch(self, state, output_type=None, amount=None, duty_cycle=None, output_channel=None):
         """
         Set the output on, off, to an amount, or to a duty cycle
         output_type can be None, 'sec', 'vol', or 'pwm', and determines the amount's unit
         """
         if state == 'on':
             self.logger.info("Output turned on")
-            self.output_state = True
+            self.output_states[output_channel] = True
         elif state == 'off':
             self.logger.info("Output turned off")
-            self.output_state = False
+            self.output_states[output_channel] = False
 
-    def is_on(self):
-        """
-        Code to return the state of the output.
-
-        This can also be handled internally by the output controller if on_state_internally_handled is set to True.
-        """
+    def is_on(self, output_channel=None):
+        """ Code to return the state of the output """
         if self.is_setup():
-            if self.output_state:
-                return self.output_state  # Output is on
+            if output_channel is not None and output_channel in self.output_states:
+                return self.output_states[output_channel]
             else:
-                return False  # Output is off
-        else:
-            return None  # Indicate output is unconfigured
+                return self.output_states
 
     def is_setup(self):
         """Returns whether the output has successfully been set up"""
-        if self.output_setup:
-            return True
-        return False
-
-    def setup_output(self):
-        """Code executed when Mycodo starts up to initialize the output"""
-        self.logger.info("Output set up")
-        self.output_setup = True
+        return self.output_setup
 
     def input_button(self, args_dict):
         """Executed when custom action button pressed"""

@@ -27,6 +27,7 @@ def constraints_pass_positive_value(mod_input, value):
         errors.append("Must be a positive value")
     return all_passed, errors, mod_input
 
+
 # Measurements
 measurements_dict = {
     0: {
@@ -46,6 +47,13 @@ measurements_dict = {
     }
 }
 
+outputs_dict = {
+    0: {
+        'types': ['volume', 'on_off'],
+        'measurements': [0, 1, 2]
+    }
+}
+
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'peristaltic_pump',
@@ -53,8 +61,7 @@ OUTPUT_INFORMATION = {
         lazy_gettext('Peristaltic Pump'), lazy_gettext('Generic')),
     'output_library': 'RPi.GPIO',
     'measurements_dict': measurements_dict,
-
-    'on_state_internally_handled': False,
+    'outputs_dict': outputs_dict,
     'output_types': ['volume', 'on_off'],
 
     'message': "This output turns a GPIO pin HIGH and LOW to control power to a generic peristaltic pump. "
@@ -117,7 +124,6 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
-        self.output_setup = False
         self.GPIO = None
         self.pin = None
         self.on_state = None
@@ -127,20 +133,41 @@ class OutputModule(AbstractOutput):
         self.currently_dispensing = False
         self.fastest_dispense_rate_ml_min = None
         self.minimum_sec_on_per_min = None
-        self.setup_custom_options(
-            OUTPUT_INFORMATION['custom_options'], output)
+        self.setup_custom_options(OUTPUT_INFORMATION['custom_options'], output)
 
-        if not testing:
-            self.initialize_output()
-
-    def initialize_output(self):
+    def setup_output(self):
         import RPi.GPIO as GPIO
 
         self.GPIO = GPIO
+
+        self.setup_on_off_output(OUTPUT_INFORMATION)
         self.pin = self.output.pin
         self.on_state = self.output.on_state
         self.mode = self.output.output_mode
         self.flow_rate = self.output.flow_rate
+
+        if self.pin is None:
+            self.logger.warning("Invalid pin for output: {}.".format(self.pin))
+            return
+
+        try:
+            try:
+                self.GPIO.setmode(self.GPIO.BCM)
+                self.GPIO.setwarnings(True)
+                self.GPIO.setup(self.pin, self.GPIO.OUT)
+                self.GPIO.output(self.pin, not self.on_state)
+                self.output_setup = True
+            except Exception as e:
+                self.logger.error("Setup error: {}".format(e))
+            state = 'LOW' if self.on_state else 'HIGH'
+            self.logger.info(
+                "Output setup on pin {pin} and turned OFF (OFF={state})".format(pin=self.pin, state=state))
+        except Exception as except_msg:
+            self.logger.exception(
+                "Output was unable to be setup on pin {pin} with trigger={trigger}: {err}".format(
+                    pin=self.pin,
+                    trigger=self.on_state,
+                    err=except_msg))
 
     def dispense_volume_fastest(self, amount, total_dispense_seconds):
         """ Dispense at fastest flow rate, a 100 % duty cycle """
@@ -207,7 +234,7 @@ class OutputModule(AbstractOutput):
         measure_dict[2]['value'] = total_dispense_seconds
         add_measurements_influxdb(self.unique_id, measure_dict)
 
-    def output_switch(self, state, output_type=None, amount=None):
+    def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         self.logger.debug("state: {}, output_type: {}, amount: {}".format(
             state, output_type, amount))
 
@@ -279,7 +306,7 @@ class OutputModule(AbstractOutput):
                     state=state, ot=output_type, mod=self.mode, amt=amount, fr=self.flow_rate))
             return
 
-    def is_on(self):
+    def is_on(self, output_channel=None):
         if self.is_setup():
             try:
                 if self.currently_dispensing:
@@ -288,30 +315,5 @@ class OutputModule(AbstractOutput):
             except Exception as e:
                 self.logger.error("Status check error: {}".format(e))
 
-
     def is_setup(self):
         return self.output_setup
-
-    def setup_output(self):
-        if self.pin is None:
-            self.logger.warning("Invalid pin for output: {}.".format(self.pin))
-            return
-
-        try:
-            try:
-                self.GPIO.setmode(self.GPIO.BCM)
-                self.GPIO.setwarnings(True)
-                self.GPIO.setup(self.pin, self.GPIO.OUT)
-                self.GPIO.output(self.pin, not self.on_state)
-                self.output_setup = True
-            except Exception as e:
-                self.logger.error("Setup error: {}".format(e))
-            state = 'LOW' if self.on_state else 'HIGH'
-            self.logger.info(
-                "Output setup on pin {pin} and turned OFF (OFF={state})".format(pin=self.pin, state=state))
-        except Exception as except_msg:
-            self.logger.exception(
-                "Output was unable to be setup on pin {pin} with trigger={trigger}: {err}".format(
-                    pin=self.pin,
-                    trigger=self.on_state,
-                    err=except_msg))

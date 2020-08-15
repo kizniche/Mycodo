@@ -88,6 +88,7 @@ def parse_output_information(exclude_custom=False):
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_manufacturer')
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_library')
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'measurements_dict')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'outputs_dict')
 
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'on_state_internally_handled')
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_types')
@@ -148,6 +149,7 @@ def outputs_on_off():
             outputs.append(each_output_type)
     return outputs
 
+
 def outputs_pwm():
     outputs = []
     for each_output_type, output_data in parse_output_information().items():
@@ -155,12 +157,14 @@ def outputs_pwm():
             outputs.append(each_output_type)
     return outputs
 
+
 def outputs_volume():
     outputs = []
     for each_output_type, output_data in parse_output_information().items():
         if 'output_types' in output_data and 'volume' in output_data['output_types']:
             outputs.append(each_output_type)
     return outputs
+
 
 def output_types():
     return {

@@ -27,16 +27,24 @@ measurements_dict = {
     }
 }
 
+outputs_dict = {
+    0: {
+        'types': ['on_off'],
+        'measurements': [0]
+    }
+}
+
 OUTPUT_INFORMATION = {
     'output_name_unique': 'MQTT_PAHO',
     'output_manufacturer': 'Mycodo',
     'output_name': "{} MQTT Publish".format(lazy_gettext('On/Off')),
     'output_library': 'paho-mqtt',
     'measurements_dict': measurements_dict,
+    'outputs_dict': outputs_dict,
+    'output_types': ['on_off'],
+
     'url_additional': 'http://www.eclipse.org/paho/',
 
-    'on_state_internally_handled': False,
-    'output_types': ['on_off'],
     'interfaces': ['Mycodo'],
 
     'message': 'An output to publish "on" or "off" to an MQTT server.',
@@ -46,9 +54,8 @@ OUTPUT_INFORMATION = {
     ],
 
     'options_enabled': [
-        'on_off_state_startup',
-        'on_off_state_shutdown',
-        'trigger_functions_startup',
+        'on_off_none_state_startup',
+        'on_off_none_state_shutdown',
         'current_draw',
         'button_on',
         'button_send_duration'
@@ -124,9 +131,10 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
-        self.output_setup = None
-        self.output_state = False
+        self.state_startup = None
+        self.state_shutdown = None
 
+        self.publish = None
         self.hostname = None
         self.port = None
         self.topic = None
@@ -137,15 +145,22 @@ class OutputModule(AbstractOutput):
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
 
-        if not testing:
-            self.initialize_output()
-
-    def initialize_output(self):
+    def setup_output(self):
         import paho.mqtt.publish as publish
 
         self.publish = publish
 
-    def output_switch(self, state, output_type=None, amount=None):
+        self.setup_on_off_output(OUTPUT_INFORMATION)
+        self.state_startup = self.output.state_startup
+        self.state_shutdown = self.output.state_shutdown
+        self.output_setup = True
+
+        if self.state_startup == '1':
+            self.output_switch('on')
+        elif self.state_startup == '0':
+            self.output_switch('off')
+
+    def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         try:
             if state == 'on':
                 self.publish.single(
@@ -155,7 +170,7 @@ class OutputModule(AbstractOutput):
                     port=self.port,
                     client_id=self.clientid,
                     keepalive=self.keepalive)
-                self.output_state = True
+                self.output_states[output_channel] = True
             elif state == 'off':
                 self.publish.single(
                     self.topic,
@@ -164,16 +179,24 @@ class OutputModule(AbstractOutput):
                     port=self.port,
                     client_id=self.clientid,
                     keepalive=self.keepalive)
-                self.output_state = False
+                self.output_states[output_channel] = False
         except Exception as e:
             self.logger.error("State change error: {}".format(e))
 
-    def is_on(self):
+    def is_on(self, output_channel=None):
         if self.is_setup():
-            return self.output_state
+            if output_channel is not None and output_channel in self.output_states:
+                return self.output_states[output_channel]
+            else:
+                return self.output_states
 
     def is_setup(self):
         return self.output_setup
 
-    def setup_output(self):
-        self.output_setup = True
+    def stop_output(self):
+        """ Called when Output is stopped """
+        if self.state_shutdown == '1':
+            self.output_switch('on')
+        elif self.state_shutdown == '0':
+            self.output_switch('off')
+        self.running = False
