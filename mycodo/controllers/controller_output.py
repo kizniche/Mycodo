@@ -64,6 +64,7 @@ class OutputController(AbstractController, threading.Thread):
         self.dict_outputs = {}
         self.output_unique_id = {}
         self.output_type = {}
+        self.output_types = {}
 
     def initialize_variables(self):
         """ Begin initializing output parameters """
@@ -231,6 +232,8 @@ class OutputController(AbstractController, threading.Thread):
         :type output_id: str
         :param state: What state is desired? 'on', 1, True or 'off', 0, False
         :type state: str or int or bool
+        :param output_channel: The output channel
+        :type output_channel: int
         :param output_type: The type of output ('sec', 'vol', 'pwm')
         :type output_type: str
         :param amount: If state is 'on', an amount can be set (e.g. duration to stay on, volume to output, etc.)
@@ -269,6 +272,12 @@ class OutputController(AbstractController, threading.Thread):
             if self.is_on(each_output_id) and each_output_amps:
                 amp_load += each_output_amps
         return amp_load
+
+        # total_amps = 0
+        # for output_id in self.output_unique_id:
+        #     for each_channel in self.output_unique_id[output_id]:
+        #         total_amps += self.output[output_id].current_amps(each_channel)
+        # return total_amps
 
     def output_sec_currently_on(self, output_id, output_channel):
         return self.output[output_id].output_sec_currently_on(output_channel)

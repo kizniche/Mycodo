@@ -409,37 +409,52 @@
           </div>
         {% endif %}
 
-        {% for each_output_channel in dict_outputs[each_output.output_type]['outputs_dict'] if 'button_send_duration' in dict_options['options_enabled'] %}
+        {% for each_output_channel in dict_outputs[each_output.output_type]['outputs_dict'] %}
 
-          <div class="row">
+          <div class="row" style="padding-top: 0.5em">
             <div class="col-auto">
               Channel {{each_output_channel}}{% if 'name' in dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel] %}: {{dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel]['name']}}{% endif %}
             </div>
+          </div>
+          <div class="row small-gutters">
             <div class="col-auto">
-              <label class='control-label'>{{dict_translation['output_amount_duration']['title']}}</label>
+              <label class="form-check-label" for="amps_{{each_output_channel}}">Current (amps)</label>
               <div>
-                <div class="row small-gutters">
-                  <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" name="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" title="{{dict_translation['output_amount_duration']['phrase']}}" type="text" value="">
-                  </div>
-                  <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel}}/on/sec/" type="button" value="{{_('Send')}}">
-                  </div>
-                </div>
+                <input class="form-control" name="amps_{{each_output_channel}}" type="number" value="{% if output_variables[each_output.unique_id][each_output_channel]['amps'] is not none %}{{output_options[each_output.unique_id][each_output_channel]['amps']}}{% endif %}">
+              </div>
+            </div>
+            <div class="col-auto">
+              <label class="form-check-label" for="trigger_{{each_output_channel}}">Trigger at Startup</label>
+              <div class="input-group-text">
+                <input name="trigger_{{each_output_channel}}" type="checkbox" value="y"{% if output_variables[each_output.unique_id][each_output_channel]['trigger_startup'] %} checked{% endif %}>
               </div>
             </div>
           </div>
 
-        {% endfor %}
+          {% if 'button_send_duration' in dict_options['options_enabled'] or
+                'button_send_volume' in dict_options['options_enabled'] or
+                'button_send_duty_cycle' in dict_options['options_enabled']  %}
 
-        {% for each_output_channel in dict_outputs[each_output.output_type]['outputs_dict'] if 'button_send_volume' in dict_options['options_enabled'] %}
+          <div class="row align-items-end small-gutters">
 
-          <div class="row">
+            {% if 'button_send_duration' in dict_options['options_enabled'] %}
+
             <div class="col-auto">
-              Channel {{each_output_channel}}{% if 'name' in dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel] %}: {{dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel]['name']}}{% endif %}
+              <label class='form-check-label'>{{dict_translation['output_amount_duration']['title']}}</label>
+              <div>
+                <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" name="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" title="{{dict_translation['output_amount_duration']['phrase']}}" type="text" value="">
+              </div>
             </div>
             <div class="col-auto">
-              <label class='control-label'>{{dict_translation['output_amount_volume']['title']}}</label>
+              <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel}}/on/sec/" type="button" value="{{_('Send')}}">
+            </div>
+
+            {% endif %}
+
+            {% if 'button_send_volume' in dict_options['options_enabled'] %}
+
+            <div class="col-auto">
+              <label class='form-check-label'>{{dict_translation['output_amount_volume']['title']}}</label>
               <div>
                 <div class="row small-gutters">
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
@@ -451,18 +466,13 @@
                 </div>
               </div>
             </div>
-          </div>
 
-        {% endfor %}
+            {% endif %}
 
-        {% for each_output_channel in dict_outputs[each_output.output_type]['outputs_dict'] if 'button_send_duty_cycle' in dict_options['options_enabled'] %}
+            {% if 'button_send_duty_cycle' in dict_options['options_enabled'] %}
 
-          <div class="row">
             <div class="col-auto">
-              Channel {{each_output_channel}}{% if 'name' in dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel] %}: {{dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel]['name']}}{% endif %}
-            </div>
-            <div class="col-auto">
-              <label class='control-label'>{{dict_translation['duty_cycle']['title']}}</label>
+              <label class='form-check-label'>{{dict_translation['duty_cycle']['title']}}</label>
               <div>
                 <div class="row small-gutters">
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
@@ -474,9 +484,14 @@
                 </div>
               </div>
             </div>
+
+            {% endif %}
+
           </div>
 
-      {% endfor %}
+          {% endif %}
+
+        {% endfor %}
 
         </div>
 

@@ -18,26 +18,29 @@ class Output(CRUDMixin, db.Model):
     interface = db.Column(db.Text, default='')
     location = db.Column(db.Text, default='')
     name = db.Column(db.Text, default='Output')
-    pin = db.Column(db.Integer, default=None)  # Pin connected to the device/output
-    on_state = db.Column(db.Boolean, default=True)  # GPIO output to turn output on (True=HIGH, False=LOW)
-    amps = db.Column(db.Float, default=0.0)  # The current drawn by the device connected to the output
+
+    # unused
     on_until = db.Column(db.DateTime, default=None)  # Stores time to turn off output (if on for a duration)
     off_until = db.Column(db.DateTime, default=None)  # Stores time the output can turn on again
     last_duration = db.Column(db.Float, default=None)  # Stores the last on duration (seconds)
     on_duration = db.Column(db.Boolean, default=None)  # Stores if the output is currently on for a duration
+
+    pin = db.Column(db.Integer, default=None)  # Pin connected to the device/output
+    on_state = db.Column(db.Boolean, default=True)  # GPIO output to turn output on (True=HIGH, False=LOW)
+    amps = db.Column(db.Float, default=0.0)  # The current drawn by the device connected to the output
+    trigger_functions_at_start = db.Column(db.Boolean, default=True)
+    force_command = db.Column(db.Boolean, default=False)
+    state_startup = db.Column(db.Text, default=0)
+    startup_value = db.Column(db.Float, default=0)
+    state_shutdown = db.Column(db.Text, default=0)
+    shutdown_value = db.Column(db.Float, default=0)
+
     protocol = db.Column(db.Integer, default=None)
     pulse_length = db.Column(db.Integer, default=None)
     linux_command_user = db.Column(db.Text, default=None)
     on_command = db.Column(db.Text, default=None)
     off_command = db.Column(db.Text, default=None)
     pwm_command = db.Column(db.Text, default=None)
-    force_command = db.Column(db.Boolean, default=False)
-    trigger_functions_at_start = db.Column(db.Boolean, default=True)
-
-    state_startup = db.Column(db.Text, default=0)
-    startup_value = db.Column(db.Float, default=0)
-    state_shutdown = db.Column(db.Text, default=0)
-    shutdown_value = db.Column(db.Float, default=0)
 
     # I2C
     i2c_location = db.Column(db.Text, default=None)  # Address location for I2C communication

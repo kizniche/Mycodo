@@ -1704,6 +1704,16 @@ def page_output():
     display_order_output = csv_to_list_of_str(
         DisplayOrder.query.first().output)
 
+    output_variables = {}
+    for each_output in output:
+        output_variables[each_output.unique_id] = {}
+        for each_channel in dict_outputs[each_output.output_type]['outputs_dict']:
+            output_variables[each_output.unique_id][each_channel] = {}
+            output_variables[each_output.unique_id][each_channel]['amps'] = None
+            output_variables[each_output.unique_id][each_channel]['trigger_startup'] = None
+
+    logger.error("TEST: {}".format(output_variables))
+
     return render_template('pages/output.html',
                            camera=camera,
                            custom_actions=custom_actions,
@@ -1719,6 +1729,7 @@ def page_output():
                            output=output,
                            output_types=output_types(),
                            output_templates=output_templates,
+                           output_variables=output_variables,
                            user=user)
 
 
