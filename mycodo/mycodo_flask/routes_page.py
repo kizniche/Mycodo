@@ -72,6 +72,7 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
+from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
 from mycodo.databases.models import Unit
@@ -123,6 +124,7 @@ from mycodo.utils.system_pi import dpkg_package_exists
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import parse_custom_option_values
 from mycodo.utils.system_pi import parse_custom_option_values_json
+from mycodo.utils.system_pi import parse_custom_option_values_channels_json
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.tools import calc_energy_usage
 from mycodo.utils.tools import return_energy_usage
@@ -1638,6 +1640,7 @@ def page_output():
     lcd = LCD.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
+    output_channel = OutputChannel.query.all()
     user = User.query.all()
 
     dict_outputs = parse_output_information()
@@ -1658,7 +1661,7 @@ def page_output():
             db.session.commit()
 
         elif form_add_output.output_add.data:
-            unmet_dependencies = utils_output.output_add(form_add_output)
+            unmet_dependencies = utils_output.output_add(form_add_output, request.form)
         elif form_mod_output.save.data:
             utils_output.output_mod(form_mod_output, request.form)
         elif form_mod_output.delete.data:
@@ -1676,8 +1679,10 @@ def page_output():
         else:
             return redirect(url_for('routes_page.page_output'))
 
-    custom_options_values_outputs = parse_custom_option_values(
+    custom_options_values_outputs = parse_custom_option_values_json(
         output, dict_controller=dict_outputs)
+    custom_options_values_output_channels = parse_custom_option_values_channels_json(
+        output_channel, dict_controller=dict_outputs, key_name='custom_channel_options')
 
     custom_actions = {}
     for each_output in output:
@@ -1707,17 +1712,16 @@ def page_output():
     output_variables = {}
     for each_output in output:
         output_variables[each_output.unique_id] = {}
-        for each_channel in dict_outputs[each_output.output_type]['outputs_dict']:
+        for each_channel in dict_outputs[each_output.output_type]['channels_dict']:
             output_variables[each_output.unique_id][each_channel] = {}
             output_variables[each_output.unique_id][each_channel]['amps'] = None
             output_variables[each_output.unique_id][each_channel]['trigger_startup'] = None
-
-    logger.error("TEST: {}".format(output_variables))
 
     return render_template('pages/output.html',
                            camera=camera,
                            custom_actions=custom_actions,
                            custom_options_values_outputs=custom_options_values_outputs,
+                           custom_options_values_output_channels=custom_options_values_output_channels,
                            dict_outputs=dict_outputs,
                            display_order_output=display_order_output,
                            form_base=form_base,
@@ -1727,6 +1731,7 @@ def page_output():
                            misc=misc,
                            names_output=names_output,
                            output=output,
+                           output_channel=output_channel,
                            output_types=output_types(),
                            output_templates=output_templates,
                            output_variables=output_variables,

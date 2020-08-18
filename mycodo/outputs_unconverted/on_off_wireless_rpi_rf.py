@@ -1,11 +1,9 @@
 # coding=utf-8
 #
-# command.py - Output for executing linux commands
+# wireless_rpi_rf.py - Output for Wireless
 #
 from flask_babel import lazy_gettext
-
 from mycodo.outputs.base_output import AbstractOutput
-from mycodo.utils.system_pi import cmd_output
 
 # Measurements
 measurements_dict = {
@@ -15,7 +13,7 @@ measurements_dict = {
     }
 }
 
-outputs_dict = {
+channels_dict = {
     0: {
         'types': ['on_off'],
         'measurements': [0]
@@ -24,20 +22,23 @@ outputs_dict = {
 
 # Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'command',
-    'output_name': "{} Shell Script".format(lazy_gettext('On/Off')),
-    'output_library': 'subprocess.Popen',
+    'output_name_unique': 'wireless_rpi_rf',
+    'output_name': "{} 315/433 MHz".format(lazy_gettext("Wireless")),
+    'output_library': 'rpi-rf',
     'measurements_dict': measurements_dict,
-    'outputs_dict': outputs_dict,
+    'channels_dict': channels_dict,
     'output_types': ['on_off'],
 
-    'message': 'Commands will be executed in the Linux shell by the specified user when this output is '
-               'turned on or off.',
+    'message': 'This output uses a 315 or 433 MHz transmitter to turn wireless power outlets on or off. '
+               'Run ~/Mycodo/mycodo/devices/wireless_rpi_rf.py with a receiver to discover the codes '
+               'produced from your remote.',
 
     'options_enabled': [
-        'command_on',
-        'command_off',
-        'command_execute_user',
+        'gpio_pin',
+        'wireless_protocol',
+        'wireless_pulse_length',
+        'wireless_command_on',
+        'wireless_command_off',
         'command_force',
         'on_off_none_state_startup',
         'on_off_none_state_shutdown',
@@ -47,7 +48,12 @@ OUTPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-    'interfaces': ['SHELL']
+    'dependencies_module': [
+        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO'),
+        ('pip-pypi', 'rpi_rf', 'rpi_rf')
+    ],
+
+    'interfaces': ['GPIO']
 }
 
 
@@ -58,46 +64,50 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
+        self.wireless_pi_switch = None
+        self.Transmit433MHz = None
+        self.pin = None
         self.state_startup = None
         self.state_shutdown = None
         self.on_command = None
         self.off_command = None
-        self.linux_command_user = None
+        self.protocol = None
+        self.pulse_length = None
 
     def setup_output(self):
+        from mycodo.devices.wireless_rpi_rf import Transmit433MHz
+
+        self.Transmit433MHz = Transmit433MHz
+
         self.setup_on_off_output(OUTPUT_INFORMATION)
+        self.pin = self.output.pin
         self.state_startup = self.output.state_startup
         self.state_shutdown = self.output.state_shutdown
         self.on_command = self.output.on_command
         self.off_command = self.output.off_command
-        self.linux_command_user = self.output.linux_command_user
+        self.protocol = self.output.protocol
+        self.pulse_length = self.output.pulse_length
 
-        if self.on_command and self.off_command:
-            self.output_setup = True
-            if self.state_startup == '1':
-                self.output_switch('on')
-            elif self.state_startup == '0':
-                self.output_switch('off')
-        else:
-            self.logger.error("Output must have both On and Off commands set")
+        if self.pin is None:
+            self.logger.warning("Invalid pin for output: {}.".format(self.pin))
+            return
+
+        self.wireless_pi_switch = self.Transmit433MHz(
+            self.pin, protocol=int(self.protocol), pulse_length=int(self.pulse_length))
+        self.output_setup = True
+
+        if self.state_startup == '1':
+            self.output_switch('on')
+        elif self.state_startup == '0':
+            self.output_switch('off')
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
-        if not self.is_setup():
-            self.logger.error('Output not set up')
-            return
-
         if state == 'on':
-            cmd_return, cmd_error, cmd_status = cmd_output(self.on_command, user=self.linux_command_user)
+            self.wireless_pi_switch.transmit(int(self.on_command))
             self.output_states[output_channel] = True
         elif state == 'off':
-            cmd_return, cmd_error, cmd_status = cmd_output(self.off_command, user=self.linux_command_user)
+            self.wireless_pi_switch.transmit(int(self.off_command))
             self.output_states[output_channel] = False
-        else:
-            return
-
-        self.logger.debug(
-            "Output on/off {state} command returned: Status: {stat}, Output: '{ret}', Error: '{err}'".format(
-                state=state, stat=cmd_status, ret=cmd_return, err=cmd_error))
 
     def is_on(self, output_channel=None):
         if self.is_setup():
@@ -107,7 +117,9 @@ class OutputModule(AbstractOutput):
                 return self.output_states
 
     def is_setup(self):
-        return self.output_setup
+        if self.wireless_pi_switch:
+            return True
+        return False
 
     def stop_output(self):
         """ Called when Output is stopped """

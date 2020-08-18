@@ -1,0 +1,184 @@
+    {% if each_option['type'] in ['float', 'integer', 'text'] %}
+
+<div class="col-auto">
+  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <div>
+    <input class="form-control" id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}" type="text" value="
+    {%- if custom_options_values[unique_id][channel][each_option['id']] is not none -%}{{custom_options_values[unique_id][channel][each_option['id']]}}
+    {%- elif running_custom_action and 'default_value' in each_option -%}{{each_option['default_value']}}
+    {%- endif -%}">
+  </div>
+</div>
+
+    {% elif each_option['type'] == 'multiline_text' %}
+
+<div class="col-12">
+  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <div>
+    <textarea class="form-control" id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" rows="{{each_option['lines']}}" type="text" title="{{each_option['phrase']}}">
+    {%- if custom_options_values[unique_id][channel][each_option['id']] -%}{{custom_options_values[unique_id][channel][each_option['id']]}}
+    {%- elif running_custom_action and 'default_value' in each_option -%}{{each_option['default_value']}}
+    {%- endif -%}
+    </textarea>
+  </div>
+</div>
+
+    {% elif each_option['type'] == 'select' %}
+
+<div class="col-auto">
+  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}">
+      <option value="">{{dict_translation['select_one']['title']}}</option>
+      {% for each_set in each_option['options_select'] %}
+      <option value="{{each_set[0]}}"{% if each_set[0] == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_set[1]}}</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
+    {% elif each_option['type'] == 'select_measurement' %}
+
+<div class="col-auto">
+  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}">
+      <option value="">{{dict_translation['select_one']['title']}}</option>
+      {% if 'Input' in each_option['options_select'] %}
+        {% for each_input_form in choices_input -%}
+      <option value="{{each_input_form['value']}}"{% if each_input_form['value'] == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_input_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
+      {% if 'Math' in each_option['options_select'] %}
+        {% for each_math_form in choices_math -%}
+      <option value="{{each_math_form['value']}}"{% if each_math_form['value'] == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_math_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
+      {% if 'Output' in each_option['options_select'] %}
+        {% for each_output_form in choices_output -%}
+      <option value="{{each_output_form['value']}}"{% if each_output_form['value'] == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
+      {% if 'Output_PWM' in each_option['options_select'] %}
+        {%- for each_output_form in choices_output_pwm -%}
+      <option value="{{each_output_form['value']}}"{% if each_output_form['value'] == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>
+        {%- endfor -%}
+      {% endif %}
+      {% if 'PID' in each_option['options_select'] %}
+        {% for each_pid_form in choices_pid -%}
+      <option value="{{each_pid_form['value']}}"{% if each_pid_form['value'] == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_pid_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
+    </select>
+  </div>
+</div>
+
+    {% elif each_option['type'] == 'select_multi_measurement' %}
+
+      {% set multiselect_size = 0 %}
+      {% if 'Input' in each_option['options_select'] %}
+        {% set multiselect_size = multiselect_size + choices_input|length %}
+      {% endif %}
+      {% if 'Math' in each_option['options_select'] %}
+        {% set multiselect_size = multiselect_size + choices_math|length %}
+      {% endif %}
+      {% if 'Output' in each_option['options_select'] %}
+        {% set multiselect_size = multiselect_size + choices_output|length %}
+      {% endif %}
+      {% if 'PID' in each_option['options_select'] %}
+        {% set multiselect_size = multiselect_size + choices_pid|length %}
+      {% endif %}
+      {% if 'Tag' in each_option['options_select'] %}
+        {% set multiselect_size = multiselect_size + choices_tag|length %}
+      {% endif %}
+
+<div class="col-auto">
+  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}" size="{{multiselect_size}}" multiple="">
+      {% if 'Input' in each_option['options_select'] %}
+        {% for each_input_form in choices_input -%}
+      <option value="{{each_input_form['value']}}"{% if each_input_form['value'] in custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_input_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
+      {% if 'Math' in each_option['options_select'] %}
+        {% for each_math_form in choices_math -%}
+      <option value="{{each_math_form['value']}}"{% if each_math_form['value'] in custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_math_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
+      {% if 'Output' in each_option['options_select'] %}
+        {% for each_output_form in choices_output -%}
+      <option value="{{each_output_form['value']}}"{% if each_output_form['value'] in custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
+      {% if 'PID' in each_option['options_select'] %}
+        {% for each_pid_form in choices_pid -%}
+      <option value="{{each_pid_form['value']}}"{% if each_pid_form['value'] in custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_pid_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
+    </select>
+  </div>
+</div>
+
+    {% elif each_option['type'] == 'select_device' %}
+
+<div class="col-auto">
+  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}">
+      <option value="">{{dict_translation['select_one']['title']}}</option>
+      {% if 'Input' in each_option['options_select'] %}
+        {%- for each_dev in input -%}
+      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>[Input {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+        {%- endfor -%}
+      {% endif %}
+      {% if 'Output' in each_option['options_select'] %}
+        {%- for each_dev in output -%}
+      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>[Output {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+        {%- endfor -%}
+      {% endif %}
+      {% if 'Math' in each_option['options_select'] %}
+        {%- for each_dev in math -%}
+      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>[Math {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+        {%- endfor -%}
+      {% endif %}
+      {% if 'PID' in each_option['options_select'] %}
+        {%- for each_dev in pid -%}
+      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>[PID {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+        {%- endfor -%}
+      {% endif %}
+      {% if 'Trigger' in each_option['options_select'] %}
+        {%- for each_dev in trigger -%}
+      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>[Trigger {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+        {%- endfor -%}
+      {% endif %}
+      {% if 'Camera' in each_option['options_select'] %}
+        {%- for each_dev in camera -%}
+      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>[Camera {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+        {%- endfor -%}
+      {% endif %}
+      {% if 'Custom' in each_option['options_select'] %}
+        {%- for each_dev in custom_functions -%}
+      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>[Custom {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+        {%- endfor -%}
+      {% endif %}
+    </select>
+  </div>
+</div>
+
+    {% elif each_option['type'] == 'bool' %}
+
+<div class="col-auto">
+  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <div class="input-group-text">
+    <input id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}" type="checkbox" value="y"{% if custom_options_values[unique_id][channel][each_option['id']] %} checked{% endif %}>
+  </div>
+</div>
+
+    {% elif each_option['type'] == 'button' %}
+
+  <div class="col-auto small-gutters">
+    <input class="form-control btn btn-primary btn-sm btn-block" id="{{each_output.unique_id}}_{{channel}}_custom_button_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_custom_button_{{each_option['id']}}" title="{{each_option['phrase']}}" type="submit" value="{{each_option['name']}}">
+  </div>
+
+    {% endif %}

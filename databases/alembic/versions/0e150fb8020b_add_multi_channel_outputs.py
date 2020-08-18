@@ -23,6 +23,18 @@ def upgrade():
     from databases.alembic_post_utils import write_revision_post_alembic
     write_revision_post_alembic(revision)
 
+    op.create_table(
+        'output_channel',
+        sa.Column('id', sa.Integer, nullable=False, unique=True),
+        sa.Column('unique_id', sa.String, nullable=False, unique=True),
+        sa.Column('output_id', sa.Text),
+        sa.Column('channel', sa.Integer),
+        sa.Column('name', sa.Text),
+        sa.Column('custom_options', sa.Text),
+        sa.PrimaryKeyConstraint('id'),
+        keep_existing=True
+    )
+
 
 def downgrade():
-    pass
+    op.drop_table('output_channel')

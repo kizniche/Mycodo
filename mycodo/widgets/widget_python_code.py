@@ -105,7 +105,7 @@ def execute_at_modification(
     :return:
     """
     allow_saving = True
-    success, error = save_python_file(mod_widget.unique_id)
+    success, error = save_python_file(custom_options_json_postsave, mod_widget.unique_id)
     for each_error in error:
         flash(each_error, 'error')
     for each_success in success:

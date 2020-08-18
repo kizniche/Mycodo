@@ -23,7 +23,7 @@ measurements_dict = {
     }
 }
 
-outputs_dict = {
+channels_dict = {
     0: {
         'types': ['pwm'],
         'measurements': [0]
@@ -36,7 +36,7 @@ OUTPUT_INFORMATION = {
     'output_name': "{} Shell Script".format(lazy_gettext('PWM')),
     'output_library': 'subprocess.Popen',
     'measurements_dict': measurements_dict,
-    'outputs_dict': outputs_dict,
+    'channels_dict': channels_dict,
     'output_types': ['pwm'],
 
     'message': 'Commands will be executed in the Linux shell by the specified user when the duty cycle '

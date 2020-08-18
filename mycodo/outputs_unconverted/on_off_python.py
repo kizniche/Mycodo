@@ -21,7 +21,7 @@ measurements_dict = {
     }
 }
 
-outputs_dict = {
+channels_dict = {
     0: {
         'types': ['on_off'],
         'measurements': [0]
@@ -33,7 +33,7 @@ OUTPUT_INFORMATION = {
     'output_name_unique': 'python',
     'output_name': "{} Python Code".format(lazy_gettext('On/Off')),
     'measurements_dict': measurements_dict,
-    'outputs_dict': outputs_dict,
+    'channels_dict': channels_dict,
     'output_types': ['on_off'],
 
     'message': 'Python 3 code will be executed when this output is turned on or off.',

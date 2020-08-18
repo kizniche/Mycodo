@@ -47,7 +47,7 @@ measurements_dict = {
     }
 }
 
-outputs_dict = {
+channels_dict = {
     0: {
         'types': ['volume', 'on_off'],
         'measurements': [0, 1, 2]
@@ -61,7 +61,7 @@ OUTPUT_INFORMATION = {
         lazy_gettext('Peristaltic Pump'), lazy_gettext('Generic')),
     'output_library': 'RPi.GPIO',
     'measurements_dict': measurements_dict,
-    'outputs_dict': outputs_dict,
+    'channels_dict': channels_dict,
     'output_types': ['volume', 'on_off'],
 
     'message': "This output turns a GPIO pin HIGH and LOW to control power to a generic peristaltic pump. "

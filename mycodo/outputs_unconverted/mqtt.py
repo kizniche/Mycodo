@@ -27,7 +27,7 @@ measurements_dict = {
     }
 }
 
-outputs_dict = {
+channels_dict = {
     0: {
         'types': ['on_off'],
         'measurements': [0]
@@ -40,7 +40,7 @@ OUTPUT_INFORMATION = {
     'output_name': "{} MQTT Publish".format(lazy_gettext('On/Off')),
     'output_library': 'paho-mqtt',
     'measurements_dict': measurements_dict,
-    'outputs_dict': outputs_dict,
+    'channels_dict': channels_dict,
     'output_types': ['on_off'],
 
     'url_additional': 'http://www.eclipse.org/paho/',
@@ -160,7 +160,7 @@ class OutputModule(AbstractOutput):
         elif self.state_startup == '0':
             self.output_switch('off')
 
-    def output_switch(self, state, output_type=None, amount=None, output_channel=None):
+    def output_switch(self, state, output_type=None, amount=None, output_channel=0):
         try:
             if state == 'on':
                 self.publish.single(
@@ -183,7 +183,7 @@ class OutputModule(AbstractOutput):
         except Exception as e:
             self.logger.error("State change error: {}".format(e))
 
-    def is_on(self, output_channel=None):
+    def is_on(self, output_channel=0):
         if self.is_setup():
             if output_channel is not None and output_channel in self.output_states:
                 return self.output_states[output_channel]

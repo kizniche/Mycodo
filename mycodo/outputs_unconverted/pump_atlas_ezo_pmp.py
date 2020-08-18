@@ -27,7 +27,7 @@ measurements_dict = {
     }
 }
 
-outputs_dict = {
+channels_dict = {
     0: {
         'types': ['volume', 'on_off'],
         'measurements': [0, 1]
@@ -39,7 +39,7 @@ OUTPUT_INFORMATION = {
     'output_name_unique': 'atlas_ezo_pmp',
     'output_name': "{} (Atlas Scientific)".format(lazy_gettext('Peristaltic Pump')),
     'measurements_dict': measurements_dict,
-    'outputs_dict': outputs_dict,
+    'channels_dict': channels_dict,
     'output_types': ['volume', 'on_off'],
 
     'url_manufacturer': 'https://atlas-scientific.com/peristaltic/',

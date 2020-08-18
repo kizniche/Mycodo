@@ -147,7 +147,7 @@ class AbstractOutput(AbstractBaseController):
         self.output_off_triggered = {}
         self.output_states = {}
 
-        for each_output_channel in output_information['outputs_dict']:
+        for each_output_channel in output_information['channels_dict']:
             self.output_states[each_output_channel] = None
             self.output_time_turned_on[each_output_channel] = None
             self.output_on_duration[each_output_channel] = False
@@ -354,16 +354,18 @@ class AbstractOutput(AbstractBaseController):
 
                 # Output is not already on
                 else:
+                    out_ret = self.output_switch(
+                        'on', output_type='sec', amount=amount, output_channel=output_channel)
+
                     msg = "Output {id} CH{ch} ({name}) on for {dur:.1f} " \
-                          "seconds.".format(
+                          "seconds. Output returned: {ret}".format(
                             id=self.unique_id,
                             ch=output_channel,
                             name=self.output_name,
-                            dur=abs(amount))
+                            dur=abs(amount),
+                            ret=out_ret)
                     self.logger.debug(msg)
 
-                    self.output_switch(
-                        'on', output_type='sec', amount=amount, output_channel=output_channel)
                     self.output_on_until[output_channel] = (
                         current_time + datetime.timedelta(seconds=abs(amount)))
                     self.output_last_duration[output_channel] = amount
@@ -389,27 +391,31 @@ class AbstractOutput(AbstractBaseController):
                     # it eventually turns off.
                     if not self.output_time_turned_on[output_channel]:
                         self.output_time_turned_on[output_channel] = current_time
-                    msg = "Output {id} CH{ch} ({name}) ON at {timeon}.".format(
+
+                    ret_value = self.output_switch('on', output_channel=output_channel, output_type='sec')
+
+                    msg = "Output {id} CH{ch} ({name}) ON at {timeon}. Output returned: {ret}".format(
                         id=self.unique_id,
                         ch=output_channel,
                         name=self.output_name,
-                        timeon=self.output_time_turned_on[output_channel])
+                        timeon=self.output_time_turned_on[output_channel],
+                        ret=ret_value)
                     self.logger.debug(msg)
-                    self.output_switch('on', output_channel=output_channel, output_type='sec')
 
         #
         # Signaled to turn output off
         #
         elif state == 'off':
 
-            self.output_switch('off', output_type=output_type, output_channel=output_channel)
+            ret_value = self.output_switch('off', output_type=output_type, output_channel=output_channel)
 
             timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-            msg = "Output {id} CH{ch} ({name}) OFF at {timeoff}.".format(
+            msg = "Output {id} CH{ch} ({name}) OFF at {timeoff}. Output returned: {ret}".format(
                 id=self.unique_id,
                 ch=output_channel,
                 name=self.output_name,
-                timeoff=timestamp)
+                timeoff=timestamp,
+                ret=ret_value)
             self.logger.debug(msg)
 
             # Write output amount to database
@@ -443,9 +449,9 @@ class AbstractOutput(AbstractBaseController):
 
                 # determine which measurement of the output_channel is a duration
                 measurement_channel = None
-                if ('outputs_dict' in self.OUTPUT_INFORMATION and
+                if ('channels_dict' in self.OUTPUT_INFORMATION and
                         'measurements_dict' in self.OUTPUT_INFORMATION):
-                    measurement_channels = self.OUTPUT_INFORMATION['outputs_dict'][output_channel]['measurements']
+                    measurement_channels = self.OUTPUT_INFORMATION['channels_dict'][output_channel]['measurements']
                     for each_measure_channel in measurement_channels:
                         if self.OUTPUT_INFORMATION['measurements_dict'][each_measure_channel]['unit'] == 's':
                             measurement_channel = each_measure_channel

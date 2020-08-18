@@ -131,8 +131,8 @@ class OutputController(AbstractController, threading.Thread):
                 self.output_type[each_output.unique_id] = each_output.output_type
                 self.output_unique_id[each_output.unique_id] = {}
 
-                if 'outputs_dict' in self.dict_outputs[each_output.output_type]:
-                    for each_channel in self.dict_outputs[each_output.output_type]['outputs_dict']:
+                if 'channels_dict' in self.dict_outputs[each_output.output_type]:
+                    for each_channel in self.dict_outputs[each_output.output_type]['channels_dict']:
                         self.output_unique_id[each_output.unique_id][each_channel] = None
                 else:
                     self.output_unique_id[each_output.unique_id][0] = None
@@ -173,8 +173,8 @@ class OutputController(AbstractController, threading.Thread):
             self.output_type[output_id] = output.output_type
             self.output_unique_id[output_id] = {}
 
-            if 'outputs_dict' in self.dict_outputs[output.output_type]:
-                for each_channel in self.dict_outputs[output.output_type]['outputs_dict']:
+            if 'channels_dict' in self.dict_outputs[output.output_type]:
+                for each_channel in self.dict_outputs[output.output_type]['channels_dict']:
                     self.output_unique_id[output_id][each_channel] = None
             else:
                 self.output_unique_id[output_id][0] = None
@@ -288,7 +288,7 @@ class OutputController(AbstractController, threading.Thread):
         :rtype: dict
         """
         states = {}
-        for output_id in self.output_unique_id:
+        for output_id in self.output:
             states[output_id] = {}
             for each_channel in self.output_unique_id[output_id]:
                 states[output_id][each_channel] = self.output[output_id].output_state(each_channel)

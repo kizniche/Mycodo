@@ -88,7 +88,7 @@ def parse_output_information(exclude_custom=False):
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_manufacturer')
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_library')
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'measurements_dict')
-            dict_outputs = dict_has_value(dict_outputs, output_custom, 'outputs_dict')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'channels_dict')
 
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'on_state_internally_handled')
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_types')
@@ -135,6 +135,9 @@ def parse_output_information(exclude_custom=False):
 
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_options_message')
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_options')
+
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_channel_options_message')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_channel_options')
 
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_actions_message')
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'custom_actions')

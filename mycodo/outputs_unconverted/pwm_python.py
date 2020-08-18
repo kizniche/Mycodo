@@ -1,18 +1,24 @@
 # coding=utf-8
 #
-# pwm.py - Output for GPIO PWM
+# python_pwm.py - Output for Python code PWM
 #
 import copy
+import importlib.util
+import os
+import textwrap
 
 from flask_babel import lazy_gettext
 from sqlalchemy import and_
 
+from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import return_measurement_info
+from mycodo.utils.system_pi import set_user_grp
 
 # Measurements
 measurements_dict = {
@@ -22,7 +28,7 @@ measurements_dict = {
     }
 }
 
-outputs_dict = {
+channels_dict = {
     0: {
         'types': ['pwm'],
         'measurements': [0]
@@ -31,32 +37,24 @@ outputs_dict = {
 
 # Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'pwm',
-    'output_name': "{} GPIO".format(lazy_gettext('PWM')),
-    'output_library': 'pigpio',
+    'output_name_unique': 'python_pwm',
+    'output_name': "{} Python Code".format(lazy_gettext('PWM')),
     'measurements_dict': measurements_dict,
-    'outputs_dict': outputs_dict,
+    'channels_dict': channels_dict,
     'output_types': ['pwm'],
 
-    'message': 'See the PWM section of the manual for PWM information and determining which '
-               'pins may be used for each library option. ',
+    'message': 'Python 3 code will be executed when this output is turned on or off. The "duty_cycle" '
+               'object is a float value that represents the duty cycle that has been set.',
 
     'options_enabled': [
-        'gpio_pin',
-        'pwm_library',
-        'pwm_frequency',
-        'pwm_invert_signal',
+        'python_pwm',
         'pwm_state_startup',
         'pwm_state_shutdown',
         'button_send_duty_cycle'
     ],
     'options_disabled': ['interface'],
 
-    'dependencies_module': [
-        ('internal', 'file-exists /opt/mycodo/pigpio_installed', 'pigpio')
-    ],
-
-    'interfaces': ['GPIO']
+    'interfaces': ['PYTHON']
 }
 
 
@@ -67,59 +65,39 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
-        self.pigpio = None
         self.state_startup = None
         self.startup_value = None
         self.state_shutdown = None
         self.shutdown_value = None
-        self.pwm_library = None
-        self.pin = None
-        self.pwm_hertz = None
+        self.pwm_state = None
+        self.pwm_command = None
         self.pwm_invert_signal = None
-        self.pwm_output = None
+        self.output_run_python_pwm = None
 
     def setup_output(self):
-        import pigpio
-
-        self.pigpio = pigpio
-
         self.setup_on_off_output(OUTPUT_INFORMATION)
         self.state_startup = self.output.state_startup
         self.startup_value = self.output.startup_value
         self.state_shutdown = self.output.state_shutdown
         self.shutdown_value = self.output.shutdown_value
-        self.pwm_library = self.output.pwm_library
-        self.pin = self.output.pin
-        self.pwm_hertz = self.output.pwm_hertz
+        self.pwm_command = self.output.pwm_command
         self.pwm_invert_signal = self.output.pwm_invert_signal
 
-        error = []
-        if self.pin is None:
-            error.append("Pin must be set")
-        if self.pwm_hertz <= 0:
-            error.append("PWM Hertz must be a positive value")
-        if error:
-            for each_error in error:
-                self.logger.error(each_error)
+        if not self.pwm_command:
+            self.logger.error("Output must have Python Code set")
             return
 
         try:
-            self.pwm_output = self.pigpio.pi()
-            if not self.pwm_output.connected:
-                self.logger.error("Could not connect to pigpiod")
-                self.pwm_output = None
-                return
-            if self.pwm_library == 'pigpio_hardware':
-                self.pwm_output.hardware_PWM(
-                    self.pin, self.pwm_hertz, 0)
-            elif self.pwm_library == 'pigpio_any':
-                self.pwm_output.set_PWM_frequency(
-                    self.pin, self.pwm_hertz)
-                self.pwm_output.set_PWM_dutycycle(
-                    self.pin, 0)
+            self.save_output_python_pwm_code(self.unique_id)
+            file_run_pwm = '{}/output_pwm_{}.py'.format(PATH_PYTHON_CODE_USER, self.unique_id)
+
+            module_name = "mycodo.output.{}".format(os.path.basename(file_run_pwm).split('.')[0])
+            spec = importlib.util.spec_from_file_location(module_name, file_run_pwm)
+            output_run_pwm = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(output_run_pwm)
+            self.output_run_python_pwm = output_run_pwm.OutputRun(self.logger, self.unique_id)
 
             self.output_setup = True
-            self.logger.info("Output setup on pin {}".format(self.pin))
 
             if self.state_startup == '0':
                 self.output_switch('off')
@@ -151,47 +129,36 @@ class OutputModule(AbstractOutput):
                         "the last known duty cycle, but a last known "
                         "duty cycle could not be found in the measurement "
                         "database")
-        except Exception as except_msg:
-            self.logger.exception("Output was unable to be setup on pin {pin}: {err}".format(
-                pin=self.pin, err=except_msg))
+        except Exception:
+            self.logger.exception("Could not set up output")
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         measure_dict = copy.deepcopy(measurements_dict)
 
-        if state == 'on':
-            if self.pwm_invert_signal:
-                amount = 100.0 - abs(amount)
-        elif state == 'off':
-            if self.pwm_invert_signal:
-                amount = 100
+        if self.pwm_command:
+            if state == 'on' and 100 >= amount >= 0:
+                if self.pwm_invert_signal:
+                    amount = 100.0 - abs(amount)
+            elif state == 'off' or amount == 0:
+                if self.pwm_invert_signal:
+                    amount = 100
+                else:
+                    amount = 0
             else:
-                amount = 0
+                return
 
-        if self.pwm_library == 'pigpio_hardware':
-            self.pwm_output.hardware_PWM(self.pin, self.pwm_hertz, int(amount * 10000))
-        elif self.pwm_library == 'pigpio_any':
-            self.pwm_output.set_PWM_frequency(self.pin, self.pwm_hertz)
-            self.pwm_output.set_PWM_range(self.pin, 1000)
-            self.pwm_output.set_PWM_dutycycle(self.pin, self.duty_cycle_to_pigpio_value(amount))
+            self.output_run_python_pwm.output_code_run(amount)
+            self.pwm_state = amount
 
-        measure_dict[0]['value'] = amount
-        add_measurements_influxdb(self.unique_id, measure_dict)
+            measure_dict[0]['value'] = amount
+            add_measurements_influxdb(self.unique_id, measure_dict)
 
-        self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=amount))
+            self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=amount))
 
     def is_on(self, output_channel=None):
         if self.is_setup():
-            response = self.pwm_output.get_PWM_dutycycle(self.pin)
-            if self.pwm_library == 'pigpio_hardware':
-                duty_cycle = response / 10000
-            elif self.pwm_library == 'pigpio_any':
-                duty_cycle = self.pigpio_value_to_duty_cycle(response)
-            else:
-                return None
-
-            if duty_cycle > 0:
-                return duty_cycle
-
+            if self.pwm_state:
+                return self.pwm_state
             return False
 
     def is_setup(self):
@@ -205,20 +172,36 @@ class OutputModule(AbstractOutput):
             self.output_switch('on', amount=self.shutdown_value)
         self.running = False
 
-    @staticmethod
-    def duty_cycle_to_pigpio_value(duty_cycle):
-        pigpio_value = int((abs(duty_cycle) / 100.0) * 1000)
-        if pigpio_value > 1000:
-            pigpio_value = 1000
-        elif pigpio_value < 0:
-            pigpio_value = 0
-        return pigpio_value
+    def save_output_python_pwm_code(self, unique_id):
+        """Save python PWM code to files"""
+        pre_statement_run = f"""import os
+import sys
+sys.path.append(os.path.abspath('/var/mycodo-root'))
+from mycodo.mycodo_client import DaemonControl
+control = DaemonControl()
+output_id = '{unique_id}'
 
-    @staticmethod
-    def pigpio_value_to_duty_cycle(pigpio_value):
-        duty_cycle = (abs(pigpio_value) / 1000.0) * 100
-        if duty_cycle > 100:
-            duty_cycle = 100
-        elif duty_cycle < 0:
-            duty_cycle = 0
-        return duty_cycle
+class OutputRun:
+    def __init__(self, logger, output_id):
+        self.logger = logger
+        self.output_id = output_id
+        self.variables = {{}}
+        self.running = True
+        self.duty_cycle = None
+
+    def stop_output(self):
+        self.running = False
+
+    def output_code_run(self, duty_cycle):
+"""
+
+        code_replaced = self.pwm_command.replace('((duty_cycle))', 'duty_cycle')
+        indented_code = textwrap.indent(code_replaced, ' ' * 8)
+        full_command_pwm = pre_statement_run + indented_code
+
+        assure_path_exists(PATH_PYTHON_CODE_USER)
+        file_run = '{}/output_pwm_{}.py'.format(PATH_PYTHON_CODE_USER, unique_id)
+        with open(file_run, 'w') as fw:
+            fw.write('{}\n'.format(full_command_pwm))
+            fw.close()
+        set_user_grp(file_run, 'mycodo', 'mycodo')

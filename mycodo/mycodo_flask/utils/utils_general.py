@@ -153,7 +153,13 @@ def custom_options_return_string(error, dict_options, mod_dev, request_form):
     return error, ';'.join(list_options)
 
 
-def custom_options_return_json(error, dict_options, request_form, mod_dev=None, device=None):
+def custom_options_return_json(
+        error,
+        dict_options,
+        request_form,
+        mod_dev=None,
+        device=None,
+        use_defaults=False):
     # Custom options
     dict_options_return = {}
 
@@ -251,7 +257,148 @@ def custom_options_return_json(error, dict_options, request_form, mod_dev=None, 
                         dict_options_return[key] = value
 
             if null_value:
-                if each_option['type'] == "select_multi_measurement":
+                if use_defaults and 'default_value' in each_option:
+                    dict_options_return[each_option['id']] = each_option['default_value']
+                elif each_option['type'] == "select_multi_measurement":
+                    dict_options_return[each_option['id']] = ""
+                else:
+                    dict_options_return[each_option['id']] = None
+
+    return error, json.dumps(dict_options_return)
+
+
+def custom_channel_options_return_json(
+        error,
+        dict_options,
+        request_form,
+        device_id,
+        channel,
+        mod_dev=None,
+        device=None,
+        use_defaults=False):
+    # Custom channel_options
+    dict_options_return = {}
+
+    # TODO: name same name in next major release
+    if mod_dev is None:
+        pass
+    elif hasattr(mod_dev, 'graph_type'):
+        device = mod_dev.graph_type
+    elif hasattr(mod_dev, 'device'):
+        device = mod_dev.device
+    elif hasattr(mod_dev, 'output_type'):
+        device = mod_dev.output_type
+    else:
+        logger.error("Unknown device")
+        return None, None
+
+    if 'custom_channel_options' in dict_options[device]:
+        for each_option in dict_options[device]['custom_channel_options']:
+            if 'id' not in each_option:
+                continue
+
+            if each_option['id'] not in dict_options_return:
+                dict_options_return[each_option['id']] = OrderedDict()
+            null_value = True
+
+            for key in request_form.keys():
+                if "{}_{}_{}".format(device_id, channel, each_option['id']) == key:
+                    constraints_pass = True
+                    constraints_errors = []
+                    value = None
+
+                    if each_option['type'] == 'float':
+                        if str_is_float(request_form.get(key)):
+                            if 'constraints_pass' in each_option:
+                                (constraints_pass,
+                                 constraints_errors,
+                                 mod_dev) = each_option['constraints_pass'](
+                                    mod_dev, float(request_form.get(key)))
+                            if constraints_pass:
+                                value = float(request_form.get(key))
+                        else:
+                            error.append(
+                                "{name} must represent a float/decimal value "
+                                "(submitted '{value}')".format(
+                                    name=each_option['name'],
+                                    value=request_form.get(key)))
+
+                    elif each_option['type'] == 'integer':
+                        if is_int(request_form.get(key)):
+                            if 'constraints_pass' in each_option:
+                                (constraints_pass,
+                                 constraints_errors,
+                                 mod_dev) = each_option['constraints_pass'](
+                                    mod_dev, int(request_form.get(key)))
+                            if constraints_pass:
+                                value = int(request_form.get(key))
+                        else:
+                            error.append(
+                                "{name} must represent an integer value "
+                                "(submitted '{value}')".format(
+                                    name=each_option['name'],
+                                    value=request_form.get(key)))
+
+                    elif each_option['type'] == 'select':
+                        if 'constraints_pass' in each_option:
+                            (constraints_pass,
+                             constraints_errors,
+                             mod_dev) = each_option['constraints_pass'](
+                                mod_dev, request_form.get(key))
+                        if constraints_pass:
+                            value = request_form.get(key)
+                            if is_int(request_form.get(key)):
+                                value = int(request_form.get(key))
+                            elif str_is_float(request_form.get(key)):
+                                value = float(request_form.get(key))
+
+                    elif each_option['type'] in [
+                            'multiline_text',
+                            'text',
+                            'select_measurement',
+                            'select_device']:
+                        if 'constraints_pass' in each_option:
+                            (constraints_pass,
+                             constraints_errors,
+                             mod_dev) = each_option['constraints_pass'](
+                                mod_dev, request_form.get(key))
+                        if constraints_pass:
+                            value = request_form.get(key)
+
+                    elif each_option['type'] == 'select_multi_measurement':
+                        if 'constraints_pass' in each_option:
+                            (constraints_pass,
+                             constraints_errors,
+                             mod_dev) = each_option['constraints_pass'](
+                                mod_dev, request_form.get(key))
+                        if constraints_pass:
+                            value = request_form.getlist(key)
+
+                    elif each_option['type'] == 'bool':
+                        value = bool(request_form.get(key))
+
+                    for each_error in constraints_errors:
+                        error.append(
+                            "Error: {name}: {error}".format(
+                                name=each_option['name'],
+                                error=each_error))
+
+                    if value is not None:
+                        null_value = False
+                        dict_options_return[each_option['id']] = value
+
+            if null_value:
+                if use_defaults and 'default_value' in each_option:
+
+                    # If a select type has cast_value set, cast the value as that type
+                    if each_option['type'] == 'select' and 'cast_value' in each_option and each_option['default_value']:
+                        if each_option['cast_value'] == 'integer':
+                            dict_options_return[each_option['id']] = int(each_option['default_value'])
+                        elif each_option['cast_value'] == 'float':
+                            dict_options_return[each_option['id']] = float(each_option['default_value'])
+                    else:
+                        dict_options_return[each_option['id']] = each_option['default_value']
+                elif each_option['type'] == "select_multi_measurement":
                     dict_options_return[each_option['id']] = ""
                 else:
                     dict_options_return[each_option['id']] = None

@@ -30,6 +30,7 @@ from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
 
+
 #
 # Dashboards
 #
@@ -195,7 +196,8 @@ def widget_add(form_base, request_form):
     # Execute at Creation
     #
 
-    if 'execute_at_creation' in dict_widgets[widget_name] and not current_app.config['TESTING']:
+    if ('execute_at_creation' in dict_widgets[widget_name] and
+            not current_app.config['TESTING']):
         dict_widgets[widget_name]['execute_at_creation'](
             new_widget, dict_widgets[widget_name])
 

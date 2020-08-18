@@ -113,7 +113,7 @@
         }
         else {
           {% for each_output in output %}
-            {% for each_output_channel in dict_outputs[each_output.output_type]['outputs_dict']  %}
+            {% for each_output_channel in dict_outputs[each_output.output_type]['channels_dict']  %}
           document.getElementById("{{each_output.unique_id}}-{{each_output_channel}}-output-state").className = "row small-gutters pause-background";
           document.getElementById("{{each_output.unique_id}}-{{each_output_channel}}-input-output-state").value = '{{_('No Connection')}}';
             {% endfor %}
@@ -178,7 +178,8 @@
         {% set unique_id = each_output.unique_id %}
         {% set custom_options_values = custom_options_values_outputs %}
 
-        {% if dict_outputs[each_output.output_type]['outputs_dict']|length == 1 %}
+        {% if dict_outputs[each_output.output_type]['channels_dict']|length == 1 %}
+
         <div class="row small-gutters pause-background" style="border-bottom: 1px solid #ddd; padding: 0.4em 0.2em 0.4em 0;" id="{{each_output.unique_id}}-0-output-state">
           <div class="col-2 col-md-1 text-center icon-fh">
             <a data-toggle="collapse" href="#collapseContainer{{each_output.unique_id}}" aria-expanded="false" aria-controls="collapseContainer{{each_output.unique_id}}">
@@ -226,11 +227,19 @@
           </div>
         </div>
 
-        {% for each_output_channel in dict_outputs[each_output.output_type]['outputs_dict'] %}
+        {% for each_output_channel in dict_outputs[each_output.output_type]['channels_dict'] %}
+
         <div class="row small-gutters pause-background" style="border-bottom: 1px solid #ddd; padding: 0.4em 0.2em 0.4em 0;" id="{{each_output.unique_id}}-{{each_output_channel}}-output-state">
           <div class="col-7 col-md-3 text-center icon-fh"></div>
           <div class="col-5 col-md-3 small-gutters">
-            <input class="form-control" disabled="" value="Channel {{each_output_channel}}{% if 'name' in dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel] %}: {{dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel]['name']}}{% endif %}" type="text">
+            <input class="form-control" disabled="" value="CH{{each_output_channel}}
+          {%- if 'name' in custom_options_values_output_channels[each_output.unique_id][each_output_channel] and
+                 custom_options_values_output_channels[each_output.unique_id][each_output_channel]['name'] -%}
+            {{': ' + custom_options_values_output_channels[each_output.unique_id][each_output_channel]['name']}}
+          {%- elif 'name' in dict_outputs[each_output.output_type]['channels_dict'][each_output_channel] -%}
+            {{': ' + dict_outputs[each_output.output_type]['channels_dict'][each_output_channel]['name']}}
+          {%- endif -%}
+            " type="text">
           </div>
           <div class="col-4 col-md-2 small-gutters">
             <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-{{each_output_channel}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">
@@ -337,7 +346,7 @@
 
           <div class="row small-gutters" style="padding: 0.5em">
             <div class="col-12">
-              <h5>{{_('Options')}}</h5>
+              <h5>{{_('Output Options')}}</h5>
             </div>
 
             <div class="col-auto">
@@ -409,44 +418,77 @@
           </div>
         {% endif %}
 
-        {% for each_output_channel in dict_outputs[each_output.output_type]['outputs_dict'] %}
+          <div class="row small-gutters" style="padding: 1em 0 0 0.5em">
+            <div class="col-12">
+              <h5>{{_('Channel Options')}}</h5>
+            </div>
+          </div>
 
-          <div class="row" style="padding-top: 0.5em">
+        {% for each_output_channel in output_channel if each_output_channel.output_id == each_output.unique_id %}
+
+          <hr/>
+          <div class="row">
             <div class="col-auto">
-              Channel {{each_output_channel}}{% if 'name' in dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel] %}: {{dict_outputs[each_output.output_type]['outputs_dict'][each_output_channel]['name']}}{% endif %}
+              Channel {{each_output_channel.channel}}
+
+            {%- if 'name' in custom_options_values_output_channels[each_output.unique_id][each_output_channel.channel] and
+                 custom_options_values_output_channels[each_output.unique_id][each_output_channel.channel]['name'] -%}
+              {{': ' + custom_options_values_output_channels[each_output.unique_id][each_output_channel.channel]['name']}}
+            {%- elif 'name' in dict_outputs[each_output.output_type]['channels_dict'][each_output_channel.channel] -%}
+              {{': ' + dict_outputs[each_output.output_type]['channels_dict'][each_output_channel.channel]['name']}}
+            {%- endif -%}
             </div>
           </div>
-          <div class="row small-gutters">
-            <div class="col-auto">
-              <label class="form-check-label" for="amps_{{each_output_channel}}">Current (amps)</label>
-              <div>
-                <input class="form-control" name="amps_{{each_output_channel}}" type="number" value="{% if output_variables[each_output.unique_id][each_output_channel]['amps'] is not none %}{{output_options[each_output.unique_id][each_output_channel]['amps']}}{% endif %}">
-              </div>
+
+              {% set dict_options = dict_outputs[each_output.output_type] %}
+              {% set unique_id = each_output.unique_id %}
+              {% set custom_options_values = custom_options_values_output_channels %}
+              {% set channel = each_output_channel.channel %}
+
+              {% if custom_options_values[unique_id] %}
+
+                {% if 'custom_channel_options_message' in dict_options %}
+            <div class="row small-gutters" style="padding: 1em">
+                <div class="col-12" style="padding-bottom: 0.5em">
+                  {{dict_options['custom_channel_options_message']|safe}}
+                </div>
             </div>
-            <div class="col-auto">
-              <label class="form-check-label" for="trigger_{{each_output_channel}}">Trigger at Startup</label>
-              <div class="input-group-text">
-                <input name="trigger_{{each_output_channel}}" type="checkbox" value="y"{% if output_variables[each_output.unique_id][each_output_channel]['trigger_startup'] %} checked{% endif %}>
-              </div>
+                {% endif %}
+
+                {% if 'custom_channel_options' in dict_options %}
+            <div class="row small-gutters" style="padding: 1em">
+                  {% for each_option in dict_options['custom_channel_options'] %}
+                    {% if each_option['type'] == 'new_line' %}
             </div>
-          </div>
+            <div class="row small-gutters" style="padding: 0.5em">
+                    {% elif each_option['type'] == 'message' %}
+              <div class="col-12" style="padding-bottom: 0.5em">
+                {{each_option['default_value']|safe}}
+              </div>
+                    {% else %}
+              {% include 'pages/form_options/Custom_Options_Channels.html' %}
+                    {% endif %}
+                  {% endfor %}
+            </div>
+                {% endif %}
+              {% endif %}
 
           {% if 'button_send_duration' in dict_options['options_enabled'] or
                 'button_send_volume' in dict_options['options_enabled'] or
                 'button_send_duty_cycle' in dict_options['options_enabled']  %}
 
-          <div class="row align-items-end small-gutters">
+          <div class="row align-items-end small-gutters" style="padding: 0.5em 0 0.5em 1.0em">
 
             {% if 'button_send_duration' in dict_options['options_enabled'] %}
 
             <div class="col-auto">
               <label class='form-check-label'>{{dict_translation['output_amount_duration']['title']}}</label>
               <div>
-                <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" name="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" title="{{dict_translation['output_amount_duration']['phrase']}}" type="text" value="">
+                <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" name="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" title="{{dict_translation['output_amount_duration']['phrase']}}" type="text" value="">
               </div>
             </div>
             <div class="col-auto">
-              <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel}}/on/sec/" type="button" value="{{_('Send')}}">
+              <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.channel}}/on/sec/" type="button" value="{{_('Send')}}">
             </div>
 
             {% endif %}
@@ -458,10 +500,10 @@
               <div>
                 <div class="row small-gutters">
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="form-control" id="vol_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" name="vol_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" title="{{dict_translation['output_amount_volume']['phrase']}}" type="text" value="">
+                    <input class="form-control" id="vol_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" name="vol_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" title="{{dict_translation['output_amount_volume']['phrase']}}" type="text" value="">
                   </div>
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel}}/on/vol/" type="button" value="{{_('Send')}}">
+                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.channel}}/on/vol/" type="button" value="{{_('Send')}}">
                   </div>
                 </div>
               </div>
@@ -476,10 +518,10 @@
               <div>
                 <div class="row small-gutters">
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                  <input class="form-control" id="pwm_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" name="pwm_on_amt_{{each_output.unique_id}}_{{each_output_channel}}" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
+                  <input class="form-control" id="pwm_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" name="pwm_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
                   </div>
                   <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                  <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel}}/on/pwm/" type="button" value="{{_('Send')}}">
+                  <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.channel}}/on/pwm/" type="button" value="{{_('Send')}}">
                   </div>
                 </div>
               </div>

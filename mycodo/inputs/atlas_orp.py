@@ -105,8 +105,7 @@ class InputModule(AbstractInput):
         self.temperature_comp_meas_device_id = None
         self.temperature_comp_meas_measurement_id = None
         self.max_age = None
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
+        self.setup_custom_options(INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
             self.initialize_input()
