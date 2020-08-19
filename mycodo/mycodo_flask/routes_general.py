@@ -2,12 +2,12 @@
 import calendar
 import datetime
 import logging
+import os
 import subprocess
 import time
 from importlib import import_module
 
 import flask_login
-import os
 from dateutil.parser import parse as date_parse
 from flask import Response
 from flask import flash
@@ -40,6 +40,7 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
+from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
@@ -47,10 +48,10 @@ from mycodo.mycodo_flask.routes_authentication import clear_cookie_auth
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 from mycodo.mycodo_flask.utils.utils_output import get_all_output_states
+from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.image import generate_thermal_image_from_pixels
 from mycodo.utils.influx import influx_time_str_to_milliseconds
 from mycodo.utils.influx import query_string
-from mycodo.utils.outputs import outputs_pwm
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
@@ -186,42 +187,18 @@ def video_feed(unique_id):
 @blueprint.route('/outputstate')
 @flask_login.login_required
 def gpio_state():
-    """Return the GPIO states, for output page status"""
+    """Return all output states"""
     return jsonify(get_all_output_states())
 
 
-@blueprint.route('/outputstate_unique_id/<unique_id>')
+@blueprint.route('/outputstate_unique_id/<unique_id>/<channel_id>')
 @flask_login.login_required
-def gpio_state_unique_id(unique_id):
+def gpio_state_unique_id(unique_id, channel_id):
     """Return the GPIO state, for dashboard output """
-    output = Output.query.filter(
-                Output.unique_id == unique_id).first()
+    output = Output.query.filter(Output.unique_id == unique_id).first()
+    channel = OutputChannel.query.filter(OutputChannel.unique_id == channel_id).first()
     daemon_control = DaemonControl()
-
-    if output.output_type == 'wired' and output.pin and -1 < output.pin < 40:
-        try:
-            from RPi import GPIO
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setwarnings(False)
-            GPIO.setup(output.pin, GPIO.OUT)
-            if GPIO.input(output.pin) == output.on_state:
-                state = 'on'
-            else:
-                state = 'off'
-        except:
-            logger.error(
-                "RPi.GPIO and Raspberry Pi required for this action")
-    elif (output.output_type in ['command',
-                                 'command_pwm',
-                                 'python',
-                                 'python_pwm',
-                                 'atlas_ezo_pmp'] or
-            (output.output_type in ['pwm', 'wireless_rpi_rf'] and
-             output.pin and -1 < output.pin < 40)):
-        state = daemon_control.output_state(output.unique_id)
-    else:
-        state = None
-
+    state = daemon_control.output_state(unique_id, channel.channel)
     return jsonify(state)
 
 
@@ -939,12 +916,20 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
 
-@blueprint.route('/output_mod/<output_id>/<output_channel>/<state>/<output_type>/<amount>')
+@blueprint.route('/output_mod/<output_id>/<channel_id>/<state>/<output_type>/<amount>')
 @flask_login.login_required
-def output_mod(output_id, output_channel, state, output_type, amount):
+def output_mod(output_id, channel_id, state, output_type, amount):
     """ Manipulate output (using non-unique ID) """
     if not utils_general.user_has_permission('edit_controllers'):
         return 'Insufficient user permissions to manipulate outputs'
+
+    if channel_id == '0':
+        # some parts of pages don't have access to the channel ID and only know there is 1 channel
+        channel = db_retrieve_table(OutputChannel).filter(and_(
+            OutputChannel.output_id == output_id,
+            OutputChannel.channel == 0)).first()
+    else:
+        channel = db_retrieve_table(OutputChannel, unique_id=channel_id)
 
     daemon = DaemonControl()
     if (state in ['on', 'off'] and output_type in ['sec', 'pwm', 'vol'] and
@@ -954,7 +939,7 @@ def output_mod(output_id, output_channel, state, output_type, amount):
             state,
             output_type=output_type,
             amount=float(amount),
-            output_channel=int(output_channel))
+            output_channel=channel.channel)
         if out_status[0]:
             return 'ERROR: {}'.format(out_status[1])
         else:

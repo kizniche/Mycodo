@@ -759,15 +759,17 @@ class DaemonController:
             message = "Could not set up output: {e}".format(e=except_msg)
             self.logger.exception(message)
 
-    def output_state(self, output_id):
+    def output_state(self, output_id, output_channel):
         """
         Return the output state, whether "on" or "off"
 
         :param output_id: Unique ID for output
         :type output_id: str
+        :param channel: The output channel to return the state of
+        :type channel: int
         """
         try:
-            return self.controller['Output'].output_state(output_id)
+            return self.controller['Output'].output_state(output_id, output_channel)
         except Exception as except_msg:
             message = "Could not query output state: {e}".format(e=except_msg)
             self.logger.exception(message)
@@ -1134,9 +1136,9 @@ class PyroServer(object):
         """Instruct the daemon to refresh a conditional's settings"""
         return self.mycodo.refresh_daemon_trigger_settings(unique_id)
 
-    def output_state(self, output_id):
-        """Return the output state (not pin but whether output is on or off)"""
-        return self.mycodo.output_state(output_id)
+    def output_state(self, output_id, output_channel):
+        """Return the output state (on or off)"""
+        return self.mycodo.output_state(output_id, output_channel)
 
     def output_states_all(self):
         """Return all output states"""

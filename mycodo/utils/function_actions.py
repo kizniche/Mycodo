@@ -329,11 +329,13 @@ def action_ir_send(cond_action, message):
 
 
 def action_output(cond_action, message):
+    output_id = cond_action.do_unique_id.split(",")[0]
+    channel_id = cond_action.do_unique_id.split(",")[1]
     control = DaemonControl()
-    this_output = db_retrieve_table_daemon(
-        Output, unique_id=cond_action.do_unique_id, entry='first')
-    message += " Turn output {unique_id} ({id}, {name}) {state}".format(
-        unique_id=cond_action.do_unique_id,
+    this_output = db_retrieve_table_daemon(Output, unique_id=output_id, entry='first')
+    message += " Turn output {unique_id} CH{ch} ({id}, {name}) {state}".format(
+        unique_id=output_id,
+        ch=channel_id,
         id=this_output.id,
         name=this_output.name,
         state=cond_action.do_output_state)
@@ -348,17 +350,20 @@ def action_output(cond_action, message):
         args=(cond_action.do_unique_id,
               cond_action.do_output_state,),
         kwargs={'output_type': 'sec',
-                'amount': cond_action.do_output_duration})
+                'amount': cond_action.do_output_duration,
+                'output_channel': channel_id})
     output_on_off.start()
     return message
 
 
 def action_output_pwm(cond_action, message):
+    output_id = cond_action.do_unique_id.split(",")[0]
+    channel_id = cond_action.do_unique_id.split(",")[1]
     control = DaemonControl()
-    this_output = db_retrieve_table_daemon(
-        Output, unique_id=cond_action.do_unique_id, entry='first')
-    message += " Turn output {unique_id} ({id}, {name}) duty cycle to {duty_cycle}%.".format(
-        unique_id=cond_action.do_unique_id,
+    this_output = db_retrieve_table_daemon(Output, unique_id=output_id, entry='first')
+    message += " Turn output {unique_id} CH{ch} ({id}, {name}) duty cycle to {duty_cycle}%.".format(
+        unique_id=output_id,
+        ch=channel_id,
         id=this_output.id,
         name=this_output.name,
         duty_cycle=cond_action.do_output_pwm)
@@ -367,19 +372,23 @@ def action_output_pwm(cond_action, message):
         target=control.output_on,
         args=(cond_action.do_unique_id,),
         kwargs={'output_type': 'pwm',
-                'duty_cycle': cond_action.do_output_pwm})
+                'duty_cycle': cond_action.do_output_pwm,
+                'output_channel': channel_id})
     output_on.start()
     return message
 
 
 def action_output_ramp_pwm(cond_action, message):
+    output_id = cond_action.do_unique_id.split(",")[0]
+    channel_id = cond_action.do_unique_id.split(",")[1]
     control = DaemonControl()
     this_output = db_retrieve_table_daemon(
         Output, unique_id=cond_action.do_unique_id, entry='first')
-    message += " Ramp output {unique_id} ({id}, {name}) " \
+    message += " Ramp output {unique_id} CH{ch} ({id}, {name}) " \
                "duty cycle from {fdc}% to {tdc}% in increments " \
                "of {inc} over {sec} seconds.".format(
-                    unique_id=cond_action.do_unique_id,
+                    unique_id=output_id,
+                    ch=channel_id,
                     id=this_output.id,
                     name=this_output.name,
                     fdc=cond_action.do_output_pwm,
@@ -405,7 +414,8 @@ def action_output_ramp_pwm(cond_action, message):
         target=control.output_on,
         args=(cond_action.do_unique_id,),
         kwargs={'output_type': 'pwm',
-                'duty_cycle': start_duty_cycle})
+                'duty_cycle': start_duty_cycle,
+                'output_channel': channel_id})
     output_on.start()
 
     loop_running = True
@@ -429,7 +439,8 @@ def action_output_ramp_pwm(cond_action, message):
                 target=control.output_on,
                 args=(cond_action.do_unique_id,),
                 kwargs={'output_type': 'pwm',
-                        'duty_cycle': current_duty_cycle})
+                        'duty_cycle': current_duty_cycle,
+                        'output_channel': channel_id})
             output_on.start()
 
             if not loop_running:
@@ -438,11 +449,13 @@ def action_output_ramp_pwm(cond_action, message):
 
 
 def action_output_volume(cond_action, message):
+    output_id = cond_action.do_unique_id.split(",")[0]
+    channel_id = cond_action.do_unique_id.split(",")[1]
     control = DaemonControl()
-    this_output = db_retrieve_table_daemon(
-        Output, unique_id=cond_action.do_unique_id, entry='first')
-    message += " Output {unique_id} ({id}, {name}) volume of {volume}.".format(
-        unique_id=cond_action.do_unique_id,
+    this_output = db_retrieve_table_daemon(Output, unique_id=output_id, entry='first')
+    message += " Output {unique_id} CH{ch} ({id}, {name}) volume of {volume}.".format(
+        unique_id=output_id,
+        ch=channel_id,
         id=this_output.id,
         name=this_output.name,
         volume=cond_action.do_output_pwm)
@@ -451,7 +464,8 @@ def action_output_volume(cond_action, message):
         target=control.output_on,
         args=(cond_action.do_unique_id,),
         kwargs={'output_type': 'vol',
-                'amount': cond_action.do_output_amount})
+                'amount': cond_action.do_output_amount,
+                'output_channel': channel_id})
     output_on.start()
     return message
 

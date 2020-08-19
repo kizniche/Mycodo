@@ -264,17 +264,18 @@ class AbstractOutput(AbstractBaseController):
 
             # Output type: PWM, set duty cycle
             elif output_type == 'pwm' and self.output_type in self.output_types['pwm']:
-                self.output_switch(
+                out_ret = self.output_switch(
                     'on',
                     output_type='pwm',
                     amount=amount,
                     output_channel=output_channel)
 
-                msg = "Command sent: Output {id} CH{ch} ({name}) duty cycle: {dc:.2f} ".format(
+                msg = "Command sent: Output {id} CH{ch} ({name}) duty cycle: {dc:.2f} %. Output returned: {ret}".format(
                     id=self.unique_id,
                     ch=output_channel,
                     name=self.output_name,
-                    dc=amount)
+                    dc=amount,
+                    ret=out_ret)
 
             # Output type: On/Off, set duration for on state
             elif (output_type in ['sec', None] and

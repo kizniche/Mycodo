@@ -158,12 +158,29 @@ def output_add(form_add, request_form):
                     DisplayOrder.query.first().output = add_display_order(
                         display_order, new_output.unique_id)
 
+                    db.session.commit()
+
+                    #
+                    # If measurements defined in the Output Module
+                    #
+
+                    if ('measurements_dict' in dict_outputs[output_type] and
+                            dict_outputs[output_type]['measurements_dict'] != []):
+                        for each_measurement in dict_outputs[output_type]['measurements_dict']:
+                            measure_info = dict_outputs[output_type]['measurements_dict'][each_measurement]
+                            new_measurement = DeviceMeasurements()
+                            if 'name' in measure_info:
+                                new_measurement.name = measure_info['name']
+                            new_measurement.device_id = new_output.unique_id
+                            new_measurement.measurement = measure_info['measurement']
+                            new_measurement.unit = measure_info['unit']
+                            new_measurement.channel = each_measurement
+                            new_measurement.save()
+
                     for each_channel, channel_info in dict_outputs[output_type]['channels_dict'].items():
                         new_channel = OutputChannel()
                         new_channel.channel = each_channel
                         new_channel.output_id = new_output.unique_id
-                        if 'name' in channel_info:
-                            new_channel.name = channel_info['name']
 
                         # Generate string to save from custom options
                         error, custom_options = custom_channel_options_return_json(
@@ -555,6 +572,8 @@ def output_mod(form_output, request_form):
         # Finally, save custom options for both output and channels
         mod_output.custom_options = custom_options
         for each_channel in channels:
+            if 'name' in custom_channel_options[each_channel.channel]:
+                each_channel.name = custom_channel_options[each_channel.channel]['name']
             each_channel.custom_options = json.dumps(custom_channel_options[each_channel.channel])
 
         if not error:

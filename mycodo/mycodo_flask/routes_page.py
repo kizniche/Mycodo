@@ -568,6 +568,7 @@ def page_dashboard(dashboard_id):
     math = Math.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
+    output_channel = OutputChannel.query.all()
     pid = PID.query.all()
     tags = NoteTags.query.all()
 
@@ -706,9 +707,12 @@ def page_dashboard(dashboard_id):
         math, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
-    choices_output_devices = utils_general.choices_output_devices(output)
+    choices_output_channels_measurements = utils_general.choices_outputs_channels_measurements(
+        output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_output_pwm = utils_general.choices_outputs_pwm(
         output, dict_units, dict_measurements, dict_outputs)
+    choices_output_channels_measurements_pwm = utils_general.choices_outputs_channels_measurements_pwm(
+        output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
     choices_pid_devices = utils_general.choices_pids_devices(pid)
@@ -736,7 +740,8 @@ def page_dashboard(dashboard_id):
                            choices_input=choices_input,
                            choices_math=choices_math,
                            choices_output=choices_output,
-                           choices_output_devices=choices_output_devices,
+                           choices_output_channels_measurements=choices_output_channels_measurements,
+                           choices_output_channels_measurements_pwm=choices_output_channels_measurements_pwm,
                            choices_output_pwm=choices_output_pwm,
                            choices_pid=choices_pid,
                            choices_pid_devices=choices_pid_devices,
@@ -1265,6 +1270,7 @@ def page_function():
     method = Method.query.all()
     tags = NoteTags.query.all()
     output = Output.query.all()
+    output_channel = OutputChannel.query.all()
     pid = PID.query.all()
     trigger = Trigger.query.all()
     user = User.query.all()
@@ -1476,6 +1482,8 @@ def page_function():
         math, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
+    choices_output_channels = utils_general.choices_outputs_channels(
+        output, output_channel, dict_outputs)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
 
@@ -1586,6 +1594,7 @@ def page_function():
                            choices_input_devices=choices_input_devices,
                            choices_math=choices_math,
                            choices_output=choices_output,
+                           choices_output_channels=choices_output_channels,
                            choices_pid=choices_pid,
                            conditional_conditions_list=CONDITIONAL_CONDITIONS,
                            conditional=conditional,
@@ -1626,6 +1635,7 @@ def page_function():
                            pid=pid,
                            sunrise_set_calc=sunrise_set_calc,
                            table_input=Input,
+                           table_output=Output,
                            tags=tags,
                            trigger=trigger,
                            units=MEASUREMENTS,

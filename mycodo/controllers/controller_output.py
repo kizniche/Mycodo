@@ -282,6 +282,13 @@ class OutputController(AbstractController, threading.Thread):
     def output_sec_currently_on(self, output_id, output_channel):
         return self.output[output_id].output_sec_currently_on(output_channel)
 
+    def output_state(self, output_id, output_channel):
+        """
+        Return an output state
+        :rtype: dict
+        """
+        return self.output[output_id].output_state(output_channel)
+
     def output_states_all(self):
         """
         Return a dictionary of all output states

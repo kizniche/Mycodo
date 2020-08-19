@@ -87,9 +87,7 @@ def generate_page_variables(widget_unique_id, widget_options):
             gauge_low = widget_options['min']
             gauge_high = widget_options['max']
             gauge_difference = gauge_high - gauge_low
-            logger.error("TEST00: {}, {}".format(type(color_areas), color_areas))
             for each_range in color_areas:
-                logger.error("TEST01: {}, {}".format(type(each_range), each_range))
                 percent_of_range = float((float(each_range.split(',')[0]) - gauge_low) / gauge_difference)
                 colors_gauge_solid.append({
                     'stop': '{:.2f}'.format(percent_of_range),
@@ -100,7 +98,6 @@ def generate_page_variables(widget_unique_id, widget_options):
         except:
             # Prevent mathematical errors from preventing proper page render
             for each_range in color_areas:
-                logger.error("TEST02: {}, {}".format(type(each_range), each_range))
                 colors_gauge_solid.append({
                     'stop': '0',
                     'hex': each_range.split(',')[1]})

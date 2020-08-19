@@ -66,6 +66,27 @@
   </div>
 </div>
 
+    {% elif each_option['type'] == 'select_measurement_channel' %}
+
+<div class="col-auto">
+  <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}">
+      <option value="">{{dict_translation['select_one']['title']}}</option>
+      {% if 'Output_Channels_Measurements' in each_option['options_select'] %}
+        {% for each_output_form in choices_output_channels_measurements -%}
+      <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
+      {% if 'Output_PWM_Channels_Measurements' in each_option['options_select'] %}
+        {%- for each_output_form in choices_output_channels_measurements_pwm -%}
+      <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
+        {%- endfor -%}
+      {% endif %}
+    </select>
+  </div>
+</div>
+
     {% elif each_option['type'] == 'select_multi_measurement' %}
 
       {% set multiselect_size = 0 %}

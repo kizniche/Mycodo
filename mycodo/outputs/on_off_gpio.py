@@ -82,6 +82,7 @@ OUTPUT_INFORMATION = {
     'output_library': 'RPi.GPIO',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
+    'execute_at_modification': execute_at_modification,
     'output_types': ['on_off'],
 
     'message': 'The specified GPIO pin will be set HIGH (3.3 volts) or LOW (0 volts) when turned '
@@ -118,7 +119,7 @@ OUTPUT_INFORMATION = {
                 (1, 'On')
             ],
             'name': lazy_gettext('Startup State'),
-            'phrase': lazy_gettext('Set the state of the GPIO when Mycodo starts')
+            'phrase': lazy_gettext('Set the state when Mycodo starts')
         },
         {
             'id': 'state_shutdown',
@@ -129,7 +130,7 @@ OUTPUT_INFORMATION = {
                 (1, 'On')
             ],
             'name': lazy_gettext('Shutdown State'),
-            'phrase': lazy_gettext('Set the state of the GPIO when Mycodo shuts down')
+            'phrase': lazy_gettext('Set the state when Mycodo shuts down')
         },
         {
             'id': 'on_state',

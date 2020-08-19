@@ -105,7 +105,7 @@ class OutputChannel(CRUDMixin, db.Model):
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     output_id = db.Column(db.Text, default=None)
     channel = db.Column(db.Integer, default=None)
-    name = db.Column(db.Text, default='Channel Name')
+    name = db.Column(db.Text, default='')
 
     custom_options = db.Column(db.Text, default='')
 

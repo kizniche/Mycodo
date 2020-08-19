@@ -68,12 +68,12 @@
     });
     $('.output_on_amt').click(function() {
       const btn_val = this.name;
-      const id = btn_val.split('/')[0];
-      const chan = btn_val.split('/')[1];
+      const output_id = btn_val.split('/')[0];
+      const channel_id = btn_val.split('/')[1];
       const on_type = btn_val.split('/')[3];
-      const on_amt = $('#' + on_type + '_on_amt_' + id + '_' + chan).val();
+      const on_amt = $('#' + on_type + '_on_amt_' + output_id + '_' + channel_id).val();
       {% if not misc.hide_alert_info %}
-      toastr['info']('Command sent to turn output ' + id + ' On for ' + on_amt + ' ' + on_type);
+      toastr['info']('Command sent to turn output ' + output_id + ' On for ' + on_amt + ' ' + on_type);
       {% endif %}
       getAjax(btn_val + on_amt);
     });
@@ -484,11 +484,11 @@
             <div class="col-auto">
               <label class='form-check-label'>{{dict_translation['output_amount_duration']['title']}}</label>
               <div>
-                <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" name="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" title="{{dict_translation['output_amount_duration']['phrase']}}" type="text" value="">
+                <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" name="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['output_amount_duration']['phrase']}}" type="text" value="">
               </div>
             </div>
             <div class="col-auto">
-              <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.channel}}/on/sec/" type="button" value="{{_('Send')}}">
+              <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/sec/" type="button" value="{{_('Send')}}">
             </div>
 
             {% endif %}
@@ -498,15 +498,11 @@
             <div class="col-auto">
               <label class='form-check-label'>{{dict_translation['output_amount_volume']['title']}}</label>
               <div>
-                <div class="row small-gutters">
-                  <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="form-control" id="vol_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" name="vol_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" title="{{dict_translation['output_amount_volume']['phrase']}}" type="text" value="">
-                  </div>
-                  <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                    <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.channel}}/on/vol/" type="button" value="{{_('Send')}}">
-                  </div>
-                </div>
+                <input class="form-control" id="vol_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" name="vol_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['output_amount_volume']['phrase']}}" type="text" value="">
               </div>
+            </div>
+            <div class="col-auto">
+              <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/vol/" type="button" value="{{_('Send')}}">
             </div>
 
             {% endif %}
@@ -516,15 +512,11 @@
             <div class="col-auto">
               <label class='form-check-label'>{{dict_translation['duty_cycle']['title']}}</label>
               <div>
-                <div class="row small-gutters">
-                  <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                  <input class="form-control" id="pwm_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" name="pwm_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
-                  </div>
-                  <div class="col-6 col-sm-4 col-md-3 small-gutters">
-                  <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.channel}}/on/pwm/" type="button" value="{{_('Send')}}">
-                  </div>
-                </div>
+                <input class="form-control" id="pwm_on_amt_{{each_output.unique_id}}_{{each_output_channel.channel}}" name="pwm_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
               </div>
+            </div>
+            <div class="col-auto">
+              <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/pwm/" type="button" value="{{_('Send')}}">
             </div>
 
             {% endif %}
