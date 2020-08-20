@@ -1,5 +1,9 @@
 ## 8.7.2 (Unreleased)
 
+### Bugfixes
+
+ - Fix issue displaying Measurement Widgets when a Math measurement is selected ([#817](https://github.com/kizniche/mycodo/issues/817))
+
 ### Features
 
  - Add ability to duplicate a dashboard and its widgets ([#812](https://github.com/kizniche/mycodo/issues/812))
