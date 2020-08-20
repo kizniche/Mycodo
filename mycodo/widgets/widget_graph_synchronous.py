@@ -761,6 +761,7 @@ WIDGET_INFORMATION = {
 
     tooltip: {
       shared: true,
+      useHTML: true,
       formatter: function(){
         const d = new Date(this.x);
         if (this.point) {
@@ -772,7 +773,7 @@ WIDGET_INFORMATION = {
         else {
           let s = '<b>' + Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds() + '</b>';
           $.each(this.points, function(i, point) {
-              s += '<br/><span style="color:' + point.color + '">o</span> ' + point.series.name + ': ' + Highcharts.numberFormat(point.y, this.series.tooltipOptions.valueDecimals) + ' ' + this.series.tooltipOptions.valueSuffix;
+              s += '<br/><span style="color:' + point.color + '">&#9679;</span> ' + point.series.name + ': ' + Highcharts.numberFormat(point.y, this.series.tooltipOptions.valueDecimals) + ' ' + this.series.tooltipOptions.valueSuffix;
           });
           return s;
         }
