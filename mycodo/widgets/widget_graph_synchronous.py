@@ -506,7 +506,7 @@ WIDGET_INFORMATION = {
                 chart[chart_number].series[series].addPoint({
                     x: time_point,
                     title: data[i][1],
-                    text: data[i][2].replace(/(?:\\r\\n|\\r|\\n)/g, '<br>').replace(/  /g, '░░')
+                    text: data[i][2].replace(/(?:\\r\\n|\\r|\\n)/g, '<br>').replace(/  /g, '\\u2591\\u2591')
                 }, false, graph_shift);
                 note_timestamps.push(time_point);
               }
