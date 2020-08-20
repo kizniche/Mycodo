@@ -430,7 +430,7 @@ WIDGET_INFORMATION = {
                 past_data.push({
                   x: new_time,
                   title: data[i][1],
-                  text: data[i][2].replace(/(?:\\r\\n|\\r|\\n)/g, '<br>').replace(/  /g, '░░')
+                  text: data[i][2].replace(/(?:\\r\\n|\\r|\\n)/g, '<br>').replace(/  /g, '\\u2591\\u2591')
                 });
                 note_timestamps.push(new_time);
               }
@@ -772,7 +772,7 @@ WIDGET_INFORMATION = {
         else {
           let s = '<b>' + Highcharts.dateFormat('%B %e, %Y %H:%M:%S.', this.x) + d.getMilliseconds() + '</b>';
           $.each(this.points, function(i, point) {
-              s += '<br/><span style="color:' + point.color + '">\u25CF</span> ' + point.series.name + ': ' + Highcharts.numberFormat(point.y, this.series.tooltipOptions.valueDecimals) + ' ' + this.series.tooltipOptions.valueSuffix;
+              s += '<br/><span style="color:' + point.color + '">&#9679;</span> ' + point.series.name + ': ' + Highcharts.numberFormat(point.y, this.series.tooltipOptions.valueDecimals) + ' ' + this.series.tooltipOptions.valueSuffix;
           });
           return s;
         }
