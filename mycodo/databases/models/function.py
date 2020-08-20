@@ -73,6 +73,7 @@ class Trigger(CRUDMixin, db.Model):
     # Used to hold unique IDs
     unique_id_1 = db.Column(db.String, default=None)
     unique_id_2 = db.Column(db.String, default=None)
+    unique_id_3 = db.Column(db.String, default=None)
 
     # Output
     output_state = db.Column(db.Text, default='')  # What action to watch output for

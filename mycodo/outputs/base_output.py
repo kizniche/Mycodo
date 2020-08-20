@@ -18,6 +18,7 @@ from sqlalchemy import and_
 from sqlalchemy import or_
 
 from mycodo.abstract_base_controller import AbstractBaseController
+from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import Trigger
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -480,12 +481,19 @@ class AbstractOutput(AbstractBaseController):
         This function is executed whenever an output is turned on or off
         It is responsible for executing Output Triggers
         """
+        output_channel_dev = db_retrieve_table_daemon(OutputChannel).filter(
+            and_(OutputChannel.output_id == output_id, OutputChannel.channel == output_channel)).first()
+        if output_channel_dev is None:
+            self.logger.error("Could nto find channel in database")
+            return
+
         #
         # Check On/Off Outputs
         #
         trigger_output = db_retrieve_table_daemon(Trigger)
         trigger_output = trigger_output.filter(Trigger.trigger_type == 'trigger_output')
         trigger_output = trigger_output.filter(Trigger.unique_id_1 == output_id)
+        trigger_output = trigger_output.filter(Trigger.unique_id_2 == output_channel_dev.unique_id)
         trigger_output = trigger_output.filter(Trigger.is_activated == True)
 
         # Find any Output Triggers with the output_id of the output that
@@ -566,6 +574,7 @@ class AbstractOutput(AbstractBaseController):
         trigger_output_pwm = db_retrieve_table_daemon(Trigger)
         trigger_output_pwm = trigger_output_pwm.filter(Trigger.trigger_type == 'trigger_output_pwm')
         trigger_output_pwm = trigger_output_pwm.filter(Trigger.unique_id_1 == output_id)
+        trigger_output_pwm = trigger_output_pwm.filter(Trigger.unique_id_2 == output_channel_dev.unique_id)
         trigger_output_pwm = trigger_output_pwm.filter(Trigger.is_activated == True)
 
         # Execute the Trigger Actions for each Output Trigger

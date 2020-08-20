@@ -711,8 +711,6 @@ def page_dashboard(dashboard_id):
         output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_output_pwm = utils_general.choices_outputs_pwm(
         output, dict_units, dict_measurements, dict_outputs)
-    choices_output_channels_measurements_pwm = utils_general.choices_outputs_channels_measurements_pwm(
-        output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
     choices_pid_devices = utils_general.choices_pids_devices(pid)
@@ -741,7 +739,6 @@ def page_dashboard(dashboard_id):
                            choices_math=choices_math,
                            choices_output=choices_output,
                            choices_output_channels_measurements=choices_output_channels_measurements,
-                           choices_output_channels_measurements_pwm=choices_output_channels_measurements_pwm,
                            choices_output_pwm=choices_output_pwm,
                            choices_pid=choices_pid,
                            choices_pid_devices=choices_pid_devices,
@@ -2060,6 +2057,7 @@ def page_usage():
     math = Math.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
+    output_channel = OutputChannel.query.all()
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
@@ -2070,9 +2068,15 @@ def page_usage():
     choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
 
+    dict_outputs = parse_output_information()
+
+    custom_options_values_output_channels = parse_custom_option_values_channels_json(
+        output_channel, dict_controller=dict_outputs, key_name='custom_channel_options')
+
     energy_usage_stats, graph_info = return_energy_usage(
         energy_usage, DeviceMeasurements.query, Conversion.query)
-    output_stats = return_output_usage(misc, output)
+    output_stats = return_output_usage(
+        dict_outputs, misc, output, OutputChannel, custom_options_values_output_channels)
 
     day = misc.output_usage_dayofmonth
     if 4 <= day <= 20 or 24 <= day <= 30:
@@ -2110,7 +2114,9 @@ def page_usage():
                            calculate_usage=calculate_usage,
                            choices_input=choices_input,
                            choices_math=choices_math,
+                           custom_options_values_output_channels=custom_options_values_output_channels,
                            date_suffix=date_suffix,
+                           dict_outputs=dict_outputs,
                            display_order=display_order,
                            energy_usage=energy_usage,
                            energy_usage_stats=energy_usage_stats,
@@ -2123,6 +2129,7 @@ def page_usage():
                            output_types=output_types(),
                            picker_end=picker_end,
                            picker_start=picker_start,
+                           table_output_channel=OutputChannel,
                            timestamp=time.strftime("%c"))
 
 

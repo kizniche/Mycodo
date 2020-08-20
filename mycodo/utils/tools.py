@@ -226,9 +226,13 @@ def calc_energy_usage(
     return calculate_usage, graph_info, picker_start, picker_end
 
 
-def return_output_usage(table_misc, table_outputs):
+def return_output_usage(
+        dict_outputs,
+        table_misc,
+        outputs,
+        table_output_channels,
+        custom_options_values_output_channels):
     """ Return output usage and cost """
-    dict_outputs = parse_output_information()
     date_now = datetime.date.today()
     time_now = datetime.datetime.now()
     past_month_seconds = 0
@@ -253,67 +257,77 @@ def return_output_usage(table_misc, table_outputs):
     output_stats['total_kwh'] = dict.fromkeys(['1d', '1w', '1m', '1m_date', '1y'], 0)
     output_stats['total_cost'] = dict.fromkeys(['1d', '1w', '1m', '1m_date', '1y'], 0)
 
-    for each_output in table_outputs:
-        if ('output_types' in dict_outputs[each_output.output_type] and
-                'on_off' in dict_outputs[each_output.output_type]['output_types'] and
-                each_output.amps):
-            past_1d_hours = output_sec_on(each_output.unique_id, 86400) / 3600
-            past_1w_hours = output_sec_on(each_output.unique_id, 604800) / 3600
-            past_1m_hours = output_sec_on(each_output.unique_id, 2629743) / 3600
-            past_1m_date_hours = output_sec_on(each_output.unique_id, int(past_month_seconds)) / 3600
-            past_1y_hours = output_sec_on(each_output.unique_id, 31556926) / 3600
+    for each_output in outputs:
+        output_channels = table_output_channels.query.filter(table_output_channels.output_id == each_output.unique_id).all()
+        for each_channel in output_channels:
+            channel_options = custom_options_values_output_channels[each_output.unique_id][each_channel.channel]
+            if ('types' in dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel] and
+                    'on_off' in dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['types'] and
+                    'amps' in channel_options):
+                past_1d_hours = output_sec_on(
+                    each_output.unique_id, 86400, output_channel=each_channel.channel) / 3600
+                past_1w_hours = output_sec_on(
+                    each_output.unique_id, 604800, output_channel=each_channel.channel) / 3600
+                past_1m_hours = output_sec_on(
+                    each_output.unique_id, 2629743, output_channel=each_channel.channel) / 3600
+                past_1m_date_hours = output_sec_on(
+                    each_output.unique_id, int(past_month_seconds), output_channel=each_channel.channel) / 3600
+                past_1y_hours = output_sec_on(
+                    each_output.unique_id, 31556926, output_channel=each_channel.channel) / 3600
 
-            past_1d_kwh = table_misc.output_usage_volts * each_output.amps * past_1d_hours / 1000
-            past_1w_kwh = table_misc.output_usage_volts * each_output.amps * past_1w_hours / 1000
-            past_1m_kwh = table_misc.output_usage_volts * each_output.amps * past_1m_hours / 1000
-            past_1m_date_kwh = table_misc.output_usage_volts * each_output.amps * past_1m_date_hours / 1000
-            past_1y_kwh = table_misc.output_usage_volts * each_output.amps * past_1y_hours / 1000
+                past_1d_kwh = table_misc.output_usage_volts * channel_options['amps'] * past_1d_hours / 1000
+                past_1w_kwh = table_misc.output_usage_volts * channel_options['amps'] * past_1w_hours / 1000
+                past_1m_kwh = table_misc.output_usage_volts * channel_options['amps'] * past_1m_hours / 1000
+                past_1m_date_kwh = table_misc.output_usage_volts * channel_options['amps'] * past_1m_date_hours / 1000
+                past_1y_kwh = table_misc.output_usage_volts * channel_options['amps'] * past_1y_hours / 1000
 
-            output_stats[each_output.unique_id] = {
-                '1d': {
-                    'hours_on': past_1d_hours,
-                    'kwh': past_1d_kwh,
-                    'cost': table_misc.output_usage_cost * past_1d_kwh
-                },
-                '1w': {
-                    'hours_on': past_1w_hours,
-                    'kwh': past_1w_kwh,
-                    'cost': table_misc.output_usage_cost * past_1w_kwh
-                },
-                '1m': {
-                    'hours_on': past_1m_hours,
-                    'kwh': past_1m_kwh,
-                    'cost': table_misc.output_usage_cost * past_1m_kwh
-                },
-                '1m_date': {
-                    'hours_on': past_1m_date_hours,
-                    'kwh': past_1m_date_kwh,
-                    'cost': table_misc.output_usage_cost * past_1m_date_kwh
-                },
-                '1y': {
-                    'hours_on': past_1y_hours,
-                    'kwh': past_1y_kwh,
-                    'cost': table_misc.output_usage_cost * past_1y_kwh
+                if each_output.unique_id not in output_stats:
+                    output_stats[each_output.unique_id] = {}
+                output_stats[each_output.unique_id][each_channel.unique_id] = {
+                    '1d': {
+                        'hours_on': past_1d_hours,
+                        'kwh': past_1d_kwh,
+                        'cost': table_misc.output_usage_cost * past_1d_kwh
+                    },
+                    '1w': {
+                        'hours_on': past_1w_hours,
+                        'kwh': past_1w_kwh,
+                        'cost': table_misc.output_usage_cost * past_1w_kwh
+                    },
+                    '1m': {
+                        'hours_on': past_1m_hours,
+                        'kwh': past_1m_kwh,
+                        'cost': table_misc.output_usage_cost * past_1m_kwh
+                    },
+                    '1m_date': {
+                        'hours_on': past_1m_date_hours,
+                        'kwh': past_1m_date_kwh,
+                        'cost': table_misc.output_usage_cost * past_1m_date_kwh
+                    },
+                    '1y': {
+                        'hours_on': past_1y_hours,
+                        'kwh': past_1y_kwh,
+                        'cost': table_misc.output_usage_cost * past_1y_kwh
+                    }
                 }
-            }
 
-            output_stats['total_duration']['1d'] += past_1d_hours
-            output_stats['total_duration']['1w'] += past_1w_hours
-            output_stats['total_duration']['1m'] += past_1m_hours
-            output_stats['total_duration']['1m_date'] += past_1m_date_hours
-            output_stats['total_duration']['1y'] += past_1y_hours
+                output_stats['total_duration']['1d'] += past_1d_hours
+                output_stats['total_duration']['1w'] += past_1w_hours
+                output_stats['total_duration']['1m'] += past_1m_hours
+                output_stats['total_duration']['1m_date'] += past_1m_date_hours
+                output_stats['total_duration']['1y'] += past_1y_hours
 
-            output_stats['total_kwh']['1d'] += past_1d_kwh
-            output_stats['total_kwh']['1w'] += past_1w_kwh
-            output_stats['total_kwh']['1m'] += past_1m_kwh
-            output_stats['total_kwh']['1m_date'] += past_1m_date_kwh
-            output_stats['total_kwh']['1y'] += past_1y_kwh
+                output_stats['total_kwh']['1d'] += past_1d_kwh
+                output_stats['total_kwh']['1w'] += past_1w_kwh
+                output_stats['total_kwh']['1m'] += past_1m_kwh
+                output_stats['total_kwh']['1m_date'] += past_1m_date_kwh
+                output_stats['total_kwh']['1y'] += past_1y_kwh
 
-            output_stats['total_cost']['1d'] += table_misc.output_usage_cost * past_1d_kwh
-            output_stats['total_cost']['1w'] += table_misc.output_usage_cost * past_1w_kwh
-            output_stats['total_cost']['1m'] += table_misc.output_usage_cost * past_1m_kwh
-            output_stats['total_cost']['1m_date'] += table_misc.output_usage_cost * past_1m_date_kwh
-            output_stats['total_cost']['1y'] += table_misc.output_usage_cost * past_1y_kwh
+                output_stats['total_cost']['1d'] += table_misc.output_usage_cost * past_1d_kwh
+                output_stats['total_cost']['1w'] += table_misc.output_usage_cost * past_1w_kwh
+                output_stats['total_cost']['1m'] += table_misc.output_usage_cost * past_1m_kwh
+                output_stats['total_cost']['1m_date'] += table_misc.output_usage_cost * past_1m_date_kwh
+                output_stats['total_cost']['1y'] += table_misc.output_usage_cost * past_1y_kwh
 
     return output_stats
 

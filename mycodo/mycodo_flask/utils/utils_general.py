@@ -793,20 +793,6 @@ def choices_outputs_pwm(output, dict_units, dict_measurements, dict_outputs):
     return choices
 
 
-def choices_outputs_channels_measurements_pwm(
-        output, table_output_channel, dict_outputs, dict_units, dict_measurements):
-    """ populate form multi-select choices from Output entries """
-    choices = []
-    for each_output in output:
-        if ('output_types' in dict_outputs[each_output.output_type] and
-                'pwm' in dict_outputs[each_output.output_type]['output_types']):
-            output_channels = table_output_channel.query.filter(
-                table_output_channel.output_id == each_output.unique_id).all()
-            choices = form_output_channel_measurement_choices(
-                choices, each_output, output_channels, dict_outputs, dict_units, dict_measurements)
-    return choices
-
-
 def choices_pids(pid, dict_units, dict_measurements):
     """ populate form multi-select choices from PID entries """
     choices = []
@@ -1069,7 +1055,14 @@ def form_output_channel_measurement_choices(
                     chan_name=channel_name,
                     meas=measurement_unit)
 
-                choices.append({'value': value, 'item': display})
+                types = []
+                if 'types' in dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]:
+                    types = dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['types']
+
+                choices.append(
+                    {'value': value,
+                     'item': display,
+                     'types': types})
 
     return choices
 
@@ -1090,7 +1083,15 @@ def form_output_channel_choices(choices, each_output, each_channel, dict_outputs
             dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['name']):
         display += ': {}'.format(dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['name'])
 
-    choices.append({'value': value, 'item': display})
+    types = []
+    if 'types' in dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]:
+        types = dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['types']
+
+    choices.append({
+        'value': value,
+         'item': display,
+         'types': types
+    })
 
     return choices
 

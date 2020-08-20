@@ -35,6 +35,12 @@ def upgrade():
         keep_existing=True
     )
 
+    with op.batch_alter_table("trigger") as batch_op:
+        batch_op.add_column(sa.Column('unique_id_3', sa.String))
+
 
 def downgrade():
     op.drop_table('output_channel')
+
+    with op.batch_alter_table("trigger") as batch_op:
+        batch_op.drop_column('unique_id_3')

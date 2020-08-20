@@ -91,7 +91,7 @@ def dashboard_copy(form):
         widgets = Widget.query.filter(Widget.dashboard_id == dashboard.unique_id).all()
 
         # Duplicate dashboard with new unique_id and name
-        new_dashboard = clone_model(dashboard, unique_id=set_uuid(), name="TEST")
+        new_dashboard = clone_model(dashboard, unique_id=set_uuid(), name="New Dashboard")
 
         # Duplicate all widgets and assign them to the new dashboard
         for each_widget in widgets:

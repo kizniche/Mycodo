@@ -184,7 +184,7 @@ class PIDController(AbstractController, threading.Thread):
         self.raise_min_off_duration = pid.raise_min_off_duration
         self.raise_always_min_pwm = pid.raise_always_min_pwm
         self.lower_output_id = pid.lower_output_id.split(",")[0]
-        self.lower_output_channel = pid.lower_output_id.split(",")[0]
+        self.lower_output_channel = pid.lower_output_id.split(",")[1]
         self.lower_output_type = pid.lower_output_type
         self.lower_min_duration = pid.lower_min_duration
         self.lower_max_duration = pid.lower_max_duration

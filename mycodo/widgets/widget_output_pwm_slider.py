@@ -246,11 +246,11 @@ $(document).ready(function() {
     {% endif %}
     modOutputPWM(send_cmd);
   });
-  $('.duty_cycle_on_amt_pwm_slider').click(function() {
+  $('.duty_cycle_on_amt_pwm_slider').click(function() {const output_id = btn_val.split('/')[1];
+    const channel_id = btn_val.split('/')[2];
     const btn_val = this.name;
     const chart = btn_val.split('/')[0];
-    const output_id = btn_val.split('/')[1];
-    const channel_id = btn_val.split('/')[2];
+    
     const dc = $('#pwm_slider_duty_cycle_on_amt_' + chart + '_' + output_id + '_' + channel_id).val();
     const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
     {% if not misc.hide_alert_info %}

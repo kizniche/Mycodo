@@ -1188,8 +1188,7 @@ class PyroServer(object):
 
     def trigger_all_actions(self, function_id, message='', debug=False):
         """Trigger all actions"""
-        return self.mycodo.trigger_all_actions(
-            function_id, message=message, debug=debug)
+        return self.mycodo.trigger_all_actions(function_id, message=message, debug=debug)
 
     def terminate_daemon(self):
         """Instruct the daemon to shut down"""

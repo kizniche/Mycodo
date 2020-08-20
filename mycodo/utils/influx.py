@@ -479,7 +479,7 @@ def read_past_influxdb(unique_id, unit, channel, past_seconds, measure=None):
     return last_measurement
 
 
-def output_sec_on(output_id, past_seconds):
+def output_sec_on(output_id, past_seconds, output_channel=0):
     """ Return the number of seconds a output has been ON in the past number of seconds """
     # Get the number of seconds ON stored in the database
     output = db_retrieve_table_daemon(Output, unique_id=output_id)
@@ -492,14 +492,15 @@ def output_sec_on(output_id, past_seconds):
     output_time_on = 0
     try:
         control = DaemonControl()
-        if control.output_state(output_id) == 'on':
-            output_time_on = control.output_sec_currently_on(output_id)
+        if control.output_state(output_id, output_channel=output_channel) == 'on':
+            output_time_on = control.output_sec_currently_on(
+                output_id, output_channel=output_channel)
     except Exception:
         logger.exception("output_sec_on()")
 
     query = query_string('s', output.unique_id,
                          measure='duration_time',
-                         channel=0,
+                         channel=output_channel,
                          value='SUM',
                          past_sec=past_seconds)
     query_output = client.query(query)
