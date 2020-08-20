@@ -392,7 +392,7 @@ WIDGET_INFORMATION = {
 
         {%- for each_input in input if each_input.unique_id == device_id %}
              pointFormatter: function () {
-              return '<span style="color:'+ this.series.color + '"">&#9679;</span> ' + this.series.name + ':<b> ' + Highcharts.numberFormat(this.y, 2) + ' {{dict_units[device_measurements_dict[measurement_id].unit]['unit']}}</b><br>';
+              return '<span style="color:'+ this.series.color + '"">o</span> ' + this.series.name + ':<b> ' + Highcharts.numberFormat(this.y, 2) + ' {{dict_units[device_measurements_dict[measurement_id].unit]['unit']}}</b><br>';
             },
         {%- endfor -%}
 
