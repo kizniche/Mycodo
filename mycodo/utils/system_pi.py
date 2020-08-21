@@ -19,14 +19,13 @@ from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.config_devices_units import UNIT_CONVERSIONS
-from mycodo.databases.models import Output
 from mycodo.databases.models import DeviceMeasurements
+from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.logging_utils import set_log_level
 
 logger = logging.getLogger("mycodo.system_pi")
-
-if logging.getLevelName(logging.getLogger().getEffectiveLevel()) == 'INFO':
-    logger.setLevel(logging.INFO)
+logger.setLevel(set_log_level(logging))
 
 
 def parse_custom_option_values(controllers, dict_controller=None):

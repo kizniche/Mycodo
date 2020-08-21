@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# wired.py - Output for simple GPIO switching
+# on_off_gpio.py - Output for simple GPIO switching
 #
 from flask import flash
 from flask_babel import lazy_gettext

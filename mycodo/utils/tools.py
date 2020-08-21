@@ -18,12 +18,13 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import average_past_seconds
 from mycodo.utils.influx import average_start_end_seconds
 from mycodo.utils.influx import output_sec_on
-from mycodo.utils.outputs import parse_output_information
+from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import set_user_grp
 
 logger = logging.getLogger("mycodo.tools")
+logger.setLevel(set_log_level(logging))
 
 
 def next_schedule(time_span='daily', set_day=None, set_hour=None):

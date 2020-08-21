@@ -17,11 +17,10 @@ from mycodo.databases.models import Output
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.logging_utils import set_log_level
 
 logger = logging.getLogger("mycodo.influxdb")
-
-if logging.getLevelName(logging.getLogger().getEffectiveLevel()) == 'INFO':
-    logger.setLevel(logging.INFO)
+logger.setLevel(set_log_level(logging))
 
 
 def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):

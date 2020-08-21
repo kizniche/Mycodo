@@ -1,6 +1,6 @@
     {% if each_option['type'] in ['float', 'integer', 'text'] %}
 
-<div class="col-auto">
+<div class="{% if 'col_width' in each_option %}col-{{each_option['col_width']}}{% else %}col-auto{% endif %}">
   <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
     <input class="form-control" id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}" type="text" value="
