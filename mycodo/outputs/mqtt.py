@@ -1,8 +1,12 @@
 # coding=utf-8
+#
 # mqtt.py - MQTT Output module
+#
 from flask_babel import lazy_gettext
 
+from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
+from mycodo.utils.database import db_retrieve_table_daemon
 
 
 def constraints_pass_positive_value(mod_input, value):
@@ -54,15 +58,13 @@ OUTPUT_INFORMATION = {
     ],
 
     'options_enabled': [
-        'on_off_none_state_startup',
-        'on_off_none_state_shutdown',
-        'current_draw',
+        'command_force',
         'button_on',
         'button_send_duration'
     ],
     'options_disabled': ['interface'],
 
-    'custom_options': [
+    'custom_channel_options': [
         {
             'id': 'hostname',
             'type': 'text',
@@ -119,6 +121,38 @@ OUTPUT_INFORMATION = {
             'required': True,
             'name': lazy_gettext('Off Payload'),
             'phrase': lazy_gettext('The payload to send when turned off')
+        },
+        {
+            'id': 'state_startup',
+            'type': 'select',
+            'default_value': 0,
+            'options_select': [
+                (-1, 'Do Nothing'),
+                (0, 'Off'),
+                (1, 'On')
+            ],
+            'name': lazy_gettext('Startup State'),
+            'phrase': lazy_gettext('Set the state when Mycodo starts')
+        },
+        {
+            'id': 'state_shutdown',
+            'type': 'select',
+            'default_value': 0,
+            'options_select': [
+                (-1, 'Do Nothing'),
+                (0, 'Off'),
+                (1, 'On')
+            ],
+            'name': lazy_gettext('Shutdown State'),
+            'phrase': lazy_gettext('Set the state when Mycodo shuts down')
+        },
+        {
+            'id': 'amps',
+            'type': 'float',
+            'default_value': 0.0,
+            'required': True,
+            'name': lazy_gettext('Current (Amps)'),
+            'phrase': lazy_gettext('The current draw of the device being controlled')
         }
     ]
 }
@@ -131,19 +165,12 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
-        self.state_startup = None
-        self.state_shutdown = None
-
         self.publish = None
-        self.hostname = None
-        self.port = None
-        self.topic = None
-        self.keepalive = None
-        self.clientid = None
-        self.payload_off = None
-        self.payload_on = None
-        self.setup_custom_options(
-            OUTPUT_INFORMATION['custom_options'], output)
+
+        output_channels = db_retrieve_table_daemon(
+            OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()
+        self.options_channels = self.setup_custom_channel_options_json(
+            OUTPUT_INFORMATION['custom_channel_options'], output_channels)
 
     def setup_output(self):
         import paho.mqtt.publish as publish
@@ -151,34 +178,32 @@ class OutputModule(AbstractOutput):
         self.publish = publish
 
         self.setup_on_off_output(OUTPUT_INFORMATION)
-        self.state_startup = self.output.state_startup
-        self.state_shutdown = self.output.state_shutdown
         self.output_setup = True
 
-        if self.state_startup == '1':
+        if self.options_channels['state_startup'][0] == 1:
             self.output_switch('on')
-        elif self.state_startup == '0':
+        elif self.options_channels['state_startup'][0] == 0:
             self.output_switch('off')
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=0):
         try:
             if state == 'on':
                 self.publish.single(
-                    self.topic,
-                    self.payload_on,
-                    hostname=self.hostname,
-                    port=self.port,
-                    client_id=self.clientid,
-                    keepalive=self.keepalive)
+                    self.options_channels['topic'][0],
+                    self.options_channels['payload_on'][0],
+                    hostname=self.options_channels['hostname'][0],
+                    port=self.options_channels['port'][0],
+                    client_id=self.options_channels['clientid'][0],
+                    keepalive=self.options_channels['keepalive'][0])
                 self.output_states[output_channel] = True
             elif state == 'off':
                 self.publish.single(
-                    self.topic,
-                    payload=self.payload_off,
-                    hostname=self.hostname,
-                    port=self.port,
-                    client_id=self.clientid,
-                    keepalive=self.keepalive)
+                    self.options_channels['topic'][0],
+                    payload=self.options_channels['payload_off'][0],
+                    hostname=self.options_channels['hostname'][0],
+                    port=self.options_channels['port'][0],
+                    client_id=self.options_channels['clientid'][0],
+                    keepalive=self.options_channels['keepalive'][0])
                 self.output_states[output_channel] = False
         except Exception as e:
             self.logger.error("State change error: {}".format(e))
@@ -195,8 +220,8 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        if self.state_shutdown == '1':
+        if self.options_channels['state_shutdown'][0] == 1:
             self.output_switch('on')
-        elif self.state_shutdown == '0':
+        elif self.options_channels['state_shutdown'][0] == 0:
             self.output_switch('off')
         self.running = False

@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# python_pwm.py - Output for Python code PWM
+# pwm_python.py - Output for Python code PWM
 #
 import copy
 import importlib.util
@@ -12,6 +12,7 @@ from sqlalchemy import and_
 
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.databases.models import DeviceMeasurements
+from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
@@ -47,14 +48,111 @@ OUTPUT_INFORMATION = {
                'object is a float value that represents the duty cycle that has been set.',
 
     'options_enabled': [
-        'python_pwm',
-        'pwm_state_startup',
-        'pwm_state_shutdown',
         'button_send_duty_cycle'
     ],
     'options_disabled': ['interface'],
 
-    'interfaces': ['PYTHON']
+    'interfaces': ['PYTHON'],
+
+    'custom_channel_options': [
+        {
+            'id': 'pwm_command',
+            'type': 'multiline_text',
+            'lines': 7,
+            'default_value': """
+import datetime
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+log_string = "{ts}: ID: {id}: {dc} % Duty Cycle".format(
+    dc=duty_cycle, id=output_id, ts=timestamp)
+self.logger.info(log_string)""",
+            'required': True,
+            'col_width': 12,
+            'name': lazy_gettext('Bash Command'),
+            'phrase': lazy_gettext('Command to execute to set the PWM duty cycle (%)')
+        },
+        {
+            'id': 'linux_command_user',
+            'type': 'select',
+            'default_value': 'pi',
+            'options_select': [
+                ('pi', 'pi'),
+                ('mycodo', 'mycodo'),
+                ('root', 'root')
+            ],
+            'name': lazy_gettext('User'),
+            'phrase': lazy_gettext('The user to execute the command')
+        },
+        {
+            'id': 'state_startup',
+            'type': 'select',
+            'default_value': '',
+            'options_select': [
+                ('', 'Do Nothing'),
+                ('0', 'Off'),
+                ('set_duty_cycle', 'User Set Value'),
+                ('last_duty_cycle', 'Last Known Value')
+            ],
+            'name': lazy_gettext('Startup State'),
+            'phrase': lazy_gettext('Set the state when Mycodo starts')
+        },
+        {
+            'id': 'startup_value',
+            'type': 'float',
+            'default_value': 0.0,
+            'required': True,
+            'name': lazy_gettext('Startup Value'),
+            'phrase': lazy_gettext('The value when Mycodo starts')
+        },
+        {
+            'id': 'state_shutdown',
+            'type': 'select',
+            'default_value': '',
+            'options_select': [
+                ('', 'Do Nothing'),
+                ('0', 'Off'),
+                ('set_duty_cycle', 'User Set Value')
+            ],
+            'name': lazy_gettext('Shutdown State'),
+            'phrase': lazy_gettext('Set the state when Mycodo shuts down')
+        },
+        {
+            'id': 'shutdown_value',
+            'type': 'float',
+            'default_value': 0.0,
+            'required': True,
+            'name': lazy_gettext('Shutdown Value'),
+            'phrase': lazy_gettext('The value when Mycodo shuts down')
+        },
+        {
+            'id': 'pwm_invert_signal',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Invert Signal'),
+            'phrase': lazy_gettext('Invert the PWM signal')
+        },
+        {
+            'id': 'trigger_functions_startup',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Trigger Functions at Startup'),
+            'phrase': lazy_gettext('Whether to trigger functions when the output switches at startup')
+        },
+        {
+            'id': 'command_force',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Force Command'),
+            'phrase': lazy_gettext('Always send the commad if instructed, regardless of the current state')
+        },
+        {
+            'id': 'amps',
+            'type': 'float',
+            'default_value': 0.0,
+            'required': True,
+            'name': lazy_gettext('Current (Amps)'),
+            'phrase': lazy_gettext('The current draw of the device being controlled')
+        }
+    ]
 }
 
 
@@ -65,25 +163,17 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
-        self.state_startup = None
-        self.startup_value = None
-        self.state_shutdown = None
-        self.shutdown_value = None
-        self.pwm_state = None
-        self.pwm_command = None
-        self.pwm_invert_signal = None
         self.output_run_python_pwm = None
+
+        output_channels = db_retrieve_table_daemon(
+            OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()
+        self.options_channels = self.setup_custom_channel_options_json(
+            OUTPUT_INFORMATION['custom_channel_options'], output_channels)
 
     def setup_output(self):
         self.setup_on_off_output(OUTPUT_INFORMATION)
-        self.state_startup = self.output.state_startup
-        self.startup_value = self.output.startup_value
-        self.state_shutdown = self.output.state_shutdown
-        self.shutdown_value = self.output.shutdown_value
-        self.pwm_command = self.output.pwm_command
-        self.pwm_invert_signal = self.output.pwm_invert_signal
 
-        if not self.pwm_command:
+        if not self.options_channels['pwm_command'][0]:
             self.logger.error("Output must have Python Code set")
             return
 
@@ -99,11 +189,11 @@ class OutputModule(AbstractOutput):
 
             self.output_setup = True
 
-            if self.state_startup == '0':
+            if self.options_channels['state_startup'][0] == '0':
                 self.output_switch('off')
-            elif self.state_startup == 'set_duty_cycle':
-                self.output_switch('on', amount=self.startup_value)
-            elif self.state_startup == 'last_duty_cycle':
+            elif self.options_channels['state_startup'][0] == 'set_duty_cycle':
+                self.output_switch('on', amount=self.options_channels['startup_value'][0])
+            elif self.options_channels['state_startup'][0] == 'last_duty_cycle':
                 device_measurement = db_retrieve_table_daemon(DeviceMeasurements).filter(
                     and_(DeviceMeasurements.device_id == self.unique_id,
                          DeviceMeasurements.channel == 0)).first()
@@ -135,12 +225,12 @@ class OutputModule(AbstractOutput):
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         measure_dict = copy.deepcopy(measurements_dict)
 
-        if self.pwm_command:
+        if self.options_channels['pwm_command'][0]:
             if state == 'on' and 100 >= amount >= 0:
-                if self.pwm_invert_signal:
+                if self.options_channels['pwm_invert_signal'][0]:
                     amount = 100.0 - abs(amount)
             elif state == 'off' or amount == 0:
-                if self.pwm_invert_signal:
+                if self.options_channels['pwm_invert_signal'][0]:
                     amount = 100
                 else:
                     amount = 0
@@ -148,7 +238,7 @@ class OutputModule(AbstractOutput):
                 return
 
             self.output_run_python_pwm.output_code_run(amount)
-            self.pwm_state = amount
+            self.output_states[0] = amount
 
             measure_dict[0]['value'] = amount
             add_measurements_influxdb(self.unique_id, measure_dict)
@@ -157,8 +247,8 @@ class OutputModule(AbstractOutput):
 
     def is_on(self, output_channel=None):
         if self.is_setup():
-            if self.pwm_state:
-                return self.pwm_state
+            if self.output_states[0]:
+                return self.output_states[0]
             return False
 
     def is_setup(self):
@@ -166,10 +256,10 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        if self.state_shutdown == '0':
+        if self.options_channels['state_shutdown'][0] == '0':
             self.output_switch('off')
-        elif self.state_shutdown == 'set_duty_cycle':
-            self.output_switch('on', amount=self.shutdown_value)
+        elif self.options_channels['state_shutdown'][0] == 'set_duty_cycle':
+            self.output_switch('on', amount=self.options_channels['shutdown_value'][0])
         self.running = False
 
     def save_output_python_pwm_code(self, unique_id):
@@ -195,7 +285,8 @@ class OutputRun:
     def output_code_run(self, duty_cycle):
 """
 
-        code_replaced = self.pwm_command.replace('((duty_cycle))', 'duty_cycle')
+        code_replaced = self.options_channels['pwm_command'][0].replace(
+            '((duty_cycle))', 'duty_cycle')
         indented_code = textwrap.indent(code_replaced, ' ' * 8)
         full_command_pwm = pre_statement_run + indented_code
 

@@ -1,15 +1,17 @@
 # coding=utf-8
 #
-# python.py - Output for executing python code
+# on_off_python.py - Output for executing python code
 #
 import importlib.util
+import os
 import textwrap
 
-import os
 from flask_babel import lazy_gettext
 
 from mycodo.config import PATH_PYTHON_CODE_USER
+from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
+from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import set_user_grp
 
@@ -39,18 +41,89 @@ OUTPUT_INFORMATION = {
     'message': 'Python 3 code will be executed when this output is turned on or off.',
 
     'options_enabled': [
-        'python_on',
-        'python_off',
-        'command_force',
-        'on_off_none_state_startup',
-        'on_off_none_state_shutdown',
-        'current_draw',
         'button_on',
         'button_send_duration'
     ],
     'options_disabled': ['interface'],
 
-    'interfaces': ['PYTHON']
+    'interfaces': ['PYTHON'],
+
+    'custom_channel_options': [
+        {
+            'id': 'on_command',
+            'type': 'multiline_text',
+            'lines': 7,
+            'default_value': """
+import datetime
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+log_string = "{ts}: ID: {id}: ON".format(id=output_id, ts=timestamp)
+self.logger.info(log_string)""",
+            'required': True,
+            'col_width': 12,
+            'name': lazy_gettext('On Command'),
+            'phrase': lazy_gettext('Python code to execute when the output is instructed to turn on')
+        },
+        {
+            'id': 'off_command',
+            'type': 'multiline_text',
+            'lines': 7,
+            'default_value': """
+import datetime
+timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+log_string = "{ts}: ID: {id}: OFF".format(id=output_id, ts=timestamp)
+self.logger.info(log_string)""",
+            'required': True,
+            'col_width': 12,
+            'name': lazy_gettext('Off Command'),
+            'phrase': lazy_gettext('Python code to execute when the output is instructed to turn off')
+        },
+        {
+            'id': 'state_startup',
+            'type': 'select',
+            'default_value': 0,
+            'options_select': [
+                (-1, 'Do Nothing'),
+                (0, 'Off'),
+                (1, 'On')
+            ],
+            'name': lazy_gettext('Startup State'),
+            'phrase': lazy_gettext('Set the state when Mycodo starts')
+        },
+        {
+            'id': 'state_shutdown',
+            'type': 'select',
+            'default_value': 0,
+            'options_select': [
+                (-1, 'Do Nothing'),
+                (0, 'Off'),
+                (1, 'On')
+            ],
+            'name': lazy_gettext('Shutdown State'),
+            'phrase': lazy_gettext('Set the state when Mycodo shuts down')
+        },
+        {
+            'id': 'trigger_functions_startup',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Trigger Functions at Startup'),
+            'phrase': lazy_gettext('Whether to trigger functions when the output switches at startup')
+        },
+        {
+            'id': 'command_force',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Force Command'),
+            'phrase': lazy_gettext('Always send the commad if instructed, regardless of the current state')
+        },
+        {
+            'id': 'amps',
+            'type': 'float',
+            'default_value': 0.0,
+            'required': True,
+            'name': lazy_gettext('Current (Amps)'),
+            'phrase': lazy_gettext('The current draw of the device being controlled')
+        }
+    ]
 }
 
 
@@ -61,21 +134,18 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
-        self.state_startup = None
-        self.state_shutdown = None
-        self.on_command = None
-        self.off_command = None
         self.run_python_on = None
         self.run_python_off = None
 
+        output_channels = db_retrieve_table_daemon(
+            OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()
+        self.options_channels = self.setup_custom_channel_options_json(
+            OUTPUT_INFORMATION['custom_channel_options'], output_channels)
+
     def setup_output(self):
         self.setup_on_off_output(OUTPUT_INFORMATION)
-        self.state_startup = self.output.state_startup
-        self.state_shutdown = self.output.state_shutdown
-        self.on_command = self.output.on_command
-        self.off_command = self.output.off_command
 
-        if not self.on_command or not self.off_command:
+        if not self.options_channels['on_command'][0] or not self.options_channels['off_command'][0]:
             self.logger.error("Output must have both On and Off Python Code set")
             return
 
@@ -98,18 +168,18 @@ class OutputModule(AbstractOutput):
 
             self.output_setup = True
 
-            if self.state_startup == '1':
+            if self.options_channels['state_startup'][0] == 1:
                 self.output_switch('on')
-            elif self.state_startup == '0':
+            elif self.options_channels['state_startup'][0] == 0:
                 self.output_switch('off')
         except Exception:
             self.logger.exception("Could not set up output")
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
-        if state == 'on' and self.on_command:
+        if state == 'on' and self.options_channels['on_command'][0]:
             self.run_python_on.output_code_run()
             self.output_states[output_channel] = True
-        elif state == 'off' and self.off_command:
+        elif state == 'off' and self.options_channels['off_command'][0]:
             self.run_python_off.output_code_run()
             self.output_states[output_channel] = False
         else:
@@ -127,9 +197,9 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        if self.state_shutdown == '1':
+        if self.options_channels['state_shutdown'][0] == 1:
             self.output_switch('on')
-        elif self.state_shutdown == '0':
+        elif self.options_channels['state_shutdown'][0] == 0:
             self.output_switch('off')
         self.running = False
 
@@ -155,10 +225,10 @@ class OutputRun:
     def output_code_run(self):
 """
 
-        code_on_indented = textwrap.indent(self.on_command, ' ' * 8)
+        code_on_indented = textwrap.indent(self.options_channels['on_command'][0], ' ' * 8)
         full_command_on = pre_statement_run + code_on_indented
 
-        code_off_indented = textwrap.indent(self.off_command, ' ' * 8)
+        code_off_indented = textwrap.indent(self.options_channels['off_command'][0], ' ' * 8)
         full_command_off = pre_statement_run + code_off_indented
 
         assure_path_exists(PATH_PYTHON_CODE_USER)

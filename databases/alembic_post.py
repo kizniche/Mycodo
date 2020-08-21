@@ -62,14 +62,50 @@ if __name__ == "__main__":
             # TODO: update database entries to include output channel
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
+            import json
+            from mycodo.databases.models import Output
+            from mycodo.databases.models import OutputChannel
+
             try:
-                try:
-                    pass
-                except Exception:
-                    msg = "ERROR: post-alembic revision {}: {}".format(
-                        each_revision, traceback.format_exc())
-                    error.append(msg)
-                    print(msg)
+                with session_scope(MYCODO_DB_PATH) as session:
+                    for each_output in session.query(Output).all():
+                        custom_options = {
+                            'pin': each_output.pin,
+                            'on_state': int(each_output.on_state),
+                            'amps': each_output.amps,
+                            'protocol': each_output.protocol,
+                            'pulse_length': each_output.pulse_length,
+                            'linux_command_user': each_output.linux_command_user,
+                            'on_command': each_output.on_command,
+                            'off_command': each_output.off_command,
+                            'pwm_command': each_output.pwm_command,
+                            'force_command': each_output.force_command,
+                            'trigger_functions_at_start': each_output.trigger_functions_at_start,
+                            'startup_value': each_output.startup_value,
+                            'shutdown_value': each_output.shutdown_value,
+                            'pwm_hertz': each_output.pwm_hertz,
+                            'pwm_library': each_output.pwm_library,
+                            'pwm_invert_signal': each_output.pwm_invert_signal,
+                            'flow_mode': each_output.output_mode,
+                            'flow_rate': each_output.flow_rate
+                        }
+
+                        if each_output.output_type in ["python",
+                                                       "command",
+                                                       "wireless_rpi_rf",
+                                                       "MQTT_PAHO"]:
+                            custom_options['state_startup'] = int(each_output.state_startup)
+                            custom_options['state_shutdown'] = int(each_output.state_shutdown)
+                        else:
+                            custom_options['state_startup'] = each_output.state_startup
+                            custom_options['state_shutdown'] = each_output.state_shutdown
+
+                        new_channel = OutputChannel()
+                        new_channel.output_id = each_output.unique_id
+                        new_channel.channel = 0
+                        new_channel.custom_options = json.dumps(custom_options)
+                        session.add(new_channel)
+                        session.commit()
 
             except Exception:
                 msg = "ERROR: post-alembic revision {}: {}".format(
@@ -86,7 +122,48 @@ if __name__ == "__main__":
             try:
                 with session_scope(MYCODO_DB_PATH) as session:
                     for each_widget in session.query(Widget).all():
-                        custom_options = {}
+                        custom_options = {
+                            'refresh_seconds': each_widget.refresh_duration,
+                            'x_axis_minutes': each_widget.x_axis_duration,
+                            'custom_yaxes': each_widget.custom_yaxes.split(";"),
+                            'decimal_places': each_widget.decimal_places,
+                            'enable_status': each_widget.enable_status,
+                            'enable_value': each_widget.enable_value,
+                            'enable_name': each_widget.enable_name,
+                            'enable_unit': each_widget.enable_unit,
+                            'enable_measurement': each_widget.enable_measurement,
+                            'enable_channel': each_widget.enable_channel,
+                            'enable_timestamp': each_widget.enable_timestamp,
+                            'enable_navbar': each_widget.enable_navbar,
+                            'enable_rangeselect': each_widget.enable_rangeselect,
+                            'enable_export': each_widget.enable_export,
+                            'enable_title': each_widget.enable_title,
+                            'enable_auto_refresh': each_widget.enable_auto_refresh,
+                            'enable_xaxis_reset': each_widget.enable_xaxis_reset,
+                            'enable_manual_y_axis': each_widget.enable_manual_y_axis,
+                            'enable_start_on_tick': each_widget.enable_start_on_tick,
+                            'enable_end_on_tick': each_widget.enable_end_on_tick,
+                            'enable_align_ticks': each_widget.enable_align_ticks,
+                            'use_custom_colors': each_widget.use_custom_colors,
+                            'custom_colors': each_widget.custom_colors.split(","),
+                            'range_colors': each_widget.range_colors.split(";"),
+                            'disable_data_grouping': each_widget.disable_data_grouping.split(","),
+                            'max_measure_age': each_widget.max_measure_age,
+                            'stops': each_widget.stops,
+                            'min': each_widget.y_axis_min,
+                            'max': each_widget.y_axis_max,
+                            'option_invert': each_widget.option_invert,
+                            'font_em_name': each_widget.font_em_name,
+                            'font_em_value': each_widget.font_em_value,
+                            'font_em_timestamp': each_widget.font_em_timestamp,
+                            'enable_output_controls': each_widget.enable_output_controls,
+                            'show_pid_info': each_widget.show_pid_info,
+                            'show_set_setpoint': each_widget.show_set_setpoint,
+                            'camera_id': each_widget.camera_id,
+                            'camera_image_type': each_widget.camera_image_type,
+                            'max_age': each_widget.camera_max_age
+                        }
+
                         if each_widget.graph_type == 'graph':
                             each_widget.graph_type = 'widget_graph_synchronous'
                             custom_options['measurements_math'] = each_widget.math_ids.split(";")
@@ -120,45 +197,6 @@ if __name__ == "__main__":
                         elif each_widget.graph_type == 'camera':
                             each_widget.graph_type = 'widget_camera'
 
-                        custom_options['refresh_seconds'] = each_widget.refresh_duration
-                        custom_options['x_axis_minutes'] = each_widget.x_axis_duration
-                        custom_options['custom_yaxes'] = each_widget.custom_yaxes.split(";")
-                        custom_options['decimal_places'] = each_widget.decimal_places
-                        custom_options['enable_status'] = each_widget.enable_status
-                        custom_options['enable_value'] = each_widget.enable_value
-                        custom_options['enable_name'] = each_widget.enable_name
-                        custom_options['enable_unit'] = each_widget.enable_unit
-                        custom_options['enable_measurement'] = each_widget.enable_measurement
-                        custom_options['enable_channel'] = each_widget.enable_channel
-                        custom_options['enable_timestamp'] = each_widget.enable_timestamp
-                        custom_options['enable_navbar'] = each_widget.enable_navbar
-                        custom_options['enable_rangeselect'] = each_widget.enable_rangeselect
-                        custom_options['enable_export'] = each_widget.enable_export
-                        custom_options['enable_title'] = each_widget.enable_title
-                        custom_options['enable_auto_refresh'] = each_widget.enable_auto_refresh
-                        custom_options['enable_xaxis_reset'] = each_widget.enable_xaxis_reset
-                        custom_options['enable_manual_y_axis'] = each_widget.enable_manual_y_axis
-                        custom_options['enable_start_on_tick'] = each_widget.enable_start_on_tick
-                        custom_options['enable_end_on_tick'] = each_widget.enable_end_on_tick
-                        custom_options['enable_align_ticks'] = each_widget.enable_align_ticks
-                        custom_options['use_custom_colors'] = each_widget.use_custom_colors
-                        custom_options['custom_colors'] = each_widget.custom_colors.split(",")
-                        custom_options['range_colors'] = each_widget.range_colors.split(";")
-                        custom_options['disable_data_grouping'] = each_widget.disable_data_grouping.split(",")
-                        custom_options['max_measure_age'] = each_widget.max_measure_age
-                        custom_options['stops'] = each_widget.stops
-                        custom_options['min'] = each_widget.y_axis_min
-                        custom_options['max'] = each_widget.y_axis_max
-                        custom_options['option_invert'] = each_widget.option_invert
-                        custom_options['font_em_name'] = each_widget.font_em_name
-                        custom_options['font_em_value'] = each_widget.font_em_value
-                        custom_options['font_em_timestamp'] = each_widget.font_em_timestamp
-                        custom_options['enable_output_controls'] = each_widget.enable_output_controls
-                        custom_options['show_pid_info'] = each_widget.show_pid_info
-                        custom_options['show_set_setpoint'] = each_widget.show_set_setpoint
-                        custom_options['camera_id'] = each_widget.camera_id
-                        custom_options['camera_image_type'] = each_widget.camera_image_type
-                        custom_options['max_age'] = each_widget.camera_max_age
                         each_widget.custom_options = json.dumps(custom_options)
                         session.commit()
             except Exception:

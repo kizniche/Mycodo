@@ -71,7 +71,7 @@ OUTPUT_INFORMATION = {
                 ('root', 'root')
             ],
             'name': lazy_gettext('User'),
-            'phrase': lazy_gettext('the user to execute the command')
+            'phrase': lazy_gettext('The user to execute the command')
         },
         {
             'id': 'state_startup',
@@ -127,6 +127,13 @@ OUTPUT_INFORMATION = {
             'default_value': False,
             'name': lazy_gettext('Trigger Functions at Startup'),
             'phrase': lazy_gettext('Whether to trigger functions when the output switches at startup')
+        },
+        {
+            'id': 'command_force',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Force Command'),
+            'phrase': lazy_gettext('Always send the commad if instructed, regardless of the current state')
         },
         {
             'id': 'amps',
