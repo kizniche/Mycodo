@@ -5291,7 +5291,7 @@ msgstr ""
 "secondes, ou 0 si elle est désactivée."
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:13
-msgid "returns \"on\" if the output is on and \"off\" if the output os off."
+msgid "returns \"on\" if the output is on and \"off\" if the output is off."
 msgstr ""
 "retours « sur » si la sortie est activée et « off » si le hors os de "
 "sortie."

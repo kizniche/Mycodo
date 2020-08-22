@@ -59,26 +59,12 @@ class ConditionalController(AbstractController, threading.Thread):
         self.pause_loop = False
         self.verify_pause_loop = True
         self.is_activated = None
-        self.smtp_max_count = None
-        self.email_count = None
-        self.allowed_to_send_notice = None
         self.period = None
         self.start_offset = None
         self.log_level_debug = None
         self.message_include_code = None
         self.conditional_statement = None
-        self.smtp_wait_timer = None
         self.timer_period = None
-        self.timer_start_time = None
-        self.timer_end_time = None
-        self.unique_id_1 = None
-        self.unique_id_2 = None
-        self.trigger_actions_at_period = None
-        self.trigger_actions_at_start = None
-        self.method_start_time = None
-        self.method_end_time = None
-        self.method_start_act = None
-
         self.file_run = None
         self.conditional_run = None
 
@@ -103,15 +89,6 @@ class ConditionalController(AbstractController, threading.Thread):
 
     def initialize_variables(self):
         """ Define all settings """
-        self.email_count = 0
-        self.allowed_to_send_notice = True
-
-        self.sample_rate = db_retrieve_table_daemon(
-            Misc, entry='first').sample_rate_controller_conditional
-
-        self.smtp_max_count = db_retrieve_table_daemon(
-            SMTP, entry='first').hourly_max
-
         cond = db_retrieve_table_daemon(
             Conditional, unique_id=self.unique_id)
         self.is_activated = cond.is_activated
@@ -124,7 +101,6 @@ class ConditionalController(AbstractController, threading.Thread):
         self.set_log_level_debug(self.log_level_debug)
 
         now = time.time()
-        self.smtp_wait_timer = now + 3600
         self.timer_period = now + self.start_offset
 
         self.file_run = '{}/conditional_{}.py'.format(
@@ -190,7 +166,7 @@ class ConditionalController(AbstractController, threading.Thread):
                        '\n{statement}' \
                        '\n--------------------' \
                        '\n'.format(
-                statement=cond.conditional_statement)
+                           statement=cond.conditional_statement)
 
         message += '\n[Messages]:\n'
 

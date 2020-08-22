@@ -101,7 +101,6 @@ class InputModule(AbstractInput):
         self.temp_humidity = None
         self.temp_dew_point = None
         self.temp_vpd = None
-        self.power_output_id = None
         self.powered = False
 
         if not testing:
@@ -110,8 +109,6 @@ class InputModule(AbstractInput):
     def initialize_input(self):
         import pigpio
         from mycodo.mycodo_client import DaemonControl
-
-        self.power_output_id = self.input_dev.power_output_id
 
         self.control = DaemonControl()
         self.pigpio = pigpio
@@ -131,8 +128,6 @@ class InputModule(AbstractInput):
         self.bit = None
         self.either_edge_cb = None
 
-        self.start_input()
-
     def get_measurement(self):
         """ Gets the humidity and temperature """
         if not self.pi.connected:  # Check if pigpiod is running
@@ -140,15 +135,6 @@ class InputModule(AbstractInput):
             return None
 
         self.return_dict = copy.deepcopy(measurements_dict)
-
-        # Ensure if the power pin turns off, it is turned back on
-        if (self.power_output_id and
-                db_retrieve_table_daemon(Output, unique_id=self.power_output_id) and
-                self.control.output_state(self.power_output_id) == 'off'):
-            self.logger.error(
-                'Sensor power output {rel} detected as being off. Turning on.'.format(rel=self.power_output_id))
-            self.start_input()
-            time.sleep(2)
 
         # Try twice to get measurement. This prevents an anomaly where
         # the first measurement fails if the sensor has just been powered
@@ -162,22 +148,6 @@ class InputModule(AbstractInput):
                 self.value_set(3, self.temp_vpd)
                 return self.return_dict  # success - no errors
             time.sleep(2)
-
-        # Measurement failure, power cycle the sensor (if enabled)
-        # Then try two more times to get a measurement
-        if self.power_output_id is not None and self.running:
-            self.stop_input()
-            time.sleep(3)
-            self.start_input()
-            for _ in range(2):
-                self.measure_sensor()
-                if self.temp_dew_point is not None:
-                    self.value_set(0, self.temp_temperature)
-                    self.value_set(1, self.temp_humidity)
-                    self.value_set(2, self.temp_dew_point)
-                    self.value_set(3, self.temp_vpd)
-                    return self.return_dict  # success - no errors
-                time.sleep(2)
 
         self.logger.debug("Could not acquire a measurement")
         return None
@@ -318,12 +288,6 @@ class InputModule(AbstractInput):
             if self.no_response > self.MAX_NO_RESPONSE:
                 self.no_response = 0
                 self.bad_SR += 1  # Bump sensor reset count.
-                if self.power_output_id is not None:
-                    self.logger.error(
-                        "Invalid data, power cycling sensor.")
-                    self.stop_input()
-                    time.sleep(2)
-                    self.start_input()
         elif self.bit < 39:  # Short message received.
             self.bad_SM += 1  # Bump short message count.
             self.no_response = 0
@@ -359,18 +323,3 @@ class InputModule(AbstractInput):
         if self.either_edge_cb:
             self.either_edge_cb.cancel()
             self.either_edge_cb = None
-
-    def start_input(self):
-        """ Turn the sensor on """
-        if self.power_output_id:
-            self.logger.info("Turning on sensor")
-            self.control.output_on(self.power_output_id)
-            time.sleep(2)
-            self.powered = True
-
-    def stop_input(self):
-        """ Turn the sensor off """
-        if self.power_output_id:
-            self.logger.info("Turning off sensor")
-            self.control.output_off(self.power_output_id)
-            self.powered = False

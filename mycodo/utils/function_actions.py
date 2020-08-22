@@ -137,13 +137,17 @@ def get_condition_value(condition_id):
 
     # Return output state
     elif sql_condition.condition_type == 'output_state':
+        output_id = sql_condition.output_id.split(",")[0]
+        channel_id = sql_condition.output_id.split(",")[1]
         control = DaemonControl()
-        return control.output_state(sql_condition.output_id)
+        return control.output_state(output_id, output_channel=channel_id)
 
     # Return the duration the output is currently on for
     elif sql_condition.condition_type == 'output_duration_on':
+        output_id = sql_condition.output_id.split(",")[0]
+        channel_id = sql_condition.output_id.split(",")[1]
         control = DaemonControl()
-        return control.output_sec_currently_on(sql_condition.output_id)
+        return control.output_sec_currently_on(output_id, output_channel=channel_id)
 
     # Return controller active state
     elif sql_condition.condition_type == 'controller_status':

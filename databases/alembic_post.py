@@ -63,15 +63,22 @@ if __name__ == "__main__":
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
             import json
+            from mycodo.databases.models import Actions
+            from mycodo.databases.models import Camera
+            from mycodo.databases.models import ConditionalConditions
+            from mycodo.databases.models import DeviceMeasurements
+            from mycodo.databases.models import Input
             from mycodo.databases.models import Output
             from mycodo.databases.models import OutputChannel
+            from mycodo.databases.models import PID
+            from mycodo.databases.models import Trigger
+            from mycodo.databases.models import Widget
 
             try:
                 with session_scope(MYCODO_DB_PATH) as session:
                     for each_output in session.query(Output).all():
                         custom_options = {
                             'pin': each_output.pin,
-                            'on_state': int(each_output.on_state),
                             'amps': each_output.amps,
                             'protocol': each_output.protocol,
                             'pulse_length': each_output.pulse_length,
@@ -90,21 +97,132 @@ if __name__ == "__main__":
                             'flow_rate': each_output.flow_rate
                         }
 
+                        try:
+                            custom_options['on_state'] = int(each_output.on_state)
+                        except:
+                            pass
+
+                        custom_options['state_startup'] = each_output.state_startup
+                        custom_options['state_shutdown'] = each_output.state_shutdown
+
                         if each_output.output_type in ["python",
                                                        "command",
                                                        "wireless_rpi_rf",
                                                        "MQTT_PAHO"]:
-                            custom_options['state_startup'] = int(each_output.state_startup)
-                            custom_options['state_shutdown'] = int(each_output.state_shutdown)
-                        else:
-                            custom_options['state_startup'] = each_output.state_startup
-                            custom_options['state_shutdown'] = each_output.state_shutdown
+                            try:
+                                custom_options['state_startup'] = int(each_output.state_startup)
+                                custom_options['state_shutdown'] = int(each_output.state_shutdown)
+                            except:
+                                pass
 
                         new_channel = OutputChannel()
                         new_channel.output_id = each_output.unique_id
                         new_channel.channel = 0
                         new_channel.custom_options = json.dumps(custom_options)
                         session.add(new_channel)
+                        session.commit()
+
+                    # Update PID outputs
+                    for each_pid in session.query(PID).all():
+                        if each_pid.raise_output_id:
+                            output_id = each_pid.raise_output_id
+                            channel_id = session.query(OutputChannel).fiter(
+                                OutputChannel.output_id == output_id).first()
+                            each_pid.raise_output_id = "{},{}".format(output_id, channel_id)
+                        if each_pid.lower_output_id:
+                            output_id = each_pid.lower_output_id
+                            output_channel = session.query(OutputChannel).fiter(
+                                OutputChannel.output_id == output_id).first()
+                            each_pid.lower_output_id = "{},{}".format(output_id, output_channel.unique_id)
+                        session.commit()
+
+                    # Update Trigger outputs
+                    for each_trigger in session.query(Trigger).all():
+                        if (each_trigger.trigger_type in ['trigger_output',
+                                                         'trigger_output_pwm'] and
+                                each_trigger.unique_id_1):
+                            output_channel = session.query(OutputChannel).fiter(
+                                OutputChannel.output_id == each_trigger.unique_id_1).first()
+                            each_trigger.unique_id_2 = output_channel.unique_id
+                        elif (each_trigger.trigger_type == 'trigger_run_pwm_method' and
+                                each_trigger.unique_id_2):
+                            output_channel = session.query(OutputChannel).fiter(
+                                OutputChannel.output_id == each_trigger.unique_id_2).first()
+                            each_trigger.unique_id_3 = output_channel.unique_id
+                        session.commit()
+
+                    # Update Function Action outputs
+                    for each_action in session.query(Actions).all():
+                        if each_action.action_type in ['output',
+                                                       'output_pwm',
+                                                       'output_ramp_pwm',
+                                                       'output_volume']:
+                            output_id = each_action.do_unique_id
+                            output = session.query(Output).fiter(
+                                Output.unique_id == output_id).first()
+                            if not output:
+                                continue
+                            output_channel = session.query(OutputChannel).fiter(
+                                OutputChannel.output_id == output_id).first()
+                            each_action.do_unique_id = "{},{}".format(output_id, output_channel.unique_id)
+                            session.commit()
+
+                    # Update Conditional Condition outputs
+                    for each_cond in session.query(ConditionalConditions).all():
+                        if each_cond.condition_type in ['output_state',
+                                                        'output_duration_on']:
+                            output_id = each_cond.output_id
+                            output = session.query(Output).fiter(
+                                Output.unique_id == output_id).first()
+                            if not output:
+                                continue
+                            output_channel = session.query(OutputChannel).fiter(
+                                OutputChannel.output_id == output_id).first()
+                            each_action.output_id = "{},{}".format(output_id, output_channel.unique_id)
+                            session.commit()
+
+                    # Update Widget outputs
+                    for each_widget in session.query(Widget).all():
+                        custom_options = json.loads(each_widget.custom_options)
+                        if each_widget.graph_type in ["widget_output",
+                                                      "widget_output_pwm_slider"]:
+                            if custom_options["output"]:
+                                output_id = custom_options["output"]
+                                output = session.query(Output).fiter(
+                                    Output.unique_id == output_id).first()
+                                if not output:
+                                    continue
+                                output_channel = session.query(OutputChannel).fiter(
+                                    OutputChannel.output_id == output_id).first()
+                                measurement = session.query(DeviceMeasurements).fiter(
+                                    DeviceMeasurements.device_id == output_id).first()
+                                custom_options["output"] = "{},{},{}".format(
+                                    output_id, output_channel.unique_id, measurement.unique_id)
+                                each_widget.custom_options = json.dumps(custom_options)
+                                session.commit()
+
+                    # Update Camera outputs
+                    for each_camera in session.query(Camera).all():
+                        output_id = each_camera.output_id
+                        output = session.query(Output).fiter(
+                            Output.unique_id == output_id).first()
+                        if not output:
+                            continue
+                        output_channel = session.query(OutputChannel).fiter(
+                            OutputChannel.output_id == output_id).first()
+                        each_camera.output_id = "{},{}".format(output_id, output_channel.unique_id)
+                        session.commit()
+
+                    # Update Input outputs
+                    for each_input in session.query(Input).all():
+                        output_id = each_input.pre_output_id
+                        output = session.query(Output).fiter(
+                            Output.unique_id == output_id).first()
+                        if not output:
+                            continue
+                        output_channel = session.query(OutputChannel).fiter(
+                            OutputChannel.output_id == output_id).first()
+                        output_id.pre_output_id = "{},{}".format(output_id, output_channel.unique_id)
                         session.commit()
 
             except Exception:
@@ -125,7 +243,6 @@ if __name__ == "__main__":
                         custom_options = {
                             'refresh_seconds': each_widget.refresh_duration,
                             'x_axis_minutes': each_widget.x_axis_duration,
-                            'custom_yaxes': each_widget.custom_yaxes.split(";"),
                             'decimal_places': each_widget.decimal_places,
                             'enable_status': each_widget.enable_status,
                             'enable_value': each_widget.enable_value,
@@ -145,9 +262,6 @@ if __name__ == "__main__":
                             'enable_end_on_tick': each_widget.enable_end_on_tick,
                             'enable_align_ticks': each_widget.enable_align_ticks,
                             'use_custom_colors': each_widget.use_custom_colors,
-                            'custom_colors': each_widget.custom_colors.split(","),
-                            'range_colors': each_widget.range_colors.split(";"),
-                            'disable_data_grouping': each_widget.disable_data_grouping.split(","),
                             'max_measure_age': each_widget.max_measure_age,
                             'stops': each_widget.stops,
                             'min': each_widget.y_axis_min,
@@ -164,13 +278,24 @@ if __name__ == "__main__":
                             'max_age': each_widget.camera_max_age
                         }
 
+                        try:
+                            custom_options['custom_yaxes'] = each_widget.math_ids.split(";")
+                            custom_options['custom_colors'] = each_widget.math_ids.split(",")
+                            custom_options['range_colors'] = each_widget.math_ids.split(";")
+                            custom_options['disable_data_grouping'] = each_widget.math_ids.split(",")
+                        except:
+                            pass
+
                         if each_widget.graph_type == 'graph':
                             each_widget.graph_type = 'widget_graph_synchronous'
-                            custom_options['measurements_math'] = each_widget.math_ids.split(";")
-                            custom_options['measurements_note_tag'] = each_widget.note_tag_ids.split(";")
-                            custom_options['measurements_input'] = each_widget.input_ids_measurements.split(";")
-                            custom_options['measurements_output'] = each_widget.output_ids.split(";")
-                            custom_options['measurements_pid'] = each_widget.pid_ids.split(";")
+                            try:
+                                custom_options['measurements_math'] = each_widget.math_ids.split(";")
+                                custom_options['measurements_note_tag'] = each_widget.note_tag_ids.split(";")
+                                custom_options['measurements_input'] = each_widget.input_ids_measurements.split(";")
+                                custom_options['measurements_output'] = each_widget.output_ids.split(";")
+                                custom_options['measurements_pid'] = each_widget.pid_ids.split(";")
+                            except:
+                                pass
                         elif each_widget.graph_type == 'spacer':
                             each_widget.graph_type = 'widget_spacer'
                         elif each_widget.graph_type == 'gauge_angular':

@@ -5284,7 +5284,7 @@ msgstr ""
 "wenn ausgeschaltet."
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:13
-msgid "returns \"on\" if the output is on and \"off\" if the output os off."
+msgid "returns \"on\" if the output is on and \"off\" if the output is off."
 msgstr "returns „auf“, wenn der Ausgang auf und „off“, wenn der Ausgang os ab."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_on_off_lower.html:5

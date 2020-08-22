@@ -5109,7 +5109,7 @@ msgid ""
 msgstr "返回多久输出当前已被上，在几秒钟内，或0，如果关闭。"
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:13
-msgid "returns \"on\" if the output is on and \"off\" if the output os off."
+msgid "returns \"on\" if the output is on and \"off\" if the output is off."
 msgstr "“接通”返回如果输出是上和“关”，如果输出口关闭。"
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_on_off_lower.html:5

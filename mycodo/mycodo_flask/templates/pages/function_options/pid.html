@@ -201,7 +201,9 @@
         </div>
       </div>
 
-  {% for each_output in output if each_pid.raise_output_id.split(",")[0] == each_output.unique_id %}
+  {% for each_output in output if each_pid.raise_output_id and
+                                  "," in each_pid.raise_output_id and
+                                  each_pid.raise_output_id.split(",")[0] == each_output.unique_id %}
 
     {% if 'output_types' in dict_outputs[each_output.output_type] and dict_outputs[each_output.output_type]['output_types']|length > 1 %}
       <div class="col-auto">
@@ -249,7 +251,9 @@
         </div>
       </div>
 
-  {% for each_output in output if each_pid.lower_output_id.split(",")[0] == each_output.unique_id %}
+  {% for each_output in output if each_pid.lower_output_id and
+                                  "," in each_pid.lower_output_id and
+                                  each_pid.lower_output_id.split(",")[0] == each_output.unique_id %}
 
     {% if 'output_types' in dict_outputs[each_output.output_type] and dict_outputs[each_output.output_type]['output_types']|length > 1 %}
       <div class="col-auto">

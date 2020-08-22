@@ -96,7 +96,6 @@ class InputModule(AbstractInput):
         self.sensor = None
         self.powered = False
         self.control = None
-        self.power_output_id = None
 
         if not testing:
             self.initialize_input()
@@ -104,9 +103,7 @@ class InputModule(AbstractInput):
     def initialize_input(self):
         from mycodo.mycodo_client import DaemonControl
 
-        self.power_output_id = self.input_dev.power_output_id
         self.control = DaemonControl()
-        self.start_input()
         self.sensor = AM2315(self.input_dev.i2c_bus)
 
     def get_measurement(self):
@@ -122,15 +119,6 @@ class InputModule(AbstractInput):
         dew_point = None
         measurements_success = False
 
-        # Ensure if the power pin turns off, it is turned back on
-        if (self.power_output_id and
-                db_retrieve_table_daemon(Output, unique_id=self.power_output_id) and
-                self.control.output_state(self.power_output_id) == 'off'):
-            self.logger.error(
-                'Sensor power output {rel} detected as being off. Turning on.'.format(rel=self.power_output_id))
-            self.start_input()
-            time.sleep(2)
-
         # Try twice to get measurement. This prevents an anomaly where
         # the first measurement fails if the sensor has just been powered
         # for the first time.
@@ -140,19 +128,6 @@ class InputModule(AbstractInput):
                 measurements_success = True
                 break
             time.sleep(2)
-
-        # Measurement failure, power cycle the sensor (if enabled)
-        # Then try two more times to get a measurement
-        if self.power_output_id and not measurements_success:
-            self.stop_input()
-            time.sleep(2)
-            self.start_input()
-            for _ in range(2):
-                dew_point, humidity, temperature = self.return_measurements()
-                if dew_point is not None:
-                    measurements_success = True
-                    break
-                time.sleep(2)
 
         if measurements_success:
             self.value_set(0, temperature)
@@ -179,21 +154,6 @@ class InputModule(AbstractInput):
 
         self.logger.error("All measurements returned failed CRC")
         return None, None, None
-
-    def start_input(self):
-        """ Turn the sensor on """
-        if self.power_output_id:
-            self.logger.info("Turning on sensor")
-            self.control.output_on(self.power_output_id)
-            time.sleep(2)
-            self.powered = True
-
-    def stop_input(self):
-        """ Turn the sensor off """
-        if self.power_output_id:
-            self.logger.info("Turning off sensor")
-            self.control.output_off(self.power_output_id)
-            self.powered = False
 
 
 class AM2315:

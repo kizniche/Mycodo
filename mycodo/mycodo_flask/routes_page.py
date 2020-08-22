@@ -180,6 +180,7 @@ def page_camera():
     form_camera = forms_camera.Camera()
     camera = Camera.query.all()
     output = Output.query.all()
+    output_channel = OutputChannel.query.all()
 
     try:
         from mycodo.devices.camera import count_cameras_opencv
@@ -284,9 +285,14 @@ def page_camera():
 
     time_now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+    dict_outputs = parse_output_information()
+    choices_output_channels = utils_general.choices_outputs_channels(
+        output, output_channel, dict_outputs)
+
     return render_template('pages/camera.html',
                            camera=camera,
                            camera_info=CAMERA_INFO,
+                           choices_output_channels=choices_output_channels,
                            form_camera=form_camera,
                            latest_img_still=latest_img_still,
                            latest_img_still_ts=latest_img_still_ts,

@@ -156,13 +156,13 @@
           {{form_camera.output_id.label(class_='control-label')}}
           <div>
             <select class="form-control form-tooltip form-dropdown" id="output_id" name="output_id" title="" data-original-title="Select the output to activate while the camera is acquiring an image or streaming.">
-              {%  if not output %}
+              {%  if not choices_output_channels %}
                 <option value="">No Outputs Available</option>
               {% else %}
                 <option value="">Disabled</option>
               {% endif %}
-              {%- for each_output in output -%}
-                <option value="{{each_output.unique_id}}"{% if each_camera.output_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
+              {%- for each_output in choices_output_channels if 'on_off' in each_output['types'] -%}
+                <option value="{{each_output['value']}}"{% if each_camera.output_id == each_output['value'] %} selected{% endif %}>{{each_output['item']}}</option>
               {%- endfor -%}
             </select>
           </div>

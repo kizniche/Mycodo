@@ -79,7 +79,7 @@
         {% endfor -%}
       {% endif %}
       {% if 'Output_PWM_Channels_Measurements' in each_option['options_select'] %}
-        {%- for each_output_form in choices_output_channels_measurements_pwm -%}
+        {%- for each_output_form in choices_output_channels_measurements if 'pwm' in each_output_form['types'] -%}
       <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
         {%- endfor -%}
       {% endif %}
