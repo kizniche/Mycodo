@@ -20,17 +20,33 @@
 #  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
 #
 #  Contact at kylegabriel.com
+import grp
 import logging
 import os
+import pwd
 
 from mycodo.config import PATH_HTML_USER
 from mycodo.config import PATH_WIDGETS
 from mycodo.config import PATH_WIDGETS_CUSTOM
 from mycodo.utils.modules import load_module_from_file
-from mycodo.utils.system_pi import assure_path_exists
-from mycodo.utils.system_pi import set_user_grp
 
 logger = logging.getLogger("mycodo.utils.widgets")
+
+
+def set_user_grp(filepath, user, group):
+    """ Set the UID and GUID of a file """
+    uid = pwd.getpwnam(user).pw_uid
+    gid = grp.getgrnam(group).gr_gid
+    os.chown(filepath, uid, gid)
+
+
+def assure_path_exists(path):
+    """ Create path if it doesn't exist """
+    if not os.path.exists(path):
+        os.makedirs(path)
+        os.chmod(path, 0o774)
+        set_user_grp(path, 'mycodo', 'mycodo')
+    return path
 
 
 def generate_widget_html():

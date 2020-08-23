@@ -1,9 +1,9 @@
-## 8.7.2 (Unreleased)
+## 8.7.2 (2020-08-23)
 
 ### Bugfixes
 
  - Fix issue displaying Measurement Widgets when a Math measurement is selected ([#817](https://github.com/kizniche/mycodo/issues/817))
- - Fix inability to generate Widget HTML ([#817](https://github.com/kizniche/mycodo/issues/817))
+ - Fix inability to generate Widget HTML ([#817](https://github.com/kizniche/mycodo/issues/817), [#822](https://github.com/kizniche/mycodo/issues/822))
 
 ### Features
 
