@@ -147,6 +147,13 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Datasheet URLs: [Link 1](https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL343.pdf), [Link 2](https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL344.pdf), [Link 3](https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL345.pdf), [Link 4](https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL346.pdf)
 - Product URLs: [Link 1](https://www.analog.com/en/products/adxl343.html), [Link 2](https://www.analog.com/en/products/adxl344.html), [Link 3](https://www.analog.com/en/products/adxl345.html), [Link 4](https://www.analog.com/en/products/adxl346.html)
 
+### AnyLeaf: pH and ORP Module
+
+- Measurements: pH, ORP
+- Dependencies: [anyleaf](https://pypi.org/project/anyleaf)
+- Manufacturer URL: [Link](https://anyleaf.org/ph-module)
+- Datasheet URL: [Link](https://www.anyleaf.org/static/ph-module-datasheet.pdf)
+
 ### Atlas Scientific: Atlas Color
 
 - Measurements: RGB, CIE, LUX, Proximity
