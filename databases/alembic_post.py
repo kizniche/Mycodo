@@ -68,6 +68,7 @@ if __name__ == "__main__":
             from mycodo.databases.models import ConditionalConditions
             from mycodo.databases.models import DeviceMeasurements
             from mycodo.databases.models import Input
+            from mycodo.databases.models import Math
             from mycodo.databases.models import Output
             from mycodo.databases.models import OutputChannel
             from mycodo.databases.models import PID
@@ -76,6 +77,8 @@ if __name__ == "__main__":
 
             try:
                 with session_scope(MYCODO_DB_PATH) as session:
+
+                    # Update outputs
                     for each_output in session.query(Output).all():
                         custom_options = {
                             'pin': each_output.pin,
@@ -120,6 +123,41 @@ if __name__ == "__main__":
                         new_channel.channel = 0
                         new_channel.custom_options = json.dumps(custom_options)
                         session.add(new_channel)
+                        session.commit()
+
+                    # Update Math
+                    for each_math in session.query(Math).all():
+                        if (each_math.math_type in ['average',
+                                                    'difference',
+                                                    'redundancy',
+                                                    'statistics',
+                                                    'sum',
+                                                    'verification'] and
+                                each_math.inputs):
+                            selections = each_math.inputs.split(";")
+                            new_list = []
+                            for each_selection in selections:
+                                if "," in each_selection:
+                                    output_id = each_selection.split(",")[0]
+                                    output = session.query(Output).filter(Output.unique_id == output_id).first()
+                                    if output:
+                                        output_channel = session.query(OutputChannel).fiter(
+                                            OutputChannel.output_id == output_id).first()
+                                        new_list.append("{},{}".format(output_id, output_channel.unique_id))
+                                    else:
+                                        new_list.append(each_selection)
+                            each_math.inputs = ";".join(new_list)
+
+                        elif (each_math.math_type in ['average_single',
+                                                      'sum_single'] and
+                                each_math.inputs):
+                            output_id = each_math.inputs.split(",")[0]
+                            output = session.query(Output).filter(Output.unique_id == output_id).first()
+                            if output:
+                                output_channel = session.query(OutputChannel).fiter(
+                                    OutputChannel.output_id == output_id).first()
+                                each_math.inputs = "{},{}".format(output_id, output_channel.unique_id)
+
                         session.commit()
 
                     # Update PID outputs

@@ -9,7 +9,7 @@
       {% for each_math_form in choices_math -%}
       <option value="{{each_math_form['value']}}"{%- if each_math.inputs and each_math_form['value'] in each_math.inputs %} selected{%- endif -%}>{{each_math_form['item']}}</option>
       {% endfor -%}
-      {% for each_output_form in choices_output -%}
+      {% for each_output_form in choices_output_channels -%}
       <option value="{{each_output_form['value']}}"{%- if each_math.inputs and each_output_form['value'] in each_math.inputs %} selected{%- endif -%}>{{each_output_form['item']}}</option>
       {% endfor -%}
     {% else %}
