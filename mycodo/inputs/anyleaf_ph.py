@@ -27,20 +27,16 @@ measurements_dict = {
         'measurement': 'pH',
         'unit': 'pH'
     },
-    1: {
-        'measurement': 'ORP',
-        'unit': 'mV'
-    }
 }
 
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'ANYLEAF_PH_ORP',
+    'input_name_unique': 'ANYLEAF_PH',
     'input_manufacturer': 'AnyLeaf',
-    'input_name': 'AnyLeaf pH ORP',
+    'input_name': 'AnyLeaf pH',
     'input_library': '',
-    'measurements_name': 'pH/ORP',
+    'measurements_name': 'pH',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://anyleaf.org/ph-module',
     'url_datasheet': 'https://anyleaf.org/static/ph-module-datasheet.pdf',
@@ -60,10 +56,12 @@ INPUT_INFORMATION = {
 
     'interfaces': ['I2C'],
     'i2c_location': ['0x48', '0x49'],
-    'i2c_address_editable': True,
+    'i2c_address_editable': False,
 
     'custom_options': [
-
+        'cal_0': (0., 4., 18.)
+        'cal_1': (0., 7., 25.)
+        'cal_2': (0., 10., -18.)
     ]
 }
 
@@ -81,15 +79,9 @@ class InputModule(AbstractInput):
         # todo: This module can be connected to either a pH probe or ORP. Should
         # that bet set up with both here, or as two separate files?
         
-        from anyleaf import PhSensor, CalPt, CalSlot, OrpSensor, OnBoard, OffBoard
+        from anyleaf import PhSensor, CalPt, CalSlot, OnBoard, OffBoard
 
-        delay = self.period
-
-        if self.is_enabled(0):
-            self.sensor = PhSensor(i2c, delay)
-        
-        if self.is_enabled(1):
-            self.sensor = OrpSensor(i2c, delay)
+        self.sensor = PhSensor(i2c, self.period)
 
         # todo: Calibration
 
@@ -100,12 +92,9 @@ class InputModule(AbstractInput):
             self.logger.error("Input not set up")
             return
 
-        if self.is_enabled(0):  # todo: OffBoard temp compensation.
-            self.value_set(0, self.sensor.read(OnBoard()))
-        
-        if self.is_enabled(1):
-            self.value_set(1, self.sensor.read(OnBoard()))
-        
+
+        self.value_set(0, self.sensor.read(OnBoard()))
+       
 
         return self.return_dict
 
