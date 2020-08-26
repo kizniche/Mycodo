@@ -41,17 +41,14 @@ INPUT_INFORMATION = {
     'url_manufacturer': 'https://anyleaf.org/ph-module',
     'url_datasheet': 'https://anyleaf.org/static/ph-module-datasheet.pdf',
 
-    'message': 'Calibration Measurement is an optional setting that provides a temperature measurement (in Celsius) of the water that the pH is being measured from.',
-
     'options_enabled': [
         'i2c_location',
-        'measurements_select',
         'period',
     ],
     'options_disabled': [],
 
     'dependencies_module': [
-        ('pip-pypi', 'anyleaf')
+        ('pip-pypi', 'anyleaf', 'anyleaf')
     ],
 
     'interfaces': ['I2C'],
@@ -90,7 +87,7 @@ class InputModule(AbstractInput):
             self.logger.error("Input not set up")
             return
 
-        self.value_set(0, self.sensor.read()
+        self.value_set(0, self.sensor.read())
 
         return self.return_dict
 

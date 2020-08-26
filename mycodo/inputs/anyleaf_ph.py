@@ -41,17 +41,14 @@ INPUT_INFORMATION = {
     'url_manufacturer': 'https://anyleaf.org/ph-module',
     'url_datasheet': 'https://anyleaf.org/static/ph-module-datasheet.pdf',
 
-    'message': 'Calibration Measurement is an optional setting that provides a temperature measurement (in Celsius) of the water that the pH is being measured from.',
-
     'options_enabled': [
         'i2c_location',
-        'measurements_select',
         'period',
     ],
     'options_disabled': [],
 
     'dependencies_module': [
-        ('pip-pypi', 'anyleaf')
+        ('pip-pypi', 'anyleaf', 'anyleaf')
     ],
 
     'interfaces': ['I2C'],
@@ -59,9 +56,30 @@ INPUT_INFORMATION = {
     'i2c_address_editable': False,
 
     'custom_options': [
-        'cal_0': (0., 4., 18.)
-        'cal_1': (0., 7., 25.)
-        'cal_2': (0., 10., -18.)
+        {
+            'id': 'cal_0',
+            'type': 'tuple',
+            'default_value': (0.18, 4., 23.),
+            'required': False,
+            'name': lazy_gettext('Cal Pt 0'),
+            'phrase': lazy_gettext('First Cal pt: Voltage, pH, Temperature')
+        },
+                {
+            'id': 'cal_1',
+            'type': 'tuple',
+            'default_value': (0, 7., 23.),
+            'required': False,
+            'name': lazy_gettext('Cal Pt 0'),
+            'phrase': lazy_gettext('Second Cal pt: Voltage, pH, Temperature')
+        },
+        {
+            'id': 'cal_2',
+            'type': 'tuple',
+            'default_value': (-0.18, 10., 23.),
+            'required': False,
+            'name': lazy_gettext('Cal Pt 0'),
+            'phrase': lazy_gettext('Third Cal pt: Voltage, pH, Temperature')
+        }
     ]
 }
 
