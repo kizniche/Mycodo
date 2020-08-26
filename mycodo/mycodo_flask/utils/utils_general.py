@@ -1018,10 +1018,10 @@ def form_output_channel_measurement_choices(
                 device_measurement, conversion)
 
             if unit:
-                value = '{output_id},{chan_id},{meas_id}'.format(
+                value = '{output_id},{meas_id},{chan_id}'.format(
                     output_id=each_output.unique_id,
-                    chan_id=each_channel.unique_id,
-                    meas_id=device_measurement.unique_id)
+                    meas_id=device_measurement.unique_id,
+                    chan_id=each_channel.unique_id)
 
                 display_unit = find_name_unit(
                     dict_units, unit)

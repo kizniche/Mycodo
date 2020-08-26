@@ -223,9 +223,19 @@ if __name__ == "__main__":
                     for each_widget in session.query(Widget).all():
                         custom_options = json.loads(each_widget.custom_options)
                         if each_widget.graph_type in ["widget_output",
-                                                      "widget_output_pwm_slider"]:
-                            if custom_options["output"]:
-                                output_id = custom_options["output"]
+                                                      "widget_output_pwm_slider",
+                                                      "widget_measurement",
+                                                      "widget_indicator"]:
+                            if each_widget.graph_type in ["widget_output",
+                                                          "widget_output_pwm_slider"]:
+                                option_name = "output"
+                            elif each_widget.graph_type in ["widget_measurement",
+                                                            "widget_indicator"]:
+                                option_name = "measurement"
+
+                            if custom_options[option_name] and "," in custom_options[option_name]:
+                                print("TEST00: {}".format(custom_options[option_name]))
+                                output_id = custom_options[option_name].split(",")[0]
                                 output = session.query(Output).filter(
                                     Output.unique_id == output_id).first()
                                 if not output:
@@ -234,8 +244,9 @@ if __name__ == "__main__":
                                     OutputChannel.output_id == output_id).first()
                                 measurement = session.query(DeviceMeasurements).filter(
                                     DeviceMeasurements.device_id == output_id).first()
-                                custom_options["output"] = "{},{},{}".format(
-                                    output_id, output_channel.unique_id, measurement.unique_id)
+                                custom_options[option_name] = "{},{},{}".format(
+                                    output_id, measurement.unique_id, output_channel.unique_id)
+                                print("TEST00: {}".format(custom_options[option_name]))
                                 each_widget.custom_options = json.dumps(custom_options)
                                 session.commit()
 

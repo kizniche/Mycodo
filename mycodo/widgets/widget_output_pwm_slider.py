@@ -357,8 +357,8 @@ $(document).ready(function() {
 
     'widget_dashboard_js_ready_end': """
 {%- set device_id = widget_options['output'].split(",")[0] -%}
-{%- set channel_id = widget_options['output'].split(",")[1] -%}
-{%- set measurement_id = widget_options['output'].split(",")[2] -%}
+{%- set measurement_id = widget_options['output'].split(",")[1] -%}
+{%- set channel_id = widget_options['output'].split(",")[2] -%}
 
 {% for each_output in output if each_output.unique_id == device_id %}
   getLastDataPWMSlider({{chart_number}}, '{{device_id}}', 'output', '{{measurement_id}}', {{widget_options['max_measure_age']}}, {{widget_options['decimal_places']}});

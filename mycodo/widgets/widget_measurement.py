@@ -63,7 +63,7 @@ WIDGET_INFORMATION = {
             'options_select': [
                 'Input',
                 'Math',
-                'Output',
+                'Output_Channels_Measurements',
                 'PID'
             ],
             'name': lazy_gettext('Measurement'),
@@ -154,9 +154,10 @@ WIDGET_INFORMATION = {
   {%- set device_id = widget_options['measurement'].split(",")[0] -%}
   {%- set measurement_id = widget_options['measurement'].split(",")[1] -%}
   
+  <div style="text-align: center">
+  
   {%- for each_input in input if each_input.unique_id == device_id and measurement_id in device_measurements_dict -%}
   
-    <div style="text-align: center">
     <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span>
     <span style="font-size: {{widget_options['font_em_value']}}em">
         {%- if dict_measure_units[measurement_id] in dict_units and

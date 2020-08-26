@@ -52,6 +52,11 @@
       <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
         {% endfor -%}
       {% endif %}
+      {% if 'Output_Channels_Measurements' in each_option['options_select'] %}
+        {% for each_output_form in choices_output_channels_measurements -%}
+      <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
       {% if 'Output_PWM' in each_option['options_select'] %}
         {% for each_output_form in choices_output_pwm -%}
           <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
