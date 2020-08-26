@@ -1,3 +1,10 @@
+## 8.7.3 (Unreleased)
+
+### Bugfixes
+
+ - Fix inability to save Python Code Input settings ([#827](https://github.com/kizniche/mycodo/issues/827))
+
+
 ## 8.7.2 (2020-08-23)
 
 ### Bugfixes

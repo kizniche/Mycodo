@@ -68,7 +68,7 @@ def execute_at_modification(mod_input, request_form):
     all_passed = True
 
     error, (input_python_code_run, file_run) = execute_at_creation(
-        mod_input.unique_id, mod_input.cmd_command, None)
+        mod_input.unique_id, mod_input, None)
 
     # Only add strings to this list to prevent options from being saved.
     # Use flash('my error message', 'error') to show errors but allow options
