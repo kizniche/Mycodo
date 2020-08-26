@@ -58,7 +58,6 @@ OUTPUT_INFORMATION = {
     ],
 
     'options_enabled': [
-        'command_force',
         'button_on',
         'button_send_duration'
     ],
@@ -145,6 +144,13 @@ OUTPUT_INFORMATION = {
             ],
             'name': lazy_gettext('Shutdown State'),
             'phrase': lazy_gettext('Set the state when Mycodo shuts down')
+        },
+        {
+            'id': 'command_force',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Force Command'),
+            'phrase': lazy_gettext('Always send the commad if instructed, regardless of the current state')
         },
         {
             'id': 'amps',

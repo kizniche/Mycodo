@@ -85,7 +85,7 @@ OUTPUT_INFORMATION = {
             'type': 'select',
             'default_value': '',
             'options_select': [
-                ('', 'Do Nothing'),
+                ('-1', 'Do Nothing'),
                 ('0', 'Off'),
                 ('set_duty_cycle', 'User Set Value'),
                 ('last_duty_cycle', 'Last Known Value')
@@ -106,7 +106,7 @@ OUTPUT_INFORMATION = {
             'type': 'select',
             'default_value': '',
             'options_select': [
-                ('', 'Do Nothing'),
+                ('-1', 'Do Nothing'),
                 ('0', 'Off'),
                 ('set_duty_cycle', 'User Set Value')
             ],

@@ -291,7 +291,7 @@ class AbstractOutput(AbstractBaseController):
                 if output_is_on and self.output_on_duration[output_channel]:
                     if self.output_on_until[output_channel] > current_time:
                         remaining_time = (
-                                self.output_on_until[output_channel] - current_time).total_seconds()
+                            self.output_on_until[output_channel] - current_time).total_seconds()
                     else:
                         remaining_time = 0
 

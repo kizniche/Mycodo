@@ -97,16 +97,15 @@ if __name__ == "__main__":
                             'pwm_library': each_output.pwm_library,
                             'pwm_invert_signal': each_output.pwm_invert_signal,
                             'flow_mode': each_output.output_mode,
-                            'flow_rate': each_output.flow_rate
+                            'flow_rate': each_output.flow_rate,
+                            'state_startup': each_output.state_startup,
+                            'state_shutdown': each_output.state_shutdown
                         }
 
                         try:
                             custom_options['on_state'] = int(each_output.on_state)
                         except:
                             pass
-
-                        custom_options['state_startup'] = each_output.state_startup
-                        custom_options['state_shutdown'] = each_output.state_shutdown
 
                         if each_output.output_type in ["python",
                                                        "command",
@@ -123,6 +122,7 @@ if __name__ == "__main__":
                         new_channel.channel = 0
                         new_channel.custom_options = json.dumps(custom_options)
                         session.add(new_channel)
+                        each_output.custom_options = ''
                         session.commit()
 
                     # Update Math
@@ -141,7 +141,7 @@ if __name__ == "__main__":
                                     output_id = each_selection.split(",")[0]
                                     output = session.query(Output).filter(Output.unique_id == output_id).first()
                                     if output:
-                                        output_channel = session.query(OutputChannel).fiter(
+                                        output_channel = session.query(OutputChannel).filter(
                                             OutputChannel.output_id == output_id).first()
                                         new_list.append("{},{}".format(output_id, output_channel.unique_id))
                                     else:
@@ -154,7 +154,7 @@ if __name__ == "__main__":
                             output_id = each_math.inputs.split(",")[0]
                             output = session.query(Output).filter(Output.unique_id == output_id).first()
                             if output:
-                                output_channel = session.query(OutputChannel).fiter(
+                                output_channel = session.query(OutputChannel).filter(
                                     OutputChannel.output_id == output_id).first()
                                 each_math.inputs = "{},{}".format(output_id, output_channel.unique_id)
 
@@ -164,12 +164,12 @@ if __name__ == "__main__":
                     for each_pid in session.query(PID).all():
                         if each_pid.raise_output_id:
                             output_id = each_pid.raise_output_id
-                            channel_id = session.query(OutputChannel).fiter(
+                            output_channel = session.query(OutputChannel).filter(
                                 OutputChannel.output_id == output_id).first()
-                            each_pid.raise_output_id = "{},{}".format(output_id, channel_id)
+                            each_pid.raise_output_id = "{},{}".format(output_id, output_channel.unique_id)
                         if each_pid.lower_output_id:
                             output_id = each_pid.lower_output_id
-                            output_channel = session.query(OutputChannel).fiter(
+                            output_channel = session.query(OutputChannel).filter(
                                 OutputChannel.output_id == output_id).first()
                             each_pid.lower_output_id = "{},{}".format(output_id, output_channel.unique_id)
                         session.commit()
@@ -179,12 +179,12 @@ if __name__ == "__main__":
                         if (each_trigger.trigger_type in ['trigger_output',
                                                          'trigger_output_pwm'] and
                                 each_trigger.unique_id_1):
-                            output_channel = session.query(OutputChannel).fiter(
+                            output_channel = session.query(OutputChannel).filter(
                                 OutputChannel.output_id == each_trigger.unique_id_1).first()
                             each_trigger.unique_id_2 = output_channel.unique_id
                         elif (each_trigger.trigger_type == 'trigger_run_pwm_method' and
                                 each_trigger.unique_id_2):
-                            output_channel = session.query(OutputChannel).fiter(
+                            output_channel = session.query(OutputChannel).filter(
                                 OutputChannel.output_id == each_trigger.unique_id_2).first()
                             each_trigger.unique_id_3 = output_channel.unique_id
                         session.commit()
@@ -196,11 +196,11 @@ if __name__ == "__main__":
                                                        'output_ramp_pwm',
                                                        'output_volume']:
                             output_id = each_action.do_unique_id
-                            output = session.query(Output).fiter(
+                            output = session.query(Output).filter(
                                 Output.unique_id == output_id).first()
                             if not output:
                                 continue
-                            output_channel = session.query(OutputChannel).fiter(
+                            output_channel = session.query(OutputChannel).filter(
                                 OutputChannel.output_id == output_id).first()
                             each_action.do_unique_id = "{},{}".format(output_id, output_channel.unique_id)
                             session.commit()
@@ -210,13 +210,13 @@ if __name__ == "__main__":
                         if each_cond.condition_type in ['output_state',
                                                         'output_duration_on']:
                             output_id = each_cond.output_id
-                            output = session.query(Output).fiter(
+                            output = session.query(Output).filter(
                                 Output.unique_id == output_id).first()
                             if not output:
                                 continue
-                            output_channel = session.query(OutputChannel).fiter(
+                            output_channel = session.query(OutputChannel).filter(
                                 OutputChannel.output_id == output_id).first()
-                            each_action.output_id = "{},{}".format(output_id, output_channel.unique_id)
+                            each_cond.output_id = "{},{}".format(output_id, output_channel.unique_id)
                             session.commit()
 
                     # Update Widget outputs
@@ -226,13 +226,13 @@ if __name__ == "__main__":
                                                       "widget_output_pwm_slider"]:
                             if custom_options["output"]:
                                 output_id = custom_options["output"]
-                                output = session.query(Output).fiter(
+                                output = session.query(Output).filter(
                                     Output.unique_id == output_id).first()
                                 if not output:
                                     continue
-                                output_channel = session.query(OutputChannel).fiter(
+                                output_channel = session.query(OutputChannel).filter(
                                     OutputChannel.output_id == output_id).first()
-                                measurement = session.query(DeviceMeasurements).fiter(
+                                measurement = session.query(DeviceMeasurements).filter(
                                     DeviceMeasurements.device_id == output_id).first()
                                 custom_options["output"] = "{},{},{}".format(
                                     output_id, output_channel.unique_id, measurement.unique_id)
@@ -242,11 +242,11 @@ if __name__ == "__main__":
                     # Update Camera outputs
                     for each_camera in session.query(Camera).all():
                         output_id = each_camera.output_id
-                        output = session.query(Output).fiter(
+                        output = session.query(Output).filter(
                             Output.unique_id == output_id).first()
                         if not output:
                             continue
-                        output_channel = session.query(OutputChannel).fiter(
+                        output_channel = session.query(OutputChannel).filter(
                             OutputChannel.output_id == output_id).first()
                         each_camera.output_id = "{},{}".format(output_id, output_channel.unique_id)
                         session.commit()
@@ -254,13 +254,13 @@ if __name__ == "__main__":
                     # Update Input outputs
                     for each_input in session.query(Input).all():
                         output_id = each_input.pre_output_id
-                        output = session.query(Output).fiter(
+                        output = session.query(Output).filter(
                             Output.unique_id == output_id).first()
                         if not output:
                             continue
-                        output_channel = session.query(OutputChannel).fiter(
+                        output_channel = session.query(OutputChannel).filter(
                             OutputChannel.output_id == output_id).first()
-                        output_id.pre_output_id = "{},{}".format(output_id, output_channel.unique_id)
+                        each_input.pre_output_id = "{},{}".format(output_id, output_channel.unique_id)
                         session.commit()
 
             except Exception:
