@@ -35,7 +35,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'ANYLEAF_PH',
     'input_manufacturer': 'AnyLeaf',
     'input_name': 'AnyLeaf pH',
-    'input_library': '',
+    'input_library': 'anyleaf',
     'measurements_name': 'pH',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://anyleaf.org/ph-module',
@@ -58,7 +58,7 @@ INPUT_INFORMATION = {
     'custom_options': [
         {
             'id': 'cal_0',
-            'type': 'tuple',
+            'type': 'float',
             'default_value': (0.18, 4., 23.),
             'required': False,
             'name': lazy_gettext('Cal Pt 0'),
@@ -66,15 +66,15 @@ INPUT_INFORMATION = {
         },
                 {
             'id': 'cal_1',
-            'type': 'tuple',
-            'default_value': (0, 7., 23.),
+            'type': 'float',
+            'default_value': (0., 7., 23.),
             'required': False,
             'name': lazy_gettext('Cal Pt 0'),
             'phrase': lazy_gettext('Second Cal pt: Voltage, pH, Temperature')
         },
         {
             'id': 'cal_2',
-            'type': 'tuple',
+            'type': 'float',
             'default_value': (-0.18, 10., 23.),
             'required': False,
             'name': lazy_gettext('Cal Pt 0'),
