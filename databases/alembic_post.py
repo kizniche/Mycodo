@@ -125,7 +125,7 @@ if __name__ == "__main__":
                         each_output.custom_options = ''
                         session.commit()
 
-                    # Update Math
+                    # Update Math outputs
                     for each_math in session.query(Math).all():
                         if (each_math.math_type in ['average',
                                                     'difference',

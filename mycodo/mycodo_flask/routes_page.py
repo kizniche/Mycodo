@@ -574,7 +574,6 @@ def page_dashboard(dashboard_id):
     math = Math.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
-    output_channel = OutputChannel.query.all()
     pid = PID.query.all()
     tags = NoteTags.query.all()
 
@@ -764,6 +763,7 @@ def page_dashboard(dashboard_id):
                            list_html_files_js=list_html_files_js,
                            list_html_files_js_ready=list_html_files_js_ready,
                            list_html_files_js_ready_end=list_html_files_js_ready_end,
+                           camera=camera,
                            math=math,
                            misc=misc,
                            pid=pid,
