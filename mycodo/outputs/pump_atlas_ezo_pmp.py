@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# atlas_ezo_pmp.py - Output for Atlas Scientific EZO Pump
+# pump_atlas_ezo_pmp.py - Output for Atlas Scientific EZO Pump
 #
 import copy
 import datetime
@@ -10,10 +10,28 @@ import time
 from flask_babel import lazy_gettext
 
 from mycodo.databases.models import DeviceMeasurements
+from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import read_last_influxdb
+
+
+def constraints_pass_positive_value(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: float or int
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure value is positive
+    if value <= 0:
+        all_passed = False
+        errors.append("Must be a positive value")
+    return all_passed, errors, mod_input
+
 
 # Measurements
 measurements_dict = {
@@ -27,17 +45,24 @@ measurements_dict = {
     }
 }
 
+channels_dict = {
+    0: {
+        'types': ['volume', 'on_off'],
+        'measurements': [0, 1]
+    }
+}
+
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'atlas_ezo_pmp',
     'output_name': "{} (Atlas Scientific)".format(lazy_gettext('Peristaltic Pump')),
     'measurements_dict': measurements_dict,
+    'channels_dict': channels_dict,
+    'output_types': ['volume', 'on_off'],
+
     'url_manufacturer': 'https://atlas-scientific.com/peristaltic/',
     'url_datasheet': 'https://www.atlas-scientific.com/files/EZO_PMP_Datasheet.pdf',
     'url_product_purchase': 'https://atlas-scientific.com/peristaltic/ezo-pmp/',
-
-    'on_state_internally_handled': False,
-    'output_types': ['volume', 'on_off'],
 
     'message': 'Atlas Scientific peristaltic pumps can be set to dispense at their maximum rate or a '
                'rate can be specified. Their minimum flow rate is 0.5 ml/min and their maximum is 105 ml/min.',
@@ -47,8 +72,6 @@ OUTPUT_INFORMATION = {
         'i2c_location',
         'uart_location',
         'uart_baud_rate',
-        'pump_output_mode',
-        'pump_flow_rate',
         'button_send_volume',
         'button_send_duration'
     ],
@@ -63,7 +86,37 @@ OUTPUT_INFORMATION = {
     'i2c_address_editable': True,
     'ftdi_location': '/dev/ttyUSB0',
     'uart_location': '/dev/ttyAMA0',
-    'uart_baud_rate': 9600
+    'uart_baud_rate': 9600,
+    
+    'custom_channel_options': [
+        {
+            'id': 'flow_mode',
+            'type': 'select',
+            'default_value': 'fastest_flow_rate',
+            'options_select': [
+                ('fastest_flow_rate', 'Fastest Flow Rate'),
+                ('specify_flow_rate', 'Specify Flow Rate')
+            ],
+            'name': lazy_gettext('Flow Rate Method'),
+            'phrase': lazy_gettext('The flow rate to use when pumping a volume')
+        },
+        {
+            'id': 'flow_rate',
+            'type': 'float',
+            'default_value': 10.0,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Desired Flow Rate (ml/min)',
+            'phrase': 'Desired flow rate in ml/minute when Specify Flow Rate set'
+        },
+        {
+            'id': 'amps',
+            'type': 'float',
+            'default_value': 0.0,
+            'required': True,
+            'name': lazy_gettext('Current (Amps)'),
+            'phrase': lazy_gettext('The current draw of the device being controlled')
+        }
+    ]
 }
 
 
@@ -77,18 +130,16 @@ class OutputModule(AbstractOutput):
         self.atlas_command = None
         self.currently_dispensing = False
         self.interface = None
-        self.mode = None
-        self.flow_rate = None
 
-        if not testing:
-            self.initialize_output()
-
-    def initialize_output(self):
-        self.interface = self.output.interface
-        self.mode = self.output.output_mode
-        self.flow_rate = self.output.flow_rate
+        output_channels = db_retrieve_table_daemon(
+            OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()
+        self.options_channels = self.setup_custom_channel_options_json(
+            OUTPUT_INFORMATION['custom_channel_options'], output_channels)
 
     def setup_output(self):
+        self.setup_on_off_output(OUTPUT_INFORMATION)
+        self.interface = self.output.interface
+
         if self.interface == 'FTDI':
             from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
             self.atlas_command = AtlasScientificFTDI(self.output.ftdi_location)
@@ -104,6 +155,9 @@ class OutputModule(AbstractOutput):
                 baudrate=self.output.baud_rate)
         else:
             self.logger.error("Unknown interface: {}".format(self.interface))
+            return
+
+        self.output_setup = True
 
     def record_dispersal(self, amount_ml=None, seconds_to_run=None):
         measure_dict = copy.deepcopy(measurements_dict)
@@ -131,7 +185,7 @@ class OutputModule(AbstractOutput):
 
         self.record_dispersal(seconds_to_run=seconds)
 
-    def output_switch(self, state, output_type=None, amount=None):
+    def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         if state == 'on' and output_type == 'sec' and amount:
             # Only dispense for a duration if output_type is 'sec'
             # Otherwise, refer to output_mode
@@ -142,18 +196,18 @@ class OutputModule(AbstractOutput):
             return
 
         elif state == 'on' and output_type in ['vol', None] and amount:
-            if self.mode == 'fastest_flow_rate':
+            if self.options_channels['flow_mode'][0] == 'fastest_flow_rate':
                 minutes_to_run = amount / 105
                 seconds_to_run = minutes_to_run * 60
                 write_cmd = 'D,{ml:.2f}'.format(ml=amount)
-            elif self.mode == 'specify_flow_rate':
-                minutes_to_run = amount / self.flow_rate
+            elif self.options_channels['flow_mode'][0] == 'specify_flow_rate':
+                minutes_to_run = amount / self.options_channels['flow_rate'][0]
                 seconds_to_run = minutes_to_run * 60
                 write_cmd = 'D,{ml:.2f},{min:.2f}'.format(
                     ml=amount, min=minutes_to_run)
             else:
                 self.logger.error("Invalid output_mode: '{}'".format(
-                    self.mode))
+                    self.options_channels['flow_mode'][0]))
                 return
 
         elif state == 'off' or (amount is not None and amount <= 0):
@@ -165,7 +219,11 @@ class OutputModule(AbstractOutput):
         else:
             self.logger.error(
                 "Invalid parameters: State: {state}, Type: {ot}, Mode: {mod}, Amount: {amt}, Flow Rate: {fr}".format(
-                    state=state, ot=output_type, mod=self.mode, amt=amount, fr=self.flow_rate))
+                    state=state,
+                    ot=output_type,
+                    mod=self.options_channels['flow_mode'][0],
+                    amt=amount,
+                    fr=self.options_channels['flow_rate'][0]))
             return
 
         self.atlas_command.write(write_cmd)
@@ -174,7 +232,7 @@ class OutputModule(AbstractOutput):
         if amount and seconds_to_run:
             self.record_dispersal(amount_ml=amount, seconds_to_run=seconds_to_run)
 
-    def is_on(self):
+    def is_on(self, output_channel=None):
         if self.is_setup():
             if self.currently_dispensing:
                 return True

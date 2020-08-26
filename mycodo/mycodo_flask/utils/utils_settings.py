@@ -40,6 +40,7 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
+from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.databases.models import Role
 from mycodo.databases.models import SMTP
@@ -1621,11 +1622,17 @@ def settings_diagnostic_delete_outputs():
     error = []
 
     output = db_retrieve_table(Output)
+    output_channels = db_retrieve_table(OutputChannel)
     display_order = db_retrieve_table(DisplayOrder, entry='first')
 
     if not error:
         try:
             for each_output in output:
+                channels = output_channels.filter(
+                    OutputChannel.output_id == each_output.unique_id)
+                for each_output_channel in channels:
+                    db.session.delete(each_output_channel)
+
                 db.session.delete(each_output)
                 db.session.commit()
             display_order.output = ''

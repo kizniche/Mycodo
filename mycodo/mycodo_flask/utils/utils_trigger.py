@@ -43,20 +43,23 @@ def trigger_mod(form):
 
         elif trigger.trigger_type == 'trigger_output':
             error = check_form_output(form, error)
-            trigger.unique_id_1 = form.unique_id_1.data
+            trigger.unique_id_1 = form.unique_id_1.data.split(",")[0]
+            trigger.unique_id_2 = form.unique_id_1.data.split(",")[1]
             trigger.output_state = form.output_state.data
             trigger.output_duration = form.output_duration.data
 
         elif trigger.trigger_type == 'trigger_output_pwm':
             error = check_form_output_pwm(form, error)
-            trigger.unique_id_1 = form.unique_id_1.data
+            trigger.unique_id_1 = form.unique_id_1.data.split(",")[0]
+            trigger.unique_id_2 = form.unique_id_1.data.split(",")[1]
             trigger.output_state = form.output_state.data
             trigger.output_duty_cycle = form.output_duty_cycle.data
 
         elif trigger.trigger_type == 'trigger_run_pwm_method':
             error = check_form_run_pwm_method(form, error)
             trigger.unique_id_1 = form.unique_id_1.data
-            trigger.unique_id_2 = form.unique_id_2.data
+            trigger.unique_id_2 = form.unique_id_2.data.split(",")[0]
+            trigger.unique_id_3 = form.unique_id_2.data.split(",")[1]
             trigger.period = form.period.data
             trigger.trigger_actions_at_start = form.trigger_actions_at_start.data
             trigger.trigger_actions_at_period = form.trigger_actions_at_period.data

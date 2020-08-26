@@ -14,8 +14,8 @@
   <div>
     <select class="form-control form-tooltip form-dropdown" id="unique_id_2" name="unique_id_2" data-placement="top" title="{{_('Apply the Duty Cycle to this PWM Output')}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
-      {%- for each_output in output if each_output.output_type in output_types['pwm'] -%}
-        <option value="{{each_output.unique_id}}"{% if each_trigger.unique_id_2 == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
+      {%- for each_output in choices_output_channels if 'pwm' in each_output['types'] -%}
+        <option value="{{each_output['value']}}"{% if each_trigger.unique_id_2 == each_output['value'].split(",")[0] and each_trigger.unique_id_3 == each_output['value'].split(",")[1] %} selected{% endif %}>{{each_output['item']}}</option>
       {%- endfor -%}
     </select>
   </div>

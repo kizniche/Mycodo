@@ -20,7 +20,6 @@
 #  along with Mycodo. If not, see <http://www.gnu.org/licenses/>.
 #
 #  Contact at kylegabriel.com
-
 import logging
 
 import os
@@ -28,8 +27,10 @@ import os
 from mycodo.config import PATH_INPUTS
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.utils.modules import load_module_from_file
+from mycodo.utils.logging_utils import set_log_level
 
 logger = logging.getLogger("mycodo.utils.inputs")
+logger.setLevel(set_log_level(logging))
 
 
 def list_devices_using_interface(interface):

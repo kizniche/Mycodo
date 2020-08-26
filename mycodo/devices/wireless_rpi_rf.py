@@ -56,24 +56,6 @@ class Transmit433MHz:
         self.device.cleanup()
 
 
-def is_int(test_var, check_range=None):
-    """
-    Test if var is integer (and also between range)
-    check_range should be a list of minimum and maximum values
-    e.g. check_range=[0, 100]
-    """
-    try:
-        _ = int(test_var)
-    except ValueError:
-        return False
-
-    if check_range:
-        if not (check_range[0] <= int(test_var) <= check_range[1]):
-            return False
-
-    return True
-
-
 def main():
     parser = argparse.ArgumentParser(description='Sends/Receives a decimal code via a 433/315MHz GPIO device')
     parser.add_argument('-d', dest='direction', type=int, default=2,

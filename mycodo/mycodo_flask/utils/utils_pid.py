@@ -100,8 +100,10 @@ def pid_mod(form_mod_pid_base,
         # Handle Raise Output Settings
         #
         if form_mod_pid_base.raise_output_id.data:
+            output_id = form_mod_pid_base.raise_output_id.data.split(",")[0]
+            channel_id = form_mod_pid_base.raise_output_id.data.split(",")[1]
             raise_output_type = Output.query.filter(
-                Output.unique_id == form_mod_pid_base.raise_output_id.data).first().output_type
+                Output.unique_id == output_id).first().output_type
 
             def default_raise_output_settings(mod):
                 if mod.raise_output_type == 'on_off':
@@ -173,8 +175,10 @@ def pid_mod(form_mod_pid_base,
         # Handle Lower Output Settings
         #
         if form_mod_pid_base.lower_output_id.data:
+            output_id = form_mod_pid_base.lower_output_id.data.split(",")[0]
+            channel_id = form_mod_pid_base.lower_output_id.data.split(",")[1]
             lower_output_type = Output.query.filter(
-                Output.unique_id == form_mod_pid_base.lower_output_id.data).first().output_type
+                Output.unique_id == output_id).first().output_type
 
             def default_lower_output_settings(mod):
                 if mod.lower_output_type == 'on_off':

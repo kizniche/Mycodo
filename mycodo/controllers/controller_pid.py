@@ -114,12 +114,14 @@ class PIDController(AbstractController, threading.Thread):
         self.setpoint_tracking_id = None
         self.setpoint_tracking_max_age = None
         self.raise_output_id = None
-        self.raise_output_type = None
+        self.raise_output_channel = None
+        self.raise_outputraise_output_id_type = None
         self.raise_min_duration = None
         self.raise_max_duration = None
         self.raise_min_off_duration = None
         self.raise_always_min_pwm = None
         self.lower_output_id = None
+        self.lower_output_channel = None
         self.lower_output_type = None
         self.lower_min_duration = None
         self.lower_max_duration = None
@@ -174,13 +176,15 @@ class PIDController(AbstractController, threading.Thread):
         self.setpoint_tracking_type = pid.setpoint_tracking_type
         self.setpoint_tracking_id = pid.setpoint_tracking_id
         self.setpoint_tracking_max_age = pid.setpoint_tracking_max_age
-        self.raise_output_id = pid.raise_output_id
+        self.raise_output_id = pid.raise_output_id.split(",")[0]
+        self.raise_output_channel = pid.raise_output_id.split(",")[1]
         self.raise_output_type = pid.raise_output_type
         self.raise_min_duration = pid.raise_min_duration
         self.raise_max_duration = pid.raise_max_duration
         self.raise_min_off_duration = pid.raise_min_off_duration
         self.raise_always_min_pwm = pid.raise_always_min_pwm
-        self.lower_output_id = pid.lower_output_id
+        self.lower_output_id = pid.lower_output_id.split(",")[0]
+        self.lower_output_channel = pid.lower_output_id.split(",")[1]
         self.lower_output_type = pid.lower_output_type
         self.lower_min_duration = pid.lower_min_duration
         self.lower_max_duration = pid.lower_max_duration
@@ -481,15 +485,19 @@ class PIDController(AbstractController, threading.Thread):
                             self.raise_duty_cycle = self.raise_min_duration
 
                         self.logger.debug(
-                            "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output {id} to {dc:.1f}%".format(
+                            "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output {id} CH{ch} to {dc:.1f}%".format(
                                 sp=self.PID_Controller.setpoint,
                                 cv=self.PID_Controller.control_variable,
                                 id=self.raise_output_id,
+                                ch=self.raise_output_channel,
                                 dc=self.raise_duty_cycle))
 
                         # Activate pwm with calculated duty cycle
                         self.control.output_on(
-                            self.raise_output_id, output_type='pwm', amount=self.raise_duty_cycle)
+                            self.raise_output_id,
+                            output_type='pwm',
+                            amount=self.raise_duty_cycle,
+                            output_channel=self.raise_output_channel)
 
                         self.write_pid_output_influxdb(
                             'percent', 'duty_cycle', 7,
@@ -506,37 +514,45 @@ class PIDController(AbstractController, threading.Thread):
 
                         if self.raise_seconds_on > self.raise_min_duration:
                             # Activate raise_output for a duration
-                            self.logger.debug("Setpoint: {sp} Output: {cv} to output {id}".format(
+                            self.logger.debug("Setpoint: {sp} Output: {cv} to output {id} CH{ch}".format(
                                 sp=self.PID_Controller.setpoint,
                                 cv=self.PID_Controller.control_variable,
-                                id=self.raise_output_id))
+                                id=self.raise_output_id,
+                                ch=self.raise_output_channel))
                             self.control.output_on(
                                 self.raise_output_id,
                                 output_type='sec',
                                 amount=self.raise_seconds_on,
-                                min_off=self.raise_min_off_duration)
+                                min_off=self.raise_min_off_duration,
+                                output_channel=self.raise_output_channel)
 
                         self.write_pid_output_influxdb(
                             's', 'duration_time', 6, self.PID_Controller.control_variable)
 
                     elif self.raise_output_type == 'volume':
                         # Activate raise_output for a volume (ml)
-                        self.logger.debug("Setpoint: {sp} Output: {cv} ml to output {id}".format(
+                        self.logger.debug("Setpoint: {sp} Output: {cv} ml to output {id} CH{ch}".format(
                             sp=self.PID_Controller.setpoint,
                             cv=self.PID_Controller.control_variable,
-                            id=self.raise_output_id))
+                            id=self.raise_output_id,
+                            ch=self.raise_output_channel))
                         self.control.output_on(
                             self.raise_output_id,
                             output_type='vol',
                             amount=self.PID_Controller.control_variable,
-                            min_off=self.raise_min_off_duration)
+                            min_off=self.raise_min_off_duration,
+                            output_channel=self.raise_output_channel)
 
                         self.write_pid_output_influxdb(
                             'ml', 'volume', 8, self.PID_Controller.control_variable)
 
                 elif self.raise_output_type == 'pwm' and not self.raise_always_min_pwm:
                     # Turn PWM Off if PWM Output and not instructed to always be at least min
-                    self.control.output_on(self.raise_output_id, output_type='pwm', amount=0)
+                    self.control.output_on(
+                        self.raise_output_id,
+                        output_type='pwm',
+                        amount=0,
+                        output_channel=self.raise_output_channel)
 
             #
             # PID control variable is negative, indicating a desire to lower
@@ -559,10 +575,11 @@ class PIDController(AbstractController, threading.Thread):
                             self.lower_duty_cycle = self.lower_min_duration
 
                         self.logger.debug(
-                            "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output {id} to {dc:.1f}%".format(
+                            "Setpoint: {sp}, Control Variable: {cv}, Output: PWM output {id} CH{ch} to {dc:.1f}%".format(
                                 sp=self.PID_Controller.setpoint,
                                 cv=self.PID_Controller.control_variable,
                                 id=self.lower_output_id,
+                                ch=self.lower_output_channel,
                                 dc=self.lower_duty_cycle))
 
                         if self.store_lower_as_negative:
@@ -576,7 +593,10 @@ class PIDController(AbstractController, threading.Thread):
 
                         # Activate pwm with calculated duty cycle
                         self.control.output_on(
-                            self.lower_output_id, output_type='pwm', amount=stored_duty_cycle)
+                            self.lower_output_id,
+                            output_type='pwm',
+                            amount=stored_duty_cycle,
+                            output_channel=self.lower_output_channel)
 
                         self.write_pid_output_influxdb(
                             'percent', 'duty_cycle', 7, stored_control_variable)
@@ -599,16 +619,18 @@ class PIDController(AbstractController, threading.Thread):
 
                         if self.lower_seconds_on > self.lower_min_duration:
                             # Activate lower_output for a duration
-                            self.logger.debug("Setpoint: {sp} Output: {cv} to output {id}".format(
+                            self.logger.debug("Setpoint: {sp} Output: {cv} to output {id} CH{ch}".format(
                                 sp=self.PID_Controller.setpoint,
                                 cv=self.PID_Controller.control_variable,
-                                id=self.lower_output_id))
+                                id=self.lower_output_id,
+                                ch=self.lower_output_channel))
 
                             self.control.output_on(
                                 self.lower_output_id,
                                 output_type='sec',
                                 amount=stored_amount_on,
-                                min_off=self.lower_min_off_duration)
+                                min_off=self.lower_min_off_duration,
+                                output_channel=self.lower_output_channel)
 
                         self.write_pid_output_influxdb(
                             's', 'duration_time', 6, stored_control_variable)
@@ -622,30 +644,38 @@ class PIDController(AbstractController, threading.Thread):
                             stored_control_variable = abs(self.PID_Controller.control_variable)
 
                         # Activate lower_output for a volume (ml)
-                        self.logger.debug("Setpoint: {sp} Output: {cv} to output {id}".format(
+                        self.logger.debug("Setpoint: {sp} Output: {cv} to output {id} CH{ch}".format(
                             sp=self.PID_Controller.setpoint,
                             cv=self.PID_Controller.control_variable,
-                            id=self.lower_output_id))
+                            id=self.lower_output_id,
+                            ch=self.lower_output_channel))
 
                         self.control.output_on(
                             self.lower_output_id,
                             output_type='vol',
                             amount=stored_amount_on,
-                            min_off=self.lower_min_off_duration)
+                            min_off=self.lower_min_off_duration,
+                            output_channel=self.lower_output_channel)
 
                         self.write_pid_output_influxdb(
                             'ml', 'volume', 8, stored_control_variable)
 
                 elif self.lower_output_type == 'pwm' and not self.lower_always_min_pwm:
                     # Turn PWM Off if PWM Output and not instructed to always be at least min
-                    self.control.output_on(self.lower_output_id, output_type='pwm', amount=0)
+                    self.control.output_on(
+                        self.lower_output_id,
+                        output_type='pwm',
+                        amount=0,
+                        output_channel=self.lower_output_channel)
 
         else:
             self.logger.debug("Last measurement unsuccessful. Turning outputs off.")
             if self.PID_Controller.direction in ['raise', 'both'] and self.raise_output_id:
-                self.control.output_off(self.raise_output_id)
+                self.control.output_off(
+                    self.raise_output_id, output_channel=self.raise_output_channel)
             if self.PID_Controller.direction in ['lower', 'both'] and self.lower_output_id:
-                self.control.output_off(self.lower_output_id)
+                self.control.output_off(
+                    self.lower_output_id, output_channel=self.lower_output_channel)
 
     def pid_parameters_str(self):
         return "Device ID: {did}, " \
@@ -660,12 +690,14 @@ class PIDController(AbstractController, threading.Thread):
                "Integrator Min: {imn}, " \
                "Integrator Max {imx}, " \
                "Output Raise: {opr}, " \
+               "Output Raise Channel: {oprc}, " \
                "Output Raise Type: {oprt}, " \
                "Output Raise Min On: {oprmnon}, " \
                "Output Raise Max On: {oprmxon}, " \
                "Output Raise Min Off: {oprmnoff}, " \
                "Output Raise Always Min: {opramn}, " \
                "Output Lower: {opl}, " \
+               "Output Lower Channel: {oplc}, " \
                "Output Lower Type: {oplt}, " \
                "Output Lower Min On: {oplmnon}, " \
                "Output Lower Max On: {oplmxon}, " \
@@ -685,12 +717,14 @@ class PIDController(AbstractController, threading.Thread):
                     imn=self.PID_Controller.integrator_min,
                     imx=self.PID_Controller.integrator_max,
                     opr=self.raise_output_id,
+                    oprc=self.raise_output_channel,
                     oprt=self.raise_output_type,
                     oprmnon=self.raise_min_duration,
                     oprmxon=self.raise_max_duration,
                     oprmnoff=self.raise_min_off_duration,
                     opramn=self.raise_always_min_pwm,
                     opl=self.lower_output_id,
+                    oplc=self.lower_output_channel,
                     oplt=self.lower_output_type,
                     oplmnon=self.lower_min_duration,
                     oplmxon=self.lower_max_duration,

@@ -5,10 +5,10 @@ import time
 
 import filelock
 
-logger = logging.getLogger("mycodo.lockfile")
+from mycodo.utils.logging_utils import set_log_level
 
-if logging.getLevelName(logging.getLogger().getEffectiveLevel()) == 'INFO':
-    logger.setLevel(logging.INFO)
+logger = logging.getLogger("mycodo.lockfile")
+logger.setLevel(set_log_level(logging))
 
 
 class LockFile:

@@ -63,7 +63,7 @@ WIDGET_INFORMATION = {
             'options_select': [
                 'Input',
                 'Math',
-                'Output',
+                'Output_Channels_Measurements',
                 'PID'
             ],
             'name': lazy_gettext('Measurement'),
@@ -87,21 +87,6 @@ WIDGET_INFORMATION = {
             'phrase': 'The period of time between refreshing the widget'
         },
         {
-            'id': 'enable_timestamp',
-            'type': 'bool',
-            'default_value': False,
-            'name': lazy_gettext('Show Timestamp'),
-            'phrase': lazy_gettext('Show the timestamp on the widget')
-        },
-        {
-            'id': 'font_em_timestamp',
-            'type': 'float',
-            'default_value': 1.5,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Timestamp Font Size (em)',
-            'phrase': 'The font size of the timestamp'
-        },
-        {
             'id': 'decimal_places',
             'type': 'integer',
             'default_value': 2,
@@ -122,8 +107,7 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
 
-    'widget_dashboard_body': """<div style="text-align: center"><img style="max-width: 60%; max-height: 60%" id="value-{{chart_number}}" src="" alt="">
-  {% if widget_options['enable_timestamp'] %}<br/><span style="font-size: {{widget_options['font_em_timestamp']}}em" id="timestamp-{{chart_number}}"></span>{% endif %}</div>""",
+    'widget_dashboard_body': """<div style="text-align: center"><img style="max-width: 60%; max-height: 60%" id="value-{{chart_number}}" src="" alt=""></div>""",
 
     'widget_dashboard_js': """<!-- No JS content -->""",
 
@@ -142,7 +126,7 @@ WIDGET_INFORMATION = {
 
     // Get output state for indicator and output widgets
     if (measure_type === "output") {
-      const url = '/outputstate_unique_id/' + unique_id;
+      const url = '/outputstate_unique_id/' + unique_id + '/' + measurement_id;
       $.ajax(url, {
         success: function (data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {
@@ -226,6 +210,7 @@ WIDGET_INFORMATION = {
     'widget_dashboard_js_ready_end': """
   {%- set device_id = widget_options['measurement'].split(",")[0] -%}
   {%- set measurement_id = widget_options['measurement'].split(",")[1] -%}
+  {%- set channel_id = widget_options['measurement'].split(",")[2] -%}
   
   {% for each_input in input if each_input.unique_id == device_id %}
   getLastDataIndicator({{chart_number}}, '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['measurement_max_age']}}, {{widget_options['decimal_places']}}, {{widget_options['option_invert']|int}});
@@ -238,8 +223,8 @@ WIDGET_INFORMATION = {
   {%- endfor -%}
 
   {% for each_output in output if each_output.unique_id == device_id %}
-  getLastDataIndicator({{chart_number}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['measurement_max_age']}}, {{widget_options['decimal_places']}}, {{widget_options['option_invert']|int}});
-  repeatLastDataIndicator({{chart_number}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_max_age']}}, {{each_widget.decimal_places}}, {{widget_options['option_invert']|int}});
+  getLastDataIndicator({{chart_number}}, '{{each_output.unique_id}}', 'output', '{{channel_id}}', {{widget_options['measurement_max_age']}}, {{widget_options['decimal_places']}}, {{widget_options['option_invert']|int}});
+  repeatLastDataIndicator({{chart_number}}, '{{each_output.unique_id}}', 'output', '{{channel_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['measurement_max_age']}}, {{each_widget.decimal_places}}, {{widget_options['option_invert']|int}});
   {%- endfor -%}
 
   {% for each_pid in pid if each_pid.unique_id == device_id %}

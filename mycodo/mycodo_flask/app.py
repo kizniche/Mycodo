@@ -41,8 +41,6 @@ from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 
 logger = logging.getLogger(__name__)
 
-ENABLE_API = False
-
 
 def create_app(config=ProdConfig):
     """

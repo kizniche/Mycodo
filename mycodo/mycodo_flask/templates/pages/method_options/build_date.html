@@ -1,6 +1,6 @@
 <div class="row small-gutters" style="padding: 0.7em">
   <div class="col-sm-12">
-    <input type="radio" name="method_select" value="setpoint" checked="checked"> {{_('Define the setpoint over a period of time based on specific times/dates.')}}
+    {{_('Define the setpoint over a period of time based on specific times/dates.')}}
     <br>{{_("The new entry's start time may be equal to the last entry's end time, but it cannot overlap. The default setpoint for the PID will be used if there is any unaccounted time.")}}
   </div>
   <div class="col-sm-6 col-md-4">
@@ -28,51 +28,6 @@
     {{form_add_method.setpoint_end.label(class_='control-label')}}
     <div>
       {{form_add_method.setpoint_end(class_='form-control')}}
-    </div>
-  </div>
-</div>
-
-<div class="row" style="padding-bottom: 1em; padding-top: 1em">
-  <div class="col-sm-12">
-    <label style="padding-top: 1em"></label>
-    <div>
-      OR
-    </div>
-  </div>
-</div>
-
-<div class="row small-gutters" style="padding: 0.7em">
-  <div class="col-md-12">
-    <input type="radio" name="method_select" value="output"> {{dict_translation['output']['title']}}
-    <br>{{_('Activate or deactivate a output within this method at a specific time/date.')}}
-  </div>
-  <div class="col-sm-6 col-md-4">
-    {{form_add_method.output_time.label(class_='control-label')}}
-    <div>
-      {{form_add_method.output_time(class_='form-control')}}
-    </div>
-  </div>
-  <div class="col-sm-6 col-md-3">
-    {{form_add_method.output_id.label(class_='control-label')}}
-    <div>
-      <select class="form-control form-tooltip form-dropdown" data-placement="bottom" id="output_id" name="output_id" title="{{_('Modulate the selected output')}}.">
-        <option value=""></option>
-        {% for each_output in output -%}
-          <option value="{{each_output.id}}">{{"[{0:02d}]".format(each_output.id)}} {{each_output.name}}</option>
-        {% endfor -%}
-      </select>
-    </div>
-  </div>
-  <div class="col-sm-3 col-md-2">
-    {{form_add_method.output_state.label(class_='control-label')}}
-    <div>
-      {{form_add_method.output_state(class_='form-control')}}
-    </div>
-  </div>
-  <div class="col-sm-3 col-md-3">
-    {{form_add_method.output_duration.label(class_='control-label')}}
-    <div>
-      {{form_add_method.output_duration(class_='form-control')}}
     </div>
   </div>
 </div>

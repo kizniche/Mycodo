@@ -59,6 +59,11 @@
       <option value="{{each_output_form['value']}}"{% if each_output_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>
         {% endfor -%}
       {% endif %}
+      {% if 'Output_Channels_Measurements' in each_option['options_select'] %}
+        {% for each_output_form in choices_output_channels_measurements -%}
+      <option value="{{each_output_form['value']}}"{% if each_output_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
       {% if 'Output_PWM' in each_option['options_select'] %}
         {%- for each_output_form in choices_output_pwm -%}
       <option value="{{each_output_form['value']}}"{% if each_output_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>
@@ -68,6 +73,27 @@
         {% for each_pid_form in choices_pid -%}
       <option value="{{each_pid_form['value']}}"{% if each_pid_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_pid_form['item']}}</option>
         {% endfor -%}
+      {% endif %}
+    </select>
+  </div>
+</div>
+
+    {% elif each_option['type'] == 'select_measurement_channel' %}
+
+<div class="col-auto">
+  <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
+  <div>
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}">
+      <option value="">{{dict_translation['select_one']['title']}}</option>
+      {% if 'Output_Channels_Measurements' in each_option['options_select'] %}
+        {% for each_output_form in choices_output_channels_measurements -%}
+      <option value="{{each_output_form['value']}}"{% if each_output_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
+      {% if 'Output_PWM_Channels_Measurements' in each_option['options_select'] %}
+        {%- for each_output_form in choices_output_channels_measurements if 'pwm' in each_output_form['types'] -%}
+      <option value="{{each_output_form['value']}}"{% if each_output_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>
+        {%- endfor -%}
       {% endif %}
     </select>
   </div>
@@ -96,7 +122,6 @@
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" size="{{multiselect_size}}" multiple="">
-      <option value="">{{dict_translation['select_one']['title']}}</option>
       {% if 'Input' in each_option['options_select'] %}
         {% for each_input_form in choices_input -%}
       <option value="{{each_input_form['value']}}"{% if each_input_form['value'] in custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_input_form['item']}}</option>

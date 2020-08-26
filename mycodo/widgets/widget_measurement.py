@@ -63,7 +63,7 @@ WIDGET_INFORMATION = {
             'options_select': [
                 'Input',
                 'Math',
-                'Output',
+                'Output_Channels_Measurements',
                 'PID'
             ],
             'name': lazy_gettext('Measurement'),

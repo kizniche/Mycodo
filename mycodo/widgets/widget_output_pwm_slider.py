@@ -58,10 +58,10 @@ WIDGET_INFORMATION = {
     'custom_options': [
         {
             'id': 'output',
-            'type': 'select_measurement',
+            'type': 'select_measurement_channel',
             'default_value': '',
             'options_select': [
-                'Output_PWM',
+                'Output_PWM_Channels_Measurements',
             ],
             'name': lazy_gettext('Output'),
             'phrase': lazy_gettext('Select the output to display and control')
@@ -147,7 +147,8 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_body': """
 {%- set device_id = widget_options['output'].split(",")[0] -%}
-{%- set measurement_id = widget_options['output'].split(",")[1] -%}
+{%- set channel_id = widget_options['output'].split(",")[1] -%}
+{%- set measurement_id = widget_options['output'].split(",")[2] -%}
 
 {% set is_pwm = [] -%}
 {% set is_ezo_pump = [] -%}
@@ -180,19 +181,19 @@ WIDGET_INFORMATION = {
   <br/>
   {%- endif -%}
 
-<span id="range_val_{{chart_number}}" style="font-size: {{widget_options['font_em_value']}}em"></span> <input id="range_{{chart_number}}" type="range" min="0" max="100" step="1" value="0" style="width:80%;" oninput="showVal({{chart_number}}, this.value)" onchange="PWMSlidersendVal({{chart_number}}, '{{device_id}}', this.value)">
+<span id="range_val_{{chart_number}}" style="font-size: {{widget_options['font_em_value']}}em"></span> <input id="range_{{chart_number}}" type="range" min="0" max="100" step="1" value="0" style="width:80%;" oninput="showVal({{chart_number}}, this.value)" onchange="PWMSlidersendVal({{chart_number}}, '{{device_id}}', '{{channel_id}}', this.value)">
 
   {% if widget_options['enable_output_controls'] %}
 
   <div class="row small-gutters" style="padding: 0.3em 1.5em 0 1.5em">
     <div class="col-auto">
-      <input class="btn btn-sm btn-primary turn_off_pwm_slider" id="turn_off" name="{{chart_number}}/{{device_id}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
+      <input class="btn btn-sm btn-primary turn_off_pwm_slider" id="turn_off" name="{{chart_number}}/{{device_id}}/{{channel_id}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
     </div>
     <div class="col-auto">
-      <input class="form-control-sm" id="pwm_slider_duty_cycle_on_amt_{{chart_number}}_{{device_id}}" name="duty_cycle_on_amt_{{chart_number}}_{{device_id}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
+      <input class="form-control-sm" id="pwm_slider_duty_cycle_on_amt_{{chart_number}}_{{device_id}}_{{channel_id}}" name="duty_cycle_on_amt_{{chart_number}}_{{device_id}}_{{channel_id}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
     </div>
     <div class="col-auto">
-      <input class="btn btn-sm btn-primary duty_cycle_on_amt_pwm_slider" id="turn_on" name="{{chart_number}}/{{device_id}}/on/pwm/" type="button" value="{{_('PWM On')}}">
+      <input class="btn btn-sm btn-primary duty_cycle_on_amt_pwm_slider" id="turn_on" name="{{chart_number}}/{{device_id}}/{{channel_id}}/on/pwm/" type="button" value="{{_('PWM On')}}">
     </div>
   </div>
 
@@ -230,9 +231,9 @@ function showVal(chart, duty_cycle){
   document.getElementById("range_val_" + chart).innerHTML = duty_cycle;
 }
 
-function PWMSlidersendVal(chart, output_id, duty_cycle){
+function PWMSlidersendVal(chart, output_id, channel_id, duty_cycle){
   document.getElementById("range_val_" + chart).innerHTML = duty_cycle;
-  const cmd_send = output_id + '/on/pwm/' + duty_cycle;
+  const cmd_send = output_id + '/' + channel_id + '/on/pwm/' + duty_cycle;
   modOutputPWM(cmd_send);
 }
 
@@ -245,11 +246,12 @@ $(document).ready(function() {
     {% endif %}
     modOutputPWM(send_cmd);
   });
-  $('.duty_cycle_on_amt_pwm_slider').click(function() {
+  $('.duty_cycle_on_amt_pwm_slider').click(function() {const output_id = btn_val.split('/')[1];
+    const channel_id = btn_val.split('/')[2];
     const btn_val = this.name;
     const chart = btn_val.split('/')[0];
-    const id = btn_val.split('/')[1];
-    const dc = $('#pwm_slider_duty_cycle_on_amt_' + chart + '_' + id).val();
+    
+    const dc = $('#pwm_slider_duty_cycle_on_amt_' + chart + '_' + output_id + '_' + channel_id).val();
     const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
     {% if not misc.hide_alert_info %}
     toastr['info']('Command sent to turn output On with a duty cycle of ' + dc + '%');
@@ -318,8 +320,8 @@ $(document).ready(function() {
     }, period_sec * 1000);
   }
   
-   function getGPIOStatePWMSlider(chart_number, unique_id) {
-    const url = '/outputstate_unique_id/' + unique_id;
+   function getGPIOStatePWMSlider(chart_number, unique_id, channel_id) {
+    const url = '/outputstate_unique_id/' + unique_id + '/' + channel_id;
     $.getJSON(url,
       function(state, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
@@ -346,9 +348,9 @@ $(document).ready(function() {
     );
   }
 
-  function repeatGPIOStatePWMSlider(chart_number, unique_id, refresh_seconds) {
+  function repeatGPIOStatePWMSlider(chart_number, unique_id, channel_id, refresh_seconds) {
     setInterval(function () {
-      getGPIOStatePWMSlider(chart_number, unique_id);
+      getGPIOStatePWMSlider(chart_number, unique_id, channel_id);
     }, refresh_seconds * 1000);  // Refresh duration in milliseconds
   }
 """,
@@ -356,11 +358,13 @@ $(document).ready(function() {
     'widget_dashboard_js_ready_end': """
 {%- set device_id = widget_options['output'].split(",")[0] -%}
 {%- set measurement_id = widget_options['output'].split(",")[1] -%}
+{%- set channel_id = widget_options['output'].split(",")[2] -%}
+
 {% for each_output in output if each_output.unique_id == device_id %}
   getLastDataPWMSlider({{chart_number}}, '{{device_id}}', 'output', '{{measurement_id}}', {{widget_options['max_measure_age']}}, {{widget_options['decimal_places']}});
   repeatLastDataPWMSlider({{chart_number}}, '{{device_id}}', 'output', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}}, {{widget_options['decimal_places']}});
 {% endfor %}
-  getGPIOStatePWMSlider({{chart_number}}, '{{device_id}}', {{widget_options['decimal_places']}});
-  repeatGPIOStatePWMSlider({{chart_number}}, '{{device_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['decimal_places']}});
+  getGPIOStatePWMSlider({{chart_number}}, '{{device_id}}', '{{channel_id}}', {{widget_options['decimal_places']}});
+  repeatGPIOStatePWMSlider({{chart_number}}, '{{device_id}}', '{{channel_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['decimal_places']}});
 """
 }

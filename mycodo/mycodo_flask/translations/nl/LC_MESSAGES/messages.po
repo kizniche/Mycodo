@@ -5273,7 +5273,7 @@ msgstr ""
 "of 0 als uitgeschakeld."
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:13
-msgid "returns \"on\" if the output is on and \"off\" if the output os off."
+msgid "returns \"on\" if the output is on and \"off\" if the output is off."
 msgstr "geeft \"aan\" wanneer de uitgang aan en \"uit\" als de uitgang os af."
 
 #: mycodo_flask/templates/pages/function_options/pid_options/output_on_off_lower.html:5

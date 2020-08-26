@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# mqtt.py - MQTT Output module
+# on_off_wireless_rpi_rf.py - Output for Wireless
 #
 from flask_babel import lazy_gettext
 
@@ -9,21 +9,23 @@ from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
 
 
-def constraints_pass_positive_value(mod_input, value):
+def constraints_pass_positive_value(mod_dev, value):
     """
     Check if the user input is acceptable
-    :param mod_input: database object, SQL object with user-saved Output options
-    :param value: input value, float or int
-    :return: tuple: (bool, list of strings, database object)
+    :param mod_input: SQL object with user-saved Input options
+    :param value: float or int
+    :return: tuple: (bool, list of strings)
     """
     errors = []
     all_passed = True
-    if value <= 0:  # Ensure value is positive
+    # Ensure value is positive
+    if value <= 0:
         all_passed = False
         errors.append("Must be a positive value")
-    return all_passed, errors, mod_input
+    return all_passed, errors, mod_dev
 
 
+# Measurements
 measurements_dict = {
     0: {
         'measurement': 'duration_time',
@@ -38,24 +40,18 @@ channels_dict = {
     }
 }
 
+# Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'MQTT_PAHO',
-    'output_manufacturer': 'Mycodo',
-    'output_name': "{} MQTT Publish".format(lazy_gettext('On/Off')),
-    'output_library': 'paho-mqtt',
+    'output_name_unique': 'wireless_rpi_rf',
+    'output_name': "{} 315/433 MHz".format(lazy_gettext("Wireless")),
+    'output_library': 'rpi-rf',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['on_off'],
 
-    'url_additional': 'http://www.eclipse.org/paho/',
-
-    'interfaces': ['Mycodo'],
-
-    'message': 'An output to publish "on" or "off" to an MQTT server.',
-
-    'dependencies_module': [
-        ('pip-pypi', 'paho', 'paho-mqtt')
-    ],
+    'message': 'This output uses a 315 or 433 MHz transmitter to turn wireless power outlets on or off. '
+               'Run ~/Mycodo/mycodo/devices/wireless_rpi_rf.py with a receiver to discover the codes '
+               'produced from your remote.',
 
     'options_enabled': [
         'button_on',
@@ -63,63 +59,61 @@ OUTPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
+    'dependencies_module': [
+        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO'),
+        ('pip-pypi', 'rpi_rf', 'rpi_rf')
+    ],
+
+    'interfaces': ['GPIO'],
+
     'custom_channel_options': [
         {
-            'id': 'hostname',
-            'type': 'text',
-            'default_value': 'localhost',
-            'required': True,
-            'name': lazy_gettext('Hostname'),
-            'phrase': lazy_gettext('The hostname of the MQTT server')
-        },
-        {
-            'id': 'port',
+            'id': 'pin',
             'type': 'integer',
-            'default_value': 1883,
-            'required': True,
-            'name': lazy_gettext('Port'),
-            'phrase': lazy_gettext('The port of the MQTT server')
-        },
-        {
-            'id': 'topic',
-            'type': 'text',
-            'default_value': 'paho/test/single',
-            'required': True,
-            'name': lazy_gettext('Topic'),
-            'phrase': lazy_gettext('The topic to publish with')
-        },
-        {
-            'id': 'keepalive',
-            'type': 'integer',
-            'default_value': 60,
+            'default_value': None,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Keep Alive'),
-            'phrase': lazy_gettext('The keepalive timeout value for the client. Set to 0 to disable.')
+            'name': lazy_gettext('GPIO Pin (BCM)'),
+            'phrase': lazy_gettext('The pin to control the state of')
         },
         {
-            'id': 'clientid',
+            'id': 'on_command',
             'type': 'text',
-            'default_value': 'mycodo_mqtt_client',
+            'default_value': '22559',
             'required': True,
-            'name': lazy_gettext('Client ID'),
-            'phrase': lazy_gettext('Unique client ID for connecting to the MQTT server')
+            'name': lazy_gettext('On Command'),
+            'phrase': lazy_gettext('Command to execute when the output is instructed to turn on')
         },
         {
-            'id': 'payload_on',
+            'id': 'off_command',
             'type': 'text',
-            'default_value': 'on',
+            'default_value': '22558',
             'required': True,
-            'name': lazy_gettext('On Payload'),
-            'phrase': lazy_gettext('The payload to send when turned on')
+            'name': lazy_gettext('Off Command'),
+            'phrase': lazy_gettext('Command to execute when the output is instructed to turn off')
         },
         {
-            'id': 'payload_off',
-            'type': 'text',
-            'default_value': 'off',
+            'id': 'protocol',
+            'type': 'select',
+            'default_value': 1,
+            'options_select': [
+                (1, '1'),
+                (2, '2'),
+                (3, '3'),
+                (4, '4'),
+                (5, '5'),
+            ],
+            'name': lazy_gettext('Protocol'),
+            'phrase': lazy_gettext('Wireless protocol')
+        },
+        {
+            'id': 'pulse_length',
+            'type': 'integer',
+            'default_value': 189,
             'required': True,
-            'name': lazy_gettext('Off Payload'),
-            'phrase': lazy_gettext('The payload to send when turned off')
+            'constraints_pass': constraints_pass_positive_value,
+            'name': lazy_gettext('Pulse Length'),
+            'phrase': lazy_gettext('Wireless pulse length')
         },
         {
             'id': 'state_startup',
@@ -144,6 +138,13 @@ OUTPUT_INFORMATION = {
             ],
             'name': lazy_gettext('Shutdown State'),
             'phrase': lazy_gettext('Set the state when Mycodo shuts down')
+        },
+        {
+            'id': 'trigger_functions_startup',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Trigger Functions at Startup'),
+            'phrase': lazy_gettext('Whether to trigger functions when the output switches at startup')
         },
         {
             'id': 'command_force',
@@ -171,7 +172,8 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
-        self.publish = None
+        self.wireless_pi_switch = None
+        self.Transmit433MHz = None
 
         output_channels = db_retrieve_table_daemon(
             OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()
@@ -179,11 +181,21 @@ class OutputModule(AbstractOutput):
             OUTPUT_INFORMATION['custom_channel_options'], output_channels)
 
     def setup_output(self):
-        import paho.mqtt.publish as publish
+        from mycodo.devices.wireless_rpi_rf import Transmit433MHz
 
-        self.publish = publish
+        self.Transmit433MHz = Transmit433MHz
 
         self.setup_on_off_output(OUTPUT_INFORMATION)
+
+        if self.options_channels['pin'][0] is None:
+            self.logger.warning("Invalid pin for output: {}.".format(
+                self.options_channels['pin'][0]))
+            return
+
+        self.wireless_pi_switch = self.Transmit433MHz(
+            self.options_channels['pin'][0],
+            protocol=int(self.options_channels['protocol'][0]),
+            pulse_length=int(self.options_channels['pulse_length'][0]))
         self.output_setup = True
 
         if self.options_channels['state_startup'][0] == 1:
@@ -191,30 +203,15 @@ class OutputModule(AbstractOutput):
         elif self.options_channels['state_startup'][0] == 0:
             self.output_switch('off')
 
-    def output_switch(self, state, output_type=None, amount=None, output_channel=0):
-        try:
-            if state == 'on':
-                self.publish.single(
-                    self.options_channels['topic'][0],
-                    self.options_channels['payload_on'][0],
-                    hostname=self.options_channels['hostname'][0],
-                    port=self.options_channels['port'][0],
-                    client_id=self.options_channels['clientid'][0],
-                    keepalive=self.options_channels['keepalive'][0])
-                self.output_states[output_channel] = True
-            elif state == 'off':
-                self.publish.single(
-                    self.options_channels['topic'][0],
-                    payload=self.options_channels['payload_off'][0],
-                    hostname=self.options_channels['hostname'][0],
-                    port=self.options_channels['port'][0],
-                    client_id=self.options_channels['clientid'][0],
-                    keepalive=self.options_channels['keepalive'][0])
-                self.output_states[output_channel] = False
-        except Exception as e:
-            self.logger.error("State change error: {}".format(e))
+    def output_switch(self, state, output_type=None, amount=None, output_channel=None):
+        if state == 'on':
+            self.wireless_pi_switch.transmit(int(self.options_channels['on_command'][0]))
+            self.output_states[output_channel] = True
+        elif state == 'off':
+            self.wireless_pi_switch.transmit(int(self.options_channels['off_command'][0]))
+            self.output_states[output_channel] = False
 
-    def is_on(self, output_channel=0):
+    def is_on(self, output_channel=None):
         if self.is_setup():
             if output_channel is not None and output_channel in self.output_states:
                 return self.output_states[output_channel]
@@ -222,7 +219,9 @@ class OutputModule(AbstractOutput):
                 return self.output_states
 
     def is_setup(self):
-        return self.output_setup
+        if self.wireless_pi_switch:
+            return True
+        return False
 
     def stop_output(self):
         """ Called when Output is stopped """

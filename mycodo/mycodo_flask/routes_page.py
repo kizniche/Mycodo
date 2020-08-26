@@ -72,6 +72,7 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
+from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
 from mycodo.databases.models import Unit
@@ -123,6 +124,7 @@ from mycodo.utils.system_pi import dpkg_package_exists
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import parse_custom_option_values
 from mycodo.utils.system_pi import parse_custom_option_values_json
+from mycodo.utils.system_pi import parse_custom_option_values_channels_json
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.tools import calc_energy_usage
 from mycodo.utils.tools import return_energy_usage
@@ -178,6 +180,7 @@ def page_camera():
     form_camera = forms_camera.Camera()
     camera = Camera.query.all()
     output = Output.query.all()
+    output_channel = OutputChannel.query.all()
 
     try:
         from mycodo.devices.camera import count_cameras_opencv
@@ -282,9 +285,14 @@ def page_camera():
 
     time_now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
+    dict_outputs = parse_output_information()
+    choices_output_channels = utils_general.choices_outputs_channels(
+        output, output_channel, dict_outputs)
+
     return render_template('pages/camera.html',
                            camera=camera,
                            camera_info=CAMERA_INFO,
+                           choices_output_channels=choices_output_channels,
                            form_camera=form_camera,
                            latest_img_still=latest_img_still,
                            latest_img_still_ts=latest_img_still_ts,
@@ -704,7 +712,8 @@ def page_dashboard(dashboard_id):
         math, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
-    choices_output_devices = utils_general.choices_output_devices(output)
+    choices_output_channels_measurements = utils_general.choices_outputs_channels_measurements(
+        output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_output_pwm = utils_general.choices_outputs_pwm(
         output, dict_units, dict_measurements, dict_outputs)
     choices_pid = utils_general.choices_pids(
@@ -734,7 +743,7 @@ def page_dashboard(dashboard_id):
                            choices_input=choices_input,
                            choices_math=choices_math,
                            choices_output=choices_output,
-                           choices_output_devices=choices_output_devices,
+                           choices_output_channels_measurements=choices_output_channels_measurements,
                            choices_output_pwm=choices_output_pwm,
                            choices_pid=choices_pid,
                            choices_pid_devices=choices_pid_devices,
@@ -754,6 +763,7 @@ def page_dashboard(dashboard_id):
                            list_html_files_js=list_html_files_js,
                            list_html_files_js_ready=list_html_files_js_ready,
                            list_html_files_js_ready_end=list_html_files_js_ready_end,
+                           camera=camera,
                            math=math,
                            misc=misc,
                            pid=pid,
@@ -1263,6 +1273,7 @@ def page_function():
     method = Method.query.all()
     tags = NoteTags.query.all()
     output = Output.query.all()
+    output_channel = OutputChannel.query.all()
     pid = PID.query.all()
     trigger = Trigger.query.all()
     user = User.query.all()
@@ -1474,6 +1485,8 @@ def page_function():
         math, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
+    choices_output_channels = utils_general.choices_outputs_channels(
+        output, output_channel, dict_outputs)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
 
@@ -1584,6 +1597,7 @@ def page_function():
                            choices_input_devices=choices_input_devices,
                            choices_math=choices_math,
                            choices_output=choices_output,
+                           choices_output_channels=choices_output_channels,
                            choices_pid=choices_pid,
                            conditional_conditions_list=CONDITIONAL_CONDITIONS,
                            conditional=conditional,
@@ -1624,6 +1638,7 @@ def page_function():
                            pid=pid,
                            sunrise_set_calc=sunrise_set_calc,
                            table_input=Input,
+                           table_output=Output,
                            tags=tags,
                            trigger=trigger,
                            units=MEASUREMENTS,
@@ -1638,6 +1653,7 @@ def page_output():
     lcd = LCD.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
+    output_channel = OutputChannel.query.all()
     user = User.query.all()
 
     dict_outputs = parse_output_information()
@@ -1658,7 +1674,7 @@ def page_output():
             db.session.commit()
 
         elif form_add_output.output_add.data:
-            unmet_dependencies = utils_output.output_add(form_add_output)
+            unmet_dependencies = utils_output.output_add(form_add_output, request.form)
         elif form_mod_output.save.data:
             utils_output.output_mod(form_mod_output, request.form)
         elif form_mod_output.delete.data:
@@ -1676,8 +1692,10 @@ def page_output():
         else:
             return redirect(url_for('routes_page.page_output'))
 
-    custom_options_values_outputs = parse_custom_option_values(
+    custom_options_values_outputs = parse_custom_option_values_json(
         output, dict_controller=dict_outputs)
+    custom_options_values_output_channels = parse_custom_option_values_channels_json(
+        output_channel, dict_controller=dict_outputs, key_name='custom_channel_options')
 
     custom_actions = {}
     for each_output in output:
@@ -1704,10 +1722,19 @@ def page_output():
     display_order_output = csv_to_list_of_str(
         DisplayOrder.query.first().output)
 
+    output_variables = {}
+    for each_output in output:
+        output_variables[each_output.unique_id] = {}
+        for each_channel in dict_outputs[each_output.output_type]['channels_dict']:
+            output_variables[each_output.unique_id][each_channel] = {}
+            output_variables[each_output.unique_id][each_channel]['amps'] = None
+            output_variables[each_output.unique_id][each_channel]['trigger_startup'] = None
+
     return render_template('pages/output.html',
                            camera=camera,
                            custom_actions=custom_actions,
                            custom_options_values_outputs=custom_options_values_outputs,
+                           custom_options_values_output_channels=custom_options_values_output_channels,
                            dict_outputs=dict_outputs,
                            display_order_output=display_order_output,
                            form_base=form_base,
@@ -1717,8 +1744,10 @@ def page_output():
                            misc=misc,
                            names_output=names_output,
                            output=output,
+                           output_channel=output_channel,
                            output_types=output_types(),
                            output_templates=output_templates,
+                           output_variables=output_variables,
                            user=user)
 
 
@@ -2034,6 +2063,7 @@ def page_usage():
     math = Math.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
+    output_channel = OutputChannel.query.all()
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
@@ -2044,9 +2074,15 @@ def page_usage():
     choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
 
+    dict_outputs = parse_output_information()
+
+    custom_options_values_output_channels = parse_custom_option_values_channels_json(
+        output_channel, dict_controller=dict_outputs, key_name='custom_channel_options')
+
     energy_usage_stats, graph_info = return_energy_usage(
         energy_usage, DeviceMeasurements.query, Conversion.query)
-    output_stats = return_output_usage(misc, output)
+    output_stats = return_output_usage(
+        dict_outputs, misc, output, OutputChannel, custom_options_values_output_channels)
 
     day = misc.output_usage_dayofmonth
     if 4 <= day <= 20 or 24 <= day <= 30:
@@ -2084,7 +2120,9 @@ def page_usage():
                            calculate_usage=calculate_usage,
                            choices_input=choices_input,
                            choices_math=choices_math,
+                           custom_options_values_output_channels=custom_options_values_output_channels,
                            date_suffix=date_suffix,
+                           dict_outputs=dict_outputs,
                            display_order=display_order,
                            energy_usage=energy_usage,
                            energy_usage_stats=energy_usage_stats,
@@ -2097,6 +2135,7 @@ def page_usage():
                            output_types=output_types(),
                            picker_end=picker_end,
                            picker_start=picker_start,
+                           table_output_channel=OutputChannel,
                            timestamp=time.strftime("%c"))
 
 

@@ -5293,7 +5293,7 @@ msgstr ""
 "o 0 se spento."
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:13
-msgid "returns \"on\" if the output is on and \"off\" if the output os off."
+msgid "returns \"on\" if the output is on and \"off\" if the output is off."
 msgstr ""
 "restituisce \"on\" se l'uscita è attivata e \"off\" se la fuori uscita "
 "del sistema operativo."

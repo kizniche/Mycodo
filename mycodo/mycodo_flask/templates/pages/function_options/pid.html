@@ -194,14 +194,16 @@
         <div>
           <select class="form-control form-tooltip form-dropdown" id="raise_output_id" name="raise_output_id" title="" data-original-title="{{_('The output that will raise the selected environmental condition (Measurement)')}}.">
             <option value="">{{_('Disabled')}}</option>
-            {%- for each_output in output -%}
-              <option value="{{each_output.unique_id}}"{% if each_pid.raise_output_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
+            {%- for each_output in choices_output_channels -%}
+              <option value="{{each_output['value']}}"{% if each_pid.raise_output_id == each_output['value'] %} selected{% endif %}>{{each_output['item']}}</option>
             {%- endfor -%}
           </select>
         </div>
       </div>
 
-  {% for each_output in output if each_pid.raise_output_id == each_output.unique_id %}
+  {% for each_output in output if each_pid.raise_output_id and
+                                  "," in each_pid.raise_output_id and
+                                  each_pid.raise_output_id.split(",")[0] == each_output.unique_id %}
 
     {% if 'output_types' in dict_outputs[each_output.output_type] and dict_outputs[each_output.output_type]['output_types']|length > 1 %}
       <div class="col-auto">
@@ -242,14 +244,16 @@
         <div>
           <select class="form-control form-tooltip form-dropdown" id="lower_output_id" name="lower_output_id" title="" data-original-title="{{_('The output that will lower the selected environmental condition (Measurement)')}}.">
             <option value="">{{_('Disabled')}}</option>
-            {%- for each_output in output -%}
-              <option value="{{each_output.unique_id}}"{% if each_pid.lower_output_id == each_output.unique_id %} selected{% endif %}>[{{'%02d' % each_output.id}}] {{each_output.name}}</option>
+            {%- for each_output in choices_output_channels -%}
+              <option value="{{each_output['value']}}"{% if each_pid.lower_output_id == each_output['value'] %} selected{% endif %}>{{each_output['item']}}</option>
             {%- endfor -%}
           </select>
         </div>
       </div>
 
-  {% for each_output in output if each_pid.lower_output_id == each_output.unique_id %}
+  {% for each_output in output if each_pid.lower_output_id and
+                                  "," in each_pid.lower_output_id and
+                                  each_pid.lower_output_id.split(",")[0] == each_output.unique_id %}
 
     {% if 'output_types' in dict_outputs[each_output.output_type] and dict_outputs[each_output.output_type]['output_types']|length > 1 %}
       <div class="col-auto">

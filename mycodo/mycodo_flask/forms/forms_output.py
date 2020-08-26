@@ -67,7 +67,6 @@ class OutputMod(FlaskForm):
     output_pin = HiddenField('Output Pin')
     name = StringField(TRANSLATIONS['name']['title'], validators=[DataRequired()])
     log_level_debug = BooleanField(TRANSLATIONS['log_level_debug']['title'])
-    output_mode = StringField(TRANSLATIONS['flow_rate_method']['title'])
     location = StringField(lazy_gettext('Location'))
     ftdi_location = StringField(TRANSLATIONS['ftdi_location']['title'])
     uart_location = StringField(TRANSLATIONS['uart_location']['title'])
@@ -75,51 +74,6 @@ class OutputMod(FlaskForm):
     gpio_location = IntegerField(TRANSLATIONS['gpio_location']['title'], widget=NumberInput())
     i2c_location = StringField(TRANSLATIONS['i2c_location']['title'])
     i2c_bus = IntegerField(TRANSLATIONS['i2c_bus']['title'])
-    protocol = IntegerField(TRANSLATIONS['protocol']['title'], widget=NumberInput())
-    pulse_length = IntegerField(TRANSLATIONS['pulse_length']['title'], widget=NumberInput())
-    linux_command_user = StringField(TRANSLATIONS['linux_command_user']['title'])
-    on_command = StringField(TRANSLATIONS['on_command']['title'])
-    off_command = StringField(TRANSLATIONS['off_command']['title'])
-    pwm_command = StringField(TRANSLATIONS['pwm_command']['title'])
-    force_command = BooleanField(TRANSLATIONS['force_command']['title'])
-    pwm_invert_signal = BooleanField(lazy_gettext('Invert Signal'))
-    amps = DecimalField(
-        TRANSLATIONS['amps']['title'],
-        validators=[validators.NumberRange(
-            min=0,
-            max=50,
-            message=lazy_gettext("The current draw of the device connected "
-                                 "to this output, in amps.")
-        )],
-        widget=NumberInput(step='any')
-    )
-    on_state = SelectField(
-        TRANSLATIONS['on_state']['title'],
-        choices=[
-            ("1", lazy_gettext('High')),
-            ("0", lazy_gettext('Low'))
-        ],
-        validators=[Optional()]
-    )
-    state_startup = SelectField(TRANSLATIONS['state_startup']['title'])
-    startup_value = FloatField(TRANSLATIONS['startup_value']['title'])
-    state_shutdown = SelectField(TRANSLATIONS['state_shutdown']['title'])
-    shutdown_value = FloatField(TRANSLATIONS['shutdown_value']['title'])
-    trigger_functions_at_start = BooleanField(
-        TRANSLATIONS['trigger_functions_at_start']['title'])
-    pwm_hertz = IntegerField(
-        TRANSLATIONS['pwm_hertz']['title'], widget=NumberInput())
-    pwm_library = SelectField(
-        TRANSLATIONS['pwm_library']['title'],
-        choices=[
-            ("pigpio_any", lazy_gettext('Any Pin, <= 40 kHz')),
-            ("pigpio_hardware", lazy_gettext('Hardware Pin, <= 30 MHz'))
-        ],
-        validators=[DataRequired()]
-    )
-    flow_rate = DecimalField(
-        TRANSLATIONS['flow_rate']['title'],
-        widget=NumberInput(step='any'))
     save = SubmitField(TRANSLATIONS['save']['title'])
     delete = SubmitField(TRANSLATIONS['delete']['title'])
     on_submit = SubmitField(lazy_gettext('Turn On'))

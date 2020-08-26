@@ -14,7 +14,7 @@
             {% for each_math_form in choices_math if each_math_form['value'] == each_in_order -%}
             <option value="{{each_math_form['value']}}">{{each_math_form['item']}}</option>
             {% endfor -%}
-            {% for each_output_form in choices_output if each_output_form['value'] == each_in_order -%}
+            {% for each_output_form in choices_output_channels if each_output_form['value'] == each_in_order -%}
             <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
             {% endfor -%}
           {% endif %}

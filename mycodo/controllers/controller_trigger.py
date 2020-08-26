@@ -34,6 +34,7 @@ from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
+from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Trigger
@@ -131,9 +132,12 @@ class TriggerController(AbstractController, threading.Thread):
                     pwm_duty_cycle, ended = self.get_method_output(
                         self.unique_id_1)
                     if not ended:
+                        output_channel = OutputChannel.query.filter(
+                            OutputChannel.unique_id == self.trigger.unique_id_3).first()
                         self.set_output_duty_cycle(
                             self.unique_id_2,
-                            pwm_duty_cycle)
+                            pwm_duty_cycle,
+                            output_channel=output_channel.channel)
                         if self.trigger_actions_at_period:
                             trigger_function_actions(
                                 self.unique_id,
@@ -222,6 +226,7 @@ class TriggerController(AbstractController, threading.Thread):
         elif self.trigger_type == 'trigger_run_pwm_method':
             self.unique_id_1 = self.trigger.unique_id_1
             self.unique_id_2 = self.trigger.unique_id_2
+            self.unique_id_2 = self.trigger.unique_id_3
             self.period = self.trigger.period
             self.trigger_actions_at_period = self.trigger.trigger_actions_at_period
             self.trigger_actions_at_start = self.trigger.trigger_actions_at_start
@@ -234,8 +239,13 @@ class TriggerController(AbstractController, threading.Thread):
                 if self.is_activated:
                     pwm_duty_cycle = self.get_method_output(
                         self.trigger.unique_id_1)
-                    self.set_output_duty_cycle(
-                        self.trigger.unique_id_2, pwm_duty_cycle)
+                    output_channel = OutputChannel.query.filter(
+                        OutputChannel.unique_id == self.trigger.unique_id_3).first()
+                    if output_channel:
+                        self.set_output_duty_cycle(
+                            self.trigger.unique_id_2,
+                            pwm_duty_cycle,
+                            output_channel=output_channel.channel)
                     trigger_function_actions(self.unique_id,
                                              debug=self.log_level_debug)
             else:
@@ -327,9 +337,10 @@ class TriggerController(AbstractController, threading.Thread):
 
         return setpoint, ended
 
-    def set_output_duty_cycle(self, output_id, duty_cycle):
+    def set_output_duty_cycle(self, output_id, duty_cycle, output_channel=0):
         """ Set PWM Output duty cycle """
-        self.control.output_on(output_id, output_type='pwm', amount=duty_cycle)
+        self.control.output_on(
+            output_id, output_type='pwm', amount=duty_cycle, output_channel=output_channel)
 
     def check_triggers(self):
         """

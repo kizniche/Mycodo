@@ -5,6 +5,8 @@ import subprocess
 import threading
 import time
 
+from sqlalchemy import and_
+
 from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import SQL_DATABASE_MYCODO
@@ -20,6 +22,7 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
+from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Trigger
@@ -134,13 +137,17 @@ def get_condition_value(condition_id):
 
     # Return output state
     elif sql_condition.condition_type == 'output_state':
+        output_id = sql_condition.output_id.split(",")[0]
+        channel_id = sql_condition.output_id.split(",")[1]
         control = DaemonControl()
-        return control.output_state(sql_condition.output_id)
+        return control.output_state(output_id, output_channel=channel_id)
 
     # Return the duration the output is currently on for
     elif sql_condition.condition_type == 'output_duration_on':
+        output_id = sql_condition.output_id.split(",")[0]
+        channel_id = sql_condition.output_id.split(",")[1]
         control = DaemonControl()
-        return control.output_sec_currently_on(sql_condition.output_id)
+        return control.output_sec_currently_on(output_id, output_channel=channel_id)
 
     # Return controller active state
     elif sql_condition.condition_type == 'controller_status':
@@ -329,11 +336,15 @@ def action_ir_send(cond_action, message):
 
 
 def action_output(cond_action, message):
+    output_id = cond_action.do_unique_id.split(",")[0]
+    channel_id = cond_action.do_unique_id.split(",")[1]
+    output_channel = db_retrieve_table_daemon(OutputChannel).filter(
+        OutputChannel.unique_id == channel_id).first()
     control = DaemonControl()
-    this_output = db_retrieve_table_daemon(
-        Output, unique_id=cond_action.do_unique_id, entry='first')
-    message += " Turn output {unique_id} ({id}, {name}) {state}".format(
-        unique_id=cond_action.do_unique_id,
+    this_output = db_retrieve_table_daemon(Output, unique_id=output_id, entry='first')
+    message += " Turn output {unique_id} CH{ch} ({id}, {name}) {state}".format(
+        unique_id=output_id,
+        ch=channel_id,
         id=this_output.id,
         name=this_output.name,
         state=cond_action.do_output_state)
@@ -345,41 +356,52 @@ def action_output(cond_action, message):
 
     output_on_off = threading.Thread(
         target=control.output_on_off,
-        args=(cond_action.do_unique_id,
+        args=(output_id,
               cond_action.do_output_state,),
         kwargs={'output_type': 'sec',
-                'amount': cond_action.do_output_duration})
+                'amount': cond_action.do_output_duration,
+                'output_channel': output_channel.channel})
     output_on_off.start()
     return message
 
 
 def action_output_pwm(cond_action, message):
+    output_id = cond_action.do_unique_id.split(",")[0]
+    channel_id = cond_action.do_unique_id.split(",")[1]
+    output_channel = db_retrieve_table_daemon(OutputChannel).filter(
+        OutputChannel.unique_id == channel_id).first()
     control = DaemonControl()
-    this_output = db_retrieve_table_daemon(
-        Output, unique_id=cond_action.do_unique_id, entry='first')
-    message += " Turn output {unique_id} ({id}, {name}) duty cycle to {duty_cycle}%.".format(
-        unique_id=cond_action.do_unique_id,
+    this_output = db_retrieve_table_daemon(Output, unique_id=output_id, entry='first')
+    message += " Turn output {unique_id} CH{ch} ({id}, {name}) duty cycle to {duty_cycle}%.".format(
+        unique_id=output_id,
+        ch=channel_id,
         id=this_output.id,
         name=this_output.name,
         duty_cycle=cond_action.do_output_pwm)
 
     output_on = threading.Thread(
         target=control.output_on,
-        args=(cond_action.do_unique_id,),
+        args=(output_id,),
         kwargs={'output_type': 'pwm',
-                'duty_cycle': cond_action.do_output_pwm})
+                'duty_cycle': cond_action.do_output_pwm,
+                'output_channel': output_channel.channel})
     output_on.start()
     return message
 
 
 def action_output_ramp_pwm(cond_action, message):
+    output_id = cond_action.do_unique_id.split(",")[0]
+    channel_id = cond_action.do_unique_id.split(",")[1]
+    output_channel = db_retrieve_table_daemon(OutputChannel).filter(
+        OutputChannel.unique_id == channel_id).first()
     control = DaemonControl()
     this_output = db_retrieve_table_daemon(
-        Output, unique_id=cond_action.do_unique_id, entry='first')
-    message += " Ramp output {unique_id} ({id}, {name}) " \
+        Output, unique_id=output_id, entry='first')
+    message += " Ramp output {unique_id} CH{ch} ({id}, {name}) " \
                "duty cycle from {fdc}% to {tdc}% in increments " \
                "of {inc} over {sec} seconds.".format(
-                    unique_id=cond_action.do_unique_id,
+                    unique_id=output_id,
+                    ch=channel_id,
                     id=this_output.id,
                     name=this_output.name,
                     fdc=cond_action.do_output_pwm,
@@ -403,9 +425,10 @@ def action_output_ramp_pwm(cond_action, message):
 
     output_on = threading.Thread(
         target=control.output_on,
-        args=(cond_action.do_unique_id,),
+        args=(output_id,),
         kwargs={'output_type': 'pwm',
-                'duty_cycle': start_duty_cycle})
+                'duty_cycle': start_duty_cycle,
+                'output_channel': output_channel.channel})
     output_on.start()
 
     loop_running = True
@@ -427,9 +450,10 @@ def action_output_ramp_pwm(cond_action, message):
 
             output_on = threading.Thread(
                 target=control.output_on,
-                args=(cond_action.do_unique_id,),
+                args=(output_id,),
                 kwargs={'output_type': 'pwm',
-                        'duty_cycle': current_duty_cycle})
+                        'duty_cycle': current_duty_cycle,
+                        'output_channel': output_channel.channel})
             output_on.start()
 
             if not loop_running:
@@ -438,20 +462,25 @@ def action_output_ramp_pwm(cond_action, message):
 
 
 def action_output_volume(cond_action, message):
+    output_id = cond_action.do_unique_id.split(",")[0]
+    channel_id = cond_action.do_unique_id.split(",")[1]
+    output_channel = db_retrieve_table_daemon(OutputChannel).filter(
+        OutputChannel.unique_id == channel_id).first()
     control = DaemonControl()
-    this_output = db_retrieve_table_daemon(
-        Output, unique_id=cond_action.do_unique_id, entry='first')
-    message += " Output {unique_id} ({id}, {name}) volume of {volume}.".format(
-        unique_id=cond_action.do_unique_id,
+    this_output = db_retrieve_table_daemon(Output, unique_id=output_id, entry='first')
+    message += " Output {unique_id} CH{ch} ({id}, {name}) volume of {volume}.".format(
+        unique_id=output_id,
+        ch=channel_id,
         id=this_output.id,
         name=this_output.name,
         volume=cond_action.do_output_pwm)
 
     output_on = threading.Thread(
         target=control.output_on,
-        args=(cond_action.do_unique_id,),
+        args=(output_id,),
         kwargs={'output_type': 'vol',
-                'amount': cond_action.do_output_amount})
+                'amount': cond_action.do_output_amount,
+                'output_channel': output_channel.channel})
     output_on.start()
     return message
 
@@ -1069,9 +1098,8 @@ def trigger_function_actions(function_id, message='', debug=False):
     :param debug: determine if logging level should be DEBUG
     :return:
     """
-    logger_actions = logging.getLogger(
-        "mycodo.trigger_function_actions_{id}".format(
-            id=function_id.split('-')[0]))
+    logger_actions = logging.getLogger("mycodo.trigger_function_actions_{id}".format(
+        id=function_id.split('-')[0]))
 
     if debug:
         logger_actions.setLevel(logging.DEBUG)
@@ -1122,9 +1150,8 @@ def trigger_function_actions(function_id, message='', debug=False):
                        email_recipients, message,
                        attachment_file, attachment_type)
         else:
-            logger_actions.error(
-                "Wait {sec:.0f} seconds to email again.".format(
-                    sec=smtp_wait_timer - time.time()))
+            logger_actions.error("Wait {sec:.0f} seconds to email again.".format(
+                sec=smtp_wait_timer - time.time()))
 
     # Create a note with the tags from the unique_ids in the list note_tags
     if note_tags:

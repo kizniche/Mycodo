@@ -132,7 +132,7 @@
             <td>{{energy_usage_stats[each_energy.unique_id]['month']|round(3)}}</td>
           </tr>
           <tr>
-            <td>{{_('Energy Usage')}} (kWh, @{{misc.output_usage_volts}}V)</td>
+            <td>kWh (@{{misc.output_usage_volts}} V)</td>
             <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['hour'] / 1000)|round(3)}}</td>
             <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['day'] / 1000 * 24)|round(3)}}</td>
             <td>{{(misc.output_usage_volts * energy_usage_stats[each_energy.unique_id]['week'] / 1000 * 168)|round(3)}}</td>
@@ -175,7 +175,7 @@
               <td>{{calculate_usage[each_energy.unique_id]['average_amps']|round(3)}}</td>
             </tr>
             <tr>
-              <td>{{_('Energy Usage')}} (kWh, @{{misc.output_usage_volts}}V)</td>
+              <td>kWh (@{{misc.output_usage_volts}} V)</td>
               <td>{{calculate_usage[each_energy.unique_id]['kwh']|round(3)}}</td>
             </tr>
             <tr>
@@ -206,6 +206,7 @@
     <table class="table">
       <tr>
         <td>{{_('ID')}}</td>
+        <td>{{_('CH')}}</td>
         <td>{{_('Name')}}</td>
         <td></td>
         <td>{{_('Past Day')}}</td>
@@ -218,45 +219,55 @@
         {%- for order in display_order -%}
           {%- for each_output in output if each_output.unique_id == order and
                                            each_output.output_type in output_types['on_off'] -%}
-            {% for key, value in output_stats.items() if key == each_output.unique_id -%}
+            {% for each_channel in table_output_channel.query.filter(table_output_channel.output_id == each_output.unique_id).all() %}
+              {% for key, value in output_stats.items() if key == each_output.unique_id -%}
               <tr>
                 <td>{{each_output.id}}</td>
-                <td>{{each_output.name}}</td>
-                <td>{{_('Duration On (hours)')}}</td>
-                <td>{{value['1d']['hours_on']|round(2)}}</td>
-                <td>{{value['1w']['hours_on']|round(2)}}</td>
-                <td>{{value['1m']['hours_on']|round(2)}}</td>
-                <td>{{value['1m_date']['hours_on']|round(2)}}</td>
-                <td>{{value['1y']['hours_on']|round(2)}}</td>
+                <td>{{each_channel.channel}}</td>
+                <td>{{each_output.name}}
+                {%- if 'name' in custom_options_values_output_channels[each_output.unique_id][each_channel.channel] and
+                      custom_options_values_output_channels[each_output.unique_id][each_channel.channel]['name'] -%}
+                  {{': ' + custom_options_values_output_channels[each_output.unique_id][each_channel.channel]['name']}}
+                {%- elif 'name' in dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel] and
+                         dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['name'] -%}
+                  {{': ' + dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['name']}}
+                {%- endif -%}</td>
+                <td>{{_('Duration')}} ({{_('hours')}})</td>
+                <td>{{value[each_channel.unique_id]['1d']['hours_on']|round(2)}}</td>
+                <td>{{value[each_channel.unique_id]['1w']['hours_on']|round(2)}}</td>
+                <td>{{value[each_channel.unique_id]['1m']['hours_on']|round(2)}}</td>
+                <td>{{value[each_channel.unique_id]['1m_date']['hours_on']|round(2)}}</td>
+                <td>{{value[each_channel.unique_id]['1y']['hours_on']|round(2)}}</td>
               </tr>
               <tr>
-                <td colspan="2"></td>
-                <td>{{_('Energy Usage')}} (kWh, @{{misc.output_usage_volts}}V)</td>
-                <td>{{value['1d']['kwh']|round(3)}}</td>
-                <td>{{value['1w']['kwh']|round(3)}}</td>
-                <td>{{value['1m']['kwh']|round(3)}}</td>
-                <td>{{value['1m_date']['kwh']|round(3)}}</td>
-                <td>{{value['1y']['kwh']|round(3)}}</td>
+                <td colspan="3"></td>
+                <td>kWh (@{{misc.output_usage_volts}} V)</td>
+                <td>{{value[each_channel.unique_id]['1d']['kwh']|round(3)}}</td>
+                <td>{{value[each_channel.unique_id]['1w']['kwh']|round(3)}}</td>
+                <td>{{value[each_channel.unique_id]['1m']['kwh']|round(3)}}</td>
+                <td>{{value[each_channel.unique_id]['1m_date']['kwh']|round(3)}}</td>
+                <td>{{value[each_channel.unique_id]['1y']['kwh']|round(3)}}</td>
               </tr>
               <tr>
-                <td colspan="2"></td>
+                <td colspan="3"></td>
                 <td>Cost ({{misc.output_usage_currency}}, {{misc.output_usage_cost}}/kWh)</td>
-                <td>{{value['1d']['cost']|round(2)}}</td>
-                <td>{{value['1w']['cost']|round(2)}}</td>
-                <td>{{value['1m']['cost']|round(2)}}</td>
-                <td>{{value['1m_date']['cost']|round(2)}}</td>
-                <td>{{value['1y']['cost']|round(2)}}</td>
+                <td>{{value[each_channel.unique_id]['1d']['cost']|round(2)}}</td>
+                <td>{{value[each_channel.unique_id]['1w']['cost']|round(2)}}</td>
+                <td>{{value[each_channel.unique_id]['1m']['cost']|round(2)}}</td>
+                <td>{{value[each_channel.unique_id]['1m_date']['cost']|round(2)}}</td>
+                <td>{{value[each_channel.unique_id]['1y']['cost']|round(2)}}</td>
               </tr>
               <tr>
                 <td colspan="8"></td>
               </tr>
+              {% endfor %}
             {%- endfor -%}
           {%- endfor -%}
         {% endfor %}
       {%- endif -%}
       <tr>
-        <td colspan="2">{{_('Total')}}</td>
-        <td>{{_('Duration On (hours)')}}</td>
+        <td colspan="3">{{_('Total')}}</td>
+        <td>{{_('Duration')}} ({{_('hours')}})</td>
         <td>{{output_stats['total_duration']['1d']|round(2)}}</td>
         <td>{{output_stats['total_duration']['1w']|round(2)}}</td>
         <td>{{output_stats['total_duration']['1m']|round(2)}}</td>
@@ -264,8 +275,8 @@
         <td>{{output_stats['total_duration']['1y']|round(2)}}</td>
       </tr>
       <tr>
-        <td colspan="2"></td>
-        <td>{{_('Energy Usage')}} (kWh, @{{misc.output_usage_volts}}V)</td>
+        <td colspan="3"></td>
+        <td>kWh (@{{misc.output_usage_volts}} V)</td>
         <td>{{output_stats['total_kwh']['1d']|round(3)}}</td>
         <td>{{output_stats['total_kwh']['1w']|round(3)}}</td>
         <td>{{output_stats['total_kwh']['1m']|round(3)}}</td>
@@ -273,7 +284,7 @@
         <td>{{output_stats['total_kwh']['1y']|round(3)}}</td>
       </tr>
       <tr>
-        <td colspan="2"></td>
+        <td colspan="3"></td>
         <td>{{_('Cost')}} ({{misc.output_usage_currency}}, at {{misc.output_usage_currency}}{{misc.output_usage_cost}}/kWh)</td>
         <td>{{output_stats['total_cost']['1d']|round(2)}}</td>
         <td>{{output_stats['total_cost']['1w']|round(2)}}</td>

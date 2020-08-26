@@ -36,7 +36,13 @@ def db_retrieve_table(table, entry=None, unique_id=None):
     return return_table
 
 
-def db_retrieve_table_daemon(table, entry=None, device_id=None, unique_id=None):
+def db_retrieve_table_daemon(
+        table,
+        entry=None,
+        device_id=None,
+        unique_id=None,
+        custom_name=None,
+        custom_value=None):
     """
     Return SQL database query object with optional filtering
     Used in daemon (For Flask, see db_retrieve_table() above)
@@ -56,6 +62,9 @@ def db_retrieve_table_daemon(table, entry=None, device_id=None, unique_id=None):
                 elif unique_id:
                     return_table = new_session.query(table).filter(
                         table.unique_id == unique_id)
+                elif custom_name and custom_value:
+                    return_table = new_session.query(table).filter(
+                        getattr(table, custom_name) == custom_value)
                 else:
                     return_table = new_session.query(table)
 

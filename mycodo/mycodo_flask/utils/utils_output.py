@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
-
 import os
+
 import sqlalchemy
 from flask import current_app
 from flask import flash
@@ -12,14 +13,16 @@ from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Output
+from mycodo.databases.models import OutputChannel
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
+from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
+from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_string
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
-from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import is_int
@@ -32,27 +35,13 @@ logger = logging.getLogger(__name__)
 # Output manipulation
 #
 
-def output_add(form_add):
+def output_add(form_add, request_form):
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['add']['title'],
         controller=TRANSLATIONS['output']['title'])
     error = []
 
     dict_outputs = parse_output_information()
-    output_types_dict = output_types()
-
-    # only one comma should be in the output_type string
-    if form_add.output_type.data.count(',') > 1:
-        error.append("Invalid output module formatting. It appears there is "
-                     "a comma in either 'output_name_unique' or 'interfaces'.")
-
-    if form_add.output_type.data.count(',') == 1:
-        output_type = form_add.output_type.data.split(',')[0]
-        output_interface = form_add.output_type.data.split(',')[1]
-    else:
-        output_type = ''
-        output_interface = ''
-        error.append("Invalid output string (must be a comma-separated string)")
 
     if current_app.config['TESTING']:
         dep_unmet = False
@@ -62,10 +51,8 @@ def output_add(form_add):
             list_unmet_deps = []
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
-            error.append(
-                "The {dev} device you're trying to add has unmet dependencies: "
-                "{dep}".format(dev=form_add.output_type.data,
-                               dep=', '.join(list_unmet_deps)))
+            error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
+                dev=form_add.output_type.data.split(',')[0], dep=', '.join(list_unmet_deps)))
 
     if not is_int(form_add.output_quantity.data, check_range=[1, 20]):
         error.append("{error}. {accepted_values}: 1-20".format(
@@ -73,11 +60,18 @@ def output_add(form_add):
             accepted_values=gettext("Acceptable values")
         ))
 
+    if form_add.output_type.data.count(',') == 1:
+        output_type = form_add.output_type.data.split(',')[0]
+        output_interface = form_add.output_type.data.split(',')[1]
+    else:
+        output_type = ''
+        output_interface = ''
+        error.append("Invalid output string (must be a comma-separated string)")
+
     if not error:
         for _ in range(0, form_add.output_quantity.data):
             try:
                 new_output = Output()
-
                 try:
                     from RPi import GPIO
                     if GPIO.RPI_INFO['P1_REVISION'] == 1:
@@ -149,89 +143,28 @@ def output_add(form_add):
                     elif dict_has_value('location'):
                         new_output.location = dict_outputs[output_type]['location']['options'][0][0]  # First entry in list
 
+                # Generate string to save from custom options
+                error, custom_options = custom_options_return_json(
+                    error, dict_outputs, request_form, device=output_type)
+                new_output.custom_options = custom_options
+
                 #
-                # Custom Options
+                # Execute at Creation
                 #
 
-                list_options = []
-                if 'custom_options' in dict_outputs[output_type]:
-                    for each_option in dict_outputs[output_type]['custom_options']:
-                        if each_option['default_value'] is False:
-                            default_value = ''
-                        else:
-                            default_value = each_option['default_value']
-                        option = '{id},{value}'.format(
-                            id=each_option['id'],
-                            value=default_value)
-                        list_options.append(option)
-                new_output.custom_options = ';'.join(list_options)
-
-                if output_type in output_types_dict['pwm']:
-                    new_output.pwm_hertz = 22000
-                    new_output.pwm_library = 'pigpio_any'
-
-                if output_type in output_types_dict['volume']:
-                    new_output.output_mode = 'fastest_flow_rate'
-                    new_output.flow_rate = 10
-                    if output_type == 'atlas_ezo_pmp':
-                        if output_interface == 'FTDI':
-                            new_output.location = '/dev/ttyUSB0'
-                        elif output_interface == 'I2C':
-                            new_output.location = '0x67'
-                            new_output.i2c_bus = 1
-                        elif output_interface == 'UART':
-                            new_output.location = '/dev/ttyAMA0'
-                            new_output.baud_rate = 9600
-
-                if output_type == 'wired':
-                    new_output.state_startup = '0'
-                    new_output.state_shutdown = '0'
-
-                elif output_type == 'wireless_rpi_rf':
-                    new_output.pin = None
-                    new_output.protocol = 1
-                    new_output.pulse_length = 189
-                    new_output.on_command = '22559'
-                    new_output.off_command = '22558'
-                    new_output.force_command = True
-
-                elif output_type == 'command':
-                    new_output.linux_command_user = 'pi'
-                    new_output.on_command = '/home/pi/script_on.sh'
-                    new_output.off_command = '/home/pi/script_off.sh'
-                    new_output.force_command = True
-
-                elif output_type == 'command_pwm':
-                    new_output.linux_command_user = 'pi'
-                    new_output.pwm_command = '/home/pi/script_pwm.sh ((duty_cycle))'
-
-                elif output_type == 'python':
-                    new_output.on_command = """
-import datetime
-timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-log_string = "{ts}: ID: {id}: ON".format(id=output_id, ts=timestamp)
-self.logger.info(log_string)"""
-                    new_output.off_command = """
-import datetime
-timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-log_string = "{ts}: ID: {id}: OFF".format(id=output_id, ts=timestamp)
-self.logger.info(log_string)"""
-                    new_output.force_command = True
-
-                elif output_type == 'python_pwm':
-                    new_output.pwm_command = """
-import datetime
-timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-log_string = "{ts}: ID: {id}: {dc} % Duty Cycle".format(
-    dc=duty_cycle, id=output_id, ts=timestamp)
-self.logger.info(log_string)"""
+                if 'execute_at_creation' in dict_outputs[output_type] and not current_app.config['TESTING']:
+                    dict_outputs[output_type]['execute_at_creation'](
+                        new_output, dict_outputs[output_type])
 
                 if not error:
                     new_output.save()
+
                     display_order = csv_to_list_of_str(
                         DisplayOrder.query.first().output)
                     DisplayOrder.query.first().output = add_display_order(
                         display_order, new_output.unique_id)
+
+                    db.session.commit()
 
                     #
                     # If measurements defined in the Output Module
@@ -239,30 +172,46 @@ self.logger.info(log_string)"""
 
                     if ('measurements_dict' in dict_outputs[output_type] and
                             dict_outputs[output_type]['measurements_dict'] != []):
-                        for each_channel in dict_outputs[output_type]['measurements_dict']:
-                            measure_info = dict_outputs[output_type]['measurements_dict'][each_channel]
+                        for each_measurement in dict_outputs[output_type]['measurements_dict']:
+                            measure_info = dict_outputs[output_type]['measurements_dict'][each_measurement]
                             new_measurement = DeviceMeasurements()
                             if 'name' in measure_info:
                                 new_measurement.name = measure_info['name']
                             new_measurement.device_id = new_output.unique_id
                             new_measurement.measurement = measure_info['measurement']
                             new_measurement.unit = measure_info['unit']
-                            new_measurement.channel = each_channel
+                            new_measurement.channel = each_measurement
                             new_measurement.save()
 
-                    db.session.commit()
+                    for each_channel, channel_info in dict_outputs[output_type]['channels_dict'].items():
+                        new_channel = OutputChannel()
+                        new_channel.channel = each_channel
+                        new_channel.output_id = new_output.unique_id
 
+                        # Generate string to save from custom options
+                        error, custom_options = custom_channel_options_return_json(
+                            error, dict_outputs, request_form,
+                            new_output.unique_id, each_channel,
+                            device=output_type, use_defaults=True)
+                        new_channel.custom_options = custom_options
+
+                        new_channel.save()
+
+                    # Refresh output settings
                     if not current_app.config['TESTING']:
                         manipulate_output('Add', new_output.unique_id)
+
+                    flash(gettext("{dev} with ID %(id)s successfully added".format(
+                        dev=dict_outputs[output_type]['output_name']), id=new_output.id),
+                        "success")
             except sqlalchemy.exc.OperationalError as except_msg:
                 error.append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
                 error.append(except_msg)
+            except Exception:
+                logger.exception(1)
 
-    flash_success_errors(error, action, url_for('routes_page.page_output'))
-
-    if dep_unmet:
-        return 1
+    return dep_unmet
 
 
 def output_mod(form_output, request_form):
@@ -274,6 +223,8 @@ def output_mod(form_output, request_form):
     dict_outputs = parse_output_information()
 
     try:
+        channels = OutputChannel.query.filter(
+            OutputChannel.output_id == form_output.output_id.data).all()
         mod_output = Output.query.filter(
             Output.unique_id == form_output.output_id.data).first()
 
@@ -298,82 +249,81 @@ def output_mod(form_output, request_form):
             else:
                 mod_output.pin = form_output.gpio_location.data
 
-        mod_output.i2c_bus = form_output.i2c_bus.data
-        mod_output.baud_rate = form_output.baud_rate.data
-        mod_output.log_level_debug = form_output.log_level_debug.data
-        mod_output.amps = form_output.amps.data
-        mod_output.trigger_functions_at_start = form_output.trigger_functions_at_start.data
-        mod_output.location = form_output.location.data
-        mod_output.output_mode = form_output.output_mode.data
+        if form_output.i2c_bus.data is not None:
+            mod_output.i2c_bus = form_output.i2c_bus.data
+        if form_output.baud_rate.data:
+            mod_output.baud_rate = form_output.baud_rate.data
+        if form_output.output_mode.data is not None:
+            mod_output.output_mode = form_output.output_mode.data
 
-        if form_output.on_state.data in ["0", "1"]:
-            mod_output.on_state = bool(int(form_output.on_state.data))
+        mod_output.log_level_debug = form_output.log_level_debug.data
 
         # Wireless options
         mod_output.protocol = form_output.protocol.data
         mod_output.pulse_length = form_output.pulse_length.data
-
-        # Command options
-        mod_output.on_command = form_output.on_command.data
-        mod_output.off_command = form_output.off_command.data
-        mod_output.force_command = form_output.force_command.data
 
         # PWM options
         mod_output.pwm_hertz = form_output.pwm_hertz.data
         mod_output.pwm_library = form_output.pwm_library.data
         mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
 
-        # Pump options
-        if form_output.flow_rate.data:
-            if (mod_output.output_type == 'atlas_ezo_pmp' and
-                    (form_output.flow_rate.data > 105 or form_output.flow_rate.data < 0.5)):
-                error.append("The Atlas Scientific Flow Rate must be between 0.5 and 105 ml/min")
-            elif form_output.flow_rate.data <= 0:
-                error.append("Flow Rate must be a positive value")
+        # Parse pre-save custom options for output device and its channels
+        if mod_output.custom_options and mod_output.custom_options != "{}":
+            custom_options_dict_presave = json.loads(mod_output.custom_options)
+        else:
+            custom_options_dict_presave = {}
+
+        custom_options_channels_dict_presave = {}
+        for each_channel in channels:
+            if each_channel.custom_options and each_channel.custom_options != "{}":
+                custom_options_channels_dict_presave[each_channel.channel] = json.loads(
+                    each_channel.custom_options)
             else:
-                mod_output.flow_rate = form_output.flow_rate.data
+                custom_options_channels_dict_presave[each_channel.channel] = {}
 
-        mod_output.pwm_command = form_output.pwm_command.data
-        mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
+        # Parse post-save custom options for output device and its channels
+        error, custom_options_json_postsave = custom_options_return_json(
+            error, dict_outputs, request_form, device=mod_output.output_type)
+        custom_options_dict_postsave = json.loads(custom_options_json_postsave)
 
-        mod_output.linux_command_user = form_output.linux_command_user.data
-
-        if form_output.state_startup.data == '-1':
-            mod_output.state_startup = None
-        elif form_output.state_startup.data is not None:
-            mod_output.state_startup = form_output.state_startup.data
-
-        if (hasattr(form_output, 'startup_value') and
-                form_output.startup_value.data):
-            mod_output.startup_value = form_output.startup_value.data
-
-        if form_output.state_shutdown.data == '-1':
-            mod_output.state_shutdown = None
-        elif form_output.state_shutdown.data is not None:
-            mod_output.state_shutdown = form_output.state_shutdown.data
-
-        if (hasattr(form_output, 'shutdown_value') and
-                form_output.shutdown_value.data):
-            mod_output.shutdown_value = form_output.shutdown_value.data
+        custom_options_channels_dict_postsave = {}
+        for each_channel in channels:
+            error, custom_options_channels_json_postsave_tmp = custom_channel_options_return_json(
+                error, dict_outputs, request_form,
+                form_output.output_id.data, each_channel.channel,
+                device=mod_output.output_type, use_defaults=True)
+            custom_options_channels_dict_postsave[each_channel.channel] = json.loads(
+                custom_options_channels_json_postsave_tmp)
 
         if 'execute_at_modification' in dict_outputs[mod_output.output_type]:
-            (constraints_pass,
-             constraints_errors,
-             mod_input) = dict_outputs[mod_output.output_type]['execute_at_modification'](
-                mod_output, request_form)
-            if constraints_pass:
-                pass
-            elif constraints_errors:
-                for each_error in constraints_errors:
-                    flash(each_error, 'error')
+            # pass custom options to module prior to saving to database
+            (allow_saving,
+             mod_output,
+             custom_options_dict,
+             custom_options_channels_dict) = dict_outputs[mod_output.output_type]['execute_at_modification'](
+                mod_output,
+                request_form,
+                custom_options_dict_presave,
+                custom_options_channels_dict_presave,
+                custom_options_dict_postsave,
+                custom_options_channels_dict_postsave)
+            custom_options = json.dumps(custom_options_dict)  # Convert from dict to JSON string
+            custom_channel_options = custom_options_channels_dict
+            if not allow_saving:
+                error.append("execute_at_modification() would not allow output options to be saved")
+        else:
+            # Don't pass custom options to module
+            custom_options = json.dumps(custom_options_dict_postsave)
+            custom_channel_options = custom_options_channels_dict_postsave
 
-        # Generate string to save from custom options
-        error, custom_options = custom_options_return_string(
-            error, dict_outputs, mod_output, request_form)
+        # Finally, save custom options for both output and channels
+        mod_output.custom_options = custom_options
+        for each_channel in channels:
+            if 'name' in custom_channel_options[each_channel.channel]:
+                each_channel.name = custom_channel_options[each_channel.channel]['name']
+            each_channel.custom_options = json.dumps(custom_channel_options[each_channel.channel])
 
         if not error:
-            mod_output.custom_options = custom_options
-
             db.session.commit()
             manipulate_output('Modify', form_output.output_id.data)
     except Exception as except_msg:
@@ -396,8 +346,12 @@ def output_del(form_output):
             delete_entry_with_id(
                 DeviceMeasurements, each_measurement.unique_id)
 
-        delete_entry_with_id(
-            Output, form_output.output_id.data)
+        delete_entry_with_id(Output, form_output.output_id.data)
+
+        channels = OutputChannel.query.filter(
+            OutputChannel.output_id == form_output.output_id.data).all()
+        for each_channel in channels:
+            delete_entry_with_id(OutputChannel, each_channel.unique_id)
 
         display_order = csv_to_list_of_str(DisplayOrder.query.first().output)
         display_order.remove(form_output.output_id.data)

@@ -5299,7 +5299,7 @@ msgstr ""
 "fuera."
 
 #: mycodo_flask/templates/pages/function_options/conditional_options/output_state.html:13
-msgid "returns \"on\" if the output is on and \"off\" if the output os off."
+msgid "returns \"on\" if the output is on and \"off\" if the output is off."
 msgstr ""
 "retornos \"en\" si la salida está activado y \"desactivado\" si el "
 "sistema operativo de salida."

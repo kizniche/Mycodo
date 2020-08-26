@@ -17,11 +17,10 @@ from mycodo.databases.models import Output
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.logging_utils import set_log_level
 
 logger = logging.getLogger("mycodo.influxdb")
-
-if logging.getLevelName(logging.getLogger().getEffectiveLevel()) == 'INFO':
-    logger.setLevel(logging.INFO)
+logger.setLevel(set_log_level(logging))
 
 
 def add_measurements_influxdb(unique_id, measurements, use_same_timestamp=True):
@@ -479,7 +478,7 @@ def read_past_influxdb(unique_id, unit, channel, past_seconds, measure=None):
     return last_measurement
 
 
-def output_sec_on(output_id, past_seconds):
+def output_sec_on(output_id, past_seconds, output_channel=0):
     """ Return the number of seconds a output has been ON in the past number of seconds """
     # Get the number of seconds ON stored in the database
     output = db_retrieve_table_daemon(Output, unique_id=output_id)
@@ -492,14 +491,15 @@ def output_sec_on(output_id, past_seconds):
     output_time_on = 0
     try:
         control = DaemonControl()
-        if control.output_state(output_id) == 'on':
-            output_time_on = control.output_sec_currently_on(output_id)
+        if control.output_state(output_id, output_channel=output_channel) == 'on':
+            output_time_on = control.output_sec_currently_on(
+                output_id, output_channel=output_channel)
     except Exception:
         logger.exception("output_sec_on()")
 
     query = query_string('s', output.unique_id,
                          measure='duration_time',
-                         channel=0,
+                         channel=output_channel,
                          value='SUM',
                          past_sec=past_seconds)
     query_output = client.query(query)

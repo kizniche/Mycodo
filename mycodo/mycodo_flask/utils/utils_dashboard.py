@@ -30,6 +30,7 @@ from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
 
+
 #
 # Dashboards
 #
@@ -90,7 +91,7 @@ def dashboard_copy(form):
         widgets = Widget.query.filter(Widget.dashboard_id == dashboard.unique_id).all()
 
         # Duplicate dashboard with new unique_id and name
-        new_dashboard = clone_model(dashboard, unique_id=set_uuid(), name="TEST")
+        new_dashboard = clone_model(dashboard, unique_id=set_uuid(), name="New Dashboard")
 
         # Duplicate all widgets and assign them to the new dashboard
         for each_widget in widgets:
@@ -195,7 +196,8 @@ def widget_add(form_base, request_form):
     # Execute at Creation
     #
 
-    if 'execute_at_creation' in dict_widgets[widget_name] and not current_app.config['TESTING']:
+    if ('execute_at_creation' in dict_widgets[widget_name] and
+            not current_app.config['TESTING']):
         dict_widgets[widget_name]['execute_at_creation'](
             new_widget, dict_widgets[widget_name])
 

@@ -121,6 +121,7 @@ def custom_options_return_string(error, dict_options, mod_dev, request_form):
                             'text',
                             'select',
                             'select_measurement',
+                            'select_measurement_channel',
                             'select_device']:
                         if 'constraints_pass' in each_option:
                             (constraints_pass,
@@ -153,7 +154,13 @@ def custom_options_return_string(error, dict_options, mod_dev, request_form):
     return error, ';'.join(list_options)
 
 
-def custom_options_return_json(error, dict_options, request_form, mod_dev=None, device=None):
+def custom_options_return_json(
+        error,
+        dict_options,
+        request_form,
+        mod_dev=None,
+        device=None,
+        use_defaults=False):
     # Custom options
     dict_options_return = {}
 
@@ -219,6 +226,7 @@ def custom_options_return_json(error, dict_options, request_form, mod_dev=None, 
                             'text',
                             'select',
                             'select_measurement',
+                            'select_measurement_channel',
                             'select_device']:
                         if 'constraints_pass' in each_option:
                             (constraints_pass,
@@ -251,7 +259,149 @@ def custom_options_return_json(error, dict_options, request_form, mod_dev=None, 
                         dict_options_return[key] = value
 
             if null_value:
-                if each_option['type'] == "select_multi_measurement":
+                if use_defaults and 'default_value' in each_option:
+                    dict_options_return[each_option['id']] = each_option['default_value']
+                elif each_option['type'] == "select_multi_measurement":
+                    dict_options_return[each_option['id']] = ""
+                else:
+                    dict_options_return[each_option['id']] = None
+
+    return error, json.dumps(dict_options_return)
+
+
+def custom_channel_options_return_json(
+        error,
+        dict_options,
+        request_form,
+        device_id,
+        channel,
+        mod_dev=None,
+        device=None,
+        use_defaults=False):
+    # Custom channel_options
+    dict_options_return = {}
+
+    # TODO: name same name in next major release
+    if mod_dev is None:
+        pass
+    elif hasattr(mod_dev, 'graph_type'):
+        device = mod_dev.graph_type
+    elif hasattr(mod_dev, 'device'):
+        device = mod_dev.device
+    elif hasattr(mod_dev, 'output_type'):
+        device = mod_dev.output_type
+    else:
+        logger.error("Unknown device")
+        return None, None
+
+    if 'custom_channel_options' in dict_options[device]:
+        for each_option in dict_options[device]['custom_channel_options']:
+            if 'id' not in each_option:
+                continue
+
+            if each_option['id'] not in dict_options_return:
+                dict_options_return[each_option['id']] = OrderedDict()
+            null_value = True
+
+            for key in request_form.keys():
+                if "{}_{}_{}".format(device_id, channel, each_option['id']) == key:
+                    constraints_pass = True
+                    constraints_errors = []
+                    value = None
+
+                    if each_option['type'] == 'float':
+                        if str_is_float(request_form.get(key)):
+                            if 'constraints_pass' in each_option:
+                                (constraints_pass,
+                                 constraints_errors,
+                                 mod_dev) = each_option['constraints_pass'](
+                                    mod_dev, float(request_form.get(key)))
+                            if constraints_pass:
+                                value = float(request_form.get(key))
+                        else:
+                            error.append(
+                                "{name} must represent a float/decimal value "
+                                "(submitted '{value}')".format(
+                                    name=each_option['name'],
+                                    value=request_form.get(key)))
+
+                    elif each_option['type'] == 'integer':
+                        if is_int(request_form.get(key)):
+                            if 'constraints_pass' in each_option:
+                                (constraints_pass,
+                                 constraints_errors,
+                                 mod_dev) = each_option['constraints_pass'](
+                                    mod_dev, int(request_form.get(key)))
+                            if constraints_pass:
+                                value = int(request_form.get(key))
+                        else:
+                            error.append(
+                                "{name} must represent an integer value "
+                                "(submitted '{value}')".format(
+                                    name=each_option['name'],
+                                    value=request_form.get(key)))
+
+                    elif each_option['type'] == 'select':
+                        if 'constraints_pass' in each_option:
+                            (constraints_pass,
+                             constraints_errors,
+                             mod_dev) = each_option['constraints_pass'](
+                                mod_dev, request_form.get(key))
+                        if constraints_pass:
+                            value = request_form.get(key)
+                            if is_int(request_form.get(key)):
+                                value = int(request_form.get(key))
+                            elif str_is_float(request_form.get(key)):
+                                value = float(request_form.get(key))
+
+                    elif each_option['type'] in [
+                            'multiline_text',
+                            'text',
+                            'select_measurement',
+                            'select_measurement_channel',
+                            'select_device']:
+                        if 'constraints_pass' in each_option:
+                            (constraints_pass,
+                             constraints_errors,
+                             mod_dev) = each_option['constraints_pass'](
+                                mod_dev, request_form.get(key))
+                        if constraints_pass:
+                            value = request_form.get(key)
+
+                    elif each_option['type'] == 'select_multi_measurement':
+                        if 'constraints_pass' in each_option:
+                            (constraints_pass,
+                             constraints_errors,
+                             mod_dev) = each_option['constraints_pass'](
+                                mod_dev, request_form.get(key))
+                        if constraints_pass:
+                            value = request_form.getlist(key)
+
+                    elif each_option['type'] == 'bool':
+                        value = bool(request_form.get(key))
+
+                    for each_error in constraints_errors:
+                        error.append(
+                            "Error: {name}: {error}".format(
+                                name=each_option['name'],
+                                error=each_error))
+
+                    if value is not None:
+                        null_value = False
+                        dict_options_return[each_option['id']] = value
+
+            if null_value:
+                if use_defaults and 'default_value' in each_option:
+
+                    # If a select type has cast_value set, cast the value as that type
+                    if each_option['type'] == 'select' and 'cast_value' in each_option and each_option['default_value']:
+                        if each_option['cast_value'] == 'integer':
+                            dict_options_return[each_option['id']] = int(each_option['default_value'])
+                        elif each_option['cast_value'] == 'float':
+                            dict_options_return[each_option['id']] = float(each_option['default_value'])
+                    else:
+                        dict_options_return[each_option['id']] = each_option['default_value']
+                elif each_option['type'] == "select_multi_measurement":
                     dict_options_return[each_option['id']] = ""
                 else:
                     dict_options_return[each_option['id']] = None
@@ -601,6 +751,29 @@ def choices_outputs(output, dict_units, dict_measurements):
     return choices
 
 
+def choices_outputs_channels_measurements(
+        output, table_output_channel, dict_outputs, dict_units, dict_measurements):
+    """ populate form multi-select choices from Output entries """
+    choices = []
+    for each_output in output:
+        output_channels = table_output_channel.query.filter(
+            table_output_channel.output_id == each_output.unique_id).all()
+        choices = form_output_channel_measurement_choices(
+            choices, each_output, output_channels, dict_outputs, dict_units, dict_measurements)
+    return choices
+
+
+def choices_outputs_channels(output, output_channel, dict_outputs):
+    """ populate form multi-select choices from Output entries """
+    choices = []
+    for each_output in output:
+        for each_channel in output_channel:
+            if each_output.unique_id == each_channel.output_id:
+                choices = form_output_channel_choices(
+                    choices, each_output, each_channel, dict_outputs)
+    return choices
+
+
 def choices_output_devices(output):
     """ populate form multi-select choices from Output entries """
     choices = []
@@ -798,7 +971,7 @@ def form_output_choices(choices, each_output, dict_units, dict_measurements):
                 dict_measurements, measurement)
 
             if isinstance(channel, int):
-                channel_num = ' CH{cnum}'.format(cnum=channel)
+                channel_num = ' M{cnum}'.format(cnum=channel)
             else:
                 channel_num = ''
 
@@ -824,6 +997,101 @@ def form_output_choices(choices, each_output, dict_units, dict_measurements):
                 meas=measurement_unit)
 
             choices.append({'value': value, 'item': display})
+
+    return choices
+
+
+def form_output_channel_measurement_choices(
+        choices, each_output, output_channels, dict_outputs, dict_units, dict_measurements):
+    from sqlalchemy import and_
+
+    for each_channel in output_channels:
+        measurement_channels = dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['measurements']
+        for measurement_channel in measurement_channels:
+            device_measurement = DeviceMeasurements.query.filter(
+                and_(DeviceMeasurements.device_id == each_output.unique_id,
+                     DeviceMeasurements.channel == measurement_channel)).first()
+
+            conversion = Conversion.query.filter(
+                Conversion.unique_id == device_measurement.conversion_id).first()
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
+
+            if unit:
+                value = '{output_id},{meas_id},{chan_id}'.format(
+                    output_id=each_output.unique_id,
+                    meas_id=device_measurement.unique_id,
+                    chan_id=each_channel.unique_id)
+
+                display_unit = find_name_unit(
+                    dict_units, unit)
+                display_measurement = find_name_measurement(
+                    dict_measurements, measurement)
+
+                if isinstance(channel, int):
+                    channel_num = ' M{cnum}'.format(cnum=channel)
+                else:
+                    channel_num = ''
+
+                if device_measurement.name:
+                    channel_name = ' ({name})'.format(name=device_measurement.name)
+                else:
+                    channel_name = ''
+
+                if display_measurement and display_unit:
+                    measurement_unit = ' {meas} ({unit})'.format(
+                        meas=display_measurement, unit=display_unit)
+                elif display_measurement:
+                    measurement_unit = ' {meas}'.format(
+                        meas=display_measurement)
+                else:
+                    measurement_unit = ' ({unit})'.format(unit=display_unit)
+
+                display = '[Output {id:02d}] CH{ch} {i_name}{chan_num}{chan_name}{meas}'.format(
+                    id=each_output.id,
+                    ch=each_channel.channel,
+                    i_name=each_output.name,
+                    chan_num=channel_num,
+                    chan_name=channel_name,
+                    meas=measurement_unit)
+
+                types = []
+                if 'types' in dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]:
+                    types = dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['types']
+
+                choices.append(
+                    {'value': value,
+                     'item': display,
+                     'types': types})
+
+    return choices
+
+
+def form_output_channel_choices(choices, each_output, each_channel, dict_outputs):
+    value = '{output_id},{chan_id}'.format(
+        output_id=each_output.unique_id,
+        chan_id=each_channel.unique_id)
+
+    display = '[Output {id:02d} CH{ch}] {name}'.format(
+        id=each_output.id,
+        name=each_output.name,
+        ch=each_channel.channel)
+
+    if each_channel.name:
+        display += ': {}'.format(each_channel.name)
+    elif ('name' in dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel] and
+            dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['name']):
+        display += ': {}'.format(dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['name'])
+
+    types = []
+    if 'types' in dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]:
+        types = dict_outputs[each_output.output_type]['channels_dict'][each_channel.channel]['types']
+
+    choices.append({
+        'value': value,
+         'item': display,
+         'types': types
+    })
 
     return choices
 

@@ -682,7 +682,7 @@ class DaemonController:
             message = "Could not refresh trigger settings: {e}".format(e=except_msg)
             self.logger.exception(message)
 
-    def output_off(self, output_id, trigger_conditionals=True):
+    def output_off(self, output_id, output_channel=None, trigger_conditionals=True):
         """
         Turn output off using default output controller
 
@@ -695,6 +695,7 @@ class DaemonController:
             return self.controller['Output'].output_on_off(
                 output_id,
                 'off',
+                output_channel=output_channel,
                 trigger_conditionals=trigger_conditionals)
         except Exception as except_msg:
             message = "Could not turn output off: {e}".format(e=except_msg)
@@ -703,6 +704,7 @@ class DaemonController:
 
     def output_on(self,
                   output_id,
+                  output_channel=None,
                   output_type=None,
                   amount=0.0,
                   min_off=0.0,
@@ -729,6 +731,7 @@ class DaemonController:
                 return self.controller['Output'].output_on_off(
                     output_id,
                     'on',
+                    output_channel=output_channel,
                     output_type=output_type,
                     amount=amount,
                     min_off=min_off,
@@ -756,15 +759,17 @@ class DaemonController:
             message = "Could not set up output: {e}".format(e=except_msg)
             self.logger.exception(message)
 
-    def output_state(self, output_id):
+    def output_state(self, output_id, output_channel):
         """
         Return the output state, whether "on" or "off"
 
         :param output_id: Unique ID for output
         :type output_id: str
+        :param channel: The output channel to return the state of
+        :type channel: int
         """
         try:
-            return self.controller['Output'].output_state(output_id)
+            return self.controller['Output'].output_state(output_id, output_channel)
         except Exception as except_msg:
             message = "Could not query output state: {e}".format(e=except_msg)
             self.logger.exception(message)
@@ -1131,30 +1136,39 @@ class PyroServer(object):
         """Instruct the daemon to refresh a conditional's settings"""
         return self.mycodo.refresh_daemon_trigger_settings(unique_id)
 
-    def output_state(self, output_id):
-        """Return the output state (not pin but whether output is on or off)"""
-        return self.mycodo.output_state(output_id)
+    def output_state(self, output_id, output_channel):
+        """Return the output state (on or off)"""
+        return self.mycodo.output_state(output_id, output_channel)
 
     def output_states_all(self):
         """Return all output states"""
         return self.mycodo.output_states_all()
 
-    def output_on(self, output_id, output_type=None, amount=0.0, min_off=0.0, trigger_conditionals=True):
+    def output_on(self,
+                  output_id,
+                  output_type=None,
+                  amount=0.0,
+                  min_off=0.0,
+                  output_channel=None,
+                  trigger_conditionals=True):
         """Turns output on from the client"""
         return self.mycodo.output_on(
             output_id,
+            output_channel=output_channel,
             output_type=output_type,
             amount=amount,
             min_off=min_off,
             trigger_conditionals=trigger_conditionals)
 
-    def output_off(self, output_id, trigger_conditionals=True):
+    def output_off(self, output_id, output_channel=None, trigger_conditionals=True):
         """Turns output off from the client"""
-        return self.mycodo.output_off(output_id, trigger_conditionals)
+        return self.mycodo.output_off(
+            output_id, output_channel=output_channel, trigger_conditionals=trigger_conditionals)
 
-    def output_sec_currently_on(self, output_id):
+    def output_sec_currently_on(self, output_id, output_channel=None):
         """Turns the amount of time a output has already been on"""
-        return self.mycodo.controller['Output'].output_sec_currently_on(output_id)
+        return self.mycodo.controller['Output'].output_sec_currently_on(
+            output_id, output_channel=output_channel)
 
     def output_setup(self, action, output_id):
         """Add, delete, or modify a output in the running output controller"""
@@ -1174,8 +1188,7 @@ class PyroServer(object):
 
     def trigger_all_actions(self, function_id, message='', debug=False):
         """Trigger all actions"""
-        return self.mycodo.trigger_all_actions(
-            function_id, message=message, debug=debug)
+        return self.mycodo.trigger_all_actions(function_id, message=message, debug=debug)
 
     def terminate_daemon(self):
         """Instruct the daemon to shut down"""

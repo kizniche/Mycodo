@@ -206,32 +206,40 @@ class DaemonControl:
     # Output Controller
     #
 
-    def output_off(self, output_id, trigger_conditionals=True):
-        return self.proxy().output_off(output_id, trigger_conditionals)
+    def output_off(self, output_id, output_channel=None, trigger_conditionals=True):
+        return self.proxy().output_off(
+            output_id, output_channel=output_channel, trigger_conditionals=trigger_conditionals)
 
-    def output_on(self, output_id, output_type=None, amount=0.0, min_off=0.0, trigger_conditionals=True):
+    def output_on(self,
+                  output_id,
+                  output_type=None,
+                  amount=0.0,
+                  min_off=0.0,
+                  output_channel=None,
+                  trigger_conditionals=True):
         return self.proxy().output_on(
             output_id, output_type=output_type, amount=amount, min_off=min_off,
-            trigger_conditionals=trigger_conditionals)
+            output_channel=output_channel, trigger_conditionals=trigger_conditionals)
 
-    def output_on_off(self, output_id, state, output_type=None, amount=0.0):
+    def output_on_off(self, output_id, state, output_type=None, amount=0.0, output_channel=None):
         """ Turn an output on or off """
         if state in ['on', 1, True]:
-            return self.output_on(output_id, amount=amount, output_type=output_type)
+            return self.output_on(
+                output_id, amount=amount, output_type=output_type, output_channel=output_channel)
         elif state in ['off', 0, False]:
-            return self.output_off(output_id)
+            return self.output_off(output_id, output_channel=output_channel)
         else:
             return 1, 'state not "on", 1, True, "off", 0, or False. Found: "{}"'.format(state)
 
-    def output_sec_currently_on(self, output_id):
+    def output_sec_currently_on(self, output_id, output_channel):
         """ Return the amount an output is currently on for (e.g. number fo seconds) """
         return self.proxy().output_sec_currently_on(output_id)
 
     def output_setup(self, action, output_id):
         return self.proxy().output_setup(action, output_id)
 
-    def output_state(self, output_id):
-        return self.proxy().output_state(output_id)
+    def output_state(self, output_id, output_channel):
+        return self.proxy().output_state(output_id, output_channel)
 
     def output_states_all(self):
         return self.proxy().output_states_all()
@@ -361,6 +369,9 @@ def parseargs(parser):
                         required=False)
     parser.add_argument('--dutycycle', metavar='DUTYCYCLE', type=float,
                         help='Turn on PWM output for a duty cycle (%%)',
+                        required=False)
+    parser.add_argument('--output_channel', metavar='OUTPUTCHANNEL', type=int,
+                        help='The output channel to modulate',
                         required=False)
 
     # PID Controller
@@ -498,29 +509,50 @@ if __name__ == "__main__":
         logger.info("[Remote command] Turn on LCD backlight with ID '{id}': Server returned: {msg}".format(
             id=args.lcd_backlight_on, msg=return_msg))
 
+    elif args.output_currently_on and args.output_channel is None:
+        parser.error("--output_currently_on requires --output_channel")
+
     elif args.output_currently_on:
-        return_msg = daemon.output_sec_currently_on(args.output_currently_on)
-        logger.info("[Remote command] How many seconds output has been on. ID '{id}': Server returned: {msg}".format(
-            id=args.output_currently_on, msg=return_msg))
+        return_msg = daemon.output_sec_currently_on(
+            args.output_currently_on, output_channel=args.output_channel)
+        logger.info("[Remote command] How many seconds output has been on. ID '{id}' CH{ch}: Server returned: {msg}".format(
+            id=args.output_currently_on, ch=args.output_channel, msg=return_msg))
+
+    elif args.output_state and args.output_channel is None:
+        parser.error("--output_state requires --output_channel")
 
     elif args.output_state:
-        return_msg = daemon.output_state(args.output_state)
-        logger.info("[Remote command] State of output with ID '{id}': Server returned: {msg}".format(
-            id=args.output_state, msg=return_msg))
+        return_msg = daemon.output_state(args.output_state, args.output_channel)
+        logger.info("[Remote command] State of output with ID '{id}' CH{ch}: Server returned: {msg}".format(
+            id=args.output_state, ch=args.output_channel, msg=return_msg))
+
+    elif args.outputoff and args.output_channel is None:
+        parser.error("--outputoff requires --output_channel")
 
     elif args.outputoff:
-        return_msg = daemon.output_off(args.outputoff)
+        return_msg = daemon.output_off(args.outputoff, args.output_channel)
         logger.info("[Remote command] Turn off output with ID '{id}': Server returned: {msg}".format(
             id=args.outputoff, msg=return_msg))
 
     elif args.duration and args.outputon is None:
         parser.error("--duration requires --outputon")
 
+    elif args.outputon and args.output_channel is None:
+        parser.error("--outputon requires --output_channel")
+
     elif args.outputon:
         if args.duration:
-            return_msg = daemon.output_on(args.outputon, output_type='sec', amount=args.duration)
+            return_msg = daemon.output_on(
+                args.outputon,
+                output_type='sec',
+                amount=args.duration,
+                output_channel=args.output_channel)
         elif args.dutycycle:
-            return_msg = daemon.output_on(args.outputon, output_type='pwm', amount=args.dutycycle)
+            return_msg = daemon.output_on(
+                args.outputon,
+                output_type='pwm',
+                amount=args.dutycycle,
+                output_channel=args.output_channel)
         else:
             return_msg = daemon.output_on(args.outputon)
         logger.info("[Remote command] Turn on output with ID '{id}': Server returned:".format(
