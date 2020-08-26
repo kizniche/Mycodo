@@ -1,8 +1,15 @@
-## 8.7.3 (Unreleased)
+## 8.8.0 (Unreleased)
+
+This release changes the Output framework to add the ability for a single Output to control multiple channels. This was originally based on the PCF8574 8-bit I/O Expander, which allows 8 additional IO pins to be controlled via the I2C bus, but applies to any other output device with more than one channel. As a result of this change, you will need to update any Custom Outputs to follow the new format (see /mycodo/outputs directory).
 
 ### Bugfixes
 
  - Fix inability to save Python Code Input settings ([#827](https://github.com/kizniche/mycodo/issues/827))
+ - Fix Cameras not appearing in Camera Widget ([#828](https://github.com/kizniche/mycodo/issues/828))
+
+### Miscellaneous
+
+ - Remove unused Output selection in Methods
 
 
 ## 8.7.2 (2020-08-23)
@@ -12,19 +19,10 @@
  - Fix issue displaying Measurement Widgets when a Math measurement is selected ([#817](https://github.com/kizniche/mycodo/issues/817))
  - Fix inability to generate Widget HTML ([#817](https://github.com/kizniche/mycodo/issues/817), [#822](https://github.com/kizniche/mycodo/issues/822))
 
-This release changes the Output framework to add the ability for a single Output to control multiple channels. This was originally based on the PCF8574 8-bit I/O Expander, which allows 8 additional IO pins to be controlled via the I2C bus, but applies to any other output device with more than one channel. As a result of this change, you will need to update any Custom Outputs to follow the new format (see /mycodo/outputs directory).
-
-### Bugfixes
-
- - Fix Cameras not appearing in Camera Widget ([#828](https://github.com/kizniche/mycodo/issues/828))
-
 ### Features
 
  - Add ability to duplicate a dashboard and its widgets ([#812](https://github.com/kizniche/mycodo/issues/812))
 
-### Miscellaneous
-
- - Remove unused Output selection in Methods
 
 ## 8.7.1 (2020-08-10)
 
