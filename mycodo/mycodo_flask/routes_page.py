@@ -1755,12 +1755,14 @@ def page_output():
 @flask_login.login_required
 def page_data():
     """ Display Data page """
-    pid = PID.query.all()
-    output = Output.query.all()
+
     input_dev = Input.query.all()
     math = Math.query.all()
-    user = User.query.all()
     measurement = Measurement.query.all()
+    output = Output.query.all()
+    output_channel = OutputChannel.query.all()
+    pid = PID.query.all()
+    user = User.query.all()
     unit = Unit.query.all()
 
     display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
@@ -1894,6 +1896,7 @@ def page_data():
             custom_actions[each_input.device] = True
 
     # Generate dict that incorporate user-added measurements/units
+    dict_outputs = parse_output_information()
     dict_units = add_custom_units(unit)
     dict_measurements = add_custom_measurements(measurement)
 
@@ -1904,6 +1907,10 @@ def page_data():
         math, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
+    choices_output_channels = utils_general.choices_outputs_channels(
+        output, output_channel, dict_outputs)
+    choices_output_channels_measurements = utils_general.choices_outputs_channels_measurements(
+        output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_unit = utils_general.choices_units(unit)
     choices_measurement = utils_general.choices_measurements(measurement)
     choices_measurements_units = utils_general.choices_measurements_units(measurement, unit)
@@ -1988,6 +1995,8 @@ def page_data():
                            choices_output=choices_output,
                            choices_measurement=choices_measurement,
                            choices_measurements_units=choices_measurements_units,
+                           choices_output_channels=choices_output_channels,
+                           choices_output_channels_measurements=choices_output_channels_measurements,
                            choices_unit=choices_unit,
                            custom_actions=custom_actions,
                            custom_options_values_inputs=custom_options_values_inputs,

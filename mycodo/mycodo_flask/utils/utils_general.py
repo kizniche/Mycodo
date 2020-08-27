@@ -884,7 +884,7 @@ def form_input_choices(choices, each_input, dict_units, dict_measurements):
             else:
                 measurement_unit = ' ({unit})'.format(unit=display_unit)
 
-            display = '[Input {id:02d}]{chan_num} {i_name}{chan_name}{meas}'.format(
+            display = '[Input {id:02d}{chan_num}] {i_name}{chan_name}{meas}'.format(
                 id=each_input.id,
                 i_name=each_input.name,
                 chan_num=channel_num,
@@ -1047,9 +1047,10 @@ def form_output_channel_measurement_choices(
                 else:
                     measurement_unit = ' ({unit})'.format(unit=display_unit)
 
-                display = '[Output {id:02d}] CH{ch} {i_name}{chan_num}{chan_name}{meas}'.format(
+                display = '[Output {id:02d} CH{ch} M{mid}] {i_name}{chan_num}{chan_name}{meas}'.format(
                     id=each_output.id,
                     ch=each_channel.channel,
+                    mid=device_measurement.channel,
                     i_name=each_output.name,
                     chan_num=channel_num,
                     chan_name=channel_name,
