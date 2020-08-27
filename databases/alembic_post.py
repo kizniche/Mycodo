@@ -118,10 +118,11 @@ if __name__ == "__main__":
                                 except:
                                     pass
 
-                            if each_output.custom_options and "," in new_channel.custom_options:
-                                for each_set in new_channel.custom_options.split(";"):
-                                    if len(each_set) > 1:
-                                        custom_options[each_set[0]] = each_set[1]
+                            # Add any custom options already present
+                            if each_output.custom_options and "," in each_output.custom_options:
+                                for each_set in each_output.custom_options.split(";"):
+                                    if len(each_set.split(",")) > 1:
+                                        custom_options[each_set.split(",")[0]] = each_set.split(",")[1]
 
                             new_channel = OutputChannel()
                             new_channel.output_id = each_output.unique_id

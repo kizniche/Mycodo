@@ -140,6 +140,8 @@ def parse_custom_option_values_channels_json(
             # Set default values if option not saved in database entry
             output = db_retrieve_table_daemon(Output).filter(
                 Output.unique_id == each_controller.output_id).first()
+            if not output:
+                continue
             dev_name = output.output_type
 
             if dev_name in dict_controller and key_name in dict_controller[dev_name]:

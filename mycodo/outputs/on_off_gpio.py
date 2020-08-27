@@ -170,17 +170,16 @@ class OutputModule(AbstractOutput):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
         self.GPIO = None
-        self.options_channels = {}
-
-    def setup_output(self):
-        import RPi.GPIO as GPIO
-
-        self.GPIO = GPIO
 
         output_channels = db_retrieve_table_daemon(
             OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()
         self.options_channels = self.setup_custom_channel_options_json(
             OUTPUT_INFORMATION['custom_channel_options'], output_channels)
+
+    def setup_output(self):
+        import RPi.GPIO as GPIO
+
+        self.GPIO = GPIO
 
         self.setup_on_off_output(OUTPUT_INFORMATION)
 

@@ -476,7 +476,7 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
             index + 1, len(choices_output), each_output))
         response = add_output(testapp, output_type=each_output)
         # Verify success message flashed
-        assert "Success: Add Output" in response
+        assert "with ID 1 successfully added" in response
 
         # Verify data was entered into the database
         output_count += 1
