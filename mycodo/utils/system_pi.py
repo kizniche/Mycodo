@@ -21,6 +21,7 @@ from mycodo.config_devices_units import UNITS
 from mycodo.config_devices_units import UNIT_CONVERSIONS
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Output
+from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.logging_utils import set_log_level
 
@@ -138,7 +139,7 @@ def parse_custom_option_values_channels_json(
 
         if dict_controller:
             # Set default values if option not saved in database entry
-            output = db_retrieve_table_daemon(Output).filter(
+            output = db_retrieve_table(Output).filter(
                 Output.unique_id == each_controller.output_id).first()
             if not output:
                 continue
