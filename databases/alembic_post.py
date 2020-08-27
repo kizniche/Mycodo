@@ -103,6 +103,16 @@ if __name__ == "__main__":
                                 'state_shutdown': each_output.state_shutdown
                             }
 
+                            # Add any custom options already present
+                            if each_output.custom_options and "," in each_output.custom_options:
+                                for each_set in each_output.custom_options.split(";"):
+                                    if len(each_set.split(",")) > 1:
+                                        key = each_set.split(",")[0]
+                                        value = each_set.split(",")[1]
+                                        if key in ['port', 'keepalive']:
+                                            value = int(value)
+                                        custom_options[key] = value
+
                             try:
                                 custom_options['on_state'] = int(each_output.on_state)
                             except:
@@ -117,12 +127,6 @@ if __name__ == "__main__":
                                     custom_options['state_shutdown'] = int(each_output.state_shutdown)
                                 except:
                                     pass
-
-                            # Add any custom options already present
-                            if each_output.custom_options and "," in each_output.custom_options:
-                                for each_set in each_output.custom_options.split(";"):
-                                    if len(each_set.split(",")) > 1:
-                                        custom_options[each_set.split(",")[0]] = each_set.split(",")[1]
 
                             new_channel = OutputChannel()
                             new_channel.output_id = each_output.unique_id
