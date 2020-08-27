@@ -75,12 +75,18 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
     # Turn on output, if configured
     output_already_on = False
-    if settings.output_id:
+    output_id = None
+    output_channel_id = None
+    if settings.output_id and ',' in settings.output_id:
+        output_id = settings.output_id.split(",")[0]
+        output_channel_id = settings.output_id.split(",")[1]
+
+    if output_id and output_channel_id:
         daemon_control = DaemonControl()
-        if daemon_control.output_state(settings.output_id) == "on":
+        if daemon_control.output_state(output_id, output_channel=output_channel_id) == "on":
             output_already_on = True
         else:
-            daemon_control.output_on(settings.output_id)
+            daemon_control.output_on(output_id, output_channel=output_channel_id)
 
     # Pause while the output remains on for the specified duration.
     # Used for instance to allow fluorescent lights to fully turn on before
@@ -341,9 +347,8 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             "{err}".format(err=e))
 
     # Turn off output, if configured
-    if settings.output_id and daemon_control:
-        if not output_already_on:
-            daemon_control.output_off(settings.output_id)
+    if output_id and output_channel_id and daemon_control and not output_already_on:
+        daemon_control.output_off(output_id, output_channel=output_channel_id)
 
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')

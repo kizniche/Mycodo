@@ -34,8 +34,6 @@ from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
-from mycodo.databases.models import Misc
-from mycodo.databases.models import SMTP
 from mycodo.utils.conditional import save_conditional_code
 from mycodo.utils.database import db_retrieve_table_daemon
 
