@@ -80,199 +80,256 @@ if __name__ == "__main__":
 
                     # Update outputs
                     for each_output in session.query(Output).all():
-                        custom_options = {
-                            'pin': each_output.pin,
-                            'amps': each_output.amps,
-                            'protocol': each_output.protocol,
-                            'pulse_length': each_output.pulse_length,
-                            'linux_command_user': each_output.linux_command_user,
-                            'on_command': each_output.on_command,
-                            'off_command': each_output.off_command,
-                            'pwm_command': each_output.pwm_command,
-                            'force_command': each_output.force_command,
-                            'trigger_functions_at_start': each_output.trigger_functions_at_start,
-                            'startup_value': each_output.startup_value,
-                            'shutdown_value': each_output.shutdown_value,
-                            'pwm_hertz': each_output.pwm_hertz,
-                            'pwm_library': each_output.pwm_library,
-                            'pwm_invert_signal': each_output.pwm_invert_signal,
-                            'flow_mode': each_output.output_mode,
-                            'flow_rate': each_output.flow_rate,
-                            'state_startup': each_output.state_startup,
-                            'state_shutdown': each_output.state_shutdown
-                        }
-
                         try:
-                            custom_options['on_state'] = int(each_output.on_state)
-                        except:
-                            pass
+                            custom_options = {
+                                'pin': each_output.pin,
+                                'amps': each_output.amps,
+                                'protocol': each_output.protocol,
+                                'pulse_length': each_output.pulse_length,
+                                'linux_command_user': each_output.linux_command_user,
+                                'on_command': each_output.on_command,
+                                'off_command': each_output.off_command,
+                                'pwm_command': each_output.pwm_command,
+                                'force_command': each_output.force_command,
+                                'trigger_functions_at_start': each_output.trigger_functions_at_start,
+                                'startup_value': each_output.startup_value,
+                                'shutdown_value': each_output.shutdown_value,
+                                'pwm_hertz': each_output.pwm_hertz,
+                                'pwm_library': each_output.pwm_library,
+                                'pwm_invert_signal': each_output.pwm_invert_signal,
+                                'flow_mode': each_output.output_mode,
+                                'flow_rate': each_output.flow_rate,
+                                'state_startup': each_output.state_startup,
+                                'state_shutdown': each_output.state_shutdown
+                            }
 
-                        if each_output.output_type in ["python",
-                                                       "command",
-                                                       "wireless_rpi_rf",
-                                                       "MQTT_PAHO"]:
                             try:
-                                custom_options['state_startup'] = int(each_output.state_startup)
-                                custom_options['state_shutdown'] = int(each_output.state_shutdown)
+                                custom_options['on_state'] = int(each_output.on_state)
                             except:
                                 pass
 
-                        new_channel = OutputChannel()
-                        new_channel.output_id = each_output.unique_id
-                        new_channel.channel = 0
-                        new_channel.custom_options = json.dumps(custom_options)
-                        session.add(new_channel)
-                        each_output.custom_options = ''
-                        session.commit()
+                            if each_output.output_type in ["python",
+                                                           "command",
+                                                           "wireless_rpi_rf",
+                                                           "MQTT_PAHO"]:
+                                try:
+                                    custom_options['state_startup'] = int(each_output.state_startup)
+                                    custom_options['state_shutdown'] = int(each_output.state_shutdown)
+                                except:
+                                    pass
+
+                            if each_output.custom_options and "," in new_channel.custom_options:
+                                for each_set in new_channel.custom_options.split(";"):
+                                    if len(each_set) > 1:
+                                        custom_options[each_set[0]] = each_set[1]
+
+                            new_channel = OutputChannel()
+                            new_channel.output_id = each_output.unique_id
+                            new_channel.channel = 0
+                            new_channel.custom_options = json.dumps(custom_options)
+                            session.add(new_channel)
+                            each_output.custom_options = ''
+                            session.commit()
+                        except Exception:
+                            msg = "ERROR: Update Output {}: {}".format(
+                                each_revision, traceback.format_exc())
+                            error.append(msg)
+                            print(msg)
 
                     # Update Math outputs
                     for each_math in session.query(Math).all():
-                        if (each_math.math_type in ['average',
-                                                    'difference',
-                                                    'redundancy',
-                                                    'statistics',
-                                                    'sum',
-                                                    'verification'] and
-                                each_math.inputs):
-                            selections = each_math.inputs.split(";")
-                            new_list = []
-                            for each_selection in selections:
-                                if "," in each_selection:
-                                    output_id = each_selection.split(",")[0]
-                                    output = session.query(Output).filter(Output.unique_id == output_id).first()
-                                    if output:
-                                        output_channel = session.query(OutputChannel).filter(
-                                            OutputChannel.output_id == output_id).first()
-                                        new_list.append("{},{}".format(output_id, output_channel.unique_id))
-                                    else:
-                                        new_list.append(each_selection)
-                            each_math.inputs = ";".join(new_list)
+                        try:
+                            if (each_math.math_type in ['average',
+                                                        'difference',
+                                                        'redundancy',
+                                                        'statistics',
+                                                        'sum',
+                                                        'verification'] and
+                                    each_math.inputs):
+                                selections = each_math.inputs.split(";")
+                                new_list = []
+                                for each_selection in selections:
+                                    if "," in each_selection:
+                                        output_id = each_selection.split(",")[0]
+                                        output = session.query(Output).filter(Output.unique_id == output_id).first()
+                                        if output:
+                                            output_channel = session.query(OutputChannel).filter(
+                                                OutputChannel.output_id == output_id).first()
+                                            new_list.append("{},{}".format(output_id, output_channel.unique_id))
+                                        else:
+                                            new_list.append(each_selection)
+                                each_math.inputs = ";".join(new_list)
 
-                        elif (each_math.math_type in ['average_single',
-                                                      'sum_single'] and
-                                each_math.inputs):
-                            output_id = each_math.inputs.split(",")[0]
-                            output = session.query(Output).filter(Output.unique_id == output_id).first()
-                            if output:
-                                output_channel = session.query(OutputChannel).filter(
-                                    OutputChannel.output_id == output_id).first()
-                                each_math.inputs = "{},{}".format(output_id, output_channel.unique_id)
+                            elif (each_math.math_type in ['average_single',
+                                                          'sum_single'] and
+                                    each_math.inputs):
+                                output_id = each_math.inputs.split(",")[0]
+                                output = session.query(Output).filter(Output.unique_id == output_id).first()
+                                if output:
+                                    output_channel = session.query(OutputChannel).filter(
+                                        OutputChannel.output_id == output_id).first()
+                                    each_math.inputs = "{},{}".format(output_id, output_channel.unique_id)
 
-                        session.commit()
+                            session.commit()
+                        except Exception:
+                            msg = "ERROR: Update Math {}: {}".format(
+                                each_revision, traceback.format_exc())
+                            error.append(msg)
+                            print(msg)
 
                     # Update PID outputs
                     for each_pid in session.query(PID).all():
-                        if each_pid.raise_output_id:
-                            output_id = each_pid.raise_output_id
-                            output_channel = session.query(OutputChannel).filter(
-                                OutputChannel.output_id == output_id).first()
-                            each_pid.raise_output_id = "{},{}".format(output_id, output_channel.unique_id)
-                        if each_pid.lower_output_id:
-                            output_id = each_pid.lower_output_id
-                            output_channel = session.query(OutputChannel).filter(
-                                OutputChannel.output_id == output_id).first()
-                            each_pid.lower_output_id = "{},{}".format(output_id, output_channel.unique_id)
-                        session.commit()
+                        try:
+                            if each_pid.raise_output_id:
+                                output_id = each_pid.raise_output_id
+                                output_channel = session.query(OutputChannel).filter(
+                                    OutputChannel.output_id == output_id).first()
+                                each_pid.raise_output_id = "{},{}".format(output_id, output_channel.unique_id)
+                            if each_pid.lower_output_id:
+                                output_id = each_pid.lower_output_id
+                                output_channel = session.query(OutputChannel).filter(
+                                    OutputChannel.output_id == output_id).first()
+                                each_pid.lower_output_id = "{},{}".format(output_id, output_channel.unique_id)
+                            session.commit()
+                        except Exception:
+                            msg = "ERROR: Update PID {}: {}".format(
+                                each_revision, traceback.format_exc())
+                            error.append(msg)
+                            print(msg)
 
                     # Update Trigger outputs
                     for each_trigger in session.query(Trigger).all():
-                        if (each_trigger.trigger_type in ['trigger_output',
-                                                         'trigger_output_pwm'] and
-                                each_trigger.unique_id_1):
-                            output_channel = session.query(OutputChannel).filter(
-                                OutputChannel.output_id == each_trigger.unique_id_1).first()
-                            each_trigger.unique_id_2 = output_channel.unique_id
-                        elif (each_trigger.trigger_type == 'trigger_run_pwm_method' and
-                                each_trigger.unique_id_2):
-                            output_channel = session.query(OutputChannel).filter(
-                                OutputChannel.output_id == each_trigger.unique_id_2).first()
-                            each_trigger.unique_id_3 = output_channel.unique_id
-                        session.commit()
+                        try:
+                            if (each_trigger.trigger_type in ['trigger_output',
+                                                              'trigger_output_pwm'] and
+                                    each_trigger.unique_id_1):
+                                output_channel = session.query(OutputChannel).filter(
+                                    OutputChannel.output_id == each_trigger.unique_id_1).first()
+                                each_trigger.unique_id_2 = output_channel.unique_id
+                            elif (each_trigger.trigger_type == 'trigger_run_pwm_method' and
+                                    each_trigger.unique_id_2):
+                                output_channel = session.query(OutputChannel).filter(
+                                    OutputChannel.output_id == each_trigger.unique_id_2).first()
+                                each_trigger.unique_id_3 = output_channel.unique_id
+                            session.commit()
+                        except Exception:
+                            msg = "ERROR: Update Trigger {}: {}".format(
+                                each_revision, traceback.format_exc())
+                            error.append(msg)
+                            print(msg)
 
                     # Update Function Action outputs
                     for each_action in session.query(Actions).all():
-                        if each_action.action_type in ['output',
-                                                       'output_pwm',
-                                                       'output_ramp_pwm',
-                                                       'output_volume']:
-                            output_id = each_action.do_unique_id
-                            output = session.query(Output).filter(
-                                Output.unique_id == output_id).first()
-                            if not output:
-                                continue
-                            output_channel = session.query(OutputChannel).filter(
-                                OutputChannel.output_id == output_id).first()
-                            each_action.do_unique_id = "{},{}".format(output_id, output_channel.unique_id)
-                            session.commit()
-
-                    # Update Conditional Condition outputs
-                    for each_cond in session.query(ConditionalConditions).all():
-                        if each_cond.condition_type in ['output_state',
-                                                        'output_duration_on']:
-                            output_id = each_cond.output_id
-                            output = session.query(Output).filter(
-                                Output.unique_id == output_id).first()
-                            if not output:
-                                continue
-                            output_channel = session.query(OutputChannel).filter(
-                                OutputChannel.output_id == output_id).first()
-                            each_cond.output_id = "{},{}".format(output_id, output_channel.unique_id)
-                            session.commit()
-
-                    # Update Widget outputs
-                    for each_widget in session.query(Widget).all():
-                        custom_options = json.loads(each_widget.custom_options)
-                        if each_widget.graph_type in ["widget_output",
-                                                      "widget_output_pwm_slider",
-                                                      "widget_measurement",
-                                                      "widget_indicator"]:
-                            if each_widget.graph_type in ["widget_output",
-                                                          "widget_output_pwm_slider"]:
-                                option_name = "output"
-                            elif each_widget.graph_type in ["widget_measurement",
-                                                            "widget_indicator"]:
-                                option_name = "measurement"
-
-                            if custom_options[option_name] and "," in custom_options[option_name]:
-                                print("TEST00: {}".format(custom_options[option_name]))
-                                output_id = custom_options[option_name].split(",")[0]
+                        try:
+                            if each_action.action_type in ['output',
+                                                           'output_pwm',
+                                                           'output_ramp_pwm',
+                                                           'output_volume']:
+                                output_id = each_action.do_unique_id
                                 output = session.query(Output).filter(
                                     Output.unique_id == output_id).first()
                                 if not output:
                                     continue
                                 output_channel = session.query(OutputChannel).filter(
                                     OutputChannel.output_id == output_id).first()
-                                measurement = session.query(DeviceMeasurements).filter(
-                                    DeviceMeasurements.device_id == output_id).first()
-                                custom_options[option_name] = "{},{},{}".format(
-                                    output_id, measurement.unique_id, output_channel.unique_id)
-                                print("TEST00: {}".format(custom_options[option_name]))
-                                each_widget.custom_options = json.dumps(custom_options)
+                                each_action.do_unique_id = "{},{}".format(output_id, output_channel.unique_id)
                                 session.commit()
+                        except Exception:
+                            msg = "ERROR: Update Action {}: {}".format(
+                                each_revision, traceback.format_exc())
+                            error.append(msg)
+                            print(msg)
+
+                    # Update Conditional Condition outputs
+                    for each_cond in session.query(ConditionalConditions).all():
+                        try:
+                            if each_cond.condition_type in ['output_state',
+                                                            'output_duration_on']:
+                                output_id = each_cond.output_id
+                                output = session.query(Output).filter(
+                                    Output.unique_id == output_id).first()
+                                if not output:
+                                    continue
+                                output_channel = session.query(OutputChannel).filter(
+                                    OutputChannel.output_id == output_id).first()
+                                each_cond.output_id = "{},{}".format(output_id, output_channel.unique_id)
+                                session.commit()
+                        except Exception:
+                            msg = "ERROR: Update Condition {}: {}".format(
+                                each_revision, traceback.format_exc())
+                            error.append(msg)
+                            print(msg)
+
+                    # Update Widget outputs
+                    for each_widget in session.query(Widget).all():
+                        try:
+                            custom_options = json.loads(each_widget.custom_options)
+                            if each_widget.graph_type in ["widget_output",
+                                                          "widget_output_pwm_slider",
+                                                          "widget_measurement",
+                                                          "widget_indicator"]:
+                                if each_widget.graph_type in ["widget_output",
+                                                              "widget_output_pwm_slider"]:
+                                    option_name = "output"
+                                elif each_widget.graph_type in ["widget_measurement",
+                                                                "widget_indicator"]:
+                                    option_name = "measurement"
+
+                                if custom_options[option_name] and "," in custom_options[option_name]:
+                                    output_id = custom_options[option_name].split(",")[0]
+                                    output = session.query(Output).filter(
+                                        Output.unique_id == output_id).first()
+                                    if not output:
+                                        continue
+                                    output_channel = session.query(OutputChannel).filter(
+                                        OutputChannel.output_id == output_id).first()
+                                    measurement = session.query(DeviceMeasurements).filter(
+                                        DeviceMeasurements.device_id == output_id).first()
+                                    custom_options[option_name] = "{},{},{}".format(
+                                        output_id, measurement.unique_id, output_channel.unique_id)
+                                    each_widget.custom_options = json.dumps(custom_options)
+                                    session.commit()
+                        except Exception:
+                            msg = "ERROR: Update Widget {}: {}".format(
+                                each_revision, traceback.format_exc())
+                            error.append(msg)
+                            print(msg)
 
                     # Update Camera outputs
                     for each_camera in session.query(Camera).all():
-                        output_id = each_camera.output_id
-                        output = session.query(Output).filter(
-                            Output.unique_id == output_id).first()
-                        if not output:
-                            continue
-                        output_channel = session.query(OutputChannel).filter(
-                            OutputChannel.output_id == output_id).first()
-                        each_camera.output_id = "{},{}".format(output_id, output_channel.unique_id)
-                        session.commit()
+                        try:
+                            output_id = each_camera.output_id
+                            output = session.query(Output).filter(
+                                Output.unique_id == output_id).first()
+                            if not output:
+                                continue
+                            output_channel = session.query(OutputChannel).filter(
+                                OutputChannel.output_id == output_id).first()
+                            each_camera.output_id = "{},{}".format(output_id, output_channel.unique_id)
+                            session.commit()
+                        except Exception:
+                            msg = "ERROR: Update Camera {}: {}".format(
+                                each_revision, traceback.format_exc())
+                            error.append(msg)
+                            print(msg)
 
                     # Update Input outputs
                     for each_input in session.query(Input).all():
-                        output_id = each_input.pre_output_id
-                        output = session.query(Output).filter(
-                            Output.unique_id == output_id).first()
-                        if not output:
-                            continue
-                        output_channel = session.query(OutputChannel).filter(
-                            OutputChannel.output_id == output_id).first()
-                        each_input.pre_output_id = "{},{}".format(output_id, output_channel.unique_id)
-                        session.commit()
+                        try:
+                            output_id = each_input.pre_output_id
+                            output = session.query(Output).filter(
+                                Output.unique_id == output_id).first()
+                            if not output:
+                                continue
+                            output_channel = session.query(OutputChannel).filter(
+                                OutputChannel.output_id == output_id).first()
+                            each_input.pre_output_id = "{},{}".format(output_id, output_channel.unique_id)
+                            session.commit()
+                        except Exception:
+                            msg = "ERROR: Update Input {}: {}".format(
+                                each_revision, traceback.format_exc())
+                            error.append(msg)
+                            print(msg)
 
             except Exception:
                 msg = "ERROR: post-alembic revision {}: {}".format(
