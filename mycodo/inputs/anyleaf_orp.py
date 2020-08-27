@@ -1,5 +1,6 @@
 # coding=utf-8
 
+import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -24,7 +25,7 @@ def constraints_pass_positive_value(mod_input, value):
 # Measurements
 measurements_dict = {
     0: {
-        'measurement': 'ORP',
+        'measurement': 'oxidation_reduction_potential',
         'unit': 'mV'
     }
 }
@@ -48,7 +49,8 @@ INPUT_INFORMATION = {
     'options_disabled': [],
 
     'dependencies_module': [
-        ('pip-pypi', 'anyleaf', 'anyleaf')
+        ('pip-pypi', 'anyleaf', 'anyleaf'),
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus')
     ],
 
     'interfaces': ['I2C'],
@@ -56,7 +58,22 @@ INPUT_INFORMATION = {
     'i2c_address_editable': False,
 
     'custom_options': [
-
+    #    {
+    #         'id': 'cal_1_V',
+    #         'type': 'float',
+    #         'default_value': (400.),
+    #         'required': False,
+    #         'name': lazy_gettext('Cal Pt 0'),
+    #         'phrase': lazy_gettext('Calibration: Voltage (V)')
+    #     },
+    #     {
+    #         'id': 'cal_1_pH',
+    #         'type': 'float',
+    #         'default_value': (0.4),
+    #         'required': False,
+    #         'name': lazy_gettext('Cal Pt 0'),
+    #         'phrase': lazy_gettext('Calibration: ORP (mV)')
+    #     },
     ]
 }
 
@@ -68,21 +85,27 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
+        self.cal = None
 
+        if not testing:
+            self.initialize_input()
 
     def initialize_input(self):
-        # todo: This module can be connected to either a pH probe or ORP. Should
-        # that bet set up with both here, or as two separate files?
-        
+        from adafruit_extended_bus import ExtendedI2C
         from anyleaf import OrpSensor, CalPtOrp
 
-        self.sensor = OrpSensor(i2c, self.period)
+        self.sensor = OrpSensor(
+            ExtendedI2C(self.input_dev.i2c_bus),
+            self.input_dev.period,
+            address=int(str(self.input_dev.i2c_location), 16)
+        )
 
         # todo: Calibration
-
-
+        
     def get_measurement(self):
         """ Gets the measurement """
+        self.return_dict = copy.deepcopy(measurements_dict)
+
         if not self.sensor:
             self.logger.error("Input not set up")
             return
