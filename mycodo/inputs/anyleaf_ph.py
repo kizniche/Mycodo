@@ -142,7 +142,7 @@ class InputModule(AbstractInput):
 
     def initialize_input(self):
         from adafruit_extended_bus import ExtendedI2C
-        from anyleaf import PhSensor, CalPt, CalSlot
+        from anyleaf import PhSensor, CalSlot
 
         self.sensor = PhSensor(
             ExtendedI2C(self.input_dev.i2c_bus),
@@ -153,8 +153,6 @@ class InputModule(AbstractInput):
         self.cal_1 = CalPt(0, 7.0, 23.)
         self.cal_2 = CalPt(0.17, 4.0, 23.)
         self.cal_3 = None
-
-        # todo: temperature compensation
 
     def calibrate(self, cal_slot, args_dict):
         """Calibration helper method"""
@@ -207,7 +205,7 @@ class InputModule(AbstractInput):
         """ Gets the measurement """
         from anyleaf import OnBoard, OffBoard
         self.return_dict = copy.deepcopy(measurements_dict)
-        
+
         if not self.sensor:
             self.logger.error("Input not set up")
             return

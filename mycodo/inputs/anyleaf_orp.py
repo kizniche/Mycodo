@@ -105,14 +105,14 @@ class InputModule(AbstractInput):
     def calibrate(self, args_dict):
         """ Auto-calibrate """
         from anyleaf import CalPtOrp
-        
+
         if 'calibration_orp' not in args_dict:
             self.logger.error("Cannot conduct calibration without a buffer ORP value")
             return
-            if not isinstance(args_dict['calibration_orp'], float) and not isinstance(args_dict['calibration_orp'], int):
-                self.logger.error("buffer value does not represent a number: '{}', type: {}".format(
-                    args_dict['calibration_orp'], type(args_dict['calibration_orp'])))
-                return
+        if not isinstance(args_dict['calibration_orp'], float) and not isinstance(args_dict['calibration_orp'], int):
+            self.logger.error("buffer value does not represent a number: '{}', type: {}".format(
+                args_dict['calibration_orp'], type(args_dict['calibration_orp'])))
+            return
 
         self.cal = CalPtOrp(
             self.sensor.read_voltage(),
