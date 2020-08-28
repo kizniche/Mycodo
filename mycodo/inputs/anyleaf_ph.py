@@ -69,78 +69,53 @@ INPUT_INFORMATION = {
             'name': lazy_gettext('Temperature compensation source. Leave at `Select one` to use the onboard sensor.'),
             'phrase': lazy_gettext('Select a measurement for temperature compensation. If not selected, uses the onboard sensor.')
         },
+    ],
+    'custom_actions_message': 'Calibrate: Place your probe in a buffer of ...', # todo
+    'custom_actions': [
+        {
+            'id': 'calibration_ph',
+            'type': 'float',
+            'default_value': 7.,
+            'name': lazy_gettext('Calibration buffer pH'),
+            'phrase': 'This is the nominal pH of the calibration buffer, usually labelled on the bottle.'
+        },
+        {
+            'id': 'calibrate_slot_1',
+            'type': 'button',
+            'name': lazy_gettext('Calibrate, slot 1')
+        },
+        {
+            'id': 'calibrate_slot_2',
+            'type': 'button',
+            'name': lazy_gettext('Calibrate, slot 2')
+        },
+        {
+            'id': 'calibrate_slot_3',
+            'type': 'button',
+            'name': lazy_gettext('Calibrate, slot 3')
+        },
+        # todo: Including this input will raise an error about `cannot convert string to float`
+        # todo when attempting calibration.
         # {
-        #     'id': 'cal_1_V',
-        #     'type': 'float',
-        #     'default_value': (0.18),
-        #     'required': False,
-        #     'name': lazy_gettext('Cal Pt 0'),
-        #     'phrase': lazy_gettext('1st Cal pt: Voltage')
+        #     'id': 'temperature_comp_meas',
+        #     'type': 'select_measurement',
+        #     'default_value': '',
+        #     'options_select': [
+        #         'Input',
+        #         'Math'
+        #     ],
+        #     'name': lazy_gettext('Temperature Compensation Measurement'),
+        #     'phrase': lazy_gettext('Select a measurement for temperature compensation')
         # },
-        # {
-        #     'id': 'cal_1_pH',
-        #     'type': 'float',
-        #     'default_value': (4.),
-        #     'required': False,
-        #     'name': lazy_gettext('Cal Pt 0'),
-        #     'phrase': lazy_gettext('1st Cal pt: pH')
-        # },
-        # {
-        #     'id': 'cal_1_T',
-        #     'type': 'float',
-        #     'default_value': (23.),
-        #     'required': False,
-        #     'name': lazy_gettext('Cal Pt 0'),
-        #     'phrase': lazy_gettext('1st Cal pt: Temperature (°C)')
-        # },
-        #         {
-        #     'id': 'cal_1_V',
-        #     'type': 'float',
-        #     'default_value': (0.),
-        #     'required': False,
-        #     'name': lazy_gettext('Cal Pt 0'),
-        #     'phrase': lazy_gettext('2nd Cal pt: Voltage')
-        # },
-        # {
-        #     'id': 'cal_1_pH',
-        #     'type': 'float',
-        #     'default_value': (7.),
-        #     'required': False,
-        #     'name': lazy_gettext('Cal Pt 0'),
-        #     'phrase': lazy_gettext('2nd Cal pt: pH')
-        # },
-        # {
-        #     'id': 'cal_1_T',
-        #     'type': 'float',
-        #     'default_value': (23.),
-        #     'required': False,
-        #     'name': lazy_gettext('Cal Pt 0'),
-        #     'phrase': lazy_gettext('2nd Cal pt: Temperature (°C)')
-        # },
-        #         {
-        #     'id': 'cal_3_V',
-        #     'type': 'float',
-        #     'default_value': (-0.18),
-        #     'required': False,
-        #     'name': lazy_gettext('Cal Pt 0'),
-        #     'phrase': lazy_gettext('3rd Cal pt: Voltage')
-        # },
-        # {
-        #     'id': 'cal_3_pH',
-        #     'type': 'float',
-        #     'default_value': (10.),
-        #     'required': False,
-        #     'name': lazy_gettext('Cal Pt 0'),
-        #     'phrase': lazy_gettext('3rd Cal pt: pH')
-        # },
-        # {
-        #     'id': 'cal_3_T',
-        #     'type': 'float',
-        #     'default_value': (23.),
-        #     'required': False,
-        #     'name': lazy_gettext('Cal Pt 0'),
-        #     'phrase': lazy_gettext('3rd Cal pt: Temperature (°C)')
-        # },
+        {
+            'id': 'max_age',
+            'type': 'integer',
+            'default_value': 120,
+            'required': True,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': lazy_gettext('Temperature Compensation Max Age'),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use for temperature compensation')
+        }
     ]
 }
 
@@ -152,7 +127,9 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
-        self.temp_source = None
+        self.temperature_comp_meas_device_id = None
+        self.temperature_comp_meas_measurement_id = None
+        self.max_age = None
         self.cal_1 = None
         self.cal_2 = None
         self.cal_3 = None
@@ -172,38 +149,87 @@ class InputModule(AbstractInput):
             self.input_dev.period,
             address=int(str(self.input_dev.i2c_location), 16)
         )
-        
 
-        # todo: Calibration
+        self.cal_1 = CalPt(0, 7.0, 23.)
+        self.cal_2 = CalPt(0.17, 4.0, 23.)
+        self.cal_3 = None
+
         # todo: temperature compensation
 
-    # def calibrate(self):
-    #     """ Auto-calibrate """
-    #     if not self.sensor:
-    #         self.logger.error("Input not set up")
-    #         return
+    def calibrate(self, cal_slot, args_dict):
+        """Calibration helper method"""
+        self.logger.error("AA")
 
+        from anyleaf import CalPt, CalSlot
 
-    #     self.value_set(0, self.sensor.read(OnBoard()))
-       
+        if 'calibration_ph' not in args_dict:
+            self.logger.error("Cannot conduct calibration without a buffer pH value")
+            return
+        if not isinstance(args_dict['calibration_ph'], float) and not isinstance(args_dict['calibration_ph'], int):
+            self.logger.error("buffer value does not represent a number: '{}', type: {}".format(
+                args_dict['calibration_ph'], type(args_dict['calibration_ph'])))
+            return
 
-    #     return self.return_dict
+        pt = CalPt(
+            self.sensor.read_voltage(),
+            args_dict['calibration_ph'],
+            self.sensor.read_temp(), # todo offboard
+        )
 
+        if cal_slot == CalSlot.ONE:
+            self.cal_1 = pt
+        elif cal_slot == CalSlot.TWO:
+            self.cal_2 = pt
+        else:
+            self.cal_3 = pt
+
+    def calibrate_slot_1(self, args_dict):
+        # """ Auto-calibrate """
+        # # todo: You probably need to store in this class, not self.sensor, to avoid it
+        # # todo resetting. experiment.
+
+        from anyleaf import CalSlot
+        self.calibrate(CalSlot.ONE, args_dict)
+
+    def calibrate_slot_2(self, args_dict):
+        """ Auto-calibrate """
+
+        from anyleaf import CalSlot
+        self.calibrate(CalSlot.TWO, args_dict)
+
+    def calibrate_slot_3(self, args_dict):
+        # """ Auto-calibrate """
+
+        from anyleaf import CalSlot
+        self.calibrate(CalSlot.THREE, args_dict)
 
     def get_measurement(self):
         """ Gets the measurement """
         from anyleaf import OnBoard, OffBoard
         self.return_dict = copy.deepcopy(measurements_dict)
-
+        
         if not self.sensor:
             self.logger.error("Input not set up")
             return
 
-        # if self.input_dev.temp_source:
-            # self.value_set(0, self.sensor.read(OffBoard(self.input_dev.temp_source.get_last_measurement())))
-        # else:
-        self.value_set(0, self.sensor.read(OnBoard()))
-       
+        # Calibrate each time, since calibration values held in this class remain, while
+        # ones held in `this.sensor` are periodically re-initialized.
+        # todo: Still loses all cal data on deactivation.
+        self.sensor.calibrate_all(self.cal_1, self.cal_2, self.cal_3)
 
+        # todo: Test offboard temp compensation.
+        if self.temperature_comp_meas_measurement_id:
+            last_temp_measurement = self.get_last_measurement(
+                self.temperature_comp_meas_device_id,
+                self.temperature_comp_meas_measurement_id,
+                max_age=self.max_age
+            )
+
+            temp_data = OffBoard(last_temp_measurement)
+        else:
+            temp_data = OnBoard()
+
+        self.value_set(0, self.sensor.read(temp_data))
+       
         return self.return_dict
 

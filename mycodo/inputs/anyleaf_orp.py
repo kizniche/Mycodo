@@ -58,22 +58,21 @@ INPUT_INFORMATION = {
     'i2c_address_editable': False,
 
     'custom_options': [
-    #    {
-    #         'id': 'cal_1_V',
-    #         'type': 'float',
-    #         'default_value': (400.),
-    #         'required': False,
-    #         'name': lazy_gettext('Cal Pt 0'),
-    #         'phrase': lazy_gettext('Calibration: Voltage (V)')
-    #     },
-    #     {
-    #         'id': 'cal_1_pH',
-    #         'type': 'float',
-    #         'default_value': (0.4),
-    #         'required': False,
-    #         'name': lazy_gettext('Cal Pt 0'),
-    #         'phrase': lazy_gettext('Calibration: ORP (mV)')
-    #     },
+    ],
+    'custom_actions_message': 'Calibrate',
+    'custom_actions': [
+        {
+            'id': 'calibration_orp',
+            'type': 'float',
+            'default_value': 400.,
+            'name': lazy_gettext('Calibration buffer ORP (mV)'),
+            'phrase': 'This is the nominal ORP of the calibration buffer in mV, usually labelled on the bottle.'
+        },
+        {
+            'id': 'calibrate',
+            'type': 'button',
+            'name': lazy_gettext('Calibrate')
+        },
     ]
 }
 
@@ -100,8 +99,26 @@ class InputModule(AbstractInput):
             address=int(str(self.input_dev.i2c_location), 16)
         )
 
-        # todo: Calibration
+        self.cal = CalPtOrp(0.4, 400.0)
+
+
+    def calibrate(self, args_dict):
+        """ Auto-calibrate """
+        from anyleaf import CalPtOrp
         
+        if 'calibration_orp' not in args_dict:
+            self.logger.error("Cannot conduct calibration without a buffer ORP value")
+            return
+            if not isinstance(args_dict['calibration_orp'], float) and not isinstance(args_dict['calibration_orp'], int):
+                self.logger.error("buffer value does not represent a number: '{}', type: {}".format(
+                    args_dict['calibration_orp'], type(args_dict['calibration_orp'])))
+                return
+
+        self.cal = CalPtOrp(
+            self.sensor.read_voltage(),
+            args_dict['calibration_orp'],
+        )
+
     def get_measurement(self):
         """ Gets the measurement """
         self.return_dict = copy.deepcopy(measurements_dict)
@@ -109,6 +126,11 @@ class InputModule(AbstractInput):
         if not self.sensor:
             self.logger.error("Input not set up")
             return
+
+        # Calibrate each time, since calibration values held in this class remain, while
+        # ones held in `this.sensor` are periodically re-initialized.
+        # todo: Still loses all cal data on deactivation.
+        self.sensor.calibrate_all(self.cal)
 
         self.value_set(0, self.sensor.read())
 
