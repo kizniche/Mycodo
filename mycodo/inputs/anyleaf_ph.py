@@ -223,7 +223,11 @@ class InputModule(AbstractInput):
                 max_age=self.max_age
             )
 
-            temp_data = OffBoard(last_temp_measurement)
+            if last_temp_measurement:
+                temp_data = OffBoard(last_temp_measurement[1])
+            else:
+            temp_data = OnBoard()
+
         else:
             temp_data = OnBoard()
 
