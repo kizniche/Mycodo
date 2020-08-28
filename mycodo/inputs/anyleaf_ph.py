@@ -142,7 +142,7 @@ class InputModule(AbstractInput):
 
     def initialize_input(self):
         from adafruit_extended_bus import ExtendedI2C
-        from anyleaf import PhSensor, CalSlot
+        from anyleaf import PhSensor
 
         self.sensor = PhSensor(
             ExtendedI2C(self.input_dev.i2c_bus),
@@ -228,6 +228,6 @@ class InputModule(AbstractInput):
             temp_data = OnBoard()
 
         self.value_set(0, self.sensor.read(temp_data))
-       
+
         return self.return_dict
 
