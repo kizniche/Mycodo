@@ -7,6 +7,10 @@ This release changes the Output framework to add the ability for a single Output
  - Fix inability to save Python Code Input settings ([#827](https://github.com/kizniche/mycodo/issues/827))
  - Fix Cameras not appearing in Camera Widget ([#828](https://github.com/kizniche/mycodo/issues/828))
 
+### Features
+
+ - Convert Input module custom_options from CSV to JSON
+
 ### Miscellaneous
 
  - Remove unused Output selection in Methods

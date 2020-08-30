@@ -39,6 +39,33 @@ def parse_custom_option_values(controllers, dict_controller=None):
         iter_controller = controllers  # iterable
 
     custom_options_values = {}
+
+    for each_controller in iter_controller:
+        custom_options_values[each_controller.unique_id] = {}
+        if each_controller.custom_options:
+
+            # Determine if custom_options should be parsed as JSON or CSV
+            if each_controller.custom_options.startswith("{"):
+                custom_options_values.update(
+                    parse_custom_option_values_json(controllers, dict_controller))
+            else:
+                custom_options_values.update(
+                    parse_custom_option_values_csv(controllers, dict_controller))
+
+    return custom_options_values
+
+
+# TODO: Remove in place of JSON function, below, in next major version
+def parse_custom_option_values_csv(controllers, dict_controller=None):
+    # Check if controllers is iterable or a single controller
+    try:
+        _ = iter(controllers)
+    except TypeError:
+        iter_controller = [controllers]  # Not iterable
+    else:
+        iter_controller = controllers  # iterable
+
+    custom_options_values = {}
     for each_controller in iter_controller:
         custom_options_values[each_controller.unique_id] = {}
         if each_controller.custom_options:

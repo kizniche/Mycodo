@@ -41,6 +41,16 @@ class AbstractBaseController(object):
         self.lockfile = LockFile()
 
     def setup_custom_options(self, custom_options, custom_controller):
+        if not hasattr(custom_controller, 'custom_options'):
+            self.logger.error("custom_controller missing attribute custom_options")
+            return
+        elif custom_controller.custom_options.startswith("{"):
+            return self.setup_custom_options_json(custom_options, custom_controller)
+        else:
+            return self.setup_custom_options_csv(custom_options, custom_controller)
+
+    # TODO: Remove in place of JSON function, below, in next major version
+    def setup_custom_options_csv(self, custom_options, custom_controller):
         for each_option_default in custom_options:
             try:
                 required = False
@@ -247,12 +257,6 @@ class AbstractBaseController(object):
                                     if len(each_value.split(',')) > 2:
                                         dict_values[each_option_default['id']][each_chan.channel]['channel_id'] = each_value.split(',')[2]
                                 else:
-                                    # if each_option_default['type'] == 'select' and 'cast_value' in each_option_default:
-                                    #     if each_option_default['cast_value'] == 'integer' and is_int(each_value):
-                                    #         dict_values[each_option_default['id']][each_chan.channel] = int(each_value)
-                                    #     elif each_option_default['cast_value'] == 'integer' and str_is_float(each_value):
-                                    #         dict_values[each_option_default['id']][each_chan.channel] = float(each_value)
-                                    # else:
                                     dict_values[each_option_default['id']][each_chan.channel] = each_value
 
                     if required and not custom_option_set:

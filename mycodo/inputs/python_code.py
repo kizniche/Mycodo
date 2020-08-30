@@ -16,7 +16,7 @@ from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
 
 
-def execute_at_creation(unique_id, input_dev, dict_inputs):
+def generate_code(unique_id, new_input):
     error = []
     pre_statement_run = """import os
 import sys
@@ -44,7 +44,7 @@ class PythonInputRun:
 
     def python_code_run(self):
 """
-    indented_code = textwrap.indent(input_dev.cmd_command, ' ' * 8)
+    indented_code = textwrap.indent(new_input.cmd_command, ' ' * 8)
     input_python_code_run = pre_statement_run + indented_code
 
     assure_path_exists(PATH_PYTHON_CODE_USER)
@@ -55,25 +55,34 @@ class PythonInputRun:
         fw.close()
     set_user_grp(file_run, 'mycodo', 'mycodo')
 
-    return error, (input_python_code_run, file_run)
+    for each_error in error:
+        flash(each_error, 'error')
+
+    return input_python_code_run, file_run
 
 
-def execute_at_modification(mod_input, request_form):
+def execute_at_creation(unique_id, new_input, dict_inputs=None):
+    generate_code(unique_id, new_input)
+    return new_input
+
+def execute_at_modification(
+        mod_input,
+        request_form,
+        custom_options_json_presave,
+        custom_options_json_postsave):
     """
     Function to run when the Input is saved to evaluate the Python 3 code using pylint3
     :param mod_input: The WTForms object containing the form data submitted by the web GUI
-    :param request_form: The custom_options form input data (if it exists)
+    :param request_form: The custom_options form input data (if it exists):param mod_widget:
+    :param custom_options_json_presave:
+    :param custom_options_json_postsave:
+    :return:
     :return: tuple of (all_passed, error, mod_input) variables
     """
     all_passed = True
-
-    error, (input_python_code_run, file_run) = execute_at_creation(
-        mod_input.unique_id, mod_input, None)
-
-    # Only add strings to this list to prevent options from being saved.
-    # Use flash('my error message', 'error') to show errors but allow options
-    # to save.
     error = []
+
+    input_python_code_run, file_run = generate_code(mod_input.unique_id, mod_input)
 
     if len(input_python_code_run.splitlines()) > 999:
         error.append("Too many lines in code. Reduce code to less than 1000 lines.")

@@ -59,9 +59,7 @@ if __name__ == "__main__":
         #         print(msg)
 
         elif each_revision == '0e150fb8020b':
-            # TODO: update database entries to include output channel
-            print("Executing post-alembic code for revision {}".format(
-                each_revision))
+            print("Executing post-alembic code for revision {}".format(each_revision))
             import json
             from mycodo.databases.models import Actions
             from mycodo.databases.models import Camera
@@ -74,9 +72,66 @@ if __name__ == "__main__":
             from mycodo.databases.models import PID
             from mycodo.databases.models import Trigger
             from mycodo.databases.models import Widget
+            from mycodo.utils.inputs import parse_input_information
 
             try:
                 with session_scope(MYCODO_DB_PATH) as session:
+
+                    # Update Input custom_options
+                    dict_inputs = parse_input_information()
+                    for each_input in session.query(Input).all():
+                        custom_options = {}
+                        if 'custom_options' not in dict_inputs[each_input.device]:
+                            continue
+
+                        try:
+                            for each_option_default in dict_inputs[each_input.device]['custom_options']:
+                                try:
+                                    option_value = each_option_default['default_value']
+
+                                    if each_input.custom_options:
+                                        for each_option in each_input.custom_options.split(';'):
+                                            option = each_option.split(',')[0]
+
+                                            if option == each_option_default['id']:
+                                                option_value = each_option.split(',', 1)[1]
+
+                                    if each_option_default['type'] == 'integer':
+                                        custom_options[each_option_default['id']] = int(option_value)
+
+                                    elif each_option_default['type'] == 'float':
+                                        custom_options[each_option_default['id']] = float(option_value)
+
+                                    elif each_option_default['type'] == 'bool':
+                                        custom_options[each_option_default['id']] = bool(option_value)
+
+                                    elif each_option_default['type'] in ['multiline_text',
+                                                                         'text',
+                                                                         'select_measurement',
+                                                                         'select_device']:
+                                        custom_options[each_option_default['id']] = str(option_value)
+
+                                    elif each_option_default['type'] == 'select':
+                                        option_value = str(option_value)
+                                        if 'cast_value' in each_option_default and each_option_default['cast_value']:
+                                            if each_option_default['cast_value'] == 'integer':
+                                                option_value = int(option_value)
+                                            elif each_option_default['cast_value'] == 'float':
+                                                option_value = float(option_value)
+                                        custom_options[each_option_default['id']] = option_value
+
+                                    else:
+                                        print("Unknown custom_option type '{}'".format(each_option_default['type']))
+                                except Exception:
+                                    print("Error parsing custom_options")
+
+                        except Exception:
+                            msg = "ERROR: Update Input {}: {}".format(each_revision, traceback.format_exc())
+                            error.append(msg)
+                            print(msg)
+
+                        each_input.custom_options = json.dumps(custom_options)
+                        session.commit()
 
                     # Update outputs
                     for each_output in session.query(Output).all():

@@ -9,13 +9,19 @@ All Inputs should inherit from this class and overwrite methods that raise
 NotImplementedErrors
 """
 import datetime
+import json
 import logging
 import time
 
 from mycodo.abstract_base_controller import AbstractBaseController
+from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
+from mycodo.databases.models import Input
+from mycodo.databases.utils import session_scope
 from mycodo.utils.database import db_retrieve_table_daemon
+
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class AbstractInput(AbstractBaseController):
@@ -283,3 +289,20 @@ class AbstractInput(AbstractBaseController):
 
     def is_acquiring_measurement(self):
         return self.acquiring_measurement
+
+    def set_custom_option(self, option, value):
+        try:
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_input = new_session.query(Input).filter(
+                    Input.unique_id == self.unique_id).first()
+                dict_custom_options = json.loads(mod_input.custom_options)
+                dict_custom_options[option] = value
+                mod_input.custom_options = json.dumps(dict_custom_options)
+                new_session.commit()
+        except Exception:
+            self.logger.exception("set_custom_option")
+
+    def get_custom_option(self, option):
+        dict_custom_options = json.loads(self.input_dev.custom_options)
+        if option in dict_custom_options:
+            return dict_custom_options[option]

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
-
 import os
+
 import sqlalchemy
 from flask import current_app
 from flask import flash
@@ -18,6 +19,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
+from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_string
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
@@ -220,22 +222,19 @@ def input_add(form_add):
         # Custom Options
         #
 
-        # TODO: Switch to JSON function
-        list_options = []
-        if 'custom_options' in dict_inputs[input_name]:
-            for each_option in dict_inputs[input_name]['custom_options']:
-                if 'id' not in each_option:
-                    continue
+        # Generate string to save from custom options
+        error, custom_options = custom_options_return_json(
+            error, dict_inputs, device=input_name)
+        new_input.custom_options = custom_options
 
-                if each_option['default_value'] is False:
-                    default_value = ''
-                else:
-                    default_value = each_option['default_value']
-                option = '{id},{value}'.format(
-                    id=each_option['id'],
-                    value=default_value)
-                list_options.append(option)
-        new_input.custom_options = ';'.join(list_options)
+        #
+        # Execute at Creation
+        #
+
+        if ('execute_at_creation' in dict_inputs[new_input.device] and
+                not current_app.config['TESTING']):
+            new_input = dict_inputs[new_input.device]['execute_at_creation'](
+                new_input, dict_inputs[new_input.device])
 
         try:
             if not error:
@@ -247,18 +246,6 @@ def input_add(form_add):
                 DisplayOrder.query.first().inputs = add_display_order(
                     display_order, new_input.unique_id)
                 db.session.commit()
-
-                #
-                # Execute at Creation
-                #
-
-                if 'execute_at_creation' in dict_inputs[new_input.device] and not current_app.config['TESTING']:
-                    (creation_errors,
-                     tuple_code_filename) = dict_inputs[new_input.device]['execute_at_creation'](
-                        new_input.unique_id, new_input, dict_inputs[input_name])
-                    if creation_errors:
-                        for each_error in creation_errors:
-                            flash(each_error, 'error')
 
                 #
                 # If there are a variable number of measurements
@@ -429,24 +416,27 @@ def input_mod(form_mod, request_form):
         if form_mod.sht_voltage.data:
             mod_input.sht_voltage = form_mod.sht_voltage.data
 
-        if 'execute_at_modification' in dict_inputs[mod_input.device]:
-            (constraints_pass,
-             constraints_errors,
-             mod_input) = dict_inputs[mod_input.device]['execute_at_modification'](
-                mod_input, request_form)
-            if constraints_pass:
-                pass
-            elif constraints_errors:
-                for each_error in constraints_errors:
-                    flash(each_error, 'error')
+        # Custom options
+        custom_options_json_presave = json.loads(mod_input.custom_options)
 
         # Generate string to save from custom options
-        error, custom_options = custom_options_return_string(
-            error, dict_inputs, mod_input, request_form)
+        error, custom_options_json_postsave = custom_options_return_json(
+            error, dict_inputs, request_form, device=mod_input.device)
+
+        if 'execute_at_modification' in dict_inputs[mod_input.device]:
+            (allow_saving,
+             mod_input,
+             custom_options) = mod_input.device['execute_at_modification'](
+                mod_input, request_form, custom_options_json_presave, json.loads(custom_options_json_postsave))
+            custom_options = json.dumps(custom_options)  # Convert from dict to JSON string
+            if not allow_saving:
+                error.append("execute_at_modification() would not allow widget options to be saved")
+        else:
+            custom_options = custom_options_json_postsave
+
+        mod_input.custom_options = custom_options
 
         if not error:
-            mod_input.custom_options = custom_options
-
             # Add or delete channels for variable measurement Inputs
             if ('measurements_variable_amount' in dict_inputs[mod_input.device] and
                     dict_inputs[mod_input.device]['measurements_variable_amount']):
