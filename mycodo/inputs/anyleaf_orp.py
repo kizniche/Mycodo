@@ -71,7 +71,23 @@ INPUT_INFORMATION = {
         {
             'id': 'calibrate',
             'type': 'button',
-            'name': lazy_gettext('Calibrate')
+            'name': lazy_gettext('Calibrate'),
+        },
+
+        {
+            'id': 'cal_voltage',
+            'type': 'float',
+            'default_value': 400.,
+            'name': lazy_gettext('Calibration value: voltage (Internal use - don\'t change'),
+            'phrase': 'This is the nominal ORP of the calibration buffer in mV, usually labelled on the bottle.'
+        },
+
+        {
+            'id': 'cal_orp',
+            'type': 'float',
+            'default_value': 400.,
+            'name': lazy_gettext('Calibration buffer ORP (mV)'),
+            'phrase': 'This is the nominal ORP of the calibration buffer in mV, usually labelled on the bottle.'
         },
     ]
 }

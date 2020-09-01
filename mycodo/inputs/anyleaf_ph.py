@@ -67,7 +67,8 @@ INPUT_INFORMATION = {
                 'Math'
             ],
             'name': lazy_gettext('Temperature compensation source. Leave at `Select one` to use the onboard sensor.'),
-            'phrase': lazy_gettext('Select a measurement for temperature compensation. If not selected, uses the onboard sensor.')
+            'phrase': lazy_gettext('Select a measurement for temperature compensation. If not selected, uses the onboard sensor.'),
+            
         },
     ],
     'custom_actions_message': 'Calibrate: Place your probe in a buffer of ...', # todo
