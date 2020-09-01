@@ -116,7 +116,70 @@ INPUT_INFORMATION = {
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Temperature Compensation Max Age'),
             'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use for temperature compensation')
-        }
+        },
+        {
+            'id': 'cal1_v_internal',
+            'type': 'float',
+            'default_value': 0.,
+            'name': lazy_gettext('Cal data: voltage (Internal use - don\'t change'),
+            'phrase': 'This is for internal use only. Don\'t modify directly.'
+        },
+        {
+            'id': 'cal1_ph_internal',
+            'type': 'float',
+            'default_value': 7.,
+            'name': lazy_gettext('Cal data: pH (Internal use - don\'t change'),
+            'phrase': 'This is for internal use only. Don\'t modify directly.'
+        },
+        {
+            'id': 'cal1_t_internal',
+            'type': 'float',
+            'default_value': 23.,
+            'name': lazy_gettext('Cal data: temperature (Internal use - don\'t change'),
+            'phrase': 'This is for internal use only. Don\'t modify directly.'
+        },
+        {
+            'id': 'cal2_v_internal',
+            'type': 'float',
+            'default_value': 17.,
+            'name': lazy_gettext('Cal data: voltage (Internal use - don\'t change'),
+            'phrase': 'This is for internal use only. Don\'t modify directly.'
+        },
+        {
+            'id': 'cal2_ph_internal',
+            'type': 'float',
+            'default_value': 4.,
+            'name': lazy_gettext('Cal data: pH (Internal use - don\'t change'),
+            'phrase': 'This is for internal use only. Don\'t modify directly.'
+        },
+        {
+            'id': 'cal2_t_internal',
+            'type': 'float',
+            'default_value': 23.,
+            'name': lazy_gettext('Cal data: temperature (Internal use - don\'t change'),
+            'phrase': 'This is for internal use only. Don\'t modify directly.'
+        },
+                {
+            'id': 'cal3_v_internal',
+            'type': 'float',
+            'default_value': None,
+            'name': lazy_gettext('Cal data: voltage (Internal use - don\'t change'),
+            'phrase': 'This is for internal use only. Don\'t modify directly.'
+        },
+        {
+            'id': 'cal3_ph_internal',
+            'type': 'float',
+            'default_value': None,
+            'name': lazy_gettext('Cal data: pH (Internal use - don\'t change'),
+            'phrase': 'This is for internal use only. Don\'t modify directly.'
+        },
+        {
+            'id': 'cal3_t_internal',
+            'type': 'float',
+            'default_value': None.,
+            'name': lazy_gettext('Cal data: temperature (Internal use - don\'t change'),
+            'phrase': 'This is for internal use only. Don\'t modify directly.'
+        },
     ]
 }
 
@@ -143,7 +206,7 @@ class InputModule(AbstractInput):
 
     def initialize_input(self):
         from adafruit_extended_bus import ExtendedI2C
-        from anyleaf import PhSensor
+        from anyleaf import PhSensor, CalPt
 
         self.sensor = PhSensor(
             ExtendedI2C(self.input_dev.i2c_bus),
@@ -151,9 +214,24 @@ class InputModule(AbstractInput):
             address=int(str(self.input_dev.i2c_location), 16)
         )
 
-        self.cal_1 = CalPt(0, 7.0, 23.)
-        self.cal_2 = CalPt(0.17, 4.0, 23.)
-        self.cal_3 = None
+        # Load cal data from the database.
+        self.sensor.calibrate_all(
+            CalPt(
+                self.get_custom_option("cal1_v_internal")
+                self.get_custom_option("cal1_ph_internal")
+                self.get_custom_option("cal1_t_internal")
+            ),
+            CalPt(
+                self.get_custom_option("cal2_v_internal")
+                self.get_custom_option("cal2_ph_internal")
+                self.get_custom_option("cal2_t_internal")
+            ),
+            CalPt(
+                self.get_custom_option("cal3_v_internal")
+                self.get_custom_option("cal3_ph_internal")
+                self.get_custom_option("cal3_t_internal")
+            ),
+        )
 
     def calibrate(self, cal_slot, args_dict):
         """Calibration helper method"""
@@ -169,18 +247,24 @@ class InputModule(AbstractInput):
                 args_dict['calibration_ph'], type(args_dict['calibration_ph'])))
             return
 
-        pt = CalPt(
-            self.sensor.read_voltage(),
-            args_dict['calibration_ph'],
-            self.sensor.read_temp(), # todo offboard
-        )
+        temp_data =  self.get_temp_data()
 
+        # For this session
+        v, t = self.sensor.calibrate(cal_slot, args_dict['calibration_ph'], temp_data)
+
+        # For future sessions
         if cal_slot == CalSlot.ONE:
-            self.cal_1 = pt
+            self.set_custom_option("cal1_v_internal", args_dict['calibration_ph'])
+            self.set_custom_option("cal1_ph_internal", v)
+            self.set_custom_option("cal1_t_internal", t)
         elif cal_slot == CalSlot.TWO:
-            self.cal_2 = pt
+            self.set_custom_option("cal2_v_internal", args_dict['calibration_ph'])
+            self.set_custom_option("cal2_ph_internal", v)
+            self.set_custom_option("cal2_t_internal", t)
         else:
-            self.cal_3 = pt
+            self.set_custom_option("cal3_v_internal", args_dict['calibration_ph'])
+            self.set_custom_option("cal3_ph_internal", v)
+            self.set_custom_option("cal3_t_internal", t)
 
     def calibrate_slot_1(self, args_dict):
         # """ Auto-calibrate """
@@ -202,21 +286,8 @@ class InputModule(AbstractInput):
         from anyleaf import CalSlot
         self.calibrate(CalSlot.THREE, args_dict)
 
-    def get_measurement(self):
-        """ Gets the measurement """
-        from anyleaf import OnBoard, OffBoard
-        self.return_dict = copy.deepcopy(measurements_dict)
-
-        if not self.sensor:
-            self.logger.error("Input not set up")
-            return
-
-        # Calibrate each time, since calibration values held in this class remain, while
-        # ones held in `this.sensor` are periodically re-initialized.
-        # todo: Still loses all cal data on deactivation.
-        self.sensor.calibrate_all(self.cal_1, self.cal_2, self.cal_3)
-
-        # todo: Test offboard temp compensation.
+    def get_temp_data(self):
+        """Get the temperature, from onboard or off."""
         if self.temperature_comp_meas_measurement_id:
             last_temp_measurement = self.get_last_measurement(
                 self.temperature_comp_meas_device_id,
@@ -227,12 +298,24 @@ class InputModule(AbstractInput):
             if last_temp_measurement:
                 temp_data = OffBoard(last_temp_measurement[1])
             else:
-            temp_data = OnBoard()
+                temp_data = OnBoard()
 
         else:
             temp_data = OnBoard()
+        
+        return temp_data
+
+    def get_measurement(self):
+        """ Gets the measurement """
+        from anyleaf import OnBoard, OffBoard
+        self.return_dict = copy.deepcopy(measurements_dict)
+
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
+        temp_data = self.get_temp_data()
 
         self.value_set(0, self.sensor.read(temp_data))
 
         return self.return_dict
-
