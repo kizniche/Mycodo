@@ -176,7 +176,7 @@ INPUT_INFORMATION = {
         {
             'id': 'cal3_t_internal',
             'type': 'float',
-            'default_value': None.,
+            'default_value': None,
             'name': lazy_gettext('Cal data: temperature (Internal use - don\'t change'),
             'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
@@ -217,19 +217,19 @@ class InputModule(AbstractInput):
         # Load cal data from the database.
         self.sensor.calibrate_all(
             CalPt(
-                self.get_custom_option("cal1_v_internal")
-                self.get_custom_option("cal1_ph_internal")
-                self.get_custom_option("cal1_t_internal")
+                self.get_custom_option("cal1_v_internal"),
+                self.get_custom_option("cal1_ph_internal"),
+                self.get_custom_option("cal1_t_internal"),
             ),
             CalPt(
-                self.get_custom_option("cal2_v_internal")
-                self.get_custom_option("cal2_ph_internal")
-                self.get_custom_option("cal2_t_internal")
+                self.get_custom_option("cal2_v_internal"),
+                self.get_custom_option("cal2_ph_internal"),
+                self.get_custom_option("cal2_t_internal"),
             ),
             CalPt(
-                self.get_custom_option("cal3_v_internal")
-                self.get_custom_option("cal3_ph_internal")
-                self.get_custom_option("cal3_t_internal")
+                self.get_custom_option("cal3_v_internal"),
+                self.get_custom_option("cal3_ph_internal"),
+                self.get_custom_option("cal3_t_internal"),
             ),
         )
 

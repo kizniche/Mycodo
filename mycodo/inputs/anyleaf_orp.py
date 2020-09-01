@@ -114,8 +114,8 @@ class InputModule(AbstractInput):
 
         # Load cal data from the database.
         self.sensor.calibrate_all(CalPtOrp(
-            self.get_custom_option("cal_v_internal")
-            self.get_custom_option("cal_orp_internal")
+            self.get_custom_option("cal_v_internal"),
+            self.get_custom_option("cal_orp_internal"),
         ))
 
     def calibrate(self, args_dict):
