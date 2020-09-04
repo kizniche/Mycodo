@@ -222,7 +222,8 @@ Languages
    `Serbian <#serbian>`__,
    `Spanish <#spanish>`__,
    `Swedish <#swedish>`__,
-   `Chinese <#chinese>`__.
+   `Simple-Chinese <#simple-chinese>`__.
+   `Traditional-Chinese <#traditional-chinese>`__.
 
 By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ``[Gear Icon] -> Configure -> General -> Language``
 
@@ -480,8 +481,8 @@ vissa villkor (modulera reläer, utföra kommandon, meddela via e-post
 etc.) och mer. Frontend är ett webbgränssnitt som möjliggör enkel
 navigering och konfiguration från alla webbläsaraktiverade enheter.
 
-Chinese
-~~~~~~~
+Simple-Chinese
+~~~~~~~~~~~~~~
 
 Mycodo是一个自动监控和调节系统，可在Raspberry Pi上运行（版本为Zero，1,2,3和4）。
 
@@ -489,6 +490,14 @@ Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更�
 
 该系统包括后端（守护进程）和前端（用户界面）。后端从传感器和设备进行测量，然后协调对这些测量的各种响应，包括调制输出（继电器，PWM，无线插座）的能力，通过PID控制的电气设备调节环境条件（稳定调节或转换时间），安排计时器，捕获照片和流视频，在测量满足特定条件时触发操作（调制继电器，执行命令，通过电子邮件通知等）等等。前端是一个Web界面，可以从任何支持浏览器的设备轻松导航和配置。
 
+Traditional-Chinese
+~~~~~~~~~~~~~~~~~~~
+
+Mycodo是一個自動化監測和調節控制系统，可在Raspberry Pi上執行（版本為Zero,1,2,3和4）。
+
+Mycodo最初設計用於種植可食用的蘑菇，已經發展到能夠做更多的事情，包括種植植物，培養微生物，維持蜂蜜養殖環境狀態，孵化動物和雞蛋，維持水質相關生態系统，發酵食品（陳年奶酪）和煙草風乾，烹飪食物（真空低溫烹調法）等等。
+
+該系统包含後端服務(守護行程)和前端網頁介面（使用者介面）。後端服務從感測器和設備端進行監測，之後設計對監測數據的各種狀態控制與觸發行為，包括數位調變輸出（繼電器、PWM、無線插座）的能力，通過PID控制的電氣設備調節環境條件（穩定調節與轉換時間），安排計時器，拍攝照片和串流视频，在監測環境滿足特定條件時觸發動作（開關繼電器，執行指令，通過電子郵件通知等）等等。前端是一個Web-UI畫面，可以從任何支援瀏覽器的設備輕鬆瀏覽和設定。
 
 .. |Build Status| image:: https://travis-ci.org/kizniche/Mycodo.svg?branch=master
    :target: https://travis-ci.org/kizniche/Mycodo
