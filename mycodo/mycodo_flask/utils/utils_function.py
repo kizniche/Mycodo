@@ -352,7 +352,7 @@ def action_mod(form):
                                         'activate_pid',
                                         'deactivate_pid',
                                         'resume_pid',
-                                        'pause_pid'
+                                        'pause_pid',
                                         'activate_timer',
                                         'deactivate_timer',
                                         'clear_total_volume',
