@@ -183,7 +183,7 @@ WIDGET_INFORMATION = {
         {%- if widget_options['enable_channel'] and widget_options['enable_measurement'] -%}
           {{', '}}
         {%- endif -%}
-        {%- if widget_options['enable_measurement'] -%}
+        {%- if widget_options['enable_measurement'] and device_measurements_dict[measurement_id].measurement -%}
           {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
         {%- endif -%}
         {%- if widget_options['enable_channel'] or widget_options['enable_measurement'] -%}
@@ -216,7 +216,7 @@ WIDGET_INFORMATION = {
         {%- if widget_options['enable_channel'] and widget_options['enable_measurement'] -%}
           {{', '}}
         {%- endif -%}
-        {%- if widget_options['enable_measurement'] -%}
+        {%- if widget_options['enable_measurement'] and device_measurements_dict[measurement_id].measurement -%}
           {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
         {%- endif -%}
         {%- if widget_options['enable_channel'] or widget_options['enable_measurement'] -%}
@@ -249,7 +249,7 @@ WIDGET_INFORMATION = {
         {%- if widget_options['enable_channel'] and widget_options['enable_measurement'] -%}
           {{', '}}
         {%- endif -%}
-        {%- if widget_options['enable_measurement'] -%}
+        {%- if widget_options['enable_measurement'] and device_measurements_dict[measurement_id].measurement -%}
           {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
         {%- endif -%}
         {%- if widget_options['enable_channel'] or widget_options['enable_measurement'] -%}
@@ -282,7 +282,7 @@ WIDGET_INFORMATION = {
         {%- if widget_options['enable_channel'] and widget_options['enable_measurement'] -%}
           {{', '}}
         {%- endif -%}
-        {%- if widget_options['enable_measurement'] -%}
+        {%- if widget_options['enable_measurement'] and device_measurements_dict[measurement_id].measurement -%}
           {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
         {%- endif -%}
         {%- if widget_options['enable_channel'] or widget_options['enable_measurement'] -%}

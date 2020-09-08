@@ -7,6 +7,7 @@ This release changes the Output framework to add the ability for a single Output
  - Fix inability to save Python Code Input settings ([#827](https://github.com/kizniche/mycodo/issues/827))
  - Fix Cameras not appearing in Camera Widget ([#828](https://github.com/kizniche/mycodo/issues/828))
  - Fix inability to save Pause PID Function Action ([#836](https://github.com/kizniche/mycodo/issues/836))
+ - Fix error diaplying Measurement or Gauge Widgets with Math controllers using non-default units ([#831](https://github.com/kizniche/mycodo/issues/831))
 
 ### Features
 

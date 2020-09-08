@@ -369,25 +369,31 @@ WIDGET_INFORMATION = {
         {%- for each_input in input if each_input.unique_id == device_id and measurement_id in device_measurements_dict -%}
           {{each_input.name}} (
             {%- if not device_measurements_dict[measurement_id].single_channel -%}
-              {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string + ', '}}
+              {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string}}
             {%- endif -%}
-          {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+            {%- if device_measurements_dict[measurement_id].measurement -%}
+          {{', ' + dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+            {%- endif -%}
         {%- endfor -%}
 
         {%- for each_math in math if each_math.unique_id == device_id and measurement_id in device_measurements_dict -%}
           {{each_math.name}} (
             {%- if not device_measurements_dict[measurement_id].single_channel -%}
-              {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string + ', '}}
+              {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string}}
             {%- endif -%}
-          {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+            {%- if device_measurements_dict[measurement_id].measurement -%}
+          {{', ' + dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+            {%- endif -%}
         {%- endfor -%}
 
         {%- for each_pid in pid if each_pid.unique_id == device_id and measurement_id in device_measurements_dict -%}
           {{each_pid.name}} (
             {%- if not device_measurements_dict[measurement_id].single_channel -%}
-              {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string + ', '}}
+              {{'CH' + (device_measurements_dict[measurement_id].channel|int)|string}}
             {%- endif -%}
-          {{dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+            {%- if device_measurements_dict[measurement_id].measurement -%}
+          {{', ' + dict_measurements[device_measurements_dict[measurement_id].measurement]['name']}}
+            {%- endif -%}
         {%- endfor -%})',
       data: [null],
       dataLabels: {
