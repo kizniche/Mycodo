@@ -68,7 +68,9 @@ def get_installed_dependencies():
                                 'Exception checking python dependency: '
                                 '{dep}'.format(dep=package))
                     elif install_type == 'apt':
-                        cmd = 'dpkg -l {}'.format(package)
+                        start = "dpkg-query -W -f='${Status}'"
+                        end = '2>/dev/null | grep -c "ok installed"'
+                        cmd = "{} {} {}".format(start, package, end)
                         _, _, status = cmd_output(cmd, user='root')
                         if not status and entry not in met_deps:
                             met_deps.append(entry)

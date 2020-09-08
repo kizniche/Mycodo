@@ -2930,8 +2930,8 @@ msgid "Controller ID"
 msgstr "ID del controller"
 
 #: mycodo_flask/forms/forms_function.py:61
-msgid "Then State"
-msgstr "Quindi state"
+msgid "State"
+msgstr "State"
 
 #: mycodo_flask/forms/forms_function.py:63
 msgid "Amount"

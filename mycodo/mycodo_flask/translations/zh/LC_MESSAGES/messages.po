@@ -2855,7 +2855,7 @@ msgid "Controller ID"
 msgstr "控制器ID"
 
 #: mycodo_flask/forms/forms_function.py:61
-msgid "Then State"
+msgid "State"
 msgstr "然后陈述"
 
 #: mycodo_flask/forms/forms_function.py:63

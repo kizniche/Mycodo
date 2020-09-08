@@ -219,7 +219,9 @@ def test_python_execute(code_string):
 
 
 def dpkg_package_exists(package_name):
-    cmd = 'dpkg -l {}'.format(package_name)
+    start = "dpkg-query -W -f='${Status}'"
+    end = '2>/dev/null | grep -c "ok installed"'
+    cmd = "{} {} {}".format(start, package_name, end)
     _, _, stat = cmd_output(cmd)
     if not stat:
         return True

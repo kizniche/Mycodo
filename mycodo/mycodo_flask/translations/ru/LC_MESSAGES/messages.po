@@ -2924,8 +2924,8 @@ msgid "Controller ID"
 msgstr "Идентификатор контроллера"
 
 #: mycodo_flask/forms/forms_function.py:61
-msgid "Then State"
-msgstr "Тогда государство"
+msgid "State"
+msgstr "государство"
 
 #: mycodo_flask/forms/forms_function.py:63
 msgid "Amount"

@@ -58,7 +58,7 @@ class Actions(FlaskForm):
         widget=NumberInput(step='any'))
     do_action_string = StringField(lazy_gettext('Action String'))
     do_unique_id = StringField(lazy_gettext('Controller ID'))
-    do_output_state = StringField(lazy_gettext('Then State'))
+    do_output_state = StringField(lazy_gettext('State'))
     do_output_amount = DecimalField(
         lazy_gettext('Amount'),
         widget=NumberInput(step='any'))
