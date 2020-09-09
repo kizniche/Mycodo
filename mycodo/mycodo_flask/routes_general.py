@@ -2,12 +2,12 @@
 import calendar
 import datetime
 import logging
-import os
 import subprocess
 import time
 from importlib import import_module
 
 import flask_login
+import os
 from dateutil.parser import parse as date_parse
 from flask import Response
 from flask import flash
@@ -53,6 +53,7 @@ from mycodo.utils.image import generate_thermal_image_from_pixels
 from mycodo.utils.influx import influx_time_str_to_milliseconds
 from mycodo.utils.influx import query_string
 from mycodo.utils.system_pi import assure_path_exists
+from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
 
@@ -916,12 +917,24 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
 
-@blueprint.route('/output_mod/<output_id>/<int:channel>/<state>/<output_type>/<float:amount>')
+@blueprint.route('/output_mod/<output_id>/<channel>/<state>/<output_type>/<amount>')
 @flask_login.login_required
 def output_mod(output_id, channel, state, output_type, amount):
     """ Manipulate output (using non-unique ID) """
     if not utils_general.user_has_permission('edit_controllers'):
         return 'Insufficient user permissions to manipulate outputs'
+
+    if is_int(channel):
+        # if an integer was returned
+        output_channel = int(channel)
+    else:
+        # if a channel ID was returned
+        channel_dev = db_retrieve_table(OutputChannel).filter(
+            OutputChannel.unique_id == channel).first()
+        if channel_dev:
+            output_channel = channel_dev.channel
+        else:
+            return "Could not determine channel number from channel ID '{}'".format(channel)
 
     daemon = DaemonControl()
     if (state in ['on', 'off'] and output_type in ['sec', 'pwm', 'vol'] and
@@ -930,8 +943,8 @@ def output_mod(output_id, channel, state, output_type, amount):
             output_id,
             state,
             output_type=output_type,
-            amount=amount,
-            output_channel=channel)
+            amount=float(amount),
+            output_channel=output_channel)
         if out_status[0]:
             return 'ERROR: {}'.format(out_status[1])
         else:
