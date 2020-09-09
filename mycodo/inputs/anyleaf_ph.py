@@ -73,67 +73,67 @@ INPUT_INFORMATION = {
             
         # },
         {
-            'id': 'cal1_v_internal',
+            'id': 'cal1_v',
             'type': 'float',
             'default_value': 0.,
             'name': lazy_gettext('Cal data: V1 (Internal'),
-            'phrase': 'This is for internal use only. Don\'t modify directly.'
+            'phrase': 'Calibration data: Voltage'
         },
         {
-            'id': 'cal1_ph_internal',
+            'id': 'cal1_ph',
             'type': 'float',
             'default_value': 7.,
-            'name': lazy_gettext('Cal data: pH1 (Internal)'),
-            'phrase': 'This is for internal use only. Don\'t modify directly.'
+            'name': lazy_gettext('Cal data: pH1'),
+            'phrase': 'Calibration data: pH'
         },
         {
-            'id': 'cal1_t_internal',
+            'id': 'cal1_t',
             'type': 'float',
             'default_value': 23.,
-            'name': lazy_gettext('Cal data: T1 (Internal)'),
-            'phrase': 'This is for internal use only. Don\'t modify directly.'
+            'name': lazy_gettext('Cal data: T1'),
+            'phrase': 'Calibration data: Temperature'
         },
         {
-            'id': 'cal2_v_internal',
+            'id': 'cal2_v',
             'type': 'float',
-            'default_value': 17.,
-            'name': lazy_gettext('Cal data: V2 (Internal'),
-            'phrase': 'This is for internal use only. Don\'t modify directly.'
+            'default_value': 0.17,
+            'name': lazy_gettext('Cal data: V2'),
+            'phrase': 'Calibration data: Voltage'
         },
         {
-            'id': 'cal2_ph_internal',
+            'id': 'cal2_ph',
             'type': 'float',
             'default_value': 4.,
-            'name': lazy_gettext('Cal data: pH2 (Internal'),
-            'phrase': 'This is for internal use only. Don\'t modify directly.'
+            'name': lazy_gettext('Cal data: pH2'),
+            'phrase': 'Calibration data: pH'
         },
         {
-            'id': 'cal2_t_internal',
+            'id': 'cal2_t',
             'type': 'float',
             'default_value': 23.,
-            'name': lazy_gettext('Cal data: T2 (Internal'),
-            'phrase': 'This is for internal use only. Don\'t modify directly.'
+            'name': lazy_gettext('Cal data: T2'),
+            'phrase': 'Calibration data: Temperature'
         },
                 {
-            'id': 'cal3_v_internal',
+            'id': 'cal3_v',
             'type': 'float',
             'default_value': None,
-            'name': lazy_gettext('Cal data: V3 (Internal'),
-            'phrase': 'This is for internal use only. Don\'t modify directly.'
+            'name': lazy_gettext('Cal data: V3'),
+            'phrase': 'Calibration data: Voltage'
         },
         {
-            'id': 'cal3_ph_internal',
+            'id': 'cal3_ph',
             'type': 'float',
             'default_value': None,
-            'name': lazy_gettext('Cal data: pH3 (Internal'),
-            'phrase': 'This is for internal use only. Don\'t modify directly.'
+            'name': lazy_gettext('Cal data: pH3'),
+            'phrase': 'Calibration data: pH'
         },
         {
-            'id': 'cal3_t_internal',
+            'id': 'cal3_t',
             'type': 'float',
             'default_value': None,
             'name': lazy_gettext('Cal data: T3 (Internal'),
-            'phrase': 'This is for internal use only. Don\'t modify directly.'
+            'phrase': 'Calibration data: Temperature'
         },
     ],
     'custom_actions_message': """Calibrate: Place your probe in a buffer of known pH. Set 
@@ -217,23 +217,71 @@ class InputModule(AbstractInput):
             address=int(str(self.input_dev.i2c_location), 16)
         )
 
+        # `default_value` above doesn't set the default in the database: custom options will initialize to None.
+        if self.get_custom_option("cal1_v"):
+            cal1_v = self.get_custom_option("cal1_v")
+        else:
+            cal1_v = 0.
+        if self.get_custom_option("cal1_ph"):
+            cal1_ph = self.get_custom_option("cal1_ph")
+        else:
+            cal1_ph = 7.
+        if self.get_custom_option("cal1_t"):
+            cal1_t = self.get_custom_option("cal1_t")
+        else:
+            cal1_t = 23.
+
+        if self.get_custom_option("cal2_v"):
+            cal2_v = self.get_custom_option("cal2_v")
+        else:
+            cal2_v = 0.17
+        if self.get_custom_option("cal2_ph"):
+            cal2_ph = self.get_custom_option("cal2_ph")
+        else:
+            cal2_ph = 4.
+        if self.get_custom_option("cal2_t"):
+            cal2_t = self.get_custom_option("cal2_t")
+        else:
+            cal2_t = 23.
+
+        if self.get_custom_option("cal3_v"):
+            cal3_v = self.get_custom_option("cal3_v")
+        else:
+            cal3_v = None
+        if self.get_custom_option("cal3_ph"):
+            cal3_ph = self.get_custom_option("cal3_ph")
+        else:
+            cal3_ph = None
+        if self.get_custom_option("cal3_t"):
+            cal3_t = self.get_custom_option("cal3_t")
+        else:
+            cal3_t = None
+
+       # cal pt 3 may be None to indicate 2-pt calibration.
+        if cal3_v and cal3_ph and cal3_t:
+                cal_pt_3 = CalPt(
+                    cal3_v,
+                    cal3_ph,
+                    cal3_t,
+                )
+        else:
+            cal_pt_3 = None
+
+        cal_pt_3 = None
+
         # Load cal data from the database.
         self.sensor.calibrate_all(
             CalPt(
-                self.get_custom_option("cal1_v_internal"),
-                self.get_custom_option("cal1_ph_internal"),
-                self.get_custom_option("cal1_t_internal"),
+                cal1_v,
+                cal1_ph,
+                cal1_t,
             ),
             CalPt(
-                self.get_custom_option("cal2_v_internal"),
-                self.get_custom_option("cal2_ph_internal"),
-                self.get_custom_option("cal2_t_internal"),
+                cal2_v,
+                cal2_ph,
+                cal2_t,
             ),
-            CalPt(
-                self.get_custom_option("cal3_v_internal"),
-                self.get_custom_option("cal3_ph_internal"),
-                self.get_custom_option("cal3_t_internal"),
-            ),
+            cal_pt_3
         )
 
     def calibrate(self, cal_slot, args_dict):
@@ -255,17 +303,17 @@ class InputModule(AbstractInput):
 
         # For future sessions
         if cal_slot == CalSlot.ONE:
-            self.set_custom_option("cal1_v_internal", args_dict['calibration_ph'])
-            self.set_custom_option("cal1_ph_internal", v)
-            self.set_custom_option("cal1_t_internal", t)
+            self.set_custom_option("cal1_v", v)
+            self.set_custom_option("cal1_ph", args_dict['calibration_ph'])
+            self.set_custom_option("cal1_t", t)
         elif cal_slot == CalSlot.TWO:
-            self.set_custom_option("cal2_v_internal", args_dict['calibration_ph'])
-            self.set_custom_option("cal2_ph_internal", v)
-            self.set_custom_option("cal2_t_internal", t)
+            self.set_custom_option("cal2_v", v)
+            self.set_custom_option("cal2_ph", args_dict['calibration_ph'])
+            self.set_custom_option("cal2_t", t)
         else:
-            self.set_custom_option("cal3_v_internal", args_dict['calibration_ph'])
-            self.set_custom_option("cal3_ph_internal", v)
-            self.set_custom_option("cal3_t_internal", t)
+            self.set_custom_option("cal3_v", v)
+            self.set_custom_option("cal3_ph", args_dict['calibration_ph'])
+            self.set_custom_option("cal3_t", t)
 
     def calibrate_slot_1(self, args_dict):
         # """ Auto-calibrate """
@@ -282,13 +330,15 @@ class InputModule(AbstractInput):
         self.calibrate(CalSlot.TWO, args_dict)
 
     def calibrate_slot_3(self, args_dict):
-        # """ Auto-calibrate """
+        """ Auto-calibrate """
 
         from anyleaf import CalSlot
         self.calibrate(CalSlot.THREE, args_dict)
 
     def get_temp_data(self):
         """Get the temperature, from onboard or off."""
+
+        from anyleaf import OnBoard, OffBoard
         # if self.temperature_comp_meas_measurement_id:
         #     last_temp_measurement = self.get_last_measurement(
         #         self.temperature_comp_meas_device_id,
@@ -311,14 +361,11 @@ class InputModule(AbstractInput):
         from anyleaf import OnBoard, OffBoard
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        self.logger.error("SENSOR: ", self.sensor)
-
         if not self.sensor:
             self.logger.error("Input not set up")
             return
 
         temp_data = self.get_temp_data()
-
         self.value_set(0, self.sensor.read(temp_data))
 
         return self.return_dict

@@ -61,18 +61,18 @@ INPUT_INFORMATION = {
 
     'custom_options': [
         {
-            'id': 'cal_v_internal',
+            'id': 'cal_v',
             'type': 'float',
             'default_value': 0.4,
-            'name': lazy_gettext('Cal data: voltage (Internal'),
-            'phrase': 'This is for internal use only. Don\'t modify directly.'
+            'name': lazy_gettext('Cal data: Voltage'),
+            'phrase': 'Calibration data: voltage'
         },
         {
-            'id': 'cal_orp_internal',
+            'id': 'cal_orp',
             'type': 'float',
             'default_value': 400.,
-            'name': lazy_gettext('Cal data: orp (Internal'),
-            'phrase': 'This is for internal use only. Don\'t modify directly.'
+            'name': lazy_gettext('Cal data: ORP'),
+            'phrase': 'Calibration data: ORP'
         },
     ],
     'custom_actions_message': """Calibrate: Place your probe in a soln of known ORP. Set 
@@ -115,11 +115,22 @@ class InputModule(AbstractInput):
             address=int(str(self.input_dev.i2c_location), 16)
         )
 
+        # `default_value` above doesn't set the default in the database: custom options will initialize to None.
+        if self.get_custom_option("cal_v"):
+            cal_v = self.get_custom_option("cal_v")
+        else:
+            cal_v = 0.4
+        if self.get_custom_option("cal_orp"):
+            cal_orp = self.get_custom_option("cal_orp")
+        else:
+            cal_orp = 400.
+
         # Load cal data from the database.
         self.sensor.calibrate_all(CalPtOrp(
-            self.get_custom_option("cal_v_internal"),
-            self.get_custom_option("cal_orp_internal"),
+            cal_v,
+            cal_orp,
         ))
+        
 
     def calibrate(self, args_dict):
         """ Auto-calibrate """
@@ -133,21 +144,25 @@ class InputModule(AbstractInput):
                 args_dict['calibration_orp'], type(args_dict['calibration_orp'])))
             return
         
-        voltage = self.sensor.calibrate(args_dict['calibration_orp']) # For this session
+        v = self.sensor.calibrate(args_dict['calibration_orp']) # For this session
 
         # For future sessions
-        self.set_custom_option("cal_orp_internal", args_dict['calibration_orp'])
-        self.set_custom_option("cal_v_internal", voltage)
+        self.set_custom_option("cal_orp", args_dict['calibration_orp'])
+        self.set_custom_option("cal_v", v)
 
     def get_measurement(self):
         """ Gets the measurement """
+        from anyleaf import CalPtOrp
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if not self.sensor:
             self.logger.error("Input not set up")
             return
 
+        self.logger.error("PRE")
         self.value_set(0, self.sensor.read())
+
+        self.logger.error("F", self.sensor.read(), self.sensor)
 
         return self.return_dict
 
