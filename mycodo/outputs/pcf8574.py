@@ -231,10 +231,10 @@ class OutputModule(AbstractOutput):
             elif self.options_channels['state_startup'][channel] == 0:
                 dict_states[channel] = bool(not self.options_channels['on_state'][channel])
             else:
-                continue
+                # Default state: Off
+                dict_states[channel] = bool(not self.options_channels['on_state'][channel])
 
-        list_states = self.dict_to_list_states(dict_states)
-        self.sensor.port = list_states
+        self.sensor.port = self.dict_to_list_states(dict_states)
         self.output_states = dict_states
 
         for channel in channels_dict:
@@ -248,12 +248,14 @@ class OutputModule(AbstractOutput):
                       duty_cycle=None,
                       output_channel=None):
         if output_channel is None:
-            self.logger.error("Output channel needs to be specified")
-            return
+            msg = "Output channel needs to be specified"
+            self.logger.error(msg)
+            return msg
 
         if not self.is_setup():
-            self.logger.error("Output not set up")
-            return
+            msg = "Output not set up"
+            self.logger.error(msg)
+            return msg
 
         try:
             dict_states = {}
@@ -264,8 +266,7 @@ class OutputModule(AbstractOutput):
                     elif state == 'off':
                         dict_states[channel] = bool(not self.options_channels['on_state'][channel])
 
-            list_states = self.dict_to_list_states(dict_states)
-            self.sensor.port = list_states
+            self.sensor.port = self.dict_to_list_states(dict_states)
             self.output_states[output_channel] = dict_states[output_channel]
             msg = "success"
         except Exception as e:
@@ -299,8 +300,7 @@ class OutputModule(AbstractOutput):
             elif self.options_channels['state_shutdown'][channel] == 0:
                 dict_states[channel] = bool(not self.options_channels['on_state'][channel])
 
-        list_states = self.dict_to_list_states(dict_states)
-        self.sensor.port = list_states
+        self.sensor.port = self.dict_to_list_states(dict_states)
         self.running = False
 
 
