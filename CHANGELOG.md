@@ -1,3 +1,11 @@
+## 8.8.1 (2020-09-09)
+
+### Bugfixes
+
+ - Fix partially broken upgrade to new output system
+ - Fix GPIO output startup states
+
+
 ## 8.8.0 (2020-09-08)
 
 This release changes the Output framework to add the ability for a single Output to control multiple channels. This was originally based on the PCF8574 8-bit I/O Expander, which allows 8 additional IO pins to be controlled via the I2C bus, but applies to any other output device with more than one channel. As a result of this change, you will need to update any Custom Outputs to follow the new format (see /mycodo/outputs directory).

@@ -188,20 +188,25 @@ class OutputModule(AbstractOutput):
         else:
 
             try:
+                if self.options_channels['state_startup'][0]:
+                    startup_state = self.options_channels['on_state'][0]
+                else:
+                    startup_state = not self.options_channels['on_state'][0]
+
                 self.GPIO.setmode(self.GPIO.BCM)
                 self.GPIO.setwarnings(True)
                 self.GPIO.setup(self.options_channels['pin'][0], self.GPIO.OUT)
-                self.GPIO.output(self.options_channels['pin'][0],
-                                 not self.options_channels['on_state'][0])
+                self.GPIO.output(self.options_channels['pin'][0], startup_state)
                 self.output_setup = True
 
                 if self.options_channels['trigger_functions_startup'][0]:
                     self.check_triggers(self.unique_id, output_channel=0)
 
-                state = 'LOW' if self.options_channels['state_startup'][0] == 0 else 'HIGH'
+                startup = 'ON' if self.options_channels['state_startup'][0] else 'OFF'
+                state = 'HIGH' if self.options_channels['on_state'][0] else 'LOW'
                 self.logger.info(
-                    "Output setup on pin {pin} and turned OFF (OFF={state})".format(
-                        pin=self.options_channels['pin'][0], state=state))
+                    "Output setup on pin {pin} and turned {startup} (ON={state})".format(
+                        pin=self.options_channels['pin'][0], startup=startup, state=state))
             except Exception as except_msg:
                 self.logger.exception(
                     "Output was unable to be setup on pin {pin} with trigger={trigger}: {err}".format(
