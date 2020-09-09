@@ -72,54 +72,6 @@ INPUT_INFORMATION = {
         #     'phrase': lazy_gettext('Select a measurement for temperature compensation. If not selected, uses the onboard sensor.'),
             
         # },
-    ],
-    'custom_actions_message': """Calibrate: Place your probe in a buffer of known pH. Set 
-this in `Calibration buffer pH`, and press `Calibrate, slot _`""",
-    'custom_actions': [
-        {
-            'id': 'calibration_ph',
-            'type': 'float',
-            'default_value': 7.,
-            'name': lazy_gettext('Calibration buffer pH'),
-            'phrase': 'This is the nominal pH of the calibration buffer, usually labelled on the bottle.'
-        },
-        {
-            'id': 'calibrate_slot_1',
-            'type': 'button',
-            'name': lazy_gettext('Calibrate, slot 1')
-        },
-        {
-            'id': 'calibrate_slot_2',
-            'type': 'button',
-            'name': lazy_gettext('Calibrate, slot 2')
-        },
-        {
-            'id': 'calibrate_slot_3',
-            'type': 'button',
-            'name': lazy_gettext('Calibrate, slot 3')
-        },
-        # todo: Including this input will raise an error about `cannot convert string to float`
-        # todo when attempting calibration.
-        # {
-        #     'id': 'temperature_comp_meas',
-        #     'type': 'select_measurement',
-        #     'default_value': '',
-        #     'options_select': [
-        #         'Input',
-        #         'Math'
-        #     ],
-        #     'name': lazy_gettext('Temperature Compensation Measurement'),
-        #     'phrase': lazy_gettext('Select a measurement for temperature compensation')
-        # },
-        # {
-        #     'id': 'max_age',
-        #     'type': 'integer',
-        #     'default_value': 120,
-        #     'required': True,
-        #     'constraints_pass': constraints_pass_positive_value,
-        #     'name': lazy_gettext('Temperature Compensation Max Age'),
-        #     'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use for temperature compensation')
-        # },
         {
             'id': 'cal1_v_internal',
             'type': 'float',
@@ -183,6 +135,55 @@ this in `Calibration buffer pH`, and press `Calibrate, slot _`""",
             'name': lazy_gettext('Cal data: T3 (Internal'),
             'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
+    ],
+    'custom_actions_message': """Calibrate: Place your probe in a buffer of known pH. Set 
+this in `Calibration buffer pH`, and press `Calibrate, slot _`""",
+    'custom_actions': [
+        {
+            'id': 'calibration_ph',
+            'type': 'float',
+            'default_value': 7.,
+            'name': lazy_gettext('Calibration buffer pH'),
+            'phrase': 'This is the nominal pH of the calibration buffer, usually labelled on the bottle.'
+        },
+        {
+            'id': 'calibrate_slot_1',
+            'type': 'button',
+            'name': lazy_gettext('Calibrate, slot 1')
+        },
+        {
+            'id': 'calibrate_slot_2',
+            'type': 'button',
+            'name': lazy_gettext('Calibrate, slot 2')
+        },
+        {
+            'id': 'calibrate_slot_3',
+            'type': 'button',
+            'name': lazy_gettext('Calibrate, slot 3')
+        },
+        # todo: Including this input will raise an error about `cannot convert string to float`
+        # todo when attempting calibration.
+        # {
+        #     'id': 'temperature_comp_meas',
+        #     'type': 'select_measurement',
+        #     'default_value': '',
+        #     'options_select': [
+        #         'Input',
+        #         'Math'
+        #     ],
+        #     'name': lazy_gettext('Temperature Compensation Measurement'),
+        #     'phrase': lazy_gettext('Select a measurement for temperature compensation')
+        # },
+        # {
+        #     'id': 'max_age',
+        #     'type': 'integer',
+        #     'default_value': 120,
+        #     'required': True,
+        #     'constraints_pass': constraints_pass_positive_value,
+        #     'name': lazy_gettext('Temperature Compensation Max Age'),
+        #     'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use for temperature compensation')
+        # },
+
     ]
 }
 

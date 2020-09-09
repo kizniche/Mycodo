@@ -60,6 +60,20 @@ INPUT_INFORMATION = {
     'i2c_address_editable': False,
 
     'custom_options': [
+        {
+            'id': 'cal_v_internal',
+            'type': 'float',
+            'default_value': 0.4,
+            'name': lazy_gettext('Cal data: voltage (Internal'),
+            'phrase': 'This is for internal use only. Don\'t modify directly.'
+        },
+        {
+            'id': 'cal_orp_internal',
+            'type': 'float',
+            'default_value': 400.,
+            'name': lazy_gettext('Cal data: orp (Internal'),
+            'phrase': 'This is for internal use only. Don\'t modify directly.'
+        },
     ],
     'custom_actions_message': """Calibrate: Place your probe in a soln of known ORP. Set 
 this in `Calibration ORP`, and press `Calibrate`""",
@@ -75,20 +89,6 @@ this in `Calibration ORP`, and press `Calibrate`""",
             'id': 'calibrate',
             'type': 'button',
             'name': lazy_gettext('Calibrate'),
-        },
-        {
-            'id': 'cal_v_internal',
-            'type': 'float',
-            'default_value': 0.4,
-            'name': lazy_gettext('Cal data: voltage (Internal'),
-            'phrase': 'This is for internal use only. Don\'t modify directly.'
-        },
-        {
-            'id': 'cal_orp_internal',
-            'type': 'float',
-            'default_value': 400.,
-            'name': lazy_gettext('Cal data: orp (Internal'),
-            'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
     ]
 }
