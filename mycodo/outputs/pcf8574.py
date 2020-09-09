@@ -229,6 +229,10 @@ class OutputModule(AbstractOutput):
             else:
                 continue
 
+        list_states = []
+        for i, _ in enumerate(dict_states):
+            list_states.append(dict_states[i])
+
         self.sensor.port = list_states
         self.output_states = dict_states
         if self.options_channels['trigger_functions_startup'][channel]:
@@ -252,6 +256,10 @@ class OutputModule(AbstractOutput):
                         dict_states[channel] = bool(self.options_channels['on_state'][channel])
                     elif state == 'off':
                         dict_states[channel] = bool(not self.options_channels['on_state'][channel])
+
+            list_states = []
+            for i, _ in enumerate(dict_states):
+                list_states.append(dict_states[i])
 
             self.sensor.port = list_states
             self.output_states[output_channel] = dict_states[output_channel]
