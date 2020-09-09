@@ -216,9 +216,13 @@ class OutputModule(AbstractOutput):
 
         self.setup_on_off_output(OUTPUT_INFORMATION)
 
-        if self.output.i2c_location:
-            self.sensor = PCF8574(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16))
-            self.output_setup = True
+        try:
+            if self.output.i2c_location:
+                self.sensor = PCF8574(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16))
+                self.output_setup = True
+        except:
+            self.logger.exception("Could not set up output")
+            return
 
         dict_states = {}
         for channel in channels_dict:
@@ -245,6 +249,10 @@ class OutputModule(AbstractOutput):
                       output_channel=None):
         if output_channel is None:
             self.logger.error("Output channel needs to be specified")
+            return
+
+        if not self.is_setup():
+            self.logger.error("Output not set up")
             return
 
         try:
