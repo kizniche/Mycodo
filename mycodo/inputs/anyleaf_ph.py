@@ -1,6 +1,6 @@
 # coding=utf-8
-
 import copy
+
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -114,7 +114,7 @@ INPUT_INFORMATION = {
             'name': lazy_gettext('Cal data: T2'),
             'phrase': 'Calibration data: Temperature'
         },
-                {
+        {
             'id': 'cal3_v',
             'type': 'float',
             'default_value': None,
@@ -190,7 +190,6 @@ this in `Calibration buffer pH`, and press `Calibrate, slot _`""",
 
 class InputModule(AbstractInput):
     """A sensor support class that monitors AnyLeaf sensor pH or ORP"""
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -257,13 +256,13 @@ class InputModule(AbstractInput):
         else:
             cal3_t = None
 
-       # cal pt 3 may be None to indicate 2-pt calibration.
+        # cal pt 3 may be None to indicate 2-pt calibration.
         if cal3_v and cal3_ph and cal3_t:
-                cal_pt_3 = CalPt(
-                    cal3_v,
-                    cal3_ph,
-                    cal3_t,
-                )
+            cal_pt_3 = CalPt(
+                cal3_v,
+                cal3_ph,
+                cal3_t,
+            )
         else:
             cal_pt_3 = None
 
@@ -286,7 +285,7 @@ class InputModule(AbstractInput):
 
     def calibrate(self, cal_slot, args_dict):
         """Calibration helper method"""
-        from anyleaf import CalPt, CalSlot
+        from anyleaf import CalSlot
 
         if 'calibration_ph' not in args_dict:
             self.logger.error("Cannot conduct calibration without a buffer pH value")
@@ -296,7 +295,7 @@ class InputModule(AbstractInput):
                 args_dict['calibration_ph'], type(args_dict['calibration_ph'])))
             return
 
-        temp_data =  self.get_temp_data()
+        temp_data = self.get_temp_data()
 
         # For this session
         v, t = self.sensor.calibrate(cal_slot, args_dict['calibration_ph'], temp_data)
@@ -335,10 +334,11 @@ class InputModule(AbstractInput):
         from anyleaf import CalSlot
         self.calibrate(CalSlot.THREE, args_dict)
 
-    def get_temp_data(self):
+    @staticmethod
+    def get_temp_data():
         """Get the temperature, from onboard or off."""
 
-        from anyleaf import OnBoard, OffBoard
+        from anyleaf import OnBoard
         # if self.temperature_comp_meas_measurement_id:
         #     last_temp_measurement = self.get_last_measurement(
         #         self.temperature_comp_meas_device_id,
@@ -358,7 +358,6 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement """
-        from anyleaf import OnBoard, OffBoard
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if not self.sensor:

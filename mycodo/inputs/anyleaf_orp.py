@@ -1,6 +1,6 @@
 # coding=utf-8
-
 import copy
+
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -70,7 +70,7 @@ INPUT_INFORMATION = {
         {
             'id': 'cal_orp',
             'type': 'float',
-            'default_value': 400.,
+            'default_value': 400.0,
             'name': lazy_gettext('Cal data: ORP'),
             'phrase': 'Calibration data: ORP'
         },
@@ -81,7 +81,7 @@ this in `Calibration ORP`, and press `Calibrate`""",
         {
             'id': 'calibration_orp',
             'type': 'float',
-            'default_value': 400.,
+            'default_value': 400.0,
             'name': lazy_gettext('Calibration buffer ORP (mV)'),
             'phrase': 'This is the nominal ORP of the calibration buffer in mV, usually labelled on the bottle.'
         },
@@ -123,19 +123,16 @@ class InputModule(AbstractInput):
         if self.get_custom_option("cal_orp"):
             cal_orp = self.get_custom_option("cal_orp")
         else:
-            cal_orp = 400.
+            cal_orp = 400.0
 
         # Load cal data from the database.
         self.sensor.calibrate_all(CalPtOrp(
             cal_v,
             cal_orp,
         ))
-        
 
     def calibrate(self, args_dict):
         """ Auto-calibrate """
-        from anyleaf import CalPtOrp
-
         if 'calibration_orp' not in args_dict:
             self.logger.error("Cannot conduct calibration without a buffer ORP value")
             return
@@ -144,7 +141,7 @@ class InputModule(AbstractInput):
                 args_dict['calibration_orp'], type(args_dict['calibration_orp'])))
             return
         
-        v = self.sensor.calibrate(args_dict['calibration_orp']) # For this session
+        v = self.sensor.calibrate(args_dict['calibration_orp'])  # For this session
 
         # For future sessions
         self.set_custom_option("cal_orp", args_dict['calibration_orp'])
@@ -152,7 +149,6 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement """
-        from anyleaf import CalPtOrp
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if not self.sensor:
@@ -165,4 +161,3 @@ class InputModule(AbstractInput):
         self.logger.error("F", self.sensor.read(), self.sensor)
 
         return self.return_dict
-
