@@ -229,10 +229,7 @@ class OutputModule(AbstractOutput):
             else:
                 continue
 
-        list_states = []
-        for i, _ in enumerate(dict_states):
-            list_states.append(dict_states[i])
-
+        list_states = self.dict_to_list_states(dict_states)
         self.sensor.port = list_states
         self.output_states = dict_states
 
@@ -259,10 +256,7 @@ class OutputModule(AbstractOutput):
                     elif state == 'off':
                         dict_states[channel] = bool(not self.options_channels['on_state'][channel])
 
-            list_states = []
-            for i, _ in enumerate(dict_states):
-                list_states.append(dict_states[i])
-
+            list_states = self.dict_to_list_states(dict_states)
             self.sensor.port = list_states
             self.output_states[output_channel] = dict_states[output_channel]
             msg = "success"
@@ -281,6 +275,13 @@ class OutputModule(AbstractOutput):
     def is_setup(self):
         return self.output_setup
 
+    @staticmethod
+    def dict_to_list_states(dict_states):
+        list_states = []
+        for i, _ in enumerate(dict_states):
+            list_states.append(dict_states[i])
+        return list_states
+
     def stop_output(self):
         """ Called when Output is stopped """
         dict_states = {}
@@ -290,10 +291,7 @@ class OutputModule(AbstractOutput):
             elif self.options_channels['state_shutdown'][channel] == 0:
                 dict_states[channel] = bool(not self.options_channels['on_state'][channel])
 
-        list_states = []
-        for i, _ in enumerate(dict_states):
-            list_states.append(dict_states[i])
-
+        list_states = self.dict_to_list_states(dict_states)
         self.sensor.port = list_states
         self.running = False
 
