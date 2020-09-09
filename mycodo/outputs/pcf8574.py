@@ -217,6 +217,7 @@ class OutputModule(AbstractOutput):
         self.setup_on_off_output(OUTPUT_INFORMATION)
 
         try:
+            self.logger.debug("I2C: Address: {}, Bus: {}".format(self.output.i2c_location, self.output.i2c_bus))
             if self.output.i2c_location:
                 self.sensor = PCF8574(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16))
                 self.output_setup = True
