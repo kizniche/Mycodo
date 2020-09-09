@@ -70,74 +70,75 @@ INPUT_INFORMATION = {
         #     ],
         #     'name': lazy_gettext('Temperature compensation source. Leave at `Select one` to use the onboard sensor.'),
         #     'phrase': lazy_gettext('Select a measurement for temperature compensation. If not selected, uses the onboard sensor.'),
-            
         # },
         {
             'id': 'cal1_v',
             'type': 'float',
             'default_value': 0.,
-            'name': lazy_gettext('Cal data: V1 (Internal'),
+            'name': lazy_gettext('Cal data: V1 (internal)'),
             'phrase': 'Calibration data: Voltage'
         },
         {
             'id': 'cal1_ph',
             'type': 'float',
             'default_value': 7.,
-            'name': lazy_gettext('Cal data: pH1'),
+            'name': lazy_gettext('Cal data: pH1 (internal)'),
             'phrase': 'Calibration data: pH'
         },
         {
             'id': 'cal1_t',
             'type': 'float',
             'default_value': 23.,
-            'name': lazy_gettext('Cal data: T1'),
+            'name': lazy_gettext('Cal data: T1 (internal)'),
             'phrase': 'Calibration data: Temperature'
         },
         {
             'id': 'cal2_v',
             'type': 'float',
             'default_value': 0.17,
-            'name': lazy_gettext('Cal data: V2'),
+            'name': lazy_gettext('Cal data: V2 (internal)'),
             'phrase': 'Calibration data: Voltage'
         },
         {
             'id': 'cal2_ph',
             'type': 'float',
             'default_value': 4.,
-            'name': lazy_gettext('Cal data: pH2'),
+            'name': lazy_gettext('Cal data: pH2 (internal)'),
             'phrase': 'Calibration data: pH'
         },
         {
             'id': 'cal2_t',
             'type': 'float',
             'default_value': 23.,
-            'name': lazy_gettext('Cal data: T2'),
+            'name': lazy_gettext('Cal data: T2 (internal)'),
             'phrase': 'Calibration data: Temperature'
         },
         {
             'id': 'cal3_v',
             'type': 'float',
             'default_value': None,
-            'name': lazy_gettext('Cal data: V3'),
+            'name': lazy_gettext('Cal data: V3 (internal)'),
             'phrase': 'Calibration data: Voltage'
         },
         {
             'id': 'cal3_ph',
             'type': 'float',
             'default_value': None,
-            'name': lazy_gettext('Cal data: pH3'),
+            'name': lazy_gettext('Cal data: pH3 (internal)'),
             'phrase': 'Calibration data: pH'
         },
         {
             'id': 'cal3_t',
             'type': 'float',
             'default_value': None,
-            'name': lazy_gettext('Cal data: T3 (Internal'),
+            'name': lazy_gettext('Cal data: T3 (internal)'),
             'phrase': 'Calibration data: Temperature'
         },
     ],
-    'custom_actions_message': """Calibrate: Place your probe in a buffer of known pH. Set 
-this in `Calibration buffer pH`, and press `Calibrate, slot _`""",
+    'custom_actions_message': """Calibrate: Place your probe in a solution of known pH. Set 
+the known pH value in the `Calibration buffer pH` field, and press `Calibrate, slot 1`. Repeat with a second buffer,
+and press `Calibrate, slot 2`. Optionally, repeat a third time with `Calibrate, slot 3`. You don't need to change
+ the values under `Custom Options`.""",
     'custom_actions': [
         {
             'id': 'calibration_ph',

@@ -64,19 +64,20 @@ INPUT_INFORMATION = {
             'id': 'cal_v',
             'type': 'float',
             'default_value': 0.4,
-            'name': lazy_gettext('Cal data: Voltage'),
+            'name': lazy_gettext('Cal data: V (internal)'),
             'phrase': 'Calibration data: voltage'
         },
         {
             'id': 'cal_orp',
             'type': 'float',
             'default_value': 400.0,
-            'name': lazy_gettext('Cal data: ORP'),
+            'name': lazy_gettext('Cal data: ORP (internal)'),
             'phrase': 'Calibration data: ORP'
         },
     ],
-    'custom_actions_message': """Calibrate: Place your probe in a soln of known ORP. Set 
-this in `Calibration ORP`, and press `Calibrate`""",
+    'custom_actions_message': """Calibrate: Place your probe in a solution of known ORP. Set 
+the known ORP value in the `Calibration ORP` field, and press `Calibrate`. You don't need to change
+ the values under `Custom Options`.""",
     'custom_actions': [
         {
             'id': 'calibration_orp',
