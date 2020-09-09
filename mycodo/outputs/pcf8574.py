@@ -234,7 +234,7 @@ class OutputModule(AbstractOutput):
                 # Default state: Off
                 dict_states[channel] = bool(not self.options_channels['on_state'][channel])
 
-        self.sensor.port = self.dict_to_list_states(dict_states)
+        self.sensor.port(self.dict_to_list_states(dict_states))
         self.output_states = dict_states
 
         for channel in channels_dict:
@@ -266,7 +266,7 @@ class OutputModule(AbstractOutput):
                     elif state == 'off':
                         dict_states[channel] = bool(not self.options_channels['on_state'][channel])
 
-            self.sensor.port = self.dict_to_list_states(dict_states)
+            self.sensor.port(self.dict_to_list_states(dict_states))
             self.output_states[output_channel] = dict_states[output_channel]
             msg = "success"
         except Exception as e:
@@ -300,7 +300,7 @@ class OutputModule(AbstractOutput):
             elif self.options_channels['state_shutdown'][channel] == 0:
                 dict_states[channel] = bool(not self.options_channels['on_state'][channel])
 
-        self.sensor.port = self.dict_to_list_states(dict_states)
+        self.sensor.port(self.dict_to_list_states(dict_states))
         self.running = False
 
 
