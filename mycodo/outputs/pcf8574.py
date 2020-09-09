@@ -267,6 +267,8 @@ class OutputModule(AbstractOutput):
                         dict_states[channel] = bool(self.options_channels['on_state'][channel])
                     elif state == 'off':
                         dict_states[channel] = bool(not self.options_channels['on_state'][channel])
+                else:
+                    dict_states[channel] = self.output_states[channel]
 
             self.logger.debug("List sent to device: {}".format(self.dict_to_list_states(dict_states)))
             self.sensor.port(self.dict_to_list_states(dict_states))
