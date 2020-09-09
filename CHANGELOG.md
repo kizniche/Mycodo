@@ -1,3 +1,11 @@
+## 8.8.2 (Unreleased)
+
+### Bugfixes
+
+ - Fix inability to switch any output except channel 0 from web interface ([#840](https://github.com/kizniche/mycodo/issues/840))
+ - Minor fixes for PCF8574 Output
+
+
 ## 8.8.1 (2020-09-09)
 
 ### Bugfixes

@@ -916,20 +916,12 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
             return '', 204
 
 
-@blueprint.route('/output_mod/<output_id>/<channel_id>/<state>/<output_type>/<amount>')
+@blueprint.route('/output_mod/<output_id>/<int:channel>/<state>/<output_type>/<float:amount>')
 @flask_login.login_required
-def output_mod(output_id, channel_id, state, output_type, amount):
+def output_mod(output_id, channel, state, output_type, amount):
     """ Manipulate output (using non-unique ID) """
     if not utils_general.user_has_permission('edit_controllers'):
         return 'Insufficient user permissions to manipulate outputs'
-
-    if channel_id == '0':
-        # some parts of pages don't have access to the channel ID and only know there is 1 channel
-        channel = db_retrieve_table(OutputChannel).filter(and_(
-            OutputChannel.output_id == output_id,
-            OutputChannel.channel == 0)).first()
-    else:
-        channel = db_retrieve_table(OutputChannel, unique_id=channel_id)
 
     daemon = DaemonControl()
     if (state in ['on', 'off'] and output_type in ['sec', 'pwm', 'vol'] and
@@ -938,8 +930,8 @@ def output_mod(output_id, channel_id, state, output_type, amount):
             output_id,
             state,
             output_type=output_type,
-            amount=float(amount),
-            output_channel=channel.channel)
+            amount=amount,
+            output_channel=channel)
         if out_status[0]:
             return 'ERROR: {}'.format(out_status[1])
         else:
