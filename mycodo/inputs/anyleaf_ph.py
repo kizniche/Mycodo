@@ -49,6 +49,8 @@ INPUT_INFORMATION = {
     'options_disabled': [],
 
     'dependencies_module': [
+        ('apt', 'python3-numpy', 'python3-numpy'),
+        ('apt', 'python3-scipy', 'python3-scipy'),
         ('pip-pypi', 'anyleaf', 'anyleaf'),
         ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus')
     ],
@@ -58,20 +60,21 @@ INPUT_INFORMATION = {
     'i2c_address_editable': False,
 
     'custom_options': [
-        {
-            'id': 'temp_source',
-            'type': 'select_measurement',
-            'default_value': '',
-            'options_select': [
-                'Input',
-                'Math'
-            ],
-            'name': lazy_gettext('Temperature compensation source. Leave at `Select one` to use the onboard sensor.'),
-            'phrase': lazy_gettext('Select a measurement for temperature compensation. If not selected, uses the onboard sensor.'),
+        # {
+        #     'id': 'temp_source',
+        #     'type': 'select_measurement',
+        #     'default_value': '',
+        #     'options_select': [
+        #         'Input',
+        #         'Math'
+        #     ],
+        #     'name': lazy_gettext('Temperature compensation source. Leave at `Select one` to use the onboard sensor.'),
+        #     'phrase': lazy_gettext('Select a measurement for temperature compensation. If not selected, uses the onboard sensor.'),
             
-        },
+        # },
     ],
-    'custom_actions_message': 'Calibrate: Place your probe in a buffer of ...', # todo
+    'custom_actions_message': """Calibrate: Place your probe in a buffer of known pH. Set 
+this in `Calibration buffer pH`, and press `Calibrate, slot _`""",
     'custom_actions': [
         {
             'id': 'calibration_ph',
@@ -108,76 +111,76 @@ INPUT_INFORMATION = {
         #     'name': lazy_gettext('Temperature Compensation Measurement'),
         #     'phrase': lazy_gettext('Select a measurement for temperature compensation')
         # },
-        {
-            'id': 'max_age',
-            'type': 'integer',
-            'default_value': 120,
-            'required': True,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Temperature Compensation Max Age'),
-            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use for temperature compensation')
-        },
+        # {
+        #     'id': 'max_age',
+        #     'type': 'integer',
+        #     'default_value': 120,
+        #     'required': True,
+        #     'constraints_pass': constraints_pass_positive_value,
+        #     'name': lazy_gettext('Temperature Compensation Max Age'),
+        #     'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use for temperature compensation')
+        # },
         {
             'id': 'cal1_v_internal',
             'type': 'float',
             'default_value': 0.,
-            'name': lazy_gettext('Cal data: voltage (Internal use - don\'t change'),
+            'name': lazy_gettext('Cal data: V1 (Internal'),
             'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
         {
             'id': 'cal1_ph_internal',
             'type': 'float',
             'default_value': 7.,
-            'name': lazy_gettext('Cal data: pH (Internal use - don\'t change'),
+            'name': lazy_gettext('Cal data: pH1 (Internal)'),
             'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
         {
             'id': 'cal1_t_internal',
             'type': 'float',
             'default_value': 23.,
-            'name': lazy_gettext('Cal data: temperature (Internal use - don\'t change'),
+            'name': lazy_gettext('Cal data: T1 (Internal)'),
             'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
         {
             'id': 'cal2_v_internal',
             'type': 'float',
             'default_value': 17.,
-            'name': lazy_gettext('Cal data: voltage (Internal use - don\'t change'),
+            'name': lazy_gettext('Cal data: V2 (Internal'),
             'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
         {
             'id': 'cal2_ph_internal',
             'type': 'float',
             'default_value': 4.,
-            'name': lazy_gettext('Cal data: pH (Internal use - don\'t change'),
+            'name': lazy_gettext('Cal data: pH2 (Internal'),
             'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
         {
             'id': 'cal2_t_internal',
             'type': 'float',
             'default_value': 23.,
-            'name': lazy_gettext('Cal data: temperature (Internal use - don\'t change'),
+            'name': lazy_gettext('Cal data: T2 (Internal'),
             'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
                 {
             'id': 'cal3_v_internal',
             'type': 'float',
             'default_value': None,
-            'name': lazy_gettext('Cal data: voltage (Internal use - don\'t change'),
+            'name': lazy_gettext('Cal data: V3 (Internal'),
             'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
         {
             'id': 'cal3_ph_internal',
             'type': 'float',
             'default_value': None,
-            'name': lazy_gettext('Cal data: pH (Internal use - don\'t change'),
+            'name': lazy_gettext('Cal data: pH3 (Internal'),
             'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
         {
             'id': 'cal3_t_internal',
             'type': 'float',
             'default_value': None,
-            'name': lazy_gettext('Cal data: temperature (Internal use - don\'t change'),
+            'name': lazy_gettext('Cal data: T3 (Internal'),
             'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
     ]
@@ -191,12 +194,11 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
-        self.temperature_comp_meas_device_id = None
-        self.temperature_comp_meas_measurement_id = None
-        self.max_age = None
-        self.cal_1 = None
-        self.cal_2 = None
-        self.cal_3 = None
+
+        # todo: We've temporarily disabled offboard measurements.
+        # self.temperature_comp_meas_device_id = None
+        # self.temperature_comp_meas_measurement_id = None
+        # self.max_age = None
 
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
@@ -235,8 +237,6 @@ class InputModule(AbstractInput):
 
     def calibrate(self, cal_slot, args_dict):
         """Calibration helper method"""
-        self.logger.error("AA")
-
         from anyleaf import CalPt, CalSlot
 
         if 'calibration_ph' not in args_dict:
@@ -288,20 +288,20 @@ class InputModule(AbstractInput):
 
     def get_temp_data(self):
         """Get the temperature, from onboard or off."""
-        if self.temperature_comp_meas_measurement_id:
-            last_temp_measurement = self.get_last_measurement(
-                self.temperature_comp_meas_device_id,
-                self.temperature_comp_meas_measurement_id,
-                max_age=self.max_age
-            )
+        # if self.temperature_comp_meas_measurement_id:
+        #     last_temp_measurement = self.get_last_measurement(
+        #         self.temperature_comp_meas_device_id,
+        #         self.temperature_comp_meas_measurement_id,
+        #         max_age=self.max_age
+        #     )
 
-            if last_temp_measurement:
-                temp_data = OffBoard(last_temp_measurement[1])
-            else:
-                temp_data = OnBoard()
+        #     if last_temp_measurement:
+        #         temp_data = OffBoard(last_temp_measurement[1])
+        #     else:
+        #         temp_data = OnBoard()
 
-        else:
-            temp_data = OnBoard()
+        # else:
+        temp_data = OnBoard()
         
         return temp_data
 
@@ -309,6 +309,8 @@ class InputModule(AbstractInput):
         """ Gets the measurement """
         from anyleaf import OnBoard, OffBoard
         self.return_dict = copy.deepcopy(measurements_dict)
+
+        self.logger.error("SENSOR: ", self.sensor)
 
         if not self.sensor:
             self.logger.error("Input not set up")

@@ -49,6 +49,8 @@ INPUT_INFORMATION = {
     'options_disabled': [],
 
     'dependencies_module': [
+        ('apt', 'python3-numpy', 'python3-numpy'),
+        ('apt', 'python3-scipy', 'python3-scipy'),
         ('pip-pypi', 'anyleaf', 'anyleaf'),
         ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus')
     ],
@@ -59,7 +61,8 @@ INPUT_INFORMATION = {
 
     'custom_options': [
     ],
-    'custom_actions_message': 'Calibrate',
+    'custom_actions_message': """Calibrate: Place your probe in a soln of known ORP. Set 
+this in `Calibration ORP`, and press `Calibrate`""",
     'custom_actions': [
         {
             'id': 'calibration_orp',
@@ -77,14 +80,14 @@ INPUT_INFORMATION = {
             'id': 'cal_v_internal',
             'type': 'float',
             'default_value': 0.4,
-            'name': lazy_gettext('Cal data: voltage (Internal use - don\'t change'),
+            'name': lazy_gettext('Cal data: voltage (Internal'),
             'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
         {
             'id': 'cal_orp_internal',
             'type': 'float',
             'default_value': 400.,
-            'name': lazy_gettext('Cal data: orp (Internal use - don\'t change'),
+            'name': lazy_gettext('Cal data: orp (Internal'),
             'phrase': 'This is for internal use only. Don\'t modify directly.'
         },
     ]
