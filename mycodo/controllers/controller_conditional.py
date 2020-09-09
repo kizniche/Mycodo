@@ -53,7 +53,6 @@ class ConditionalController(AbstractController, threading.Thread):
         super(ConditionalController, self).__init__(ready, unique_id=unique_id, name=__name__)
 
         self.unique_id = unique_id
-        self.sample_rate = None
         self.pause_loop = False
         self.verify_pause_loop = True
         self.is_activated = None

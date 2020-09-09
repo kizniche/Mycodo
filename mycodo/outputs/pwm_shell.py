@@ -78,8 +78,8 @@ OUTPUT_INFORMATION = {
             'type': 'select',
             'default_value': '',
             'options_select': [
-                ('-1', 'Do Nothing'),
-                ('0', 'Off'),
+                (-1, 'Do Nothing'),
+                (0, 'Off'),
                 ('set_duty_cycle', 'User Set Value'),
                 ('last_duty_cycle', 'Last Known Value')
             ],
@@ -99,8 +99,8 @@ OUTPUT_INFORMATION = {
             'type': 'select',
             'default_value': '',
             'options_select': [
-                ('-1', 'Do Nothing'),
-                ('0', 'Off'),
+                (-1, 'Do Nothing'),
+                (0, 'Off'),
                 ('set_duty_cycle', 'User Set Value')
             ],
             'name': lazy_gettext('Shutdown State'),
@@ -165,7 +165,7 @@ class OutputModule(AbstractOutput):
         if self.options_channels['pwm_command'][0]:
             self.output_setup = True
 
-            if self.options_channels['state_startup'][0] == '0':
+            if self.options_channels['state_startup'][0] == 0:
                 self.output_switch('off')
             elif self.options_channels['state_startup'][0] == 'set_duty_cycle':
                 self.output_switch('on', amount=self.options_channels['startup_value'][0])
@@ -244,7 +244,7 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        if self.options_channels['state_shutdown'][0] == '0':
+        if self.options_channels['state_shutdown'][0] == 0:
             self.output_switch('off')
         elif self.options_channels['state_shutdown'][0] == 'set_duty_cycle':
             self.output_switch('on', amount=self.options_channels['shutdown_value'][0])

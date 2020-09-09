@@ -158,6 +158,21 @@ if __name__ == "__main__":
                                 'state_shutdown': each_output.state_shutdown
                             }
 
+                            try:
+                                custom_options['state_startup'] = int(each_output.state_startup)
+                            except:
+                                pass
+
+                            try:
+                                custom_options['state_shutdown'] = int(each_output.state_shutdown)
+                            except:
+                                pass
+
+                            try:
+                                custom_options['on_state'] = int(each_output.on_state)
+                            except:
+                                pass
+
                             # Add any custom options already present
                             if each_output.custom_options and "," in each_output.custom_options:
                                 for each_set in each_output.custom_options.split(";"):
@@ -167,11 +182,6 @@ if __name__ == "__main__":
                                         if key in ['port', 'keepalive']:
                                             value = int(value)
                                         custom_options[key] = value
-
-                            try:
-                                custom_options['on_state'] = int(each_output.on_state)
-                            except:
-                                pass
 
                             if each_output.output_type in ["python",
                                                            "command",

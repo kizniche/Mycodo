@@ -198,7 +198,7 @@ class OutputModule(AbstractOutput):
                 if self.options_channels['trigger_functions_startup'][0]:
                     self.check_triggers(self.unique_id, output_channel=0)
 
-                state = 'LOW' if self.options_channels['state_startup'][0] == '0' else 'HIGH'
+                state = 'LOW' if self.options_channels['state_startup'][0] == 0 else 'HIGH'
                 self.logger.info(
                     "Output setup on pin {pin} and turned OFF (OFF={state})".format(
                         pin=self.options_channels['pin'][0], state=state))
@@ -236,8 +236,8 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        if self.options_channels['state_shutdown'][0] == '1':
+        if self.options_channels['state_shutdown'][0] == 1:
             self.output_switch('on', output_channel=0)
-        elif self.options_channels['state_shutdown'][0] == '0':
+        elif self.options_channels['state_shutdown'][0] == 0:
             self.output_switch('off', output_channel=0)
         self.running = False

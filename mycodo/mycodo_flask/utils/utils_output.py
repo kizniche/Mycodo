@@ -253,19 +253,8 @@ def output_mod(form_output, request_form):
             mod_output.i2c_bus = form_output.i2c_bus.data
         if form_output.baud_rate.data:
             mod_output.baud_rate = form_output.baud_rate.data
-        if form_output.output_mode.data is not None:
-            mod_output.output_mode = form_output.output_mode.data
 
         mod_output.log_level_debug = form_output.log_level_debug.data
-
-        # Wireless options
-        mod_output.protocol = form_output.protocol.data
-        mod_output.pulse_length = form_output.pulse_length.data
-
-        # PWM options
-        mod_output.pwm_hertz = form_output.pwm_hertz.data
-        mod_output.pwm_library = form_output.pwm_library.data
-        mod_output.pwm_invert_signal = form_output.pwm_invert_signal.data
 
         # Parse pre-save custom options for output device and its channels
         if mod_output.custom_options and mod_output.custom_options != "{}":

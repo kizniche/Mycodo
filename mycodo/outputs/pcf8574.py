@@ -221,9 +221,9 @@ class OutputModule(AbstractOutput):
             self.output_setup = True
 
         for channel in channels_dict:
-            if self.options_channels['state_startup'][channel] == '1':
+            if self.options_channels['state_startup'][channel] == 1:
                 self.output_switch('on', output_channel=channel)
-            elif self.options_channels['state_startup'][channel] == '0':
+            elif self.options_channels['state_startup'][channel] == 0:
                 self.output_switch('off', output_channel=channel)
             else:
                 continue
@@ -271,9 +271,9 @@ class OutputModule(AbstractOutput):
     def stop_output(self):
         """ Called when Output is stopped """
         for channel in channels_dict:
-            if self.options_channels['state_shutdown'][channel] == '1':
+            if self.options_channels['state_shutdown'][channel] == 1:
                 self.output_switch('on', output_channel=channel)
-            elif self.options_channels['state_shutdown'][channel] == '0':
+            elif self.options_channels['state_shutdown'][channel] == 0:
                 self.output_switch('off', output_channel=channel)
         self.running = False
 
