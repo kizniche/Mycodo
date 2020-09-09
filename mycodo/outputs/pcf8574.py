@@ -235,8 +235,10 @@ class OutputModule(AbstractOutput):
 
         self.sensor.port = list_states
         self.output_states = dict_states
-        if self.options_channels['trigger_functions_startup'][channel]:
-            self.check_triggers(self.unique_id, output_channel=channel)
+
+        for channel in channels_dict:
+            if self.options_channels['trigger_functions_startup'][channel]:
+                self.check_triggers(self.unique_id, output_channel=channel)
 
     def output_switch(self,
                       state,
