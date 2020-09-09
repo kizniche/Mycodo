@@ -283,12 +283,17 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        list_states = [0] * len(channels_dict)
+        dict_states = {}
         for channel in channels_dict:
             if self.options_channels['state_shutdown'][channel] == 1:
-                list_states[channel] = bool(self.options_channels['on_state'][channel])
+                dict_states[channel] = bool(self.options_channels['on_state'][channel])
             elif self.options_channels['state_shutdown'][channel] == 0:
-                list_states[channel] = bool(not self.options_channels['on_state'][channel])
+                dict_states[channel] = bool(not self.options_channels['on_state'][channel])
+
+        list_states = []
+        for i, _ in enumerate(dict_states):
+            list_states.append(dict_states[i])
+
         self.sensor.port = list_states
         self.running = False
 
