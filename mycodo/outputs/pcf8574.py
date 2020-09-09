@@ -217,7 +217,7 @@ class OutputModule(AbstractOutput):
         self.setup_on_off_output(OUTPUT_INFORMATION)
 
         if self.output.i2c_location:
-            # self.sensor = PCF8574(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16))
+            self.sensor = PCF8574(smbus2, self.output.i2c_bus, int(str(self.output.i2c_location), 16))
             self.output_setup = True
 
         dict_states = {}
@@ -229,7 +229,7 @@ class OutputModule(AbstractOutput):
             else:
                 continue
 
-        # self.sensor.port = list_states
+        self.sensor.port = list_states
         self.output_states = dict_states
         if self.options_channels['trigger_functions_startup'][channel]:
             self.check_triggers(self.unique_id, output_channel=channel)
@@ -253,7 +253,7 @@ class OutputModule(AbstractOutput):
                     elif state == 'off':
                         dict_states[channel] = bool(not self.options_channels['on_state'][channel])
 
-            # self.sensor.port = list_states
+            self.sensor.port = list_states
             self.output_states[output_channel] = dict_states[output_channel]
             msg = "success"
         except Exception as e:
