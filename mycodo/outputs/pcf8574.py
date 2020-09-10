@@ -283,8 +283,6 @@ class OutputModule(AbstractOutput):
         if self.is_setup():
             if output_channel is not None and output_channel in self.output_states:
                 return self.output_states[output_channel] == self.options_channels['on_state'][output_channel]
-            else:
-                return self.output_states
 
     def is_setup(self):
         return self.output_setup
