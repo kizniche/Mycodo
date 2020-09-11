@@ -62,6 +62,7 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
 from mycodo.databases.models import Misc
+from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
@@ -114,13 +115,15 @@ class PIDController(AbstractController, threading.Thread):
         self.setpoint_tracking_id = None
         self.setpoint_tracking_max_age = None
         self.raise_output_id = None
+        self.raise_output_channel_id = None
         self.raise_output_channel = None
-        self.raise_outputraise_output_id_type = None
+        self.raise_output_type = None
         self.raise_min_duration = None
         self.raise_max_duration = None
         self.raise_min_off_duration = None
         self.raise_always_min_pwm = None
         self.lower_output_id = None
+        self.lower_output_channel_id = None
         self.lower_output_channel = None
         self.lower_output_type = None
         self.lower_min_duration = None
@@ -131,7 +134,7 @@ class PIDController(AbstractController, threading.Thread):
         self.start_offset = 0
         self.max_measure_age = None
         self.store_lower_as_negative = None
-        self.timer = None
+        self.timer = 0
 
         # Check if a method is set for this PID
         self.method_type = None
@@ -151,9 +154,11 @@ class PIDController(AbstractController, threading.Thread):
     def run_finally(self):
         # Turn off output used in PID when the controller is deactivated
         if self.raise_output_id and self.PID_Controller.direction in ['raise', 'both']:
-            self.control.output_off(self.raise_output_id, trigger_conditionals=True)
+            self.control.output_off(
+                self.raise_output_id, output_channel=self.raise_output_channel, trigger_conditionals=True)
         if self.lower_output_id and self.PID_Controller.direction in ['lower', 'both']:
-            self.control.output_off(self.lower_output_id, trigger_conditionals=True)
+            self.control.output_off(
+                self.lower_output_id, output_channel=self.lower_output_channel, trigger_conditionals=True)
 
     def initialize_variables(self):
         """Set PID parameters"""
@@ -176,15 +181,23 @@ class PIDController(AbstractController, threading.Thread):
         self.setpoint_tracking_type = pid.setpoint_tracking_type
         self.setpoint_tracking_id = pid.setpoint_tracking_id
         self.setpoint_tracking_max_age = pid.setpoint_tracking_max_age
-        self.raise_output_id = pid.raise_output_id.split(",")[0]
-        self.raise_output_channel = pid.raise_output_id.split(",")[1]
+        if pid.raise_output_id and "," in pid.raise_output_id:
+            self.raise_output_id = pid.raise_output_id.split(",")[0]
+            self.raise_output_channel_id = pid.raise_output_id.split(",")[1]
+            output_channel = db_retrieve_table_daemon(
+                OutputChannel, unique_id=self.raise_output_channel_id)
+            self.raise_output_channel = output_channel.channel
         self.raise_output_type = pid.raise_output_type
         self.raise_min_duration = pid.raise_min_duration
         self.raise_max_duration = pid.raise_max_duration
         self.raise_min_off_duration = pid.raise_min_off_duration
         self.raise_always_min_pwm = pid.raise_always_min_pwm
-        self.lower_output_id = pid.lower_output_id.split(",")[0]
-        self.lower_output_channel = pid.lower_output_id.split(",")[1]
+        if pid.lower_output_id and "," in pid.lower_output_id:
+            self.lower_output_id = pid.lower_output_id.split(",")[0]
+            self.lower_output_channel_id = pid.lower_output_id.split(",")[1]
+            output_channel = db_retrieve_table_daemon(
+                OutputChannel, unique_id=self.lower_output_channel_id)
+            self.lower_output_channel = output_channel.channel
         self.lower_output_type = pid.lower_output_type
         self.lower_min_duration = pid.lower_min_duration
         self.lower_max_duration = pid.lower_max_duration
@@ -739,6 +752,13 @@ class PIDController(AbstractController, threading.Thread):
             return 100.0
         else:
             return float((control_variable / self.period) * 100)
+
+    @staticmethod
+    def return_output_channel(output_channel_id):
+        output_channel = db_retrieve_table_daemon(
+            OutputChannel, unique_id=output_channel_id)
+        if output_channel and output_channel.channel is not None:
+            return output_channel.channel
 
     def write_pid_output_influxdb(self, unit, measurement, channel, value):
         write_pid_out_db = threading.Thread(

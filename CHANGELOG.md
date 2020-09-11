@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+ - Fix PID Controller not operating ([#843](https://github.com/kizniche/mycodo/issues/843))
  - Fix inability to switch any output except channel 0 from web interface ([#840](https://github.com/kizniche/mycodo/issues/840))
  - Minor fixes for PCF8574 Output
 
