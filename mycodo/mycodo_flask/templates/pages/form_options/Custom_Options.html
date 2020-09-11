@@ -183,6 +183,11 @@
       <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[PID {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
+      {% if 'Method' in each_option['options_select'] %}
+        {% for each_method_form in choices_method -%}
+      <option value="{{each_method_form['value']}}"{% if each_method_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_method_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
       {% if 'Trigger' in each_option['options_select'] %}
         {%- for each_dev in trigger -%}
       <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[Trigger {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>

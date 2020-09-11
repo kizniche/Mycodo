@@ -805,10 +805,18 @@ def choices_pids(pid, dict_units, dict_measurements):
 
 
 def choices_pids_devices(pid):
-    """ populate form multi-select choices from Output entries """
+    """ populate form multi-select choices from PID device entries """
     choices = []
     for each_pid in pid:
         choices = form_pid_choices_devices(choices, each_pid)
+    return choices
+
+
+def choices_methods(method):
+    """ populate form multi-select choices from Method entries """
+    choices = []
+    for each_method in method:
+        choices = form_method_choices(choices, each_method)
     return choices
 
 
@@ -1164,6 +1172,15 @@ def form_pid_choices_devices(choices, each_pid):
     display = '[PID {id:02d}] {name}'.format(
         id=each_pid.id,
         name=each_pid.name)
+    choices.append({'value': value, 'item': display})
+    return choices
+
+
+def form_method_choices(choices, each_method):
+    value = '{id}'.format(id=each_method.unique_id)
+    display = '[Method {id:02d}] {name}'.format(
+        id=each_method.id,
+        name=each_method.name)
     choices.append({'value': value, 'item': display})
     return choices
 

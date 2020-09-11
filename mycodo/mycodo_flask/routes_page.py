@@ -572,6 +572,7 @@ def page_dashboard(dashboard_id):
     input_dev = Input.query.all()
     device_measurements = DeviceMeasurements.query.all()
     math = Math.query.all()
+    method = Method.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
     pid = PID.query.all()
@@ -710,6 +711,7 @@ def page_dashboard(dashboard_id):
         input_dev, dict_units, dict_measurements)
     choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
+    choices_method = utils_general.choices_methods(method)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
     choices_output_channels_measurements = utils_general.choices_outputs_channels_measurements(
@@ -742,6 +744,7 @@ def page_dashboard(dashboard_id):
                            choices_camera=choices_camera,
                            choices_input=choices_input,
                            choices_math=choices_math,
+                           choices_method=choices_method,
                            choices_output=choices_output,
                            choices_output_channels_measurements=choices_output_channels_measurements,
                            choices_output_pwm=choices_output_pwm,
@@ -1483,6 +1486,7 @@ def page_function():
     choices_input_devices = utils_general.choices_input_devices(input_dev)
     choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
+    choices_method = utils_general.choices_methods(method)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
     choices_output_channels = utils_general.choices_outputs_channels(
@@ -1596,6 +1600,7 @@ def page_function():
                            choices_input=choices_input,
                            choices_input_devices=choices_input_devices,
                            choices_math=choices_math,
+                           choices_method=choices_method,
                            choices_output=choices_output,
                            choices_output_channels=choices_output_channels,
                            choices_pid=choices_pid,
@@ -1650,10 +1655,14 @@ def page_function():
 def page_output():
     """ Display output status and config """
     camera = Camera.query.all()
+    input_dev = Input.query.all()
     lcd = LCD.query.all()
+    math = Math.query.all()
+    method = Method.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
     output_channel = OutputChannel.query.all()
+    pid = PID.query.all()
     user = User.query.all()
 
     dict_outputs = parse_output_information()
@@ -1691,6 +1700,23 @@ def page_output():
                 device=form_add_output.output_type.data.split(',')[0]))
         else:
             return redirect(url_for('routes_page.page_output'))
+
+    # Generate all measurement and units used
+    dict_measurements = add_custom_measurements(Measurement.query.all())
+    dict_units = add_custom_units(Unit.query.all())
+
+    choices_input = utils_general.choices_inputs(
+        input_dev, dict_units, dict_measurements)
+    choices_input_devices = utils_general.choices_input_devices(input_dev)
+    choices_math = utils_general.choices_maths(
+        math, dict_units, dict_measurements)
+    choices_method = utils_general.choices_methods(method)
+    choices_output = utils_general.choices_outputs(
+        output, dict_units, dict_measurements)
+    choices_output_channels = utils_general.choices_outputs_channels(
+        output, output_channel, dict_outputs)
+    choices_pid = utils_general.choices_pids(
+        pid, dict_units, dict_measurements)
 
     custom_options_values_outputs = parse_custom_option_values_json(
         output, dict_controller=dict_outputs)
@@ -1732,6 +1758,13 @@ def page_output():
 
     return render_template('pages/output.html',
                            camera=camera,
+                           choices_input=choices_input,
+                           choices_input_devices=choices_input_devices,
+                           choices_math=choices_math,
+                           choices_method=choices_method,
+                           choices_output=choices_output,
+                           choices_output_channels=choices_output_channels,
+                           choices_pid=choices_pid,
                            custom_actions=custom_actions,
                            custom_options_values_outputs=custom_options_values_outputs,
                            custom_options_values_output_channels=custom_options_values_output_channels,
@@ -1758,6 +1791,7 @@ def page_data():
 
     input_dev = Input.query.all()
     math = Math.query.all()
+    method = Method.query.all()
     measurement = Measurement.query.all()
     output = Output.query.all()
     output_channel = OutputChannel.query.all()
@@ -1905,12 +1939,16 @@ def page_data():
         input_dev, dict_units, dict_measurements)
     choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
+    choices_method = utils_general.choices_methods(method)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
     choices_output_channels = utils_general.choices_outputs_channels(
         output, output_channel, dict_outputs)
     choices_output_channels_measurements = utils_general.choices_outputs_channels_measurements(
         output, OutputChannel, dict_outputs, dict_units, dict_measurements)
+    choices_pid = utils_general.choices_pids(
+        pid, dict_units, dict_measurements)
+    choices_pid_devices = utils_general.choices_pids_devices(pid)
     choices_unit = utils_general.choices_units(unit)
     choices_measurement = utils_general.choices_measurements(measurement)
     choices_measurements_units = utils_general.choices_measurements_units(measurement, unit)
@@ -1995,8 +2033,11 @@ def page_data():
                            choices_output=choices_output,
                            choices_measurement=choices_measurement,
                            choices_measurements_units=choices_measurements_units,
+                           choices_method=choices_method,
                            choices_output_channels=choices_output_channels,
                            choices_output_channels_measurements=choices_output_channels_measurements,
+                           choices_pid=choices_pid,
+                           choices_pid_devices=choices_pid_devices,
                            choices_unit=choices_unit,
                            custom_actions=custom_actions,
                            custom_options_values_inputs=custom_options_values_inputs,
