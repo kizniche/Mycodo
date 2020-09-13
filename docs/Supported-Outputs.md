@@ -17,6 +17,15 @@ An output to publish "on" or "off" to an MQTT server.
 
 The specified GPIO pin will be set HIGH (3.3 volts) or LOW (0 volts) when turned on or off, depending on the On State option.
 
+###  On/Off PCF8574 (8 Channels)
+
+- Dependencies: [smbus2](https://pypi.org/project/smbus2)
+- Manufacturer URL: [Link](https://www.ti.com/product/PCF8574)
+- Datasheet URL: [Link](https://www.ti.com/lit/ds/symlink/pcf8574.pdf)
+- Product URL: [Link](https://www.amazon.com/gp/product/B07JGSNWFF)
+
+Controls the 8 channels of the PCF8574.
+
 ###  On/Off Python Code
 
 

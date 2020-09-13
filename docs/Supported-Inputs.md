@@ -147,6 +147,20 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Datasheet URLs: [Link 1](https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL343.pdf), [Link 2](https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL344.pdf), [Link 3](https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL345.pdf), [Link 4](https://www.analog.com/media/en/technical-documentation/data-sheets/ADXL346.pdf)
 - Product URLs: [Link 1](https://www.analog.com/en/products/adxl343.html), [Link 2](https://www.analog.com/en/products/adxl344.html), [Link 3](https://www.analog.com/en/products/adxl345.html), [Link 4](https://www.analog.com/en/products/adxl346.html)
 
+### AnyLeaf: AnyLeaf ORP
+
+- Measurements: Oxidation Reduction Potential
+- Dependencies: [python3-numpy](https://packages.debian.org/buster/python3-numpy), [python3-scipy](https://packages.debian.org/buster/python3-scipy), [anyleaf](https://pypi.org/project/anyleaf), [Adafruit_Extended_Bus](https://pypi.org/project/Adafruit_Extended_Bus)
+- Manufacturer URL: [Link](https://anyleaf.org/ph-module)
+- Datasheet URL: [Link](https://anyleaf.org/static/ph-module-datasheet.pdf)
+
+### AnyLeaf: AnyLeaf pH
+
+- Measurements: Ion concentration
+- Dependencies: [python3-numpy](https://packages.debian.org/buster/python3-numpy), [python3-scipy](https://packages.debian.org/buster/python3-scipy), [anyleaf](https://pypi.org/project/anyleaf), [Adafruit_Extended_Bus](https://pypi.org/project/Adafruit_Extended_Bus)
+- Manufacturer URL: [Link](https://anyleaf.org/ph-module)
+- Datasheet URL: [Link](https://anyleaf.org/static/ph-module-datasheet.pdf)
+
 ### Atlas Scientific: Atlas Color
 
 - Measurements: RGB, CIE, LUX, Proximity
@@ -392,9 +406,9 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 
 - Measurements: Millimeter (Time-of-Flight Distance)
 - Dependencies: [smbus2](https://pypi.org/project/smbus2), [vl53l1x](https://pypi.org/project/vl53l1x)
-- Manufacturer URL: [Link](https://www.st.com/en/imaging-and-photonics-solutions/vl53l0x.html)
-- Datasheet URL: [Link](https://www.st.com/resource/en/datasheet/vl53l0x.pdf)
-- Product URLs: [Link 1](https://www.adafruit.com/product/3317), [Link 2](https://www.pololu.com/product/2490)
+- Manufacturer URL: [Link](https://www.st.com/en/imaging-and-photonics-solutions/vl53l1x.html)
+- Datasheet URL: [Link](https://www.st.com/resource/en/datasheet/vl53l1x.pdf)
+- Product URLs: [Link 1](https://www.pololu.com/product/3415), [Link 2](https://www.sparkfun.com/products/14722)
 
 Notes when setting a custom timing budget: A higher timing budget results in greater measurement accuracy, but also a higher power consumption. The inter measurement period must be >= the timing budget, otherwise it will be double the expected value.
 
