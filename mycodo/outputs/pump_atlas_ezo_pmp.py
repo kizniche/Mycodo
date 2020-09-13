@@ -168,22 +168,21 @@ class OutputModule(AbstractOutput):
         add_measurements_influxdb(self.unique_id, measure_dict)
 
     def dispense_duration(self, seconds):
+        # timer_dispense = time.time() + seconds
         self.currently_dispensing = True
-        timer_dispense = time.time() + seconds
-
         write_cmd = "D,*"
         self.atlas_command.write(write_cmd)
         self.logger.debug("EZO-PMP command: {}".format(write_cmd))
 
-        while time.time() < timer_dispense and self.currently_dispensing:
-            time.sleep(0.1)
-
-        write_cmd = 'X'
-        self.atlas_command.write(write_cmd)
-        self.logger.debug("EZO-PMP command: {}".format(write_cmd))
-        self.currently_dispensing = False
-
-        self.record_dispersal(seconds_to_run=seconds)
+        # while time.time() < timer_dispense and self.currently_dispensing:
+        #     time.sleep(0.1)
+        #
+        # write_cmd = 'X'
+        # self.atlas_command.write(write_cmd)
+        # self.logger.debug("EZO-PMP command: {}".format(write_cmd))
+        # self.currently_dispensing = False
+        #
+        # self.record_dispersal(seconds_to_run=seconds)
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         if state == 'on' and output_type == 'sec' and amount:
