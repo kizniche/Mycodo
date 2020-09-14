@@ -1,3 +1,10 @@
+## 8.8.3 (Unreleased)
+
+### Bugfixes
+
+ - Fix inability to create Angular Gauge Widget with more than 4 stops ([#844](https://github.com/kizniche/mycodo/issues/844))
+
+
 ## 8.8.2 (2020-09-13)
 
 ### Bugfixes

@@ -47,7 +47,7 @@ def execute_at_creation(new_widget, dict_widget):
         '{low},{high},{color}'.format(low=stop, high=stop + stop_size, color=color_list[0]))
     for i in range(custom_options_json['stops'] - 1):
         stop += stop_size
-        if i < len(color_list):
+        if i < len(color_list) - 1:
             color = color_list[i + 1]
         else:
             color = "#DF5353"
