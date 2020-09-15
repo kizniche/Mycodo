@@ -73,8 +73,10 @@ def parse_custom_option_values_csv(controllers, dict_controller=None):
                 option = each_option.split(',')[0]
                 if len(each_option.split(',')) > 2:
                     value = ','.join(each_option.split(',')[1:])
-                else:
+                elif len(each_option.split(',')) > 1:
                     value = each_option.split(',')[1]
+                else:
+                    continue
                 custom_options_values[each_controller.unique_id][option] = value
 
         if dict_controller:
@@ -116,8 +118,11 @@ def parse_custom_option_values_json(
     for each_controller in iter_controller:
         custom_options_values[each_controller.unique_id] = {}
         if each_controller.custom_options:
-            custom_options_values[each_controller.unique_id] = json.loads(
-                each_controller.custom_options)
+            try:
+                custom_options_values[each_controller.unique_id] = json.loads(
+                    each_controller.custom_options)
+            except:
+                custom_options_values[each_controller.unique_id] = {}
 
         if dict_controller:
             # Set default values if option not saved in database entry

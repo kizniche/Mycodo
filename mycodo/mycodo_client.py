@@ -45,7 +45,7 @@ from mycodo.databases.models import Misc
 from mycodo.databases.models import SMTP
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.send_data import send_email as send_email_notification
-from mycodo.utils.widgets import generate_widget_html
+from mycodo.utils.widget_generate_html import generate_widget_html
 
 
 logging.basicConfig(

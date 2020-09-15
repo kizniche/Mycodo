@@ -173,7 +173,7 @@ case "${1:-''}" in
     ;;
     'generate-widget-html')
         printf "\n#### Generating widget HTML files\n"
-        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/mycodo/mycodo_client.py --gen_widget_html
+        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/mycodo/utils/widget_generate_html.py
     ;;
     'initialize')
         printf "\n#### Running initialization\n"

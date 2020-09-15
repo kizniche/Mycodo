@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
-import os
-import re
 import subprocess
 import time
 import traceback
 
 import bcrypt
 import flask_login
+import os
+import re
 import sqlalchemy
 from flask import flash
 from flask import redirect
@@ -57,8 +57,8 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_input import input_deactivate_associated_controllers
-from mycodo.utils.functions import parse_function_information
 from mycodo.utils.database import db_retrieve_table
+from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.outputs import parse_output_information
@@ -68,7 +68,7 @@ from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.utils import test_password
 from mycodo.utils.utils import test_username
-from mycodo.utils.widgets import generate_widget_html
+from mycodo.utils.widget_generate_html import generate_widget_html
 from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)

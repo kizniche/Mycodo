@@ -79,7 +79,7 @@ def execute_at_modification(
     :return:
     :return: tuple of (all_passed, error, mod_input) variables
     """
-    all_passed = True
+    allow_saving = True
     error = []
 
     input_python_code_run, file_run = generate_code(mod_input)
@@ -124,7 +124,7 @@ def execute_at_modification(
             "before putting it into a production environment.", 'success')
         flash(message, 'success')
 
-    return all_passed, error, mod_input
+    return allow_saving, mod_input, custom_options_json_postsave
 
 
 # Measurements

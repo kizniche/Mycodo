@@ -428,7 +428,7 @@ def input_mod(form_mod, request_form):
         if 'execute_at_modification' in dict_inputs[mod_input.device]:
             (allow_saving,
              mod_input,
-             custom_options) = mod_input.device['execute_at_modification'](
+             custom_options) = dict_inputs[mod_input.device]['execute_at_modification'](
                 mod_input, request_form, custom_options_json_presave, json.loads(custom_options_json_postsave))
             custom_options = json.dumps(custom_options)  # Convert from dict to JSON string
             if not allow_saving:
