@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix inability to create Angular Gauge Widget with more than 4 stops ([#844](https://github.com/kizniche/mycodo/issues/844))
+ - Fix issue with Python Code Input ([#846](https://github.com/kizniche/mycodo/issues/846))
 
 
 ## 8.8.2 (2020-09-13)

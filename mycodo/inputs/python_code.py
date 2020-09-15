@@ -16,7 +16,7 @@ from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
 
 
-def generate_code(unique_id, new_input):
+def generate_code(new_input):
     error = []
     pre_statement_run = """import os
 import sys
@@ -49,7 +49,7 @@ class PythonInputRun:
 
     assure_path_exists(PATH_PYTHON_CODE_USER)
     file_run = '{}/input_python_code_{}.py'.format(
-        PATH_PYTHON_CODE_USER, unique_id)
+        PATH_PYTHON_CODE_USER, new_input.unique_id)
     with open(file_run, 'w') as fw:
         fw.write('{}\n'.format(input_python_code_run))
         fw.close()
@@ -61,8 +61,8 @@ class PythonInputRun:
     return input_python_code_run, file_run
 
 
-def execute_at_creation(unique_id, new_input, dict_inputs=None):
-    generate_code(unique_id, new_input)
+def execute_at_creation(new_input, dict_inputs=None):
+    generate_code(new_input)
     return new_input
 
 def execute_at_modification(
@@ -82,7 +82,7 @@ def execute_at_modification(
     all_passed = True
     error = []
 
-    input_python_code_run, file_run = generate_code(mod_input.unique_id, mod_input)
+    input_python_code_run, file_run = generate_code(mod_input)
 
     if len(input_python_code_run.splitlines()) > 999:
         error.append("Too many lines in code. Reduce code to less than 1000 lines.")

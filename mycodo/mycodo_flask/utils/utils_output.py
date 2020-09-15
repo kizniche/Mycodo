@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-import os
 
+import os
 import sqlalchemy
 from flask import current_app
 from flask import flash
@@ -10,6 +10,7 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config_translations import TRANSLATIONS
+from mycodo.databases import set_uuid
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Output
@@ -19,7 +20,6 @@ from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
-from mycodo.mycodo_flask.utils.utils_general import custom_options_return_string
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
@@ -151,6 +151,8 @@ def output_add(form_add, request_form):
                 #
                 # Execute at Creation
                 #
+
+                new_output.unique_id = set_uuid()
 
                 if 'execute_at_creation' in dict_outputs[output_type] and not current_app.config['TESTING']:
                     dict_outputs[output_type]['execute_at_creation'](

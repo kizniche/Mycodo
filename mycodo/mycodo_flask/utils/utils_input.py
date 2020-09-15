@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-import os
 
+import os
 import sqlalchemy
 from flask import current_app
 from flask import flash
@@ -11,6 +11,7 @@ from flask_babel import gettext
 
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config_translations import TRANSLATIONS
+from mycodo.databases import set_uuid
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
@@ -20,7 +21,6 @@ from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
-from mycodo.mycodo_flask.utils.utils_general import custom_options_return_string
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
@@ -230,6 +230,8 @@ def input_add(form_add):
         #
         # Execute at Creation
         #
+
+        new_input.unique_id = set_uuid()
 
         if ('execute_at_creation' in dict_inputs[new_input.device] and
                 not current_app.config['TESTING']):
