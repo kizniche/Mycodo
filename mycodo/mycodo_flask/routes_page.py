@@ -1315,7 +1315,7 @@ def page_function():
                 DisplayOrder.query.first().function)
 
         # Function
-        if form_add_function.func_add.data:
+        elif form_add_function.func_add.data:
             unmet_dependencies = utils_function.function_add(
                 form_add_function)
         elif form_function.save_function.data:

@@ -1,3 +1,10 @@
+## 8.8.4 (Unreleased)
+
+### Bugfixes
+
+ - Increase nginx proxy buffer to accommodate large headers ([#849](https://github.com/kizniche/mycodo/issues/849))
+
+
 ## 8.8.3 (2020-09-15)
 
 ### Bugfixes
