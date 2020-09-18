@@ -324,40 +324,33 @@ def graph_y_axes_async(dict_measurements, ids_measures):
         # Iterate through each set of ID and measurement of the dashboard element
         for each_id_measure in ids_measures:
 
-            if each_device != output and ',' in each_id_measure:
+            if ',' in each_id_measure:
                 measure_id = each_id_measure.split(',')[1]
+                measurement = DeviceMeasurements.query.filter(
+                    DeviceMeasurements.unique_id == measure_id).first()
 
-                for each_measure in device_measurements:
-                    if each_measure.unique_id == measure_id:
-
-                        if each_measure.conversion_id:
-                            conversion = Conversion.query.filter(
-                                Conversion.unique_id == each_measure.conversion_id).first()
-                            if not y_axes:
-                                y_axes = [conversion.convert_unit_to]
-                            elif y_axes and conversion.convert_unit_to not in y_axes:
-                                y_axes.append(conversion.convert_unit_to)
-                        elif (each_measure.rescaled_measurement and
-                                each_measure.rescaled_unit):
-                            if not y_axes:
-                                y_axes = [each_measure.rescaled_unit]
-                            elif y_axes and each_measure.rescaled_unit not in y_axes:
-                                y_axes.append(each_measure.rescaled_unit)
-                        else:
-                            if not y_axes:
-                                y_axes = [each_measure.unit]
-                            elif y_axes and each_measure.unit not in y_axes:
-                                y_axes.append(each_measure.unit)
-
-            elif each_device == output and ',' in each_id_measure:
-                output_id = each_id_measure.split(',')[0]
-
-                for each_output in output:
-                    if each_output.unique_id == output_id:
-                        if not y_axes:
-                            y_axes = [each_output.unit]
-                        elif y_axes and each_output.unit not in y_axes:
-                            y_axes.append(each_output.unit)
+                if not measurement:
+                    pass
+                elif measurement.conversion_id:
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == measurement.conversion_id).first()
+                    if not conversion:
+                        pass
+                    elif not y_axes:
+                        y_axes = [conversion.convert_unit_to]
+                    elif y_axes and conversion.convert_unit_to not in y_axes:
+                        y_axes.append(conversion.convert_unit_to)
+                elif (measurement.rescaled_measurement and
+                        measurement.rescaled_unit):
+                    if not y_axes:
+                        y_axes = [measurement.rescaled_unit]
+                    elif y_axes and measurement.rescaled_unit not in y_axes:
+                        y_axes.append(measurement.rescaled_unit)
+                else:
+                    if not y_axes:
+                        y_axes = [measurement.unit]
+                    elif y_axes and measurement.unit not in y_axes:
+                        y_axes.append(measurement.unit)
 
             if len(each_id_measure.split(',')) > 1 and each_id_measure.split(',')[1].startswith('channel_'):
                 unit = each_id_measure.split(',')[1].split('_')[4]
@@ -369,7 +362,6 @@ def graph_y_axes_async(dict_measurements, ids_measures):
 
             else:
                 if len(each_id_measure.split(',')) == 2:
-
                     unique_id = each_id_measure.split(',')[0]
                     measurement = each_id_measure.split(',')[1]
 
@@ -378,7 +370,6 @@ def graph_y_axes_async(dict_measurements, ids_measures):
 
                         # If the ID saved to the dashboard element matches the table entry ID
                         if each_device_entry.unique_id == unique_id:
-
                             y_axes = check_func(each_device,
                                                 unique_id,
                                                 y_axes,
@@ -390,7 +381,6 @@ def graph_y_axes_async(dict_measurements, ids_measures):
                                                 math)
 
                 elif len(each_id_measure.split(',')) == 3:
-
                     unique_id = each_id_measure.split(',')[0]
                     measurement = each_id_measure.split(',')[1]
                     unit = each_id_measure.split(',')[2]
@@ -400,7 +390,6 @@ def graph_y_axes_async(dict_measurements, ids_measures):
 
                         # If the ID saved to the dashboard element matches the table entry ID
                         if each_device_entry.unique_id == unique_id:
-
                             y_axes = check_func(each_device,
                                                 unique_id,
                                                 y_axes,
