@@ -76,6 +76,10 @@ def get_condition_value(condition_id):
     sql_condition = db_retrieve_table_daemon(ConditionalConditions).filter(
         ConditionalConditions.unique_id == condition_id).first()
 
+    if not sql_condition:
+        logger.error("Condition ID not found")
+        return
+
     # Check Measurement Conditions
     if sql_condition.condition_type in ['measurement',
                                         'measurement_past_average',
@@ -656,6 +660,7 @@ def action_email(logger_actions,
 
 
 def action_activate_controller(cond_action, message):
+    logger.debug("Finding controller with ID {}".format(cond_action.do_unique_id))
     control = DaemonControl()
     (controller_type,
      controller_object,
@@ -681,6 +686,7 @@ def action_activate_controller(cond_action, message):
 
 
 def action_deactivate_controller(cond_action, message):
+    logger.debug("Finding controller with ID {}".format(cond_action.do_unique_id))
     control = DaemonControl()
     (controller_type,
      controller_object,
