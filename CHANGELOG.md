@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Increase nginx proxy buffer to accommodate large headers ([#849](https://github.com/kizniche/mycodo/issues/849))
+ - Fix URL generation for cameras ([#850](https://github.com/kizniche/mycodo/issues/850))
 
 
 ## 8.8.3 (2020-09-15)

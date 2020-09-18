@@ -242,12 +242,18 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         from urllib.request import urlretrieve
 
         if record_type in ['photo', 'timelapse']:
-            # Images can be of different extensions
-            # Find extension, convert to jpg
+            path_tmp = "/tmp/tmpimg.jpg"
+
+            # Get filename and extension, if available
             a = urlparse(settings.url_still)
-            # print(a.path)  # Output: /kyle/09-09-201315-47-571378756077.jpg
-            filename = os.path.basename(a.path)  # Output: 09-09-201315-47-571378756077.jpg
-            path_tmp = "/tmp/{}".format(filename)
+            filename = os.path.basename(a.path)
+            if filename:
+                path_tmp = "/tmp/{}".format(filename)
+
+            try:
+                os.remove(path_tmp)
+            except FileNotFoundError:
+                pass
 
             try:
                 urlretrieve(settings.url_still, path_tmp)
@@ -261,6 +267,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
                 if img_orig is not None and img_orig.shape is not None:
                     if any((settings.hflip, settings.vflip, settings.rotation)):
+                        img_edited = None
                         if settings.hflip and settings.vflip:
                             img_edited = cv2.flip(img_orig, -1)
                         elif settings.hflip:
@@ -271,7 +278,8 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                         if settings.rotation:
                             img_edited = imutils.rotate_bound(img_orig, settings.rotation)
 
-                        cv2.imwrite(path_file, img_edited)
+                        if img_edited:
+                            cv2.imwrite(path_file, img_edited)
                     else:
                         cv2.imwrite(path_file, img_orig)
                 else:
