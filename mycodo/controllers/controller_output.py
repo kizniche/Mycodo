@@ -243,7 +243,7 @@ class OutputController(AbstractController, threading.Thread):
         :param trigger_conditionals: Whether to allow trigger conditionals to act or not
         :type trigger_conditionals: bool
         """
-        self.logger.debug("TEST: {}, {}, {}, {}, {}, {}, {}".format(
+        self.logger.debug("output_on_off({}, {}, {}, {}, {}, {}, {})".format(
             output_id,
             state,
             output_channel,
