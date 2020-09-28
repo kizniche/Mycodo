@@ -1,3 +1,10 @@
+## 8.8.5 (Unreleased)
+
+### Bugfixes
+
+ - Fix Output Widgets not able to control outputs
+
+
 ## 8.8.4 (2020-09-28)
 
 ### Bugfixes

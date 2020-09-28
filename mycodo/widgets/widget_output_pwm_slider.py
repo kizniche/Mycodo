@@ -147,8 +147,8 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_body': """
 {%- set device_id = widget_options['output'].split(",")[0] -%}
-{%- set channel_id = widget_options['output'].split(",")[1] -%}
-{%- set measurement_id = widget_options['output'].split(",")[2] -%}
+{%- set measurement_id = widget_options['output'].split(",")[1] -%}
+{%- set channel_id = widget_options['output'].split(",")[2] -%}
 
 {% set is_pwm = [] -%}
 {% set is_ezo_pump = [] -%}
