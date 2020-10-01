@@ -106,17 +106,17 @@ class InputModule(AbstractInput):
             self.initialize_input()
 
     def initialize_input(self):
-        from ADS1256_definitions import POS_AIN0
-        from ADS1256_definitions import POS_AIN1
-        from ADS1256_definitions import POS_AIN2
-        from ADS1256_definitions import POS_AIN3
-        from ADS1256_definitions import POS_AIN4
-        from ADS1256_definitions import POS_AIN5
-        from ADS1256_definitions import POS_AIN6
-        from ADS1256_definitions import POS_AIN7
-        from ADS1256_definitions import NEG_AINCOM
-        from pipyadc_py3 import ADS1256
         import glob
+        from pipyadc_py3 import ADS1256
+        from ADS1256_definitions import POS_AIN0
+        from pipyadc_py3.ADS1256_definitions import POS_AIN1
+        from pipyadc_py3.ADS1256_definitions import POS_AIN2
+        from pipyadc_py3.ADS1256_definitions import POS_AIN3
+        from pipyadc_py3.ADS1256_definitions import POS_AIN4
+        from pipyadc_py3.ADS1256_definitions import POS_AIN5
+        from pipyadc_py3.ADS1256_definitions import POS_AIN6
+        from pipyadc_py3.ADS1256_definitions import POS_AIN7
+        from pipyadc_py3.ADS1256_definitions import NEG_AINCOM
 
         # Input pin for the potentiometer on the Waveshare Precision ADC board
         POTI = POS_AIN0 | NEG_AINCOM
