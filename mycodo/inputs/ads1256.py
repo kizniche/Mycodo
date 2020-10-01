@@ -108,7 +108,7 @@ class InputModule(AbstractInput):
     def initialize_input(self):
         import glob
         from pipyadc_py3 import ADS1256
-        from ADS1256_definitions import POS_AIN0
+        from pipyadc_py3.ADS1256_definitions import POS_AIN0
         from pipyadc_py3.ADS1256_definitions import POS_AIN1
         from pipyadc_py3.ADS1256_definitions import POS_AIN2
         from pipyadc_py3.ADS1256_definitions import POS_AIN3
