@@ -229,14 +229,14 @@ class AbstractOutput(AbstractBaseController):
         if state == 'on':
 
             # Checks if device is not on and is instructed to turn on
-            if (output_type == 'on_off' and
-                    'output_types' in self.OUTPUT_INFORMATION and
+            if (output_type in ['sec', None] and
+                    self.output_type in self.output_types['on_off'] and
                     not output_is_on):
 
                 # Check if time is greater than off_until to allow an output on.
                 # If the output is supposed to be off for a minimum duration and that amount
                 # of time has not passed, do not allow the output to be turned on.
-                off_until_datetime = self.output_off_until[self.unique_id][output_channel]
+                off_until_datetime = self.output_off_until[output_channel]
                 if off_until_datetime and off_until_datetime > current_time:
                     off_seconds = (off_until_datetime - current_time).total_seconds()
                     msg = "Output {id} CH{ch} ({name}) instructed to turn on, " \

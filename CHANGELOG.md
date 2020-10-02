@@ -1,8 +1,10 @@
-## 8.8.5 (Unreleased)
+## 8.8.5 (2020-10-01)
 
 ### Bugfixes
 
  - Fix Output Widgets not able to control outputs
+ - Fix ADS1256 ([#854](https://github.com/kizniche/mycodo/issues/854))
+ - Fix PID controllers not obeying minimum off duration ([#859](https://github.com/kizniche/mycodo/issues/859))
 
 
 ## 8.8.4 (2020-09-28)
