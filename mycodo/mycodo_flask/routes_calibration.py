@@ -485,7 +485,7 @@ def setup_atlas_ph():
             if selected_input.device == each_input[0]:
                 input_device_name = each_input[1]
 
-    if backend_stage in ['temperature', 'low', 'mid', 'high']:
+    if backend_stage in ['temperature', 'mid', 'low', 'high']:
         time.sleep(2)  # Sleep makes querying sensor more stable
 
         # Determine next ui_stage
