@@ -39,6 +39,7 @@ LANGUAGES = {
     'it': 'Italiano (Italian)',
     'nl': 'Nederlands (Dutch)',
     'nb': 'Norsk (Norwegian)',
+    'pl': 'Polski (Polish)',
     'pt': 'Português (Portuguese)',
     'ru': 'русский язык (Russian)',
     'sr': 'српски (Serbian)',
