@@ -513,14 +513,14 @@ def setup_atlas_ph():
             ui_stage, complete_with_error = dual_commands_to_sensor(
                 selected_input, 'temperature', temp, 'continuous',
                 current_stage='temperature', next_stage=next_stage)
-    elif backend_stage == 'low':
-        ui_stage, complete_with_error = dual_commands_to_sensor(
-            selected_input, 'low', '4.0', 'continuous',
-            current_stage='low', next_stage=next_stage)
     elif backend_stage == 'mid':
         ui_stage, complete_with_error = dual_commands_to_sensor(
             selected_input, 'mid', '7.0', 'continuous',
             current_stage='mid', next_stage=next_stage)
+    elif backend_stage == 'low':
+        ui_stage, complete_with_error = dual_commands_to_sensor(
+            selected_input, 'low', '4.0', 'continuous',
+            current_stage='low', next_stage=next_stage)
     elif backend_stage == 'high':
         ui_stage, complete_with_error = dual_commands_to_sensor(
             selected_input, 'high', '10.0', 'end',

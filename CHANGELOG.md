@@ -1,3 +1,14 @@
+## 8.8.6 (Unreleased)
+
+### Bugfixes
+
+ - Fix order of Atlas Scientific pH sensor calibration points ([#861](https://github.com/kizniche/mycodo/issues/861))
+
+### Features
+
+ - Add Polish translation
+
+
 ## 8.8.5 (2020-10-01)
 
 ### Bugfixes

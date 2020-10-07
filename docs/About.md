@@ -12,10 +12,14 @@ When Inputs and Outputs are combined, PID controllers may be used to create a fe
 
 Triggers can be set to activate events based on specific dates and times, according to durations of time, or the sunrise/sunset at a specific latitude and longitude. Conditionals are used to activates certain events based on the truth of custom user conditional statements (e.g. "Sensor1 > 23 and 10 < Sensor2 < 30").
 
-## Web Interface
+## Web User Interface
 
-The main frontend of Mycodo is a web interface that allows any device with a web browser to view collected data and configure the backend, or the daemon, of the system. The web interface supports an authentication system with user/password credentials, user roles that grant/deny access to parts of the system, and SSL for encrypted browsing.
+The main frontend of Mycodo is a web user interface that allows any device with a web browser to view collected data and configure the backend, or the daemon, of the system. The web interface supports an authentication system with user/password credentials, user roles that grant/deny access to parts of the system, and SSL for encrypted browsing.
 
 An SSL certificate with an expiration of 10 years will be generated and stored in ``~/Mycodo/mycodo/mycodo_flask/ssl_certs/`` during the install process to allow SSL to be used to securely connect to the web interface. If you want to use your own SSL certificates, replace them with your own.
 
 If using the auto-generated certificate from the install, be aware that it will not be verified when visiting the web interface in your browser. You may continually receive a warning message about the security of your site unless you add the certificate to your browser's trusted list.
+
+## Languages
+
+The Mycodo user interface has been translated from English to Dutch, German, French, Italian, Norwegian, Polish, Portuguese, Russian, Serbian, Spanish, Swedish, and Chinese. If the default language for your web browser is one of these languages, it will be automatically selected. Otherwise, you can manually set the language from the Configuration menu.

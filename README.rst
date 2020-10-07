@@ -217,6 +217,7 @@ Languages
    `French <#french>`__,
    `Italian <#italian>`__,
    `Norwegian <#norwegian>`__,
+   `Polish <#polish>`__,
    `Portuguese <#portuguese>`__,
    `Russian <#russian>`__,
    `Serbian <#serbian>`__,
@@ -357,6 +358,15 @@ målingene oppfyller visse forhold (modulere reléer, utføre kommandoer,
 varsle via e-post, etc.) og mer. Frontend er et webgrensesnitt som gjør det
 enkelt å navigere og konfigurere fra hvilken som helst nettleseraktivert
 enhet.
+
+Polish
+~~~~~~
+
+Mycodo to zautomatyzowany system monitorowania i regulacji, który został zbudowany do pracy na Raspberry Pi (wersje Zero, 1, 2 i 3).
+
+Pierwotnie zaprojektowany do uprawy grzybów jadalnych, Mycodo rozwinęło się, aby umożliwić znacznie więcej, w tym uprawę roślin, hodowlę mikroorganizmów, utrzymanie homeostazy pszczół miodnych, inkubację zwierząt i jaj, utrzymanie systemów wodnych, dojrzewanie serów, fermentację żywności i tytoniu, gotowanie jedzenie (sous-vide) i nie tylko.
+
+System składa się z zaplecza (demona) i frontendu (interfejsu użytkownika). Backend przeprowadza pomiary z czujników i urządzeń, a następnie koordynuje zróżnicowany zestaw odpowiedzi na te pomiary, w tym możliwość modulacji wyjść (przekaźniki, PWM, wyjścia bezprzewodowe), regulację warunków środowiskowych za pomocą urządzeń elektrycznych pod kontrolą PID (regulacja stała lub przełączanie czas), ustawianie timerów, robienie zdjęć i strumieniowanie wideo, wyzwalanie działań, gdy pomiary spełniają określone warunki (modulacja przekaźników, wykonywanie poleceń, powiadamianie przez e-mail itp.) i nie tylko. Frontend to interfejs sieciowy, który umożliwia łatwą nawigację i konfigurację z dowolnego urządzenia obsługującego przeglądarkę.
 
 Portuguese
 ~~~~~~~~~~
