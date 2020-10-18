@@ -34,7 +34,7 @@ Figure: `Automated Hydroponic System Build <https://kylegabriel.com/projects/202
 Donate
 ------
 
-I have always made Mycodo free and I don't intend on changing that. However, if you find Mycodo useful and would like to support its continued development, please consider becoming a patron at `patreon.com/mycodo <https://www.patreon.com/mycodo>`__
+I have always made Mycodo free and I don't intend on changing that. However, if you find Mycodo useful and would like to support its continued development, please consider becoming a patron at `Patreon.com/mycodo <https://www.patreon.com/mycodo>`__
 
 Several other one-time donation methods exist at `KyleGabriel.com/donate <https://kylegabriel.com/donate>`__.
 

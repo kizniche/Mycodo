@@ -35,3 +35,9 @@ https://127.0.0.1
 *   [Mycodo API](https://kizniche.github.io/Mycodo/mycodo-api.html)
 *   [Mycodo Forum](https://kylegabriel.com/forum/)
 *   [Mycodo Support](https://play.google.com/store/apps/details?id=com.mycodo.mycododocs) (Android App)
+
+### Donate
+
+Patreon: [Patreon.com/mycodo](https://www.patreon.com/mycodo)
+
+Other methods: [KyleGabriel.com/donate](https://kylegabriel.com/donate)
