@@ -31,6 +31,13 @@ Figure: `Automated Hydroponic System Build <https://kylegabriel.com/projects/202
 .. contents:: Table of Contents
    :depth: 1
 
+Donate
+------
+
+I have always made Mycodo free and I don't intend on changing that. However, if you find Mycodo useful and would like to support its continued development, please consider becoming a patron at `patreon.com/mycodo <https://www.patreon.com/mycodo>`__
+
+Several other one-time donation methods exist at `KyleGabriel.com/donate <https://kylegabriel.com/donate>`__.
+
 Features
 --------
 
@@ -180,11 +187,6 @@ Mycodo supports importing custom Input, Output, and Controller modules. you can 
 If you would like to add to the list of supported Inputs, Outputs, and Controllers, submit a pull request with the module you created or start a `New Issue <https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=>`__.
 
 Additionally, I have another github repository devoted to custom Inputs, Outputs, and Controllers that do not necessarily fit with the built-in set and are not included by default with Mycodo, but can be imported. These can be found at `kizniche/Mycodo-custom <https://github.com/kizniche/Mycodo-custom>`__.
-
-Donate
-------
-
-I have always made Mycodo free and I don't intend on changing that. However, if you would like to make a donation, you can find several options to do so at `KyleGabriel.com/donate <https://kylegabriel.com/donate>`__.
 
 Links
 -----
