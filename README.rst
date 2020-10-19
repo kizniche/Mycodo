@@ -21,22 +21,15 @@ Mycodo is open source software for the Raspberry Pi that couples inputs and outp
 
 For technical support discussion, use the `Mycodo Forum <https://kylegabriel.com/forum>`__
 
-.. image:: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2020/06/Screenshot_2020-04-25-hydra-Default-Dashboard-Mycodo-8-4-0-dashboard_2.png
-   :target: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2020/06/Screenshot_2020-04-25-hydra-Default-Dashboard-Mycodo-8-4-0-dashboard_2.png
-
-Figure: `Automated Hydroponic System Build <https://kylegabriel.com/projects/2020/06/automated-hydroponic-system-build.html>`__
-
---------------
-
-.. contents:: Table of Contents
-   :depth: 1
-
 Donate
 ------
 
 I have always made Mycodo free and I don't intend on changing that. However, if you find Mycodo useful and would like to support its continued development, please consider becoming a patron at `Patreon.com/mycodo <https://www.patreon.com/mycodo>`__
 
 Several other one-time donation methods exist at `KyleGabriel.com/donate <https://kylegabriel.com/donate>`__.
+
+.. contents:: Table of Contents
+   :depth: 1
 
 Features
 --------
@@ -53,6 +46,13 @@ Features
 -  `Energy Usage Measurement <https://kizniche.github.io/Mycodo/Energy-Usage/>`__ for calculating and tracking power consumption and cost over time.
 -  `Upgrade System <https://kizniche.github.io/Mycodo/Upgrade-Backup-Restore/>`__ to easily upgrade the Mycodo system to the latest release to get the newest features or restore to a previously-backed up version.
 -  `Translations <https://kizniche.github.io/Mycodo/Translations/>`__ that enable the web interface to be presented in different `Languages <https://github.com/kizniche/Mycodo#features>`__.
+
+.. image:: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2020/06/Screenshot_2020-04-25-hydra-Default-Dashboard-Mycodo-8-4-0-dashboard_2.png
+   :target: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2020/06/Screenshot_2020-04-25-hydra-Default-Dashboard-Mycodo-8-4-0-dashboard_2.png
+
+Figure: `Automated Hydroponic System Build <https://kylegabriel.com/projects/2020/06/automated-hydroponic-system-build.html>`__
+
+--------------
 
 Uses
 ----
