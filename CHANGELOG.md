@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix missing default values when adding new controllers ([#868](https://github.com/kizniche/mycodo/issues/868))
+ - Fix catching loss of internet connection during upgrade ([#869](https://github.com/kizniche/mycodo/issues/869))
 
 
 ## 8.8.6 (2020-10-07)

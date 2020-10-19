@@ -39,7 +39,13 @@
   <div class="container">
     {% include 'flash_messages.html' %}
 
-    {% if upgrade == 1 %}
+    {% if not is_internet %}
+
+    <div style="padding: 0.5em 0">
+      {{_('No internet connection detected. To upgrade Mycodo automatically, you will need an internet connection. Refresh the page when one is connected.')}}
+    </div>
+
+    {% elif upgrade == 1 %}
 
     <div style="padding: 0.5em 0">
       <p>{{_('Mycodo is currently in the process of an upgrade')}}</p>
@@ -105,12 +111,6 @@
           </div>
         </div>
       </form>
-    </div>
-
-    {% elif not is_internet %}
-
-    <div style="padding: 0.5em 0">
-      {{_('No internet connection detected. To upgrade Mycodo automatically, you will need an internet connection. Refresh the page when one is connected.')}}
     </div>
 
     {% elif not upgrade_available %}

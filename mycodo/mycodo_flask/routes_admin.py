@@ -416,9 +416,6 @@ def admin_upgrade():
     if not internet(host=misc.net_test_ip,
                     port=misc.net_test_port,
                     timeout=misc.net_test_timeout):
-        flash(gettext("Upgrade functionality is disabled because an internet "
-                      "connection was unable to be detected"),
-              "error")
         return render_template('admin/upgrade.html',
                                is_internet=False)
 
