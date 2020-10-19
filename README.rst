@@ -28,6 +28,8 @@ I have always made Mycodo free and I don't intend on changing that. However, if 
 
 Several other one-time donation methods exist at `KyleGabriel.com/donate <https://kylegabriel.com/donate>`__.
 
+--------------
+
 .. contents:: Table of Contents
    :depth: 1
 
