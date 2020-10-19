@@ -4,6 +4,7 @@
 
  - Fix missing default values when adding new controllers ([#868](https://github.com/kizniche/mycodo/issues/868))
  - Fix catching loss of internet connection during upgrade ([#869](https://github.com/kizniche/mycodo/issues/869))
+ - Fix Function Actions Output PWM and Output PWM Ramp not working ([#865](https://github.com/kizniche/mycodo/issues/865))
 
 
 ## 8.8.6 (2020-10-07)

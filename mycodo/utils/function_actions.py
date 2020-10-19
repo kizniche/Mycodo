@@ -387,7 +387,7 @@ def action_output_pwm(cond_action, message):
         target=control.output_on,
         args=(output_id,),
         kwargs={'output_type': 'pwm',
-                'duty_cycle': cond_action.do_output_pwm,
+                'amount': cond_action.do_output_pwm,
                 'output_channel': output_channel.channel})
     output_on.start()
     return message
@@ -431,7 +431,7 @@ def action_output_ramp_pwm(cond_action, message):
         target=control.output_on,
         args=(output_id,),
         kwargs={'output_type': 'pwm',
-                'duty_cycle': start_duty_cycle,
+                'amount': start_duty_cycle,
                 'output_channel': output_channel.channel})
     output_on.start()
 
@@ -456,7 +456,7 @@ def action_output_ramp_pwm(cond_action, message):
                 target=control.output_on,
                 args=(output_id,),
                 kwargs={'output_type': 'pwm',
-                        'duty_cycle': current_duty_cycle,
+                        'amount': current_duty_cycle,
                         'output_channel': output_channel.channel})
             output_on.start()
 
