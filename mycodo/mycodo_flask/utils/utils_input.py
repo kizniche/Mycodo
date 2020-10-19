@@ -224,7 +224,7 @@ def input_add(form_add):
 
         # Generate string to save from custom options
         error, custom_options = custom_options_return_json(
-            error, dict_inputs, device=input_name)
+            error, dict_inputs, device=input_name, use_defaults=True)
         new_input.custom_options = custom_options
 
         #

@@ -189,7 +189,7 @@ def widget_add(form_base, request_form):
 
     # Generate string to save from custom options
     error, custom_options = custom_options_return_json(
-        error, dict_widgets, request_form, device=widget_name)
+        error, dict_widgets, request_form, device=widget_name, use_defaults=True)
     new_widget.custom_options = custom_options
 
     #

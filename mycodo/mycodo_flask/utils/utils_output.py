@@ -145,7 +145,7 @@ def output_add(form_add, request_form):
 
                 # Generate string to save from custom options
                 error, custom_options = custom_options_return_json(
-                    error, dict_outputs, request_form, device=output_type)
+                    error, dict_outputs, request_form, device=output_type, use_defaults=True)
                 new_output.custom_options = custom_options
 
                 #
