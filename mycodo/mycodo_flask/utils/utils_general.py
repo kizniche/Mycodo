@@ -160,7 +160,7 @@ def custom_options_return_json(
         request_form=None,
         mod_dev=None,
         device=None,
-        use_defaults=False):
+        use_defaults=True):
     # Custom options
     dict_options_return = {}
 
@@ -279,7 +279,7 @@ def custom_channel_options_return_json(
         channel,
         mod_dev=None,
         device=None,
-        use_defaults=False):
+        use_defaults=True):
     # Custom channel_options
     dict_options_return = {}
 

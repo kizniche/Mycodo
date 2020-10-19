@@ -1,3 +1,10 @@
+## 8.8.7 (Unreleased)
+
+### Bugfixes
+
+ - Fix missing default values when adding new controllers ([#868](https://github.com/kizniche/mycodo/issues/868))
+
+
 ## 8.8.6 (2020-10-07)
 
 ### Bugfixes
