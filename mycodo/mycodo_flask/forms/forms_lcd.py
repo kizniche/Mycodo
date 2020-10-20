@@ -65,6 +65,10 @@ class LCDMod(FlaskForm):
                                 reset=TRANSLATIONS['reset']['title']),
         validators=[Optional()]
     )
+    pin_cs = IntegerField(
+        "{pin}: CS".format(pin=TRANSLATIONS['pin']['title']),
+        validators=[Optional()]
+    )
     pin_dc = IntegerField(
         "{pin}: DC".format(pin=TRANSLATIONS['pin']['title']),
         validators=[Optional()]

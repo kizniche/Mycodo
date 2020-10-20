@@ -87,8 +87,14 @@
           {{form_lcd_mod.add_display(class_='form-control btn btn-primary btn-sm')}}
         </div>
       </div>
-      <div class="row small-gutters">
 
+    {%  if "message" in lcd_info[each_lcd.lcd_type] and lcd_info[each_lcd.lcd_type]["message"] %}
+      <div class="col-12" style="padding-top: 0.3em">
+        {{lcd_info[each_lcd.lcd_type]["message"]|safe}}
+      </div>
+    {% endif %}
+
+      <div class="row small-gutters">
         <div class="col-auto">
           {{form_lcd_mod.name.label(class_='control-label')}}
           <div>
@@ -97,6 +103,16 @@
         </div>
 
       {% if each_lcd.interface == 'SPI' %}
+
+          {% if each_lcd.lcd_type in ['128x32_pioled_circuit_python',
+                                      '128x64_pioled_circuit_python'] %}
+        <div class="col-auto">
+          {{form_lcd_mod.pin_cs.label(class_='control-label')}}
+          <div>
+            {{form_lcd_mod.pin_cs(class_='form-control', value=each_lcd.pin_cs)}}
+          </div>
+        </div>
+          {% endif %}
 
         <div class="col-auto">
           {{form_lcd_mod.pin_reset.label(class_='control-label')}}
@@ -150,7 +166,10 @@
           </div>
         </div>
 
-      {% elif each_lcd.interface == 'I2C' and each_lcd.lcd_type in ['128x32_pioled', '128x64_pioled'] %}
+      {% elif each_lcd.interface == 'I2C' and each_lcd.lcd_type in ['128x32_pioled',
+                                                                    '128x64_pioled',
+                                                                    '128x32_pioled_circuit_python',
+                                                                    '128x64_pioled_circuit_python'] %}
 
         <div class="col-auto">
           {{form_lcd_mod.location.label(class_='control-label')}}
@@ -172,7 +191,10 @@
 
       {% endif %}
 
-      {% if each_lcd.interface == 'I2C' and each_lcd.lcd_type in ['128x32_pioled', '128x64_pioled'] %}
+      {% if each_lcd.interface == 'I2C' and each_lcd.lcd_type in ['128x32_pioled',
+                                                                  '128x64_pioled',
+                                                                  '128x32_pioled_circuit_python',
+                                                                  '128x64_pioled_circuit_python'] %}
 
         <div class="col-auto">
           {{form_lcd_mod.pin_reset.label(class_='control-label')}}
@@ -294,7 +316,11 @@
 
       </div>
 
-        {%- if each_lcd.lcd_type in ['20x4_generic', '128x32_pioled', '128x64_pioled'] -%}
+        {%- if each_lcd.lcd_type in ['20x4_generic',
+                                     '128x32_pioled',
+                                     '128x64_pioled',
+                                     '128x32_pioled_circuit_python',
+                                     '128x64_pioled_circuit_python'] -%}
 
       <div class="row small-gutters">
         <div class="col-auto">
@@ -380,7 +406,7 @@
 
         {% endif %}
 
-        {%- if each_lcd.lcd_type == '128x64_pioled' -%}
+        {%- if each_lcd.lcd_type in ['128x64_pioled', '128x64_pioled_circuit_python'] -%}
 
       <div class="row small-gutters">
         <div class="col-auto">

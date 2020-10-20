@@ -23,6 +23,7 @@ class LCD(CRUDMixin, db.Model):
 
     # SPI
     pin_reset = db.Column(db.Integer, default=None)
+    pin_cs = db.Column(db.Integer, default=None)
     pin_dc = db.Column(db.Integer, default=None)
     spi_device = db.Column(db.Integer, default=None)
     spi_bus = db.Column(db.Integer, default=None)

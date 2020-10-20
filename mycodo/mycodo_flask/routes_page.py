@@ -1101,7 +1101,7 @@ def page_lcd():
 
         if unmet_dependencies:
             return redirect(url_for('routes_admin.admin_dependencies',
-                                    device=form_lcd_add.lcd_type.data))
+                                    device=form_lcd_add.lcd_type.data.split(",")[0]))
         else:
             return redirect(url_for('routes_page.page_lcd'))
 

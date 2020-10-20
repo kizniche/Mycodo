@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.8.6'
-ALEMBIC_VERSION = '0e150fb8020b'
+ALEMBIC_VERSION = '66e27f22b15a'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -121,8 +121,33 @@ LCD_INFO = {
         'dependencies_module': [],
         'interfaces': ['I2C']
     },
+    '128x32_pioled_circuit_python': {
+        'name': '128x32 OLED (SD1306, CircuitPython)',
+        'message': "This module uses the newer Adafruit CircuitPython library. The older Adafruit_SSD1306 library is deprecated and not recommended to be used.",
+        'dependencies_module': [
+            ('apt', 'libjpeg-dev', 'libjpeg-dev'),
+            ('pip-pypi', 'PIL', 'Pillow'),
+            ('pip-pypi', 'adafruit_framebuf', 'Adafruit-Circuitpython-Framebuff'),
+            ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306'),
+            ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus')
+        ],
+        'interfaces': ['I2C', 'SPI']
+    },
+    '128x64_pioled_circuit_python': {
+        'name': '128x64 OLED (SD1306, CircuitPython)',
+        'message': "This module uses the newer Adafruit CircuitPython library. The older Adafruit_SSD1306 library is deprecated and not recommended to be used.",
+        'dependencies_module': [
+            ('apt', 'libjpeg-dev', 'libjpeg-dev'),
+            ('pip-pypi', 'PIL', 'Pillow'),
+            ('pip-pypi', 'adafruit_framebuf', 'Adafruit-Circuitpython-Framebuff'),
+            ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306'),
+            ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus')
+        ],
+        'interfaces': ['I2C', 'SPI']
+    },
     '128x32_pioled': {
-        'name': '128x32 OLED (SD1306)',
+        'name': '128x32 OLED (SD1306, Adafruit_SSD1306)',
+        'message': "This module uses the older Adafruit_SSD1306 library that is deprecated and is not recommended to be used. It is recommended to use the other module that uses the newer Adafruit CircuitPython library.",
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
             ('pip-pypi', 'PIL', 'Pillow'),
@@ -133,7 +158,8 @@ LCD_INFO = {
         'interfaces': ['I2C', 'SPI']
     },
     '128x64_pioled': {
-        'name': '128x64 OLED (SD1306)',
+        'name': '128x64 OLED (SD1306, Adafruit_SSD1306)',
+        'message': "This module uses the older Adafruit_SSD1306 library that is deprecated and is not recommended to be used. It is recommended to use the other module that uses the newer Adafruit CircuitPython library.",
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
             ('pip-pypi', 'PIL', 'Pillow'),
@@ -150,7 +176,9 @@ LCDS = [
     ('16x2_generic', LCD_INFO['16x2_generic']['name']),
     ('20x4_generic', LCD_INFO['20x4_generic']['name']),
     ('128x32_pioled', LCD_INFO['128x32_pioled']['name']),
-    ('128x64_pioled', LCD_INFO['128x64_pioled']['name'])
+    ('128x64_pioled', LCD_INFO['128x64_pioled']['name']),
+    ('128x32_pioled_circuit_python', LCD_INFO['128x32_pioled_circuit_python']['name']),
+    ('128x64_pioled_circuit_python', LCD_INFO['128x64_pioled_circuit_python']['name'])
 ]
 
 # Math info

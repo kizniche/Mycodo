@@ -41,7 +41,8 @@ def lcd_add(form):
     if current_app.config['TESTING']:
         dep_unmet = False
     else:
-        dep_unmet, _ = return_dependencies(form.lcd_type.data)
+        dep_unmet, _ = return_dependencies(form.lcd_type.data.split(",")[0])
+        logger.error("TEST00: {}".format(dep_unmet))
         if dep_unmet:
             list_unmet_deps = []
             for each_dep in dep_unmet:
@@ -71,21 +72,26 @@ def lcd_add(form):
         new_lcd.interface = lcd_interface
         new_lcd.name = str(LCD_INFO[lcd_id]['name'])
 
-        if lcd_id in ['128x32_pioled', '128x64_pioled'] and lcd_interface == 'I2C':
+        if (lcd_interface == 'I2C' and lcd_id in [
+                '128x32_pioled',
+                '128x64_pioled',
+                '128x32_pioled_circuit_python',
+                '128x64_pioled_circuit_python']):
             new_lcd.location = '0x3c'
             new_lcd.pin_reset = 19
-        elif lcd_id in ['16x2_generic', '20x4_generic'] and lcd_interface == 'I2C':
+        elif lcd_interface == 'I2C' and lcd_id in ['16x2_generic', '20x4_generic']:
             new_lcd.location = '0x27'
         elif lcd_interface == 'SPI':
             new_lcd.pin_reset = 19
             new_lcd.pin_dc = 16
+            new_lcd.pin_cs = 17
             new_lcd.spi_device = 0
             new_lcd.spi_bus = 0
 
-        if lcd_id == '128x32_pioled':
+        if lcd_id in ['28x32_pioled', '128x32_pioled_circuit_python']:
             new_lcd.x_characters = 21
             new_lcd.y_lines = 4
-        elif lcd_id == '128x64_pioled':
+        elif lcd_id in ['128x64_pioled', '128x64_pioled_circuit_python']:
             new_lcd.x_characters = 21
             new_lcd.y_lines = 8
         elif lcd_id == '16x2_generic':
@@ -138,6 +144,8 @@ def lcd_mod(form_mod_lcd):
                     mod_lcd.pin_dc = form_mod_lcd.pin_dc.data
                     mod_lcd.spi_device = form_mod_lcd.spi_device.data
                     mod_lcd.spi_bus = form_mod_lcd.spi_bus.data
+                    if form_mod_lcd.pin_cs.data:
+                        mod_lcd.pin_cs = form_mod_lcd.pin_cs.data
 
                 if form_mod_lcd.pin_reset.data is not None:
                     mod_lcd.pin_reset = form_mod_lcd.pin_reset.data

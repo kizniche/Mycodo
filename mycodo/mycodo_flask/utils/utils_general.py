@@ -1509,8 +1509,11 @@ def return_dependencies(device_type):
         METHOD_INFO,
     ]
 
+    logger.error("TEST03: {}".format(device_type))
+
     for each_section in list_dependencies:
         if device_type in each_section:
+            logger.error("TEST02: {}".format(device_type))
             for each_device, each_dict in each_section[device_type].items():
                 if not each_dict:
                     met_deps = True
@@ -1524,6 +1527,7 @@ def return_dependencies(device_type):
                         if install_type in ['pip-pypi', 'pip-git']:
                             try:
                                 module = importlib.util.find_spec(package)
+                                logger.error("TEST01: {}, {}".format(package, module))
                                 if module is None:
                                     if entry not in unmet_deps:
                                         unmet_deps.append(entry)

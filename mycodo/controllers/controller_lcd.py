@@ -291,6 +291,11 @@ class LCDController(AbstractController, threading.Thread):
             from mycodo.devices.lcd_pioled import LCD_Pioled
             self.lcd_out = LCD_Pioled(lcd_dev)
             self.lcd_init()
+        elif self.lcd_type in ['128x32_pioled_circuit_python',
+                               '128x64_pioled_circuit_python']:
+            from mycodo.devices.lcd_pioled_circuitpython import LCD_Pioled_Circuitpython
+            self.lcd_out = LCD_Pioled_Circuitpython(lcd_dev)
+            self.lcd_init()
         else:
             self.logger.error("Unknown LCD type: {}".format(self.lcd_type))
 
@@ -465,11 +470,12 @@ class LCDController(AbstractController, threading.Thread):
             line_8 = self.lcd_string_line[display_id][8]
 
         if self.lcd_type in ['128x32_pioled',
+                             '128x32_pioled_circuit_python',
                              '16x2_generic',
                              '20x4_generic']:
             self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4)
 
-        elif self.lcd_type == '128x64_pioled':
+        elif self.lcd_type in ['128x64_pioled', '128x64_pioled_circuit_python']:
             self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4,
                                          message_line_5=line_5,
                                          message_line_6=line_6,
