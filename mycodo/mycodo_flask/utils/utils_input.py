@@ -419,9 +419,13 @@ def input_mod(form_mod, request_form):
             mod_input.sht_voltage = form_mod.sht_voltage.data
 
         # Custom options
-        custom_options_json_presave = json.loads(mod_input.custom_options)
+        try:
+            custom_options_json_presave = json.loads(mod_input.custom_options)
+        except:
+            logger.error("Malformed JSON")
+            custom_options_json_presave = {}
 
-        # Generate string to save from custom options
+            # Generate string to save from custom options
         error, custom_options_json_postsave = custom_options_return_json(
             error, dict_inputs, request_form, device=mod_input.device)
 

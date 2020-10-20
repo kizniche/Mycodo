@@ -6,6 +6,10 @@
  - Fix catching loss of internet connection during upgrade ([#869](https://github.com/kizniche/mycodo/issues/869))
  - Fix Function Actions Output PWM and Output PWM Ramp not working ([#865](https://github.com/kizniche/mycodo/issues/865))
  - Fix dependencies not being installed for LCDs
+ - Fix saving when missing/malformed custom_options JSON present ([#866](https://github.com/kizniche/mycodo/issues/866))
+
+### Features
+
  - Add LCDs: 128x32 and 128x64 PiOLED using the Adafruit CircuitPython library ([#842](https://github.com/kizniche/mycodo/issues/842))
 
 

@@ -259,9 +259,10 @@ def output_mod(form_output, request_form):
         mod_output.log_level_debug = form_output.log_level_debug.data
 
         # Parse pre-save custom options for output device and its channels
-        if mod_output.custom_options and mod_output.custom_options != "{}":
+        try:
             custom_options_dict_presave = json.loads(mod_output.custom_options)
-        else:
+        except:
+            logger.error("Malformed JSON")
             custom_options_dict_presave = {}
 
         custom_options_channels_dict_presave = {}

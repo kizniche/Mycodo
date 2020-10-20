@@ -238,7 +238,11 @@ def widget_mod(form_base, request_form):
     mod_widget.enable_drag_handle = form_base.enable_drag_handle.data
     mod_widget.refresh_duration = form_base.refresh_duration.data
 
-    custom_options_json_presave = json.loads(mod_widget.custom_options)
+    try:
+        custom_options_json_presave = json.loads(mod_widget.custom_options)
+    except:
+        logger.error("Malformed JSON")
+        custom_options_json_presave = {}
 
     # Generate string to save from custom options
     error, custom_options_json_postsave = custom_options_return_json(
