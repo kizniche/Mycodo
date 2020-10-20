@@ -425,7 +425,7 @@ def input_mod(form_mod, request_form):
             logger.error("Malformed JSON")
             custom_options_json_presave = {}
 
-            # Generate string to save from custom options
+        # Generate string to save from custom options
         error, custom_options_json_postsave = custom_options_return_json(
             error, dict_inputs, request_form, device=mod_input.device)
 
