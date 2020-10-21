@@ -38,6 +38,6 @@ https://127.0.0.1
 
 ### Donate
 
-Patreon: [Patreon.com/mycodo](https://www.patreon.com/mycodo)
+Become a Sponsor: [github.com/sponsors/kizniche](https://github.com/sponsors/kizniche)
 
 Other methods: [KyleGabriel.com/donate](https://kylegabriel.com/donate)
