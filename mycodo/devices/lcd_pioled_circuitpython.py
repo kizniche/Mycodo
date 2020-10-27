@@ -56,14 +56,12 @@ class LCD_Pioled_Circuitpython:
 
         if not self.disp:
             self.logger.error("Unable to set up display. Check the LCD settings.")
-        else:
-            self.disp.begin()
 
     def lcd_init(self):
         """ Initialize LCD display """
         try:
-            self.disp.clear()
-            self.disp.display()
+            self.disp.fill(0)
+            self.disp.show()
         except Exception as err:
             self.logger.error(
                 "Could not initialize LCD. Check your configuration and wiring. Error: {err}".format(err=err))
@@ -102,7 +100,7 @@ class LCD_Pioled_Circuitpython:
             draw.text((x, top + 54), message_line_8, font=font, fill=255)
 
         self.disp.image(image)
-        self.disp.display()
+        self.disp.show()
         time.sleep(0.1)
 
     def lcd_backlight(self, state):
