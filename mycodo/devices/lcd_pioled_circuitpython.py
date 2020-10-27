@@ -8,7 +8,7 @@ from PIL import ImageDraw
 from PIL import ImageFont
 from adafruit_extended_bus import ExtendedI2C
 
-logger = logging.getLogger("mycodo.device.lcd_pioled")
+logger = logging.getLogger("mycodo.device.lcd_pioled_circuitpython")
 
 
 class LCD_Pioled_Circuitpython:
