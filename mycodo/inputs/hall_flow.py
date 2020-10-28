@@ -130,7 +130,6 @@ class InputModule(AbstractInput):
 
         if flow_rate or flow_rate == 0.0:
             self.value_set(0, flow_rate)
-        
         if self.session_total_volume or self.session_total_volume == 0.0:
             self.value_set(1, self.session_total_volume)
 
