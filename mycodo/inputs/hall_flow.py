@@ -41,7 +41,6 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['GPIO'],
-    
     'custom_options': [
         {
             'id': 'k_value',
