@@ -1,3 +1,14 @@
+## 8.8.8 (2020-10-30)
+
+### Bugfixes
+
+ - Fix PiOLED (CircuitPython) ([#842](https://github.com/kizniche/mycodo/issues/842))
+
+### Miscellaneous
+
+ - Update Polish translations
+
+
 ## 8.8.7 (2020-10-27)
 
 ### Bugfixes
