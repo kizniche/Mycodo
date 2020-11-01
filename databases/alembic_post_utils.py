@@ -8,9 +8,6 @@ import sys
 sys.path.append(os.path.abspath(os.path.join(__file__, "../..")))
 
 from mycodo.config import ALEMBIC_UPGRADE_POST
-from mycodo.config import SQL_DATABASE_MYCODO
-
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 def read_revision_file():

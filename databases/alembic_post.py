@@ -1095,5 +1095,5 @@ if __name__ == "__main__":
                 ALEMBIC_UPGRADE_POST))
             os.remove(ALEMBIC_UPGRADE_POST)
         except Exception:
-            msg = "ERROR: Could not delete {}: {}".format(
-                ALEMBIC_UPGRADE_POST, traceback.format_exc())
+            print("ERROR: Could not delete {}: {}".format(
+                ALEMBIC_UPGRADE_POST, traceback.format_exc()))
