@@ -781,8 +781,8 @@ class DaemonController:
         try:
             return self.controller['Output'].output_states_all()
         except Exception as except_msg:
-            message = "Could not query output state: {e}".format(e=except_msg)
-            self.logger.exception(message)
+            self.logger.exception(
+                "Could not query output state: {e}".format(e=except_msg))
 
     def startup_stats(self):
         """Ensure existence of statistics file and save daemon startup time"""

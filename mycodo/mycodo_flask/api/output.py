@@ -8,14 +8,14 @@ from flask_restx import Resource
 from flask_restx import abort
 from flask_restx import fields
 
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Output
-from mycodo.databases.models.measurement import DeviceMeasurementsSchema
+from mycodo.databases.models import OutputChannel
+from mycodo.databases.models.output import OutputChannelSchema
 from mycodo.databases.models.output import OutputSchema
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.api import api
 from mycodo.mycodo_flask.api import default_responses
-from mycodo.mycodo_flask.api.sql_schema_fields import device_measurement_fields
+from mycodo.mycodo_flask.api.sql_schema_fields import output_channel_fields
 from mycodo.mycodo_flask.api.sql_schema_fields import output_fields
 from mycodo.mycodo_flask.api.utils import get_from_db
 from mycodo.mycodo_flask.api.utils import return_list_of_dictionaries
@@ -26,27 +26,39 @@ logger = logging.getLogger(__name__)
 
 ns_output = api.namespace('outputs', description='Output operations')
 
-output_states_fields = ns_output.model('Output States Fields', {
-    'unique_id': fields.String,
-    'state': fields.String
+MODEL_STATES_STATE = ns_output.model('states', {
+	'*': fields.Wildcard(fields.String(description='on, off, or a duty cycle'),)
+})
+MODEL_STATES_CHAN = ns_output.model('channels', {
+	'*': fields.Wildcard(fields.Nested(
+        MODEL_STATES_STATE,
+        description='Dictionary with channel as key and state data as value.'))
+})
+output_list_fields = ns_output.model('Output Fields List', {
+    'output devices': fields.List(fields.Nested(output_fields)),
+    'output channels': fields.List(fields.Nested(output_channel_fields)),
+    'output states': fields.Nested(
+        MODEL_STATES_CHAN,
+        description='Dictionary with ID as key and channel state data as value.')
 })
 
-output_list_fields = api.model('Output Fields List', {
-    'output settings': fields.List(fields.Nested(output_fields)),
-    'output states': fields.Nested(output_states_fields)
-})
-
-output_unique_id_fields = ns_output.model('Output Status Fields', {
-    'output settings': fields.Nested(output_fields),
-    'output device measurements': fields.List(
-        fields.Nested(device_measurement_fields)),
-    'output state': fields.String
+output_unique_id_fields = ns_output.model('Output Device Fields List', {
+    'output device': fields.Nested(output_fields),
+    'output device channels': fields.List(fields.Nested(output_channel_fields)),
+    'output device channel states': fields.Nested(
+        MODEL_STATES_STATE,
+        description='Dictionary with channel as key and state data as value.')
 })
 
 output_set_fields = ns_output.model('Output Modulation Fields', {
     'state': fields.Boolean(
         description='Set a non-PWM output state to on (True) or off (False).',
         required=False),
+    'channel': fields.Float(
+        description='The output channel to modulate.',
+        required=True,
+        example=0,
+        min=0),
     'duration': fields.Float(
         description='The duration to keep a non-PWM output on, in seconds.',
         required=False,
@@ -90,10 +102,20 @@ class Inputs(Resource):
             abort(403)
         try:
             list_data = get_from_db(OutputSchema, Output)
+            list_channels = get_from_db(OutputChannelSchema, OutputChannel)
             states = get_all_output_states()
+
+            # Change integer channel keys to strings (flask-restx limitation?)
+            new_state_dict = {}
+            for each_id in states:
+                new_state_dict[each_id] = {}
+                for each_channel in states[each_id]:
+                    new_state_dict[each_id][str(each_channel)] = states[each_id][each_channel]
+
             if list_data:
-                return {'output settings': list_data,
-                        'output states': states}, 200
+                return {'output devices': list_data,
+                        'output channels': list_channels,
+                        'output states': new_state_dict}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
@@ -120,17 +142,22 @@ class Outputs(Resource):
         try:
             dict_data = get_from_db(OutputSchema, Output, unique_id=unique_id)
 
-            measure_schema = DeviceMeasurementsSchema()
+            output_channel_schema = OutputChannelSchema()
             list_data = return_list_of_dictionaries(
-                measure_schema.dump(
-                    DeviceMeasurements.query.filter_by(
-                        device_id=unique_id).all(), many=True))
+                output_channel_schema.dump(
+                    OutputChannel.query.filter_by(
+                        output_id=unique_id).all(), many=True))
 
-            control = DaemonControl()
-            output_state = control.output_state(unique_id)
-            return {'output settings': dict_data,
-                    'output device measurements': list_data,
-                    'output state': output_state}, 200
+            states = get_all_output_states()
+
+            # Change integer channel keys to strings (flask-restx limitation?)
+            new_state_dict = {}
+            for each_channel in states[unique_id]:
+                new_state_dict[str(each_channel)] = states[unique_id][each_channel]
+
+            return {'output device': dict_data,
+                    'output device channels': list_data,
+                    'output device channel states': new_state_dict}, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
@@ -147,6 +174,7 @@ class Outputs(Resource):
         control = DaemonControl()
 
         state = None
+        channel = None
         duration = None
         duty_cycle = None
         volume = None
@@ -159,6 +187,16 @@ class Outputs(Resource):
                         state = bool(state)
                     except Exception:
                         abort(422, message='state must represent a bool value')
+
+            if 'channel' in ns_output.payload:
+                channel = ns_output.payload["channel"]
+                if channel is not None:
+                    try:
+                        channel = int(channel)
+                    except Exception:
+                        abort(422, message='channel does not represent a number')
+                else:
+                    channel = 0
 
             if 'duration' in ns_output.payload:
                 duration = ns_output.payload["duration"]
@@ -190,13 +228,18 @@ class Outputs(Resource):
 
         try:
             if state is not None and duration is not None:
-                return_ = control.output_on_off(unique_id, state, output_type='sec', amount=duration)
+                return_ = control.output_on_off(
+                    unique_id, state, output_channel=channel,
+                    output_type='sec', amount=duration)
             elif duty_cycle is not None:
-                return_ = control.output_on(unique_id, output_type='pwm', amount=duty_cycle)
+                return_ = control.output_on(
+                    unique_id, output_channel=channel, output_type='pwm', amount=duty_cycle)
             elif volume is not None:
-                return_ = control.output_on(unique_id, output_type='vol', amount=duty_cycle)
+                return_ = control.output_on(
+                    unique_id, output_channel=channel, output_type='vol', amount=duty_cycle)
             elif state is not None:
-                return_ = control.output_on_off(unique_id, state)
+                return_ = control.output_on_off(
+                    unique_id, state, output_channel=channel)
             else:
                 return {'message': 'Insufficient payload'}, 460
 

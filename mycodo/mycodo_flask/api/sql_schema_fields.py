@@ -113,41 +113,29 @@ measurement_fields = api.model('Measurement Settings Fields', {
     'units': fields.String
 })
 
-output_fields = api.model('Output Settings Fields', {
+output_fields = api.model('Output Device Fields', {
     'id': fields.Integer,
     'unique_id': fields.String,
     'output_type': fields.String,
-    'output_mode': fields.String,
+    'name': fields.String,
+    'log_level_debug': fields.Boolean,
     'interface': fields.String,
     'location': fields.String,
+    'i2c_location': fields.String,
     'i2c_bus': fields.Integer,
+    'ftdi_location': fields.String,
+    'uart_location': fields.String,
     'baud_rate': fields.Integer,
-    'name': fields.String,
-    'measurement': fields.String,
-    'unit': fields.String,
-    'conversion_id': fields.String,
+    'custom_options': fields.String
+})
+
+output_channel_fields = api.model('Output Channel Fields', {
+    'id': fields.Integer,
+    'unique_id': fields.String,
+    'output_id': fields.String,
     'channel': fields.Integer,
-    'pin': fields.Integer,
-    'on_state': fields.Boolean,
-    'amps': fields.Float,
-    'on_until': fields.DateTime,
-    'off_until': fields.DateTime,
-    'last_duration': fields.Float,
-    'on_duration': fields.Boolean,
-    'protocol': fields.Integer,
-    'pulse_length': fields.Integer,
-    'on_command': fields.String,
-    'off_command': fields.String,
-    'pwm_command': fields.String,
-    'trigger_functions_at_start': fields.Boolean,
-    'state_startup': fields.String,
-    'startup_value': fields.Float,
-    'state_shutdown': fields.String,
-    'shutdown_value': fields.Float,
-    'pwm_hertz': fields.Integer,
-    'pwm_library': fields.String,
-    'pwm_invert_signal': fields.Boolean,
-    'flow_rate': fields.Float
+    'name': fields.String,
+    'custom_options': fields.String,
 })
 
 pid_fields = api.model('PID Settings Fields', {

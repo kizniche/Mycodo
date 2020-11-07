@@ -1,3 +1,14 @@
+## 8.8.9 (Unreleased)
+
+### Bugfixes
+
+ - Fix broken Output API get/post calls
+
+### Miscellaneous
+
+ - Add Generic Hall Effect Flow Sensor Input
+
+
 ## 8.8.8 (2020-10-30)
 
 ### Bugfixes
