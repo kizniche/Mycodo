@@ -1491,6 +1491,8 @@ def page_function():
         output, dict_units, dict_measurements)
     choices_output_channels = utils_general.choices_outputs_channels(
         output, output_channel, dict_outputs)
+    choices_output_channels_measurements = utils_general.choices_outputs_channels_measurements(
+        output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
 
@@ -1603,6 +1605,7 @@ def page_function():
                            choices_method=choices_method,
                            choices_output=choices_output,
                            choices_output_channels=choices_output_channels,
+                           choices_output_channels_measurements=choices_output_channels_measurements,
                            choices_pid=choices_pid,
                            conditional_conditions_list=CONDITIONAL_CONDITIONS,
                            conditional=conditional,

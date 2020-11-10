@@ -18,12 +18,11 @@ from collections import OrderedDict
 
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
+from mycodo.databases.models import OutputChannel
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.lockfile import LockFile
-from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import return_measurement_info
-from mycodo.utils.system_pi import str_is_float
 
 
 class AbstractBaseController(object):
@@ -73,6 +72,7 @@ class AbstractBaseController(object):
                 option_value = each_option_default['default_value']
                 device_id = None
                 measurement_id = None
+                channel_id = None
 
                 if not hasattr(custom_controller, 'custom_options'):
                     self.logger.error("custom_controller missing attribute custom_options")
@@ -89,6 +89,11 @@ class AbstractBaseController(object):
                                     len(each_option.split(',')) > 2):
                                 device_id = each_option.split(',')[1]
                                 measurement_id = each_option.split(',')[2]
+                            if (each_option_default['type'] == 'select_measurement_channel' and
+                                    len(each_option.split(',')) > 3):
+                                device_id = each_option.split(',')[1]
+                                measurement_id = each_option.split(',')[2]
+                                channel_id = each_option.split(',')[3]
                             else:
                                 option_value = each_option.split(',')[1]
 
@@ -126,14 +131,28 @@ class AbstractBaseController(object):
                             '{}_measurement_id'.format(each_option_default['id']),
                             measurement_id)
 
+                elif each_option_default['type'] == 'select_measurement_channel':
+                    setattr(self,
+                            '{}_device_id'.format(each_option_default['id']),
+                            device_id)
+                    setattr(self,
+                            '{}_measurement_id'.format(each_option_default['id']),
+                            measurement_id)
+                    setattr(self,
+                            '{}_channel_id'.format(each_option_default['id']),
+                            channel_id)
+
                 elif each_option_default['type'] == 'select_device':
                     setattr(self,
                             '{}_id'.format(each_option_default['id']),
                             str(option_value))
 
+                elif each_option_default['type'] in ['message', 'new_line']:
+                    pass
+
                 else:
                     self.logger.error(
-                        "Unknown custom_option type '{}'".format(each_option_default['type']))
+                        "(a) Unknown custom_option type '{}'".format(each_option_default['type']))
             except Exception:
                 self.logger.exception("Error parsing custom_options")
 
@@ -161,6 +180,7 @@ class AbstractBaseController(object):
                 option_value = each_option_default['default_value']
                 device_id = None
                 measurement_id = None
+                channel_id = None
 
                 if not hasattr(custom_controller, 'custom_options'):
                     self.logger.error("custom_controller missing attribute custom_options")
@@ -175,6 +195,11 @@ class AbstractBaseController(object):
                                     len(each_value.split(',')) > 1):
                                 device_id = each_value.split(',')[0]
                                 measurement_id = each_value.split(',')[1]
+                            if (each_option_default['type'] == 'select_measurement_channel' and
+                                    len(each_option.split(',')) > 3):
+                                device_id = each_option.split(',')[0]
+                                measurement_id = each_option.split(',')[1]
+                                channel_id = each_option.split(',')[2]
                             else:
                                 option_value = each_value
 
@@ -199,13 +224,28 @@ class AbstractBaseController(object):
                             '{}_measurement_id'.format(each_option_default['id']),
                             measurement_id)
 
+                elif each_option_default['type'] == 'select_measurement_channel':
+                    setattr(self,
+                            '{}_device_id'.format(each_option_default['id']),
+                            device_id)
+                    setattr(self,
+                            '{}_measurement_id'.format(each_option_default['id']),
+                            measurement_id)
+                    setattr(self,
+                            '{}_channel_id'.format(each_option_default['id']),
+                            channel_id)
+
                 elif each_option_default['type'] == 'select_device':
                     setattr(self,
                             '{}_id'.format(each_option_default['id']),
                             str(option_value))
+
+                elif each_option_default['type'] in ['message', 'new_line']:
+                    pass
+
                 else:
                     self.logger.error(
-                        "Unknown option type '{}'".format(each_option_default['type']))
+                        "(b) Unknown option type '{}'".format(each_option_default['type']))
             except Exception:
                 self.logger.exception("Error parsing options")
 
@@ -288,6 +328,15 @@ class AbstractBaseController(object):
             duration_sec=max_age)
 
         return last_measurement
+
+    @staticmethod
+    def get_output_channel_from_channel_id(channel_id):
+        """Return channel number from channel ID"""
+        output_channel = db_retrieve_table_daemon(
+            OutputChannel).filter(
+            OutputChannel.unique_id == channel_id).first()
+        if output_channel:
+            return output_channel.channel
 
     def lock_acquire(self, lockfile, timeout):
         self.lockfile.lock_acquire(lockfile, timeout)

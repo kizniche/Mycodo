@@ -121,12 +121,22 @@ FUNCTION_INFORMATION = {
             'default_value': '',
             'options_select': [
                 'Input',
-                'Output',
                 'Math',
                 'PID'
             ],
             'name': lazy_gettext('Select Measurement 1'),
             'phrase': lazy_gettext('Select Measurement 1 Description')
+        },
+        {
+            'id': 'output_1',
+            'type': 'select_measurement_channel',
+            'default_value': '',
+            'required': True,
+            'options_select': [
+                'Output_Channels_Measurements',
+            ],
+            'name': lazy_gettext('Output'),
+            'phrase': lazy_gettext('Select an output to modulate that will affect the measurement')
         },
         {
             'id': 'select_device_1',
@@ -178,6 +188,9 @@ class CustomModule(AbstractController, threading.Thread):
         self.select_1 = None
         self.select_measurement_1_device_id = None
         self.select_measurement_1_measurement_id = None
+        self.output_1_device_id = None
+        self.output_1_measurement_id = None
+        self.output_1_channel_id = None
         self.select_device_1_id = None
         self.select_device_2_id = None
 
@@ -186,6 +199,9 @@ class CustomModule(AbstractController, threading.Thread):
             CustomController, unique_id=unique_id)
         self.setup_custom_options(
             FUNCTION_INFORMATION['custom_options'], custom_function)
+
+        # Get selected output channel number
+        self.output_1_channel = self.get_output_channel_from_channel_id(self.output_1_channel_id)
 
         if not testing:
             pass
@@ -203,7 +219,7 @@ class CustomModule(AbstractController, threading.Thread):
             # messages to appear in the daemon log.
             self.logger.debug(
                 "Custom controller started with options: "
-                "{}, {}, {}, {}, {}, {}, {}, {}".format(
+                "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(
                     self.text_1,
                     self.integer_1,
                     self.float_1,
@@ -211,6 +227,9 @@ class CustomModule(AbstractController, threading.Thread):
                     self.select_1,
                     self.select_measurement_1_device_id,
                     self.select_measurement_1_measurement_id,
+                    self.output_1_device_id,
+                    self.output_1_measurement_id,
+                    self.output_1_channel_id,
                     self.select_device_1_id))
 
             # Get last measurement for select_measurement_1
@@ -235,7 +254,11 @@ class CustomModule(AbstractController, threading.Thread):
             # Turn Output select_device_1 on for 15 seconds
             self.logger.debug("Turning select_device_1 with ID {} on for 15 seconds...".format(
                 self.select_device_1_id))
-            self.control.output_on(self.select_device_1_id, output_type='sec', amount=15)
+            self.control.output_on(
+                self.select_device_1_id,
+                output_type='sec',
+                output_channel=self.output_1_channel,
+                amount=15)
 
             # Deactivate controller in the SQL database
             self.logger.debug(

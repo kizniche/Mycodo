@@ -236,7 +236,12 @@ class OutputModule(AbstractOutput):
                 dict_states[channel] = bool(not self.options_channels['on_state'][channel])
 
         self.logger.debug("List sent to device: {}".format(self.dict_to_list_states(dict_states)))
-        self.sensor.port(self.dict_to_list_states(dict_states))
+        try:
+            self.sensor.port(self.dict_to_list_states(dict_states))
+        except OSError as err:
+            self.logger.error(
+                "OSError: {}. Check that the device is connected properly, the correct "
+                "address is selected, and you can communicate with the device.".format(err))
         self.output_states = dict_states
 
         for channel in channels_dict:

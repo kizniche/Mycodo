@@ -27,11 +27,15 @@ import timeit
 
 from flask_babel import lazy_gettext
 
+from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import CustomController
+from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.PID_hirschmann.pid_autotune import PIDAutotune
 from mycodo.utils.database import db_retrieve_table_daemon
+
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 def constraints_pass_positive_value(mod_controller, value):
@@ -74,11 +78,11 @@ FUNCTION_INFORMATION = {
         },
         {
             'id': 'output',
-            'type': 'select_device',
+            'type': 'select_measurement_channel',
             'default_value': '',
             'required': True,
             'options_select': [
-                'Output',
+                'Output_Channels_Measurements',
             ],
             'name': lazy_gettext('Output'),
             'phrase': lazy_gettext('Select an output to modulate that will affect the measurement')
@@ -120,6 +124,7 @@ FUNCTION_INFORMATION = {
             'phrase': lazy_gettext('How many seconds the output will turn on every Period')
         },
         {
+            'id': 'message_main',
             'type': 'message',
             'default_value': 'Currently, only autotuning to raise a condition (measurement) is supported.',
         },
@@ -157,18 +162,24 @@ class CustomModule(AbstractController, threading.Thread):
         # Initialize custom options
         self.measurement_device_id = None
         self.measurement_measurement_id = None
-        self.output_id = None
+        self.output_device_id = None
+        self.output_measurement_id = None
+        self.output_channel_id = None
         self.setpoint = None
         self.period = None
         self.noiseband = None
         self.outstep = None
         self.direction = None
 
+        self.output_channel = None
+
         # Set custom options
         custom_function = db_retrieve_table_daemon(
             CustomController, unique_id=unique_id)
         self.setup_custom_options(
             FUNCTION_INFORMATION['custom_options'], custom_function)
+
+        self.output_channel = self.get_output_channel_from_channel_id(self.output_channel_id)
 
         self.initialize_variables()
 
@@ -189,6 +200,10 @@ class CustomModule(AbstractController, threading.Thread):
 
     def run(self):
         try:
+            if not self.output_channel:
+                self.logger.error("Cannot start PID Autotune: Could not find output channel.")
+                return
+
             self.logger.info("Activated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
 
@@ -199,11 +214,12 @@ class CustomModule(AbstractController, threading.Thread):
 
             self.logger.info(
                 "PID Autotune started with options: "
-                "Measurement Device: {}, Measurement: {}, Output: {}, Setpoint: {}, "
+                "Measurement Device: {}, Measurement: {}, Output: {}, Output_Channel: {}, Setpoint: {}, "
                 "Period: {}, Noise Band: {}, Outstep: {}, DIrection: {}".format(
                     self.measurement_device_id,
                     self.measurement_measurement_id,
-                    self.output_id,
+                    self.output_device_id,
+                    self.output_channel,
                     self.setpoint,
                     self.period,
                     self.noiseband,
@@ -265,14 +281,13 @@ class CustomModule(AbstractController, threading.Thread):
                 return
 
             self.control.output_on(
-                self.output_id, output_type='sec', amount=self.control_variable)
+                self.output_device_id,
+                output_type='sec',
+                output_channel=self.output_channel,
+                amount=self.control_variable)
 
     def deactivate_self(self):
         self.logger.info("Deactivating Autotune Function")
-
-        from mycodo.databases.utils import session_scope
-        from mycodo.config import SQL_DATABASE_MYCODO
-        MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
         with session_scope(MYCODO_DB_PATH) as new_session:
             mod_cont = new_session.query(CustomController).filter(
                 CustomController.unique_id == self.unique_id).first()

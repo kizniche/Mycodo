@@ -3,6 +3,8 @@
 ### Bugfixes
 
  - Fix broken Output API get/post calls
+ - Fix selecting output channels in custom functions
+ - Fix Autotune PID Function ([#876](https://github.com/kizniche/mycodo/issues/876))
 
 ### Miscellaneous
 
