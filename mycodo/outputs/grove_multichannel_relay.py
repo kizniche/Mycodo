@@ -148,7 +148,7 @@ OUTPUT_INFORMATION = {
     'url_datasheet': 'http://wiki.seeedstudio.com/Grove-4-Channel_SPDT_Relay/',
     'url_product_purchase': 'https://www.seeedstudio.com/Grove-4-Channel-SPDT-Relay-p-3119.html',
 
-    'message': 'Controls the 4 or 8 relays of the Grove multichannel relay board.',
+    'message': 'Controls the 4 or 8 channel Grove multichannel relay board.',
 
     'options_enabled': [
         'i2c_location',
@@ -265,7 +265,12 @@ class OutputModule(AbstractOutput):
                 dict_states[channel] = bool(not self.options_channels['on_state'][channel])
 
         self.logger.debug("List sent to device: {}".format(self.dict_to_list_states(dict_states)))
-        self.sensor.port(self.dict_to_list_states(dict_states))
+        try:
+            self.sensor.port(self.dict_to_list_states(dict_states))
+        except OSError as err:
+            self.logger.error(
+                "OSError: {}. Check that the device is connected properly, the correct "
+                "address is selected, and you can communicate with the device.".format(err))
         self.output_states = dict_states
 
         for channel in channels_dict:

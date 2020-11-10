@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  bang_bang_control.py - A hysteretic control
+#  function_bang_bang.py - A hysteretic control
 #
 #  Copyright (C) 2015-2020 Rob Bultman <rob@firstbuild.com>
 #
@@ -10,11 +10,14 @@ import timeit
 
 from flask_babel import lazy_gettext
 
+from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import CustomController
+from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 def constraints_pass_positive_value(mod_controller, value):
     """
@@ -34,9 +37,14 @@ def constraints_pass_positive_value(mod_controller, value):
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'bang_bang',
-    'function_name': 'Bang-Bang (Hysteretic) Control',
+    'function_name': 'Function: Bang-Bang (Hysteretic) Control',
 
-    'message': 'A simple bang-bang control for controlling one output from one input.',
+    'message': 'A simple bang-bang control for controlling one output from one input.'
+        ' Select an input, an output, enter a setpoint and a hysteresis, and select a direction.'
+        ' The output will turn on when the input is below setpoint-hysteresis and turn off when'
+        ' the input is above setpoint+hysteresis.  This is the behavior when Raise is selected, such'
+        ' as when heating.  Lower direction has the opposite behavior - it will try to'
+        ' turn the output on in order to drive the input lower.',
 
     'options_enabled': [],
     'dependencies_module': [],
@@ -56,11 +64,11 @@ FUNCTION_INFORMATION = {
         },
         {
             'id': 'output',
-            'type': 'select_device',
+            'type': 'select_measurement_channel',
             'default_value': '',
             'required': True,
             'options_select': [
-                'Output',
+                'Output_Channels_Measurements',
             ],
             'name': lazy_gettext('Output'),
             'phrase': lazy_gettext('Select an output to control that will affect the measurement')
@@ -70,14 +78,13 @@ FUNCTION_INFORMATION = {
             'type': 'float',
             'default_value': 50,
             'required': True,
-            'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Setpoint'),
             'phrase': lazy_gettext('The desired setpoint in degrees F')
         },
         {
             'id': 'hysteresis',
             'type': 'float',
-            'default_value': 0.5,
+            'default_value': 1,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Hysteresis'),
@@ -86,12 +93,23 @@ FUNCTION_INFORMATION = {
         {
             'id': 'direction',
             'type': 'select',
-            'default_value': 'direct',
+            'default_value': 'raise',
+            'required': True,
             'options_select': [
-                ('direct', 'inverse')
+                ('raise', 'Raise'),
+                ('lower', 'Lower')
             ],
             'name': lazy_gettext('Direction'),
-            'phrase': lazy_gettext('Direct means the measurement will increase when the control is on (heating), inverse means the measurement will decrease when the output is on (cooling)')
+            'phrase': lazy_gettext('Raise means the measurement will increase when the control is on (heating). Lower means the measurement will decrease when the output is on (cooling)')
+        },
+        {
+            'id': 'update_period',
+            'type': 'float',
+            'default_value': 5,
+            'required': True,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': lazy_gettext('Update Period'),
+            'phrase': lazy_gettext('The update period for the controller.')
         }
     ]
 }
@@ -116,16 +134,22 @@ class CustomModule(AbstractController, threading.Thread):
         # Initialize custom options
         self.measurement_device_id = None
         self.measurement_measurement_id = None
-        self.output_id = None
+        self.output_device_id = None
+        self.output_measurement_id = None
+        self.output_channel_id = None
         self.setpoint = None
         self.hysteresis = None
         self.direction = None
+        self.output_channel = None
+        self.update_period = None
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
             CustomController, unique_id=unique_id)
         self.setup_custom_options(
             FUNCTION_INFORMATION['custom_options'], custom_function)
+
+        self.output_channel = self.get_output_channel_from_channel_id(self.output_channel_id)
 
         self.initialize_variables()
 
@@ -139,6 +163,12 @@ class CustomModule(AbstractController, threading.Thread):
 
     def run(self):
         try:
+
+            if self.output_channel is None:
+                self.logger.error("Cannot start bang-bang controller: Could not find output channel.")
+                self.deactivate_self()
+                return
+
             self.logger.info("Activated in {:.1f} ms".format(
                 (timeit.default_timer() - self.thread_startup_timer) * 1000))
 
@@ -147,20 +177,22 @@ class CustomModule(AbstractController, threading.Thread):
             self.timer = time.time()
 
             self.logger.info(
-                "Band-Bang controller started with options: "
-                "Measurement Device: {}, Measurement: {}, Output: {}, Setpoint: {}, "
-                "Hysteresis: {}, Direction: {}".format(
+                "Bang-Bang controller started with options: "
+                "Measurement Device: {}, Measurement: {}, Output: {}, Output_Channel: {}, Setpoint: {}, "
+                "Hysteresis: {}, Direction: {}, Period: {}".format(
                     self.measurement_device_id,
                     self.measurement_measurement_id,
-                    self.output_id,
+                    self.output_device_id,
+                    self.output_channel,                    
                     self.setpoint,
                     self.hysteresis,
-                    self.direction))
+                    self.direction,
+                    self.update_period))
 
             # Start a loop
             while self.running:
                 self.loop()
-                time.sleep(5)
+                time.sleep(self.update_period)
         except:
             self.logger.exception("Run Error")
         finally:
@@ -173,14 +205,50 @@ class CustomModule(AbstractController, threading.Thread):
                 self.logger.error("Deactivated unexpectedly")
 
     def loop(self):
-        self.logger.info("Bang bang controller loop running")
+        last_measurement = self.get_last_measurement(
+            self.measurement_device_id,
+            self.measurement_measurement_id)[1]
+        outputState = self.control.output_state(self.output_device_id, self.output_channel)
+
+        self.logger.info("Input: {}, output: {}, target: {}, hyst: {}".format(
+            last_measurement, outputState, self.setpoint, self.hysteresis))
+
+        if self.direction == 'raise':
+            if outputState == 'on':
+                # looking to turn output off
+                if (last_measurement > (self.setpoint + self.hysteresis)):
+                    self.control.output_off(
+                        self.output_device_id,
+                        output_channel=self.output_channel,
+                        )
+            else:
+                # looking to turn output on
+                if (last_measurement < (self.setpoint - self.hysteresis)):
+                    self.control.output_on(
+                        self.output_device_id,
+                        output_channel=self.output_channel,
+                        )
+        elif self.direction == 'lower':
+            if outputState == 'on':
+                # looking to turn output off
+                if (last_measurement < (self.setpoint - self.hysteresis)):
+                    self.control.output_off(
+                        self.output_device_id,
+                        output_channel=self.output_channel,
+                        )
+            else:
+                # looking to turn output on
+                if (last_measurement > (self.setpoint + self.hysteresis)):
+                    self.control.output_on(
+                        self.output_device_id,
+                        output_channel=self.output_channel,
+                        )
+        else:
+            self.logger.info("Unknown controller direction: {}".format(self.direction))
 
     def deactivate_self(self):
         self.logger.info("Deactivating bang-bang controller")
 
-        from mycodo.databases.utils import session_scope
-        from mycodo.config import SQL_DATABASE_MYCODO
-        MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
         with session_scope(MYCODO_DB_PATH) as new_session:
             mod_cont = new_session.query(CustomController).filter(
                 CustomController.unique_id == self.unique_id).first()
@@ -191,3 +259,6 @@ class CustomModule(AbstractController, threading.Thread):
             target=self.control.controller_deactivate,
             args=(self.unique_id,))
         deactivate_controller.start()
+
+    def pre_stop(self):
+        self.control.output_off(self.output_device_id, self.output_channel)
