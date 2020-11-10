@@ -202,6 +202,7 @@ class CustomModule(AbstractController, threading.Thread):
         try:
             if not self.output_channel:
                 self.logger.error("Cannot start PID Autotune: Could not find output channel.")
+                self.deactivate_self()
                 return
 
             self.logger.info("Activated in {:.1f} ms".format(
