@@ -95,6 +95,7 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
+        self.CH_SEQUENCE = None
         self.adc_gain = None
         self.adc_sample_speed = None
 
@@ -128,7 +129,23 @@ class InputModule(AbstractInput):
         EXT2, EXT3, EXT4 = POS_AIN2 | NEG_AINCOM, POS_AIN3 | NEG_AINCOM, POS_AIN4 | NEG_AINCOM
         EXT5, EXT6, EXT7 = POS_AIN5 | NEG_AINCOM, POS_AIN6 | NEG_AINCOM, POS_AIN7 | NEG_AINCOM
 
-        self.CH_SEQUENCE = (POTI, LDR, EXT2, EXT3, EXT4, EXT5, EXT6, EXT7)
+        channels = {
+            0: POTI,
+            1: LDR,
+            2: EXT2,
+            3: EXT3,
+            4: EXT4,
+            5: EXT5,
+            6: EXT6,
+            7: EXT7
+        }
+
+        # Generate the channel sequence for enabled channels
+        self.CH_SEQUENCE = []
+        for channel in self.channels_measurement:
+            if self.is_enabled(channel):
+                self.CH_SEQUENCE.append(channels[channel])
+        self.CH_SEQUENCE = tuple(self.CH_SEQUENCE)
 
         self.adc_gain = self.input_dev.adc_gain
         self.adc_sample_speed = self.input_dev.adc_sample_speed
@@ -157,24 +174,24 @@ class InputModule(AbstractInput):
             self.logger.error("Input not set up")
             return
 
-        voltages_list = []
-        voltages_dict = {}
-        count = 0
-
         self.return_dict = copy.deepcopy(measurements_dict)
 
         # 2 attempts to get valid measurement
-        while (self.running and count < 2 and
-               (not any(voltages_dict.values()) or 0 in voltages_dict.values())):
+        voltages_list = []
+        for _ in range(2):
             raw_channels = self.sensor.read_sequence(self.CH_SEQUENCE)
             voltages_list = [i * self.sensor.v_per_digit for i in raw_channels]
-            count += 1
+            if 0 not in voltages_list:
+                break
 
         if not voltages_list or 0 in voltages_list:
             self.logger.error("ADC returned measurement of 0 (indicating something is wrong).")
             return
 
+        index = 0
         for channel in self.channels_measurement:
-            self.value_set(channel, voltages_list[channel])
+            if self.is_enabled(channel):
+                self.value_set(channel, voltages_list[index])
+                index += 1
 
         return self.return_dict
