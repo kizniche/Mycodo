@@ -339,7 +339,7 @@ class AbstractBaseController(object):
             return output_channel.channel
 
     def lock_acquire(self, lockfile, timeout):
-        self.lockfile.lock_acquire(lockfile, timeout)
+        return self.lockfile.lock_acquire(lockfile, timeout)
 
     def lock_locked(self, lockfile):
         return self.lockfile.lock_locked(lockfile)
