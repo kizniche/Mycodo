@@ -105,6 +105,7 @@
 .widget-settings a {
   opacity: 0.4;
   outline: none;
+  border: 0;
 }
 
 .widget-settings a:hover,
