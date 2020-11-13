@@ -112,7 +112,7 @@ MEASUREMENTS = {
     'electrical_current': {
         'name': lazy_gettext('Electrical Current'),
         'meas': 'electrical_current',
-        'units': ['A']},
+        'units': ['A', 'mA']},
     'electrical_potential': {
         'name': lazy_gettext('Electrical Potential'),
         'meas': 'electrical_potential',
@@ -360,6 +360,9 @@ UNITS = {
     'minute': {
         'name': lazy_gettext('Minute'),
         'unit': 'min'},
+    'mA': {
+        'name': lazy_gettext('Milliamp'),
+        'unit': 'mA'},
     'ml': {
         'name': lazy_gettext('Milliliter'),
         'unit': 'ml'},
@@ -498,6 +501,10 @@ UNIT_CONVERSIONS = [
     # Volt
     ('V', 'mV', 'x*1000'),
     ('mV', 'V', 'x/1000'),
+
+    # Electrical Current
+    ('A', 'mA', 'x*1000'),
+    ('mA', 'A', 'x/1000'),
 
     # Volume
     ('l', 'ml', 'x*1000'),
