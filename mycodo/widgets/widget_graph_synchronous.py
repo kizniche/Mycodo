@@ -269,13 +269,17 @@ WIDGET_INFORMATION = {
     'widget_dashboard_head': """<!-- no head content -->""",
 
     'widget_dashboard_title_bar': """
-    <span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>
-    {% if widget_options['enable_header_buttons'] -%}
-    <button class="btn btn-sm btn-primary" id="updateData{{chart_number}}">Update</button>
-    <button class="btn btn-sm btn-primary" id="resetZoom{{chart_number}}">Reset</button>
-    <button class="btn btn-sm btn-primary" id="showhidebutton{{chart_number}}">Hide</button>
-    {% endif %}
-""",
+        <div class="widget-graph-controls">
+            {% if widget_options['enable_header_buttons'] -%}
+            <button class="btn btn-sm btn-primary" id="updateData{{chart_number}}">Update</button>
+            <button class="btn btn-sm btn-primary" id="resetZoom{{chart_number}}">Reset</button>
+            <button class="btn btn-sm btn-primary" id="showhidebutton{{chart_number}}">Hide</button>
+            {% endif %}
+        </div>
+        <div class="widget-graph-title">
+            <span style="font-size: {{each_widget.font_em_name}}em;clear:right">{{each_widget.name}}</span>
+        </div>
+    """,
 
     'widget_dashboard_body': """<div class="not-draggable" id="container-synchronous-graph-{{each_widget.unique_id}}" style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; overflow: hidden;"></div>""",
 

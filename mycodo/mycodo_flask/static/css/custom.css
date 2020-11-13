@@ -116,3 +116,12 @@
 .widget-settings .btn {
   padding: 0;
 }
+
+.widget-graph-title {
+  clear: both;
+}
+
+.widget-graph-controls {
+  float: right;
+  margin-right: 1.5em;
+}
