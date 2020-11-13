@@ -73,3 +73,46 @@
 .table {
   margin-bottom: 0;
 }
+
+.widget-heading {
+  flex: 0 1 auto;
+  padding-top: 0.5em;
+}
+
+.widget-drag-handle {
+  position: absolute;
+  left: 0.75em;
+  top: 0.75em;
+  opacity: 0.4;
+}
+
+.widget-title {
+  width: 100%;
+  margin: 0 1.5em;
+  text-align: center;
+}
+
+.widget-title span {
+  padding: 0 0.5em;
+}
+
+.widget-settings {
+  position: absolute;
+  right: 0.75em;
+  top: 0.75em;
+}
+
+.widget-settings a {
+  opacity: 0.4;
+  outline: none;
+  border: 0;
+}
+
+.widget-settings a:hover,
+.widget-settings a:active {
+  opacity: 1.0;
+}
+
+.widget-settings .btn {
+  padding: 0;
+}
