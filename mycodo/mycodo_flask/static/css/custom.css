@@ -138,6 +138,13 @@
   display: none;
 }
 
+.widget-graph-responsive-controls a {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#78cc78), color-stop(60%, #62c462), to(#53be53));
+  background-color: linear-gradient(#78cc78, #62c462 60%, #53be53);
+  background-repeat: no-repeat;
+  color: #fff !important;
+}
+
 .widget-graph-responsive-controls.responsive {
   display: inline-block;
   padding: 0 0.5em;
