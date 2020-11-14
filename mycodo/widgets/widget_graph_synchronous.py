@@ -274,14 +274,15 @@ WIDGET_INFORMATION = {
         </div>
         {% if widget_options['enable_header_buttons'] -%}
         <div class="widget-graph-controls" id="widget-graph-controls-{{chart_number}}">
-            <div class="widget-graph-responsive-controls" id="widget-graph-responsive-controls-{{chart_number}}">
-                <button class="btn btn-sm btn-primary" id="updateData{{chart_number}}">Update</button>
-                <button class="btn btn-sm btn-primary" id="resetZoom{{chart_number}}">Reset</button>
-                <button class="btn btn-sm btn-primary" id="showhidebutton{{chart_number}}">Hide</button>
-            </div>
             <a href="javascript:void(0);" class="btn btn-sm btn-link menu" onclick="graphMenuFunction{{chart_number}}()">
                 <i class="fa fa-bars"></i>
             </a>
+        </div>
+
+        <div class="widget-graph-responsive-controls" id="widget-graph-responsive-controls-{{chart_number}}">
+            <button class="btn btn-sm btn-primary" id="updateData{{chart_number}}">Update</button>
+            <button class="btn btn-sm btn-primary" id="resetZoom{{chart_number}}">Reset</button>
+            <button class="btn btn-sm btn-primary" id="showhidebutton{{chart_number}}">Hide</button>
         </div>
 
         <script>
