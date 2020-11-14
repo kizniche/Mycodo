@@ -76,7 +76,7 @@
 
 .widget-heading {
   flex: 0 1 auto;
-  padding-top: 0.5em;
+  padding: 0.5em 0;
 }
 
 .widget-drag-handle {
