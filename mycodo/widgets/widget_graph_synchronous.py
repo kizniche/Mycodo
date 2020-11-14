@@ -269,19 +269,19 @@ WIDGET_INFORMATION = {
     'widget_dashboard_head': """<!-- no head content -->""",
 
     'widget_dashboard_title_bar': """
-        <div class="widget-graph-title">
-            <span style="font-size: {{each_widget.font_em_name}}em;clear:right">{{each_widget.name}}</span>
+        <div class="widget-graph-title" id="widget-graph-title-{{chart_number}}">
+            <span style="font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>
         </div>
         {% if widget_options['enable_header_buttons'] -%}
         <div class="widget-graph-controls" id="widget-graph-controls-{{chart_number}}">
             <div class="widget-graph-responsive-controls" id="widget-graph-responsive-controls-{{chart_number}}">
-                <a class="btn btn-sm btn-secondary" id="updateData{{chart_number}}" title="Update">
+                <a class="btn btn-sm btn-success" id="updateData{{chart_number}}" title="Update">
                     <i class="fa fa-sync-alt"></i>
                 </a>
-                <a class="btn btn-sm btn-secondary" id="resetZoom{{chart_number}}" title="Reset">
+                <a class="btn btn-sm btn-success" id="resetZoom{{chart_number}}" title="Reset">
                     <i class="fa fa-undo-alt"></i>
                 </a>
-                <a class="btn btn-sm btn-secondary" id="showhidebutton{{chart_number}}" title="Hide">
+                <a class="btn btn-sm btn-success" id="showhidebutton{{chart_number}}" title="Hide">
                     <i class="fa fa-eye-slash"></i>
                 </a>
             </div>
@@ -293,10 +293,16 @@ WIDGET_INFORMATION = {
         <script>
             function graphMenuFunction{{chart_number}}() {
               var x = document.getElementById("widget-graph-responsive-controls-{{chart_number}}");
+              var y = document.getElementById("widget-graph-title-{{chart_number}}");
               if (x.className === "widget-graph-responsive-controls") {
                 x.className += " responsive";
               } else {
                 x.className = "widget-graph-responsive-controls";
+              }
+              if (y.className === "widget-graph-title") {
+                y.className += " responsive";
+              } else {
+                y.className = "widget-graph-title";
               }
             }
         </script>

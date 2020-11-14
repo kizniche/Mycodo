@@ -150,3 +150,8 @@
   padding: 0 0.5em;
   text-align: right;
 }
+
+.widget-graph-title.responsive {
+  padding-left: 0.5em;
+  text-align: left;
+}
