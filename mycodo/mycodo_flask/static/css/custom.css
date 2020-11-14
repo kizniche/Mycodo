@@ -124,20 +124,16 @@
   text-align: right;
 }
 
-.widget-graph-controls button.menu,
+.widget-graph-controls a {
+  outline: 0
+}
+
 .widget-graph-responsive-controls {
   display: none;
 }
 
-@media screen and (max-width: 992px) {
-  .widget-graph-controls button { display: none; }
-  .widget-graph-controls button.menu {
-    display: block;
-  }
-
-  .widget-graph-responsive-controls.responsive {
-    padding: 0.5em 0;
-    display: block;
-    text-align: center;
-  }
+.widget-graph-responsive-controls.responsive {
+  display: inline-block;
+  margin-right: 0.5em;
+  text-align: right;
 }
