@@ -151,7 +151,9 @@
   text-align: right;
 }
 
-.widget-graph-title.responsive {
-  padding-left: 0.5em;
-  text-align: left;
+@media screen and (max-width: 768px) {
+  .widget-graph-title.responsive {
+    padding-left: 0.5em;
+    text-align: left;
+  }
 }
