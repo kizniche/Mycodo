@@ -117,11 +117,27 @@
   padding: 0;
 }
 
-.widget-graph-title {
-  clear: both;
+.widget-graph-controls {
+  position: absolute;
+  right: 3em;
+  top: 0.5em;
+  text-align: right;
 }
 
-.widget-graph-controls {
-  float: right;
-  margin-right: 1.5em;
+.widget-graph-controls button.menu,
+.widget-graph-responsive-controls {
+  display: none;
+}
+
+@media screen and (max-width: 992px) {
+  .widget-graph-controls button { display: none; }
+  .widget-graph-controls button.menu {
+    display: block;
+  }
+
+  .widget-graph-responsive-controls.responsive {
+    padding: 0.5em 0;
+    display: block;
+    text-align: center;
+  }
 }

@@ -269,16 +269,36 @@ WIDGET_INFORMATION = {
     'widget_dashboard_head': """<!-- no head content -->""",
 
     'widget_dashboard_title_bar': """
-        <div class="widget-graph-controls">
-            {% if widget_options['enable_header_buttons'] -%}
-            <button class="btn btn-sm btn-primary" id="updateData{{chart_number}}">Update</button>
-            <button class="btn btn-sm btn-primary" id="resetZoom{{chart_number}}">Reset</button>
-            <button class="btn btn-sm btn-primary" id="showhidebutton{{chart_number}}">Hide</button>
-            {% endif %}
-        </div>
         <div class="widget-graph-title">
             <span style="font-size: {{each_widget.font_em_name}}em;clear:right">{{each_widget.name}}</span>
         </div>
+        {% if widget_options['enable_header_buttons'] -%}
+        <div class="widget-graph-controls" id="widget-graph-controls-{{chart_number}}">
+            <button class="btn btn-sm btn-primary" id="updateData{{chart_number}}">Update</button>
+            <button class="btn btn-sm btn-primary" id="resetZoom{{chart_number}}">Reset</button>
+            <button class="btn btn-sm btn-primary" id="showhidebutton{{chart_number}}">Hide</button>
+            <button href="javascript:void(0);" class="btn btn-sm btn-primary menu" onclick="graphMenuFunction{{chart_number}}()">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+
+        <div class="widget-graph-responsive-controls" id="widget-graph-responsive-controls-{{chart_number}}">
+            <button class="btn btn-sm btn-primary" id="updateData{{chart_number}}">Update</button>
+            <button class="btn btn-sm btn-primary" id="resetZoom{{chart_number}}">Reset</button>
+            <button class="btn btn-sm btn-primary" id="showhidebutton{{chart_number}}">Hide</button>
+        </div>
+
+        <script>
+            function graphMenuFunction{{chart_number}}() {
+              var x = document.getElementById("widget-graph-responsive-controls-{{chart_number}}");
+              if (x.className === "widget-graph-responsive-controls") {
+                x.className += " responsive";
+              } else {
+                x.className = "widget-graph-responsive-controls";
+              }
+            }
+        </script>
+        {% endif %}
     """,
 
     'widget_dashboard_body': """<div class="not-draggable" id="container-synchronous-graph-{{each_widget.unique_id}}" style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; overflow: hidden;"></div>""",
