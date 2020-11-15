@@ -76,7 +76,7 @@
 
 .widget-heading {
   flex: 0 1 auto;
-  padding-top: 0.5em;
+  padding: 0.5em 0;
 }
 
 .widget-drag-handle {
@@ -103,8 +103,9 @@
 }
 
 .widget-settings a {
+  padding: 0;
   opacity: 0.4;
-  outline: none;
+  outline: 0;
   border: 0;
 }
 
@@ -113,6 +114,46 @@
   opacity: 1.0;
 }
 
-.widget-settings .btn {
-  padding: 0;
+.widget-graph-controls {
+  position: absolute;
+  right: 3em;
+  top: 0.5em;
+  text-align: right;
+}
+
+.widget-graph-controls a.menu {
+  border-color: rgba(0,0,0,0.0);
+  opacity: 0.4;
+  outline: 0;
+}
+
+.widget-graph-controls a.menu:hover,
+.widget-graph-controls a.menu:active {
+  border-color: rgba(0,0,0,0.0);
+  opacity: 1.0;
+  outline: 0;
+}
+
+.widget-graph-responsive-controls {
+  display: none;
+}
+
+.widget-graph-responsive-controls a {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#78cc78), color-stop(60%, #62c462), to(#53be53));
+  background-color: linear-gradient(#78cc78, #62c462 60%, #53be53);
+  background-repeat: no-repeat;
+  color: #fff !important;
+}
+
+.widget-graph-responsive-controls.responsive {
+  display: inline-block;
+  padding: 0 0.5em;
+  text-align: right;
+}
+
+@media screen and (max-width: 768px) {
+  .widget-graph-title.responsive {
+    padding-left: 0.5em;
+    text-align: left;
+  }
 }
