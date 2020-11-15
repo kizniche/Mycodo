@@ -11,6 +11,7 @@
 ### Miscellaneous
 
  - Add Generic Hall Effect Flow Sensor Input
+ - Change widget title styles
 
 
 ## 8.8.8 (2020-10-30)
