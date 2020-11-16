@@ -74,8 +74,13 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """
+    This module is a modified version of the DHT11/22 module from the Mycodo 
+    distribution.  This version interfaces to the sensor through the Grove Pi+
+    hat for the Raspberry Pi.  The GPIO pin is the pin on the Grove Pi+.  The
+    sensor type is either blue for the DHT11 or blue for the DHT22.
+
     A sensor support class that measures the DHT11's humidity and temperature
-    and calculates the dew point
+    and calculates the dew point.
 
     The DHT11 class is a stripped version of the DHT22 sensor code by joan2937.
     You can find the initial implementation here:
