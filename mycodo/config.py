@@ -121,6 +121,11 @@ LCD_INFO = {
         'dependencies_module': [],
         'interfaces': ['I2C']
     },
+    '16x2_grove_lcd_rgb': {
+        'name': '16x2 Grove LCD RGB',
+        'dependencies_module': [],
+        'interfaces': ['I2C']
+    },
     '128x32_pioled_circuit_python': {
         'name': '128x32 OLED (SD1306, CircuitPython)',
         'message': "This module uses the newer Adafruit CircuitPython library. The older Adafruit_SSD1306 library is deprecated and not recommended to be used.",
@@ -175,6 +180,7 @@ LCD_INFO = {
 LCDS = [
     ('16x2_generic', LCD_INFO['16x2_generic']['name']),
     ('20x4_generic', LCD_INFO['20x4_generic']['name']),
+    ('16x2_grove_lcd_rgb', LCD_INFO['16x2_grove_lcd_rgb']['name']),
     ('128x32_pioled', LCD_INFO['128x32_pioled']['name']),
     ('128x64_pioled', LCD_INFO['128x64_pioled']['name']),
     ('128x32_pioled_circuit_python', LCD_INFO['128x32_pioled_circuit_python']['name']),

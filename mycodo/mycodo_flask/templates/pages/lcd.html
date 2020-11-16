@@ -139,7 +139,7 @@
           </div>
         </div>
 
-      {% elif each_lcd.interface == 'I2C' and each_lcd.lcd_type in ['16x2_generic', '20x4_generic'] %}
+      {% elif each_lcd.interface == 'I2C' and each_lcd.lcd_type in ['16x2_generic', '20x4_generic', '16x2_grove_lcd_rgb'] %}
 
         <div class="col-auto">
           {{form_lcd_mod.location.label(class_='control-label')}}
