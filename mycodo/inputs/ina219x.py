@@ -78,6 +78,23 @@ def constraints_pass_calibration(mod_input, value):
         errors.append("Invalid range. Need one of %s.", range_pass)
     return all_passed, errors, mod_input
 
+def constraints_pass_bus_voltage_range(mod_input, value):
+    """
+    Check if the Bus Voltage Range is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: string
+    :return: tuple: (bool, errors, mod_input)
+    """
+    errors = []
+    all_passed = True
+    # Ensure valid range is selected
+    range_pass = ['0','1']
+
+    if value not in range_pass:
+        all_passed = False
+        errors.append("Invalid range. Need one of %s.", range_pass)
+    return all_passed, errors, mod_input
+
 # Measurements
 measurements_dict = {
     0: {
@@ -151,6 +168,18 @@ INPUT_INFORMATION = {
             'constraints_pass': constraints_pass_calibration
         },
         {
+            'id': 'bus_voltage_range',
+            'type': 'select',
+            'default_value': '1',
+            'options_select': [
+                ('0', '(0x00) - 16V'),
+                ('1', '(0x01) - 32V (default)')
+            ],
+            'name': lazy_gettext('Bus Voltage Range'),
+            'phrase': lazy_gettext('Set the bus voltage range'),
+            'constraints_pass': constraints_pass_bus_voltage_range
+        },
+        {
             'id': 'bus_adc_resolution',
             'type': 'select',
             'default_value': '03',
@@ -195,21 +224,22 @@ class InputModule(AbstractInput):
         Initialize INA219x sensor
         """
         import board
-        from adafruit_ina219 import INA219, ADCResolution
+        from adafruit_ina219 import INA219, ADCResolution, BusVoltageRange
 
         i2c_bus = board.I2C()
 
-        self.sensor = INA219(i2c_bus,
-            addr=int(str(self.input_dev.i2c_location), 16))
+        try:
+            self.sensor = INA219(i2c_bus,
+                addr=int(str(self.input_dev.i2c_location), 16))
+        except (ValueError, OSError) as msg:
+            self.logger.exception("INA219x Exception: %s", msg)
+            return None
 
         if not self.sensor:
             self.logger.error("INA219x sensor unable to initialize.")
+            return None
 
         self.measurements_for_average = self.measurements_for_average
-
-        self.calibration = self.calibration
-        self.bus_adc_resolution = self.bus_adc_resolution
-        self.shunt_adc_resolution = self.shunt_adc_resolution
 
         # calibrate voltage and current detection range
         if self.calibration   == '1':
@@ -225,6 +255,15 @@ class InputModule(AbstractInput):
             # use default sensor calibration of 32V / 2A
             self.sensor.set_calibration_32V_2A()
             self.logger.debug("INA219x: set_calibration_32V_2A()")
+
+        BUS_VOLTAGE_RANGE = {
+            '0': BusVoltageRange.RANGE_16V,
+            '1': BusVoltageRange.RANGE_32V
+        }
+
+        # calibrate sensor bus voltage range
+        self.sensor.bus_voltage_range = BUS_VOLTAGE_RANGE.get(
+            self.bus_voltage_range, BUS_VOLTAGE_RANGE['1'])
 
         ADC_RESOLUTION = {
             '00': ADCResolution.ADCRES_9BIT_1S,
