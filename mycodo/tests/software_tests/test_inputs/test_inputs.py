@@ -20,6 +20,7 @@ from mycodo.inputs.dht11 import InputModule as DHT11Sensor
 from mycodo.inputs.dht22 import InputModule as DHT22Sensor
 from mycodo.inputs.ds18b20 import InputModule as DS18B20Sensor
 from mycodo.inputs.htu21d import InputModule as HTU21DSensor
+from mycodo.inputs.ina219x import InputModule as INA219xSensor
 from mycodo.inputs.k30 import InputModule as K30Sensor
 from mycodo.inputs.linux_command import InputModule as LinuxCommand
 from mycodo.inputs.mh_z16 import InputModule as MHZ16Sensor
@@ -50,6 +51,7 @@ input_classes = [
     DHT22Sensor(None, testing=True),
     DS18B20Sensor(None, testing=True),
     HTU21DSensor(None, testing=True),
+    INA219xSensor(None, testing=True),
     K30Sensor(None, testing=True),
     LinuxCommand(None, testing=True),
     MHZ16Sensor(None, testing=True),
