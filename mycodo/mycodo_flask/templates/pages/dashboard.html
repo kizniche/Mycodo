@@ -72,23 +72,25 @@
 
       {% if each_widget.graph_type in dict_widgets %}
 
-        <div class="d-flex justify-content-between panel-heading" style="flex: 0 1 auto;">
-          <div class="my-auto" style="padding-left: 0.4em">
+        <div class="d-flex justify-content-between panel-heading widget-heading">
+          <div class="my-auto widget-drag-handle">
             {% if each_widget.enable_drag_handle -%}
-            <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="Drag"></i>
+              <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="Drag"></i>
             {%- endif %}
           </div>
-          <div class="my-auto">
 
-        {% for widget_type, file_title_bar in list_html_files_title_bar.items() if widget_type == each_widget.graph_type %}
-            <!-- Widget {{widget_type}} title_bar template begin -->
-            {% include 'user_templates/{}'.format(file_title_bar) %}
-            <!-- Widget {{widget_type}} title_bar template end -->
-        {% endfor %}
+          <div class="my-auto widget-title">
+            {% for widget_type, file_title_bar in list_html_files_title_bar.items() if widget_type == each_widget.graph_type %}
+              <!-- Widget {{widget_type}} title_bar template begin -->
+              {% include 'user_templates/{}'.format(file_title_bar) %}
+              <!-- Widget {{widget_type}} title_bar template end -->
+            {% endfor %}
+          </div>
 
-            <button type="button" class="btn btn-link" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
+          <div class="my-auto widget-settings">
+            <a class="btn" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
               <i style="font-size: 1.5em" class="fas fa-cog"></i>
-            </button>
+            </a>
           </div>
         </div>
 

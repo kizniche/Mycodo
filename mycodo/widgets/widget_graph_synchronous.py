@@ -269,13 +269,45 @@ WIDGET_INFORMATION = {
     'widget_dashboard_head': """<!-- no head content -->""",
 
     'widget_dashboard_title_bar': """
-    <span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>
-    {% if widget_options['enable_header_buttons'] -%}
-    <button class="btn btn-sm btn-primary" id="updateData{{chart_number}}">Update</button>
-    <button class="btn btn-sm btn-primary" id="resetZoom{{chart_number}}">Reset</button>
-    <button class="btn btn-sm btn-primary" id="showhidebutton{{chart_number}}">Hide</button>
-    {% endif %}
-""",
+        <div class="widget-graph-title" id="widget-graph-title-{{chart_number}}">
+            <span style="font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>
+        </div>
+        {% if widget_options['enable_header_buttons'] -%}
+        <div class="widget-graph-controls" id="widget-graph-controls-{{chart_number}}">
+            <div class="widget-graph-responsive-controls" id="widget-graph-responsive-controls-{{chart_number}}">
+                <a class="btn btn-sm btn-success" id="updateData{{chart_number}}" title="Update">
+                    <i class="fa fa-sync-alt"></i>
+                </a>
+                <a class="btn btn-sm btn-success" id="resetZoom{{chart_number}}" title="Reset">
+                    <i class="fa fa-undo-alt"></i>
+                </a>
+                <a class="btn btn-sm btn-success" id="showhidebutton{{chart_number}}" title="Hide">
+                    <i class="fa fa-eye-slash"></i>
+                </a>
+            </div>
+            <a href="javascript:void(0);" class="btn btn-sm menu" onclick="graphMenuFunction{{chart_number}}()">
+                <i class="fa fa-bars"></i>
+            </a>
+        </div>
+
+        <script>
+            function graphMenuFunction{{chart_number}}() {
+              var x = document.getElementById("widget-graph-responsive-controls-{{chart_number}}");
+              var y = document.getElementById("widget-graph-title-{{chart_number}}");
+              if (x.className === "widget-graph-responsive-controls") {
+                x.className += " responsive";
+              } else {
+                x.className = "widget-graph-responsive-controls";
+              }
+              if (y.className === "widget-graph-title") {
+                y.className += " responsive";
+              } else {
+                y.className = "widget-graph-title";
+              }
+            }
+        </script>
+        {% endif %}
+    """,
 
     'widget_dashboard_body': """<div class="not-draggable" id="container-synchronous-graph-{{each_widget.unique_id}}" style="position: absolute; left: 0; top: 0; bottom: 0; right: 0; overflow: hidden;"></div>""",
 
