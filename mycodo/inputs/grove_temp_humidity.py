@@ -68,9 +68,7 @@ INPUT_INFORMATION = {
         },
     ],
 
-    'interfaces': ['I2C'],
-    'i2c_location': ['0x04'],
-    'i2c_address_editable': False,
+    'interfaces': ['GROVE'],
 }
 
 
@@ -123,13 +121,6 @@ class InputModule(AbstractInput):
         """ Gets the humidity and temperature """
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        import os.path
-
-        if os.path.isfile('/home/pi/Dexter/GrovePi/Software/Python/grovepi.py'):
-            self.logger.info("------------> File exists")
-        else:
-            self.logger.info("------------> File not exists")
-
         # Try twice to get measurement. This prevents an anomaly where
         # the first measurement fails if the sensor has just been powered
         # for the first time.
@@ -158,9 +149,12 @@ class InputModule(AbstractInput):
             except Exception as except_msg:
                 self.logger.error(
                     'Could not initialize sensor. Check if gpiod is running. Error: {msg}'.format(msg=except_msg))
-            self.logger.info("Starting reading on pin {} for sensor type {}".format(self.gpio, self.sensor_type))
-            import grovepid
-            [self.temp_temperature, self.temp_humidity] = grovepid.dht(self.gpio, self.sensor_type)
+            import grovepi
+            if isinstance(self.sensor_type, str):
+                self.sensor_type = int(self.sensor_type)
+            [self.temp_temperature, self.temp_humidity, retval] = grovepi.dht(self.gpio, self.sensor_type)
+            if retval == None:
+                self.logger.error("Error reading from DHT sensor: {}".format(retval))
             self.logger.info("Temp: {}, Hum: {}".format(self.temp_temperature, self.temp_humidity))
             if self.temp_humidity != 0:
                 self.temp_dew_point = calculate_dewpoint(self.temp_temperature, self.temp_humidity)
