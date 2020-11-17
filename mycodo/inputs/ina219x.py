@@ -209,6 +209,7 @@ class InputModule(AbstractInput):
 
         self.sensor = None
         self.calibration = None
+        self.bus_voltage_range = None
         self.bus_adc_resolution = None
         self.shunt_adc_resolution = None
         self.measurements_for_average = None
@@ -332,8 +333,11 @@ class InputModule(AbstractInput):
             )
 
         # set values
-        self.value_set(0, measurement_totals['current'] / measurement_range)
-        self.value_set(1, measurement_totals['bus_v'] / measurement_range)
-        self.value_set(2, measurement_totals['shunt_v'] / measurement_range)
+        if self.is_enabled(0):
+            self.value_set(0, measurement_totals['current'] / measurement_range)
+        if self.is_enabled(1):
+            self.value_set(1, measurement_totals['bus_v'] / measurement_range)
+        if self.is_enabled(2):
+            self.value_set(2, measurement_totals['shunt_v'] / measurement_range)
 
         return self.return_dict
