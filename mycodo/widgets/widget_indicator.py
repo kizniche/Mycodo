@@ -105,9 +105,9 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_head': """<!-- No head content -->""",
 
-    'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
+    'widget_dashboard_title_bar': """<span style="font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
 
-    'widget_dashboard_body': """<div style="text-align: center"><img style="max-width: 60%; max-height: 60%" id="value-{{chart_number}}" src="" alt=""></div>""",
+    'widget_dashboard_body': """<div class="widget-indicator-body"><img id="value-{{chart_number}}" src="" alt=""></div>""",
 
     'widget_dashboard_js': """<!-- No JS content -->""",
 
