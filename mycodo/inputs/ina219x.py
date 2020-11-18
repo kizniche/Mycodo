@@ -6,8 +6,8 @@ Support for Texas Instruments INA219x devices:
 - Adafruit INA219 High Side DC Current Sensor Breakout (Product 904)
 """
 
-import timeit
 import copy
+import timeit
 
 from flask_babel import lazy_gettext
 
@@ -58,7 +58,7 @@ def constraints_pass_adc_resolution(mod_input, value):
 
     if value not in range_pass:
         all_passed = False
-        errors.append("Invalid range. Need one of %s.", range_pass)
+        errors.append("Invalid range. Need one of {}.".format(range_pass))
     return all_passed, errors, mod_input
 
 def constraints_pass_calibration(mod_input, value):
@@ -75,7 +75,7 @@ def constraints_pass_calibration(mod_input, value):
 
     if value not in range_pass:
         all_passed = False
-        errors.append("Invalid range. Need one of %s.", range_pass)
+        errors.append("Invalid range. Need one of {}.".format(range_pass))
     return all_passed, errors, mod_input
 
 def constraints_pass_bus_voltage_range(mod_input, value):
@@ -92,7 +92,7 @@ def constraints_pass_bus_voltage_range(mod_input, value):
 
     if value not in range_pass:
         all_passed = False
-        errors.append("Invalid range. Need one of %s.", range_pass)
+        errors.append("Invalid range. Need one of {}.".format(range_pass))
     return all_passed, errors, mod_input
 
 # Measurements
@@ -122,6 +122,8 @@ INPUT_INFORMATION = {
     'input_library': 'Adafruit_CircuitPython',
     'measurements_name': 'Electrical Current (DC)',
     'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.ti.com/product/INA219',
+    'url_datasheet': 'https://www.ti.com/lit/gpn/ina219',
     'measurements_rescale': True,
     'scale_from_min': 0.0,
     'scale_from_max': 32000.0,

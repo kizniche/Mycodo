@@ -149,7 +149,8 @@ class CustomModule(AbstractController, threading.Thread):
         self.setup_custom_options(
             FUNCTION_INFORMATION['custom_options'], custom_function)
 
-        self.output_channel = self.get_output_channel_from_channel_id(self.output_channel_id)
+        self.output_channel = self.get_output_channel_from_channel_id(
+            self.output_channel_id)
 
         self.initialize_variables()
 
@@ -163,7 +164,6 @@ class CustomModule(AbstractController, threading.Thread):
 
     def run(self):
         try:
-
             if self.output_channel is None:
                 self.logger.error("Cannot start bang-bang controller: Could not find output channel.")
                 self.deactivate_self()
@@ -178,8 +178,9 @@ class CustomModule(AbstractController, threading.Thread):
 
             self.logger.info(
                 "Bang-Bang controller started with options: "
-                "Measurement Device: {}, Measurement: {}, Output: {}, Output_Channel: {}, Setpoint: {}, "
-                "Hysteresis: {}, Direction: {}, Period: {}".format(
+                "Measurement Device: {}, Measurement: {}, Output: {}, "
+                "Output_Channel: {}, Setpoint: {}, Hysteresis: {}, "
+                "Direction: {}, Period: {}".format(
                     self.measurement_device_id,
                     self.measurement_measurement_id,
                     self.output_device_id,
@@ -216,14 +217,14 @@ class CustomModule(AbstractController, threading.Thread):
         if self.direction == 'raise':
             if outputState == 'on':
                 # looking to turn output off
-                if (last_measurement > (self.setpoint + self.hysteresis)):
+                if last_measurement > (self.setpoint + self.hysteresis):
                     self.control.output_off(
                         self.output_device_id,
                         output_channel=self.output_channel,
                         )
             else:
                 # looking to turn output on
-                if (last_measurement < (self.setpoint - self.hysteresis)):
+                if last_measurement < (self.setpoint - self.hysteresis):
                     self.control.output_on(
                         self.output_device_id,
                         output_channel=self.output_channel,
@@ -231,14 +232,14 @@ class CustomModule(AbstractController, threading.Thread):
         elif self.direction == 'lower':
             if outputState == 'on':
                 # looking to turn output off
-                if (last_measurement < (self.setpoint - self.hysteresis)):
+                if last_measurement < (self.setpoint - self.hysteresis):
                     self.control.output_off(
                         self.output_device_id,
                         output_channel=self.output_channel,
                         )
             else:
                 # looking to turn output on
-                if (last_measurement > (self.setpoint + self.hysteresis)):
+                if last_measurement > (self.setpoint + self.hysteresis):
                     self.control.output_on(
                         self.output_device_id,
                         output_channel=self.output_channel,

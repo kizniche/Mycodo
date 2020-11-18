@@ -8,9 +8,16 @@
  - Fix issue with LockFile not locking
  - Fix Output State and Output Duration On Conditional Conditions ([#879](https://github.com/kizniche/mycodo/issues/879))
 
+### Features
+
+ - Add Generic Hall Effect Flow sensor Input
+ - Add INA219 current sensor Input
+ - Add Grove Pi DHT11/22 sensor Input
+ - Add Function: bang-bang/hysteretic
+ - Add Output: GrovePi multi-channel relay I2C board
+
 ### Miscellaneous
 
- - Add Generic Hall Effect Flow Sensor Input
  - Change widget title styles
 
 

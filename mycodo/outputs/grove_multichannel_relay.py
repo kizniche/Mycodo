@@ -2,11 +2,13 @@
 #
 # grove_multichannel_relay.py - Output for the Grove Multichannel Relay
 #
+from flask import flash
 from flask_babel import lazy_gettext
 
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
+
 
 def execute_at_modification(
         mod_output,
@@ -40,7 +42,8 @@ def execute_at_modification(
             mod_output,
             custom_options_dict_postsave,
             custom_options_channels_dict_postsave)
-            
+
+
 def constraints_pass_positive_value(mod_dev, value):
     """
     Check if the user input is acceptable
