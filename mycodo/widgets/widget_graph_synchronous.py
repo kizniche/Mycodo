@@ -51,6 +51,7 @@ def execute_at_creation(new_widget, dict_widget):
     custom_options_json['enable_align_ticks'] = False
     custom_options_json['enable_start_on_tick'] = False
     custom_options_json['enable_end_on_tick'] = False
+    custom_options_json['enable_graph_legend'] = True
     custom_options_json['disable_data_grouping'] = ""
     custom_options_json['custom_yaxes'] = ""
     custom_options_json['custom_colors'] = ""
@@ -77,6 +78,8 @@ def execute_at_modification(
             custom_options_json_postsave['enable_start_on_tick'] = request_form.get(key)
         elif key == 'enable_end_on_tick':
             custom_options_json_postsave['enable_end_on_tick'] = request_form.get(key)
+        elif key == 'enable_graph_legend':
+            custom_options_json_postsave['enable_graph_legend'] = request_form.get(key)
 
     custom_options_json_postsave['custom_yaxes'] = custom_yaxes_str_from_form(request_form)
 
@@ -208,6 +211,13 @@ WIDGET_INFORMATION = {
             'default_value': False,
             'name': 'Enable Range Selector',
             'phrase': 'Enagle the graph range selector.'
+        },
+        {
+            'id': 'enable_graph_legend',
+            'type': 'bool',
+            'default_value': True,
+            'name': 'Enable Graph Legend',
+            'phrase': 'Enable the Graph Legend that is displayed below the graph.'
         },
         {'type': 'new_line'},
         {
@@ -689,7 +699,7 @@ WIDGET_INFORMATION = {
     },
 
     legend: {
-      enabled: true
+      enabled: {% if widget_options['enable_graph_legend'] %}true{% else %}false{% endif %}
     },
 
     xAxis: {
