@@ -127,7 +127,7 @@ LCD_INFO = {
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
             ('pip-pypi', 'PIL', 'Pillow'),
-            ('pip-pypi', 'adafruit_framebuf', 'Adafruit-Circuitpython-Framebuff'),
+            ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf'),
             ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306'),
             ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus')
         ],
@@ -139,7 +139,7 @@ LCD_INFO = {
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
             ('pip-pypi', 'PIL', 'Pillow'),
-            ('pip-pypi', 'adafruit_framebuf', 'Adafruit-Circuitpython-Framebuff'),
+            ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf'),
             ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306'),
             ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus')
         ],
