@@ -329,6 +329,7 @@ def settings_general_mod(form):
                 mod_user = User.query.filter(
                     User.id == flask_login.current_user.id).first()
                 mod_user.landing_page = form.landing_page.data
+                mod_user.index_page = form.index_page.data
                 mod_user.language = form.language.data
 
                 db.session.commit()

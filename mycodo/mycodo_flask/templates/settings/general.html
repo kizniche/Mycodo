@@ -34,6 +34,19 @@
         </div>
       </div>
       <div class="form-group">
+        {{form_settings_general.index_page.label(class_='col-sm-12
+        control-label')}}
+        <div class="col-sm-12">
+          <select class="form-control form-tooltip form-dropdown"
+          data-placement="top" id="index_page" name="index_page" title="{{_('Which page to land on after clicking brand link (top-corner link)')}}">
+            <option value="landing"{% if current_user.index_page == 'landing' %} selected{% endif %}>{{_('Same as Landing Page')}}</option>
+            <option value="info"{% if current_user.index_page == 'info' %} selected{% endif %}>{{_('System Information')}}</option>
+            <option value="dashboard"{% if current_user.index_page == 'dashboard' %} selected{% endif %}>{{_('Dashboard')}}</option>
+            <option value="live"{% if current_user.index_page == 'live' %} selected{% endif %}>{{_('Live')}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
         {{form_settings_general.rpyc_timeout.label(class_='col-sm-12 control-label checkbox-nopad')}}
         <div class="col-sm-12">
           {{form_settings_general.rpyc_timeout(class_='form-control', value=misc.rpyc_timeout, **{'title':_("Set the timeout (seconds) for Pyro connections (client-daemon communication). Requires daemon restart.")})}}

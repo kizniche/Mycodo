@@ -227,5 +227,6 @@ user_fields = api.model('User Settings Fields', {
     "role_id": fields.Integer,
     "theme": fields.String,
     "landing_page": fields.String,
+    "index_page": fields.String,
     "language": fields.String
 })
