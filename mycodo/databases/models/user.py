@@ -21,6 +21,7 @@ class User(UserMixin, CRUDMixin, db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), default=None)
     theme = db.Column(db.VARCHAR(64))
     landing_page = db.Column(db.Text, default='live')
+    index_page = db.Column(db.Text, default='landing')
     language = db.Column(db.Text, default=None)  # Force the web interface to use a specific language
     password_reset_code = db.Column(db.Text, default=None)
     password_reset_code_expiration = db.Column(db.DateTime, default=None)

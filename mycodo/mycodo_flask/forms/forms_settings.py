@@ -87,6 +87,7 @@ class SettingsEmail(FlaskForm):
 
 class SettingsGeneral(FlaskForm):
     landing_page = StringField(lazy_gettext('Landing Page'))
+    index_page = StringField(lazy_gettext('Index Page'))
     language = StringField(lazy_gettext('Language'))
     rpyc_timeout = StringField(lazy_gettext('Pyro Timeout'))
     daemon_debug_mode = BooleanField(lazy_gettext('Enable Daemon Debug Logging'))

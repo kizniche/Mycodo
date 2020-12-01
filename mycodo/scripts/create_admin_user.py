@@ -58,6 +58,7 @@ try:
         new_user.role_id = 1
         new_user.theme = 'slate'
         new_user.landing_page = 'live'
+        new_user.index_page = 'landing'
         new_user.language = 'en'
         db_session.add(new_user)
 
