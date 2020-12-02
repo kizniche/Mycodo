@@ -15,6 +15,7 @@
  - Add Grove Pi DHT11/22 sensor Input
  - Add Function: bang-bang/hysteretic
  - Add Output: GrovePi multi-channel relay I2C board
+ - Add configurable link for navbar brand link
 
 ### Miscellaneous
 

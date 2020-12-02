@@ -19,6 +19,13 @@ def upgrade():
     with op.batch_alter_table("users") as batch_op:
         batch_op.add_column(sa.Column('index_page', sa.String))
 
+        op.execute(
+            '''
+            UPDATE users
+            SET index_page='info'
+            '''
+        )
+
 
 def downgrade():
     with op.batch_alter_table("users") as batch_op:
