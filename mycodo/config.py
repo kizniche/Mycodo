@@ -70,7 +70,7 @@ CAMERA_INFO = {
             ('apt', 'fswebcam', 'fswebcam')
         ],
         'capable_image': True,
-        'capable_stream': True
+        'capable_stream': False
     },
     'opencv': {
         'name': 'OpenCV',
@@ -105,7 +105,7 @@ CAMERA_INFO = {
             ('apt', 'python3-opencv', 'python3-opencv'),
         ],
         'capable_image': True,
-        'capable_stream': True
+        'capable_stream': False
     },
 }
 

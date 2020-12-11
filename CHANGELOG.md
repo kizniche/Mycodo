@@ -7,6 +7,7 @@
  - Fix Autotune PID Function ([#876](https://github.com/kizniche/mycodo/issues/876))
  - Fix issue with LockFile not locking
  - Fix Output State and Output Duration On Conditional Conditions ([#879](https://github.com/kizniche/mycodo/issues/879))
+ - Fix not showing camera stream buttons for cameras libraries that don't have stream support ([#899](https://github.com/kizniche/mycodo/issues/899))
 
 ### Features
 
