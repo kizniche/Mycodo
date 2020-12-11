@@ -289,6 +289,9 @@ TRANSLATIONS = {
     'output_amount_duration': {
         'title': lazy_gettext('Duration'),
         'phrase': lazy_gettext('Duration to send to output controller')},
+    'output_amount_voltage': {
+        'title': lazy_gettext('Voltage'),
+        'phrase': lazy_gettext('Voltage to send to output controller')},
     'output_amount_volume': {
         'title': lazy_gettext('Volume'),
         'phrase': lazy_gettext('Volume to send to output controller')},

@@ -100,7 +100,7 @@
                     if (states[i] === 'on') {
                       document.getElementById(output_id + "-" + i + "-input-output-state").value = '{{_('Active')}}';
                     } else {
-                      document.getElementById(output_id + "-" + i + "-input-output-state").value = '{{_('Active')}}, ' + states[0].toFixed(1) + '%';
+                      document.getElementById(output_id + "-" + i + "-input-output-state").value = '{{_('Active')}}, ' + states[i].toFixed(1);
                     }
                   } else {
                     document.getElementById(output_id + "-" + i + "-output-state").className = "row small-gutters inactive-background";
@@ -447,6 +447,7 @@
               {% endif %}
 
           {% if 'button_send_duration' in dict_options['options_enabled'] or
+                'button_send_voltage' in dict_options['options_enabled'] or
                 'button_send_volume' in dict_options['options_enabled'] or
                 'button_send_duty_cycle' in dict_options['options_enabled']  %}
 
@@ -462,6 +463,20 @@
             </div>
             <div class="col-auto">
               <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/sec/" type="button" value="{{_('Send')}}">
+            </div>
+
+            {% endif %}
+
+            {% if 'button_send_voltage' in dict_options['options_enabled'] %}
+
+            <div class="col-auto">
+              <label class='form-check-label'>{{dict_translation['output_amount_voltage']['title']}}</label>
+              <div>
+                <input class="form-control" id="volt_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" name="volt_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['output_amount_voltage']['phrase']}}" type="text" value="">
+              </div>
+            </div>
+            <div class="col-auto">
+              <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/volt/" type="button" value="{{_('Send')}}">
             </div>
 
             {% endif %}

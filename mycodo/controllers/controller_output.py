@@ -234,7 +234,7 @@ class OutputController(AbstractController, threading.Thread):
         :type state: str or int or bool
         :param output_channel: The output channel
         :type output_channel: int
-        :param output_type: The type of output ('sec', 'vol', 'pwm')
+        :param output_type: The type of output ('sec', 'vol', 'volt', 'pwm')
         :type output_type: str
         :param amount: If state is 'on', an amount can be set (e.g. duration to stay on, volume to output, etc.)
         :type amount: float
@@ -251,6 +251,31 @@ class OutputController(AbstractController, threading.Thread):
             amount,
             min_off,
             trigger_conditionals))
+
+        if output_id not in self.output:
+            msg = "Output {} not found".format(output_id)
+            self.logger.error(msg)
+            return 1, msg
+
+        # # TODO: Unimplemented until speed of current_amp_load() execution can be tested
+        # # Checks if device is not on and instructed to turn on and will exceed max amp load
+        # if (state == 'on' and
+        #         self.output_type[output_id] in ['sec', 'vol'] and
+        #         not self.is_on(output_id, output_channel=output_channel)):
+        #     # Check if max amperage will be exceeded
+        #     current_amps = self.current_amp_load()
+        #     max_amps = db_retrieve_table_daemon(
+        #         Misc, entry='first').max_amps
+        #     if current_amps + self.output_amps[output_id] > max_amps:
+        #         msg = "Cannot turn output {} On. If this output " \
+        #               "turns on, there will be {} amps being drawn, " \
+        #               "which exceeds the maximum set draw of {} " \
+        #               "amps.".format(
+        #             output_id,
+        #             current_amps,
+        #             max_amps)
+        #         self.logger.warning(msg)
+        #         return 1, msg
 
         return self.output[output_id].output_on_off(
             state,
@@ -269,24 +294,27 @@ class OutputController(AbstractController, threading.Thread):
         else:
             return [1, 'Invalid output_setup action']
 
-    def current_amp_load(self):
+    def current_amp_load(self):  # TODO: Unimplemented until speed of current_amp_load() execution can be tested
         """
         Calculate the sum of amps drawn from all outputs currently on
 
         :return: total Amperage draw
         :rtype: float
         """
+        from mycodo.databases.models import OutputChannel
         amp_load = 0.0
-        for each_output_id, each_output_amps in self.output_amps.items():
-            if self.is_on(each_output_id) and each_output_amps:
-                amp_load += each_output_amps
-        return amp_load
 
-        # total_amps = 0
-        # for output_id in self.output_unique_id:
-        #     for each_channel in self.output_unique_id[output_id]:
-        #         total_amps += self.output[output_id].current_amps(each_channel)
-        # return total_amps
+        for each_output_id in self.output:
+            output_channels = db_retrieve_table_daemon(
+                OutputChannel).filter(OutputChannel.output_id == each_output_id).all()
+            self.setup_custom_channel_options_json(
+                self.output[each_output_id].OUTPUT_INFORMATION['custom_channel_options'], output_channels)
+            channels_amps = self.output[each_output_id].options_channels['amps']
+            for each_channel in channels_amps:
+                if self.is_on(each_output_id, output_channel=each_channel) and channels_amps[each_channel]:
+                    amp_load += channels_amps[each_channel]
+
+        return amp_load
 
     def output_sec_currently_on(self, output_id, output_channel):
         return self.output[output_id].output_sec_currently_on(output_channel)
@@ -316,6 +344,8 @@ class OutputController(AbstractController, threading.Thread):
 
         :param output_id: Unique ID for each output
         :type output_id: str
+        :param output_channel: Channel each output
+        :type output_id: int
 
         :return: Whether the output is currently On (True) or Off (False)
         :rtype: bool
