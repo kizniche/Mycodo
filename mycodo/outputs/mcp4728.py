@@ -94,8 +94,8 @@ OUTPUT_INFORMATION = {
     'interfaces': ['I2C'],
     'i2c_location': ['0x60'],
     'i2c_address_editable': True,
-    
-    'custom_channel_options': [
+
+    'custom_options': [
         {
             'id': 'vref',
             'type': 'float',
@@ -103,95 +103,32 @@ OUTPUT_INFORMATION = {
             'constraints_pass': constraints_pass_positive_value,
             'name': 'VREF (volts)',
             'phrase': 'Set the VREF voltage'
-        },
+        }
+    ],
+
+    'custom_channel_options': [
         {
-            'id': 'a_vref',
+            'id': 'vref',
             'type': 'select',
             'default_value': 'internal',
             'options_select': [
                 ('internal', 'Internal'),
                 ('vdd', 'VDD')
             ],
-            'name': 'Channel A VREF',
-            'phrase': 'Select the VREF for channel A'
+            'name': 'VREF',
+            'phrase': 'Select the channel VREF'
         },
         {
-            'id': 'a_gain',
+            'id': 'gain',
             'type': 'select',
             'default_value': 1,
             'options_select': [
                 (1, '1X'),
                 (2, '2X')
             ],
-            'name': 'Channel A Gain',
-            'phrase': 'Select the Gain for channel A'
-        },
-        {
-            'id': 'b_vref',
-            'type': 'select',
-            'default_value': 'Internal',
-            'options_select': [
-                ('internal', 'Internal'),
-                ('vdd', 'VDD')
-            ],
-            'name': 'Channel B VREF',
-            'phrase': 'Select the VREF for channel B'
-        },
-        {
-            'id': 'b_gain',
-            'type': 'select',
-            'default_value': 1,
-            'options_select': [
-                (1, '1X'),
-                (2, '2X')
-            ],
-            'name': 'Channel B Gain',
-            'phrase': 'Select the Gain for channel B'
-        },
-        {
-            'id': 'c_vref',
-            'type': 'select',
-            'default_value': 'Internal',
-            'options_select': [
-                ('internal', 'Internal'),
-                ('vdd', 'VDD')
-            ],
-            'name': 'Channel C VREF',
-            'phrase': 'Select the VREF for channel C'
-        },
-        {
-            'id': 'c_gain',
-            'type': 'select',
-            'default_value': 1,
-            'options_select': [
-                (1, '1X'),
-                (2, '2X')
-            ],
-            'name': 'Channel C Gain',
-            'phrase': 'Select the Gain for channel C'
-        },
-        {
-            'id': 'd_vref',
-            'type': 'select',
-            'default_value': 'Internal',
-            'options_select': [
-                ('internal', 'Internal'),
-                ('vdd', 'VDD')
-            ],
-            'name': 'Channel D VREF',
-            'phrase': 'Select the VREF for channel D'
-        },
-        {
-            'id': 'd_gain',
-            'type': 'select',
-            'default_value': 1,
-            'options_select': [
-                (1, '1X'),
-                (2, '2X')
-            ],
-            'name': 'Channel D Gain',
-            'phrase': 'Select the Gain for channel D'
-        },
+            'name': 'Gain',
+            'phrase': 'Select the channel Gain'
+        }
     ]
 }
 
@@ -248,32 +185,32 @@ class OutputModule(AbstractOutput):
             }
 
             # Channel A
-            if self.a_vref == "internal":
+            if self.options_channels['vref'][0] == "internal":
                 self.channel[0].vref = adafruit_mcp4728.Vref.INTERNAL
             else:
                 self.channel[0].vref = adafruit_mcp4728.Vref.VDD
-            self.channel[0].gain = self.a_gain
+            self.channel[0].gain = self.options_channels['gain'][0]
 
             # Channel B
-            if self.b_vref == "internal":
+            if self.options_channels['vref'][1] == "internal":
                 self.channel[1].vref = adafruit_mcp4728.Vref.INTERNAL
             else:
                 self.channel[1].vref = adafruit_mcp4728.Vref.VDD
-            self.channel[1].gain = self.b_gain
+            self.channel[1].gain = self.options_channels['gain'][1]
 
             # Channel C
-            if self.c_vref == "internal":
+            if self.options_channels['vref'][2] == "internal":
                 self.channel[2].vref = adafruit_mcp4728.Vref.INTERNAL
             else:
                 self.channel[2].vref = adafruit_mcp4728.Vref.VDD
-            self.channel[2].gain = self.c_gain
+            self.channel[2].gain = self.options_channels['gain'][2]
 
             # Channel D
-            if self.d_vref == "internal":
+            if self.options_channels['vref'][3] == "internal":
                 self.channel[3].vref = adafruit_mcp4728.Vref.INTERNAL
             else:
                 self.channel[3].vref = adafruit_mcp4728.Vref.VDD
-            self.channel[3].gain = self.d_gain
+            self.channel[3].gain = self.options_channels['gain'][3]
 
             self.dac.save_settings()
 
