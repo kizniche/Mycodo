@@ -81,7 +81,7 @@
   <div class="col-auto">
     {{form_mod_input_measurement.invert_scale.label(class_='control-label')}}
     <div class="input-group-text">
-    {%- if each_measurement.invert_scale == 'True' -%}
+    {%- if each_measurement.invert_scale -%}
       {{form_mod_input_measurement.invert_scale(checked=True, class_='checkbox-big', **{'title': dict_translation['invert_scale']['phrase']})}}
     {%- else -%}
       {{form_mod_input_measurement.invert_scale(class_='checkbox-big', **{'title': dict_translation['invert_scale']['phrase']})}}
