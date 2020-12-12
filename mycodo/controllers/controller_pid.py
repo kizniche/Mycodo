@@ -527,11 +527,12 @@ class PIDController(AbstractController, threading.Thread):
 
                         if self.raise_seconds_on > self.raise_min_duration:
                             # Activate raise_output for a duration
-                            self.logger.debug("Setpoint: {sp} Output: {cv} to output {id} CH{ch}".format(
+                            self.logger.debug("Setpoint: {sp} Output: {cv} sec to output {id} CH{ch}".format(
                                 sp=self.PID_Controller.setpoint,
                                 cv=self.PID_Controller.control_variable,
                                 id=self.raise_output_id,
                                 ch=self.raise_output_channel))
+
                             self.control.output_on(
                                 self.raise_output_id,
                                 output_type='sec',
@@ -542,6 +543,24 @@ class PIDController(AbstractController, threading.Thread):
                         self.write_pid_output_influxdb(
                             's', 'duration_time', 6, self.PID_Controller.control_variable)
 
+                    elif self.raise_output_type == 'volt':
+                        # Activate raise_output for a voltage (V)
+                        self.logger.debug("Setpoint: {sp} Output: {cv} V to output {id} CH{ch}".format(
+                            sp=self.PID_Controller.setpoint,
+                            cv=self.PID_Controller.control_variable,
+                            id=self.raise_output_id,
+                            ch=self.raise_output_channel))
+
+                        self.control.output_on(
+                            self.raise_output_id,
+                            output_type='volt',
+                            amount=self.PID_Controller.control_variable,
+                            min_off=self.raise_min_off_duration,
+                            output_channel=self.raise_output_channel)
+
+                        self.write_pid_output_influxdb(
+                            'V', 'electrical_potential', 9, self.PID_Controller.control_variable)
+
                     elif self.raise_output_type == 'volume':
                         # Activate raise_output for a volume (ml)
                         self.logger.debug("Setpoint: {sp} Output: {cv} ml to output {id} CH{ch}".format(
@@ -549,6 +568,7 @@ class PIDController(AbstractController, threading.Thread):
                             cv=self.PID_Controller.control_variable,
                             id=self.raise_output_id,
                             ch=self.raise_output_channel))
+
                         self.control.output_on(
                             self.raise_output_id,
                             output_type='vol',
@@ -632,7 +652,7 @@ class PIDController(AbstractController, threading.Thread):
 
                         if self.lower_seconds_on > self.lower_min_duration:
                             # Activate lower_output for a duration
-                            self.logger.debug("Setpoint: {sp} Output: {cv} to output {id} CH{ch}".format(
+                            self.logger.debug("Setpoint: {sp} Output: {cv} sec to output {id} CH{ch}".format(
                                 sp=self.PID_Controller.setpoint,
                                 cv=self.PID_Controller.control_variable,
                                 id=self.lower_output_id,
@@ -648,6 +668,31 @@ class PIDController(AbstractController, threading.Thread):
                         self.write_pid_output_influxdb(
                             's', 'duration_time', 6, stored_control_variable)
 
+                    elif self.lower_output_type == 'volt':
+                        if self.store_lower_as_negative:
+                            stored_amount_on = -abs(self.lower_seconds_on)
+                            stored_control_variable = -abs(self.PID_Controller.control_variable)
+                        else:
+                            stored_amount_on = abs(self.lower_seconds_on)
+                            stored_control_variable = abs(self.PID_Controller.control_variable)
+
+                        # Activate lower_output for a voltage (V)
+                        self.logger.debug("Setpoint: {sp} Output: {cv} V to output {id} CH{ch}".format(
+                            sp=self.PID_Controller.setpoint,
+                            cv=self.PID_Controller.control_variable,
+                            id=self.lower_output_id,
+                            ch=self.lower_output_channel))
+
+                        self.control.output_on(
+                            self.lower_output_id,
+                            output_type='volt',
+                            amount=stored_amount_on,
+                            min_off=self.lower_min_off_duration,
+                            output_channel=self.lower_output_channel)
+
+                        self.write_pid_output_influxdb(
+                            'V', 'electrical_potential', 9, stored_control_variable)
+
                     elif self.lower_output_type == 'volume':
                         if self.store_lower_as_negative:
                             stored_amount_on = -abs(self.lower_seconds_on)
@@ -657,7 +702,7 @@ class PIDController(AbstractController, threading.Thread):
                             stored_control_variable = abs(self.PID_Controller.control_variable)
 
                         # Activate lower_output for a volume (ml)
-                        self.logger.debug("Setpoint: {sp} Output: {cv} to output {id} CH{ch}".format(
+                        self.logger.debug("Setpoint: {sp} Output: {cv} ml to output {id} CH{ch}".format(
                             sp=self.PID_Controller.setpoint,
                             cv=self.PID_Controller.control_variable,
                             id=self.lower_output_id,

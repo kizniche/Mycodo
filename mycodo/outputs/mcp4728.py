@@ -47,18 +47,22 @@ measurements_dict = {
 
 channels_dict = {
     0: {
+        'name': 'Channel A',
         'types': ['volt'],
         'measurements': [0]
     },
     1: {
+        'name': 'Channel B',
         'types': ['volt'],
         'measurements': [1]
     },
     2: {
+        'name': 'Channel C',
         'types': ['volt'],
         'measurements': [2]
     },
     3: {
+        'name': 'Channel D',
         'types': ['volt'],
         'measurements': [3]
     }

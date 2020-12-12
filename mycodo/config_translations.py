@@ -179,6 +179,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Upload')},
     'user': {
         'title': lazy_gettext('User')},
+    'voltage': {
+        'title': lazy_gettext('Voltage')},
     'volume': {
         'title': lazy_gettext('Volume')},
     'widget': {

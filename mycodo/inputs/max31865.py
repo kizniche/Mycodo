@@ -232,7 +232,7 @@ class max31865_sen(object):
         self.GPIO.output(self.csPin, self.GPIO.LOW)
 
         # 0x8x to specify 'write register value'
-        addressByte = 0x80 | regNum;
+        addressByte = 0x80 | regNum
 
         # first byte is address byte
         self.sendByte(addressByte)
@@ -258,7 +258,7 @@ class max31865_sen(object):
     def sendByte(self, byte):
         for _ in range(8):
             self.GPIO.output(self.clkPin, self.GPIO.HIGH)
-            if (byte & 0x80):
+            if byte & 0x80:
                 self.GPIO.output(self.mosiPin, self.GPIO.HIGH)
             else:
                 self.GPIO.output(self.mosiPin, self.GPIO.LOW)
@@ -316,7 +316,7 @@ class max31865_sen(object):
         # temp_C_numpy = abs(temp_C_numpy[-1])
         # print("Solving Full Callendar-Van Dusen using numpy: {}".format(temp_C_numpy))
 
-        if (temp_C < 0):  # use straight line approximation if less than 0
+        if temp_C < 0:  # use straight line approximation if less than 0
             # Can also use python lib numpy to solve cubic
             # Should never get here in this application
             temp_C_line = (RTD_ADC_Code / 32.0) - 256.0

@@ -416,6 +416,13 @@ PID_INFO = {
             'name': '{} ({})'.format(
                 TRANSLATIONS['output']['title'],
                 TRANSLATIONS['volume']['title'])
+        },
+        9: {
+            'measurement': 'voltage',
+            'unit': 'V',
+            'name': '{} ({})'.format(
+                TRANSLATIONS['output']['title'],
+                TRANSLATIONS['voltage']['title'])
         }
     }
 }
