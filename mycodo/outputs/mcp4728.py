@@ -286,8 +286,8 @@ class OutputModule(AbstractOutput):
             self.output_setup = True
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
-        if state == 'on' and amount and output_channel:
-            self.channel[output_channel].value = 65535  # Voltage = VDD
+        if state == 'on' and amount and output_channel is not None:
+            self.channel[output_channel].value = int(65535 * (amount / self.vref))
         elif state == 'off' or (amount is not None and amount <= 0):
             self.channel[output_channel].value = 0
         else:
