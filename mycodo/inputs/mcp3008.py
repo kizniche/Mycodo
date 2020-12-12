@@ -6,6 +6,22 @@ import copy
 
 from mycodo.inputs.base_input import AbstractInput
 
+
+def constraints_pass_positive_value(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: float or int
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure value is positive
+    if value <= 0:
+        all_passed = False
+        errors.append("Must be a positive value")
+    return all_passed, errors, mod_input
+
 # Measurements
 measurements_dict = OrderedDict()
 for each_channel in range(4):
@@ -50,7 +66,18 @@ INPUT_INFORMATION = {
     'pin_cs': 8,
     'pin_miso': 9,
     'pin_mosi': 10,
-    'pin_clock': 11
+    'pin_clock': 11,
+
+    'custom_channel_options': [
+        {
+            'id': 'vref',
+            'type': 'float',
+            'default_value': 3.3,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'VREF (volts)',
+            'phrase': 'Set the VREF voltage'
+        }
+    ]
 }
 
 
@@ -60,15 +87,16 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
-        self.scale_from_max = None
+        self.vref = None
+
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
             self.initialize_input()
 
     def initialize_input(self):
         import Adafruit_MCP3008
-
-        self.scale_from_max = self.input_dev.scale_from_max
 
         self.sensor = Adafruit_MCP3008.MCP3008(
             clk=self.input_dev.pin_clock,
@@ -85,6 +113,6 @@ class InputModule(AbstractInput):
 
         for channel in self.channels_measurement:
             if self.is_enabled(channel):
-                self.value_set(channel, ((self.sensor.read_adc(channel) / 1023.0) * self.scale_from_max))
+                self.value_set(channel, ((self.sensor.read_adc(channel) / 1024.0) * self.vref))
 
         return self.return_dict

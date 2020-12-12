@@ -9,6 +9,7 @@
  - Fix Output State and Output Duration On Conditional Conditions ([#879](https://github.com/kizniche/mycodo/issues/879))
  - Fix not showing camera stream buttons for cameras libraries that don't have stream support ([#899](https://github.com/kizniche/mycodo/issues/899))
  - Fix Clock Pin option showing twice for UART Inputs
+ - Fix MCP3008 Input error ([#902](https://github.com/kizniche/mycodo/issues/902))
 
 ### Features
 
