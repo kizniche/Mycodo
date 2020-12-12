@@ -1,5 +1,6 @@
-{% if 'pin_clock' in dict_options['options_disabled'] or
-      'pin_clock' in dict_options['options_enabled']
+{% if ('pin_clock' in dict_options['options_disabled'] or
+      'pin_clock' in dict_options['options_enabled']) and
+      each_device.interface != 'UART'
   %}
 
 <div class="col-auto">
