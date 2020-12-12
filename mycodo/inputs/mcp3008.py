@@ -68,7 +68,7 @@ INPUT_INFORMATION = {
     'pin_mosi': 10,
     'pin_clock': 11,
 
-    'custom_channel_options': [
+    'custom_options': [
         {
             'id': 'vref',
             'type': 'float',
