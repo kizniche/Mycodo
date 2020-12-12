@@ -248,7 +248,6 @@ class OutputModule(AbstractOutput):
             }
 
             # Channel A
-            self.channel[0].raw_value = int(self.vref * 1000 / 2)  # VDD/2
             if self.a_vref == "internal":
                 self.channel[0].vref = adafruit_mcp4728.Vref.INTERNAL
             else:
@@ -256,7 +255,6 @@ class OutputModule(AbstractOutput):
             self.channel[0].gain = self.a_gain
 
             # Channel B
-            self.channel[1].raw_value = int(self.vref * 1000 / 2)  # VDD/2
             if self.b_vref == "internal":
                 self.channel[1].vref = adafruit_mcp4728.Vref.INTERNAL
             else:
@@ -264,7 +262,6 @@ class OutputModule(AbstractOutput):
             self.channel[1].gain = self.b_gain
 
             # Channel C
-            self.channel[2].raw_value = int(self.vref * 1000 / 2)  # VDD/2
             if self.c_vref == "internal":
                 self.channel[2].vref = adafruit_mcp4728.Vref.INTERNAL
             else:
@@ -272,7 +269,6 @@ class OutputModule(AbstractOutput):
             self.channel[2].gain = self.c_gain
 
             # Channel D
-            self.channel[3].raw_value = int(self.vref * 1000 / 2)  # VDD/2
             if self.d_vref == "internal":
                 self.channel[3].vref = adafruit_mcp4728.Vref.INTERNAL
             else:
