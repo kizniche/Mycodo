@@ -25,6 +25,22 @@ def constraints_pass_positive_value(mod_input, value):
     return all_passed, errors, mod_input
 
 
+def constraints_pass_positive_or_zero_value(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: float or int
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure value is positive
+    if value < 0:
+        all_passed = False
+        errors.append("Must be zero or a positive value")
+    return all_passed, errors, mod_input
+
+
 # Measurements
 measurements_dict = {
     0: {
@@ -130,6 +146,44 @@ OUTPUT_INFORMATION = {
             ],
             'name': 'Gain',
             'phrase': 'Select the channel Gain'
+        },
+        {
+            'id': 'state_start',
+            'type': 'select',
+            'default_value': 'saved',
+            'options_select': [
+                ('saved', 'Previously-Saved State'),
+                ('value', 'Specified Value')
+            ],
+            'name': 'Start State',
+            'phrase': 'Select the channel start state'
+        },
+        {
+            'id': 'state_start_value',
+            'type': 'float',
+            'default_value': 0,
+            'constraints_pass': constraints_pass_positive_or_zero_value,
+            'name': 'Start Value (volts)',
+            'phrase': 'If Specified Value is selected, set the start state value'
+        },
+        {
+            'id': 'state_shutdown',
+            'type': 'select',
+            'default_value': 'saved',
+            'options_select': [
+                ('saved', 'Previously-Saved Value'),
+                ('value', 'Specified Value')
+            ],
+            'name': 'Shutdown State',
+            'phrase': 'Select the channel shutdown state'
+        },
+        {
+            'id': 'state_shutdown_value',
+            'type': 'float',
+            'default_value': 0,
+            'constraints_pass': constraints_pass_positive_or_zero_value,
+            'name': 'Shutdown Value (volts)',
+            'phrase': 'If Specified Value is selected, set the shutdown state value'
         }
     ]
 }
@@ -179,6 +233,10 @@ class OutputModule(AbstractOutput):
             else:
                 self.channel[0].vref = adafruit_mcp4728.Vref.VDD
             self.channel[0].gain = self.options_channels['gain'][0]
+            if (self.options_channels['state_start'][0] == "value" and
+                    self.options_channels['state_start_value'][0]):
+                self.channel[0].value = int(65535 * (
+                    self.options_channels['state_start_value'][0] / self.vref))
 
             # Channel B
             if self.options_channels['vref'][1] == "internal":
@@ -186,6 +244,10 @@ class OutputModule(AbstractOutput):
             else:
                 self.channel[1].vref = adafruit_mcp4728.Vref.VDD
             self.channel[1].gain = self.options_channels['gain'][1]
+            if (self.options_channels['state_start'][1] == "value" and
+                    self.options_channels['state_start_value'][1]):
+                self.channel[1].value = int(65535 * (
+                    self.options_channels['state_start_value'][1] / self.vref))
 
             # Channel C
             if self.options_channels['vref'][2] == "internal":
@@ -193,6 +255,10 @@ class OutputModule(AbstractOutput):
             else:
                 self.channel[2].vref = adafruit_mcp4728.Vref.VDD
             self.channel[2].gain = self.options_channels['gain'][2]
+            if (self.options_channels['state_start'][2] == "value" and
+                    self.options_channels['state_start_value'][2]):
+                self.channel[2].value = int(65535 * (
+                    self.options_channels['state_start_value'][2] / self.vref))
 
             # Channel D
             if self.options_channels['vref'][3] == "internal":
@@ -200,6 +266,10 @@ class OutputModule(AbstractOutput):
             else:
                 self.channel[3].vref = adafruit_mcp4728.Vref.VDD
             self.channel[3].gain = self.options_channels['gain'][3]
+            if (self.options_channels['state_start'][3] == "value" and
+                    self.options_channels['state_start_value'][3]):
+                self.channel[3].value = int(65535 * (
+                    self.options_channels['state_start_value'][3] / self.vref))
 
             self.dac.save_settings()
 
@@ -232,3 +302,27 @@ class OutputModule(AbstractOutput):
         if self.output_setup:
             return True
         return False
+
+    def stop_output(self):
+        """ Called when Output is stopped """
+        if (self.options_channels['state_shutdown'][0] == "value" and
+                self.options_channels['state_shutdown_value'][0]):
+            self.channel[0].value = int(65535 * (
+                    self.options_channels['state_shutdown_value'][0] / self.vref))
+
+        if (self.options_channels['state_shutdown'][1] == "value" and
+                self.options_channels['state_shutdown_value'][1]):
+            self.channel[1].value = int(65535 * (
+                    self.options_channels['state_shutdown_value'][1] / self.vref))
+
+        if (self.options_channels['state_shutdown'][2] == "value" and
+                self.options_channels['state_shutdown_value'][2]):
+            self.channel[2].value = int(65535 * (
+                    self.options_channels['state_shutdown_value'][2] / self.vref))
+
+        if (self.options_channels['state_shutdown'][3] == "value" and
+                self.options_channels['state_shutdown_value'][3]):
+            self.channel[3].value = int(65535 * (
+                    self.options_channels['state_shutdown_value'][3] / self.vref))
+
+        self.running = False
