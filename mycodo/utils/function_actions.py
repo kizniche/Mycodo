@@ -469,6 +469,30 @@ def action_output_ramp_pwm(cond_action, message):
     return message
 
 
+def action_output_value(cond_action, message):
+    output_id = cond_action.do_unique_id.split(",")[0]
+    channel_id = cond_action.do_unique_id.split(",")[1]
+    output_channel = db_retrieve_table_daemon(OutputChannel).filter(
+        OutputChannel.unique_id == channel_id).first()
+    control = DaemonControl()
+    this_output = db_retrieve_table_daemon(Output, unique_id=output_id, entry='first')
+    message += " Output {unique_id} CH{ch} ({id}, {name}) of {val}.".format(
+        unique_id=output_id,
+        ch=channel_id,
+        id=this_output.id,
+        name=this_output.name,
+        val=cond_action.do_output_pwm)
+
+    output_on = threading.Thread(
+        target=control.output_on,
+        args=(output_id,),
+        kwargs={'output_type': 'value',
+                'amount': cond_action.do_output_amount,
+                'output_channel': output_channel.channel})
+    output_on.start()
+    return message
+
+
 def action_output_volume(cond_action, message):
     output_id = cond_action.do_unique_id.split(",")[0]
     channel_id = cond_action.do_unique_id.split(",")[1]
@@ -1024,6 +1048,10 @@ def trigger_action(
                 0 <= cond_action.do_output_pwm2 <= 100 and
                 cond_action.do_output_duration > 0):
             message = action_output_ramp_pwm(cond_action, message)
+        elif (cond_action.action_type == 'output_value' and
+                cond_action.do_unique_id and
+                cond_action.do_output_amount > 0):
+            message = action_output_value(cond_action, message)
         elif (cond_action.action_type == 'output_volume' and
                 cond_action.do_unique_id and
                 cond_action.do_output_amount > 0):

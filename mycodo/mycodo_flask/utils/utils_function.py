@@ -343,6 +343,10 @@ def action_mod(form):
             mod_action.do_action_string = form.do_action_string.data
             mod_action.do_output_duration = form.do_output_duration.data
 
+        elif mod_action.action_type == 'output_value':
+            mod_action.do_unique_id = form.do_unique_id.data
+            mod_action.do_output_amount = form.do_output_amount.data
+
         elif mod_action.action_type == 'output_volume':
             mod_action.do_unique_id = form.do_unique_id.data
             mod_action.do_output_amount = form.do_output_amount.data
@@ -540,6 +544,11 @@ def check_form_actions(form, error):
             error.append("Output must be set")
         if form.do_output_pwm.data < 0 or form.do_output_pwm.data > 100 or form.do_output_pwm.data == '':
             error.append("Duty Cycle must be set (0 <= duty cycle <= 100)")
+    elif action.action_type == 'output_value':
+        if not form.do_unique_id.data or form.do_unique_id.data == '':
+            error.append("Output must be set")
+        if not form.do_output_amount.data:
+            error.append("Value must be set")
     elif action.action_type == 'output_volume':
         if not form.do_unique_id.data or form.do_unique_id.data == '':
             error.append("Output must be set")

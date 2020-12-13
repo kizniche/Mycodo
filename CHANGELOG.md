@@ -16,6 +16,7 @@
 
  - Add Digital-to-Analog Converter output support (and add MCP4728) ([#893](https://github.com/kizniche/mycodo/issues/893))
  - Add Stepper Motor Controller output support (and add DRV8825) ([#857](https://github.com/kizniche/mycodo/issues/857))
+ - Add Function Action: Output Value
  - Add Input: MAX31865 (CircuitPython) ([#900](https://github.com/kizniche/mycodo/issues/900))
  - Add Generic Hall Effect Flow sensor Input
  - Add INA219 current sensor Input

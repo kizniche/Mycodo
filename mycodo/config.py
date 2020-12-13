@@ -679,6 +679,12 @@ FUNCTION_ACTION_INFO = {
             TRANSLATIONS['duty_cycle']['title']),
         'dependencies_module': []
     },
+    'output_value': {
+        'name': '{} ({})'.format(
+            TRANSLATIONS['output']['title'],
+            TRANSLATIONS['value']['title']),
+        'dependencies_module': []
+    },
     'output_volume': {
         'name': '{} ({})'.format(
             TRANSLATIONS['output']['title'],
@@ -760,6 +766,7 @@ FUNCTION_ACTIONS = [
     ('output', FUNCTION_ACTION_INFO['output']['name']),
     ('output_pwm', FUNCTION_ACTION_INFO['output_pwm']['name']),
     ('output_ramp_pwm', FUNCTION_ACTION_INFO['output_ramp_pwm']['name']),
+    ('output_value', FUNCTION_ACTION_INFO['output_value']['name']),
     ('output_volume', FUNCTION_ACTION_INFO['output_volume']['name']),
     ('pause_pid', FUNCTION_ACTION_INFO['pause_pid']['name']),
     ('resume_pid', FUNCTION_ACTION_INFO['resume_pid']['name']),
