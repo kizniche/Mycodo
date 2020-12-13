@@ -3,6 +3,7 @@
 # stepper_ drv8825.py - Output for DRV-8825 stepper controller
 #
 import copy
+import time
 
 from flask_babel import lazy_gettext
 
@@ -78,7 +79,7 @@ OUTPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'rpi_python_drv8825', 'rpi_python_drv8825')
+        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO')
     ],
 
     'interfaces': ['GPIO'],
@@ -183,8 +184,6 @@ class OutputModule(AbstractOutput):
             OUTPUT_INFORMATION['custom_options'], output)
 
     def setup_output(self):
-        from rpi_python_drv8825.stepper import StepperMotor
-
         self.setup_on_off_output(OUTPUT_INFORMATION)
 
         if self.pin_step and self.pin_dir and self.pin_mode_1 and self.pin_mode_2 and self.pin_mode_3:
@@ -238,3 +237,56 @@ class OutputModule(AbstractOutput):
         if self.output_setup:
             return True
         return False
+
+
+class StepperMotor:
+    """
+    Generic stepper motor driver
+    Modified from https://github.com/dimschlukas/rpi_python_drv8825
+    """
+    def __init__(self, enable_pin, step_pin, dir_pin, mode_pins, step_type, full_step_delay):
+        import RPi.GPIO as GPIO
+
+        self.GPIO = GPIO
+
+        self.enable_pin = enable_pin
+        self.step_pin = step_pin
+        self.dir_pin = dir_pin
+
+        GPIO.setwarnings(False)
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(enable_pin, GPIO.OUT)
+        GPIO.setup(step_pin, GPIO.OUT)
+        GPIO.setup(dir_pin, GPIO.OUT)
+        GPIO.setup(mode_pins, GPIO.OUT)
+
+        resolution = {
+            'Full': (0, 0, 0),
+            'Half': (1, 0, 0),
+            '1/4': (0, 1, 0),
+            '1/8': (1, 1, 0),
+            '1/16': (0, 0, 1),
+            '1/32': (1, 0, 1)
+        }
+        micro_steps =  {
+            'Full': 1,
+            'Half': 2,
+            '1/4': 4,
+            '1/8': 8,
+            '1/16': 16,
+            '1/32': 32
+        }
+
+        self.delay = full_step_delay / micro_steps[step_type]
+        GPIO.output(mode_pins, resolution[step_type])
+
+    def enable(self, enable):
+        self.GPIO.output(self.enable_pin, not enable)
+
+    def run(self, steps, clockwise):
+        self.GPIO.output(self.dir_pin, clockwise)
+        for _ in range(steps):
+            self.GPIO.output(self.step_pin, self.GPIO.HIGH)
+            time.sleep(self.delay)
+            self.GPIO.output(self.step_pin, self.GPIO.LOW)
+            time.sleep(self.delay)

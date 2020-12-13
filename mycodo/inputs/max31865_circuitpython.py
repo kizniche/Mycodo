@@ -80,6 +80,7 @@ class InputModule(AbstractInput):
         self.thermocouple_type = None
         self.spi = None
         self.cs = None
+        self.cs_pin = None
         self.wires = None
         self.ref_ohm = None
         self.rtd_nominal = None
@@ -152,5 +153,12 @@ class InputModule(AbstractInput):
             return
 
         self.return_dict = copy.deepcopy(measurements_dict)
-        self.value_set(0, self.sensor.temperature)
+
+        try:
+            while not self.spi.try_lock():
+                time.sleep(0.1)
+            self.value_set(0, self.sensor.temperature)
+        finally:
+            self.spi.unlock()
+
         return self.return_dict
