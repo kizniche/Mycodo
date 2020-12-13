@@ -83,9 +83,19 @@ class InputModule(AbstractInput):
         self.wires = None
         self.ref_ohm = None
         self.rtd_nominal = None
+        self.bcm_to_board = []
 
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
+
+        if not testing:
+            self.initialize_input()
+
+    def initialize_input(self):
+        import busio
+        import board
+        import digitalio
+        import adafruit_max31865
 
         self.bcm_to_board = [
             board.D1,
@@ -116,15 +126,6 @@ class InputModule(AbstractInput):
             board.D26,
             board.D27
         ]
-
-        if not testing:
-            self.initialize_input()
-
-    def initialize_input(self):
-        import busio
-        import board
-        import digitalio
-        import adafruit_max31865
 
         self.thermocouple_type = self.input_dev.thermocouple_type
         if self.thermocouple_type == 'PT100':
