@@ -145,14 +145,6 @@ class OutputModule(AbstractOutput):
         self.output_setup = False
 
         self.vref = None
-        self.a_vref = None
-        self.a_gain = None
-        self.b_vref = None
-        self.b_gain = None
-        self.c_vref = None
-        self.c_gain = None
-        self.d_vref = None
-        self.d_gain = None
 
         # For testing, TODO: REMOVE
         # self.channel_state = {}
@@ -160,6 +152,9 @@ class OutputModule(AbstractOutput):
         # self.channel_state[1] = False
         # self.channel_state[2] = False
         # self.channel_state[3] = False
+
+        self.setup_custom_options(
+            OUTPUT_INFORMATION['custom_options'], output)
 
         output_channels = db_retrieve_table_daemon(
             OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()
