@@ -5,7 +5,6 @@
 import copy
 import datetime
 import threading
-import time
 
 from flask_babel import lazy_gettext
 

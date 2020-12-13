@@ -2,11 +2,14 @@
 #
 # mqtt_value.py - MQTT Output module
 #
+import copy
+
 from flask_babel import lazy_gettext
 
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import add_measurements_influxdb
 
 
 def constraints_pass_positive_value(mod_input, value):
@@ -26,14 +29,14 @@ def constraints_pass_positive_value(mod_input, value):
 
 measurements_dict = {
     0: {
-        'measurement': 'duration_time',
-        'unit': 's'
+        'measurement': 'unitless',
+        'unit': 'none'
     }
 }
 
 channels_dict = {
     0: {
-        'types': ['on_off'],
+        'types': ['value'],
         'measurements': [0]
     }
 }
@@ -41,7 +44,7 @@ channels_dict = {
 OUTPUT_INFORMATION = {
     'output_name_unique': 'MQTT_PAHO_VALUE',
     'output_manufacturer': 'Mycodo',
-    'output_name': "{}: MQTT Publish".format(lazy_gettext('Value')),
+    'output_name': "MQTT Publish: {}".format(lazy_gettext('Value')),
     'output_library': 'paho-mqtt',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
@@ -139,6 +142,8 @@ class OutputModule(AbstractOutput):
         self.output_setup = True
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=0):
+        measure_dict = copy.deepcopy(measurements_dict)
+
         try:
             if state == 'on' and amount is not None:
                 self.publish.single(
@@ -149,6 +154,7 @@ class OutputModule(AbstractOutput):
                     client_id=self.options_channels['clientid'][0],
                     keepalive=self.options_channels['keepalive'][0])
                 self.output_states[output_channel] = amount
+                measure_dict[0]['value'] = amount
             elif state == 'off':
                 self.publish.single(
                     self.options_channels['topic'][0],
@@ -158,8 +164,12 @@ class OutputModule(AbstractOutput):
                     client_id=self.options_channels['clientid'][0],
                     keepalive=self.options_channels['keepalive'][0])
                 self.output_states[output_channel] = False
+                measure_dict[0]['value'] = self.options_channels['off_value'][0]
         except Exception as e:
             self.logger.error("State change error: {}".format(e))
+            return
+
+        add_measurements_influxdb(self.unique_id, measure_dict)
 
     def is_on(self, output_channel=0):
         if self.is_setup():

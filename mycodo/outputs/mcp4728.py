@@ -71,7 +71,9 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'mcp4728',
-    'output_name': "{}: MCP4728".format(lazy_gettext('Digital-to-Analog Converter')),
+    'output_name': "MCP4728 {}: {}".format(
+        lazy_gettext('Digital-to-Analog Converter'),
+        lazy_gettext('Value')),
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['value'],
@@ -143,15 +145,7 @@ class OutputModule(AbstractOutput):
         self.dac = None
         self.channel = {}
         self.output_setup = False
-
         self.vref = None
-
-        # For testing, TODO: REMOVE
-        # self.channel_state = {}
-        # self.channel_state[0] = False
-        # self.channel_state[1] = False
-        # self.channel_state[2] = False
-        # self.channel_state[3] = False
 
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
@@ -211,7 +205,7 @@ class OutputModule(AbstractOutput):
 
             self.output_setup = True
         except:
-            self.output_setup = True
+            self.output_setup = False
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         if state == 'on' and None not in [amount, output_channel]:
@@ -227,37 +221,12 @@ class OutputModule(AbstractOutput):
             return
         self.dac.save_settings()
 
-    # For testing, TODO: REMOVE
-    # def output_switch(self, state, output_type=None, amount=None, output_channel=None):
-    #     if state == 'on' and amount and output_channel is not None:
-    #         self.channel_state[output_channel] = amount
-    #         self.logger.error("TEST00: {}, {}, {}".format(output_type, output_channel, amount))
-    #     elif (state == 'off' or (amount is not None and amount <= 0)) and output_channel is not None:
-    #         self.channel_state[output_channel] = 0
-    #         self.logger.error("TEST01: {}, {}, {}".format(output_type, output_channel, amount))
-    #     else:
-    #         self.logger.error(
-    #             "Invalid parameters: State: {state}, Type: {ot}, Amount: {amt}".format(
-    #                 state=state,
-    #                 ot=output_type,
-    #                 amt=amount))
-    #         return
-
     def is_on(self, output_channel=None):
         if self.is_setup():
             if self.channel[output_channel].value:
                 return self.channel[output_channel].value
             else:
                 return False
-
-    # For testing, TODO: REMOVE
-    # def is_on(self, output_channel=None):
-    #     if self.is_setup():
-    #         if self.channel_state[output_channel]:
-    #             self.logger.error("TEST03: {}".format(self.channel_state[output_channel]))
-    #             return self.channel_state[output_channel]
-    #         else:
-    #             return False
 
     def is_setup(self):
         if self.output_setup:

@@ -33,7 +33,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'python',
-    'output_name': "{}: Python Code".format(lazy_gettext('On/Off')),
+    'output_name': "Python Code: {}".format(lazy_gettext('On/Off')),
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['on_off'],

@@ -15,6 +15,7 @@
 ### Features
 
  - Add Digital-to-Analog Converter output support (and add MCP4728) ([#893](https://github.com/kizniche/mycodo/issues/893))
+ - Add Stepper Motor Controller output support (and add DRV8825) ([#857](https://github.com/kizniche/mycodo/issues/857))
  - Add Generic Hall Effect Flow sensor Input
  - Add INA219 current sensor Input
  - Add Grove Pi DHT11/22 sensor Input

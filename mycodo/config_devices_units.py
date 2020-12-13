@@ -197,7 +197,11 @@ MEASUREMENTS = {
         'name': lazy_gettext('Resistance'),
         'meas': 'resistance',
         'units': ['Ohm']},
-    'revolutions': {
+    'rotation': {
+        'name': lazy_gettext('Rotation'),
+        'meas': 'rotation',
+        'units': ['steps']},
+    'revolutions': {  # TODO: Move revolutions to rotations
         'name': lazy_gettext('Revolutions'),
         'meas': 'revolutions',
         'units': ['rpm']},
@@ -417,6 +421,9 @@ UNITS = {
     'setpoint': {
         'name': lazy_gettext('Setpoint'),
         'unit': ''},
+    'steps': {
+        'name': lazy_gettext('Steps'),
+        'unit': 'steps'},
     'ug_m3': {
         'name': lazy_gettext('Microgram per cubic meter'),
         'unit': 'μg/m^3'},
