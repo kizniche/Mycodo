@@ -43,7 +43,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'wireless_rpi_rf',
-    'output_name': "{} 315/433 MHz".format(lazy_gettext("Wireless")),
+    'output_name': "{}: 315/433 MHz".format(lazy_gettext("Wireless")),
     'output_library': 'rpi-rf',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,

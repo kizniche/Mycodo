@@ -249,7 +249,7 @@ MEASUREMENTS = {
 
 # Measurement units
 UNITS = {
-    'unitless': {
+    'unitless': {  # TODO: This unit and "none" are redundant. remove one.
         'name': '',
         'unit': ''},
     'us': {

@@ -48,22 +48,22 @@ measurements_dict = {
 channels_dict = {
     0: {
         'name': 'Channel A',
-        'types': ['volt'],
+        'types': ['value'],
         'measurements': [0]
     },
     1: {
         'name': 'Channel B',
-        'types': ['volt'],
+        'types': ['value'],
         'measurements': [1]
     },
     2: {
         'name': 'Channel C',
-        'types': ['volt'],
+        'types': ['value'],
         'measurements': [2]
     },
     3: {
         'name': 'Channel D',
-        'types': ['volt'],
+        'types': ['value'],
         'measurements': [3]
     }
 }
@@ -74,7 +74,7 @@ OUTPUT_INFORMATION = {
     'output_name': "{}: MCP4728".format(lazy_gettext('Digital-to-Analog Converter')),
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
-    'output_types': ['volt'],
+    'output_types': ['value'],
 
     'url_manufacturer': 'https://www.microchip.com/wwwproducts/en/en541737',
     'url_datasheet': 'https://ww1.microchip.com/downloads/en/DeviceDoc/22187E.pdf',
@@ -82,7 +82,7 @@ OUTPUT_INFORMATION = {
 
     'options_enabled': [
         'i2c_location',
-        'button_send_voltage'
+        'button_send_value'
     ],
     'options_disabled': ['interface'],
 
@@ -214,7 +214,7 @@ class OutputModule(AbstractOutput):
             self.output_setup = True
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
-        if state == 'on' and amount and output_channel is not None:
+        if state == 'on' and None not in [amount, output_channel]:
             self.channel[output_channel].value = int(65535 * (amount / self.vref))
         elif state == 'off' or (amount is not None and amount <= 0):
             self.channel[output_channel].value = 0

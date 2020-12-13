@@ -39,7 +39,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'python_pwm',
-    'output_name': "{} Python Code".format(lazy_gettext('PWM')),
+    'output_name': "{}: Python Code".format(lazy_gettext('PWM')),
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['pwm'],

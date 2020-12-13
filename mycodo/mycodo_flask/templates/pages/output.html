@@ -447,7 +447,7 @@
               {% endif %}
 
           {% if 'button_send_duration' in dict_options['options_enabled'] or
-                'button_send_voltage' in dict_options['options_enabled'] or
+                'button_send_value' in dict_options['options_enabled'] or
                 'button_send_volume' in dict_options['options_enabled'] or
                 'button_send_duty_cycle' in dict_options['options_enabled']  %}
 
@@ -467,16 +467,16 @@
 
             {% endif %}
 
-            {% if 'button_send_voltage' in dict_options['options_enabled'] %}
+            {% if 'button_send_value' in dict_options['options_enabled'] %}
 
             <div class="col-auto">
-              <label class='form-check-label'>{{dict_translation['output_amount_voltage']['title']}}</label>
+              <label class='form-check-label'>{{dict_translation['output_amount_value']['title']}}</label>
               <div>
-                <input class="form-control" id="volt_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" name="volt_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['output_amount_voltage']['phrase']}}" type="text" value="">
+                <input class="form-control" id="value_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" name="value_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['output_amount_value']['phrase']}}" type="text" value="">
               </div>
             </div>
             <div class="col-auto">
-              <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/volt/" type="button" value="{{_('Send')}}">
+              <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/value/" type="button" value="{{_('Send')}}">
             </div>
 
             {% endif %}

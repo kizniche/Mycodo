@@ -39,6 +39,8 @@ def pid_mod(form_mod_pid_base,
             form_mod_pid_pwm_lower,
             form_mod_pid_output_raise,
             form_mod_pid_output_lower,
+            form_mod_pid_value_raise,
+            form_mod_pid_value_lower,
             form_mod_pid_volume_raise,
             form_mod_pid_volume_lower):
     action = '{action} {controller}'.format(
@@ -113,6 +115,9 @@ def pid_mod(form_mod_pid_base,
                 elif mod.raise_output_type == 'pwm':
                     mod.raise_min_duration = 2
                     mod.raise_max_duration = 98
+                elif mod.raise_output_type == 'value':
+                    mod.raise_min_duration = 0
+                    mod.raise_max_duration = 0
                 elif mod.raise_output_type == 'volume':
                     mod.raise_min_duration = 0
                     mod.raise_max_duration = 0
@@ -161,6 +166,13 @@ def pid_mod(form_mod_pid_base,
                         mod_pid.raise_min_duration = form_mod_pid_pwm_raise.raise_min_duty_cycle.data
                         mod_pid.raise_max_duration = form_mod_pid_pwm_raise.raise_max_duty_cycle.data
                         mod_pid.raise_always_min_pwm = form_mod_pid_pwm_raise.raise_always_min_pwm.data
+                elif mod_pid.raise_output_type == 'value':
+                    if not form_mod_pid_value_raise.validate():
+                        error.append(TRANSLATIONS['error']['title'])
+                        flash_form_errors(form_mod_pid_value_raise)
+                    else:
+                        mod_pid.raise_min_duration = form_mod_pid_value_raise.raise_min_amount.data
+                        mod_pid.raise_max_duration = form_mod_pid_value_raise.raise_max_amount.data
                 elif mod_pid.raise_output_type == 'volume':
                     if not form_mod_pid_volume_raise.validate():
                         error.append(TRANSLATIONS['error']['title'])
@@ -188,6 +200,9 @@ def pid_mod(form_mod_pid_base,
                 elif mod.lower_output_type == 'pwm':
                     mod.lower_min_duration = 2
                     mod.lower_max_duration = 98
+                elif mod.lower_output_type == 'value':
+                    mod.lower_min_duration = 0
+                    mod.lower_max_duration = 0
                 elif mod.lower_output_type == 'volume':
                     mod.lower_min_duration = 0
                     mod.lower_max_duration = 0
@@ -236,6 +251,13 @@ def pid_mod(form_mod_pid_base,
                         mod_pid.lower_min_duration = form_mod_pid_pwm_lower.lower_min_duty_cycle.data
                         mod_pid.lower_max_duration = form_mod_pid_pwm_lower.lower_max_duty_cycle.data
                         mod_pid.lower_always_min_pwm = form_mod_pid_pwm_lower.lower_always_min_pwm.data
+                elif mod_pid.lower_output_type == 'value':
+                    if not form_mod_pid_value_lower.validate():
+                        error.append(TRANSLATIONS['error']['title'])
+                        flash_form_errors(form_mod_pid_value_lower)
+                    else:
+                        mod_pid.lower_min_duration = form_mod_pid_value_lower.lower_min_amount.data
+                        mod_pid.lower_max_duration = form_mod_pid_value_lower.lower_max_amount.data
                 elif mod_pid.lower_output_type == 'volume':
                     if not form_mod_pid_volume_lower.validate():
                         error.append(TRANSLATIONS['error']['title'])

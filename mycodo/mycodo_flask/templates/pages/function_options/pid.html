@@ -1,6 +1,7 @@
 {% set dict_output_type = ({
     "on_off": "On/Off",
     "pwm": "PWM",
+    "value": "Value",
     "volume": "Volume"
     })
 %}
@@ -209,7 +210,7 @@
       <div class="col-auto">
         {{form_mod_pid_base.raise_output_type.label(class_='control-label')}}
         <div>
-          <select class="form-control form-tooltip form-dropdown" id="raise_output_type" name="raise_output_type" title="" data-original-title="{{_('The output action (on/off, PWM, volume, etc.)')}}.">
+          <select class="form-control form-tooltip form-dropdown" id="raise_output_type" name="raise_output_type" title="" data-original-title="{{_('The output action (on/off, PWM, value, volume, etc.)')}}.">
             <option value="">{{_('Select One')}}</option>
             {%- for each_type in dict_outputs[each_output.output_type]['output_types'] -%}
               <option value="{{each_type}}"{% if each_pid.raise_output_type == each_type %} selected{% endif %}>{{dict_output_type[each_type]}}</option>
@@ -231,6 +232,8 @@
       {% include 'pages/function_options/pid_options/output_pwm_raise.html' %}
     {% elif each_pid.raise_output_type == 'on_off' %}
       {% include 'pages/function_options/pid_options/output_on_off_raise.html' %}
+    {% elif each_pid.raise_output_type == 'value' %}
+      {% include 'pages/function_options/pid_options/output_value_raise.html' %}
     {% elif each_pid.raise_output_type == 'volume' %}
       {% include 'pages/function_options/pid_options/output_volume_raise.html' %}
     {% endif %}
@@ -281,6 +284,8 @@
       {% include 'pages/function_options/pid_options/output_pwm_lower.html' %}
     {% elif each_pid.lower_output_type == 'on_off' %}
       {% include 'pages/function_options/pid_options/output_on_off_lower.html' %}
+    {% elif each_pid.lower_output_type == 'value' %}
+      {% include 'pages/function_options/pid_options/output_value_lower.html' %}
     {% elif each_pid.lower_output_type == 'volume' %}
       {% include 'pages/function_options/pid_options/output_volume_lower.html' %}
     {% endif %}

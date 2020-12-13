@@ -234,7 +234,7 @@ class OutputController(AbstractController, threading.Thread):
         :type state: str or int or bool
         :param output_channel: The output channel
         :type output_channel: int
-        :param output_type: The type of output ('sec', 'vol', 'volt', 'pwm')
+        :param output_type: The type of output ('sec', 'vol', 'value', 'pwm')
         :type output_type: str
         :param amount: If state is 'on', an amount can be set (e.g. duration to stay on, volume to output, etc.)
         :type amount: float

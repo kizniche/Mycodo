@@ -27,7 +27,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'command',
-    'output_name': "{} Shell Script".format(lazy_gettext('On/Off')),
+    'output_name': "{}: Shell Script".format(lazy_gettext('On/Off')),
     'output_library': 'subprocess.Popen',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,

@@ -177,7 +177,7 @@ class AbstractOutput(AbstractBaseController):
         :type state: str or int or bool
         :param output_channel: Channel of output
         :type output_channel: int
-        :param output_type: The type of output ('sec', 'vol', 'volt', 'pwm')
+        :param output_type: The type of output ('sec', 'vol', 'value', 'pwm')
         :type output_type: str
         :param amount: If state is 'on', an amount can be set (e.g. duration to stay on, volume to output, etc.)
         :type amount: float
@@ -250,14 +250,14 @@ class AbstractOutput(AbstractBaseController):
                     return 1, msg
 
             # Output type: volt, set amount
-            if output_type == 'volt' and self.output_type in self.output_types['volt']:
+            if output_type == 'value' and self.output_type in self.output_types['value']:
                 self.output_switch(
                     'on',
-                    output_type='volt',
+                    output_type='value',
                     amount=amount,
                     output_channel=output_channel)
 
-                msg = "Command sent: Output {id} CH{ch} ({name}) volt: {v:.1f} ".format(
+                msg = "Command sent: Output {id} CH{ch} ({name}) value: {v:.1f} ".format(
                     id=self.unique_id,
                     ch=output_channel,
                     name=self.output_name,
@@ -662,7 +662,7 @@ class AbstractOutput(AbstractBaseController):
         """
         state = self.is_on(output_channel)
         if state is not None:
-            if self.output_type in self.output_types['pwm'] + self.output_types['volt']:
+            if self.output_type in self.output_types['pwm'] + self.output_types['value']:
                 if state:
                     return state
                 elif state == 0 or state is False:

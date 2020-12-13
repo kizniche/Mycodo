@@ -50,7 +50,7 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'pwm',
-    'output_name': "{} GPIO".format(lazy_gettext('PWM')),
+    'output_name': "{}: GPIO".format(lazy_gettext('PWM')),
     'output_library': 'pigpio',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,

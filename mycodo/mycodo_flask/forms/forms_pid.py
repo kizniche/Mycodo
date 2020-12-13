@@ -172,6 +172,28 @@ class PIDModRelayLower(FlaskForm):
     )
 
 
+class PIDModValueRaise(FlaskForm):
+    raise_min_amount = DecimalField(
+        lazy_gettext('Min Amount (Raise)'),
+        widget=NumberInput(step='any')
+    )
+    raise_max_amount = DecimalField(
+        lazy_gettext('Max Amount (Raise)'),
+        widget=NumberInput(step='any')
+    )
+
+
+class PIDModValueLower(FlaskForm):
+    lower_min_amount = DecimalField(
+        lazy_gettext('Min Amount (Lower)'),
+        widget=NumberInput(step='any')
+    )
+    lower_max_amount = DecimalField(
+        lazy_gettext('Max Amount (Lower)'),
+        widget=NumberInput(step='any')
+    )
+
+
 class PIDModVolumeRaise(FlaskForm):
     raise_min_amount = DecimalField(
         lazy_gettext('Min On Amount (Raise)'),

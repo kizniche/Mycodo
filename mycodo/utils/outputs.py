@@ -161,10 +161,10 @@ def outputs_pwm():
     return outputs
 
 
-def outputs_volt():
+def outputs_value():
     outputs = []
     for each_output_type, output_data in parse_output_information().items():
-        if 'output_types' in output_data and 'volt' in output_data['output_types']:
+        if 'output_types' in output_data and 'value' in output_data['output_types']:
             outputs.append(each_output_type)
     return outputs
 
@@ -181,6 +181,6 @@ def output_types():
     return {
         'on_off': outputs_on_off(),
         'pwm': outputs_pwm(),
-        'volt': outputs_volt(),
+        'value': outputs_value(),
         'volume': outputs_volume()
     }

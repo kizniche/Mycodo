@@ -1291,6 +1291,8 @@ def page_function():
     form_mod_pid_output_lower = forms_pid.PIDModRelayLower()
     form_mod_pid_pwm_raise = forms_pid.PIDModPWMRaise()
     form_mod_pid_pwm_lower = forms_pid.PIDModPWMLower()
+    form_mod_pid_value_raise = forms_pid.PIDModValueRaise()
+    form_mod_pid_value_lower = forms_pid.PIDModValueLower()
     form_mod_pid_volume_raise = forms_pid.PIDModVolumeRaise()
     form_mod_pid_volume_lower = forms_pid.PIDModVolumeLower()
     form_function = forms_function.FunctionMod()
@@ -1342,6 +1344,8 @@ def page_function():
                               form_mod_pid_pwm_lower,
                               form_mod_pid_output_raise,
                               form_mod_pid_output_lower,
+                              form_mod_pid_value_raise,
+                              form_mod_pid_value_lower,
                               form_mod_pid_volume_raise,
                               form_mod_pid_volume_lower)
         elif form_mod_pid_base.pid_delete.data:
@@ -1629,6 +1633,8 @@ def page_function():
                            form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
                            form_mod_pid_output_raise=form_mod_pid_output_raise,
                            form_mod_pid_output_lower=form_mod_pid_output_lower,
+                           form_mod_pid_value_raise=form_mod_pid_value_raise,
+                           form_mod_pid_value_lower=form_mod_pid_value_lower,
                            form_mod_pid_volume_raise=form_mod_pid_volume_raise,
                            form_mod_pid_volume_lower=form_mod_pid_volume_lower,
                            form_trigger=form_trigger,

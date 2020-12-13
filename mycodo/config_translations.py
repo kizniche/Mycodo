@@ -179,6 +179,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Upload')},
     'user': {
         'title': lazy_gettext('User')},
+    'value': {
+        'title': lazy_gettext('Value')},
     'voltage': {
         'title': lazy_gettext('Voltage')},
     'volume': {
@@ -291,6 +293,9 @@ TRANSLATIONS = {
     'output_amount_duration': {
         'title': lazy_gettext('Duration'),
         'phrase': lazy_gettext('Duration to send to output controller')},
+    'output_amount_value': {
+        'title': lazy_gettext('Value'),
+        'phrase': lazy_gettext('Value to send to output controller')},
     'output_amount_voltage': {
         'title': lazy_gettext('Voltage'),
         'phrase': lazy_gettext('Voltage to send to output controller')},
