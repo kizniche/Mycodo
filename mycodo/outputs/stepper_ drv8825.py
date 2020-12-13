@@ -69,6 +69,9 @@ OUTPUT_INFORMATION = {
     'url_datasheet': 'https://www.ti.com/lit/ds/symlink/drv8825.pdf',
     'url_product_purchase': 'https://www.pololu.com/product/2133',
 
+    'message': 'The value passed to the output is the number of steps. A positive value turns '
+               'clockwise and a negative value turns counter-clockwise.',
+
     'options_enabled': [
         'button_send_value'
     ],
