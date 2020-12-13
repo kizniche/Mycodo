@@ -49,6 +49,9 @@ INPUT_INFORMATION = {
     'url_datasheet': 'https://datasheets.maximintegrated.com/en/ds/MAX31865.pdf',
     'url_product_purchase': 'https://www.adafruit.com/product/3328',
 
+    'message': 'Note: This module does not allow for multiple sensors to be connected at the same time. '
+               'For multi-sensor support, use the MAX31865 CircuitPython Input.',
+
     'options_enabled': [
         'thermocouple_type',
         'pin_cs',
