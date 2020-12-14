@@ -1,11 +1,11 @@
 # coding=utf-8
 import logging
-import time
 
-from smbus2 import SMBus
-from grove_rgb_lcd import *
+from grove_rgb_lcd import setRGB
+from grove_rgb_lcd import setText
 
 logger = logging.getLogger("mycodo.device.lcd_grove_lcd_rgb")
+
 
 class LCD_Grove_LCD_RGB:
     """Output to a Grove I2C LCD RGB display (16x2 LCD with RGB or monochrome backlight)"""
@@ -25,11 +25,13 @@ class LCD_Grove_LCD_RGB:
         self.LCD_WIDTH = self.lcd_x_characters  # Max characters per line
         self.I2C_ADDR = self.i2c_address
 
-    def lcd_init(self):
+    @staticmethod
+    def lcd_init():
         """ Initialize LCD display """
         setRGB(255,255,255)
 
-    def lcd_backlight(self, state):
+    @staticmethod
+    def lcd_backlight(state):
         """ Turn the backlight on or off """
         if state:
             setRGB(255,255,255)
@@ -48,7 +50,8 @@ class LCD_Grove_LCD_RGB:
         """ Send strings to display """
         pass
 
-    def lcd_write_lines(self, line_1, line_2, line_3, line_4):
+    @staticmethod
+    def lcd_write_lines(line_1, line_2, line_3, line_4):
         msg = ""
         if line_1:
             msg += line_1
@@ -62,3 +65,11 @@ class LCD_Grove_LCD_RGB:
         if line_4:
             msg += line_4
         setText(msg)
+
+    @staticmethod
+    def lcd_backlight_color(color_tuple):
+        try:
+            tuple_colors = color_tuple.split(",")
+            setRGB(int(tuple_colors[0]), int(tuple_colors[1]), int(tuple_colors[2]))
+        except:
+            logger.error("Could not set color. Invalid color string: '{}'".format(color_tuple))

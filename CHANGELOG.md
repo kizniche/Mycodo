@@ -16,13 +16,15 @@
 
  - Add Digital-to-Analog Converter output support (and add MCP4728) ([#893](https://github.com/kizniche/mycodo/issues/893))
  - Add Stepper Motor Controller output support (and add DRV8825) ([#857](https://github.com/kizniche/mycodo/issues/857))
- - Add Function Action: Output Value
- - Add Input: MAX31865 (CircuitPython) ([#900](https://github.com/kizniche/mycodo/issues/900))
- - Add Generic Hall Effect Flow sensor Input
- - Add INA219 current sensor Input
- - Add Grove Pi DHT11/22 sensor Input
- - Add Function: bang-bang/hysteretic
  - Add Output: GrovePi multi-channel relay I2C board
+ - Add Input: MAX31865 (CircuitPython) ([#900](https://github.com/kizniche/mycodo/issues/900))
+ - Add Input: Generic Hall Effect Flow sensor
+ - Add Input: INA219 current sensor
+ - Add Input: Grove Pi DHT11/22 sensor
+ - Add LCD: Grove RGB LCD
+ - Add Function: bang-bang/hysteretic
+ - Add Function Action: Output Value
+ - Add Function Action: Set LCD Backlight Color
  - Add configurable link for navbar brand link
 
 ### Miscellaneous

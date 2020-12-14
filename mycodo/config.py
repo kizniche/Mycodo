@@ -643,15 +643,21 @@ FUNCTION_ACTION_INFO = {
         'dependencies_module': []
     },
     'lcd_backlight_off': {
-        'name': '{}: {}'.format(
+        'name': '{}: {}: {}'.format(
             TRANSLATIONS['lcd']['title'],
-            lazy_gettext('Backlight Off')),
+            lazy_gettext('Backlight'), lazy_gettext('Off')),
         'dependencies_module': []
     },
     'lcd_backlight_on': {
-        'name': '{}: {}'.format(
+        'name': '{}: {}: {}'.format(
             TRANSLATIONS['lcd']['title'],
-            lazy_gettext('Backlight On')),
+            lazy_gettext('Backlight'), lazy_gettext('On')),
+        'dependencies_module': []
+    },
+    'lcd_backlight_color': {
+        'name': '{}: {}: {}'.format(
+            TRANSLATIONS['lcd']['title'],
+            lazy_gettext('Backlight'), lazy_gettext('Color')),
         'dependencies_module': []
     },
     'flash_lcd_off': {
@@ -767,6 +773,7 @@ FUNCTION_ACTIONS = [
     ('infrared_send', FUNCTION_ACTION_INFO['infrared_send']['name']),
     ('lcd_backlight_off', FUNCTION_ACTION_INFO['lcd_backlight_off']['name']),
     ('lcd_backlight_on', FUNCTION_ACTION_INFO['lcd_backlight_on']['name']),
+    ('lcd_backlight_color', FUNCTION_ACTION_INFO['lcd_backlight_color']['name']),
     ('flash_lcd_off', FUNCTION_ACTION_INFO['flash_lcd_off']['name']),
     ('flash_lcd_on', FUNCTION_ACTION_INFO['flash_lcd_on']['name']),
     ('output', FUNCTION_ACTION_INFO['output']['name']),

@@ -186,6 +186,9 @@ class DaemonControl:
     def lcd_backlight(self, lcd_id, state):
         return self.proxy().lcd_backlight(lcd_id, state)
 
+    def lcd_backlight_color(self, lcd_id, color):
+        return self.proxy().lcd_backlight(lcd_id, color)
+
     def lcd_flash(self, lcd_id, state):
         return self.proxy().lcd_flash(lcd_id, state)
 

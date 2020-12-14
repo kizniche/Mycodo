@@ -961,6 +961,23 @@ def action_lcd_backlight_on(cond_action, message):
     return message
 
 
+def action_lcd_backlight_color(cond_action, message):
+    control = DaemonControl()
+    lcd = db_retrieve_table_daemon(
+        LCD, unique_id=cond_action.do_unique_id)
+    message += " LCD {unique_id} ({id}, {name}) Backlight Color to {color}.".format(
+        unique_id=cond_action.do_unique_id,
+        id=lcd.id,
+        name=lcd.name,
+        color=cond_action.do_action_string)
+
+    lcd_color = threading.Thread(
+        target=control.lcd_backlight_color,
+        args=(cond_action.do_unique_id, cond_action.do_action_string,))
+    lcd_color.start()
+    return message
+
+
 def action_system_restart(message):
     message += " System restarting in 10 seconds."
     cmd = '{path}/mycodo/scripts/mycodo_wrapper restart 2>&1'.format(

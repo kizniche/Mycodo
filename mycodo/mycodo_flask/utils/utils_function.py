@@ -31,6 +31,7 @@ from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.conditional import save_conditional_code
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.system_pi import csv_to_list_of_str
+from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import str_is_float
 
@@ -396,6 +397,10 @@ def action_mod(form):
                                         'lcd_backlight_on']:
             mod_action.do_unique_id = form.do_unique_id.data
 
+        elif mod_action.action_type == 'lcd_backlight_color':
+            mod_action.do_unique_id = form.do_unique_id.data
+            mod_action.do_action_string = form.do_action_string.data
+
         elif mod_action.action_type == 'photo':
             mod_action.do_unique_id = form.do_unique_id.data
 
@@ -578,6 +583,31 @@ def check_form_actions(form, error):
             error.append('Only Pi Cameras can record video')
     elif action.action_type == 'flash_lcd_on' and not form.do_unique_id.data:
         error.append("LCD must be set")
+    elif action.action_type == 'lcd_backlight_color':
+        if not form.do_unique_id.data:
+            error.append("LCD must be set")
+        try:
+            tuple_colors = form.do_action_string.data.split(",")
+            if len(tuple_colors) != 3:
+                error.append('LCD backlight color must be in the R,G,B format "255,255,255"')
+
+            if not is_int(tuple_colors[0]):
+                error.append('Red color does not represent an integer.')
+            elif int(tuple_colors[0]) < 0 or int(tuple_colors[0]) > 255:
+                error.append('Red color must be >= 0 and <= 255')
+
+            if not is_int(tuple_colors[1]):
+                error.append('Blue color does not represent an integer.')
+            elif int(tuple_colors[1]) < 0 or int(tuple_colors[1]) > 255:
+                error.append('Blue color must be >= 0 and <= 255')
+
+            if not is_int(tuple_colors[2]):
+                error.append('Green color does not represent an integer.')
+            elif int(tuple_colors[2]) < 0 or int(tuple_colors[2]) > 255:
+                error.append('Green color must be >= 0 and <= 255')
+        except:
+            error.append('Error parsing LCD backlight color. Must be in the R,G,B format '
+                         '"255,255,255" without quotes.')
     elif (action.action_type in ['photo', 'video'] and
             (not form.do_unique_id.data or form.do_unique_id.data == '')):
         error.append("Camera must be set")
@@ -616,6 +646,31 @@ def check_actions(action, error):
             error.append('Only Pi Cameras can record video')
     elif action.action_type == 'flash_lcd_on' and not action.do_unique_id:
         error.append("LCD must be set")
+    elif action.action_type == 'lcd_backlight_color':
+        if not action.do_unique_id:
+            error.append("LCD must be set")
+        try:
+            tuple_colors = action.do_action_string.split(",")
+            if len(tuple_colors) != 3:
+                error.append('LCD backlight color must be in the R,G,B format "255,255,255"')
+
+            if not is_int(tuple_colors[0]):
+                error.append('Red color does not represent an integer.')
+            elif int(tuple_colors[0]) < 0 or int(tuple_colors[0]) > 255:
+                error.append('Red color must be >= 0 and <= 255')
+
+            if not is_int(tuple_colors[1]):
+                error.append('Blue color does not represent an integer.')
+            elif int(tuple_colors[1]) < 0 or int(tuple_colors[1]) > 255:
+                error.append('Blue color must be >= 0 and <= 255')
+
+            if not is_int(tuple_colors[2]):
+                error.append('Green color does not represent an integer.')
+            elif int(tuple_colors[2]) < 0 or int(tuple_colors[2]) > 255:
+                error.append('Green color must be >= 0 and <= 255')
+        except:
+            error.append('Error parsing LCD backlight color. Must be in the R,G,B format '
+                         '"255,255,255" without quotes.')
     elif (action.action_type in ['photo', 'video'] and
             (not action.do_unique_id or action.do_unique_id == '')):
         error.append("Camera must be set")

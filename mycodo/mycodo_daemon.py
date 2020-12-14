@@ -521,6 +521,29 @@ class DaemonController:
             message = "Could not flash LCD: {e}".format(e=except_msg)
             self.logger.exception(message)
 
+    def lcd_backlight_color(self, lcd_id, color):
+        """
+        Set the LCD backlight color
+
+        :return: success or error message
+        :rtype: str
+
+        :param lcd_id: Which LCD controller ID is to be affected?
+        :type lcd_id: str
+        :param color: R,G,B tuple
+        :type color: tuple
+
+        """
+        try:
+            return self.controller['LCD'][lcd_id].lcd_backlight_color(color)
+        except KeyError:
+            message = "Cannot stop flashing, LCD not running"
+            self.logger.exception(message)
+            return 0, message
+        except Exception as except_msg:
+            message = "Could not flash LCD: {e}".format(e=except_msg)
+            self.logger.exception(message)
+
     def lcd_flash(self, lcd_id, state):
         """
         Begin or end a repeated flashing of an LCD
