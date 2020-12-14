@@ -286,6 +286,10 @@ class LCDController(AbstractController, threading.Thread):
             from mycodo.devices.lcd_generic import LCD_Generic
             self.lcd_out = LCD_Generic(lcd_dev)
             self.lcd_init()
+        elif self.lcd_type in ['16x2_grove_lcd_rgb']:
+            from mycodo.devices.lcd_grove_lcd_rgb import LCD_Grove_LCD_RGB
+            self.lcd_out = LCD_Grove_LCD_RGB(lcd_dev)
+            self.lcd_init()
         elif self.lcd_type in ['128x32_pioled',
                                '128x64_pioled']:
             from mycodo.devices.lcd_pioled import LCD_Pioled
@@ -472,7 +476,8 @@ class LCDController(AbstractController, threading.Thread):
         if self.lcd_type in ['128x32_pioled',
                              '128x32_pioled_circuit_python',
                              '16x2_generic',
-                             '20x4_generic']:
+                             '20x4_generic',
+                             '16x2_grove_lcd_rgb']:
             self.lcd_out.lcd_write_lines(line_1, line_2, line_3, line_4)
 
         elif self.lcd_type in ['128x64_pioled', '128x64_pioled_circuit_python']:
