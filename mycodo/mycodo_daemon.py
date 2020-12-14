@@ -537,11 +537,11 @@ class DaemonController:
         try:
             return self.controller['LCD'][lcd_id].lcd_backlight_color(color)
         except KeyError:
-            message = "Cannot stop flashing, LCD not running"
+            message = "Cannot change LCD color, LCD not running"
             self.logger.exception(message)
             return 0, message
         except Exception as except_msg:
-            message = "Could not flash LCD: {e}".format(e=except_msg)
+            message = "Could not change LCD color: {e}".format(e=except_msg)
             self.logger.exception(message)
 
     def lcd_flash(self, lcd_id, state):
