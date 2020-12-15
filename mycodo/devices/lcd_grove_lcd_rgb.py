@@ -25,6 +25,8 @@
 import logging
 import time
 
+from smbus2 import SMBus
+
 logger = logging.getLogger("mycodo.device.lcd_grove_lcd_rgb")
 
 
@@ -39,7 +41,8 @@ class LCD_Grove_LCD_RGB:
         self.lcd_is_on = False
 
         self.i2c_address = int(lcd_dev.location, 16)
-        self.i2c_address_backlight = int(lcd_dev.location_rgb, 16)
+        # self.i2c_address_backlight = int(lcd_dev.location_backlight, 16)
+        self.i2c_address_backlight = 0x62
         self.i2c_bus = lcd_dev.i2c_bus
         self.lcd_x_characters = lcd_dev.x_characters
         self.lcd_y_lines = lcd_dev.y_lines
@@ -83,30 +86,44 @@ class LCD_Grove_LCD_RGB:
         self.REG_MODE1 = 0x00
         self.REG_MODE2 = 0x01
         self.REG_OUTPUT = 0x08
+
+                # Setup I2C bus
+        try:
+            self.bus = SMBus(self.i2c_bus)
+        except Exception as except_msg:
+            self.logger.exception(
+                "Could not initialize I2C bus: {err}".format(
+                    err=except_msg))
         
     def writeCommand(self, cmd):
-        self.i2c_bus.write_byte_data(self.i2c_address,0x80,cmd)
+        self.bus.write_byte_data(self.i2c_address,0x80,cmd)
 
     def writeData(self, data):
-        self.i2c_bus.write_byte_data(self.i2c_address,0x40,data)
+        self.bus.write_byte_data(self.i2c_address,0x40,data)
 
     def setRGB(self, r,g,b):
-        self.i2c_bus.write_byte_data(self.i2c_address_backlight,0,0)
-        self.i2c_bus.write_byte_data(self.i2c_address_backlight,1,0)
-        self.i2c_bus.write_byte_data(self.i2c_address_backlight,0x08,0xaa)
-        self.i2c_bus.write_byte_data(self.i2c_address_backlight,4,r)
-        self.i2c_bus.write_byte_data(self.i2c_address_backlight,3,g)
-        self.i2c_bus.write_byte_data(self.i2c_address_backlight,2,b)
+        self.bus.write_byte_data(self.i2c_address_backlight,0,0)
+        self.bus.write_byte_data(self.i2c_address_backlight,1,0)
+        self.bus.write_byte_data(self.i2c_address_backlight,0x08,0xaa)
+        self.bus.write_byte_data(self.i2c_address_backlight,4,r)
+        self.bus.write_byte_data(self.i2c_address_backlight,3,g)
+        self.bus.write_byte_data(self.i2c_address_backlight,2,b)
 
     def clearDisplay(self):
         self.writeCommand(self.LCD_CLEARDISPLAY) # clear display
+        time.sleep(0.002)
+
+    def setCursor(self, col, row):
+        if row == 0:
+            location = col | 0x80
+        else:
+            location = col | 0xc0
+        self.writeCommand(location)
+        time.sleep(0.001)
 
     def setText(self, text):
         self.clearDisplay()
-        # time.sleep(.05)
-        # self.writeCommand(0x08 | 0x04) # display on, no cursor
-        # self.writeCommand(0x28) # 2 lines
-        # time.sleep(.05)
+        self.setCursor(0, 0)
         count = 0
         row = 0
         for c in text:
@@ -144,12 +161,12 @@ class LCD_Grove_LCD_RGB:
         self.writeCommand(entryMode)
 
         # Initialize the backlight
-        self.i2c_bus.write_byte_data(self.i2c_address_backlight, self.REG_MODE1, 0)
+        self.bus.write_byte_data(self.i2c_address_backlight, self.REG_MODE1, 0)
         # set LEDs controllable by both PWM and GRPPWM registers
-        self.i2c_bus.write_byte_data(self.i2c_address_backlight, self.REG_OUTPUT, 0xff)
+        self.bus.write_byte_data(self.i2c_address_backlight, self.REG_OUTPUT, 0xff)
         # set MODE2 values
         # 0010 0000 -> 0x20  (DMBLNK to 1, ie blinky mode)
-        self.i2c_bus.write_byte_data(self.i2c_address_backlight, self.REG_MODE2, 0x20)
+        self.bus.write_byte_data(self.i2c_address_backlight, self.REG_MODE2, 0x20)
         self.setRGB(255,255,255)
 
     def lcd_backlight(self, state):
@@ -182,11 +199,7 @@ class LCD_Grove_LCD_RGB:
 
     def lcd_string_write(self, message, line):
         """ Send strings to display """
-        if line == 0:
-            line = 0x80
-        else:
-            line = 0xc0
-        self.i2c_bus.write_block_data(self.i2c_address, 0x80, line)
+        self.setCursor(0, line)
         for c in message:
             self.writeData(ord(c))
 
