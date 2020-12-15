@@ -1214,7 +1214,8 @@ WIDGET_INFORMATION = {
 def data_grouping_graph(form, error):
     """
     Get checkbox options for data grouping
-    :param form:
+    :param form: form object submitted by user on web page
+    :param error: list of accumulated errors to add to
     :return:
     """
     list_data_grouping = []
@@ -1272,7 +1273,8 @@ def is_rgb_color(color_hex):
 def custom_colors_graph(form, error):
     """
     Get variable number of graph color inputs, turn into CSV string
-    :param form:
+    :param form: form object submitted by user on web page
+    :param error: list of accumulated errors to add to
     :return:
     """
     colors = {}

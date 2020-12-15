@@ -95,7 +95,8 @@ class MycodoRelease:
             return True
         return False
 
-    def sort_reverse_list(self, versions_unsorted):
+    @staticmethod
+    def sort_reverse_list(versions_unsorted):
         """
         Sort and reverse a list of strings representing Mycodo release version
         numbers in the format "x.x.x"

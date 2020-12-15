@@ -518,13 +518,13 @@ if None not in [measure_1, measure_2]:
 measure_1 = self.condition("{asdf1234}")
 measure_2 = self.condition("{hjkl5678}")
 if None not in [measure_1, measure_2]:
-    sum = measure_1 + measure_2
-    if measure_1 > 2 and 10 < measure_2 < 23 and sum < 30.5:
+    sum_ = measure_1 + measure_2
+    if measure_1 > 2 and 10 < measure_2 < 23 and sum_ < 30.5:
         self.run_all_actions()
 
 # Example 4, combine into one conditional
 measurement = self.condition("{asdf1234}")
-if measurement != None and 20 < measurement < 30:  # combine conditions
+if measurement is not None and 20 < measurement < 30:  # combine conditions
     self.run_all_actions()
 
 # Example 5, test two measurements
@@ -592,15 +592,15 @@ if None not in [measure_1, measure_2]:
 measure_1 = self.condition("{asdf1234}")
 measure_2 = self.condition("{hjkl5678}")
 if None not in [measure_1, measure_2]:
-    sum = measure_1 + measure_2
-    if measure_1 > 2 and 10 < measure_2 < 23 and sum < 30.5:
+    sum_ = measure_1 + measure_2
+    if measure_1 > 2 and 10 < measure_2 < 23 and sum_ < 30.5:
         self.run_action("{qwer1234}")
     else:
         self.run_action("{uiop5678}")
 
 # Example 4, combine into one conditional
 measurement = self.condition("{asdf1234}")
-if measurement != None and 20 < measurement < 30:
+if measurement is not None and 20 < measurement < 30:
     self.run_action("{uiop5678}")
 
 # Example 5, test two measurements, convert Edge Input from 0/1 to True/False

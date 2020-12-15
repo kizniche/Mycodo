@@ -88,6 +88,8 @@ def calculate_method_setpoint(method_id, table, this_controller, Method, MethodD
     :param method_id: ID of Method to be used
     :param table: Table of the this_controller using this function
     :param this_controller: The this_controller using this function
+    :param Method: Method SQL table
+    :param MethodData: MethodData SQL table
     :param logger: The logger to use
     :return: 0 (success) or 1 (error) and a setpoint value
     """
@@ -98,8 +100,8 @@ def calculate_method_setpoint(method_id, table, this_controller, Method, MethodD
     method_data = db_retrieve_table_daemon(MethodData)
     method_data = method_data.filter(MethodData.method_id == method_id)
 
-    method_data_all = method_data.filter(MethodData.output_id == None).all()
-    method_data_first = method_data.filter(MethodData.output_id == None).first()
+    method_data_all = method_data.filter(MethodData.output_id.is_(None)).all()
+    method_data_first = method_data.filter(MethodData.output_id.is_(None)).first()
 
     now = datetime.datetime.now()
 

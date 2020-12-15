@@ -273,7 +273,8 @@ class DaemonControl:
     # Miscellaneous
     #
 
-    def send_email(self, recipients, message, subject=''):
+    @staticmethod
+    def send_email(recipients, message, subject=''):
         smtp = db_retrieve_table_daemon(SMTP, entry='first')
         send_email_notification(
             smtp.host, smtp.protocol, smtp.port,

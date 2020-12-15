@@ -143,10 +143,10 @@ class InputModule(AbstractInput):
         if self.is_enabled(1):
             self.value_set(1, humidity)
 
-        if (self.is_enabled(2) and self.is_enabled(0) and self.is_enabled(1)):
+        if self.is_enabled(2) and self.is_enabled(0) and self.is_enabled(1):
             self.value_set(2, calculate_dewpoint(self.value_get(0), self.value_get(1)))
 
-        if (self.is_enabled(3) and self.is_enabled(0) and self.is_enabled(1)):
+        if self.is_enabled(3) and self.is_enabled(0) and self.is_enabled(1):
             self.value_set(3, calculate_vapor_pressure_deficit(self.value_get(0), self.value_get(1)))
 
         return self.return_dict

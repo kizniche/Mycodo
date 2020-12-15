@@ -890,7 +890,6 @@ def page_info():
     frontend_pid = None
     pstree_frontend_output = None
     top_frontend_output = None
-    dmesg_output = None
 
     uptime = subprocess.Popen(
         "uptime", stdout=subprocess.PIPE, shell=True)

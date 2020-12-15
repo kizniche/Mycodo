@@ -134,7 +134,7 @@ class InputModule(AbstractInput):
             self.value_set(1, humidity)
 
             if self.is_enabled(0) and self.is_enabled(1):
-                self.value_set(2, calculate_dewpoint(self.value_get(0), self.value_get(1)))
+                self.value_set(2, dew_point)
                 self.value_set(3, calculate_vapor_pressure_deficit(self.value_get(0), self.value_get(1)))
 
             return self.return_dict
@@ -184,8 +184,6 @@ class AM2315:
                 humidity    - float
                 temperature - float (Celsius)
         """
-        data = None
-
         # Send a wakeup call to the sensor. This call will always fail
         try:
             self.bus.transaction(self.i2c.writing(self.address, bytes([0x03,0x0,0x04])))

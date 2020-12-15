@@ -456,7 +456,6 @@ def import_notes(form):
 
     upload_folder = os.path.join(INSTALL_DIRECTORY, 'upload')
     tmp_folder = os.path.join(upload_folder, 'mycodo_notes_tmp')
-    full_path = None
 
     try:
         if not form.notes_import_file.data:
@@ -534,10 +533,10 @@ def import_notes(form):
                                 new_note.files = line['Files']
                                 new_note.save()
 
-                                for each_file in line['Files'].split(','):
+                                for each_file_name in line['Files'].split(','):
                                     count_attach += 1
-                                    os.rename(os.path.join(path_attachments, each_file),
-                                              os.path.join(PATH_NOTE_ATTACHMENTS, each_file))
+                                    os.rename(os.path.join(path_attachments, each_file_name),
+                                              os.path.join(PATH_NOTE_ATTACHMENTS, each_file_name))
                             else:
                                 count_notes_skipped += 1
 
