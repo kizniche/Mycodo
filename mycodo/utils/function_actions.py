@@ -1121,6 +1121,8 @@ def trigger_action(
             message = action_lcd_backlight_off(cond_action, message)
         elif cond_action.action_type == 'lcd_backlight_on':
             message = action_lcd_backlight_on(cond_action, message)
+        elif cond_action.action_type == 'lcd_backlight_color':
+            message = action_lcd_backlight_color(cond_action, message)
         elif cond_action.action_type == 'system_restart':
             message = action_system_restart(message)
         elif cond_action.action_type == 'system_shutdown':

@@ -1,34 +1,12 @@
 # coding=utf-8
-# Much of the code in this module is taken from the Dexter Industries repo.
-# The original comment header from that code appears below.
-
 #
-# GrovePi Example for using the Grove - LCD RGB Backlight (http://www.seeedstudio.com/wiki/Grove_-_LCD_RGB_Backlight)
+# Support for the Grove - LCD RGB Backlight (http://www.seeedstudio.com/wiki/Grove_-_LCD_RGB_Backlight)
 #
 # The GrovePi connects the Raspberry Pi and Grove sensors.  You can learn more about GrovePi here:  http://www.dexterindustries.com/GrovePi
 #
-# Have a question about this example?  Ask on the forums here:  http://forum.dexterindustries.com/c/grovepi
-#
-# History
-# ------------------------------------------------
-# Author	Date      		Comments
-# 						  	Initial Authoring
-# Karan		7 Jan 16		Library updated to add a function to update the text without erasing the screen
-# Released under the MIT license (http://choosealicense.com/licenses/mit/).
-# For more information see https://github.com/DexterInd/GrovePi/blob/master/LICENSE
-
-#
-# NOTE:
-# 	Just supports setting the backlight colour, and
-# 	putting a single string of text onto the display
-# 	Doesn't support anything clever, cursors or anything
 import logging
 import time
-
 from smbus2 import SMBus
-
-logger = logging.getLogger("mycodo.device.lcd_grove_lcd_rgb")
-
 
 class LCD_Grove_LCD_RGB:
     """Output to a Grove I2C LCD RGB display (16x2 LCD with RGB or monochrome backlight)"""
@@ -39,6 +17,9 @@ class LCD_Grove_LCD_RGB:
 
         self.lcd_initialized = False
         self.lcd_is_on = False
+        self.red = 255
+        self.green = 255
+        self.blue = 255
 
         self.i2c_address = int(lcd_dev.location, 16)
         # self.i2c_address_backlight = int(lcd_dev.location_backlight, 16)
@@ -94,6 +75,35 @@ class LCD_Grove_LCD_RGB:
             self.logger.exception(
                 "Could not initialize I2C bus: {err}".format(
                     err=except_msg))
+
+        # set configuration
+        displayConfig = self.LCD_FUNCTIONSET
+        if self.lcd_y_lines == 2:
+            displayConfig = displayConfig | self.LCD_2LINE
+        self.writeCommand(displayConfig)
+        time.sleep(0.005)
+        self.writeCommand(displayConfig)
+        time.sleep(0.001)
+        self.writeCommand(displayConfig)
+        self.writeCommand(displayConfig)
+        # set state
+        displayState = self.LCD_DISPLAYCONTROL | self.LCD_DISPLAYON | self.LCD_CURSOROFF | self.LCD_BLINKOFF
+        self.writeCommand(displayState)
+
+        self.clearDisplay()
+
+        # set the entry mode
+        entryMode = self.LCD_ENTRYMODESET | self.LCD_ENTRYLEFT | self.LCD_ENTRYSHIFTDECREMENT
+        self.writeCommand(entryMode)
+
+        # Initialize the backlight
+        self.bus.write_byte_data(self.i2c_address_backlight, self.REG_MODE1, 0)
+        # set LEDs controllable by both PWM and GRPPWM registers
+        self.bus.write_byte_data(self.i2c_address_backlight, self.REG_OUTPUT, 0xff)
+        # set MODE2 values
+        # 0010 0000 -> 0x20  (DMBLNK to 1, ie blinky mode)
+        self.bus.write_byte_data(self.i2c_address_backlight, self.REG_MODE2, 0x20)
+        self.setRGB(self.red, self.green, self.blue)
         
     def writeCommand(self, cmd):
         self.bus.write_byte_data(self.i2c_address,0x80,cmd)
@@ -102,9 +112,6 @@ class LCD_Grove_LCD_RGB:
         self.bus.write_byte_data(self.i2c_address,0x40,data)
 
     def setRGB(self, r,g,b):
-        self.bus.write_byte_data(self.i2c_address_backlight,0,0)
-        self.bus.write_byte_data(self.i2c_address_backlight,1,0)
-        self.bus.write_byte_data(self.i2c_address_backlight,0x08,0xaa)
         self.bus.write_byte_data(self.i2c_address_backlight,4,r)
         self.bus.write_byte_data(self.i2c_address_backlight,3,g)
         self.bus.write_byte_data(self.i2c_address_backlight,2,b)
@@ -139,49 +146,25 @@ class LCD_Grove_LCD_RGB:
             self.writeData(ord(c))
 
     def lcd_init(self):
-        """ Initialize LCD display """
-        # set configuration
-        displayConfig = self.LCD_FUNCTIONSET
-        if self.lcd_y_lines == 2:
-            displayConfig = displayConfig | self.LCD_2LINE
-        self.writeCommand(displayConfig)
-        time.sleep(0.005)
-        self.writeCommand(displayConfig)
-        time.sleep(0.001)
-        self.writeCommand(displayConfig)
-        self.writeCommand(displayConfig)
-        # set state
-        displayState = self.LCD_DISPLAYCONTROL | self.LCD_DISPLAYON | self.LCD_CURSOROFF | self.LCD_BLINKOFF
-        self.writeCommand(displayState)
-
+        """ Clear LCD display """
         self.clearDisplay()
-
-        # set the entry mode
-        entryMode = self.LCD_ENTRYMODESET | self.LCD_ENTRYLEFT | self.LCD_ENTRYSHIFTDECREMENT
-        self.writeCommand(entryMode)
-
-        # Initialize the backlight
-        self.bus.write_byte_data(self.i2c_address_backlight, self.REG_MODE1, 0)
-        # set LEDs controllable by both PWM and GRPPWM registers
-        self.bus.write_byte_data(self.i2c_address_backlight, self.REG_OUTPUT, 0xff)
-        # set MODE2 values
-        # 0010 0000 -> 0x20  (DMBLNK to 1, ie blinky mode)
-        self.bus.write_byte_data(self.i2c_address_backlight, self.REG_MODE2, 0x20)
-        self.setRGB(255,255,255)
 
     def lcd_backlight(self, state):
         """ Turn the backlight on or off """
         if state:
-            self.setRGB(255,255,255)
+            self.setRGB(self.red, self.green, self.blue)
         else:
             self.setRGB(0,0,0)
 
     def lcd_backlight_color(self, color_tuple):
         try:
             tuple_colors = color_tuple.split(",")
-            self.setRGB(int(tuple_colors[0]), int(tuple_colors[1]), int(tuple_colors[2]))
+            self.red = int(tuple_colors[0])
+            self.green = int(tuple_colors[1])
+            self.blue = int(tuple_colors[2])
+            self.setRGB(self.red, self.green, self.blue)
         except:
-            logger.error("Could not set color. Invalid color string: '{}'".format(color_tuple))
+            self.logger.error("Could not set color. Invalid color string: '{}'".format(color_tuple))
 
     def lcd_byte(self, bits, mode, backlight=None):
         """ Send byte to data pins """
