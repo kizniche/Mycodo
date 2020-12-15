@@ -107,8 +107,9 @@ class InputModule(AbstractInput):
 
     def read_reg(self, reg_addr):
         return self.bus.read_word_data(self.i2c_address, reg_addr)
- 
-    def data_to_temp(self, data):
+
+    @staticmethod
+    def data_to_temp(data):
         temp = (data*0.02) - 273.15
         return temp
  

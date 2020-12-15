@@ -35,7 +35,6 @@ from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
-from mycodo.databases.models import Output
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl

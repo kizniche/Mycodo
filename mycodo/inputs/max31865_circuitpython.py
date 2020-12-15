@@ -24,7 +24,7 @@ INPUT_INFORMATION = {
     'url_datasheet': 'https://datasheets.maximintegrated.com/en/ds/MAX31865.pdf',
     'url_product_purchase': 'https://www.adafruit.com/product/3328',
 
-    'message': 'This module was added to allow support for multiple sensors to be connected at the same time, ' \
+    'message': 'This module was added to allow support for multiple sensors to be connected at the same time, '
                'which the original MAX31865 module was not designed for.',
 
     'options_enabled': [

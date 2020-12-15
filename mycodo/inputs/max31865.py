@@ -161,6 +161,7 @@ class max31865_sen(object):
         """
         Read the temperature of a PT100 or PT1000 probe
         :param device: 'PT100' or 'PT1000'
+        :param resistor_ref: reference ohms
         :return:
         """
         #

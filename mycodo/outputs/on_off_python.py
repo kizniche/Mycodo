@@ -113,7 +113,7 @@ self.logger.info(log_string)""",
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Force Command'),
-            'phrase': lazy_gettext('Always send the commad if instructed, regardless of the current state')
+            'phrase': lazy_gettext('Always send the command if instructed, regardless of the current state')
         },
         {
             'id': 'amps',

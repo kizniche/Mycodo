@@ -19,7 +19,6 @@ from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
-from mycodo.databases.models import Output
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_method
 from mycodo.mycodo_flask.routes_static import inject_variables
@@ -72,7 +71,7 @@ def method_data(method_id):
     method_list = []
     if method.method_type == "Date":
         for each_method in method_data:
-            if each_method.setpoint_end == None:
+            if each_method.setpoint_end is None:
                 setpoint_end = each_method.setpoint_start
             else:
                 setpoint_end = each_method.setpoint_end
@@ -146,7 +145,6 @@ def method_data(method_id):
     elif method.method_type == "Duration":
         first_entry = True
         start_duration = 0
-        end_duration = 0
         method_data = method_data.filter(MethodData.output_id == None)
         for each_method in method_data:
             if each_method.setpoint_end is None:

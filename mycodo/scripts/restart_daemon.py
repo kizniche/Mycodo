@@ -30,7 +30,7 @@ def check_daemon(print_msg=True, start_daemon=True):
                                           "{}".format(rcode))
                 except OSError as e:
                     message = "Unable to remove pid file: {}".format(e)
-                    logging.warn(message)
+                    logging.warning(message)
                     if print_msg:
                         print(message)
             else:

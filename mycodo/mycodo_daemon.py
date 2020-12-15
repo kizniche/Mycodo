@@ -711,6 +711,8 @@ class DaemonController:
 
         :param output_id: Unique ID for output
         :type output_id: str
+        :param output_channel: channel of output
+        :type output_channel: int
         :param trigger_conditionals: Whether to trigger output conditionals or not
         :type trigger_conditionals: bool
         """
@@ -737,6 +739,8 @@ class DaemonController:
 
         :param output_id: Unique ID for output
         :type output_id: str
+        :param output_channel: channel of output
+        :type output_channel: int
         :param output_type: The type of output ('sec', 'vol', 'pwm')
         :type output_type: str
         :param amount: How long to turn the output on or how much volume to dispense
@@ -788,8 +792,8 @@ class DaemonController:
 
         :param output_id: Unique ID for output
         :type output_id: str
-        :param channel: The output channel to return the state of
-        :type channel: int
+        :param output_channel: channel of output
+        :type output_channel: int
         """
         try:
             return self.controller['Output'].output_state(output_id, output_channel)

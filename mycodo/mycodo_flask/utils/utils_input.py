@@ -630,7 +630,7 @@ def input_activate(form_mod):
     if 'custom_options' in dict_inputs[input_dev.device]:
         for each_option in dict_inputs[input_dev.device]['custom_options']:
             if each_option['id'] not in custom_options_values_inputs[input_dev.unique_id]:
-                if ('required' in each_option and each_option['required']):
+                if 'required' in each_option and each_option['required']:
                     error.append("{} not found and is required to be set. "
                                  "Set option and save Input.".format(
                         each_option['name']))

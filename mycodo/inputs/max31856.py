@@ -195,28 +195,28 @@ class MAX31856(object):
         [tc_highByte, tc_middleByte, tc_lowByte] = [out[0], out[1], out[2]]
         temp = ((tc_highByte << 16) | (tc_middleByte << 8) | tc_lowByte) >> 5
 
-        if (tc_highByte & 0x80):
+        if tc_highByte & 0x80:
             temp -= 0x80000
 
         temp_C = temp * 0.0078125
 
         fault = out[3]
 
-        if ((fault & 0x80) != 0):
+        if (fault & 0x80) != 0:
             self.logger.error("Cold Junction Out-of-Range")
-        elif ((fault & 0x40) != 0):
+        elif (fault & 0x40) != 0:
             self.logger.error("Thermocouple Out-of-Range")
-        elif ((fault & 0x20) != 0):
+        elif (fault & 0x20) != 0:
             self.logger.error("Cold-Junction High Fault")
-        elif ((fault & 0x10) != 0):
+        elif (fault & 0x10) != 0:
             self.logger.error("Cold-Junction Low Fault")
-        elif ((fault & 0x08) != 0):
+        elif (fault & 0x08) != 0:
             self.logger.error("Thermocouple Temperature High Fault")
-        elif ((fault & 0x04) != 0):
+        elif (fault & 0x04) != 0:
             self.logger.error("Thermocouple Temperature Low Fault")
-        elif ((fault & 0x02) != 0):
+        elif (fault & 0x02) != 0:
             self.logger.error("Overvoltage or Undervoltage Input Fault")
-        elif ((fault & 0x01) != 0):
+        elif (fault & 0x01) != 0:
             self.logger.error("Thermocouple Open-Circuit Fault")
         else:
             return temp_C
@@ -234,7 +234,7 @@ class MAX31856(object):
         temp = ((junc_msb << 8) | junc_lsb) >> 2
         temp = offset + temp
 
-        if (junc_msb & 0x80):
+        if junc_msb & 0x80:
             temp -= 0x4000
 
         temp_C = temp * 0.015625
@@ -263,7 +263,7 @@ class MAX31856(object):
         self.GPIO.output(self.csPin, self.GPIO.LOW)
 
         # 0x8x to specify 'write register value'
-        addressByte = 0x80 | regNum;
+        addressByte = 0x80 | regNum
 
         # first byte is address byte
         self.sendByte(addressByte)
@@ -289,7 +289,7 @@ class MAX31856(object):
     def sendByte(self, byte):
         for _ in range(8):
             self.GPIO.output(self.clkPin, self.GPIO.HIGH)
-            if (byte & 0x80):
+            if byte & 0x80:
                 self.GPIO.output(self.mosiPin, self.GPIO.HIGH)
             else:
                 self.GPIO.output(self.mosiPin, self.GPIO.LOW)

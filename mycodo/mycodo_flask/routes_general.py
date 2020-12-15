@@ -213,7 +213,6 @@ def gpio_state():
 @flask_login.login_required
 def gpio_state_unique_id(unique_id, channel_id):
     """Return the GPIO state, for dashboard output """
-    output = Output.query.filter(Output.unique_id == unique_id).first()
     channel = OutputChannel.query.filter(OutputChannel.unique_id == channel_id).first()
     daemon_control = DaemonControl()
     state = daemon_control.output_state(unique_id, channel.channel)

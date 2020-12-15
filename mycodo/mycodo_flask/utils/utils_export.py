@@ -355,7 +355,6 @@ def thread_import_influxdb(tmp_folder):
     # Restore the backup to new database mycodo_db_bak
     try:
         logger.info("Creating tmp db with restore data")
-        output_successes = []
         command = "{pth}/mycodo/scripts/mycodo_wrapper " \
                   "influxdb_restore_mycodo_db {dir}".format(
             pth=INSTALL_DIRECTORY, dir=tmp_folder)

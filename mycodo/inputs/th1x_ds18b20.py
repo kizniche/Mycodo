@@ -77,7 +77,7 @@ class InputModule(AbstractInput):
         # Convert string to datetime object
         datetime_timestmp = datetime.datetime.strptime(dict_data['StatusSNS']['Time'], '%Y-%m-%dT%H:%M:%S')
 
-        if ('TempUnit' in dict_data['StatusSNS'] and dict_data['StatusSNS']['TempUnit']):
+        if 'TempUnit' in dict_data['StatusSNS'] and dict_data['StatusSNS']['TempUnit']:
             # Convert temperature to SI unit Celsius
             temp_c = convert_from_x_to_y_unit(
                 dict_data['StatusSNS']['TempUnit'],

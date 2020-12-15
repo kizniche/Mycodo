@@ -165,4 +165,4 @@ def reset_password():
 
 def generate_reset_code(length):
     characters = string.ascii_letters + string.digits
-    return ''.join(random.choice(characters) for i in range(length))
+    return ''.join(random.choice(characters) for _ in range(length))
