@@ -568,6 +568,11 @@ class LCDController(AbstractController, threading.Thread):
         else:
             self.lcd_is_on = False  # Instruct LCD backlight to turn off
 
+    def lcd_backlight_color(self, color):
+        """ Set backlight color """
+        self.lcd_out.lcd_backlight_color(color)
+        self.timer = time.time() - 1  # Induce LCD to update after turning backlight on
+
     def lcd_flash(self, state):
         """ Enable the LCD to begin or end flashing """
         if state:

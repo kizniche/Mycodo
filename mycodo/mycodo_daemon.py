@@ -1088,6 +1088,10 @@ class PyroServer(object):
         """Turns an LCD backlight on or off"""
         return self.mycodo.lcd_backlight(lcd_id, state)
 
+    def lcd_backlight_color(self, lcd_id, color):
+        """Set the LCD backlight color"""
+        return self.mycodo.lcd_backlight_color(lcd_id, color)
+
     def lcd_flash(self, lcd_id, state):
         """Starts or stops an LCD from flashing (alarm)"""
         return self.mycodo.lcd_flash(lcd_id, state)

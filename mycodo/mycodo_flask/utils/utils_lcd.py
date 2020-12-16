@@ -78,8 +78,11 @@ def lcd_add(form):
                 '128x64_pioled_circuit_python']):
             new_lcd.location = '0x3c'
             new_lcd.pin_reset = 19
-        elif lcd_interface == 'I2C' and lcd_id in ['16x2_generic', '20x4_generic', '16x2_grove_lcd_rgb']:
+        elif lcd_interface == 'I2C' and lcd_id in ['16x2_generic', '20x4_generic']:
             new_lcd.location = '0x27'
+        elif lcd_interface == 'I2C' and lcd_id in ['16x2_grove_lcd_rgb']:
+            new_lcd.location = '0x3e'
+            new_lcd.location_backlight = '0x62'
         elif lcd_interface == 'SPI':
             new_lcd.pin_reset = 19
             new_lcd.pin_dc = 16
