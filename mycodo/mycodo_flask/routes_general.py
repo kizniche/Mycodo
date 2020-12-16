@@ -953,8 +953,11 @@ def output_mod(output_id, channel, state, output_type, amount):
             return "Could not determine channel number from channel ID '{}'".format(channel)
 
     daemon = DaemonControl()
-    if (state in ['on', 'off'] and output_type in ['sec', 'pwm', 'vol', 'value'] and
-            (str_is_float(amount) and float(amount) >= 0)):
+    if (state in ['on', 'off'] and str_is_float(amount) and
+            (
+                (output_type in ['sec', 'pwm', 'vol'] and float(amount) >= 0) or
+                (output_type == 'value')
+            )):
         out_status = daemon.output_on_off(
             output_id,
             state,

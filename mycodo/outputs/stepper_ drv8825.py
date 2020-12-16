@@ -91,7 +91,7 @@ OUTPUT_INFORMATION = {
             'default_value': 0,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Enable Pin',
-            'phrase': 'The Enable pin of the controller (BCM numbering)'
+            'phrase': 'The Enable pin of the controller (BCM numbering). 0 to disable.'
         },
         {
             'id': 'pin_step',
@@ -105,33 +105,33 @@ OUTPUT_INFORMATION = {
             'id': 'pin_dir',
             'type': 'integer',
             'default_value': 0,
-            'constraints_pass': constraints_pass_positive_value,
+            'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Direction Pin',
-            'phrase': 'The Direction pin of the controller (BCM numbering)'
+            'phrase': 'The Direction pin of the controller (BCM numbering). 0 to disable.'
         },
         {
             'id': 'pin_mode_1',
             'type': 'integer',
             'default_value': 0,
-            'constraints_pass': constraints_pass_positive_value,
+            'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Mode Pin 1',
-            'phrase': 'The Mode Pin 1 of the controller (BCM numbering)'
+            'phrase': 'The Mode Pin 1 of the controller (BCM numbering). 0 to disable.'
         },
         {
             'id': 'pin_mode_2',
             'type': 'integer',
             'default_value': 0,
-            'constraints_pass': constraints_pass_positive_value,
+            'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Mode Pin 2',
-            'phrase': 'The Mode Pin 2 of the controller (BCM numbering)'
+            'phrase': 'The Mode Pin 2 of the controller (BCM numbering). 0 to disable.'
         },
         {
             'id': 'pin_mode_3',
             'type': 'integer',
             'default_value': 0,
-            'constraints_pass': constraints_pass_positive_value,
+            'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Mode Pin 3',
-            'phrase': 'The Mode Pin 3 of the controller (BCM numbering)'
+            'phrase': 'The Mode Pin 3 of the controller (BCM numbering). 0 to disable.'
         },
         {
             'id': 'full_step_delay',
@@ -186,18 +186,30 @@ class OutputModule(AbstractOutput):
     def setup_output(self):
         self.setup_on_off_output(OUTPUT_INFORMATION)
 
-        if self.pin_step and self.pin_dir and self.pin_mode_1 and self.pin_mode_2 and self.pin_mode_3:
+        mode_pins = []
+        if self.pin_mode_1 and self.pin_mode_2 and self.pin_mode_3:
+            mode_pins = (self.pin_mode_1, self.pin_mode_2, self.pin_mode_3)
+        elif self.step_resolution != "Full":
+            self.logger.warning(
+                "When using a step resolution other than Full, pin modes should be set. "
+                "Only proceed if you know what you're doing (e.g. they're pulled high/low "
+                "on the board and not via Mycodo GPIO pins).")
+
+        if self.pin_step:
             try:
                 self.stepper = StepperMotor(
                     self.pin_enable,
                     self.pin_step,
                     self.pin_dir,
-                    (self.pin_mode_1, self.pin_mode_2, self.pin_mode_3),
+                    mode_pins,
                     self.step_resolution,
                     self.full_step_delay)
+                self.stepper_running = False
                 self.output_setup = True
             except:
                 self.output_setup = False
+        else:
+            self.logger.error("Step pin must be set")
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         measure_dict = copy.deepcopy(measurements_dict)
@@ -208,7 +220,7 @@ class OutputModule(AbstractOutput):
                 self.stepper.enable(True)
                 self.stepper.run(int(amount), True)
                 self.stepper.enable(False)
-                self.stepper_running = True
+                self.stepper_running = False
             else:
                 self.stepper_running = True
                 self.stepper.enable(True)
@@ -258,7 +270,8 @@ class StepperMotor:
         GPIO.setup(enable_pin, GPIO.OUT)
         GPIO.setup(step_pin, GPIO.OUT)
         GPIO.setup(dir_pin, GPIO.OUT)
-        GPIO.setup(mode_pins, GPIO.OUT)
+        if all(mode_pins):
+            GPIO.setup(mode_pins, GPIO.OUT)
 
         resolution = {
             'Full': (0, 0, 0),
@@ -278,7 +291,8 @@ class StepperMotor:
         }
 
         self.delay = full_step_delay / micro_steps[step_type]
-        GPIO.output(mode_pins, resolution[step_type])
+        if all(mode_pins):
+            GPIO.output(mode_pins, resolution[step_type])
 
     def enable(self, enable):
         self.GPIO.output(self.enable_pin, not enable)
