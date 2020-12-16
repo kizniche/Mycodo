@@ -206,13 +206,13 @@ class OutputModule(AbstractOutput):
             if amount > 0:
                 self.stepper_running = True
                 self.stepper.enable(True)
-                self.stepper.run(amount, True)
+                self.stepper.run(int(amount), True)
                 self.stepper.enable(False)
                 self.stepper_running = True
             else:
                 self.stepper_running = True
                 self.stepper.enable(True)
-                self.stepper.run(abs(amount), False)
+                self.stepper.run(int(abs(amount)), False)
                 self.stepper.enable(False)
                 self.stepper_running = False
             measure_dict[0]['value'] = amount
