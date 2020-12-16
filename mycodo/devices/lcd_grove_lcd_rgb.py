@@ -22,8 +22,8 @@ class LCD_Grove_LCD_RGB:
         self.blue = 255
 
         self.i2c_address = int(lcd_dev.location, 16)
-        # self.i2c_address_backlight = int(lcd_dev.location_backlight, 16)
-        self.i2c_address_backlight = 0x62
+        self.i2c_address_backlight = int(lcd_dev.location_backlight, 16)
+        # self.i2c_address_backlight = 0x62
         self.i2c_bus = lcd_dev.i2c_bus
         self.lcd_x_characters = lcd_dev.x_characters
         self.lcd_y_lines = lcd_dev.y_lines
@@ -68,7 +68,7 @@ class LCD_Grove_LCD_RGB:
         self.REG_MODE2 = 0x01
         self.REG_OUTPUT = 0x08
 
-                # Setup I2C bus
+        # Setup I2C bus
         try:
             self.bus = SMBus(self.i2c_bus)
         except Exception as except_msg:
@@ -111,10 +111,10 @@ class LCD_Grove_LCD_RGB:
     def writeData(self, data):
         self.bus.write_byte_data(self.i2c_address,0x40,data)
 
-    def setRGB(self, r,g,b):
-        self.bus.write_byte_data(self.i2c_address_backlight,4,r)
-        self.bus.write_byte_data(self.i2c_address_backlight,3,g)
-        self.bus.write_byte_data(self.i2c_address_backlight,2,b)
+    def setRGB(self, r, g, b):
+        self.bus.write_byte_data(self.i2c_address_backlight, 4, r)
+        self.bus.write_byte_data(self.i2c_address_backlight, 3, g)
+        self.bus.write_byte_data(self.i2c_address_backlight, 2, b)
 
     def clearDisplay(self):
         self.writeCommand(self.LCD_CLEARDISPLAY) # clear display

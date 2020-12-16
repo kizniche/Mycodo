@@ -60,6 +60,12 @@ class LCDMod(FlaskForm):
         validators=[Optional()],
         widget=NumberInput()
     )
+    location_backlight = StringField(
+        "{bl} {op} ({unit})".format(
+            bl=lazy_gettext('Backlight'),
+            op=lazy_gettext('Address'),
+            unit=lazy_gettext('I2C'))
+    )
     pin_reset = IntegerField(
         "{pin}: {reset}".format(pin=TRANSLATIONS['pin']['title'],
                                 reset=TRANSLATIONS['reset']['title']),

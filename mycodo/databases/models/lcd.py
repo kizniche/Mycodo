@@ -20,6 +20,7 @@ class LCD(CRUDMixin, db.Model):
     # I2C
     location = db.Column(db.Text, default=None)
     i2c_bus = db.Column(db.Integer, default=1)
+    location_backlight = db.Column(db.Text, default=None)
 
     # SPI
     pin_reset = db.Column(db.Integer, default=None)

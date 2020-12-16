@@ -180,6 +180,17 @@
 
       {% endif %}
 
+      {% if each_lcd.interface == 'I2C' and each_lcd.lcd_type == '16x2_grove_lcd_rgb' %}
+
+        <div class="col-auto">
+          {{form_lcd_mod.location_backlight.label(class_='control-label')}}
+          <div>
+            {{form_lcd_mod.location_backlight(class_='form-control', value=each_lcd.location_backlight)}}
+          </div>
+        </div>
+
+      {% endif %}
+
       {% if each_lcd.interface == 'I2C' %}
 
         <div class="col-auto">

@@ -80,7 +80,7 @@ def lcd_add(form):
             new_lcd.pin_reset = 19
         elif lcd_interface == 'I2C' and lcd_id in ['16x2_generic', '20x4_generic']:
             new_lcd.location = '0x27'
-        elif lcd_interface == 'I2C' and lcd_id in ['16x2_grove_lcd_rgb']:
+        elif lcd_interface == 'I2C' and lcd_id == '16x2_grove_lcd_rgb':
             new_lcd.location = '0x3e'
             new_lcd.location_backlight = '0x62'
         elif lcd_interface == 'SPI':
@@ -151,6 +151,9 @@ def lcd_mod(form_mod_lcd):
                     mod_lcd.spi_bus = form_mod_lcd.spi_bus.data
                     if form_mod_lcd.pin_cs.data:
                         mod_lcd.pin_cs = form_mod_lcd.pin_cs.data
+
+                if mod_lcd.lcd_type == '16x2_grove_lcd_rgb':
+                    mod_lcd.location_backlight = form_mod_lcd.location_backlight.data
 
                 if form_mod_lcd.pin_reset.data is not None:
                     mod_lcd.pin_reset = form_mod_lcd.pin_reset.data
