@@ -30,6 +30,7 @@
 ### Miscellaneous
 
  - Change widget title styles
+ - Fix GCC warnings ([#906](https://github.com/kizniche/mycodo/issues/906))
 
 
 ## 8.8.8 (2020-10-30)

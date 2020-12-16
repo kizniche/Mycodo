@@ -7,15 +7,15 @@
 #include <unistd.h>
 
 int upgrade_commands(char *argv, char *command) {
-    char path[255];
+    char path[256];
     strncpy(path, argv, sizeof(path));
     dirname(path);
 
-    char full_cmd[255];
-    strncpy(full_cmd, "/bin/bash ", sizeof(full_cmd));
-    strncat(full_cmd, path, sizeof(full_cmd));
-    strncat(full_cmd, "/upgrade_commands.sh ", sizeof(full_cmd));
-    strncat(full_cmd, command, sizeof(full_cmd));
+    char full_cmd[512];
+    strncpy(full_cmd, "/bin/bash ", sizeof(full_cmd) - 1);
+    strncat(full_cmd, path, sizeof(full_cmd) - 1);
+    strncat(full_cmd, "/upgrade_commands.sh ", sizeof(full_cmd) - 1);
+    strncat(full_cmd, command, sizeof(full_cmd) - 1);
 
     system(full_cmd);
 }
@@ -26,26 +26,26 @@ int main(int argc, char *argv[]) {
 
 	if (argc > 1) {
 		if (strcmp(argv[1], "backup-create") == 0) {
-		    char path[255];
-            strncpy(path, argv[0], sizeof(path));
-            dirname(path);
-			char restoreScript[255];
-			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
-			strncat(restoreScript, path, sizeof(restoreScript));
-			strncat(restoreScript, "/upgrade_commands.sh backup-create", sizeof(restoreScript));
+      char path[256];
+      strncpy(path, argv[0], sizeof(path) - 1);
+      dirname(path);
+			char restoreScript[512];
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript) - 1);
+			strncat(restoreScript, path, sizeof(restoreScript) - 1);
+			strncat(restoreScript, "/upgrade_commands.sh backup-create", sizeof(restoreScript) - 1);
 			system(restoreScript);
         } else if (strcmp(argv[1], "backup-delete") == 0 && (argc > 2)) {
 			sprintf(cmd, "rm -rf /var/Mycodo-backups/Mycodo-backup-%s", argv[2]);
 			system(cmd);
 		} else if (strcmp(argv[1], "backup-restore") == 0 && (argc > 2)) {
-		    char path[255];
-            strncpy(path, argv[0], sizeof(path));
-            dirname(path);
-			char restoreScript[255];
-			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
-			strncat(restoreScript, path, sizeof(restoreScript));
+      char path[256];
+      strncpy(path, argv[0], sizeof(path) - 1);
+      dirname(path);
+			char restoreScript[512];
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript) - 1);
+			strncat(restoreScript, path, sizeof(restoreScript) - 1);
 			sprintf(cmd, "/upgrade_commands.sh backup-restore %s", argv[2]);
-			strncat(restoreScript, cmd, sizeof(restoreScript));
+			strncat(restoreScript, cmd, sizeof(restoreScript) - 1);
 			system(restoreScript);
         } else if (strcmp(argv[1], "restart") == 0) {
 			sprintf(cmd, "sleep 10 && shutdown now -r");
@@ -92,44 +92,44 @@ int main(int argc, char *argv[]) {
 		} else if (strcmp(argv[1], "update_permissions") == 0) {
 			upgrade_commands(argv[0], "update-permissions");
 		} else if (strcmp(argv[1], "install_dependency") == 0 && strcmp(argv[2], "pip-pypi") == 0 && (argc == 4)) {
-		    char path[255];
-            strncpy(path, argv[0], sizeof(path));
-            dirname(path);
+      char path[256];
+      strncpy(path, argv[0], sizeof(path) - 1);
+      dirname(path);
 			char restoreScript[1024];
-			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
-			strncat(restoreScript, path, sizeof(restoreScript));
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript) - 1);
+			strncat(restoreScript, path, sizeof(restoreScript) - 1);
 			sprintf(cmd, "/dependencies.sh pip-pypi %s", argv[3]);
-			strncat(restoreScript, cmd, sizeof(restoreScript));
+			strncat(restoreScript, cmd, sizeof(restoreScript) - 1);
 			system(restoreScript);
 		} else if (strcmp(argv[1], "install_dependency") == 0 && strcmp(argv[2], "pip-git") == 0 && (argc == 4)) {
-		    char path[255];
-            strncpy(path, argv[0], sizeof(path));
-            dirname(path);
+      char path[256];
+      strncpy(path, argv[0], sizeof(path) - 1);
+      dirname(path);
 			char restoreScript[1024];
-			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
-			strncat(restoreScript, path, sizeof(restoreScript));
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript) - 1);
+			strncat(restoreScript, path, sizeof(restoreScript) - 1);
 			sprintf(cmd, "/dependencies.sh pip-git %s", argv[3]);
-			strncat(restoreScript, cmd, sizeof(restoreScript));
+			strncat(restoreScript, cmd, sizeof(restoreScript) - 1);
 			system(restoreScript);
 		} else if (strcmp(argv[1], "install_dependency") == 0 && strcmp(argv[2], "apt") == 0 && (argc == 4)) {
-		    char path[255];
-            strncpy(path, argv[0], sizeof(path));
-            dirname(path);
+      char path[256];
+      strncpy(path, argv[0], sizeof(path) - 1);
+      dirname(path);
 			char restoreScript[1024];
-			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
-			strncat(restoreScript, path, sizeof(restoreScript));
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript) - 1);
+			strncat(restoreScript, path, sizeof(restoreScript) - 1);
 			sprintf(cmd, "/dependencies.sh apt %s", argv[3]);
-			strncat(restoreScript, cmd, sizeof(restoreScript));
+			strncat(restoreScript, cmd, sizeof(restoreScript) - 1);
 			system(restoreScript);
 		} else if (strcmp(argv[1], "install_dependency") == 0 && strcmp(argv[2], "internal") == 0 && (argc == 4)) {
-		    char path[255];
-            strncpy(path, argv[0], sizeof(path));
-            dirname(path);
+      char path[256];
+      strncpy(path, argv[0], sizeof(path) - 1);
+      dirname(path);
 			char restoreScript[1024];
-			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
-			strncat(restoreScript, path, sizeof(restoreScript));
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript) - 1);
+			strncat(restoreScript, path, sizeof(restoreScript) - 1);
 			sprintf(cmd, "/dependencies.sh internal %s", argv[3]);
-			strncat(restoreScript, cmd, sizeof(restoreScript));
+			strncat(restoreScript, cmd, sizeof(restoreScript) - 1);
 			system(restoreScript);
         } else if (strcmp(argv[1], "install_pigpiod") == 0) {
 			upgrade_commands(argv[0], "install-pigpiod");
@@ -144,24 +144,24 @@ int main(int argc, char *argv[]) {
 		} else if (strcmp(argv[1], "uninstall_pigpiod") == 0) {
 			upgrade_commands(argv[0], "uninstall-pigpiod");
     } else if (strcmp(argv[1], "upgrade-release-wipe") == 0 && (argc > 2)) {
-      char path[255];
-      strncpy(path, argv[0], sizeof(path));
+      char path[256];
+      strncpy(path, argv[0], sizeof(path) - 1);
       dirname(path);
-			char restoreScript[255];
-			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
-			strncat(restoreScript, path, sizeof(restoreScript));
+			char restoreScript[256];
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript) - 1);
+			strncat(restoreScript, path, sizeof(restoreScript) - 1);
 			sprintf(cmd, "/upgrade_commands.sh upgrade-release-wipe %s", argv[2]);
-			strncat(restoreScript, cmd, sizeof(restoreScript));
+			strncat(restoreScript, cmd, sizeof(restoreScript) - 1);
 			system(restoreScript);
     } else if (strcmp(argv[1], "upgrade-release-major") == 0 && (argc > 2)) {
-      char path[255];
-      strncpy(path, argv[0], sizeof(path));
+      char path[256];
+      strncpy(path, argv[0], sizeof(path) - 1);
       dirname(path);
-			char restoreScript[255];
-			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript));
-			strncat(restoreScript, path, sizeof(restoreScript));
+			char restoreScript[256];
+			strncpy(restoreScript, "/bin/bash ", sizeof(restoreScript) - 1);
+			strncat(restoreScript, path, sizeof(restoreScript) - 1);
 			sprintf(cmd, "/upgrade_commands.sh upgrade-release-major %s", argv[2]);
-			strncat(restoreScript, cmd, sizeof(restoreScript));
+			strncat(restoreScript, cmd, sizeof(restoreScript) - 1);
 			system(restoreScript);
     } else if (strcmp(argv[1], "upgrade-master") == 0) {
 			upgrade_commands(argv[0], "upgrade-master");
