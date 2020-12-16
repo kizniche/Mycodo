@@ -1,8 +1,12 @@
 # coding=utf-8
 #
-# Support for the Grove - LCD RGB Backlight (http://www.seeedstudio.com/wiki/Grove_-_LCD_RGB_Backlight)
+# Support for the Grove - LCD RGB Backlight (https://wiki.seeedstudio.com/Grove-LCD_RGB_Backlight/)
 #
 # The GrovePi connects the Raspberry Pi and Grove sensors.  You can learn more about GrovePi here:  http://www.dexterindustries.com/GrovePi
+#
+# Configuration:
+#   The I2C default address of the display is 0x3e
+#   The I2C default address of the backlight is 0x62
 #
 import logging
 import time
