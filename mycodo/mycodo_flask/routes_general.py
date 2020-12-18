@@ -968,6 +968,10 @@ def output_mod(output_id, channel, state, output_type, amount):
             return 'ERROR: {}'.format(out_status[1])
         else:
             return 'SUCCESS: {}'.format(out_status[1])
+    else:
+        return 'ERROR: unknown parameters: ' \
+               'output_id: {}, channel: {}, state: {}, output_type: {}, amount: {}'.format(
+                output_id, channel, state, output_type, amount)
 
 
 @blueprint.route('/daemonactive')

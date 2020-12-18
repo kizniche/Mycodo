@@ -153,12 +153,5 @@ class InputModule(AbstractInput):
             return
 
         self.return_dict = copy.deepcopy(measurements_dict)
-
-        try:
-            while not self.spi.try_lock():
-                time.sleep(0.1)
-            self.value_set(0, self.sensor.temperature)
-        finally:
-            self.spi.unlock()
-
+        self.value_set(0, self.sensor.temperature)
         return self.return_dict

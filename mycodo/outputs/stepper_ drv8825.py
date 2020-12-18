@@ -60,17 +60,24 @@ channels_dict = {
 
 # Output information
 OUTPUT_INFORMATION = {
-    'output_name_unique': 'drv8825',
-    'output_name': "{}: DRV8825".format(lazy_gettext('Stepper Motor Controller')),
+    'output_name_unique': 'drv8825',  # TODO: Rename to "stepper_generic" for release and file name
+    'output_name': "{}: Generic".format(lazy_gettext('Stepper Motor')),
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['value'],
 
-    'url_manufacturer': 'https://www.ti.com/product/DRV8825',
-    'url_datasheet': 'https://www.ti.com/lit/ds/symlink/drv8825.pdf',
-    'url_product_purchase': 'https://www.pololu.com/product/2133',
+    'url_manufacturer': [
+        'https://www.ti.com/product/DRV8825',
+        'https://www.allegromicro.com/en/products/motor-drivers/brush-dc-motor-drivers/a4988'],
+    'url_datasheet': [
+        'https://www.ti.com/lit/ds/symlink/drv8825.pdf',
+        'https://www.allegromicro.com/-/media/files/datasheets/a4988-datasheet.ashx'],
+    'url_product_purchase': [
+        'https://www.pololu.com/product/2133',
+        'https://www.pololu.com/product/1182'],
 
-    'message': 'The value passed to the output is the number of steps. A positive value turns '
+    'message': 'This is a generic stepper motor module for drivers such as the DRV8825, A4988, and others. '
+               'The value passed to the output is the number of steps. A positive value turns '
                'clockwise and a negative value turns counter-clockwise.',
 
     'options_enabled': [
