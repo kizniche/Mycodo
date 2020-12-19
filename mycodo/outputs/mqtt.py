@@ -24,6 +24,22 @@ def constraints_pass_positive_value(mod_input, value):
     return all_passed, errors, mod_input
 
 
+def constraints_pass_positive_or_zero_value(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: float or int
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure value is positive
+    if value < 0:
+        all_passed = False
+        errors.append("Must be zero or a positive value")
+    return all_passed, errors, mod_input
+
+
 measurements_dict = {
     0: {
         'measurement': 'duration_time',
@@ -93,7 +109,7 @@ OUTPUT_INFORMATION = {
             'type': 'integer',
             'default_value': 60,
             'required': True,
-            'constraints_pass': constraints_pass_positive_value,
+            'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': lazy_gettext('Keep Alive'),
             'phrase': lazy_gettext('The keepalive timeout value for the client. Set to 0 to disable.')
         },

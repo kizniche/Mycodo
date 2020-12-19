@@ -11,6 +11,7 @@
  - Fix Clock Pin option showing twice for UART Inputs
  - Fix MCP3008 Input error ([#902](https://github.com/kizniche/mycodo/issues/902))
  - Fix Input Measurement option Invert Scale not displaying properly ([#902](https://github.com/kizniche/mycodo/issues/902))
+ - Fix MQTT output being able to set 0 to disable option
 
 ### Features
 
