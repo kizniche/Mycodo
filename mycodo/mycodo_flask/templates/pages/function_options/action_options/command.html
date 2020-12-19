@@ -1,6 +1,10 @@
-<div class="col-sm">
+<div class="col-auto">
   <label class='control-label'>{{_('Command')}}</label>
-  {{form_actions.do_action_string(class_='form-control', value=each_action.do_action_string, **{'title':_('Command to execute (as user "mycodo")')})}}
+  {{form_actions.do_action_string(class_='form-control', value=each_action.do_action_string, **{'title':_('Command to execute')})}}
+</div>
+<div class="col-auto">
+  <label class='control-label'>{{_('User')}}</label>
+  {{form_actions.do_output_state(class_='form-control', value=each_action.do_output_state, **{'title':_('The user to execute the command')})}}
 </div>
 <div class="col-12">
   <strong>{{_('Execute Command')}}</strong>: {{_('Execute a Linux shell command.')}}

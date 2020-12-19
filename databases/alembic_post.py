@@ -58,6 +58,31 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == '313a6fb99082':
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from mycodo.databases.models import Actions
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    for each_action in session.query(Actions).all():
+                        try:
+                            if each_action.action_type == 'command' and not each_action.do_output_state:
+                                # "pi" was the default prior to this update.
+                                # The new default is "mycodo"
+                                each_action.do_output_state = 'pi'
+                                session.commit()
+                        except Exception:
+                            msg = "ERROR: Update Action {}: {}".format(
+                                each_revision, traceback.format_exc())
+                            error.append(msg)
+                            print(msg)
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == '0e150fb8020b':
             print("Executing post-alembic code for revision {}".format(each_revision))
             import json

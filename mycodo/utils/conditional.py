@@ -27,12 +27,12 @@ class ConditionalRun:
     def run_all_actions(self, message=None):
         if message is None:
             message = self.message
-        control.trigger_all_actions(self.function_id, message=message)
+        self.message = control.trigger_all_actions(self.function_id, message=message)
 
     def run_action(self, action_id, message=None):
         if message is None:
             message = self.message
-        control.trigger_action(action_id, message=message, single_action=True)
+        self.message = control.trigger_action(action_id, message=message, single_action=True)
 
     @staticmethod
     def condition(condition_id):

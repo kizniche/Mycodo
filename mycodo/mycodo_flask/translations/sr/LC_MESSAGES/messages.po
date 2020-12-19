@@ -2237,8 +2237,8 @@ msgid "How long to wait for the command to finish before killing the process."
 msgstr "Колико дуго да чекају команду до краја пре убиства процес."
 
 #: inputs/linux_command.py:56
-msgid "The user to execute the command."
-msgstr "Кориснику да изврши наредбу."
+msgid "The user to execute the command"
+msgstr "Кориснику да изврши наредбу"
 
 #: inputs/linux_command.py:63
 msgid "CWD"

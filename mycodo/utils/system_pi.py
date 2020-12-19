@@ -360,7 +360,7 @@ def epoch_of_next_time(time_str):
         return None
 
 
-def cmd_output(command, stdout_pipe=True, timeout=360, user='pi', cwd='/home/pi'):
+def cmd_output(command, stdout_pipe=True, timeout=360, user='mycodo', cwd='/home'):
     """
     Executes a bash command and returns the output
 

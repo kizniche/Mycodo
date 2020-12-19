@@ -12,6 +12,7 @@
  - Fix MCP3008 Input error ([#902](https://github.com/kizniche/mycodo/issues/902))
  - Fix Input Measurement option Invert Scale not displaying properly ([#902](https://github.com/kizniche/mycodo/issues/902))
  - Fix MQTT output being able to set 0 to disable option
+ - Fix compounding of Function Action return messages in Conditionals
 
 ### Features
 
@@ -27,11 +28,13 @@
  - Add Function Action: Output Value
  - Add Function Action: Set LCD Backlight Color
  - Add configurable link for navbar brand link
+ - Add User option to Shell Command Function Action
 
 ### Miscellaneous
 
  - Change widget title styles
  - Fix GCC warnings ([#906](https://github.com/kizniche/mycodo/issues/906))
+ - Remove default user "pi" with "mycodo" (for compatibility with non-Raspberry Pi operating systems)
 
 
 ## 8.8.8 (2020-10-30)

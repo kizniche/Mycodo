@@ -72,13 +72,8 @@ self.logger.info(log_string)""",
         },
         {
             'id': 'linux_command_user',
-            'type': 'select',
-            'default_value': 'pi',
-            'options_select': [
-                ('pi', 'pi'),
-                ('mycodo', 'mycodo'),
-                ('root', 'root')
-            ],
+            'type': 'text',
+            'default_value': 'mycodo',
             'name': lazy_gettext('User'),
             'phrase': lazy_gettext('The user to execute the command')
         },

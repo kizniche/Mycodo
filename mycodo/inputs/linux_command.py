@@ -50,10 +50,10 @@ INPUT_INFORMATION = {
         {
             'id': 'execute_as_user',
             'type': 'text',
-            'default_value': 'pi',
+            'default_value': 'mycodo',
             'required': True,
             'name': lazy_gettext('User'),
-            'phrase': lazy_gettext('The user to execute the command.')
+            'phrase': lazy_gettext('The user to execute the command')
         },
         {
             'id': 'current_working_dir',

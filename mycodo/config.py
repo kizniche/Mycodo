@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.8.8'
-ALEMBIC_VERSION = '03331fc158bc'
+ALEMBIC_VERSION = '313a6fb99082'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -625,7 +625,8 @@ FUNCTION_ACTION_INFO = {
         'dependencies_module': []
     },
     'command': {
-        'name': lazy_gettext('Execute Command'),
+        'name': "{}: {}".format(lazy_gettext('Execute Command'),
+                                lazy_gettext('Shell')),
         'dependencies_module': []
     },
     'infrared_send': {

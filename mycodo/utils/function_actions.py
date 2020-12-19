@@ -520,6 +520,7 @@ def action_output_volume(cond_action, message):
 def action_command(cond_action, message):
     # Replace string variables with actual values
     command_str = cond_action.do_action_string
+    user = cond_action.do_output_state
 
     # TODO: Maybe get this working again with the new measurement system
     # # Replace measurement variables
@@ -560,9 +561,10 @@ def action_command(cond_action, message):
     message += " Execute '{com}' ".format(
         com=command_str)
 
-    _, _, cmd_status = cmd_output(command_str)
+    cmd_out, cmd_err, cmd_status = cmd_output(command_str, user=user)
 
-    message += "(return status: {stat}).".format(stat=cmd_status)
+    message += "(return out: {out}, err: {err}, status: {stat}).".format(
+        out=cmd_out, err=cmd_err, stat=cmd_status)
     return message
 
 
@@ -1227,6 +1229,7 @@ def trigger_function_actions(function_id, message='', debug=False):
                 db_session.add(new_note)
 
     logger_actions.debug("Message: {}".format(message))
+    return message
 
 
 def which_controller(unique_id):

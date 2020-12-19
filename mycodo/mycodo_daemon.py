@@ -952,6 +952,7 @@ class DaemonController:
         except Exception as except_msg:
             message = "Could not trigger Conditional Actions: {err}".format(err=except_msg)
             self.logger.exception(message)
+            return message
 
     def terminate_daemon(self):
         """Instruct the daemon to shut down"""

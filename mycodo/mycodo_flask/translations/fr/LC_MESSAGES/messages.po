@@ -2255,8 +2255,8 @@ msgid "How long to wait for the command to finish before killing the process."
 msgstr "Combien de temps attendre la commande à la fin avant de tuer le processus."
 
 #: inputs/linux_command.py:56
-msgid "The user to execute the command."
-msgstr "L'utilisateur d'exécuter la commande."
+msgid "The user to execute the command"
+msgstr "L'utilisateur d'exécuter la commande"
 
 #: inputs/linux_command.py:63
 msgid "CWD"

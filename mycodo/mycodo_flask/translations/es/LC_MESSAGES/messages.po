@@ -2259,8 +2259,8 @@ msgstr ""
 "proceso."
 
 #: inputs/linux_command.py:56
-msgid "The user to execute the command."
-msgstr "El usuario ejecutar el comando."
+msgid "The user to execute the command"
+msgstr "El usuario ejecutar el comando"
 
 #: inputs/linux_command.py:63
 msgid "CWD"

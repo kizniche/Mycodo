@@ -296,6 +296,9 @@ def action_add(form):
         new_action.function_type = form.function_type.data
         new_action.action_type = form.action_type.data
 
+        if form.action_type.data == 'command':
+            new_action.do_output_state = 'mycodo'  # user to execute shell command as
+
         if not error:
             new_action.save()
 
@@ -408,8 +411,11 @@ def action_mod(form):
             mod_action.do_unique_id = form.do_unique_id.data
             mod_action.do_camera_duration = form.do_camera_duration.data
 
-        elif mod_action.action_type in ['command',
-                                        'create_note']:
+        elif mod_action.action_type == 'command':
+            mod_action.do_action_string = form.do_action_string.data
+            mod_action.do_output_state = form.do_output_state.data
+
+        elif mod_action.action_type == 'create_note':
             mod_action.do_action_string = form.do_action_string.data
 
         elif mod_action.action_type in ['system_restart',
