@@ -196,9 +196,12 @@ class OutputModule(AbstractOutput):
         mode_pins = []
         if self.pin_mode_1 and self.pin_mode_2 and self.pin_mode_3:
             mode_pins = (self.pin_mode_1, self.pin_mode_2, self.pin_mode_3)
+        elif any([self.pin_mode_1, self.pin_mode_2, self.pin_mode_3]):
+            self.logger.warning(
+                "When setting mode pins, this driver needs all three to be set.")
         elif self.step_resolution != "Full":
             self.logger.warning(
-                "When using a step resolution other than Full, pin modes should be set. "
+                "When using a step resolution other than Full, mode pins should be set. "
                 "Only proceed if you know what you're doing (e.g. they're pulled high/low "
                 "on the board and not via Mycodo GPIO pins).")
 
@@ -214,6 +217,7 @@ class OutputModule(AbstractOutput):
                 self.stepper_running = False
                 self.output_setup = True
             except:
+                self.logger.exception("Stepper setup")
                 self.output_setup = False
         else:
             self.logger.error("Step pin must be set")
@@ -277,7 +281,7 @@ class StepperMotor:
         GPIO.setup(enable_pin, GPIO.OUT)
         GPIO.setup(step_pin, GPIO.OUT)
         GPIO.setup(dir_pin, GPIO.OUT)
-        if all(mode_pins):
+        if mode_pins and all(mode_pins):
             GPIO.setup(mode_pins, GPIO.OUT)
 
         resolution = {
@@ -298,7 +302,7 @@ class StepperMotor:
         }
 
         self.delay = full_step_delay / micro_steps[step_type]
-        if all(mode_pins):
+        if mode_pins and all(mode_pins):
             GPIO.output(mode_pins, resolution[step_type])
 
     def enable(self, enable):

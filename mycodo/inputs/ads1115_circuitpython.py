@@ -151,7 +151,7 @@ class InputModule(AbstractInput):
                 if self.is_enabled(channel):
                     if channel not in measurement_totals:
                         measurement_totals[channel] = 0
-                    chan = self.analog_in(self.adc, self.ads.P0)
+                    chan = self.analog_in(self.adc, channel)
                     self.adc.gain = self.adc_gain
                     self.logger.debug("Channel {}: Gain {}, {} raw, {} volts".format(
                         channel, self.adc_gain, chan.value, chan.voltage))

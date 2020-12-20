@@ -1,4 +1,4 @@
-## 8.8.9 (Unreleased)
+## 8.9.0 (Unreleased)
 
 ### Bugfixes
 
@@ -13,6 +13,7 @@
  - Fix Input Measurement option Invert Scale not displaying properly ([#902](https://github.com/kizniche/mycodo/issues/902))
  - Fix MQTT output being able to set 0 to disable option
  - Fix compounding of Function Action return messages in Conditionals
+ - Fix ADS1015 and ADS1115 inputs only measuring channel 0 ([#911](https://github.com/kizniche/mycodo/issues/911))
 
 ### Features
 
