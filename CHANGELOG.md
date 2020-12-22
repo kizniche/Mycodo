@@ -15,6 +15,7 @@
  - Fix compounding of Function Action return messages in Conditionals
  - Fix ADS1015 and ADS1115 inputs only measuring channel 0 ([#911](https://github.com/kizniche/mycodo/issues/911))
  - Fix install of pyusb dependency of Adafruit_Extended_Bus ([#863](https://github.com/kizniche/mycodo/issues/863))
+ - Fix Message and New Line options in Custom Options
 
 ### Features
 
@@ -31,7 +32,7 @@
  - Add Function Action: Set LCD Backlight Color
  - Add configurable link for navbar brand link
  - Add User option to Shell Command Function Action
- - Add Message and New Line options to Custom Outputs
+ - Add Message and New Line options to Custom Options of Outputs
 
 ### Miscellaneous
 

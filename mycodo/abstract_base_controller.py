@@ -55,16 +55,25 @@ class AbstractBaseController(object):
                 required = False
                 custom_option_set = False
                 error = []
+
                 if 'type' not in each_option_default:
                     error.append("'type' not found in custom_options")
-                if 'id' not in each_option_default:
+                if ('id' not in each_option_default and
+                        ('type' in each_option_default and
+                         each_option_default['type'] not in ['new_line', 'message'])):
                     error.append("'id' not found in custom_options")
-                if 'default_value' not in each_option_default:
+                if ('default_value' not in each_option_default and
+                        ('type' in each_option_default and
+                         each_option_default['type'] != 'new_line')):
                     error.append("'default_value' not found in custom_options")
+
                 for each_error in error:
                     self.logger.error(each_error)
                 if error:
                     return
+
+                if each_option_default['type'] in ['new_line', 'message']:
+                    continue
 
                 if 'required' in each_option_default and each_option_default['required']:
                     required = True
@@ -162,16 +171,25 @@ class AbstractBaseController(object):
                 required = False
                 custom_option_set = False
                 error = []
+
                 if 'type' not in each_option_default:
                     error.append("'type' not found in custom_options")
-                if 'id' not in each_option_default:
+                if ('id' not in each_option_default and
+                        ('type' in each_option_default and
+                         each_option_default['type'] not in ['new_line', 'message'])):
                     error.append("'id' not found in custom_options")
-                if 'default_value' not in each_option_default:
+                if ('default_value' not in each_option_default and
+                        ('type' in each_option_default and
+                         each_option_default['type'] != 'new_line')):
                     error.append("'default_value' not found in custom_options")
+
                 for each_error in error:
                     self.logger.error(each_error)
                 if error:
                     return
+
+                if each_option_default['type'] in ['new_line', 'message']:
+                    continue
 
                 if 'required' in each_option_default and each_option_default['required']:
                     required = True
