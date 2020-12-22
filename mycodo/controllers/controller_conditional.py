@@ -34,6 +34,7 @@ from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
+from mycodo.databases.models import Misc
 from mycodo.utils.conditional import save_conditional_code
 from mycodo.utils.database import db_retrieve_table_daemon
 
@@ -63,6 +64,8 @@ class ConditionalController(AbstractController, threading.Thread):
         self.conditional_statement = None
         self.timer_period = None
         self.file_run = None
+        self.sample_rate = None
+        self.time_conditional = None
         self.conditional_run = None
 
     def loop(self):
@@ -94,6 +97,9 @@ class ConditionalController(AbstractController, threading.Thread):
         self.start_offset = cond.start_offset
         self.log_level_debug = cond.log_level_debug
         self.message_include_code = cond.message_include_code
+
+        self.sample_rate = db_retrieve_table_daemon(
+            Misc, entry='first').sample_rate_controller_conditional
 
         self.set_log_level_debug(self.log_level_debug)
 

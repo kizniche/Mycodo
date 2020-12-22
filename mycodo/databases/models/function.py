@@ -32,6 +32,8 @@ class Conditional(CRUDMixin, db.Model):
     start_offset = db.Column(db.Float, default=10.0)
     message_include_code = db.Column(db.Boolean, default=False)
 
+    custom_options = db.Column(db.Text, default='')
+
 
 class ConditionalConditions(CRUDMixin, db.Model):
     __tablename__ = "conditional_data"

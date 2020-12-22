@@ -28,7 +28,7 @@ class AbstractController(AbstractBaseController):
         self.thread_startup_timer = timeit.default_timer()
         self.running = False
         self.thread_shutdown_timer = 0
-        self.sample_rate = 30
+        self.sample_rate = 10
         self.ready = ready
 
         logger_name = "{}".format(name)

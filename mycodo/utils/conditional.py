@@ -13,44 +13,19 @@ logger = logging.getLogger(__name__)
 pre_statement_run = """import os
 import sys
 sys.path.append(os.path.abspath('/var/mycodo-root'))
+from mycodo.controllers.base_conditional import AbstractConditional
 from mycodo.mycodo_client import DaemonControl
 control = DaemonControl()
 
-class ConditionalRun:
+class ConditionalRun(AbstractConditional):
     def __init__(self, logger, function_id, message):
+        super(ConditionalRun, self).__init__(logger, function_id, message)
+
         self.logger = logger
         self.function_id = function_id
         self.variables = {}
         self.message = message
         self.running = True
-
-    def run_all_actions(self, message=None):
-        if message is None:
-            message = self.message
-        self.message = control.trigger_all_actions(self.function_id, message=message)
-
-    def run_action(self, action_id, message=None):
-        if message is None:
-            message = self.message
-        self.message = control.trigger_action(action_id, message=message, single_action=True)
-
-    @staticmethod
-    def condition(condition_id):
-        return control.get_condition_measurement(condition_id)
-
-    @staticmethod
-    def condition_dict(condition_id):
-        string_sets = control.get_condition_measurement_dict(condition_id)
-        if string_sets:
-            list_ts_values = []
-            for each_set in string_sets.split(';'):
-                ts_value = each_set.split(',')
-                list_ts_values.append({'time': ts_value[0], 'value': float(ts_value[1])})
-            return list_ts_values
-        return None
-
-    def stop_conditional(self):
-        self.running = False
 
     def conditional_code_run(self):
 """

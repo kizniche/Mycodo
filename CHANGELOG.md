@@ -16,6 +16,7 @@
  - Fix ADS1015 and ADS1115 inputs only measuring channel 0 ([#911](https://github.com/kizniche/mycodo/issues/911))
  - Fix install of pyusb dependency of Adafruit_Extended_Bus ([#863](https://github.com/kizniche/mycodo/issues/863))
  - Fix Message and New Line options in Custom Options
+ - Fix Conditional sample_rate not being set from Config
 
 ### Features
 
@@ -33,6 +34,7 @@
  - Add configurable link for navbar brand link
  - Add User option to Shell Command Function Action
  - Add Message and New Line options to Custom Options of Outputs
+ - Add set_custom_option/get_custom_option to Conditionals ([#901](https://github.com/kizniche/mycodo/issues/901))
 
 ### Miscellaneous
 

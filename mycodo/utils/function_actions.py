@@ -481,7 +481,7 @@ def action_output_value(cond_action, message):
         ch=channel_id,
         id=this_output.id,
         name=this_output.name,
-        val=cond_action.do_output_pwm)
+        val=cond_action.do_output_amount)
 
     output_on = threading.Thread(
         target=control.output_on,

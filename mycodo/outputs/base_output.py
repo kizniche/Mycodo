@@ -9,6 +9,7 @@ All Outputs should inherit from this class and overwrite methods that raise
 NotImplementedErrors
 """
 import datetime
+import json
 import logging
 import threading
 import time
@@ -18,12 +19,17 @@ from sqlalchemy import and_
 from sqlalchemy import or_
 
 from mycodo.abstract_base_controller import AbstractBaseController
+from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import Trigger
+from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.outputs import output_types
+
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class AbstractOutput(AbstractBaseController):
@@ -671,3 +677,26 @@ class AbstractOutput(AbstractBaseController):
                 return 'on'
             else:
                 return 'off'
+
+    def set_custom_option(self, option, value):
+        try:
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_output = new_session.query(Output).filter(
+                    Output.unique_id == self.unique_id).first()
+                try:
+                    dict_custom_options = json.loads(mod_output.custom_options)
+                except:
+                    dict_custom_options = {}
+                dict_custom_options[option] = value
+                mod_output.custom_options = json.dumps(dict_custom_options)
+                new_session.commit()
+        except Exception:
+            self.logger.exception("set_custom_option")
+
+    def get_custom_option(self, option):
+        try:
+            dict_custom_options = json.loads(self.output.custom_options)
+        except:
+            dict_custom_options = {}
+        if option in dict_custom_options:
+            return dict_custom_options[option]

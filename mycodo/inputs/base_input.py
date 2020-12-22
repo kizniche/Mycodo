@@ -295,7 +295,10 @@ class AbstractInput(AbstractBaseController):
             with session_scope(MYCODO_DB_PATH) as new_session:
                 mod_input = new_session.query(Input).filter(
                     Input.unique_id == self.unique_id).first()
-                dict_custom_options = json.loads(mod_input.custom_options)
+                try:
+                    dict_custom_options = json.loads(mod_input.custom_options)
+                except:
+                    dict_custom_options = {}
                 dict_custom_options[option] = value
                 mod_input.custom_options = json.dumps(dict_custom_options)
                 new_session.commit()
@@ -303,6 +306,9 @@ class AbstractInput(AbstractBaseController):
             self.logger.exception("set_custom_option")
 
     def get_custom_option(self, option):
-        dict_custom_options = json.loads(self.input_dev.custom_options)
+        try:
+            dict_custom_options = json.loads(self.input_dev.custom_options)
+        except:
+            dict_custom_options = {}
         if option in dict_custom_options:
             return dict_custom_options[option]
