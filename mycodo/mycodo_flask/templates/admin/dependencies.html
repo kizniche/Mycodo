@@ -45,7 +45,7 @@
     <p>{{_('Several software dependencies used by Mycodo features may be disabled. This is done to speed up the initial installation process. This page can be used to determine which dependencies are installed and the ability to install currently unmet dependencies.')}}</p>
 
   {% if device != '0' %}
-    <h2>Device: {{device}} ({{device_name}})</h2>
+    <h2>Device: {{device_name}} ({{device}})</h2>
 
     {% if device_unmet_dependencies %}
 
@@ -57,7 +57,7 @@
       <li>{% if each_dep[2] == 'internal' %}{{each_dep[3]}}{% else %}{{each_dep[0]}}{% endif %}</li>
     {% endfor %}
     </ul>
-    <p>The Dependency Install Log below will refresh every 5 seconds. Wait until all dependencies have been installed to attempt to add the associated device again. You will know the entire install process have completed by "#### All Dependencies have been installed." appearing at the end of the log.</p>
+    <p>The Dependency Install Log below will refresh every 5 seconds. Wait until all dependencies have been installed to attempt to add the associated device again. You will know the entire install process have completed by "#### Dependency install finished" appearing at the end of the log.</p>
     <p>If there's an issue with the install and you need to reset the install state, delete ~/Mycodo/.dependency to restore dependency install functionality.</p>
 
     <pre style="overflow:auto; resize: vertical; height:400px" id="dependency_status"></pre>

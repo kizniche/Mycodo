@@ -105,8 +105,9 @@ OUTPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'adafruit_mcp4728', 'adafruit-circuitpython-mcp4728'),
-        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus')
+        ('pip-pypi', 'usb.core', 'pyusb==1.0.2'),
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus'),
+        ('pip-pypi', 'adafruit_mcp4728', 'adafruit-circuitpython-mcp4728')
     ],
 
     'interfaces': ['I2C'],

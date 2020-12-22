@@ -216,7 +216,7 @@ def install_dependencies(dependencies):
 
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with open(DEPENDENCY_LOG_FILE, 'a') as f:
-        f.write("\n[{time}] #### All Dependencies have been installed.\n\n".format(time=now))
+        f.write("\n[{time}] #### Dependency install finished\n\n".format(time=now))
 
     with open(DEPENDENCY_INIT_FILE, 'w') as f:
         f.write('0')

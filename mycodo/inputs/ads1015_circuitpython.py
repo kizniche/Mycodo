@@ -56,8 +56,9 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'adafruit_ads1x15', 'Adafruit_CircuitPython_ADS1x15'),
-        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus')
+        ('pip-pypi', 'usb.core', 'pyusb==1.0.2'),
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus'),
+        ('pip-pypi', 'adafruit_ads1x15', 'Adafruit_CircuitPython_ADS1x15')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x48', '0x49', '0x4A', '0x4B'],

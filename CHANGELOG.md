@@ -14,6 +14,7 @@
  - Fix MQTT output being able to set 0 to disable option
  - Fix compounding of Function Action return messages in Conditionals
  - Fix ADS1015 and ADS1115 inputs only measuring channel 0 ([#911](https://github.com/kizniche/mycodo/issues/911))
+ - Fix install of pyusb dependency of Adafruit_Extended_Bus ([#863](https://github.com/kizniche/mycodo/issues/863))
 
 ### Features
 
@@ -30,6 +31,7 @@
  - Add Function Action: Set LCD Backlight Color
  - Add configurable link for navbar brand link
  - Add User option to Shell Command Function Action
+ - Add Message and New Line options to Custom Outputs
 
 ### Miscellaneous
 

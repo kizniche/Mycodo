@@ -31,8 +31,9 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'adafruit_adt7410', 'Adafruit_CircuitPython_ADT7410'),
-        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus')
+        ('pip-pypi', 'usb.core', 'pyusb==1.0.2'),
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus'),
+        ('pip-pypi', 'adafruit_adt7410', 'Adafruit_CircuitPython_ADT7410')
     ],
 
     'interfaces': ['I2C'],
