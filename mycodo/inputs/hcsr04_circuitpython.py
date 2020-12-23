@@ -75,7 +75,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ A sensor support class that measures the MAX31865's temperature """
+    """ A sensor support class that measures the HCSR04's temperature """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -129,7 +129,7 @@ class InputModule(AbstractInput):
                 echo_pin=bcm_to_board[self.pin_echo - 1])
 
     def get_measurement(self):
-        """ Gets the measurement in units by reading the """
+        """ Gets the measurement """
         if not self.sensor:
             self.logger.error("Input not set up")
             return
