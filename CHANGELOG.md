@@ -27,6 +27,7 @@
  - Add Input: Generic Hall Effect Flow sensor
  - Add Input: INA219 current sensor
  - Add Input: Grove Pi DHT11/22 sensor
+ - Add Input: HC-SR04 Ultrasonic Distance sensor
  - Add LCD: Grove RGB LCD
  - Add Function: bang-bang/hysteretic
  - Add Function Action: Output Value

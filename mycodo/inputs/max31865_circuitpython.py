@@ -1,6 +1,5 @@
 # coding=utf-8
 import copy
-import time
 
 from mycodo.inputs.base_input import AbstractInput
 
@@ -45,18 +44,18 @@ INPUT_INFORMATION = {
         {
             'id': 'cs_pin',
             'type': 'integer',
-            'default_value': '8',
+            'default_value': 8,
             'name': 'Chip Select Pin',
             'phrase': 'Enter the GPIO Chip Select Pin for your device.'
         },
         {
             'id': 'wires',
             'type': 'select',
-            'default_value': '2',
+            'default_value': 2,
             'options_select': [
-                ('2', '2 Wires'),
-                ('3', '3 Wires'),
-                ('4', '4 Wires')
+                (2, '2 Wires'),
+                (3, '3 Wires'),
+                (4, '4 Wires')
             ],
             'name': 'Number of wires',
             'phrase': 'Select the number of wires your thermocouple has.'
@@ -84,7 +83,6 @@ class InputModule(AbstractInput):
         self.wires = None
         self.ref_ohm = None
         self.rtd_nominal = None
-        self.bcm_to_board = []
 
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
@@ -98,7 +96,7 @@ class InputModule(AbstractInput):
         import digitalio
         import adafruit_max31865
 
-        self.bcm_to_board = [
+        bcm_to_board = [
             board.D1,
             board.D2,
             board.D3,
@@ -137,7 +135,7 @@ class InputModule(AbstractInput):
         self.ref_ohm = self.input_dev.ref_ohm
 
         self.spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
-        self.cs = digitalio.DigitalInOut(self.bcm_to_board[self.cs_pin - 1])
+        self.cs = digitalio.DigitalInOut(bcm_to_board[self.cs_pin - 1])
 
         self.sensor = adafruit_max31865.MAX31865(
             self.spi,
