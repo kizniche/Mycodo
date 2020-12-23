@@ -39,6 +39,7 @@ INPUT_INFORMATION = {
     'url_manufacturer': 'https://www.cytron.io/p-5v-hc-sr04-ultrasonic-sensor',
     'url_datasheet': 'http://web.eece.maine.edu/~zhu/book/lab/HC-SR04%20User%20Manual.pdf',
     'url_product_purchase': 'https://www.adafruit.com/product/3942',
+    'url_additional': 'https://learn.adafruit.com/ultrasonic-sonar-distance-sensors/python-circuitpython',
 
     'options_enabled': [
         'period',
