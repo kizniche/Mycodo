@@ -48,6 +48,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
+        ('pip-pypi', 'usb.core', 'pyusb==1.0.2'),
         ('pip-pypi', 'adafruit_hcsr04','adafruit-circuitpython-hcsr04')
     ],
 

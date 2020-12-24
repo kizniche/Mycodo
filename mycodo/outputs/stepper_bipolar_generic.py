@@ -95,7 +95,7 @@ OUTPUT_INFORMATION = {
 
     'interfaces': ['GPIO'],
 
-    'custom_options': [
+    'custom_channel_options': [
         {
             'type': 'message',
             'default_value': 'If the Direction or Enable pins are not used, make sure you pull the appropriate pins on your driver high or low to set the proper direction and enable the stepper motor to be energized. Note: For Enable Mode, always having the motor energized will use more energy and produce more heat.',
@@ -104,6 +104,7 @@ OUTPUT_INFORMATION = {
             'id': 'pin_step',
             'type': 'integer',
             'default_value': 0,
+            'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Step Pin',
             'phrase': 'The Step pin of the controller (BCM numbering)'
@@ -211,50 +212,46 @@ class OutputModule(AbstractOutput):
 
         self.stepper = None
         self.output_setup = False
-        self.stepper_running = None
-
-        self.pin_enable = None
-        self.enable_mode = None
-        self.enable_shutdown = None
-        self.pin_step = None
-        self.pin_dir = None
-        self.pin_mode_1 = None
-        self.pin_mode_2 = None
-        self.pin_mode_3 = None
-        self.full_step_delay = None
-        self.step_resolution = None
-
-        self.setup_custom_options(
-            OUTPUT_INFORMATION['custom_options'], output)
+        
+        output_channels = db_retrieve_table_daemon(
+            OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()
+        self.options_channels = self.setup_custom_channel_options_json(
+            OUTPUT_INFORMATION['custom_channel_options'], output_channels)
 
     def setup_output(self):
         self.setup_on_off_output(OUTPUT_INFORMATION)
 
         mode_pins = []
-        if self.pin_mode_1 and self.pin_mode_2 and self.pin_mode_3:
-            mode_pins = (self.pin_mode_1, self.pin_mode_2, self.pin_mode_3)
-        elif any([self.pin_mode_1, self.pin_mode_2, self.pin_mode_3]):
+        if (self.options_channels['pin_mode_1'][0] and
+                self.options_channels['pin_mode_2'][0] and
+                self.options_channels['pin_mode_3'][0]):
+            mode_pins = (self.options_channels['pin_mode_1'][0],
+                         self.options_channels['pin_mode_2'][0],
+                         self.options_channels['pin_mode_3'][0])
+        elif any([self.options_channels['pin_mode_1'][0],
+                  self.options_channels['pin_mode_2'][0],
+                  self.options_channels['pin_mode_3'][0]]):
             self.logger.warning(
                 "When setting mode pins, this driver needs all three to be set.")
-        elif self.step_resolution != "Full":
+        elif self.options_channels['step_resolution'][0] != "Full":
             self.logger.warning(
                 "When using a step resolution other than Full, mode pins should be set. "
                 "Only proceed if you know what you're doing (e.g. they're pulled high/low "
                 "on the board and not via Mycodo GPIO pins).")
 
-        if self.pin_step:
+        if self.options_channels['pin_step'][0]:
             try:
                 self.stepper = StepperMotor(
-                    self.pin_enable,
-                    self.pin_step,
-                    self.pin_dir,
+                    self.options_channels['pin_enable'][0],
+                    self.options_channels['pin_step'][0],
+                    self.options_channels['pin_dir'][0],
                     mode_pins,
-                    self.step_resolution,
-                    self.full_step_delay)
-                self.stepper_running = False
+                    self.options_channels['step_resolution'][0],
+                    self.options_channels['full_step_delay'][0])
                 self.output_setup = True
 
-                if self.pin_enable and self.enable_mode == "always":
+                if (self.options_channels['pin_enable'][0] and
+                        self.options_channels['enable_mode'][0] == "always"):
                     self.stepper.enable(True)
             except:
                 self.logger.exception("Stepper setup")
@@ -266,27 +263,26 @@ class OutputModule(AbstractOutput):
         measure_dict = copy.deepcopy(measurements_dict)
 
         if amount not in [None, 0]:
+            if (self.options_channels['pin_enable'][0] and
+                    self.options_channels['enable_mode'][0] == "only_run"):
+                self.stepper.enable(True)
+                
             if amount > 0:
-                self.stepper_running = True
-                if self.pin_enable and self.enable_mode == "only_run":
-                    self.stepper.enable(True)
                 self.stepper.run(int(amount), True)
-                if self.pin_enable and self.enable_mode == "only_run":
-                    self.stepper.enable(False)
-                self.stepper_running = False
-            else:
-                self.stepper_running = True
-                if self.pin_enable and self.enable_mode == "only_run":
-                    self.stepper.enable(True)
+            elif amount < 0:
                 self.stepper.run(int(abs(amount)), False)
-                if self.pin_enable and self.enable_mode == "only_run":
-                    self.stepper.enable(False)
-                self.stepper_running = False
+            
+            if (self.options_channels['pin_enable'][0] and
+                    self.options_channels['enable_mode'][0] == "only_run"):
+                self.stepper.enable(False)
+
             measure_dict[0]['value'] = amount
         elif state == "off":
-            if self.pin_enable and self.enable_mode == "only_run":
+            if (self.options_channels['pin_enable'][0] and
+                    self.options_channels['enable_mode'][0] == "only_run"):
                 self.stepper.enable(False)
-            self.stepper_running = False
+            if self.stepper.running:
+                self.stepper.stop_running()
         else:
             self.logger.error(
                 "Invalid parameters: State: {state}, Type: {ot}, Amount: {amt}".format(
@@ -299,7 +295,7 @@ class OutputModule(AbstractOutput):
 
     def is_on(self, output_channel=None):
         if self.is_setup():
-            return self.stepper_running
+            return self.stepper.running
 
     def is_setup(self):
         if self.output_setup:
@@ -308,12 +304,12 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        if self.pin_enable:
-            if self.enable_shutdown == "enable":
+        if self.options_channels['pin_enable'][0]:
+            if self.options_channels['enable_shutdown'][0] == "enable":
                 self.stepper.enable(True)
-            elif self.enable_shutdown == "disable":
+            elif self.options_channels['enable_shutdown'][0] == "disable":
                 self.stepper.enable(False)
-        self.running = False
+        self.stepper.stop_running()
 
 
 class StepperMotor:
@@ -329,6 +325,8 @@ class StepperMotor:
         self.enable_pin = enable_pin
         self.step_pin = step_pin
         self.dir_pin = dir_pin
+        self.break_turn = False
+        self.running = False
 
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
@@ -366,11 +364,20 @@ class StepperMotor:
         if self.enable_pin:
             self.GPIO.output(self.enable_pin, not enable)
 
+    def stop_running(self):
+        if self.running:
+            self.break_turn = True
+
     def run(self, steps, clockwise):
         if self.dir_pin:
             self.GPIO.output(self.dir_pin, clockwise)
+        self.running = True
         for _ in range(steps):
+            if self.break_turn:
+                break
             self.GPIO.output(self.step_pin, self.GPIO.HIGH)
             time.sleep(self.delay)
             self.GPIO.output(self.step_pin, self.GPIO.LOW)
             time.sleep(self.delay)
+        self.running = False
+        self.break_turn = False
