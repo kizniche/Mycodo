@@ -96,9 +96,10 @@ class InputModule(AbstractInput):
                     (owread_output, _) = owread.communicate()
                     owread.wait()
                     if owread_output:
+                        self.logger.debug("Output: '{}'".format(owread_output))
                         temperature = float(owread_output.decode("latin1"))
                 except Exception:
-                    self.logger.exception(1)
+                    self.logger.exception("Obtaining measurement")
             except Exception as e:
                 if i == n:
                     self.logger.exception(
@@ -113,6 +114,7 @@ class InputModule(AbstractInput):
                 "Measurement outside the expected range of -55 C to 125 C: {temp} C".format(temp=temperature))
             return None
 
-        self.value_set(0, temperature)
+        if temperature is not None:
+            self.value_set(0, temperature)
 
         return self.return_dict

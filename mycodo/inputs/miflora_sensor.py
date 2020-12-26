@@ -92,16 +92,16 @@ class InputModule(AbstractInput):
             self.logger.error("Input not set up")
             return
 
-        from miflora.miflora_poller import MI_CONDUCTIVITY
-        from miflora.miflora_poller import MI_MOISTURE
-        from miflora.miflora_poller import MI_LIGHT
-        from miflora.miflora_poller import MI_TEMPERATURE
-        from miflora.miflora_poller import MI_BATTERY
-
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.lock_acquire(self.lock_file, timeout=3600):
             try:
+                from miflora.miflora_poller import MI_CONDUCTIVITY
+                from miflora.miflora_poller import MI_MOISTURE
+                from miflora.miflora_poller import MI_LIGHT
+                from miflora.miflora_poller import MI_TEMPERATURE
+                from miflora.miflora_poller import MI_BATTERY
+
                 if self.is_enabled(0):
                     self.value_set(0, self.sensor.parameter_value(MI_BATTERY))
 
@@ -118,5 +118,7 @@ class InputModule(AbstractInput):
                     self.value_set(4, self.sensor.parameter_value(MI_TEMPERATURE))
 
                 return self.return_dict
+            except:
+                self.logger.exception("acquiring measurements")
             finally:
                 self.lock_release(self.lock_file)
