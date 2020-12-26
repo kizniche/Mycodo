@@ -82,7 +82,7 @@ class InputModule(AbstractInput):
                 BluepyBackend,
                 adapter='hci{}'.format(self.input_dev.bt_adapter))
             self.logger.info("Miflora: Name: {}, FW: {}".format(
-                self.sensor.name(), self.sensor.firmware_version())
+                self.sensor.name(), self.sensor.firmware_version()))
         except:
             self.logger.exception("Setting up sensor")
 
