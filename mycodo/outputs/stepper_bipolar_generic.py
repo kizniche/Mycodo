@@ -36,7 +36,7 @@ def constraints_pass_positive_or_zero_value(mod_input, value):
     """
     errors = []
     all_passed = True
-    # Ensure value is positive
+    # Ensure value is positive or zero
     if value < 0:
         all_passed = False
         errors.append("Must be zero or a positive value")

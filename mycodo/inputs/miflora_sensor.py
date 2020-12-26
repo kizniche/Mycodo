@@ -75,10 +75,16 @@ class InputModule(AbstractInput):
         from btlewrap import BluepyBackend
 
         self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(self.input_dev.bt_adapter)
-        self.sensor = MiFloraPoller(
-            self.input_dev.location,
-            BluepyBackend,
-            adapter='hci{}'.format(self.input_dev.bt_adapter))
+        
+        try:
+            self.sensor = MiFloraPoller(
+                self.input_dev.location,
+                BluepyBackend,
+                adapter='hci{}'.format(self.input_dev.bt_adapter))
+            self.logger.info("Miflora: Name: {}, FW: {}".format(
+                self.sensor.name(), self.sensor.firmware_version())
+        except:
+            self.logger.exception("Setting up sensor")
 
     def get_measurement(self):
         """ Gets the light, moisture, and temperature """
