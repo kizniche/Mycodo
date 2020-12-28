@@ -23,6 +23,7 @@
  - Add Digital-to-Analog Converter output support (and add MCP4728) ([#893](https://github.com/kizniche/mycodo/issues/893))
  - Add Stepper Motor Controller output support (and add DRV8825) ([#857](https://github.com/kizniche/mycodo/issues/857))
  - Add Output: GrovePi multi-channel relay I2C board
+ - Add Output: PCA9685 16-channel PWM servo/LED controller
  - Add Input: MAX31865 (CircuitPython) ([#900](https://github.com/kizniche/mycodo/issues/900))
  - Add Input: Generic Hall Effect Flow sensor
  - Add Input: INA219 current sensor

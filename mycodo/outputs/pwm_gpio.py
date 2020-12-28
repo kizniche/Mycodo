@@ -57,7 +57,7 @@ OUTPUT_INFORMATION = {
     'output_types': ['pwm'],
 
     'message': 'See the PWM section of the manual for PWM information and determining which '
-               'pins may be used for each library option. ',
+               'pins may be used for each library option.',
 
     'options_enabled': [
         'button_send_duty_cycle'
@@ -186,8 +186,6 @@ class OutputModule(AbstractOutput):
         import pigpio
 
         self.pigpio = pigpio
-
-        self.setup_on_off_output(OUTPUT_INFORMATION)
 
         error = []
         if self.options_channels['pin'][0] is None:
