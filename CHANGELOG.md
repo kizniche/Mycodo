@@ -17,6 +17,7 @@
  - Fix install of pyusb dependency of Adafruit_Extended_Bus ([#863](https://github.com/kizniche/mycodo/issues/863))
  - Fix Message and New Line options in Custom Options
  - Fix Conditional sample_rate not being set from Config
+ - Fix Saving Angular and Solid Gauge Widget stop values ([#916](https://github.com/kizniche/mycodo/issues/916))
 
 ### Features
 

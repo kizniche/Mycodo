@@ -137,7 +137,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'Displays a solid gauge.',
+    'message': 'Displays a solid gauge. Be sure to set the Maximum option to the last Stop value for the gauge to display properly.',
 
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
@@ -456,15 +456,19 @@ def custom_colors_gauge(form, error):
     # Combine all color form inputs to dictionary
     for key in form.keys():
         if 'color_hex_number' in key or 'color_stop_number' in key:
-            if int(key[17:]) not in colors_hex:
+            if 'color_hex_number' in key and int(key[16:]) not in colors_hex:
+                colors_hex[int(key[16:])] = {}
+            if 'color_stop_number' in key and int(key[17:]) not in colors_hex:
                 colors_hex[int(key[17:])] = {}
         if 'color_hex_number' in key:
             for value in form.getlist(key):
                 if not is_rgb_color(value):
                     error.append("Invalid hex color value")
-                colors_hex[int(key[17:])]['hex'] = value
+                colors_hex[int(key[16:])]['hex'] = value
         elif 'color_stop_number' in key:
             for value in form.getlist(key):
+                if not is_rgb_color(value):
+                    error.append("Invalid hex color value")
                 colors_hex[int(key[17:])]['stop'] = value
 
     # Build string of colors and associated gauge values
@@ -488,7 +492,10 @@ def gauge_reformat_stops(current_stops, new_stops, current_colors=None):
         colors = ['20,#33CCFF', '40,#55BF3B', '60,#DDDF0D', '80,#DF5353']
 
     if new_stops > current_stops:
-        stop = 80
+        try:
+            stop = float(colors[-1].split(",")[0])
+        except:
+            stop = 80
         for _ in range(new_stops - current_stops):
             stop += 20
             colors.append('{},#DF5353'.format(stop))

@@ -118,7 +118,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'Displays an angular gauge.',
+    'message': 'Displays an angular gauge. Be sure to set the Maximum option to the last Stop High value for the gauge to display properly.',
 
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
@@ -439,18 +439,26 @@ def custom_colors_gauge(form, error):
         if ('color_hex_number' in key or
                 'color_low_number' in key or
                 'color_high_number' in key):
-            if int(key[17:]) not in colors_hex:
+            if 'color_hex_number' in key and int(key[16:]) not in colors_hex:
+                colors_hex[int(key[16:])] = {}
+            if 'color_low_number' in key and int(key[16:]) not in colors_hex:
+                colors_hex[int(key[16:])] = {}
+            if 'color_high_number' in key and int(key[17:]) not in colors_hex:
                 colors_hex[int(key[17:])] = {}
         if 'color_hex_number' in key:
             for value in form.getlist(key):
                 if not is_rgb_color(value):
                     error.append('Invalid hex color value')
-                colors_hex[int(key[17:])]['hex'] = value
+                colors_hex[int(key[16:])]['hex'] = value
         elif 'color_low_number' in key:
             for value in form.getlist(key):
-                colors_hex[int(key[17:])]['low'] = value
+                if not is_rgb_color(value):
+                    error.append("Invalid hex color value")
+                colors_hex[int(key[16:])]['low'] = value
         elif 'color_high_number' in key:
             for value in form.getlist(key):
+                if not is_rgb_color(value):
+                    error.append("Invalid hex color value")
                 colors_hex[int(key[17:])]['high'] = value
 
     # Build string of colors and associated gauge values
@@ -461,6 +469,7 @@ def custom_colors_gauge(form, error):
                 colors_hex[i]['high'],
                 colors_hex[i]['hex']))
         except Exception as err_msg:
+            logger.exception(1)
             error.append(err_msg)
     return sorted_colors, error
 
@@ -473,11 +482,14 @@ def gauge_reformat_stops(current_stops, new_stops, current_colors=None):
         colors = ['0,20,#33CCFF', '20,40,#55BF3B', '40,60,#DDDF0D', '60,80,#DF5353']
 
     if new_stops > current_stops:
-        stop = 80
+        try:
+            stop = float(colors[-1].split(",")[1])
+        except:
+            stop = 80
         for _ in range(new_stops - current_stops):
             stop += 20
             colors.append('{low},{high},#DF5353'.format(low=stop - 20, high=stop))
     elif new_stops < current_stops:
-        colors = colors[: len(colors) - (current_stops - new_stops)]
+        colors = colors[:len(colors) - (current_stops - new_stops)]
 
     return colors
