@@ -7,7 +7,9 @@ import time
 
 from flask_babel import lazy_gettext
 
+from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
+from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 
 
@@ -212,7 +214,7 @@ class OutputModule(AbstractOutput):
 
         self.stepper = None
         self.output_setup = False
-        
+
         output_channels = db_retrieve_table_daemon(
             OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()
         self.options_channels = self.setup_custom_channel_options_json(
