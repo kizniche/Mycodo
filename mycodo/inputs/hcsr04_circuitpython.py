@@ -136,5 +136,13 @@ class InputModule(AbstractInput):
             return
 
         self.return_dict = copy.deepcopy(measurements_dict)
-        self.value_set(0, self.sensor.distance)
+
+        # try 3 times
+        for _ in range(3):
+            try:
+                self.value_set(0, self.sensor.distance)
+                break
+            except RuntimeError:
+                pass
+
         return self.return_dict
