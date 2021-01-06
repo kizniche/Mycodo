@@ -18,6 +18,7 @@
  - Fix Message and New Line options in Custom Options
  - Fix Conditional sample_rate not being set from Config
  - Fix Saving Angular and Solid Gauge Widget stop values ([#916](https://github.com/kizniche/mycodo/issues/916))
+ - Fix uncaught exception if trying to acquire image when opencv can't detect a camera ([#917](https://github.com/kizniche/mycodo/issues/917))
 
 ### Features
 

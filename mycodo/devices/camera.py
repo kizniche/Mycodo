@@ -96,6 +96,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
     if settings.library == 'picamera':
         import picamera
+
         # Try 5 times to access the pi camera (in case another process is accessing it)
         for _ in range(5):
             try:
@@ -160,6 +161,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     elif settings.library == 'opencv':
         import cv2
         import imutils
+
         cap = cv2.VideoCapture(settings.opencv_device)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, settings.width)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, settings.height)
@@ -171,7 +173,8 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         cap.set(cv2.CAP_PROP_SATURATION, settings.saturation)
 
         # Check if image can be read
-        if not cap.read():
+        status, _ = cap.read()
+        if not status:
             logger.error(
                 "Cannot detect USB camera with device '{dev}'".format(
                     dev=settings.opencv_device))
@@ -183,8 +186,12 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
         if record_type in ['photo', 'timelapse']:
             edited = False
-            _, img_orig = cap.read()
+            status, img_orig = cap.read()
             cap.release()
+
+            if not status:
+                logger.error("Could not acquire image")
+                return
 
             img_edited = img_orig.copy()
 
