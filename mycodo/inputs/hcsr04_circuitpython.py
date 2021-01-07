@@ -3,23 +3,6 @@ import copy
 
 from mycodo.inputs.base_input import AbstractInput
 
-
-def constraints_pass_positive_value(mod_input, value):
-    """
-    Check if the user input is acceptable
-    :param mod_input: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_input
-
-
 # Measurements
 measurements_dict = {
     0: {
@@ -57,19 +40,77 @@ INPUT_INFORMATION = {
     'custom_options': [
         {
             'id': 'pin_trigger',
-            'type': 'integer',
-            'default_value': 0,
-            'constraints_pass': constraints_pass_positive_value,
+            'type': 'select',
+            'default_value': '20',
+            'options_select': [
+                ('0', 'GPIO 0'),
+                ('1', 'GPIO 1'),
+                ('2', 'GPIO 2'),
+                ('3', 'GPIO 3'),
+                ('4', 'GPIO 4'),
+                ('5', 'GPIO 5'),
+                ('6', 'GPIO 6'),
+                ('7', 'GPIO 7'),
+                ('8', 'GPIO 8'),
+                ('9', 'GPIO 9'),
+                ('10', 'GPIO 10'),
+                ('11', 'GPIO 11'),
+                ('12', 'GPIO 12'),
+                ('13', 'GPIO 13'),
+                ('14', 'GPIO 14'),
+                ('15', 'GPIO 15'),
+                ('16', 'GPIO 16'),
+                ('17', 'GPIO 17'),
+                ('18', 'GPIO 18'),
+                ('19', 'GPIO 19'),
+                ('20', 'GPIO 20'),
+                ('21', 'GPIO 21'),
+                ('22', 'GPIO 22'),
+                ('23', 'GPIO 23'),
+                ('24', 'GPIO 24'),
+                ('25', 'GPIO 25'),
+                ('26', 'GPIO 26'),
+                ('27', 'GPIO 27')
+            ],
             'name': 'Trigger Pin',
-            'phrase': 'Enter the GPIO Trigger Pin for your device (BCM numbering).'
+            'phrase': 'Enter the GPIO Trigger Pin for your device (GPIO numbering).'
         },
         {
             'id': 'pin_echo',
-            'type': 'integer',
-            'default_value': 0,
-            'constraints_pass': constraints_pass_positive_value,
+            'type': 'select',
+            'default_value': '21',
+            'options_select': [
+                ('0', 'GPIO 0'),
+                ('1', 'GPIO 1'),
+                ('2', 'GPIO 2'),
+                ('3', 'GPIO 3'),
+                ('4', 'GPIO 4'),
+                ('5', 'GPIO 5'),
+                ('6', 'GPIO 6'),
+                ('7', 'GPIO 7'),
+                ('8', 'GPIO 8'),
+                ('9', 'GPIO 9'),
+                ('10', 'GPIO 10'),
+                ('11', 'GPIO 11'),
+                ('12', 'GPIO 12'),
+                ('13', 'GPIO 13'),
+                ('14', 'GPIO 14'),
+                ('15', 'GPIO 15'),
+                ('16', 'GPIO 16'),
+                ('17', 'GPIO 17'),
+                ('18', 'GPIO 18'),
+                ('19', 'GPIO 19'),
+                ('20', 'GPIO 20'),
+                ('21', 'GPIO 21'),
+                ('22', 'GPIO 22'),
+                ('23', 'GPIO 23'),
+                ('24', 'GPIO 24'),
+                ('25', 'GPIO 25'),
+                ('26', 'GPIO 26'),
+                ('27', 'GPIO 27')
+            ],
             'name': 'Echo Pin',
-            'phrase': 'Enter the GPIO Echo Pin for your device (BCM numbering).'
+            'phrase': 'Enter the GPIO Echo Pin for your device (GPIO numbering).'
         },
     ]
 }
@@ -94,40 +135,41 @@ class InputModule(AbstractInput):
         import board
         import adafruit_hcsr04
 
-        bcm_to_board = [
-            board.D1,
-            board.D2,
-            board.D3,
-            board.D4,
-            board.D5,
-            board.D6,
-            board.D7,
-            board.D8,
-            board.D9,
-            board.D10,
-            board.D11,
-            board.D12,
-            board.D13,
-            board.D14,
-            board.D15,
-            board.D16,
-            board.D17,
-            board.D18,
-            board.D19,
-            board.D20,
-            board.D21,
-            board.D22,
-            board.D23,
-            board.D24,
-            board.D25,
-            board.D26,
-            board.D27
-        ]
+        bcm_to_board = {
+            "0": board.D0,
+            "1": board.D1,
+            "2": board.D2,
+            "3": board.D3,
+            "4": board.D4,
+            "5": board.D5,
+            "6": board.D6,
+            "7": board.D7,
+            "8": board.D8,
+            "9": board.D9,
+            "10": board.D10,
+            "11": board.D11,
+            "12": board.D12,
+            "13": board.D13,
+            "14": board.D14,
+            "15": board.D15,
+            "16": board.D16,
+            "17": board.D17,
+            "18": board.D18,
+            "19": board.D19,
+            "20": board.D20,
+            "21": board.D21,
+            "22": board.D22,
+            "23": board.D23,
+            "24": board.D24,
+            "25": board.D25,
+            "26": board.D26,
+            "27": board.D27
+        }
 
         if self.pin_trigger and self.pin_echo:
             self.sensor = adafruit_hcsr04.HCSR04(
-                trigger_pin=bcm_to_board[self.pin_trigger - 1],
-                echo_pin=bcm_to_board[self.pin_echo - 1])
+                trigger_pin=bcm_to_board[self.pin_trigger],
+                echo_pin=bcm_to_board[self.pin_echo])
 
     def get_measurement(self):
         """ Gets the measurement """
