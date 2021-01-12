@@ -85,6 +85,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Dewpoint'),
         'meas': 'temperature',
         'units': ['C', 'F', 'K']},
+    'direction': {
+        'name': lazy_gettext('Direction'),
+        'meas': 'direction',
+        'units': ['bearing']},
     'disk_space': {
         'name': lazy_gettext('Disk'),
         'meas': 'disk_space',
@@ -225,6 +229,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Specific Volume'),
         'meas': 'specific_volume',
         'units': ['m3_kg']},
+    'speed': {
+        'name': lazy_gettext('Speed'),
+        'meas': 'speed',
+        'units': ['m_s', 'mph', 'kn']},
     'temperature': {
         'name': lazy_gettext('Temperature'),
         'meas': 'temperature',
@@ -268,6 +276,9 @@ UNITS = {
     'A': {
         'name': lazy_gettext('Amp'),
         'unit': 'A'},
+    'bearing': {
+        'name': lazy_gettext('Bearing'),
+        'unit': 'bearing'},
     'bool': {
         'name': lazy_gettext('Boolean'),
         'unit': 'bool'},
@@ -334,6 +345,9 @@ UNITS = {
     'kJ_kg': {
         'name': lazy_gettext('Kilojoule per kilogram'),
         'unit': 'kJ/kg'},
+    'kn': {
+        'name': lazy_gettext('Knot'),
+        'unit': 'knot'},
     'kPa': {
         'name': lazy_gettext('Kilopascal'),
         'unit': 'kPa'},
@@ -355,6 +369,9 @@ UNITS = {
     'm': {
         'name': lazy_gettext('Meter'),
         'unit': 'm'},
+    'm_s': {
+        'name': lazy_gettext('Meters per second'),
+        'unit': 'm/s'},
     'm_s_s': {
         'name': lazy_gettext('Meters per second per second'),
         'unit': 'm/s/s'},
@@ -373,6 +390,9 @@ UNITS = {
     'mm': {
         'name': lazy_gettext('Millimeter'),
         'unit': 'mm'},
+    'mph': {
+        'name': lazy_gettext('Miles per hour'),
+        'unit': 'mph'},
     'mV': {
         'name': lazy_gettext('Millivolt'),
         'unit': 'mV'},
@@ -436,6 +456,14 @@ UNITS = {
 # These are added to the SQLite database when it's created
 # Users may add or delete after that
 UNIT_CONVERSIONS = [
+    # Speed
+    ('m_s', 'mph', 'x*2.2369362920544'),
+    ('m_s', 'kn', 'x*1.9438444924406'),
+    ('mph', 'm_s', 'x/2.2369362920544'),
+    ('mph', 'kn', 'x/1.1507794480235'),
+    ('kn', 'm_s', 'x/1.9438444924406'),
+    ('kn', 'mph', 'x*1.1507794480235'),
+
     # Acceleration
     ('g_force', 'm_s_s', 'x*9.80665'),
     ('m_s_s', 'g_force', 'x/9.80665'),
@@ -503,7 +531,11 @@ UNIT_CONVERSIONS = [
 
     # Time
     ('s', 'minute', 'x/60'),
+    ('s', 'h', 'x/60/60'),
     ('minute', 's', 'x*60'),
+    ('minute', 'h', 'x/60'),
+    ('h', 's', 'x*60*60'),
+    ('h', 'minute', 'x*60'),
 
     # Volt
     ('V', 'mV', 'x*1000'),

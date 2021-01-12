@@ -1,5 +1,9 @@
 ## 8.9.0 (Unreleased)
 
+This release contains bug fixes and several new types of Inputs and Outputs. These include stepper motors, digital-to-analog converters, a multi-channel PWM output, as well as an input to acquire current and future weather conditions.
+
+This new weather input acquires current and future weather conditions from openweathermap.org with either a city (200,000 to choose from) or latitude/longitude for a location and a time frame from the present up to 7 days in the future, with a resolution of days or hours. An API key to use the service is free and the measurements returned include temperature (including minimum and maximum if forecasting days in the future), humidity, dew point, pressure, wind speed, and wind direction. This can be useful for incorporating current or future weather conditions into your conditional controllers or other functions or calculations. For instance, you may prevent Mycodo from watering your outdoor plants if the forecasted temperature in the next 12 to 24 hours is below freezing. You may also want to be alerted by email if the forecasted weather conditions are extreme. Not everyone wants to set up a weather station, but might still want to have local outdoor measurements, so this input was made to bridge that gap.
+
 ### Bugfixes
 
  - Fix broken Output API get/post calls
@@ -32,8 +36,13 @@
  - Add Input: Grove Pi DHT11/22 sensor
  - Add Input: HC-SR04 Ultrasonic Distance sensor
  - Add Input: SCD30 CO2/Humidity/Temperature sensor
+ - Add Input: Current Weather from OpenWeatherMap.org (Free API Key, Latitude/Longitude, 200,000 cities, Humidity/Temperature/Pressure/Dewpoint/Wind Speed/Wind Direction)
+ - Add Input: Forecast Hourly/Daily Weather from OpenWeatherMap.org (Free API Key, , Humidity/Temperature/Pressure/Dewpoint)
+ - Add Measurement and Unit: Speed, Meters/Second
+ - Add Measurement and Unit: Direction, Bearing
+ - Add Conversions: m/s <-> mph <-> knots, hour <-> minutes and seconds
  - Add LCD: Grove RGB LCD
- - Add Function: bang-bang/hysteretic
+ - Add Function: Bang-bang/hysteretic
  - Add Function Action: Output Value
  - Add Function Action: Set LCD Backlight Color
  - Add configurable link for navbar brand link
