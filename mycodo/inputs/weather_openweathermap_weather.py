@@ -1,29 +1,4 @@
 # coding=utf-8
-#
-# Copyright 2014 Matt Heitzenroder
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# Python wrapper exposes the capabilities of the AOSONG AM2315 humidity
-# and temperature sensor.
-# The datasheet for the device can be found here:
-# http://www.adafruit.com/datasheets/AM2315.pdf
-#
-# Portions of this code were inspired by Joehrg Ehrsam's am2315-python-api
-# code. http://code.google.com/p/am2315-python-api/
-#
-# This library was originally authored by Sopwith:
-#     http://sopwith.ismellsmoke.net/?p=104
 import copy
 
 import requests
@@ -31,7 +6,6 @@ from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
-from mycodo.inputs.sensorutils import convert_from_x_to_y_unit
 
 # Measurements
 measurements_dict = {
