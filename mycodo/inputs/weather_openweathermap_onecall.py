@@ -80,9 +80,9 @@ measurements_dict = {
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'WEATHER_OPENWEATHERMAP_LATLON',
+    'input_name_unique': 'OPENWEATHERMAP_CALL_ONECALL',
     'input_manufacturer': 'Weather',
-    'input_name': 'OpenWeatherMap.org (Lat/Lon, Current, Forecast)',
+    'input_name': 'OpenWeatherMap (Lat/Lon, Current/Future)',
     'measurements_name': 'Humidity/Temperature/Pressure/Wind',
     'measurements_dict': measurements_dict,
     'url_additional': 'openweathermap.org',

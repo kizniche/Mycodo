@@ -65,9 +65,9 @@ measurements_dict = {
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'WEATHER_OPENWEATHERMAP_CITY',
+    'input_name_unique': 'OPENWEATHERMAP_CALL_WEATHER',
     'input_manufacturer': 'Weather',
-    'input_name': 'OpenWeatherMap.org (City, Current)',
+    'input_name': 'OpenWeatherMap (City, Current)',
     'measurements_name': 'Humidity/Temperature/Pressure/Wind',
     'measurements_dict': measurements_dict,
     'url_additional': 'openweathermap.org',
