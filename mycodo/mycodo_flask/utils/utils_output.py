@@ -363,7 +363,7 @@ def manipulate_output(action, output_id):
 
     :param output_id: output ID in the SQL database
     :type output_id: str
-    :param action: "add", "del", or "mod"
+    :param action: "Add", "Delete", or "Modify"
     :type action: str
     """
     try:

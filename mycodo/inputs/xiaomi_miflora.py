@@ -59,8 +59,7 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """
-    A sensor support class that measures the Miflora's electrical
-    conductivity, moisture, temperature, and light.
+    A sensor support class that measures
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)

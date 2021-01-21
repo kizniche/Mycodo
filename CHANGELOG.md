@@ -23,6 +23,7 @@ This new weather input acquires current and future weather conditions from openw
  - Fix Conditional sample_rate not being set from Config
  - Fix Saving Angular and Solid Gauge Widget stop values ([#916](https://github.com/kizniche/mycodo/issues/916))
  - Fix uncaught exception if trying to acquire image when opencv can't detect a camera ([#917](https://github.com/kizniche/mycodo/issues/917))
+ - Fix displaying input/output pypi.org dependencies with "=="
 
 ### Features
 
@@ -55,6 +56,7 @@ This new weather input acquires current and future weather conditions from openw
  - Change widget title styles
  - Fix GCC warnings ([#906](https://github.com/kizniche/mycodo/issues/906))
  - Remove default user "pi" with "mycodo" (for compatibility with non-Raspberry Pi operating systems)
+ - Update pyusb to 1.1.1
 
 
 ## 8.8.8 (2020-10-30)

@@ -51,7 +51,7 @@ INPUT_INFORMATION = {
     'dependencies_module': [
         ('apt', 'python3-numpy', 'python3-numpy'),
         ('apt', 'python3-scipy', 'python3-scipy'),
-        ('pip-pypi', 'usb.core', 'pyusb==1.0.2'),
+        ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
         ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus'),
         ('pip-pypi', 'anyleaf', 'anyleaf')
     ],

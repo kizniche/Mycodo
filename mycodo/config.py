@@ -132,7 +132,7 @@ LCD_INFO = {
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
             ('pip-pypi', 'PIL', 'Pillow'),
-            ('pip-pypi', 'usb.core', 'pyusb==1.0.2'),
+            ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
             ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus'),
             ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf'),
             ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306')
@@ -145,7 +145,7 @@ LCD_INFO = {
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
             ('pip-pypi', 'PIL', 'Pillow'),
-            ('pip-pypi', 'usb.core', 'pyusb==1.0.2'),
+            ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
             ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus'),
             ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf'),
             ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306')
@@ -676,8 +676,10 @@ FUNCTION_ACTION_INFO = {
         'dependencies_module': []
     },
     'output': {
-        'name': '{} ({})'.format(
+        'name': '{} ({}/{}/{})'.format(
             TRANSLATIONS['output']['title'],
+            TRANSLATIONS['on']['title'],
+            TRANSLATIONS['off']['title'],
             TRANSLATIONS['duration']['title']),
         'dependencies_module': []
     },

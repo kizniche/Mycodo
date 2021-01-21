@@ -50,7 +50,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'usb.core', 'pyusb==1.0.2'),
+        ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
         ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus'),
         ('pip-pypi', 'adafruit_adxl34x', 'Adafruit_CircuitPython_ADXL34x')
     ],
