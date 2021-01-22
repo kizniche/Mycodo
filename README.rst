@@ -24,7 +24,7 @@ For technical support discussion, use the `Mycodo Forum <https://kylegabriel.com
 Donate
 ------
 
-I have always made Mycodo free and I don't intend on changing that. However, if you find Mycodo useful and would like to support its continued development, please consider becoming a sponsor at `github.com/sponsors/kizniche <https://github.com/sponsors/kizniche>`__ or donate at `kylegabriel.com/donate <kylegabriel.com/donate>`__.
+I have always made Mycodo free and I don't intend on changing that. However, if you find Mycodo useful and would like to support its continued development, please consider becoming a sponsor at `github.com/sponsors/kizniche <https://github.com/sponsors/kizniche>`__ or donate at `kylegabriel.com/donate <https://kylegabriel.com/donate>`__.
 
 --------------
 
