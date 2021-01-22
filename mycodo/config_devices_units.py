@@ -184,7 +184,7 @@ MEASUREMENTS = {
     'pressure': {
         'name': lazy_gettext('Pressure'),
         'meas': 'pressure',
-        'units': ['cm_water', 'psi', 'Pa', 'kPa']},
+        'units': ['cm_water', 'psi', 'hPa', 'Pa', 'kPa']},
     'pulse_width': {
         'name': lazy_gettext('Pulse Width'),
         'meas': 'pulse_width',
@@ -244,7 +244,7 @@ MEASUREMENTS = {
     'vapor_pressure_deficit': {
         'name': lazy_gettext('Vapor Pressure Deficit'),
         'meas': 'vapor_pressure_deficit',
-        'units': ['Pa']},
+        'units': ['hPa', 'Pa', 'kPa']},
     'version': {
         'name': lazy_gettext('Version'),
         'meas': 'version',
@@ -324,6 +324,9 @@ UNITS = {
     'h': {
         'name': lazy_gettext('Hour'),
         'unit': 'h'},
+    'hPa': {
+        'name': lazy_gettext('Hectopascals'),
+        'unit': 'hPa'},
     'Hz': {
         'name': lazy_gettext('Hertz'),
         'unit': 'Hz'},
@@ -515,8 +518,12 @@ UNIT_CONVERSIONS = [
     ('decimal', 'percent', 'x*100'),
 
     # Pressure
-    ('Pa', 'kPa', 'x/1000'),
-    ('kPa', 'Pa', 'x*1000'),
+    ('Pa', 'kPa', 'x*1000'),
+    ('Pa', 'hPa', 'x/100'),
+    ('hPa', 'Pa', 'x*100'),
+    ('hPa', 'kPa', 'x/10'),
+    ('kPa', 'Pa', 'x/1000'),
+    ('kPa', 'jPa', 'x*10'),
     ('psi', 'cm_water', 'x*70.306957964239'),
     ('psi', 'kPa', 'x*6.8947572932'),
     ('kPa', 'psi', 'x/6.8947572932'),

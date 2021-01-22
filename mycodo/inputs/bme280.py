@@ -5,6 +5,7 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_altitude
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
+from mycodo.inputs.sensorutils import convert_from_x_to_y_unit
 
 # Measurements
 measurements_dict = {
@@ -105,7 +106,7 @@ class InputModule(AbstractInput):
             self.value_set(1, self.sensor.read_humidity())
 
         if self.is_enabled(2):
-            self.value_set(2, self.sensor.read_pressure())
+            self.value_set(2, convert_from_x_to_y_unit('hPa', 'Pa', self.sensor.read_pressure()))
 
         if self.is_enabled(3) and self.is_enabled(0) and self.is_enabled(1):
             self.value_set(3, calculate_dewpoint(self.value_get(0), self.value_get(1)))

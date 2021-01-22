@@ -24,6 +24,7 @@ This new weather input acquires current and future weather conditions from openw
  - Fix Saving Angular and Solid Gauge Widget stop values ([#916](https://github.com/kizniche/mycodo/issues/916))
  - Fix uncaught exception if trying to acquire image when opencv can't detect a camera ([#917](https://github.com/kizniche/mycodo/issues/917))
  - Fix displaying input/output pypi.org dependencies with "=="
+ - Fix pressure measurement in BME680 and BME280 Inputs ([#923](https://github.com/kizniche/mycodo/issues/923))
 
 ### Features
 

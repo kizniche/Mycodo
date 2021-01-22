@@ -6,7 +6,7 @@ from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_altitude
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
-
+from mycodo.inputs.sensorutils import convert_from_x_to_y_unit
 
 def constraints_pass_oversample(mod_input, value):
     """
@@ -395,9 +395,14 @@ class InputModule(AbstractInput):
             self.logger.error("Sensor get_sensor_data() returned False.")
             return
 
-        self.value_set(0, self.sensor.data.temperature)
-        self.value_set(1, self.sensor.data.humidity)
-        self.value_set(2, self.sensor.data.pressure)
+        if self.is_enabled(0):
+            self.value_set(0, self.sensor.data.temperature)
+
+        if self.is_enabled(1):
+            self.value_set(1, self.sensor.data.humidity)
+
+        if self.is_enabled(2):
+            self.value_set(2, convert_from_x_to_y_unit('hPa', 'Pa', self.sensor.data.pressure))
 
         if self.is_enabled(3):
             if self.sensor.data.heat_stable:
