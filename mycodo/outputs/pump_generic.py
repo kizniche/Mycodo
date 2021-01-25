@@ -286,7 +286,7 @@ class OutputModule(AbstractOutput):
             if self.currently_dispensing:
                 self.logger.debug("Pump instructed to turn on for a volume while it's already dispensing. "
                                   "Overriding current dispense with new instruction.")
-            
+
             if self.options_channels['flow_mode'][0] == 'fastest_flow_rate':
                 total_dispense_seconds = amount / self.options_channels['fastest_dispense_rate_ml_min'][0] * 60
                 msg = "Turning pump on for {sec:.1f} seconds to dispense {ml:.1f} ml (at {rate:.1f} ml/min, " \

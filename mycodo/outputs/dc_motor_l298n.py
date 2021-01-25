@@ -70,27 +70,15 @@ measurements_dict = {
     },
     1: {
         'measurement': 'volume',
-        'unit': 'ml',
-        'name': 'Dispense Volume',
+        'unit': 'ml'
     },
     2: {
         'measurement': 'duration_time',
-        'unit': 's',
-        'name': 'Dispense Duration',
-    },
-    3: {
-        'measurement': 'duration_time',
         'unit': 's'
     },
-    4: {
+    3: {
         'measurement': 'volume',
-        'unit': 'ml',
-        'name': 'Dispense Volume',
-    },
-    5: {
-        'measurement': 'duration_time',
-        'unit': 's',
-        'name': 'Dispense Duration',
+        'unit': 'ml'
     }
 }
 
@@ -98,12 +86,12 @@ channels_dict = {
     0: {
         'name': 'Channel 1',
         'types': ['volume', 'on_off'],
-        'measurements': [0, 1, 2]
+        'measurements': [0, 1]
     },
     1: {
         'name': 'Channel 2',
         'types': ['volume', 'on_off'],
-        'measurements': [3, 4, 5]
+        'measurements': [2, 3]
     }
 }
 
@@ -281,14 +269,13 @@ class OutputModule(AbstractOutput):
         self.stop(channel)
         self.currently_dispensing = False
         self.logger.debug("Output turned off")
-        self.record_dispersal(amount, total_dispense_seconds, total_dispense_seconds)
+        self.record_dispersal(channel, amount, total_dispense_seconds)
 
-    def record_dispersal(self, channel, amount, total_on_seconds, total_dispense_seconds):
+    def record_dispersal(self, channel, amount, total_on_seconds):
         measure_dict = copy.deepcopy(measurements_dict)
         measure = channels_dict[channel]['measurements']
         measure_dict[measure[0]]['value'] = total_on_seconds
         measure_dict[measure[1]]['value'] = amount
-        measure_dict[measure[2]]['value'] = total_dispense_seconds
         add_measurements_influxdb(self.unique_id, measure_dict)
 
     def run(self, channel):
