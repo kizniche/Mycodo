@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-# stepper_ drv8825.py - Output for DRV-8825 stepper controller
+# stepper_bipolar_generaic.py - Output for stepper motor
 #
 import copy
 import time

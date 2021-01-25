@@ -67,7 +67,7 @@ OUTPUT_INFORMATION = {
 
     'interfaces': ['Mycodo'],
 
-    'message': 'An output to publish "on" or "off" to an MQTT server.',
+    'message': 'An output to publish "on" or "off" (or any other strings of your choosing) to an MQTT server.',
 
     'dependencies_module': [
         ('pip-pypi', 'paho', 'paho-mqtt')
