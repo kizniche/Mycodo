@@ -25,6 +25,7 @@ This new weather input acquires current and future weather conditions from openw
  - Fix uncaught exception if trying to acquire image when opencv can't detect a camera ([#917](https://github.com/kizniche/mycodo/issues/917))
  - Fix displaying input/output pypi.org dependencies with "=="
  - Fix pressure measurement in BME680 and BME280 Inputs ([#923](https://github.com/kizniche/mycodo/issues/923))
+ - Fix controllers disappearing following reorder ([#925](https://github.com/kizniche/mycodo/issues/925))
 
 ### Features
 

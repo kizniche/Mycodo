@@ -577,6 +577,18 @@ def celsius_to_kelvin(celsius):
         logger.error("Input must be an int or float")
 
 
+def check_missing_ids(current_ids, db_list):
+    try:
+        ids = current_ids.split(",")
+        for each_db in db_list:
+            for each_entry in each_db:
+                if each_entry.unique_id not in ids:
+                    ids.append(each_entry.unique_id)
+        return ",".join(ids)
+    except:
+        return current_ids
+
+
 def csv_to_list_of_str(str_csv):
     """ return a list of strings from a string of csv strings """
     list_str = []

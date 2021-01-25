@@ -119,6 +119,7 @@ from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
+from mycodo.utils.system_pi import check_missing_ids
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import dpkg_package_exists
 from mycodo.utils.system_pi import list_to_csv
@@ -1137,10 +1138,8 @@ def page_live():
         device_measurements, input_dev, output, math)
 
     # Display orders
-    display_order_input = csv_to_list_of_str(
-        DisplayOrder.query.first().inputs)
-    display_order_math = csv_to_list_of_str(
-        DisplayOrder.query.first().math)
+    display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
+    display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
@@ -1280,8 +1279,7 @@ def page_function():
     trigger = Trigger.query.all()
     user = User.query.all()
 
-    display_order_function = csv_to_list_of_str(
-        DisplayOrder.query.first().function)
+    display_order_function = csv_to_list_of_str(DisplayOrder.query.first().function)
 
     form_base = forms_function.DataBase()
     form_add_function = forms_function.FunctionAdd()
@@ -1311,9 +1309,17 @@ def page_function():
             mod_order = DisplayOrder.query.first()
             mod_order.function = list_to_csv(
                 form_base.list_visible_elements.data)
+            mod_order.function = check_missing_ids(
+                mod_order.function,
+                [
+                    conditional,
+                    custom_functions,
+                    function_dev,
+                    pid,
+                    trigger
+                ])
             db.session.commit()
-            display_order_function = csv_to_list_of_str(
-                DisplayOrder.query.first().function)
+            display_order_function = csv_to_list_of_str(DisplayOrder.query.first().function)
 
         # Function
         elif form_add_function.func_add.data:
@@ -1535,7 +1541,7 @@ def page_function():
 
     # Create dict of Function names
     names_function = {}
-    all_elements = [conditional, pid, trigger, function_dev]
+    all_elements = [conditional, pid, trigger, function_dev, custom_functions]
     for each_element in all_elements:
         for each_function in each_element:
             names_function[each_function.unique_id] = '[{id}] {name}'.format(
@@ -1688,6 +1694,7 @@ def page_output():
         if form_base.reorder.data:
             mod_order = DisplayOrder.query.first()
             mod_order.output = list_to_csv(form_base.list_visible_elements.data)
+            mod_order.function = check_missing_ids(mod_order.function, [output])
             db.session.commit()
 
         elif form_add_output.output_add.data:
@@ -1753,8 +1760,7 @@ def page_output():
         output_templates.extend(file_names)
         break
 
-    display_order_output = csv_to_list_of_str(
-        DisplayOrder.query.first().output)
+    display_order_output = csv_to_list_of_str(DisplayOrder.query.first().output)
 
     output_variables = {}
     for each_output in output:
@@ -1840,10 +1846,12 @@ def page_data():
             if form_base.reorder_type.data == 'input':
                 mod_order = DisplayOrder.query.first()
                 mod_order.inputs = list_to_csv(form_base.list_visible_elements.data)
+                mod_order.function = check_missing_ids(mod_order.function, [input_dev])
                 db.session.commit()
             elif form_base.reorder_type.data == 'math':
                 mod_order = DisplayOrder.query.first()
                 mod_order.math = list_to_csv(form_base.list_visible_elements.data)
+                mod_order.function = check_missing_ids(mod_order.function, [math])
                 db.session.commit()
             flash("Reorder Complete", "success")
 
