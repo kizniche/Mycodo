@@ -2,11 +2,32 @@
 #
 # dc_motor_l298n.py - Output for L298N DC motor controller
 #
+import copy
+import threading
+import time
+
 from flask_babel import lazy_gettext
 
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import add_measurements_influxdb
+
+
+def constraints_pass_positive_value(mod_input, value):
+    """
+    Check if the user input is acceptable
+    :param mod_input: SQL object with user-saved Input options
+    :param value: float or int
+    :return: tuple: (bool, list of strings)
+    """
+    errors = []
+    all_passed = True
+    # Ensure value is positive
+    if value <= 0:
+        all_passed = False
+        errors.append("Must be a positive value")
+    return all_passed, errors, mod_input
 
 
 def constraints_pass_positive_or_zero_value(mod_input, value):
@@ -48,21 +69,41 @@ measurements_dict = {
         'unit': 's'
     },
     1: {
+        'measurement': 'volume',
+        'unit': 'ml',
+        'name': 'Dispense Volume',
+    },
+    2: {
         'measurement': 'duration_time',
         'unit': 's',
+        'name': 'Dispense Duration',
     },
+    3: {
+        'measurement': 'duration_time',
+        'unit': 's'
+    },
+    4: {
+        'measurement': 'volume',
+        'unit': 'ml',
+        'name': 'Dispense Volume',
+    },
+    5: {
+        'measurement': 'duration_time',
+        'unit': 's',
+        'name': 'Dispense Duration',
+    }
 }
 
 channels_dict = {
     0: {
         'name': 'Channel 1',
-        'types': ['on_off'],
-        'measurements': [0]
+        'types': ['volume', 'on_off'],
+        'measurements': [0, 1, 2]
     },
     1: {
         'name': 'Channel 2',
-        'types': ['on_off'],
-        'measurements': [1]
+        'types': ['volume', 'on_off'],
+        'measurements': [3, 4, 5]
     }
 }
 
@@ -70,15 +111,20 @@ channels_dict = {
 OUTPUT_INFORMATION = {
     'output_name_unique': 'DC_MOTOR_L298N',
     'output_name': "DC Motor: L298N",
+    'output_library': 'RPi.GPIO',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
-    'output_types': ['on_off'],
+    'output_types': ['volume', 'on_off'],
 
     'url_additional': 'https://www.electronicshub.org/raspberry-pi-l298n-interface-tutorial-control-dc-motor-l298n-raspberry-pi/',
 
+    'message': 'The L298N can control 2 DC motors. If these motors control peristaltic pumps, set the Flow Rate '
+               'and the output can can be instructed to dispense volumes in addition to being turned on dor durations.',
+
     'options_enabled': [
         'button_on',
-        'button_send_duration'
+        'button_send_duration',
+        'button_send_volume'
     ],
     'options_disabled': ['interface'],
 
@@ -131,7 +177,15 @@ OUTPUT_INFORMATION = {
             ],
             'name': lazy_gettext('Direction'),
             'phrase': 'The direction to turn the motor'
-        }
+        },
+        {
+            'id': 'flow_rate_ml_min',
+            'type': 'float',
+            'default_value': 150.0,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Volume Rate (ml/min)',
+            'phrase': 'If a pump, the measured flow rate (ml/min) at the set Duty Cycle'
+        },
     ]
 }
 
@@ -144,6 +198,8 @@ class OutputModule(AbstractOutput):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
         self.driver = None
+        self.currently_dispensing = False
+        self.output_setup = False
         self.channel_setup = {}
         self.gpio = None
 
@@ -175,18 +231,8 @@ class OutputModule(AbstractOutput):
                 self.driver = self.gpio.PWM(self.options_channels['pin_enable'][channel], 1000)
                 self.driver.start(self.options_channels['duty_cycle'][channel])
                 self.channel_setup[channel] = True
-
-    def run(self, channel):
-        if self.options_channels['direction'][channel]:
-            self.gpio.output(self.options_channels['pin_1'][channel], self.gpio.HIGH)
-            self.gpio.output(self.options_channels['pin_2'][channel], self.gpio.LOW)
-        else:
-            self.gpio.output(self.options_channels['pin_1'][channel], self.gpio.LOW)
-            self.gpio.output(self.options_channels['pin_2'][channel], self.gpio.HIGH)
-
-    def stop(self, channel):
-        self.gpio.output(self.options_channels['pin_1'][channel], self.gpio.LOW)
-        self.gpio.output(self.options_channels['pin_2'][channel], self.gpio.LOW)
+                self.output_setup = True
+                self.output_states[channel] = False
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         if not self.channel_setup[output_channel]:
@@ -194,12 +240,71 @@ class OutputModule(AbstractOutput):
             self.logger.error(msg)
             return msg
 
-        if state == 'on':
+        if state == 'on' and output_type == 'vol' and amount:
+            if self.currently_dispensing:
+                self.logger.debug("DC motor instructed to dispense volume while it's already dispensing a volume. "
+                                  "Overriding current dispense with new instruction.")
+
+            total_dispense_seconds = amount / self.options_channels['flow_rate_ml_min'][0] * 60
+            msg = "Turning pump on for {sec:.1f} seconds to dispense {ml:.1f} ml (at {rate:.1f} ml/min).".format(
+                sec=total_dispense_seconds,
+                ml=amount,
+                rate=self.options_channels['flow_rate_ml_min'][0])
+            self.logger.debug(msg)
+
+            write_db = threading.Thread(
+                target=self.dispense_volume,
+                args=(output_channel, amount, total_dispense_seconds,))
+            write_db.start()
+            return
+        if state == 'on' and output_type == 'sec':
+            if self.currently_dispensing:
+                self.logger.debug(
+                    "DC motor instructed to turn on while it's already dispensing a volume. "
+                    "Overriding current dispense with new instruction.")
             self.run(output_channel)
-            self.output_states[output_channel] = True
         elif state == 'off':
+            if self.currently_dispensing:
+                self.currently_dispensing = False
             self.stop(output_channel)
-            self.output_states[output_channel] = False
+
+    def dispense_volume(self, channel, amount, total_dispense_seconds):
+        """ Dispense at flow rate """
+        self.currently_dispensing = True
+        self.logger.debug("Output turned on")
+        self.run(channel)
+        timer_dispense = time.time() + total_dispense_seconds
+
+        while time.time() < timer_dispense and self.currently_dispensing:
+            time.sleep(0.01)
+
+        self.stop(channel)
+        self.currently_dispensing = False
+        self.logger.debug("Output turned off")
+        self.record_dispersal(amount, total_dispense_seconds, total_dispense_seconds)
+
+    def record_dispersal(self, channel, amount, total_on_seconds, total_dispense_seconds):
+        measure_dict = copy.deepcopy(measurements_dict)
+        measure = channels_dict[channel]['measurements']
+        measure_dict[measure[0]]['value'] = total_on_seconds
+        measure_dict[measure[1]]['value'] = amount
+        measure_dict[measure[2]]['value'] = total_dispense_seconds
+        add_measurements_influxdb(self.unique_id, measure_dict)
+
+    def run(self, channel):
+        if self.options_channels['direction'][channel]:
+            self.gpio.output(self.options_channels['pin_1'][channel], self.gpio.HIGH)
+            self.gpio.output(self.options_channels['pin_2'][channel], self.gpio.LOW)
+            self.output_states[channel] = True
+        else:
+            self.gpio.output(self.options_channels['pin_1'][channel], self.gpio.LOW)
+            self.gpio.output(self.options_channels['pin_2'][channel], self.gpio.HIGH)
+            self.output_states[channel] = True
+
+    def stop(self, channel):
+        self.gpio.output(self.options_channels['pin_1'][channel], self.gpio.LOW)
+        self.gpio.output(self.options_channels['pin_2'][channel], self.gpio.LOW)
+        self.output_states[channel] = False
 
     def is_on(self, output_channel=None):
         if self.is_setup(channel=output_channel):
@@ -208,7 +313,8 @@ class OutputModule(AbstractOutput):
     def is_setup(self, channel=None):
         if channel:
             return self.channel_setup[channel]
-        return any(self.channel_setup)
+        if True in self.channel_setup.values():
+            return True
 
     def stop_output(self):
         """ Called when Output is stopped """

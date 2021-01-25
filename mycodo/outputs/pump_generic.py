@@ -282,9 +282,9 @@ class OutputModule(AbstractOutput):
             self.logger.debug("Output turned off")
             self.GPIO.output(self.options_channels['pin'][0], not self.options_channels['on_state'][0])
 
-        elif state == 'on' and output_type == ['vol', None] and amount:
+        elif state == 'on' and output_type in ['vol', None] and amount:
             if self.currently_dispensing:
-                self.logger.debug("Pump instructed to turn on for a duration while it's already dispensing. "
+                self.logger.debug("Pump instructed to turn on for a volume while it's already dispensing. "
                                   "Overriding current dispense with new instruction.")
             
             if self.options_channels['flow_mode'][0] == 'fastest_flow_rate':

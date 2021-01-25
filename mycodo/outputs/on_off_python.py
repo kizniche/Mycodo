@@ -182,8 +182,6 @@ class OutputModule(AbstractOutput):
         elif state == 'off' and self.options_channels['off_command'][0]:
             self.run_python_off.output_code_run()
             self.output_states[output_channel] = False
-        else:
-            return
 
     def is_on(self, output_channel=None):
         if self.is_setup():
