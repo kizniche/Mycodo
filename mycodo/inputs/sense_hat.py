@@ -80,11 +80,11 @@ measurements_dict = {
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'SENSEHAT',
+    'input_name_unique': 'PI_SENSE_HAT',
     'input_manufacturer': 'Raspberry Pi Foundation',
     'input_name': 'Sense HAT',
     'input_library': 'sense-hat',
-    'measurements_name': 'humidity/temperature/pressure/compass/magenetism/acceleration/gyroscope',
+    'measurements_name': 'humidity/temperature/pressure/compass/magnetism/acceleration/gyroscope',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.raspberrypi.org/products/sense-hat/',
 

@@ -41,7 +41,7 @@ This new weather input acquires current and future weather conditions from openw
  - Add Input: SCD30 CO2/Humidity/Temperature sensor
  - Add Input: Current Weather from OpenWeatherMap.org (Free API Key, Latitude/Longitude, 200,000 cities, Humidity/Temperature/Pressure/Dewpoint/Wind Speed/Wind Direction)
  - Add Input: Forecast Hourly/Daily Weather from OpenWeatherMap.org (Free API Key, , Humidity/Temperature/Pressure/Dewpoint)
- - Add Input: Raspberry Pi Sense HAT (humidity/temperature/pressure/compass/magenetism/acceleration/gyroscope)
+ - Add Input: Raspberry Pi Sense HAT (humidity/temperature/pressure/compass/magnetism/acceleration/gyroscope)
  - Add Measurement and Unit: Speed, Meters/Second
  - Add Measurement and Unit: Direction, Bearing
  - Add Conversions: m/s <-> mph <-> knots, hour <-> minutes and seconds
