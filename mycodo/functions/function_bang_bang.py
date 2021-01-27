@@ -42,8 +42,8 @@ FUNCTION_INFORMATION = {
     'message': 'A simple bang-bang control for controlling one output from one input.'
         ' Select an input, an output, enter a setpoint and a hysteresis, and select a direction.'
         ' The output will turn on when the input is below setpoint-hysteresis and turn off when'
-        ' the input is above setpoint+hysteresis.  This is the behavior when Raise is selected, such'
-        ' as when heating.  Lower direction has the opposite behavior - it will try to'
+        ' the input is above setpoint+hysteresis. This is the behavior when Raise is selected, such'
+        ' as when heating. Lower direction has the opposite behavior - it will try to'
         ' turn the output on in order to drive the input lower.',
 
     'options_enabled': [],
@@ -79,7 +79,7 @@ FUNCTION_INFORMATION = {
             'default_value': 50,
             'required': True,
             'name': lazy_gettext('Setpoint'),
-            'phrase': lazy_gettext('The desired setpoint in degrees F')
+            'phrase': lazy_gettext('The desired setpoint')
         },
         {
             'id': 'hysteresis',
@@ -100,7 +100,7 @@ FUNCTION_INFORMATION = {
                 ('lower', 'Lower')
             ],
             'name': lazy_gettext('Direction'),
-            'phrase': lazy_gettext('Raise means the measurement will increase when the control is on (heating). Lower means the measurement will decrease when the output is on (cooling)')
+            'phrase': 'Raise means the measurement will increase when the control is on (heating). Lower means the measurement will decrease when the output is on (cooling)'
         },
         {
             'id': 'update_period',
@@ -108,8 +108,8 @@ FUNCTION_INFORMATION = {
             'default_value': 5,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Update Period'),
-            'phrase': lazy_gettext('The update period for the controller.')
+            'name': lazy_gettext('Period (seconds)'),
+            'phrase': lazy_gettext('The duration (seconds) between measurements or actions')
         }
     ]
 }

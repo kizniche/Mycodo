@@ -84,12 +84,12 @@ measurements_dict = {
 
 channels_dict = {
     0: {
-        'name': 'Channel 1',
+        'name': 'Motor A',
         'types': ['volume', 'on_off'],
         'measurements': [0, 1]
     },
     1: {
-        'name': 'Channel 2',
+        'name': 'Motor B',
         'types': ['volume', 'on_off'],
         'measurements': [2, 3]
     }

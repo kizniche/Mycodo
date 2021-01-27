@@ -2296,10 +2296,12 @@ msgid "Keep Alive"
 msgstr "Одржи у животу"
 
 #: inputs/mqtt_paho.py:78
-msgid "Maximum amount of time between received signals. Set to 0 to disable."
-msgstr ""
-"Максимални износ времена између примљених сигнала. Подесите на 0 до "
-"искључити."
+msgid "Maximum amount of time between received signals."
+msgstr "Максимални износ времена између примљених сигнала."
+
+#: inputs/mqtt_paho.py:78
+msgid "Set to 0 to disable."
+msgstr "Подесите на 0 до искључити."
 
 #: inputs/mqtt_paho.py:85 outputs/mqtt.py:105
 msgid "Client ID"

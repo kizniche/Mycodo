@@ -2322,10 +2322,14 @@ msgid "Keep Alive"
 msgstr "Bleib am Leben"
 
 #: inputs/mqtt_paho.py:78
-msgid "Maximum amount of time between received signals. Set to 0 to disable."
+msgid "Maximum amount of time between received signals."
 msgstr ""
-"Die maximale Menge an Zeit zwischen den empfangenen Signalen. Auf 0 "
-"gesetzt zu deaktivieren."
+"Die maximale Menge an Zeit zwischen den empfangenen Signalen."
+
+#: inputs/mqtt_paho.py:78
+msgid "Set to 0 to disable."
+msgstr ""
+"Auf 0 gesetzt zu deaktivieren."
 
 #: inputs/mqtt_paho.py:85 outputs/mqtt.py:105
 msgid "Client ID"

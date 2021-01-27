@@ -65,15 +65,15 @@ INPUT_INFORMATION = {
             'id': 'cal_v',
             'type': 'float',
             'default_value': 0.4,
-            'name': lazy_gettext('Cal data: V (internal)'),
-            'phrase': 'Calibration data: voltage'
+            'name': "{}: {} ({})".format(lazy_gettext('Calibrate'), lazy_gettext('Voltage'), lazy_gettext('Internal')),
+            'phrase': 'Calibration data: internal voltage'
         },
         {
             'id': 'cal_orp',
             'type': 'float',
             'default_value': 400.0,
-            'name': lazy_gettext('Cal data: ORP (internal)'),
-            'phrase': 'Calibration data: ORP'
+            'name': "{}: {} ({})".format(lazy_gettext('Calibrate'), lazy_gettext('ORP'), lazy_gettext('Internal')),
+            'phrase': 'Calibration data: internal ORP'
         },
     ],
     'custom_actions_message': """Calibrate: Place your probe in a solution of known ORP. Set 
@@ -84,7 +84,7 @@ the known ORP value in the `Calibration ORP` field, and press `Calibrate`. You d
             'id': 'calibration_orp',
             'type': 'float',
             'default_value': 400.0,
-            'name': lazy_gettext('Calibration buffer ORP (mV)'),
+            'name': "{}: {} ({})".format(lazy_gettext('Calibrate'), lazy_gettext('Buffer ORP'), lazy_gettext('mV')) ,
             'phrase': 'This is the nominal ORP of the calibration buffer in mV, usually labelled on the bottle.'
         },
         {

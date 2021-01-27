@@ -2303,8 +2303,12 @@ msgid "Keep Alive"
 msgstr "Utrzymać przy życiu"
 
 #: inputs/mqtt_paho.py:78
-msgid "Maximum amount of time between received signals. Set to 0 to disable."
-msgstr "Maksymalny czas między odbieranych sygnałów. Ustaw na 0, aby wyłączyć."
+msgid "Maximum amount of time between received signals."
+msgstr "Maksymalny czas między odbieranych sygnałów."
+
+#: inputs/mqtt_paho.py:78
+msgid "Set to 0 to disable."
+msgstr "Ustaw na 0, aby wyłączyć."
 
 #: inputs/mqtt_paho.py:85 outputs/mqtt.py:105
 msgid "Client ID"
@@ -6508,8 +6512,12 @@ msgid "The topic to publish with"
 msgstr "Temat opublikować"
 
 #: outputs/mqtt.py:98
-msgid "The keepalive timeout value for the client. Set to 0 to disable."
-msgstr "Keepalive wartość limitu czasu dla klienta. Ustaw na 0, aby wyłączyć."
+msgid "The keepalive timeout value for the client."
+msgstr "Keepalive wartość limitu czasu dla klienta."
+
+#: outputs/mqtt.py:98
+msgid "Set to 0 to disable."
+msgstr "Ustaw na 0, aby wyłączyć."
 
 #: outputs/mqtt.py:113
 msgid "On Payload"

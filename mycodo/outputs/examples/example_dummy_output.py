@@ -53,7 +53,7 @@ OUTPUT_INFORMATION = {
     'output_name_unique': 'example_output_dummy',
 
     # A friendly/common name for the output to display to the user
-    'output_name': lazy_gettext('Example Dummy Output'),
+    'output_name': 'Example Dummy Output',
 
     # Optional library name (for outputs that are named the same but use different libraries)
     'output_library': 'library_name',
@@ -95,13 +95,13 @@ OUTPUT_INFORMATION = {
         {
             'id': 'input_value',
             'type': 'float',
-            'name': lazy_gettext('Value Name'),
+            'name': 'Value Name',
             'phrase': 'A description for this input'
         },
         {
             'id': 'input_button',
             'type': 'button',
-            'name': lazy_gettext('Button Name')
+            'name': 'Button Name'
         }
     ],
 
@@ -112,16 +112,16 @@ OUTPUT_INFORMATION = {
             'id': 'bool_value',
             'type': 'bool',
             'default_value': True,
-            'name': lazy_gettext('Bool Value'),
-            'phrase': lazy_gettext('Set a bool value')
+            'name': 'Bool Value',
+            'phrase': 'Set a bool value'
         },
         {
             'id': 'float_value',
             'type': 'float',
             'default_value': 5.0,
             'constraints_pass': constraints_pass_fan_seconds,
-            'name': lazy_gettext('Decimal Value'),
-            'phrase': lazy_gettext('Set a decimal value')
+            'name': 'Decimal Value',
+            'phrase': 'Set a decimal value'
         },
         {
             'id': 'range_value',
@@ -134,8 +134,8 @@ OUTPUT_INFORMATION = {
                 ('5000', '0 - 5000'),
             ],
             'constraints_pass': constraints_pass_measure_range,
-            'name': lazy_gettext('Range Value'),
-            'phrase': lazy_gettext('Select a range value')
+            'name': 'Range Value',
+            'phrase': 'Select a range value'
         }
     ],
 }

@@ -63,8 +63,8 @@ INPUT_INFORMATION = {
             'id': 'serial_device',
             'type': 'text',
             'default_value': '/dev/ttyUSB0',
-            'name': lazy_gettext('Serial Device'),
-            'phrase': lazy_gettext('The serial device to write to')
+            'name': 'Serial Device',
+            'phrase': 'The serial device to write to'
         }
     ]
 }

@@ -25,8 +25,6 @@ import threading
 import time
 import timeit
 
-from flask_babel import lazy_gettext
-
 from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import CustomController
 from mycodo.mycodo_client import DaemonControl
@@ -75,8 +73,8 @@ FUNCTION_INFORMATION = {
             'type': 'text',
             'default_value': 'Text_1',
             'required': True,
-            'name': lazy_gettext('Text 1'),
-            'phrase': lazy_gettext('Text 1 Description')
+            'name': 'Text 1',
+            'phrase': 'Text 1 Description'
         },
         {
             'id': 'integer_1',
@@ -84,8 +82,8 @@ FUNCTION_INFORMATION = {
             'default_value': 100,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Integer 1'),
-            'phrase': lazy_gettext('Integer 1 Description')
+            'name': 'Integer 1',
+            'phrase': 'Integer 1 Description'
         },
         {
             'id': 'float_1',
@@ -93,15 +91,15 @@ FUNCTION_INFORMATION = {
             'default_value': 50.2,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Float 1'),
-            'phrase': lazy_gettext('Float 1 Description')
+            'name': 'Float 1',
+            'phrase': 'Float 1 Description'
         },
         {
             'id': 'bool_1',
             'type': 'bool',
             'default_value': True,
-            'name': lazy_gettext('Boolean 1'),
-            'phrase': lazy_gettext('Boolean 1 Description')
+            'name': 'Boolean 1',
+            'phrase': 'Boolean 1 Description'
         },
         {
             'id': 'select_1',
@@ -112,8 +110,8 @@ FUNCTION_INFORMATION = {
                 ('SECOND', 'Second Option Selected'),
                 ('THIRD', 'Third Option Selected'),
             ],
-            'name': lazy_gettext('Select 1'),
-            'phrase': lazy_gettext('Select 1 Description')
+            'name': 'Select 1',
+            'phrase': 'Select 1 Description'
         },
         {
             'id': 'select_measurement_1',
@@ -124,8 +122,8 @@ FUNCTION_INFORMATION = {
                 'Math',
                 'PID'
             ],
-            'name': lazy_gettext('Select Measurement 1'),
-            'phrase': lazy_gettext('Select Measurement 1 Description')
+            'name': 'Select Measurement 1',
+            'phrase': 'Select Measurement 1 Description'
         },
         {
             'id': 'output_1',
@@ -135,8 +133,8 @@ FUNCTION_INFORMATION = {
             'options_select': [
                 'Output_Channels_Measurements',
             ],
-            'name': lazy_gettext('Output'),
-            'phrase': lazy_gettext('Select an output to modulate that will affect the measurement')
+            'name': 'Output',
+            'phrase': 'Select an output to modulate that will affect the measurement'
         },
         {
             'id': 'select_device_1',
@@ -145,8 +143,8 @@ FUNCTION_INFORMATION = {
             'options_select': [
                 'Output',
             ],
-            'name': lazy_gettext('Select Device 1'),
-            'phrase': lazy_gettext('Select Device 1 Description')
+            'name': 'Select Device 1',
+            'phrase': 'Select Device 1 Description'
         },
         {
             'id': 'select_device_2',
@@ -160,8 +158,8 @@ FUNCTION_INFORMATION = {
                 'Trigger',
                 'Custom'
             ],
-            'name': lazy_gettext('Select Device 2'),
-            'phrase': lazy_gettext('Select Device 2 Description')
+            'name': 'Select Device 2',
+            'phrase': 'Select Device 2 Description'
         }
     ]
 }

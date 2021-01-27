@@ -64,6 +64,7 @@ INPUT_INFORMATION = {
     'i2c_location': ['0x48', '0x49', '0x4A', '0x4B'],
     'i2c_address_editable': False,
 
+    # TODO: Next major revision, move settings such as these to custom_options
     'adc_gain': [(0, '2/3 (±6.144 V)'),
                  (1, '1 (±4.096 V)'),
                  (2, '2 (±2.048 V)'),

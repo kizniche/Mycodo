@@ -58,7 +58,7 @@ INPUT_INFORMATION = {
             'default_value': 'localhost',
             'required': True,
             'name': lazy_gettext('Hostname'),
-            'phrase': lazy_gettext('The hostname of the MQTT server')
+            'phrase': lazy_gettext('The hostname of the server')
         },
         {
             'id': 'mqtt_port',
@@ -66,7 +66,7 @@ INPUT_INFORMATION = {
             'default_value': 1883,
             'required': True,
             'name': lazy_gettext('Port'),
-            'phrase': lazy_gettext('The port of the MQTT server')
+            'phrase': lazy_gettext('The port of the server')
         },
         {
             'id': 'mqtt_keepalive',
@@ -75,7 +75,9 @@ INPUT_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Keep Alive'),
-            'phrase': lazy_gettext('Maximum amount of time between received signals. Set to 0 to disable.')
+            'phrase': "{} {}".format(
+                lazy_gettext('Maximum amount of time between received signals.'),
+                lazy_gettext('Set to 0 to disable.'))
         },
         {
             'id': 'mqtt_clientid',
@@ -83,7 +85,7 @@ INPUT_INFORMATION = {
             'default_value': 'mycodo_mqtt_client',
             'required': True,
             'name': lazy_gettext('Client ID'),
-            'phrase': lazy_gettext('Unique client ID for connecting to the MQTT server')
+            'phrase': lazy_gettext('Unique client ID for connecting to the server')
         }
     ]
 }

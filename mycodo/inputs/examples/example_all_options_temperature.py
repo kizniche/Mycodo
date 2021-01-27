@@ -1,6 +1,5 @@
 # coding=utf-8
 import copy
-from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 
@@ -207,16 +206,16 @@ INPUT_INFORMATION = {
             'id': 'fan_modulate',
             'type': 'bool',
             'default_value': True,
-            'name': lazy_gettext('Fan Off After Measure'),
-            'phrase': lazy_gettext('Turn the fan on only during the measurement')
+            'name': 'Fan Off After Measure',
+            'phrase': 'Turn the fan on only during the measurement'
         },
         {
             'id': 'fan_seconds',
             'type': 'float',
             'default_value': 5.0,
             'constraints_pass': constraints_pass_fan_seconds,
-            'name': lazy_gettext('Fan On Duration'),
-            'phrase': lazy_gettext('How long to turn the fan on (seconds) before acquiring measurements')
+            'name': 'Fan On Duration',
+            'phrase': 'How long to turn the fan on (seconds) before acquiring measurements'
         },
         {'type': 'new_line'},  # This starts a new line for the next options
         {
@@ -234,8 +233,8 @@ INPUT_INFORMATION = {
                 ('5000', '0 - 5000 ppmv'),
             ],
             'constraints_pass': constraints_pass_measure_range,
-            'name': lazy_gettext('Measurement Range'),
-            'phrase': lazy_gettext('Set the measuring range of the sensor')
+            'name': 'Measurement Range',
+            'phrase': 'Set the measuring range of the sensor'
         }
     ],
 
@@ -248,26 +247,26 @@ INPUT_INFORMATION = {
             'id': 'button_one_value',
             'type': 'integer',
             'default_value': 650,
-            'name': lazy_gettext('Button One Value'),
+            'name': 'Button One Value',
             'phrase': 'Value for button one.'
         },
         {
             'id': 'button_one',
             'type': 'button',
-            'name': lazy_gettext('Button One'),
+            'name': 'Button One',
             'phrase': "This is button one"
         },
         {
             'id': 'button_two_value',
             'type': 'integer',
             'default_value': 1500,
-            'name': lazy_gettext('Button Two Value'),
+            'name': 'Button Two Value',
             'phrase': 'Value for button two.'
         },
         {
             'id': 'button_two',
             'type': 'button',
-            'name': lazy_gettext('Button Two'),
+            'name': 'Button Two',
             'phrase': "This is button two"
         }
     ]

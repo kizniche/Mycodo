@@ -72,7 +72,7 @@ INPUT_INFORMATION = {
             'default_value': 120,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Calibration Max Age'),
+            'name': "{}: {}".format(lazy_gettext('Calibrate'), lazy_gettext('Max Age')),
             'phrase': lazy_gettext('The Max Age (seconds) of the Input/Math to use for calibration')
         }
     ]

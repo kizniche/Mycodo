@@ -125,7 +125,9 @@ OUTPUT_INFORMATION = {
             'default_value': 0,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Direction Pin',
-            'phrase': 'The Direction pin of the controller (BCM numbering). 0 to disable.'
+            'phrase': "{} {}".format(
+                'The Direction pin of the controller (BCM numbering).',
+                lazy_gettext('Set to 0 to disable.'))
         },
         {
             'id': 'pin_enable',
@@ -133,7 +135,8 @@ OUTPUT_INFORMATION = {
             'default_value': 0,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Enable Pin',
-            'phrase': 'The Enable pin of the controller (BCM numbering). 0 to disable.'
+            'phrase': 'The Enable pin of the controller (BCM numbering). {}'.format(
+                lazy_gettext('Set to 0 to disable.'))
         },
         {
             'id': 'enable_mode',
@@ -183,7 +186,8 @@ OUTPUT_INFORMATION = {
             'default_value': 0,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Mode Pin 1',
-            'phrase': 'The Mode Pin 1 of the controller (BCM numbering). 0 to disable.'
+            'phrase': 'The Mode Pin 1 of the controller (BCM numbering). {}'.format(
+                lazy_gettext('Set to 0 to disable.'))
         },
         {
             'id': 'pin_mode_2',
@@ -191,7 +195,8 @@ OUTPUT_INFORMATION = {
             'default_value': 0,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Mode Pin 2',
-            'phrase': 'The Mode Pin 2 of the controller (BCM numbering). 0 to disable.'
+            'phrase': 'The Mode Pin 2 of the controller (BCM numbering). {}'.format(
+                lazy_gettext('Set to 0 to disable.'))
         },
         {
             'id': 'pin_mode_3',
@@ -199,7 +204,8 @@ OUTPUT_INFORMATION = {
             'default_value': 0,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Mode Pin 3',
-            'phrase': 'The Mode Pin 3 of the controller (BCM numbering). 0 to disable.'
+            'phrase': 'The Mode Pin 3 of the controller (BCM numbering). {}'.format(
+                lazy_gettext('Set to 0 to disable.'))
         }
     ]
 }

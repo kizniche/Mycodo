@@ -48,7 +48,7 @@ LANGUAGES = {
 }
 
 DASHBOARD_WIDGETS = [
-    ('', lazy_gettext('Add Dashboard Widget')),
+    ('', "{} {} {}".format(lazy_gettext('Add'), lazy_gettext('Dashboard'), lazy_gettext('Widget'))),
     ('spacer', lazy_gettext('Spacer')),
     ('graph', lazy_gettext('Graph')),
     ('gauge', lazy_gettext('Gauge')),
@@ -192,26 +192,26 @@ LCDS = [
 # Math info
 MATH_INFO = {
     'average': {
-        'name': lazy_gettext('Average (Last, Multiple Channels)'),
+        'name': "{} ({}, {})".format(lazy_gettext('Average'), lazy_gettext('Last'), lazy_gettext('Multiple Channels')),
         'dependencies_module': [],
         'enable_measurements_select': True,
         'measure': {}
     },
     'average_single': {
-        'name': lazy_gettext('Average (Past, Single Channel)'),
+        'name': "{} ({}, {})".format(lazy_gettext('Average'), lazy_gettext('Past'), lazy_gettext('Single Channel')),
         'dependencies_module': [],
         'enable_measurements_select': False,
         'enable_measurements_convert': True,
         'measure': {}
     },
     'sum': {
-        'name': lazy_gettext('Sum (Last, Multiple Channels)'),
+        'name': "{} ({}, {})".format(lazy_gettext('Sum'), lazy_gettext('Last'), lazy_gettext('Multiple Channels')),
         'dependencies_module': [],
         'enable_measurements_select': True,
         'measure': {}
     },
     'sum_single': {
-        'name': lazy_gettext('Sum (Past, Single Channel)'),
+        'name': "{} ({}, {})".format(lazy_gettext('Sum'), lazy_gettext('Past'), lazy_gettext('Single Channel')),
         'dependencies_module': [],
         'enable_measurements_select': False,
         'enable_measurements_convert': True,
@@ -230,7 +230,7 @@ MATH_INFO = {
         'measure': {}
     },
     'humidity': {
-        'name': lazy_gettext('Humidity (Wet/Dry-Bulb)'),
+        'name': "{} ({})".format(lazy_gettext('Humidity'), lazy_gettext('Wet/Dry-Bulb')),
         'dependencies_module': [],
         'enable_measurements_convert': True,
         'measure': {
@@ -345,15 +345,15 @@ METHOD_INFO = {
         'dependencies_module': []
     },
     'Daily': {
-        'name': lazy_gettext('Daily (Time-Based)'),
+        'name': "{} ({})".format(lazy_gettext('Daily'), lazy_gettext('Time-Based')),
         'dependencies_module': []
     },
     'DailySine': {
-        'name': lazy_gettext('Daily (Sine Wave)'),
+        'name': "{} ({})".format(lazy_gettext('Daily'), lazy_gettext('Sine Wave')),
         'dependencies_module': []
     },
     'DailyBezier': {
-        'name': lazy_gettext('Daily (Bezier Curve)'),
+        'name': "{} ({})".format(lazy_gettext('Daily'), lazy_gettext('Bezier Curve')),
         'dependencies_module': [
             ('apt', 'python3-numpy', 'python3-numpy')
         ]
@@ -380,13 +380,15 @@ PID_INFO = {
         1: {
             'measurement': '',
             'unit': '',
-            'name': '{} (Band Min)'.format(TRANSLATIONS['setpoint']['title']),
+            'name': '{} ({})'.format(
+                TRANSLATIONS['setpoint']['title'], lazy_gettext('Band Min')),
             'measurement_type': 'setpoint'
         },
         2: {
             'measurement': '',
             'unit': '',
-            'name': '{} (Band Max)'.format(TRANSLATIONS['setpoint']['title']),
+            'name': '{} ({})'.format(
+                TRANSLATIONS['setpoint']['title'], lazy_gettext('Band Max')),
             'measurement_type': 'setpoint'
         },
         3: {
@@ -408,29 +410,25 @@ PID_INFO = {
             'measurement': 'duration_time',
             'unit': 's',
             'name': '{} ({})'.format(
-                TRANSLATIONS['output']['title'],
-                TRANSLATIONS['duration']['title'])
+                TRANSLATIONS['output']['title'], TRANSLATIONS['duration']['title'])
         },
         7: {
             'measurement': 'duty_cycle',
             'unit': 'percent',
             'name': '{} ({})'.format(
-                TRANSLATIONS['output']['title'],
-                TRANSLATIONS['duty_cycle']['title'])
+                TRANSLATIONS['output']['title'], TRANSLATIONS['duty_cycle']['title'])
         },
         8: {
             'measurement': 'volume',
             'unit': 'ml',
             'name': '{} ({})'.format(
-                TRANSLATIONS['output']['title'],
-                TRANSLATIONS['volume']['title'])
+                TRANSLATIONS['output']['title'], TRANSLATIONS['volume']['title'])
         },
         9: {
             'measurement': 'unitless',
             'unit': 'none',
             'name': '{} ({})'.format(
-                TRANSLATIONS['output']['title'],
-                TRANSLATIONS['value']['title'])
+                TRANSLATIONS['output']['title'], TRANSLATIONS['value']['title'])
         }
     }
 }
@@ -438,7 +436,10 @@ PID_INFO = {
 # Calibration
 CALIBRATION_INFO = {
     'CALIBRATE_DS_TYPE': {
-        'name': lazy_gettext('DS-Type Sensor Calibration'),
+        'name': "{}: {}: {}".format(
+            lazy_gettext('Calibration'),
+            lazy_gettext('Sensor'),
+            lazy_gettext('DS-Type')),
         'dependencies_module': [
             ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
         ]
@@ -579,29 +580,26 @@ FUNCTIONS = [
 FUNCTION_ACTION_INFO = {
     'pause_actions': {
         'name': '{} {}'.format(
-            TRANSLATIONS['pause']['title'],
-            TRANSLATIONS['actions']['title']),
+            TRANSLATIONS['pause']['title'], TRANSLATIONS['actions']['title']),
         'dependencies_module': []
     },
     'photo': {
-        'name': lazy_gettext('Camera: Capture Photo'),
+        'name': "{}: {}".format(lazy_gettext('Camera'), lazy_gettext('Capture Photo')),
         'dependencies_module': []
     },
     'activate_controller': {
         'name': '{}: {}'.format(
-            TRANSLATIONS['controller']['title'],
-            TRANSLATIONS['activate']['title']),
+            TRANSLATIONS['controller']['title'], TRANSLATIONS['activate']['title']),
         'dependencies_module': []
     },
     'deactivate_controller': {
         'name': '{}: {}'.format(
-            TRANSLATIONS['controller']['title'],
-            TRANSLATIONS['deactivate']['title']),
+            TRANSLATIONS['controller']['title'], TRANSLATIONS['deactivate']['title']),
         'dependencies_module': []
     },
     'clear_total_volume': {
-        'name': "{}: {}".format(lazy_gettext('Flow Meter'),
-                                lazy_gettext('Clear Total Volume')),
+        'name': "{}: {}".format(
+            lazy_gettext('Flow Meter'), lazy_gettext('Clear Total Volume')),
         'dependencies_module': []
     },
     'create_note': {
@@ -609,13 +607,13 @@ FUNCTION_ACTION_INFO = {
         'dependencies_module': []
     },
     'email': {
-        'name': '{} ({})'.format(TRANSLATIONS['email']['title'],
-                                 TRANSLATIONS['single']['title']),
+        'name': '{} ({})'.format(
+            TRANSLATIONS['email']['title'], TRANSLATIONS['single']['title']),
         'dependencies_module': []
     },
     'email_multiple': {
-        'name': '{} ({})'.format(TRANSLATIONS['email']['title'],
-                                 TRANSLATIONS['multiple']['title']),
+        'name': '{} ({})'.format(
+            TRANSLATIONS['email']['title'], TRANSLATIONS['multiple']['title']),
         'dependencies_module': []
     },
     'photo_email': {
@@ -627,8 +625,8 @@ FUNCTION_ACTION_INFO = {
         'dependencies_module': []
     },
     'command': {
-        'name': "{}: {}".format(lazy_gettext('Execute Command'),
-                                lazy_gettext('Shell')),
+        'name': "{}: {}".format(
+            lazy_gettext('Execute Command'), lazy_gettext('Shell')),
         'dependencies_module': []
     },
     'infrared_send': {
@@ -641,119 +639,99 @@ FUNCTION_ACTION_INFO = {
         ]
     },
     'input_force_measurements': {
-        'name': "{}: {}".format(lazy_gettext('Input'),
-                                lazy_gettext('Force Measurements')),
+        'name': "{}: {}".format(
+            lazy_gettext('Input'), lazy_gettext('Force Measurements')),
         'dependencies_module': []
     },
     'lcd_backlight_off': {
         'name': '{}: {}: {}'.format(
-            TRANSLATIONS['lcd']['title'],
-            lazy_gettext('Backlight'), lazy_gettext('Off')),
+            TRANSLATIONS['lcd']['title'], lazy_gettext('Backlight'), lazy_gettext('Off')),
         'dependencies_module': []
     },
     'lcd_backlight_on': {
         'name': '{}: {}: {}'.format(
-            TRANSLATIONS['lcd']['title'],
-            lazy_gettext('Backlight'), lazy_gettext('On')),
+            TRANSLATIONS['lcd']['title'], lazy_gettext('Backlight'), lazy_gettext('On')),
         'dependencies_module': []
     },
     'lcd_backlight_color': {
         'name': '{}: {}: {}'.format(
-            TRANSLATIONS['lcd']['title'],
-            lazy_gettext('Backlight'), lazy_gettext('Color')),
+            TRANSLATIONS['lcd']['title'], lazy_gettext('Backlight'), lazy_gettext('Color')),
         'dependencies_module': []
     },
     'flash_lcd_off': {
         'name': '{}: {}'.format(
-            TRANSLATIONS['lcd']['title'],
-            lazy_gettext('Flashing Off')),
+            TRANSLATIONS['lcd']['title'], lazy_gettext('Flashing Off')),
         'dependencies_module': []
     },
     'flash_lcd_on': {
         'name': '{}: {}'.format(
-            TRANSLATIONS['lcd']['title'],
-            lazy_gettext('Flashing On')),
+            TRANSLATIONS['lcd']['title'], lazy_gettext('Flashing On')),
         'dependencies_module': []
     },
     'output': {
         'name': '{} ({}/{}/{})'.format(
-            TRANSLATIONS['output']['title'],
-            TRANSLATIONS['on']['title'],
-            TRANSLATIONS['off']['title'],
-            TRANSLATIONS['duration']['title']),
+            TRANSLATIONS['output']['title'], TRANSLATIONS['on']['title'],
+            TRANSLATIONS['off']['title'], TRANSLATIONS['duration']['title']),
         'dependencies_module': []
     },
     'output_pwm': {
         'name': '{} ({})'.format(
-            TRANSLATIONS['output']['title'],
-            TRANSLATIONS['duty_cycle']['title']),
+            TRANSLATIONS['output']['title'], TRANSLATIONS['duty_cycle']['title']),
         'dependencies_module': []
     },
     'output_ramp_pwm': {
         'name': '{} ({} {})'.format(
-            TRANSLATIONS['output']['title'],
-            TRANSLATIONS['ramp']['title'],
-            TRANSLATIONS['duty_cycle']['title']),
+            TRANSLATIONS['output']['title'], TRANSLATIONS['ramp']['title'], TRANSLATIONS['duty_cycle']['title']),
         'dependencies_module': []
     },
     'output_value': {
         'name': '{} ({})'.format(
-            TRANSLATIONS['output']['title'],
-            TRANSLATIONS['value']['title']),
+            TRANSLATIONS['output']['title'], TRANSLATIONS['value']['title']),
         'dependencies_module': []
     },
     'output_volume': {
         'name': '{} ({})'.format(
-            TRANSLATIONS['output']['title'],
-            TRANSLATIONS['volume']['title']),
+            TRANSLATIONS['output']['title'], TRANSLATIONS['volume']['title']),
         'dependencies_module': []
     },
     'pause_pid': {
         'name': '{}: {}'.format(
-            TRANSLATIONS['pid']['title'],
-            TRANSLATIONS['pause']['title']),
+            TRANSLATIONS['pid']['title'], TRANSLATIONS['pause']['title']),
         'dependencies_module': []
     },
     'resume_pid': {
         'name': '{}: {}'.format(
-            TRANSLATIONS['pid']['title'],
-            TRANSLATIONS['resume']['title']),
+            TRANSLATIONS['pid']['title'], TRANSLATIONS['resume']['title']),
         'dependencies_module': []
     },
     'method_pid': {
         'name': '{}: {}'.format(
-            TRANSLATIONS['pid']['title'],
-            lazy_gettext('Set Method')),
+            TRANSLATIONS['pid']['title'], lazy_gettext('Set Method')),
         'dependencies_module': []
     },
     'setpoint_pid': {
-        'name': '{}: {}'.format(
-            TRANSLATIONS['pid']['title'],
-            lazy_gettext('Set Setpoint')),
+        'name': '{}: {}: {}'.format(
+            TRANSLATIONS['pid']['title'], lazy_gettext('Set'), lazy_gettext('Setpoint')),
         'dependencies_module': []
     },
     'setpoint_pid_raise': {
-        'name': '{}: {}'.format(
-            TRANSLATIONS['pid']['title'],
-            lazy_gettext('Raise Setpoint')),
+        'name': '{}: {}: {}'.format(
+            TRANSLATIONS['pid']['title'], lazy_gettext('Raise'), lazy_gettext('Setpoint')),
         'dependencies_module': []
     },
     'setpoint_pid_lower': {
-        'name': '{}: {}'.format(
-            TRANSLATIONS['pid']['title'],
-            lazy_gettext('Lower Setpoint')),
+        'name': '{}: {}: {}'.format(
+            TRANSLATIONS['pid']['title'], lazy_gettext('Lower'), lazy_gettext('Setpoint')),
         'dependencies_module': []
     },
     'system_restart': {
         'name': '{}: {}'.format(
-            TRANSLATIONS['system']['title'],
-            lazy_gettext('Restart')),
+            TRANSLATIONS['system']['title'], lazy_gettext('Restart')),
         'dependencies_module': []
     },
     'system_shutdown': {
         'name': '{}: {}'.format(
-            TRANSLATIONS['system']['title'],
-            lazy_gettext('Shutdown')),
+            TRANSLATIONS['system']['title'], lazy_gettext('Shutdown')),
         'dependencies_module': []
     }
 

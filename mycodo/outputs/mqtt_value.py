@@ -113,7 +113,9 @@ OUTPUT_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': lazy_gettext('Keep Alive'),
-            'phrase': lazy_gettext('The keepalive timeout value for the client. Set to 0 to disable.')
+            'phrase': "{} {}".format(
+                lazy_gettext('The keepalive timeout value for the client.'),
+                lazy_gettext('Set to 0 to disable.'))
         },
         {
             'id': 'clientid',

@@ -67,7 +67,7 @@ INPUT_INFORMATION = {
             'id': 'option_one',
             'type': 'integer',
             'default_value': 999,
-            'name': lazy_gettext('Option One Value'),
+            'name': 'Option One Value',
             'phrase': 'Value for option one.'
         },
     ],
@@ -78,13 +78,13 @@ INPUT_INFORMATION = {
             'id': 'button_one_value',
             'type': 'integer',
             'default_value': 650,
-            'name': lazy_gettext('Button One Value'),
+            'name': 'Button One Value',
             'phrase': 'Value for button one.'
         },
         {
             'id': 'button_one',
             'type': 'button',
-            'name': lazy_gettext('Button One'),
+            'name': 'Button One',
             'phrase': "This is button one"
         },
         {'type': 'new_line'},  # This starts a new line for the next action
@@ -96,13 +96,13 @@ INPUT_INFORMATION = {
             'id': 'button_two_value',
             'type': 'integer',
             'default_value': 1500,
-            'name': lazy_gettext('Button Two Value'),
+            'name': 'Button Two Value',
             'phrase': 'Value for button two.'
         },
         {
             'id': 'button_two',
             'type': 'button',
-            'name': lazy_gettext('Button Two'),
+            'name': 'Button Two',
             'phrase': "This is button two"
         }
     ]

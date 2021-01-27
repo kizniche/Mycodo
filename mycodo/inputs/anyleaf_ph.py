@@ -1,8 +1,6 @@
 # coding=utf-8
 import copy
 
-from flask_babel import lazy_gettext
-
 from mycodo.inputs.base_input import AbstractInput
 
 
@@ -76,63 +74,63 @@ INPUT_INFORMATION = {
             'id': 'cal1_v',
             'type': 'float',
             'default_value': 0.,
-            'name': lazy_gettext('Cal data: V1 (internal)'),
+            'name': 'Cal data: V1 (internal)',
             'phrase': 'Calibration data: Voltage'
         },
         {
             'id': 'cal1_ph',
             'type': 'float',
             'default_value': 7.,
-            'name': lazy_gettext('Cal data: pH1 (internal)'),
+            'name': 'Cal data: pH1 (internal)',
             'phrase': 'Calibration data: pH'
         },
         {
             'id': 'cal1_t',
             'type': 'float',
             'default_value': 23.,
-            'name': lazy_gettext('Cal data: T1 (internal)'),
+            'name': 'Cal data: T1 (internal)',
             'phrase': 'Calibration data: Temperature'
         },
         {
             'id': 'cal2_v',
             'type': 'float',
             'default_value': 0.17,
-            'name': lazy_gettext('Cal data: V2 (internal)'),
+            'name': 'Cal data: V2 (internal)',
             'phrase': 'Calibration data: Voltage'
         },
         {
             'id': 'cal2_ph',
             'type': 'float',
             'default_value': 4.,
-            'name': lazy_gettext('Cal data: pH2 (internal)'),
+            'name': 'Cal data: pH2 (internal)',
             'phrase': 'Calibration data: pH'
         },
         {
             'id': 'cal2_t',
             'type': 'float',
             'default_value': 23.,
-            'name': lazy_gettext('Cal data: T2 (internal)'),
+            'name': 'Cal data: T2 (internal)',
             'phrase': 'Calibration data: Temperature'
         },
         {
             'id': 'cal3_v',
             'type': 'float',
             'default_value': None,
-            'name': lazy_gettext('Cal data: V3 (internal)'),
+            'name': 'Cal data: V3 (internal)',
             'phrase': 'Calibration data: Voltage'
         },
         {
             'id': 'cal3_ph',
             'type': 'float',
             'default_value': None,
-            'name': lazy_gettext('Cal data: pH3 (internal)'),
+            'name': 'Cal data: pH3 (internal)',
             'phrase': 'Calibration data: pH'
         },
         {
             'id': 'cal3_t',
             'type': 'float',
             'default_value': None,
-            'name': lazy_gettext('Cal data: T3 (internal)'),
+            'name': 'Cal data: T3 (internal)',
             'phrase': 'Calibration data: Temperature'
         },
     ],
@@ -145,23 +143,23 @@ and press `Calibrate, slot 2`. Optionally, repeat a third time with `Calibrate, 
             'id': 'calibration_ph',
             'type': 'float',
             'default_value': 7.,
-            'name': lazy_gettext('Calibration buffer pH'),
+            'name': 'Calibration buffer pH',
             'phrase': 'This is the nominal pH of the calibration buffer, usually labelled on the bottle.'
         },
         {
             'id': 'calibrate_slot_1',
             'type': 'button',
-            'name': lazy_gettext('Calibrate, slot 1')
+            'name': 'Calibrate, slot 1'
         },
         {
             'id': 'calibrate_slot_2',
             'type': 'button',
-            'name': lazy_gettext('Calibrate, slot 2')
+            'name': 'Calibrate, slot 2'
         },
         {
             'id': 'calibrate_slot_3',
             'type': 'button',
-            'name': lazy_gettext('Calibrate, slot 3')
+            'name': 'Calibrate, slot 3'
         },
         # todo: Including this input will raise an error about `cannot convert string to float`
         # todo when attempting calibration.
