@@ -33,6 +33,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Altitude'),
         'meas': 'altitude',
         'units': ['m', 'ft']},
+    'angle': {
+        'name': lazy_gettext('Angle'),
+        'meas': 'angle',
+        'units': ['degree']},
     'battery': {
         'name': lazy_gettext('Battery'),
         'meas': 'battery',
@@ -149,6 +153,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Light'),
         'meas': 'light',
         'units': ['full', 'ir', 'lux']},
+    'magnetic_flux_density': {
+        'name': lazy_gettext('Magnetic Flux Density'),
+        'meas': 'magnetic_flux_density',
+        'units': ['uT']},
     'moisture': {
         'name': lazy_gettext('Moisture'),
         'meas': 'moisture',
@@ -303,6 +311,9 @@ UNITS = {
     'decimal': {
         'name': lazy_gettext('Decimal'),
         'unit': ''},
+    'degree': {
+        'name': lazy_gettext('Degree'),
+        'unit': '°'},
     'eight_bit_color': {
         'name': lazy_gettext('8-Bit Color'),
         'unit': '8-bit'},
@@ -450,6 +461,9 @@ UNITS = {
     'ug_m3': {
         'name': lazy_gettext('Microgram per cubic meter'),
         'unit': 'μg/m^3'},
+    'uT': {
+        'name': lazy_gettext('Microtesla'),
+        'unit': 'μT'},
     'V': {
         'name': lazy_gettext('Volt'),
         'unit': 'V'}
