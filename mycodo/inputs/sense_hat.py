@@ -96,7 +96,7 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['I2C'],
-    'i2c_location': ['Multiple'],
+    'i2c_location': ['0x5c'],
     'i2c_address_editable': False,
 
     'options_enabled': [
