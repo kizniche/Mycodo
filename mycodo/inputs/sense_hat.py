@@ -84,7 +84,7 @@ INPUT_INFORMATION = {
     'input_manufacturer': 'Raspberry Pi Foundation',
     'input_name': 'Sense HAT',
     'input_library': 'sense-hat',
-    'measurements_name': 'humidity/temperature/pressure/compass/magnetism/acceleration/gyroscope',
+    'measurements_name': 'hum/temp/press/compass/magnet/accel/gyro',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.raspberrypi.org/products/sense-hat/',
 
@@ -96,11 +96,9 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['I2C'],
-    'i2c_location': ['Multiple'],
-    'i2c_address_editable': False,
 
     'options_enabled': [
-        'i2c_location',
+        'measurements_select',
         'period',
         'pre_output'
     ],
