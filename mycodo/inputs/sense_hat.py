@@ -88,12 +88,15 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.raspberrypi.org/products/sense-hat/',
 
+    'message': 'This module acquires measurements from the Raspberry Pi Sense HAT sensors, '
+               'which include the LPS25H, LSM9DS1, and HTS221.',
+
     'dependencies_module': [
         ('apt', 'sense-hat', 'sense-hat'),
     ],
 
     'interfaces': ['I2C'],
-    'i2c_location': ['0x5c', '0x5f'],
+    'i2c_location': ['Multiple'],
     'i2c_address_editable': False,
 
     'options_enabled': [
