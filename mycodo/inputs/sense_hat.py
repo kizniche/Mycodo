@@ -74,7 +74,7 @@ measurements_dict = {
     14: {
         'measurement': 'acceleration_z',
         'unit': 'g_force'
-    },
+    }
 }
 
 
@@ -96,6 +96,8 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['I2C'],
+    'i2c_location': ['Multiple'],
+    'i2c_address_editable': False,
 
     'options_enabled': [
         'measurements_select',
