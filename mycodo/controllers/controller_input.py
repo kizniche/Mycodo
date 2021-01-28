@@ -307,7 +307,7 @@ class InputController(AbstractController, threading.Thread):
         self.lock_file = '/var/lock/input_pre_output_{id}'.format(id=self.pre_output_id)
 
         # Convert string I2C address to base-16 int
-        if self.interface == 'I2C':
+        if self.interface == 'I2C' and self.input_dev.i2c_location:
             self.i2c_address = int(str(self.input_dev.i2c_location), 16)
 
         # Set up edge detection of a GPIO pin
