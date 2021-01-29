@@ -69,9 +69,10 @@ class InputModule(AbstractInput):
 
     def initialize_input(self):
         from w1thermsensor import W1ThermSensor
+        from w1thermsensor import Sensor
 
         self.sensor = W1ThermSensor(
-            W1ThermSensor.THERM_SENSOR_DS18S20, self.input_dev.location)
+            Sensor.DS18S20, self.input_dev.location)
 
     def get_measurement(self):
         """ Gets the DS18S20's temperature in Celsius """

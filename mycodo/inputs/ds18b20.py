@@ -69,10 +69,11 @@ class InputModule(AbstractInput):
 
     def initialize_input(self):
         from w1thermsensor import W1ThermSensor
+        from w1thermsensor import Sensor
 
         try:
             self.sensor = W1ThermSensor(
-                W1ThermSensor.THERM_SENSOR_DS18B20, self.input_dev.location)
+                Sensor.DS18B20, self.input_dev.location)
             if self.input_dev.resolution:
                 self.sensor.set_resolution(self.input_dev.resolution)
         except:

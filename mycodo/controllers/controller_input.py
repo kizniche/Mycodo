@@ -402,6 +402,10 @@ class InputController(AbstractController, threading.Thread):
                     "StopIteration raised 3 times. Possibly could not read "
                     "input. Ensure it's connected properly and "
                     "detected.")
+        except AttributeError:
+            self.logger.error(
+                "Mycodo is attempting to acquire measurement(s) from an Input that has already critically errored. "
+                "Review the log lines following Input Activation to investigate why this happened.")
         except Exception as except_msg:
             self.logger.exception(
                 "Error while attempting to read input: {err}".format(
