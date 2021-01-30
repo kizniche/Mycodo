@@ -86,6 +86,38 @@ INPUT_INFORMATION = {
             'required': True,
             'name': lazy_gettext('Client ID'),
             'phrase': lazy_gettext('Unique client ID for connecting to the server')
+        },
+        {
+            'id': 'mqtt_login',
+            'type': 'bool',
+            'default_value': False,
+            'name': 'Use Login',
+            'phrase': 'Send login credentials'
+        },
+        {
+            'id': 'mqtt_use_tls',
+            'type': 'bool',
+            'default_value': False,
+            'name': 'Use TLS',
+            'phrase': 'Send login credentials using TLS'
+        },
+        {
+            'id': 'mqtt_username',
+            'type': 'text',
+            'default_value': 'user',
+            'required': False,
+            'name': lazy_gettext('Username'),
+            'phrase': lazy_gettext('Username for connecting to the server')
+        },
+        {
+            'id': 'mqtt_password',
+            'type': 'text',
+            'default_value': '',
+            'required': False,
+            'name': lazy_gettext('Password'),
+            'phrase': "{} {}".format(
+                lazy_gettext('Password for connecting to the server.'),
+                lazy_gettext('Leave blank to disable.'))
         }
     ]
 }
@@ -104,6 +136,10 @@ class InputModule(AbstractInput):
         self.mqtt_channel = None
         self.mqtt_keepalive = None
         self.mqtt_clientid = None
+        self.mqtt_login = None
+        self.mqtt_use_tls = None
+        self.mqtt_username = None
+        self.mqtt_password = None
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
@@ -115,6 +151,13 @@ class InputModule(AbstractInput):
 
         self.client = mqtt.Client(self.mqtt_clientid)
         self.logger.debug("Client created with ID {}".format(self.mqtt_clientid))
+        if self.mqtt_login:
+            if not self.mqtt_password:
+                self.mqtt_password = None
+            self.logger.debug("Sending username and password credentials")
+            self.client.username_pw_set(self.mqtt_username, self.mqtt_password)
+        if self.mqtt_use_tls:
+            self.client.tls_set()
 
     def listener(self):
         self.callbacks_connect()

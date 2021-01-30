@@ -43,6 +43,7 @@ This new weather input acquires current and future weather conditions from openw
  - Add Input: Current Weather from OpenWeatherMap.org (Free API Key, Latitude/Longitude, 200,000 cities, Humidity/Temperature/Pressure/Dewpoint/Wind Speed/Wind Direction)
  - Add Input: Forecast Hourly/Daily Weather from OpenWeatherMap.org (Free API Key, , Humidity/Temperature/Pressure/Dewpoint)
  - Add Input: Raspberry Pi Sense HAT (humidity/temperature/pressure/compass/magnetism/acceleration/gyroscope)
+ - Add Input: Xiaomi Mijia LYWSD03MMC
  - Add Measurement and Unit: Speed, Meters/Second
  - Add Measurement and Unit: Direction, Bearing
  - Add Conversions: m/s <-> mph <-> knots, hour <-> minutes and seconds
@@ -54,6 +55,7 @@ This new weather input acquires current and future weather conditions from openw
  - Add User option to Shell Command Function Action
  - Add Message and New Line options to Custom Options of Outputs
  - Add set_custom_option/get_custom_option to Conditionals ([#901](https://github.com/kizniche/mycodo/issues/901))
+ - Add ability to login with username/password using MQTT Input and Outputs
 
 ### Miscellaneous
 

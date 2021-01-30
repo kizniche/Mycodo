@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-
 import os
+import re
+
 import sqlalchemy
 from flask import current_app
 from flask import flash
@@ -134,7 +135,11 @@ def input_add(form_add):
             # Bluetooth (BT) options
             elif input_interface == 'BT':
                 if dict_has_value('bt_location'):
-                    new_input.location = dict_inputs[input_name]['bt_location']
+                    if not re.match("[0-9a-fA-F]{2}([:]?)[0-9a-fA-F]{2}(\\1[0-9a-fA-F]{2}){4}$",
+                                    dict_inputs[input_name]['bt_location']):
+                        error.append("Please specify device MAC-Address in format AA:BB:CC:DD:EE:FF")
+                    else:
+                        new_input.location = dict_inputs[input_name]['bt_location']
                 if dict_has_value('bt_adapter'):
                     new_input.bt_adapter = dict_inputs[input_name]['bt_adapter']
 

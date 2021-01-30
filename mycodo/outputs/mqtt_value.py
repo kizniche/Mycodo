@@ -132,6 +132,31 @@ OUTPUT_INFORMATION = {
             'required': True,
             'name': lazy_gettext('Off Value'),
             'phrase': lazy_gettext('The value to send when an Off command is given')
+        },
+        {
+            'id': 'login',
+            'type': 'bool',
+            'default_value': False,
+            'name': 'Use Login',
+            'phrase': 'Send login credentials'
+        },
+        {
+            'id': 'username',
+            'type': 'text',
+            'default_value': 'user',
+            'required': False,
+            'name': lazy_gettext('Username'),
+            'phrase': lazy_gettext('Username for connecting to the server')
+        },
+        {
+            'id': 'password',
+            'type': 'text',
+            'default_value': '',
+            'required': False,
+            'name': lazy_gettext('Password'),
+            'phrase': "{} {}".format(
+                lazy_gettext('Password for connecting to the server.'),
+                lazy_gettext('Leave blank to disable.'))
         }
     ]
 }
@@ -163,6 +188,15 @@ class OutputModule(AbstractOutput):
         measure_dict = copy.deepcopy(measurements_dict)
 
         try:
+            auth_dict = None
+            if self.options_channels['login'][0]:
+                if not self.options_channels['password'][0]:
+                    self.options_channels['password'][0] = None
+                auth_dict = {
+                    "username": self.options_channels['username'][0],
+                    "password": self.options_channels['password'][0]
+                }
+
             if state == 'on' and amount is not None:
                 self.publish.single(
                     self.options_channels['topic'][0],
@@ -170,7 +204,8 @@ class OutputModule(AbstractOutput):
                     hostname=self.options_channels['hostname'][0],
                     port=self.options_channels['port'][0],
                     client_id=self.options_channels['clientid'][0],
-                    keepalive=self.options_channels['keepalive'][0])
+                    keepalive=self.options_channels['keepalive'][0],
+                    auth=auth_dict)
                 self.output_states[output_channel] = amount
                 measure_dict[0]['value'] = amount
             elif state == 'off':
@@ -180,7 +215,8 @@ class OutputModule(AbstractOutput):
                     hostname=self.options_channels['hostname'][0],
                     port=self.options_channels['port'][0],
                     client_id=self.options_channels['clientid'][0],
-                    keepalive=self.options_channels['keepalive'][0])
+                    keepalive=self.options_channels['keepalive'][0],
+                    auth=auth_dict)
                 self.output_states[output_channel] = False
                 measure_dict[0]['value'] = self.options_channels['off_value'][0]
         except Exception as e:
