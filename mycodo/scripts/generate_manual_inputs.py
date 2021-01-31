@@ -32,6 +32,8 @@ if __name__ == "__main__":
             name_str += ": {}".format(input_data['input_name'])
         if 'measurements_name' in input_data and input_data['measurements_name']:
             name_str += ": {}".format(input_data['measurements_name'])
+        if 'input_library' in input_data and input_data['input_library']:
+            name_str += ": {}".format(input_data['input_library'])
 
         if ('input_manufacturer' in input_data and
                 input_data['input_manufacturer'] in ['Linux', 'Mycodo', 'Raspberry Pi', 'System']):
@@ -78,6 +80,9 @@ if __name__ == "__main__":
 
                 if 'measurements_name' in each_data and each_data['measurements_name']:
                     out_file.write("- Measurements: {}\n".format(each_data['measurements_name']))
+
+                if 'input_library' in each_data and each_data['input_library']:
+                    out_file.write("- Libraries: {}\n".format(each_data['input_library']))
 
                 if 'dependencies_module' in each_data and each_data['dependencies_module']:
                     out_file.write("- Dependencies: ")

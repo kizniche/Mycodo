@@ -28,6 +28,8 @@ if __name__ == "__main__":
         name_str = ""
         if 'widget_name' in widget_data and widget_data['widget_name']:
             name_str += ": {}".format(widget_data['widget_name'])
+        if 'widget_library' in widget_data and widget_data['widget_library']:
+            name_str += ": {}".format(widget_data['widget_library'])
 
         if name_str in widgets_info and 'dependencies_module' in widgets_info[name_str]:
             # Multiple sets of dependencies, append library
@@ -55,6 +57,9 @@ if __name__ == "__main__":
                     name_str = "{}".format(each_data['widget_name'])
 
                 out_file.write("### {}\n\n".format(name_str))
+
+                if 'widget_library' in each_data and each_data['widget_library']:
+                    out_file.write("- Libraries: {}\n".format(each_data['widget_library']))
 
                 if 'dependencies_module' in each_data and each_data['dependencies_module']:
                     out_file.write("- Dependencies: ")

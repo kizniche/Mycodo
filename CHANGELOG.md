@@ -27,6 +27,7 @@ This new weather input acquires current and future weather conditions from openw
  - Fix pressure measurement in BME680 and BME280 Inputs ([#923](https://github.com/kizniche/mycodo/issues/923))
  - Fix controllers disappearing following reorder ([#925](https://github.com/kizniche/mycodo/issues/925))
  - Fix Inputs that use w1thermsensor ([#926](https://github.com/kizniche/mycodo/issues/926))
+ - Fix issue generating documentation for similar Inputs/Outputs/Widgets
 
 ### Features
 
