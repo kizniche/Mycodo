@@ -292,7 +292,7 @@ def input_add(form_add):
                     for each_channel, channel_info in dict_inputs[new_input.device]['channels_dict'].items():
                         new_channel = InputChannel()
                         new_channel.channel = each_channel
-                        new_channel.output_id = new_input.unique_id
+                        new_channel.input_id = new_input.unique_id
 
                         # Generate string to save from custom options
                         error, custom_options = custom_channel_options_return_json(
@@ -634,6 +634,12 @@ def input_del(input_id):
             delete_entry_with_id(DeviceMeasurements, each_measurement.unique_id)
 
         delete_entry_with_id(Input, input_id)
+
+        channels = InputChannel.query.filter(
+            InputChannel.input_id == input_id).all()
+        for each_channel in channels:
+            delete_entry_with_id(InputChannel, each_channel.unique_id)
+
         try:
             display_order = csv_to_list_of_str(
                 DisplayOrder.query.first().inputs)

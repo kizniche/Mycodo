@@ -20,6 +20,7 @@ from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.config_devices_units import UNIT_CONVERSIONS
 from mycodo.databases.models import DeviceMeasurements
+from mycodo.databases.models import Input
 from mycodo.databases.models import Output
 from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -218,10 +219,18 @@ def parse_custom_option_values_input_channels_json(
 
         if dict_controller:
             # Set default values if option not saved in database entry
-            output = db_retrieve_table(Output, unique_id=each_controller.input_id)
-            if not output:
+            logger.error("TEST00: {}".format(each_controller.input_id))
+            input_dev = db_retrieve_table(Input, unique_id=each_controller.input_id)
+            logger.error("TEST01: {}, {}".format(type(input_dev), input_dev))
+            if not input_dev:
+                logger.error("TEST02: cont")
                 continue
-            dev_name = output.output_type
+            try:
+                input_dev.unique_id
+            except:
+                continue
+            logger.error("TEST03: {}".format(input_dev.unique_id))
+            dev_name = input_dev.device
 
             if dev_name in dict_controller and key_name in dict_controller[dev_name]:
                 dict_custom_options = dict_controller[dev_name][key_name]

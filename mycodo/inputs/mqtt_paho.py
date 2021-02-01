@@ -221,7 +221,7 @@ class InputModule(AbstractInput):
         """ Set up the subscriptions to the proper MQTT channels to listen to """
         try:
             for channel in self.channels_measurement:
-                self.client.subscribe(self.options_channels['subscribe_topic'][0])
+                self.client.subscribe(self.options_channels['subscribe_topic'][channel])
                 self.logger.debug("Subscribed to MQTT channel '{}'".format(
                     self.channels_measurement[channel].name))
         except:

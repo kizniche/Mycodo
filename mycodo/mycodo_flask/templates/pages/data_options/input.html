@@ -250,9 +250,13 @@
         {% endif %}
     </div>
       {% endif %}
+
+      {%- set input_channel_exists = [] -%}
+      {% for each_input_channel in input_channel if each_input_channel.input_id == each_input.unique_id %}
+        {%- do input_channel_exists.append(1) -%}
+      {% endfor %}
       
-      
-      {% if input_channel %}
+      {% if input_channel_exists %}
       
     <div class="row small-gutters" style="padding: 1em 0 0 0.5em">
       <div class="col-12">

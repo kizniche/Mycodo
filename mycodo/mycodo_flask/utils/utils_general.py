@@ -303,94 +303,96 @@ def custom_channel_options_return_json(
 
             if each_option['id'] not in dict_options_return:
                 dict_options_return[each_option['id']] = OrderedDict()
+
             null_value = True
 
-            for key in request_form.keys():
-                if "{}_{}_{}".format(device_id, channel, each_option['id']) == key:
-                    constraints_pass = True
-                    constraints_errors = []
-                    value = None
+            if request_form:
+                for key in request_form.keys():
+                    if "{}_{}_{}".format(device_id, channel, each_option['id']) == key:
+                        constraints_pass = True
+                        constraints_errors = []
+                        value = None
 
-                    if each_option['type'] == 'float':
-                        if str_is_float(request_form.get(key)):
-                            if 'constraints_pass' in each_option:
-                                (constraints_pass,
-                                 constraints_errors,
-                                 mod_dev) = each_option['constraints_pass'](
-                                    mod_dev, float(request_form.get(key)))
-                            if constraints_pass:
-                                value = float(request_form.get(key))
-                        else:
-                            error.append(
-                                "{name} must represent a float/decimal value "
-                                "(submitted '{value}')".format(
-                                    name=each_option['name'],
-                                    value=request_form.get(key)))
+                        if each_option['type'] == 'float':
+                            if str_is_float(request_form.get(key)):
+                                if 'constraints_pass' in each_option:
+                                    (constraints_pass,
+                                     constraints_errors,
+                                     mod_dev) = each_option['constraints_pass'](
+                                        mod_dev, float(request_form.get(key)))
+                                if constraints_pass:
+                                    value = float(request_form.get(key))
+                            else:
+                                error.append(
+                                    "{name} must represent a float/decimal value "
+                                    "(submitted '{value}')".format(
+                                        name=each_option['name'],
+                                        value=request_form.get(key)))
 
-                    elif each_option['type'] == 'integer':
-                        if is_int(request_form.get(key)):
-                            if 'constraints_pass' in each_option:
-                                (constraints_pass,
-                                 constraints_errors,
-                                 mod_dev) = each_option['constraints_pass'](
-                                    mod_dev, int(request_form.get(key)))
-                            if constraints_pass:
-                                value = int(request_form.get(key))
-                        else:
-                            error.append(
-                                "{name} must represent an integer value "
-                                "(submitted '{value}')".format(
-                                    name=each_option['name'],
-                                    value=request_form.get(key)))
-
-                    elif each_option['type'] == 'select':
-                        if 'constraints_pass' in each_option:
-                            (constraints_pass,
-                             constraints_errors,
-                             mod_dev) = each_option['constraints_pass'](
-                                mod_dev, request_form.get(key))
-                        if constraints_pass:
-                            value = request_form.get(key)
+                        elif each_option['type'] == 'integer':
                             if is_int(request_form.get(key)):
-                                value = int(request_form.get(key))
-                            elif str_is_float(request_form.get(key)):
-                                value = float(request_form.get(key))
+                                if 'constraints_pass' in each_option:
+                                    (constraints_pass,
+                                     constraints_errors,
+                                     mod_dev) = each_option['constraints_pass'](
+                                        mod_dev, int(request_form.get(key)))
+                                if constraints_pass:
+                                    value = int(request_form.get(key))
+                            else:
+                                error.append(
+                                    "{name} must represent an integer value "
+                                    "(submitted '{value}')".format(
+                                        name=each_option['name'],
+                                        value=request_form.get(key)))
 
-                    elif each_option['type'] in [
-                            'multiline_text',
-                            'text',
-                            'select_measurement',
-                            'select_measurement_channel',
-                            'select_device']:
-                        if 'constraints_pass' in each_option:
-                            (constraints_pass,
-                             constraints_errors,
-                             mod_dev) = each_option['constraints_pass'](
-                                mod_dev, request_form.get(key))
-                        if constraints_pass:
-                            value = request_form.get(key)
+                        elif each_option['type'] == 'select':
+                            if 'constraints_pass' in each_option:
+                                (constraints_pass,
+                                 constraints_errors,
+                                 mod_dev) = each_option['constraints_pass'](
+                                    mod_dev, request_form.get(key))
+                            if constraints_pass:
+                                value = request_form.get(key)
+                                if is_int(request_form.get(key)):
+                                    value = int(request_form.get(key))
+                                elif str_is_float(request_form.get(key)):
+                                    value = float(request_form.get(key))
 
-                    elif each_option['type'] == 'select_multi_measurement':
-                        if 'constraints_pass' in each_option:
-                            (constraints_pass,
-                             constraints_errors,
-                             mod_dev) = each_option['constraints_pass'](
-                                mod_dev, request_form.get(key))
-                        if constraints_pass:
-                            value = request_form.getlist(key)
+                        elif each_option['type'] in [
+                                'multiline_text',
+                                'text',
+                                'select_measurement',
+                                'select_measurement_channel',
+                                'select_device']:
+                            if 'constraints_pass' in each_option:
+                                (constraints_pass,
+                                 constraints_errors,
+                                 mod_dev) = each_option['constraints_pass'](
+                                    mod_dev, request_form.get(key))
+                            if constraints_pass:
+                                value = request_form.get(key)
 
-                    elif each_option['type'] == 'bool':
-                        value = bool(request_form.get(key))
+                        elif each_option['type'] == 'select_multi_measurement':
+                            if 'constraints_pass' in each_option:
+                                (constraints_pass,
+                                 constraints_errors,
+                                 mod_dev) = each_option['constraints_pass'](
+                                    mod_dev, request_form.get(key))
+                            if constraints_pass:
+                                value = request_form.getlist(key)
 
-                    for each_error in constraints_errors:
-                        error.append(
-                            "Error: {name}: {error}".format(
-                                name=each_option['name'],
-                                error=each_error))
+                        elif each_option['type'] == 'bool':
+                            value = bool(request_form.get(key))
 
-                    if value is not None:
-                        null_value = False
-                        dict_options_return[each_option['id']] = value
+                        for each_error in constraints_errors:
+                            error.append(
+                                "Error: {name}: {error}".format(
+                                    name=each_option['name'],
+                                    error=each_error))
+
+                        if value is not None:
+                            null_value = False
+                            dict_options_return[each_option['id']] = value
 
             if null_value:
                 if use_defaults and 'default_value' in each_option:
