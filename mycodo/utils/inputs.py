@@ -125,6 +125,8 @@ def parse_input_information(exclude_custom=False):
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'input_library')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_name')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_dict')
+            dict_inputs = dict_has_value(dict_inputs, input_custom, 'channels_dict')
+
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_variable_amount')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_use_same_timestamp')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_rescale')
@@ -200,6 +202,7 @@ def parse_input_information(exclude_custom=False):
 
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_options_message')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_options')
+            dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_channel_options')
 
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_actions_message')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'custom_actions')

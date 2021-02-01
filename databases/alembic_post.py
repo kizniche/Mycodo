@@ -58,6 +58,44 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == 'cc7261a89a87':
+            # This version adds Input Options, with the first Input using it being MQTT_PAHO
+            # We need to create Input channels can copy the measurement name to the new subscribe_topic custom option
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                import json
+                from sqlalchemy import and_
+                from mycodo.databases.models import DeviceMeasurements
+                from mycodo.databases.models import Input
+                from mycodo.databases.models import InputChannel
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    for each_input in session.query(Input).all():
+                        if each_input.device == "MQTT_PAHO":  # Find mqtt inputs
+                            for each_measure in session.query(DeviceMeasurements).filter(
+                                    DeviceMeasurements.device_id == each_input.unique_id).all():
+                                # does Input Channel exist?
+                                channel_exist = session.query(InputChannel).filter(and_(
+                                    InputChannel.input_id == each_input.unique_id,
+                                    InputChannel.channel == each_measure.channel)).first()
+                                if channel_exist:
+                                    pass
+                                else:  # Need to create Input Channel
+                                    new_channel = InputChannel()
+                                    new_channel.input_id = each_input.unique_id
+                                    new_channel.channel = each_measure.channel
+                                    custom_options = {
+                                        "subscribe_topic": each_measure.name
+                                    }
+                                    new_channel.custom_options = json.dumps(custom_options)
+                                    session.add(new_channel)
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == '313a6fb99082':
             print("Executing post-alembic code for revision {}".format(
                 each_revision))

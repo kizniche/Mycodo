@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
+
 import os
 import re
-
 import sqlalchemy
 from flask import current_app
 from flask import flash
@@ -16,11 +16,13 @@ from mycodo.databases import set_uuid
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
+from mycodo.databases.models import InputChannel
 from mycodo.databases.models import PID
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
+from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
@@ -286,6 +288,21 @@ def input_add(form_add):
                         new_measurement.channel = each_channel
                         new_measurement.save()
 
+                if 'channels_dict' in dict_inputs[new_input.device]:
+                    for each_channel, channel_info in dict_inputs[new_input.device]['channels_dict'].items():
+                        new_channel = InputChannel()
+                        new_channel.channel = each_channel
+                        new_channel.output_id = new_input.unique_id
+
+                        # Generate string to save from custom options
+                        error, custom_options = custom_channel_options_return_json(
+                            error, dict_inputs, None,
+                            new_input.unique_id, each_channel,
+                            device=new_input.device, use_defaults=True)
+                        new_channel.custom_options = custom_options
+
+                        new_channel.save()
+
                 flash(gettext(
                     "%(type)s Input with ID %(id)s (%(uuid)s) successfully added",
                     type=input_name,
@@ -423,57 +440,112 @@ def input_mod(form_mod, request_form):
         if form_mod.sht_voltage.data:
             mod_input.sht_voltage = form_mod.sht_voltage.data
 
-        # Custom options
+        channels = InputChannel.query.filter(
+            InputChannel.input_id == form_mod.input_id.data)
+
+        # Add or delete channels for variable measurement Inputs
+        if ('measurements_variable_amount' in dict_inputs[mod_input.device] and
+                dict_inputs[mod_input.device]['measurements_variable_amount']):
+            measurements = DeviceMeasurements.query.filter(
+                DeviceMeasurements.device_id == form_mod.input_id.data)
+
+            if measurements.count() != form_mod.num_channels.data:
+                # Delete channels
+                if form_mod.num_channels.data < measurements.count():
+                    for index, each_channel in enumerate(measurements.all()):
+                        if index + 1 >= measurements.count():
+                            delete_entry_with_id(DeviceMeasurements,
+                                                 each_channel.unique_id)
+
+                if form_mod.num_channels.data < channels.count():
+                    for index, each_channel in enumerate(channels.all()):
+                        if index + 1 >= channels.count():
+                            delete_entry_with_id(InputChannel,
+                                                 each_channel.unique_id)
+
+                # Add channels
+                elif form_mod.num_channels.data > measurements.count():
+                    start_number = measurements.count()
+                    for index in range(start_number, form_mod.num_channels.data):
+                        new_measurement = DeviceMeasurements()
+                        new_measurement.name = ""
+                        new_measurement.device_id = mod_input.unique_id
+                        new_measurement.measurement = ""
+                        new_measurement.unit = ""
+                        new_measurement.channel = index
+                        new_measurement.save()
+
+                        new_channel = InputChannel()
+                        new_channel.name = ""
+                        new_channel.input_id = mod_input.unique_id
+                        new_measurement.channel = index
+
+                        error, custom_options = custom_channel_options_return_json(
+                            error, dict_inputs, request_form,
+                            mod_input.unique_id, index,
+                            device=mod_input.device, use_defaults=True)
+                        new_channel.custom_options = custom_options
+
+                        new_channel.save()
+
+        # Parse pre-save custom options for output device and its channels
         try:
-            custom_options_json_presave = json.loads(mod_input.custom_options)
+            custom_options_dict_presave = json.loads(mod_input.custom_options)
         except:
             logger.error("Malformed JSON")
-            custom_options_json_presave = {}
+            custom_options_dict_presave = {}
 
-        # Generate string to save from custom options
+        custom_options_channels_dict_presave = {}
+        for each_channel in channels.all():
+            if each_channel.custom_options and each_channel.custom_options != "{}":
+                custom_options_channels_dict_presave[each_channel.channel] = json.loads(
+                    each_channel.custom_options)
+            else:
+                custom_options_channels_dict_presave[each_channel.channel] = {}
+
+        # Parse post-save custom options for output device and its channels
         error, custom_options_json_postsave = custom_options_return_json(
             error, dict_inputs, request_form, device=mod_input.device)
+        custom_options_dict_postsave = json.loads(custom_options_json_postsave)
+
+        custom_options_channels_dict_postsave = {}
+        for each_channel in channels.all():
+            error, custom_options_channels_json_postsave_tmp = custom_channel_options_return_json(
+                error, dict_inputs, request_form,
+                form_mod.input_id.data, each_channel.channel,
+                device=mod_input.device, use_defaults=True)
+            custom_options_channels_dict_postsave[each_channel.channel] = json.loads(
+                custom_options_channels_json_postsave_tmp)
 
         if 'execute_at_modification' in dict_inputs[mod_input.device]:
+            # pass custom options to module prior to saving to database
             (allow_saving,
-             mod_input,
-             custom_options) = dict_inputs[mod_input.device]['execute_at_modification'](
-                mod_input, request_form, custom_options_json_presave, json.loads(custom_options_json_postsave))
-            custom_options = json.dumps(custom_options)  # Convert from dict to JSON string
+             mod_output,
+             custom_options_dict,
+             custom_options_channels_dict) = dict_inputs[mod_input.device]['execute_at_modification'](
+                mod_input,
+                request_form,
+                custom_options_dict_presave,
+                custom_options_channels_dict_presave,
+                custom_options_dict_postsave,
+                custom_options_channels_dict_postsave)
+            custom_options = json.dumps(custom_options_dict)  # Convert from dict to JSON string
+            custom_channel_options = custom_options_channels_dict
             if not allow_saving:
-                error.append("execute_at_modification() would not allow widget options to be saved")
+                error.append("execute_at_modification() would not allow input options to be saved")
         else:
-            custom_options = custom_options_json_postsave
+            # Don't pass custom options to module
+            custom_options = json.dumps(custom_options_dict_postsave)
+            custom_channel_options = custom_options_channels_dict_postsave
 
+        # Finally, save custom options for both output and channels
         mod_input.custom_options = custom_options
+        for each_channel in channels:
+            if 'name' in custom_channel_options[each_channel.channel]:
+                each_channel.name = custom_channel_options[each_channel.channel]['name']
+            each_channel.custom_options = json.dumps(custom_channel_options[each_channel.channel])
 
         if not error:
-            # Add or delete channels for variable measurement Inputs
-            if ('measurements_variable_amount' in dict_inputs[mod_input.device] and
-                    dict_inputs[mod_input.device]['measurements_variable_amount']):
-                channels = DeviceMeasurements.query.filter(
-                    DeviceMeasurements.device_id == form_mod.input_id.data)
-
-                if channels.count() != form_mod.num_channels.data:
-                    # Delete channels
-                    if form_mod.num_channels.data < channels.count():
-                        for index, each_channel in enumerate(channels.all()):
-                            if index + 1 >= channels.count():
-                                delete_entry_with_id(DeviceMeasurements,
-                                                     each_channel.unique_id)
-
-                    # Add channels
-                    elif form_mod.num_channels.data > channels.count():
-                        start_number = channels.count()
-                        for index in range(start_number, form_mod.num_channels.data):
-                            new_measurement = DeviceMeasurements()
-                            new_measurement.name = ""
-                            new_measurement.device_id = mod_input.unique_id
-                            new_measurement.measurement = ""
-                            new_measurement.unit = ""
-                            new_measurement.channel = index
-                            new_measurement.save()
-
             db.session.commit()
 
     except Exception as except_msg:
@@ -500,8 +572,11 @@ def measurement_mod(form):
         mod_meas.name = form.name.data
 
         if form.input_type.data == 'measurement_select':
-            mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
-            mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
+            if not form.select_measurement_unit.data:
+                error.append("Must select a measurement unit")
+            else:
+                mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
+                mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
 
         elif form.input_type.data == 'measurement_convert':
             input_info = parse_input_information()

@@ -3,6 +3,7 @@ import datetime
 
 from flask_babel import lazy_gettext
 
+from mycodo.databases.models import InputChannel
 from mycodo.databases.models import Conversion
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -28,6 +29,11 @@ def constraints_pass_positive_value(mod_input, value):
 # Measurements
 measurements_dict = {}
 
+# Channels
+channels_dict = {
+    0: {}
+}
+
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'MQTT_PAHO',
@@ -36,10 +42,15 @@ INPUT_INFORMATION = {
     'input_library': 'paho-mqtt',
     'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,
+    'channels_dict': channels_dict,
 
     'measurements_variable_amount': True,
     'measurements_use_same_timestamp': False,
     'listener': True,
+
+    'message': 'Be sure you select and save the Measurement Unit for each of the values you are receiving from a '
+               'subscribed topic. Once the unit has been saved, you can convert to other units in the Convert '
+               'Measurement section.',
 
     'options_enabled': [
         'measurements_select'
@@ -119,6 +130,17 @@ INPUT_INFORMATION = {
                 lazy_gettext('Password for connecting to the server.'),
                 lazy_gettext('Leave blank to disable.'))
         }
+    ],
+
+    'custom_channel_options': [
+        {
+            'id': 'subscribe_topic',
+            'type': 'text',
+            'default_value': '',
+            'required': True,
+            'name': lazy_gettext('Subscription Topic'),
+            'phrase': 'The MQTT topic to subscribe to'
+        }
     ]
 }
 
@@ -142,6 +164,11 @@ class InputModule(AbstractInput):
         self.mqtt_password = None
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
+
+        input_channels = db_retrieve_table_daemon(
+            InputChannel).filter(InputChannel.input_id == input_dev.unique_id).all()
+        self.options_channels = self.setup_custom_channel_options_json(
+            INPUT_INFORMATION['custom_channel_options'], input_channels)
 
         if not testing:
             self.initialize_input()
@@ -194,7 +221,7 @@ class InputModule(AbstractInput):
         """ Set up the subscriptions to the proper MQTT channels to listen to """
         try:
             for channel in self.channels_measurement:
-                self.client.subscribe(self.channels_measurement[channel].name)
+                self.client.subscribe(self.options_channels['subscribe_topic'][0])
                 self.logger.debug("Subscribed to MQTT channel '{}'".format(
                     self.channels_measurement[channel].name))
         except:

@@ -250,6 +250,70 @@
         {% endif %}
     </div>
       {% endif %}
+      
+      
+      {% if input_channel %}
+      
+    <div class="row small-gutters" style="padding: 1em 0 0 0.5em">
+      <div class="col-12">
+        <h5>{{_('Channel Options')}}</h5>
+      </div>
+    </div>
+
+      {% endif %}
+
+      {% for each_input_channel in input_channel if each_input_channel.input_id == each_input.unique_id %}
+
+    <hr/>
+    <div class="row">
+      <div class="col-auto">
+        Channel {{each_input_channel.channel}}
+
+        {%- if 'name' in custom_options_values_input_channels[each_input.unique_id][each_input_channel.channel] and
+             custom_options_values_input_channels[each_input.unique_id][each_input_channel.channel]['name'] -%}
+          {{': ' + custom_options_values_input_channels[each_input.unique_id][each_input_channel.channel]['name']}}
+        {%- elif 'channels_dict' in dict_inputs[each_input.output_type] and
+                 'name' in dict_inputs[each_input.output_type]['channels_dict'][each_input_channel.channel] -%}
+          {{': ' + dict_inputs[each_input.output_type]['channels_dict'][each_input_channel.channel]['name']}}
+        {%- endif -%}
+      </div>
+    </div>
+
+        {% set dict_options = dict_inputs[each_input.device] %}
+        {% set unique_id = each_input.unique_id %}
+        {% set custom_options_values = custom_options_values_input_channels %}
+        {% set channel = each_input_channel.channel %}
+        {% set each_device = each_input %}
+
+        {% if custom_options_values[unique_id] %}
+
+          {% if 'custom_channel_options_message' in dict_options %}
+    <div class="row small-gutters" style="padding: 1em">
+        <div class="col-12" style="padding-bottom: 0.5em">
+          {{dict_options['custom_channel_options_message']|safe}}
+        </div>
+    </div>
+          {% endif %}
+
+          {% if 'custom_channel_options' in dict_options %}
+    <div class="row small-gutters" style="padding: 1em">
+            {% for each_option in dict_options['custom_channel_options'] %}
+              {% if each_option['type'] == 'new_line' %}
+    </div>
+    <div class="row small-gutters" style="padding: 0.5em">
+              {% elif each_option['type'] == 'message' %}
+      <div class="col-12" style="padding-bottom: 0.5em">
+        {{each_option['default_value']|safe}}
+      </div>
+              {% else %}
+        {% include 'pages/form_options/Custom_Options_Channels.html' %}
+              {% endif %}
+            {% endfor %}
+    </div>
+          {% endif %}
+        {% endif %}
+
+      {% endfor %}
 
     {% endif %}
 

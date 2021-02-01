@@ -63,6 +63,7 @@ from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import EnergyUsage
 from mycodo.databases.models import Function
 from mycodo.databases.models import Input
+from mycodo.databases.models import InputChannel
 from mycodo.databases.models import LCD
 from mycodo.databases.models import LCDData
 from mycodo.databases.models import Math
@@ -125,6 +126,7 @@ from mycodo.utils.system_pi import dpkg_package_exists
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import parse_custom_option_values
 from mycodo.utils.system_pi import parse_custom_option_values_json
+from mycodo.utils.system_pi import parse_custom_option_values_input_channels_json
 from mycodo.utils.system_pi import parse_custom_option_values_channels_json
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.tools import calc_energy_usage
@@ -1804,6 +1806,7 @@ def page_data():
     """ Display Data page """
 
     input_dev = Input.query.all()
+    input_channel = InputChannel.query.all()
     math = Math.query.all()
     method = Method.query.all()
     measurement = Measurement.query.all()
@@ -1835,6 +1838,11 @@ def page_data():
     form_mod_misc = forms_math.MathModMisc()
 
     dict_inputs = parse_input_information()
+
+    custom_options_values_input_channels = parse_custom_option_values_input_channels_json(
+        input_channel, dict_controller=dict_inputs, key_name='custom_channel_options')
+
+    logger.error("TEST00: {}".format(custom_options_values_input_channels))
 
     if request.method == 'POST':
         unmet_dependencies = None
@@ -2057,6 +2065,7 @@ def page_data():
                            choices_unit=choices_unit,
                            custom_actions=custom_actions,
                            custom_options_values_inputs=custom_options_values_inputs,
+                           custom_options_values_input_channels=custom_options_values_input_channels,
                            dict_inputs=dict_inputs,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
@@ -2078,6 +2087,7 @@ def page_data():
                            form_mod_verification=form_mod_verification,
                            form_mod_misc=form_mod_misc,
                            ftdi_devices=ftdi_devices,
+                           input_channel=input_channel,
                            input_templates=input_templates,
                            math_info=MATH_INFO,
                            math_templates=math_templates,

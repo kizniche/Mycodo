@@ -1,9 +1,9 @@
     {% if each_option['type'] in ['float', 'integer', 'text'] %}
 
 <div class="{% if 'col_width' in each_option %}col-{{each_option['col_width']}}{% else %}col-auto{% endif %}">
-  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <label class="control-label" for="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <input class="form-control" id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}" type="text" value="
+    <input class="form-control" id="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}" type="text" value="
     {%- if custom_options_values[unique_id][channel][each_option['id']] is not none -%}{{custom_options_values[unique_id][channel][each_option['id']]}}
     {%- elif running_custom_action and 'default_value' in each_option -%}{{each_option['default_value']}}
     {%- endif -%}">
@@ -13,9 +13,9 @@
     {% elif each_option['type'] == 'multiline_text' %}
 
 <div class="col-12">
-  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <label class="control-label" for="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <textarea class="form-control" id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" rows="{{each_option['lines']}}" type="text" title="{{each_option['phrase']}}">
+    <textarea class="form-control" id="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" rows="{{each_option['lines']}}" type="text" title="{{each_option['phrase']}}">
     {%- if custom_options_values[unique_id][channel][each_option['id']] -%}{{custom_options_values[unique_id][channel][each_option['id']]}}
     {%- elif running_custom_action and 'default_value' in each_option -%}{{each_option['default_value']}}
     {%- endif -%}
@@ -26,9 +26,9 @@
     {% elif each_option['type'] == 'select' %}
 
 <div class="col-auto">
-  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <label class="control-label" for="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_set in each_option['options_select'] %}
       <option value="{{each_set[0]}}"{% if each_set[0] == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_set[1]}}</option>
@@ -40,9 +40,9 @@
     {% elif each_option['type'] == 'select_measurement' %}
 
 <div class="col-auto">
-  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <label class="control-label" for="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% if 'Input' in each_option['options_select'] %}
         {% for each_input_form in choices_input -%}
@@ -93,9 +93,9 @@
       {% endif %}
 
 <div class="col-auto">
-  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <label class="control-label" for="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}" size="{{multiselect_size}}" multiple="">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}" size="{{multiselect_size}}" multiple="">
       {% if 'Input' in each_option['options_select'] %}
         {% for each_input_form in choices_input -%}
       <option value="{{each_input_form['value']}}"{% if each_input_form['value'] in custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_input_form['item']}}</option>
@@ -123,9 +123,9 @@
     {% elif each_option['type'] == 'select_device' %}
 
 <div class="col-auto">
-  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <label class="control-label" for="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}">
+    <select class="form-control form-tooltip form-dropdown" data-placement="top" id="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% if 'Input' in each_option['options_select'] %}
         {%- for each_dev in input -%}
@@ -169,16 +169,16 @@
     {% elif each_option['type'] == 'bool' %}
 
 <div class="col-auto">
-  <label class="control-label" for="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
+  <label class="control-label" for="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
   <div class="input-group-text">
-    <input id="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}" type="checkbox" value="y"{% if custom_options_values[unique_id][channel][each_option['id']] %} checked{% endif %}>
+    <input id="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" title="{{each_option['phrase']}}" type="checkbox" value="y"{% if custom_options_values[unique_id][channel][each_option['id']] %} checked{% endif %}>
   </div>
 </div>
 
     {% elif each_option['type'] == 'button' %}
 
   <div class="col-auto small-gutters">
-    <input class="form-control btn btn-primary btn-sm btn-block" id="{{each_output.unique_id}}_{{channel}}_custom_button_{{each_option['id']}}" name="{{each_output.unique_id}}_{{channel}}_custom_button_{{each_option['id']}}" title="{{each_option['phrase']}}" type="submit" value="{{each_option['name']}}">
+    <input class="form-control btn btn-primary btn-sm btn-block" id="{{each_device.unique_id}}_{{channel}}_custom_button_{{each_option['id']}}" name="{{each_device.unique_id}}_{{channel}}_custom_button_{{each_option['id']}}" title="{{each_option['phrase']}}" type="submit" value="{{each_option['name']}}">
   </div>
 
     {% endif %}

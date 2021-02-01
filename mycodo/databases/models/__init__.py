@@ -42,6 +42,7 @@ from .function import ConditionalConditions
 from .function import Function
 from .function import Trigger
 from .input import Input
+from .input import InputChannel
 from .lcd import LCD
 from .lcd import LCDData
 from .math import Math
