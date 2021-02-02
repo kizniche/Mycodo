@@ -155,7 +155,7 @@ class OutputModule(AbstractOutput):
             OUTPUT_INFORMATION['custom_channel_options'], output_channels)
 
     def setup_output(self):
-        self.setup_on_off_output(OUTPUT_INFORMATION)
+        self.setup_output_variables(OUTPUT_INFORMATION)
 
         if self.options_channels['pwm_command'][0]:
             self.output_setup = True

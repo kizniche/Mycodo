@@ -145,23 +145,31 @@ class AbstractOutput(AbstractBaseController):
                 self.logger.setLevel(logging.INFO)
 
     def setup_on_off_output(self, output_information):
+        """Deprecated TODO: Remove"""
+        self.setup_output_variables(output_information)
+
+    def setup_output_variables(self, output_information):
         self.OUTPUT_INFORMATION = output_information
+        self.output_states = {}
+        self.output_off_triggered = {}
         self.output_time_turned_on = {}
         self.output_on_duration = {}
         self.output_last_duration = {}
-        self.output_on_until = {}
         self.output_off_until = {}
-        self.output_off_triggered = {}
-        self.output_states = {}
+
+        if "on_off" in output_information['output_types']:
+            self.output_on_until = {}
 
         for each_output_channel in output_information['channels_dict']:
             self.output_states[each_output_channel] = None
+            self.output_off_triggered[each_output_channel] = False
             self.output_time_turned_on[each_output_channel] = None
             self.output_on_duration[each_output_channel] = False
             self.output_last_duration[each_output_channel] = 0
-            self.output_on_until[each_output_channel] = datetime.datetime.now()
             self.output_off_until[each_output_channel] = 0
-            self.output_off_triggered[each_output_channel] = False
+
+            if "on_off" in output_information['output_types']:
+                self.output_on_until[each_output_channel] = datetime.datetime.now()
 
     def shutdown(self, shutdown_timer):
         self.stop_output()

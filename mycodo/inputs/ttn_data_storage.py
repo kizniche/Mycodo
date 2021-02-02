@@ -8,6 +8,7 @@ from flask_babel import lazy_gettext
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Input
+from mycodo.databases.models import InputChannel
 from mycodo.databases.utils import session_scope
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -38,6 +39,11 @@ def constraints_pass_positive_value(mod_input, value):
 # Measurements
 measurements_dict = {}
 
+# Channels
+channels_dict = {
+    0: {}
+}
+
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'TTN_DATA_STORAGE',
@@ -46,10 +52,12 @@ INPUT_INFORMATION = {
     'input_library': 'requests',
     'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,
+    'channels_dict': channels_dict,
 
     'message': 'This Input receives and stores measurements from the Data Storage Integration on The Things Network.',
 
     'measurements_variable_amount': True,
+    'channel_quantity_same_as_measurements': True,
     'measurements_use_same_timestamp': False,
 
     'options_enabled': [
@@ -91,6 +99,17 @@ INPUT_INFORMATION = {
             'name': lazy_gettext('Device ID'),
             'phrase': lazy_gettext('The Things Network Device ID')
         }
+    ],
+
+    'custom_channel_options': [
+        {
+            'id': 'variable_name',
+            'type': 'text',
+            'default_value': '',
+            'required': True,
+            'name': 'Variable Name',
+            'phrase': 'The TTN variable name'
+        }
     ]
 }
 
@@ -108,6 +127,11 @@ class InputModule(AbstractInput):
         self.device_id = None
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
+
+        input_channels = db_retrieve_table_daemon(
+            InputChannel).filter(InputChannel.input_id == input_dev.unique_id).all()
+        self.options_channels = self.setup_custom_channel_options_json(
+            INPUT_INFORMATION['custom_channel_options'], input_channels)
 
         if not testing:
             self.initialize_input()
@@ -155,14 +179,14 @@ class InputModule(AbstractInput):
             measurements = {}
             for channel in self.channels_measurement:
                 if (self.is_enabled(channel) and
-                        self.channels_measurement[channel].name in each_resp and
-                        each_resp[self.channels_measurement[channel].name] is not None):
+                        self.options_channels['variable_name'][channel] in each_resp and
+                        each_resp[self.options_channels['variable_name'][channel]] is not None):
 
                     # Original value/unit
                     measurements[channel] = {}
                     measurements[channel]['measurement'] = self.channels_measurement[channel].measurement
                     measurements[channel]['unit'] = self.channels_measurement[channel].unit
-                    measurements[channel]['value'] = each_resp[self.channels_measurement[channel].name]
+                    measurements[channel]['value'] = each_resp[self.options_channels['variable_name'][channel]]
                     measurements[channel]['timestamp_utc'] = datetime_utc
 
                     # Convert value/unit is conversion_id present and valid

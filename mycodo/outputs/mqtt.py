@@ -226,7 +226,7 @@ class OutputModule(AbstractOutput):
 
         self.publish = publish
 
-        self.setup_on_off_output(OUTPUT_INFORMATION)
+        self.setup_output_variables(OUTPUT_INFORMATION)
         self.output_setup = True
 
         if self.options_channels['state_startup'][0] == 1:

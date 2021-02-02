@@ -18,9 +18,11 @@ There's also minimal input module template that generates random data as an exam
 
 <https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py>
 
-There's also an input module that includes all available INPUT_INFORMATION options along with descriptions:
+There ares also input modules that includes all available INPUT_INFORMATION options along with descriptions:
 
 <https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py>
+
+<https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature_with_channel_options.py>
 
 Additionally, I have another github repository devoted to Custom Modules that are not included in the built-in set, at [kizniche/Mycodo-custom](https://github.com/kizniche/Mycodo-custom).
 
@@ -228,7 +230,7 @@ In addition to several supported sensors and devices, a Linux command may be spe
 
 [The Things Network](https://www.thethingsnetwork.org/) (TTN) Input module enables downloading of data from TTN if the Data Storage Integration is enabled in your TTN Application. The Data Storage Integration will store data for up to 7 days. Mycodo will download this data periodically and store the measurements locally.
 
-The payload on TTN must be properly decoded to variables that correspond to the "Name" option under "Select Measurements", in the lower section of the Input options. For instance, in your TTN Application, if a custom Payload Format is selected, the decoder code may look like this:
+The payload on TTN must be properly decoded to variables that correspond to the "Variable Name" option under "Channel Options", in the lower section of the Input options. For instance, in your TTN Application, if a custom Payload Format is selected, the decoder code may look like this:
 
 ```javascript
 function Decoder(bytes, port) {
@@ -249,9 +251,11 @@ function sflt162f(rawSflt16) {
 }
 ```
 
-This will decode the 2-byte payload into a temperature float value with the name "temperature". Set "Number of Measurements" to "1", then set the "Name" for the first channel (CH0) to "temperature" and the "Measurement Unit" to "Temperature: Celsius (°C)".
+This will decode the 2-byte payload into a temperature float value with the name "temperature". Set "Number of Measurements" to "1", then set the "Variable Name" for the first channel (CH0) to "temperature" and the "Measurement Unit" to "Temperature: Celsius (°C)".
 
 Upon activation of the Input, data will be downloaded for the past 7 days. The latest data timestamp will be stored so any subsequent activation of the Input will only download new data (since the last known timestamp).
+
+This Input also allows multiple measurements to be stored. You merely have to change "Number of Measurements" to a number larger than 1, save, and there will now be multiple variable names and measurement units to set.
 
 There are several example Input modules that, in addition to storing the measurements of a sensor in the influx database, will write the measurements to a serial device. This is useful of you have a LoRaWAN transmitter connected via serial to receive measurement information from Mycodo and transmit it to a LoRaWAN gateway (and subsequently to The Things Network). The data on TTN can then be downloaded elsewhere with the TTN Input. These example Input modules are located in the following locations:
 

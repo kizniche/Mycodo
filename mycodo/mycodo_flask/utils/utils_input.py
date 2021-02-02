@@ -450,20 +450,22 @@ def input_mod(form_mod, request_form):
                 DeviceMeasurements.device_id == form_mod.input_id.data)
 
             if measurements.count() != form_mod.num_channels.data:
-                # Delete channels
+                # Delete measurements/channels
                 if form_mod.num_channels.data < measurements.count():
                     for index, each_channel in enumerate(measurements.all()):
                         if index + 1 >= measurements.count():
                             delete_entry_with_id(DeviceMeasurements,
                                                  each_channel.unique_id)
 
-                if form_mod.num_channels.data < channels.count():
-                    for index, each_channel in enumerate(channels.all()):
-                        if index + 1 >= channels.count():
-                            delete_entry_with_id(InputChannel,
-                                                 each_channel.unique_id)
+                if ('channel_quantity_same_as_measurements' in dict_inputs[mod_input.device] and
+                        dict_inputs[mod_input.device]["channel_quantity_same_as_measurements"]):
+                    if form_mod.num_channels.data < channels.count():
+                        for index, each_channel in enumerate(channels.all()):
+                            if index + 1 >= channels.count():
+                                delete_entry_with_id(InputChannel,
+                                                     each_channel.unique_id)
 
-                # Add channels
+                # Add measurements/channels
                 elif form_mod.num_channels.data > measurements.count():
                     start_number = measurements.count()
                     for index in range(start_number, form_mod.num_channels.data):
@@ -475,18 +477,20 @@ def input_mod(form_mod, request_form):
                         new_measurement.channel = index
                         new_measurement.save()
 
-                        new_channel = InputChannel()
-                        new_channel.name = ""
-                        new_channel.input_id = mod_input.unique_id
-                        new_measurement.channel = index
+                        if ('channel_quantity_same_as_measurements' in dict_inputs[mod_input.device] and
+                                dict_inputs[mod_input.device]["channel_quantity_same_as_measurements"]):
+                            new_channel = InputChannel()
+                            new_channel.name = ""
+                            new_channel.input_id = mod_input.unique_id
+                            new_measurement.channel = index
 
-                        error, custom_options = custom_channel_options_return_json(
-                            error, dict_inputs, request_form,
-                            mod_input.unique_id, index,
-                            device=mod_input.device, use_defaults=True)
-                        new_channel.custom_options = custom_options
+                            error, custom_options = custom_channel_options_return_json(
+                                error, dict_inputs, request_form,
+                                mod_input.unique_id, index,
+                                device=mod_input.device, use_defaults=True)
+                            new_channel.custom_options = custom_options
 
-                        new_channel.save()
+                            new_channel.save()
 
         # Parse pre-save custom options for output device and its channels
         try:

@@ -181,7 +181,7 @@ class OutputModule(AbstractOutput):
 
         self.GPIO = GPIO
 
-        self.setup_on_off_output(OUTPUT_INFORMATION)
+        self.setup_output_variables(OUTPUT_INFORMATION)
 
         if self.options_channels['pin'][0] is None:
             self.logger.warning("Invalid pin for output: {}.".format(self.options_channels['pin'][0]))

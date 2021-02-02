@@ -1842,8 +1842,6 @@ def page_data():
     custom_options_values_input_channels = parse_custom_option_values_input_channels_json(
         input_channel, dict_controller=dict_inputs, key_name='custom_channel_options')
 
-    logger.error("TEST00: {}".format(custom_options_values_input_channels))
-
     if request.method == 'POST':
         unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):

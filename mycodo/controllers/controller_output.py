@@ -99,8 +99,10 @@ class OutputController(AbstractController, threading.Thread):
 
         for output_id in self.output:
             for each_channel in self.output_unique_id[output_id]:
+
                 # Execute if past the time the output was supposed to turn off
                 if (self.output[output_id].output_setup and
+                        each_channel in self.output[output_id].output_on_until and
                         self.output[output_id].output_on_until[each_channel] < datetime.datetime.now() and
                         self.output[output_id].output_on_duration[each_channel] and
                         not self.output[output_id].output_off_triggered[each_channel]):

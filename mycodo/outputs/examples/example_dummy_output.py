@@ -162,7 +162,7 @@ class OutputModule(AbstractOutput):
         # Variables set by the user interface
         self.gpio_pin = self.output.pin
 
-        self.setup_on_off_output(OUTPUT_INFORMATION)
+        self.setup_output_variables(OUTPUT_INFORMATION)
 
         self.logger.info(
             "Output class initialized with: "

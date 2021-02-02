@@ -246,7 +246,7 @@ class OutputModule(AbstractOutput):
     def setup_output(self):
         import smbus2
 
-        self.setup_on_off_output(OUTPUT_INFORMATION)
+        self.setup_output_variables(OUTPUT_INFORMATION)
 
         try:
             self.logger.debug("I2C: Address: {}, Bus: {}".format(self.output.i2c_location, self.output.i2c_bus))

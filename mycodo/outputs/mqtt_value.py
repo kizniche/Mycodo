@@ -181,7 +181,7 @@ class OutputModule(AbstractOutput):
 
         self.publish = publish
 
-        self.setup_on_off_output(OUTPUT_INFORMATION)
+        self.setup_output_variables(OUTPUT_INFORMATION)
         self.output_setup = True
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=0):

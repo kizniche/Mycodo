@@ -409,13 +409,15 @@
           {%- do output_channel_exists.append(1) -%}
         {% endfor %}
 
-      {% if output_channel_exists %}
+        {% if output_channel_exists %}
 
           <div class="row small-gutters" style="padding: 1em 0 0 0.5em">
             <div class="col-12">
               <h5>{{_('Channel Options')}}</h5>
             </div>
           </div>
+
+        {% endif %}
 
         {% for each_output_channel in output_channel if each_output_channel.output_id == each_output.unique_id %}
 

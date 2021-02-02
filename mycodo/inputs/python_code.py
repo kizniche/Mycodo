@@ -145,6 +145,10 @@ INPUT_INFORMATION = {
     'measurements_name': 'Store Value(s)',
     'measurements_dict': measurements_dict,
     'measurements_variable_amount': True,
+    'channel_quantity_same_as_measurements': False,
+
+    'message': 'All channels require a Measurement Unit to be selected and saved in order to store values to the '
+               'database.',
 
     'options_enabled': [
         'measurements_select',

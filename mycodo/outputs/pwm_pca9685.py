@@ -320,6 +320,8 @@ class OutputModule(AbstractOutput):
     def setup_output(self):
         import Adafruit_PCA9685
 
+        self.setup_output_variables(OUTPUT_INFORMATION)
+
         error = []
         if self.options_channels['pwm_hertz'][0] < 40:
             error.append("PWM Hertz must be a value between 40 and 1600")

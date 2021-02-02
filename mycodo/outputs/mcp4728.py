@@ -214,7 +214,7 @@ class OutputModule(AbstractOutput):
         import adafruit_mcp4728
         from adafruit_extended_bus import ExtendedI2C
 
-        self.setup_on_off_output(OUTPUT_INFORMATION)
+        self.setup_output_variables(OUTPUT_INFORMATION)
 
         try:
             self.dac = adafruit_mcp4728.MCP4728(

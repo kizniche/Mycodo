@@ -166,7 +166,7 @@ class OutputModule(AbstractOutput):
             OUTPUT_INFORMATION['custom_channel_options'], output_channels)
 
     def setup_output(self):
-        self.setup_on_off_output(OUTPUT_INFORMATION)
+        self.setup_output_variables(OUTPUT_INFORMATION)
 
         if not self.options_channels['pwm_command'][0]:
             self.logger.error("Output must have Python Code set")

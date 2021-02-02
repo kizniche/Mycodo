@@ -45,6 +45,7 @@ INPUT_INFORMATION = {
     'channels_dict': channels_dict,
 
     'measurements_variable_amount': True,
+    'channel_quantity_same_as_measurements': True,
     'measurements_use_same_timestamp': False,
     'listener': True,
 

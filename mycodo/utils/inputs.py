@@ -128,6 +128,7 @@ def parse_input_information(exclude_custom=False):
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'channels_dict')
 
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_variable_amount')
+            dict_inputs = dict_has_value(dict_inputs, input_custom, 'channel_quantity_same_as_measurements')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_use_same_timestamp')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'measurements_rescale')
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'listener')

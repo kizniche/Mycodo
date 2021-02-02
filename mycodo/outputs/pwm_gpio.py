@@ -187,6 +187,8 @@ class OutputModule(AbstractOutput):
 
         self.pigpio = pigpio
 
+        self.setup_output_variables(OUTPUT_INFORMATION)
+
         error = []
         if self.options_channels['pin'][0] is None:
             error.append("Pin must be set")

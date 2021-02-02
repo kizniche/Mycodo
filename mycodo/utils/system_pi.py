@@ -219,17 +219,13 @@ def parse_custom_option_values_input_channels_json(
 
         if dict_controller:
             # Set default values if option not saved in database entry
-            logger.error("TEST00: {}".format(each_controller.input_id))
             input_dev = db_retrieve_table(Input, unique_id=each_controller.input_id)
-            logger.error("TEST01: {}, {}".format(type(input_dev), input_dev))
             if not input_dev:
-                logger.error("TEST02: cont")
                 continue
             try:
                 input_dev.unique_id
             except:
                 continue
-            logger.error("TEST03: {}".format(input_dev.unique_id))
             dev_name = input_dev.device
 
             if dev_name in dict_controller and key_name in dict_controller[dev_name]:

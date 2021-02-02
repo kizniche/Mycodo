@@ -59,8 +59,9 @@ if __name__ == "__main__":
         #         print(msg)
 
         elif each_revision == 'cc7261a89a87':
-            # This version adds Input Options, with the first Input using it being MQTT_PAHO
-            # We need to create Input channels can copy the measurement name to the new subscribe_topic custom option
+            # This version adds Input Channel Options
+            # We need to create Input channels and copy the measurement name to the new
+            # custom channel option for the MQTT and TTN Inputs.
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
             try:
@@ -72,22 +73,21 @@ if __name__ == "__main__":
 
                 with session_scope(MYCODO_DB_PATH) as session:
                     for each_input in session.query(Input).all():
-                        if each_input.device == "MQTT_PAHO":  # Find mqtt inputs
+                        if each_input.device in ["MQTT_PAHO", "TTN_DATA_STORAGE"]:
                             for each_measure in session.query(DeviceMeasurements).filter(
                                     DeviceMeasurements.device_id == each_input.unique_id).all():
                                 # does Input Channel exist?
                                 channel_exist = session.query(InputChannel).filter(and_(
                                     InputChannel.input_id == each_input.unique_id,
                                     InputChannel.channel == each_measure.channel)).first()
-                                if channel_exist:
-                                    pass
-                                else:  # Need to create Input Channel
+                                if not channel_exist:
                                     new_channel = InputChannel()
                                     new_channel.input_id = each_input.unique_id
                                     new_channel.channel = each_measure.channel
-                                    custom_options = {
-                                        "subscribe_topic": each_measure.name
-                                    }
+                                    if each_input.device == "MQTT_PAHO":
+                                        custom_options = {"subscribe_topic": each_measure.name}
+                                    elif each_input.device == "TTN_DATA_STORAGE":
+                                        custom_options = {"variable_name": each_measure.name}
                                     new_channel.custom_options = json.dumps(custom_options)
                                     session.add(new_channel)
             except Exception:
