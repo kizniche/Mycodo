@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 import datetime
+import io
 import logging
+import os
+import shutil
 import socket
 import subprocess
 import threading
 import time
 import zipfile
 
-import io
-import os
-import shutil
 from flask import send_file
 from flask import url_for
 from influxdb import InfluxDBClient
@@ -24,12 +24,19 @@ from mycodo.config import INFLUXDB_PORT
 from mycodo.config import INFLUXDB_USER
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import MYCODO_VERSION
+from mycodo.config import PATH_FUNCTIONS_CUSTOM
+from mycodo.config import PATH_HTML_USER
+from mycodo.config import PATH_INPUTS_CUSTOM
+from mycodo.config import PATH_OUTPUTS_CUSTOM
+from mycodo.config import PATH_PYTHON_CODE_USER
+from mycodo.config import PATH_WIDGETS_CUSTOM
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.widget_generate_html import generate_widget_html
 
 logger = logging.getLogger(__name__)
 
@@ -90,6 +97,19 @@ def export_settings(form):
         with zipfile.ZipFile(data, mode='w') as z:
             z.write(SQL_DATABASE_MYCODO,
                     os.path.basename(SQL_DATABASE_MYCODO))
+            export_directories = [
+                (PATH_FUNCTIONS_CUSTOM, "custom_functions"),
+                (PATH_INPUTS_CUSTOM, "custom_inputs"),
+                (PATH_OUTPUTS_CUSTOM, "custom_outputs"),
+                (PATH_WIDGETS_CUSTOM, "custom_widgets")
+            ]
+            for each_backup in export_directories:
+                for folder_name, sub_folders, filenames in os.walk(each_backup[0]):
+                    for filename in filenames:
+                        if filename.startswith("__init__") or filename.endswith("pyc"):
+                            continue
+                        file_path = os.path.join(folder_name, filename)
+                        z.write(file_path, "{}/{}".format(each_backup[1], os.path.basename(file_path)))
         data.seek(0)
         return send_file(
             data,
@@ -192,6 +212,9 @@ def thread_import_settings(tmp_folder):
           "initialize".format(
         pth=INSTALL_DIRECTORY)
     _, _, _ = cmd_output(cmd)
+
+    # Generate widget HTML
+    generate_widget_html()
 
     # Start Mycodo daemon (backend)
     cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
@@ -317,8 +340,49 @@ def import_settings(form):
                 backup_name = (
                     SQL_DATABASE_MYCODO + '.backup_' +
                     datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
-                os.rename(SQL_DATABASE_MYCODO, backup_name)
-                os.rename(imported_database, SQL_DATABASE_MYCODO)
+                os.rename(SQL_DATABASE_MYCODO, backup_name)  # rename current database to backup name
+                os.rename(imported_database, SQL_DATABASE_MYCODO)  # move zipped database to Mycodo
+
+                delete_directories = [
+                    PATH_HTML_USER,
+                    PATH_PYTHON_CODE_USER,
+                    PATH_FUNCTIONS_CUSTOM,
+                    PATH_INPUTS_CUSTOM,
+                    PATH_OUTPUTS_CUSTOM,
+                    PATH_WIDGETS_CUSTOM,
+                ]
+
+                # Delete custom functions/inputs/outputs/widgets
+                for each_dir in delete_directories:
+                    for folder_name, sub_folders, filenames in os.walk(each_dir):
+                        for filename in filenames:
+                            if filename == "__init__.py":
+                                continue
+                            file_path = os.path.join(folder_name, filename)
+                            try:
+                                os.remove(file_path)
+                            except:
+                                pass
+
+                restore_directories = [
+                    (PATH_FUNCTIONS_CUSTOM, "custom_functions"),
+                    (PATH_INPUTS_CUSTOM, "custom_inputs"),
+                    (PATH_OUTPUTS_CUSTOM, "custom_outputs"),
+                    (PATH_WIDGETS_CUSTOM, "custom_widgets")
+                ]
+
+                # Restore zipped custom functions/inputs/outputs/widgets
+                for each_dir in restore_directories:
+                    extract_dir = os.path.join(tmp_folder, each_dir[1])
+                    if os.path.exists(extract_dir):
+                        for folder_name, sub_folders, filenames in os.walk(extract_dir):
+                            for filename in filenames:
+                                file_path = os.path.join(folder_name, filename)
+                                new_path = os.path.join(each_dir[0], filename)
+                                try:
+                                    os.rename(file_path, new_path)
+                                except:
+                                    pass
 
                 import_settings_db = threading.Thread(
                     target=thread_import_settings,

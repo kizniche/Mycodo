@@ -58,6 +58,7 @@ This new weather input acquires current and future weather conditions from openw
  - Add set_custom_option/get_custom_option to Conditionals ([#901](https://github.com/kizniche/mycodo/issues/901))
  - Add ability to login with username/password using MQTT Input and Outputs
  - Add ability to use Custom Channel Options with Inputs (first used in MQTT Input)
+ - Add Custom Functions/Inputs/Outputs/Widgets to Settings Export/Import
 
 ### Miscellaneous
 
