@@ -352,7 +352,7 @@ def import_settings(form):
                     PATH_WIDGETS_CUSTOM,
                 ]
 
-                # Delete custom functions/inputs/outputs/widgets
+                # Delete custom functions/inputs/outputs/widgets and generated HTML/Python code
                 for each_dir in delete_directories:
                     for folder_name, sub_folders, filenames in os.walk(each_dir):
                         for filename in filenames:
@@ -470,7 +470,7 @@ def thread_import_influxdb(tmp_folder):
 
 def import_influxdb(form):
     """
-    Receive a zip file contatining influx metastore and database that was
+    Receive a zip file containing influx metastore and database that was
     exported with export_influxdb(), then import the metastore and database
     in InfluxDB.
     """

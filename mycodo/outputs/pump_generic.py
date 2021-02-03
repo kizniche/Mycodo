@@ -88,11 +88,7 @@ OUTPUT_INFORMATION = {
                               "air. Next, turn the pump on for 60 seconds and collect the fluid that's dispensed. "
                               "Last, measure and enter the amount of fluid that was dispensed, in ml, into the "
                               "Fastest Rate (ml/min) field. Your pump should now be calibrated to dispense volumes "
-                              "accurately. "
-                              "Since Peristaltic Pump Output controllers are capable of accepting multiple different "
-                              "dispersal value types, Default Dispersal Method must be set in order to specify whether "
-                              "the peristaltic pump should output for a duration or a specific volume when other "
-                              "controllers (such as PID controllers) send a value instructing it to dispense." ,
+                              "accurately." ,
     'custom_channel_options': [
         {
             'id': 'pin',

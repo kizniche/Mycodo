@@ -485,7 +485,7 @@ def page_export():
                       'completion of the import.', 'success')
                 return redirect(url_for('routes_authentication.logout'))
             else:
-                flash('An error occurred during the settingsdatabase import.',
+                flash('An error occurred during the settings database import.',
                       'error')
         elif form_export_influxdb.export_influxdb_zip.data:
             file_send = utils_export.export_influxdb(form_export_influxdb)
