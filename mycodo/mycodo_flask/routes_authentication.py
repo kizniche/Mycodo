@@ -92,7 +92,7 @@ def create_admin():
             new_user.email = form_create_admin.email.data
             new_user.set_password(form_create_admin.password.data)
             new_user.role_id = 1  # Admin
-            new_user.theme = 'slate'
+            new_user.theme = 'spacelab'
             try:
                 db.session.add(new_user)
                 db.session.commit()

@@ -4,9 +4,6 @@ import calendar
 import datetime
 import glob
 import logging
-import os
-import re
-import resource
 import socket
 import subprocess
 import sys
@@ -15,6 +12,9 @@ from collections import OrderedDict
 from importlib import import_module
 
 import flask_login
+import os
+import re
+import resource
 from flask import current_app
 from flask import flash
 from flask import redirect
@@ -47,6 +47,7 @@ from mycodo.config import MYCODO_VERSION
 from mycodo.config import PATH_1WIRE
 from mycodo.config import PATH_HTML_USER
 from mycodo.config import RESTORE_LOG_FILE
+from mycodo.config import THEMES_DARK
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.config_devices_units import MEASUREMENTS
@@ -125,9 +126,9 @@ from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import dpkg_package_exists
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import parse_custom_option_values
-from mycodo.utils.system_pi import parse_custom_option_values_json
-from mycodo.utils.system_pi import parse_custom_option_values_input_channels_json
 from mycodo.utils.system_pi import parse_custom_option_values_channels_json
+from mycodo.utils.system_pi import parse_custom_option_values_input_channels_json
+from mycodo.utils.system_pi import parse_custom_option_values_json
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.tools import calc_energy_usage
 from mycodo.utils.tools import return_energy_usage
@@ -2236,8 +2237,7 @@ def dict_custom_colors():
 
     :return: dictionary of graph_ids and lists of custom colors
     """
-    dark_themes = ['cyborg', 'darkly', 'slate', 'sun', 'superhero']
-    if flask_login.current_user.theme in dark_themes:
+    if flask_login.current_user.theme in THEMES_DARK:
         default_palette = [
             '#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066',
             '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'

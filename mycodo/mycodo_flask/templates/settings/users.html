@@ -57,7 +57,7 @@
         <div>
           <select class="form-control" id="theme" name="theme">
             {% for value, name in themes %}
-              <option value="{{value|e}}"{% if name|e == 'Slate' %} selected{% endif %}>{{name|e}}</option>
+              <option value="{{value|e}}"{% if value == 'spacelab' %} selected{% endif %}>{{name|e}}</option>
             {% endfor -%}
           </select>
         </div>

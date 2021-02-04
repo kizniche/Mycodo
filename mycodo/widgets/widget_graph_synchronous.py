@@ -23,12 +23,13 @@
 #
 import json
 import logging
-import re
 
 import flask_login
+import re
 from flask import flash
 from flask_babel import lazy_gettext
 
+from mycodo.config import THEMES_DARK
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
@@ -1300,8 +1301,7 @@ def dict_custom_colors(widget_options):
     :return: dictionary of graph_ids and lists of custom colors
     """
     color_count = []
-    dark_themes = ['cyborg', 'darkly', 'slate', 'sun', 'superhero']
-    if flask_login.current_user.theme in dark_themes:
+    if flask_login.current_user.theme in THEMES_DARK:
         default_palette = [
             '#2b908f', '#90ee7e', '#f45b5b', '#7798BF', '#aaeeee', '#ff0066',
             '#eeaaee', '#55BF3B', '#DF5353', '#7798BF', '#aaeeee'
