@@ -31,6 +31,7 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
+from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import SMTP
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -96,8 +97,11 @@ class InputController(AbstractController, threading.Thread):
 
         # Pre-Output: Activates prior to input measurement
         self.pre_output_id = None
+        self.pre_output_channel_id = None
+        self.pre_output_channel = None
         self.pre_output_duration = None
         self.pre_output_during_measure = None
+        self.pre_output_lock_file = None
         self.pre_output_setup = None
         self.last_measurement = None
         self.next_measurement = None
@@ -165,7 +169,7 @@ class InputController(AbstractController, threading.Thread):
                     self.pre_output_setup and
                     not self.pre_output_activated):
 
-                self.lock_acquire(self.lock_file, 30)
+                self.lock_acquire(self.pre_output_lock_file, 30)
 
                 self.pre_output_timer = time.time() + self.pre_output_duration
                 self.pre_output_activated = True
@@ -175,8 +179,9 @@ class InputController(AbstractController, threading.Thread):
                 if not self.pre_output_during_measure:
                     output_on = threading.Thread(
                         target=self.control.output_on,
-                        args=(self.pre_output_id,
-                              self.pre_output_duration,))
+                        args=(self.pre_output_id,),
+                        kwargs={'output_channel': self.pre_output_channel,
+                                'amount': self.pre_output_duration})
                     output_on.start()
 
                 # Run the pre-output during the measurement
@@ -184,7 +189,8 @@ class InputController(AbstractController, threading.Thread):
                 else:
                     output_on = threading.Thread(
                         target=self.control.output_on,
-                        args=(self.pre_output_id,))
+                        args=(self.pre_output_id,),
+                        kwargs={'output_channel': self.pre_output_channel})
                     output_on.start()
 
             # If using a pre output, wait for it to complete before
@@ -200,7 +206,8 @@ class InputController(AbstractController, threading.Thread):
                         self.update_measure()
                         output_off = threading.Thread(
                             target=self.control.output_off,
-                            args=(self.pre_output_id,))
+                            args=(self.pre_output_id,),
+                            kwargs={'output_channel': self.pre_output_channel})
                         output_off.start()
                     else:
                         # Pre-output has turned off, now measure
@@ -209,7 +216,7 @@ class InputController(AbstractController, threading.Thread):
                     self.pre_output_activated = False
                     self.get_new_measurement = False
 
-                    self.lock_release(self.lock_file)
+                    self.lock_release(self.pre_output_lock_file)
 
                 elif not self.pre_output_setup:
                     # Pre-output not enabled, just measure
@@ -237,13 +244,16 @@ class InputController(AbstractController, threading.Thread):
             pass
 
     def initialize_variables(self):
+        input_dev = db_retrieve_table_daemon(
+            Input, unique_id=self.unique_id)
+
+        self.log_level_debug = input_dev.log_level_debug
+        self.set_log_level_debug(self.log_level_debug)
+
         self.dict_inputs = parse_input_information()
 
         self.sample_rate = db_retrieve_table_daemon(
             Misc, entry='first').sample_rate_controller_input
-
-        input_dev = db_retrieve_table_daemon(
-            Input, unique_id=self.unique_id)
 
         self.device_measurements = db_retrieve_table_daemon(
             DeviceMeasurements).filter(
@@ -254,42 +264,47 @@ class InputController(AbstractController, threading.Thread):
         self.input_dev = input_dev
         self.input_name = input_dev.name
         self.unique_id = input_dev.unique_id
-        self.log_level_debug = input_dev.log_level_debug
         self.gpio_location = input_dev.gpio_location
         self.device = input_dev.device
         self.interface = input_dev.interface
         self.period = input_dev.period
         self.start_offset = input_dev.start_offset
 
-        # Pre-Output: Activates prior to input measurement
-        self.pre_output_id = input_dev.pre_output_id
-        self.pre_output_duration = input_dev.pre_output_duration
-        self.pre_output_during_measure = input_dev.pre_output_during_measure
+        # Pre-Output (activates output prior to and/or during input measurement)
         self.pre_output_setup = False
+
+        if self.input_dev.pre_output_id and "," in self.input_dev.pre_output_id:
+            try:
+                self.pre_output_id = input_dev.pre_output_id.split(",")[0]
+                self.pre_output_channel_id = input_dev.pre_output_id.split(",")[1]
+
+                self.pre_output_duration = input_dev.pre_output_duration
+                self.pre_output_during_measure = input_dev.pre_output_during_measure
+                self.pre_output_activated = False
+                self.pre_output_timer = time.time()
+                self.pre_output_lock_file = '/var/lock/input_pre_output_{id}_{ch}'.format(
+                    id=self.pre_output_id, ch=self.pre_output_channel_id)
+
+                # Check if Pre Output and channel IDs exists
+                output = db_retrieve_table_daemon(Output, unique_id=self.pre_output_id)
+                output_channel = db_retrieve_table_daemon(OutputChannel, unique_id=self.pre_output_channel_id)
+                if output and output_channel and self.pre_output_duration:
+                    self.pre_output_channel = output_channel.channel
+                    self.logger.debug("Pre output successfully set up")
+                    self.pre_output_setup = True
+            except:
+                self.logger.exception("Could not set up pre-output")
+
         self.last_measurement = 0
         self.next_measurement = time.time() + self.start_offset
         self.get_new_measurement = False
         self.trigger_cond = False
         self.measurement_acquired = False
-        self.pre_output_activated = False
-        self.pre_output_timer = time.time()
-
-        self.set_log_level_debug(self.log_level_debug)
-
-        # Check if Pre-Output ID actually exists
-        output = db_retrieve_table_daemon(Output, entry='all')
-        for each_output in output:
-            if (each_output.unique_id == self.pre_output_id and
-                    self.pre_output_duration):
-                self.pre_output_setup = True
 
         smtp = db_retrieve_table_daemon(SMTP, entry='first')
         self.smtp_max_count = smtp.hourly_max
         self.email_count = 0
         self.allowed_to_send_notice = True
-
-        # Set up input lock
-        self.lock_file = '/var/lock/input_pre_output_{id}'.format(id=self.pre_output_id)
 
         # Convert string I2C address to base-16 int
         if self.interface == 'I2C' and self.input_dev.i2c_location:
@@ -407,7 +422,8 @@ class InputController(AbstractController, threading.Thread):
     def pre_stop(self):
         # Ensure pre-output is off
         if self.pre_output_setup:
-            output_on = threading.Thread(
+            output_off = threading.Thread(
                 target=self.control.output_off,
-                args=(self.pre_output_id,))
-            output_on.start()
+                args=(self.pre_output_id,),
+                kwargs={'output_channel': self.pre_output_channel})
+            output_off.start()

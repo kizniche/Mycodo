@@ -57,7 +57,7 @@ class Input(CRUDMixin, db.Model):
 
     # Pre-measurement output options
     pre_output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Output to turn on before sensor read
-    pre_output_duration = db.Column(db.Float, default=0.0)  # Duration to turn output on before sensor read
+    pre_output_duration = db.Column(db.Float, default=10.0)  # Duration to turn output on before sensor read
     pre_output_during_measure = db.Column(db.Boolean, default=True)
 
     # SHT sensor options
