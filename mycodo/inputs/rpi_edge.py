@@ -1,4 +1,13 @@
 # coding=utf-8
+import datetime
+import threading
+import time
+
+from mycodo.databases.models import Trigger
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.mycodo_client import DaemonControl
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import write_influxdb_value
 
 # Measurements
 measurements_dict = {
@@ -16,6 +25,7 @@ INPUT_INFORMATION = {
     'input_library': 'RPi.GPIO',
     'measurements_name': 'Rising/Falling Edge',
     'measurements_dict': measurements_dict,
+    'listener': True,
 
     'options_enabled': [
         'gpio_location',
@@ -30,3 +40,127 @@ INPUT_INFORMATION = {
 
     'interfaces': ['GPIO']
 }
+
+class InputModule(AbstractInput):
+    """ A sensor support class that listens for rising or falling pin edge events """
+
+    def __init__(self, input_dev, testing=False):
+        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
+        self.gpio_location = None
+        self.switch_bouncetime = None
+        self.switch_edge = None
+        self.switch_reset_period = None
+        self.control = None
+        self.switch_edge_gpio = None
+        self.edge_reset_timer = time.time()
+
+        if not testing:
+            self.initialize_input()
+
+    def initialize_input(self):
+        try:
+            import RPi.GPIO as GPIO
+
+            self.gpio_location = self.input_dev.gpio_location
+            self.switch_bouncetime = self.input_dev.switch_bouncetime
+            self.switch_edge = self.input_dev.switch_edge
+            self.switch_reset_period = self.input_dev.switch_reset_period
+            self.control = DaemonControl()
+
+            if self.switch_edge == 'rising':
+                self.switch_edge_gpio = GPIO.RISING
+            elif self.switch_edge == 'falling':
+                self.switch_edge_gpio = GPIO.FALLING
+            else:
+                self.switch_edge_gpio = GPIO.BOTH
+
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(int(self.gpio_location), GPIO.IN)
+            GPIO.add_event_detect(
+                int(self.gpio_location),
+                self.switch_edge_gpio,
+                callback=self.edge_detected,
+                bouncetime=self.switch_bouncetime)
+        except:
+            self.logger.exception("Setting up Input")
+
+    def listener(self):
+        while self.running:
+            time.sleep(1)
+        self.logger.debug("Listener thread ending.")
+
+    def edge_detected(self, bcm_pin):
+        """
+        Callback function from GPIO.add_event_detect() for when an edge is detected
+
+        Write rising (1) or falling (-1) edge to influxdb database
+        Trigger any conditionals that match the rising/falling/both edge
+
+        :param bcm_pin: BMC pin of rising/falling edge (required parameter)
+        :return: None
+        """
+        try:
+            import RPi.GPIO as GPIO
+            gpio_state = GPIO.input(int(self.gpio_location))
+        except:
+            self.logger.error(
+                "RPi.GPIO and Raspberry Pi required for this action")
+            gpio_state = None
+
+        if gpio_state is not None and time.time() > self.edge_reset_timer:
+            self.edge_reset_timer = time.time() + self.switch_reset_period
+
+            if (self.switch_edge == 'rising' or
+                    (self.switch_edge == 'both' and gpio_state)):
+                rising_or_falling = 1  # Rising edge detected
+                state_str = 'Rising'
+            else:
+                rising_or_falling = -1  # Falling edge detected
+                state_str = 'Falling'
+
+            write_db = threading.Thread(
+                target=write_influxdb_value,
+                args=(self.unique_id, 'edge', rising_or_falling,))
+            write_db.start()
+
+            trigger = db_retrieve_table_daemon(Trigger)
+            trigger = trigger.filter(
+                Trigger.trigger_type == 'trigger_edge')
+            trigger = trigger.filter(
+                Trigger.measurement == self.unique_id)
+            trigger = trigger.filter(
+                Trigger.is_activated == True)
+
+            for each_trigger in trigger.all():
+                if each_trigger.edge_detected in ['both', state_str.lower()]:
+                    now = time.time()
+                    timestamp = datetime.datetime.fromtimestamp(now).strftime('%Y-%m-%d %H-%M-%S')
+                    message = "{ts}\n[Trigger {cid} ({cname})] " \
+                              "Input {oid} ({name}) {state} edge detected " \
+                              "on pin {pin} (BCM)".format(
+                                    ts=timestamp,
+                                    cid=each_trigger.id,
+                                    cname=each_trigger.name,
+                                    oid=self.unique_id,
+                                    name=self.input_dev.name,
+                                    state=state_str,
+                                    pin=bcm_pin)
+                    self.logger.debug("Edge: {}".format(message))
+
+                    self.control.trigger_all_actions(
+                        each_trigger.unique_id, message=message)
+
+    def stop_input(self):
+        """ Called when Input is deactivated """
+        self.running = False
+        try:
+            self.logger.debug("Cleaning up GPIO")
+            import RPi.GPIO as GPIO
+            GPIO.remove_event_detect(int(self.gpio_location))
+            GPIO.setmode(GPIO.BCM)
+            GPIO.cleanup(int(self.gpio_location))
+            self.logger.debug("Cleaned up GPIO")
+        except:
+            self.logger.error(
+                "RPi.GPIO and Raspberry Pi required for this action")

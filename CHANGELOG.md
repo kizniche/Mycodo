@@ -28,6 +28,7 @@ This new weather input acquires current and future weather conditions from openw
  - Fix controllers disappearing following reorder ([#925](https://github.com/kizniche/mycodo/issues/925))
  - Fix Inputs that use w1thermsensor ([#926](https://github.com/kizniche/mycodo/issues/926))
  - Fix issue generating documentation for similar Inputs/Outputs/Widgets
+ - Fix execution of Input stop_input()
 
 ### Features
 
@@ -66,6 +67,7 @@ This new weather input acquires current and future weather conditions from openw
  - Fix GCC warnings ([#906](https://github.com/kizniche/mycodo/issues/906))
  - Remove default user "pi" with "mycodo" (for compatibility with non-Raspberry Pi operating systems)
  - Update pyusb to 1.1.1
+ - Refactor Edge detection Input
 
 
 ## 8.8.8 (2020-10-30)

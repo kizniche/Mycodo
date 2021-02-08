@@ -248,19 +248,22 @@ class InputModule(AbstractInput):
         channel = None
         for each_channel in self.channels_measurement:
             if self.options_channels['subscribe_topic'][each_channel] == msg.topic:
-                self.logger.debug("Found channel with topic '{}': {}".format(
-                    self.options_channels['subscribe_topic'][each_channel], each_channel))
+                self.logger.debug("Found channel {} with topic '{}'".format(
+                    each_channel, self.options_channels['subscribe_topic'][each_channel]))
                 channel = each_channel
 
         if channel is None:
-            self.logger.error("Could not determine channel for '{}'".format(msg.topic))
+            self.logger.error("Could not determine channel for topic '{}'".format(msg.topic))
             return
 
         try:
             value = float(msg.payload.decode())
             self.logger.debug("Payload is float: {}".format(value))
         except Exception:
-            self.logger.exception("Message doesn't represent a float value.")
+            try:
+                self.logger.error("Message doesn't represent a float value: {}".format(msg.payload.decode()))
+            except:
+                self.logger.error("Message doesn't represent a float and could not decode payload")
             return
 
         # Original value/unit

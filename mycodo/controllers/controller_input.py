@@ -22,7 +22,6 @@
 #
 #  Contact at kylegabriel.com
 #
-import datetime
 import threading
 import time
 
@@ -33,12 +32,10 @@ from mycodo.databases.models import Input
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import SMTP
-from mycodo.databases.models import Trigger
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import parse_measurement
-from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.modules import load_module_from_file
 
@@ -97,11 +94,6 @@ class InputController(AbstractController, threading.Thread):
         self.period = None
         self.start_offset = None
 
-        # Edge detection
-        self.switch_edge = None
-        self.switch_bouncetime = None
-        self.switch_reset_period = None
-
         # Pre-Output: Activates prior to input measurement
         self.pre_output_id = None
         self.pre_output_duration = None
@@ -125,7 +117,6 @@ class InputController(AbstractController, threading.Thread):
         self.measure_input = None
         self.device_recognized = None
 
-        self.edge_reset_timer = time.time()
         self.input_timer = time.time()
         self.lastUpdate = None
 
@@ -150,7 +141,10 @@ class InputController(AbstractController, threading.Thread):
             self.button_args_dict = None
             self.button_pressed = None
 
-        if self.device not in ['EDGE', 'MQTT_PAHO']:
+        if ('listener' in self.dict_inputs[self.device] and
+              self.dict_inputs[self.device]['listener']):
+            pass
+        else:
             now = time.time()
             # Signal that a measurement needs to be obtained
             if (now > self.next_measurement and
@@ -237,14 +231,10 @@ class InputController(AbstractController, threading.Thread):
         self.trigger_cond = False
 
     def run_finally(self):
-        if self.device == 'EDGE':
-            try:
-                import RPi.GPIO as GPIO
-                GPIO.setmode(GPIO.BCM)
-                GPIO.cleanup(int(self.gpio_location))
-            except:
-                self.logger.error(
-                    "RPi.GPIO and Raspberry Pi required for this action")
+        try:
+            self.measure_input.stop_input()
+        except:
+            pass
 
     def initialize_variables(self):
         self.dict_inputs = parse_input_information()
@@ -270,11 +260,6 @@ class InputController(AbstractController, threading.Thread):
         self.interface = input_dev.interface
         self.period = input_dev.period
         self.start_offset = input_dev.start_offset
-
-        # Edge detection
-        self.switch_edge = input_dev.switch_edge
-        self.switch_bouncetime = input_dev.switch_bouncetime
-        self.switch_reset_period = input_dev.switch_reset_period
 
         # Pre-Output: Activates prior to input measurement
         self.pre_output_id = input_dev.pre_output_id
@@ -310,20 +295,6 @@ class InputController(AbstractController, threading.Thread):
         if self.interface == 'I2C' and self.input_dev.i2c_location:
             self.i2c_address = int(str(self.input_dev.i2c_location), 16)
 
-        # Set up edge detection of a GPIO pin
-        if self.device == 'EDGE':
-            try:
-                import RPi.GPIO as GPIO
-                if self.switch_edge == 'rising':
-                    self.switch_edge_gpio = GPIO.RISING
-                elif self.switch_edge == 'falling':
-                    self.switch_edge_gpio = GPIO.FALLING
-                else:
-                    self.switch_edge_gpio = GPIO.BOTH
-            except:
-                self.logger.error(
-                    "RPi.GPIO and Raspberry Pi required for this action")
-
         self.device_recognized = True
 
         if self.device in self.dict_inputs:
@@ -331,11 +302,7 @@ class InputController(AbstractController, threading.Thread):
                 self.dict_inputs[self.device]['file_path'],
                 'inputs')
 
-            if self.device == 'EDGE':
-                # Edge detection handled internally, no module to load
-                self.measure_input = None
-            else:
-                self.measure_input = input_loaded.InputModule(self.input_dev)
+            self.measure_input = input_loaded.InputModule(self.input_dev)
 
         else:
             self.device_recognized = False
@@ -344,28 +311,13 @@ class InputController(AbstractController, threading.Thread):
             raise Exception("'{device}' is not a valid device type.".format(
                 device=self.device))
 
-        self.edge_reset_timer = time.time()
         self.input_timer = time.time()
         self.lastUpdate = None
 
-        # Set up edge detection
-        if self.device == 'EDGE':
-            try:
-                import RPi.GPIO as GPIO
-                GPIO.setmode(GPIO.BCM)
-                GPIO.setup(int(self.gpio_location), GPIO.IN)
-                GPIO.add_event_detect(
-                    int(self.gpio_location),
-                    self.switch_edge_gpio,
-                    callback=self.edge_detected,
-                    bouncetime=self.switch_bouncetime)
-            except:
-                self.logger.error(
-                    "RPi.GPIO and Raspberry Pi required for this action")
-
-        # Set up MQTT listener
-        elif ('listener' in self.dict_inputs[self.device] and
+        # Set up listener (e.g. MQTT, EDGE)
+        if ('listener' in self.dict_inputs[self.device] and
               self.dict_inputs[self.device]['listener']):
+            self.logger.debug("Detected as listener. Starting listener thread.")
             input_listener = threading.Thread(
                 target=self.measure_input.listener())
             input_listener.daemon = True
@@ -420,68 +372,6 @@ class InputController(AbstractController, threading.Thread):
 
         self.lastUpdate = time.time()
 
-    def edge_detected(self, bcm_pin):
-        """
-        Callback function from GPIO.add_event_detect() for when an edge is detected
-
-        Write rising (1) or falling (-1) edge to influxdb database
-        Trigger any conditionals that match the rising/falling/both edge
-
-        :param bcm_pin: BMC pin of rising/falling edge (required parameter)
-        :return: None
-        """
-        try:
-            import RPi.GPIO as GPIO
-            gpio_state = GPIO.input(int(self.gpio_location))
-        except:
-            self.logger.error(
-                "RPi.GPIO and Raspberry Pi required for this action")
-            gpio_state = None
-
-        if gpio_state is not None and time.time() > self.edge_reset_timer:
-            self.edge_reset_timer = time.time()+self.switch_reset_period
-
-            if (self.switch_edge == 'rising' or
-                    (self.switch_edge == 'both' and gpio_state)):
-                rising_or_falling = 1  # Rising edge detected
-                state_str = 'Rising'
-            else:
-                rising_or_falling = -1  # Falling edge detected
-                state_str = 'Falling'
-
-            write_db = threading.Thread(
-                target=write_influxdb_value,
-                args=(self.unique_id, 'edge', rising_or_falling,))
-            write_db.start()
-
-            trigger = db_retrieve_table_daemon(Trigger)
-            trigger = trigger.filter(
-                Trigger.trigger_type == 'trigger_edge')
-            trigger = trigger.filter(
-                Trigger.measurement == self.unique_id)
-            trigger = trigger.filter(
-                Trigger.is_activated == True)
-
-            for each_trigger in trigger.all():
-                if each_trigger.edge_detected in ['both', state_str.lower()]:
-                    now = time.time()
-                    timestamp = datetime.datetime.fromtimestamp(
-                        now).strftime('%Y-%m-%d %H-%M-%S')
-                    message = "{ts}\n[Trigger {cid} ({cname})] " \
-                              "Input {oid} ({name}) {state} edge detected " \
-                              "on pin {pin} (BCM)".format(
-                                    ts=timestamp,
-                                    cid=each_trigger.id,
-                                    cname=each_trigger.name,
-                                    oid=self.unique_id,
-                                    name=self.input_name,
-                                    state=state_str,
-                                    pin=bcm_pin)
-                    self.logger.debug("Edge: {}".format(message))
-
-                    self.control.trigger_all_actions(
-                        each_trigger.unique_id, message=message)
-
     def create_measurements_dict(self):
         measurements_record = {}
         for each_channel, each_measurement in self.measurement.values.items():
@@ -515,10 +405,6 @@ class InputController(AbstractController, threading.Thread):
         return 0, "Command sent to Input Controller"
 
     def pre_stop(self):
-        # Execute stop_input() if not EDGE or ADC
-        if self.device != 'EDGE':
-            self.measure_input.stop_input()
-
         # Ensure pre-output is off
         if self.pre_output_setup:
             output_on = threading.Thread(
