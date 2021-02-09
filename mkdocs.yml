@@ -9,8 +9,6 @@ plugins:
         - en
   - minify:
       minify_html: true
-  - mkpdfs:
-      - author: Kyle T. Gabriel
 
 theme:
   name: material
