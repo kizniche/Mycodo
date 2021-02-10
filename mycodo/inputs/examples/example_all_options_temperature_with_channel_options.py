@@ -326,14 +326,17 @@ class InputModule(AbstractInput):
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
-        # Set custom channel option variables to defaults or user-set values
-        input_channels = db_retrieve_table_daemon(
-            InputChannel).filter(InputChannel.input_id == input_dev.unique_id).all()
-        self.options_channels = self.setup_custom_channel_options_json(
-            INPUT_INFORMATION['custom_channel_options'], input_channels)
+        if not testing:
+            self.initialize_input()
 
     def initialize_input(self):
         self.interface = self.input_dev.interface
+
+        # Set custom channel option variables to defaults or user-set values
+        input_channels = db_retrieve_table_daemon(
+            InputChannel).filter(InputChannel.input_id == self.input_dev.unique_id).all()
+        self.options_channels = self.setup_custom_channel_options_json(
+            INPUT_INFORMATION['custom_channel_options'], input_channels)
 
         #
         # Begin dependent modules loading

@@ -166,16 +166,16 @@ class InputModule(AbstractInput):
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
-        input_channels = db_retrieve_table_daemon(
-            InputChannel).filter(InputChannel.input_id == input_dev.unique_id).all()
-        self.options_channels = self.setup_custom_channel_options_json(
-            INPUT_INFORMATION['custom_channel_options'], input_channels)
-
         if not testing:
             self.initialize_input()
 
     def initialize_input(self):
         import paho.mqtt.client as mqtt
+
+        input_channels = db_retrieve_table_daemon(
+            InputChannel).filter(InputChannel.input_id == self.input_dev.unique_id).all()
+        self.options_channels = self.setup_custom_channel_options_json(
+            INPUT_INFORMATION['custom_channel_options'], input_channels)
 
         self.client = mqtt.Client(self.mqtt_clientid)
         self.logger.debug("Client created with ID {}".format(self.mqtt_clientid))

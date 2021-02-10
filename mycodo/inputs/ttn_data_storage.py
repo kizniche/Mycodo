@@ -128,11 +128,6 @@ class InputModule(AbstractInput):
         self.setup_custom_options(
             INPUT_INFORMATION['custom_options'], input_dev)
 
-        input_channels = db_retrieve_table_daemon(
-            InputChannel).filter(InputChannel.input_id == input_dev.unique_id).all()
-        self.options_channels = self.setup_custom_channel_options_json(
-            INPUT_INFORMATION['custom_channel_options'], input_channels)
-
         if not testing:
             self.initialize_input()
 
@@ -140,6 +135,11 @@ class InputModule(AbstractInput):
         self.interface = self.input_dev.interface
         self.period = self.input_dev.period
         self.latest_datetime = self.input_dev.datetime
+
+        input_channels = db_retrieve_table_daemon(
+            InputChannel).filter(InputChannel.input_id == self.input_dev.unique_id).all()
+        self.options_channels = self.setup_custom_channel_options_json(
+            INPUT_INFORMATION['custom_channel_options'], input_channels)
 
     def get_new_data(self, past_seconds):
         # Basic implementation. Future development may use more complex library to access API

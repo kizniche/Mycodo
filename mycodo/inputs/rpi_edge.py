@@ -21,7 +21,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'EDGE',
     'input_manufacturer': 'Raspberry Pi',
-    'input_name': 'Edge',
+    'input_name': 'Edge Detection',
     'input_library': 'RPi.GPIO',
     'measurements_name': 'Rising/Falling Edge',
     'measurements_dict': measurements_dict,
@@ -88,7 +88,7 @@ class InputModule(AbstractInput):
     def listener(self):
         while self.running:
             time.sleep(1)
-        self.logger.debug("Listener thread ending.")
+        self.logger.debug("Listener thread ending")
 
     def edge_detected(self, bcm_pin):
         """
@@ -104,8 +104,7 @@ class InputModule(AbstractInput):
             import RPi.GPIO as GPIO
             gpio_state = GPIO.input(int(self.gpio_location))
         except:
-            self.logger.error(
-                "RPi.GPIO and Raspberry Pi required for this action")
+            self.logger.exception("RPi.GPIO and Raspberry Pi required")
             gpio_state = None
 
         if gpio_state is not None and time.time() > self.edge_reset_timer:
@@ -125,12 +124,9 @@ class InputModule(AbstractInput):
             write_db.start()
 
             trigger = db_retrieve_table_daemon(Trigger)
-            trigger = trigger.filter(
-                Trigger.trigger_type == 'trigger_edge')
-            trigger = trigger.filter(
-                Trigger.measurement == self.unique_id)
-            trigger = trigger.filter(
-                Trigger.is_activated == True)
+            trigger = trigger.filter(Trigger.trigger_type == 'trigger_edge')
+            trigger = trigger.filter(Trigger.measurement == self.unique_id)
+            trigger = trigger.filter(Trigger.is_activated == True)
 
             for each_trigger in trigger.all():
                 if each_trigger.edge_detected in ['both', state_str.lower()]:
@@ -160,7 +156,5 @@ class InputModule(AbstractInput):
             GPIO.remove_event_detect(int(self.gpio_location))
             GPIO.setmode(GPIO.BCM)
             GPIO.cleanup(int(self.gpio_location))
-            self.logger.debug("Cleaned up GPIO")
         except:
-            self.logger.error(
-                "RPi.GPIO and Raspberry Pi required for this action")
+            self.logger.exception("RPi.GPIO and Raspberry Pi required")
