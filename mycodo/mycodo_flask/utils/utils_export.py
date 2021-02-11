@@ -29,6 +29,7 @@ from mycodo.config import PATH_HTML_USER
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import PATH_OUTPUTS_CUSTOM
 from mycodo.config import PATH_PYTHON_CODE_USER
+from mycodo.config import PATH_USER_SCRIPTS
 from mycodo.config import PATH_WIDGETS_CUSTOM
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config_translations import TRANSLATIONS
@@ -101,12 +102,15 @@ def export_settings(form):
                 (PATH_FUNCTIONS_CUSTOM, "custom_functions"),
                 (PATH_INPUTS_CUSTOM, "custom_inputs"),
                 (PATH_OUTPUTS_CUSTOM, "custom_outputs"),
-                (PATH_WIDGETS_CUSTOM, "custom_widgets")
+                (PATH_WIDGETS_CUSTOM, "custom_widgets"),
+                (PATH_USER_SCRIPTS, "user_scripts")
             ]
             for each_backup in export_directories:
+                if not os.path.exists(each_backup[0]):
+                    continue
                 for folder_name, sub_folders, filenames in os.walk(each_backup[0]):
                     for filename in filenames:
-                        if filename.startswith("__init__") or filename.endswith("pyc"):
+                        if filename == "__init__.py" or filename.endswith("pyc"):
                             continue
                         file_path = os.path.join(folder_name, filename)
                         z.write(file_path, "{}/{}".format(each_backup[1], os.path.basename(file_path)))
@@ -350,10 +354,13 @@ def import_settings(form):
                     PATH_INPUTS_CUSTOM,
                     PATH_OUTPUTS_CUSTOM,
                     PATH_WIDGETS_CUSTOM,
+                    PATH_USER_SCRIPTS
                 ]
 
                 # Delete custom functions/inputs/outputs/widgets and generated HTML/Python code
                 for each_dir in delete_directories:
+                    if not os.path.exists(each_dir):
+                        continue
                     for folder_name, sub_folders, filenames in os.walk(each_dir):
                         for filename in filenames:
                             if filename == "__init__.py":
@@ -368,21 +375,23 @@ def import_settings(form):
                     (PATH_FUNCTIONS_CUSTOM, "custom_functions"),
                     (PATH_INPUTS_CUSTOM, "custom_inputs"),
                     (PATH_OUTPUTS_CUSTOM, "custom_outputs"),
-                    (PATH_WIDGETS_CUSTOM, "custom_widgets")
+                    (PATH_WIDGETS_CUSTOM, "custom_widgets"),
+                    (PATH_USER_SCRIPTS, "user_scripts")
                 ]
 
                 # Restore zipped custom functions/inputs/outputs/widgets
                 for each_dir in restore_directories:
                     extract_dir = os.path.join(tmp_folder, each_dir[1])
-                    if os.path.exists(extract_dir):
-                        for folder_name, sub_folders, filenames in os.walk(extract_dir):
-                            for filename in filenames:
-                                file_path = os.path.join(folder_name, filename)
-                                new_path = os.path.join(each_dir[0], filename)
-                                try:
-                                    os.rename(file_path, new_path)
-                                except:
-                                    pass
+                    if not os.path.exists(extract_dir):
+                        continue
+                    for folder_name, sub_folders, filenames in os.walk(extract_dir):
+                        for filename in filenames:
+                            file_path = os.path.join(folder_name, filename)
+                            new_path = os.path.join(each_dir[0], filename)
+                            try:
+                                os.rename(file_path, new_path)
+                            except:
+                                pass
 
                 import_settings_db = threading.Thread(
                     target=thread_import_settings,
