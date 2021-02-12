@@ -47,6 +47,7 @@ This new weather input acquires current and future weather conditions from openw
  - Add Input: Forecast Hourly/Daily Weather from OpenWeatherMap.org (Free API Key, , Humidity/Temperature/Pressure/Dewpoint)
  - Add Input: Raspberry Pi Sense HAT (humidity/temperature/pressure/compass/magnetism/acceleration/gyroscope)
  - Add Input: Xiaomi Mijia LYWSD03MMC
+ - Add Input: Atlas Scientific CO2 sensor
  - Add Measurement and Unit: Speed, Meters/Second
  - Add Measurement and Unit: Direction, Bearing
  - Add Conversions: m/s <-> mph <-> knots, hour <-> minutes and seconds
