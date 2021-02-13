@@ -6,6 +6,7 @@ import time
 
 from mycodo.config import PATH_CAMERAS
 from mycodo.databases.models import Camera
+from mycodo.databases.models import OutputChannel
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists
@@ -77,16 +78,18 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     output_already_on = False
     output_id = None
     output_channel_id = None
+    output_channel = None
     if settings.output_id and ',' in settings.output_id:
         output_id = settings.output_id.split(",")[0]
         output_channel_id = settings.output_id.split(",")[1]
+        output_channel = db_retrieve_table_daemon(OutputChannel, unique_id=output_channel_id)
 
-    if output_id and output_channel_id:
+    if output_id and output_channel:
         daemon_control = DaemonControl()
-        if daemon_control.output_state(output_id, output_channel=output_channel_id) == "on":
+        if daemon_control.output_state(output_id, output_channel=output_channel.channel) == "on":
             output_already_on = True
         else:
-            daemon_control.output_on(output_id, output_channel=output_channel_id)
+            daemon_control.output_on(output_id, output_channel=output_channel.channel)
 
     # Pause while the output remains on for the specified duration.
     # Used for instance to allow fluorescent lights to fully turn on before
@@ -362,8 +365,8 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             "{err}".format(err=e))
 
     # Turn off output, if configured
-    if output_id and output_channel_id and daemon_control and not output_already_on:
-        daemon_control.output_off(output_id, output_channel=output_channel_id)
+    if output_id and output_channel and daemon_control and not output_already_on:
+        daemon_control.output_off(output_id, output_channel=output_channel.channel)
 
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')

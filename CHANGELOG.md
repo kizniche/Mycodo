@@ -30,6 +30,7 @@ This new weather input acquires current and future weather conditions from openw
  - Fix issue generating documentation for similar Inputs/Outputs/Widgets
  - Fix execution of Input stop_input()
  - Fix Input Pre-Outputs not turning on
+ - Fix Output not activating for Camera
 
 ### Features
 
