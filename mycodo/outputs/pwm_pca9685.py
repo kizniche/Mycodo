@@ -116,66 +116,82 @@ measurements_dict = {
 
 channels_dict = {
     0: {
+        'name': 'Channel 0',
         'types': ['pwm'],
         'measurements': [0]
     },
     1: {
+        'name': 'Channel 1',
         'types': ['pwm'],
         'measurements': [1]
     },
     2: {
+        'name': 'Channel 2',
         'types': ['pwm'],
         'measurements': [2]
     },
     3: {
+        'name': 'Channel 3',
         'types': ['pwm'],
         'measurements': [3]
     },
     4: {
+        'name': 'Channel 4',
         'types': ['pwm'],
         'measurements': [4]
     },
     5: {
+        'name': 'Channel 5',
         'types': ['pwm'],
         'measurements': [5]
     },
     6: {
+        'name': 'Channel 6',
         'types': ['pwm'],
         'measurements': [6]
     },
     7: {
+        'name': 'Channel 7',
         'types': ['pwm'],
         'measurements': [7]
     },
     8: {
+        'name': 'Channel 8',
         'types': ['pwm'],
         'measurements': [8]
     },
     9: {
+        'name': 'Channel 9',
         'types': ['pwm'],
         'measurements': [9]
     },
     10: {
+        'name': 'Channel 10',
         'types': ['pwm'],
         'measurements': [10]
     },
     11: {
+        'name': 'Channel 11',
         'types': ['pwm'],
         'measurements': [11]
     },
     12: {
+        'name': 'Channel 12',
         'types': ['pwm'],
         'measurements': [12]
     },
     13: {
+        'name': 'Channel 13',
         'types': ['pwm'],
         'measurements': [13]
     },
     14: {
+        'name': 'Channel 14',
         'types': ['pwm'],
         'measurements': [14]
     },
     15: {
+        'name': 'Channel 15',
         'types': ['pwm'],
         'measurements': [15]
     }
@@ -214,7 +230,7 @@ OUTPUT_INFORMATION = {
     'i2c_address_editable': False,
     'i2c_address_default': '0x40',
 
-    'custom_channel_options': [
+    'custom_options': [
         {
             'id': 'pwm_hertz',
             'type': 'integer',
@@ -223,16 +239,23 @@ OUTPUT_INFORMATION = {
             'constraints_pass': constraints_pass_hertz,
             'name': lazy_gettext('Frequency (Hertz)'),
             'phrase': 'The Herts to output the PWM signal (40 - 1600)'
-        }
-    ],
+        },
+     ],
 
     'custom_channel_options': [
         {
+            'id': 'name',
+            'type': 'text',
+            'default_value': '',
+            'required': False,
+            'name': lazy_gettext('Name'),
+            'phrase': lazy_gettext('A name for this channel')
+        },
+        {
             'id': 'state_startup',
             'type': 'select',
-            'default_value': '',
+            'default_value': 0,
             'options_select': [
-                (-1, 'Do Nothing'),
                 (0, 'Off'),
                 ('set_duty_cycle', 'User Set Value'),
                 ('last_duty_cycle', 'Last Known Value')
@@ -323,7 +346,7 @@ class OutputModule(AbstractOutput):
         self.setup_output_variables(OUTPUT_INFORMATION)
 
         error = []
-        if self.options_channels['pwm_hertz'][0] < 40:
+        if self.pwm_hertz < 40:
             error.append("PWM Hertz must be a value between 40 and 1600")
         if error:
             for each_error in error:
@@ -334,7 +357,7 @@ class OutputModule(AbstractOutput):
             self.pwm_output = Adafruit_PCA9685.PCA9685(
                 address=int(str(self.output.i2c_location), 16),
                 busnum=self.output.i2c_bus)
-                
+ 
             self.pwm_output.set_pwm_freq(self.pwm_hertz)
 
             self.output_setup = True
@@ -343,10 +366,13 @@ class OutputModule(AbstractOutput):
 
             for i in range(16):
                 if self.options_channels['state_startup'][i] == 0:
-                    self.output_switch('off')
+                    self.logger.info("Startup state channel {ch}: off".format(ch=i))
+                    self.output_switch('off', output_channel=i)
                 elif self.options_channels['state_startup'][i] == 'set_duty_cycle':
-                    self.output_switch('on', amount=self.options_channels['startup_value'][i])
+                    self.logger.info("Startup state channel {ch}: on ({dc:.2f} %)".format(ch=i, dc=self.options_channels['startup_value'][i]))
+                    self.output_switch('on', output_channel=i, amount=self.options_channels['startup_value'][i])
                 elif self.options_channels['state_startup'][i] == 'last_duty_cycle':
+                    self.logger.info("Startup state channel {ch}: last".format(ch=i))
                     device_measurement = db_retrieve_table_daemon(DeviceMeasurements).filter(
                         and_(DeviceMeasurements.device_id == self.unique_id,
                              DeviceMeasurements.channel == i)).first()
@@ -372,36 +398,43 @@ class OutputModule(AbstractOutput):
                             "the last known duty cycle, but a last known "
                             "duty cycle could not be found in the measurement "
                             "database".format(i))
+                else:
+                    self.logger.info("Startup state channel {ch}: no change".format(ch=i))
         except Exception as except_msg:
             self.logger.exception("Output was unable to be setup: {err}".format(err=except_msg))
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         measure_dict = copy.deepcopy(measurements_dict)
 
+        if amount is None:
+            amount = 0
+
         if state == 'on':
             if self.options_channels['pwm_invert_signal'][output_channel]:
-                amount = 100.0 - abs(amount)
+                output_amount = 100.0 - abs(amount)
+            else:
+                output_amount = abs(amount)
         elif state == 'off':
             if self.options_channels['pwm_invert_signal'][output_channel]:
-                amount = 100
+                output_amount = 100
             else:
-                amount = 0
+                output_amount = 0
 
-        self.pwm_output.set_pwm(self.options_channels['pwm_hertz'][output_channel], amount)
+        off_at_tick = round(output_amount*4095./100.)
+        self.pwm_output.set_pwm(output_channel, 0, off_at_tick)
+
         self.pwm_duty_cycles[output_channel] = amount
-
         measure_dict[output_channel]['value'] = amount
         add_measurements_influxdb(self.unique_id, measure_dict)
 
-        self.logger.debug("Duty cycle of channel {ch} set to {dc:.2f} %".format(
-            ch=output_channel, dc=amount))
+        self.logger.debug("Duty cycle of channel {ch} set to {dc:.2f} % (switched off for {off_at_tick:d} of 4095 ticks)".format(
+            ch=output_channel, dc=amount, off_at_tick=off_at_tick))
         return "success"
 
     def is_on(self, output_channel=None):
         if self.is_setup():
             duty_cycle = self.pwm_duty_cycles[output_channel]
-
-            if duty_cycle > 0:
+            if duty_cycle and duty_cycle > 0:
                 return duty_cycle
 
             return False
