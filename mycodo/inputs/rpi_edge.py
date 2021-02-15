@@ -1,4 +1,5 @@
 # coding=utf-8
+from flask_babel import lazy_gettext
 import datetime
 import threading
 import time
@@ -38,7 +39,23 @@ INPUT_INFORMATION = {
         ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO')
     ],
 
-    'interfaces': ['GPIO']
+    'interfaces': ['GPIO'],
+
+    'custom_options': [
+        {
+            'id': 'pin_mode',
+            'type': 'select',
+            'default_value': 'floating',
+            'options_select': [
+                ('floating', 'Floating'),
+                ('pull_down', 'Pull Down'),
+                ('pull_up', 'Pull Up')
+            ],
+            'name': lazy_gettext('Pin Mode'),
+            'phrase': lazy_gettext('Enables or disables the pull-up or pull-down resistor')
+        }
+    ]
+
 }
 
 class InputModule(AbstractInput):
@@ -55,6 +72,8 @@ class InputModule(AbstractInput):
         self.control = None
         self.switch_edge_gpio = None
         self.edge_reset_timer = time.time()
+        self.pin_mode = None
+        self.setup_custom_options(INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
             self.initialize_input()
@@ -79,7 +98,16 @@ class InputModule(AbstractInput):
                 self.switch_edge_gpio = GPIO.BOTH
 
             self.GPIO.setmode(GPIO.BCM)
-            self.GPIO.setup(int(self.gpio_location), GPIO.IN)
+
+            if self.pin_mode == "pull_down":
+                self.logger.debug("Pull-DOWN enabled for pin {ch}".format(ch=self.gpio_location))
+                self.GPIO.setup(int(self.gpio_location), self.GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            elif self.pin_mode == "pull_up":
+                self.logger.debug("Pull-UP enabled for pin {ch}".format(ch=self.gpio_location))
+                self.GPIO.setup(int(self.gpio_location), self.GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            else:
+                self.GPIO.setup(int(self.gpio_location), self.GPIO.IN)
+
         except:
             self.logger.exception("Setting up Input")
 
@@ -105,6 +133,8 @@ class InputModule(AbstractInput):
         except:
             self.logger.exception("RPi.GPIO and Raspberry Pi required")
             gpio_state = None
+
+        self.logger.debug("Edge detected on pin {ch}: {state}".format(ch=self.gpio_location, state=gpio_state))
 
         if gpio_state is not None and time.time() > self.edge_reset_timer:
             self.edge_reset_timer = time.time() + self.switch_reset_period

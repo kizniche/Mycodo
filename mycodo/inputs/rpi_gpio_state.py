@@ -1,4 +1,5 @@
 # coding=utf-8
+from flask_babel import lazy_gettext
 import copy
 
 from mycodo.inputs.base_input import AbstractInput
@@ -31,7 +32,22 @@ INPUT_INFORMATION = {
         ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO')
     ],
 
-    'interfaces': ['GPIO']
+    'interfaces': ['GPIO'],
+
+    'custom_options': [
+        {
+            'id': 'pin_mode',
+            'type': 'select',
+            'default_value': 'floating',
+            'options_select': [
+                ('floating', 'Floating'),
+                ('pull_down', 'Pull Down'),
+                ('pull_up', 'Pull Up')
+            ],
+            'name': lazy_gettext('Pin Mode'),
+            'phrase': lazy_gettext('Enables or disables the pull-up or pull-down resistor')
+        }
+    ]
 }
 
 
@@ -42,6 +58,8 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.gpio = None
+        self.pin_mode = None
+        self.setup_custom_options(INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
             self.initialize_input()
@@ -53,7 +71,15 @@ class InputModule(AbstractInput):
 
         self.location = int(self.input_dev.gpio_location)
         self.gpio.setmode(self.gpio.BCM)
-        self.gpio.setup(self.location, self.gpio.IN)
+
+        if self.pin_mode == "pull_down":
+            self.logger.debug("Pull-DOWN enabled for pin {ch}".format(ch=self.location))
+            self.gpio.setup(self.location, self.gpio.IN, pull_up_down=GPIO.PUD_DOWN)
+        elif self.pin_mode == "pull_up":
+            self.logger.debug("Pull-UP enabled for pin {ch}".format(ch=self.location))
+            self.gpio.setup(self.location, self.gpio.IN, pull_up_down=GPIO.PUD_UP)
+        else:
+            self.gpio.setup(self.location, self.gpio.IN)
 
     def get_measurement(self):
         """ Gets the GPIO state via RPi.GPIO """
