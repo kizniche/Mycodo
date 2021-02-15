@@ -558,7 +558,9 @@ if __name__ == "__main__":
                 amount=args.dutycycle,
                 output_channel=args.output_channel)
         else:
-            return_msg = daemon.output_on(args.outputon)
+            return_msg = daemon.output_on(
+                args.outputon,
+                output_channel=args.output_channel)
         logger.info("[Remote command] Turn on output with ID '{id}': Server returned:".format(
             id=args.outputon, msg=return_msg))
 

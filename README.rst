@@ -515,20 +515,35 @@ Thanks
 ------
 
 -  `Alembic <https://alembic.sqlalchemy.org>`__
+-  `Argparse <https://pypi.org/project/argparse>`__
+-  `Bcrypt <https://pypi.org/project/bcrypt>`__
 -  `Bootstrap <https://getbootstrap.com>`__
+-  `Daemonize <https://pypi.org/project/daemonize>`__
 -  `Date Range Picker <https://github.com/dangrossman/daterangepicker>`__
--  `Flask <http://flask.palletsprojects.com>`__
--  `Flask-Babel <https://github.com/python-babel/flask-babel>`__
--  `Flask-Limiter <https://github.com/alisaifee/flask-limiter>`__
--  `Flask-RestPlus <https://github.com/noirbizarre/flask-restplus>`__
--  `Flask-WTF <https://github.com/lepture/flask-wtf>`__
+-  `Distro <https://pypi.org/project/distro>`__
+-  `Email_Validator <https://pypi.org/project/email_validator>`__
+-  `Filelock <https://pypi.org/project/filelock>`__
+-  `Flask <https://pypi.org/project/flask>`__
+-  `Flask_Accept <https://pypi.org/project/flask_accept>`__
+-  `Flask_Babel <https://pypi.org/project/flask_babel>`__
+-  `Flask_Compress <https://pypi.org/project/flask_compress>`__
+-  `Flask_Limiter <https://pypi.org/project/flask_limiter>`__
+-  `Flask_Login <https://pypi.org/project/flask_login>`__
+-  `Flask_Marshmallow <https://pypi.org/project/flask_marshmallow>`__
+-  `Flask_RESTX <https://pypi.org/project/flask_restx>`__
+-  `Flask_SQLAlchemy <https://pypi.org/project/flask_sqlalchemy>`__
+-  `Flask_Talisman <https://pypi.org/project/flask_talisman>`__
+-  `Flask_WTF <https://pypi.org/project/flask_wtf>`__
 -  `FontAwesome <https://fontawesome.com>`__
+-  `Geocoder <https://pypi.org/project/geocoder>`__
 -  `gridstack.js <https://github.com/gridstack/gridstack.js>`__
 -  `Gunicorn <https://gunicorn.org>`__
 -  `Highcharts <https://www.highcharts.com>`__
 -  `InfluxDB <https://github.com/influxdata/influxdb>`__
 -  `jQuery <https://jquery.com>`__
+-  `Marshmallow_SQLAlchemy <https://pypi.org/project/marshmallow_sqlalchemy>`__
 -  `Pyro5 <https://github.com/irmen/Pyro5>`__
 -  `SQLAlchemy <https://www.sqlalchemy.org>`__
 -  `SQLite <https://www.sqlite.org>`__
 -  `toastr <https://github.com/CodeSeven/toastr>`__
+-  `WTForms <https://pypi.org/project/wtforms>`__

@@ -227,8 +227,7 @@ class CustomModule(AbstractController, threading.Thread):
                 if last_measurement < (self.setpoint - self.hysteresis):
                     self.control.output_on(
                         self.output_device_id,
-                        output_channel=self.output_channel,
-                        )
+                        output_channel=self.output_channel)
         elif self.direction == 'lower':
             if outputState == 'on':
                 # looking to turn output off
@@ -242,8 +241,7 @@ class CustomModule(AbstractController, threading.Thread):
                 if last_measurement > (self.setpoint + self.hysteresis):
                     self.control.output_on(
                         self.output_device_id,
-                        output_channel=self.output_channel,
-                        )
+                        output_channel=self.output_channel)
         else:
             self.logger.info("Unknown controller direction: {}".format(self.direction))
 
