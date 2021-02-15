@@ -47,6 +47,7 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.GPIO = None
         self.gpio_location = None
         self.switch_bouncetime = None
         self.switch_edge = None
@@ -62,6 +63,8 @@ class InputModule(AbstractInput):
         try:
             import RPi.GPIO as GPIO
 
+            self.GPIO = GPIO
+
             self.gpio_location = self.input_dev.gpio_location
             self.switch_bouncetime = self.input_dev.switch_bouncetime
             self.switch_edge = self.input_dev.switch_edge
@@ -75,20 +78,17 @@ class InputModule(AbstractInput):
             else:
                 self.switch_edge_gpio = GPIO.BOTH
 
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setup(int(self.gpio_location), GPIO.IN)
-            GPIO.add_event_detect(
-                int(self.gpio_location),
-                self.switch_edge_gpio,
-                callback=self.edge_detected,
-                bouncetime=self.switch_bouncetime)
+            self.GPIO.setmode(GPIO.BCM)
+            self.GPIO.setup(int(self.gpio_location), GPIO.IN)
         except:
             self.logger.exception("Setting up Input")
 
     def listener(self):
-        while self.running:
-            time.sleep(1)
-        self.logger.debug("Listener thread ending")
+        self.GPIO.add_event_detect(
+            int(self.gpio_location),
+            self.switch_edge_gpio,
+            callback=self.edge_detected,
+            bouncetime=self.switch_bouncetime)
 
     def edge_detected(self, bcm_pin):
         """
@@ -101,8 +101,7 @@ class InputModule(AbstractInput):
         :return: None
         """
         try:
-            import RPi.GPIO as GPIO
-            gpio_state = GPIO.input(int(self.gpio_location))
+            gpio_state = self.GPIO.input(int(self.gpio_location))
         except:
             self.logger.exception("RPi.GPIO and Raspberry Pi required")
             gpio_state = None
@@ -152,9 +151,8 @@ class InputModule(AbstractInput):
         self.running = False
         try:
             self.logger.debug("Cleaning up GPIO")
-            import RPi.GPIO as GPIO
-            GPIO.remove_event_detect(int(self.gpio_location))
-            GPIO.setmode(GPIO.BCM)
-            GPIO.cleanup(int(self.gpio_location))
+            self.GPIO.remove_event_detect(int(self.gpio_location))
+            self.GPIO.setmode(self.GPIO.BCM)
+            self.GPIO.cleanup(int(self.gpio_location))
         except:
             self.logger.exception("RPi.GPIO and Raspberry Pi required")
