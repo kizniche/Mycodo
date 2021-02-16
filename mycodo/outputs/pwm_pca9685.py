@@ -240,7 +240,7 @@ OUTPUT_INFORMATION = {
             'name': lazy_gettext('Frequency (Hertz)'),
             'phrase': 'The Herts to output the PWM signal (40 - 1600)'
         },
-     ],
+    ],
 
     'custom_channel_options': [
         {
@@ -275,7 +275,7 @@ OUTPUT_INFORMATION = {
         {
             'id': 'state_shutdown',
             'type': 'select',
-            'default_value': '',
+            'default_value': 0,
             'options_select': [
                 (-1, 'Do Nothing'),
                 (0, 'Off'),
@@ -369,7 +369,8 @@ class OutputModule(AbstractOutput):
                     self.logger.debug("Startup state channel {ch}: off".format(ch=i))
                     self.output_switch('off', output_channel=i)
                 elif self.options_channels['state_startup'][i] == 'set_duty_cycle':
-                    self.logger.debug("Startup state channel {ch}: on ({dc:.2f} %)".format(ch=i, dc=self.options_channels['startup_value'][i]))
+                    self.logger.debug("Startup state channel {ch}: on ({dc:.2f} %)".format(
+                        ch=i, dc=self.options_channels['startup_value'][i]))
                     self.output_switch('on', output_channel=i, amount=self.options_channels['startup_value'][i])
                 elif self.options_channels['state_startup'][i] == 'last_duty_cycle':
                     self.logger.debug("Startup state channel {ch}: last".format(ch=i))
@@ -388,9 +389,8 @@ class OutputModule(AbstractOutput):
                             duration_sec=None)
 
                     if last_measurement:
-                        self.logger.info(
-                            "Setting channel {ch} startup duty cycle to last known value of {dc} %".format(
-                                ch=i, dc=last_measurement[1]))
+                        self.logger.debug("Setting channel {ch} startup duty cycle to last known value of {dc} %".format(
+                            ch=i, dc=last_measurement[1]))
                         self.output_switch('on', amount=last_measurement[1])
                     else:
                         self.logger.error(
@@ -399,15 +399,14 @@ class OutputModule(AbstractOutput):
                             "duty cycle could not be found in the measurement "
                             "database".format(i))
                 else:
-                    self.logger.info("Startup state channel {ch}: no change".format(ch=i))
+                    self.logger.debug("Startup state channel {ch}: no change".format(ch=i))
         except Exception as except_msg:
             self.logger.exception("Output was unable to be setup: {err}".format(err=except_msg))
 
-    def output_switch(self, state, output_type=None, amount=None, output_channel=None):
+    def output_switch(self, state, output_type=None, amount=0, output_channel=None):
         measure_dict = copy.deepcopy(measurements_dict)
 
-        if amount is None:
-            amount = 0
+        output_amount = 0
 
         if state == 'on':
             if self.options_channels['pwm_invert_signal'][output_channel]:
@@ -420,21 +419,22 @@ class OutputModule(AbstractOutput):
             else:
                 output_amount = 0
 
-        off_at_tick = round(output_amount*4095./100.)
+        off_at_tick = round(output_amount * 4095. / 100.)
         self.pwm_output.set_pwm(output_channel, 0, off_at_tick)
 
         self.pwm_duty_cycles[output_channel] = amount
         measure_dict[output_channel]['value'] = amount
         add_measurements_influxdb(self.unique_id, measure_dict)
 
-        self.logger.debug("Duty cycle of channel {ch} set to {dc:.2f} % (switched off at tick {off_at_tick:d} out of 4095 ticks)".format(
-            ch=output_channel, dc=amount, off_at_tick=off_at_tick))
+        self.logger.debug(
+            "Duty cycle of channel {ch} set to {dc:.2f} % (switched off for {off_at_tick:d} of 4095 ticks)".format(
+                ch=output_channel, dc=amount, off_at_tick=off_at_tick))
         return "success"
 
     def is_on(self, output_channel=None):
         if self.is_setup():
             duty_cycle = self.pwm_duty_cycles[output_channel]
-            if duty_cycle and duty_cycle > 0:
+            if duty_cycle:
                 return duty_cycle
 
             return False

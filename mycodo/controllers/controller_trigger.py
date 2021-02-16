@@ -285,7 +285,7 @@ class TriggerController(AbstractController, threading.Thread):
             self.method_end_time = None
 
             if method.method_type == 'Duration':
-                if self.method_start_time == 'Ended':
+                if self.method_start_act == 'Ended':
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_conditional = db_session.query(Trigger)
                         mod_conditional = mod_conditional.filter(
