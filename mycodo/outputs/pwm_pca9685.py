@@ -366,13 +366,13 @@ class OutputModule(AbstractOutput):
 
             for i in range(16):
                 if self.options_channels['state_startup'][i] == 0:
-                    self.logger.info("Startup state channel {ch}: off".format(ch=i))
+                    self.logger.debug("Startup state channel {ch}: off".format(ch=i))
                     self.output_switch('off', output_channel=i)
                 elif self.options_channels['state_startup'][i] == 'set_duty_cycle':
-                    self.logger.info("Startup state channel {ch}: on ({dc:.2f} %)".format(ch=i, dc=self.options_channels['startup_value'][i]))
+                    self.logger.debug("Startup state channel {ch}: on ({dc:.2f} %)".format(ch=i, dc=self.options_channels['startup_value'][i]))
                     self.output_switch('on', output_channel=i, amount=self.options_channels['startup_value'][i])
                 elif self.options_channels['state_startup'][i] == 'last_duty_cycle':
-                    self.logger.info("Startup state channel {ch}: last".format(ch=i))
+                    self.logger.debug("Startup state channel {ch}: last".format(ch=i))
                     device_measurement = db_retrieve_table_daemon(DeviceMeasurements).filter(
                         and_(DeviceMeasurements.device_id == self.unique_id,
                              DeviceMeasurements.channel == i)).first()
@@ -427,7 +427,7 @@ class OutputModule(AbstractOutput):
         measure_dict[output_channel]['value'] = amount
         add_measurements_influxdb(self.unique_id, measure_dict)
 
-        self.logger.debug("Duty cycle of channel {ch} set to {dc:.2f} % (switched off for {off_at_tick:d} of 4095 ticks)".format(
+        self.logger.debug("Duty cycle of channel {ch} set to {dc:.2f} % (switched off at tick {off_at_tick:d} out of 4095 ticks)".format(
             ch=output_channel, dc=amount, off_at_tick=off_at_tick))
         return "success"
 

@@ -121,28 +121,31 @@ class TriggerController(AbstractController, threading.Thread):
             check_approved = False
 
             # Check if the trigger period has elapsed
-            if self.trigger_type in ['trigger_sunrise_sunset',
-                                     'trigger_run_pwm_method']:
+            if self.trigger_type == 'trigger_sunrise_sunset':
                 while self.running and self.timer_period < time.time():
                     self.timer_period = calculate_sunrise_sunset_epoch(self.trigger)
 
-                if self.trigger_type == 'trigger_run_pwm_method':
-                    # Only execute trigger actions when started
-                    # Now only set PWM output
-                    pwm_duty_cycle, ended = self.get_method_output(
-                        self.unique_id_1)
-                    if not ended:
-                        output_channel = OutputChannel.query.filter(
-                            OutputChannel.unique_id == self.trigger.unique_id_3).first()
-                        self.set_output_duty_cycle(
-                            self.unique_id_2,
-                            pwm_duty_cycle,
-                            output_channel=output_channel.channel)
-                        if self.trigger_actions_at_period:
-                            trigger_function_actions(
-                                self.unique_id,
-                                debug=self.log_level_debug)
-                else:
+                check_approved = True
+
+            elif self.trigger_type == 'trigger_run_pwm_method':
+
+                # Only execute trigger actions when started
+                # Now only set PWM output
+                pwm_duty_cycle, ended = self.get_method_output(
+                    self.trigger.unique_id_1)
+                self.logger.debug("trigger_run_pwm_method: {a} {b}".format(a=pwm_duty_cycle, b=ended))
+                if not ended:
+                    self.timer_period += self.trigger.period
+                    output_channel = db_retrieve_table_daemon(OutputChannel).filter(
+                        OutputChannel.unique_id == self.trigger.unique_id_3).first()
+                    self.set_output_duty_cycle(
+                        self.trigger.unique_id_2,
+                        pwm_duty_cycle,
+                        output_channel=output_channel.channel)
+                    if self.trigger_actions_at_period:
+                        trigger_function_actions(
+                            self.unique_id,
+                            debug=self.log_level_debug)
                     check_approved = True
 
             elif (self.trigger_type in [
@@ -226,7 +229,7 @@ class TriggerController(AbstractController, threading.Thread):
         elif self.trigger_type == 'trigger_run_pwm_method':
             self.unique_id_1 = self.trigger.unique_id_1
             self.unique_id_2 = self.trigger.unique_id_2
-            self.unique_id_2 = self.trigger.unique_id_3
+            self.unique_id_3 = self.trigger.unique_id_3
             self.period = self.trigger.period
             self.trigger_actions_at_period = self.trigger.trigger_actions_at_period
             self.trigger_actions_at_start = self.trigger.trigger_actions_at_start
@@ -237,17 +240,19 @@ class TriggerController(AbstractController, threading.Thread):
             if self.trigger_actions_at_start:
                 self.timer_period = now + self.trigger.period
                 if self.is_activated:
-                    pwm_duty_cycle = self.get_method_output(
+                    pwm_duty_cycle, ended = self.get_method_output(
                         self.trigger.unique_id_1)
-                    output_channel = OutputChannel.query.filter(
-                        OutputChannel.unique_id == self.trigger.unique_id_3).first()
-                    if output_channel:
-                        self.set_output_duty_cycle(
-                            self.trigger.unique_id_2,
-                            pwm_duty_cycle,
-                            output_channel=output_channel.channel)
-                    trigger_function_actions(self.unique_id,
-                                             debug=self.log_level_debug)
+                    if not ended:
+                        output_channel = db_retrieve_table_daemon(OutputChannel).filter(
+                            OutputChannel.unique_id == self.trigger.unique_id_3).first()
+                        if output_channel:
+                            self.set_output_duty_cycle(
+                                self.trigger.unique_id_2,
+                                pwm_duty_cycle,
+                                output_channel=output_channel.channel)
+                        if self.trigger_actions_at_period:
+                            trigger_function_actions(self.unique_id,
+                                                     debug=self.log_level_debug)
             else:
                 self.timer_period = now
 
@@ -274,12 +279,13 @@ class TriggerController(AbstractController, threading.Thread):
             method_data = method_data.filter(MethodData.method_id == method_id)
             method_data_repeat = method_data.filter(
                 MethodData.duration_sec == 0).first()
+
             self.method_start_act = self.method_start_time
             self.method_start_time = None
             self.method_end_time = None
 
             if method.method_type == 'Duration':
-                if self.method_start_act == 'Ended':
+                if self.method_start_time == 'Ended':
                     with session_scope(MYCODO_DB_PATH) as db_session:
                         mod_conditional = db_session.query(Trigger)
                         mod_conditional = mod_conditional.filter(
@@ -459,3 +465,11 @@ class TriggerController(AbstractController, threading.Thread):
             trigger_function_actions(self.unique_id,
                                      message=message,
                                      debug=self.log_level_debug)
+
+    def pre_stop(self):
+        output_channel = db_retrieve_table_daemon(OutputChannel).filter(
+            OutputChannel.unique_id == self.trigger.unique_id_3).first()
+        self.set_output_duty_cycle(
+            self.trigger.unique_id_2,
+            None,
+            output_channel=output_channel.channel)
