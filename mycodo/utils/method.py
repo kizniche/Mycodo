@@ -201,8 +201,10 @@ def calculate_method_setpoint(method_id, table, this_controller, Method, MethodD
             # Convert time string to datetime object
             end_time = datetime.datetime.strptime(
                 str(this_controller.method_end_time), '%Y-%m-%d %H:%M:%S.%f')
-            if now > start_time:
+            if now > end_time:
                 ended = True
+        else:
+            end_time = None
 
         seconds_from_start = (now - start_time).total_seconds()
         total_sec = 0

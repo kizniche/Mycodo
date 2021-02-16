@@ -172,13 +172,13 @@ def trigger_activate(trigger_id):
     actions = Actions.query.filter(
         Actions.function_id == trigger_id)
 
-    if not actions.count():
+    if not actions.count() and mod_trigger.trigger_type != 'trigger_run_pwm_method':
         error.append("No Actions found: Add at least one Action before activating.")
 
     for each_action in actions.all():
         error = check_actions(each_action, error)
 
-    if mod_trigger.trigger_type == 'run_pwm_method':
+    if mod_trigger.trigger_type == 'trigger_run_pwm_method':
         mod_trigger_ready = Trigger.query.filter(
             Trigger.unique_id == trigger_id).first()
         mod_trigger_ready.method_start_time = 'Ready'
