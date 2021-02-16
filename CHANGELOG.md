@@ -64,6 +64,7 @@ This new weather input acquires current and future weather conditions from openw
  - Add ability to use Custom Channel Options with Inputs (first used in MQTT Input)
  - Add Custom Functions/Inputs/Outputs/Widgets to Settings Export/Import
  - Add user_scripts directory for user code that's preserved during upgrade/export/import ([#930](https://github.com/kizniche/mycodo/issues/930))
+ - Add pin mode option (float, pull-up, pull-down) for Edge and State Inputs
 
 ### Miscellaneous
 
