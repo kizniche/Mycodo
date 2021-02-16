@@ -296,7 +296,8 @@ class TriggerController(AbstractController, threading.Thread):
                     self.logger.warning(
                         "Method has ended. "
                         "Activate the Trigger controller to start it again.")
-                else: 
+                elif (self.method_start_act == 'Ready' or
+                        self.method_start_act is None):
                     # Method has been instructed to begin
                     now = datetime.datetime.now()
                     self.method_start_time = now
