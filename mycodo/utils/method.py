@@ -11,13 +11,14 @@ from mycodo.databases.models import MethodData
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
-def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
+def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day):
     """
     For a cubic Bezier segment described by the 2-tuples P0, ..., P3, return
     the y-value associated with the given x-value.
 
     Ex: getYfromXforBezSegment((10,0), (5,-5), (5,5), (0,0), 3.2)
     """
+
     try:
         import numpy as np
     except ImportError:
@@ -32,11 +33,7 @@ def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
     # If provided, calculate y of the Bezier curve with that x
     # Otherwise, use the current second of the day
     if second_of_day is None:
-        now = datetime.datetime.now()
-        dt = datetime.timedelta(hours=now.hour,
-                                minutes=now.minute,
-                                seconds=now.second)
-        seconds = dt.total_seconds()
+        raise Exception("second_of_day must be specified")
     else:
         seconds = second_of_day
 
@@ -104,18 +101,17 @@ class AbstractMethod(object):
         self.method_data_all = self.method_data.filter(MethodData.output_id.is_(None)).all()
         self.method_data_first = self.method_data.filter(MethodData.output_id.is_(None)).first()
 
-    def calculate_setpoint(self):
+    def calculate_setpoint(self, when):
         return None, False
 
 
 class DateMethod(AbstractMethod):
-    def calculate_setpoint(self):
+    def calculate_setpoint(self, when):
         # Calculate where the current time/date is within the time/date method
-        now = datetime.datetime.now()
         for each_method in self.method_data_all:
             start_time = datetime.datetime.strptime(each_method.time_start, '%Y-%m-%d %H:%M:%S')
             end_time = datetime.datetime.strptime(each_method.time_end, '%Y-%m-%d %H:%M:%S')
-            if start_time < now < end_time:
+            if start_time < when < end_time:
                 setpoint_start = each_method.setpoint_start
                 if each_method.setpoint_end:
                     setpoint_end = each_method.setpoint_end
@@ -124,7 +120,7 @@ class DateMethod(AbstractMethod):
 
                 setpoint_diff = abs(setpoint_end - setpoint_start)
                 total_seconds = (end_time - start_time).total_seconds()
-                part_seconds = (now - start_time).total_seconds()
+                part_seconds = (when - start_time).total_seconds()
                 percent_total = part_seconds / total_seconds
 
                 if setpoint_start < setpoint_end:
@@ -147,14 +143,14 @@ class DateMethod(AbstractMethod):
 
 
 class DailyMethod(AbstractMethod):
-    def calculate_setpoint(self):
+    def calculate_setpoint(self, when):
         # Calculate where the current Hour:Minute:Seconds is within the Daily method
-        daily_now = datetime.datetime.now().strftime('%H:%M:%S')
-        daily_now = datetime.datetime.strptime(str(daily_now), '%H:%M:%S')
+        daily_when = when.strftime('%H:%M:%S')
+        daily_when = datetime.datetime.strptime(str(daily_when), '%H:%M:%S')
         for each_method in self.method_data_all:
             start_time = datetime.datetime.strptime(each_method.time_start, '%H:%M:%S')
             end_time = datetime.datetime.strptime(each_method.time_end, '%H:%M:%S')
-            if start_time < daily_now < end_time:
+            if start_time < daily_when < end_time:
                 setpoint_start = each_method.setpoint_start
                 if each_method.setpoint_end:
                     setpoint_end = each_method.setpoint_end
@@ -163,7 +159,7 @@ class DailyMethod(AbstractMethod):
 
                 setpoint_diff = abs(setpoint_end-setpoint_start)
                 total_seconds = (end_time-start_time).total_seconds()
-                part_seconds = (daily_now-start_time).total_seconds()
+                part_seconds = (daily_when-start_time).total_seconds()
                 percent_total = part_seconds/total_seconds
 
                 if setpoint_start < setpoint_end:
@@ -187,31 +183,43 @@ class DailyMethod(AbstractMethod):
 
 
 class DailySineMethod(AbstractMethod):
-    def calculate_setpoint(self):
+    def calculate_setpoint(self, when):
         # Calculate sine y-axis value from the x-axis (seconds of the day)
+        dt = datetime.timedelta(hours=when.hour,
+                                minutes=when.minute,
+                                seconds=when.second)
+        secs_per_day = 24 * 60 * 60
+        angle = dt.total_seconds() / secs_per_day * 360
         new_setpoint = sine_wave_y_out(self.method_data_first.amplitude,
                                        self.method_data_first.frequency,
                                        self.method_data_first.shift_angle,
-                                       self.method_data_first.shift_y)
+                                       self.method_data_first.shift_y,
+                                       angle)
         return new_setpoint, False
 
 
 class DailyBezierMethod(AbstractMethod):
-    def calculate_setpoint(self):
+    def calculate_setpoint(self, when):
         # Calculate Bezier curve y-axis value from the x-axis (seconds of the day)
+
+        dt = datetime.timedelta(hours=when.hour,
+                                minutes=when.minute,
+                                seconds=when.second)
+
         new_setpoint = bezier_curve_y_out(
             self.method_data_first.shift_angle,
             (self.method_data_first.x0, self.method_data_first.y0),
             (self.method_data_first.x1, self.method_data_first.y1),
             (self.method_data_first.x2, self.method_data_first.y2),
-            (self.method_data_first.x3, self.method_data_first.y3))
+            (self.method_data_first.x3, self.method_data_first.y3),
+            dt.total_seconds())
+
         return new_setpoint, False
 
 
 class DurationMethod(AbstractMethod):
-    def calculate_setpoint(self):
+    def calculate_setpoint(self, when):
         # Calculate the duration in the method based on self.method_start_time
-        now = datetime.datetime.now()
 
         start_time = datetime.datetime.strptime(
             str(self.this_controller.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
@@ -221,10 +229,10 @@ class DurationMethod(AbstractMethod):
         # Check if method_end_time is not None
         if self.this_controller.method_end_time:
             # Convert time string to datetime object
-            if datetime.datetime.strptime(str(self.this_controller.method_end_time), '%Y-%m-%d %H:%M:%S.%f') > now:
+            if datetime.datetime.strptime(str(self.this_controller.method_end_time), '%Y-%m-%d %H:%M:%S.%f') > when:
                 ended = True
 
-        seconds_from_start = (now - start_time).total_seconds()
+        seconds_from_start = (when - start_time).total_seconds()
         total_sec = 0
         previous_total_sec = 0
         previous_end = None
@@ -240,7 +248,7 @@ class DurationMethod(AbstractMethod):
             total_sec += each_method.duration_sec
             if previous_total_sec <= seconds_from_start < total_sec:
                 row_start_time = float(start_time.strftime('%s')) + previous_total_sec
-                row_since_start_sec = (now - (start_time + datetime.timedelta(0, previous_total_sec))).total_seconds()
+                row_since_start_sec = (when - (start_time + datetime.timedelta(0, previous_total_sec))).total_seconds()
                 percent_row = row_since_start_sec / each_method.duration_sec
 
                 setpoint_start = each_method.setpoint_start
@@ -280,7 +288,7 @@ class DurationMethod(AbstractMethod):
                         mod_method = db_session.query(self.table)
                         mod_method = mod_method.filter(
                             self.table.unique_id == self.this_controller.unique_id).first()
-                        mod_method.method_start_time = datetime.datetime.now()
+                        mod_method.method_start_time = when
                         db_session.commit()
                         return previous_end, False
 
@@ -297,7 +305,10 @@ class DurationMethod(AbstractMethod):
         return None, ended
 
 
-def calculate_method_setpoint(method_id, table, this_controller, logger):
+def calculate_method_setpoint(method_id, table, this_controller, logger, when=None):
+
+    if not when:
+        when = datetime.datetime.now()
 
     method_key = db_retrieve_table_daemon(Method).filter(Method.unique_id == method_id).first()
 
@@ -306,18 +317,13 @@ def calculate_method_setpoint(method_id, table, this_controller, logger):
         logger.error("Method {} is unknown.".format(method_key.method_type))
         method_class = AbstractMethod
 
-    return method_class(method_id, table, this_controller, logger).calculate_setpoint()
+    return method_class(method_id, table, this_controller, logger).calculate_setpoint(when)
 
 
 def sine_wave_y_out(amplitude, frequency, shift_angle,
-                    shift_y, angle_in=None):
+                    shift_y, angle_in):
     if angle_in is None:
-        now = datetime.datetime.now()
-        dt = datetime.timedelta(hours=now.hour,
-                                minutes=now.minute,
-                                seconds=now.second)
-        secs_per_day = 24 * 60 * 60
-        angle = dt.total_seconds() / secs_per_day * 360
+        raise Exception("angle_in must be specified")
     else:
         angle = angle_in
 
