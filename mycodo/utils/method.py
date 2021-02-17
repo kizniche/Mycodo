@@ -5,6 +5,8 @@ from math import sin, radians
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.utils import session_scope
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.databases.models import Method
+from mycodo.databases.models import MethodData
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -82,32 +84,35 @@ def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day=None):
     return y
 
 
-def calculate_method_setpoint(method_id, table, this_controller, Method, MethodData, logger):
-    """
-    Calculates the setpoint from a method
-    :param method_id: ID of Method to be used
-    :param table: Table of the this_controller using this function
-    :param this_controller: The this_controller using this function
-    :param Method: Method SQL table
-    :param MethodData: MethodData SQL table
-    :param logger: The logger to use
-    :return: 0 (success) or 1 (error) and a setpoint value
-    """
-    method = db_retrieve_table_daemon(Method)
+class AbstractMethod(object):
+    def __init__(self, method_id, table, this_controller, logger):
+        """
+        Initializes the method class
+        :param method_id: ID of Method to be used
+        :param table: Table of the this_controller using this function
+        :param this_controller: The this_controller using this function
+        :param logger: The logger to use
+        :return: 0 (success) or 1 (error) and a setpoint value
+        """
+        self.table = table
+        self.this_controller = this_controller
+        self.logger = logger
 
-    method_key = method.filter(Method.unique_id == method_id).first()
+        self.method_data = db_retrieve_table_daemon(MethodData)
+        self.method_data = self.method_data.filter(MethodData.method_id == method_id)
 
-    method_data = db_retrieve_table_daemon(MethodData)
-    method_data = method_data.filter(MethodData.method_id == method_id)
+        self.method_data_all = self.method_data.filter(MethodData.output_id.is_(None)).all()
+        self.method_data_first = self.method_data.filter(MethodData.output_id.is_(None)).first()
 
-    method_data_all = method_data.filter(MethodData.output_id.is_(None)).all()
-    method_data_first = method_data.filter(MethodData.output_id.is_(None)).first()
+    def calculate_setpoint(self):
+        return None, False
 
-    now = datetime.datetime.now()
 
-    # Calculate where the current time/date is within the time/date method
-    if method_key.method_type == 'Date':
-        for each_method in method_data_all:
+class DateMethod(AbstractMethod):
+    def calculate_setpoint(self):
+        # Calculate where the current time/date is within the time/date method
+        now = datetime.datetime.now()
+        for each_method in self.method_data_all:
             start_time = datetime.datetime.strptime(each_method.time_start, '%Y-%m-%d %H:%M:%S')
             end_time = datetime.datetime.strptime(each_method.time_end, '%Y-%m-%d %H:%M:%S')
             if start_time < now < end_time:
@@ -127,21 +132,26 @@ def calculate_method_setpoint(method_id, table, this_controller, Method, MethodD
                 else:
                     new_setpoint = setpoint_start - (setpoint_diff * percent_total)
 
-                logger.debug("[Method] Start: {start} End: {end}".format(
+                self.logger.debug("[Method] Start: {start} End: {end}".format(
                     start=start_time, end=end_time))
-                logger.debug("[Method] Start: {start} End: {end}".format(
+                self.logger.debug("[Method] Start: {start} End: {end}".format(
                     start=setpoint_start, end=setpoint_end))
-                logger.debug("[Method] Total: {tot} Part total: {par} ({per}%)".format(
+                self.logger.debug("[Method] Total: {tot} Part total: {par} ({per}%)".format(
                     tot=total_seconds, par=part_seconds, per=percent_total))
-                logger.debug("[Method] New Setpoint: {sp}".format(
+                self.logger.debug("[Method] New Setpoint: {sp}".format(
                     sp=new_setpoint))
                 return new_setpoint, False
 
-    # Calculate where the current Hour:Minute:Seconds is within the Daily method
-    elif method_key.method_type == 'Daily':
+        # Setpoint not needing to be calculated, use default setpoint
+        return None, False
+
+
+class DailyMethod(AbstractMethod):
+    def calculate_setpoint(self):
+        # Calculate where the current Hour:Minute:Seconds is within the Daily method
         daily_now = datetime.datetime.now().strftime('%H:%M:%S')
         daily_now = datetime.datetime.strptime(str(daily_now), '%H:%M:%S')
-        for each_method in method_data_all:
+        for each_method in self.method_data_all:
             start_time = datetime.datetime.strptime(each_method.time_start, '%H:%M:%S')
             end_time = datetime.datetime.strptime(each_method.time_end, '%H:%M:%S')
             if start_time < daily_now < end_time:
@@ -161,50 +171,58 @@ def calculate_method_setpoint(method_id, table, this_controller, Method, MethodD
                 else:
                     new_setpoint = setpoint_start-(setpoint_diff*percent_total)
 
-                logger.debug("[Method] Start: {start} End: {end}".format(
+                self.logger.debug("[Method] Start: {start} End: {end}".format(
                     start=start_time.strftime('%H:%M:%S'),
                     end=end_time.strftime('%H:%M:%S')))
-                logger.debug("[Method] Start: {start} End: {end}".format(
+                self.logger.debug("[Method] Start: {start} End: {end}".format(
                     start=setpoint_start, end=setpoint_end))
-                logger.debug("[Method] Total: {tot} Part total: {par} ({per}%)".format(
+                self.logger.debug("[Method] Total: {tot} Part total: {par} ({per}%)".format(
                     tot=total_seconds, par=part_seconds, per=percent_total))
-                logger.debug("[Method] New Setpoint: {sp}".format(
+                self.logger.debug("[Method] New Setpoint: {sp}".format(
                     sp=new_setpoint))
                 return new_setpoint, False
 
-    # Calculate sine y-axis value from the x-axis (seconds of the day)
-    elif method_key.method_type == 'DailySine':
-        new_setpoint = sine_wave_y_out(method_data_first.amplitude,
-                                       method_data_first.frequency,
-                                       method_data_first.shift_angle,
-                                       method_data_first.shift_y)
+        # Setpoint not needing to be calculated, use default setpoint
+        return None, False
+
+
+class DailySineMethod(AbstractMethod):
+    def calculate_setpoint(self):
+        # Calculate sine y-axis value from the x-axis (seconds of the day)
+        new_setpoint = sine_wave_y_out(self.method_data_first.amplitude,
+                                       self.method_data_first.frequency,
+                                       self.method_data_first.shift_angle,
+                                       self.method_data_first.shift_y)
         return new_setpoint, False
 
-    # Calculate Bezier curve y-axis value from the x-axis (seconds of the day)
-    elif method_key.method_type == 'DailyBezier':
+
+class DailyBezierMethod(AbstractMethod):
+    def calculate_setpoint(self):
+        # Calculate Bezier curve y-axis value from the x-axis (seconds of the day)
         new_setpoint = bezier_curve_y_out(
-            method_data_first.shift_angle,
-            (method_data_first.x0, method_data_first.y0),
-            (method_data_first.x1, method_data_first.y1),
-            (method_data_first.x2, method_data_first.y2),
-            (method_data_first.x3, method_data_first.y3))
+            self.method_data_first.shift_angle,
+            (self.method_data_first.x0, self.method_data_first.y0),
+            (self.method_data_first.x1, self.method_data_first.y1),
+            (self.method_data_first.x2, self.method_data_first.y2),
+            (self.method_data_first.x3, self.method_data_first.y3))
         return new_setpoint, False
 
-    # Calculate the duration in the method based on self.method_start_time
-    elif method_key.method_type == 'Duration':
+
+class DurationMethod(AbstractMethod):
+    def calculate_setpoint(self):
+        # Calculate the duration in the method based on self.method_start_time
+        now = datetime.datetime.now()
+
         start_time = datetime.datetime.strptime(
-            str(this_controller.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
+            str(self.this_controller.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
+
         ended = False
 
         # Check if method_end_time is not None
-        if this_controller.method_end_time:
+        if self.this_controller.method_end_time:
             # Convert time string to datetime object
-            end_time = datetime.datetime.strptime(
-                str(this_controller.method_end_time), '%Y-%m-%d %H:%M:%S.%f')
-            if now > end_time:
+            if datetime.datetime.strptime(str(self.this_controller.method_end_time), '%Y-%m-%d %H:%M:%S.%f') > now:
                 ended = True
-        else:
-            end_time = None
 
         seconds_from_start = (now - start_time).total_seconds()
         total_sec = 0
@@ -212,7 +230,7 @@ def calculate_method_setpoint(method_id, table, this_controller, Method, MethodD
         previous_end = None
         method_restart = False
 
-        for each_method in method_data_all:
+        for each_method in self.method_data_all:
             # If duration_sec is 0, method has instruction to restart
             if each_method.duration_sec == 0:
                 method_restart = True
@@ -236,52 +254,59 @@ def calculate_method_setpoint(method_id, table, this_controller, Method, MethodD
                 else:
                     new_setpoint = setpoint_start - (setpoint_diff * percent_row)
 
-                logger.debug(
+                self.logger.debug(
                     "[Method] Start: {start} Seconds Since: {sec}".format(
                         start=start_time, sec=seconds_from_start))
-                logger.debug(
+                self.logger.debug(
                     "[Method] Start time of row: {start}".format(
                         start=datetime.datetime.fromtimestamp(row_start_time)))
-                logger.debug(
+                self.logger.debug(
                     "[Method] Sec since start of row: {sec}".format(
                         sec=row_since_start_sec))
-                logger.debug(
+                self.logger.debug(
                     "[Method] Percent of row: {per}".format(
                         per=percent_row))
-                logger.debug(
+                self.logger.debug(
                     "[Method] New Setpoint: {sp}".format(
                         sp=new_setpoint))
                 return new_setpoint, False
             previous_total_sec = total_sec
 
-        if this_controller.method_start_time:
+        if self.this_controller.method_start_time:
             if method_restart:
-                if end_time and now > end_time:
-                    ended = True
-                else:
+                if not ended:
                     # Method has been instructed to restart
                     with session_scope(MYCODO_DB_PATH) as db_session:
-                        mod_method = db_session.query(table)
+                        mod_method = db_session.query(self.table)
                         mod_method = mod_method.filter(
-                            table.unique_id == this_controller.unique_id).first()
+                            self.table.unique_id == self.this_controller.unique_id).first()
                         mod_method.method_start_time = datetime.datetime.now()
                         db_session.commit()
                         return previous_end, False
-            else:
-                ended = True
 
             if ended:
                 # Duration method has ended, reset method_start_time locally and in DB
                 with session_scope(MYCODO_DB_PATH) as db_session:
-                    mod_method = db_session.query(table).filter(
-                        table.unique_id == this_controller.unique_id).first()
+                    mod_method = db_session.query(self.table).filter(
+                        self.table.unique_id == self.this_controller.unique_id).first()
                     mod_method.method_start_time = 'Ended'
                     mod_method.method_end_time = None
                     db_session.commit()
-                return None, True
 
-    # Setpoint not needing to be calculated, use default setpoint
-    return None, False
+        # Setpoint not needing to be calculated, use default setpoint
+        return None, ended
+
+
+def calculate_method_setpoint(method_id, table, this_controller, logger):
+
+    method_key = db_retrieve_table_daemon(Method).filter(Method.unique_id == method_id).first()
+
+    method_class = globals().get(method_key.method_type+"Method")
+    if not method_class or not issubclass(method_class, AbstractMethod):
+        logger.error("Method {} is unknown.".format(method_key.method_type))
+        method_class = AbstractMethod
+
+    return method_class(method_id, table, this_controller, logger).calculate_setpoint()
 
 
 def sine_wave_y_out(amplitude, frequency, shift_angle,

@@ -321,8 +321,6 @@ class TriggerController(AbstractController, threading.Thread):
             method_id,
             Trigger,
             this_controller,
-            Method,
-            MethodData,
             self.logger)
 
         if setpoint is not None:

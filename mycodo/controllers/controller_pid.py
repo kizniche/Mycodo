@@ -256,8 +256,6 @@ class PIDController(AbstractController, threading.Thread):
                         self.setpoint_tracking_id,
                         PID,
                         this_pid,
-                        Method,
-                        MethodData,
                         self.logger)
                     if ended:
                         self.method_start_act = 'Ended'
