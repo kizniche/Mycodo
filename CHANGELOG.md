@@ -32,6 +32,7 @@ This new weather input acquires current and future weather conditions from openw
  - Fix Input Pre-Outputs not turning on
  - Fix Output not activating for Camera
  - Fix PWM trigger and Duration Method ([#937](https://github.com/kizniche/mycodo/issues/937))
+ - Fix PCA9685 Output Module ([#933](https://github.com/kizniche/Mycodo/issues/933)) 
 
 ### Features
 
@@ -66,7 +67,7 @@ This new weather input acquires current and future weather conditions from openw
  - Add Custom Functions/Inputs/Outputs/Widgets to Settings Export/Import
  - Add user_scripts directory for user code that's preserved during upgrade/export/import ([#930](https://github.com/kizniche/mycodo/issues/930))
  - Add pin mode option (float, pull-up, pull-down) for Edge and State Inputs
-
+ 
 ### Miscellaneous
 
  - Change widget title styles
@@ -74,6 +75,7 @@ This new weather input acquires current and future weather conditions from openw
  - Remove default user "pi" with "mycodo" (for compatibility with non-Raspberry Pi operating systems)
  - Update pyusb to 1.1.1
  - Refactor Edge detection Input
+ - Refactor method implementation from single large method into multiple small classes
 
 
 ## 8.8.8 (2020-10-30)
