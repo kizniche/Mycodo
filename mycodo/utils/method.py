@@ -3,92 +3,25 @@ import datetime
 import time
 from math import sin, radians
 
-from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.databases.utils import session_scope
 from mycodo.utils.system_pi import get_sec
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
 
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
-
-
-def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day):
-    """
-    For a cubic Bezier segment described by the 2-tuples P0, ..., P3, return
-    the y-value associated with the given x-value.
-
-    Ex: getYfromXforBezSegment((10,0), (5,-5), (5,5), (0,0), 3.2)
-    """
-
-    try:
-        import numpy as np
-    except ImportError:
-        np = None
-
-    if not np:
-        return 0
-
-    seconds_per_day = 24*60*60
-
-    # Check if the second of the day is provided.
-    # If provided, calculate y of the Bezier curve with that x
-    # Otherwise, use the current second of the day
-    if second_of_day is None:
-        raise Exception("second_of_day must be specified")
-    else:
-        seconds = second_of_day
-
-    # Shift the entire graph using 0 - 360 to determine the degree
-    if shift_angle:
-        percent_angle = shift_angle/360
-        angle_seconds = percent_angle*seconds_per_day
-        if seconds+angle_seconds > seconds_per_day:
-            seconds_shifted = seconds+angle_seconds-seconds_per_day
-        else:
-            seconds_shifted = seconds+angle_seconds
-        percent_of_day = seconds_shifted/seconds_per_day
-    else:
-        percent_of_day = seconds/seconds_per_day
-
-    x = percent_of_day*(P0[0]-P3[0])
-
-    # First, get the t-value associated with x-value, where t is the
-    # parameterization of the Bezier curve and ranges from 0 to 1.
-    # We need the coefficients of the polynomial describing cubic Bezier
-    # (cubic polynomial in t)
-    coefficients = [-P0[0] + 3*P1[0] - 3*P2[0] + P3[0],
-                    3*P0[0] - 6*P1[0] + 3*P2[0],
-                    -3*P0[0] + 3*P1[0],
-                    P0[0] - x]
-    # Find roots of the polynomial to determine the parameter t
-    roots = np.roots(coefficients)
-    # Find the root which is between 0 and 1, and is also real
-    correct_root = None
-    for root in roots:
-        if np.isreal(root) and 0 <= root <= 1:
-            correct_root = root
-    # Check a valid root was found
-    if correct_root is None:
-        print('Error, no valid root found. Are you sure your Bezier curve '
-              'represents a valid function when projected into the xy-plane?')
-        return 0
-    param_t = correct_root
-    # From the value for the t parameter, find the corresponding y-value
-    # using the formula for cubic Bezier curves
-    y = (1-param_t)**3*P0[1] + 3*(1-param_t)**2*param_t*P1[1] + 3*(1-param_t)*param_t**2*P2[1] + param_t**3*P3[1]
-    assert np.isreal(y)
-    # Typecast y from np.complex128 to float64
-    y = y.real
-    return y
-
 
 class AbstractMethod(object):
+    """
+    Basic class for methods. A method is called by controller (trigger, pid) to determine an analogue
+    value. A trigger can use this as condition or forward into a pwm output. Pid can use these values
+    to allow setpoint tracking functionality.
+    The config frontend also displays plots of the method. This class also calculates the necessary values.
+    """
 
     def __init__(self, method_data, method_type, logger=None):
         """
         Initializes the method class
-        :param method_id: ID of Method to be used
+        :param method_data: data queried from method_data table
+        :param method_type: method type from method table
         :param logger: The logger to use
         :return: 0 (success) or 1 (error) and a setpoint value
         """
@@ -105,13 +38,20 @@ class AbstractMethod(object):
     def calculate_setpoint(self, now, method_start_time=None):
         """
         Returns the value for the setpoint for a given point in time and elapsed duration
-        :param method_start_time: when this method started. Must accept datetime and strings
         :param now: point in time to calculate the value for
-        :return: float value of the setpoint;Ttrue if method ended, otherwise False
+        :param method_start_time: when this method started. Must accept datetime and strings
+        :return: float value of the setpoint; True if method finished, otherwise False
         """
         return None, False
 
     def should_restart(self, now, method_start_time=None):
+        """
+        If a method has signalled to be finished, this method is asked if the controller should restart
+        the method processing from the beginning.
+        :param now: point in time to calculate the value for
+        :param method_start_time: when this method started. Must accept datetime and strings
+        :return: True if the method wants to be restarted, otherwise False
+        """
         return False
 
     def get_plot(self, max_points_x=None):
@@ -124,8 +64,15 @@ class AbstractMethod(object):
 
 
 class DateMethod(AbstractMethod):
+    """
+    A time/date method allows a specific time/date span to dictate the setpoint.
+    This is useful for long-running methods, that may take place over the period of days, weeks, or months.
+    """
 
     def ignore_date(self):
+        """
+        :return: False -> date part of date-time should be considered
+        """
         return False
 
     def calculate_setpoint(self, now, method_start_time=None):
@@ -207,8 +154,17 @@ class DateMethod(AbstractMethod):
 
 
 class DailyMethod(DateMethod):
+    """
+    The daily time-based method is similar to the time/date method, however it will repeat every day.
+    Therefore, it is essential that only the span of one day be set in this method.
+
+    The implementation is derived from DateMethod, as the calculation is essentially the same ignoring the date part.
+    """
 
     def ignore_date(self):
+        """
+        :return: True -> date part of date-time should be ignored aka the method's data repeat on a daily basis.
+        """
         return True
 
     def get_plot(self, max_points_x=None):
@@ -233,6 +189,11 @@ class DailyMethod(DateMethod):
 
 
 class AbstractDailyFormulaMethod(AbstractMethod):
+    """
+    Abstract base for mathematical function based methods. It offers shared functionality to generate the frontend
+    plot by iterating through the x axis and calling the calculate_setpoint function to get the corresponding y values.
+    """
+
     def get_plot(self, max_points_x=700):
         result = []
 
@@ -249,6 +210,12 @@ class AbstractDailyFormulaMethod(AbstractMethod):
 
 
 class DailySineMethod(AbstractDailyFormulaMethod):
+    """
+    The daily sine wave method defines the setpoint over the day based on a sinusoidal wave.
+    The sine wave is defined by y = [A * sin(B * x + C)] + D, where A is amplitude, B is frequency,
+    C is the angle shift, and D is the y-axis shift. This method will repeat daily.
+    """
+
     def calculate_setpoint(self, now, method_start_time=None):
         # Calculate sine y-axis value from the x-axis (seconds of the day)
         dt = datetime.timedelta(hours=now.hour,
@@ -284,6 +251,11 @@ class DailyBezierMethod(AbstractDailyFormulaMethod):
 
 
 class DurationMethod(AbstractMethod):
+    """
+    A daily Bezier curve method define the setpoint over the day based on a cubic Bezier curve.
+    The x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit within a
+    24-hour period and this method will repeat daily.
+    """
 
     def calculate_setpoint(self, now, method_start_time=None):
         # Calculate the duration in the method based on self.method_start_time
@@ -373,6 +345,9 @@ class DurationMethod(AbstractMethod):
 
 
 def method_by_type(method_data, method_type, logger=None):
+    """
+    Looks up a method class suitable to the given method_type and initializes it with the given method_data
+    """
 
     method_class = globals().get(method_type+"Method")
     if not method_class or not issubclass(method_class, AbstractMethod):
@@ -383,15 +358,14 @@ def method_by_type(method_data, method_type, logger=None):
 
 
 def load_method(method_id, logger=None):
+    """
+    Loads method type and data from database for the given method_id. Then uses method_by_type to create an instance.
+    """
 
     method_type = db_retrieve_table_daemon(Method).filter(Method.unique_id == method_id).first().method_type
     method_data = db_retrieve_table_daemon(MethodData).filter(MethodData.method_id == method_id)
 
     return method_by_type(method_data, method_type, logger)
-
-
-def calculate_method_setpoint(method_id, table, this_controller, logger, start_time, now):
-    return load_method(method_id, logger).calculate_setpoint(now, start_time)
 
 
 def sine_wave_y_out(amplitude, frequency, shift_angle,
@@ -402,4 +376,74 @@ def sine_wave_y_out(amplitude, frequency, shift_angle,
         angle = angle_in
 
     y = (amplitude * sin(radians(frequency * (angle - shift_angle)))) + shift_y
+    return y
+
+
+def bezier_curve_y_out(shift_angle, P0, P1, P2, P3, second_of_day):
+    """
+    For a cubic Bezier segment described by the 2-tuples P0, ..., P3, return
+    the y-value associated with the given x-value.
+
+    Ex: getYfromXforBezSegment((10,0), (5,-5), (5,5), (0,0), 3.2)
+    """
+
+    try:
+        import numpy as np
+    except ImportError:
+        np = None
+
+    if not np:
+        return 0
+
+    seconds_per_day = 24*60*60
+
+    # Check if the second of the day is provided.
+    # If provided, calculate y of the Bezier curve with that x
+    # Otherwise, use the current second of the day
+    if second_of_day is None:
+        raise Exception("second_of_day must be specified")
+    else:
+        seconds = second_of_day
+
+    # Shift the entire graph using 0 - 360 to determine the degree
+    if shift_angle:
+        percent_angle = shift_angle/360
+        angle_seconds = percent_angle*seconds_per_day
+        if seconds+angle_seconds > seconds_per_day:
+            seconds_shifted = seconds+angle_seconds-seconds_per_day
+        else:
+            seconds_shifted = seconds+angle_seconds
+        percent_of_day = seconds_shifted/seconds_per_day
+    else:
+        percent_of_day = seconds/seconds_per_day
+
+    x = percent_of_day*(P0[0]-P3[0])
+
+    # First, get the t-value associated with x-value, where t is the
+    # parameterization of the Bezier curve and ranges from 0 to 1.
+    # We need the coefficients of the polynomial describing cubic Bezier
+    # (cubic polynomial in t)
+    coefficients = [-P0[0] + 3*P1[0] - 3*P2[0] + P3[0],
+                    3*P0[0] - 6*P1[0] + 3*P2[0],
+                    -3*P0[0] + 3*P1[0],
+                    P0[0] - x]
+    # Find roots of the polynomial to determine the parameter t
+    roots = np.roots(coefficients)
+    # Find the root which is between 0 and 1, and is also real
+    correct_root = None
+    for root in roots:
+        if np.isreal(root) and 0 <= root <= 1:
+            correct_root = root
+    # Check a valid root was found
+    if correct_root is None:
+        print('Error, no valid root found. Are you sure your Bezier curve '
+              'represents a valid function when projected into the xy-plane?')
+        return 0
+    param_t = correct_root
+    # From the value for the t parameter, find the corresponding y-value
+    # using the formula for cubic Bezier curves
+    y = (1-param_t)**3*P0[1] + 3*(1-param_t)**2*param_t*P1[1] + 3*(1-param_t)*param_t**2*P2[1] + param_t**3*P3[1]
+    assert np.isreal(y)
+    # Typecast y from np.complex128 to float64
+    y = y.real
     return y
