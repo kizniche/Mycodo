@@ -256,7 +256,10 @@ class PIDController(AbstractController, threading.Thread):
                         self.setpoint_tracking_id,
                         PID,
                         this_pid,
-                        self.logger)
+                        self.logger,
+                        self.pid.method_start_time,
+                        self.pid.method_end_time,
+                        datetime.datetime.now())
                     if ended:
                         self.method_start_act = 'Ended'
                     if new_setpoint is not None:
