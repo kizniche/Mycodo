@@ -125,17 +125,17 @@ class AbstractMethod(object):
 
 class DateMethod(AbstractMethod):
 
-    def ignore_time(self):
+    def ignore_date(self):
         return False
 
     def calculate_setpoint(self, now, method_start_time=None):
         # Calculate where the current time/date is within the time/date method
 
-        if self.ignore_time():
+        if self.ignore_date():
             now = datetime.datetime.strptime(str(now.strftime('%H:%M:%S')), '%H:%M:%S')
 
         for each_method in self.method_data_all:
-            if self.ignore_time():
+            if self.ignore_date():
                 start_time = datetime.datetime.strptime(each_method.time_start, '%H:%M:%S')
                 end_time = datetime.datetime.strptime(each_method.time_end, '%H:%M:%S')
             else:
@@ -160,7 +160,7 @@ class DateMethod(AbstractMethod):
                     new_setpoint = setpoint_start - (setpoint_diff * percent_total)
 
                 if self.logger:
-                    if self.ignore_time():
+                    if self.ignore_date():
                         self.logger.debug("[Method] Start: {start} End: {end}".format(
                             start=start_time.strftime('%H:%M:%S'),
                             end=end_time.strftime('%H:%M:%S')))
@@ -208,7 +208,7 @@ class DateMethod(AbstractMethod):
 
 class DailyMethod(DateMethod):
 
-    def ignore_time(self):
+    def ignore_date(self):
         return True
 
     def get_plot(self, max_points_x=None):

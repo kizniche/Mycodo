@@ -130,7 +130,8 @@ class TriggerController(AbstractController, threading.Thread):
 
                 # Only execute trigger actions when started
                 # Now only set PWM output
-                pwm_duty_cycle, ended = self.get_method_output(self.trigger.unique_id_1)
+                pwm_duty_cycle, ended = self.get_method_output(
+                    self.trigger.unique_id_1)
                 if not ended:
                     self.timer_period += self.trigger.period
                     self.set_output_duty_cycle(pwm_duty_cycle)
@@ -269,10 +270,10 @@ class TriggerController(AbstractController, threading.Thread):
             if method.method_type == 'Duration':
                 if self.method_start_act == 'Ended':
                     with session_scope(MYCODO_DB_PATH) as db_session:
-                        this_controller = db_session.query(Trigger)
-                        this_controller = this_controller.filter(
+                        mod_conditional = db_session.query(Trigger)
+                        mod_conditional = mod_conditional.filter(
                             Trigger.unique_id == self.unique_id).first()
-                        this_controller.is_activated = False
+                        mod_conditional.is_activated = False
                         db_session.commit()
                     self.stop_controller()
                     self.logger.warning(
@@ -288,11 +289,11 @@ class TriggerController(AbstractController, threading.Thread):
                             seconds=float(method.method_data_repeat.duration_end))
 
                     with session_scope(MYCODO_DB_PATH) as db_session:
-                        this_controller = db_session.query(Trigger)
-                        this_controller = this_controller.filter(
+                        mod_conditional = db_session.query(Trigger)
+                        mod_conditional = mod_conditional.filter(
                             Trigger.unique_id == self.unique_id).first()
-                        this_controller.method_start_time = self.method_start_time
-                        this_controller.method_end_time = self.method_end_time
+                        mod_conditional.method_start_time = self.method_start_time
+                        mod_conditional.method_end_time = self.method_end_time
                         db_session.commit()
 
     def get_method_output(self, method_id):
