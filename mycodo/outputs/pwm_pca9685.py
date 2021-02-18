@@ -361,7 +361,7 @@ class OutputModule(AbstractOutput):
             self.pwm_output.set_pwm_freq(self.pwm_hertz)
 
             self.output_setup = True
-            self.logger.info("Output setup on bus {} at {}".format(
+            self.logger.debug("Output setup on bus {} at {}".format(
                 self.output.i2c_bus, self.output.i2c_location))
 
             for i in range(16):

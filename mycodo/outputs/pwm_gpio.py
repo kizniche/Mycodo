@@ -211,16 +211,16 @@ class OutputModule(AbstractOutput):
             elif self.options_channels['pwm_library'][0] == 'pigpio_any':
                 self.pwm_output.set_PWM_frequency(
                     self.options_channels['pin'][0], self.options_channels['pwm_hertz'][0])
-                self.pwm_output.set_PWM_dutycycle(
-                    self.options_channels['pin'][0], 0)
 
             self.output_setup = True
-            self.logger.info("Output setup on pin {}".format(self.options_channels['pin'][0]))
 
+            state_string = ""
             if self.options_channels['state_startup'][0] == 0:
                 self.output_switch('off')
+                state_string += " and turned off (0 % duty cycle)"
             elif self.options_channels['state_startup'][0] == 'set_duty_cycle':
                 self.output_switch('on', amount=self.options_channels['startup_value'][0])
+                state_string += " and {} % duty cycle (user-specified value)".format(self.options_channels['startup_value'][0])
             elif self.options_channels['state_startup'][0] == 'last_duty_cycle':
                 device_measurement = db_retrieve_table_daemon(DeviceMeasurements).filter(
                     and_(DeviceMeasurements.device_id == self.unique_id,
@@ -237,9 +237,7 @@ class OutputModule(AbstractOutput):
                         duration_sec=None)
 
                 if last_measurement:
-                    self.logger.info(
-                        "Setting startup duty cycle to last known value of {dc} %".format(
-                            dc=last_measurement[1]))
+                    state_string += " and {} % duty cycle (last known value)".format(last_measurement[1])
                     self.output_switch('on', amount=last_measurement[1])
                 else:
                     self.logger.error(
@@ -247,6 +245,11 @@ class OutputModule(AbstractOutput):
                         "the last known duty cycle, but a last known "
                         "duty cycle could not be found in the measurement "
                         "database")
+
+            self.logger.info("Output setup on pin {pin} at {hz} Hertz{ss}".format(
+                pin=self.options_channels['pin'][0],
+                hz=self.options_channels['pwm_hertz'][0],
+                ss=state_string))
         except Exception as except_msg:
             self.logger.exception("Output was unable to be setup on pin {pin}: {err}".format(
                 pin=self.options_channels['pin'][0], err=except_msg))
