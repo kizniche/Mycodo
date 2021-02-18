@@ -70,7 +70,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import write_influxdb_value
-from mycodo.utils.method import calculate_method_setpoint
+from mycodo.utils.method import load_method
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.pid_controller_default import PIDControl
 from mycodo.utils.system_pi import get_measurement
@@ -252,19 +252,56 @@ class PIDController(AbstractController, threading.Thread):
                 if self.setpoint_tracking_type == 'method' and self.setpoint_tracking_id != '':
                     # Update setpoint using a method
                     this_pid = db_retrieve_table_daemon(PID, unique_id=self.unique_id)
-                    new_setpoint, ended = calculate_method_setpoint(
-                        self.setpoint_tracking_id,
-                        PID,
-                        this_pid,
-                        self.logger,
-                        self.pid.method_start_time,
-                        self.pid.method_end_time,
-                        datetime.datetime.now())
-                    if ended:
-                        self.method_start_act = 'Ended'
+
+                    now = datetime.datetime.now()
+
+                    if this_pid.method_start_time is None or this_pid.method_start_time == 'Ready':
+                        this_pid.method_start_time = now
+
+                    method = load_method(self.setpoint_tracking_id, self.logger)
+                    new_setpoint, finished = method.calculate_setpoint(now, this_pid.method_start_time)
+                    self.logger.debug("Method {} {} {} {}".format(self.setpoint_tracking_id, method, now, this_pid.method_start_time))
+
+                    # Check if method_end_time is not None
+                    end_time_reached = False
+                    if this_pid.method_end_time:
+                        # Convert time string to datetime object
+                        end_time = datetime.datetime.strptime(
+                            str(this_pid.method_end_time), '%Y-%m-%d %H:%M:%S.%f')
+                        if now > end_time:
+                            end_time_reached = True
+
+                    if finished or end_time_reached:
+                        # point in time is out of method range
+                        with session_scope(MYCODO_DB_PATH) as db_session:
+                            # Overwrite this_controller with committable connection
+                            this_pid = db_session.query(PID).filter(
+                                PID.unique_id == self.unique_id).first()
+
+                            if not end_time_reached and method.should_restart(now, this_pid.method_start_time):
+                                self.logger.debug("Restart")
+                                # Method has been instructed to restart
+                                this_pid.method_start_time = now
+                                # Calculate restart value
+                                new_setpoint, finished = method.calculate_setpoint(now, this_pid.method_start_time)
+                            else:
+                                self.logger.debug("Ended")
+                                # Duration method has ended, reset method_start_time locally and in DB
+                                this_pid.method_start_time = 'Ended'
+                                this_pid.method_end_time = None
+                                this_pid.is_activated = False
+                                db_session.commit()
+
+                                self.is_activated = False
+                                self.stop_controller()
+
+                            db_session.commit()
+
                     if new_setpoint is not None:
+                        self.logger.debug("New setpoint = {} {}".format(new_setpoint, finished))
                         self.PID_Controller.setpoint = new_setpoint
                     else:
+                        self.logger.debug("New setpoint = default {} {}".format(self.setpoint, finished))
                         self.PID_Controller.setpoint = self.setpoint
 
                 if self.setpoint_tracking_type == 'input-math' and self.setpoint_tracking_id != '':
@@ -315,10 +352,8 @@ class PIDController(AbstractController, threading.Thread):
         """ Initialize method variables to start running a method """
         self.setpoint_tracking_id = ''
 
-        method = db_retrieve_table_daemon(Method, unique_id=method_id)
-        method_data = db_retrieve_table_daemon(MethodData)
-        method_data = method_data.filter(MethodData.method_id == method_id)
-        method_data_repeat = method_data.filter(MethodData.duration_sec == 0).first()
+        method = load_method(method_id, self.logger)
+
         pid = db_retrieve_table_daemon(PID, unique_id=self.unique_id)
         self.method_type = method.method_type
         self.method_start_act = pid.method_start_time
@@ -328,36 +363,29 @@ class PIDController(AbstractController, threading.Thread):
         if self.method_type == 'Duration':
             if self.method_start_act == 'Ended':
                 # Method has ended and hasn't been instructed to begin again
-                pass
+                with session_scope(MYCODO_DB_PATH) as db_session:
+                    mod_pid = db_session.query(PID)
+                    mod_pid = mod_pid.filter(
+                        PID.unique_id == self.unique_id).first()
+                    mod_pid.is_activated = False
+                    db_session.commit()
+                self.stop_controller()
+                self.logger.warning(
+                    "Method has ended. "
+                    "Activate the PID controller to start it again.")
             elif self.method_start_act == 'Ready' or self.method_start_act is None:
                 # Method has been instructed to begin
                 now = datetime.datetime.now()
                 self.method_start_time = now
-                if method_data_repeat and method_data_repeat.duration_end:
+                if method.method_data_repeat and method.method_data_repeat.duration_end:
                     self.method_end_time = now + datetime.timedelta(
-                        seconds=float(method_data_repeat.duration_end))
+                        seconds=float(method.method_data_repeat.duration_end))
 
                 with session_scope(MYCODO_DB_PATH) as db_session:
                     mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()
                     mod_pid.method_start_time = self.method_start_time
                     mod_pid.method_end_time = self.method_end_time
                     db_session.commit()
-            else:
-                # Method neither instructed to begin or not to
-                # Likely there was a daemon restart ot power failure
-                # Resume method with saved start_time
-                self.method_start_time = datetime.datetime.strptime(
-                    str(pid.method_start_time), '%Y-%m-%d %H:%M:%S.%f')
-                if method_data_repeat and method_data_repeat.duration_end:
-                    self.method_end_time = datetime.datetime.strptime(
-                        str(pid.method_end_time), '%Y-%m-%d %H:%M:%S.%f')
-                    if self.method_end_time > datetime.datetime.now():
-                        self.logger.warning("Resuming method {id}: started {start}, ends {end}".format(
-                            id=method_id, start=self.method_start_time, end=self.method_end_time))
-                    else:
-                        self.method_start_act = 'Ended'
-                else:
-                    self.method_start_act = 'Ended'
 
         self.setpoint_tracking_id = method_id
         self.logger.debug("Method enabled: {id}".format(id=self.setpoint_tracking_id))
