@@ -1,24 +1,74 @@
 # coding=utf-8
 """ Tests for input classes """
 import inspect
-import os
 from collections.abc import Iterator
 
 import mock
+import os
 import pytest
 from testfixtures import LogCapture
 
-from mycodo.utils.inputs import parse_input_information
-from mycodo.utils.modules import load_module_from_file
+from mycodo.inputs.am2315 import InputModule as AM2315Sensor
+from mycodo.inputs.atlas_ph import InputModule as AtlaspHSensor
+from mycodo.inputs.atlas_pt1000 import InputModule as AtlasPT1000Sensor
+from mycodo.inputs.bh1750 import InputModule as BH1750Sensor
+from mycodo.inputs.bme280 import InputModule as BME280Sensor
+from mycodo.inputs.bmp180 import InputModule as BMP180Sensor
+from mycodo.inputs.bmp280 import InputModule as BMP280Sensor
+from mycodo.inputs.chirp import InputModule as ChirpSensor
+from mycodo.inputs.dht11 import InputModule as DHT11Sensor
+from mycodo.inputs.dht22 import InputModule as DHT22Sensor
+from mycodo.inputs.ds18b20 import InputModule as DS18B20Sensor
+from mycodo.inputs.htu21d import InputModule as HTU21DSensor
+from mycodo.inputs.ina219x import InputModule as INA219xSensor
+from mycodo.inputs.k30 import InputModule as K30Sensor
+from mycodo.inputs.linux_command import InputModule as LinuxCommand
+from mycodo.inputs.mh_z16 import InputModule as MHZ16Sensor
+from mycodo.inputs.mh_z19 import InputModule as MHZ19Sensor
+from mycodo.inputs.mycodo_ram import InputModule as MycodoRam
+from mycodo.inputs.rpi_cpu_gpu_temperature import InputModule as RaspberryPiCPUTemp
+from mycodo.inputs.rpi_signal_pwm import InputModule as SignalPWMInput
+from mycodo.inputs.rpi_signal_revolutions import InputModule as SignalRPMInput
+from mycodo.inputs.sht1x_7x import InputModule as SHT1x7xSensor
+from mycodo.inputs.sht2x import InputModule as SHT2xSensor
+from mycodo.inputs.system_cpuload import InputModule as RaspberryPiCPULoad
+from mycodo.inputs.system_freespace import InputModule as RaspberryPiFreeSpace
+from mycodo.inputs.tmp006 import InputModule as TMP006Sensor
+from mycodo.inputs.tsl2561 import InputModule as TSL2561Sensor
+from mycodo.inputs.tsl2591_sensor import InputModule as TSL2591Sensor
+from mycodo.inputs.ttn_data_storage import InputModule as TTNDataStorage
 
-dict_inputs = parse_input_information()
-
-input_classes = []
-for each_device in dict_inputs:
-    input_loaded = load_module_from_file(
-        dict_inputs[each_device]['file_path'],
-        'inputs')
-    input_classes.append(input_loaded.InputModule(None, testing=True))
+input_classes = [
+    AM2315Sensor(None, testing=True),
+    AtlaspHSensor(None, testing=True),
+    AtlasPT1000Sensor(None, testing=True),
+    BH1750Sensor(None, testing=True),
+    BME280Sensor(None, testing=True),
+    BMP180Sensor(None, testing=True),
+    BMP280Sensor(None, testing=True),
+    ChirpSensor(None, testing=True),
+    DHT11Sensor(None, testing=True),
+    DHT22Sensor(None, testing=True),
+    DS18B20Sensor(None, testing=True),
+    HTU21DSensor(None, testing=True),
+    INA219xSensor(None, testing=True),
+    K30Sensor(None, testing=True),
+    LinuxCommand(None, testing=True),
+    MHZ16Sensor(None, testing=True),
+    MHZ19Sensor(None, testing=True),
+    MycodoRam(None, testing=True),
+    RaspberryPiCPUTemp(None, testing=True),
+    RaspberryPiCPULoad(None, testing=True),
+    RaspberryPiFreeSpace(None, testing=True),
+    SHT1x7xSensor(None, testing=True),
+    SHT2xSensor(None, testing=True),
+    SignalPWMInput(None, testing=True),
+    SignalRPMInput(None, testing=True),
+    TMP006Sensor(None, testing=True),
+    TSL2561Sensor(None, testing=True),
+    TSL2591Sensor(None, testing=True),
+    TTNDataStorage(None, testing=True)
+]
 
 
 def test_inputs_have_depreciated_stop_input():
