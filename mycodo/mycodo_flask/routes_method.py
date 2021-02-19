@@ -24,7 +24,7 @@ from mycodo.mycodo_flask.forms import forms_method
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_method
-from mycodo.utils.method import method_by_type
+from mycodo.utils.method import create_method_handler
 from mycodo.utils.outputs import output_types
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
@@ -56,7 +56,7 @@ def method_data(method_id):
     # User-edited lines of each method
     method_data = MethodData.query.filter(MethodData.method_id == method.unique_id)
 
-    return jsonify(method_by_type(method_data, method.method_type).get_plot(700))
+    return jsonify(create_method_handler(method, method_data).get_plot(700))
 
 
 @blueprint.route('/method', methods=('GET', 'POST'))
@@ -110,6 +110,36 @@ def method_builder(method_id):
 
     # First method column with general information about method
     method = Method.query.filter(Method.unique_id == method_id).first()
+
+    if method.method_type == 'Cascade':
+        method_data = MethodData.query.filter(
+            MethodData.method_id == method.unique_id)
+
+        cascade_method = Method.query.filter(Method.unique_id != method_id).all()
+
+        if request.method == 'POST':
+            form_name = request.form['form-name']
+            if form_name == 'addMethod':
+                form_fail = utils_method.method_add(form_add_method)
+            elif form_name in ['modMethod', 'renameMethod']:
+                form_fail = utils_method.method_mod(form_mod_method)
+            if (form_name in ['addMethod', 'modMethod', 'renameMethod'] and
+                    not form_fail):
+                return redirect('/method-build/{method_id}'.format(
+                    method_id=method.unique_id))
+
+        if not method_data:
+            method_data = []
+
+        return render_template('pages/method-build.html',
+                               method=method,
+                               method_data=method_data,
+                               method_id=method_id,
+                               output_types=output_types(),
+                               cascade_method=cascade_method,
+                               form_create_method=form_create_method,
+                               form_add_method=form_add_method,
+                               form_mod_method=form_mod_method)
 
     if method.method_type in ['Date', 'Duration', 'Daily',
                               'DailySine', 'DailyBezier']:

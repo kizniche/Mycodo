@@ -40,7 +40,7 @@ from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.function_actions import trigger_function_actions
-from mycodo.utils.method import load_method
+from mycodo.utils.method import load_method_handler
 from mycodo.utils.sunriseset import calculate_sunrise_sunset_epoch
 from mycodo.utils.system_pi import epoch_of_next_time
 from mycodo.utils.system_pi import time_between_range
@@ -261,7 +261,7 @@ class TriggerController(AbstractController, threading.Thread):
     def start_method(self, method_id):
         """ Instruct a method to start running """
         if method_id:
-            method = load_method(method_id, self.logger)
+            method = load_method_handler(method_id, self.logger)
 
             self.method_start_act = self.method_start_time
             self.method_start_time = None
@@ -306,7 +306,7 @@ class TriggerController(AbstractController, threading.Thread):
         if this_controller.method_start_time is None or this_controller.method_start_time == 'Ready':
             this_controller.method_start_time = now
 
-        method = load_method(method_id, self.logger)
+        method = load_method_handler(method_id, self.logger)
         setpoint, finished = method.calculate_setpoint(now, this_controller.method_start_time)
 
         # Check if method_end_time is not None

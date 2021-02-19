@@ -68,7 +68,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.influx import write_influxdb_value
-from mycodo.utils.method import load_method
+from mycodo.utils.method import load_method_handler
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.pid_controller_default import PIDControl
 from mycodo.utils.system_pi import get_measurement
@@ -256,7 +256,7 @@ class PIDController(AbstractController, threading.Thread):
                     if this_pid.method_start_time is None or this_pid.method_start_time == 'Ready':
                         this_pid.method_start_time = now
 
-                    method = load_method(self.setpoint_tracking_id, self.logger)
+                    method = load_method_handler(self.setpoint_tracking_id, self.logger)
                     new_setpoint, finished = method.calculate_setpoint(now, this_pid.method_start_time)
                     self.logger.debug("Method {} {} {} {}".format(self.setpoint_tracking_id, method, now, this_pid.method_start_time))
 
@@ -350,7 +350,7 @@ class PIDController(AbstractController, threading.Thread):
         """ Initialize method variables to start running a method """
         self.setpoint_tracking_id = ''
 
-        method = load_method(method_id, self.logger)
+        method = load_method_handler(method_id, self.logger)
 
         pid = db_retrieve_table_daemon(PID, unique_id=self.unique_id)
         self.method_type = method.method_type

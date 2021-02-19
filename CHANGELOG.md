@@ -67,7 +67,8 @@ This new weather input acquires current and future weather conditions from openw
  - Add Custom Functions/Inputs/Outputs/Widgets to Settings Export/Import
  - Add user_scripts directory for user code that's preserved during upgrade/export/import ([#930](https://github.com/kizniche/mycodo/issues/930))
  - Add pin mode option (float, pull-up, pull-down) for Edge and State Inputs
- 
+ - Add Method: Cascaded Method, allows combining (multiply) any number of existing methods ([discussion](https://kylegabriel.com/forum/general-discussion/refactor-method-implementation-to-enable-further-methods/))
+
 ### Miscellaneous
 
  - Change widget title styles

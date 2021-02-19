@@ -69,6 +69,8 @@
           {% include 'pages/method_options/build_daily_sine.html' %}
         {%- elif method.method_type == "DailyBezier" -%}
           {% include 'pages/method_options/build_daily_bezier.html' %}
+        {%- elif method.method_type == "Cascade" -%}
+          {% include 'pages/method_options/build_cascade.html' %}
         {%- endif -%}
 
       </form>
@@ -80,6 +82,38 @@
         <div class="col-sm-12" id="container" style="padding-top: 1.5em; height: 300px; width: 100%;"></div>
       </div>
 
+    {%- endif -%}
+
+    {%- if method.method_type == "Cascade" -%}
+      <div class="row small-gutters" style="padding: 0.7em">
+        <div class="col-sm-12">
+          {{_('Methods invoked to calculate the value of this method:')}}
+        </div>
+      </div>
+
+      {%- for each_method in method_data if each_method.method_id == method.unique_id -%}
+      <form method="post" action="/method-build/{{method.unique_id}}">
+        <input type="hidden" name="form-name" value="modMethod">
+        {{form_mod_method.csrf_token}}
+        {{form_mod_method.method_id(class_='form-control', value=method.unique_id)}}
+        {{form_mod_method.method_data_id(class_='form-control', value=each_method.unique_id)}}
+
+        <div class="row align-items-end small-gutters" style="padding: 0.7em">
+
+          <div class="col-auto">
+            {%- for linked_method in cascade_method if linked_method.unique_id == each_method.linked_method_id -%}
+            <div class="form-control">[{{'%02d' % linked_method.id}}] {{linked_method.name}}</div>
+            {%- endfor -%}
+          </div>
+
+          <div class="col-auto">
+            {{form_mod_method.delete(class_='btn btn-primary')}}
+          </div>
+
+        </div>
+
+      </form>
+      {%- endfor -%}
     {%- endif -%}
 
     {%- if method_setpoint -%}

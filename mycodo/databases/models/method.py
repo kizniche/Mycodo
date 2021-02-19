@@ -46,6 +46,7 @@ class MethodData(CRUDMixin, db.Model):
     y2 = db.Column(db.Float, default=None)
     x3 = db.Column(db.Float, default=None)
     y3 = db.Column(db.Float, default=None)
+    linked_method_id = db.Column(db.String, db.ForeignKey('method.unique_id'), default=None)
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

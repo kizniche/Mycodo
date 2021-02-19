@@ -17,7 +17,7 @@ class AbstractMethod(object):
     The config frontend also displays plots of the method. This class also calculates the necessary values.
     """
 
-    def __init__(self, method_data, method_type, logger=None):
+    def __init__(self, method, method_data, logger=None):
         """
         Initializes the method class
         :param method_data: data queried from method_data table
@@ -27,7 +27,9 @@ class AbstractMethod(object):
         """
         self.logger = logger
 
-        self.method_type = method_type
+        self.unique_id = method.unique_id
+        self.method_type = method.method_type
+        self.method_name = method.name
 
         self.method_data = method_data
 
@@ -344,28 +346,81 @@ class DurationMethod(AbstractMethod):
         return result
 
 
-def method_by_type(method_data, method_type, logger=None):
+class CascadeMethod(AbstractMethod):
+
+    def calculate_setpoint(self, now, method_start_time=None, blacklist=None):
+        setpoint = 1.0
+        ended = False
+
+        # blacklist is passed into cascaded cascade methods to avoid endless loops
+        if blacklist is None:
+            blacklist = set()
+
+        if self.unique_id in blacklist:
+            if self.logger:
+                self.logger.error("Recursive method invocation. Stopping here.")
+                return None, False
+
+        blacklist.add(self.unique_id)
+
+        for each_method in self.method_data_all:
+            if not each_method.linked_method_id:
+                if self.logger:
+                    self.logger.warning("Method data does not contain linked_method_id")
+                continue
+
+            linked_method = load_method_handler(each_method.linked_method_id, self.logger)
+
+            if not linked_method:
+                if self.logger:
+                    self.logger.warning("Linked method {} not found".format(each_method.linked_method_id))
+                continue
+
+            if isinstance(linked_method, CascadeMethod):
+                linked_method_setpoint, linked_method_ended = linked_method.calculate_setpoint(
+                    now, method_start_time, blacklist)
+            else:
+                linked_method_setpoint, linked_method_ended = linked_method.calculate_setpoint(
+                    now, method_start_time)
+
+            if linked_method_setpoint is not None:
+                setpoint *= linked_method_setpoint
+            if linked_method_ended:
+                ended = True
+
+            if self.logger:
+                self.logger.debug("Linked method: {} {} returned {}, {}; current product is {}, {}".format(
+                    each_method.linked_method_id, linked_method.method_name, linked_method_setpoint, linked_method_ended,
+                    setpoint, ended))
+
+        return setpoint, ended
+
+
+def create_method_handler(method, method_data, logger=None):
     """
     Looks up a method class suitable to the given method_type and initializes it with the given method_data
     """
 
-    method_class = globals().get(method_type+"Method")
+    method_class = globals().get(method.method_type+"Method")
     if not method_class or not issubclass(method_class, AbstractMethod):
-        logger.error("Method {} is unknown.".format(method_type))
+        logger.error("Method {} is unknown.".format(method.method_type))
         method_class = AbstractMethod
 
-    return method_class(method_data, method_type, logger)
+    return method_class(method, method_data, logger)
 
 
-def load_method(method_id, logger=None):
+def load_method_handler(method_id, logger=None):
     """
     Loads method type and data from database for the given method_id. Then uses method_by_type to create an instance.
     """
 
-    method_type = db_retrieve_table_daemon(Method).filter(Method.unique_id == method_id).first().method_type
+    method = db_retrieve_table_daemon(Method).filter(Method.unique_id == method_id).first()
+    if not method:
+        return None
+
     method_data = db_retrieve_table_daemon(MethodData).filter(MethodData.method_id == method_id)
 
-    return method_by_type(method_data, method_type, logger)
+    return create_method_handler(method, method_data, logger)
 
 
 def sine_wave_y_out(amplitude, frequency, shift_angle,
