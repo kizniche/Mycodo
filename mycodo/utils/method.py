@@ -349,7 +349,7 @@ class DurationMethod(AbstractMethod):
 class CascadeMethod(AbstractMethod):
 
     def calculate_setpoint(self, now, method_start_time=None, blacklist=None):
-        setpoint = 100.0
+        setpoint = 1.
         ended = False
 
         # blacklist is passed into cascaded cascade methods to avoid endless loops
@@ -384,15 +384,16 @@ class CascadeMethod(AbstractMethod):
                     now, method_start_time)
 
             if linked_method_setpoint is not None:
-                setpoint *= linked_method_setpoint
+                setpoint *= linked_method_setpoint / 100.
             if linked_method_ended:
                 ended = True
 
             if self.logger:
                 self.logger.debug("Linked method: {} {} returned {}, {}; current product is {}, {}".format(
                     each_method.linked_method_id, linked_method.method_name, linked_method_setpoint, linked_method_ended,
-                    setpoint, ended))
+                    setpoint * 100., ended))
 
+        setpoint *= 100.
         return setpoint, ended
 
 
