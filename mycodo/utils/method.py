@@ -349,7 +349,7 @@ class DurationMethod(AbstractMethod):
 class CascadeMethod(AbstractMethod):
 
     def calculate_setpoint(self, now, method_start_time=None, blacklist=None):
-        setpoint = 1.0
+        setpoint = 100.0
         ended = False
 
         # blacklist is passed into cascaded cascade methods to avoid endless loops
