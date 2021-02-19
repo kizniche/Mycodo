@@ -1,7 +1,7 @@
 # coding=utf-8
 """ Tests for input classes """
 import inspect
-from collections import Iterator
+from collections.abc import Iterator
 
 import mock
 import os

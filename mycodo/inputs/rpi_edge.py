@@ -73,9 +73,10 @@ class InputModule(AbstractInput):
         self.switch_edge_gpio = None
         self.edge_reset_timer = time.time()
         self.pin_mode = None
-        self.setup_custom_options(INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

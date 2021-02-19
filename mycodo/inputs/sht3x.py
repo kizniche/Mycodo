@@ -120,10 +120,10 @@ class InputModule(AbstractInput):
         self.heater_enable = None
         self.heater_seconds = None
         self.heater_measurements = None
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

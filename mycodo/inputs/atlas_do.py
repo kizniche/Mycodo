@@ -81,7 +81,6 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """A sensor support class that monitors the Atlas Scientific sensor DO"""
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -90,10 +89,10 @@ class InputModule(AbstractInput):
         self.calibrate_sensor_measure = None
 
         self.max_age = None
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

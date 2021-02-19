@@ -82,10 +82,10 @@ class InputModule(AbstractInput):
         self.sample_time = None
         self.weighting = None
         self.session_total_volume = 0.0
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

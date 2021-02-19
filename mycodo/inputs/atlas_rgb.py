@@ -154,7 +154,6 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """A sensor support class that monitors the Atlas Scientific sensor"""
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -162,16 +161,13 @@ class InputModule(AbstractInput):
         self.interface = None
         self.enabled_rgb = False
 
-        # Initialize custom option variables to None
         self.led_only_while_reading = None
         self.led_percentage = None
         self.gamma_correction = None
 
-        # Set custom option variables to defaults or user-set values
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
-
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

@@ -110,10 +110,10 @@ class InputModule(AbstractInput):
         self.fan_modulate = None
         self.fan_seconds = None
         self.number_measurements = None
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):
