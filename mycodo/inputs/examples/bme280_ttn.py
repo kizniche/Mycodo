@@ -119,9 +119,11 @@ class InputModule(AbstractInput):
 
         # Initialize custom options
         self.serial_device = None
-        # Set custom options
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
+
+        if not testing:
+            # Set custom options
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
 
     def initialize_input(self):
         from Adafruit_BME280 import BME280

@@ -137,10 +137,10 @@ class InputModule(AbstractInput):
         self.download_stored_data = None
         self.logging_interval_ms = None
         self.logging_interval = None
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

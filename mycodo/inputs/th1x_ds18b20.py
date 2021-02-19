@@ -60,9 +60,11 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.ip_address = None
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
-        self.ip_address = self.ip_address.replace(" ", "")  # Remove spaces
+
+        if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
+            self.ip_address = self.ip_address.replace(" ", "")  # Remove spaces
 
     def get_measurement(self):
         self.return_dict = copy.deepcopy(measurements_dict)

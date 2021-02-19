@@ -295,10 +295,10 @@ class InputModule(AbstractInput):
         self.gas_heater_duration = None
         self.gas_heater_profile = None
         self.temp_offset = None
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

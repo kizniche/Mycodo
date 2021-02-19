@@ -170,10 +170,10 @@ class InputModule(AbstractInput):
         self.indicator_led_current = None
         self.indicator_led_mode = None
         self.integration_time = None
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

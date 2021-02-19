@@ -77,10 +77,10 @@ class InputModule(AbstractInput):
         self.command_timeout = None
         self.execute_as_user = None
         self.current_working_dir = None
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

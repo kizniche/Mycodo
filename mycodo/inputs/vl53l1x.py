@@ -94,10 +94,10 @@ class InputModule(AbstractInput):
         self.range = None
         self.timing_budget = None
         self.inter_measurement_period = None
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

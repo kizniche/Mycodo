@@ -125,10 +125,10 @@ class InputModule(AbstractInput):
         self.application_id = None
         self.app_api_key = None
         self.device_id = None
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

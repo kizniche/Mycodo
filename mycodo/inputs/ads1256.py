@@ -100,10 +100,10 @@ class InputModule(AbstractInput):
         self.adc_sample_speed = None
 
         self.adc_calibration = None
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

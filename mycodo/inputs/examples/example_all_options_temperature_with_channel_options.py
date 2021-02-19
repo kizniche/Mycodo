@@ -322,11 +322,11 @@ class InputModule(AbstractInput):
         self.fan_seconds = None
         self.measure_range = None
 
-        # Set custom option variables to defaults or user-set values
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
-
         if not testing:
+            # Set custom option variables to defaults or user-set values
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
+
             self.initialize_input()
 
     def initialize_input(self):

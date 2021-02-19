@@ -122,9 +122,11 @@ class InputModule(AbstractInput):
 
         # Initialize custom options from INPUT_INFORMATION
         self.option_one = False
-        # Set custom options
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
+
+        if not testing:
+            # Set custom options
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
 
     def initialize_input(self):
         # Load dependent modules

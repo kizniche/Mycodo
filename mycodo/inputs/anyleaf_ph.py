@@ -200,10 +200,9 @@ class InputModule(AbstractInput):
         # self.temperature_comp_meas_measurement_id = None
         # self.max_age = None
 
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
-
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

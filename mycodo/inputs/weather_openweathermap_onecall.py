@@ -181,10 +181,10 @@ class InputModule(AbstractInput):
         self.longitude = None
         self.weather_time = None
         self.weather_time_dict = {}
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):

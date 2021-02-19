@@ -84,10 +84,9 @@ class InputModule(AbstractInput):
         self.ref_ohm = None
         self.rtd_nominal = None
 
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], input_dev)
-
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):
