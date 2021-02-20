@@ -77,6 +77,7 @@ This new weather input acquires current and future weather conditions from openw
  - Update pyusb to 1.1.1
  - Refactor Edge detection Input
  - Refactor method implementation from single large method into multiple small classes
+ - Changed duration method start- and end-time handling
 
 
 ## 8.8.8 (2020-10-30)
