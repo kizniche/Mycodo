@@ -274,10 +274,10 @@ class PIDController(AbstractController, threading.Thread):
                             db_session.commit()
 
                     if new_setpoint is not None:
-                        self.logger.debug("New setpoint = {} {}".format(new_setpoint, finished))
+                        self.logger.debug("New setpoint = {} {}".format(new_setpoint, ended))
                         self.PID_Controller.setpoint = new_setpoint
                     else:
-                        self.logger.debug("New setpoint = default {} {}".format(self.setpoint, finished))
+                        self.logger.debug("New setpoint = default {} {}".format(self.setpoint, ended))
                         self.PID_Controller.setpoint = self.setpoint
 
                 if self.setpoint_tracking_type == 'input-math' and self.setpoint_tracking_id != '':
