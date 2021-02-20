@@ -874,13 +874,6 @@ def action_method_pid(cond_action, message):
         id=pid.id,
         name=pid.name)
 
-    # Instruct method to start
-    with session_scope(MYCODO_DB_PATH) as new_session:
-        mod_pid = new_session.query(PID).filter(
-            PID.unique_id == cond_action.do_unique_id).first()
-        mod_pid.method_start_time = 'Ready'
-        new_session.commit()
-
     pid = db_retrieve_table_daemon(
         PID, unique_id=cond_action.do_unique_id, entry='first')
     if pid.is_activated:

@@ -40,7 +40,7 @@ from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.function_actions import trigger_function_actions
-from mycodo.utils.method import load_method_handler
+from mycodo.utils.method import load_method_handler, parse_db_time
 from mycodo.utils.sunriseset import calculate_sunrise_sunset_epoch
 from mycodo.utils.system_pi import epoch_of_next_time
 from mycodo.utils.system_pi import time_between_range
@@ -96,7 +96,6 @@ class TriggerController(AbstractController, threading.Thread):
         self.trigger_actions_at_start = None
         self.method_start_time = None
         self.method_end_time = None
-        self.method_start_act = None
 
         # Infrared remote input
         self.lirc = None
@@ -132,14 +131,17 @@ class TriggerController(AbstractController, threading.Thread):
                 # Now only set PWM output
                 pwm_duty_cycle, ended = self.get_method_output(
                     self.trigger.unique_id_1)
-                if not ended:
-                    self.timer_period += self.trigger.period
-                    self.set_output_duty_cycle(pwm_duty_cycle)
-                    if self.trigger_actions_at_period:
-                        trigger_function_actions(
-                            self.unique_id,
-                            debug=self.log_level_debug)
-                    check_approved = True
+
+                self.timer_period += self.trigger.period
+                self.set_output_duty_cycle(pwm_duty_cycle)
+                if self.trigger_actions_at_period:
+                    trigger_function_actions(
+                        self.unique_id,
+                        debug=self.log_level_debug)
+                check_approved = True
+
+                if ended:
+                    self.stop_method()
 
             elif (self.trigger_type in [
                     'trigger_timer_daily_time_point',
@@ -231,15 +233,9 @@ class TriggerController(AbstractController, threading.Thread):
             if self.is_activated:
                 self.start_method(self.trigger.unique_id_1)
             if self.trigger_actions_at_start:
-                self.timer_period = now + self.trigger.period
+                self.timer_period = now - self.trigger.period
                 if self.is_activated:
-                    pwm_duty_cycle, ended = self.get_method_output(
-                        self.trigger.unique_id_1)
-                    if not ended:
-                        self.set_output_duty_cycle(pwm_duty_cycle)
-                        if self.trigger_actions_at_period:
-                            trigger_function_actions(self.unique_id,
-                                                     debug=self.log_level_debug)
+                    self.loop()
             else:
                 self.timer_period = now
 
@@ -261,88 +257,56 @@ class TriggerController(AbstractController, threading.Thread):
     def start_method(self, method_id):
         """ Instruct a method to start running """
         if method_id:
+            this_controller = db_retrieve_table_daemon(
+                Trigger, unique_id=self.unique_id)
+
             method = load_method_handler(method_id, self.logger)
 
-            self.method_start_act = self.method_start_time
-            self.method_start_time = None
-            self.method_end_time = None
+            if parse_db_time(this_controller.method_start_time) is None:
+                self.method_start_time = datetime.datetime.now()
+                self.method_end_time = method.determine_end_time(self.method_start_time)
 
-            if method.method_type == 'Duration':
-                if self.method_start_act == 'Ended':
-                    with session_scope(MYCODO_DB_PATH) as db_session:
-                        mod_conditional = db_session.query(Trigger)
-                        mod_conditional = mod_conditional.filter(
-                            Trigger.unique_id == self.unique_id).first()
-                        mod_conditional.is_activated = False
-                        db_session.commit()
-                    self.stop_controller()
-                    self.logger.warning(
-                        "Method has ended. "
-                        "Activate the Trigger controller to start it again.")
-                elif (self.method_start_act == 'Ready' or
-                        self.method_start_act is None):
-                    # Method has been instructed to begin
-                    now = datetime.datetime.now()
-                    self.method_start_time = now
-                    if method.method_data_repeat and method.method_data_repeat.duration_end:
-                        self.method_end_time = now + datetime.timedelta(
-                            seconds=float(method.method_data_repeat.duration_end))
+                self.logger.info("Starting method {} {}".format(self.method_start_time, self.method_end_time))
 
-                    with session_scope(MYCODO_DB_PATH) as db_session:
-                        mod_conditional = db_session.query(Trigger)
-                        mod_conditional = mod_conditional.filter(
-                            Trigger.unique_id == self.unique_id).first()
-                        mod_conditional.method_start_time = self.method_start_time
-                        mod_conditional.method_end_time = self.method_end_time
-                        db_session.commit()
+                with session_scope(MYCODO_DB_PATH) as db_session:
+                    this_controller = db_session.query(Trigger)
+                    this_controller = this_controller.filter(Trigger.unique_id == self.unique_id).first()
+                    this_controller.method_start_time = self.method_start_time
+                    this_controller.method_end_time = self.method_end_time
+                    db_session.commit()
+            else:
+                # already running, potentially the daemon has been restarted
+                self.method_start_time = this_controller.method_start_time
+                self.method_end_time = this_controller.method_end_time
+
+    def stop_method(self):
+        self.method_start_time = None
+        self.method_end_time = None
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            this_controller = db_session.query(Trigger)
+            this_controller = this_controller.filter(Trigger.unique_id == self.unique_id).first()
+            this_controller.is_activated = False
+            this_controller.method_start_time = None
+            this_controller.method_end_time = None
+            db_session.commit()
+        self.stop_controller()
+        self.is_activated = False
+        self.logger.warning(
+            "Method has ended. "
+            "Activate the Trigger controller to start it again.")
 
     def get_method_output(self, method_id):
         """ Get output variable from method """
         this_controller = db_retrieve_table_daemon(
             Trigger, unique_id=self.unique_id)
 
+        if this_controller.method_start_time is None:
+            return
+
         now = datetime.datetime.now()
 
-        if this_controller.method_start_time is None or this_controller.method_start_time == 'Ready':
-            this_controller.method_start_time = now
-
         method = load_method_handler(method_id, self.logger)
-        setpoint, finished = method.calculate_setpoint(now, this_controller.method_start_time)
-
-        # Check if method_end_time is not None
-        end_time_reached = False
-        if this_controller.method_end_time:
-            # Convert time string to datetime object
-            end_time = datetime.datetime.strptime(
-                str(this_controller.method_end_time), '%Y-%m-%d %H:%M:%S.%f')
-            if now > end_time:
-                end_time_reached = True
-
-        if finished or end_time_reached:
-            # point in time is out of method range
-            with session_scope(MYCODO_DB_PATH) as db_session:
-                # Overwrite this_controller with committable connection
-                this_controller = db_session.query(Trigger).filter(
-                    Trigger.unique_id == self.unique_id).first()
-
-                if not end_time_reached and method.should_restart(now, this_controller.method_start_time):
-                    self.logger.debug("Restart")
-                    # Method has been instructed to restart
-                    this_controller.method_start_time = now
-                    # Calculate restart value
-                    setpoint, finished = method.calculate_setpoint(now, this_controller.method_start_time)
-                else:
-                    self.logger.debug("Ended")
-                    # Duration method has ended, reset method_start_time locally and in DB
-                    this_controller.method_start_time = 'Ended'
-                    this_controller.method_end_time = None
-                    this_controller.is_activated = False
-                    db_session.commit()
-
-                    self.is_activated = False
-                    self.stop_controller()
-
-                db_session.commit()
+        setpoint, ended = method.calculate_setpoint(now, this_controller.method_start_time)
 
         if setpoint is not None:
             if setpoint > 100:
@@ -350,7 +314,7 @@ class TriggerController(AbstractController, threading.Thread):
             elif setpoint < 0:
                 setpoint = 0
 
-        return setpoint, finished
+        return setpoint, ended
 
     def set_output_duty_cycle(self, duty_cycle):
         """ Set PWM Output duty cycle """

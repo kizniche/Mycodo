@@ -9,6 +9,13 @@ from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
 
 
+def parse_db_time(time_string, default=None):
+    try:
+        return datetime.datetime.fromisoformat(str(time_string))
+    except ValueError:
+        return default
+
+
 class AbstractMethod(object):
     """
     Basic class for methods. A method is called by controller (trigger, pid) to determine an analogue
@@ -37,24 +44,21 @@ class AbstractMethod(object):
         self.method_data_first = self.method_data.filter(MethodData.output_id.is_(None)).first()
         self.method_data_repeat = self.method_data.filter(MethodData.duration_sec == 0).first()
 
+    def determine_end_time(self, method_start_time):
+        """
+        Called to determine desired end time of this method
+        :return: None if never-ending, otherwise a date and time to end
+        """
+        return datetime.datetime.max
+
     def calculate_setpoint(self, now, method_start_time=None):
         """
         Returns the value for the setpoint for a given point in time and elapsed duration
         :param now: point in time to calculate the value for
-        :param method_start_time: when this method started. Must accept datetime and strings
+        :param method_start_time: when this method started.
         :return: float value of the setpoint; True if method finished, otherwise False
         """
         return None, False
-
-    def should_restart(self, now, method_start_time=None):
-        """
-        If a method has signalled to be finished, this method is asked if the controller should restart
-        the method processing from the beginning.
-        :param now: point in time to calculate the value for
-        :param method_start_time: when this method started. Must accept datetime and strings
-        :return: True if the method wants to be restarted, otherwise False
-        """
-        return False
 
     def get_plot(self, max_points_x=None):
         """
@@ -159,7 +163,6 @@ class DailyMethod(DateMethod):
     """
     The daily time-based method is similar to the time/date method, however it will repeat every day.
     Therefore, it is essential that only the span of one day be set in this method.
-
     The implementation is derived from DateMethod, as the calculation is essentially the same ignoring the date part.
     """
 
@@ -262,18 +265,29 @@ class DurationMethod(AbstractMethod):
     def calculate_setpoint(self, now, method_start_time=None):
         # Calculate the duration in the method based on self.method_start_time
 
-        start_time = datetime.datetime.strptime(str(method_start_time), '%Y-%m-%d %H:%M:%S.%f')
+        start_time = parse_db_time(method_start_time, datetime.datetime.min)
 
+        duration_in_seconds = self.cycle_duration()
         seconds_from_start = (now - start_time).total_seconds()
+
+        if seconds_from_start >= duration_in_seconds:
+            repeat_duration = self.repeat_duration()
+            if repeat_duration is None:
+                # ended after one cycle
+                return None, True
+            if 0 < repeat_duration <= seconds_from_start:
+                # ended after configured repeat time
+                return None, True
+            else:
+                # still repeated
+                seconds_from_start = seconds_from_start % duration_in_seconds
+
         total_sec = 0
         previous_total_sec = 0
-
         for each_method in self.method_data_all:
-
             total_sec += each_method.duration_sec
             if previous_total_sec <= seconds_from_start < total_sec:
-                row_start_time = float(start_time.strftime('%s')) + previous_total_sec
-                row_since_start_sec = (now - (start_time + datetime.timedelta(0, previous_total_sec))).total_seconds()
+                row_since_start_sec = seconds_from_start - previous_total_sec
                 percent_row = row_since_start_sec / each_method.duration_sec
 
                 setpoint_start = each_method.setpoint_start
@@ -289,32 +303,47 @@ class DurationMethod(AbstractMethod):
 
                 if self.logger:
                     self.logger.debug(
-                        "[Method] Start: {start} Seconds Since: {sec}".format(
-                            start=start_time, sec=seconds_from_start))
+                        "[Method] {sec_method:.1f}s/{sec_cycle:.1f}s/{sec_row:.1f}s "
+                        "since start of method/cycle/row".format(
+                            sec_method=(now - start_time).total_seconds(),
+                            sec_cycle=seconds_from_start,
+                            sec_row=row_since_start_sec))
                     self.logger.debug(
-                        "[Method] Start time of row: {start}".format(
-                            start=datetime.datetime.fromtimestamp(row_start_time)))
-                    self.logger.debug(
-                        "[Method] Sec since start of row: {sec}".format(
-                            sec=row_since_start_sec))
-                    self.logger.debug(
-                        "[Method] Percent of row: {per}".format(
-                            per=percent_row))
-                    self.logger.debug(
-                        "[Method] New Setpoint: {sp}".format(
-                            sp=new_setpoint))
+                        "[Method] Percent of row: {per:.2f}, new Setpoint {sp:.2f}".format(
+                            per=percent_row, sp=new_setpoint))
                 return new_setpoint, False
+
             previous_total_sec = total_sec
 
-        return None, True
+        return previous_total_sec, False
 
-    def should_restart(self, now, method_start_time=None):
+    def cycle_duration(self):
+        total_sec = 0
         for each_method in self.method_data_all:
-            # If duration_sec is 0, method has instruction to restart
-            if each_method.duration_sec == 0:
-                return True
+            total_sec += each_method.duration_sec
 
-        return False
+        return total_sec
+
+    def repeat_duration(self):
+        for each_method in self.method_data_all:
+            if each_method.duration_sec == 0:
+                return each_method.duration_end or 0
+
+        return None
+
+    def determine_end_time(self, method_start_time):
+        method_start_time = parse_db_time(method_start_time, datetime.datetime.min)
+        repeat_duration = self.repeat_duration()
+
+        if repeat_duration is None:
+            # if not repeated, the end time is always based on the total configured duration
+            return method_start_time + datetime.timedelta(seconds=self.cycle_duration())
+        elif repeat_duration > 0:
+            # specific total duration in seconds is given
+            return method_start_time + datetime.timedelta(seconds=repeat_duration)
+        else:
+            # if no specific end time is given but the method shall be repeated, return max date
+            return datetime.datetime.max
 
     def get_plot(self, max_points_x=None):
         result = []
@@ -390,7 +419,8 @@ class CascadeMethod(AbstractMethod):
 
             if self.logger:
                 self.logger.debug("Linked method: {} {} returned {}, {}; current product is {}, {}".format(
-                    each_method.linked_method_id, linked_method.method_name, linked_method_setpoint, linked_method_ended,
+                    each_method.linked_method_id, linked_method.method_name,
+                    linked_method_setpoint, linked_method_ended,
                     setpoint * 100., ended))
 
         setpoint *= 100.

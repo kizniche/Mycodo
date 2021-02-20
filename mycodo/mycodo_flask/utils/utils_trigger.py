@@ -178,12 +178,6 @@ def trigger_activate(trigger_id):
     for each_action in actions.all():
         error = check_actions(each_action, error)
 
-    if mod_trigger.trigger_type == 'trigger_run_pwm_method':
-        mod_trigger_ready = Trigger.query.filter(
-            Trigger.unique_id == trigger_id).first()
-        mod_trigger_ready.method_start_time = 'Ready'
-        db.session.commit()
-
     if not error:
         controller_activate_deactivate(
             'activate',
@@ -205,6 +199,12 @@ def trigger_deactivate(trigger_id):
             'deactivate',
             'Trigger',
             trigger_id)
+
+        trigger = Trigger.query.filter(
+            Trigger.unique_id == trigger_id).first()
+        trigger.method_start_time = None
+        trigger.method_end_time = None
+        db.session.commit()
 
     flash_success_errors(error, action, url_for('routes_page.page_function'))
 
