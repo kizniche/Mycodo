@@ -413,13 +413,13 @@ class InputModule(AbstractInput):
         self.logger.debug("Temp: {t}, Hum: {h}, Press: {p}, Gas: {g}".format(
             t=self.value_get(0), h=self.value_get(1), p=self.value_get(2), g=self.value_get(3)))
 
-        if self.is_enabled(0) and self.is_enabled(1):
+        if self.is_enabled(0) and self.is_enabled(1) and self.is_enabled(4):
             self.value_set(4, calculate_dewpoint(self.value_get(0), self.value_get(1)))
 
-        if self.is_enabled(2):
+        if self.is_enabled(2) and self.is_enabled(5):
             self.value_set(5, calculate_altitude(self.value_get(2)))
 
-        if self.is_enabled(0) and self.is_enabled(1):
+        if self.is_enabled(0) and self.is_enabled(1) and self.is_enabled(6):
             self.value_set(6, calculate_vapor_pressure_deficit(self.value_get(0), self.value_get(1)))
 
         return self.return_dict
