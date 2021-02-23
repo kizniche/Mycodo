@@ -228,6 +228,8 @@ def method_delete(method_id):
     try:
         MethodData.query.filter(
             MethodData.method_id == method_id).delete()
+        MethodData.query.filter(
+            MethodData.linked_method_id == method_id).delete()
         Method.query.filter(
             Method.unique_id == method_id).delete()
         display_order = csv_to_list_of_str(DisplayOrder.query.first().method)
