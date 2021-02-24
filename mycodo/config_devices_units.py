@@ -341,6 +341,9 @@ UNITS = {
     'Hz': {
         'name': lazy_gettext('Hertz'),
         'unit': 'Hz'},
+    'ir': {
+        'name': lazy_gettext('Infrared'),
+        'unit': 'IR'},
     'K': {
         'name': lazy_gettext('Kelvin'),
         'unit': '°K'},
