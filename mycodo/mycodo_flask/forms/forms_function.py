@@ -75,10 +75,5 @@ class Actions(FlaskForm):
         lazy_gettext('Duration (seconds)'),
         widget=NumberInput(step='any'))
 
-    # Infrared
-    remote = StringField(lazy_gettext('Remote'))
-    code = StringField(lazy_gettext('Code'))
-    send_times = IntegerField(lazy_gettext('Times to Send'))
-
     save_action = SubmitField(TRANSLATIONS['save']['title'])
     delete_action = SubmitField(TRANSLATIONS['delete']['title'])

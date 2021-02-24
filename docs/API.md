@@ -365,16 +365,6 @@ Parameters:
 -  **message** - The body of the email.
 -  **subject** - The subject of the email.
 
-### send_infrared_code_broadcast()
-
-**send_infrared_code_broadcast**\ (*code*)
-
-Send an infrared command code.
-
-Parameters:
-
--  **code** - The infrared code to send.
-
 ### terminate_daemon()
 
 **terminate_daemon**\ ()

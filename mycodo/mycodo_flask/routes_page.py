@@ -1591,18 +1591,6 @@ def page_function():
                 sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = None
                 sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = None
 
-    # Get infrared remotes and codes
-    infrared_remotes = {}
-    try:
-        from py_irsend import irsend
-        for remote in irsend.list_remotes():
-            remote_str = remote.decode('utf-8')
-            infrared_remotes[remote_str] = irsend.list_codes(remote)
-            infrared_remotes[remote_str] = [
-                x.decode('utf-8') for x in infrared_remotes[remote_str]]
-    except:
-        pass
-
     return render_template('pages/function.html',
                            actions=actions,
                            actions_dict=actions_dict,
@@ -1649,7 +1637,6 @@ def page_function():
                            function_action_info=FUNCTION_ACTION_INFO,
                            function_dev=function_dev,
                            function_types=FUNCTIONS,
-                           infrared_remotes=infrared_remotes,
                            input=input_dev,
                            lcd=lcd,
                            math=math,

@@ -126,7 +126,6 @@ if measurement is not None:  # If a measurement exists
                                'trigger_timer_daily_time_point',
                                'trigger_timer_daily_time_span',
                                'trigger_timer_duration',
-                               'trigger_infrared_remote_input',
                                'trigger_run_pwm_method',
                                'trigger_sunrise_sunset']:
             new_func = Trigger()
@@ -379,11 +378,6 @@ def action_mod(form):
             mod_action.do_unique_id = form.do_unique_id.data
             mod_action.do_action_string = form.do_action_string.data
 
-        elif mod_action.action_type == 'infrared_send':
-            mod_action.remote = form.remote.data
-            mod_action.code = form.code.data
-            mod_action.send_times = form.send_times.data
-
         elif mod_action.action_type in ['email',
                                         'email_multiple']:
             mod_action.do_action_string = form.do_action_string.data
@@ -571,9 +565,6 @@ def check_form_actions(form, error):
                                 'pause_pid']:
         if not form.do_unique_id.data or form.do_unique_id.data == '':
             error.append("ID must be set")
-    elif action.action_type == 'infrared_send':
-        if not form.remote.data:
-            error.append("Remote must be set")
     elif action.action_type == 'email':
         if not form.do_action_string.data or form.do_action_string.data == '':
             error.append("Email must be set")
@@ -634,9 +625,6 @@ def check_actions(action, error):
                                 'deactivate_pid']:
         if not action.do_unique_id or action.do_unique_id == '':
             error.append("PID must be set")
-    elif action.action_type == 'infrared_send':
-        if not action.remote or not action.code:
-            error.append("Remote and Code must be set")
     elif action.action_type == 'email':
         if not action.do_action_string or action.do_action_string == '':
             error.append("Email must be set")

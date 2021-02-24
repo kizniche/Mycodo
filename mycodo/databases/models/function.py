@@ -96,7 +96,7 @@ class Trigger(CRUDMixin, db.Model):
     timer_start_time = db.Column(db.Text, default='16:30')
     timer_end_time = db.Column(db.Text, default='19:00')
 
-    # Receive infrared from remote
+    # Receive infrared from remote (deprecated, TODO: remove)
     program = db.Column(db.Text, default='mycodo')
     word = db.Column(db.Text, default='button_a')
 
@@ -137,7 +137,7 @@ class Actions(CRUDMixin, db.Model):
     do_output_pwm2 = db.Column(db.Float, default=0.0)
     do_camera_duration = db.Column(db.Float, default=5.0)
 
-    # Infrared remote send
+    # Infrared remote send (deprecated, TODO: remove)
     remote = db.Column(db.Text, default='my_remote')
     code = db.Column(db.Text, default='KEY_A')
     send_times = db.Column(db.Integer, default=1)

@@ -99,11 +99,6 @@ class TriggerController(AbstractController, threading.Thread):
         self.method_end_time = None
         self.method_start_act = None
 
-        # Infrared remote input
-        self.lirc = None
-        self.program = None
-        self.word = None
-
     def loop(self):
         # Pause loop to modify trigger.
         # Prevents execution of trigger while variables are
@@ -112,9 +107,6 @@ class TriggerController(AbstractController, threading.Thread):
             self.verify_pause_loop = True
             while self.pause_loop:
                 time.sleep(0.1)
-
-        if self.trigger_type == 'trigger_infrared_remote_input':
-            self.infrared_remote_input()
 
         elif (self.is_activated and self.timer_period and
                 self.timer_period < time.time()):
@@ -256,16 +248,7 @@ class TriggerController(AbstractController, threading.Thread):
             else:
                 self.timer_period = now
 
-        elif self.trigger_type == 'trigger_infrared_remote_input':
-            import lirc
-            self.lirc = lirc
-            self.program = self.trigger.program
-            self.word = self.trigger.word
-            lirc.init(self.program,
-                      config_filename='/home/pi/.lircrc',
-                      blocking=False)
-
-            # Set up trigger sunrise/sunset
+        # Set up trigger sunrise/sunset
         elif self.trigger_type == 'trigger_sunrise_sunset':
             self.period = 60
             # Set the next trigger at the specified sunrise/sunset time (+-offsets)
@@ -440,36 +423,3 @@ class TriggerController(AbstractController, threading.Thread):
             self.unique_id,
             message=message,
             debug=self.log_level_debug)
-
-    def infrared_remote_input(self):
-        """
-        Wait for an infrared input signal
-        Because only one thread will capture the button press, the thread that
-        catches it will send a broadcast of the codes to all trigger threads.
-        """
-        code = self.lirc.nextcode()
-        if code:
-            self.control.send_infrared_code_broadcast(code)
-
-    def receive_infrared_code_broadcast(self, code):
-        if self.word in code:
-            timestamp = datetime.datetime.fromtimestamp(
-                time.time()).strftime('%Y-%m-%d %H:%M:%S')
-            message = "{ts}\n[Trigger {id} ({name})]".format(
-                ts=timestamp,
-                name=self.trigger_name,
-                id=self.unique_id)
-            message += "\nInfrared Remote Input detected " \
-                       "'{word}' on program '{prog}'".format(
-                        word=self.word, prog=self.program)
-            trigger_function_actions(self.unique_id,
-                                     message=message,
-                                     debug=self.log_level_debug)
-
-    def pre_stop(self):
-        output_channel = db_retrieve_table_daemon(OutputChannel).filter(
-            OutputChannel.unique_id == self.trigger.unique_id_3).first()
-        self.set_output_duty_cycle(
-            self.trigger.unique_id_2,
-            None,
-            output_channel=output_channel.channel)
