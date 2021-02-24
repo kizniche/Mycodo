@@ -374,9 +374,11 @@ class InputController(AbstractController, threading.Thread):
                 "Mycodo is attempting to acquire measurement(s) from an Input that has already critically errored. "
                 "Review the log lines following Input Activation to investigate why this happened.")
         except Exception as except_msg:
-            self.logger.exception(
-                "Error while attempting to read input: {err}".format(
-                    err=except_msg))
+            if except_msg == "'NoneType' object has no attribute 'next'":
+                self.logger.exception("This Input has already crashed. Look before this message "
+                                      "for the relevant error that indicates what the issue was.")
+            else:
+                self.logger.exception("Error while attempting to read input: {err}".format(err=except_msg))
 
         if self.device_recognized and measurements is not None:
             self.measurement = Measurement(measurements)
