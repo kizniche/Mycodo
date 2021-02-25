@@ -97,7 +97,7 @@ class DateMethod(AbstractMethod):
 
             if start_time < now < end_time:
                 setpoint_start = each_method.setpoint_start
-                if each_method.setpoint_end:
+                if each_method.setpoint_end is not None:
                     setpoint_end = each_method.setpoint_end
                 else:
                     setpoint_end = each_method.setpoint_start
@@ -291,7 +291,7 @@ class DurationMethod(AbstractMethod):
                 percent_row = row_since_start_sec / each_method.duration_sec
 
                 setpoint_start = each_method.setpoint_start
-                if each_method.setpoint_end:
+                if each_method.setpoint_end is not None:
                     setpoint_end = each_method.setpoint_end
                 else:
                     setpoint_end = each_method.setpoint_start

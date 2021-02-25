@@ -89,8 +89,8 @@ def validate_method_data(form_data, this_method):
                 return 0
         except Exception:
             pass
-        if (not form_data.duration.data or
-                not form_data.setpoint_start.data):
+        if (form_data.duration.data is None or
+                form_data.setpoint_start.data is None):
             flash(gettext("Required: Duration, start setpoint"),
                   "error")
             return 1
