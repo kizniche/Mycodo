@@ -377,14 +377,6 @@ def pid_activate(pid_id):
             "are not selected"))
 
     if not error:
-        # Signal the duration method can run because it's been
-        # properly initiated (non-power failure)
-        method = Method.query.filter(
-            Method.unique_id == pid.setpoint_tracking_id).first()
-        if pid.setpoint_tracking_type == 'method' and method and method.method_type == 'Duration':
-            mod_pid = PID.query.filter(PID.unique_id == pid_id).first()
-            mod_pid.method_start_time = 'Ready'
-            db.session.commit()
         time.sleep(1)
         controller_activate_deactivate('activate', 'PID', pid_id)
 
@@ -397,6 +389,8 @@ def pid_deactivate(pid_id):
     pid.is_activated = False
     pid.is_held = False
     pid.is_paused = False
+    pid.method_start_time = None
+    pid.method_end_time = None
     db.session.commit()
     time.sleep(1)
     controller_activate_deactivate('deactivate', 'PID', pid_id)

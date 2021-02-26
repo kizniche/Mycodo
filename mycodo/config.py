@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.8.8'
-ALEMBIC_VERSION = 'cc7261a89a87'
+ALEMBIC_VERSION = '1cf1cd4d06bd'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -357,6 +357,10 @@ METHOD_INFO = {
         'dependencies_module': [
             ('apt', 'python3-numpy', 'python3-numpy')
         ]
+    },
+    'Cascade': {
+        'name': lazy_gettext('Method Cascade'),
+        'dependencies_module': []
     }
 }
 
@@ -366,7 +370,8 @@ METHODS = [
     ('Duration', METHOD_INFO['Duration']['name']),
     ('Daily', METHOD_INFO['Daily']['name']),
     ('DailySine', METHOD_INFO['DailySine']['name']),
-    ('DailyBezier', METHOD_INFO['DailyBezier']['name'])
+    ('DailyBezier', METHOD_INFO['DailyBezier']['name']),
+    ('Cascade', METHOD_INFO['Cascade']['name'])
 ]
 
 PID_INFO = {

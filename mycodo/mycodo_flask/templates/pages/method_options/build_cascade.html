@@ -1,0 +1,24 @@
+<div class="row small-gutters" style="padding: 0.7em">
+  <div class="col-sm-12">
+    {{_('Combine output of multiple methods. All listed methods run in parallel and their outputs are multiplied. The combined method ends when one of cascaded method ends.')}}
+  </div>
+</div>
+
+<div class="row small-gutters" style="padding: 0.7em">
+  <div class="col-auto">
+    <div>
+      <select class="form-control form-tooltip form-dropdown" id="linked_method_id" name="linked_method_id" data-placement="top" title="{{_('Run this duration method, using the output value to set the Duty Cycle of a PWM output')}}">
+        <option value="">{{dict_translation['select_one']['title']}}</option>
+        {%- for each_method in cascade_method -%}
+          <option value="{{each_method.unique_id}}">[{{'%02d' % each_method.id}}] {{each_method.name}}</option>
+        {%- endfor -%}
+      </select>
+    </div>
+  </div>
+
+  <div class="col-auto">
+    <div>
+      {{form_add_method.save(class_='form-control btn btn-primary btn-sm')}}
+    </div>
+  </div>
+</div>

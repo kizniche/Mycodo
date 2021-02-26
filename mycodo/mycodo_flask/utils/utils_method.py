@@ -280,6 +280,9 @@ def method_add(form_add_method):
             else:
                 add_method_data.duration_sec = form_add_method.duration.data
 
+        elif method.method_type == 'Cascade':
+            add_method_data.linked_method_id = form_add_method.linked_method_id.data
+
         add_method_data.setpoint_start = form_add_method.setpoint_start.data
         add_method_data.setpoint_end = form_add_method.setpoint_end.data
 

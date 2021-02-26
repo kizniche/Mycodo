@@ -30,8 +30,6 @@ from mycodo.controllers.base_controller import AbstractController
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
-from mycodo.databases.models import Method
-from mycodo.databases.models import MethodData
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
@@ -42,7 +40,7 @@ from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.function_actions import trigger_function_actions
-from mycodo.utils.method import calculate_method_setpoint
+from mycodo.utils.method import load_method_handler, parse_db_time
 from mycodo.utils.sunriseset import calculate_sunrise_sunset_epoch
 from mycodo.utils.system_pi import epoch_of_next_time
 from mycodo.utils.system_pi import time_between_range
@@ -93,11 +91,11 @@ class TriggerController(AbstractController, threading.Thread):
         self.timer_end_time = None
         self.unique_id_1 = None
         self.unique_id_2 = None
+        self.unique_id_3 = None
         self.trigger_actions_at_period = None
         self.trigger_actions_at_start = None
         self.method_start_time = None
         self.method_end_time = None
-        self.method_start_act = None
 
     def loop(self):
         # Pause loop to modify trigger.
@@ -125,20 +123,17 @@ class TriggerController(AbstractController, threading.Thread):
                 # Now only set PWM output
                 pwm_duty_cycle, ended = self.get_method_output(
                     self.trigger.unique_id_1)
-                self.logger.debug("trigger_run_pwm_method: {a} {b}".format(a=pwm_duty_cycle, b=ended))
-                if not ended:
-                    self.timer_period += self.trigger.period
-                    output_channel = db_retrieve_table_daemon(OutputChannel).filter(
-                        OutputChannel.unique_id == self.trigger.unique_id_3).first()
-                    self.set_output_duty_cycle(
-                        self.trigger.unique_id_2,
-                        pwm_duty_cycle,
-                        output_channel=output_channel.channel)
-                    if self.trigger_actions_at_period:
-                        trigger_function_actions(
-                            self.unique_id,
-                            debug=self.log_level_debug)
-                    check_approved = True
+
+                self.timer_period += self.trigger.period
+                self.set_output_duty_cycle(pwm_duty_cycle)
+                if self.trigger_actions_at_period:
+                    trigger_function_actions(
+                        self.unique_id,
+                        debug=self.log_level_debug)
+                check_approved = True
+
+                if ended:
+                    self.stop_method()
 
             elif (self.trigger_type in [
                     'trigger_timer_daily_time_point',
@@ -230,21 +225,9 @@ class TriggerController(AbstractController, threading.Thread):
             if self.is_activated:
                 self.start_method(self.trigger.unique_id_1)
             if self.trigger_actions_at_start:
-                self.timer_period = now + self.trigger.period
+                self.timer_period = now - self.trigger.period
                 if self.is_activated:
-                    pwm_duty_cycle, ended = self.get_method_output(
-                        self.trigger.unique_id_1)
-                    if not ended:
-                        output_channel = db_retrieve_table_daemon(OutputChannel).filter(
-                            OutputChannel.unique_id == self.trigger.unique_id_3).first()
-                        if output_channel:
-                            self.set_output_duty_cycle(
-                                self.trigger.unique_id_2,
-                                pwm_duty_cycle,
-                                output_channel=output_channel.channel)
-                        if self.trigger_actions_at_period:
-                            trigger_function_actions(self.unique_id,
-                                                     debug=self.log_level_debug)
+                    self.loop()
             else:
                 self.timer_period = now
 
@@ -257,56 +240,56 @@ class TriggerController(AbstractController, threading.Thread):
     def start_method(self, method_id):
         """ Instruct a method to start running """
         if method_id:
-            method = db_retrieve_table_daemon(Method, unique_id=method_id)
-            method_data = db_retrieve_table_daemon(MethodData)
-            method_data = method_data.filter(MethodData.method_id == method_id)
-            method_data_repeat = method_data.filter(
-                MethodData.duration_sec == 0).first()
+            this_controller = db_retrieve_table_daemon(
+                Trigger, unique_id=self.unique_id)
 
-            self.method_start_act = self.method_start_time
-            self.method_start_time = None
-            self.method_end_time = None
+            method = load_method_handler(method_id, self.logger)
 
-            if method.method_type == 'Duration':
-                if self.method_start_act == 'Ended':
-                    with session_scope(MYCODO_DB_PATH) as db_session:
-                        mod_conditional = db_session.query(Trigger)
-                        mod_conditional = mod_conditional.filter(
-                            Trigger.unique_id == self.unique_id).first()
-                        mod_conditional.is_activated = False
-                        db_session.commit()
-                    self.stop_controller()
-                    self.logger.warning(
-                        "Method has ended. "
-                        "Activate the Trigger controller to start it again.")
-                elif (self.method_start_act == 'Ready' or
-                        self.method_start_act is None):
-                    # Method has been instructed to begin
-                    now = datetime.datetime.now()
-                    self.method_start_time = now
-                    if method_data_repeat and method_data_repeat.duration_end:
-                        self.method_end_time = now + datetime.timedelta(
-                            seconds=float(method_data_repeat.duration_end))
+            if parse_db_time(this_controller.method_start_time) is None:
+                self.method_start_time = datetime.datetime.now()
+                self.method_end_time = method.determine_end_time(self.method_start_time)
 
-                    with session_scope(MYCODO_DB_PATH) as db_session:
-                        mod_conditional = db_session.query(Trigger)
-                        mod_conditional = mod_conditional.filter(
-                            Trigger.unique_id == self.unique_id).first()
-                        mod_conditional.method_start_time = self.method_start_time
-                        mod_conditional.method_end_time = self.method_end_time
-                        db_session.commit()
+                self.logger.info("Starting method {} {}".format(self.method_start_time, self.method_end_time))
+
+                with session_scope(MYCODO_DB_PATH) as db_session:
+                    this_controller = db_session.query(Trigger)
+                    this_controller = this_controller.filter(Trigger.unique_id == self.unique_id).first()
+                    this_controller.method_start_time = self.method_start_time
+                    this_controller.method_end_time = self.method_end_time
+                    db_session.commit()
+            else:
+                # already running, potentially the daemon has been restarted
+                self.method_start_time = this_controller.method_start_time
+                self.method_end_time = this_controller.method_end_time
+
+    def stop_method(self):
+        self.method_start_time = None
+        self.method_end_time = None
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            this_controller = db_session.query(Trigger)
+            this_controller = this_controller.filter(Trigger.unique_id == self.unique_id).first()
+            this_controller.is_activated = False
+            this_controller.method_start_time = None
+            this_controller.method_end_time = None
+            db_session.commit()
+        self.stop_controller()
+        self.is_activated = False
+        self.logger.warning(
+            "Method has ended. "
+            "Activate the Trigger controller to start it again.")
 
     def get_method_output(self, method_id):
         """ Get output variable from method """
         this_controller = db_retrieve_table_daemon(
             Trigger, unique_id=self.unique_id)
-        setpoint, ended = calculate_method_setpoint(
-            method_id,
-            Trigger,
-            this_controller,
-            Method,
-            MethodData,
-            self.logger)
+
+        if this_controller.method_start_time is None:
+            return
+
+        now = datetime.datetime.now()
+
+        method = load_method_handler(method_id, self.logger)
+        setpoint, ended = method.calculate_setpoint(now, this_controller.method_start_time)
 
         if setpoint is not None:
             if setpoint > 100:
@@ -314,22 +297,16 @@ class TriggerController(AbstractController, threading.Thread):
             elif setpoint < 0:
                 setpoint = 0
 
-        if ended:
-            with session_scope(MYCODO_DB_PATH) as db_session:
-                mod_conditional = db_session.query(Trigger)
-                mod_conditional = mod_conditional.filter(
-                    Trigger.unique_id == self.unique_id).first()
-                mod_conditional.is_activated = False
-                db_session.commit()
-            self.is_activated = False
-            self.stop_controller()
-
         return setpoint, ended
 
-    def set_output_duty_cycle(self, output_id, duty_cycle, output_channel=0):
+    def set_output_duty_cycle(self, duty_cycle):
         """ Set PWM Output duty cycle """
+        output_channel = db_retrieve_table_daemon(OutputChannel).filter(
+            OutputChannel.unique_id == self.trigger.unique_id_3).first()
+        output_channel = output_channel.channel if output_channel else 0
+        self.logger.debug("Set output duty cycle to {}".format(duty_cycle))
         self.control.output_on(
-            output_id, output_type='pwm', amount=duty_cycle, output_channel=output_channel)
+            self.trigger.unique_id_2, output_type='pwm', amount=duty_cycle, output_channel=output_channel)
 
     def check_triggers(self):
         """

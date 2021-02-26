@@ -24,11 +24,9 @@ from mycodo.mycodo_flask.forms import forms_method
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_method
-from mycodo.utils.method import bezier_curve_y_out
-from mycodo.utils.method import sine_wave_y_out
+from mycodo.utils.method import create_method_handler
 from mycodo.utils.outputs import output_types
 from mycodo.utils.system_pi import csv_to_list_of_str
-from mycodo.utils.system_pi import get_sec
 from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger('mycodo.mycodo_flask.methods')
@@ -58,118 +56,7 @@ def method_data(method_id):
     # User-edited lines of each method
     method_data = MethodData.query.filter(MethodData.method_id == method.unique_id)
 
-    # Retrieve the order to display method data lines
-    display_order = csv_to_list_of_str(method.method_order)
-
-    last_method_data = None
-    if display_order is not None:
-        method_data = MethodData.query.filter(
-            MethodData.method_id == method.unique_id)
-        last_method_data = method_data.filter(
-            MethodData.unique_id == display_order[-1]).first()
-
-    method_list = []
-    if method.method_type == "Date":
-        for each_method in method_data:
-            if each_method.setpoint_end is None:
-                setpoint_end = each_method.setpoint_start
-            else:
-                setpoint_end = each_method.setpoint_end
-
-            start_time = datetime.datetime.strptime(
-                each_method.time_start, '%Y-%m-%d %H:%M:%S')
-            end_time = datetime.datetime.strptime(
-                each_method.time_end, '%Y-%m-%d %H:%M:%S')
-
-            is_dst = time.daylight and time.localtime().tm_isdst > 0
-            utc_offset_ms = (time.altzone if is_dst else time.timezone)
-            method_list.append(
-                [(int(start_time.strftime("%s")) - utc_offset_ms) * 1000,
-                 each_method.setpoint_start])
-            method_list.append(
-                [(int(end_time.strftime("%s")) - utc_offset_ms) * 1000,
-                 setpoint_end])
-            method_list.append(
-                [(int(start_time.strftime("%s")) - utc_offset_ms) * 1000,
-                 None])
-
-    elif method.method_type == "Daily":
-        method_data = method_data.filter(MethodData.time_start != None)
-        method_data = method_data.filter(MethodData.time_end != None)
-        method_data = method_data.filter(MethodData.output_id == None)
-        for each_method in method_data:
-            if each_method.setpoint_end is None:
-                setpoint_end = each_method.setpoint_start
-            else:
-                setpoint_end = each_method.setpoint_end
-            method_list.append(
-                [get_sec(each_method.time_start) * 1000,
-                 each_method.setpoint_start])
-            method_list.append(
-                [get_sec(each_method.time_end) * 1000,
-                 setpoint_end])
-            method_list.append(
-                [get_sec(each_method.time_start) * 1000,
-                 None])
-
-    elif method.method_type == "DailyBezier":
-        points_x = 700
-        seconds_in_day = 60 * 60 * 24
-        P0 = (last_method_data.x0, last_method_data.y0)
-        P1 = (last_method_data.x1, last_method_data.y1)
-        P2 = (last_method_data.x2, last_method_data.y2)
-        P3 = (last_method_data.x3, last_method_data.y3)
-        for n in range(points_x):
-            percent = n / float(points_x)
-            second_of_day = percent * seconds_in_day
-            if second_of_day == 0:
-                continue
-            y = bezier_curve_y_out(last_method_data.shift_angle,
-                                   P0, P1, P2, P3,
-                                   second_of_day)
-            method_list.append([percent * seconds_in_day * 1000, y])
-
-    elif method.method_type == "DailySine":
-        points_x = 700
-        seconds_in_day = 60 * 60 * 24
-        for n in range(points_x):
-            percent = n / float(points_x)
-            angle = n / float(points_x) * 360
-            y = sine_wave_y_out(last_method_data.amplitude,
-                                last_method_data.frequency,
-                                last_method_data.shift_angle,
-                                last_method_data.shift_y,
-                                angle)
-            method_list.append([percent * seconds_in_day * 1000, y])
-
-    elif method.method_type == "Duration":
-        first_entry = True
-        start_duration = 0
-        method_data = method_data.filter(MethodData.output_id == None)
-        for each_method in method_data:
-            if each_method.setpoint_end is None:
-                setpoint_end = each_method.setpoint_start
-            else:
-                setpoint_end = each_method.setpoint_end
-
-            if each_method.duration_sec == 0:
-                pass  # Method line is repeat command, don't add to method_list
-            elif first_entry:
-                method_list.append([0, each_method.setpoint_start])
-                method_list.append([each_method.duration_sec, setpoint_end])
-                start_duration += each_method.duration_sec
-                first_entry = False
-            else:
-                end_duration = start_duration + each_method.duration_sec
-
-                method_list.append(
-                    [start_duration, each_method.setpoint_start])
-                method_list.append(
-                    [end_duration, setpoint_end])
-
-                start_duration += each_method.duration_sec
-
-    return jsonify(method_list)
+    return jsonify(create_method_handler(method, method_data).get_plot(700))
 
 
 @blueprint.route('/method', methods=('GET', 'POST'))
@@ -223,6 +110,36 @@ def method_builder(method_id):
 
     # First method column with general information about method
     method = Method.query.filter(Method.unique_id == method_id).first()
+
+    if method.method_type == 'Cascade':
+        method_data = MethodData.query.filter(
+            MethodData.method_id == method.unique_id)
+
+        cascade_method = Method.query.filter(Method.unique_id != method_id).all()
+
+        if request.method == 'POST':
+            form_name = request.form['form-name']
+            if form_name == 'addMethod':
+                form_fail = utils_method.method_add(form_add_method)
+            elif form_name in ['modMethod', 'renameMethod']:
+                form_fail = utils_method.method_mod(form_mod_method)
+            if (form_name in ['addMethod', 'modMethod', 'renameMethod'] and
+                    not form_fail):
+                return redirect('/method-build/{method_id}'.format(
+                    method_id=method.unique_id))
+
+        if not method_data:
+            method_data = []
+
+        return render_template('pages/method-build.html',
+                               method=method,
+                               method_data=method_data,
+                               method_id=method_id,
+                               output_types=output_types(),
+                               cascade_method=cascade_method,
+                               form_create_method=form_create_method,
+                               form_add_method=form_add_method,
+                               form_mod_method=form_mod_method)
 
     if method.method_type in ['Date', 'Duration', 'Daily',
                               'DailySine', 'DailyBezier']:
@@ -311,6 +228,8 @@ def method_delete(method_id):
     try:
         MethodData.query.filter(
             MethodData.method_id == method_id).delete()
+        MethodData.query.filter(
+            MethodData.linked_method_id == method_id).delete()
         Method.query.filter(
             Method.unique_id == method_id).delete()
         display_order = csv_to_list_of_str(DisplayOrder.query.first().method)

@@ -88,6 +88,7 @@ class MethodAdd(FlaskForm):
         render_kw={"placeholder": "YYYY-MM-DD HH:MM:SS"})
     save = SubmitField(lazy_gettext('Add to Method'))
     restart = SubmitField(lazy_gettext('Set Repeat Option'))
+    linked_method_id = StringField('Linked Method Id')
 
 
 class MethodMod(FlaskForm):
