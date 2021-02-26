@@ -163,14 +163,14 @@ INPUT_INFORMATION = {
         {
             'id': 'humidity_oversample',
             'type': 'select',
-            'default_value': 'OS_NONE',
+            'default_value': 'OS_2X',
             'options_select': [
-                ('OS_NONE', 'OS_NONE'),
-                ('OS_1X', 'OS_1X'),
-                ('OS_2X', 'OS_2X'),
-                ('OS_4X', 'OS_4X'),
-                ('OS_8X', 'OS_8X'),
-                ('OS_16X', 'OS_16X')
+                ('OS_NONE', 'NONE'),
+                ('OS_1X', '1X'),
+                ('OS_2X', '2X'),
+                ('OS_4X', '4X'),
+                ('OS_8X', '8X'),
+                ('OS_16X', '16X')
             ],
             'constraints_pass': constraints_pass_oversample,
             'name': lazy_gettext('Humidity Oversampling'),
@@ -179,14 +179,14 @@ INPUT_INFORMATION = {
         {
             'id': 'temperature_oversample',
             'type': 'select',
-            'default_value': 'OS_NONE',
+            'default_value': 'OS_8X',
             'options_select': [
-                ('OS_NONE', 'OS_NONE'),
-                ('OS_1X', 'OS_1X'),
-                ('OS_2X', 'OS_2X'),
-                ('OS_4X', 'OS_4X'),
-                ('OS_8X', 'OS_8X'),
-                ('OS_16X', 'OS_16X')
+                ('OS_NONE', 'NONE'),
+                ('OS_1X', '1X'),
+                ('OS_2X', '2X'),
+                ('OS_4X', '4X'),
+                ('OS_8X', '8X'),
+                ('OS_16X', '16X')
             ],
             'constraints_pass': constraints_pass_oversample,
             'name': lazy_gettext('Temperature Oversampling'),
@@ -195,14 +195,14 @@ INPUT_INFORMATION = {
         {
             'id': 'pressure_oversample',
             'type': 'select',
-            'default_value': 'OS_NONE',
+            'default_value': 'OS_4X',
             'options_select': [
-                ('OS_NONE', 'OS_NONE'),
-                ('OS_1X', 'OS_1X'),
-                ('OS_2X', 'OS_2X'),
-                ('OS_4X', 'OS_4X'),
-                ('OS_8X', 'OS_8X'),
-                ('OS_16X', 'OS_16X')
+                ('OS_NONE', 'NONE'),
+                ('OS_1X', '1X'),
+                ('OS_2X', '2X'),
+                ('OS_4X', '4X'),
+                ('OS_8X', '8X'),
+                ('OS_16X', '16X')
             ],
             'constraints_pass': constraints_pass_oversample,
             'name': lazy_gettext('Pressure Oversampling'),
@@ -211,16 +211,16 @@ INPUT_INFORMATION = {
         {
             'id': 'iir_filter',
             'type': 'select',
-            'default_value': 'FILTER_SIZE_0',
+            'default_value': 'FILTER_SIZE_3',
             'options_select': [
-                ('FILTER_SIZE_0', 'FILTER_SIZE_0'),
-                ('FILTER_SIZE_1', 'FILTER_SIZE_1'),
-                ('FILTER_SIZE_3', 'FILTER_SIZE_3'),
-                ('FILTER_SIZE_7', 'FILTER_SIZE_7'),
-                ('FILTER_SIZE_15', 'FILTER_SIZE_15'),
-                ('FILTER_SIZE_31', 'FILTER_SIZE_31'),
-                ('FILTER_SIZE_63', 'FILTER_SIZE_63'),
-                ('FILTER_SIZE_127', 'FILTER_SIZE_127')
+                ('FILTER_SIZE_0', '0'),
+                ('FILTER_SIZE_1', '1'),
+                ('FILTER_SIZE_3', '3'),
+                ('FILTER_SIZE_7', '7'),
+                ('FILTER_SIZE_15', '15'),
+                ('FILTER_SIZE_31', '31'),
+                ('FILTER_SIZE_63', '63'),
+                ('FILTER_SIZE_127', '127')
             ],
             'constraints_pass': constraints_pass_iir_filter,
             'name': lazy_gettext('IIR Filter Size'),
