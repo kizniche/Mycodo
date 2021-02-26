@@ -923,10 +923,6 @@ These are the actions that can be added to Controllers (i.e. Conditional, Trigge
 <td>Execute a command in the linux shell (as user 'root').</td>
 </tr>
 <tr>
-<td>Infrared Remote Send</td>
-<td>Send an infrared signal.</td>
-</tr>
-<tr>
 <td>LCD: Backlight</td>
 <td>Turn the LCD backlight on or off. Note: Only some LCDs are supported.</td>
 </tr>

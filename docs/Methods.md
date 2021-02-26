@@ -54,3 +54,7 @@ The daily sine wave method defines the setpoint over the day based on a sinusoid
 ## Daily (Bezier Curve) Method
 
 A daily Bezier curve method define the setpoint over the day based on a cubic Bezier curve. If unfamiliar with a Bezier curve, it is recommended you use the [graphical Bezier curve generator](https://www.desmos.com/calculator/cahqdxeshd) and use the 8 variables it creates for 4 points (each a set of x and y). The x-axis start (x3) and end (x0) will be automatically stretched or skewed to fit within a 24-hour period and this method will repeat daily.
+
+## Cascade Method
+
+This method combines multiple methods and outputs the average of the methods. For examples, let's combine a Duration method set to 100 for 60 seconds and 0 for 60 seconds (and set to repeat forever) with a Daily Method that rises from 0 at 00:00:00 to 50 at 12:00:00, and falls back to 0 at 23:59:59. At 00:00:00, the combined methods would produce an output that oscillates from 0 ((0 / 100) * (0 / 100) = 0) to 0 ((100 / 100) * (0 / 100) = 0) every 60 seconds, and gradually increase until at 12:00:00 the output would be oscillating from 0 ((0 / 100) * (50 / 100)) to 50 ((100 / 100) * (50 / 100)) every 60 seconds. This is a simple example, but combinations can become very complex.
