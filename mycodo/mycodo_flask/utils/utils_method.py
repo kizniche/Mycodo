@@ -89,14 +89,14 @@ def validate_method_data(form_data, this_method):
                 return 0
         except Exception:
             pass
-        if (form_data.duration.data is None or
-                form_data.setpoint_start.data is None):
-            flash(gettext("Required: Duration, start setpoint"),
-                  "error")
+        if not form_data.duration.data:
+            flash(gettext("Required: Duration"), "error")
             return 1
-        if not is_positive_integer(form_data.duration.data):
-            flash(gettext("Required: Duration must be positive"),
-                  "error")
+        elif not is_positive_integer(form_data.duration.data):
+            flash(gettext("Required: Duration must be positive"), "error")
+            return 1
+        if form_data.setpoint_start.data is None:
+            flash(gettext("Required: Start Setpoint"), "error")
             return 1
 
 

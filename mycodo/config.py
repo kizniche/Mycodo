@@ -541,16 +541,6 @@ FUNCTION_INFO = {
             TRANSLATIONS['duration']['title']),
         'dependencies_module': []
     },
-    'trigger_infrared_remote_input': {
-        'name': '{}: {}'.format(
-            TRANSLATIONS['trigger']['title'],
-            lazy_gettext('Infrared Receive')),
-        'dependencies_module': [
-            ('apt', 'liblircclient-dev', 'liblircclient-dev'),
-            ('apt', 'lirc', 'lirc'),
-            ('pip-pypi', 'lirc', 'python-lirc')
-        ]
-    },
     'trigger_run_pwm_method': {
         'name': '{}: {}'.format(
             TRANSLATIONS['trigger']['title'],
@@ -576,7 +566,6 @@ FUNCTIONS = [
     ('trigger_timer_daily_time_point', FUNCTION_INFO['trigger_timer_daily_time_point']['name']),
     ('trigger_timer_daily_time_span', FUNCTION_INFO['trigger_timer_daily_time_span']['name']),
     ('trigger_timer_duration', FUNCTION_INFO['trigger_timer_duration']['name']),
-    ('trigger_infrared_remote_input', FUNCTION_INFO['trigger_infrared_remote_input']['name']),
     ('trigger_run_pwm_method', FUNCTION_INFO['trigger_run_pwm_method']['name']),
     ('trigger_sunrise_sunset', FUNCTION_INFO['trigger_sunrise_sunset']['name'])
 ]
@@ -633,15 +622,6 @@ FUNCTION_ACTION_INFO = {
         'name': "{}: {}".format(
             lazy_gettext('Execute Command'), lazy_gettext('Shell')),
         'dependencies_module': []
-    },
-    'infrared_send': {
-        'name': lazy_gettext('Infrared Send'),
-        'dependencies_module': [
-            ('apt', 'liblircclient-dev', 'liblircclient-dev'),
-            ('apt', 'lirc', 'lirc'),
-            ('pip-pypi', 'lirc', 'python-lirc'),
-            ('pip-pypi', 'py_irsend', 'py-irsend')
-        ]
     },
     'input_force_measurements': {
         'name': "{}: {}".format(
@@ -758,7 +738,6 @@ FUNCTION_ACTIONS = [
     ('photo_email', FUNCTION_ACTION_INFO['photo_email']['name']),
     ('video_email', FUNCTION_ACTION_INFO['video_email']['name']),
     ('command', FUNCTION_ACTION_INFO['command']['name']),
-    ('infrared_send', FUNCTION_ACTION_INFO['infrared_send']['name']),
     ('lcd_backlight_off', FUNCTION_ACTION_INFO['lcd_backlight_off']['name']),
     ('lcd_backlight_on', FUNCTION_ACTION_INFO['lcd_backlight_on']['name']),
     ('lcd_backlight_color', FUNCTION_ACTION_INFO['lcd_backlight_color']['name']),

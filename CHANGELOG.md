@@ -32,7 +32,7 @@ This new weather input acquires current and future weather conditions from openw
  - Fix Input Pre-Outputs not turning on
  - Fix Output not activating for Camera
  - Fix PWM trigger and Duration Method ([#937](https://github.com/kizniche/mycodo/issues/937))
- - Fix PCA9685 Output Module ([#933](https://github.com/kizniche/Mycodo/issues/933)) 
+ - Fix stopping Trigger Controllers ([#940](https://github.com/kizniche/mycodo/issues/940))
 
 ### Features
 
@@ -71,6 +71,7 @@ This new weather input acquires current and future weather conditions from openw
 
 ### Miscellaneous
 
+ - Remove lirc
  - Change widget title styles
  - Fix GCC warnings ([#906](https://github.com/kizniche/mycodo/issues/906))
  - Remove default user "pi" with "mycodo" (for compatibility with non-Raspberry Pi operating systems)

@@ -62,10 +62,10 @@ INPUT_INFORMATION = {
         {
             'id': 'sensor_type',
             'type': 'select',
-            'default_value': 0,
+            'default_value': '0',
             'options_select': [
-                (0, 'DHT11 (Blue)'),
-                (1, 'DHT22 (White)')
+                ('0', 'DHT11 (Blue)'),
+                ('1', 'DHT22 (White)')
             ],
             'name': lazy_gettext('Sensor Type'),
             'phrase': 'Sensor type'

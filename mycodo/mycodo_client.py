@@ -149,9 +149,6 @@ class DaemonControl:
     def refresh_daemon_trigger_settings(self, unique_id):
         return self.proxy().refresh_daemon_trigger_settings(unique_id)
 
-    def send_infrared_code_broadcast(self, code):
-        return self.proxy().send_infrared_code_broadcast(code)
-
     def terminate_daemon(self):
         return self.proxy().terminate_daemon()
 

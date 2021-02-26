@@ -1151,12 +1151,14 @@ if __name__ == "__main__":
             print("Code for revision {} not found".format(each_revision))
 
     if error:
-        print("Completed with errors. Review the entire log for details.")
+        print("Completed with errors. Review the entire log for details. "
+              "Errors recorded:")
+        for each_error in error:
+            print("ERROR: {}".format(each_error))
     else:
+        print("Completed without errors. Deleting {}".format(
+            ALEMBIC_UPGRADE_POST))
         try:
-            print("Completed without errors. Deleting {}".format(
-                ALEMBIC_UPGRADE_POST))
             os.remove(ALEMBIC_UPGRADE_POST)
-        except Exception:
-            print("ERROR: Could not delete {}: {}".format(
-                ALEMBIC_UPGRADE_POST, traceback.format_exc()))
+        except:
+            pass

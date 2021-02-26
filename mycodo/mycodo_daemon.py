@@ -926,15 +926,6 @@ class DaemonController:
         except Exception as err:
             self.logger.info("Widget controller had an issue stopping: {err}".format(err=err))
 
-    def send_infrared_code_broadcast(self, code):
-        """Broadcast IR code to all active IR Triggers (thread for speed)"""
-        for each_trigger_id in self.controller['Trigger']:
-            if self.controller['Trigger'][each_trigger_id].trigger_type == 'trigger_infrared_remote_input':
-                broadcast_ir = threading.Thread(
-                    target=self.controller['Trigger'][each_trigger_id].receive_infrared_code_broadcast,
-                    args=(code,))
-                broadcast_ir.start()
-
     def trigger_action(self, action_id, message='', single_action=False, debug=False):
         try:
             return trigger_action(
@@ -1205,10 +1196,6 @@ class PyroServer(object):
     def output_setup(self, action, output_id):
         """Add, delete, or modify a output in the running output controller"""
         return self.mycodo.output_setup(action, output_id)
-
-    def send_infrared_code_broadcast(self, code):
-        """Broadcast infrared code to all IR Triggers"""
-        return self.mycodo.send_infrared_code_broadcast(code)
 
     def trigger_action(self, action_id, message='', single_action=False, debug=False):
         """Trigger action"""
