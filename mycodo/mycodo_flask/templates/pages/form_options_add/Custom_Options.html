@@ -101,6 +101,9 @@
       {% if 'Math' in each_option['options_select'] %}
         {% set multiselect_size = multiselect_size + choices_math|length %}
       {% endif %}
+      {% if 'CustomController' in each_option['options_select'] %}
+        {% set multiselect_size = multiselect_size + choices_custom_controller|length %}
+      {% endif %}
       {% if 'Output' in each_option['options_select'] %}
         {% set multiselect_size = multiselect_size + choices_output|length %}
       {% endif %}
@@ -125,6 +128,11 @@
       <option value="{{each_math_form['value']}}">{{each_math_form['item']}}</option>
         {% endfor -%}
       {% endif %}
+      {% if 'CustomController' in each_option['options_select'] %}
+        {% for each_controller_form in choices_custom_controller -%}
+      <option value="{{each_controller_form['value']}}">{{each_controller_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
       {% if 'Output' in each_option['options_select'] %}
         {% for each_output_form in choices_output -%}
       <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
@@ -133,6 +141,11 @@
       {% if 'PID' in each_option['options_select'] %}
         {% for each_pid_form in choices_pid -%}
       <option value="{{each_pid_form['value']}}">{{each_pid_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
+      {% if 'Tag' in each_option['options_select'] %}
+        {% for each_tag_form in choices_tag -%}
+      <option value="{{each_tag_form['value']}}">{{each_tag_form['item']}}</option>
         {% endfor -%}
       {% endif %}
     </select>

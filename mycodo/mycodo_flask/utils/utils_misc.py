@@ -7,7 +7,14 @@ from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config_translations import TRANSLATIONS
+from mycodo.databases.models import Conditional
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import EnergyUsage
+from mycodo.databases.models import Input
+from mycodo.databases.models import LCD
+from mycodo.databases.models import Math
+from mycodo.databases.models import PID
+from mycodo.databases.models import Trigger
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
@@ -80,3 +87,18 @@ def energy_usage_delete(energy_usage_id):
         error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_data'))
+
+
+def determine_controller_type(unique_id):
+    db_tables = {
+        'Conditional': Conditional.query.filter(Conditional.unique_id == unique_id).count(),
+        'Input': Input.query.filter(Input.unique_id == unique_id).count(),
+        'LCD': LCD.query.filter(LCD.unique_id == unique_id).count(),
+        'Math': Math.query.filter(Math.unique_id == unique_id).count(),
+        'PID': PID.query.filter(PID.unique_id == unique_id).count(),
+        'Trigger': Trigger.query.filter(Trigger.unique_id == unique_id).count(),
+        'CustomController': CustomController.query.filter(CustomController.unique_id == unique_id).count()
+    }
+    for each_type in db_tables:
+        if db_tables[each_type]:
+            return each_type

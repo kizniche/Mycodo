@@ -15,6 +15,9 @@ import timeit
 import Pyro5
 
 from mycodo.abstract_base_controller import AbstractBaseController
+from mycodo.databases.models import Conversion
+from mycodo.databases.models import DeviceMeasurements
+from mycodo.utils.database import db_retrieve_table_daemon
 
 
 class AbstractController(AbstractBaseController):
@@ -28,12 +31,16 @@ class AbstractController(AbstractBaseController):
         self.thread_startup_timer = timeit.default_timer()
         self.running = False
         self.thread_shutdown_timer = 0
-        self.sample_rate = 10
+        self.sample_rate = 0.25
+        self.unique_id = unique_id
+        self.channels_conversion = {}
+        self.channels_measurement = {}
         self.ready = ready
 
         logger_name = "{}".format(name)
-        if unique_id:
+        if self.unique_id:
             logger_name += "_{}".format(unique_id.split('-')[0])
+            self.setup_device_measurement()
         self.logger = logging.getLogger(logger_name)
 
     #
@@ -114,6 +121,23 @@ class AbstractController(AbstractBaseController):
             self.logger.setLevel(logging.DEBUG)
         else:
             self.logger.setLevel(logging.INFO)
+
+    def setup_device_measurement(self):
+        # Make 5 attempts to access database
+        for _ in range(5):
+            try:
+                self.device_measurements = db_retrieve_table_daemon(
+                    DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == self.unique_id)
+
+                for each_measure in self.device_measurements.all():
+                    self.channels_measurement[each_measure.channel] = each_measure
+                    self.channels_conversion[each_measure.channel] = db_retrieve_table_daemon(
+                        Conversion, unique_id=each_measure.conversion_id)
+                return
+            except Exception as msg:
+                self.logger.debug("Error: {}".format(msg))
+            time.sleep(1)
 
     def attempt_execute(self, func, times=3, delay_sec=10):
         """ Attempt to execute a function several times with a delay between attempts """

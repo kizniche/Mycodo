@@ -33,8 +33,9 @@ from mycodo.mycodo_flask.extensions import db
 from .alembic_version import AlembicVersion
 from .camera import Camera
 from .controller import CustomController
-from .dashboard import Widget
+from .controller import FunctionChannel
 from .dashboard import Dashboard
+from .dashboard import Widget
 from .display_order import DisplayOrder
 from .function import Actions
 from .function import Conditional

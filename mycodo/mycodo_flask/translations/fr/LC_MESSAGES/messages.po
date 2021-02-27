@@ -4742,12 +4742,12 @@ msgstr "Paramètres de mesure"
 msgid "The duration (seconds) between math calculations"
 msgstr "La durée (en secondes) entre les calculs mathématiques"
 
-#: mycodo_flask/templates/pages/data_options/math_options/TEMPLATE_OPTIONS_Measurements_Convert.html:45
+#: mycodo_flask/templates/pages/data_options/math_options/TEMPLATE_OPTIONS_Measurements_Configure.html:45
 msgid "No Measurement/Unit Selected"
 msgstr "Aucune mesure / unité sélectionnée"
 
 #: mycodo_flask/templates/pages/data_options/math_options/TEMPLATE_OPTIONS_Measurements_Convert.html:79
-#: mycodo_flask/templates/pages/form_options/Measurements_Convert.html:114
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:114
 msgid "Do Not Convert"
 msgstr "Ne pas convertir"
 
@@ -4778,7 +4778,7 @@ msgstr "La différence maximale autorisée entre les mesures sélectionnées"
 msgid "None Found"
 msgstr ""
 
-#: mycodo_flask/templates/pages/form_options/Measurements_Convert.html:74
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:74
 msgid "Do Not Rescale"
 msgstr "Ne pas redimensionner"
 

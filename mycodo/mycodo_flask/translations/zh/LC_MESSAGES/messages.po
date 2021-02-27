@@ -4595,7 +4595,7 @@ msgid "No Measurement/Unit Selected"
 msgstr "没有选择测量/单位"
 
 #: mycodo_flask/templates/pages/data_options/math_options/TEMPLATE_OPTIONS_Measurements_Convert.html:79
-#: mycodo_flask/templates/pages/form_options/Measurements_Convert.html:114
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:114
 msgid "Do Not Convert"
 msgstr "不要转换"
 
@@ -4624,7 +4624,7 @@ msgstr "任何选定测量之间允许的最大差异"
 msgid "None Found"
 msgstr ""
 
-#: mycodo_flask/templates/pages/form_options/Measurements_Convert.html:74
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:74
 msgid "Do Not Rescale"
 msgstr "不要重新缩放"
 

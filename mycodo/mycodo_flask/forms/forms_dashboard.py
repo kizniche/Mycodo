@@ -30,7 +30,7 @@ class DashboardBase(FlaskForm):
         choices_widgets.append((each_widget, dict_widgets[each_widget]['widget_name']))
 
     widget_type = SelectField(
-        'Dashboard Widget Type TEST',
+        'Dashboard Widget Type',
         choices=choices_widgets,
         validators=[DataRequired()]
     )

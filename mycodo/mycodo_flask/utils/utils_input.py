@@ -276,7 +276,7 @@ def input_add(form_add):
                 #
 
                 elif ('measurements_dict' in dict_inputs[input_name] and
-                        dict_inputs[input_name]['measurements_dict'] != []):
+                        dict_inputs[input_name]['measurements_dict']):
                     for each_channel in dict_inputs[input_name]['measurements_dict']:
                         measure_info = dict_inputs[input_name]['measurements_dict'][each_channel]
                         new_measurement = DeviceMeasurements()
@@ -457,13 +457,13 @@ def input_mod(form_mod, request_form):
                             delete_entry_with_id(DeviceMeasurements,
                                                  each_channel.unique_id)
 
-                if ('channel_quantity_same_as_measurements' in dict_inputs[mod_input.device] and
-                        dict_inputs[mod_input.device]["channel_quantity_same_as_measurements"]):
-                    if form_mod.num_channels.data < channels.count():
-                        for index, each_channel in enumerate(channels.all()):
-                            if index + 1 >= channels.count():
-                                delete_entry_with_id(InputChannel,
-                                                     each_channel.unique_id)
+                    if ('channel_quantity_same_as_measurements' in dict_inputs[mod_input.device] and
+                            dict_inputs[mod_input.device]["channel_quantity_same_as_measurements"]):
+                        if form_mod.num_channels.data < channels.count():
+                            for index, each_channel in enumerate(channels.all()):
+                                if index + 1 >= channels.count():
+                                    delete_entry_with_id(InputChannel,
+                                                         each_channel.unique_id)
 
                 # Add measurements/channels
                 elif form_mod.num_channels.data > measurements.count():
@@ -553,65 +553,6 @@ def input_mod(form_mod, request_form):
             db.session.commit()
 
     except Exception as except_msg:
-        error.append(except_msg)
-
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
-
-
-def measurement_mod(form):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller=TRANSLATIONS['measurement']['title'])
-    error = []
-
-    try:
-        mod_meas = DeviceMeasurements.query.filter(
-            DeviceMeasurements.unique_id == form.input_measurement_id.data).first()
-
-        mod_input = Input.query.filter(Input.unique_id == mod_meas.device_id).first()
-        if mod_input.is_activated:
-            error.append(gettext(
-                "Deactivate controller before modifying its settings"))
-
-        mod_meas.name = form.name.data
-
-        if form.input_type.data == 'measurement_select':
-            if not form.select_measurement_unit.data:
-                error.append("Must select a measurement unit")
-            else:
-                mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
-                mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
-
-        elif form.input_type.data == 'measurement_convert':
-            input_info = parse_input_information()
-            if ('enable_channel_unit_select' in input_info[mod_input.device] and
-                    input_info[mod_input.device]['enable_channel_unit_select']):
-                if ',' in form.select_measurement_unit.data:
-                    mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
-                    mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
-                else:
-                    mod_meas.measurement = ''
-                    mod_meas.unit = ''
-
-            if form.rescaled_measurement_unit.data != '' and ',' in form.rescaled_measurement_unit.data:
-                mod_meas.rescaled_measurement = form.rescaled_measurement_unit.data.split(',')[0]
-                mod_meas.rescaled_unit = form.rescaled_measurement_unit.data.split(',')[1]
-            elif form.rescaled_measurement_unit.data == '':
-                mod_meas.rescaled_measurement = ''
-                mod_meas.rescaled_unit = ''
-
-            mod_meas.scale_from_min = form.scale_from_min.data
-            mod_meas.scale_from_max = form.scale_from_max.data
-            mod_meas.scale_to_min = form.scale_to_min.data
-            mod_meas.scale_to_max = form.scale_to_max.data
-            mod_meas.invert_scale = form.invert_scale.data
-            mod_meas.conversion_id = form.convert_to_measurement_unit.data
-
-        if not error:
-            db.session.commit()
-
-    except Exception as except_msg:
-        logger.exception(1)
         error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_data'))

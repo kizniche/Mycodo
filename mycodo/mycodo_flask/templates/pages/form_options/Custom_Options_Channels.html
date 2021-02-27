@@ -82,6 +82,9 @@
       {% if 'Math' in each_option['options_select'] %}
         {% set multiselect_size = multiselect_size + choices_math|length %}
       {% endif %}
+      {% if 'CustomController' in each_option['options_select'] %}
+        {% set multiselect_size = multiselect_size + choices_custom_controller|length %}
+      {% endif %}
       {% if 'Output' in each_option['options_select'] %}
         {% set multiselect_size = multiselect_size + choices_output|length %}
       {% endif %}

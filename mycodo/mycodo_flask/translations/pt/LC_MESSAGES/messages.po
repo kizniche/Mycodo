@@ -4730,7 +4730,7 @@ msgid "No Measurement/Unit Selected"
 msgstr "Nenhuma medida / unidade selecionada"
 
 #: mycodo_flask/templates/pages/data_options/math_options/TEMPLATE_OPTIONS_Measurements_Convert.html:79
-#: mycodo_flask/templates/pages/form_options/Measurements_Convert.html:114
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:114
 msgid "Do Not Convert"
 msgstr "Não converter"
 
@@ -4761,7 +4761,7 @@ msgstr "A diferença máxima permitida entre quaisquer medidas selecionadas"
 msgid "None Found"
 msgstr ""
 
-#: mycodo_flask/templates/pages/form_options/Measurements_Convert.html:74
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:74
 msgid "Do Not Rescale"
 msgstr "Não resgatar"
 

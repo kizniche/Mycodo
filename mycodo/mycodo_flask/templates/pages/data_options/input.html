@@ -201,10 +201,10 @@
       {% include 'pages/form_options/Period.html' %}
       {% include 'pages/form_options/Start_Offset.html' %}
       {% include 'pages/form_options/Pre_Output.html' %}
+      {% include 'pages/form_options/Num_channels.html' %}
 
       {# TODO: move many of the below options from database columns to custom options at next major revision #}
 
-      {% include 'pages/form_options/Num_channels.html' %}
       {% include 'pages/form_options/Measurements_Enabled.html' %}
       {% include 'pages/form_options/Single_Input_Math.html' %}
       {% include 'pages/form_options/EDGE.html' %}
@@ -288,6 +288,7 @@
         {% set custom_options_values = custom_options_values_input_channels %}
         {% set channel = each_input_channel.channel %}
         {% set each_device = each_input %}
+        {% set controller_type = "Input" %}
 
         {% if custom_options_values[unique_id] %}
 
@@ -329,8 +330,11 @@
       </div>
     </div>
 
-    {% include 'pages/form_options/Measurements_Select.html' %}
-    {% include 'pages/form_options/Measurements_Convert.html' %}
+    {% if "measurements_variable_amount" in dict_options and dict_options['measurements_variable_amount'] %}
+      {% include 'pages/form_options/Measurements_Select.html' %}
+    {% endif %}
+
+    {% include 'pages/form_options/Measurements_Configure.html' %}
 
   </div> <!- collapse container end ->
 

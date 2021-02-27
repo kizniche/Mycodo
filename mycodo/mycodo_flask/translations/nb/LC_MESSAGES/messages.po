@@ -4708,7 +4708,7 @@ msgid "No Measurement/Unit Selected"
 msgstr "Ingen måling / enhet valgt"
 
 #: mycodo_flask/templates/pages/data_options/math_options/TEMPLATE_OPTIONS_Measurements_Convert.html:79
-#: mycodo_flask/templates/pages/form_options/Measurements_Convert.html:114
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:114
 msgid "Do Not Convert"
 msgstr "Ikke konverter"
 
@@ -4739,7 +4739,7 @@ msgstr "Maksimal tillatt forskjell mellom noen valgte målinger"
 msgid "None Found"
 msgstr ""
 
-#: mycodo_flask/templates/pages/form_options/Measurements_Convert.html:74
+#: mycodo_flask/templates/pages/form_options/Measurements_Configure.html:74
 msgid "Do Not Rescale"
 msgstr "Ikke rescale"
 

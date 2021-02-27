@@ -48,8 +48,8 @@ def constraints_pass_positive_value(mod_controller, value):
 
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'example_function',
-    'function_name': 'Example Custom Function',
+    'function_name_unique': 'example_function_generic',
+    'function_name': 'Function: Example: Generic',
 
     'message': 'This is a custom message that will appear above the Function options. It merely demonstrates how to generate user options and manipulate them. It will retrieve the last selected measurement, turn the selected output on for 15 seconds, then deactivate itself. Study the code to develop your own Custom Function.',
 

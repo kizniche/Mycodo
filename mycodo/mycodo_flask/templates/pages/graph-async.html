@@ -75,6 +75,9 @@
         {% for each_math_form in choices_math -%}
           <option value="{{each_math_form['value']}},math"{% if each_math_form['value'] + ',math' in selected_ids_measures %} selected{% endif %}>{{each_math_form['item']}}</option>
         {% endfor -%}
+        {% for each_custom_controller_form in choices_custom_controller -%}
+          <option value="{{each_custom_controller_form['value']}},math"{% if each_custom_controller_form['value'] + ',math' in selected_ids_measures %} selected{% endif %}>{{each_custom_controller_form['item']}}</option>
+        {% endfor -%}
         {% for each_output_form in choices_output -%}
           <option value="{{each_output_form['value']}},output"{% if each_output_form['value'] + ',output' in selected_ids_measures %} selected{% endif %}>{{each_output_form['item']}}</option>
         {% endfor -%}
@@ -374,6 +377,56 @@ $(document).ready(function() {
 
             {
             name: '{{each_math.name}}
+
+              {%- if device_measurements_dict[measurement_id].name -%}
+                {{' (' + device_measurements_dict[measurement_id].name}})
+              {%- endif -%}
+
+                {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
+
+              {%- if dict_measure_measurements[measurement_id] in dict_measurements and
+               dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
+                {{', ' + dict_measurements[dict_measure_measurements[measurement_id]]['name']}}
+              {%- endif -%}
+
+              {%- if dict_measure_units[measurement_id] in dict_units and
+                     dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+                {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+              {%- endif -%}
+
+              )',
+
+            {% if dict_measure_measurements[measurement_id] in dict_measurements and
+                  dict_measurements[dict_measure_measurements[measurement_id]]['meas'] == 'edge' %}
+            type: 'column',
+            {% else %}
+            type: 'line',
+            {% endif %}
+            tooltip: {
+              valueSuffix: '
+              {%- if dict_measure_units[measurement_id] in dict_units and
+                     dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+                {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+              {%- endif -%}
+              ',
+              valueDecimals: 3
+            },
+            yAxis: '
+              {%- if measurement_id in dict_measure_units -%}
+                {{dict_measure_units[measurement_id]}}
+              {%- endif -%}
+                ',
+            data: []
+          },
+            {%- endif -%}
+          {% endfor %}
+
+          {% for each_custom_controller in custom_controller if each_custom_controller.unique_id == each_id_meas.split(',')[0] -%}
+            {%- set measurement_id = each_id_meas.split(',')[1] -%}
+            {%- if measurement_id in device_measurements_dict -%}
+
+            {
+            name: '{{each_custom_controller.name}}
 
               {%- if device_measurements_dict[measurement_id].name -%}
                 {{' (' + device_measurements_dict[measurement_id].name}})

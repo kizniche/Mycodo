@@ -69,9 +69,14 @@
         </div>
       </div>
 
+    {% set form = form_custom_controller %}
     {% set dict_options = dict_controllers[each_function.device] %}
     {% set unique_id = each_function.unique_id %}
     {% set custom_options_values = custom_options_values_controllers %}
+    {% set each_device = each_function %}
+    {% set controller_type = "Function" %}
+
+    {% include 'pages/form_options/Num_channels.html' %}
 
     {% if 'custom_options' in dict_options %}
       {% for each_option in dict_options['custom_options'] %}
@@ -81,8 +86,90 @@
 
     </div>
 
+      {%- set function_channel_exists = [] -%}
+      {% for each_function_channel in function_channel if each_function_channel.function_id == each_function.unique_id %}
+        {%- do function_channel_exists.append(1) -%}
+      {% endfor %}
+
+      {% if function_channel_exists %}
+
+    <div class="row small-gutters" style="padding: 1em 0 0 0.5em">
+      <div class="col-12">
+        <h5>{{_('Channel Options')}}</h5>
+      </div>
+    </div>
+
+      {% endif %}
+
+      {% for each_function_channel in function_channel if each_function_channel.function_id == each_function.unique_id %}
+
+    <hr/>
+    <div class="row">
+      <div class="col-auto">
+        Channel {{each_function_channel.channel}}
+
+        {%- if 'name' in custom_options_values_function_channels[each_function.unique_id][each_function_channel.channel] and
+             custom_options_values_function_channels[each_function.unique_id][each_function_channel.channel]['name'] -%}
+          {{': ' + custom_options_values_function_channels[each_function.unique_id][each_function_channel.channel]['name']}}
+        {%- elif 'channels_dict' in dict_functions[each_function.output_type] and
+                 'name' in dict_functions[each_function.output_type]['channels_dict'][each_function_channel.channel] -%}
+          {{': ' + dict_functions[each_function.output_type]['channels_dict'][each_function_channel.channel]['name']}}
+        {%- endif -%}
+      </div>
+    </div>
+
+        {% set dict_options = dict_functions[each_function.device] %}
+        {% set unique_id = each_function.unique_id %}
+        {% set custom_options_values = custom_options_values_function_channels %}
+        {% set channel = each_function_channel.channel %}
+        {% set each_device = each_function %}
+        {% set controller_type = "Input" %}
+
+        {% if custom_options_values[unique_id] %}
+
+          {% if 'custom_channel_options_message' in dict_options %}
+    <div class="row small-gutters" style="padding: 1em">
+        <div class="col-12" style="padding-bottom: 0.5em">
+          {{dict_options['custom_channel_options_message']|safe}}
+        </div>
+    </div>
+          {% endif %}
+
+          {% if 'custom_channel_options' in dict_options %}
+    <div class="row small-gutters" style="padding: 1em">
+            {% for each_option in dict_options['custom_channel_options'] %}
+              {% if each_option['type'] == 'new_line' %}
+    </div>
+    <div class="row small-gutters" style="padding: 0.5em">
+              {% elif each_option['type'] == 'message' %}
+      <div class="col-12" style="padding-bottom: 0.5em">
+        {{each_option['default_value']|safe}}
+      </div>
+              {% else %}
+        {% include 'pages/form_options/Custom_Options_Channels.html' %}
+              {% endif %}
+            {% endfor %}
+    </div>
+          {% endif %}
+        {% endif %}
+
+      {% endfor %}
+
+    </form>
+
+    <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.5em 0.5em 0 0.5em">
+      <div class="col-12">
+        <h5>{{_('Measurement Settings')}}</h5>
+      </div>
+    </div>
+
+    {% if "measurements_variable_amount" in dict_options and dict_options['measurements_variable_amount'] %}
+      {% include 'pages/form_options/Measurements_Select.html' %}
+    {% endif %}
+
+    {% include 'pages/form_options/Measurements_Configure.html' %}
+
   </div>
-  </form>
 
 </div>
 

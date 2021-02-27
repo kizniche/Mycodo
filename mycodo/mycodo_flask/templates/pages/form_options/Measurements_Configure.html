@@ -4,20 +4,26 @@
 {% if all_measurements %}
 
 <div class="row small-gutters" style="padding: 0.5em">
-  <h5>Convert Measurements</h5>
+  <h5>Configure Measurements</h5>
 </div>
 
   {% for each_measurement in all_measurements %}
 
-<form method="post" action="/data">
-{{form_mod_input_measurement.csrf_token}}
-{{form_mod_input_measurement.input_id(value=each_device.unique_id)}}
-{{form_mod_input_measurement.input_measurement_id(value=each_measurement.unique_id)}}
-{{form_mod_input_measurement.input_type(value='measurement_convert')}}
+<form method="post" action="
+{%- if controller_type == "Input" -%}
+    /data
+{%- elif controller_type == "Function" -%}
+    /function
+{%- endif -%}
+">
+{{form_mod_measurement.csrf_token}}
+{{form_mod_measurement.device_id(value=each_device.unique_id)}}
+{{form_mod_measurement.measurement_id(value=each_measurement.unique_id)}}
+{{form_mod_measurement.device_type(value='measurement_convert')}}
 
 <div class="row small-gutters align-items-end" style="border-bottom: 1px solid #ddd; padding: 0.5em">
   <div class="col-auto small-gutters">
-    {{form_mod_input_measurement.input_measurement_mod(class_='form-control btn btn-primary btn-sm btn-block')}}
+    {{form_mod_measurement.measurement_mod(class_='form-control btn btn-primary btn-sm btn-block')}}
   </div>
 
     {% if each_measurement.unit and each_measurement.measurement %}
@@ -35,40 +41,40 @@
     {% endif %}
 
   <div class="col-auto">
-    {{form_mod_input_measurement.name.label(class_='control-label')}}
+    {{form_mod_measurement.name.label(class_='control-label')}}
     <div>
-      {{form_mod_input_measurement.name(class_='form-control', value=each_measurement.name, **{'title': dict_translation['name']['phrase']})}}
+      {{form_mod_measurement.name(class_='form-control', value=each_measurement.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
   </div>
 
     {% if 'measurements_rescale' in dict_options and dict_options['measurements_rescale'] %}
 
   <div class="col-auto">
-    {{form_mod_input_measurement.scale_from_min.label(class_='control-label')}}
+    {{form_mod_measurement.scale_from_min.label(class_='control-label')}}
     <div>
       <input class="form-control" id="scale_from_min" name="scale_from_min" step="any" title="{{dict_translation['scale_from_min']['phrase']}}" type="number" value="{{each_measurement.scale_from_min}}">
     </div>
   </div>
   <div class="col-auto">
-    {{form_mod_input_measurement.scale_from_max.label(class_='control-label')}}
+    {{form_mod_measurement.scale_from_max.label(class_='control-label')}}
     <div>
       <input class="form-control" id="scale_from_max" name="scale_from_max" step="any" title="{{dict_translation['scale_from_max']['phrase']}}" type="number" value="{{each_measurement.scale_from_max}}">
     </div>
   </div>
   <div class="col-auto">
-    {{form_mod_input_measurement.scale_to_min.label(class_='control-label')}}
+    {{form_mod_measurement.scale_to_min.label(class_='control-label')}}
     <div>
       <input class="form-control" id="scale_to_min" name="scale_to_min" step="any" title="{{dict_translation['scale_to_min']['phrase']}}" type="number" value="{{each_measurement.scale_to_min}}">
     </div>
   </div>
   <div class="col-auto">
-    {{form_mod_input_measurement.scale_to_max.label(class_='control-label')}}
+    {{form_mod_measurement.scale_to_max.label(class_='control-label')}}
     <div>
       <input class="form-control" id="scale_to_max" name="scale_to_max" step="any" title="{{dict_translation['scale_to_max']['phrase']}}" type="number" value="{{each_measurement.scale_to_max}}">
     </div>
   </div>
   <div class="col-auto">
-    {{form_mod_input_measurement.rescaled_measurement_unit.label(class_='control-label')}}
+    {{form_mod_measurement.rescaled_measurement_unit.label(class_='control-label')}}
     <div>
       <select class="form-control" id="rescaled_measurement_unit" name="rescaled_measurement_unit">
         <option value="">{{_('Do Not Rescale')}}</option>
@@ -79,12 +85,12 @@
     </div>
   </div>
   <div class="col-auto">
-    {{form_mod_input_measurement.invert_scale.label(class_='control-label')}}
+    {{form_mod_measurement.invert_scale.label(class_='control-label')}}
     <div class="input-group-text">
     {%- if each_measurement.invert_scale -%}
-      {{form_mod_input_measurement.invert_scale(checked=True, class_='checkbox-big', **{'title': dict_translation['invert_scale']['phrase']})}}
+      {{form_mod_measurement.invert_scale(checked=True, class_='checkbox-big', **{'title': dict_translation['invert_scale']['phrase']})}}
     {%- else -%}
-      {{form_mod_input_measurement.invert_scale(class_='checkbox-big', **{'title': dict_translation['invert_scale']['phrase']})}}
+      {{form_mod_measurement.invert_scale(class_='checkbox-big', **{'title': dict_translation['invert_scale']['phrase']})}}
     {%- endif -%}
     </div>
   </div>
@@ -94,7 +100,7 @@
     {% if 'measurements_select_measurement_unit' in dict_options['options_enabled'] %}
 
   <div class="col-auto">
-    {{form_mod_input_measurement.select_measurement_unit.label(class_='control-label')}}
+    {{form_mod_measurement.select_measurement_unit.label(class_='control-label')}}
     <div>
       <select class="form-control" id="select_measurement_unit" name="select_measurement_unit" >
         <option value="">{{dict_translation['select_one']['title']}}</option>
@@ -108,7 +114,7 @@
     {% else %}
 
   <div class="col-auto">
-    {{form_mod_input_measurement.convert_to_measurement_unit.label(class_='control-label')}}
+    {{form_mod_measurement.convert_to_measurement_unit.label(class_='control-label')}}
     <div>
       <select class="form-control form-tooltip form-dropdown" id="convert_to_measurement_unit" name="convert_to_measurement_unit" data-placement="top" title="{{dict_translation['convert_to_measurement_unit']['phrase']}}">
         <option value="">{{_('Do Not Convert')}}</option>

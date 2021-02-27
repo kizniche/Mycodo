@@ -180,31 +180,3 @@ class InputMod(FlaskForm):
     input_deactivate = SubmitField(TRANSLATIONS['deactivate']['title'])
     input_order_up = SubmitField(TRANSLATIONS['up']['title'])
     input_order_down = SubmitField(TRANSLATIONS['down']['title'])
-
-
-class InputMeasurementMod(FlaskForm):
-    input_id = StringField('Input ID', widget=widgets.HiddenInput())
-    input_measurement_id = StringField(widget=widgets.HiddenInput())
-    input_type = StringField(widget=widgets.HiddenInput())
-    name = StringField(TRANSLATIONS['name']['title'])
-    select_measurement_unit = StringField(TRANSLATIONS['select_measurement_unit']['title'])
-
-    scale_from_min = DecimalField(
-        TRANSLATIONS['scale_from_min']['title'],
-        widget=NumberInput(step='any'))
-    scale_from_max = DecimalField(
-        TRANSLATIONS['scale_from_max']['title'],
-        widget=NumberInput(step='any'))
-    scale_to_min = DecimalField(
-        TRANSLATIONS['scale_to_min']['title'],
-        widget=NumberInput(step='any'))
-    scale_to_max = DecimalField(
-        TRANSLATIONS['scale_to_max']['title'],
-        widget=NumberInput(step='any'))
-    invert_scale = BooleanField(
-        TRANSLATIONS['invert_scale']['title'])
-
-    rescaled_measurement_unit = StringField(lazy_gettext('Rescaled Measurement'))
-    convert_to_measurement_unit = StringField(TRANSLATIONS['convert_to_measurement_unit']['title'])
-
-    input_measurement_mod = SubmitField(TRANSLATIONS['save']['title'])

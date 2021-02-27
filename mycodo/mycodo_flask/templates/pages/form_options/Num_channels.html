@@ -1,4 +1,4 @@
-{% if each_device.device in ['TTN_DATA_STORAGE', 'MQTT_PAHO', 'PythonCode'] %}
+{% if "measurements_variable_amount" in dict_options and dict_options['measurements_variable_amount'] %}
 
 <div class="col-auto">
   {{form.num_channels.label(class_='control-label')}}

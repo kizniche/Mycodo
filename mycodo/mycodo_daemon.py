@@ -233,11 +233,9 @@ class DaemonController:
             'Trigger': db_retrieve_table_daemon(Trigger, unique_id=unique_id),
             'Custom': db_retrieve_table_daemon(CustomController, unique_id=unique_id)
         }
-        controller_type = None
         for each_type in db_tables:
             if db_tables[each_type]:
-                controller_type = each_type
-        return controller_type
+                return each_type
 
     def controller_activate(self, cont_id):
         """

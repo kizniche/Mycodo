@@ -33,6 +33,8 @@ This new weather input acquires current and future weather conditions from openw
  - Fix Output not activating for Camera
  - Fix PWM trigger and Duration Method ([#937](https://github.com/kizniche/mycodo/issues/937))
  - Fix stopping Trigger Controllers ([#940](https://github.com/kizniche/mycodo/issues/940))
+ - Fix Tags not appearing in Graph Widgets
+ - Fix variable measurement Inputs saving correctly
 
 ### Features
 
@@ -51,6 +53,9 @@ This new weather input acquires current and future weather conditions from openw
  - Add Input: Raspberry Pi Sense HAT (humidity/temperature/pressure/compass/magnetism/acceleration/gyroscope)
  - Add Input: Xiaomi Mijia LYWSD03MMC
  - Add Input: Atlas Scientific CO2 sensor
+ - Add Input: AHTx0 Temperature/Humidity sensor
+ - Add Input: BME680 (Circuitpython)
+ - Add measurements to Custom Controllers
  - Add Measurement and Unit: Speed, Meters/Second
  - Add Measurement and Unit: Direction, Bearing
  - Add Conversions: m/s <-> mph <-> knots, hour <-> minutes and seconds

@@ -79,10 +79,16 @@ def parse_function_information(exclude_custom=False):
             dict_controllers[function_custom.FUNCTION_INFORMATION['function_name_unique']]['file_path'] = full_path
 
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'function_name')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'measurements_dict')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'channels_dict')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'measurements_variable_amount')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'channel_quantity_same_as_measurements')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'enable_channel_unit_select')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'message')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'options_enabled')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'options_disabled')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'dependencies_module')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_options')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_channel_options')
 
     return dict_controllers
