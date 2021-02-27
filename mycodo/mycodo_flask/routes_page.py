@@ -1274,12 +1274,14 @@ def page_function():
     input_dev = Input.query.all()
     lcd = LCD.query.all()
     math = Math.query.all()
+    measurement = Measurement.query.all()
     method = Method.query.all()
     tags = NoteTags.query.all()
     output = Output.query.all()
     output_channel = OutputChannel.query.all()
     pid = PID.query.all()
     trigger = Trigger.query.all()
+    unit = Unit.query.all()
     user = User.query.all()
 
     display_order_function = csv_to_list_of_str(DisplayOrder.query.first().function)
@@ -1480,6 +1482,9 @@ def page_function():
     dict_controllers = parse_function_information()
     dict_outputs = parse_output_information()
 
+    dict_units = add_custom_units(unit)
+    dict_measurements = add_custom_measurements(measurement)
+
     custom_options_values_controllers = parse_custom_option_values(
         custom_functions, dict_controller=dict_controllers)
 
@@ -1615,7 +1620,9 @@ def page_function():
                            custom_functions=custom_functions,
                            custom_options_values_controllers=custom_options_values_controllers,
                            dict_controllers=dict_controllers,
+                           dict_measurements=dict_measurements,
                            dict_outputs=dict_outputs,
+                           dict_units=dict_units,
                            display_order_function=display_order_function,
                            form_base=form_base,
                            form_conditional=form_conditional,

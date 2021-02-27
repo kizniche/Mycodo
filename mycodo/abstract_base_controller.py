@@ -151,6 +151,12 @@ class AbstractBaseController(object):
                             '{}_channel_id'.format(each_option_default['id']),
                             channel_id)
 
+                elif each_option_default['type'] == 'select_type_measurement':
+                    setattr(self, each_option_default['id'], str(option_value))
+
+                elif each_option_default['type'] == 'select_type_unit':
+                    setattr(self, each_option_default['id'], str(option_value))
+
                 elif each_option_default['type'] == 'select_device':
                     setattr(self,
                             '{}_id'.format(each_option_default['id']),
@@ -252,6 +258,12 @@ class AbstractBaseController(object):
                     setattr(self,
                             '{}_channel_id'.format(each_option_default['id']),
                             channel_id)
+
+                elif each_option_default['type'] == 'select_type_measurement':
+                    setattr(self, each_option_default['id'], str(option_value))
+
+                elif each_option_default['type'] == 'select_type_unit':
+                    setattr(self, each_option_default['id'], str(option_value))
 
                 elif each_option_default['type'] == 'select_device':
                     setattr(self,

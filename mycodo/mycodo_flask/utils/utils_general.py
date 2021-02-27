@@ -122,6 +122,8 @@ def custom_options_return_string(error, dict_options, mod_dev, request_form):
                             'select',
                             'select_measurement',
                             'select_measurement_channel',
+                            'select_type_measurement',
+                            'select_type_unit',
                             'select_device']:
                         if 'constraints_pass' in each_option:
                             (constraints_pass,
@@ -229,6 +231,8 @@ def custom_options_return_json(
                                 'select',
                                 'select_measurement',
                                 'select_measurement_channel',
+                                'select_type_measurement',
+                                'select_type_unit',
                                 'select_device']:
                             if 'constraints_pass' in each_option:
                                 (constraints_pass,
@@ -363,6 +367,8 @@ def custom_channel_options_return_json(
                                 'text',
                                 'select_measurement',
                                 'select_measurement_channel',
+                                'select_type_measurement',
+                                'select_type_unit',
                                 'select_device']:
                             if 'constraints_pass' in each_option:
                                 (constraints_pass,
