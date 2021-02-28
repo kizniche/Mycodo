@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  average_past_single.py - Calculates the average of past measurements for a single channel
+#  sum_last_multiple.py - Calculates the sum of last measurements for multiple channels
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
@@ -32,7 +32,7 @@ from mycodo.databases.models import CustomController
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.influx import average_past_seconds
+from mycodo.utils.influx import read_last_influxdb
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import return_measurement_info
 
@@ -61,13 +61,13 @@ measurements_dict = {
 }
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'average_past_single',
-    'function_name': 'Function: Average (Past, Single)',
+    'function_name_unique': 'sum_last_multiple',
+    'function_name': 'Function: Sum (Last, Multiple)',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 
-    'message': 'This function acquires the past measurements (within Max Age) for the selected measurement, averages '
-               'them, then stores the resulting value as the selected measurement and unit.',
+    'message': 'This function acquires the last measurement of those that are selected, sums them, then stores '
+               'the resulting value as the selected measurement and unit.',
 
     'options_enabled': [
         'measurements_select_measurement_unit',
@@ -102,7 +102,7 @@ FUNCTION_INFORMATION = {
         },
         {
             'id': 'select_measurement',
-            'type': 'select_measurement',
+            'type': 'select_multi_measurement',
             'default_value': '',
             'options_select': [
                 'Input',
@@ -133,8 +133,7 @@ class CustomModule(AbstractController, threading.Thread):
         # Initialize custom options
         self.period = None
         self.start_offset = None
-        self.select_measurement_device_id = None
-        self.select_measurement_measurement_id = None
+        self.select_measurement = None
         self.max_measure_age = None
 
         # Set custom options
@@ -156,33 +155,42 @@ class CustomModule(AbstractController, threading.Thread):
             while self.timer_loop < time.time():
                 self.timer_loop += self.period
 
-            device_measurement = get_measurement(self.select_measurement_measurement_id)
+            measurements = []
+            for each_id_set in self.select_measurement:
+                device_device_id = each_id_set.split(",")[0]
+                device_measure_id = each_id_set.split(",")[1]
 
-            if not device_measurement:
-                self.logger.error("Could not find Device Measurement")
-                return
+                device_measurement = get_measurement(device_measure_id)
 
-            conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=device_measurement.conversion_id)
-            channel, unit, measurement = return_measurement_info(
-                device_measurement, conversion)
+                if not device_measurement:
+                    self.logger.error("Could not find Device Measurement")
+                    return
 
-            average = average_past_seconds(
-                self.select_measurement_device_id,
-                unit,
-                channel,
-                self.max_measure_age,
-                measure=measurement)
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=device_measurement.conversion_id)
+                channel, unit, measurement = return_measurement_info(
+                    device_measurement, conversion)
 
-            if not average:
-                self.logger.error("Could not find measurement within the set Max Age")
-                return False
+                last_measurement = read_last_influxdb(
+                    device_device_id,
+                    unit,
+                    channel,
+                    measure=measurement,
+                    duration_sec=self.max_measure_age)
+
+                if not last_measurement:
+                    self.logger.error("Could not find measurement within the set Max Age")
+                    return False
+                else:
+                    measurements.append(last_measurement[1])
+
+            sum_measurements = float(sum(measurements))
 
             measurement_dict = {
                 0: {
                     'measurement': self.channels_measurement[0].measurement,
                     'unit': self.channels_measurement[0].unit,
-                    'value': average
+                    'value': sum_measurements
                 }
             }
 

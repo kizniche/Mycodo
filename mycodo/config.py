@@ -321,8 +321,6 @@ MATH_INFO = {
 
 # Math form dropdown
 MATHS = [
-    ('sum', MATH_INFO['sum']['name']),
-    ('sum_single', MATH_INFO['sum_single']['name']),
     ('difference', MATH_INFO['difference']['name']),
     ('redundancy', MATH_INFO['redundancy']['name']),
     ('verification', MATH_INFO['verification']['name']),

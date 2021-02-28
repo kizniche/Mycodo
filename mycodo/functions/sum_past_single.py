@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  average_past_single.py - Calculates the average of past measurements for a single channel
+#  sum_past_single.py - Calculates the sum of past measurements for a single channel
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
@@ -32,7 +32,7 @@ from mycodo.databases.models import CustomController
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.influx import average_past_seconds
+from mycodo.utils.influx import sum_past_seconds
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import return_measurement_info
 
@@ -61,12 +61,12 @@ measurements_dict = {
 }
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'average_past_single',
-    'function_name': 'Function: Average (Past, Single)',
+    'function_name_unique': 'sum_past_single',
+    'function_name': 'Function: Sum (Past, Single)',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 
-    'message': 'This function acquires the past measurements (within Max Age) for the selected measurement, averages '
+    'message': 'This function acquires the past measurements (within Max Age) for the selected measurement, sums '
                'them, then stores the resulting value as the selected measurement and unit.',
 
     'options_enabled': [
@@ -167,14 +167,14 @@ class CustomModule(AbstractController, threading.Thread):
             channel, unit, measurement = return_measurement_info(
                 device_measurement, conversion)
 
-            average = average_past_seconds(
+            sum_measurements = sum_past_seconds(
                 self.select_measurement_device_id,
                 unit,
                 channel,
                 self.max_measure_age,
                 measure=measurement)
 
-            if not average:
+            if not sum_measurements:
                 self.logger.error("Could not find measurement within the set Max Age")
                 return False
 
@@ -182,7 +182,7 @@ class CustomModule(AbstractController, threading.Thread):
                 0: {
                     'measurement': self.channels_measurement[0].measurement,
                     'unit': self.channels_measurement[0].unit,
-                    'value': average
+                    'value': sum_measurements
                 }
             }
 

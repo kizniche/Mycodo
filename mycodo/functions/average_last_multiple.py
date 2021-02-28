@@ -66,7 +66,8 @@ FUNCTION_INFORMATION = {
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 
-    'message': 'This function acquires the last measurement of those that are selected, averages them, then stores the resulting value as the selected measurement and unit.',
+    'message': 'This function acquires the last measurement of those that are selected, averages them, then stores '
+               'the resulting value as the selected measurement and unit.',
 
     'options_enabled': [
         'measurements_select_measurement_unit',
@@ -146,6 +147,8 @@ class CustomModule(AbstractController, threading.Thread):
             CustomController, unique_id=self.unique_id)
         self.log_level_debug = controller.log_level_debug
         self.set_log_level_debug(self.log_level_debug)
+
+        self.timer_loop = time.time() + self.start_offset
 
     def loop(self):
         if self.timer_loop < time.time():

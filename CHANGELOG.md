@@ -84,8 +84,8 @@ This new weather input acquires current and future weather conditions from openw
  - Refactor Edge detection Input
  - Refactor method implementation from single large method into multiple small classes
  - Changed duration method start- and end-time handling
- - Port Math controllers to Functions: Equation, Average (Single), Average (Multi)
- - Deprecate Math controllers: Equation, Average (Single), Average (Multi)
+ - Port Math controllers to Functions: Equation, Average (Single/Multi), Sum (Single/Multi)
+ - Deprecate Math controllers: Equation, Average (Single), Average (Single/Multi), Sum (Single/Multi)
 
 
 ## 8.8.8 (2020-10-30)
