@@ -54,6 +54,11 @@
       <option value="{{each_math_form['value']}}"{% if each_math_form['value'] == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_math_form['item']}}</option>
         {% endfor -%}
       {% endif %}
+      {% if 'Function' in each_option['options_select'] %}
+        {% for each_function_form in choices_function -%}
+      <option value="{{each_function_form['value']}}"{% if each_function_form['value'] == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_function_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
       {% if 'Output' in each_option['options_select'] %}
         {% for each_output_form in choices_output -%}
       <option value="{{each_output_form['value']}}"{% if each_output_form['value'] == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>
@@ -82,8 +87,8 @@
       {% if 'Math' in each_option['options_select'] %}
         {% set multiselect_size = multiselect_size + choices_math|length %}
       {% endif %}
-      {% if 'CustomController' in each_option['options_select'] %}
-        {% set multiselect_size = multiselect_size + choices_custom_controller|length %}
+      {% if 'Function' in each_option['options_select'] %}
+        {% set multiselect_size = multiselect_size + choices_function|length %}
       {% endif %}
       {% if 'Output' in each_option['options_select'] %}
         {% set multiselect_size = multiselect_size + choices_output|length %}
@@ -145,6 +150,11 @@
       <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>[Math {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
+      {% if 'Function' in each_option['options_select'] %}
+        {%- for each_dev in custom_functions -%}
+      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>[Function {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+        {%- endfor -%}
+      {% endif %}
       {% if 'PID' in each_option['options_select'] %}
         {%- for each_dev in pid -%}
       <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>[PID {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
@@ -158,11 +168,6 @@
       {% if 'Camera' in each_option['options_select'] %}
         {%- for each_dev in camera -%}
       <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>[Camera {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
-        {%- endfor -%}
-      {% endif %}
-      {% if 'Custom' in each_option['options_select'] %}
-        {%- for each_dev in custom_functions -%}
-      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>[Custom {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
     </select>

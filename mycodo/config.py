@@ -321,12 +321,9 @@ MATH_INFO = {
 
 # Math form dropdown
 MATHS = [
-    ('average', MATH_INFO['average']['name']),
-    ('average_single', MATH_INFO['average_single']['name']),
     ('sum', MATH_INFO['sum']['name']),
     ('sum_single', MATH_INFO['sum_single']['name']),
     ('difference', MATH_INFO['difference']['name']),
-    ('equation', MATH_INFO['equation']['name']),
     ('redundancy', MATH_INFO['redundancy']['name']),
     ('verification', MATH_INFO['verification']['name']),
     ('statistics', MATH_INFO['statistics']['name']),

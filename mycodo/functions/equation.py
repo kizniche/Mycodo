@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  function_multi_measurement_equation.py - Perform equation with multiple measurements
+#  equation.py - Perform equation with multiple measurements
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
@@ -58,12 +58,12 @@ measurements_dict = {
 }
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'multi_measurement_equation',
-    'function_name': 'Function: Multi-Measure Equation',
+    'function_name_unique': 'measurement_equation',
+    'function_name': 'Function: Equation',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 
-    'message': 'This function acquires two measurements and uses them within a user-set equation and stores the '
+    'message': 'This function acquires a measurement and uses it within a user-set equation and stores the '
                'resulting value as the selected measurement and unit.',
 
     'options_enabled': [
@@ -82,50 +82,32 @@ FUNCTION_INFORMATION = {
             'phrase': lazy_gettext('The duration (seconds) between measurements or actions')
         },
         {
-            'id': 'select_measurement_a',
+            'id': 'select_measurement',
             'type': 'select_measurement',
             'default_value': '',
             'options_select': [
                 'Input',
-                'Math'
+                'Math',
+                'Function'
             ],
-            'name': 'Measurement A',
-            'phrase': 'Measurement to replace a'
+            'name': 'Measurement',
+            'phrase': 'Measurement to replace "x" in the equation'
         },
         {
-            'id': 'measurement_a_max_age',
+            'id': 'measurement_max_age',
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': 'Measurement A Max Age',
-            'phrase': 'The maximum allowed age of measurement a'
-        },
-        {
-            'id': 'select_measurement_b',
-            'type': 'select_measurement',
-            'default_value': '',
-            'options_select': [
-                'Input',
-                'Math'
-            ],
-            'name': 'Measurement B',
-            'phrase': 'Measurement to replace b'
-        },
-        {
-            'id': 'measurement_b_max_age',
-            'type': 'integer',
-            'default_value': 360,
-            'required': True,
-            'name': 'Measurement B Max Age',
-            'phrase': 'The maximum allowed age of measurement b'
+            'name': 'Measurement Max Age',
+            'phrase': 'The maximum allowed age of the measurement'
         },
         {
             'id': 'equation',
             'type': 'text',
-            'default_value': 'a*(2+b)',
+            'default_value': 'x*5+2',
             'required': True,
             'name': 'Equation',
-            'phrase': 'Equation using measurements a and b'
+            'phrase': 'Equation using the measurement'
         }
     ]
 }
@@ -147,12 +129,9 @@ class CustomModule(AbstractController, threading.Thread):
 
         # Initialize custom options
         self.period = None
-        self.select_measurement_a_device_id = None
-        self.select_measurement_a_measurement_id = None
-        self.measurement_a_max_age = None
-        self.select_measurement_b_device_id = None
-        self.select_measurement_b_measurement_id = None
-        self.measurement_b_max_age = None
+        self.select_measurement_device_id = None
+        self.select_measurement_measurement_id = None
+        self.measurement_max_age = None
         self.equation = None
 
         # Set custom options
@@ -169,11 +148,9 @@ class CustomModule(AbstractController, threading.Thread):
 
         self.logger.debug(
             "Custom controller started with options: "
-            "{}, {}, {}, {}, {}".format(
-                self.select_measurement_a_device_id,
-                self.select_measurement_a_measurement_id,
-                self.select_measurement_b_device_id,
-                self.select_measurement_b_measurement_id,
+            "{}, {}, {}".format(
+                self.select_measurement_device_id,
+                self.select_measurement_measurement_id,
                 self.equation))
 
     def loop(self):
@@ -182,51 +159,30 @@ class CustomModule(AbstractController, threading.Thread):
                 self.timer_loop += self.period
 
             # Get last measurement for select_measurement_1
-            last_measurement_a = self.get_last_measurement(
-                self.select_measurement_a_device_id,
-                self.select_measurement_a_measurement_id,
-                max_age=self.measurement_a_max_age)
+            last_measurement = self.get_last_measurement(
+                self.select_measurement_device_id,
+                self.select_measurement_measurement_id,
+                max_age=self.measurement_max_age)
 
-            if last_measurement_a:
+            if last_measurement:
                 self.logger.debug(
                     "Most recent timestamp and measurement for "
                     "select_measurement_a: {timestamp}, {meas}".format(
-                        timestamp=last_measurement_a[0],
-                        meas=last_measurement_a[1]))
+                        timestamp=last_measurement[0],
+                        meas=last_measurement[1]))
             else:
                 self.logger.debug(
                     "Could not find a measurement in the database for "
                     "select_measurement_a device ID {} and measurement "
                     "ID {} in the past {} seconds".format(
-                        self.select_measurement_a_device_id,
-                        self.select_measurement_a_measurement_id,
-                        self.measurement_a_max_age))
-
-            last_measurement_b = self.get_last_measurement(
-                self.select_measurement_b_device_id,
-                self.select_measurement_b_measurement_id,
-                max_age=self.measurement_b_max_age)
-
-            if last_measurement_b:
-                self.logger.debug(
-                    "Most recent timestamp and measurement for "
-                    "select_measurement_b: {timestamp}, {meas}".format(
-                        timestamp=last_measurement_b[0],
-                        meas=last_measurement_b[1]))
-            else:
-                self.logger.debug(
-                    "Could not find a measurement in the database for "
-                    "select_measurement_b device ID {} and measurement "
-                    "ID {} in the past {} seconds".format(
-                        self.select_measurement_b_device_id,
-                        self.select_measurement_b_measurement_id,
-                        self.measurement_b_max_age))
+                        self.select_measurement_device_id,
+                        self.select_measurement_measurement_id,
+                        self.measurement_max_age))
 
             # Perform equation and save to DB here
-            if last_measurement_a and last_measurement_b:
+            if last_measurement:
                 equation_str = self.equation
-                equation_str = equation_str.replace("a", str(last_measurement_a[1]))
-                equation_str = equation_str.replace("b", str(last_measurement_b[1]))
+                equation_str = equation_str.replace("x", str(last_measurement[1]))
 
                 self.logger.debug("Equation: {} = {}".format(self.equation, equation_str))
 

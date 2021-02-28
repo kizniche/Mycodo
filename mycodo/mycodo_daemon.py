@@ -113,7 +113,7 @@ class DaemonController:
             'Math': {},
             'PID': {},
             'Trigger': {},
-            'Custom': {}
+            'Function': {}
         }
 
         # Controllers that may launch multiple threads
@@ -125,7 +125,7 @@ class DaemonController:
             'Math',
             'PID',
             'LCD',
-            'Custom'
+            'Function'
         ]
 
         # Dashboard widgets
@@ -231,7 +231,7 @@ class DaemonController:
             'Math': db_retrieve_table_daemon(Math, unique_id=unique_id),
             'PID': db_retrieve_table_daemon(PID, unique_id=unique_id),
             'Trigger': db_retrieve_table_daemon(Trigger, unique_id=unique_id),
-            'Custom': db_retrieve_table_daemon(CustomController, unique_id=unique_id)
+            'Function': db_retrieve_table_daemon(CustomController, unique_id=unique_id)
         }
         for each_type in db_tables:
             if db_tables[each_type]:
@@ -278,7 +278,7 @@ class DaemonController:
             elif cont_type == 'Trigger':
                 controller_manage['type'] = Trigger
                 controller_manage['function'] = TriggerController
-            elif cont_type == 'Custom':
+            elif cont_type == 'Function':
                 controller_manage['type'] = CustomController
 
                 custom_function = db_retrieve_table_daemon(controller_manage['type'], unique_id=cont_id)
@@ -413,9 +413,9 @@ class DaemonController:
             for trigger_id in self.controller['Trigger']:
                 if not self.controller['Trigger'][trigger_id].is_running():
                     return "Error: Trigger ID {}".format(trigger_id)
-            for controller_id in self.controller['Custom']:
-                if not self.controller['Custom'][controller_id].is_running():
-                    return "Error: Custom ID {}".format(controller_id)
+            for controller_id in self.controller['Function']:
+                if not self.controller['Function'][controller_id].is_running():
+                    return "Error: Function ID {}".format(controller_id)
             if not self.controller['Output'].is_running():
                 return "Error: Output controller"
             if not self.controller['Widget'].is_running():
@@ -836,7 +836,7 @@ class DaemonController:
                 'Math': db_retrieve_table_daemon(Math, entry='all'),
                 'PID': db_retrieve_table_daemon(PID, entry='all'),
                 'Trigger': db_retrieve_table_daemon(Trigger, entry='all'),
-                'Custom': db_retrieve_table_daemon(CustomController, entry='all')
+                'Function': db_retrieve_table_daemon(CustomController, entry='all')
             }
 
             self.logger.debug("Starting Output Controller")

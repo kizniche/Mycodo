@@ -1,12 +1,12 @@
-{%- for each_function in custom_functions if each_function.unique_id == order -%}
+{%- for each_function in function if each_function.unique_id == order -%}
 
 <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
 
   <form method="post" action="/function">
   <input type="hidden" name="form-name" value="modController">
-  {{form_custom_controller.csrf_token}}
-  {{form_custom_controller.function_id(value=each_function.unique_id)}}
-  {{form_custom_controller.function_type(class_='form-control', value='custom_controller')}}
+  {{form_function.csrf_token}}
+  {{form_function.function_id(value=each_function.unique_id)}}
+  {{form_function.function_type(class_='form-control', value='function')}}
 
   <div class="{% if each_function.is_activated -%}active-background
               {% else -%}inactive-background
@@ -18,7 +18,7 @@
       </a>
     </div>
     <div class="col-5 col-sm-3 col-md-3 col-lg-3">
-      {{form_custom_controller.name(class_='form-control', value=each_function.name, **{'title': dict_translation['name']['phrase']})}}
+      {{form_function.name(class_='form-control', value=each_function.name, **{'title': dict_translation['name']['phrase']})}}
     </div>
     <div class="col-5 col-sm-4 col-md-4 col-lg-4">
       <input class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{dict_translation['controller']['title']}}
@@ -30,9 +30,9 @@
 
     <div class="col-6 col-sm-4 col-md-4 col-lg-4">
       {%- if each_function.is_activated %}
-        {{form_custom_controller.deactivate_controller(class_='form-control btn btn-primary btn-sm')}}
+        {{form_function.deactivate_controller(class_='form-control btn btn-primary btn-sm')}}
       {%- else %}
-        {{form_custom_controller.activate_controller(class_='form-control btn btn-primary btn-sm')}}
+        {{form_function.activate_controller(class_='form-control btn btn-primary btn-sm')}}
       {%- endif -%}
     </div>
   </div>
@@ -41,16 +41,16 @@
 
     <div class="row small-gutters" style="padding: 0.5em;">
       <div class="col-auto small-gutters">
-        {{form_custom_controller.save_controller(class_='form-control btn btn-primary btn-sm')}}
+        {{form_function.save_controller(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto small-gutters">
-        {{form_custom_controller.delete_controller(class_='form-control btn btn-primary btn-sm',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        {{form_function.delete_controller(class_='form-control btn btn-primary btn-sm',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
       <div class="col-auto small-gutters">
-        {{form_custom_controller.order_up(class_='form-control btn btn-primary btn-sm')}}
+        {{form_function.order_up(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto small-gutters">
-        {{form_custom_controller.order_down(class_='form-control btn btn-primary btn-sm')}}
+        {{form_function.order_down(class_='form-control btn btn-primary btn-sm')}}
       </div>
     </div>
 
@@ -63,13 +63,13 @@
       {% endif %}
 
       <div class="col-auto">
-        {{form_custom_controller.log_level_debug.label(class_='control-label')}}
+        {{form_function.log_level_debug.label(class_='control-label')}}
         <div class="input-group-text">
           <input id="log_level_debug" name="log_level_debug" type="checkbox" title="{{dict_translation['log_level_debug']['phrase']}}" value="y"{% if each_function.log_level_debug %} checked{% endif %}>
         </div>
       </div>
 
-    {% set form = form_custom_controller %}
+    {% set form = form_function %}
     {% set dict_options = dict_controllers[each_function.device] %}
     {% set unique_id = each_function.unique_id %}
     {% set custom_options_values = custom_options_values_controllers %}
@@ -111,19 +111,12 @@
         {%- if 'name' in custom_options_values_function_channels[each_function.unique_id][each_function_channel.channel] and
              custom_options_values_function_channels[each_function.unique_id][each_function_channel.channel]['name'] -%}
           {{': ' + custom_options_values_function_channels[each_function.unique_id][each_function_channel.channel]['name']}}
-        {%- elif 'channels_dict' in dict_functions[each_function.output_type] and
-                 'name' in dict_functions[each_function.output_type]['channels_dict'][each_function_channel.channel] -%}
-          {{': ' + dict_functions[each_function.output_type]['channels_dict'][each_function_channel.channel]['name']}}
+        {%- elif 'channels_dict' in dict_controllers[each_function.device] and
+                 'name' in dict_controllers[each_function.device]['channels_dict'][each_function_channel.channel] -%}
+          {{': ' + dict_controllers[each_function.device]['channels_dict'][each_function_channel.channel]['name']}}
         {%- endif -%}
       </div>
     </div>
-
-        {% set dict_options = dict_functions[each_function.device] %}
-        {% set unique_id = each_function.unique_id %}
-        {% set custom_options_values = custom_options_values_function_channels %}
-        {% set channel = each_function_channel.channel %}
-        {% set each_device = each_function %}
-        {% set controller_type = "Input" %}
 
         {% if custom_options_values[unique_id] %}
 

@@ -15,7 +15,7 @@ from mycodo.databases.models import FunctionChannel
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
-from mycodo.mycodo_flask.utils.utils_general import custom_options_return_string
+from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.functions import parse_function_information
@@ -99,11 +99,14 @@ def controller_mod(form_mod, request_form):
                             new_channel.save()
 
         # Generate string to save from custom options
-        error, custom_options = custom_options_return_string(
-            error, dict_controllers, mod_controller, request_form)
+        error, custom_options = custom_options_return_json(
+            error, dict_controllers,
+            request_form=request_form,
+            device=mod_controller.device,
+            use_defaults=True)
+        mod_controller.custom_options = custom_options
 
         if not error:
-            mod_controller.custom_options = custom_options
             db.session.commit()
 
     except sqlalchemy.exc.OperationalError as except_msg:
@@ -175,7 +178,7 @@ def controller_activate(controller_id):
         controller=TRANSLATIONS['controller']['title'])
 
     if not error:
-        controller_activate_deactivate('activate', 'CustomController', controller_id)
+        controller_activate_deactivate('activate', 'Function', controller_id)
 
     flash_success_errors(error, action, url_for('routes_page.page_function'))
 
@@ -188,6 +191,6 @@ def controller_deactivate(controller_id):
         controller=TRANSLATIONS['controller']['title'])
 
     if not error:
-        controller_activate_deactivate('deactivate', 'CustomController', controller_id)
+        controller_activate_deactivate('deactivate', 'Function', controller_id)
 
     flash_success_errors(error, action, url_for('routes_page.page_function'))

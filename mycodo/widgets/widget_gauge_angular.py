@@ -135,6 +135,7 @@ WIDGET_INFORMATION = {
             'options_select': [
                 'Input',
                 'Math',
+                'Function',
                 'PID'
             ],
             'name': lazy_gettext('Measurement'),
@@ -284,6 +285,11 @@ WIDGET_INFORMATION = {
           getLastDataGaugeAngular({{chart_number}}, '{{device_id}}', 'math', '{{measurement_id}}', {{widget_options['max_measure_age']}});
           repeatLastDataGaugeAngular({{chart_number}}, '{{device_id}}', 'math', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
           {%- endfor -%}
+          
+          {% for each_function in function if each_function.unique_id == device_id %}
+          getLastDataGaugeAngular({{chart_number}}, '{{device_id}}', 'function', '{{measurement_id}}', {{widget_options['max_measure_age']}});
+          repeatLastDataGaugeAngular({{chart_number}}, '{{device_id}}', 'function', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
+          {%- endfor -%}
 
           {%- for each_pid in pid if each_pid.unique_id == device_id %}
           getLastDataGaugeAngular({{chart_number}}, '{{device_id}}', 'pid', '{{measurement_id}}', {{widget_options['max_measure_age']}});
@@ -376,6 +382,10 @@ WIDGET_INFORMATION = {
         {%- for each_math in math if each_math.unique_id == device_id -%}
           {{each_math.measure|safe}}
         {%- endfor -%}
+        
+        {%- for each_function in function if each_function.unique_id == device_id -%}
+          {{each_function.measure|safe}}
+        {%- endfor -%}
 
         {%- for each_pid in pid if each_pid.unique_id == device_id -%}
           {{each_pid.measure|safe}}
@@ -405,6 +415,10 @@ WIDGET_INFORMATION = {
 
         {%- for each_math in math if each_math.unique_id == device_id -%}
           {{' ' + each_math.measure_units|safe}}
+        {%- endfor -%}
+        
+        {%- for each_function in function if each_function.unique_id == device_id -%}
+          {{' ' + each_function.measure_units|safe}}
         {%- endfor -%}
 
         {%- for each_pid in pid if each_pid.unique_id == device_id -%}

@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  function_bang_bang.py - A hysteretic control
+#  bang_bang.py - A hysteretic control
 #
 #  Copyright (C) 2015-2020 Rob Bultman <rob@firstbuild.com>
 #

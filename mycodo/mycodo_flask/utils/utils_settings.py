@@ -435,7 +435,7 @@ def settings_function_import(form):
             # Determine filename
             unique_name = '{}.py'.format(controller_info.FUNCTION_INFORMATION['function_name_unique'].lower())
 
-            # Move module from temp directory to custom_controller directory
+            # Move module from temp directory to function directory
             full_path_final = os.path.join(PATH_FUNCTIONS_CUSTOM, unique_name)
             os.rename(full_path_tmp, full_path_final)
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  function_pid_autotune.py - PID Controller Autotune
+#  pid_autotune.py - PID Controller Autotune
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #

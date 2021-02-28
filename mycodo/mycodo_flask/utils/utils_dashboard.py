@@ -315,7 +315,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
 
     y_axes = []
 
-    custom_controller = CustomController.query.all()
+    function = CustomController.query.all()
     device_measurements = DeviceMeasurements.query.all()
     input_dev = Input.query.all()
     math = Math.query.all()
@@ -385,7 +385,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
                                                 input_dev,
                                                 output,
                                                 math,
-                                                custom_controller)
+                                                function)
 
                 elif len(each_id_measure.split(',')) == 3:
                     unique_id = each_id_measure.split(',')[0]
@@ -406,7 +406,7 @@ def graph_y_axes_async(dict_measurements, ids_measures):
                                                 input_dev,
                                                 output,
                                                 math,
-                                                custom_controller,
+                                                function,
                                                 unit=unit)
 
     return y_axes
@@ -421,7 +421,7 @@ def check_func(all_devices,
                input_dev,
                output,
                math,
-               custom_controller,
+               function,
                unit=None):
     """
     Generate a list of y-axes for Live and Asynchronous Graphs
@@ -434,7 +434,7 @@ def check_func(all_devices,
     :param input_dev:
     :param output:
     :param math:
-    :param custom_controller
+    :param function
     :param unit:
     :return: None
     """
@@ -445,7 +445,7 @@ def check_func(all_devices,
         if each_device.unique_id == unique_id:
 
             use_unit = use_unit_generate(
-                device_measurements, input_dev, output, math, custom_controller)
+                device_measurements, input_dev, output, math, function)
 
             # Add duration
             if measurement == 'duration_time':

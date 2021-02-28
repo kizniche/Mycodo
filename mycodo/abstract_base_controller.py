@@ -120,7 +120,11 @@ class AbstractBaseController(object):
                 elif each_option_default['type'] == 'bool':
                     setattr(self, each_option_default['id'], bool(option_value))
 
-                elif each_option_default['type'] in ['multiline_text', 'text']:
+                elif each_option_default['type'] in ['multiline_text',
+                                                     'text']:
+                    setattr(self, each_option_default['id'], str(option_value))
+
+                elif each_option_default['type'] == 'select_multi_measurement':
                     setattr(self, each_option_default['id'], str(option_value))
 
                 elif each_option_default['type'] == 'select':
@@ -151,10 +155,8 @@ class AbstractBaseController(object):
                             '{}_channel_id'.format(each_option_default['id']),
                             channel_id)
 
-                elif each_option_default['type'] == 'select_type_measurement':
-                    setattr(self, each_option_default['id'], str(option_value))
-
-                elif each_option_default['type'] == 'select_type_unit':
+                elif each_option_default['type'] in ['select_type_measurement',
+                                                     'select_type_unit']:
                     setattr(self, each_option_default['id'], str(option_value))
 
                 elif each_option_default['type'] == 'select_device':
@@ -167,7 +169,7 @@ class AbstractBaseController(object):
 
                 else:
                     self.logger.error(
-                        "(a) Unknown custom_option type '{}'".format(each_option_default['type']))
+                        "setup_custom_options_csv() Unknown custom_option type '{}'".format(each_option_default['type']))
             except Exception:
                 self.logger.exception("Error parsing custom_options")
 
@@ -236,6 +238,7 @@ class AbstractBaseController(object):
                                                      'float',
                                                      'bool',
                                                      'multiline_text',
+                                                     'select_multi_measurement',
                                                      'text',
                                                      'select']:
                     setattr(self, each_option_default['id'], option_value)
@@ -275,7 +278,7 @@ class AbstractBaseController(object):
 
                 else:
                     self.logger.error(
-                        "(b) Unknown option type '{}'".format(each_option_default['type']))
+                        "setup_custom_options_json() Unknown option type '{}'".format(each_option_default['type']))
             except Exception:
                 self.logger.exception("Error parsing options")
 

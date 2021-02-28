@@ -243,14 +243,14 @@ WIDGET_INFORMATION = {
             'phrase': lazy_gettext('Select Math measurements to display')
         },
         {
-            'id': 'measurements_custom_controller',
+            'id': 'measurements_function',
             'type': 'select_multi_measurement',
             'default_value': '',
             'options_select': [
-                'CustomController'
+                'Function'
             ],
-            'name': lazy_gettext('Custom Controllers'),
-            'phrase': lazy_gettext('Select Custom Controller measurements to display')
+            'name': lazy_gettext('Function'),
+            'phrase': lazy_gettext('Select Function measurements to display')
         },
         {
             'id': 'measurements_output',
@@ -610,7 +610,7 @@ WIDGET_INFORMATION = {
     'widget_dashboard_js_ready_end': """
 {% set graph_input_ids = widget_options['measurements_input'] %}
 {% set graph_math_ids = widget_options['measurements_math'] %}
-{% set graph_custom_controller_ids = widget_options['measurements_custom_controller'] %}
+{% set graph_function_ids = widget_options['measurements_function'] %}
 {% set graph_output_ids = widget_options['measurements_output'] %}
 {% set graph_pid_ids = widget_options['measurements_pid'] %}
 {% set graph_note_tag_ids = widget_options['measurements_note_tag'] %}
@@ -660,15 +660,15 @@ WIDGET_INFORMATION = {
             {%- endif -%}
           {%- endfor -%}
           
-          {%- for custom_controller_and_measurement_ids in graph_custom_controller_ids -%}
-            {%- set custom_controller_id = custom_controller_and_measurement_ids.split(',')[0] -%}
-            {%- set measurement_id = custom_controller_and_measurement_ids.split(',')[1] -%}
-            {%- set all_custom_controller = table_custom_controller.query.filter(table_custom_controller.unique_id == custom_controller_id).all() -%}
-            {%- if all_custom_controller -%}
-              {% for each_custom_controller in all_custom_controller %}
-          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_custom_controller.unique_id}}', 'custom_controller', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
+          {%- for function_and_measurement_ids in graph_function_ids -%}
+            {%- set function_id = function_and_measurement_ids.split(',')[0] -%}
+            {%- set measurement_id = function_and_measurement_ids.split(',')[1] -%}
+            {%- set all_function = table_function.query.filter(table_function.unique_id == function_id).all() -%}
+            {%- if all_function -%}
+              {% for each_function in all_function %}
+          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_function.unique_id}}', 'function', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
                 {% if widget_options['enable_auto_refresh'] %}
-          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_custom_controller.unique_id}}', 'custom_controller', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_function.unique_id}}', 'function', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
                 {% endif %}
                 {%- do count_series.append(1) %}
               {%- endfor -%}
@@ -1035,9 +1035,9 @@ WIDGET_INFORMATION = {
     {%- endfor -%}
   {% endfor %}
   
-  {% for each_custom_controller in custom_controller -%}
-    {%- for custom_controller_and_measurement_ids in graph_custom_controller_ids if each_custom_controller.unique_id == custom_controller_and_measurement_ids.split(',')[0] -%}
-      {%- set measurement_id = custom_controller_and_measurement_ids.split(',')[1] -%}
+  {% for each_function in function -%}
+    {%- for function_and_measurement_ids in graph_function_ids if each_function.unique_id == function_and_measurement_ids.split(',')[0] -%}
+      {%- set measurement_id = function_and_measurement_ids.split(',')[1] -%}
 
       {% set disable_data_grouping = [] -%}
       {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
@@ -1046,7 +1046,7 @@ WIDGET_INFORMATION = {
 
       {%- if measurement_id in device_measurements_dict -%}
       {
-      name: '{{each_custom_controller.name}}
+      name: '{{each_function.name}}
 
         {%- if device_measurements_dict[measurement_id].name -%}
           {{' (' + device_measurements_dict[measurement_id].name}})
@@ -1256,10 +1256,10 @@ WIDGET_INFORMATION = {
       {% endfor %}
     {%- endfor -%}
 
-    {% for each_custom_controller in custom_controller -%}
-      {% for custom_controller_and_measurement_id in graph_custom_controller_ids if each_custom_controller.unique_id == custom_controller_and_measurement_id.split(',')[0] %}
-        {%- set measurement_id = custom_controller_and_measurement_id.split(',')[1] -%}
-    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_custom_controller.unique_id}}', 'custom_controller', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+    {% for each_function in function -%}
+      {% for function_and_measurement_id in graph_function_ids if each_function.unique_id == function_and_measurement_id.split(',')[0] %}
+        {%- set measurement_id = function_and_measurement_id.split(',')[1] -%}
+    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_function.unique_id}}', 'function', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
         {%- do count_series.append(1) %}
       {% endfor %}
     {%- endfor -%}
@@ -1530,17 +1530,17 @@ def dict_custom_colors(widget_options):
                     index += 1
             index_sum += index
 
-        if widget_options['measurements_custom_controller']:
+        if widget_options['measurements_function']:
             index = 0
-            for each_set in widget_options['measurements_custom_controller']:
+            for each_set in widget_options['measurements_function']:
                 if not each_set:
                     continue
 
-                custom_controller_unique_id = each_set.split(',')[0]
-                custom_controller_measure_id = each_set.split(',')[1]
+                function_unique_id = each_set.split(',')[0]
+                function_measure_id = each_set.split(',')[1]
 
                 device_measurement = DeviceMeasurements.query.filter(
-                    DeviceMeasurements.unique_id == custom_controller_measure_id).first()
+                    DeviceMeasurements.unique_id == function_measure_id).first()
                 if device_measurement:
                     measurement_name = device_measurement.name
                     conversion = Conversion.query.filter(
@@ -1551,10 +1551,10 @@ def dict_custom_colors(widget_options):
                 channel, unit, measurement = return_measurement_info(
                     device_measurement, conversion)
 
-                custom_controller = CustomController.query.filter_by(unique_id=custom_controller_unique_id).first()
+                function = CustomController.query.filter_by(unique_id=function_unique_id).first()
 
                 # Custom colors
-                if (index < len(widget_options['measurements_custom_controller']) and
+                if (index < len(widget_options['measurements_function']) and
                         len(colors) > index_sum + index):
                     color = colors[index_sum + index]
                 else:
@@ -1562,15 +1562,15 @@ def dict_custom_colors(widget_options):
 
                 # Data grouping
                 disable_data_grouping = False
-                if custom_controller_measure_id in widget_options['disable_data_grouping']:
+                if function_measure_id in widget_options['disable_data_grouping']:
                     disable_data_grouping = True
 
-                if custom_controller is not None:
+                if function is not None:
                     total.append({
-                        'unique_id': custom_controller_unique_id,
-                        'measure_id': custom_controller_measure_id,
-                        'type': 'CustomController',
-                        'name': custom_controller.name,
+                        'unique_id': function_unique_id,
+                        'measure_id': function_measure_id,
+                        'type': 'Function',
+                        'name': function.name,
                         'channel': channel,
                         'unit': unit,
                         'measure': measurement,
@@ -1728,7 +1728,7 @@ def check_func(all_devices,
                input_dev,
                output,
                math,
-               custom_controller,
+               function,
                unit=None):
     """
     Generate a list of y-axes for Synchronous and Asynchronous Graphs
@@ -1741,7 +1741,7 @@ def check_func(all_devices,
     :param input_dev:
     :param output:
     :param math:
-    :param custom_controller
+    :param function
     :param unit:
     :return: None
     """
@@ -1752,7 +1752,7 @@ def check_func(all_devices,
         if each_device.unique_id == unique_id:
 
             use_unit = use_unit_generate(
-                device_measurements, input_dev, output, math, custom_controller)
+                device_measurements, input_dev, output, math, function)
 
             # Add duration
             if measurement == 'duration_time':
@@ -1811,14 +1811,14 @@ def graph_y_axes(dict_measurements, widget_options):
     """ Determine which y-axes to use for each Graph """
     y_axes = []
 
-    custom_controller = CustomController.query.all()
+    function = CustomController.query.all()
     device_measurements = DeviceMeasurements.query.all()
     input_dev = Input.query.all()
     math = Math.query.all()
     output = Output.query.all()
     pid = PID.query.all()
 
-    devices_list = [input_dev, math, custom_controller, output, pid]
+    devices_list = [input_dev, math, function, output, pid]
 
     # Iterate through device tables
     for each_device in devices_list:
@@ -1827,8 +1827,8 @@ def graph_y_axes(dict_measurements, widget_options):
             dev_and_measure_ids = widget_options['measurements_input']
         elif each_device == math and widget_options['measurements_math']:
             dev_and_measure_ids = widget_options['measurements_math']
-        elif each_device == custom_controller and widget_options['measurements_custom_controller']:
-            dev_and_measure_ids = widget_options['measurements_custom_controller']
+        elif each_device == function and widget_options['measurements_function']:
+            dev_and_measure_ids = widget_options['measurements_function']
         elif each_device == output and widget_options['measurements_output']:
             dev_and_measure_ids = widget_options['measurements_output']
         elif each_device == pid and widget_options['measurements_pid']:
@@ -1893,7 +1893,7 @@ def graph_y_axes(dict_measurements, widget_options):
                     input_dev,
                     output,
                     math,
-                    custom_controller)
+                    function)
 
             elif len(each_id_measure.split(',')) == 3:
 
@@ -1911,7 +1911,7 @@ def graph_y_axes(dict_measurements, widget_options):
                     input_dev,
                     output,
                     math,
-                    custom_controller,
+                    function,
                     unit=unit)
 
     return y_axes

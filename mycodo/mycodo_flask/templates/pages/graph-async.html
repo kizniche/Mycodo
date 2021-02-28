@@ -75,8 +75,8 @@
         {% for each_math_form in choices_math -%}
           <option value="{{each_math_form['value']}},math"{% if each_math_form['value'] + ',math' in selected_ids_measures %} selected{% endif %}>{{each_math_form['item']}}</option>
         {% endfor -%}
-        {% for each_custom_controller_form in choices_custom_controller -%}
-          <option value="{{each_custom_controller_form['value']}},math"{% if each_custom_controller_form['value'] + ',math' in selected_ids_measures %} selected{% endif %}>{{each_custom_controller_form['item']}}</option>
+        {% for each_function_form in choices_function -%}
+          <option value="{{each_function_form['value']}},math"{% if each_function_form['value'] + ',math' in selected_ids_measures %} selected{% endif %}>{{each_function_form['item']}}</option>
         {% endfor -%}
         {% for each_output_form in choices_output -%}
           <option value="{{each_output_form['value']}},output"{% if each_output_form['value'] + ',output' in selected_ids_measures %} selected{% endif %}>{{each_output_form['item']}}</option>
@@ -421,12 +421,12 @@ $(document).ready(function() {
             {%- endif -%}
           {% endfor %}
 
-          {% for each_custom_controller in custom_controller if each_custom_controller.unique_id == each_id_meas.split(',')[0] -%}
+          {% for each_function in function if each_function.unique_id == each_id_meas.split(',')[0] -%}
             {%- set measurement_id = each_id_meas.split(',')[1] -%}
             {%- if measurement_id in device_measurements_dict -%}
 
             {
-            name: '{{each_custom_controller.name}}
+            name: '{{each_function.name}}
 
               {%- if device_measurements_dict[measurement_id].name -%}
                 {{' (' + device_measurements_dict[measurement_id].name}})

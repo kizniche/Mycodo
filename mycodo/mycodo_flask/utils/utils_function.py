@@ -188,71 +188,72 @@ if measurement is not None:  # If a measurement exists
             db.session.commit()
 
 
+            if function_name in dict_controllers:
+                #
+                # Add measurements defined in the Function Module
+                #
 
-            #
-            # Add measurements defined in the Function Module
-            #
+                if ('measurements_dict' in dict_controllers[function_name] and
+                        dict_controllers[function_name]['measurements_dict']):
+                    for each_channel in dict_controllers[function_name]['measurements_dict']:
+                        measure_info = dict_controllers[function_name]['measurements_dict'][each_channel]
+                        new_measurement = DeviceMeasurements()
+                        new_measurement.device_id = new_func.unique_id
+                        if 'name' in measure_info:
+                            new_measurement.name = measure_info['name']
+                        else:
+                            new_measurement.name = ""
+                        if 'measurement' in measure_info:
+                            new_measurement.measurement = measure_info['measurement']
+                        else:
+                            new_measurement.measurement = ""
+                        if 'unit' in measure_info:
+                            new_measurement.unit = measure_info['unit']
+                        else:
+                            new_measurement.unit = ""
+                        new_measurement.channel = each_channel
+                        new_measurement.save()
 
-            if ('measurements_dict' in dict_controllers[function_name] and
-                    dict_controllers[function_name]['measurements_dict']):
-                for each_channel in dict_controllers[function_name]['measurements_dict']:
-                    measure_info = dict_controllers[function_name]['measurements_dict'][each_channel]
+                #
+                # If there are a variable number of measurements
+                #
+
+                elif ('measurements_variable_amount' in dict_controllers[function_name] and
+                        dict_controllers[function_name]['measurements_variable_amount']):
+                    # Add first default measurement with empty unit and measurement
                     new_measurement = DeviceMeasurements()
+                    new_measurement.name = ""
                     new_measurement.device_id = new_func.unique_id
-                    if 'name' in measure_info:
-                        new_measurement.name = measure_info['name']
-                    else:
-                        new_measurement.name = ""
-                    if 'measurement' in measure_info:
-                        new_measurement.measurement = measure_info['measurement']
-                    else:
-                        new_measurement.measurement = ""
-                    if 'unit' in measure_info:
-                        new_measurement.unit = measure_info['unit']
-                    else:
-                        new_measurement.unit = ""
-                    new_measurement.channel = each_channel
+                    new_measurement.measurement = ""
+                    new_measurement.unit = ""
+                    new_measurement.channel = 0
                     new_measurement.save()
 
-            #
-            # If there are a variable number of measurements
-            #
+                #
+                # Add channels defined in the Function Module
+                #
 
-            elif ('measurements_variable_amount' in dict_controllers[function_name] and
-                    dict_controllers[function_name]['measurements_variable_amount']):
-                # Add first default measurement with empty unit and measurement
-                new_measurement = DeviceMeasurements()
-                new_measurement.name = ""
-                new_measurement.device_id = new_func.unique_id
-                new_measurement.measurement = ""
-                new_measurement.unit = ""
-                new_measurement.channel = 0
-                new_measurement.save()
+                if 'channels_dict' in dict_controllers[function_name]:
+                    for each_channel, channel_info in dict_controllers[function_name]['channels_dict'].items():
+                        new_channel = FunctionChannel()
+                        new_channel.channel = each_channel
+                        new_channel.function_id = new_func.unique_id
 
-            #
-            # Add channels defined in the Function Module
-            #
+                        # Generate string to save from custom options
+                        error, custom_options = custom_channel_options_return_json(
+                            error, dict_controllers, None,
+                            new_func.unique_id, each_channel,
+                            device=new_func.device, use_defaults=True)
+                        new_channel.custom_options = custom_options
 
-            if 'channels_dict' in dict_controllers[function_name]:
-                for each_channel, channel_info in dict_controllers[function_name]['channels_dict'].items():
-                    new_channel = FunctionChannel()
-                    new_channel.channel = each_channel
-                    new_channel.function_id = new_func.unique_id
-
-                    # Generate string to save from custom options
-                    error, custom_options = custom_channel_options_return_json(
-                        error, dict_controllers, None,
-                        new_func.unique_id, each_channel,
-                        device=new_func.device, use_defaults=True)
-                    new_channel.custom_options = custom_options
-
-                    new_channel.save()
+                        new_channel.save()
 
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
     except sqlalchemy.exc.IntegrityError as except_msg:
         error.append(except_msg)
     except Exception as except_msg:
+        logger.exception("Add Function")
         error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_function'))

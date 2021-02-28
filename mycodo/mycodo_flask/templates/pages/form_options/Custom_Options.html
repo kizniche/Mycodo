@@ -65,6 +65,11 @@
       <option value="{{each_math_form['value']}}"{% if each_math_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_math_form['item']}}</option>
         {% endfor -%}
       {% endif %}
+      {% if 'Function' in each_option['options_select'] %}
+        {% for each_function_form in choices_function -%}
+      <option value="{{each_function_form['value']}}"{% if each_function_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_function_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
       {% if 'Output' in each_option['options_select'] %}
         {% for each_output_form in choices_output -%}
       <option value="{{each_output_form['value']}}"{% if each_output_form['value'] == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>
@@ -119,8 +124,8 @@
       {% if 'Math' in each_option['options_select'] %}
         {% set multiselect_size = multiselect_size + choices_math|length %}
       {% endif %}
-      {% if 'CustomController' in each_option['options_select'] %}
-        {% set multiselect_size = multiselect_size + choices_custom_controller|length %}
+      {% if 'Function' in each_option['options_select'] %}
+        {% set multiselect_size = multiselect_size + choices_function|length %}
       {% endif %}
       {% if 'Output' in each_option['options_select'] %}
         {% set multiselect_size = multiselect_size + choices_output|length %}
@@ -146,9 +151,9 @@
       <option value="{{each_math_form['value']}}"{% if each_math_form['value'] in custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_math_form['item']}}</option>
         {% endfor -%}
       {% endif %}
-      {% if 'CustomController' in each_option['options_select'] %}
-        {% for each_custom_controller_form in choices_custom_controller -%}
-      <option value="{{each_custom_controller_form['value']}}"{% if each_custom_controller_form['value'] in custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_custom_controller_form['item']}}</option>
+      {% if 'Function' in each_option['options_select'] %}
+        {% for each_function_form in choices_function -%}
+      <option value="{{each_function_form['value']}}"{% if each_function_form['value'] in custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>{{each_function_form['item']}}</option>
         {% endfor -%}
       {% endif %}
       {% if 'Output' in each_option['options_select'] %}

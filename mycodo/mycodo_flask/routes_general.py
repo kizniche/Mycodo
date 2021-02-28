@@ -252,7 +252,7 @@ def last_data(unique_id, measure_type, measurement_id, period):
     if not str_is_float(period):
         return '', 204
 
-    if measure_type in ['input', 'math', 'custom_controller', 'output', 'pid']:
+    if measure_type in ['input', 'math', 'function', 'output', 'pid']:
         dbcon = InfluxDBClient(
             INFLUXDB_HOST,
             INFLUXDB_PORT,
@@ -260,7 +260,7 @@ def last_data(unique_id, measure_type, measurement_id, period):
             INFLUXDB_PASSWORD,
             INFLUXDB_DATABASE)
 
-        if measure_type in ['input', 'math', 'custom_controller', 'output', 'pid']:
+        if measure_type in ['input', 'math', 'function', 'output', 'pid']:
             measure = DeviceMeasurements.query.filter(
                 DeviceMeasurements.unique_id == measurement_id).first()
         else:
@@ -347,7 +347,7 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
         else:
             return '', 204
 
-    elif measure_type in ['input', 'math', 'custom_controller', 'output', 'pid']:
+    elif measure_type in ['input', 'math', 'function', 'output', 'pid']:
         dbcon = InfluxDBClient(
             INFLUXDB_HOST,
             INFLUXDB_PORT,
@@ -355,7 +355,7 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
             INFLUXDB_PASSWORD,
             INFLUXDB_DATABASE)
 
-        if measure_type in ['input', 'math', 'custom_controller', 'output', 'pid']:
+        if measure_type in ['input', 'math', 'function', 'output', 'pid']:
             measure = DeviceMeasurements.query.filter(
                 DeviceMeasurements.unique_id == measurement_id).first()
         else:
@@ -588,7 +588,7 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
         INFLUXDB_PASSWORD,
         INFLUXDB_DATABASE)
 
-    if device_type in ['input', 'math', 'custom_controller', 'output', 'pid']:
+    if device_type in ['input', 'math', 'function', 'output', 'pid']:
         measure = DeviceMeasurements.query.filter(
             DeviceMeasurements.unique_id == measurement_id).first()
     else:

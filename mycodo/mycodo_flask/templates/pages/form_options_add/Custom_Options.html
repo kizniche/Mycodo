@@ -47,6 +47,11 @@
       <option value="{{each_math_form['value']}}">{{each_math_form['item']}}</option>
         {% endfor -%}
       {% endif %}
+      {% if 'Function' in each_option['options_select'] %}
+        {% for each_function_form in choices_function -%}
+      <option value="{{each_function_form['value']}}">{{each_function_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
       {% if 'Output' in each_option['options_select'] %}
         {% for each_output_form in choices_output -%}
       <option value="{{each_output_form['value']}}">{{each_output_form['item']}}</option>
@@ -101,8 +106,8 @@
       {% if 'Math' in each_option['options_select'] %}
         {% set multiselect_size = multiselect_size + choices_math|length %}
       {% endif %}
-      {% if 'CustomController' in each_option['options_select'] %}
-        {% set multiselect_size = multiselect_size + choices_custom_controller|length %}
+      {% if 'Function' in each_option['options_select'] %}
+        {% set multiselect_size = multiselect_size + choices_function|length %}
       {% endif %}
       {% if 'Output' in each_option['options_select'] %}
         {% set multiselect_size = multiselect_size + choices_output|length %}
@@ -128,8 +133,8 @@
       <option value="{{each_math_form['value']}}">{{each_math_form['item']}}</option>
         {% endfor -%}
       {% endif %}
-      {% if 'CustomController' in each_option['options_select'] %}
-        {% for each_controller_form in choices_custom_controller -%}
+      {% if 'Function' in each_option['options_select'] %}
+        {% for each_controller_form in choices_function -%}
       <option value="{{each_controller_form['value']}}">{{each_controller_form['item']}}</option>
         {% endfor -%}
       {% endif %}

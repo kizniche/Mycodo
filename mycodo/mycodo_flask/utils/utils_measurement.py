@@ -34,7 +34,7 @@ def measurement_mod(form, return_url):
         if controller_type == "Input":
             mod_device = Input.query.filter(Input.unique_id == mod_meas.device_id).first()
             device_info = parse_input_information()
-        elif controller_type == "CustomController":
+        elif controller_type == "Function":
             mod_device = CustomController.query.filter(CustomController.unique_id == mod_meas.device_id).first()
             device_info = parse_function_information()
 

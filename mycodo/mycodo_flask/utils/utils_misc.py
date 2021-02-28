@@ -97,7 +97,7 @@ def determine_controller_type(unique_id):
         'Math': Math.query.filter(Math.unique_id == unique_id).count(),
         'PID': PID.query.filter(PID.unique_id == unique_id).count(),
         'Trigger': Trigger.query.filter(Trigger.unique_id == unique_id).count(),
-        'CustomController': CustomController.query.filter(CustomController.unique_id == unique_id).count()
+        'Function': CustomController.query.filter(CustomController.unique_id == unique_id).count()
     }
     for each_type in db_tables:
         if db_tables[each_type]:

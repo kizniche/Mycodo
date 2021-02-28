@@ -133,6 +133,15 @@ def custom_options_return_string(error, dict_options, mod_dev, request_form):
                         if constraints_pass:
                             value = request_form.get(key)
 
+                    elif each_option['type'] == 'select_multi_measurement':
+                        if 'constraints_pass' in each_option:
+                            (constraints_pass,
+                             constraints_errors,
+                             mod_dev) = each_option['constraints_pass'](
+                                mod_dev, request_form.get(key))
+                        if constraints_pass:
+                            value = ",".join(request_form.getlist(key))
+
                     elif each_option['type'] == 'bool':
                         value = bool(request_form.get(key))
 
@@ -481,9 +490,7 @@ def controller_activate_deactivate(controller_action,
         "Math": TRANSLATIONS['math']['title'],
         "PID": TRANSLATIONS['pid']['title'],
         "Trigger": TRANSLATIONS['trigger']['title'],
-        "CustomController": '{} {}'.format(
-            TRANSLATIONS['custom']['title'],
-            TRANSLATIONS['controller']['title'])
+        "Function": TRANSLATIONS['function']['title']
     }
 
     mod_controller = None
@@ -511,7 +518,7 @@ def controller_activate_deactivate(controller_action,
     elif controller_type == 'Trigger':
         mod_controller = Trigger.query.filter(
             Trigger.unique_id == controller_id).first()
-    elif controller_type == 'CustomController':
+    elif controller_type == 'Function':
         mod_controller = CustomController.query.filter(
             CustomController.unique_id == controller_id).first()
 
@@ -595,7 +602,7 @@ def choices_controller_ids():
             name=each_trigger.name)
         choices.append({'value': each_trigger.unique_id, 'item': display})
     for each_custom in CustomController.query.all():
-        display = '[Custom {id:02d}] {name}'.format(
+        display = '[Function {id:02d}] {name}'.format(
             id=each_custom.id,
             name=each_custom.name)
         choices.append({'value': each_custom.unique_id, 'item': display})
@@ -700,12 +707,12 @@ def choices_maths(maths, dict_units, dict_measurements):
     return choices
 
 
-def choices_custom_controllers(custom_controllers, dict_units, dict_measurements):
+def choices_functions(functions, dict_units, dict_measurements):
     """ populate form multi-select choices from Math entries """
     choices = []
-    for each_custom_controller in custom_controllers:
-        choices = form_custom_controller_choices(
-            choices, each_custom_controller, dict_units, dict_measurements)
+    for each_function in functions:
+        choices = form_function_choices(
+            choices, each_function, dict_units, dict_measurements)
     return choices
 
 
@@ -977,9 +984,9 @@ def form_math_choices(choices, each_math, dict_units, dict_measurements):
     return choices
 
 
-def form_custom_controller_choices(choices, each_custom_controller, dict_units, dict_measurements):
+def form_function_choices(choices, each_function, dict_units, dict_measurements):
     device_measurements = DeviceMeasurements.query.filter(
-        DeviceMeasurements.device_id == each_custom_controller.unique_id).all()
+        DeviceMeasurements.device_id == each_function.unique_id).all()
 
     for each_measure in device_measurements:
         conversion = Conversion.query.filter(
@@ -989,7 +996,7 @@ def form_custom_controller_choices(choices, each_custom_controller, dict_units, 
 
         if unit:
             value = '{input_id},{meas_id}'.format(
-                input_id=each_custom_controller.unique_id,
+                input_id=each_function.unique_id,
                 meas_id=each_measure.unique_id)
 
             display_unit = find_name_unit(
@@ -1013,8 +1020,8 @@ def form_custom_controller_choices(choices, each_custom_controller, dict_units, 
                 measurement_unit = '({unit})'.format(unit=display_unit)
 
             display = '[Controller {id:02d}] {i_name} {chan} {meas}'.format(
-                id=each_custom_controller.id,
-                i_name=each_custom_controller.name,
+                id=each_function.id,
+                i_name=each_function.name,
                 chan=channel_info,
                 meas=measurement_unit)
             choices.append({'value': value, 'item': display})
@@ -1629,13 +1636,13 @@ def return_dependencies(device_type):
     return unmet_deps, met_deps
 
 
-def use_unit_generate(device_measurements, input_dev, output, math, custom_controller):
+def use_unit_generate(device_measurements, input_dev, output, math, function):
     """Generate dictionary of units to convert to"""
     use_unit = {}
 
     # Input and Math controllers have measurement tables with the same schema
     list_devices_with_measurements = [
-        input_dev, math, custom_controller
+        input_dev, math, function
     ]
 
     for devices in list_devices_with_measurements:
