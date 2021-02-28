@@ -62,7 +62,7 @@ measurements_dict = {
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'sum_past_single',
-    'function_name': 'Function: Sum (Past, Single)',
+    'function_name': 'Sum (Past, Single)',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 

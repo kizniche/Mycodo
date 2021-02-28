@@ -56,7 +56,7 @@ def constraints_pass_positive_value(mod_controller, value):
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'pid_autotune',
-    'function_name': 'Function: PID Autotune',
+    'function_name': 'PID Autotune',
 
     'message': '<p>Manual: <a href="https://kizniche.github.io/Mycodo/Functions/#pid-autotune" target="_blank">PID Autotune</a></p><p>This function will attempt to perform a PID controller autotune. That is, an output will be powered and the response measured from a sensor several times to calculate the P, I, and D gains. Updates about the operation will be sent to the Daemon log. If the autotune successfully completes, a summary will be sent to the Daemon log as well. Currently only raising a Measurement is supported, but lowering should be possible with some modification to the function controller code. It is recommended to createa a graph on a dashboard with the Measurement and Output to monitor that the Output is successfully raising the Measurement beyond the Setpoint.</p><p style="color: red">Autotune is an experimental feature, it is not well-developed, and it has a high likelihood of failing to generate PID gains. Do not rely on it for accurately tuning your PID controller.</p>',
 

@@ -28,7 +28,7 @@ MEASUREMENTS = {
     'adc': {
         'name': lazy_gettext('ADC'),
         'meas': 'adc',
-        'units': ['unitless']},
+        'units': ['none']},
     'altitude': {
         'name': lazy_gettext('Altitude'),
         'meas': 'altitude',
@@ -160,7 +160,7 @@ MEASUREMENTS = {
     'moisture': {
         'name': lazy_gettext('Moisture'),
         'meas': 'moisture',
-        'units': ['unitless']},
+        'units': ['none']},
     'oxidation_reduction_potential': {
         'name': lazy_gettext('Oxidation Reduction Potential'),
         'meas': 'oxidation_reduction_potential',
@@ -256,7 +256,7 @@ MEASUREMENTS = {
     'version': {
         'name': lazy_gettext('Version'),
         'meas': 'version',
-        'units': ['unitless']},
+        'units': ['none']},
     'voc': {
         'name': lazy_gettext('VOC'),
         'meas': 'voc',

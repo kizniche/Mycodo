@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  equation.py - Perform equation with multiple measurements
+#  difference.py - Calculate difference between two measurements
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
@@ -53,17 +53,17 @@ measurements_dict = {
     0: {
         'measurement': '',
         'unit': '',
-        'name': 'Equation Output'
+        'name': 'Difference'
     }
 }
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'measurement_equation',
-    'function_name': 'Equation (Single-Measure)',
+    'function_name_unique': 'calculate_difference',
+    'function_name': 'Difference',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 
-    'message': 'This function acquires a measurement and uses it within a user-set equation and stores the '
+    'message': 'This function acquires 2 measurements, calculates the difference, and stores the '
                'resulting value as the selected measurement and unit.',
 
     'options_enabled': [
@@ -82,7 +82,7 @@ FUNCTION_INFORMATION = {
             'phrase': lazy_gettext('The duration (seconds) between measurements or actions')
         },
         {
-            'id': 'select_measurement',
+            'id': 'select_measurement_a',
             'type': 'select_measurement',
             'default_value': '',
             'options_select': [
@@ -90,24 +90,52 @@ FUNCTION_INFORMATION = {
                 'Math',
                 'Function'
             ],
-            'name': 'Measurement',
-            'phrase': 'Measurement to replace "x" in the equation'
+            'name': 'Measurement A',
+            'phrase': 'Measurement A'
         },
         {
-            'id': 'measurement_max_age',
+            'id': 'measurement_max_age_a',
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': 'Measurement Max Age',
-            'phrase': 'The maximum allowed age of the measurement'
+            'name': 'Measurement A Max Age',
+            'phrase': 'The maximum allowed age of Measurement A'
         },
         {
-            'id': 'equation',
-            'type': 'text',
-            'default_value': 'x*5+2',
+            'id': 'select_measurement_b',
+            'type': 'select_measurement',
+            'default_value': '',
+            'options_select': [
+                'Input',
+                'Math',
+                'Function'
+            ],
+            'name': 'Measurement B',
+            'phrase': 'Measurement B'
+        },
+        {
+            'id': 'measurement_max_age_b',
+            'type': 'integer',
+            'default_value': 360,
             'required': True,
-            'name': 'Equation',
-            'phrase': 'Equation using the measurement'
+            'name': 'Measurement B Max Age',
+            'phrase': 'The maximum allowed age of Measurement B'
+        },
+        {
+            'id': 'difference_reverse_order',
+            'type': 'bool',
+            'default_value': False,
+            'required': True,
+            'name': 'Reverse Order',
+            'phrase': 'Reverse the order in the calculation'
+        },
+        {
+            'id': 'difference_absolute',
+            'type': 'bool',
+            'default_value': False,
+            'required': True,
+            'name': 'Absolute Difference',
+            'phrase': 'Return the absolute value of the difference'
         }
     ]
 }
@@ -129,10 +157,14 @@ class CustomModule(AbstractController, threading.Thread):
 
         # Initialize custom options
         self.period = None
-        self.select_measurement_device_id = None
-        self.select_measurement_measurement_id = None
-        self.measurement_max_age = None
-        self.equation = None
+        self.select_measurement_a_device_id = None
+        self.select_measurement_a_measurement_id = None
+        self.measurement_max_age_a = None
+        self.select_measurement_b_device_id = None
+        self.select_measurement_b_measurement_id = None
+        self.measurement_max_age_b = None
+        self.difference_reverse_order = None
+        self.difference_absolute = None
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
@@ -148,51 +180,66 @@ class CustomModule(AbstractController, threading.Thread):
 
         self.logger.debug(
             "Custom controller started with options: "
-            "{}, {}, {}".format(
-                self.select_measurement_device_id,
-                self.select_measurement_measurement_id,
-                self.equation))
+            "{}, {}, {}, {}, {}, {}".format(
+                self.select_measurement_a_device_id,
+                self.select_measurement_a_measurement_id,
+                self.measurement_max_age_a,
+                self.select_measurement_a_device_id,
+                self.select_measurement_a_measurement_id,
+                self.measurement_max_age_a))
 
     def loop(self):
         if self.timer_loop < time.time():
             while self.timer_loop < time.time():
                 self.timer_loop += self.period
 
-            # Get last measurement for select_measurement_1
-            last_measurement = self.get_last_measurement(
-                self.select_measurement_device_id,
-                self.select_measurement_measurement_id,
-                max_age=self.measurement_max_age)
+            last_measurement_a = self.get_last_measurement(
+                self.select_measurement_a_device_id,
+                self.select_measurement_a_measurement_id,
+                max_age=self.measurement_max_age_a)
 
-            if last_measurement:
+            if last_measurement_a:
                 self.logger.debug(
                     "Most recent timestamp and measurement for "
                     "select_measurement_a: {timestamp}, {meas}".format(
-                        timestamp=last_measurement[0],
-                        meas=last_measurement[1]))
+                        timestamp=last_measurement_a[0],
+                        meas=last_measurement_a[1]))
             else:
                 self.logger.debug(
                     "Could not find a measurement in the database for "
-                    "select_measurement_a device ID {} and measurement "
-                    "ID {} in the past {} seconds".format(
-                        self.select_measurement_device_id,
-                        self.select_measurement_measurement_id,
-                        self.measurement_max_age))
+                    "select_measurement_a in the past {} seconds".format(
+                        self.measurement_max_age_a))
 
-            # Perform equation and save to DB here
-            if last_measurement:
-                equation_str = self.equation
-                equation_str = equation_str.replace("x", str(last_measurement[1]))
+            last_measurement_b = self.get_last_measurement(
+                self.select_measurement_b_device_id,
+                self.select_measurement_b_measurement_id,
+                max_age=self.measurement_max_age_b)
 
-                self.logger.debug("Equation: {} = {}".format(self.equation, equation_str))
+            if last_measurement_b:
+                self.logger.debug(
+                    "Most recent timestamp and measurement for "
+                    "select_measurement_b: {timestamp}, {meas}".format(
+                        timestamp=last_measurement_b[0],
+                        meas=last_measurement_b[1]))
+            else:
+                self.logger.debug(
+                    "Could not find a measurement in the database for "
+                    "select_measurement_b in the past {} seconds".format(
+                        self.measurement_max_age_b))
 
-                equation_output = eval(equation_str)
+            if last_measurement_a and last_measurement_b:
+                if self.difference_reverse_order:
+                    difference = last_measurement_b - last_measurement_a
+                else:
+                    difference = last_measurement_a -last_measurement_b
+                if self.difference_absolute:
+                    difference = abs(difference)
 
-                self.logger.debug("Output: {}".format(equation_output))
+                self.logger.debug("Output: {}".format(difference))
 
                 write_influxdb_value(
                     self.unique_id,
                     self.channels_measurement[0].unit,
-                    value=equation_output,
+                    value=difference,
                     measure=self.channels_measurement[0].measurement,
                     channel=0)

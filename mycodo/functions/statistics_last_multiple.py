@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  average_past_single.py - Calculates the average of past measurements for a single channel
+#  statistics_last_multiple.py - Calculate statistics for multiple measurements
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
@@ -23,6 +23,8 @@
 #
 import threading
 import time
+from statistics import median
+from statistics import stdev
 
 from flask_babel import lazy_gettext
 
@@ -31,8 +33,8 @@ from mycodo.databases.models import Conversion
 from mycodo.databases.models import CustomController
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import add_measurements_influxdb
-from mycodo.utils.influx import average_past_seconds
+from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import return_measurement_info
 
@@ -57,20 +59,52 @@ measurements_dict = {
     0: {
         'measurement': '',
         'unit': '',
+        'name': 'Mean'
+    },
+    1: {
+        'measurement': '',
+        'unit': '',
+        'name': 'Median'
+    },
+    2: {
+        'measurement': '',
+        'unit': '',
+        'name': 'Minimum'
+    },
+    3: {
+        'measurement': '',
+        'unit': '',
+        'name': 'Maximum'
+    },
+    4: {
+        'measurement': '',
+        'unit': '',
+        'name': 'Standard Deviation'
+    },
+    5: {
+        'measurement': '',
+        'unit': '',
+        'name': 'St. Dev. of Mean (upper)'
+    },
+    6: {
+        'measurement': '',
+        'unit': '',
+        'name': 'St. Dev. of Mean (lower)'
     }
 }
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'average_past_single',
-    'function_name': 'Average (Past, Single)',
+    'function_name_unique': 'statistics_last_multiple',
+    'function_name': 'Statistics (Last, Multiple)',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 
-    'message': 'This function acquires the past measurements (within Max Age) for the selected measurement, averages '
-               'them, then stores the resulting value as the selected measurement and unit.',
+    'message': 'This function acquires multiple measurements, calculates statictics, and stores the '
+               'resulting values as the selected unit.',
 
     'options_enabled': [
         'measurements_select_measurement_unit',
+        'measurements_select',
         'custom_options'
     ],
 
@@ -85,24 +119,16 @@ FUNCTION_INFORMATION = {
             'phrase': lazy_gettext('The duration (seconds) between measurements or actions')
         },
         {
-            'id': 'start_offset',
-            'type': 'integer',
-            'default_value': 10,
-            'required': True,
-            'name': 'Start Offset',
-            'phrase': 'The duration (seconds) to wait before the first operation'
-        },
-        {
             'id': 'max_measure_age',
             'type': 'integer',
             'default_value': 360,
             'required': True,
             'name': 'Measurement Max Age',
-            'phrase': 'The maximum allowed age of the measurement'
+            'phrase': 'The maximum allowed age of the measurements'
         },
         {
             'id': 'select_measurement',
-            'type': 'select_measurement',
+            'type': 'select_multi_measurement',
             'default_value': '',
             'options_select': [
                 'Input',
@@ -110,7 +136,7 @@ FUNCTION_INFORMATION = {
                 'Function'
             ],
             'name': 'Measurement',
-            'phrase': 'Measurement to replace "x" in the equation'
+            'phrase': 'Measurements to perform statistics on'
         }
     ]
 }
@@ -132,9 +158,7 @@ class CustomModule(AbstractController, threading.Thread):
 
         # Initialize custom options
         self.period = None
-        self.start_offset = None
-        self.select_measurement_device_id = None
-        self.select_measurement_measurement_id = None
+        self.select_measurement = None
         self.max_measure_age = None
 
         # Set custom options
@@ -149,49 +173,70 @@ class CustomModule(AbstractController, threading.Thread):
         self.log_level_debug = controller.log_level_debug
         self.set_log_level_debug(self.log_level_debug)
 
-        self.timer_loop = time.time() + self.start_offset
-
     def loop(self):
         if self.timer_loop < time.time():
             while self.timer_loop < time.time():
                 self.timer_loop += self.period
 
-            device_measurement = get_measurement(self.select_measurement_measurement_id)
+            measure = []
+            for each_id_set in self.select_measurement:
+                device_device_id = each_id_set.split(",")[0]
+                device_measure_id = each_id_set.split(",")[1]
 
-            if not device_measurement:
-                self.logger.error("Could not find Device Measurement")
-                return
+                device_measurement = get_measurement(device_measure_id)
 
-            conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=device_measurement.conversion_id)
-            channel, unit, measurement = return_measurement_info(
-                device_measurement, conversion)
+                if not device_measurement:
+                    self.logger.error("Could not find Device Measurement")
+                    return
 
-            average = average_past_seconds(
-                self.select_measurement_device_id,
-                unit,
-                channel,
-                self.max_measure_age,
-                measure=measurement)
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=device_measurement.conversion_id)
+                channel, unit, measurement = return_measurement_info(
+                    device_measurement, conversion)
 
-            if not average:
-                self.logger.error("Could not find measurement within the set Max Age")
-                return False
+                last_measurement = read_last_influxdb(
+                    device_device_id,
+                    unit,
+                    channel,
+                    measure=measurement,
+                    duration_sec=self.max_measure_age)
 
-            measurement_dict = {
-                0: {
-                    'measurement': self.channels_measurement[0].measurement,
-                    'unit': self.channels_measurement[0].unit,
-                    'value': average
-                }
-            }
+                if not last_measurement:
+                    self.logger.error(
+                        "Could not find measurement within the set Max Age for Device {} and Measurement {}".format(
+                            device_device_id, device_measure_id))
+                    return False
+                else:
+                    measure.append(last_measurement[1])
 
-            if measurement_dict:
-                self.logger.debug(
-                    "Adding measurements to InfluxDB with ID {}: {}".format(
-                        self.unique_id, measurement_dict))
-                add_measurements_influxdb(self.unique_id, measurement_dict)
-            else:
-                self.logger.debug(
-                    "No measurements to add to InfluxDB with ID {}".format(
-                        self.unique_id))
+            stat_mean = float(sum(measure) / float(len(measure)))
+            stat_median = median(measure)
+            stat_minimum = min(measure)
+            stat_maximum = max(measure)
+            stdev_ = stdev(measure)
+            stdev_mean_upper = stat_mean + stdev_
+            stdev_mean_lower = stat_mean - stdev_
+
+            list_measurement = [
+                stat_mean,
+                stat_median,
+                stat_minimum,
+                stat_maximum,
+                stdev_,
+                stdev_mean_upper,
+                stdev_mean_lower
+            ]
+
+            for each_measurement in self.device_measurements.all():
+                if each_measurement.is_enabled:
+                    conversion = db_retrieve_table_daemon(
+                        Conversion, unique_id=each_measurement.conversion_id)
+                    channel, unit, measurement = return_measurement_info(
+                        each_measurement, conversion)
+
+                    write_influxdb_value(
+                        self.unique_id,
+                        unit,
+                        value=list_measurement[channel],
+                        measure=measurement,
+                        channel=0)

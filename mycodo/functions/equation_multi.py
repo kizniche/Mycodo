@@ -59,7 +59,7 @@ measurements_dict = {
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'multi_measurement_equation',
-    'function_name': 'Function: Equation (Multiple Measurements)',
+    'function_name': 'Equation (Multi-Measure)',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 

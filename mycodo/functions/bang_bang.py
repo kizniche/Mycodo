@@ -37,7 +37,7 @@ def constraints_pass_positive_value(mod_controller, value):
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'bang_bang',
-    'function_name': 'Function: Bang-Bang (Hysteretic) Control',
+    'function_name': 'Bang-Bang Hysteretic',
 
     'message': 'A simple bang-bang control for controlling one output from one input.'
         ' Select an input, an output, enter a setpoint and a hysteresis, and select a direction.'

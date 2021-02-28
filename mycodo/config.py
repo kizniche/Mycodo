@@ -321,10 +321,8 @@ MATH_INFO = {
 
 # Math form dropdown
 MATHS = [
-    ('difference', MATH_INFO['difference']['name']),
     ('redundancy', MATH_INFO['redundancy']['name']),
     ('verification', MATH_INFO['verification']['name']),
-    ('statistics', MATH_INFO['statistics']['name']),
     ('humidity', MATH_INFO['humidity']['name']),
     ('vapor_pressure_deficit', MATH_INFO['vapor_pressure_deficit']['name'])
 ]
@@ -474,27 +472,23 @@ CONDITIONAL_CONDITIONS = [
 
 FUNCTION_INFO = {
     'function_spacer': {
-        'name': '{}: {}'.format(
-            TRANSLATIONS['function']['title'],
-            lazy_gettext('Spacer')),
+        'name': lazy_gettext('Spacer'),
         'dependencies_module': []
     },
     'function_actions': {
-        'name': '{}: {}'.format(
-            TRANSLATIONS['function']['title'],
-            lazy_gettext('Execute Actions')),
+        'name': lazy_gettext('Execute Actions'),
         'dependencies_module': []
     },
     'conditional_conditional': {
-        'name': '{}: {}'.format(
-            TRANSLATIONS['controller']['title'],
-            TRANSLATIONS['conditional']['title']),
+        'name': '{} {}'.format(
+            TRANSLATIONS['conditional']['title'],
+            TRANSLATIONS['controller']['title']),
         'dependencies_module': []
     },
     'pid_pid': {
-        'name': '{}: {}'.format(
-            TRANSLATIONS['controller']['title'],
-            TRANSLATIONS['pid']['title']),
+        'name': '{} {}'.format(
+            TRANSLATIONS['pid']['title'],
+            TRANSLATIONS['controller']['title']),
         'dependencies_module': []
     },
     'trigger_edge': {

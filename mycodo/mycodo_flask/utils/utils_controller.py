@@ -45,6 +45,16 @@ def controller_mod(form_mod, request_form):
         mod_controller.name = form_mod.name.data
         mod_controller.log_level_debug = form_mod.log_level_debug.data
 
+        # Enable/disable Channels
+        measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == form_mod.function_id.data).all()
+        if form_mod.measurements_enabled.data:
+            for each_measurement in measurements:
+                if each_measurement.unique_id in form_mod.measurements_enabled.data:
+                    each_measurement.is_enabled = True
+                else:
+                    each_measurement.is_enabled = False
+
         channels = FunctionChannel.query.filter(
             FunctionChannel.function_id == form_mod.function_id.data)
 
