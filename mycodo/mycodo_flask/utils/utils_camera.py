@@ -190,19 +190,22 @@ def camera_timelapse_video(form_camera):
     action = "Generate Timelapse Video"
     error = []
 
-    camera = db_retrieve_table(
-        Camera, unique_id=form_camera.camera_id.data)
-    camera_path = assure_path_exists(
-        os.path.join(PATH_CAMERAS, '{uid}'.format(uid=camera.unique_id)))
-    timelapse_path = assure_path_exists(os.path.join(camera_path, 'timelapse'))
-    video_path = assure_path_exists(os.path.join(camera_path, 'timelapse_video'))
-    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-    path_file = os.path.join(
-        video_path, "Video_{name}_{ts}.mp4".format(
-            name=form_camera.timelapse_image_set.data, ts=timestamp))
+    if not os.path.exists("/usr/bin/ffmpeg"):
+        error.append("ffmpeg not found. Install with 'sudo apt install ffmpeg'")
 
     if not error:
         try:
+            camera = db_retrieve_table(
+                Camera, unique_id=form_camera.camera_id.data)
+            camera_path = assure_path_exists(
+                os.path.join(PATH_CAMERAS, '{uid}'.format(uid=camera.unique_id)))
+            timelapse_path = assure_path_exists(os.path.join(camera_path, 'timelapse'))
+            video_path = assure_path_exists(os.path.join(camera_path, 'timelapse_video'))
+            timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+            path_file = os.path.join(
+                video_path, "Video_{name}_{ts}.mp4".format(
+                    name=form_camera.timelapse_image_set.data, ts=timestamp))
+
             cmd =  "/usr/bin/ffmpeg " \
                    "-f image2 " \
                    "-r {fps} " \
