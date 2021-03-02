@@ -406,7 +406,7 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
         choice_name = each_input.split(',')[0]
         print("test_add_all_data_devices_logged_in_as_admin: Adding and deleting Input ({}/{}): {}".format(
             index + 1, len(choices_input), each_input))
-        response = add_data(testapp, data_type='input', input_type=each_input)
+        response = add_data(testapp, input_type=each_input)
 
         # Verify success message flashed
         assert "{} Input with ID".format(choice_name) in response
@@ -421,34 +421,9 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
         assert choice_name == input_dev.device, "Input name doesn't match: {}".format(choice_name)
 
         # Delete input (speeds up further input addition checking)
-        response = delete_data(testapp, data_type='input', device_dev=input_dev)
+        response = delete_data(testapp, 'input', device_dev=input_dev)
         assert "Delete input with ID: {}".format(input_dev.unique_id) in response
         input_count -= 1
-
-    # Add All Maths
-    math_count = 0
-    for index, each_math in enumerate(MATH_INFO.keys()):
-        print("test_add_all_data_devices_logged_in_as_admin: Adding Math ({}/{}): {}".format(
-            index + 1, len(MATH_INFO.keys()), each_math))
-        response = add_data(testapp, data_type='math', input_type=each_math)
-
-        # Verify success message flashed
-        assert "{} Math with ID".format(each_math) in response
-        assert "successfully added" in response
-
-        # Verify data was entered into the database
-        math_count += 1
-        actual_count = Math.query.count()
-        assert actual_count == math_count, "Number of Maths don't match: In DB {}, Should be: {}".format(
-            actual_count, math_count)
-
-        math_dev = Math.query.filter(Math.id == math_count).first()
-        assert each_math in math_dev.math_type, "Math type doesn't match: {}".format(each_math)
-
-        # Delete input (speeds up further input addition checking)
-        response = delete_data(testapp, data_type='math', device_dev=math_dev)
-        assert "Delete math with ID: {}".format(math_dev.unique_id) in response
-        math_count -= 1
 
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
@@ -485,7 +460,7 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
 
         # Delete output (speeds up further output addition checking)
         output = Output.query.filter(Output.id == output_count).first()
-        response = delete_data(testapp, data_type='output', device_dev=output)
+        response = delete_data(testapp, 'output', device_dev=output)
         assert "Success: Delete output with ID: {}".format(output.unique_id) in response
         output_count -= 1
 
@@ -537,23 +512,17 @@ def create_user(mycodo_db, role_id, name, password):
     return new_user
 
 
-def add_data(testapp, data_type='input', input_type='RPi'):
-    """ Go to the data page and create input/math """
-    response = None
-    if data_type == 'input':
-        form = testapp.get('/data').maybe_follow().forms['new_input_form']
-        form.select(name='input_type', value=input_type)
-        response = form.submit(name='input_add', value='Add').maybe_follow()
-    elif data_type == 'math':
-        form = testapp.get('/data').maybe_follow().forms['new_math_form']
-        form.select(name='math_type', value=input_type)
-        response = form.submit(name='math_add', value='Add').maybe_follow()
+def add_data(testapp, input_type='RPi'):
+    """ Go to the data page and create input """
+    form = testapp.get('/data').maybe_follow().forms['new_input_form']
+    form.select(name='input_type', value=input_type)
+    response = form.submit(name='input_add', value='Add').maybe_follow()
     # response.showbrowser()
     return response
 
 
 def add_output(testapp, output_type='wired'):
-    """ Go to the data page and create output/math """
+    """ Go to the data page and create output """
     form = testapp.get('/output').maybe_follow().forms['new_output_form']
     form.set(name='output_quantity', value=1)
     form.select(name='output_type', value=output_type)
@@ -562,17 +531,13 @@ def add_output(testapp, output_type='wired'):
     return response
 
 
-def delete_data(testapp, data_type='input', device_dev=None):
-    """ Go to the data page and delete input/math """
+def delete_data(testapp, data_type, device_dev=None):
+    """ Go to the data page and delete input/output """
     response = None
     if data_type == 'input':
         form = testapp.get('/data').maybe_follow().forms['mod_input_form']
         form['input_id'].force_value(device_dev.unique_id)
         response = form.submit(name='input_delete', value='Delete').maybe_follow()
-    elif data_type == 'math':
-        form = testapp.get('/data').maybe_follow().forms['mod_math_form']
-        form['math_id'].force_value(device_dev.unique_id)
-        response = form.submit(name='math_delete', value='Delete').maybe_follow()
     elif data_type == 'output':
         form = testapp.get('/output').maybe_follow().forms['mod_output_form']
         form['output_id'].force_value(device_dev.unique_id)
