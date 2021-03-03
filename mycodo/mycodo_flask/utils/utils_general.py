@@ -621,7 +621,7 @@ def choices_custom_functions():
     list_controllers_sorted = generate_form_controller_list(dict_controllers)
     for each_custom in list_controllers_sorted:
         value = '{inp}'.format(inp=each_custom)
-        display = '{name}'.format(
+        display = 'Function: {name}'.format(
             name=dict_controllers[each_custom]['function_name'])
         choices.append({'value': value, 'item': display})
     return choices
