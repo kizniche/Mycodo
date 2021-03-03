@@ -93,14 +93,6 @@ FUNCTION_INFORMATION = {
             'phrase': 'The duration (seconds) to wait before the first operation'
         },
         {
-            'id': 'max_measure_age',
-            'type': 'integer',
-            'default_value': 360,
-            'required': True,
-            'name': 'Measurement Max Age',
-            'phrase': 'The maximum allowed age of the measurement'
-        },
-        {
             'id': 'select_measurement',
             'type': 'select_measurement',
             'default_value': '',
@@ -111,6 +103,14 @@ FUNCTION_INFORMATION = {
             ],
             'name': 'Measurement',
             'phrase': 'Measurement to replace "x" in the equation'
+        },
+        {
+            'id': 'max_measure_age',
+            'type': 'integer',
+            'default_value': 360,
+            'required': True,
+            'name': 'Measurement Max Age',
+            'phrase': 'The maximum allowed age of the measurement'
         }
     ]
 }

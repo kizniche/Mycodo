@@ -323,7 +323,6 @@ MATH_INFO = {
 MATHS = [
     ('redundancy', MATH_INFO['redundancy']['name']),
     ('verification', MATH_INFO['verification']['name']),
-    ('humidity', MATH_INFO['humidity']['name']),
     ('vapor_pressure_deficit', MATH_INFO['vapor_pressure_deficit']['name'])
 ]
 
