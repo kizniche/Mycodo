@@ -322,8 +322,7 @@ MATH_INFO = {
 # Math form dropdown
 MATHS = [
     ('redundancy', MATH_INFO['redundancy']['name']),
-    ('verification', MATH_INFO['verification']['name']),
-    ('vapor_pressure_deficit', MATH_INFO['vapor_pressure_deficit']['name'])
+    ('verification', MATH_INFO['verification']['name'])
 ]
 
 # Method info
