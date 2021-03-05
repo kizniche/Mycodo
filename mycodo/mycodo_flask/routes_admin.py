@@ -52,7 +52,7 @@ from mycodo.utils.functions import parse_function_information
 from mycodo.utils.github_release_info import MycodoRelease
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
-from mycodo.utils.statistics import return_stat_file_dict
+from mycodo.utils.stats import return_stat_file_dict
 from mycodo.utils.system_pi import can_perform_backup
 from mycodo.utils.system_pi import get_directory_size
 from mycodo.utils.system_pi import internet

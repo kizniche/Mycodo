@@ -48,7 +48,6 @@ def get_installed_dependencies():
         FUNCTION_ACTION_INFO,
         FUNCTION_INFO,
         LCD_INFO,
-        MATH_INFO,
         METHOD_INFO,
     ]
 
