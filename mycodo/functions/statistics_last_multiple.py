@@ -99,7 +99,7 @@ FUNCTION_INFORMATION = {
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 
-    'message': 'This function acquires multiple measurements, calculates statictics, and stores the '
+    'message': 'This function acquires multiple measurements, calculates statistics, and stores the '
                'resulting values as the selected unit.',
 
     'options_enabled': [

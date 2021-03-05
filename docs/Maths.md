@@ -1,6 +1,7 @@
 Page\: `Setup -> Data`
 
-Math controllers allow one or more Inputs to have math applied to produce a new value that may be used within Mycodo.
+!!! warning
+    Math controllers have been deprecated since Mycodo version 8.9.0. All Math controller functionality has been moved to [Functions](Functions.md). No new Math controllers can be created in Mycodo 8.9.0 and beyond, but already-existing Math controllers are permitted to operate until further notice. If you are using Mycodo version 8.9.0 or beyond, it is advised to create Functions for all your current Math controllers, because some point in the future Math controllers will not be allowed to operate. This manual page only serves as reference material for those still using Math controllers.
 
 !!! note
     "Last" means the controller will only acquire the last (latest) measurement in the database for performing math with. "Past" means the controller will acquire all measurements from the present until the "Max Age (seconds)" set by the user (e.g. if measurements are acquired every 10 seconds, and a Max Age is set to 60 seconds, there will on average be 6 measurements returned to have math performed).

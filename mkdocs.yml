@@ -57,6 +57,7 @@ nav:
   - Supported Devices:
     - Supported Inputs: Supported-Inputs.md
     - Supported Outputs: Supported-Outputs.md
+    - Supported Functions: Supported-Functions.md
     - Supported Widgets: Supported-Widgets.md
     - I2C Multiplexers: I2C-Multiplexers.md
     - Analog-To-Digital Converters: Analog-To-Digital-Converters.md

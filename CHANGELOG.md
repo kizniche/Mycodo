@@ -86,7 +86,7 @@ The new weather input acquires current and future weather conditions from openwe
  - Refactor Edge detection Input
  - Refactor method implementation from single large method into multiple small classes
  - Changed duration method start- and end-time handling
- - Port Math controllers to Functions: Equation (Single/Multi), Difference, Statistics (Multi), Average (Single/Multi), Sum (Single/Multi), Wet-Bulb Humidity, Vapor Pressure Deficit
+ - Port Math controllers to Functions: Equation (Single/Multi), Difference, Statistics (Multi), Average (Single/Multi), Sum (Single/Multi), Wet-Bulb Humidity, Redundancy, Vapor Pressure Deficit
  - Deprecate Math controllers
 
 

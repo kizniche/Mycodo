@@ -1,5 +1,7 @@
 Page\: `Setup -> Function`
 
+For a full list of supported Inputs, see [Supported Functions](Supported-Functions.md).
+
 Function controllers perform tasks that often involve the use of Inputs and Outputs.
 
 ## Custom Functions

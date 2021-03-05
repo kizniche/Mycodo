@@ -321,7 +321,6 @@ MATH_INFO = {
 
 # Math form dropdown
 MATHS = [
-    ('redundancy', MATH_INFO['redundancy']['name']),
     ('verification', MATH_INFO['verification']['name'])
 ]
 
