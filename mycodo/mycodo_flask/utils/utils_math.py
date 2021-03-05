@@ -34,66 +34,66 @@ logger = logging.getLogger(__name__)
 # Math manipulation
 #
 
-def math_add(form_add_math):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['add']['title'],
-        controller=TRANSLATIONS['math']['title'])
-    error = []
-
-    dep_unmet, _ = return_dependencies(form_add_math.math_type.data)
-    if dep_unmet:
-        list_unmet_deps = []
-        for each_dep in dep_unmet:
-            list_unmet_deps.append(each_dep[0])
-        error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
-            dev=form_add_math.math_type.data, dep=', '.join(list_unmet_deps)))
-
-    if form_add_math.validate():
-        new_math = Math()
-        new_math.name = str(MATH_INFO[form_add_math.math_type.data]['name'])
-        new_math.math_type = form_add_math.math_type.data
-
-        try:
-            new_math.save()
-
-            display_order = csv_to_list_of_str(
-                DisplayOrder.query.first().math)
-            DisplayOrder.query.first().math = add_display_order(
-                display_order, new_math.unique_id)
-            db.session.commit()
-
-            if not MATH_INFO[form_add_math.math_type.data]['measure']:
-                new_measurement = DeviceMeasurements()
-                new_measurement.device_id = new_math.unique_id
-                new_measurement.channel = 0
-                new_measurement.save()
-            else:
-                for each_channel, measure_info in MATH_INFO[form_add_math.math_type.data]['measure'].items():
-                    new_measurement = DeviceMeasurements()
-                    if 'name' in measure_info and measure_info['name']:
-                        new_measurement.name = measure_info['name']
-                    new_measurement.device_id = new_math.unique_id
-                    new_measurement.measurement = measure_info['measurement']
-                    new_measurement.unit = measure_info['unit']
-                    new_measurement.channel = each_channel
-                    new_measurement.save()
-
-            flash(gettext(
-                "%(type)s Math with ID %(id)s (%(uuid)s) successfully added",
-                type=form_add_math.math_type.data,
-                id=new_math.id,
-                uuid=new_math.unique_id),
-                  "success")
-        except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
-        except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
-        flash_success_errors(error, action, url_for('routes_page.page_data'))
-    else:
-        flash_form_errors(form_add_math)
-
-    if dep_unmet:
-        return 1
+# def math_add(form_add_math):
+#     action = '{action} {controller}'.format(
+#         action=TRANSLATIONS['add']['title'],
+#         controller=TRANSLATIONS['math']['title'])
+#     error = []
+#
+#     dep_unmet, _ = return_dependencies(form_add_math.math_type.data)
+#     if dep_unmet:
+#         list_unmet_deps = []
+#         for each_dep in dep_unmet:
+#             list_unmet_deps.append(each_dep[0])
+#         error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
+#             dev=form_add_math.math_type.data, dep=', '.join(list_unmet_deps)))
+#
+#     if form_add_math.validate():
+#         new_math = Math()
+#         new_math.name = str(MATH_INFO[form_add_math.math_type.data]['name'])
+#         new_math.math_type = form_add_math.math_type.data
+#
+#         try:
+#             new_math.save()
+#
+#             display_order = csv_to_list_of_str(
+#                 DisplayOrder.query.first().math)
+#             DisplayOrder.query.first().math = add_display_order(
+#                 display_order, new_math.unique_id)
+#             db.session.commit()
+#
+#             if not MATH_INFO[form_add_math.math_type.data]['measure']:
+#                 new_measurement = DeviceMeasurements()
+#                 new_measurement.device_id = new_math.unique_id
+#                 new_measurement.channel = 0
+#                 new_measurement.save()
+#             else:
+#                 for each_channel, measure_info in MATH_INFO[form_add_math.math_type.data]['measure'].items():
+#                     new_measurement = DeviceMeasurements()
+#                     if 'name' in measure_info and measure_info['name']:
+#                         new_measurement.name = measure_info['name']
+#                     new_measurement.device_id = new_math.unique_id
+#                     new_measurement.measurement = measure_info['measurement']
+#                     new_measurement.unit = measure_info['unit']
+#                     new_measurement.channel = each_channel
+#                     new_measurement.save()
+#
+#             flash(gettext(
+#                 "%(type)s Math with ID %(id)s (%(uuid)s) successfully added",
+#                 type=form_add_math.math_type.data,
+#                 id=new_math.id,
+#                 uuid=new_math.unique_id),
+#                   "success")
+#         except sqlalchemy.exc.OperationalError as except_msg:
+#             error.append(except_msg)
+#         except sqlalchemy.exc.IntegrityError as except_msg:
+#             error.append(except_msg)
+#         flash_success_errors(error, action, url_for('routes_page.page_input'))
+#     else:
+#         flash_form_errors(form_add_math)
+#
+#     if dep_unmet:
+#         return 1
 
 
 def math_mod(form_mod_math, form_mod_type=None):
@@ -274,7 +274,7 @@ def math_mod(form_mod_math, form_mod_type=None):
         logger.exception(1)
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_input'))
 
 
 def math_measurement_mod(form):
@@ -312,7 +312,7 @@ def math_measurement_mod(form):
         logger.exception(1)
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_input'))
 
 
 def math_del(form_mod_math):
@@ -349,7 +349,7 @@ def math_del(form_mod_math):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_input'))
 
 
 def math_reorder(math_id, display_order, direction):
@@ -368,7 +368,7 @@ def math_reorder(math_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_input'))
 
 
 def math_activate(form_mod_math):

@@ -15,17 +15,7 @@ from wtforms import widgets
 from wtforms.validators import DataRequired
 from wtforms.widgets.html5 import NumberInput
 
-from mycodo.config import MATHS
 from mycodo.config_translations import TRANSLATIONS
-
-
-class MathAdd(FlaskForm):
-    math_type = SelectField(
-        choices=MATHS,
-        validators=[DataRequired()]
-    )
-    math_add = SubmitField(
-        TRANSLATIONS['add']['title'])
 
 
 class MathMod(FlaskForm):

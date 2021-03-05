@@ -202,7 +202,7 @@ msgstr "Infrarot-Sende"
 
 #: config.py:599 config_translations.py:95
 #: mycodo_flask/templates/layout-remote.html:50
-#: mycodo_flask/templates/pages/data.html:25
+#: mycodo_flask/templates/pages/input.html:25
 #: mycodo_flask/templates/pages/data_options/input.html:1
 #: mycodo_flask/templates/pages/function_options/action_options/input_force_measurements.html:11
 msgid "Input"
@@ -917,7 +917,7 @@ msgstr "Linie"
 msgid "Login"
 msgstr "Login"
 
-#: config_translations.py:107 mycodo_flask/templates/pages/data.html:37
+#: config_translations.py:107 mycodo_flask/templates/pages/input.html:37
 #: mycodo_flask/templates/pages/data_options/math.html:1
 msgid "Math"
 msgstr "Berechnung"
@@ -4409,7 +4409,7 @@ msgstr "Letzter"
 #: mycodo_flask/templates/pages/function.html:19
 msgid ""
 "Functions conduct complex tasks, often coupling one or more <a "
-"href=\"/data\">Data</a> sources with <a href=\"/output\">Outputs</a>. For"
+"href=\"/input\">Input</a> sources with <a href=\"/output\">Outputs</a>. For"
 " example, this could be using a PID Controller to create a feedback loop "
 "with a temperature sensor and heater in order to regulate temperature."
 msgstr ""

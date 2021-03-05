@@ -7,7 +7,7 @@
 
 <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
 
-  <form id="mod_input_form" method="post" action="/data">
+  <form id="mod_input_form" method="post" action="/input">
     {{form_mod_input.csrf_token}}
     {{form_mod_input.input_id(value=each_input.unique_id)}}
 
@@ -358,7 +358,7 @@
 
   <div class="collapse" id="collapseContainerReorderInput" style="padding-bottom: 1em">
 
-    <form method="post" action="/data">
+    <form method="post" action="/input">
     {{form_base.csrf_token}}
 
     <div class="row" style="padding-bottom: 0.5em">

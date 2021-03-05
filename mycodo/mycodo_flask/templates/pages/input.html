@@ -1,23 +1,23 @@
 {% extends "layout.html" %}
 {% set active_page = "data" %}
-{% set help_page = ["https://kizniche.github.io/Mycodo/Inputs/", dict_translation['data']['title']] %}
+{% set help_page = ["https://kizniche.github.io/Mycodo/Inputs/", dict_translation['input']['title']] %}
 
-{% block title %} - {{dict_translation['data']['title']}}{% endblock %}
+{% block title %} - {{dict_translation['input']['title']}}{% endblock %}
 
 {% block head %}
   <script type="text/javascript" src="/static/js/multiselect.min.js"></script>
 {% endblock %}
 
 {%- block body %}
-  <!-- Route: /data -->
+  <!-- Route: /input -->
   <main role="main" class="container">
     {% include 'flash_messages.html' %}
 
-    <h4>{{dict_translation['data']['title']}} <a href="{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
+    <h4>{{dict_translation['input']['title']}} <a href="{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
 
     <div style="clear: both; padding: 0.5em 0;"></div>
 
-    <form id="new_input_form" method="post" action="/data" style="padding-bottom: 0.5em">
+    <form id="new_input_form" method="post" action="/input" style="padding-bottom: 0.5em">
       {{form_add_input.hidden_tag()}}
       <input type="hidden" name="form-name" value="addSensor">
       <div class="row small-gutters" style="padding-left: 0.75em">
@@ -26,18 +26,6 @@
         </div>
         <div class="col-auto">
           {{form_add_input.input_add(class_='btn btn-primary')}}
-        </div>
-      </div>
-    </form>
-
-    <form id="new_math_form" method="post" action="/data">
-      {{form_add_math.hidden_tag()}}
-      <div class="row small-gutters" style="padding-left: 0.75em">
-        <div class="col-auto">
-          {{form_add_math.math_type(class_='selectpicker', **{'title': _('Math') + ': ' + dict_translation['select_one']['title']})}}
-        </div>
-        <div class="col-auto">
-          {{form_add_math.math_add(class_='btn btn-primary')}}
         </div>
       </div>
     </form>

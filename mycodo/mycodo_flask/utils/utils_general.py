@@ -1778,4 +1778,4 @@ def custom_action(controller, dict_device, unique_id, form):
     except Exception as except_msg:
         logger.exception(1)
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_input'))

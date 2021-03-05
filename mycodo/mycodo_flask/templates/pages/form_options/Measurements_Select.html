@@ -9,7 +9,7 @@
 
   {% for each_measurement in all_measurements %}
 
-<form method="post" action="/data">
+<form method="post" action="/input">
 {{form_mod_measurement.csrf_token}}
 {{form_mod_measurement.device_id(value=each_device.unique_id)}}
 {{form_mod_measurement.measurement_id(value=each_measurement.unique_id)}}

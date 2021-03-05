@@ -4,7 +4,7 @@
 {%- if all_measurements %}
   {% for each_measurement in all_measurements %}
 
-<form method="post" action="/data">
+<form method="post" action="/input">
 {{form_mod_math_measurement.csrf_token}}
 {{form_mod_math_measurement.math_id(value=each_math.unique_id)}}
 {{form_mod_math_measurement.math_measurement_id(value=each_measurement.unique_id)}}

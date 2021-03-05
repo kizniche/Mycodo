@@ -314,7 +314,7 @@ def input_add(form_add):
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
 
-        flash_success_errors(error, action, url_for('routes_page.page_data'))
+        flash_success_errors(error, action, url_for('routes_page.page_input'))
     else:
         flash_form_errors(form_add)
 
@@ -555,7 +555,7 @@ def input_mod(form_mod, request_form):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_input'))
 
 
 def input_del(input_id):
@@ -605,7 +605,7 @@ def input_del(input_id):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_input'))
 
 
 def input_reorder(input_id, display_order, direction):
@@ -623,7 +623,7 @@ def input_reorder(input_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_input'))
 
 
 def input_activate(form_mod):
@@ -692,7 +692,7 @@ def input_activate(form_mod):
 
     if not error:
         controller_activate_deactivate('activate', 'Input',  input_id)
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_input'))
 
 
 def input_deactivate(form_mod):
@@ -737,4 +737,4 @@ def force_acquire_measurements(unique_id):
                 flash("Force Input Measurement: {}".format(status[1]), "success")
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_input'))

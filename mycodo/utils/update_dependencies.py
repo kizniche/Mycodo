@@ -15,7 +15,6 @@ from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LCD_INFO
-from mycodo.config import MATH_INFO
 from mycodo.config import METHOD_INFO
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera

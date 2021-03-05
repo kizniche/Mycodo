@@ -49,7 +49,7 @@ def energy_usage_add(form_add_energy_usage):
             error.append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
             error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_input'))
 
 
 def energy_usage_mod(form_mod_energy_usage):
@@ -72,7 +72,7 @@ def energy_usage_mod(form_mod_energy_usage):
         logger.exception(1)
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_input'))
 
 
 def energy_usage_delete(energy_usage_id):
@@ -86,7 +86,7 @@ def energy_usage_delete(energy_usage_id):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_data'))
+    flash_success_errors(error, action, url_for('routes_page.page_input'))
 
 
 def determine_controller_type(unique_id):

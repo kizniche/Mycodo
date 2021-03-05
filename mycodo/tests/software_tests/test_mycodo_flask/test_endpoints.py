@@ -352,7 +352,7 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('calibration', '<!-- Route: /calibration -->'),
         ('camera', '<!-- Route: /camera -->'),
         ('dashboard', '<!-- Route: /dashboard -->'),
-        ('data', '<!-- Route: /data -->'),
+        ('input', '<!-- Route: /input -->'),
         ('export', '<!-- Route: /export -->'),
         ('forgot_password', '<!-- Route: /forgot_password -->'),
         ('function', '<!-- Route: /function -->'),
@@ -514,7 +514,7 @@ def create_user(mycodo_db, role_id, name, password):
 
 def add_data(testapp, input_type='RPi'):
     """ Go to the data page and create input """
-    form = testapp.get('/data').maybe_follow().forms['new_input_form']
+    form = testapp.get('/input').maybe_follow().forms['new_input_form']
     form.select(name='input_type', value=input_type)
     response = form.submit(name='input_add', value='Add').maybe_follow()
     # response.showbrowser()
@@ -535,7 +535,7 @@ def delete_data(testapp, data_type, device_dev=None):
     """ Go to the data page and delete input/output """
     response = None
     if data_type == 'input':
-        form = testapp.get('/data').maybe_follow().forms['mod_input_form']
+        form = testapp.get('/input').maybe_follow().forms['mod_input_form']
         form['input_id'].force_value(device_dev.unique_id)
         response = form.submit(name='input_delete', value='Delete').maybe_follow()
     elif data_type == 'output':

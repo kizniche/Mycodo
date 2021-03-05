@@ -1819,9 +1819,9 @@ def page_output():
                            user=user)
 
 
-@blueprint.route('/data', methods=('GET', 'POST'))
+@blueprint.route('/input', methods=('GET', 'POST'))
 @flask_login.login_required
-def page_data():
+def page_input():
     """ Display Data page """
 
     input_dev = Input.query.all()
@@ -1844,7 +1844,6 @@ def page_data():
     form_mod_input = forms_input.InputMod()
     form_mod_measurement = forms_measurement.MeasurementMod()
 
-    form_add_math = forms_math.MathAdd()
     form_mod_math = forms_math.MathMod()
     form_mod_math_measurement = forms_math.MathMeasurementMod()
     form_mod_average_single = forms_math.MathModAverageSingle()
@@ -1864,7 +1863,7 @@ def page_data():
     if request.method == 'POST':
         unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('routes_page.page_data'))
+            return redirect(url_for('routes_page.page_input'))
 
         # Reorder
         if form_base.reorder.data:
@@ -1891,7 +1890,7 @@ def page_data():
         # Mod Input Measurement
         elif form_mod_measurement.measurement_mod.data:
             utils_measurement.measurement_mod(
-                form_mod_measurement, url_for('routes_page.page_data'))
+                form_mod_measurement, url_for('routes_page.page_input'))
 
         # Mod other Input settings
         elif form_mod_input.input_mod.data:
@@ -1908,10 +1907,6 @@ def page_data():
             utils_input.input_activate(form_mod_input)
         elif form_mod_input.input_deactivate.data:
             utils_input.input_deactivate(form_mod_input)
-
-        # Add Math
-        elif form_add_math.math_add.data:
-            unmet_dependencies = utils_math.math_add(form_add_math)
 
         # Mod Math Measurement
         elif form_mod_math_measurement.math_measurement_mod.data:
@@ -1961,7 +1956,7 @@ def page_data():
             return redirect(url_for('routes_admin.admin_dependencies',
                                     device=form_add_input.input_type.data.split(',')[0]))
         else:
-            return redirect(url_for('routes_page.page_data'))
+            return redirect(url_for('routes_page.page_input'))
 
     custom_options_values_inputs = parse_custom_option_values(
         input_dev, dict_controller=dict_inputs)
@@ -2068,7 +2063,7 @@ def page_data():
                 ftdi_devices = get_ftdi_device_list()
                 break
 
-    return render_template('pages/data.html',
+    return render_template('pages/input.html',
                            and_=and_,
                            choices_input=choices_input,
                            choices_math=choices_math,
@@ -2091,7 +2086,6 @@ def page_data():
                            display_order_math=display_order_math,
                            form_base=form_base,
                            form_add_input=form_add_input,
-                           form_add_math=form_add_math,
                            form_mod_input=form_mod_input,
                            form_mod_measurement=form_mod_measurement,
                            form_mod_average_single=form_mod_average_single,
