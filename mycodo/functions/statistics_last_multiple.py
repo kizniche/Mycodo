@@ -137,6 +137,14 @@ FUNCTION_INFORMATION = {
             ],
             'name': 'Measurement',
             'phrase': 'Measurements to perform statistics on'
+        },
+        {
+            'id': 'halt_on_missing_measure',
+            'type': 'bool',
+            'default_value': False,
+            'required': True,
+            'name': 'Halt on Missing Measurement',
+            'phrase': "Don't calculate statistics if >= 1 measurement is not found within Max Age"
         }
     ]
 }
@@ -160,6 +168,7 @@ class CustomModule(AbstractController, threading.Thread):
         self.period = None
         self.select_measurement = None
         self.max_measure_age = None
+        self.halt_on_missing_measure = None
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
@@ -205,38 +214,45 @@ class CustomModule(AbstractController, threading.Thread):
                     self.logger.error(
                         "Could not find measurement within the set Max Age for Device {} and Measurement {}".format(
                             device_device_id, device_measure_id))
-                    return False
+                    if self.halt_on_missing_measure:
+                        self.logger.debug("Instructed to halt on the first missing measurement. Halting.")
+                        return False
                 else:
                     measure.append(last_measurement[1])
 
-            stat_mean = float(sum(measure) / float(len(measure)))
-            stat_median = median(measure)
-            stat_minimum = min(measure)
-            stat_maximum = max(measure)
-            stdev_ = stdev(measure)
-            stdev_mean_upper = stat_mean + stdev_
-            stdev_mean_lower = stat_mean - stdev_
+            if len(measure) > 1:
+                stat_mean = float(sum(measure) / float(len(measure)))
+                stat_median = median(measure)
+                stat_minimum = min(measure)
+                stat_maximum = max(measure)
+                stdev_ = stdev(measure)
+                stdev_mean_upper = stat_mean + stdev_
+                stdev_mean_lower = stat_mean - stdev_
 
-            list_measurement = [
-                stat_mean,
-                stat_median,
-                stat_minimum,
-                stat_maximum,
-                stdev_,
-                stdev_mean_upper,
-                stdev_mean_lower
-            ]
+                list_measurement = [
+                    stat_mean,
+                    stat_median,
+                    stat_minimum,
+                    stat_maximum,
+                    stdev_,
+                    stdev_mean_upper,
+                    stdev_mean_lower
+                ]
 
-            for each_measurement in self.device_measurements.all():
-                if each_measurement.is_enabled:
-                    conversion = db_retrieve_table_daemon(
-                        Conversion, unique_id=each_measurement.conversion_id)
-                    channel, unit, measurement = return_measurement_info(
-                        each_measurement, conversion)
+                for each_channel, each_measurement in self.channels_measurement.items():
+                    if each_measurement.is_enabled:
+                        channel, unit, measurement = return_measurement_info(
+                            each_measurement, self.channels_conversion[each_channel])
 
-                    write_influxdb_value(
-                        self.unique_id,
-                        unit,
-                        value=list_measurement[channel],
-                        measure=measurement,
-                        channel=0)
+                        self.logger.debug("Saving {} to channel {} with measurement {} and unit {}".format(
+                            list_measurement[each_channel], each_channel, measurement, unit))
+
+                        write_influxdb_value(
+                            self.unique_id,
+                            unit,
+                            value=list_measurement[each_channel],
+                            measure=measurement,
+                            channel=each_channel)
+            else:
+                self.logger.debug("Less than 2 measurements found within Max Age. "
+                                  "Calculations need at least 2 measurements. Not calculating.")

@@ -167,13 +167,13 @@ class CustomModule(AbstractController, threading.Thread):
             if last_measurement:
                 self.logger.debug(
                     "Most recent timestamp and measurement for "
-                    "select_measurement_a: {timestamp}, {meas}".format(
+                    "Measurement A: {timestamp}, {meas}".format(
                         timestamp=last_measurement[0],
                         meas=last_measurement[1]))
             else:
                 self.logger.debug(
                     "Could not find a measurement in the database for "
-                    "select_measurement_a device ID {} and measurement "
+                    "Measurement A device ID {} and measurement "
                     "ID {} in the past {} seconds".format(
                         self.select_measurement_device_id,
                         self.select_measurement_measurement_id,
@@ -196,3 +196,5 @@ class CustomModule(AbstractController, threading.Thread):
                     value=equation_output,
                     measure=self.channels_measurement[0].measurement,
                     channel=0)
+            else:
+                self.logger.debug("A measurement could not be found within the Max Age. Not calculating.")

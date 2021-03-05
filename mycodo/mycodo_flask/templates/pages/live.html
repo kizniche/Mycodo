@@ -54,15 +54,17 @@
         {% endfor %}
       {%- endfor -%}
 
-      {%- for each_math in table_math.query.filter(table_math.is_activated).all() -%}
-        {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_math.unique_id).all() if each_meas.is_enabled %}
-
-          {%- if each_math.math_type == 'redundancy' -%}
-          liveTextData('{{each_math.unique_id}}', 'math', '{{each_meas.unique_id}}', 14400);
-          {%- else -%}
-          liveTextData('{{each_math.unique_id}}', 'math', '{{each_meas.unique_id}}', {{each_math.period * 2}});
-          {%- endif -%}
-
+      {%- for each_function in table_function.query.filter(table_function.is_activated).all() -%}
+        {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_function.unique_id).all() if each_meas.is_enabled %}
+          {%  set function_options = custom_options_values_controllers[each_function.unique_id] %}
+          {% if "period" in function_options %}
+            {% set function_period = function_options["period"] %}
+          {% endif %}
+          {% if function_period %}
+          liveTextData('{{each_function.unique_id}}', 'function', '{{each_meas.unique_id}}', {{function_period * 2}});
+          {% else %}
+          liveTextData('{{each_function.unique_id}}', 'function', '{{each_meas.unique_id}}', 1440);
+          {% endif %}
         {% endfor %}
       {%- endfor -%}
     });
@@ -75,9 +77,9 @@
 
     {% include 'flash_messages.html' %}
 
-    {%- if not activated_inputs and not activated_maths -%}
+    {%- if not activated_inputs and not activated_functions -%}
     <div>
-      {{_('No Input Sources Activated')}}. <a href="/input">Click here</a> to go to the Input page. Read the <a href="https://kizniche.github.io/Mycodo">Manual</a> to become more familiar with the system and configuration options.
+      {{_('No Inputs/Functions Activated')}}. <a href="/input">Click here</a> to go to the Input page. Read the <a href="https://kizniche.github.io/Mycodo">Manual</a> to become more familiar with the system and configuration options.
     </div>
     {%- endif -%}
 
@@ -131,26 +133,34 @@
       {%- endif -%}
     {%- endfor -%}
 
-    {% for each_order_math_id in display_order_math %}
-      {%- set each_math = table_math.query.filter(
-                             and_(table_math.unique_id == each_order_math_id,
-                                  table_math.is_activated)).first() -%}
-      {%- if each_math -%}
+    {% for each_order_function_id in display_order_function %}
+      {%- set each_function = table_function.query.filter(
+                              and_(table_function.unique_id == each_order_function_id,
+                                   table_function.is_activated)).first() -%}
+      {%- if each_function -%}
+        {%  set function_options = custom_options_values_controllers[each_function.unique_id] %}
+        {% if "period" in function_options %}
+          {% set function_period = function_options["period"] %}
+        {% endif %}
 
     <div style="padding: 0.5em; margin-bottom: 0.7em; border: 1px solid #ddd; border-radius: 5px;">
 
       <div class="row">
         <div class="col-12 col-sm-6 text-left">
-          {{each_math.name}} (Math {{each_math.unique_id[:8]}})
+          {{each_function.name}} (Function {{each_function.unique_id[:8]}})
           <div>
-            {{_('Math (%(type)s), %(sec)s second interval', type=each_math.math_type, sec=each_math.period)}}
+            {% if function_period %}
+            {{_('Function (%(type)s), %(sec)s second interval', type=each_function.device, sec=function_period)}}
+            {% else %}
+            {{_('Function (%(type)s)', type=each_function.function_type)}}
+            {% endif %}
           </div>
         </div>
 
         <div class="col-12 col-sm-6 text-right">
           {{_('Measurement')}} | {{_('Timestamp')}}
-        {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_math.unique_id).all() if each_meas.is_enabled %}
-          {% set measure_string = each_math.unique_id + '-math-' + each_meas.unique_id %}
+        {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_function.unique_id).all() if each_meas.is_enabled %}
+          {% set measure_string = each_function.unique_id + '-function-' + each_meas.unique_id %}
           <div>
             <b><span id="{{measure_string}}-value">0.0</span>
 

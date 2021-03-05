@@ -37,6 +37,8 @@ The new weather input acquires current and future weather conditions from openwe
  - Fix stopping Trigger Controllers ([#940](https://github.com/kizniche/mycodo/issues/940))
  - Fix Tags not appearing in Graph Widgets
  - Fix variable measurement Inputs saving correctly
+ - Fix detection of custom_option save type (CSV or JSON) for proper parsing
+ - Fix saving of unchecked checkboxes when using forms
 
 ### Features
 

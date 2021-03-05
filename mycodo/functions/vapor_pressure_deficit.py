@@ -64,7 +64,7 @@ measurements_dict = {
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'vapor_pressure_deficit',
-    'function_name': lazy_gettext('Vapor Pressure Deficit'),
+    'function_name': 'Vapor Pressure Deficit',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 
@@ -227,13 +227,11 @@ class CustomModule(AbstractController, threading.Thread):
                 self.logger.error("Error: {msg}".format(msg=err))
 
             if vpd_pa:
-                math_dev_measurement = self.device_measurements.first()
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=math_dev_measurement.conversion_id)
+                dev_measurement = self.channels_measurement[0]
                 channel, unit, measurement = return_measurement_info(
-                    math_dev_measurement, conversion)
+                    dev_measurement, self.channels_conversion[0])
 
-                measurement_dict[channel] = {
+                measurement_dict[0] = {
                     'measurement': measurement,
                     'unit': unit,
                     'value': vpd_pa
@@ -251,4 +249,4 @@ class CustomModule(AbstractController, threading.Thread):
                         self.unique_id))
         else:
             self.logger.debug(
-                "Could not acquire both temperature and humidity measurements")
+                "Could not acquire both temperature and humidity measurements.")

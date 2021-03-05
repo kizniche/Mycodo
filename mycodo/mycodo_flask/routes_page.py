@@ -1149,18 +1149,23 @@ def page_live():
     math = Math.query.all()
 
     activated_inputs = Input.query.filter(Input.is_activated).count()
-    activated_maths = Math.query.filter(Input.is_activated).count()
+    activated_functions = CustomController.query.filter(CustomController.is_activated).count()
 
     use_unit = utils_general.use_unit_generate(
         device_measurements, input_dev, output, math, function)
 
     # Display orders
     display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
-    display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
+    display_order_function = csv_to_list_of_str(DisplayOrder.query.first().function)
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
+
+    dict_controllers = parse_function_information()
+
+    custom_options_values_controllers = parse_custom_option_values(
+        function, dict_controller=dict_controllers)
 
     dict_measure_measurements = {}
     dict_measure_units = {}
@@ -1173,18 +1178,19 @@ def page_live():
         dict_measure_units[each_measurement.unique_id] = unit
 
     return render_template('pages/live.html',
-                           activated_inputs=activated_inputs,
-                           activated_maths=activated_maths,
                            and_=and_,
+                           activated_inputs=activated_inputs,
+                           activated_functions=activated_functions,
+                           custom_options_values_controllers=custom_options_values_controllers,
                            table_device_measurements=DeviceMeasurements,
                            table_input=Input,
-                           table_math=Math,
+                           table_function=CustomController,
                            dict_measurements=dict_measurements,
                            dict_units=dict_units,
                            dict_measure_measurements=dict_measure_measurements,
                            dict_measure_units=dict_measure_units,
                            display_order_input=display_order_input,
-                           display_order_math=display_order_math,
+                           display_order_function=display_order_function,
                            list_devices_adc=list_analog_to_digital_converters(),
                            measurement_units=MEASUREMENTS,
                            use_unit=use_unit)

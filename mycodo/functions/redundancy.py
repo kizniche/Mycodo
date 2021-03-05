@@ -53,7 +53,7 @@ measurements_dict = {
     0: {
         'measurement': '',
         'unit': '',
-        'name': 'Equation Output'
+        'name': 'Redundancy'
     }
 }
 
@@ -206,13 +206,13 @@ class CustomModule(AbstractController, threading.Thread):
             if last_measurement_a:
                 self.logger.debug(
                     "Most recent timestamp and measurement for "
-                    "select_measurement_a: {timestamp}, {meas}".format(
+                    "Measurement A: {timestamp}, {meas}".format(
                         timestamp=last_measurement_a[0],
                         meas=last_measurement_a[1]))
             else:
                 self.logger.debug(
                     "Could not find a measurement in the database for "
-                    "select_measurement_a device ID {} and measurement "
+                    "Measurement A device ID {} and measurement "
                     "ID {} in the past {} seconds".format(
                         self.select_measurement_a_device_id,
                         self.select_measurement_a_measurement_id,
@@ -226,13 +226,13 @@ class CustomModule(AbstractController, threading.Thread):
             if last_measurement_b:
                 self.logger.debug(
                     "Most recent timestamp and measurement for "
-                    "select_measurement_b: {timestamp}, {meas}".format(
+                    "Measurement B: {timestamp}, {meas}".format(
                         timestamp=last_measurement_b[0],
                         meas=last_measurement_b[1]))
             else:
                 self.logger.debug(
                     "Could not find a measurement in the database for "
-                    "select_measurement_b device ID {} and measurement "
+                    "Measurement B device ID {} and measurement "
                     "ID {} in the past {} seconds".format(
                         self.select_measurement_b_device_id,
                         self.select_measurement_b_measurement_id,
@@ -246,13 +246,13 @@ class CustomModule(AbstractController, threading.Thread):
             if last_measurement_c:
                 self.logger.debug(
                     "Most recent timestamp and measurement for "
-                    "select_measurement_c: {timestamp}, {meas}".format(
+                    "Measurement C: {timestamp}, {meas}".format(
                         timestamp=last_measurement_c[0],
                         meas=last_measurement_c[1]))
             else:
                 self.logger.debug(
                     "Could not find a measurement in the database for "
-                    "select_measurement_c device ID {} and measurement "
+                    "Measurement C device ID {} and measurement "
                     "ID {} in the past {} seconds".format(
                         self.select_measurement_c_device_id,
                         self.select_measurement_c_measurement_id,
@@ -279,3 +279,6 @@ class CustomModule(AbstractController, threading.Thread):
                     value=measurement_store,
                     measure=self.channels_measurement[0].measurement,
                     channel=0)
+            else:
+                self.logger.debug("No measurements could not be found within the Max Age.")
+

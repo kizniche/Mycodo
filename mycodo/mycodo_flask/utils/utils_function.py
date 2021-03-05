@@ -26,6 +26,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
+from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
@@ -155,22 +156,11 @@ if measurement is not None:  # If a measurement exists
             else:
                 new_func.name = 'Function Name'
 
-            # TODO: Switch to JSON function
-            list_options = []
-            if 'custom_options' in dict_controllers[function_name]:
-                for each_option in dict_controllers[function_name]['custom_options']:
-                    if 'id' not in each_option:
-                        continue
+            # Generate string to save from custom options
+            error, custom_options = custom_options_return_json(
+                error, dict_controllers, device=function_name, use_defaults=True)
+            new_func.custom_options = custom_options
 
-                    if each_option['default_value'] is False:
-                        default_value = ''
-                    else:
-                        default_value = each_option['default_value']
-                    option = '{id},{value}'.format(
-                        id=each_option['id'],
-                        value=default_value)
-                    list_options.append(option)
-            new_func.custom_options = ';'.join(list_options)
             if not error:
                 new_func.save()
 
@@ -186,7 +176,6 @@ if measurement is not None:  # If a measurement exists
             DisplayOrder.query.first().function = add_display_order(
                 display_order, new_func.unique_id)
             db.session.commit()
-
 
             if function_name in dict_controllers:
                 #

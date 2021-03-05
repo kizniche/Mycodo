@@ -47,17 +47,19 @@ def parse_custom_option_values(controllers, dict_controller=None):
 
             # Determine if custom_options should be parsed as JSON or CSV
             if each_controller.custom_options.startswith("{"):
-                custom_options_values.update(
-                    parse_custom_option_values_json(controllers, dict_controller))
+                custom_options = parse_custom_option_values_json(
+                    controllers, dict_controller, unique_id=each_controller.unique_id)
+                custom_options_values.update({each_controller.unique_id: custom_options})
             else:
-                custom_options_values.update(
-                    parse_custom_option_values_csv(controllers, dict_controller))
+                custom_options = parse_custom_option_values_csv(
+                    controllers, dict_controller, unique_id=each_controller.unique_id)
+                custom_options_values.update({each_controller.unique_id: custom_options})
 
     return custom_options_values
 
 
 # TODO: Remove in place of JSON function, below, in next major version
-def parse_custom_option_values_csv(controllers, dict_controller=None):
+def parse_custom_option_values_csv(controllers, dict_controller=None, unique_id=None):
     # Check if controllers is iterable or a single controller
     try:
         _ = iter(controllers)
@@ -100,13 +102,17 @@ def parse_custom_option_values_csv(controllers, dict_controller=None):
                         each_option['id'] not in custom_options_values[each_controller.unique_id]):
                     custom_options_values[each_controller.unique_id][each_option['id']] = each_option['default_value']
 
+    if unique_id:
+        return custom_options_values[unique_id]
+
     return custom_options_values
 
 
 def parse_custom_option_values_json(
         controllers,
         dict_controller=None,
-        key_name='custom_options'):
+        key_name='custom_options',
+        unique_id=None):
     # Check if controllers is iterable or a single controller
     try:
         _ = iter(controllers)
@@ -147,7 +153,11 @@ def parse_custom_option_values_json(
                         each_option['id'] not in custom_options_values[each_controller.unique_id]):
                     custom_options_values[each_controller.unique_id][each_option['id']] = each_option['default_value']
 
+    if unique_id:
+        return custom_options_values[unique_id]
+
     return custom_options_values
+
 
 # TODO: Combine these next two functions by naming output_id and input_id the same
 def parse_custom_option_values_channels_json(

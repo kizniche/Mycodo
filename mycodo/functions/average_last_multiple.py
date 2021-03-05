@@ -179,7 +179,8 @@ class CustomModule(AbstractController, threading.Thread):
                     duration_sec=self.max_measure_age)
 
                 if not last_measurement:
-                    self.logger.error("Could not find measurement within the set Max Age")
+                    self.logger.error(
+                        "One more more measurements were not within the set Max Age. Not calculating average.")
                     return False
                 else:
                     measurements.append(last_measurement[1])

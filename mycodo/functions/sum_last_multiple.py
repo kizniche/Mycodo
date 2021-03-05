@@ -57,6 +57,7 @@ measurements_dict = {
     0: {
         'measurement': '',
         'unit': '',
+        'name': 'Sum'
     }
 }
 

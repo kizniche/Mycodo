@@ -78,7 +78,6 @@ FUNCTION_INFORMATION = {
     'function_name_unique': 'humidity_wet_dry_bulb',
     'function_name': "{} ({})".format(lazy_gettext('Humidity'), lazy_gettext('Wet/Dry-Bulb')),
     'measurements_dict': measurements_dict,
-    'enable_channel_unit_select': True,
 
     'message': 'This function calculates the humidity based on wet and dry bulb temperature measurements.',
 
@@ -320,13 +319,10 @@ class CustomModule(AbstractController, threading.Thread):
                 specific_volume
             ]
 
-            for each_measurement in self.device_measurements.all():
+            for each_channel, each_measurement in self.channels_measurement.items():
                 if each_measurement.is_enabled:
-                    conversion = db_retrieve_table_daemon(
-                        Conversion,
-                        unique_id=each_measurement.conversion_id)
                     channel, unit, measurement = return_measurement_info(
-                        each_measurement, conversion)
+                        each_measurement, self.channels_conversion[each_channel])
 
                     measurements[channel] = {
                         'measurement': measurement,
@@ -344,3 +340,6 @@ class CustomModule(AbstractController, threading.Thread):
                 self.logger.debug(
                     "No measurements to add to InfluxDB with ID {}".format(
                         self.unique_id))
+        else:
+            self.logger.debug(
+                "One or more temperature measurements could not be found within the Max Age. Not calculating.")

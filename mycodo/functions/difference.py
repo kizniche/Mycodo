@@ -201,13 +201,13 @@ class CustomModule(AbstractController, threading.Thread):
             if last_measurement_a:
                 self.logger.debug(
                     "Most recent timestamp and measurement for "
-                    "select_measurement_a: {timestamp}, {meas}".format(
+                    "Measurement A: {timestamp}, {meas}".format(
                         timestamp=last_measurement_a[0],
                         meas=last_measurement_a[1]))
             else:
                 self.logger.debug(
                     "Could not find a measurement in the database for "
-                    "select_measurement_a in the past {} seconds".format(
+                    "Measurement A in the past {} seconds".format(
                         self.measurement_max_age_a))
 
             last_measurement_b = self.get_last_measurement(
@@ -218,20 +218,20 @@ class CustomModule(AbstractController, threading.Thread):
             if last_measurement_b:
                 self.logger.debug(
                     "Most recent timestamp and measurement for "
-                    "select_measurement_b: {timestamp}, {meas}".format(
+                    "Measurement B: {timestamp}, {meas}".format(
                         timestamp=last_measurement_b[0],
                         meas=last_measurement_b[1]))
             else:
                 self.logger.debug(
                     "Could not find a measurement in the database for "
-                    "select_measurement_b in the past {} seconds".format(
+                    "Measurement B in the past {} seconds".format(
                         self.measurement_max_age_b))
 
             if last_measurement_a and last_measurement_b:
                 if self.difference_reverse_order:
-                    difference = last_measurement_b - last_measurement_a
+                    difference = last_measurement_b[1] - last_measurement_a[1]
                 else:
-                    difference = last_measurement_a -last_measurement_b
+                    difference = last_measurement_a[1] - last_measurement_b[1]
                 if self.difference_absolute:
                     difference = abs(difference)
 

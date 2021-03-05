@@ -79,6 +79,7 @@ def custom_options_return_string(error, dict_options, mod_dev, request_form):
                 continue
 
             null_value = True
+
             for key in request_form.keys():
                 if each_option['id'] == key:
                     constraints_pass = True
@@ -158,7 +159,13 @@ def custom_options_return_string(error, dict_options, mod_dev, request_form):
                             value=value)
                         list_options.append(option)
 
-            if null_value:
+            if (request_form and
+                    each_option['type'] == 'bool' and
+                    each_option['id'] not in request_form.keys()):
+                option = '{id},{value}'.format(id=each_option['id'], value=False)
+                list_options.append(option)
+
+            elif null_value:
                 option = '{id},'.format(id=each_option['id'])
                 list_options.append(option)
 
@@ -273,7 +280,12 @@ def custom_options_return_json(
                             null_value = False
                             dict_options_return[key] = value
 
-            if null_value:
+            if (request_form and
+                    each_option['type'] == 'bool' and
+                    each_option['id'] not in request_form.keys()):
+                dict_options_return[each_option['id']] = False
+
+            elif null_value:
                 if use_defaults and 'default_value' in each_option:
                     dict_options_return[each_option['id']] = each_option['default_value']
                 elif each_option['type'] == "select_multi_measurement":
@@ -1019,7 +1031,7 @@ def form_function_choices(choices, each_function, dict_units, dict_measurements)
             else:
                 measurement_unit = '({unit})'.format(unit=display_unit)
 
-            display = '[Controller {id:02d}] {i_name} {chan} {meas}'.format(
+            display = '[Function {id:02d}] {i_name} {chan} {meas}'.format(
                 id=each_function.id,
                 i_name=each_function.name,
                 chan=channel_info,

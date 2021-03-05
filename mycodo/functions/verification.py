@@ -53,7 +53,7 @@ measurements_dict = {
     0: {
         'measurement': '',
         'unit': '',
-        'name': 'Measurement'
+        'name': 'Verify'
     }
 }
 
@@ -192,13 +192,13 @@ class CustomModule(AbstractController, threading.Thread):
             if last_measurement_a:
                 self.logger.debug(
                     "Most recent timestamp and measurement for "
-                    "select_measurement_a: {timestamp}, {meas}".format(
+                    "Measurement A: {timestamp}, {meas}".format(
                         timestamp=last_measurement_a[0],
                         meas=last_measurement_a[1]))
             else:
                 self.logger.debug(
                     "Could not find a measurement in the database for "
-                    "select_measurement_a in the past {} seconds".format(
+                    "Measurement A in the past {} seconds".format(
                         self.measurement_max_age_a))
 
             last_measurement_b = self.get_last_measurement(
@@ -209,17 +209,17 @@ class CustomModule(AbstractController, threading.Thread):
             if last_measurement_b:
                 self.logger.debug(
                     "Most recent timestamp and measurement for "
-                    "select_measurement_b: {timestamp}, {meas}".format(
+                    "Measurement B: {timestamp}, {meas}".format(
                         timestamp=last_measurement_b[0],
                         meas=last_measurement_b[1]))
             else:
                 self.logger.debug(
                     "Could not find a measurement in the database for "
-                    "select_measurement_b in the past {} seconds".format(
+                    "Measurement B in the past {} seconds".format(
                         self.measurement_max_age_b))
 
             if last_measurement_a and last_measurement_b:
-                list_measures = [last_measurement_a, last_measurement_b]
+                list_measures = [last_measurement_a[1], last_measurement_b[1]]
                 difference = max(list_measures) - min(list_measures)
                 if difference > self.max_difference:
                     self.logger.debug(
@@ -231,7 +231,7 @@ class CustomModule(AbstractController, threading.Thread):
                     0: {
                         'measurement': self.channels_measurement[0].measurement,
                         'unit': self.channels_measurement[0].unit,
-                        'value': last_measurement_a
+                        'value': last_measurement_a[1]
                     }
                 }
 
