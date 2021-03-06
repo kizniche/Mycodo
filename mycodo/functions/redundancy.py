@@ -58,7 +58,7 @@ measurements_dict = {
 }
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'redundancy',
+    'function_name_unique': 'REDUNDANCY',
     'function_name': 'Redundancy',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,

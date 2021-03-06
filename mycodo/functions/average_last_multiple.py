@@ -61,7 +61,7 @@ measurements_dict = {
 }
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'average_last_multiple',
+    'function_name_unique': 'AVG_LAST_MULTI',
     'function_name': 'Average (Last, Multiple)',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,

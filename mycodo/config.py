@@ -319,11 +319,6 @@ MATH_INFO = {
     }
 }
 
-# Math form dropdown
-MATHS = [
-    ('verification', MATH_INFO['verification']['name'])
-]
-
 # Method info
 METHOD_INFO = {
     'Date': {

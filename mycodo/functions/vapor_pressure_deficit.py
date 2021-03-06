@@ -63,7 +63,7 @@ measurements_dict = {
 }
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'vapor_pressure_deficit',
+    'function_name_unique': 'VAP_PRESS_DEFICIT',
     'function_name': 'Vapor Pressure Deficit',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,

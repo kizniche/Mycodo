@@ -94,7 +94,7 @@ measurements_dict = {
 }
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'statistics_last_multiple',
+    'function_name_unique': 'STAT_LAST_MULTI',
     'function_name': 'Statistics (Last, Multiple)',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,

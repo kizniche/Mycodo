@@ -58,7 +58,7 @@ measurements_dict = {
 }
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'calculate_difference',
+    'function_name_unique': 'DIFFERENCE',
     'function_name': 'Difference',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,

@@ -94,7 +94,7 @@ measurements_dict = {
 }
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'statistics_past_single',
+    'function_name_unique': 'STAT_PAST_SINGLE',
     'function_name': 'Statistics (Past, Single)',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,

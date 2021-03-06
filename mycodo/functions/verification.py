@@ -58,7 +58,7 @@ measurements_dict = {
 }
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'verification',
+    'function_name_unique': 'VERIFICATION',
     'function_name': 'Verification',
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,

@@ -75,7 +75,7 @@ measurements_dict = {
 }
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'humidity_wet_dry_bulb',
+    'function_name_unique': 'HUMIDITY_BULB',
     'function_name': "{} ({})".format(lazy_gettext('Humidity'), lazy_gettext('Wet/Dry-Bulb')),
     'measurements_dict': measurements_dict,
 
