@@ -7,9 +7,7 @@ import base64
 import mock
 import random
 
-from mycodo.config import MATH_INFO
 from mycodo.databases.models import Input
-from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import User
 from mycodo.mycodo_flask.utils.utils_general import generate_form_input_list
@@ -68,7 +66,6 @@ def test_routes_when_not_logged_in(testapp):
         'async/0/0/0/0/0',
         'camera',
         'dl/0/0',
-        'data',
         'daemonactive',
         'dashboard',
         'export',
@@ -76,6 +73,7 @@ def test_routes_when_not_logged_in(testapp):
         'outputstate',
         'graph-async',
         'info',
+        'input',
         'last/0/0/0/0',
         'lcd',
         'live',
