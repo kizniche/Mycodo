@@ -188,6 +188,23 @@ def controller_activate(controller_id):
         action=TRANSLATIONS['activate']['title'],
         controller=TRANSLATIONS['controller']['title'])
 
+    function = CustomController.query.filter(
+        CustomController.unique_id == controller_id).first()
+
+    dict_controllers = parse_function_information()
+
+    if ('enable_channel_unit_select' in dict_controllers[function.device] and
+            dict_controllers[function.device]['enable_channel_unit_select']):
+        device_measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == controller_id).all()
+        for each_measure in device_measurements:
+            if (None in [each_measure.measurement, each_measure.unit] or
+                    "" in [each_measure.measurement, each_measure.unit]):
+                error.append(
+                    "Measurement CH{} ({}) measurement/unit not set. All Measurements need to have "
+                    "the measurement and unit set before the Function can be activated.".format(
+                        each_measure.channel, each_measure.name))
+
     if not error:
         controller_activate_deactivate('activate', 'Function', controller_id)
 
