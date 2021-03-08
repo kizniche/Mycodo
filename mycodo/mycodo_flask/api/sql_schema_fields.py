@@ -3,6 +3,25 @@ from flask_restx import fields
 
 from mycodo.mycodo_flask.api import api
 
+function_fields = api.model('Function Device Fields', {
+    'id': fields.Integer,
+    'unique_id': fields.String,
+    'name': fields.String,
+    'device': fields.String,
+    'is_activated': fields.Boolean,
+    'log_level_debug': fields.Boolean,
+    'custom_options': fields.String
+})
+
+function_channel_fields = api.model('Function Channel Fields', {
+    'id': fields.Integer,
+    'unique_id': fields.String,
+    'function_id': fields.String,
+    'channel': fields.Integer,
+    'name': fields.String,
+    'custom_options': fields.String,
+})
+
 device_measurement_fields = api.model('Device Measurement Settings Fields', {
     'id': fields.Integer,
     'unique_id': fields.String,
@@ -74,6 +93,15 @@ input_fields = api.model('Input Settings Fields', {
     'deadline': fields.Integer,
     'datetime': fields.DateTime,
     'custom_options': fields.String
+})
+
+input_channel_fields = api.model('Function Channel Fields', {
+    'id': fields.Integer,
+    'unique_id': fields.String,
+    'input_id': fields.String,
+    'channel': fields.Integer,
+    'name': fields.String,
+    'custom_options': fields.String,
 })
 
 math_fields = api.model('Math Settings Fields', {

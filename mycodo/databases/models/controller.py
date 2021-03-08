@@ -31,6 +31,11 @@ class CustomController(CRUDMixin, db.Model):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
 
+class FunctionSchema(ModelSchema):
+    class Meta:
+        model = CustomController
+
+
 class FunctionChannel(CRUDMixin, db.Model):
     __tablename__ = "function_channel"
     __table_args__ = {'extend_existing': True}

@@ -27,10 +27,10 @@ logger = logging.getLogger(__name__)
 ns_output = api.namespace('outputs', description='Output operations')
 
 MODEL_STATES_STATE = ns_output.model('states', {
-	'*': fields.Wildcard(fields.String(description='on, off, or a duty cycle'),)
+    '*': fields.Wildcard(fields.String(description='on, off, or a duty cycle'),)
 })
 MODEL_STATES_CHAN = ns_output.model('channels', {
-	'*': fields.Wildcard(fields.Nested(
+    '*': fields.Wildcard(fields.Nested(
         MODEL_STATES_STATE,
         description='Dictionary with channel as key and state data as value.'))
 })
@@ -140,10 +140,10 @@ class Outputs(Resource):
             abort(403)
 
         try:
-            dict_data = get_from_db(OutputSchema, Output, unique_id=unique_id)
+            list_data = get_from_db(OutputSchema, Output, unique_id=unique_id)
 
             output_channel_schema = OutputChannelSchema()
-            list_data = return_list_of_dictionaries(
+            list_channels = return_list_of_dictionaries(
                 output_channel_schema.dump(
                     OutputChannel.query.filter_by(
                         output_id=unique_id).all(), many=True))
@@ -155,8 +155,8 @@ class Outputs(Resource):
             for each_channel in states[unique_id]:
                 new_state_dict[str(each_channel)] = states[unique_id][each_channel]
 
-            return {'output device': dict_data,
-                    'output device channels': list_data,
+            return {'output device': list_data,
+                    'output device channels': list_channels,
                     'output device channel states': new_state_dict}, 200
         except Exception:
             abort(500,

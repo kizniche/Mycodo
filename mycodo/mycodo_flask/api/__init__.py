@@ -40,6 +40,7 @@ api = Api(
 if 'application/json' in api.representations:
     del api.representations['application/json']
 
+
 # Add API v1 + json accept content type
 @api.representation('application/vnd.mycodo.v1+json')
 def api_v1(data, code, headers):
@@ -61,6 +62,7 @@ def init_api(app):
     import mycodo.mycodo_flask.api.choices
     import mycodo.mycodo_flask.api.controller
     import mycodo.mycodo_flask.api.daemon
+    import mycodo.mycodo_flask.api.function
     import mycodo.mycodo_flask.api.input
     import mycodo.mycodo_flask.api.math
     import mycodo.mycodo_flask.api.measurement
