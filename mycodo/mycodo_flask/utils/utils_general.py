@@ -483,7 +483,7 @@ def controller_activate_deactivate(controller_action,
 
     :param controller_action: Activate or deactivate
     :type controller_action: str
-    :param controller_type: The controller type (Conditional, LCD, Math, PID, Input)
+    :param controller_type: The controller type (Conditional, Input, LCD, Math, PID, Trigger, Function)
     :type controller_type: str
     :param controller_id: Controller with ID to activate or deactivate
     :type controller_id: str
@@ -627,7 +627,7 @@ def choices_controller_ids():
 
 
 def choices_custom_functions():
-    """ populate form multi-select choices from Input entries """
+    """ populate form multi-select choices from Function entries """
     choices = []
     dict_controllers = parse_function_information()
     list_controllers_sorted = generate_form_controller_list(dict_controllers)

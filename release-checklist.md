@@ -3,8 +3,8 @@
 Notes to keep track of the steps involved in making a new release.
 
  - [ ] Check that the IP address in /mycodo/scripts/generate_manual_api.sh is accessible and is the latest yet-to-be released version of Mycodo.
- - [ ] Run ```/bin/bash ~/Mycodo/mycodo/scripts/generage_all.sh```
-   - Generates Input/Output/Widget manual pages, API manual, and translatable .po files.
+ - [ ] Run ```/bin/bash ~/Mycodo/mycodo/scripts/generate_all.sh```
+   - Generates Input/Output/Function/Widget manual pages, API manual, and translatable .po files.
  - [ ] Verify the Input information was successfully inserted into the Mycodo Manuals.
  - [ ] Translate any new untranslated words/phrases in .po files.
  - [ ] Update config.py variables: MYCODO_VERSION, ALEMBIC_VERSION (if applicable).

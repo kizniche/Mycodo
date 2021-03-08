@@ -1,4 +1,4 @@
-## 8.9.0 (Unreleased)
+## 8.9.0 (2021-03-08)
 
 This release contains bug fixes and several new types of Inputs and Outputs. These include stepper motors, digital-to-analog converters, a multi-channel PWM output, as well as an input to acquire current and future weather conditions.
 

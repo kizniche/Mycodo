@@ -10,25 +10,17 @@ See [Building a Custom Input Module](https://github.com/kizniche/Mycodo/wiki/Bui
 
 There is a Custom Input import system in Mycodo that allows user-created Inputs to be created an used in the Mycodo system. Custom Inputs can be uploaded and imported from the `[Gear Icon] -> Configure -> Custom Inputs` page. After import, they will be available to use on the `Setup -> Input` page.
 
-If you have a sensor that is not currently supported by Mycodo, you can build your own input module and import it into Mycodo.
+If you develop a working Input module, please consider [creating a new GitHub issue](https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=New%20Module) or pull request, and it may be included in the built-in set.
 
-Open any of the built-in modules located in the inputs directory (<https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/>) for examples of the proper formatting.
+Open any of the built-in modules located in the directory [Mycodo/mycodo/inputs](https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/) for examples of the proper formatting.
 
-There's also minimal input module template that generates random data as an example:
-
-<https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/minimal_humidity_temperature.py>
-
-There ares also input modules that includes all available INPUT_INFORMATION options along with descriptions:
-
-<https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature.py>
-
-<https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples/example_all_options_temperature_with_channel_options.py>
+There are also example Custom Inputs in the directory [Mycodo/mycodo/inputs/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/inputs/examples)
 
 Additionally, I have another github repository devoted to Custom Modules that are not included in the built-in set, at [kizniche/Mycodo-custom](https://github.com/kizniche/Mycodo-custom).
 
 ### Input Actions
 
-Input Actions are functions within the Input module that can be executed from the Web UI. This is useful for things such as calibration or other functionality specific to the input. By default there is at least one action, Acquire Measurements Now, which will cause the input to acquire measurements rather than waiting until the next Period has elapsed.
+Input Actions are functions within the Input module that can be executed from the Web UI. This is useful for things such as calibration or other functionality specific to the input. By default, there is at least one action, Acquire Measurements Now, which will cause the input to acquire measurements rather than waiting until the next Period has elapsed.
 
 !!! note
     Actions can only be executed while the Input is active.

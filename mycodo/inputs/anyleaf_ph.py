@@ -65,6 +65,7 @@ INPUT_INFORMATION = {
         #     'default_value': '',
         #     'options_select': [
         #         'Input',
+        #         'Function',
         #         'Math'
         #     ],
         #     'name': lazy_gettext('Temperature compensation source. Leave at `Select one` to use the onboard sensor.'),
@@ -169,6 +170,7 @@ and press `Calibrate, slot 2`. Optionally, repeat a third time with `Calibrate, 
         #     'default_value': '',
         #     'options_select': [
         #         'Input',
+        #         'Function',
         #         'Math'
         #     ],
         #     'name': lazy_gettext('Temperature Compensation Measurement'),

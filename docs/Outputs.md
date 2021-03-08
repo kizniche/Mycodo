@@ -8,7 +8,15 @@ Outputs are various signals that can be generated that operate devices. An outpu
 
 There is a Custom Output import system in Mycodo that allows user-created Outputs to be created an used in the Mycodo system. Custom Outputs can be uploaded and imported from the `[Gear Icon] -> Configure -> Custom Outputs` page. After import, they will be available to use on the `Setup -> Output` page.
 
-If you desire an Output that is not currently supported by Mycodo, you can build your own Output module and import it into Mycodo. All information about an Output is contained within the Output module. Open any of the built-in modules located in the [outputs directory](https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/) for examples of the proper formatting. There's also a [minimal output module template as an example](https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/examples/example_dummy_output.py). For Outputs that require new measurements/units, they can be added on the `[Gear Icon] -> Configure -> Measurements` page.
+If you develop a working Output module, please consider [creating a new GitHub issue](https://github.com/kizniche/Mycodo/issues/new?assignees=&labels=&template=feature-request.md&title=New%20Module) or pull request, and it may be included in the built-in set.
+
+Open any of the built-in modules located in the directory [Mycodo/mycodo/outputs](https://github.com/kizniche/Mycodo/tree/master/mycodo/outputs/) for examples of the proper formatting.
+
+There are also example Custom Outputs in the directory [Mycodo/mycodo/outputs/examples](https://github.com/kizniche/Mycodo/tree/master/mycodo/functions/examples)
+
+Additionally, I have another github repository devoted to Custom Modules that are not included in the built-in set, at [kizniche/Mycodo-custom](https://github.com/kizniche/Mycodo-custom).
+
+For Outputs that require new measurements/units, they can be added on the `[Gear Icon] -> Configure -> Measurements` page.
 
 ## Output Options
 

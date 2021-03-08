@@ -447,20 +447,23 @@ def page_export():
     form_export_influxdb = forms_misc.ExportInfluxdb()
     form_import_influxdb = forms_misc.ImportInfluxdb()
 
-    output = Output.query.all()
+    function = CustomController.query.all()
     input_dev = Input.query.all()
     math = Math.query.all()
+    output = Output.query.all()
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
-    choices_output = utils_general.choices_outputs(
-        output, dict_units, dict_measurements)
+    choices_function = utils_general.choices_functions(
+        function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
+    choices_output = utils_general.choices_outputs(
+        output, dict_units, dict_measurements)
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_controllers'):
@@ -523,9 +526,10 @@ def page_export():
                            form_export_settings=form_export_settings,
                            form_import_influxdb=form_import_influxdb,
                            form_import_settings=form_import_settings,
-                           choices_output=choices_output,
+                           choices_function=choices_function,
                            choices_input=choices_input,
-                           choices_math=choices_math)
+                           choices_math=choices_math,
+                           choices_output=choices_output)
 
 
 @blueprint.route('/save_dashboard_layout', methods=['POST'])
@@ -714,12 +718,12 @@ def page_dashboard(dashboard_id):
 
     # Retrieve all choices to populate form drop-down menu
     choices_camera = utils_general.choices_id_name(camera)
+    choices_function = utils_general.choices_functions(
+        function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
-    choices_function = utils_general.choices_functions(
-        function, dict_units, dict_measurements)
     choices_method = utils_general.choices_methods(method)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
@@ -811,12 +815,12 @@ def page_graph_async():
     use_unit = utils_general.use_unit_generate(
         device_measurements, input_dev, output, math, function)
 
+    choices_function = utils_general.choices_functions(
+        function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
-    choices_function = utils_general.choices_functions(
-        function, dict_units, dict_measurements)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
@@ -1519,13 +1523,13 @@ def page_function():
     # Sort combined list
     choices_functions_add = sorted(choices_functions_add, key=lambda i: i['item'])
 
+    choices_function = utils_general.choices_functions(
+        function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     choices_input_devices = utils_general.choices_input_devices(input_dev)
     choices_math = utils_general.choices_maths(
         math, dict_units, dict_measurements)
-    choices_function = utils_general.choices_functions(
-        function, dict_units, dict_measurements)
     choices_method = utils_general.choices_methods(method)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
@@ -1557,9 +1561,9 @@ def page_function():
             conditions_dict[each_condition.conditional_id] = True
 
     controllers = []
-    controllers_all = [('Conditional', conditional),
+    controllers_all = [('Input', input_dev),
+                       ('Conditional', conditional),
                        ('Function', function),
-                       ('Input', input_dev),
                        ('LCD', lcd),
                        ('Math', math),
                        ('PID', pid),
@@ -1696,6 +1700,7 @@ def page_function():
 def page_output():
     """ Display output status and config """
     camera = Camera.query.all()
+    function = CustomController.query.all()
     input_dev = Input.query.all()
     lcd = LCD.query.all()
     math = Math.query.all()
@@ -1747,6 +1752,8 @@ def page_output():
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
+    choices_function = utils_general.choices_functions(
+        function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     choices_input_devices = utils_general.choices_input_devices(input_dev)
@@ -1799,6 +1806,7 @@ def page_output():
 
     return render_template('pages/output.html',
                            camera=camera,
+                           choices_function=choices_function,
                            choices_input=choices_input,
                            choices_input_devices=choices_input_devices,
                            choices_math=choices_math,
@@ -1830,6 +1838,7 @@ def page_output():
 def page_input():
     """ Display Data page """
 
+    function = CustomController.query.all()
     input_dev = Input.query.all()
     input_channel = InputChannel.query.all()
     math = Math.query.all()
@@ -1978,6 +1987,8 @@ def page_input():
     dict_measurements = add_custom_measurements(measurement)
 
     # Create list of choices to be used in dropdown menus
+    choices_function = utils_general.choices_functions(
+        function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     choices_math = utils_general.choices_maths(
@@ -2071,6 +2082,7 @@ def page_input():
 
     return render_template('pages/input.html',
                            and_=and_,
+                           choices_function=choices_function,
                            choices_input=choices_input,
                            choices_math=choices_math,
                            choices_output=choices_output,
@@ -2154,6 +2166,7 @@ def page_usage():
 
     energy_usage = EnergyUsage.query.all()
     input_dev = Input.query.all()
+    function = CustomController.query.all()
     math = Math.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
@@ -2163,6 +2176,8 @@ def page_usage():
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
+    choices_function = utils_general.choices_functions(
+        function, dict_units, dict_measurements)
     choices_input = utils_general.choices_inputs(
         input_dev, dict_units, dict_measurements)
     choices_math = utils_general.choices_maths(
@@ -2212,6 +2227,7 @@ def page_usage():
 
     return render_template('pages/usage.html',
                            calculate_usage=calculate_usage,
+                           choices_function=choices_function,
                            choices_input=choices_input,
                            choices_math=choices_math,
                            custom_options_values_output_channels=custom_options_values_output_channels,

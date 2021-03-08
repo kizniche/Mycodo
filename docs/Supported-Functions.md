@@ -40,7 +40,7 @@ This function calculates the humidity based on wet and dry bulb temperature meas
 ### PID Autotune
 
 
-This function will attempt to perform a PID controller autotune. That is, an output will be powered and the response measured from a sensor several times to calculate the P, I, and D gains. Updates about the operation will be sent to the Daemon log. If the autotune successfully completes, a summary will be sent to the Daemon log as well. Currently only raising a Measurement is supported, but lowering should be possible with some modification to the function controller code. It is recommended to creates a graph on a dashboard with the Measurement and Output to monitor that the Output is successfully raising the Measurement beyond the Setpoint. Note: Autotune is an experimental feature, it is not well-developed, and it has a high likelihood of failing to generate PID gains. Do not rely on it for accurately tuning your PID controller.
+This function will attempt to perform a PID controller autotune. That is, an output will be powered and the response measured from a sensor several times to calculate the P, I, and D gains. Updates about the operation will be sent to the Daemon log. If the autotune successfully completes, a summary will be sent to the Daemon log as well. Currently, only raising a Measurement is supported, but lowering should be possible with some modification to the function controller code. It is recommended to create a graph on a dashboard with the Measurement and Output to monitor that the Output is successfully raising the Measurement beyond the Setpoint. Note: Autotune is an experimental feature, it is not well-developed, and it has a high likelihood of failing to generate PID gains. Do not rely on it for accurately tuning your PID controller.
 
 ### Redundancy
 
@@ -51,6 +51,11 @@ This function stores the first available measurement. This is useful if you have
 
 
 This function acquires multiple measurements, calculates statistics, and stores the resulting values as the selected unit.
+
+### Statistics (Past, Single)
+
+
+This function acquires multiple values from a single measurement, calculates statistics, and stores the resulting values as the selected unit.
 
 ### Sum (Last, Multiple)
 
@@ -66,4 +71,9 @@ This function acquires the past measurements (within Max Age) for the selected m
 
 
 This function calculates the vapor pressure deficit based on leaf temperature and humidity.
+
+### Verification
+
+
+This function acquires 2 measurements, calculates the difference, and if the difference is not larger than the set threshold, the Measurement A value is stored. This enables verifying one sensor's measurement with another sensor's measurement. Only when they are both in agreement is a measurement stored. This stored measurement can be used in functions such as Conditional Statements that will notify the user if no measurement is avilable to indicate there may be an issue with a sensor.
 

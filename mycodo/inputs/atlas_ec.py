@@ -74,6 +74,7 @@ INPUT_INFORMATION = {
             'default_value': '',
             'options_select': [
                 'Input',
+                'Function',
                 'Math'
             ],
             'name': "{}: {}".format(lazy_gettext('Temperature Compensation'), lazy_gettext('Measurement')),

@@ -49,7 +49,7 @@ INPUT_INFORMATION = {
         'uart_location',
         'uart_baud_rate',
         'period',
-        'single_input_math',
+        'calibration_measurement',
         'pre_output'
     ],
     'options_disabled': ['interface'],
@@ -73,7 +73,7 @@ INPUT_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': "{}: {}".format(lazy_gettext('Calibrate'), lazy_gettext('Max Age')),
-            'phrase': lazy_gettext('The Max Age (seconds) of the Input/Math to use for calibration')
+            'phrase': lazy_gettext('The Max Age (seconds) of the measurement to use for calibration')
         }
     ]
 }

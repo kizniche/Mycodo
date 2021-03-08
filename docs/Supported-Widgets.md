@@ -10,12 +10,12 @@ Displays a camera image or stream.
 ### Gauge (Angular)
 
 
-Displays an angular gauge.
+Displays an angular gauge. Be sure to set the Maximum option to the last Stop High value for the gauge to display properly.
 
 ### Gauge (Solid)
 
 
-Displays a solid gauge.
+Displays a solid gauge. Be sure to set the Maximum option to the last Stop value for the gauge to display properly.
 
 ### Graph (Synchronous)
 
