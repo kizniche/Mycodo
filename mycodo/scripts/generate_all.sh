@@ -4,8 +4,14 @@
 #
 # Includes:
 #
-# Manual versions (PDF, HTML, TXT)
+# Mycodo Manual
+# API Docs (swager)
 # Translations
+#
+# Requirements (for generate_manual_api.sh):
+# sudo apt install npm
+# sudo npm install -g redoc-cli
+# sudo npm install -g npx
 
 INSTALL_DIRECTORY=$( cd "$( dirname "${BASH_SOURCE[0]}" )/../../" && pwd -P )
 

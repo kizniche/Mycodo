@@ -25,6 +25,8 @@ if curl -k -s --head --request GET https://${API_SERV_IP}/api/swagger.json | gre
     sed -i 's/<title>ReDoc documentation<\/title>/<title>Mycodo API documentation<\/title>/g' "${INSTALL_DIRECTORY}"/docs/mycodo-api.html
 
     cp "${INSTALL_DIRECTORY}"/docs/mycodo-api.html "${INSTALL_DIRECTORY}"/mycodo/mycodo_flask/static/manual/mycodo-api.html
+  else
+    printf "Cannot find redoc-cli. See the requirements at the top of this file.\n"
   fi
 else
   printf "Cannot connect to https://%s/api/swagger.json\n" "$API_SERV_IP"
