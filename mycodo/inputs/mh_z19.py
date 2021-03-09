@@ -159,15 +159,17 @@ class InputModule(AbstractInput):
             time.sleep(.01)
             resp = self.ser.read(9)
 
-            if resp[0] != 0xff or resp[1] != 0x86:
+            if not resp:
+                self.logger.debug("No response")
+            elif len(resp) < 4:
+                self.logger.debug("Too few values in response '{}'".format(resp))
+            elif resp[0] != 0xff or resp[1] != 0x86:
                 self.logger.error("Bad checksum")
             elif len(resp) >= 4:
                 high = resp[2]
                 low = resp[3]
                 co2 = (high * 256) + low
                 self.value_set(0, co2)
-            else:
-                self.logger.error("Bad response")
         except:
             self.logger.exception("get_measurement()")
         finally:
