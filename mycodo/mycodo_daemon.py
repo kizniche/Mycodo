@@ -288,29 +288,34 @@ class DaemonController:
                         dict_functions[custom_function.device]['file_path'], 'functions')
                     controller_manage['function'] = function_loaded.CustomModule
                 else:
-                    return 1, "Custom function not found.".format(type=cont_type)
+                    message = "Custom function not found.".format(type=cont_type)
+                    self.logger.error(message)
+                    return 1, message
 
             else:
-                return 1, "'{type}' not a valid controller type.".format(type=cont_type)
+                message = "'{type}' not a valid controller type.".format(type=cont_type)
+                self.logger.error(message)
+                return 1, message
 
-            # Check if the controller actually exists
-            controller = db_retrieve_table_daemon(controller_manage['type'], unique_id=cont_id)
-            if not controller:
-                return 1, "{type} controller with ID {id} not found.".format(type=cont_type, id=cont_id)
-
-            # set as active in SQL database
             with session_scope(MYCODO_DB_PATH) as new_session:
                 mod_cont = new_session.query(controller_manage['type']).filter(
                     controller_manage['type'].unique_id == cont_id).first()
-                mod_cont.is_activated = True
-                new_session.commit()
+                if not mod_cont:  # Check if the controller actually exists
+                    message = "{type} controller with ID {id} not found.".format(
+                        type=cont_type, id=cont_id)
+                    self.logger.error(message)
+                    return 1, message
+                else:  # set as active in SQL database
+                    mod_cont.is_activated = True
+                    new_session.commit()
 
             self.controller[cont_type][cont_id] = controller_manage['function'](ready, cont_id)
             self.controller[cont_type][cont_id].daemon = True
             self.controller[cont_type][cont_id].start()
             ready.wait()  # wait for thread to return ready
-
-            return 0, "{type} controller with ID {id} activated.".format(type=cont_type, id=cont_id)
+            message = "{type} controller with ID {id} activated.".format(type=cont_type, id=cont_id)
+            self.logger.debug(message)
+            return 0, message
 
         except Exception as except_msg:
             message = "Could not activate {type} controller with ID {id}: {e}".format(
@@ -333,13 +338,49 @@ class DaemonController:
             if cont_id in self.controller[cont_type]:
                 if self.controller[cont_type][cont_id].is_running():
                     try:
+                        if cont_type == 'Conditional':
+                            controller_table = Conditional
+                        elif cont_type == 'LCD':
+                            controller_table = LCD
+                        elif cont_type == 'Input':
+                            controller_table = Input
+                        elif cont_type == 'Math':
+                            controller_table = Math
+                        elif cont_type == 'PID':
+                            controller_table = PID
+                        elif cont_type == 'Trigger':
+                            controller_table = Trigger
+                        elif cont_type == 'Function':
+                            controller_table = CustomController
+                        else:
+                            message = "'{type}' not a valid controller type.".format(type=cont_type)
+                            self.logger.error(message)
+                            return 1, message
+
+                        if controller_table:
+                            # set as active in SQL database
+                            with session_scope(MYCODO_DB_PATH) as new_session:
+                                mod_cont = new_session.query(controller_table).filter(
+                                    controller_table.unique_id == cont_id).first()
+                                if not mod_cont:  # Check if the controller actually exists
+                                    message = "{type} controller with ID {id} not found.".format(
+                                        type=cont_type, id=cont_id)
+                                    self.logger.error(message)
+                                    return 1, message
+                                else:  # set as active in SQL database
+                                    mod_cont.is_activated = False
+                                    new_session.commit()
+
                         if cont_type == 'PID':
                             self.controller[cont_type][cont_id].stop_controller(deactivate_pid=True)
                         else:
                             self.controller[cont_type][cont_id].stop_controller()
                         self.controller[cont_type][cont_id].join()
-                        return 0, "{type} controller with ID {id} deactivated.".format(
+
+                        message = "{type} controller with ID {id} deactivated.".format(
                             type=cont_type, id=cont_id)
+                        self.logger.debug(message)
+                        return 0, message
                     except Exception as except_msg:
                         message = "Could not deactivate {type} controller with " \
                                   "ID {id}: {err}".format(type=cont_type,
@@ -351,12 +392,13 @@ class DaemonController:
                     message = "Could not deactivate {type} controller with ID " \
                               "{id}, it's not active.".format(type=cont_type,
                                                               id=cont_id)
-                    self.logger.debug(message)
+                    self.logger.error(message)
                     return 1, message
             else:
                 message = "{type} controller with ID {id} not found".format(type=cont_type, id=cont_id)
-                self.logger.warning(message)
+                self.logger.error(message)
                 return 1, message
+
         except Exception as except_msg:
             message = "Could not deactivate {type} controller with ID {id}: {e}".format(
                 type=cont_type, id=cont_id, e=except_msg)
