@@ -345,12 +345,11 @@ def input_mod(form_mod, request_form):
                 "AM2315 may become unresponsive if the period is "
                 "below 7."))
 
-        if (mod_input.device != 'EDGE' and
-                (mod_input.pre_output_duration and
-                 form_mod.period.data < mod_input.pre_output_duration)):
+        if (form_mod.period.data and
+                mod_input.pre_output_duration and
+                form_mod.period.data < mod_input.pre_output_duration):
             error.append(gettext(
-                "The Read Period cannot be less than the Pre Output "
-                "Duration"))
+                "The Read Period cannot be less than the Pre Output Duration"))
 
         if (form_mod.uart_location.data and
                 not os.path.exists(form_mod.uart_location.data)):
@@ -553,6 +552,7 @@ def input_mod(form_mod, request_form):
             db.session.commit()
 
     except Exception as except_msg:
+        logger.exception("asdf")
         error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_input'))
