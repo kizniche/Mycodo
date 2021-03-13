@@ -58,6 +58,26 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == '110d2d00e91d':
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from sqlalchemy import and_
+                from mycodo.databases.models import Conversion
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    conv = session.query(Conversion).filter(
+                        and_(Conversion.convert_unit_from == "kPa",
+                             Conversion.convert_unit_to == "jPa")).first()
+                    if conv:
+                        new_session.delete(conv)
+                        new_session.commit()
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == 'cc7261a89a87':
             # This version adds Input Channel Options
             # We need to create Input channels and copy the measurement name to the new
