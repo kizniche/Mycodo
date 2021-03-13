@@ -552,7 +552,6 @@ def input_mod(form_mod, request_form):
             db.session.commit()
 
     except Exception as except_msg:
-        logger.exception("asdf")
         error.append(except_msg)
 
     flash_success_errors(error, action, url_for('routes_page.page_input'))

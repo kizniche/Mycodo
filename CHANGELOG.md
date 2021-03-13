@@ -5,6 +5,7 @@
  - Fix API deactivating controller in database ([#944](https://github.com/kizniche/mycodo/issues/944))
  - Fix invalid conversion ([#947](https://github.com/kizniche/mycodo/issues/947))
  - Fix inability to save MQTT Input ([#946](https://github.com/kizniche/mycodo/issues/946))
+ - Fix Camera Widget ([#948](https://github.com/kizniche/mycodo/issues/948))
 
 
 ## 8.9.0 (2021-03-08)

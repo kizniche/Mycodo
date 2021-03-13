@@ -120,7 +120,7 @@ WIDGET_INFORMATION = {
     if (image_type === 'tmp_img') {
       url = '/camera_acquire_image/tmp/' + camera_unique_id + '/' + max_age;
       image_type_str = 'still'
-    } else if (image_type === 'new_image') {
+    } else if (image_type === 'new_img') {
       url = '/camera_acquire_image/new/' + camera_unique_id + '/' + max_age;
       image_type_str = 'still'
     } else if (image_type === 'timelapse') {
