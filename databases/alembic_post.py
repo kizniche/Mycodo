@@ -70,8 +70,8 @@ if __name__ == "__main__":
                         and_(Conversion.convert_unit_from == "kPa",
                              Conversion.convert_unit_to == "jPa")).first()
                     if conv:
-                        new_session.delete(conv)
-                        new_session.commit()
+                        session.delete(conv)
+                        session.commit()
             except Exception:
                 msg = "ERROR: post-alembic revision {}: {}".format(
                     each_revision, traceback.format_exc())
