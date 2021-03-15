@@ -4,6 +4,7 @@
 
  - Fix Function measurements not appearing in some dropdowns
  - Fix displaying saved Custom Option values when Inputs/Outputs have Custom Actions ([#952](https://github.com/kizniche/mycodo/issues/952))
+ - Fix silent failures when cookies are too large ([#950](https://github.com/kizniche/mycodo/issues/950))
 
 
 ## 8.9.1 (2021-03-13)

@@ -924,6 +924,7 @@ class ProdConfig(object):
     }
 
     REMEMBER_COOKIE_DURATION = timedelta(days=90)
+    SESSION_TYPE = "filesystem"
 
     # Ensure file containing the Flask secret_key exists
     FLASK_SECRET_KEY_PATH = os.path.join(DATABASE_PATH, 'flask_secret_key')

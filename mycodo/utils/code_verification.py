@@ -32,36 +32,45 @@ def test_python_code(python_code_run, filename):
     success = []
     error = []
 
-    python_code_run, file_run = create_python_file(python_code_run, filename)
+    try:
+        python_code_run, file_run = create_python_file(python_code_run, filename)
 
-    lines_code = ''
-    for line_num, each_line in enumerate(python_code_run.splitlines(), 1):
-        if len(str(line_num)) == 3:
-            line_spacing = ''
-        elif len(str(line_num)) == 2:
-            line_spacing = ' '
-        else:
-            line_spacing = '  '
-        lines_code += '{sp}{ln}: {line}\n'.format(
-            sp=line_spacing,
-            ln=line_num,
-            line=each_line)
+        lines_code = ''
+        for line_num, each_line in enumerate(python_code_run.splitlines(), 1):
+            if len(str(line_num)) == 3:
+                line_spacing = ''
+            elif len(str(line_num)) == 2:
+                line_spacing = ' '
+            else:
+                line_spacing = '  '
+            lines_code += '{sp}{ln}: {line}\n'.format(
+                sp=line_spacing,
+                ln=line_num,
+                line=each_line)
 
-    cmd_test = 'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
-               'pylint3 -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413,R0201,R0903,W0201,W0612 {path}'.format(
-        path=file_run)
-    cmd_out, _, cmd_status = cmd_output(cmd_test)
+        cmd_test = 'mkdir -p /var/mycodo-root/.pylint.d && ' \
+                   'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
+                   'export PYLINTHOME=/var/mycodo-root/.pylint.d && ' \
+                   'pylint3 -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413,R0201,R0903,W0201,W0612 {path}'.format(
+                       path=file_run)
+        cmd_out, _, cmd_status = cmd_output(cmd_test)
 
-    message = Markup(
-        '<pre>\n\n'
-        'Full Python Code Input code:\n\n{code}\n\n'
-        'Python Code Input code analysis:\n\n{report}'
-        '</pre>'.format(
-            code=lines_code.replace("<", "&lt"), report=cmd_out.decode("utf-8")))
-    if cmd_status:
+        message = Markup(
+            '<pre>\n\n'
+            'Full Python Code Input code:\n\n{code}\n\n'
+            'Python Code Input code analysis:\n\n{report}'
+            '</pre>'.format(
+                code=lines_code.replace("<", "&lt"), report=cmd_out.decode("utf-8")))
+    except Exception as err:
+        cmd_status = None
+        message = "Error running pylint: {}".format(err)
+        error.append(message)
+
+    if cmd_status and cmd_status != 30:
         error.append(
             'Error(s) were found while evaluating your code. Review '
             'the error(s), below, and fix them.')
+        error.append("pylint returned with status: {}".format(cmd_status, 'error'))
         error.append(message)
     else:
         success.append(
