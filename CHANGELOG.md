@@ -1,5 +1,7 @@
 ## 8.9.2 (Unreleased)
 
+This bugfix release changes how sessions are handled and as a result will log all users out following the upgrade.
+
 ### Bugfixes
 
  - Fix Function measurements not appearing in some dropdowns
