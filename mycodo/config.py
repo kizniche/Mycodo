@@ -942,5 +942,6 @@ class TestConfig(object):
     PRESERVE_CONTEXT_ON_EXCEPTION = False
     RATELIMIT_ENABLED = False
     SECRET_KEY = '1234'
+    SESSION_TYPE = "filesystem"
     TESTING = True
     DEBUG = True

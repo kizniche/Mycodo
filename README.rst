@@ -502,8 +502,8 @@ Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更�
 该系统包括后端（守护进程）和前端（用户界面）。后端从传感器和设备进行测量，然后协调对这些测量的各种响应，包括调制输出（继电器，PWM，无线插座）的能力，通过PID控制的电气设备调节环境条件（稳定调节或转换时间），安排计时器，捕获照片和流视频，在测量满足特定条件时触发操作（调制继电器，执行命令，通过电子邮件通知等）等等。前端是一个Web界面，可以从任何支持浏览器的设备轻松导航和配置。
 
 
-.. |Build Status| image:: https://travis-ci.org/kizniche/Mycodo.svg?branch=master
-   :target: https://travis-ci.org/kizniche/Mycodo
+.. |Build Status| image:: https://travis-ci.com/kizniche/Mycodo.svg?branch=master
+   :target: https://travis-ci.com/kizniche/Mycodo
 .. |Codacy Badge| image:: https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80
    :target: https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&utm_medium=referral&utm_content=kizniche/Mycodo&utm_campaign=Badge_Grade
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.824199.svg
