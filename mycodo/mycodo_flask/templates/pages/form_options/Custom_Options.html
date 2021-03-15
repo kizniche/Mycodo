@@ -4,7 +4,7 @@
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
     <input class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" title="{{each_option['phrase']}}" type="text" value="
-    {%- if running_custom_action and 'default_value' in each_option -%}
+    {%- if force_default_value and 'default_value' in each_option -%}
       {{each_option['default_value']}}
     {%- elif custom_options_values[unique_id][each_option['id']] is not none -%}
       {{custom_options_values[unique_id][each_option['id']]}}
@@ -18,7 +18,7 @@
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
     <textarea class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" rows="{{each_option['lines']}}" type="text" title="{{each_option['phrase']}}">
-    {%- if running_custom_action and 'default_value' in each_option -%}
+    {%- if force_default_value and 'default_value' in each_option -%}
       {{each_option['default_value']}}
     {%- elif custom_options_values[unique_id][each_option['id']] -%}
       {{custom_options_values[unique_id][each_option['id']]}}
@@ -36,10 +36,10 @@
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_set in each_option['options_select'] %}
       <option value="{{each_set[0]}}"
-        {%- if (running_custom_action and
+        {%- if (force_default_value and
                 'default_value' in each_option and
                 each_set[0] == each_option['default_value']) or
-                 each_set[0] == custom_options_values[unique_id][each_option['id']] %}
+               each_set[0] == custom_options_values[unique_id][each_option['id']] %}
           {{' selected'}}
         {%- endif -%}
       >{{each_set[1]}}</option>
@@ -235,7 +235,7 @@
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_measure_name_safe, each_measure in dict_measurements.items() %}
       <option value="{{each_measure_name_safe}}"
-        {%- if (running_custom_action and
+        {%- if (force_default_value and
                 'default_value' in each_option and
                 each_measure_name_safe == each_option['default_value']) or
                  each_measure_name_safe == custom_options_values[unique_id][each_option['id']] %}
@@ -256,7 +256,7 @@
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {% for each_unit_name_safe, each_unit in dict_units.items() %}
       <option value="{{each_unit_name_safe}}"
-        {%- if (running_custom_action and
+        {%- if (force_default_value and
                 'default_value' in each_option and
                 each_unit_name_safe == each_option['default_value']) or
                  each_unit_name_safe == custom_options_values[unique_id][each_option['id']] %}

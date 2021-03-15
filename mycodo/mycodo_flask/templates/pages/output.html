@@ -334,16 +334,16 @@
           </div>
 
         {% if each_output.output_type in custom_actions and custom_actions[each_output.output_type] %}
+          {% set force_default_value = true %}
           <div class="row small-gutters align-items-end" style="padding: 0.5em">
             <div class="col-12">
               <h5>{{_('Actions')}}</h5>
             </div>
             {% include 'pages/form_options/Custom_Actions_Message.html' %}
-              {% set running_custom_action = true %}
-              {% if 'custom_actions' in dict_options %}
-                {% for each_option in dict_options['custom_actions'] %}
-                  {% include 'pages/form_options/Custom_Options.html' %}
-                {% endfor %}
+            {% if 'custom_actions' in dict_options %}
+              {% for each_option in dict_options['custom_actions'] %}
+                {% include 'pages/form_options/Custom_Options.html' %}
+              {% endfor %}
             {% endif %}
           </div>
         {% endif %}
@@ -379,7 +379,9 @@
 
           </div>
 
-        {% if 'custom_options' in dict_options or 'custom_options_message' in dict_options %}
+        {% if ('custom_options' in dict_options and custom_options_values[unique_id]) or
+              'custom_options_message' in dict_options %}
+          {% set force_default_value = false %}
           <div class="row small-gutters" style="padding: 0.5em">
             <div class="col-12">
               <h5>{{_('Custom Options')}}</h5>

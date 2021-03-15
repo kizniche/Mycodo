@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix Function measurements not appearing in some dropdowns
+ - Fix displaying saved Custom Option values when Inputs/Outputs have Custom Actions ([#952](https://github.com/kizniche/mycodo/issues/952))
 
 
 ## 8.9.1 (2021-03-13)

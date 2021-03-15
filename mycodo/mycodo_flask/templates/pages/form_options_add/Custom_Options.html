@@ -179,6 +179,11 @@
       <option value="{{each_dev.unique_id}}">[Math {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
+      {% if 'Function' in each_option['options_select'] %}
+        {%- for each_dev in custom_functions -%}
+      <option value="{{each_dev.unique_id}}">[Function {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+        {%- endfor -%}
+      {% endif %}
       {% if 'PID' in each_option['options_select'] %}
         {%- for each_dev in pid -%}
       <option value="{{each_dev.unique_id}}">[PID {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
@@ -192,11 +197,6 @@
       {% if 'Camera' in each_option['options_select'] %}
         {%- for each_dev in camera -%}
       <option value="{{each_dev.unique_id}}">[Camera {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
-        {%- endfor -%}
-      {% endif %}
-      {% if 'Custom' in each_option['options_select'] %}
-        {%- for each_dev in custom_functions -%}
-      <option value="{{each_dev.unique_id}}">[Custom {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
     </select>

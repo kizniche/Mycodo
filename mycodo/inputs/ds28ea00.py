@@ -33,7 +33,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
+        ('pip-pypi', 'w1thermsensor', 'w1thermsensor==2.0.0')
     ],
 
     'interfaces': ['1WIRE'],

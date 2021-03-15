@@ -103,6 +103,8 @@
               {% else %}
             <a href="https://pypi.org/project/{{each_lib[2]}}" target="_blank">{{each_lib[2]}}</a>
               {%  endif %}
+          {% elif each_lib[0] == 'internal' %}
+            {{each_lib[2]}}
           {% else %}
             {{each_lib[1]}}
           {% endif %}
@@ -154,7 +156,7 @@
         {{form_mod_input.input_acquire_measurements(class_='form-control btn btn-primary btn-sm btn-block')}}
       </div>
       {% if each_input.device in custom_actions and custom_actions[each_input.device] %}
-        {% set running_custom_action = true %}
+        {% set force_default_value = true %}
         {% if 'custom_actions' in dict_options %}
           {% for each_option in dict_options['custom_actions'] %}
             {% if each_option['type'] == 'new_line' %}
@@ -228,7 +230,9 @@
 
     </div>
 
-      {% if custom_options_values[unique_id] %}
+      {% if ('custom_options' in dict_options and custom_options_values[unique_id]) or
+            'custom_options_message' in dict_options %}
+        {% set force_default_value = false %}
     <div class="row small-gutters" style="padding: 0.5em">
       <div class="col-12">
         <h5>{{_('Custom Options')}}</h5>

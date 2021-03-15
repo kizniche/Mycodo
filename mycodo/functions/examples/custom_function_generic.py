@@ -154,9 +154,9 @@ FUNCTION_INFORMATION = {
                 'Input',
                 'Output',
                 'Math',
+                'Function',
                 'PID',
-                'Trigger',
-                'Function'
+                'Trigger'
             ],
             'name': 'Select Device 2',
             'phrase': 'Select Device 2 Description'

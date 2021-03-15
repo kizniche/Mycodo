@@ -41,14 +41,15 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['GPIO'],
+
     'custom_options': [
         {
             'id': 'k_value',
             'type': 'float',
-            'default_value': '1.0',
+            'default_value': 1.0,
             'name': lazy_gettext('Pulses per Liter'),
             'phrase': lazy_gettext("Enter the conversion factor for this meter (pulses to Liter).")
-        },
+        }
     ],
 
     'weighting': 0.0,
