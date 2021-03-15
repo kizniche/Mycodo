@@ -343,6 +343,9 @@
           {% for each_math_form in choices_math -%}
             <option value="{{each_math_form['value']}}"{% if each_pid.setpoint_tracking_id == each_math_form['value'] %} selected{% endif %}>{{each_math_form['item']}}</option>
           {% endfor -%}
+          {% for each_function_form in choices_function -%}
+            <option value="{{each_function_form['value']}}"{% if each_pid.setpoint_tracking_id == each_function_form['value'] %} selected{% endif %}>{{each_function_form['item']}}</option>
+          {% endfor -%}
         </select>
       </div>
       <div class="col-auto" id="input_math_max_age_{{each_pid.unique_id}}">

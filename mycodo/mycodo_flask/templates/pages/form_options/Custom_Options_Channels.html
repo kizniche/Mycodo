@@ -114,6 +114,11 @@
       <option value="{{each_math_form['value']}}"{% if each_math_form['value'] in custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_math_form['item']}}</option>
         {% endfor -%}
       {% endif %}
+      {% if 'Function' in each_option['options_select'] %}
+        {% for each_function_form in choices_function -%}
+      <option value="{{each_function_form['value']}}"{% if each_function_form['value'] == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_function_form['item']}}</option>
+        {% endfor -%}
+      {% endif %}
       {% if 'Output' in each_option['options_select'] %}
         {% for each_output_form in choices_output -%}
       <option value="{{each_output_form['value']}}"{% if each_output_form['value'] in custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>{{each_output_form['item']}}</option>

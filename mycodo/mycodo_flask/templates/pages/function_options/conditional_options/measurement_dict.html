@@ -9,6 +9,9 @@
       {% for each_math_form in choices_math -%}
         <option value="{{each_math_form['value']}}"{% if each_condition.measurement == each_math_form['value'] %} selected{% endif %}>{{each_math_form['item']}}</option>
       {% endfor -%}
+      {% for each_function_form in choices_function -%}
+        <option value="{{each_function_form['value']}}"{% if each_condition.measurement == each_function_form['value'] %} selected{% endif %}>{{each_function_form['item']}}</option>
+      {% endfor -%}
       {% for each_pid_form in choices_pid -%}
         <option value="{{each_pid_form['value']}}"{% if each_condition.measurement == each_pid_form['value'] %} selected{% endif %}>{{each_pid_form['item']}}</option>
       {% endfor -%}

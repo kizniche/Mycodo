@@ -1,3 +1,10 @@
+## 8.9.2 (Unreleased)
+
+### Bugfixes
+
+ - Fix Function measurements not appearing in some dropdowns
+
+
 ## 8.9.1 (2021-03-13)
 
 ### Bugfixes

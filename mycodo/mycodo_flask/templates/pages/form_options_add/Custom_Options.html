@@ -134,8 +134,8 @@
         {% endfor -%}
       {% endif %}
       {% if 'Function' in each_option['options_select'] %}
-        {% for each_controller_form in choices_function -%}
-      <option value="{{each_controller_form['value']}}">{{each_controller_form['item']}}</option>
+        {% for each_function_form in choices_function -%}
+      <option value="{{each_function_form['value']}}">{{each_function_form['item']}}</option>
         {% endfor -%}
       {% endif %}
       {% if 'Output' in each_option['options_select'] %}
