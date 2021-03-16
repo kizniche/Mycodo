@@ -222,10 +222,10 @@ class AbstractBaseController(object):
                                 device_id = each_value.split(',')[0]
                                 measurement_id = each_value.split(',')[1]
                             if (each_option_default['type'] == 'select_measurement_channel' and
-                                    len(each_option.split(',')) > 3):
-                                device_id = each_option.split(',')[0]
-                                measurement_id = each_option.split(',')[1]
-                                channel_id = each_option.split(',')[2]
+                                    len(each_value.split(',')) > 2):
+                                device_id = each_value.split(',')[0]
+                                measurement_id = each_value.split(',')[1]
+                                channel_id = each_value.split(',')[2]
                             else:
                                 option_value = each_value
 
