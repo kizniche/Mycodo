@@ -481,7 +481,7 @@ def input_mod(form_mod, request_form):
                             new_channel = InputChannel()
                             new_channel.name = ""
                             new_channel.input_id = mod_input.unique_id
-                            new_measurement.channel = index
+                            new_channel.channel = index
 
                             error, custom_options = custom_channel_options_return_json(
                                 error, dict_inputs, request_form,
