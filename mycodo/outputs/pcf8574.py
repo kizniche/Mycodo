@@ -325,8 +325,10 @@ class PCF8574(object):
 
     def port(self, value):
         """ Set the whole port using a list """
-        assert isinstance(value, list)
-        assert len(value) == 8
+        if not isinstance(value, list):
+            raise AssertionError
+        if len(value) != 8:
+            raise AssertionError
         new_state = 0
         for i, val in enumerate(value):
             if val:

@@ -192,10 +192,7 @@ def __H_DBT_W(DBT, W):
         return 1.006*DBT+W*(2501+1.86*DBT)
 
 def __is_positive(x):
-    if x>0:
-        return True
-    else:
-        return False
+    return x>0
 
 # ASHRAE 2009 Chapter 1 Equation 22
 def __Pw_W_P(W, P):
@@ -384,7 +381,4 @@ def __WBT_DBT_W_P(DBT, W, P):
         return WBT
 
 def __valid_DBT(DBT):
-    if Min_DBT<=DBT<=Max_DBT:
-        return True
-    else:
-        return False
+    return Min_DBT<=DBT<=Max_DBT

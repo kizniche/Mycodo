@@ -651,7 +651,7 @@ def input_activate(form_mod):
             not input_dev.pre_output_duration):
         error.append("Pre Output Duration must be > 0 if Pre Output is enabled")
 
-    if not device_measurements.filter(DeviceMeasurements.is_enabled == True).count():
+    if not device_measurements.filter(DeviceMeasurements.is_enabled.is_(True)).count():
         error.append("At least one measurement must be enabled")
 
     #
@@ -705,7 +705,7 @@ def input_deactivate_associated_controllers(input_id):
     # Deactivate any activated PIDs using this input
     sensor_unique_id = Input.query.filter(
         Input.unique_id == input_id).first().unique_id
-    pid = PID.query.filter(PID.is_activated == True).all()
+    pid = PID.query.filter(PID.is_activated.is_(True)).all()
     for each_pid in pid:
         if sensor_unique_id in each_pid.measurement:
             controller_activate_deactivate('deactivate',

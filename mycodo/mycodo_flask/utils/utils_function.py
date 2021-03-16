@@ -551,10 +551,7 @@ def action_execute_all(form):
 
     try:
         if not error:
-            if hasattr(form, 'log_level_debug') and form.log_level_debug.data:
-                debug = True
-            else:
-                debug = False
+            debug = bool(hasattr(form, 'log_level_debug') and form.log_level_debug.data)
             control = DaemonControl()
             trigger_all_actions = threading.Thread(
                 target=control.trigger_all_actions,

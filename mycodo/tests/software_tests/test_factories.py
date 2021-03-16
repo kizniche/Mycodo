@@ -7,8 +7,8 @@ from mycodo.tests.software_tests.factories import RoleFactory
 
 # (Factory, kwargs)
 known_factories = [
-    (UserFactory, dict()),
-    (RoleFactory, dict()),
+    (UserFactory, {}),
+    (RoleFactory, {}),
 ]
 
 

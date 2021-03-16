@@ -522,7 +522,7 @@ class AbstractOutput(AbstractBaseController):
         trigger_output = trigger_output.filter(Trigger.trigger_type == 'trigger_output')
         trigger_output = trigger_output.filter(Trigger.unique_id_1 == output_id)
         trigger_output = trigger_output.filter(Trigger.unique_id_2 == output_channel_dev.unique_id)
-        trigger_output = trigger_output.filter(Trigger.is_activated == True)
+        trigger_output = trigger_output.filter(Trigger.is_activated.is_(True))
 
         # Find any Output Triggers with the output_id of the output that
         # just changed its state
@@ -603,7 +603,7 @@ class AbstractOutput(AbstractBaseController):
         trigger_output_pwm = trigger_output_pwm.filter(Trigger.trigger_type == 'trigger_output_pwm')
         trigger_output_pwm = trigger_output_pwm.filter(Trigger.unique_id_1 == output_id)
         trigger_output_pwm = trigger_output_pwm.filter(Trigger.unique_id_2 == output_channel_dev.unique_id)
-        trigger_output_pwm = trigger_output_pwm.filter(Trigger.is_activated == True)
+        trigger_output_pwm = trigger_output_pwm.filter(Trigger.is_activated.is_(True))
 
         # Execute the Trigger Actions for each Output Trigger
         # for this particular Output device

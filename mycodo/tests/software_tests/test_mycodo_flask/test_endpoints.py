@@ -151,7 +151,6 @@ def test_api_with_admin_apikey_in_header(_, testapp):
     for index, route in enumerate(api_endpoints):
         print("test_api_with_admin_apikey_in_header: Test Route ({}/{}): testapp.get('/api/{}')".format(
             index + 1, len(api_endpoints), route[0]))
-        import base64
         response = testapp.get(
             '/api/{add}'.format(add=route[0]),
             headers={
@@ -267,7 +266,6 @@ def test_api_with_guest_apikey_in_header_403_forbidden(_, testapp):
     for index, route in enumerate(api_endpoints):
         print("test_api_with_guest_apikey_in_header_403_forbidden: Test Route ({}/{}): testapp.get('/api/{}')".format(
             index + 1, len(api_endpoints), route[0]))
-        import base64
         response = testapp.get(
             '/api/{add}'.format(add=route[0]),
             headers={
