@@ -9,7 +9,7 @@ before_install:
   - git clone --recursive https://github.com/WiringPi/WiringPi-Python.git && cd WiringPi-Python && git submodule update --init && cd WiringPi && ./build && cd ../..
   - wget https://github.com/joan2937/pigpio/archive/v75.zip && unzip v75.zip && cd ./pigpio-75 && make -j4 && sudo make install && cd ..
   - pip install --upgrade pip webtest
-  - wget https://dl.influxdata.com/influxdb/releases/influxdb_1.7.8_amd64.deb && sudo dpkg -i influxdb_1.7.8_amd64.deb
+  - wget https://dl.influxdata.com/influxdb/releases/influxdb_1.8.0_amd64.deb && sudo dpkg -i influxdb_1.8.0_amd64.deb
   - sudo service influxdb start && sleep 2
   - influx -execute "CREATE DATABASE mycodo_db"
   - influx -database mycodo_db -execute "CREATE USER mycodo WITH PASSWORD 'mmdu77sj3nIoiajjs'"
