@@ -330,7 +330,7 @@ def add_custom_measurements(measurements):
     """
     Returns the measurement dictionary appended with custom measurements/units
     """
-    return_measurements = MEASUREMENTS
+    return_measurements = copy.deepcopy(MEASUREMENTS)
 
     for each_measure in measurements:
         if each_measure.name_safe not in return_measurements:

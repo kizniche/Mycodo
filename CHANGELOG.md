@@ -8,6 +8,7 @@ This bugfix release changes how sessions are handled and as a result will log al
  - Fix displaying saved Custom Option values when Inputs/Outputs have Custom Actions ([#952](https://github.com/kizniche/mycodo/issues/952))
  - Fix silent failures when cookies are too large ([#950](https://github.com/kizniche/mycodo/issues/950))
  - Fix use of select_measurement_channel custom option in controllers ([#953](https://github.com/kizniche/mycodo/issues/953))
+ - Fix error-handling of erroneous measurements/units ([#949](https://github.com/kizniche/mycodo/issues/949))
 
 
 ## 8.9.1 (2021-03-13)

@@ -15,21 +15,50 @@
 {{form_mod_measurement.measurement_id(value=each_measurement.unique_id)}}
 {{form_mod_measurement.device_type(value='measurement_select')}}
 
+{% if each_measurement.measurement and each_measurement.measurement not in dict_measurements %}
+  <div class="row small-gutters" style="padding: 0.5em">
+    <div class="col-auto" style="color: red">
+      Warning: Saved measurement with ID "{{each_measurement.measurement}}" not found in database. Add the missing unit on the Configure -> Measurement page or change the set measurement.
+    </div>
+  </div>
+{% endif %}
+{% if each_measurement.unit and each_measurement.unit not in dict_units %}
+  <div class="row small-gutters" style="padding: 0.5em">
+    <div class="col-auto" style="color: red">
+      Warning: Saved unit with ID "{{each_measurement.unit}}" not found in database. Add the missing unit on the Configure -> Measurement page or change the set unit.
+    </div>
+  </div>
+{% endif %}
+
 <div class="row small-gutters align-items-end" style="border-bottom: 1px solid #ddd; padding: 0.5em">
   <div class="col-auto small-gutters">
     {{form_mod_measurement.measurement_mod(class_='form-control btn btn-primary btn-sm btn-block')}}
   </div>
 
-    {% if each_measurement.unit %}
+    {% if each_measurement.unit and each_measurement.measurement %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_measurement.unique_id}}')" title="UUID: {{each_measurement.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel}} {% endif %}{{dict_measurements[each_measurement.measurement]['name']}} ({{dict_units[each_measurement.unit]['unit']}})">
+    <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_measurement.unique_id}}')" title="UUID: {{each_measurement.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="
+    {%- if each_measurement.channel != None -%}
+      CH{{each_measurement.channel}}
+    {%- endif -%}
+    {%- if each_measurement.measurement in dict_measurements -%}
+      {{' ' + dict_measurements[each_measurement.measurement]['name']}}
+    {%- endif -%}
+    {%- if each_measurement.unit in dict_units -%}
+      {{' (' + dict_units[each_measurement.unit]['unit'] + ') '}}
+    {%- endif -%}
+    ">
   </div>
 
     {% else %}
 
   <div class="col-auto">
-    <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_measurement.unique_id}}')" title="UUID: {{each_measurement.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{% if each_measurement.channel != None %}CH{{each_measurement.channel}} {% endif %}">
+    <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_measurement.unique_id}}')" title="UUID: {{each_measurement.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="
+    {%- if each_measurement.channel != None -%}
+      CH{{each_measurement.channel}}
+    {%- endif -%}
+    ">
   </div>
 
     {% endif %}
