@@ -1,4 +1,4 @@
-## 8.9.2 (Unreleased)
+## 8.9.2 (2021-03-16)
 
 This bugfix release changes how sessions are handled and as a result will log all users out following the upgrade.
 
