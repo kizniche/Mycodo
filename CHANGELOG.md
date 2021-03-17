@@ -1,3 +1,10 @@
+## 8.9.3 (Unreleased)
+
+### Bugfixes
+
+ - Fix camera paths not saving ([#955](https://github.com/kizniche/mycodo/issues/955))
+
+
 ## 8.9.2 (2021-03-16)
 
 This bugfix release changes how sessions are handled and as a result will log all users out following the upgrade.

@@ -36,7 +36,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     camera_path = assure_path_exists(
         os.path.join(PATH_CAMERAS, '{uid}'.format(uid=settings.unique_id)))
     if record_type == 'photo':
-        if settings.path_still != '':
+        if settings.path_still:
             save_path = settings.path_still
         else:
             save_path = assure_path_exists(os.path.join(camera_path, 'still'))
@@ -45,7 +45,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             cam=settings.name,
             ts=timestamp).replace(" ", "_")
     elif record_type == 'timelapse':
-        if settings.path_timelapse != '':
+        if settings.path_timelapse:
             save_path = settings.path_timelapse
         else:
             save_path = assure_path_exists(os.path.join(camera_path, 'timelapse'))
@@ -57,7 +57,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             st=start,
             cn=settings.timelapse_capture_number).replace(" ", "_")
     elif record_type == 'video':
-        if settings.path_video != '':
+        if settings.path_video:
             save_path = settings.path_video
         else:
             save_path = assure_path_exists(os.path.join(camera_path, 'video'))

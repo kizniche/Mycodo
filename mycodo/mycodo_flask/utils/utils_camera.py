@@ -106,6 +106,9 @@ def camera_mod(form_camera):
         mod_camera.brightness = form_camera.brightness.data
         mod_camera.hide_still = form_camera.hide_still.data
         mod_camera.hide_timelapse = form_camera.hide_timelapse.data
+        mod_camera.path_still = form_camera.path_still.data
+        mod_camera.path_timelapse = form_camera.path_timelapse.data
+        mod_camera.path_video = form_camera.path_video.data
 
         if mod_camera.library == 'fswebcam':
             mod_camera.device = form_camera.device.data
