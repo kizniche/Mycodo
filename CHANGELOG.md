@@ -7,8 +7,7 @@
 
 ### Features
 
-  - Add CircuitPython variant of the SHT31-D Input
-  - Add CircuitPython variant of the BME280 Input
+  - Add CircuitPython variants of the BME280 and SHT31-D Inputs
 
 ### Miscellaneous
 
