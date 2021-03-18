@@ -125,6 +125,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Electrical Potential'),
         'meas': 'electrical_potential',
         'units': ['V', 'mV']},
+    'energy': {
+        'name': lazy_gettext('Energy'),
+        'meas': 'energy',
+        'units': ['kWh']},
     'frequency': {
         'name': lazy_gettext('Frequency'),
         'meas': 'frequency',
@@ -189,6 +193,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('PID D-Value'),
         'meas': 'pid_value',
         'units': ['pid_value']},
+    'power': {
+        'name': lazy_gettext('Power'),
+        'meas': 'power',
+        'units': ['W']},
     'pressure': {
         'name': lazy_gettext('Pressure'),
         'meas': 'pressure',
@@ -365,6 +373,9 @@ UNITS = {
     'kPa': {
         'name': lazy_gettext('Kilopascal'),
         'unit': 'kPa'},
+    'kWh': {
+        'name': lazy_gettext('Kilowatt-hour'),
+        'unit': 'kWh'},
     'l': {
         'name': lazy_gettext('Liter'),
         'unit': 'l'},
@@ -466,7 +477,10 @@ UNITS = {
         'unit': 'μT'},
     'V': {
         'name': lazy_gettext('Volt'),
-        'unit': 'V'}
+        'unit': 'V'},
+    'W': {
+        'name': lazy_gettext('Watt'),
+        'unit': 'W'}
 }
 
 # Initial conversions

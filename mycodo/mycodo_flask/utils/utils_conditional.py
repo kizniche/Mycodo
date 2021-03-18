@@ -60,16 +60,11 @@ def conditional_mod(form):
         cond_mod.start_offset = form.start_offset.data
 
         if cmd_status:
-            flash('Error(s) were found while evaluating your code. Review '
-                  'the error(s), below, and fix them before activating your '
-                  'Conditional.', 'error')
-            flash(message, 'error')
-        else:
-            flash(
-                "No errors were found while evaluating your code. However, "
-                "this doesn't mean your code will perform as expected. "
-                "Review your code for issues and test your Conditional "
-                "before putting it into a production environment.", 'success')
+            error.append("pylint returned with status: {}".format(cmd_status))
+
+        if message:
+            flash("Review your code for issues and test before putting it "
+                  "into a production environment.", 'success')
             flash(message, 'success')
 
         if not error:

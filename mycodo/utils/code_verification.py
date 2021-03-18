@@ -66,16 +66,11 @@ def test_python_code(python_code_run, filename):
         message = "Error running pylint: {}".format(err)
         error.append(message)
 
-    if cmd_status and cmd_status != 30:
-        error.append(
-            'Error(s) were found while evaluating your code. Review '
-            'the error(s), below, and fix them.')
-        error.append("pylint returned with status: {}".format(cmd_status, 'error'))
-        error.append(message)
-    else:
+    if cmd_status:
+        error.append("pylint returned with status: {}".format(cmd_status))
+
+    if message:
         success.append(
-            "No errors were found while evaluating your code. However, "
-            "this doesn't mean your code will perform as expected. "
             "Review your code for issues and test before putting it "
             "into a production environment.")
         success.append(message)

@@ -122,15 +122,11 @@ def execute_at_modification(
         message = "Error running pylint: {}".format(err)
         error.append(message)
 
-    if cmd_status and cmd_status not in [16, 30]:
-        flash('Error(s) were found while evaluating your code. Review '
-              'the error(s), below, and fix them before activating your '
-              'Input.', 'error')
+    if cmd_status:
         flash("pylint returned with status: {}".format(cmd_status), 'error')
-    else:
-        flash("No errors were found while evaluating your code. However, "
-              "this doesn't mean your code will perform as expected. "
-              "Review your code for issues and test your Input "
+
+    if message:
+        flash("Review your code for issues and test your Input "
               "before putting it into a production environment.", 'success')
         flash(message, 'success')
 
