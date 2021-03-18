@@ -138,7 +138,8 @@ INPUT_INFORMATION = {
 
     # adafruit-circuitpython-ina219 also installs adafruit-blinka
     'dependencies_module': [
-        ('pip-pypi', 'adafruit_ina219', 'adafruit-circuitpython-ina219')
+        ('pip-pypi', 'adafruit_ina219', 'adafruit-circuitpython-ina219'),
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus')
     ],
 
     'interfaces': ['I2C'],
@@ -225,13 +226,11 @@ class InputModule(AbstractInput):
         """
         Initialize INA219x sensor
         """
-        import board
         from adafruit_ina219 import INA219, ADCResolution, BusVoltageRange
-
-        i2c_bus = board.I2C()
+        from adafruit_extended_bus import ExtendedI2C
 
         try:
-            self.sensor = INA219(i2c_bus,
+            self.sensor = INA219(ExtendedI2C(self.input_dev.i2c_bus),
                 addr=int(str(self.input_dev.i2c_location), 16))
         except (ValueError, OSError) as msg:
             self.logger.exception("INA219x Exception: %s", msg)
