@@ -5,6 +5,11 @@
  - Fix camera paths not saving ([#955](https://github.com/kizniche/mycodo/issues/955))
  - Fix returning pylint3 report after saving Python Code
 
+### Features
+
+  - Add CircuitPython variant of the SHT31-D Input
+  - Add CircuitPython variant of the BME280 Input
+
 ### Miscellaneous
 
  - Add Units kilowatt-hour and Watt
