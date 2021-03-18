@@ -80,7 +80,6 @@ def execute_at_modification(
     :param custom_options_channels_dict_presave:
     :param custom_options_dict_postsave:
     :param custom_options_channels_dict_postsave:
-    :return:
     :return: tuple of (all_passed, error, mod_input) variables
     """
     allow_saving = True
@@ -111,7 +110,7 @@ def execute_at_modification(
                    'pylint3 -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413 {path}'.format(
                        path=file_run)
         cmd_out, cmd_error, cmd_status = cmd_output(cmd_test)
-
+        # flash('Pylint command: {}'.format(cmd_test), 'success')
         message = Markup(
             '<pre>\n\n'
             'Full Python Code Input code:\n\n{code}\n\n'
@@ -123,11 +122,11 @@ def execute_at_modification(
         message = "Error running pylint: {}".format(err)
         error.append(message)
 
-    if cmd_status and cmd_status != 30:
+    if cmd_status and cmd_status not in [16, 30]:
         flash('Error(s) were found while evaluating your code. Review '
               'the error(s), below, and fix them before activating your '
               'Input.', 'error')
-        flash("pylint returned with status: {}".format(cmd_status, 'error'))
+        flash("pylint returned with status: {}".format(cmd_status), 'error')
     else:
         flash("No errors were found while evaluating your code. However, "
               "this doesn't mean your code will perform as expected. "

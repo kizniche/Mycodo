@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix camera paths not saving ([#955](https://github.com/kizniche/mycodo/issues/955))
+ - Fix returning pylint3 report after saving Python Code Input
 
 
 ## 8.9.2 (2021-03-16)
