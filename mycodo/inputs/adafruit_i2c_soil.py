@@ -21,7 +21,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'ADAFRUIT_I2C_SOIL',
     'input_manufacturer': 'Adafruit',
-    'input_name': 'ADAFRUIT_I2C_SOIL',
+    'input_name': 'I2C Capacitive Moisture Sensor',
     'input_library': 'adafruit_seesaw',
     'measurements_name': 'Moisture/Temperature',
     'measurements_dict': measurements_dict,
@@ -38,7 +38,7 @@ INPUT_INFORMATION = {
     'dependencies_module': [
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
         ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus'),
-        ('pip-pypi', 'adafruit-circuitpython-seesaw', 'adafruit-circuitpython-seesaw')
+        ('pip-pypi', 'adafruit_seesaw', 'adafruit-circuitpython-seesaw')
     ],
 
     'interfaces': ['I2C'],
