@@ -859,10 +859,7 @@ PATH_CAMERAS = os.path.join(INSTALL_DIRECTORY, 'cameras')
 PATH_NOTE_ATTACHMENTS = os.path.join(INSTALL_DIRECTORY, 'note_attachments')
 
 # Determine if running in a Docker container
-if os.environ.get('DOCKER_CONTAINER', False) == 'TRUE':
-    DOCKER_CONTAINER = True
-else:
-    DOCKER_CONTAINER = False
+DOCKER_CONTAINER = os.environ.get('DOCKER_CONTAINER', False) == 'TRUE'
 
 # Pyro5 URI/host, used by mycodo_client.py
 if DOCKER_CONTAINER:

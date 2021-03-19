@@ -258,10 +258,7 @@ class InputModule(AbstractInput):
         # Read config register
         config = self.read_config_register()
         config = config & ~ HDC1000_CONFIG_HEATER_ENABLE
-        if config == 0:
-            return True
-        else:
-            return False
+        return config == 0
 
     def read_manufacturer_id(self):
         s = [HDC1000_MANUFACTURERID_REGISTER]  # temp

@@ -542,8 +542,6 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
         name=name, meas=measurement, id=unique_id)
     csv_filename = '{id}_{name}_{meas}.csv'.format(
         id=unique_id, name=name, meas=measurement)
-
-    from flask import Response
     import csv
     from io import StringIO
 

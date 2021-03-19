@@ -156,7 +156,7 @@ class InputModule(AbstractInput):
             trigger = db_retrieve_table_daemon(Trigger)
             trigger = trigger.filter(Trigger.trigger_type == 'trigger_edge')
             trigger = trigger.filter(Trigger.measurement == self.unique_id)
-            trigger = trigger.filter(Trigger.is_activated == True)
+            trigger = trigger.filter(Trigger.is_activated.is_(True))
 
             for each_trigger in trigger.all():
                 if each_trigger.edge_detected in ['both', state_str.lower()]:
