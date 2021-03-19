@@ -26,6 +26,7 @@ INPUT_INFORMATION = {
     'measurements_name': 'Moisture/Temperature',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://learn.adafruit.com/adafruit-stemma-soil-sensor-i2c-capacitive-moisture-sensor',
+    'url_product_purchase': 'https://www.adafruit.com/product/4026',
 
     'options_enabled': [
         'i2c_location',

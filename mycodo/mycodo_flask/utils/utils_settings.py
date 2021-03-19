@@ -938,7 +938,7 @@ def settings_measurement_add(form):
     new_measurement.name = form.name.data
     new_measurement.units = ",".join(form.units.data)
 
-    name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.id.data)
+    name_safe = re.sub(r'[^0-9a-zA-Z]+', '_', form.id.data)
     if name_safe.endswith('_'):
         name_safe = name_safe[:-1]
     if name_safe in choices_meas:
@@ -975,7 +975,7 @@ def settings_measurement_mod(form):
         mod_measurement.name = form.name.data
         mod_measurement.units = ",".join(form.units.data)
 
-        name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.id.data)
+        name_safe = re.sub(r'[^0-9a-zA-Z]+', '_', form.id.data)
         if name_safe.endswith('_'):
             name_safe = name_safe[:-1]
 
@@ -1044,7 +1044,7 @@ def settings_unit_add(form):
     choices_unit = choices_units(Unit.query.all())
 
     if form.validate():
-        name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.id.data)
+        name_safe = re.sub(r'[^0-9a-zA-Z]+', '_', form.id.data)
         if name_safe.endswith('_'):
             name_safe = name_safe[:-1]
 
@@ -1085,7 +1085,7 @@ def settings_unit_mod(form):
         mod_unit = Unit.query.filter(
             Unit.unique_id == form.unit_id.data).first()
 
-        name_safe = re.sub('[^0-9a-zA-Z]+', '_', form.id.data)
+        name_safe = re.sub(r'[^0-9a-zA-Z]+', '_', form.id.data)
         if name_safe.endswith('_'):
             name_safe = name_safe[:-1]
 
@@ -1711,5 +1711,5 @@ def is_valid_hostname(hostname):
         return False
     if hostname[-1] == ".":
         hostname = hostname[:-1] # strip exactly one dot from the right, if present
-    allowed = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
+    allowed = re.compile(r"(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
     return all(allowed.match(x) for x in hostname.split("."))

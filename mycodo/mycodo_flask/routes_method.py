@@ -150,11 +150,11 @@ def method_builder(method_id):
         method_data = MethodData.query.filter(
             MethodData.method_id == method.unique_id)
         setpoint_method_data = MethodData.query.filter(
-            MethodData.setpoint_start != None)
+            MethodData.setpoint_start.isnot(None))
         sine_method_data = MethodData.query.filter(
-            MethodData.amplitude != None)
+            MethodData.amplitude.isnot(None))
         bezier_method_data = MethodData.query.filter(
-            MethodData.x0 != None)
+            MethodData.x0.isnot(None))
         if display_order:
             last_setpoint_method = setpoint_method_data.filter(
                 MethodData.unique_id == display_order[-1]).first()

@@ -47,7 +47,7 @@ class MycodoRelease:
         """ Return the tarball URL for the latest Mycodo release version """
         all_versions = []
         for each_release in mycodo_releases:
-            if re.match('v{maj}.*(\d\.\d)'.format(maj=major_version),
+            if re.match(r'v{maj}.*(\d\.\d)'.format(maj=major_version),
                         each_release['name']):
                 all_versions.append(each_release['name'][1:])
         return self.sort_reverse_list(all_versions)
@@ -56,7 +56,7 @@ class MycodoRelease:
         """ Return the latest Mycodo release version """
         all_versions = []
         for each_release in mycodo_releases:
-            if re.match('v.*(\d\.\d\.\d)', each_release['name']):
+            if re.match(r'v.*(\d\.\d\.\d)', each_release['name']):
                 all_versions.append(each_release['name'][1:])
         try:
             return self.sort_reverse_list(all_versions)[0]
@@ -118,11 +118,11 @@ class MycodoRelease:
         """ Return the tarball URL for the latest Mycodo release version """
         all_versions = []
         for each_release in self.mycodo_releases:
-            if re.match('v.*(\d\.\d\.\d)', each_release['name']):
+            if re.match(r'v.*(\d\.\d\.\d)', each_release['name']):
                 all_versions.append(each_release['name'][1:])
 
         for each_release in self.mycodo_releases:
-            if (re.match('v.*(\d\.\d\.\d)', each_release['name']) and
+            if (re.match(r'v.*(\d\.\d\.\d)', each_release['name']) and
                     each_release['name'][1:] == self.sort_reverse_list(all_versions)[0]):
                 if version_only:
                     return each_release['name'][1:]
@@ -136,12 +136,12 @@ class MycodoRelease:
         """
         maj_versions = []
         for each_release in self.mycodo_releases:
-            if re.match('v{maj}.*(\d\.\d)'.format(maj=major_version),
+            if re.match(r'v{maj}.*(\d\.\d)'.format(maj=major_version),
                         each_release['name']):
                 maj_versions.append(each_release['name'][1:])
 
         for each_release in self.mycodo_releases:
-            if (re.match('v{maj}.*(\d\.\d)'.format(maj=major_version), each_release['name']) and
+            if (re.match(r'v{maj}.*(\d\.\d)'.format(maj=major_version), each_release['name']) and
                     each_release['name'][1:] == self.sort_reverse_list(maj_versions)[0]):
                 if version_only:
                     return each_release['name'][1:]

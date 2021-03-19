@@ -137,7 +137,7 @@ def input_add(form_add):
             # Bluetooth (BT) options
             elif input_interface == 'BT':
                 if dict_has_value('bt_location'):
-                    if not re.match("[0-9a-fA-F]{2}([:]?)[0-9a-fA-F]{2}(\\1[0-9a-fA-F]{2}){4}$",
+                    if not re.match(r"[0-9a-fA-F]{2}([:]?)[0-9a-fA-F]{2}(\\1[0-9a-fA-F]{2}){4}$",
                                     dict_inputs[input_name]['bt_location']):
                         error.append("Please specify device MAC-Address in format AA:BB:CC:DD:EE:FF")
                     else:
