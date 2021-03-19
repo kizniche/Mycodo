@@ -7,7 +7,8 @@
 
 ### Features
 
-  - Add CircuitPython variants of the BME280 and SHT31-D Inputs
+ - Add CircuitPython variants of the BME280 and SHT31-D Inputs
+ - Add support for SHT41x based input devices 
 
 ### Miscellaneous
 
