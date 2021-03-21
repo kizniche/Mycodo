@@ -380,10 +380,11 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 def count_cameras_opencv():
     """ Returns how many cameras are detected with opencv (cv2) """
     import cv2
-    max_tested = 100
+    camera_ids = []
+    max_tested = 10
     for i in range(max_tested):
         temp_camera = cv2.VideoCapture(i)
         if temp_camera.isOpened():
             temp_camera.release()
-            continue
-        return i
+            camera_ids.append(i)
+    return camera_ids

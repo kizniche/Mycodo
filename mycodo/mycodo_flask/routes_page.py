@@ -192,7 +192,7 @@ def page_camera():
         from mycodo.devices.camera import count_cameras_opencv
         opencv_devices = count_cameras_opencv()
     except Exception:
-        opencv_devices = 0
+        opencv_devices = []
 
     pi_camera_enabled = False
     try:
