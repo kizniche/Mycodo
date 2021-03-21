@@ -94,14 +94,14 @@ if __name__ == "__main__":
                                 out_file.write("[{0}](https://packages.debian.org/buster/{0})".format(each_dep[2]))
                             elif each_dep[0] == "pip-pypi":
                                 if 'git+' in each_dep[2]:
-                                    url = re.search(r'git\+(.*).git', each_dep[2])
+                                    url = re.search('git\+(.*).git', each_dep[2])
                                     out_file.write("[{name}]({url})".format(name=each_dep[1], url=url.group(1)))
                                 elif "==" in each_dep[2]:
                                     out_file.write("[{0}](https://pypi.org/project/{0})".format(each_dep[2].split("==")[0]))
                                 else:
                                     out_file.write("[{0}](https://pypi.org/project/{0})".format(each_dep[2]))
                             elif each_dep[0] == "pip-git":
-                                url = re.search(r'git://(.*).git', each_dep[2])
+                                url = re.search('git://(.*).git', each_dep[2])
                                 out_file.write("[{name}](https://{url})".format(name=each_dep[1], url=url.group(1)))
                             else:
                                 out_file.write(each_dep[2])

@@ -35,7 +35,7 @@ def is_email(email):
     :return: Whether the string matches an Email address
     :rtype: Bool
     """
-    if re.match(r'[^@]+@[^@]+\.[^@]+', email) is None:
+    if re.match('[^@]+@[^@]+\.[^@]+', email) is None:
         print("This doesn't appear to be an email address")
         return False
     else:
