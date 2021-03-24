@@ -293,7 +293,7 @@ case "${1:-''}" in
         make install
         cd "${MYCODO_PATH}"/install || return
         rm -rf ./PIGPIO
-        rm -rf pigpio-latest.tar.gz
+        rm -rf pigpio.tar.gz
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh disable-pigpiod
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh enable-pigpiod-high
         mkdir -p /opt/mycodo
@@ -312,7 +312,7 @@ case "${1:-''}" in
         make uninstall
         cd "${MYCODO_PATH}"/install || return
         rm -rf ./PIGPIO
-        rm -rf pigpio-latest.tar.gz
+        rm -rf pigpio.tar.gz
         touch /etc/systemd/system/pigpiod_uninstalled.service
         rm -f /opt/mycodo/pigpio_installed
     ;;
