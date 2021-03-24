@@ -14,7 +14,7 @@ fi
 MYCODO_MAJOR_VERSION="8"
 
 # Dependency versions/URLs
-PIGPIO_URL="https://github.com/joan2937/pigpio/archive/v77.tar.gz"
+PIGPIO_URL="https://github.com/joan2937/pigpio/archive/v79.tar.gz"
 MCB2835_URL="http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz"
 WIRINGPI_URL="https://project-downloads.drogon.net/wiringpi-latest.deb"
 INFLUXDB_VERSION="1.8.0"
@@ -293,7 +293,7 @@ case "${1:-''}" in
         make install
         cd "${MYCODO_PATH}"/install || return
         rm -rf ./PIGPIO
-        rm -rf pigpio-latest.tar.gz
+        rm -rf pigpio.tar.gz
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh disable-pigpiod
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh enable-pigpiod-high
         mkdir -p /opt/mycodo
@@ -312,7 +312,7 @@ case "${1:-''}" in
         make uninstall
         cd "${MYCODO_PATH}"/install || return
         rm -rf ./PIGPIO
-        rm -rf pigpio-latest.tar.gz
+        rm -rf pigpio.tar.gz
         touch /etc/systemd/system/pigpiod_uninstalled.service
         rm -f /opt/mycodo/pigpio_installed
     ;;
