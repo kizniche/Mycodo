@@ -943,7 +943,8 @@ WIDGET_INFORMATION = {
         type: 'line',
         {%- endif -%}
         dataGrouping: {
-          enabled: {% if disable_data_grouping %}false{% else %}true{% endif %}
+          enabled: {% if disable_data_grouping %}false{% else %}true{% endif %},
+          groupPixelWidth: 2
         },
         tooltip: {
           valueSuffix: '
@@ -1008,7 +1009,8 @@ WIDGET_INFORMATION = {
       type: 'line',
       {% endif %}
       dataGrouping: {
-        enabled: {% if disable_data_grouping %}false{% else %}true{% endif %}
+        enabled: {% if disable_data_grouping %}false{% else %}true{% endif %},
+        groupPixelWidth: 2
       },
       tooltip: {
         valueSuffix: '
@@ -1073,7 +1075,8 @@ WIDGET_INFORMATION = {
       type: 'line',
       {% endif %}
       dataGrouping: {
-        enabled: {% if disable_data_grouping %}false{% else %}true{% endif %}
+        enabled: {% if disable_data_grouping %}false{% else %}true{% endif %},
+        groupPixelWidth: 2
       },
       tooltip: {
         valueSuffix: '
@@ -1135,7 +1138,8 @@ WIDGET_INFORMATION = {
           )',
         type: 'column',
         dataGrouping: {
-          enabled: {% if disable_data_grouping %}false{% else %}true{% endif %}
+          enabled: {% if disable_data_grouping %}false{% else %}true{% endif %},
+          groupPixelWidth: 5
         },
         tooltip: {
           valueSuffix: '
@@ -1200,7 +1204,8 @@ WIDGET_INFORMATION = {
       type: 'line',
       {% endif %}
       dataGrouping: {
-        enabled: {% if disable_data_grouping %}false{% else %}true{% endif %}
+        enabled: {% if disable_data_grouping %}false{% else %}true{% endif %},
+        groupPixelWidth: 2
       },
       tooltip: {
         valueSuffix: '
