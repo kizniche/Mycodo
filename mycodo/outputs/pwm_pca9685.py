@@ -200,7 +200,8 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'pwm_pca9685',
-    'output_name': "PCA9685 (16 channels): {}".format(lazy_gettext('PWM')),
+    'output_name': "{}: PCA9685 (16 channels): {}".format(
+        lazy_gettext("LED Controller"), lazy_gettext('PWM')),
     'output_library': 'adafruit-pca9685',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
