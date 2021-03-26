@@ -5,6 +5,7 @@
  - Fix camera paths not saving ([#955](https://github.com/kizniche/mycodo/issues/955))
  - Fix returning pylint3 report after saving Python Code
  - Fix detection of multiple cameras by opencv
+ - Fix SCD30 (CircuitPython) Input ([#963](https://github.com/kizniche/mycodo/issues/963))
 
 ### Features
 

@@ -92,7 +92,7 @@ class InputModule(AbstractInput):
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.scd.data_available:
-            co2 = self.scd.eCO2
+            co2 = self.scd.CO2
             temperature = self.scd.temperature
             humidity = self.scd.relative_humidity
 
