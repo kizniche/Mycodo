@@ -37,7 +37,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'Adafruit_TMP', 'Adafruit_TMP')
+        ('pip-pypi', 'Adafruit_TMP', 'Adafruit-TMP==1.6.3')
     ],
 
     'interfaces': ['I2C'],

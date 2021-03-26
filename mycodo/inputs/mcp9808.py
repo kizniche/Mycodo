@@ -24,7 +24,7 @@ INPUT_INFORMATION = {
     'url_product_purchase': 'https://www.adafruit.com/product/1782',
 
     'dependencies_module': [
-        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit-GPIO==1.0.3'),
         ('pip-pypi', 'Adafruit_MCP9808', 'git+https://github.com/adafruit/Adafruit_Python_MCP9808.git'),
     ],
 

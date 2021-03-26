@@ -59,7 +59,7 @@ INPUT_INFORMATION = {
     ],
 
     'dependencies_module': [
-        ('pip-pypi', 'scd30_i2c', 'scd30_i2c')
+        ('pip-pypi', 'scd30_i2c', 'scd30-i2c==0.0.6')
     ],
 
     'interfaces': ['I2C'],

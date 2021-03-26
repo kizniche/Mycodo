@@ -38,8 +38,8 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
-        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus'),
-        ('pip-pypi', 'adafruit_seesaw', 'adafruit-circuitpython-seesaw')
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.1'),
+        ('pip-pypi', 'adafruit_seesaw', 'adafruit-circuitpython-seesaw==1.7.2')
     ],
 
     'interfaces': ['I2C'],

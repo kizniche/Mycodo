@@ -51,7 +51,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'serial', 'pyserial')
+        ('pip-pypi', 'serial', 'pyserial==3.5')
     ],
 
     'interfaces': ['UART'],

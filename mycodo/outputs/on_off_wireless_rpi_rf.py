@@ -60,8 +60,8 @@ OUTPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO'),
-        ('pip-pypi', 'rpi_rf', 'rpi_rf')
+        ('pip-pypi', 'RPi.GPIO', 'RPi.GPIO==0.7.0'),
+        ('pip-pypi', 'rpi_rf', 'rpi_rf==0.9.7')
     ],
 
     'interfaces': ['GPIO'],

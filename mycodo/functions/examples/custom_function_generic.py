@@ -64,7 +64,7 @@ FUNCTION_INFORMATION = {
         # ('apt', 'libasound2-dev', 'libasound2-dev'),
         # ('apt', 'libpulse-dev', 'libpulse-dev'),
         # ('apt', 'swig', 'swig'),
-        # ('pip-pypi', 'pocketsphinx', 'pocketsphinx')
+        # ('pip-pypi', 'pocketsphinx', 'pocketsphinx==0.1.17')  # Note: specify package version, search for package installed elsewhere and ensure versions are the same
     ],
 
     'custom_options': [

@@ -49,7 +49,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'smbus2', 'smbus2'),
+        ('pip-pypi', 'smbus2', 'smbus2==0.4.1'),
         ('pip-pypi', 'MCP342x', 'MCP342x==0.3.4')
     ],
 

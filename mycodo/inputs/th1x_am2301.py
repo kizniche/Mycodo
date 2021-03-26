@@ -53,7 +53,7 @@ INPUT_INFORMATION = {
     ],
 
     'dependencies_module': [
-        ('pip-pypi', 'requests', 'requests'),
+        ('pip-pypi', 'requests', 'requests==2.25.1')
     ],
 
     'custom_options': [

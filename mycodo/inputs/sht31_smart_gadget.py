@@ -89,7 +89,7 @@ INPUT_INFORMATION = {
     'dependencies_module': [
         ('apt', 'pi-bluetooth', 'pi-bluetooth'),
         ('apt', 'libglib2.0-dev', 'libglib2.0-dev'),
-        ('pip-pypi', 'bluepy', 'bluepy')
+        ('pip-pypi', 'bluepy', 'bluepy==1.3.0')
 
     ],
 

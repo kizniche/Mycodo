@@ -47,7 +47,6 @@ FUNCTION_INFORMATION = {
         ' turn the output on in order to drive the input lower.',
 
     'options_enabled': [],
-    'dependencies_module': [],
 
     'custom_options': [
         {

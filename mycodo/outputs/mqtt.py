@@ -70,7 +70,7 @@ OUTPUT_INFORMATION = {
     'message': 'An output to publish "on" or "off" (or any other strings of your choosing) to an MQTT server.',
 
     'dependencies_module': [
-        ('pip-pypi', 'paho', 'paho-mqtt')
+        ('pip-pypi', 'paho', 'paho-mqtt==1.5.1')
     ],
 
     'options_enabled': [

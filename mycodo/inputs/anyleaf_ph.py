@@ -50,8 +50,8 @@ INPUT_INFORMATION = {
         ('apt', 'python3-numpy', 'python3-numpy'),
         ('apt', 'python3-scipy', 'python3-scipy'),
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
-        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus'),
-        ('pip-pypi', 'anyleaf', 'anyleaf')
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.1'),
+        ('pip-pypi', 'anyleaf', 'anyleaf==0.1.8.1')
     ],
 
     'interfaces': ['I2C'],

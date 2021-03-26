@@ -35,7 +35,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'adafruit_max31865','adafruit-circuitpython-max31865')
+        ('pip-pypi', 'adafruit_max31865', 'adafruit-circuitpython-max31865==2.2.8')
     ],
 
     'interfaces': ['SPI'],

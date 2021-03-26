@@ -60,7 +60,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'bme280', 'RPi.bme280')
+        ('pip-pypi', 'bme280', 'RPi.bme280--0.2.3')
     ],
 
     'interfaces': ['I2C'],

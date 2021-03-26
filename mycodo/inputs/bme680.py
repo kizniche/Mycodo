@@ -151,8 +151,8 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'bme680', 'bme680'),
-        ('pip-pypi', 'smbus2', 'smbus2')
+        ('pip-pypi', 'bme680', 'bme680==0.5'),
+        ('pip-pypi', 'smbus2', 'smbus2==0.4.1')
     ],
 
     'interfaces': ['I2C'],

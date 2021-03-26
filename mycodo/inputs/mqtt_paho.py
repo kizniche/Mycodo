@@ -61,7 +61,7 @@ INPUT_INFORMATION = {
     'interfaces': ['Mycodo'],
 
     'dependencies_module': [
-        ('pip-pypi', 'paho', 'paho-mqtt')],
+        ('pip-pypi', 'paho', 'paho-mqtt==1.5.1')],
 
     'custom_options': [
         {

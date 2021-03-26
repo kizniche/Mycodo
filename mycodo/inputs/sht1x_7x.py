@@ -49,7 +49,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'sht_sensor', 'sht_sensor')
+        ('pip-pypi', 'sht_sensor', 'sht-sensor==18.4.2')
     ],
 
     'interfaces': ['GPIO'],

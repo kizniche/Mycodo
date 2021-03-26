@@ -41,7 +41,7 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_MAX31855', 'git+https://github.com/adafruit/Adafruit_Python_MAX31855.git'),
-        ('pip-pypi', 'Adafruit_GPIO','Adafruit_GPIO')
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit-GPIO==1.0.3')
     ],
 
     'interfaces': ['UART'],

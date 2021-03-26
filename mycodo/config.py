@@ -131,9 +131,9 @@ LCD_INFO = {
         'message': "This module uses the newer Adafruit CircuitPython library. The older Adafruit_SSD1306 library is deprecated and not recommended to be used.",
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
-            ('pip-pypi', 'PIL', 'Pillow'),
+            ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
             ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
-            ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus'),
+            ('pip-pypi', 'adafruit_extended_bus', 'adafruit-extended-bus==1.0.1'),
             ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf'),
             ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306')
         ],
@@ -144,9 +144,9 @@ LCD_INFO = {
         'message': "This module uses the newer Adafruit CircuitPython library. The older Adafruit_SSD1306 library is deprecated and not recommended to be used.",
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
-            ('pip-pypi', 'PIL', 'Pillow'),
+            ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
             ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
-            ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus'),
+            ('pip-pypi', 'adafruit_extended_bus', 'adafruit-extended-bus==1.0.1'),
             ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf'),
             ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306')
         ],
@@ -157,9 +157,9 @@ LCD_INFO = {
         'message': "This module uses the older Adafruit_SSD1306 library that is deprecated and is not recommended to be used. It is recommended to use the other module that uses the newer Adafruit CircuitPython library.",
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
-            ('pip-pypi', 'PIL', 'Pillow'),
-            ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
-            ('pip-pypi', 'Adafruit_PureIO', 'Adafruit_PureIO'),
+            ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
+            ('pip-pypi', 'Adafruit_GPIO', 'Adafruit-GPIO==1.0.3'),
+            ('pip-pypi', 'Adafruit_PureIO', 'Adafruit-PureIO==1.1.8'),
             ('pip-pypi', 'Adafruit_SSD1306', 'git+https://github.com/adafruit/Adafruit_Python_SSD1306.git')
         ],
         'interfaces': ['I2C', 'SPI']
@@ -169,9 +169,9 @@ LCD_INFO = {
         'message': "This module uses the older Adafruit_SSD1306 library that is deprecated and is not recommended to be used. It is recommended to use the other module that uses the newer Adafruit CircuitPython library.",
         'dependencies_module': [
             ('apt', 'libjpeg-dev', 'libjpeg-dev'),
-            ('pip-pypi', 'PIL', 'Pillow'),
-            ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
-            ('pip-pypi', 'Adafruit_PureIO', 'Adafruit_PureIO'),
+            ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
+            ('pip-pypi', 'Adafruit_GPIO', 'Adafruit-GPIO==1.0.3'),
+            ('pip-pypi', 'Adafruit_PureIO', 'Adafruit-PureIO==1.1.8'),
             ('pip-pypi', 'Adafruit_SSD1306', 'git+https://github.com/adafruit/Adafruit_Python_SSD1306.git')
         ],
         'interfaces': ['I2C', 'SPI']
@@ -431,7 +431,7 @@ CALIBRATION_INFO = {
             lazy_gettext('Sensor'),
             lazy_gettext('DS-Type')),
         'dependencies_module': [
-            ('pip-pypi', 'w1thermsensor', 'w1thermsensor')
+            ('pip-pypi', 'w1thermsensor', 'w1thermsensor==2.0.0')
         ]
     }
 }

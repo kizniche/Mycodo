@@ -74,7 +74,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface', 'i2c_location'],
 
     'dependencies_module': [
-        ('pip-pypi', 'as7262', 'as7262'),
+        ('pip-pypi', 'as7262', 'as7262==0.1.0'),
     ],
 
     'interfaces': ['I2C'],

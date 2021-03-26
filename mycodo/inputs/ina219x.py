@@ -138,8 +138,8 @@ INPUT_INFORMATION = {
 
     # adafruit-circuitpython-ina219 also installs adafruit-blinka
     'dependencies_module': [
-        ('pip-pypi', 'adafruit_ina219', 'adafruit-circuitpython-ina219'),
-        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus')
+        ('pip-pypi', 'adafruit_ina219', 'adafruit-circuitpython-ina219==3.4.9'),
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.1')
     ],
 
     'interfaces': ['I2C'],

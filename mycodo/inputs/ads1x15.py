@@ -58,8 +58,8 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
-        ('pip-pypi', 'Adafruit_ADS1x15', 'Adafruit_ADS1x15')
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit-GPIO==1.0.3'),
+        ('pip-pypi', 'Adafruit_ADS1x15', 'Adafruit-ADS1x15==1.0.2')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x48', '0x49', '0x4A', '0x4B'],

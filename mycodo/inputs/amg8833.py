@@ -42,8 +42,8 @@ INPUT_INFORMATION = {
     'dependencies_module': [
         ('apt', 'libjpeg-dev', 'libjpeg-dev'),
         ('apt', 'zlib1g-dev', 'zlib1g-dev'),
-        ('pip-pypi', 'colour', 'colour'),
-        ('pip-pypi', 'PIL', 'Pillow'),
+        ('pip-pypi', 'colour', 'colour==0.1.5'),
+        ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
         ('pip-pypi', 'Adafruit_AMG88xx', 'git+https://github.com/adafruit/Adafruit_AMG88xx_python.git')
     ],
 

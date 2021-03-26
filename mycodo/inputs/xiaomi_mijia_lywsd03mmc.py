@@ -63,8 +63,8 @@ INPUT_INFORMATION = {
         ('apt', 'bluez', 'bluez'),
         ('apt', 'bluetooth', 'bluetooth'),
         ('apt', 'libbluetooth-dev', 'libbluetooth-dev'),
-        ('pip-pypi', 'bluepy', 'bluepy'),
-        ('pip-pypi', 'bluetooth', 'pybluez')
+        ('pip-pypi', 'bluepy', 'bluepy==1.3.0'),
+        ('pip-pypi', 'bluetooth', 'pybluez==0.41')
     ],
 
     'interfaces': ['BT'],

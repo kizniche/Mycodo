@@ -59,7 +59,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO'),
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit-GPIO==1.0.3'),
         ('pip-pypi', 'Adafruit_BME280', 'git+https://github.com/adafruit/Adafruit_Python_BME280.git')
     ],
 

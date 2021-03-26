@@ -76,7 +76,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface', 'i2c_location'],
 
     'dependencies_module': [
-        ('pip-pypi', 'quick2wire', 'quick2wire-api')
+        ('pip-pypi', 'quick2wire', 'quick2wire-api==0.0.0.2')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x5c'],

@@ -69,7 +69,6 @@ FUNCTION_INFORMATION = {
                'on it for accurately tuning your PID controller.',
 
     'options_enabled': [],
-    'dependencies_module': [],
 
     'custom_options': [
         {

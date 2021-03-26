@@ -45,8 +45,8 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
-        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit_Extended_Bus'),
-        ('pip-pypi', 'adafruit_sht31d', 'Adafruit_CircuitPython_SHT31D')
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.1'),
+        ('pip-pypi', 'adafruit_sht31d', 'adafruit-circuitpython-sht31d==2.3.5')
     ],
 
     'interfaces': ['I2C'],

@@ -40,8 +40,8 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface', 'i2c_location'],
 
     'dependencies_module': [
-        ('pip-pypi', 'Adafruit_BMP', 'Adafruit_BMP'),
-        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit_GPIO')
+        ('pip-pypi', 'Adafruit_BMP', 'Adafruit-BMP==1.5.4'),
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit-GPIO==1.0.3')
     ],
     'interfaces': ['I2C'],
     'i2c_location': ['0x77'],

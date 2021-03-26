@@ -220,7 +220,7 @@ OUTPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'Adafruit_PCA9685', 'adafruit-pca9685')
+        ('pip-pypi', 'Adafruit_PCA9685', 'adafruit-pca9685==1.0.1')
     ],
 
     'interfaces': ['I2C'],

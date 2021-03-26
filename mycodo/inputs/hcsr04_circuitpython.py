@@ -49,7 +49,7 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
-        ('pip-pypi', 'adafruit_hcsr04','adafruit-circuitpython-hcsr04')
+        ('pip-pypi', 'adafruit_hcsr04', 'adafruit-circuitpython-hcsr04==0.4.6')
     ],
 
     'interfaces': ['GPIO'],

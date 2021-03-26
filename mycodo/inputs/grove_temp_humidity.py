@@ -55,7 +55,7 @@ INPUT_INFORMATION = {
     ],
 
     'dependencies_module': [
-        ('pip-pypi', 'grovepi', 'grovepi')
+        ('pip-pypi', 'grovepi', 'grovepi==1.0.4')
     ],
 
     'custom_options': [

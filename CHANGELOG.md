@@ -16,6 +16,7 @@
 ### Miscellaneous
 
  - Add Units kilowatt-hour and Watt
+ - Specify package versions for pypi dependencies
 
 
 ## 8.9.2 (2021-03-16)
