@@ -9,17 +9,30 @@ Mycodo is open source software for the Raspberry Pi that couples inputs and outp
 
 |Build Status| |Codacy Badge| |DOI|
 
+Support
+-------
+
+Documentation
+~~~~~~~~~~~~~
+
 `Mycodo Manual <https://kizniche.github.io/Mycodo>`__
 
 `Mycodo API <https://kizniche.github.io/Mycodo/mycodo-api.html>`__ (Latest Version: v1)
 
-`Mycodo Support Android App <https://play.google.com/store/apps/details?id=com.mycodo.mycododocs>`__
-
 `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__
 
-`Mycodo Custom Inputs and Controllers Repository <https://github.com/kizniche/Mycodo-custom>`__
+`Mycodo Custom Module Repository <https://github.com/kizniche/Mycodo-custom>`__
 
-For technical support discussion, use the `Mycodo Forum <https://kylegabriel.com/forum>`__
+`Mycodo Support Android App <https://play.google.com/store/apps/details?id=com.mycodo.mycododocs>`__
+
+Discussion
+~~~~~~~~~~
+
+`Mycodo Issues (Bug Reports/Feature Requests) <https://github.com/kizniche/Mycodo/issues>`__
+
+`Mycodo Forum <https://kylegabriel.com/forum>`__
+
+`Mycodo Discord <https://discord.gg/kmDNky4ZHZ>`__
 
 Donate
 ------
