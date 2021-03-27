@@ -113,7 +113,7 @@ class MeasurementsCreate(Resource):
         'unit': 'The unit of the measurement',
         'channel': 'The channel of the measurement',
         'epoch_start': 'The start time, as epoch. Set to 0 for none.',
-        'epoch_end': 'The start time, as epoch. Set to 0 for none.'
+        'epoch_end': 'The end time, as epoch. Set to 0 for none.'
     }
 )
 class MeasurementsHistorical(Resource):
@@ -178,7 +178,7 @@ class MeasurementsHistorical(Resource):
         'unit': 'The unit of the measurement',
         'channel': 'The channel of the measurement',
         'epoch_start': 'The start time, as epoch. Set to 0 for none.',
-        'epoch_end': 'The start time, as epoch. Set to 0 for none.',
+        'epoch_end': 'The end time, as epoch. Set to 0 for none.',
         'function': 'The InfluxDB function to apply to the measurements. '
                     'For example, SUM, MIN, MAX, STDDEV, etc. '
                     'See https://docs.influxdata.com/influxdb/v1.7/query_language/functions/ for more information.'
