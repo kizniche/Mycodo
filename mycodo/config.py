@@ -84,7 +84,7 @@ CAMERA_INFO = {
     'picamera': {
         'name': 'PiCamera',
         'dependencies_module': [
-            ('pip-pypi', 'picamera', 'picamera')
+            ('pip-pypi', 'picamera', 'picamerab==1.13b1')
         ],
         'capable_image': True,
         'capable_stream': True
