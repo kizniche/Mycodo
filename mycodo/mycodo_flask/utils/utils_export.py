@@ -16,6 +16,7 @@ from influxdb import InfluxDBClient
 from werkzeug.utils import secure_filename
 
 from mycodo.config import ALEMBIC_VERSION
+from mycodo.config import DATABASE_NAME
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import INFLUXDB_DATABASE
 from mycodo.config import INFLUXDB_HOST
@@ -246,7 +247,6 @@ def import_settings(form):
         correct_format = 'Mycodo_MYCODOVERSION_Settings_DBVERSION_HOST_DATETIME.zip'
         upload_folder = os.path.join(INSTALL_DIRECTORY, 'upload')
         tmp_folder = os.path.join(upload_folder, 'mycodo_db_tmp')
-        mycodo_database_name = 'mycodo.db'
         full_path = None
 
         if not form.settings_import_file.data:
@@ -310,14 +310,11 @@ def import_settings(form):
             # Check if contents of zip file are correct
             try:
                 file_list = zipfile.ZipFile(full_path, 'r').namelist()
-                if len(file_list) > 1:
-                    error.append("Incorrect number of files in zip: "
-                                 "{an} != 1".format(an=len(file_list)))
-                elif file_list[0] != mycodo_database_name:
-                    error.append("Incorrect file in zip: {af} != {cf}".format(
-                        af=file_list[0], cf=mycodo_database_name))
+                if DATABASE_NAME not in file_list:
+                    error.append("{} not found in zip: {}".format(
+                        DATABASE_NAME, ", ".join(file_list)))
             except Exception as err:
-                error.append("Exception while opening zip file: "
+                error.append("Exception checking files in zip: "
                              "{err}".format(err=err))
 
         if not error:
@@ -339,8 +336,7 @@ def import_settings(form):
                 _, _, _ = cmd_output(cmd)
 
                 # Backup current database and replace with extracted mycodo.db
-                imported_database = os.path.join(
-                    tmp_folder, mycodo_database_name)
+                imported_database = os.path.join(tmp_folder, DATABASE_NAME)
                 backup_name = (
                     SQL_DATABASE_MYCODO + '.backup_' +
                     datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))

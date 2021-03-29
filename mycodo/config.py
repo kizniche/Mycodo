@@ -802,9 +802,10 @@ THEMES_DARK = ['cyborg', 'darkly', 'slate', 'solar', 'superhero']
 INSTALL_DIRECTORY = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/..')
 
 # Database
+DATABASE_NAME = "mycodo.db"
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
 ALEMBIC_UPGRADE_POST = os.path.join(DATABASE_PATH, 'alembic_post_upgrade_versions')
-SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
+SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, DATABASE_NAME)
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 # Misc paths
@@ -896,7 +897,7 @@ RELEASE_URL = 'https://api.github.com/repos/kizniche/Mycodo/tags'
 
 class ProdConfig(object):
     """ Production Configuration """
-    SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, 'mycodo.db')
+    SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, DATABASE_NAME)
     MYCODO_DB_PATH = 'sqlite:///{}'.format(SQL_DATABASE_MYCODO)
     SQLALCHEMY_DATABASE_URI = 'sqlite:///{}'.format(SQL_DATABASE_MYCODO)
     SQLALCHEMY_TRACK_MODIFICATIONS = False

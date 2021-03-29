@@ -6,6 +6,7 @@
  - Fix returning pylint3 report after saving Python Code
  - Fix detection of multiple cameras by opencv
  - Fix SCD30 (CircuitPython) Input ([#963](https://github.com/kizniche/mycodo/issues/963))
+ - Fix importing Mycodo Settings ZIP if custom modules were exported ([#967](https://github.com/kizniche/mycodo/issues/967))
 
 ### Features
 
