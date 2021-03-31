@@ -63,17 +63,18 @@ def dashboard_mod(form):
         controller=TRANSLATIONS['dashboard']['title'])
     error = []
 
-    name_exists = Dashboard.query.filter(
-        Dashboard.name == form.name.data).first()
-    if name_exists:
-        flash('Dashboard name already is use', 'error')
-        return
-
     dash_mod = Dashboard.query.filter(
         Dashboard.unique_id == form.dashboard_id.data).first()
+
+    name_exists = Dashboard.query.filter(
+        Dashboard.name == form.name.data).first()
+    if dash_mod.name != form.name.data and name_exists:
+        flash('Dashboard name already is use', 'error')
+
     dash_mod.name = form.name.data
 
-    db.session.commit()
+    if not error:
+        db.session.commit()
 
     flash_success_errors(
         error, action, url_for('routes_page.page_dashboard_default'))
