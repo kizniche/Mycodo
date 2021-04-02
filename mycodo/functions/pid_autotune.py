@@ -79,6 +79,7 @@ FUNCTION_INFORMATION = {
             'options_select': [
                 'Input',
                 'Math',
+                'Function'
             ],
             'name': lazy_gettext('Measurement'),
             'phrase': lazy_gettext('Select a measurement the selected output will affect')

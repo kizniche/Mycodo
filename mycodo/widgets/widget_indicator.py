@@ -63,6 +63,7 @@ WIDGET_INFORMATION = {
             'options_select': [
                 'Input',
                 'Math',
+                'Function',
                 'Output_Channels_Measurements',
                 'PID'
             ],

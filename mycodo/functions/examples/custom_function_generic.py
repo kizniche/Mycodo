@@ -120,6 +120,7 @@ FUNCTION_INFORMATION = {
             'options_select': [
                 'Input',
                 'Math',
+                'Function',
                 'PID'
             ],
             'name': 'Select Measurement 1',

@@ -107,7 +107,8 @@ FUNCTION_INFORMATION = {
             'default_value': '',
             'options_select': [
                 'Input',
-                'Math'
+                'Math',
+                'Function'
             ],
             'name': 'Measurement B',
             'phrase': 'Measurement to replace b'
