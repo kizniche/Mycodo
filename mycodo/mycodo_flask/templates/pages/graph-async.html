@@ -555,6 +555,10 @@ $(document).ready(function() {
                 ',
                 valueDecimals: 3
               },
+              dataGrouping: {
+                enabled: false,
+                groupPixelWidth: 2
+              },
               yAxis: '
                 {%- if measurement_id in dict_measure_units -%}
                   {{dict_measure_units[measurement_id]}}
