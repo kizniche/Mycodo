@@ -663,6 +663,13 @@ def action_email(logger_actions,
     return message, email_recipients, attachment_type
 
 
+def action_webhook(logger_actions, cond_action, message):
+
+    # If the emails per hour limit has not been exceeded
+    logger_actions.info("Webhook '{url}' triggered with message '{msg}'", cond_action.do_action_string, message)
+    return message
+
+
 def action_activate_controller(cond_action, message):
     logger.debug("Finding controller with ID {}".format(cond_action.do_unique_id))
     control = DaemonControl()
@@ -1094,6 +1101,8 @@ def trigger_action(
             message = action_system_restart(message)
         elif cond_action.action_type == 'system_shutdown':
             message = action_system_shutdown(message)
+        elif cond_action.action_type == 'webhook':
+            message = action_webhook(logger_actions, cond_action, message)
 
     except Exception:
         logger_actions.exception("Error triggering action:")
