@@ -666,7 +666,7 @@ def action_email(logger_actions,
 def action_webhook(logger_actions, cond_action, message):
 
     # If the emails per hour limit has not been exceeded
-    logger_actions.info("Webhook '{url}' triggered with message '{msg}'", cond_action.do_action_string, message)
+    logger_actions.info("Webhook '{url}' triggered with message '{msg}'", url=cond_action.do_action_string, msg=message)
     return message
 
 
