@@ -4,6 +4,9 @@ import os
 import subprocess
 import threading
 import time
+import http.client
+import urllib
+from urllib.parse import urlparse
 
 from sqlalchemy import and_
 
@@ -664,9 +667,55 @@ def action_email(logger_actions,
 
 
 def action_webhook(logger_actions, cond_action, message):
+    lines = cond_action.do_action_string.splitlines()
 
-    # If the emails per hour limit has not been exceeded
-    logger_actions.info("Webhook '{url}' triggered with message '{msg}'", url=cond_action.do_action_string, msg=message)
+    method = "GET"
+
+    # first line is "[<Method> ]<URL>", following lines are http request headers
+    parts = lines.pop(0).split(" ", 1)
+    if len(parts) == 1:
+        url = parts[0]
+    else:
+        method = parts[0]
+        url = parts[1]
+
+    headers = []
+    while len(lines) > 0:
+        line = lines.pop(0)
+        if line.strip() == "":
+            break
+        headers.append(map(str.strip, line.split(':', 1)))
+
+    headers = dict(headers)
+    parsed_url = urlparse(url)
+    body = "\n".join(lines)
+
+    body = body.replace("{{{message}}}", message)
+    body = body.replace("{{{quoted_message}}}", urllib.parse.quote_plus(message))
+    path_and_query = parsed_url.path + "?" + parsed_url.query
+
+    logger_actions.debug("Method: {}".format(method))
+    logger_actions.debug("Scheme: {}".format(parsed_url.scheme))
+    logger_actions.debug("Netloc: {}".format(parsed_url.netloc))
+    logger_actions.debug("Path: {}".format(path_and_query))
+    logger_actions.debug("Headers: {}".format(headers))
+    logger_actions.debug("Body: {}".format(body))
+
+    if parsed_url.scheme == 'http':
+        conn = http.client.HTTPConnection(parsed_url.netloc)
+    elif parsed_url.scheme == 'https':
+        conn = http.client.HTTPSConnection(parsed_url.netloc)
+    else:
+        raise Exception("Unsupported url scheme '{}'".format(parsed_url.scheme))
+
+    conn.request(method, path_and_query, body, headers)
+    response = conn.getresponse()
+    if 200 <= response.getcode() < 300:
+        logger_actions.debug("HTTP {} -> OK".format(response.getcode()))
+    else:
+        raise Exception("Got HTTP {} response.".format(response.getcode()))
+    response.close()
+
     return message
 
 
