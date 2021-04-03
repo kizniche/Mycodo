@@ -710,7 +710,7 @@ def action_webhook(logger_actions, cond_action, message):
 
     conn.request(method, path_and_query, body, headers)
     response = conn.getresponse()
-    if logger_actions.isEnabledFor(logger_actions.DEBUG):
+    if logger_actions.isEnabledFor(logging.DEBUG):
         logger_actions.debug(response.readlines())
     if 200 <= response.getcode() < 300:
         logger_actions.debug("HTTP {} -> OK".format(response.getcode()))
