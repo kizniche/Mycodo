@@ -667,7 +667,10 @@ def action_email(logger_actions,
 
 
 def action_webhook(logger_actions, cond_action, message):
-    lines = cond_action.do_action_string.splitlines()
+    action_string = cond_action.do_action_string
+    action_string = action_string.replace("{{{message}}}", message)
+    action_string = action_string.replace("{{{quoted_message}}}", urllib.parse.quote_plus(message))
+    lines = action_string.splitlines()
 
     method = "GET"
 
@@ -690,8 +693,6 @@ def action_webhook(logger_actions, cond_action, message):
     parsed_url = urlparse(url)
     body = "\n".join(lines)
 
-    body = body.replace("{{{message}}}", message)
-    body = body.replace("{{{quoted_message}}}", urllib.parse.quote_plus(message))
     path_and_query = parsed_url.path + "?" + parsed_url.query
 
     logger_actions.debug("Method: {}".format(method))
