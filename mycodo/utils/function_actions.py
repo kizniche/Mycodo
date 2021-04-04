@@ -1070,9 +1070,10 @@ def trigger_action(
     else:
         logger_actions.setLevel(logging.INFO)
 
-    message += "\n[Action {id}, {name}]:".format(
-        id=cond_action.unique_id.split('-')[0],
-        name=FUNCTION_ACTION_INFO[cond_action.action_type]['name'])
+    if cond_action.action_type != 'webhook':
+        message += "\n[Action {id}, {name}]:".format(
+            id=cond_action.unique_id.split('-')[0],
+            name=FUNCTION_ACTION_INFO[cond_action.action_type]['name'])
 
     try:
         if cond_action.action_type == 'pause_actions':
