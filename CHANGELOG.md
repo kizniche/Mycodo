@@ -14,6 +14,7 @@
  - Add CircuitPython variants of the BME280 and SHT31-D Inputs
  - Add support for SHT41x based input devices 
  - Add support for Adafruit's i2c capacitive soil sensor input devices
+ - Add webhook action to emit HTTP requests ([discussion](https://kylegabriel.com/forum/general-discussion/webhook-action/))
 
 ### Miscellaneous
 
