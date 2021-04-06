@@ -1,4 +1,4 @@
-Here are a few frequently asked questions about Mycodo. There is also an [Question & Answer Forum](https://kylegabriel.com/forum/questions-answers-mycodo) that you can post new questions. However, to ensure it's relevant to the topic, read the [stickied Q&A Post](https://kylegabriel.com/forum/questions-answers-mycodo/when-should-you-post-in-this-forum) to determine if it may be better suited for the [General Discussion Forum](https://kylegabriel.com/forum/general-discussion).
+Here are a few frequently asked questions about Mycodo.
 
 --------------
 
