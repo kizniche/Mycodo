@@ -33,7 +33,7 @@ https://127.0.0.1
 *   [Mycodo on GitHub](https://github.com/kizniche/Mycodo)
 *   [Mycodo Wiki](https://github.com/kizniche/Mycodo/wiki)
 *   [Mycodo API](https://kizniche.github.io/Mycodo/mycodo-api.html)
-*   [Mycodo Forum](https://discourse.kylegabriel.com)
+*   [Mycodo Forum](https://forum.kylegabriel.com)
 *   [Mycodo Support](https://play.google.com/store/apps/details?id=com.mycodo.mycododocs) (Android App)
 
 ### Donate

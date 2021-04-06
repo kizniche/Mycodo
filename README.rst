@@ -30,7 +30,7 @@ Discussion
 
 `Mycodo Issues (Bug Reports/Feature Requests) <https://github.com/kizniche/Mycodo/issues>`__
 
-`Mycodo Discourse Forum <https://discourse.kylegabriel.com>`__ (the `old forum <https://kylegabriel.com/forum>`__ is being phased out, registration closed)
+`Mycodo Forum <https://forum.kylegabriel.com>`__ (the `old forum <https://kylegabriel.com/forum>`__ is being phased out, registration closed)
 
 `Mycodo Discord <https://discord.gg/kmDNky4ZHZ>`__
 
