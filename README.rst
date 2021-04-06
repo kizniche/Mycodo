@@ -30,9 +30,14 @@ Discussion
 
 `Mycodo Issues (Bug Reports/Feature Requests) <https://github.com/kizniche/Mycodo/issues>`__
 
-`Mycodo Forum <https://kylegabriel.com/forum>`__
+|ss| `Mycodo Forum <https://kylegabriel.com/forum>`__ |se| `Mycodo Forum <https://discourse.kylegabriel.com>`__
 
 `Mycodo Discord <https://discord.gg/kmDNky4ZHZ>`__
+
+Bug in the Mycodo Software
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you believe there is a bug in the Mycodo software, first search through the guthub `Issues <https://github.com/kizniche/Mycodo/issues>`__ and see if your issue has already recently been discussed or resolved. If your issue is novel or significantly mre recent than a similar one, you should create a `New Issue <https://github.com/kizniche/Mycodo/issues/new>`__. When creating a new issue, make sure to read all information in the issue template and follow the instructions. Replace the template text with the information being requested (e.g. "step 1" under "Steps to Reproduce the issue" should be replaced with the actual steps to reproduce the issue). The more information you provide, the easier it is to reproduce and diagnose the issue. If the issue is not able to reproduced because not enough information is provided, it may delay or prevent solving the issue.
 
 Donate
 ------
@@ -143,29 +148,6 @@ If the install is successful, the web user interface should be accessible by nav
 If you receive an error during the install that you believe is preventing your system from operating, please `create an issue <https://github.com/kizniche/Mycodo/issues>`__ with the install log attached. If you would first like to attempt to diagnose the issue yourself, see `Diagnosing Issues <#diagnosing-issues>`__.
 
 A minimal set of anonymous usage statistics are collected to help improve development. No identifying information is saved from the information that is collected and it is only used to improve Mycodo. No other sources will have access to this information. The data collected is mainly what and how many features are used, and other similar information. The data that's collected can be viewed from the 'View collected statistics' link in the ``Settings -> General`` page. There is an opt out option on the General Settings page.
-
-Support
--------
-
-Before making a post to the forum or issue tracker on github, please read the
-`Manual <https://kizniche.github.io/Mycodo>`__.
-
-Need assistance with Mycodo
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If Mycodo is supposedly operating correctly and you would like assistance with how to configure the system or to merely discuss something related to Mycodo, do a search on the `Mycodo Forum <https://kylegabriel.com/forum/mycodo/>`__ for a similar discussion. If a similar topic doesn't already exist on the forum, create a new post in the appropriate subforum.
-
-Bug in the Mycodo Software
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you believe there is a bug in the Mycodo software, first search through the guthub `Issues <https://github.com/kizniche/Mycodo/issues>`__ and see if your issue has already recently been discussed or resolved. If your issue is novel or significantly mre recent than a similar one, you should create a `New Issue <https://github.com/kizniche/Mycodo/issues/new>`__. When creating a new issue, make sure to read all information in the issue template and follow the instructions. Replace the template text with the information being requested (e.g. "step 1" under "Steps to Reproduce the issue" should be replaced with the actual steps to reproduce the issue). The more information you provide, the easier it is to reproduce and diagnose the issue. If the issue is not able to reproduced because not enough information is provided, it may delay or prevent solving the issue.
-
-Manual
-------
-
-The Mycodo Manual may be found at `https://kizniche.github.io/Mycodo <https://kizniche.github.io/Mycodo>`__
-
-The `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__ also contains useful information.
 
 REST API
 --------
@@ -523,6 +505,10 @@ Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更�
    :target: https://doi.org/10.5281/zenodo.824199
 .. |Mycodo| image:: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/05/Mycodo-3.6.0-tango-Graph-2016-05-21-11-15-26.png
    :target: https://kylegabriel.com/projects/
+.. |ss| raw:: html
+   <strike>
+.. |se| raw:: html
+   </strike>
 
 Thanks
 ------
