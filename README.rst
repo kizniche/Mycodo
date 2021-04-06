@@ -30,7 +30,7 @@ Discussion
 
 `Mycodo Issues (Bug Reports/Feature Requests) <https://github.com/kizniche/Mycodo/issues>`__
 
-|ss| `Mycodo Forum <https://kylegabriel.com/forum>`__ |se| `Mycodo Forum <https://discourse.kylegabriel.com>`__
+`Mycodo Forum <https://discourse.kylegabriel.com>`__ (old `Forum <https://kylegabriel.com/forum>`__ being phased out, registration currently closed)
 
 `Mycodo Discord <https://discord.gg/kmDNky4ZHZ>`__
 
@@ -505,10 +505,6 @@ Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更�
    :target: https://doi.org/10.5281/zenodo.824199
 .. |Mycodo| image:: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/05/Mycodo-3.6.0-tango-Graph-2016-05-21-11-15-26.png
    :target: https://kylegabriel.com/projects/
-.. |ss| raw:: html
-   <strike>
-.. |se| raw:: html
-   </strike>
 
 Thanks
 ------
