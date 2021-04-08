@@ -3,7 +3,11 @@
 import calendar
 import datetime
 import glob
+import json
 import logging
+import os
+import re
+import resource
 import socket
 import subprocess
 import sys
@@ -12,9 +16,6 @@ from collections import OrderedDict
 from importlib import import_module
 
 import flask_login
-import os
-import re
-import resource
 from flask import current_app
 from flask import flash
 from flask import redirect
@@ -1468,7 +1469,7 @@ def page_function():
 
         # Actions
         elif form_actions.save_action.data:
-            utils_function.action_mod(form_actions)
+            utils_function.action_mod(form_actions, request.form)
         elif form_actions.delete_action.data:
             utils_function.action_del(form_actions)
 
@@ -1512,6 +1513,14 @@ def page_function():
 
     custom_options_values_controllers = parse_custom_option_values(
         function, dict_controller=dict_controllers)
+
+    # TODO: Update actions to use single-file modules and be consistent with other custom_options
+    custom_options_values_actions = {}
+    for each_action in actions:
+        try:
+            custom_options_values_actions[each_action.unique_id] = json.loads(each_action.custom_options)
+        except:
+            custom_options_values_actions[each_action.unique_id] = {}
 
     # Create lists of built-in and custom functions
     choices_functions = []
@@ -1649,6 +1658,7 @@ def page_function():
                            conditions_dict=conditions_dict,
                            controllers=controllers,
                            function=function,
+                           custom_options_values_actions=custom_options_values_actions,
                            custom_options_values_controllers=custom_options_values_controllers,
                            dict_controllers=dict_controllers,
                            dict_measurements=dict_measurements,

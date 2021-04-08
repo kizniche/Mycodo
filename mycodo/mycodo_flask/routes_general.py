@@ -261,8 +261,6 @@ def last_data(unique_id, measure_type, measurement_id, period):
             INFLUXDB_DATABASE)
 
         if measure_type in ['input', 'math', 'function', 'output', 'pid']:
-            if unique_id == "9a8d7ebb-08f8-4803-a1f7-3aa2db3c9bde":
-                logger.error("TEST00: {}".format(measure_type))
             measure = DeviceMeasurements.query.filter(
                 DeviceMeasurements.unique_id == measurement_id).first()
         else:
@@ -277,9 +275,6 @@ def last_data(unique_id, measure_type, measurement_id, period):
         channel, unit, measurement = return_measurement_info(
             measure, conversion)
 
-        if unique_id == "9a8d7ebb-08f8-4803-a1f7-3aa2db3c9bde":
-            logger.error("TEST01: {}, {}, {}".format(channel, unit, measurement))
-
         if hasattr(measure, 'measurement_type') and measure.measurement_type == 'setpoint':
             setpoint_pid = PID.query.filter(PID.unique_id == measure.device_id).first()
             if setpoint_pid and ',' in setpoint_pid.measurement:
@@ -290,10 +285,6 @@ def last_data(unique_id, measure_type, measurement_id, period):
                     conversion = Conversion.query.filter(
                         Conversion.unique_id == setpoint_measurement.conversion_id).first()
                     _, unit, measurement = return_measurement_info(setpoint_measurement, conversion)
-
-        if unique_id == "9a8d7ebb-08f8-4803-a1f7-3aa2db3c9bde":
-            logger.error("TEST02")
-
         try:
             if period != '0':
                 query_str = query_string(
@@ -310,9 +301,6 @@ def last_data(unique_id, measure_type, measurement_id, period):
 
             raw_data = dbcon.query(query_str).raw
 
-            if unique_id == "9a8d7ebb-08f8-4803-a1f7-3aa2db3c9bde":
-                logger.error("TEST03")
-
             number = len(raw_data['series'][0]['values'])
             time_raw = raw_data['series'][0]['values'][number - 1][0]
             value = raw_data['series'][0]['values'][number - 1][1]
@@ -321,9 +309,6 @@ def last_data(unique_id, measure_type, measurement_id, period):
             dt = date_parse(time_raw)
             timestamp = calendar.timegm(dt.timetuple()) * 1000
             live_data = '[{},{}]'.format(timestamp, value)
-
-            if unique_id == "9a8d7ebb-08f8-4803-a1f7-3aa2db3c9bde":
-                logger.error("TEST04: {}".format(live_data))
 
             return Response(live_data, mimetype='text/json')
         except KeyError:

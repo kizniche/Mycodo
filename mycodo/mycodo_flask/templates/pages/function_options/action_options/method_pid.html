@@ -19,3 +19,6 @@
 <div class="col-12">
   <strong>{{_('PID')}}: {{_('Set Method')}}</strong>: {{_('Select a method to set the PID to use.')}}
 </div>
+<div class="col-12">
+    <strong>self.run_action("{{"{" + each_action.unique_id.split('-')[0] + "}"}}")</strong> {{_('will execute only this action. <strong>self.run_all_actions()</strong> will execute all actions sequentially.')}}
+</div>

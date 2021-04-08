@@ -1,11 +1,10 @@
 # coding=utf-8
+import json
 import logging
 import os
 import subprocess
 import threading
 import time
-
-from sqlalchemy import and_
 
 from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import INSTALL_DIRECTORY
@@ -314,6 +313,34 @@ def action_pause(cond_action, message):
         sec=cond_action.pause_duration)
 
     time.sleep(cond_action.pause_duration)
+    return message
+
+
+def action_mqtt_publish(cond_action, message, value):
+    import paho.mqtt.publish as publish
+
+    try:
+        custom_options = json.loads(cond_action.custom_options)
+        auth_dict = None
+        if custom_options['login']:
+            auth_dict = {
+                "username": custom_options['username'],
+                "password": custom_options['password']
+            }
+        publish.single(
+            custom_options['topic'],
+            value,
+            hostname=custom_options['hostname'],
+            port=custom_options['port'],
+            client_id=custom_options['clientid'],
+            keepalive=custom_options['keepalive'],
+            auth=auth_dict)
+        message += " MQTT Publish '{value}'.".format(value=value)
+    except Exception as err:
+        msg = " Could not execute MQTT Publish: Malformed JSON custom_options: {}".format(err)
+        logger.error(msg)
+        message += msg
+
     return message
 
 
@@ -965,6 +992,7 @@ def action_system_shutdown(message):
 
 def trigger_action(
         cond_action_id,
+        value=None,
         message='',
         note_tags=None,
         email_recipients=None,
@@ -980,6 +1008,7 @@ def trigger_action(
     passed back to this function in order to append to those lists.
 
     :param cond_action_id: unique_id of action
+    :param value: a variable to be sent to the action
     :param message: message string to append to that will be sent back
     :param note_tags: list of note tags to use if creating a note
     :param email_recipients: list of email addresses to notify if sending an email
@@ -1094,6 +1123,8 @@ def trigger_action(
             message = action_system_restart(message)
         elif cond_action.action_type == 'system_shutdown':
             message = action_system_shutdown(message)
+        elif cond_action.action_type == 'mqtt_publish':
+            message = action_mqtt_publish(cond_action, message, value=value)
 
     except Exception:
         logger_actions.exception("Error triggering action:")
@@ -1147,6 +1178,10 @@ def trigger_function_actions(function_id, message='', debug=False):
         Actions.function_id == function_id).all()
 
     for cond_action in actions:
+        if cond_action.action_type == 'mqtt_publish':
+            continue  # Actions to skip when triggering all actions
+                      # TODO: incorporate into single-file module when refactored
+
         (message,
          note_tags,
          email_recipients,

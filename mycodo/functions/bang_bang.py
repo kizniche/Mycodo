@@ -185,7 +185,7 @@ class CustomModule(AbstractController, threading.Thread):
                     self.measurement_device_id,
                     self.measurement_measurement_id,
                     self.output_device_id,
-                    self.output_channel,                    
+                    self.output_channel,
                     self.setpoint,
                     self.hysteresis,
                     self.direction,

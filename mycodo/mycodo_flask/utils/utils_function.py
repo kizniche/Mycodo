@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
 import threading
 
@@ -355,6 +356,21 @@ def action_add(form):
         if form.action_type.data == 'command':
             new_action.do_output_state = 'mycodo'  # user to execute shell command as
 
+        elif form.action_type.data == 'mqtt_publish':
+            # Fill in default values
+            # TODO: Future improvements to actions will be single-file modules, making this obsolete
+            custom_options = {
+                "hostname": "localhost",
+                "port": 1883,
+                "topic": "paho/test/single",
+                "keepalive": 60,
+                "clientid": "mycodo_mqtt_client",
+                "login": False,
+                "username": "user",
+                "password": ""
+            }
+            new_action.custom_options = json.dumps(custom_options)
+
         if not error:
             new_action.save()
 
@@ -371,7 +387,7 @@ def action_add(form):
         return 1
 
 
-def action_mod(form):
+def action_mod(form, request_form):
     """Modify a Conditional Action"""
     error = []
     action = '{action} {controller}'.format(
@@ -472,6 +488,25 @@ def action_mod(form):
         elif mod_action.action_type in ['system_restart',
                                         'system_shutdown']:
             pass  # No options
+
+        elif mod_action.action_type == 'mqtt_publish':
+            try:
+                custom_options = {
+                    "hostname": request_form['hostname'],
+                    "port": int(request_form['port']),
+                    "topic": request_form['topic'],
+                    "keepalive": int(request_form['keepalive']),
+                    "clientid": request_form['clientid'],
+                    "username": request_form['username'],
+                    "password": request_form['password']
+                }
+                if 'login' in request_form:
+                    custom_options["login"] = True
+                else:
+                    custom_options["login"] = False
+                mod_action.custom_options = json.dumps(custom_options)
+            except:
+                error.append("")
 
         if not error:
             db.session.commit()
