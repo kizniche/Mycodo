@@ -6,7 +6,7 @@ labels: ''
 assignees: ''
 
 ---
-Please first read [How to write a good bug report](https://forum.kylegabriel.com/t/how-to-write-a-good-bug-report/71).
+Please first read: How to write a good bug report at https://forum.kylegabriel.com/t/how-to-write-a-good-bug-report/71
 
 Please DO NOT OPEN AN ISSUE:
 
