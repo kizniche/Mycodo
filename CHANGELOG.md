@@ -15,6 +15,8 @@
  - Add support for SHT41x based input devices 
  - Add support for Adafruit's i2c capacitive soil sensor input devices
  - Add Function Action: MQTT Publish
+ - Add ability to set camera stream frames per second
+ - Add missing stream resolution option to opencv cameras
 
 ### Miscellaneous
 

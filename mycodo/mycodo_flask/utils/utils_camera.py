@@ -110,6 +110,11 @@ def camera_mod(form_camera):
         mod_camera.path_timelapse = form_camera.path_timelapse.data
         mod_camera.path_video = form_camera.path_video.data
 
+        if form_camera.stream_fps.data:
+            if form_camera.stream_fps.data < 1:
+                error.append("Stream FPS cannot be less than 1")
+            mod_camera.stream_fps = form_camera.stream_fps.data
+
         if mod_camera.library == 'fswebcam':
             mod_camera.device = form_camera.device.data
             mod_camera.custom_options = form_camera.custom_options.data
@@ -130,6 +135,8 @@ def camera_mod(form_camera):
             mod_camera.picamera_image_effect = form_camera.picamera_image_effect.data
         elif mod_camera.library == 'opencv':
             mod_camera.opencv_device = form_camera.opencv_device.data
+            mod_camera.resolution_stream_width = form_camera.resolution_stream_width.data
+            mod_camera.resolution_stream_height = form_camera.resolution_stream_height.data
             mod_camera.hflip = form_camera.hflip.data
             mod_camera.vflip = form_camera.vflip.data
             mod_camera.rotation = form_camera.rotation.data
@@ -142,7 +149,10 @@ def camera_mod(form_camera):
             mod_camera.hue = form_camera.hue.data
             mod_camera.saturation = form_camera.saturation.data
             mod_camera.white_balance = form_camera.white_balance.data
-        elif mod_camera.library in ['http_address', 'http_address_requests']:
+        elif mod_camera.library == 'http_address':
+            mod_camera.url_still = form_camera.url_still.data
+            mod_camera.url_stream = form_camera.url_stream.data
+        elif mod_camera.library == 'http_address_requests':
             mod_camera.url_still = form_camera.url_still.data
             mod_camera.url_stream = form_camera.url_stream.data
         else:
