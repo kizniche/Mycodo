@@ -72,6 +72,8 @@ def measurement_mod(form, return_url):
                 mod_meas.rescaled_measurement = ''
                 mod_meas.rescaled_unit = ''
 
+            mod_meas.rescale_method = form.rescale_method.data
+            mod_meas.rescale_equation = form.rescale_equation.data
             mod_meas.scale_from_min = form.scale_from_min.data
             mod_meas.scale_from_max = form.scale_from_max.data
             mod_meas.scale_to_min = form.scale_to_min.data

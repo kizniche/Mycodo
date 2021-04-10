@@ -18,11 +18,13 @@
  - Add ability to set camera stream frames per second
  - Add missing stream resolution option to opencv cameras
  - Add ability for Atlas Scientific Peristaltic Pump Outputs to run in reverse
+ - Add new ADC measurement rescaling method: Equation
 
 ### Miscellaneous
 
  - Add Units kilowatt-hour and Watt
  - Specify package versions for pypi dependencies
+ - Update python libraries
 
 
 ## 8.9.2 (2021-03-16)

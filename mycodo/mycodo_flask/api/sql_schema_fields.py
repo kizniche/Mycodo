@@ -36,6 +36,8 @@ device_measurement_fields = api.model('Device Measurement Settings Fields', {
     'invert_scale': fields.Boolean,
     'rescaled_measurement': fields.String,
     'rescaled_unit': fields.String,
+    'rescale_method': fields.String,
+    'rescale_equation': fields.String,
     'scale_from_min': fields.Float,
     'scale_from_max': fields.Float,
     'scale_to_min': fields.Float,
