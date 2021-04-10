@@ -17,6 +17,7 @@
  - Add Function Action: MQTT Publish
  - Add ability to set camera stream frames per second
  - Add missing stream resolution option to opencv cameras
+ - Add ability for Atlas Scientific Peristaltic Pump Outputs to run in reverse
 
 ### Miscellaneous
 

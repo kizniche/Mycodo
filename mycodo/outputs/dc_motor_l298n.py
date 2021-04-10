@@ -229,6 +229,10 @@ class OutputModule(AbstractOutput):
             self.logger.error(msg)
             return msg
 
+        if amount is not None and amount < 0:
+            self.logger.error("Amount cannot be less than 0")
+            return
+
         if state == 'on' and output_type == 'vol' and amount:
             if self.currently_dispensing:
                 self.logger.debug("DC motor instructed to dispense volume while it's already dispensing a volume. "
