@@ -178,18 +178,13 @@ def constraints_pass_positive_value(mod_controller, value):
 
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'lcd_16x2_i2c',
-    'function_name': 'LCD: Generic 16x2 (I2C)',
+    'function_name_unique': 'display_generic_lcd_16x2_i2c',
+    'function_name': 'Display: Generic LCD 16x2 (I2C)',
+    'function_library': 'smbus2',
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
 
-    'message': 'This Function outputs to an LCD. Since this LCD can display 2 lines at a time, channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 2 lines that are displayed are channels 0 and 1, then 2 and 3, and so on. After all channels have been displayed on the LCD, it will cycle back to the beginning.',
-
-    'options_enabled': [
-        'custom_options'
-    ],
-
-    'dependencies_module': [],
+    'message': 'This Function outputs to a generic 16x2 LCD display via I2C. Since this display can show 2 lines at a time, channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 2 lines that are displayed are channels 0 and 1, then 2 and 3, and so on. After all channels have been displayed, it will cycle back to the beginning.',
 
     'custom_options': [
         {

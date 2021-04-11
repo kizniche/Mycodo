@@ -54,18 +54,86 @@
       </div>
     </div>
 
-    <div class="row small-gutters" style="padding-bottom: 0.3em">
+    {% if each_function.device in dict_controllers %}
+
+    <div class="row small-gutters" style="padding: 0.5em">
+
+      {% if 'function_manufacturer' in dict_controllers[each_function.device] %}
+      <div class="col-12">
+        {{_("Manufacturer")}}: {{dict_controllers[each_function.device]['function_manufacturer']}}
+      </div>
+      {% endif %}
+
+      {% if 'function_name' in dict_controllers[each_function.device] %}
+      <div class="col-12">
+        {{_("Name")}}: {{dict_controllers[each_function.device]['function_name']}}
+      </div>
+      {% endif %}
+
+      {% if 'measurements_name' in dict_controllers[each_function.device] %}
+      <div class="col-12">
+        {{_("Measurements")}}: {{dict_controllers[each_function.device]['measurements_name']}}
+      </div>
+      {% endif %}
+
+      {% if 'dependencies_module' in dict_controllers[each_function.device] and dict_controllers[each_function.device]['dependencies_module'] %}
+        <div class="col-12">
+        {{_("Library")}}:
+        {% for each_lib in dict_controllers[each_function.device]['dependencies_module'] -%}
+          {% if each_lib[0] == 'pip-pypi' %}
+              {% if "==" in each_lib[2] %}
+            <a href="https://pypi.org/project/{{each_lib[2].split('==')[0]}}/{{each_lib[2].split('==')[1]}}" target="_blank">{{each_lib[2].split('==')[0]}}</a>
+              {% else %}
+            <a href="https://pypi.org/project/{{each_lib[2]}}" target="_blank">{{each_lib[2]}}</a>
+              {%  endif %}
+          {% elif each_lib[0] == 'internal' %}
+            {{each_lib[2]}}
+          {% else %}
+            {{each_lib[1]}}
+          {% endif %}
+          {%- if not loop.last %}, {% endif %}
+        {% endfor %}
+        </div>
+      {% endif %}
+
+      {% set manufacturer_url = 'url_manufacturer' in dict_controllers[each_function.device] and dict_controllers[each_function.device]['url_manufacturer'] %}
+      {% set datasheet_url = 'url_datasheet' in dict_controllers[each_function.device] and dict_controllers[each_function.device]['url_datasheet'] %}
+      {% set product_purchase_url = 'url_product_purchase' in dict_controllers[each_function.device] and dict_controllers[each_function.device]['url_product_purchase'] %}
+      {% set additional_url = 'url_additional' in dict_controllers[each_function.device] and dict_controllers[each_function.device]['url_additional'] %}
+
+      {% if manufacturer_url or datasheet_url or product_purchase_url or additional_url %}
+      <div class="col-12">
+        {{_("Literature") + ": "}}
+        {%- if manufacturer_url -%}
+        {{_("Manufacturer")}} {% for each_url in dict_controllers[each_function.device]['url_manufacturer'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
+        {%- endif -%}
+        {%- if datasheet_url -%}
+        {% if manufacturer_url %}; {% endif -%}
+        {{_("Datasheet")}} {% for each_url in dict_controllers[each_function.device]['url_datasheet'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
+        {%- endif -%}
+        {%- if product_purchase_url -%}
+        {% if manufacturer_url or datasheet_url %}; {% endif -%}
+        {{_("Product")}} {% for each_url in dict_controllers[each_function.device]['url_product_purchase'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
+        {%- endif -%}
+        {%- if additional_url -%}
+        {% if manufacturer_url or datasheet_url or product_purchase_url %}; {% endif -%}
+        {{_("Additional")}} {% for each_url in dict_controllers[each_function.device]['url_additional'] %}<a href="{{each_url}}" target="_blank">Link {{loop.index}}</a>{{ ", " if not loop.last }}{% endfor %}
+        {%- endif -%}.
+      </div>
+      {% endif %}
 
       {% if 'message' in dict_controllers[each_function.device] %}
-      <div class="col-12" style="padding-bottom: 0.5em">
+      <div class="col-12" style="padding-top: 0.3em">
         {{dict_controllers[each_function.device]['message']|safe}}
       </div>
       {% endif %}
 
+      <div class="col-12" style="padding-top: 1em"></div>
+
       <div class="col-auto">
         {{form_function.log_level_debug.label(class_='control-label')}}
         <div class="input-group-text">
-          <input id="log_level_debug" name="log_level_debug" type="checkbox" title="{{dict_translation['log_level_debug']['phrase']}}" value="y"{% if each_function.log_level_debug %} checked{% endif %}>
+         <input id="log_level_debug" name="log_level_debug" type="checkbox" title="{{dict_translation['log_level_debug']['phrase']}}" value="y"{% if each_function.log_level_debug %} checked{% endif %}>
         </div>
       </div>
 
@@ -86,6 +154,8 @@
     {% endif %}
 
     </div>
+
+    {% endif %}
 
       {%- set function_channel_exists = [] -%}
       {% for each_function_channel in function_channel if each_function_channel.function_id == each_function.unique_id %}
