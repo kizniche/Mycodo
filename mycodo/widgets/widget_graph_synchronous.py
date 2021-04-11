@@ -46,7 +46,7 @@ from mycodo.utils.system_pi import return_measurement_info
 logger = logging.getLogger(__name__)
 
 
-def execute_at_creation(new_widget, dict_widget):
+def execute_at_creation(error, new_widget, dict_widget):
     # Create initial default values
     custom_options_json = json.loads(new_widget.custom_options)
     custom_options_json['enable_manual_y_axis'] = False
@@ -58,7 +58,7 @@ def execute_at_creation(new_widget, dict_widget):
     custom_options_json['custom_yaxes'] = ""
     custom_options_json['custom_colors'] = ""
     new_widget.custom_options = json.dumps(custom_options_json)
-    return new_widget
+    return error, new_widget
 
 
 def execute_at_modification(

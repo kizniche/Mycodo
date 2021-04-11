@@ -61,9 +61,9 @@ class PythonInputRun:
     return input_python_code_run, file_run
 
 
-def execute_at_creation(new_input, dict_inputs=None):
+def execute_at_creation(error, new_input, dict_inputs=None):
     generate_code(new_input)
-    return new_input
+    return error, new_input
 
 def execute_at_modification(
         mod_input,
@@ -184,6 +184,7 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.input_dev = input_dev
         self.python_code = None
 
         if not testing:
@@ -215,7 +216,7 @@ class InputModule(AbstractInput):
 
         # If the file to execute doesn't exist, generate it
         if not os.path.exists(file_run):
-            execute_at_creation(self.unique_id, self.python_code, None)
+            execute_at_creation([], self.input_dev)
 
         with open(file_run, 'r') as file:
             self.logger.debug("Python Code:\n{}".format(file.read()))

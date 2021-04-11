@@ -67,7 +67,7 @@ channels_dict = {
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'example_function_multiple_channels',
-    'function_name': 'Function: Example: Multiple Channels',
+    'function_name': 'Example: Multiple Channels',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'measurements_variable_amount': True,
@@ -114,6 +114,7 @@ class CustomModule(AbstractController, threading.Thread):
         super(CustomModule, self).__init__(ready, unique_id=unique_id, name=__name__)
 
         self.unique_id = unique_id
+        self.options_channels = {}
         self.log_level_debug = None
         self.timer_loop = time.time()
 
@@ -135,10 +136,10 @@ class CustomModule(AbstractController, threading.Thread):
         self.log_level_debug = controller.log_level_debug
         self.set_log_level_debug(self.log_level_debug)
 
-        input_channels = db_retrieve_table_daemon(
+        function_channels = db_retrieve_table_daemon(
             FunctionChannel).filter(FunctionChannel.function_id == self.unique_id).all()
         self.options_channels = self.setup_custom_channel_options_json(
-            FUNCTION_INFORMATION['custom_channel_options'], input_channels)
+            FUNCTION_INFORMATION['custom_channel_options'], function_channels)
 
         self.logger.debug(
             "Custom controller started with options: {}".format( self.float_input))

@@ -10,6 +10,7 @@
  - Fix inability to install picamera library on some Pi 4s ([#967](https://github.com/kizniche/mycodo/issues/967))
  - Fix VPD Function saving and calculating pressure conversion ([#978](https://github.com/kizniche/mycodo/issues/978))
  - Fix pressure conversion equations ([#978](https://github.com/kizniche/mycodo/issues/978))
+ - Fix issues with Function channels/measurements
 
 ### Features
 
@@ -21,6 +22,7 @@
  - Add missing stream resolution option to opencv cameras
  - Add ability for Atlas Scientific Peristaltic Pump Outputs to run in reverse
  - Add new ADC measurement rescaling method: Equation
+ - Add Function: LCD Generic 16x2 (I2C)
 
 ### Miscellaneous
 

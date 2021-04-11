@@ -12,6 +12,7 @@ from sqlalchemy import and_
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import PID_INFO
 from mycodo.config_translations import TRANSLATIONS
+from mycodo.databases import set_uuid
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
@@ -161,6 +162,13 @@ if measurement is not None:  # If a measurement exists
             error, custom_options = custom_options_return_json(
                 error, dict_controllers, device=function_name, use_defaults=True)
             new_func.custom_options = custom_options
+
+            new_func.unique_id = set_uuid()
+
+            if ('execute_at_creation' in dict_controllers[new_func.device] and
+                    not current_app.config['TESTING']):
+                error, new_func = dict_controllers[new_func.device]['execute_at_creation'](
+                    error, new_func, dict_controllers[new_func.device])
 
             if not error:
                 new_func.save()

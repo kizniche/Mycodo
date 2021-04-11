@@ -19,6 +19,7 @@ from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.config_devices_units import UNITS
 from mycodo.config_devices_units import UNIT_CONVERSIONS
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import Output
@@ -159,8 +160,8 @@ def parse_custom_option_values_json(
     return custom_options_values
 
 
-# TODO: Combine these next two functions by naming output_id and input_id the same
-def parse_custom_option_values_channels_json(
+# TODO: Combine parse_custom_option_values_*_channels_json() functions by naming output_id and input_id the same
+def parse_custom_option_values_output_channels_json(
         controllers,
         dict_controller=None,
         key_name='custom_channel_options'):
@@ -203,6 +204,57 @@ def parse_custom_option_values_channels_json(
                             elif each_option['cast_value'] == 'float':
                                 each_option['default_value'] = float(each_option['default_value'])
                         custom_options_values[each_controller.output_id][each_controller.channel][each_option['id']] = each_option['default_value']
+
+    return custom_options_values
+
+
+def parse_custom_option_values_function_channels_json(
+        controllers,
+        dict_controller=None,
+        key_name='custom_channel_options'):
+    # Check if controllers is iterable or a single controller
+    try:
+        _ = iter(controllers)
+    except TypeError:
+        iter_controller = [controllers]  # Not iterable
+    else:
+        iter_controller = controllers  # iterable
+
+    custom_options_values = {}
+    for each_controller in iter_controller:
+        if each_controller.function_id not in custom_options_values:
+            custom_options_values[each_controller.function_id] = {}
+        if each_controller.custom_options:
+            custom_options_values[each_controller.function_id][each_controller.channel] = json.loads(
+                each_controller.custom_options)
+
+        if dict_controller:
+            # Set default values if option not saved in database entry
+            function = db_retrieve_table(CustomController, unique_id=each_controller.function_id)
+            if not function:
+                continue
+            try:
+                function.unique_id
+            except:
+                continue
+            dev_name = function.device
+
+            if dev_name in dict_controller and key_name in dict_controller[dev_name]:
+                dict_custom_options = dict_controller[dev_name][key_name]
+            else:
+                dict_custom_options = {}
+            for each_option in dict_custom_options:
+                if 'id' in each_option and 'default_value' in each_option:
+                    if each_controller.channel not in custom_options_values[each_controller.function_id]:
+                        custom_options_values[each_controller.function_id][each_controller.channel] = {}
+                    if each_option['id'] not in custom_options_values[each_controller.function_id][each_controller.channel]:
+                        # If a select type has cast_value set, cast the value as that type
+                        if each_option['type'] == 'select' and 'cast_value' in each_option:
+                            if each_option['cast_value'] == 'integer':
+                                each_option['default_value'] = int(each_option['default_value'])
+                            elif each_option['cast_value'] == 'float':
+                                each_option['default_value'] = float(each_option['default_value'])
+                        custom_options_values[each_controller.function_id][each_controller.channel][each_option['id']] = each_option['default_value']
 
     return custom_options_values
 

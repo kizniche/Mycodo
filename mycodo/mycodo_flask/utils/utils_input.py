@@ -242,8 +242,8 @@ def input_add(form_add):
 
         if ('execute_at_creation' in dict_inputs[new_input.device] and
                 not current_app.config['TESTING']):
-            new_input = dict_inputs[new_input.device]['execute_at_creation'](
-                new_input, dict_inputs[new_input.device])
+            error, new_input = dict_inputs[new_input.device]['execute_at_creation'](
+                error, new_input, dict_inputs[new_input.device])
 
         try:
             if not error:

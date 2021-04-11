@@ -10,17 +10,26 @@ logger = logging.getLogger("mycodo.device.lcd_generic")
 class LCD_Generic:
     """Output to a generic I2C LCD (16x2 and 20x4 LCD with I2C backpack)"""
 
-    def __init__(self, lcd_dev):
-        self.logger = logging.getLogger(
-            "{}_{}".format(__name__, lcd_dev.unique_id.split('-')[0]))
+    def __init__(self, lcd_dev=None, lcd_settings_dict=None):
+
 
         self.lcd_initialized = False
         self.lcd_is_on = False
 
-        self.i2c_address = int(lcd_dev.location, 16)
-        self.i2c_bus = lcd_dev.i2c_bus
-        self.lcd_x_characters = lcd_dev.x_characters
-        self.lcd_y_lines = lcd_dev.y_lines
+        if lcd_dev:
+            self.logger = logging.getLogger(
+                "{}_{}".format(__name__, lcd_dev.unique_id.split('-')[0]))
+            self.i2c_address = int(lcd_dev.location, 16)
+            self.i2c_bus = lcd_dev.i2c_bus
+            self.lcd_x_characters = lcd_dev.x_characters
+            self.lcd_y_lines = lcd_dev.y_lines
+        elif lcd_settings_dict:
+            self.logger = logging.getLogger(
+                "{}_{}".format(__name__, lcd_settings_dict["unique_id"].split('-')[0]))
+            self.i2c_address = int(lcd_settings_dict["i2c_address"], 16)
+            self.i2c_bus = lcd_settings_dict["i2c_bus"]
+            self.lcd_x_characters = lcd_settings_dict["x_characters"]
+            self.lcd_y_lines = lcd_settings_dict["y_lines"]
 
         self.LCD_LINE = {
             1: 0x80,

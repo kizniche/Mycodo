@@ -7,13 +7,13 @@
   <h5>Configure Measurements</h5>
 </div>
 
-    {% if 'measurements_rescale' in dict_options and dict_options['measurements_rescale'] %}
+  {% if 'measurements_rescale' in dict_options and dict_options['measurements_rescale'] %}
 
 <div class="col-12">
     Rescaling: If rescaling, set the Rescaled Measurement to the new measurement and unit and the Rescale Method to {{_('Linear')}} or {{_('Equation')}}. {{_('Linear')}} rescaling requires the {{dict_translation['scale_to_min']['title']}} and {{dict_translation['scale_to_max']['title']}} options be set. {{_('Equation')}} rescaling requires the {{_('Equation')}} option be set, with the variable "x" being replaced with the measurement and the result of the calculation being stored in the database.
 </div>
 
-        {% endif %}
+  {% endif %}
 
   {% for each_measurement in all_measurements %}
 

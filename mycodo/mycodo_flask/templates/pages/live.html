@@ -137,7 +137,9 @@
       {%- set each_function = table_function.query.filter(
                               and_(table_function.unique_id == each_order_function_id,
                                    table_function.is_activated)).first() -%}
-      {%- if each_function -%}
+      {%- set func_measurements = table_device_measurements.query.filter(table_device_measurements.device_id == each_function.unique_id).all() -%}
+
+      {%- if each_function and func_measurements -%}
         {%  set function_options = custom_options_values_controllers[each_function.unique_id] %}
         {% if "period" in function_options %}
           {% set function_period = function_options["period"] %}
@@ -159,7 +161,7 @@
 
         <div class="col-12 col-sm-6 text-right">
           {{_('Measurement')}} | {{_('Timestamp')}}
-        {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_function.unique_id).all() if each_meas.is_enabled %}
+        {% for each_meas in func_measurements if each_meas.is_enabled %}
           {% set measure_string = each_function.unique_id + '-function-' + each_meas.unique_id %}
           <div>
             <b><span id="{{measure_string}}-value">0.0</span>

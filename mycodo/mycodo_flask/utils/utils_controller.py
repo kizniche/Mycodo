@@ -36,6 +36,8 @@ def controller_mod(form_mod, request_form):
     dict_controllers = parse_function_information()
 
     try:
+        channels = FunctionChannel.query.filter(
+            FunctionChannel.function_id == form_mod.function_id.data).all()
         mod_controller = CustomController.query.filter(
             CustomController.unique_id == form_mod.function_id.data).first()
 
@@ -55,9 +57,6 @@ def controller_mod(form_mod, request_form):
                     each_measurement.is_enabled = True
                 else:
                     each_measurement.is_enabled = False
-
-        channels = FunctionChannel.query.filter(
-            FunctionChannel.function_id == form_mod.function_id.data)
 
         # Add or delete channels for variable measurement Inputs
         if ('measurements_variable_amount' in dict_controllers[mod_controller.device] and
@@ -99,7 +98,7 @@ def controller_mod(form_mod, request_form):
                             new_channel = FunctionChannel()
                             new_channel.name = ""
                             new_channel.function_id = mod_controller.unique_id
-                            new_measurement.channel = index
+                            new_channel.channel = index
 
                             error, custom_options = custom_channel_options_return_json(
                                 error, dict_controllers, request_form,
@@ -109,13 +108,65 @@ def controller_mod(form_mod, request_form):
 
                             new_channel.save()
 
-        # Generate string to save from custom options
-        error, custom_options = custom_options_return_json(
+        # Parse pre-save custom options for function device and its channels
+        try:
+            custom_options_dict_presave = json.loads(mod_controller.custom_options)
+        except:
+            logger.error("Malformed JSON")
+            custom_options_dict_presave = {}
+
+        custom_options_channels_dict_presave = {}
+        for each_channel in channels:
+            if each_channel.custom_options and each_channel.custom_options != "{}":
+                custom_options_channels_dict_presave[each_channel.channel] = json.loads(
+                    each_channel.custom_options)
+            else:
+                custom_options_channels_dict_presave[each_channel.channel] = {}
+
+        # Parse post-save custom options for function device and its channels
+        error, custom_options_json_postsave = custom_options_return_json(
             error, dict_controllers,
             request_form=request_form,
             device=mod_controller.device,
             use_defaults=True)
+        custom_options_dict_postsave = json.loads(custom_options_json_postsave)
+
+        custom_options_channels_dict_postsave = {}
+        for each_channel in channels:
+            error, custom_options_channels_json_postsave_tmp = custom_channel_options_return_json(
+                error, dict_controllers, request_form,
+                form_mod.function_id.data, each_channel.channel,
+                device=mod_controller.device, use_defaults=True)
+            custom_options_channels_dict_postsave[each_channel.channel] = json.loads(
+                custom_options_channels_json_postsave_tmp)
+
+        if 'execute_at_modification' in dict_controllers[mod_controller.device]:
+            # pass custom options to module prior to saving to database
+            (allow_saving,
+             mod_controller,
+             custom_options_dict,
+             custom_options_channels_dict) = dict_controllers[mod_controller.device]['execute_at_modification'](
+                mod_controller,
+                request_form,
+                custom_options_dict_presave,
+                custom_options_channels_dict_presave,
+                custom_options_dict_postsave,
+                custom_options_channels_dict_postsave)
+            custom_options = json.dumps(custom_options_dict)  # Convert from dict to JSON string
+            custom_channel_options = custom_options_channels_dict
+            if not allow_saving:
+                error.append("execute_at_modification() would not allow function options to be saved")
+        else:
+            # Don't pass custom options to module
+            custom_options = json.dumps(custom_options_dict_postsave)
+            custom_channel_options = custom_options_channels_dict_postsave
+
+        # Finally, save custom options for both function and channels
         mod_controller.custom_options = custom_options
+        for each_channel in channels:
+            if 'name' in custom_channel_options[each_channel.channel]:
+                each_channel.name = custom_channel_options[each_channel.channel]['name']
+            each_channel.custom_options = json.dumps(custom_channel_options[each_channel.channel])
 
         if not error:
             db.session.commit()
