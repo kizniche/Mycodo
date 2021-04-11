@@ -8,6 +8,8 @@
  - Fix SCD30 (CircuitPython) Input ([#963](https://github.com/kizniche/mycodo/issues/963))
  - Fix importing Mycodo Settings ZIP if custom modules were exported ([#967](https://github.com/kizniche/mycodo/issues/967))
  - Fix inability to install picamera library on some Pi 4s ([#967](https://github.com/kizniche/mycodo/issues/967))
+ - Fix VPD Function saving and calculating pressure conversion ([#978](https://github.com/kizniche/mycodo/issues/978))
+ - Fix pressure conversion equations ([#978](https://github.com/kizniche/mycodo/issues/978))
 
 ### Features
 
