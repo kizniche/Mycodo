@@ -7,6 +7,7 @@ import copy
 from flask_babel import lazy_gettext
 from sqlalchemy import and_
 
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
@@ -249,8 +250,8 @@ OUTPUT_INFORMATION = {
             'type': 'text',
             'default_value': '',
             'required': False,
-            'name': lazy_gettext('Name'),
-            'phrase': lazy_gettext('A name for this channel')
+            'name': TRANSLATIONS['name']['title'],
+            'phrase': TRANSLATIONS['name']['phrase']
         },
         {
             'id': 'state_startup',

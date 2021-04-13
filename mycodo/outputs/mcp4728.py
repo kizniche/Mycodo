@@ -4,6 +4,7 @@
 #
 from flask_babel import lazy_gettext
 
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -125,6 +126,14 @@ OUTPUT_INFORMATION = {
     ],
 
     'custom_channel_options': [
+        {
+            'id': 'name',
+            'type': 'text',
+            'default_value': '',
+            'required': False,
+            'name': TRANSLATIONS['name']['title'],
+            'phrase': TRANSLATIONS['name']['phrase']
+        },
         {
             'id': 'vref',
             'type': 'select',

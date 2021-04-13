@@ -4,6 +4,7 @@
 #
 from flask_babel import lazy_gettext
 
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -145,8 +146,8 @@ OUTPUT_INFORMATION = {
             'type': 'text',
             'default_value': '',
             'required': False,
-            'name': lazy_gettext('Name'),
-            'phrase': lazy_gettext('A name for this channel')
+            'name': TRANSLATIONS['name']['title'],
+            'phrase': TRANSLATIONS['name']['phrase']
         },
         {
             'id': 'state_startup',
