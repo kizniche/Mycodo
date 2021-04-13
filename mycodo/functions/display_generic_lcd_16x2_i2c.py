@@ -366,7 +366,8 @@ class CustomModule(AbstractController, threading.Thread):
         lines_display = {}
         for current_line in self.line_sets[self.current_line_set]:
             current_channel = (self.current_line_set * lcd_lines) + current_line
-            self.logger.debug("Current Line: {}, Channel: {}".format(current_line, current_channel))
+            self.logger.debug("Channel: {}, Set: {} Line: {}, ".format(
+                current_channel, self.current_line_set, current_line))
 
             try:
                 # Get measurement value and timestamp

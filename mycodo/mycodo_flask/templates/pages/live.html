@@ -137,7 +137,8 @@
       {%- set each_function = table_function.query.filter(
                               and_(table_function.unique_id == each_order_function_id,
                                    table_function.is_activated)).first() -%}
-      {%- set func_measurements = table_device_measurements.query.filter(table_device_measurements.device_id == each_function.unique_id).all() -%}
+      {%- set func_measurements = table_device_measurements.query.filter(
+                                      table_device_measurements.device_id == each_order_function_id).all() -%}
 
       {%- if each_function and func_measurements -%}
         {%  set function_options = custom_options_values_controllers[each_function.unique_id] %}
