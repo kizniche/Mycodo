@@ -23,6 +23,7 @@
  - Add ability for Atlas Scientific Peristaltic Pump Outputs to run in reverse
  - Add new ADC measurement rescaling method: Equation
  - Add Function: LCD Generic 16x2 (I2C)
+ - Add Input: Generic Analog pH/EC using ADS1115 ADC 
 
 ### Miscellaneous
 

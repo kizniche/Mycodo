@@ -312,3 +312,18 @@ class AbstractInput(AbstractBaseController):
             dict_custom_options = {}
         if option in dict_custom_options:
             return dict_custom_options[option]
+
+    def delete_custom_option(self, option):
+        try:
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_input = new_session.query(Input).filter(
+                    Input.unique_id == self.unique_id).first()
+                try:
+                    dict_custom_options = json.loads(mod_input.custom_options)
+                except:
+                    dict_custom_options = {}
+                dict_custom_options.pop(option)
+                mod_input.custom_options = json.dumps(dict_custom_options)
+                new_session.commit()
+        except Exception:
+            self.logger.exception("delete_custom_option")
