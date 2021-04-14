@@ -95,6 +95,8 @@ def custom_options_return_string(error, dict_options, mod_dev, request_form):
                                     mod_dev, float(request_form.get(key)))
                             if constraints_pass:
                                 value = float(request_form.get(key))
+                        elif 'required' in each_option and not each_option['required']:
+                            value = None
                         else:
                             error.append(
                                 "{name} must represent a float/decimal value "
@@ -111,6 +113,8 @@ def custom_options_return_string(error, dict_options, mod_dev, request_form):
                                     mod_dev, int(request_form.get(key)))
                             if constraints_pass:
                                 value = int(request_form.get(key))
+                        elif 'required' in each_option and not each_option['required']:
+                            value = None
                         else:
                             error.append(
                                 "{name} must represent an integer value "
@@ -218,6 +222,8 @@ def custom_options_return_json(
                                         mod_dev, float(request_form.get(key)))
                                 if constraints_pass:
                                     value = float(request_form.get(key))
+                            elif 'required' in each_option and not each_option['required']:
+                                value = None
                             else:
                                 error.append(
                                     "{name} must represent a float/decimal value "
@@ -234,6 +240,8 @@ def custom_options_return_json(
                                         mod_dev, int(request_form.get(key)))
                                 if constraints_pass:
                                     value = int(request_form.get(key))
+                            elif 'required' in each_option and not each_option['required']:
+                                value = None
                             else:
                                 error.append(
                                     "{name} must represent an integer value "
@@ -350,6 +358,8 @@ def custom_channel_options_return_json(
                                         mod_dev, float(request_form.get(key)))
                                 if constraints_pass:
                                     value = float(request_form.get(key))
+                            elif 'required' in each_option and not each_option['required']:
+                                value = None
                             else:
                                 error.append(
                                     "{name} must represent a float/decimal value "
@@ -366,6 +376,8 @@ def custom_channel_options_return_json(
                                         mod_dev, int(request_form.get(key)))
                                 if constraints_pass:
                                     value = int(request_form.get(key))
+                            elif 'required' in each_option and not each_option['required']:
+                                value = None
                             else:
                                 error.append(
                                     "{name} must represent an integer value "

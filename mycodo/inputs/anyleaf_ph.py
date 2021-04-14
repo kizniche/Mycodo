@@ -1,6 +1,8 @@
 # coding=utf-8
 import copy
 
+from flask_babel import lazy_gettext
+
 from mycodo.inputs.base_input import AbstractInput
 
 
@@ -44,10 +46,11 @@ INPUT_INFORMATION = {
         'i2c_location',
         'period',
     ],
-    'options_disabled': [],
 
     'dependencies_module': [
-        ('apt', 'python3-numpy', 'python3-numpy'),
+        ('apt', 'libjpeg-dev', 'libjpeg-dev'),
+        ('apt', 'zlib1g-dev', 'zlib1g-dev'),
+        ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
         ('apt', 'python3-scipy', 'python3-scipy'),
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
         ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.1'),
@@ -59,36 +62,45 @@ INPUT_INFORMATION = {
     'i2c_address_editable': False,
 
     'custom_options': [
-        # {
-        #     'id': 'temp_source',
-        #     'type': 'select_measurement',
-        #     'default_value': '',
-        #     'options_select': [
-        #         'Input',
-        #         'Function',
-        #         'Math'
-        #     ],
-        #     'name': lazy_gettext('Temperature compensation source. Leave at `Select one` to use the onboard sensor.'),
-        #     'phrase': lazy_gettext('Select a measurement for temperature compensation. If not selected, uses the onboard sensor.'),
-        # },
+        {
+            'id': 'temperature_comp_meas',
+            'type': 'select_measurement',
+            'default_value': '',
+            'options_select': [
+                'Input',
+                'Function',
+                'Math'
+            ],
+            'name': lazy_gettext('Temperature Compensation Measurement'),
+            'phrase': lazy_gettext('Select a measurement for temperature compensation')
+        },
+        {
+            'id': 'max_age',
+            'type': 'integer',
+            'default_value': 120,
+            'required': True,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': lazy_gettext('Temperature Compensation Max Age'),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use for temperature compensation')
+        },
         {
             'id': 'cal1_v',
             'type': 'float',
-            'default_value': 0.,
+            'default_value': 0,
             'name': 'Cal data: V1 (internal)',
             'phrase': 'Calibration data: Voltage'
         },
         {
             'id': 'cal1_ph',
             'type': 'float',
-            'default_value': 7.,
+            'default_value': 7.0,
             'name': 'Cal data: pH1 (internal)',
             'phrase': 'Calibration data: pH'
         },
         {
             'id': 'cal1_t',
             'type': 'float',
-            'default_value': 23.,
+            'default_value': 23.0,
             'name': 'Cal data: T1 (internal)',
             'phrase': 'Calibration data: Temperature'
         },
@@ -102,14 +114,14 @@ INPUT_INFORMATION = {
         {
             'id': 'cal2_ph',
             'type': 'float',
-            'default_value': 4.,
+            'default_value': 4.0,
             'name': 'Cal data: pH2 (internal)',
             'phrase': 'Calibration data: pH'
         },
         {
             'id': 'cal2_t',
             'type': 'float',
-            'default_value': 23.,
+            'default_value': 23.0,
             'name': 'Cal data: T2 (internal)',
             'phrase': 'Calibration data: Temperature'
         },
@@ -117,6 +129,7 @@ INPUT_INFORMATION = {
             'id': 'cal3_v',
             'type': 'float',
             'default_value': None,
+            'required': False,
             'name': 'Cal data: V3 (internal)',
             'phrase': 'Calibration data: Voltage'
         },
@@ -124,6 +137,7 @@ INPUT_INFORMATION = {
             'id': 'cal3_ph',
             'type': 'float',
             'default_value': None,
+            'required': False,
             'name': 'Cal data: pH3 (internal)',
             'phrase': 'Calibration data: pH'
         },
@@ -131,6 +145,7 @@ INPUT_INFORMATION = {
             'id': 'cal3_t',
             'type': 'float',
             'default_value': None,
+            'required': False,
             'name': 'Cal data: T3 (internal)',
             'phrase': 'Calibration data: Temperature'
         },
@@ -143,7 +158,7 @@ and press `Calibrate, slot 2`. Optionally, repeat a third time with `Calibrate, 
         {
             'id': 'calibration_ph',
             'type': 'float',
-            'default_value': 7.,
+            'default_value': 7.0,
             'name': 'Calibration buffer pH',
             'phrase': 'This is the nominal pH of the calibration buffer, usually labelled on the bottle.'
         },
@@ -162,30 +177,11 @@ and press `Calibrate, slot 2`. Optionally, repeat a third time with `Calibrate, 
             'type': 'button',
             'name': 'Calibrate, slot 3'
         },
-        # todo: Including this input will raise an error about `cannot convert string to float`
-        # todo when attempting calibration.
-        # {
-        #     'id': 'temperature_comp_meas',
-        #     'type': 'select_measurement',
-        #     'default_value': '',
-        #     'options_select': [
-        #         'Input',
-        #         'Function',
-        #         'Math'
-        #     ],
-        #     'name': lazy_gettext('Temperature Compensation Measurement'),
-        #     'phrase': lazy_gettext('Select a measurement for temperature compensation')
-        # },
-        # {
-        #     'id': 'max_age',
-        #     'type': 'integer',
-        #     'default_value': 120,
-        #     'required': True,
-        #     'constraints_pass': constraints_pass_positive_value,
-        #     'name': lazy_gettext('Temperature Compensation Max Age'),
-        #     'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use for temperature compensation')
-        # },
-
+        {
+            'id': 'clear_calibrate_slots',
+            'type': 'button',
+            'name': 'Clear Calibration Slots'
+        }
     ]
 }
 
@@ -197,10 +193,19 @@ class InputModule(AbstractInput):
 
         self.sensor = None
 
-        # todo: We've temporarily disabled offboard measurements.
-        # self.temperature_comp_meas_device_id = None
-        # self.temperature_comp_meas_measurement_id = None
-        # self.max_age = None
+        self.cal1_v = None
+        self.cal1_ph = None
+        self.cal1_t = None
+        self.cal2_v = None
+        self.cal2_ph = None
+        self.cal2_t = None
+        self.cal3_v = None
+        self.cal3_ph = None
+        self.cal3_t = None
+
+        self.temperature_comp_meas_device_id = None
+        self.temperature_comp_meas_measurement_id = None
+        self.max_age = None
 
         if not testing:
             self.setup_custom_options(
@@ -217,70 +222,16 @@ class InputModule(AbstractInput):
             address=int(str(self.input_dev.i2c_location), 16)
         )
 
-        # `default_value` above doesn't set the default in the database: custom options will initialize to None.
-        if self.get_custom_option("cal1_v"):
-            cal1_v = self.get_custom_option("cal1_v")
-        else:
-            cal1_v = 0.
-        if self.get_custom_option("cal1_ph"):
-            cal1_ph = self.get_custom_option("cal1_ph")
-        else:
-            cal1_ph = 7.
-        if self.get_custom_option("cal1_t"):
-            cal1_t = self.get_custom_option("cal1_t")
-        else:
-            cal1_t = 23.
-
-        if self.get_custom_option("cal2_v"):
-            cal2_v = self.get_custom_option("cal2_v")
-        else:
-            cal2_v = 0.17
-        if self.get_custom_option("cal2_ph"):
-            cal2_ph = self.get_custom_option("cal2_ph")
-        else:
-            cal2_ph = 4.
-        if self.get_custom_option("cal2_t"):
-            cal2_t = self.get_custom_option("cal2_t")
-        else:
-            cal2_t = 23.
-
-        if self.get_custom_option("cal3_v"):
-            cal3_v = self.get_custom_option("cal3_v")
-        else:
-            cal3_v = None
-        if self.get_custom_option("cal3_ph"):
-            cal3_ph = self.get_custom_option("cal3_ph")
-        else:
-            cal3_ph = None
-        if self.get_custom_option("cal3_t"):
-            cal3_t = self.get_custom_option("cal3_t")
-        else:
-            cal3_t = None
-
         # cal pt 3 may be None to indicate 2-pt calibration.
-        if cal3_v and cal3_ph and cal3_t:
-            cal_pt_3 = CalPt(
-                cal3_v,
-                cal3_ph,
-                cal3_t,
-            )
+        if self.cal3_v and self.cal3_ph and self.cal3_t:
+            cal_pt_3 = CalPt(self.cal3_v, self.cal3_ph, self.cal3_t)
         else:
             cal_pt_3 = None
 
-        cal_pt_3 = None
-
         # Load cal data from the database.
         self.sensor.calibrate_all(
-            CalPt(
-                cal1_v,
-                cal1_ph,
-                cal1_t,
-            ),
-            CalPt(
-                cal2_v,
-                cal2_ph,
-                cal2_t,
-            ),
+            CalPt(self.cal1_v, self.cal1_ph, self.cal1_t),
+            CalPt(self.cal2_v, self.cal2_ph, self.cal2_t),
             cal_pt_3
         )
 
@@ -317,45 +268,48 @@ class InputModule(AbstractInput):
 
     def calibrate_slot_1(self, args_dict):
         # """ Auto-calibrate """
-        # # todo: You probably need to store in this class, not self.sensor, to avoid it
-        # # todo resetting. experiment.
-
         from anyleaf import CalSlot
         self.calibrate(CalSlot.ONE, args_dict)
 
     def calibrate_slot_2(self, args_dict):
         """ Auto-calibrate """
-
         from anyleaf import CalSlot
         self.calibrate(CalSlot.TWO, args_dict)
 
     def calibrate_slot_3(self, args_dict):
         """ Auto-calibrate """
-
         from anyleaf import CalSlot
         self.calibrate(CalSlot.THREE, args_dict)
 
-    @staticmethod
-    def get_temp_data():
+    def clear_calibrate_slots(self, args_dict):
+        self.delete_custom_option("cal1_v")
+        self.delete_custom_option("cal1_ph")
+        self.delete_custom_option("cal1_t")
+        self.delete_custom_option("cal2_v")
+        self.delete_custom_option("cal2_ph")
+        self.delete_custom_option("cal2_t")
+        self.delete_custom_option("cal3_v")
+        self.delete_custom_option("cal3_ph")
+        self.delete_custom_option("cal3_t")
+        self.setup_custom_options(
+            INPUT_INFORMATION['custom_options'], self.input_dev)
+
+    def get_temp_data(self):
         """Get the temperature, from onboard or off."""
-
+        from anyleaf import OffBoard
         from anyleaf import OnBoard
-        # if self.temperature_comp_meas_measurement_id:
-        #     last_temp_measurement = self.get_last_measurement(
-        #         self.temperature_comp_meas_device_id,
-        #         self.temperature_comp_meas_measurement_id,
-        #         max_age=self.max_age
-        #     )
 
-        #     if last_temp_measurement:
-        #         temp_data = OffBoard(last_temp_measurement[1])
-        #     else:
-        #         temp_data = OnBoard()
+        last_temp_measurement = None
+        if self.temperature_comp_meas_measurement_id:
+            last_temp_measurement = self.get_last_measurement(
+                self.temperature_comp_meas_device_id,
+                self.temperature_comp_meas_measurement_id,
+                max_age=self.max_age)
 
-        # else:
-        temp_data = OnBoard()
-        
-        return temp_data
+        if last_temp_measurement:
+            return OffBoard(last_temp_measurement[1])
+        else:
+            return OnBoard()
 
     def get_measurement(self):
         """ Gets the measurement """
@@ -365,7 +319,6 @@ class InputModule(AbstractInput):
             self.logger.error("Input not set up")
             return
 
-        temp_data = self.get_temp_data()
-        self.value_set(0, self.sensor.read(temp_data))
+        self.value_set(0, self.sensor.read(self.get_temp_data()))
 
         return self.return_dict
