@@ -486,7 +486,11 @@ class DaemonController:
         """
         try:
             if controller_type == "Input":
-                return self.controller["Input"][unique_id].custom_button_exec_function(button_id, args_dict)
+                return self.controller["Input"][unique_id].custom_button_exec_function(
+                    button_id, args_dict)
+            if controller_type == "Function":
+                return self.controller["Function"][unique_id].custom_button_exec_function(
+                    button_id, args_dict)
             elif controller_type == "Output":
                 return self.controller["Output"].custom_button_exec_function(
                     unique_id, button_id, args_dict)
@@ -494,8 +498,9 @@ class DaemonController:
                 msg = "Unknown controller: {}".format(controller_type)
                 self.logger.error(msg)
                 return 1, msg
-        except Exception as except_msg:
-            message = "Cannot execute Input function from custom action: {err}".format(err=except_msg)
+        except:
+            message = "Cannot execute custom action. Is the controller activated? " \
+                      "If it is and this error is still occurring, check the Daemon Log."
             self.logger.exception(message)
             return 1, message
 
