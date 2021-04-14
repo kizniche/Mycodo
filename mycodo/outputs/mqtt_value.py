@@ -70,7 +70,7 @@ OUTPUT_INFORMATION = {
 
     'interfaces': ['Mycodo'],
 
-    'message': 'An output to publish a value to an MQTT server.',
+    'message': lazy_gettext('Publish a value to an MQTT server.'),
 
     'dependencies_module': [
         ('pip-pypi', 'paho', 'paho-mqtt==1.5.1')
@@ -154,9 +154,7 @@ OUTPUT_INFORMATION = {
             'default_value': '',
             'required': False,
             'name': lazy_gettext('Password'),
-            'phrase': "{} {}".format(
-                lazy_gettext('Password for connecting to the server.'),
-                lazy_gettext('Leave blank to disable.'))
+            'phrase': 'Password for connecting to the server.'
         }
     ]
 }

@@ -155,8 +155,8 @@ def output_add(form_add, request_form):
                 new_output.unique_id = set_uuid()
 
                 if 'execute_at_creation' in dict_outputs[output_type] and not current_app.config['TESTING']:
-                    dict_outputs[output_type]['execute_at_creation'](
-                        new_output, dict_outputs[output_type])
+                    error, new_output = dict_outputs[output_type]['execute_at_creation'](
+                        error, new_output, dict_outputs[output_type])
 
                 if not error:
                     new_output.save()

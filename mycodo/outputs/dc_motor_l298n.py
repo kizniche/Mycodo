@@ -8,6 +8,7 @@ import time
 
 from flask_babel import lazy_gettext
 
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -125,6 +126,14 @@ OUTPUT_INFORMATION = {
 
     'custom_channel_options': [
         {
+            'id': 'name',
+            'type': 'text',
+            'default_value': '',
+            'required': False,
+            'name': TRANSLATIONS['name']['title'],
+            'phrase': TRANSLATIONS['name']['phrase']
+        },
+        {
             'id': 'pin_1',
             'type': 'integer',
             'default_value': 0,
@@ -228,6 +237,10 @@ class OutputModule(AbstractOutput):
             msg = "Output channel {} not set up, cannot turn it on or off.".format(output_channel)
             self.logger.error(msg)
             return msg
+
+        if amount is not None and amount < 0:
+            self.logger.error("Amount cannot be less than 0")
+            return
 
         if state == 'on' and output_type == 'vol' and amount:
             if self.currently_dispensing:

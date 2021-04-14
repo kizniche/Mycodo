@@ -3,7 +3,11 @@
 import calendar
 import datetime
 import glob
+import json
 import logging
+import os
+import re
+import resource
 import socket
 import subprocess
 import sys
@@ -12,9 +16,6 @@ from collections import OrderedDict
 from importlib import import_module
 
 import flask_login
-import os
-import re
-import resource
 from flask import current_app
 from flask import flash
 from flask import redirect
@@ -63,6 +64,7 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import EnergyUsage
 from mycodo.databases.models import Function
+from mycodo.databases.models import FunctionChannel
 from mycodo.databases.models import Input
 from mycodo.databases.models import InputChannel
 from mycodo.databases.models import LCD
@@ -128,9 +130,10 @@ from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import dpkg_package_exists
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import parse_custom_option_values
-from mycodo.utils.system_pi import parse_custom_option_values_channels_json
+from mycodo.utils.system_pi import parse_custom_option_values_function_channels_json
 from mycodo.utils.system_pi import parse_custom_option_values_input_channels_json
 from mycodo.utils.system_pi import parse_custom_option_values_json
+from mycodo.utils.system_pi import parse_custom_option_values_output_channels_json
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.tools import calc_energy_usage
 from mycodo.utils.tools import return_energy_usage
@@ -1293,6 +1296,7 @@ def page_function():
     conditional = Conditional.query.all()
     conditional_conditions = ConditionalConditions.query.all()
     function = CustomController.query.all()
+    function_channel = FunctionChannel.query.all()
     function_dev = Function.query.all()
     actions = Actions.query.all()
     input_dev = Input.query.all()
@@ -1468,7 +1472,7 @@ def page_function():
 
         # Actions
         elif form_actions.save_action.data:
-            utils_function.action_mod(form_actions)
+            utils_function.action_mod(form_actions, request.form)
         elif form_actions.delete_action.data:
             utils_function.action_del(form_actions)
 
@@ -1512,6 +1516,16 @@ def page_function():
 
     custom_options_values_controllers = parse_custom_option_values(
         function, dict_controller=dict_controllers)
+    custom_options_values_function_channels = parse_custom_option_values_function_channels_json(
+        function_channel, dict_controller=function, key_name='custom_channel_options')
+
+    # TODO: Update actions to use single-file modules and be consistent with other custom_options
+    custom_options_values_actions = {}
+    for each_action in actions:
+        try:
+            custom_options_values_actions[each_action.unique_id] = json.loads(each_action.custom_options)
+        except:
+            custom_options_values_actions[each_action.unique_id] = {}
 
     # Create lists of built-in and custom functions
     choices_functions = []
@@ -1649,7 +1663,10 @@ def page_function():
                            conditions_dict=conditions_dict,
                            controllers=controllers,
                            function=function,
+                           function_channel=function_channel,
+                           custom_options_values_actions=custom_options_values_actions,
                            custom_options_values_controllers=custom_options_values_controllers,
+                           custom_options_values_function_channels=custom_options_values_function_channels,
                            dict_controllers=dict_controllers,
                            dict_measurements=dict_measurements,
                            dict_outputs=dict_outputs,
@@ -1769,7 +1786,7 @@ def page_output():
 
     custom_options_values_outputs = parse_custom_option_values_json(
         output, dict_controller=dict_outputs)
-    custom_options_values_output_channels = parse_custom_option_values_channels_json(
+    custom_options_values_output_channels = parse_custom_option_values_output_channels_json(
         output_channel, dict_controller=dict_outputs, key_name='custom_channel_options')
 
     custom_actions = {}
@@ -1872,9 +1889,6 @@ def page_input():
 
     dict_inputs = parse_input_information()
 
-    custom_options_values_input_channels = parse_custom_option_values_input_channels_json(
-        input_channel, dict_controller=dict_inputs, key_name='custom_channel_options')
-
     if request.method == 'POST':
         unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):
@@ -1975,6 +1989,8 @@ def page_input():
 
     custom_options_values_inputs = parse_custom_option_values(
         input_dev, dict_controller=dict_inputs)
+    custom_options_values_input_channels = parse_custom_option_values_input_channels_json(
+        input_channel, dict_controller=dict_inputs, key_name='custom_channel_options')
 
     custom_actions = {}
     for each_input in input_dev:
@@ -2185,7 +2201,7 @@ def page_usage():
 
     dict_outputs = parse_output_information()
 
-    custom_options_values_output_channels = parse_custom_option_values_channels_json(
+    custom_options_values_output_channels = parse_custom_option_values_output_channels_json(
         output_channel, dict_controller=dict_outputs, key_name='custom_channel_options')
 
     energy_usage_stats, graph_info = return_energy_usage(

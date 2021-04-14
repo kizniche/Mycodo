@@ -8,6 +8,9 @@
  - Fix SCD30 (CircuitPython) Input ([#963](https://github.com/kizniche/mycodo/issues/963))
  - Fix importing Mycodo Settings ZIP if custom modules were exported ([#967](https://github.com/kizniche/mycodo/issues/967))
  - Fix inability to install picamera library on some Pi 4s ([#967](https://github.com/kizniche/mycodo/issues/967))
+ - Fix VPD Function saving and calculating pressure conversion ([#978](https://github.com/kizniche/mycodo/issues/978))
+ - Fix pressure conversion equations ([#978](https://github.com/kizniche/mycodo/issues/978))
+ - Fix issues with Function channels/measurements
 
 ### Features
 
@@ -15,11 +18,20 @@
  - Add support for SHT41x based input devices 
  - Add support for Adafruit's i2c capacitive soil sensor input devices
  - Add webhook action to emit HTTP requests ([discussion](https://kylegabriel.com/forum/general-discussion/webhook-action/))
+ - Add Function Action: MQTT Publish
+ - Add ability to set camera stream frames per second
+ - Add missing stream resolution option to opencv cameras
+ - Add ability for Atlas Scientific Peristaltic Pump Outputs to run in reverse
+ - Add new ADC measurement rescaling method: Equation
+ - Add Function: LCD Generic 16x2 (I2C)
+ - Add Input: Generic Analog pH/EC using ADS1115 ADC
+ - Enable external temperature compensation for Anyleaf pH Input
 
 ### Miscellaneous
 
  - Add Units kilowatt-hour and Watt
  - Specify package versions for pypi dependencies
+ - Update python libraries
 
 
 ## 8.9.2 (2021-03-16)
@@ -123,7 +135,7 @@ The new weather input acquires current and future weather conditions from openwe
  - Add Custom Functions/Inputs/Outputs/Widgets to Settings Export/Import
  - Add user_scripts directory for user code that's preserved during upgrade/export/import ([#930](https://github.com/kizniche/mycodo/issues/930))
  - Add pin mode option (float, pull-up, pull-down) for Edge and State Inputs
- - Add Method: Cascaded Method, allows combining (multiply) any number of existing methods ([discussion](https://kylegabriel.com/forum/general-discussion/refactor-method-implementation-to-enable-further-methods/))
+ - Add Method: Cascaded Method, allows combining (multiply) any number of existing methods
  - Add Functions and to API
  - Add missing Input Channels to Input API calls
 
@@ -503,7 +515,7 @@ WARNING: There are changes with this version that may cause issues with your cur
  - Add Conditional options: Log Level Debug and Message Includes Code
  - Add Force Command option for Command/Python/Wireless Outputs ([#728](https://github.com/kizniche/mycodo/issues/728))
  - Add ability to select which user executes Linux Output commands ([#719](https://github.com/kizniche/mycodo/issues/719))
- - Add Cameras: URL (urllib), URL (requests) ([Feature Request - IP Camera/Network Camera](https://kylegabriel.com/forum/general-discussion/feature-request-ip-camera-network-camera-stream))
+ - Add Cameras: URL (urllib), URL (requests) 
  - Add ability to encode videos from time-lapse image sets
  - Add send_email() to Daemon Control object
 

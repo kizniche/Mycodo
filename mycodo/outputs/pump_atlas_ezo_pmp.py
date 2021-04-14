@@ -195,11 +195,11 @@ class OutputModule(AbstractOutput):
 
         elif state == 'on' and output_type in ['vol', None] and amount:
             if self.options_channels['flow_mode'][0] == 'fastest_flow_rate':
-                minutes_to_run = amount / 105
+                minutes_to_run = abs(amount) / 105
                 seconds_to_run = minutes_to_run * 60
                 write_cmd = 'D,{ml:.2f}'.format(ml=amount)
             elif self.options_channels['flow_mode'][0] == 'specify_flow_rate':
-                minutes_to_run = amount / self.options_channels['flow_rate'][0]
+                minutes_to_run = abs(amount) / self.options_channels['flow_rate'][0]
                 seconds_to_run = minutes_to_run * 60
                 write_cmd = 'D,{ml:.2f},{min:.2f}'.format(
                     ml=amount, min=minutes_to_run)
@@ -208,7 +208,7 @@ class OutputModule(AbstractOutput):
                     self.options_channels['flow_mode'][0]))
                 return
 
-        elif state == 'off' or (amount is not None and amount <= 0):
+        elif state == 'off' or (amount is not None and amount == 0):
             self.currently_dispensing = False
             write_cmd = 'X'
             amount = 0
@@ -224,8 +224,8 @@ class OutputModule(AbstractOutput):
                     fr=self.options_channels['flow_rate'][0]))
             return
 
-        self.atlas_command.write(write_cmd)
         self.logger.debug("EZO-PMP command: {}".format(write_cmd))
+        self.atlas_command.write(write_cmd)
 
         if amount and seconds_to_run:
             self.record_dispersal(amount_ml=amount, seconds_to_run=seconds_to_run)

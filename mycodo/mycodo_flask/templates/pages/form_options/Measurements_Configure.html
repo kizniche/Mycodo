@@ -7,6 +7,14 @@
   <h5>Configure Measurements</h5>
 </div>
 
+  {% if 'measurements_rescale' in dict_options and dict_options['measurements_rescale'] %}
+
+<div class="col-12">
+    Rescaling: If rescaling, set the Rescaled Measurement to the new measurement and unit and the Rescale Method to {{_('Linear')}} or {{_('Equation')}}. {{_('Linear')}} rescaling requires the {{dict_translation['scale_to_min']['title']}} and {{dict_translation['scale_to_max']['title']}} options be set. {{_('Equation')}} rescaling requires the {{_('Equation')}} option be set, with the variable "x" being replaced with the measurement and the result of the calculation being stored in the database.
+</div>
+
+  {% endif %}
+
   {% for each_measurement in all_measurements %}
 
 <form method="post" action="
@@ -89,6 +97,15 @@
       <input class="form-control" id="scale_from_max" name="scale_from_max" step="any" title="{{dict_translation['scale_from_max']['phrase']}}" type="number" value="{{each_measurement.scale_from_max}}">
     </div>
   </div>
+    <div class="col-auto">
+        {{form_mod_measurement.rescale_method.label(class_='control-label')}}
+        <div>
+            <select class="form-control form-tooltip form-dropdown" id="rescale_method" name="rescale_method" data-placement="top" title="The method to employ to rescale">
+                <option value="linear"{% if each_measurement.rescale_method == "linear" %} selected{% endif %}>{{_('Linear')}}</option>
+                <option value="equation"{% if each_measurement.rescale_method == "equation" %} selected{% endif %}>{{_('Equation')}}</option>
+            </select>
+        </div>
+  </div>
   <div class="col-auto">
     {{form_mod_measurement.scale_to_min.label(class_='control-label')}}
     <div>
@@ -99,6 +116,12 @@
     {{form_mod_measurement.scale_to_max.label(class_='control-label')}}
     <div>
       <input class="form-control" id="scale_to_max" name="scale_to_max" step="any" title="{{dict_translation['scale_to_max']['phrase']}}" type="number" value="{{each_measurement.scale_to_max}}">
+    </div>
+  </div>
+  <div class="col-auto">
+    {{form_mod_measurement.rescale_equation.label(class_='control-label')}}
+    <div>
+      {{form_mod_measurement.rescale_equation(class_='form-control', value=each_measurement.rescale_equation, **{'title': "The equation to rescale the measurement (variable x)"})}}
     </div>
   </div>
   <div class="col-auto">

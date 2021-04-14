@@ -1019,9 +1019,7 @@ if __name__ == "__main__":
                     for each_input in input_sess.query(Input).all():
                         if each_input.device == 'PythonCode' and each_input.cmd_command:
                             try:
-                                execute_at_creation(each_input.unique_id,
-                                                    each_input.cmd_command,
-                                                    None)
+                                execute_at_creation(error, each_input)
                             except Exception as msg:
                                 print("Exception: {}".format(msg))
             except Exception:
@@ -1096,9 +1094,7 @@ if __name__ == "__main__":
                     for each_input in input_sess.query(Input).all():
                         if each_input.device == 'PythonCode' and each_input.cmd_command:
                             try:
-                                execute_at_creation(each_input.unique_id,
-                                                    each_input.cmd_command,
-                                                    None)
+                                execute_at_creation(error, each_input)
                             except Exception as msg:
                                 print("Exception: {}".format(msg))
             except Exception:

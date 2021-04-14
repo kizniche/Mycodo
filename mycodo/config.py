@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.9.2'
-ALEMBIC_VERSION = '110d2d00e91d'
+ALEMBIC_VERSION = '50a4e41e7444'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -634,6 +634,12 @@ FUNCTION_ACTION_INFO = {
             TRANSLATIONS['lcd']['title'], lazy_gettext('Flashing On')),
         'dependencies_module': []
     },
+    'mqtt_publish': {
+        'name': 'MQTT: {}'.format(lazy_gettext('Publish')),
+        'dependencies_module': [
+            ('pip-pypi', 'paho', 'paho-mqtt==1.5.1')
+        ]
+    },
     'output': {
         'name': '{} ({}/{}/{})'.format(
             TRANSLATIONS['output']['title'], TRANSLATIONS['on']['title'],
@@ -728,6 +734,7 @@ FUNCTION_ACTIONS = [
     ('lcd_backlight_color', FUNCTION_ACTION_INFO['lcd_backlight_color']['name']),
     ('flash_lcd_off', FUNCTION_ACTION_INFO['flash_lcd_off']['name']),
     ('flash_lcd_on', FUNCTION_ACTION_INFO['flash_lcd_on']['name']),
+    ('mqtt_publish', FUNCTION_ACTION_INFO['mqtt_publish']['name']),
     ('output', FUNCTION_ACTION_INFO['output']['name']),
     ('output_pwm', FUNCTION_ACTION_INFO['output_pwm']['name']),
     ('output_ramp_pwm', FUNCTION_ACTION_INFO['output_ramp_pwm']['name']),

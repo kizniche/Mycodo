@@ -200,8 +200,8 @@ def widget_add(form_base, request_form):
 
     if ('execute_at_creation' in dict_widgets[widget_name] and
             not current_app.config['TESTING']):
-        dict_widgets[widget_name]['execute_at_creation'](
-            new_widget, dict_widgets[widget_name])
+        error, new_widget = dict_widgets[widget_name]['execute_at_creation'](
+            error, new_widget, dict_widgets[widget_name])
 
     try:
         if not error:

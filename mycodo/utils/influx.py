@@ -156,45 +156,51 @@ def parse_measurement(
 
 
 def rescale_measurements(measurement, measurement_value):
-    """ Read channels """
+    """ Rescale measurement """
+    rescaled_measurement = None
     try:
+        if measurement.rescale_method == "linear":
+            # Get the difference between min and max volts
+            diff_voltage = abs(
+                float(measurement.scale_from_max) - float(measurement.scale_from_min))
 
-        # Get the difference between min and max volts
-        diff_voltage = abs(
-            float(measurement.scale_from_max) - float(measurement.scale_from_min))
+            # Ensure the value stays within the min/max bounds
+            if measurement_value < float(measurement.scale_from_min):
+                measured_voltage = measurement.scale_from_min
+            elif measurement_value > float(measurement.scale_from_max):
+                measured_voltage = float(measurement.scale_from_max)
+            else:
+                measured_voltage = measurement_value
 
-        # Ensure the value stays within the min/max bounds
-        if measurement_value < float(measurement.scale_from_min):
-            measured_voltage = measurement.scale_from_min
-        elif measurement_value > float(measurement.scale_from_max):
-            measured_voltage = float(measurement.scale_from_max)
-        else:
-            measured_voltage = measurement_value
+            # Calculate the percentage of the difference
+            percent_diff = ((measured_voltage - float(measurement.scale_from_min)) /
+                            diff_voltage)
 
-        # Calculate the percentage of the difference
-        percent_diff = ((measured_voltage - float(measurement.scale_from_min)) /
-                        diff_voltage)
+            # Get the units difference between min and max units
+            diff_units = abs(float(measurement.scale_to_max) - float(measurement.scale_to_min))
 
-        # Get the units difference between min and max units
-        diff_units = abs(float(measurement.scale_to_max) - float(measurement.scale_to_min))
+            # Calculate the measured units from the percent difference
+            if measurement.invert_scale:
+                converted_units = (float(measurement.scale_to_max) -
+                                   (diff_units * percent_diff))
+            else:
+                converted_units = (float(measurement.scale_to_min) +
+                                   (diff_units * percent_diff))
 
-        # Calculate the measured units from the percent difference
-        if measurement.invert_scale:
-            converted_units = (float(measurement.scale_to_max) -
-                               (diff_units * percent_diff))
-        else:
-            converted_units = (float(measurement.scale_to_min) +
-                               (diff_units * percent_diff))
+            # Ensure the units stay within the min/max bounds
+            if converted_units < float(measurement.scale_to_min):
+                rescaled_measurement = float(measurement.scale_to_min)
+            elif converted_units > float(measurement.scale_to_max):
+                rescaled_measurement = float(measurement.scale_to_max)
+            else:
+                rescaled_measurement = converted_units
 
-        # Ensure the units stay within the min/max bounds
-        if converted_units < float(measurement.scale_to_min):
-            rescaled_measurement = float(measurement.scale_to_min)
-        elif converted_units > float(measurement.scale_to_max):
-            rescaled_measurement = float(measurement.scale_to_max)
-        else:
-            rescaled_measurement = converted_units
+        elif measurement.rescale_method == "equation":
+            replaced_str = measurement.rescale_equation.replace('x', str(measurement_value))
+            rescaled_measurement = eval(replaced_str)
 
-        return rescaled_measurement
+        if rescaled_measurement:
+            return rescaled_measurement
 
     except Exception as except_msg:
         logger.exception(

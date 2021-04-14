@@ -6,10 +6,12 @@ labels: ''
 assignees: ''
 
 ---
+Please first read: How to write a good bug report at https://forum.kylegabriel.com/t/how-to-write-a-good-bug-report/71
 
 Please DO NOT OPEN AN ISSUE:
 
  - If your Mycodo version is not the latest release version, please update your device before submitting your issue (unless your issue is related to not being able to upgrade). Your problem might already be solved.
+
  - If your issue has been addressed before (i.e., duplicated issue), please ask in the original issue.
 
 Please complete as many of the sections below, if applicable, to provide the most information that may help with investigating your issue. The details requested potentially affect which options to pursue. The small amount of time you spend completing the template will also help those providing assistance by reducing the time required to help you.

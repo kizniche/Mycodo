@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
 import threading
 
@@ -11,6 +12,7 @@ from sqlalchemy import and_
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import PID_INFO
 from mycodo.config_translations import TRANSLATIONS
+from mycodo.databases import set_uuid
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
@@ -160,6 +162,13 @@ if measurement is not None:  # If a measurement exists
             error, custom_options = custom_options_return_json(
                 error, dict_controllers, device=function_name, use_defaults=True)
             new_func.custom_options = custom_options
+
+            new_func.unique_id = set_uuid()
+
+            if ('execute_at_creation' in dict_controllers[new_func.device] and
+                    not current_app.config['TESTING']):
+                error, new_func = dict_controllers[new_func.device]['execute_at_creation'](
+                    error, new_func, dict_controllers[new_func.device])
 
             if not error:
                 new_func.save()
@@ -355,6 +364,21 @@ def action_add(form):
         if form.action_type.data == 'command':
             new_action.do_output_state = 'mycodo'  # user to execute shell command as
 
+        elif form.action_type.data == 'mqtt_publish':
+            # Fill in default values
+            # TODO: Future improvements to actions will be single-file modules, making this obsolete
+            custom_options = {
+                "hostname": "localhost",
+                "port": 1883,
+                "topic": "paho/test/single",
+                "keepalive": 60,
+                "clientid": "mycodo_mqtt_client",
+                "login": False,
+                "username": "user",
+                "password": ""
+            }
+            new_action.custom_options = json.dumps(custom_options)
+
         if not error:
             new_action.save()
 
@@ -371,7 +395,7 @@ def action_add(form):
         return 1
 
 
-def action_mod(form):
+def action_mod(form, request_form):
     """Modify a Conditional Action"""
     error = []
     action = '{action} {controller}'.format(
@@ -475,6 +499,25 @@ def action_mod(form):
 
         elif mod_action.action_type == 'webhook':
             mod_action.do_action_string = form.do_action_string.data
+
+        elif mod_action.action_type == 'mqtt_publish':
+            try:
+                custom_options = {
+                    "hostname": request_form['hostname'],
+                    "port": int(request_form['port']),
+                    "topic": request_form['topic'],
+                    "keepalive": int(request_form['keepalive']),
+                    "clientid": request_form['clientid'],
+                    "username": request_form['username'],
+                    "password": request_form['password']
+                }
+                if 'login' in request_form:
+                    custom_options["login"] = True
+                else:
+                    custom_options["login"] = False
+                mod_action.custom_options = json.dumps(custom_options)
+            except:
+                error.append("")
 
         if not error:
             db.session.commit()

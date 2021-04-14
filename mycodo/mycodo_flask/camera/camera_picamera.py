@@ -22,6 +22,7 @@ class Camera(BaseCamera):
     @staticmethod
     def frames():
         settings = Camera.camera_options
+
         with picamera.PiCamera() as camera:
             camera.resolution = (settings.resolution_stream_width,
                                  settings.resolution_stream_height)
@@ -47,11 +48,13 @@ class Camera(BaseCamera):
             time.sleep(2)
 
             stream = io.BytesIO()
+            wait_period = float(1 / settings.stream_fps)
+
             for _ in camera.capture_continuous(
                     stream, 'jpeg', use_video_port=True):
                 # return current frame
                 stream.seek(0)
-                time.sleep(0.05)
+                time.sleep(wait_period)
                 yield stream.read()
 
                 # reset stream for next frame

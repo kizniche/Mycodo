@@ -79,16 +79,16 @@ class PythonRun:
     return success, error
 
 
-def execute_at_creation(new_widget, dict_widget):
+def execute_at_creation(error, new_widget, dict_widget):
     custom_options_json = json.loads(new_widget.custom_options)
     uuid = set_uuid()
     new_widget.unique_id = uuid
-    success, error = save_python_file(custom_options_json, uuid)
-    for each_error in error:
+    success, errors = save_python_file(custom_options_json, uuid)
+    for each_error in errors:
         flash(each_error, 'error')
     for each_success in success:
         flash(each_success, 'success')
-    return new_widget
+    return error, new_widget
 
 
 def execute_at_modification(

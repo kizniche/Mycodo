@@ -421,27 +421,28 @@
 
         {% endif %}
 
+        {% set custom_options_values = custom_options_values_output_channels %}
+
         {% for each_output_channel in output_channel if each_output_channel.output_id == each_output.unique_id %}
+
+          {% set dict_options = dict_outputs[each_output.output_type] %}
+          {% set unique_id = each_output.unique_id %}
+          {% set channel = each_output_channel.channel %}
+          {% set each_device = each_output %}
 
           <hr/>
           <div class="row">
             <div class="col-auto">
               Channel {{each_output_channel.channel}}
 
-            {%- if 'name' in custom_options_values_output_channels[each_output.unique_id][each_output_channel.channel] and
-                 custom_options_values_output_channels[each_output.unique_id][each_output_channel.channel]['name'] -%}
-              {{': ' + custom_options_values_output_channels[each_output.unique_id][each_output_channel.channel]['name']}}
+            {%- if 'name' in custom_options_values[each_output.unique_id][each_output_channel.channel] and
+                 custom_options_values[each_output.unique_id][each_output_channel.channel]['name'] -%}
+              {{': ' + custom_options_values[each_output.unique_id][each_output_channel.channel]['name']}}
             {%- elif 'name' in dict_outputs[each_output.output_type]['channels_dict'][each_output_channel.channel] -%}
               {{': ' + dict_outputs[each_output.output_type]['channels_dict'][each_output_channel.channel]['name']}}
             {%- endif -%}
             </div>
           </div>
-
-              {% set dict_options = dict_outputs[each_output.output_type] %}
-              {% set unique_id = each_output.unique_id %}
-              {% set custom_options_values = custom_options_values_output_channels %}
-              {% set channel = each_output_channel.channel %}
-              {% set each_device = each_output %}
 
               {% if custom_options_values[unique_id] %}
 

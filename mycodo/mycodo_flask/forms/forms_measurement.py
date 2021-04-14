@@ -40,6 +40,9 @@ class MeasurementMod(FlaskForm):
     invert_scale = BooleanField(
         TRANSLATIONS['invert_scale']['title'])
 
+    rescale_method = StringField(lazy_gettext('Rescale Method'))
+    rescale_equation = StringField(lazy_gettext('Equation'))
+
     rescaled_measurement_unit = StringField(lazy_gettext('Rescaled Measurement'))
     convert_to_measurement_unit = StringField(TRANSLATIONS['convert_to_measurement_unit']['title'])
 

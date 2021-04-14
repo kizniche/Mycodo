@@ -31,7 +31,7 @@ from flask_babel import lazy_gettext
 logger = logging.getLogger(__name__)
 
 
-def execute_at_creation(new_widget, dict_widget):
+def execute_at_creation(error, new_widget, dict_widget):
     color_list = ["#33CCFF", "#55BF3B", "#DDDF0D", "#DF5353"]
     custom_options_json = json.loads(new_widget.custom_options)
     custom_options_json['range_colors'] = []
@@ -55,7 +55,7 @@ def execute_at_creation(new_widget, dict_widget):
             '{low},{high},{color}'.format(low=stop, high=stop + stop_size, color=color))
 
     new_widget.custom_options = json.dumps(custom_options_json)
-    return new_widget
+    return error, new_widget
 
 
 def execute_at_modification(

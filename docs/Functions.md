@@ -141,8 +141,6 @@ PID tuning can be a complex process, depending on the output device(s) used and 
 
 #### PID Tuning Resources
 
- - [Mycodo PID Tuning Forum](https://kylegabriel.com/forum/pid-tuning/).
-
  - [Sous Vide PID Tuning and the Unexpected Electrical Fire](https://hackaday.io/project/11997-mycodo-environmental-regulation-system/log/45733-sous-vide-pid-tuning-and-the-unexpected-electrical-fire)
 
 #### PID Control Theory

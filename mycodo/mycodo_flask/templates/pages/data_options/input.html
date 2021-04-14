@@ -81,17 +81,23 @@
 
     <div class="row small-gutters" style="padding: 0.5em">
 
+      {% if 'input_manufacturer' in dict_inputs[each_input.device] %}
       <div class="col-12">
         {{_("Manufacturer")}}: {{dict_inputs[each_input.device]['input_manufacturer']}}
       </div>
+      {% endif %}
 
+      {% if 'input_name' in dict_inputs[each_input.device] %}
       <div class="col-12">
-        {{_("Model")}}: {{dict_inputs[each_input.device]['input_name']}}
+        {{_("Name")}}: {{dict_inputs[each_input.device]['input_name']}}
       </div>
+      {% endif %}
 
+      {% if 'measurements_name' in dict_inputs[each_input.device] %}
       <div class="col-12">
         {{_("Measurements")}}: {{dict_inputs[each_input.device]['measurements_name']}}
       </div>
+      {% endif %}
 
       {% if 'dependencies_module' in dict_inputs[each_input.device] and dict_inputs[each_input.device]['dependencies_module'] %}
         <div class="col-12">
@@ -270,29 +276,30 @@
 
       {% endif %}
 
+      {% set custom_options_values = custom_options_values_input_channels %}
+
       {% for each_input_channel in input_channel if each_input_channel.input_id == each_input.unique_id %}
+
+        {% set dict_options = dict_inputs[each_input.device] %}
+        {% set unique_id = each_input.unique_id %}
+        {% set channel = each_input_channel.channel %}
+        {% set each_device = each_input %}
+        {% set controller_type = "Input" %}
 
     <hr/>
     <div class="row">
       <div class="col-auto">
         Channel {{each_input_channel.channel}}
 
-        {%- if 'name' in custom_options_values_input_channels[each_input.unique_id][each_input_channel.channel] and
-             custom_options_values_input_channels[each_input.unique_id][each_input_channel.channel]['name'] -%}
-          {{': ' + custom_options_values_input_channels[each_input.unique_id][each_input_channel.channel]['name']}}
+        {%- if 'name' in custom_options_values[each_input.unique_id][each_input_channel.channel] and
+             custom_options_values[each_input.unique_id][each_input_channel.channel]['name'] -%}
+          {{': ' + custom_options_values[each_input.unique_id][each_input_channel.channel]['name']}}
         {%- elif 'channels_dict' in dict_inputs[each_input.device] and
                  'name' in dict_inputs[each_input.device]['channels_dict'][each_input_channel.channel] -%}
           {{': ' + dict_inputs[each_input.device]['channels_dict'][each_input_channel.channel]['name']}}
         {%- endif -%}
       </div>
     </div>
-
-        {% set dict_options = dict_inputs[each_input.device] %}
-        {% set unique_id = each_input.unique_id %}
-        {% set custom_options_values = custom_options_values_input_channels %}
-        {% set channel = each_input_channel.channel %}
-        {% set each_device = each_input %}
-        {% set controller_type = "Input" %}
 
         {% if custom_options_values[unique_id] %}
 

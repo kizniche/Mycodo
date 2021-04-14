@@ -29,6 +29,12 @@
    </div>
 </div>
 <div class="col-auto">
+  {{form_camera.stream_fps.label(class_='control-label')}}
+  <div>
+    {{form_camera.stream_fps(class_='form-control', value=each_camera.stream_fps)}}
+   </div>
+</div>
+<div class="col-auto">
   {{form_camera.brightness.label(class_='control-label')}}
   <div>
     {{form_camera.brightness(class_='form-control', value=each_camera.brightness, **{'title': 'Accepted values: 0 - 100. Default: 50.'})}}

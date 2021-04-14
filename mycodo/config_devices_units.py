@@ -546,11 +546,11 @@ UNIT_CONVERSIONS = [
     ('decimal', 'percent', 'x*100'),
 
     # Pressure
-    ('Pa', 'kPa', 'x*1000'),
+    ('Pa', 'kPa', 'x/1000'),
     ('Pa', 'hPa', 'x/100'),
     ('hPa', 'Pa', 'x*100'),
     ('hPa', 'kPa', 'x/10'),
-    ('kPa', 'Pa', 'x/1000'),
+    ('kPa', 'Pa', 'x*1000'),
     ('kPa', 'hPa', 'x*10'),
     ('psi', 'cm_water', 'x*70.306957964239'),
     ('psi', 'kPa', 'x*6.8947572932'),

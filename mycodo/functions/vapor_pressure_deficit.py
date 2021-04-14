@@ -66,12 +66,10 @@ FUNCTION_INFORMATION = {
     'function_name_unique': 'VAP_PRESS_DEFICIT',
     'function_name': 'Vapor Pressure Deficit',
     'measurements_dict': measurements_dict,
-    'enable_channel_unit_select': True,
 
     'message': 'This function calculates the vapor pressure deficit based on leaf temperature and humidity.',
 
     'options_enabled': [
-        'measurements_select',
         'custom_options'
     ],
 
@@ -231,10 +229,12 @@ class CustomModule(AbstractController, threading.Thread):
                 channel, unit, measurement = return_measurement_info(
                     dev_measurement, self.channels_conversion[0])
 
+                vpd_store = convert_from_x_to_y_unit('Pa', unit, vpd_pa)
+
                 measurement_dict[0] = {
                     'measurement': measurement,
                     'unit': unit,
-                    'value': vpd_pa
+                    'value': vpd_store
                 }
 
             # Add measurement(s) to influxdb

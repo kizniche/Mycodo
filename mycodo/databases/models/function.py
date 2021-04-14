@@ -126,6 +126,8 @@ class Actions(CRUDMixin, db.Model):
     function_type = db.Column(db.Text, default='')
     action_type = db.Column(db.Text, default='')  # what action, such as 'email', 'execute command', 'flash LCD'
 
+    custom_options = db.Column(db.Text, default='{}')
+
     # Actions
     pause_duration = db.Column(db.Float, default=5.0)
     do_unique_id = db.Column(db.Text, default='')

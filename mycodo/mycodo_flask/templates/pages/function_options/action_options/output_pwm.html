@@ -18,3 +18,6 @@
 <div class="col-12">
   <strong>{{_('Output')}} ({{_('Duty Cycle')}})</strong>: {{_('Set an Output to a PWM duty cycle.')}}
 </div>
+<div class="col-12">
+    <strong>self.run_action("{{"{" + each_action.unique_id.split('-')[0] + "}"}}")</strong> {{_('will execute only this action. <strong>self.run_all_actions()</strong> will execute all actions sequentially.')}}
+</div>

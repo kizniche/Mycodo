@@ -272,6 +272,10 @@ class OutputModule(AbstractOutput):
         self.logger.debug("state: {}, output_type: {}, amount: {}".format(
             state, output_type, amount))
 
+        if amount is not None and amount < 0:
+            self.logger.error("Amount cannot be less than 0")
+            return
+
         if state == 'off':
             if self.currently_dispensing:
                 self.currently_dispensing = False

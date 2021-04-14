@@ -93,6 +93,8 @@ class Camera(FlaskForm):
         lazy_gettext('Stream Width'), widget=NumberInput())
     resolution_stream_height = IntegerField(
         lazy_gettext('Stream Height'), widget=NumberInput())
+    stream_fps = IntegerField(
+        lazy_gettext('Stream Frames Per Second'), widget=NumberInput())
 
     # Picamera
     picamera_shutter_speed = IntegerField(lazy_gettext('Shutter Speed'))

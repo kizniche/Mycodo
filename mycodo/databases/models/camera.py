@@ -49,11 +49,12 @@ class Camera(CRUDMixin, db.Model):
     path_timelapse = db.Column(db.Text, default='')
     path_video = db.Column(db.Text, default='')
 
-    # Resolutions
+    # Resolutions and stream
     width = db.Column(db.Integer, default=1024)
     height = db.Column(db.Integer, default=768)
     resolution_stream_width = db.Column(db.Integer, default=1024)
     resolution_stream_height = db.Column(db.Integer, default=768)
+    stream_fps = db.Column(db.Integer, default=5)
 
     # picamera options
     picamera_shutter_speed = db.Column(db.Integer, default=0)

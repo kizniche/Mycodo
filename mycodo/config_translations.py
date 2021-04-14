@@ -133,6 +133,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('PID')},
     'pin': {
         'title': lazy_gettext('Pin')},
+    'publish': {
+        'title': lazy_gettext('Publish')},
     'pwm': {
         'title': lazy_gettext('PWM')},
     'ramp': {
