@@ -47,7 +47,7 @@
   </div>
 </div>
 <div class="col-12">
-  <strong>{{_('MQTT')}} {{_('Publish')}}</strong>: {{_('Publish a value to an MQTT server.')}}
+  <strong>{{function_action_info[each_action.action_type]["name"]}}</strong>: {{function_action_info[each_action.action_type]["description"]}}
 </div>
 <div class="col-12">
     <strong>self.run_action("{{"{" + each_action.unique_id.split('-')[0] + "}"}}", value=33)</strong> {{_('will execute only this action and publish the value 33. <strong>self.run_all_actions()</strong> will not execute this action.')}}

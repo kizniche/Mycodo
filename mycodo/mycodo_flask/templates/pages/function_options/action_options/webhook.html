@@ -5,5 +5,5 @@
   </div>
 </div>
 <div class="col-12">
-  <strong>{{_('Webhook')}}</strong>: {{_('Emits a HTTP request when triggered. The first line contains a HTTP verb (GET, POST, PUT, ...) followed by a space and the URL to call. Subsequent lines are optional "name: value"-header parameters. After a blank line, the body payload to be sent follows. {{{message}}} is a placeholder that gets replaced by the message, {{{quoted_message}}} is the message in an URL safe encoding.')}}
+  <strong>{{function_action_info[each_action.action_type]["name"]}}</strong>: {{function_action_info[each_action.action_type]["description"]}}
 </div>

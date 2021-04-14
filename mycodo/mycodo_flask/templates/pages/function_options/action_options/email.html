@@ -11,7 +11,7 @@
   </select>
 </div>
 <div class="col-12">
-  <strong>{{_('E-Mail')}} ({{_('Single')}})</strong>: {{_('Email a single recipient.')}}
+  <strong>{{function_action_info[each_action.action_type]["name"]}}</strong>: {{function_action_info[each_action.action_type]["description"]}}
 </div>
 <div class="col-12">
     <strong>self.run_action("{{"{" + each_action.unique_id.split('-')[0] + "}"}}")</strong> {{_('will execute only this action. <strong>self.run_all_actions()</strong> will execute all actions sequentially.')}}
