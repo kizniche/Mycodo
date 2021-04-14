@@ -705,7 +705,11 @@ FUNCTION_ACTION_INFO = {
         'name': '{}: {}'.format(
             TRANSLATIONS['system']['title'], lazy_gettext('Shutdown')),
         'dependencies_module': []
-    }
+    },
+    'webhook': {
+        'name': lazy_gettext('Webhook'),
+        'dependencies_module': []
+    },
 
     # TODO: These have been disabled until they can be properly tested
     # ('video', lazy_gettext('Video')),
@@ -743,7 +747,8 @@ FUNCTION_ACTIONS = [
     ('setpoint_pid_raise', FUNCTION_ACTION_INFO['setpoint_pid_raise']['name']),
     ('setpoint_pid_lower', FUNCTION_ACTION_INFO['setpoint_pid_lower']['name']),
     ('system_restart', FUNCTION_ACTION_INFO['system_restart']['name']),
-    ('system_shutdown', FUNCTION_ACTION_INFO['system_shutdown']['name'])
+    ('system_shutdown', FUNCTION_ACTION_INFO['system_shutdown']['name']),
+    ('webhook', FUNCTION_ACTION_INFO['webhook']['name'])
 ]
 
 # Calibration

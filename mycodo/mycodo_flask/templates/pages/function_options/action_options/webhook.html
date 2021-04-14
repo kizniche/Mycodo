@@ -1,0 +1,9 @@
+<div class="col-12">
+  <label class='control-label'>{{_('Webhook Request')}}</label>
+  <div>
+    <textarea class="form-control" id="do_action_string" name="do_action_string" rows="8" type="text">{{each_action.do_action_string}}</textarea>
+  </div>
+</div>
+<div class="col-12">
+  <strong>{{_('Webhook')}}</strong>: {{_('Emits a HTTP request when triggered. The first line contains a HTTP verb (GET, POST, PUT, ...) followed by a space and the URL to call. Subsequent lines are optional "name: value"-header parameters. After a blank line, the body payload to be sent follows. {{{message}}} is a placeholder that gets replaced by the message, {{{quoted_message}}} is the message in an URL safe encoding.')}}
+</div>

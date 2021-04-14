@@ -5,6 +5,9 @@ import os
 import subprocess
 import threading
 import time
+import http.client
+import urllib
+from urllib.parse import urlparse
 
 from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import INSTALL_DIRECTORY
@@ -690,6 +693,62 @@ def action_email(logger_actions,
     return message, email_recipients, attachment_type
 
 
+def action_webhook(logger_actions, cond_action, message):
+    action_string = cond_action.do_action_string
+    action_string = action_string.replace("{{{message}}}", message)
+    action_string = action_string.replace("{{{quoted_message}}}", urllib.parse.quote_plus(message))
+    lines = action_string.splitlines()
+
+    method = "GET"
+
+    # first line is "[<Method> ]<URL>", following lines are http request headers
+    parts = lines.pop(0).split(" ", 1)
+    if len(parts) == 1:
+        url = parts[0]
+    else:
+        method = parts[0]
+        url = parts[1]
+
+    headers = []
+    while len(lines) > 0:
+        line = lines.pop(0)
+        if line.strip() == "":
+            break
+        headers.append(map(str.strip, line.split(':', 1)))
+
+    headers = dict(headers)
+    parsed_url = urlparse(url)
+    body = "\n".join(lines)
+
+    path_and_query = parsed_url.path + "?" + parsed_url.query
+
+    logger_actions.debug("Method: {}".format(method))
+    logger_actions.debug("Scheme: {}".format(parsed_url.scheme))
+    logger_actions.debug("Netloc: {}".format(parsed_url.netloc))
+    logger_actions.debug("Path: {}".format(path_and_query))
+    logger_actions.debug("Headers: {}".format(headers))
+    logger_actions.debug("Body: {}".format(body))
+
+    if parsed_url.scheme == 'http':
+        conn = http.client.HTTPConnection(parsed_url.netloc)
+    elif parsed_url.scheme == 'https':
+        conn = http.client.HTTPSConnection(parsed_url.netloc)
+    else:
+        raise Exception("Unsupported url scheme '{}'".format(parsed_url.scheme))
+
+    conn.request(method, path_and_query, body, headers)
+    response = conn.getresponse()
+    if logger_actions.isEnabledFor(logging.DEBUG):
+        logger_actions.debug(response.readlines())
+    if 200 <= response.getcode() < 300:
+        logger_actions.debug("HTTP {} -> OK".format(response.getcode()))
+    else:
+        raise Exception("Got HTTP {} response.".format(response.getcode()))
+    response.close()
+
+    return message
+
+
 def action_activate_controller(cond_action, message):
     logger.debug("Finding controller with ID {}".format(cond_action.do_unique_id))
     control = DaemonControl()
@@ -1040,9 +1099,10 @@ def trigger_action(
     else:
         logger_actions.setLevel(logging.INFO)
 
-    message += "\n[Action {id}, {name}]:".format(
-        id=cond_action.unique_id.split('-')[0],
-        name=FUNCTION_ACTION_INFO[cond_action.action_type]['name'])
+    if cond_action.action_type != 'webhook':
+        message += "\n[Action {id}, {name}]:".format(
+            id=cond_action.unique_id.split('-')[0],
+            name=FUNCTION_ACTION_INFO[cond_action.action_type]['name'])
 
     try:
         if cond_action.action_type == 'pause_actions':
@@ -1123,6 +1183,8 @@ def trigger_action(
             message = action_system_restart(message)
         elif cond_action.action_type == 'system_shutdown':
             message = action_system_shutdown(message)
+        elif cond_action.action_type == 'webhook':
+            message = action_webhook(logger_actions, cond_action, message)
         elif cond_action.action_type == 'mqtt_publish':
             message = action_mqtt_publish(cond_action, message, value=value)
 

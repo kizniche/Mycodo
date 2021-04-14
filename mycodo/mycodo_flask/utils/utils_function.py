@@ -497,6 +497,9 @@ def action_mod(form, request_form):
                                         'system_shutdown']:
             pass  # No options
 
+        elif mod_action.action_type == 'webhook':
+            mod_action.do_action_string = form.do_action_string.data
+
         elif mod_action.action_type == 'mqtt_publish':
             try:
                 custom_options = {
@@ -705,6 +708,9 @@ def check_form_actions(form, error):
     elif (action.action_type in ['photo', 'video'] and
             (not form.do_unique_id.data or form.do_unique_id.data == '')):
         error.append("Camera must be set")
+    elif action.action_type == 'webhook':
+        if not form.do_action_string.data or form.do_action_string.data == '':
+            error.append("URL must be set")
     return error
 
 
@@ -765,4 +771,7 @@ def check_actions(action, error):
     elif (action.action_type in ['photo', 'video'] and
             (not action.do_unique_id or action.do_unique_id == '')):
         error.append("Camera must be set")
+    elif action.action_type == 'webhook':
+        if not action.do_action_string or action.do_action_string == '':
+            error.append("URL must be set")
     return error
