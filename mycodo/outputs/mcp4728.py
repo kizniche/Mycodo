@@ -236,55 +236,22 @@ class OutputModule(AbstractOutput):
                 3: self.dac.channel_d
             }
 
-            # Channel A
-            if self.options_channels['vref'][0] == "internal":
-                self.channel[0].vref = adafruit_mcp4728.Vref.INTERNAL
-            else:
-                self.channel[0].vref = adafruit_mcp4728.Vref.VDD
-            self.channel[0].gain = self.options_channels['gain'][0]
-            if (self.options_channels['state_start'][0] == "value" and
-                    self.options_channels['state_start_value'][0]):
-                self.channel[0].value = int(65535 * (
-                    self.options_channels['state_start_value'][0] / self.vref))
-
-            # Channel B
-            if self.options_channels['vref'][1] == "internal":
-                self.channel[1].vref = adafruit_mcp4728.Vref.INTERNAL
-            else:
-                self.channel[1].vref = adafruit_mcp4728.Vref.VDD
-            self.channel[1].gain = self.options_channels['gain'][1]
-            if (self.options_channels['state_start'][1] == "value" and
-                    self.options_channels['state_start_value'][1]):
-                self.channel[1].value = int(65535 * (
-                    self.options_channels['state_start_value'][1] / self.vref))
-
-            # Channel C
-            if self.options_channels['vref'][2] == "internal":
-                self.channel[2].vref = adafruit_mcp4728.Vref.INTERNAL
-            else:
-                self.channel[2].vref = adafruit_mcp4728.Vref.VDD
-            self.channel[2].gain = self.options_channels['gain'][2]
-            if (self.options_channels['state_start'][2] == "value" and
-                    self.options_channels['state_start_value'][2]):
-                self.channel[2].value = int(65535 * (
-                    self.options_channels['state_start_value'][2] / self.vref))
-
-            # Channel D
-            if self.options_channels['vref'][3] == "internal":
-                self.channel[3].vref = adafruit_mcp4728.Vref.INTERNAL
-            else:
-                self.channel[3].vref = adafruit_mcp4728.Vref.VDD
-            self.channel[3].gain = self.options_channels['gain'][3]
-            if (self.options_channels['state_start'][3] == "value" and
-                    self.options_channels['state_start_value'][3]):
-                self.channel[3].value = int(65535 * (
-                    self.options_channels['state_start_value'][3] / self.vref))
+            # Set up Channels
+            for channel in channels_dict:
+                if self.options_channels['vref'][channel] == "internal":
+                    self.channel[channel].vref = adafruit_mcp4728.Vref.INTERNAL
+                else:
+                    self.channel[channel].vref = adafruit_mcp4728.Vref.VDD
+                self.channel[channel].gain = self.options_channels['gain'][channel]
+                if (self.options_channels['state_start'][channel] == "value" and
+                        self.options_channels['state_start_value'][channel]):
+                    self.channel[channel].value = int(65535 * (
+                        self.options_channels['state_start_value'][channel] / self.vref))
 
             self.dac.save_settings()
-
             self.output_setup = True
         except:
-            self.output_setup = False
+            self.logger.exception("Error setting up Output")
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         if state == 'on' and None not in [amount, output_channel]:
@@ -314,24 +281,10 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        if (self.options_channels['state_shutdown'][0] == "value" and
-                self.options_channels['state_shutdown_value'][0]):
-            self.channel[0].value = int(65535 * (
-                    self.options_channels['state_shutdown_value'][0] / self.vref))
-
-        if (self.options_channels['state_shutdown'][1] == "value" and
-                self.options_channels['state_shutdown_value'][1]):
-            self.channel[1].value = int(65535 * (
-                    self.options_channels['state_shutdown_value'][1] / self.vref))
-
-        if (self.options_channels['state_shutdown'][2] == "value" and
-                self.options_channels['state_shutdown_value'][2]):
-            self.channel[2].value = int(65535 * (
-                    self.options_channels['state_shutdown_value'][2] / self.vref))
-
-        if (self.options_channels['state_shutdown'][3] == "value" and
-                self.options_channels['state_shutdown_value'][3]):
-            self.channel[3].value = int(65535 * (
-                    self.options_channels['state_shutdown_value'][3] / self.vref))
+        for channel in channels_dict:
+            if (self.options_channels['state_shutdown'][channel] == "value" and
+                    self.options_channels['state_shutdown_value'][channel]):
+                self.channel[channel].value = int(65535 * (
+                        self.options_channels['state_shutdown_value'][channel] / self.vref))
 
         self.running = False

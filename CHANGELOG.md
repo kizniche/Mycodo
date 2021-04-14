@@ -26,6 +26,7 @@
  - Add Function: LCD Generic 16x2 (I2C)
  - Add Input: Generic Analog pH/EC using ADS1115 ADC
  - Enable external temperature compensation for Anyleaf pH Input
+ - Add Input: KP303 Smart WiFi Power Strip ([#980](https://github.com/kizniche/mycodo/issues/980))
 
 ### Miscellaneous
 
