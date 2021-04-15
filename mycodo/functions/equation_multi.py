@@ -173,68 +173,70 @@ class CustomModule(AbstractFunction):
                 self.equation))
 
     def loop(self):
-        if self.timer_loop < time.time():
-            while self.timer_loop < time.time():
-                self.timer_loop += self.period
+        if self.timer_loop > time.time():
+            return
 
-            # Get last measurement for select_measurement_1
-            last_measurement_a = self.get_last_measurement(
-                self.select_measurement_a_device_id,
-                self.select_measurement_a_measurement_id,
-                max_age=self.measurement_a_max_age)
+        while self.timer_loop < time.time():
+            self.timer_loop += self.period
 
-            if last_measurement_a:
-                self.logger.debug(
-                    "Most recent timestamp and measurement for "
-                    "Measurement A: {timestamp}, {meas}".format(
-                        timestamp=last_measurement_a[0],
-                        meas=last_measurement_a[1]))
-            else:
-                self.logger.debug(
-                    "Could not find a measurement in the database for "
-                    "Measurement A device ID {} and measurement "
-                    "ID {} in the past {} seconds".format(
-                        self.select_measurement_a_device_id,
-                        self.select_measurement_a_measurement_id,
-                        self.measurement_a_max_age))
+        # Get last measurement for select_measurement_1
+        last_measurement_a = self.get_last_measurement(
+            self.select_measurement_a_device_id,
+            self.select_measurement_a_measurement_id,
+            max_age=self.measurement_a_max_age)
 
-            last_measurement_b = self.get_last_measurement(
-                self.select_measurement_b_device_id,
-                self.select_measurement_b_measurement_id,
-                max_age=self.measurement_b_max_age)
+        if last_measurement_a:
+            self.logger.debug(
+                "Most recent timestamp and measurement for "
+                "Measurement A: {timestamp}, {meas}".format(
+                    timestamp=last_measurement_a[0],
+                    meas=last_measurement_a[1]))
+        else:
+            self.logger.debug(
+                "Could not find a measurement in the database for "
+                "Measurement A device ID {} and measurement "
+                "ID {} in the past {} seconds".format(
+                    self.select_measurement_a_device_id,
+                    self.select_measurement_a_measurement_id,
+                    self.measurement_a_max_age))
 
-            if last_measurement_b:
-                self.logger.debug(
-                    "Most recent timestamp and measurement for "
-                    "Measurement B: {timestamp}, {meas}".format(
-                        timestamp=last_measurement_b[0],
-                        meas=last_measurement_b[1]))
-            else:
-                self.logger.debug(
-                    "Could not find a measurement in the database for "
-                    "Measurement B device ID {} and measurement "
-                    "ID {} in the past {} seconds".format(
-                        self.select_measurement_b_device_id,
-                        self.select_measurement_b_measurement_id,
-                        self.measurement_b_max_age))
+        last_measurement_b = self.get_last_measurement(
+            self.select_measurement_b_device_id,
+            self.select_measurement_b_measurement_id,
+            max_age=self.measurement_b_max_age)
 
-            # Perform equation and save to DB here
-            if last_measurement_a and last_measurement_b:
-                equation_str = self.equation
-                equation_str = equation_str.replace("a", str(last_measurement_a[1]))
-                equation_str = equation_str.replace("b", str(last_measurement_b[1]))
+        if last_measurement_b:
+            self.logger.debug(
+                "Most recent timestamp and measurement for "
+                "Measurement B: {timestamp}, {meas}".format(
+                    timestamp=last_measurement_b[0],
+                    meas=last_measurement_b[1]))
+        else:
+            self.logger.debug(
+                "Could not find a measurement in the database for "
+                "Measurement B device ID {} and measurement "
+                "ID {} in the past {} seconds".format(
+                    self.select_measurement_b_device_id,
+                    self.select_measurement_b_measurement_id,
+                    self.measurement_b_max_age))
 
-                self.logger.debug("Equation: {} = {}".format(self.equation, equation_str))
+        # Perform equation and save to DB here
+        if last_measurement_a and last_measurement_b:
+            equation_str = self.equation
+            equation_str = equation_str.replace("a", str(last_measurement_a[1]))
+            equation_str = equation_str.replace("b", str(last_measurement_b[1]))
 
-                equation_output = eval(equation_str)
+            self.logger.debug("Equation: {} = {}".format(self.equation, equation_str))
 
-                self.logger.debug("Output: {}".format(equation_output))
+            equation_output = eval(equation_str)
 
-                write_influxdb_value(
-                    self.unique_id,
-                    self.channels_measurement[0].unit,
-                    value=equation_output,
-                    measure=self.channels_measurement[0].measurement,
-                    channel=0)
-            else:
-                self.logger.debug("One more more measurements could not be found within the Max Age. Not calculating.")
+            self.logger.debug("Output: {}".format(equation_output))
+
+            write_influxdb_value(
+                self.unique_id,
+                self.channels_measurement[0].unit,
+                value=equation_output,
+                measure=self.channels_measurement[0].measurement,
+                channel=0)
+        else:
+            self.logger.debug("One more more measurements could not be found within the Max Age. Not calculating.")

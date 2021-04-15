@@ -187,92 +187,93 @@ class CustomModule(AbstractFunction):
                 self.select_measurement_c_measurement_id,))
 
     def loop(self):
-        if self.timer_loop < time.time():
-            while self.timer_loop < time.time():
-                self.timer_loop += self.period
+        if self.timer_loop > time.time():
+            return
 
-            # Get last measurement for select_measurement_1
-            last_measurement_a = self.get_last_measurement(
-                self.select_measurement_a_device_id,
-                self.select_measurement_a_measurement_id,
-                max_age=self.measurement_a_max_age)
+        while self.timer_loop < time.time():
+            self.timer_loop += self.period
 
+        # Get last measurement for select_measurement_1
+        last_measurement_a = self.get_last_measurement(
+            self.select_measurement_a_device_id,
+            self.select_measurement_a_measurement_id,
+            max_age=self.measurement_a_max_age)
+
+        if last_measurement_a:
+            self.logger.debug(
+                "Most recent timestamp and measurement for "
+                "Measurement A: {timestamp}, {meas}".format(
+                    timestamp=last_measurement_a[0],
+                    meas=last_measurement_a[1]))
+        else:
+            self.logger.debug(
+                "Could not find a measurement in the database for "
+                "Measurement A device ID {} and measurement "
+                "ID {} in the past {} seconds".format(
+                    self.select_measurement_a_device_id,
+                    self.select_measurement_a_measurement_id,
+                    self.measurement_a_max_age))
+
+        last_measurement_b = self.get_last_measurement(
+            self.select_measurement_b_device_id,
+            self.select_measurement_b_measurement_id,
+            max_age=self.measurement_b_max_age)
+
+        if last_measurement_b:
+            self.logger.debug(
+                "Most recent timestamp and measurement for "
+                "Measurement B: {timestamp}, {meas}".format(
+                    timestamp=last_measurement_b[0],
+                    meas=last_measurement_b[1]))
+        else:
+            self.logger.debug(
+                "Could not find a measurement in the database for "
+                "Measurement B device ID {} and measurement "
+                "ID {} in the past {} seconds".format(
+                    self.select_measurement_b_device_id,
+                    self.select_measurement_b_measurement_id,
+                    self.measurement_b_max_age))
+
+        last_measurement_c = self.get_last_measurement(
+            self.select_measurement_c_device_id,
+            self.select_measurement_c_measurement_id,
+            max_age=self.measurement_c_max_age)
+
+        if last_measurement_c:
+            self.logger.debug(
+                "Most recent timestamp and measurement for "
+                "Measurement C: {timestamp}, {meas}".format(
+                    timestamp=last_measurement_c[0],
+                    meas=last_measurement_c[1]))
+        else:
+            self.logger.debug(
+                "Could not find a measurement in the database for "
+                "Measurement C device ID {} and measurement "
+                "ID {} in the past {} seconds".format(
+                    self.select_measurement_c_device_id,
+                    self.select_measurement_c_measurement_id,
+                    self.measurement_c_max_age))
+
+        if last_measurement_a or last_measurement_b or last_measurement_c:
             if last_measurement_a:
-                self.logger.debug(
-                    "Most recent timestamp and measurement for "
-                    "Measurement A: {timestamp}, {meas}".format(
-                        timestamp=last_measurement_a[0],
-                        meas=last_measurement_a[1]))
+                self.logger.debug("Using Measurement A")
+                measurement_store = last_measurement_a[1]
+            elif last_measurement_b:
+                self.logger.debug("Using Measurement B")
+                measurement_store = last_measurement_b[1]
+            elif last_measurement_c:
+                self.logger.debug("Using Measurement C")
+                measurement_store = last_measurement_c[1]
             else:
                 self.logger.debug(
-                    "Could not find a measurement in the database for "
-                    "Measurement A device ID {} and measurement "
-                    "ID {} in the past {} seconds".format(
-                        self.select_measurement_a_device_id,
-                        self.select_measurement_a_measurement_id,
-                        self.measurement_a_max_age))
+                    "Could not find a measurement in the specified time frames for Measurements A, B, or C")
+                return
 
-            last_measurement_b = self.get_last_measurement(
-                self.select_measurement_b_device_id,
-                self.select_measurement_b_measurement_id,
-                max_age=self.measurement_b_max_age)
-
-            if last_measurement_b:
-                self.logger.debug(
-                    "Most recent timestamp and measurement for "
-                    "Measurement B: {timestamp}, {meas}".format(
-                        timestamp=last_measurement_b[0],
-                        meas=last_measurement_b[1]))
-            else:
-                self.logger.debug(
-                    "Could not find a measurement in the database for "
-                    "Measurement B device ID {} and measurement "
-                    "ID {} in the past {} seconds".format(
-                        self.select_measurement_b_device_id,
-                        self.select_measurement_b_measurement_id,
-                        self.measurement_b_max_age))
-
-            last_measurement_c = self.get_last_measurement(
-                self.select_measurement_c_device_id,
-                self.select_measurement_c_measurement_id,
-                max_age=self.measurement_c_max_age)
-
-            if last_measurement_c:
-                self.logger.debug(
-                    "Most recent timestamp and measurement for "
-                    "Measurement C: {timestamp}, {meas}".format(
-                        timestamp=last_measurement_c[0],
-                        meas=last_measurement_c[1]))
-            else:
-                self.logger.debug(
-                    "Could not find a measurement in the database for "
-                    "Measurement C device ID {} and measurement "
-                    "ID {} in the past {} seconds".format(
-                        self.select_measurement_c_device_id,
-                        self.select_measurement_c_measurement_id,
-                        self.measurement_c_max_age))
-
-            if last_measurement_a or last_measurement_b or last_measurement_c:
-                if last_measurement_a:
-                    self.logger.debug("Using Measurement A")
-                    measurement_store = last_measurement_a[1]
-                elif last_measurement_b:
-                    self.logger.debug("Using Measurement B")
-                    measurement_store = last_measurement_b[1]
-                elif last_measurement_c:
-                    self.logger.debug("Using Measurement C")
-                    measurement_store = last_measurement_c[1]
-                else:
-                    self.logger.debug(
-                        "Could not find a measurement in the specified time frames for Measurements A, B, or C")
-                    return
-
-                write_influxdb_value(
-                    self.unique_id,
-                    self.channels_measurement[0].unit,
-                    value=measurement_store,
-                    measure=self.channels_measurement[0].measurement,
-                    channel=0)
-            else:
-                self.logger.debug("No measurements could not be found within the Max Age.")
-
+            write_influxdb_value(
+                self.unique_id,
+                self.channels_measurement[0].unit,
+                value=measurement_store,
+                measure=self.channels_measurement[0].measurement,
+                channel=0)
+        else:
+            self.logger.debug("No measurements could not be found within the Max Age.")

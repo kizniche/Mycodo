@@ -146,55 +146,57 @@ class CustomModule(AbstractFunction):
         self.timer_loop = time.time() + self.start_offset
 
     def loop(self):
-        if self.timer_loop < time.time():
-            while self.timer_loop < time.time():
-                self.timer_loop += self.period
+        if self.timer_loop > time.time():
+            return
 
-            measurements = []
-            for each_id_set in self.select_measurement:
-                device_device_id = each_id_set.split(",")[0]
-                device_measure_id = each_id_set.split(",")[1]
+        while self.timer_loop < time.time():
+            self.timer_loop += self.period
 
-                device_measurement = get_measurement(device_measure_id)
+        measurements = []
+        for each_id_set in self.select_measurement:
+            device_device_id = each_id_set.split(",")[0]
+            device_measure_id = each_id_set.split(",")[1]
 
-                if not device_measurement:
-                    self.logger.error("Could not find Device Measurement")
-                    return
+            device_measurement = get_measurement(device_measure_id)
 
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=device_measurement.conversion_id)
-                channel, unit, measurement = return_measurement_info(
-                    device_measurement, conversion)
+            if not device_measurement:
+                self.logger.error("Could not find Device Measurement")
+                return
 
-                last_measurement = read_last_influxdb(
-                    device_device_id,
-                    unit,
-                    channel,
-                    measure=measurement,
-                    duration_sec=self.max_measure_age)
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
 
-                if not last_measurement:
-                    self.logger.error("Could not find measurement within the set Max Age")
-                    return False
-                else:
-                    measurements.append(last_measurement[1])
+            last_measurement = read_last_influxdb(
+                device_device_id,
+                unit,
+                channel,
+                measure=measurement,
+                duration_sec=self.max_measure_age)
 
-            sum_measurements = float(sum(measurements))
-
-            measurement_dict = {
-                0: {
-                    'measurement': self.channels_measurement[0].measurement,
-                    'unit': self.channels_measurement[0].unit,
-                    'value': sum_measurements
-                }
-            }
-
-            if measurement_dict:
-                self.logger.debug(
-                    "Adding measurements to InfluxDB with ID {}: {}".format(
-                        self.unique_id, measurement_dict))
-                add_measurements_influxdb(self.unique_id, measurement_dict)
+            if not last_measurement:
+                self.logger.error("Could not find measurement within the set Max Age")
+                return False
             else:
-                self.logger.debug(
-                    "No measurements to add to InfluxDB with ID {}".format(
-                        self.unique_id))
+                measurements.append(last_measurement[1])
+
+        sum_measurements = float(sum(measurements))
+
+        measurement_dict = {
+            0: {
+                'measurement': self.channels_measurement[0].measurement,
+                'unit': self.channels_measurement[0].unit,
+                'value': sum_measurements
+            }
+        }
+
+        if measurement_dict:
+            self.logger.debug(
+                "Adding measurements to InfluxDB with ID {}: {}".format(
+                    self.unique_id, measurement_dict))
+            add_measurements_influxdb(self.unique_id, measurement_dict)
+        else:
+            self.logger.debug(
+                "No measurements to add to InfluxDB with ID {}".format(
+                    self.unique_id))

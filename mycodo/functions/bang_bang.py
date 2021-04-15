@@ -123,7 +123,6 @@ class CustomModule(AbstractFunction):
 
         self.control_variable = None
         self.timestamp = None
-        self.timer = None
         self.control = DaemonControl()
         self.outputIsOn = False
         self.timer_loop = time.time()
@@ -155,44 +154,32 @@ class CustomModule(AbstractFunction):
     def initialize_variables(self):
         self.timestamp = time.time()
 
-    def run(self):
-        try:
-            if self.output_channel is None:
-                self.logger.error("Cannot start bang-bang controller: Could not find output channel.")
-                self.deactivate_self()
-                return
-
-            self.running = True
-            self.timer = time.time()
-
-            self.logger.info(
-                "Bang-Bang controller started with options: "
-                "Measurement Device: {}, Measurement: {}, Output: {}, "
-                "Output_Channel: {}, Setpoint: {}, Hysteresis: {}, "
-                "Direction: {}, Period: {}".format(
-                    self.measurement_device_id,
-                    self.measurement_measurement_id,
-                    self.output_device_id,
-                    self.output_channel,
-                    self.setpoint,
-                    self.hysteresis,
-                    self.direction,
-                    self.update_period))
-
-            # Start a loop
-            while self.running:
-                if self.timer_loop < time.time():
-                    while self.timer_loop < time.time():
-                        self.timer_loop += self.update_period
-                    self.loop()
-                time.sleep(0.1)
-        except:
-            self.logger.exception("Run Error")
-        finally:
-            self.running = False
-            self.logger.error("Deactivated unexpectedly")
+        self.logger.info(
+            "Bang-Bang controller started with options: "
+            "Measurement Device: {}, Measurement: {}, Output: {}, "
+            "Output_Channel: {}, Setpoint: {}, Hysteresis: {}, "
+            "Direction: {}, Period: {}".format(
+                self.measurement_device_id,
+                self.measurement_measurement_id,
+                self.output_device_id,
+                self.output_channel,
+                self.setpoint,
+                self.hysteresis,
+                self.direction,
+                self.update_period))
 
     def loop(self):
+        if self.output_channel is None:
+            self.logger.error("Cannot start bang-bang controller: Could not find output channel.")
+            self.deactivate_self()
+            return
+
+        if self.timer_loop > time.time():
+            return
+
+        while self.timer_loop < time.time():
+            self.timer_loop += self.update_period
+
         last_measurement = self.get_last_measurement(
             self.measurement_device_id,
             self.measurement_measurement_id)[1]

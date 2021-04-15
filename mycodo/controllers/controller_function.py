@@ -104,7 +104,6 @@ class FunctionController(AbstractController, threading.Thread):
                 'function')
 
             self.run_function = function_loaded.CustomModule(self.function)
-
         else:
             self.logger.debug("Device '{device}' not recognized".format(
                 device=self.device))

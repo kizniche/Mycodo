@@ -183,57 +183,59 @@ class CustomModule(AbstractFunction):
                 self.measurement_max_age_a))
 
     def loop(self):
-        if self.timer_loop < time.time():
-            while self.timer_loop < time.time():
-                self.timer_loop += self.period
+        if self.timer_loop > time.time():
+            return
 
-            last_measurement_a = self.get_last_measurement(
-                self.select_measurement_a_device_id,
-                self.select_measurement_a_measurement_id,
-                max_age=self.measurement_max_age_a)
+        while self.timer_loop < time.time():
+            self.timer_loop += self.period
 
-            if last_measurement_a:
-                self.logger.debug(
-                    "Most recent timestamp and measurement for "
-                    "Measurement A: {timestamp}, {meas}".format(
-                        timestamp=last_measurement_a[0],
-                        meas=last_measurement_a[1]))
+        last_measurement_a = self.get_last_measurement(
+            self.select_measurement_a_device_id,
+            self.select_measurement_a_measurement_id,
+            max_age=self.measurement_max_age_a)
+
+        if last_measurement_a:
+            self.logger.debug(
+                "Most recent timestamp and measurement for "
+                "Measurement A: {timestamp}, {meas}".format(
+                    timestamp=last_measurement_a[0],
+                    meas=last_measurement_a[1]))
+        else:
+            self.logger.debug(
+                "Could not find a measurement in the database for "
+                "Measurement A in the past {} seconds".format(
+                    self.measurement_max_age_a))
+
+        last_measurement_b = self.get_last_measurement(
+            self.select_measurement_b_device_id,
+            self.select_measurement_b_measurement_id,
+            max_age=self.measurement_max_age_b)
+
+        if last_measurement_b:
+            self.logger.debug(
+                "Most recent timestamp and measurement for "
+                "Measurement B: {timestamp}, {meas}".format(
+                    timestamp=last_measurement_b[0],
+                    meas=last_measurement_b[1]))
+        else:
+            self.logger.debug(
+                "Could not find a measurement in the database for "
+                "Measurement B in the past {} seconds".format(
+                    self.measurement_max_age_b))
+
+        if last_measurement_a and last_measurement_b:
+            if self.difference_reverse_order:
+                difference = last_measurement_b[1] - last_measurement_a[1]
             else:
-                self.logger.debug(
-                    "Could not find a measurement in the database for "
-                    "Measurement A in the past {} seconds".format(
-                        self.measurement_max_age_a))
+                difference = last_measurement_a[1] - last_measurement_b[1]
+            if self.difference_absolute:
+                difference = abs(difference)
 
-            last_measurement_b = self.get_last_measurement(
-                self.select_measurement_b_device_id,
-                self.select_measurement_b_measurement_id,
-                max_age=self.measurement_max_age_b)
+            self.logger.debug("Output: {}".format(difference))
 
-            if last_measurement_b:
-                self.logger.debug(
-                    "Most recent timestamp and measurement for "
-                    "Measurement B: {timestamp}, {meas}".format(
-                        timestamp=last_measurement_b[0],
-                        meas=last_measurement_b[1]))
-            else:
-                self.logger.debug(
-                    "Could not find a measurement in the database for "
-                    "Measurement B in the past {} seconds".format(
-                        self.measurement_max_age_b))
-
-            if last_measurement_a and last_measurement_b:
-                if self.difference_reverse_order:
-                    difference = last_measurement_b[1] - last_measurement_a[1]
-                else:
-                    difference = last_measurement_a[1] - last_measurement_b[1]
-                if self.difference_absolute:
-                    difference = abs(difference)
-
-                self.logger.debug("Output: {}".format(difference))
-
-                write_influxdb_value(
-                    self.unique_id,
-                    self.channels_measurement[0].unit,
-                    value=difference,
-                    measure=self.channels_measurement[0].measurement,
-                    channel=0)
+            write_influxdb_value(
+                self.unique_id,
+                self.channels_measurement[0].unit,
+                value=difference,
+                measure=self.channels_measurement[0].measurement,
+                channel=0)

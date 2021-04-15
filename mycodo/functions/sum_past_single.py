@@ -147,46 +147,50 @@ class CustomModule(AbstractFunction):
         self.timer_loop = time.time() + self.start_offset
 
     def loop(self):
-        if self.timer_loop < time.time():
-            while self.timer_loop < time.time():
-                self.timer_loop += self.period
+        if self.timer_loop > time.time():
+            return
 
-            device_measurement = get_measurement(self.select_measurement_measurement_id)
+        while self.timer_loop < time.time():
+            self.timer_loop += self.period
 
-            if not device_measurement:
-                self.logger.error("Could not find Device Measurement")
-                return
+        device_measurement = get_measurement(
+            self.select_measurement_measurement_id)
 
-            conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=device_measurement.conversion_id)
-            channel, unit, measurement = return_measurement_info(
-                device_measurement, conversion)
+        if not device_measurement:
+            self.logger.error("Could not find Device Measurement")
+            return
 
-            sum_measurements = sum_past_seconds(
-                self.select_measurement_device_id,
-                unit,
-                channel,
-                self.max_measure_age,
-                measure=measurement)
+        conversion = db_retrieve_table_daemon(
+            Conversion, unique_id=device_measurement.conversion_id)
+        channel, unit, measurement = return_measurement_info(
+            device_measurement, conversion)
 
-            if not sum_measurements:
-                self.logger.error("Could not find measurement within the set Max Age")
-                return False
+        sum_measurements = sum_past_seconds(
+            self.select_measurement_device_id,
+            unit,
+            channel,
+            self.max_measure_age,
+            measure=measurement)
 
-            measurement_dict = {
-                0: {
-                    'measurement': self.channels_measurement[0].measurement,
-                    'unit': self.channels_measurement[0].unit,
-                    'value': sum_measurements
-                }
+        if not sum_measurements:
+            self.logger.error(
+                "Could not find measurement within the set Max Age")
+            return False
+
+        measurement_dict = {
+            0: {
+                'measurement': self.channels_measurement[0].measurement,
+                'unit': self.channels_measurement[0].unit,
+                'value': sum_measurements
             }
+        }
 
-            if measurement_dict:
-                self.logger.debug(
-                    "Adding measurements to InfluxDB with ID {}: {}".format(
-                        self.unique_id, measurement_dict))
-                add_measurements_influxdb(self.unique_id, measurement_dict)
-            else:
-                self.logger.debug(
-                    "No measurements to add to InfluxDB with ID {}".format(
-                        self.unique_id))
+        if measurement_dict:
+            self.logger.debug(
+                "Adding measurements to InfluxDB with ID {}: {}".format(
+                    self.unique_id, measurement_dict))
+            add_measurements_influxdb(self.unique_id, measurement_dict)
+        else:
+            self.logger.debug(
+                "No measurements to add to InfluxDB with ID {}".format(
+                    self.unique_id))

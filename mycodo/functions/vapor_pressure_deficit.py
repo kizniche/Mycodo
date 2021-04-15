@@ -171,13 +171,12 @@ class CustomModule(AbstractFunction):
         self.timer_loop = time.time() + self.start_offset
 
     def loop(self):
-        if self.timer_loop < time.time():
-            while self.timer_loop < time.time():
-                self.timer_loop += self.period
+        if self.timer_loop > time.time():
+            return
 
-            self.run_function()
+        while self.timer_loop < time.time():
+            self.timer_loop += self.period
 
-    def run_function(self):
         temp_c = None
         hum_percent = None
         vpd_pa = None

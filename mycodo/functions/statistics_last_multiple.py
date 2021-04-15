@@ -173,76 +173,78 @@ class CustomModule(AbstractFunction):
             FUNCTION_INFORMATION['custom_options'], custom_function)
 
     def loop(self):
-        if self.timer_loop < time.time():
-            while self.timer_loop < time.time():
-                self.timer_loop += self.period
+        if self.timer_loop > time.time():
+            return
 
-            measure = []
-            for each_id_set in self.select_measurement:
-                device_device_id = each_id_set.split(",")[0]
-                device_measure_id = each_id_set.split(",")[1]
+        while self.timer_loop < time.time():
+            self.timer_loop += self.period
 
-                device_measurement = get_measurement(device_measure_id)
+        measure = []
+        for each_id_set in self.select_measurement:
+            device_device_id = each_id_set.split(",")[0]
+            device_measure_id = each_id_set.split(",")[1]
 
-                if not device_measurement:
-                    self.logger.error("Could not find Device Measurement")
-                    return
+            device_measurement = get_measurement(device_measure_id)
 
-                conversion = db_retrieve_table_daemon(
-                    Conversion, unique_id=device_measurement.conversion_id)
-                channel, unit, measurement = return_measurement_info(
-                    device_measurement, conversion)
+            if not device_measurement:
+                self.logger.error("Could not find Device Measurement")
+                return
 
-                last_measurement = read_last_influxdb(
-                    device_device_id,
-                    unit,
-                    channel,
-                    measure=measurement,
-                    duration_sec=self.max_measure_age)
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
 
-                if not last_measurement:
-                    self.logger.error(
-                        "Could not find measurement within the set Max Age for Device {} and Measurement {}".format(
-                            device_device_id, device_measure_id))
-                    if self.halt_on_missing_measure:
-                        self.logger.debug("Instructed to halt on the first missing measurement. Halting.")
-                        return False
-                else:
-                    measure.append(last_measurement[1])
+            last_measurement = read_last_influxdb(
+                device_device_id,
+                unit,
+                channel,
+                measure=measurement,
+                duration_sec=self.max_measure_age)
 
-            if len(measure) > 1:
-                stat_mean = float(sum(measure) / float(len(measure)))
-                stat_median = median(measure)
-                stat_minimum = min(measure)
-                stat_maximum = max(measure)
-                stdev_ = stdev(measure)
-                stdev_mean_upper = stat_mean + stdev_
-                stdev_mean_lower = stat_mean - stdev_
-
-                list_measurement = [
-                    stat_mean,
-                    stat_median,
-                    stat_minimum,
-                    stat_maximum,
-                    stdev_,
-                    stdev_mean_upper,
-                    stdev_mean_lower
-                ]
-
-                for each_channel, each_measurement in self.channels_measurement.items():
-                    if each_measurement.is_enabled:
-                        channel, unit, measurement = return_measurement_info(
-                            each_measurement, self.channels_conversion[each_channel])
-
-                        self.logger.debug("Saving {} to channel {} with measurement {} and unit {}".format(
-                            list_measurement[each_channel], each_channel, measurement, unit))
-
-                        write_influxdb_value(
-                            self.unique_id,
-                            unit,
-                            value=list_measurement[each_channel],
-                            measure=measurement,
-                            channel=each_channel)
+            if not last_measurement:
+                self.logger.error(
+                    "Could not find measurement within the set Max Age for Device {} and Measurement {}".format(
+                        device_device_id, device_measure_id))
+                if self.halt_on_missing_measure:
+                    self.logger.debug("Instructed to halt on the first missing measurement. Halting.")
+                    return False
             else:
-                self.logger.debug("Less than 2 measurements found within Max Age. "
-                                  "Calculations need at least 2 measurements. Not calculating.")
+                measure.append(last_measurement[1])
+
+        if len(measure) > 1:
+            stat_mean = float(sum(measure) / float(len(measure)))
+            stat_median = median(measure)
+            stat_minimum = min(measure)
+            stat_maximum = max(measure)
+            stdev_ = stdev(measure)
+            stdev_mean_upper = stat_mean + stdev_
+            stdev_mean_lower = stat_mean - stdev_
+
+            list_measurement = [
+                stat_mean,
+                stat_median,
+                stat_minimum,
+                stat_maximum,
+                stdev_,
+                stdev_mean_upper,
+                stdev_mean_lower
+            ]
+
+            for each_channel, each_measurement in self.channels_measurement.items():
+                if each_measurement.is_enabled:
+                    channel, unit, measurement = return_measurement_info(
+                        each_measurement, self.channels_conversion[each_channel])
+
+                    self.logger.debug("Saving {} to channel {} with measurement {} and unit {}".format(
+                        list_measurement[each_channel], each_channel, measurement, unit))
+
+                    write_influxdb_value(
+                        self.unique_id,
+                        unit,
+                        value=list_measurement[each_channel],
+                        measure=measurement,
+                        channel=each_channel)
+        else:
+            self.logger.debug("Less than 2 measurements found within Max Age. "
+                              "Calculations need at least 2 measurements. Not calculating.")

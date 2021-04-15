@@ -148,47 +148,49 @@ class CustomModule(AbstractFunction):
                 self.equation))
 
     def loop(self):
-        if self.timer_loop < time.time():
-            while self.timer_loop < time.time():
-                self.timer_loop += self.period
+        if self.timer_loop > time.time():
+            return
 
-            # Get last measurement for select_measurement_1
-            last_measurement = self.get_last_measurement(
-                self.select_measurement_device_id,
-                self.select_measurement_measurement_id,
-                max_age=self.measurement_max_age)
+        while self.timer_loop < time.time():
+            self.timer_loop += self.period
 
-            if last_measurement:
-                self.logger.debug(
-                    "Most recent timestamp and measurement for "
-                    "Measurement A: {timestamp}, {meas}".format(
-                        timestamp=last_measurement[0],
-                        meas=last_measurement[1]))
-            else:
-                self.logger.debug(
-                    "Could not find a measurement in the database for "
-                    "Measurement A device ID {} and measurement "
-                    "ID {} in the past {} seconds".format(
-                        self.select_measurement_device_id,
-                        self.select_measurement_measurement_id,
-                        self.measurement_max_age))
+        # Get last measurement for select_measurement_1
+        last_measurement = self.get_last_measurement(
+            self.select_measurement_device_id,
+            self.select_measurement_measurement_id,
+            max_age=self.measurement_max_age)
 
-            # Perform equation and save to DB here
-            if last_measurement:
-                equation_str = self.equation
-                equation_str = equation_str.replace("x", str(last_measurement[1]))
+        if last_measurement:
+            self.logger.debug(
+                "Most recent timestamp and measurement for "
+                "Measurement A: {timestamp}, {meas}".format(
+                    timestamp=last_measurement[0],
+                    meas=last_measurement[1]))
+        else:
+            self.logger.debug(
+                "Could not find a measurement in the database for "
+                "Measurement A device ID {} and measurement "
+                "ID {} in the past {} seconds".format(
+                    self.select_measurement_device_id,
+                    self.select_measurement_measurement_id,
+                    self.measurement_max_age))
 
-                self.logger.debug("Equation: {} = {}".format(self.equation, equation_str))
+        # Perform equation and save to DB here
+        if last_measurement:
+            equation_str = self.equation
+            equation_str = equation_str.replace("x", str(last_measurement[1]))
 
-                equation_output = eval(equation_str)
+            self.logger.debug("Equation: {} = {}".format(self.equation, equation_str))
 
-                self.logger.debug("Output: {}".format(equation_output))
+            equation_output = eval(equation_str)
 
-                write_influxdb_value(
-                    self.unique_id,
-                    self.channels_measurement[0].unit,
-                    value=equation_output,
-                    measure=self.channels_measurement[0].measurement,
-                    channel=0)
-            else:
-                self.logger.debug("A measurement could not be found within the Max Age. Not calculating.")
+            self.logger.debug("Output: {}".format(equation_output))
+
+            write_influxdb_value(
+                self.unique_id,
+                self.channels_measurement[0].unit,
+                value=equation_output,
+                measure=self.channels_measurement[0].measurement,
+                channel=0)
+        else:
+            self.logger.debug("A measurement could not be found within the Max Age. Not calculating.")

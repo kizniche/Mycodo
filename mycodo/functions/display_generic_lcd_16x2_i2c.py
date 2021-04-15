@@ -31,6 +31,7 @@ import traceback
 from flask import flash
 from flask_babel import lazy_gettext
 
+from mycodo.config import MYCODO_VERSION
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import FunctionChannel
@@ -435,3 +436,7 @@ class CustomModule(AbstractFunction):
         # Display lines
         self.lcd.lcd_init()
         self.lcd.lcd_write_lines(lines_display[0], lines_display[1], "", "")
+
+    def stop_function(self):
+        self.lcd.lcd_init()
+        self.lcd.lcd_write_lines("Mycodo {}".format(MYCODO_VERSION), "LCD Deactivated", "", "")

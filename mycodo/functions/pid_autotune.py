@@ -160,7 +160,7 @@ class CustomModule(AbstractFunction):
         self.autotune_active = None
         self.control_variable = None
         self.timestamp = None
-        self.timer = None
+        self.timer_loop = None
         self.control = DaemonControl()
 
         # Initialize custom options
@@ -198,85 +198,75 @@ class CustomModule(AbstractFunction):
             out_max=self.period,
             noiseband=self.noiseband)
 
-    def run(self):
-        try:
-            if self.output_channel is None:
-                self.logger.error("Cannot start PID Autotune: Could not find output channel.")
-                self.deactivate_self()
-                return
+        self.running = True
+        self.autotune_active = True
+        self.timer_loop = time.time()
 
-            self.running = True
-            self.autotune_active = True
-            self.timer = time.time()
-
-            self.logger.info(
-                "PID Autotune started with options: "
-                "Measurement Device: {}, Measurement: {}, Output: {}, Output_Channel: {}, Setpoint: {}, "
-                "Period: {}, Noise Band: {}, Outstep: {}, DIrection: {}".format(
-                    self.measurement_device_id,
-                    self.measurement_measurement_id,
-                    self.output_device_id,
-                    self.output_channel,
-                    self.setpoint,
-                    self.period,
-                    self.noiseband,
-                    self.outstep,
-                    self.direction))
-
-            # Start a loop
-            while self.running:
-                self.loop()
-                time.sleep(0.1)
-        except:
-            self.logger.exception("Run Error")
-        finally:
-            self.running = False
-            self.logger.error("Deactivated unexpectedly")
+        self.logger.info(
+            "PID Autotune started with options: "
+            "Measurement Device: {}, Measurement: {}, Output: {}, Output_Channel: {}, Setpoint: {}, "
+            "Period: {}, Noise Band: {}, Outstep: {}, DIrection: {}".format(
+                self.measurement_device_id,
+                self.measurement_measurement_id,
+                self.output_device_id,
+                self.output_channel,
+                self.setpoint,
+                self.period,
+                self.noiseband,
+                self.outstep,
+                self.direction))
 
     def loop(self):
-        if time.time() > self.timer and self.autotune_active:
-            while time.time() > self.timer:
-                self.timer = self.timer + self.period
+        if self.output_channel is None:
+            self.logger.error("Cannot start PID Autotune: Could not find output channel.")
+            self.deactivate_self()
+            return
 
-            last_measurement = self.get_last_measurement(
-                self.measurement_device_id,
-                self.measurement_measurement_id)
+        if self.timer_loop > time.time() or not self.autotune_active:
+            return
 
-            if not self.autotune.run(last_measurement[1]):
-                self.control_variable = self.autotune.output
+        while time.time() > self.timer_loop:
+            self.timer_loop = self.timer_loop + self.period
 
-                self.logger.info('')
-                self.logger.info("state: {}".format(self.autotune.state))
-                self.logger.info("output: {}".format(self.autotune.output))
+        last_measurement = self.get_last_measurement(
+            self.measurement_device_id,
+            self.measurement_measurement_id)
+
+        if not self.autotune.run(last_measurement[1]):
+            self.control_variable = self.autotune.output
+
+            self.logger.info('')
+            self.logger.info("state: {}".format(self.autotune.state))
+            self.logger.info("output: {}".format(self.autotune.output))
+        else:
+            # Autotune has finished
+            timestamp = time.time() - self.timestamp
+            self.autotune_active = False
+            self.logger.info('Autotune has finished')
+            self.logger.info('time:  {0} min'.format(round(timestamp / 60)))
+            self.logger.info('state: {0}'.format(self.autotune.state))
+
+            if self.autotune.state == PIDAutotune.STATE_SUCCEEDED:
+                self.logger.info('Autotube was successful')
+                for rule in self.autotune.tuning_rules:
+                    params = self.autotune.get_pid_parameters(rule)
+                    self.logger.info('')
+                    self.logger.info('rule: {0}'.format(rule))
+                    self.logger.info('Kp: {0}'.format(params.Kp))
+                    self.logger.info('Ki: {0}'.format(params.Ki))
+                    self.logger.info('Kd: {0}'.format(params.Kd))
             else:
-                # Autotune has finished
-                timestamp = time.time() - self.timestamp
-                self.autotune_active = False
-                self.logger.info('Autotune has finished')
-                self.logger.info('time:  {0} min'.format(round(timestamp / 60)))
-                self.logger.info('state: {0}'.format(self.autotune.state))
+                self.logger.info('Autotune was not successful')
 
-                if self.autotune.state == PIDAutotune.STATE_SUCCEEDED:
-                    self.logger.info('Autotube was successful')
-                    for rule in self.autotune.tuning_rules:
-                        params = self.autotune.get_pid_parameters(rule)
-                        self.logger.info('')
-                        self.logger.info('rule: {0}'.format(rule))
-                        self.logger.info('Kp: {0}'.format(params.Kp))
-                        self.logger.info('Ki: {0}'.format(params.Ki))
-                        self.logger.info('Kd: {0}'.format(params.Kd))
-                else:
-                    self.logger.info('Autotune was not successful')
+            # Finally, deactivate controller
+            self.deactivate_self()
+            return
 
-                # Finally, deactivate controller
-                self.deactivate_self()
-                return
-
-            self.control.output_on(
-                self.output_device_id,
-                output_type='sec',
-                output_channel=self.output_channel,
-                amount=self.control_variable)
+        self.control.output_on(
+            self.output_device_id,
+            output_type='sec',
+            output_channel=self.output_channel,
+            amount=self.control_variable)
 
     def deactivate_self(self):
         self.logger.info("Deactivating Autotune Function")
