@@ -137,6 +137,12 @@
           </div>
         </div>
         <div class="col-auto">
+          {{form_settings_pi.sample_rate_controller_function.label(class_='control-label')}}
+          <div>
+            {{form_settings_pi.sample_rate_controller_function(class_='form-control', value=misc.sample_rate_controller_function)}}
+          </div>
+        </div>
+        <div class="col-auto">
           {{form_settings_pi.sample_rate_controller_input.label(class_='control-label')}}
           <div>
             {{form_settings_pi.sample_rate_controller_input(class_='form-control', value=misc.sample_rate_controller_input)}}

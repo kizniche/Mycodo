@@ -360,6 +360,9 @@ class SettingsPi(FlaskForm):
     sample_rate_controller_conditional = DecimalField(
         lazy_gettext('Conditional Sample Rate (seconds)'),
         widget=NumberInput(step='any'))
+    sample_rate_controller_function = DecimalField(
+        lazy_gettext('Function Sample Rate (seconds)'),
+        widget=NumberInput(step='any'))
     sample_rate_controller_input = DecimalField(
         lazy_gettext('Input Sample Rate (seconds)'),
         widget=NumberInput(step='any'))

@@ -91,11 +91,13 @@ the known ORP value in the `Calibration ORP` field, and press `Calibrate`. You d
         {
             'id': 'calibrate',
             'type': 'button',
+            'wait_for_return': True,
             'name': lazy_gettext('Calibrate'),
         },
         {
             'id': 'clear_calibrate_slots',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Clear Calibration Slots'
         }
     ]

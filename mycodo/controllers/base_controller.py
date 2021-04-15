@@ -9,6 +9,7 @@ All Controllers should inherit from this class and overwrite methods that raise
 NotImplementedErrors
 """
 import logging
+import threading
 import time
 import timeit
 

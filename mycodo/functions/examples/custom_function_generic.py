@@ -23,10 +23,9 @@
 #
 import threading
 import time
-import timeit
 
-from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import CustomController
+from mycodo.functions.base_function import AbstractFunction
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 
@@ -162,20 +161,53 @@ FUNCTION_INFORMATION = {
             'name': 'Select Device 2',
             'phrase': 'Select Device 2 Description'
         }
+    ],
+
+    'custom_actions_message': 'This is a message for custom actions.',
+    'custom_actions': [
+        {
+            'id': 'button_one_value',
+            'type': 'integer',
+            'default_value': 650,
+            'name': 'Button One Value',
+            'phrase': 'Value for button one.'
+        },
+        {
+            'id': 'button_one',
+            'type': 'button',
+            'wait_for_return': True,  # Refreshing the UI will wait for the function to complete
+            'name': 'Button One',
+            'phrase': "This is button one"
+        },
+        {'type': 'new_line'},  # This starts a new line for the next action
+        {
+            'type': 'message',
+            'default_value': 'Here is another action',  # This message will be displayed after the new line
+        },
+        {
+            'id': 'button_two_value',
+            'type': 'integer',
+            'default_value': 1500,
+            'name': 'Button Two Value',
+            'phrase': 'Value for button two.'
+        },
+        {
+            'id': 'button_two',
+            'type': 'button',
+            'wait_for_return': False,  # Refreshing the UI will not wait for the function to complete
+            'name': 'Button Two',
+            'phrase': "This is button two"
+        }
     ]
 }
 
 
-class CustomModule(AbstractController, threading.Thread):
+class CustomModule(AbstractFunction):
     """
     Class to operate custom controller
     """
-    def __init__(self, ready, unique_id, testing=False):
-        threading.Thread.__init__(self)
-        super(CustomModule, self).__init__(ready, unique_id=unique_id, name=__name__)
-
-        self.unique_id = unique_id
-        self.log_level_debug = None
+    def __init__(self, function, testing=False):
+        super(CustomModule, self).__init__(function, testing=testing, name=__name__)
 
         self.control = DaemonControl()
 
@@ -195,7 +227,7 @@ class CustomModule(AbstractController, threading.Thread):
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
-            CustomController, unique_id=unique_id)
+            CustomController, unique_id=self.unique_id)
         self.setup_custom_options(
             FUNCTION_INFORMATION['custom_options'], custom_function)
 
@@ -203,15 +235,14 @@ class CustomModule(AbstractController, threading.Thread):
         self.output_1_channel = self.get_output_channel_from_channel_id(self.output_1_channel_id)
 
         if not testing:
-            pass
-            # import controller-specific modules here
+            self.initialize_variables()
+
+    def initialize_variables(self):
+        # import controller-specific modules here
+        pass
 
     def run(self):
         try:
-            self.logger.info("Activated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_startup_timer) * 1000))
-
-            self.ready.set()
             self.running = True
 
             # Make sure the option "Log Level: Debug" is enabled for these
@@ -291,19 +322,20 @@ class CustomModule(AbstractController, threading.Thread):
         except:
             self.logger.exception("Run Error")
         finally:
-            self.run_finally()
             self.running = False
-            if self.thread_shutdown_timer:
-                self.logger.info("Deactivated in {:.1f} ms".format(
-                    (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
-            else:
-                self.logger.error("Deactivated unexpectedly")
+            self.logger.error("Deactivated unexpectedly")
 
     def loop(self):
         pass
 
     def initialize_variables(self):
-        controller = db_retrieve_table_daemon(
-            CustomController, unique_id=self.unique_id)
-        self.log_level_debug = controller.log_level_debug
-        self.set_log_level_debug(self.log_level_debug)
+        pass
+
+    def button_one(self, args_dict):
+        self.logger.error("Button One Pressed!: {}".format(int(args_dict['button_one_value'])))
+        return "Here return message will be seen in the web UI. " \
+               "This only works when 'wait_for_return' is set True."
+
+    def button_two(self, args_dict):
+        self.logger.error("Button Two Pressed!: {}".format(int(args_dict['button_two_value'])))
+        return "This message will never be seen in the web UI because this process is threaded"

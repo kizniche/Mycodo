@@ -1745,6 +1745,9 @@ def custom_action(controller, dict_device, unique_id, form):
     if controller == "Output":
         controller_type = Output.query.filter(
             Output.unique_id == unique_id).first().output_type
+    elif controller == "Function":
+        controller_type = CustomController.query.filter(
+            CustomController.unique_id == unique_id).first().device
     elif controller == "Input":
         controller_type = Input.query.filter(
             Input.unique_id == unique_id).first().device
@@ -1753,11 +1756,11 @@ def custom_action(controller, dict_device, unique_id, form):
         return
 
     try:
-        option_types = {}
+        options = {}
         if 'custom_actions' in dict_device[controller_type]:
             for each_option in dict_device[controller_type]['custom_actions']:
                 if 'id' in each_option and 'type' in each_option:
-                    option_types[each_option['id']] = each_option['type']
+                    options[each_option['id']] = each_option
 
         args_dict = {}
         button_id = None
@@ -1766,23 +1769,23 @@ def custom_action(controller, dict_device, unique_id, form):
                 button_id = key[14:]
             else:
                 for value in form.getlist(key):
-                    if key in option_types:
-                        if option_types[key] == 'integer':
+                    if key in options:
+                        if options[key]['type'] == 'integer':
                             try:
                                 args_dict[key] = int(value)
                             except:
                                 logger.error("Value of option '{}' doesn't represent integer: '{}'".format(key, value))
-                        elif option_types[key] == 'float':
+                        elif options[key]['type'] == 'float':
                             try:
                                 args_dict[key] = float(value)
                             except:
                                 logger.error("Value of option '{}' doesn't represent float: '{}'".format(key, value))
-                        elif option_types[key] == 'bool':
+                        elif options[key]['type'] == 'bool':
                             try:
                                 args_dict[key] = bool(value)
                             except:
                                 logger.error("Value of option '{}' doesn't represent bool: '{}'".format(key, value))
-                        elif option_types[key] == 'text':
+                        elif options[key]['type'] == 'text':
                             try:
                                 args_dict[key] = str(value)
                             except:
@@ -1796,8 +1799,13 @@ def custom_action(controller, dict_device, unique_id, form):
         if not error and button_id:
             from mycodo.mycodo_client import DaemonControl
             control = DaemonControl()
+            use_thread = True
+            if (button_id in options and
+                    'wait_for_return' in options[button_id] and
+                    options[button_id]['wait_for_return']):
+                use_thread = False
             status = control.custom_button(
-                controller, unique_id, button_id, args_dict)
+                controller, unique_id, button_id, args_dict, use_thread)
             if status[0]:
                 flash("Custom Button: {}".format(status[1]), "error")
             else:

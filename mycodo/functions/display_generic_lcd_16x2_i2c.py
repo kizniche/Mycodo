@@ -25,7 +25,6 @@ import calendar
 import datetime
 import json
 import math
-import threading
 import time
 import traceback
 
@@ -33,9 +32,9 @@ from flask import flash
 from flask_babel import lazy_gettext
 
 from mycodo.config_translations import TRANSLATIONS
-from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import FunctionChannel
+from mycodo.functions.base_function import AbstractFunction
 from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.utils.database import db_retrieve_table_daemon
@@ -284,17 +283,14 @@ FUNCTION_INFORMATION = {
 }
 
 
-class CustomModule(AbstractController, threading.Thread):
+class CustomModule(AbstractFunction):
     """
     Class to operate custom controller
     """
-    def __init__(self, ready, unique_id, testing=False):
-        threading.Thread.__init__(self)
-        super(CustomModule, self).__init__(ready, unique_id=unique_id, name=__name__)
+    def __init__(self, function, testing=False):
+        super(CustomModule, self).__init__(function, testing=testing, name=__name__)
 
-        self.unique_id = unique_id
         self.options_channels = {}
-        self.log_level_debug = None
         self.lcd = None
         self.canvas = None
         self.timer_loop = time.time()
@@ -311,19 +307,17 @@ class CustomModule(AbstractController, threading.Thread):
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
-            CustomController, unique_id=unique_id)
+            CustomController, unique_id=self.unique_id)
         self.setup_custom_options(
             FUNCTION_INFORMATION['custom_options'], custom_function)
+
+        if not testing:
+            self.initialize_variables()
 
     def initialize_variables(self):
         from mycodo.devices.lcd_generic import LCD_Generic
 
         try:
-            controller = db_retrieve_table_daemon(
-                CustomController, unique_id=self.unique_id)
-            self.log_level_debug = controller.log_level_debug
-            self.set_log_level_debug(self.log_level_debug)
-
             function_channels = db_retrieve_table_daemon(
                 FunctionChannel).filter(FunctionChannel.function_id == self.unique_id).all()
             self.options_channels = self.setup_custom_channel_options_json(

@@ -165,21 +165,25 @@ and press `Calibrate, slot 2`. Optionally, repeat a third time with `Calibrate, 
         {
             'id': 'calibrate_slot_1',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate, slot 1'
         },
         {
             'id': 'calibrate_slot_2',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate, slot 2'
         },
         {
             'id': 'calibrate_slot_3',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate, slot 3'
         },
         {
             'id': 'clear_calibrate_slots',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Clear Calibration Slots'
         }
     ]

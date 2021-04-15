@@ -1330,6 +1330,7 @@ def settings_pi_mod(form):
     if form.save_sample_rates.data:
         mod_misc = Misc.query.first()
         mod_misc.sample_rate_controller_conditional = form.sample_rate_controller_conditional.data
+        mod_misc.sample_rate_controller_function = form.sample_rate_controller_function.data
         mod_misc.sample_rate_controller_input = form.sample_rate_controller_input.data
         mod_misc.sample_rate_controller_math = form.sample_rate_controller_math.data
         mod_misc.sample_rate_controller_output = form.sample_rate_controller_output.data

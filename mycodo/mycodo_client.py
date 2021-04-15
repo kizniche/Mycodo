@@ -278,10 +278,10 @@ class DaemonControl:
             smtp.user, smtp.passw, smtp.email_from,
             recipients, message, subject=subject)
 
-    def custom_button(self, controller_type, unique_id, button_id, args_dict):
+    def custom_button(self, controller_type, unique_id, button_id, args_dict, thread=True):
         try:
             return self.proxy().custom_button(
-                controller_type, unique_id, button_id, args_dict)
+                controller_type, unique_id, button_id, args_dict, thread)
         except Exception:
             return 0, traceback.format_exc()
 

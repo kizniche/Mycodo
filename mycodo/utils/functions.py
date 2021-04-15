@@ -92,5 +92,6 @@ def parse_function_information(exclude_custom=False):
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'dependencies_module')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_options')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_channel_options')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'custom_actions')
 
     return dict_controllers

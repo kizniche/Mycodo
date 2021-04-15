@@ -1,5 +1,87 @@
 ## 8.9.3 (Unreleased)
 
+This release contains changes that requires modification to any Custom Functions you may have in use. In order for the new features to work for Custom Functions, it required the use of an abstract base function class (similarly to Inputs and Outputs). As a result, any Custom Functions that previously were formatted as such:
+
+```python
+from mycodo.controllers.base_controller import AbstractController
+
+class CustomModule(AbstractController, threading.Thread):
+    """
+    Class to operate custom controller
+    """
+    def __init__(self, ready, unique_id, testing=False):
+        threading.Thread.__init__(self)
+        super(CustomModule, self).__init__(ready, unique_id=unique_id, name=__name__)
+
+        self.unique_id = unique_id
+        self.log_level_debug = None
+
+        # Set custom options
+        custom_function = db_retrieve_table_daemon(
+            CustomController, unique_id=unique_id)
+        self.setup_custom_options(
+            FUNCTION_INFORMATION['custom_options'], custom_function)
+```
+
+will need to be changed to the format:
+
+```python
+from mycodo.functions.base_function import AbstractFunction
+
+class CustomModule(AbstractFunction):
+    """
+    Class to operate custom controller
+    """
+    def __init__(self, function, testing=False):
+        super(CustomModule, self).__init__(function, testing=testing, name=__name__)
+
+        # Note: The following 2 lines are no longer needed to be defined here. Delete them.
+        # self.unique_id = function.unique_id  
+        # self.log_level_debug = None
+
+        # Set custom options
+        custom_function = db_retrieve_table_daemon(
+            CustomController, unique_id=self.unique_id)  # Note: "self." is added here
+        self.setup_custom_options(
+            FUNCTION_INFORMATION['custom_options'], custom_function)
+
+        # These two lines are new and are required to execute initialize_variables()
+        if not testing:
+            self.initialize_variables()
+```
+
+You also no longer need to define the following (i.e. you can remove these lines):
+
+```python
+controller = db_retrieve_table_daemon(
+    CustomController, unique_id=self.unique_id)
+self.log_level_debug = controller.log_level_debug
+self.set_log_level_debug(self.log_level_debug)
+```
+
+Additionally, if you have pre_stop() in your Function Class, it will need to be renamed to stop_function().
+
+There are two ways to perform these changes.
+
+Method A:
+
+1. Deactivate all custom functions.
+2. Delete all custom functions on the Setup -> Function page.
+3. Delete all custom functions on the Configure -> Custom Functions page.
+4. Perform the Mycodo upgrade.
+5. Make the necessary edits to all your Custom Functions.
+6. Import all your updated Custom Functions on the Configure -> Custom Functions page.
+7. Add and configure your Custom Functions on the Setup -> Function page.
+
+Method B:
+
+1. Either SSH into your Raspberry Pi or use a keyboard/mouse/monitor and edit the Custom Functions in the ~/Mycodo/mycodo/function/custom_functions directory.
+2. Perform the Mycodo upgrade.
+
+Method A is more involved, but does not require accessing the Pi from outside the web UI. Method B has fewer steps and doesn't require deleting and reconfiguring new Functions, but requires being able to SSH in to your Raspberry Pi or connecting a keyboard/mouse/monitor to be able to edit the files in-place.
+
+As always, a backup of the current system files and settings is performed during an upgrade, allowing you to restore your system to a previous release state if needed.
+
 ### Bugfixes
 
  - Fix camera paths not saving ([#955](https://github.com/kizniche/mycodo/issues/955))
@@ -27,6 +109,8 @@
  - Add Input: Generic Analog pH/EC using ADS1115 ADC
  - Enable external temperature compensation for Anyleaf pH Input
  - Add Input: KP303 Smart WiFi Power Strip ([#980](https://github.com/kizniche/mycodo/issues/980))
+ - Add Custom Actions to Functions
+ - Add "wait_for_return" option to Custom Actions
 
 ### Miscellaneous
 

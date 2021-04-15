@@ -70,9 +70,6 @@ class InputController(AbstractController, threading.Thread):
         threading.Thread.__init__(self)
         super(InputController, self).__init__(ready, unique_id=unique_id, name=__name__)
 
-        self.button_pressed = None
-        self.button_args_dict = None
-
         self.unique_id = unique_id
         self.sample_rate = None
 
@@ -135,15 +132,6 @@ class InputController(AbstractController, threading.Thread):
             self.verify_pause_loop = True
             while self.pause_loop:
                 time.sleep(0.1)
-
-        if self.button_pressed:
-            try:
-                getattr(self.measure_input, self.button_pressed)(self.button_args_dict)
-            except:
-                self.logger.exception("Error executing button press function '{}'".format(
-                    self.button_pressed))
-            self.button_args_dict = None
-            self.button_pressed = None
 
         if ('listener' in self.dict_inputs[self.device] and
               self.dict_inputs[self.device]['listener']):
@@ -415,11 +403,22 @@ class InputController(AbstractController, threading.Thread):
         self.next_measurement = time.time()
         return 0, "Input instructed to begin acquiring measurements"
 
-    def custom_button_exec_function(self, button_id, args_dict):
+    def custom_button_exec_function(self, button_id, args_dict, thread=True):
         """Execute function from custom action button press"""
-        self.button_args_dict = args_dict
-        self.button_pressed = button_id
-        return 0, "Command sent to Input Controller"
+        try:
+            run_action = getattr(self.measure_input, button_id)
+            if thread:
+                thread_run_action = threading.Thread(
+                    target=run_action,
+                    args=(args_dict,))
+                thread_run_action.start()
+                return 0, "Command sent to Input Controller and is running in the background."
+            else:
+                return_val = run_action(args_dict)
+                return 0, "Command sent to Input Controller. Returned: {}".format(return_val)
+        except:
+            self.logger.exception("Error executing button press function '{}'".format(
+                button_id))
 
     def pre_stop(self):
         # Ensure pre-output is off

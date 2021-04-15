@@ -21,13 +21,12 @@
 #
 #  Contact at kylegabriel.com
 #
-import threading
 import time
 
 from flask_babel import lazy_gettext
 
-from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import CustomController
+from mycodo.functions.base_function import AbstractFunction
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import write_influxdb_value
@@ -141,16 +140,13 @@ FUNCTION_INFORMATION = {
 }
 
 
-class CustomModule(AbstractController, threading.Thread):
+class CustomModule(AbstractFunction):
     """
     Class to operate custom controller
     """
-    def __init__(self, ready, unique_id, testing=False):
-        threading.Thread.__init__(self)
-        super(CustomModule, self).__init__(ready, unique_id=unique_id, name=__name__)
+    def __init__(self, function, testing=False):
+        super(CustomModule, self).__init__(function, testing=testing, name=__name__)
 
-        self.unique_id = unique_id
-        self.log_level_debug = None
         self.timer_loop = time.time()
 
         self.control = DaemonControl()
@@ -168,16 +164,14 @@ class CustomModule(AbstractController, threading.Thread):
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
-            CustomController, unique_id=unique_id)
+            CustomController, unique_id=self.unique_id)
         self.setup_custom_options(
             FUNCTION_INFORMATION['custom_options'], custom_function)
 
-    def initialize_variables(self):
-        controller = db_retrieve_table_daemon(
-            CustomController, unique_id=self.unique_id)
-        self.log_level_debug = controller.log_level_debug
-        self.set_log_level_debug(self.log_level_debug)
+        if not testing:
+            self.initialize_variables()
 
+    def initialize_variables(self):
         self.logger.debug(
             "Custom controller started with options: "
             "{}, {}, {}, {}, {}, {}".format(

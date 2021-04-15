@@ -1333,6 +1333,8 @@ def page_function():
     form_function = forms_custom_controller.CustomController()
     form_actions = forms_function.Actions()
 
+    dict_controllers = parse_function_information()
+
     if request.method == 'POST':
         unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):
@@ -1493,6 +1495,11 @@ def page_function():
             utils_measurement.measurement_mod(
                 form_mod_measurement, url_for('routes_page.page_function'))
 
+        # Custom action
+        else:
+            utils_general.custom_action(
+                "Function", dict_controllers, form_function.function_id.data, request.form)
+
         if unmet_dependencies:
             function_type = None
             if form_add_function.func_add.data:
@@ -1511,7 +1518,6 @@ def page_function():
     dict_measurements = add_custom_measurements(Measurement.query.all())
     dict_units = add_custom_units(Unit.query.all())
 
-    dict_controllers = parse_function_information()
     dict_outputs = parse_output_information()
 
     custom_options_values_controllers = parse_custom_option_values(
@@ -1536,6 +1542,11 @@ def page_function():
     choices_functions_add = choices_functions + choices_custom_functions
     # Sort combined list
     choices_functions_add = sorted(choices_functions_add, key=lambda i: i['item'])
+
+    custom_actions = {}
+    for each_function in function:
+        if 'custom_actions' in dict_controllers[each_function.device]:
+            custom_actions[each_function.device] = True
 
     choices_function = utils_general.choices_functions(
         function, dict_units, dict_measurements)
@@ -1664,6 +1675,7 @@ def page_function():
                            controllers=controllers,
                            function=function,
                            function_channel=function_channel,
+                           custom_actions=custom_actions,
                            custom_options_values_actions=custom_options_values_actions,
                            custom_options_values_controllers=custom_options_values_controllers,
                            custom_options_values_function_channels=custom_options_values_function_channels,

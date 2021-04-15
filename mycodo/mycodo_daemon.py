@@ -58,6 +58,7 @@ from mycodo.controllers.controller_output import OutputController
 from mycodo.controllers.controller_pid import PIDController
 from mycodo.controllers.controller_trigger import TriggerController
 from mycodo.controllers.controller_widget import WidgetController
+from mycodo.controllers.controller_function import FunctionController
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import CustomController
@@ -280,17 +281,18 @@ class DaemonController:
                 controller_manage['function'] = TriggerController
             elif cont_type == 'Function':
                 controller_manage['type'] = CustomController
+                controller_manage['function'] = FunctionController
 
-                custom_function = db_retrieve_table_daemon(controller_manage['type'], unique_id=cont_id)
-                dict_functions = parse_function_information()
-                if custom_function and custom_function.device in dict_functions:
-                    function_loaded = load_module_from_file(
-                        dict_functions[custom_function.device]['file_path'], 'functions')
-                    controller_manage['function'] = function_loaded.CustomModule
-                else:
-                    message = "Custom function not found.".format(type=cont_type)
-                    self.logger.error(message)
-                    return 1, message
+                # custom_function = db_retrieve_table_daemon(controller_manage['type'], unique_id=cont_id)
+                # dict_functions = parse_function_information()
+                # if custom_function and custom_function.device in dict_functions:
+                #     function_loaded = load_module_from_file(
+                #         dict_functions[custom_function.device]['file_path'], 'functions')
+                #     controller_manage['function'] = function_loaded.CustomModule
+                # else:
+                #     message = "Custom function not found.".format(type=cont_type)
+                #     self.logger.error(message)
+                #     return 1, message
 
             else:
                 message = "'{type}' not a valid controller type.".format(type=cont_type)
@@ -467,7 +469,7 @@ class DaemonController:
             self.logger.exception(message)
             return "Exception: {msg}".format(msg=except_msg)
 
-    def custom_button(self, controller_type, unique_id, button_id, args_dict):
+    def custom_button(self, controller_type, unique_id, button_id, args_dict, thread=True):
         """
         Force function to be executed from UI
 
@@ -482,18 +484,19 @@ class DaemonController:
         :type button_id: str
         :param args_dict: dict of arguments to pass to function
         :type args_dict: dict
-
+        :param thread: execute the function sa a thread or get return value
+        :type thread: bool
         """
         try:
             if controller_type == "Input":
                 return self.controller["Input"][unique_id].custom_button_exec_function(
-                    button_id, args_dict)
+                    button_id, args_dict, thread=thread)
             if controller_type == "Function":
                 return self.controller["Function"][unique_id].custom_button_exec_function(
-                    button_id, args_dict)
+                    button_id, args_dict, thread=thread)
             elif controller_type == "Output":
                 return self.controller["Output"].custom_button_exec_function(
-                    unique_id, button_id, args_dict)
+                    button_id, args_dict, unique_id=unique_id, thread=thread)
             else:
                 msg = "Unknown controller: {}".format(controller_type)
                 self.logger.error(msg)
@@ -1140,10 +1143,10 @@ class PyroServer(object):
     def get_condition_measurement_dict(self, condition_id):
         return self.mycodo.get_condition_measurement_dict(condition_id)
 
-    def custom_button(self, controller_type, unique_id, button_id, args_dict):
+    def custom_button(self, controller_type, unique_id, button_id, args_dict, thread=True):
         """execute custom button function"""
         return self.mycodo.custom_button(
-            controller_type, unique_id, button_id, args_dict)
+            controller_type, unique_id, button_id, args_dict, thread)
 
     def controller_activate(self, cont_id):
         """Activates a controller"""

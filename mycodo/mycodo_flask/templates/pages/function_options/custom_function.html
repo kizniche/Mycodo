@@ -8,6 +8,12 @@
   {{form_function.function_id(value=each_function.unique_id)}}
   {{form_function.function_type(class_='form-control', value='function')}}
 
+    {% set form = form_mod_function %}
+    {% set dict_options = dict_controllers[each_function.device] %}
+    {% set each_device = each_function %}
+    {% set unique_id = each_function.unique_id %}
+    {% set custom_options_values = custom_options_values_controllers %}
+
   <div class="{% if each_function.is_activated -%}active-background
               {% else -%}inactive-background
               {% endif -%} row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.3em 0.2em 0.3em 0.3em;">
@@ -128,7 +134,36 @@
       </div>
       {% endif %}
 
-      <div class="col-12" style="padding-top: 1em"></div>
+    </div>
+
+      {% if each_function.device in custom_actions %}
+    <div class="row small-gutters align-items-end" style="padding: 0.5em">
+        <div class="col-12" style="padding-top: 1em"></div>
+        <div class="col-12">
+          <h5>{{_('Actions')}}</h5>
+        </div>
+        {% include 'pages/form_options/Custom_Actions_Message.html' %}
+        {% if each_function.device in custom_actions and custom_actions[each_function.device] %}
+          {% set force_default_value = true %}
+          {% if 'custom_actions' in dict_options %}
+            {% for each_option in dict_options['custom_actions'] %}
+              {% if each_option['type'] == 'new_line' %}
+        </div>
+        <div class="row small-gutters" style="padding: 0.5em">
+              {% elif each_option['type'] == 'message' %}
+          <div class="col-12" style="padding-bottom: 0.5em">
+            {{each_option['default_value']|safe}}
+          </div>
+              {% else %}
+          {% include 'pages/form_options/Custom_Options.html' %}
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endif %}
+      </div>
+     {% endif %}
+
+    <div class="row small-gutters" style="padding: 0.5em">
 
       <div class="col-auto">
         {{form_function.log_level_debug.label(class_='control-label')}}
@@ -137,17 +172,13 @@
         </div>
       </div>
 
-    {% set form = form_function %}
-    {% set dict_options = dict_controllers[each_function.device] %}
-    {% set unique_id = each_function.unique_id %}
-    {% set custom_options_values = custom_options_values_controllers %}
-    {% set each_device = each_function %}
     {% set controller_type = "Function" %}
 
     {% include 'pages/form_options/Num_channels.html' %}
     {% include 'pages/form_options/Measurements_Enabled.html' %}
 
     {% if 'custom_options' in dict_options %}
+      {% set force_default_value = false %}
       {% for each_option in dict_options['custom_options'] %}
     {% include 'pages/form_options/Custom_Options.html' %}
       {% endfor %}

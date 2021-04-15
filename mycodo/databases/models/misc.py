@@ -27,6 +27,7 @@ class Misc(CRUDMixin, db.Model):
     output_usage_report_day = db.Column(db.Integer, default=1)
     output_usage_report_hour = db.Column(db.Integer, default=0)
     sample_rate_controller_conditional = db.Column(db.Float, default=0.25)
+    sample_rate_controller_function = db.Column(db.Float, default=0.25)
     sample_rate_controller_input = db.Column(db.Float, default=0.1)
     sample_rate_controller_math = db.Column(db.Float, default=0.25)
     sample_rate_controller_output = db.Column(db.Float, default=0.05)

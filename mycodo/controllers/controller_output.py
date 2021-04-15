@@ -48,10 +48,6 @@ class OutputController(AbstractController, threading.Thread):
         self.set_log_level_debug(debug)
         self.control = DaemonControl()
 
-        self.button_pressed = None
-        self.button_args_dict = None
-        self.button_output_id = None
-
         # SMTP options
         self.smtp_max_count = None
         self.smtp_wait_time = None
@@ -88,15 +84,6 @@ class OutputController(AbstractController, threading.Thread):
 
     def loop(self):
         """ Main loop of the output controller """
-        if self.button_pressed:
-            try:
-                getattr(self.output[self.button_output_id], self.button_pressed)(self.button_args_dict)
-            except:
-                self.logger.exception("Error executing button press function '{}'".format(self.button_pressed))
-            self.button_args_dict = None
-            self.button_output_id = None
-            self.button_pressed = None
-
         for output_id in self.output:
             for each_channel in self.output_unique_id[output_id]:
 
@@ -375,9 +362,19 @@ class OutputController(AbstractController, threading.Thread):
         except Exception:
             self.logger.exception("is_setup() exception")
 
-    def custom_button_exec_function(self, output_id, button_id, args_dict):
+    def custom_button_exec_function(self, button_id, args_dict, unique_id=None, thread=True):
         """Execute function from custom action button press"""
-        self.button_args_dict = args_dict
-        self.button_output_id = output_id
-        self.button_pressed = button_id
-        return 0, "Command sent to Output Controller"
+        try:
+            run_action = getattr(self.output[unique_id], button_id)
+            if thread:
+                thread_run_action = threading.Thread(
+                    target=run_action,
+                    args=(args_dict,))
+                thread_run_action.start()
+                return 0, "Command sent to Output Controller and is running in the background."
+            else:
+                return_val = run_action(args_dict)
+                return 0, "Command sent to Output Controller. Returned: {}".format(return_val)
+        except:
+            self.logger.exception("Error executing custom action '{}'".format(
+                button_id))

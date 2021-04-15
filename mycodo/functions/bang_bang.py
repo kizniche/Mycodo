@@ -6,14 +6,13 @@
 #
 import threading
 import time
-import timeit
 
 from flask_babel import lazy_gettext
 
 from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import CustomController
 from mycodo.databases.utils import session_scope
+from mycodo.functions.base_function import AbstractFunction
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 
@@ -115,16 +114,13 @@ FUNCTION_INFORMATION = {
 }
 
 
-class CustomModule(AbstractController, threading.Thread):
+class CustomModule(AbstractFunction):
     """
     Class to operate custom controller
     """
-    def __init__(self, ready, unique_id, testing=False):
-        threading.Thread.__init__(self)
-        super(CustomModule, self).__init__(ready, unique_id=unique_id, name=__name__)
+    def __init__(self, function, testing=False):
+        super(CustomModule, self).__init__(function, testing=testing, name=__name__)
 
-        self.unique_id = unique_id
-        self.log_level_debug = None
         self.control_variable = None
         self.timestamp = None
         self.timer = None
@@ -146,21 +142,17 @@ class CustomModule(AbstractController, threading.Thread):
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
-            CustomController, unique_id=unique_id)
+            CustomController, unique_id=self.unique_id)
         self.setup_custom_options(
             FUNCTION_INFORMATION['custom_options'], custom_function)
 
         self.output_channel = self.get_output_channel_from_channel_id(
             self.output_channel_id)
 
-        self.initialize_variables()
+        if not testing:
+            self.initialize_variables()
 
     def initialize_variables(self):
-        controller = db_retrieve_table_daemon(
-            CustomController, unique_id=self.unique_id)
-        self.log_level_debug = controller.log_level_debug
-        self.set_log_level_debug(self.log_level_debug)
-
         self.timestamp = time.time()
 
     def run(self):
@@ -170,10 +162,6 @@ class CustomModule(AbstractController, threading.Thread):
                 self.deactivate_self()
                 return
 
-            self.logger.info("Activated in {:.1f} ms".format(
-                (timeit.default_timer() - self.thread_startup_timer) * 1000))
-
-            self.ready.set()
             self.running = True
             self.timer = time.time()
 
@@ -201,13 +189,8 @@ class CustomModule(AbstractController, threading.Thread):
         except:
             self.logger.exception("Run Error")
         finally:
-            self.run_finally()
             self.running = False
-            if self.thread_shutdown_timer:
-                self.logger.info("Deactivated in {:.1f} ms".format(
-                    (timeit.default_timer() - self.thread_shutdown_timer) * 1000))
-            else:
-                self.logger.error("Deactivated unexpectedly")
+            self.logger.error("Deactivated unexpectedly")
 
     def loop(self):
         last_measurement = self.get_last_measurement(
@@ -261,5 +244,5 @@ class CustomModule(AbstractController, threading.Thread):
             args=(self.unique_id,))
         deactivate_controller.start()
 
-    def pre_stop(self):
+    def stop_function(self):
         self.control.output_off(self.output_device_id, self.output_channel)

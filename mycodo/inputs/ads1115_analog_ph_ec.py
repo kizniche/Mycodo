@@ -279,16 +279,19 @@ INPUT_INFORMATION = {
         {
             'id': 'calibrate_ph_slot_1',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate pH, slot 1'
         },
         {
             'id': 'calibrate_ph_slot_2',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate pH, slot 2'
         },
         {
             'id': 'clear_ph_calibrate_slots',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Clear pH Calibration Slots'
         },
         {  # This message will be displayed after the new line
@@ -302,23 +305,26 @@ INPUT_INFORMATION = {
         {
             'id': 'calibration_ec',
             'type': 'float',
-            'default_value': 1413.,
+            'default_value': 1413.0,
             'name': 'Calibration standard EC',
             'phrase': 'This is the nominal EC of the calibration standard, usually labelled on the bottle.'
         },
         {
             'id': 'calibrate_ec_slot_1',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate EC, slot 1'
         },
         {
             'id': 'calibrate_ec_slot_2',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Calibrate EC, slot 2'
         },
         {
             'id': 'clear_ec_calibrate_slots',
             'type': 'button',
+            'wait_for_return': True,
             'name': 'Clear pH Calibration Slots'
         }
     ]
@@ -337,7 +343,7 @@ class InputModule(AbstractInput):
          -  16 = ±0.256 V
         See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
         """
-    def __init__(self, input_dev, testing=False,):
+    def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.adc = None
@@ -469,7 +475,7 @@ class InputModule(AbstractInput):
                 args_dict['calibration_ec'], type(args_dict['calibration_ec'])))
             return
 
-        v = self.get_volt_data(int(self.adc_channel_ec))  # pH
+        v = self.get_volt_data(int(self.adc_channel_ec))  # EC
         temp = self.get_temp_data()
         if temp is not None:
             # Use measured temperature
