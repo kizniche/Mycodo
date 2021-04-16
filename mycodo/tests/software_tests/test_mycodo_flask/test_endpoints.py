@@ -615,7 +615,6 @@ def sees_navbar(testapp):
         'Output',
         'Energy Usage',
         'Energy Usage Reports',
-        'Remote Admin',
         'System Information',
         'Upgrade'
     ]
