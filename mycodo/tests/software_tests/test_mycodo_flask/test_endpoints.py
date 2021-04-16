@@ -1,25 +1,23 @@
 # coding=utf-8
 """ functional tests for flask endpoints """
+import base64
 import json
+import random
 import time
 
-import base64
 import mock
-import random
 
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import Input
 from mycodo.databases.models import Output
 from mycodo.databases.models import User
+from mycodo.mycodo_flask.utils.utils_general import choices_custom_functions
 from mycodo.mycodo_flask.utils.utils_general import generate_form_input_list
 from mycodo.mycodo_flask.utils.utils_general import generate_form_output_list
-from mycodo.mycodo_flask.utils.utils_general import generate_form_controller_list
 from mycodo.tests.software_tests.conftest import login_user
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
-from mycodo.utils.functions import parse_function_information
-from mycodo.mycodo_flask.utils.utils_general import choices_custom_functions
 
 
 # ----------------------

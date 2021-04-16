@@ -365,6 +365,25 @@ def settings_measurement():
                            form_mod_conversion=form_mod_conversion)
 
 
+
+@blueprint.route('/change_theme', methods=('GET', 'POST'))
+@flask_login.login_required
+def change_theme():
+    """ Change theme """
+    if not utils_general.user_has_permission('view_settings'):
+        return redirect(url_for('routes_general.home'))
+
+    form_theme = forms_settings.ChangeTheme()
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_users'):
+            return redirect(url_for('routes_general.home'))
+
+        if form_theme.save.data:
+            utils_settings.change_theme(form_theme)
+    return redirect(url_for('routes_general.home'))
+
+
 @blueprint.route('/settings/users', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_users():

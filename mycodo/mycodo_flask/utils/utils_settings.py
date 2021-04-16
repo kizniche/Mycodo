@@ -204,6 +204,24 @@ def generate_api_key(form):
         error, action, url_for('routes_settings.settings_users'))
 
 
+def change_theme(form):
+    action = '{action} {controller}'.format(
+        action=TRANSLATIONS['modify']['title'],
+        controller=TRANSLATIONS['theme']['title'])
+    error = []
+
+    try:
+        mod_user = User.query.filter(
+            User.id == flask_login.current_user.id).first()
+        mod_user.theme = form.theme.data
+        db.session.commit()
+    except Exception as except_msg:
+        error.append(except_msg)
+
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_users'))
+
+
 def user_mod(form):
     mod_user = User.query.filter(
         User.unique_id == form.user_id.data).first()

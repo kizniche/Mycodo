@@ -296,6 +296,12 @@ class UserAdd(FlaskForm):
     add_user = SubmitField(lazy_gettext('Add User'))
 
 
+
+class ChangeTheme(FlaskForm):
+    theme = StringField(lazy_gettext('Theme'))
+    save = SubmitField(TRANSLATIONS['save']['title'])
+
+
 class UserMod(FlaskForm):
     user_id = StringField('User ID', widget=widgets.HiddenInput())
     email = EmailField(

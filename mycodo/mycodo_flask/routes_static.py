@@ -13,6 +13,7 @@ from flask import url_for
 from flask.blueprints import Blueprint
 
 from mycodo.config import MYCODO_VERSION
+from mycodo.config import THEMES
 from mycodo.config import THEMES_DARK
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Dashboard
@@ -64,7 +65,8 @@ def inject_variables():
             'name': each_dash.name
         })
 
-    return dict(dark_themes=THEMES_DARK,
+    return dict(current_user=flask_login.current_user,
+                dark_themes=THEMES_DARK,
                 daemon_status=daemon_status,
                 dashboards=dashboards,
                 form_dashboard=form_dashboard,
@@ -76,8 +78,8 @@ def inject_variables():
                 mycodo_version=MYCODO_VERSION,
                 permission_view_settings=user_has_permission('view_settings', silent=True),
                 dict_translation=TRANSLATIONS,
-                upgrade_available=misc.mycodo_upgrade_available,
-                username=flask_login.current_user.name)
+                themes=THEMES,
+                upgrade_available=misc.mycodo_upgrade_available)
 
 
 @blueprint.route('/robots.txt')
