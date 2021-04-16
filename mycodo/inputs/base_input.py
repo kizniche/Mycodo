@@ -9,19 +9,10 @@ All Inputs should inherit from this class and overwrite methods that raise
 NotImplementedErrors
 """
 import datetime
-import json
 import logging
-import time
 
 from mycodo.abstract_base_controller import AbstractBaseController
-from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.databases.models import Conversion
-from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
-from mycodo.databases.utils import session_scope
-from mycodo.utils.database import db_retrieve_table_daemon
-
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class AbstractInput(AbstractBaseController):
@@ -39,8 +30,6 @@ class AbstractInput(AbstractBaseController):
         self.setup_logger(testing=testing, name=name, input_dev=input_dev)
         self.input_dev = input_dev
         self._measurements = None
-        self.channels_conversion = {}
-        self.channels_measurement = {}
         self.return_dict = {}
         self.filter_avg = {}
         self.avg_max = {}
@@ -48,7 +37,6 @@ class AbstractInput(AbstractBaseController):
         self.avg_meas = {}
         self.acquiring_measurement = False
         self.running = True
-        self.device_measurements = None
 
         if not testing:
             self.unique_id = input_dev.unique_id
@@ -156,31 +144,14 @@ class AbstractInput(AbstractBaseController):
                 return
         except:
             pass
-        self.setup_device_measurement()
+        self.setup_device_measurement(self.unique_id)
 
     def is_enabled(self, channel):
         try:
             return self.channels_measurement[channel].is_enabled
         except:
-            self.setup_device_measurement()
+            self.setup_device_measurement(self.unique_id)
             return self.channels_measurement[channel].is_enabled
-
-    def setup_device_measurement(self):
-        # Make 5 attempts to access database
-        for _ in range(5):
-            try:
-                self.device_measurements = db_retrieve_table_daemon(
-                    DeviceMeasurements).filter(
-                    DeviceMeasurements.device_id == self.input_dev.unique_id)
-
-                for each_measure in self.device_measurements.all():
-                    self.channels_measurement[each_measure.channel] = each_measure
-                    self.channels_conversion[each_measure.channel] = db_retrieve_table_daemon(
-                        Conversion, unique_id=each_measure.conversion_id)
-                return
-            except Exception as msg:
-                self.logger.debug("Error: {}".format(msg))
-            time.sleep(1)
 
     def setup_logger(self, testing=None, name=None, input_dev=None):
         name = name if name else __name__
@@ -291,39 +262,10 @@ class AbstractInput(AbstractBaseController):
         return self.acquiring_measurement
 
     def set_custom_option(self, option, value):
-        try:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                mod_input = new_session.query(Input).filter(
-                    Input.unique_id == self.unique_id).first()
-                try:
-                    dict_custom_options = json.loads(mod_input.custom_options)
-                except:
-                    dict_custom_options = {}
-                dict_custom_options[option] = value
-                mod_input.custom_options = json.dumps(dict_custom_options)
-                new_session.commit()
-        except Exception:
-            self.logger.exception("set_custom_option")
+        return self._set_custom_option(Input, self.unique_id, option, value)
 
     def get_custom_option(self, option):
-        try:
-            dict_custom_options = json.loads(self.input_dev.custom_options)
-        except:
-            dict_custom_options = {}
-        if option in dict_custom_options:
-            return dict_custom_options[option]
+        return self._get_custom_option(self.input_dev.custom_options, option)
 
     def delete_custom_option(self, option):
-        try:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                mod_input = new_session.query(Input).filter(
-                    Input.unique_id == self.unique_id).first()
-                try:
-                    dict_custom_options = json.loads(mod_input.custom_options)
-                except:
-                    dict_custom_options = {}
-                dict_custom_options.pop(option)
-                mod_input.custom_options = json.dumps(dict_custom_options)
-                new_session.commit()
-        except Exception:
-            self.logger.exception("delete_custom_option")
+        return self._delete_custom_option(Input, self.unique_id, option)

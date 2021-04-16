@@ -27,12 +27,10 @@ from statistics import stdev
 
 from flask_babel import lazy_gettext
 
-from mycodo.databases.models import Conversion
 from mycodo.databases.models import CustomController
 from mycodo.functions.base_function import AbstractFunction
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import read_past_influxdb
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import return_measurement_info
@@ -98,8 +96,9 @@ FUNCTION_INFORMATION = {
     'measurements_dict': measurements_dict,
     'enable_channel_unit_select': True,
 
-    'message': 'This function acquires multiple values from a single measurement, calculates statistics, and stores '
-               'the resulting values as the selected unit.',
+    'message': 'This function acquires multiple values from a single '
+               'measurement, calculates statistics, and stores the resulting '
+               'values as the selected unit.',
 
     'options_enabled': [
         'measurements_select_measurement_unit',
@@ -171,32 +170,28 @@ class CustomModule(AbstractFunction):
         while self.timer_loop < time.time():
             self.timer_loop += self.period
 
-        device_measurement = get_measurement(self.select_measurement_measurement_id)
+        device_measurement = get_measurement(
+            self.select_measurement_measurement_id)
 
         if not device_measurement:
             self.logger.error("Could not find Device Measurement")
             return
 
-        conversion = db_retrieve_table_daemon(
-            Conversion, unique_id=device_measurement.conversion_id)
-        channel, unit, measurement = return_measurement_info(
-            device_measurement, conversion)
-
-        last_measurements = read_past_influxdb(
+        past_measurements = self.get_past_measurements(
             self.select_measurement_device_id,
-            unit,
-            channel,
-            self.max_measure_age,
-            measure=measurement)
+            self.select_measurement_measurement_id,
+            max_age=self.max_measure_age)
 
-        self.logger.debug("Past Measurements returned: {}".format(last_measurements))
+        self.logger.debug("Past Measurements returned: {}".format(
+            past_measurements))
 
-        if not last_measurements:
-            self.logger.error("Could not find measurements within the set Max Age")
+        if not past_measurements:
+            self.logger.error(
+                "Could not find measurements within the set Max Age")
             return False
 
         measure = []
-        for each_measure in last_measurements:
+        for each_measure in past_measurements:
             measure.append(each_measure[1])
 
         if len(measure) > 1:
@@ -223,8 +218,12 @@ class CustomModule(AbstractFunction):
                     channel, unit, measurement = return_measurement_info(
                         each_measurement, self.channels_conversion[each_channel])
 
-                    self.logger.debug("Saving {} to channel {} with measurement {} and unit {}".format(
-                        list_measurement[each_channel], each_channel, measurement, unit))
+                    self.logger.debug(
+                        "Saving {} to channel {} with measurement {} and "
+                        "unit {}".format(list_measurement[each_channel],
+                                         each_channel,
+                                         measurement,
+                                         unit))
 
                     write_influxdb_value(
                         self.unique_id,
@@ -233,5 +232,6 @@ class CustomModule(AbstractFunction):
                         measure=measurement,
                         channel=each_channel)
         else:
-            self.logger.debug("Less than 2 measurements found within Max Age. "
-                              "Calculations need at least 2 measurements. Not calculating.")
+            self.logger.debug(
+                "Less than 2 measurements found within Max Age. "
+                "Calculations need at least 2 measurements. Not calculating.")

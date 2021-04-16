@@ -14,15 +14,20 @@ outputs/base_output.py
 """
 import json
 import logging
+import time
 from collections import OrderedDict
 
+from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import OutputChannel
+from mycodo.databases.utils import session_scope
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import read_last_influxdb
+from mycodo.utils.influx import get_last_measurement
+from mycodo.utils.influx import get_past_measurements
 from mycodo.utils.lockfile import LockFile
-from mycodo.utils.system_pi import return_measurement_info
+
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class AbstractBaseController(object):
@@ -31,13 +36,15 @@ class AbstractBaseController(object):
     in controllers.
     """
     def __init__(self, unique_id=None, testing=False, name=__name__):
-
         logger_name = "{}".format(name)
         if not testing and unique_id:
             logger_name += "_{}".format(unique_id.split('-')[0])
         self.logger = logging.getLogger(logger_name)
 
         self.lockfile = LockFile()
+        self.channels_conversion = {}
+        self.channels_measurement = {}
+        self.device_measurements = None
 
     def setup_custom_options(self, custom_options, custom_controller):
         if not hasattr(custom_controller, 'custom_options'):
@@ -47,6 +54,22 @@ class AbstractBaseController(object):
             return self.setup_custom_options_json(custom_options, custom_controller)
         else:
             return self.setup_custom_options_csv(custom_options, custom_controller)
+
+    def setup_device_measurement(self, unique_id):
+        for _ in range(5):  # Make 5 attempts to access database
+            try:
+                self.device_measurements = db_retrieve_table_daemon(
+                    DeviceMeasurements).filter(
+                    DeviceMeasurements.device_id == unique_id)
+
+                for each_measure in self.device_measurements.all():
+                    self.channels_measurement[each_measure.channel] = each_measure
+                    self.channels_conversion[each_measure.channel] = db_retrieve_table_daemon(
+                        Conversion, unique_id=each_measure.conversion_id)
+                return
+            except Exception as msg:
+                self.logger.debug("Error: {}".format(msg))
+            time.sleep(0.1)
 
     # TODO: Remove in place of JSON function, below, in next major version
     def setup_custom_options_csv(self, custom_options, custom_controller):
@@ -304,33 +327,35 @@ class AbstractBaseController(object):
                 if 'required' in each_option_default and each_option_default['required']:
                     required = True
 
-                for each_chan in custom_controller_channels:
+                for each_channel in custom_controller_channels:
+                    channel = each_channel.channel
+
                     # set default value
-                    dict_values[each_option_default['id']][each_chan.channel] = each_option_default['default_value']
+                    dict_values[each_option_default['id']][channel] = each_option_default['default_value']
 
                     if each_option_default['type'] == 'select_measurement':
-                        dict_values[each_option_default['id']][each_chan.channel] = {}
-                        dict_values[each_option_default['id']][each_chan.channel]['device_id'] = None
-                        dict_values[each_option_default['id']][each_chan.channel]['measurement_id'] = None
-                        dict_values[each_option_default['id']][each_chan.channel]['channel_id'] = None
+                        dict_values[each_option_default['id']][channel] = {}
+                        dict_values[each_option_default['id']][channel]['device_id'] = None
+                        dict_values[each_option_default['id']][channel]['measurement_id'] = None
+                        dict_values[each_option_default['id']][channel]['channel_id'] = None
 
-                    if not hasattr(each_chan, 'custom_options'):
+                    if not hasattr(each_channel, 'custom_options'):
                         self.logger.error("custom_controller missing attribute custom_options")
                         return
 
-                    if getattr(each_chan, 'custom_options'):
-                        for each_option, each_value in json.loads(getattr(each_chan, 'custom_options')).items():
+                    if getattr(each_channel, 'custom_options'):
+                        for each_option, each_value in json.loads(getattr(each_channel, 'custom_options')).items():
                             if each_option == each_option_default['id']:
                                 custom_option_set = True
 
                                 if each_option_default['type'] == 'select_measurement':
                                     if len(each_value.split(',')) > 1:
-                                        dict_values[each_option_default['id']][each_chan.channel]['device_id'] = each_value.split(',')[0]
-                                        dict_values[each_option_default['id']][each_chan.channel]['measurement_id'] = each_value.split(',')[1]
+                                        dict_values[each_option_default['id']][channel]['device_id'] = each_value.split(',')[0]
+                                        dict_values[each_option_default['id']][channel]['measurement_id'] = each_value.split(',')[1]
                                     if len(each_value.split(',')) > 2:
-                                        dict_values[each_option_default['id']][each_chan.channel]['channel_id'] = each_value.split(',')[2]
+                                        dict_values[each_option_default['id']][channel]['channel_id'] = each_value.split(',')[2]
                                 else:
-                                    dict_values[each_option_default['id']][each_chan.channel] = each_value
+                                    dict_values[each_option_default['id']][channel] = each_value
 
                     if required and not custom_option_set:
                         self.logger.error(
@@ -340,36 +365,6 @@ class AbstractBaseController(object):
                 self.logger.exception("Error parsing options")
 
         return dict_values
-
-    @staticmethod
-    def get_last_measurement(device_id, measurement_id, max_age=None):
-        device_measurement = db_retrieve_table_daemon(
-            DeviceMeasurements).filter(
-            DeviceMeasurements.unique_id == measurement_id).first()
-        if device_measurement:
-            conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=device_measurement.conversion_id)
-        else:
-            conversion = None
-        channel, unit, measurement = return_measurement_info(device_measurement, conversion)
-
-        last_measurement = read_last_influxdb(
-            device_id,
-            unit,
-            channel,
-            measure=measurement,
-            duration_sec=max_age)
-
-        return last_measurement
-
-    @staticmethod
-    def get_output_channel_from_channel_id(channel_id):
-        """Return channel number from channel ID"""
-        output_channel = db_retrieve_table_daemon(
-            OutputChannel).filter(
-            OutputChannel.unique_id == channel_id).first()
-        if output_channel:
-            return output_channel.channel
 
     def lock_acquire(self, lockfile, timeout):
         self.logger.debug("Acquiring lock")
@@ -381,3 +376,59 @@ class AbstractBaseController(object):
     def lock_release(self, lockfile):
         self.logger.debug("Releasing lock")
         self.lockfile.lock_release(lockfile)
+
+    def _delete_custom_option(self, controller, unique_id, option):
+        try:
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_function = new_session.query(controller).filter(
+                    controller.unique_id == unique_id).first()
+                try:
+                    dict_custom_options = json.loads(mod_function.custom_options)
+                except:
+                    dict_custom_options = {}
+                dict_custom_options.pop(option)
+                mod_function.custom_options = json.dumps(dict_custom_options)
+                new_session.commit()
+        except Exception:
+            self.logger.exception("delete_custom_option")
+
+    def _set_custom_option(self, controller, unique_id, option, value):
+        try:
+            with session_scope(MYCODO_DB_PATH) as new_session:
+                mod_function = new_session.query(controller).filter(
+                    controller.unique_id == unique_id).first()
+                try:
+                    dict_custom_options = json.loads(mod_function.custom_options)
+                except:
+                    dict_custom_options = {}
+                dict_custom_options[option] = value
+                mod_function.custom_options = json.dumps(dict_custom_options)
+                new_session.commit()
+        except Exception:
+            self.logger.exception("set_custom_option")
+
+    @staticmethod
+    def _get_custom_option(custom_options, option):
+        try:
+            dict_custom_options = json.loads(custom_options)
+        except:
+            dict_custom_options = {}
+        if option in dict_custom_options:
+            return dict_custom_options[option]
+
+    @staticmethod
+    def get_last_measurement(device_id, measurement_id, max_age=None):
+        return get_last_measurement(device_id, measurement_id, max_age=max_age)
+
+    @staticmethod
+    def get_past_measurements(device_id, measurement_id, max_age=None):
+        return get_past_measurements(device_id, measurement_id, max_age=max_age)
+
+    @staticmethod
+    def get_output_channel_from_channel_id(channel_id):
+        """Return channel number from channel ID"""
+        output_channel = db_retrieve_table_daemon(
+            OutputChannel).filter(
+            OutputChannel.unique_id == channel_id).first()
+        if output_channel:
+            return output_channel.channel

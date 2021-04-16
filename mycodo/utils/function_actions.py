@@ -1,13 +1,14 @@
 # coding=utf-8
+import http.client
 import json
 import logging
-import os
 import subprocess
 import threading
 import time
-import http.client
 import urllib
 from urllib.parse import urlparse
+
+import os
 
 from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import INSTALL_DIRECTORY
@@ -32,8 +33,8 @@ from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import read_last_influxdb
-from mycodo.utils.influx import read_past_influxdb
+from mycodo.utils.influx import get_last_measurement
+from mycodo.utils.influx import get_past_measurements
 from mycodo.utils.send_data import send_email
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import return_measurement_info
@@ -108,21 +109,25 @@ def get_condition_value(condition_id):
         max_age = sql_condition.max_age
 
         if sql_condition.condition_type == 'measurement':
-            return_measurement = get_last_measurement(
-                device_id, unit, measurement, channel, max_age)
+            influx_return = get_last_measurement(
+                device_id, measurement_id, max_age=max_age)
+            if influx_return is not None:
+                return_measurement = influx_return[1]
+            else:
+                return_measurement = None
         elif sql_condition.condition_type == 'measurement_past_average':
             measurement_list = []
-            measurements_str = get_past_measurements(
-                device_id, unit, measurement, channel, max_age)
-            for each_set in measurements_str.split(';'):
-                measurement_list.append(float(each_set.split(',')[1]))
+            past_measurements = get_past_measurements(
+                device_id, measurement_id, max_age=max_age)
+            for each_set in past_measurements:
+                measurement_list.append(float(each_set[1]))
             return_measurement = sum(measurement_list) / len(measurement_list)
         elif sql_condition.condition_type == 'measurement_past_sum':
             measurement_list = []
-            measurements_str = get_past_measurements(
-                device_id, unit, measurement, channel, max_age)
-            for each_set in measurements_str.split(';'):
-                measurement_list.append(float(each_set.split(',')[1]))
+            past_measurements = get_past_measurements(
+                device_id, measurement_id, max_age=max_age)
+            for each_set in past_measurements:
+                measurement_list.append(float(each_set[1]))
             return_measurement = sum(measurement_list)
         else:
             return
@@ -179,6 +184,7 @@ def get_condition_value_dict(condition_id):
     if sql_condition.condition_type == 'measurement_dict':
         device_id = sql_condition.measurement.split(',')[0]
         measurement_id = sql_condition.measurement.split(',')[1]
+        max_age = sql_condition.max_age
 
         device_measurement = db_retrieve_table_daemon(
             DeviceMeasurements, unique_id=measurement_id)
@@ -196,83 +202,18 @@ def get_condition_value_dict(condition_id):
                 "{}".format(measurement_id))
             return
 
-        max_age = sql_condition.max_age
-        # Check if there hasn't been a measurement in the last set number
-        # of seconds. If not, trigger conditional
-        past_measurements = get_past_measurements(
-            device_id, unit, measurement, channel, max_age)
-        return past_measurements
+        past_measurements_dict = get_past_measurements(
+            device_id, measurement_id, max_age=max_age)
 
-
-def get_last_measurement(unique_id, unit, measurement, channel, duration_sec):
-    """
-    Retrieve the latest input measurement
-
-    :return: The latest input value or None if no data available
-    :rtype: float or None
-
-    :param unique_id: What unique_id tag to query in the Influxdb
-        database (eg. '00000001')
-    :type unique_id: str
-    :param unit: What unit to query in the Influxdb
-        database (eg. 'C', 's')
-    :type unit: str
-    :param measurement: What measurement to query in the Influxdb
-        database (eg. 'temperature', 'duration_time')
-    :type measurement: str or None
-    :param channel: Channel
-    :type channel: int or None
-    :param duration_sec: How many seconds to look for a past measurement
-    :type duration_sec: int or None
-    """
-
-    last_measurement = read_last_influxdb(
-        unique_id,
-        unit,
-        channel,
-        measure=measurement,
-        duration_sec=duration_sec)
-
-    if last_measurement is not None:
-        last_value = last_measurement[1]
-        return last_value
-
-
-def get_past_measurements(unique_id, unit, measurement, channel, duration_sec):
-    """
-    Retrieve the past input measurements
-
-    :return: The latest input value or None if no data available
-    :rtype: dict or None
-
-    :param unique_id: What unique_id tag to query in the Influxdb
-        database (eg. '00000001')
-    :type unique_id: str
-    :param unit: What unit to query in the Influxdb
-        database (eg. 'C', 's')
-    :type unit: str
-    :param measurement: What measurement to query in the Influxdb
-        database (eg. 'temperature', 'duration_time')
-    :type measurement: str or None
-    :param channel: Channel
-    :type channel: int or None
-    :param duration_sec: How many seconds to look for a past measurement
-    :type duration_sec: int or None
-    """
-
-    past_measurements = read_past_influxdb(
-        unique_id,
-        unit,
-        channel,
-        duration_sec,
-        measure=measurement)
-
-    if past_measurements:
+        # TODO: Change to return dictionary in next major release
         string_ts_values = ''
-        for index, each_set in enumerate(past_measurements):
-            string_ts_values += '{},{}'.format(each_set[0], each_set[1])
-            if index + 1 < len(past_measurements):
-                string_ts_values += ';'
+        if past_measurements_dict:
+            string_ts_values = ''
+            for index, each_set in enumerate(past_measurements_dict):
+                string_ts_values += '{},{}'.format(each_set[0], each_set[1])
+                if index + 1 < len(past_measurements_dict):
+                    string_ts_values += ';'
+
         return string_ts_values
 
 

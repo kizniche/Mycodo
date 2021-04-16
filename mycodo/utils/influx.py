@@ -13,11 +13,14 @@ from mycodo.config import INFLUXDB_HOST
 from mycodo.config import INFLUXDB_PASSWORD
 from mycodo.config import INFLUXDB_PORT
 from mycodo.config import INFLUXDB_USER
+from mycodo.databases.models import Conversion
+from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Output
 from mycodo.inputs.sensorutils import convert_units
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.logging_utils import set_log_level
+from mycodo.utils.system_pi import return_measurement_info
 
 logger = logging.getLogger("mycodo.influxdb")
 logger.setLevel(set_log_level(logging))
@@ -111,6 +114,50 @@ def format_influxdb_data(unique_id, unit, value, channel=None, measure=None, tim
             influx_dict['time'] = timestamp.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     return influx_dict
+
+
+def get_last_measurement(device_id, measurement_id, max_age=None):
+    device_measurement = db_retrieve_table_daemon(
+        DeviceMeasurements).filter(
+        DeviceMeasurements.unique_id == measurement_id).first()
+    if device_measurement:
+        conversion = db_retrieve_table_daemon(
+            Conversion, unique_id=device_measurement.conversion_id)
+    else:
+        conversion = None
+    channel, unit, measurement = return_measurement_info(
+        device_measurement, conversion)
+
+    last_measurement = read_last_influxdb(
+        device_id,
+        unit,
+        channel,
+        measure=measurement,
+        duration_sec=max_age)
+
+    return last_measurement
+
+
+def get_past_measurements(device_id, measurement_id, max_age=None):
+    device_measurement = db_retrieve_table_daemon(
+        DeviceMeasurements).filter(
+        DeviceMeasurements.unique_id == measurement_id).first()
+    if device_measurement:
+        conversion = db_retrieve_table_daemon(
+            Conversion, unique_id=device_measurement.conversion_id)
+    else:
+        conversion = None
+    channel, unit, measurement = return_measurement_info(
+        device_measurement, conversion)
+
+    past_measurements = read_past_influxdb(
+        device_id,
+        unit,
+        channel,
+        max_age,
+        measure=measurement)
+
+    return past_measurements
 
 
 def parse_measurement(

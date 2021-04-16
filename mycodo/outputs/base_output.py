@@ -9,7 +9,6 @@ All Outputs should inherit from this class and overwrite methods that raise
 NotImplementedErrors
 """
 import datetime
-import json
 import logging
 import threading
 import time
@@ -19,17 +18,13 @@ from sqlalchemy import and_
 from sqlalchemy import or_
 
 from mycodo.abstract_base_controller import AbstractBaseController
-from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import Trigger
-from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import write_influxdb_value
 from mycodo.utils.outputs import output_types
-
-MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class AbstractOutput(AbstractBaseController):
@@ -327,16 +322,16 @@ class AbstractOutput(AbstractBaseController):
                     msg = "Output {id} CH{ch} ({name}) is already on for an " \
                           "amount of {on:.2f} seconds (with {remain:.2f} " \
                           "seconds remaining). Recording the amount of time " \
-                          "the output has been on ({beenon:.2f} sec) and " \
-                          "updating the amount to {newon:.2f} " \
+                          "the output has been on ({been_on:.2f} sec) and " \
+                          "updating the amount to {new_on:.2f} " \
                           "seconds.".format(
                             id=self.unique_id,
                             ch=output_channel,
                             name=self.output_name,
                             on=abs(self.output_last_duration[output_channel]),
                             remain=remaining_time,
-                            beenon=time_on,
-                            newon=abs(amount))
+                            been_on=time_on,
+                            new_on=abs(amount))
                     self.logger.debug(msg)
                     self.output_on_until[output_channel] = (
                         current_time + datetime.timedelta(seconds=abs(amount)))
@@ -422,13 +417,14 @@ class AbstractOutput(AbstractBaseController):
                     if not self.output_time_turned_on[output_channel]:
                         self.output_time_turned_on[output_channel] = current_time
 
-                    ret_value = self.output_switch('on', output_channel=output_channel, output_type='sec')
+                    ret_value = self.output_switch(
+                        'on', output_channel=output_channel, output_type='sec')
 
-                    msg = "Output {id} CH{ch} ({name}) ON at {timeon}. Output returned: {ret}".format(
+                    msg = "Output {id} CH{ch} ({name}) ON at {on}. Output returned: {ret}".format(
                         id=self.unique_id,
                         ch=output_channel,
                         name=self.output_name,
-                        timeon=self.output_time_turned_on[output_channel],
+                        on=self.output_time_turned_on[output_channel],
                         ret=ret_value)
                     self.logger.debug(msg)
 
@@ -440,11 +436,11 @@ class AbstractOutput(AbstractBaseController):
             ret_value = self.output_switch('off', output_type=output_type, output_channel=output_channel)
 
             timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
-            msg = "Output {id} CH{ch} ({name}) OFF at {timeoff}. Output returned: {ret}".format(
+            msg = "Output {id} CH{ch} ({name}) OFF at {time_off}. Output returned: {ret}".format(
                 id=self.unique_id,
                 ch=output_channel,
                 name=self.output_name,
-                timeoff=timestamp,
+                time_off=timestamp,
                 ret=ret_value)
             self.logger.debug(msg)
 
@@ -687,24 +683,10 @@ class AbstractOutput(AbstractBaseController):
                 return 'off'
 
     def set_custom_option(self, option, value):
-        try:
-            with session_scope(MYCODO_DB_PATH) as new_session:
-                mod_output = new_session.query(Output).filter(
-                    Output.unique_id == self.unique_id).first()
-                try:
-                    dict_custom_options = json.loads(mod_output.custom_options)
-                except:
-                    dict_custom_options = {}
-                dict_custom_options[option] = value
-                mod_output.custom_options = json.dumps(dict_custom_options)
-                new_session.commit()
-        except Exception:
-            self.logger.exception("set_custom_option")
+        return self._set_custom_option(Output, self.unique_id, option, value)
 
     def get_custom_option(self, option):
-        try:
-            dict_custom_options = json.loads(self.output.custom_options)
-        except:
-            dict_custom_options = {}
-        if option in dict_custom_options:
-            return dict_custom_options[option]
+        return self._get_custom_option(self.output.custom_options, option)
+
+    def delete_custom_option(self, option):
+        return self._delete_custom_option(Output, self.unique_id, option)

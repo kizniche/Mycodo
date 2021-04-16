@@ -157,29 +157,31 @@ class InputController(AbstractController, threading.Thread):
                     self.pre_output_setup and
                     not self.pre_output_activated):
 
-                self.lock_acquire(self.pre_output_lock_file, 30)
+                if self.lock_acquire(self.pre_output_lock_file, 30):
+                    self.pre_output_timer = time.time() + self.pre_output_duration
+                    self.pre_output_activated = True
 
-                self.pre_output_timer = time.time() + self.pre_output_duration
-                self.pre_output_activated = True
+                    # Only run the pre-output before measurement
+                    # Turn on for a duration, measure after it turns off
+                    if not self.pre_output_during_measure:
+                        output_on = threading.Thread(
+                            target=self.control.output_on,
+                            args=(self.pre_output_id,),
+                            kwargs={'output_channel': self.pre_output_channel,
+                                    'amount': self.pre_output_duration})
+                        output_on.start()
 
-                # Only run the pre-output before measurement
-                # Turn on for a duration, measure after it turns off
-                if not self.pre_output_during_measure:
-                    output_on = threading.Thread(
-                        target=self.control.output_on,
-                        args=(self.pre_output_id,),
-                        kwargs={'output_channel': self.pre_output_channel,
-                                'amount': self.pre_output_duration})
-                    output_on.start()
-
-                # Run the pre-output during the measurement
-                # Just turn on, then off after the measurement
+                    # Run the pre-output during the measurement
+                    # Just turn on, then off after the measurement
+                    else:
+                        output_on = threading.Thread(
+                            target=self.control.output_on,
+                            args=(self.pre_output_id,),
+                            kwargs={'output_channel': self.pre_output_channel})
+                        output_on.start()
                 else:
-                    output_on = threading.Thread(
-                        target=self.control.output_on,
-                        args=(self.pre_output_id,),
-                        kwargs={'output_channel': self.pre_output_channel})
-                    output_on.start()
+                    self.logger.error("Could not acquire pre-output lock at {}".format(
+                        self.pre_output_lock_file))
 
             # If using a pre output, wait for it to complete before
             # querying the input for a measurement
@@ -189,22 +191,28 @@ class InputController(AbstractController, threading.Thread):
                         self.pre_output_activated and
                         now > self.pre_output_timer):
 
-                    if self.pre_output_during_measure:
-                        # Measure then turn off pre-output
-                        self.update_measure()
-                        output_off = threading.Thread(
-                            target=self.control.output_off,
-                            args=(self.pre_output_id,),
-                            kwargs={'output_channel': self.pre_output_channel})
-                        output_off.start()
+                    if self.lock_locked(self.pre_output_lock_file):
+                        try:
+                            if self.pre_output_during_measure:
+                                # Measure then turn off pre-output
+                                self.update_measure()
+                                output_off = threading.Thread(
+                                    target=self.control.output_off,
+                                    args=(self.pre_output_id,),
+                                    kwargs={'output_channel': self.pre_output_channel})
+                                output_off.start()
+                            else:
+                                # Pre-output has turned off, now measure
+                                self.update_measure()
+
+                            self.pre_output_activated = False
+                            self.get_new_measurement = False
+                        finally:
+                            # always remove lock
+                            self.lock_release(self.pre_output_lock_file)
                     else:
-                        # Pre-output has turned off, now measure
-                        self.update_measure()
-
-                    self.pre_output_activated = False
-                    self.get_new_measurement = False
-
-                    self.lock_release(self.pre_output_lock_file)
+                        self.logger.error("Pre-output lock not found at {}".format(
+                            self.pre_output_lock_file))
 
                 elif not self.pre_output_setup:
                     # Pre-output not enabled, just measure
