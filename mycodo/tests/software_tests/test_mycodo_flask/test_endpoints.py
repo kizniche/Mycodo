@@ -7,15 +7,19 @@ import base64
 import mock
 import random
 
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import Input
 from mycodo.databases.models import Output
 from mycodo.databases.models import User
 from mycodo.mycodo_flask.utils.utils_general import generate_form_input_list
 from mycodo.mycodo_flask.utils.utils_general import generate_form_output_list
+from mycodo.mycodo_flask.utils.utils_general import generate_form_controller_list
 from mycodo.tests.software_tests.conftest import login_user
 from mycodo.tests.software_tests.factories import UserFactory
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
+from mycodo.utils.functions import parse_function_information
+from mycodo.mycodo_flask.utils.utils_general import choices_custom_functions
 
 
 # ----------------------
@@ -461,6 +465,40 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
         output_count -= 1
 
 
+@mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
+def test_add_all_function_devices_logged_in_as_admin(_, testapp):
+    """ Verifies adding all functions as a logged in admin user """
+    print("\nTest: test_add_all_function_devices_logged_in_as_admin")
+    login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
+
+    # Add All Custom Functions
+    function_count = 0
+    choices_function = choices_custom_functions(prepend_func_title=False)
+
+    for index, each_function in enumerate(choices_function):
+        choice_name = each_function["item"]
+        print("test_add_all_function_devices_logged_in_as_admin: Adding and deleting Function ({}/{}): {}".format(
+            index + 1, len(choices_function), each_function["value"]))
+        response = add_function(testapp, function_type=each_function["value"])
+
+        # Verify success message flashed
+        assert "{} Function with ID".format(choice_name) in response
+        assert "Success: Add Function" in response
+
+        # Verify data was entered into the database
+        function_count += 1
+        assert CustomController.query.count() == function_count, "Number of Functions doesn't match: In DB {}, Should be: {}".format(
+            CustomController.query.count(), function_count)
+
+        function_dev = CustomController.query.filter(CustomController.id == function_count).first()
+        assert each_function["value"] == function_dev.device, "Function name doesn't match: {}".format(choice_name)
+
+        # Delete function (speeds up further function addition checking)
+        response = delete_data(testapp, 'function', device_dev=function_dev)
+        assert "Delete custom_controller with ID: {}".format(function_dev.unique_id) in response
+        function_count -= 1
+
+
 # ---------------------------
 #   Tests Logged in as Guest
 # ---------------------------
@@ -527,6 +565,15 @@ def add_output(testapp, output_type='wired'):
     return response
 
 
+def add_function(testapp, function_type=''):
+    """ Go to the data page and create input """
+    form = testapp.get('/function').maybe_follow().forms['new_function_form']
+    form.select(name='function_type', value=function_type)
+    response = form.submit(name='func_add', value='Add').maybe_follow()
+    # response.showbrowser()
+    return response
+
+
 def delete_data(testapp, data_type, device_dev=None):
     """ Go to the data page and delete input/output """
     response = None
@@ -538,6 +585,10 @@ def delete_data(testapp, data_type, device_dev=None):
         form = testapp.get('/output').maybe_follow().forms['mod_output_form']
         form['output_id'].force_value(device_dev.unique_id)
         response = form.submit(name='delete', value='Delete').maybe_follow()
+    elif data_type == 'function':
+        form = testapp.get('/function').maybe_follow().forms['mod_function_form']
+        form['function_id'].force_value(device_dev.unique_id)
+        response = form.submit(name='delete_controller', value='Delete').maybe_follow()
     # response.showbrowser()
     return response
 

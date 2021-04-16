@@ -2,13 +2,13 @@
 
 <div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
 
-  <form method="post" action="/function">
+  <form id="mod_function_form" method="post" action="/function">
   <input type="hidden" name="form-name" value="modController">
   {{form_function.csrf_token}}
   {{form_function.function_id(value=each_function.unique_id)}}
   {{form_function.function_type(class_='form-control', value='function')}}
 
-    {% set form = form_mod_function %}
+    {% set form = form_function %}
     {% set dict_options = dict_controllers[each_function.device] %}
     {% set each_device = each_function %}
     {% set unique_id = each_function.unique_id %}

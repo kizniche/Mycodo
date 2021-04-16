@@ -5,6 +5,7 @@ import threading
 
 import sqlalchemy
 from flask import current_app
+from flask import flash
 from flask import url_for
 from flask_babel import gettext
 from sqlalchemy import and_
@@ -245,6 +246,13 @@ if measurement is not None:  # If a measurement exists
                         new_channel.custom_options = custom_options
 
                         new_channel.save()
+
+            flash(gettext(
+                "%(type)s Function with ID %(id)s (%(uuid)s) successfully added",
+                type=new_func.name,
+                id=new_func.id,
+                uuid=new_func.unique_id),
+                "success")
 
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)

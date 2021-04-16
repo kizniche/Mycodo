@@ -1,5 +1,5 @@
 {%- set all_measurements = table_device_measurements.query.filter(
-            table_device_measurements.device_id == each_device.unique_id).all() -%}
+                               table_device_measurements.device_id == each_device.unique_id).all() -%}
 {% if all_measurements and 'measurements_select' in dict_options['options_enabled'] %}
 
 <div class="col-auto">

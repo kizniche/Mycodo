@@ -117,6 +117,7 @@ As always, a backup of the current system files and settings is performed during
  - Add Units kilowatt-hour and Watt
  - Specify package versions for pypi dependencies
  - Update python libraries
+ - Add unit testing for Custom Functions
 
 
 ## 8.9.2 (2021-03-16)
