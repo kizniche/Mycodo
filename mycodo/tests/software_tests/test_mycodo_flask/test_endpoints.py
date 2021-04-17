@@ -471,7 +471,7 @@ def test_add_all_function_devices_logged_in_as_admin(_, testapp):
 
     # Add All Custom Functions
     function_count = 0
-    choices_function = choices_custom_functions(prepend_func_title=False)
+    choices_function = choices_custom_functions()
 
     for index, each_function in enumerate(choices_function):
         choice_name = each_function["item"]

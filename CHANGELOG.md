@@ -104,10 +104,11 @@ As always, a backup of the current system files and settings is performed during
  - Add Input: Tasmota Outlet Energy Monitor
  - Add Output: DS3502 Digital Potentiometer
  - Add Output: ULN2003 Unipolar Stepper Motor Driver
- - Add Function: LCD Generic 16x2 (I2C)
+ - Add Function: SSD1309 Display
  - Add Function: Bang-Bang PWM
  - Add Function Action: MQTT Publish
  - Add Function Action: webhook to emit HTTP requests ([discussion](https://kylegabriel.com/forum/general-discussion/webhook-action/))
+ - Partial conversion of Display/LCD controllers to Display Functions
  - Add external temperature compensation for Anyleaf pH Input
  - Add ability to set camera stream frames per second
  - Add missing stream resolution option to opencv cameras

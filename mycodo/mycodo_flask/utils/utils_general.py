@@ -641,19 +641,16 @@ def choices_controller_ids():
     return choices
 
 
-def choices_custom_functions(prepend_func_title=True):
+def choices_custom_functions():
     """ populate form multi-select choices from Function entries """
     choices = []
     dict_controllers = parse_function_information()
     list_controllers_sorted = generate_form_controller_list(dict_controllers)
     for each_custom in list_controllers_sorted:
-        value = '{inp}'.format(inp=each_custom)
-        if prepend_func_title:
-            display = 'Function: {name}'.format(
-                name=dict_controllers[each_custom]['function_name'])
-        else:
-            display = dict_controllers[each_custom]['function_name']
-        choices.append({'value': value, 'item': display})
+        choices.append({
+            'value': each_custom,
+            'item': dict_controllers[each_custom]['function_name']
+        })
     return choices
 
 
