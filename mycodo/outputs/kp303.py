@@ -168,7 +168,15 @@ class OutputModule(AbstractOutput):
                 self.strip = SmartStrip(self.plug_address)
                 asyncio.run(self.strip.update())
                 self.output_setup = True
-                self.logger.info('Strip setup with children {0}'.format(self.strip.children))
+                self.logger.debug('Strip setup: {}'.format(self.strip.hw_info))
+                for channel in channels_dict:
+                    if self.options_channels['state_startup'][channel] == 1:
+                        asyncio.run(self.strip.children[channel].turn_on())
+                        self.output_states[channel] = True
+                    elif self.options_channels['state_startup'][channel] == 0:
+                        asyncio.run(self.strip.children[channel].turn_off())
+                        self.output_states[channel] = False
+                    self.logger.debug('Strip children: {}'.format(self.strip.children[channel]))
             except Exception as e:
                 self.logger.exception("Output was unable to be setup {err}".format(err=e))
 
