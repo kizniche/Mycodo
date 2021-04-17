@@ -102,12 +102,13 @@ As always, a backup of the current system files and settings is performed during
  - Add Input: KP303 Smart WiFi Power Strip ([#980](https://github.com/kizniche/mycodo/issues/980))
  - Add Input: Generic Analog pH/EC using ADS1115 ADC
  - Add Input: Tasmota Outlet Energy Monitor
- - Add Measurements: Apparent Power, Reactive Power, Power Factor
- - Add Units: Volt-Amps, Volt-Amps-Reactive
- - Enable external temperature compensation for Anyleaf pH Input
+ - Add Output: DS3502 Digital Potentiometer
+ - Add Output: ULN2003 Unipolar Stepper Motor Driver
  - Add Function: LCD Generic 16x2 (I2C)
+ - Add Function: Bang-Bang PWM
  - Add Function Action: MQTT Publish
  - Add Function Action: webhook to emit HTTP requests ([discussion](https://kylegabriel.com/forum/general-discussion/webhook-action/))
+ - Add external temperature compensation for Anyleaf pH Input
  - Add ability to set camera stream frames per second
  - Add missing stream resolution option to opencv cameras
  - Add ability for Atlas Scientific Peristaltic Pump Outputs to run in reverse
@@ -117,7 +118,8 @@ As always, a backup of the current system files and settings is performed during
 
 ### Miscellaneous
 
- - Add Units kilowatt-hour and Watt
+ - Add Measurements: Apparent Power, Reactive Power, Power Factor
+ - Add Units: kilowatt-hour, Watt, Volt-Amps, Volt-Amps-Reactive
  - Specify package versions for pypi dependencies
  - Update python libraries
  - Add unit testing for Custom Functions
