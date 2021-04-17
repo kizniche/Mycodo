@@ -142,7 +142,8 @@ channels_dict = {
 # Output information
 OUTPUT_INFORMATION = {
     'output_name_unique': 'Grove_Multichannel_Relay',
-    'output_name': "Grove Multichannel Relay (4/8 Channels): {}".format(lazy_gettext('On/Off')),
+    'output_name': "Grove Multichannel Relay (4- or 8-Channel board)",
+    'output_manufacturer': 'Grove',
     'output_library': 'smbus2',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,

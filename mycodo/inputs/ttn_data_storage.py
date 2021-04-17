@@ -72,7 +72,7 @@ INPUT_INFORMATION = {
         ('pip-pypi', 'requests', 'requests==2.25.1'),
     ],
 
-    'interfaces': ['Mycodo'],
+    'interfaces': ['MYCODO'],
 
     'custom_options': [
         {

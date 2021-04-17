@@ -96,19 +96,22 @@ As always, a backup of the current system files and settings is performed during
 
 ### Features
 
- - Add CircuitPython variants of the BME280 and SHT31-D Inputs
- - Add support for SHT41x based input devices 
- - Add support for Adafruit's i2c capacitive soil sensor input devices
- - Add webhook action to emit HTTP requests ([discussion](https://kylegabriel.com/forum/general-discussion/webhook-action/))
+ - Add Input SHT41x
+ - Add Input: Adafruit I2C capacitive soil sensor
+ - Add Input: CircuitPython variants of the BME280 and SHT31-D Inputs
+ - Add Input: KP303 Smart WiFi Power Strip ([#980](https://github.com/kizniche/mycodo/issues/980))
+ - Add Input: Generic Analog pH/EC using ADS1115 ADC
+ - Add Input: Tasmota Outlet Energy Monitor
+ - Add Measurements: Apparent Power, Reactive Power, Power Factor
+ - Add Units: Volt-Amps, Volt-Amps-Reactive
+ - Enable external temperature compensation for Anyleaf pH Input
+ - Add Function: LCD Generic 16x2 (I2C)
  - Add Function Action: MQTT Publish
+ - Add Function Action: webhook to emit HTTP requests ([discussion](https://kylegabriel.com/forum/general-discussion/webhook-action/))
  - Add ability to set camera stream frames per second
  - Add missing stream resolution option to opencv cameras
  - Add ability for Atlas Scientific Peristaltic Pump Outputs to run in reverse
  - Add new ADC measurement rescaling method: Equation
- - Add Function: LCD Generic 16x2 (I2C)
- - Add Input: Generic Analog pH/EC using ADS1115 ADC
- - Enable external temperature compensation for Anyleaf pH Input
- - Add Input: KP303 Smart WiFi Power Strip ([#980](https://github.com/kizniche/mycodo/issues/980))
  - Add Custom Actions to Functions
  - Add "wait_for_return" option to Custom Actions
 

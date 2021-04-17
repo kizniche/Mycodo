@@ -61,13 +61,14 @@ OUTPUT_INFORMATION = {
     'output_name_unique': 'MQTT_PAHO_VALUE',
     'output_name': "MQTT Publish: {}".format(lazy_gettext('Value')),
     'output_library': 'paho-mqtt',
+    'output_manufacturer': 'Mycodo',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['value'],
 
     'url_additional': 'http://www.eclipse.org/paho/',
 
-    'interfaces': ['Mycodo'],
+    'interfaces': ['MYCODO'],
 
     'message': lazy_gettext('Publish a value to an MQTT server.'),
 

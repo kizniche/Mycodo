@@ -78,8 +78,36 @@ if __name__ == "__main__":
 
                 out_file.write("### {}\n\n".format(name_str))
 
+                if 'input_manufacturer' in each_data and each_data['input_manufacturer']:
+                    out_file.write("- Manufacturer: {}\n".format(each_data['input_manufacturer']))
+
                 if 'measurements_name' in each_data and each_data['measurements_name']:
                     out_file.write("- Measurements: {}\n".format(each_data['measurements_name']))
+
+                if 'interfaces' in each_data and each_data['interfaces']:
+                    list_interfaces = []
+                    for each_type in each_data['interfaces']:
+                        if each_type == 'I2C':
+                            list_interfaces.append("I<sup>2</sup>C")
+                        elif each_type == 'MYCODO':
+                            list_interfaces.append("Mycodo")
+                        elif each_type == '1WIRE':
+                            list_interfaces.append("1-Wire")
+                        elif each_type == 'HTTP':
+                            list_interfaces.append("HTTP")
+                        elif each_type == 'FTDI':
+                            list_interfaces.append("FTDI")
+                        elif each_type == 'UART':
+                            list_interfaces.append("UART")
+                        elif each_type == 'GPIO':
+                            list_interfaces.append("GPIO")
+                        elif each_type == 'PYTHON':
+                            list_interfaces.append("Python")
+                        elif each_type == 'SHELL':
+                            list_interfaces.append("Shell")
+                        else:
+                            list_interfaces.append(each_type)
+                    out_file.write("- Interfaces: {}\n".format(", ".join(list_interfaces)))
 
                 if 'input_library' in each_data and each_data['input_library']:
                     out_file.write("- Libraries: {}\n".format(each_data['input_library']))

@@ -3,8 +3,9 @@ import datetime
 
 from flask_babel import lazy_gettext
 
-from mycodo.databases.models import InputChannel
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Conversion
+from mycodo.databases.models import InputChannel
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
@@ -69,16 +70,16 @@ INPUT_INFORMATION = {
             'type': 'text',
             'default_value': 'localhost',
             'required': True,
-            'name': lazy_gettext('Hostname'),
-            'phrase': lazy_gettext('The hostname of the server')
+            'name': TRANSLATIONS["host"]["title"],
+            'phrase': TRANSLATIONS["host"]["phrase"]
         },
         {
             'id': 'mqtt_port',
             'type': 'integer',
             'default_value': 1883,
             'required': True,
-            'name': lazy_gettext('Port'),
-            'phrase': lazy_gettext('The port of the server')
+            'name': TRANSLATIONS["port"]["title"],
+            'phrase': TRANSLATIONS["port"]["phrase"]
         },
         {
             'id': 'mqtt_keepalive',

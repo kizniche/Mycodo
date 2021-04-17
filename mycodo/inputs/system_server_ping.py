@@ -2,6 +2,7 @@
 import copy
 import os
 
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.inputs.base_input import AbstractInput
 
 # Measurements
@@ -32,10 +33,10 @@ INPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-    'interfaces': ['Mycodo'],
+    'interfaces': ['MYCODO'],
     'location': {
-        'title': 'Host Location',
-        'phrase': 'Host name or IP address',
+        'name': TRANSLATIONS["host"]["title"],
+        'phrase': TRANSLATIONS["host"]["phrase"],
         'options': [('127.0.0.1', '')]
     },
     'times_check': 1,

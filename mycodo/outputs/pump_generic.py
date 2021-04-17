@@ -256,9 +256,7 @@ class OutputModule(AbstractOutput):
             while time.time() < timer_dispense_off and self.currently_dispensing:
                 time.sleep(0.01)
 
-        self.GPIO.output(self.options_channels['pin'][0], not self.options_channels['on_state'][0])
         self.currently_dispensing = False
-        self.logger.debug("Output turned off")
         self.record_dispersal(amount, total_seconds_on, total_dispense_seconds)
 
     def record_dispersal(self, amount, total_on_seconds, total_dispense_seconds):

@@ -90,6 +90,7 @@ OUTPUT_INFORMATION = {
     'output_name_unique': 'mcp4728',
     'output_name': "{}: MCP4728".format(
         lazy_gettext('Digital-to-Analog Converter')),
+    'output_manufacturer': 'MICROCHIP',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
     'output_types': ['value'],

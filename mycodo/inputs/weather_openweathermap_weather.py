@@ -59,7 +59,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [],
-    'interfaces': ['Mycodo'],
+    'interfaces': ['MYCODO'],
 
     'custom_options': [
         {

@@ -197,6 +197,18 @@ MEASUREMENTS = {
         'name': lazy_gettext('Power'),
         'meas': 'power',
         'units': ['W']},
+    'power_apparent': {
+        'name': lazy_gettext('Apparent Power'),
+        'meas': 'power_apparent',
+        'units': ['va']},
+    'power_factor': {
+        'name': lazy_gettext('Power Factor'),
+        'meas': 'power_factor',
+        'units': ['unitless']},
+    'power_reactive': {
+        'name': lazy_gettext('Reactive Power'),
+        'meas': 'power_reactive',
+        'units': ['var']},
     'pressure': {
         'name': lazy_gettext('Pressure'),
         'meas': 'pressure',
@@ -475,6 +487,12 @@ UNITS = {
     'uT': {
         'name': lazy_gettext('Microtesla'),
         'unit': 'μT'},
+    'va': {
+        'name': 'Volt-Amps',
+        'unit': 'VA'},
+    'var': {
+        'name': 'Volt-Amps-Reactive',
+        'unit': 'VAr'},
     'V': {
         'name': lazy_gettext('Volt'),
         'unit': 'V'},

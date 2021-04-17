@@ -27,7 +27,7 @@ INPUT_INFORMATION = {
     ],
     'options_disabled': ['interface'],
 
-    'interfaces': ['Mycodo'],
+    'interfaces': ['MYCODO'],
     'location': {
         'title': 'Path',
         'phrase': 'The path to monitor the free space of',

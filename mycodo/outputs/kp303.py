@@ -1,4 +1,10 @@
+# coding=utf-8
+#
+# kp303.py - Output for KP303
+#
 import asyncio
+import threading
+import time
 
 from flask_babel import lazy_gettext
 
@@ -74,6 +80,14 @@ OUTPUT_INFORMATION = {
             'required': True,
             'name': TRANSLATIONS['host']['title'],
             'phrase': TRANSLATIONS['host']['phrase']
+        },
+        {
+            'id': 'status_update_period',
+            'type': 'integer',
+            'default_value': 60,
+            'required': True,
+            'name': lazy_gettext('Status Update (Sec)'),
+            'phrase': lazy_gettext('The period (seconds) between updating the state of the output(s). 0 to disable.')
         }
     ],
 
@@ -144,9 +158,14 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
-        self.plug_address = None
         self.strip = None
         self.output_setup = False
+        self.outlet_switching = False
+        self.outlet_status_checking = False
+        self.timer_status_check = time.time()
+
+        self.plug_address = None
+        self.status_update_period = None
 
         self.setup_custom_options(
             OUTPUT_INFORMATION['custom_options'], output)
@@ -171,12 +190,14 @@ class OutputModule(AbstractOutput):
                 self.logger.debug('Strip setup: {}'.format(self.strip.hw_info))
                 for channel in channels_dict:
                     if self.options_channels['state_startup'][channel] == 1:
-                        asyncio.run(self.strip.children[channel].turn_on())
-                        self.output_states[channel] = True
+                        self.output_switch("on", output_channel=channel)
                     elif self.options_channels['state_startup'][channel] == 0:
-                        asyncio.run(self.strip.children[channel].turn_off())
-                        self.output_states[channel] = False
+                        self.output_switch("off", output_channel=channel)
                     self.logger.debug('Strip children: {}'.format(self.strip.children[channel]))
+
+                if self.status_update_period:
+                    write_db = threading.Thread(target=self.status_update)
+                    write_db.start()
             except Exception as e:
                 self.logger.exception("Output was unable to be setup {err}".format(err=e))
 
@@ -185,7 +206,11 @@ class OutputModule(AbstractOutput):
             self.logger.error('Output not set up')
             return
 
+        while self.outlet_status_checking and self.running:
+            time.sleep(0.1)
+
         try:
+            self.outlet_switching = True
             if state == 'on':
                 asyncio.run(self.strip.children[output_channel].turn_on())
                 self.output_states[output_channel] = True
@@ -196,6 +221,8 @@ class OutputModule(AbstractOutput):
         except Exception as e:
             msg = "State change error: {}".format(e)
             self.logger.exception(msg)
+        finally:
+            self.outlet_switching = False
         return msg
 
     def is_on(self, output_channel=None):
@@ -216,3 +243,25 @@ class OutputModule(AbstractOutput):
             elif self.options_channels['state_shutdown'][channel] == 0:
                 self.output_switch('off', output_channel=channel)
         self.running = False
+
+    def status_update(self):
+        while self.running:
+            if self.timer_status_check < time.time():
+
+                while self.timer_status_check < time.time():
+                    self.timer_status_check += self.status_update_period
+
+                while self.outlet_switching and self.running:
+                    time.sleep(0.1)
+                try:
+                    self.outlet_status_checking = True
+                    asyncio.run(self.strip.update())
+                    for channel in channels_dict:
+                        if self.strip.children[channel].is_on:
+                            self.output_states[channel] = True
+                        else:
+                            self.output_states[channel] = False
+                finally:
+                    self.outlet_status_checking = False
+
+            time.sleep(1)

@@ -26,10 +26,10 @@ def repeat_to_length(s, wanted):
 if __name__ == "__main__":
     for output_id, output_data in parse_output_information(exclude_custom=True).items():
         name_str = ""
-        if 'output_manufacturer' in output_data and output_data['output_manufacturer']:
-            name_str += "{}".format(output_data['output_manufacturer'])
         if 'output_name' in output_data and output_data['output_name']:
-            name_str += ": {}".format(output_data['output_name'])
+            name_str += "{}".format(output_data['output_name'])
+        if 'output_manufacturer' in output_data and output_data['output_manufacturer']:
+            name_str += ": {}".format(output_data['output_manufacturer'])
         if 'measurements_name' in output_data and output_data['measurements_name']:
             name_str += ": {}".format(output_data['measurements_name'])
         if 'output_library' in output_data and output_data['output_library']:
@@ -70,16 +70,54 @@ if __name__ == "__main__":
             out_file.write("## {}\n\n".format(each_list[1]))
 
             for each_id, each_data in each_list[0].items():
-                name_str = ""
-                if 'output_manufacturer' in each_data and each_data['output_manufacturer']:
-                    name_str += "{}".format(each_data['output_manufacturer'])
                 if 'output_name' in each_data and each_data['output_name']:
-                    name_str += " {}".format(each_data['output_name'])
+                    out_file.write("### {}\n\n".format(each_data['output_name']))
+                else:
+                    out_file.write("### {}\n\n".format(each_id))
 
-                out_file.write("### {}\n\n".format(name_str))
+                if 'output_manufacturer' in each_data and each_data['output_manufacturer']:
+                    out_file.write("- Manufacturer: {}\n".format(each_data['output_manufacturer']))
 
                 if 'measurements_name' in each_data and each_data['measurements_name']:
                     out_file.write("- Measurements: {}\n".format(each_data['measurements_name']))
+
+                if 'interfaces' in each_data and each_data['interfaces']:
+                    list_interfaces = []
+                    for each_type in each_data['interfaces']:
+                        if each_type == 'I2C':
+                            list_interfaces.append("I<sup>2</sup>C")
+                        elif each_type == 'MYCODO':
+                            list_interfaces.append("Mycodo")
+                        elif each_type == '1WIRE':
+                            list_interfaces.append("1-Wire")
+                        elif each_type == 'HTTP':
+                            list_interfaces.append("HTTP")
+                        elif each_type == 'FTDI':
+                            list_interfaces.append("FTDI")
+                        elif each_type == 'UART':
+                            list_interfaces.append("UART")
+                        elif each_type == 'GPIO':
+                            list_interfaces.append("GPIO")
+                        elif each_type == 'PYTHON':
+                            list_interfaces.append("Python")
+                        elif each_type == 'SHELL':
+                            list_interfaces.append("Shell")
+                        else:
+                            list_interfaces.append(each_type)
+                    out_file.write("- Interfaces: {}\n".format(", ".join(list_interfaces)))
+
+                if 'output_types' in each_data and each_data['output_types']:
+                    list_output_types = []
+                    for each_type in each_data['output_types']:
+                        if each_type == 'on_off':
+                            list_output_types.append("On/Off")
+                        elif each_type == 'volume':
+                            list_output_types.append("Volume")
+                        elif each_type == 'pwm':
+                            list_output_types.append("PWM")
+                        elif each_type == 'value':
+                            list_output_types.append("Value")
+                    out_file.write("- Output Types: {}\n".format(", ".join(list_output_types)))
 
                 if 'output_library' in each_data and each_data['output_library']:
                     out_file.write("- Libraries: {}\n".format(each_data['output_library']))
