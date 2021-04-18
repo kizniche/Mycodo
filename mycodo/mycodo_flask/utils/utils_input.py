@@ -327,6 +327,7 @@ def input_mod(form_mod, request_form):
         action=TRANSLATIONS['modify']['title'],
         controller=TRANSLATIONS['input']['title'])
     error = []
+    warning = []
 
     dict_inputs = parse_input_information()
 
@@ -353,7 +354,7 @@ def input_mod(form_mod, request_form):
 
         if (form_mod.uart_location.data and
                 not os.path.exists(form_mod.uart_location.data)):
-            error.append(gettext(
+            warning.append(gettext(
                 "Invalid device or improper permissions to read device"))
 
         if ('gpio_location' in dict_inputs[mod_input.device]['options_enabled'] and
@@ -508,7 +509,7 @@ def input_mod(form_mod, request_form):
 
         # Parse post-save custom options for output device and its channels
         error, custom_options_json_postsave = custom_options_return_json(
-            error, dict_inputs, request_form, device=mod_input.device)
+            error, dict_inputs, request_form, mod_dev=mod_input, device=mod_input.device)
         custom_options_dict_postsave = json.loads(custom_options_json_postsave)
 
         custom_options_channels_dict_postsave = {}
@@ -553,6 +554,9 @@ def input_mod(form_mod, request_form):
 
     except Exception as except_msg:
         error.append(except_msg)
+
+    for each_warning in warning:
+        flash(each_warning, "warning")
 
     flash_success_errors(error, action, url_for('routes_page.page_input'))
 

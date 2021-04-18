@@ -9,41 +9,10 @@ from flask_babel import lazy_gettext
 
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
+from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
-
-
-def constraints_pass_positive_value(mod_input, value):
-    """
-    Check if the user input is acceptable
-    :param mod_input: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_input
-
-
-def constraints_pass_positive_or_zero_value(mod_input, value):
-    """
-    Check if the user input is acceptable
-    :param mod_input: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive or zero
-    if value < 0:
-        all_passed = False
-        errors.append("Must be zero or a positive value")
-    return all_passed, errors, mod_input
-
 
 # Measurements
 measurements_dict = {
@@ -107,7 +76,7 @@ OUTPUT_INFORMATION = {
             'type': 'integer',
             'default_value': 0,
             'required': True,
-            'constraints_pass': constraints_pass_positive_value,
+            'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Step Pin',
             'phrase': 'The Step pin of the controller (BCM numbering)'
         },

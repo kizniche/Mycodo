@@ -2,24 +2,8 @@
 #
 # example_dummy_output.py - Example Output module
 #
-from flask_babel import lazy_gettext
 from mycodo.outputs.base_output import AbstractOutput
-
-
-def constraints_pass_fan_seconds(mod_input, value):
-    """
-    Check if the user input is acceptable
-    :param mod_input: SQL object with user-saved Input options
-    :param value: value
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_input
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
 
 
 def constraints_pass_measure_range(mod_input, value):
@@ -119,7 +103,7 @@ OUTPUT_INFORMATION = {
             'id': 'float_value',
             'type': 'float',
             'default_value': 5.0,
-            'constraints_pass': constraints_pass_fan_seconds,
+            'constraints_pass': constraints_pass_positive_value(),
             'name': 'Decimal Value',
             'phrase': 'Set a decimal value'
         },

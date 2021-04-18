@@ -221,6 +221,7 @@ def output_mod(form_output, request_form):
         action=TRANSLATIONS['modify']['title'],
         controller=TRANSLATIONS['output']['title'])
     error = []
+    warning = []
 
     dict_outputs = parse_output_information()
 
@@ -232,7 +233,7 @@ def output_mod(form_output, request_form):
 
         if (form_output.uart_location.data and
                 not os.path.exists(form_output.uart_location.data)):
-            error.append(gettext(
+            warning.append(gettext(
                 "Invalid device or improper permissions to read device"))
 
         mod_output.name = form_output.name.data
@@ -275,7 +276,7 @@ def output_mod(form_output, request_form):
 
         # Parse post-save custom options for output device and its channels
         error, custom_options_json_postsave = custom_options_return_json(
-            error, dict_outputs, request_form, device=mod_output.output_type)
+            error, dict_outputs, request_form, mod_dev=mod_output, device=mod_output.output_type)
         custom_options_dict_postsave = json.loads(custom_options_json_postsave)
 
         custom_options_channels_dict_postsave = {}
@@ -319,8 +320,11 @@ def output_mod(form_output, request_form):
             db.session.commit()
             manipulate_output('Modify', form_output.output_id.data)
     except Exception as except_msg:
-        logger.exception(1)
         error.append(except_msg)
+
+    for each_warning in warning:
+        flash(each_warning, "warning")
+
     flash_success_errors(error, action, url_for('routes_page.page_output'))
 
 

@@ -248,7 +248,7 @@ def widget_mod(form_base, request_form):
 
     # Generate string to save from custom options
     error, custom_options_json_postsave = custom_options_return_json(
-        error, dict_widgets, request_form, device=mod_widget.graph_type)
+        error, dict_widgets, request_form, mod_dev=mod_widget, device=mod_widget.graph_type)
 
     if 'execute_at_modification' in dict_widgets[mod_widget.graph_type]:
         (allow_saving,

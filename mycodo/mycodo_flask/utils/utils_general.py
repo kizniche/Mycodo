@@ -438,9 +438,10 @@ def custom_channel_options_return_json(
 
             if null_value:
                 if use_defaults and 'default_value' in each_option:
-
                     # If a select type has cast_value set, cast the value as that type
-                    if each_option['type'] == 'select' and 'cast_value' in each_option and each_option['default_value']:
+                    if (each_option['type'] == 'select' and
+                            'cast_value' in each_option and
+                            each_option['default_value'] is not None):
                         if each_option['cast_value'] == 'integer':
                             dict_options_return[each_option['id']] = int(each_option['default_value'])
                         elif each_option['cast_value'] == 'float':

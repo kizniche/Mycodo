@@ -30,7 +30,7 @@ class Input(CRUDMixin, db.Model):
     calibrate_sensor_measure = db.Column(db.Text, default=None)  # sensor ID and measurement (CSV)
 
     location = db.Column(db.Text, default='')  # GPIO pin or i2c address to communicate with sensor
-    gpio_location = db.Column(db.Integer, default=None)  # Pin location for GPIO communication
+    gpio_location = db.Column(db.Integer, default=0)  # Pin location for GPIO communication
 
     # I2C
     i2c_location = db.Column(db.Text, default=None)  # Address location for I2C communication

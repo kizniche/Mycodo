@@ -14,7 +14,7 @@ def constraints_pass_positive_value(mod_input, value):
     errors = []
     all_passed = True
     # Ensure value is positive
-    if value <= 0:
+    if value < 0:
         all_passed = False
         errors.append("Must be a positive value")
     return all_passed, errors, mod_input

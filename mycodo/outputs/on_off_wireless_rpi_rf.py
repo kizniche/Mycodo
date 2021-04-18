@@ -6,24 +6,8 @@ from flask_babel import lazy_gettext
 
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
-
-
-def constraints_pass_positive_value(mod_dev, value):
-    """
-    Check if the user input is acceptable
-    :param mod_dev: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_dev
-
 
 # Measurements
 measurements_dict = {
@@ -70,7 +54,7 @@ OUTPUT_INFORMATION = {
         {
             'id': 'pin',
             'type': 'integer',
-            'default_value': None,
+            'default_value': 0,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('GPIO Pin (BCM)'),

@@ -381,9 +381,9 @@ def test_routes_logged_in_as_admin(_, testapp):
 
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
-def test_add_all_data_devices_logged_in_as_admin(_, testapp):
+def test_add_all_input_devices_logged_in_as_admin(_, testapp):
     """ Verifies adding all inputs as a logged in admin user """
-    print("\nTest: test_add_all_data_devices_logged_in_as_admin")
+    print("\nTest: test_add_all_input_devices_logged_in_as_admin")
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 
     # Add All Inputs
@@ -402,7 +402,7 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
 
     for index, each_input in enumerate(choices_input):
         choice_name = each_input.split(',')[0]
-        print("test_add_all_data_devices_logged_in_as_admin: Adding, saving, and deleting Input ({}/{}): {}".format(
+        print("test_add_all_input_devices_logged_in_as_admin: Adding, saving, and deleting Input ({}/{}): {}".format(
             index + 1, len(choices_input), each_input))
         response = add_data(testapp, input_type=each_input)
 

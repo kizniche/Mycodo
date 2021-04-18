@@ -44,7 +44,7 @@ measurements_dict = {
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'tasmota_ouetlet_energy_monitor',
+    'input_name_unique': 'tasmota_outlet_energy_monitor',
     'input_manufacturer': 'Tasmota',
     'input_name': 'Tasmota Outlet Energy Monitor (HTTP)',
     'input_library': 'requests',
