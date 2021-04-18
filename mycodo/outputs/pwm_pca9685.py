@@ -257,7 +257,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'constraints_pass': constraints_pass_percent(),
+            'constraints_pass': constraints_pass_percent,
             'name': lazy_gettext('Startup Value'),
             'phrase': lazy_gettext('The value when Mycodo starts')
         },
@@ -278,7 +278,7 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'constraints_pass': constraints_pass_duty_cycle,
+            'constraints_pass': constraints_pass_percent,
             'name': lazy_gettext('Shutdown Value'),
             'phrase': lazy_gettext('The value when Mycodo shuts down')
         },

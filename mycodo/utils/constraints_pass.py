@@ -7,7 +7,6 @@ logger = logging.getLogger("mycodo.atlas_scientific")
 logger.setLevel(set_log_level(logging))
 
 
-
 def constraints_pass_percent(mod_dev, value):
     """
     Check if the user input is acceptable
@@ -22,7 +21,6 @@ def constraints_pass_percent(mod_dev, value):
         all_passed = False
         errors.append("Must be between 0 and 100")
     return all_passed, errors, mod_dev
-
 
 def constraints_pass_positive_value(mod_dev, value):
     """
@@ -39,7 +37,6 @@ def constraints_pass_positive_value(mod_dev, value):
         errors.append("Must be a positive value")
     return all_passed, errors, mod_dev
 
-
 def constraints_pass_positive_or_zero_value(mod_dev, value):
     """
     Check if the user input is acceptable
@@ -54,4 +51,3 @@ def constraints_pass_positive_or_zero_value(mod_dev, value):
         all_passed = False
         errors.append("Must be a positive value")
     return all_passed, errors, mod_dev
-
