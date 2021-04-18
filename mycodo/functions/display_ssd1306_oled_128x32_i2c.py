@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  lcd_ssd1309_i2c.py - Function to output to LCD
+#  display_ssd1306_oled_128x32_i2c.py - Function to output to display
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
@@ -44,7 +44,7 @@ from mycodo.utils.lcd import format_measurement_line
 from mycodo.utils.system_pi import cmd_output
 
 # Set to how many lines the LCD has
-lcd_lines = 8
+lcd_lines = 4
 lcd_x_characters = 21
 
 
@@ -150,6 +150,7 @@ def execute_at_modification(
 
     except Exception:
         error.append("execute_at_modification() Error: {}".format(traceback.print_exc()))
+        allow_saving = False
 
     for each_error in error:
         flash(each_error, 'error')
@@ -178,29 +179,28 @@ def constraints_pass_positive_value(mod_controller, value):
 
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'display_ssd1309_oled_128x64_i2c_03',
-    'function_name': 'Display: SSD1309 OLED 128x64 (I2C) Test 03',
-    'function_library': 'luma.oled',
+    'function_name_unique': 'display_ssd1306_oled_128x32_i2c',
+    'function_name': 'Display: SSD1306 OLED 128x32 (I2C)',
+    'function_library': 'Adafruit-Circuitpython-SSD1306',
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
 
-    'message': 'This Function outputs to a 128x64 SSD1309 OLED display via I2C. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.',
+    'message': 'This Function outputs to a 128x32 SSD1306 OLED display via I2C. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.',
 
     'options_enabled': [
         'custom_options'
     ],
 
     'dependencies_module': [
-        ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
-        ('pip-pypi', 'luma.oled', 'luma.oled==3.8.1'),
-        ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
         ('apt', 'libjpeg-dev', 'libjpeg-dev'),
-        ('apt', 'zlib1g-dev', 'zlib1g-dev'),
-        ('apt', 'libfreetype6-dev', 'libfreetype6-dev'),
-        ('apt', 'liblcms2-dev', 'liblcms2-dev'),
-        ('apt', 'libopenjp2-7', 'libopenjp2-7'),
-        ('apt', 'libtiff5', 'libtiff5')
+        ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
+        ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
+        ('pip-pypi', 'adafruit_extended_bus', 'adafruit-extended-bus==1.0.1'),
+        ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf'),
+        ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306')
     ],
+
+    'interface': 'I2C',
 
     'custom_options': [
         {
@@ -308,11 +308,10 @@ class CustomModule(AbstractFunction):
 
         self.options_channels = {}
         self.device = None
-        self.canvas = None
         self.timer_loop = time.time()
         self.line_sets = []
         self.current_line_set = 0
-        self.line_y_dimensions = [0, 8, 16, 24, 32, 40, 48, 56]
+        self.line_y_dimensions = [0, 8, 16, 24]
         self.pad = -2
 
         # Initialize custom options
@@ -332,11 +331,7 @@ class CustomModule(AbstractFunction):
             self.initialize_variables()
 
     def initialize_variables(self):
-        from luma.core.interface.serial import i2c
-        from luma.core.render import canvas
-        from luma.oled.device import ssd1309
-
-        self.canvas = canvas
+        from mycodo.devices.lcd_pioled_circuitpython import LCD_Pioled_Circuitpython
 
         try:
             function_channels = db_retrieve_table_daemon(
@@ -351,9 +346,17 @@ class CustomModule(AbstractFunction):
 
             self.logger.debug("Line sets: {}".format(self.line_sets))
 
-            self.device = ssd1309(i2c(
-                port=self.i2c_bus,
-                address=int(str(self.i2c_address), 16)))
+            lcd_settings_dict = {
+                "unique_id": self.unique_id,
+                "interface": "I2C",
+                "i2c_address": self.i2c_address,
+                "i2c_bus": self.i2c_bus,
+                "x_characters": lcd_x_characters,
+                "lcd_type": "128x64_pioled_circuit_python"
+            }
+
+            self.device = LCD_Pioled_Circuitpython(lcd_settings_dict=lcd_settings_dict)
+            self.device.lcd_init()
 
             self.logger.debug("LCD Function started")
         except:
@@ -447,16 +450,13 @@ class CustomModule(AbstractFunction):
         self.logger.debug("Displaying: {}".format(lines_display))
 
         # Display lines
-        with self.canvas(self.device) as draw:
-            draw.rectangle(self.device.bounding_box, fill="black")
-            for i, each_channel in enumerate(self.line_sets[self.current_line_set]):
-                draw.text((0, self.pad + self.line_y_dimensions[each_channel]),
-                          lines_display[each_channel], fill="white")
+        self.device.lcd_init()
+        self.device.lcd_write_lines(
+            lines_display[0],
+            lines_display[1],
+            lines_display[2],
+            lines_display[3])
 
     def stop_function(self):
-        with self.canvas(self.device) as draw:
-            draw.rectangle(self.device.bounding_box, fill="black")
-            draw.text((0, self.pad + self.line_y_dimensions[0]),
-                      "Mycodo {}".format(MYCODO_VERSION), fill="white")
-            draw.text((0, self.pad + self.line_y_dimensions[1]),
-                      "Display Deactivated", fill="white")
+        self.device.lcd_write_lines(
+            "Mycodo {}".format(MYCODO_VERSION), "Display Deactivated", "", "")

@@ -42,6 +42,7 @@ def execute_at_modification(
             allow_saving = False
     except Exception:
         error.append("execute_at_modification() Error: {}".format(traceback.print_exc()))
+        allow_saving = False
 
     for each_error in error:
         flash(each_error, 'error')

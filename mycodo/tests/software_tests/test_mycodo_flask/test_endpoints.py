@@ -402,7 +402,7 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
 
     for index, each_input in enumerate(choices_input):
         choice_name = each_input.split(',')[0]
-        print("test_add_all_data_devices_logged_in_as_admin: Adding and deleting Input ({}/{}): {}".format(
+        print("test_add_all_data_devices_logged_in_as_admin: Adding, saving, and deleting Input ({}/{}): {}".format(
             index + 1, len(choices_input), each_input))
         response = add_data(testapp, input_type=each_input)
 
@@ -417,6 +417,10 @@ def test_add_all_data_devices_logged_in_as_admin(_, testapp):
 
         input_dev = Input.query.filter(Input.id == input_count).first()
         assert choice_name == input_dev.device, "Input name doesn't match: {}".format(choice_name)
+
+        # Save input
+        response = save_data(testapp, 'input', device_dev=input_dev)
+        assert "Success: Modify Input" in response
 
         # Delete input (speeds up further input addition checking)
         response = delete_data(testapp, 'input', device_dev=input_dev)
@@ -445,7 +449,7 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
                 choices_output.append('{inp},{int}'.format(inp=each_output, int=each_interface))
 
     for index, each_output in enumerate(choices_output):
-        print("test_add_all_data_devices_logged_in_as_admin: Adding and deleting Output ({}/{}): {}".format(
+        print("test_add_all_data_devices_logged_in_as_admin: Adding, saving, and deleting Output ({}/{}): {}".format(
             index + 1, len(choices_output), each_output))
         response = add_output(testapp, output_type=each_output)
         # Verify success message flashed
@@ -456,8 +460,13 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
         assert Output.query.count() == output_count, "Number of Outputs doesn't match: In DB {}, Should be: {}".format(
             Output.query.count(), output_count)
 
-        # Delete output (speeds up further output addition checking)
         output = Output.query.filter(Output.id == output_count).first()
+
+        # Save output
+        response = save_data(testapp, 'output', device_dev=output)
+        assert "Success: Modify Output" in response
+
+        # Delete output (speeds up further output addition checking)
         response = delete_data(testapp, 'output', device_dev=output)
         assert "Success: Delete output with ID: {}".format(output.unique_id) in response
         output_count -= 1
@@ -475,7 +484,7 @@ def test_add_all_function_devices_logged_in_as_admin(_, testapp):
 
     for index, each_function in enumerate(choices_function):
         choice_name = each_function["item"]
-        print("test_add_all_function_devices_logged_in_as_admin: Adding and deleting Function ({}/{}): {}".format(
+        print("test_add_all_function_devices_logged_in_as_admin: Adding, saving, and deleting Function ({}/{}): {}".format(
             index + 1, len(choices_function), each_function["value"]))
         response = add_function(testapp, function_type=each_function["value"])
 
@@ -490,6 +499,10 @@ def test_add_all_function_devices_logged_in_as_admin(_, testapp):
 
         function_dev = CustomController.query.filter(CustomController.id == function_count).first()
         assert each_function["value"] == function_dev.device, "Function name doesn't match: {}".format(choice_name)
+
+        # Save function
+        response = save_data(testapp, 'function', device_dev=function_dev)
+        assert "Success: Modify Controller" in response
 
         # Delete function (speeds up further function addition checking)
         response = delete_data(testapp, 'function', device_dev=function_dev)
@@ -573,7 +586,7 @@ def add_function(testapp, function_type=''):
 
 
 def delete_data(testapp, data_type, device_dev=None):
-    """ Go to the data page and delete input/output """
+    """ Go to the data page and delete input/output/function """
     response = None
     if data_type == 'input':
         form = testapp.get('/input').maybe_follow().forms['mod_input_form']
@@ -587,6 +600,25 @@ def delete_data(testapp, data_type, device_dev=None):
         form = testapp.get('/function').maybe_follow().forms['mod_function_form']
         form['function_id'].force_value(device_dev.unique_id)
         response = form.submit(name='delete_controller', value='Delete').maybe_follow()
+    # response.showbrowser()
+    return response
+
+
+def save_data(testapp, data_type, device_dev=None):
+    """ Go to the page and save input/output/function """
+    response = None
+    if data_type == 'input':
+        form = testapp.get('/input').maybe_follow().forms['mod_input_form']
+        form['input_id'].force_value(device_dev.unique_id)
+        response = form.submit(name='input_mod', value='Save').maybe_follow()
+    elif data_type == 'output':
+        form = testapp.get('/output').maybe_follow().forms['mod_output_form']
+        form['output_id'].force_value(device_dev.unique_id)
+        response = form.submit(name='save', value='Save').maybe_follow()
+    elif data_type == 'function':
+        form = testapp.get('/function').maybe_follow().forms['mod_function_form']
+        form['function_id'].force_value(device_dev.unique_id)
+        response = form.submit(name='save_controller', value='Save').maybe_follow()
     # response.showbrowser()
     return response
 

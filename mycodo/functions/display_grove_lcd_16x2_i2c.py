@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  lcd_generic_20x4_i2c.py - Function to output to LCD
+#  lcd_grove_16x2_i2c.py - Function to output to Grove LCD
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
@@ -44,8 +44,8 @@ from mycodo.utils.lcd import format_measurement_line
 from mycodo.utils.system_pi import cmd_output
 
 # Set to how many lines the LCD has
-lcd_lines = 4
-lcd_x_characters = 20
+lcd_lines = 2
+lcd_x_characters = 16
 
 
 def execute_at_creation(error, new_func, dict_functions=None):
@@ -179,13 +179,14 @@ def constraints_pass_positive_value(mod_controller, value):
 
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'display_generic_lcd_20x4_i2c',
-    'function_name': 'Display: Generic LCD 20x4 (I2C)',
+    'function_name_unique': 'display_grove_lcd_16x2_i2c',
+    'function_name': 'Display: Grove LCD 16x2 (I2C)',
+    'function_manufacturer': 'Grove',
     'function_library': 'smbus2',
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
 
-    'message': 'This Function outputs to a generic 20x4 LCD display via I2C. Since this display can show 4 lines at a time, channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 4 lines that are displayed are channels 0, 1, 2, and 3, then 4, 5, 6, and 7, and so on. After all channels have been displayed, it will cycle back to the beginning.',
+    'message': 'This Function outputs to the Grove 16x2 LCD display via I2C. Since this display can show 2 lines at a time, channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 2 lines that are displayed are channels 0 and 1, then 2 and 3, and so on. After all channels have been displayed, it will cycle back to the beginning.',
 
     'custom_options': [
         {
@@ -200,7 +201,7 @@ FUNCTION_INFORMATION = {
         {
             'id': 'i2c_address',
             'type': 'text',
-            'default_value': '0x20',
+            'default_value': '0x3e',
             'required': True,
             'name': TRANSLATIONS['i2c_location']['title'],
             'phrase': TRANSLATIONS['i2c_location']['phrase']
@@ -214,6 +215,14 @@ FUNCTION_INFORMATION = {
             'phrase': TRANSLATIONS['i2c_bus']['phrase']
         },
         {
+            'id': 'location_backlight',
+            'type': 'text',
+            'default_value': '0x62',
+            'required': True,
+            'name': 'Backlight I2C Address',
+            'phrase': 'I2C address to control the backlight'
+        },
+        {
             'id': 'number_line_sets',
             'type': 'integer',
             'default_value': 1,
@@ -221,6 +230,30 @@ FUNCTION_INFORMATION = {
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Number of Line Sets',
             'phrase': 'How many sets of lines to cycle on the LCD'
+        },
+        {
+            'id': 'backlight_red',
+            'type': 'integer',
+            'default_value': 255,
+            'required': True,
+            'name': 'Backlight Red (0 - 255)',
+            'phrase': 'Set the red color value of the backlight on startup.'
+        },
+        {
+            'id': 'backlight_green',
+            'type': 'integer',
+            'default_value': 255,
+            'required': True,
+            'name': 'Backlight Green (0 - 255)',
+            'phrase': 'Set the green color value of the backlight on startup.'
+        },
+        {
+            'id': 'backlight_blue',
+            'type': 'integer',
+            'default_value': 255,
+            'required': True,
+            'name': 'Backlight Blue (0 - 255)',
+            'phrase': 'Set the blue color value of the backlight on startup.'
         }
     ],
 
@@ -297,13 +330,17 @@ class CustomModule(AbstractFunction):
         self.timer_loop = time.time()
         self.line_sets = []
         self.current_line_set = 0
-        self.line_y_dimensions = [0, 8, 16, 24]
+        self.line_y_dimensions = [0, 8]
         self.pad = -2
 
         # Initialize custom options
         self.period = None
         self.i2c_address = None
         self.i2c_bus = None
+        self.location_backlight = None
+        self.backlight_red = None
+        self.backlight_green = None
+        self.backlight_blue = None
         self.number_line_sets = None
 
         # Set custom options
@@ -316,7 +353,7 @@ class CustomModule(AbstractFunction):
             self.initialize_variables()
 
     def initialize_variables(self):
-        from mycodo.devices.lcd_generic import LCD_Generic
+        from mycodo.devices.lcd_grove_lcd_rgb import LCD_Grove_LCD_RGB
 
         try:
             function_channels = db_retrieve_table_daemon(
@@ -335,11 +372,15 @@ class CustomModule(AbstractFunction):
                 "unique_id": self.unique_id,
                 "i2c_address": self.i2c_address,
                 "i2c_bus": self.i2c_bus,
+                "location_backlight": self.location_backlight,
+                "red": self.backlight_red,
+                "green": self.backlight_green,
+                "blue": self.backlight_blue,
                 "x_characters": lcd_x_characters,
                 "y_lines": lcd_lines
             }
 
-            self.lcd = LCD_Generic(lcd_settings_dict=lcd_settings_dict)
+            self.lcd = LCD_Grove_LCD_RGB(lcd_settings_dict=lcd_settings_dict)
             self.lcd.lcd_init()
 
             self.logger.debug("LCD Function started")
@@ -436,7 +477,13 @@ class CustomModule(AbstractFunction):
 
         # Display lines
         self.lcd.lcd_init()
-        self.lcd.lcd_write_lines(lines_display[0], lines_display[1], "", "")
+        self.lcd.lcd_write_lines(
+            lines_display[0], lines_display[1], lines_display[2],lines_display[3])
+
+    def lcd_backlight_color(self, color):
+        """ Set backlight color """
+        self.lcd.lcd_backlight_color(color)
+        self.timer_loop = time.time() - 1  # Induce LCD to update after turning backlight on
 
     def stop_function(self):
         self.lcd.lcd_init()

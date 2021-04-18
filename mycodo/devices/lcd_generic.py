@@ -9,10 +9,7 @@ logger = logging.getLogger("mycodo.device.lcd_generic")
 
 class LCD_Generic:
     """Output to a generic I2C LCD (16x2 and 20x4 LCD with I2C backpack)"""
-
     def __init__(self, lcd_dev=None, lcd_settings_dict=None):
-
-
         self.lcd_initialized = False
         self.lcd_is_on = False
 

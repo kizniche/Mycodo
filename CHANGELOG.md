@@ -116,6 +116,7 @@ As always, a backup of the current system files and settings is performed during
  - Add new ADC measurement rescaling method: Equation
  - Add Custom Actions to Functions
  - Add "wait_for_return" option to Custom Actions
+ - Convert all LCD/Display controllers to Functions
 
 ### Miscellaneous
 

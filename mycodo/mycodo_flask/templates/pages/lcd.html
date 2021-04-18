@@ -13,23 +13,9 @@
 
   <p>{{_('LCDs allow the display of data for easy viewing and for displaying alerts to conditional events you configure (flash the LCD).')}}</p>
 
-  <div style="clear: both; padding: 0.5em 0;"></div>
+  <p>LCD controllers have been deprecated. If you would like to control a display/LCD, go to the Setup -> Function page and add a supported Display Function.</p>
 
-  <form method="post" action="/lcd">
-  {{form_lcd_add.hidden_tag()}}
-
-  <div class="row small-gutters" style="padding-left: 1em">
-    <div class="col-auto">
-      {{form_lcd_add.lcd_type(class_='form-control')}}
-    </div>
-    <div class="col-auto">
-      {{form_lcd_add.add(class_='form-control btn btn-primary')}}
-    </div>
-  </div>
-
-  </form>
-
-  <div style="clear: both; padding:1em 0;"></div>
+  <div style="clear: both; padding: 1em 0;"></div>
 
   {%- if display_order -%}
   {%- for order in display_order -%}

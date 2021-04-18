@@ -79,6 +79,7 @@ def parse_function_information(exclude_custom=False):
             dict_controllers[function_custom.FUNCTION_INFORMATION['function_name_unique']]['file_path'] = full_path
 
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'function_name')
+            dict_controllers = dict_has_value(dict_controllers, function_custom, 'function_manufacturer')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'measurements_dict')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'channels_dict')
             dict_controllers = dict_has_value(dict_controllers, function_custom, 'measurements_variable_amount')

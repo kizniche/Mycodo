@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  lcd_generic_20x4_i2c.py - Function to output to LCD
+#  display_ssd1306_oled_128x64_i2c.py - Function to output to LCD
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
@@ -44,8 +44,8 @@ from mycodo.utils.lcd import format_measurement_line
 from mycodo.utils.system_pi import cmd_output
 
 # Set to how many lines the LCD has
-lcd_lines = 4
-lcd_x_characters = 20
+lcd_lines = 8
+lcd_x_characters = 21
 
 
 def execute_at_creation(error, new_func, dict_functions=None):
@@ -179,13 +179,28 @@ def constraints_pass_positive_value(mod_controller, value):
 
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'display_generic_lcd_20x4_i2c',
-    'function_name': 'Display: Generic LCD 20x4 (I2C)',
-    'function_library': 'smbus2',
+    'function_name_unique': 'display_ssd1306_oled_128x64_i2c',
+    'function_name': 'Display: SSD1306 OLED 128x64 (I2C)',
+    'function_library': 'Adafruit-Circuitpython-SSD1306',
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
 
-    'message': 'This Function outputs to a generic 20x4 LCD display via I2C. Since this display can show 4 lines at a time, channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 4 lines that are displayed are channels 0, 1, 2, and 3, then 4, 5, 6, and 7, and so on. After all channels have been displayed, it will cycle back to the beginning.',
+    'message': 'This Function outputs to a 128x64 SSD1306 OLED display via I2C. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.',
+
+    'options_enabled': [
+        'custom_options'
+    ],
+
+    'dependencies_module': [
+        ('apt', 'libjpeg-dev', 'libjpeg-dev'),
+        ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
+        ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
+        ('pip-pypi', 'adafruit_extended_bus', 'adafruit-extended-bus==1.0.1'),
+        ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf'),
+        ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306')
+    ],
+
+    'interface': 'I2C',
 
     'custom_options': [
         {
@@ -200,7 +215,7 @@ FUNCTION_INFORMATION = {
         {
             'id': 'i2c_address',
             'type': 'text',
-            'default_value': '0x20',
+            'default_value': '0x3c',
             'required': True,
             'name': TRANSLATIONS['i2c_location']['title'],
             'phrase': TRANSLATIONS['i2c_location']['phrase']
@@ -221,7 +236,15 @@ FUNCTION_INFORMATION = {
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Number of Line Sets',
             'phrase': 'How many sets of lines to cycle on the LCD'
-        }
+        },
+        {
+            'id': 'pin_reset',
+            'type': 'integer',
+            'default_value': 17,
+            'required': True,
+            'name': 'Reset Pin',
+            'phrase': 'The pin (BCM numbering) connected to RST of the display'
+        },
     ],
 
     'custom_channel_options': [
@@ -265,15 +288,6 @@ FUNCTION_INFORMATION = {
             'phrase': 'The maximum allowed age of the measurement'
         },
         {
-            'id': 'measure_decimal',
-            'type': 'integer',
-            'default_value': 1,
-            'required': True,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Measurement Decimal',
-            'phrase': 'The number of digits after the decimal'
-        },
-        {
             'id': 'text',
             'type': 'text',
             'default_value': 'Text',
@@ -293,11 +307,11 @@ class CustomModule(AbstractFunction):
         super(CustomModule, self).__init__(function, testing=testing, name=__name__)
 
         self.options_channels = {}
-        self.lcd = None
+        self.device = None
         self.timer_loop = time.time()
         self.line_sets = []
         self.current_line_set = 0
-        self.line_y_dimensions = [0, 8, 16, 24]
+        self.line_y_dimensions = [0, 8, 16, 24, 32, 40, 48, 56]
         self.pad = -2
 
         # Initialize custom options
@@ -305,6 +319,7 @@ class CustomModule(AbstractFunction):
         self.i2c_address = None
         self.i2c_bus = None
         self.number_line_sets = None
+        self.pin_reset = None
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
@@ -316,7 +331,7 @@ class CustomModule(AbstractFunction):
             self.initialize_variables()
 
     def initialize_variables(self):
-        from mycodo.devices.lcd_generic import LCD_Generic
+        from mycodo.devices.lcd_pioled_circuitpython import LCD_Pioled_Circuitpython
 
         try:
             function_channels = db_retrieve_table_daemon(
@@ -333,14 +348,15 @@ class CustomModule(AbstractFunction):
 
             lcd_settings_dict = {
                 "unique_id": self.unique_id,
+                "interface": "I2C",
                 "i2c_address": self.i2c_address,
                 "i2c_bus": self.i2c_bus,
                 "x_characters": lcd_x_characters,
-                "y_lines": lcd_lines
+                "lcd_type": "128x64_pioled_circuit_python"
             }
 
-            self.lcd = LCD_Generic(lcd_settings_dict=lcd_settings_dict)
-            self.lcd.lcd_init()
+            self.device = LCD_Pioled_Circuitpython(lcd_settings_dict=lcd_settings_dict)
+            self.device.lcd_init()
 
             self.logger.debug("LCD Function started")
         except:
@@ -353,7 +369,7 @@ class CustomModule(AbstractFunction):
         while self.timer_loop < time.time():
             self.timer_loop += self.period
 
-        if not self.lcd:
+        if not self.device:
             self.logger.error("LCD not set up")
             return
 
@@ -367,7 +383,7 @@ class CustomModule(AbstractFunction):
             try:
                 # Get measurement value and timestamp
                 if self.options_channels['line_display_type'][current_channel] in [
-                        'measurement_value', 'measurement_ts']:
+                    'measurement_value', 'measurement_ts']:
                     lines_display[current_line] = "NONE"
                     measure_ts = None
                     measure_value = None
@@ -422,9 +438,8 @@ class CustomModule(AbstractFunction):
                     ip_out, _, _ = cmd_output(str_ip_cmd)
                     lines_display[current_line] = ip_out.rstrip().decode("utf-8")
             except Exception as err:
-                self.logger.error(
-                    "Error generating channel {} line: {}".format(
-                        current_channel, err))
+                # self.logger.exception("Generating line")
+                self.logger.error("Error generating channel {} line: {}".format(current_channel, err))
                 lines_display[current_line] = "ERROR"
 
         if self.current_line_set == len(self.line_sets) - 1:
@@ -435,10 +450,13 @@ class CustomModule(AbstractFunction):
         self.logger.debug("Displaying: {}".format(lines_display))
 
         # Display lines
-        self.lcd.lcd_init()
-        self.lcd.lcd_write_lines(lines_display[0], lines_display[1], "", "")
+        self.device.lcd_init()
+        self.device.lcd_write_lines(
+            lines_display[0],
+            lines_display[1],
+            lines_display[2],
+            lines_display[3])
 
     def stop_function(self):
-        self.lcd.lcd_init()
-        self.lcd.lcd_write_lines(
-            "Mycodo {}".format(MYCODO_VERSION), "LCD Deactivated", "", "")
+        self.device.lcd_write_lines(
+            "Mycodo {}".format(MYCODO_VERSION), "Display Deactivated", "", "")

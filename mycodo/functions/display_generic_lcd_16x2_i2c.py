@@ -150,6 +150,7 @@ def execute_at_modification(
 
     except Exception:
         error.append("execute_at_modification() Error: {}".format(traceback.print_exc()))
+        allow_saving = False
 
     for each_error in error:
         flash(each_error, 'error')
@@ -293,7 +294,6 @@ class CustomModule(AbstractFunction):
 
         self.options_channels = {}
         self.lcd = None
-        self.canvas = None
         self.timer_loop = time.time()
         self.line_sets = []
         self.current_line_set = 0

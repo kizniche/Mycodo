@@ -13,46 +13,69 @@ logger = logging.getLogger("mycodo.device.lcd_pioled_circuitpython")
 
 class LCD_Pioled_Circuitpython:
     """Output to the PiOLED I2C LCD"""
-
-    def __init__(self, lcd_dev):
-        self.logger = logging.getLogger(
-            "{}_{}".format(__name__, lcd_dev.unique_id.split('-')[0]))
+    def __init__(self, lcd_dev=None, lcd_settings_dict=None):
+        if lcd_dev:
+            self.logger = logging.getLogger(
+                "{}_{}".format(__name__, lcd_dev.unique_id.split('-')[0]))
+            self.interface = lcd_dev.interface
+            self.lcd_x_characters = lcd_dev.x_characters
+            self.lcd_type = lcd_dev.lcd_type
+            # I2C
+            self.i2c_address = int(lcd_dev.location, 16)
+            self.i2c_bus = lcd_dev.i2c_bus
+            # SPI
+            self.spi_bus = lcd_dev.spi_bus
+            self.spi_device = lcd_dev.spi_device
+            self.pin_dc = lcd_dev.pin_dc
+            self.pin_reset = lcd_dev.pin_reset
+            self.pin_cs = lcd_dev.pin_cs
+        elif lcd_settings_dict:
+            self.logger = logging.getLogger(
+                "{}_{}".format(__name__, lcd_settings_dict["unique_id"].split('-')[0]))
+            self.interface = lcd_settings_dict["interface"]
+            self.lcd_x_characters = lcd_settings_dict["x_characters"]
+            self.lcd_type = lcd_settings_dict["lcd_type"]
+            # I2C
+            self.i2c_address = int(lcd_settings_dict["i2c_address"], 16)
+            self.i2c_bus = lcd_settings_dict["i2c_bus"]
+            # SPI
+            self.spi_bus = lcd_settings_dict["spi_bus"]
+            self.spi_device = lcd_settings_dict["spi_device"]
+            self.pin_dc = lcd_settings_dict["pin_dc"]
+            self.pin_reset = lcd_settings_dict["pin_reset"]
+            self.pin_cs = lcd_settings_dict["pin_cs"]
 
         self.disp = None
-        self.interface = lcd_dev.interface
-        self.lcd_x_characters = lcd_dev.x_characters
-        self.lcd_y_lines = lcd_dev.y_lines
-        self.lcd_type = lcd_dev.lcd_type
 
         if self.interface == 'I2C':
             if self.lcd_type == '128x32_pioled_circuit_python':
                 self.disp = adafruit_ssd1306.SSD1306_I2C(
                     128, 32,
-                    ExtendedI2C(lcd_dev.i2c_bus),
-                    addr=int(str(lcd_dev.location), 16))
+                    ExtendedI2C(self.i2c_bus),
+                    addr=int(str(self.i2c_address), 16))
             elif self.lcd_type == '128x64_pioled_circuit_python':
                 self.disp = adafruit_ssd1306.SSD1306_I2C(
                     128, 64,
-                    ExtendedI2C(lcd_dev.i2c_bus),
-                    addr=int(str(lcd_dev.location), 16))
+                    ExtendedI2C(self.i2c_bus),
+                    addr=int(str(self.i2c_address), 16))
 
         elif self.interface == 'SPI':
             if self.lcd_type == '128x32_pioled_circuit_python':
                 import Adafruit_GPIO.SPI as SPI
                 self.disp = adafruit_ssd1306.SSD1306_SPI(
                     128, 32,
-                    spi=SPI.SpiDev(lcd_dev.spi_bus, lcd_dev.spi_device),
-                    dc=lcd_dev.pin_dc,
-                    reset=lcd_dev.pin_reset,
-                    cs=lcd_dev.pin_cs)
+                    spi=SPI.SpiDev(self.spi_bus, self.spi_device),
+                    dc=self.pin_dc,
+                    reset=self.pin_reset,
+                    cs=self.pin_cs)
             elif self.lcd_type == '128x64_pioled_circuit_python':
                 import Adafruit_GPIO.SPI as SPI
                 self.disp = adafruit_ssd1306.SSD1306_SPI(
                     128, 64,
-                    spi=SPI.SpiDev(lcd_dev.spi_bus, lcd_dev.spi_device),
-                    dc=lcd_dev.pin_dc,
-                    reset=lcd_dev.pin_reset,
-                    cs=lcd_dev.pin_cs)
+                    spi=SPI.SpiDev(self.spi_bus, self.spi_device),
+                    dc=self.pin_dc,
+                    reset=self.pin_reset,
+                    cs=self.pin_cs)
 
         if not self.disp:
             self.logger.error("Unable to set up display. Check the LCD settings.")

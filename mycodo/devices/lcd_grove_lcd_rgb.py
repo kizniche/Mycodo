@@ -14,23 +14,38 @@ from smbus2 import SMBus
 
 class LCD_Grove_LCD_RGB:
     """Output to a Grove I2C LCD RGB display (16x2 LCD with RGB or monochrome backlight)"""
+    def __init__(self, lcd_dev=None, lcd_settings_dict=None):
+        self.lcd_initialized = False
+        self.lcd_is_on = False
 
-    def __init__(self, lcd_dev):
+        if lcd_dev:
+            self.logger = logging.getLogger(
+                "{}_{}".format(__name__, lcd_dev.unique_id.split('-')[0]))
+            self.i2c_address = int(lcd_dev.location, 16)
+            self.i2c_bus = lcd_dev.i2c_bus
+            self.location_backlight = int(lcd_dev.location_backlight, 16)
+            self.lcd_x_characters = lcd_dev.x_characters
+            self.lcd_y_lines = lcd_dev.y_lines
+            self.red = 255
+            self.green = 255
+            self.blue = 255
+        elif lcd_settings_dict:
+            self.logger = logging.getLogger(
+                "{}_{}".format(__name__, lcd_settings_dict["unique_id"].split('-')[0]))
+            self.i2c_address = int(lcd_settings_dict["i2c_address"], 16)
+            self.i2c_bus = lcd_settings_dict["i2c_bus"]
+            self.location_backlight = int(lcd_settings_dict["location_backlight"], 16)
+            self.lcd_x_characters = lcd_settings_dict["x_characters"]
+            self.lcd_y_lines = lcd_settings_dict["y_lines"]
+            self.red = lcd_settings_dict["red"]
+            self.green = lcd_settings_dict["green"]
+            self.blue = lcd_settings_dict["blue"]
+
         self.logger = logging.getLogger(
             "{}_{}".format(__name__, lcd_dev.unique_id.split('-')[0]))
 
-        self.lcd_initialized = False
-        self.lcd_is_on = False
-        self.red = 255
-        self.green = 255
-        self.blue = 255
-
-        self.i2c_address = int(lcd_dev.location, 16)
-        self.i2c_address_backlight = int(lcd_dev.location_backlight, 16)
+        self.i2c_address_backlight = self.location_backlight
         # self.i2c_address_backlight = 0x62
-        self.i2c_bus = lcd_dev.i2c_bus
-        self.lcd_x_characters = lcd_dev.x_characters
-        self.lcd_y_lines = lcd_dev.y_lines
 
         self.LCD_WIDTH = self.lcd_x_characters  # Max characters per line
         self.I2C_ADDR = self.i2c_address
