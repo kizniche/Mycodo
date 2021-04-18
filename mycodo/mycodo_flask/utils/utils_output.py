@@ -223,11 +223,7 @@ def output_mod(form_output, request_form):
     error = []
     warning = []
 
-    print("TEST03")
-
     dict_outputs = parse_output_information()
-
-    print("TEST04")
 
     try:
         channels = OutputChannel.query.filter(
@@ -278,14 +274,10 @@ def output_mod(form_output, request_form):
             else:
                 custom_options_channels_dict_presave[each_channel.channel] = {}
 
-        print("TEST05")
-
         # Parse post-save custom options for output device and its channels
         error, custom_options_json_postsave = custom_options_return_json(
             error, dict_outputs, request_form, mod_dev=mod_output, device=mod_output.output_type)
         custom_options_dict_postsave = json.loads(custom_options_json_postsave)
-
-        print("TEST06")
 
         custom_options_channels_dict_postsave = {}
         for each_channel in channels:
@@ -295,8 +287,6 @@ def output_mod(form_output, request_form):
                 device=mod_output.output_type, use_defaults=True)
             custom_options_channels_dict_postsave[each_channel.channel] = json.loads(
                 custom_options_channels_json_postsave_tmp)
-
-        print("TEST07")
 
         if 'execute_at_modification' in dict_outputs[mod_output.output_type]:
             # pass custom options to module prior to saving to database
@@ -319,8 +309,6 @@ def output_mod(form_output, request_form):
             custom_options = json.dumps(custom_options_dict_postsave)
             custom_channel_options = custom_options_channels_dict_postsave
 
-        print("TEST08")
-
         # Finally, save custom options for both output and channels
         mod_output.custom_options = custom_options
         for each_channel in channels:
@@ -328,15 +316,13 @@ def output_mod(form_output, request_form):
                 each_channel.name = custom_channel_options[each_channel.channel]['name']
             each_channel.custom_options = json.dumps(custom_channel_options[each_channel.channel])
 
-        print("TEST09")
-
         if not error:
             db.session.commit()
-            manipulate_output('Modify', form_output.output_id.data)
+
+            if not current_app.config['TESTING']:
+                manipulate_output('Modify', form_output.output_id.data)
     except Exception as except_msg:
         error.append(except_msg)
-
-    print("TEST10")
 
     for each_warning in warning:
         flash(each_warning, "warning")
