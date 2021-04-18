@@ -1786,13 +1786,13 @@ def custom_action(controller, dict_device, unique_id, form):
                                 args_dict[key] = bool(value)
                             except:
                                 logger.error("Value of option '{}' doesn't represent bool: '{}'".format(key, value))
-                        elif options[key]['type'] == 'text':
+                        elif options[key]['type'] in ['select', 'text']:
                             try:
                                 args_dict[key] = str(value)
                             except:
                                 logger.error("Value of option '{}' doesn't represent string: '{}'".format(key, value))
                         else:
-                            args_dict[key] = float(value)
+                            error.append("Unknown key type. Key: {}, Type: {}".format(key, options[key]['type']))
 
         if not button_id:
             return
@@ -1811,6 +1811,7 @@ def custom_action(controller, dict_device, unique_id, form):
                 flash("Custom Button: {}".format(status[1]), "error")
             else:
                 flash("Custom Button: {}".format(status[1]), "success")
+
     except Exception as except_msg:
         logger.exception(1)
         error.append(except_msg)

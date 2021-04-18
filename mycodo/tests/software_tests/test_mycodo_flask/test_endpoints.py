@@ -450,7 +450,7 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
                 choices_output.append('{inp},{int}'.format(inp=each_output, int=each_interface))
 
     for index, each_output in enumerate(choices_output):
-        print("test_add_all_data_devices_logged_in_as_admin: Adding, saving, and deleting Output ({}/{}): {}".format(
+        print("test_add_all_output_devices_logged_in_as_admin: Adding, saving, and deleting Output ({}/{}): {}".format(
             index + 1, len(choices_output), each_output))
         response = add_output(testapp, output_type=each_output)
         # Verify success message flashed

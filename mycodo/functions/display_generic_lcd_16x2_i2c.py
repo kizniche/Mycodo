@@ -359,6 +359,9 @@ class CustomModule(AbstractFunction):
 
         # Generate lines to display
         lines_display = {}
+        for line in range(lcd_lines):
+            lines_display[line] = ""
+
         for current_line in self.line_sets[self.current_line_set]:
             current_channel = (self.current_line_set * lcd_lines) + current_line
             self.logger.debug("Channel: {}, Set: {} Line: {}, ".format(
@@ -437,7 +440,7 @@ class CustomModule(AbstractFunction):
         # Display lines
         self.lcd.lcd_init()
         self.lcd.lcd_write_lines(
-            lines_display[0], lines_display[1], lines_display[2],lines_display[3])
+            lines_display[0], lines_display[1], "", "")
 
     def stop_function(self):
         self.lcd.lcd_init()

@@ -395,6 +395,9 @@ class CustomModule(AbstractFunction):
 
         # Generate lines to display
         lines_display = {}
+        for line in range(lcd_lines):
+            lines_display[line] = ""
+
         for current_line in self.line_sets[self.current_line_set]:
             current_channel = (self.current_line_set * lcd_lines) + current_line
             self.logger.debug("Channel: {}, Set: {} Line: {}, ".format(
