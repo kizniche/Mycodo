@@ -223,6 +223,8 @@ def output_mod(form_output, request_form):
     error = []
     warning = []
 
+    print("TEST03")
+
     dict_outputs = parse_output_information()
 
     try:

@@ -454,18 +454,18 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
         response = add_output(testapp, output_type=each_output)
         # Verify success message flashed
         assert "with ID 1 successfully added" in response
-
+        print("TEST00")
         # Verify data was entered into the database
         output_count += 1
         assert Output.query.count() == output_count, "Number of Outputs doesn't match: In DB {}, Should be: {}".format(
             Output.query.count(), output_count)
 
         output = Output.query.filter(Output.id == output_count).first()
-
+        print("TEST01")
         # Save output
         response = save_data(testapp, 'output', device_dev=output)
         assert "Success: Modify Output" in response
-
+        print("TEST02")
         # Delete output (speeds up further output addition checking)
         response = delete_data(testapp, 'output', device_dev=output)
         assert "Success: Delete output with ID: {}".format(output.unique_id) in response

@@ -10,6 +10,7 @@ from flask_babel import lazy_gettext
 
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
+from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
@@ -79,7 +80,7 @@ OUTPUT_INFORMATION = {
             'type': 'integer',
             'default_value': 0,
             'required': True,
-            'constraints_pass': constraints_pass_positive_value,
+            'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': lazy_gettext('GPIO Pin (BCM)'),
             'phrase': lazy_gettext('The pin to control the state of')
         },
