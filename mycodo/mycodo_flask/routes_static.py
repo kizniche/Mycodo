@@ -1,5 +1,6 @@
 # coding=utf-8
 import logging
+import operator
 import socket
 import traceback
 
@@ -12,6 +13,7 @@ from flask import send_from_directory
 from flask import url_for
 from flask.blueprints import Blueprint
 
+from mycodo.config import LANGUAGES
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import THEMES
 from mycodo.config import THEMES_DARK
@@ -65,6 +67,8 @@ def inject_variables():
             'name': each_dash.name
         })
 
+    languages_sorted = sorted(LANGUAGES.items(), key=operator.itemgetter(1))
+
     return dict(current_user=flask_login.current_user,
                 dark_themes=THEMES_DARK,
                 daemon_status=daemon_status,
@@ -75,6 +79,7 @@ def inject_variables():
                 hide_alert_warning=misc.hide_alert_warning,
                 hide_tooltips=misc.hide_tooltips,
                 host=socket.gethostname(),
+                languages=languages_sorted,
                 mycodo_version=MYCODO_VERSION,
                 permission_view_settings=user_has_permission('view_settings', silent=True),
                 dict_translation=TRANSLATIONS,

@@ -297,8 +297,9 @@ class UserAdd(FlaskForm):
 
 
 
-class ChangeTheme(FlaskForm):
+class UserPreferences(FlaskForm):
     theme = StringField(lazy_gettext('Theme'))
+    language = StringField(lazy_gettext('Language'))
     save = SubmitField(TRANSLATIONS['save']['title'])
 
 

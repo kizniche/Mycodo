@@ -204,7 +204,7 @@ def generate_api_key(form):
         error, action, url_for('routes_settings.settings_users'))
 
 
-def change_theme(form):
+def change_preferences(form):
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['modify']['title'],
         controller=TRANSLATIONS['theme']['title'])
@@ -214,6 +214,7 @@ def change_theme(form):
         mod_user = User.query.filter(
             User.id == flask_login.current_user.id).first()
         mod_user.theme = form.theme.data
+        mod_user.language = form.language.data
         db.session.commit()
     except Exception as except_msg:
         error.append(except_msg)

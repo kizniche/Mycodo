@@ -1,21 +1,19 @@
 # coding=utf-8
 """ collection of Page endpoints """
 import logging
+import os
 
 import flask_login
-import operator
-import os
 from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
 from flask.blueprints import Blueprint
 
-from mycodo.config import LANGUAGES
 from mycodo.config import PATH_FUNCTIONS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
-from mycodo.config import PATH_WIDGETS_CUSTOM
 from mycodo.config import PATH_OUTPUTS_CUSTOM
+from mycodo.config import PATH_WIDGETS_CUSTOM
 from mycodo.config import THEMES
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Measurement
@@ -88,8 +86,6 @@ def settings_general():
     misc = Misc.query.first()
     form_settings_general = forms_settings.SettingsGeneral()
 
-    languages_sorted = sorted(LANGUAGES.items(), key=operator.itemgetter(1))
-
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_settings'):
             return redirect(url_for('routes_general.home'))
@@ -101,7 +97,6 @@ def settings_general():
 
     return render_template('settings/general.html',
                            misc=misc,
-                           languages=languages_sorted,
                            form_settings_general=form_settings_general)
 
 
@@ -366,21 +361,21 @@ def settings_measurement():
 
 
 
-@blueprint.route('/change_theme', methods=('GET', 'POST'))
+@blueprint.route('/change_preferences', methods=('GET', 'POST'))
 @flask_login.login_required
 def change_theme():
     """ Change theme """
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
-    form_theme = forms_settings.ChangeTheme()
+    form_prefs = forms_settings.UserPreferences()
 
     if request.method == 'POST':
         if not utils_general.user_has_permission('edit_users'):
             return redirect(url_for('routes_general.home'))
 
-        if form_theme.save.data:
-            utils_settings.change_theme(form_theme)
+        if form_prefs.save.data:
+            utils_settings.change_preferences(form_prefs)
     return redirect(url_for('routes_general.home'))
 
 

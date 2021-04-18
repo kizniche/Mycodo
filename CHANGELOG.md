@@ -93,6 +93,7 @@ As always, a backup of the current system files and settings is performed during
  - Fix VPD Function saving and calculating pressure conversion ([#978](https://github.com/kizniche/mycodo/issues/978))
  - Fix pressure conversion equations ([#978](https://github.com/kizniche/mycodo/issues/978))
  - Fix issues with Function channels/measurements
+ - Fix Mijia LYWSD03MMC Input using a nonexistent pybluez version
 
 ### Features
 

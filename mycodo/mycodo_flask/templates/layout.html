@@ -268,7 +268,7 @@
               <a class="dropdown-item" href="/systemctl/restart" onclick='return confirm("Confirm restarting the system")'><i class="fas fa-redo-alt"></i> {{_('Restart System')}}</a>
               <a class="dropdown-item" href="/systemctl/shutdown" onclick='return confirm("Confirm shutting down the system")'><i class="fas fa-power-off"></i> {{_('Shutdown System')}}</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal_config_theme"><i class="fas fa-palette"></i> Change Theme</a>
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#modal_config_theme"><i class="fas fa-user-cog"></i> {{_('Preferences')}}</a>
               <a class="dropdown-item" href="/logout"><i class="fas fa-lock"></i> {{_('Logout')}} ({{current_user.name}})</a>
             </div>
           </li>
@@ -282,17 +282,31 @@
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="padding: 1em">
           <div class="modal-header">
-            <h5 class="modal-title">Change Theme</h5>
+            <h5 class="modal-title">{{_('Preferences')}}</h5>
           </div>
 
-          <form method="post" action="/change_theme">
-            <div class="form-row">
+          <form method="post" action="/change_preferences">
+            <div class="form-row" style="padding-top: 0.5em">
               <div class="col-auto">
-                <select class="form-control" id="theme" name="theme">
-                  {% for value, name in themes %}
-                    <option value="{{value|e}}"{% if value == current_user.theme %} selected{% endif %}>{{name|e}}</option>
-                  {% endfor -%}
-                </select>
+                <label class='form-check-label'>{{_('Language')}}</label>
+                <div>
+                  <select class="form-control form-tooltip form-dropdown" data-placement="top" id="language" name="language" title="{{_("Selecting a language will override the web browser's language")}}">
+                    <option value="">Browser Default</option>
+                    {% for each_language in languages %}
+                    <option value="{{each_language[0]}}"{% if current_user.language == each_language[0] %} selected{% endif %}>{{each_language[1]}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="col-auto">
+                <label class='form-check-label'>{{_('Theme')}}</label>
+                <div>
+                  <select class="form-control" id="theme" name="theme">
+                    {% for value, name in themes %}
+                      <option value="{{value|e}}"{% if value == current_user.theme %} selected{% endif %}>{{name|e}}</option>
+                    {% endfor -%}
+                  </select>
+                </div>
               </div>
             </div>
 
