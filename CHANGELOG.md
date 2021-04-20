@@ -94,6 +94,7 @@ As always, a backup of the current system files and settings is performed during
  - Fix pressure conversion equations ([#978](https://github.com/kizniche/mycodo/issues/978))
  - Fix issues with Function channels/measurements
  - Fix Mijia LYWSD03MMC Input using a nonexistent pybluez version
+ - Fix Hall Flow Input
 
 ### Features
 

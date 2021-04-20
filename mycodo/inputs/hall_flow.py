@@ -1,7 +1,7 @@
 # coding=utf-8
+import copy
 import time
 
-import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -30,7 +30,6 @@ INPUT_INFORMATION = {
     'options_enabled': [
         'gpio_location',
         'weighting',
-        'sample_time',
         'period',
         'pre_output'
     ],
@@ -52,9 +51,6 @@ INPUT_INFORMATION = {
         }
     ],
 
-    'weighting': 0.0,
-    'sample_time': 2.0,
-
     'custom_actions_message': 'The total session volume can be cleared with the following button or as a Function Action.',
     'custom_actions': [
         {
@@ -69,20 +65,15 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """ A sensor support class that monitors flow rate / volume """
-
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        self.sensor_is_measuring = False
-        self.sensor_is_clearing = False
+        self.sensor = None
 
-        self.pigpio = None
+        self.pi = None
         self.gpio = None
         self.flow_rate_unit = None
         self.k_value = None
-        self.sample_time = None
-        self.weighting = None
-        self.session_total_volume = 0.0
 
         if not testing:
             self.setup_custom_options(
@@ -92,92 +83,58 @@ class InputModule(AbstractInput):
     def initialize_input(self):
         import pigpio
 
-        self.pigpio = pigpio
+        self.pi = pigpio.pi()
         self.gpio = int(self.input_dev.gpio_location)
-        self.weighting = self.input_dev.weighting
-        self.sample_time = self.input_dev.sample_time
+
+        self.sensor = ReadHall(
+            self.logger, self.pi, self.gpio, pigpio, self.k_value)
 
     def get_measurement(self):
         """ Gets the flow rate and volume """
-        pi = self.pigpio.pi()
-        if not pi.connected:  # Check if pigpiod is running
+        if not self.pi.connected:  # Check if pigpiod is running
             self.logger.error("Could not connect to pigpiod. Ensure it is running and try again.")
-            return None
+            return
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        while self.sensor_is_clearing:
-            time.sleep(0.1)
-        self.sensor_is_measuring = True
+        l_min, pulses = self.sensor.flow_period()
+        total_pulses = self.sensor.total_pulses()
+        total_volume = self.sensor.total_volume()
 
-        total_pulses = None
-        flow_rate_raw = None
-        flow_rate = None
+        self.logger.debug(
+            "fLow: {} l/min, pulses: {}, total pulses: {}, total volume: {}".format(
+                l_min, pulses, total_pulses, total_volume))
 
-        read_flow = ReadHall(pi, self.gpio, self.pigpio, self.k_value, self.weighting)
-        time.sleep(self.sample_time)
-
-        flow_rate_raw = read_flow.flow()
-        if flow_rate_raw:
-            flow_rate = float(flow_rate_raw)
-
-        total_pulses = int(read_flow.pulses())
-
-        if total_pulses:
-            self.session_total_volume += float(total_pulses * self.k_value)
-
-        read_flow.cancel()
-        pi.stop()
-
-        if flow_rate or flow_rate == 0.0:
-            self.value_set(0, flow_rate)
-        if self.session_total_volume or self.session_total_volume == 0.0:
-            self.value_set(1, self.session_total_volume)
+        self.value_set(0, l_min)
+        self.value_set(1, total_volume)
 
         return self.return_dict
 
+    def stop_input(self):
+        self.sensor.cancel()
+        self.pi.stop()
+
     def clear_total_session_volume(self, args_dict):
-        while self.sensor_is_measuring:
-            time.sleep(0.1)
-        self.sensor_is_clearing = True
-        self.session_total_volume = float(0.0)
-        self.sensor_is_clearing = False
+        self.sensor.clear_totals()
         return 1, "Success"
 
 
 class ReadHall:
-    """
-    A class to read pulses and calculate the Flow Rate
-    """
+    """A class to read pulses and calculate the Flow Rate"""
+    def __init__(self, logger, pi, gpio, pigpio, pulses_per_l=1.0):
+        self.logger = logger
 
-    def __init__(self, pi, gpio, pigpio, pulses_per_l=1.0, weight=0.0):
-        """
-        Instantiate with the Pi and gpio of the signal to monitor.
-
-        Optionally a weighting may be specified. This is a number
-        between 0 and 1 and indicates how much the old reading
-        affects the new reading. It defaults to 0 which means
-        the old reading has no effect. This may be used to
-        smooth the data.
-        """
         self.pigpio = pigpio
         self.pi = pi
-        self.gpio = int(gpio)
-        self.pulses_per_l = float(pulses_per_l)
+        self.gpio = gpio
+        self.pulses_per_l = pulses_per_l
 
         self._watchdog = 200  # Milliseconds.
 
-        if weight < 0.0:
-            weight = 0.0
-        elif weight > 0.99:
-            weight = 0.99
-
-        self._new = 1.0 - weight  # Weighting for new reading.
-        self._old = weight  # Weighting for old reading.
-
         self._high_tick = None
-        self._period = None
-        self._total_pulses = None
+        self._total_pulses = 0
+        self._period_pulses = 0
+        self._last_time = time.time()
 
         pi.set_mode(self.gpio, self.pigpio.INPUT)
 
@@ -185,44 +142,46 @@ class ReadHall:
         pi.set_watchdog(self.gpio, self._watchdog)
 
     def _cbf(self, gpio, level, tick):
-        if level == 1:  # Rising edge.
+        if level == 1:  # Rising edge
+            self.logger.debug("Rising edge detected")
             if self._high_tick is not None:
                 t = self.pigpio.tickDiff(self._high_tick, tick)
-                if self._total_pulses is not None:
-                    self._total_pulses += int(1)
-                else:
-                    self._total_pulses = int(1)
-                if self._period is not None:
-                    self._period = (self._old * self._period) + (self._new * t)
-                else:
-                    self._period = t
+                self._total_pulses += 1
+                self._period_pulses += 1
             self._high_tick = tick
-        elif level == 2:  # Watchdog timeout.
-            if self._period is not None:
-                if self._period < 2000000000:
-                    self._period += (self._watchdog * 1000)
 
-    def flow(self):
-        """
-        Returns the Flow Rate.
-        """
-        flow = 0.0
-        if self._period is not None:
-            flow = 60000000.0 / (self._period * self.pulses_per_l)
-        return flow
+    def flow_period(self):
+        """Returns the Flow Rate in l/min"""
+        l_min = 0
+        pulses = self.period_pulses()
+        minutes = (time.time() - self._last_time) / 60
+        if pulses:
+            liters = pulses / self.pulses_per_l
+            l_min = float(liters / minutes)
+        self._last_time = time.time()
+        return l_min, pulses
 
-    def pulses(self):
-        """
-        Returns the total pulses.
-        """
-        if self._total_pulses is not None:
-            return self._total_pulses
-        else:
-            return 0
+    def period_pulses(self):
+        try:
+            return self._period_pulses
+        finally:
+            self._period_pulses = 0
+
+    def total_pulses(self):
+        """Returns the total pulses"""
+        return self._total_pulses
+
+    def total_volume(self):
+        """Returns the total volume in liters"""
+        volume = 0
+        if self._total_pulses:
+            volume = float(self._total_pulses / self.pulses_per_l)
+        return volume
 
     def cancel(self):
-        """
-        Cancels the reader and releases resources.
-        """
+        """Cancels the reader and releases resources"""
         self.pi.set_watchdog(self.gpio, 0)  # cancel watchdog
         self._cb.cancel()
+
+    def clear_totals(self):
+        self._total_pulses = 0
