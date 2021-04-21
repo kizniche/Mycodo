@@ -121,17 +121,27 @@ def camera_img_return_path(camera_unique_id, img_type, filename):
     camera = Camera.query.filter(Camera.unique_id == camera_unique_id).first()
     camera_path = assure_path_exists(
         os.path.join(PATH_CAMERAS, '{uid}'.format(uid=camera.unique_id)))
-
-    if img_type in ['still', 'timelapse']:
-        path = os.path.join(camera_path, img_type)
-        if os.path.isdir(path):
-            files = (files for files in os.listdir(path)
-                     if os.path.isfile(os.path.join(path, files)))
+    if img_type == 'still':
+        if camera.path_still:
+            path = camera.path_still
         else:
-            files = []
-        if filename in files:
-            path_file = os.path.join(path, filename)
-            return send_file(path_file, mimetype='image/jpeg')
+            path = os.path.join(camera_path, img_type)
+    elif img_type == 'timelapse':
+        if camera.path_timelapse:
+            path = camera.path_timelapse
+        else:
+            path = os.path.join(camera_path, img_type)
+    else:
+        return "Unknown Image Type"
+
+    if os.path.isdir(path):
+        files = (files for files in os.listdir(path)
+                 if os.path.isfile(os.path.join(path, files)))
+    else:
+        files = []
+    if filename in files:
+        path_file = os.path.join(path, filename)
+        return send_file(path_file, mimetype='image/jpeg')
 
     return "Image not found"
 

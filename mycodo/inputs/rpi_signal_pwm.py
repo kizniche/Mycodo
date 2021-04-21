@@ -89,7 +89,7 @@ class InputModule(AbstractInput):
             self.value_set(0, read_pwm.frequency())
 
         if self.is_enabled(1):
-            self.value_set(1, int(read_pwm.pulse_width() + 0.5))
+            self.value_set(1, read_pwm.pulse_width())
 
         if self.is_enabled(2):
             self.value_set(2, read_pwm.duty_cycle())

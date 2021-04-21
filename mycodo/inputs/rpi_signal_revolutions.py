@@ -81,15 +81,13 @@ class InputModule(AbstractInput):
         time.sleep(self.sample_time)
 
         rpm = read_revolutions.RPM()
-        if rpm:
-            rpm = int(rpm + 0.5)
 
         read_revolutions.cancel()
         pi.stop()
 
-        if rpm or rpm == 0:
-            self.value_set(0, rpm)
-            return self.return_dict
+        self.value_set(0, rpm)
+
+        return self.return_dict
 
 
 class ReadRPM:
@@ -146,16 +144,16 @@ class ReadRPM:
         elif level == 2:  # Watchdog timeout.
             if self._period is not None:
                 if self._period < 2000000000:
-                    self._period += (self._watchdog * 1000)
+                    self._period += self._watchdog * 1000
 
     def RPM(self):
         """
         Returns the RPM.
         """
-        RPM = 0
+        rpm = 0
         if self._period is not None:
-            RPM = 60000000.0 / (self._period * self.pulses_per_rev)
-        return RPM
+            rpm = 60000000.0 / (self._period * self.pulses_per_rev)
+        return rpm
 
     def cancel(self):
         """
