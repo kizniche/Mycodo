@@ -95,6 +95,7 @@ As always, a backup of the current system files and settings is performed during
  - Fix issues with Function channels/measurements
  - Fix Mijia LYWSD03MMC Input using a nonexistent pybluez version
  - Fix Hall Flow Input
+ - Remove Flask-Session to resolve bug preventing frontend loading ([#971](https://github.com/kizniche/mycodo/issues/971))
 
 ### Features
 
