@@ -55,7 +55,7 @@ nav:
     - Camera.md
     - Energy Usage: Energy-Usage.md
   - Supported Devices:
-    - Inputs Sorted by Measurement: Supported-Inputs-Sorted.md
+    - Inputs Sorted by Measurement: Supported-Inputs-By-Measurement.md
     - Supported Inputs: Supported-Inputs.md
     - Supported Outputs: Supported-Outputs.md
     - Supported Functions: Supported-Functions.md
