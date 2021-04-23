@@ -1,10 +1,8 @@
 # coding=utf-8
+import copy
 import time
 
-import copy
 from flask_babel import lazy_gettext
-import sys
-sys.path.insert(1, '/usr/local/bin')
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
@@ -33,8 +31,8 @@ measurements_dict = {
 # Input information
 INPUT_INFORMATION = {
     'input_name_unique': 'GROVE_TEMP_AND_HUMIDITY',
-    'input_manufacturer': 'Grove Pi',
-    'input_name': 'DHT11/DHT22',
+    'input_manufacturer': 'Seeedstudio',
+    'input_name': 'DHT11/22',
     'input_library': 'grovepi',
     'measurements_name': 'Humidity/Temperature',
     'measurements_dict': measurements_dict,
@@ -101,7 +99,6 @@ class InputModule(AbstractInput):
 
         self.gpio = None
         self.grovepi = None
-        self.control = None
 
         self.temp_temperature = 0
         self.temp_humidity = 0
@@ -119,13 +116,9 @@ class InputModule(AbstractInput):
 
     def initialize_input(self):
         import grovepi
-        from mycodo.mycodo_client import DaemonControl
 
         self.grovepi = grovepi
-
         self.gpio = int(self.input_dev.gpio_location)
-
-        self.control = DaemonControl()
 
     def get_measurement(self):
         """ Gets the humidity and temperature """

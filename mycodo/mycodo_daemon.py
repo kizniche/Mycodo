@@ -23,9 +23,8 @@
 #
 #  Contact at kylegabriel.com
 
-import sys
-
 import os
+import sys
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
@@ -70,14 +69,12 @@ from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.devices.camera import camera_record
-from mycodo.utils.functions import parse_function_information
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.function_actions import get_condition_value
 from mycodo.utils.function_actions import get_condition_value_dict
 from mycodo.utils.function_actions import trigger_action
 from mycodo.utils.function_actions import trigger_function_actions
 from mycodo.utils.github_release_info import MycodoRelease
-from mycodo.utils.modules import load_module_from_file
 from mycodo.utils.stats import add_update_csv
 from mycodo.utils.stats import recreate_stat_file
 from mycodo.utils.stats import return_stat_file_dict
