@@ -77,17 +77,6 @@ The specified GPIO pin will be set HIGH (3.3 volts) or LOW (0 volts) when turned
 
 See the PWM section of the manual for PWM information and determining which pins may be used for each library option.
 
-### Grove Motor Driver v1.3
-
-- Manufacturer: Grove
-- Interfaces: I<sup>2</sup>C
-- Output Types: Volume, On/Off
-- Libraries: smbus2
-- Dependencies: [smbus2](https://pypi.org/project/smbus2)
-- Manufacturer URL: [Link](https://wiki.seeedstudio.com/Grove-I2C_Motor_Driver_V1.3/)
-
-Controls the Grove I2C Motor Driver Board (v1.3). Both motors will turn at the same time. This output can also dispense volumes of fluid if the motors are attached to peristaltic pumps.
-
 ### Grove Multichannel Relay (4- or 8-Channel board)
 
 - Manufacturer: Grove

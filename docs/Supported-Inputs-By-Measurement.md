@@ -635,17 +635,6 @@ This is the B version of the sensor that includes the ability to conduct automat
 - Manufacturer URL: [Link](https://www.co2meter.com/products/cozir-2000-ppm-co2-sensor)
 - Datasheet URL: [Link](https://cdn.shopify.com/s/files/1/0019/5952/files/Datasheet_COZIR_A_CO2Meter_4_15.pdf)
 
-### Grove Pi: DHT11/DHT22
-
-- Manufacturer: Grove Pi
-- Measurements: Humidity/Temperature
-- Interfaces: GROVE
-- Libraries: grovepi
-- Dependencies: [grovepi](https://pypi.org/project/grovepi)
-- Manufacturer URLs: [Link 1](https://wiki.seeedstudio.com/Grove-Temperature_and_Humidity_Sensor_Pro/), [Link 2](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
-
-Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
-
 ### Ruuvi: RuuviTag
 
 - Manufacturer: Ruuvi
@@ -655,6 +644,17 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Dependencies: [python3-dev](https://packages.debian.org/buster/python3-dev), [python3-psutil](https://packages.debian.org/buster/python3-psutil), [bluez](https://packages.debian.org/buster/bluez), [bluez-hcidump](https://packages.debian.org/buster/bluez-hcidump), [ruuvitag-sensor](https://pypi.org/project/ruuvitag-sensor)
 - Manufacturer URL: [Link](https://ruuvi.com/)
 - Datasheet URL: [Link](https://ruuvi.com/files/ruuvitag-tech-spec-2019-7.pdf)
+
+### Seeedstudio: DHT11/22
+
+- Manufacturer: Seeedstudio
+- Measurements: Humidity/Temperature
+- Interfaces: GROVE
+- Libraries: grovepi
+- Dependencies: [grovepi](https://pypi.org/project/grovepi)
+- Manufacturer URLs: [Link 1](https://wiki.seeedstudio.com/Grove-Temperature_and_Humidity_Sensor_Pro/), [Link 2](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
+
+Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 
 ### Sensirion: SCD30
 
@@ -889,16 +889,6 @@ Obtain a free API key at openweathermap.org. Notes: The free API subscription is
 - Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [Adafruit_CircuitPython_ADS1x15](https://pypi.org/project/Adafruit_CircuitPython_ADS1x15)
 
 This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH and/or electrical conductivity (EC) from analog sensors. You can enable or disable either measurement if you want to only connect a pH sensor or an EC sensor by selecting which measurements you want to under Measurements Enabled. Select which channel each sensor is connected to on the ADC. There are default calibration values initially set for the Input. There are also functions to allow you to easily calibrate your sensors with calibration solutions. If you use the Calibrate Slot actions, these values will be calculated and will replace the currently-set values. You can use the Clear Calibration action to delete the database values and return to using the default values. If you delete the Input or create a new Input to use your ADC/sensors with, you will need to recalibrate in order to store new calibration data.
-
-### Generic: ADS1256: Analog pH/EC
-
-- Manufacturer: Generic
-- Measurements: Ion Concentration/Electrical Conductivity
-- Interfaces: UART
-- Libraries: wiringpi, kizniche/PiPyADC-py3
-- Dependencies: [wiringpi](https://pypi.org/project/wiringpi), [pipyadc_py3](https://github.com/kizniche/PiPyADC-py3)
-
-This input relies on an ADS1256 analog-to-digital converter (ADC) to measure pH and/or electrical conductivity (EC) from analog sensors. You can enable or disable either measurement if you want to only connect a pH sensor or an EC sensor by selecting which measurements you want to under Measurements Enabled. Select which channel each sensor is connected to on the ADC. There are default calibration values initially set for the Input. There are also functions to allow you to easily calibrate your sensors with calibration solutions. If you use the Calibrate Slot actions, these values will be calculated and will replace the currently-set values. You can use the Clear Calibration action to delete the database values and return to using the default values. If you delete the Input or create a new Input to use your ADC/sensors with, you will need to recalibrate in order to store new calibration data.
 
 ### Xiaomi: Miflora
 
@@ -1149,17 +1139,6 @@ This input queries the energy usage information from a WiFi outlet that is runni
 - Manufacturer URL: [Link](https://www.co2meter.com/products/cozir-2000-ppm-co2-sensor)
 - Datasheet URL: [Link](https://cdn.shopify.com/s/files/1/0019/5952/files/Datasheet_COZIR_A_CO2Meter_4_15.pdf)
 
-### Grove Pi: DHT11/DHT22
-
-- Manufacturer: Grove Pi
-- Measurements: Humidity/Temperature
-- Interfaces: GROVE
-- Libraries: grovepi
-- Dependencies: [grovepi](https://pypi.org/project/grovepi)
-- Manufacturer URLs: [Link 1](https://wiki.seeedstudio.com/Grove-Temperature_and_Humidity_Sensor_Pro/), [Link 2](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
-
-Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
-
 ### Raspberry Pi Foundation: Sense HAT
 
 - Manufacturer: Raspberry Pi Foundation
@@ -1180,6 +1159,17 @@ This module acquires measurements from the Raspberry Pi Sense HAT sensors, which
 - Dependencies: [python3-dev](https://packages.debian.org/buster/python3-dev), [python3-psutil](https://packages.debian.org/buster/python3-psutil), [bluez](https://packages.debian.org/buster/bluez), [bluez-hcidump](https://packages.debian.org/buster/bluez-hcidump), [ruuvitag-sensor](https://pypi.org/project/ruuvitag-sensor)
 - Manufacturer URL: [Link](https://ruuvi.com/)
 - Datasheet URL: [Link](https://ruuvi.com/files/ruuvitag-tech-spec-2019-7.pdf)
+
+### Seeedstudio: DHT11/22
+
+- Manufacturer: Seeedstudio
+- Measurements: Humidity/Temperature
+- Interfaces: GROVE
+- Libraries: grovepi
+- Dependencies: [grovepi](https://pypi.org/project/grovepi)
+- Manufacturer URLs: [Link 1](https://wiki.seeedstudio.com/Grove-Temperature_and_Humidity_Sensor_Pro/), [Link 2](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
+
+Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 
 ### Sensirion: SCD30
 
@@ -1346,16 +1336,6 @@ Calibration Measurement is an optional setting that provides a temperature measu
 - Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [Adafruit_CircuitPython_ADS1x15](https://pypi.org/project/Adafruit_CircuitPython_ADS1x15)
 
 This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH and/or electrical conductivity (EC) from analog sensors. You can enable or disable either measurement if you want to only connect a pH sensor or an EC sensor by selecting which measurements you want to under Measurements Enabled. Select which channel each sensor is connected to on the ADC. There are default calibration values initially set for the Input. There are also functions to allow you to easily calibrate your sensors with calibration solutions. If you use the Calibrate Slot actions, these values will be calculated and will replace the currently-set values. You can use the Clear Calibration action to delete the database values and return to using the default values. If you delete the Input or create a new Input to use your ADC/sensors with, you will need to recalibrate in order to store new calibration data.
-
-### Generic: ADS1256: Analog pH/EC
-
-- Manufacturer: Generic
-- Measurements: Ion Concentration/Electrical Conductivity
-- Interfaces: UART
-- Libraries: wiringpi, kizniche/PiPyADC-py3
-- Dependencies: [wiringpi](https://pypi.org/project/wiringpi), [pipyadc_py3](https://github.com/kizniche/PiPyADC-py3)
-
-This input relies on an ADS1256 analog-to-digital converter (ADC) to measure pH and/or electrical conductivity (EC) from analog sensors. You can enable or disable either measurement if you want to only connect a pH sensor or an EC sensor by selecting which measurements you want to under Measurements Enabled. Select which channel each sensor is connected to on the ADC. There are default calibration values initially set for the Input. There are also functions to allow you to easily calibrate your sensors with calibration solutions. If you use the Calibrate Slot actions, these values will be calculated and will replace the currently-set values. You can use the Clear Calibration action to delete the database values and return to using the default values. If you delete the Input or create a new Input to use your ADC/sensors with, you will need to recalibrate in order to store new calibration data.
 
 ## Length
 
@@ -2033,17 +2013,6 @@ This is similar to the other BMP280 Input, except it uses a different library, w
 - Manufacturer URL: [Link](https://www.co2meter.com/products/cozir-2000-ppm-co2-sensor)
 - Datasheet URL: [Link](https://cdn.shopify.com/s/files/1/0019/5952/files/Datasheet_COZIR_A_CO2Meter_4_15.pdf)
 
-### Grove Pi: DHT11/DHT22
-
-- Manufacturer: Grove Pi
-- Measurements: Humidity/Temperature
-- Interfaces: GROVE
-- Libraries: grovepi
-- Dependencies: [grovepi](https://pypi.org/project/grovepi)
-- Manufacturer URLs: [Link 1](https://wiki.seeedstudio.com/Grove-Temperature_and_Humidity_Sensor_Pro/), [Link 2](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
-
-Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
-
 ### MAXIM: DS1822
 
 - Manufacturer: MAXIM
@@ -2229,6 +2198,17 @@ The internal CPU and GPU temperature of the Raspberry Pi.
 - Dependencies: [python3-dev](https://packages.debian.org/buster/python3-dev), [python3-psutil](https://packages.debian.org/buster/python3-psutil), [bluez](https://packages.debian.org/buster/bluez), [bluez-hcidump](https://packages.debian.org/buster/bluez-hcidump), [ruuvitag-sensor](https://pypi.org/project/ruuvitag-sensor)
 - Manufacturer URL: [Link](https://ruuvi.com/)
 - Datasheet URL: [Link](https://ruuvi.com/files/ruuvitag-tech-spec-2019-7.pdf)
+
+### Seeedstudio: DHT11/22
+
+- Manufacturer: Seeedstudio
+- Measurements: Humidity/Temperature
+- Interfaces: GROVE
+- Libraries: grovepi
+- Dependencies: [grovepi](https://pypi.org/project/grovepi)
+- Manufacturer URLs: [Link 1](https://wiki.seeedstudio.com/Grove-Temperature_and_Humidity_Sensor_Pro/), [Link 2](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
+
+Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 
 ### Sensirion: SCD30
 
@@ -2475,17 +2455,6 @@ More information about ATC mode can be found at https://github.com/JsBergbau/MiT
 - Datasheet URL: [Link](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme680-ds001.pdf)
 - Product URLs: [Link 1](https://www.adafruit.com/product/3660), [Link 2](https://www.sparkfun.com/products/16466)
 
-### Grove Pi: DHT11/DHT22
-
-- Manufacturer: Grove Pi
-- Measurements: Humidity/Temperature
-- Interfaces: GROVE
-- Libraries: grovepi
-- Dependencies: [grovepi](https://pypi.org/project/grovepi)
-- Manufacturer URLs: [Link 1](https://wiki.seeedstudio.com/Grove-Temperature_and_Humidity_Sensor_Pro/), [Link 2](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
-
-Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
-
 ### Ruuvi: RuuviTag
 
 - Manufacturer: Ruuvi
@@ -2495,6 +2464,17 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Dependencies: [python3-dev](https://packages.debian.org/buster/python3-dev), [python3-psutil](https://packages.debian.org/buster/python3-psutil), [bluez](https://packages.debian.org/buster/bluez), [bluez-hcidump](https://packages.debian.org/buster/bluez-hcidump), [ruuvitag-sensor](https://pypi.org/project/ruuvitag-sensor)
 - Manufacturer URL: [Link](https://ruuvi.com/)
 - Datasheet URL: [Link](https://ruuvi.com/files/ruuvitag-tech-spec-2019-7.pdf)
+
+### Seeedstudio: DHT11/22
+
+- Manufacturer: Seeedstudio
+- Measurements: Humidity/Temperature
+- Interfaces: GROVE
+- Libraries: grovepi
+- Dependencies: [grovepi](https://pypi.org/project/grovepi)
+- Manufacturer URLs: [Link 1](https://wiki.seeedstudio.com/Grove-Temperature_and_Humidity_Sensor_Pro/), [Link 2](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
+
+Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 
 ### Sensirion: SCD30
 

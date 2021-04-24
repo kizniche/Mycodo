@@ -488,27 +488,6 @@ This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH 
 - Libraries: pigpio
 - Dependencies: pigpio
 
-### Generic: TEST 01
-
-- Manufacturer: Generic
-- Measurements: Ion Concentration/Electrical Conductivity
-- Interfaces: I<sup>2</sup>C
-- Libraries: Adafruit_CircuitPython_ADS1x15
-- Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [Adafruit_CircuitPython_ADS1x15](https://pypi.org/project/Adafruit_CircuitPython_ADS1x15)
-
-TEST 01
-
-### Grove Pi: DHT11/DHT22
-
-- Manufacturer: Grove Pi
-- Measurements: Humidity/Temperature
-- Interfaces: GROVE
-- Libraries: grovepi
-- Dependencies: [grovepi](https://pypi.org/project/grovepi)
-- Manufacturer URLs: [Link 1](https://wiki.seeedstudio.com/Grove-Temperature_and_Humidity_Sensor_Pro/), [Link 2](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
-
-Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
-
 ### MAXIM: DS1822
 
 - Manufacturer: MAXIM
@@ -754,6 +733,17 @@ This module acquires measurements from the Raspberry Pi Sense HAT sensors, which
 
 Notes when setting a custom timing budget: A higher timing budget results in greater measurement accuracy, but also a higher power consumption. The inter measurement period must be >= the timing budget, otherwise it will be double the expected value.
 
+### Seeedstudio: DHT11/22
+
+- Manufacturer: Seeedstudio
+- Measurements: Humidity/Temperature
+- Interfaces: GROVE
+- Libraries: grovepi
+- Dependencies: [grovepi](https://pypi.org/project/grovepi)
+- Manufacturer URLs: [Link 1](https://wiki.seeedstudio.com/Grove-Temperature_and_Humidity_Sensor_Pro/), [Link 2](https://wiki.seeedstudio.com/Grove-TemperatureAndHumidity_Sensor/)
+
+Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
+
 ### Sensirion: SCD30
 
 - Manufacturer: Sensirion
@@ -864,6 +854,7 @@ Notes when setting a custom timing budget: A higher timing budget results in gre
 - Interfaces: HTTP
 - Libraries: requests
 - Manufacturer URL: [Link](https://tasmota.github.io)
+- Product URL: [Link](https://templates.blakadder.com/plug.html)
 
 This input queries the energy usage information from a WiFi outlet that is running the tasmota firmware. There are many WiFi outlets that support tasmota, and many of of those have energy monitoring capabilities. When used with an MQTT Output, you can both control your tasmota outlets as well as mionitor their energy usage.
 

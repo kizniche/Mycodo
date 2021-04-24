@@ -12,6 +12,11 @@ This function acquires the last measurement of those that are selected, averages
 
 This function acquires the past measurements (within Max Age) for the selected measurement, averages them, then stores the resulting value as the selected measurement and unit.
 
+### Bang-Bang (PWM) Hysteretic
+
+
+A simple bang-bang control for controlling one PWM output from one input. Select an input, a PWM output, enter a setpoint and a hysteresis, and select a direction. The output will turn on when the input is below setpoint-hysteresis and turn off when the input is above setpoint+hysteresis. This is the behavior when Raise is selected, such as when heating. Lower direction has the opposite behavior - it will try to turn the output on in order to drive the input lower.
+
 ### Bang-Bang Hysteretic
 
 
@@ -21,6 +26,51 @@ A simple bang-bang control for controlling one output from one input. Select an 
 
 
 This function acquires 2 measurements, calculates the difference, and stores the resulting value as the selected measurement and unit.
+
+### Display: Generic LCD 16x2 (I2C)
+
+
+This Function outputs to a generic 16x2 LCD display via I2C. Since this display can show 2 lines at a time, channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 2 lines that are displayed are channels 0 and 1, then 2 and 3, and so on. After all channels have been displayed, it will cycle back to the beginning.
+
+### Display: Generic LCD 20x4 (I2C)
+
+
+This Function outputs to a generic 20x4 LCD display via I2C. Since this display can show 4 lines at a time, channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 4 lines that are displayed are channels 0, 1, 2, and 3, then 4, 5, 6, and 7, and so on. After all channels have been displayed, it will cycle back to the beginning.
+
+### Display: Grove LCD 16x2 (I2C)
+
+
+This Function outputs to the Grove 16x2 LCD display via I2C. Since this display can show 2 lines at a time, channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 2 lines that are displayed are channels 0 and 1, then 2 and 3, and so on. After all channels have been displayed, it will cycle back to the beginning.
+
+### Display: SSD1306 OLED 128x32 (I2C)
+
+- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
+
+This Function outputs to a 128x32 SSD1306 OLED display via I2C. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
+
+### Display: SSD1306 OLED 128x32 (SPI)
+
+- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
+
+This Function outputs to a 128x32 SSD1306 OLED display via SPI. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
+
+### Display: SSD1306 OLED 128x64 (I2C)
+
+- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
+
+This Function outputs to a 128x64 SSD1306 OLED display via I2C. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
+
+### Display: SSD1306 OLED 128x64 (SPI)
+
+- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
+
+This Function outputs to a 128x64 SSD1306 OLED display via SPI. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
+
+### Display: SSD1309 OLED 128x64 (I2C)
+
+- Dependencies: [pyusb](https://pypi.org/project/pyusb), [luma.oled](https://pypi.org/project/luma.oled), [Pillow](https://pypi.org/project/Pillow), [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [zlib1g-dev](https://packages.debian.org/buster/zlib1g-dev), [libfreetype6-dev](https://packages.debian.org/buster/libfreetype6-dev), [liblcms2-dev](https://packages.debian.org/buster/liblcms2-dev), [libopenjp2-7](https://packages.debian.org/buster/libopenjp2-7), [libtiff5](https://packages.debian.org/buster/libtiff5)
+
+This Function outputs to a 128x64 SSD1309 OLED display via I2C. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
 
 ### Equation (Multi-Measure)
 

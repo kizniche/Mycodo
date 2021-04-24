@@ -1,4 +1,4 @@
-## 8.9.3 (Unreleased)
+## 8.10.0 (2021-04-24)
 
 This release contains changes that requires modification to any Custom Functions you may have in use. In order for the new features to work for Custom Functions, it required the use of an abstract base function class (similarly to Inputs and Outputs). As a result, any Custom Functions that previously were formatted as such:
 
