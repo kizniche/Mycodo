@@ -120,6 +120,7 @@ As always, a backup of the current system files and settings is performed during
  - Add Custom Actions to Functions
  - Add "wait_for_return" option to Custom Actions
  - Convert all LCD/Display controllers to Functions
+ - Add ability to not have to set time-lapse end (defaults to 10 years) ([#987](https://github.com/kizniche/mycodo/issues/987))
 
 ### Miscellaneous
 

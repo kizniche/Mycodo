@@ -91,13 +91,13 @@
         <div class="col-auto">
           {{form_camera.timelapse_interval.label(class_='control-label')}}
           <div>
-            {{form_camera.timelapse_interval(class_='form-control')}}
+            {{form_camera.timelapse_interval(class_='form-control', **{'title':_('The interval that photos will be acquired')})}}
           </div>
         </div>
         <div class="col-auto">
           {{form_camera.timelapse_runtime_sec.label(class_='control-label')}}
           <div>
-            {{form_camera.timelapse_runtime_sec(class_='form-control')}}
+            {{form_camera.timelapse_runtime_sec(class_='form-control', **{'title':_('How long to run before stopping. Set 0 to run forever.')})}}
           </div>
         </div>
         <div class="col-auto">
