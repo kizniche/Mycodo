@@ -53,6 +53,7 @@ INPUT_INFORMATION = {
     ],
 
     'dependencies_module': [
+        ('apt', 'libatlas-base-dev', 'libatlas-base-dev'),
         ('pip-pypi', 'grovepi', 'grovepi==1.0.4')
     ],
 
