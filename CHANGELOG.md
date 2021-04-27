@@ -1,3 +1,10 @@
+## 8.10.2 (Unreleased)
+
+### Bugfixes
+
+ - Fix GrovePi DHT Input
+
+
 ## 8.10.1 (2021-04-27)
 
 ### Bugfixes

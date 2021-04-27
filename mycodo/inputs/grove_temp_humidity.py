@@ -161,12 +161,8 @@ class InputModule(AbstractInput):
             if isinstance(self.sensor_type, str):
                 self.sensor_type = int(self.sensor_type)
             [self.temp_temperature,
-             self.temp_humidity,
-             retval] = self.grovepi.dht(self.gpio, self.sensor_type)
-            if retval is None:
-                self.logger.error(
-                    "Error reading from DHT sensor: {}".format(retval))
-            self.logger.info("Temp: {}, Hum: {}".format(
+             self.temp_humidity] = self.grovepi.dht(self.gpio, self.sensor_type)
+            self.logger.debug("Temp: {}, Hum: {}".format(
                 self.temp_temperature, self.temp_humidity))
             if self.temp_humidity != 0:
                 self.temp_dew_point = calculate_dewpoint(
