@@ -71,7 +71,7 @@ INPUT_INFORMATION = {
         },
     ],
 
-    'interfaces': ['GROVE'],
+    'interfaces': ['GROVE']
 }
 
 
@@ -98,14 +98,8 @@ class InputModule(AbstractInput):
         """
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
-        self.gpio = None
         self.grovepi = None
-
-        self.temp_temperature = 0
-        self.temp_humidity = 0
-        self.temp_dew_point = None
-        self.temp_vpd = None
-        self.powered = False
+        self.gpio = None
         self.sensor_type = 0
 
         if not testing:
@@ -120,6 +114,7 @@ class InputModule(AbstractInput):
 
         self.grovepi = grovepi
         self.gpio = int(self.input_dev.gpio_location)
+        self.sensor_type = int(self.sensor_type)
 
     def get_measurement(self):
         """ Gets the humidity and temperature """
@@ -129,62 +124,37 @@ class InputModule(AbstractInput):
         # the first measurement fails if the sensor has just been powered
         # for the first time.
         for _ in range(2):
-            self.measure_sensor()
-            if self.temp_dew_point is not None:
-                if self.is_enabled(0):
-                    self.value_set(0, self.temp_temperature)
-                if self.is_enabled(1):
-                    self.value_set(1, self.temp_humidity)
-                if self.is_enabled(2):
-                    self.value_set(2, self.temp_dew_point)
-                if self.is_enabled(3):
-                    self.value_set(3, self.temp_vpd)
-                return self.return_dict  # success - no errors
+            try:
+                self.logger.debug("GPIO: {}, Sensor Type: {}".format(
+                    self.gpio, self.sensor_type))
+
+                [temp_temperature,
+                 temp_humidity] = self.grovepi.dht(self.gpio, self.sensor_type)
+
+                self.logger.debug("Temp: {}, Hum: {}".format(
+                    temp_temperature, temp_humidity))
+
+                if temp_humidity:
+                    temp_dew_point = calculate_dewpoint(
+                        temp_temperature, temp_humidity)
+                    temp_vpd = calculate_vapor_pressure_deficit(
+                        temp_temperature, temp_humidity)
+                else:
+                    self.logger.error("Could not acquire measurement")
+                    continue
+
+                if temp_dew_point is not None:
+                    if self.is_enabled(0):
+                        self.value_set(0, temp_temperature)
+                    if self.is_enabled(1):
+                        self.value_set(1, temp_humidity)
+                    if self.is_enabled(2):
+                        self.value_set(2, temp_dew_point)
+                    if self.is_enabled(3):
+                        self.value_set(3, temp_vpd)
+                    break
+            except Exception as err:
+                self.logger.exception("get_measurement() error: {}".format(err))
             time.sleep(2)
 
-        self.logger.error("Could not acquire a measurement")
-        return None
-
-    def measure_sensor(self):
-        self.temp_temperature = 0
-        self.temp_humidity = 0
-        self.temp_dew_point = None
-        self.temp_vpd = None
-
-        try:
-            try:
-                self.setup()
-            except Exception as except_msg:
-                self.logger.error(
-                    'Could not initialize sensor. Check if gpiod is running. '
-                    'Error: {msg}'.format(msg=except_msg))
-
-            if isinstance(self.sensor_type, str):
-                self.sensor_type = int(self.sensor_type)
-            [self.temp_temperature,
-             self.temp_humidity] = self.grovepi.dht(self.gpio, self.sensor_type)
-            self.logger.debug("Temp: {}, Hum: {}".format(
-                self.temp_temperature, self.temp_humidity))
-            if self.temp_humidity != 0:
-                self.temp_dew_point = calculate_dewpoint(
-                    self.temp_temperature, self.temp_humidity)
-                self.temp_vpd = calculate_vapor_pressure_deficit(
-                    self.temp_temperature, self.temp_humidity)
-        except Exception as e:
-            self.logger.error("Exception raised when taking a reading: {err}".format(err=e))
-        finally:
-            self.close()
-            return (self.temp_dew_point,
-                    self.temp_humidity,
-                    self.temp_temperature)
-
-    def setup(self):
-        """ """
-        return
-
-    def close(self):
-        """ Stop reading sensor """
-        return
-
-    def stop_input(self):
-        return
+        return self.return_dict
