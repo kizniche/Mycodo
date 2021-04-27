@@ -98,264 +98,314 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         time.sleep(settings.output_duration)
 
     if settings.library == 'picamera':
-        import picamera
+        try:
+            import picamera
 
-        # Try 5 times to access the pi camera (in case another process is accessing it)
-        for _ in range(5):
-            try:
-                with picamera.PiCamera() as camera:
-                    camera.resolution = (settings.width, settings.height)
-                    camera.hflip = settings.hflip
-                    camera.vflip = settings.vflip
-                    camera.rotation = settings.rotation
-                    camera.brightness = int(settings.brightness)
-                    camera.contrast = int(settings.contrast)
-                    camera.exposure_compensation = int(settings.exposure)
-                    camera.saturation = int(settings.saturation)
-                    camera.shutter_speed = settings.picamera_shutter_speed
-                    camera.sharpness = settings.picamera_sharpness
-                    camera.iso = settings.picamera_iso
-                    camera.awb_mode = settings.picamera_awb
-                    if settings.picamera_awb == 'off':
-                        camera.awb_gains = (settings.picamera_awb_gain_red,
-                                            settings.picamera_awb_gain_blue)
-                    camera.exposure_mode = settings.picamera_exposure_mode
-                    camera.meter_mode = settings.picamera_meter_mode
-                    camera.image_effect = settings.picamera_image_effect
+            # Try 5 times to access the pi camera (in case another process is accessing it)
+            for _ in range(5):
+                try:
+                    with picamera.PiCamera() as camera:
+                        camera.resolution = (settings.width, settings.height)
+                        camera.hflip = settings.hflip
+                        camera.vflip = settings.vflip
+                        camera.rotation = settings.rotation
+                        camera.brightness = int(settings.brightness)
+                        camera.contrast = int(settings.contrast)
+                        camera.exposure_compensation = int(settings.exposure)
+                        camera.saturation = int(settings.saturation)
+                        camera.shutter_speed = settings.picamera_shutter_speed
+                        camera.sharpness = settings.picamera_sharpness
+                        camera.iso = settings.picamera_iso
+                        camera.awb_mode = settings.picamera_awb
+                        if settings.picamera_awb == 'off':
+                            camera.awb_gains = (settings.picamera_awb_gain_red,
+                                                settings.picamera_awb_gain_blue)
+                        camera.exposure_mode = settings.picamera_exposure_mode
+                        camera.meter_mode = settings.picamera_meter_mode
+                        camera.image_effect = settings.picamera_image_effect
 
-                    camera.start_preview()
-                    time.sleep(2)  # Camera warm-up time
+                        camera.start_preview()
+                        time.sleep(2)  # Camera warm-up time
 
-                    if record_type in ['photo', 'timelapse']:
-                        camera.capture(path_file, use_video_port=False)
-                    elif record_type == 'video':
-                        camera.start_recording(path_file, format='h264', quality=20)
-                        camera.wait_recording(duration_sec)
-                        camera.stop_recording()
-                    else:
-                        return
-                    break
-            except picamera.exc.PiCameraMMALError:
-                logger.error("The camera is already open by picamera. Retrying 4 times.")
-            time.sleep(1)
+                        if record_type in ['photo', 'timelapse']:
+                            camera.capture(path_file, use_video_port=False)
+                        elif record_type == 'video':
+                            camera.start_recording(path_file, format='h264', quality=20)
+                            camera.wait_recording(duration_sec)
+                            camera.stop_recording()
+                        else:
+                            return
+                        break
+                except picamera.exc.PiCameraMMALError:
+                    logger.error("The camera is already open by picamera. Retrying 4 times.")
+                time.sleep(1)
+        except:
+            logger.exception("picamera")
 
     elif settings.library == 'fswebcam':
-        cmd = "/usr/bin/fswebcam --device {dev} --resolution {w}x{h} --set brightness={bt}% " \
-              "--no-banner --save {file}".format(dev=settings.device,
-                                                 w=settings.width,
-                                                 h=settings.height,
-                                                 bt=settings.brightness,
-                                                 file=path_file)
-        if settings.hflip:
-            cmd += " --flip h"
-        if settings.vflip:
-            cmd += " --flip h"
-        if settings.rotation:
-            cmd += " --rotate {angle}".format(angle=settings.rotation)
-        if settings.custom_options:
-            cmd += " {}".format(settings.custom_options)
+        try:
+            cmd = "/usr/bin/fswebcam --device {dev} --resolution {w}x{h} --set brightness={bt}% " \
+                  "--no-banner --save {file}".format(dev=settings.device,
+                                                     w=settings.width,
+                                                     h=settings.height,
+                                                     bt=settings.brightness,
+                                                     file=path_file)
+            if settings.hflip:
+                cmd += " --flip h"
+            if settings.vflip:
+                cmd += " --flip h"
+            if settings.rotation:
+                cmd += " --rotat {angle}".format(angle=settings.rotation)
+            if settings.custom_options:
+                cmd += " {}".format(settings.custom_options)
 
-        out, err, status = cmd_output(cmd, stdout_pipe=False, user='root')
-        logger.debug(
-            "Camera debug message: "
-            "cmd: {}; out: {}; error: {}; status: {}".format(
-                cmd, out, err, status))
+            out, err, status = cmd_output(cmd, stdout_pipe=False, user='root')
+            logger.debug(
+                "Camera debug message: "
+                "cmd: {}; out: {}; error: {}; status: {}".format(
+                    cmd, out, err, status))
+        except:
+            logger.exception("fswebcam")
+
+    elif settings.library == 'raspistill':
+        try:
+            cmd = "/usr/bin/raspistill -w {w} -h {h} --brightness {bt} " \
+                  "-o {file}".format(w=settings.width,
+                                     h=settings.height,
+                                     bt=settings.brightness,
+                                     file=path_file)
+
+            if settings.contrast is not None:
+                cmd += " --contrast {}".format(int(settings.contrast))
+            if settings.saturation is not None:
+                cmd += " --saturation {}".format(int(settings.saturation))
+            if settings.picamera_sharpness is not None:
+                cmd += " --sharpness {}".format(int(settings.picamera_sharpness))
+            if settings.picamera_iso not in [0, None]:
+                cmd += " --ISO {}".format(int(settings.picamera_iso))
+            if settings.picamera_awb is not None:
+                cmd += " --awb {}".format(settings.picamera_awb)
+            if settings.hflip:
+                cmd += " --hflip"
+            if settings.vflip:
+                cmd += " --vflip"
+            if settings.rotation:
+                cmd += " --rotation {angle}".format(angle=settings.rotation)
+            if settings.custom_options:
+                cmd += " {}".format(settings.custom_options)
+
+            out, err, status = cmd_output(cmd, stdout_pipe=False, user='root')
+            logger.debug(
+                "Camera debug message: "
+                "cmd: {}; out: {}; error: {}; status: {}".format(
+                    cmd, out, err, status))
+        except:
+            logger.exception("raspistill")
 
     elif settings.library == 'opencv':
-        import cv2
-        import imutils
+        try:
+            import cv2
+            import imutils
 
-        cap = cv2.VideoCapture(settings.opencv_device)
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, settings.width)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, settings.height)
-        cap.set(cv2.CAP_PROP_EXPOSURE, settings.exposure)
-        cap.set(cv2.CAP_PROP_GAIN, settings.gain)
-        cap.set(cv2.CAP_PROP_BRIGHTNESS, settings.brightness)
-        cap.set(cv2.CAP_PROP_CONTRAST, settings.contrast)
-        cap.set(cv2.CAP_PROP_HUE, settings.hue)
-        cap.set(cv2.CAP_PROP_SATURATION, settings.saturation)
+            cap = cv2.VideoCapture(settings.opencv_device)
+            cap.set(cv2.CAP_PROP_FRAME_WIDTH, settings.width)
+            cap.set(cv2.CAP_PROP_FRAME_HEIGHT, settings.height)
+            cap.set(cv2.CAP_PROP_EXPOSURE, settings.exposure)
+            cap.set(cv2.CAP_PROP_GAIN, settings.gain)
+            cap.set(cv2.CAP_PROP_BRIGHTNESS, settings.brightness)
+            cap.set(cv2.CAP_PROP_CONTRAST, settings.contrast)
+            cap.set(cv2.CAP_PROP_HUE, settings.hue)
+            cap.set(cv2.CAP_PROP_SATURATION, settings.saturation)
 
-        # Check if image can be read
-        status, _ = cap.read()
-        if not status:
-            logger.error(
-                "Cannot detect USB camera with device '{dev}'".format(
-                    dev=settings.opencv_device))
-            return
-
-        # Discard a few frames to allow camera to adjust to settings
-        for _ in range(2):
-            cap.read()
-
-        if record_type in ['photo', 'timelapse']:
-            edited = False
-            status, img_orig = cap.read()
-            cap.release()
-
+            # Check if image can be read
+            status, _ = cap.read()
             if not status:
-                logger.error("Could not acquire image")
+                logger.error(
+                    "Cannot detect USB camera with device '{dev}'".format(
+                        dev=settings.opencv_device))
                 return
 
-            img_edited = img_orig.copy()
+            # Discard a few frames to allow camera to adjust to settings
+            for _ in range(2):
+                cap.read()
 
-            if any((settings.hflip, settings.vflip, settings.rotation)):
-                edited = True
-
-            if settings.hflip and settings.vflip:
-                img_edited = cv2.flip(img_orig, -1)
-            elif settings.hflip:
-                img_edited = cv2.flip(img_orig, 1)
-            elif settings.vflip:
-                img_edited = cv2.flip(img_orig, 0)
-
-            if settings.rotation:
-                img_edited = imutils.rotate_bound(img_orig, settings.rotation)
-
-            if edited:
-                cv2.imwrite(path_file, img_edited)
-            else:
-                cv2.imwrite(path_file, img_orig)
-
-        elif record_type == 'video':
-            # TODO: opencv video recording is currently not working. No idea why. Try to fix later.
-            try:
-                cap = cv2.VideoCapture(settings.opencv_device)
-                fourcc = cv2.CV_FOURCC('X', 'V', 'I', 'D')
-                resolution = (settings.width, settings.height)
-                out = cv2.VideoWriter(path_file, fourcc, 20.0, resolution)
-
-                time_end = time.time() + duration_sec
-                while cap.isOpened() and time.time() < time_end:
-                    ret, frame = cap.read()
-                    if ret:
-                        # write the frame
-                        out.write(frame)
-                        if cv2.waitKey(1) & 0xFF == ord('q'):
-                            break
-                    else:
-                        break
+            if record_type in ['photo', 'timelapse']:
+                edited = False
+                status, img_orig = cap.read()
                 cap.release()
-                out.release()
-                cv2.destroyAllWindows()
-            except Exception as e:
-                logger.exception(
-                    "Exception raised while recording video: "
-                    "{err}".format(err=e))
-        else:
-            return
+
+                if not status:
+                    logger.error("Could not acquire image")
+                    return
+
+                img_edited = img_orig.copy()
+
+                if any((settings.hflip, settings.vflip, settings.rotation)):
+                    edited = True
+
+                if settings.hflip and settings.vflip:
+                    img_edited = cv2.flip(img_orig, -1)
+                elif settings.hflip:
+                    img_edited = cv2.flip(img_orig, 1)
+                elif settings.vflip:
+                    img_edited = cv2.flip(img_orig, 0)
+
+                if settings.rotation:
+                    img_edited = imutils.rotate_bound(img_orig, settings.rotation)
+
+                if edited:
+                    cv2.imwrite(path_file, img_edited)
+                else:
+                    cv2.imwrite(path_file, img_orig)
+
+            elif record_type == 'video':
+                # TODO: opencv video recording is currently not working. No idea why. Try to fix later.
+                try:
+                    cap = cv2.VideoCapture(settings.opencv_device)
+                    fourcc = cv2.CV_FOURCC('X', 'V', 'I', 'D')
+                    resolution = (settings.width, settings.height)
+                    out = cv2.VideoWriter(path_file, fourcc, 20.0, resolution)
+
+                    time_end = time.time() + duration_sec
+                    while cap.isOpened() and time.time() < time_end:
+                        ret, frame = cap.read()
+                        if ret:
+                            # write the frame
+                            out.write(frame)
+                            if cv2.waitKey(1) & 0xFF == ord('q'):
+                                break
+                        else:
+                            break
+                    cap.release()
+                    out.release()
+                    cv2.destroyAllWindows()
+                except Exception as e:
+                    logger.exception(
+                        "Exception raised while recording video: "
+                        "{err}".format(err=e))
+            else:
+                return
+        except:
+            logger.exception("opencv")
 
     elif settings.library == 'http_address':
-        import cv2
-        import imutils
-        from urllib.error import HTTPError
-        from urllib.parse import urlparse
-        from urllib.request import urlretrieve
+        try:
+            import cv2
+            import imutils
+            from urllib.error import HTTPError
+            from urllib.parse import urlparse
+            from urllib.request import urlretrieve
 
-        if record_type in ['photo', 'timelapse']:
-            path_tmp = "/tmp/tmpimg.jpg"
+            if record_type in ['photo', 'timelapse']:
+                path_tmp = "/tmp/tmpimg.jpg"
 
-            # Get filename and extension, if available
-            a = urlparse(settings.url_still)
-            filename = os.path.basename(a.path)
-            if filename:
-                path_tmp = "/tmp/{}".format(filename)
+                # Get filename and extension, if available
+                a = urlparse(settings.url_still)
+                filename = os.path.basename(a.path)
+                if filename:
+                    path_tmp = "/tmp/{}".format(filename)
 
-            try:
-                os.remove(path_tmp)
-            except FileNotFoundError:
-                pass
-
-            try:
-                urlretrieve(settings.url_still, path_tmp)
-            except HTTPError as err:
-                logger.error(err)
-            except Exception as err:
-                logger.exception(err)
-
-            try:
-                img_orig = cv2.imread(path_tmp)
-
-                if img_orig is not None and img_orig.shape is not None:
-                    if any((settings.hflip, settings.vflip, settings.rotation)):
-                        img_edited = None
-                        if settings.hflip and settings.vflip:
-                            img_edited = cv2.flip(img_orig, -1)
-                        elif settings.hflip:
-                            img_edited = cv2.flip(img_orig, 1)
-                        elif settings.vflip:
-                            img_edited = cv2.flip(img_orig, 0)
-
-                        if settings.rotation:
-                            img_edited = imutils.rotate_bound(img_orig, settings.rotation)
-
-                        if img_edited:
-                            cv2.imwrite(path_file, img_edited)
-                    else:
-                        cv2.imwrite(path_file, img_orig)
-                else:
-                    os.rename(path_tmp, path_file)
-            except Exception as err:
-                logger.error("Could not convert, rotate, or invert image: {}".format(err))
                 try:
-                    os.rename(path_tmp, path_file)
+                    os.remove(path_tmp)
                 except FileNotFoundError:
-                    logger.error("Camera image not found")
+                    pass
 
-        elif record_type == 'video':
-            pass  # No video (yet)
+                try:
+                    urlretrieve(settings.url_still, path_tmp)
+                except HTTPError as err:
+                    logger.error(err)
+                except Exception as err:
+                    logger.exception(err)
+
+                try:
+                    img_orig = cv2.imread(path_tmp)
+
+                    if img_orig is not None and img_orig.shape is not None:
+                        if any((settings.hflip, settings.vflip, settings.rotation)):
+                            img_edited = None
+                            if settings.hflip and settings.vflip:
+                                img_edited = cv2.flip(img_orig, -1)
+                            elif settings.hflip:
+                                img_edited = cv2.flip(img_orig, 1)
+                            elif settings.vflip:
+                                img_edited = cv2.flip(img_orig, 0)
+
+                            if settings.rotation:
+                                img_edited = imutils.rotate_bound(img_orig, settings.rotation)
+
+                            if img_edited:
+                                cv2.imwrite(path_file, img_edited)
+                        else:
+                            cv2.imwrite(path_file, img_orig)
+                    else:
+                        os.rename(path_tmp, path_file)
+                except Exception as err:
+                    logger.error("Could not convert, rotate, or invert image: {}".format(err))
+                    try:
+                        os.rename(path_tmp, path_file)
+                    except FileNotFoundError:
+                        logger.error("Camera image not found")
+
+            elif record_type == 'video':
+                pass  # No video (yet)
+        except:
+            logger.exception("http:address")
 
     elif settings.library == 'http_address_requests':
-        import cv2
-        import imutils
-        import requests
+        try:
+            import cv2
+            import imutils
+            import requests
 
-        if record_type in ['photo', 'timelapse']:
-            path_tmp = "/tmp/tmpimg.jpg"
-            try:
-                os.remove(path_tmp)
-            except FileNotFoundError:
-                pass
-
-            try:
-                r = requests.get(settings.url_still)
-                if r.status_code == 200:
-                    open(path_tmp, 'wb').write(r.content)
-                else:
-                    logger.error("Could not download image. Status code: {}".format(r.status_code))
-            except requests.HTTPError as err:
-                logger.error("HTTPError: {}".format(err))
-            except Exception as err:
-                logger.exception(err)
-
-            try:
-                img_orig = cv2.imread(path_tmp)
-
-                if img_orig is not None and img_orig.shape is not None:
-                    if any((settings.hflip, settings.vflip, settings.rotation)):
-                        if settings.hflip and settings.vflip:
-                            img_edited = cv2.flip(img_orig, -1)
-                        elif settings.hflip:
-                            img_edited = cv2.flip(img_orig, 1)
-                        elif settings.vflip:
-                            img_edited = cv2.flip(img_orig, 0)
-
-                        if settings.rotation:
-                            img_edited = imutils.rotate_bound(img_orig, settings.rotation)
-
-                        cv2.imwrite(path_file, img_edited)
-                    else:
-                        cv2.imwrite(path_file, img_orig)
-                else:
-                    os.rename(path_tmp, path_file)
-            except Exception as err:
-                logger.error("Could not convert, rotate, or invert image: {}".format(err))
+            if record_type in ['photo', 'timelapse']:
+                path_tmp = "/tmp/tmpimg.jpg"
                 try:
-                    os.rename(path_tmp, path_file)
+                    os.remove(path_tmp)
                 except FileNotFoundError:
-                    logger.error("Camera image not found")
+                    pass
 
-        elif record_type == 'video':
-            pass  # No video (yet)
+                try:
+                    r = requests.get(settings.url_still)
+                    if r.status_code == 200:
+                        open(path_tmp, 'wb').write(r.content)
+                    else:
+                        logger.error("Could not download image. Status code: {}".format(r.status_code))
+                except requests.HTTPError as err:
+                    logger.error("HTTPError: {}".format(err))
+                except Exception as err:
+                    logger.exception(err)
+
+                try:
+                    img_orig = cv2.imread(path_tmp)
+
+                    if img_orig is not None and img_orig.shape is not None:
+                        if any((settings.hflip, settings.vflip, settings.rotation)):
+                            if settings.hflip and settings.vflip:
+                                img_edited = cv2.flip(img_orig, -1)
+                            elif settings.hflip:
+                                img_edited = cv2.flip(img_orig, 1)
+                            elif settings.vflip:
+                                img_edited = cv2.flip(img_orig, 0)
+
+                            if settings.rotation:
+                                img_edited = imutils.rotate_bound(img_orig, settings.rotation)
+
+                            cv2.imwrite(path_file, img_edited)
+                        else:
+                            cv2.imwrite(path_file, img_orig)
+                    else:
+                        os.rename(path_tmp, path_file)
+                except Exception as err:
+                    logger.error("Could not convert, rotate, or invert image: {}".format(err))
+                    try:
+                        os.rename(path_tmp, path_file)
+                    except FileNotFoundError:
+                        logger.error("Camera image not found")
+
+            elif record_type == 'video':
+                pass  # No video (yet)
+        except:
+            logger.exception("http_address_requests")
 
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')

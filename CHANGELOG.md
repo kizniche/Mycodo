@@ -4,6 +4,12 @@
 
  - Fix Sense Hat Input dependency
 
+### Features
+
+ - Add Input: Atlas Scientific humidity sensor
+ - Add Camera: raspistill
+ - Make Add Output dropdown searchable
+
 
 ## 8.10.0 (2021-04-24)
 
@@ -106,7 +112,7 @@ As always, a backup of the current system files and settings is performed during
 
 ### Features
 
- - Add Input SHT41x
+ - Add Input: SHT41x
  - Add Input: Adafruit I2C capacitive soil sensor
  - Add Input: CircuitPython variants of the BME280 and SHT31-D Inputs
  - Add Input: KP303 Smart WiFi Power Strip ([#980](https://github.com/kizniche/mycodo/issues/980))

@@ -250,7 +250,7 @@ class InputModule(AbstractInput):
             index_place = 0
             return_list = return_string.split(',')
             if self.enabled_rgb:
-                self.value_set(0, int(return_list[index_place + 0]))
+                self.value_set(0, int(return_list[index_place]))
                 self.value_set(1, int(return_list[index_place + 1]))
                 self.value_set(2, int(return_list[index_place + 2]))
                 index_place += 3

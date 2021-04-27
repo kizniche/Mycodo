@@ -17,12 +17,12 @@ class Camera(CRUDMixin, db.Model):
     hflip = db.Column(db.Boolean, default=False)  # Horizontal flip image
     vflip = db.Column(db.Boolean, default=False)  # Vertical flip image
     rotation = db.Column(db.Integer, default=0)  # Rotation degree (0-360)
-    brightness = db.Column(db.Float, default=None)
-    contrast = db.Column(db.Float, default=None)
+    brightness = db.Column(db.Float, default=0)
+    contrast = db.Column(db.Float, default=0)
     exposure = db.Column(db.Float, default=None)
     gain = db.Column(db.Float, default=None)
     hue = db.Column(db.Float, default=None)
-    saturation = db.Column(db.Float, default=0.3)
+    saturation = db.Column(db.Float, default=0)
     white_balance = db.Column(db.Float, default=0.0)
     custom_options = db.Column(db.Text, default='')
     output_id = db.Column(db.String, db.ForeignKey('output.unique_id'), default=None)  # Turn output on during capture

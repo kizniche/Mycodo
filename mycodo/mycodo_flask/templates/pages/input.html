@@ -19,10 +19,9 @@
 
     <form id="new_input_form" method="post" action="/input" style="padding-bottom: 0.5em">
       {{form_add_input.hidden_tag()}}
-      <input type="hidden" name="form-name" value="addSensor">
       <div class="row small-gutters" style="padding-left: 0.75em">
         <div class="col-auto">
-          {{form_add_input.input_type(class_='selectpicker', **{'data-live-search': 'true', 'title': _('Input') + ': ' + dict_translation['select_one']['title']})}}
+          {{form_add_input.input_type(class_='selectpicker', **{'data-live-search': 'true', 'title': dict_translation['input']['title'] + ': ' + dict_translation['select_one']['title']})}}
         </div>
         <div class="col-auto">
           {{form_add_input.input_add(class_='btn btn-primary')}}

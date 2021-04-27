@@ -47,6 +47,13 @@ def camera_add(form_camera):
     if form_camera.library.data == 'fswebcam':
         new_camera.device = '/dev/video0'
         new_camera.brightness = 50
+    elif form_camera.library.data == 'raspistill':
+        new_camera.brightness = 50
+        new_camera.contrast = 0.0
+        new_camera.saturation = 0.0
+        new_camera.picamera_sharpness = 0
+        new_camera.picamera_iso = 0
+        new_camera.picamera_awb = "auto"
     elif form_camera.library.data == 'picamera':
         new_camera.brightness = 50
         new_camera.contrast = 0.0
@@ -117,6 +124,14 @@ def camera_mod(form_camera):
 
         if mod_camera.library == 'fswebcam':
             mod_camera.device = form_camera.device.data
+            mod_camera.custom_options = form_camera.custom_options.data
+        if mod_camera.library == 'raspistill':
+            mod_camera.brightness = form_camera.brightness.data
+            mod_camera.contrast = form_camera.contrast.data
+            mod_camera.saturation = form_camera.saturation.data
+            mod_camera.picamera_sharpness = form_camera.picamera_sharpness.data
+            mod_camera.picamera_iso = int(form_camera.picamera_iso.data)
+            mod_camera.picamera_awb = form_camera.picamera_awb.data
             mod_camera.custom_options = form_camera.custom_options.data
         elif mod_camera.library == 'picamera':
             mod_camera.resolution_stream_width = form_camera.resolution_stream_width.data

@@ -89,6 +89,12 @@ CAMERA_INFO = {
         'capable_image': True,
         'capable_stream': True
     },
+    'raspistill': {
+        'name': 'raspistill',
+        'dependencies_module': [],
+        'capable_image': True,
+        'capable_stream': False
+    },
     'http_address': {
         'name': 'URL (urllib)',
         'dependencies_module': [
