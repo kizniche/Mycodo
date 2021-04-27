@@ -107,8 +107,6 @@ class InputModule(AbstractInput):
                 INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
-        self.logger.info("DHT sensor initialization complete, pin={}, type={}.".format(self.gpio, self.sensor_type))
-
     def initialize_input(self):
         import grovepi
 
