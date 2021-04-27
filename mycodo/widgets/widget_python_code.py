@@ -75,19 +75,25 @@ class PythonRun:
 
     file_run = '{}/python_code_{}.py'.format(PATH_PYTHON_CODE_USER, unique_id)
     create_python_file(widget_python_code_run, file_run)
-    success, error = test_python_code(widget_python_code_run, file_run)
-    return success, error
+    info, warning, success, error = test_python_code(
+        widget_python_code_run, file_run)
+    return info, warning, success, error
 
 
 def execute_at_creation(error, new_widget, dict_widget):
     custom_options_json = json.loads(new_widget.custom_options)
     uuid = set_uuid()
     new_widget.unique_id = uuid
-    success, errors = save_python_file(custom_options_json, uuid)
-    for each_error in errors:
-        flash(each_error, 'error')
+    info, warning, success, errors = save_python_file(
+        custom_options_json, uuid)
     for each_success in success:
         flash(each_success, 'success')
+    for each_info in info:
+        flash(each_info, "info")
+    for each_warning in warning:
+        flash(each_warning, "warning")
+    for each_error in error:
+        flash(each_error, 'error')
     return error, new_widget
 
 
@@ -105,11 +111,16 @@ def execute_at_modification(
     :return:
     """
     allow_saving = True
-    success, error = save_python_file(custom_options_json_postsave, mod_widget.unique_id)
-    for each_error in error:
-        flash(each_error, 'error')
+    info, warning, success, error = save_python_file(
+        custom_options_json_postsave, mod_widget.unique_id)
     for each_success in success:
         flash(each_success, 'success')
+    for each_info in info:
+        flash(each_info, "info")
+    for each_warning in warning:
+        flash(each_warning, "warning")
+    for each_error in error:
+        flash(each_error, 'error')
     return allow_saving, mod_widget, custom_options_json_postsave
 
 

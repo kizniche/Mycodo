@@ -60,12 +60,12 @@ def conditional_mod(form):
         cond_mod.start_offset = form.start_offset.data
 
         if cmd_status:
-            error.append("pylint returned with status: {}".format(cmd_status))
+            flash("pylint returned with status: {}".format(cmd_status), "warning")
 
         if message:
             flash("Review your code for issues and test before putting it "
-                  "into a production environment.", 'success')
-            flash(message, 'success')
+                  "into a production environment.", 'info')
+            flash(message, 'info')
 
         if not error:
             db.session.commit()

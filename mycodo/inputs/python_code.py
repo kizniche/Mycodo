@@ -123,12 +123,12 @@ def execute_at_modification(
         error.append(message)
 
     if cmd_status:
-        flash("pylint returned with status: {}".format(cmd_status), 'error')
+        flash("pylint returned with status: {}".format(cmd_status), 'warning')
 
     if message:
         flash("Review your code for issues and test your Input "
               "before putting it into a production environment.", 'success')
-        flash(message, 'success')
+        flash(message, 'info')
 
     if error:
         for each_error in error:

@@ -27,8 +27,10 @@ def test_python_code(python_code_run, filename):
     """
     Function to evaluate the Python 3 code using pylint3
     :param :
-    :return: tuple of (all_passed, error, mod_input) variables
+    :return: tuple (info, warning, success, error)
     """
+    info = []
+    warning = []
     success = []
     error = []
 
@@ -67,12 +69,12 @@ def test_python_code(python_code_run, filename):
         error.append(message)
 
     if cmd_status:
-        error.append("pylint returned with status: {}".format(cmd_status))
+        warning.append("pylint returned with status: {}".format(cmd_status))
 
     if message:
-        success.append(
+        info.append(
             "Review your code for issues and test before putting it "
             "into a production environment.")
-        success.append(message)
+        info.append(message)
 
-    return success, error
+    return info, warning, success, error

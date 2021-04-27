@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+ - Fix warning preventing saving of Conditional Controller
  - Fix Sense Hat Input dependency
 
 ### Features
