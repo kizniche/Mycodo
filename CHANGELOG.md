@@ -2,7 +2,7 @@
 
 ### Bugfixes
 
- - Fix warning preventing saving of Conditional Controller
+ - Fix warning preventing saving of Python code
  - Fix Sense Hat Input dependency
 
 ### Features
