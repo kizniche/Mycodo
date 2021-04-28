@@ -104,6 +104,13 @@ OUTPUT_INFORMATION = {
             'phrase': 'The Input Pin 2 of the controller (BCM numbering)'
         },
         {
+            'id': 'use_enable',
+            'type': 'bool',
+            'default_value': True,
+            'name': 'Use Enable Pin',
+            'phrase': 'Enable the use of the Enable Pin'
+        },
+        {
             'id': 'pin_enable',
             'type': 'integer',
             'default_value': 0,
@@ -169,7 +176,8 @@ class OutputModule(AbstractOutput):
         for channel in channels_dict:
             if (not self.options_channels['pin_1'][channel] or
                     not self.options_channels['pin_2'][channel] or
-                    not self.options_channels['pin_enable'][channel] or
+                    (self.options_channels['use_enable'][channel] and
+                     not self.options_channels['pin_enable'][channel]) or
                     not self.options_channels['duty_cycle'][channel]):
                 self.logger.error("Cannot initialize Output channel {} until all options are set. "
                                   "Check your configuration.".format(channel))
@@ -178,10 +186,12 @@ class OutputModule(AbstractOutput):
                 self.gpio.setmode(self.gpio.BCM)
                 self.gpio.setup(self.options_channels['pin_1'][channel], self.gpio.OUT)
                 self.gpio.setup(self.options_channels['pin_2'][channel], self.gpio.OUT)
-                self.gpio.setup(self.options_channels['pin_enable'][channel], self.gpio.OUT)
+                if self.options_channels['use_enable'][channel]:
+                    self.gpio.setup(self.options_channels['pin_enable'][channel], self.gpio.OUT)
                 self.stop(channel)
-                self.driver = self.gpio.PWM(self.options_channels['pin_enable'][channel], 1000)
-                self.driver.start(self.options_channels['duty_cycle'][channel])
+                if self.options_channels['use_enable'][channel]:
+                    self.driver = self.gpio.PWM(self.options_channels['pin_enable'][channel], 1000)
+                    self.driver.start(self.options_channels['duty_cycle'][channel])
                 self.channel_setup[channel] = True
                 self.output_setup = True
                 self.output_states[channel] = False

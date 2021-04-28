@@ -145,9 +145,12 @@ class InputModule(AbstractInput):
         elif self.interface == 'I2C':
             hum_status, return_string = self.atlas_device.query('R')
             if hum_status == 'error':
-                self.logger.error("Sensor read unsuccessful: {err}".format(
-                    err=return_string))
-            elif hum_status == 'success':
+                # try again
+                hum_status, return_string = self.atlas_device.query('R')
+                if hum_status == 'error':
+                    self.logger.error("Sensor read unsuccessful (after 2 attempts): {err}".format(
+                        err=return_string))
+            if hum_status == 'success':
                 self.logger.debug("Sensor returned: type: {}, value: {}".format(
                     type(return_string), return_string))
 

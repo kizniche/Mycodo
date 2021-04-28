@@ -40,6 +40,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             save_path = settings.path_still
         else:
             save_path = assure_path_exists(os.path.join(camera_path, 'still'))
+        # TODO: next major version, remove cam id (unique_id is already in path)
         filename = 'Still-{cam_id}-{cam}-{ts}.jpg'.format(
             cam_id=settings.id,
             cam=settings.name,
@@ -51,6 +52,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             save_path = assure_path_exists(os.path.join(camera_path, 'timelapse'))
         start = datetime.datetime.fromtimestamp(
             settings.timelapse_start_time).strftime("%Y-%m-%d_%H-%M-%S")
+        # TODO: next major version, remove cam id (unique_id is already in path)
         filename = 'Timelapse-{cam_id}-{cam}-{st}-img-{cn:05d}.jpg'.format(
             cam_id=settings.id,
             cam=settings.name,

@@ -4,6 +4,10 @@
 
  - Fix GrovePi DHT Input
 
+### Features
+
+ - Make Enable Pin optional for L298N Output
+
 
 ## 8.10.1 (2021-04-27)
 
