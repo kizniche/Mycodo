@@ -14,6 +14,7 @@ from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import list_to_csv
 
@@ -107,6 +108,16 @@ def method_create(form_create_method):
         controller=TRANSLATIONS['method']['title'])
     error = []
 
+    dep_unmet, _ = return_dependencies(form_create_method.method_type.data)
+    if dep_unmet:
+        list_unmet_deps = []
+        for each_dep in dep_unmet:
+            list_unmet_deps.append(each_dep[0])
+        error.append(
+            "The {dev} device you're trying to add has unmet dependencies: "
+            "{dep}".format(dev=form_create_method.method_type.data,
+                           dep=', '.join(list_unmet_deps)))
+
     try:
         # Create method
         new_method = Method()
@@ -155,12 +166,13 @@ def method_create(form_create_method):
             method.method_order = add_display_order(
                 display_order, new_method_data.unique_id)
             db.session.commit()
-
-        return 0
     except Exception as except_msg:
-
         error.append(except_msg)
+
     flash_success_errors(error, action, url_for('routes_method.method_list'))
+
+    if dep_unmet:
+        return 1
 
 
 def method_add(form_add_method):

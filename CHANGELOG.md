@@ -3,9 +3,11 @@
 ### Bugfixes
 
  - Fix GrovePi DHT Input
+ - Fix Method dependencies not being installed
 
 ### Features
 
+ - Add Output: Grove I2C Motor Driver (TB6612FNG, Board v1.0)
  - Make Enable Pin optional for L298N Output
 
 

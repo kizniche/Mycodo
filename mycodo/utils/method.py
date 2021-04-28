@@ -1,12 +1,15 @@
 # coding=utf-8
 import datetime
+import logging
 import time
 from math import sin, radians
 
-from mycodo.utils.system_pi import get_sec
-from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.databases.models import Method
 from mycodo.databases.models import MethodData
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.system_pi import get_sec
+
+logger = logging.getLogger(__name__)
 
 
 def parse_db_time(time_string, default=None):

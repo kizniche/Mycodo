@@ -97,9 +97,13 @@ def method_builder(method_id):
 
     # Create new method
     elif method_id == '0':
-        form_fail = utils_method.method_create(form_create_method)
-        new_method = Method.query.order_by(Method.id.desc()).first()
-        if not form_fail:
+        unmet_dependencies = utils_method.method_create(form_create_method)
+        if unmet_dependencies:
+            return redirect(url_for('routes_admin.admin_dependencies',
+                                    device=form_create_method.method_type.data))
+
+        if not unmet_dependencies:
+            new_method = Method.query.order_by(Method.id.desc()).first()
             return redirect('/method-build/{method_id}'.format(
                 method_id=new_method.unique_id))
         else:
