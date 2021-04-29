@@ -21,11 +21,53 @@
 #
 #  Contact at kylegabriel.com
 #
+import json
 import logging
 
+from flask import flash
 from flask_babel import lazy_gettext
 
+from mycodo.config import CAMERA_INFO
+from mycodo.databases.models import Camera
+
 logger = logging.getLogger(__name__)
+
+
+def can_stream(custom_options_json):
+    custom_options = json.loads(custom_options_json)
+    camera = Camera.query.filter(Camera.unique_id == custom_options['camera_id']).first()
+    if (custom_options['camera_image_type'] == 'stream' and
+            CAMERA_INFO[camera.library]['capable_stream']):
+        return True
+
+
+def execute_at_creation(error, new_widget, dict_widget):
+    try:
+        if not can_stream(new_widget.custom_options):
+            error.append("This camera type is not capable of streaming")
+    except Exception as err:
+        error.append("execute_at_creation() error: {}".format(err))
+    return error, new_widget
+
+
+def execute_at_modification(
+        mod_widget,
+        request_form,
+        custom_options_json_presave,
+        custom_options_json_postsave):
+    allow_saving = True
+    error = []
+    try:
+        if not can_stream(json.dumps(custom_options_json_postsave)):
+            allow_saving = False
+            error.append("This camera type is not capable of streaming")
+    except Exception as err:
+        error.append("execute_at_modification() error: {}".format(err))
+
+    for each_error in error:
+        flash(each_error, "error")
+
+    return allow_saving, mod_widget, custom_options_json_postsave
 
 
 def constraints_pass_positive_value(mod_widget, value):
@@ -51,6 +93,9 @@ WIDGET_INFORMATION = {
     'no_class': True,
 
     'message': 'Displays a camera image or stream.',
+
+    'execute_at_creation': execute_at_creation,
+    'execute_at_modification': execute_at_modification,
 
     'widget_width': 7,
     'widget_height': 8,

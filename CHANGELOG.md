@@ -4,6 +4,7 @@
 
  - Fix GrovePi DHT Input
  - Fix Method dependencies not being installed
+ - Prevent non-streamable camera types from being selected to stream in Camera Widget ([#991](https://github.com/kizniche/mycodo/issues/991))
 
 ### Features
 

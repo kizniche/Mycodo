@@ -216,6 +216,9 @@ def widget_add(form_base, request_form):
                     dev=dict_widgets[form_base.widget_type.data]['widget_name']),
                 id=new_widget.id),
                 "success")
+        else:
+            for each_error in error:
+                flash(each_error, "error")
     except sqlalchemy.exc.OperationalError as except_msg:
         error.append(except_msg)
     except sqlalchemy.exc.IntegrityError as except_msg:
@@ -252,7 +255,7 @@ def widget_mod(form_base, request_form):
 
     if 'execute_at_modification' in dict_widgets[mod_widget.graph_type]:
         (allow_saving,
-         mod_input,
+         mod_widget,
          custom_options) = dict_widgets[mod_widget.graph_type]['execute_at_modification'](
             mod_widget, request_form, custom_options_json_presave, json.loads(custom_options_json_postsave))
         custom_options = json.dumps(custom_options)  # Convert from dict to JSON string
