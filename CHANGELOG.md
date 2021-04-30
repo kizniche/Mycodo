@@ -26,6 +26,10 @@
  - Add Camera: raspistill
  - Make Add Output dropdown searchable
 
+### Miscellaneous
+
+ - Add "Both" direction option for On/Off and PWM Bang-Bang Outputs
+
 
 ## 8.10.0 (2021-04-24)
 

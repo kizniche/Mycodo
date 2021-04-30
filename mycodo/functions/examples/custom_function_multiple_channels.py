@@ -139,36 +139,38 @@ class CustomModule(AbstractFunction):
             "Custom controller started with options: {}".format( self.float_input))
 
     def loop(self):
-        if self.timer_loop < time.time():
-            while self.timer_loop < time.time():
-                self.timer_loop += self.period
+        if self.timer_loop > time.time():
+            return
 
-            measurements = {}
-            for channel in self.channels_measurement:
-                # Original value/unit
-                measurements[channel] = {}
-                measurements[channel]['measurement'] = self.channels_measurement[channel].measurement
-                measurements[channel]['unit'] = self.channels_measurement[channel].unit
-                measurements[channel]['value'] = random.randint(1, 100)
+        while self.timer_loop < time.time():
+            self.timer_loop += self.period
 
-                # Convert value/unit is conversion_id present and valid
-                if self.channels_conversion[channel]:
-                    conversion = db_retrieve_table_daemon(
-                        Conversion, unique_id=self.channels_measurement[channel].conversion_id)
-                    if conversion:
-                        meas = parse_measurement(
-                            self.channels_conversion[channel],
-                            self.channels_measurement[channel],
-                            measurements,
-                            channel,
-                            measurements[channel])
+        measurements = {}
+        for channel in self.channels_measurement:
+            # Original value/unit
+            measurements[channel] = {}
+            measurements[channel]['measurement'] = self.channels_measurement[channel].measurement
+            measurements[channel]['unit'] = self.channels_measurement[channel].unit
+            measurements[channel]['value'] = random.randint(1, 100)
 
-                        measurements[channel]['measurement'] = meas[channel]['measurement']
-                        measurements[channel]['unit'] = meas[channel]['unit']
-                        measurements[channel]['value'] = meas[channel]['value']
+            # Convert value/unit is conversion_id present and valid
+            if self.channels_conversion[channel]:
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=self.channels_measurement[channel].conversion_id)
+                if conversion:
+                    meas = parse_measurement(
+                        self.channels_conversion[channel],
+                        self.channels_measurement[channel],
+                        measurements,
+                        channel,
+                        measurements[channel])
 
-            if measurements:
-                self.logger.debug("Adding measurements to influxdb: {}".format(measurements))
-                add_measurements_influxdb(self.unique_id, measurements)
-            else:
-                self.logger.debug("No measurements to add to influxdb.")
+                    measurements[channel]['measurement'] = meas[channel]['measurement']
+                    measurements[channel]['unit'] = meas[channel]['unit']
+                    measurements[channel]['value'] = meas[channel]['value']
+
+        if measurements:
+            self.logger.debug("Adding measurements to influxdb: {}".format(measurements))
+            add_measurements_influxdb(self.unique_id, measurements)
+        else:
+            self.logger.debug("No measurements to add to influxdb.")

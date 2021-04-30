@@ -1,9 +1,6 @@
 # coding=utf-8
 #
-#  bang_bang_pwm.py - A hysteretic control for PWM
-#
-#  Copyright (C) 2015-2020 Rob Bultman <rob@firstbuild.com>
-#
+#  bang_bang_pwm.py - A hysteretic control for PWM Outputs
 import time
 
 from flask_babel import lazy_gettext
@@ -32,14 +29,14 @@ def constraints_pass_positive_value(mod_controller, value):
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'bang_bang_pwm',
-    'function_name': 'Bang-Bang (PWM) Hysteretic',
+    'function_name': 'Bang-Bang Hysteretic (PWM) (Raise/Lower/Both)',
 
     'message': 'A simple bang-bang control for controlling one PWM output from one input.'
         ' Select an input, a PWM output, enter a setpoint and a hysteresis, and select a direction.'
-        ' The output will turn on when the input is below setpoint-hysteresis and turn off when'
-        ' the input is above setpoint+hysteresis. This is the behavior when Raise is selected, such'
+        ' The output will turn on when the input is below below (lower = setpoint - hysteresis) and turn off when'
+        ' the input is above (higher = setpoint + hysteresis). This is the behavior when Raise is selected, such'
         ' as when heating. Lower direction has the opposite behavior - it will try to'
-        ' turn the output on in order to drive the input lower.',
+        ' turn the output on in order to drive the input lower. The Both option will raise and lower.',
 
     'options_enabled': [],
 
@@ -88,11 +85,12 @@ FUNCTION_INFORMATION = {
         {
             'id': 'direction',
             'type': 'select',
-            'default_value': 'raise',
+            'default_value': 'both',
             'required': True,
             'options_select': [
                 ('raise', 'Raise'),
-                ('lower', 'Lower')
+                ('lower', 'Lower'),
+                ('both', 'Both')
             ],
             'name': lazy_gettext('Direction'),
             'phrase': 'Raise means the measurement will increase when the control is on (heating). Lower means the measurement will decrease when the output is on (cooling)'
@@ -177,14 +175,14 @@ class CustomModule(AbstractFunction):
         self.setup_custom_options(
             FUNCTION_INFORMATION['custom_options'], custom_function)
 
-        self.output_channel = self.get_output_channel_from_channel_id(
-            self.output_channel_id)
-
         if not testing:
             self.initialize_variables()
 
     def initialize_variables(self):
         self.timestamp = time.time()
+
+        self.output_channel = self.get_output_channel_from_channel_id(
+            self.output_channel_id)
 
         self.logger.info(
             "Bang-Bang controller started with options: "
@@ -206,15 +204,15 @@ class CustomModule(AbstractFunction):
                 self.update_period))
 
     def loop(self):
-        if self.output_channel is None:
-            self.logger.error("Cannot start bang-bang controller: Could not find output channel.")
-            return
-
         if self.timer_loop > time.time():
             return
 
         while self.timer_loop < time.time():
             self.timer_loop += self.update_period
+
+        if self.output_channel is None:
+            self.logger.error("Cannot run bang-bang controller: Check output channel.")
+            return
 
         last_measurement = self.get_last_measurement(
             self.measurement_device_id,
@@ -250,8 +248,27 @@ class CustomModule(AbstractFunction):
                     output_type='pwm',
                     amount=self.duty_cycle_maintain,
                     output_channel=self.output_channel)
+        elif self.direction == 'both':
+            if last_measurement < (self.setpoint - self.hysteresis):
+                self.control.output_on(
+                    self.output_device_id,
+                    output_type='pwm',
+                    amount=self.duty_cycle_increase,
+                    output_channel=self.output_channel)
+            elif last_measurement > (self.setpoint + self.hysteresis):
+                self.control.output_on(
+                    self.output_device_id,
+                    output_type='pwm',
+                    amount=self.duty_cycle_decrease,
+                    output_channel=self.output_channel)
+            else:
+                self.control.output_on(
+                    self.output_device_id,
+                    output_type='pwm',
+                    amount=self.duty_cycle_maintain,
+                    output_channel=self.output_channel)
         else:
-            self.logger.info("Unknown controller direction: {}".format(self.direction))
+            self.logger.info("Unknown controller direction: '{}'".format(self.direction))
 
     def stop_function(self):
         self.control.output_on(
