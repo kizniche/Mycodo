@@ -8,6 +8,7 @@
 
 ### Features
 
+ - Add Input: CCS811 (without temperature) ([#992](https://github.com/kizniche/mycodo/issues/992))
  - Add Output: Grove I2C Motor Driver (TB6612FNG, Board v1.0)
  - Make Enable Pin optional for L298N Output
 

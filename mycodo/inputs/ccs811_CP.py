@@ -1,6 +1,4 @@
 # coding=utf-8
-import time
-
 import copy
 
 from mycodo.inputs.base_input import AbstractInput
@@ -14,10 +12,6 @@ measurements_dict = {
     1: {
         'measurement': 'voc',
         'unit': 'ppb'
-    },
-    2: {
-        'measurement': 'temperature',
-        'unit': 'C'
     }
 }
 
@@ -25,16 +19,13 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'CCS811',
     'input_manufacturer': 'AMS',
-    'input_name': 'CCS811 (with Temperature)',
-    'input_library': 'Adafruit_CCS811',
-    'measurements_name': 'CO2/VOC/Temperature',
+    'input_name': 'CCS811 (without Temperature)',
+    'input_library': 'Adafruit_CircuitPython_CCS811',
+    'measurements_name': 'CO2/VOC',
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.sciosense.com/products/environmental-sensors/ccs811-gas-sensor-solution/',
     'url_datasheet': 'https://www.sciosense.com/wp-content/uploads/2020/01/CCS811-Datasheet.pdf',
-    'url_product_purchase': [
-        'https://www.adafruit.com/product/3566',
-        'https://www.sparkfun.com/products/14193'
-    ],
+    'url_product_purchase': 'https://www.adafruit.com/product/3566',
 
     'options_enabled': [
         'i2c_location',
@@ -45,8 +36,9 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'Adafruit_CCS811', 'Adafruit_CCS811==0.2.1'),
-        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit-GPIO==1.0.3')
+        ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.1'),
+        ('pip-pypi', 'adafruit_bme280', 'adafruit-circuitpython-ccs811==1.3.4')
     ],
 
     'interfaces': ['I2C'],
@@ -57,7 +49,7 @@ INPUT_INFORMATION = {
 
 class InputModule(AbstractInput):
     """
-    A sensor support class that measures the CC2811's voc, temperature, and co2
+    A sensor support class that measures the CC2811's voc and co2
     """
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -68,16 +60,12 @@ class InputModule(AbstractInput):
             self.initialize_input()
 
     def initialize_input(self):
-        from Adafruit_CCS811 import Adafruit_CCS811
+        import adafruit_ccs811
+        from adafruit_extended_bus import ExtendedI2C
 
-        self.sensor = Adafruit_CCS811(
-            address=int(str(self.input_dev.i2c_location), 16),
-            busnum=self.input_dev.i2c_bus)
-
-        while not self.sensor.available():
-            time.sleep(0.1)
-
-        self.sensor.tempOffset = self.sensor.calculateTemperature() - 25.0
+        self.sensor = adafruit_ccs811.CCS811(
+            ExtendedI2C(self.input_dev.i2c_bus),
+            address=int(str(self.input_dev.i2c_location), 16))
 
     def get_measurement(self):
         """ Gets the CO2, VOC, and temperature """
@@ -87,17 +75,10 @@ class InputModule(AbstractInput):
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        if self.sensor.available():
-            temp = self.sensor.calculateTemperature()
-            if not self.sensor.readData():
-                if self.is_enabled(0):
-                    self.value_set(0, self.sensor.geteCO2())
-                if self.is_enabled(1):
-                    self.value_set(1, self.sensor.getTVOC())
-                if self.is_enabled(2):
-                    self.value_set(2, temp)
-            else:
-                self.logger.error("Sensor error")
-                return
+        if self.is_enabled(0):
+            self.value_set(0, self.sensor.eco2)
 
-            return self.return_dict
+        if self.is_enabled(1):
+            self.value_set(1, self.sensor.tvoc)
+
+        return self.return_dict
