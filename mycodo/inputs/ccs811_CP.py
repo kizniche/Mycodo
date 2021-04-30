@@ -25,6 +25,7 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
     'url_manufacturer': 'https://www.sciosense.com/products/environmental-sensors/ccs811-gas-sensor-solution/',
     'url_datasheet': 'https://www.sciosense.com/wp-content/uploads/2020/01/CCS811-Datasheet.pdf',
+    'url_additional': 'https://learn.adafruit.com/adafruit-ccs811-air-quality-sensor',
     'url_product_purchase': 'https://www.adafruit.com/product/3566',
 
     'options_enabled': [
