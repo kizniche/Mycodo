@@ -558,7 +558,7 @@ if __name__ == "__main__":
             return_msg = daemon.output_on(
                 args.outputon,
                 output_channel=args.output_channel)
-        logger.info("[Remote command] Turn on output with ID '{id}': Server returned:".format(
+        logger.info("[Remote command] Turn on output with ID '{id}': Server returned: {msg}".format(
             id=args.outputon, msg=return_msg))
 
     elif args.activatecontroller:

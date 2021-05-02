@@ -93,7 +93,7 @@ OUTPUT_INFORMATION = {
     'interfaces': ['I2C'],
 
     'i2c_address_editable': True,
-    'i2c_address_default': '0x13',
+    'i2c_address_default': '0x14',
 
     'custom_options_message': "To accurately dispense specific volumes, the following options need to be correctly "
                               "set. To determine the flow rate of your pump, first purge the fluid line to remove "
@@ -159,6 +159,26 @@ OUTPUT_INFORMATION = {
             'phrase': 'The speed to dispense and calibrate at'
         }
     ],
+
+    'custom_actions_message':
+        'The I2C address of the board can be changed. Enter a new address in the 0xYY format '
+        '(e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate the Output and '
+        'change the I2C address option after setting the new address.',
+
+    'custom_actions': [
+        {
+            'id': 'new_i2c_address',
+            'type': 'text',
+            'default_value': '0x14',
+            'name': lazy_gettext('New I2C Address'),
+            'phrase': 'The new I2C to set the sensor to'
+        },
+        {
+            'id': 'set_i2c_address',
+            'type': 'button',
+            'name': lazy_gettext('Set I2C Address')
+        }
+    ]
 }
 
 
@@ -167,6 +187,7 @@ class OutputModule(AbstractOutput):
     reg_write_run_cw = 0x02
     reg_write_run_ccw = 0x03
     reg_write_off = 0x00
+    reg_change_i2c = 0x11
 
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
@@ -174,6 +195,7 @@ class OutputModule(AbstractOutput):
         self.i2c_address = None
         self.bus = None
         self.currently_dispensing = {0: False, 1: False}
+        self.setting_i2c = False
 
         output_channels = db_retrieve_table_daemon(
             OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()
@@ -280,6 +302,10 @@ class OutputModule(AbstractOutput):
         add_measurements_influxdb(self.unique_id, measure_dict)
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
+        if self.setting_i2c:
+            self.logger.error("Cannot operate output while I2C address is changing")
+            return
+
         direction = "CW"
         direction_reg = self.reg_write_run_cw
         if amount < 0:
@@ -392,3 +418,26 @@ class OutputModule(AbstractOutput):
 
     def is_setup(self):
         return self.output_setup
+
+    def set_i2c_address(self, args_dict):
+        while self.currently_dispensing[0] or self.currently_dispensing[0]:
+            time.sleep(0.1)
+
+        self.setting_i2c = True
+
+        if 'new_i2c_address' not in args_dict:
+            self.logger.error(
+                "Cannot set new I2C address without an I2C address")
+            return
+
+        try:
+            new_i2c_address = int(str(args_dict['new_i2c_address']), 16)
+            self.bus.write_word_data(
+                self.i2c_address, self.reg_change_i2c, new_i2c_address)
+        except:
+            self.logger.exception(
+                "Could not parse I2C address {} or send it to the board. "
+                "Ensure it's entered in the correct format and the board is accessible.".format(
+                    args_dict['new_i2c_address']))
+        finally:
+            self.setting_i2c = False
