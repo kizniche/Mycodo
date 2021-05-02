@@ -324,7 +324,12 @@ class OutputController(AbstractController, threading.Thread):
         for output_id in self.output:
             states[output_id] = {}
             for each_channel in self.output_unique_id[output_id]:
-                states[output_id][each_channel] = self.output[output_id].output_state(each_channel)
+                try:
+                    states[output_id][each_channel] = self.output[output_id].output_state(each_channel)
+                except Exception as err:
+                    self.logger.error(
+                        "Error getting state for channel {} of output with ID {}: {}".format(
+                            each_channel, output_id, err))
         return states
 
     def is_on(self, output_id, output_channel=0):

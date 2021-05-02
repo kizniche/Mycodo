@@ -151,7 +151,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('pip-pypi', 'bme680', 'bme680==0.5'),
+        ('pip-pypi', 'bme680', 'bme680==1.0.5'),
         ('pip-pypi', 'smbus2', 'smbus2==0.4.1')
     ],
 

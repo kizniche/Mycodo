@@ -2,12 +2,15 @@
 
 ### Bugfixes
 
+ - Fix output state checking not handling errors ([#990](https://github.com/kizniche/mycodo/issues/990))
+ - Fix BME680 Input dependency
  - Fix GrovePi DHT Input
  - Fix Method dependencies not being installed
  - Prevent non-streamable camera types from being selected to stream in Camera Widget ([#991](https://github.com/kizniche/mycodo/issues/991))
 
 ### Features
 
+ - Add Input: MQTT Subscribe (JSON payload)
  - Add Output: Grove I2C Motor Driver (TB6612FNG, Board v1.0)
  - Make Enable Pin optional for L298N Output
 

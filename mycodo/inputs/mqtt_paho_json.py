@@ -1,5 +1,6 @@
 # coding=utf-8
 import datetime
+import json
 
 from flask_babel import lazy_gettext
 
@@ -37,9 +38,9 @@ channels_dict = {
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'MQTT_PAHO',
+    'input_name_unique': 'MQTT_PAHO_JSON',
     'input_manufacturer': 'Mycodo',
-    'input_name': 'MQTT Subscribe (value payload)',
+    'input_name': 'MQTT Subscribe (JSON payload)',
     'input_library': 'paho-mqtt',
     'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,
@@ -50,10 +51,11 @@ INPUT_INFORMATION = {
     'measurements_use_same_timestamp': False,
     'listener': True,
 
-    'message': 'A topic is subscribed to for each channel Subscription Topic and the returned '
-               'payload value will be stored for that channel. Be sure you select and save the '
-               'Measurement Unit for each of the channels. Once the unit has been saved, you '
-               'can convert to other units in the Convert Measurement section.',
+    'message': 'A single topic is subscribed to and the returned JSON payload contains one or '
+               'more key/value pairs. If the set JSON Key exists in the payload, the '
+               'corresponding value will be stored for that channel. Be sure you select and '
+               'save the Measurement Unit for each of channels. Once the unit has been saved, '
+               'you can convert to other units in the Convert Measurement section.',
 
     'options_enabled': [
         'measurements_select'
@@ -81,6 +83,14 @@ INPUT_INFORMATION = {
             'required': True,
             'name': TRANSLATIONS["port"]["title"],
             'phrase': TRANSLATIONS["port"]["phrase"]
+        },
+        {
+            'id': 'mqtt_channel',
+            'type': 'text',
+            'default_value': 'mqtt/test/input',
+            'required': True,
+            'name': lazy_gettext('Topic'),
+            'phrase': lazy_gettext('The topic to subscribe to')
         },
         {
             'id': 'mqtt_keepalive',
@@ -137,12 +147,12 @@ INPUT_INFORMATION = {
 
     'custom_channel_options': [
         {
-            'id': 'subscribe_topic',
+            'id': 'json_name',
             'type': 'text',
             'default_value': '',
             'required': True,
-            'name': lazy_gettext('Subscription Topic'),
-            'phrase': 'The MQTT topic to subscribe to'
+            'name': lazy_gettext('JSON Key'),
+            'phrase': 'JSON Key for the value to be stored'
         }
     ]
 }
@@ -221,12 +231,11 @@ class InputModule(AbstractInput):
                 self.mqtt_hostname, self.mqtt_port))
 
     def subscribe(self):
-        """ Set up the subscriptions to the proper MQTT channels to listen to """
+        """ Subscribe to the proper MQTT channel to listen to """
         try:
-            for channel in self.channels_measurement:
-                self.client.subscribe(self.options_channels['subscribe_topic'][channel])
-                self.logger.debug("Subscribed to MQTT channel '{}'".format(
-                    self.channels_measurement[channel].name))
+            self.client.subscribe(self.mqtt_channel)
+            self.logger.debug("Subscribed to MQTT channel '{}'".format(
+                self.mqtt_channel))
         except:
             self.logger.error("Could not subscribe to MQTT channel '{}'".format(
                 self.mqtt_channel))
@@ -244,43 +253,44 @@ class InputModule(AbstractInput):
 
     def on_message(self, client, userdata, msg):
         datetime_utc = datetime.datetime.utcnow()
-        self.logger.debug("Message received: Channel: {}, Value: {}".format(
-            msg.topic, msg.payload.decode()))
+        payload = msg.payload.decode()
+        self.logger.debug("Message: Channel: {}, Value: {}".format(
+            msg.topic, payload))
         measurement = {}
-        channel = None
-        for each_channel in self.channels_measurement:
-            if self.options_channels['subscribe_topic'][each_channel] == msg.topic:
-                self.logger.debug("Found channel {} with topic '{}'".format(
-                    each_channel,
-                    self.options_channels['subscribe_topic'][each_channel]))
-                channel = each_channel
-
-        if channel is None:
-            self.logger.error(
-                "Could not determine channel for topic '{}'".format(msg.topic))
-            return
 
         try:
-            value = float(msg.payload.decode())
-            self.logger.debug("Payload is float: {}".format(value))
-        except Exception:
-            try:
-                self.logger.error(
-                    "Message doesn't represent a float value: {}".format(
-                        msg.payload.decode()))
-            except:
-                self.logger.error(
-                    "Message doesn't represent a float and could not decode payload")
+            json_values = json.loads(payload)
+        except ValueError as e:
+            self.logger.error("Payload not JSON: {} ".format(
+                msg.payload.decode()))
             return
 
-        # Original value/unit
-        measurement[channel] = {}
-        measurement[channel]['measurement'] = self.channels_measurement[channel].measurement
-        measurement[channel]['unit'] = self.channels_measurement[channel].unit
-        measurement[channel]['value'] = value
-        measurement[channel]['timestamp_utc'] = datetime_utc
+        for key in json_values:
+            for each_channel in self.channels_measurement:
+                if self.options_channels['json_name'][each_channel] == key:
 
-        self.add_measurement_influxdb(channel, measurement)
+                    self.logger.debug(
+                        "Match found. Key: {}, Value: {}".format(
+                            self.options_channels['json_name'][each_channel],
+                            json_values[key]))
+
+                    try:
+                        measurement[each_channel] = {}
+                        measurement[each_channel]['measurement'] = self.channels_measurement[each_channel].measurement
+                        measurement[each_channel]['unit'] = self.channels_measurement[each_channel].unit
+                        measurement[each_channel]['value'] = float(json_values[key])
+                        measurement[each_channel]['timestamp_utc'] = datetime_utc
+
+                        self.add_measurement_influxdb(each_channel, measurement)
+                    except Exception:
+                        try:
+                            self.logger.error(
+                                "Something happened in storing this measurement: {}".format(
+                                    float(json_values[key])))
+                        except:
+                            self.logger.error(
+                                "Value doesn't represent a float and could not decode payload")
+                        return
 
     def add_measurement_influxdb(self, channel, measurement):
         # Convert value/unit is conversion_id present and valid

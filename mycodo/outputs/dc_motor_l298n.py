@@ -63,7 +63,7 @@ OUTPUT_INFORMATION = {
     'url_additional': 'https://www.electronicshub.org/raspberry-pi-l298n-interface-tutorial-control-dc-motor-l298n-raspberry-pi/',
 
     'message': 'The L298N can control 2 DC motors. If these motors control peristaltic pumps, set the Flow Rate '
-               'and the output can can be instructed to dispense volumes in addition to being turned on dor durations.',
+               'and the output can can be instructed to dispense volumes in addition to being turned on for durations.',
 
     'options_enabled': [
         'button_on',
@@ -123,8 +123,8 @@ OUTPUT_INFORMATION = {
             'type': 'integer',
             'default_value': 50,
             'constraints_pass': constraints_pass_percent,
-            'name': 'Duty Cycle',
-            'phrase': 'The duty cycle of the motor (percent, 1 - 100)'
+            'name': 'Enable Pin Duty Cycle',
+            'phrase': 'The duty cycle to apply to the Enable Pin (percent, 1 - 100)'
         },
         {
             'id': 'direction',
