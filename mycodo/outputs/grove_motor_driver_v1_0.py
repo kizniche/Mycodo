@@ -420,7 +420,7 @@ class OutputModule(AbstractOutput):
         return self.output_setup
 
     def set_i2c_address(self, args_dict):
-        while self.currently_dispensing[0] or self.currently_dispensing[0]:
+        while self.currently_dispensing[0] or self.currently_dispensing[1]:
             time.sleep(0.1)
 
         try:
