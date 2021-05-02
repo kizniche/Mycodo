@@ -10,6 +10,7 @@
 
 ### Features
 
+ - Add Input: CCS811 (without temperature) ([#992](https://github.com/kizniche/mycodo/issues/992))
  - Add Input: MQTT Subscribe (JSON payload)
  - Add Output: Grove I2C Motor Driver (TB6612FNG, Board v1.0)
  - Make Enable Pin optional for L298N Output
@@ -27,6 +28,10 @@
  - Add Input: Atlas Scientific humidity sensor
  - Add Camera: raspistill
  - Make Add Output dropdown searchable
+
+### Miscellaneous
+
+ - Add "Both" direction option for On/Off and PWM Bang-Bang Outputs
 
 
 ## 8.10.0 (2021-04-24)
