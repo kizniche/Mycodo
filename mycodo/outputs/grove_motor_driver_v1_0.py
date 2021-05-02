@@ -423,14 +423,14 @@ class OutputModule(AbstractOutput):
         while self.currently_dispensing[0] or self.currently_dispensing[0]:
             time.sleep(0.1)
 
-        self.setting_i2c = True
-
-        if 'new_i2c_address' not in args_dict:
-            self.logger.error(
-                "Cannot set new I2C address without an I2C address")
-            return
-
         try:
+            self.setting_i2c = True
+
+            if 'new_i2c_address' not in args_dict:
+                self.logger.error(
+                    "Cannot set new I2C address without an I2C address")
+                return
+
             new_i2c_address = int(str(args_dict['new_i2c_address']), 16)
             self.bus.write_word_data(
                 self.i2c_address, self.reg_change_i2c, new_i2c_address)
