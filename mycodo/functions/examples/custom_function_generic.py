@@ -50,7 +50,11 @@ FUNCTION_INFORMATION = {
     'function_name_unique': 'example_function_generic',
     'function_name': 'Function: Example: Generic',
 
-    'message': 'This is a custom message that will appear above the Function options. It merely demonstrates how to generate user options and manipulate them. It will retrieve the last selected measurement, turn the selected output on for 15 seconds, then deactivate itself. Study the code to develop your own Custom Function.',
+    'message': 'This is a custom message that will appear above the Function options. '
+               'It merely demonstrates how to generate user options and manipulate them. '
+               'It will retrieve the last selected measurement, turn the selected output '
+               'on for 15 seconds, then deactivate itself. Study the code to develop your '
+               'own Custom Function.',
 
     'options_enabled': [
         'custom_options'
@@ -58,14 +62,19 @@ FUNCTION_INFORMATION = {
 
     'dependencies_module': [
         # Example dependencies that will be installed when the user adds the controller
-        # ('apt', 'build-essential', 'build-essential'),
+        ('apt', 'build-essential', 'build-essential'),
         # ('apt', 'bison', 'bison'),
         # ('apt', 'libasound2-dev', 'libasound2-dev'),
         # ('apt', 'libpulse-dev', 'libpulse-dev'),
         # ('apt', 'swig', 'swig'),
-        # ('pip-pypi', 'pocketsphinx', 'pocketsphinx==0.1.17')  # Note: specify package version, search for package installed elsewhere and ensure versions are the same
+        # ('pip-pypi', 'pocketsphinx', 'pocketsphinx==0.1.17')
+        # Note: specify the pip-pypi package version, but also search for this same package
+        # used elsewhere in Mycodo. All need to be set to the same version in order to prevent conflicts.
     ],
 
+    # These options will appear in the settings of the Function,
+    # which the user can use to set different values and options for the Function.
+    # These settings can only be changed when the Function is inactive.
     'custom_options': [
         {
             'id': 'text_1',
@@ -99,6 +108,9 @@ FUNCTION_INFORMATION = {
             'default_value': True,
             'name': 'Boolean 1',
             'phrase': 'Boolean 1 Description'
+        },
+        {  # This starts a new line for the next action
+            'type': 'new_line'
         },
         {
             'id': 'select_1',
@@ -163,6 +175,10 @@ FUNCTION_INFORMATION = {
         }
     ],
 
+    # Custom Actions give the user the ability to interact with the running Function Controller.
+    # Each button will execute a different function within the Function Controller and pass any
+    # input (text, numbers, selections, etc.) the user entered. This is useful for such things as
+    # calibration.
     'custom_actions_message': 'This is a message for custom actions.',
     'custom_actions': [
         {
@@ -173,16 +189,15 @@ FUNCTION_INFORMATION = {
             'phrase': 'Value for button one.'
         },
         {
-            'id': 'button_one',
+            'id': 'button_one',  # Do a search for the function "button_one(self, args_dict)"
             'type': 'button',
-            'wait_for_return': True,  # Refreshing the UI will wait for the function to complete
+            'wait_for_return': True,  # The UI will wait until the function has returned the UI with a value to display
             'name': 'Button One',
             'phrase': "This is button one"
         },
-        {'type': 'new_line'},  # This starts a new line for the next action
-        {
+        {  # This message will be displayed on it's own line
             'type': 'message',
-            'default_value': 'Here is another action',  # This message will be displayed after the new line
+            'default_value': 'Here is another action',
         },
         {
             'id': 'button_two_value',
@@ -211,42 +226,61 @@ class CustomModule(AbstractFunction):
 
         self.control = DaemonControl()
 
-        # Initialize custom options
+        #
+        # Initialize what you defined in custom_options, above
+        #
+
+        # Standard custom options inherit the name you defined in the "id" key
         self.text_1 = None
         self.integer_1 = None
         self.float_1 = None
         self.bool_1 = None
         self.select_1 = None
+
+        # Custom options of type "select_measurement" require creating two variables and adding "_device_id"
+        # and "_measurement_id" after the name
         self.select_measurement_1_device_id = None
         self.select_measurement_1_measurement_id = None
+
+        # Custom options of type "select_measurement_channel" require three variables and adding
+        # "device_id", "measurement_id", and "channel_id" after the name
         self.output_1_device_id = None
         self.output_1_measurement_id = None
         self.output_1_channel_id = None
+
+        # Custom options of type "select_device" require adding "_id" after the name
         self.select_device_1_id = None
         self.select_device_2_id = None
 
+        #
         # Set custom options
+        #
         custom_function = db_retrieve_table_daemon(
             CustomController, unique_id=self.unique_id)
         self.setup_custom_options(
             FUNCTION_INFORMATION['custom_options'], custom_function)
 
         # Get selected output channel number
-        self.output_1_channel = self.get_output_channel_from_channel_id(self.output_1_channel_id)
+        self.output_1_channel = self.get_output_channel_from_channel_id(
+            self.output_1_channel_id)
 
         if not testing:
             self.initialize_variables()
 
     def initialize_variables(self):
         # import controller-specific modules here
+        # You may import something you defined in dependencies_module
         pass
 
     def run(self):
         try:
             self.running = True
 
-            # Make sure the option "Log Level: Debug" is enabled for these
-            # messages to appear in the daemon log.
+            # This log line will appear in the Daemon log under Config -> Mycodo Logs
+            self.logger.info("Function running")
+
+            # Make sure the option "Log Level: Debug" is enabled for these debug
+            # log lines to appear in the Daemon log.
             self.logger.debug(
                 "Custom controller started with options: "
                 "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(
@@ -261,6 +295,12 @@ class CustomModule(AbstractFunction):
                     self.output_1_measurement_id,
                     self.output_1_channel_id,
                     self.select_device_1_id))
+
+            # You can specify different log levels to indicate things such as errors
+            self.logger.error("This is an error line that will appear in the log")
+
+            # And Warnings
+            self.logger.warning("This is a warning line that will appear in the log")
 
             # Get last measurement for select_measurement_1
             last_measurement = self.get_last_measurement(
@@ -326,9 +366,6 @@ class CustomModule(AbstractFunction):
             self.logger.error("Deactivated unexpectedly")
 
     def loop(self):
-        pass
-
-    def initialize_variables(self):
         pass
 
     def button_one(self, args_dict):

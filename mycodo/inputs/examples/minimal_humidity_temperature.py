@@ -81,16 +81,18 @@ INPUT_INFORMATION = {
             'name': 'Button One Value',
             'phrase': 'Value for button one.'
         },
+        {  # This starts a new line
+            'type': 'new_line'
+        },
         {
             'id': 'button_one',
             'type': 'button',
             'name': 'Button One',
             'phrase': "This is button one"
         },
-        {'type': 'new_line'},  # This starts a new line for the next action
-        {
+        {  # This message will be displayed on a new line
             'type': 'message',
-            'default_value': 'Here is another action',  # This message will be displayed after the new line
+            'default_value': 'Here is another action',
         },
         {
             'id': 'button_two_value',

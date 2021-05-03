@@ -209,6 +209,9 @@ INPUT_INFORMATION = {
             'name': 'Fan Off After Measure',
             'phrase': 'Turn the fan on only during the measurement'
         },
+        {  # This starts a new line for the next options
+            'type': 'new_line'
+        },
         {
             'id': 'fan_seconds',
             'type': 'float',
@@ -217,10 +220,9 @@ INPUT_INFORMATION = {
             'name': 'Fan On Duration',
             'phrase': 'How long to turn the fan on (seconds) before acquiring measurements'
         },
-        {'type': 'new_line'},  # This starts a new line for the next options
-        {
+        {  # This message will be displayed on its own line
             'type': 'message',
-            'default_value': 'Another message between options',  # This message will be displayed after the new line
+            'default_value': 'Another message between options',
         },
         {
             'id': 'measure_range',
