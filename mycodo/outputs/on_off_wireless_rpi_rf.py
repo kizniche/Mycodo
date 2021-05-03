@@ -55,8 +55,8 @@ OUTPUT_INFORMATION = {
         {
             'id': 'pin',
             'type': 'integer',
-            'default_value': 0,
-            'required': True,
+            'default_value': None,
+            'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': lazy_gettext('GPIO Pin (BCM)'),
             'phrase': lazy_gettext('The pin to control the state of')
@@ -210,8 +210,9 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        if self.options_channels['state_shutdown'][0] == 1:
-            self.output_switch('on')
-        elif self.options_channels['state_shutdown'][0] == 0:
-            self.output_switch('off')
+        if self.is_setup():
+            if self.options_channels['state_shutdown'][0] == 1:
+                self.output_switch('on')
+            elif self.options_channels['state_shutdown'][0] == 0:
+                self.output_switch('off')
         self.running = False

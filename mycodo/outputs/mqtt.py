@@ -249,8 +249,9 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        if self.options_channels['state_shutdown'][0] == 1:
-            self.output_switch('on')
-        elif self.options_channels['state_shutdown'][0] == 0:
-            self.output_switch('off')
+        if self.is_setup():
+            if self.options_channels['state_shutdown'][0] == 1:
+                self.output_switch('on')
+            elif self.options_channels['state_shutdown'][0] == 0:
+                self.output_switch('off')
         self.running = False

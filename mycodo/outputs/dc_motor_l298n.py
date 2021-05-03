@@ -90,7 +90,8 @@ OUTPUT_INFORMATION = {
         {
             'id': 'pin_1',
             'type': 'integer',
-            'default_value': 0,
+            'default_value': None,
+            'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Input Pin 1',
             'phrase': 'The Input Pin 1 of the controller (BCM numbering)'
@@ -98,7 +99,8 @@ OUTPUT_INFORMATION = {
         {
             'id': 'pin_2',
             'type': 'integer',
-            'default_value': 0,
+            'default_value': None,
+            'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Input Pin 2',
             'phrase': 'The Input Pin 2 of the controller (BCM numbering)'
@@ -113,7 +115,8 @@ OUTPUT_INFORMATION = {
         {
             'id': 'pin_enable',
             'type': 'integer',
-            'default_value': 0,
+            'default_value': None,
+            'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Enable Pin',
             'phrase': 'The Enable pin of the controller (BCM numbering)'
@@ -284,5 +287,6 @@ class OutputModule(AbstractOutput):
     def stop_output(self):
         """ Called when Output is stopped """
         for channel in channels_dict:
-            self.stop(channel)
+            if self.is_setup(channel=channel):
+                self.stop(channel)
         self.running = False

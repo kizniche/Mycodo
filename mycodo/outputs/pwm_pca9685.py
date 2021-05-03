@@ -433,9 +433,10 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        for i in range(16):
-            if self.options_channels['state_shutdown'][i] == 0:
-                self.output_switch('off')
-            elif self.options_channels['state_shutdown'][i] == 'set_duty_cycle':
-                self.output_switch('on', amount=self.options_channels['shutdown_value'][i])
+        if self.is_setup():
+            for i in range(16):
+                if self.options_channels['state_shutdown'][i] == 0:
+                    self.output_switch('off')
+                elif self.options_channels['state_shutdown'][i] == 'set_duty_cycle':
+                    self.output_switch('on', amount=self.options_channels['shutdown_value'][i])
         self.running = False

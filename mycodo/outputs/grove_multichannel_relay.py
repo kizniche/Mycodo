@@ -320,14 +320,14 @@ class OutputModule(AbstractOutput):
     def stop_output(self):
         """ Called when Output is stopped """
         dict_states = {}
-        for channel in channels_dict:
-            if self.options_channels['state_shutdown'][channel] == 1:
-                dict_states[channel] = bool(self.options_channels['on_state'][channel])
-            elif self.options_channels['state_shutdown'][channel] == 0:
-                dict_states[channel] = bool(not self.options_channels['on_state'][channel])
-
-        self.logger.debug("List sent to device: {}".format(self.dict_to_list_states(dict_states)))
-        self.sensor.port(self.dict_to_list_states(dict_states))
+        if self.is_setup():
+            for channel in channels_dict:
+                if self.options_channels['state_shutdown'][channel] == 1:
+                    dict_states[channel] = bool(self.options_channels['on_state'][channel])
+                elif self.options_channels['state_shutdown'][channel] == 0:
+                    dict_states[channel] = bool(not self.options_channels['on_state'][channel])
+            self.logger.debug("List sent to device: {}".format(self.dict_to_list_states(dict_states)))
+            self.sensor.port(self.dict_to_list_states(dict_states))
         self.running = False
 
 

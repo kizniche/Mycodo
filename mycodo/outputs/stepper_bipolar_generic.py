@@ -74,8 +74,8 @@ OUTPUT_INFORMATION = {
         {
             'id': 'pin_step',
             'type': 'integer',
-            'default_value': 0,
-            'required': True,
+            'default_value': None,
+            'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Step Pin',
             'phrase': 'The Step pin of the controller (BCM numbering)'
@@ -91,21 +91,23 @@ OUTPUT_INFORMATION = {
         {
             'id': 'pin_dir',
             'type': 'integer',
-            'default_value': 0,
+            'default_value': None,
+            'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Direction Pin',
             'phrase': "{} {}".format(
                 'The Direction pin of the controller (BCM numbering).',
-                lazy_gettext('Set to 0 to disable.'))
+                lazy_gettext('Set to None to disable.'))
         },
         {
             'id': 'pin_enable',
             'type': 'integer',
-            'default_value': 0,
+            'default_value': None,
+            'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Enable Pin',
             'phrase': 'The Enable pin of the controller (BCM numbering). {}'.format(
-                lazy_gettext('Set to 0 to disable.'))
+                lazy_gettext('Set to None to disable.'))
         },
         {
             'id': 'enable_mode',
@@ -152,29 +154,32 @@ OUTPUT_INFORMATION = {
         {
             'id': 'pin_mode_1',
             'type': 'integer',
-            'default_value': 0,
+            'default_value': None,
+            'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Mode Pin 1',
             'phrase': 'The Mode Pin 1 of the controller (BCM numbering). {}'.format(
-                lazy_gettext('Set to 0 to disable.'))
+                lazy_gettext('Set to None to disable.'))
         },
         {
             'id': 'pin_mode_2',
             'type': 'integer',
-            'default_value': 0,
+            'default_value': None,
+            'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Mode Pin 2',
             'phrase': 'The Mode Pin 2 of the controller (BCM numbering). {}'.format(
-                lazy_gettext('Set to 0 to disable.'))
+                lazy_gettext('Set to None to disable.'))
         },
         {
             'id': 'pin_mode_3',
             'type': 'integer',
-            'default_value': 0,
+            'default_value': None,
+            'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Mode Pin 3',
             'phrase': 'The Mode Pin 3 of the controller (BCM numbering). {}'.format(
-                lazy_gettext('Set to 0 to disable.'))
+                lazy_gettext('Set to None to disable.'))
         }
     ]
 }
@@ -281,7 +286,7 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        if self.options_channels['pin_enable'][0]:
+        if self.is_setup():
             if self.options_channels['enable_shutdown'][0] == "enable":
                 self.stepper.enable(True)
             elif self.options_channels['enable_shutdown'][0] == "disable":
