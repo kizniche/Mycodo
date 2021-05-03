@@ -308,7 +308,7 @@ class OutputModule(AbstractOutput):
 
         direction = "CW"
         direction_reg = self.reg_write_run_cw
-        if amount < 0:
+        if amount and amount < 0:
             direction = "CCW"
             direction_reg = self.reg_write_run_ccw
 
@@ -329,9 +329,8 @@ class OutputModule(AbstractOutput):
             self.logger.debug("Output turned off")
             self.bus.write_word_data(self.i2c_address, self.reg_write_off, output_channel)
 
-        elif (state == 'on' and
-                output_type in ['vol', None] and
-                amount not in [0, None]):
+        elif (amount and state == 'on' and
+                output_type in ['vol', None]):
 
             if self.currently_dispensing[output_channel]:
                 self.logger.debug(
