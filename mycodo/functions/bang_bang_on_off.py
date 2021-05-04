@@ -16,7 +16,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'bang_bang',
+    'function_name_unique': 'bang_bang_on_off',
     'function_name': 'Bang-Bang Hysteretic (On/Off) (Raise/Lower/Both)',
 
     'message': 'A simple bang-bang control for controlling one output from one input.'
