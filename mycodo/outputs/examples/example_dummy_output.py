@@ -103,7 +103,7 @@ OUTPUT_INFORMATION = {
             'id': 'float_value',
             'type': 'float',
             'default_value': 5.0,
-            'constraints_pass': constraints_pass_positive_value(),
+            'constraints_pass': constraints_pass_positive_value,
             'name': 'Decimal Value',
             'phrase': 'Set a decimal value'
         },

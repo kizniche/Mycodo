@@ -288,7 +288,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 1,
             'required': True,
-            'constraints_pass': constraints_pass_positive_or_zero_value(),
+            'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Measurement Decimal',
             'phrase': 'The number of digits after the decimal'
         },
