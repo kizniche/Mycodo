@@ -1,4 +1,15 @@
-    {% if each_option['type'] in ['float', 'integer', 'text'] %}
+  {% if each_option['type'] == 'message' %}
+
+<div class="col-12" style="padding-top: 1em; padding-bottom: 0.5em">
+  {{each_option['default_value']}}
+</div>
+
+  {% elif each_option['type'] == 'new_line' %}
+
+</div>
+<div class="row small-gutters" style="padding: 0.5em">
+
+  {% elif each_option['type'] in ['float', 'integer', 'text'] %}
 
 <div class="col-auto">
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>

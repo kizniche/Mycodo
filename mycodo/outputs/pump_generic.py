@@ -78,8 +78,8 @@ OUTPUT_INFORMATION = {
         {
             'id': 'pin',
             'type': 'integer',
-            'default_value': 0,
-            'required': True,
+            'default_value': None,
+            'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': lazy_gettext('GPIO Pin (BCM)'),
             'phrase': lazy_gettext('The pin to control the state of')

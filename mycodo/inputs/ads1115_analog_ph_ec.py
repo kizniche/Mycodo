@@ -62,7 +62,17 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
     'execute_at_modification': execute_at_modification,
 
-    'message': 'This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH and/or electrical conductivity (EC) from analog sensors. You can enable or disable either measurement if you want to only connect a pH sensor or an EC sensor by selecting which measurements you want to under Measurements Enabled. Select which channel each sensor is connected to on the ADC. There are default calibration values initially set for the Input. There are also functions to allow you to easily calibrate your sensors with calibration solutions. If you use the Calibrate Slot actions, these values will be calculated and will replace the currently-set values. You can use the Clear Calibration action to delete the database values and return to using the default values. If you delete the Input or create a new Input to use your ADC/sensors with, you will need to recalibrate in order to store new calibration data.',
+    'message': 'This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH '
+               'and/or electrical conductivity (EC) from analog sensors. You can enable or disable '
+               'either measurement if you want to only connect a pH sensor or an EC sensor by '
+               'selecting which measurements you want to under Measurements Enabled. Select which '
+               'channel each sensor is connected to on the ADC. There are default calibration values '
+               'initially set for the Input. There are also functions to allow you to easily '
+               'calibrate your sensors with calibration solutions. If you use the Calibrate Slot '
+               'actions, these values will be calculated and will replace the currently-set values. '
+               'You can use the Clear Calibration action to delete the database values and return '
+               'to using the default values. If you delete the Input or create a new Input to use '
+               'your ADC/sensors with, you will need to recalibrate in order to store new calibration data.',
 
     'options_enabled': [
         'measurements_select',
@@ -118,7 +128,6 @@ INPUT_INFORMATION = {
             'phrase': 'The ADC channel the EC sensor is connected'
         },
         {  # This message will be displayed after the new line
-            'id': None,
             'type': 'message',
             'default_value': 'Temperature Compensation',
         },
@@ -144,7 +153,6 @@ INPUT_INFORMATION = {
             'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use for temperature compensation')
         },
         {  # This message will be displayed after the new line
-            'id': None,
             'type': 'message',
             'default_value': 'pH Calibration Data',
         },
@@ -170,7 +178,6 @@ INPUT_INFORMATION = {
             'phrase': 'Calibration data: Temperature'
         },
         {  # This starts a new line for the next options
-            'id': None,
             'type': 'new_line'
         },
         {
@@ -195,7 +202,6 @@ INPUT_INFORMATION = {
             'phrase': 'Calibration data: Temperature'
         },
         {  # This message will be displayed after the new line
-            'id': None,
             'type': 'message',
             'default_value': 'EC Calibration Data'
         },
@@ -221,7 +227,6 @@ INPUT_INFORMATION = {
             'phrase': 'EC calibration data: EC'
         },
         {  # This starts a new line for the next options
-            'id': None,
             'type': 'new_line'
         },
         {
@@ -248,12 +253,11 @@ INPUT_INFORMATION = {
     ],
     'custom_actions': [
         {  # This message will be displayed after the new line
-            'id': None,
             'type': 'message',
             'default_value': """pH Calibration Actions: Place your probe in a solution of known pH.
-            Set the known pH value in the `Calibration buffer pH` field, and press `Calibrate pH, slot 1`.
-            Repeat with a second buffer, and press `Calibrate pH, slot 2`.
-            You don't need to change the values under `Custom Options`."""
+            Set the known pH value in the "Calibration buffer pH" field, and press "Calibrate pH, slot 1".
+            Repeat with a second buffer, and press "Calibrate pH, slot 2".
+            You don't need to change the values under "Custom Options"."""
         },
         {
             'id': 'calibration_ph',
@@ -281,12 +285,11 @@ INPUT_INFORMATION = {
             'name': 'Clear pH Calibration Slots'
         },
         {  # This message will be displayed after the new line
-            'id': None,
             'type': 'message',
             'default_value': """EC Calibration Actions: Place your probe in a solution of known EC.
-            Set the known EC value in the `Calibration standard EC` field, and press `Calibrate EC, slot 1`.
-            Repeat with a second standard, and press `Calibrate EC, slot 2`.
-            You don't need to change the values under `Custom Options`."""
+            Set the known EC value in the "Calibration standard EC" field, and press "Calibrate EC, slot 1".
+            Repeat with a second standard, and press "Calibrate EC, slot 2".
+            You don't need to change the values under "Custom Options"."""
         },
         {
             'id': 'calibration_ec',

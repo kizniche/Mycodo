@@ -249,11 +249,12 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        for channel in channels_dict:
-            if self.options_channels['state_shutdown'][channel] == 1:
-                self.output_switch('on', output_channel=channel)
-            elif self.options_channels['state_shutdown'][channel] == 0:
-                self.output_switch('off', output_channel=channel)
+        if self.is_setup():
+            for channel in channels_dict:
+                if self.options_channels['state_shutdown'][channel] == 1:
+                    self.output_switch('on', output_channel=channel)
+                elif self.options_channels['state_shutdown'][channel] == 0:
+                    self.output_switch('off', output_channel=channel)
         self.running = False
 
     def status_update(self):

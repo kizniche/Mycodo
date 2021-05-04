@@ -115,7 +115,6 @@ FUNCTION_INFORMATION = {
             'phrase': lazy_gettext('How many seconds the output will turn on every Period')
         },
         {
-            'id': 'message_main',
             'type': 'message',
             'default_value': 'Currently, only autotuning to raise a condition (measurement) is supported.',
         },

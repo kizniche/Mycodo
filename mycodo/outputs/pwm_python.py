@@ -251,10 +251,11 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
-        if self.options_channels['state_shutdown'][0] == 0:
-            self.output_switch('off')
-        elif self.options_channels['state_shutdown'][0] == 'set_duty_cycle':
-            self.output_switch('on', amount=self.options_channels['shutdown_value'][0])
+        if self.is_setup():
+            if self.options_channels['state_shutdown'][0] == 0:
+                self.output_switch('off')
+            elif self.options_channels['state_shutdown'][0] == 'set_duty_cycle':
+                self.output_switch('on', amount=self.options_channels['shutdown_value'][0])
         self.running = False
 
     def save_output_python_pwm_code(self, unique_id):
