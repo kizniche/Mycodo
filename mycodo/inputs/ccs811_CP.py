@@ -17,7 +17,7 @@ measurements_dict = {
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'CCS811',
+    'input_name_unique': 'CCS811_CP',
     'input_manufacturer': 'AMS',
     'input_name': 'CCS811 (without Temperature)',
     'input_library': 'Adafruit_CircuitPython_CCS811',
