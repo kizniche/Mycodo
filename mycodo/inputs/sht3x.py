@@ -3,32 +3,16 @@
 # Author: Tony DiCola
 # Based on the BMP280 driver with SHT31 changes provided by
 # David J Taylor, Edinburgh (www.satsignal.eu)
+import copy
 import math
 import time
 
-import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
-
-
-def constraints_pass_positive_value(mod_input, value):
-    """
-    Check if the user input is acceptable
-    :param mod_input: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_input
-
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
 
 # Measurements
 measurements_dict = {

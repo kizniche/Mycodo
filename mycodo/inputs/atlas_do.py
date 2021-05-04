@@ -1,27 +1,12 @@
 # coding=utf-8
 import copy
+
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.atlas_calibration import setup_atlas_device
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.system_pi import str_is_float
-
-
-def constraints_pass_positive_value(mod_input, value):
-    """
-    Check if the user input is acceptable
-    :param mod_input: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_input
-
 
 # Measurements
 measurements_dict = {
@@ -30,7 +15,6 @@ measurements_dict = {
         'unit': 'mg_L'
     }
 }
-
 
 # Input information
 INPUT_INFORMATION = {

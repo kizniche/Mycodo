@@ -23,9 +23,9 @@
 #
 import json
 import logging
+import re
 
 import flask_login
-import re
 from flask import flash
 from flask_babel import lazy_gettext
 
@@ -40,6 +40,7 @@ from mycodo.databases.models import NoteTags
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.mycodo_flask.utils.utils_general import use_unit_generate
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import return_measurement_info
 
@@ -116,22 +117,6 @@ def generate_page_variables(widget_unique_id, widget_options):
     }
 
     return dict_return
-
-
-def constraints_pass_positive_value(mod_widget, value):
-    """
-    Check if the user widget is acceptable
-    :param mod_widget: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_widget
 
 
 WIDGET_INFORMATION = {

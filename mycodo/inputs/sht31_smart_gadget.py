@@ -1,8 +1,8 @@
 # coding=utf-8
+import copy
 import datetime
 import time
 
-import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -12,7 +12,7 @@ from mycodo.utils.influx import parse_measurement
 from mycodo.utils.influx import write_influxdb_value
 
 
-def constraints_pass_positive_value(mod_input, value):
+def constraints_pass_logging_interval(mod_input, value):
     """
     Check if the user input is acceptable
     :param mod_input: SQL object with user-saved Input options
@@ -110,7 +110,7 @@ INPUT_INFORMATION = {
             'type': 'integer',
             'default_value': 600,
             'required': True,
-            'constraints_pass': constraints_pass_positive_value,
+            'constraints_pass': constraints_pass_logging_interval,
             'name': lazy_gettext('Set Logging Interval'),
             'phrase': lazy_gettext(
                 'Set the logging interval (seconds) the device will store '

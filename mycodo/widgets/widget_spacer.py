@@ -23,23 +23,9 @@
 #
 import logging
 
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
+
 logger = logging.getLogger(__name__)
-
-
-def constraints_pass_positive_value(mod_widget, value):
-    """
-    Check if the user widget is acceptable
-    :param mod_widget: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_widget
 
 
 WIDGET_INFORMATION = {

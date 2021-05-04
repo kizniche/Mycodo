@@ -29,6 +29,7 @@ from flask_babel import lazy_gettext
 
 from mycodo.config import CAMERA_INFO
 from mycodo.databases.models import Camera
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
 
 logger = logging.getLogger(__name__)
 
@@ -68,22 +69,6 @@ def execute_at_modification(
         flash(each_error, "error")
 
     return allow_saving, mod_widget, custom_options_json_postsave
-
-
-def constraints_pass_positive_value(mod_widget, value):
-    """
-    Check if the user widget is acceptable
-    :param mod_widget: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_widget
 
 
 WIDGET_INFORMATION = {

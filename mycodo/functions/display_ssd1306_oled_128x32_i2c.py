@@ -42,6 +42,8 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.lcd import format_measurement_line
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
 
 # Set to how many lines the LCD has
 lcd_lines = 4
@@ -162,22 +164,6 @@ def execute_at_modification(
             custom_options_channels_dict_postsave)
 
 
-def constraints_pass_positive_value(mod_controller, value):
-    """
-    Check if the user controller is acceptable
-    :param mod_controller: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_controller
-
-
 FUNCTION_INFORMATION = {
     'function_name_unique': 'display_ssd1306_oled_128x32_i2c',
     'function_name': 'Display: SSD1306 OLED 128x32 (I2C)',
@@ -286,6 +272,15 @@ FUNCTION_INFORMATION = {
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Measurement Max Age',
             'phrase': 'The maximum allowed age of the measurement'
+        },
+        {
+            'id': 'measure_decimal',
+            'type': 'integer',
+            'default_value': 1,
+            'required': True,
+            'constraints_pass': constraints_pass_positive_or_zero_value,
+            'name': 'Measurement Decimal',
+            'phrase': 'The number of digits after the decimal'
         },
         {
             'id': 'text',

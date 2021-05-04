@@ -2,23 +2,7 @@
 import copy
 
 from mycodo.inputs.base_input import AbstractInput
-
-
-def constraints_pass_positive_value(mod_input, value):
-    """
-    Check if the user input is acceptable
-    :param mod_input: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value < 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_input
-
+from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
 
 # Measurements
 measurements_dict = {
@@ -58,16 +42,18 @@ INPUT_INFORMATION = {
         {
             'id': 'pin_trigger',
             'type': 'integer',
-            'default_value': 0,
-            'constraints_pass': constraints_pass_positive_value,
+            'default_value': None,
+            'required': False,
+            'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Trigger Pin',
             'phrase': 'Enter the GPIO Trigger Pin for your device (BCM numbering).'
         },
         {
             'id': 'pin_echo',
             'type': 'integer',
-            'default_value': 0,
-            'constraints_pass': constraints_pass_positive_value,
+            'default_value': None,
+            'required': False,
+            'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': 'Echo Pin',
             'phrase': 'Enter the GPIO Echo Pin for your device (BCM numbering).'
         },
@@ -128,6 +114,8 @@ class InputModule(AbstractInput):
             self.sensor = adafruit_hcsr04.HCSR04(
                 trigger_pin=bcm_to_board[self.pin_trigger - 1],
                 echo_pin=bcm_to_board[self.pin_echo - 1])
+        else:
+            self.logger.error("Must set trigger and enable pins")
 
     def get_measurement(self):
         """ Gets the measurement """

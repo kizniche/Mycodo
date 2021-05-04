@@ -4,23 +4,7 @@ import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
-
-
-def constraints_pass_positive_value(mod_input, value):
-    """
-    Check if the user input is acceptable
-    :param mod_input: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_input
-
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
 
 # Measurements
 measurements_dict = {
@@ -29,7 +13,6 @@ measurements_dict = {
         'unit': 'pH'
     },
 }
-
 
 # Input information
 INPUT_INFORMATION = {

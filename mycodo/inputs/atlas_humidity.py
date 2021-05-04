@@ -1,5 +1,7 @@
 # coding=utf-8
 import copy
+import time
+
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
@@ -146,6 +148,7 @@ class InputModule(AbstractInput):
             hum_status, return_string = self.atlas_device.query('R')
             if hum_status == 'error':
                 # try again
+                time.sleep(1)
                 hum_status, return_string = self.atlas_device.query('R')
                 if hum_status == 'error':
                     self.logger.error("Sensor read unsuccessful (after 2 attempts): {err}".format(

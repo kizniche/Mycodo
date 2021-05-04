@@ -59,7 +59,7 @@ OUTPUT_INFORMATION = {
         {
             'id': 'pin',
             'type': 'integer',
-            'default_value': 0,
+            'default_value': None,
             'required': True,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': lazy_gettext('GPIO Pin (BCM)'),
@@ -193,19 +193,26 @@ class OutputModule(AbstractOutput):
             if self.options_channels['pwm_library'][0] == 'pigpio_hardware':
                 self.pwm_output.hardware_PWM(
                     self.options_channels['pin'][0], self.options_channels['pwm_hertz'][0], 0)
+                self.logger.info("Output setup on Hardware pin {pin} at {hz} Hertz".format(
+                    pin=self.options_channels['pin'][0],
+                    hz=self.options_channels['pwm_hertz'][0]))
             elif self.options_channels['pwm_library'][0] == 'pigpio_any':
                 self.pwm_output.set_PWM_frequency(
                     self.options_channels['pin'][0], self.options_channels['pwm_hertz'][0])
+                self.logger.info("Output setup on Any pin {pin} at {hz} Hertz".format(
+                    pin=self.options_channels['pin'][0],
+                    hz=self.options_channels['pwm_hertz'][0]))
 
             self.output_setup = True
 
             state_string = ""
             if self.options_channels['state_startup'][0] == 0:
                 self.output_switch('off')
-                state_string += " and turned off (0 % duty cycle)"
+                self.logger.info("PWM turned off (0 % duty cycle)")
             elif self.options_channels['state_startup'][0] == 'set_duty_cycle':
                 self.output_switch('on', amount=self.options_channels['startup_value'][0])
-                state_string += " and {} % duty cycle (user-specified value)".format(self.options_channels['startup_value'][0])
+                self.logger.info("PWM set to {} % duty cycle (user-specified value)".format(
+                    self.options_channels['startup_value'][0]))
             elif self.options_channels['state_startup'][0] == 'last_duty_cycle':
                 device_measurement = db_retrieve_table_daemon(DeviceMeasurements).filter(
                     and_(DeviceMeasurements.device_id == self.unique_id,
@@ -222,7 +229,9 @@ class OutputModule(AbstractOutput):
                         duration_sec=None)
 
                 if last_measurement:
-                    state_string += " and {} % duty cycle (last known value)".format(last_measurement[1])
+                    self.logger.info(
+                        "PWM set to {} % duty cycle (last known value)".format(
+                            last_measurement[1]))
                     self.output_switch('on', amount=last_measurement[1])
                 else:
                     self.logger.error(
@@ -230,11 +239,6 @@ class OutputModule(AbstractOutput):
                         "the last known duty cycle, but a last known "
                         "duty cycle could not be found in the measurement "
                         "database")
-
-            self.logger.info("Output setup on pin {pin} at {hz} Hertz{ss}".format(
-                pin=self.options_channels['pin'][0],
-                hz=self.options_channels['pwm_hertz'][0],
-                ss=state_string))
         except Exception as except_msg:
             self.logger.exception("Output was unable to be setup on pin {pin}: {err}".format(
                 pin=self.options_channels['pin'][0], err=except_msg))
@@ -271,16 +275,22 @@ class OutputModule(AbstractOutput):
 
     def is_on(self, output_channel=None):
         if self.is_setup():
-            response = self.pwm_output.get_PWM_dutycycle(self.options_channels['pin'][0])
-            if self.options_channels['pwm_library'][0] == 'pigpio_hardware':
-                duty_cycle = response / 10000
-            elif self.options_channels['pwm_library'][0] == 'pigpio_any':
-                duty_cycle = self.pigpio_value_to_duty_cycle(response)
-            else:
-                return None
+            try:
+                response = self.pwm_output.get_PWM_dutycycle(self.options_channels['pin'][0])
 
-            if duty_cycle > 0:
-                return duty_cycle
+                if self.options_channels['pwm_library'][0] == 'pigpio_hardware':
+                    duty_cycle = response / 10000
+                elif self.options_channels['pwm_library'][0] == 'pigpio_any':
+                    duty_cycle = self.pigpio_value_to_duty_cycle(response)
+                else:
+                    return None
+                if duty_cycle > 0:
+                    return duty_cycle
+            except self.pigpio.error as error:
+                if error.value == 'GPIO is not in use for PWM':
+                    pass  # How duty cycle of 0 is returned now in pigpio (*raises eyebrow*)
+            except Exception as err:
+                self.logger.error("Error getting PWM state: {}".format(err))
 
             return False
 

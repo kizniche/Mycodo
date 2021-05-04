@@ -88,7 +88,7 @@ OUTPUT_INFORMATION = {
         {
             'id': 'pin',
             'type': 'integer',
-            'default_value': 0,
+            'default_value': None,
             'required': True,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': lazy_gettext('GPIO Pin (BCM)'),

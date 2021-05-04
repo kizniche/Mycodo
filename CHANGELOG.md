@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+ - Fix error when PWM Output duty cycle is 0
  - Fix output state checking not handling errors ([#990](https://github.com/kizniche/mycodo/issues/990))
  - Fix BME680 Input dependency
  - Fix GrovePi DHT Input

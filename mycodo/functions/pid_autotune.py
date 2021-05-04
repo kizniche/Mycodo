@@ -32,26 +32,10 @@ from mycodo.databases.utils import session_scope
 from mycodo.functions.base_function import AbstractFunction
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.PID_hirschmann.pid_autotune import PIDAutotune
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
-
-
-def constraints_pass_positive_value(mod_controller, value):
-    """
-    Check if the user controller is acceptable
-    :param mod_controller: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_controller
-
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'pid_autotune',

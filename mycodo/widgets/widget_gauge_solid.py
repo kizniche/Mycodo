@@ -28,6 +28,8 @@ import re
 from flask import flash
 from flask_babel import lazy_gettext
 
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
+
 logger = logging.getLogger(__name__)
 
 
@@ -113,22 +115,6 @@ def generate_page_variables(widget_unique_id, widget_options):
         "colors_gauge_solid_form": colors_gauge_solid_form,
     }
     return dict_return
-
-
-def constraints_pass_positive_value(mod_widget, value):
-    """
-    Check if the user widget is acceptable
-    :param mod_widget: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_widget
 
 
 WIDGET_INFORMATION = {

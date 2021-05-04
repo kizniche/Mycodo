@@ -1,35 +1,18 @@
 # coding=utf-8
 #
 #  bang_bang_on_off.py - A hysteretic control for On/Off Outputs
-import threading
 import time
 
 from flask_babel import lazy_gettext
 
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import CustomController
-from mycodo.databases.utils import session_scope
 from mycodo.functions.base_function import AbstractFunction
 from mycodo.mycodo_client import DaemonControl
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
-
-
-def constraints_pass_positive_value(mod_controller, value):
-    """
-    Check if the user controller is acceptable
-    :param mod_controller: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_controller
 
 
 FUNCTION_INFORMATION = {

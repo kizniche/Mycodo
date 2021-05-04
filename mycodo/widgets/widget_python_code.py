@@ -36,6 +36,7 @@ from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.databases import set_uuid
 from mycodo.utils.code_verification import create_python_file
 from mycodo.utils.code_verification import test_python_code
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.widgets.base_widget import AbstractWidget
 
 logger = logging.getLogger(__name__)
@@ -126,22 +127,6 @@ def execute_at_modification(
 
 def execute_at_deletion(unique_id):
     pass
-
-
-def constraints_pass_positive_value(mod_widget, value):
-    """
-    Check if the user widget is acceptable
-    :param mod_widget: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is positive
-    if value <= 0:
-        all_passed = False
-        errors.append("Must be a positive value")
-    return all_passed, errors, mod_widget
 
 
 WIDGET_INFORMATION = {

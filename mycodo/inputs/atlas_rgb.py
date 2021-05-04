@@ -1,25 +1,12 @@
 # coding=utf-8
 import copy
+
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.atlas_calibration import setup_atlas_device
+from mycodo.utils.constraints_pass import constraints_pass_percent
 
-
-def constraints_pass_percentage(mod_input, value):
-    """
-    Check if the user input is acceptable
-    :param mod_input: SQL object with user-saved Input options
-    :param value: float or int
-    :return: tuple: (bool, list of strings)
-    """
-    errors = []
-    all_passed = True
-    # Ensure value is between 0 - 100
-    if value < 0 or value > 100:
-        all_passed = False
-        errors.append("Must be >= 0 and <= 100")
-    return all_passed, errors, mod_input
 
 def constraints_pass_gamma(mod_input, value):
     """
@@ -119,7 +106,7 @@ INPUT_INFORMATION = {
             'id': 'led_percentage',
             'type': 'integer',
             'default_value': 30,
-            'constraints_pass': constraints_pass_percentage,
+            'constraints_pass': constraints_pass_percent,
             'name': lazy_gettext('LED Percentage'),
             'phrase': lazy_gettext('What percentage of power to supply to the LEDs during measurement')
         },
