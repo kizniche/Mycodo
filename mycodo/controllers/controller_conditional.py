@@ -174,7 +174,10 @@ class ConditionalController(AbstractController, threading.Thread):
         message += '\n[Messages]:\n'
 
         self.conditional_run.message = message
-        self.conditional_run.conditional_code_run()
+        try:
+            self.conditional_run.conditional_code_run()
+        except Exception:
+            self.logger.exception("Exception executing Conditional Statement code")
 
     def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()
