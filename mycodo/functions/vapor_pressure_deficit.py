@@ -170,6 +170,8 @@ class CustomModule(AbstractFunction):
             self.select_measurement_temperature_c_measurement_id,
             max_age=self.max_measure_age_temperature_c)
 
+        self.logger.debug("Temp: {}".format(last_measurement_temp))
+
         if last_measurement_temp:
             device_measurement = get_measurement(
                 self.select_measurement_temperature_c_measurement_id)
@@ -183,6 +185,8 @@ class CustomModule(AbstractFunction):
             self.select_measurement_humidity_device_id,
             self.select_measurement_humidity_measurement_id,
             max_age=self.max_measure_age_humidity)
+
+        self.logger.debug("Hum: {}".format(last_measurement_hum))
 
         if last_measurement_hum:
             device_measurement = get_measurement(

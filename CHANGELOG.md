@@ -17,6 +17,7 @@
  - Add Input: CCS811 (without temperature) ([#992](https://github.com/kizniche/mycodo/issues/992))
  - Add Input: MQTT Subscribe (JSON payload)
  - Add Output: Grove I2C Motor Driver (TB6612FNG, Board v1.0)
+ - Add Output: Grove I2C Motor Driver (Board v1.3)
  - Make Enable Pin optional for L298N Output
 
 
