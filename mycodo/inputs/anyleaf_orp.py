@@ -5,6 +5,7 @@ from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 
+
 # Measurements
 measurements_dict = {
     0: {
@@ -12,6 +13,7 @@ measurements_dict = {
         'unit': 'mV'
     }
 }
+
 
 # Input information
 INPUT_INFORMATION = {
@@ -21,22 +23,21 @@ INPUT_INFORMATION = {
     'input_library': 'anyleaf',
     'measurements_name': 'Oxidation Reduction Potential',
     'measurements_dict': measurements_dict,
-    'url_manufacturer': 'https://anyleaf.org/ph-module',
-    'url_datasheet': 'https://anyleaf.org/static/ph-module-datasheet.pdf',
+    'url_manufacturer': 'https://www.anyleaf.org/ph-module',
+    'url_datasheet': 'https://www.anyleaf.org/static/ph-module-datasheet.pdf',
 
     'options_enabled': [
         'i2c_location',
         'period',
     ],
+    'options_disabled': [],
 
     'dependencies_module': [
-        ('apt', 'libjpeg-dev', 'libjpeg-dev'),
-        ('apt', 'zlib1g-dev', 'zlib1g-dev'),
-        ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
+        ('apt', 'python3-numpy', 'python3-numpy'),
         ('apt', 'python3-scipy', 'python3-scipy'),
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
         ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.1'),
-        ('pip-pypi', 'anyleaf', 'anyleaf==0.1.8.1')
+        ('pip-pypi', 'anyleaf', 'anyleaf')
     ],
 
     'interfaces': ['I2C'],
@@ -73,15 +74,8 @@ the known ORP value in the `Calibration ORP` field, and press `Calibrate`. You d
         {
             'id': 'calibrate',
             'type': 'button',
-            'wait_for_return': True,
             'name': lazy_gettext('Calibrate'),
         },
-        {
-            'id': 'clear_calibrate_slots',
-            'type': 'button',
-            'wait_for_return': True,
-            'name': 'Clear Calibration Slots'
-        }
     ]
 }
 
@@ -94,9 +88,6 @@ class InputModule(AbstractInput):
 
         self.sensor = None
 
-        self.cal_v = None
-        self.cal_orp = None
-
         if not testing:
             self.initialize_input()
 
@@ -107,10 +98,24 @@ class InputModule(AbstractInput):
         self.sensor = OrpSensor(
             ExtendedI2C(self.input_dev.i2c_bus),
             self.input_dev.period,
-            address=int(str(self.input_dev.i2c_location), 16))
+            address=int(str(self.input_dev.i2c_location), 16)
+        )
 
-        # Load cal data from the database
-        self.sensor.calibrate_all(CalPtOrp(self.cal_v, self.cal_orp,))
+        # `default_value` above doesn't set the default in the database: custom options will initialize to None.
+        if self.get_custom_option("cal_v"):
+            cal_v = self.get_custom_option("cal_v")
+        else:
+            cal_v = 0.4
+        if self.get_custom_option("cal_orp"):
+            cal_orp = self.get_custom_option("cal_orp")
+        else:
+            cal_orp = 400.0
+
+        # Load cal data from the database.
+        self.sensor.calibrate_all(CalPtOrp(
+            cal_v,
+            cal_orp,
+        ))
 
     def calibrate(self, args_dict):
         """ Auto-calibrate """
@@ -121,19 +126,12 @@ class InputModule(AbstractInput):
             self.logger.error("buffer value does not represent a number: '{}', type: {}".format(
                 args_dict['calibration_orp'], type(args_dict['calibration_orp'])))
             return
-
-        # For this session
-        v = self.sensor.calibrate(args_dict['calibration_orp'])
+        
+        v = self.sensor.calibrate(args_dict['calibration_orp'])  # For this session
 
         # For future sessions
         self.set_custom_option("cal_orp", args_dict['calibration_orp'])
         self.set_custom_option("cal_v", v)
-
-    def clear_calibrate_slots(self, args_dict):
-        self.delete_custom_option("cal_v")
-        self.delete_custom_option("cal_orp")
-        self.setup_custom_options(
-            INPUT_INFORMATION['custom_options'], self.input_dev)
 
     def get_measurement(self):
         """ Gets the measurement """
