@@ -74,12 +74,32 @@ INPUT_INFORMATION = {
         }
     ],
 
-    'custom_actions_message':
-        'The I2C address can be changed. Enter a new address in the 0xYY format '
-        '(e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and '
-        'change the I2C address option after setting the new address.',
-
     'custom_actions': [
+        {
+            'type': 'message',
+            'default_value': """A one-point calibration can be performed. Enter the solution's mV, set the probe in the solution, then press Calibrate. You can also clear the currently-saved calibration by pressing Clear Calibration."""
+        },
+        {
+            'id': 'solution_mV',
+            'type': 'integer',
+            'default_value': 225,
+            'name': 'Calibration Solution mV',
+            'phrase': 'The value of the calibration solution, in mV'
+        },
+        {
+            'id': 'calibrate',
+            'type': 'button',
+            'name': lazy_gettext('Calibrate')
+        },
+        {
+            'id': 'calibrate_clear',
+            'type': 'button',
+            'name': lazy_gettext('Clear Calibration')
+        },
+        {
+            'type': 'message',
+            'default_value': """The I2C address can be changed. Enter a new address in the 0xYY format (e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and change the I2C address option after setting the new address."""
+        },
         {
             'id': 'new_i2c_address',
             'type': 'text',
@@ -188,6 +208,27 @@ class InputModule(AbstractInput):
         self.value_set(0, orp)
 
         return self.return_dict
+
+    def calibrate(self, args_dict):
+        if 'solution_mV' not in args_dict:
+            self.logger.error("Cannot calibrate without Solution mV")
+            return
+        try:
+            write_cmd = "Cal,{}".format(args_dict['solution_mV'])
+            self.logger.debug("Command to send: {}".format(write_cmd))
+            self.atlas_device.write(write_cmd)
+            # Verify calibration saved
+            write_cmd = "Cal,?"
+            self.logger.info("Device Calibrated?: {}".format(
+                self.atlas_device.write(write_cmd)))
+        except:
+            self.logger.exception("Exception calibrating sensor")
+
+    def calibrate_clear(self, args_dict):
+        try:
+            self.atlas_device.write("Cal,clear")
+        except:
+            self.logger.exception("Exception clearing calibration")
 
     def set_i2c_address(self, args_dict):
         if 'new_i2c_address' not in args_dict:
