@@ -76,12 +76,56 @@ INPUT_INFORMATION = {
         }
     ],
 
-    'custom_actions_message':
-        'The I2C address can be changed. Enter a new address in the 0xYY format '
-        '(e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and '
-        'change the I2C address option after setting the new address.',
-
     'custom_actions': [
+        {
+            'type': 'message',
+            'default_value': """Calibration: a one, two or three-point calibration can be performed. """
+        },
+        {
+            'id': 'calibrate_clear',
+            'type': 'button',
+            'name': lazy_gettext('Clear Calibration')
+        },
+        {
+            'id': 'mid_point_ph',
+            'type': 'float',
+            'default_value': 7.0,
+            'name': 'Mid Point pH',
+            'phrase': 'The pH of the mid point calibration solution'
+        },
+        {
+            'id': 'mid_calibrate',
+            'type': 'button',
+            'name': 'Calibrate Mid'
+        },
+        {
+            'id': 'low_point_ph',
+            'type': 'float',
+            'default_value': 4.0,
+            'name': 'Low Point pH',
+            'phrase': 'The pH of the low point calibration solution'
+        },
+        {
+            'id': 'low_calibrate',
+            'type': 'button',
+            'name': 'Calibrate Low'
+        },
+        {
+            'id': 'high_point_ph',
+            'type': 'float',
+            'default_value': 10.0,
+            'name': 'High Point pH',
+            'phrase': 'The pH of the high point calibration solution'
+        },
+        {
+            'id': 'high_calibrate',
+            'type': 'button',
+            'name': 'Calibrate High'
+        },
+        {
+            'type': 'message',
+            'default_value': """The I2C address can be changed. Enter a new address in the 0xYY format (e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and change the I2C address option after setting the new address."""
+        },
         {
             'id': 'new_i2c_address',
             'type': 'text',
@@ -196,6 +240,46 @@ class InputModule(AbstractInput):
 
         return self.return_dict
 
+    def calibrate_clear(self):
+        try:
+            write_cmd = "Cal,clear"
+            self.logger.debug("Calibration command: {}".format(write_cmd))
+            ret_val = self.atlas_device.write(write_cmd)
+            self.logger.info("Command returned: {}".format(ret_val))
+        except:
+            self.logger.exception("Exception calibrating")
+
+    def calibrate(self, level, ph):
+        try:
+            write_cmd = "Cal,{},{:.2f}".format(level, ph)
+            self.logger.debug("Calibration command: {}".format(write_cmd))
+            ret_val = self.atlas_device.write(write_cmd)
+            self.logger.info("Command returned: {}".format(ret_val))
+            # Verify calibration saved
+            write_cmd = "Cal,?"
+            self.logger.info("Device Calibrated?: {}".format(
+                self.atlas_device.write(write_cmd)))
+        except:
+            self.logger.exception("Exception calibrating")
+
+    def mid_calibrate(self, args_dict):
+        if 'mid_point_ph' not in args_dict:
+            self.logger.error("Cannot calibrate without calibration solution ph")
+            return
+        self.calibrate('mid', args_dict['mid_point_ph'])
+
+    def low_calibrate(self, args_dict):
+        if 'low_point_ph' not in args_dict:
+            self.logger.error("Cannot calibrate without calibration solution ph")
+            return
+        self.calibrate('low', args_dict['low_point_ph'])
+
+    def high_calibrate(self, args_dict):
+        if 'high_point_ph' not in args_dict:
+            self.logger.error("Cannot calibrate without calibration solution ph")
+            return
+        self.calibrate('high', args_dict['high_point_ph'])
+
     def set_i2c_address(self, args_dict):
         if 'new_i2c_address' not in args_dict:
             self.logger.error("Cannot set new I2C address without an I2C address")
@@ -204,6 +288,7 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            self.atlas_device.write(write_cmd)
+            ret_val = self.atlas_device.write(write_cmd)
+            self.logger.info("Command returned: {}".format(ret_val))
         except:
             self.logger.exception("Exception changing I2C address")
