@@ -120,21 +120,42 @@ INPUT_INFORMATION = {
         },
     ],
 
-    'custom_actions_message':
-        'The EZO-RGB color sensor is designed to be calibrated to a white object at the maximum brightness the object '
-        'will be viewed under. In order to get the best results, Atlas Scientific strongly recommends that the sensor '
-        'is mounted into a fixed location. Holding the sensor in your hand during calibration will decrease '
-        'performance.'
-        '<br>1. Embed the EZO-RGB color sensor into its intended use location.'
-        '<br>2. Set LED brightness to the desired level.'
-        '<br>3. Place a white object in front of the target object and press the Calibration button.'
-        '<br>4. A single color reading will be taken and the device will be fully calibrated.',
     'custom_actions': [
+        {
+            'type': 'message',
+            'default_value': 'The EZO-RGB color sensor is designed to be calibrated to a white '
+                             'object at the maximum brightness the object will be viewed under. '
+                             'In order to get the best results, Atlas Scientific strongly '
+                             'recommends that the sensor is mounted into a fixed location. Holding '
+                             'the sensor in your hand during calibration will decrease performance.'
+                             '<br>1. Embed the EZO-RGB color sensor into its intended use location.'
+                             '<br>2. Set LED brightness to the desired level.'
+                             '<br>3. Place a white object in front of the target object and press '
+                             'the Calibration button.'
+                             '<br>4. A single color reading will be taken and the device will be '
+                             'fully calibrated.'
+        },
         {
             'id': 'calibrate',
             'type': 'button',
             'name': lazy_gettext('Calibrate')
         },
+        {
+            'type': 'message',
+            'default_value': """The I2C address can be changed. Enter a new address in the 0xYY format (e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and change the I2C address option after setting the new address."""
+        },
+        {
+            'id': 'new_i2c_address',
+            'type': 'text',
+            'default_value': '0x67',
+            'name': lazy_gettext('New I2C Address'),
+            'phrase': lazy_gettext('The new I2C to set the device to')
+        },
+        {
+            'id': 'set_i2c_address',
+            'type': 'button',
+            'name': lazy_gettext('Set I2C Address')
+        }
     ]
 }
 
@@ -256,3 +277,15 @@ class InputModule(AbstractInput):
 
     def calibrate(self, args_dict):
         self.atlas_device.query('Cal')
+
+    def set_i2c_address(self, args_dict):
+        if 'new_i2c_address' not in args_dict:
+            self.logger.error("Cannot set new I2C address without an I2C address")
+            return
+        try:
+            i2c_address = int(str(args_dict['new_i2c_address']), 16)
+            write_cmd = "I2C,{}".format(i2c_address)
+            self.logger.debug("I2C Change command: {}".format(write_cmd))
+            self.atlas_device.write(write_cmd)
+        except:
+            self.logger.exception("Exception changing I2C address")

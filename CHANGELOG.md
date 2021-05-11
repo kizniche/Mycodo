@@ -15,6 +15,7 @@
 
 ### Features
 
+ - Add ability to change I2C address of Atlas Scientific devices
  - Add Input: CCS811 (without temperature) ([#992](https://github.com/kizniche/mycodo/issues/992))
  - Add Input: MQTT Subscribe (JSON payload)
  - Add Output: Grove I2C Motor Driver (TB6612FNG, Board v1.0)
