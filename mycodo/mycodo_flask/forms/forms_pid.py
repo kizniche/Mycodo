@@ -69,6 +69,7 @@ class PIDModBase(FlaskForm):
     band = DecimalField(
         lazy_gettext('Band (+/- Setpoint)'),
         widget=NumberInput(step='any'))
+    send_lower_as_negative = BooleanField(lazy_gettext('Send Lower as Negative'))
     store_lower_as_negative = BooleanField(lazy_gettext('Store Lower as Negative'))
     k_p = DecimalField(
         lazy_gettext('Kp Gain'),
