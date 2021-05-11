@@ -87,6 +87,9 @@ INPUT_INFORMATION = {
             'name': lazy_gettext('Clear Calibration')
         },
         {
+            'type': 'new_line'
+        },
+        {
             'id': 'mid_point_ph',
             'type': 'float',
             'default_value': 7.0,
@@ -99,6 +102,9 @@ INPUT_INFORMATION = {
             'name': 'Calibrate Mid'
         },
         {
+            'type': 'new_line'
+        },
+        {
             'id': 'low_point_ph',
             'type': 'float',
             'default_value': 4.0,
@@ -109,6 +115,9 @@ INPUT_INFORMATION = {
             'id': 'low_calibrate',
             'type': 'button',
             'name': 'Calibrate Low'
+        },
+        {
+            'type': 'new_line'
         },
         {
             'id': 'high_point_ph',
@@ -129,7 +138,7 @@ INPUT_INFORMATION = {
         {
             'id': 'new_i2c_address',
             'type': 'text',
-            'default_value': '0x67',
+            'default_value': '0x63',
             'name': lazy_gettext('New I2C Address'),
             'phrase': lazy_gettext('The new I2C to set the device to')
         },

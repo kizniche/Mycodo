@@ -81,7 +81,7 @@ INPUT_INFORMATION = {
         {
             'id': 'new_i2c_address',
             'type': 'text',
-            'default_value': '0x67',
+            'default_value': '0x6f',
             'name': lazy_gettext('New I2C Address'),
             'phrase': lazy_gettext('The new I2C to set the device to')
         },
