@@ -43,7 +43,10 @@ INPUT_INFORMATION = {
         'period',
         'pre_output'
     ],
-    'options_disabled': ['interface', 'i2c_location'],
+    'options_disabled': [
+        'interface',
+        'i2c_location'
+    ],
 
     'dependencies_module': [
         ('pip-pypi', 'smbus2', 'smbus2==0.4.1')

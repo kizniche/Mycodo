@@ -56,7 +56,10 @@ INPUT_INFORMATION = {
         'period',
         'pre_output'
     ],
-    'options_disabled': ['interface', 'i2c_location'],
+    'options_disabled': [
+        'interface',
+        'i2c_location'
+    ],
 
     'dependencies_module': [
         ('pip-pypi', 'as7262', 'as7262==0.1.0'),

@@ -54,9 +54,7 @@ INPUT_INFORMATION = {
         'period',
         'pre_output'
     ],
-    'options_disabled': [
-        'interface',
-    ],
+    'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),

@@ -37,7 +37,10 @@ INPUT_INFORMATION = {
         'period',
         'pre_output'
     ],
-    'options_disabled': ['interface', 'i2c_location'],
+    'options_disabled': [
+        'interface',
+        'i2c_location'
+    ],
 
     'dependencies_module': [
         ('pip-pypi', 'Adafruit_BMP', 'Adafruit-BMP==1.5.4'),

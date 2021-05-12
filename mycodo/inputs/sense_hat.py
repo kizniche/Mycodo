@@ -102,7 +102,6 @@ INPUT_INFORMATION = {
         'period',
         'pre_output'
     ],
-
     'options_disabled': ['interface']
 }
 

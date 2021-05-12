@@ -54,9 +54,7 @@ INPUT_INFORMATION = {
         'period',
         'pre_output'
     ],
-    'options_disabled': [
-        'interface',
-    ],
+    'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'scd30_i2c', 'scd30-i2c==0.0.6')

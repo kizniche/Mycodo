@@ -51,6 +51,7 @@ INPUT_INFORMATION = {
         'period',
         'pre_output'
     ],
+    'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('pip-pypi', 'requests', 'requests==2.25.1')
