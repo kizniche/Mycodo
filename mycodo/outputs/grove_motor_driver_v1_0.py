@@ -116,6 +116,14 @@ OUTPUT_INFORMATION = {
             'phrase': TRANSLATIONS['name']['phrase']
         },
         {
+            'id': 'motor_speed',
+            'type': 'integer',
+            'default_value': 255,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Motor Speed (0 - 255)',
+            'phrase': 'The motor output that determines the speed'
+        },
+        {
             'id': 'flow_mode',
             'type': 'select',
             'default_value': 'fastest_flow_rate',
@@ -149,14 +157,6 @@ OUTPUT_INFORMATION = {
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Minimum On (sec/min)',
             'phrase': 'The minimum duration (seconds) the pump turns on for every 60 second period (only used for Specify Flow Rate mode).'
-        },
-        {
-            'id': 'dispense_speed',
-            'type': 'integer',
-            'default_value': 255,
-            'constraints_pass': constraints_pass_positive_value,
-            'name': 'Dispense Speed (0 - 255)',
-            'phrase': 'The speed to dispense and calibrate at'
         }
     ],
 
@@ -219,27 +219,26 @@ class OutputModule(AbstractOutput):
 
     def dispense_volume_fastest(self, channel, amount, total_dispense_seconds):
         """ Dispense at fastest flow rate, a 100 % duty cycle """
-        self.currently_dispensing[channel] = True
-        self.logger.debug("Output turned on")
-
         if amount < 0:
             direction_reg = self.reg_write_run_ccw
         else:
             direction_reg = self.reg_write_run_cw
 
+        self.currently_dispensing[channel] = True
         self.bus.write_i2c_block_data(
             self.i2c_address, direction_reg,
-            [channel, self.options_channels['dispense_speed'][channel]])
+            [channel, self.options_channels['motor_speed'][channel]])
+        self.logger.debug("Output turned on")
 
         timer_dispense = time.time() + total_dispense_seconds
         while time.time() < timer_dispense and self.currently_dispensing[channel]:
             time.sleep(0.01)
 
         self.bus.write_word_data(self.i2c_address, self.reg_write_off, channel)
-
         self.currently_dispensing[channel] = False
         self.logger.debug("Output turned off")
-        self.record_dispersal(amount, total_dispense_seconds, total_dispense_seconds)
+
+        self.record_dispersal(channel, amount, total_dispense_seconds, total_dispense_seconds)
 
     def dispense_volume_rate(self, channel, amount, dispense_rate):
         """ Dispense at a specific flow rate """
@@ -274,7 +273,7 @@ class OutputModule(AbstractOutput):
             self.logger.debug("Output turned on")
             self.bus.write_i2c_block_data(
                 self.i2c_address, direction_reg,
-                [channel, self.options_channels['dispense_speed'][channel]])
+                [channel, self.options_channels['motor_speed'][channel]])
             timer_dispense_on = time.time() + repeat_seconds_on
             while time.time() < timer_dispense_on and self.currently_dispensing[channel]:
                 time.sleep(0.01)
@@ -400,11 +399,11 @@ class OutputModule(AbstractOutput):
                     "Pump instructed to turn on while it's already dispensing. "
                     "Overriding current dispense with new instruction.")
             self.logger.debug("Speed: {0:.1f}".format(
-                self.options_channels['dispense_speed'][output_channel]))
+                self.options_channels['motor_speed'][output_channel]))
             self.logger.debug("Output turned on {}".format(direction))
             self.bus.write_i2c_block_data(
                 self.i2c_address, direction_reg,
-                [output_channel, self.options_channels['dispense_speed'][output_channel]])
+                [output_channel, self.options_channels['motor_speed'][output_channel]])
 
         else:
             self.logger.error("Invalid parameters")

@@ -2,16 +2,16 @@
 #
 # grove_i2c_motor_driver_v1_3.py - Output for Grove I2C Motor Driver (v1.3)
 #
-
-# Import stuff
-import copy
 import threading
 import time
 
+import copy
 from flask_babel import lazy_gettext
 
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
+from mycodo.utils.constraints_pass import constraints_pass_percent
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
@@ -108,6 +108,22 @@ OUTPUT_INFORMATION = {
                               "controllers (such as PID controllers) send a value instructing it to dispense.",
 
     'custom_channel_options': [
+        {
+            'id': 'name',
+            'type': 'text',
+            'default_value': '',
+            'required': False,
+            'name': TRANSLATIONS['name']['title'],
+            'phrase': TRANSLATIONS['name']['phrase']
+        },
+        {
+            'id': 'motor_speed',
+            'type': 'integer',
+            'default_value': 100,
+            'constraints_pass': constraints_pass_percent,
+            'name': 'Motor Speed (0 - 100)',
+            'phrase': 'The motor output that determines the speed'
+        },
         {
             'id': 'flow_mode',
             'type': 'select',
@@ -224,7 +240,9 @@ class OutputModule(AbstractOutput):
         while time.time() < timer_dispense and self.currently_dispensing:
             # On for duration
             self.logger.debug("Output turned on")
-            self.motor.motor_speed_set_a_b(100, 100)
+            self.motor.motor_speed_set_a_b(
+                self.options_channels['motor_speed'][0],
+                self.options_channels['motor_speed'][1])
             timer_dispense_on = time.time() + repeat_seconds_on
             while time.time() < timer_dispense_on and self.currently_dispensing:
                 time.sleep(0.01)
@@ -328,7 +346,9 @@ class OutputModule(AbstractOutput):
                     "Pump instructed to turn on while it's already dispensing. "
                     "Overriding current dispense with new instruction.")
             self.logger.debug("Output turned on {}".format(direction))
-            self.motor.motor_speed_set_a_b(100, 100)
+            self.motor.motor_speed_set_a_b(
+                self.options_channels['motor_speed'][0],
+                self.options_channels['motor_speed'][1])
 
         else:
             self.logger.error(
