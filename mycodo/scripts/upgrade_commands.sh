@@ -280,8 +280,7 @@ case "${1:-''}" in
         wget ${WIRINGPI_URL} -O wiringpi-latest.deb
         dpkg -i wiringpi-latest.deb
     ;;
-    'install-pigpiod')
-        printf "\n#### Installing pigpiod\n"
+    'build-pigpio')
         apt-get install -y python3-pigpio
         cd "${MYCODO_PATH}"/install || return
         # wget --quiet -P "${MYCODO_PATH}"/install abyz.co.uk/rpi/pigpio/pigpio.zip
@@ -294,6 +293,10 @@ case "${1:-''}" in
         cd "${MYCODO_PATH}"/install || return
         rm -rf ./PIGPIO
         rm -rf pigpio.tar.gz
+    ;;
+    'install-pigpiod')
+        printf "\n#### Installing pigpiod\n"
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh build-pigpio
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh disable-pigpiod
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh enable-pigpiod-high
         mkdir -p /opt/mycodo
