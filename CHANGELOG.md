@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+ - Fix SSD1306 OLED Display Function initialization
  - Fix PID Min/Max options not being respected ([#998](https://github.com/kizniche/mycodo/issues/998))
  - Fix error when PWM Output duty cycle is 0
  - Change pin default when creating an Output from 0 to None

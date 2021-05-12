@@ -280,7 +280,7 @@ case "${1:-''}" in
         wget ${WIRINGPI_URL} -O wiringpi-latest.deb
         dpkg -i wiringpi-latest.deb
     ;;
-    'build-pigpio')
+    'build-pigpiod')
         apt-get install -y python3-pigpio
         cd "${MYCODO_PATH}"/install || return
         # wget --quiet -P "${MYCODO_PATH}"/install abyz.co.uk/rpi/pigpio/pigpio.zip
