@@ -1,10 +1,11 @@
 # coding=utf-8
 import logging
-import operator
 import socket
+import subprocess
 import traceback
 
 import flask_login
+import operator
 from flask import current_app
 from flask import redirect
 from flask import render_template
@@ -13,6 +14,7 @@ from flask import send_from_directory
 from flask import url_for
 from flask.blueprints import Blueprint
 
+from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import LANGUAGES
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import THEMES
@@ -100,5 +102,47 @@ def not_found(error):
 
 @blueprint.app_errorhandler(500)
 def page_error(error):
-    trace = traceback.format_exc()
-    return render_template('500.html', trace=trace), 500
+    try:
+        trace = traceback.format_exc()
+    except:
+        trace = None
+
+    try:
+        lsb_release = subprocess.Popen(
+            "lsb_release -irdc", stdout=subprocess.PIPE, shell=True)
+        (lsb_release_output, _) = lsb_release.communicate()
+        lsb_release.wait()
+        if lsb_release_output:
+            lsb_release_output = lsb_release_output.decode("latin1").replace("\n", "<br/>")
+    except:
+        lsb_release_output = None
+
+    try:
+        model = subprocess.Popen(
+            "cat /proc/device-tree/model && echo", stdout=subprocess.PIPE, shell=True)
+        (model_output, _) = model.communicate()
+        model.wait()
+        if model_output:
+            model_output = model_output.decode("latin1")
+    except:
+        model_output = None
+
+    try:
+        firmware = subprocess.Popen(
+            "/opt/vc/bin/vcgencmd version", stdout=subprocess.PIPE, shell=True)
+        (firmware_output, _) = firmware.communicate()
+        firmware.wait()
+        if firmware_output:
+            firmware_output = firmware_output.decode("latin1").replace("\n", "<br/>")
+    except:
+        firmware_output = None
+
+    dict_return = {
+        "trace": trace,
+        "version_mycodo": MYCODO_VERSION,
+        "version_alembic":  ALEMBIC_VERSION,
+        "lsb_release": lsb_release_output,
+        "model": model_output,
+        "firmware": firmware_output
+    }
+    return render_template('500.html', dict_return=dict_return), 500

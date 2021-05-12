@@ -346,6 +346,7 @@ METHOD_INFO = {
     'DailyBezier': {
         'name': "{} ({})".format(lazy_gettext('Daily'), lazy_gettext('Bezier Curve')),
         'dependencies_module': [
+            ('apt', 'libatlas-base-dev', 'libatlas-base-dev'),
             ('apt', 'python3-numpy', 'python3-numpy')
         ]
     },

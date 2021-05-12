@@ -5,9 +5,15 @@
   <body>
     <h2>{{_('Error 500: Internal Server Error')}}</h2>
 
-    <p>Something bad happened but it's <i>probably</i> not your fault. Letting the developers know about these issues is crucial to supporting Mycodo. Please submit a <a href="https://github.com/kizniche/Mycodo/issues/new" target="_blank">new issue on GitHub</a> with the following error traceback (copy the entire traceback):</p>
+    <p>Something bad happened but it's <i>probably</i> not your fault. Letting the developers know about these issues is crucial to supporting Mycodo. Please submit a <a href="https://github.com/kizniche/Mycodo/issues/new?template=problem-bug-report.md" target="_blank">new issue on GitHub</a> with the following diagnostic information and error traceback (copy the entire traceback):</p>
+
+    <p>Mycodo: {{dict_return["version_mycodo"]}}</p>
+    <p>Alembic: {{dict_return["version_alembic"]}}</p>
+    <p>Model: {{dict_return["model"]}}</p>
+    <p>Release:<br/>{{dict_return["lsb_release"]|safe}}</p>
+    <p>Firmware:<br/>{{dict_return["firmware"]|safe}}</p>
 
     <p>Error (Full Traceback):</p>
-    <pre>{{trace}}</pre>
+    <pre>{{dict_return["trace"]}}</pre>
   </body>
 </html>
