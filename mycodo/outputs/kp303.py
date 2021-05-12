@@ -66,6 +66,7 @@ OUTPUT_INFORMATION = {
         'button_on',
         'button_send_duration'
     ],
+    'options_disabled': ['interface'],
 
     'interfaces': ['MYCODO'],
 
