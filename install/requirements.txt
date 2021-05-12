@@ -1,12 +1,12 @@
 # Mycodo base
-alembic==1.6.2
+alembic==1.5.8
 argparse==1.4.0
 bcrypt==3.2.0
 daemonize==2.5.0
 distro==1.5.0
 email_validator==1.1.2
 filelock==3.0.12
-Flask==2.0.0
+Flask==1.1.2
 Flask_Accept==0.0.6
 Flask_Babel==2.0.0
 Flask_Compress==1.9.0
@@ -14,19 +14,19 @@ Flask_Limiter==1.4
 Flask_Login==0.5.0
 Flask_Marshmallow==0.14.0
 #Flask_Profiler==1.8.1  # only use (uncomment and enable in config) when profiling
-Flask_RESTX==0.4.0
+Flask_RESTX==0.3.0
 Flask_SQLAlchemy==2.5.1
 Flask_Talisman==0.7.0
 Flask_WTF==0.14.3
 geocoder==1.38.1
 gunicorn==20.1.0
 influxdb==5.3.1
-marshmallow_sqlalchemy==0.25.0
+marshmallow_sqlalchemy==0.24.2
 pyro5==5.12
 pyserial==3.5
 python-dateutil==2.8.1
 requests==2.25.1
-setuptools==56.2.0
-SQLAlchemy==1.4.15
-Werkzeug==2.0.0
+setuptools==56.0.0
+SQLAlchemy==1.4.7
+Werkzeug==1.0.1
 WTForms==2.3.3
