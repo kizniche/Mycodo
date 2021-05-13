@@ -16,11 +16,6 @@ before_install:
   - sudo useradd -M mycodo
   - export PATH=/usr/bin:$PATH
 install:
-  - whereis python
-  - sed -i '/picamera/d' install/requirements-rpi.txt
-  - pip3 install --upgrade -r install/requirements.txt
-  - pip3 install --upgrade -r install/requirements-rpi.txt
-  - pip3 install --upgrade -r install/requirements-testing.txt
   - sudo bash mycodo/scripts/upgrade_commands.sh setup-virtualenv
   - sudo bash mycodo/scripts/upgrade_commands.sh update-pip3-packages
   - sudo bash mycodo/scripts/upgrade_commands.sh ssl-certs-generate
@@ -28,11 +23,11 @@ install:
   - sudo bash mycodo/scripts/upgrade_commands.sh generate-widget-html
   - cd mycodo && sudo ../env/bin/gunicorn --bind 127.0.0.1:8080 start_flask_ui:app &
   - sleep 5
-  - wget --quiet --no-check-certificate -p http://127.0.0.1:8080 -O /dev/null
+  - wget --debug --no-check-certificate -p http://127.0.0.1:8080 -O /dev/null
   - env/bin/python mycodo/scripts/generate_manual_inputs_by_measure.py
   - env/bin/python mycodo/scripts/generate_manual_inputs.py
   - env/bin/python mycodo/scripts/generate_manual_outputs.py
   - env/bin/python mycodo/scripts/generate_manual_functions.py
   - env/bin/python mycodo/scripts/generate_manual_widgets.py
 script:
-  - cd mycodo && pytest -W ignore::DeprecationWarning -s tests/software_tests
+  - cd mycodo && ../env/bin/pytest -W ignore::DeprecationWarning -s tests/software_tests
