@@ -22,6 +22,7 @@ install:
   - pip3 install --upgrade -r install/requirements-testing.txt
   - sudo bash mycodo/scripts/upgrade_commands.sh setup-virtualenv
   - sudo bash mycodo/scripts/upgrade_commands.sh update-pip3-packages
+  - sudo bash mycodo/scripts/upgrade_commands.sh create-user
   - sudo bash mycodo/scripts/upgrade_commands.sh ssl-certs-generate
   - sudo bash mycodo/scripts/upgrade_commands.sh compile-translations
   - sudo bash mycodo/scripts/upgrade_commands.sh generate-widget-html
