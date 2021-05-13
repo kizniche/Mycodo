@@ -23,7 +23,7 @@ INFLUXDB_VERSION="1.8.0"
 # Raspberry Pi but should work with most Debian-based systems.
 APT_PKGS="gawk gcc g++ git libffi-dev libi2c-dev logrotate moreutils nginx sqlite3 wget python3 python3-dev python3-setuptools python3-smbus python3-pylint-common rng-tools"
 
-PYTHON_BINARY_SYS_LOC="$(python3.7 -c "import os; print(os.environ['_'])")"
+PYTHON_BINARY_SYS_LOC="$(python3 -c "import os; print(os.environ['_'])")"
 
 # Get the Mycodo root directory
 SOURCE="${BASH_SOURCE[0]}"
