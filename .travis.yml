@@ -14,6 +14,7 @@ before_install:
   - sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb-db-user
   - export PATH=/usr/bin:$PATH
 install:
+  - whereis python
   - sed -i '/picamera/d' install/requirements-rpi.txt
   - pip3 install --upgrade -r install/requirements.txt
   - pip3 install --upgrade -r install/requirements-rpi.txt
