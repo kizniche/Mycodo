@@ -67,7 +67,10 @@ class FunctionController(AbstractController, threading.Thread):
             while self.timer_loop < time.time():
                 self.timer_loop += self.sample_rate
 
-            self.run_function.loop()
+            try:
+                self.run_function.loop()
+            except Exception as err:
+                self.logger.error("Exception while running loop(): {}".format(err))
 
     def run_finally(self):
         try:
