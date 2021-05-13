@@ -18,12 +18,13 @@ install:
   - pip3 install --upgrade -r install/requirements.txt
   - pip3 install --upgrade -r install/requirements-rpi.txt
   - pip3 install --upgrade -r install/requirements-testing.txt
-  - sudo bash mycodo/scripts/upgrade_commands.sh setup-virtualenv-full
+  - sudo bash mycodo/scripts/upgrade_commands.sh setup-virtualenv
+  - sudo bash mycodo/scripts/upgrade_commands.sh update-pip3-packages
   - bash mycodo/scripts/generate_translations_pybabel.sh
-  - python mycodo/scripts/generate_manual_inputs_by_measure.py
-  - python mycodo/scripts/generate_manual_inputs.py
-  - python mycodo/scripts/generate_manual_outputs.py
-  - python mycodo/scripts/generate_manual_functions.py
-  - python mycodo/scripts/generate_manual_widgets.py
+  - env/bin/python mycodo/scripts/generate_manual_inputs_by_measure.py
+  - env/bin/python mycodo/scripts/generate_manual_inputs.py
+  - env/bin/python mycodo/scripts/generate_manual_outputs.py
+  - env/bin/python mycodo/scripts/generate_manual_functions.py
+  - env/bin/python mycodo/scripts/generate_manual_widgets.py
 script:
   - cd mycodo && pytest -W ignore::DeprecationWarning -s tests/software_tests
