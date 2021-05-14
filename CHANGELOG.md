@@ -17,6 +17,7 @@
 
 ### Features
 
+ - Add Input: Anyleaf Electrical Conductivity
  - Add ability to calibrate Atlas Scientific ORP and DO sensors
  - Add ability to change I2C address of Atlas Scientific devices
  - Add Input: CCS811 (without temperature) ([#992](https://github.com/kizniche/mycodo/issues/992))

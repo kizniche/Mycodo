@@ -1,13 +1,7 @@
 # coding=utf-8
 import copy
 
-from flask_babel import lazy_gettext
-
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.utils.constraints_pass import constraints_pass_positive_value
-
-# todo: This does not yet include temperature compensation
-# todo or calibration
 
 # Measurements
 measurements_dict = {
@@ -50,15 +44,12 @@ INPUT_INFORMATION = {
 
     'custom_options': [
         {
-            'id': 'K',
+            'id': 'constant_k',
             'type': 'float',
             'default_value': 1.0,
-            'name': "{}".format(lazy_gettext('K')),  # todo: What should this be?
+            'name': "Conductivity Constant",
             'phrase': 'Conductivity constant K',
         }
-    ],
-    'custom_actions_message': """""",
-    'custom_actions': [
     ]
 }
 
@@ -70,19 +61,17 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
+        self.constant_k = None
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):
         from anyleaf import EcSensor
 
-        if self.get_custom_option("K"):
-            k = self.get_custom_option("K")
-        else:
-            k = 1.0
-
-        self.sensor = EcSensor(K=k)
+        self.sensor = EcSensor(K=self.constant_k)
 
     def get_measurement(self):
         """ Gets the measurement """
