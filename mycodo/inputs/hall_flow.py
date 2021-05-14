@@ -54,7 +54,7 @@ INPUT_INFORMATION = {
     'custom_actions_message': 'The total session volume can be cleared with the following button or as a Function Action.',
     'custom_actions': [
         {
-            'id': 'clear_session_total_volume',
+            'id': 'clear_total_session_volume',
             'type': 'button',
             'name': lazy_gettext('Clear Total Volume')
         }
@@ -116,7 +116,6 @@ class InputModule(AbstractInput):
 
     def clear_total_session_volume(self, args_dict):
         self.sensor.clear_totals()
-        return 1, "Success"
 
 
 class ReadHall:
