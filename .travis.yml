@@ -24,10 +24,6 @@ install:
   - sudo env/bin/python mycodo/start_flask_ui.py &
   - sleep 3
   - wget --debug --no-check-certificate -p https://127.0.0.1 -O /dev/null
-  - env/bin/python mycodo/scripts/generate_manual_inputs_by_measure.py
-  - env/bin/python mycodo/scripts/generate_manual_inputs.py
-  - env/bin/python mycodo/scripts/generate_manual_outputs.py
-  - env/bin/python mycodo/scripts/generate_manual_functions.py
-  - env/bin/python mycodo/scripts/generate_manual_widgets.py
+  - sudo bash mycodo/scripts/generate_all.sh 127.0.0.1
 script:
   - cd mycodo && ../env/bin/pytest -W ignore::DeprecationWarning -s tests/software_tests
