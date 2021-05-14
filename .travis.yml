@@ -29,6 +29,6 @@ install:
   - env/bin/python mycodo/scripts/generate_manual_outputs.py
   - env/bin/python mycodo/scripts/generate_manual_functions.py
   - env/bin/python mycodo/scripts/generate_manual_widgets.py
-  - sudo bash /mycodo/scripts/generate_translations_pybabel.sh
+  - sudo bash mycodo/scripts/generate_translations_pybabel.sh
 script:
   - cd mycodo && ../env/bin/pytest -W ignore::DeprecationWarning -s tests/software_tests
