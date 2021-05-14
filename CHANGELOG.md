@@ -16,7 +16,7 @@
 
 ### Features
 
- - Add ability to calibrate Atlas Scientific ORP sensor
+ - Add ability to calibrate Atlas Scientific ORP and DO sensors
  - Add ability to change I2C address of Atlas Scientific devices
  - Add Input: CCS811 (without temperature) ([#992](https://github.com/kizniche/mycodo/issues/992))
  - Add Input: MQTT Subscribe (JSON payload)
