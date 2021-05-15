@@ -424,7 +424,7 @@ def admin_upgrade():
     try:
         with open(UPGRADE_INIT_FILE) as f:
             upgrade = int(f.read(1))
-    except:
+    except Exception:
         try:
             with open(UPGRADE_INIT_FILE, 'w') as f:
                 f.write('0')

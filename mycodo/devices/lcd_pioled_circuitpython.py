@@ -22,7 +22,7 @@ class LCD_Pioled_Circuitpython:
             self.lcd_type = lcd_dev.lcd_type
 
             if self.interface == "I2C":
-                self.i2c_address = int(lcd_dev.location, 16)
+                self.i2c_address = lcd_dev.location
                 self.i2c_bus = lcd_dev.i2c_bus
             elif self.interface == "SPI":
                 self.spi_bus = lcd_dev.spi_bus
@@ -38,7 +38,7 @@ class LCD_Pioled_Circuitpython:
             self.lcd_type = lcd_settings_dict["lcd_type"]
 
             if self.interface == "I2C":
-                self.i2c_address = int(lcd_settings_dict["i2c_address"], 16)
+                self.i2c_address = lcd_settings_dict["i2c_address"]
                 self.i2c_bus = lcd_settings_dict["i2c_bus"]
             elif self.interface == "SPI":
                 self.spi_bus = lcd_settings_dict["spi_bus"]
