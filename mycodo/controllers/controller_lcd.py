@@ -297,8 +297,8 @@ class LCDController(AbstractController, threading.Thread):
             self.lcd_init()
         elif self.lcd_type in ['128x32_pioled_circuit_python',
                                '128x64_pioled_circuit_python']:
-            from mycodo.devices.lcd_pioled_circuitpython import LCD_Pioled_Circuitpython
-            self.lcd_out = LCD_Pioled_Circuitpython(lcd_dev)
+            from mycodo.devices.lcd_pioled_circuitpython import PiOLEDCircuitpython
+            self.lcd_out = PiOLEDCircuitpython(lcd_dev)
             self.lcd_init()
         else:
             self.logger.error("Unknown LCD type: {}".format(self.lcd_type))

@@ -2,6 +2,8 @@
 
 ### Bugfixes
 
+ - Fix 'id' KeyError when saving certain Inputs ([#1004](https://github.com/kizniche/mycodo/issues/1004))
+ - Fix I2C PiOLED Display Functions
  - Fix clearing total volume of Hall Flow Input ([#994](https://github.com/kizniche/mycodo/issues/994))
  - Fix SSD1306 OLED Display Function initialization
  - Fix PID Min/Max options not being respected ([#998](https://github.com/kizniche/mycodo/issues/998))

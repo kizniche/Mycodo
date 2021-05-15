@@ -326,7 +326,7 @@ class CustomModule(AbstractFunction):
             self.initialize_variables()
 
     def initialize_variables(self):
-        from mycodo.devices.lcd_pioled_circuitpython import LCD_Pioled_Circuitpython
+        from mycodo.devices.lcd_pioled_circuitpython import PiOLEDCircuitpython
 
         try:
             function_channels = db_retrieve_table_daemon(
@@ -350,7 +350,7 @@ class CustomModule(AbstractFunction):
                 "lcd_type": "128x64_pioled_circuit_python"
             }
 
-            self.device = LCD_Pioled_Circuitpython(lcd_settings_dict=lcd_settings_dict)
+            self.device = PiOLEDCircuitpython(lcd_settings_dict=lcd_settings_dict)
             self.device.lcd_init()
 
             self.logger.debug("LCD Function started")

@@ -2,6 +2,7 @@
 import logging
 import time
 
+import Adafruit_GPIO.SPI as SPI
 import adafruit_ssd1306
 from PIL import Image
 from PIL import ImageDraw
@@ -11,12 +12,14 @@ from adafruit_extended_bus import ExtendedI2C
 logger = logging.getLogger("mycodo.device.lcd_pioled_circuitpython")
 
 
-class LCD_Pioled_Circuitpython:
-    """Output to the PiOLED I2C LCD"""
+class PiOLEDCircuitpython:
+    """Output to the PiOLED"""
     def __init__(self, lcd_dev=None, lcd_settings_dict=None):
+        self.disp = None
+
         if lcd_dev:
-            self.logger = logging.getLogger(
-                "{}_{}".format(__name__, lcd_dev.unique_id.split('-')[0]))
+            self.logger = logging.getLogger("{}_{}".format(
+                __name__, lcd_dev.unique_id.split('-')[0]))
             self.interface = lcd_dev.interface
             self.lcd_x_characters = lcd_dev.x_characters
             self.lcd_type = lcd_dev.lcd_type
@@ -31,8 +34,8 @@ class LCD_Pioled_Circuitpython:
                 self.pin_reset = lcd_dev.pin_reset
                 self.pin_cs = lcd_dev.pin_cs
         elif lcd_settings_dict:
-            self.logger = logging.getLogger(
-                "{}_{}".format(__name__, lcd_settings_dict["unique_id"].split('-')[0]))
+            self.logger = logging.getLogger("{}_{}".format(
+                __name__, lcd_settings_dict["unique_id"].split('-')[0]))
             self.interface = lcd_settings_dict["interface"]
             self.lcd_x_characters = lcd_settings_dict["x_characters"]
             self.lcd_type = lcd_settings_dict["lcd_type"]
@@ -46,8 +49,6 @@ class LCD_Pioled_Circuitpython:
                 self.pin_dc = lcd_settings_dict["pin_dc"]
                 self.pin_reset = lcd_settings_dict["pin_reset"]
                 self.pin_cs = lcd_settings_dict["pin_cs"]
-
-        self.disp = None
 
         if self.interface == 'I2C':
             if self.lcd_type == '128x32_pioled_circuit_python':
@@ -63,7 +64,6 @@ class LCD_Pioled_Circuitpython:
 
         elif self.interface == 'SPI':
             if self.lcd_type == '128x32_pioled_circuit_python':
-                import Adafruit_GPIO.SPI as SPI
                 self.disp = adafruit_ssd1306.SSD1306_SPI(
                     128, 32,
                     spi=SPI.SpiDev(self.spi_bus, self.spi_device),
@@ -71,7 +71,6 @@ class LCD_Pioled_Circuitpython:
                     reset=self.pin_reset,
                     cs=self.pin_cs)
             elif self.lcd_type == '128x64_pioled_circuit_python':
-                import Adafruit_GPIO.SPI as SPI
                 self.disp = adafruit_ssd1306.SSD1306_SPI(
                     128, 64,
                     spi=SPI.SpiDev(self.spi_bus, self.spi_device),
@@ -80,7 +79,8 @@ class LCD_Pioled_Circuitpython:
                     cs=self.pin_cs)
 
         if not self.disp:
-            self.logger.error("Unable to set up display. Check the LCD settings.")
+            self.logger.error(
+                "Unable to set up display. Check the LCD settings.")
 
     def lcd_init(self):
         """ Initialize LCD display """
@@ -89,7 +89,9 @@ class LCD_Pioled_Circuitpython:
             self.disp.show()
         except Exception as err:
             self.logger.error(
-                "Could not initialize LCD. Check your configuration and wiring. Error: {err}".format(err=err))
+                "Could not initialize LCD. "
+                "Check your configuration and wiring. "
+                "Error: {err}".format(err=err))
 
     def lcd_write_lines(self,
                         message_line_1,
@@ -108,7 +110,9 @@ class LCD_Pioled_Circuitpython:
         image = Image.new('1', (self.disp.width, self.disp.height))
 
         draw = ImageDraw.Draw(image)
-        draw.rectangle((0, 0, self.disp.width, self.disp.height), outline=0, fill=0)
+        draw.rectangle((0, 0, self.disp.width, self.disp.height),
+                       outline=0,
+                       fill=0)
 
         draw.text((x, top), message_line_1, font=font, fill=255)
         draw.text((x, top + 8), message_line_2, font=font, fill=255)
