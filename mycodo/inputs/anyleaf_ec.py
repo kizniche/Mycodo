@@ -27,6 +27,7 @@ INPUT_INFORMATION = {
         'uart_location',
         'period',
     ],
+    'options_disabled': ['interface'],
 
     'dependencies_module': [
         ('apt', 'libjpeg-dev', 'libjpeg-dev'),
