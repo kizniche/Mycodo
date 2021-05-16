@@ -474,7 +474,7 @@ def epoch_of_next_time(time_str):
         return None
 
 
-def cmd_output(command, stdout_pipe=True, timeout=360, user='mycodo', cwd='/home'):
+def cmd_output(command, stdout_pipe=True, shell=True, timeout=360, user='mycodo', cwd='/home'):
     """
     Executes a bash command and returns the output
 
@@ -522,13 +522,14 @@ def cmd_output(command, stdout_pipe=True, timeout=360, user='mycodo', cwd='/home
     if stdout_pipe:
         cmd = subprocess.Popen(command,
                                stdout=subprocess.PIPE,
-                               shell=True,
+                               stderr=subprocess.PIPE,
+                               shell=shell,
                                preexec_fn=demote(user_uid, user_gid, user_groups),
                                cwd=cwd,
                                env=env)
     else:
         cmd = subprocess.Popen(command,
-                               shell=True,
+                               shell=shell,
                                preexec_fn=demote(user_uid, user_gid, user_groups),
                                cwd=cwd,
                                env=env)

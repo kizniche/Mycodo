@@ -173,6 +173,11 @@ FUNCTION_INFORMATION = {
 
     'message': 'This Function outputs to a generic 20x4 LCD display via I2C. Since this display can show 4 lines at a time, channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first 4 lines that are displayed are channels 0, 1, 2, and 3, then 4, 5, 6, and 7, and so on. After all channels have been displayed, it will cycle back to the beginning.',
 
+    'options_disabled': [
+        'measurements_select',
+        'measurements_configure'
+    ],
+
     'custom_options': [
         {
             'id': 'period',

@@ -173,8 +173,9 @@ FUNCTION_INFORMATION = {
 
     'message': 'This Function outputs to a 128x64 SSD1309 OLED display via I2C. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.',
 
-    'options_enabled': [
-        'custom_options'
+    'options_disabled': [
+        'measurements_select',
+        'measurements_configure'
     ],
 
     'dependencies_module': [

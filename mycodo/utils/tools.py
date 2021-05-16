@@ -1,13 +1,21 @@
 # coding=utf-8
 import csv
 import datetime
+import io
 import logging
 import os
 import time
+import zipfile
 from collections import OrderedDict
 
 from dateutil import relativedelta
 
+from mycodo.config import PATH_FUNCTIONS_CUSTOM
+from mycodo.config import PATH_INPUTS_CUSTOM
+from mycodo.config import PATH_OUTPUTS_CUSTOM
+from mycodo.config import PATH_USER_SCRIPTS
+from mycodo.config import PATH_WIDGETS_CUSTOM
+from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
@@ -25,6 +33,41 @@ from mycodo.utils.system_pi import set_user_grp
 
 logger = logging.getLogger("mycodo.tools")
 logger.setLevel(set_log_level(logging))
+
+
+def create_settings_export(save_path=None):
+    try:
+        data = io.BytesIO()
+        with zipfile.ZipFile(data, mode='w') as z:
+            z.write(SQL_DATABASE_MYCODO,
+                    os.path.basename(SQL_DATABASE_MYCODO))
+            export_directories = [
+                (PATH_FUNCTIONS_CUSTOM, "custom_functions"),
+                (PATH_INPUTS_CUSTOM, "custom_inputs"),
+                (PATH_OUTPUTS_CUSTOM, "custom_outputs"),
+                (PATH_WIDGETS_CUSTOM, "custom_widgets"),
+                (PATH_USER_SCRIPTS, "user_scripts")
+            ]
+            for each_backup in export_directories:
+                if not os.path.exists(each_backup[0]):
+                    continue
+                for folder_name, sub_folders, filenames in os.walk(each_backup[0]):
+                    for filename in filenames:
+                        if filename == "__init__.py" or filename.endswith("pyc"):
+                            continue
+                        file_path = os.path.join(folder_name, filename)
+                        z.write(file_path, "{}/{}".format(each_backup[1], os.path.basename(file_path)))
+        data.seek(0)
+        if save_path:
+            with open(save_path, "wb") as f:
+                f.write(data.getbuffer())
+            set_user_grp(save_path, 'mycodo', 'mycodo')
+            return 0, save_path
+        else:
+            return 0, data
+    except Exception as err:
+        logger.error("Error: {}".format(err))
+        return 1, err
 
 
 def next_schedule(time_span='daily', set_day=None, set_hour=None):

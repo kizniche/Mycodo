@@ -70,7 +70,7 @@ class FunctionController(AbstractController, threading.Thread):
             try:
                 self.run_function.loop()
             except Exception as err:
-                self.logger.error("Exception while running loop(): {}".format(err))
+                self.logger.exception("Exception while running loop(): {}".format(err))
 
     def run_finally(self):
         try:

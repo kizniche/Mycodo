@@ -38,6 +38,7 @@ from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.tools import create_settings_export
 from mycodo.utils.widget_generate_html import generate_widget_html
 
 logger = logging.getLogger(__name__)
@@ -95,37 +96,20 @@ def export_settings(form):
     error = []
 
     try:
-        data = io.BytesIO()
-        with zipfile.ZipFile(data, mode='w') as z:
-            z.write(SQL_DATABASE_MYCODO,
-                    os.path.basename(SQL_DATABASE_MYCODO))
-            export_directories = [
-                (PATH_FUNCTIONS_CUSTOM, "custom_functions"),
-                (PATH_INPUTS_CUSTOM, "custom_inputs"),
-                (PATH_OUTPUTS_CUSTOM, "custom_outputs"),
-                (PATH_WIDGETS_CUSTOM, "custom_widgets"),
-                (PATH_USER_SCRIPTS, "user_scripts")
-            ]
-            for each_backup in export_directories:
-                if not os.path.exists(each_backup[0]):
-                    continue
-                for folder_name, sub_folders, filenames in os.walk(each_backup[0]):
-                    for filename in filenames:
-                        if filename == "__init__.py" or filename.endswith("pyc"):
-                            continue
-                        file_path = os.path.join(folder_name, filename)
-                        z.write(file_path, "{}/{}".format(each_backup[1], os.path.basename(file_path)))
-        data.seek(0)
-        return send_file(
-            data,
-            mimetype='application/zip',
-            as_attachment=True,
-            attachment_filename=
-                'Mycodo_{mver}_Settings_{aver}_{host}_{dt}.zip'.format(
-                    mver=MYCODO_VERSION, aver=ALEMBIC_VERSION,
-                    host=socket.gethostname().replace(' ', ''),
-                    dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
-        )
+        status, data = create_settings_export()
+        if not status:
+            return send_file(
+                data,
+                mimetype='application/zip',
+                as_attachment=True,
+                attachment_filename=
+                    'Mycodo_{mver}_Settings_{aver}_{host}_{dt}.zip'.format(
+                        mver=MYCODO_VERSION, aver=ALEMBIC_VERSION,
+                        host=socket.gethostname().replace(' ', ''),
+                        dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+            )
+        else:
+            error.append(data)
     except Exception as err:
         error.append("Error: {}".format(err))
 
