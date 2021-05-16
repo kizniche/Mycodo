@@ -6,6 +6,7 @@ import requests
 from flask_babel import lazy_gettext
 
 from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import Input
 from mycodo.databases.models import InputChannel
@@ -102,6 +103,14 @@ INPUT_INFORMATION = {
     ],
 
     'custom_channel_options': [
+        {
+            'id': 'name',
+            'type': 'text',
+            'default_value': '',
+            'required': False,
+            'name': TRANSLATIONS['name']['title'],
+            'phrase': TRANSLATIONS['name']['phrase']
+        },
         {
             'id': 'variable_name',
             'type': 'text',

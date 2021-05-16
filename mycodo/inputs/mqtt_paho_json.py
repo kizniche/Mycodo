@@ -132,6 +132,14 @@ INPUT_INFORMATION = {
 
     'custom_channel_options': [
         {
+            'id': 'name',
+            'type': 'text',
+            'default_value': '',
+            'required': False,
+            'name': TRANSLATIONS['name']['title'],
+            'phrase': TRANSLATIONS['name']['phrase']
+        },
+        {
             'id': 'json_name',
             'type': 'text',
             'default_value': '',

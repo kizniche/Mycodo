@@ -276,9 +276,6 @@
         {%- if 'name' in custom_options_values[each_input.unique_id][each_input_channel.channel] and
              custom_options_values[each_input.unique_id][each_input_channel.channel]['name'] -%}
           {{': ' + custom_options_values[each_input.unique_id][each_input_channel.channel]['name']}}
-        {%- elif 'channels_dict' in dict_inputs[each_input.device] and
-                 'name' in dict_inputs[each_input.device]['channels_dict'][each_input_channel.channel] -%}
-          {{': ' + dict_inputs[each_input.device]['channels_dict'][each_input_channel.channel]['name']}}
         {%- endif -%}
       </div>
     </div>
