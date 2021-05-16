@@ -522,7 +522,6 @@ def cmd_output(command, stdout_pipe=True, shell=True, timeout=360, user='mycodo'
     if stdout_pipe:
         cmd = subprocess.Popen(command,
                                stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE,
                                shell=shell,
                                preexec_fn=demote(user_uid, user_gid, user_groups),
                                cwd=cwd,

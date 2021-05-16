@@ -51,7 +51,10 @@ FUNCTION_INFORMATION = {
                'it is not well-developed, and it has a high likelihood of failing to generate PID gains. Do not rely '
                'on it for accurately tuning your PID controller.',
 
-    'options_enabled': [],
+    'options_disabled': [
+        'measurements_select',
+        'measurements_configure'
+    ],
 
     'custom_options': [
         {

@@ -30,7 +30,10 @@ FUNCTION_INFORMATION = {
         ' as when heating. Lower direction has the opposite behavior - it will try to'
         ' turn the output on in order to drive the input lower.',
 
-    'options_enabled': [],
+    'options_disabled': [
+        'measurements_select',
+        'measurements_configure'
+    ],
 
     'custom_options': [
         {
