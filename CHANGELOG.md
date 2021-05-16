@@ -22,6 +22,7 @@
 
 ### Features
 
+ - Add Function: Backup to Remote Host (rsync)
  - Add Input: Anyleaf Electrical Conductivity
  - Add ability to calibrate Atlas Scientific ORP and DO sensors
  - Add ability to change I2C address of Atlas Scientific devices

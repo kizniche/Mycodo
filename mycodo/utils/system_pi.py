@@ -480,6 +480,7 @@ def cmd_output(command, stdout_pipe=True, shell=True, timeout=360, user='mycodo'
 
     :param command: Bash command to execute
     :param stdout_pipe: Capture output
+    :param shell: Set the shell argument
     :param timeout: Kill process if it runs longer than this many seconds
     :param user: The user to execute the command as
     :param cwd: The current working directory of the environment
@@ -521,7 +522,9 @@ def cmd_output(command, stdout_pipe=True, shell=True, timeout=360, user='mycodo'
 
     if stdout_pipe:
         cmd = subprocess.Popen(command,
+                               stdin=subprocess.PIPE,
                                stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE,
                                shell=shell,
                                preexec_fn=demote(user_uid, user_gid, user_groups),
                                cwd=cwd,
