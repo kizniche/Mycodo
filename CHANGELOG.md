@@ -2,6 +2,8 @@
 
 ### Bugfixes
 
+ - Fix unnecessary reference to measurement dict causing error ([#1001](https://github.com/kizniche/mycodo/issues/1001), [#1005](https://github.com/kizniche/mycodo/issues/1005))
+ - Add missing dependency for HC-SR04 Input ([#1003](https://github.com/kizniche/mycodo/issues/1003))
  - Fix 'id' KeyError when saving certain Inputs ([#1004](https://github.com/kizniche/mycodo/issues/1004))
  - Fix I2C PiOLED Display Functions
  - Fix clearing total volume of Hall Flow Input ([#994](https://github.com/kizniche/mycodo/issues/994))

@@ -315,20 +315,20 @@ $(document).ready(function() {
             document.getElementById("container-output-" + chart_number).className = "active-background";
             if (state !== 'off') {
               if (state === 'on') {
-                document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Active')}}';
+                document.getElementById("text-output-state-" + chart_number).innerHTML = '({{_('Active')}})';
               } else {
-                document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Active')}}, ' + state.toFixed(1) + '%';
+                document.getElementById("text-output-state-" + chart_number).innerHTML = '({{_('Active')}}, ' + state.toFixed(1) + '%)';
               }
             }
             else {
               document.getElementById("container-output-" + chart_number).className = "inactive-background";
-              document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Inactive')}}';
+              document.getElementById("text-output-state-" + chart_number).innerHTML = '({{_('Inactive')}})';
             }
           }
         }
         else {
           document.getElementById("container-output-" + chart_number).className = "pause-background";
-          document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('No Connection')}}';
+          document.getElementById("text-output-state-" + chart_number).innerHTML = '({{_('No Connection')}})';
         }
       }
     );

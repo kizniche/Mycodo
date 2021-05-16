@@ -740,12 +740,7 @@ WIDGET_INFORMATION = {
           format: '{value}'
         },
         opposite: false,
-        id: '
-    {%- if 'custom_axis_id' in dict_measurements[each_axis_meas] -%}
-      {{dict_measurements[each_axis_meas]['custom_axis_id']}}
-    {%- else -%}
-      {{each_axis_meas}}
-    {%- endif -%}'
+        id: '{{each_axis_meas}}'
       },
   {% endfor %}
     ],

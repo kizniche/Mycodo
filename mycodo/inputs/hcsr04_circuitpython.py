@@ -1,5 +1,6 @@
 # coding=utf-8
 import copy
+import time
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
@@ -16,7 +17,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'HCSR04_CIRCUITPYTHON',
     'input_manufacturer': 'Multiple Manufacturers',
-    'input_name': 'HCSR04',
+    'input_name': 'HC-SR04',
     'input_library': 'Adafruit-CircuitPython-HCSR04',
     'measurements_name': 'Ultrasonic Distance',
     'measurements_dict': measurements_dict,
@@ -32,6 +33,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
+        ('apt', 'libgpiod-dev', 'libgpiod-dev'),
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
         ('pip-pypi', 'adafruit_hcsr04', 'adafruit-circuitpython-hcsr04==0.4.6')
     ],
@@ -129,8 +131,7 @@ class InputModule(AbstractInput):
         for _ in range(3):
             try:
                 self.value_set(0, self.sensor.distance)
-                break
-            except RuntimeError:
-                pass
-
-        return self.return_dict
+                return self.return_dict
+            except Exception as err:
+                self.logger.debug("Error: {}".format(err))
+            time.sleep(0.5)

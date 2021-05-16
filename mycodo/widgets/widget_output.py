@@ -123,7 +123,7 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_title_bar': """
     {%- if widget_options['enable_status'] -%}
-      (<span id="text-output-state-{{chart_number}}"></span>{{') '}}
+      <span id="text-output-state-{{chart_number}}"></span>{{' '}}
     {%- else -%}
       <span style="display: none" id="text-output-state-{{chart_number}}"></span>
     {%- endif -%}
@@ -354,14 +354,14 @@ $(document).ready(function() {
             document.getElementById("container-output-" + chart_number).className = "active-background";
             if (state !== 'off') {
               if (state === 'on') {
-                document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Active')}}';
+                document.getElementById("text-output-state-" + chart_number).innerHTML = '({{_('Active')}})';
               } else {
-                document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Active')}}, ' + state.toFixed(1) + '%';
+                document.getElementById("text-output-state-" + chart_number).innerHTML = '({{_('Active')}}, ' + state.toFixed(1) + '%)';
               }
             }
             else {
               document.getElementById("container-output-" + chart_number).className = "inactive-background";
-              document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('Inactive')}}';
+              document.getElementById("text-output-state-" + chart_number).innerHTML = '({{_('Inactive')}})';
             }
           }
         }

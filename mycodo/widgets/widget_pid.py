@@ -116,7 +116,7 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_title_bar': """
     {%- if widget_options['enable_status'] -%}
-      (<span id="text-pid-state-{{chart_number}}"></span>{{') '}}
+      <span id="text-pid-state-{{chart_number}}"></span>{{' '}}
     {%- else -%}
       <span style="display: none" id="text-pid-state-{{chart_number}}"></span>
     {%- endif -%}
@@ -318,7 +318,7 @@ $(document).ready(function() {
         else {
           if (data['activated']) {
             if (data['paused']) {
-              document.getElementById('text-pid-state-' + chart_number).innerHTML = 'Paused';
+              document.getElementById('text-pid-state-' + chart_number).innerHTML = '({{_('Paused')}})';
               document.getElementById('container-pid-' + chart_number).className = "pause-background";
               document.getElementById('button-activate-' + chart_number).style.display = "none";
               document.getElementById('button-deactivate-' + chart_number).style.display = "block";
@@ -354,7 +354,7 @@ $(document).ready(function() {
               }
 
             } else if (data['held']) {
-              document.getElementById('text-pid-state-' + chart_number).innerHTML = 'Held';
+              document.getElementById('text-pid-state-' + chart_number).innerHTML = '({{_('Held')}})';
               document.getElementById('container-pid-' + chart_number).className = "pause-background";
               document.getElementById('button-activate-' + chart_number).style.display = "none";
               document.getElementById('button-deactivate-' + chart_number).style.display = "block";
@@ -389,7 +389,7 @@ $(document).ready(function() {
                 document.getElementById('duty_cycle-' + chart_number).innerHTML = '';
               }
             } else {
-              document.getElementById('text-pid-state-' + chart_number).innerHTML = 'Active';
+              document.getElementById('text-pid-state-' + chart_number).innerHTML = '({{_('Active')}})';
               document.getElementById('container-pid-' + chart_number).className = "active-background";
               document.getElementById('button-activate-' + chart_number).style.display = "none";
               document.getElementById('button-deactivate-' + chart_number).style.display = "block";
@@ -424,7 +424,7 @@ $(document).ready(function() {
               }
             }
           } else {
-            document.getElementById('text-pid-state-' + chart_number).innerHTML = 'Inactive';
+            document.getElementById('text-pid-state-' + chart_number).innerHTML = '({{_('Inactive')}})';
             document.getElementById('container-pid-' + chart_number).className = "inactive-background";
             document.getElementById('button-activate-' + chart_number).style.display = "block";
             document.getElementById('button-deactivate-' + chart_number).style.display = "none";
