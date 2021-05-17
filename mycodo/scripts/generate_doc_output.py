@@ -186,11 +186,14 @@ def generate_controller_doc(out_file, each_data):
             for each_option in each_data[each_opt]:
                 if each_option['type'] == 'new_line':
                     pass
+
                 elif each_option['type'] == 'message':
                     out_file.write("\n##### {}\n".format(each_option['default_value']))
+
                 elif each_option['type'] == 'button':
                     out_file.write("\n##### {}\n".format(each_option['name']))
                     out_file.write("\n- Type: Button")
+
                 else:
                     out_file.write("\n##### {}\n".format(each_option['name']))
                     if each_option['type'] == 'integer':
@@ -216,10 +219,19 @@ def generate_controller_doc(out_file, each_data):
                         if each_option['type'] in ['integer', 'text', 'float', 'bool']:
                             out_file.write("\n- Default Value: {}".format(each_option['default_value']))
                         elif each_option['type'] == 'select':
-                            for each_option_sel in each_option['options_select']:
-                                if each_option['default_value'] == each_option_sel[0]:
-                                    out_file.write("\n- Default Value: {}".format(each_option_sel[1]))
-                                    break
+                            select_options = "- Options: \["
+                            select_default = None
+                            if 'default_value' in each_option and each_option['default_value']:
+                                select_default = each_option['default_value']
+                            for i, each_option_sel in enumerate(each_option['options_select']):
+                                if select_default and select_default == each_option_sel[0]:
+                                    select_options += "**{}**".format(each_option_sel[1])
+                                else:
+                                    select_options += each_option_sel[1]
+                                if i < len(each_option['options_select']) - 1:
+                                    select_options += " | "
+                            select_options += "\] (Default is **bold**)"
+                            out_file.write("\n{}".format(select_options))
 
                     out_file.write("\n- Description: {}\n".format(each_option['phrase']))
 

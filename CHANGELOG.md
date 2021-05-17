@@ -22,6 +22,7 @@
 
 ### Features
 
+ - Add Output channel names to Graph Widget multi-select and legend
  - Add Function: Backup to Remote Host (rsync)
  - Add Input: Anyleaf Electrical Conductivity
  - Add ability to calibrate Atlas Scientific ORP and DO sensors

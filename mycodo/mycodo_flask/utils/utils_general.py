@@ -14,6 +14,7 @@ from flask import redirect
 from flask import request
 from flask import url_for
 from flask_babel import gettext
+from sqlalchemy import and_
 
 from mycodo.config import CALIBRATION_INFO
 from mycodo.config import CAMERA_INFO
@@ -36,6 +37,7 @@ from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
 from mycodo.databases.models import Output
+from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.databases.models import Role
 from mycodo.databases.models import Trigger
@@ -1078,23 +1080,34 @@ def form_output_choices(choices, each_output, dict_units, dict_measurements):
                 dict_measurements, measurement)
 
             if isinstance(channel, int):
-                channel_num = ' M{cnum}'.format(cnum=channel)
+                channel_num = ', M{cnum}'.format(cnum=channel)
             else:
                 channel_num = ''
 
+            channel_name = ''
+
+            output_channel = OutputChannel.query.filter(and_(
+                OutputChannel.output_id == each_output.unique_id,
+                OutputChannel.channel == channel)).first()
+            if output_channel:
+                try:
+                    custom_channel_options = json.loads(output_channel.custom_options)
+                    if "name" in custom_channel_options:
+                        channel_name += ', {name}'.format(name=custom_channel_options["name"])
+                except:
+                    pass
+
             if each_measure.name:
-                channel_name = ' ({name})'.format(name=each_measure.name)
-            else:
-                channel_name = ''
+                channel_name += ', {name}'.format(name=each_measure.name)
 
             if display_measurement and display_unit:
-                measurement_unit = ' {meas} ({unit})'.format(
+                measurement_unit = ', {meas} ({unit})'.format(
                     meas=display_measurement, unit=display_unit)
             elif display_measurement:
-                measurement_unit = ' {meas}'.format(
+                measurement_unit = ', {meas}'.format(
                     meas=display_measurement)
             else:
-                measurement_unit = ' ({unit})'.format(unit=display_unit)
+                measurement_unit = ', {unit}'.format(unit=display_unit)
 
             display = '[Output {id:02d}] {i_name}{chan_num}{chan_name}{meas}'.format(
                 id=each_output.id,

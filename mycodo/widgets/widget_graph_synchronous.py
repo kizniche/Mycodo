@@ -1104,6 +1104,12 @@ WIDGET_INFORMATION = {
           {%- endif -%}
 
           {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
+          
+          {%- if output_id in custom_options_values_output_channels and 
+                 device_measurements_dict[measurement_id].channel in custom_options_values_output_channels[output_id] and
+                 'name' in custom_options_values_output_channels[output_id][device_measurements_dict[measurement_id].channel] -%}
+            {{', ' + custom_options_values_output_channels[output_id][device_measurements_dict[measurement_id].channel]['name']}}
+          {%- endif -%}
 
           {%- if dict_measure_measurements[measurement_id] in dict_measurements and
                  dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}

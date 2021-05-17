@@ -592,6 +592,7 @@ def page_dashboard(dashboard_id):
     method = Method.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
+    output_channel = OutputChannel.query.all()
     pid = PID.query.all()
     tags = NoteTags.query.all()
 
@@ -663,6 +664,9 @@ def page_dashboard(dashboard_id):
 
     custom_options_values_widgets = parse_custom_option_values_json(
         dashboard, dict_controller=dict_widgets)
+
+    custom_options_values_output_channels = parse_custom_option_values_output_channels_json(
+        output_channel, dict_controller=dict_outputs, key_name='custom_channel_options')
 
     widget_types_on_dashboard = []
     custom_widget_variables = {}
@@ -751,6 +755,7 @@ def page_dashboard(dashboard_id):
         device_measurements, input_dev, output, math, function)
 
     return render_template('pages/dashboard.html',
+                           custom_options_values_output_channels=custom_options_values_output_channels,
                            custom_options_values_widgets=custom_options_values_widgets,
                            custom_widget_variables=custom_widget_variables,
                            table_conversion=Conversion,
