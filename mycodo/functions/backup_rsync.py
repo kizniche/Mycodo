@@ -133,7 +133,7 @@ FUNCTION_INFORMATION = {
     'custom_actions': [
         {
             'type': 'message',
-            'default_value': 'Backup of settings are only created if the Mycodo version or database versions change. This is due to this Function running periodically, as if it created a new backup every Period, there would soon be many backups that are identical. Therefore, if you want to induce the creation of a new settings backup and sync it to your remote system, use the button below.',
+            'default_value': 'Backup of settings are only created if the Mycodo version or database versions change. This is due to this Function running periodically- if it created a new backup every Period, there would soon be many identical backups. Therefore, if you want to induce the creation of a new settings backup and sync it to your remote system, use the button below.',
         },
         {
             'id': 'create_new_settings_backup',
@@ -204,7 +204,7 @@ class CustomModule(AbstractFunction):
                     host=socket.gethostname().replace(' ', ''))
             self.create_settings_backup(filename)
 
-            rsync_cmd = "rsync -avz -e ssh {path_local}/ {user}@{host}:{remote_path}/settings/".format(
+            rsync_cmd = "rsync -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
                 path_local=PATH_SETTINGS_BACKUP,
                 user=self.remote_user,
                 host=self.remote_host,
@@ -217,7 +217,7 @@ class CustomModule(AbstractFunction):
                 cmd_out.decode(), cmd_err.decode(), cmd_status))
 
         if self.backup_cameras:
-            rsync_cmd = "rsync -avz -e ssh {path_local}/ {user}@{host}:{remote_path}/cameras/".format(
+            rsync_cmd = "rsync -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
                 path_local=PATH_CAMERAS,
                 user=self.remote_user,
                 host=self.remote_host,
@@ -252,7 +252,7 @@ class CustomModule(AbstractFunction):
             dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
         self.create_settings_backup(filename)
 
-        rsync_cmd = "rsync -avz -e ssh {path_local}/ {user}@{host}:{remote_path}/settings/".format(
+        rsync_cmd = "rsync -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
             path_local=PATH_SETTINGS_BACKUP,
             user=self.remote_user,
             host=self.remote_host,
