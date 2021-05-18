@@ -219,7 +219,7 @@ def generate_controller_doc(out_file, each_data):
                         if each_option['type'] in ['integer', 'text', 'float', 'bool']:
                             out_file.write("\n- Default Value: {}".format(each_option['default_value']))
                         elif each_option['type'] == 'select':
-                            select_options = "- Options: \["
+                            select_options = "\n- Options: \["
                             select_default = None
                             if 'default_value' in each_option and each_option['default_value']:
                                 select_default = each_option['default_value']
@@ -230,8 +230,8 @@ def generate_controller_doc(out_file, each_data):
                                     select_options += each_option_sel[1]
                                 if i < len(each_option['options_select']) - 1:
                                     select_options += " | "
-                            select_options += "\] (Default is **bold**)"
-                            out_file.write("\n{}".format(select_options))
+                            select_options += "\] (Default in **bold**)"
+                            out_file.write(select_options)
 
                     out_file.write("\n- Description: {}\n".format(each_option['phrase']))
 

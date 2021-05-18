@@ -22,6 +22,7 @@
 
 ### Features
 
+ - Add Temperature Compensation for Atlas Scientific pH Input during calibration
  - Add Output channel names to Graph Widget multi-select and legend
  - Add Function: Backup to Remote Host (rsync)
  - Add Input: Anyleaf Electrical Conductivity

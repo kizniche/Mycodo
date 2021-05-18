@@ -100,7 +100,7 @@ class AtlasScientificCommand:
             if self.board_version == 1:
                 err, msg = self.send_command(set_amount)
             elif self.board_version == 2:
-                err, msg = self.send_command('T,{temp}'.format(temp=set_amount))
+                err, msg = self.send_command('T,{:.2f}'.format(set_amount))
         elif command == 'clear_calibration':
             if self.board_version == 1:
                 err, msg = self.send_command('X')

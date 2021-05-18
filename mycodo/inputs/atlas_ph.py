@@ -79,7 +79,19 @@ INPUT_INFORMATION = {
     'custom_actions': [
         {
             'type': 'message',
-            'default_value': """Calibration: a one, two or three-point calibration can be performed. """
+            'default_value': """Calibration: a one-, two- or three-point calibration can be performed. The first calibration must be the Mid point. The second must be the Low point. And the third must be the High point. You can perform a one-, two- or three-point calibration, but they must be performed in this order. Allow a minute or two after submerging your probe in a calibration solution for the measurements to equilibrate before calibrating to that solution. The EZO pH circuit default temperature compensation is set to 25 °C. If the temperature of the calibration solution is +/- 2 °C from 25 °C, consider setting the temperature compensation first. Note that if you have a Temperature Compensation Measurement selected from the Options, this will overwrite the manual Temperature Compensation set here, so be sure to disable this option if you would like to specify the temperature to compensate with."""
+        },
+        {
+            'id': 'compensation_temp_c',
+            'type': 'float',
+            'default_value': 25.0,
+            'name': 'Compensation Temperature (°C)',
+            'phrase': 'The temperature of the calibration solutions'
+        },
+        {
+            'id': 'compensation_temp_set',
+            'type': 'button',
+            'name': 'Set Temperature Compensation'
         },
         {
             'id': 'calibrate_clear',
@@ -204,12 +216,19 @@ class InputModule(AbstractInput):
                 max_age=self.max_age)
 
             if last_measurement:
-                self.logger.debug("Latest temperature used to calibrate: {temp}".format(temp=last_measurement[1]))
-                ret_value, ret_msg = self.atlas_command.calibrate('temperature', set_amount=last_measurement[1])
+                self.logger.debug(
+                    "Latest temperature used to calibrate: {temp}".format(
+                        temp=last_measurement[1]))
+                ret_value, ret_msg = self.atlas_command.calibrate(
+                    'temperature', set_amount=last_measurement[1])
                 time.sleep(0.5)
-                self.logger.debug("Calibration returned: {val}, {msg}".format(val=ret_value, msg=ret_msg))
+                self.logger.debug(
+                    "Calibration returned: {val}, {msg}".format(
+                        val=ret_value, msg=ret_msg))
             else:
-                self.logger.error("Calibration measurement not found within the past {} seconds".format(self.max_age))
+                self.logger.error(
+                    "Calibration measurement not found within the past {} seconds".format(
+                        self.max_age))
 
         # Read sensor via FTDI or UART
         if self.interface in ['FTDI', 'UART']:
@@ -249,7 +268,19 @@ class InputModule(AbstractInput):
 
         return self.return_dict
 
-    def calibrate_clear(self):
+    def compensation_temp_set(self, args_dict):
+        if 'compensation_temp_c' not in args_dict:
+            self.logger.error("Cannot set temperature compensation without temperature")
+            return
+        try:
+            write_cmd = "T,{:.2f}".format(args_dict['compensation_temp_c'])
+            self.logger.debug("Compensation command: {}".format(write_cmd))
+            ret_val = self.atlas_device.write(write_cmd)
+            self.logger.info("Command returned: {}".format(ret_val))
+        except:
+            self.logger.exception("Exception compensating temperature")
+
+    def calibrate_clear(self, args_dict):
         try:
             write_cmd = "Cal,clear"
             self.logger.debug("Calibration command: {}".format(write_cmd))
