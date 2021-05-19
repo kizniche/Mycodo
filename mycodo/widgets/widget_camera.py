@@ -37,8 +37,11 @@ logger = logging.getLogger(__name__)
 def can_stream(custom_options_json):
     custom_options = json.loads(custom_options_json)
     camera = Camera.query.filter(Camera.unique_id == custom_options['camera_id']).first()
-    if (custom_options['camera_image_type'] == 'stream' and
-            CAMERA_INFO[camera.library]['capable_stream']):
+    if ((custom_options['camera_image_type'] == 'stream' and
+            CAMERA_INFO[camera.library]['capable_stream']) or
+
+            (custom_options['camera_image_type'] in ['new_img', 'tmp_img', 'timelapse'] and
+             CAMERA_INFO[camera.library]['capable_image'])):
         return True
 
 
