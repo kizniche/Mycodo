@@ -63,10 +63,10 @@ class DaemonControl:
     def __init__(self, pyro_uri=PYRO_URI, pyro_timeout=None):
         self.pyro_timeout = 30
         try:
-            misc = db_retrieve_table_daemon(Misc, entry='first')
             if pyro_timeout:
                 self.pyro_timeout = pyro_timeout
             else:
+                misc = db_retrieve_table_daemon(Misc, entry='first')
                 self.pyro_timeout = misc.rpyc_timeout  # TODO: Rename to pyro_timeout at next major revision
         except Exception as e:
             logger.exception(
