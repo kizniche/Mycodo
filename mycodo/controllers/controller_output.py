@@ -130,9 +130,11 @@ class OutputController(AbstractController, threading.Thread):
                     output_loaded = load_module_from_file(
                         self.dict_outputs[each_output.output_type]['file_path'],
                         'outputs')
-                    self.output[each_output.unique_id] = output_loaded.OutputModule(each_output)
-                    self.output[each_output.unique_id].setup_output()
-                    self.output[each_output.unique_id].init_post()
+
+                    if output_loaded:
+                        self.output[each_output.unique_id] = output_loaded.OutputModule(each_output)
+                        self.output[each_output.unique_id].setup_output()
+                        self.output[each_output.unique_id].init_post()
 
                 self.logger.debug("{id} ({name}) Initialized".format(
                     id=each_output.unique_id.split('-')[0], name=each_output.name))
@@ -172,9 +174,11 @@ class OutputController(AbstractController, threading.Thread):
                 output_loaded = load_module_from_file(
                     self.dict_outputs[self.output_type[output_id]]['file_path'],
                     'outputs')
-                self.output[output_id] = output_loaded.OutputModule(output)
-                self.output[output_id].setup_output()
-                self.output[output_id].init_post()
+
+                if output_loaded:
+                    self.output[output_id] = output_loaded.OutputModule(output)
+                    self.output[output_id].setup_output()
+                    self.output[output_id].init_post()
 
             return 0, "add_mod_output() Success"
         except Exception as e:

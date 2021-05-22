@@ -313,8 +313,8 @@ class InputController(AbstractController, threading.Thread):
                 self.dict_inputs[self.device]['file_path'],
                 'inputs')
 
-            self.measure_input = input_loaded.InputModule(self.input_dev)
-
+            if input_loaded:
+                self.measure_input = input_loaded.InputModule(self.input_dev)
         else:
             self.device_recognized = False
             self.logger.debug("Device '{device}' not recognized".format(

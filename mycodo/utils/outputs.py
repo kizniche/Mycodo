@@ -72,7 +72,7 @@ def parse_output_information(exclude_custom=False):
             full_path = "{}/{}".format(real_path, each_file)
             output_custom = load_module_from_file(full_path, 'outputs')
 
-            if not hasattr(output_custom, 'OUTPUT_INFORMATION'):
+            if not output_custom or not hasattr(output_custom, 'OUTPUT_INFORMATION'):
                 continue
 
             # Populate dictionary of output information

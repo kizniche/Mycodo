@@ -65,7 +65,7 @@ def parse_function_information(exclude_custom=False):
             full_path = "{}/{}".format(real_path, each_file)
             function_custom = load_module_from_file(full_path, 'functions')
 
-            if not hasattr(function_custom, 'FUNCTION_INFORMATION'):
+            if not function_custom or not hasattr(function_custom, 'FUNCTION_INFORMATION'):
                 continue
 
             # Populate dictionary of function information

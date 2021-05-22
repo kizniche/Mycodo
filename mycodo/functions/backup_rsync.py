@@ -31,6 +31,7 @@ from flask_babel import lazy_gettext
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import PATH_CAMERAS
+from mycodo.config import PATH_MEASUREMENTS_BACKUP
 from mycodo.config import PATH_SETTINGS_BACKUP
 from mycodo.databases.models import CustomController
 from mycodo.functions.base_function import AbstractFunction
@@ -39,6 +40,7 @@ from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.tools import create_measurements_export
 from mycodo.utils.tools import create_settings_export
 
 try:
@@ -55,7 +57,7 @@ FUNCTION_INFORMATION = {
         'measurements_configure'
     ],
 
-    'message': 'This function will use rsync to back up assets on this system to a remote system. Your remote system needs to have an SSH server running and rsync installed. This system will need to be able to access your remote system via SSH without a password. You can do this by creating an SSH key on this system running Mycodo with "ssh-keygen" (leave the password field empty), then run "ssh-copy-id -i ~/.ssh/id_rsa.pub pi@REMOTE_HOST_IP" to transfer your public SSH key to your remote system (changing pi and REMOTE_HOST_IP to the appropriate user and host of your remote system). You can test if this worked by trying to connect to your remote system with "ssh pi@REMOTE_HOST_IP" and you should log in without being asked for a password.',
+    'message': 'This function will use rsync to back up assets on this system to a remote system. Your remote system needs to have an SSH server running and rsync installed. This system will need to be able to access your remote system via SSH without a password. You can do this by creating an SSH key on this system running Mycodo with "ssh-keygen" (leave the password field empty), then run "ssh-copy-id -i ~/.ssh/id_rsa.pub pi@REMOTE_HOST_IP" to transfer your public SSH key to your remote system (changing pi and REMOTE_HOST_IP to the appropriate user and host of your remote system). You can test if this worked by trying to connect to your remote system with "ssh pi@REMOTE_HOST_IP" and you should log in without being asked for a password. Be careful not to set the Period too low, which could cause the function to begin running before the previous operation(s) complete. Therefore, it is recommended to set a relatively long Period (greater than 10 minutes). The default Period is 15 days. Note that the Period will reset if the system or the Mycodo daemon restarts and the Function will run, generating new settings and measurement archives that will be synced.',
 
     'dependencies_module': [
         ('apt', 'rsync', 'rsync')
@@ -65,11 +67,19 @@ FUNCTION_INFORMATION = {
         {
             'id': 'period',
             'type': 'float',
-            'default_value': 3600,
+            'default_value': 1296000,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Period (seconds)'),
             'phrase': lazy_gettext('The duration (seconds) between measurements or actions')
+        },
+        {
+            'id': 'start_offset',
+            'type': 'integer',
+            'default_value': 300,
+            'required': True,
+            'name': 'Start Offset',
+            'phrase': 'The duration (seconds) to wait before the first operation'
         },
         {
             'id': 'local_user',
@@ -110,10 +120,10 @@ FUNCTION_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Rsync Timeout',
-            'phrase': 'How long to allow rsync to complete'
+            'phrase': 'How long to allow rsync to complete (seconds)'
         },
         {
-            'id': 'backup_settings',
+            'id': 'do_backup_settings',
             'type': 'bool',
             'default_value': True,
             'required': True,
@@ -121,7 +131,15 @@ FUNCTION_INFORMATION = {
             'phrase': 'Create and backup exported settings file'
         },
         {
-            'id': 'backup_cameras',
+            'id': 'do_backup_measurements',
+            'type': 'bool',
+            'default_value': True,
+            'required': True,
+            'name': 'Backup Measurements',
+            'phrase': 'Backup all influxdb measurements'
+        },
+        {
+            'id': 'do_backup_cameras',
             'type': 'bool',
             'default_value': True,
             'required': True,
@@ -151,6 +169,13 @@ FUNCTION_INFORMATION = {
             'phrase': 'Create a new settings backup and backup via rsync'
         },
         {
+            'id': 'create_new_measurements_backup',
+            'type': 'button',
+            'wait_for_return': False,
+            'name': 'Backup Measurements',
+            'phrase': 'Backup measurements via rsync'
+        },
+        {
             'id': 'create_new_camera_backup',
             'type': 'button',
             'wait_for_return': False,
@@ -175,13 +200,15 @@ class CustomModule(AbstractFunction):
 
         # Initialize custom options
         self.period = None
+        self.start_offset = None
         self.local_user = None
         self.remote_user = None
         self.remote_host = None
         self.remote_backup_path = None
         self.rsync_timeout = None
-        self.backup_settings = None
-        self.backup_cameras = None
+        self.do_backup_settings = None
+        self.do_backup_measurements = None
+        self.do_backup_cameras = None
         self.backup_cameras_remove_source = None
 
         # Set custom options
@@ -194,6 +221,8 @@ class CustomModule(AbstractFunction):
             self.initialize_variables()
 
     def initialize_variables(self):
+        self.timer_loop = time.time() + self.start_offset
+
         self.logger.debug(
             "Custom controller started with options: {}, {}, {}, {}".format(
                 self.remote_host,
@@ -215,16 +244,20 @@ class CustomModule(AbstractFunction):
             self.logger.error("Cannot run: Not all options are set")
             return
 
-        if self.backup_settings:
-            filename = 'Mycodo_{mver}_Settings_{aver}_{host}.zip'.format(
-                mver=MYCODO_VERSION, aver=ALEMBIC_VERSION,
-                host=socket.gethostname().replace(' ', ''))
-            self.backup_settings(filename)
+        if self.do_backup_settings:
+            self.backup_settings()
 
-        if self.backup_cameras:
+        if self.do_backup_measurements:
+            self.backup_measurements()
+
+        if self.do_backup_cameras:
             self.backup_camera()
 
-    def backup_settings(self, filename):
+    def backup_settings(self):
+        filename = 'Mycodo_{mver}_Settings_{aver}_{host}_{dt}.zip'.format(
+            mver=MYCODO_VERSION, aver=ALEMBIC_VERSION,
+            host=socket.gethostname().replace(' ', ''),
+            dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
         path_save = os.path.join(PATH_SETTINGS_BACKUP, filename)
         assure_path_exists(PATH_SETTINGS_BACKUP)
         if os.path.exists(path_save):
@@ -242,6 +275,38 @@ class CustomModule(AbstractFunction):
 
         rsync_cmd = "rsync -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
             path_local=PATH_SETTINGS_BACKUP,
+            user=self.remote_user,
+            host=self.remote_host,
+            remote_path=self.remote_backup_path)
+        self.logger.debug("rsync command: {}".format(rsync_cmd))
+        cmd_out, cmd_err, cmd_status = cmd_output(
+            rsync_cmd, timeout=self.rsync_timeout, user=self.local_user)
+        self.logger.debug("rsync returned:\nOut: {}\nError: {}\nStatus: {}".format(
+            cmd_out.decode(), cmd_err.decode(), cmd_status))
+
+    def backup_measurements(self):
+        influxd_version_out, _, _ = cmd_output(
+            '/usr/bin/influxd version')
+        if influxd_version_out:
+            influxd_version = influxd_version_out.decode('utf-8').split(' ')[1]
+        else:
+            influxd_version = "UNKNOWN"
+        filename = 'Mycodo_{mv}_Influxdb_{iv}_{host}_{dt}.zip'.format(
+            mv=MYCODO_VERSION, iv=influxd_version,
+            host=socket.gethostname().replace(' ', ''),
+            dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+        path_save = os.path.join(PATH_MEASUREMENTS_BACKUP, filename)
+        assure_path_exists(PATH_MEASUREMENTS_BACKUP)
+        status, saved_path = create_measurements_export(save_path=path_save)
+        if not status:
+            self.logger.debug("Saved measurements file: "
+                              "{}".format(saved_path))
+        else:
+            self.logger.debug("Could not create measurements file: "
+                              "{}".format(saved_path))
+
+        rsync_cmd = "rsync -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
+            path_local=PATH_MEASUREMENTS_BACKUP,
             user=self.remote_user,
             host=self.remote_host,
             remote_path=self.remote_backup_path)
@@ -272,11 +337,10 @@ class CustomModule(AbstractFunction):
             cmd_out.decode(), cmd_err.decode(), cmd_status))
 
     def create_new_settings_backup(self, args_dict):
-        filename = 'Mycodo_{mver}_Settings_{aver}_{host}_{dt}.zip'.format(
-            mver=MYCODO_VERSION, aver=ALEMBIC_VERSION,
-            host=socket.gethostname().replace(' ', ''),
-            dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
-        self.backup_settings(filename)
+        self.backup_settings()
+
+    def create_new_measurements_backup(self, args_dict):
+        self.backup_measurements()
 
     def create_new_camera_backup(self, args_dict):
         self.backup_camera()

@@ -91,14 +91,16 @@ class WidgetController(AbstractController, threading.Thread):
 
         try:
             timer = timeit.default_timer()
-            input_loaded = load_module_from_file(
+            widget_loaded = load_module_from_file(
                 self.dict_widgets[widget.graph_type]['file_path'], 'widgets')
             widget = db_retrieve_table_daemon(Widget, unique_id=unique_id)
-            self.widget_loaded[unique_id] = input_loaded.WidgetModule(widget)
-            self.widget_loaded[unique_id].initialize_variables()
-            self.widget_ready[unique_id] = True
-            self.logger.info("Widget {id} created/refreshed in {time:.1f} ms".format(
-                id=widget.unique_id.split('-')[0], time=(timeit.default_timer() - timer) * 1000))
+
+            if widget_loaded:
+                self.widget_loaded[unique_id] = widget_loaded.WidgetModule(widget)
+                self.widget_loaded[unique_id].initialize_variables()
+                self.widget_ready[unique_id] = True
+                self.logger.info("Widget {id} created/refreshed in {time:.1f} ms".format(
+                    id=widget.unique_id.split('-')[0], time=(timeit.default_timer() - timer) * 1000))
         except Exception:
             self.logger.exception("Widget create/refresh")
 

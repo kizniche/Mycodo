@@ -72,7 +72,7 @@ def parse_widget_information(exclude_custom=False):
             full_path = "{}/{}".format(real_path, each_file)
             widget_custom = load_module_from_file(full_path, 'widgets')
 
-            if not hasattr(widget_custom, 'WIDGET_INFORMATION'):
+            if not widget_custom or not hasattr(widget_custom, 'WIDGET_INFORMATION'):
                 continue
 
             # Populate dictionary of widget information

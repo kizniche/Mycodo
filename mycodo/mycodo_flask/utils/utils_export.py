@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import datetime
-import io
 import logging
 import os
 import shutil
@@ -38,6 +37,7 @@ from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.tools import create_measurements_export
 from mycodo.utils.tools import create_settings_export
 from mycodo.utils.widget_generate_html import generate_widget_html
 
@@ -127,51 +127,25 @@ def export_influxdb(form):
     error = []
 
     try:
-        influx_backup_dir = os.path.join(INSTALL_DIRECTORY, 'influx_backup')
-
-        # Delete influxdb directory if it exists
-        if os.path.isdir(influx_backup_dir):
-            shutil.rmtree(influx_backup_dir)
-
-        # Create new directory (make sure it's empty)
-        assure_path_exists(influx_backup_dir)
-
-        cmd = "/usr/bin/influxd backup -database {db} -portable {path}".format(
-            db=INFLUXDB_DATABASE, path=influx_backup_dir)
-        _, _, status = cmd_output(cmd)
-
-        influxd_version_out, _, _ = cmd_output(
-            '/usr/bin/influxd version')
-        if influxd_version_out:
-            influxd_version = influxd_version_out.decode('utf-8').split(' ')[1]
+        status, data = create_measurements_export()
+        if not status:
+            influxd_version_out, _, _ = cmd_output(
+                '/usr/bin/influxd version')
+            if influxd_version_out:
+                influxd_version = influxd_version_out.decode('utf-8').split(' ')[1]
+                return send_file(
+                    data,
+                    mimetype='application/zip',
+                    as_attachment=True,
+                    attachment_filename=
+                    'Mycodo_{mv}_Influxdb_{iv}_{host}_{dt}.zip'.format(
+                        mv=MYCODO_VERSION, iv=influxd_version,
+                        host=socket.gethostname().replace(' ', ''),
+                        dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")))
+            else:
+                error.append("Could not determine Influxdb version")
         else:
-            influxd_version = None
-            error.append("Could not determine Influxdb version")
-
-        if not status and influxd_version:
-            # Zip all files in the influx_backup directory
-            data = io.BytesIO()
-            with zipfile.ZipFile(data, mode='w') as z:
-                for _, _, files in os.walk(influx_backup_dir):
-                    for filename in files:
-                        z.write(os.path.join(influx_backup_dir, filename),
-                                filename)
-            data.seek(0)
-
-            # Delete influxdb directory if it exists
-            if os.path.isdir(influx_backup_dir):
-                shutil.rmtree(influx_backup_dir)
-
-            # Send zip file to user
-            return send_file(
-                data,
-                mimetype='application/zip',
-                as_attachment=True,
-                attachment_filename='Mycodo_{mv}_Influxdb_{iv}_{host}_{dt}.zip'.format(
-                     mv=MYCODO_VERSION, iv=influxd_version,
-                     host=socket.gethostname().replace(' ', ''),
-                     dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
-            )
+            error.append(data)
     except Exception as err:
         error.append("Error: {}".format(err))
 

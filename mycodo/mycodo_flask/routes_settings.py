@@ -131,9 +131,11 @@ def settings_function():
             try:
                 full_path_file = os.path.join(PATH_FUNCTIONS_CUSTOM, each_file)
                 controller_info = load_module_from_file(full_path_file, 'functions')
-                func_info = controller_info.FUNCTION_INFORMATION
-                dict_controllers[func_info['function_name_unique']] = {}
-                dict_controllers[func_info['function_name_unique']]['function_name'] = func_info['function_name']
+
+                if controller_info:
+                    func_info = controller_info.FUNCTION_INFORMATION
+                    dict_controllers[func_info['function_name_unique']] = {}
+                    dict_controllers[func_info['function_name_unique']]['function_name'] = func_info['function_name']
             except:
                 pass
 
@@ -177,13 +179,15 @@ def settings_input():
             try:
                 full_path_file = os.path.join(PATH_INPUTS_CUSTOM, each_file)
                 input_info = load_module_from_file(full_path_file, 'inputs')
-                dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']] = {}
-                dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']]['input_name'] = \
-                    input_info.INPUT_INFORMATION['input_name']
-                dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']]['input_manufacturer'] = \
-                    input_info.INPUT_INFORMATION['input_manufacturer']
-                dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']]['measurements_name'] = \
-                    input_info.INPUT_INFORMATION['measurements_name']
+
+                if input_info:
+                    dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']] = {}
+                    dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']]['input_name'] = \
+                        input_info.INPUT_INFORMATION['input_name']
+                    dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']]['input_manufacturer'] = \
+                        input_info.INPUT_INFORMATION['input_manufacturer']
+                    dict_inputs[input_info.INPUT_INFORMATION['input_name_unique']]['measurements_name'] = \
+                        input_info.INPUT_INFORMATION['measurements_name']
             except:
                 pass
 
@@ -229,11 +233,13 @@ def settings_output():
             try:
                 full_path_file = os.path.join(PATH_OUTPUTS_CUSTOM, each_file)
                 output_info = load_module_from_file(full_path_file, 'outputs')
-                dict_outputs[output_info.OUTPUT_INFORMATION['output_name_unique']] = {}
-                dict_outputs[output_info.OUTPUT_INFORMATION['output_name_unique']]['output_name'] = \
-                    output_info.OUTPUT_INFORMATION['output_name']
-                dict_outputs[output_info.OUTPUT_INFORMATION['output_name_unique']]['measurements_name'] = \
-                    output_info.OUTPUT_INFORMATION['measurements_name']
+
+                if output_info:
+                    dict_outputs[output_info.OUTPUT_INFORMATION['output_name_unique']] = {}
+                    dict_outputs[output_info.OUTPUT_INFORMATION['output_name_unique']]['output_name'] = \
+                        output_info.OUTPUT_INFORMATION['output_name']
+                    dict_outputs[output_info.OUTPUT_INFORMATION['output_name_unique']]['measurements_name'] = \
+                        output_info.OUTPUT_INFORMATION['measurements_name']
             except:
                 pass
 
@@ -279,11 +285,13 @@ def settings_widget():
             try:
                 full_path_file = os.path.join(PATH_WIDGETS_CUSTOM, each_file)
                 widget_info = load_module_from_file(full_path_file, 'widgets')
-                dict_widgets[widget_info.WIDGET_INFORMATION['widget_name_unique']] = {}
-                dict_widgets[widget_info.WIDGET_INFORMATION['widget_name_unique']]['widget_name'] = \
-                    widget_info.WIDGET_INFORMATION['widget_name']
-                dict_widgets[widget_info.WIDGET_INFORMATION['widget_name_unique']]['measurements_name'] = \
-                    widget_info.WIDGET_INFORMATION['measurements_name']
+
+                if widget_info:
+                    dict_widgets[widget_info.WIDGET_INFORMATION['widget_name_unique']] = {}
+                    dict_widgets[widget_info.WIDGET_INFORMATION['widget_name_unique']]['widget_name'] = \
+                        widget_info.WIDGET_INFORMATION['widget_name']
+                    dict_widgets[widget_info.WIDGET_INFORMATION['widget_name_unique']]['measurements_name'] = \
+                        widget_info.WIDGET_INFORMATION['measurements_name']
             except:
                 pass
 

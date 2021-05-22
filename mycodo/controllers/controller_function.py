@@ -106,7 +106,8 @@ class FunctionController(AbstractController, threading.Thread):
                 self.dict_function[self.device]['file_path'],
                 'function')
 
-            self.run_function = function_loaded.CustomModule(self.function)
+            if function_loaded:
+                self.run_function = function_loaded.CustomModule(self.function)
         else:
             self.logger.debug("Device '{device}' not recognized".format(
                 device=self.device))

@@ -279,18 +279,6 @@ class DaemonController:
             elif cont_type == 'Function':
                 controller_manage['type'] = CustomController
                 controller_manage['function'] = FunctionController
-
-                # custom_function = db_retrieve_table_daemon(controller_manage['type'], unique_id=cont_id)
-                # dict_functions = parse_function_information()
-                # if custom_function and custom_function.device in dict_functions:
-                #     function_loaded = load_module_from_file(
-                #         dict_functions[custom_function.device]['file_path'], 'functions')
-                #     controller_manage['function'] = function_loaded.CustomModule
-                # else:
-                #     message = "Custom function not found.".format(type=cont_type)
-                #     self.logger.error(message)
-                #     return 1, message
-
             else:
                 message = "'{type}' not a valid controller type.".format(type=cont_type)
                 self.logger.error(message)
