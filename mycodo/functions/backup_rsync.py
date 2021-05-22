@@ -147,15 +147,15 @@ FUNCTION_INFORMATION = {
             'id': 'create_new_settings_backup',
             'type': 'button',
             'wait_for_return': False,
-            'name': 'Create New Settings Backup',
+            'name': 'Backup Settings',
             'phrase': 'Create a new settings backup and backup via rsync'
         },
         {
             'id': 'create_new_camera_backup',
             'type': 'button',
             'wait_for_return': False,
-            'name': 'Create New Camera Backup',
-            'phrase': 'Create a new camera image backup via rsync'
+            'name': 'Backup Cameras',
+            'phrase': 'Backup camera images via rsync'
         }
     ]
 }

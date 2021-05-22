@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+ - Fix Generic Pump Output timestamps
  - Fix inability to add Camera Widget for some cameras
  - Fix error referencing key of Input dict that doesn't exist
  - Fix unnecessary reference to measurement dict causing error ([#1001](https://github.com/kizniche/mycodo/issues/1001), [#1005](https://github.com/kizniche/mycodo/issues/1005))
