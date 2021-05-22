@@ -127,13 +127,21 @@ FUNCTION_INFORMATION = {
             'required': True,
             'name': 'Backup Camera Directories',
             'phrase': 'Backup all camera directories'
+        },
+        {
+            'id': 'backup_cameras_remove_source',
+            'type': 'bool',
+            'default_value': False,
+            'required': True,
+            'name': 'Remove Source Images',
+            'phrase': 'Remove source files after successful transfer of camera images'
         }
     ],
 
     'custom_actions': [
         {
             'type': 'message',
-            'default_value': 'Backup of settings are only created if the Mycodo version or database versions change. This is due to this Function running periodically- if it created a new backup every Period, there would soon be many identical backups. Therefore, if you want to induce the creation of a new settings backup and sync it to your remote system, use the button below.',
+            'default_value': 'Backup of settings are only created if the Mycodo version or database versions change. This is due to this Function running periodically- if it created a new backup every Period, there would soon be many identical backups. Therefore, if you want to induce the creation of a new settings or camera image backup and sync it to your remote system, use the buttons below.',
         },
         {
             'id': 'create_new_settings_backup',
@@ -141,6 +149,13 @@ FUNCTION_INFORMATION = {
             'wait_for_return': False,
             'name': 'Create New Settings Backup',
             'phrase': 'Create a new settings backup and backup via rsync'
+        },
+        {
+            'id': 'create_new_camera_backup',
+            'type': 'button',
+            'wait_for_return': False,
+            'name': 'Create New Camera Backup',
+            'phrase': 'Create a new camera image backup via rsync'
         }
     ]
 }
@@ -150,6 +165,7 @@ class CustomModule(AbstractFunction):
     """
     Class to operate custom controller
     """
+
     def __init__(self, function, testing=False):
         super(CustomModule, self).__init__(function, testing=testing, name=__name__)
 
@@ -166,6 +182,7 @@ class CustomModule(AbstractFunction):
         self.rsync_timeout = None
         self.backup_settings = None
         self.backup_cameras = None
+        self.backup_cameras_remove_source = None
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
@@ -200,36 +217,14 @@ class CustomModule(AbstractFunction):
 
         if self.backup_settings:
             filename = 'Mycodo_{mver}_Settings_{aver}_{host}.zip'.format(
-                    mver=MYCODO_VERSION, aver=ALEMBIC_VERSION,
-                    host=socket.gethostname().replace(' ', ''))
-            self.create_settings_backup(filename)
-
-            rsync_cmd = "rsync -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
-                path_local=PATH_SETTINGS_BACKUP,
-                user=self.remote_user,
-                host=self.remote_host,
-                remote_path=self.remote_backup_path
-            )
-            self.logger.debug("rsync command: {}".format(rsync_cmd))
-            cmd_out, cmd_err, cmd_status = cmd_output(
-                rsync_cmd, timeout=self.rsync_timeout, user=self.local_user)
-            self.logger.debug("rsync returned:\nOut: {}\nError: {}\nStatus: {}".format(
-                cmd_out.decode(), cmd_err.decode(), cmd_status))
+                mver=MYCODO_VERSION, aver=ALEMBIC_VERSION,
+                host=socket.gethostname().replace(' ', ''))
+            self.backup_settings(filename)
 
         if self.backup_cameras:
-            rsync_cmd = "rsync -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
-                path_local=PATH_CAMERAS,
-                user=self.remote_user,
-                host=self.remote_host,
-                remote_path=self.remote_backup_path
-            )
-            self.logger.debug("rsync command: {}".format(rsync_cmd))
-            cmd_out, cmd_err, cmd_status = cmd_output\
-                (rsync_cmd, timeout=self.rsync_timeout, user=self.local_user)
-            self.logger.debug("rsync returned:\nOut: {}\nError: {}\nStatus: {}".format(
-                cmd_out.decode(), cmd_err.decode(), cmd_status))
+            self.backup_camera()
 
-    def create_settings_backup(self, filename):
+    def backup_settings(self, filename):
         path_save = os.path.join(PATH_SETTINGS_BACKUP, filename)
         assure_path_exists(PATH_SETTINGS_BACKUP)
         if os.path.exists(path_save):
@@ -245,21 +240,43 @@ class CustomModule(AbstractFunction):
                 self.logger.debug("Could not create settings file: "
                                   "{}".format(saved_path))
 
-    def create_new_settings_backup(self, args_dict):
-        filename = 'Mycodo_{mver}_Settings_{aver}_{host}_{dt}.zip'.format(
-            mver=MYCODO_VERSION, aver=ALEMBIC_VERSION,
-            host=socket.gethostname().replace(' ', ''),
-            dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
-        self.create_settings_backup(filename)
-
         rsync_cmd = "rsync -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
             path_local=PATH_SETTINGS_BACKUP,
             user=self.remote_user,
             host=self.remote_host,
-            remote_path=self.remote_backup_path
-        )
+            remote_path=self.remote_backup_path)
         self.logger.debug("rsync command: {}".format(rsync_cmd))
         cmd_out, cmd_err, cmd_status = cmd_output(
             rsync_cmd, timeout=self.rsync_timeout, user=self.local_user)
         self.logger.debug("rsync returned:\nOut: {}\nError: {}\nStatus: {}".format(
             cmd_out.decode(), cmd_err.decode(), cmd_status))
+
+    def backup_camera(self):
+        if self.backup_cameras_remove_source:
+            rsync_cmd = "rsync --remove-source-files -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
+                path_local=PATH_CAMERAS,
+                user=self.remote_user,
+                host=self.remote_host,
+                remote_path=self.remote_backup_path)
+        else:
+            rsync_cmd = "rsync -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
+                path_local=PATH_CAMERAS,
+                user=self.remote_user,
+                host=self.remote_host,
+                remote_path=self.remote_backup_path)
+
+        self.logger.debug("rsync command: {}".format(rsync_cmd))
+        cmd_out, cmd_err, cmd_status = cmd_output(
+            rsync_cmd, timeout=self.rsync_timeout, user=self.local_user)
+        self.logger.debug("rsync returned:\nOut: {}\nError: {}\nStatus: {}".format(
+            cmd_out.decode(), cmd_err.decode(), cmd_status))
+
+    def create_new_settings_backup(self, args_dict):
+        filename = 'Mycodo_{mver}_Settings_{aver}_{host}_{dt}.zip'.format(
+            mver=MYCODO_VERSION, aver=ALEMBIC_VERSION,
+            host=socket.gethostname().replace(' ', ''),
+            dt=datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S"))
+        self.backup_settings(filename)
+
+    def create_new_camera_backup(self, args_dict):
+        self.backup_camera()
