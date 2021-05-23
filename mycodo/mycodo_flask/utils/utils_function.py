@@ -487,7 +487,7 @@ def action_mod(form, request_form):
             mod_action.do_unique_id = form.do_unique_id.data
             mod_action.do_action_string = form.do_action_string.data
 
-        elif mod_action.action_type == 'photo':
+        elif mod_action.action_type in ['photo', 'camera_timelapse_pause', 'camera_timelapse_resume']:
             mod_action.do_unique_id = form.do_unique_id.data
 
         elif mod_action.action_type == 'video':

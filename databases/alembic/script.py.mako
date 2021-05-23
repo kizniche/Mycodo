@@ -5,6 +5,13 @@ Revises: ${down_revision | comma,n}
 Create Date: ${create_date}
 
 """
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(__file__, "../../../..")))
+
+from databases.alembic_post_utils import write_revision_post_alembic
+
 from alembic import op
 import sqlalchemy as sa
 ${imports if imports else ""}
@@ -17,10 +24,6 @@ depends_on = ${repr(depends_on)}
 
 
 def upgrade():
-    # import sys
-    # import os
-    # sys.path.append(os.path.abspath(os.path.join(__file__, "../../../..")))
-    # from databases.alembic_post_utils import write_revision_post_alembic
     # write_revision_post_alembic(revision)
 
     ${upgrades if upgrades else "pass"}

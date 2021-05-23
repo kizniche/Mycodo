@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.10.1'
-ALEMBIC_VERSION = 'd46e17d65f48'
+ALEMBIC_VERSION = '45d5ab26ca82'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -566,6 +566,23 @@ FUNCTION_ACTION_INFO = {
         'description': lazy_gettext('Activate a controller.'),
         'dependencies_module': []
     },
+    'photo': {  # TODO: rename to camera_capture_photo
+        'name': "{}: {}".format(TRANSLATIONS['camera']['title'], lazy_gettext('Capture Photo')),
+        'description': lazy_gettext('Capture a photo with the selected Camera.'),
+        'dependencies_module': []
+    },
+    'camera_timelapse_pause': {
+        'name': '{}: {}: {}'.format(
+            TRANSLATIONS['camera']['title'], TRANSLATIONS['timelapse']['title'], TRANSLATIONS['pause']['title']),
+        'description': 'Pause a camera timelapse',
+        'dependencies_module': []
+    },
+    'camera_timelapse_resume': {
+        'name': '{}: {}: {}'.format(
+            TRANSLATIONS['camera']['title'], TRANSLATIONS['timelapse']['title'], TRANSLATIONS['resume']['title']),
+        'description': 'Resume a camera timelapse',
+        'dependencies_module': []
+    },
     'clear_total_volume': {
         'name': "{}: {}".format(
             lazy_gettext('Flow Meter'), lazy_gettext('Clear Total Volume')),
@@ -703,11 +720,6 @@ FUNCTION_ACTION_INFO = {
         'description': lazy_gettext('Pause a PID.'),
         'dependencies_module': []
     },
-    'photo': {
-        'name': "{}: {}".format(lazy_gettext('Camera'), lazy_gettext('Capture Photo')),
-        'description': lazy_gettext('Capture a photo with the selected Camera.'),
-        'dependencies_module': []
-    },
     'photo_email': {
         'name': lazy_gettext('Email with Photo Attachment'),
         'description': lazy_gettext('Capture a photo with the selected Camera and Email it as an attahment.'),
@@ -757,7 +769,7 @@ FUNCTION_ACTION_INFO = {
     },
     'video_email': {
         'name': lazy_gettext('Email with Video Attachment'),
-        'description': lazy_gettext('Capture a video with the selected Camera and Email it as an attahment.'),
+        'description': lazy_gettext('Capture a video with the selected Camera and Email it as an attachment'),
         'dependencies_module': []
     },
     'webhook': {
@@ -773,6 +785,8 @@ FUNCTION_ACTION_INFO = {
 FUNCTION_ACTIONS = [
     ('pause_actions', FUNCTION_ACTION_INFO['pause_actions']['name']),
     ('photo', FUNCTION_ACTION_INFO['photo']['name']),
+    ('camera_timelapse_pause', FUNCTION_ACTION_INFO['camera_timelapse_pause']['name']),
+    ('camera_timelapse_resume', FUNCTION_ACTION_INFO['camera_timelapse_resume']['name']),
     ('activate_controller', FUNCTION_ACTION_INFO['activate_controller']['name']),
     ('deactivate_controller', FUNCTION_ACTION_INFO['deactivate_controller']['name']),
     ('clear_total_volume', FUNCTION_ACTION_INFO['clear_total_volume']['name']),

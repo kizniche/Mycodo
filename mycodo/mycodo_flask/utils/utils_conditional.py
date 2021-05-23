@@ -41,6 +41,7 @@ def conditional_mod(form):
             form.function_id.data,
             ConditionalConditions.query.all(),
             Actions.query.all(),
+            timeout=form.pyro_timeout.data,
             test=True)
 
         message = Markup(
@@ -58,6 +59,7 @@ def conditional_mod(form):
         cond_mod.log_level_debug = form.log_level_debug.data
         cond_mod.message_include_code = form.message_include_code.data
         cond_mod.start_offset = form.start_offset.data
+        cond_mod.pyro_timeout = form.pyro_timeout.data
 
         if cmd_status:
             flash("pylint returned with status: {}".format(cmd_status), "warning")

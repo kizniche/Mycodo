@@ -24,6 +24,8 @@
 
 ### Features
 
+ - Add Conditional Controller option: Timeout (seconds)
+ - Add Function Actions: Camera Timelapse Pause/Resume
  - Add Temperature Compensation for Atlas Scientific pH Input during calibration
  - Add Output channel names to Graph Widget multi-select and legend
  - Add Function: Backup to Remote Host (rsync)

@@ -217,6 +217,40 @@ def get_condition_value_dict(condition_id):
         return string_ts_values
 
 
+def action_camera_timelapse_pause(cond_action, message):
+    """Pauses a camera timelapse"""
+    unique_id = cond_action.do_unique_id.split(",")[0]
+    this_camera = db_retrieve_table_daemon(
+        Camera, unique_id=unique_id, entry='first')
+    message += " Pause timelapse with Camera {unique_id} ({id}, {name}).".format(
+        unique_id=unique_id,
+        id=this_camera.id,
+        name=this_camera.name)
+    with session_scope(MYCODO_DB_PATH) as new_session:
+        mod_camera = new_session.query(Camera).filter(
+            Camera.unique_id == unique_id).first()
+        mod_camera.timelapse_paused = True
+        new_session.commit()
+    return message
+
+
+def action_camera_timelapse_resume(cond_action, message):
+    """Resumes a camera timelapse"""
+    unique_id = cond_action.do_unique_id.split(",")[0]
+    this_camera = db_retrieve_table_daemon(
+        Camera, unique_id=unique_id, entry='first')
+    message += " Resume timelapse with Camera {unique_id} ({id}, {name}).".format(
+        unique_id=unique_id,
+        id=this_camera.id,
+        name=this_camera.name)
+    with session_scope(MYCODO_DB_PATH) as new_session:
+        mod_camera = new_session.query(Camera).filter(
+            Camera.unique_id == unique_id).first()
+        mod_camera.timelapse_paused = False
+        new_session.commit()
+    return message
+
+
 def action_clear_flow_meter_total_volume(cond_action, message):
     """Clears the total volume of a flow meter input"""
     control = DaemonControl()
@@ -1070,6 +1104,10 @@ def trigger_action(
                 cond_action.do_unique_id and
                 cond_action.do_output_amount > 0):
             message = action_output_volume(cond_action, message)
+        elif cond_action.action_type == 'camera_timelapse_pause':
+            message = action_camera_timelapse_pause(cond_action, message)
+        elif cond_action.action_type == 'camera_timelapse_resume':
+            message = action_camera_timelapse_resume(cond_action, message)
         elif cond_action.action_type == 'command':
             message = action_command(cond_action, message)
         elif cond_action.action_type == 'create_note':

@@ -59,6 +59,7 @@ class ConditionalController(AbstractController, threading.Thread):
         self.is_activated = None
         self.period = None
         self.start_offset = None
+        self.pyro_timeout = None
         self.log_level_debug = None
         self.message_include_code = None
         self.conditional_statement = None
@@ -95,6 +96,7 @@ class ConditionalController(AbstractController, threading.Thread):
         self.conditional_statement = cond.conditional_statement
         self.period = cond.period
         self.start_offset = cond.start_offset
+        self.pyro_timeout = cond.pyro_timeout
         self.log_level_debug = cond.log_level_debug
         self.message_include_code = cond.message_include_code
 
@@ -116,7 +118,8 @@ class ConditionalController(AbstractController, threading.Thread):
                 self.conditional_statement,
                 self.unique_id,
                 db_retrieve_table_daemon(ConditionalConditions, entry='all'),
-                db_retrieve_table_daemon(Actions, entry='all'))
+                db_retrieve_table_daemon(Actions, entry='all'),
+                timeout=self.pyro_timeout)
 
         module_name = "mycodo.conditional.{}".format(
             os.path.basename(self.file_run).split('.')[0])

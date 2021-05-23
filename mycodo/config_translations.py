@@ -173,6 +173,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Text')},
     'theme': {
         'title': lazy_gettext('Theme')},
+    'timelapse': {
+        'title': lazy_gettext('Time-lapse')},
     'timer': {
         'title': lazy_gettext('Timer')},
     'trigger': {

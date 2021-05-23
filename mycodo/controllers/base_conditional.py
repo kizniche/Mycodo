@@ -10,12 +10,10 @@ NotImplementedErrors
 """
 import json
 
-from mycodo.mycodo_client import DaemonControl
-
-control = DaemonControl()
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Conditional
 from mycodo.databases.utils import session_scope
+from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
@@ -26,31 +24,30 @@ class AbstractConditional:
     Base Conditional class that ensures certain methods and values are present
     in Conditionals.
     """
-    def __init__(self, logger, function_id, message):
+    def __init__(self, logger, function_id, message, timeout=30):
         self.logger = logger
         self.function_id = function_id
         self.variables = {}
         self.message = message
         self.running = True
+        self.control = DaemonControl(pyro_timeout=timeout)
 
     def run_all_actions(self, message=None):
         if message is None:
             message = self.message
-        self.message = control.trigger_all_actions(self.function_id, message=message)
+        self.message = self.control.trigger_all_actions(self.function_id, message=message)
 
     def run_action(self, action_id, value=None, message=None):
         if message is None:
             message = self.message
-        self.message = control.trigger_action(
+        self.message = self.control.trigger_action(
             action_id, value=value, message=message, single_action=True)
 
-    @staticmethod
-    def condition(condition_id):
-        return control.get_condition_measurement(condition_id)
+    def condition(self, condition_id):
+        return self.control.get_condition_measurement(condition_id)
 
-    @staticmethod
-    def condition_dict(condition_id):
-        string_sets = control.get_condition_measurement_dict(condition_id)
+    def condition_dict(self, condition_id):
+        string_sets = self.control.get_condition_measurement_dict(condition_id)
         if string_sets:
             list_ts_values = []
             for each_set in string_sets.split(';'):

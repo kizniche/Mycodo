@@ -41,6 +41,9 @@ class Conditional(FlaskForm):
     start_offset = DecimalField(
         lazy_gettext('Start Offset (seconds)'),
         widget=NumberInput(step='any'))
+    pyro_timeout = DecimalField(
+        lazy_gettext('Timeout (seconds)'),
+        widget=NumberInput(step='any'))
     condition_type = SelectField(
         choices=[('', TRANSLATIONS['select_one']['title'])] + CONDITIONAL_CONDITIONS)
     add_condition = SubmitField(lazy_gettext('Add Condition'))

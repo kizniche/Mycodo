@@ -10,27 +10,6 @@ from mycodo.utils.system_pi import set_user_grp
 logger = logging.getLogger(__name__)
 
 
-pre_statement_run = """import os
-import sys
-sys.path.append(os.path.abspath('/var/mycodo-root'))
-from mycodo.controllers.base_conditional import AbstractConditional
-from mycodo.mycodo_client import DaemonControl
-control = DaemonControl()
-
-class ConditionalRun(AbstractConditional):
-    def __init__(self, logger, function_id, message):
-        super(ConditionalRun, self).__init__(logger, function_id, message)
-
-        self.logger = logger
-        self.function_id = function_id
-        self.variables = {}
-        self.message = message
-        self.running = True
-
-    def conditional_code_run(self):
-"""
-
-
 def cond_statement_replace(
         cond_statement,
         table_conditions_all,
@@ -58,12 +37,33 @@ def save_conditional_code(
         unique_id,
         table_conditions_all,
         table_actions_all,
+        timeout=30,
         test=False):
     lines_code = None
     cmd_status = None
     cmd_out = None
 
     try:
+        pre_statement_run = """import os
+import sys
+sys.path.append(os.path.abspath('/var/mycodo-root'))
+from mycodo.controllers.base_conditional import AbstractConditional
+from mycodo.mycodo_client import DaemonControl
+control = DaemonControl(pyro_timeout={timeout})
+
+class ConditionalRun(AbstractConditional):
+    def __init__(self, logger, function_id, message):
+        super(ConditionalRun, self).__init__(logger, function_id, message, timeout={timeout})
+
+        self.logger = logger
+        self.function_id = function_id
+        self.variables = {{}}
+        self.message = message
+        self.running = True
+
+    def conditional_code_run(self):
+""".format(timeout=timeout)
+
         indented_code = textwrap.indent(cond_statement, ' ' * 8)
 
         cond_statement_run = pre_statement_run + indented_code
