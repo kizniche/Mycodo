@@ -57,7 +57,7 @@ FUNCTION_INFORMATION = {
         'measurements_configure'
     ],
 
-    'message': 'This function will use rsync to back up assets on this system to a remote system. Your remote system needs to have an SSH server running and rsync installed. This system will need to be able to access your remote system via SSH without a password. You can do this by creating an SSH key on this system running Mycodo with "ssh-keygen" (leave the password field empty), then run "ssh-copy-id -i ~/.ssh/id_rsa.pub pi@REMOTE_HOST_IP" to transfer your public SSH key to your remote system (changing pi and REMOTE_HOST_IP to the appropriate user and host of your remote system). You can test if this worked by trying to connect to your remote system with "ssh pi@REMOTE_HOST_IP" and you should log in without being asked for a password. Be careful not to set the Period too low, which could cause the function to begin running before the previous operation(s) complete. Therefore, it is recommended to set a relatively long Period (greater than 10 minutes). The default Period is 15 days. Note that the Period will reset if the system or the Mycodo daemon restarts and the Function will run, generating new settings and measurement archives that will be synced.',
+    'message': 'This function will use rsync to back up assets on this system to a remote system. Your remote system needs to have an SSH server running and rsync installed. This system will need rsync installed and be able to access your remote system via SSH keyfile (login without a password). You can do this by creating an SSH key on this system running Mycodo with "ssh-keygen" (leave the password field empty), then run "ssh-copy-id -i ~/.ssh/id_rsa.pub pi@REMOTE_HOST_IP" to transfer your public SSH key to your remote system (changing pi and REMOTE_HOST_IP to the appropriate user and host of your remote system). You can test if this worked by trying to connect to your remote system with "ssh pi@REMOTE_HOST_IP" and you should log in without being asked for a password. Be careful not to set the Period too low, which could cause the function to begin running before the previous operation(s) complete. Therefore, it is recommended to set a relatively long Period (greater than 10 minutes). The default Period is 15 days. Note that the Period will reset if the system or the Mycodo daemon restarts and the Function will run, generating new settings and measurement archives that will be synced. There are two common ways to use this Function: 1) A short period (1 hour), only have Backup Camera Directories enabled, and use the Backup Settings Now and Backup Measurements Now buttons manually to perform a backup, and 2) A long period (15 days), only have Backup Settings and Backup Measurements enabled. You can even create two of these Functions with one set up to perform long-Period settings and measurement backups and the other set up to perform short-Period camera backups.',
 
     'dependencies_module': [
         ('apt', 'rsync', 'rsync')
@@ -175,28 +175,28 @@ FUNCTION_INFORMATION = {
     'custom_actions': [
         {
             'type': 'message',
-            'default_value': 'Backup of settings are only created if the Mycodo version or database versions change. This is due to this Function running periodically- if it created a new backup every Period, there would soon be many identical backups. Therefore, if you want to induce the creation of a new settings or camera image backup and sync it to your remote system, use the buttons below.',
+            'default_value': 'Backup of settings are only created if the Mycodo version or database versions change. This is due to this Function running periodically- if it created a new backup every Period, there would soon be many identical backups. Therefore, if you want to induce the backup of settings, measurements, or camera directories and sync them to your remote system, use the buttons below.',
         },
         {
             'id': 'create_new_settings_backup',
             'type': 'button',
             'wait_for_return': False,
-            'name': 'Backup Settings',
-            'phrase': 'Create a new settings backup and backup via rsync'
+            'name': 'Backup Settings Now',
+            'phrase': 'Backup settings via rsync'
         },
         {
             'id': 'create_new_measurements_backup',
             'type': 'button',
             'wait_for_return': False,
-            'name': 'Backup Measurements',
+            'name': 'Backup Measurements Now',
             'phrase': 'Backup measurements via rsync'
         },
         {
             'id': 'create_new_camera_backup',
             'type': 'button',
             'wait_for_return': False,
-            'name': 'Backup Cameras',
-            'phrase': 'Backup camera images via rsync'
+            'name': 'Backup Camera Directories Now',
+            'phrase': 'Backup camera directories via rsync'
         }
     ]
 }
