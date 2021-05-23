@@ -131,12 +131,28 @@ FUNCTION_INFORMATION = {
             'phrase': 'Create and backup exported settings file'
         },
         {
+            'id': 'backup_remove_settings_archives',
+            'type': 'bool',
+            'default_value': False,
+            'required': True,
+            'name': 'Remove Local Settings Backups',
+            'phrase': 'Remove local settings backups after successful transfer to remote host'
+        },
+        {
             'id': 'do_backup_measurements',
             'type': 'bool',
             'default_value': True,
             'required': True,
             'name': 'Backup Measurements',
             'phrase': 'Backup all influxdb measurements'
+        },
+        {
+            'id': 'backup_remove_measurements_archives',
+            'type': 'bool',
+            'default_value': False,
+            'required': True,
+            'name': 'Remove Local Measurements Backups',
+            'phrase': 'Remove local measurements backups after successful transfer to remote host'
         },
         {
             'id': 'do_backup_cameras',
@@ -147,12 +163,12 @@ FUNCTION_INFORMATION = {
             'phrase': 'Backup all camera directories'
         },
         {
-            'id': 'backup_cameras_remove_source',
+            'id': 'backup_remove_camera_images',
             'type': 'bool',
             'default_value': False,
             'required': True,
-            'name': 'Remove Source Images',
-            'phrase': 'Remove source files after successful transfer of camera images'
+            'name': 'Remove Local Camera Images',
+            'phrase': 'Remove local camera images after successful transfer to remote host'
         }
     ],
 
@@ -207,9 +223,11 @@ class CustomModule(AbstractFunction):
         self.remote_backup_path = None
         self.rsync_timeout = None
         self.do_backup_settings = None
+        self.backup_remove_settings_archives = None
         self.do_backup_measurements = None
+        self.backup_remove_measurements_archives = None
         self.do_backup_cameras = None
-        self.backup_cameras_remove_source = None
+        self.backup_remove_camera_images = None
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
@@ -273,7 +291,12 @@ class CustomModule(AbstractFunction):
                 self.logger.debug("Could not create settings file: "
                                   "{}".format(saved_path))
 
-        rsync_cmd = "rsync -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
+        if self.backup_remove_settings_archives:
+            remove_files = "--remove-source-files "
+        else:
+            remove_files = ""
+        rsync_cmd = "rsync {rem}-avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
+            rem=remove_files,
             path_local=PATH_SETTINGS_BACKUP,
             user=self.remote_user,
             host=self.remote_host,
@@ -305,7 +328,12 @@ class CustomModule(AbstractFunction):
             self.logger.debug("Could not create measurements file: "
                               "{}".format(saved_path))
 
-        rsync_cmd = "rsync -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
+        if self.backup_remove_measurements_archives:
+            remove_files = "--remove-source-files "
+        else:
+            remove_files = ""
+        rsync_cmd = "rsync {rem}-avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
+            rem=remove_files,
             path_local=PATH_MEASUREMENTS_BACKUP,
             user=self.remote_user,
             host=self.remote_host,
@@ -317,18 +345,16 @@ class CustomModule(AbstractFunction):
             cmd_out.decode(), cmd_err.decode(), cmd_status))
 
     def backup_camera(self):
-        if self.backup_cameras_remove_source:
-            rsync_cmd = "rsync --remove-source-files -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
-                path_local=PATH_CAMERAS,
-                user=self.remote_user,
-                host=self.remote_host,
-                remote_path=self.remote_backup_path)
+        if self.backup_remove_camera_images:
+            remove_files = "--remove-source-files "
         else:
-            rsync_cmd = "rsync -avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
-                path_local=PATH_CAMERAS,
-                user=self.remote_user,
-                host=self.remote_host,
-                remote_path=self.remote_backup_path)
+            remove_files = ""
+        rsync_cmd = "rsync {rem}-avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
+            rem=remove_files,
+            path_local=PATH_CAMERAS,
+            user=self.remote_user,
+            host=self.remote_host,
+            remote_path=self.remote_backup_path)
 
         self.logger.debug("rsync command: {}".format(rsync_cmd))
         cmd_out, cmd_err, cmd_status = cmd_output(
