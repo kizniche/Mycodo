@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+ - Fix upgrading database to version 61a0d0568d24
  - Fix Generic Pump Output timestamps
  - Fix inability to add Camera Widget for some cameras
  - Fix error referencing key of Input dict that doesn't exist
