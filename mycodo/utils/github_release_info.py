@@ -3,6 +3,7 @@ import argparse
 import json
 import logging
 import sys
+from urllib.request import Request
 from urllib.request import urlopen
 
 import os
@@ -10,23 +11,29 @@ import re
 from pkg_resources import parse_version
 
 sys.path.append(
-    os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+    os.path.abspath(os.path.join(
+        os.path.dirname(__file__), os.path.pardir) + '/..'))
 
-from config import MYCODO_VERSION
-from config import RELEASE_URL
+from mycodo.config import MYCODO_VERSION
+from mycodo.config import RELEASE_URL
 
 logger = logging.getLogger("mycodo.release_info")
 
 
 class MycodoRelease:
-    def __init__(self):
-        self.update_mycodo_reelases()
+    def __init__(self, release_uri=RELEASE_URL, access_token=None):
+        self.mycodo_releases = None
+        self.release_uri = release_uri
+        self.access_token = access_token
+        self.update_mycodo_releases()
 
-    def update_mycodo_reelases(self):
-        self.mycodo_releases = self.mycodo_releases_dict(RELEASE_URL)
+    def update_mycodo_releases(self):
+        try:
+            self.mycodo_releases = self.mycodo_releases_dict(self.release_uri)
+        except Exception as err:
+            logger.error("Could not update release dictionary: {}".format(err))
 
-    @staticmethod
-    def mycodo_releases_dict(url):
+    def mycodo_releases_dict(self, url):
         """
         Receive the content of ``url``, parse it as JSON and return the object.
 
@@ -37,10 +44,16 @@ class MycodoRelease:
         :type url: str
         """
         try:
-            response = urlopen(url)
+            if self.access_token:
+                request = Request(url)
+                request.add_header('Authorization', 'token {}'.format(self.access_token))
+                response = urlopen(request)
+            else:
+                response = urlopen(url)
             data = response.read().decode("utf-8")
             return json.loads(data)
-        except Exception:
+        except Exception as err:
+            logger.error("Error: {}".format(err))
             return {}
 
     def github_releases(self, mycodo_releases, major_version):
