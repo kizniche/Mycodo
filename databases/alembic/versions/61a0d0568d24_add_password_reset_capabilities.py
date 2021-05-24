@@ -29,7 +29,7 @@ def upgrade():
         batch_op.add_column(sa.Column('password_reset_last_request', sa.DateTime))
 
     with op.batch_alter_table("roles") as batch_op:
-        batch_op.add_column(sa.Column('reset_password', sa.Boolean, nullable=False, default=False))
+        batch_op.add_column(sa.Column('reset_password', sa.Boolean, default=False))
 
 
 def downgrade():
