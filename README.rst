@@ -17,7 +17,7 @@ Documentation
 
 `Mycodo Manual <https://kizniche.github.io/Mycodo>`__
 
-`Mycodo API <https://kizniche.github.io/Mycodo/mycodo-api.html>`__ (Latest Version: v1)
+`Mycodo API <https://kizniche.github.io/Mycodo/mycodo-api.html>`__ (Version: v1)
 
 `Mycodo Wiki <https://github.com/kizniche/Mycodo/wiki>`__
 
