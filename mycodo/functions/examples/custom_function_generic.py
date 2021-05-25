@@ -32,7 +32,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'example_function_generic',
-    'function_name': 'Function: Example: Generic',
+    'function_name': 'Example: Generic',
 
     'message': 'This is a custom message that will appear above the Function options. '
                'It merely demonstrates how to generate user options and manipulate them. '

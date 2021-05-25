@@ -25,6 +25,8 @@
 
 ### Features
 
+ - Add ability to display the status of Functions and PID Controllers in the UI
+ - Add Widget: Function Status
  - Add Conditional Controller option: Timeout (seconds)
  - Add Function Actions: Camera Timelapse Pause/Resume
  - Add Temperature Compensation for Atlas Scientific pH Input during calibration

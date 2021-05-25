@@ -18,6 +18,7 @@ from importlib import import_module
 import flask_login
 from flask import current_app
 from flask import flash
+from flask import jsonify
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -1732,6 +1733,17 @@ def page_function():
                            user=user)
 
 
+@blueprint.route('/function_status/<unique_id>', methods=('GET', 'POST'))
+@flask_login.login_required
+def function_status(unique_id):
+    try:
+        control = DaemonControl()
+        return jsonify(control.function_status(unique_id))
+    except Exception as err:
+        logger.error("Function Status Error: {}".format(err))
+        return jsonify({'error': err})
+
+
 @blueprint.route('/output', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_output():
@@ -1874,7 +1886,6 @@ def page_output():
 @flask_login.login_required
 def page_input():
     """ Display Data page """
-
     function = CustomController.query.all()
     input_dev = Input.query.all()
     input_channel = InputChannel.query.all()

@@ -374,7 +374,10 @@ class DaemonController:
                                                           id=cont_id,
                                                           err=except_msg)
                         self.logger.exception(message)
-                        return 1, message
+                        return 1,
+                    finally:
+                        self.controller[cont_type].pop(cont_id, None)
+
                 else:
                     message = "Could not deactivate {type} controller with ID " \
                               "{id}, it's not active.".format(type=cont_type,
@@ -509,6 +512,20 @@ class DaemonController:
             message = "Cannot force acquisition of Input measurements: {err}".format(err=except_msg)
             self.logger.exception(message)
             return 1, message
+
+    def function_status(self, function_id):
+        if function_id in self.controller["Function"]:
+            try:
+                return self.controller["Function"][function_id].function_status()
+            except Exception as err:
+                return {'error': ["Error getting Function status: {}".format(err)]}
+        elif function_id in self.controller["PID"]:
+            try:
+                return self.controller["PID"][function_id].function_status()
+            except Exception as err:
+                return {'error': ["Error getting Function status: {}".format(err)]}
+        else:
+            return {'error': ["Function ID not found"]}
 
     def lcd_reset(self, lcd_id):
         """
@@ -1148,6 +1165,10 @@ class PyroServer(object):
     def check_daemon(self):
         """Check if all active controllers respond"""
         return self.mycodo.check_daemon()
+
+    def function_status(self, function_id):
+        """Get status of Function"""
+        return self.mycodo.function_status(function_id)
 
     def input_force_measurements(self, input_id):
         """Updates all input information"""

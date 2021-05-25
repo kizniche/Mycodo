@@ -228,8 +228,8 @@
       <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[Camera {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
-      {% if 'Custom' in each_option['options_select'] %}
-        {%- for each_dev in custom_functions -%}
+      {% if 'Function' in each_option['options_select'] %}
+        {%- for each_dev in function -%}
       <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[Custom {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}

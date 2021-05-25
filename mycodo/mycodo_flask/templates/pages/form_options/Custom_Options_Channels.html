@@ -168,7 +168,7 @@
         {%- endfor -%}
       {% endif %}
       {% if 'Function' in each_option['options_select'] %}
-        {%- for each_dev in custom_functions -%}
+        {%- for each_dev in function -%}
       <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][channel][each_option['id']] %} selected{% endif %}>[Function {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}

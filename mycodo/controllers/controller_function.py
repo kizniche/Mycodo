@@ -130,3 +130,6 @@ class FunctionController(AbstractController, threading.Thread):
         except:
             self.logger.exception("Error executing button press function '{}'".format(
                 button_id))
+
+    def function_status(self):
+        return self.run_function.function_status()

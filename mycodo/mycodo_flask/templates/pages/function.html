@@ -8,6 +8,28 @@
   <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-clockpicker.min.css">
 
   <script type="text/javascript" src="/static/js/multiselect.min.js"></script>
+
+  <script type="text/javascript">
+  function function_status(function_id) {
+    const url = '/function_status/' + function_id;
+    $.getJSON(url,
+      function(data, responseText, jqXHR) {
+        if (jqXHR.status !== 204) {
+          document.getElementById("function_status_" + function_id).innerHTML = data['string_status'].replace(/(?:\r\n|\r|\n)/g, "<br>");
+        }
+        else {
+          document.getElementById("function_status_" + function_id).innerHTML = "Error";
+        }
+      }
+    );
+  }
+  // Repeat function for function_status()
+  function repeat_function_status(function_id, period_sec) {
+    setInterval(function () {
+      function_status(function_id)
+    }, period_sec * 1000);
+  }
+  </script>
 {% endblock %}
 
 {% block body %}
@@ -119,10 +141,19 @@
     });
 
     jQuery(document).ready(function($) {
-        $('#multiselect').multiselect({
-            sort: false,
-            keepRenderingSort: true
-        });
+      $('#multiselect').multiselect({
+        sort: false,
+        keepRenderingSort: true
+      });
+
+  {%- for each_function in function if each_function.is_activated and 'period_status' in custom_options_values_controllers[each_function.unique_id] %}
+    function_status('{{each_function.unique_id}}');
+    repeat_function_status('{{each_function.unique_id}}', {{custom_options_values_controllers[each_function.unique_id]['period_status']}});
+  {% endfor %}
+  {%- for each_pid in pid if each_pid.is_activated %}
+    function_status('{{each_pid.unique_id}}');
+    repeat_function_status('{{each_pid.unique_id}}', 30);
+  {% endfor %}
     });
 
     $('#collapseContainerReorderFunction').on('shown.bs.collapse', function () {

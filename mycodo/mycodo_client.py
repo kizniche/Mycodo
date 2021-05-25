@@ -267,6 +267,13 @@ class DaemonControl:
         return self.proxy().pid_set(pid_id, setting, value)
 
     #
+    # Functions
+    #
+
+    def function_status(self, function_id):
+        return self.proxy().function_status(function_id)
+
+    #
     # Miscellaneous
     #
 

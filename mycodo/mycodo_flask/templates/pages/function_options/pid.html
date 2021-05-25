@@ -84,6 +84,17 @@
       </div>
     </div>
 
+    {% if each_pid.is_activated %}
+    <div class="row small-gutters align-items-end" style="padding: 0.5em">
+      <div class="col-12">
+        <h5>{{_('Status')}}</h5>
+      </div>
+      <div class="col-12">
+        <span id="function_status_{{each_pid.unique_id}}"></span>
+      </div>
+    </div>
+    {% endif %}
+
     <div class="row small-gutters">
       <div class="col-auto">
         {{form_mod_pid_base.measurement.label(class_='control-label')}}

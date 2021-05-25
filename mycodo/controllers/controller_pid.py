@@ -973,6 +973,19 @@ class PIDController(AbstractController, threading.Thread):
     def get_kd(self):
         return self.PID_Controller.Kd
 
+    def function_status(self):
+        return_dict = {
+            'string_status': "This info is being returned from the PID Controller."
+                             "\nCurrent time: {}\nControl Variable: {:.4f} = {:.4f} (P), {:.4f} (I), {:.4f} (D)".format(
+                datetime.datetime.now(),
+                self.PID_Controller.P_value + self.PID_Controller.I_value + self.PID_Controller.D_value,
+                self.PID_Controller.P_value,
+                self.PID_Controller.I_value,
+                self.PID_Controller.D_value),
+            'error': []
+        }
+        return return_dict
+
     def stop_controller(self, ended_normally=True, deactivate_pid=False):
         self.thread_shutdown_timer = timeit.default_timer()
         self.running = False
