@@ -101,6 +101,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('LCD')},
     'line': {
         'title': lazy_gettext('Line')},
+    'lock': {
+        'title': lazy_gettext('Lock')},
     'login': {
         'title': lazy_gettext('Login')},
     'math': {
@@ -179,6 +181,8 @@ TRANSLATIONS = {
         'title': lazy_gettext('Timer')},
     'trigger': {
         'title': lazy_gettext('Trigger')},
+    'unlock': {
+        'title': lazy_gettext('Unlock')},
     'up': {
         'title': lazy_gettext('Up')},
     'upload': {

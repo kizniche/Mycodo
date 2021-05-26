@@ -80,6 +80,30 @@ def dashboard_mod(form):
         error, action, url_for('routes_page.page_dashboard_default'))
 
 
+def dashboard_lock(dashboard_id, lock):
+    """Lock a dashboard"""
+    action = '{action} {controller}'.format(
+        action=TRANSLATIONS['lock']['title'],
+        controller=TRANSLATIONS['dashboard']['title'])
+    error = []
+
+    try:
+        dash_mod = Dashboard.query.filter(
+            Dashboard.unique_id == dashboard_id).first()
+
+        dash_mod.locked = lock
+
+        if not error:
+            db.session.commit()
+
+    except Exception as msg:
+        error.append(msg)
+        logger.exception("Duplicating dashboard")
+
+    flash_success_errors(
+        error, action, url_for('routes_page.page_dashboard_default'))
+
+
 def dashboard_copy(form):
     """Duplicate a dashboard and its widgets"""
     action = '{action} {controller}'.format(
@@ -89,11 +113,14 @@ def dashboard_copy(form):
 
     try:
         # Get current dashboard and its widgets
-        dashboard = Dashboard.query.filter(Dashboard.unique_id == form.dashboard_id.data).first()
-        widgets = Widget.query.filter(Widget.dashboard_id == dashboard.unique_id).all()
+        dashboard = Dashboard.query.filter(
+            Dashboard.unique_id == form.dashboard_id.data).first()
+        widgets = Widget.query.filter(
+            Widget.dashboard_id == dashboard.unique_id).all()
 
         # Duplicate dashboard with new unique_id and name
-        new_dashboard = clone_model(dashboard, unique_id=set_uuid(), name="New Dashboard")
+        new_dashboard = clone_model(
+            dashboard, unique_id=set_uuid(), name="New Dashboard")
 
         # Duplicate all widgets and assign them to the new dashboard
         for each_widget in widgets:

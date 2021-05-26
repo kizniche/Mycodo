@@ -2,7 +2,7 @@
 {% set active_page = "dashboard" %}
 {% set help_page = ["https://kizniche.github.io/Mycodo/Data-Viewing/#dashboard", dict_translation['dashboard']['title']] %}
 
-{% block title %} - {% for each_dash in dashboards if each_dash['dashboard_id'] == dashboard_id %}{{each_dash['name']}}{% endfor %} {{dict_translation['dashboard']['title']}}{% endblock %}
+{% block title %} - {% for each_dash in dashboards if each_dash.unique_id == dashboard_id %}{{each_dash.name}}{% endfor %} {{dict_translation['dashboard']['title']}}{% endblock %}
 
 {% block head %}
 
@@ -87,11 +87,13 @@
             {% endfor %}
           </div>
 
+          {% if not this_dashboard.locked %}
           <div class="my-auto widget-settings">
             <a class="btn" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
               <i style="font-size: 1.5em" class="fas fa-cog"></i>
             </a>
           </div>
+          {% endif %}
         </div>
 
         <div id="container-graph-{{each_widget.id}}" style="position: relative; flex-grow: 1; padding: 0.35em">
@@ -103,6 +105,8 @@
           {% endfor %}
 
         </div>
+
+        {% if not this_dashboard.locked %}
 
         <div class="modal fade" id="modal_config_{{chart_number}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-lg" role="document">
@@ -180,6 +184,8 @@
             </div>
           </div>
         </div>
+
+        {% endif %}
 
       {% endif %}
 

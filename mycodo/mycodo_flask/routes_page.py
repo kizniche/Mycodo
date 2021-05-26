@@ -586,7 +586,9 @@ def page_dashboard(dashboard_id):
     # Retrieve tables from SQL database
     camera = Camera.query.all()
     function = CustomController.query.all()
-    dashboard = Widget.query.all()
+    widget = Widget.query.all()
+    this_dashboard = Dashboard.query.filter(
+        Dashboard.unique_id == dashboard_id).first()
     input_dev = Input.query.all()
     device_measurements = DeviceMeasurements.query.all()
     math = Math.query.all()
@@ -611,6 +613,10 @@ def page_dashboard(dashboard_id):
             utils_dashboard.dashboard_mod(form_dashboard)
         elif form_dashboard.dash_duplicate.data:
             utils_dashboard.dashboard_copy(form_dashboard)
+        elif form_dashboard.lock.data:
+            utils_dashboard.dashboard_lock(form_dashboard.dashboard_id.data, True)
+        elif form_dashboard.unlock.data:
+            utils_dashboard.dashboard_lock(form_dashboard.dashboard_id.data, False)
         elif form_dashboard.dash_delete.data:
             utils_dashboard.dashboard_del(form_dashboard)
             return redirect(url_for('routes_page.page_dashboard_default'))
@@ -664,7 +670,7 @@ def page_dashboard(dashboard_id):
     dict_widgets = parse_widget_information()
 
     custom_options_values_widgets = parse_custom_option_values_json(
-        dashboard, dict_controller=dict_widgets)
+        widget, dict_controller=dict_widgets)
 
     custom_options_values_output_channels = parse_custom_option_values_output_channels_json(
         output_channel, dict_controller=dict_outputs, key_name='custom_channel_options')
@@ -778,7 +784,6 @@ def page_dashboard(dashboard_id):
                            choices_pid=choices_pid,
                            choices_pid_devices=choices_pid_devices,
                            choices_tag=choices_tag,
-                           dashboard=dashboard,
                            dashboard_id=dashboard_id,
                            device_measurements_dict=device_measurements_dict,
                            dict_measure_measurements=dict_measure_measurements,
@@ -802,9 +807,11 @@ def page_dashboard(dashboard_id):
                            output_types=output_types(),
                            input=input_dev,
                            tags=tags,
+                           this_dashboard=this_dashboard,
                            use_unit=use_unit,
                            form_base=form_base,
-                           form_dashboard=form_dashboard)
+                           form_dashboard=form_dashboard,
+                           widget=widget)
 
 
 @blueprint.route('/graph-async', methods=('GET', 'POST'))

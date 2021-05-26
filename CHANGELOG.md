@@ -25,6 +25,7 @@
 
 ### Features
 
+ - Add ability to lock Dashboards (remove ability to edit widget options) ([#996](https://github.com/kizniche/mycodo/issues/996))
  - Add ability to display the status of Functions and PID Controllers in the UI
  - Add Widget: Function Status
  - Add Conditional Controller option: Timeout (seconds)

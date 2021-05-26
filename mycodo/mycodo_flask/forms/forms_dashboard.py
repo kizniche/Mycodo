@@ -63,6 +63,8 @@ class DashboardConfig(FlaskForm):
         TRANSLATIONS['name']['title'],
         validators=[DataRequired()]
     )
+    lock = SubmitField(TRANSLATIONS['lock']['title'])
+    unlock = SubmitField(TRANSLATIONS['unlock']['title'])
     dash_modify = SubmitField(TRANSLATIONS['save']['title'])
     dash_delete = SubmitField(TRANSLATIONS['delete']['title'])
     dash_duplicate = SubmitField(TRANSLATIONS['duplicate']['title'])

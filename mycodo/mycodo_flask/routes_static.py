@@ -49,6 +49,7 @@ def inject_variables():
     """Variables to send with every page request"""
     form_dashboard = forms_dashboard.DashboardConfig()  # Dashboard configuration in layout
 
+    dashboards = Dashboard.query.all()
     misc = Misc.query.first()
 
     try:
@@ -61,13 +62,6 @@ def inject_variables():
         logger.debug("URL for 'inject_variables' raised and error: "
                      "{err}".format(err=e))
         daemon_status = '0'
-
-    dashboards = []
-    for each_dash in Dashboard.query.all():
-        dashboards.append({
-            'dashboard_id': each_dash.unique_id,
-            'name': each_dash.name
-        })
 
     languages_sorted = sorted(LANGUAGES.items(), key=operator.itemgetter(1))
 
