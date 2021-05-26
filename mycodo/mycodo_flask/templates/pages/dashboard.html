@@ -80,11 +80,11 @@
           </div>
 
           <div class="my-auto widget-title">
-            {% for widget_type, file_title_bar in list_html_files_title_bar.items() if widget_type == each_widget.graph_type %}
-              <!-- Widget {{widget_type}} title_bar template begin -->
-              {% include 'user_templates/{}'.format(file_title_bar) %}
-              <!-- Widget {{widget_type}} title_bar template end -->
-            {% endfor %}
+            {% if each_widget.graph_type in list_html_files_title_bar %}
+              <!-- Widget {{each_widget.graph_type}} title_bar template begin -->
+              {% include 'user_templates/{}'.format(list_html_files_title_bar[each_widget.graph_type]) %}
+              <!-- Widget {{each_widget.graph_type}} title_bar template end -->
+            {% endif %}
           </div>
 
           {% if not this_dashboard.locked %}
@@ -97,13 +97,11 @@
         </div>
 
         <div id="container-graph-{{each_widget.id}}" style="position: relative; flex-grow: 1; padding: 0.35em">
-
-          {% for widget_type, file_body in list_html_files_body.items() if widget_type == each_widget.graph_type %}
-          <!-- Widget {{widget_type}} body template begin -->
-          {% include 'user_templates/{}'.format(file_body) %}
-          <!-- Widget {{widget_type}} body template end -->
-          {% endfor %}
-
+        {% if each_widget.graph_type in list_html_files_body %}
+          <!-- Widget {{each_widget.graph_type}} body template begin -->
+          {% include 'user_templates/{}'.format(list_html_files_body[each_widget.graph_type]) %}
+          <!-- Widget {{each_widget.graph_type}} body template end -->
+        {% endif %}
         </div>
 
         {% if not this_dashboard.locked %}
@@ -161,11 +159,11 @@
                     {% endif %}
                   {% endif %}
 
-                  {% for widget_type, file_configure_options in list_html_files_configure_options.items() if widget_type == each_widget.graph_type %}
-                  <!-- Widget {{widget_type}} {{each_widget.unique_id}} configure_options template begin -->
-                  {% include 'user_templates/{}'.format(file_configure_options) %}
-                  <!-- Widget {{widget_type}} {{each_widget.unique_id}} configure_options template end -->
-                  {% endfor %}
+                  {% if each_widget.graph_type in list_html_files_configure_options %}
+                  <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} configure_options template begin -->
+                  {% include 'user_templates/{}'.format(list_html_files_configure_options[each_widget.graph_type]) %}
+                  <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} configure_options template end -->
+                  {% endif %}
 
                 <div class="row small-gutters" style="padding: 1em">
                   <div class="col-auto">
@@ -201,6 +199,8 @@
 
   <div style="clear: both"></div>
 
+  {% if not this_dashboard.locked %}
+
   <div class="container-fluid" style="padding-bottom: 1em">
 
     <div class="form-inline" style="padding-bottom: 1em;">
@@ -212,7 +212,6 @@
   {% for each_widget in dict_widgets %}
 
   <div class="add_dashboard_widget" style="display: none" id="{{each_widget}}">
-
     <form method="post" action="/dashboard/{{dashboard_id}}">
     {{form_base.csrf_token}}
     <input type="hidden" name="dashboard_id" value="{{dashboard_id}}">
@@ -253,9 +252,12 @@
 
     </form>
   </div>
+
   {% endfor %}
 
   </div>
+
+  {% endif %}
 
 <script type="text/javascript">
 
@@ -314,6 +316,7 @@ jQuery(document).ready(function($) {
   });
 });
 
+{% if not this_dashboard.locked %}
 // Add Dashboard Widget content selector
 $('#widget_type').on('change', function () {
   let x = document.getElementsByClassName("add_dashboard_widget");  // Find the widgets
@@ -325,6 +328,7 @@ $('#widget_type').on('change', function () {
     document.getElementById(this.value).scrollIntoView();
   }
 });
+{% endif %}
 
 // Graph Widget
 Highcharts.setOptions({
@@ -373,11 +377,11 @@ $(document).ready(function() {
   {% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
   {% set widget_variables = custom_widget_variables[each_widget.unique_id] %}
 
-  {% for widget_type, file_js_ready_end in list_html_files_js_ready_end.items() if widget_type == each_widget.graph_type %}
-  <!-- Widget {{widget_type}} {{each_widget.unique_id}} js_ready_end template begin -->
-  {% include 'user_templates/{}'.format(file_js_ready_end) %}
-  <!-- Widget {{widget_type}} {{each_widget.unique_id}} js_ready_end template end -->
-  {% endfor %}
+  {% if each_widget.graph_type in list_html_files_js_ready_end %}
+  <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} js_ready_end template begin -->
+  {% include 'user_templates/{}'.format(list_html_files_js_ready_end[each_widget.graph_type]) %}
+  <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} js_ready_end template end -->
+  {% endif %}
 
 {%- endfor %}
 
