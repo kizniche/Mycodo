@@ -145,6 +145,13 @@ WIDGET_INFORMATION = {
             'phrase': 'The period of time between refreshing the widget'
         },
         {
+            'id': 'decimal_places',
+            'type': 'integer',
+            'default_value': 1,
+            'name': 'Decimal Places',
+            'phrase': 'The number of digits to display after the decimal'
+        },
+        {
             'id': 'min',
             'type': 'float',
             'default_value': 0,
@@ -207,10 +214,6 @@ WIDGET_INFORMATION = {
                        measure_type,
                        measurement_id,
                        max_measure_age_sec) {
-    if (decimal_places === null) {
-      decimal_places = 1;
-    }
-
     const url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + max_measure_age_sec.toString();
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
@@ -379,7 +382,7 @@ WIDGET_INFORMATION = {
         data: [null],
         dataLabels: {
           style: {"fontSize": "14px"},
-          format: '{point.y:,.1f}'
+          format: '{point.y:,.{{widget_options['decimal_places']}}f}'
         },
         yAxis: 0,
           dial: {
