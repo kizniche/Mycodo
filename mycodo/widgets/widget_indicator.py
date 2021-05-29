@@ -118,7 +118,6 @@ WIDGET_INFORMATION = {
         success: function (data, responseText, jqXHR) {
           if (jqXHR.status !== 204) {
             if (data !== null) {
-              if (document.getElementById('timestamp-' + chart_number)) document.getElementById('timestamp-' + chart_number).innerHTML = '';
               if (data !== 'off') {
                 document.getElementById('value-' + chart_number).title = "{{_('On')}}";
               } else {
@@ -133,13 +132,11 @@ WIDGET_INFORMATION = {
             }
           } else {
             document.getElementById('value-' + chart_number).src = '/static/img/button-yellow.png';
-            if (document.getElementById('timestamp-' + chart_number)) document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
           }
         },
         error: function (jqXHR, textStatus, errorThrown) {
           document.getElementById('value-' + chart_number).src = '';
           document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-          if (document.getElementById('timestamp-' + chart_number)) document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
         }
       });
     }
@@ -151,7 +148,6 @@ WIDGET_INFORMATION = {
         success: function(data, responseText, jqXHR) {
           if (jqXHR.status === 204) {
             document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-            if (document.getElementById('timestamp-' + chart_number)) document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
           }
           else {
             const formattedTime = epoch_to_timestamp(data[0]);
@@ -161,13 +157,11 @@ WIDGET_INFORMATION = {
             } else {
               document.getElementById('value-' + chart_number).src = '/static/img/button-red.png';
             }
-            document.getElementById('value-' + chart_number).title = "{{_('Value')}}: " + measurement;
-            if (document.getElementById('timestamp-' + chart_number)) document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
+            document.getElementById('value-' + chart_number).title = "{{_('Value')}}: " + measurement.toFixed(decimal_places);
           }
         },
         error: function(jqXHR, textStatus, errorThrown) {
-          document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-          if (document.getElementById('timestamp-' + chart_number)) document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
+          document.getElementById('value-' + chart_number).title = 'NO DATA';
         }
       });
     }
