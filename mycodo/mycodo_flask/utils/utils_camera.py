@@ -125,7 +125,7 @@ def camera_mod(form_camera):
         if mod_camera.library == 'fswebcam':
             mod_camera.device = form_camera.device.data
             mod_camera.custom_options = form_camera.custom_options.data
-        if mod_camera.library == 'raspistill':
+        elif mod_camera.library == 'raspistill':
             mod_camera.brightness = form_camera.brightness.data
             mod_camera.contrast = form_camera.contrast.data
             mod_camera.saturation = form_camera.saturation.data
