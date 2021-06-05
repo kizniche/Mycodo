@@ -7,6 +7,11 @@ Supported Widget devices are listed below.
 
 Displays a camera image or stream.
 
+### Function Status
+
+
+Displays the status of a Function (if supported).
+
 ### Gauge (Angular)
 
 
