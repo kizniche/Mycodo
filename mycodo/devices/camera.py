@@ -187,8 +187,15 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 cmd += " --sharpness {}".format(int(settings.picamera_sharpness))
             if settings.picamera_iso not in [0, None]:
                 cmd += " --ISO {}".format(int(settings.picamera_iso))
-            if settings.picamera_awb is not None:
+            if settings.picamera_awb not in ["off", None]:
                 cmd += " --awb {}".format(settings.picamera_awb)
+            elif (settings.picamera_awb == "off" and
+                  settings.picamera_awb_gain_blue is not None and
+                  settings.picamera_awb_gain_red is not None):
+                cmd += " --awb {}".format(settings.picamera_awb)
+                cmd += " --awbgains {red:.1f},{blue:.1f}".format(
+                    red=settings.picamera_awb_gain_red,
+                    blue=settings.picamera_awb_gain_blue)
             if settings.hflip:
                 cmd += " --hflip"
             if settings.vflip:

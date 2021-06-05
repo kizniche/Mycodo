@@ -54,6 +54,8 @@ def camera_add(form_camera):
         new_camera.picamera_sharpness = 0
         new_camera.picamera_iso = 0
         new_camera.picamera_awb = "auto"
+        new_camera.picamera_awb_gain_blue = 3.0
+        new_camera.picamera_awb_gain_red = 2.0
     elif form_camera.library.data == 'picamera':
         new_camera.brightness = 50
         new_camera.contrast = 0.0
@@ -132,6 +134,8 @@ def camera_mod(form_camera):
             mod_camera.picamera_sharpness = form_camera.picamera_sharpness.data
             mod_camera.picamera_iso = int(form_camera.picamera_iso.data)
             mod_camera.picamera_awb = form_camera.picamera_awb.data
+            mod_camera.picamera_awb_gain_red = form_camera.picamera_awb_gain_red.data
+            mod_camera.picamera_awb_gain_blue = form_camera.picamera_awb_gain_blue.data
             mod_camera.custom_options = form_camera.custom_options.data
         elif mod_camera.library == 'picamera':
             mod_camera.resolution_stream_width = form_camera.resolution_stream_width.data

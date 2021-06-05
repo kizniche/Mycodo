@@ -55,6 +55,9 @@
     </select>
   </div>
 </div>
+<div class="col-12">
+  If Auto White Balance is set to Off, AWB Gain Blue and AWB Gain Red are used. See the <a href="https://www.raspberrypi.org/documentation/raspbian/applications/camera.md">raspistill documentation</a> for more information.
+</div>
 <div class="col-auto">
   {{form_camera.picamera_awb.label(class_='control-label')}}
   <div>
@@ -73,6 +76,18 @@
   </div>
 </div>
 <div class="col-auto">
+  {{form_camera.picamera_awb_gain_red.label(class_='control-label')}}
+  <div>
+    {{form_camera.picamera_awb_gain_red(class_='form-control', value=each_camera.picamera_awb_gain_red)}}
+   </div>
+</div>
+<div class="col-auto">
+  {{form_camera.picamera_awb_gain_blue.label(class_='control-label')}}
+  <div>
+    {{form_camera.picamera_awb_gain_blue(class_='form-control', value=each_camera.picamera_awb_gain_blue)}}
+   </div>
+</div>
+<div class="col-12">
   {{form_camera.custom_options.label(class_='control-label')}}
   <div>
     {{form_camera.custom_options(class_='form-control', value=each_camera.custom_options)}}

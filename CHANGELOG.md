@@ -1,4 +1,15 @@
-## 8.11.0 (2021-06-05)
+## 8.11.1 (Unreleased)
+
+### Bugfixes
+
+ - Fix taking photos with camera library "raspistill" when AWB set to off
+
+### Features
+
+ - Add options for camera library raspistill: AWB Gain Blue, AWB Gain Red
+
+
+## 8.11.0 (2021-06-05) 
 
 ### Bugfixes
 
