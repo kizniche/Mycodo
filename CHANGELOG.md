@@ -4,6 +4,7 @@
 
  - Fix taking photos with camera library "raspistill" when AWB set to off
  - Fix issue querying graph data
+ - Fix flag/tag newlines on asynchronous graphs
 
 ### Features
 
