@@ -640,7 +640,11 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
         raw_data = dbcon.query(query_str).raw
 
-        first_point = raw_data['series'][0]['values'][0][0]
+        try:
+            first_point = raw_data['series'][0]['values'][0][0]
+        except:
+            return '', 204
+
         end = datetime.datetime.utcnow()
         end_str = end.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
     # Set the time frame to the past start epoch to now
@@ -662,9 +666,14 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
         raw_data = dbcon.query(query_str).raw
 
-        count_points = raw_data['series'][0]['values'][0][1]
-        # Get the timestamp of the first point in the past year
+        logger.info("TEST00: {}".format(raw_data))
 
+        try:
+            count_points = raw_data['series'][0]['values'][0][1]
+        except:
+            return '', 204
+
+        # Get the timestamp of the first point in the past year
         query_str = query_string(
             unit, device_id,
             measure=measurement,
@@ -677,7 +686,10 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
         raw_data = dbcon.query(query_str).raw
 
-        first_point = raw_data['series'][0]['values'][0][0]
+        try:
+            first_point = raw_data['series'][0]['values'][0][0]
+        except:
+            return '', 204
     else:
         start = datetime.datetime.utcfromtimestamp(float(start_seconds))
         start_str = start.strftime('%Y-%m-%dT%H:%M:%S.%fZ')
@@ -696,9 +708,12 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
         raw_data = dbcon.query(query_str).raw
 
-        count_points = raw_data['series'][0]['values'][0][1]
-        # Get the timestamp of the first point in the past year
+        try:
+            count_points = raw_data['series'][0]['values'][0][1]
+        except:
+            return '', 204
 
+        # Get the timestamp of the first point in the past year
         query_str = query_string(
             unit, device_id,
             measure=measurement,
@@ -711,7 +726,10 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
         raw_data = dbcon.query(query_str).raw
 
-        first_point = raw_data['series'][0]['values'][0][0]
+        try:
+            first_point = raw_data['series'][0]['values'][0][0]
+        except:
+            return '', 204
 
     start = datetime.datetime.strptime(
         influx_time_str_to_milliseconds(first_point),
@@ -751,7 +769,10 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
                 return '', 204
             raw_data = dbcon.query(query_str).raw
 
-            return jsonify(raw_data['series'][0]['values'])
+            try:
+                return jsonify(raw_data['series'][0]['values'])
+            except:
+                return '', 204
         except Exception as e:
             logger.error("URL for 'async_data' raised and error: "
                          "{err}".format(err=e))
