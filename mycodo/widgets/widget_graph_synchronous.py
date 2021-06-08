@@ -708,7 +708,7 @@ WIDGET_INFORMATION = {
   {%- endif -%}
 
     title: {
-      text: '{% if widget_options['enable_title'] %}{{each_widget.name}}{% endif %}'
+      text: "{% if widget_options['enable_title'] %}{{each_widget.name}}{% endif %}"
     },
 
     legend: {
@@ -731,10 +731,10 @@ WIDGET_INFORMATION = {
         endOnTick: {% if widget_options['enable_end_on_tick'] %}true{% else %}false{% endif %},
     {% endif %}
         title: {
-          text: '{{dict_units[each_axis_meas]['name']}}
+          text: "{{dict_units[each_axis_meas]['name']}}
     {%- if dict_units[each_axis_meas]['unit'] != '' -%}
       {{' (' + dict_units[each_axis_meas]['unit'] + ')'}}
-    {%- endif -%}'
+    {%- endif -%}"
         },
         labels: {
           format: '{value}'
@@ -896,7 +896,7 @@ WIDGET_INFORMATION = {
 
         {%- if measurement_id in device_measurements_dict -%}
       {
-        name: '{{each_input.name}}
+        name: "{{each_input.name}}
 
           {%- if device_measurements_dict[measurement_id].name -%}
             {{' (' + device_measurements_dict[measurement_id].name}})
@@ -914,7 +914,7 @@ WIDGET_INFORMATION = {
             {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
           {%- endif -%}
 
-          )',
+          )",
 
         {% if dict_measure_measurements[measurement_id] in dict_measurements and
               dict_measurements[dict_measure_measurements[measurement_id]]['meas'] == 'edge' %}
@@ -1028,7 +1028,7 @@ WIDGET_INFORMATION = {
 
       {%- if measurement_id in device_measurements_dict -%}
       {
-      name: '{{each_function.name}}
+      name: "{{each_function.name}}
 
         {%- if device_measurements_dict[measurement_id].name -%}
           {{' (' + device_measurements_dict[measurement_id].name}})
@@ -1046,7 +1046,7 @@ WIDGET_INFORMATION = {
           {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
         {%- endif -%}
 
-        )',
+        )",
 
       {% if dict_measure_measurements[measurement_id] in dict_measurements and
             dict_measurements[dict_measure_measurements[measurement_id]]['meas'] == 'edge' %}
@@ -1097,7 +1097,7 @@ WIDGET_INFORMATION = {
 
         {%- if measurement_id in device_measurements_dict -%}
       {
-        name: '{{each_output.name}}
+        name: "{{each_output.name}}
 
           {%- if device_measurements_dict[measurement_id].name -%}
             {{' (' + device_measurements_dict[measurement_id].name}})
@@ -1121,7 +1121,7 @@ WIDGET_INFORMATION = {
             {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
           {%- endif -%}
 
-          )',
+          )",
         type: 'column',
         dataGrouping: {
           enabled: {% if disable_data_grouping %}false{% else %}true{% endif %},
@@ -1163,7 +1163,7 @@ WIDGET_INFORMATION = {
 
       {%- if measurement_id in device_measurements_dict -%}
     {
-      name: '{{each_pid.name}}
+      name: "{{each_pid.name}}
 
         {%- if device_measurements_dict[measurement_id].name -%}
           {{' (' + device_measurements_dict[measurement_id].name}})
@@ -1181,7 +1181,7 @@ WIDGET_INFORMATION = {
           {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
         {%- endif -%}
 
-        )',
+        )",
 
       {% if dict_measure_measurements[measurement_id] in dict_measurements and
             dict_measurements[dict_measure_measurements[measurement_id]]['meas'] == 'edge' %}
