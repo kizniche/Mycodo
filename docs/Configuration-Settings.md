@@ -217,6 +217,10 @@ Mycodo requires at least one Admin user for the login system to be enabled. If t
 <td>Choose a password that is between 6 and 64 characters and only contains letters, numbers, and symbols.</td>
 </tr>
 <tr>
+<td>Keypad Code</td>
+<td>Set an optional numeric code that is at least 4 digits for logging in using a keypad.</td>
+</tr>
+<tr>
 <td>Role</td>
 <td>Roles are a way of imposing access restrictions on users, to either allow or deny actions. See the table below for explanations of the four default Roles.</td>
 </tr>

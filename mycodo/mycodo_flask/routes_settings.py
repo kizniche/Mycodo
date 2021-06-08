@@ -394,8 +394,10 @@ def settings_users():
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
+    misc = Misc.query.first()
     users = User.query.all()
     user_roles = Role.query.all()
+    form_user = forms_settings.User()
     form_add_user = forms_settings.UserAdd()
     form_mod_user = forms_settings.UserMod()
     form_user_roles = forms_settings.UserRoles()
@@ -404,7 +406,9 @@ def settings_users():
         if not utils_general.user_has_permission('edit_users'):
             return redirect(url_for('routes_general.home'))
 
-        if form_add_user.add_user.data:
+        if form_user.save_user.data:
+            utils_settings.user(form_user)
+        elif form_add_user.add_user.data:
             utils_settings.user_add(form_add_user)
         elif form_mod_user.generate_api_key.data:
             utils_settings.generate_api_key(form_mod_user)
@@ -421,11 +425,13 @@ def settings_users():
         return redirect(url_for('routes_settings.settings_users'))
 
     return render_template('settings/users.html',
+                           misc=misc,
                            themes=THEMES,
                            users=users,
                            user_roles=user_roles,
                            form_add_user=form_add_user,
                            form_mod_user=form_mod_user,
+                           form_user=form_user,
                            form_user_roles=form_user_roles)
 
 

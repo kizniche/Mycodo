@@ -265,6 +265,11 @@ class UserRoles(FlaskForm):
     delete_role = SubmitField(TRANSLATIONS['delete']['title'])
 
 
+class User(FlaskForm):
+    default_login_page = StringField(lazy_gettext('Default Login Page'))
+    save_user = SubmitField(lazy_gettext('Save'))
+
+
 class UserAdd(FlaskForm):
     user_name = StringField(
         TRANSLATIONS['user']['title'], validators=[DataRequired()])
@@ -289,6 +294,9 @@ class UserAdd(FlaskForm):
     )
     password_repeat = PasswordField(
         lazy_gettext('Repeat Password'), validators=[DataRequired()])
+    code = PasswordField("{} ({})".format(
+        lazy_gettext('Keypad Code'),
+        lazy_gettext('Optional')))
     addRole = StringField(
         lazy_gettext('Role'), validators=[DataRequired()])
     theme = StringField(
@@ -329,6 +337,9 @@ class UserMod(FlaskForm):
     password_repeat = PasswordField(
         lazy_gettext('Repeat Password'),
         render_kw={"placeholder": lazy_gettext("Repeat Password")})
+    code = PasswordField(
+        lazy_gettext('Keypad Code'),
+        render_kw={"placeholder": lazy_gettext("Keypad Code")})
     api_key = StringField('API Key', render_kw={"placeholder": "API Key (Base64)"})
     role_id = IntegerField(
         lazy_gettext('Role ID'),

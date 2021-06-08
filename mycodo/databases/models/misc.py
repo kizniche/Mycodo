@@ -41,6 +41,7 @@ class Misc(CRUDMixin, db.Model):
     net_test_ip = db.Column(db.String, default='8.8.8.8')
     net_test_port = db.Column(db.Integer, default=53)
     net_test_timeout = db.Column(db.Integer, default=3)
+    default_login_page = db.Column(db.String, default='password')
 
     def __repr__(self):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)

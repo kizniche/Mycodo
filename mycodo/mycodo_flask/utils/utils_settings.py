@@ -136,6 +136,30 @@ def user_roles(form):
         error, action, url_for('routes_settings.settings_users'))
 
 
+def user(form):
+    action = '{action} {controller}'.format(
+        action=TRANSLATIONS['save']['title'],
+        controller=TRANSLATIONS['user']['title'])
+    error = []
+
+    if form.validate():
+        misc = Misc.query.first()
+        misc.default_login_page = form.default_login_page.data
+
+        if not error:
+            try:
+                db.session.commit()
+            except sqlalchemy.exc.OperationalError as except_msg:
+                error.append(except_msg)
+            except sqlalchemy.exc.IntegrityError as except_msg:
+                error.append(except_msg)
+
+        flash_success_errors(
+            error, action, url_for('routes_settings.settings_users'))
+    else:
+        flash_form_errors(form)
+
+
 def user_add(form):
     action = '{action} {controller} {user}'.format(
         action=TRANSLATIONS['add']['title'],
@@ -163,6 +187,15 @@ def user_add(form):
 
         if form.password_new.data != form.password_repeat.data:
             error.append(gettext("Passwords do not match. Please try again."))
+
+        if form.code.data:
+            try:
+                code_int = int(form.code.data)
+                if len(str(code_int)) < 4:
+                    error.append("Keypad code must be a numerical value of 4 or more digits")
+                new_user.code = code_int
+            except:
+                error.append("Keypad code must be a numerical value of 4 or more digits")
 
         if not error:
             new_user.set_password(form.password_new.data)
@@ -236,6 +269,20 @@ def user_mod(form):
         mod_user = User.query.filter(
             User.unique_id == form.user_id.data).first()
         mod_user.email = form.email.data
+
+        logger.error("TEST10: {}".format(form.code.data))
+
+        if form.code.data == "0":
+            mod_user.code = None
+        elif form.code.data:
+            try:
+                code_int = int(form.code.data)
+                if len(str(code_int)) < 4:
+                    error.append("Keypad code must be a numerical value of 4 or more digits")
+                mod_user.code = code_int
+            except:
+                error.append("Keypad code must be a numerical value of 4 or more digits")
+
         # Only change the password if it's entered in the form
         logout_user = False
         if form.password_new.data != '':

@@ -10,7 +10,30 @@
   <div class="container">
     <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="https://kizniche.github.io/Mycodo/Configuration-Settings/#users" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('User Settings')}}</h3>
 
+    <form class="form-horizontal" method="post" action="/settings/users">
+      {{form_user.csrf_token}}
+      <div class="row align-items-end small-gutters">
+
+        <div class="col-auto">
+          {{form_user.default_login_page.label(class_='control-label')}}
+          <div>
+            <select class="form-control form-tooltip form-dropdown" data-placement="top" id="default_login_page" name="default_login_page" title="{{_('Which page to land on for logging in')}}">
+              <option value="password"{% if misc.default_login_page == 'password' %} selected{% endif %}>{{_('Password')}}</option>
+              <option value="keypad"{% if misc.default_login_page == 'keypad' %} selected{% endif %}>{{_('Keypad')}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-12" style="padding-top: 1em">
+          {{form_user.save_user(class_='btn btn-primary')}}
+        </div>
+      </div>
+    </form>
+
+    <div style="clear: both; padding: 1em 0;"></div>
+
     <h3>{{_('Add User')}}</h3>
+
+    <p>Note: If used, the Keypad Code must be a numerical value of 4 or more digits.</p>
 
     <form class="form-horizontal" method="post" action="/settings/users">
     {{form_add_user.hidden_tag()}}
@@ -39,6 +62,12 @@
         {{form_add_user.password_repeat.label(class_='control-label')}}
         <div>
           {{form_add_user.password_repeat(class_='form-control')}}
+        </div>
+      </div>
+      <div class="col-sm-3 col-md-3">
+        {{form_add_user.code.label(class_='control-label')}}
+        <div>
+          {{form_add_user.code(class_='form-control')}}
         </div>
       </div>
       <div class="col-4 col-sm-3 col-md-3">
@@ -73,16 +102,16 @@
 
     <h3>{{_('Users')}}</h3>
 
+    <p>Note: The Password and Keypad Code fields used to log in will remain empty. To change the password or code, enter a value and press save. Leaving them empty will keep the current setting. To disable a Keypad Code, enter 0 and save.</p>
+
     {% for user in users %}
 
     <form method="post" action="/settings/users">
-    {{form_mod_user.csrf_token}}
-    {{form_mod_user.user_id(value=user.unique_id)}}
+      {{form_mod_user.csrf_token}}
+      {{form_mod_user.user_id(value=user.unique_id)}}
+      <h6>User: {{user.name}}, Keypad Code Set: {% if user.code %}True{% else %}False{% endif %}</h6>
 
       <div class="row small-gutters">
-        <div class="col-sm-6 col-md-3">
-          <input class="form-control btn btn-primary" disabled="" value="{{user.name}}" type="text">
-        </div>
         <div class="col-sm-6 col-md-3">
           {{form_mod_user.email(class_='form-control', value=user.email)}}
         </div>
@@ -91,6 +120,9 @@
         </div>
         <div class="col-sm-3 col-md-3">
           {{form_mod_user.password_repeat(class_='form-control')}}
+        </div>
+        <div class="col-sm-3 col-md-3">
+          {{form_mod_user.code(class_='form-control')}}
         </div>
         <div class="col-sm-3">
           <select class="form-control" id="role_id" name="role_id">

@@ -9,6 +9,7 @@
 
 ### Features
 
+ - Add numerical keypad login
  - Add options for camera library raspistill: AWB Gain Blue, AWB Gain Red
 
 

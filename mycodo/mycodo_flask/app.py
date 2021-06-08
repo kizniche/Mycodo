@@ -202,6 +202,6 @@ def extension_login_manager(app):
         except:
             pass
         flash(gettext('Please log in to access this page'), "error")
-        return redirect(url_for('routes_authentication.do_login'))
+        return redirect(url_for('routes_authentication.login_check'))
 
     return app

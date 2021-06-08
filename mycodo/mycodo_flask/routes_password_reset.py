@@ -151,7 +151,7 @@ def reset_password():
                     user.password_reset_last_request = None
                     db.session.commit()
                     flash("Password successfully reset", "success")
-                    return redirect(url_for('routes_authentication.do_login'))
+                    return redirect(url_for('routes_authentication.login_check'))
             else:
                 error.append(wrong_code_msg)
 

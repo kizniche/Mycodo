@@ -99,7 +99,7 @@ def create_admin():
                 flash(gettext("User '%(user)s' successfully created. Please "
                               "log in below.", user=username),
                       "success")
-                return redirect(url_for('routes_authentication.do_login'))
+                return redirect(url_for('routes_authentication.login_check'))
             except Exception as except_msg:
                 flash(gettext("Failed to create user '%(user)s': %(err)s",
                               user=username,
@@ -117,11 +117,28 @@ def create_admin():
 
 
 @blueprint.route('/login', methods=('GET', 'POST'))
-def do_login():
+def login_check():
     """Authenticate users of the web-UI"""
     if not admin_exists():
         return redirect('/create_admin')
+    elif flask_login.current_user.is_authenticated:
+        flash(gettext("Cannot access login page if you're already logged in"),
+              "error")
+        return redirect(url_for('routes_general.home'))
 
+    settings = Misc.query.first()
+    if settings.default_login_page == "password":
+        return redirect(url_for('routes_authentication.login_password'))
+    elif settings.default_login_page == "keypad":
+        return redirect(url_for('routes_authentication.login_keypad'))
+    return redirect(url_for('routes_authentication.login_password'))
+
+
+@blueprint.route('/login_password', methods=('GET', 'POST'))
+def login_password():
+    """Authenticate users of the web-UI"""
+    if not admin_exists():
+        return redirect('/create_admin')
     elif flask_login.current_user.is_authenticated:
         flash(gettext("Cannot access login page if you're already logged in"),
               "error")
@@ -178,9 +195,85 @@ def do_login():
 
             return redirect('/login')
 
-    return render_template('login.html',
+    return render_template('login_password.html',
                            dict_translation=TRANSLATIONS,
                            form_login=form_login,
+                           host=socket.gethostname())
+
+
+@blueprint.route('/login_keypad', methods=('GET', 'POST'))
+def login_keypad():
+    """Authenticate users of the web-UI (with keypad)"""
+    if not admin_exists():
+        return redirect('/create_admin')
+
+    elif flask_login.current_user.is_authenticated:
+        flash(gettext("Cannot access login page if you're already logged in"),
+              "error")
+        return redirect(url_for('routes_general.home'))
+
+    # Check if the user is banned from logging in (too many incorrect attempts)
+    if banned_from_login():
+        flash(gettext(
+            "Too many failed login attempts. Please wait %(min)s "
+            "minutes before attempting to log in again",
+            min=int((LOGIN_BAN_SECONDS - session['ban_time_left']) / 60) + 1),
+                "info")
+
+    return render_template('login_keypad.html',
+                           dict_translation=TRANSLATIONS,
+                           host=socket.gethostname())
+
+
+@blueprint.route('/login_keypad_code/', methods=('GET', 'POST'))
+def login_keypad_code_empty():
+    """Forward to keypad when no code entered"""
+    time.sleep(2)
+    flash("Please enter a code", "error")
+    return redirect('/login_keypad')
+
+
+@blueprint.route('/login_keypad_code/<code>', methods=('GET', 'POST'))
+def login_keypad_code(code):
+    """Check code from keypad"""
+    if not admin_exists():
+        return redirect('/create_admin')
+
+    elif flask_login.current_user.is_authenticated:
+        flash(gettext("Cannot access login page if you're already logged in"),
+              "error")
+        return redirect(url_for('routes_general.home'))
+
+    # Check if the user is banned from logging in (too many incorrect attempts)
+    if banned_from_login():
+        flash(gettext(
+            "Too many failed login attempts. Please wait %(min)s "
+            "minutes before attempting to log in again",
+            min=int((LOGIN_BAN_SECONDS - session['ban_time_left']) / 60) + 1),
+                "info")
+    else:
+        user = User.query.filter(User.code == code).first()
+        user_ip = request.environ.get('HTTP_X_FORWARDED_FOR', 'unknown address')
+
+        if not user:
+            login_log(code, 'NA', user_ip, 'FAIL')
+            failed_login()
+            flash("Invalid Code", "error")
+            time.sleep(2)
+        else:
+            role_name = Role.query.filter(Role.id == user.role_id).first().name
+            login_log(user.name, role_name, user_ip, 'LOGIN')
+
+            # flask-login user
+            login_user = User()
+            login_user.id = user.id
+            remember_me = True
+            flask_login.login_user(login_user, remember=remember_me)
+
+            return redirect(url_for('routes_general.home'))
+
+    return render_template('login_keypad.html',
+                           dict_translation=TRANSLATIONS,
                            host=socket.gethostname())
 
 

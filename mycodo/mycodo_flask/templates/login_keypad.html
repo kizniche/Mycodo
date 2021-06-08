@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="/static/img/favicon.png">
+
+  <title>Mycodo {{dict_translation['login']['title']}} - {{host}}</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="/static/css/signin.css" rel="stylesheet">
+
+  <script src="/static/js/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+
+{% if current_user.is_authenticated %}
+  <p>{{_("You're logged in already!")}}</p>
+{% else %}
+  <!-- Route: /login_keypad -->
+  <div class="container">
+  {% include 'flash_messages.html' %}
+
+    <div class="text-center">
+      <h2 class="form-signin-heading">Mycodo {{dict_translation['login']['title']}}</h2>
+      <h4 style="text-align: center;">{{host}}</h4>
+      <div class="btn-group-vertical btn-group-justified" role="group" aria-label="Keypad Login">
+        <div class="btn-group">
+          <input class="text-center form-control-lg mb-2" id="code" type="password">
+        </div>
+        <div class="btn-group">
+          <button type="button" style="font-family: monospace;" class="btn btn-outline-secondary btn-lg py-3" onclick="document.getElementById('code').value=document.getElementById('code').value + '1';">1</button>
+          <button type="button" style="font-family: monospace;" class="btn btn-outline-secondary btn-lg py-3" onclick="document.getElementById('code').value=document.getElementById('code').value + '2';">2</button>
+          <button type="button" style="font-family: monospace;" class="btn btn-outline-secondary btn-lg py-3" onclick="document.getElementById('code').value=document.getElementById('code').value + '3';">3</button>
+        </div>
+        <div class="btn-group">
+          <button type="button" style="font-family: monospace;" class="btn btn-outline-secondary btn-lg py-3" onclick="document.getElementById('code').value=document.getElementById('code').value + '4';">4</button>
+          <button type="button" style="font-family: monospace;" class="btn btn-outline-secondary btn-lg py-3" onclick="document.getElementById('code').value=document.getElementById('code').value + '5';">5</button>
+          <button type="button" style="font-family: monospace;" class="btn btn-outline-secondary btn-lg py-3" onclick="document.getElementById('code').value=document.getElementById('code').value + '6';">6</button>
+        </div>
+        <div class="btn-group">
+          <button type="button" style="font-family: monospace;" class="btn btn-outline-secondary btn-lg py-3" onclick="document.getElementById('code').value=document.getElementById('code').value + '7';">7</button>
+          <button type="button" style="font-family: monospace;" class="btn btn-outline-secondary btn-lg py-3" onclick="document.getElementById('code').value=document.getElementById('code').value + '8';">8</button>
+          <button type="button" style="font-family: monospace;" class="btn btn-outline-secondary btn-lg py-3" onclick="document.getElementById('code').value=document.getElementById('code').value + '9';">9</button>
+        </div>
+        <div class="btn-group">
+          <button type="button" style="font-family: monospace;" class="btn btn-outline-secondary btn-lg py-3" onclick="document.getElementById('code').value=document.getElementById('code').value.slice(0, -1);">&lt;</button>
+          <button type="button" style="font-family: monospace;" class="btn btn-outline-secondary btn-lg py-3" onclick="document.getElementById('code').value=document.getElementById('code').value + '0';">0</button>
+          <button type="button" style="font-family: monospace;" class="btn btn-outline-secondary btn-lg py-3" onclick="document.getElementById('code').value='';">X</button>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary btn-lg py-3" onclick="location.href='/login_keypad_code/'+document.getElementById('code').value;">{{_('Log In')}}</button>
+        </div>
+      </div>
+
+      <div style="text-align: center; padding-top: 1em">
+        <a href="/login_password">{{_('Password Login')}}</a>
+      </div>
+    </div>
+
+  </div>
+
+{% endif %}
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<script src="/static/js/bootstrap.min.js"></script>
+</body>
+</html>
