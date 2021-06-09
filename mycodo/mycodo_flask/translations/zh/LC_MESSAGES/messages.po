@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-06-09 16:51-0400\n"
+"POT-Creation-Date: 2021-06-09 17:15-0400\n"
 "PO-Revision-Date: 2018-08-10 15:59-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh\n"
@@ -239,10 +239,6 @@ msgstr "流量计"
 msgid "Clear Total Volume"
 msgstr "清除总容积"
 
-#: config.py:589
-msgid "Clear the total volume saved for a flow meter input."
-msgstr "清除保存流量计输入的总量。"
-
 #: config.py:594
 msgid "Execute Command"
 msgstr "执行命令"
@@ -263,31 +259,13 @@ msgstr "创建与所选标签的说明。"
 msgid "Deactivate a controller."
 msgstr "停用的控制器。"
 
-#: config.py:612
-msgid "Email a single recipient."
-msgstr "电子邮件一个收件人。"
-
-#: config.py:618
-msgid ""
-"Email multiple recipients. Separate email addresses with commas (e.g. "
-"\"email1@address.com,email2@address.com\")."
-msgstr "电子邮件多个收件人。用逗号分隔电子邮件地址（例如 “@ EMAIL1 address.com，EMAIL2 @ address.com”）。"
-
 #: config.py:623
 msgid "Flashing Off"
 msgstr "闪烁关闭"
 
-#: config.py:624
-msgid "Stop LCD flashing."
-msgstr "停止LCD闪烁。"
-
 #: config.py:629
 msgid "Flashing On"
 msgstr "闪烁"
-
-#: config.py:630
-msgid "Start LCD flashing."
-msgstr "启动LCD闪烁。"
 
 #: config.py:635 config_translations.py:95
 #: mycodo_flask/templates/layout-remote.html:50
@@ -311,27 +289,15 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-#: config.py:644
-msgid "Set LCD backlight color (if supported)."
-msgstr ""
-
 #: config.py:651 config_translations.py:123
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:24
 msgid "Off"
 msgstr "离"
 
-#: config.py:652
-msgid "Turn off LCD backlight (if supported)."
-msgstr "关闭LCD背光（如果支持的话）。"
-
 #: config.py:659 config_translations.py:125
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:22
 msgid "On"
 msgstr "上"
-
-#: config.py:660
-msgid "Turn on LCD backlight (if supported)."
-msgstr "打开LCD背光（如果支持的话）。"
 
 #: config.py:665
 msgid "Set Method"
@@ -343,10 +309,6 @@ msgstr "选择的PID设置为使用的方法。"
 
 #: config.py:670 config_translations.py:139
 msgid "Publish"
-msgstr ""
-
-#: config.py:671
-msgid "Publish a value to an MQTT server."
 msgstr ""
 
 #: config.py:682
@@ -382,10 +344,6 @@ msgstr "暂停PID。"
 #: config.py:724
 msgid "Email with Photo Attachment"
 msgstr "带照片附件的电子邮件"
-
-#: config.py:725
-msgid "Capture a photo with the selected Camera and Email it as an attahment."
-msgstr "捕捉与选择的相机中的照片，并通过电子邮件将它作为一个attahment。"
 
 #: config.py:731
 msgid "Resume a PID."
@@ -427,39 +385,16 @@ msgstr "由该值提高一个PID的设定值。"
 msgid "Restart"
 msgstr "重新开始"
 
-#: config.py:761
-msgid "Restart the System"
-msgstr "重新启动系统"
-
 #: config.py:766
 msgid "Shutdown"
 msgstr "关掉"
-
-#: config.py:767
-msgid "Shutdown the System"
-msgstr "关闭系统"
 
 #: config.py:771
 msgid "Email with Video Attachment"
 msgstr "带视频附件的电子邮件"
 
-#: config.py:772
-#, fuzzy
-msgid "Capture a video with the selected Camera and Email it as an attachment"
-msgstr "捕获与所选摄像头的视频，并通过电子邮件将它作为一个attahment。"
-
 #: config.py:776
 msgid "Webhook"
-msgstr ""
-
-#: config.py:777
-msgid ""
-"Emits a HTTP request when triggered. The first line contains a HTTP verb "
-"(GET, POST, PUT, ...) followed by a space and the URL to call. Subsequent"
-" lines are optional \"name: value\"-header parameters. After a blank "
-"line, the body payload to be sent follows. {{{message}}} is a placeholder"
-" that gets replaced by the message, {{{quoted_message}}} is the message "
-"in an URL safe encoding."
 msgstr ""
 
 #: config_devices_units.py:13

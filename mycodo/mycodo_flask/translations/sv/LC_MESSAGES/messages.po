@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-06-09 16:51-0400\n"
+"POT-Creation-Date: 2021-06-09 17:15-0400\n"
 "PO-Revision-Date: 2019-01-29 14:25-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: sv\n"
@@ -239,10 +239,6 @@ msgstr "Flödesmätare"
 msgid "Clear Total Volume"
 msgstr "Clear Total volym"
 
-#: config.py:589
-msgid "Clear the total volume saved for a flow meter input."
-msgstr "Rensa den totala volymen sparas för en flödesmätare ingång."
-
 #: config.py:594
 msgid "Execute Command"
 msgstr "Utför kommando"
@@ -263,33 +259,13 @@ msgstr "Skapa en anteckning med den valda Tag."
 msgid "Deactivate a controller."
 msgstr "Deaktivera en styrenhet."
 
-#: config.py:612
-msgid "Email a single recipient."
-msgstr "E-post en enda mottagare."
-
-#: config.py:618
-msgid ""
-"Email multiple recipients. Separate email addresses with commas (e.g. "
-"\"email1@address.com,email2@address.com\")."
-msgstr ""
-"E-post flera mottagare. Separata e-postadresser med kommatecken (t.ex. "
-"\"email1 @ address.com, post2 @ address.com\")."
-
 #: config.py:623
 msgid "Flashing Off"
 msgstr "blinkande Av"
 
-#: config.py:624
-msgid "Stop LCD flashing."
-msgstr "blinkande Stop LCD."
-
 #: config.py:629
 msgid "Flashing On"
 msgstr "blinkande On"
-
-#: config.py:630
-msgid "Start LCD flashing."
-msgstr "blinkande Start LCD."
 
 #: config.py:635 config_translations.py:95
 #: mycodo_flask/templates/layout-remote.html:50
@@ -313,27 +289,15 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-#: config.py:644
-msgid "Set LCD backlight color (if supported)."
-msgstr ""
-
 #: config.py:651 config_translations.py:123
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:24
 msgid "Off"
 msgstr "Av"
 
-#: config.py:652
-msgid "Turn off LCD backlight (if supported)."
-msgstr "Stäng av LCD-skärmens bakgrundsbelysning (om det stöds)."
-
 #: config.py:659 config_translations.py:125
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:22
 msgid "On"
 msgstr "På"
-
-#: config.py:660
-msgid "Turn on LCD backlight (if supported)."
-msgstr "Slå på LCD-skärmens bakgrundsbelysning (om det stöds)."
 
 #: config.py:665
 msgid "Set Method"
@@ -345,10 +309,6 @@ msgstr "Välj en metod för att ställa in PID till användning."
 
 #: config.py:670 config_translations.py:139
 msgid "Publish"
-msgstr ""
-
-#: config.py:671
-msgid "Publish a value to an MQTT server."
 msgstr ""
 
 #: config.py:682
@@ -388,10 +348,6 @@ msgstr "Pausa en PID."
 #: config.py:724
 msgid "Email with Photo Attachment"
 msgstr "E-post med Photo Attachment"
-
-#: config.py:725
-msgid "Capture a photo with the selected Camera and Email it as an attahment."
-msgstr "Ta ett foto med den valda kameran och skicka den som ett attahment."
 
 #: config.py:731
 msgid "Resume a PID."
@@ -433,39 +389,16 @@ msgstr "Höj Börvärde en PID från detta värde."
 msgid "Restart"
 msgstr "Omstart"
 
-#: config.py:761
-msgid "Restart the System"
-msgstr "Starta om systemet"
-
 #: config.py:766
 msgid "Shutdown"
 msgstr "Stänga av"
-
-#: config.py:767
-msgid "Shutdown the System"
-msgstr "Stänga av systemet"
 
 #: config.py:771
 msgid "Email with Video Attachment"
 msgstr "E-post med Video Attachment"
 
-#: config.py:772
-#, fuzzy
-msgid "Capture a video with the selected Camera and Email it as an attachment"
-msgstr "Fånga en video med den valda kameran och skicka den som ett attahment."
-
 #: config.py:776
 msgid "Webhook"
-msgstr ""
-
-#: config.py:777
-msgid ""
-"Emits a HTTP request when triggered. The first line contains a HTTP verb "
-"(GET, POST, PUT, ...) followed by a space and the URL to call. Subsequent"
-" lines are optional \"name: value\"-header parameters. After a blank "
-"line, the body payload to be sent follows. {{{message}}} is a placeholder"
-" that gets replaced by the message, {{{quoted_message}}} is the message "
-"in an URL safe encoding."
 msgstr ""
 
 #: config_devices_units.py:13

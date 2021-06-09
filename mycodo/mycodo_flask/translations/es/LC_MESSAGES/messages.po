@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-06-09 16:51-0400\n"
+"POT-Creation-Date: 2021-06-09 17:15-0400\n"
 "PO-Revision-Date: 2018-08-10 15:21-0400\n"
 "Last-Translator: \n"
 "Language: es\n"
@@ -237,10 +237,6 @@ msgstr "Medidor de corriente"
 msgid "Clear Total Volume"
 msgstr "Claro Volumen Total"
 
-#: config.py:589
-msgid "Clear the total volume saved for a flow meter input."
-msgstr "Borrar el volumen total ahorrado para una entrada de medidor de flujo."
-
 #: config.py:594
 msgid "Execute Command"
 msgstr "Ejecutar comando"
@@ -261,34 +257,13 @@ msgstr "Crear una nota con la etiqueta seleccionada."
 msgid "Deactivate a controller."
 msgstr "Desactivar un controlador."
 
-#: config.py:612
-msgid "Email a single recipient."
-msgstr "Enviar a un único destinatario."
-
-#: config.py:618
-msgid ""
-"Email multiple recipients. Separate email addresses with commas (e.g. "
-"\"email1@address.com,email2@address.com\")."
-msgstr ""
-"Correo electrónico múltiples destinatarios. direcciones de correo "
-"electrónico separados con comas (por ejemplo, \"email1 @ address.com, "
-"email2 @ address.com\")."
-
 #: config.py:623
 msgid "Flashing Off"
 msgstr "Intermitente Apagado"
 
-#: config.py:624
-msgid "Stop LCD flashing."
-msgstr "Parada intermitente de LCD."
-
 #: config.py:629
 msgid "Flashing On"
 msgstr "El parpadeo"
-
-#: config.py:630
-msgid "Start LCD flashing."
-msgstr "Inicio intermitente de LCD."
 
 #: config.py:635 config_translations.py:95
 #: mycodo_flask/templates/layout-remote.html:50
@@ -312,27 +287,15 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-#: config.py:644
-msgid "Set LCD backlight color (if supported)."
-msgstr ""
-
 #: config.py:651 config_translations.py:123
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:24
 msgid "Off"
 msgstr "Apague"
 
-#: config.py:652
-msgid "Turn off LCD backlight (if supported)."
-msgstr "Apaga la luz de fondo del LCD (si es compatible)."
-
 #: config.py:659 config_translations.py:125
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:22
 msgid "On"
 msgstr "Encienda"
-
-#: config.py:660
-msgid "Turn on LCD backlight (if supported)."
-msgstr "Encender la luz de fondo del LCD (si es compatible)."
 
 #: config.py:665
 msgid "Set Method"
@@ -344,10 +307,6 @@ msgstr "Seleccione un método para establecer el PID para su uso."
 
 #: config.py:670 config_translations.py:139
 msgid "Publish"
-msgstr ""
-
-#: config.py:671
-msgid "Publish a value to an MQTT server."
 msgstr ""
 
 #: config.py:682
@@ -387,12 +346,6 @@ msgstr "Pausa un PID."
 #: config.py:724
 msgid "Email with Photo Attachment"
 msgstr "Correo electrónico con foto adjunta"
-
-#: config.py:725
-msgid "Capture a photo with the selected Camera and Email it as an attahment."
-msgstr ""
-"Permite tomar una fotografía con la cámara seleccionada y correo "
-"electrónico como un attahment."
 
 #: config.py:731
 msgid "Resume a PID."
@@ -434,41 +387,16 @@ msgstr "La temperatura de referencia de un PID por este valor."
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: config.py:761
-msgid "Restart the System"
-msgstr "Reiniciar el sistema"
-
 #: config.py:766
 msgid "Shutdown"
 msgstr "Apagar"
-
-#: config.py:767
-msgid "Shutdown the System"
-msgstr "Apagar el Sistema"
 
 #: config.py:771
 msgid "Email with Video Attachment"
 msgstr "Correo electrónico con video adjunto"
 
-#: config.py:772
-#, fuzzy
-msgid "Capture a video with the selected Camera and Email it as an attachment"
-msgstr ""
-"Capturar un vídeo con la cámara seleccionada y correo electrónico como un"
-" attahment."
-
 #: config.py:776
 msgid "Webhook"
-msgstr ""
-
-#: config.py:777
-msgid ""
-"Emits a HTTP request when triggered. The first line contains a HTTP verb "
-"(GET, POST, PUT, ...) followed by a space and the URL to call. Subsequent"
-" lines are optional \"name: value\"-header parameters. After a blank "
-"line, the body payload to be sent follows. {{{message}}} is a placeholder"
-" that gets replaced by the message, {{{quoted_message}}} is the message "
-"in an URL safe encoding."
 msgstr ""
 
 #: config_devices_units.py:13

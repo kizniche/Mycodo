@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-06-09 16:51-0400\n"
+"POT-Creation-Date: 2021-06-09 17:15-0400\n"
 "PO-Revision-Date: 2018-08-10 15:07-0400\n"
 "Last-Translator: \n"
 "Language: de\n"
@@ -239,12 +239,6 @@ msgstr "Durchflussmesser"
 msgid "Clear Total Volume"
 msgstr "Klar Gesamtvolumen"
 
-#: config.py:589
-msgid "Clear the total volume saved for a flow meter input."
-msgstr ""
-"Deaktivieren Sie das Gesamtvolumen für einen Durchflusszähler-Eingang "
-"gespeichert."
-
 #: config.py:594
 msgid "Execute Command"
 msgstr "Befehl ausführen"
@@ -265,33 +259,13 @@ msgstr "Erstellen Sie eine Notiz mit dem ausgewählten Tag."
 msgid "Deactivate a controller."
 msgstr "Deaktivieren Sie einen Controller."
 
-#: config.py:612
-msgid "Email a single recipient."
-msgstr "E-Mail an einen einzelnen Empfänger."
-
-#: config.py:618
-msgid ""
-"Email multiple recipients. Separate email addresses with commas (e.g. "
-"\"email1@address.com,email2@address.com\")."
-msgstr ""
-"E-Mail an mehrere Empfänger. Separate E-Mail-Adressen mit Komma "
-"(beispielsweise \"email1 @ address.com, EMAIL2 @ address.com\")."
-
 #: config.py:623
 msgid "Flashing Off"
 msgstr "Ablüften"
 
-#: config.py:624
-msgid "Stop LCD flashing."
-msgstr "Stop-LCD blinkt."
-
 #: config.py:629
 msgid "Flashing On"
 msgstr "Flashing On"
-
-#: config.py:630
-msgid "Start LCD flashing."
-msgstr "Start LCD blinkt."
 
 #: config.py:635 config_translations.py:95
 #: mycodo_flask/templates/layout-remote.html:50
@@ -315,27 +289,15 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-#: config.py:644
-msgid "Set LCD backlight color (if supported)."
-msgstr ""
-
 #: config.py:651 config_translations.py:123
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:24
 msgid "Off"
 msgstr "Aus"
 
-#: config.py:652
-msgid "Turn off LCD backlight (if supported)."
-msgstr "Schalten Sie LCD-Hintergrundbeleuchtung (falls unterstützt)."
-
 #: config.py:659 config_translations.py:125
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:22
 msgid "On"
 msgstr "An"
-
-#: config.py:660
-msgid "Turn on LCD backlight (if supported)."
-msgstr "Schalten Sie LCD-Hintergrundbeleuchtung (falls unterstützt)."
 
 #: config.py:665
 msgid "Set Method"
@@ -347,10 +309,6 @@ msgstr "Wählen Sie eine Methode, um die PID zu Verwendung einzustellen."
 
 #: config.py:670 config_translations.py:139
 msgid "Publish"
-msgstr ""
-
-#: config.py:671
-msgid "Publish a value to an MQTT server."
 msgstr ""
 
 #: config.py:682
@@ -388,12 +346,6 @@ msgstr "Pause, um eine PID."
 #: config.py:724
 msgid "Email with Photo Attachment"
 msgstr "E-Mail mit Foto-Anhang"
-
-#: config.py:725
-msgid "Capture a photo with the selected Camera and Email it as an attahment."
-msgstr ""
-"Nehmen Sie ein Foto mit der ausgewählten Kamera und E-Mail an sich als "
-"attahment."
 
 #: config.py:731
 msgid "Resume a PID."
@@ -435,41 +387,16 @@ msgstr "Erhöhen Sie den Sollwert eines PID durch diesen Wert."
 msgid "Restart"
 msgstr ""
 
-#: config.py:761
-msgid "Restart the System"
-msgstr ""
-
 #: config.py:766
 msgid "Shutdown"
-msgstr ""
-
-#: config.py:767
-msgid "Shutdown the System"
 msgstr ""
 
 #: config.py:771
 msgid "Email with Video Attachment"
 msgstr "E-Mail mit Videoanhang"
 
-#: config.py:772
-#, fuzzy
-msgid "Capture a video with the selected Camera and Email it as an attachment"
-msgstr ""
-"Nehmen Sie ein Video mit der ausgewählten Kamera und E-Mail an sich als "
-"attahment."
-
 #: config.py:776
 msgid "Webhook"
-msgstr ""
-
-#: config.py:777
-msgid ""
-"Emits a HTTP request when triggered. The first line contains a HTTP verb "
-"(GET, POST, PUT, ...) followed by a space and the URL to call. Subsequent"
-" lines are optional \"name: value\"-header parameters. After a blank "
-"line, the body payload to be sent follows. {{{message}}} is a placeholder"
-" that gets replaced by the message, {{{quoted_message}}} is the message "
-"in an URL safe encoding."
 msgstr ""
 
 #: config_devices_units.py:13

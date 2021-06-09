@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-06-09 16:51-0400\n"
+"POT-Creation-Date: 2021-06-09 17:15-0400\n"
 "PO-Revision-Date: 2018-08-10 15:43-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -240,10 +240,6 @@ msgstr "Расходомер"
 msgid "Clear Total Volume"
 msgstr "Очистить Общий объем"
 
-#: config.py:589
-msgid "Clear the total volume saved for a flow meter input."
-msgstr "Очистить общий объем сохраненной на входе расходомера."
-
 #: config.py:594
 msgid "Execute Command"
 msgstr "Выполнять команду"
@@ -264,33 +260,13 @@ msgstr "Создать с выбранным Tag записку."
 msgid "Deactivate a controller."
 msgstr "Деактивировать контроллер."
 
-#: config.py:612
-msgid "Email a single recipient."
-msgstr "Электронная почта одного получателя."
-
-#: config.py:618
-msgid ""
-"Email multiple recipients. Separate email addresses with commas (e.g. "
-"\"email1@address.com,email2@address.com\")."
-msgstr ""
-"Отправить несколько получателей. Отдельные адреса электронной почты "
-"запятыми (например, \"EMAIL1 @ address.com, email2 @ address.com\")."
-
 #: config.py:623
 msgid "Flashing Off"
 msgstr "Мигает Выкл"
 
-#: config.py:624
-msgid "Stop LCD flashing."
-msgstr "Стоп LCD мигает."
-
 #: config.py:629
 msgid "Flashing On"
 msgstr "мерцать"
-
-#: config.py:630
-msgid "Start LCD flashing."
-msgstr "Start LCD мигает."
 
 #: config.py:635 config_translations.py:95
 #: mycodo_flask/templates/layout-remote.html:50
@@ -314,27 +290,15 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-#: config.py:644
-msgid "Set LCD backlight color (if supported)."
-msgstr ""
-
 #: config.py:651 config_translations.py:123
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:24
 msgid "Off"
 msgstr "от"
 
-#: config.py:652
-msgid "Turn off LCD backlight (if supported)."
-msgstr "Выключите подсветку ЖК-дисплея (если поддерживается)."
-
 #: config.py:659 config_translations.py:125
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:22
 msgid "On"
 msgstr "На"
-
-#: config.py:660
-msgid "Turn on LCD backlight (if supported)."
-msgstr "Включите подсветку ЖК-дисплея (если поддерживается)."
 
 #: config.py:665
 msgid "Set Method"
@@ -346,10 +310,6 @@ msgstr "Выберите способ настройки PID для исполь
 
 #: config.py:670 config_translations.py:139
 msgid "Publish"
-msgstr ""
-
-#: config.py:671
-msgid "Publish a value to an MQTT server."
 msgstr ""
 
 #: config.py:682
@@ -389,10 +349,6 @@ msgstr "Приостановка PID."
 #: config.py:724
 msgid "Email with Photo Attachment"
 msgstr "Электронная почта с приложением фотографии"
-
-#: config.py:725
-msgid "Capture a photo with the selected Camera and Email it as an attahment."
-msgstr "Фотосъемка с выбранной камеры и отправить его в качестве attahment."
 
 #: config.py:731
 msgid "Resume a PID."
@@ -434,39 +390,16 @@ msgstr "Повышение уставки ПИД этим значением."
 msgid "Restart"
 msgstr "Перезапуск"
 
-#: config.py:761
-msgid "Restart the System"
-msgstr "Перезагрузка системы"
-
 #: config.py:766
 msgid "Shutdown"
 msgstr "Неисправность"
-
-#: config.py:767
-msgid "Shutdown the System"
-msgstr "Выключение системы"
 
 #: config.py:771
 msgid "Email with Video Attachment"
 msgstr "Электронная почта с вложением видео"
 
-#: config.py:772
-#, fuzzy
-msgid "Capture a video with the selected Camera and Email it as an attachment"
-msgstr "Захват видео с выбранной камеры и отправить его в качестве attahment."
-
 #: config.py:776
 msgid "Webhook"
-msgstr ""
-
-#: config.py:777
-msgid ""
-"Emits a HTTP request when triggered. The first line contains a HTTP verb "
-"(GET, POST, PUT, ...) followed by a space and the URL to call. Subsequent"
-" lines are optional \"name: value\"-header parameters. After a blank "
-"line, the body payload to be sent follows. {{{message}}} is a placeholder"
-" that gets replaced by the message, {{{quoted_message}}} is the message "
-"in an URL safe encoding."
 msgstr ""
 
 #: config_devices_units.py:13

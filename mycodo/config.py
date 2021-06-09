@@ -586,7 +586,7 @@ FUNCTION_ACTION_INFO = {
     'clear_total_volume': {
         'name': "{}: {}".format(
             lazy_gettext('Flow Meter'), lazy_gettext('Clear Total Volume')),
-        'description': lazy_gettext('Clear the total volume saved for a flow meter input.'),
+        'description': 'Clear the total volume saved for a flow meter input.',
         'dependencies_module': []
     },
     'command': {
@@ -609,25 +609,25 @@ FUNCTION_ACTION_INFO = {
     'email': {
         'name': '{} ({})'.format(
             TRANSLATIONS['email']['title'], TRANSLATIONS['single']['title']),
-        'description': lazy_gettext('Email a single recipient.'),
+        'description': 'Email a single recipient.',
         'dependencies_module': []
     },
     'email_multiple': {
         'name': '{} ({})'.format(
             TRANSLATIONS['email']['title'], TRANSLATIONS['multiple']['title']),
-        'description': lazy_gettext('Email multiple recipients. Separate email addresses with commas (e.g. "email1@address.com,email2@address.com").'),
+        'description': 'Email multiple recipients. Separate email addresses with commas (e.g. "email1@address.com,email2@address.com").',
         'dependencies_module': []
     },
     'flash_lcd_off': {
         'name': '{}: {}'.format(
             TRANSLATIONS['lcd']['title'], lazy_gettext('Flashing Off')),
-        'description': lazy_gettext('Stop LCD flashing.'),
+        'description': 'Stop LCD flashing.',
         'dependencies_module': []
     },
     'flash_lcd_on': {
         'name': '{}: {}'.format(
             TRANSLATIONS['lcd']['title'], lazy_gettext('Flashing On')),
-        'description': lazy_gettext('Start LCD flashing.'),
+        'description': 'Start LCD flashing.',
         'dependencies_module': []
     },
     'input_force_measurements': {
@@ -641,7 +641,7 @@ FUNCTION_ACTION_INFO = {
             TRANSLATIONS['lcd']['title'],
             lazy_gettext('Backlight'),
             lazy_gettext('Color')),
-        'description': lazy_gettext('Set LCD backlight color (if supported).'),
+        'description': 'Set LCD backlight color (if supported).',
         'dependencies_module': []
     },
     'lcd_backlight_off': {
@@ -649,7 +649,7 @@ FUNCTION_ACTION_INFO = {
             TRANSLATIONS['lcd']['title'],
             lazy_gettext('Backlight'),
             lazy_gettext('Off')),
-        'description': lazy_gettext('Turn off LCD backlight (if supported).'),
+        'description': 'Turn off LCD backlight (if supported).',
         'dependencies_module': []
     },
     'lcd_backlight_on': {
@@ -657,7 +657,7 @@ FUNCTION_ACTION_INFO = {
             TRANSLATIONS['lcd']['title'],
             lazy_gettext('Backlight'),
             lazy_gettext('On')),
-        'description': lazy_gettext('Turn on LCD backlight (if supported).'),
+        'description': 'Turn on LCD backlight (if supported).',
         'dependencies_module': []
     },
     'method_pid': {
@@ -668,7 +668,7 @@ FUNCTION_ACTION_INFO = {
     },
     'mqtt_publish': {
         'name': 'MQTT: {}'.format(lazy_gettext('Publish')),
-        'description': lazy_gettext('Publish a value to an MQTT server.'),
+        'description': 'Publish a value to an MQTT server.',
         'dependencies_module': [
             ('pip-pypi', 'paho', 'paho-mqtt==1.5.1')
         ]
@@ -722,7 +722,7 @@ FUNCTION_ACTION_INFO = {
     },
     'photo_email': {
         'name': lazy_gettext('Email with Photo Attachment'),
-        'description': lazy_gettext('Capture a photo with the selected Camera and Email it as an attahment.'),
+        'description': 'Capture a photo with the selected Camera and Email it as an attachment.',
         'dependencies_module': []
     },
     'resume_pid': {
@@ -758,23 +758,23 @@ FUNCTION_ACTION_INFO = {
     'system_restart': {
         'name': '{}: {}'.format(
             TRANSLATIONS['system']['title'], lazy_gettext('Restart')),
-        'description': lazy_gettext('Restart the System'),
+        'description': 'Restart the System',
         'dependencies_module': []
     },
     'system_shutdown': {
         'name': '{}: {}'.format(
             TRANSLATIONS['system']['title'], lazy_gettext('Shutdown')),
-        'description': lazy_gettext('Shutdown the System'),
+        'description': 'Shutdown the System',
         'dependencies_module': []
     },
     'video_email': {
         'name': lazy_gettext('Email with Video Attachment'),
-        'description': lazy_gettext('Capture a video with the selected Camera and Email it as an attachment'),
+        'description': 'Capture a video with the selected Camera and Email it as an attachment',
         'dependencies_module': []
     },
     'webhook': {
         'name': lazy_gettext('Webhook'),
-        'description': lazy_gettext('Emits a HTTP request when triggered. The first line contains a HTTP verb (GET, POST, PUT, ...) followed by a space and the URL to call. Subsequent lines are optional "name: value"-header parameters. After a blank line, the body payload to be sent follows. {{{message}}} is a placeholder that gets replaced by the message, {{{quoted_message}}} is the message in an URL safe encoding.'),
+        'description': 'Emits a HTTP request when triggered. The first line contains a HTTP verb (GET, POST, PUT, ...) followed by a space and the URL to call. Subsequent lines are optional "name: value"-header parameters. After a blank line, the body payload to be sent follows. {{{message}}} is a placeholder that gets replaced by the message, {{{quoted_message}}} is the message in an URL safe encoding.',
         'dependencies_module': []
     },
 

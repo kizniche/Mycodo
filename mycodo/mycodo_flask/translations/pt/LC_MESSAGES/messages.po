@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-06-09 16:51-0400\n"
+"POT-Creation-Date: 2021-06-09 17:15-0400\n"
 "PO-Revision-Date: 2018-08-21 10:41-0400\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt\n"
@@ -239,10 +239,6 @@ msgstr "Flow Meter"
 msgid "Clear Total Volume"
 msgstr "Limpar Volume Total"
 
-#: config.py:589
-msgid "Clear the total volume saved for a flow meter input."
-msgstr "Limpar o volume total salvo para uma entrada do medidor de fluxo."
-
 #: config.py:594
 msgid "Execute Command"
 msgstr "Executar Comando"
@@ -263,33 +259,13 @@ msgstr "Criar uma nota com a Tag selecionado."
 msgid "Deactivate a controller."
 msgstr "Desactivar um controlador."
 
-#: config.py:612
-msgid "Email a single recipient."
-msgstr "Enviar e-mail um único destinatário."
-
-#: config.py:618
-msgid ""
-"Email multiple recipients. Separate email addresses with commas (e.g. "
-"\"email1@address.com,email2@address.com\")."
-msgstr ""
-"Enviar e-mail múltiplos destinatários. endereços de e-mail separados por "
-"vírgulas (por exemplo, \"email1 @ address.com, email2 @ address.com\")."
-
 #: config.py:623
 msgid "Flashing Off"
 msgstr "piscar Desligar"
 
-#: config.py:624
-msgid "Stop LCD flashing."
-msgstr "Parar LCD piscando."
-
 #: config.py:629
 msgid "Flashing On"
 msgstr "Flashing On"
-
-#: config.py:630
-msgid "Start LCD flashing."
-msgstr "Iniciar LCD piscando."
 
 #: config.py:635 config_translations.py:95
 #: mycodo_flask/templates/layout-remote.html:50
@@ -313,27 +289,15 @@ msgstr ""
 msgid "Color"
 msgstr ""
 
-#: config.py:644
-msgid "Set LCD backlight color (if supported)."
-msgstr ""
-
 #: config.py:651 config_translations.py:123
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:24
 msgid "Off"
 msgstr "Fora"
 
-#: config.py:652
-msgid "Turn off LCD backlight (if supported)."
-msgstr "Desligue luz de fundo LCD (se suportado)."
-
 #: config.py:659 config_translations.py:125
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:22
 msgid "On"
 msgstr "Em"
-
-#: config.py:660
-msgid "Turn on LCD backlight (if supported)."
-msgstr "Ligue luz de fundo LCD (se suportado)."
 
 #: config.py:665
 msgid "Set Method"
@@ -345,10 +309,6 @@ msgstr "Selecione um método para definir o PID para uso."
 
 #: config.py:670 config_translations.py:139
 msgid "Publish"
-msgstr ""
-
-#: config.py:671
-msgid "Publish a value to an MQTT server."
 msgstr ""
 
 #: config.py:682
@@ -388,10 +348,6 @@ msgstr "Pausar um PID."
 #: config.py:724
 msgid "Email with Photo Attachment"
 msgstr "E-mail com anexo de foto"
-
-#: config.py:725
-msgid "Capture a photo with the selected Camera and Email it as an attahment."
-msgstr "Tirar uma foto com a câmera selecionada e e-mail como um attahment."
 
 #: config.py:731
 msgid "Resume a PID."
@@ -433,39 +389,16 @@ msgstr "Elevar o Setpoint de PID por este valor."
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: config.py:761
-msgid "Restart the System"
-msgstr "Reiniciar o sistema"
-
 #: config.py:766
 msgid "Shutdown"
 msgstr "Desligar"
-
-#: config.py:767
-msgid "Shutdown the System"
-msgstr "Desligar o sistema"
 
 #: config.py:771
 msgid "Email with Video Attachment"
 msgstr "E-mail com anexo de vídeo"
 
-#: config.py:772
-#, fuzzy
-msgid "Capture a video with the selected Camera and Email it as an attachment"
-msgstr "Capturar um vídeo com a câmera selecionada e e-mail como um attahment."
-
 #: config.py:776
 msgid "Webhook"
-msgstr ""
-
-#: config.py:777
-msgid ""
-"Emits a HTTP request when triggered. The first line contains a HTTP verb "
-"(GET, POST, PUT, ...) followed by a space and the URL to call. Subsequent"
-" lines are optional \"name: value\"-header parameters. After a blank "
-"line, the body payload to be sent follows. {{{message}}} is a placeholder"
-" that gets replaced by the message, {{{quoted_message}}} is the message "
-"in an URL safe encoding."
 msgstr ""
 
 #: config_devices_units.py:13
