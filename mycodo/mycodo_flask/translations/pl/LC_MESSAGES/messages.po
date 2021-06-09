@@ -7,15 +7,17 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2021-06-09 17:15-0400\n"
-"PO-Revision-Date: 2020-10-01 20:22-0400\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2021-06-09 21:32+0000\n"
+"Last-Translator: Weblate Admin <webmaster@kylegabriel.com>\n"
+"Language-Team: Polish <http://weblate.kylegabriel.com/projects/mycodo/master/"
+"pl/>\n"
 "Language: pl\n"
-"Language-Team: pl <LL@li.org>\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && "
-"(n%100<10 || n%100>=20) ? 1 : 2)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.6.2\n"
 "Generated-By: Babel 2.9.0\n"
 
 #: config.py:51 config_translations.py:17
@@ -68,7 +70,7 @@ msgstr "Ostatni, ubiegły, zeszły"
 
 #: config.py:201 config.py:214
 msgid "Multiple Channels"
-msgstr ""
+msgstr "Wiele kanałów"
 
 #: config.py:207 config.py:220 config_translations.py:129
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_dict.html:28
@@ -79,7 +81,7 @@ msgstr "Przeszłość"
 
 #: config.py:207 config.py:220
 msgid "Single Channel"
-msgstr ""
+msgstr "Pojedynczy kanał"
 
 #: config.py:214 config.py:220 config_translations.py:169
 #: mycodo_flask/templates/pages/function_options/conditional_options/measurement_past_sum.html:28
@@ -140,19 +142,19 @@ msgstr "Włącz na X sekund"
 
 #: config.py:339 config.py:343 config.py:347
 msgid "Daily"
-msgstr ""
+msgstr "Codziennie"
 
 #: config.py:339
 msgid "Time-Based"
-msgstr ""
+msgstr "Na podstawie czasu"
 
 #: config.py:343
 msgid "Sine Wave"
-msgstr ""
+msgstr "Sinusoida"
 
 #: config.py:347
 msgid "Bezier Curve"
-msgstr ""
+msgstr "Krzywa Beziera"
 
 #: config.py:354
 msgid "Method Cascade"
@@ -173,7 +175,7 @@ msgstr "Kalibrowanie"
 
 #: config.py:438
 msgid "Sensor"
-msgstr ""
+msgstr "Czujnik"
 
 #: config.py:439
 msgid "DS-Type"
@@ -225,7 +227,7 @@ msgstr "Aktywuj kontrolera."
 
 #: config.py:570
 msgid "Capture Photo"
-msgstr ""
+msgstr "Zrób zdjęcie"
 
 #: config.py:571
 msgid "Capture a photo with the selected Camera."
@@ -283,11 +285,11 @@ msgstr "pomiary siły, aby być prowadzone na wejście"
 
 #: config.py:642 config.py:650 config.py:658 mycodo_flask/forms/forms_lcd.py:65
 msgid "Backlight"
-msgstr ""
+msgstr "Podświetlenie"
 
 #: config.py:643
 msgid "Color"
-msgstr ""
+msgstr "Kolor"
 
 #: config.py:651 config_translations.py:123
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:24
@@ -309,7 +311,7 @@ msgstr "Wybierz metodę ustalania PID do użytku."
 
 #: config.py:670 config_translations.py:139
 msgid "Publish"
-msgstr ""
+msgstr "Publikować"
 
 #: config.py:682
 msgid "Turn an Output Off, On, or On or a duration."
@@ -329,7 +331,7 @@ msgstr ""
 
 #: config.py:702
 msgid "Send a value to the Output."
-msgstr ""
+msgstr "Wyślij wartość do wyjścia."
 
 #: config.py:708
 msgid "Instruct the Output to dispense a volume."
@@ -355,7 +357,7 @@ msgstr "Wznowienie PID."
 
 #: config.py:737
 msgid "Set"
-msgstr ""
+msgstr "Zestaw"
 
 #: config.py:738 config.py:746 config.py:754 config_devices_units.py:241
 #: config_devices_units.py:479 config_translations.py:159
@@ -427,7 +429,7 @@ msgstr "Wysokość"
 
 #: config_devices_units.py:37
 msgid "Angle"
-msgstr ""
+msgstr "Kąt"
 
 #: config_devices_units.py:41
 msgid "Battery"
@@ -521,7 +523,7 @@ msgstr "Potencjał elektryczny"
 
 #: config_devices_units.py:129
 msgid "Energy"
-msgstr ""
+msgstr "Energia"
 
 #: config_devices_units.py:133 mycodo_flask/forms/forms_method.py:67
 msgid "Frequency"
@@ -545,7 +547,7 @@ msgstr "Światło"
 
 #: config_devices_units.py:161
 msgid "Magnetic Flux Density"
-msgstr ""
+msgstr "Gęstość strumienia magnetycznego"
 
 #: config_devices_units.py:165
 msgid "Moisture"
@@ -569,19 +571,19 @@ msgstr "PID Wartość D"
 
 #: config_devices_units.py:197
 msgid "Power"
-msgstr ""
+msgstr "Moc"
 
 #: config_devices_units.py:201
 msgid "Apparent Power"
-msgstr ""
+msgstr "Moc pozorna"
 
 #: config_devices_units.py:205
 msgid "Power Factor"
-msgstr ""
+msgstr "Współczynnik mocy"
 
 #: config_devices_units.py:209
 msgid "Reactive Power"
-msgstr ""
+msgstr "Reaktywna moc"
 
 #: config_devices_units.py:213 mycodo_flask/forms/forms_math.py:76
 msgid "Pressure"
@@ -605,7 +607,7 @@ msgstr "Odporność"
 
 #: config_devices_units.py:233
 msgid "Rotation"
-msgstr ""
+msgstr "Obrót"
 
 #: config_devices_units.py:237
 msgid "Revolutions"
