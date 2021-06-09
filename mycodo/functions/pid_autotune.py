@@ -68,7 +68,7 @@ FUNCTION_INFORMATION = {
                 'Function'
             ],
             'name': lazy_gettext('Measurement'),
-            'phrase': lazy_gettext('Select a measurement the selected output will affect')
+            'phrase': 'Select a measurement the selected output will affect'
         },
         {
             'id': 'output',
@@ -79,7 +79,7 @@ FUNCTION_INFORMATION = {
                 'Output_Channels_Measurements',
             ],
             'name': lazy_gettext('Output'),
-            'phrase': lazy_gettext('Select an output to modulate that will affect the measurement')
+            'phrase': 'Select an output to modulate that will affect the measurement'
         },
         {
             'id': 'period',
@@ -88,7 +88,7 @@ FUNCTION_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Period'),
-            'phrase': lazy_gettext('The period between powering the output')
+            'phrase': 'The period between powering the output'
         },
         {
             'id': 'setpoint',
@@ -97,7 +97,7 @@ FUNCTION_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Setpoint'),
-            'phrase': lazy_gettext('A value sufficiently far from the current measured value that the output is capable of pushing the measurement toward')
+            'phrase': 'A value sufficiently far from the current measured value that the output is capable of pushing the measurement toward'
         },
         {
             'id': 'noiseband',
@@ -106,7 +106,7 @@ FUNCTION_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Noise Band'),
-            'phrase': lazy_gettext('The amount above the setpoint the measurement must reach')
+            'phrase': 'The amount above the setpoint the measurement must reach'
         },
         {
             'id': 'outstep',
@@ -115,7 +115,7 @@ FUNCTION_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Outstep'),
-            'phrase': lazy_gettext('How many seconds the output will turn on every Period')
+            'phrase': 'How many seconds the output will turn on every Period'
         },
         {
             'type': 'message',
@@ -129,7 +129,7 @@ FUNCTION_INFORMATION = {
                 ('raise', 'Raise')
             ],
             'name': lazy_gettext('Direction'),
-            'phrase': lazy_gettext('The direction the Output will push the Measurement')
+            'phrase': 'The direction the Output will push the Measurement'
         }
     ]
 }

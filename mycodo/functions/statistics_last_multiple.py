@@ -106,8 +106,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': 'Measurement Max Age',
-            'phrase': 'The maximum allowed age of the measurements'
+            'name': lazy_gettext('Max Age'),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
             'id': 'select_measurement',

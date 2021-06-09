@@ -72,7 +72,7 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 10,
             'required': True,
-            'name': 'Start Offset',
+            'name': lazy_gettext('Start Offset'),
             'phrase': 'The duration (seconds) to wait before the first operation'
         },
         {
@@ -84,7 +84,7 @@ FUNCTION_INFORMATION = {
                 'Math',
                 'Function'
             ],
-            'name': 'Measurement',
+            'name': lazy_gettext('Measurement'),
             'phrase': 'Measurement to replace "x" in the equation'
         },
         {
@@ -92,8 +92,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': 'Measurement Max Age',
-            'phrase': 'The maximum allowed age of the measurement'
+            'name': lazy_gettext('Max Age'),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         }
     ]
 }

@@ -73,7 +73,7 @@ FUNCTION_INFORMATION = {
                 'Math',
                 'Function'
             ],
-            'name': 'Measurement A',
+            'name': lazy_gettext('{} A'.format(lazy_gettext('Measurement'))),
             'phrase': 'Measurement to replace a'
         },
         {
@@ -81,8 +81,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': 'Measurement A Max Age',
-            'phrase': 'The maximum allowed age of measurement a'
+            'name': lazy_gettext('{} A {}'.format(lazy_gettext('Measurement'), lazy_gettext('Max Age'))),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
             'id': 'select_measurement_b',
@@ -93,7 +93,7 @@ FUNCTION_INFORMATION = {
                 'Math',
                 'Function'
             ],
-            'name': 'Measurement B',
+            'name': lazy_gettext('{} B'.format(lazy_gettext('Measurement'))),
             'phrase': 'Measurement to replace b'
         },
         {
@@ -101,15 +101,15 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': 'Measurement B Max Age',
-            'phrase': 'The maximum allowed age of measurement b'
+            'name': lazy_gettext('{} B {}'.format(lazy_gettext('Measurement'), lazy_gettext('Max Age'))),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
             'id': 'equation',
             'type': 'text',
             'default_value': 'a*(2+b)',
             'required': True,
-            'name': 'Equation',
+            'name': lazy_gettext('Equation'),
             'phrase': 'Equation using measurements a and b'
         }
     ]

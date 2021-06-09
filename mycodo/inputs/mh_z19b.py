@@ -2,7 +2,6 @@
 import time
 
 import copy
-from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
@@ -63,8 +62,8 @@ INPUT_INFORMATION = {
             'id': 'abc_enable',
             'type': 'bool',
             'default_value': False,
-            'name': lazy_gettext('Automatic Baseline Correction'),
-            'phrase': lazy_gettext('Enable automatic baseline correction (ABC)')
+            'name': 'Automatic Baseline Correction',
+            'phrase': 'Enable automatic baseline correction (ABC)'
         },
         {
             'id': 'measure_range',
@@ -78,8 +77,8 @@ INPUT_INFORMATION = {
             ],
             'required': True,
             'constraints_pass': constraints_pass_measure_range,
-            'name': lazy_gettext('Measurement Range'),
-            'phrase': lazy_gettext('Set the measuring range of the sensor')
+            'name': 'Measurement Range',
+            'phrase': 'Set the measuring range of the sensor'
         }
     ],
 
@@ -93,19 +92,19 @@ INPUT_INFORMATION = {
         {
             'id': 'calibrate_zero_point',
             'type': 'button',
-            'name': lazy_gettext('Calibrate Zero Point')
+            'name': 'Calibrate Zero Point'
         },
         {
             'id': 'span_point_value_ppmv',
             'type': 'integer',
             'default_value': 1500,
-            'name': lazy_gettext('Span Point (ppmv)'),
+            'name': 'Span Point (ppmv)',
             'phrase': 'The ppmv concentration for a span point calibration'
         },
         {
             'id': 'calibrate_span_point',
             'type': 'button',
-            'name': lazy_gettext('Calibrate Span Point')
+            'name': 'Calibrate Span Point'
         }
     ]
 }

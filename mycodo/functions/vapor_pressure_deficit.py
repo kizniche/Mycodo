@@ -92,8 +92,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': False,
-            'name': 'Temperature Max Age',
-            'phrase': 'The maximum allowed age of the Temperature measurement'
+            'name': lazy_gettext('{} {}'.format(lazy_gettext('Temperature'), lazy_gettext('Max Age'))),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
             'id': 'select_measurement_humidity',
@@ -113,8 +113,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': False,
-            'name': 'Humidity Max Age',
-            'phrase': 'The maximum allowed age of the Humidity measurement'
+            'name': lazy_gettext('{} {}'.format(lazy_gettext('Humidity'), lazy_gettext('Max Age'))),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         }
     ]
 }

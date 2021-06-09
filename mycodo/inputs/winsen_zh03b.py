@@ -2,10 +2,9 @@
 #
 # From https://github.com/Theoi-Meteoroi/Winsen_ZH03B
 #
-import copy
 import time
 
-from flask_babel import lazy_gettext
+import copy
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
@@ -57,26 +56,24 @@ INPUT_INFORMATION = {
             'id': 'fan_modulate',
             'type': 'bool',
             'default_value': False,
-            'name': lazy_gettext('Fan Off After Measure'),
-            'phrase': lazy_gettext('Turn the fan on only during the measurement')
+            'name': 'Fan Off After Measure',
+            'phrase': 'Turn the fan on only during the measurement'
         },
         {
             'id': 'fan_seconds',
             'type': 'float',
             'default_value': 50.0,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Fan On Duration'),
-            'phrase': lazy_gettext('How long to turn the fan on (seconds) before acquiring measurements')
+            'name': 'Fan On Duration',
+            'phrase': 'How long to turn the fan on (seconds) before acquiring measurements'
         },
         {
             'id': 'number_measurements',
             'type': 'integer',
             'default_value': 3,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Number of Measurements'),
-            'phrase': lazy_gettext(
-                'How many measurements to acquire. If more than 1 are acquired that '
-                'are less than 1001, the average of the measurements will be stored.')
+            'name': 'Number of Measurements',
+            'phrase': 'How many measurements to acquire. If more than 1 are acquired that are less than 1001, the average of the measurements will be stored.'
         }
     ]
 }

@@ -137,8 +137,8 @@ INPUT_INFORMATION = {
                 ('non-atlas', 'Non-Atlas Scientific Flow Meter')
             ],
             'constraints_pass': constraints_pass_meter_type,
-            'name': lazy_gettext('Flow Meter Type'),
-            'phrase': lazy_gettext('Set the type of flow meter used')
+            'name': 'Flow Meter Type',
+            'phrase': 'Set the type of flow meter used'
         },
         {
             'id': 'flow_rate_unit',
@@ -150,8 +150,8 @@ INPUT_INFORMATION = {
                 ('h', 'Liters per Hour')
             ],
             'constraints_pass': constraints_pass_rate,
-            'name': lazy_gettext('Atlas Meter Time Base'),
-            'phrase': lazy_gettext('If using an Atlas Scientific flow meter, set the flow rate/time base')
+            'name': 'Atlas Meter Time Base',
+            'phrase': 'If using an Atlas Scientific flow meter, set the flow rate/time base'
         },
         {
             'id': 'internal_resistor',
@@ -169,14 +169,14 @@ INPUT_INFORMATION = {
             ],
             'constraints_pass': constraints_pass_resistor,
             'name': lazy_gettext('Internal Resistor'),
-            'phrase': lazy_gettext('Set an internal resistor for the flow meter')
+            'phrase': 'Set an internal resistor for the flow meter'
         },
         {
             'id': 'custom_k_values',
             'type': 'text',
             'default_value': '',
-            'name': lazy_gettext('Custom K Value(s)'),
-            'phrase': lazy_gettext("If using a non-Atlas Scientific flow meter, enter the meter's K value(s). For a single K value, enter '[volume per pulse],[number of pulses]'. For multiple K values (up to 16), enter '[volume at frequency],[frequency in Hz];[volume at frequency],[frequency in Hz];...'. Leave blank to disable.")
+            'name': 'Custom K Value(s)',
+            'phrase': "If using a non-Atlas Scientific flow meter, enter the meter's K value(s). For a single K value, enter '[volume per pulse],[number of pulses]'. For multiple K values (up to 16), enter '[volume at frequency],[frequency in Hz];[volume at frequency],[frequency in Hz];...'. Leave blank to disable."
         },
         {
             'id': 'custom_k_value_time_base',
@@ -189,8 +189,8 @@ INPUT_INFORMATION = {
                 ('h', 'Liters per Hour')
             ],
             'constraints_pass': constraints_pass_custom_k_value_time_base,
-            'name': lazy_gettext('K Value Time Base'),
-            'phrase': lazy_gettext('If using a non-Atlas Scientific flow meter, set the flow rate/time base for the custom K values entered.')
+            'name': 'K Value Time Base',
+            'phrase': 'If using a non-Atlas Scientific flow meter, set the flow rate/time base for the custom K values entered.'
         },
     ],
 

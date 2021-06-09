@@ -39,7 +39,7 @@ OUTPUT_INFORMATION = {
 
     'interfaces': ['MYCODO'],
 
-    'message': lazy_gettext('Publish a value to an MQTT server.'),
+    'message': 'Publish a value to an MQTT server.',
 
     'dependencies_module': [
         ('pip-pypi', 'paho', 'paho-mqtt==1.5.1')
@@ -57,7 +57,7 @@ OUTPUT_INFORMATION = {
             'default_value': 'localhost',
             'required': True,
             'name': lazy_gettext('Hostname'),
-            'phrase': lazy_gettext('The hostname of the MQTT server')
+            'phrase': 'The hostname of the MQTT server'
         },
         {
             'id': 'port',
@@ -65,15 +65,15 @@ OUTPUT_INFORMATION = {
             'default_value': 1883,
             'required': True,
             'name': lazy_gettext('Port'),
-            'phrase': lazy_gettext('The port of the MQTT server')
+            'phrase': 'The port of the MQTT server'
         },
         {
             'id': 'topic',
             'type': 'text',
             'default_value': 'paho/test/single',
             'required': True,
-            'name': lazy_gettext('Topic'),
-            'phrase': lazy_gettext('The topic to publish with')
+            'name': 'Topic',
+            'phrase': 'The topic to publish with'
         },
         {
             'id': 'keepalive',
@@ -82,17 +82,15 @@ OUTPUT_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': lazy_gettext('Keep Alive'),
-            'phrase': "{} {}".format(
-                lazy_gettext('The keepalive timeout value for the client.'),
-                lazy_gettext('Set to 0 to disable.'))
+            'phrase': 'The keepalive timeout value for the client. Set to 0 to disable.'
         },
         {
             'id': 'clientid',
             'type': 'text',
             'default_value': 'mycodo_mqtt_client',
             'required': True,
-            'name': lazy_gettext('Client ID'),
-            'phrase': lazy_gettext('Unique client ID for connecting to the MQTT server')
+            'name': 'Client ID',
+            'phrase': 'Unique client ID for connecting to the MQTT server'
         },
         {
             'id': 'off_value',
@@ -100,7 +98,7 @@ OUTPUT_INFORMATION = {
             'default_value': 0,
             'required': True,
             'name': lazy_gettext('Off Value'),
-            'phrase': lazy_gettext('The value to send when an Off command is given')
+            'phrase': 'The value to send when an Off command is given'
         },
         {
             'id': 'login',
@@ -115,7 +113,7 @@ OUTPUT_INFORMATION = {
             'default_value': 'user',
             'required': False,
             'name': lazy_gettext('Username'),
-            'phrase': lazy_gettext('Username for connecting to the server')
+            'phrase': 'Username for connecting to the server'
         },
         {
             'id': 'password',

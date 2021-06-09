@@ -68,14 +68,14 @@ self.logger.info(log_string)""",
             'required': True,
             'col_width': 12,
             'name': lazy_gettext('Bash Command'),
-            'phrase': lazy_gettext('Command to execute to set the PWM duty cycle (%)')
+            'phrase': 'Command to execute to set the PWM duty cycle (%)'
         },
         {
             'id': 'linux_command_user',
             'type': 'text',
             'default_value': 'mycodo',
             'name': lazy_gettext('User'),
-            'phrase': lazy_gettext('The user to execute the command')
+            'phrase': 'The user to execute the command'
         },
         {
             'id': 'state_startup',
@@ -88,7 +88,7 @@ self.logger.info(log_string)""",
                 ('last_duty_cycle', 'Last Known Value')
             ],
             'name': lazy_gettext('Startup State'),
-            'phrase': lazy_gettext('Set the state when Mycodo starts')
+            'phrase': 'Set the state when Mycodo starts'
         },
         {
             'id': 'startup_value',
@@ -96,7 +96,7 @@ self.logger.info(log_string)""",
             'default_value': 0.0,
             'required': True,
             'name': lazy_gettext('Startup Value'),
-            'phrase': lazy_gettext('The value when Mycodo starts')
+            'phrase': 'The value when Mycodo starts'
         },
         {
             'id': 'state_shutdown',
@@ -108,7 +108,7 @@ self.logger.info(log_string)""",
                 ('set_duty_cycle', 'User Set Value')
             ],
             'name': lazy_gettext('Shutdown State'),
-            'phrase': lazy_gettext('Set the state when Mycodo shuts down')
+            'phrase': 'Set the state when Mycodo shuts down'
         },
         {
             'id': 'shutdown_value',
@@ -116,36 +116,36 @@ self.logger.info(log_string)""",
             'default_value': 0.0,
             'required': True,
             'name': lazy_gettext('Shutdown Value'),
-            'phrase': lazy_gettext('The value when Mycodo shuts down')
+            'phrase': 'The value when Mycodo shuts down'
         },
         {
             'id': 'pwm_invert_signal',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Invert Signal'),
-            'phrase': lazy_gettext('Invert the PWM signal')
+            'phrase': 'Invert the PWM signal'
         },
         {
             'id': 'trigger_functions_startup',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Trigger Functions at Startup'),
-            'phrase': lazy_gettext('Whether to trigger functions when the output switches at startup')
+            'phrase': 'Whether to trigger functions when the output switches at startup'
         },
         {
             'id': 'command_force',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Force Command'),
-            'phrase': lazy_gettext('Always send the commad if instructed, regardless of the current state')
+            'phrase': 'Always send the command if instructed, regardless of the current state'
         },
         {
             'id': 'amps',
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': lazy_gettext('Current (Amps)'),
-            'phrase': lazy_gettext('The current draw of the device being controlled')
+            'name': '{} ({})'.format(lazy_gettext('Current'), lazy_gettext('Amps')),
+            'phrase': 'The current draw of the device being controlled'
         }
     ]
 }

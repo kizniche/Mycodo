@@ -9,7 +9,7 @@
   <meta name="author" content="">
   <link rel="icon" href="/static/img/favicon.png">
 
-  <title>Mycodo - {{_('Create Admin')}} - {{ host }}</title>
+  <title>Mycodo - {{_('Create Admin')}} - {{host}}</title>
 
   <!-- Bootstrap core CSS -->
   <link href="/static/css/bootstrap.min.css" rel="stylesheet">
@@ -63,7 +63,7 @@
   <form id='create_admin_form' class="form-signin" name="create_admin" action="/create_admin" method="POST">
     <input type="hidden" name="form-name" value="create_admin">
     <h2 class="form-signin-heading">Mycodo</h2>
-    <h3 class="form-signin-heading">{{_('Create Admin User')}}</h3>
+    <h3 class="form-signin-heading">{{_('Create Admin')}}</h3>
     <h6 style="text-align: center;">{{_('Login information is stored locally')}}</h6>
     {{form_create_admin.hidden_tag()}}
     {{form_create_admin.username.label(class_='sr-only')}}

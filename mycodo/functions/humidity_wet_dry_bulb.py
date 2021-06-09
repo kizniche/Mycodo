@@ -105,8 +105,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': False,
-            'name': 'Dry Bulb Max Age',
-            'phrase': 'The maximum allowed age of the Dry Bulb measurement'
+            'name': lazy_gettext('{} {}'.format(lazy_gettext('Dry Bulb'), lazy_gettext('Max Age'))),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
             'id': 'select_measurement_temp_wet_c',
@@ -126,8 +126,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': False,
-            'name': 'Wet Bulb Max Age',
-            'phrase': 'The maximum allowed age of the Wet Bulb measurement'
+            'name': lazy_gettext('{} {}'.format(lazy_gettext('Wet Bulb'), lazy_gettext('Max Age'))),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
             'id': 'select_measurement_pressure_pa',
@@ -147,8 +147,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': False,
-            'name': 'Pressure Max Age',
-            'phrase': 'The maximum allowed age of the Pressure measurement'
+            'name': lazy_gettext('{} {}'.format(lazy_gettext('Pressure'), lazy_gettext('Max Age'))),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         }
     ]
 }

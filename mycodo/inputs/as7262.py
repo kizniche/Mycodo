@@ -81,7 +81,7 @@ INPUT_INFORMATION = {
                 ('64', '64x')
             ],
             'name': lazy_gettext('Gain'),
-            'phrase': lazy_gettext('Set the sensor gain')
+            'phrase': 'Set the sensor gain'
         },
         {
             'id': 'illumination_led_current',
@@ -93,8 +93,8 @@ INPUT_INFORMATION = {
                 ('50', '50 mA'),
                 ('100', '100 mA')
             ],
-            'name': lazy_gettext('Illumination LED Current'),
-            'phrase': lazy_gettext('Set the illumination LED current (milliamps)')
+            'name': 'Illumination LED Current',
+            'phrase': 'Set the illumination LED current (milliamps)'
         },
         {
             'id': 'illumination_led_mode',
@@ -104,8 +104,8 @@ INPUT_INFORMATION = {
                 ('1', 'On'),
                 ('0', 'Off')
             ],
-            'name': lazy_gettext('Illumination LED Mode'),
-            'phrase': lazy_gettext('Turn the illumination LED on or off during a measurement')
+            'name': 'Illumination LED Mode',
+            'phrase': 'Turn the illumination LED on or off during a measurement'
         },
         {
             'id': 'indicator_led_current',
@@ -117,8 +117,8 @@ INPUT_INFORMATION = {
                 ('4', '4 mA'),
                 ('8', '8 mA')
             ],
-            'name': lazy_gettext('Indicator LED Current'),
-            'phrase': lazy_gettext('Set the indicator LED current (milliamps)')
+            'name': 'Indicator LED Current',
+            'phrase': 'Set the indicator LED current (milliamps)'
         },
         {
             'id': 'indicator_led_mode',
@@ -128,8 +128,8 @@ INPUT_INFORMATION = {
                 ('1', 'On'),
                 ('0', 'Off')
             ],
-            'name': lazy_gettext('Indicator LED Mode'),
-            'phrase': lazy_gettext('Turn the indicator LED on or off during a measurement')
+            'name': 'Indicator LED Mode',
+            'phrase': 'Turn the indicator LED on or off during a measurement'
         },
         {
             'id': 'integration_time',
@@ -137,8 +137,8 @@ INPUT_INFORMATION = {
             'default_value': 15.0,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Integration Time'),
-            'phrase': lazy_gettext('The integration time (0 - ~91 ms)')
+            'name': 'Integration Time',
+            'phrase': 'The integration time (0 - ~91 ms)'
         }
     ],
 }

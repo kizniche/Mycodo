@@ -153,7 +153,7 @@ INPUT_INFORMATION = {
             'default_value': 5,
             'name': lazy_gettext('Measurements to Average'),
             'phrase': lazy_gettext(
-                'The number of times to measure. An average of the measurements will be stored.'),
+                'The number of times to measure each channel. An average of the measurements will be stored.'),
             'constraints_pass': constraints_pass_measurement_repetitions
         },
         {
@@ -166,8 +166,8 @@ INPUT_INFORMATION = {
                 ('2', '16V @ 400mA max'),
                 ('3', '16V @ 5A max')
             ],
-            'name': lazy_gettext('Calibration Range'),
-            'phrase': lazy_gettext('Set the device calibration range'),
+            'name': 'Calibration Range',
+            'phrase': 'Set the device calibration range',
             'constraints_pass': constraints_pass_calibration
         },
         {
@@ -178,8 +178,8 @@ INPUT_INFORMATION = {
                 ('0', '(0x00) - 16V'),
                 ('1', '(0x01) - 32V (default)')
             ],
-            'name': lazy_gettext('Bus Voltage Range'),
-            'phrase': lazy_gettext('Set the bus voltage range'),
+            'name': 'Bus Voltage Range',
+            'phrase': 'Set the bus voltage range',
             'constraints_pass': constraints_pass_bus_voltage_range
         },
         {
@@ -187,8 +187,8 @@ INPUT_INFORMATION = {
             'type': 'select',
             'default_value': '03',
             'options_select': ADC_OPTIONS,
-            'name': lazy_gettext('Bus ADC Resolution'),
-            'phrase': lazy_gettext('Set the Bus ADC Resolution.'),
+            'name': 'Bus ADC Resolution',
+            'phrase': 'Set the Bus ADC Resolution.',
             'constraints_pass': constraints_pass_adc_resolution
         },
         {
@@ -196,8 +196,8 @@ INPUT_INFORMATION = {
             'type': 'select',
             'default_value': '03',
             'options_select': ADC_OPTIONS,
-            'name': lazy_gettext('Shunt ADC Resolution'),
-            'phrase': lazy_gettext('Set the Shunt ADC Resolution.'),
+            'name': 'Shunt ADC Resolution',
+            'phrase': 'Set the Shunt ADC Resolution.',
             'constraints_pass': constraints_pass_adc_resolution
         }
     ]

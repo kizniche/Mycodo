@@ -2,8 +2,6 @@
 import copy
 import time
 
-from flask_babel import lazy_gettext
-
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
@@ -66,7 +64,7 @@ INPUT_INFORMATION = {
                 ('0', 'DHT11 (Blue)'),
                 ('1', 'DHT22 (White)')
             ],
-            'name': lazy_gettext('Sensor Type'),
+            'name': 'Sensor Type',
             'phrase': 'Sensor type'
         },
     ],

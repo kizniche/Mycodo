@@ -60,21 +60,21 @@ INPUT_INFORMATION = {
                 ('0', 'Custom Timing Budget')
             ],
             'name': lazy_gettext('Range'),
-            'phrase': lazy_gettext('Select a range or select to set a custom Timing Budget and Inter Measurement Period.')
+            'phrase': 'Select a range or select to set a custom Timing Budget and Inter Measurement Period.'
         },
         {
             'id': 'timing_budget',
             'type': 'integer',
             'default_value': 66000,
-            'name': lazy_gettext('Timing Budget (microseconds)'),
-            'phrase': lazy_gettext('Set the timing budget. Must be less than or equal to the Inter Measurement Period.')
+            'name': 'Timing Budget (microseconds)',
+            'phrase': 'Set the timing budget. Must be less than or equal to the Inter Measurement Period.'
         },
         {
             'id': 'inter_measurement_period',
             'type': 'integer',
             'default_value': 70,
-            'name': lazy_gettext('Inter Measurement Period (milliseconds)'),
-            'phrase': lazy_gettext('Set the Inter Measurement Period')
+            'name': 'Inter Measurement Period (milliseconds)',
+            'phrase': 'Set the Inter Measurement Period'
         }
     ]
 }

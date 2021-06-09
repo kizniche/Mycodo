@@ -54,7 +54,7 @@ WIDGET_INFORMATION = {
                 'PID'
             ],
             'name': lazy_gettext('Measurement'),
-            'phrase': lazy_gettext('Select a measurement to display')
+            'phrase': 'Select a measurement to display'
         },
         {
             'id': 'measurement_max_age',
@@ -62,7 +62,7 @@ WIDGET_INFORMATION = {
             'default_value': 120,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Measurement Max Age'),
+            'name': lazy_gettext('{} {}'.format(lazy_gettext('Measurement'), lazy_gettext('Max Age'))),
             'phrase': lazy_gettext('The maximum age (seconds) of the measurement')
         },
         {
@@ -85,8 +85,8 @@ WIDGET_INFORMATION = {
             'id': 'option_invert',
             'type': 'bool',
             'default_value': False,
-            'name': lazy_gettext('Invert Colors'),
-            'phrase': lazy_gettext('Invert the indicator colors')
+            'name': 'Invert Colors',
+            'phrase': 'Invert the indicator colors'
         }
     ],
 

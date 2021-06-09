@@ -321,7 +321,7 @@ WIDGET_INFORMATION = {
     'widget_dashboard_configure_options': """
         <div class="form-row" style="padding-left: 0.5em; padding-top: 1em; padding-bottom: 0.5em">
           <div class="col-12" style="font-weight: bold">
-            {{_('Series Options')}}
+            Series Options
           </div>
           <div class="col-auto">
             <label class="control-label">Enable Custom Colors</label>
@@ -367,7 +367,7 @@ WIDGET_INFORMATION = {
 
         <div class="form-row" style="padding-left: 0.5em; padding-top: 1em">
           <div class="col-12" style="font-weight: bold">
-            {{_('Y-Axis Options')}}
+            Y-Axis Options
           </div>
           <div class="col-auto">
             <label class="control-label">Enable Manual Y-Axis Min/Max</label>

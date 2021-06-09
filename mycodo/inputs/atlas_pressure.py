@@ -52,9 +52,9 @@ INPUT_INFORMATION = {
             'type': 'select',
             'default_value': 'on',
             'options_select': [
-                ('on', 'Always On'),
-                ('off', 'Always Off'),
-                ('measure', 'Only On During Measure')
+                ('on', lazy_gettext('Always On')),
+                ('off', lazy_gettext('Always Off')),
+                ('measure', lazy_gettext('Only On During Measure'))
             ],
             'name': lazy_gettext('LED Mode'),
             'phrase': lazy_gettext('When to turn the LED on')

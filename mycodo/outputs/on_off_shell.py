@@ -52,7 +52,7 @@ OUTPUT_INFORMATION = {
             'required': True,
             'col_width': 12,
             'name': lazy_gettext('On Command'),
-            'phrase': lazy_gettext('Command to execute when the output is instructed to turn on')
+            'phrase': 'Command to execute when the output is instructed to turn on'
         },
         {
             'id': 'off_command',
@@ -61,14 +61,14 @@ OUTPUT_INFORMATION = {
             'required': True,
             'col_width': 12,
             'name': lazy_gettext('Off Command'),
-            'phrase': lazy_gettext('Command to execute when the output is instructed to turn off')
+            'phrase': 'Command to execute when the output is instructed to turn off'
         },
         {
             'id': 'linux_command_user',
             'type': 'text',
             'default_value': 'mycodo',
             'name': lazy_gettext('User'),
-            'phrase': lazy_gettext('The user to execute the command')
+            'phrase': 'The user to execute the command'
         },
         {
             'id': 'state_startup',
@@ -80,7 +80,7 @@ OUTPUT_INFORMATION = {
                 (1, 'On')
             ],
             'name': lazy_gettext('Startup State'),
-            'phrase': lazy_gettext('Set the state when Mycodo starts')
+            'phrase': 'Set the state when Mycodo starts'
         },
         {
             'id': 'state_shutdown',
@@ -92,21 +92,21 @@ OUTPUT_INFORMATION = {
                 (1, 'On')
             ],
             'name': lazy_gettext('Shutdown State'),
-            'phrase': lazy_gettext('Set the state when Mycodo shuts down')
+            'phrase': 'Set the state when Mycodo shuts down'
         },
         {
             'id': 'trigger_functions_startup',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Trigger Functions at Startup'),
-            'phrase': lazy_gettext('Whether to trigger functions when the output switches at startup')
+            'phrase': 'Whether to trigger functions when the output switches at startup'
         },
         {
             'id': 'command_force',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Force Command'),
-            'phrase': lazy_gettext('Always send the commad if instructed, regardless of the current state')
+            'phrase': 'Always send the command if instructed, regardless of the current state'
         },
         {
             'id': 'amps',
@@ -114,7 +114,7 @@ OUTPUT_INFORMATION = {
             'default_value': 0.0,
             'required': True,
             'name': lazy_gettext('Current (Amps)'),
-            'phrase': lazy_gettext('The current draw of the device being controlled')
+            'phrase': 'The current draw of the device being controlled'
         }
     ]
 }

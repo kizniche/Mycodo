@@ -1,8 +1,6 @@
 # coding=utf-8
 import copy
 
-from flask_babel import lazy_gettext
-
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
@@ -87,8 +85,8 @@ INPUT_INFORMATION = {
                 ('8', '8X'),
                 ('16', '16X')
             ],
-            'name': lazy_gettext('Humidity Oversampling'),
-            'phrase': lazy_gettext('A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.')
+            'name': 'Humidity Oversampling',
+            'phrase': 'A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.'
         },
         {
             'id': 'temperature_oversample',
@@ -102,8 +100,8 @@ INPUT_INFORMATION = {
                 ('8', '8X'),
                 ('16', '16X')
             ],
-            'name': lazy_gettext('Temperature Oversampling'),
-            'phrase': lazy_gettext('A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.')
+            'name': 'Temperature Oversampling',
+            'phrase': 'A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.'
         },
         {
             'id': 'pressure_oversample',
@@ -117,8 +115,8 @@ INPUT_INFORMATION = {
                 ('8', '8X'),
                 ('16', '16X')
             ],
-            'name': lazy_gettext('Pressure Oversampling'),
-            'phrase': lazy_gettext('A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.')
+            'name': 'Pressure Oversampling',
+            'phrase': 'A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.'
         },
         {
             'id': 'iir_filter',
@@ -134,22 +132,22 @@ INPUT_INFORMATION = {
                 ('63', '63'),
                 ('127', '127')
             ],
-            'name': lazy_gettext('IIR Filter Size'),
-            'phrase': lazy_gettext('Optionally remove short term fluctuations from the temperature and pressure readings, increasing their resolution but reducing their bandwidth.')
+            'name': 'IIR Filter Size',
+            'phrase': 'Optionally remove short term fluctuations from the temperature and pressure readings, increasing their resolution but reducing their bandwidth.'
         },
         {
             'id': 'temp_offset',
             'type': 'float',
             'default_value': 0,
-            'name': lazy_gettext('Temperature Offset'),
-            'phrase': lazy_gettext('The amount to offset the temperature, either negative or positive')
+            'name': 'Temperature Offset',
+            'phrase': 'The amount to offset the temperature, either negative or positive'
         },
         {
             'id': 'sea_level_pressure_ha',
             'type': 'float',
             'default_value': 1013.25,
-            'name': lazy_gettext('Sea Level Pressure (ha)'),
-            'phrase': lazy_gettext('The pressure at sea level for the sensor location')
+            'name': 'Sea Level Pressure (ha)',
+            'phrase': 'The pressure at sea level for the sensor location'
         }
     ],
 }

@@ -1,5 +1,4 @@
 # coding=utf-8
-from flask_babel import lazy_gettext
 import copy
 
 from mycodo.inputs.base_input import AbstractInput
@@ -44,8 +43,8 @@ INPUT_INFORMATION = {
                 ('pull_down', 'Pull Down'),
                 ('pull_up', 'Pull Up')
             ],
-            'name': lazy_gettext('Pin Mode'),
-            'phrase': lazy_gettext('Enables or disables the pull-up or pull-down resistor')
+            'name': 'Pin Mode',
+            'phrase': 'Enables or disables the pull-up or pull-down resistor'
         }
     ]
 }

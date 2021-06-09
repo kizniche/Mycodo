@@ -1,9 +1,8 @@
 # coding=utf-8
-import copy
 import datetime
 import time
 
-from flask_babel import lazy_gettext
+import copy
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
@@ -102,8 +101,8 @@ INPUT_INFORMATION = {
             'id': 'download_stored_data',
             'type': 'bool',
             'default_value': True,
-            'name': lazy_gettext('Download Stored Data'),
-            'phrase': lazy_gettext('Download the data logged to the device.')
+            'name': 'Download Stored Data',
+            'phrase': 'Download the data logged to the device.'
         },
         {
             'id': 'logging_interval',
@@ -111,10 +110,8 @@ INPUT_INFORMATION = {
             'default_value': 600,
             'required': True,
             'constraints_pass': constraints_pass_logging_interval,
-            'name': lazy_gettext('Set Logging Interval'),
-            'phrase': lazy_gettext(
-                'Set the logging interval (seconds) the device will store '
-                'measurements on its internal memory.')
+            'name': 'Set Logging Interval',
+            'phrase': 'Set the logging interval (seconds) the device will store measurements on its internal memory.'
         }
     ]
 }

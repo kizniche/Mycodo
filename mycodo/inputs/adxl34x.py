@@ -71,7 +71,7 @@ INPUT_INFORMATION = {
                 ('16', '±16 g (±156.9 m/s/s)')
             ],
             'name': lazy_gettext('Range'),
-            'phrase': lazy_gettext('Set the measurement range')
+            'phrase': 'Set the measurement range'
         }
     ]
 }

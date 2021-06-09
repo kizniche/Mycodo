@@ -12,7 +12,7 @@
 </div>
 <div class="col-auto">
   <label class='control-label'>{{_('Camera')}}</label>
-  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="{{_('Camera to capture with')}}">
+  <select class="form-control form-tooltip form-dropdown" id="do_unique_id" name="do_unique_id" data-placement="top" title="Camera to capture with">
     <option value=""></option>
     {%- for each_camera in camera -%}
       <option value="{{each_camera.unique_id}}"{% if each_action.do_unique_id == each_camera.unique_id %} selected{% endif %}>[{{'%02d' % each_camera.id}}] {{each_camera.name}}</option>

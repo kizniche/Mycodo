@@ -250,7 +250,7 @@ OUTPUT_INFORMATION = {
                 ('last_duty_cycle', 'Last Known Value')
             ],
             'name': lazy_gettext('Startup State'),
-            'phrase': lazy_gettext('Set the state when Mycodo starts')
+            'phrase': 'Set the state when Mycodo starts'
         },
         {
             'id': 'startup_value',
@@ -259,7 +259,7 @@ OUTPUT_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_percent,
             'name': lazy_gettext('Startup Value'),
-            'phrase': lazy_gettext('The value when Mycodo starts')
+            'phrase': 'The value when Mycodo starts'
         },
         {
             'id': 'state_shutdown',
@@ -271,7 +271,7 @@ OUTPUT_INFORMATION = {
                 ('set_duty_cycle', 'User Set Value')
             ],
             'name': lazy_gettext('Shutdown State'),
-            'phrase': lazy_gettext('Set the state when Mycodo shuts down')
+            'phrase': 'Set the state when Mycodo shuts down'
         },
         {
             'id': 'shutdown_value',
@@ -280,29 +280,29 @@ OUTPUT_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_percent,
             'name': lazy_gettext('Shutdown Value'),
-            'phrase': lazy_gettext('The value when Mycodo shuts down')
+            'phrase': 'The value when Mycodo shuts down'
         },
         {
             'id': 'pwm_invert_signal',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Invert Signal'),
-            'phrase': lazy_gettext('Invert the PWM signal')
+            'phrase': 'Invert the PWM signal'
         },
         {
             'id': 'trigger_functions_startup',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Trigger Functions at Startup'),
-            'phrase': lazy_gettext('Whether to trigger functions when the output switches at startup')
+            'phrase': 'Whether to trigger functions when the output switches at startup'
         },
         {
             'id': 'amps',
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': lazy_gettext('Current (Amps)'),
-            'phrase': lazy_gettext('The current draw of the device being controlled')
+            'name': '{} ({})'.format(lazy_gettext('Current'), lazy_gettext('Amps')),
+            'phrase': 'The current draw of the device being controlled'
         }
     ]
 }

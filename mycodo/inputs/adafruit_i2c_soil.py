@@ -2,8 +2,6 @@
 import copy
 
 from mycodo.inputs.base_input import AbstractInput
-from mycodo.inputs.sensorutils import calculate_dewpoint
-from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 
 # Measurements
 measurements_dict = {

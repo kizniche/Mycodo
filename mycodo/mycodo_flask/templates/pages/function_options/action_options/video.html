@@ -3,7 +3,7 @@
   {{form_actions.do_camera_duration(class_='form-control', value=each_action.do_camera_duration, **{'title':_('Duration to record video (sec)')})}}
 </div>
 <div class="col-12">
-  <strong>{{_('Camera: Capture Video')}}</strong>: {{_('Capture a video with the selected Camera.')}}
+  <strong>{{_('Camera: Capture Video')}}</strong>: Capture a video with the selected Camera.
 </div>
 <div class="col-12">
     <strong>self.run_action("{{"{" + each_action.unique_id.split('-')[0] + "}"}}")</strong> {{_('will execute only this action. <strong>self.run_all_actions()</strong> will execute all actions sequentially.')}}

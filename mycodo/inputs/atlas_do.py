@@ -57,7 +57,7 @@ INPUT_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': "{}: {}".format(lazy_gettext('Calibrate'), lazy_gettext('Max Age')),
-            'phrase': lazy_gettext('The Max Age (seconds) of the measurement to use for calibration')
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         }
     ],
 
@@ -69,12 +69,12 @@ INPUT_INFORMATION = {
         {
             'id': 'calibrate_air',
             'type': 'button',
-            'name': lazy_gettext('Calibrate (Air)')
+            'name': 'Calibrate (Air)'
         },
         {
             'id': 'calibrate_0mg',
             'type': 'button',
-            'name': lazy_gettext('Calibrate (0 mg/L)')
+            'name': 'Calibrate (0 mg/L)'
         },
         {
             'id': 'calibrate_clear',

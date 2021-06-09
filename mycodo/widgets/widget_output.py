@@ -50,7 +50,7 @@ WIDGET_INFORMATION = {
                 'Output_Channels_Measurements',
             ],
             'name': lazy_gettext('Output'),
-            'phrase': lazy_gettext('Select the output to display and control')
+            'phrase': 'Select the output to display and control'
         },
         {
             'id': 'max_measure_age',

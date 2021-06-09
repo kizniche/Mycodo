@@ -142,7 +142,7 @@ OUTPUT_INFORMATION = {
                 (1, 'On')
             ],
             'name': lazy_gettext('Startup State'),
-            'phrase': lazy_gettext('Set the state of the GPIO when Mycodo starts')
+            'phrase': 'Set the state of the GPIO when Mycodo starts'
         },
         {
             'id': 'state_shutdown',
@@ -153,7 +153,7 @@ OUTPUT_INFORMATION = {
                 (1, 'On')
             ],
             'name': lazy_gettext('Shutdown State'),
-            'phrase': lazy_gettext('Set the state of the GPIO when Mycodo shuts down')
+            'phrase': 'Set the state of the GPIO when Mycodo shuts down'
         },
         {
             'id': 'on_state',
@@ -164,22 +164,22 @@ OUTPUT_INFORMATION = {
                 (0, 'LOW')
             ],
             'name': lazy_gettext('On State'),
-            'phrase': lazy_gettext('The state of the GPIO that corresponds to an On state')
+            'phrase': 'The state of the GPIO that corresponds to an On state'
         },
         {
             'id': 'trigger_functions_startup',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Trigger Functions at Startup'),
-            'phrase': lazy_gettext('Whether to trigger functions when the output switches at startup')
+            'phrase': 'Whether to trigger functions when the output switches at startup'
         },
         {
             'id': 'amps',
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': lazy_gettext('Current (Amps)'),
-            'phrase': lazy_gettext('The current draw of the device being controlled')
+            'name': '{} ({})'.format(lazy_gettext('Current'), lazy_gettext('Amps')),
+            'phrase': 'The current draw of the device being controlled'
         }
     ]
 }

@@ -80,8 +80,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': 'Measurement A Max Age',
-            'phrase': 'The maximum allowed age of measurement a'
+            'name': lazy_gettext('{} A {}'.format(lazy_gettext('Measurement'), lazy_gettext('Max Age'))),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
             'id': 'select_measurement_b',
@@ -100,8 +100,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': 'Measurement B Max Age',
-            'phrase': 'The maximum allowed age of measurement b'
+            'name': lazy_gettext('{} B {}'.format(lazy_gettext('Measurement'), lazy_gettext('Max Age'))),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
             'id': 'select_measurement_c',
@@ -120,8 +120,8 @@ FUNCTION_INFORMATION = {
             'type': 'integer',
             'default_value': 360,
             'required': True,
-            'name': 'Measurement C Max Age',
-            'phrase': 'The maximum allowed age of measurement C'
+            'name': lazy_gettext('{} C {}'.format(lazy_gettext('Measurement'), lazy_gettext('Max Age'))),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         }
     ]
 }

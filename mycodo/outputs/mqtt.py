@@ -55,7 +55,7 @@ OUTPUT_INFORMATION = {
             'default_value': 'localhost',
             'required': True,
             'name': lazy_gettext('Hostname'),
-            'phrase': lazy_gettext('The hostname of the MQTT server')
+            'phrase': 'The hostname of the MQTT server'
         },
         {
             'id': 'port',
@@ -63,15 +63,15 @@ OUTPUT_INFORMATION = {
             'default_value': 1883,
             'required': True,
             'name': lazy_gettext('Port'),
-            'phrase': lazy_gettext('The port of the MQTT server')
+            'phrase': 'The port of the MQTT server'
         },
         {
             'id': 'topic',
             'type': 'text',
             'default_value': 'paho/test/single',
             'required': True,
-            'name': lazy_gettext('Topic'),
-            'phrase': lazy_gettext('The topic to publish with')
+            'name': 'Topic',
+            'phrase': 'The topic to publish with'
         },
         {
             'id': 'keepalive',
@@ -80,17 +80,15 @@ OUTPUT_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': lazy_gettext('Keep Alive'),
-            'phrase': "{} {}".format(
-                lazy_gettext('The keepalive timeout value for the client.'),
-                lazy_gettext('Set to 0 to disable.'))
+            'phrase': 'The keepalive timeout value for the client. Set to 0 to disable.'
         },
         {
             'id': 'clientid',
             'type': 'text',
             'default_value': 'mycodo_mqtt_client',
             'required': True,
-            'name': lazy_gettext('Client ID'),
-            'phrase': lazy_gettext('Unique client ID for connecting to the MQTT server')
+            'name': 'Client ID',
+            'phrase': 'Unique client ID for connecting to the MQTT server'
         },
         {
             'id': 'payload_on',
@@ -98,7 +96,7 @@ OUTPUT_INFORMATION = {
             'default_value': 'on',
             'required': True,
             'name': lazy_gettext('On Payload'),
-            'phrase': lazy_gettext('The payload to send when turned on')
+            'phrase': 'The payload to send when turned on'
         },
         {
             'id': 'payload_off',
@@ -106,7 +104,7 @@ OUTPUT_INFORMATION = {
             'default_value': 'off',
             'required': True,
             'name': lazy_gettext('Off Payload'),
-            'phrase': lazy_gettext('The payload to send when turned off')
+            'phrase': 'The payload to send when turned off'
         },
         {
             'id': 'state_startup',
@@ -118,7 +116,7 @@ OUTPUT_INFORMATION = {
                 (1, 'On')
             ],
             'name': lazy_gettext('Startup State'),
-            'phrase': lazy_gettext('Set the state when Mycodo starts')
+            'phrase': 'Set the state when Mycodo starts'
         },
         {
             'id': 'state_shutdown',
@@ -130,22 +128,22 @@ OUTPUT_INFORMATION = {
                 (1, 'On')
             ],
             'name': lazy_gettext('Shutdown State'),
-            'phrase': lazy_gettext('Set the state when Mycodo shuts down')
+            'phrase': 'Set the state when Mycodo shuts down'
         },
         {
             'id': 'command_force',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Force Command'),
-            'phrase': lazy_gettext('Always send the commad if instructed, regardless of the current state')
+            'phrase': 'Always send the command if instructed, regardless of the current state'
         },
         {
             'id': 'amps',
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': lazy_gettext('Current (Amps)'),
-            'phrase': lazy_gettext('The current draw of the device being controlled')
+            'name': '{} ({})'.format(lazy_gettext('Current'), lazy_gettext('Amps')),
+            'phrase': 'The current draw of the device being controlled'
         },
         {
             'id': 'login',
@@ -160,7 +158,7 @@ OUTPUT_INFORMATION = {
             'default_value': 'user',
             'required': False,
             'name': lazy_gettext('Username'),
-            'phrase': lazy_gettext('Username for connecting to the server')
+            'phrase': 'Username for connecting to the server'
         },
         {
             'id': 'password',
@@ -168,9 +166,7 @@ OUTPUT_INFORMATION = {
             'default_value': '',
             'required': False,
             'name': lazy_gettext('Password'),
-            'phrase': "{} {}".format(
-                lazy_gettext('Password for connecting to the server.'),
-                lazy_gettext('Leave blank to disable.'))
+            'phrase': 'Password for connecting to the server. Leave blank to disable.'
         }
     ]
 }

@@ -47,7 +47,7 @@ INPUT_INFORMATION = {
             'type': 'float',
             'default_value': 1.0,
             'name': lazy_gettext('Pulses per Liter'),
-            'phrase': lazy_gettext("Enter the conversion factor for this meter (pulses to Liter).")
+            'phrase': "Enter the conversion factor for this meter (pulses to Liter)."
         }
     ],
 

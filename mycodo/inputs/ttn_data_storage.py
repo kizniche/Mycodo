@@ -3,7 +3,6 @@ import datetime
 import time
 
 import requests
-from flask_babel import lazy_gettext
 
 from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.config_translations import TRANSLATIONS
@@ -81,24 +80,24 @@ INPUT_INFORMATION = {
             'type': 'text',
             'default_value': '',
             'required': True,
-            'name': lazy_gettext('Application ID'),
-            'phrase': lazy_gettext('The Things Network Application ID')
+            'name': 'Application ID',
+            'phrase': 'The Things Network Application ID'
         },
         {
             'id': 'app_api_key',
             'type': 'text',
             'default_value': '',
             'required': True,
-            'name': lazy_gettext('App API Key'),
-            'phrase': lazy_gettext('The Things Network Application API Key')
+            'name': 'App API Key',
+            'phrase': 'The Things Network Application API Key'
         },
         {
             'id': 'device_id',
             'type': 'text',
             'default_value': '',
             'required': True,
-            'name': lazy_gettext('Device ID'),
-            'phrase': lazy_gettext('The Things Network Device ID')
+            'name': 'Device ID',
+            'phrase': 'The Things Network Device ID'
         }
     ],
 

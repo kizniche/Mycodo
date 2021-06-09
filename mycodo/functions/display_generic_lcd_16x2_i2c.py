@@ -252,8 +252,8 @@ FUNCTION_INFORMATION = {
             'default_value': 360,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
-            'name': 'Measurement Max Age',
-            'phrase': 'The maximum allowed age of the measurement'
+            'name': lazy_gettext('{} {}'.format(lazy_gettext('Measurement'), lazy_gettext('Max Age'))),
+            'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
             'id': 'measure_decimal',

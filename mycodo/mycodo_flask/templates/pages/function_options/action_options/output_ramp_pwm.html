@@ -24,7 +24,7 @@
 <div class="col-auto">
   <label class='control-label'>{{_('Duty Cycle')}} {{_('Increment')}}</label>
   <div>
-    <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="{{_('The amount of the duty cycle change for each step.')}}">
+    <select class="form-control form-tooltip form-dropdown" id="do_action_string" name="do_action_string" data-placement="top" title="The amount of the duty cycle change for each step.">
       <option value="">{{_('Select One')}}</option>
       <option value="0.1"{% if each_action.do_action_string == '0.1' %} selected{% endif %}>0.1</option>
       <option value="1.0"{% if each_action.do_action_string == '1.0' %} selected{% endif %}>1.0</option>

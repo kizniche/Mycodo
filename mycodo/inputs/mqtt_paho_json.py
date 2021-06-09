@@ -74,8 +74,8 @@ INPUT_INFORMATION = {
             'type': 'text',
             'default_value': 'mqtt/test/input',
             'required': True,
-            'name': lazy_gettext('Topic'),
-            'phrase': lazy_gettext('The topic to subscribe to')
+            'name': 'Topic',
+            'phrase': 'The topic to subscribe to'
         },
         {
             'id': 'mqtt_keepalive',
@@ -84,17 +84,15 @@ INPUT_INFORMATION = {
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Keep Alive'),
-            'phrase': "{} {}".format(
-                lazy_gettext('Maximum amount of time between received signals.'),
-                lazy_gettext('Set to 0 to disable.'))
+            'phrase': 'Maximum amount of time between received signals. Set to 0 to disable.'
         },
         {
             'id': 'mqtt_clientid',
             'type': 'text',
             'default_value': 'mycodo_mqtt_client',
             'required': True,
-            'name': lazy_gettext('Client ID'),
-            'phrase': lazy_gettext('Unique client ID for connecting to the server')
+            'name': 'Client ID',
+            'phrase': 'Unique client ID for connecting to the server'
         },
         {
             'id': 'mqtt_login',
@@ -124,9 +122,7 @@ INPUT_INFORMATION = {
             'default_value': '',
             'required': False,
             'name': lazy_gettext('Password'),
-            'phrase': "{} {}".format(
-                lazy_gettext('Password for connecting to the server.'),
-                lazy_gettext('Leave blank to disable.'))
+            'phrase': 'Password for connecting to the server. Leave blank to disable.'
         }
     ],
 
@@ -144,7 +140,7 @@ INPUT_INFORMATION = {
             'type': 'text',
             'default_value': '',
             'required': True,
-            'name': lazy_gettext('JSON Key'),
+            'name': 'JSON Key',
             'phrase': 'JSON Key for the value to be stored'
         }
     ]

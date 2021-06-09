@@ -12,7 +12,6 @@
 import time
 
 import copy
-from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device

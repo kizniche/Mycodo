@@ -68,7 +68,7 @@ INPUT_INFORMATION = {
             'default_value': '',
             'required': True,
             'name': lazy_gettext('API Key'),
-            'phrase': lazy_gettext("The API Key for this service's API")
+            'phrase': "The API Key for this service's API"
         },
         {
             'id': 'city',

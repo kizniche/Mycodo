@@ -45,7 +45,7 @@ INPUT_INFORMATION = {
             'default_value': 60,
             'required': True,
             'name': lazy_gettext('Command Timeout'),
-            'phrase': lazy_gettext('How long to wait for the command to finish before killing the process.')
+            'phrase': 'How long to wait for the command to finish before killing the process.'
         },
         {
             'id': 'execute_as_user',
@@ -53,15 +53,15 @@ INPUT_INFORMATION = {
             'default_value': 'mycodo',
             'required': True,
             'name': lazy_gettext('User'),
-            'phrase': lazy_gettext('The user to execute the command')
+            'phrase': 'The user to execute the command'
         },
         {
             'id': 'current_working_dir',
             'type': 'text',
             'default_value': '/home/pi',
             'required': True,
-            'name': lazy_gettext('CWD'),
-            'phrase': lazy_gettext('The current working directory of the shell environment.')
+            'name': lazy_gettext('Current Working Directory'),
+            'phrase': 'The current working directory of the shell environment.'
         }
     ]
 }

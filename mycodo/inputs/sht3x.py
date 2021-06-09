@@ -3,11 +3,10 @@
 # Author: Tony DiCola
 # Based on the BMP280 driver with SHT31 changes provided by
 # David J Taylor, Edinburgh (www.satsignal.eu)
-import copy
 import math
 import time
 
-from flask_babel import lazy_gettext
+import copy
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
@@ -66,25 +65,24 @@ INPUT_INFORMATION = {
             'id': 'heater_enable',
             'type': 'bool',
             'default_value': False,
-            'name': lazy_gettext('Enable Heater'),
-            'phrase': lazy_gettext(
-                'Enable heater to evaporate condensation. Turn on heater x seconds every y measurements.')
+            'name': 'Enable Heater',
+            'phrase': 'Enable heater to evaporate condensation. Turn on heater x seconds every y measurements.'
         },
         {
             'id': 'heater_seconds',
             'type': 'float',
             'default_value': 1.0,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Heater On Seconds'),
-            'phrase': lazy_gettext('How long to turn the heater on (seconds).')
+            'name': 'Heater On Seconds',
+            'phrase': 'How long to turn the heater on (seconds).'
         },
         {
             'id': 'heater_measurements',
             'type': 'integer',
             'default_value': 10,
             'constraints_pass': constraints_pass_positive_value,
-            'name': lazy_gettext('Heater On Period'),
-            'phrase': lazy_gettext('After how many measurements to turn the heater on. This will repeat.')
+            'name': 'Heater On Period',
+            'phrase': 'After how many measurements to turn the heater on. This will repeat.'
         }
     ]
 }

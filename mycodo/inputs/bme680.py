@@ -1,6 +1,5 @@
 # coding=utf-8
 import copy
-from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_altitude
@@ -173,8 +172,8 @@ INPUT_INFORMATION = {
                 ('OS_16X', '16X')
             ],
             'constraints_pass': constraints_pass_oversample,
-            'name': lazy_gettext('Humidity Oversampling'),
-            'phrase': lazy_gettext('A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.')
+            'name': 'Humidity Oversampling',
+            'phrase': 'A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.'
         },
         {
             'id': 'temperature_oversample',
@@ -189,8 +188,8 @@ INPUT_INFORMATION = {
                 ('OS_16X', '16X')
             ],
             'constraints_pass': constraints_pass_oversample,
-            'name': lazy_gettext('Temperature Oversampling'),
-            'phrase': lazy_gettext('A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.')
+            'name': 'Temperature Oversampling',
+            'phrase': 'A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.'
         },
         {
             'id': 'pressure_oversample',
@@ -205,8 +204,8 @@ INPUT_INFORMATION = {
                 ('OS_16X', '16X')
             ],
             'constraints_pass': constraints_pass_oversample,
-            'name': lazy_gettext('Pressure Oversampling'),
-            'phrase': lazy_gettext('A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.')
+            'name': 'Pressure Oversampling',
+            'phrase': 'A higher oversampling value means more stable readings with less noise and jitter. However each step of oversampling adds ~2 ms latency, causing a slower response time to fast transients.'
         },
         {
             'id': 'iir_filter',
@@ -223,24 +222,24 @@ INPUT_INFORMATION = {
                 ('FILTER_SIZE_127', '127')
             ],
             'constraints_pass': constraints_pass_iir_filter,
-            'name': lazy_gettext('IIR Filter Size'),
-            'phrase': lazy_gettext('Optionally remove short term fluctuations from the temperature and pressure readings, increasing their resolution but reducing their bandwidth.')
+            'name': 'IIR Filter Size',
+            'phrase': 'Optionally remove short term fluctuations from the temperature and pressure readings, increasing their resolution but reducing their bandwidth.'
         },
         {
             'id': 'gas_heater_temperature',
             'type': 'integer',
             'default_value': 320,
             'constraints_pass': constraints_pass_gas_heater_temperature,
-            'name': lazy_gettext('Gas Heater Temperature (°C)'),
-            'phrase': lazy_gettext('What temperature to set')
+            'name': 'Gas Heater Temperature (°C)',
+            'phrase': 'What temperature to set'
         },
         {
             'id': 'gas_heater_duration',
             'type': 'integer',
             'default_value': 150,
             'constraints_pass': constraints_pass_gas_heater_duration,
-            'name': lazy_gettext('Gas Heater Duration (ms)'),
-            'phrase': lazy_gettext('How long of a duration to heat. 20-30 ms are necessary for the heater to reach the intended target temperature.')
+            'name': 'Gas Heater Duration (ms)',
+            'phrase': 'How long of a duration to heat. 20-30 ms are necessary for the heater to reach the intended target temperature.'
         },
         {
             'id': 'gas_heater_profile',
@@ -260,15 +259,15 @@ INPUT_INFORMATION = {
                 ('9', '9')
             ],
             'constraints_pass': constraints_pass_gas_heater_profile,
-            'name': lazy_gettext('Gas Heater Profile'),
-            'phrase': lazy_gettext('Select one of the 10 configured heating durations/set points')
+            'name': 'Gas Heater Profile',
+            'phrase': 'Select one of the 10 configured heating durations/set points'
         },
         {
             'id': 'temp_offset',
             'type': 'float',
             'default_value': 0,
-            'name': lazy_gettext('Temperature Offset'),
-            'phrase': lazy_gettext('The amount to offset the temperature, either negative or positive')
+            'name': 'Temperature Offset',
+            'phrase': 'The amount to offset the temperature, either negative or positive'
         },
     ],
 }

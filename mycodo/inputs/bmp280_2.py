@@ -1,8 +1,5 @@
 # coding=utf-8
 import copy
-import time
-
-from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_altitude
@@ -59,9 +56,8 @@ INPUT_INFORMATION = {
             'id': 'forced',
             'type': 'bool',
             'default_value': False,
-            'name': lazy_gettext('Enable Forced Mode'),
-            'phrase': lazy_gettext(
-                'Enable heater to evaporate condensation. Turn on heater x seconds every y measurements.')
+            'name': 'Enable Forced Mode',
+            'phrase': 'Enable heater to evaporate condensation. Turn on heater x seconds every y measurements.'
         }
     ]
 }

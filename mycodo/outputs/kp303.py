@@ -89,7 +89,7 @@ OUTPUT_INFORMATION = {
             'default_value': 60,
             'constraints_pass': constraints_pass_positive_value,
             'required': True,
-            'name': lazy_gettext('Status Update (Sec)'),
+            'name': 'Status Update (Sec)',
             'phrase': 'The period (seconds) between checking if connected and output states.'
         }
     ],
@@ -114,7 +114,7 @@ OUTPUT_INFORMATION = {
                 (1, 'On')
             ],
             'name': lazy_gettext('Startup State'),
-            'phrase': lazy_gettext('Set the state when Mycodo starts')
+            'phrase': 'Set the state when Mycodo starts'
         },
         {
             'id': 'state_shutdown',
@@ -126,29 +126,29 @@ OUTPUT_INFORMATION = {
                 (1, 'On')
             ],
             'name': lazy_gettext('Shutdown State'),
-            'phrase': lazy_gettext('Set the state when Mycodo shuts down')
+            'phrase': 'Set the state when Mycodo shuts down'
         },
         {
             'id': 'trigger_functions_startup',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Trigger Functions at Startup'),
-            'phrase': lazy_gettext('Whether to trigger functions when the output switches at startup')
+            'phrase': 'Whether to trigger functions when the output switches at startup'
         },
         {
             'id': 'command_force',
             'type': 'bool',
             'default_value': False,
             'name': lazy_gettext('Force Command'),
-            'phrase': lazy_gettext('Always send the command if instructed, regardless of the current state')
+            'phrase': 'Always send the command if instructed, regardless of the current state'
         },
         {
             'id': 'amps',
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': lazy_gettext('Current (Amps)'),
-            'phrase': lazy_gettext('The current draw of the device being controlled')
+            'name': '{} ({})'.format(lazy_gettext('Current'), lazy_gettext('Amps')),
+            'phrase': 'The current draw of the device being controlled'
         }
     ]
 }

@@ -131,8 +131,8 @@ OUTPUT_INFORMATION = {
                 ('fastest_flow_rate', 'Fastest Flow Rate'),
                 ('specify_flow_rate', 'Specify Flow Rate')
             ],
-            'name': lazy_gettext('Flow Rate Method'),
-            'phrase': lazy_gettext('The flow rate to use when pumping a volume')
+            'name': 'Flow Rate Method',
+            'phrase': 'The flow rate to use when pumping a volume'
         },
         {
             'id': 'flow_rate',

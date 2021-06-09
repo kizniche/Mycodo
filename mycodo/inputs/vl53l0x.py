@@ -57,10 +57,8 @@ INPUT_INFORMATION = {
                 ('3', 'Long Range (33 ms, 2 m)'),
                 ('4', 'High Speed, Low Accuracy (20 ms, 1.2 m)')
             ],
-            'name': lazy_gettext('Accuracy'),
-            'phrase': "{}. {}.".format(
-                lazy_gettext('Set the accuracy'),
-                lazy_gettext('A longer measurement duration yields a more accurate measurement'))
+            'name': 'Accuracy',
+            'phrase': 'Set the accuracy. A longer measurement duration yields a more accurate measurement'
         }
     ],
 

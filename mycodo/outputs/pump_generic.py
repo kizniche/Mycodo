@@ -83,7 +83,7 @@ OUTPUT_INFORMATION = {
             'required': False,
             'constraints_pass': constraints_pass_positive_or_zero_value,
             'name': lazy_gettext('GPIO Pin (BCM)'),
-            'phrase': lazy_gettext('The pin to control the state of')
+            'phrase': 'The pin to control the state of'
         },
         {
             'id': 'on_state',
@@ -94,7 +94,7 @@ OUTPUT_INFORMATION = {
                 (0, 'LOW')
             ],
             'name': lazy_gettext('On State'),
-            'phrase': lazy_gettext('The state of the GPIO that corresponds to an On state')
+            'phrase': 'The state of the GPIO that corresponds to an On state'
         },
         {
             'id': 'fastest_dispense_rate_ml_min',
@@ -120,8 +120,8 @@ OUTPUT_INFORMATION = {
                 ('fastest_flow_rate', 'Fastest Flow Rate'),
                 ('specify_flow_rate', 'Specify Flow Rate')
             ],
-            'name': lazy_gettext('Flow Rate Method'),
-            'phrase': lazy_gettext('The flow rate to use when pumping a volume')
+            'name': 'Flow Rate Method',
+            'phrase': 'The flow rate to use when pumping a volume'
         },
         {
             'id': 'flow_rate',
@@ -136,8 +136,8 @@ OUTPUT_INFORMATION = {
             'type': 'float',
             'default_value': 0.0,
             'required': True,
-            'name': lazy_gettext('Current (Amps)'),
-            'phrase': lazy_gettext('The current draw of the device being controlled')
+            'name': '{} ({})'.format(lazy_gettext('Current'), lazy_gettext('Amps')),
+            'phrase': 'The current draw of the device being controlled'
         }
     ]
 }

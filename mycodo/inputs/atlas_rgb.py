@@ -99,24 +99,24 @@ INPUT_INFORMATION = {
             'id': 'led_only_while_reading',
             'type': 'bool',
             'default_value': True,
-            'name': lazy_gettext('LED Only For Measure'),
-            'phrase': lazy_gettext('Turn the LED on only during the measurement')
+            'name': 'LED Only For Measure',
+            'phrase': 'Turn the LED on only during the measurement'
         },
         {
             'id': 'led_percentage',
             'type': 'integer',
             'default_value': 30,
             'constraints_pass': constraints_pass_percent,
-            'name': lazy_gettext('LED Percentage'),
-            'phrase': lazy_gettext('What percentage of power to supply to the LEDs during measurement')
+            'name': 'LED Percentage',
+            'phrase': 'What percentage of power to supply to the LEDs during measurement'
         },
         {
             'id': 'gamma_correction',
             'type': 'float',
             'default_value': 1.0,
             'constraints_pass': constraints_pass_gamma,
-            'name': lazy_gettext('Gamma Correction'),
-            'phrase': lazy_gettext('Gamma correction between 0.01 and 4.99 (default is 1.0)')
+            'name': 'Gamma Correction',
+            'phrase': 'Gamma correction between 0.01 and 4.99 (default is 1.0)'
         },
     ],
 

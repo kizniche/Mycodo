@@ -109,8 +109,8 @@ WIDGET_INFORMATION = {
                 ('stream', lazy_gettext('Display Live Video Stream')),
                 ('timelapse', lazy_gettext('Display Latest Timelapse Image'))
             ],
-            'name': lazy_gettext('Image Display Type'),
-            'phrase': lazy_gettext('Select how to display the image')
+            'name': 'Image Display Type',
+            'phrase': 'Select how to display the image'
         },
         {
             'id': 'max_age',
