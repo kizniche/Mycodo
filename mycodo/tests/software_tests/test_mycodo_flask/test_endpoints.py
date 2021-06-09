@@ -9,7 +9,6 @@ import mock
 
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import Input
-from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
 from mycodo.databases.models import User
 from mycodo.mycodo_flask.utils.utils_general import choices_custom_functions
@@ -51,7 +50,7 @@ def test_sees_admin_creation_form(testapp):
 def test_does_not_see_admin_creation_form(testapp):
     """ Admin user exists: user sees the normal login page """
     print("\nTest: test_does_not_see_admin_creation_form")
-    expected_body_msg = "<!-- Route: /login -->"
+    expected_body_msg = "<!-- Route: /login_password -->"
     assert expected_body_msg in testapp.get('/').maybe_follow()
 
 

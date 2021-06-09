@@ -110,7 +110,7 @@ def login_user(app, username, password):
     session for the user login status
     :returns: None
     """
-    res = app.get('/login')
+    res = app.get('/login_password')
     form = res.forms['login_form']
     form['username'] = username
     form['password'] = password
