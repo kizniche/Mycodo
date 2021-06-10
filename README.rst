@@ -211,7 +211,7 @@ Languages
 |Translation Table|
 
 -  Native: English
--  Complete: `Dutch <#dutch>`__,
+-  `Dutch <#dutch>`__,
    `German <#german>`__,
    `French <#french>`__,
    `Italian <#italian>`__,
@@ -226,7 +226,7 @@ Languages
 
 By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ``[Gear Icon] -> Configure -> General -> Language``
 
-If you would like to improve the translations, you can make changes at `http://translate.kylegabriel.com <http://translate.kylegabriel.com:8080/projects/mycodo/master/>`__, submit a pull request with an amended .po file from ~/Mycodo/mycodo/mycodo_flask/translations/, or start a `New Issue <https://github.com/kizniche/Mycodo/issues/new>`__ detailing the corrections.
+If you would like to improve the translations, you can make changes at `http://translate.kylegabriel.com <http://translate.kylegabriel.com:8080/engage/mycodo/>`__, submit a pull request with an amended .po file from ~/Mycodo/mycodo/mycodo_flask/translations/, or start a `New Issue <https://github.com/kizniche/Mycodo/issues/new>`__ detailing the corrections.
 
 English
 ~~~~~~~
