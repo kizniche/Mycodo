@@ -17,8 +17,11 @@ jobs:
         uses: actions/setup-python@v1
         with:
           python-version: 3.7
-      - name: Install dependency apps
+      - name: Install dependencies
         run: |
+          sudo bash mycodo/scripts/upgrade_commands.sh update-apt
+          sudo apt-get install -y libatlas-base-dev libboost-python-dev gawk git libffi-dev libi2c-dev nginx python3-dev python3-numpy sqlite3 swig
+          sudo bash mycodo/scripts/upgrade_commands.sh update-packages
           git clone --recursive https://github.com/WiringPi/WiringPi-Python.git && cd WiringPi-Python && git submodule update --init && cd WiringPi && ./build && cd ../..
           sudo bash mycodo/scripts/upgrade_commands.sh build-pigpiod
           wget https://dl.influxdata.com/influxdb/releases/influxdb_1.8.0_amd64.deb && sudo dpkg -i influxdb_1.8.0_amd64.deb
@@ -26,10 +29,6 @@ jobs:
           sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb-db-user
           sudo useradd -M mycodo
           export PATH=/usr/bin:$PATH
-      - name: Install apt dependencies
-        run: |
-          sudo apt-get install -y libatlas-base-dev libboost-python-dev gawk git libffi-dev libi2c-dev nginx python3-dev python3-numpy sqlite3 swig
-          sudo bash mycodo/scripts/upgrade_commands.sh update-packages
       - name: Test setup components
         run: |
           sudo bash mycodo/scripts/upgrade_commands.sh setup-virtualenv
