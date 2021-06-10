@@ -169,6 +169,14 @@ FUNCTION_INFORMATION = {
             'required': True,
             'name': 'Remove Local Camera Images',
             'phrase': 'Remove local camera images after successful transfer to remote host'
+        },
+        {
+            'id': 'ssh_port',
+            'type': 'integer',
+            'default_value': 22,
+            'required': False,
+            'name': 'SSH Port',
+            'phrase': 'Specify a nonstandard SSH port'
         }
     ],
 
@@ -228,6 +236,7 @@ class CustomModule(AbstractFunction):
         self.backup_remove_measurements_archives = None
         self.do_backup_cameras = None
         self.backup_remove_camera_images = None
+        self.ssh_port = None
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
@@ -242,13 +251,14 @@ class CustomModule(AbstractFunction):
         self.timer_loop = time.time() + self.start_offset
 
         self.logger.debug(
-            "Custom controller started with options: {}, {}, {}, {}".format(
+            "Custom controller started with options: {}, {}, {}, {}, {}".format(
                 self.remote_host,
                 self.remote_user,
+                self.ssh_port,
                 self.remote_backup_path,
                 self.backup_settings))
 
-        if self.remote_host and self.remote_user and self.remote_backup_path:
+        if self.remote_host and self.remote_user and self.remote_backup_path and self.ssh_port:
             self.is_setup = True
 
     def loop(self):
@@ -295,8 +305,9 @@ class CustomModule(AbstractFunction):
             remove_files = "--remove-source-files "
         else:
             remove_files = ""
-        rsync_cmd = "rsync {rem}-avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
+        rsync_cmd = "rsync {rem}-avz -e 'ssh -p {port}' {path_local} {user}@{host}:{remote_path}".format(
             rem=remove_files,
+            port=self.ssh_port,
             path_local=PATH_SETTINGS_BACKUP,
             user=self.remote_user,
             host=self.remote_host,
@@ -332,8 +343,9 @@ class CustomModule(AbstractFunction):
             remove_files = "--remove-source-files "
         else:
             remove_files = ""
-        rsync_cmd = "rsync {rem}-avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
+        rsync_cmd = "rsync {rem}-avz -e 'ssh -p {port}' {path_local} {user}@{host}:{remote_path}".format(
             rem=remove_files,
+            port=self.ssh_port,
             path_local=PATH_MEASUREMENTS_BACKUP,
             user=self.remote_user,
             host=self.remote_host,
@@ -349,8 +361,9 @@ class CustomModule(AbstractFunction):
             remove_files = "--remove-source-files "
         else:
             remove_files = ""
-        rsync_cmd = "rsync {rem}-avz -e ssh {path_local} {user}@{host}:{remote_path}".format(
+        rsync_cmd = "rsync {rem}-avz -e 'ssh -p {port}' {path_local} {user}@{host}:{remote_path}".format(
             rem=remove_files,
+            port=self.ssh_port,
             path_local=PATH_CAMERAS,
             user=self.remote_user,
             host=self.remote_host,
