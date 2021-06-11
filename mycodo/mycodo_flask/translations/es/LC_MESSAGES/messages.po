@@ -6,14 +6,16 @@ msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2021-06-09 17:15-0400\n"
-"PO-Revision-Date: 2018-08-10 15:21-0400\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2021-06-11 14:13+0000\n"
+"Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
+"Language-Team: Spanish <http://translate.kylegabriel.com:8080/projects/"
+"mycodo/master/es/>\n"
 "Language: es\n"
-"Language-Team: es <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.6.2\n"
 "Generated-By: Babel 2.9.0\n"
 
 #: config.py:51 config_translations.py:17
@@ -2940,7 +2942,7 @@ msgstr "Comienzo HH:MM:SS"
 
 #: mycodo_flask/forms/forms_method.py:40 mycodo_flask/forms/forms_method.py:104
 msgid "End HH:MM:SS"
-msgstr "Fin  HH:MM:SS"
+msgstr "Fin HH:MM:SS"
 
 #: mycodo_flask/forms/forms_method.py:44 mycodo_flask/forms/forms_method.py:107
 msgid "Start YYYY-MM-DD HH:MM:SS"
@@ -4864,8 +4866,8 @@ msgid ""
 "will execute only this action. <strong>self.run_all_actions()</strong> "
 "will execute all actions sequentially."
 msgstr ""
-"ejecutará sólo que esta acción. <Strong> self.run_all_actions () </ "
-"strong> se ejecutará todas las acciones de forma secuencial."
+"ejecutará sólo que esta acción. <strong>self.run_all_actions()</strong> se "
+"ejecutará todas las acciones de forma secuencial."
 
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:3
 msgid "Command to execute"

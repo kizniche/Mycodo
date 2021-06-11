@@ -8,14 +8,16 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2021-06-09 17:15-0400\n"
-"PO-Revision-Date: 2018-08-10 15:59-0400\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2021-06-11 14:13+0000\n"
+"Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <http://translate.kylegabriel.com:8080/"
+"projects/mycodo/master/zh_Hans/>\n"
 "Language: zh\n"
-"Language-Team: zh <LL@li.org>\n"
-"Plural-Forms: nplurals=1; plural=0\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.6.2\n"
 "Generated-By: Babel 2.9.0\n"
 
 #: config.py:51 config_translations.py:17
@@ -1400,7 +1402,7 @@ msgstr "等待失败的时间（秒）"
 
 #: config_translations.py:242
 msgid "Duty cycle for the PWM (percent, 0.0 - 100.0)"
-msgstr "PWM的占空比（百分比，0.0  -  100.0）"
+msgstr "PWM的占空比（百分比，0.0 - 100.0）"
 
 #: config_translations.py:244
 msgid "Desired Flow Rate (ml/min)"
@@ -1750,7 +1752,7 @@ msgstr "频率（赫兹）"
 
 #: config_translations.py:358
 msgid "The Hertz to output the PWM signal (0 - 70,000)"
-msgstr "赫兹输出PWM信号（0  -  70,000）"
+msgstr "赫兹输出PWM信号（0 - 70,000）"
 
 #: config_translations.py:360 mycodo_flask/forms/forms_camera.py:23
 #: mycodo_flask/templates/pages/data_options/input.html:104
@@ -1984,7 +1986,7 @@ msgid ""
 "The weighting of the previous measurement on the current measurement. "
 "Range: 0.0 - 1.0. Used for smoothing measurements. 0.0 means no "
 "weighting."
-msgstr "前一次测量对当前测量的加权。范围：0.0  -  1.0。用于平滑测量。 0.0表示没有加权。"
+msgstr "前一次测量对当前测量的加权。范围：0.0 - 1.0。用于平滑测量。 0.0表示没有加权。"
 
 #: config_translations.py:448
 msgid "Always Min (Raise)"
@@ -3550,7 +3552,7 @@ msgstr "禁用串行"
 
 #: mycodo_flask/forms/forms_settings.py:367
 msgid "Enable SPI"
-msgstr "启用S​​PI"
+msgstr "启用SPI"
 
 #: mycodo_flask/forms/forms_settings.py:368
 msgid "Disable SPI"
@@ -3558,7 +3560,7 @@ msgstr "禁用SPI"
 
 #: mycodo_flask/forms/forms_settings.py:369
 msgid "Enable SSH"
-msgstr "启用S​​SH"
+msgstr "启用SSH"
 
 #: mycodo_flask/forms/forms_settings.py:370
 msgid "Disable SSH"
@@ -4198,7 +4200,7 @@ msgstr "异步图"
 msgid ""
 "Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more "
 "than one"
-msgstr "按住<kbd> Ctrl </ kbd>或<kbd>＆＃8984; </ kbd>键选择多个"
+msgstr "按住<kbd>Ctrl</kbd>或<kbd>&#8984;</kbd>键选择多个"
 
 #: mycodo_flask/templates/pages/info.html:14
 msgid "Mycodo Version:"
@@ -4737,7 +4739,7 @@ msgstr "控制器影响"
 msgid ""
 "will execute only this action. <strong>self.run_all_actions()</strong> "
 "will execute all actions sequentially."
-msgstr "仅执行此操作。的<strong> self.run_all_actions（）</强>将顺序执行的所有操作。"
+msgstr "仅执行此操作。的<strong>self.run_all_actions()</strong>将顺序执行的所有操作。"
 
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:3
 msgid "Command to execute"
@@ -5769,7 +5771,7 @@ msgstr "确保所有pH校准溶液的温度相同。输入解决方案的温度�
 msgid ""
 "Rinse the pH probe with distilled water, place it into the pH %(ph)s "
 "solution, then click Ready"
-msgstr "用蒸馏水冲洗pH值探头，将其放入pH值％（PH）溶液，然后单击就绪"
+msgstr "用蒸馏水冲洗pH值探头，将其放入pH值 %(ph)s 溶液，然后单击就绪"
 
 #: mycodo_flask/templates/tools/calibration_options/atlas_rgb.html:14
 msgid ""
@@ -5862,7 +5864,7 @@ msgstr "在修改其设置之前停用控制器"
 #: mycodo_flask/utils/utils_dashboard.py:52
 #, python-format
 msgid "Dashboard with ID %(id)s successfully added"
-msgstr "用ID％（ID）信息中心s成功加入"
+msgstr "用ID %(id)s 信息中心s成功加入"
 
 #: mycodo_flask/utils/utils_dashboard.py:242
 #: mycodo_flask/utils/utils_output.py:206
