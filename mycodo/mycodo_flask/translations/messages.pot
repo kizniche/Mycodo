@@ -311,7 +311,7 @@ msgid "Publish"
 msgstr ""
 
 #: config.py:682
-msgid "Turn an Output Off, On, or On or a duration."
+msgid "Turn an Output Off, On, or On for a duration."
 msgstr ""
 
 #: config.py:688

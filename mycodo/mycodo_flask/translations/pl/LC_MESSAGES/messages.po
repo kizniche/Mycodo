@@ -1,23 +1,23 @@
 # Polish translations for Mycodo.
-# Copyright (C) 2020 Mycodo
+# Copyright (C) 2021 Kyle T. Gabriel
 # This file is distributed under the same license as the Mycodo project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-06-09 17:15-0400\n"
+"Project-Id-Version: Mycodo1 8.11.0\n"
+"Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
+"POT-Creation-Date: 2021-06-11 10:19-0400\n"
 "PO-Revision-Date: 2021-06-11 14:13+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
-"Language-Team: Polish <http://translate.kylegabriel.com:8080/projects/mycodo/"
-"master/pl/>\n"
 "Language: pl\n"
+"Language-Team: Polish "
+"<http://translate.kylegabriel.com:8080/projects/mycodo/master/pl/>\n"
+"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && "
+"(n%100<10 || n%100>=20) ? 1 : 2\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.6.2\n"
 "Generated-By: Babel 2.9.0\n"
 
 #: config.py:51 config_translations.py:17
@@ -314,7 +314,7 @@ msgid "Publish"
 msgstr "Publikować"
 
 #: config.py:682
-msgid "Turn an Output Off, On, or On or a duration."
+msgid "Turn an Output Off, On, or On for a duration."
 msgstr "Włącz wyjście na OFF, ON lub ON na czas trwania."
 
 #: config.py:688
@@ -4281,8 +4281,8 @@ msgid ""
 "Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more "
 "than one"
 msgstr ""
-"Przytrzymaj <kbd>Ctrl</kbd> lub <kbd>&#8984;</kbd>, aby wybrać więcej niż "
-"jedną"
+"Przytrzymaj <kbd>Ctrl</kbd> lub <kbd>&#8984;</kbd>, aby wybrać więcej niż"
+" jedną"
 
 #: mycodo_flask/templates/pages/info.html:14
 msgid "Mycodo Version:"
@@ -4593,8 +4593,8 @@ msgid ""
 "No Reports. Go to <a href=\"%(loc)\">Energy Usage Options</a> to schedule"
 " a report to be generated."
 msgstr ""
-"Brak raportów. Idź do <a href=\"%(loc)\"> energetyczne opcje wykorzystania</"
-"a> zaplanować wygenerowanie raportu."
+"Brak raportów. Idź do <a href=\"%(loc)\"> energetyczne opcje "
+"wykorzystania</a> zaplanować wygenerowanie raportu."
 
 #: mycodo_flask/templates/pages/data_options/input.html:176
 #: mycodo_flask/templates/pages/function_options/custom_function.html:170
@@ -6847,3 +6847,4 @@ msgstr "Kod Python (Odśwież)"
 #: widgets/widget_python_code.py:210
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr "Kod Python wykonać każdą deskę rozdzielczą / odświeżania widget"
+

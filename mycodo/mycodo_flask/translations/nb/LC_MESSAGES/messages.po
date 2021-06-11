@@ -1,23 +1,22 @@
-# Norwegian translations for PROJECT.
-# Copyright (C) 2019 ORGANIZATION
-# This file is distributed under the same license as the PROJECT project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2019.
+# Norwegian Bokmål translations for Mycodo.
+# Copyright (C) 2021 Kyle T. Gabriel
+# This file is distributed under the same license as the Mycodo project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
-"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2021-06-09 17:15-0400\n"
+"Project-Id-Version: Mycodo1 8.11.0\n"
+"Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
+"POT-Creation-Date: 2021-06-11 10:19-0400\n"
 "PO-Revision-Date: 2021-06-11 14:13+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
-"Language-Team: Norwegian Bokmål <http://translate.kylegabriel.com:8080/"
-"projects/mycodo/master/nb_NO/>\n"
 "Language: nb\n"
+"Language-Team: Norwegian Bokmål "
+"<http://translate.kylegabriel.com:8080/projects/mycodo/master/nb_NO/>\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.6.2\n"
 "Generated-By: Babel 2.9.0\n"
 
 #: config.py:51 config_translations.py:17
@@ -314,7 +313,7 @@ msgid "Publish"
 msgstr ""
 
 #: config.py:682
-msgid "Turn an Output Off, On, or On or a duration."
+msgid "Turn an Output Off, On, or On for a duration."
 msgstr "Slå en utgang Av, På eller På eller en varighet."
 
 #: config.py:688
@@ -4274,8 +4273,8 @@ msgid ""
 "Hold down the <kbd>Ctrl</kbd> or <kbd>&#8984;</kbd> key to select more "
 "than one"
 msgstr ""
-"Hold nede <kbd>Ctrl</kbd> eller <kbd>&#8984;</kbd> -tasten for å velge mer "
-"enn ett"
+"Hold nede <kbd>Ctrl</kbd> eller <kbd>&#8984;</kbd> -tasten for å velge "
+"mer enn ett"
 
 #: mycodo_flask/templates/pages/info.html:14
 msgid "Mycodo Version:"
@@ -4835,8 +4834,8 @@ msgid ""
 "will execute only this action. <strong>self.run_all_actions()</strong> "
 "will execute all actions sequentially."
 msgstr ""
-"vil utføre bare denne handlingen. <strong>self.run_all_actions()</strong> "
-"vil utføre alle handlinger sekvensielt."
+"vil utføre bare denne handlingen. <strong>self.run_all_actions()</strong>"
+" vil utføre alle handlinger sekvensielt."
 
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:3
 msgid "Command to execute"
@@ -5985,8 +5984,8 @@ msgid ""
 "Rinse the pH probe with distilled water, place it into the pH %(ph)s "
 "solution, then click Ready"
 msgstr ""
-"Skyll den pH-sonde med destillert vann, plassere den i pH %(ph)s løsning og "
-"deretter på Ready"
+"Skyll den pH-sonde med destillert vann, plassere den i pH %(ph)s løsning "
+"og deretter på Ready"
 
 #: mycodo_flask/templates/tools/calibration_options/atlas_rgb.html:14
 msgid ""
@@ -6797,3 +6796,4 @@ msgstr ""
 #: widgets/widget_python_code.py:210
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr ""
+

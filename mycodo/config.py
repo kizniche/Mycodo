@@ -679,7 +679,7 @@ FUNCTION_ACTION_INFO = {
             TRANSLATIONS['on']['title'],
             TRANSLATIONS['off']['title'],
             TRANSLATIONS['duration']['title']),
-        'description': lazy_gettext('Turn an Output Off, On, or On or a duration.'),
+        'description': lazy_gettext('Turn an Output Off, On, or On for a duration.'),
         'dependencies_module': []
     },
     'output_pwm': {
