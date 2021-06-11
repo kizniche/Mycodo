@@ -6,6 +6,7 @@
  - Fix issue querying graph data
  - Fix flag/tag newlines on asynchronous graphs
  - Fix single quotes in translations causing error ([#1019](https://github.com/kizniche/mycodo/issues/1019))
+ - Fix CCS811 Input dependency install issue ([#1023](https://github.com/kizniche/mycodo/issues/1023))
 
 ### Features
 
