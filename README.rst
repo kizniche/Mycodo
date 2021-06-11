@@ -7,7 +7,7 @@ Latest version: 8.11.0
 
 Mycodo is open source software for the Raspberry Pi that couples inputs and outputs in interesting ways to sense and manipulate the environment.
 
-|Build Status| |Codacy Badge| |DOI|
+|Build Status| |Codacy Badge| |Translation Badge| |DOI|
 
 Support
 -------
@@ -208,8 +208,10 @@ This software includes third party open source software components. Please see i
 Languages
 ---------
 
+|Translation Table|
+
 -  Native: English
--  Complete: `Dutch <#dutch>`__,
+-  `Dutch <#dutch>`__,
    `German <#german>`__,
    `French <#french>`__,
    `Italian <#italian>`__,
@@ -224,7 +226,7 @@ Languages
 
 By default, mycodo will display the default language set by your browser. You may also force a language in the settings at ``[Gear Icon] -> Configure -> General -> Language``
 
-If you would like to improve the translations, you can submit a pull request with an amended .po file from ~/Mycodo/mycodo/mycodo_flask/translations/ or start a `New Issue <https://github.com/kizniche/Mycodo/issues/new>`__ detailing the corrections.
+If you would like to improve the translations, you can make changes at `http://translate.kylegabriel.com <http://translate.kylegabriel.com:8080/engage/mycodo/>`__, submit a pull request with an amended .po file from ~/Mycodo/mycodo/mycodo_flask/translations/, or start a `New Issue <https://github.com/kizniche/Mycodo/issues/new>`__ detailing the corrections.
 
 English
 ~~~~~~~
@@ -497,10 +499,14 @@ Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更�
 该系统包括后端（守护进程）和前端（用户界面）。后端从传感器和设备进行测量，然后协调对这些测量的各种响应，包括调制输出（继电器，PWM，无线插座）的能力，通过PID控制的电气设备调节环境条件（稳定调节或转换时间），安排计时器，捕获照片和流视频，在测量满足特定条件时触发操作（调制继电器，执行命令，通过电子邮件通知等）等等。前端是一个Web界面，可以从任何支持浏览器的设备轻松导航和配置。
 
 
-.. |Build Status| image:: https://travis-ci.com/kizniche/Mycodo.svg?branch=master
-   :target: https://travis-ci.com/kizniche/Mycodo
+.. |Build Status| image:: https://github.com/kizniche/Mycodo/actions/workflows/main.yml/badge.svg
+   :target: https://github.com/kizniche/Mycodo/actions/workflows/main.yml
 .. |Codacy Badge| image:: https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80
    :target: https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&utm_medium=referral&utm_content=kizniche/Mycodo&utm_campaign=Badge_Grade
+.. |Translation Badge| image:: http://translate.kylegabriel.com:8080/widgets/mycodo/-/svg-badge.svg
+   :target: http://translate.kylegabriel.com:8080/engage/mycodo/
+.. |Translation Table| image:: http://translate.kylegabriel.com:8080/widgets/mycodo/-/multi-auto.svg
+   :target: http://translate.kylegabriel.com:8080/engage/mycodo/
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.5281/zenodo.824199.svg
    :target: https://doi.org/10.5281/zenodo.824199
 .. |Mycodo| image:: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2016/05/Mycodo-3.6.0-tango-Graph-2016-05-21-11-15-26.png

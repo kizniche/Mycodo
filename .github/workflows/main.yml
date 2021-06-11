@@ -1,0 +1,51 @@
+name: Mycodo
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.7
+      - name: Install dependencies
+        run: |
+          sudo bash mycodo/scripts/upgrade_commands.sh update-apt
+          sudo apt-get install -y libatlas-base-dev libboost-python-dev gawk git libffi-dev libi2c-dev nginx python3-dev python3-numpy sqlite3 swig
+          sudo bash mycodo/scripts/upgrade_commands.sh update-packages
+          git clone --recursive https://github.com/WiringPi/WiringPi-Python.git && cd WiringPi-Python && git submodule update --init && cd WiringPi && ./build && cd ../..
+          sudo bash mycodo/scripts/upgrade_commands.sh build-pigpiod
+          wget https://dl.influxdata.com/influxdb/releases/influxdb_1.8.0_amd64.deb && sudo dpkg -i influxdb_1.8.0_amd64.deb
+          sudo service influxdb start && sleep 3
+          sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb-db-user
+          sudo useradd -M mycodo
+          export PATH=/usr/bin:$PATH
+      - name: Test setup components
+        run: |
+          sudo bash mycodo/scripts/upgrade_commands.sh setup-virtualenv
+          sudo bash mycodo/scripts/upgrade_commands.sh update-pip3
+          sudo bash mycodo/scripts/upgrade_commands.sh update-pip3-packages
+          sudo bash mycodo/scripts/upgrade_commands.sh ssl-certs-generate
+          sudo bash mycodo/scripts/upgrade_commands.sh compile-translations
+          sudo bash mycodo/scripts/upgrade_commands.sh generate-widget-html
+          sudo env/bin/python mycodo/start_flask_ui.py &
+          sleep 3
+          wget --debug --no-check-certificate -p https://127.0.0.1 -O /dev/null
+          env/bin/python mycodo/scripts/generate_manual_inputs_by_measure.py
+          env/bin/python mycodo/scripts/generate_manual_inputs.py
+          env/bin/python mycodo/scripts/generate_manual_outputs.py
+          env/bin/python mycodo/scripts/generate_manual_functions.py
+          env/bin/python mycodo/scripts/generate_manual_widgets.py
+          sudo bash mycodo/scripts/generate_translations_pybabel.sh
+      - name: Test with pytest
+        run: |
+          cd mycodo && ../env/bin/pytest -W ignore::DeprecationWarning -s tests/software_tests

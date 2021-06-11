@@ -39,7 +39,7 @@ INPUT_INFORMATION = {
     'dependencies_module': [
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
         ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.1'),
-        ('pip-pypi', 'adafruit_bme280', 'adafruit-circuitpython-ccs811==1.3.4')
+        ('pip-pypi', 'adafruit_ccs811', 'adafruit-circuitpython-ccs811==1.3.4')
     ],
 
     'interfaces': ['I2C'],
