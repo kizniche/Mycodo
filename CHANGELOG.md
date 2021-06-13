@@ -12,6 +12,11 @@
 
  - Add numerical keypad login
  - Add options for camera library raspistill: AWB Gain Blue, AWB Gain Red
+ - Add Input: ADS1256 with Analog pH/EC sensors
+
+### Miscellaneous
+
+ - Replace TravisCI (no longer free) with [Github Actions](https://github.com/kizniche/Mycodo/actions/workflows/main.yml) to perform unit tests
 
 
 ## 8.11.0 (2021-06-05) 

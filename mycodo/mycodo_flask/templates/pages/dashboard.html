@@ -68,16 +68,18 @@
          data-gs-width="{{each_widget.width}}"
          data-gs-height="{{each_widget.height}}">
 
-        <div class="grid-stack-item-content" style="display: flex; flex-flow: column; height: 100%; padding: 0.xm; border: 1px solid #ddd; border-radius: 5px">
+        <div class="grid-stack-item-content" style="display: flex; flex-flow: column; height: 100%; padding: 0; border: 1px solid #ddd; border-radius: 5px">
 
       {% if each_widget.graph_type in dict_widgets %}
 
-        <div class="d-flex justify-content-between panel-heading widget-heading">
+        <div class="d-flex justify-content-between widget-heading{% if not this_dashboard.locked %} panel-heading{% endif %}">
+        {% if not this_dashboard.locked %}
           <div class="my-auto widget-drag-handle">
             {% if each_widget.enable_drag_handle -%}
               <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="Drag"></i>
             {%- endif %}
           </div>
+        {% endif %}
 
           <div class="my-auto widget-title">
             {% if each_widget.graph_type in list_html_files_title_bar %}

@@ -1567,8 +1567,10 @@ def get_camera_image_info():
             latest_still_img_full_path = None
         if latest_still_img_full_path:
             ts = os.path.getmtime(latest_still_img_full_path)
-            latest_img_still_ts[each_camera.unique_id] = datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
-            latest_img_still[each_camera.unique_id] = os.path.basename(latest_still_img_full_path)
+            latest_img_still_ts[each_camera.unique_id] = datetime.fromtimestamp(
+                ts).strftime("%Y-%m-%d %H:%M:%S")
+            latest_img_still[each_camera.unique_id] = os.path.basename(
+                latest_still_img_full_path)
         else:
             latest_img_still[each_camera.unique_id] = None
 
