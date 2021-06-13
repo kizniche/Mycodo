@@ -13,6 +13,7 @@
  - Add numerical keypad login
  - Add options for camera library raspistill: AWB Gain Blue, AWB Gain Red
  - Add Input: ADS1256 with Analog pH/EC sensors
+ - Add Output: MCP23017 16-Channel I/O Expander (On/Off)
 
 ### Miscellaneous
 
