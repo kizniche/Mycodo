@@ -130,6 +130,15 @@ class ConditionalController(AbstractController, threading.Thread):
         self.conditional_run = conditional_run.ConditionalRun(
             self.logger, self.unique_id, '')
 
+        self.logger.debug(
+            "Conditional Statement (pre-replacement):\n{}".format(
+                self.conditional_statement))
+
+        with open(self.file_run, 'r') as file:
+            self.logger.debug(
+                "Conditional Statement (post-replacement):\n{}".format(
+                    file.read()))
+
     def refresh_settings(self):
         """ Signal to pause the main loop and wait for verification, the refresh settings """
         self.pause_loop = True
@@ -156,15 +165,6 @@ class ConditionalController(AbstractController, threading.Thread):
             ts=timestamp,
             name=cond.name,
             id=self.unique_id)
-
-        self.logger.debug(
-            "Conditional Statement (pre-replacement):\n{}".format(
-                self.conditional_statement))
-
-        with open(self.file_run, 'r') as file:
-            self.logger.debug(
-                "Conditional Statement (post-replacement):\n{}".format(
-                    file.read()))
 
         if self.message_include_code:
             message += '\n[Conditional Statement Code Executed]:' \
