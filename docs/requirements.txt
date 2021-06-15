@@ -1,7 +1,9 @@
-mkdocs==1.1.2
-mkdocs-material==6.2.8
+mkdocs==1.2.1
+mkdocs-material==7.1.8
 mkdocs-minify-plugin>=0.4.0
 Pygments>=2.7.4  # syntax hilighting
 
+# PDF
+mkdocs-with-pdf==0.9.2
 # Currently broken
 # mkpdfs-mkdocs-plugin

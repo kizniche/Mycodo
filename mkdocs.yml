@@ -9,6 +9,7 @@ plugins:
         - en
   - minify:
       minify_html: true
+  - with-pdf
 
 theme:
   name: material
