@@ -59,7 +59,7 @@ INPUT_INFORMATION = {
     'input_name': 'OpenWeatherMap (Lat/Lon, Current/Future)',
     'measurements_name': 'Humidity/Temperature/Pressure/Wind',
     'measurements_dict': measurements_dict,
-    'url_additional': 'openweathermap.org',
+    'url_additional': 'https://openweathermap.org',
     'measurements_rescale': False,
 
     'message': 'Obtain a free API key at openweathermap.org. '

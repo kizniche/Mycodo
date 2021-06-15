@@ -4885,7 +4885,7 @@ The Adafruit_ADS1x15 is deprecated. It's advised to use The Circuit Python ADS1x
 - Manufacturer: Weather
 - Measurements: Humidity/Temperature/Pressure/Wind
 - Interfaces: Mycodo
-- Additional URL: [Link](openweathermap.org)
+- Additional URL: [Link](https://openweathermap.org)
 
 Obtain a free API key at openweathermap.org. If the city you enter does not return measurements, try another city. Note: the free API subscription is limited to 60 calls per minute
 
@@ -4931,7 +4931,7 @@ Obtain a free API key at openweathermap.org. If the city you enter does not retu
 - Manufacturer: Weather
 - Measurements: Humidity/Temperature/Pressure/Wind
 - Interfaces: Mycodo
-- Additional URL: [Link](openweathermap.org)
+- Additional URL: [Link](https://openweathermap.org)
 
 Obtain a free API key at openweathermap.org. Notes: The free API subscription is limited to 60 calls per minute. If a Day (Future) time is selected, Minimum and Maximum temperatures are available as measurements.
 

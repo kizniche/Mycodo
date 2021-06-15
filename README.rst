@@ -15,7 +15,7 @@ Support
 Documentation
 ~~~~~~~~~~~~~
 
-`Mycodo Manual <https://kizniche.github.io/Mycodo>`__
+`Mycodo Manual <https://kizniche.github.io/Mycodo>`__ (`PDF <https://github.com/kizniche/Mycodo/raw/master/docs/mycodo-manual.pdf>`__)
 
 `Mycodo API <https://kizniche.github.io/Mycodo/mycodo-api.html>`__ (Version: v1)
 
