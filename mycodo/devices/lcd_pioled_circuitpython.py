@@ -15,7 +15,7 @@ class PiOLEDCircuitpython:
     """Output to the PiOLED"""
     def __init__(self, lcd_dev=None, lcd_settings_dict=None, font=None):
         self.disp = None
-        self.font = None
+        self.font = font
         self.font_size = 10
 
         if lcd_dev:
