@@ -264,7 +264,7 @@ FUNCTION_INFORMATION = {
         },
         {
             'id': 'font_size',
-            'type': 'float',
+            'type': 'integer',
             'default_value': 10,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
