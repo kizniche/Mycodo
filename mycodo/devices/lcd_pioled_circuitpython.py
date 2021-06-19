@@ -112,7 +112,7 @@ class PiOLEDCircuitpython:
         if not self.font:
             font = ImageFont.load_default()
         else:
-            font = ImageFont.truetype(font=self.font, size=10)
+            font = ImageFont.truetype(font=self.font, size=self.font_size)
             # font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu//DejaVuSans.ttf')
 
         image = Image.new('1', (self.disp.width, self.disp.height))
