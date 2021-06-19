@@ -166,7 +166,7 @@ def execute_at_modification(
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'display_ssd1306_oled_128x32_i2c',
-    'function_name': 'Display: SSD1306 OLED 128x32 (I2C)',
+    'function_name': 'Display: SSD1306 OLED 128x32 [4 Lines] (I2C)',
     'function_library': 'Adafruit-Circuitpython-SSD1306',
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
@@ -232,6 +232,30 @@ FUNCTION_INFORMATION = {
             'name': 'Reset Pin',
             'phrase': 'The pin (BCM numbering) connected to RST of the display'
         },
+        {
+            'id': 'use_non_default_font',
+            'type': 'bool',
+            'default_value': False,
+            'required': True,
+            'name': 'Use Non-Default Font',
+            'phrase': "Don't use the default font. Enable to specify the path to a font to use."
+        },
+        {
+            'id': 'non_default_font',
+            'type': 'text',
+            'default_value': '/usr/share/fonts/truetype/dejavu//DejaVuSans.ttf',
+            'name': 'Non-Default Font Path',
+            'phrase': 'The path to the non-default font to use'
+        },
+        {
+            'id': 'font_size',
+            'type': 'float',
+            'default_value': 10,
+            'required': True,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Font Size (pt)',
+            'phrase': 'The size of the font, in points'
+        }
     ],
 
     'custom_channel_options': [
@@ -316,6 +340,9 @@ class CustomModule(AbstractFunction):
         self.i2c_bus = None
         self.number_line_sets = None
         self.pin_reset = None
+        self.use_non_default_font = None
+        self.non_default_font = None
+        self.font_size = None
 
         # Set custom options
         custom_function = db_retrieve_table_daemon(
@@ -348,10 +375,15 @@ class CustomModule(AbstractFunction):
                 "i2c_address": self.i2c_address,
                 "i2c_bus": self.i2c_bus,
                 "x_characters": lcd_x_characters,
-                "lcd_type": "128x64_pioled_circuit_python"
+                "lcd_type": "128x64_pioled_circuit_python",
+                "font_size": self.font_size
             }
 
-            self.device = PiOLEDCircuitpython(lcd_settings_dict=lcd_settings_dict)
+            font = None
+            if self.use_non_default_font:
+                font = self.non_default_font
+
+            self.device = PiOLEDCircuitpython(lcd_settings_dict=lcd_settings_dict, font=font)
             self.device.lcd_init()
 
             self.logger.debug("LCD Function started")

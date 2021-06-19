@@ -13,8 +13,10 @@ logger = logging.getLogger("mycodo.device.lcd_pioled_circuitpython")
 
 class PiOLEDCircuitpython:
     """Output to the PiOLED"""
-    def __init__(self, lcd_dev=None, lcd_settings_dict=None):
+    def __init__(self, lcd_dev=None, lcd_settings_dict=None, font=None):
         self.disp = None
+        self.font = None
+        self.font_size = 10
 
         if lcd_dev:
             self.logger = logging.getLogger("{}_{}".format(
@@ -32,12 +34,14 @@ class PiOLEDCircuitpython:
                 self.pin_dc = lcd_dev.pin_dc
                 self.pin_reset = lcd_dev.pin_reset
                 self.pin_cs = lcd_dev.pin_cs
+
         elif lcd_settings_dict:
             self.logger = logging.getLogger("{}_{}".format(
                 __name__, lcd_settings_dict["unique_id"].split('-')[0]))
             self.interface = lcd_settings_dict["interface"]
             self.lcd_x_characters = lcd_settings_dict["x_characters"]
             self.lcd_type = lcd_settings_dict["lcd_type"]
+            self.font_size = lcd_settings_dict["font_size"]
 
             if self.interface == "I2C":
                 self.i2c_address = lcd_settings_dict["i2c_address"]
@@ -105,7 +109,11 @@ class PiOLEDCircuitpython:
         """ Send strings to display """
         x = 0
         top = -2  # padding
-        font = ImageFont.load_default()
+        if not self.font:
+            font = ImageFont.load_default()
+        else:
+            font = ImageFont.truetype(font=self.font, size=10)
+            # font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu//DejaVuSans.ttf')
 
         image = Image.new('1', (self.disp.width, self.disp.height))
 

@@ -166,7 +166,7 @@ def execute_at_modification(
 
 FUNCTION_INFORMATION = {
     'function_name_unique': 'display_ssd1309_oled_128x64_i2c',
-    'function_name': 'Display: SSD1309 OLED 128x64 (I2C)',
+    'function_name': 'Display: SSD1309 OLED 128x64 [8 Lines] (I2C)',
     'function_library': 'luma.oled',
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,

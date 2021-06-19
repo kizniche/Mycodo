@@ -131,10 +131,10 @@ class AbstractBaseController(object):
 
                 if required and not custom_option_set:
                     self.logger.error(
-                        "Custom option '{}' required but was not found to be set by the user".format(
+                        "Option '{}' required but was not found to be set by the user. Setting to default.".format(
                             each_option_default['id']))
 
-                elif each_option_default['type'] == 'integer':
+                if each_option_default['type'] == 'integer':
                     setattr(self, each_option_default['id'], int(option_value))
 
                 elif each_option_default['type'] == 'float':
@@ -254,16 +254,16 @@ class AbstractBaseController(object):
 
                 if required and not custom_option_set:
                     self.logger.error(
-                        "Option '{}' required but was not found to be set by the user".format(
+                        "Option '{}' required but was not found to be set by the user. Setting to default.".format(
                             each_option_default['id']))
 
-                elif each_option_default['type'] in ['integer',
-                                                     'float',
-                                                     'bool',
-                                                     'multiline_text',
-                                                     'select_multi_measurement',
-                                                     'text',
-                                                     'select']:
+                if each_option_default['type'] in ['integer',
+                                                   'float',
+                                                   'bool',
+                                                   'multiline_text',
+                                                   'select_multi_measurement',
+                                                   'text',
+                                                   'select']:
                     setattr(self, each_option_default['id'], option_value)
 
                 elif each_option_default['type'] == 'select_measurement':
