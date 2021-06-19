@@ -34,6 +34,7 @@ def cond_statement_replace(
 def save_conditional_code(
         error,
         cond_statement,
+        cond_status,
         unique_id,
         table_conditions_all,
         table_actions_all,
@@ -64,11 +65,23 @@ class ConditionalRun(AbstractConditional):
     def conditional_code_run(self):
 """.format(timeout=timeout)
 
-        indented_code = textwrap.indent(cond_statement, ' ' * 8)
+        if cond_statement:
+            indented_code = textwrap.indent(cond_statement, ' ' * 8)
+        else:
+            indented_code = textwrap.indent("pass", ' ' * 8)
 
         cond_statement_run = pre_statement_run + indented_code
         cond_statement_run = cond_statement_replace(
             cond_statement_run, table_conditions_all, table_actions_all)
+
+        cond_statement_run += """
+
+    def function_status(self):
+"""
+        if cond_status:
+            cond_statement_run += textwrap.indent(cond_status, ' ' * 8)
+        else:
+            cond_statement_run += textwrap.indent("pass", ' ' * 8)
 
         assure_path_exists(PATH_PYTHON_CODE_USER)
         file_run = '{}/conditional_{}.py'.format(

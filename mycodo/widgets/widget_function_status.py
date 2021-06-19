@@ -47,8 +47,9 @@ WIDGET_INFORMATION = {
             'type': 'select_device',
             'default_value': '',
             'options_select': [
-                'PID',
                 'Function',
+                'Conditional',
+                'PID'
             ],
             'name': lazy_gettext('Function'),
             'phrase': lazy_gettext('Select a Function to display the status of')
@@ -85,7 +86,16 @@ WIDGET_INFORMATION = {
     $.getJSON(url,
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
-          document.getElementById("status-" + chart_number).innerHTML = data['string_status'].replace(/(?:\\r\\n|\\r|\\n)/g, "<br>");
+          let string_display = "";
+          if ('error' in data) {
+            for (var i = 0, size = data['error'].length; i < size; i++){
+              string_display += "<p>Error: " + data['error'][i] + "</p>";
+            }
+          }
+          if ('string_status' in data) {
+            string_display += data['string_status'].replace(/(?:\\r\\n|\\r|\\n)/g, "<br>");
+          }
+          document.getElementById("status-" + chart_number).innerHTML = string_display;
         }
         else {
           document.getElementById("status-" + chart_number).innerHTML = "Error";

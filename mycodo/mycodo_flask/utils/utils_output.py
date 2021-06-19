@@ -284,7 +284,7 @@ def output_mod(form_output, request_form):
             error, custom_options_channels_json_postsave_tmp = custom_channel_options_return_json(
                 error, dict_outputs, request_form,
                 form_output.output_id.data, each_channel.channel,
-                device=mod_output.output_type, use_defaults=True)
+                device=mod_output.output_type, use_defaults=False)
             custom_options_channels_dict_postsave[each_channel.channel] = json.loads(
                 custom_options_channels_json_postsave_tmp)
 

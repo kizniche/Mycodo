@@ -28,7 +28,7 @@
 <div class="col-12">
   <label class="control-label" for="{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <textarea class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" rows="{{each_option['lines']}}" type="text" title="{{each_option['phrase']}}">
+    <textarea style="font-family:monospace;" class="form-control" id="{{each_option['id']}}" name="{{each_option['id']}}" rows="{{each_option['lines']}}" type="text" title="{{each_option['phrase']}}">
     {%- if force_default_value and 'default_value' in each_option -%}
       {{each_option['default_value']}}
     {%- elif custom_options_values[unique_id][each_option['id']] -%}
@@ -230,7 +230,12 @@
       {% endif %}
       {% if 'Function' in each_option['options_select'] %}
         {%- for each_dev in function -%}
-      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[Custom {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[Function {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
+        {%- endfor -%}
+      {% endif %}
+      {% if 'Conditional' in each_option['options_select'] %}
+        {%- for each_dev in conditional -%}
+      <option value="{{each_dev.unique_id}}"{% if each_dev.unique_id == custom_options_values[unique_id][each_option['id']] %} selected{% endif %}>[Conditional {{'%02d' % each_dev.id}}] {{each_dev.name}}</option>
         {%- endfor -%}
       {% endif %}
     </select>

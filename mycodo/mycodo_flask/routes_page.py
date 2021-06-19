@@ -585,6 +585,7 @@ def page_dashboard(dashboard_id):
     """ Generate custom dashboard with various data """
     # Retrieve tables from SQL database
     camera = Camera.query.all()
+    conditional = Conditional.query.all()
     function = CustomController.query.all()
     widget = Widget.query.all()
     this_dashboard = Dashboard.query.filter(
@@ -762,6 +763,7 @@ def page_dashboard(dashboard_id):
         device_measurements, input_dev, output, math, function)
 
     return render_template('pages/dashboard.html',
+                           conditional=conditional,
                            custom_options_values_output_channels=custom_options_values_output_channels,
                            custom_options_values_widgets=custom_options_values_widgets,
                            custom_widget_variables=custom_widget_variables,

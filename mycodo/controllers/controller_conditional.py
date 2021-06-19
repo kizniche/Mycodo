@@ -63,6 +63,7 @@ class ConditionalController(AbstractController, threading.Thread):
         self.log_level_debug = None
         self.message_include_code = None
         self.conditional_statement = None
+        self.conditional_status = None
         self.timer_period = None
         self.file_run = None
         self.sample_rate = None
@@ -94,6 +95,7 @@ class ConditionalController(AbstractController, threading.Thread):
             Conditional, unique_id=self.unique_id)
         self.is_activated = cond.is_activated
         self.conditional_statement = cond.conditional_statement
+        self.conditional_status = cond.conditional_status
         self.period = cond.period
         self.start_offset = cond.start_offset
         self.pyro_timeout = cond.pyro_timeout
@@ -116,6 +118,7 @@ class ConditionalController(AbstractController, threading.Thread):
             save_conditional_code(
                 [],
                 self.conditional_statement,
+                self.conditional_status,
                 self.unique_id,
                 db_retrieve_table_daemon(ConditionalConditions, entry='all'),
                 db_retrieve_table_daemon(Actions, entry='all'),
@@ -181,6 +184,9 @@ class ConditionalController(AbstractController, threading.Thread):
             self.conditional_run.conditional_code_run()
         except Exception:
             self.logger.exception("Exception executing Conditional Statement code")
+
+    def function_status(self):
+        return self.conditional_run.function_status()
 
     def stop_controller(self):
         self.thread_shutdown_timer = timeit.default_timer()

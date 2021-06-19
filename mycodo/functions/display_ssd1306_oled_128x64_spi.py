@@ -135,7 +135,7 @@ def execute_at_modification(
                 error, custom_options = custom_channel_options_return_json(
                     error, dict_controllers, request_form,
                     mod_function.unique_id, index,
-                    device=mod_function.device, use_defaults=True)
+                    device=mod_function.device, use_defaults=False)
                 custom_options_dict = json.loads(custom_options)
                 custom_options_dict["name"] = new_channel.name
                 new_channel.custom_options = json.dumps(custom_options_dict)
@@ -182,6 +182,7 @@ FUNCTION_INFORMATION = {
         ('apt', 'libjpeg-dev', 'libjpeg-dev'),
         ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit-GPIO==1.0.3'),
         ('pip-pypi', 'adafruit_extended_bus', 'adafruit-extended-bus==1.0.1'),
         ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf'),
         ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306')

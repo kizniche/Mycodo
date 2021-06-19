@@ -27,7 +27,7 @@
 <div class="col-12">
   <label class="control-label" for="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}">{{each_option['name']}}</label>
   <div>
-    <textarea class="form-control" id="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" rows="{{each_option['lines']}}" type="text" title="{{each_option['phrase']}}">
+    <textarea style="font-family:monospace;" class="form-control" id="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" name="{{each_device.unique_id}}_{{channel}}_{{each_option['id']}}" rows="{{each_option['lines']}}" type="text" title="{{each_option['phrase']}}">
     {%- if custom_options_values[unique_id][channel][each_option['id']] -%}{{custom_options_values[unique_id][channel][each_option['id']]}}
     {%- elif 'default_value' in each_option -%}{{each_option['default_value']}}
     {%- endif -%}

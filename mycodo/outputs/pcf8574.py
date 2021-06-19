@@ -2,6 +2,8 @@
 #
 # pcf8574.py - Output for PCF8574
 #
+from collections import OrderedDict
+
 from flask_babel import lazy_gettext
 
 from mycodo.config_translations import TRANSLATIONS
@@ -10,83 +12,18 @@ from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
 
 # Measurements
-measurements_dict = {
-    0: {
+measurements_dict = OrderedDict()
+channels_dict = OrderedDict()
+for each_channel in range(8):
+    measurements_dict[each_channel] = {
         'measurement': 'duration_time',
-        'unit': 's',
-    },
-    1: {
-        'measurement': 'duration_time',
-        'unit': 's',
-    },
-    2: {
-        'measurement': 'duration_time',
-        'unit': 's',
-    },
-    3: {
-        'measurement': 'duration_time',
-        'unit': 's',
-    },
-    4: {
-        'measurement': 'duration_time',
-        'unit': 's',
-    },
-    5: {
-        'measurement': 'duration_time',
-        'unit': 's',
-    },
-    6: {
-        'measurement': 'duration_time',
-        'unit': 's',
-    },
-    7: {
-        'measurement': 'duration_time',
-        'unit': 's',
+        'unit': 's'
     }
-}
-
-channels_dict = {
-    0: {
-        'name': 'Channel 1',
+    channels_dict[each_channel] = {
+        'name': 'Channel {}'.format(each_channel + 1),
         'types': ['on_off'],
-        'measurements': [0]
-    },
-    1: {
-        'name': 'Channel 2',
-        'types': ['on_off'],
-        'measurements': [1]
-    },
-    2: {
-        'name': 'Channel 3',
-        'types': ['on_off'],
-        'measurements': [2]
-    },
-    3: {
-        'name': 'Channel 4',
-        'types': ['on_off'],
-        'measurements': [3]
-    },
-    4: {
-        'name': 'Channel 5',
-        'types': ['on_off'],
-        'measurements': [4]
-    },
-    5: {
-        'name': 'Channel 6',
-        'types': ['on_off'],
-        'measurements': [5]
-    },
-    6: {
-        'name': 'Channel 7',
-        'types': ['on_off'],
-        'measurements': [6]
-    },
-    7: {
-        'name': 'Channel 8',
-        'types': ['on_off'],
-        'measurements': [7]
+        'measurements': [each_channel]
     }
-}
 
 # Output information
 OUTPUT_INFORMATION = {

@@ -2,7 +2,6 @@
 import logging
 import time
 
-import Adafruit_GPIO.SPI as SPI
 import adafruit_ssd1306
 from PIL import Image
 from PIL import ImageDraw
@@ -63,6 +62,7 @@ class PiOLEDCircuitpython:
                     addr=int(str(self.i2c_address), 16))
 
         elif self.interface == 'SPI':
+            import Adafruit_GPIO.SPI as SPI
             if self.lcd_type == '128x32_pioled_circuit_python':
                 self.disp = adafruit_ssd1306.SSD1306_SPI(
                     128, 32,

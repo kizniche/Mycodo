@@ -892,6 +892,7 @@ if __name__ == "__main__":
                         save_conditional_code(
                             [],
                             each_cond.conditional_statement,
+                            each_cond.conditional_status,
                             each_cond.unique_is,
                             conditions,
                             actions)
@@ -1011,6 +1012,7 @@ if __name__ == "__main__":
                         save_conditional_code(
                             [],
                             each_conditional.conditional_statement,
+                            each_conditional.conditional_status,
                             each_conditional.unique_is,
                             conditions,
                             actions)
@@ -1069,6 +1071,7 @@ if __name__ == "__main__":
                         save_conditional_code(
                             [],
                             each_conditional.conditional_statement,
+                            each_conditional.conditional_status,
                             each_conditional.unique_is,
                             conditions,
                             actions)

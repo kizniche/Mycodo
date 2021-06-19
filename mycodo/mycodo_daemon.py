@@ -519,6 +519,11 @@ class DaemonController:
                 return self.controller["Function"][function_id].function_status()
             except Exception as err:
                 return {'error': ["Error getting Function status: {}".format(err)]}
+        elif function_id in self.controller["Conditional"]:
+            try:
+                return self.controller["Conditional"][function_id].function_status()
+            except Exception as err:
+                return {'error': ["Error getting Function status: {}".format(err)]}
         elif function_id in self.controller["PID"]:
             try:
                 return self.controller["PID"][function_id].function_status()

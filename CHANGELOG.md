@@ -7,6 +7,9 @@
  - Fix flag/tag newlines on asynchronous graphs
  - Fix single quotes in translations causing error ([#1019](https://github.com/kizniche/mycodo/issues/1019))
  - Fix CCS811 Input dependency install issue ([#1023](https://github.com/kizniche/mycodo/issues/1023))
+ - Fix sense-hat dependency issue
+ - Fix saving Output checkboxes ([#1029](https://github.com/kizniche/mycodo/issues/1029))
+ - Fix PiOLED Functions ([#1030](https://github.com/kizniche/mycodo/issues/1030))
 
 ### Features
 
@@ -14,6 +17,7 @@
  - Add options for camera library raspistill: AWB Gain Blue, AWB Gain Red
  - Add Input: ADS1256 with Analog pH/EC sensors
  - Add Output: MCP23017 16-Channel I/O Expander (On/Off)
+ - Add return status to Conditional Controllers
 
 ### Miscellaneous
 

@@ -59,14 +59,20 @@
     </div>
 
     <div class="col-12" style="padding-top: 0.3em">
-      Conditional Controllers allow the execution of Python 3 code as well as the use of Conditions and Actions that interact with Mycodo. Conditions typically acquire data from Mycodo, such as Input measurements, and Actions typically affect Mycodo, such as actuating an Output or pausing a PID controller. Each Condition and Action you add will have its own description and example code to demonstrate how to use it in your Conditional Statement code. Notes: 1) Timeout must be set longer than it takes your Conditional Statement to execute (if Timeout is set too low, only part of your Conditional Statement may execute), 2) Period must be set longer than the time it takes for your Conditional Statement to execute, otherwise it will execute again before the previous execution has finished.
+      Conditional Controllers allow the execution of Python 3 code as well as the use of Conditions and Actions that interact with Mycodo. Conditions typically acquire data from Mycodo, such as Input measurements, and Actions typically affect Mycodo, such as actuating an Output or pausing a PID controller. Each Condition and Action you add will have its own description and example code to demonstrate how to use it in your Conditional Statement code. Notes: 1) Timeout must be set longer than it takes your Conditional Statement to execute (if Timeout is set too low, only part of your Conditional Statement may execute), 2) Period must be set longer than the time it takes for your Conditional Statement to execute, otherwise it will execute again before the previous execution has finished. The Conditional Status allows you to provide a return value that can be used by other controllers or dashboard widgets.
     </div>
 
     <div class="row small-gutters" style="padding: 1.5em 0 0.2em 0.1em">
-      <div class="col-md-12 col-lg-9">
+      <div class="col-12">
         {{form_conditional.conditional_statement.label(class_='control-label')}}
         <div>
-          <textarea class="form-control" id="conditional_statement" name="conditional_statement" rows="8" type="text" title="{{_('The Python 3 code to execute')}}">{{each_cond.conditional_statement}}</textarea>
+          <textarea style="font-family:monospace;" class="form-control" id="conditional_statement" name="conditional_statement" rows="8" type="text" title="{{_('The Python 3 code to execute')}}">{{each_cond.conditional_statement}}</textarea>
+        </div>
+      </div>
+      <div class="col-12">
+        {{form_conditional.conditional_status.label(class_='control-label')}}
+        <div>
+          <textarea style="font-family:monospace;" class="form-control" id="conditional_status" name="conditional_status" rows="8" type="text" title="{{_('The Python 3 code to execute')}}. {{_('The return value provides a status for the controller')}}.">{{each_cond.conditional_status}}</textarea>
         </div>
       </div>
       <div class="col-auto">

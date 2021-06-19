@@ -92,7 +92,7 @@ INPUT_INFORMATION = {
                'which include the LPS25H, LSM9DS1, and HTS221.',
 
     'dependencies_module': [
-        ('pip-pypi', 'sense-hat', 'sense-hat==2.2.0'),
+        ('pip-pypi', 'sense_hat', 'sense-hat==2.2.0'),
     ],
 
     'interfaces': ['I2C'],

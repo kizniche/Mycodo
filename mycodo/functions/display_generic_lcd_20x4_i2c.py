@@ -135,7 +135,7 @@ def execute_at_modification(
                 error, custom_options = custom_channel_options_return_json(
                     error, dict_controllers, request_form,
                     mod_function.unique_id, index,
-                    device=mod_function.device, use_defaults=True)
+                    device=mod_function.device, use_defaults=False)
                 custom_options_dict = json.loads(custom_options)
                 custom_options_dict["name"] = new_channel.name
                 new_channel.custom_options = json.dumps(custom_options_dict)

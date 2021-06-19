@@ -38,6 +38,7 @@ def conditional_mod(form):
         error, lines_code, cmd_status, cmd_out = save_conditional_code(
             error,
             form.conditional_statement.data,
+            form.conditional_status.data,
             form.function_id.data,
             ConditionalConditions.query.all(),
             Actions.query.all(),
@@ -55,6 +56,7 @@ def conditional_mod(form):
             Conditional.unique_id == form.function_id.data).first()
         cond_mod.name = form.name.data
         cond_mod.conditional_statement = form.conditional_statement.data
+        cond_mod.conditional_status = form.conditional_status.data
         cond_mod.period = form.period.data
         cond_mod.log_level_debug = form.log_level_debug.data
         cond_mod.message_include_code = form.message_include_code.data

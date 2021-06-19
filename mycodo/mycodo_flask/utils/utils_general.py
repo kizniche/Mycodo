@@ -438,7 +438,13 @@ def custom_channel_options_return_json(
                             null_value = False
                             dict_options_return[each_option['id']] = value
 
-            if null_value:
+            if (request_form and
+                    each_option['type'] == 'bool' and
+                    "{}_{}_{}".format(device_id, channel, each_option['id']) not in request_form.keys() and
+                    not use_defaults):
+                dict_options_return[each_option['id']] = False
+
+            elif null_value:
                 if use_defaults and 'default_value' in each_option:
                     # If a select type has cast_value set, cast the value as that type
                     if (each_option['type'] == 'select' and
@@ -448,6 +454,8 @@ def custom_channel_options_return_json(
                             dict_options_return[each_option['id']] = int(each_option['default_value'])
                         elif each_option['cast_value'] == 'float':
                             dict_options_return[each_option['id']] = float(each_option['default_value'])
+                        elif each_option['cast_value'] == 'bool':
+                            dict_options_return[each_option['id']] = bool(each_option['default_value'])
                     else:
                         dict_options_return[each_option['id']] = each_option['default_value']
                 elif each_option['type'] == "select_multi_measurement":
