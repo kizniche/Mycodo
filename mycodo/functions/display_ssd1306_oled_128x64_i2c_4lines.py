@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  display_ssd1306_oled_128x64_i2c.py - Function to output to LCD
+#  display_ssd1306_oled_128x64_i2c_4lines.py - Function to output to LCD
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
@@ -46,7 +46,7 @@ from mycodo.utils.lcd import format_measurement_line
 from mycodo.utils.system_pi import cmd_output
 
 # Set to how many lines the LCD has
-lcd_lines = 8
+lcd_lines = 4
 lcd_x_characters = 21
 
 
@@ -165,8 +165,8 @@ def execute_at_modification(
 
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'display_ssd1306_oled_128x64_i2c',
-    'function_name': 'Display: SSD1306 OLED 128x64 [8 Lines] (I2C)',
+    'function_name_unique': 'display_ssd1306_oled_128x64_i2c_4lines',
+    'function_name': 'Display: SSD1306 OLED 128x64 [4 Lines] (I2C)',
     'function_library': 'Adafruit-Circuitpython-SSD1306',
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
@@ -331,7 +331,7 @@ class CustomModule(AbstractFunction):
         self.timer_loop = time.time()
         self.line_sets = []
         self.current_line_set = 0
-        self.line_y_dimensions = [0, 8, 16, 24, 32, 40, 48, 56]
+        self.line_y_dimensions = [0, 16, 32, 48]
         self.pad = -2
 
         # Initialize custom options
@@ -486,11 +486,7 @@ class CustomModule(AbstractFunction):
             lines_display[0],
             lines_display[1],
             lines_display[2],
-            lines_display[3],
-            lines_display[4],
-            lines_display[5],
-            lines_display[6],
-            lines_display[7])
+            lines_display[3])
 
     def stop_function(self):
         self.device.lcd_write_lines(

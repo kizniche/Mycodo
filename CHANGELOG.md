@@ -18,6 +18,7 @@
  - Add Input: ADS1256 with Analog pH/EC sensors
  - Add Output: MCP23017 16-Channel I/O Expander (On/Off)
  - Add return status to Conditional Controllers
+ - Add SSD1306 128x64 Display with 4 Lines ([#1030](https://github.com/kizniche/mycodo/issues/1030))
 
 ### Miscellaneous
 
