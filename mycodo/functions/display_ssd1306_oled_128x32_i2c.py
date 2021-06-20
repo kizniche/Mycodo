@@ -375,6 +375,7 @@ class CustomModule(AbstractFunction):
                 "i2c_address": self.i2c_address,
                 "i2c_bus": self.i2c_bus,
                 "x_characters": lcd_x_characters,
+                "line_y_dimensions": self.line_y_dimensions,
                 "lcd_type": "128x64_pioled_circuit_python",
                 "font_size": self.font_size
             }

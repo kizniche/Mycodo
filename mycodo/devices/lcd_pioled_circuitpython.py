@@ -23,6 +23,7 @@ class PiOLEDCircuitpython:
                 __name__, lcd_dev.unique_id.split('-')[0]))
             self.interface = lcd_dev.interface
             self.lcd_x_characters = lcd_dev.x_characters
+            self.line_y_dimensions = [0, 8, 16, 24, 32, 40, 48, 56]
             self.lcd_type = lcd_dev.lcd_type
 
             if self.interface == "I2C":
@@ -40,6 +41,7 @@ class PiOLEDCircuitpython:
                 __name__, lcd_settings_dict["unique_id"].split('-')[0]))
             self.interface = lcd_settings_dict["interface"]
             self.lcd_x_characters = lcd_settings_dict["x_characters"]
+            self.line_y_dimensions = lcd_settings_dict["line_y_dimensions"]
             self.lcd_type = lcd_settings_dict["lcd_type"]
             self.font_size = lcd_settings_dict["font_size"]
 
@@ -113,7 +115,6 @@ class PiOLEDCircuitpython:
             font = ImageFont.load_default()
         else:
             font = ImageFont.truetype(font=self.font, size=self.font_size)
-            # font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu//DejaVuSans.ttf')
 
         image = Image.new('1', (self.disp.width, self.disp.height))
 
@@ -122,19 +123,19 @@ class PiOLEDCircuitpython:
                        outline=0,
                        fill=0)
 
-        draw.text((x, top), message_line_1, font=font, fill=255)
-        draw.text((x, top + 8), message_line_2, font=font, fill=255)
-        draw.text((x, top + 16), message_line_3, font=font, fill=255)
-        draw.text((x, top + 24), message_line_4, font=font, fill=255)
+        draw.text((x, top + self.line_y_dimensions[0]), message_line_1, font=font, fill=255)
+        draw.text((x, top + self.line_y_dimensions[1]), message_line_2, font=font, fill=255)
+        draw.text((x, top + self.line_y_dimensions[2]), message_line_3, font=font, fill=255)
+        draw.text((x, top + self.line_y_dimensions[3]), message_line_4, font=font, fill=255)
 
         if message_line_5 is not None:
-            draw.text((x, top + 32), message_line_5, font=font, fill=255)
+            draw.text((x, top + self.line_y_dimensions[4]), message_line_5, font=font, fill=255)
         if message_line_6 is not None:
-            draw.text((x, top + 40), message_line_6, font=font, fill=255)
+            draw.text((x, top + self.line_y_dimensions[5]), message_line_6, font=font, fill=255)
         if message_line_7 is not None:
-            draw.text((x, top + 48), message_line_7, font=font, fill=255)
+            draw.text((x, top + self.line_y_dimensions[6]), message_line_7, font=font, fill=255)
         if message_line_8 is not None:
-            draw.text((x, top + 54), message_line_8, font=font, fill=255)
+            draw.text((x, top + self.line_y_dimensions[7]), message_line_8, font=font, fill=255)
 
         self.disp.image(image)
         self.disp.show()
