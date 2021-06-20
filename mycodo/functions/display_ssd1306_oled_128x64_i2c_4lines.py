@@ -250,7 +250,7 @@ FUNCTION_INFORMATION = {
         {
             'id': 'font_size',
             'type': 'integer',
-            'default_value': 10,
+            'default_value': 14,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Font Size (pt)',
