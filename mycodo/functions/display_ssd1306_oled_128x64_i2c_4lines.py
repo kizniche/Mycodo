@@ -47,7 +47,6 @@ from mycodo.utils.system_pi import cmd_output
 
 # Set to how many lines the LCD has
 lcd_lines = 4
-lcd_x_characters = 21
 
 
 def execute_at_creation(error, new_func, dict_functions=None):
@@ -233,6 +232,14 @@ FUNCTION_INFORMATION = {
             'phrase': 'The pin (BCM numbering) connected to RST of the display'
         },
         {
+            'id': 'characters_x',
+            'type': 'integer',
+            'default_value': 17,
+            'required': True,
+            'name': 'Characters Per Line',
+            'phrase': 'The maximum number of characters to display per line'
+        },
+        {
             'id': 'use_non_default_font',
             'type': 'bool',
             'default_value': False,
@@ -250,7 +257,7 @@ FUNCTION_INFORMATION = {
         {
             'id': 'font_size',
             'type': 'integer',
-            'default_value': 14,
+            'default_value': 12,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Font Size (pt)',
@@ -340,6 +347,7 @@ class CustomModule(AbstractFunction):
         self.i2c_bus = None
         self.number_line_sets = None
         self.pin_reset = None
+        self.characters_x = None
         self.use_non_default_font = None
         self.non_default_font = None
         self.font_size = None
@@ -374,7 +382,7 @@ class CustomModule(AbstractFunction):
                 "interface": "I2C",
                 "i2c_address": self.i2c_address,
                 "i2c_bus": self.i2c_bus,
-                "x_characters": lcd_x_characters,
+                "x_characters": self.characters_x,
                 "line_y_dimensions": self.line_y_dimensions,
                 "lcd_type": "128x64_pioled_circuit_python",
                 "font_size": self.font_size
@@ -441,7 +449,7 @@ class CustomModule(AbstractFunction):
                             lines_display[current_line] = format_measurement_line(
                                 self.options_channels['select_measurement'][current_channel]['device_id'],
                                 self.options_channels['select_measurement'][current_channel]['measurement_id'],
-                                val_rounded, lcd_x_characters)
+                                val_rounded, self.characters_x)
 
                     elif self.options_channels['line_display_type'][current_channel] == 'measurement_ts':
                         if measure_ts:
