@@ -14,7 +14,7 @@ cd "${INSTALL_PATH}" || exit
 case "${1:-''}" in
     "dependencies")
         apt-get update -y
-        apt-get install -y python3 python3-dev python3-setuptools libffi-dev libssl-dev
+        apt-get install -y python3 python3-dev python3-setuptools libffi-dev libssl-dev build-essential
         apt remove -y python3-cffi-backend
 
         pip install --upgrade pip
