@@ -45,8 +45,8 @@ case "${1:-''}" in
         printf "#### You must log out then back in before running 'make build'. If you are not running Raspbian under the user 'pi', then you need to add your user to the 'docker group with the command 'usermod -aG docker pi', substitutung 'pi' with your user, then log out for the changes to take effect.\n" 2>&1 | tee -a "${LOG_LOCATION}"
     ;;
     "test")
-        docker exec -ti flask "${INSTALL_PATH}"/env/bin/pip install --upgrade -r /home/mycodo/mycodo/install/requirements-testing.txt
-        docker exec -ti flask pytest /home/mycodo/mycodo/tests/software_tests
+        docker exec -ti mycodo_flask "${INSTALL_PATH}"/env/bin/python -m pip install --upgrade -r /home/mycodo/mycodo/install/requirements-testing.txt
+        docker exec -ti mycodo_flask "${INSTALL_PATH}"/env/bin/python -m pytest /home/mycodo/mycodo/tests/software_tests
     ;;
     "clean-all")
         docker container stop "$(docker container ls -a -q)" && docker system prune -a -f --volumes
