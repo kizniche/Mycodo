@@ -17,6 +17,10 @@ case "${1:-''}" in
         apt-get install -y python3 python3-dev python3-setuptools libffi-dev libssl-dev build-essential
         apt remove -y python3-cffi-backend
 
+        python3 /usr/lib/python3/dist-packages/easy_install.py pip
+        python3 -m pip install --upgrade pip
+
+        "${INSTALL_PATH}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
         "${INSTALL_PATH}"/mycodo/scripts/upgrade_commands.sh install-docker-ce-cli
         apt install -y docker-ce containerd.io
 
@@ -24,15 +28,6 @@ case "${1:-''}" in
 
         if ! [ -x "$(command -v "${INSTALL_PATH}"/env/bin/docker-compose)" ]; then
             printf "#### Installing docker-compose\n" 2>&1 | tee -a "${LOG_LOCATION}"
-
-            # ensure pip is installed, because `setup-virtualenv` might need it
-            python3 /usr/lib/python3/dist-packages/easy_install.py pip
-            python3 -m pip install --upgrade pip
-
-            # ensure virtualenv is set up
-            "${INSTALL_PATH}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
-
-            # finally, install docker-compose to the virtualenv
             "${INSTALL_PATH}"/env/bin/python -m pip install docker-compose
         else
             printf "#### docker-compose already installed. Skipping install.\n" 2>&1 | tee -a "${LOG_LOCATION}"
