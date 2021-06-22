@@ -9,6 +9,7 @@ COPY . /home/mycodo
 
 WORKDIR /home/mycodo/mycodo
 
+RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh compile-mycodo-wrapper
 RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh create-files-directories
 RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh update-apt
 RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh update-packages
