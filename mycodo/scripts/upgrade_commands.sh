@@ -195,9 +195,9 @@ case "${1:-''}" in
         printf "\n#### Checking python 3 virtualenv\n"
         if [[ ! -e ${MYCODO_PATH}/env/bin/python3 ]]; then
             printf "#### Virtualenv doesn't exist. Creating...\n"
-            pip install virtualenv --upgrade
+            python3 -m pip install virtualenv --upgrade
             rm -rf "${MYCODO_PATH}"/env
-            virtualenv --system-site-packages -p "${PYTHON_BINARY_SYS_LOC}" "${MYCODO_PATH}"/env
+            python3 -m virtualenv --system-site-packages -p "${PYTHON_BINARY_SYS_LOC}" "${MYCODO_PATH}"/env
         else
             printf "#### Virtualenv already exists, skipping creation\n"
         fi
@@ -423,7 +423,7 @@ case "${1:-''}" in
         apt-get remove -y apache2 python-cffi-backend python3-cffi-backend
         apt-get install -y ${APT_PKGS}
         python3 /usr/lib/python3/dist-packages/easy_install.py pip
-        pip install --upgrade pip
+        python3 -m pip install --upgrade pip
     ;;
     'update-permissions')
         printf "\n#### Setting permissions\n"
@@ -440,17 +440,17 @@ case "${1:-''}" in
     ;;
     'update-pip3')
         printf "\n#### Updating pip\n"
-        "${MYCODO_PATH}"/env/bin/pip3 install --upgrade pip
+        "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip
     ;;
     'update-pip3-packages')
         printf "\n#### Installing pip requirements\n"
         if [[ ! -d ${MYCODO_PATH}/env ]]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
         else
-            "${MYCODO_PATH}"/env/bin/pip3 install --upgrade pip setuptools
-            "${MYCODO_PATH}"/env/bin/pip3 install --upgrade -r "${MYCODO_PATH}"/install/requirements.txt
-            "${MYCODO_PATH}"/env/bin/pip3 install --upgrade -r "${MYCODO_PATH}"/install/requirements-rpi.txt
-            "${MYCODO_PATH}"/env/bin/pip3 install --upgrade -r "${MYCODO_PATH}"/install/requirements-testing.txt
+            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools
+            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements.txt
+            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements-rpi.txt
+            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements-testing.txt
         fi
     ;;
     'update-swap-size')
@@ -524,17 +524,17 @@ case "${1:-''}" in
     'docker-compile-translations')
         printf "\n#### Compiling Translations\n"
         cd "${MYCODO_PATH}"/mycodo || exit
-        pybabel compile -d mycodo_flask/translations
+        "${MYCODO_PATH}"/env/bin/pybabel compile -d mycodo_flask/translations
     ;;
     'docker-update-pip')
         printf "\n#### Updating pip\n"
-        pip install --upgrade pip
+        "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip
     ;;
     'docker-update-pip-packages')
         printf "\n#### Installing pip requirements\n"
-        pip install --upgrade pip setuptools
-        pip install --no-cache-dir -r /home/mycodo/install/requirements.txt
-        pip install --no-cache-dir -r /home/mycodo/install/requirements-rpi.txt
+        "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools
+        "${MYCODO_PATH}"/env/bin/python -m pip install --no-cache-dir -r /home/mycodo/install/requirements.txt
+        "${MYCODO_PATH}"/env/bin/python -m pip install --no-cache-dir -r /home/mycodo/install/requirements-rpi.txt
     ;;
     'install-docker-ce-cli')
         printf "\n#### Installing Docker Client\n"

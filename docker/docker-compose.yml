@@ -45,7 +45,7 @@ services:
     privileged: true
     ports:
       - "9090:9090"
-    command: bash -c "PYTHONPATH=/home/mycodo python mycodo_daemon.py"
+    command: bash -c "PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py"
     depends_on:
       - mycodo_flask
       - influxdb
@@ -64,7 +64,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Permits container to restart itself
       - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
     privileged: true
-    command: gunicorn --workers 1 --bind unix:/home/mycodo/mycodoflask.sock start_flask_ui:app
+    command: /home/mycodo/env/bin/python -m gunicorn --workers 1 --bind unix:/home/mycodo/mycodoflask.sock start_flask_ui:app
     depends_on:
       - influxdb
 
