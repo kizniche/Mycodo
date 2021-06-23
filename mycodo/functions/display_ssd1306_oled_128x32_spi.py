@@ -47,7 +47,6 @@ from mycodo.utils.system_pi import cmd_output
 
 # Set to how many lines the LCD has
 lcd_lines = 4
-lcd_x_characters = 21
 
 
 def execute_at_creation(error, new_func, dict_functions=None):
@@ -171,7 +170,7 @@ FUNCTION_INFORMATION = {
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
 
-    'message': 'This Function outputs to a 128x32 SSD1306 OLED display via SPI. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.',
+    'message': 'This Function outputs to a 128x32 SSD1306 OLED display via SPI. This display Function will show 4 lines at a time, so channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 3, then 4 - 7, and so on. After all channels have been displayed, it will cycle back to the beginning.',
 
     'options_disabled': [
         'measurements_select',
@@ -248,6 +247,14 @@ FUNCTION_INFORMATION = {
             'phrase': 'The pin (BCM numbering) connected to CS of the display'
         },
         {
+            'id': 'characters_x',
+            'type': 'integer',
+            'default_value': 21,
+            'required': True,
+            'name': 'Characters Per Line',
+            'phrase': 'The maximum number of characters to display per line'
+        },
+        {
             'id': 'use_non_default_font',
             'type': 'bool',
             'default_value': False,
@@ -270,6 +277,14 @@ FUNCTION_INFORMATION = {
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Font Size (pt)',
             'phrase': 'The size of the font, in points'
+        },
+        {
+            'id': 'display_unit',
+            'type': 'bool',
+            'default_value': True,
+            'required': True,
+            'name': 'Display Unit',
+            'phrase': "Display the measurement unit (if available)"
         }
     ],
 
@@ -330,6 +345,14 @@ FUNCTION_INFORMATION = {
             'name': TRANSLATIONS['text']['title'],
             'phrase': "Text to display"
         },
+        {
+            'id': 'display_unit',
+            'type': 'bool',
+            'default_value': True,
+            'required': True,
+            'name': 'Display Unit',
+            'phrase': "Display the measurement unit (if available)"
+        }
     ]
 }
 
@@ -346,7 +369,7 @@ class CustomModule(AbstractFunction):
         self.timer_loop = time.time()
         self.line_sets = []
         self.current_line_set = 0
-        self.line_y_dimensions = [0, 8, 16, 24, 32, 40, 48, 56]
+        self.line_y_dimensions = [0, 8, 16, 24]
         self.pad = -2
 
         # Initialize custom options
@@ -358,6 +381,7 @@ class CustomModule(AbstractFunction):
         self.pin_cs = None
         self.number_line_sets = None
         self.pin_reset = None
+        self.characters_x = None
         self.use_non_default_font = None
         self.non_default_font = None
         self.font_size = None
@@ -395,9 +419,9 @@ class CustomModule(AbstractFunction):
                 "pin_dc": self.pin_dc,
                 "pin_reset": self.pin_reset,
                 "pin_cs": self.pin_cs,
-                "x_characters": lcd_x_characters,
+                "x_characters": self.characters_x,
                 "line_y_dimensions": self.line_y_dimensions,
-                "lcd_type": "128x64_pioled_circuit_python",
+                "lcd_type": "128x32_pioled_circuit_python",
                 "font_size": self.font_size
             }
 
@@ -462,7 +486,9 @@ class CustomModule(AbstractFunction):
                             lines_display[current_line] = format_measurement_line(
                                 self.options_channels['select_measurement'][current_channel]['device_id'],
                                 self.options_channels['select_measurement'][current_channel]['measurement_id'],
-                                val_rounded, lcd_x_characters)
+                                val_rounded,
+                                self.characters_x,
+                                display_unit=self.options_channels['select_measurement'][current_channel]['display_unit'])
 
                     elif self.options_channels['line_display_type'][current_channel] == 'measurement_ts':
                         if measure_ts:

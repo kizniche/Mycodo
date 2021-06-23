@@ -100,10 +100,10 @@ class PiOLEDCircuitpython:
                 "Error: {err}".format(err=err))
 
     def lcd_write_lines(self,
-                        message_line_1,
-                        message_line_2,
-                        message_line_3,
-                        message_line_4,
+                        message_line_1=None,
+                        message_line_2=None,
+                        message_line_3=None,
+                        message_line_4=None,
                         message_line_5=None,
                         message_line_6=None,
                         message_line_7=None,
@@ -123,11 +123,14 @@ class PiOLEDCircuitpython:
                        outline=0,
                        fill=0)
 
-        draw.text((x, top + self.line_y_dimensions[0]), message_line_1, font=font, fill=255)
-        draw.text((x, top + self.line_y_dimensions[1]), message_line_2, font=font, fill=255)
-        draw.text((x, top + self.line_y_dimensions[2]), message_line_3, font=font, fill=255)
-        draw.text((x, top + self.line_y_dimensions[3]), message_line_4, font=font, fill=255)
-
+        if message_line_1 is not None:
+            draw.text((x, top + self.line_y_dimensions[0]), message_line_1, font=font, fill=255)
+        if message_line_2 is not None:
+            draw.text((x, top + self.line_y_dimensions[1]), message_line_2, font=font, fill=255)
+        if message_line_3 is not None:
+            draw.text((x, top + self.line_y_dimensions[2]), message_line_3, font=font, fill=255)
+        if message_line_4 is not None:
+            draw.text((x, top + self.line_y_dimensions[3]), message_line_4, font=font, fill=255)
         if message_line_5 is not None:
             draw.text((x, top + self.line_y_dimensions[4]), message_line_5, font=font, fill=255)
         if message_line_6 is not None:

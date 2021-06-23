@@ -36,17 +36,22 @@ from mycodo.utils.system_pi import return_measurement_info
 logger = logging.getLogger("mycodo.utils.lcd")
 
 
-def format_measurement_line(device_id, measure_id, val_rounded, lcd_x_characters):
+def format_measurement_line(device_id, measure_id, val_rounded, lcd_x_characters, display_unit=True):
     unit_display, unit_length, name = get_measurement_info(device_id, measure_id)
 
     if unit_length:
         value_length = len(str(val_rounded))
         name_length = lcd_x_characters - value_length - unit_length - 2
         name_cropped = name.ljust(name_length)[:name_length]
-        line_display = '{name} {value} {unit}'.format(
-            name=name_cropped,
-            value=val_rounded,
-            unit=unit_display.replace('°', u''))
+        if display_unit:
+            line_display = '{name} {value} {unit}'.format(
+                name=name_cropped,
+                value=val_rounded,
+                unit=unit_display.replace('°', u''))
+        else:
+            line_display = '{name} {value}'.format(
+                name=name_cropped,
+                value=val_rounded)
     else:
         value_length = len(str(val_rounded))
         name_length = lcd_x_characters - value_length - 1

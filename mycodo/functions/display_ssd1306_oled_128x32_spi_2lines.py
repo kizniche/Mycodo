@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  display_ssd1306_oled_128x64_i2c.py - Function to output to LCD
+#  display_ssd1306_oled_128x32_spi_2lines.py - Function to output to display
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
@@ -46,7 +46,7 @@ from mycodo.utils.lcd import format_measurement_line
 from mycodo.utils.system_pi import cmd_output
 
 # Set to how many lines the LCD has
-lcd_lines = 8
+lcd_lines = 2
 
 
 def execute_at_creation(error, new_func, dict_functions=None):
@@ -149,8 +149,8 @@ def execute_at_modification(
                 if index >= end_channel:
                     delete_entry_with_id(FunctionChannel, each_channel.unique_id)
 
-    except Exception:
-        error.append("execute_at_modification() Error: {}".format(traceback.print_exc()))
+    except Exception as err:
+        error.append("execute_at_modification() Error: {}".format(err))
         allow_saving = False
 
     for each_error in error:
@@ -164,13 +164,13 @@ def execute_at_modification(
 
 
 FUNCTION_INFORMATION = {
-    'function_name_unique': 'display_ssd1306_oled_128x64_i2c',
-    'function_name': 'Display: SSD1306 OLED 128x64 [8 Lines] (I2C)',
+    'function_name_unique': 'display_ssd1306_oled_128x32_spi_2lines',
+    'function_name': 'Display: SSD1306 OLED 128x32 [2 Lines] (SPI)',
     'function_library': 'Adafruit-Circuitpython-SSD1306',
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
 
-    'message': 'This Function outputs to a 128x64 SSD1306 OLED display via I2C. This display Function will show 8 lines at a time, so channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.',
+    'message': 'This Function outputs to a 128x32 SSD1306 OLED display via SPI. This display Function will show 2 lines at a time, so channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 1, then 2 - 3, and so on. After all channels have been displayed, it will cycle back to the beginning.',
 
     'options_disabled': [
         'measurements_select',
@@ -181,12 +181,11 @@ FUNCTION_INFORMATION = {
         ('apt', 'libjpeg-dev', 'libjpeg-dev'),
         ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
+        ('pip-pypi', 'Adafruit_GPIO', 'Adafruit-GPIO==1.0.3'),
         ('pip-pypi', 'adafruit_extended_bus', 'adafruit-extended-bus==1.0.1'),
         ('pip-pypi', 'adafruit_framebuf', 'adafruit-circuitpython-framebuf'),
         ('pip-pypi', 'adafruit_ssd1306', 'Adafruit-Circuitpython-SSD1306')
     ],
-
-    'interface': 'I2C',
 
     'custom_options': [
         {
@@ -199,22 +198,6 @@ FUNCTION_INFORMATION = {
             'phrase': lazy_gettext('The duration (seconds) between measurements or actions')
         },
         {
-            'id': 'i2c_address',
-            'type': 'text',
-            'default_value': '0x3c',
-            'required': True,
-            'name': TRANSLATIONS['i2c_location']['title'],
-            'phrase': TRANSLATIONS['i2c_location']['phrase']
-        },
-        {
-            'id': 'i2c_bus',
-            'type': 'integer',
-            'default_value': 1,
-            'required': True,
-            'name': TRANSLATIONS['i2c_bus']['title'],
-            'phrase': TRANSLATIONS['i2c_bus']['phrase']
-        },
-        {
             'id': 'number_line_sets',
             'type': 'integer',
             'default_value': 1,
@@ -224,17 +207,49 @@ FUNCTION_INFORMATION = {
             'phrase': 'How many sets of lines to cycle on the LCD'
         },
         {
+            'id': 'spi_device',
+            'type': 'integer',
+            'default_value': 0,
+            'required': True,
+            'name': 'SPI Device',
+            'phrase': 'The SPI device'
+        },
+        {
+            'id': 'spi_bus',
+            'type': 'integer',
+            'default_value': 0,
+            'required': True,
+            'name': 'SPI Bus',
+            'phrase': 'The SPI bus'
+        },
+        {
+            'id': 'pin_dc',
+            'type': 'integer',
+            'default_value': 16,
+            'required': True,
+            'name': 'DC Pin',
+            'phrase': 'The pin (BCM numbering) connected to DC of the display'
+        },
+        {
             'id': 'pin_reset',
             'type': 'integer',
-            'default_value': 17,
+            'default_value': 19,
             'required': True,
             'name': 'Reset Pin',
             'phrase': 'The pin (BCM numbering) connected to RST of the display'
         },
         {
+            'id': 'pin_cs',
+            'type': 'integer',
+            'default_value': 17,
+            'required': True,
+            'name': 'CS Pin',
+            'phrase': 'The pin (BCM numbering) connected to CS of the display'
+        },
+        {
             'id': 'characters_x',
             'type': 'integer',
-            'default_value': 21,
+            'default_value': 17,
             'required': True,
             'name': 'Characters Per Line',
             'phrase': 'The maximum number of characters to display per line'
@@ -257,7 +272,7 @@ FUNCTION_INFORMATION = {
         {
             'id': 'font_size',
             'type': 'integer',
-            'default_value': 10,
+            'default_value': 12,
             'required': True,
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Font Size (pt)',
@@ -346,13 +361,16 @@ class CustomModule(AbstractFunction):
         self.timer_loop = time.time()
         self.line_sets = []
         self.current_line_set = 0
-        self.line_y_dimensions = [0, 8, 16, 24, 32, 40, 48, 56]
+        self.line_y_dimensions = [0, 16]
         self.pad = -2
 
         # Initialize custom options
         self.period = None
-        self.i2c_address = None
-        self.i2c_bus = None
+        self.spi_bus = None
+        self.spi_device = None
+        self.pin_dc = None
+        self.pin_reset = None
+        self.pin_cs = None
         self.number_line_sets = None
         self.pin_reset = None
         self.characters_x = None
@@ -387,12 +405,15 @@ class CustomModule(AbstractFunction):
 
             lcd_settings_dict = {
                 "unique_id": self.unique_id,
-                "interface": "I2C",
-                "i2c_address": self.i2c_address,
-                "i2c_bus": self.i2c_bus,
+                "interface": "SPI",
+                "spi_bus": self.spi_bus,
+                "spi_device": self.spi_device,
+                "pin_dc": self.pin_dc,
+                "pin_reset": self.pin_reset,
+                "pin_cs": self.pin_cs,
                 "x_characters": self.characters_x,
                 "line_y_dimensions": self.line_y_dimensions,
-                "lcd_type": "128x64_pioled_circuit_python",
+                "lcd_type": "128x32_pioled_circuit_python",
                 "font_size": self.font_size
             }
 
@@ -505,11 +526,7 @@ class CustomModule(AbstractFunction):
             lines_display[0],
             lines_display[1],
             lines_display[2],
-            lines_display[3],
-            lines_display[4],
-            lines_display[5],
-            lines_display[6],
-            lines_display[7])
+            lines_display[3])
 
     def stop_function(self):
         self.device.lcd_write_lines(
