@@ -928,7 +928,7 @@ if __name__ == "__main__":
                 try:
                     from mycodo.config import INSTALL_DIRECTORY
                     import subprocess
-                    command = '{path}/env/bin/pip install -r {path}/install/requirements.txt'.format(
+                    command = '{path}/env/bin/python -m pip install -r {path}/install/requirements.txt'.format(
                         path=INSTALL_DIRECTORY)
                     cmd = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
                     cmd_out, cmd_err = cmd.communicate()

@@ -164,7 +164,7 @@ if __name__ == "__main__":
             elif each_dep.split(' ')[0] == 'pip-git':
                 f.write('-e {dep}\n'.format(dep=each_dep.split(' ')[1]))
 
-    pip_req_update = '{home}/env/bin/pip install --upgrade -r {home}/install/requirements-generated.txt'.format(
+    pip_req_update = '{home}/env/bin/python -m pip install --upgrade -r {home}/install/requirements-generated.txt'.format(
         home=INSTALL_DIRECTORY)
     output, err, stat = cmd_output(pip_req_update, user='root')
     formatted_output = output.decode("utf-8").replace('\\n', '\n')

@@ -25,7 +25,7 @@ case "${1}" in
             printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
             /bin/bash "${INSTALL_DIRECTORY}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
         else
-            "${INSTALL_DIRECTORY}"/env/bin/pip3 install --upgrade "${2}"
+            "${INSTALL_DIRECTORY}"/env/bin/python -m pip install --upgrade "${2}"
         fi
     ;;
     'pip-git')  # TODO: Remove in next major revision (no longer works properly?)
@@ -33,7 +33,7 @@ case "${1}" in
             printf "\n## Error: Virtualenv doesn't exist. Creating...\n"
             /bin/bash "${INSTALL_DIRECTORY}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv
         else
-            "${INSTALL_DIRECTORY}"/env/bin/pip3 install --upgrade -e "${2}"
+            "${INSTALL_DIRECTORY}"/env/bin/python -m pip install --upgrade -e "${2}"
         fi
     ;;
     'internal')
