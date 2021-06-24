@@ -10,6 +10,7 @@
  - Fix sense-hat dependency issue
  - Fix saving Output checkboxes ([#1029](https://github.com/kizniche/mycodo/issues/1029))
  - Fix PiOLED Functions ([#1030](https://github.com/kizniche/mycodo/issues/1030))
+ - Fix PID controller properly reporting if Held/Paused
 
 ### Features
 

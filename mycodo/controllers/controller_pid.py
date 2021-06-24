@@ -871,19 +871,36 @@ class PIDController(AbstractController, threading.Thread):
 
     def pid_hold(self):
         self.is_held = True
-        self.logger.info("Hold")
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_pid = db_session.query(PID).filter(
+                PID.unique_id == self.unique_id).first()
+            mod_pid.is_held = True
+            db_session.commit()
+        self.logger.info("PID Held")
         return "success"
 
     def pid_pause(self):
         self.is_paused = True
-        self.logger.info("Pause")
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_pid = db_session.query(PID).filter(
+                PID.unique_id == self.unique_id).first()
+            mod_pid.is_paused = True
+            db_session.commit()
+        self.logger.info("PID Paused")
         return "success"
 
     def pid_resume(self):
         self.is_activated = True
         self.is_held = False
         self.is_paused = False
-        self.logger.info("Resume")
+        with session_scope(MYCODO_DB_PATH) as db_session:
+            mod_pid = db_session.query(PID).filter(
+                PID.unique_id == self.unique_id).first()
+            mod_pid.is_activated = True
+            mod_pid.is_held = False
+            mod_pid.is_paused = False
+            db_session.commit()
+        self.logger.info("PID Resumed")
         return "success"
 
     def set_setpoint(self, setpoint):
@@ -995,7 +1012,8 @@ class PIDController(AbstractController, threading.Thread):
                 self.setpoint_tracking_id != '' and
                 ended_normally):
             with session_scope(MYCODO_DB_PATH) as db_session:
-                mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()
+                mod_pid = db_session.query(PID).filter(
+                    PID.unique_id == self.unique_id).first()
                 mod_pid.method_start_time = None
                 mod_pid.method_end_time = None
                 db_session.commit()
@@ -1003,7 +1021,8 @@ class PIDController(AbstractController, threading.Thread):
         # Deactivate PID and Autotune
         if deactivate_pid:
             with session_scope(MYCODO_DB_PATH) as db_session:
-                mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()
+                mod_pid = db_session.query(PID).filter(
+                    PID.unique_id == self.unique_id).first()
                 mod_pid.is_activated = False
                 mod_pid.autotune_activated = False
                 db_session.commit()

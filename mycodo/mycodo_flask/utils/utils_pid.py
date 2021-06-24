@@ -403,20 +403,6 @@ def pid_manipulate(pid_id, action):
         return 1
 
     try:
-        mod_pid = PID.query.filter(
-            PID.unique_id == pid_id).first()
-        if action == 'Hold':
-            mod_pid.is_held = True
-            mod_pid.is_paused = False
-        elif action == 'Pause':
-            mod_pid.is_paused = True
-            mod_pid.is_held = False
-        elif action == 'Resume':
-            mod_pid.is_activated = True
-            mod_pid.is_held = False
-            mod_pid.is_paused = False
-        db.session.commit()
-
         control = DaemonControl()
         return_value = None
         if action == 'Hold':
