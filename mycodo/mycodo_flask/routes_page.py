@@ -177,6 +177,32 @@ def page_functions():
                 utc_to_local_time=utc_to_local_time)
 
 
+@blueprint.route('/camera_submit', methods=['POST'])
+@flask_login.login_required
+def page_camera_submit():
+    if not utils_general.user_has_permission('view_camera'):
+        return redirect(url_for('routes_general.home'))
+
+    if not utils_general.user_has_permission('edit_settings'):
+        return redirect(url_for('routes_page.page_camera'))
+
+    error = []
+    message = ""
+    form_camera = forms_camera.Camera()
+
+    if form_camera.camera_mod.data:
+        error, message = utils_camera.camera_mod(form_camera)
+    elif form_camera.timelapse_generate.data:
+        error, message = utils_camera.camera_timelapse_video(form_camera)
+    else:
+        error.append("Unknown camera directive")
+
+    return jsonify(data={
+        'message': message,
+        'error': error
+    })
+
+
 @blueprint.route('/camera', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_camera():
@@ -192,11 +218,16 @@ def page_camera():
     output = Output.query.all()
     output_channel = OutputChannel.query.all()
 
-    try:
-        from mycodo.devices.camera import count_cameras_opencv
-        opencv_devices = count_cameras_opencv()
-    except Exception:
-        opencv_devices = []
+    opencv_devices = []
+
+    for each_cam in camera:
+        if each_cam.library == 'opencv':
+            try:
+                from mycodo.devices.camera import count_cameras_opencv
+                opencv_devices = count_cameras_opencv()
+            except Exception:
+                opencv_devices = []
+            break
 
     pi_camera_enabled = False
     try:
@@ -217,8 +248,6 @@ def page_camera():
             Camera.unique_id == form_camera.camera_id.data).first()
         if form_camera.camera_add.data:
             unmet_dependencies = utils_camera.camera_add(form_camera)
-        elif form_camera.camera_mod.data:
-            utils_camera.camera_mod(form_camera)
         elif form_camera.camera_del.data:
             utils_camera.camera_del(form_camera)
         elif form_camera.capture_still.data:
@@ -280,8 +309,6 @@ def page_camera():
                 camera_stream(unique_id=mod_camera.unique_id).stop(mod_camera.unique_id)
             mod_camera.stream_started = False
             db.session.commit()
-        elif form_camera.timelapse_generate.data:
-            utils_camera.camera_timelapse_video(form_camera)
 
         if unmet_dependencies:
             return redirect(url_for('routes_admin.admin_dependencies',

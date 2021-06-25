@@ -4,6 +4,69 @@
 
 {% block title %} - {{_('Camera')}}{% endblock %}
 
+{%  block head %}
+<link href="/static/css/toastr.min.css" rel="stylesheet"/>
+<script src="/static/js/toastr.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "7000",
+      "extendedTimeOut": "10000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+
+    $('form').submit(function (e) {
+      let submitter_btn = $(e.originalEvent.submitter);
+
+      if (submitter_btn.attr("name") === 'camera_mod' ||
+          submitter_btn.attr("name") === 'timelapse_generate') {
+        $.ajax({
+          type: "POST",
+          url: '/camera_submit',
+          data: $(this).serialize()
+              + '&'
+              + submitter_btn.attr("name")
+              + '='
+              + submitter_btn.attr("value"),
+          success: function (data) {
+            if (data.data.error.length === 0) {
+              toastr['info']('Success: ' + data.data.message);
+            } else {
+              toastr['error']('Error: ' + data.data.error);
+            }
+          },
+          error: function() {
+            toastr['error']('Error: Could not communicate with server');
+          }
+        });
+        e.preventDefault();
+      }
+    });
+
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", "{{form_camera.csrf_token._value()}}")
+        }
+      }
+    })
+  });
+</script>
+{% endblock %}
+
 {% block body %}
 <!-- Route: /camera -->
 <div class="container">
@@ -33,7 +96,7 @@
   {% for each_camera in camera %}
 
   <div class="container" style="width: 95%; border: 2px solid #ddd; border-radius: 5px;">
-    <form method="post" action="/camera">
+    <form class="form-submit" method="post" action="/camera">
     {{form_camera.csrf_token}}
     {{form_camera.camera_id(value=each_camera.unique_id)}}
     <div class="row small-gutters" style="border-bottom: 2px solid #ddd; padding: 0.1em 0;">

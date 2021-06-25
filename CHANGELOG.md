@@ -26,6 +26,7 @@
  - Replace TravisCI (no longer free) with [Github Actions](https://github.com/kizniche/Mycodo/actions/workflows/main.yml) to perform unit tests
  - Update KP303 library ([#1028](https://github.com/kizniche/mycodo/issues/1028))
  - Add Try/Except for checking Output Triggers ([#1037](https://github.com/kizniche/mycodo/issues/1037))
+ - Speed up loading of Camera page
 
 
 ## 8.11.0 (2021-06-05) 

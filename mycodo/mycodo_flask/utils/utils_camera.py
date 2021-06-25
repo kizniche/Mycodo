@@ -88,10 +88,8 @@ def camera_add(form_camera):
 
 
 def camera_mod(form_camera):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller=TRANSLATIONS['camera']['title'])
     error = []
+    message = ""
 
     try:
         if (Camera.query
@@ -189,11 +187,12 @@ def camera_mod(form_camera):
             db.session.commit()
             control = DaemonControl()
             control.refresh_daemon_camera_settings()
+            message = "Camera settings saved"
     except Exception as except_msg:
         logger.exception(1)
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_camera'))
+    return error, message
 
 
 def camera_del(form_camera):
@@ -219,8 +218,8 @@ def camera_del(form_camera):
 
 
 def camera_timelapse_video(form_camera):
-    action = "Generate Timelapse Video"
     error = []
+    message = ""
 
     if not os.path.exists("/usr/bin/ffmpeg"):
         error.append("ffmpeg not found. Install with 'sudo apt install ffmpeg'")
@@ -250,11 +249,9 @@ def camera_timelapse_video(form_camera):
                         codec=form_camera.timelapse_codec.data,
                         save=path_file)
             subprocess.Popen(cmd, shell=True)
-            flash("The time-lapse video is being generated in the background with the command:\n"
-                  "{}".format(cmd), "success")
-            flash("The video will be saved at "
-                  "{}".format(path_file), "success")
+            message = "The time-lapse video is being generated in the background with the command: {}." \
+                      " The video will be saved at {}".format(cmd, path_file)
         except Exception as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_camera'))
+    return error, message
