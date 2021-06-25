@@ -16,10 +16,8 @@ from mycodo.utils.inputs import parse_input_information
 logger = logging.getLogger(__name__)
 
 
-def measurement_mod(form, return_url):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller=TRANSLATIONS['measurement']['title'])
+def measurement_mod(form):
+    message = ""
     error = []
 
     mod_device = None
@@ -83,9 +81,10 @@ def measurement_mod(form, return_url):
 
         if not error:
             db.session.commit()
+            message = "Measurement settings saved"
 
     except Exception as except_msg:
         logger.exception(1)
         error.append(except_msg)
 
-    flash_success_errors(error, action, return_url)
+    return error, message

@@ -5,7 +5,92 @@
 {% block title %} - {{dict_translation['input']['title']}}{% endblock %}
 
 {% block head %}
-  <script type="text/javascript" src="/static/js/multiselect.min.js"></script>
+<script type="text/javascript" src="/static/js/multiselect.min.js"></script>
+
+<link href="/static/css/toastr.min.css" rel="stylesheet"/>
+<script src="/static/js/toastr.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "15000",
+      "extendedTimeOut": "10000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+
+    $('form').submit(function (e) {
+      let submitter_btn = $(e.originalEvent.submitter);
+      console.log(submitter_btn.attr("name"));
+
+      if (submitter_btn.attr("name") === 'input_mod' ||
+          submitter_btn.attr("name") === 'input_delete' ||
+          submitter_btn.attr("name") === 'measurement_mod' ||
+          submitter_btn.attr("name") === 'input_activate' ||
+          submitter_btn.attr("name") === 'input_deactivate') {
+        $.ajax({
+          type: "POST",
+          url: '/input_submit',
+          data: $(this).serialize()
+              + '&'
+              + submitter_btn.attr("name")
+              + '='
+              + submitter_btn.attr("value"),
+          success: function (data) {
+            if (data.data.error.length === 0) {
+              if (submitter_btn.attr("name") === 'input_mod' && 'page_refresh' in data.data && data.data.page_refresh) {
+                window.location.reload();
+                return;
+              }
+              if (submitter_btn.attr("name") === 'input_delete' && 'input_id' in data.data) {
+                  $('#input_' + data.data.input_id).hide('slow');
+                  $('#spacer_' + data.data.input_id).hide('slow');
+              }
+              if (submitter_btn.attr("name") === 'input_activate' && 'input_id' in data.data) {
+                  $('#input_status_' + data.data.input_id).removeClass("inactive-background");
+                  $('#input_status_' + data.data.input_id).addClass("active-background");
+                  document.getElementById('input_activate_' + data.data.input_id).style.display = "none";
+                  document.getElementById('input_deactivate_' + data.data.input_id).style.display = "";
+              }
+              if (submitter_btn.attr("name") === 'input_deactivate' && 'input_id' in data.data) {
+                  $('#input_status_' + data.data.input_id).removeClass("active-background");
+                  $('#input_status_' + data.data.input_id).addClass("inactive-background");
+                  document.getElementById('input_activate_' + data.data.input_id).style.display = "";
+                  document.getElementById('input_deactivate_' + data.data.input_id).style.display = "none";
+              }
+              toastr['success']('Success: ' + data.data.message);
+            } else {
+              toastr['error']('Error: ' + data.data.error.join(", "));
+            }
+          },
+          error: function() {
+            toastr['error']('Error: Could not communicate with server');
+          }
+        });
+        e.preventDefault();
+      }
+    });
+
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", "{{form_mod_input.csrf_token._value()}}")
+        }
+      }
+    })
+  });
+</script>
 {% endblock %}
 
 {%- block body %}

@@ -282,6 +282,7 @@ def widget_mod(form_base, request_form):
 
     if 'execute_at_modification' in dict_widgets[mod_widget.graph_type]:
         (allow_saving,
+         page_refresh,
          mod_widget,
          custom_options) = dict_widgets[mod_widget.graph_type]['execute_at_modification'](
             mod_widget, request_form, custom_options_json_presave, json.loads(custom_options_json_postsave))

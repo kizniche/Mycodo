@@ -83,6 +83,7 @@ def execute_at_modification(
     :return: tuple of (all_passed, error, mod_input) variables
     """
     allow_saving = True
+    page_refresh = True
     error = []
 
     try:
@@ -135,6 +136,7 @@ def execute_at_modification(
             flash(each_error, 'error')
 
     return (allow_saving,
+            page_refresh,
             mod_input,
             custom_options_dict_postsave,
             custom_options_channels_dict_postsave)

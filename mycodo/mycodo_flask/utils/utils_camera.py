@@ -201,7 +201,7 @@ def camera_del(form_camera):
         Camera, unique_id=form_camera.camera_id.data)
     if camera.timelapse_started:
         error.append("Cannot delete camera if a time-lapse is currently "
-                     "using it. Stop the time-lapse and try again.")
+                     "active. Stop the time-lapse and try again.")
 
     if not error:
         try:

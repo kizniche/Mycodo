@@ -185,7 +185,7 @@ def page_camera_submit():
 
     form_camera = forms_camera.Camera()
 
-    if not utils_general.user_has_permission('edit_settings'):
+    if not utils_general.user_has_permission('edit_controllers'):
         error.append("Your permissions do not allow this action")
 
     if not error:
@@ -242,7 +242,7 @@ def page_camera():
 
     if request.method == 'POST':
         unmet_dependencies = None
-        if not utils_general.user_has_permission('edit_settings'):
+        if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_page.page_camera'))
 
         control = DaemonControl()
@@ -1918,6 +1918,58 @@ def page_output():
                            user=user)
 
 
+@blueprint.route('/input_submit', methods=['POST'])
+@flask_login.login_required
+def page_input_submit():
+    """ Submit form for Data page """
+    error = []
+    warning = []
+    message = ""
+    page_refresh = False
+
+    form_mod_input = forms_input.InputMod()
+    form_mod_measurement = forms_measurement.MeasurementMod()
+
+    if not utils_general.user_has_permission('edit_controllers'):
+        error.append("Your permissions do not allow this action")
+
+    logger.error("TEST00: {}, {}, {}".format(
+        form_mod_input.input_activate.data,
+        form_mod_input.input_deactivate.data,
+        request.form))
+
+    if not error:
+        # Input save/delete
+        if form_mod_input.input_mod.data:
+            error, warning, message, page_refresh = utils_input.input_mod(
+                form_mod_input, request.form)
+        elif form_mod_input.input_delete.data:
+            error, message = utils_input.input_del(
+                form_mod_input.input_id.data)
+
+        # Activate/Deactivate
+        elif form_mod_input.input_activate.data:
+            error, message = utils_input.input_activate(form_mod_input)
+        elif form_mod_input.input_deactivate.data:
+            error, message = utils_input.input_deactivate(form_mod_input)
+
+        # Mod Input Measurement
+        elif form_mod_measurement.measurement_mod.data:
+            error, message = utils_measurement.measurement_mod(
+                form_mod_measurement)
+        else:
+            error.append("Unknown input directive")
+
+    return jsonify(data={
+        'input_id': form_mod_input.input_id.data,
+        'message': message,
+        "warning": warning,
+        'error': error,
+        "page_refresh": page_refresh
+    })
+
+
+
 @blueprint.route('/input', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_input():
@@ -1983,26 +2035,13 @@ def page_input():
         elif form_add_input.input_add.data:
             unmet_dependencies = utils_input.input_add(form_add_input)
 
-        # Mod Input Measurement
-        elif form_mod_measurement.measurement_mod.data:
-            utils_measurement.measurement_mod(
-                form_mod_measurement, url_for('routes_page.page_input'))
-
         # Mod other Input settings
-        elif form_mod_input.input_mod.data:
-            utils_input.input_mod(form_mod_input, request.form)
-        elif form_mod_input.input_delete.data:
-            utils_input.input_del(form_mod_input.input_id.data)
         elif form_mod_input.input_order_up.data:
             utils_input.input_reorder(form_mod_input.input_id.data,
                                       display_order_input, 'up')
         elif form_mod_input.input_order_down.data:
             utils_input.input_reorder(form_mod_input.input_id.data,
                                       display_order_input, 'down')
-        elif form_mod_input.input_activate.data:
-            utils_input.input_activate(form_mod_input)
-        elif form_mod_input.input_deactivate.data:
-            utils_input.input_deactivate(form_mod_input)
 
         # Mod Math Measurement
         elif form_mod_math_measurement.math_measurement_mod.data:

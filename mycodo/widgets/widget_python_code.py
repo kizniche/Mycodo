@@ -112,6 +112,8 @@ def execute_at_modification(
     :return:
     """
     allow_saving = True
+    page_refresh = False
+
     info, warning, success, error = save_python_file(
         custom_options_json_postsave, mod_widget.unique_id)
     for each_success in success:
@@ -122,7 +124,7 @@ def execute_at_modification(
         flash(each_warning, "warning")
     for each_error in error:
         flash(each_error, 'error')
-    return allow_saving, mod_widget, custom_options_json_postsave
+    return allow_saving, page_refresh, mod_widget, custom_options_json_postsave
 
 
 def execute_at_deletion(unique_id):

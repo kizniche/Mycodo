@@ -63,6 +63,7 @@ def execute_at_modification(
         custom_options_json_presave,
         custom_options_json_postsave):
     allow_saving = True
+    page_refresh = True
     error = []
 
     sorted_colors, error = custom_colors_gauge(request_form, error)
@@ -72,7 +73,7 @@ def execute_at_modification(
         current_colors=sorted_colors)
 
     custom_options_json_postsave['range_colors'] = sorted_colors
-    return allow_saving, mod_widget, custom_options_json_postsave
+    return allow_saving, page_refresh, mod_widget, custom_options_json_postsave
 
 
 def generate_page_variables(widget_unique_id, widget_options):

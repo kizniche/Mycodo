@@ -323,11 +323,10 @@ def input_add(form_add):
 
 
 def input_mod(form_mod, request_form):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller=TRANSLATIONS['input']['title'])
+    message = ""
     error = []
     warning = []
+    page_refresh = False
 
     dict_inputs = parse_input_information()
 
@@ -450,6 +449,8 @@ def input_mod(form_mod, request_form):
                 DeviceMeasurements.device_id == form_mod.input_id.data)
 
             if measurements.count() != form_mod.num_channels.data:
+                page_refresh = True
+
                 # Delete measurements/channels
                 if form_mod.num_channels.data < measurements.count():
                     for index, each_channel in enumerate(measurements.all()):
@@ -462,8 +463,8 @@ def input_mod(form_mod, request_form):
                         if form_mod.num_channels.data < channels.count():
                             for index, each_channel in enumerate(channels.all()):
                                 if index + 1 >= channels.count():
-                                    delete_entry_with_id(InputChannel,
-                                                         each_channel.unique_id)
+                                    delete_entry_with_id(
+                                        InputChannel, each_channel.unique_id)
 
                 # Add measurements/channels
                 elif form_mod.num_channels.data > measurements.count():
@@ -524,6 +525,7 @@ def input_mod(form_mod, request_form):
         if 'execute_at_modification' in dict_inputs[mod_input.device]:
             # pass custom options to module prior to saving to database
             (allow_saving,
+             page_refresh,
              mod_output,
              custom_options_dict,
              custom_options_channels_dict) = dict_inputs[mod_input.device]['execute_at_modification'](
@@ -551,20 +553,16 @@ def input_mod(form_mod, request_form):
 
         if not error:
             db.session.commit()
+            message = "Input settings saved"
 
     except Exception as except_msg:
         error.append(except_msg)
 
-    for each_warning in warning:
-        flash(each_warning, "warning")
-
-    flash_success_errors(error, action, url_for('routes_page.page_input'))
+    return error, warning, message, page_refresh
 
 
 def input_del(input_id):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['delete']['title'],
-        controller=TRANSLATIONS['input']['title'])
+    message = ""
     error = []
 
     try:
@@ -605,10 +603,11 @@ def input_del(input_id):
             pass
 
         db.session.commit()
+        message = "Input deleted"
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_input'))
+    return error, message
 
 
 def input_reorder(input_id, display_order, direction):
@@ -630,9 +629,7 @@ def input_reorder(input_id, display_order, direction):
 
 
 def input_activate(form_mod):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['activate']['title'],
-        controller=TRANSLATIONS['input']['title'])
+    message = ""
     error = []
 
     dict_inputs = parse_input_information()
@@ -698,13 +695,28 @@ def input_activate(form_mod):
 
     if not error:
         controller_activate_deactivate('activate', 'Input',  input_id)
-    flash_success_errors(error, action, url_for('routes_page.page_input'))
+        message = '{action} {controller}'.format(
+            action=TRANSLATIONS['activate']['title'],
+            controller=TRANSLATIONS['input']['title'])
+
+    return error, message
 
 
 def input_deactivate(form_mod):
-    input_id = form_mod.input_id.data
-    input_deactivate_associated_controllers(input_id)
-    controller_activate_deactivate('deactivate', 'Input', input_id)
+    message = ""
+    error = []
+
+    try:
+        input_id = form_mod.input_id.data
+        input_deactivate_associated_controllers(input_id)
+        controller_activate_deactivate('deactivate', 'Input', input_id)
+        message = '{action} {controller}'.format(
+            action=TRANSLATIONS['deactivate']['title'],
+            controller=TRANSLATIONS['input']['title'])
+    except Exception as err:
+        error.append("Error deactivating Input: {}".format(err))
+
+    return error, message
 
 
 # Deactivate any active PID or LCD controllers using this sensor

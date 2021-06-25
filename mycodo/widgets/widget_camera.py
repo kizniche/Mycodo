@@ -60,7 +60,9 @@ def execute_at_modification(
         custom_options_json_presave,
         custom_options_json_postsave):
     allow_saving = True
+    page_refresh = True
     error = []
+
     try:
         if not can_stream(json.dumps(custom_options_json_postsave)):
             allow_saving = False
@@ -71,7 +73,7 @@ def execute_at_modification(
     for each_error in error:
         flash(each_error, "error")
 
-    return allow_saving, mod_widget, custom_options_json_postsave
+    return allow_saving, page_refresh, mod_widget, custom_options_json_postsave
 
 
 WIDGET_INFORMATION = {

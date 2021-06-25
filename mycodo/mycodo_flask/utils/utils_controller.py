@@ -144,6 +144,7 @@ def controller_mod(form_mod, request_form):
         if 'execute_at_modification' in dict_controllers[mod_controller.device]:
             # pass custom options to module prior to saving to database
             (allow_saving,
+             page_refresh,
              mod_controller,
              custom_options_dict,
              custom_options_channels_dict) = dict_controllers[mod_controller.device]['execute_at_modification'](

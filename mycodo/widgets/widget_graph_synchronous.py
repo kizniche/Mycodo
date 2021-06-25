@@ -68,6 +68,7 @@ def execute_at_modification(
         custom_options_json_presave,
         custom_options_json_postsave):
     allow_saving = True
+    page_refresh = False
     error = []
 
     for key in request_form.keys():
@@ -95,7 +96,7 @@ def execute_at_modification(
     for each_error in error:
         flash(each_error, "error")
 
-    return allow_saving, mod_widget, custom_options_json_postsave
+    return allow_saving, page_refresh, mod_widget, custom_options_json_postsave
 
 
 def generate_page_variables(widget_unique_id, widget_options):

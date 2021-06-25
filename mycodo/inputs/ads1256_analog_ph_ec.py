@@ -36,6 +36,7 @@ def execute_at_modification(
         custom_options_dict_postsave,
         custom_options_channels_dict_postsave):
     allow_saving = True
+    page_refresh = False
     success = []
     error = []
 
@@ -51,16 +52,19 @@ def execute_at_modification(
                 for each_measure in measurements:
                     if each_measure.channel == int(custom_options_dict_postsave['adc_channel_ph']):
                         if each_measure.measurement != 'ion_concentration':
+                            page_refresh = True
                             each_measure.conversion_id = ''
                         each_measure.measurement = 'ion_concentration'
                         each_measure.unit = 'pH'
                     elif each_measure.channel == int(custom_options_dict_postsave['adc_channel_ec']):
                         if each_measure.measurement != 'electrical_conductivity':
+                            page_refresh = True
                             each_measure.conversion_id = ''
                         each_measure.measurement = 'electrical_conductivity'
                         each_measure.unit = 'uS_cm'
                     else:
                         if each_measure.measurement != 'electrical_potential':
+                            page_refresh = True
                             each_measure.conversion_id = ''
                         each_measure.measurement = 'electrical_potential'
                         each_measure.unit = 'V'
@@ -73,6 +77,7 @@ def execute_at_modification(
     for each_success in success:
         flash(each_success, 'success')
     return (allow_saving,
+            page_refresh,
             mod_input,
             custom_options_dict_postsave,
             custom_options_channels_dict_postsave)

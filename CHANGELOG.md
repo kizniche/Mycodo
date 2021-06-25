@@ -1,5 +1,7 @@
 ## 8.11.1 (Unreleased)
 
+This release improves the way settings are saved, which requires a change to any custom Inputs/Outputs/Functions you have in use. 
+
 ### Bugfixes
 
  - Fix taking photos with camera library "raspistill" when AWB set to off

@@ -95,6 +95,7 @@ def execute_at_modification(
     :return:
     """
     allow_saving = True
+    page_refresh = False
     success = []
     error = []
 
@@ -121,6 +122,7 @@ def execute_at_modification(
         if (custom_options_dict_postsave['number_line_sets'] >
                 custom_options_dict_presave['number_line_sets']):
 
+            page_refresh = True
             start_channel = channels.count()
 
             for index in range(start_channel, end_channel):
@@ -145,6 +147,7 @@ def execute_at_modification(
         elif (custom_options_dict_postsave['number_line_sets'] <
                 custom_options_dict_presave['number_line_sets']):
 
+            page_refresh = True
             for index, each_channel in enumerate(channels.all()):
                 if index >= end_channel:
                     delete_entry_with_id(FunctionChannel, each_channel.unique_id)
@@ -158,6 +161,7 @@ def execute_at_modification(
     for each_success in success:
         flash(each_success, 'success')
     return (allow_saving,
+            page_refresh,
             mod_function,
             custom_options_dict_postsave,
             custom_options_channels_dict_postsave)

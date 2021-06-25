@@ -4,7 +4,12 @@
 {% if all_measurements %}
 
 <div class="row small-gutters" style="padding: 0.5em">
-  <h5>Configure Measurements</h5>
+  <div class="col-12">
+    <h5>Configure Measurements</h5>
+  </div>
+  <div class="col-12">
+    You may need to refresh the page to update the available conversion selections.
+  </div>
 </div>
 
   {% if 'measurements_rescale' in dict_options and dict_options['measurements_rescale'] %}

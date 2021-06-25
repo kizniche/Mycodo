@@ -17,6 +17,7 @@ def execute_at_modification(
         custom_options_dict_postsave,
         custom_options_channels_dict_postsave):
     allow_saving = True
+    page_refresh = False
     success = []
     error = []
 
@@ -34,6 +35,7 @@ def execute_at_modification(
     for each_success in success:
         flash(each_success, 'success')
     return (allow_saving,
+            page_refresh,
             mod_input,
             custom_options_dict_postsave,
             custom_options_channels_dict_postsave)

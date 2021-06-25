@@ -33,13 +33,16 @@ def execute_at_modification(
     :return:
     """
     allow_saving = True
+    page_refresh = False
     success = []
     error = []
+
     for each_error in error:
         flash(each_error, 'error')
     for each_success in success:
         flash(each_success, 'success')
     return (allow_saving,
+            page_refresh,
             mod_output,
             custom_options_dict_postsave,
             custom_options_channels_dict_postsave)

@@ -291,6 +291,7 @@ def output_mod(form_output, request_form):
         if 'execute_at_modification' in dict_outputs[mod_output.output_type]:
             # pass custom options to module prior to saving to database
             (allow_saving,
+             page_refresh,
              mod_output,
              custom_options_dict,
              custom_options_channels_dict) = dict_outputs[mod_output.output_type]['execute_at_modification'](

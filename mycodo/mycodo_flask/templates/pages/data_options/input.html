@@ -5,7 +5,7 @@
   {%- if all_input -%}
     {%- for each_input in all_input -%}
 
-<div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
+<div class="container" id="input_{{each_input.unique_id}}" style="border: 2px solid #ddd; border-radius: 5px;">
 
   <form id="mod_input_form" method="post" action="/input">
     {{form_mod_input.csrf_token}}
@@ -17,7 +17,7 @@
     {% set unique_id = each_input.unique_id %}
     {% set custom_options_values = custom_options_values_inputs %}
 
-  <div class="row {% if each_input.is_activated -%}active-background
+  <div id="input_status_{{each_input.unique_id}}" class="row {% if each_input.is_activated -%}active-background
                   {% else -%}inactive-background
                   {% endif %} small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.3em 0.2em 0.3em 0">
 
@@ -34,17 +34,19 @@
     </div>
     <div class="col-4 col-xs-offset-2 col-sm-2 col-sm-offset-0">
     {% if each_input.is_activated -%}
+      {{form_mod_input.input_activate(class_='form-control btn btn-primary btn-sm', id='input_activate_' + each_input.unique_id, style='display: none')}}
       {%- set has_active_pid = [] -%}
       {%- for each_pid in pid if each_pid.measurement.split(',')[0] == each_input.unique_id and each_pid.is_activated -%}
         {%- do has_active_pid.append(1) -%}
       {%- endfor -%}
       {% if has_active_pid -%}
-        {{form_mod_input.input_deactivate(class_='form-control btn btn-primary btn-sm',**{'onclick':'return confirm("There are currently active PID controllers that rely on this Input to be active. Select OK to deactivate this input and all associated PID controllers, otherwise click Cancel to leave them active.")'})}}
+        {{form_mod_input.input_deactivate(class_='form-control btn btn-primary btn-sm', id='input_deactivate_' + each_input.unique_id, **{'onclick':'return confirm("There are currently active PID controllers that rely on this Input to be active. Select OK to deactivate this input and all associated PID controllers, otherwise click Cancel to leave them active.")'})}}
       {% else -%}
-        {{form_mod_input.input_deactivate(class_='form-control btn btn-primary btn-sm')}}
+        {{form_mod_input.input_deactivate(class_='form-control btn btn-primary btn-sm', id='input_deactivate_' + each_input.unique_id)}}
       {% endif -%}
     {% else -%}
-      {{form_mod_input.input_activate(class_='form-control btn btn-primary btn-sm')}}
+      {{form_mod_input.input_activate(class_='form-control btn btn-primary btn-sm', id='input_activate_' + each_input.unique_id)}}
+      {{form_mod_input.input_deactivate(class_='form-control btn btn-primary btn-sm', id='input_deactivate_' + each_input.unique_id, style='display: none')}}
     {% endif -%}
     </div>
 
@@ -321,7 +323,7 @@
 
 </div>
 
-<div style="clear: both; padding-bottom: 0.5em;"></div>
+<div id="spacer_{{each_input.unique_id}}" style="clear: both; padding-bottom: 0.5em;"></div>
 
     {%- endfor -%}
   {%- endif -%}
