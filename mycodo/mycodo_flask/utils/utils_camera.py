@@ -95,11 +95,9 @@ def camera_mod(form_camera):
         if (Camera.query
                 .filter(Camera.unique_id != form_camera.camera_id.data)
                 .filter(Camera.name == form_camera.name.data).count()):
-            flash("You must choose a unique name", "error")
-            return redirect(url_for('routes_settings.settings_camera'))
-        if 0 > form_camera.rotation.data > 360:
-            flash("Rotation must be between 0 and 360 degrees", "error")
-            return redirect(url_for('routes_settings.settings_camera'))
+            error.append("You must choose a unique name")
+        if not 0 <= form_camera.rotation.data <= 360:
+            error.append("Rotation must be between 0 and 360 degrees")
 
         mod_camera = Camera.query.filter(
             Camera.unique_id == form_camera.camera_id.data).first()

@@ -180,22 +180,21 @@ def page_functions():
 @blueprint.route('/camera_submit', methods=['POST'])
 @flask_login.login_required
 def page_camera_submit():
-    if not utils_general.user_has_permission('view_camera'):
-        return redirect(url_for('routes_general.home'))
-
-    if not utils_general.user_has_permission('edit_settings'):
-        return redirect(url_for('routes_page.page_camera'))
-
     error = []
     message = ""
+
     form_camera = forms_camera.Camera()
 
-    if form_camera.camera_mod.data:
-        error, message = utils_camera.camera_mod(form_camera)
-    elif form_camera.timelapse_generate.data:
-        error, message = utils_camera.camera_timelapse_video(form_camera)
-    else:
-        error.append("Unknown camera directive")
+    if not utils_general.user_has_permission('edit_settings'):
+        error.append("Your permissions do not allow this action")
+
+    if not error:
+        if form_camera.camera_mod.data:
+            error, message = utils_camera.camera_mod(form_camera)
+        elif form_camera.timelapse_generate.data:
+            error, message = utils_camera.camera_timelapse_video(form_camera)
+        else:
+            error.append("Unknown camera directive")
 
     return jsonify(data={
         'message': message,
