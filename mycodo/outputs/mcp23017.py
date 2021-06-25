@@ -167,7 +167,12 @@ class OutputModule(AbstractOutput):
                 self.output_states[channel] = bool(not self.options_channels['on_state'][channel])
 
             if self.options_channels['trigger_functions_startup'][channel]:
-                self.check_triggers(self.unique_id, output_channel=channel)
+                try:
+                    self.check_triggers(self.unique_id, output_channel=channel)
+                except Exception as err:
+                    self.logger.error(
+                        "Could not check Trigger for channel {} of output {}: {}".format(
+                            channel, self.unique_id, err))
 
     def output_switch(self,
                       state,

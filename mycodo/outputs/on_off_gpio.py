@@ -184,7 +184,12 @@ class OutputModule(AbstractOutput):
                 self.output_setup = True
 
                 if self.options_channels['trigger_functions_startup'][0]:
-                    self.check_triggers(self.unique_id, output_channel=0)
+                    try:
+                        self.check_triggers(self.unique_id, output_channel=0)
+                    except Exception as err:
+                        self.logger.error(
+                            "Could not check Trigger for channel 0 of output {}: {}".format(
+                                self.unique_id, err))
 
                 startup = 'ON' if self.options_channels['state_startup'][0] else 'OFF'
                 state = 'HIGH' if self.options_channels['on_state'][0] else 'LOW'

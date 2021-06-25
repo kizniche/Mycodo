@@ -496,7 +496,12 @@ class AbstractOutput(AbstractBaseController):
             self.output_off_triggered[output_channel] = False
 
         if trigger_conditionals:
-            self.check_triggers(self.unique_id, amount=amount, output_channel=output_channel)
+            try:
+                self.check_triggers(self.unique_id, amount=amount, output_channel=output_channel)
+            except Exception as err:
+                self.logger.error(
+                    "Could not check Trigger for channel {} of output {}: {}".format(
+                        output_channel, self.unique_id, err))
 
         return 0, msg
 
