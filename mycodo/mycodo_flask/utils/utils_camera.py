@@ -194,9 +194,7 @@ def camera_mod(form_camera):
 
 
 def camera_del(form_camera):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['delete']['title'],
-        controller=TRANSLATIONS['camera']['title'])
+    message = ""
     error = []
 
     camera = db_retrieve_table(
@@ -209,10 +207,11 @@ def camera_del(form_camera):
         try:
             delete_entry_with_id(
                 Camera, form_camera.camera_id.data)
+            message = "Camera deleted"
         except Exception as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_camera'))
+    return error, message
 
 
 def camera_timelapse_video(form_camera):

@@ -37,7 +37,8 @@ FUNCTION_INFORMATION = {
 
     'message': 'This is an example function that will increment a stored variable once every 60 seconds. '
                'A status call will be made to the function from the web UI and the return string along '
-               'with the current time will be displayed for the user every Status Period.',
+               'with the current time will be displayed for the user every Status Period. The Status '
+               'Widget will also display this status.',
 
     'options_disabled': [
         'measurements_select',

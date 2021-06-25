@@ -191,12 +191,15 @@ def page_camera_submit():
     if not error:
         if form_camera.camera_mod.data:
             error, message = utils_camera.camera_mod(form_camera)
+        elif form_camera.camera_del.data:
+            error, message = utils_camera.camera_del(form_camera)
         elif form_camera.timelapse_generate.data:
             error, message = utils_camera.camera_timelapse_video(form_camera)
         else:
             error.append("Unknown camera directive")
 
     return jsonify(data={
+        'camera_id': form_camera.camera_id.data,
         'message': message,
         'error': error
     })
@@ -247,8 +250,6 @@ def page_camera():
             Camera.unique_id == form_camera.camera_id.data).first()
         if form_camera.camera_add.data:
             unmet_dependencies = utils_camera.camera_add(form_camera)
-        elif form_camera.camera_del.data:
-            utils_camera.camera_del(form_camera)
         elif form_camera.capture_still.data:
             # If a stream is active, stop the stream to take a photo
             if mod_camera.stream_started:
