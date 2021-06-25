@@ -37,7 +37,7 @@ INPUT_INFORMATION = {
         ('apt', 'python3-scipy', 'python3-scipy'),
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
         ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.1'),
-        ('pip-pypi', 'anyleaf', 'anyleaf==0.1.8.1')
+        ('pip-pypi', 'anyleaf', 'anyleaf==0.1.9')
     ],
 
     'interfaces': ['I2C'],
@@ -99,6 +99,8 @@ class InputModule(AbstractInput):
         self.cal_orp = None
 
         if not testing:
+            self.setup_custom_options(
+                INPUT_INFORMATION['custom_options'], input_dev)
             self.initialize_input()
 
     def initialize_input(self):
