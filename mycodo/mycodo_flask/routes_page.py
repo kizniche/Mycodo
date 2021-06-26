@@ -1780,7 +1780,6 @@ def function_status(unique_id):
         return jsonify({'error': err})
 
 
-
 @blueprint.route('/output_submit', methods=['POST'])
 @flask_login.login_required
 def page_output_submit():

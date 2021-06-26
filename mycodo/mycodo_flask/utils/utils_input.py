@@ -553,7 +553,9 @@ def input_mod(form_mod, request_form):
 
         if not error:
             db.session.commit()
-            message = "Input settings saved"
+            message = '{action} {controller}'.format(
+                action=TRANSLATIONS['modify']['title'],
+                controller=TRANSLATIONS['input']['title'])
 
     except Exception as except_msg:
         error.append(except_msg)
@@ -603,7 +605,9 @@ def input_del(input_id):
             pass
 
         db.session.commit()
-        message = "Input deleted"
+        message = '{action} {controller}'.format(
+            action=TRANSLATIONS['delete']['title'],
+            controller=TRANSLATIONS['input']['title'])
     except Exception as except_msg:
         error.append(except_msg)
 

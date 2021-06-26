@@ -419,13 +419,15 @@ def test_add_all_input_devices_logged_in_as_admin(_, testapp):
         assert choice_name == input_dev.device, "Input name doesn't match: {}".format(choice_name)
 
         # Save input
-        response = save_data(testapp, 'input', device_dev=input_dev)
-        assert "Success: Modify Input" in response
+        # response = save_data(testapp, 'input', device_dev=input_dev)
+        # assert "Success: Modify Input" in response
 
         # Delete input (speeds up further input addition checking)
         response = delete_data(testapp, 'input', device_dev=input_dev)
-        assert "Delete input with ID: {}".format(input_dev.unique_id) in response
+        # assert "Delete input with ID: {}".format(input_dev.unique_id) in response
         input_count -= 1
+        assert Input.query.count() == input_count, "Number of Inputs doesn't match: In DB {}, Should be: {}".format(
+            Input.query.count(), input_count)
 
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
@@ -463,13 +465,15 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
         output = Output.query.filter(Output.id == output_count).first()
 
         # Save output
-        response = save_data(testapp, 'output', device_dev=output)
-        assert "Success: Modify Output" in response
+        # response = save_data(testapp, 'output', device_dev=output)
+        # assert "Success: Modify Output" in response
 
         # Delete output (speeds up further output addition checking)
         response = delete_data(testapp, 'output', device_dev=output)
-        assert "Success: Delete output with ID: {}".format(output.unique_id) in response
+        # assert "Success: Delete output with ID: {}".format(output.unique_id) in response
         output_count -= 1
+        assert Output.query.count() == output_count, "Number of Outputs doesn't match: In DB {}, Should be: {}".format(
+            Output.query.count(), output_count)
 
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
@@ -589,13 +593,15 @@ def delete_data(testapp, data_type, device_dev=None):
     """ Go to the data page and delete input/output/function """
     response = None
     if data_type == 'input':
-        form = testapp.get('/input').maybe_follow().forms['mod_input_form']
-        form['input_id'].force_value(device_dev.unique_id)
-        response = form.submit(name='input_delete', value='Delete').maybe_follow()
+        # form = testapp.get('/input_submit').maybe_follow().forms['mod_input_form']
+        # form['input_id'].force_value(device_dev.unique_id)
+        # response = form.submit(name='input_delete', value='Delete').maybe_follow()
+        testapp.post('/input_submit', {'input_delete': 'Delete', 'input_id': device_dev.unique_id})
     elif data_type == 'output':
-        form = testapp.get('/output').maybe_follow().forms['mod_output_form']
-        form['output_id'].force_value(device_dev.unique_id)
-        response = form.submit(name='delete', value='Delete').maybe_follow()
+        # form = testapp.get('/output').maybe_follow().forms['mod_output_form']
+        # form['output_id'].force_value(device_dev.unique_id)
+        # response = form.submit(name='delete', value='Delete').maybe_follow()
+        testapp.post('/output_submit', {'output_delete': 'Delete', 'output_id': device_dev.unique_id})
     elif data_type == 'function':
         form = testapp.get('/function').maybe_follow().forms['mod_function_form']
         form['function_id'].force_value(device_dev.unique_id)
