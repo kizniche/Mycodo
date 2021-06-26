@@ -3,7 +3,7 @@
 <div class="col-auto">
   <label class="control-label">{{dict_translation['interface']['title']}}</label>
   <div>
-    {{form.location(class_='form-control', value=each_device.interface, disabled=True, **{'title': dict_translation['interface']['phrase']})}}
+    <input class="form-control" disabled id="interface" name="interface" title="{{dict_translation['interface']['phrase']}}" type="text" value="{{each_device.interface}}">
   </div>
 </div>
 
