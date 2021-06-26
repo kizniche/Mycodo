@@ -419,12 +419,16 @@ def test_add_all_input_devices_logged_in_as_admin(_, testapp):
         assert choice_name == input_dev.device, "Input name doesn't match: {}".format(choice_name)
 
         # Save input
-        # response = save_data(testapp, 'input', device_dev=input_dev)
-        # assert "Success: Modify Input" in response
+        response = save_data(testapp, 'input', device_dev=input_dev)
+        assert 'data' in response.json
+        assert 'error' in response.json['data']
+        assert response.json['data']['error'] == []
 
         # Delete input (speeds up further input addition checking)
         response = delete_data(testapp, 'input', device_dev=input_dev)
-        # assert "Delete input with ID: {}".format(input_dev.unique_id) in response
+        assert 'data' in response.json
+        assert 'error' in response.json['data']
+        assert response.json['data']['error'] == []
         input_count -= 1
         assert Input.query.count() == input_count, "Number of Inputs doesn't match: In DB {}, Should be: {}".format(
             Input.query.count(), input_count)
@@ -465,12 +469,16 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
         output = Output.query.filter(Output.id == output_count).first()
 
         # Save output
-        # response = save_data(testapp, 'output', device_dev=output)
-        # assert "Success: Modify Output" in response
+        response = save_data(testapp, 'output', device_dev=output)
+        assert 'data' in response.json
+        assert 'error' in response.json['data']
+        assert response.json['data']['error'] == []
 
         # Delete output (speeds up further output addition checking)
         response = delete_data(testapp, 'output', device_dev=output)
-        # assert "Success: Delete output with ID: {}".format(output.unique_id) in response
+        assert 'data' in response.json
+        assert 'error' in response.json['data']
+        assert response.json['data']['error'] == []
         output_count -= 1
         assert Output.query.count() == output_count, "Number of Outputs doesn't match: In DB {}, Should be: {}".format(
             Output.query.count(), output_count)
@@ -593,15 +601,9 @@ def delete_data(testapp, data_type, device_dev=None):
     """ Go to the data page and delete input/output/function """
     response = None
     if data_type == 'input':
-        # form = testapp.get('/input_submit').maybe_follow().forms['mod_input_form']
-        # form['input_id'].force_value(device_dev.unique_id)
-        # response = form.submit(name='input_delete', value='Delete').maybe_follow()
-        testapp.post('/input_submit', {'input_delete': 'Delete', 'input_id': device_dev.unique_id})
+        response = testapp.post('/input_submit', {'input_delete': 'Delete', 'input_id': device_dev.unique_id})
     elif data_type == 'output':
-        # form = testapp.get('/output').maybe_follow().forms['mod_output_form']
-        # form['output_id'].force_value(device_dev.unique_id)
-        # response = form.submit(name='delete', value='Delete').maybe_follow()
-        testapp.post('/output_submit', {'output_delete': 'Delete', 'output_id': device_dev.unique_id})
+        response = testapp.post('/output_submit', {'output_delete': 'Delete', 'output_id': device_dev.unique_id})
     elif data_type == 'function':
         form = testapp.get('/function').maybe_follow().forms['mod_function_form']
         form['function_id'].force_value(device_dev.unique_id)
@@ -615,12 +617,18 @@ def save_data(testapp, data_type, device_dev=None):
     response = None
     if data_type == 'input':
         form = testapp.get('/input').maybe_follow().forms['mod_input_form']
-        form['input_id'].force_value(device_dev.unique_id)
-        response = form.submit(name='input_mod', value='Save').maybe_follow()
+        form_dict = {}
+        for each_field in form.fields.items():
+            if each_field[0]:
+                form_dict[each_field[0]] = form[each_field[0]].value
+        response = testapp.post('/input_submit', form_dict)
     elif data_type == 'output':
         form = testapp.get('/output').maybe_follow().forms['mod_output_form']
-        form['output_id'].force_value(device_dev.unique_id)
-        response = form.submit(name='save', value='Save').maybe_follow()
+        form_dict = {}
+        for each_field in form.fields.items():
+            if each_field[0]:
+                form_dict[each_field[0]] = form[each_field[0]].value
+        response = testapp.post('/output_submit', form_dict)
     elif data_type == 'function':
         form = testapp.get('/function').maybe_follow().forms['mod_function_form']
         form['function_id'].force_value(device_dev.unique_id)
