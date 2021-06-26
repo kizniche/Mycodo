@@ -29,7 +29,6 @@ INPUT_INFORMATION = {
 
     'options_enabled': [
         'gpio_location',
-        'period',
         'pre_output'
     ],
     'options_disabled': ['interface'],
