@@ -39,6 +39,7 @@
           submitter_btn.attr("name") === 'measurement_mod' ||
           submitter_btn.attr("name") === 'input_activate' ||
           submitter_btn.attr("name") === 'input_deactivate') {
+        toastr['info']('Command sent. Please wait...');
         $.ajax({
           type: "POST",
           url: '/input_submit',
@@ -52,6 +53,9 @@
               if (submitter_btn.attr("name") === 'input_mod' && 'page_refresh' in data.data && data.data.page_refresh) {
                 window.location.reload();
                 return;
+              }
+              if (submitter_btn.attr("name") === 'input_mod' && data.data.warning.length !== 0) {
+                toastr['warning']('Warning: ' + data.data.warning.join(", "));
               }
               if (submitter_btn.attr("name") === 'input_delete' && 'input_id' in data.data) {
                   $('#input_' + data.data.input_id).hide('slow');

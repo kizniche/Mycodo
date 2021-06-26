@@ -503,7 +503,8 @@ def check_for_valid_unit_and_conversion(device_id, error):
 
 def controller_activate_deactivate(controller_action,
                                    controller_type,
-                                   controller_id):
+                                   controller_id,
+                                   flash_message=True):
     """
     Activate or deactivate controller
 
@@ -520,16 +521,6 @@ def controller_activate_deactivate(controller_action,
     error = []
 
     activated = bool(controller_action == 'activate')
-
-    translated_names = {
-        "Conditional": TRANSLATIONS['conditional']['title'],
-        "Input": TRANSLATIONS['input']['title'],
-        "LCD": TRANSLATIONS['lcd']['title'],
-        "Math": TRANSLATIONS['math']['title'],
-        "PID": TRANSLATIONS['pid']['title'],
-        "Trigger": TRANSLATIONS['trigger']['title'],
-        "Function": TRANSLATIONS['function']['title']
-    }
 
     mod_controller = None
     if controller_type == 'Conditional':
@@ -569,19 +560,6 @@ def controller_activate_deactivate(controller_action,
         if not error:
             mod_controller.is_activated = activated
             db.session.commit()
-
-            if activated:
-                flash(
-                    "{} {} (SQL)".format(
-                        translated_names[controller_type],
-                        TRANSLATIONS['activate']['title']),
-                    "success")
-            else:
-                flash(
-                    "{} {} (SQL)".format(
-                        translated_names[controller_type],
-                        TRANSLATIONS['deactivate']['title']),
-                    "success")
     except Exception as except_msg:
         flash(gettext("Error: %(err)s",
                       err='SQL: {msg}'.format(msg=except_msg)),
@@ -595,10 +573,11 @@ def controller_activate_deactivate(controller_action,
                 return_values = control.controller_activate(controller_id)
             else:
                 return_values = control.controller_deactivate(controller_id)
-            if return_values[0]:
-                flash("{err}".format(err=return_values[1]), "error")
-            else:
-                flash("{err}".format(err=return_values[1]), "success")
+            if flash_message:
+                if return_values[0]:
+                    flash(return_values[1], "error")
+                else:
+                    flash(return_values[1], "success")
     except Exception as except_msg:
         flash('{}: {}'.format(TRANSLATIONS['error']['title'], except_msg),
               "error")

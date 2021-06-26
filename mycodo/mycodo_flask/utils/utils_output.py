@@ -217,9 +217,8 @@ def output_add(form_add, request_form):
 
 
 def output_mod(form_output, request_form):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller=TRANSLATIONS['output']['title'])
+    message = ""
+    page_refresh = False
     error = []
     warning = []
 
@@ -319,22 +318,20 @@ def output_mod(form_output, request_form):
 
         if not error:
             db.session.commit()
+            message = '{action} {controller}'.format(
+                action=TRANSLATIONS['modify']['title'],
+                controller=TRANSLATIONS['output']['title'])
 
             if not current_app.config['TESTING']:
                 manipulate_output('Modify', form_output.output_id.data)
     except Exception as except_msg:
         error.append(except_msg)
 
-    for each_warning in warning:
-        flash(each_warning, "warning")
-
-    flash_success_errors(error, action, url_for('routes_page.page_output'))
+    return error, warning, message, page_refresh
 
 
 def output_del(form_output):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['delete']['title'],
-        controller=TRANSLATIONS['output']['title'])
+    message = ""
     error = []
 
     try:
@@ -356,12 +353,16 @@ def output_del(form_output):
         display_order.remove(form_output.output_id.data)
         DisplayOrder.query.first().output = list_to_csv(display_order)
         db.session.commit()
+        message = '{action} {controller}'.format(
+            action=TRANSLATIONS['delete']['title'],
+            controller=TRANSLATIONS['output']['title'])
 
         if not current_app.config['TESTING']:
             manipulate_output('Delete', form_output.output_id.data)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_output'))
+
+    return error, message
 
 
 def manipulate_output(action, output_id):

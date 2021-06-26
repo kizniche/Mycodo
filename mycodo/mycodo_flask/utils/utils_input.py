@@ -694,7 +694,7 @@ def input_activate(form_mod):
             error.append("All measurements must have a name and unit/measurement set")
 
     if not error:
-        controller_activate_deactivate('activate', 'Input',  input_id)
+        controller_activate_deactivate('activate', 'Input',  input_id, flash_message=False)
         message = '{action} {controller}'.format(
             action=TRANSLATIONS['activate']['title'],
             controller=TRANSLATIONS['input']['title'])
@@ -709,7 +709,7 @@ def input_deactivate(form_mod):
     try:
         input_id = form_mod.input_id.data
         input_deactivate_associated_controllers(input_id)
-        controller_activate_deactivate('deactivate', 'Input', input_id)
+        controller_activate_deactivate('deactivate', 'Input', input_id, flash_message=False)
         message = '{action} {controller}'.format(
             action=TRANSLATIONS['deactivate']['title'],
             controller=TRANSLATIONS['input']['title'])

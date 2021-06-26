@@ -1780,6 +1780,47 @@ def function_status(unique_id):
         return jsonify({'error': err})
 
 
+
+@blueprint.route('/output_submit', methods=['POST'])
+@flask_login.login_required
+def page_output_submit():
+    """ Submit form for Output page """
+    error = []
+    warning = []
+    message = ""
+    page_refresh = False
+
+    form_mod_output = forms_output.OutputMod()
+
+    if not utils_general.user_has_permission('edit_controllers'):
+        error.append("Your permissions do not allow this action")
+
+    if not error:
+        if form_mod_output.output_mod.data:
+            error, warning, message, page_refresh = utils_output.output_mod(
+                form_mod_output, request.form)
+        elif form_mod_output.output_delete.data:
+            error, message = utils_output.output_del(form_mod_output)
+        else:
+            error.append("Unknown Output directive")
+
+    if page_refresh:
+        for each_warn in warning:
+            flash(each_warn, "error")
+        for each_error in error:
+            flash(each_error, "error")
+        if message:
+            flash(message, "info")
+
+    return jsonify(data={
+        'output_id': form_mod_output.output_id.data,
+        'message': message,
+        "warning": warning,
+        'error': error,
+        "page_refresh": page_refresh
+    })
+
+
 @blueprint.route('/output', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_output():
@@ -1816,10 +1857,6 @@ def page_output():
 
         elif form_add_output.output_add.data:
             unmet_dependencies = utils_output.output_add(form_add_output, request.form)
-        elif form_mod_output.save.data:
-            utils_output.output_mod(form_mod_output, request.form)
-        elif form_mod_output.delete.data:
-            utils_output.output_del(form_mod_output)
 
         # Custom action
         else:
@@ -1933,11 +1970,6 @@ def page_input_submit():
     if not utils_general.user_has_permission('edit_controllers'):
         error.append("Your permissions do not allow this action")
 
-    logger.error("TEST00: {}, {}, {}".format(
-        form_mod_input.input_activate.data,
-        form_mod_input.input_deactivate.data,
-        request.form))
-
     if not error:
         # Input save/delete
         if form_mod_input.input_mod.data:
@@ -1960,6 +1992,14 @@ def page_input_submit():
         else:
             error.append("Unknown input directive")
 
+    if page_refresh:
+        for each_warn in warning:
+            flash(each_warn, "error")
+        for each_error in error:
+            flash(each_error, "error")
+        if message:
+            flash(message, "info")
+
     return jsonify(data={
         'input_id': form_mod_input.input_id.data,
         'message': message,
@@ -1967,7 +2007,6 @@ def page_input_submit():
         'error': error,
         "page_refresh": page_refresh
     })
-
 
 
 @blueprint.route('/input', methods=('GET', 'POST'))
