@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-
 import os
 import re
+
 import sqlalchemy
 from flask import current_app
 from flask import flash
 from flask import url_for
 from flask_babel import gettext
+from sqlalchemy import desc
 
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config_translations import TRANSLATIONS
@@ -76,6 +77,14 @@ def input_add(form_add):
     if form_add.validate():
         new_input = Input()
         new_input.device = input_name
+
+        # Find where the next Input should be placed on the grid
+        # Finds the lowest position to create as the new Input's starting position
+        position_y_start = 0
+        input_highest = Input.query.order_by(desc(Input.position_y)).limit(1).first()
+        if input_highest:
+            position_y_start = input_highest.position_y + 2
+        new_input.position_y = position_y_start
 
         if input_interface:
             new_input.interface = input_interface

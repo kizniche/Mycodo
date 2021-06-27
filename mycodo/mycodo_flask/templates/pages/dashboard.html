@@ -19,8 +19,6 @@
   <script type="text/javascript" src="/static/js/modules/highslide.config.js"></script>
   <link href="/static/css/highslide.css" rel="stylesheet">
 
-  <script type="text/javascript" src="/static/js/multiselect.min.js"></script>
-
   {% if current_user.theme in dark_themes %}
     <script type="text/javascript" src="/static/js/dark-unica.js"></script>
   {% endif %}
@@ -309,13 +307,6 @@ grid.on('change', function (event, items) {
       }
     });
   }
-});
-
-jQuery(document).ready(function($) {
-  $('#multiselect').multiselect({
-    sort: false,
-    keepRenderingSort: true
-  });
 });
 
 {% if not this_dashboard.locked %}

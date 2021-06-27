@@ -1809,7 +1809,7 @@ def page_output_submit():
         for each_error in error:
             flash(each_error, "error")
         if message:
-            flash(message, "info")
+            flash(message, "success")
 
     return jsonify(data={
         'output_id': form_mod_output.output_id.data,
@@ -1997,7 +1997,7 @@ def page_input_submit():
         for each_error in error:
             flash(each_error, "error")
         if message:
-            flash(message, "info")
+            flash(message, "success")
 
     return jsonify(data={
         'input_id': form_mod_input.input_id.data,
@@ -2006,6 +2006,23 @@ def page_input_submit():
         'error': error,
         "page_refresh": page_refresh
     })
+
+
+@blueprint.route('/save_input_layout', methods=['POST'])
+def save_input_layout():
+    """Save positions of inputs"""
+    if not utils_general.user_has_permission('edit_controllers'):
+        return redirect(url_for('routes_general.home'))
+    data = request.get_json()
+    keys = ('input_id', 'position_y')
+    for index, each_input in enumerate(data):
+        if all(k in each_input for k in keys):
+            input_mod = Input.query.filter(
+                Input.unique_id == each_input['input_id']).first()
+            if input_mod:
+                input_mod.position_y = each_input['position_y']
+    db.session.commit()
+    return "success"
 
 
 @blueprint.route('/input', methods=('GET', 'POST'))
@@ -2026,8 +2043,6 @@ def page_input():
 
     display_order_input = csv_to_list_of_str(DisplayOrder.query.first().inputs)
     display_order_math = csv_to_list_of_str(DisplayOrder.query.first().math)
-
-    form_base = forms_input.DataBase()
 
     form_add_input = forms_input.InputAdd()
     form_mod_input = forms_input.InputMod()
@@ -2051,22 +2066,8 @@ def page_input():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_page.page_input'))
 
-        # Reorder
-        if form_base.reorder.data:
-            if form_base.reorder_type.data == 'input':
-                mod_order = DisplayOrder.query.first()
-                mod_order.inputs = list_to_csv(form_base.list_visible_elements.data)
-                mod_order.function = check_missing_ids(mod_order.function, [input_dev])
-                db.session.commit()
-            elif form_base.reorder_type.data == 'math':
-                mod_order = DisplayOrder.query.first()
-                mod_order.math = list_to_csv(form_base.list_visible_elements.data)
-                mod_order.function = check_missing_ids(mod_order.function, [math])
-                db.session.commit()
-            flash("Reorder Complete", "success")
-
         # Misc Input
-        elif form_mod_input.input_acquire_measurements.data:
+        if form_mod_input.input_acquire_measurements.data:
             utils_input.force_acquire_measurements(form_mod_input.input_id.data)
 
         # Add Input
@@ -2262,7 +2263,6 @@ def page_input():
                            dict_units=dict_units,
                            display_order_input=display_order_input,
                            display_order_math=display_order_math,
-                           form_base=form_base,
                            form_add_input=form_add_input,
                            form_mod_input=form_mod_input,
                            form_mod_measurement=form_mod_measurement,

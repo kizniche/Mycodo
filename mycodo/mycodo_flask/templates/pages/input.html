@@ -7,6 +7,11 @@
 {% block head %}
 <script type="text/javascript" src="/static/js/multiselect.min.js"></script>
 
+<script src="/static/js/jquery.ui.touch-punch.min.js"></script>
+<link rel="stylesheet" href="/static/css/gridstack.min.css" />
+<link rel="stylesheet" href="/static/css/gridstack-custom.css" />
+<script src="/static/js/gridstack.all.js"></script>
+
 <link href="/static/css/toastr.min.css" rel="stylesheet"/>
 <script src="/static/js/toastr.min.js"></script>
 
@@ -58,20 +63,22 @@
                 toastr['warning']('Warning: ' + data.data.warning.join(", "));
               }
               if (submitter_btn.attr("name") === 'input_delete' && 'input_id' in data.data) {
-                  $('#input_' + data.data.input_id).hide('slow');
-                  $('#spacer_' + data.data.input_id).hide('slow');
+                $('#modal_config_' + data.data.input_id).modal('hide');
+                $('.modal-backdrop').remove();
+                $(document.body).removeClass("modal-open");
+                $('.grid-stack').data('gridstack').remove_widget($('#input_' + data.data.input_id));
               }
               if (submitter_btn.attr("name") === 'input_activate' && 'input_id' in data.data) {
-                  $('#input_status_' + data.data.input_id).removeClass("inactive-background");
-                  $('#input_status_' + data.data.input_id).addClass("active-background");
-                  document.getElementById('input_activate_' + data.data.input_id).style.display = "none";
-                  document.getElementById('input_deactivate_' + data.data.input_id).style.display = "";
+                $('#input_status_' + data.data.input_id).removeClass("inactive-background");
+                $('#input_status_' + data.data.input_id).addClass("active-background");
+                document.getElementById('input_activate_' + data.data.input_id).style.display = "none";
+                document.getElementById('input_deactivate_' + data.data.input_id).style.display = "";
               }
               if (submitter_btn.attr("name") === 'input_deactivate' && 'input_id' in data.data) {
-                  $('#input_status_' + data.data.input_id).removeClass("active-background");
-                  $('#input_status_' + data.data.input_id).addClass("inactive-background");
-                  document.getElementById('input_activate_' + data.data.input_id).style.display = "";
-                  document.getElementById('input_deactivate_' + data.data.input_id).style.display = "none";
+                $('#input_status_' + data.data.input_id).removeClass("active-background");
+                $('#input_status_' + data.data.input_id).addClass("inactive-background");
+                document.getElementById('input_activate_' + data.data.input_id).style.display = "";
+                document.getElementById('input_deactivate_' + data.data.input_id).style.display = "none";
               }
               toastr['success']('Success: ' + data.data.message);
             } else {
@@ -137,6 +144,39 @@
       $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
     }).on('hide.bs.collapse', function(){
       $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
+    });
+
+    // Grid
+    let options = {
+      cellHeight: 20,
+      column: 20,
+      verticalMargin: 8,
+      draggable: {
+        handle: '.panel-heading'
+      },
+      float: false
+    };
+    let grid = $('.grid-stack').gridstack(options);
+
+    grid.on('change', function (event, items) {
+      if ($(items)) {
+        let res = $('.grid-stack > .grid-stack-item:visible').map(function (i, el) {
+          el = $(el);
+          const node = el.data('_gridstack_node');
+          return {
+            input_id: el.attr('data-custom-id'),
+            position_y: node.y,
+          };
+        });
+        $.ajax({
+          url: "/save_input_layout",
+          type: "POST",
+          data: JSON.stringify(res.toArray()),
+          contentType: "application/json; charset=utf-8",
+          success: function (dat) {
+          }
+        });
+      }
     });
   </script>
 

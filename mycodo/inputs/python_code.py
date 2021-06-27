@@ -128,7 +128,7 @@ def execute_at_modification(
 
     if message:
         flash("Review your code for issues and test your Input "
-              "before putting it into a production environment.", 'success')
+              "before putting it into a production environment.", 'info')
         flash(message, 'info')
 
     if error:

@@ -25,12 +25,6 @@ from mycodo.utils.inputs import parse_input_information
 logger = logging.getLogger("mycodo.forms_input")
 
 
-class DataBase(FlaskForm):
-    reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
-    list_visible_elements = SelectMultipleField('New Order')
-    reorder = SubmitField(TRANSLATIONS['save_order']['title'])
-
-
 class InputAdd(FlaskForm):
     choices_inputs = []
     dict_inputs = parse_input_information()

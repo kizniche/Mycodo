@@ -13,6 +13,7 @@ class Input(CRUDMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.Text, default='Input Name')
+    position_y = db.Column(db.Integer, default=0)
     is_activated = db.Column(db.Boolean, default=False)
     log_level_debug = db.Column(db.Boolean, default=False)
     is_preset = db.Column(db.Boolean, default=False)  # Is config saved as a preset?

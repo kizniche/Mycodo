@@ -49,6 +49,7 @@ input_fields = api.model('Input Settings Fields', {
     'id': fields.Integer,
     'unique_id': fields.String,
     'name': fields.String,
+    'position_y': fields.Integer,
     'is_activated': fields.Boolean,
     'log_level_debug': fields.Boolean,
     'is_preset': fields.Boolean,

@@ -16,6 +16,9 @@ This release improves the way settings are saved, which requires a change to any
 
 ### Features
 
+ - Add ability to save configuration options without refreshing page ([#1040](https://github.com/kizniche/mycodo/issues/1040))
+ - Add drag and drop sorting of Inputs
+ - Add modal dialogue for Input configuration
  - Add numerical keypad login
  - Add options for camera library raspistill: AWB Gain Blue, AWB Gain Red
  - Add Input: ADS1256 with Analog pH/EC sensors
