@@ -126,7 +126,7 @@ class SettingsGeneral(FlaskForm):
         lazy_gettext('Internet Test Port'), widget=NumberInput())
     net_test_timeout = IntegerField(
         lazy_gettext('Internet Test Timeout'), widget=NumberInput())
-    Submit = SubmitField(TRANSLATIONS['save']['title'])
+    settings_general_save = SubmitField(TRANSLATIONS['save']['title'])
 
 
 #
@@ -260,14 +260,14 @@ class UserRoles(FlaskForm):
     edit_settings = BooleanField(lazy_gettext('Edit Settings'))
     reset_password = BooleanField(lazy_gettext('Reset Password'))
     role_id = StringField('Role ID', widget=widgets.HiddenInput())
-    add_role = SubmitField(lazy_gettext('Add Role'))
-    save_role = SubmitField(TRANSLATIONS['save']['title'])
-    delete_role = SubmitField(TRANSLATIONS['delete']['title'])
+    user_role_add = SubmitField(lazy_gettext('Add Role'))
+    user_role_save = SubmitField(TRANSLATIONS['save']['title'])
+    user_role_delete = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 class User(FlaskForm):
     default_login_page = StringField(lazy_gettext('Default Login Page'))
-    save_user = SubmitField(lazy_gettext('Save'))
+    settings_user_save = SubmitField(lazy_gettext('Save'))
 
 
 class UserAdd(FlaskForm):
@@ -301,14 +301,14 @@ class UserAdd(FlaskForm):
         lazy_gettext('Role'), validators=[DataRequired()])
     theme = StringField(
         lazy_gettext('Theme'), validators=[DataRequired()])
-    add_user = SubmitField(lazy_gettext('Add User'))
+    user_add = SubmitField(lazy_gettext('Add User'))
 
 
 
 class UserPreferences(FlaskForm):
     theme = StringField(lazy_gettext('Theme'))
     language = StringField(lazy_gettext('Language'))
-    save = SubmitField(TRANSLATIONS['save']['title'])
+    user_preferences_save = SubmitField(TRANSLATIONS['save']['title'])
 
 
 class UserMod(FlaskForm):
@@ -347,9 +347,9 @@ class UserMod(FlaskForm):
         widget=NumberInput()
     )
     theme = StringField(lazy_gettext('Theme'))
-    generate_api_key = SubmitField("Generate API Key")
-    save = SubmitField(TRANSLATIONS['save']['title'])
-    delete = SubmitField(TRANSLATIONS['delete']['title'])
+    user_generate_api_key = SubmitField("Generate API Key")
+    user_save = SubmitField(TRANSLATIONS['save']['title'])
+    user_delete = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 #

@@ -34,6 +34,7 @@
       if (submitter_btn.attr("name") === 'camera_mod' ||
           submitter_btn.attr("name") === 'camera_del' ||
           submitter_btn.attr("name") === 'timelapse_generate') {
+        toastr['info']('Command sent. Please wait...');
         $.ajax({
           type: "POST",
           url: '/camera_submit',
@@ -43,14 +44,22 @@
               + '='
               + submitter_btn.attr("value"),
           success: function (data) {
-            if (data.data.error.length === 0) {
-              toastr['success']('Success: ' + data.data.message);
+            if (data.data.messages.error.length === 0) {
               if (submitter_btn.attr("name") === 'camera_del' && 'camera_id' in data.data) {
                   $('#camera_' + data.data.camera_id).hide('slow');
                   $('#spacer_' + data.data.camera_id).hide('slow');
               }
+              if ('warning' in data.data.messages && data.data.messages.warning.length !== 0) {
+                toastr['warning']('Warning: ' + data.data.messages.warning.join(", "));
+              }
+              if ('info' in data.data.messages && data.data.messages.info.length !== 0) {
+                toastr['info']('Info: ' + data.data.messages.info.join(", "));
+              }
+              if ('success' in data.data.messages && data.data.messages.success.length !== 0) {
+                toastr['success']('Success: ' + data.data.messages.success.join(", "));
+              }
             } else {
-              toastr['error']('Error: ' + data.data.error.join(", "));
+              toastr['error']('Error: ' + data.data.messages.error.join(", "));
             }
           },
           error: function() {

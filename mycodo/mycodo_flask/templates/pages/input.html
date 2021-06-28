@@ -37,7 +37,6 @@
 
     $('form').submit(function (e) {
       let submitter_btn = $(e.originalEvent.submitter);
-      console.log(submitter_btn.attr("name"));
 
       if (submitter_btn.attr("name") === 'input_mod' ||
           submitter_btn.attr("name") === 'input_delete' ||
@@ -54,13 +53,10 @@
               + '='
               + submitter_btn.attr("value"),
           success: function (data) {
-            if (data.data.error.length === 0) {
+            if (data.data.messages.error.length === 0) {
               if (submitter_btn.attr("name") === 'input_mod' && 'page_refresh' in data.data && data.data.page_refresh) {
                 window.location.reload();
                 return;
-              }
-              if (submitter_btn.attr("name") === 'input_mod' && data.data.warning.length !== 0) {
-                toastr['warning']('Warning: ' + data.data.warning.join(", "));
               }
               if (submitter_btn.attr("name") === 'input_delete' && 'input_id' in data.data) {
                 $('#modal_config_' + data.data.input_id).modal('hide');
@@ -80,9 +76,17 @@
                 document.getElementById('input_activate_' + data.data.input_id).style.display = "";
                 document.getElementById('input_deactivate_' + data.data.input_id).style.display = "none";
               }
-              toastr['success']('Success: ' + data.data.message);
+              if ('warning' in data.data.messages && data.data.messages.warning.length !== 0) {
+                toastr['warning']('Warning: ' + data.data.messages.warning.join(", "));
+              }
+              if ('info' in data.data.messages && data.data.messages.info.length !== 0) {
+                toastr['info']('Info: ' + data.data.messages.info.join(", "));
+              }
+              if ('success' in data.data.messages && data.data.messages.success.length !== 0) {
+                toastr['success']('Success: ' + data.data.messages.success.join(", "));
+              }
             } else {
-              toastr['error']('Error: ' + data.data.error.join(", "));
+              toastr['error']('Error: ' + data.data.messages.error.join(", "));
             }
           },
           error: function() {

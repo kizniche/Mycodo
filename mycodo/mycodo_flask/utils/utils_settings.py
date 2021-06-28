@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
+import os
+import re
 import subprocess
 import time
 import traceback
 
 import bcrypt
 import flask_login
-import os
-import re
 import sqlalchemy
 from flask import flash
 from flask import redirect
@@ -65,6 +65,7 @@ from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.send_data import send_email
 from mycodo.utils.system_pi import all_conversions
 from mycodo.utils.system_pi import assure_path_exists
+from mycodo.utils.system_pi import base64_encode_bytes
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.utils import test_password
 from mycodo.utils.utils import test_username
@@ -79,21 +80,16 @@ logger = logging.getLogger(__name__)
 #
 
 def user_roles(form):
-    action = None
-    if form.add_role.data:
-        action = TRANSLATIONS['add']['title']
-    elif form.save_role.data:
-        action = TRANSLATIONS['modify']['title']
-    elif form.delete_role.data:
-        action = TRANSLATIONS['delete']['title']
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    page_refresh = False
 
-    action = '{action} {controller}'.format(
-        action=action,
-        controller=gettext("User Role"))
-    error = []
-
-    if not error:
-        if form.add_role.data:
+    if not messages["error"]:
+        if form.user_role_add.data:
             new_role = Role()
             new_role.name = form.name.data
             new_role.view_logs = form.view_logs.data
@@ -106,11 +102,15 @@ def user_roles(form):
             new_role.reset_password = form.reset_password.data
             try:
                 new_role.save()
+                page_refresh = True
+                messages["success"].append('{action} {controller}'.format(
+                    action=TRANSLATIONS['add']['title'],
+                    controller=gettext("User Role")))
             except sqlalchemy.exc.OperationalError as except_msg:
-                error.append(except_msg)
+                messages["error"].append(except_msg)
             except sqlalchemy.exc.IntegrityError as except_msg:
-                error.append(except_msg)
-        elif form.save_role.data:
+                messages["error"].append(except_msg)
+        elif form.user_role_save.data:
             mod_role = Role.query.filter(
                 Role.unique_id == form.role_id.data).first()
             mod_role.view_logs = form.view_logs.data
@@ -122,42 +122,50 @@ def user_roles(form):
             mod_role.edit_controllers = form.edit_controllers.data
             mod_role.reset_password = form.reset_password.data
             db.session.commit()
-        elif form.delete_role.data:
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['modify']['title'],
+                controller=gettext("User Role")))
+        elif form.user_role_delete.data:
             user = User().query.filter(User.role_id == form.role_id.data)
-            if user.first().id == 1:
-                error.append("Cannot delete user: this user is protected")
+            role = Role().query.filter(Role.unique_id == form.role_id.data).first()
+            if role.id == 1:
+                messages["error"].append("Cannot delete role: Admin role is protected")
             if user.count():
-                error.append(
+                messages["error"].append(
                     "Cannot delete role if it is assigned to a user. "
                     "Change the user to another role and try again.")
             else:
                 delete_entry_with_id(Role, form.role_id.data)
-    flash_success_errors(
-        error, action, url_for('routes_settings.settings_users'))
+                messages["success"].append('{action} {controller}'.format(
+                    action=TRANSLATIONS['delete']['title'],
+                    controller=gettext("User Role")))
+
+    return messages, page_refresh
 
 
 def user(form):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['save']['title'],
-        controller=TRANSLATIONS['user']['title'])
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
-    if form.validate():
-        misc = Misc.query.first()
-        misc.default_login_page = form.default_login_page.data
+    misc = Misc.query.first()
+    misc.default_login_page = form.default_login_page.data
 
-        if not error:
-            try:
-                db.session.commit()
-            except sqlalchemy.exc.OperationalError as except_msg:
-                error.append(except_msg)
-            except sqlalchemy.exc.IntegrityError as except_msg:
-                error.append(except_msg)
+    if not messages["error"]:
+        try:
+            db.session.commit()
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['save']['title'],
+                controller=TRANSLATIONS['user']['title']))
+        except sqlalchemy.exc.OperationalError as except_msg:
+            messages["error"].append(except_msg)
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            messages["error"].append(except_msg)
 
-        flash_success_errors(
-            error, action, url_for('routes_settings.settings_users'))
-    else:
-        flash_form_errors(form)
+    return messages
 
 
 def user_add(form):
@@ -217,24 +225,25 @@ def user_add(form):
 
 
 def generate_api_key(form):
-    mod_user = User.query.filter(
-        User.unique_id == form.user_id.data).first()
-    action = '{action} {controller} {user}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller=TRANSLATIONS['user']['title'],
-        user=mod_user.name)
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    api_key = None
 
     try:
         mod_user = User.query.filter(
             User.unique_id == form.user_id.data).first()
-        mod_user.api_key = set_api_key(128)
+        api_key = set_api_key(128)
+        mod_user.api_key = api_key
         db.session.commit()
+        messages["success"].append("Generated API Key")
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(except_msg)
 
-    flash_success_errors(
-        error, action, url_for('routes_settings.settings_users'))
+    return messages, base64_encode_bytes(api_key)
 
 
 def change_preferences(form):
@@ -257,20 +266,18 @@ def change_preferences(form):
 
 
 def user_mod(form):
-    mod_user = User.query.filter(
-        User.unique_id == form.user_id.data).first()
-    action = '{action} {controller} {user}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller=TRANSLATIONS['user']['title'],
-        user=mod_user.name)
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    logout = False
 
     try:
         mod_user = User.query.filter(
             User.unique_id == form.user_id.data).first()
         mod_user.email = form.email.data
-
-        logger.error("TEST10: {}".format(form.code.data))
 
         if form.code.data == "0":
             mod_user.code = None
@@ -278,71 +285,73 @@ def user_mod(form):
             try:
                 code_int = int(form.code.data)
                 if len(str(code_int)) < 4:
-                    error.append("Keypad code must be a numerical value of 4 or more digits")
+                    messages["error"].append("Keypad code must be a numerical value of 4 or more digits")
                 mod_user.code = code_int
             except:
-                error.append("Keypad code must be a numerical value of 4 or more digits")
+                messages["error"].append("Keypad code must be a numerical value of 4 or more digits")
 
         # Only change the password if it's entered in the form
-        logout_user = False
         if form.password_new.data != '':
             if not utils_general.user_has_permission('reset_password'):
-                error.append("Cannot change user password")
+                messages["error"].append("Cannot change user password")
             if not test_password(form.password_new.data):
-                error.append(gettext("Invalid password"))
+                messages["error"].append(gettext("Invalid password"))
             if form.password_new.data != form.password_repeat.data:
-                error.append(gettext(
+                messages["error"].append(gettext(
                     "Passwords do not match. Please try again."))
             mod_user.password_hash = bcrypt.hashpw(
                 form.password_new.data.encode('utf-8'),
                 bcrypt.gensalt())
             if flask_login.current_user.id == form.user_id.data:
-                logout_user = True
+                logout = True
 
         current_user_name = User.query.filter(
             User.unique_id == form.user_id.data).first().name
         if (mod_user.role_id == 1 and
                 mod_user.role_id != form.role_id.data and
                 flask_login.current_user.name == current_user_name):
-            error.append(
+            messages["error"].append(
                 "Cannot change currently-logged in user's role from Admin")
 
-        if not error:
+        if not messages["error"]:
             mod_user.role_id = form.role_id.data
             mod_user.theme = form.theme.data
             db.session.commit()
-            if logout_user:
-                return 'logout'
+            messages["success"].append('{action} {controller} {user}'.format(
+                action=TRANSLATIONS['modify']['title'],
+                controller=TRANSLATIONS['user']['title'],
+                user=mod_user.name))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(except_msg)
 
-    flash_success_errors(
-        error, action, url_for('routes_settings.settings_users'))
+    return messages, logout
 
 
 def user_del(form):
     """ Delete user from SQL database """
-    user_name = User.query.filter(
-        User.unique_id == form.user_id.data).first().name
-    action = '{action} {controller} {user}'.format(
-        action=TRANSLATIONS['delete']['title'],
-        controller=TRANSLATIONS['user']['title'],
-        user=user_name)
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     if form.user_id.data == flask_login.current_user.id:
-        error.append("Cannot delete the currently-logged in user")
+        messages["error"].append("Cannot delete the currently-logged in user")
 
-    if not error:
+    if not messages["error"]:
         try:
             user = User.query.filter(
                 User.unique_id == form.user_id.data).first()
             user.delete()
+            messages["success"].append('{action} {controller} {user}'.format(
+                action=TRANSLATIONS['delete']['title'],
+                controller=TRANSLATIONS['user']['title'],
+                user=user.name))
         except Exception as except_msg:
-            error.append(except_msg)
+            messages["error"].append(except_msg)
 
-    flash_success_errors(
-        error, action, url_for('routes_settings.settings_users'))
+    return messages
 
 
 #
@@ -351,20 +360,22 @@ def user_del(form):
 
 def settings_general_mod(form):
     """ Modify General settings """
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller=gettext("General Settings"))
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     if form.validate():
         if (form.output_usage_report_span.data == 'monthly' and
                 not 0 < form.output_usage_report_day.data < 29):
-            error.append("Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28")
+            messages["error"].append("Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28")
         elif (form.output_usage_report_span.data == 'weekly' and
                 not 0 < form.output_usage_report_day.data < 8):
-            error.append("Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28")
+            messages["error"].append("Day Options: Daily: 1-7 (1=Monday), Monthly: 1-28")
 
-        if not error:
+        if not messages["error"]:
             try:
                 mod_misc = Misc.query.first()
 
@@ -401,6 +412,9 @@ def settings_general_mod(form):
                 db.session.commit()
                 control = DaemonControl()
                 control.refresh_daemon_misc_settings()
+                messages["success"].append('{action} {controller}'.format(
+                    action=TRANSLATIONS['modify']['title'],
+                    controller=gettext("General Settings")))
 
                 if force_https != form.force_https.data:
                     # Force HTTPS option changed.
@@ -411,12 +425,16 @@ def settings_general_mod(form):
                         os.utime(wsgi_file, None)
 
             except Exception as except_msg:
-                error.append(except_msg)
-
-        flash_success_errors(
-            error, action, url_for('routes_settings.settings_general'))
+                messages["error"].append(except_msg)
     else:
-        flash_form_errors(form)
+        for field, errors in form.errors.items():
+            for error in errors:
+                messages["error"].append(
+                    gettext("Error in the %(field)s field - %(err)s",
+                        field=getattr(form, field).label.text,
+                        err=error))
+
+    return messages
 
 
 def settings_function_import(form):

@@ -172,5 +172,3 @@ class InputMod(FlaskForm):
     input_acquire_measurements = SubmitField(lazy_gettext('Acquire Measurements Now'))
     input_activate = SubmitField(TRANSLATIONS['activate']['title'])
     input_deactivate = SubmitField(TRANSLATIONS['deactivate']['title'])
-    input_order_up = SubmitField(TRANSLATIONS['up']['title'])
-    input_order_down = SubmitField(TRANSLATIONS['down']['title'])

@@ -332,9 +332,12 @@ def input_add(form_add):
 
 
 def input_mod(form_mod, request_form):
-    message = ""
-    error = []
-    warning = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
     page_refresh = False
 
     dict_inputs = parse_input_information()
@@ -344,12 +347,12 @@ def input_mod(form_mod, request_form):
             Input.unique_id == form_mod.input_id.data).first()
 
         if mod_input.is_activated:
-            error.append(gettext(
+            messages["error"].append(gettext(
                 "Deactivate controller before modifying its settings"))
 
         if (mod_input.device == 'AM2315' and
                 form_mod.period.data < 7):
-            error.append(gettext(
+            messages["error"].append(gettext(
                 "Choose a Read Period equal to or greater than 7. The "
                 "AM2315 may become unresponsive if the period is "
                 "below 7."))
@@ -357,17 +360,17 @@ def input_mod(form_mod, request_form):
         if (form_mod.period.data and
                 mod_input.pre_output_duration and
                 form_mod.period.data < mod_input.pre_output_duration):
-            error.append(gettext(
+            messages["error"].append(gettext(
                 "The Read Period cannot be less than the Pre Output Duration"))
 
         if (form_mod.uart_location.data and
                 not os.path.exists(form_mod.uart_location.data)):
-            warning.append(gettext(
+            messages["warning"].append(gettext(
                 "Invalid device or improper permissions to read device"))
 
         if ('gpio_location' in dict_inputs[mod_input.device]['options_enabled'] and
                 form_mod.gpio_location.data is None):
-            error.append(gettext("Pin (GPIO) must be set"))
+            messages["error"].append(gettext("Pin (GPIO) must be set"))
 
         mod_input.name = form_mod.name.data
 
@@ -494,8 +497,8 @@ def input_mod(form_mod, request_form):
                             new_channel.input_id = mod_input.unique_id
                             new_channel.channel = index
 
-                            error, custom_options = custom_channel_options_return_json(
-                                error, dict_inputs, request_form,
+                            messages["error"], custom_options = custom_channel_options_return_json(
+                                messages["error"], dict_inputs, request_form,
                                 mod_input.unique_id, index,
                                 device=mod_input.device, use_defaults=True)
                             new_channel.custom_options = custom_options
@@ -518,14 +521,14 @@ def input_mod(form_mod, request_form):
                 custom_options_channels_dict_presave[each_channel.channel] = {}
 
         # Parse post-save custom options for output device and its channels
-        error, custom_options_json_postsave = custom_options_return_json(
-            error, dict_inputs, request_form, mod_dev=mod_input, device=mod_input.device)
+        messages["error"], custom_options_json_postsave = custom_options_return_json(
+            messages["error"], dict_inputs, request_form, mod_dev=mod_input, device=mod_input.device)
         custom_options_dict_postsave = json.loads(custom_options_json_postsave)
 
         custom_options_channels_dict_postsave = {}
         for each_channel in channels.all():
-            error, custom_options_channels_json_postsave_tmp = custom_channel_options_return_json(
-                error, dict_inputs, request_form,
+            messages["error"], custom_options_channels_json_postsave_tmp = custom_channel_options_return_json(
+                messages["error"], dict_inputs, request_form,
                 form_mod.input_id.data, each_channel.channel,
                 device=mod_input.device, use_defaults=False)
             custom_options_channels_dict_postsave[each_channel.channel] = json.loads(
@@ -547,7 +550,7 @@ def input_mod(form_mod, request_form):
             custom_options = json.dumps(custom_options_dict)  # Convert from dict to JSON string
             custom_channel_options = custom_options_channels_dict
             if not allow_saving:
-                error.append("execute_at_modification() would not allow input options to be saved")
+                messages["error"].append("execute_at_modification() would not allow input options to be saved")
         else:
             # Don't pass custom options to module
             custom_options = json.dumps(custom_options_dict_postsave)
@@ -560,21 +563,25 @@ def input_mod(form_mod, request_form):
                 each_channel.name = custom_channel_options[each_channel.channel]['name']
             each_channel.custom_options = json.dumps(custom_channel_options[each_channel.channel])
 
-        if not error:
+        if not messages["error"]:
             db.session.commit()
-            message = '{action} {controller}'.format(
+            messages["success"].append('{action} {controller}'.format(
                 action=TRANSLATIONS['modify']['title'],
-                controller=TRANSLATIONS['input']['title'])
+                controller=TRANSLATIONS['input']['title']))
 
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(except_msg)
 
-    return error, warning, message, page_refresh
+    return messages, page_refresh
 
 
 def input_del(input_id):
-    message = ""
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     try:
         input_dev = Input.query.filter(
@@ -588,14 +595,21 @@ def input_del(input_id):
             DeviceMeasurements.device_id == input_id).all()
 
         for each_measurement in device_measurements:
-            delete_entry_with_id(DeviceMeasurements, each_measurement.unique_id)
+            delete_entry_with_id(
+                DeviceMeasurements,
+                each_measurement.unique_id,
+                flash_message=False)
 
-        delete_entry_with_id(Input, input_id)
+        delete_entry_with_id(
+            Input, input_id, flash_message=False)
 
         channels = InputChannel.query.filter(
             InputChannel.input_id == input_id).all()
         for each_channel in channels:
-            delete_entry_with_id(InputChannel, each_channel.unique_id)
+            delete_entry_with_id(
+                InputChannel,
+                each_channel.unique_id,
+                flash_message=False)
 
         try:
             display_order = csv_to_list_of_str(
@@ -614,36 +628,22 @@ def input_del(input_id):
             pass
 
         db.session.commit()
-        message = '{action} {controller}'.format(
+        messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['delete']['title'],
-            controller=TRANSLATIONS['input']['title'])
+            controller=TRANSLATIONS['input']['title']))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(except_msg)
 
-    return error, message
-
-
-def input_reorder(input_id, display_order, direction):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['reorder']['title'],
-        controller=TRANSLATIONS['input']['title'])
-    error = []
-
-    try:
-        status, reord_list = reorder(display_order, input_id, direction)
-        if status == 'success':
-            DisplayOrder.query.first().inputs = ','.join(map(str, reord_list))
-            db.session.commit()
-        elif status == 'error':
-            error.append(reord_list)
-    except Exception as except_msg:
-        error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_input'))
+    return messages
 
 
 def input_activate(form_mod):
-    message = ""
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     dict_inputs = parse_input_information()
     input_id = form_mod.input_id.data
@@ -658,15 +658,15 @@ def input_activate(form_mod):
     # General Input checks
     #
     if not input_dev.period:
-        error.append("Period must be set")
+        messages["error"].append("Period must be set")
 
     if (input_dev.pre_output_id and
             len(input_dev.pre_output_id) > 1 and
             not input_dev.pre_output_duration):
-        error.append("Pre Output Duration must be > 0 if Pre Output is enabled")
+        messages["error"].append("Pre Output Duration must be > 0 if Pre Output is enabled")
 
     if not device_measurements.filter(DeviceMeasurements.is_enabled.is_(True)).count():
-        error.append("At least one measurement must be enabled")
+        messages["error"].append("At least one measurement must be enabled")
 
     #
     # Check if required custom options are set
@@ -678,7 +678,7 @@ def input_activate(form_mod):
 
             if each_option['id'] not in custom_options_values_inputs[input_dev.unique_id]:
                 if 'required' in each_option and each_option['required']:
-                    error.append("{} not found and is required to be set. "
+                    messages["error"].append("{} not found and is required to be set. "
                                  "Set option and save Input.".format(
                         each_option['name']))
             else:
@@ -686,14 +686,14 @@ def input_activate(form_mod):
                 if ('required' in each_option and
                         each_option['required'] and
                         not value):
-                    error.append("{} is required to be set".format(
+                    messages["error"].append("{} is required to be set".format(
                         each_option['name']))
 
     #
     # Input-specific checks
     #
     if input_dev.device == 'LinuxCommand' and not input_dev.cmd_command:
-        error.append("Cannot activate Command Input without a Command set")
+        messages["error"].append("Cannot activate Command Input without a Command set")
 
     elif ('measurements_variable_amount' in dict_inputs[input_dev.device] and
             dict_inputs[input_dev.device]['measurements_variable_amount']):
@@ -704,32 +704,36 @@ def input_activate(form_mod):
                     not each_channel.unit):
                 measure_set = False
         if not measure_set:
-            error.append("All measurements must have a name and unit/measurement set")
+            messages["error"].append("All measurements must have a name and unit/measurement set")
 
-    if not error:
+    if not messages["error"]:
         controller_activate_deactivate('activate', 'Input',  input_id, flash_message=False)
-        message = '{action} {controller}'.format(
+        messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['activate']['title'],
-            controller=TRANSLATIONS['input']['title'])
+            controller=TRANSLATIONS['input']['title']))
 
-    return error, message
+    return messages
 
 
 def input_deactivate(form_mod):
-    message = ""
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     try:
         input_id = form_mod.input_id.data
         input_deactivate_associated_controllers(input_id)
         controller_activate_deactivate('deactivate', 'Input', input_id, flash_message=False)
-        message = '{action} {controller}'.format(
+        messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['deactivate']['title'],
-            controller=TRANSLATIONS['input']['title'])
+            controller=TRANSLATIONS['input']['title']))
     except Exception as err:
-        error.append("Error deactivating Input: {}".format(err))
+        messages["error"].append("Error deactivating Input: {}".format(err))
 
-    return error, message
+    return messages
 
 
 # Deactivate any active PID or LCD controllers using this sensor

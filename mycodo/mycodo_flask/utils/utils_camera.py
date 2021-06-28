@@ -88,16 +88,20 @@ def camera_add(form_camera):
 
 
 def camera_mod(form_camera):
-    error = []
-    message = ""
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     try:
         if (Camera.query
                 .filter(Camera.unique_id != form_camera.camera_id.data)
                 .filter(Camera.name == form_camera.name.data).count()):
-            error.append("You must choose a unique name")
+            messages["error"].append("You must choose a unique name")
         if not 0 <= form_camera.rotation.data <= 360:
-            error.append("Rotation must be between 0 and 360 degrees")
+            messages["error"].append("Rotation must be between 0 and 360 degrees")
 
         mod_camera = Camera.query.filter(
             Camera.unique_id == form_camera.camera_id.data).first()
@@ -117,7 +121,7 @@ def camera_mod(form_camera):
 
         if form_camera.stream_fps.data:
             if form_camera.stream_fps.data < 1:
-                error.append("Stream FPS cannot be less than 1")
+                messages["error"].append("Stream FPS cannot be less than 1")
             mod_camera.stream_fps = form_camera.stream_fps.data
 
         if mod_camera.library == 'fswebcam':
@@ -171,7 +175,7 @@ def camera_mod(form_camera):
             mod_camera.url_still = form_camera.url_still.data
             mod_camera.url_stream = form_camera.url_stream.data
         else:
-            error.append("Unknown camera library")
+            messages["error"].append("Unknown camera library")
 
         if form_camera.output_id.data:
             mod_camera.output_id = form_camera.output_id.data
@@ -181,47 +185,55 @@ def camera_mod(form_camera):
         mod_camera.cmd_pre_camera = form_camera.cmd_pre_camera.data
         mod_camera.cmd_post_camera = form_camera.cmd_post_camera.data
 
-        if not error:
+        if not messages["error"]:
             db.session.commit()
             control = DaemonControl()
             control.refresh_daemon_camera_settings()
-            message = "Camera settings saved"
+            messages["success"].append("Camera settings saved")
     except Exception as except_msg:
         logger.exception(1)
-        error.append(except_msg)
+        messages["error"].append(except_msg)
 
-    return error, message
+    return messages
 
 
 def camera_del(form_camera):
-    message = ""
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     camera = db_retrieve_table(
         Camera, unique_id=form_camera.camera_id.data)
     if camera.timelapse_started:
-        error.append("Cannot delete camera if a time-lapse is currently "
+        messages["error"].append("Cannot delete camera if a time-lapse is currently "
                      "active. Stop the time-lapse and try again.")
 
-    if not error:
+    if not messages["error"]:
         try:
             delete_entry_with_id(
                 Camera, form_camera.camera_id.data)
-            message = "Camera deleted"
+            messages["success"].append("Camera deleted")
         except Exception as except_msg:
-            error.append(except_msg)
+            messages["error"].append(except_msg)
 
-    return error, message
+    return messages
 
 
 def camera_timelapse_video(form_camera):
-    error = []
-    message = ""
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     if not os.path.exists("/usr/bin/ffmpeg"):
-        error.append("ffmpeg not found. Install with 'sudo apt install ffmpeg'")
+        messages["error"].append("ffmpeg not found. Install with 'sudo apt install ffmpeg'")
 
-    if not error:
+    if not messages["error"]:
         try:
             camera = db_retrieve_table(
                 Camera, unique_id=form_camera.camera_id.data)
@@ -246,9 +258,10 @@ def camera_timelapse_video(form_camera):
                         codec=form_camera.timelapse_codec.data,
                         save=path_file)
             subprocess.Popen(cmd, shell=True)
-            message = "The time-lapse video is being generated in the background with the command: {}." \
-                      " The video will be saved at {}".format(cmd, path_file)
+            messages["success"].append(
+                "The time-lapse video is being generated in the background with the command: {}."
+                " The video will be saved at {}".format(cmd, path_file))
         except Exception as except_msg:
-            error.append(except_msg)
+            messages["error"].append(except_msg)
 
-    return error, message
+    return messages

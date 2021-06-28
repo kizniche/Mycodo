@@ -25,6 +25,7 @@ This release improves the way settings are saved, which requires a change to any
  - Add Output: MCP23017 16-Channel I/O Expander (On/Off)
  - Add return status to Conditional Controllers
  - Add 2- and 4-line variants of SSD1306 Display Functions and extra Options ([#1030](https://github.com/kizniche/mycodo/issues/1030))
+ - Add PDF Manual
 
 ### Miscellaneous
 

@@ -5,6 +5,77 @@
 
 {% block title %} - {{dict_translation['settings']['title'] + ': ' + dict_translation['general']['title']}}{% endblock %}
 
+{% block head %}
+<link href="/static/css/toastr.min.css" rel="stylesheet"/>
+<script src="/static/js/toastr.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "15000",
+      "extendedTimeOut": "10000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+
+    $('form').submit(function (e) {
+      let submitter_btn = $(e.originalEvent.submitter);
+
+      if (submitter_btn.attr("name") === 'settings_general_save') {
+        toastr['info']('Command sent. Please wait...');
+        $.ajax({
+          type: "POST",
+          url: '/settings/general_submit',
+          data: $(this).serialize()
+              + '&'
+              + submitter_btn.attr("name")
+              + '='
+              + submitter_btn.attr("value"),
+          success: function (data) {
+            if (data.data.messages.error.length === 0) {
+              if ('warning' in data.data.messages && data.data.messages.warning.length !== 0) {
+                toastr['warning']('Warning: ' + data.data.messages.warning.join(", "));
+              }
+              if ('info' in data.data.messages && data.data.messages.info.length !== 0) {
+                toastr['info']('Info: ' + data.data.messages.info.join(", "));
+              }
+              if ('success' in data.data.messages && data.data.messages.success.length !== 0) {
+                toastr['success']('Success: ' + data.data.messages.success.join(", "));
+              }
+            } else {
+              toastr['error']('Error: ' + data.data.messages.error.join(", "));
+            }
+          },
+          error: function() {
+            toastr['error']('Error: Could not communicate with server');
+          }
+        });
+        e.preventDefault();
+      }
+    });
+
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", "{{form_settings_general.csrf_token._value()}}")
+        }
+      }
+    })
+  });
+</script>
+{% endblock %}
+
 {% block settings %}
   <!-- Route: /settings/general -->
   <div class="container">
@@ -243,7 +314,7 @@
       </div>
       <div class="form-group">
         <div class="col-sm-offset-4 col-sm-12">
-          {{form_settings_general.Submit(class_='btn btn-primary')}}
+          {{form_settings_general.settings_general_save(class_='btn btn-primary')}}
         </div>
       </div>
     </form>

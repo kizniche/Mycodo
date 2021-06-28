@@ -1397,32 +1397,32 @@ def dashboard_widget_get_info(dashboard_id=None):
     return dashboards
 
 
-def delete_entry_with_id(table, entry_id):
+def delete_entry_with_id(table, entry_id, flash_message=True):
     """ Delete SQL database entry with specific id """
     try:
         entries = table.query.filter(
             table.unique_id == entry_id).first()
         db.session.delete(entries)
         db.session.commit()
-        flash(gettext("%(msg)s",
-                      msg='{action} {table} with ID: {id}'.format(
-                          action=TRANSLATIONS['delete']['title'],
-                          table=table.__tablename__,
-                          id=entry_id)),
-              "success")
+        msg = '{action} {table} with ID: {id}'.format(
+            action=TRANSLATIONS['delete']['title'],
+            table=table.__tablename__,
+            id=entry_id)
+        if flash_message:
+            flash(gettext("%(msg)s", msg=msg), "success")
+        else:
+            logger.info(msg)
         return 1
     except sqlalchemy.orm.exc.NoResultFound:
-        flash(gettext("%(err)s",
-                      err=gettext("Entry with ID %(id)s not found",
-                                  id=entry_id)),
-              "error")
-        flash(gettext("%(msg)s",
-                      msg='{action} {id}: {err}'.format(
-                          action=TRANSLATIONS['delete']['title'],
-                          id=entry_id,
-                          err=gettext("Entry with ID %(id)s not found",
-                                      id=entry_id))),
-              "success")
+        msg = '{action} {id}: {err}'.format(
+            action=TRANSLATIONS['delete']['title'],
+            id=entry_id,
+            err=gettext("Entry with ID %(id)s not found",
+                id=entry_id))
+        if flash_message:
+            flash(gettext("%(msg)s", msg=msg), "error")
+        else:
+            logger.error(msg)
         return 0
 
 

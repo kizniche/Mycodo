@@ -89,6 +89,15 @@ def static_from_root():
     return send_from_directory(current_app.static_folder, request.path[1:])
 
 
+@blueprint.route('/mycodo-manual.pdf')
+def download_pdf_manual():
+    """Return PDF Manual"""
+    from mycodo.config import INSTALL_DIRECTORY
+    import os
+    path_manual = os.path.join(INSTALL_DIRECTORY, "docs")
+    return send_from_directory(path_manual, "mycodo-manual.pdf")
+
+
 @blueprint.app_errorhandler(404)
 def not_found(error):
     return render_template('404.html', error=error), 404

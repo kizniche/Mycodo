@@ -4,6 +4,8 @@ import logging
 import os
 
 import flask_login
+from flask import flash
+from flask import jsonify
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -76,6 +78,30 @@ def settings_alerts():
                            form_email_alert=form_email_alert)
 
 
+@blueprint.route('/settings/general_submit', methods=['POST'])
+@flask_login.login_required
+def settings_general_submit():
+    """ Submit form for General Settings page """
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+
+    form_settings_general = forms_settings.SettingsGeneral()
+
+    if not utils_general.user_has_permission('edit_settings'):
+        messages["error"].append("Your permissions do not allow this action")
+
+    if not messages["error"]:
+        messages = utils_settings.settings_general_mod(form_settings_general)
+
+    return jsonify(data={
+        'messages': messages,
+    })
+
+
 @blueprint.route('/settings/general', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_general():
@@ -85,15 +111,6 @@ def settings_general():
 
     misc = Misc.query.first()
     form_settings_general = forms_settings.SettingsGeneral()
-
-    if request.method == 'POST':
-        if not utils_general.user_has_permission('edit_settings'):
-            return redirect(url_for('routes_general.home'))
-
-        form_name = request.form['form-name']
-        if form_name == 'General':
-            utils_settings.settings_general_mod(form_settings_general)
-        return redirect(url_for('routes_settings.settings_general'))
 
     return render_template('settings/general.html',
                            misc=misc,
@@ -382,9 +399,71 @@ def change_theme():
         if not utils_general.user_has_permission('edit_users'):
             return redirect(url_for('routes_general.home'))
 
-        if form_prefs.save.data:
+        if form_prefs.user_preferences_save.data:
             utils_settings.change_preferences(form_prefs)
     return redirect(url_for('routes_general.home'))
+
+
+@blueprint.route('/settings/users_submit', methods=['POST'])
+@flask_login.login_required
+def settings_users_submit():
+    """ Submit form for User Settings page """
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    page_refresh = False
+    logout = False
+    user_id = None
+    role_id = None
+    user_generate_api_key = None
+
+    if not utils_general.user_has_permission('edit_users'):
+        messages["error"].append("Your permissions do not allow this action")
+
+    form_user = forms_settings.User()
+    form_mod_user = forms_settings.UserMod()
+    form_user_roles = forms_settings.UserRoles()
+
+    if not messages["error"]:
+        if form_user.settings_user_save.data:
+            messages = utils_settings.user(form_user)
+        elif form_mod_user.user_generate_api_key.data:
+            (messages,
+             generated_api_key) = utils_settings.generate_api_key(
+                form_mod_user)
+            user_id = form_mod_user.user_id.data
+        elif form_mod_user.user_delete.data:
+            user_id = form_mod_user.user_id.data
+            messages = utils_settings.user_del(form_mod_user)
+        elif form_mod_user.user_save.data:
+            messages, logout = utils_settings.user_mod(form_mod_user)
+            if logout:
+                page_refresh = True
+        elif (form_user_roles.user_role_save.data or
+              form_user_roles.user_role_delete.data):
+            role_id = form_user_roles.role_id.data
+            messages, page_refresh = utils_settings.user_roles(form_user_roles)
+
+    if page_refresh:
+        for each_error in messages["error"]:
+            flash(each_error, "error")
+        for each_warn in messages["warning"]:
+            flash(each_warn, "warning")
+        for each_info in messages["info"]:
+            flash(each_info, "info")
+        for each_success in messages["success"]:
+            flash(each_success, "success")
+
+    return jsonify(data={
+        'generated_api_key': generated_api_key,
+        'user_id': user_id,
+        'role_id': role_id,
+        'messages': messages,
+        'logout': logout
+    })
 
 
 @blueprint.route('/settings/users', methods=('GET', 'POST'))
@@ -393,6 +472,13 @@ def settings_users():
     """ Display user settings """
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
+
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     misc = Misc.query.first()
     users = User.query.all()
@@ -406,23 +492,19 @@ def settings_users():
         if not utils_general.user_has_permission('edit_users'):
             return redirect(url_for('routes_general.home'))
 
-        if form_user.save_user.data:
-            utils_settings.user(form_user)
-        elif form_add_user.add_user.data:
+        if form_add_user.user_add.data:
             utils_settings.user_add(form_add_user)
-        elif form_mod_user.generate_api_key.data:
-            utils_settings.generate_api_key(form_mod_user)
-        elif form_mod_user.delete.data:
-            if utils_settings.user_del(form_mod_user) == 'logout':
-                return redirect('/logout')
-        elif form_mod_user.save.data:
-            if utils_settings.user_mod(form_mod_user) == 'logout':
-                return redirect('/logout')
-        elif (form_user_roles.add_role.data or
-                form_user_roles.save_role.data or
-                form_user_roles.delete_role.data):
-            utils_settings.user_roles(form_user_roles)
-        return redirect(url_for('routes_settings.settings_users'))
+        elif form_user_roles.user_role_add.data:
+            messages, page_refresh = utils_settings.user_roles(form_user_roles)
+
+    for each_error in messages["error"]:
+        flash(each_error, "error")
+    for each_warn in messages["warning"]:
+        flash(each_warn, "warning")
+    for each_info in messages["info"]:
+        flash(each_info, "info")
+    for each_success in messages["success"]:
+        flash(each_success, "success")
 
     return render_template('settings/users.html',
                            misc=misc,

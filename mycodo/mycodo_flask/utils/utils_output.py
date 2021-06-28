@@ -217,10 +217,13 @@ def output_add(form_add, request_form):
 
 
 def output_mod(form_output, request_form):
-    message = ""
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
     page_refresh = False
-    error = []
-    warning = []
 
     dict_outputs = parse_output_information()
 
@@ -232,7 +235,7 @@ def output_mod(form_output, request_form):
 
         if (form_output.uart_location.data and
                 not os.path.exists(form_output.uart_location.data)):
-            warning.append(gettext(
+            messages["warning"].append(gettext(
                 "Invalid device or improper permissions to read device"))
 
         mod_output.name = form_output.name.data
@@ -247,7 +250,7 @@ def output_mod(form_output, request_form):
             mod_output.uart_location = form_output.uart_location.data
         if form_output.gpio_location.data:
             if not is_int(form_output.gpio_location.data):
-                error.append("BCM GPIO Pin must be an integer")
+                messages["error"].append("BCM GPIO Pin must be an integer")
             else:
                 mod_output.pin = form_output.gpio_location.data
 
@@ -274,14 +277,14 @@ def output_mod(form_output, request_form):
                 custom_options_channels_dict_presave[each_channel.channel] = {}
 
         # Parse post-save custom options for output device and its channels
-        error, custom_options_json_postsave = custom_options_return_json(
-            error, dict_outputs, request_form, mod_dev=mod_output, device=mod_output.output_type)
+        messages["error"], custom_options_json_postsave = custom_options_return_json(
+            messages["error"], dict_outputs, request_form, mod_dev=mod_output, device=mod_output.output_type)
         custom_options_dict_postsave = json.loads(custom_options_json_postsave)
 
         custom_options_channels_dict_postsave = {}
         for each_channel in channels:
-            error, custom_options_channels_json_postsave_tmp = custom_channel_options_return_json(
-                error, dict_outputs, request_form,
+            messages["error"], custom_options_channels_json_postsave_tmp = custom_channel_options_return_json(
+                messages["error"], dict_outputs, request_form,
                 form_output.output_id.data, each_channel.channel,
                 device=mod_output.output_type, use_defaults=False)
             custom_options_channels_dict_postsave[each_channel.channel] = json.loads(
@@ -303,7 +306,7 @@ def output_mod(form_output, request_form):
             custom_options = json.dumps(custom_options_dict)  # Convert from dict to JSON string
             custom_channel_options = custom_options_channels_dict
             if not allow_saving:
-                error.append("execute_at_modification() would not allow output options to be saved")
+                messages["error"].append("execute_at_modification() would not allow output options to be saved")
         else:
             # Don't pass custom options to module
             custom_options = json.dumps(custom_options_dict_postsave)
@@ -316,23 +319,27 @@ def output_mod(form_output, request_form):
                 each_channel.name = custom_channel_options[each_channel.channel]['name']
             each_channel.custom_options = json.dumps(custom_channel_options[each_channel.channel])
 
-        if not error:
+        if not messages["error"]:
             db.session.commit()
-            message = '{action} {controller}'.format(
+            messages["success"].append('{action} {controller}'.format(
                 action=TRANSLATIONS['modify']['title'],
-                controller=TRANSLATIONS['output']['title'])
+                controller=TRANSLATIONS['output']['title']))
 
             if not current_app.config['TESTING']:
                 manipulate_output('Modify', form_output.output_id.data)
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(except_msg)
 
-    return error, warning, message, page_refresh
+    return messages, page_refresh
 
 
 def output_del(form_output):
-    message = ""
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     try:
         device_measurements = DeviceMeasurements.query.filter(
@@ -340,29 +347,37 @@ def output_del(form_output):
 
         for each_measurement in device_measurements:
             delete_entry_with_id(
-                DeviceMeasurements, each_measurement.unique_id)
+                DeviceMeasurements,
+                each_measurement.unique_id,
+                flash_message=False)
 
-        delete_entry_with_id(Output, form_output.output_id.data)
+        delete_entry_with_id(
+            Output,
+            form_output.output_id.data,
+            flash_message=False)
 
         channels = OutputChannel.query.filter(
             OutputChannel.output_id == form_output.output_id.data).all()
         for each_channel in channels:
-            delete_entry_with_id(OutputChannel, each_channel.unique_id)
+            delete_entry_with_id(
+                OutputChannel,
+                each_channel.unique_id,
+                flash_message=False)
 
         display_order = csv_to_list_of_str(DisplayOrder.query.first().output)
         display_order.remove(form_output.output_id.data)
         DisplayOrder.query.first().output = list_to_csv(display_order)
         db.session.commit()
-        message = '{action} {controller}'.format(
+        messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['delete']['title'],
-            controller=TRANSLATIONS['output']['title'])
+            controller=TRANSLATIONS['output']['title']))
 
         if not current_app.config['TESTING']:
             manipulate_output('Delete', form_output.output_id.data)
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(except_msg)
 
-    return error, message
+    return messages
 
 
 def manipulate_output(action, output_id):

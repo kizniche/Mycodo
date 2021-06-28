@@ -180,28 +180,43 @@ def page_functions():
 @blueprint.route('/camera_submit', methods=['POST'])
 @flask_login.login_required
 def page_camera_submit():
-    error = []
-    message = ""
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    page_refresh = False
 
     form_camera = forms_camera.Camera()
 
     if not utils_general.user_has_permission('edit_controllers'):
-        error.append("Your permissions do not allow this action")
+        messages["error"].append("Your permissions do not allow this action")
 
-    if not error:
+    if not messages["error"]:
         if form_camera.camera_mod.data:
-            error, message = utils_camera.camera_mod(form_camera)
+            messages = utils_camera.camera_mod(form_camera)
         elif form_camera.camera_del.data:
-            error, message = utils_camera.camera_del(form_camera)
+            messages = utils_camera.camera_del(form_camera)
         elif form_camera.timelapse_generate.data:
-            error, message = utils_camera.camera_timelapse_video(form_camera)
+            messages = utils_camera.camera_timelapse_video(form_camera)
         else:
-            error.append("Unknown camera directive")
+            messages["error"].append("Unknown camera directive")
+
+    if page_refresh:
+        for each_error in messages["error"]:
+            flash(each_error, "error")
+        for each_warn in messages["warning"]:
+            flash(each_warn, "warning")
+        for each_info in messages["info"]:
+            flash(each_info, "info")
+        for each_success in messages["success"]:
+            flash(each_success, "success")
 
     return jsonify(data={
         'camera_id': form_camera.camera_id.data,
-        'message': message,
-        'error': error
+        'messages': messages,
+        'page_refresh': page_refresh
     })
 
 
@@ -1784,38 +1799,41 @@ def function_status(unique_id):
 @flask_login.login_required
 def page_output_submit():
     """ Submit form for Output page """
-    error = []
-    warning = []
-    message = ""
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
     page_refresh = False
 
     form_mod_output = forms_output.OutputMod()
 
     if not utils_general.user_has_permission('edit_controllers'):
-        error.append("Your permissions do not allow this action")
+        messages["error"].append("Your permissions do not allow this action")
 
-    if not error:
+    if not messages["error"]:
         if form_mod_output.output_mod.data:
-            error, warning, message, page_refresh = utils_output.output_mod(
+            messages, page_refresh = utils_output.output_mod(
                 form_mod_output, request.form)
         elif form_mod_output.output_delete.data:
-            error, message = utils_output.output_del(form_mod_output)
+            messages = utils_output.output_del(form_mod_output)
         else:
-            error.append("Unknown Output directive")
+            messages["error"].append("Unknown Output directive")
 
     if page_refresh:
-        for each_warn in warning:
-            flash(each_warn, "error")
-        for each_error in error:
+        for each_error in messages["error"]:
             flash(each_error, "error")
-        if message:
-            flash(message, "success")
+        for each_warn in messages["warning"]:
+            flash(each_warn, "warning")
+        for each_info in messages["info"]:
+            flash(each_info, "info")
+        for each_success in messages["success"]:
+            flash(each_success, "success")
 
     return jsonify(data={
         'output_id': form_mod_output.output_id.data,
-        'message': message,
-        "warning": warning,
-        'error': error,
+        'messages': messages,
         "page_refresh": page_refresh
     })
 
@@ -1958,52 +1976,55 @@ def page_output():
 @flask_login.login_required
 def page_input_submit():
     """ Submit form for Data page """
-    error = []
-    warning = []
-    message = ""
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
     page_refresh = False
 
     form_mod_input = forms_input.InputMod()
     form_mod_measurement = forms_measurement.MeasurementMod()
 
     if not utils_general.user_has_permission('edit_controllers'):
-        error.append("Your permissions do not allow this action")
+        messages["error"].append("Your permissions do not allow this action")
 
-    if not error:
+    if not messages["error"]:
         # Input save/delete
         if form_mod_input.input_mod.data:
-            error, warning, message, page_refresh = utils_input.input_mod(
+            messages, page_refresh = utils_input.input_mod(
                 form_mod_input, request.form)
         elif form_mod_input.input_delete.data:
-            error, message = utils_input.input_del(
+            messages = utils_input.input_del(
                 form_mod_input.input_id.data)
 
         # Activate/Deactivate
         elif form_mod_input.input_activate.data:
-            error, message = utils_input.input_activate(form_mod_input)
+            messages = utils_input.input_activate(form_mod_input)
         elif form_mod_input.input_deactivate.data:
-            error, message = utils_input.input_deactivate(form_mod_input)
+            messages = utils_input.input_deactivate(form_mod_input)
 
         # Mod Input Measurement
         elif form_mod_measurement.measurement_mod.data:
-            error, message = utils_measurement.measurement_mod(
+            messages = utils_measurement.measurement_mod(
                 form_mod_measurement)
         else:
-            error.append("Unknown input directive")
+            messages["error"].append("Unknown input directive")
 
     if page_refresh:
-        for each_warn in warning:
-            flash(each_warn, "error")
-        for each_error in error:
+        for each_error in messages["error"]:
             flash(each_error, "error")
-        if message:
-            flash(message, "success")
+        for each_warn in messages["warning"]:
+            flash(each_warn, "warning")
+        for each_info in messages["info"]:
+            flash(each_info, "info")
+        for each_success in messages["success"]:
+            flash(each_success, "success")
 
     return jsonify(data={
         'input_id': form_mod_input.input_id.data,
-        'message': message,
-        "warning": warning,
-        'error': error,
+        'messages': messages,
         "page_refresh": page_refresh
     })
 
@@ -2073,14 +2094,6 @@ def page_input():
         # Add Input
         elif form_add_input.input_add.data:
             unmet_dependencies = utils_input.input_add(form_add_input)
-
-        # Mod other Input settings
-        elif form_mod_input.input_order_up.data:
-            utils_input.input_reorder(form_mod_input.input_id.data,
-                                      display_order_input, 'up')
-        elif form_mod_input.input_order_down.data:
-            utils_input.input_reorder(form_mod_input.input_id.data,
-                                      display_order_input, 'down')
 
         # Mod Math Measurement
         elif form_mod_math_measurement.math_measurement_mod.data:
