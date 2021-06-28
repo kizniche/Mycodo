@@ -421,14 +421,20 @@ def test_add_all_input_devices_logged_in_as_admin(_, testapp):
         # Save input
         response = save_data(testapp, 'input', device_dev=input_dev)
         assert 'data' in response.json
-        assert 'error' in response.json['data']
-        assert response.json['data']['error'] == []
+        assert 'messages' in response.json['data']
+        assert 'error' in response.json['data']['messages']
+        assert response.json['data']['messages']['error'] == []
+        assert 'success' in response.json['data']['messages']
+        assert len(response.json['data']['messages']['success']) == 1
 
         # Delete input (speeds up further input addition checking)
         response = delete_data(testapp, 'input', device_dev=input_dev)
         assert 'data' in response.json
-        assert 'error' in response.json['data']
-        assert response.json['data']['error'] == []
+        assert 'messages' in response.json['data']
+        assert 'error' in response.json['data']['messages']
+        assert response.json['data']['messages']['error'] == []
+        assert 'success' in response.json['data']['messages']
+        assert len(response.json['data']['messages']['success']) == 1
         input_count -= 1
         assert Input.query.count() == input_count, "Number of Inputs doesn't match: In DB {}, Should be: {}".format(
             Input.query.count(), input_count)
@@ -471,14 +477,20 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
         # Save output
         response = save_data(testapp, 'output', device_dev=output)
         assert 'data' in response.json
-        assert 'error' in response.json['data']
-        assert response.json['data']['error'] == []
+        assert 'messages' in response.json['data']
+        assert 'error' in response.json['data']['messages']
+        assert response.json['data']['messages']['error'] == []
+        assert 'success' in response.json['data']['messages']
+        assert len(response.json['data']['messages']['success']) == 1
 
         # Delete output (speeds up further output addition checking)
         response = delete_data(testapp, 'output', device_dev=output)
         assert 'data' in response.json
-        assert 'error' in response.json['data']
-        assert response.json['data']['error'] == []
+        assert 'messages' in response.json['data']
+        assert 'error' in response.json['data']['messages']
+        assert response.json['data']['messages']['error'] == []
+        assert 'success' in response.json['data']['messages']
+        assert len(response.json['data']['messages']['success']) == 1
         output_count -= 1
         assert Output.query.count() == output_count, "Number of Outputs doesn't match: In DB {}, Should be: {}".format(
             Output.query.count(), output_count)
