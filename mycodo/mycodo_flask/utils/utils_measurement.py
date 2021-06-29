@@ -3,12 +3,10 @@ import logging
 
 from flask_babel import gettext
 
-from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_misc import determine_controller_type
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
@@ -17,10 +15,14 @@ logger = logging.getLogger(__name__)
 
 
 def measurement_mod(form):
-    message = ""
-    error = []
-
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
     mod_device = None
+    device_id = None
     device_info = None
 
     try:
@@ -30,25 +32,29 @@ def measurement_mod(form):
         controller_type = determine_controller_type(mod_meas.device_id)
 
         if controller_type == "Input":
-            mod_device = Input.query.filter(Input.unique_id == mod_meas.device_id).first()
+            mod_device = Input.query.filter(
+                Input.unique_id == mod_meas.device_id).first()
             device_info = parse_input_information()
         elif controller_type == "Function":
-            mod_device = CustomController.query.filter(CustomController.unique_id == mod_meas.device_id).first()
+            mod_device = CustomController.query.filter(
+                CustomController.unique_id == mod_meas.device_id).first()
             device_info = parse_function_information()
 
         if not mod_device or not device_info:
             logger.error("Could not find mod_device or device_info")
             return
+        else:
+            device_id = mod_meas.device_id
 
         if mod_device.is_activated:
-            error.append(gettext(
+            messages["error"].append(gettext(
                 "Deactivate controller before modifying its settings"))
 
         mod_meas.name = form.name.data
 
         if form.device_type.data == 'measurement_select':
             if not form.select_measurement_unit.data:
-                error.append("Must select a measurement unit")
+                messages["error"].append("Must select a measurement unit")
             else:
                 mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
                 mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
@@ -79,12 +85,12 @@ def measurement_mod(form):
             mod_meas.invert_scale = form.invert_scale.data
             mod_meas.conversion_id = form.convert_to_measurement_unit.data
 
-        if not error:
+        if not messages["error"]:
             db.session.commit()
-            message = "Measurement settings saved"
+            messages["success"].append("Measurement settings saved")
 
     except Exception as except_msg:
         logger.exception(1)
-        error.append(except_msg)
+        messages["error"].append(except_msg)
 
-    return error, message
+    return device_id, messages

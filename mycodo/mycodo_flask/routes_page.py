@@ -1553,7 +1553,7 @@ def page_function():
                 form_function.function_id.data)
         elif form_mod_measurement.measurement_mod.data:
             utils_measurement.measurement_mod(
-                form_mod_measurement, url_for('routes_page.page_function'))
+                form_mod_measurement)
 
         # Custom action
         else:
@@ -1983,7 +1983,10 @@ def page_input_submit():
         "error": []
     }
     page_refresh = False
+    input_id = None
+    dep_unmet = None
 
+    form_add_input = forms_input.InputAdd()
     form_mod_input = forms_input.InputMod()
     form_mod_measurement = forms_measurement.MeasurementMod()
 
@@ -1991,13 +1994,25 @@ def page_input_submit():
         messages["error"].append("Your permissions do not allow this action")
 
     if not messages["error"]:
+        # Add Input
+        if form_add_input.input_add.data:
+            (messages,
+             dep_unmet,
+             input_id) = utils_input.input_add(form_add_input)
+            if dep_unmet:
+                dep_unmet = form_add_input.input_type.data.split(',')[0]
+                for each_error in messages["error"]:
+                    flash(each_error, "error")
+
         # Input save/delete
-        if form_mod_input.input_mod.data:
+        elif form_mod_input.input_mod.data:
             messages, page_refresh = utils_input.input_mod(
                 form_mod_input, request.form)
+            input_id = form_mod_input.input_id.data
         elif form_mod_input.input_delete.data:
             messages = utils_input.input_del(
                 form_mod_input.input_id.data)
+            input_id = form_mod_input.input_id.data
 
         # Activate/Deactivate
         elif form_mod_input.input_activate.data:
@@ -2007,23 +2022,15 @@ def page_input_submit():
 
         # Mod Input Measurement
         elif form_mod_measurement.measurement_mod.data:
-            messages = utils_measurement.measurement_mod(
+            input_id, messages = utils_measurement.measurement_mod(
                 form_mod_measurement)
+            page_refresh = True
         else:
             messages["error"].append("Unknown input directive")
 
-    if page_refresh:
-        for each_error in messages["error"]:
-            flash(each_error, "error")
-        for each_warn in messages["warning"]:
-            flash(each_warn, "warning")
-        for each_info in messages["info"]:
-            flash(each_info, "info")
-        for each_success in messages["success"]:
-            flash(each_success, "success")
-
     return jsonify(data={
-        'input_id': form_mod_input.input_id.data,
+        'input_id': input_id,
+        'dep_unmet': dep_unmet,
         'messages': messages,
         "page_refresh": page_refresh
     })
@@ -2050,6 +2057,17 @@ def save_input_layout():
 @flask_login.login_required
 def page_input():
     """ Display Data page """
+    return redirect('/input/all/0')
+
+
+@blueprint.route('/input/<input_type>/<input_id>', methods=('GET', 'POST'))
+@flask_login.login_required
+def page_input_options(input_type, input_id):
+    """ Display Data page options """
+    each_input = None
+    if input_type in ['entry', 'options'] and input_id != '0':
+        each_input = Input.query.filter(Input.unique_id == input_id).first()
+
     function = CustomController.query.all()
     input_dev = Input.query.all()
     input_channel = InputChannel.query.all()
@@ -2083,17 +2101,12 @@ def page_input():
     dict_inputs = parse_input_information()
 
     if request.method == 'POST':
-        unmet_dependencies = None
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_page.page_input'))
 
         # Misc Input
         if form_mod_input.input_acquire_measurements.data:
             utils_input.force_acquire_measurements(form_mod_input.input_id.data)
-
-        # Add Input
-        elif form_add_input.input_add.data:
-            unmet_dependencies = utils_input.input_add(form_add_input)
 
         # Mod Math Measurement
         elif form_mod_math_measurement.math_measurement_mod.data:
@@ -2139,11 +2152,7 @@ def page_input():
             utils_general.custom_action(
                 "Input", dict_inputs, form_mod_input.input_id.data, request.form)
 
-        if unmet_dependencies:
-            return redirect(url_for('routes_admin.admin_dependencies',
-                                    device=form_add_input.input_type.data.split(',')[0]))
-        else:
-            return redirect(url_for('routes_page.page_input'))
+        return redirect(url_for('routes_page.page_input'))
 
     custom_options_values_inputs = parse_custom_option_values(
         input_dev, dict_controller=dict_inputs)
@@ -2254,58 +2263,167 @@ def page_input():
                 ftdi_devices = get_ftdi_device_list()
                 break
 
-    return render_template('pages/input.html',
-                           and_=and_,
-                           choices_function=choices_function,
-                           choices_input=choices_input,
-                           choices_math=choices_math,
-                           choices_output=choices_output,
-                           choices_measurement=choices_measurement,
-                           choices_measurements_units=choices_measurements_units,
-                           choices_method=choices_method,
-                           choices_output_channels=choices_output_channels,
-                           choices_output_channels_measurements=choices_output_channels_measurements,
-                           choices_pid=choices_pid,
-                           choices_pid_devices=choices_pid_devices,
-                           choices_unit=choices_unit,
-                           custom_actions=custom_actions,
-                           custom_options_values_inputs=custom_options_values_inputs,
-                           custom_options_values_input_channels=custom_options_values_input_channels,
-                           dict_inputs=dict_inputs,
-                           dict_measurements=dict_measurements,
-                           dict_units=dict_units,
-                           display_order_input=display_order_input,
-                           display_order_math=display_order_math,
-                           form_add_input=form_add_input,
-                           form_mod_input=form_mod_input,
-                           form_mod_measurement=form_mod_measurement,
-                           form_mod_average_single=form_mod_average_single,
-                           form_mod_sum_single=form_mod_sum_single,
-                           form_mod_redundancy=form_mod_redundancy,
-                           form_mod_difference=form_mod_difference,
-                           form_mod_equation=form_mod_equation,
-                           form_mod_humidity=form_mod_humidity,
-                           form_mod_math=form_mod_math,
-                           form_mod_math_measurement=form_mod_math_measurement,
-                           form_mod_verification=form_mod_verification,
-                           form_mod_misc=form_mod_misc,
-                           ftdi_devices=ftdi_devices,
-                           input_channel=input_channel,
-                           input_templates=input_templates,
-                           math_info=MATH_INFO,
-                           math_templates=math_templates,
-                           names_input=names_input,
-                           names_math=names_math,
-                           output=output,
-                           output_types=output_types(),
-                           pid=pid,
-                           table_conversion=Conversion,
-                           table_device_measurements=DeviceMeasurements,
-                           table_input=Input,
-                           table_math=Math,
-                           user=user,
-                           devices_1wire_ow_shell=devices_1wire_ow_shell,
-                           devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)
+    if input_type == 'all':
+        return render_template('pages/input.html',
+                               and_=and_,
+                               choices_function=choices_function,
+                               choices_input=choices_input,
+                               choices_math=choices_math,
+                               choices_output=choices_output,
+                               choices_measurement=choices_measurement,
+                               choices_measurements_units=choices_measurements_units,
+                               choices_method=choices_method,
+                               choices_output_channels=choices_output_channels,
+                               choices_output_channels_measurements=choices_output_channels_measurements,
+                               choices_pid=choices_pid,
+                               choices_pid_devices=choices_pid_devices,
+                               choices_unit=choices_unit,
+                               custom_actions=custom_actions,
+                               custom_options_values_inputs=custom_options_values_inputs,
+                               custom_options_values_input_channels=custom_options_values_input_channels,
+                               dict_inputs=dict_inputs,
+                               dict_measurements=dict_measurements,
+                               dict_units=dict_units,
+                               display_order_input=display_order_input,
+                               display_order_math=display_order_math,
+                               form_add_input=form_add_input,
+                               form_mod_input=form_mod_input,
+                               form_mod_measurement=form_mod_measurement,
+                               form_mod_average_single=form_mod_average_single,
+                               form_mod_sum_single=form_mod_sum_single,
+                               form_mod_redundancy=form_mod_redundancy,
+                               form_mod_difference=form_mod_difference,
+                               form_mod_equation=form_mod_equation,
+                               form_mod_humidity=form_mod_humidity,
+                               form_mod_math=form_mod_math,
+                               form_mod_math_measurement=form_mod_math_measurement,
+                               form_mod_verification=form_mod_verification,
+                               form_mod_misc=form_mod_misc,
+                               ftdi_devices=ftdi_devices,
+                               input_channel=input_channel,
+                               input_templates=input_templates,
+                               math_info=MATH_INFO,
+                               math_templates=math_templates,
+                               names_input=names_input,
+                               names_math=names_math,
+                               output=output,
+                               output_types=output_types(),
+                               pid=pid,
+                               table_conversion=Conversion,
+                               table_device_measurements=DeviceMeasurements,
+                               table_input=Input,
+                               table_math=Math,
+                               user=user,
+                               devices_1wire_ow_shell=devices_1wire_ow_shell,
+                               devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)
+    elif input_type == 'entry':
+        return render_template('pages/data_options/input_entry.html',
+                               and_=and_,
+                               choices_function=choices_function,
+                               choices_input=choices_input,
+                               choices_math=choices_math,
+                               choices_output=choices_output,
+                               choices_measurement=choices_measurement,
+                               choices_measurements_units=choices_measurements_units,
+                               choices_method=choices_method,
+                               choices_output_channels=choices_output_channels,
+                               choices_output_channels_measurements=choices_output_channels_measurements,
+                               choices_pid=choices_pid,
+                               choices_pid_devices=choices_pid_devices,
+                               choices_unit=choices_unit,
+                               custom_actions=custom_actions,
+                               custom_options_values_inputs=custom_options_values_inputs,
+                               custom_options_values_input_channels=custom_options_values_input_channels,
+                               dict_inputs=dict_inputs,
+                               dict_measurements=dict_measurements,
+                               dict_units=dict_units,
+                               display_order_input=display_order_input,
+                               display_order_math=display_order_math,
+                               each_input=each_input,
+                               form_add_input=form_add_input,
+                               form_mod_input=form_mod_input,
+                               form_mod_measurement=form_mod_measurement,
+                               form_mod_average_single=form_mod_average_single,
+                               form_mod_sum_single=form_mod_sum_single,
+                               form_mod_redundancy=form_mod_redundancy,
+                               form_mod_difference=form_mod_difference,
+                               form_mod_equation=form_mod_equation,
+                               form_mod_humidity=form_mod_humidity,
+                               form_mod_math=form_mod_math,
+                               form_mod_math_measurement=form_mod_math_measurement,
+                               form_mod_verification=form_mod_verification,
+                               form_mod_misc=form_mod_misc,
+                               ftdi_devices=ftdi_devices,
+                               input_channel=input_channel,
+                               input_templates=input_templates,
+                               math_info=MATH_INFO,
+                               math_templates=math_templates,
+                               names_input=names_input,
+                               names_math=names_math,
+                               output=output,
+                               output_types=output_types(),
+                               pid=pid,
+                               table_conversion=Conversion,
+                               table_device_measurements=DeviceMeasurements,
+                               table_input=Input,
+                               table_math=Math,
+                               user=user,
+                               devices_1wire_ow_shell=devices_1wire_ow_shell,
+                               devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)
+    elif input_type == 'options':
+        return render_template('pages/data_options/input_options.html',
+                               and_=and_,
+                               choices_function=choices_function,
+                               choices_input=choices_input,
+                               choices_math=choices_math,
+                               choices_output=choices_output,
+                               choices_measurement=choices_measurement,
+                               choices_measurements_units=choices_measurements_units,
+                               choices_method=choices_method,
+                               choices_output_channels=choices_output_channels,
+                               choices_output_channels_measurements=choices_output_channels_measurements,
+                               choices_pid=choices_pid,
+                               choices_pid_devices=choices_pid_devices,
+                               choices_unit=choices_unit,
+                               custom_actions=custom_actions,
+                               custom_options_values_inputs=custom_options_values_inputs,
+                               custom_options_values_input_channels=custom_options_values_input_channels,
+                               dict_inputs=dict_inputs,
+                               dict_measurements=dict_measurements,
+                               dict_units=dict_units,
+                               display_order_input=display_order_input,
+                               display_order_math=display_order_math,
+                               each_input=each_input,
+                               form_add_input=form_add_input,
+                               form_mod_input=form_mod_input,
+                               form_mod_measurement=form_mod_measurement,
+                               form_mod_average_single=form_mod_average_single,
+                               form_mod_sum_single=form_mod_sum_single,
+                               form_mod_redundancy=form_mod_redundancy,
+                               form_mod_difference=form_mod_difference,
+                               form_mod_equation=form_mod_equation,
+                               form_mod_humidity=form_mod_humidity,
+                               form_mod_math=form_mod_math,
+                               form_mod_math_measurement=form_mod_math_measurement,
+                               form_mod_verification=form_mod_verification,
+                               form_mod_misc=form_mod_misc,
+                               ftdi_devices=ftdi_devices,
+                               input_channel=input_channel,
+                               input_templates=input_templates,
+                               math_info=MATH_INFO,
+                               math_templates=math_templates,
+                               names_input=names_input,
+                               names_math=names_math,
+                               output=output,
+                               output_types=output_types(),
+                               pid=pid,
+                               table_conversion=Conversion,
+                               table_device_measurements=DeviceMeasurements,
+                               table_input=Input,
+                               table_math=Math,
+                               user=user,
+                               devices_1wire_ow_shell=devices_1wire_ow_shell,
+                               devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)
 
 
 @blueprint.route('/usage', methods=('GET', 'POST'))

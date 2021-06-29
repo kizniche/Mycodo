@@ -28,7 +28,6 @@ from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import csv_to_list_of_str
@@ -43,16 +42,19 @@ logger = logging.getLogger(__name__)
 #
 
 def input_add(form_add):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['add']['title'],
-        controller=TRANSLATIONS['input']['title'])
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    new_input_id = None
 
     dict_inputs = parse_input_information()
 
     # only one comma should be in the input_type string
     if form_add.input_type.data.count(',') > 1:
-        error.append("Invalid input module formatting. It appears there is "
+        messages["error"].append("Invalid input module formatting. It appears there is "
                      "a comma in either 'input_name_unique' or 'interfaces'.")
 
     if form_add.input_type.data.count(',') == 1:
@@ -61,7 +63,7 @@ def input_add(form_add):
     else:
         input_name = ''
         input_interface = ''
-        error.append("Invalid input string (must be a comma-separated string)")
+        messages["error"].append("Invalid input string (must be a comma-separated string)")
 
     if current_app.config['TESTING']:
         dep_unmet = False
@@ -71,8 +73,10 @@ def input_add(form_add):
             list_unmet_deps = []
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
-            error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
+            messages["error"].append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
                 dev=input_name, dep=', '.join(list_unmet_deps)))
+
+            return messages, dep_unmet, None
 
     if form_add.validate():
         new_input = Input()
@@ -148,7 +152,7 @@ def input_add(form_add):
                 if dict_has_value('bt_location'):
                     if not re.match("[0-9a-fA-F]{2}([:]?)[0-9a-fA-F]{2}(\\1[0-9a-fA-F]{2}){4}$",
                                     dict_inputs[input_name]['bt_location']):
-                        error.append("Please specify device MAC-Address in format AA:BB:CC:DD:EE:FF")
+                        messages["error"].append("Please specify device MAC-Address in format AA:BB:CC:DD:EE:FF")
                     else:
                         new_input.location = dict_inputs[input_name]['bt_location']
                 if dict_has_value('bt_adapter'):
@@ -239,8 +243,8 @@ def input_add(form_add):
         #
 
         # Generate string to save from custom options
-        error, custom_options = custom_options_return_json(
-            error, dict_inputs, device=input_name, use_defaults=True)
+        messages["error"], custom_options = custom_options_return_json(
+            messages["error"], dict_inputs, device=input_name, use_defaults=True)
         new_input.custom_options = custom_options
 
         #
@@ -251,19 +255,13 @@ def input_add(form_add):
 
         if ('execute_at_creation' in dict_inputs[new_input.device] and
                 not current_app.config['TESTING']):
-            error, new_input = dict_inputs[new_input.device]['execute_at_creation'](
-                error, new_input, dict_inputs[new_input.device])
+            messages["error"], new_input = dict_inputs[new_input.device]['execute_at_creation'](
+                messages["error"], new_input, dict_inputs[new_input.device])
 
         try:
-            if not error:
+            if not messages["error"]:
                 new_input.save()
-
-                display_order = csv_to_list_of_str(
-                    DisplayOrder.query.first().inputs)
-
-                DisplayOrder.query.first().inputs = add_display_order(
-                    display_order, new_input.unique_id)
-                db.session.commit()
+                new_input_id = new_input.unique_id
 
                 #
                 # If there are a variable number of measurements
@@ -304,31 +302,31 @@ def input_add(form_add):
                         new_channel.input_id = new_input.unique_id
 
                         # Generate string to save from custom options
-                        error, custom_options = custom_channel_options_return_json(
-                            error, dict_inputs, None,
+                        messages["error"], custom_options = custom_channel_options_return_json(
+                            messages["error"], dict_inputs, None,
                             new_input.unique_id, each_channel,
                             device=new_input.device, use_defaults=True)
                         new_channel.custom_options = custom_options
 
                         new_channel.save()
 
-                flash(gettext(
-                    "%(type)s Input with ID %(id)s (%(uuid)s) successfully added",
-                    type=input_name,
-                    id=new_input.id,
-                    uuid=new_input.unique_id),
-                      "success")
+                messages["success"].append('{action} {controller}'.format(
+                    action=TRANSLATIONS['add']['title'],
+                    controller=TRANSLATIONS['input']['title']))
         except sqlalchemy.exc.OperationalError as except_msg:
-            error.append(except_msg)
+            messages["error"].append(except_msg)
         except sqlalchemy.exc.IntegrityError as except_msg:
-            error.append(except_msg)
+            messages["error"].append(except_msg)
 
-        flash_success_errors(error, action, url_for('routes_page.page_input'))
     else:
-        flash_form_errors(form_add)
+        for field, errors in form_add.errors.items():
+            for error in errors:
+                messages["error"].append(
+                    gettext("Error in the %(field)s field - %(err)s",
+                            field=getattr(form_add, field).label.text,
+                            err=error))
 
-    if dep_unmet:
-        return 1
+    return messages, dep_unmet, new_input_id
 
 
 def input_mod(form_mod, request_form):
@@ -466,17 +464,21 @@ def input_mod(form_mod, request_form):
                 # Delete measurements/channels
                 if form_mod.num_channels.data < measurements.count():
                     for index, each_channel in enumerate(measurements.all()):
-                        if index + 1 >= measurements.count():
-                            delete_entry_with_id(DeviceMeasurements,
-                                                 each_channel.unique_id)
+                        if index + 1 > form_mod.num_channels.data:
+                            delete_entry_with_id(
+                                DeviceMeasurements,
+                                each_channel.unique_id,
+                                flash_message=False)
 
                     if ('channel_quantity_same_as_measurements' in dict_inputs[mod_input.device] and
                             dict_inputs[mod_input.device]["channel_quantity_same_as_measurements"]):
                         if form_mod.num_channels.data < channels.count():
                             for index, each_channel in enumerate(channels.all()):
-                                if index + 1 >= channels.count():
+                                if index + 1 > form_mod.num_channels.data:
                                     delete_entry_with_id(
-                                        InputChannel, each_channel.unique_id)
+                                        InputChannel,
+                                        each_channel.unique_id,
+                                        flash_message=False)
 
                 # Add measurements/channels
                 elif form_mod.num_channels.data > measurements.count():
@@ -707,7 +709,8 @@ def input_activate(form_mod):
             messages["error"].append("All measurements must have a name and unit/measurement set")
 
     if not messages["error"]:
-        controller_activate_deactivate('activate', 'Input',  input_id, flash_message=False)
+        controller_activate_deactivate(
+            'activate', 'Input',  input_id, flash_message=False)
         messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['activate']['title'],
             controller=TRANSLATIONS['input']['title']))
@@ -726,7 +729,8 @@ def input_deactivate(form_mod):
     try:
         input_id = form_mod.input_id.data
         input_deactivate_associated_controllers(input_id)
-        controller_activate_deactivate('deactivate', 'Input', input_id, flash_message=False)
+        controller_activate_deactivate(
+            'deactivate', 'Input', input_id, flash_message=False)
         messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['deactivate']['title'],
             controller=TRANSLATIONS['input']['title']))

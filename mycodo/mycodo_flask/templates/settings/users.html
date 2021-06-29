@@ -53,7 +53,6 @@
                 window.location.href = "/logout";
               }
               if (submitter_btn.attr("name") === 'user_generate_api_key' && 'generated_api_key' in data.data) {
-                console.log(data.data.generated_api_key);
                 document.forms['user_' + data.data.user_id]['api_key'].value = data.data.generated_api_key;
               }
               if (submitter_btn.attr("name") === 'user_delete' && 'user_id' in data.data) {
