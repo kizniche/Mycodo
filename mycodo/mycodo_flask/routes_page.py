@@ -2017,8 +2017,10 @@ def page_input_submit():
         # Activate/Deactivate
         elif form_mod_input.input_activate.data:
             messages = utils_input.input_activate(form_mod_input)
+            input_id = form_mod_input.input_id.data
         elif form_mod_input.input_deactivate.data:
             messages = utils_input.input_deactivate(form_mod_input)
+            input_id = form_mod_input.input_id.data
 
         # Mod Input Measurement
         elif form_mod_measurement.measurement_mod.data:

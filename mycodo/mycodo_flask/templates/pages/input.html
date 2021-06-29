@@ -73,14 +73,12 @@
                 $('.grid-stack').data('gridstack').removeWidget($('#gridstack_input_' + data.data.input_id));
               }
               else if (submitter_btn.attr("name") === 'input_activate' && 'input_id' in data.data) {
-                $('#input_status_' + data.data.input_id).removeClass("inactive-background");
-                $('#input_status_' + data.data.input_id).addClass("active-background");
+                $('#input_status_' + data.data.input_id).removeClass("inactive-background").addClass("active-background");
                 document.getElementById('input_activate_' + data.data.input_id).style.display = "none";
                 document.getElementById('input_deactivate_' + data.data.input_id).style.display = "";
               }
               else if (submitter_btn.attr("name") === 'input_deactivate' && 'input_id' in data.data) {
-                $('#input_status_' + data.data.input_id).removeClass("active-background");
-                $('#input_status_' + data.data.input_id).addClass("inactive-background");
+                $('#input_status_' + data.data.input_id).removeClass("active-background").addClass("inactive-background");
                 document.getElementById('input_activate_' + data.data.input_id).style.display = "";
                 document.getElementById('input_deactivate_' + data.data.input_id).style.display = "none";
               }
