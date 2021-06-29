@@ -754,26 +754,32 @@ def input_deactivate_associated_controllers(input_id):
 
 
 def force_acquire_measurements(unique_id):
-    action = '{action}, {controller}'.format(
-        action=gettext("Force Measurements"),
-        controller=TRANSLATIONS['input']['title'])
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     try:
         mod_input = Input.query.filter(
             Input.unique_id == unique_id).first()
 
         if not mod_input.is_activated:
-            error.append(gettext(
+            messages["error"].append(gettext(
                 "Activate controller before attempting to force the acquisition of measurements"))
 
-        if not error:
+        if not messages["error"]:
             control = DaemonControl()
             status = control.input_force_measurements(unique_id)
             if status[0]:
-                flash("Force Input Measurement: {}".format(status[1]), "error")
+                messages["error"].append("Force Input Measurement: {}".format(status[1]))
             else:
+                messages["success"].append('{action}, {controller}'.format(
+                    action=gettext("Force Measurements"),
+                    controller=TRANSLATIONS['input']['title']))
                 flash("Force Input Measurement: {}".format(status[1]), "success")
     except Exception as except_msg:
-        error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_input'))
+        messages["error"].append(str(except_msg))
+
+    return messages

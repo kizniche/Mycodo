@@ -54,7 +54,8 @@
           submitter_btn.attr("name") === 'input_delete' ||
           submitter_btn.attr("name") === 'measurement_mod' ||
           submitter_btn.attr("name") === 'input_activate' ||
-          submitter_btn.attr("name") === 'input_deactivate') {
+          submitter_btn.attr("name") === 'input_deactivate' ||
+          submitter_btn.attr("name") === 'input_acquire_measurements') {
         toastr['info']('Command sent. Please wait...');
         $.ajax({
           type: "POST",

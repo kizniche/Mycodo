@@ -2027,6 +2027,12 @@ def page_input_submit():
             input_id, messages = utils_measurement.measurement_mod(
                 form_mod_measurement)
             page_refresh = True
+
+        # Acquire measurements
+        elif form_mod_input.input_acquire_measurements.data:
+            messages = utils_input.force_acquire_measurements(
+                form_mod_input.input_id.data)
+
         else:
             messages["error"].append("Unknown input directive")
 
@@ -2106,12 +2112,8 @@ def page_input_options(input_type, input_id):
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_page.page_input'))
 
-        # Misc Input
-        if form_mod_input.input_acquire_measurements.data:
-            utils_input.force_acquire_measurements(form_mod_input.input_id.data)
-
         # Mod Math Measurement
-        elif form_mod_math_measurement.math_measurement_mod.data:
+        if form_mod_math_measurement.math_measurement_mod.data:
             utils_math.math_measurement_mod(form_mod_math_measurement)
 
         # Mod other Math settings
