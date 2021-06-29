@@ -34,26 +34,21 @@
       "showMethod": "fadeIn",
       "hideMethod": "fadeOut"
     }
-    scan_forms();
-  });
 
-  function scan_forms() {
-    $('form').submit(function (e) {
-
-      function popup_response(data) {
-        if ('warning' in data.data.messages && data.data.messages.warning.length !== 0) {
-          toastr['warning']('Warning: ' + data.data.messages.warning.join(", "));
-        }
-        if ('info' in data.data.messages && data.data.messages.info.length !== 0) {
-          toastr['info']('Info: ' + data.data.messages.info.join(", "));
-        }
-        if ('success' in data.data.messages && data.data.messages.success.length !== 0) {
-          toastr['success']('Success: ' + data.data.messages.success.join(", "));
-        }
+    function popup_response(data) {
+      if ('warning' in data.data.messages && data.data.messages.warning.length !== 0) {
+        toastr['warning']('Warning: ' + data.data.messages.warning.join(", "));
       }
+      if ('info' in data.data.messages && data.data.messages.info.length !== 0) {
+        toastr['info']('Info: ' + data.data.messages.info.join(", "));
+      }
+      if ('success' in data.data.messages && data.data.messages.success.length !== 0) {
+        toastr['success']('Success: ' + data.data.messages.success.join(", "));
+      }
+    }
 
+    $("body").on("submit", "form", function(e) {
       let submitter_btn = $(e.originalEvent.submitter);
-
       if (submitter_btn.attr("name") === 'input_add' ||
           submitter_btn.attr("name") === 'input_mod' ||
           submitter_btn.attr("name") === 'input_delete' ||
@@ -70,25 +65,6 @@
               + '='
               + submitter_btn.attr("value"),
           success: function (data) {
-            if (submitter_btn.attr("name") === 'input_add' && 'input_id' in data.data) {
-              if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
-                window.location.href = '/admin/dependencies/' + data.data.dep_unmet;
-                return;
-              } else {
-                $.ajax({
-                  type: "GET",
-                  url: '/input/entry/' + data.data.input_id,
-                  success: function (new_entry) {
-                    $('.grid-stack').data('gridstack').addWidget('<div id=\"gridstack_input_' + data.data.input_id + '\" data-custom-id=\"' + data.data.input_id + '\">' + new_entry + '</div>', {width: 20, height: 2});
-                    scan_forms();
-                  },
-                  error: function() {
-                    toastr['error']('Error: Could not get new Input entry');
-                  }
-                });
-              }
-            }
-
             if (data.data.messages.error.length === 0) {
               if (submitter_btn.attr("name") === 'input_delete' && 'input_id' in data.data) {
                 $('#modal_config_' + data.data.input_id).modal('hide');
@@ -96,27 +72,42 @@
                 $(document.body).removeClass("modal-open");
                 $('.grid-stack').data('gridstack').removeWidget($('#gridstack_input_' + data.data.input_id));
               }
-              if (submitter_btn.attr("name") === 'input_activate' && 'input_id' in data.data) {
+              else if (submitter_btn.attr("name") === 'input_activate' && 'input_id' in data.data) {
                 $('#input_status_' + data.data.input_id).removeClass("inactive-background");
                 $('#input_status_' + data.data.input_id).addClass("active-background");
                 document.getElementById('input_activate_' + data.data.input_id).style.display = "none";
                 document.getElementById('input_deactivate_' + data.data.input_id).style.display = "";
               }
-              if (submitter_btn.attr("name") === 'input_deactivate' && 'input_id' in data.data) {
+              else if (submitter_btn.attr("name") === 'input_deactivate' && 'input_id' in data.data) {
                 $('#input_status_' + data.data.input_id).removeClass("active-background");
                 $('#input_status_' + data.data.input_id).addClass("inactive-background");
                 document.getElementById('input_activate_' + data.data.input_id).style.display = "";
                 document.getElementById('input_deactivate_' + data.data.input_id).style.display = "none";
               }
-
-              if ('page_refresh' in data.data && data.data.page_refresh) {
+              if (submitter_btn.attr("name") === 'input_add' && 'input_id' in data.data) {
+                if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
+                  window.location.href = '/admin/dependencies/' + data.data.dep_unmet;
+                } else {
+                  $.ajax({
+                    type: "GET",
+                    url: '/input/entry/' + data.data.input_id,
+                    success: function (new_entry) {
+                      $('.grid-stack').data('gridstack').addWidget('<div id=\"gridstack_input_' + data.data.input_id + '\" data-custom-id=\"' + data.data.input_id + '\">' + new_entry + '</div>', {width: 20, height: 2});
+                      popup_response(data);
+                    },
+                    error: function() {
+                      toastr['error']('Error: Could not get new Input entry');
+                    }
+                  });
+                }
+              }
+              else if ('page_refresh' in data.data && data.data.page_refresh) {
                 $.ajax({
                   type: "GET",
                   url: '/input/options/' + data.data.input_id,
                   success: function (new_options) {
                     $('#mod_input_' + data.data.input_id).html(new_options);
                     popup_response(data);
-                    scan_forms();
                   },
                   error: function() {
                     toastr['error']('Error: Could not get new Input options');
@@ -143,8 +134,8 @@
           xhr.setRequestHeader("X-CSRFToken", "{{form_mod_input.csrf_token._value()}}")
         }
       }
-    })
-  }
+    });
+  });
 </script>
 {% endblock %}
 
