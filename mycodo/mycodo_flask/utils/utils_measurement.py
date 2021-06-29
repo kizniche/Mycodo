@@ -91,6 +91,6 @@ def measurement_mod(form):
 
     except Exception as except_msg:
         logger.exception(1)
-        messages["error"].append(except_msg)
+        messages["error"].append(str(except_msg))
 
     return device_id, messages

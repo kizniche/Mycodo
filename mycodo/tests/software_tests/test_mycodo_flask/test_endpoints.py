@@ -585,9 +585,6 @@ def create_user(mycodo_db, role_id, name, password):
 
 def add_data(testapp, input_type='RPi'):
     """ Go to the data page and create input """
-    # form = testapp.get('/input').maybe_follow().forms['new_input_form']
-    # form.select(name='input_type', value=input_type)
-    # response = form.submit(name='input_add', value='Add').maybe_follow()
     form = testapp.get('/input').maybe_follow().forms['new_input_form']
     form.select(name='input_type', value=input_type)
     form_dict = {}
@@ -645,7 +642,6 @@ def save_data(testapp, data_type, device_dev=None):
             if each_field[0]:
                 form_dict[each_field[0]] = form[each_field[0]].value
         form_dict['input_mod'] = 'Save'
-        # response = testapp.post('/input_submit', form_dict)
         response = testapp.post('/input_submit', form_dict)
     elif data_type == 'output':
         form = testapp.get('/output').maybe_follow().forms['mod_output_form']

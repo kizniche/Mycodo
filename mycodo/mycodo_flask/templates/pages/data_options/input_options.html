@@ -1,5 +1,5 @@
 <div id="mod_input_{{each_input.unique_id}}">
-  <form method="post" action="/input">
+  <form id="mod_input_form" method="post" action="/input">
   {{form_mod_input.csrf_token}}
   {{form_mod_input.input_id(value=each_input.unique_id)}}
 

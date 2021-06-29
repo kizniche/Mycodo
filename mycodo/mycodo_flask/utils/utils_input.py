@@ -572,7 +572,7 @@ def input_mod(form_mod, request_form):
                 controller=TRANSLATIONS['input']['title']))
 
     except Exception as except_msg:
-        messages["error"].append(except_msg)
+        messages["error"].append(str(except_msg))
 
     return messages, page_refresh
 
@@ -634,7 +634,7 @@ def input_del(input_id):
             action=TRANSLATIONS['delete']['title'],
             controller=TRANSLATIONS['input']['title']))
     except Exception as except_msg:
-        messages["error"].append(except_msg)
+        messages["error"].append(str(except_msg))
 
     return messages
 
