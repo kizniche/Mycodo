@@ -590,7 +590,13 @@ def add_data(testapp, input_type='RPi'):
     # response = form.submit(name='input_add', value='Add').maybe_follow()
     form = testapp.get('/input').maybe_follow().forms['new_input_form']
     form.select(name='input_type', value=input_type)
-    response = testapp.post('/input_submit', {'input_add': 'Add', 'input_type': input_type})
+    form_dict = {}
+    for each_field in form.fields.items():
+        if each_field[0]:
+            form_dict[each_field[0]] = form[each_field[0]].value
+    form_dict['input_add'] = 'Add'
+    form_dict['input_type'] = input_type
+    response = testapp.post('/input_submit', form_dict)
     # response.showbrowser()
     return response
 
