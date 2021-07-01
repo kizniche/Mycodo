@@ -16,7 +16,7 @@ This release improves the way settings are saved, which requires a change to any
 
 ### Features
 
- - Add ability to save configuration options without refreshing page ([#1040](https://github.com/kizniche/mycodo/issues/1040))
+ - Add ability to submit forms without refreshing the page ([#1040](https://github.com/kizniche/mycodo/issues/1040))
  - Add drag and drop sorting of Inputs
  - Add modal dialogue for Input configuration
  - Add numerical keypad login
@@ -33,6 +33,7 @@ This release improves the way settings are saved, which requires a change to any
  - Update KP303 library ([#1028](https://github.com/kizniche/mycodo/issues/1028))
  - Add Try/Except for checking Output Triggers ([#1037](https://github.com/kizniche/mycodo/issues/1037))
  - Speed up loading of Camera page
+ - Update Gridstack to latest version
 
 
 ## 8.11.0 (2021-06-05) 

@@ -1,4 +1,4 @@
-"""Add position to Inptu table
+"""Add position to Input table
 
 Revision ID: b8ff72b5c2c9
 Revises: 37509b846483

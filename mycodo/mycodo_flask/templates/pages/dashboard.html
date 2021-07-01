@@ -27,10 +27,9 @@
   <script type="text/javascript" src="/static/js/toastr.min.js"></script>
 
   <!-- gridstack.js -->
-  <script src="/static/js/jquery.ui.touch-punch.min.js"></script>
-  <link rel="stylesheet" href="/static/css/gridstack.min.css" />
+  <link rel="stylesheet" href="/static/css/gridstack.css" />
   <link rel="stylesheet" href="/static/css/gridstack-custom.css" />
-  <script src="/static/js/gridstack.all.js"></script>
+  <script src="/static/js/gridstack-h5.js"></script>
 
   <!-- Dashboard begin head (dashboard {{dashboard_id}}) -->
   {% for widget_type, file_head in list_html_files_head.items() %}
@@ -59,14 +58,13 @@
 
       <div class="grid-stack-item"
          data-custom-chart-number="{{chart_number}}"
-         data-custom-id="{{each_widget.unique_id}}"
-         data-name="{{each_widget.name}}"
-         data-gs-x="{{each_widget.position_x}}"
-         data-gs-y="{{each_widget.position_y}}"
-         data-gs-width="{{each_widget.width}}"
-         data-gs-height="{{each_widget.height}}">
+         gs-id="{{each_widget.unique_id}}"
+         gs-x="{{each_widget.position_x}}"
+         gs-y="{{each_widget.position_y}}"
+         gs-w="{{each_widget.width}}"
+         gs-h="{{each_widget.height}}">
 
-        <div class="grid-stack-item-content" style="display: flex; flex-flow: column; height: 100%; padding: 0; border: 1px solid #ddd; border-radius: 5px">
+        <div class="grid-stack-item-content" style="display: flex; flex-flow: column; padding: 0; border: 1px solid #ddd; border-radius: 5px">
 
       {% if each_widget.graph_type in dict_widgets %}
 
@@ -282,31 +280,17 @@ let options = {
   alwaysShowResizeHandle: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
   float: true
 };
-let grid = $('.grid-stack').gridstack(options);
+let grid = GridStack.init(options);
 
 grid.on('change', function (event, items) {
-  if ($(items)) {
-    let res = $('.grid-stack > .grid-stack-item:visible').map(function (i, el) {
-      el = $(el);
-      const node = el.data('_gridstack_node');
-      return {
-        name: el.attr('data-name'),
-        widget_id: el.attr('data-custom-id'),
-        position_x: node.x,
-        position_y: node.y,
-        width: node.width,
-        height: node.height
-      };
-    });
-    $.ajax({
-      url: "/save_dashboard_layout",
-      type: "POST",
-      data: JSON.stringify(res.toArray()),
-      contentType: "application/json; charset=utf-8",
-      success: function (dat) {
-      }
-    });
-  }
+  let serializedFull = grid.save(false);
+  $.ajax({
+    url: "/save_dashboard_layout",
+    type: "POST",
+    data: JSON.stringify(serializedFull, null, '  '),
+    contentType: "application/json; charset=utf-8",
+    success: function (data) {}
+  });
 });
 
 {% if not this_dashboard.locked %}
@@ -378,7 +362,7 @@ $(document).ready(function() {
 
 {%- endfor %}
 
-  $('.grid-stack').on('gsresizestop', function(event, elem) {
+  grid.on('resizestop', function(event, elem) {
     const chart_number = $(elem).attr('data-custom-chart-number');
     chart[chart_number].reflow();
   });
