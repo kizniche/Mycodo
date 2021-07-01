@@ -590,7 +590,6 @@ def create_user(mycodo_db, role_id, name, password):
 def add_data(testapp, input_type='RPi'):
     """ Go to the data page and create input """
     form = testapp.get('/input').maybe_follow().forms['new_input_form']
-    form.select(name='input_type', value=input_type)
     form_dict = {}
     for each_field in form.fields.items():
         if each_field[0]:
@@ -605,9 +604,14 @@ def add_data(testapp, input_type='RPi'):
 def add_output(testapp, output_type='wired'):
     """ Go to the data page and create output """
     form = testapp.get('/output').maybe_follow().forms['new_output_form']
-    form.set(name='output_quantity', value=1)
-    form.select(name='output_type', value=output_type)
-    response = form.submit(name='output_add', value='Add').maybe_follow()
+    form_dict = {}
+    for each_field in form.fields.items():
+        if each_field[0]:
+            form_dict[each_field[0]] = form[each_field[0]].value
+    form_dict['output_add'] = 'Add'
+    form_dict['output_type'] = output_type
+    form_dict['output_quantity'] = 1
+    response = testapp.post('/output_submit', form_dict)
     # response.showbrowser()
     return response
 
