@@ -466,8 +466,12 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
         print("test_add_all_output_devices_logged_in_as_admin: Adding, saving, and deleting Output ({}/{}): {}".format(
             index + 1, len(choices_output), each_output))
         response = add_output(testapp, output_type=each_output)
-        # Verify success message flashed
-        assert "with ID 1 successfully added" in response
+        assert 'data' in response.json
+        assert 'messages' in response.json['data']
+        assert 'error' in response.json['data']['messages']
+        assert response.json['data']['messages']['error'] == []
+        assert 'success' in response.json['data']['messages']
+        assert len(response.json['data']['messages']['success']) == 1
 
         # Verify data was entered into the database
         output_count += 1
@@ -649,6 +653,7 @@ def save_data(testapp, data_type, device_dev=None):
         for each_field in form.fields.items():
             if each_field[0]:
                 form_dict[each_field[0]] = form[each_field[0]].value
+        form_dict['output_mod'] = 'Save'
         response = testapp.post('/output_submit', form_dict)
     elif data_type == 'function':
         form = testapp.get('/function').maybe_follow().forms['mod_function_form']
