@@ -50,7 +50,7 @@ INPUT_INFORMATION = {
     'interfaces': ['Mycodo'],
 
     'dependencies_module': [
-        ('pip-pypi', 'paho', 'paho-mqtt==1.5.1')],
+        ('pip-pypi', 'paho', 'paho-mqtt==1.5.1', 'jmespath==0.10.1')],
 
     'custom_options': [
         {
@@ -141,7 +141,7 @@ INPUT_INFORMATION = {
             'default_value': '',
             'required': True,
             'name': 'JSON Key',
-            'phrase': 'JSON Key for the value to be stored'
+            'phrase': 'JMES Path expression to find value in JSON response (e.g. "temperature" or "sensors[0].temperature" or "bathroom.temperature")'
         }
     ]
 }
@@ -241,6 +241,8 @@ class InputModule(AbstractInput):
         self.logger.info("Log: {}".format(string))
 
     def on_message(self, client, userdata, msg):
+        import jmespath as jmespath
+
         datetime_utc = datetime.datetime.utcnow()
         payload = msg.payload.decode()
         self.logger.debug("Message: Channel: {}, Value: {}".format(
@@ -254,32 +256,31 @@ class InputModule(AbstractInput):
                 msg.payload.decode()))
             return
 
-        for key in json_values:
-            for each_channel in self.channels_measurement:
-                if self.options_channels['json_name'][each_channel] == key:
+        for each_channel in self.channels_measurement:
+            self.logger.debug(
+                "Searching in json for jmes path {}".format(
+                self.options_channels['json_name'][each_channel]))
 
-                    self.logger.debug(
-                        "Match found. Key: {}, Value: {}".format(
-                            self.options_channels['json_name'][each_channel],
-                            json_values[key]))
+            try:
+                jmesexpression = jmespath.compile(self.options_channels['json_name'][each_channel])
+                value = jmesexpression.search(json_values)
+                self.logger.debug("Match found. Key: {}, Value: {}".format(self.options_channels['json_name'][each_channel],value))
+                measurement[each_channel] = {}
+                measurement[each_channel]['measurement'] = self.channels_measurement[each_channel].measurement
+                measurement[each_channel]['unit'] = self.channels_measurement[each_channel].unit
+                measurement[each_channel]['value'] = value
+                measurement[each_channel]['timestamp_utc'] = datetime_utc
 
-                    try:
-                        measurement[each_channel] = {}
-                        measurement[each_channel]['measurement'] = self.channels_measurement[each_channel].measurement
-                        measurement[each_channel]['unit'] = self.channels_measurement[each_channel].unit
-                        measurement[each_channel]['value'] = float(json_values[key])
-                        measurement[each_channel]['timestamp_utc'] = datetime_utc
-
-                        self.add_measurement_influxdb(each_channel, measurement)
-                    except Exception:
-                        try:
-                            self.logger.error(
-                                "Something happened in storing this measurement: {}".format(
-                                    float(json_values[key])))
-                        except:
-                            self.logger.error(
-                                "Value doesn't represent a float and could not decode payload")
-                        return
+                self.add_measurement_influxdb(each_channel, measurement)
+            except Exception as exc:
+                try:
+                    self.logger.error(
+                        "Something happened in storing this measurement: {} : {}".format(
+                            value, exc))
+                except:
+                    self.logger.error(
+                        "Value doesn't represent a float and could not decode payload : {}".format(exc))
+                return
 
     def add_measurement_influxdb(self, channel, measurement):
         # Convert value/unit is conversion_id present and valid
