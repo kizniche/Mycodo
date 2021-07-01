@@ -188,9 +188,9 @@
 
     // Grid
     let options = {
-      cellHeight: {{theme_grid_spacing[current_user.theme]["output"]["cellHeight"]}},
+      cellHeight: {% if current_user.theme %}{{theme_grid_spacing[current_user.theme]["output"]["cellHeight"]}}{% else %}60{% endif %},
       column: 20,
-      margin: {{theme_grid_spacing[current_user.theme]["output"]["margin"]}},
+      margin: {% if current_user.theme %}{{theme_grid_spacing[current_user.theme]["output"]["margin"]}}{% else %}0{% endif %},
       draggable: {
         handle: '.panel-heading'
       },
