@@ -58,6 +58,63 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == 'bdc03b708ac6':
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from mycodo.databases.models import Input
+                from mycodo.databases.models import Output
+                from mycodo.databases.models import OutputChannel
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    inputs = session.query(Input).all()
+                    first = True
+                    last_position = 0
+                    for each_input in inputs:
+
+                        try:
+                            if first:
+                                each_input.position_y = 0
+                                first = False
+                            else:
+                                each_input.position_y = last_position + 1
+                            last_position = each_input.position_y
+                        except:
+                            pass
+                        session.commit()
+
+                    outputs = session.query(Output).all()
+                    first = True
+                    last_position = 0
+                    last_size = 0
+                    for each_output in outputs:
+                        try:
+                            channels = session.query(OutputChannel).filter(
+                                OutputChannel.output_id == each_output.unique_id).count()
+                            if channels > 1:
+                                each_output.size_y = channels + 1
+                            else:
+                                each_output.size_y = 2
+                        except:
+                            pass
+
+                        try:
+                            if first:
+                                each_output.position_y = 0
+                                first = False
+                            else:
+                                each_output.position_y = last_position + last_size
+                            last_position = each_output.position_y
+                            last_size = each_output.size_y
+                        except:
+                            pass
+                        session.commit()
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == '110d2d00e91d':
             print("Executing post-alembic code for revision {}".format(
                 each_revision))

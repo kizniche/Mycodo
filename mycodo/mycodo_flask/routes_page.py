@@ -50,6 +50,7 @@ from mycodo.config import PATH_1WIRE
 from mycodo.config import PATH_HTML_USER
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import THEMES_DARK
+from mycodo.config import THEME_GRID_SPACING
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.config_devices_units import MEASUREMENTS
@@ -187,6 +188,7 @@ def page_camera_submit():
         "error": []
     }
     page_refresh = False
+    dep_unmet = None
 
     form_camera = forms_camera.Camera()
 
@@ -215,6 +217,7 @@ def page_camera_submit():
 
     return jsonify(data={
         'camera_id': form_camera.camera_id.data,
+        'dep_unmet': dep_unmet,
         'messages': messages,
         'page_refresh': page_refresh
     })
@@ -587,16 +590,16 @@ def save_dashboard_layout():
     if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('routes_general.home'))
     data = request.get_json()
-    keys = ('widget_id', 'position_x', 'position_y', 'width', 'height')
+    keys = ('id', 'x', 'y', 'w', 'h')
     for index, each_widget in enumerate(data):
         if all(k in each_widget for k in keys):
             widget_mod = Widget.query.filter(
-                Widget.unique_id == each_widget['widget_id']).first()
+                Widget.unique_id == each_widget['id']).first()
             if widget_mod:
-                widget_mod.position_x = each_widget['position_x']
-                widget_mod.position_y = each_widget['position_y']
-                widget_mod.width = each_widget['width']
-                widget_mod.height = each_widget['height']
+                widget_mod.position_x = each_widget['x']
+                widget_mod.position_y = each_widget['y']
+                widget_mod.width = each_widget['w']
+                widget_mod.height = each_widget['h']
     db.session.commit()
     return "success"
 
@@ -1806,42 +1809,81 @@ def page_output_submit():
         "error": []
     }
     page_refresh = False
+    output_id = None
+    dep_unmet = ''
+    dep_name = ''
+    dep_list = []
+    size_y = None
 
+    form_add_output = forms_output.OutputAdd()
     form_mod_output = forms_output.OutputMod()
 
     if not utils_general.user_has_permission('edit_controllers'):
         messages["error"].append("Your permissions do not allow this action")
 
     if not messages["error"]:
-        if form_mod_output.output_mod.data:
+        if form_add_output.output_add.data:
+            (messages,
+             dep_name,
+             dep_list,
+             output_id,
+             size_y) = utils_output.output_add(
+                form_add_output, request.form)
+            if dep_list:
+                dep_unmet = form_add_output.output_type.data.split(',')[0]
+        elif form_mod_output.output_mod.data:
             messages, page_refresh = utils_output.output_mod(
                 form_mod_output, request.form)
+            output_id = form_mod_output.output_id.data
         elif form_mod_output.output_delete.data:
             messages = utils_output.output_del(form_mod_output)
+            output_id = form_mod_output.output_id.data
         else:
             messages["error"].append("Unknown Output directive")
 
-    if page_refresh:
-        for each_error in messages["error"]:
-            flash(each_error, "error")
-        for each_warn in messages["warning"]:
-            flash(each_warn, "warning")
-        for each_info in messages["info"]:
-            flash(each_info, "info")
-        for each_success in messages["success"]:
-            flash(each_success, "success")
-
     return jsonify(data={
-        'output_id': form_mod_output.output_id.data,
+        'output_id': output_id,
+        'dep_name': dep_name,
+        'dep_list': dep_list,
+        'dep_unmet': dep_unmet,
+        'size_y': size_y,
         'messages': messages,
         "page_refresh": page_refresh
     })
 
 
+@blueprint.route('/save_output_layout', methods=['POST'])
+def save_output_layout():
+    """Save positions of outputs"""
+    if not utils_general.user_has_permission('edit_controllers'):
+        return redirect(url_for('routes_general.home'))
+    data = request.get_json()
+    keys = ('id', 'y')
+    for each_output in data:
+        if all(k in each_output for k in keys):
+            output_mod = Output.query.filter(
+                Output.unique_id == each_output['id']).first()
+            if output_mod:
+                output_mod.position_y = each_output['y']
+    db.session.commit()
+    return "success"
+
+
 @blueprint.route('/output', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_output():
-    """ Display output status and config """
+    """ Display Output page """
+    return redirect('/output/all/0')
+
+
+@blueprint.route('/output/<output_type>/<output_id>', methods=('GET', 'POST'))
+@flask_login.login_required
+def page_output_options(output_type, output_id):
+    """ Display Output page options """
+    each_output = None
+    if output_type in ['entry', 'options'] and output_id != '0':
+        each_output = Output.query.filter(Output.unique_id == output_id).first()
+
     camera = Camera.query.all()
     function = CustomController.query.all()
     input_dev = Input.query.all()
@@ -1871,9 +1913,6 @@ def page_output():
             mod_order.output = list_to_csv(form_base.list_visible_elements.data)
             mod_order.function = check_missing_ids(mod_order.function, [output])
             db.session.commit()
-
-        elif form_add_output.output_add.data:
-            unmet_dependencies = utils_output.output_add(form_add_output, request.form)
 
         # Custom action
         else:
@@ -1943,33 +1982,94 @@ def page_output():
             output_variables[each_output.unique_id][each_channel]['amps'] = None
             output_variables[each_output.unique_id][each_channel]['trigger_startup'] = None
 
-    return render_template('pages/output.html',
-                           camera=camera,
-                           choices_function=choices_function,
-                           choices_input=choices_input,
-                           choices_input_devices=choices_input_devices,
-                           choices_math=choices_math,
-                           choices_method=choices_method,
-                           choices_output=choices_output,
-                           choices_output_channels=choices_output_channels,
-                           choices_pid=choices_pid,
-                           custom_actions=custom_actions,
-                           custom_options_values_outputs=custom_options_values_outputs,
-                           custom_options_values_output_channels=custom_options_values_output_channels,
-                           dict_outputs=dict_outputs,
-                           display_order_output=display_order_output,
-                           form_base=form_base,
-                           form_add_output=form_add_output,
-                           form_mod_output=form_mod_output,
-                           lcd=lcd,
-                           misc=misc,
-                           names_output=names_output,
-                           output=output,
-                           output_channel=output_channel,
-                           output_types=output_types(),
-                           output_templates=output_templates,
-                           output_variables=output_variables,
-                           user=user)
+    if output_type == 'all':
+        return render_template('pages/output.html',
+                               camera=camera,
+                               choices_function=choices_function,
+                               choices_input=choices_input,
+                               choices_input_devices=choices_input_devices,
+                               choices_math=choices_math,
+                               choices_method=choices_method,
+                               choices_output=choices_output,
+                               choices_output_channels=choices_output_channels,
+                               choices_pid=choices_pid,
+                               custom_actions=custom_actions,
+                               custom_options_values_outputs=custom_options_values_outputs,
+                               custom_options_values_output_channels=custom_options_values_output_channels,
+                               dict_outputs=dict_outputs,
+                               display_order_output=display_order_output,
+                               form_base=form_base,
+                               form_add_output=form_add_output,
+                               form_mod_output=form_mod_output,
+                               lcd=lcd,
+                               misc=misc,
+                               names_output=names_output,
+                               output=output,
+                               output_channel=output_channel,
+                               output_types=output_types(),
+                               output_templates=output_templates,
+                               output_variables=output_variables,
+                               theme_grid_spacing=THEME_GRID_SPACING,
+                               user=user)
+    elif output_type == 'entry':
+        return render_template('pages/output_entry.html',
+                               camera=camera,
+                               choices_function=choices_function,
+                               choices_input=choices_input,
+                               choices_input_devices=choices_input_devices,
+                               choices_math=choices_math,
+                               choices_method=choices_method,
+                               choices_output=choices_output,
+                               choices_output_channels=choices_output_channels,
+                               choices_pid=choices_pid,
+                               custom_actions=custom_actions,
+                               custom_options_values_outputs=custom_options_values_outputs,
+                               custom_options_values_output_channels=custom_options_values_output_channels,
+                               dict_outputs=dict_outputs,
+                               display_order_output=display_order_output,
+                               each_output=each_output,
+                               form_base=form_base,
+                               form_add_output=form_add_output,
+                               form_mod_output=form_mod_output,
+                               lcd=lcd,
+                               misc=misc,
+                               names_output=names_output,
+                               output=output,
+                               output_channel=output_channel,
+                               output_types=output_types(),
+                               output_templates=output_templates,
+                               output_variables=output_variables,
+                               user=user)
+    elif output_type == 'options':
+        return render_template('pages/output_options.html',
+                               camera=camera,
+                               choices_function=choices_function,
+                               choices_input=choices_input,
+                               choices_input_devices=choices_input_devices,
+                               choices_math=choices_math,
+                               choices_method=choices_method,
+                               choices_output=choices_output,
+                               choices_output_channels=choices_output_channels,
+                               choices_pid=choices_pid,
+                               custom_actions=custom_actions,
+                               custom_options_values_outputs=custom_options_values_outputs,
+                               custom_options_values_output_channels=custom_options_values_output_channels,
+                               dict_outputs=dict_outputs,
+                               display_order_output=display_order_output,
+                               each_output=each_output,
+                               form_base=form_base,
+                               form_add_output=form_add_output,
+                               form_mod_output=form_mod_output,
+                               lcd=lcd,
+                               misc=misc,
+                               names_output=names_output,
+                               output=output,
+                               output_channel=output_channel,
+                               output_types=output_types(),
+                               output_templates=output_templates,
+                               output_variables=output_variables,
+                               user=user)
+
 
 
 @blueprint.route('/input_submit', methods=['POST'])
@@ -1984,7 +2084,9 @@ def page_input_submit():
     }
     page_refresh = False
     input_id = None
-    dep_unmet = None
+    dep_unmet = ''
+    dep_name = ''
+    dep_list = []
 
     form_add_input = forms_input.InputAdd()
     form_mod_input = forms_input.InputMod()
@@ -1997,12 +2099,11 @@ def page_input_submit():
         # Add Input
         if form_add_input.input_add.data:
             (messages,
-             dep_unmet,
+             dep_name,
+             dep_list,
              input_id) = utils_input.input_add(form_add_input)
-            if dep_unmet:
+            if dep_list:
                 dep_unmet = form_add_input.input_type.data.split(',')[0]
-                for each_error in messages["error"]:
-                    flash(each_error, "error")
 
         # Input save/delete
         elif form_mod_input.input_mod.data:
@@ -2038,6 +2139,8 @@ def page_input_submit():
 
     return jsonify(data={
         'input_id': input_id,
+        'dep_name': dep_name,
+        'dep_list': dep_list,
         'dep_unmet': dep_unmet,
         'messages': messages,
         "page_refresh": page_refresh
@@ -2050,13 +2153,13 @@ def save_input_layout():
     if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('routes_general.home'))
     data = request.get_json()
-    keys = ('input_id', 'position_y')
-    for index, each_input in enumerate(data):
+    keys = ('id', 'y')
+    for each_input in data:
         if all(k in each_input for k in keys):
             input_mod = Input.query.filter(
-                Input.unique_id == each_input['input_id']).first()
+                Input.unique_id == each_input['id']).first()
             if input_mod:
-                input_mod.position_y = each_input['position_y']
+                input_mod.position_y = each_input['y']
     db.session.commit()
     return "success"
 
@@ -2317,6 +2420,7 @@ def page_input_options(input_type, input_id):
                                table_device_measurements=DeviceMeasurements,
                                table_input=Input,
                                table_math=Math,
+                               theme_grid_spacing=THEME_GRID_SPACING,
                                user=user,
                                devices_1wire_ow_shell=devices_1wire_ow_shell,
                                devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)

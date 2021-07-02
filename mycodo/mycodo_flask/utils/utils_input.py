@@ -7,7 +7,6 @@ import re
 import sqlalchemy
 from flask import current_app
 from flask import flash
-from flask import url_for
 from flask_babel import gettext
 from sqlalchemy import desc
 
@@ -21,13 +20,10 @@ from mycodo.databases.models import InputChannel
 from mycodo.databases.models import PID
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
-from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
-from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.system_pi import csv_to_list_of_str
@@ -49,6 +45,7 @@ def input_add(form_add):
         "error": []
     }
     new_input_id = None
+    dep_name = None
 
     dict_inputs = parse_input_information()
 
@@ -73,22 +70,20 @@ def input_add(form_add):
             list_unmet_deps = []
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
-            messages["error"].append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
-                dev=input_name, dep=', '.join(list_unmet_deps)))
+            messages["error"].append(
+                "{dev} has unmet dependencies. They must be installed before the Input can be added.".format(
+                    dev=input_name))
+            if input_name in dict_inputs:
+                dep_name = dict_inputs[input_name]['input_name']
+            else:
+                messages["error"].append("Input not found: {}".format(input_name))
 
-            return messages, dep_unmet, None
+            return messages, dep_name, list_unmet_deps, None
 
     if form_add.validate():
         new_input = Input()
         new_input.device = input_name
-
-        # Find where the next Input should be placed on the grid
-        # Finds the lowest position to create as the new Input's starting position
-        position_y_start = 0
-        input_highest = Input.query.order_by(desc(Input.position_y)).limit(1).first()
-        if input_highest:
-            position_y_start = input_highest.position_y + 2
-        new_input.position_y = position_y_start
+        new_input.position_y = 999
 
         if input_interface:
             new_input.interface = input_interface
@@ -326,7 +321,7 @@ def input_add(form_add):
                             field=getattr(form_add, field).label.text,
                             err=error))
 
-    return messages, dep_unmet, new_input_id
+    return messages, dep_name, dep_unmet, new_input_id
 
 
 def input_mod(form_mod, request_form):

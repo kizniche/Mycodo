@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-
 import os
+
 import sqlalchemy
 from flask import current_app
-from flask import flash
-from flask import url_for
 from flask_babel import gettext
+from sqlalchemy import desc
 
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases import set_uuid
@@ -21,7 +20,6 @@ from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
-from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import csv_to_list_of_str
@@ -36,12 +34,25 @@ logger = logging.getLogger(__name__)
 #
 
 def output_add(form_add, request_form):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['add']['title'],
-        controller=TRANSLATIONS['output']['title'])
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    output_id = None
+    dep_name = None
+    size_y = None
 
     dict_outputs = parse_output_information()
+
+    if form_add.output_type.data.count(',') == 1:
+        output_type = form_add.output_type.data.split(',')[0]
+        output_interface = form_add.output_type.data.split(',')[1]
+    else:
+        output_type = ''
+        output_interface = ''
+        messages["error"].append("Invalid output string (must be a comma-separated string)")
 
     if current_app.config['TESTING']:
         dep_unmet = False
@@ -51,24 +62,23 @@ def output_add(form_add, request_form):
             list_unmet_deps = []
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
-            error.append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
-                dev=form_add.output_type.data.split(',')[0], dep=', '.join(list_unmet_deps)))
+            messages["error"].append(
+                "{dev} has unmet dependencies. They must be installed before the Output can be added.".format(
+                    dev=output_type))
+            if output_type in dict_outputs:
+                dep_name = dict_outputs[output_type]["output_name"]
+            else:
+                messages["error"].append("Output not found: {}".format(output_type))
+
+            return messages, dep_name, list_unmet_deps, None, None
 
     if not is_int(form_add.output_quantity.data, check_range=[1, 20]):
-        error.append("{error}. {accepted_values}: 1-20".format(
+        messages["error"].append("{error}. {accepted_values}: 1-20".format(
             error=gettext("Invalid quantity"),
             accepted_values=gettext("Acceptable values")
         ))
 
-    if form_add.output_type.data.count(',') == 1:
-        output_type = form_add.output_type.data.split(',')[0]
-        output_interface = form_add.output_type.data.split(',')[1]
-    else:
-        output_type = ''
-        output_interface = ''
-        error.append("Invalid output string (must be a comma-separated string)")
-
-    if not error:
+    if not messages["error"]:
         for _ in range(0, form_add.output_quantity.data):
             try:
                 new_output = Output()
@@ -85,6 +95,9 @@ def output_add(form_add, request_form):
                 new_output.name = "Name"
                 new_output.output_type = output_type
                 new_output.interface = output_interface
+                size_y = len(dict_outputs[output_type]['channels_dict']) + 1
+                new_output.size_y = len(dict_outputs[output_type]['channels_dict']) + 1
+                new_output.position_y = 999
 
                 #
                 # Set default values for new input being added
@@ -144,8 +157,8 @@ def output_add(form_add, request_form):
                         new_output.location = dict_outputs[output_type]['location']['options'][0][0]  # First entry in list
 
                 # Generate string to save from custom options
-                error, custom_options = custom_options_return_json(
-                    error, dict_outputs, request_form, device=output_type, use_defaults=True)
+                messages["error"], custom_options = custom_options_return_json(
+                    messages["error"], dict_outputs, request_form, device=output_type, use_defaults=True)
                 new_output.custom_options = custom_options
 
                 #
@@ -155,11 +168,12 @@ def output_add(form_add, request_form):
                 new_output.unique_id = set_uuid()
 
                 if 'execute_at_creation' in dict_outputs[output_type] and not current_app.config['TESTING']:
-                    error, new_output = dict_outputs[output_type]['execute_at_creation'](
-                        error, new_output, dict_outputs[output_type])
+                    messages["error"], new_output = dict_outputs[output_type]['execute_at_creation'](
+                        messages["error"], new_output, dict_outputs[output_type])
 
-                if not error:
+                if not messages["error"]:
                     new_output.save()
+                    output_id = new_output.unique_id
 
                     display_order = csv_to_list_of_str(
                         DisplayOrder.query.first().output)
@@ -191,8 +205,8 @@ def output_add(form_add, request_form):
                         new_channel.output_id = new_output.unique_id
 
                         # Generate string to save from custom options
-                        error, custom_options = custom_channel_options_return_json(
-                            error, dict_outputs, request_form,
+                        messages["error"], custom_options = custom_channel_options_return_json(
+                            messages["error"], dict_outputs, request_form,
                             new_output.unique_id, each_channel,
                             device=output_type, use_defaults=True)
                         new_channel.custom_options = custom_options
@@ -201,19 +215,23 @@ def output_add(form_add, request_form):
 
                     # Refresh output settings
                     if not current_app.config['TESTING']:
-                        manipulate_output('Add', new_output.unique_id)
+                        new_messages = manipulate_output(
+                            'Add', new_output.unique_id)
+                        messages["error"].extend(new_messages["error"])
+                        messages["success"].extend(new_messages["success"])
 
-                    flash(gettext("{dev} with ID %(id)s successfully added".format(
-                        dev=dict_outputs[output_type]['output_name']), id=new_output.id),
-                        "success")
+                    messages["success"].append('{action} {controller}'.format(
+                        action=TRANSLATIONS['add']['title'],
+                        controller=TRANSLATIONS['output']['title']))
             except sqlalchemy.exc.OperationalError as except_msg:
-                error.append(except_msg)
+                messages["error"].append(str(except_msg))
             except sqlalchemy.exc.IntegrityError as except_msg:
-                error.append(except_msg)
-            except Exception:
+                messages["error"].append(str(except_msg))
+            except Exception as except_msg:
+                messages["error"].append(str(except_msg))
                 logger.exception(1)
 
-    return dep_unmet
+    return messages, dep_unmet, None, output_id, size_y
 
 
 def output_mod(form_output, request_form):
@@ -326,7 +344,10 @@ def output_mod(form_output, request_form):
                 controller=TRANSLATIONS['output']['title']))
 
             if not current_app.config['TESTING']:
-                manipulate_output('Modify', form_output.output_id.data)
+                new_messages = manipulate_output(
+                    'Modify', form_output.output_id.data)
+                messages["error"].extend(new_messages["error"])
+                messages["success"].extend(new_messages["success"])
     except Exception as except_msg:
         messages["error"].append(except_msg)
 
@@ -373,7 +394,10 @@ def output_del(form_output):
             controller=TRANSLATIONS['output']['title']))
 
         if not current_app.config['TESTING']:
-            manipulate_output('Delete', form_output.output_id.data)
+            new_messages = manipulate_output(
+                'Delete', form_output.output_id.data)
+            messages["error"].extend(new_messages["error"])
+            messages["success"].extend(new_messages["success"])
     except Exception as except_msg:
         messages["error"].append(except_msg)
 
@@ -389,27 +413,33 @@ def manipulate_output(action, output_id):
     :param action: "Add", "Delete", or "Modify"
     :type action: str
     """
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+
     try:
         control = DaemonControl()
         return_values = control.output_setup(action, output_id)
         if return_values and len(return_values) > 1:
             if return_values[0]:
-                flash(gettext("%(err)s",
-                              err='{action} Output: Daemon response: {msg}'.format(
-                                  action=action,
-                                  msg=return_values[1])),
-                      "error")
+                messages["error"].append(gettext("%(err)s",
+                    err='{action} Output: Daemon response: {msg}'.format(
+                        action=action,
+                        msg=return_values[1])))
             else:
-                flash(gettext("%(err)s",
-                              err='{action} Output: Daemon response: {msg}'.format(
-                                  action=gettext(action),
-                                  msg=return_values[1])),
-                      "success")
+                messages["success"].append(gettext("%(err)s",
+                    err='{action} Output: Daemon response: {msg}'.format(
+                        action=gettext(action),
+                        msg=return_values[1])))
     except Exception as msg:
-        flash(gettext("%(err)s",
-                      err='{action} Output: Could not connect to Daemon: {error}'.format(
-                          action=action, error=msg)),
-              "error")
+        messages["error"].append(gettext("%(err)s",
+            err='{action} Output: Could not connect to Daemon: {error}'.format(
+                action=action, error=msg)))
+
+    return messages
 
 
 def get_all_output_states():

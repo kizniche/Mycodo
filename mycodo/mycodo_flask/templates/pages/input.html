@@ -5,12 +5,9 @@
 {% block title %} - {{dict_translation['input']['title']}}{% endblock %}
 
 {% block head %}
-<script type="text/javascript" src="/static/js/multiselect.min.js"></script>
-
-<script src="/static/js/jquery.ui.touch-punch.min.js"></script>
-<link rel="stylesheet" href="/static/css/gridstack.min.css" />
+<link rel="stylesheet" href="/static/css/gridstack.css" />
 <link rel="stylesheet" href="/static/css/gridstack-custom.css" />
-<script src="/static/js/gridstack.all.js"></script>
+<script src="/static/js/gridstack-h5.js"></script>
 
 <link href="/static/css/toastr.min.css" rel="stylesheet"/>
 <script src="/static/js/toastr.min.js"></script>
@@ -34,106 +31,6 @@
       "showMethod": "fadeIn",
       "hideMethod": "fadeOut"
     }
-
-    function popup_response(data) {
-      if ('warning' in data.data.messages && data.data.messages.warning.length !== 0) {
-        toastr['warning']('Warning: ' + data.data.messages.warning.join(", "));
-      }
-      if ('info' in data.data.messages && data.data.messages.info.length !== 0) {
-        toastr['info']('Info: ' + data.data.messages.info.join(", "));
-      }
-      if ('success' in data.data.messages && data.data.messages.success.length !== 0) {
-        toastr['success']('Success: ' + data.data.messages.success.join(", "));
-      }
-    }
-
-    $("body").on("submit", "form", function(e) {
-      let submitter_btn = $(e.originalEvent.submitter);
-      if (submitter_btn.attr("name") === 'input_add' ||
-          submitter_btn.attr("name") === 'input_mod' ||
-          submitter_btn.attr("name") === 'input_delete' ||
-          submitter_btn.attr("name") === 'measurement_mod' ||
-          submitter_btn.attr("name") === 'input_activate' ||
-          submitter_btn.attr("name") === 'input_deactivate' ||
-          submitter_btn.attr("name") === 'input_acquire_measurements') {
-        toastr['info']('Command sent. Please wait...');
-        $.ajax({
-          type: "POST",
-          url: '/input_submit',
-          data: $(this).serialize()
-              + '&'
-              + submitter_btn.attr("name")
-              + '='
-              + submitter_btn.attr("value"),
-          success: function (data) {
-            if (data.data.messages.error.length === 0) {
-              if (submitter_btn.attr("name") === 'input_delete' && 'input_id' in data.data) {
-                $('#modal_config_' + data.data.input_id).modal('hide');
-                $('.modal-backdrop').remove();
-                $(document.body).removeClass("modal-open");
-                $('.grid-stack').data('gridstack').removeWidget($('#gridstack_input_' + data.data.input_id));
-              }
-              else if (submitter_btn.attr("name") === 'input_activate' && 'input_id' in data.data) {
-                $('#input_status_' + data.data.input_id).removeClass("inactive-background").addClass("active-background");
-                document.getElementById('input_activate_' + data.data.input_id).style.display = "none";
-                document.getElementById('input_deactivate_' + data.data.input_id).style.display = "";
-              }
-              else if (submitter_btn.attr("name") === 'input_deactivate' && 'input_id' in data.data) {
-                $('#input_status_' + data.data.input_id).removeClass("active-background").addClass("inactive-background");
-                document.getElementById('input_activate_' + data.data.input_id).style.display = "";
-                document.getElementById('input_deactivate_' + data.data.input_id).style.display = "none";
-              }
-              if (submitter_btn.attr("name") === 'input_add' && 'input_id' in data.data) {
-                if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
-                  window.location.href = '/admin/dependencies/' + data.data.dep_unmet;
-                } else {
-                  $.ajax({
-                    type: "GET",
-                    url: '/input/entry/' + data.data.input_id,
-                    success: function (new_entry) {
-                      $('.grid-stack').data('gridstack').addWidget('<div id=\"gridstack_input_' + data.data.input_id + '\" data-custom-id=\"' + data.data.input_id + '\">' + new_entry + '</div>', {width: 20, height: 2});
-                      popup_response(data);
-                    },
-                    error: function() {
-                      toastr['error']('Error: Could not get new Input entry');
-                    }
-                  });
-                }
-              }
-              else if ('page_refresh' in data.data && data.data.page_refresh) {
-                $.ajax({
-                  type: "GET",
-                  url: '/input/options/' + data.data.input_id,
-                  success: function (new_options) {
-                    $('#mod_input_' + data.data.input_id).html(new_options);
-                    popup_response(data);
-                  },
-                  error: function() {
-                    toastr['error']('Error: Could not get new Input options');
-                  }
-                });
-              } else {
-                popup_response(data);
-              }
-            } else {
-              toastr['error']('Error: ' + data.data.messages.error.join(", "));
-            }
-          },
-          error: function() {
-            toastr['error']('Error: Could not communicate with server');
-          }
-        });
-        e.preventDefault();
-      }
-    });
-
-    $.ajaxSetup({
-      beforeSend: function (xhr, settings) {
-        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-          xhr.setRequestHeader("X-CSRFToken", "{{form_mod_input.csrf_token._value()}}")
-        }
-      }
-    });
   });
 </script>
 {% endblock %}
@@ -165,13 +62,12 @@
     {% for each_input in table_input.query.all() -%}
       <div id="gridstack_input_{{each_input.unique_id}}"
         class="grid-stack-item"
-        data-custom-id="{{each_input.unique_id}}"
-        data-name="{{each_input.name}}"
-        data-gs-x="1"
-        data-gs-y="{{each_input.position_y}}"
-        data-gs-width="20"
-        data-gs-height="2"
-        data-gs-no-resize="true">
+        gs-id="{{each_input.unique_id}}"
+        gs-x="0"
+        gs-y="{{each_input.position_y}}"
+        gs-w="20"
+        gs-h="1"
+        gs-no-resize="true">
         {% include 'pages/data_options/input_entry.html' %}
       </div> <!- grid-stack-item ->
     {%- endfor -%}
@@ -180,6 +76,8 @@
     {% if display_order_math %}
       {% include 'pages/data_options/math.html' %}
     {% endif %}
+
+    {% include 'admin/dependencies_install.html' %}
 
   </main>
 
@@ -194,33 +92,133 @@
 
     // Grid
     let options = {
-      cellHeight: 20,
+      cellHeight: {% if current_user.theme %}{{theme_grid_spacing[current_user.theme]["input"]["cellHeight"]}}{% else %}60{% endif %},
       column: 20,
-      verticalMargin: 8,
+      margin: {% if current_user.theme %}{{theme_grid_spacing[current_user.theme]["input"]["margin"]}}{% else %}0{% endif %},
       draggable: {
         handle: '.panel-heading'
       },
       float: false
     };
-    let grid = $('.grid-stack').gridstack(options);
+    let grid = GridStack.init(options);
 
     grid.on('change', function (event, items) {
-      if ($(items)) {
-        let res = $('.grid-stack > .grid-stack-item:visible').map(function (i, el) {
-          el = $(el);
-          const node = el.data('_gridstack_node');
-          return {
-            input_id: el.attr('data-custom-id'),
-            position_y: node.y,
-          };
-        });
+      let serializedFull = grid.save(false);
+      $.ajax({
+        url: "/save_input_layout",
+        type: "POST",
+        data: JSON.stringify(serializedFull, null, '  '),
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {}
+      });
+    });
+
+    function popup_response(data) {
+      if ('error' in data.data.messages && data.data.messages.error.length !== 0) {
+        toastr['error']('Error: ' + data.data.messages.error.join(", "));
+      }
+      if ('warning' in data.data.messages && data.data.messages.warning.length !== 0) {
+        toastr['warning']('Warning: ' + data.data.messages.warning.join(", "));
+      }
+      if ('info' in data.data.messages && data.data.messages.info.length !== 0) {
+        toastr['info']('Info: ' + data.data.messages.info.join(", "));
+      }
+      if ('success' in data.data.messages && data.data.messages.success.length !== 0) {
+        toastr['success']('Success: ' + data.data.messages.success.join(", "));
+      }
+    }
+
+    $("body").on("submit", "form", function(e) {
+      let submitter_btn = $(e.originalEvent.submitter);
+      if (submitter_btn.attr("name") === 'input_add' ||
+          submitter_btn.attr("name") === 'input_mod' ||
+          submitter_btn.attr("name") === 'input_delete' ||
+          submitter_btn.attr("name") === 'measurement_mod' ||
+          submitter_btn.attr("name") === 'input_activate' ||
+          submitter_btn.attr("name") === 'input_deactivate' ||
+          submitter_btn.attr("name") === 'input_acquire_measurements') {
+        e.preventDefault();
+        toastr['info']('Command sent. Please wait...');
         $.ajax({
-          url: "/save_input_layout",
           type: "POST",
-          data: JSON.stringify(res.toArray()),
-          contentType: "application/json; charset=utf-8",
-          success: function (data) {}
+          url: '/input_submit',
+          data: $(this).serialize()
+              + '&'
+              + submitter_btn.attr("name")
+              + '='
+              + submitter_btn.attr("value"),
+          success: function (data) {
+            if (submitter_btn.attr("name") === 'input_add' && 'input_id' in data.data) {
+              if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
+                $(".dependencies_device_name").text(data.data.dep_name);
+                $(".dependencies_device").text(data.data.dep_unmet);
+                $(".dependencies_unmet").text(data.data.dep_list.join(", "));
+                document.getElementById("dependency_unmet").value = data.data.dep_unmet;
+                $('#modal_config_dependency_install').modal('show');
+                popup_response(data);
+              } else {
+                $.ajax({
+                  type: "GET",
+                  url: '/input/entry/' + data.data.input_id,
+                  success: function (new_entry) {
+                    grid.addWidget('<div class="grid-stack-item" id="gridstack_input_' + data.data.input_id + '" gs-id="' + data.data.input_id + '">' + new_entry + '</div>', {w: 20, h: 1, y: 999});
+                    popup_response(data);
+                  },
+                  error: function() {
+                    toastr['error']('Error: Could not get new Input entry');
+                  }
+                });
+              }
+              return;
+            }
+            if (data.data.messages.error.length === 0) {
+              if (submitter_btn.attr("name") === 'input_delete' && 'input_id' in data.data) {
+                $('#modal_config_' + data.data.input_id).modal('hide');
+                $('.modal-backdrop').remove();
+                $(document.body).removeClass("modal-open");
+                grid.removeWidget('#gridstack_input_' + data.data.input_id);
+              }
+              else if (submitter_btn.attr("name") === 'input_activate' && 'input_id' in data.data) {
+                $('#input_status_' + data.data.input_id).removeClass("inactive-background").addClass("active-background");
+                document.getElementById('input_activate_' + data.data.input_id).style.display = "none";
+                document.getElementById('input_deactivate_' + data.data.input_id).style.display = "";
+              }
+              else if (submitter_btn.attr("name") === 'input_deactivate' && 'input_id' in data.data) {
+                $('#input_status_' + data.data.input_id).removeClass("active-background").addClass("inactive-background");
+                document.getElementById('input_activate_' + data.data.input_id).style.display = "";
+                document.getElementById('input_deactivate_' + data.data.input_id).style.display = "none";
+              }
+              if ('page_refresh' in data.data && data.data.page_refresh) {
+                $.ajax({
+                  type: "GET",
+                  url: '/input/options/' + data.data.input_id,
+                  success: function (new_options) {
+                    $('#mod_input_' + data.data.input_id).html(new_options);
+                    popup_response(data);
+                  },
+                  error: function() {
+                    toastr['error']('Error: Could not get new Input options');
+                  }
+                });
+              } else {
+                popup_response(data);
+              }
+            } else {
+              popup_response(data);
+            }
+          },
+          error: function() {
+            toastr['error']('Error: Could not communicate with server');
+          }
         });
+      }
+    });
+
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", "{{form_mod_input.csrf_token._value()}}")
+        }
       }
     });
   </script>

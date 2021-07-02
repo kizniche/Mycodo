@@ -8,12 +8,10 @@
       {% set unique_id = each_input.unique_id %}
       {% set custom_options_values = custom_options_values_inputs %}
 
-      <div id="input_status_{{each_input.unique_id}}" class="grid-stack-item-content {% if each_input.is_activated -%}active-background{% else -%}inactive-background{% endif %} row small-gutters" style="padding: 0.3em 0 0.3em 0; border: 2px solid #ddd; border-radius: 5px">
-
+      <div id="input_status_{{each_input.unique_id}}" class="grid-stack-item-content {% if each_input.is_activated -%}active-background{% else -%}inactive-background{% endif %} row small-gutters" style="padding: 4px; border: 1px solid #ddd; border-radius: 5px">
         <div class="col-1 text-center icon-fh my-auto panel-heading">
           <i style="font-size: 2em" class="fa fa-grip-horizontal" title="{{_('Drag')}}"></i>
         </div>
-
         <div class="col-1 text-center icon-fh my-auto">
           <a class="btn" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{each_input.unique_id}}">
             <i style="font-size: 1.5em" class="fas fa-cog" title="{{_('Configure')}}"></i>

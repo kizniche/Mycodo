@@ -14,7 +14,7 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 from config_translations import TRANSLATIONS
 
 MYCODO_VERSION = '8.11.0'
-ALEMBIC_VERSION = 'b8ff72b5c2c9'
+ALEMBIC_VERSION = 'bdc03b708ac6'
 
 #  FORCE_UPGRADE_MASTER
 #  Set True to enable upgrading to the master branch of the Mycodo repository.
@@ -878,6 +878,29 @@ THEMES = [
 
 THEMES_DARK = ['cyborg', 'darkly', 'slate', 'solar', 'superhero']
 
+THEME_GRID_SPACING = {
+    'cerulean': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'cosmo': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'cyborg': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'darkly': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'flatly': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'journal': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'literia': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'lumen': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'lux': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'materia': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'minty': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'pulse': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'sandstone': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'simplex': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'slate': {'output': {'cellHeight': 64, 'margin': 0}, 'input': {'cellHeight': 63, 'margin': 0}},  # Checked
+    'solar': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'spacelab': {'output': {'cellHeight': 50, 'margin': 0}, 'input': {'cellHeight': 52, 'margin': 0}},  # Checked
+    'superhero': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'united': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
+    'yeti': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}}
+}
+
 # Install path (the parent directory of this script)
 INSTALL_DIRECTORY = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/..')
 
@@ -1003,6 +1026,7 @@ class ProdConfig(object):
         "endpointRoot": "mycodo-flask-profiler"
     }
 
+    WTF_CSRF_TIME_LIMIT = 60 * 60 * 24 * 7  # 1 week expiration
     REMEMBER_COOKIE_DURATION = timedelta(days=90)
     SESSION_TYPE = "filesystem"
 

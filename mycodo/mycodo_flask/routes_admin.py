@@ -1,7 +1,9 @@
 # coding=utf-8
 """ collection of Admin endpoints """
 import datetime
+import io
 import logging
+import os
 import socket
 import subprocess
 import threading
@@ -9,10 +11,9 @@ import zipfile
 from collections import OrderedDict
 
 import flask_login
-import io
-import os
 from flask import Blueprint
 from flask import flash
+from flask import jsonify
 from flask import make_response
 from flask import redirect
 from flask import render_template
@@ -192,7 +193,7 @@ def install_dependencies(dependencies):
             dependency_list.append(each_dependency[0])
     with open(DEPENDENCY_LOG_FILE, 'a') as f:
         f.write("\n[{time}] Dependency installation beginning. Installing: {deps}\n\n".format(
-            time=now, deps=",".join(dependency_list)))
+            time=now, deps=", ".join(dependency_list)))
 
     for each_dep in dependencies:
         cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_dependency {dep}" \
@@ -216,7 +217,7 @@ def install_dependencies(dependencies):
 
     now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     with open(DEPENDENCY_LOG_FILE, 'a') as f:
-        f.write("\n[{time}] #### Dependency install finished\n\n".format(time=now))
+        f.write("\n[{time}] #### Dependencies installed. Restarting frontend and backend...".format(time=now))
 
     with open(DEPENDENCY_INIT_FILE, 'w') as f:
         f.write('0')
@@ -234,6 +235,38 @@ def install_dependencies(dependencies):
             log=DEPENDENCY_LOG_FILE)
     init = subprocess.Popen(cmd, shell=True)
     init.wait()
+
+    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open(DEPENDENCY_LOG_FILE, 'a') as f:
+        f.write("\n\n[{time}] #### Dependency install complete.\n\n".format(time=now))
+
+
+@blueprint.route('/admin/dependency_install/<device>', methods=('GET', 'POST'))
+@flask_login.login_required
+def admin_dependency_install(device):
+    """ Install Dependencies """
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+
+    try:
+        device_unmet_dependencies, _ = utils_general.return_dependencies(device)
+        with open(DEPENDENCY_INIT_FILE, 'w') as f:
+            f.write('1')
+        install_deps = threading.Thread(
+            target=install_dependencies,
+            args=(device_unmet_dependencies,))
+        install_deps.start()
+        messages["success"].append("Dependency install initiated")
+    except Exception as err:
+        messages["error"].append("Error: {}".format(err))
+
+    return jsonify(data={
+        'messages': messages
+    })
 
 
 @blueprint.route('/admin/dependencies', methods=('GET', 'POST'))
