@@ -37,11 +37,16 @@ INPUT_INFORMATION = {
     'listener': True,
 
     'message': 'A single topic is subscribed to and the returned JSON payload contains one or '
-               'more key/value pairs. If the set JSON Key exists in the payload, the '
-               'corresponding value will be stored for that channel. Be sure you select and '
+               'more key/value pairs. The given JSON Key is used as a JMESPATH expression to find the '
+               'corresponding value that will be stored for that channel. Be sure you select and '
                'save the Measurement Unit for each of channels. Once the unit has been saved, '
-               'you can convert to other units in the Convert Measurement section.',
-
+               'you can convert to other units in the Convert Measurement section.'
+               ' Example for jmespath expressions (see https://jmespath.org) are '
+               '<i>temperature</i> or <i>sensors[0].temperature</i> or <i>bathroom.temperature</i> which refer to '
+               'the temperature as a direct key, within the first entry of sensors or as a subkey '
+               'of bathroom respectively. '
+               'Jmespath elements and keys that contain special characters have to be enclosed ' 
+               'in double quotes e.q. <i>"sensor-1".temperature</i> ',
     'options_enabled': [
         'measurements_select'
     ],
@@ -142,7 +147,7 @@ INPUT_INFORMATION = {
             'default_value': '',
             'required': True,
             'name': 'JSON Key',
-            'phrase': 'JMES Path expression to find value in JSON response (e.g. "temperature" or "sensors[0].temperature" or "bathroom.temperature")'
+            'phrase': 'JMES Path expression to find value in JSON response'
         }
     ]
 }
