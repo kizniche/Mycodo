@@ -420,7 +420,7 @@ class CustomModule(AbstractFunction):
                                 self.options_channels['select_measurement'][current_channel]['measurement_id'],
                                 val_rounded,
                                 lcd_x_characters,
-                                display_unit=self.options_channels['select_measurement'][current_channel]['display_unit'])
+                                display_unit=self.options_channels['display_unit'][current_channel])
 
                     elif self.options_channels['line_display_type'][current_channel] == 'measurement_ts':
                         if measure_ts:
