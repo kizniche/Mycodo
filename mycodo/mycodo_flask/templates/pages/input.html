@@ -77,6 +77,8 @@
       {% include 'pages/data_options/math.html' %}
     {% endif %}
 
+    {% include 'admin/dependencies_install.html' %}
+
   </main>
 
   <div style="clear: both; padding-bottom: 1.5em;"></div>
@@ -112,6 +114,9 @@
     });
 
     function popup_response(data) {
+      if ('error' in data.data.messages && data.data.messages.error.length !== 0) {
+        toastr['error']('Error: ' + data.data.messages.error.join(", "));
+      }
       if ('warning' in data.data.messages && data.data.messages.warning.length !== 0) {
         toastr['warning']('Warning: ' + data.data.messages.warning.join(", "));
       }
@@ -145,7 +150,12 @@
           success: function (data) {
             if (submitter_btn.attr("name") === 'input_add' && 'input_id' in data.data) {
               if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
-                window.location.href = '/admin/dependencies/' + data.data.dep_unmet;
+                $(".dependencies_device_name").text(data.data.dep_name);
+                $(".dependencies_device").text(data.data.dep_unmet);
+                $(".dependencies_unmet").text(data.data.dep_list.join(", "));
+                document.getElementById("dependency_unmet").value = data.data.dep_unmet;
+                $('#modal_config_dependency_install').modal('show');
+                popup_response(data);
               } else {
                 $.ajax({
                   type: "GET",
@@ -194,7 +204,7 @@
                 popup_response(data);
               }
             } else {
-              toastr['error']('Error: ' + data.data.messages.error.join(", "));
+              popup_response(data);
             }
           },
           error: function() {

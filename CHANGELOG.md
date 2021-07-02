@@ -17,6 +17,7 @@ This release improves the way settings are saved, which requires a change to any
 ### Features
 
  - Add ability to submit forms without refreshing the page ([#1040](https://github.com/kizniche/mycodo/issues/1040))
+ - Add ability to install dependencies from Input/Output page modal dialogue
  - Add drag and drop sorting of Inputs
  - Add modal dialogue for Input configuration
  - Add numerical keypad login

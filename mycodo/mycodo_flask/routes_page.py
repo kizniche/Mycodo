@@ -1810,7 +1810,9 @@ def page_output_submit():
     }
     page_refresh = False
     output_id = None
-    dep_unmet = None
+    dep_unmet = ''
+    dep_name = ''
+    dep_list = []
     size_y = None
 
     form_add_output = forms_output.OutputAdd()
@@ -1822,14 +1824,13 @@ def page_output_submit():
     if not messages["error"]:
         if form_add_output.output_add.data:
             (messages,
-             dep_unmet,
+             dep_name,
+             dep_list,
              output_id,
              size_y) = utils_output.output_add(
                 form_add_output, request.form)
-            if dep_unmet:
+            if dep_list:
                 dep_unmet = form_add_output.output_type.data.split(',')[0]
-                for each_error in messages["error"]:
-                    flash(each_error, "error")
         elif form_mod_output.output_mod.data:
             messages, page_refresh = utils_output.output_mod(
                 form_mod_output, request.form)
@@ -1842,6 +1843,8 @@ def page_output_submit():
 
     return jsonify(data={
         'output_id': output_id,
+        'dep_name': dep_name,
+        'dep_list': dep_list,
         'dep_unmet': dep_unmet,
         'size_y': size_y,
         'messages': messages,
@@ -2081,7 +2084,9 @@ def page_input_submit():
     }
     page_refresh = False
     input_id = None
-    dep_unmet = None
+    dep_unmet = ''
+    dep_name = ''
+    dep_list = []
 
     form_add_input = forms_input.InputAdd()
     form_mod_input = forms_input.InputMod()
@@ -2094,12 +2099,11 @@ def page_input_submit():
         # Add Input
         if form_add_input.input_add.data:
             (messages,
-             dep_unmet,
+             dep_name,
+             dep_list,
              input_id) = utils_input.input_add(form_add_input)
-            if dep_unmet:
+            if dep_list:
                 dep_unmet = form_add_input.input_type.data.split(',')[0]
-                for each_error in messages["error"]:
-                    flash(each_error, "error")
 
         # Input save/delete
         elif form_mod_input.input_mod.data:
@@ -2135,6 +2139,8 @@ def page_input_submit():
 
     return jsonify(data={
         'input_id': input_id,
+        'dep_name': dep_name,
+        'dep_list': dep_list,
         'dep_unmet': dep_unmet,
         'messages': messages,
         "page_refresh": page_refresh

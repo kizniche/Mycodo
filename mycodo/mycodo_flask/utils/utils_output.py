@@ -41,9 +41,18 @@ def output_add(form_add, request_form):
         "error": []
     }
     output_id = None
+    dep_name = None
     size_y = None
 
     dict_outputs = parse_output_information()
+
+    if form_add.output_type.data.count(',') == 1:
+        output_type = form_add.output_type.data.split(',')[0]
+        output_interface = form_add.output_type.data.split(',')[1]
+    else:
+        output_type = ''
+        output_interface = ''
+        messages["error"].append("Invalid output string (must be a comma-separated string)")
 
     if current_app.config['TESTING']:
         dep_unmet = False
@@ -53,24 +62,21 @@ def output_add(form_add, request_form):
             list_unmet_deps = []
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
-            messages["error"].append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
-                dev=form_add.output_type.data.split(',')[0], dep=', '.join(list_unmet_deps)))
+            messages["error"].append(
+                "{dev} has unmet dependencies. They must be installed before the Output can be added.".format(
+                    dev=output_type))
+            if output_type in dict_outputs:
+                dep_name = dict_outputs[output_type]["output_name"]
+            else:
+                messages["error"].append("Output not found: {}".format(output_type))
 
-            return messages, dep_unmet, None, None
+            return messages, dep_name, list_unmet_deps, None, None
 
     if not is_int(form_add.output_quantity.data, check_range=[1, 20]):
         messages["error"].append("{error}. {accepted_values}: 1-20".format(
             error=gettext("Invalid quantity"),
             accepted_values=gettext("Acceptable values")
         ))
-
-    if form_add.output_type.data.count(',') == 1:
-        output_type = form_add.output_type.data.split(',')[0]
-        output_interface = form_add.output_type.data.split(',')[1]
-    else:
-        output_type = ''
-        output_interface = ''
-        messages["error"].append("Invalid output string (must be a comma-separated string)")
 
     if not messages["error"]:
         for _ in range(0, form_add.output_quantity.data):
@@ -225,7 +231,7 @@ def output_add(form_add, request_form):
                 messages["error"].append(str(except_msg))
                 logger.exception(1)
 
-    return messages, dep_unmet, output_id, size_y
+    return messages, dep_unmet, None, output_id, size_y
 
 
 def output_mod(form_output, request_form):

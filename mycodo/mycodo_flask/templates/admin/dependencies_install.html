@@ -1,0 +1,105 @@
+<div class="modal fade" id="modal_config_dependency_install" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content" style="padding: 1em">
+        <div class="modal-header">
+          <h5 class="modal-title">Install Dependencies for <span class="dependencies_device_name"></span></h5>
+        </div>
+        <div id="container_confirm_install" >
+          <p>There were unmet dependencies encountered when adding the following device: <span class="dependencies_device_name"></span> (<span class="dependencies_device"></span>)</p>
+          <p>Dependencies not installed: <span class="dependencies_unmet"></span></p>
+
+          <p>To install these dependencies, click the Install button below and wait for the install to complete before attempting to add the device again. Note that the frontend and the backend will be restarted following the install to allow detection of the newly-installed modules.</p>
+
+          <form id="form_dependency_install" method="post">
+            <input type="hidden" id="dependency_unmet" name="dependency_unmet" value="">
+            <div class="row small-gutters" style="padding-left: 0.5em">
+              <div class="col-auto">
+                <button type="button" class="form-control btn btn-primary btn-sm btn-block" data-dismiss="modal">{{_('Close')}}</button>
+              </div>
+              <div class="col-auto">
+                <input class="form-control btn btn-primary btn-sm btn-block" type="submit" name="install" value="{{_('Install')}}">
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div id="container_install" style="display: none;">
+          <p>The install has been initiated for the following dependencies: <span class="dependencies_unmet"></span></p>
+
+          <p>The Dependency Install Log below will refresh every 5 seconds. Wait until all dependencies have been installed and the frontend and backend has been restarted before attempting to add the associated device again. The install process will be complete when you see "#### Dependency install complete" appearing at the end of the log.</p>
+          <p>If there's an issue with the install and you need to reset the install state, delete ~/Mycodo/.dependency to restore dependency install functionality.</p>
+
+          <div class="row small-gutters" style="padding: 0.5em">
+            <div class="col-auto">
+              <button type="button" class="form-control btn btn-primary btn-sm btn-block" data-dismiss="modal">{{_('Close')}}</button>
+            </div>
+          </div>
+
+          <pre style="overflow:auto; resize: vertical; height:400px" id="dependency_status"></pre>
+        </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  let prev_string = '';
+  function check_dependency_status() {
+    const url = '/admin/dependency_status';
+    $.ajax(url, {
+      success: function(new_string, responseText, jqXHR) {
+        if (jqXHR.status !== 204) {
+          if (new_string !== prev_string) {
+            prev_string = new_string;
+            document.getElementById("dependency_status").innerHTML = new_string;
+            let objDiv = document.getElementById("dependency_status");
+            objDiv.scrollTop = objDiv.scrollHeight;
+          }
+        }
+        else {
+          document.getElementById("dependency_status").innerHTML = "Attempting to read the dependency log. Please wait...";
+        }
+      },
+      cache: false
+    });
+  }
+
+  function popup_response(data) {
+    if ('warning' in data.data.messages && data.data.messages.warning.length !== 0) {
+      toastr['warning']('Warning: ' + data.data.messages.warning.join(", "));
+    }
+    if ('info' in data.data.messages && data.data.messages.info.length !== 0) {
+      toastr['info']('Info: ' + data.data.messages.info.join(", "));
+    }
+    if ('success' in data.data.messages && data.data.messages.success.length !== 0) {
+      toastr['success']('Success: ' + data.data.messages.success.join(", "));
+    }
+  }
+
+  $("#form_dependency_install").submit(function(e) {
+    e.preventDefault();
+    toastr['info']('Command sent. Please wait...');
+    $.ajax({
+      type: "POST",
+      url: '/admin/dependency_install/' + $('#dependency_unmet').val(),
+      data: $(this).serialize(),
+      success: function (data) {
+        document.getElementById('container_confirm_install').style.display = "none";
+        document.getElementById('container_install').style.display = "";
+        popup_response(data);
+        check_dependency_status();
+        setInterval(function() {
+          check_dependency_status();
+        }, 5000);
+      },
+      error: function() {
+        toastr['error']('Error: Could not communicate with server');
+      }
+    });
+  });
+
+  $("#modal_config_dependency_install").on("hidden.bs.modal", function () {
+    document.getElementById('container_confirm_install').style.display = "";
+    document.getElementById('container_install').style.display = "none";
+  });
+</script>

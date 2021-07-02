@@ -45,6 +45,7 @@ def input_add(form_add):
         "error": []
     }
     new_input_id = None
+    dep_name = None
 
     dict_inputs = parse_input_information()
 
@@ -69,10 +70,15 @@ def input_add(form_add):
             list_unmet_deps = []
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
-            messages["error"].append("The {dev} device you're trying to add has unmet dependencies: {dep}".format(
-                dev=input_name, dep=', '.join(list_unmet_deps)))
+            messages["error"].append(
+                "{dev} has unmet dependencies. They must be installed before the Input can be added.".format(
+                    dev=input_name))
+            if input_name in dict_inputs:
+                dep_name = dict_inputs[input_name]['input_name']
+            else:
+                messages["error"].append("Input not found: {}".format(input_name))
 
-            return messages, dep_unmet, None
+            return messages, dep_name, list_unmet_deps, None
 
     if form_add.validate():
         new_input = Input()
@@ -315,7 +321,7 @@ def input_add(form_add):
                             field=getattr(form_add, field).label.text,
                             err=error))
 
-    return messages, dep_unmet, new_input_id
+    return messages, dep_name, dep_unmet, new_input_id
 
 
 def input_mod(form_mod, request_form):
