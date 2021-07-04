@@ -274,6 +274,7 @@
                   url: '/function?function_type=entry&function_id=' + data.data.function_id,
                   success: function (new_entry) {
                     grid.addWidget('<div class="grid-stack-item" id="gridstack_function_' + data.data.function_id + '" gs-id="' + data.data.function_id + '">' + new_entry + '</div>', {w: 20, h: 1, y: 999});
+                    {% if not hide_tooltips %}$('input[title]').tooltip({placement:'top'});{% endif %}
                     popup_response(data);
                   },
                   error: function() {

@@ -84,12 +84,6 @@
   <div style="clear: both; padding-bottom: 1.5em;"></div>
 
   <script>
-    $('.collapse').on('show.bs.collapse', function(){
-      $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
-    }).on('hide.bs.collapse', function(){
-      $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
-    });
-
     let gridstack_item_height = $(".grid-stack-item-content").eq(0).outerHeight(true);
 
     // Grid
@@ -166,6 +160,7 @@
                   url: '/input?input_type=entry&input_id=' + data.data.input_id,
                   success: function (new_entry) {
                     grid.addWidget('<div class="grid-stack-item" id="gridstack_input_' + data.data.input_id + '" gs-id="' + data.data.input_id + '">' + new_entry + '</div>', {w: 20, h: 1, y: 999});
+                    {% if not hide_tooltips %}$('input[title]').tooltip({placement:'top'});{% endif %}
                     popup_response(data);
                   },
                   error: function() {

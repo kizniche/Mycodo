@@ -78,7 +78,6 @@
       getAjax(btn_val + on_amt);
     });
 
-
     function pad(num, size) {
       let s = num + "";
       while (s.length < size) s = "0" + s;
@@ -182,12 +181,6 @@
   {% include 'admin/dependencies_install.html' %}
 
   <script>
-    $('.collapse').on('show.bs.collapse', function(){
-      $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
-    }).on('hide.bs.collapse', function(){
-      $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
-    });
-
     let gridstack_item_height = $(".item_channel").eq(0).outerHeight(true);
 
     // Grid
@@ -260,6 +253,7 @@
                   url: '/output?output_type=entry&output_id=' + data.data.output_id,
                   success: function (new_entry) {
                     grid.addWidget('<div class="grid-stack-item" id="gridstack_output_' + data.data.output_id + '" gs-id="' + data.data.output_id + '">' + new_entry + '</div>', {w: 20, h: data.data.size_y});
+                    {% if not hide_tooltips %}$('input[title]').tooltip({placement:'top'});{% endif %}
                     popup_response(data);
                   },
                   error: function() {
