@@ -20,17 +20,17 @@
             <i style="font-size: 1.5em" class="fas fa-cog" title="{{_('Configure')}}"></i>
           </a>
         </div>
-        <div class="col-4 small-gutters">
-          <input class="form-control" disabled="" value="{{each_output.name}}" type="text">
+        <div class="col-4">
+          <input id="output_name_{{each_output.unique_id}}" class="form-control" disabled="" value="{{each_output.name}}" type="text">
         </div>
-        <div class="col-6 small-gutters">
-          <input class="form-control" disabled="" value="[{{each_output.interface}}] {{dict_outputs[each_output.output_type]['output_name']}}{% if dict_outputs[each_output.output_type]['output_library'] %} ({{dict_outputs[each_output.output_type]['output_library']}}){% endif %}" type="text">
+        <div class="col-6">
+          <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" title="UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="[{{each_output.interface}}] {{dict_outputs[each_output.output_type]['output_name']}}{% if dict_outputs[each_output.output_type]['output_library'] %} ({{dict_outputs[each_output.output_type]['output_library']}}){% endif %}">
         </div>
       </div>
 
       {% for each_output_channel in dict_outputs[each_output.output_type]['channels_dict'] %}
       <div class="item_channel row small-gutters pause-background" style="border: 1px solid #ddd; {% if loop.last %}border-radius: 0 0 5px 5px;{% endif %} padding: 5px 4px 5px 4px;" id="{{each_output.unique_id}}-{{each_output_channel}}-output-state">
-        <div class="col-4 small-gutters">
+        <div class="col-4">
           <input class="form-control" disabled="" value="CH{{each_output_channel}}
         {%- if 'name' in custom_options_values_output_channels[each_output.unique_id][each_output_channel] and
                custom_options_values_output_channels[each_output.unique_id][each_output_channel]['name'] -%}
@@ -40,15 +40,15 @@
         {%- endif -%}
           " type="text">
         </div>
-        <div class="col-4 small-gutters">
+        <div class="col-4">
           <input class="form-control btn btn-primary btn-sm btn-block" type="button" onclick="setClipboard('{{each_output.unique_id}}')" id="{{each_output.unique_id}}-{{each_output_channel}}-input-output-state" title="[{{'%02d' % each_output.id}}] UUID: {{each_output.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{ _('Unconfigured')}}">
         </div>
       {% if 'button_on' in dict_options['options_enabled'] -%}
-        <div class="col-2 small-gutters">
+        <div class="col-2">
           <input class="form-control btn btn-primary btn-sm btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
         </div>
       {%- endif %}
-        <div class="{% if 'button_on' in dict_options['options_enabled'] -%}col-2{% else %}col-4{% endif %} small-gutters">
+        <div class="{% if 'button_on' in dict_options['options_enabled'] -%}col-2{% else %}col-4{% endif %}">
           <input class="form-control btn btn-primary btn-sm btn-danger btn-block turn_off" id="turn_off" name="{{each_output.unique_id}}/{{each_output_channel}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
         </div>
       </div>

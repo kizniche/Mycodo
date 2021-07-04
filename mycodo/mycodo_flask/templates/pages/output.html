@@ -245,6 +245,7 @@
               + '='
               + submitter_btn.attr("value"),
           success: function (data) {
+            console.log(data);
             if (submitter_btn.attr("name") === 'output_add' && 'output_id' in data.data) {
               if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
                 $(".dependencies_device_name").text(data.data.dep_name);
@@ -256,7 +257,7 @@
               } else {
                 $.ajax({
                   type: "GET",
-                  url: '/output?input_type=entry&output_id=' + data.data.output_id,
+                  url: '/output?output_type=entry&output_id=' + data.data.output_id,
                   success: function (new_entry) {
                     grid.addWidget('<div class="grid-stack-item" id="gridstack_output_' + data.data.output_id + '" gs-id="' + data.data.output_id + '">' + new_entry + '</div>', {w: 20, h: data.data.size_y});
                     popup_response(data);
@@ -268,17 +269,22 @@
               }
               return;
             }
-            if (submitter_btn.attr("name") === 'output_delete' && 'output_id' in data.data) {
-              $('#modal_config_' + data.data.output_id).modal('hide');
-              $('.modal-backdrop').remove();
-              $(document.body).removeClass("modal-open");
-              grid.removeWidget('#gridstack_output_' + data.data.output_id);
-            }
             if (data.data.messages.error.length === 0) {
+              if (submitter_btn.attr("name") === 'output_mod' && 'output_id' in data.data) {
+                if ('name' in data.data.messages) {
+                  document.getElementById("output_name_" + data.data.output_id).value = data.data.messages.name;
+                }
+              }
+              else if (submitter_btn.attr("name") === 'output_delete' && 'output_id' in data.data) {
+                $('#modal_config_' + data.data.output_id).modal('hide');
+                $('.modal-backdrop').remove();
+                $(document.body).removeClass("modal-open");
+                grid.removeWidget('#gridstack_output_' + data.data.output_id);
+              }
               if ('page_refresh' in data.data && data.data.page_refresh) {
                 $.ajax({
                   type: "GET",
-                  url: '/output?input_type=options&output_id=' + data.data.output_id,
+                  url: '/outputoutput_type=options&output_id=' + data.data.output_id,
                   success: function (new_options) {
                     $('#mod_output_' + data.data.output_id).html(new_options);
                     popup_response(data);
@@ -291,7 +297,7 @@
                 popup_response(data);
               }
             } else {
-              toastr['error']('Error: ' + data.data.messages.error.join(", "));
+              popup_response(data);
             }
           },
           error: function() {

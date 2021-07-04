@@ -16,7 +16,7 @@
       </a>
     </div>
     <div class="col-3">
-      {{form_trigger.name(class_='form-control', disabled=True, value=each_function.name)}}
+      {{form_trigger.name(class_='form-control', disabled=True, id='function_name_' + each_function.unique_id, value=each_function.name)}}
     </div>
     <div class="col-4">
       <input class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="

@@ -291,7 +291,8 @@ def function_mod(form):
         "success": [],
         "info": [],
         "warning": [],
-        "error": []
+        "error": [],
+        "name": None
     }
 
     try:
@@ -299,6 +300,7 @@ def function_mod(form):
             Function.unique_id == form.function_id.data).first()
 
         func_mod.name = form.name.data
+        messages["name"] = form.name.data
         func_mod.log_level_debug = form.log_level_debug.data
 
         if not messages["error"]:

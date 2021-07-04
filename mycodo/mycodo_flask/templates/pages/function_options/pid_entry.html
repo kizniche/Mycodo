@@ -18,7 +18,7 @@
       </a>
     </div>
     <div class="col-3">
-      {{form_mod_pid_base.name(class_='form-control', disabled=True, value=each_function.name)}}
+      {{form_mod_pid_base.name(class_='form-control', disabled=True, id='function_name_' + each_function.unique_id, value=each_function.name)}}
     </div>
     <div class="col-4">
       <input id="pid_activity_indicator_{{each_function.unique_id}}" class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="PID Controller

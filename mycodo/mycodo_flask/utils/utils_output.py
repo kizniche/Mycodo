@@ -237,7 +237,8 @@ def output_mod(form_output, request_form):
         "success": [],
         "info": [],
         "warning": [],
-        "error": []
+        "error": [],
+        "name": None
     }
     page_refresh = False
 
@@ -255,6 +256,7 @@ def output_mod(form_output, request_form):
                 "Invalid device or improper permissions to read device"))
 
         mod_output.name = form_output.name.data
+        messages["name"] = form_output.name.data
 
         if form_output.location.data:
             mod_output.location = form_output.location.data

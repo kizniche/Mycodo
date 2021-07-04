@@ -1620,7 +1620,6 @@ def page_input_submit():
         messages["error"].append("Your permissions do not allow this action")
 
     if not messages["error"]:
-        # Add Input
         if form_add_input.input_add.data:
             (messages,
              dep_name,
@@ -1628,8 +1627,6 @@ def page_input_submit():
              input_id) = utils_input.input_add(form_add_input)
             if dep_list:
                 dep_unmet = form_add_input.input_type.data.split(',')[0]
-
-        # Input save/delete
         elif form_mod_input.input_mod.data:
             messages, page_refresh = utils_input.input_mod(
                 form_mod_input, request.form)
@@ -1638,21 +1635,15 @@ def page_input_submit():
             messages = utils_input.input_del(
                 form_mod_input.input_id.data)
             input_id = form_mod_input.input_id.data
-
-        # Activate/Deactivate
         elif form_mod_input.input_activate.data:
             messages = utils_input.input_activate(form_mod_input)
             input_id = form_mod_input.input_id.data
         elif form_mod_input.input_deactivate.data:
             messages = utils_input.input_deactivate(form_mod_input)
             input_id = form_mod_input.input_id.data
-
-        # Mod Input Measurement
         elif form_mod_measurement.measurement_mod.data:
             messages = utils_measurement.measurement_mod(
                 form_mod_measurement)
-
-        # Acquire measurements
         elif form_mod_input.input_acquire_measurements.data:
             messages = utils_input.force_acquire_measurements(
                 form_mod_input.input_id.data)

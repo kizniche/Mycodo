@@ -38,7 +38,8 @@ def pid_mod(form_mod_pid_base,
         "success": [],
         "info": [],
         "warning": [],
-        "error": []
+        "error": [],
+        "name": None
     }
     page_refresh = False
 
@@ -52,6 +53,7 @@ def pid_mod(form_mod_pid_base,
         PID.unique_id == form_mod_pid_base.function_id.data).first()
 
     mod_pid.name = form_mod_pid_base.name.data
+    messages["name"] = form_mod_pid_base.name.data
     mod_pid.measurement = form_mod_pid_base.measurement.data
     mod_pid.direction = form_mod_pid_base.direction.data
     mod_pid.period = form_mod_pid_base.period.data

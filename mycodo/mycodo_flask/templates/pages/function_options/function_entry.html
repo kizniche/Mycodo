@@ -19,7 +19,7 @@
 
   {% if each_function.function_type == 'function_actions' %}
     <div class="col-3">
-      {{form_function_base.name(class_='form-control', disabled=True, value=each_function.name)}}
+      {{form_function_base.name(class_='form-control', disabled=True, id='function_name_' + each_function.unique_id, value=each_function.name)}}
     </div>
     <div class="col-4">
       <input class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="Function Actions">
@@ -29,7 +29,7 @@
     </div>
   {% elif each_function.function_type == 'function_spacer' %}
     <div class="col-10">
-      <input class="form-control btn btn-primary" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{each_function.name}}">
+      <input id="function_name_{{each_function.unique_id}}" class="form-control btn btn-primary" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{each_function.name}}">
     </div>
   {% endif %}
   </div> <!- grid-stack-item-content ->

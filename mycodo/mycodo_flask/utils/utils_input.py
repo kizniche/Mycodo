@@ -327,7 +327,8 @@ def input_mod(form_mod, request_form):
         "success": [],
         "info": [],
         "warning": [],
-        "error": []
+        "error": [],
+        "name": None
     }
     page_refresh = False
 
@@ -364,6 +365,7 @@ def input_mod(form_mod, request_form):
             messages["error"].append(gettext("Pin (GPIO) must be set"))
 
         mod_input.name = form_mod.name.data
+        messages["name"] = form_mod.name.data
 
         if form_mod.location.data:
             mod_input.location = form_mod.location.data

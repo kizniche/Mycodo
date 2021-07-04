@@ -27,7 +27,8 @@ def controller_mod(form_mod, request_form):
         "success": [],
         "info": [],
         "warning": [],
-        "error": []
+        "error": [],
+        "name": None
     }
     page_refresh = False
 
@@ -44,6 +45,7 @@ def controller_mod(form_mod, request_form):
                 "Deactivate controller before modifying its settings"))
 
         mod_controller.name = form_mod.name.data
+        messages["name"] = form_mod.name.data
         mod_controller.log_level_debug = form_mod.log_level_debug.data
 
         # Enable/disable Channels

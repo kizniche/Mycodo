@@ -176,7 +176,12 @@
               return;
             }
             if (data.data.messages.error.length === 0) {
-              if (submitter_btn.attr("name") === 'input_delete' && 'input_id' in data.data) {
+              if (submitter_btn.attr("name") === 'input_mod' && 'input_id' in data.data) {
+                if ('name' in data.data.messages) {
+                  document.getElementById("input_name_" + data.data.input_id).value = data.data.messages.name;
+                }
+              }
+              else if (submitter_btn.attr("name") === 'input_delete' && 'input_id' in data.data) {
                 $('#modal_config_' + data.data.input_id).modal('hide');
                 $('.modal-backdrop').remove();
                 $(document.body).removeClass("modal-open");

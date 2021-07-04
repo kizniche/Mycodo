@@ -29,7 +29,8 @@ def conditional_mod(form):
         "info": [],
         "warning": [],
         "error": [],
-        "pylint": []
+        "pylint": [],
+        "name": None
     }
 
     try:
@@ -57,6 +58,7 @@ def conditional_mod(form):
         cond_mod = Conditional.query.filter(
             Conditional.unique_id == form.function_id.data).first()
         cond_mod.name = form.name.data
+        messages["name"] = form.name.data
         cond_mod.conditional_statement = form.conditional_statement.data
         cond_mod.conditional_status = form.conditional_status.data
         cond_mod.period = form.period.data

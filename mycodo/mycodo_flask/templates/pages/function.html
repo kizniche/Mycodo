@@ -288,6 +288,9 @@
                 if ('pylint' in data.data.messages) {
                   document.getElementById("pylint_" + data.data.function_id).innerHTML = data.data.messages.pylint.join("<br/><br/>");
                 }
+                if ('name' in data.data.messages) {
+                  document.getElementById("function_name_" + data.data.function_id).value = data.data.messages.name;
+                }
               }
               else if (submitter_btn.attr("name") === 'function_delete' && 'function_id' in data.data) {
                 $('#modal_config_' + data.data.function_id).modal('hide');
