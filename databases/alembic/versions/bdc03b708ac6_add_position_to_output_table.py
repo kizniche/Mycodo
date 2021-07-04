@@ -47,3 +47,18 @@ def downgrade():
     with op.batch_alter_table("output") as batch_op:
         batch_op.drop_column('position_y')
         batch_op.drop_column('size_y')
+
+    with op.batch_alter_table("conditional") as batch_op:
+        batch_op.drop_column('position_y')
+
+    with op.batch_alter_table("custom_controller") as batch_op:
+        batch_op.drop_column('position_y')
+
+    with op.batch_alter_table("function") as batch_op:
+        batch_op.drop_column('position_y')
+
+    with op.batch_alter_table("trigger") as batch_op:
+        batch_op.drop_column('position_y')
+
+    with op.batch_alter_table("pid") as batch_op:
+        batch_op.drop_column('position_y')

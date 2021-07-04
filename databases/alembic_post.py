@@ -73,76 +73,74 @@ if __name__ == "__main__":
                 from mycodo.databases.models import Conditional
 
                 with session_scope(MYCODO_DB_PATH) as session:
+                    display_order = session.query(DisplayOrder).first()
                     # Convert Function display order to positions
-                    position = 0
-                    for each_id in session.query(DisplayOrder).first().function.split(","):
-                        conditional = session.query(Conditional).filter(
-                            Conditional.unique_id == each_id).first()
-                        if conditional:
-                            conditional.position_y = position
-                            position += 1
-                        pid = session.query(PID).filter(
-                            PID.unique_id == each_id).first()
-                        if pid:
-                            pid.position_y = position
-                            position += 1
-                        session.commit()
-                        trigger = session.query(Trigger).filter(
-                            Trigger.unique_id == each_id).first()
-                        if trigger:
-                            trigger.position_y = position
-                            position += 1
-                        session.commit()
-                        function = session.query(Function).filter(
-                            Function.unique_id == each_id).first()
-                        if function:
-                            function.position_y = position
-                            position += 1
-                        session.commit()
-                        custom = session.query(CustomController).filter(
-                            CustomController.unique_id == each_id).first()
-                        if custom:
-                            custom.position_y = position
-                            position += 1
-                        session.commit()
+                    if display_order and "," in display_order.function:
+                        position = 0
+                        for each_id in display_order.function.split(","):
+                            conditional = session.query(Conditional).filter(
+                                Conditional.unique_id == each_id).first()
+                            if conditional:
+                                conditional.position_y = position
+                                position += 1
+                            pid = session.query(PID).filter(
+                                PID.unique_id == each_id).first()
+                            if pid:
+                                pid.position_y = position
+                                position += 1
+                            trigger = session.query(Trigger).filter(
+                                Trigger.unique_id == each_id).first()
+                            if trigger:
+                                trigger.position_y = position
+                                position += 1
+                            function = session.query(Function).filter(
+                                Function.unique_id == each_id).first()
+                            if function:
+                                function.position_y = position
+                                position += 1
+                            custom = session.query(CustomController).filter(
+                                CustomController.unique_id == each_id).first()
+                            if custom:
+                                custom.position_y = position
+                                position += 1
+                            session.commit()
 
                     # Convert Input display order to positions
-                    position = 0
-                    for each_id in session.query(DisplayOrder).first().inputs.split(","):
-                        input_dev = session.query(Input).filter(
-                            Input.unique_id == each_id).first()
-                        if input_dev:
-                            input_dev.position_y = position
-                            position += 1
+                    if display_order and "," in display_order.inputs:
+                        position = 0
+                        for each_id in display_order.inputs.split(","):
+                            input_dev = session.query(Input).filter(
+                                Input.unique_id == each_id).first()
+                            if input_dev:
+                                input_dev.position_y = position
+                                position += 1
+                                session.commit()
 
                     # Convert Output display order to positions
-                    first = True
-                    last_position = 0
-                    last_size = 0
-                    for each_id in session.query(DisplayOrder).first().output.split(","):
-                        output = session.query(Output).filter(
-                            Output.unique_id == each_id).first()
-                        try:
-                            channels = session.query(OutputChannel).filter(
-                                OutputChannel.output_id == output.unique_id).count()
-                            if channels > 1:
-                                output.size_y = channels + 1
-                            else:
-                                output.size_y = 2
-                        except:
-                            pass
+                    if display_order and "," in display_order.output:
+                        first = True
+                        last_position = 0
+                        last_size = 0
+                        for each_id in display_order.output.split(","):
+                            output = session.query(Output).filter(
+                                Output.unique_id == each_id).first()
+                            if output:
+                                channels = session.query(OutputChannel).filter(
+                                    OutputChannel.output_id == output.unique_id).count()
+                                if channels > 1:
+                                    output.size_y = channels + 1
+                                else:
+                                    output.size_y = 2
 
-                        try:
-                            if first:
-                                output.position_y = 0
-                                first = False
-                            else:
-                                output.position_y = last_position + last_size
-                            last_position = output.position_y
-                            last_size = output.size_y
-                        except:
-                            pass
-                        session.commit()
+                                if first:
+                                    output.position_y = 0
+                                    first = False
+                                else:
+                                    output.position_y = last_position + last_size
+                                last_position = output.position_y
+                                last_size = output.size_y
+                                session.commit()
+
             except Exception:
                 msg = "ERROR: post-alembic revision {}: {}".format(
                     each_revision, traceback.format_exc())
