@@ -66,7 +66,7 @@
   <h5>{{_('Actions')}} <a href="https://kizniche.github.io/Mycodo/Functions/#function-actions" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
   {% endif %}
 
-  {% set function_type = 'function' %}
+  {% set function_type = 'trigger' %}
 
   <div id="mod_function_actions_{{each_function.unique_id}}">
   {% for each_action in actions if each_action.function_id == each_function.unique_id %}

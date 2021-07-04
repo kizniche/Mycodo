@@ -666,8 +666,6 @@ def async_data(device_id, device_type, measurement_id, start_seconds, end_second
             return '', 204
         raw_data = dbcon.query(query_str).raw
 
-        logger.info("TEST00: {}".format(raw_data))
-
         try:
             count_points = raw_data['series'][0]['values'][0][1]
         except:

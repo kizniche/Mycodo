@@ -449,7 +449,6 @@ def action_mod(form, request_form):
         "error": []
     }
 
-    logger.info("TEST00: {}".format(form.function_action_id.data))
     mod_action = Actions.query.filter(
         Actions.unique_id == form.function_action_id.data).first()
 

@@ -238,7 +238,6 @@
               + '='
               + submitter_btn.attr("value"),
           success: function (data) {
-            console.log(data);
             if (submitter_btn.attr("name") === 'output_add' && 'output_id' in data.data) {
               if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
                 $(".dependencies_device_name").text(data.data.dep_name);

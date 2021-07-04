@@ -46,7 +46,7 @@
 
   </form>
 
-    {% set function_type = 'function' %}
+  {% set function_type = 'function' %}
 
   <div id="mod_function_actions_{{each_function.unique_id}}">
   {% for each_action in actions if each_action.function_id == each_function.unique_id %}
@@ -62,7 +62,7 @@
   {{form_conditional.function_type(value='function')}}
 
     <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em;">
-      <div class="col-auto">
+      <div class="col-12">
         {{form_function_base.name.label(class_='control-label')}}
         <div>
           {{form_function_base.name(class_='form-control', value=each_function.name, **{'title': dict_translation['name']['phrase']})}}
