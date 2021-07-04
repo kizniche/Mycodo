@@ -7,9 +7,14 @@ import time
 
 import mock
 
+from mycodo.config import FUNCTIONS
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import Input
+from mycodo.databases.models import Conditional
 from mycodo.databases.models import Output
+from mycodo.databases.models import Function
+from mycodo.databases.models import PID
+from mycodo.databases.models import Trigger
 from mycodo.databases.models import User
 from mycodo.mycodo_flask.utils.utils_general import choices_custom_functions
 from mycodo.mycodo_flask.utils.utils_general import generate_form_input_list
@@ -510,34 +515,76 @@ def test_add_all_function_devices_logged_in_as_admin(_, testapp):
 
     # Add All Custom Functions
     function_count = 0
-    choices_function = choices_custom_functions()
+    # choices_function = choices_custom_functions()
+
+    list_function_tables = [
+        CustomController,
+        Conditional,
+        Function,
+        PID,
+        Trigger,
+    ]
+
+    choices_functions = []
+    for choice_function in FUNCTIONS:
+        choices_functions.append({'value': choice_function[0], 'item': choice_function[1]})
+    choices_functions_cus = choices_custom_functions()
+    # Combine function lists
+    choices_function = choices_functions + choices_functions_cus
 
     for index, each_function in enumerate(choices_function):
-        choice_name = each_function["item"]
         print("test_add_all_function_devices_logged_in_as_admin: Adding, saving, and deleting Function ({}/{}): {}".format(
             index + 1, len(choices_function), each_function["value"]))
         response = add_function(testapp, function_type=each_function["value"])
-
-        # Verify success message flashed
-        assert "{} Function with ID".format(choice_name) in response
-        assert "Success: Add Function" in response
+        print(response.json['data']['messages'])
+        assert 'data' in response.json
+        assert 'messages' in response.json['data']
+        assert 'error' in response.json['data']['messages']
+        assert response.json['data']['messages']['error'] == []
+        assert 'success' in response.json['data']['messages']
+        assert len(response.json['data']['messages']['success']) == 1
 
         # Verify data was entered into the database
         function_count += 1
-        assert CustomController.query.count() == function_count, "Number of Functions doesn't match: In DB {}, Should be: {}".format(
-            CustomController.query.count(), function_count)
+        total_count = (CustomController.query.count() +
+                       Conditional.query.count() +
+                       Function.query.count() +
+                       PID.query.count() +
+                       Trigger.query.count())
+        assert total_count == function_count, "Number of Functions doesn't match: In DB {}, Should be: {}".format(
+            total_count, function_count)
 
-        function_dev = CustomController.query.filter(CustomController.id == function_count).first()
-        assert each_function["value"] == function_dev.device, "Function name doesn't match: {}".format(choice_name)
+        function_dev = None
+        for each_table in list_function_tables:
+            function_dev = each_table.query.filter(each_table.id == function_count).first()
+            if function_dev:
+                break
 
         # Save function
         response = save_data(testapp, 'function', device_dev=function_dev)
-        assert "Success: Modify Controller" in response
+        print(response.json['data']['messages'])
+        assert 'data' in response.json
+        assert 'messages' in response.json['data']
+        assert 'error' in response.json['data']['messages']
+        assert 'success' in response.json['data']['messages']
 
         # Delete function (speeds up further function addition checking)
         response = delete_data(testapp, 'function', device_dev=function_dev)
-        assert "Delete custom_controller with ID: {}".format(function_dev.unique_id) in response
+        print(response.json['data']['messages'])
+        assert 'data' in response.json
+        assert 'messages' in response.json['data']
+        assert 'error' in response.json['data']['messages']
+        assert response.json['data']['messages']['error'] == []
+        assert 'success' in response.json['data']['messages']
+        assert len(response.json['data']['messages']['success']) == 1
         function_count -= 1
+        total_count = (CustomController.query.count() +
+                       Conditional.query.count() +
+                       Function.query.count() +
+                       PID.query.count() +
+                       Trigger.query.count())
+        assert total_count == function_count, "Number of Functions doesn't match: In DB {}, Should be: {}".format(
+            total_count, function_count)
 
 
 # ---------------------------
@@ -602,7 +649,7 @@ def add_data(testapp, input_type='RPi'):
 
 
 def add_output(testapp, output_type='wired'):
-    """ Go to the data page and create output """
+    """ Go to the output page and add output """
     form = testapp.get('/output').maybe_follow().forms['new_output_form']
     form_dict = {}
     for each_field in form.fields.items():
@@ -617,10 +664,15 @@ def add_output(testapp, output_type='wired'):
 
 
 def add_function(testapp, function_type=''):
-    """ Go to the data page and create input """
+    """ Go to the function page and add function """
     form = testapp.get('/function').maybe_follow().forms['new_function_form']
-    form.select(name='function_type', value=function_type)
-    response = form.submit(name='func_add', value='Add').maybe_follow()
+    form_dict = {}
+    for each_field in form.fields.items():
+        if each_field[0]:
+            form_dict[each_field[0]] = form[each_field[0]].value
+    form_dict['function_add'] = 'Add'
+    form_dict['function_type'] = function_type
+    response = testapp.post('/function_submit', form_dict)
     # response.showbrowser()
     return response
 
@@ -633,9 +685,7 @@ def delete_data(testapp, data_type, device_dev=None):
     elif data_type == 'output':
         response = testapp.post('/output_submit', {'output_delete': 'Delete', 'output_id': device_dev.unique_id})
     elif data_type == 'function':
-        form = testapp.get('/function').maybe_follow().forms['mod_function_form']
-        form['function_id'].force_value(device_dev.unique_id)
-        response = form.submit(name='delete_controller', value='Delete').maybe_follow()
+        response = testapp.post('/function_submit', {'function_delete': 'Delete', 'function_id': device_dev.unique_id})
     # response.showbrowser()
     return response
 
@@ -661,8 +711,12 @@ def save_data(testapp, data_type, device_dev=None):
         response = testapp.post('/output_submit', form_dict)
     elif data_type == 'function':
         form = testapp.get('/function').maybe_follow().forms['mod_function_form']
-        form['function_id'].force_value(device_dev.unique_id)
-        response = form.submit(name='save_controller', value='Save').maybe_follow()
+        form_dict = {}
+        for each_field in form.fields.items():
+            if each_field[0]:
+                form_dict[each_field[0]] = form[each_field[0]].value
+        form_dict['function_mod'] = 'Save'
+        response = testapp.post('/function_submit', form_dict)
     # response.showbrowser()
     return response
 

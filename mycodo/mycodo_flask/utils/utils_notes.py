@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 import csv
 import glob
+import io
 import logging
+import os
+import shutil
 import socket
 import time
 import uuid
 import zipfile
 from datetime import datetime
 
-import io
-import os
-import shutil
 from flask import flash
 from flask import url_for
 from flask_babel import gettext

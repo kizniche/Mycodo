@@ -5,8 +5,6 @@ import threading
 
 import sqlalchemy
 from flask import current_app
-from flask import flash
-from flask import url_for
 from flask_babel import gettext
 from sqlalchemy import and_
 
@@ -20,29 +18,22 @@ from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Function
 from mycodo.databases.models import FunctionChannel
 from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
-from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.mycodo_flask.utils.utils_general import reorder
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.conditional import save_conditional_code
 from mycodo.utils.functions import parse_function_information
-from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import is_int
-from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import str_is_float
 
 logger = logging.getLogger(__name__)
-
 
 #
 # Function manipulation
@@ -126,14 +117,15 @@ return status_dict'''
             if not messages["error"]:
                 new_func.save()
                 new_function_id = new_func.unique_id
-                save_conditional_code(
-                    messages["error"],
-                    new_func.conditional_statement,
-                    new_func.conditional_status,
-                    new_func.unique_id,
-                    ConditionalConditions.query.all(),
-                    Actions.query.all(),
-                    test=False)
+                if not current_app.config['TESTING']:
+                    save_conditional_code(
+                        messages["error"],
+                        new_func.conditional_statement,
+                        new_func.conditional_status,
+                        new_func.unique_id,
+                        ConditionalConditions.query.all(),
+                        Actions.query.all(),
+                        test=False)
 
         elif function_name == 'pid_pid':
             new_func = PID()
@@ -681,24 +673,6 @@ def action_execute_all(form):
         messages["error"].append(str(except_msg))
 
     return messages
-
-
-def function_reorder(function_id, display_order, direction):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['reorder']['title'],
-        controller=TRANSLATIONS['function']['title'])
-    error = []
-    try:
-        status, reord_list = reorder(
-            display_order, function_id, direction)
-        if status == 'success':
-            DisplayOrder.query.first().function = ','.join(map(str, reord_list))
-            db.session.commit()
-        else:
-            error.append(reord_list)
-    except Exception as except_msg:
-        error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_function.page_function'))
 
 
 def check_form_actions(form, error):

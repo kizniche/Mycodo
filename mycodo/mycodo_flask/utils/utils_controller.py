@@ -1,27 +1,22 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
-
 import os
+
 import sqlalchemy
-from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import FunctionChannel
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
-from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.functions import parse_function_information
-from mycodo.utils.system_pi import csv_to_list_of_str
-from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
 

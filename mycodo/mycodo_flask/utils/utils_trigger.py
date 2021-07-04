@@ -2,23 +2,17 @@
 import logging
 
 import sqlalchemy
-from flask import flash
-from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Actions
-from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Trigger
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_function import check_actions
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
-from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import epoch_of_next_time
-from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
 

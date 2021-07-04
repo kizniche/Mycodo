@@ -23,11 +23,9 @@ from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
 
-
 #
 # Remote host commands executed on Mycodo with Remote Admin Dashboard
 #
-
 
 def remote_log_in(address, user, password_hash):
     """

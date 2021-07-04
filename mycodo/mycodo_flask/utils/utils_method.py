@@ -20,7 +20,6 @@ from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
 
-
 #
 # Method Development
 #

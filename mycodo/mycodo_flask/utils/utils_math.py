@@ -1,34 +1,27 @@
 # -*- coding: utf-8 -*-
 import logging
 
-import sqlalchemy
-from flask import flash
 from flask import url_for
 from flask_babel import gettext
 
-from mycodo.config import MATH_INFO
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
-from mycodo.databases.models import Output
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import reorder
-from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import return_measurement_info
 
 logger = logging.getLogger(__name__)
-
 
 #
 # Math manipulation

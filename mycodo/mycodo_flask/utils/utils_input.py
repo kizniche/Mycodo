@@ -8,7 +8,6 @@ import sqlalchemy
 from flask import current_app
 from flask import flash
 from flask_babel import gettext
-from sqlalchemy import desc
 
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config_translations import TRANSLATIONS
@@ -31,7 +30,6 @@ from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import parse_custom_option_values
 
 logger = logging.getLogger(__name__)
-
 
 #
 # Input manipulation

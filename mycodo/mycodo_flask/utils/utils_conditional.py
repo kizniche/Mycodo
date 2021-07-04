@@ -4,8 +4,7 @@ import os
 
 import sqlalchemy
 from flask import Markup
-from flask import flash
-from flask import url_for
+from flask import current_app
 from flask_babel import gettext
 
 from mycodo.config import PATH_PYTHON_CODE_USER
@@ -13,16 +12,12 @@ from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
-from mycodo.databases.models import DisplayOrder
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_function import check_actions
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
-from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.conditional import save_conditional_code
-from mycodo.utils.system_pi import csv_to_list_of_str
-from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
 
@@ -38,22 +33,26 @@ def conditional_mod(form):
     }
 
     try:
-        messages["error"], lines_code, cmd_status, cmd_out = save_conditional_code(
-            messages["error"],
-            form.conditional_statement.data,
-            form.conditional_status.data,
-            form.function_id.data,
-            ConditionalConditions.query.all(),
-            Actions.query.all(),
-            timeout=form.pyro_timeout.data,
-            test=True)
+        if current_app.config['TESTING']:
+            cmd_status = None
+            message = ""
+        else:
+            messages["error"], lines_code, cmd_status, cmd_out = save_conditional_code(
+                messages["error"],
+                form.conditional_statement.data,
+                form.conditional_status.data,
+                form.function_id.data,
+                ConditionalConditions.query.all(),
+                Actions.query.all(),
+                timeout=form.pyro_timeout.data,
+                test=True)
 
-        message = Markup(
-            '<pre>\n\n'
-            'Full Conditional Statement code:\n\n{code}\n\n'
-            'Conditional Statement code analysis:\n\n{report}'
-            '</pre>'.format(
-                code=lines_code, report=cmd_out.decode("utf-8")))
+            message = Markup(
+                '<pre>\n\n'
+                'Full Conditional Statement code:\n\n{code}\n\n'
+                'Conditional Statement code analysis:\n\n{report}'
+                '</pre>'.format(
+                    code=lines_code, report=cmd_out.decode("utf-8")))
 
         cond_mod = Conditional.query.filter(
             Conditional.unique_id == form.function_id.data).first()

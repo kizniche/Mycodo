@@ -3,8 +3,6 @@ import logging
 import time
 
 from flask import flash
-from flask import redirect
-from flask import url_for
 from flask_babel import gettext
 
 from mycodo.config_translations import TRANSLATIONS
@@ -17,19 +15,15 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
-from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
-from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.mycodo_flask.utils.utils_general import form_error_messages
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import get_measurement
 
 logger = logging.getLogger(__name__)
 
-
 #
 # PID manipulation
 #
-
 
 def pid_mod(form_mod_pid_base,
             form_mod_pid_pwm_raise,

@@ -43,7 +43,6 @@ from mycodo.utils.widget_generate_html import generate_widget_html
 
 logger = logging.getLogger(__name__)
 
-
 #
 # Export
 #

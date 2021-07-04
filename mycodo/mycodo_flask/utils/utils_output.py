@@ -6,7 +6,6 @@ import os
 import sqlalchemy
 from flask import current_app
 from flask_babel import gettext
-from sqlalchemy import desc
 
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases import set_uuid
@@ -27,7 +26,6 @@ from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
-
 
 #
 # Output manipulation

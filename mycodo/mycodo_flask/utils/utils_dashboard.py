@@ -31,7 +31,6 @@ from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger(__name__)
 
-
 #
 # Dashboards
 #

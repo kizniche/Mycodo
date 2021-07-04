@@ -22,7 +22,6 @@ from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 
 logger = logging.getLogger(__name__)
 
-
 #
 # Math manipulation
 #

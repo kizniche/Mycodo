@@ -6,7 +6,6 @@ import subprocess
 
 import sqlalchemy
 from flask import flash
-from flask import redirect
 from flask import url_for
 
 from mycodo.config import PATH_CAMERAS
