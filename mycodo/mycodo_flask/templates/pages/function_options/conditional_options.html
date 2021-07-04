@@ -23,6 +23,15 @@
       Conditional Controllers allow the execution of Python 3 code as well as the use of Conditions and Actions that interact with Mycodo. Conditions typically acquire data from Mycodo, such as Input measurements, and Actions typically affect Mycodo, such as actuating an Output or pausing a PID controller. Each Condition and Action you add will have its own description and example code to demonstrate how to use it in your Conditional Statement code. Notes: 1) Timeout must be set longer than it takes your Conditional Statement to execute (if Timeout is set too low, only part of your Conditional Statement may execute), 2) Period must be set longer than the time it takes for your Conditional Statement to execute, otherwise it will execute again before the previous execution has finished. The Conditional Status allows you to provide a return value that can be used by other controllers or dashboard widgets.
     </div>
 
+    <div id="status_enable_{{each_function.unique_id}}" class="row small-gutters align-items-end" style="{% if not each_function.is_activated %}display: none; {% endif %}padding: 0.5em">
+      <div class="col-12">
+        <h5>{{_('Status')}}</h5>
+      </div>
+      <div class="col-12">
+        <span id="function_status_message_{{each_function.unique_id}}"></span>
+      </div>
+    </div>
+
     <div id="pylint_{{each_function.unique_id}}" class="col-12"></div>
 
     <div class="row small-gutters" style="padding: 1.5em 0 0.2em 0.1em">

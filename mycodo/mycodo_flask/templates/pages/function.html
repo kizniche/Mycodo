@@ -185,6 +185,8 @@
       }
     }
 
+    var status_message = {};
+
     function function_status(function_id) {
       const url = '/function_status/' + function_id;
       $.getJSON(url,
@@ -202,10 +204,26 @@
     }
     // Repeat function for function_status()
     function repeat_function_status(function_id, period_sec) {
-      setInterval(function () {
+      status_message[function_id] = setInterval(function () {
         function_status(function_id)
       }, period_sec * 1000);
     }
+
+    jQuery(document).ready(function($) {
+    {%- for each_function in function if each_function.is_activated and 'period_status' in custom_options_values_controllers[each_function.unique_id] %}
+      function_status('{{each_function.unique_id}}');
+      repeat_function_status('{{each_function.unique_id}}', {{custom_options_values_controllers[each_function.unique_id]['period_status']}});
+    {% endfor %}
+    {%- for each_conditional in conditional if each_conditional.is_activated %}
+      function_status('{{each_conditional.unique_id}}');
+      repeat_function_status('{{each_conditional.unique_id}}', 30);
+    {% endfor %}
+    {%- for each_pid in pid if each_pid.is_activated %}
+      function_status('{{each_pid.unique_id}}');
+      repeat_function_status('{{each_pid.unique_id}}', 30);
+    {% endfor %}
+    });
+
     function function_status_reset(function_id) {
       $('#function_status_' + function_id)
         .removeClass("inactive-background")
@@ -230,7 +248,16 @@
       }
     }
 
+    function getFormData(form) {
+      let rawJson = form.serializeArray();
+      let model = {}; $.map(rawJson, function (n, i) {
+        model[n['name']] = n['value'];
+      });
+      return model;
+    }
+
     $("body").on("submit", "form", function(e) {
+      let form_values = getFormData($(this));
       let submitter_btn = $(e.originalEvent.submitter);
       if (submitter_btn.attr("name") === 'function_add' ||
           submitter_btn.attr("name") === 'function_mod' ||
@@ -310,10 +337,18 @@
                 }
                 if (document.getElementById('form_pid_' + data.data.function_id) != null) {
                   ids_hide(data.data.function_id, ["pid_activate", "pid_resume"]);
-                  ids_show(data.data.function_id, ["pid_deactivate", "pid_pause", "pid_hold", "pid_status_enable"]);
+                  ids_show(data.data.function_id, ["pid_deactivate", "pid_pause", "pid_hold"]);
                   document.getElementById("pid_activity_indicator_" + data.data.function_id).value = "PID Controller [Active]";
                 }
-                function_status(data.data.function_id);
+                if ("function_type" in form_values && ["conditional", "function", "pid"].includes(form_values.function_type)) {
+                  ids_show(data.data.function_id, ["status_enable"]);
+                  function_status(data.data.function_id);
+                  if ("period_status" in data.data.messages) {
+                    repeat_function_status(data.data.function_id, data.data.messages.period_status);
+                  } else {
+                    repeat_function_status(data.data.function_id, 30);
+                  }
+                }
               }
               else if (submitter_btn.attr("name") === 'function_deactivate' && 'function_id' in data.data) {
                 function_status_reset(data.data.function_id);
@@ -325,10 +360,17 @@
                   document.getElementById('function_deactivate_' + data.data.function_id).style.display = "none";
                 }
                 if (document.getElementById('form_pid_' + data.data.function_id) != null) {
-                  ids_hide(data.data.function_id, ["pid_deactivate", "pid_pause", "pid_hold", "pid_resume", "pid_status_enable"]);
+                  ids_hide(data.data.function_id, ["pid_deactivate", "pid_pause", "pid_hold", "pid_resume"]);
                   ids_show(data.data.function_id, ["pid_activate"]);
                   document.getElementById("pid_activity_indicator_" + data.data.function_id).value = "PID Controller [Inactive]";
                   document.getElementById("function_status_message_" + data.data.function_id).innerHTML = "";
+                }
+                if ("function_type" in form_values && ["conditional", "function", "pid"].includes(form_values.function_type)) {
+                  ids_hide(data.data.function_id, ["status_enable"]);
+                  if (data.data.function_id in status_message) {
+                    clearInterval(status_message[data.data.function_id]);
+                    delete status_message[data.data.function_id];
+                  }
                 }
               }
               else if (submitter_btn.attr("name") === 'pid_pause' && 'function_id' in data.data) {
@@ -428,17 +470,6 @@
       $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
     }).on('hide.bs.collapse', function(){
       $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
-    });
-
-    jQuery(document).ready(function($) {
-    {%- for each_function in function if 'period_status' in custom_options_values_controllers[each_function.unique_id] %}
-      function_status('{{each_function.unique_id}}');
-      repeat_function_status('{{each_function.unique_id}}', {{custom_options_values_controllers[each_function.unique_id]['period_status']}});
-    {% endfor %}
-    {%- for each_pid in pid %}
-      function_status('{{each_pid.unique_id}}');
-      repeat_function_status('{{each_pid.unique_id}}', 30);
-    {% endfor %}
     });
   </script>
 

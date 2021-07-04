@@ -89,34 +89,32 @@
 
     </div>
 
-    {% if each_function.is_activated and 'period_status' in custom_options_values[unique_id] %}
-    <div class="row small-gutters align-items-end" style="padding: 0.5em">
+    <div id="status_enable_{{each_function.unique_id}}" class="row small-gutters align-items-end" style="{% if not each_function.is_activated %}display: none; {% endif %}padding: 0.5em">
       <div class="col-12">
         <h5>{{_('Status')}}</h5>
       </div>
       <div class="col-12">
-        <span id="function_status_{{unique_id}}"></span>
+        <span id="function_status_message_{{each_function.unique_id}}"></span>
       </div>
     </div>
-    {% endif %}
 
-      {% if each_function.device in custom_actions %}
-      <div class="row small-gutters align-items-end" style="padding: 0.5em">
-        <div class="col-12" style="padding-top: 1em"></div>
-        <div class="col-12">
-          <h5>{{_('Actions')}}</h5>
-        </div>
-        {% include 'pages/form_options/Custom_Actions_Message.html' %}
-        {% if each_function.device in custom_actions and custom_actions[each_function.device] %}
-          {% set force_default_value = true %}
-          {% if 'custom_actions' in dict_options %}
-            {% for each_option in dict_options['custom_actions'] %}
-              {% include 'pages/form_options/Custom_Options.html' %}
-            {% endfor %}
-          {% endif %}
-        {% endif %}
+    {% if each_function.device in custom_actions %}
+    <div class="row small-gutters align-items-end" style="padding: 0.5em">
+      <div class="col-12" style="padding-top: 1em"></div>
+      <div class="col-12">
+        <h5>{{_('Actions')}}</h5>
       </div>
-     {% endif %}
+      {% include 'pages/form_options/Custom_Actions_Message.html' %}
+      {% if each_function.device in custom_actions and custom_actions[each_function.device] %}
+        {% set force_default_value = true %}
+        {% if 'custom_actions' in dict_options %}
+          {% for each_option in dict_options['custom_actions'] %}
+            {% include 'pages/form_options/Custom_Options.html' %}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+    </div>
+   {% endif %}
 
     <div class="row small-gutters" style="padding: 0.5em">
       <div class="col-12">

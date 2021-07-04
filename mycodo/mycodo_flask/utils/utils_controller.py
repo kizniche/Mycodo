@@ -17,6 +17,7 @@ from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_retur
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.utils.functions import parse_function_information
+from mycodo.utils.system_pi import parse_custom_option_values
 
 logger = logging.getLogger(__name__)
 
@@ -252,25 +253,35 @@ def controller_activate(controller_id):
         "success": [],
         "info": [],
         "warning": [],
-        "error": []
+        "error": [],
+        "period_status": None
     }
 
     function = CustomController.query.filter(
         CustomController.unique_id == controller_id).first()
 
-    dict_controllers = parse_function_information()
+    if not function:
+        messages["error"].append("Function nto found")
+    else:
+        dict_controllers = parse_function_information()
+        custom_options_values_controllers = parse_custom_option_values(
+            CustomController.query.all(), dict_controller=dict_controllers)
 
-    if ('enable_channel_unit_select' in dict_controllers[function.device] and
-            dict_controllers[function.device]['enable_channel_unit_select']):
-        device_measurements = DeviceMeasurements.query.filter(
-            DeviceMeasurements.device_id == controller_id).all()
-        for each_measure in device_measurements:
-            if (None in [each_measure.measurement, each_measure.unit] or
-                    "" in [each_measure.measurement, each_measure.unit]):
-                messages["error"].append(
-                    "Measurement CH{} ({}) measurement/unit not set. All Measurements need to have "
-                    "the measurement and unit set before the Function can be activated.".format(
-                        each_measure.channel, each_measure.name))
+        if (controller_id in custom_options_values_controllers and
+                'period_status' in custom_options_values_controllers[controller_id]):
+            messages["period_status"] = custom_options_values_controllers[controller_id]['period_status']
+
+        if ('enable_channel_unit_select' in dict_controllers[function.device] and
+                dict_controllers[function.device]['enable_channel_unit_select']):
+            device_measurements = DeviceMeasurements.query.filter(
+                DeviceMeasurements.device_id == controller_id).all()
+            for each_measure in device_measurements:
+                if (None in [each_measure.measurement, each_measure.unit] or
+                        "" in [each_measure.measurement, each_measure.unit]):
+                    messages["error"].append(
+                        "Measurement CH{} ({}) measurement/unit not set. All Measurements need to have "
+                        "the measurement and unit set before the Function can be activated.".format(
+                            each_measure.channel, each_measure.name))
 
     if not messages["error"]:
         controller_activate_deactivate(
