@@ -1,62 +1,15 @@
-{%- for each_function in function if each_function.unique_id == order -%}
-
-<div class="container" style="border: 2px solid #ddd; border-radius: 5px;">
-
+<div id="mod_function_{{each_function.unique_id}}">
   <form id="mod_function_form" method="post" action="/function">
-  <input type="hidden" name="form-name" value="modController">
-  {{form_function.csrf_token}}
-  {{form_function.function_id(value=each_function.unique_id)}}
-  {{form_function.function_type(class_='form-control', value='function')}}
-
-    {% set form = form_function %}
-    {% set dict_options = dict_controllers[each_function.device] %}
-    {% set each_device = each_function %}
-    {% set unique_id = each_function.unique_id %}
-    {% set custom_options_values = custom_options_values_controllers %}
-
-  <div class="{% if each_function.is_activated -%}active-background
-              {% else -%}inactive-background
-              {% endif -%} row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.3em 0.2em 0.3em 0.3em;">
-
-    <div class="col-2 col-sm-1 text-center icon-fh">
-      <a data-toggle="collapse" href="#collapseContainer-controller-{{each_function.id}}" aria-expanded="false" aria-controls="collapseContainer-controller-{{each_function.id}}">
-        <span style="font-size: 3.6em" class="collapse-button{{each_function.id}} fa fa-plus-square"></span>
-      </a>
-    </div>
-    <div class="col-5 col-sm-3 col-md-3 col-lg-3">
-      {{form_function.name(class_='form-control', value=each_function.name, **{'title': dict_translation['name']['phrase']})}}
-    </div>
-    <div class="col-5 col-sm-4 col-md-4 col-lg-4">
-      <input class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{dict_controllers[each_function.device]['function_name']}}
-        {%- if each_function.is_activated %} [{{_('Active')}}]
-        {%- else %} [{{_('Inactive')}}]
-        {%- endif -%}
-      ">
-    </div>
-
-    <div class="col-6 col-sm-4 col-md-4 col-lg-4">
-      {%- if each_function.is_activated %}
-        {{form_function.deactivate_controller(class_='form-control btn btn-primary btn-sm')}}
-      {%- else %}
-        {{form_function.activate_controller(class_='form-control btn btn-primary btn-sm')}}
-      {%- endif -%}
-    </div>
-  </div>
-
-  <div class="collapse" id="collapseContainer-controller-{{each_function.id}}">
+    {{form_conditional.csrf_token}}
+    {{form_conditional.function_id(value=each_function.unique_id)}}
+    {{form_conditional.function_type(value='function')}}
 
     <div class="row small-gutters" style="padding: 0.5em;">
       <div class="col-auto small-gutters">
-        {{form_function.save_controller(class_='form-control btn btn-primary btn-sm')}}
+        {{form_function_base.function_mod(class_='form-control btn btn-primary btn-sm')}}
       </div>
       <div class="col-auto small-gutters">
-        {{form_function.delete_controller(class_='form-control btn btn-primary btn-sm',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-      </div>
-      <div class="col-auto small-gutters">
-        {{form_function.order_up(class_='form-control btn btn-primary btn-sm')}}
-      </div>
-      <div class="col-auto small-gutters">
-        {{form_function.order_down(class_='form-control btn btn-primary btn-sm')}}
+        {{form_function_base.function_delete(class_='form-control btn btn-primary btn-sm',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
       </div>
     </div>
 
@@ -169,7 +122,12 @@
       <div class="col-12">
         <h5>{{_('Options')}}</h5>
       </div>
-
+      <div class="col-auto">
+        {{form_function.name.label(class_='control-label')}}
+        <div>
+          {{form_function.name(class_='form-control', value=each_function.name, **{'title': dict_translation['name']['phrase']})}}
+        </div>
+      </div>
       <div class="col-auto">
         {{form_function.log_level_debug.label(class_='control-label')}}
         <div class="input-group-text">
@@ -250,7 +208,7 @@
 
       {% endfor %}
 
-    </form>
+  </form>
 
     {% if ("options_disabled" in dict_options and
            ('measurements_select' not in dict_options['options_disabled'] and
@@ -276,10 +234,4 @@
 
     {% endif %}
 
-  </div>
-
 </div>
-
-<div style="padding-bottom: 0.5em; "></div>
-
-{%- endfor -%}

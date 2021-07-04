@@ -28,9 +28,3 @@ class CustomController(FlaskForm):
     measurements_enabled = SelectMultipleField(TRANSLATIONS['measurements_enabled']['title'])
     log_level_debug = BooleanField(
         TRANSLATIONS['log_level_debug']['title'])
-    activate_controller = SubmitField(TRANSLATIONS['activate']['title'])
-    deactivate_controller = SubmitField(TRANSLATIONS['deactivate']['title'])
-    delete_controller = SubmitField(TRANSLATIONS['delete']['title'])
-    save_controller = SubmitField(TRANSLATIONS['save']['title'])
-    order_up = SubmitField(TRANSLATIONS['up']['title'])
-    order_down = SubmitField(TRANSLATIONS['down']['title'])

@@ -108,15 +108,9 @@ class PIDModBase(FlaskForm):
     setpoint_tracking_max_age = DecimalField('Max Age (seconds)',
         validators=[Optional()],
         widget=NumberInput(step='any'))
-    pid_mod = SubmitField(TRANSLATIONS['save']['title'])
     pid_hold = SubmitField(lazy_gettext('Hold'))
     pid_pause = SubmitField(lazy_gettext('Pause'))
     pid_resume = SubmitField(lazy_gettext('Resume'))
-    pid_delete = SubmitField(TRANSLATIONS['delete']['title'])
-    pid_activate = SubmitField(TRANSLATIONS['activate']['title'])
-    pid_deactivate = SubmitField(TRANSLATIONS['deactivate']['title'])
-    order_up = SubmitField(TRANSLATIONS['up']['title'])
-    order_down = SubmitField(TRANSLATIONS['down']['title'])
 
 
 class PIDModRelayRaise(FlaskForm):

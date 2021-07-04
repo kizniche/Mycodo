@@ -3,7 +3,6 @@
 import calendar
 import datetime
 import glob
-import json
 import logging
 import os
 import re
@@ -31,13 +30,10 @@ from sqlalchemy import and_
 from mycodo.config import ALEMBIC_VERSION
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import CAMERA_INFO
-from mycodo.config import CONDITIONAL_CONDITIONS
 from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DAEMON_PID_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import FRONTEND_PID_FILE
-from mycodo.config import FUNCTIONS
-from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import HTTP_ACCESS_LOG_FILE
 from mycodo.config import HTTP_ERROR_LOG_FILE
 from mycodo.config import INSTALL_DIRECTORY
@@ -50,23 +46,18 @@ from mycodo.config import PATH_1WIRE
 from mycodo.config import PATH_HTML_USER
 from mycodo.config import RESTORE_LOG_FILE
 from mycodo.config import THEMES_DARK
-from mycodo.config import THEME_GRID_SPACING
 from mycodo.config import UPGRADE_LOG_FILE
 from mycodo.config import USAGE_REPORTS_PATH
 from mycodo.config_devices_units import MEASUREMENTS
-from mycodo.databases.models import Actions
 from mycodo.databases.models import AlembicVersion
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
-from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Conversion
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import Dashboard
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import EnergyUsage
-from mycodo.databases.models import Function
-from mycodo.databases.models import FunctionChannel
 from mycodo.databases.models import Input
 from mycodo.databases.models import InputChannel
 from mycodo.databases.models import LCD
@@ -80,7 +71,6 @@ from mycodo.databases.models import Notes
 from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
-from mycodo.databases.models import Trigger
 from mycodo.databases.models import Unit
 from mycodo.databases.models import User
 from mycodo.databases.models import Widget
@@ -89,10 +79,7 @@ from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_client import daemon_active
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_camera
-from mycodo.mycodo_flask.forms import forms_conditional
-from mycodo.mycodo_flask.forms import forms_custom_controller
 from mycodo.mycodo_flask.forms import forms_dashboard
-from mycodo.mycodo_flask.forms import forms_function
 from mycodo.mycodo_flask.forms import forms_input
 from mycodo.mycodo_flask.forms import forms_lcd
 from mycodo.mycodo_flask.forms import forms_math
@@ -100,15 +87,10 @@ from mycodo.mycodo_flask.forms import forms_measurement
 from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.forms import forms_notes
 from mycodo.mycodo_flask.forms import forms_output
-from mycodo.mycodo_flask.forms import forms_pid
-from mycodo.mycodo_flask.forms import forms_trigger
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_camera
-from mycodo.mycodo_flask.utils import utils_conditional
-from mycodo.mycodo_flask.utils import utils_controller
 from mycodo.mycodo_flask.utils import utils_dashboard
 from mycodo.mycodo_flask.utils import utils_export
-from mycodo.mycodo_flask.utils import utils_function
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_input
 from mycodo.mycodo_flask.utils import utils_lcd
@@ -117,14 +99,11 @@ from mycodo.mycodo_flask.utils import utils_measurement
 from mycodo.mycodo_flask.utils import utils_misc
 from mycodo.mycodo_flask.utils import utils_notes
 from mycodo.mycodo_flask.utils import utils_output
-from mycodo.mycodo_flask.utils import utils_pid
-from mycodo.mycodo_flask.utils import utils_trigger
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import list_analog_to_digital_converters
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
-from mycodo.utils.sunriseset import Sun
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
 from mycodo.utils.system_pi import check_missing_ids
@@ -132,7 +111,6 @@ from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import dpkg_package_exists
 from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import parse_custom_option_values
-from mycodo.utils.system_pi import parse_custom_option_values_function_channels_json
 from mycodo.utils.system_pi import parse_custom_option_values_input_channels_json
 from mycodo.utils.system_pi import parse_custom_option_values_json
 from mycodo.utils.system_pi import parse_custom_option_values_output_channels_json
@@ -157,7 +135,7 @@ def inject_dictionary():
 
 
 @blueprint.context_processor
-def page_functions():
+def inject_functions():
     def epoch_to_time_string(epoch):
         return datetime.datetime.fromtimestamp(epoch).strftime(
             "%Y-%m-%d %H:%M:%S")
@@ -1351,453 +1329,6 @@ def page_logview():
                            log_output=log_output)
 
 
-@blueprint.route('/function', methods=('GET', 'POST'))
-@flask_login.login_required
-def page_function():
-    """ Display Function settings """
-    camera = Camera.query.all()
-    conditional = Conditional.query.all()
-    conditional_conditions = ConditionalConditions.query.all()
-    function = CustomController.query.all()
-    function_channel = FunctionChannel.query.all()
-    function_dev = Function.query.all()
-    actions = Actions.query.all()
-    input_dev = Input.query.all()
-    lcd = LCD.query.all()
-    math = Math.query.all()
-    measurement = Measurement.query.all()
-    method = Method.query.all()
-    tags = NoteTags.query.all()
-    output = Output.query.all()
-    output_channel = OutputChannel.query.all()
-    pid = PID.query.all()
-    trigger = Trigger.query.all()
-    unit = Unit.query.all()
-    user = User.query.all()
-
-    display_order_function = csv_to_list_of_str(DisplayOrder.query.first().function)
-
-    form_base = forms_function.DataBase()
-    form_add_function = forms_function.FunctionAdd()
-    form_mod_measurement = forms_measurement.MeasurementMod()
-    form_mod_pid_base = forms_pid.PIDModBase()
-    form_mod_pid_output_raise = forms_pid.PIDModRelayRaise()
-    form_mod_pid_output_lower = forms_pid.PIDModRelayLower()
-    form_mod_pid_pwm_raise = forms_pid.PIDModPWMRaise()
-    form_mod_pid_pwm_lower = forms_pid.PIDModPWMLower()
-    form_mod_pid_value_raise = forms_pid.PIDModValueRaise()
-    form_mod_pid_value_lower = forms_pid.PIDModValueLower()
-    form_mod_pid_volume_raise = forms_pid.PIDModVolumeRaise()
-    form_mod_pid_volume_lower = forms_pid.PIDModVolumeLower()
-    form_function_base = forms_function.FunctionMod()
-    form_trigger = forms_trigger.Trigger()
-    form_conditional = forms_conditional.Conditional()
-    form_conditional_conditions = forms_conditional.ConditionalConditions()
-    form_function = forms_custom_controller.CustomController()
-    form_actions = forms_function.Actions()
-
-    dict_controllers = parse_function_information()
-
-    if request.method == 'POST':
-        unmet_dependencies = None
-        if not utils_general.user_has_permission('edit_controllers'):
-            return redirect(url_for('routes_general.home'))
-
-        # Reorder
-        if form_base.reorder.data:
-            mod_order = DisplayOrder.query.first()
-            mod_order.function = list_to_csv(
-                form_base.list_visible_elements.data)
-            mod_order.function = check_missing_ids(
-                mod_order.function,
-                [
-                    conditional,
-                    function,
-                    function_dev,
-                    pid,
-                    trigger
-                ])
-            db.session.commit()
-            display_order_function = csv_to_list_of_str(DisplayOrder.query.first().function)
-
-        # Function
-        elif form_add_function.func_add.data:
-            unmet_dependencies = utils_function.function_add(
-                form_add_function)
-        elif form_function_base.save_function.data:
-            utils_function.function_mod(
-                form_conditional)
-        elif form_function_base.delete_function.data:
-            utils_function.function_del(
-                form_conditional.function_id.data)
-        elif form_function_base.order_up.data:
-            utils_function.function_reorder(
-                form_conditional.function_id.data,
-                display_order_function, 'up')
-        elif form_function_base.order_down.data:
-            utils_function.function_reorder(
-                form_conditional.function_id.data,
-                display_order_function, 'down')
-        elif form_function_base.execute_all_actions.data:
-            utils_function.action_execute_all(form_conditional)
-
-        # PID
-        elif form_mod_pid_base.pid_mod.data:
-            utils_pid.pid_mod(form_mod_pid_base,
-                              form_mod_pid_pwm_raise,
-                              form_mod_pid_pwm_lower,
-                              form_mod_pid_output_raise,
-                              form_mod_pid_output_lower,
-                              form_mod_pid_value_raise,
-                              form_mod_pid_value_lower,
-                              form_mod_pid_volume_raise,
-                              form_mod_pid_volume_lower)
-        elif form_mod_pid_base.pid_delete.data:
-            utils_pid.pid_del(form_mod_pid_base.function_id.data)
-        elif form_mod_pid_base.order_up.data:
-            utils_function.function_reorder(
-                form_mod_pid_base.function_id.data,
-                display_order_function, 'up')
-        elif form_mod_pid_base.order_down.data:
-            utils_function.function_reorder(
-                form_mod_pid_base.function_id.data,
-                display_order_function, 'down')
-        elif form_mod_pid_base.pid_activate.data:
-            utils_pid.pid_activate(
-                form_mod_pid_base.function_id.data)
-        elif form_mod_pid_base.pid_deactivate.data:
-            utils_pid.pid_deactivate(
-                form_mod_pid_base.function_id.data)
-        elif form_mod_pid_base.pid_hold.data:
-            utils_pid.pid_manipulate(
-                form_mod_pid_base.function_id.data, 'Hold')
-        elif form_mod_pid_base.pid_pause.data:
-            utils_pid.pid_manipulate(
-                form_mod_pid_base.function_id.data, 'Pause')
-        elif form_mod_pid_base.pid_resume.data:
-            utils_pid.pid_manipulate(
-                form_mod_pid_base.function_id.data, 'Resume')
-
-        # Trigger
-        elif form_trigger.save_trigger.data:
-            utils_trigger.trigger_mod(form_trigger)
-        elif form_trigger.delete_trigger.data:
-            utils_trigger.trigger_del(form_trigger.function_id.data)
-        elif form_trigger.deactivate_trigger.data:
-            utils_trigger.trigger_deactivate(form_trigger.function_id.data)
-        elif form_trigger.activate_trigger.data:
-            utils_trigger.trigger_activate(form_trigger.function_id.data)
-        elif form_trigger.order_up.data:
-            utils_function.function_reorder(
-                form_trigger.function_id.data,
-                display_order_function, 'up')
-        elif form_trigger.order_down.data:
-            utils_function.function_reorder(
-                form_trigger.function_id.data,
-                display_order_function, 'down')
-        elif form_trigger.add_action.data:
-            unmet_dependencies = utils_function.action_add(form_trigger)
-        elif form_trigger.test_all_actions.data:
-            utils_function.action_execute_all(form_trigger)
-
-        # Conditional
-        elif form_conditional.save_conditional.data:
-            utils_conditional.conditional_mod(form_conditional)
-        elif form_conditional.delete_conditional.data:
-            utils_conditional.conditional_del(
-                form_conditional.function_id.data)
-        elif form_conditional.deactivate_cond.data:
-            utils_conditional.conditional_deactivate(
-                form_conditional.function_id.data)
-        elif form_conditional.activate_cond.data:
-            utils_conditional.conditional_activate(
-                form_conditional.function_id.data)
-        elif form_conditional.order_up.data:
-            utils_function.function_reorder(
-                form_conditional.function_id.data,
-                display_order_function, 'up')
-        elif form_conditional.order_down.data:
-            utils_function.function_reorder(
-                form_conditional.function_id.data,
-                display_order_function, 'down')
-        elif form_conditional.add_condition.data:
-            utils_conditional.conditional_condition_add(form_conditional)
-        elif form_conditional.add_action.data:
-            unmet_dependencies = utils_function.action_add(form_conditional)
-        elif form_conditional.test_all_actions.data:
-            utils_function.action_execute_all(form_conditional)
-
-        # Conditional conditions
-        elif form_conditional_conditions.save_condition.data:
-            utils_conditional.conditional_condition_mod(
-                form_conditional_conditions)
-        elif form_conditional_conditions.delete_condition.data:
-            utils_conditional.conditional_condition_del(
-                form_conditional_conditions)
-
-        # Actions
-        elif form_actions.save_action.data:
-            utils_function.action_mod(form_actions, request.form)
-        elif form_actions.delete_action.data:
-            utils_function.action_del(form_actions)
-
-        # Custom Functions
-        elif form_function.save_controller.data:
-            utils_controller.controller_mod(
-                form_function, request.form)
-        elif form_function.delete_controller.data:
-            utils_controller.controller_del(
-                form_function.function_id.data)
-        elif form_function.deactivate_controller.data:
-            utils_controller.controller_deactivate(
-                form_function.function_id.data)
-        elif form_function.activate_controller.data:
-            utils_controller.controller_activate(
-                form_function.function_id.data)
-        elif form_mod_measurement.measurement_mod.data:
-            utils_measurement.measurement_mod(
-                form_mod_measurement)
-
-        # Custom action
-        else:
-            utils_general.custom_action(
-                "Function", dict_controllers, form_function.function_id.data, request.form)
-
-        if unmet_dependencies:
-            function_type = None
-            if form_add_function.func_add.data:
-                function_type = form_add_function.function_type.data
-            elif form_trigger.add_action.data:
-                function_type = form_trigger.action_type.data
-            elif form_conditional.add_action.data:
-                function_type = form_conditional.action_type.data
-            if function_type:
-                return redirect(url_for('routes_admin.admin_dependencies',
-                                        device=function_type))
-        else:
-            return redirect(url_for('routes_page.page_function'))
-
-    # Generate all measurement and units used
-    dict_measurements = add_custom_measurements(Measurement.query.all())
-    dict_units = add_custom_units(Unit.query.all())
-
-    dict_outputs = parse_output_information()
-
-    custom_options_values_controllers = parse_custom_option_values(
-        function, dict_controller=dict_controllers)
-    custom_options_values_function_channels = parse_custom_option_values_function_channels_json(
-        function_channel, dict_controller=function, key_name='custom_channel_options')
-
-    # TODO: Update actions to use single-file modules and be consistent with other custom_options
-    custom_options_values_actions = {}
-    for each_action in actions:
-        try:
-            custom_options_values_actions[each_action.unique_id] = json.loads(each_action.custom_options)
-        except:
-            custom_options_values_actions[each_action.unique_id] = {}
-
-    # Create lists of built-in and custom functions
-    choices_functions = []
-    for each_function in FUNCTIONS:
-        choices_functions.append({'value': each_function[0], 'item': each_function[1]})
-    choices_custom_functions = utils_general.choices_custom_functions()
-    # Combine function lists
-    choices_functions_add = choices_functions + choices_custom_functions
-    # Sort combined list
-    choices_functions_add = sorted(choices_functions_add, key=lambda i: i['item'])
-
-    custom_actions = {}
-    for each_function in function:
-        if 'custom_actions' in dict_controllers[each_function.device]:
-            custom_actions[each_function.device] = True
-
-    choices_function = utils_general.choices_functions(
-        function, dict_units, dict_measurements)
-    choices_input = utils_general.choices_inputs(
-        input_dev, dict_units, dict_measurements)
-    choices_input_devices = utils_general.choices_input_devices(input_dev)
-    choices_math = utils_general.choices_maths(
-        math, dict_units, dict_measurements)
-    choices_method = utils_general.choices_methods(method)
-    choices_output = utils_general.choices_outputs(
-        output, dict_units, dict_measurements)
-    choices_output_channels = utils_general.choices_outputs_channels(
-        output, output_channel, dict_outputs)
-    choices_output_channels_measurements = utils_general.choices_outputs_channels_measurements(
-        output, OutputChannel, dict_outputs, dict_units, dict_measurements)
-    choices_pid = utils_general.choices_pids(
-        pid, dict_units, dict_measurements)
-    choices_measurements_units = utils_general.choices_measurements_units(measurement, unit)
-
-    choices_controller_ids = utils_general.choices_controller_ids()
-
-    actions_dict = {
-        'conditional': {},
-        'trigger': {}
-    }
-    for each_action in actions:
-        if (each_action.function_type == 'conditional' and
-                each_action.unique_id not in actions_dict['conditional']):
-            actions_dict['conditional'][each_action.function_id] = True
-        if (each_action.function_type == 'trigger' and
-                each_action.unique_id not in actions_dict['trigger']):
-            actions_dict['trigger'][each_action.function_id] = True
-
-    conditions_dict = {}
-    for each_condition in conditional_conditions:
-        if each_condition.unique_id not in conditions_dict:
-            conditions_dict[each_condition.conditional_id] = True
-
-    controllers = []
-    controllers_all = [('Input', input_dev),
-                       ('Conditional', conditional),
-                       ('Function', function),
-                       ('LCD', lcd),
-                       ('Math', math),
-                       ('PID', pid),
-                       ('Trigger', trigger)]
-    for each_controller in controllers_all:
-        for each_cont in each_controller[1]:
-            controllers.append((each_controller[0],
-                                each_cont.unique_id,
-                                each_cont.id,
-                                each_cont.name))
-
-    # Create dict of Function names
-    names_function = {}
-    all_elements = [conditional, pid, trigger, function_dev, function]
-    for each_element in all_elements:
-        for each_function in each_element:
-            names_function[each_function.unique_id] = '[{id}] {name}'.format(
-                id=each_function.unique_id.split('-')[0], name=each_function.name)
-
-    # Calculate sunrise/sunset times if conditional controller is set up properly
-    sunrise_set_calc = {}
-    for each_trigger in trigger:
-        if each_trigger.trigger_type == 'trigger_sunrise_sunset':
-            sunrise_set_calc[each_trigger.unique_id] = {}
-            try:
-                sun = Sun(latitude=each_trigger.latitude,
-                          longitude=each_trigger.longitude,
-                          zenith=each_trigger.zenith)
-                sunrise = sun.get_sunrise_time()['time_local']
-                sunset = sun.get_sunset_time()['time_local']
-
-                # Adjust for date offset
-                new_date = datetime.datetime.now() + datetime.timedelta(
-                    days=each_trigger.date_offset_days)
-
-                sun = Sun(latitude=each_trigger.latitude,
-                          longitude=each_trigger.longitude,
-                          zenith=each_trigger.zenith,
-                          day=new_date.day,
-                          month=new_date.month,
-                          year=new_date.year,
-                          offset_minutes=each_trigger.time_offset_minutes)
-                offset_rise = sun.get_sunrise_time()['time_local']
-                offset_set = sun.get_sunset_time()['time_local']
-
-                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = (
-                    sunrise.strftime("%Y-%m-%d %H:%M"))
-                sunrise_set_calc[each_trigger.unique_id]['sunset'] = (
-                    sunset.strftime("%Y-%m-%d %H:%M"))
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = (
-                    offset_rise.strftime("%Y-%m-%d %H:%M"))
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = (
-                    offset_set.strftime("%Y-%m-%d %H:%M"))
-            except:
-                logger.exception(1)
-                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = None
-                sunrise_set_calc[each_trigger.unique_id]['sunrise'] = None
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunrise'] = None
-                sunrise_set_calc[each_trigger.unique_id]['offset_sunset'] = None
-
-    return render_template('pages/function.html',
-                           and_=and_,
-                           actions=actions,
-                           actions_dict=actions_dict,
-                           camera=camera,
-                           choices_controller_ids=choices_controller_ids,
-                           choices_custom_functions=choices_custom_functions,
-                           choices_function=choices_function,
-                           choices_functions=choices_functions,
-                           choices_functions_add=choices_functions_add,
-                           choices_input=choices_input,
-                           choices_input_devices=choices_input_devices,
-                           choices_math=choices_math,
-                           choices_measurements_units=choices_measurements_units,
-                           choices_method=choices_method,
-                           choices_output=choices_output,
-                           choices_output_channels=choices_output_channels,
-                           choices_output_channels_measurements=choices_output_channels_measurements,
-                           choices_pid=choices_pid,
-                           conditional_conditions_list=CONDITIONAL_CONDITIONS,
-                           conditional=conditional,
-                           conditional_conditions=conditional_conditions,
-                           conditions_dict=conditions_dict,
-                           controllers=controllers,
-                           function=function,
-                           function_channel=function_channel,
-                           custom_actions=custom_actions,
-                           custom_options_values_actions=custom_options_values_actions,
-                           custom_options_values_controllers=custom_options_values_controllers,
-                           custom_options_values_function_channels=custom_options_values_function_channels,
-                           dict_controllers=dict_controllers,
-                           dict_measurements=dict_measurements,
-                           dict_outputs=dict_outputs,
-                           dict_units=dict_units,
-                           display_order_function=display_order_function,
-                           form_base=form_base,
-                           form_conditional=form_conditional,
-                           form_conditional_conditions=form_conditional_conditions,
-                           form_function=form_function,
-                           form_actions=form_actions,
-                           form_add_function=form_add_function,
-                           form_function_base=form_function_base,
-                           form_mod_measurement=form_mod_measurement,
-                           form_mod_pid_base=form_mod_pid_base,
-                           form_mod_pid_pwm_raise=form_mod_pid_pwm_raise,
-                           form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
-                           form_mod_pid_output_raise=form_mod_pid_output_raise,
-                           form_mod_pid_output_lower=form_mod_pid_output_lower,
-                           form_mod_pid_value_raise=form_mod_pid_value_raise,
-                           form_mod_pid_value_lower=form_mod_pid_value_lower,
-                           form_mod_pid_volume_raise=form_mod_pid_volume_raise,
-                           form_mod_pid_volume_lower=form_mod_pid_volume_lower,
-                           form_trigger=form_trigger,
-                           function_action_info=FUNCTION_ACTION_INFO,
-                           function_dev=function_dev,
-                           function_types=FUNCTIONS,
-                           input=input_dev,
-                           lcd=lcd,
-                           math=math,
-                           method=method,
-                           names_function=names_function,
-                           output=output,
-                           output_types=output_types(),
-                           pid=pid,
-                           sunrise_set_calc=sunrise_set_calc,
-                           table_conversion=Conversion,
-                           table_device_measurements=DeviceMeasurements,
-                           table_input=Input,
-                           table_output=Output,
-                           tags=tags,
-                           trigger=trigger,
-                           units=MEASUREMENTS,
-                           user=user)
-
-
-@blueprint.route('/function_status/<unique_id>', methods=('GET', 'POST'))
-@flask_login.login_required
-def function_status(unique_id):
-    try:
-        control = DaemonControl()
-        return jsonify(control.function_status(unique_id))
-    except Exception as err:
-        logger.error("Function Status Error: {}".format(err))
-        return jsonify({'error': err})
-
-
 @blueprint.route('/output_submit', methods=['POST'])
 @flask_login.login_required
 def page_output_submit():
@@ -1872,14 +1403,9 @@ def save_output_layout():
 @blueprint.route('/output', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_output():
-    """ Display Output page """
-    return redirect('/output/all/0')
-
-
-@blueprint.route('/output/<output_type>/<output_id>', methods=('GET', 'POST'))
-@flask_login.login_required
-def page_output_options(output_type, output_id):
     """ Display Output page options """
+    output_type = request.args.get('output_type', None)
+    output_id = request.args.get('output_id', None)
     each_output = None
     if output_type in ['entry', 'options'] and output_id != '0':
         each_output = Output.query.filter(Output.unique_id == output_id).first()
@@ -1982,7 +1508,7 @@ def page_output_options(output_type, output_id):
             output_variables[each_output.unique_id][each_channel]['amps'] = None
             output_variables[each_output.unique_id][each_channel]['trigger_startup'] = None
 
-    if output_type == 'all':
+    if not output_type:
         return render_template('pages/output.html',
                                camera=camera,
                                choices_function=choices_function,
@@ -2009,7 +1535,6 @@ def page_output_options(output_type, output_id):
                                output_types=output_types(),
                                output_templates=output_templates,
                                output_variables=output_variables,
-                               theme_grid_spacing=THEME_GRID_SPACING,
                                user=user)
     elif output_type == 'entry':
         return render_template('pages/output_entry.html',
@@ -2071,7 +1596,6 @@ def page_output_options(output_type, output_id):
                                user=user)
 
 
-
 @blueprint.route('/input_submit', methods=['POST'])
 @flask_login.login_required
 def page_input_submit():
@@ -2125,9 +1649,8 @@ def page_input_submit():
 
         # Mod Input Measurement
         elif form_mod_measurement.measurement_mod.data:
-            input_id, messages = utils_measurement.measurement_mod(
+            messages = utils_measurement.measurement_mod(
                 form_mod_measurement)
-            page_refresh = True
 
         # Acquire measurements
         elif form_mod_input.input_acquire_measurements.data:
@@ -2167,14 +1690,9 @@ def save_input_layout():
 @blueprint.route('/input', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_input():
-    """ Display Data page """
-    return redirect('/input/all/0')
-
-
-@blueprint.route('/input/<input_type>/<input_id>', methods=('GET', 'POST'))
-@flask_login.login_required
-def page_input_options(input_type, input_id):
     """ Display Data page options """
+    input_type = request.args.get('input_type', None)
+    input_id = request.args.get('input_id', None)
     each_input = None
     if input_type in ['entry', 'options'] and input_id != '0':
         each_input = Input.query.filter(Input.unique_id == input_id).first()
@@ -2370,7 +1888,7 @@ def page_input_options(input_type, input_id):
                 ftdi_devices = get_ftdi_device_list()
                 break
 
-    if input_type == 'all':
+    if not input_type:
         return render_template('pages/input.html',
                                and_=and_,
                                choices_function=choices_function,
@@ -2420,7 +1938,6 @@ def page_input_options(input_type, input_id):
                                table_device_measurements=DeviceMeasurements,
                                table_input=Input,
                                table_math=Math,
-                               theme_grid_spacing=THEME_GRID_SPACING,
                                user=user,
                                devices_1wire_ow_shell=devices_1wire_ow_shell,
                                devices_1wire_w1thermsensor=devices_1wire_w1thermsensor)

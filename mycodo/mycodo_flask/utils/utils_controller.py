@@ -28,10 +28,13 @@ logger = logging.getLogger(__name__)
 
 def controller_mod(form_mod, request_form):
     """Modify a Custom Function"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller=TRANSLATIONS['controller']['title'])
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    page_refresh = False
 
     dict_controllers = parse_function_information()
 
@@ -42,7 +45,7 @@ def controller_mod(form_mod, request_form):
             CustomController.unique_id == form_mod.function_id.data).first()
 
         if mod_controller.is_activated:
-            error.append(gettext(
+            messages["error"].append(gettext(
                 "Deactivate controller before modifying its settings"))
 
         mod_controller.name = form_mod.name.data
@@ -100,8 +103,8 @@ def controller_mod(form_mod, request_form):
                             new_channel.function_id = mod_controller.unique_id
                             new_channel.channel = index
 
-                            error, custom_options = custom_channel_options_return_json(
-                                error, dict_controllers, request_form,
+                            messages["error"], custom_options = custom_channel_options_return_json(
+                                messages["error"], dict_controllers, request_form,
                                 mod_controller.unique_id, index,
                                 device=mod_controller.device, use_defaults=True)
                             new_channel.custom_options = custom_options
@@ -124,8 +127,8 @@ def controller_mod(form_mod, request_form):
                 custom_options_channels_dict_presave[each_channel.channel] = {}
 
         # Parse post-save custom options for function device and its channels
-        error, custom_options_json_postsave = custom_options_return_json(
-            error, dict_controllers,
+        messages["error"], custom_options_json_postsave = custom_options_return_json(
+            messages["error"], dict_controllers,
             request_form=request_form,
             mod_dev=mod_controller,
             device=mod_controller.device,
@@ -134,8 +137,8 @@ def controller_mod(form_mod, request_form):
 
         custom_options_channels_dict_postsave = {}
         for each_channel in channels:
-            error, custom_options_channels_json_postsave_tmp = custom_channel_options_return_json(
-                error, dict_controllers, request_form,
+            messages["error"], custom_options_channels_json_postsave_tmp = custom_channel_options_return_json(
+                messages["error"], dict_controllers, request_form,
                 form_mod.function_id.data, each_channel.channel,
                 device=mod_controller.device, use_defaults=False)
             custom_options_channels_dict_postsave[each_channel.channel] = json.loads(
@@ -157,7 +160,7 @@ def controller_mod(form_mod, request_form):
             custom_options = json.dumps(custom_options_dict)  # Convert from dict to JSON string
             custom_channel_options = custom_options_channels_dict
             if not allow_saving:
-                error.append("execute_at_modification() would not allow function options to be saved")
+                messages["error"].append("execute_at_modification() would not allow function options to be saved")
         else:
             # Don't pass custom options to module
             custom_options = json.dumps(custom_options_dict_postsave)
@@ -170,25 +173,30 @@ def controller_mod(form_mod, request_form):
                 each_channel.name = custom_channel_options[each_channel.channel]['name']
             each_channel.custom_options = json.dumps(custom_channel_options[each_channel.channel])
 
-        if not error:
+        if not messages["error"]:
             db.session.commit()
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['modify']['title'],
+                controller=TRANSLATIONS['controller']['title']))
 
     except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages, page_refresh
 
 
 def controller_del(cond_id):
-    """Delete a Conditional"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['delete']['title'],
-        controller=TRANSLATIONS['controller']['title'])
+    """Delete a custom Function"""
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     cond = CustomController.query.filter(
         CustomController.unique_id == cond_id).first()
@@ -198,22 +206,29 @@ def controller_del(cond_id):
         controller_deactivate(cond_id)
 
     try:
-        if not error:
+        if not messages["error"]:
             device_measurements = DeviceMeasurements.query.filter(
                 DeviceMeasurements.device_id == cond_id).all()
             for each_measurement in device_measurements:
-                delete_entry_with_id(DeviceMeasurements, each_measurement.unique_id)
+                delete_entry_with_id(
+                    DeviceMeasurements,
+                    each_measurement.unique_id,
+                    flash_message=False)
 
-            delete_entry_with_id(CustomController, cond_id)
+            delete_entry_with_id(
+                CustomController, cond_id, flash_message=False)
 
             channels = FunctionChannel.query.filter(
                 FunctionChannel.function_id == cond_id).all()
             for each_channel in channels:
-                delete_entry_with_id(FunctionChannel, each_channel.unique_id)
+                delete_entry_with_id(
+                    FunctionChannel,
+                    each_channel.unique_id,
+                    flash_message=False)
 
-            display_order = csv_to_list_of_str(DisplayOrder.query.first().function)
-            display_order.remove(cond_id)
-            DisplayOrder.query.first().function = list_to_csv(display_order)
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['delete']['title'],
+                controller=TRANSLATIONS['controller']['title']))
 
             try:
                 file_path = os.path.join(
@@ -225,21 +240,23 @@ def controller_del(cond_id):
 
             db.session.commit()
     except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def controller_activate(controller_id):
     """Activate a Conditional"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['activate']['title'],
-        controller=TRANSLATIONS['controller']['title'])
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     function = CustomController.query.filter(
         CustomController.unique_id == controller_id).first()
@@ -253,25 +270,35 @@ def controller_activate(controller_id):
         for each_measure in device_measurements:
             if (None in [each_measure.measurement, each_measure.unit] or
                     "" in [each_measure.measurement, each_measure.unit]):
-                error.append(
+                messages["error"].append(
                     "Measurement CH{} ({}) measurement/unit not set. All Measurements need to have "
                     "the measurement and unit set before the Function can be activated.".format(
                         each_measure.channel, each_measure.name))
 
-    if not error:
-        controller_activate_deactivate('activate', 'Function', controller_id)
+    if not messages["error"]:
+        controller_activate_deactivate(
+            'activate', 'Function', controller_id, flash_message=False)
+        messages["success"].append('{action} {controller}'.format(
+            action=TRANSLATIONS['activate']['title'],
+            controller=TRANSLATIONS['controller']['title']))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def controller_deactivate(controller_id):
     """Deactivate a Conditional"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['deactivate']['title'],
-        controller=TRANSLATIONS['controller']['title'])
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
-    if not error:
-        controller_activate_deactivate('deactivate', 'Function', controller_id)
+    if not messages["error"]:
+        controller_activate_deactivate(
+            'deactivate', 'Function', controller_id, flash_message=False)
+        messages["success"].append('{action} {controller}'.format(
+            action=TRANSLATIONS['deactivate']['title'],
+            controller=TRANSLATIONS['controller']['title']))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages

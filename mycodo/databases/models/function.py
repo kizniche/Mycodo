@@ -14,6 +14,7 @@ class Function(CRUDMixin, db.Model):
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     function_type = db.Column(db.Text, default='')
     name = db.Column(db.Text, default='Function Name')
+    position_y = db.Column(db.Integer, default=0)
     log_level_debug = db.Column(db.Boolean, default=False)
 
 
@@ -24,6 +25,7 @@ class Conditional(CRUDMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     name = db.Column(db.Text, default='Conditional')
+    position_y = db.Column(db.Integer, default=0)
 
     is_activated = db.Column(db.Boolean, default=False)
     log_level_debug = db.Column(db.Boolean, default=False)
@@ -71,6 +73,7 @@ class Trigger(CRUDMixin, db.Model):
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
     trigger_type = db.Column(db.Text, default=None)
     name = db.Column(db.Text, default='Trigger Name')
+    position_y = db.Column(db.Integer, default=0)
     is_activated = db.Column(db.Boolean, default=False)
     log_level_debug = db.Column(db.Boolean, default=False)
 

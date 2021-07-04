@@ -13,6 +13,7 @@ class PID(CRUDMixin, db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)  # ID for influxdb entries
     name = db.Column(db.Text, default='PID')
+    position_y = db.Column(db.Integer, default=0)
 
     # PID Controller
     is_activated = db.Column(db.Boolean, default=False)

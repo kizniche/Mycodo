@@ -12,7 +12,8 @@ class CustomController(CRUDMixin, db.Model):
 
     id = db.Column(db.Integer, unique=True, primary_key=True)
     unique_id = db.Column(db.String, nullable=False, unique=True, default=set_uuid)
-    name = db.Column(db.Text, default='Conditional')
+    name = db.Column(db.Text, default='Custom Function')
+    position_y = db.Column(db.Integer, default=0)
     device = db.Column(db.Text, default='')
 
     is_activated = db.Column(db.Boolean, default=False)

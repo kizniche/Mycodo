@@ -5,36 +5,42 @@
 {% block title %} - {{dict_translation['function']['title']}}{% endblock %}
 
 {% block head %}
-  <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-clockpicker.min.css">
+<link rel="stylesheet" type="text/css" href="/static/css/bootstrap-clockpicker.min.css">
+<script type="text/javascript" src="/static/js/bootstrap-clockpicker.min.js"></script>
 
-  <script type="text/javascript" src="/static/js/multiselect.min.js"></script>
+<link rel="stylesheet" href="/static/css/gridstack.css" />
+<link rel="stylesheet" href="/static/css/gridstack-custom.css" />
+<script src="/static/js/gridstack-h5.js"></script>
 
-  <script type="text/javascript">
-  function function_status(function_id) {
-    const url = '/function_status/' + function_id;
-    $.getJSON(url,
-      function(data, responseText, jqXHR) {
-        if (jqXHR.status !== 204) {
-          document.getElementById("function_status_" + function_id).innerHTML = data['string_status'].replace(/(?:\r\n|\r|\n)/g, "<br>");
-        }
-        else {
-          document.getElementById("function_status_" + function_id).innerHTML = "Error";
-        }
-      }
-    );
-  }
-  // Repeat function for function_status()
-  function repeat_function_status(function_id, period_sec) {
-    setInterval(function () {
-      function_status(function_id)
-    }, period_sec * 1000);
-  }
-  </script>
+<link href="/static/css/toastr.min.css" rel="stylesheet"/>
+<script src="/static/js/toastr.min.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "15000",
+      "extendedTimeOut": "10000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+  });
+</script>
 {% endblock %}
 
 {% block body %}
   <!-- Route: /function -->
-  <div class="container">
+  <main role="main" class="container">
     {% include 'flash_messages.html' %}
 
     <h4>{{dict_translation['function']['title']}} <a href="{{help_page[0]}}" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h4>
@@ -55,7 +61,7 @@
       </div>
 
       <div class="col-auto">
-        {{form_add_function.func_add(class_='btn btn-primary')}}
+        {{form_add_function.function_add(class_='btn btn-primary')}}
       </div>
     </div>
 
@@ -63,73 +69,353 @@
 
     <div style="clear: both; padding: 1em 0;"></div>
 
-  {%- if display_order_function -%}
-    {%- for order in display_order_function -%}
+    <div class="grid-stack">
+      {%- for each_function in conditional -%}
+      <div id="gridstack_function_{{each_function.unique_id}}"
+        class="grid-stack-item"
+        gs-id="{{each_function.unique_id}}"
+        gs-x="0"
+        gs-y="{{each_function.position_y}}"
+        gs-w="20"
+        gs-h="1"
+        gs-no-resize="true">
+        {% include 'pages/function_options/conditional_entry.html' %}
+      </div> <!- grid-stack-item ->
+      {% endfor %}
 
-      {% include 'pages/function_options/conditional.html' %}
-      {% include 'pages/function_options/pid.html' %}
-      {% include 'pages/function_options/trigger.html' %}
-      {% include 'pages/function_options/function_spacer.html' %}
-      {% include 'pages/function_options/function_actions.html' %}
-      {% include 'pages/function_options/custom_function.html' %}
+      {%- for each_function in pid -%}
+      <div id="gridstack_function_{{each_function.unique_id}}"
+        class="grid-stack-item"
+        gs-id="{{each_function.unique_id}}"
+        gs-x="0"
+        gs-y="{{each_function.position_y}}"
+        gs-w="20"
+        gs-h="1"
+        gs-no-resize="true">
+        {% include 'pages/function_options/pid_entry.html' %}
+      </div> <!- grid-stack-item ->
+      {% endfor %}
 
-    {% endfor %}
+      {%- for each_function in trigger -%}
+      <div id="gridstack_function_{{each_function.unique_id}}"
+        class="grid-stack-item"
+        gs-id="{{each_function.unique_id}}"
+        gs-x="0"
+        gs-y="{{each_function.position_y}}"
+        gs-w="20"
+        gs-h="1"
+        gs-no-resize="true">
+        {% include 'pages/function_options/trigger_entry.html' %}
+      </div> <!- grid-stack-item ->
+      {% endfor %}
 
-    <div class="container">
+      {%- for each_function in function_dev -%}
+      <div id="gridstack_function_{{each_function.unique_id}}"
+        class="grid-stack-item"
+        gs-id="{{each_function.unique_id}}"
+        gs-x="0"
+        gs-y="{{each_function.position_y}}"
+        gs-w="20"
+        gs-h="1"
+        gs-no-resize="true">
+        {% include 'pages/function_options/function_entry.html' %}
+      </div> <!- grid-stack-item ->
+      {% endfor %}
 
-      <div class="form-inline" style="padding-bottom: 1em;">
-        <div class="form-group">
-          <a data-toggle="collapse" href="#collapseContainerReorderFunction" aria-expanded="false" aria-controls="collapseContainerReorderFunction" class="btn btn-sm btn-primary" role="button">{{dict_translation['function']['title'] + ' ' + dict_translation['reorder']['title']}}</a>
-        </div>
-      </div>
+      {%- for each_function in function -%}
+      <div id="gridstack_function_{{each_function.unique_id}}"
+        class="grid-stack-item"
+        gs-id="{{each_function.unique_id}}"
+        gs-x="0"
+        gs-y="{{each_function.position_y}}"
+        gs-w="20"
+        gs-h="1"
+        gs-no-resize="true">
+        {% include 'pages/function_options/custom_function_entry.html' %}
+      </div> <!- grid-stack-item ->
+      {% endfor %}
+    </div> <!- grid-stack ->
 
-      <div class="collapse" id="collapseContainerReorderFunction" style="padding-bottom: 1em">
+  {% include 'admin/dependencies_install.html' %}
 
-        <form method="post" action="/function">
-        {{form_base.csrf_token}}
+  </main>
 
-        <div class="row" style="padding-bottom: 0.5em">
-          <div class="col-auto">
-            {{form_base.reorder(class_='btn btn-primary')}}
-          </div>
-        </div>
+  <div style="clear: both; padding-bottom: 1.5em;"></div>
 
-        <div class="row">
-          <div class="col-auto">
-            {{form_base.reorder_type(class_='form-control', value='function')}}
-            <select style="display: none" name="from[]" id="multiselect" class="" size="8" multiple="multiple"></select>
-            <div>
-              <select name="list_visible_elements" id="multiselect_to" class="form-control" size="8" multiple="multiple">
-              {% if display_order_function -%}
-                {% for each_visible in display_order_function if each_visible in names_function %}
-                  <option value="{{each_visible}}">{{names_function[each_visible]}}</option>
-                {% endfor %}
-              {% endif %}
-              </select>
-              <div class="row">
-                <div class="col-sm-6">
-                  <button type="button" id="multiselect_move_up" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-up"></i></button>
-                </div>
-                <div class="col-sm-6">
-                  <button type="button" id="multiselect_move_down" class="btn btn-sm btn-block btn-primary"><i class="fa fa-arrow-down"></i></button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        </form>
-
-      </div>
-
-    </div>
-
-  {% endif %}
-
-  </div>
-
-  <script type="text/javascript" src="/static/js/bootstrap-clockpicker.min.js"></script>
   <script type="text/javascript">
+    let gridstack_item_height = $(".grid-stack-item-content").eq(0).outerHeight(true);
+
+    // Grid
+    let options = {
+      cellHeight: gridstack_item_height + 5,
+      column: 20,
+      margin: 0,
+      draggable: {
+        handle: '.panel-heading'
+      },
+      float: false
+    };
+    let grid = GridStack.init(options);
+
+    grid.on('change', function (event, items) {
+      let gridstack_item_height = $(".grid-stack-item-content").eq(0).outerHeight(true);
+      grid.cellHeight(gridstack_item_height + 5);
+      let serializedFull = grid.save(false);
+      $.ajax({
+        url: "/save_function_layout",
+        type: "POST",
+        data: JSON.stringify(serializedFull, null, '  '),
+        contentType: "application/json; charset=utf-8",
+        success: function (data) {}
+      });
+    });
+
+    function popup_response(data) {
+      if ('error' in data.data.messages && data.data.messages.error.length !== 0) {
+        toastr['error']('Error: ' + data.data.messages.error.join(", "));
+      }
+      if ('warning' in data.data.messages && data.data.messages.warning.length !== 0) {
+        toastr['warning']('Warning: ' + data.data.messages.warning.join(", "));
+      }
+      if ('info' in data.data.messages && data.data.messages.info.length !== 0) {
+        toastr['info']('Info: ' + data.data.messages.info.join(", "));
+      }
+      if ('success' in data.data.messages && data.data.messages.success.length !== 0) {
+        toastr['success']('Success: ' + data.data.messages.success.join(", "));
+      }
+    }
+
+    function function_status(function_id) {
+      const url = '/function_status/' + function_id;
+      $.getJSON(url,
+        function(data, responseText, jqXHR) {
+          if (jqXHR.status !== 204) {
+            if (data && "string_status" in data) {
+              document.getElementById("function_status_message_" + function_id).innerHTML = data['string_status'].replace(/(?:\r\n|\r|\n)/g, "<br>");
+            }
+          }
+          else {
+            document.getElementById("function_status_message_" + function_id).innerHTML = "Error";
+          }
+        }
+      );
+    }
+    // Repeat function for function_status()
+    function repeat_function_status(function_id, period_sec) {
+      setInterval(function () {
+        function_status(function_id)
+      }, period_sec * 1000);
+    }
+    function function_status_reset(function_id) {
+      $('#function_status_' + function_id)
+        .removeClass("inactive-background")
+        .removeClass("active-background")
+        .removeClass("hold-background")
+        .removeClass("pause-background");
+    }
+    function ids_hide(pid_id, class_list) {
+      for (let c = 0; c < class_list.length; c++) {
+        let id_str = class_list[c] + "_" + pid_id;
+        if (document.getElementById(id_str) != null) {
+          document.getElementById(id_str).style.display = "none";
+        }
+      }
+    }
+    function ids_show(pid_id, class_list) {
+      for (let c = 0; c < class_list.length; c++) {
+        let id_str = class_list[c] + "_" + pid_id;
+        if (document.getElementById(id_str) != null) {
+          document.getElementById(id_str).style.display = "";
+        }
+      }
+    }
+
+    $("body").on("submit", "form", function(e) {
+      let submitter_btn = $(e.originalEvent.submitter);
+      if (submitter_btn.attr("name") === 'function_add' ||
+          submitter_btn.attr("name") === 'function_mod' ||
+          submitter_btn.attr("name") === 'function_delete' ||
+          submitter_btn.attr("name") === 'function_activate' ||
+          submitter_btn.attr("name") === 'function_deactivate' ||
+          submitter_btn.attr("name") === 'execute_all_actions' ||
+          submitter_btn.attr("name") === 'add_action' ||
+          submitter_btn.attr("name") === 'save_action' ||
+          submitter_btn.attr("name") === 'delete_action' ||
+          submitter_btn.attr("name") === 'add_condition' ||
+          submitter_btn.attr("name") === 'save_condition' ||
+          submitter_btn.attr("name") === 'delete_condition' ||
+          submitter_btn.attr("name") === 'measurement_mod' ||
+          submitter_btn.attr("name") === 'pid_pause' ||
+          submitter_btn.attr("name") === 'pid_hold' ||
+          submitter_btn.attr("name") === 'pid_resume' ||
+          submitter_btn.attr("name").startsWith('custom_button_')) {
+        e.preventDefault();
+        toastr['info']('Command sent. Please wait...');
+        $.ajax({
+          type: "POST",
+          url: '/function_submit',
+          data: $(this).serialize()
+              + '&'
+              + submitter_btn.attr("name")
+              + '='
+              + submitter_btn.attr("value"),
+          success: function (data) {
+            if (submitter_btn.attr("name") === 'function_add' && 'function_id' in data.data) {
+              if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
+                $(".dependencies_device_name").text(data.data.dep_name);
+                $(".dependencies_device").text(data.data.dep_unmet);
+                $(".dependencies_unmet").text(data.data.dep_list.join(", "));
+                document.getElementById("dependency_unmet").value = data.data.dep_unmet;
+                $('#modal_config_dependency_install').modal('show');
+                popup_response(data);
+              } else {
+                $.ajax({
+                  type: "GET",
+                  url: '/function?function_type=entry&function_id=' + data.data.function_id,
+                  success: function (new_entry) {
+                    grid.addWidget('<div class="grid-stack-item" id="gridstack_function_' + data.data.function_id + '" gs-id="' + data.data.function_id + '">' + new_entry + '</div>', {w: 20, h: 1, y: 999});
+                    popup_response(data);
+                  },
+                  error: function() {
+                    toastr['error']('Error: Could not get new Function entry');
+                  }
+                });
+              }
+              return;
+            }
+            if (data.data.messages.error.length === 0) {
+              if (submitter_btn.attr("name") === 'function_mod' && 'function_id' in data.data) {
+                if ('pylint' in data.data.messages) {
+                  document.getElementById("pylint_" + data.data.function_id).innerHTML = data.data.messages.pylint.join("<br/><br/>");
+                }
+              }
+              else if (submitter_btn.attr("name") === 'function_delete' && 'function_id' in data.data) {
+                $('#modal_config_' + data.data.function_id).modal('hide');
+                $('.modal-backdrop').remove();
+                $(document.body).removeClass("modal-open");
+                grid.removeWidget('#gridstack_function_' + data.data.function_id);
+              }
+              else if (submitter_btn.attr("name") === 'function_activate' && 'function_id' in data.data) {
+                function_status_reset(data.data.function_id);
+                $('#function_status_' + data.data.function_id).addClass("active-background");
+                if (document.getElementById('function_activate_' + data.data.function_id) != null) {
+                  document.getElementById('function_activate_' + data.data.function_id).style.display = "none";
+                }
+                if (document.getElementById('function_deactivate_' + data.data.function_id) != null) {
+                  document.getElementById('function_deactivate_' + data.data.function_id).style.display = "";
+                }
+                if (document.getElementById('form_pid_' + data.data.function_id) != null) {
+                  ids_hide(data.data.function_id, ["pid_activate", "pid_resume"]);
+                  ids_show(data.data.function_id, ["pid_deactivate", "pid_pause", "pid_hold", "pid_status_enable"]);
+                  document.getElementById("pid_activity_indicator_" + data.data.function_id).value = "PID Controller [Active]";
+                }
+                function_status(data.data.function_id);
+              }
+              else if (submitter_btn.attr("name") === 'function_deactivate' && 'function_id' in data.data) {
+                function_status_reset(data.data.function_id);
+                $('#function_status_' + data.data.function_id).addClass("inactive-background");
+                if (document.getElementById('function_activate_' + data.data.function_id) != null) {
+                  document.getElementById('function_activate_' + data.data.function_id).style.display = "";
+                }
+                if (document.getElementById('function_deactivate_' + data.data.function_id) != null) {
+                  document.getElementById('function_deactivate_' + data.data.function_id).style.display = "none";
+                }
+                if (document.getElementById('form_pid_' + data.data.function_id) != null) {
+                  ids_hide(data.data.function_id, ["pid_deactivate", "pid_pause", "pid_hold", "pid_resume", "pid_status_enable"]);
+                  ids_show(data.data.function_id, ["pid_activate"]);
+                  document.getElementById("pid_activity_indicator_" + data.data.function_id).value = "PID Controller [Inactive]";
+                  document.getElementById("function_status_message_" + data.data.function_id).innerHTML = "";
+                }
+              }
+              else if (submitter_btn.attr("name") === 'pid_pause' && 'function_id' in data.data) {
+                function_status_reset(data.data.function_id);
+                $('#function_status_' + data.data.function_id).addClass("pause-background");
+                ids_hide(data.data.function_id, ["pid_activate", "pid_pause"]);
+                ids_show(data.data.function_id, ["pid_deactivate", "pid_hold", "pid_resume"]);
+                document.getElementById("pid_activity_indicator_" + data.data.function_id).value = "PID Controller [Paused]";
+              }
+              else if (submitter_btn.attr("name") === 'pid_hold' && 'function_id' in data.data) {
+                function_status_reset(data.data.function_id);
+                $('#function_status_' + data.data.function_id).addClass("hold-background");
+                ids_hide(data.data.function_id, ["pid_aactivate", "pid_hold"]);
+                ids_show(data.data.function_id, ["pid_deactivate", "pid_pause", "pid_resume"]);
+                document.getElementById("pid_activity_indicator_" + data.data.function_id).value = "PID Controller [Held]";
+              }
+              else if (submitter_btn.attr("name") === 'pid_resume' && 'function_id' in data.data) {
+                function_status_reset(data.data.function_id);
+                $('#function_status_' + data.data.function_id).addClass("active-background");
+                ids_hide(data.data.function_id, ["pid_activated", "pid_resume"]);
+                ids_show(data.data.function_id, ["pid_deactivate", "pid_pause", "pid_hold"]);
+                document.getElementById("pid_activity_indicator_" + data.data.function_id).value = "PID Controller [Active]";
+              }
+              if (submitter_btn.attr("name") === 'delete_action' && 'action_id' in data.data) {
+                document.getElementById("mod_function_action_" + data.data.action_id).remove();
+                popup_response(data);
+              }
+              if (submitter_btn.attr("name") === 'delete_condition' && 'condition_id' in data.data) {
+                document.getElementById("mod_function_condition_" + data.data.condition_id).remove();
+                popup_response(data);
+              }
+              if (submitter_btn.attr("name") === 'function_mod' && 'page_refresh' in data.data && data.data.page_refresh) {
+                $.ajax({
+                  type: "GET",
+                  url: '/function?function_type=options&function_id=' + data.data.function_id,
+                  success: function (new_options) {
+                    $('#mod_function_' + data.data.function_id).html(new_options);
+                    popup_response(data);
+                  },
+                  error: function() {
+                    toastr['error']('Error: Could not get new Function options');
+                  }
+                });
+              }
+              else if (submitter_btn.attr("name") === 'add_action' && 'page_refresh' in data.data && data.data.page_refresh) {
+                $.ajax({
+                  type: "GET",
+                  url: '/function?function_type=actions&function_id=' + data.data.function_id + '?action_id=' + data.data.action_id,
+                  success: function (new_options) {
+                    document.getElementById('mod_function_actions_' + data.data.function_id).innerHTML += new_options;
+                    popup_response(data);
+                  },
+                  error: function() {
+                    toastr['error']('Error: Could not get Function Actions');
+                  }
+                });
+              }
+              else if (submitter_btn.attr("name") === 'add_condition' && 'page_refresh' in data.data && data.data.page_refresh) {
+                $.ajax({
+                  type: "GET",
+                  url: '/function?function_type=conditions&function_id=' + data.data.function_id + '&condition_id=' + data.data.condition_id,
+                  success: function (new_options) {
+                    document.getElementById('mod_function_conditions_' + data.data.function_id).innerHTML += new_options;
+                    popup_response(data);
+                  },
+                  error: function() {
+                    toastr['error']('Error: Could not get Function Actions');
+                  }
+                });
+              } else {
+                popup_response(data);
+              }
+            } else {
+              popup_response(data);
+            }
+          },
+          error: function() {
+            toastr['error']('Error: Could not communicate with server');
+          }
+        });
+      }
+    });
+
+    $.ajaxSetup({
+      beforeSend: function (xhr, settings) {
+        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", "{{form_mod_pid_base.csrf_token._value()}}")
+        }
+      }
+    });
+
     $('.clockpicker').clockpicker({
       donetext: 'Done'
     });
@@ -141,23 +427,14 @@
     });
 
     jQuery(document).ready(function($) {
-      $('#multiselect').multiselect({
-        sort: false,
-        keepRenderingSort: true
-      });
-
-  {%- for each_function in function if each_function.is_activated and 'period_status' in custom_options_values_controllers[each_function.unique_id] %}
-    function_status('{{each_function.unique_id}}');
-    repeat_function_status('{{each_function.unique_id}}', {{custom_options_values_controllers[each_function.unique_id]['period_status']}});
-  {% endfor %}
-  {%- for each_pid in pid if each_pid.is_activated %}
-    function_status('{{each_pid.unique_id}}');
-    repeat_function_status('{{each_pid.unique_id}}', 30);
-  {% endfor %}
-    });
-
-    $('#collapseContainerReorderFunction').on('shown.bs.collapse', function () {
-      this.scrollIntoView();
+    {%- for each_function in function if 'period_status' in custom_options_values_controllers[each_function.unique_id] %}
+      function_status('{{each_function.unique_id}}');
+      repeat_function_status('{{each_function.unique_id}}', {{custom_options_values_controllers[each_function.unique_id]['period_status']}});
+    {% endfor %}
+    {%- for each_pid in pid %}
+      function_status('{{each_pid.unique_id}}');
+      repeat_function_status('{{each_pid.unique_id}}', 30);
+    {% endfor %}
     });
   </script>
 

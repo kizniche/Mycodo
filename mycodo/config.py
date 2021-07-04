@@ -878,29 +878,6 @@ THEMES = [
 
 THEMES_DARK = ['cyborg', 'darkly', 'slate', 'solar', 'superhero']
 
-THEME_GRID_SPACING = {
-    'cerulean': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'cosmo': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'cyborg': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'darkly': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'flatly': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'journal': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'literia': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'lumen': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'lux': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'materia': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'minty': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'pulse': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'sandstone': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'simplex': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'slate': {'output': {'cellHeight': 64, 'margin': 0}, 'input': {'cellHeight': 63, 'margin': 0}},  # Checked
-    'solar': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'spacelab': {'output': {'cellHeight': 50, 'margin': 0}, 'input': {'cellHeight': 52, 'margin': 0}},  # Checked
-    'superhero': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'united': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}},
-    'yeti': {'output': {'cellHeight': 51, 'margin': 0}, 'input': {'cellHeight': 51, 'margin': 0}}
-}
-
 # Install path (the parent directory of this script)
 INSTALL_DIRECTORY = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) + '/..')
 

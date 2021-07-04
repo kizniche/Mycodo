@@ -582,8 +582,9 @@ def controller_activate_deactivate(controller_action,
         flash('{}: {}'.format(TRANSLATIONS['error']['title'], except_msg),
               "error")
 
-    for each_error in error:
-        flash(each_error, 'error')
+    if flash_message:
+        for each_error in error:
+            flash(each_error, 'error')
 
 
 #
@@ -1012,8 +1013,8 @@ def form_function_choices(choices, each_function, dict_units, dict_measurements)
             each_measure, conversion)
 
         if unit:
-            value = '{input_id},{meas_id}'.format(
-                input_id=each_function.unique_id,
+            value = '{function_id},{meas_id}'.format(
+                function_id=each_function.unique_id,
                 meas_id=each_measure.unique_id)
 
             display_unit = find_name_unit(
@@ -1436,6 +1437,17 @@ def flash_form_errors(form):
                   "error")
 
 
+def form_error_messages(form, error):
+    """ Append form errors """
+    for field, errors in form.errors.items():
+        for each_error in errors:
+            error.append(
+                gettext("Error in the %(field)s field - %(err)s",
+                    field=getattr(form, field).label.text,
+                    err=each_error))
+    return error
+
+
 def flash_success_errors(error, action, redirect_url):
     if error:
         for each_error in error:
@@ -1750,24 +1762,37 @@ def generate_form_widget_list(dict_widgets):
     return list_widgets_sorted
 
 
-def custom_action(controller, dict_device, unique_id, form):
-    action = '{action}, {controller}'.format(
-        action=gettext("Action"),
-        controller=TRANSLATIONS['controller']['title'])
-    error = []
+def custom_action(controller_type, dict_device, unique_id, form):
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
-    if controller == "Output":
-        controller_type = Output.query.filter(
-            Output.unique_id == unique_id).first().output_type
-    elif controller == "Function":
-        controller_type = CustomController.query.filter(
-            CustomController.unique_id == unique_id).first().device
-    elif controller == "Input":
-        controller_type = Input.query.filter(
-            Input.unique_id == unique_id).first().device
+    if controller_type == "Output":
+        controller = Output.query.filter(
+            Output.unique_id == unique_id).first()
+        controller_type = controller.output_type
+    elif controller_type == "Function_Custom":
+        controller = CustomController.query.filter(
+            CustomController.unique_id == unique_id).first()
+        controller_type = controller.device
+    elif controller_type == "Input":
+        controller = Input.query.filter(
+            Input.unique_id == unique_id).first()
+        controller_type = controller.device
     else:
-        logger.error("Unknown controller: {}".format(controller))
-        return
+        messages["error"].append("Unknown controller: {}".format(controller_type))
+        return messages
+
+    if not controller:
+        messages["error"].append("Could not find button ID")
+        return messages
+
+    if not controller.is_activated:
+        messages["error"].append("Activate controller before executing a Custom Action")
+        return messages
 
     try:
         options = {}
@@ -1805,12 +1830,13 @@ def custom_action(controller, dict_device, unique_id, form):
                             except:
                                 logger.error("Value of option '{}' doesn't represent string: '{}'".format(key, value))
                         else:
-                            error.append("Unknown key type. Key: {}, Type: {}".format(key, options[key]['type']))
+                            messages["error"].append("Unknown key type. Key: {}, Type: {}".format(key, options[key]['type']))
 
         if not button_id:
-            return
+            messages["error"].append("Could nto find button ID")
+            return messages
 
-        if not error and button_id:
+        if not messages["error"] and button_id:
             from mycodo.mycodo_client import DaemonControl
             control = DaemonControl()
             use_thread = True
@@ -1821,11 +1847,12 @@ def custom_action(controller, dict_device, unique_id, form):
             status = control.custom_button(
                 controller, unique_id, button_id, args_dict, use_thread)
             if status[0]:
-                flash("Custom Button: {}".format(status[1]), "error")
+                messages["error"].append("Custom Button: {}".format(status[1]))
             else:
-                flash("Custom Button: {}".format(status[1]), "success")
+                messages["success"].append("Custom Button: {}".format(status[1]))
 
     except Exception as except_msg:
         logger.exception(1)
-        error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_input'))
+        messages["error"].append(str(except_msg))
+
+    return messages

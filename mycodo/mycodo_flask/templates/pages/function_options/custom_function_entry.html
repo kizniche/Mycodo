@@ -1,0 +1,55 @@
+<form method="post" action="/function">
+  {{form_mod_pid_base.csrf_token}}
+  {{form_mod_pid_base.function_id(value=each_function.unique_id)}}
+  {{form_mod_pid_base.function_type(class_='form-control', value='function')}}
+
+    {% set form = form_function %}
+    {% set dict_options = dict_controllers[each_function.device] %}
+    {% set each_device = each_function %}
+    {% set unique_id = each_function.unique_id %}
+    {% set custom_options_values = custom_options_values_controllers %}
+
+  <div id="function_status_{{each_function.unique_id}}" class="grid-stack-item-content {% if each_function.is_activated -%}active-background
+      {% else -%}inactive-background
+      {% endif -%} row small-gutters" style="padding: 4px; border: 1px solid #ddd; border-radius: 5px">
+
+    <div class="col-1 text-center icon-fh my-auto panel-heading">
+      <i style="font-size: 2em" class="fa fa-grip-horizontal" title="{{_('Drag')}}"></i>
+    </div>
+    <div class="col-1 text-center icon-fh my-auto">
+      <a class="btn" style="border-color: transparent; padding: 0" data-toggle="modal" data-target="#modal_config_{{each_function.unique_id}}">
+        <i style="font-size: 1.5em" class="fas fa-cog" title="{{_('Configure')}}"></i>
+      </a>
+    </div>
+    <div class="col-3">
+      {{form_function.name(class_='form-control', disabled=True, value=each_function.name)}}
+    </div>
+    <div class="col-4">
+      <input class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{dict_controllers[each_function.device]['function_name']}}
+        {%- if each_function.is_activated %} [{{_('Active')}}]
+        {%- else %} [{{_('Inactive')}}]
+        {%- endif -%}
+      ">
+    </div>
+    <div class="col-3">
+      {%- if each_function.is_activated %}
+        {{form_function_base.function_deactivate(class_='form-control btn btn-primary btn-sm', id='function_deactivate_' + each_function.unique_id)}}
+        {{form_function_base.function_activate(class_='form-control btn btn-primary btn-sm', id='function_activate_' + each_function.unique_id, style='display: none')}}
+      {%- else %}
+        {{form_function_base.function_deactivate(class_='form-control btn btn-primary btn-sm', id='function_deactivate_' + each_function.unique_id, style='display: none')}}
+        {{form_function_base.function_activate(class_='form-control btn btn-primary btn-sm', id='function_activate_' + each_function.unique_id)}}
+      {%- endif -%}
+    </div>
+  </div> <!- grid-stack-item-content ->
+</form>
+
+<div class="modal fade" id="modal_config_{{each_function.unique_id}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content" style="padding: 1em">
+      <div class="modal-header">
+        <h5 class="modal-title">Function Configuration</h5>
+      </div>
+      {% include 'pages/function_options/custom_function_options.html' %}
+    </div>
+  </div>
+</div>

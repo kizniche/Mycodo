@@ -4,7 +4,7 @@
     <select class="form-control form-tooltip form-dropdown" id="unique_id_1" name="unique_id_1" data-placement="top" title="{{_('Run this duration method, using the output value to set the Duty Cycle of a PWM output')}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {%- for each_method in method -%}
-        <option value="{{each_method.unique_id}}"{% if each_trigger.unique_id_1 == each_method.unique_id %} selected{% endif %}>[{{'%02d' % each_method.id}}] {{each_method.name}}</option>
+        <option value="{{each_method.unique_id}}"{% if each_function.unique_id_1 == each_method.unique_id %} selected{% endif %}>[{{'%02d' % each_method.id}}] {{each_method.name}}</option>
       {%- endfor -%}
     </select>
   </div>
@@ -15,7 +15,7 @@
     <select class="form-control form-tooltip form-dropdown" id="unique_id_2" name="unique_id_2" data-placement="top" title="{{_('Apply the Duty Cycle to this PWM Output')}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {%- for each_output in choices_output_channels if 'pwm' in each_output['types'] -%}
-        <option value="{{each_output['value']}}"{% if each_trigger.unique_id_2 == each_output['value'].split(",")[0] and each_trigger.unique_id_3 == each_output['value'].split(",")[1] %} selected{% endif %}>{{each_output['item']}}</option>
+        <option value="{{each_output['value']}}"{% if each_function.unique_id_2 == each_output['value'].split(",")[0] and each_function.unique_id_3 == each_output['value'].split(",")[1] %} selected{% endif %}>{{each_output['item']}}</option>
       {%- endfor -%}
     </select>
   </div>
@@ -23,18 +23,18 @@
 <div class="col-auto">
   {{form_trigger.period.label(class_='control-label')}}
   <div>
-    {{form_trigger.period(class_='form-control', value=each_trigger.period, **{'title':_('The duration between calculating and setting the Duty Cycle of the the PWM Output')})}}
+    {{form_trigger.period(class_='form-control', value=each_function.period, **{'title':_('The duration between calculating and setting the Duty Cycle of the the PWM Output')})}}
   </div>
 </div>
 <div class="col-auto">
   {{form_trigger.trigger_actions_at_period.label(class_='control-label')}}
   <div class="input-group-text">
-    <input id="trigger_actions_at_period" name="trigger_actions_at_period" type="checkbox" value="y"{% if each_trigger.trigger_actions_at_period %} checked{% endif %}>
+    <input id="trigger_actions_at_period" name="trigger_actions_at_period" type="checkbox" value="y"{% if each_function.trigger_actions_at_period %} checked{% endif %}>
   </div>
 </div>
 <div class="col-auto">
   {{form_trigger.trigger_actions_at_start.label(class_='control-label')}}
   <div class="input-group-text">
-    <input id="trigger_actions_at_start" name="trigger_actions_at_start" type="checkbox" value="y"{% if each_trigger.trigger_actions_at_start %} checked{% endif %}>
+    <input id="trigger_actions_at_start" name="trigger_actions_at_start" type="checkbox" value="y"{% if each_function.trigger_actions_at_start %} checked{% endif %}>
   </div>
 </div>

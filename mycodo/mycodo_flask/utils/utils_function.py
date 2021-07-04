@@ -49,10 +49,14 @@ logger = logging.getLogger(__name__)
 #
 
 def function_add(form_add_func):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['add']['title'],
-        controller=TRANSLATIONS['function']['title'])
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    new_function_id = None
+    dep_name = None
 
     function_name = form_add_func.function_type.data
 
@@ -66,16 +70,22 @@ def function_add(form_add_func):
             list_unmet_deps = []
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
-            error.append(
-                "The {dev} device you're trying to add has unmet "
-                "dependencies: {dep}".format(
-                    dev=function_name, dep=', '.join(list_unmet_deps)))
+            messages["error"].append(
+                "{dev} has unmet dependencies. They must be installed before the Function can be added.".format(
+                    dev=function_name))
+            if function_name in dict_controllers:
+                dep_name = dict_controllers[function_name]['function_name']
+            else:
+                messages["error"].append("Function not found: {}".format(function_name))
+
+            return messages, dep_name, list_unmet_deps, None
 
     new_func = None
 
     try:
         if function_name == 'conditional_conditional':
             new_func = Conditional()
+            new_func.position_y = 999
             new_func.conditional_statement = '''
 # Example code for learning how to use a Conditional. See the manual for more information.
 
@@ -113,10 +123,11 @@ status_dict = {
 }
 return status_dict'''
 
-            if not error:
+            if not messages["error"]:
                 new_func.save()
+                new_function_id = new_func.unique_id
                 save_conditional_code(
-                    error,
+                    messages["error"],
                     new_func.conditional_statement,
                     new_func.conditional_status,
                     new_func.unique_id,
@@ -125,7 +136,10 @@ return status_dict'''
                     test=False)
 
         elif function_name == 'pid_pid':
-            new_func = PID().save()
+            new_func = PID()
+            new_func.position_y = 999
+            new_func.save()
+            new_function_id = new_func.unique_id
 
             for each_channel, measure_info in PID_INFO['measure'].items():
                 new_measurement = DeviceMeasurements()
@@ -139,7 +153,7 @@ return status_dict'''
                 new_measurement.measurement = measure_info['measurement']
                 new_measurement.unit = measure_info['unit']
                 new_measurement.channel = each_channel
-                if not error:
+                if not messages["error"]:
                     new_measurement.save()
 
         elif function_name in ['trigger_edge',
@@ -153,22 +167,28 @@ return status_dict'''
             new_func = Trigger()
             new_func.name = '{}'.format(FUNCTION_INFO[function_name]['name'])
             new_func.trigger_type = function_name
-            if not error:
+            new_func.position_y = 999
+
+            if not messages["error"]:
                 new_func.save()
+                new_function_id = new_func.unique_id
 
         elif function_name in ['function_spacer',
                                'function_actions']:
             new_func = Function()
+            new_func.position_y = 999
             if function_name == 'function_spacer':
                 new_func.name = 'Spacer'
             new_func.function_type = function_name
-            if not error:
+            if not messages["error"]:
                 new_func.save()
+                new_function_id = new_func.unique_id
 
         elif function_name in dict_controllers:
             # Custom Function Controller
             new_func = CustomController()
             new_func.device = function_name
+            new_func.position_y = 999
 
             if 'function_name' in dict_controllers[function_name]:
                 new_func.name = dict_controllers[function_name]['function_name']
@@ -176,33 +196,28 @@ return status_dict'''
                 new_func.name = 'Function Name'
 
             # Generate string to save from custom options
-            error, custom_options = custom_options_return_json(
-                error, dict_controllers, device=function_name, use_defaults=True)
+            messages["error"], custom_options = custom_options_return_json(
+                messages["error"], dict_controllers, device=function_name, use_defaults=True)
             new_func.custom_options = custom_options
 
             new_func.unique_id = set_uuid()
 
             if ('execute_at_creation' in dict_controllers[new_func.device] and
                     not current_app.config['TESTING']):
-                error, new_func = dict_controllers[new_func.device]['execute_at_creation'](
-                    error, new_func, dict_controllers[new_func.device])
+                messages["error"], new_func = dict_controllers[new_func.device]['execute_at_creation'](
+                    messages["error"], new_func, dict_controllers[new_func.device])
 
-            if not error:
+            if not messages["error"]:
                 new_func.save()
+                new_function_id = new_func.unique_id
 
         elif function_name == '':
-            error.append("Must select a function type")
+            messages["error"].append("Must select a function type")
         else:
-            error.append("Unknown function type: '{}'".format(
+            messages["error"].append("Unknown function type: '{}'".format(
                 function_name))
 
-        if not error:
-            display_order = csv_to_list_of_str(
-                DisplayOrder.query.first().function)
-            DisplayOrder.query.first().function = add_display_order(
-                display_order, new_func.unique_id)
-            db.session.commit()
-
+        if not messages["error"]:
             if function_name in dict_controllers:
                 #
                 # Add measurements defined in the Function Module
@@ -255,41 +270,37 @@ return status_dict'''
                         new_channel.function_id = new_func.unique_id
 
                         # Generate string to save from custom options
-                        error, custom_options = custom_channel_options_return_json(
-                            error, dict_controllers, None,
+                        messages["error"], custom_options = custom_channel_options_return_json(
+                            messages["error"], dict_controllers, None,
                             new_func.unique_id, each_channel,
                             device=new_func.device, use_defaults=True)
                         new_channel.custom_options = custom_options
 
                         new_channel.save()
 
-            flash(gettext(
-                "%(type)s Function with ID %(id)s (%(uuid)s) successfully added",
-                type=new_func.name,
-                id=new_func.id,
-                uuid=new_func.unique_id),
-                "success")
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['add']['title'],
+                controller=TRANSLATIONS['function']['title']))
 
     except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except Exception as except_msg:
         logger.exception("Add Function")
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
-
-    if dep_unmet:
-        return 1
+    return messages, dep_name, dep_unmet, new_function_id
 
 
 def function_mod(form):
     """Modify a Function"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller=TRANSLATIONS['function']['title'])
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     try:
         func_mod = Function.query.filter(
@@ -298,67 +309,81 @@ def function_mod(form):
         func_mod.name = form.name.data
         func_mod.log_level_debug = form.log_level_debug.data
 
-        if not error:
+        if not messages["error"]:
             db.session.commit()
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['modify']['title'],
+                controller=TRANSLATIONS['function']['title']))
 
     except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def function_del(function_id):
     """Delete a Function"""
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['delete']['title'],
-        controller=TRANSLATIONS['function']['title'])
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     try:
         # Delete Actions
         actions = Actions.query.filter(
             Actions.function_id == function_id).all()
         for each_action in actions:
-            delete_entry_with_id(Actions, each_action.unique_id)
+            delete_entry_with_id(
+                Actions, each_action.unique_id, flash_message=False)
 
         device_measurements = DeviceMeasurements.query.filter(
             DeviceMeasurements.device_id == function_id).all()
         for each_measurement in device_measurements:
-            delete_entry_with_id(DeviceMeasurements, each_measurement.unique_id)
+            delete_entry_with_id(
+                DeviceMeasurements,
+                each_measurement.unique_id,
+                flash_message=False)
 
-        delete_entry_with_id(Function, function_id)
+        delete_entry_with_id(Function, function_id, flash_message=False)
 
-        display_order = csv_to_list_of_str(DisplayOrder.query.first().function)
-        display_order.remove(function_id)
-        DisplayOrder.query.first().function = list_to_csv(display_order)
-        db.session.commit()
+        messages["success"].append('{action} {controller}'.format(
+            action=TRANSLATIONS['delete']['title'],
+            controller=TRANSLATIONS['function']['title']))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def action_add(form):
-    """Add a function Action"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['add']['title'],
-        controller='{} {}'.format(TRANSLATIONS['conditional']['title'],
-                                  TRANSLATIONS['actions']['title']))
+    """Add an Action"""
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    action_id = None
+    dep_name = ""
+    page_refresh = False
 
     dep_unmet, _ = return_dependencies(form.action_type.data)
     if dep_unmet:
         list_unmet_deps = []
         for each_dep in dep_unmet:
             list_unmet_deps.append(each_dep[0])
-        error.append(
-            "The {dev} device you're trying to add has unmet dependencies: "
-            "{dep}".format(dev=form.function_type.data,
-                           dep=', '.join(list_unmet_deps)))
+        messages["error"].append(
+            "{dev} has unmet dependencies. They must be installed before the Action can be added.".format(
+                dev=form.action_type.data))
+        dep_name = form.action_type.data
+
+        return messages, dep_name, list_unmet_deps, None
 
     if form.function_type.data == 'conditional':
         func = Conditional.query.filter(
@@ -366,18 +391,18 @@ def action_add(form):
     elif form.function_type.data == 'trigger':
         func = Trigger.query.filter(
             Trigger.unique_id == form.function_id.data).first()
-    elif form.function_type.data == 'function_actions':
+    elif form.function_type.data == 'function':
         func = Function.query.filter(
             Function.unique_id == form.function_id.data).first()
     else:
         func = None
-        error.append("Invalid Function type: {}".format(form.function_type.data))
+        messages["error"].append("Invalid Function type: {}".format(form.function_type.data))
 
-    if form.function_type.data != 'function_actions' and func and func.is_activated:
-        error.append("Deactivate before adding an Action")
+    if form.function_type.data != 'function' and func and func.is_activated:
+        messages["error"].append("Deactivate before adding an Action")
 
     if form.action_type.data == '':
-        error.append("Must select an action")
+        messages["error"].append("Must select an action")
 
     try:
         new_action = Actions()
@@ -403,35 +428,43 @@ def action_add(form):
             }
             new_action.custom_options = json.dumps(custom_options)
 
-        if not error:
+        if not messages["error"]:
             new_action.save()
+            action_id = new_action.unique_id
+            page_refresh = True
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['add']['title'],
+                controller=TRANSLATIONS['actions']['title']))
 
     except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
-
-    if dep_unmet:
-        return 1
+    return messages, dep_name, dep_unmet, action_id, page_refresh
 
 
 def action_mod(form, request_form):
-    """Modify a Conditional Action"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller='{} {}'.format(TRANSLATIONS['conditional']['title'], TRANSLATIONS['actions']['title']))
+    """Modify an Action"""
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
-    error = check_form_actions(form, error)
+    logger.info("TEST00: {}".format(form.function_action_id.data))
+    mod_action = Actions.query.filter(
+        Actions.unique_id == form.function_action_id.data).first()
+
+    if not action_mod:
+        messages["error"].append("Action not found")
+
+    messages["error"] = check_form_actions(form, messages["error"])
 
     try:
-        mod_action = Actions.query.filter(
-            Actions.unique_id == form.function_action_id.data).first()
-
         if mod_action.action_type == 'pause_actions':
             mod_action.pause_duration = form.pause_duration.data
 
@@ -475,7 +508,7 @@ def action_mod(form, request_form):
                                         'setpoint_pid_raise',
                                         'setpoint_pid_lower']:
             if not str_is_float(form.do_action_string.data):
-                error.append("Setpoint value must be an integer or float value")
+                messages["error"].append("Setpoint value must be an integer or float value")
             mod_action.do_unique_id = form.do_unique_id.data
             mod_action.do_action_string = form.do_action_string.data
 
@@ -525,43 +558,45 @@ def action_mod(form, request_form):
             mod_action.do_action_string = form.do_action_string.data
 
         elif mod_action.action_type == 'mqtt_publish':
-            try:
-                custom_options = {
-                    "hostname": request_form['hostname'],
-                    "port": int(request_form['port']),
-                    "topic": request_form['topic'],
-                    "keepalive": int(request_form['keepalive']),
-                    "clientid": request_form['clientid'],
-                    "username": request_form['username'],
-                    "password": request_form['password']
-                }
-                if 'login' in request_form:
-                    custom_options["login"] = True
-                else:
-                    custom_options["login"] = False
-                mod_action.custom_options = json.dumps(custom_options)
-            except:
-                error.append("")
+            custom_options = {
+                "hostname": request_form['hostname'],
+                "port": int(request_form['port']),
+                "topic": request_form['topic'],
+                "keepalive": int(request_form['keepalive']),
+                "clientid": request_form['clientid'],
+                "username": request_form['username'],
+                "password": request_form['password']
+            }
+            if 'login' in request_form:
+                custom_options["login"] = True
+            else:
+                custom_options["login"] = False
+            mod_action.custom_options = json.dumps(custom_options)
 
-        if not error:
+        if not messages["error"]:
             db.session.commit()
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['modify']['title'],
+                controller=TRANSLATIONS['actions']['title']))
 
     except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def action_del(form):
-    """Delete a Conditional Action"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['delete']['title'],
-        controller='{} {}'.format(TRANSLATIONS['conditional']['title'], TRANSLATIONS['actions']['title']))
+    """Delete an Action"""
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     conditional = Conditional.query.filter(
         Conditional.unique_id == form.function_id.data).first()
@@ -571,27 +606,37 @@ def action_del(form):
 
     if ((conditional and conditional.is_activated) or
             (trigger and trigger.is_activated)):
-        error.append("Deactivate the Conditional before deleting an Action")
+        messages["error"].append(
+            "Deactivate the Conditional before deleting an Action")
 
     try:
-        if not error:
+        if not messages["error"]:
             function_action_id = Actions.query.filter(
                 Actions.unique_id == form.function_action_id.data).first().unique_id
-            delete_entry_with_id(Actions, function_action_id)
+            delete_entry_with_id(
+                Actions, function_action_id, flash_message=False)
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['delete']['title'],
+                controller=TRANSLATIONS['actions']['title']))
 
     except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def action_execute_all(form):
     """Execute All Conditional Actions"""
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     function_type = None
     func = None
@@ -609,18 +654,14 @@ def action_execute_all(form):
         func = Function.query.filter(
             Function.unique_id == form.function_id.data).first()
     else:
-        error.append("Unknown Function type: '{}'".format(
+        messages["error"].append("Unknown Function type: '{}'".format(
             form.function_type.data))
 
-    action = '{action} {controller}'.format(
-        action=gettext("Execute All"),
-        controller='{} {}'.format(function_type, TRANSLATIONS['actions']['title']))
-
     if form.function_type.data != 'function_actions' and func and not func.is_activated:
-        error.append("Activate the Conditional before testing all Actions")
+        messages["error"].append("Activate the Controller before testing all Actions")
 
     try:
-        if not error:
+        if not messages["error"]:
             debug = bool(hasattr(form, 'log_level_debug') and form.log_level_debug.data)
             control = DaemonControl()
             trigger_all_actions = threading.Thread(
@@ -632,10 +673,14 @@ def action_execute_all(form):
                 }
             )
             trigger_all_actions.start()
+            messages["success"].append('{action} {controller}'.format(
+                action=gettext("Execute All"),
+                controller='{} {}'.format(function_type,
+                                          TRANSLATIONS['actions']['title'])))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def function_reorder(function_id, display_order, direction):
@@ -653,7 +698,7 @@ def function_reorder(function_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    flash_success_errors(error, action, url_for('routes_function.page_function'))
 
 
 def check_form_actions(form, error):

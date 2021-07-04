@@ -7,7 +7,7 @@
     {% for each_input_form in choices_input -%}
       {%- if table_input.query.filter(table_input.unique_id == each_input_form['value'].split(',')[0]).first().device == 'EDGE' -%}
         {% do edge_sensor.append(1) %}
-      <option value="{{each_input_form['value'].split(',')[0]}}"{% if each_trigger.measurement == each_input_form['value'].split(',')[0] %} selected{% endif %}>{{each_input_form['item']}}</option>
+      <option value="{{each_input_form['value'].split(',')[0]}}"{% if each_function.measurement == each_input_form['value'].split(',')[0] %} selected{% endif %}>{{each_input_form['item']}}</option>
       {%- endif -%}
     {% endfor -%}
 
@@ -22,9 +22,9 @@
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="edge_detected" name="edge_detected" title="{{_('Detect low to high (rising), high to low (falling), or both?')}}">
       <option value=""></option>
-      <option value="rising"{% if each_trigger.edge_detected == 'rising' %} selected{% endif %}>{{_('Rising')}}</option>
-      <option value="falling"{% if each_trigger.edge_detected == 'falling' %} selected{% endif %}>{{_('Falling')}}</option>
-      <option value="both"{% if each_trigger.edge_detected == 'both' %} selected{% endif %}>{{_('Both')}}</option>
+      <option value="rising"{% if each_function.edge_detected == 'rising' %} selected{% endif %}>{{_('Rising')}}</option>
+      <option value="falling"{% if each_function.edge_detected == 'falling' %} selected{% endif %}>{{_('Falling')}}</option>
+      <option value="both"{% if each_function.edge_detected == 'both' %} selected{% endif %}>{{_('Both')}}</option>
     </select>
   </div>
 </div>

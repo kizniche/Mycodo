@@ -15,7 +15,6 @@ from wtforms import widgets
 from wtforms.widgets.html5 import NumberInput
 
 from mycodo.config import CONDITIONAL_CONDITIONS
-from mycodo.config import FUNCTION_ACTIONS
 from mycodo.config_translations import TRANSLATIONS
 
 
@@ -48,16 +47,6 @@ class Conditional(FlaskForm):
     condition_type = SelectField(
         choices=[('', TRANSLATIONS['select_one']['title'])] + CONDITIONAL_CONDITIONS)
     add_condition = SubmitField(lazy_gettext('Add Condition'))
-    action_type = SelectField(
-        choices=[('', TRANSLATIONS['select_one']['title'])] + FUNCTION_ACTIONS)
-    add_action = SubmitField(lazy_gettext('Add Action'))
-    activate_cond = SubmitField(TRANSLATIONS['activate']['title'])
-    deactivate_cond = SubmitField(TRANSLATIONS['deactivate']['title'])
-    test_all_actions = SubmitField(lazy_gettext('Test All Actions'))
-    delete_conditional = SubmitField(TRANSLATIONS['delete']['title'])
-    save_conditional = SubmitField(TRANSLATIONS['save']['title'])
-    order_up = SubmitField(TRANSLATIONS['up']['title'])
-    order_down = SubmitField(TRANSLATIONS['down']['title'])
 
 
 class ConditionalConditions(FlaskForm):

@@ -90,11 +90,13 @@
       $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
     });
 
+    let gridstack_item_height = $(".grid-stack-item-content").eq(0).outerHeight(true);
+
     // Grid
     let options = {
-      cellHeight: {% if current_user.theme %}{{theme_grid_spacing[current_user.theme]["input"]["cellHeight"]}}{% else %}60{% endif %},
+      cellHeight: gridstack_item_height + 5,
       column: 20,
-      margin: {% if current_user.theme %}{{theme_grid_spacing[current_user.theme]["input"]["margin"]}}{% else %}0{% endif %},
+      margin: 0,
       draggable: {
         handle: '.panel-heading'
       },
@@ -103,6 +105,8 @@
     let grid = GridStack.init(options);
 
     grid.on('change', function (event, items) {
+      let gridstack_item_height = $(".grid-stack-item-content").eq(0).outerHeight(true);
+      grid.cellHeight(gridstack_item_height + 5);
       let serializedFull = grid.save(false);
       $.ajax({
         url: "/save_input_layout",
@@ -159,7 +163,7 @@
               } else {
                 $.ajax({
                   type: "GET",
-                  url: '/input/entry/' + data.data.input_id,
+                  url: '/input?input_type=entry&input_id=' + data.data.input_id,
                   success: function (new_entry) {
                     grid.addWidget('<div class="grid-stack-item" id="gridstack_input_' + data.data.input_id + '" gs-id="' + data.data.input_id + '">' + new_entry + '</div>', {w: 20, h: 1, y: 999});
                     popup_response(data);
@@ -191,7 +195,7 @@
               if ('page_refresh' in data.data && data.data.page_refresh) {
                 $.ajax({
                   type: "GET",
-                  url: '/input/options/' + data.data.input_id,
+                  url: '/input?input_type=options&input_id=' + data.data.input_id,
                   success: function (new_options) {
                     $('#mod_input_' + data.data.input_id).html(new_options);
                     popup_response(data);

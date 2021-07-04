@@ -8,21 +8,11 @@ from flask_wtf import FlaskForm
 from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import IntegerField
-from wtforms import SelectField
-from wtforms import SelectMultipleField
 from wtforms import StringField
-from wtforms import SubmitField
 from wtforms import widgets
 from wtforms.widgets.html5 import NumberInput
 
-from mycodo.config import FUNCTION_ACTIONS
 from mycodo.config_translations import TRANSLATIONS
-
-
-class DataBase(FlaskForm):
-    reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
-    list_visible_elements = SelectMultipleField('New Order')
-    reorder = SubmitField(TRANSLATIONS['save_order']['title'])
 
 
 class Trigger(FlaskForm):
@@ -73,14 +63,3 @@ class Trigger(FlaskForm):
         lazy_gettext('If Duration (seconds)'), widget=NumberInput(step='any'))
     output_duty_cycle = DecimalField(
         lazy_gettext('If Duty Cycle (%%)'), widget=NumberInput(step='any'))
-    action_type = SelectField(
-        choices=[('', TRANSLATIONS['select_one']['title'])] + FUNCTION_ACTIONS)
-    add_action = SubmitField(lazy_gettext('Add Action'))
-
-    activate_trigger = SubmitField(TRANSLATIONS['activate']['title'])
-    deactivate_trigger = SubmitField(TRANSLATIONS['deactivate']['title'])
-    test_all_actions = SubmitField(lazy_gettext('Test All Actions'))
-    delete_trigger = SubmitField(TRANSLATIONS['delete']['title'])
-    save_trigger = SubmitField(TRANSLATIONS['save']['title'])
-    order_up = SubmitField(TRANSLATIONS['up']['title'])
-    order_down = SubmitField(TRANSLATIONS['down']['title'])

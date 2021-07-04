@@ -4,7 +4,7 @@
     <select class="form-control form-tooltip form-dropdown" id="unique_id_1" name="unique_id_1" data-placement="top" title="{{_('Trigger this conditional to act when this output turns on or off')}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
       {%- for each_output in choices_output_channels if 'pwm' in each_output['types'] -%}
-        <option value="{{each_output['value']}}"{% if each_trigger.unique_id_1 == each_output['value'].split(",")[0] and each_trigger.unique_id_2 == each_output['value'].split(",")[1] %} selected{% endif %}>{{each_output['item']}}</option>
+        <option value="{{each_output['value']}}"{% if each_function.unique_id_1 == each_output['value'].split(",")[0] and each_function.unique_id_2 == each_output['value'].split(",")[1] %} selected{% endif %}>{{each_output['item']}}</option>
       {%- endfor -%}
     </select>
   </div>
@@ -14,15 +14,15 @@
   <div>
     <select class="form-control form-tooltip form-dropdown" data-placement="top" id="output_state" name="output_state" title="{{_('The conditional is triggered when the measured condition is greater than or less than the set value, or the measurement timestamp is greater than the value of seconds')}}">
       <option value="">{{dict_translation['select_one']['title']}}</option>
-      <option value="above"{% if each_trigger.output_state == 'above' %} selected{% endif %}>{{_('Greater Than (>)')}}</option>
-      <option value="below"{% if each_trigger.output_state == 'below' %} selected{% endif %}>{{_('Less Than (<)')}}</option>
-      <option value="equal"{% if each_trigger.output_state == 'equal' %} selected{% endif %}>{{_('Equal To (=)')}}</option>
+      <option value="above"{% if each_function.output_state == 'above' %} selected{% endif %}>{{_('Greater Than (>)')}}</option>
+      <option value="below"{% if each_function.output_state == 'below' %} selected{% endif %}>{{_('Less Than (<)')}}</option>
+      <option value="equal"{% if each_function.output_state == 'equal' %} selected{% endif %}>{{_('Equal To (=)')}}</option>
     </select>
   </div>
 </div>
 <div class="col-auto">
   {{form_trigger.output_duty_cycle.label(class_='control-label')}}
   <div>
-   {{form_trigger.output_duty_cycle(class_='form-control', value=each_trigger.output_duty_cycle, **{'title':_('The duty cycle of the output to be checked')})}}
+   {{form_trigger.output_duty_cycle(class_='form-control', value=each_function.output_duty_cycle, **{'title':_('The duty cycle of the output to be checked')})}}
   </div>
 </div>

@@ -65,47 +65,81 @@ if __name__ == "__main__":
                 from mycodo.databases.models import Input
                 from mycodo.databases.models import Output
                 from mycodo.databases.models import OutputChannel
+                from mycodo.databases.models import DisplayOrder
+                from mycodo.databases.models import CustomController
+                from mycodo.databases.models import Function
+                from mycodo.databases.models import Trigger
+                from mycodo.databases.models import PID
+                from mycodo.databases.models import Conditional
 
                 with session_scope(MYCODO_DB_PATH) as session:
-                    inputs = session.query(Input).all()
-                    first = True
-                    last_position = 0
-                    for each_input in inputs:
-
-                        try:
-                            if first:
-                                each_input.position_y = 0
-                                first = False
-                            else:
-                                each_input.position_y = last_position + 1
-                            last_position = each_input.position_y
-                        except:
-                            pass
+                    # Convert Function display order to positions
+                    position = 0
+                    for each_id in session.query(DisplayOrder).first().function.split(","):
+                        conditional = session.query(Conditional).filter(
+                            Conditional.unique_id == each_id).first()
+                        if conditional:
+                            conditional.position_y = position
+                            position += 1
+                        pid = session.query(PID).filter(
+                            PID.unique_id == each_id).first()
+                        if pid:
+                            pid.position_y = position
+                            position += 1
+                        session.commit()
+                        trigger = session.query(Trigger).filter(
+                            Trigger.unique_id == each_id).first()
+                        if trigger:
+                            trigger.position_y = position
+                            position += 1
+                        session.commit()
+                        function = session.query(Function).filter(
+                            Function.unique_id == each_id).first()
+                        if function:
+                            function.position_y = position
+                            position += 1
+                        session.commit()
+                        custom = session.query(CustomController).filter(
+                            CustomController.unique_id == each_id).first()
+                        if custom:
+                            custom.position_y = position
+                            position += 1
                         session.commit()
 
-                    outputs = session.query(Output).all()
+                    # Convert Input display order to positions
+                    position = 0
+                    for each_id in session.query(DisplayOrder).first().inputs.split(","):
+                        input_dev = session.query(Input).filter(
+                            Input.unique_id == each_id).first()
+                        if input_dev:
+                            input_dev.position_y = position
+                            position += 1
+
+                    # Convert Output display order to positions
                     first = True
                     last_position = 0
                     last_size = 0
-                    for each_output in outputs:
+                    for each_id in session.query(DisplayOrder).first().output.split(","):
+                        output = session.query(Output).filter(
+                            Output.unique_id == each_id).first()
                         try:
                             channels = session.query(OutputChannel).filter(
-                                OutputChannel.output_id == each_output.unique_id).count()
+                                OutputChannel.output_id == output.unique_id).count()
                             if channels > 1:
-                                each_output.size_y = channels + 1
+                                output.size_y = channels + 1
                             else:
-                                each_output.size_y = 2
+                                output.size_y = 2
                         except:
                             pass
 
                         try:
                             if first:
-                                each_output.position_y = 0
+                                output.position_y = 0
                                 first = False
                             else:
-                                each_output.position_y = last_position + last_size
-                            last_position = each_output.position_y
-                            last_size = each_output.size_y
+                                output.position_y = last_position + last_size
+                            last_position = output.position_y
+                            last_size = output.size_y
                         except:
                             pass
                         session.commit()

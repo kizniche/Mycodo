@@ -11,12 +11,12 @@
 
     <div class="grid-stack-item-content">
 
-      <div class="row small-gutters" style="border: 1px solid #ddd; border-radius: 5px 5px 0 0; padding: 4px 4px 4px 4px;">
+      <div class="row small-gutters" style="border: 1px solid #ddd; border-radius: 5px 5px 0 0; padding: 2px 4px 2px 4px;">
         <div class="col-1 text-center icon-fh my-auto panel-heading">
           <i style="font-size: 2em" class="fa fa-grip-horizontal" title="{{_('Drag')}}"></i>
         </div>
         <div class="col-1 text-center icon-fh my-auto">
-          <a class="btn" style="padding: 0" data-toggle="modal" data-target="#modal_config_{{each_output.unique_id}}">
+          <a class="btn" style="border-color: transparent; padding: 0" data-toggle="modal" data-target="#modal_config_{{each_output.unique_id}}">
             <i style="font-size: 1.5em" class="fas fa-cog" title="{{_('Configure')}}"></i>
           </a>
         </div>
@@ -29,7 +29,7 @@
       </div>
 
       {% for each_output_channel in dict_outputs[each_output.output_type]['channels_dict'] %}
-      <div class="row small-gutters pause-background" style="border: 1px solid #ddd; {% if loop.last %}border-radius: 0 0 5px 5px;{% endif %} padding: 4px 4px 4px 4px;" id="{{each_output.unique_id}}-{{each_output_channel}}-output-state">
+      <div class="item_channel row small-gutters pause-background" style="border: 1px solid #ddd; {% if loop.last %}border-radius: 0 0 5px 5px;{% endif %} padding: 5px 4px 5px 4px;" id="{{each_output.unique_id}}-{{each_output_channel}}-output-state">
         <div class="col-4 small-gutters">
           <input class="form-control" disabled="" value="CH{{each_output_channel}}
         {%- if 'name' in custom_options_values_output_channels[each_output.unique_id][each_output_channel] and

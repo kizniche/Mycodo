@@ -9,10 +9,8 @@ from flask_babel import gettext
 
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
-from mycodo.databases.models import Method
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.mycodo_client import DaemonControl
@@ -21,10 +19,9 @@ from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactiva
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
+from mycodo.mycodo_flask.utils.utils_general import form_error_messages
 from mycodo.utils.outputs import parse_output_information
-from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import get_measurement
-from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
 
@@ -43,16 +40,19 @@ def pid_mod(form_mod_pid_base,
             form_mod_pid_value_lower,
             form_mod_pid_volume_raise,
             form_mod_pid_volume_lower):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller=TRANSLATIONS['pid']['title'])
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    page_refresh = False
 
     dict_outputs = parse_output_information()
 
     if not form_mod_pid_base.validate():
-        error.append(TRANSLATIONS['error']['title'])
-        flash_form_errors(form_mod_pid_base)
+        messages["error"] = form_error_messages(
+            form_mod_pid_base, messages["error"])
 
     mod_pid = PID.query.filter(
         PID.unique_id == form_mod_pid_base.function_id.data).first()
@@ -128,6 +128,7 @@ def pid_mod(form_mod_pid_base,
             if mod_pid.raise_output_id != form_mod_pid_base.raise_output_id.data:
                 mod_pid.raise_output_id = form_mod_pid_base.raise_output_id.data
                 raise_output_id_changed = True
+                page_refresh = True
 
             # Output ID changed
             if ('output_types' in dict_outputs[raise_output_type] and
@@ -153,35 +154,37 @@ def pid_mod(form_mod_pid_base,
                     mod_pid = default_raise_output_settings(mod_pid)
                 elif mod_pid.raise_output_type == 'on_off':
                     if not form_mod_pid_output_raise.validate():
-                        error.append(TRANSLATIONS['error']['title'])
-                        flash_form_errors(form_mod_pid_output_raise)
+                        messages["error"] = form_error_messages(
+                            form_mod_pid_output_raise, messages["error"])
                     else:
                         mod_pid.raise_min_duration = form_mod_pid_output_raise.raise_min_duration.data
                         mod_pid.raise_max_duration = form_mod_pid_output_raise.raise_max_duration.data
                         mod_pid.raise_min_off_duration = form_mod_pid_output_raise.raise_min_off_duration.data
                 elif mod_pid.raise_output_type == 'pwm':
                     if not form_mod_pid_pwm_raise.validate():
-                        error.append(TRANSLATIONS['error']['title'])
-                        flash_form_errors(form_mod_pid_pwm_raise)
+                        messages["error"] = form_error_messages(
+                            form_mod_pid_pwm_raise, messages["error"])
                     else:
                         mod_pid.raise_min_duration = form_mod_pid_pwm_raise.raise_min_duty_cycle.data
                         mod_pid.raise_max_duration = form_mod_pid_pwm_raise.raise_max_duty_cycle.data
                         mod_pid.raise_always_min_pwm = form_mod_pid_pwm_raise.raise_always_min_pwm.data
                 elif mod_pid.raise_output_type == 'value':
                     if not form_mod_pid_value_raise.validate():
-                        error.append(TRANSLATIONS['error']['title'])
-                        flash_form_errors(form_mod_pid_value_raise)
+                        messages["error"] = form_error_messages(
+                            form_mod_pid_value_raise, messages["error"])
                     else:
                         mod_pid.raise_min_duration = form_mod_pid_value_raise.raise_min_amount.data
                         mod_pid.raise_max_duration = form_mod_pid_value_raise.raise_max_amount.data
                 elif mod_pid.raise_output_type == 'volume':
                     if not form_mod_pid_volume_raise.validate():
-                        error.append(TRANSLATIONS['error']['title'])
-                        flash_form_errors(form_mod_pid_volume_raise)
+                        messages["error"] = form_error_messages(
+                            form_mod_pid_volume_raise, messages["error"])
                     else:
                         mod_pid.raise_min_duration = form_mod_pid_volume_raise.raise_min_amount.data
                         mod_pid.raise_max_duration = form_mod_pid_volume_raise.raise_max_amount.data
         else:
+            if mod_pid.raise_output_id is not None:
+                page_refresh = True
             mod_pid.raise_output_id = None
 
         #
@@ -213,6 +216,7 @@ def pid_mod(form_mod_pid_base,
             if mod_pid.lower_output_id != form_mod_pid_base.lower_output_id.data:
                 mod_pid.lower_output_id = form_mod_pid_base.lower_output_id.data
                 lower_output_id_changed = True
+                page_refresh = True
 
             # Output ID changed
             if ('output_types' in dict_outputs[lower_output_type] and
@@ -238,44 +242,50 @@ def pid_mod(form_mod_pid_base,
                     mod_pid = default_lower_output_settings(mod_pid)
                 elif mod_pid.lower_output_type == 'on_off':
                     if not form_mod_pid_output_lower.validate():
-                        error.append(TRANSLATIONS['error']['title'])
-                        flash_form_errors(form_mod_pid_output_lower)
+                        messages["error"] = form_error_messages(
+                            form_mod_pid_output_lower, messages["error"])
                     else:
                         mod_pid.lower_min_duration = form_mod_pid_output_lower.lower_min_duration.data
                         mod_pid.lower_max_duration = form_mod_pid_output_lower.lower_max_duration.data
                         mod_pid.lower_min_off_duration = form_mod_pid_output_lower.lower_min_off_duration.data
                 elif mod_pid.lower_output_type == 'pwm':
                     if not form_mod_pid_pwm_lower.validate():
-                        error.append(TRANSLATIONS['error']['title'])
-                        flash_form_errors(form_mod_pid_pwm_lower)
+                        messages["error"] = form_error_messages(
+                            form_mod_pid_pwm_lower, messages["error"])
                     else:
                         mod_pid.lower_min_duration = form_mod_pid_pwm_lower.lower_min_duty_cycle.data
                         mod_pid.lower_max_duration = form_mod_pid_pwm_lower.lower_max_duty_cycle.data
                         mod_pid.lower_always_min_pwm = form_mod_pid_pwm_lower.lower_always_min_pwm.data
                 elif mod_pid.lower_output_type == 'value':
                     if not form_mod_pid_value_lower.validate():
-                        error.append(TRANSLATIONS['error']['title'])
-                        flash_form_errors(form_mod_pid_value_lower)
+                        messages["error"] = form_error_messages(
+                            form_mod_pid_value_lower, messages["error"])
                     else:
                         mod_pid.lower_min_duration = form_mod_pid_value_lower.lower_min_amount.data
                         mod_pid.lower_max_duration = form_mod_pid_value_lower.lower_max_amount.data
                 elif mod_pid.lower_output_type == 'volume':
                     if not form_mod_pid_volume_lower.validate():
-                        error.append(TRANSLATIONS['error']['title'])
-                        flash_form_errors(form_mod_pid_volume_lower)
+                        messages["error"] = form_error_messages(
+                            form_mod_pid_volume_lower, messages["error"])
                     else:
                         mod_pid.lower_min_duration = form_mod_pid_volume_lower.lower_min_amount.data
                         mod_pid.lower_max_duration = form_mod_pid_volume_lower.lower_max_amount.data
         else:
+            if mod_pid.lower_output_id is not None:
+                page_refresh = True
             mod_pid.lower_output_id = None
 
     if (mod_pid.raise_output_id and mod_pid.lower_output_id and
             mod_pid.raise_output_id == mod_pid.lower_output_id):
-        error.append(gettext("Raise and lower outputs cannot be the same"))
+        messages["error"].append(gettext("Raise and lower outputs cannot be the same"))
 
     try:
-        if not error:
+        if not messages["error"]:
             db.session.commit()
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['modify']['title'],
+                controller=TRANSLATIONS['pid']['title']))
+
             # If the controller is active or paused, refresh variables in thread
             if mod_pid.is_activated:
                 control = DaemonControl()
@@ -283,15 +293,18 @@ def pid_mod(form_mod_pid_base,
                 flash("PID Controller settings refresh response: "
                       "{resp}".format(resp=return_value), "success")
     except Exception as except_msg:
-        error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+        messages["error"].append(str(except_msg))
+
+    return messages, page_refresh
 
 
 def pid_del(pid_id):
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['delete']['title'],
-        controller=TRANSLATIONS['pid']['title'])
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     try:
         pid = PID.query.filter(
@@ -303,31 +316,31 @@ def pid_del(pid_id):
             DeviceMeasurements.device_id == pid_id).all()
 
         for each_measurement in device_measurements:
-            delete_entry_with_id(DeviceMeasurements, each_measurement.unique_id)
+            delete_entry_with_id(
+                DeviceMeasurements,
+                each_measurement.unique_id,
+                flash_message=False)
 
-        delete_entry_with_id(PID, pid_id)
-        try:
-            display_order = csv_to_list_of_str(DisplayOrder.query.first().math)
-            display_order.remove(pid_id)
-            DisplayOrder.query.first().function = list_to_csv(display_order)
-        except Exception:  # id not in list
-            pass
-        db.session.commit()
+        delete_entry_with_id(
+            PID, pid_id, flash_message=False)
+
+        messages["success"].append('{action} {controller}'.format(
+            action=TRANSLATIONS['delete']['title'],
+            controller=TRANSLATIONS['pid']['title']))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 # TODO: Add more settings-checks before allowing controller to be activated
-def has_required_pid_values(pid_id):
+def has_required_pid_values(pid_id, messages):
     pid = PID.query.filter(
         PID.unique_id == pid_id).first()
-    error = False
 
     if not pid.measurement:
-        flash(gettext("A valid Measurement is required"), "error")
-        error = True
+        messages["error"].append(gettext(
+            "A valid Measurement is required"))
     else:
         device_unique_id = pid.measurement.split(',')[0]
         input_dev = Input.query.filter(
@@ -335,25 +348,25 @@ def has_required_pid_values(pid_id):
         math = Math.query.filter(
             Math.unique_id == device_unique_id).first()
         if not input_dev and not math:
-            flash(gettext("A valid Measurement is required"), "error")
-            error = True
+            messages["error"].append(gettext(
+                "A valid Measurement is required"))
 
     if not pid.raise_output_id and not pid.lower_output_id:
-        flash(gettext("A Raise Output and/or a Lower Output is ""required"),
-              "error")
-        error = True
-    if error:
-        return redirect('/pid')
+        messages["error"].append(gettext(
+            "A Raise Output and/or a Lower Output is ""required"))
+
+    return messages
 
 
 def pid_activate(pid_id):
-    if has_required_pid_values(pid_id):
-        return redirect(url_for('routes_page.page_function'))
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['activate']['title'],
-        controller=TRANSLATIONS['pid']['title'])
-    error = []
+    messages = has_required_pid_values(pid_id, messages)
 
     # Check if associated sensor is activated
     pid = PID.query.filter(
@@ -366,41 +379,73 @@ def pid_activate(pid_id):
         Math.unique_id == device_unique_id).first()
 
     if (input_dev and not input_dev.is_activated) or (math and not math.is_activated):
-        error.append(gettext(
+        messages["error"].append(gettext(
             "Cannot activate PID controller if the associated sensor "
             "controller is inactive"))
 
     if ((pid.direction == 'both' and not (pid.lower_output_id and pid.raise_output_id)) or
             (pid.direction == 'lower' and not pid.lower_output_id) or
             (pid.direction == 'raise' and not pid.raise_output_id)):
-        error.append(gettext(
+        messages["error"].append(gettext(
             "Cannot activate PID controller if raise and/or lower output IDs "
             "are not selected"))
 
-    if not error:
+    if not messages["error"]:
         time.sleep(1)
-        controller_activate_deactivate('activate', 'PID', pid_id)
+        controller_activate_deactivate(
+            'activate', 'PID', pid_id, flash_message=False)
+        messages["success"].append('{action} {controller}'.format(
+            action=TRANSLATIONS['activate']['title'],
+            controller=TRANSLATIONS['pid']['title']))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def pid_deactivate(pid_id):
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+
     pid = PID.query.filter(
         PID.unique_id == pid_id).first()
-    pid.is_activated = False
-    pid.is_held = False
-    pid.is_paused = False
-    pid.method_start_time = None
-    pid.method_end_time = None
-    db.session.commit()
-    time.sleep(1)
-    controller_activate_deactivate('deactivate', 'PID', pid_id)
+    if not pid:
+        messages["error"].append("PID Controller not found")
+
+    if not pid.is_activated:
+        messages["error"].append("PID Controller not active")
+
+    if not messages["error"]:
+        pid.is_activated = False
+        pid.is_held = False
+        pid.is_paused = False
+        pid.method_start_time = None
+        pid.method_end_time = None
+        db.session.commit()
+        time.sleep(1)
+        controller_activate_deactivate(
+            'deactivate', 'PID', pid_id, flash_message=False)
+        messages["success"].append('{action} {controller}'.format(
+            action=TRANSLATIONS['deactivate']['title'],
+            controller=TRANSLATIONS['pid']['title']))
+
+    return messages
 
 
 def pid_manipulate(pid_id, action):
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+
     if action not in ['Hold', 'Pause', 'Resume']:
-        flash('{}: {}'.format(TRANSLATIONS['invalid']['title'], action), "error")
-        return 1
+        messages["error"].append(
+            '{}: {}'.format(TRANSLATIONS['invalid']['title'], action))
+        return messages
 
     try:
         control = DaemonControl()
@@ -412,16 +457,16 @@ def pid_manipulate(pid_id, action):
         elif action == 'Resume':
             return_value = control.pid_resume(pid_id)
         if return_value:
-            flash(
+            messages["success"].append(
                 '{}: {}: {}: {}'.format(
                     TRANSLATIONS['controller']['title'],
                     TRANSLATIONS['pid']['title'],
                     action,
-                    return_value),
-                "success")
+                    return_value))
     except Exception as err:
-        flash(
+        messages["error"].append(
             "{}: {}: {}".format(
                 TRANSLATIONS['Error']['title'],
-                TRANSLATIONS['PID']['title'], err),
-            "error")
+                TRANSLATIONS['PID']['title'], err))
+
+    return messages

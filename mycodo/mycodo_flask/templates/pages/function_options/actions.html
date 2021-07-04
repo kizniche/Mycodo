@@ -1,0 +1,18 @@
+<div id="mod_function_action_{{each_action.unique_id}}">
+  <form method="post" action="/function">
+  {{form_actions.csrf_token}}
+  {{form_actions.function_type(class_='form-control', value=function_type)}}
+  {{form_actions.function_id(class_='form-control', value=each_function.unique_id)}}
+  {{form_actions.function_action_id(class_='form-control', value=each_action.unique_id)}}
+
+    <div class="row align-items-end small-gutters" style="border-bottom: 1px solid #ddd; padding-bottom: 0.3em">
+      <div class="col-auto">
+        {{form_actions.save_action(class_='form-control btn btn-primary btn-sm')}}
+      </div>
+      <div class="col-auto">
+        {{form_actions.delete_action(class_='form-control btn btn-primary btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      </div>
+      {% include 'pages/function_options/action_options/'+each_action.action_type+'.html' %}
+    </div>
+  </form>
+</div>

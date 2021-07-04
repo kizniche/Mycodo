@@ -1,0 +1,35 @@
+<div id="mod_function_condition_{{each_condition.unique_id}}">
+  <form method="post" action="/function">
+    {{form_conditional_conditions.csrf_token}}
+    {{form_conditional_conditions.conditional_id(class_='form-control', value=each_function.unique_id)}}
+    {{form_conditional_conditions.conditional_condition_id(class_='form-control', value=each_condition.unique_id)}}
+
+    <div class="row align-items-end small-gutters" style="padding-bottom: 0.3em; border-top: 1px dashed #ddd">
+      <div class="col-auto">
+        {{form_conditional_conditions.save_condition(class_='form-control btn btn-primary btn-sm')}}
+      </div>
+      <div class="col-auto">
+        {{form_conditional_conditions.delete_condition(class_='form-control btn btn-primary btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      </div>
+
+    {% if each_condition.condition_type == 'measurement' %}
+      {% include 'pages/function_options/conditional_options/measurement.html' %}
+    {% elif each_condition.condition_type == 'measurement_past_average' %}
+      {% include 'pages/function_options/conditional_options/measurement_past_average.html' %}
+    {% elif each_condition.condition_type == 'measurement_past_sum' %}
+      {% include 'pages/function_options/conditional_options/measurement_past_sum.html' %}
+    {% elif each_condition.condition_type == 'measurement_dict' %}
+      {% include 'pages/function_options/conditional_options/measurement_dict.html' %}
+    {% elif each_condition.condition_type == 'gpio_state' %}
+      {% include 'pages/function_options/conditional_options/gpio_state.html' %}
+    {% elif each_condition.condition_type == 'output_state' %}
+      {% include 'pages/function_options/conditional_options/output_state.html' %}
+    {% elif each_condition.condition_type == 'output_duration_on' %}
+      {% include 'pages/function_options/conditional_options/output_duration_on.html' %}
+    {% elif each_condition.condition_type == 'controller_status' %}
+      {% include 'pages/function_options/conditional_options/controller_status.html' %}
+    {% endif %}
+
+    </div>
+  </form>
+</div>

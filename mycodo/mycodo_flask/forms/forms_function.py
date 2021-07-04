@@ -8,7 +8,6 @@ from flask_wtf import FlaskForm
 from wtforms import BooleanField
 from wtforms import DecimalField
 from wtforms import SelectField
-from wtforms import SelectMultipleField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import widgets
@@ -18,15 +17,9 @@ from mycodo.config import FUNCTION_ACTIONS
 from mycodo.config_translations import TRANSLATIONS
 
 
-class DataBase(FlaskForm):
-    reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
-    list_visible_elements = SelectMultipleField('New Order')
-    reorder = SubmitField(TRANSLATIONS['save_order']['title'])
-
-
 class FunctionAdd(FlaskForm):
     function_type = SelectField()
-    func_add = SubmitField(TRANSLATIONS['add']['title'])
+    function_add = SubmitField(TRANSLATIONS['add']['title'])
 
 
 class FunctionMod(FlaskForm):
@@ -38,11 +31,11 @@ class FunctionMod(FlaskForm):
     action_type = SelectField(
         choices=[('', TRANSLATIONS['select_one']['title'])] + FUNCTION_ACTIONS)
     add_action = SubmitField(lazy_gettext('Add Action'))
-    order_up = SubmitField(TRANSLATIONS['up']['title'])
-    order_down = SubmitField(TRANSLATIONS['down']['title'])
     execute_all_actions = SubmitField(lazy_gettext('Execute All Actions'))
-    save_function = SubmitField(TRANSLATIONS['save']['title'])
-    delete_function = SubmitField(TRANSLATIONS['delete']['title'])
+    function_activate = SubmitField(TRANSLATIONS['activate']['title'])
+    function_deactivate = SubmitField(TRANSLATIONS['deactivate']['title'])
+    function_mod = SubmitField(TRANSLATIONS['save']['title'])
+    function_delete = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 class Actions(FlaskForm):

@@ -1,0 +1,61 @@
+<form id="form_pid_{{each_function.unique_id}}" method="post" action="/function">
+  {{form_mod_pid_base.csrf_token}}
+  {{form_mod_pid_base.function_id(value=each_function.unique_id)}}
+  {{form_mod_pid_base.function_type(class_='form-control', value='pid')}}
+
+  <div id="function_status_{{each_function.unique_id}}" class="grid-stack-item-content {% if each_function.is_activated and not each_function.is_paused -%}active-background
+              {% elif each_function.is_activated and each_function.is_paused -%}pause-background
+              {% elif each_function.is_held -%}hold-background
+              {% else -%}inactive-background
+              {% endif %} row small-gutters" style="padding: 4px; border: 1px solid #ddd; border-radius: 5px">
+
+    <div class="col-1 text-center icon-fh my-auto panel-heading">
+      <i style="font-size: 2em" class="fa fa-grip-horizontal" title="{{_('Drag')}}"></i>
+    </div>
+    <div class="col-1 text-center icon-fh my-auto">
+      <a class="btn" style="border-color: transparent; padding: 0" data-toggle="modal" data-target="#modal_config_{{each_function.unique_id}}">
+        <i style="font-size: 1.5em" class="fas fa-cog" title="{{_('Configure')}}"></i>
+      </a>
+    </div>
+    <div class="col-3">
+      {{form_mod_pid_base.name(class_='form-control', disabled=True, value=each_function.name)}}
+    </div>
+    <div class="col-4">
+      <input id="pid_activity_indicator_{{each_function.unique_id}}" class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="PID Controller
+      {%- if each_function.is_activated and not each_function.is_paused %} [{{_('Active')}}]
+      {%- elif each_function.is_activated and each_function.is_paused %} [{{_('Paused')}}]
+      {%- elif each_function.is_held %} [{{_('On Hold')}}]
+      {%- else %} [{{_('Inactive')}}]
+      {%-endif -%}
+      ">
+    </div>
+
+    <div id="pid_deactivate_{{each_function.unique_id}}" class="col-1" style="{%- if not each_function.is_activated %}display: none{% endif %}">
+      {{form_function_base.function_deactivate(class_='form-control btn btn-primary btn-sm')}}
+    </div>
+    <div id="pid_resume_{{each_function.unique_id}}" class="col-1" style="{%- if not each_function.is_paused and not each_function.is_held %}display: none{% endif %}">
+      {{form_mod_pid_base.pid_resume(class_='form-control btn btn-primary btn-sm')}}
+    </div>
+    <div id="pid_pause_{{each_function.unique_id}}" class="col-1" style="{%- if not each_function.is_activated or each_function.is_paused %}display: none{% endif %}">
+      {{form_mod_pid_base.pid_pause(class_='form-control btn btn-primary btn-sm')}}
+    </div>
+    <div id="pid_hold_{{each_function.unique_id}}" class="col-1" style="{%- if not each_function.is_activated or each_function.is_held %}display: none{% endif %}">
+      {{form_mod_pid_base.pid_hold(class_='form-control btn btn-primary btn-sm')}}
+    </div>
+    <div id="pid_activate_{{each_function.unique_id}}" class="col-3" style="{%- if each_function.is_activated %}display: none{% endif %}">
+      {{form_function_base.function_activate(class_='form-control btn btn-primary btn-sm')}}
+    </div>
+
+  </div> <!- grid-stack-item-content ->
+</form>
+
+<div class="modal fade" id="modal_config_{{each_function.unique_id}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content" style="padding: 1em">
+      <div class="modal-header">
+        <h5 class="modal-title">PID Configuration</h5>
+      </div>
+      {% include 'pages/function_options/pid_options.html' %}
+    </div>
+  </div>
+</div>

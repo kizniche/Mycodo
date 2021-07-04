@@ -1,0 +1,47 @@
+<form method="post" action="/function">
+  {{form_trigger.csrf_token}}
+  {{form_trigger.function_id(class_='form-control', value=each_function.unique_id)}}
+  {% if each_function.function_type == 'function_actions' %}
+    {{form_trigger.function_type(class_='form-control', value='function_actions')}}
+  {% elif each_function.function_type == 'function_spacer' %}
+    {{form_trigger.function_type(class_='form-control', value='function_spacer')}}
+  {% endif %}
+
+  <div id="function_status_{{each_function.unique_id}}" class="grid-stack-item-content row small-gutters" style="padding: 4px; border: 1px solid #ddd; border-radius: 5px">
+    <div class="col-1 text-center icon-fh my-auto panel-heading">
+      <i style="font-size: 2em" class="fa fa-grip-horizontal" title="{{_('Drag')}}"></i>
+    </div>
+    <div class="col-1 text-center icon-fh my-auto">
+      <a class="btn" style="border-color: transparent; padding: 0" data-toggle="modal" data-target="#modal_config_{{each_function.unique_id}}">
+        <i style="font-size: 1.5em" class="fas fa-cog" title="{{_('Configure')}}"></i>
+      </a>
+    </div>
+
+  {% if each_function.function_type == 'function_actions' %}
+    <div class="col-3">
+      {{form_function_base.name(class_='form-control', disabled=True, value=each_function.name)}}
+    </div>
+    <div class="col-4">
+      <input class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="Function Actions">
+    </div>
+    <div class="col-3">
+      {{form_function_base.execute_all_actions(class_='form-control btn btn-primary btn-sm')}}
+    </div>
+  {% elif each_function.function_type == 'function_spacer' %}
+    <div class="col-10">
+      <input class="form-control btn btn-primary" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="{{each_function.name}}">
+    </div>
+  {% endif %}
+  </div> <!- grid-stack-item-content ->
+</form>
+
+<div class="modal fade" id="modal_config_{{each_function.unique_id}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content" style="padding: 1em">
+      <div class="modal-header">
+        <h5 class="modal-title">Function Configuration</h5>
+      </div>
+      {% include 'pages/function_options/function_options.html' %}
+    </div>
+  </div>
+</div>

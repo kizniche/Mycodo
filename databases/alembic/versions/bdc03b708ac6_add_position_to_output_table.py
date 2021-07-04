@@ -1,4 +1,4 @@
-"""Add position to Output table
+"""Add position to tables
 
 Revision ID: bdc03b708ac6
 Revises: b8ff72b5c2c9
@@ -27,12 +27,20 @@ def upgrade():
         batch_op.add_column(sa.Column('position_y', sa.Integer))
         batch_op.add_column(sa.Column('size_y', sa.Integer))
 
-    op.execute(
-        '''
-        UPDATE output
-        SET position_y=0
-        '''
-    )
+    with op.batch_alter_table("conditional") as batch_op:
+        batch_op.add_column(sa.Column('position_y', sa.Integer))
+
+    with op.batch_alter_table("custom_controller") as batch_op:
+        batch_op.add_column(sa.Column('position_y', sa.Integer))
+
+    with op.batch_alter_table("function") as batch_op:
+        batch_op.add_column(sa.Column('position_y', sa.Integer))
+
+    with op.batch_alter_table("trigger") as batch_op:
+        batch_op.add_column(sa.Column('position_y', sa.Integer))
+
+    with op.batch_alter_table("pid") as batch_op:
+        batch_op.add_column(sa.Column('position_y', sa.Integer))
 
 
 def downgrade():

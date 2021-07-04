@@ -29,14 +29,17 @@ logger = logging.getLogger(__name__)
 
 def conditional_mod(form):
     """Modify a Conditional"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller=TRANSLATIONS['conditional']['title'])
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": [],
+        "pylint": []
+    }
 
     try:
-        error, lines_code, cmd_status, cmd_out = save_conditional_code(
-            error,
+        messages["error"], lines_code, cmd_status, cmd_out = save_conditional_code(
+            messages["error"],
             form.conditional_statement.data,
             form.conditional_status.data,
             form.function_id.data,
@@ -64,40 +67,45 @@ def conditional_mod(form):
         cond_mod.pyro_timeout = form.pyro_timeout.data
 
         if cmd_status:
-            flash("pylint returned with status: {}".format(cmd_status), "warning")
+            messages["warning"].append("pylint returned with status: {}".format(cmd_status))
 
         if message:
-            flash("Review your code for issues and test before putting it "
-                  "into a production environment.", 'info')
-            flash(message, 'info')
+            messages["info"].append("Review your code for issues and test before putting it "
+                  "into a production environment.")
+            messages["pylint"].append(message)
 
-        if not error:
+        if not messages["error"]:
             db.session.commit()
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['modify']['title'],
+                controller=TRANSLATIONS['conditional']['title']))
 
             if cond_mod.is_activated:
                 control = DaemonControl()
                 return_value = control.refresh_daemon_conditional_settings(
                     form.function_id.data)
-                flash(gettext(
+                messages["success"].append(gettext(
                     "Daemon response: %(resp)s",
-                    resp=return_value), "success")
+                    resp=return_value))
 
     except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def conditional_del(cond_id):
     """Delete a Conditional"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['delete']['title'],
-        controller=TRANSLATIONS['conditional']['title'])
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     cond = Conditional.query.filter(
         Conditional.unique_id == cond_id).first()
@@ -107,26 +115,31 @@ def conditional_del(cond_id):
         conditional_deactivate(cond_id)
 
     try:
-        if not error:
+        if not messages["error"]:
             # Delete conditions
             conditions = ConditionalConditions.query.filter(
                 ConditionalConditions.conditional_id == cond_id).all()
             for each_condition in conditions:
-                delete_entry_with_id(ConditionalConditions,
-                                     each_condition.unique_id)
+                delete_entry_with_id(
+                    ConditionalConditions,
+                    each_condition.unique_id,
+                    flash_message=False)
 
             # Delete Actions
             actions = Actions.query.filter(
                 Actions.function_id == cond_id).all()
             for each_action in actions:
-                delete_entry_with_id(Actions,
-                                     each_action.unique_id)
+                delete_entry_with_id(
+                    Actions,
+                    each_action.unique_id,
+                    flash_message=False)
 
-            delete_entry_with_id(Conditional, cond_id)
+            delete_entry_with_id(
+                Conditional, cond_id, flash_message=False)
 
-            display_order = csv_to_list_of_str(DisplayOrder.query.first().function)
-            display_order.remove(cond_id)
-            DisplayOrder.query.first().function = list_to_csv(display_order)
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['delete']['title'],
+                controller=TRANSLATIONS['conditional']['title']))
 
             try:
                 file_path = os.path.join(
@@ -138,30 +151,32 @@ def conditional_del(cond_id):
 
             db.session.commit()
     except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def conditional_condition_add(form):
     """Add a Conditional Condition"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['add']['title'],
-        controller='{} {}'.format(TRANSLATIONS['conditional']['title'],
-                                  gettext("Condition")))
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    condition_id = None
 
     cond = Conditional.query.filter(
         Conditional.unique_id == form.function_id.data).first()
     if cond.is_activated:
-        error.append("Deactivate the Conditional before adding a Condition")
+        messages["error"].append("Deactivate the Conditional before adding a Condition")
 
     if form.condition_type.data == '':
-        error.append("Must select a condition")
+        messages["error"].append("Must select a condition")
 
     try:
         new_condition = ConditionalConditions()
@@ -171,38 +186,45 @@ def conditional_condition_add(form):
         if new_condition.condition_type == 'measurement':
             new_condition.max_age = 360
 
-        if not error:
+        if not messages["error"]:
             new_condition.save()
-    except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
-    except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
-    except Exception as except_msg:
-        error.append(except_msg)
+            condition_id = new_condition.unique_id
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['add']['title'],
+                controller='{} {}'.format(TRANSLATIONS['conditional']['title'],
+                                          gettext("Condition"))))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    except sqlalchemy.exc.OperationalError as except_msg:
+        messages["error"].append(str(except_msg))
+    except sqlalchemy.exc.IntegrityError as except_msg:
+        messages["error"].append(str(except_msg))
+    except Exception as except_msg:
+        messages["error"].append(str(except_msg))
+
+    return messages, condition_id
 
 
 def conditional_condition_mod(form):
     """Modify a Conditional condition"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['modify']['title'],
-        controller='{} {}'.format(TRANSLATIONS['conditional']['title'],
-                                  gettext("Condition")))
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     try:
-        conditional = Conditional.query.filter(
-            Conditional.unique_id == form.conditional_id.data).first()
-
         cond_mod = ConditionalConditions.query.filter(
             ConditionalConditions.unique_id == form.conditional_condition_id.data).first()
+
+        conditional = Conditional.query.filter(
+            Conditional.unique_id == cond_mod.conditional_id).first()
 
         if cond_mod.condition_type in ['measurement',
                                        'measurement_past_average',
                                        'measurement_past_sum',
                                        'measurement_dict']:
-            error = check_form_measurements(form, error)
+            messages["error"] = check_form_measurements(form, messages["error"])
             cond_mod.measurement = form.measurement.data
             cond_mod.max_age = form.max_age.data
 
@@ -216,108 +238,131 @@ def conditional_condition_mod(form):
         elif cond_mod.condition_type == 'controller_status':
             cond_mod.controller_id = form.controller_id.data
 
-        if not error:
+        if not messages["error"]:
             db.session.commit()
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['modify']['title'],
+                controller='{} {}'.format(TRANSLATIONS['conditional']['title'],
+                                          gettext("Condition"))))
 
             if conditional.is_activated:
                 control = DaemonControl()
                 return_value = control.refresh_daemon_conditional_settings(
                     form.conditional_id.data)
-                flash(gettext(
+                messages["success"].append(gettext(
                     "Daemon response: %(resp)s",
-                    resp=return_value), "success")
+                    resp=return_value))
 
     except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def conditional_condition_del(form):
     """Delete a Conditional Condition"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['delete']['title'],
-        controller='{} {}'.format(TRANSLATIONS['conditional']['title'],
-                                  gettext("Condition")))
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
-    cond = Conditional.query.filter(
-        Conditional.unique_id == form.conditional_id.data).first()
-    if cond.is_activated:
-        error.append("Deactivate the Conditional before deleting a Condition")
+    condition = ConditionalConditions.query.filter(
+        ConditionalConditions.unique_id == form.conditional_condition_id.data).first()
+    if not condition:
+        messages["error"].append("Condition not found")
+
+    conditional = Conditional.query.filter(
+        Conditional.unique_id == condition.conditional_id).first()
+    if conditional.is_activated:
+        messages["error"].append("Deactivate the Conditional before deleting a Condition")
 
     try:
-        if not error:
-            cond_condition_id = ConditionalConditions.query.filter(
-                ConditionalConditions.unique_id == form.conditional_condition_id.data).first().unique_id
-            delete_entry_with_id(ConditionalConditions, cond_condition_id)
+        if not messages["error"]:
+            delete_entry_with_id(
+                ConditionalConditions, condition.unique_id, flash_message=False)
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['delete']['title'],
+                controller='{} {}'.format(TRANSLATIONS['conditional']['title'],
+                                          gettext("Condition"))))
 
     except sqlalchemy.exc.OperationalError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except sqlalchemy.exc.IntegrityError as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def conditional_activate(cond_id):
     """Activate a Conditional"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['activate']['title'],
-        controller=TRANSLATIONS['conditional']['title'])
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     conditions = ConditionalConditions.query.filter(
         ConditionalConditions.conditional_id == cond_id).all()
 
     for each_condition in conditions:
         # Check for errors in the Conditional settings
-        error = check_cond_conditions(each_condition, error)
+        messages["success"] = check_cond_conditions(
+            each_condition, messages["success"])
 
     conditions = ConditionalConditions.query.filter(
         ConditionalConditions.conditional_id == cond_id)
     if not conditions.count():
-        flash(
+        messages["info"].append(
             "Conditional activated without any Conditions. Typical "
             "Conditional Controller use involves the use of Conditions. Only "
-            "proceed without Conditions if you know what you're doing.",
-            'info')
+            "proceed without Conditions if you know what you're doing.")
 
-    actions = Actions.query.filter(
-        Actions.function_id == cond_id)
+    actions = Actions.query.filter(Actions.function_id == cond_id)
     if not actions.count():
-        flash(
+        messages["info"].append(
             "Conditional activated without any Actions. Typical "
             "Conditional Controller use involves the use of Actions. Only "
-            "proceed without Actions if you know what you're doing.",
-            'info')
+            "proceed without Actions if you know what you're doing.")
 
     for each_action in actions.all():
-        error = check_actions(each_action, error)
+        messages["success"] = check_actions(each_action, messages["success"])
 
-    if not error:
-        controller_activate_deactivate('activate', 'Conditional', cond_id)
+    if not messages["success"]:
+        controller_activate_deactivate(
+            'activate', 'Conditional', cond_id, flash_message=False)
+        messages["success"].append('{action} {controller}'.format(
+            action=TRANSLATIONS['activate']['title'],
+            controller=TRANSLATIONS['conditional']['title']))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def conditional_deactivate(cond_id):
     """Deactivate a Conditional"""
-    error = []
-    action = '{action} {controller}'.format(
-        action=TRANSLATIONS['deactivate']['title'],
-        controller=TRANSLATIONS['conditional']['title'])
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
-    if not error:
-        controller_activate_deactivate('deactivate', 'Conditional', cond_id)
+    if not messages["error"]:
+        controller_activate_deactivate(
+            'deactivate', 'Conditional', cond_id, flash_message=False)
+        messages["success"].append('{action} {controller}'.format(
+            action=TRANSLATIONS['deactivate']['title'],
+            controller=TRANSLATIONS['conditional']['title']))
 
-    flash_success_errors(error, action, url_for('routes_page.page_function'))
+    return messages
 
 
 def check_form_measurements(form, error):

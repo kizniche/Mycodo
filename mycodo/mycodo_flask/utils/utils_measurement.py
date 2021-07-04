@@ -22,12 +22,13 @@ def measurement_mod(form):
         "error": []
     }
     mod_device = None
-    device_id = None
     device_info = None
 
     try:
         mod_meas = DeviceMeasurements.query.filter(
             DeviceMeasurements.unique_id == form.measurement_id.data).first()
+        if not mod_meas:
+            messages["error"].append("Count not found measurement")
 
         controller_type = determine_controller_type(mod_meas.device_id)
 
@@ -35,7 +36,7 @@ def measurement_mod(form):
             mod_device = Input.query.filter(
                 Input.unique_id == mod_meas.device_id).first()
             device_info = parse_input_information()
-        elif controller_type == "Function":
+        elif controller_type == "Function_Custom":
             mod_device = CustomController.query.filter(
                 CustomController.unique_id == mod_meas.device_id).first()
             device_info = parse_function_information()
@@ -43,8 +44,6 @@ def measurement_mod(form):
         if not mod_device or not device_info:
             logger.error("Could not find mod_device or device_info")
             return
-        else:
-            device_id = mod_meas.device_id
 
         if mod_device.is_activated:
             messages["error"].append(gettext(
@@ -93,4 +92,4 @@ def measurement_mod(form):
         logger.exception(1)
         messages["error"].append(str(except_msg))
 
-    return device_id, messages
+    return messages

@@ -10,6 +10,7 @@ from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import EnergyUsage
+from mycodo.databases.models import Function
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
 from mycodo.databases.models import Math
@@ -97,7 +98,8 @@ def determine_controller_type(unique_id):
         'Math': Math.query.filter(Math.unique_id == unique_id).count(),
         'PID': PID.query.filter(PID.unique_id == unique_id).count(),
         'Trigger': Trigger.query.filter(Trigger.unique_id == unique_id).count(),
-        'Function': CustomController.query.filter(CustomController.unique_id == unique_id).count()
+        'Function': Function.query.filter(Function.unique_id == unique_id).count(),
+        'Function_Custom': CustomController.query.filter(CustomController.unique_id == unique_id).count()
     }
     for each_type in db_tables:
         if db_tables[each_type]:
