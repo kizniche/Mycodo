@@ -76,7 +76,7 @@ def dashboard_mod(form):
         db.session.commit()
 
     flash_success_errors(
-        error, action, url_for('routes_page.page_dashboard_default'))
+        error, action, url_for('routes_dashboard.page_dashboard_default'))
 
 
 def dashboard_lock(dashboard_id, lock):
@@ -100,7 +100,7 @@ def dashboard_lock(dashboard_id, lock):
         logger.exception("Duplicating dashboard")
 
     flash_success_errors(
-        error, action, url_for('routes_page.page_dashboard_default'))
+        error, action, url_for('routes_dashboard.page_dashboard_default'))
 
 
 def dashboard_copy(form):
@@ -129,7 +129,7 @@ def dashboard_copy(form):
         logger.exception("Duplicating dashboard")
 
     flash_success_errors(
-        error, action, url_for('routes_page.page_dashboard_default'))
+        error, action, url_for('routes_dashboard.page_dashboard_default'))
 
 
 def dashboard_del(form):
@@ -152,7 +152,7 @@ def dashboard_del(form):
     delete_entry_with_id(Dashboard, form.dashboard_id.data)
 
     flash_success_errors(
-        error, action, url_for('routes_page.page_dashboard_default'))
+        error, action, url_for('routes_dashboard.page_dashboard_default'))
 
 
 #
@@ -305,7 +305,7 @@ def widget_mod(form_base, request_form):
         control.widget_add_refresh(mod_widget.unique_id)
 
     flash_success_errors(error, action, url_for(
-        'routes_page.page_dashboard',
+        'routes_dashboard.page_dashboard',
         dashboard_id=form_base.dashboard_id.data))
 
 
@@ -335,7 +335,7 @@ def widget_del(form_base):
         error.append(except_msg)
 
     flash_success_errors(
-        error, action, url_for('routes_page.page_dashboard',
+        error, action, url_for('routes_dashboard.page_dashboard',
                                dashboard_id=form_base.dashboard_id.data))
 
 

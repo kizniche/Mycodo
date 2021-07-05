@@ -81,7 +81,7 @@ logger = logging.getLogger(__name__)
 #             error.append(except_msg)
 #         except sqlalchemy.exc.IntegrityError as except_msg:
 #             error.append(except_msg)
-#         flash_success_errors(error, action, url_for('routes_page.page_input'))
+#         flash_success_errors(error, action, url_for('routes_input.page_input'))
 #     else:
 #         flash_form_errors(form_add_math)
 #
@@ -267,7 +267,7 @@ def math_mod(form_mod_math, form_mod_type=None):
         logger.exception(1)
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_input'))
+    flash_success_errors(error, action, url_for('routes_input.page_input'))
 
 
 def math_measurement_mod(form):
@@ -305,7 +305,7 @@ def math_measurement_mod(form):
         logger.exception(1)
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_input'))
+    flash_success_errors(error, action, url_for('routes_input.page_input'))
 
 
 def math_del(form_mod_math):
@@ -342,7 +342,7 @@ def math_del(form_mod_math):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_page.page_input'))
+    flash_success_errors(error, action, url_for('routes_input.page_input'))
 
 
 def math_reorder(math_id, display_order, direction):
@@ -361,7 +361,7 @@ def math_reorder(math_id, display_order, direction):
             error.append(reord_list)
     except Exception as except_msg:
         error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_input'))
+    flash_success_errors(error, action, url_for('routes_input.page_input'))
 
 
 def math_activate(form_mod_math):

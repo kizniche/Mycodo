@@ -74,7 +74,7 @@ def home():
         if flask_login.current_user.landing_page == 'live':
             return redirect(url_for('routes_page.page_live'))
         elif flask_login.current_user.landing_page == 'dashboard':
-            return redirect(url_for('routes_page.page_dashboard_default'))
+            return redirect(url_for('routes_dashboard.page_dashboard_default'))
         elif flask_login.current_user.landing_page == 'info':
             return redirect(url_for('routes_page.page_info'))
         return redirect(url_for('routes_page.page_live'))
@@ -92,7 +92,7 @@ def index_page():
             if flask_login.current_user.index_page == 'live':
                 return redirect(url_for('routes_page.page_live'))
             elif flask_login.current_user.index_page == 'dashboard':
-                return redirect(url_for('routes_page.page_dashboard_default'))
+                return redirect(url_for('routes_dashboard.page_dashboard_default'))
             elif flask_login.current_user.index_page == 'info':
                 return redirect(url_for('routes_page.page_info'))
             return redirect(url_for('routes_page.page_live'))

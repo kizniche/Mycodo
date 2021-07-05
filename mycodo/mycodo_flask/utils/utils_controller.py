@@ -261,7 +261,7 @@ def controller_activate(controller_id):
         CustomController.unique_id == controller_id).first()
 
     if not function:
-        messages["error"].append("Function nto found")
+        messages["error"].append("Function not found")
     else:
         dict_controllers = parse_function_information()
         custom_options_values_controllers = parse_custom_option_values(

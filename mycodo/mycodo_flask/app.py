@@ -27,9 +27,12 @@ from mycodo.databases.utils import session_scope
 from mycodo.mycodo_flask import routes_admin
 from mycodo.mycodo_flask import routes_authentication
 from mycodo.mycodo_flask import routes_calibration
+from mycodo.mycodo_flask import routes_dashboard
 from mycodo.mycodo_flask import routes_function
 from mycodo.mycodo_flask import routes_general
+from mycodo.mycodo_flask import routes_input
 from mycodo.mycodo_flask import routes_method
+from mycodo.mycodo_flask import routes_output
 from mycodo.mycodo_flask import routes_page
 from mycodo.mycodo_flask import routes_password_reset
 from mycodo.mycodo_flask import routes_remote_admin
@@ -98,9 +101,12 @@ def register_blueprints(app):
     app.register_blueprint(routes_authentication.blueprint)  # register login/logout views
     app.register_blueprint(routes_password_reset.blueprint)  # register password reset views
     app.register_blueprint(routes_calibration.blueprint)  # register calibration views
-    app.register_blueprint(routes_function.blueprint)  # register page views
+    app.register_blueprint(routes_dashboard.blueprint)  # register dashboard views
+    app.register_blueprint(routes_function.blueprint)  # register function views
     app.register_blueprint(routes_general.blueprint)  # register general routes
+    app.register_blueprint(routes_input.blueprint)  # register input routes
     app.register_blueprint(routes_method.blueprint)  # register method views
+    app.register_blueprint(routes_output.blueprint)  # register output views
     app.register_blueprint(routes_page.blueprint)  # register page views
     app.register_blueprint(routes_remote_admin.blueprint)  # register remote admin views
     app.register_blueprint(routes_settings.blueprint)  # register settings views

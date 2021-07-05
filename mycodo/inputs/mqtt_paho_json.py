@@ -39,14 +39,14 @@ INPUT_INFORMATION = {
     'message': 'A single topic is subscribed to and the returned JSON payload contains one or '
                'more key/value pairs. The given JSON Key is used as a JMESPATH expression to find the '
                'corresponding value that will be stored for that channel. Be sure you select and '
-               'save the Measurement Unit for each of channels. Once the unit has been saved, '
+               'save the Measurement Unit for each channel. Once the unit has been saved, '
                'you can convert to other units in the Convert Measurement section.'
-               ' Example for jmespath expressions (see https://jmespath.org) are '
+               ' Examples for jmespath expressions (see https://jmespath.org) are '
                '<i>temperature</i> or <i>sensors[0].temperature</i> or <i>bathroom.temperature</i> which refer to '
-               'the temperature as a direct key, within the first entry of sensors or as a subkey '
-               'of bathroom respectively. '
+               'the temperature as a direct key within the first entry of sensors or as a subkey '
+               'of bathroom, respectively. '
                'Jmespath elements and keys that contain special characters have to be enclosed ' 
-               'in double quotes e.q. <i>"sensor-1".temperature</i> ',
+               'in double quotes, e.g. <i>"sensor-1".temperature</i>.',
     'options_enabled': [
         'measurements_select'
     ],
@@ -160,6 +160,8 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.client = None
+        self.jmespath = None
+        self.options_channels = None
 
         self.mqtt_hostname = None
         self.mqtt_port = None
@@ -181,7 +183,7 @@ class InputModule(AbstractInput):
         import jmespath as jmespath
 
         self.jmespath = jmespath
-        
+
         input_channels = db_retrieve_table_daemon(
             InputChannel).filter(InputChannel.input_id == self.input_dev.unique_id).all()
         self.options_channels = self.setup_custom_channel_options_json(
@@ -250,7 +252,6 @@ class InputModule(AbstractInput):
         self.logger.info("Log: {}".format(string))
 
     def on_message(self, client, userdata, msg):
-
         datetime_utc = datetime.datetime.utcnow()
         payload = msg.payload.decode()
         self.logger.debug("Message: Channel: {}, Value: {}".format(

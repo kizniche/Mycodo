@@ -134,7 +134,8 @@
           submitter_btn.attr("name") === 'measurement_mod' ||
           submitter_btn.attr("name") === 'input_activate' ||
           submitter_btn.attr("name") === 'input_deactivate' ||
-          submitter_btn.attr("name") === 'input_acquire_measurements') {
+          submitter_btn.attr("name") === 'input_acquire_measurements' ||
+          submitter_btn.attr("name").startsWith('custom_button_')) {
         e.preventDefault();
         toastr['info']('Command sent. Please wait...');
         $.ajax({

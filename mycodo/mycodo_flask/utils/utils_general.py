@@ -1832,10 +1832,10 @@ def custom_action(controller_type, dict_device, unique_id, form):
                             messages["error"].append("Unknown key type. Key: {}, Type: {}".format(key, options[key]['type']))
 
         if not button_id:
-            messages["error"].append("Could nto find button ID")
+            messages["error"].append("Could not find button ID")
             return messages
 
-        if not messages["error"] and button_id:
+        if not messages["error"]:
             from mycodo.mycodo_client import DaemonControl
             control = DaemonControl()
             use_thread = True

@@ -513,7 +513,7 @@ class AbstractOutput(AbstractBaseController):
         output_channel_dev = db_retrieve_table_daemon(OutputChannel).filter(
             and_(OutputChannel.output_id == output_id, OutputChannel.channel == output_channel)).first()
         if output_channel_dev is None:
-            self.logger.error("Could nto find channel in database")
+            self.logger.error("Could not find channel in database")
             return
 
         #
