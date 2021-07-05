@@ -37,11 +37,16 @@ INPUT_INFORMATION = {
     'listener': True,
 
     'message': 'A single topic is subscribed to and the returned JSON payload contains one or '
-               'more key/value pairs. If the set JSON Key exists in the payload, the '
-               'corresponding value will be stored for that channel. Be sure you select and '
+               'more key/value pairs. The given JSON Key is used as a JMESPATH expression to find the '
+               'corresponding value that will be stored for that channel. Be sure you select and '
                'save the Measurement Unit for each of channels. Once the unit has been saved, '
-               'you can convert to other units in the Convert Measurement section.',
-
+               'you can convert to other units in the Convert Measurement section.'
+               ' Example for jmespath expressions (see https://jmespath.org) are '
+               '<i>temperature</i> or <i>sensors[0].temperature</i> or <i>bathroom.temperature</i> which refer to '
+               'the temperature as a direct key, within the first entry of sensors or as a subkey '
+               'of bathroom respectively. '
+               'Jmespath elements and keys that contain special characters have to be enclosed ' 
+               'in double quotes e.q. <i>"sensor-1".temperature</i> ',
     'options_enabled': [
         'measurements_select'
     ],
@@ -50,7 +55,8 @@ INPUT_INFORMATION = {
     'interfaces': ['Mycodo'],
 
     'dependencies_module': [
-        ('pip-pypi', 'paho', 'paho-mqtt==1.5.1')],
+        ('pip-pypi', 'paho', 'paho-mqtt==1.5.1'),
+        ('pip-pypi', 'jmespath', 'jmespath==0.10.1')],
 
     'custom_options': [
         {
@@ -141,7 +147,7 @@ INPUT_INFORMATION = {
             'default_value': '',
             'required': True,
             'name': 'JSON Key',
-            'phrase': 'JSON Key for the value to be stored'
+            'phrase': 'JMES Path expression to find value in JSON response'
         }
     ]
 }
@@ -172,7 +178,10 @@ class InputModule(AbstractInput):
 
     def initialize_input(self):
         import paho.mqtt.client as mqtt
+        import jmespath as jmespath
 
+        self.jmespath = jmespath
+        
         input_channels = db_retrieve_table_daemon(
             InputChannel).filter(InputChannel.input_id == self.input_dev.unique_id).all()
         self.options_channels = self.setup_custom_channel_options_json(
@@ -241,6 +250,7 @@ class InputModule(AbstractInput):
         self.logger.info("Log: {}".format(string))
 
     def on_message(self, client, userdata, msg):
+
         datetime_utc = datetime.datetime.utcnow()
         payload = msg.payload.decode()
         self.logger.debug("Message: Channel: {}, Value: {}".format(
@@ -254,32 +264,31 @@ class InputModule(AbstractInput):
                 msg.payload.decode()))
             return
 
-        for key in json_values:
-            for each_channel in self.channels_measurement:
-                if self.options_channels['json_name'][each_channel] == key:
+        for each_channel in self.channels_measurement:
+            self.logger.debug(
+                "Searching in json for jmes path {}".format(
+                self.options_channels['json_name'][each_channel]))
 
-                    self.logger.debug(
-                        "Match found. Key: {}, Value: {}".format(
-                            self.options_channels['json_name'][each_channel],
-                            json_values[key]))
+            try:
+                jmesexpression = self.jmespath.compile(self.options_channels['json_name'][each_channel])
+                value = jmesexpression.search(json_values)
+                self.logger.debug("Match found. Key: {}, Value: {}".format(self.options_channels['json_name'][each_channel],value))
+                measurement[each_channel] = {}
+                measurement[each_channel]['measurement'] = self.channels_measurement[each_channel].measurement
+                measurement[each_channel]['unit'] = self.channels_measurement[each_channel].unit
+                measurement[each_channel]['value'] = value
+                measurement[each_channel]['timestamp_utc'] = datetime_utc
 
-                    try:
-                        measurement[each_channel] = {}
-                        measurement[each_channel]['measurement'] = self.channels_measurement[each_channel].measurement
-                        measurement[each_channel]['unit'] = self.channels_measurement[each_channel].unit
-                        measurement[each_channel]['value'] = float(json_values[key])
-                        measurement[each_channel]['timestamp_utc'] = datetime_utc
-
-                        self.add_measurement_influxdb(each_channel, measurement)
-                    except Exception:
-                        try:
-                            self.logger.error(
-                                "Something happened in storing this measurement: {}".format(
-                                    float(json_values[key])))
-                        except:
-                            self.logger.error(
-                                "Value doesn't represent a float and could not decode payload")
-                        return
+                self.add_measurement_influxdb(each_channel, measurement)
+            except Exception as exc:
+                try:
+                    self.logger.error(
+                        "Something happened in storing this measurement: {} : {}".format(
+                            value, exc))
+                except:
+                    self.logger.error(
+                        "Value doesn't represent a float and could not decode payload : {}".format(exc))
+                return
 
     def add_measurement_influxdb(self, channel, measurement):
         # Convert value/unit is conversion_id present and valid
