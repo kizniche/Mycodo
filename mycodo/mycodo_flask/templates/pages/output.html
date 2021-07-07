@@ -93,7 +93,7 @@
               function(output_id, states) {
                 for (let i = 0; i < Object.keys(states).length; i++) {
                   if (states[i] !== null && document.getElementById(output_id + "-" + i + "-output-state") != null) {
-                    document.getElementById(output_id + "-" + i + "-output-state").className = "row small-gutters active-background";
+                    document.getElementById(output_id + "-" + i + "-output-state").className = "item_channel row small-gutters active-background";
                     if (states[i] !== 'off') {
                       if (states[i] === 'on') {
                         document.getElementById(output_id + "-" + i + "-input-output-state").value = '{{_('Active')}}';
@@ -101,7 +101,7 @@
                         document.getElementById(output_id + "-" + i + "-input-output-state").value = '{{_('Active')}}, ' + states[i].toFixed(1);
                       }
                     } else {
-                      document.getElementById(output_id + "-" + i + "-output-state").className = "row small-gutters inactive-background";
+                      document.getElementById(output_id + "-" + i + "-output-state").className = "item_channel row small-gutters inactive-background";
                       document.getElementById(output_id + "-" + i + "-input-output-state").value = '{{_('Inactive')}}';
                     }
                   }
@@ -112,7 +112,7 @@
           else {
             {% for each_output in output %}
               {% for each_output_channel in dict_outputs[each_output.output_type]['channels_dict']  %}
-            document.getElementById("{{each_output.unique_id}}-{{each_output_channel}}-output-state").className = "row small-gutters pause-background";
+            document.getElementById("{{each_output.unique_id}}-{{each_output_channel}}-output-state").className = "item_channel row small-gutters pause-background";
             document.getElementById("{{each_output.unique_id}}-{{each_output_channel}}-input-output-state").value = '{{_('No Connection')}}';
               {% endfor %}
             {% endfor %}
@@ -197,7 +197,9 @@
 
     grid.on('change', function (event, items) {
       let gridstack_channel_height = $(".item_channel").eq(0).outerHeight(true);
-      grid.cellHeight(gridstack_channel_height);
+      if (gridstack_channel_height) {
+        grid.cellHeight(gridstack_channel_height);
+      }
       let serializedFull = grid.save(false);
       $.ajax({
         url: "/save_output_layout",

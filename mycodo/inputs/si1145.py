@@ -64,9 +64,9 @@ class InputModule(AbstractInput):
             self.initialize_input()
 
     def initialize_input(self):
-        from sii1145 import SI1145
+        import SI1145.SI1145 as SI1145
 
-        self.sensor = SI1145(
+        self.sensor = SI1145.SI1145(
             address=int(str(self.input_dev.i2c_location), 16),
             busnum=self.input_dev.i2c_bus)
 

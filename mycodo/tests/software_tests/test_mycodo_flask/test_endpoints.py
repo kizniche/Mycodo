@@ -536,7 +536,6 @@ def test_add_all_function_devices_logged_in_as_admin(_, testapp):
         print("test_add_all_function_devices_logged_in_as_admin: Adding, saving, and deleting Function ({}/{}): {}".format(
             index + 1, len(choices_function), each_function["value"]))
         response = add_function(testapp, function_type=each_function["value"])
-        print(response.json['data']['messages'])
         assert 'data' in response.json
         assert 'messages' in response.json['data']
         assert 'error' in response.json['data']['messages']

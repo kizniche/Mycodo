@@ -100,7 +100,9 @@
 
     grid.on('change', function (event, items) {
       let gridstack_item_height = $(".grid-stack-item-content").eq(0).outerHeight(true);
-      grid.cellHeight(gridstack_item_height + 5);
+      if (gridstack_item_height) {
+        grid.cellHeight(gridstack_item_height + 5);
+      }
       let serializedFull = grid.save(false);
       $.ajax({
         url: "/save_input_layout",
