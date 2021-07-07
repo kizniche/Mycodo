@@ -1,10 +1,11 @@
 # coding=utf-8
+import copy
 import importlib.util
+import os
 import textwrap
 
-import copy
-import os
 from flask import Markup
+from flask import current_app
 from flask import flash
 
 from mycodo.config import PATH_PYTHON_CODE_USER
@@ -86,6 +87,12 @@ def execute_at_modification(
     """
     messages["page_refresh"] = True
     pylint_message = None
+
+    if current_app.config['TESTING']:
+        return (messages,
+                mod_input,
+                custom_options_dict_postsave,
+                custom_options_channels_dict_postsave)
 
     try:
         input_python_code_run, file_run = generate_code(mod_input)

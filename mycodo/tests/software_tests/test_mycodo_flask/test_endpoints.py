@@ -8,11 +8,11 @@ import time
 import mock
 
 from mycodo.config import FUNCTIONS
-from mycodo.databases.models import CustomController
-from mycodo.databases.models import Input
 from mycodo.databases.models import Conditional
-from mycodo.databases.models import Output
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import Function
+from mycodo.databases.models import Input
+from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Trigger
 from mycodo.databases.models import User
@@ -562,7 +562,6 @@ def test_add_all_function_devices_logged_in_as_admin(_, testapp):
 
         # Save function
         response = save_data(testapp, 'function', device_dev=function_dev)
-        print(response.json['data']['messages'])
         assert 'data' in response.json
         assert 'messages' in response.json['data']
         assert 'error' in response.json['data']['messages']
@@ -570,7 +569,6 @@ def test_add_all_function_devices_logged_in_as_admin(_, testapp):
 
         # Delete function (speeds up further function addition checking)
         response = delete_data(testapp, 'function', device_dev=function_dev)
-        print(response.json['data']['messages'])
         assert 'data' in response.json
         assert 'messages' in response.json['data']
         assert 'error' in response.json['data']['messages']
