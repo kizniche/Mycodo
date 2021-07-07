@@ -533,11 +533,11 @@ def input_mod(form_mod, request_form):
 
         if 'execute_at_modification' in dict_inputs[mod_input.device]:
             # pass custom options to module prior to saving to database
-            (allow_saving,
-             page_refresh,
-             mod_output,
+            (messages,
+             mod_input,
              custom_options_dict,
              custom_options_channels_dict) = dict_inputs[mod_input.device]['execute_at_modification'](
+                messages,
                 mod_input,
                 request_form,
                 custom_options_dict_presave,
@@ -546,8 +546,6 @@ def input_mod(form_mod, request_form):
                 custom_options_channels_dict_postsave)
             custom_options = json.dumps(custom_options_dict)  # Convert from dict to JSON string
             custom_channel_options = custom_options_channels_dict
-            if not allow_saving:
-                messages["error"].append("execute_at_modification() would not allow input options to be saved")
         else:
             # Don't pass custom options to module
             custom_options = json.dumps(custom_options_dict_postsave)
@@ -607,14 +605,6 @@ def input_del(input_id):
                 InputChannel,
                 each_channel.unique_id,
                 flash_message=False)
-
-        try:
-            display_order = csv_to_list_of_str(
-                DisplayOrder.query.first().inputs)
-            display_order.remove(input_id)
-            DisplayOrder.query.first().inputs = list_to_csv(display_order)
-        except Exception:  # id not in list
-            pass
 
         try:
             file_path = os.path.join(

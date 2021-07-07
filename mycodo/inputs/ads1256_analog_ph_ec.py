@@ -29,22 +29,17 @@ def constraints_pass_positive_value(mod_input, value):
 
 
 def execute_at_modification(
+        messages,
         mod_input,
         request_form,
         custom_options_dict_presave,
         custom_options_channels_dict_presave,
         custom_options_dict_postsave,
         custom_options_channels_dict_postsave):
-    allow_saving = True
-    page_refresh = False
-    success = []
-    error = []
-
     try:
         if (custom_options_dict_postsave['adc_channel_ph'] ==
                 custom_options_dict_postsave['adc_channel_ec']):
-            error.append("Cannot set pH and EC to be measured from the same channel.")
-            allow_saving = False
+            messages["error"].append("Cannot set pH and EC to be measured from the same channel.")
         else:
             with session_scope(MYCODO_DB_PATH) as new_session:
                 measurements = new_session.query(DeviceMeasurements).filter(
@@ -52,32 +47,27 @@ def execute_at_modification(
                 for each_measure in measurements:
                     if each_measure.channel == int(custom_options_dict_postsave['adc_channel_ph']):
                         if each_measure.measurement != 'ion_concentration':
-                            page_refresh = True
+                            messages["page_refresh"] = True
                             each_measure.conversion_id = ''
                         each_measure.measurement = 'ion_concentration'
                         each_measure.unit = 'pH'
                     elif each_measure.channel == int(custom_options_dict_postsave['adc_channel_ec']):
                         if each_measure.measurement != 'electrical_conductivity':
-                            page_refresh = True
+                            messages["page_refresh"] = True
                             each_measure.conversion_id = ''
                         each_measure.measurement = 'electrical_conductivity'
                         each_measure.unit = 'uS_cm'
                     else:
                         if each_measure.measurement != 'electrical_potential':
-                            page_refresh = True
+                            messages["page_refresh"] = True
                             each_measure.conversion_id = ''
                         each_measure.measurement = 'electrical_potential'
                         each_measure.unit = 'V'
                     new_session.commit()
     except Exception:
-        error.append("execute_at_modification() Error: {}".format(traceback.print_exc()))
+        messages["error"].append("execute_at_modification() Error: {}".format(traceback.print_exc()))
 
-    for each_error in error:
-        flash(each_error, 'error')
-    for each_success in success:
-        flash(each_success, 'success')
-    return (allow_saving,
-            page_refresh,
+    return (messages,
             mod_input,
             custom_options_dict_postsave,
             custom_options_channels_dict_postsave)

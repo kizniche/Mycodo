@@ -199,7 +199,10 @@ class OutputController(AbstractController, threading.Thread):
 
             # instruct output to shutdown
             shutdown_timer = timeit.default_timer()
-            self.output[output_id].shutdown(shutdown_timer)
+            try:
+                self.output[output_id].shutdown(shutdown_timer)
+            except Exception as err:
+                self.logger.error("Could not shut down output gracefully: {}".format(err))
 
             self.output_unique_id.pop(output_id, None)
             self.output_type.pop(output_id, None)

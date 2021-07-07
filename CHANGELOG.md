@@ -1,6 +1,46 @@
 ## 8.11.1 (Unreleased)
 
-This release improves the way settings are saved, which requires a change to any custom Inputs/Outputs/Functions you have in use. 
+This release changes the way settings are saved, which requires a change to any custom Inputs/Outputs/Functions you have in use. If your custom module includes the seldom-used execute_at_modification() function (such as Mycodo/mycodo/inputs/python_code.py), you will need to change the parameters as well as the return variables.
+
+Before:
+
+```python
+def execute_at_modification(
+        mod_entry,
+        request_form,
+        custom_options_dict_presave,
+        custom_options_channels_dict_presave,
+        custom_options_dict_postsave,
+        custom_options_channels_dict_postsave):
+    allow_saving = True  # Allows saving of options to occur
+    return (allow_saving,
+            mod_entry,
+            custom_options_dict_postsave,
+            custom_options_channels_dict_postsave)
+```
+
+After:
+
+```python
+def execute_at_modification(
+        messages,
+        mod_entry,
+        request_form,
+        custom_options_dict_presave,
+        custom_options_channels_dict_presave,
+        custom_options_dict_postsave,
+        custom_options_channels_dict_postsave):
+     # Uncomment the next line to prevent saving of options from occurring
+     # messages["error"].append("Some error that prevents saving of options")
+     # messages["warning"].append("This will be a warning message")
+     # messages["info"].append("This will be an info message")
+     # messages[""].append("This will be a success message")
+     # messages["page_refresh"] = True  # This will cause the options on the user's page to refresh (e.g. if the number of measurements change)
+     return (messages,
+             mod_entry,
+             custom_options_dict_postsave,
+             custom_options_channels_dict_postsave)
+```
 
 ### Bugfixes
 
@@ -17,10 +57,10 @@ This release improves the way settings are saved, which requires a change to any
 ### Features
 
  - Add ability to submit forms without refreshing the page ([#1040](https://github.com/kizniche/mycodo/issues/1040))
- - Add ability to install dependencies from Input/Output page modal dialogue
- - Add drag and drop sorting of Inputs
- - Add modal dialogue for Input configuration
- - Add numerical keypad login
+ - Add ability to install dependencies without changing the page
+ - Add drag and drop sorting of Inputs/Ouputs/Functions
+ - Add modal dialogue for Input/Output/Function configuration
+ - Add option for a numerical keypad login
  - Add options for camera library raspistill: AWB Gain Blue, AWB Gain Red
  - Add Input: ADS1256 with Analog pH/EC sensors
    Add Input: SI1145 Light/Proximity sensor
@@ -35,7 +75,7 @@ This release improves the way settings are saved, which requires a change to any
  - Update KP303 library ([#1028](https://github.com/kizniche/mycodo/issues/1028))
  - Add Try/Except for checking Output Triggers ([#1037](https://github.com/kizniche/mycodo/issues/1037))
  - Speed up loading of Camera page
- - Update Gridstack to latest version
+ - Update Gridstack to the latest version
 
 
 ## 8.11.0 (2021-06-05) 

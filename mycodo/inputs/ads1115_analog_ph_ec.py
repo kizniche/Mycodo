@@ -10,32 +10,21 @@ from mycodo.utils.constraints_pass import constraints_pass_positive_value
 
 
 def execute_at_modification(
+        messages,
         mod_input,
         request_form,
         custom_options_dict_presave,
         custom_options_channels_dict_presave,
         custom_options_dict_postsave,
         custom_options_channels_dict_postsave):
-    allow_saving = True
-    page_refresh = False
-    success = []
-    error = []
-
     try:
         if (custom_options_dict_postsave['adc_channel_ph'] ==
                 custom_options_dict_postsave['adc_channel_ec']):
-            error.append("Cannot set pH and EC to be measured from the same channel.")
-            allow_saving = False
+            messages["error"].append("Cannot set pH and EC to be measured from the same channel.")
     except Exception:
-        error.append("execute_at_modification() Error: {}".format(traceback.print_exc()))
-        allow_saving = False
+        messages["error"].append("execute_at_modification() Error: {}".format(traceback.print_exc()))
 
-    for each_error in error:
-        flash(each_error, 'error')
-    for each_success in success:
-        flash(each_success, 'success')
-    return (allow_saving,
-            page_refresh,
+    return (messages,
             mod_input,
             custom_options_dict_postsave,
             custom_options_channels_dict_postsave)

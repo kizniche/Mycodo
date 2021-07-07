@@ -144,11 +144,11 @@ def controller_mod(form_mod, request_form):
 
         if 'execute_at_modification' in dict_controllers[mod_controller.device]:
             # pass custom options to module prior to saving to database
-            (allow_saving,
-             page_refresh,
+            (messages,
              mod_controller,
              custom_options_dict,
              custom_options_channels_dict) = dict_controllers[mod_controller.device]['execute_at_modification'](
+                messages,
                 mod_controller,
                 request_form,
                 custom_options_dict_presave,
@@ -157,8 +157,6 @@ def controller_mod(form_mod, request_form):
                 custom_options_channels_dict_postsave)
             custom_options = json.dumps(custom_options_dict)  # Convert from dict to JSON string
             custom_channel_options = custom_options_channels_dict
-            if not allow_saving:
-                messages["error"].append("execute_at_modification() would not allow function options to be saved")
         else:
             # Don't pass custom options to module
             custom_options = json.dumps(custom_options_dict_postsave)

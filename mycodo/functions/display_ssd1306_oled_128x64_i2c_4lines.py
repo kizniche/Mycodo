@@ -74,6 +74,7 @@ def execute_at_creation(error, new_func, dict_functions=None):
 
 
 def execute_at_modification(
+        messages,
         mod_function,
         request_form,
         custom_options_dict_presave,
@@ -94,11 +95,6 @@ def execute_at_modification(
     :param custom_options_channels_dict_postsave: dict of post-saved custom output channel options
     :return:
     """
-    allow_saving = True
-    page_refresh = False
-    success = []
-    error = []
-
     try:
         dict_controllers = parse_function_information()
 
@@ -133,8 +129,8 @@ def execute_at_modification(
                 new_channel.function_id = mod_function.unique_id
                 new_channel.channel = index
 
-                error, custom_options = custom_channel_options_return_json(
-                    error, dict_controllers, request_form,
+                messages["error"], custom_options = custom_channel_options_return_json(
+                    messages["error"], dict_controllers, request_form,
                     mod_function.unique_id, index,
                     device=mod_function.device, use_defaults=False)
                 custom_options_dict = json.loads(custom_options)
@@ -153,15 +149,9 @@ def execute_at_modification(
                     delete_entry_with_id(FunctionChannel, each_channel.unique_id)
 
     except Exception:
-        error.append("execute_at_modification() Error: {}".format(traceback.print_exc()))
-        allow_saving = False
+        messages["error"].append("execute_at_modification() Error: {}".format(traceback.print_exc()))
 
-    for each_error in error:
-        flash(each_error, 'error')
-    for each_success in success:
-        flash(each_success, 'success')
-    return (allow_saving,
-            page_refresh,
+    return (messages,
             mod_function,
             custom_options_dict_postsave,
             custom_options_channels_dict_postsave)

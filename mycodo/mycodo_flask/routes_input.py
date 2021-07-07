@@ -168,7 +168,7 @@ def page_input():
     input_type = request.args.get('input_type', None)
     input_id = request.args.get('input_id', None)
     each_input = None
-    if input_type in ['entry', 'options'] and input_id != '0':
+    if input_type in ['entry', 'options']:
         each_input = Input.query.filter(Input.unique_id == input_id).first()
 
     function = CustomController.query.all()

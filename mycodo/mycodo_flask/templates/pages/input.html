@@ -142,10 +142,7 @@
           type: "POST",
           url: '/input_submit',
           data: $(this).serialize()
-              + '&'
-              + submitter_btn.attr("name")
-              + '='
-              + submitter_btn.attr("value"),
+              + '&' + submitter_btn.attr("name") + '=' + submitter_btn.attr("value"),
           success: function (data) {
             if (submitter_btn.attr("name") === 'input_add' && 'input_id' in data.data) {
               if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
@@ -173,6 +170,9 @@
             }
             if (data.data.messages.error.length === 0) {
               if (submitter_btn.attr("name") === 'input_mod' && 'input_id' in data.data) {
+                if ('return_text' in data.data.messages) {
+                  document.getElementById("return_text_" + data.data.input_id).innerHTML = data.data.messages.return_text.join("<br/><br/>");
+                }
                 if ('name' in data.data.messages) {
                   document.getElementById("input_name_" + data.data.input_id).value = data.data.messages.name;
                 }

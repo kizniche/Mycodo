@@ -92,7 +92,7 @@
             $.each(data,
               function(output_id, states) {
                 for (let i = 0; i < Object.keys(states).length; i++) {
-                  if (states[i] !== null) {
+                  if (states[i] !== null && document.getElementById(output_id + "-" + i + "-output-state") != null) {
                     document.getElementById(output_id + "-" + i + "-output-state").className = "row small-gutters active-background";
                     if (states[i] !== 'off') {
                       if (states[i] === 'on') {
@@ -228,15 +228,13 @@
       if (submitter_btn.attr("name") === 'output_add' ||
           submitter_btn.attr("name") === 'output_mod' ||
           submitter_btn.attr("name") === 'output_delete') {
+        e.preventDefault();
         toastr['info']('Command sent. Please wait...');
         $.ajax({
           type: "POST",
           url: '/output_submit',
           data: $(this).serialize()
-              + '&'
-              + submitter_btn.attr("name")
-              + '='
-              + submitter_btn.attr("value"),
+              + '&' + submitter_btn.attr("name") + '=' + submitter_btn.attr("value"),
           success: function (data) {
             if (submitter_btn.attr("name") === 'output_add' && 'output_id' in data.data) {
               if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
@@ -264,6 +262,9 @@
             }
             if (data.data.messages.error.length === 0) {
               if (submitter_btn.attr("name") === 'output_mod' && 'output_id' in data.data) {
+                if ('return_text' in data.data.messages) {
+                  document.getElementById("return_text_" + data.data.output_id).innerHTML = data.data.messages.return_text.join("<br/><br/>");
+                }
                 if ('name' in data.data.messages) {
                   document.getElementById("output_name_" + data.data.output_id).value = data.data.messages.name;
                 }
@@ -297,7 +298,6 @@
             toastr['error']('Error: Could not communicate with server');
           }
         });
-        e.preventDefault();
       }
     });
 

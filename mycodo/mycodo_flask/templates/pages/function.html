@@ -282,10 +282,7 @@
           type: "POST",
           url: '/function_submit',
           data: $(this).serialize()
-              + '&'
-              + submitter_btn.attr("name")
-              + '='
-              + submitter_btn.attr("value"),
+              + '&' + submitter_btn.attr("name") + '=' + submitter_btn.attr("value"),
           success: function (data) {
             if (submitter_btn.attr("name") === 'function_add' && 'function_id' in data.data) {
               if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
@@ -313,8 +310,8 @@
             }
             if (data.data.messages.error.length === 0) {
               if (submitter_btn.attr("name") === 'function_mod' && 'function_id' in data.data) {
-                if ('pylint' in data.data.messages) {
-                  document.getElementById("pylint_" + data.data.function_id).innerHTML = data.data.messages.pylint.join("<br/><br/>");
+                if ('return_text' in data.data.messages) {
+                  document.getElementById("return_text_" + data.data.function_id).innerHTML = data.data.messages.return_text.join("<br/><br/>");
                 }
                 if ('name' in data.data.messages) {
                   document.getElementById("function_name_" + data.data.function_id).value = data.data.messages.name;
@@ -457,7 +454,7 @@
     $.ajaxSetup({
       beforeSend: function (xhr, settings) {
         if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-          xhr.setRequestHeader("X-CSRFToken", "{{form_mod_pid_base.csrf_token._value()}}")
+          xhr.setRequestHeader("X-CSRFToken", "{{form_function_base.csrf_token._value()}}")
         }
       }
     });

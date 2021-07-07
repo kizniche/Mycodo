@@ -2,50 +2,12 @@
 #
 # on_off_gpio.py - Output for simple GPIO switching
 #
-from flask import flash
 from flask_babel import lazy_gettext
 
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
 from mycodo.utils.database import db_retrieve_table_daemon
-
-
-def execute_at_modification(
-        mod_output,
-        request_form,
-        custom_options_dict_presave,
-        custom_options_channels_dict_presave,
-        custom_options_dict_postsave,
-        custom_options_channels_dict_postsave):
-    """
-    This function allows you to view and modify the output and channel settings when the user clicks
-    save on the user interface. Both the output and channel settings are passed to this function, as
-    dictionaries. Additionally, both the pre-saved and post-saved options are available, as it's
-    sometimes useful to know what settings changed and from what values. You can modify the post-saved
-    options and these will be stored in the database.
-    :param mod_output: The post-saved output database entry, minus the custom_options settings
-    :param request_form: The requests.form object the user submitted
-    :param custom_options_dict_presave: dict of pre-saved custom output options
-    :param custom_options_channels_dict_presave: dict of pre-saved custom output channel options
-    :param custom_options_dict_postsave: dict of post-saved custom output options
-    :param custom_options_channels_dict_postsave: dict of post-saved custom output channel options
-    :return:
-    """
-    allow_saving = True
-    page_refresh = False
-    success = []
-    error = []
-
-    for each_error in error:
-        flash(each_error, 'error')
-    for each_success in success:
-        flash(each_success, 'success')
-    return (allow_saving,
-            page_refresh,
-            mod_output,
-            custom_options_dict_postsave,
-            custom_options_channels_dict_postsave)
 
 # Measurements
 measurements_dict = {
@@ -69,7 +31,6 @@ OUTPUT_INFORMATION = {
     'output_library': 'RPi.GPIO',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
-    'execute_at_modification': execute_at_modification,
     'output_types': ['on_off'],
 
     'message': 'The specified GPIO pin will be set HIGH (3.3 volts) or LOW (0 volts) when turned '

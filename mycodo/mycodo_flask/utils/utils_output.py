@@ -310,11 +310,11 @@ def output_mod(form_output, request_form):
 
         if 'execute_at_modification' in dict_outputs[mod_output.output_type]:
             # pass custom options to module prior to saving to database
-            (allow_saving,
-             page_refresh,
+            (messages,
              mod_output,
              custom_options_dict,
              custom_options_channels_dict) = dict_outputs[mod_output.output_type]['execute_at_modification'](
+                messages,
                 mod_output,
                 request_form,
                 custom_options_dict_presave,
@@ -323,8 +323,6 @@ def output_mod(form_output, request_form):
                 custom_options_channels_dict_postsave)
             custom_options = json.dumps(custom_options_dict)  # Convert from dict to JSON string
             custom_channel_options = custom_options_channels_dict
-            if not allow_saving:
-                messages["error"].append("execute_at_modification() would not allow output options to be saved")
         else:
             # Don't pass custom options to module
             custom_options = json.dumps(custom_options_dict_postsave)
@@ -385,9 +383,6 @@ def output_del(form_output):
                 each_channel.unique_id,
                 flash_message=False)
 
-        display_order = csv_to_list_of_str(DisplayOrder.query.first().output)
-        display_order.remove(form_output.output_id.data)
-        DisplayOrder.query.first().output = list_to_csv(display_order)
         db.session.commit()
         messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['delete']['title'],
