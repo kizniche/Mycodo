@@ -281,9 +281,10 @@ def controller_activate(controller_id):
                         "the measurement and unit set before the Function can be activated.".format(
                             each_measure.channel, each_measure.name))
 
+    messages = controller_activate_deactivate(
+        messages, 'activate', 'Function', controller_id, flash_message=False)
+
     if not messages["error"]:
-        controller_activate_deactivate(
-            'activate', 'Function', controller_id, flash_message=False)
         messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['activate']['title'],
             controller=TRANSLATIONS['controller']['title']))
@@ -300,9 +301,10 @@ def controller_deactivate(controller_id):
         "error": []
     }
 
+    messages = controller_activate_deactivate(
+        messages, 'deactivate', 'Function', controller_id, flash_message=False)
+
     if not messages["error"]:
-        controller_activate_deactivate(
-            'deactivate', 'Function', controller_id, flash_message=False)
         messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['deactivate']['title'],
             controller=TRANSLATIONS['controller']['title']))

@@ -5,6 +5,7 @@ import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import str_is_float
 
@@ -44,6 +45,7 @@ INPUT_INFORMATION = {
             'type': 'integer',
             'default_value': 60,
             'required': True,
+            'constraints_pass': constraints_pass_positive_value,
             'name': lazy_gettext('Command Timeout'),
             'phrase': 'How long to wait for the command to finish before killing the process.'
         },
@@ -103,7 +105,9 @@ class InputModule(AbstractInput):
                 user=self.execute_as_user,
                 cwd=self.current_working_dir)
 
-            self.logger.debug("Command returned: {}, Status: {}, Error: {}".format(out, err, status))
+            self.logger.debug(
+                "Command returned: {}, Status: {}, Error: {}".format(
+                    out, err, status))
 
             if str_is_float(out):
                 measurement_value = float(out)

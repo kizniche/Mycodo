@@ -1,8 +1,7 @@
 # coding=utf-8
-import copy
 import traceback
 
-from flask import flash
+import copy
 from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput

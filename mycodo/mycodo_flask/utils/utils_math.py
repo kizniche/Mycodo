@@ -312,7 +312,12 @@ def math_del(form_mod_math):
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['delete']['title'],
         controller=TRANSLATIONS['math']['title'])
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     math_id = form_mod_math.math_id.data
 
@@ -320,7 +325,8 @@ def math_del(form_mod_math):
         math = Math.query.filter(
             Math.unique_id == math_id).first()
         if math.is_activated:
-            controller_activate_deactivate(
+            messages = controller_activate_deactivate(
+                messages,
                 'deactivate',
                 'Math',
                 form_mod_math.math_id.data)
@@ -329,20 +335,23 @@ def math_del(form_mod_math):
             DeviceMeasurements.device_id == math_id).all()
 
         for each_measurement in device_measurements:
-            delete_entry_with_id(DeviceMeasurements, each_measurement.unique_id)
+            delete_entry_with_id(
+                DeviceMeasurements, each_measurement.unique_id)
 
         delete_entry_with_id(Math, math_id)
         try:
-            display_order = csv_to_list_of_str(DisplayOrder.query.first().math)
+            display_order = csv_to_list_of_str(
+                DisplayOrder.query.first().math)
             display_order.remove(math_id)
             DisplayOrder.query.first().math = list_to_csv(display_order)
         except Exception:  # id not in list
             pass
         db.session.commit()
     except Exception as except_msg:
-        error.append(except_msg)
+        messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_input.page_input'))
+    flash_success_errors(
+        messages["error"], action, url_for('routes_input.page_input'))
 
 
 def math_reorder(math_id, display_order, direction):
@@ -365,10 +374,22 @@ def math_reorder(math_id, display_order, direction):
 
 
 def math_activate(form_mod_math):
-    controller_activate_deactivate(
-        'activate', 'Math', form_mod_math.math_id.data)
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    messages = controller_activate_deactivate(
+        messages, 'activate', 'Math', form_mod_math.math_id.data)
 
 
 def math_deactivate(form_mod_math):
-    controller_activate_deactivate(
-        'deactivate', 'Math', form_mod_math.math_id.data)
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    messages = controller_activate_deactivate(
+        messages, 'deactivate', 'Math', form_mod_math.math_id.data)

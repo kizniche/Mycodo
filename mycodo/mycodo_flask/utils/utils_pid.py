@@ -386,10 +386,11 @@ def pid_activate(pid_id):
             "Cannot activate PID controller if raise and/or lower output IDs "
             "are not selected"))
 
+    time.sleep(1)
+    messages = controller_activate_deactivate(
+        messages, 'activate', 'PID', pid_id, flash_message=False)
+
     if not messages["error"]:
-        time.sleep(1)
-        controller_activate_deactivate(
-            'activate', 'PID', pid_id, flash_message=False)
         messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['activate']['title'],
             controller=TRANSLATIONS['pid']['title']))
@@ -420,9 +421,12 @@ def pid_deactivate(pid_id):
         pid.method_start_time = None
         pid.method_end_time = None
         db.session.commit()
+
         time.sleep(1)
-        controller_activate_deactivate(
-            'deactivate', 'PID', pid_id, flash_message=False)
+        messages = controller_activate_deactivate(
+            messages, 'deactivate', 'PID', pid_id, flash_message=False)
+
+    if not messages["error"]:
         messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['deactivate']['title'],
             controller=TRANSLATIONS['pid']['title']))

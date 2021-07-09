@@ -1,7 +1,6 @@
 # coding=utf-8
 import traceback
 
-from flask import flash
 from flask_babel import lazy_gettext
 
 from mycodo.config import SQL_DATABASE_MYCODO

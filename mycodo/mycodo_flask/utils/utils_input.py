@@ -583,8 +583,10 @@ def input_del(input_id):
             Input.unique_id == input_id).first()
 
         if input_dev.is_activated:
-            input_deactivate_associated_controllers(input_id)
-            controller_activate_deactivate('deactivate', 'Input', input_id)
+            messages = input_deactivate_associated_controllers(
+                messages, input_id)
+            messages = controller_activate_deactivate(
+                messages, 'deactivate', 'Input', input_id)
 
         device_measurements = DeviceMeasurements.query.filter(
             DeviceMeasurements.device_id == input_id).all()
@@ -693,9 +695,11 @@ def input_activate(form_mod):
         if not measure_set:
             messages["error"].append("All measurements must have a name and unit/measurement set")
 
+
+    messages = controller_activate_deactivate(
+        messages, 'activate', 'Input',  input_id, flash_message=False)
+
     if not messages["error"]:
-        controller_activate_deactivate(
-            'activate', 'Input',  input_id, flash_message=False)
         messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['activate']['title'],
             controller=TRANSLATIONS['input']['title']))
@@ -713,9 +717,9 @@ def input_deactivate(form_mod):
 
     try:
         input_id = form_mod.input_id.data
-        input_deactivate_associated_controllers(input_id)
-        controller_activate_deactivate(
-            'deactivate', 'Input', input_id, flash_message=False)
+        messages = input_deactivate_associated_controllers(messages, input_id)
+        messages = controller_activate_deactivate(
+            messages, 'deactivate', 'Input', input_id, flash_message=False)
         messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['deactivate']['title'],
             controller=TRANSLATIONS['input']['title']))
@@ -725,17 +729,17 @@ def input_deactivate(form_mod):
     return messages
 
 
-# Deactivate any active PID or LCD controllers using this sensor
-def input_deactivate_associated_controllers(input_id):
+# Deactivate any active PID controllers using this Input
+def input_deactivate_associated_controllers(messages, input_id):
     # Deactivate any activated PIDs using this input
     sensor_unique_id = Input.query.filter(
         Input.unique_id == input_id).first().unique_id
     pid = PID.query.filter(PID.is_activated.is_(True)).all()
     for each_pid in pid:
         if sensor_unique_id in each_pid.measurement:
-            controller_activate_deactivate('deactivate',
-                                           'PID',
-                                           each_pid.unique_id)
+            messages = controller_activate_deactivate(
+                messages, 'deactivate', 'PID', each_pid.unique_id)
+    return messages
 
 
 def force_acquire_measurements(unique_id):

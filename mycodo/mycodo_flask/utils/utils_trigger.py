@@ -232,9 +232,10 @@ def trigger_activate(trigger_id):
     for each_action in actions.all():
         messages["error"] = check_actions(each_action, messages["error"])
 
+    messages = controller_activate_deactivate(
+        messages, 'activate', 'Trigger', trigger_id, flash_message=False)
+
     if not messages["error"]:
-        controller_activate_deactivate(
-            'activate', 'Trigger', trigger_id, flash_message=False)
         messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['activate']['title'],
             controller=TRANSLATIONS['trigger']['title']))
@@ -251,10 +252,10 @@ def trigger_deactivate(trigger_id):
         "error": []
     }
 
-    if not messages["error"]:
-        controller_activate_deactivate(
-            'deactivate', 'Trigger', trigger_id, flash_message=False)
+    messages = controller_activate_deactivate(
+        messages, 'deactivate', 'Trigger', trigger_id, flash_message=False)
 
+    if not messages["error"]:
         trigger = Trigger.query.filter(
             Trigger.unique_id == trigger_id).first()
         trigger.method_start_time = None

@@ -1587,26 +1587,34 @@ def settings_alert_mod(form_mod_alert):
     except Exception as except_msg:
         error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_alerts'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_alerts'))
 
 
 def settings_diagnostic_delete_inputs():
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['delete']['title'],
         controller=TRANSLATIONS['input']['title'])
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     inputs = db_retrieve_table(Input)
     device_measurements = db_retrieve_table(DeviceMeasurements)
     display_order = db_retrieve_table(DisplayOrder, entry='first')
 
-    if not error:
+    if not messages["error"]:
         try:
             for each_input in inputs:
                 # Deactivate any active controllers using the input
                 if each_input.is_activated:
-                    input_deactivate_associated_controllers(each_input.unique_id)
-                    controller_activate_deactivate('deactivate', 'Input', each_input.unique_id)
+                    messages = input_deactivate_associated_controllers(
+                        messages, each_input.unique_id)
+                    messages = controller_activate_deactivate(
+                        messages, 'deactivate', 'Input', each_input.unique_id)
 
                 # Delete all measurements associated with the input
                 for each_measurement in device_measurements:
@@ -1618,27 +1626,36 @@ def settings_diagnostic_delete_inputs():
             display_order.input = ''  # Clear the order
             db.session.commit()
         except Exception as except_msg:
-            error.append(except_msg)
+            messages["error"].append(str(except_msg))
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+    flash_success_errors(
+        messages["error"],
+        action,
+        url_for('routes_settings.settings_diagnostic'))
 
 
 def settings_diagnostic_delete_maths():
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['delete']['title'],
         controller=TRANSLATIONS['math']['title'])
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     maths = db_retrieve_table(Math)
     device_measurements = db_retrieve_table(DeviceMeasurements)
     display_order = db_retrieve_table(DisplayOrder, entry='first')
 
-    if not error:
+    if not messages["error"]:
         try:
             for each_math in maths:
                 # Deactivate any active controllers using the input
                 if each_math.is_activated:
-                    controller_activate_deactivate('deactivate', 'Math', each_math.unique_id)
+                    messages = controller_activate_deactivate(
+                        messages, 'deactivate', 'Math', each_math.unique_id)
 
                 # Delete all measurements associated
                 for each_measurement in device_measurements:
@@ -1648,9 +1665,12 @@ def settings_diagnostic_delete_maths():
             display_order.math = ''
             db.session.commit()
         except Exception as except_msg:
-            error.append(except_msg)
+            messages["error"].append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+    flash_success_errors(
+        messages["error"],
+        action,
+        url_for('routes_settings.settings_diagnostic'))
 
 
 def settings_diagnostic_delete_dashboard_elements():
@@ -1676,7 +1696,8 @@ def settings_diagnostic_delete_dashboard_elements():
         except Exception as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_diagnostic'))
 
 
 def settings_diagnostic_delete_notes_tags():
@@ -1697,7 +1718,8 @@ def settings_diagnostic_delete_notes_tags():
         except Exception as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_diagnostic'))
 
 
 def settings_diagnostic_delete_outputs():
@@ -1725,7 +1747,8 @@ def settings_diagnostic_delete_outputs():
         except Exception as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_diagnostic'))
 
 
 def settings_diagnostic_delete_settings_database():
@@ -1745,7 +1768,8 @@ def settings_diagnostic_delete_settings_database():
         except Exception as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_diagnostic'))
 
 
 def settings_diagnostic_delete_file(delete_type):
@@ -1771,7 +1795,8 @@ def settings_diagnostic_delete_file(delete_type):
         except Exception as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_diagnostic'))
 
 
 def settings_diagnostic_reset_email_counter():
@@ -1787,7 +1812,8 @@ def settings_diagnostic_reset_email_counter():
         except Exception as except_msg:
             error.append(except_msg)
 
-    flash_success_errors(error, action, url_for('routes_settings.settings_diagnostic'))
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_diagnostic'))
 
 
 def is_valid_hostname(hostname):

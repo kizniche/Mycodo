@@ -337,9 +337,10 @@ def conditional_activate(cond_id):
     for each_action in actions.all():
         messages["success"] = check_actions(each_action, messages["success"])
 
+    messages = controller_activate_deactivate(
+        messages, 'activate', 'Conditional', cond_id, flash_message=False)
+
     if not messages["success"]:
-        controller_activate_deactivate(
-            'activate', 'Conditional', cond_id, flash_message=False)
         messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['activate']['title'],
             controller=TRANSLATIONS['conditional']['title']))
@@ -356,9 +357,10 @@ def conditional_deactivate(cond_id):
         "error": []
     }
 
+    messages = controller_activate_deactivate(
+        messages, 'deactivate', 'Conditional', cond_id, flash_message=False)
+
     if not messages["error"]:
-        controller_activate_deactivate(
-            'deactivate', 'Conditional', cond_id, flash_message=False)
         messages["success"].append('{action} {controller}'.format(
             action=TRANSLATIONS['deactivate']['title'],
             controller=TRANSLATIONS['conditional']['title']))

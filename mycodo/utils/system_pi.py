@@ -539,9 +539,11 @@ def cmd_output(command, stdout_pipe=True, shell=True, timeout=360, user='mycodo'
     def kill_process():
         nonlocal cmd_success
         cmd_success = False
-        os.killpg(os.getpgid(cmd.pid), signal.SIGTERM)
-        logger.debug("cmd_output() timed out after {} seconds "
-                     "with command '{}'".format(timeout, command))
+        logger.error(
+            "cmd_output() with PID {} timed out after {} seconds "
+            "with command '{}'. Killing PID.".format(
+                cmd.pid, timeout, command))
+        os.kill(cmd.pid, signal.SIGTERM)
 
     # Add timeout functionality
     timer = Timer(timeout, kill_process)

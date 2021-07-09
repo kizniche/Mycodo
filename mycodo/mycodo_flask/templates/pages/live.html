@@ -83,64 +83,56 @@
     </div>
     {%- endif -%}
 
-    {% for each_order_input_id in display_order_input -%}
-      {%- set each_input = table_input.query.filter(
-                              and_(table_input.unique_id == each_order_input_id,
-                                   table_input.is_activated)).first() -%}
-      {%- if each_input -%}
+    {% for each_input in table_input.query.filter(table_input.is_activated.is_(True)).order_by(table_input.position_y.asc()).all() %}
 
     <div style="padding: 0.5em; margin-bottom: 0.7em; border: 1px solid #ddd; border-radius: 5px;">
 
       <div class="row">
         <div class="col-12 col-sm-6 text-left">
           {{each_input.name}} (Input {{each_input.unique_id[:8]}})
-          {%- if each_input.device != 'EDGE' -%}
+      {%- if each_input.device != 'EDGE' -%}
             <div>
                {{_('Input (%(type)s), %(sec)s second interval', type=each_input.device, sec=each_input.period)}}
             </div>
-          {%- endif -%}
+      {%- endif -%}
         </div>
 
         <div class="col-12 col-sm-6 text-right">
           {{_('Measurement')}} | {{_('Timestamp')}}
-        {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_input.unique_id).all() if each_meas.is_enabled %}
-          {% set measure_string = each_input.unique_id + '-input-' + each_meas.unique_id %}
+      {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_input.unique_id).all() if each_meas.is_enabled %}
+        {% set measure_string = each_input.unique_id + '-input-' + each_meas.unique_id %}
           <div>
             <b><span id="{{measure_string}}-value">0.0</span>
 
-          {%- if dict_units[dict_measure_units[each_meas.unique_id]]['unit'] -%}
+        {%- if dict_units[dict_measure_units[each_meas.unique_id]]['unit'] -%}
             {{' ' + dict_units[dict_measure_units[each_meas.unique_id]]['unit']}}
-          {%- endif -%}</b>
+        {%- endif -%}</b>
 
-          {%- if each_meas.conversion_id or each_meas.rescaled_unit -%}
+        {%- if each_meas.conversion_id or each_meas.rescaled_unit -%}
             {{' (' + dict_units[dict_measure_units[each_meas.unique_id]]['name'] + ') '}}
-          {%- else -%}
+        {%- else -%}
             {{' (' + dict_measurements[each_meas.measurement]['name'] + ') '}}
-          {%- endif -%}
+        {%- endif -%}
 
-          {%- if each_meas.name -%}
+        {%- if each_meas.name -%}
             {{' (' + each_meas.name + ') '}}
-          {%- endif -%}
+        {%- endif -%}
 
             CH{{each_meas.channel}} | <span id="{{measure_string}}-time">&lt;{{_('Please wait')}}&gt;</span><br>
           </div>
-        {% endfor %}
+      {% endfor %}
         </div>
       </div>
 
     </div>
 
-      {%- endif -%}
     {%- endfor -%}
 
-    {% for each_order_function_id in display_order_function %}
-      {%- set each_function = table_function.query.filter(
-                              and_(table_function.unique_id == each_order_function_id,
-                                   table_function.is_activated)).first() -%}
+    {% for each_function in table_function.query.filter(table_input.is_activated.is_(True)).order_by(table_function.position_y.asc()).all() %}
       {%- set func_measurements = table_device_measurements.query.filter(
-                                      table_device_measurements.device_id == each_order_function_id).all() -%}
+                                      table_device_measurements.device_id == each_function.unique_id).all() -%}
 
-      {%- if each_function and func_measurements -%}
+      {%- if func_measurements -%}
         {%  set function_options = custom_options_values_controllers[each_function.unique_id] %}
         {% if "period" in function_options %}
           {% set function_period = function_options["period"] %}
@@ -152,11 +144,11 @@
         <div class="col-12 col-sm-6 text-left">
           {{each_function.name}} (Function {{each_function.unique_id[:8]}})
           <div>
-            {% if function_period %}
+        {% if function_period %}
             {{_('Function (%(type)s), %(sec)s second interval', type=each_function.device, sec=function_period)}}
-            {% else %}
+        {% else %}
             {{_('Function (%(type)s)', type=each_function.function_type)}}
-            {% endif %}
+        {% endif %}
           </div>
         </div>
 
@@ -195,13 +187,5 @@
     {%- endfor -%}
 
   </main>
-
-  <script>
-    $('.collapse').on('show.bs.collapse', function(){
-      $(this).parent().find(".fa-plus-square").removeClass("fa-plus-square").addClass("fa-minus-square");
-    }).on('hide.bs.collapse', function(){
-      $(this).parent().find(".fa-minus-square").removeClass("fa-minus-square").addClass("fa-plus-square");
-    });
-  </script>
 
 {% endblock -%}

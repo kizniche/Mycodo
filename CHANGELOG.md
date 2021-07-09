@@ -53,6 +53,7 @@ def execute_at_modification(
  - Fix saving Output checkboxes ([#1029](https://github.com/kizniche/mycodo/issues/1029))
  - Fix PiOLED Functions ([#1030](https://github.com/kizniche/mycodo/issues/1030))
  - Fix PID controller properly reporting if Held/Paused
+ - Fix cmd_output() killing daemon upon command timeout ([#1047](https://github.com/kizniche/mycodo/issues/1047))
 
 ### Features
 

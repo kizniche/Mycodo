@@ -500,13 +500,16 @@ def check_for_valid_unit_and_conversion(device_id, error):
         return error
 
 
-def controller_activate_deactivate(controller_action,
+def controller_activate_deactivate(messages,
+                                   controller_action,
                                    controller_type,
                                    controller_id,
                                    flash_message=True):
     """
     Activate or deactivate controller
 
+    :param messages: messages to return to the user
+    :type messages: dict of list of strings
     :param controller_action: Activate or deactivate
     :type controller_action: str
     :param controller_type: The controller type (Conditional, Input, LCD, Math, PID, Trigger, Function)
@@ -515,9 +518,9 @@ def controller_activate_deactivate(controller_action,
     :type controller_id: str
     """
     if not user_has_permission('edit_controllers'):
-        return redirect(url_for('routes_general.home'))
-
-    error = []
+        messages["error"].append(
+            "Insufficient permissions to activate/deactivate controller")
+        return messages
 
     activated = bool(controller_action == 'activate')
 
@@ -529,7 +532,8 @@ def controller_activate_deactivate(controller_action,
         mod_controller = Input.query.filter(
             Input.unique_id == controller_id).first()
         if activated:
-            error = check_for_valid_unit_and_conversion(controller_id, error)
+            messages["error"] = check_for_valid_unit_and_conversion(
+                controller_id, messages["error"])
     elif controller_type == 'LCD':
         mod_controller = LCD.query.filter(
             LCD.unique_id == controller_id).first()
@@ -537,12 +541,14 @@ def controller_activate_deactivate(controller_action,
         mod_controller = Math.query.filter(
             Math.unique_id == controller_id).first()
         if activated:
-            error = check_for_valid_unit_and_conversion(controller_id, error)
+            messages["error"] = check_for_valid_unit_and_conversion(
+                controller_id, messages["error"])
     elif controller_type == 'PID':
         mod_controller = PID.query.filter(
             PID.unique_id == controller_id).first()
         if activated:
-            error = check_for_valid_unit_and_conversion(controller_id, error)
+            messages["error"] = check_for_valid_unit_and_conversion(
+                controller_id, messages["error"])
     elif controller_type == 'Trigger':
         mod_controller = Trigger.query.filter(
             Trigger.unique_id == controller_id).first()
@@ -551,21 +557,20 @@ def controller_activate_deactivate(controller_action,
             CustomController.unique_id == controller_id).first()
 
     if mod_controller is None:
-        flash("{type} Controller {id} doesn't exist".format(
-            type=controller_type, id=controller_id), "error")
-        return redirect(url_for('routes_general.home'))
+        messages["error"].append("{type} Controller {id} doesn't exist".format(
+            type=controller_type, id=controller_id))
+        return messages
 
     try:
-        if not error:
+        if not messages["error"]:
             mod_controller.is_activated = activated
             db.session.commit()
     except Exception as except_msg:
-        flash(gettext("Error: %(err)s",
-                      err='SQL: {msg}'.format(msg=except_msg)),
-              "error")
+        messages["error"].append(
+            '{}: {}'.format(TRANSLATIONS['error']['title'], except_msg))
 
     try:
-        if not error:
+        if not messages["error"]:
             from mycodo.mycodo_client import DaemonControl
             control = DaemonControl()
             if controller_action == 'activate':
@@ -574,16 +579,18 @@ def controller_activate_deactivate(controller_action,
                 return_values = control.controller_deactivate(controller_id)
             if flash_message:
                 if return_values[0]:
-                    flash(return_values[1], "error")
+                    messages["error"].append(return_values[1])
                 else:
-                    flash(return_values[1], "success")
+                    messages["success"].append(return_values[1])
     except Exception as except_msg:
-        flash('{}: {}'.format(TRANSLATIONS['error']['title'], except_msg),
-              "error")
+        messages["error"].append(
+            '{}: {}'.format(TRANSLATIONS['error']['title'], except_msg))
 
     if flash_message:
-        for each_error in error:
+        for each_error in messages["error"]:
             flash(each_error, 'error')
+
+    return messages
 
 
 #

@@ -218,7 +218,12 @@ def lcd_activate(lcd_id):
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['activate']['title'],
         controller=TRANSLATIONS['lcd']['title'])
-    error = []
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
 
     try:
         # All display lines must be filled to activate display
@@ -257,62 +262,73 @@ def lcd_activate(lcd_id):
 
         for each_lcd_data in lcd_data:
             if lcd.y_lines in [2, 4, 8]:
-                error = check_display_set(
-                    error, 1,
+                messages["error"] = check_display_set(
+                    messages["error"], 1,
                     each_lcd_data.line_1_measurement,
                     each_lcd_data.line_1_max_age,
                     each_lcd_data.line_1_decimal_places)
-                error = check_display_set(
-                    error, 2,
+                messages["error"] = check_display_set(
+                    messages["error"], 2,
                     each_lcd_data.line_2_measurement,
                     each_lcd_data.line_2_max_age,
                     each_lcd_data.line_2_decimal_places)
             if lcd.y_lines in [4, 8]:
-                error = check_display_set(
-                    error, 3,
+                messages["error"] = check_display_set(
+                    messages["error"], 3,
                     each_lcd_data.line_3_measurement,
                     each_lcd_data.line_3_max_age,
                     each_lcd_data.line_3_decimal_places)
-                error = check_display_set(
-                    error, 4,
+                messages["error"] = check_display_set(
+                    messages["error"], 4,
                     each_lcd_data.line_4_measurement,
                     each_lcd_data.line_4_max_age,
                     each_lcd_data.line_4_decimal_places)
             if lcd.y_lines == 8:
-                error = check_display_set(
-                    error, 5,
+                messages["error"] = check_display_set(
+                    messages["error"], 5,
                     each_lcd_data.line_5_measurement,
                     each_lcd_data.line_5_max_age,
                     each_lcd_data.line_5_decimal_places)
-                error = check_display_set(
-                    error, 6,
+                messages["error"] = check_display_set(
+                    messages["error"], 6,
                     each_lcd_data.line_6_measurement,
                     each_lcd_data.line_6_max_age,
                     each_lcd_data.line_6_decimal_places)
-                error = check_display_set(
-                    error, 7,
+                messages["error"] = check_display_set(
+                    messages["error"], 7,
                     each_lcd_data.line_7_measurement,
                     each_lcd_data.line_7_max_age,
                     each_lcd_data.line_7_decimal_places)
-                error = check_display_set(
-                    error, 8,
+                messages["error"] = check_display_set(
+                    messages["error"], 8,
                     each_lcd_data.line_8_measurement,
                     each_lcd_data.line_8_max_age,
                     each_lcd_data.line_8_decimal_places)
 
         if blank_line_detected:
-            error.append(gettext(
-                'Detected at least one "Line" unset. Cannot activate LCD if there are unconfigured lines.'))
+            messages["error"].append(gettext(
+                'Detected at least one "Line" unset. '
+                'Cannot activate LCD if there are unconfigured lines.'))
 
-        if not error:
-            controller_activate_deactivate('activate', 'LCD', lcd_id)
+        if not messages["error"]:
+            messages = controller_activate_deactivate(
+                messages, 'activate', 'LCD', lcd_id)
     except Exception as except_msg:
-        error.append(except_msg)
-    flash_success_errors(error, action, url_for('routes_page.page_lcd'))
+        messages["error"].append(str(except_msg))
+
+    flash_success_errors(
+        messages["error"], action, url_for('routes_page.page_lcd'))
 
 
 def lcd_deactivate(lcd_id):
-    controller_activate_deactivate('deactivate', 'LCD', lcd_id)
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+    messages = controller_activate_deactivate(
+        messages, 'deactivate', 'LCD', lcd_id)
 
 
 def lcd_reset_flashing(lcd_id):
