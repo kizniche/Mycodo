@@ -14,11 +14,6 @@
   <script type="text/javascript" src="/static/js/modules/export-data.js"></script>
   <script type="text/javascript" src="/static/js/modules/offline-exporting.js"></script>
 
-  {# Graph popup effect#}
-  <script type="text/javascript" src="/static/js/modules/highslide-full.js"></script>
-  <script type="text/javascript" src="/static/js/modules/highslide.config.js"></script>
-  <link href="/static/css/highslide.css" rel="stylesheet">
-
   {% if current_user.theme in dark_themes %}
     <script type="text/javascript" src="/static/js/dark-unica.js"></script>
   {% endif %}
@@ -364,7 +359,9 @@ $(document).ready(function() {
 
   grid.on('resizestop', function(event, elem) {
     const chart_number = $(elem).attr('data-custom-chart-number');
-    chart[chart_number].reflow();
+    if (chart_number in chart) {
+      chart[chart_number].reflow();
+    }
   });
 
 });

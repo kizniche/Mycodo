@@ -264,7 +264,7 @@
             }
             if (data.data.messages.error.length === 0) {
               if (submitter_btn.attr("name") === 'output_mod' && 'output_id' in data.data) {
-                if ('return_text' in data.data.messages) {
+                if ('return_text' in data.data.messages && data.data.messages.return_text.length > 0) {
                   document.getElementById("return_text_" + data.data.output_id).innerHTML = data.data.messages.return_text.join("<br/><br/>");
                 }
                 if ('name' in data.data.messages) {

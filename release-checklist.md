@@ -7,8 +7,9 @@ Notes to keep track of the steps involved in making a new release.
    - Generates Input/Output/Function/Widget manual pages, API manual, and translatable .po files.
  - [ ] Verify the Input information was successfully inserted into the Mycodo Manuals.
  - [ ] Translate any new untranslated words/phrases in .po files.
- - [ ] Update config.py variables: MYCODO_VERSION, ALEMBIC_VERSION (if applicable).
+ - [ ] Update config.py variables MYCODO_VERSION and ALEMBIC_VERSION (if applicable).
  - [ ] Update version in README.rst
+ - [ ] Update version in mkdocs.yml
  - [ ] Update changes in CHANGELOG.md
    - Title in format "## 8.5.3 (2020-06-06)", with current date.
    - Section headers "### Bugfixes", "### Features", and "### Miscellaneous".

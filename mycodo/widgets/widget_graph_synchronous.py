@@ -274,6 +274,11 @@ WIDGET_INFORMATION = {
         }
     ],
 
+  # <!-- Graph popup effect for thermal imaging, goes in widget_dashboard_head -->
+  # <script type="text/javascript" src="/static/js/modules/highslide-full.js"></script>
+  # <script type="text/javascript" src="/static/js/modules/highslide.config.js"></script>
+  # <link href="/static/css/highslide.css" rel="stylesheet">
+
     'widget_dashboard_head': """<!-- no head content -->""",
 
     'widget_dashboard_title_bar': """

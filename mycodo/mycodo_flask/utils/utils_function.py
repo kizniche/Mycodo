@@ -292,7 +292,8 @@ def function_mod(form):
         "info": [],
         "warning": [],
         "error": [],
-        "name": None
+        "name": None,
+        "return_text": []
     }
 
     try:

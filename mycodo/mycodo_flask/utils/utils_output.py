@@ -238,7 +238,8 @@ def output_mod(form_output, request_form):
         "info": [],
         "warning": [],
         "error": [],
-        "name": None
+        "name": None,
+        "return_text": []
     }
     page_refresh = False
 

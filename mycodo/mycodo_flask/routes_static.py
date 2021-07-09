@@ -6,6 +6,7 @@ import traceback
 
 import flask_login
 import operator
+import os
 from flask import current_app
 from flask import redirect
 from flask import render_template
@@ -15,6 +16,7 @@ from flask import url_for
 from flask.blueprints import Blueprint
 
 from mycodo.config import ALEMBIC_VERSION
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LANGUAGES
 from mycodo.config import MYCODO_VERSION
 from mycodo.config import THEMES
@@ -89,11 +91,9 @@ def static_from_root():
     return send_from_directory(current_app.static_folder, request.path[1:])
 
 
-@blueprint.route('/mycodo-manual.pdf')
+@blueprint.route("/mycodo-manual_{}.pdf".format(MYCODO_VERSION))
 def download_pdf_manual():
     """Return PDF Manual"""
-    from mycodo.config import INSTALL_DIRECTORY
-    import os
     path_manual = os.path.join(INSTALL_DIRECTORY, "docs")
     return send_from_directory(path_manual, "mycodo-manual.pdf")
 
