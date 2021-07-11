@@ -12,6 +12,7 @@ from mycodo.databases.models import CustomController
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import FunctionChannel
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.utils import utils_measurement
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
@@ -58,6 +59,10 @@ def controller_mod(form_mod, request_form):
                     each_measurement.is_enabled = True
                 else:
                     each_measurement.is_enabled = False
+
+        # Save Measurement settings
+        messages, page_refresh = utils_measurement.measurement_mod_form(
+            messages, page_refresh, request_form)
 
         # Add or delete channels for variable measurement Inputs
         if ('measurements_variable_amount' in dict_controllers[mod_controller.device] and

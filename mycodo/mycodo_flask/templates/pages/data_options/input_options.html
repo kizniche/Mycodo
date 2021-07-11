@@ -220,14 +220,14 @@
     {% endif %}
 
     {% set custom_options_values = custom_options_values_input_channels %}
+    {% set dict_options = dict_inputs[each_input.device] %}
+    {% set unique_id = each_input.unique_id %}
+    {% set each_device = each_input %}
+    {% set controller_type = "Input" %}
 
     {% for each_input_channel in input_channel if each_input_channel.input_id == each_input.unique_id %}
 
-      {% set dict_options = dict_inputs[each_input.device] %}
-      {% set unique_id = each_input.unique_id %}
       {% set channel = each_input_channel.channel %}
-      {% set each_device = each_input %}
-      {% set controller_type = "Input" %}
 
   <hr/>
   <div class="row">
@@ -264,8 +264,6 @@
 
   {% endif %}
 
-  </form>
-
   <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.5em 0.5em 0 0.5em">
     <div class="col-12">
       <h5>{{_('Measurement Settings')}}</h5>
@@ -277,4 +275,6 @@
   {% endif %}
 
   {% include 'pages/form_options/Measurements_Configure.html' %}
+
+  </form>
 </div>

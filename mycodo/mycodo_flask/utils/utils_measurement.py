@@ -14,82 +14,99 @@ from mycodo.utils.inputs import parse_input_information
 logger = logging.getLogger(__name__)
 
 
-def measurement_mod(form):
-    messages = {
-        "success": [],
-        "info": [],
-        "warning": [],
-        "error": []
-    }
+def measurement_mod_form(messages, page_refresh, form):
     mod_device = None
     device_info = None
+    measurement_ids = []
 
-    try:
-        mod_meas = DeviceMeasurements.query.filter(
-            DeviceMeasurements.unique_id == form.measurement_id.data).first()
-        if not mod_meas:
-            messages["error"].append("Count not found measurement")
+    for key in form.keys():
+        if key.startswith("measurement_id_") and len(key) > 15:
+            measurement_ids.append(key[15:])
 
-        controller_type = determine_controller_type(mod_meas.device_id)
+    for each_meas_id in measurement_ids:
+        try:
+            mod_meas = DeviceMeasurements.query.filter(
+                DeviceMeasurements.unique_id == each_meas_id).first()
+            if not mod_meas:
+                messages["error"].append("Count not found measurement")
 
-        if controller_type == "Input":
-            mod_device = Input.query.filter(
-                Input.unique_id == mod_meas.device_id).first()
-            device_info = parse_input_information()
-        elif controller_type == "Function_Custom":
-            mod_device = CustomController.query.filter(
-                CustomController.unique_id == mod_meas.device_id).first()
-            device_info = parse_function_information()
+            controller_type = determine_controller_type(mod_meas.device_id)
 
-        if not mod_device or not device_info:
-            logger.error("Could not find mod_device or device_info")
-            return
+            if controller_type == "Input":
+                mod_device = Input.query.filter(
+                    Input.unique_id == mod_meas.device_id).first()
+                device_info = parse_input_information()
+            elif controller_type == "Function_Custom":
+                mod_device = CustomController.query.filter(
+                    CustomController.unique_id == mod_meas.device_id).first()
+                device_info = parse_function_information()
 
-        if mod_device.is_activated:
-            messages["error"].append(gettext(
-                "Deactivate controller before modifying its settings"))
+            if not mod_device or not device_info:
+                logger.error("Could not find mod_device or device_info")
+                return
 
-        mod_meas.name = form.name.data
+            if mod_device.is_activated:
+                messages["error"].append(gettext(
+                    "Deactivate controller before modifying its settings"))
 
-        if form.device_type.data == 'measurement_select':
-            if not form.select_measurement_unit.data:
-                messages["error"].append("Must select a measurement unit")
+            if ("measurement_meas_name_{}".format(each_meas_id) in form and
+                    form["measurement_meas_name_{}".format(each_meas_id)]):
+                mod_meas.name = form["measurement_meas_name_{}".format(each_meas_id)]
+            elif ("measurement_convert_name_{}".format(each_meas_id) in form and
+                    form["measurement_convert_name_{}".format(each_meas_id)]):
+                mod_meas.name = form["measurement_convert_name_{}".format(each_meas_id)]
             else:
-                mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
-                mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
+                mod_meas.name = ''
 
-        elif form.device_type.data == 'measurement_convert':
+            if ("measurement_meas_unit_{}".format(each_meas_id) in form and
+                    ',' in form["measurement_meas_unit_{}".format(each_meas_id)]):
+                mod_meas.measurement = form["measurement_meas_unit_{}".format(
+                    each_meas_id)].split(',')[0]
+                mod_meas.unit = form["measurement_meas_unit_{}".format(
+                    each_meas_id)].split(',')[1]
+                page_refresh = True
+
             if ('enable_channel_unit_select' in device_info[mod_device.device] and
-                    device_info[mod_device.device]['enable_channel_unit_select']):
-                if ',' in form.select_measurement_unit.data:
-                    mod_meas.measurement = form.select_measurement_unit.data.split(',')[0]
-                    mod_meas.unit = form.select_measurement_unit.data.split(',')[1]
-                else:
-                    mod_meas.measurement = ''
-                    mod_meas.unit = ''
+                    device_info[mod_device.device]['enable_channel_unit_select'] and
+                        ("measurement_meas_unit_{}".format(each_meas_id) not in form or
+                         ',' not in form["measurement_meas_unit_{}".format(each_meas_id)])):
+                mod_meas.measurement = ''
+                mod_meas.unit = ''
 
-            if form.rescaled_measurement_unit.data != '' and ',' in form.rescaled_measurement_unit.data:
-                mod_meas.rescaled_measurement = form.rescaled_measurement_unit.data.split(',')[0]
-                mod_meas.rescaled_unit = form.rescaled_measurement_unit.data.split(',')[1]
-            elif form.rescaled_measurement_unit.data == '':
-                mod_meas.rescaled_measurement = ''
-                mod_meas.rescaled_unit = ''
+            if "measurement_rescaled_meas_unit_{}".format(each_meas_id) in form:
+                if (form["measurement_rescaled_meas_unit_{}".format(each_meas_id)] != '' and
+                        ',' in form["measurement_rescaled_meas_unit_{}".format(each_meas_id)]):
+                    mod_meas.rescaled_measurement = form["measurement_rescaled_meas_unit_{}".format(
+                        each_meas_id)].split(',')[0]
+                    mod_meas.rescaled_unit = form["measurement_rescaled_meas_unit_{}".format(
+                        each_meas_id)].split(',')[1]
+                elif form["measurement_rescaled_meas_unit_{}".format(each_meas_id)] == '':
+                    mod_meas.rescaled_measurement = ''
+                    mod_meas.rescaled_unit = ''
 
-            mod_meas.rescale_method = form.rescale_method.data
-            mod_meas.rescale_equation = form.rescale_equation.data
-            mod_meas.scale_from_min = form.scale_from_min.data
-            mod_meas.scale_from_max = form.scale_from_max.data
-            mod_meas.scale_to_min = form.scale_to_min.data
-            mod_meas.scale_to_max = form.scale_to_max.data
-            mod_meas.invert_scale = form.invert_scale.data
-            mod_meas.conversion_id = form.convert_to_measurement_unit.data
+            if "measurement_rescale_method_{}".format(each_meas_id) in form:
+                mod_meas.rescale_method = form["measurement_rescale_method_{}".format(each_meas_id)]
+            if "measurement_rescale_equation_{}".format(each_meas_id) in form:
+                mod_meas.rescale_equation = form["measurement_rescale_equation_{}".format(each_meas_id)]
+            if "measurement_scale_from_min_{}".format(each_meas_id) in form:
+                mod_meas.scale_from_min = form["measurement_scale_from_min_{}".format(each_meas_id)]
+            if "measurement_scale_from_max_{}".format(each_meas_id) in form:
+                mod_meas.scale_from_max = form["measurement_scale_from_max_{}".format(each_meas_id)]
+            if "measurement_scale_to_min_{}".format(each_meas_id) in form:
+                mod_meas.scale_to_min = form["measurement_scale_to_min_{}".format(each_meas_id)]
+            if "measurement_scale_to_max_{}".format(each_meas_id) in form:
+                mod_meas.scale_to_max = form["measurement_scale_to_max_{}".format(each_meas_id)]
+            if "measurement_invert_scale_{}".format(each_meas_id) in form:
+                mod_meas.invert_scale = form["measurement_invert_scale_{}".format(each_meas_id)]
+            if "measurement_conversion_id_{}".format(each_meas_id) in form:
+                mod_meas.conversion_id = form["measurement_conversion_id_{}".format(each_meas_id)]
 
-        if not messages["error"]:
-            db.session.commit()
-            messages["success"].append("Measurement settings saved")
+            if not messages["error"]:
+                db.session.commit()
+                messages["success"].append("Measurement settings saved")
 
-    except Exception as except_msg:
-        logger.exception(1)
-        messages["error"].append(str(except_msg))
+        except Exception as except_msg:
+            logger.exception(1)
+            messages["error"].append(str(except_msg))
 
-    return messages
+    return messages, page_refresh

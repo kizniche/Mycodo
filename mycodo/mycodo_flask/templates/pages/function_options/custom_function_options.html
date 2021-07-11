@@ -1,3 +1,9 @@
+{% set custom_options_values = custom_options_values_controllers %}
+{% set each_device = each_function %}
+{% set dict_options = dict_controllers[each_function.device] %}
+{% set unique_id = each_function.unique_id %}
+{% set controller_type = "Function" %}
+
 <div id="mod_function_{{each_function.unique_id}}">
   <form id="mod_function_form" method="post" action="/function">
     {{form_conditional.csrf_token}}
@@ -135,8 +141,6 @@
         </div>
       </div>
 
-    {% set controller_type = "Function" %}
-
     {% include 'pages/form_options/Num_channels.html' %}
     {% include 'pages/form_options/Measurements_Enabled.html' %}
 
@@ -208,8 +212,6 @@
 
       {% endfor %}
 
-  </form>
-
     {% if ("options_disabled" in dict_options and
            ('measurements_select' not in dict_options['options_disabled'] and
             'measurements_configure' not in dict_options['options_disabled']))
@@ -233,5 +235,7 @@
     {% include 'pages/form_options/Measurements_Configure.html' %}
 
     {% endif %}
+
+  </form>
 
 </div>

@@ -11,6 +11,7 @@ from flask_babel import lazy_gettext
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
+from mycodo.utils.atlas_calibration import setup_atlas_device
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
@@ -102,12 +103,50 @@ OUTPUT_INFORMATION = {
         }
     ],
 
-    'custom_actions_message':
-        'The I2C address can be changed. Enter a new address in the 0xYY format '
-        '(e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and '
-        'change the I2C address option after setting the new address.',
-
     'custom_actions': [
+        {
+            'type': 'message',
+            'default_value': """Calibration: a calibration can be performed to increase the accuracy of the pump. It's a good idea to clear the calibration before calibrating. First, remove all air from the line by pumping the fluid you would like to calibrate to through the pump hose. Next, press Dispense Amount and the pump will be instructed to dispense 10 ml (unless you changed the default value). Measure how much fluid was actually dispensed, enter this value in the Actual Volume Dispensed (ml) field, and press Calibrate to Dispensed Amount. Now any further pump volumes dispensed should be accurate."""
+        },
+        {
+            'id': 'clear_calibrate',
+            'type': 'button',
+            'name': 'Clear Calibration'
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'dispense_volume_ml',
+            'type': 'integer',
+            'default_value': 10,
+            'name': 'Volume to Dispense (ml)',
+            'phrase': 'The volume (ml) that is instructed to be dispensed'
+        },
+        {
+            'id': 'dispense_ml',
+            'type': 'button',
+            'name': 'Dispense Amount'
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'calibrate_volume_ml',
+            'type': 'integer',
+            'default_value': 10,
+            'name': 'Actual Volume Dispensed (ml)',
+            'phrase': 'The actual volume (ml) that was dispensed'
+        },
+        {
+            'id': 'calibrate_ml',
+            'type': 'button',
+            'name': 'Calibrate to Dispensed Amount'
+        },
+        {
+            'type': 'message',
+            'default_value': """The I2C address can be changed. Enter a new address in the 0xYY format (e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and change the I2C address option after setting the new address."""
+        },
         {
             'id': 'new_i2c_address',
             'type': 'text',
@@ -131,7 +170,7 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
-        self.atlas_command = None
+        self.atlas_device = None
         self.currently_dispensing = False
         self.interface = None
 
@@ -143,24 +182,7 @@ class OutputModule(AbstractOutput):
     def setup_output(self):
         self.setup_output_variables(OUTPUT_INFORMATION)
         self.interface = self.output.interface
-
-        if self.interface == 'FTDI':
-            from mycodo.devices.atlas_scientific_ftdi import AtlasScientificFTDI
-            self.atlas_command = AtlasScientificFTDI(self.output.ftdi_location)
-        elif self.interface == 'I2C':
-            from mycodo.devices.atlas_scientific_i2c import AtlasScientificI2C
-            self.atlas_command = AtlasScientificI2C(
-                i2c_address=int(str(self.output.i2c_location), 16),
-                i2c_bus=self.output.i2c_bus)
-        elif self.interface == 'UART':
-            from mycodo.devices.atlas_scientific_uart import AtlasScientificUART
-            self.atlas_command = AtlasScientificUART(
-                self.output.uart_location,
-                baudrate=self.output.baud_rate)
-        else:
-            self.logger.error("Unknown interface: {}".format(self.interface))
-            return
-
+        self.atlas_device = setup_atlas_device(self.output)
         self.output_setup = True
 
     def record_dispersal(self, amount_ml=None, seconds_to_run=None):
@@ -175,14 +197,14 @@ class OutputModule(AbstractOutput):
         # timer_dispense = time.time() + seconds
         self.currently_dispensing = True
         write_cmd = "D,*"
-        self.atlas_command.write(write_cmd)
+        self.atlas_device.write(write_cmd)
         self.logger.debug("EZO-PMP command: {}".format(write_cmd))
 
         # while time.time() < timer_dispense and self.currently_dispensing:
         #     time.sleep(0.1)
         #
         # write_cmd = 'X'
-        # self.atlas_command.write(write_cmd)
+        # self.atlas_device.write(write_cmd)
         # self.logger.debug("EZO-PMP command: {}".format(write_cmd))
         # self.currently_dispensing = False
         #
@@ -230,7 +252,7 @@ class OutputModule(AbstractOutput):
             return
 
         self.logger.debug("EZO-PMP command: {}".format(write_cmd))
-        self.atlas_command.write(write_cmd)
+        self.atlas_device.write(write_cmd)
 
         if amount and seconds_to_run:
             self.record_dispersal(amount_ml=amount, seconds_to_run=seconds_to_run)
@@ -269,13 +291,47 @@ class OutputModule(AbstractOutput):
             return False
 
     def is_setup(self):
-        if self.atlas_command:
+        if self.output_setup:
             return True
         return False
 
-    def set_i2c_address(self, args_dict):
-        self.output_setup = False
+    def calibrate(self, level, ml):
+        try:
+            if level == "clear":
+                write_cmd = "Cal,clear"
+            elif level == "dispense_ml":
+                write_cmd = "D,{}".format(level, ml)
+            elif level == "calibrate_ml":
+                write_cmd = "Cal,{}".format(level, ml)
+            else:
+                self.logger.error("Unknown option: {}".format(level))
+                return
+            self.logger.debug("Calibration command: {}".format(write_cmd))
+            ret_val = self.atlas_device.write(write_cmd)
+            self.logger.info("Command returned: {}".format(ret_val))
+            # Verify calibration saved
+            write_cmd = "Cal,?"
+            self.logger.info("Device Calibrated?: {}".format(
+                self.atlas_device.write(write_cmd)))
+        except:
+            self.logger.exception("Exception calibrating")
 
+    def clear_calibrate(self, args_dict):
+        self.calibrate('clear', None)
+
+    def dispense_ml(self, args_dict):
+        if 'dispense_volume_ml' not in args_dict:
+            self.logger.error("Cannot calibrate without volume (instructed)")
+            return
+        self.calibrate('instructed', args_dict['dispense_volume_ml'])
+
+    def calibrate_ml(self, args_dict):
+        if 'calibrate_volume_ml' not in args_dict:
+            self.logger.error("Cannot calibrate without volume (actual)")
+            return
+        self.calibrate('actual', args_dict['calibrate_volume_ml'])
+
+    def set_i2c_address(self, args_dict):
         if 'new_i2c_address' not in args_dict:
             self.logger.error("Cannot set new I2C address without an I2C address")
             return
@@ -283,6 +339,9 @@ class OutputModule(AbstractOutput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            self.atlas_command.write(write_cmd)
+            ret_val = self.atlas_device.write(write_cmd)
+            self.logger.info("Command returned: {}".format(ret_val))
+            self.atlas_device = None
+            self.output_setup = False
         except:
             self.logger.exception("Exception changing I2C address")

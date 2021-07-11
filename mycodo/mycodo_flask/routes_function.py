@@ -44,7 +44,6 @@ from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_conditional
 from mycodo.mycodo_flask.forms import forms_custom_controller
 from mycodo.mycodo_flask.forms import forms_function
-from mycodo.mycodo_flask.forms import forms_measurement
 from mycodo.mycodo_flask.forms import forms_pid
 from mycodo.mycodo_flask.forms import forms_trigger
 from mycodo.mycodo_flask.routes_static import inject_variables
@@ -52,7 +51,6 @@ from mycodo.mycodo_flask.utils import utils_conditional
 from mycodo.mycodo_flask.utils import utils_controller
 from mycodo.mycodo_flask.utils import utils_function
 from mycodo.mycodo_flask.utils import utils_general
-from mycodo.mycodo_flask.utils import utils_measurement
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_trigger
 from mycodo.mycodo_flask.utils.utils_misc import determine_controller_type
@@ -107,7 +105,6 @@ def page_function_submit():
     form_conditional_conditions = forms_conditional.ConditionalConditions()
     form_function = forms_custom_controller.CustomController()
     form_function_base = forms_function.FunctionMod()
-    form_mod_measurement = forms_measurement.MeasurementMod()
     form_mod_pid_base = forms_pid.PIDModBase()
     form_mod_pid_output_raise = forms_pid.PIDModRelayRaise()
     form_mod_pid_output_lower = forms_pid.PIDModRelayLower()
@@ -238,11 +235,6 @@ def page_function_submit():
                     form_conditional_conditions)
                 page_refresh = True
                 condition_id = form_conditional_conditions.conditional_condition_id.data
-
-            # Custom Functions
-            elif form_mod_measurement.measurement_mod.data:
-                messages = utils_measurement.measurement_mod(
-                    form_mod_measurement)
 
             # Custom action
             else:
@@ -383,7 +375,6 @@ def page_function():
     display_order_function = csv_to_list_of_str(DisplayOrder.query.first().function)
 
     form_add_function = forms_function.FunctionAdd()
-    form_mod_measurement = forms_measurement.MeasurementMod()
     form_mod_pid_base = forms_pid.PIDModBase()
     form_mod_pid_output_raise = forms_pid.PIDModRelayRaise()
     form_mod_pid_output_lower = forms_pid.PIDModRelayLower()
@@ -580,7 +571,6 @@ def page_function():
                                form_actions=form_actions,
                                form_add_function=form_add_function,
                                form_function_base=form_function_base,
-                               form_mod_measurement=form_mod_measurement,
                                form_mod_pid_base=form_mod_pid_base,
                                form_mod_pid_pwm_raise=form_mod_pid_pwm_raise,
                                form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
@@ -654,7 +644,6 @@ def page_function():
                                form_actions=form_actions,
                                form_add_function=form_add_function,
                                form_function_base=form_function_base,
-                               form_mod_measurement=form_mod_measurement,
                                form_mod_pid_base=form_mod_pid_base,
                                form_mod_pid_pwm_raise=form_mod_pid_pwm_raise,
                                form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
@@ -728,7 +717,6 @@ def page_function():
                                form_actions=form_actions,
                                form_add_function=form_add_function,
                                form_function_base=form_function_base,
-                               form_mod_measurement=form_mod_measurement,
                                form_mod_pid_base=form_mod_pid_base,
                                form_mod_pid_pwm_raise=form_mod_pid_pwm_raise,
                                form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
@@ -803,7 +791,6 @@ def page_function():
                                form_actions=form_actions,
                                form_add_function=form_add_function,
                                form_function_base=form_function_base,
-                               form_mod_measurement=form_mod_measurement,
                                form_mod_pid_base=form_mod_pid_base,
                                form_mod_pid_pwm_raise=form_mod_pid_pwm_raise,
                                form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,
@@ -879,7 +866,6 @@ def page_function():
                                form_actions=form_actions,
                                form_add_function=form_add_function,
                                form_function_base=form_function_base,
-                               form_mod_measurement=form_mod_measurement,
                                form_mod_pid_base=form_mod_pid_base,
                                form_mod_pid_pwm_raise=form_mod_pid_pwm_raise,
                                form_mod_pid_pwm_lower=form_mod_pid_pwm_lower,

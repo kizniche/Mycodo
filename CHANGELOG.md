@@ -42,6 +42,8 @@ def execute_at_modification(
              custom_options_channels_dict_postsave)
 ```
 
+Additionally, if you are currently using the MQTT JSON Input and your topics contain any special characters, you will need to enclose the topic in quotes (e.g. sensor-1 to "sensor-1").
+
 ### Bugfixes
 
  - Fix taking photos with camera library "raspistill" when AWB set to off
@@ -69,6 +71,8 @@ def execute_at_modification(
  - Add return status to Conditional Controllers
  - Add 2- and 4-line variants of SSD1306 Display Functions and extra Options ([#1030](https://github.com/kizniche/mycodo/issues/1030))
  - Add PDF Manual
+ - Add ability to calibrate from the Atlas Scientific Electrical Conductivity Input
+ - Add ability to calibrate from the Atlas Scientific Peristaltic Pump Output
 
 ### Miscellaneous
 

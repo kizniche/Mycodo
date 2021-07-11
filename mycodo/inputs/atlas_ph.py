@@ -79,7 +79,7 @@ INPUT_INFORMATION = {
     'custom_actions': [
         {
             'type': 'message',
-            'default_value': """Calibration: a one-, two- or three-point calibration can be performed. The first calibration must be the Mid point. The second must be the Low point. And the third must be the High point. You can perform a one-, two- or three-point calibration, but they must be performed in this order. Allow a minute or two after submerging your probe in a calibration solution for the measurements to equilibrate before calibrating to that solution. The EZO pH circuit default temperature compensation is set to 25 °C. If the temperature of the calibration solution is +/- 2 °C from 25 °C, consider setting the temperature compensation first. Note that if you have a Temperature Compensation Measurement selected from the Options, this will overwrite the manual Temperature Compensation set here, so be sure to disable this option if you would like to specify the temperature to compensate with."""
+            'default_value': """Calibration: a one-, two- or three-point calibration can be performed. It's a good idea to clear the calibration before calibrating. The first calibration must be the Mid point. The second must be the Low point. And the third must be the High point. You can perform a one-, two- or three-point calibration, but they must be performed in this order. Allow a minute or two after submerging your probe in a calibration solution for the measurements to equilibrate before calibrating to that solution. The EZO pH circuit default temperature compensation is set to 25 °C. If the temperature of the calibration solution is +/- 2 °C from 25 °C, consider setting the temperature compensation first. Note that if you have a Temperature Compensation Measurement selected from the Options, this will overwrite the manual Temperature Compensation set here, so be sure to disable this option if you would like to specify the temperature to compensate with."""
         },
         {
             'id': 'compensation_temp_c',
@@ -94,7 +94,10 @@ INPUT_INFORMATION = {
             'name': 'Set Temperature Compensation'
         },
         {
-            'id': 'calibrate_clear',
+            'type': 'new_line'
+        },
+        {
+            'id': 'clear_calibrate',
             'type': 'button',
             'name': lazy_gettext('Clear Calibration')
         },
@@ -280,18 +283,12 @@ class InputModule(AbstractInput):
         except:
             self.logger.exception("Exception compensating temperature")
 
-    def calibrate_clear(self, args_dict):
-        try:
-            write_cmd = "Cal,clear"
-            self.logger.debug("Calibration command: {}".format(write_cmd))
-            ret_val = self.atlas_device.write(write_cmd)
-            self.logger.info("Command returned: {}".format(ret_val))
-        except:
-            self.logger.exception("Exception calibrating")
-
     def calibrate(self, level, ph):
         try:
-            write_cmd = "Cal,{},{:.2f}".format(level, ph)
+            if level == "clear":
+                write_cmd = "Cal,clear"
+            else:
+                write_cmd = "Cal,{},{:.2f}".format(level, ph)
             self.logger.debug("Calibration command: {}".format(write_cmd))
             ret_val = self.atlas_device.write(write_cmd)
             self.logger.info("Command returned: {}".format(ret_val))
@@ -302,21 +299,24 @@ class InputModule(AbstractInput):
         except:
             self.logger.exception("Exception calibrating")
 
+    def clear_calibrate(self, args_dict):
+        self.calibrate('clear', None)
+
     def mid_calibrate(self, args_dict):
         if 'mid_point_ph' not in args_dict:
-            self.logger.error("Cannot calibrate without calibration solution ph")
+            self.logger.error("Cannot calibrate without calibration solution pH")
             return
         self.calibrate('mid', args_dict['mid_point_ph'])
 
     def low_calibrate(self, args_dict):
         if 'low_point_ph' not in args_dict:
-            self.logger.error("Cannot calibrate without calibration solution ph")
+            self.logger.error("Cannot calibrate without calibration solution pH")
             return
         self.calibrate('low', args_dict['low_point_ph'])
 
     def high_calibrate(self, args_dict):
         if 'high_point_ph' not in args_dict:
-            self.logger.error("Cannot calibrate without calibration solution ph")
+            self.logger.error("Cannot calibrate without calibration solution pH")
             return
         self.calibrate('high', args_dict['high_point_ph'])
 
@@ -330,5 +330,6 @@ class InputModule(AbstractInput):
             self.logger.debug("I2C Change command: {}".format(write_cmd))
             ret_val = self.atlas_device.write(write_cmd)
             self.logger.info("Command returned: {}".format(ret_val))
+            self.atlas_device = None
         except:
             self.logger.exception("Exception changing I2C address")

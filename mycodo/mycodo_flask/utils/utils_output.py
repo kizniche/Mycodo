@@ -10,20 +10,16 @@ from flask_babel import gettext
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases import set_uuid
 from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.utils.utils_general import add_display_order
 from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.outputs import parse_output_information
-from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import is_int
-from mycodo.utils.system_pi import list_to_csv
 
 logger = logging.getLogger(__name__)
 
@@ -172,12 +168,6 @@ def output_add(form_add, request_form):
                 if not messages["error"]:
                     new_output.save()
                     output_id = new_output.unique_id
-
-                    display_order = csv_to_list_of_str(
-                        DisplayOrder.query.first().output)
-                    DisplayOrder.query.first().output = add_display_order(
-                        display_order, new_output.unique_id)
-
                     db.session.commit()
 
                     #

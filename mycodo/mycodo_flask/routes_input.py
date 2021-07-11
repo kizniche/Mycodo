@@ -7,7 +7,6 @@ import subprocess
 
 import flask_login
 from flask import current_app
-from flask import flash
 from flask import jsonify
 from flask import redirect
 from flask import render_template
@@ -36,12 +35,10 @@ from mycodo.databases.models import User
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.forms import forms_input
 from mycodo.mycodo_flask.forms import forms_math
-from mycodo.mycodo_flask.forms import forms_measurement
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_input
 from mycodo.mycodo_flask.utils import utils_math
-from mycodo.mycodo_flask.utils import utils_measurement
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
@@ -84,7 +81,6 @@ def page_input_submit():
 
     form_add_input = forms_input.InputAdd()
     form_mod_input = forms_input.InputMod()
-    form_mod_measurement = forms_measurement.MeasurementMod()
 
     if not utils_general.user_has_permission('edit_controllers'):
         messages["error"].append("Your permissions do not allow this action")
@@ -111,9 +107,6 @@ def page_input_submit():
         elif form_mod_input.input_deactivate.data:
             messages = utils_input.input_deactivate(form_mod_input)
             input_id = form_mod_input.input_id.data
-        elif form_mod_measurement.measurement_mod.data:
-            messages = utils_measurement.measurement_mod(
-                form_mod_measurement)
         elif form_mod_input.input_acquire_measurements.data:
             messages = utils_input.force_acquire_measurements(
                 form_mod_input.input_id.data)
@@ -188,7 +181,6 @@ def page_input():
 
     form_add_input = forms_input.InputAdd()
     form_mod_input = forms_input.InputMod()
-    form_mod_measurement = forms_measurement.MeasurementMod()
 
     form_mod_math = forms_math.MathMod()
     form_mod_math_measurement = forms_math.MathMeasurementMod()
@@ -382,7 +374,6 @@ def page_input():
                                display_order_math=display_order_math,
                                form_add_input=form_add_input,
                                form_mod_input=form_mod_input,
-                               form_mod_measurement=form_mod_measurement,
                                form_mod_average_single=form_mod_average_single,
                                form_mod_sum_single=form_mod_sum_single,
                                form_mod_redundancy=form_mod_redundancy,
@@ -436,7 +427,6 @@ def page_input():
                                each_input=each_input,
                                form_add_input=form_add_input,
                                form_mod_input=form_mod_input,
-                               form_mod_measurement=form_mod_measurement,
                                form_mod_average_single=form_mod_average_single,
                                form_mod_sum_single=form_mod_sum_single,
                                form_mod_redundancy=form_mod_redundancy,
@@ -490,7 +480,6 @@ def page_input():
                                each_input=each_input,
                                form_add_input=form_add_input,
                                form_mod_input=form_mod_input,
-                               form_mod_measurement=form_mod_measurement,
                                form_mod_average_single=form_mod_average_single,
                                form_mod_sum_single=form_mod_sum_single,
                                form_mod_redundancy=form_mod_redundancy,

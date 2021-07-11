@@ -9,11 +9,7 @@
 
   {% for each_measurement in all_measurements %}
 
-<form method="post" action="/input">
-{{form_mod_measurement.csrf_token}}
-{{form_mod_measurement.device_id(value=each_device.unique_id)}}
-{{form_mod_measurement.measurement_id(value=each_measurement.unique_id)}}
-{{form_mod_measurement.device_type(value='measurement_select')}}
+  <input id="measurement_id_{{each_measurement.unique_id}}" name="measurement_id_{{each_measurement.unique_id}}" type="hidden" value="{{each_measurement.unique_id}}">
 
 {% if each_measurement.measurement and each_measurement.measurement not in dict_measurements %}
   <div class="row small-gutters" style="padding: 0.5em">
@@ -31,9 +27,6 @@
 {% endif %}
 
 <div class="row small-gutters align-items-end" style="border-bottom: 1px solid #ddd; padding: 0.5em">
-  <div class="col-auto small-gutters">
-    {{form_mod_measurement.measurement_mod(class_='form-control btn btn-primary btn-sm btn-block')}}
-  </div>
 
     {% if each_measurement.unit and each_measurement.measurement %}
 
@@ -64,16 +57,16 @@
     {% endif %}
 
   <div class="col-auto">
-    {{form_mod_measurement.name.label(class_='control-label')}}
+    <label class="control-label" for="measurement_meas_name_{{each_measurement.unique_id}}">{{dict_translation['select_measurement_unit']['name']}}</label>
     <div>
-      {{form_mod_measurement.name(class_='form-control', value=each_measurement.name, **{'title': dict_translation['name']['phrase']})}}
+      <input class="form-control" id="measurement_meas_name_{{each_measurement.unique_id}}" name="measurement_meas_name_{{each_measurement.unique_id}}" title="{{dict_translation['name']['phrase']}}" type="text" value="{{each_measurement.name}}">
     </div>
   </div>
 
   <div class="col-auto">
-    {{form_mod_measurement.select_measurement_unit.label(class_='control-label')}}
+    <label class="control-label" for="measurement_meas_unit_{{each_measurement.unique_id}}">{{dict_translation['select_measurement_unit']['title']}}</label>
     <div>
-      <select class="form-control" id="select_measurement_unit" name="select_measurement_unit">
+      <select class="form-control" id="measurement_meas_unit_{{each_measurement.unique_id}}" name="measurement_meas_unit_{{each_measurement.unique_id}}" title="{{dict_translation['select_measurement_unit']['phrase']}}">
         <option value="">{{dict_translation['select_one']['title']}}</option>
         {% for each_measure_unit in choices_measurements_units %}
         <option value="{{each_measure_unit['value']}}"{% if each_measure_unit['value'] == each_measurement.measurement + ',' + each_measurement.unit %} selected{% endif %}>{{each_measure_unit['item']}}</option>
@@ -83,8 +76,6 @@
   </div>
 
 </div>
-
-</form>
 
   {% endfor %}
 {% endif %}

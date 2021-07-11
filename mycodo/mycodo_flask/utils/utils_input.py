@@ -13,20 +13,18 @@ from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases import set_uuid
 from mycodo.databases.models import DeviceMeasurements
-from mycodo.databases.models import DisplayOrder
 from mycodo.databases.models import Input
 from mycodo.databases.models import InputChannel
 from mycodo.databases.models import PID
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.utils import utils_measurement
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.inputs import parse_input_information
-from mycodo.utils.system_pi import csv_to_list_of_str
-from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import parse_custom_option_values
 
 logger = logging.getLogger(__name__)
@@ -447,6 +445,10 @@ def input_mod(form_mod, request_form):
 
         channels = InputChannel.query.filter(
             InputChannel.input_id == form_mod.input_id.data)
+
+        # Save Measurement settings
+        messages, page_refresh = utils_measurement.measurement_mod_form(
+            messages, page_refresh, request_form)
 
         # Add or delete channels for variable measurement Inputs
         if ('measurements_variable_amount' in dict_inputs[mod_input.device] and
