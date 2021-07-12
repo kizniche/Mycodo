@@ -64,27 +64,38 @@ def measurement_mod_form(messages, page_refresh, form):
 
             if ("measurement_meas_unit_{}".format(each_meas_id) in form and
                     ',' in form["measurement_meas_unit_{}".format(each_meas_id)]):
-                mod_meas.measurement = form["measurement_meas_unit_{}".format(
-                    each_meas_id)].split(',')[0]
-                mod_meas.unit = form["measurement_meas_unit_{}".format(
-                    each_meas_id)].split(',')[1]
-                page_refresh = True
+                measurement = form["measurement_meas_unit_{}".format(each_meas_id)].split(',')[0]
+                unit = form["measurement_meas_unit_{}".format(each_meas_id)].split(',')[1]
+                if (mod_meas.measurement != measurement or
+                        mod_meas.unit != unit):
+                    page_refresh = True
+                mod_meas.measurement = measurement
+                mod_meas.unit = unit
 
             if ('enable_channel_unit_select' in device_info[mod_device.device] and
                     device_info[mod_device.device]['enable_channel_unit_select'] and
                         ("measurement_meas_unit_{}".format(each_meas_id) not in form or
                          ',' not in form["measurement_meas_unit_{}".format(each_meas_id)])):
+                if (mod_meas.measurement != '' or
+                        mod_meas.unit != ''):
+                    page_refresh = True
                 mod_meas.measurement = ''
                 mod_meas.unit = ''
 
             if "measurement_rescaled_meas_unit_{}".format(each_meas_id) in form:
                 if (form["measurement_rescaled_meas_unit_{}".format(each_meas_id)] != '' and
                         ',' in form["measurement_rescaled_meas_unit_{}".format(each_meas_id)]):
-                    mod_meas.rescaled_measurement = form["measurement_rescaled_meas_unit_{}".format(
-                        each_meas_id)].split(',')[0]
-                    mod_meas.rescaled_unit = form["measurement_rescaled_meas_unit_{}".format(
-                        each_meas_id)].split(',')[1]
+                    rescaled_measurement = form["measurement_rescaled_meas_unit_{}".format(each_meas_id)].split(',')[0]
+                    rescaled_unit = form["measurement_rescaled_meas_unit_{}".format(each_meas_id)].split(',')[1]
+                    if (mod_meas.rescaled_measurement != rescaled_measurement or
+                            mod_meas.rescaled_unit != rescaled_unit):
+                        page_refresh = True
+                    mod_meas.rescaled_measurement = rescaled_measurement
+                    mod_meas.rescaled_unit = rescaled_unit
                 elif form["measurement_rescaled_meas_unit_{}".format(each_meas_id)] == '':
+                    if (mod_meas.rescaled_measurement != '' or
+                            mod_meas.rescaled_unit != ''):
+                        page_refresh = True
                     mod_meas.rescaled_measurement = ''
                     mod_meas.rescaled_unit = ''
 
@@ -101,7 +112,9 @@ def measurement_mod_form(messages, page_refresh, form):
             if "measurement_scale_to_max_{}".format(each_meas_id) in form:
                 mod_meas.scale_to_max = form["measurement_scale_to_max_{}".format(each_meas_id)]
             if "measurement_invert_scale_{}".format(each_meas_id) in form:
-                mod_meas.invert_scale = form["measurement_invert_scale_{}".format(each_meas_id)]
+                mod_meas.invert_scale = True
+            else:
+                mod_meas.invert_scale = False
             if "measurement_conversion_id_{}".format(each_meas_id) in form:
                 mod_meas.conversion_id = form["measurement_conversion_id_{}".format(each_meas_id)]
 
