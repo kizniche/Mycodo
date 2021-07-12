@@ -22,7 +22,7 @@
 
   {% for each_measurement in all_measurements %}
 
-  <input id="measurement_id_{{each_measurement.unique_id}}" name="measurement_id_{{each_measurement.unique_id}}" type="hidden" value="{{each_measurement.unique_id}}">
+  <input id="measurement_id_config_{{each_measurement.unique_id}}" name="measurement_id_config_{{each_measurement.unique_id}}" type="hidden" value="{{each_measurement.unique_id}}">
 
 {% if each_measurement.measurement and each_measurement.measurement not in dict_measurements %}
   <div class="row small-gutters" style="padding: 0.5em">

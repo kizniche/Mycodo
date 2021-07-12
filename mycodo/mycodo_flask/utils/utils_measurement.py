@@ -20,8 +20,12 @@ def measurement_mod_form(messages, page_refresh, form):
     measurement_ids = []
 
     for key in form.keys():
-        if key.startswith("measurement_id_") and len(key) > 15:
-            measurement_ids.append(key[15:])
+        if (key.startswith("measurement_id_select_") and len(key) > 22 and
+                key[22:] not in measurement_ids):
+            measurement_ids.append(key[22:])
+        if (key.startswith("measurement_id_config_") and len(key) > 22 and
+                key[22:] not in measurement_ids):
+            measurement_ids.append(key[22:])
 
     for each_meas_id in measurement_ids:
         try:
