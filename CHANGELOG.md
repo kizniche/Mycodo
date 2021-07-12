@@ -1,4 +1,4 @@
-## 8.11.1 (Unreleased)
+## 8.12.0 (Unreleased)
 
 This release changes the way settings are saved, which requires a change to any custom Inputs/Outputs/Functions you have in use. If your custom module includes the seldom-used execute_at_modification() function (such as Mycodo/mycodo/inputs/python_code.py), you will need to change the parameters as well as the return variables.
 
@@ -30,12 +30,12 @@ def execute_at_modification(
         custom_options_channels_dict_presave,
         custom_options_dict_postsave,
         custom_options_channels_dict_postsave):
-     # Uncomment the next line to prevent saving of options from occurring
-     # messages["error"].append("Some error that prevents saving of options")
+     # messages["page_refresh"] = True  # Setting to True will cause the options on the user's page to refresh
+     # messages["error"].append("Some error")  # Uncomment this line to prevent options saving
      # messages["warning"].append("This will be a warning message")
      # messages["info"].append("This will be an info message")
-     # messages[""].append("This will be a success message")
-     # messages["page_refresh"] = True  # This will cause the options on the user's page to refresh (e.g. if the number of measurements change)
+     if not messages["error"]:
+        messages["success"].append("Successfully completed execute_at_modification()")
      return (messages,
              mod_entry,
              custom_options_dict_postsave,
@@ -70,9 +70,8 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Add Output: MCP23017 16-Channel I/O Expander (On/Off)
  - Add return status to Conditional Controllers
  - Add 2- and 4-line variants of SSD1306 Display Functions and extra Options ([#1030](https://github.com/kizniche/mycodo/issues/1030))
+ - Add calibration to the Atlas Scientific EC Input Peristaltic Pump Output
  - Add PDF Manual
- - Add ability to calibrate from the Atlas Scientific Electrical Conductivity Input
- - Add ability to calibrate from the Atlas Scientific Peristaltic Pump Output
 
 ### Miscellaneous
 
@@ -81,6 +80,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Add Try/Except for checking Output Triggers ([#1037](https://github.com/kizniche/mycodo/issues/1037))
  - Speed up loading of Camera page
  - Update Gridstack to the latest version
+ - Ensure Atlas DO sensor only returns DO ([#1052](https://github.com/kizniche/mycodo/issues/1052))
 
 
 ## 8.11.0 (2021-06-05) 
