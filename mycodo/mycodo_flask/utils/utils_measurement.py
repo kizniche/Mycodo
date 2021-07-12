@@ -103,7 +103,6 @@ def measurement_mod_form(messages, page_refresh, form):
 
             if not messages["error"]:
                 db.session.commit()
-                messages["success"].append("Measurement settings saved")
 
         except Exception as except_msg:
             logger.exception(1)
