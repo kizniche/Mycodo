@@ -149,7 +149,7 @@ def page_dashboard(dashboard_id):
 
         if unmet_dependencies:
             return redirect(url_for('routes_admin.admin_dependencies',
-                                    device=form_base.graph_type.data))
+                                    device=form_base.widget_type.data))
 
         return redirect(url_for(
             'routes_dashboard.page_dashboard', dashboard_id=dashboard_id))

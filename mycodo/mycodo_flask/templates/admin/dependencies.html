@@ -65,7 +65,7 @@
       {% else %}
 
     <p>There were unmet dependencies encountered when adding the following device: {{device}}</p>
-    <p>The unmet dependencies are the following python modules:</p>
+    <p>Unmet dependencies:</p>
     <ul>
     {% for each_dep in device_unmet_dependencies %}
       <li>{% if each_dep[2] == 'internal' %}{{each_dep[3]}}{% else %}{{each_dep[0]}}{% endif %}</li>
