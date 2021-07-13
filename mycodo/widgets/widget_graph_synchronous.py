@@ -122,11 +122,41 @@ def generate_page_variables(widget_unique_id, widget_options):
 
 WIDGET_INFORMATION = {
     'widget_name_unique': 'widget_graph_synchronous',
-    'widget_name': 'Graph (Synchronous)',
-    'widget_library': '',
+    'widget_name': 'Graph (Synchronous) [Highstock]',
+    'widget_library': 'Highstock',
     'no_class': True,
 
     'message': 'Displays a synchronous graph (all data is downloaded for the selected period on the x-axis).',
+
+    'dependencies_module': [
+        ('apt', 'unzip', 'unzip'),
+        ('bash-commands',
+         [
+             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
+             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
+             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js',
+             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js',
+             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js',
+             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js'
+         ],
+         [
+            'wget --no-clobber https://code.highcharts.com/zips/Highcharts-Stock-9.1.2.zip',
+            'unzip Highcharts-Stock-9.1.2.zip -d Highcharts-Stock-9.1.2',
+            'cp Highcharts-Stock-9.1.2/code/highstock.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
+            'cp Highcharts-Stock-9.1.2/code/highstock.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js.map',
+            'cp Highcharts-Stock-9.1.2/code/highcharts-more.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
+            'cp Highcharts-Stock-9.1.2/code/highcharts-more.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js.map',
+            'cp Highcharts-Stock-9.1.2/code/modules/data.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js',
+            'cp Highcharts-Stock-9.1.2/code/modules/data.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js.map',
+            'cp Highcharts-Stock-9.1.2/code/modules/exporting.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js',
+            'cp Highcharts-Stock-9.1.2/code/modules/exporting.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js.map',
+            'cp Highcharts-Stock-9.1.2/code/modules/export-data.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js',
+            'cp Highcharts-Stock-9.1.2/code/modules/export-data.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js.map',
+            'cp Highcharts-Stock-9.1.2/code/modules/offline-exporting.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js',
+            'cp Highcharts-Stock-9.1.2/code/modules/offline-exporting.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js.map',
+            'rm -rf Highcharts-Stock-9.1.2'
+         ]),
+    ],
 
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
@@ -274,12 +304,13 @@ WIDGET_INFORMATION = {
         }
     ],
 
-  # <!-- Graph popup effect for thermal imaging, goes in widget_dashboard_head -->
-  # <script type="text/javascript" src="/static/js/modules/highslide-full.js"></script>
-  # <script type="text/javascript" src="/static/js/modules/highslide.config.js"></script>
-  # <link href="/static/css/highslide.css" rel="stylesheet">
-
-    'widget_dashboard_head': """<!-- no head content -->""",
+    'widget_dashboard_head': """<script type="text/javascript" src="/static/js/user_js/highstock-9.1.2.js"></script>
+<script type="text/javascript" src="/static/js/user_js/highcharts-more-9.1.2.js"></script>
+<script type="text/javascript" src="/static/js/user_js/data-9.1.2.js"></script>
+<script type="text/javascript" src="/static/js/user_js/exporting-9.1.2.js"></script>
+<script type="text/javascript" src="/static/js/user_js/export-data-9.1.2.js"></script>
+<script type="text/javascript" src="/static/js/user_js/offline-exporting-9.1.2.js"></script>
+""",
 
     'widget_dashboard_title_bar': """
         <div class="widget-graph-title" id="widget-graph-title-{{chart_number}}">

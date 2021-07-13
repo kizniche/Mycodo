@@ -14,9 +14,11 @@ from mycodo.config import CAMERA_INFO
 from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import LCD_INFO
 from mycodo.config import METHOD_INFO
 from mycodo.databases.models import Actions
+from mycodo.databases.models import Widget
 from mycodo.databases.models import Camera
 from mycodo.databases.models import CustomController
 from mycodo.databases.models import Function
@@ -125,6 +127,11 @@ if __name__ == "__main__":
         if each_dev.device not in devices:
             devices.append(each_dev.device)
 
+    widget = db_retrieve_table_daemon(Widget)
+    for each_dev in widget:
+        if each_dev.graph_type not in devices:
+            devices.append(each_dev.graph_type)
+
     for each_device in devices:
         device_unmet_dependencies, _ = return_dependencies(each_device)
         for each_dep in device_unmet_dependencies:
@@ -134,13 +141,22 @@ if __name__ == "__main__":
     if dependencies:
         print("Unmet dependencies found: {}".format(dependencies))
 
-        # Install unmet dependencies
         for each_dep in dependencies:
-            intsall_cmd = "{pth}/mycodo/scripts/dependencies.sh {dep}".format(
-                pth=INSTALL_DIRECTORY,
-                dep=each_dep[1])
-            output, err, stat = cmd_output(intsall_cmd, user='root')
-            formatted_output = output.decode("utf-8").replace('\\n', '\n')
+            if each_dep[1] == 'bash-commands':
+                for each_command in each_dep[2]:
+                    command = "{cmd} | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
+                        cmd=each_command,
+                        log=DEPENDENCY_LOG_FILE)
+                    cmd_out, cmd_err, cmd_status = cmd_output(
+                        command, timeout=600, cwd="/tmp")
+                    logger.info("Command returned: out: {}, error: {}, status: {}".format(
+                        cmd_out, cmd_err, cmd_status))
+            else:
+                install_cmd = "{pth}/mycodo/scripts/dependencies.sh {dep}".format(
+                    pth=INSTALL_DIRECTORY,
+                    dep=each_dep[1])
+                output, err, stat = cmd_output(install_cmd, user='root')
+                formatted_output = output.decode("utf-8").replace('\\n', '\n')
 
     # Update installed dependencies
     installed_deps = get_installed_dependencies()

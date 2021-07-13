@@ -120,18 +120,39 @@ def generate_page_variables(widget_unique_id, widget_options):
 
 WIDGET_INFORMATION = {
     'widget_name_unique': 'widget_gauge_solid',
-    'widget_name': 'Gauge (Solid)',
-    'widget_library': '',
+    'widget_name': 'Gauge (Solid) [Highcharts]',
+    'widget_library': 'Highcharts',
     'no_class': True,
 
     'message': 'Displays a solid gauge. Be sure to set the Maximum option to the last Stop value for the gauge to display properly.',
+
+    'dependencies_module': [
+        ('apt', 'unzip', 'unzip'),
+        ('bash-commands',
+         [
+            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
+            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
+            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge-9.1.2.js'
+         ],
+         [
+            'wget --no-clobber https://code.highcharts.com/zips/Highcharts-9.1.2.zip',
+            'unzip Highcharts-9.1.2.zip -d Highcharts-9.1.2',
+            'cp Highcharts-9.1.2/code/highcharts.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
+            'cp Highcharts-9.1.2/code/highcharts.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js.map',
+            'cp Highcharts-9.1.2/code/highcharts-more.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
+            'cp Highcharts-9.1.2/code/highcharts-more.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js.map',
+            'cp Highcharts-9.1.2/code/modules/solid-gauge.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge-9.1.2.js',
+            'cp Highcharts-9.1.2/code/modules/solid-gauge.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge-9.1.2.js.map',
+            'rm -rf Highcharts-9.1.2'
+         ])
+    ],
 
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
     'generate_page_variables': generate_page_variables,
 
-    'widget_width': 6,
-    'widget_height': 5,
+    'widget_width': 4,
+    'widget_height': 8,
 
     'custom_options': [
         {
@@ -194,7 +215,10 @@ WIDGET_INFORMATION = {
         }
     ],
 
-    'widget_dashboard_head': """<script type="text/javascript" src="/static/js/modules/solid-gauge.js"></script>""",
+    'widget_dashboard_head': """<script src="/static/js/user_js/highcharts-9.1.2.js"></script>
+<script src="/static/js/user_js/highcharts-more-9.1.2.js"></script>
+<script src="/static/js/user_js/solid-gauge-9.1.2.js"></script>
+""",
 
     'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
 

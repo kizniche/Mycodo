@@ -56,9 +56,12 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Fix PiOLED Functions ([#1030](https://github.com/kizniche/mycodo/issues/1030))
  - Fix PID controller properly reporting if Held/Paused
  - Fix cmd_output() killing daemon upon command timeout ([#1047](https://github.com/kizniche/mycodo/issues/1047))
+ - Remove Highcharts/Highstock Javascript from package to be compliant with licensing
+ - Fix missing check for Widget dependencies during upgrade/restore
 
 ### Features
 
+ - Add ability to install Javascript/CSS dependencies
  - Add ability to submit forms without refreshing the page ([#1040](https://github.com/kizniche/mycodo/issues/1040))
  - Add ability to install dependencies without changing the page
  - Add drag and drop sorting of Inputs/Ouputs/Functions

@@ -1,9 +1,7 @@
 # coding=utf-8
 """ collection of Admin endpoints """
 import datetime
-import io
 import logging
-import os
 import socket
 import subprocess
 import threading
@@ -11,6 +9,8 @@ import zipfile
 from collections import OrderedDict
 
 import flask_login
+import io
+import os
 from flask import Blueprint
 from flask import flash
 from flask import jsonify
@@ -55,8 +55,10 @@ from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.stats import return_stat_file_dict
 from mycodo.utils.system_pi import can_perform_backup
+from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import get_directory_size
 from mycodo.utils.system_pi import internet
+from mycodo.utils.widgets import parse_widget_information
 
 logger = logging.getLogger('mycodo.mycodo_flask.admin')
 
@@ -196,17 +198,27 @@ def install_dependencies(dependencies):
             time=now, deps=", ".join(dependency_list)))
 
     for each_dep in dependencies:
-        cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_dependency {dep}" \
-              " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
-                pth=INSTALL_DIRECTORY,
-                log=DEPENDENCY_LOG_FILE,
-                dep=each_dep[1])
-        dep = subprocess.Popen(cmd, shell=True)
-        dep.wait()
-        now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        with open(DEPENDENCY_LOG_FILE, 'a') as f:
-            f.write("\n[{time}] End install of {dep}\n\n".format(
-                time=now, dep=each_dep[0]))
+        if each_dep[1] == 'bash-commands':
+            for each_command in each_dep[2]:
+                command = "{cmd} | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
+                    cmd=each_command,
+                    log=DEPENDENCY_LOG_FILE)
+                cmd_out, cmd_err, cmd_status = cmd_output(
+                    command, timeout=600, cwd="/tmp")
+                logger.info("Command returned: out: {}, error: {}, status: {}".format(
+                    cmd_out, cmd_err, cmd_status))
+        else:
+            cmd = "{pth}/mycodo/scripts/mycodo_wrapper install_dependency {dep}" \
+                  " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
+                    pth=INSTALL_DIRECTORY,
+                    log=DEPENDENCY_LOG_FILE,
+                    dep=each_dep[1])
+            dep = subprocess.Popen(cmd, shell=True)
+            dep.wait()
+            now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            with open(DEPENDENCY_LOG_FILE, 'a') as f:
+                f.write("\n[{time}] End install of {dep}\n\n".format(
+                    time=now, dep=each_dep[0]))
 
     cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_permissions" \
           " | ts '[%Y-%m-%d %H:%M:%S]' >> {log}  2>&1".format(
@@ -316,6 +328,7 @@ def admin_dependencies(device):
         parse_function_information(),
         parse_input_information(),
         parse_output_information(),
+        parse_widget_information(),
         CALIBRATION_INFO,
         CAMERA_INFO,
         FUNCTION_ACTION_INFO,
@@ -329,8 +342,13 @@ def admin_dependencies(device):
 
             if device in each_section:
                 for each_device_, each_val in each_section[device].items():
-                    if each_device_ in ['name', 'input_name']:
+                    if each_device_ in ['name',
+                                        'input_name',
+                                        'output_name',
+                                        'function_name',
+                                        'widget_name']:
                         device_name = each_val
+                        break
 
             # Only get all dependencies when not loading a single dependency page
             if device == '0':

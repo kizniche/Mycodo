@@ -5,15 +5,6 @@
 {% block title %} - {% for each_dash in dashboards if each_dash.unique_id == dashboard_id %}{{each_dash.name}}{% endfor %} {{dict_translation['dashboard']['title']}}{% endblock %}
 
 {% block head %}
-
-  <script type="text/javascript" src="/static/js/highstock.js"></script>
-  <script type="text/javascript" src="/static/js/highcharts-more.js"></script>
-
-  <script type="text/javascript" src="/static/js/modules/data.js"></script>
-  <script type="text/javascript" src="/static/js/modules/exporting.js"></script>
-  <script type="text/javascript" src="/static/js/modules/export-data.js"></script>
-  <script type="text/javascript" src="/static/js/modules/offline-exporting.js"></script>
-
   {% if current_user.theme in dark_themes %}
     <script type="text/javascript" src="/static/js/dark-unica.js"></script>
   {% endif %}

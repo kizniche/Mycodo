@@ -1665,6 +1665,20 @@ def return_dependencies(device_type):
                                 unmet_deps.append(entry)
                             else:
                                 met_deps = True
+                        elif install_type == 'bash-commands':
+                            files_not_found = []
+                            for each_file in package:
+                                if not os.path.isfile(each_file):
+                                    files_not_found.append(each_file.split('/')[-1])
+                            if files_not_found:
+                                if entry not in unmet_deps:
+                                    unmet_deps.append((
+                                        ", ".join(files_not_found),
+                                        install_type,
+                                        install_id
+                                    ))
+                                else:
+                                    met_deps = True
                         elif install_type == 'internal':
                             if package.startswith('file-exists'):
                                 filepath = package.split(' ', 1)[1]
