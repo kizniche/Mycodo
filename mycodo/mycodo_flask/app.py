@@ -91,7 +91,7 @@ def register_extensions(app):
         with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
             misc = new_session.query(Misc).first()
             if misc and misc.force_https:
-                csp = {'default-src': ['*', '\'unsafe-inline\'']}
+                csp = {'default-src': ['*', '\'unsafe-inline\'', '\'unsafe-eval\'']}
                 Talisman(app, content_security_policy=csp)
 
 
