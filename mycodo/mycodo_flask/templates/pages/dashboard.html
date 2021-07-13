@@ -350,7 +350,7 @@
 
     grid.on('resizestop', function(event, elem) {
       const chart_number = $(elem).attr('data-custom-chart-number');
-      if (chart_number in chart) {
+      if (chart_number in chart && typeof chart[chart_number].reflow !== "undefined") {
         chart[chart_number].reflow();
       }
     });
