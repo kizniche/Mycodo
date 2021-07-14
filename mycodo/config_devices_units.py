@@ -14,15 +14,15 @@ MEASUREMENTS = {
         'meas': 'acceleration',
         'units': ['g_force', 'm_s_s']},
     'acceleration_x': {
-        'name': lazy_gettext('Acceleration (X)'),
+        'name': "{} (X)".format(lazy_gettext('Acceleration')),
         'meas': 'acceleration_x',
         'units': ['g_force', 'm_s_s']},
     'acceleration_y': {
-        'name': lazy_gettext('Acceleration (Y)'),
+        'name': "{} (Y)".format(lazy_gettext('Acceleration')),
         'meas': 'acceleration_y',
         'units': ['g_force', 'm_s_s']},
     'acceleration_z': {
-        'name': lazy_gettext('Acceleration (Z)'),
+        'name': "{} (Z)".format(lazy_gettext('Acceleration')),
         'meas': 'acceleration_z',
         'units': ['g_force', 'm_s_s']},
     'adc': {
@@ -50,39 +50,39 @@ MEASUREMENTS = {
         'meas': 'co2',
         'units': ['ppm', 'ppb', 'percent']},
     'color_red': {
-        'name': lazy_gettext('Color (Red)'),
+        'name': "{} ({})".format(lazy_gettext('Color'), lazy_gettext('Red')),
         'meas': 'color_red',
         'units': ['eight_bit_color']},
     'color_green': {
-        'name': lazy_gettext('Color (Green)'),
+        'name': "{} ({})".format(lazy_gettext('Color'), lazy_gettext('Green')),
         'meas': 'color_green',
         'units': ['eight_bit_color']},
     'color_blue': {
-        'name': lazy_gettext('Color (Blue)'),
+        'name': "{} ({})".format(lazy_gettext('Color'), lazy_gettext('Blue')),
         'meas': 'color_blue',
         'units': ['eight_bit_color']},
     'color_x': {
-        'name': lazy_gettext('Color (x)'),
+        'name': "{} (x)".format(lazy_gettext('Color')),
         'meas': 'color_x',
         'units': ['cie']},
     'color_y': {
-        'name': lazy_gettext('Color (y)'),
+        'name': "{} (y)".format(lazy_gettext('Color')),
         'meas': 'color_y',
         'units': ['cie']},
     'color_Y': {
-        'name': lazy_gettext('Color (Y)'),
+        'name': "{} (Y)".format(lazy_gettext('Color')),
         'meas': 'color_Y',
         'units': ['cie']},
     'cpu_load_1m': {
-        'name': lazy_gettext('CPU Load 1 min'),
+        'name': "{} (1 {})".format(lazy_gettext('CPU Load'), lazy_gettext('min')),
         'meas': 'cpu_load',
         'units': ['cpu_load']},
     'cpu_load_5m': {
-        'name': lazy_gettext('CPU Load 5 min'),
+        'name': "{} (5 {})".format(lazy_gettext('CPU Load'), lazy_gettext('min')),
         'meas': 'cpu_load',
         'units': ['cpu_load']},
     'cpu_load_15m': {
-        'name': lazy_gettext('CPU Load 15 min'),
+        'name': "{} (15 {})".format(lazy_gettext('CPU Load'), lazy_gettext('min')),
         'meas': 'cpu_load',
         'units': ['cpu_load']},
     'dewpoint': {

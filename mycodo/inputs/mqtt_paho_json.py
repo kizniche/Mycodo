@@ -241,7 +241,7 @@ class InputModule(AbstractInput):
                 self.mqtt_channel))
 
     def on_connect(self, client, obj, flags, rc):
-        self.logger.debug("Connected to '{}', rc: {}".format(
+        self.logger.debug("Connected to '{}'. Return code: {}".format(
             self.mqtt_channel, rc))
 
     def on_subscribe(self, client, obj, mid, granted_qos):
@@ -319,7 +319,7 @@ class InputModule(AbstractInput):
                 use_same_timestamp=INPUT_INFORMATION['measurements_use_same_timestamp'])
 
     def on_disconnect(self, client, userdata, rc=0):
-        self.logger.debug("Disconnected result code {}".format(rc))
+        self.logger.debug("Disconnected. Return code: {}".format(rc))
 
     def stop_input(self):
         """ Called when Input is deactivated """
