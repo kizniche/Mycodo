@@ -352,7 +352,6 @@ def test_routes_logged_in_as_admin(_, testapp):
         ('settings/input', '<!-- Route: /settings/input -->'),
         ('settings/measurement', '<!-- Route: /settings/measurement -->'),
         ('settings/users', '<!-- Route: /settings/users -->'),
-        ('calibration', '<!-- Route: /calibration -->'),
         ('camera', '<!-- Route: /camera -->'),
         ('dashboard', '<!-- Route: /dashboard -->'),
         ('input', '<!-- Route: /input -->'),
@@ -726,7 +725,6 @@ def sees_navbar(testapp):
     assert response.status_code == 200
     navbar_strings = [
         'Asynchronous Graphs',
-        'Calibration & Setup',
         'Camera',
         'Configure',
         'Dashboard',

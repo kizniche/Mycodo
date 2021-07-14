@@ -27,8 +27,6 @@ Input Actions are functions within the Input module that can be executed from th
 
 ### Input Options
 
-In addition to several supported sensors and devices, a Linux command may be specified that will be executed and the return value stored in the measurement database to be used throughout the Mycodo system.
-
 <table>
 <thead>
 <tr class="header">
