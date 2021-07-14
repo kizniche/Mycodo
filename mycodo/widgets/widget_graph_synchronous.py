@@ -137,7 +137,8 @@ WIDGET_INFORMATION = {
              '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js',
              '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js',
              '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js',
-             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js'
+             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js',
+             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js'
          ],
          [
             'wget --no-clobber https://code.highcharts.com/zips/Highcharts-Stock-9.1.2.zip',
@@ -154,8 +155,10 @@ WIDGET_INFORMATION = {
             'cp Highcharts-Stock-9.1.2/code/modules/export-data.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js.map',
             'cp Highcharts-Stock-9.1.2/code/modules/offline-exporting.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js',
             'cp Highcharts-Stock-9.1.2/code/modules/offline-exporting.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js.map',
+            'cp Highcharts-Stock-9.1.2/code/themes/dark-unica.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js',
+            'cp Highcharts-Stock-9.1.2/code/themes/dark-unica.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js.map',
             'rm -rf Highcharts-Stock-9.1.2'
-         ]),
+         ])
     ],
 
     'execute_at_creation': execute_at_creation,
@@ -163,7 +166,7 @@ WIDGET_INFORMATION = {
     'generate_page_variables': generate_page_variables,
 
     'widget_width': 20,
-    'widget_height': 9,
+    'widget_height': 15,
 
     'custom_options': [
         {
@@ -643,9 +646,7 @@ WIDGET_INFORMATION = {
       zoomType: 'x',
       alignTicks: {% if widget_options['enable_align_ticks'] %}true{% else %}false{% endif %},
       resetZoomButton: {
-        theme: {
-          display: 'none'
-        }
+        theme: { style: { display: 'none'} }
       },
 
       events: {
@@ -874,6 +875,13 @@ WIDGET_INFORMATION = {
     plotOptions: {
       column: {
         maxPointWidth: 3  /* limit the maximum column width. */
+      },
+      series:{
+        states: {
+          hover: {
+            enabled: false
+          }
+        }
       }
     },
 
@@ -1050,7 +1058,6 @@ WIDGET_INFORMATION = {
     },
 
       {%- endif -%}
-
     {%- endfor -%}
   {% endfor %}
   
@@ -1116,7 +1123,6 @@ WIDGET_INFORMATION = {
     },
 
       {%- endif -%}
-
     {%- endfor -%}
   {% endfor %}
 

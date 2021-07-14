@@ -112,7 +112,8 @@ WIDGET_INFORMATION = {
         ('bash-commands',
          [
             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
-            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js'
+            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
+            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js'
          ],
          [
             'wget --no-clobber https://code.highcharts.com/zips/Highcharts-9.1.2.zip',
@@ -121,6 +122,8 @@ WIDGET_INFORMATION = {
             'cp Highcharts-9.1.2/code/highcharts.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js.map',
             'cp Highcharts-9.1.2/code/highcharts-more.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
             'cp Highcharts-9.1.2/code/highcharts-more.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js.map',
+            'cp Highcharts-9.1.2/code/themes/dark-unica.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js',
+            'cp Highcharts-9.1.2/code/themes/dark-unica.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js.map',
             'rm -rf Highcharts-9.1.2'
          ])
     ],

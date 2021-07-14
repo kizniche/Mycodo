@@ -3,19 +3,15 @@
 {% set help_page = ["https://kizniche.github.io/Mycodo/Data-Viewing/#asynchronous-graphs", _('Asynchronous Graphs')] %}
 
 {% block head %}
-  <script src="/static/js/highstock.js"></script>
+  <script type="text/javascript" src="/static/js/user_js/highstock-9.1.2.js"></script>
+  <script type="text/javascript" src="/static/js/user_js/highcharts-more-9.1.2.js"></script>
+  <script type="text/javascript" src="/static/js/user_js/data-9.1.2.js"></script>
+  <script type="text/javascript" src="/static/js/user_js/exporting-9.1.2.js"></script>
+  <script type="text/javascript" src="/static/js/user_js/export-data-9.1.2.js"></script>
+  <script type="text/javascript" src="/static/js/user_js/offline-exporting-9.1.2.js"></script>
 
-  <script type="text/javascript" src="/static/js/modules/exporting.js"></script>
-  <script type="text/javascript" src="/static/js/modules/offline-exporting.js"></script>
-  <script type="text/javascript" src="/static/js/modules/export-data.js"></script>
-  <script type="text/javascript" src="/static/js/modules/canvas-tools.js"></script>
-  <script type="text/javascript" src="/static/js/modules/jspdf.min.js"></script>
-  <script type="text/javascript" src="/static/js/modules/highcharts-export-clientside.js"></script>
-
-  <script src="/static/js/modules/jspdf.min.js"></script>
-  <script src="/static/js/modules/highcharts-export-clientside.js"></script>
   {% if current_user.theme in dark_themes %}
-    <script src="/static/js/dark-unica.js"></script>
+    <script src="/static/js/user_js/dark-unica-9.1.2.js"></script>
   {% endif %}
 {% endblock %}
 

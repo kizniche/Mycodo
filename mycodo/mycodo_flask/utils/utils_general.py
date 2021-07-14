@@ -12,12 +12,12 @@ import sqlalchemy
 from flask import flash
 from flask import redirect
 from flask import request
-from flask import url_for
 from flask_babel import gettext
 from sqlalchemy import and_
 
 from mycodo.config import CALIBRATION_INFO
 from mycodo.config import CAMERA_INFO
+from mycodo.config import DEPENDENCIES_GENERAL
 from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import LCD_INFO
@@ -1634,6 +1634,7 @@ def return_dependencies(device_type):
         LCD_INFO,
         MATH_INFO,
         METHOD_INFO,
+        DEPENDENCIES_GENERAL
     ]
 
     for each_section in list_dependencies:

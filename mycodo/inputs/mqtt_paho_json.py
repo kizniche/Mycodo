@@ -180,7 +180,7 @@ class InputModule(AbstractInput):
 
     def initialize_input(self):
         import paho.mqtt.client as mqtt
-        import jmespath as jmespath
+        import jmespath
 
         self.jmespath = jmespath
 

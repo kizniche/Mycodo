@@ -11,6 +11,7 @@ sys.path.append(
 
 from mycodo.config import CALIBRATION_INFO
 from mycodo.config import CAMERA_INFO
+from mycodo.config import DEPENDENCIES_GENERAL
 from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import INSTALL_DIRECTORY
@@ -21,6 +22,7 @@ from mycodo.databases.models import Actions
 from mycodo.databases.models import Widget
 from mycodo.databases.models import Camera
 from mycodo.databases.models import CustomController
+from mycodo.databases.models import EnergyUsage
 from mycodo.databases.models import Function
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
@@ -50,6 +52,7 @@ def get_installed_dependencies():
         FUNCTION_INFO,
         LCD_INFO,
         METHOD_INFO,
+        DEPENDENCIES_GENERAL
     ]
 
     for each_section in list_dependencies:
@@ -131,6 +134,11 @@ if __name__ == "__main__":
     for each_dev in widget:
         if each_dev.graph_type not in devices:
             devices.append(each_dev.graph_type)
+
+    energy_usage = db_retrieve_table_daemon(EnergyUsage)
+    for each_dev in energy_usage:
+        if 'highstock' not in devices:
+            devices.append('highstock')
 
     for each_device in devices:
         device_unmet_dependencies, _ = return_dependencies(each_device)

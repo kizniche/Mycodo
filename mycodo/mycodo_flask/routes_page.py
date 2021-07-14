@@ -80,6 +80,7 @@ from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_lcd
 from mycodo.mycodo_flask.utils import utils_misc
 from mycodo.mycodo_flask.utils import utils_notes
+from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import list_analog_to_digital_converters
 from mycodo.utils.inputs import parse_input_information
@@ -541,6 +542,11 @@ def page_export():
 @flask_login.login_required
 def page_graph_async():
     """ Generate graphs using asynchronous data retrieval """
+    dep_unmet, _ = return_dependencies('highstock')
+    if dep_unmet:
+        return redirect(url_for('routes_admin.admin_dependencies',
+                                device='highstock'))
+
     function = CustomController.query.all()
     input_dev = Input.query.all()
     device_measurements = DeviceMeasurements.query.all()
@@ -1044,6 +1050,10 @@ def page_usage():
             return redirect(url_for('routes_page.page_usage'))
 
         if form_energy_usage_add.energy_usage_add.data:
+            dep_unmet, _ = return_dependencies('highstock')
+            if dep_unmet:
+                return redirect(url_for('routes_admin.admin_dependencies',
+                                        device='highstock'))
             utils_misc.energy_usage_add(form_energy_usage_add)
         elif form_energy_usage_mod.energy_usage_mod.data:
             utils_misc.energy_usage_mod(form_energy_usage_mod)

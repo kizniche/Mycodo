@@ -5,25 +5,22 @@
 {% block title %} - {{_('Energy Usage')}}{% endblock %}
 
 {% block head %}
-<script type="text/javascript" src="/static/js/moment.min.js"></script>
-<script type="text/javascript" src="/static/js/daterangepicker.js"></script>
-<link rel="stylesheet" type="text/css" href="/static/css/daterangepicker.css" />
+  <script type="text/javascript" src="/static/js/moment.min.js"></script>
+  <script type="text/javascript" src="/static/js/daterangepicker.js"></script>
+  <link rel="stylesheet" type="text/css" href="/static/css/daterangepicker.css" />
 
-<script src="/static/js/highstock.js"></script>
+  <script type="text/javascript" src="/static/js/user_js/highstock-9.1.2.js"></script>
+  <script type="text/javascript" src="/static/js/user_js/highcharts-more-9.1.2.js"></script>
+  <script type="text/javascript" src="/static/js/user_js/data-9.1.2.js"></script>
+  <script type="text/javascript" src="/static/js/user_js/exporting-9.1.2.js"></script>
+  <script type="text/javascript" src="/static/js/user_js/export-data-9.1.2.js"></script>
+  <script type="text/javascript" src="/static/js/user_js/offline-exporting-9.1.2.js"></script>
 
-<script type="text/javascript" src="/static/js/modules/exporting.js"></script>
-<script type="text/javascript" src="/static/js/modules/offline-exporting.js"></script>
-<script type="text/javascript" src="/static/js/modules/export-data.js"></script>
-<script type="text/javascript" src="/static/js/modules/canvas-tools.js"></script>
-<script type="text/javascript" src="/static/js/modules/jspdf.min.js"></script>
-<script type="text/javascript" src="/static/js/modules/highcharts-export-clientside.js"></script>
-
-<script src="/static/js/modules/jspdf.min.js"></script>
-<script src="/static/js/modules/highcharts-export-clientside.js"></script>
-{% if current_user.theme in dark_themes %}
-  <script src="/static/js/dark-unica.js"></script>
-{% endif %}
-
+  <script src="/static/js/modules/jspdf.min.js"></script>
+  <script src="/static/js/modules/highcharts-export-clientside.js"></script>
+  {% if current_user.theme in dark_themes %}
+    <script src="/static/js/user_js/dark-unica-9.1.2.js"></script>
+  {% endif %}
 {% endblock %}
 
 {% block body %}

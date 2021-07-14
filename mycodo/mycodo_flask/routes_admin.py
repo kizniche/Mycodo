@@ -1,7 +1,9 @@
 # coding=utf-8
 """ collection of Admin endpoints """
 import datetime
+import io
 import logging
+import os
 import socket
 import subprocess
 import threading
@@ -9,8 +11,6 @@ import zipfile
 from collections import OrderedDict
 
 import flask_login
-import io
-import os
 from flask import Blueprint
 from flask import flash
 from flask import jsonify
@@ -27,6 +27,7 @@ from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
 from mycodo.config import CALIBRATION_INFO
 from mycodo.config import CAMERA_INFO
+from mycodo.config import DEPENDENCIES_GENERAL
 from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import FINAL_RELEASES
@@ -336,6 +337,7 @@ def admin_dependencies(device):
         LCD_INFO,
         MATH_INFO,
         METHOD_INFO,
+        DEPENDENCIES_GENERAL
     ]
     for each_section in list_dependencies:
         for each_device in each_section:

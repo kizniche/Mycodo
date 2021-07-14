@@ -5,10 +5,6 @@
 {% block title %} - {% for each_dash in dashboards if each_dash.unique_id == dashboard_id %}{{each_dash.name}}{% endfor %} {{dict_translation['dashboard']['title']}}{% endblock %}
 
 {% block head %}
-  {% if current_user.theme in dark_themes %}
-    <script type="text/javascript" src="/static/js/dark-unica.js"></script>
-  {% endif %}
-
   <link href="/static/css/toastr.min.css" rel="stylesheet"/>
   <script type="text/javascript" src="/static/js/toastr.min.js"></script>
 
@@ -22,6 +18,9 @@
   <!-- Widget {{widget_type}} head template end -->
   {% endfor %}
 
+  {% if current_user.theme in dark_themes %}
+    <script type="text/javascript" src="/static/js/user_js/dark-unica-9.1.2.js"></script>
+  {% endif %}
 {% endblock %}
 
 {% block body %}

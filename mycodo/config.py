@@ -325,15 +325,20 @@ MATH_INFO = {
     }
 }
 
-method_dep_base = [
+METHOD_DEP_BASE = [
     ('apt', 'unzip', 'unzip'),
     ('bash-commands',
-     ['/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js'],
+     [
+         '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
+         '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js'
+     ],
      [
         'wget --no-clobber https://code.highcharts.com/zips/Highcharts-9.1.2.zip',
         'unzip Highcharts-9.1.2.zip -d Highcharts-9.1.2',
         'cp Highcharts-9.1.2/code/highcharts.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
         'cp Highcharts-9.1.2/code/highcharts.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js.map',
+        'cp Highcharts-9.1.2/code/themes/dark-unica.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js',
+        'cp Highcharts-9.1.2/code/themes/dark-unica.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js.map',
         'rm -rf Highcharts-9.1.2'
      ])
 ]
@@ -342,30 +347,30 @@ method_dep_base = [
 METHOD_INFO = {
     'Date': {
         'name': lazy_gettext('Time/Date'),
-        'dependencies_module': method_dep_base
+        'dependencies_module': METHOD_DEP_BASE
     },
     'Duration': {
         'name': lazy_gettext('Duration'),
-        'dependencies_module': method_dep_base
+        'dependencies_module': METHOD_DEP_BASE
     },
     'Daily': {
         'name': "{} ({})".format(lazy_gettext('Daily'), lazy_gettext('Time-Based')),
-        'dependencies_module': method_dep_base
+        'dependencies_module': METHOD_DEP_BASE
     },
     'DailySine': {
         'name': "{} ({})".format(lazy_gettext('Daily'), lazy_gettext('Sine Wave')),
-        'dependencies_module': method_dep_base
+        'dependencies_module': METHOD_DEP_BASE
     },
     'DailyBezier': {
         'name': "{} ({})".format(lazy_gettext('Daily'), lazy_gettext('Bezier Curve')),
         'dependencies_module': [
             ('apt', 'libatlas-base-dev', 'libatlas-base-dev'),
             ('apt', 'python3-numpy', 'python3-numpy')
-        ] + method_dep_base
+        ] + METHOD_DEP_BASE
     },
     'Cascade': {
         'name': lazy_gettext('Method Cascade'),
-        'dependencies_module': method_dep_base
+        'dependencies_module': METHOD_DEP_BASE
     }
 }
 
@@ -440,6 +445,44 @@ PID_INFO = {
             'name': '{} ({})'.format(
                 TRANSLATIONS['output']['title'], TRANSLATIONS['value']['title'])
         }
+    }
+}
+
+DEPENDENCIES_GENERAL = {
+    'highstock': {
+        'name': 'Highstock',
+        'dependencies_module': [
+            ('apt', 'unzip', 'unzip'),
+            ('bash-commands',
+             [
+                 '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
+                 '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
+                 '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js',
+                 '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js',
+                 '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js',
+                 '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js',
+                 '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js'
+             ],
+             [
+                 'wget --no-clobber https://code.highcharts.com/zips/Highcharts-Stock-9.1.2.zip',
+                 'unzip Highcharts-Stock-9.1.2.zip -d Highcharts-Stock-9.1.2',
+                 'cp Highcharts-Stock-9.1.2/code/highstock.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
+                 'cp Highcharts-Stock-9.1.2/code/highstock.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js.map',
+                 'cp Highcharts-Stock-9.1.2/code/highcharts-more.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
+                 'cp Highcharts-Stock-9.1.2/code/highcharts-more.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js.map',
+                 'cp Highcharts-Stock-9.1.2/code/modules/data.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js',
+                 'cp Highcharts-Stock-9.1.2/code/modules/data.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js.map',
+                 'cp Highcharts-Stock-9.1.2/code/modules/exporting.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js',
+                 'cp Highcharts-Stock-9.1.2/code/modules/exporting.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js.map',
+                 'cp Highcharts-Stock-9.1.2/code/modules/export-data.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js',
+                 'cp Highcharts-Stock-9.1.2/code/modules/export-data.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js.map',
+                 'cp Highcharts-Stock-9.1.2/code/modules/offline-exporting.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js',
+                 'cp Highcharts-Stock-9.1.2/code/modules/offline-exporting.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js.map',
+                 'cp Highcharts-Stock-9.1.2/code/themes/dark-unica.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js',
+                 'cp Highcharts-Stock-9.1.2/code/themes/dark-unica.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js.map',
+                 'rm -rf Highcharts-Stock-9.1.2'
+             ])
+        ]
     }
 }
 
