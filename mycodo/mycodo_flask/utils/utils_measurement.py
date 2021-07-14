@@ -32,7 +32,7 @@ def measurement_mod_form(messages, page_refresh, form):
             mod_meas = DeviceMeasurements.query.filter(
                 DeviceMeasurements.unique_id == each_meas_id).first()
             if not mod_meas:
-                messages["error"].append("Count not found measurement")
+                messages["error"].append("Count not find measurement")
 
             controller_type = determine_controller_type(mod_meas.device_id)
 
@@ -47,11 +47,13 @@ def measurement_mod_form(messages, page_refresh, form):
 
             if not mod_device or not device_info:
                 logger.error("Could not find mod_device or device_info")
-                return
+                continue
 
             if mod_device.is_activated:
                 messages["error"].append(gettext(
-                    "Deactivate controller before modifying its settings"))
+                    "Deactivate controller '{}' before modifying its settings".format(
+                        mod_device.name)))
+                break
 
             if ("measurement_meas_name_{}".format(each_meas_id) in form and
                     form["measurement_meas_name_{}".format(each_meas_id)]):

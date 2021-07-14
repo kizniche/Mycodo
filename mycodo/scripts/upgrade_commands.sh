@@ -119,6 +119,8 @@ case "${1:-''}" in
         mkdir -p /var/log/mycodo
         mkdir -p /var/Mycodo-backups
         mkdir -p "${MYCODO_PATH}"/note_attachments
+        mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/static/js/user_js
+        mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/static/css/user_css
 
         if [[ ! -e /var/log/mycodo/mycodo.log ]]; then
             touch /var/log/mycodo/mycodo.log

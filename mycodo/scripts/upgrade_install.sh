@@ -194,6 +194,24 @@ runSelfUpgrade() {
     printf "Done.\n"
   fi
 
+  if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/static/js/user_js ] ; then
+    printf "Copying mycodo/mycodo_flask/static/js/user_js..."
+    if ! cp -r "${CURRENT_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/static/js/user_js "${THIS_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/static/js/ ; then
+      printf "Failed: Error while trying to copy mycodo/mycodo_flask/static/js/user_js"
+      error_found
+    fi
+    printf "Done.\n"
+  fi
+
+  if [ -d "${CURRENT_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/static/css/user_css ] ; then
+    printf "Copying mycodo/mycodo_flask/static/css/user_css..."
+    if ! cp -r "${CURRENT_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/static/css/user_css "${THIS_MYCODO_DIRECTORY}"/mycodo/mycodo_flask/static/css/ ; then
+      printf "Failed: Error while trying to copy mycodo/mycodo_flask/static/css/user_css"
+      error_found
+    fi
+    printf "Done.\n"
+  fi
+
   if [ -d "${CURRENT_MYCODO_DIRECTORY}"/output_usage_reports ] ; then
     printf "Moving output_usage_reports directory..."
     if ! mv "${CURRENT_MYCODO_DIRECTORY}"/output_usage_reports "${THIS_MYCODO_DIRECTORY}" ; then
