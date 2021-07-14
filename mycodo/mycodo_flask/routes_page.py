@@ -542,10 +542,11 @@ def page_export():
 @flask_login.login_required
 def page_graph_async():
     """ Generate graphs using asynchronous data retrieval """
-    dep_unmet, _ = return_dependencies('highstock')
-    if dep_unmet:
-        return redirect(url_for('routes_admin.admin_dependencies',
-                                device='highstock'))
+    if not current_app.config['TESTING']:
+        dep_unmet, _ = return_dependencies('highstock')
+        if dep_unmet:
+            return redirect(url_for('routes_admin.admin_dependencies',
+                                    device='highstock'))
 
     function = CustomController.query.all()
     input_dev = Input.query.all()
