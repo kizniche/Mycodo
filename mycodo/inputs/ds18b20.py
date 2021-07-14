@@ -46,13 +46,6 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['1WIRE'],
-    'resolution': [
-        ('', 'Use Chip Default'),
-        (9, '9-bit, 0.5 °C, 93.75 ms'),
-        (10, '10-bit, 0.25 °C, 187.5 ms'),
-        (11, '11-bit, 0.125 °C, 375 ms'),
-        (12, '12-bit, 0.0625 °C, 750 ms')
-    ],
     
     'custom_actions': [
         {
@@ -99,8 +92,6 @@ class InputModule(AbstractInput):
         try:
             self.sensor = W1ThermSensor(
                 Sensor.DS18B20, self.input_dev.location)
-            if self.input_dev.resolution:
-                self.sensor.set_resolution(self.input_dev.resolution)
         except:
             self.logger.exception("Input initialization")
 
