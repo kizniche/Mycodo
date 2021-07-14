@@ -26,7 +26,7 @@ INPUT_INFORMATION = {
     'input_name_unique': 'MQTT_PAHO_JSON',
     'input_manufacturer': 'Mycodo',
     'input_name': 'MQTT Subscribe (JSON payload)',
-    'input_library': 'paho-mqtt',
+    'input_library': 'paho-mqtt, jmespath',
     'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
@@ -41,12 +41,12 @@ INPUT_INFORMATION = {
                'corresponding value that will be stored for that channel. Be sure you select and '
                'save the Measurement Unit for each channel. Once the unit has been saved, '
                'you can convert to other units in the Convert Measurement section.'
-               ' Examples for jmespath expressions (see https://jmespath.org) are '
-               '<i>temperature</i> or <i>sensors[0].temperature</i> or <i>bathroom.temperature</i> which refer to '
+               ' Example expressions for jmespath (https://jmespath.org) include '
+               '<i>temperature</i>, <i>sensors[0].temperature</i>, and <i>bathroom.temperature</i> which refer to '
                'the temperature as a direct key within the first entry of sensors or as a subkey '
-               'of bathroom, respectively. '
-               'Jmespath elements and keys that contain special characters have to be enclosed ' 
-               'in double quotes, e.g. <i>"sensor-1".temperature</i>.',
+               'of bathroom, respectively. Jmespath elements and keys that contain special characters '
+               'have to be enclosed in double quotes, e.g. <i>"sensor-1".temperature</i>.',
+
     'options_enabled': [
         'measurements_select'
     ],
@@ -56,7 +56,8 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'paho', 'paho-mqtt==1.5.1'),
-        ('pip-pypi', 'jmespath', 'jmespath==0.10.1')],
+        ('pip-pypi', 'jmespath', 'jmespath==0.10.1')
+    ],
 
     'custom_options': [
         {
@@ -233,9 +234,9 @@ class InputModule(AbstractInput):
     def subscribe(self):
         """ Subscribe to the proper MQTT channel to listen to """
         try:
-            self.client.subscribe(self.mqtt_channel)
-            self.logger.debug("Subscribed to MQTT channel '{}'".format(
+            self.logger.debug("Subscribing to MQTT topic '{}'".format(
                 self.mqtt_channel))
+            self.client.subscribe(self.mqtt_channel)
         except:
             self.logger.error("Could not subscribe to MQTT channel '{}'".format(
                 self.mqtt_channel))
@@ -245,51 +246,52 @@ class InputModule(AbstractInput):
             self.mqtt_channel, rc))
 
     def on_subscribe(self, client, obj, mid, granted_qos):
-        self.logger.debug("Subscribing to mqtt topic: {}, {}, {}".format(
+        self.logger.debug("Subscribed to mqtt topic: {}, {}, {}".format(
             self.mqtt_channel, mid, granted_qos))
 
     def on_log(self, mqttc, obj, level, string):
         self.logger.info("Log: {}".format(string))
 
     def on_message(self, client, userdata, msg):
-        datetime_utc = datetime.datetime.utcnow()
-        payload = msg.payload.decode()
-        self.logger.debug("Message: Channel: {}, Value: {}".format(
-            msg.topic, payload))
-        measurement = {}
+        try:
+            payload = msg.payload.decode()
+            self.logger.debug(
+                "Received message: topic: {}, payload: {}".format(
+                    msg.topic, payload))
+        except Exception as exc:
+            self.logger.error(
+                "Payload could not be decoded: {}".format(exc))
+            return
 
         try:
             json_values = json.loads(payload)
-        except ValueError as e:
-            self.logger.error("Payload not JSON: {} ".format(
-                msg.payload.decode()))
+        except ValueError as err:
+            self.logger.error(
+                "Error parsing payload '{}' as JSON: {} ".format(
+                    msg.payload.decode(), err))
             return
 
+        datetime_utc = datetime.datetime.utcnow()
+        measurement = {}
         for each_channel in self.channels_measurement:
-            self.logger.debug(
-                "Searching in json for jmes path {}".format(
-                self.options_channels['json_name'][each_channel]))
+            json_name = self.options_channels['json_name'][each_channel]
+            self.logger.debug("Searching JSON for {}".format(json_name))
 
             try:
-                jmesexpression = self.jmespath.compile(self.options_channels['json_name'][each_channel])
+                jmesexpression = self.jmespath.compile(json_name)
                 value = jmesexpression.search(json_values)
-                self.logger.debug("Match found. Key: {}, Value: {}".format(self.options_channels['json_name'][each_channel],value))
+                self.logger.debug(
+                    "Found key: {}, value: {}".format(json_name, value))
                 measurement[each_channel] = {}
                 measurement[each_channel]['measurement'] = self.channels_measurement[each_channel].measurement
                 measurement[each_channel]['unit'] = self.channels_measurement[each_channel].unit
                 measurement[each_channel]['value'] = value
                 measurement[each_channel]['timestamp_utc'] = datetime_utc
-
                 self.add_measurement_influxdb(each_channel, measurement)
-            except Exception as exc:
-                try:
-                    self.logger.error(
-                        "Something happened in storing this measurement: {} : {}".format(
-                            value, exc))
-                except:
-                    self.logger.error(
-                        "Value doesn't represent a float and could not decode payload : {}".format(exc))
-                return
+            except Exception as err:
+                self.logger.error(
+                    "Error in JSON '{}' finding '{}': {}".format(
+                        json_values, json_name, err))
 
     def add_measurement_influxdb(self, channel, measurement):
         # Convert value/unit is conversion_id present and valid

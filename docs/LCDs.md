@@ -1,5 +1,8 @@
 Page\: `Setup -> LCD`
 
+!!! warning
+    LCD controllers have been deprecated since Mycodo version 8.9.0. All LCD controller functionality has been ported to [Functions](Functions.md). No new LCD controllers can be created in Mycodo 8.9.0 and beyond, but already-existing LCD controllers are permitted to operate until further notice. If you are using Mycodo version 8.9.0 or beyond, it is advised to create Functions for all your current LCD controllers, because at some point in the future LCD controllers will be completely removed. This manual page only serves as reference material for those still using LCD controllers.
+
 Data may be output to a liquid crystal display (LCD) for easy viewing. Please see [LCD Displays](Device-Notes.md#lcd-displays) for specific information regarding compatibility.
 
 There may be multiple displays created for each LCD. If there is only one display created for the LCD, it will refresh at the set period. If there is more than one display, it will cycle from one display to the next every set period.

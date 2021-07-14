@@ -53,7 +53,32 @@ INPUT_INFORMATION = {
         ('pip-pypi', 'w1thermsensor', 'w1thermsensor==2.0.0'),
     ],
 
-    'interfaces': ['1WIRE']
+    'interfaces': ['1WIRE'],
+
+    'custom_actions': [
+        {
+            'type': 'message',
+            'default_value': """Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k)."""
+        },
+        {
+            'id': 'resolution',
+            'type': 'select',
+            'default_value': '',
+            'options_select': [
+                ('9', '9-bit, 0.5 °C, 93.75 ms'),
+                ('10', '10-bit, 0.25 °C, 187.5 ms'),
+                ('11', '11-bit, 0.125 °C, 375 ms'),
+                ('12', '12-bit, 0.0625 °C, 750 ms')
+            ],
+            'name': 'Resolution',
+            'phrase': 'Select the resolution for the sensor'
+        },
+        {
+            'id': 'set_resolution',
+            'type': 'button',
+            'name': 'Set Resolution'
+        }
+    ]
 }
 
 
@@ -94,3 +119,14 @@ class InputModule(AbstractInput):
                 time.sleep(1)
 
         return self.return_dict
+
+    def set_resolution(self, args_dict):
+        if 'resolution' not in args_dict or not args_dict['resolution']:
+            self.logger.error("Resolution required")
+            return
+        try:
+            self.sensor.set_resolution(
+                int(args_dict['resolution']), persist=True)
+        except Exception as err:
+            self.logger.error(
+                "Error setting resolution: {}".format(err))

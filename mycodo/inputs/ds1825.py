@@ -37,12 +37,30 @@ INPUT_INFORMATION = {
     ],
 
     'interfaces': ['1WIRE'],
-    'resolution': [
-        ('', 'Use Chip Default'),
-        (9, '9-bit, 0.5 °C, 93.75 ms'),
-        (10, '10-bit, 0.25 °C, 187.5 ms'),
-        (11, '11-bit, 0.125 °C, 375 ms'),
-        (12, '12-bit, 0.0625 °C, 750 ms')
+
+    'custom_actions': [
+        {
+            'type': 'message',
+            'default_value': """Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k)."""
+        },
+        {
+            'id': 'resolution',
+            'type': 'select',
+            'default_value': '',
+            'options_select': [
+                ('9', '9-bit, 0.5 °C, 93.75 ms'),
+                ('10', '10-bit, 0.25 °C, 187.5 ms'),
+                ('11', '11-bit, 0.125 °C, 375 ms'),
+                ('12', '12-bit, 0.0625 °C, 750 ms')
+            ],
+            'name': 'Resolution',
+            'phrase': 'Select the resolution for the sensor'
+        },
+        {
+            'id': 'set_resolution',
+            'type': 'button',
+            'name': 'Set Resolution'
+        }
     ]
 }
 
@@ -63,8 +81,6 @@ class InputModule(AbstractInput):
 
         self.sensor = W1ThermSensor(
             Sensor.DS1825, self.input_dev.location)
-        if self.input_dev.resolution:
-            self.sensor.set_resolution(self.input_dev.resolution)
 
     def get_measurement(self):
         """ Gets the DS1825's temperature in Celsius """
@@ -97,3 +113,14 @@ class InputModule(AbstractInput):
         self.value_set(0, temperature)
 
         return self.return_dict
+
+    def set_resolution(self, args_dict):
+        if 'resolution' not in args_dict or not args_dict['resolution']:
+            self.logger.error("Resolution required")
+            return
+        try:
+            self.sensor.set_resolution(
+                int(args_dict['resolution']), persist=True)
+        except Exception as err:
+            self.logger.error(
+                "Error setting resolution: {}".format(err))

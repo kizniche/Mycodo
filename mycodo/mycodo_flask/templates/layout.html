@@ -188,7 +188,7 @@
           <li class="nav-item dropdown{% if active_page in ['dashboard', 'live', 'graph_async'] %} active{% endif %}">
             <a class="nav-link dropdown-toggle" href="#" id="dropdown00" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('Data')}}</a>
             <div class="dropdown-menu" aria-labelledby="dropdown00">
-              <a class="dropdown-item{% if active_page == 'live' %} active{% endif %}" href="{{url_for('routes_page.page_live')}}"><i class="fas fa-play-circle"></i> {{_('Live')}}</a>
+              <a class="dropdown-item{% if active_page == 'live' %} active{% endif %}" href="{{url_for('routes_page.page_live')}}"><i class="fas fa-play-circle"></i> {{_('Live Measurements')}}</a>
               <a class="dropdown-item{% if active_page == 'graph_async' %} active{% endif %}" href="{{url_for('routes_page.page_graph_async')}}"><i class="fas fa-sync"></i> {{_('Asynchronous Graphs')}}</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item disabled" href="#"><i class="fas fa-tachometer-alt"></i> {{_('Dashboards')}}</a>
@@ -200,15 +200,14 @@
             </div>
           </li>
 
-          <li class="nav-item dropdown{% if active_page in ['data', 'output', 'function', 'method_list', 'lcd', 'calibration'] %} active{% endif %}">
+          <li class="nav-item dropdown{% if active_page in ['data', 'output', 'function', 'method_list', 'lcd'] %} active{% endif %}">
             <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{_('Setup')}}</a>
             <div class="dropdown-menu" aria-labelledby="dropdown01">
               <a class="dropdown-item{% if active_page == 'input' %} active{% endif %}" href="{{url_for('routes_input.page_input')}}"><i class="fas fa-database"></i> {{dict_translation['input']['title']}}</a>
               <a class="dropdown-item{% if active_page == 'output' %} active{% endif %}" href="{{url_for('routes_output.page_output')}}"><i class="fas fa-bolt"></i> {{dict_translation['output']['title']}}</a>
-              <a class="dropdown-item{% if active_page == 'function' %} active{% endif %}" href="{{url_for('routes_function.page_function')}}"><i class="fas fa-random"></i> {{dict_translation['function']['title']}}</a>
+              <a class="dropdown-item{% if active_page == 'function' %} active{% endif %}" href="{{url_for('routes_function.page_function')}}"><i class="fas fa-atom"></i> {{dict_translation['function']['title']}}</a>
               <a class="dropdown-item{% if active_page == 'method_list' %} active{% endif %}" href="{{url_for('routes_method.method_list')}}"><i class="fas fa-chart-line"></i> {{dict_translation['method']['title']}}</a>
               <a class="dropdown-item{% if active_page == 'lcd' %} active{% endif %}" href="{{url_for('routes_page.page_lcd')}}"><i class="fas fa-desktop"></i> {{dict_translation['lcd']['title']}}</a>
-              <a class="dropdown-item{% if active_page == 'calibration' %} active{% endif %}" href="{{url_for('routes_calibration.calibration_select')}}"><i class="fas fa-wrench"></i> {{_('Calibration & Setup')}}</a>
             </div>
           </li>
 

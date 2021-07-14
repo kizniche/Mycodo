@@ -25,7 +25,6 @@ from pkg_resources import parse_version
 
 from mycodo.config import BACKUP_LOG_FILE
 from mycodo.config import BACKUP_PATH
-from mycodo.config import CALIBRATION_INFO
 from mycodo.config import CAMERA_INFO
 from mycodo.config import DEPENDENCIES_GENERAL
 from mycodo.config import DEPENDENCY_INIT_FILE
@@ -330,7 +329,6 @@ def admin_dependencies(device):
         parse_input_information(),
         parse_output_information(),
         parse_widget_information(),
-        CALIBRATION_INFO,
         CAMERA_INFO,
         FUNCTION_ACTION_INFO,
         FUNCTION_INFO,

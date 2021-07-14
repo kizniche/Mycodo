@@ -24,7 +24,7 @@ channels_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'MQTT_PAHO',
     'input_manufacturer': 'Mycodo',
-    'input_name': 'MQTT Subscribe (value payload)',
+    'input_name': 'MQTT Subscribe (Value payload)',
     'input_library': 'paho-mqtt',
     'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,
@@ -48,7 +48,8 @@ INPUT_INFORMATION = {
     'interfaces': ['Mycodo'],
 
     'dependencies_module': [
-        ('pip-pypi', 'paho', 'paho-mqtt==1.5.1')],
+        ('pip-pypi', 'paho', 'paho-mqtt==1.5.1')
+    ],
 
     'custom_options': [
         {
@@ -213,9 +214,9 @@ class InputModule(AbstractInput):
         """ Set up the subscriptions to the proper MQTT channels to listen to """
         try:
             for channel in self.channels_measurement:
-                self.client.subscribe(self.options_channels['subscribe_topic'][channel])
-                self.logger.debug("Subscribed to MQTT channel '{}'".format(
+                self.logger.debug("Subscribing to MQTT topic '{}'".format(
                     self.channels_measurement[channel].name))
+                self.client.subscribe(self.options_channels['subscribe_topic'][channel])
         except:
             self.logger.error("Could not subscribe to MQTT channel '{}'".format(
                 self.mqtt_channel))
@@ -225,16 +226,23 @@ class InputModule(AbstractInput):
             self.mqtt_channel, rc))
 
     def on_subscribe(self, client, obj, mid, granted_qos):
-        self.logger.debug("Subscribing to mqtt topic: {}, {}, {}".format(
+        self.logger.debug("Subscribed to mqtt topic: {}, {}, {}".format(
             self.mqtt_channel, mid, granted_qos))
 
     def on_log(self, mqttc, obj, level, string):
         self.logger.info("Log: {}".format(string))
 
     def on_message(self, client, userdata, msg):
+        try:
+            payload = msg.payload.decode()
+            self.logger.debug("Received message: topic: {}, payload: {}".format(
+                msg.topic, payload))
+        except Exception as exc:
+            self.logger.error(
+                "Payload could not be decoded: {}".format(exc))
+            return
+
         datetime_utc = datetime.datetime.utcnow()
-        self.logger.debug("Message received: Channel: {}, Value: {}".format(
-            msg.topic, msg.payload.decode()))
         measurement = {}
         channel = None
         for each_channel in self.channels_measurement:
@@ -250,26 +258,18 @@ class InputModule(AbstractInput):
             return
 
         try:
-            value = float(msg.payload.decode())
-            self.logger.debug("Payload is float: {}".format(value))
-        except Exception:
-            try:
-                self.logger.error(
-                    "Message doesn't represent a float value: {}".format(
-                        msg.payload.decode()))
-            except:
-                self.logger.error(
-                    "Message doesn't represent a float and could not decode payload")
-            return
-
-        # Original value/unit
-        measurement[channel] = {}
-        measurement[channel]['measurement'] = self.channels_measurement[channel].measurement
-        measurement[channel]['unit'] = self.channels_measurement[channel].unit
-        measurement[channel]['value'] = value
-        measurement[channel]['timestamp_utc'] = datetime_utc
-
-        self.add_measurement_influxdb(channel, measurement)
+            value = float(payload)
+            self.logger.debug("Payload represents a float: {}".format(value))
+            measurement[channel] = {}
+            measurement[channel]['measurement'] = self.channels_measurement[channel].measurement
+            measurement[channel]['unit'] = self.channels_measurement[channel].unit
+            measurement[channel]['value'] = value
+            measurement[channel]['timestamp_utc'] = datetime_utc
+            self.add_measurement_influxdb(channel, measurement)
+        except Exception as err:
+            self.logger.error(
+                "Error processing message payload '{}': {}".format(
+                    payload, err))
 
     def add_measurement_influxdb(self, channel, measurement):
         # Convert value/unit is conversion_id present and valid

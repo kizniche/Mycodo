@@ -9,7 +9,6 @@ sys.path.append(
     os.path.abspath(os.path.join(
         os.path.dirname(__file__), os.path.pardir) + '/..'))
 
-from mycodo.config import CALIBRATION_INFO
 from mycodo.config import CAMERA_INFO
 from mycodo.config import DEPENDENCIES_GENERAL
 from mycodo.config import FUNCTION_ACTION_INFO
@@ -46,7 +45,6 @@ def get_installed_dependencies():
         parse_function_information(),
         parse_input_information(),
         parse_output_information(),
-        CALIBRATION_INFO,
         CAMERA_INFO,
         FUNCTION_ACTION_INFO,
         FUNCTION_INFO,

@@ -1,4 +1,4 @@
-Page\: `Setup -> Input` (Previously `Setup -> Data`)
+Page\: `Setup -> Input`
 
 !!! warning
     Math controllers have been deprecated since Mycodo version 8.9.0. All Math controller functionality has been ported to [Functions](Functions.md). No new Math controllers can be created in Mycodo 8.9.0 and beyond, but already-existing Math controllers are permitted to operate until further notice. If you are using Mycodo version 8.9.0 or beyond, it is advised to create Functions for all your current Math controllers, because at some point in the future Math controllers will be completely removed. This manual page only serves as reference material for those still using Math controllers.

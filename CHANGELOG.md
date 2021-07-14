@@ -70,7 +70,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Add option for a numerical keypad login
  - Add options for camera library raspistill: AWB Gain Blue, AWB Gain Red
  - Add Input: ADS1256 with Analog pH/EC sensors
-   Add Input: SI1145 Light/Proximity sensor
+ - Add Input: SI1145 Light/Proximity sensor
  - Add Output: MCP23017 16-Channel I/O Expander (On/Off)
  - Add return status to Conditional Controllers
  - Add 2- and 4-line variants of SSD1306 Display Functions and extra Options ([#1030](https://github.com/kizniche/mycodo/issues/1030))
@@ -85,6 +85,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Speed up loading of Camera page
  - Update Gridstack to the latest version
  - Ensure Atlas DO sensor only returns DO ([#1052](https://github.com/kizniche/mycodo/issues/1052))
+ - Remove calibration page (all functionality has been moved to modules)
 
 
 ## 8.11.0 (2021-06-05) 

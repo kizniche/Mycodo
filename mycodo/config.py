@@ -480,19 +480,6 @@ DEPENDENCIES_GENERAL = {
     }
 }
 
-# Calibration
-CALIBRATION_INFO = {
-    'CALIBRATE_DS_TYPE': {
-        'name': "{}: {}: {}".format(
-            lazy_gettext('Calibration'),
-            lazy_gettext('Sensor'),
-            lazy_gettext('DS-Type')),
-        'dependencies_module': [
-            ('pip-pypi', 'w1thermsensor', 'w1thermsensor==2.0.0')
-        ]
-    }
-}
-
 # Conditional controllers
 CONDITIONAL_CONDITIONS = [
     ('measurement', "{} ({}, {})".format(
@@ -867,11 +854,6 @@ FUNCTION_ACTIONS = [
     ('system_restart', FUNCTION_ACTION_INFO['system_restart']['name']),
     ('system_shutdown', FUNCTION_ACTION_INFO['system_shutdown']['name']),
     ('webhook', FUNCTION_ACTION_INFO['webhook']['name'])
-]
-
-# Calibration
-CALIBRATION_DEVICES = [
-    ('setup_ds_resolution', 'DS-Type Temperature Sensors (e.g. DS18B20)')
 ]
 
 # User Roles

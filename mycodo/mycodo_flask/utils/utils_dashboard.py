@@ -455,7 +455,7 @@ def check_func(all_devices,
                function,
                unit=None):
     """
-    Generate a list of y-axes for Live and Asynchronous Graphs
+    Generate a list of y-axes
     :param all_devices: Input, Math, Output, and PID SQL entries of a table
     :param unique_id: The ID of the measurement
     :param y_axes: empty list to populate

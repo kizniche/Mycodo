@@ -15,7 +15,6 @@ from flask import request
 from flask_babel import gettext
 from sqlalchemy import and_
 
-from mycodo.config import CALIBRATION_INFO
 from mycodo.config import CAMERA_INFO
 from mycodo.config import DEPENDENCIES_GENERAL
 from mycodo.config import FUNCTION_ACTION_INFO
@@ -1627,7 +1626,6 @@ def return_dependencies(device_type):
         parse_input_information(),
         parse_output_information(),
         parse_widget_information(),
-        CALIBRATION_INFO,
         CAMERA_INFO,
         FUNCTION_ACTION_INFO,
         FUNCTION_INFO,

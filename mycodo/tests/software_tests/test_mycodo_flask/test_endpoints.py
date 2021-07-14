@@ -734,7 +734,7 @@ def sees_navbar(testapp):
         'Export',
         'Function',
         'LCD',
-        'Live',
+        'Live Measurements',
         'Logout',
         'Mycodo Logs',
         'Method',
