@@ -231,9 +231,9 @@ class DaemonControl:
         else:
             return 1, 'state not "on", 1, True, "off", 0, or False. Found: "{}"'.format(state)
 
-    def output_sec_currently_on(self, output_id, output_channel):
-        """ Return the amount an output is currently on for (e.g. number fo seconds) """
-        return self.proxy().output_sec_currently_on(output_id)
+    def output_sec_currently_on(self, output_id, output_channel=None):
+        """ Return the amount of seconds an on/off output channel has been on """
+        return self.proxy().output_sec_currently_on(output_id, output_channel)
 
     def output_setup(self, action, output_id):
         return self.proxy().output_setup(action, output_id)

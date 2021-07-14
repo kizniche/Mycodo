@@ -132,20 +132,17 @@ WIDGET_INFORMATION = {
          [
             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
-            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge-9.1.2.js',
-            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js'
+            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge-9.1.2.js'
          ],
          [
             'wget --no-clobber https://code.highcharts.com/zips/Highcharts-9.1.2.zip',
             'unzip Highcharts-9.1.2.zip -d Highcharts-9.1.2',
-            'cp Highcharts-9.1.2/code/highcharts.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
-            'cp Highcharts-9.1.2/code/highcharts.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js.map',
-            'cp Highcharts-9.1.2/code/highcharts-more.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
-            'cp Highcharts-9.1.2/code/highcharts-more.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js.map',
-            'cp Highcharts-9.1.2/code/modules/solid-gauge.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge-9.1.2.js',
-            'cp Highcharts-9.1.2/code/modules/solid-gauge.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge-9.1.2.js.map',
-            'cp Highcharts-9.1.2/code/themes/dark-unica.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js',
-            'cp Highcharts-9.1.2/code/themes/dark-unica.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/dark-unica-9.1.2.js.map',
+            'cp -rf Highcharts-9.1.2/code/highcharts.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
+            'cp -rf Highcharts-9.1.2/code/highcharts.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts.js.map',
+            'cp -rf Highcharts-9.1.2/code/highcharts-more.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
+            'cp -rf Highcharts-9.1.2/code/highcharts-more.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more.js.map',
+            'cp -rf Highcharts-9.1.2/code/modules/solid-gauge.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge-9.1.2.js',
+            'cp -rf Highcharts-9.1.2/code/modules/solid-gauge.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge.js.map',
             'rm -rf Highcharts-9.1.2'
          ])
     ],

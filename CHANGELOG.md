@@ -58,6 +58,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Fix cmd_output() killing daemon upon command timeout ([#1047](https://github.com/kizniche/mycodo/issues/1047))
  - Remove Highcharts/Highstock Javascript from package to be compliant with licensing
  - Fix missing check for Widget dependencies during upgrade/restore
+ - Fix output_sec_currently_on()
 
 ### Features
 
