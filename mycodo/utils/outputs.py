@@ -91,6 +91,7 @@ def parse_output_information(exclude_custom=False):
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'channels_dict')
 
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'on_state_internally_handled')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'no_run')
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_types')
 
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'message')

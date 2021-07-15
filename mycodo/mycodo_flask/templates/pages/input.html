@@ -159,8 +159,14 @@
                   type: "GET",
                   url: '/input?input_type=entry&input_id=' + data.data.input_id,
                   success: function (new_entry) {
-                    grid.addWidget('<div class="grid-stack-item" id="gridstack_input_' + data.data.input_id + '" gs-id="' + data.data.input_id + '">' + new_entry + '</div>', {w: 20, h: 1, y: 999});
-                    {% if not hide_tooltips %}$('input[title]').tooltip({placement:'top'});{% endif %}
+                    if (data.data.messages.success.length !== 0) {
+                      grid.addWidget('<div class="grid-stack-item" id="gridstack_input_' + data.data.input_id + '" gs-id="' + data.data.input_id + '">' + new_entry + '</div>', {
+                        w: 20,
+                        h: 1,
+                        y: 999
+                      });
+                      {% if not hide_tooltips %}$('input[title]').tooltip({placement: 'top'});{% endif %}
+                    }
                     popup_response(data);
                   },
                   error: function() {

@@ -75,6 +75,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Add return status to Conditional Controllers
  - Add 2- and 4-line variants of SSD1306 Display Functions and extra Options ([#1030](https://github.com/kizniche/mycodo/issues/1030))
  - Add calibration to the Atlas Scientific EC Input Peristaltic Pump Output
+ - Add Spacers for Input and Output lists
  - Add PDF Manual
 
 ### Miscellaneous

@@ -81,6 +81,19 @@ def input_add(form_add):
         new_input.device = input_name
         new_input.position_y = 999
 
+        if input_name == "input_spacer":
+            new_input.name = "Spacer Name"
+            new_input.size_y = 1
+            new_input.position_y = 999
+            new_input.save()
+            new_input_id = new_input.unique_id
+            db.session.commit()
+
+            messages["success"].append('{action} {controller}'.format(
+                action=TRANSLATIONS['add']['title'],
+                controller=TRANSLATIONS['input']['title']))
+            return messages, dep_name, dep_unmet, new_input_id
+
         if input_interface:
             new_input.interface = input_interface
 
@@ -359,7 +372,8 @@ def input_mod(form_mod, request_form):
             messages["warning"].append(gettext(
                 "Invalid device or improper permissions to read device"))
 
-        if ('gpio_location' in dict_inputs[mod_input.device]['options_enabled'] and
+        if ('options_enabled' in dict_inputs[mod_input.device] and
+                'gpio_location' in dict_inputs[mod_input.device]['options_enabled'] and
                 form_mod.gpio_location.data is None):
             messages["error"].append(gettext("Pin (GPIO) must be set"))
 
@@ -568,6 +582,7 @@ def input_mod(form_mod, request_form):
                 controller=TRANSLATIONS['input']['title']))
 
     except Exception as except_msg:
+        logger.exception("input_mod")
         messages["error"].append(str(except_msg))
 
     return messages, page_refresh

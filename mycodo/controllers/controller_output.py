@@ -127,6 +127,10 @@ class OutputController(AbstractController, threading.Thread):
                     self.output_unique_id[each_output.unique_id][0] = None
 
                 if each_output.output_type in self.dict_outputs:
+                    if ('no_run' in self.dict_outputs[each_output.output_type] and
+                            self.dict_outputs[each_output.output_type]['no_run']):
+                        continue
+
                     output_loaded = load_module_from_file(
                         self.dict_outputs[each_output.output_type]['file_path'],
                         'outputs')
@@ -171,14 +175,18 @@ class OutputController(AbstractController, threading.Thread):
                 self.output_unique_id[output_id][0] = None
 
             if self.output_type[output_id] in self.dict_outputs:
-                output_loaded = load_module_from_file(
-                    self.dict_outputs[self.output_type[output_id]]['file_path'],
-                    'outputs')
+                if ('no_run' in self.dict_outputs[output.output_type] and
+                        self.dict_outputs[output.output_type]['no_run']):
+                    pass
+                else:
+                    output_loaded = load_module_from_file(
+                        self.dict_outputs[self.output_type[output_id]]['file_path'],
+                        'outputs')
 
-                if output_loaded:
-                    self.output[output_id] = output_loaded.OutputModule(output)
-                    self.output[output_id].setup_output()
-                    self.output[output_id].init_post()
+                    if output_loaded:
+                        self.output[output_id] = output_loaded.OutputModule(output)
+                        self.output[output_id].setup_output()
+                        self.output[output_id].init_post()
 
             return 0, "add_mod_output() Success"
         except Exception as e:
@@ -195,18 +203,26 @@ class OutputController(AbstractController, threading.Thread):
         :rtype: int, str
         """
         try:
-            self.logger.debug("Output {id} Deleted.".format(id=output_id))
+            self.dict_outputs = parse_output_information()
+
+            output = db_retrieve_table_daemon(Output, unique_id=output_id)
 
             # instruct output to shutdown
             shutdown_timer = timeit.default_timer()
-            try:
-                self.output[output_id].shutdown(shutdown_timer)
-            except Exception as err:
-                self.logger.error("Could not shut down output gracefully: {}".format(err))
+
+            if ('no_run' in self.dict_outputs[output.output_type] and
+                    self.dict_outputs[output.output_type]['no_run']):
+                pass
+            else:
+                try:
+                    self.output[output_id].shutdown(shutdown_timer)
+                except Exception as err:
+                    self.logger.error("Could not shut down output gracefully: {}".format(err))
 
             self.output_unique_id.pop(output_id, None)
             self.output_type.pop(output_id, None)
             self.output.pop(output_id, None)
+            self.logger.debug("Output {id} Deleted.".format(id=output_id))
 
             return 0, "del_output() Success"
         except Exception as e:

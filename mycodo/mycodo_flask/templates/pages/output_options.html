@@ -99,15 +99,18 @@
 
     <div class="row small-gutters" style="padding: 0.5em">
       <div class="col-12">
-        <h5>{{_('Output Options')}}</h5>
+        <h5>{{_('Options')}}</h5>
       </div>
 
-      <div class="col-auto">
+      <div class="{% if each_output.output_type == 'output_spacer' %}col-12{% else %}col-auto{% endif %}">
         {{form_mod_output.name.label(class_='control-label')}}
         <div>
           {{form_mod_output.name(class_='form-control', value=each_output.name, **{'title': dict_translation['name']['phrase']})}}
         </div>
       </div>
+
+  {% if each_output.output_type != 'output_spacer' %}
+
       <div class="col-auto">
         {{form_mod_output.log_level_debug.label(class_='control-label')}}
         <div class="input-group-text">
@@ -126,6 +129,7 @@
 {% include 'pages/form_options/Location.html' %}
 {% include 'pages/form_options/Period.html' %}
 
+  {% endif %}
     </div>
 
   {% if ('custom_options' in dict_options and custom_options_values[unique_id]) or

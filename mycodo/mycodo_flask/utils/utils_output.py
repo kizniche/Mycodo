@@ -76,6 +76,21 @@ def output_add(form_add, request_form):
         for _ in range(0, form_add.output_quantity.data):
             try:
                 new_output = Output()
+
+                if output_type == "output_spacer":
+                    new_output.output_type = output_type
+                    new_output.name = "Spacer Name"
+                    new_output.size_y = 1
+                    new_output.position_y = 999
+                    new_output.save()
+                    output_id = new_output.unique_id
+                    db.session.commit()
+
+                    messages["success"].append('{action} {controller}'.format(
+                        action=TRANSLATIONS['add']['title'],
+                        controller=TRANSLATIONS['output']['title']))
+                    break
+
                 try:
                     from RPi import GPIO
                     if GPIO.RPI_INFO['P1_REVISION'] == 1:
@@ -170,6 +185,10 @@ def output_add(form_add, request_form):
                     output_id = new_output.unique_id
                     db.session.commit()
 
+                    messages["success"].append('{action} {controller}'.format(
+                        action=TRANSLATIONS['add']['title'],
+                        controller=TRANSLATIONS['output']['title']))
+
                     #
                     # If measurements defined in the Output Module
                     #
@@ -208,9 +227,6 @@ def output_add(form_add, request_form):
                         messages["error"].extend(new_messages["error"])
                         messages["success"].extend(new_messages["success"])
 
-                    messages["success"].append('{action} {controller}'.format(
-                        action=TRANSLATIONS['add']['title'],
-                        controller=TRANSLATIONS['output']['title']))
             except sqlalchemy.exc.OperationalError as except_msg:
                 messages["error"].append(str(except_msg))
             except sqlalchemy.exc.IntegrityError as except_msg:

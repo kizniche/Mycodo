@@ -114,6 +114,7 @@
 
   </div>
 
+  {% if each_input.device != 'input_spacer' %}
   <div class="row small-gutters align-items-end" style="padding: 0.5em">
     <div class="col-12">
       <h5>{{_('Actions')}}</h5>
@@ -131,18 +132,22 @@
       {% endif %}
     {% endif %}
   </div>
+  {% endif %}
 
   <div class="row small-gutters" style="padding: 0.5em">
     <div class="col-12">
       <h5>{{_('Options')}}</h5>
     </div>
 
-    <div class="col-auto">
+    <div class="{% if each_input.device == 'input_spacer' %}col-12{% else %}col-auto{% endif %}">
       {{form_mod_input.name.label(class_='control-label')}}
       <div>
         {{form_mod_input.name(class_='form-control', value=each_input.name, **{'title': dict_translation['name']['phrase']})}}
       </div>
     </div>
+
+    {% if each_input.device != 'input_spacer' %}
+
     <div class="col-auto">
       {{form_mod_input.log_level_debug.label(class_='control-label')}}
       <div class="input-group-text">
@@ -186,6 +191,7 @@
     {% include 'pages/form_options/ADC_Sample_Speed.html' %}
     {% include 'pages/form_options/Shell_Command.html' %}
 
+    {% endif %}
   </div>
 
     {% if ('custom_options' in dict_options and custom_options_values[unique_id]) or
@@ -264,17 +270,19 @@
 
   {% endif %}
 
+  {% if each_input.device != 'input_spacer' %}
+
   <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.5em 0.5em 0 0.5em">
     <div class="col-12">
       <h5>{{_('Measurement Settings')}}</h5>
     </div>
   </div>
-
   {% if "measurements_variable_amount" in dict_options and dict_options['measurements_variable_amount'] %}
     {% include 'pages/form_options/Measurements_Select.html' %}
   {% endif %}
-
   {% include 'pages/form_options/Measurements_Configure.html' %}
+
+  {% endif %}
 
   </form>
 </div>

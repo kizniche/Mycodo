@@ -36,9 +36,12 @@ class InputAdd(FlaskForm):
             manuf=dict_inputs[each_input]['input_manufacturer'],
             name=dict_inputs[each_input]['input_name'])
 
-        name += ': {meas}'.format(meas=dict_inputs[each_input]['measurements_name'])
+        if ('measurements_name' in dict_inputs[each_input] and
+                dict_inputs[each_input]['measurements_name']):
+            name += ': {meas}'.format(meas=dict_inputs[each_input]['measurements_name'])
 
-        if 'input_library' in dict_inputs[each_input]:
+        if ('input_library' in dict_inputs[each_input] and
+                dict_inputs[each_input]['input_library']):
             name += ' ({lib})'.format(lib=dict_inputs[each_input]['input_library'])
 
         if 'interfaces' in dict_inputs[each_input]:

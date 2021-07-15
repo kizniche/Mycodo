@@ -251,8 +251,13 @@
                   type: "GET",
                   url: '/output?output_type=entry&output_id=' + data.data.output_id,
                   success: function (new_entry) {
-                    grid.addWidget('<div class="grid-stack-item" id="gridstack_output_' + data.data.output_id + '" gs-id="' + data.data.output_id + '">' + new_entry + '</div>', {w: 20, h: data.data.size_y});
-                    {% if not hide_tooltips %}$('input[title]').tooltip({placement:'top'});{% endif %}
+                    if (data.data.messages.success.length !== 0) {
+                      grid.addWidget('<div class="grid-stack-item" id="gridstack_output_' + data.data.output_id + '" gs-id="' + data.data.output_id + '">' + new_entry + '</div>', {
+                        w: 20,
+                        h: data.data.size_y
+                      });
+                      {% if not hide_tooltips %}$('input[title]').tooltip({placement: 'top'});{% endif %}
+                    }
                     popup_response(data);
                   },
                   error: function() {
