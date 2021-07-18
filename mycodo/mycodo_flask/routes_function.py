@@ -314,7 +314,7 @@ def page_function():
     function_page_entry = None
     function_page_options = None
 
-    if function_type in ['entry', 'options', 'actions'] and function_id != '0':
+    if function_type in ['entry', 'options', 'conditions', 'actions'] and function_id != '0':
         controller_type = determine_controller_type(function_id)
         if controller_type == "Conditional":
             each_function = Conditional.query.filter(

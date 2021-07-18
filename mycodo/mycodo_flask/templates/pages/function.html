@@ -425,7 +425,7 @@
                   type: "GET",
                   url: '/function?function_type=actions&function_id=' + data.data.function_id + '?action_id=' + data.data.action_id,
                   success: function (new_options) {
-                    document.getElementById('mod_function_actions_' + data.data.function_id).innerHTML += new_options;
+                    document.getElementById('mod_function_actions_' + data.data.function_id).insertAdjacentHTML('beforeend', (new_options));
                     popup_response(data);
                   },
                   error: function() {
@@ -438,7 +438,7 @@
                   type: "GET",
                   url: '/function?function_type=conditions&function_id=' + data.data.function_id + '&condition_id=' + data.data.condition_id,
                   success: function (new_options) {
-                    document.getElementById('mod_function_conditions_' + data.data.function_id).innerHTML += new_options;
+                    document.getElementById('mod_function_conditions_' + data.data.function_id).insertAdjacentHTML('beforeend', (new_options));
                     popup_response(data);
                   },
                   error: function() {
