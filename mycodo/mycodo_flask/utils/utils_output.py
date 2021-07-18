@@ -316,7 +316,6 @@ def output_mod(form_output, request_form):
                 custom_options_channels_json_postsave_tmp)
 
         if 'execute_at_modification' in dict_outputs[mod_output.output_type]:
-            logger.info("TEST00: {}".format(custom_options_channels_dict_postsave))
             # pass custom options to module prior to saving to database
             (messages,
              mod_output,
@@ -355,7 +354,7 @@ def output_mod(form_output, request_form):
                 messages["error"].extend(new_messages["error"])
                 messages["success"].extend(new_messages["success"])
     except Exception as except_msg:
-        messages["error"].append(except_msg)
+        messages["error"].append(str(except_msg))
 
     return messages, page_refresh
 
@@ -402,7 +401,7 @@ def output_del(form_output):
             messages["error"].extend(new_messages["error"])
             messages["success"].extend(new_messages["success"])
     except Exception as except_msg:
-        messages["error"].append(except_msg)
+        messages["error"].append(str(except_msg))
 
     return messages
 

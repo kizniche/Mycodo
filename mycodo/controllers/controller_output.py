@@ -205,13 +205,11 @@ class OutputController(AbstractController, threading.Thread):
         try:
             self.dict_outputs = parse_output_information()
 
-            output = db_retrieve_table_daemon(Output, unique_id=output_id)
-
             # instruct output to shutdown
             shutdown_timer = timeit.default_timer()
 
-            if ('no_run' in self.dict_outputs[output.output_type] and
-                    self.dict_outputs[output.output_type]['no_run']):
+            if ('no_run' in self.dict_outputs[self.output_type[output_id]] and
+                    self.dict_outputs[self.output_type[output_id]]['no_run']):
                 pass
             else:
                 try:
