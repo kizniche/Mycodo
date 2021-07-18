@@ -29,14 +29,15 @@ def conditional_mod(form):
         "info": [],
         "warning": [],
         "error": [],
-        "pylint": [],
+        "page_refresh": True,
+        "return_text": [],
         "name": None
     }
 
     try:
         if current_app.config['TESTING']:
             cmd_status = None
-            message = ""
+            pylint_message = ""
         else:
             messages["error"], lines_code, cmd_status, cmd_out = save_conditional_code(
                 messages["error"],
@@ -48,7 +49,7 @@ def conditional_mod(form):
                 timeout=form.pyro_timeout.data,
                 test=True)
 
-            message = Markup(
+            pylint_message = Markup(
                 '<pre>\n\n'
                 'Full Conditional Statement code:\n\n{code}\n\n'
                 'Conditional Statement code analysis:\n\n{report}'
@@ -70,10 +71,10 @@ def conditional_mod(form):
         if cmd_status:
             messages["warning"].append("pylint returned with status: {}".format(cmd_status))
 
-        if message:
+        if pylint_message:
             messages["info"].append("Review your code for issues and test before putting it "
                   "into a production environment.")
-            messages["pylint"].append(message)
+            messages["return_text"].append(pylint_message)
 
         if not messages["error"]:
             db.session.commit()

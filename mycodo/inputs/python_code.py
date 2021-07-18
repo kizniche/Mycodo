@@ -116,7 +116,6 @@ def execute_at_modification(
                    'pylint3 -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413 {path}'.format(
                        path=file_run)
         cmd_out, cmd_error, cmd_status = cmd_output(cmd_test)
-        # flash('Pylint command: {}'.format(cmd_test), 'success')
         pylint_message = Markup(
             '<pre>\n\n'
             'Full Python Code Input code:\n\n{code}\n\n'

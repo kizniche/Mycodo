@@ -56,7 +56,6 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Fix PiOLED Functions ([#1030](https://github.com/kizniche/mycodo/issues/1030))
  - Fix PID controller properly reporting if Held/Paused
  - Fix cmd_output() killing daemon upon command timeout ([#1047](https://github.com/kizniche/mycodo/issues/1047))
- - Remove Highcharts/Highstock Javascript from package to be compliant with licensing
  - Fix missing check for Widget dependencies during upgrade/restore
  - Fix output_sec_currently_on()
 
@@ -86,6 +85,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Speed up loading of Camera page
  - Update Gridstack to the latest version
  - Ensure Atlas DO sensor only returns DO ([#1052](https://github.com/kizniche/mycodo/issues/1052))
+ - Remove Highcharts/Highstock Javascript from package to be compliant with licensing
  - Remove calibration page (all functionality has been moved to modules)
 
 
