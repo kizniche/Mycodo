@@ -380,9 +380,12 @@ class InputModule(AbstractInput):
         else:
             self.adc_gain = self.input_dev.adc_gain
 
-        self.adc = ADS.ADS1115(
-            ExtendedI2C(self.input_dev.i2c_bus),
-            address=int(str(self.input_dev.i2c_location), 16))
+        try:
+            self.adc = ADS.ADS1115(
+                ExtendedI2C(self.input_dev.i2c_bus),
+                address=int(str(self.input_dev.i2c_location), 16))
+        except Exception as err:
+            self.logger.error("Error while initializing: {}".format(err))
 
     def calibrate_ph(self, cal_slot, args_dict):
         """Calibration helper method"""
@@ -594,6 +597,10 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the measurement """
+        if not self.adc:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         # Store measurement for each channel

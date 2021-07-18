@@ -42,6 +42,7 @@ from mycodo.databases.models import Role
 from mycodo.databases.models import Trigger
 from mycodo.databases.models import User
 from mycodo.databases.models import Widget
+from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
@@ -570,7 +571,6 @@ def controller_activate_deactivate(messages,
 
     try:
         if not messages["error"]:
-            from mycodo.mycodo_client import DaemonControl
             control = DaemonControl()
             if controller_action == 'activate':
                 return_values = control.controller_activate(controller_id)
@@ -1792,15 +1792,15 @@ def custom_action(controller_type, dict_device, unique_id, form):
     if controller_type == "Output":
         controller = Output.query.filter(
             Output.unique_id == unique_id).first()
-        controller_type = controller.output_type
+        device_type = controller.output_type
     elif controller_type == "Function_Custom":
         controller = CustomController.query.filter(
             CustomController.unique_id == unique_id).first()
-        controller_type = controller.device
+        device_type = controller.device
     elif controller_type == "Input":
         controller = Input.query.filter(
             Input.unique_id == unique_id).first()
-        controller_type = controller.device
+        device_type = controller.device
     else:
         messages["error"].append("Unknown controller: {}".format(controller_type))
         return messages
@@ -1815,8 +1815,8 @@ def custom_action(controller_type, dict_device, unique_id, form):
 
     try:
         options = {}
-        if 'custom_actions' in dict_device[controller_type]:
-            for each_option in dict_device[controller_type]['custom_actions']:
+        if 'custom_actions' in dict_device[device_type]:
+            for each_option in dict_device[device_type]['custom_actions']:
                 if 'id' in each_option and 'type' in each_option:
                     options[each_option['id']] = each_option
 
@@ -1856,7 +1856,6 @@ def custom_action(controller_type, dict_device, unique_id, form):
             return messages
 
         if not messages["error"]:
-            from mycodo.mycodo_client import DaemonControl
             control = DaemonControl()
             use_thread = True
             if (button_id in options and
@@ -1864,11 +1863,14 @@ def custom_action(controller_type, dict_device, unique_id, form):
                     options[button_id]['wait_for_return']):
                 use_thread = False
             status = control.custom_button(
-                controller, unique_id, button_id, args_dict, use_thread)
-            if status[0]:
-                messages["error"].append("Custom Button: {}".format(status[1]))
+                controller_type, unique_id, button_id, args_dict, use_thread)
+            if status:
+                if status[0]:
+                    messages["error"].append("Custom Button: {}".format(status[1]))
+                else:
+                    messages["success"].append("Custom Button: {}".format(status[1]))
             else:
-                messages["success"].append("Custom Button: {}".format(status[1]))
+                messages["error"].append("Custom Button didn't receive a return value")
 
     except Exception as except_msg:
         logger.exception(1)

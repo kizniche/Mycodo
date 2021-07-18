@@ -424,9 +424,11 @@ class InputController(AbstractController, threading.Thread):
             else:
                 return_val = run_action(args_dict)
                 return 0, "Command sent to Input Controller. Returned: {}".format(return_val)
-        except:
-            self.logger.exception("Error executing button press function '{}'".format(
-                button_id))
+        except Exception as err:
+            msg = "Error executing button press function '{}': {}".format(
+                button_id, err)
+            self.logger.exception(msg)
+            return 1, msg
 
     def pre_stop(self):
         # Ensure pre-output is off
