@@ -94,6 +94,9 @@ def parse_output_information(exclude_custom=False):
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'no_run')
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'output_types')
 
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'execute_at_creation')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'execute_at_modification')
+
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'message')
 
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'url_datasheet', force_type='list')

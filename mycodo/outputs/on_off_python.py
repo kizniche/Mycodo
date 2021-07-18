@@ -6,6 +6,9 @@ import importlib.util
 import os
 import textwrap
 
+from flask import Markup
+from flask import current_app
+from flask import flash
 from flask_babel import lazy_gettext
 
 from mycodo.config import PATH_PYTHON_CODE_USER
@@ -13,7 +16,128 @@ from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.system_pi import assure_path_exists
+from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
+
+
+def generate_code(code_on, code_off, unique_id):
+    pre_statement_run = f"""import os
+import sys
+sys.path.append(os.path.abspath('/var/mycodo-root'))
+from mycodo.mycodo_client import DaemonControl
+control = DaemonControl()
+output_id = '{unique_id}'
+
+class OutputRun:
+    def __init__(self, logger, output_id):
+        self.logger = logger
+        self.output_id = output_id
+        self.variables = {{}}
+        self.running = True
+
+    def stop_output(self):
+        self.running = False
+
+    def output_code_run_on(self):
+"""
+
+    code_on_indented = textwrap.indent(code_on, ' ' * 8)
+    full_code = pre_statement_run + code_on_indented
+
+    full_code += """
+
+    def output_code_run_off(self):
+"""
+
+    code_off_indented = textwrap.indent(code_off, ' ' * 8)
+    full_code += code_off_indented
+
+    assure_path_exists(PATH_PYTHON_CODE_USER)
+    file_run = '{}/output_{}.py'.format(PATH_PYTHON_CODE_USER, unique_id)
+    with open(file_run, 'w') as fw:
+        fw.write('{}\n'.format(full_code))
+        fw.close()
+    set_user_grp(file_run, 'mycodo', 'mycodo')
+
+    return full_code, file_run
+
+
+def execute_at_modification(
+        messages,
+        mod_output,
+        request_form,
+        custom_options_dict_presave,
+        custom_options_channels_dict_presave,
+        custom_options_dict_postsave,
+        custom_options_channels_dict_postsave):
+    """
+    Function to run when the Output is saved to evaluate the Python 3 code using pylint3
+    :param messages: dict of info, warning, error, success messages as well as other variables
+    :param mod_input: The WTForms object containing the form data submitted by the web GUI
+    :param request_form: The custom_options form input data (if it exists)
+    :param custom_options_dict_presave:
+    :param custom_options_channels_dict_presave:
+    :param custom_options_dict_postsave:
+    :param custom_options_channels_dict_postsave:
+    :return: tuple of (all_passed, error, mod_input) variables
+    """
+    messages["page_refresh"] = True
+    pylint_message = None
+
+    if current_app.config['TESTING']:
+        return (messages,
+                mod_output,
+                custom_options_dict_postsave,
+                custom_options_channels_dict_postsave)
+
+    try:
+        input_python_code_run, file_run = generate_code(
+            custom_options_channels_dict_postsave[0]['on_command'],
+            custom_options_channels_dict_postsave[0]['off_command'],
+            mod_output.unique_id)
+
+        lines_code = ''
+        for line_num, each_line in enumerate(input_python_code_run.splitlines(), 1):
+            if len(str(line_num)) == 3:
+                line_spacing = ''
+            elif len(str(line_num)) == 2:
+                line_spacing = ' '
+            else:
+                line_spacing = '  '
+            lines_code += '{sp}{ln}: {line}\n'.format(
+                sp=line_spacing,
+                ln=line_num,
+                line=each_line)
+
+        cmd_test = 'mkdir -p /var/mycodo-root/.pylint.d && ' \
+                   'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
+                   'export PYLINTHOME=/var/mycodo-root/.pylint.d && ' \
+                   'pylint3 -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413 {path}'.format(
+                       path=file_run)
+        cmd_out, cmd_error, cmd_status = cmd_output(cmd_test)
+        pylint_message = Markup(
+            '<pre>\n\n'
+            'Full Python code:\n\n{code}\n\n'
+            'Python code analysis:\n\n{report}'
+            '</pre>'.format(
+                code=lines_code, report=cmd_out.decode("utf-8")))
+    except Exception as err:
+        cmd_status = None
+        messages["error"].append("Error running pylint: {}".format(err))
+
+    if cmd_status:
+        messages["warning"].append("pylint returned with status: {}".format(cmd_status))
+
+    if pylint_message:
+        messages["info"].append("Review your code for issues and test your Input "
+              "before putting it into a production environment.")
+        messages["return_text"].append(pylint_message)
+
+    return (messages,
+            mod_output,
+            custom_options_dict_postsave,
+            custom_options_channels_dict_postsave)
+
 
 # Measurements
 measurements_dict = {
@@ -36,6 +160,7 @@ OUTPUT_INFORMATION = {
     'output_name': "Python Code: {}".format(lazy_gettext('On/Off')),
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
+    'execute_at_modification': execute_at_modification,
     'output_types': ['on_off'],
 
     'message': 'Python 3 code will be executed when this output is turned on or off.',
@@ -54,9 +179,7 @@ OUTPUT_INFORMATION = {
             'type': 'multiline_text',
             'lines': 7,
             'default_value': """
-import datetime
-timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-log_string = "{ts}: ID: {id}: ON".format(id=output_id, ts=timestamp)
+log_string = "ID: {id}: ON".format(id=output_id)
 self.logger.info(log_string)""",
             'required': True,
             'col_width': 12,
@@ -68,9 +191,7 @@ self.logger.info(log_string)""",
             'type': 'multiline_text',
             'lines': 7,
             'default_value': """
-import datetime
-timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-log_string = "{ts}: ID: {id}: OFF".format(id=output_id, ts=timestamp)
+log_string = "ID: {id}: OFF".format(id=output_id)
 self.logger.info(log_string)""",
             'required': True,
             'col_width': 12,
@@ -134,8 +255,7 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
-        self.run_python_on = None
-        self.run_python_off = None
+        self.run_python = None
 
         output_channels = db_retrieve_table_daemon(
             OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()
@@ -150,21 +270,16 @@ class OutputModule(AbstractOutput):
             return
 
         try:
-            self.save_output_python_code(self.unique_id)
-            file_run_on = '{}/output_on_{}.py'.format(PATH_PYTHON_CODE_USER, self.unique_id)
-            file_run_off = '{}/output_off_{}.py'.format(PATH_PYTHON_CODE_USER, self.unique_id)
+            full_code, file_run = generate_code(
+                self.options_channels['on_command'][0],
+                self.options_channels['off_command'][0],
+                self.unique_id)
 
-            module_name = "mycodo.output.{}".format(os.path.basename(file_run_on).split('.')[0])
-            spec = importlib.util.spec_from_file_location(module_name, file_run_on)
-            output_run_on = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(output_run_on)
-            self.run_python_on = output_run_on.OutputRun(self.logger, self.unique_id)
-
-            module_name = "mycodo.output.{}".format(os.path.basename(file_run_off).split('.')[0])
-            spec = importlib.util.spec_from_file_location(module_name, file_run_off)
-            output_run_off = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(output_run_off)
-            self.run_python_off = output_run_off.OutputRun(self.logger, self.unique_id)
+            module_name = "mycodo.output.{}".format(os.path.basename(file_run).split('.')[0])
+            spec = importlib.util.spec_from_file_location(module_name, file_run)
+            output_run = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(output_run)
+            self.run_python = output_run.OutputRun(self.logger, self.unique_id)
 
             self.output_setup = True
 
@@ -177,10 +292,10 @@ class OutputModule(AbstractOutput):
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         if state == 'on' and self.options_channels['on_command'][0]:
-            self.run_python_on.output_code_run()
+            self.run_python.output_code_run_on()
             self.output_states[output_channel] = True
         elif state == 'off' and self.options_channels['off_command'][0]:
-            self.run_python_off.output_code_run()
+            self.run_python.output_code_run_off()
             self.output_states[output_channel] = False
 
     def is_on(self, output_channel=None):
@@ -201,44 +316,3 @@ class OutputModule(AbstractOutput):
             elif self.options_channels['state_shutdown'][0] == 0:
                 self.output_switch('off')
         self.running = False
-
-    def save_output_python_code(self, unique_id):
-        """Save python code to files"""
-        pre_statement_run = f"""import os
-import sys
-sys.path.append(os.path.abspath('/var/mycodo-root'))
-from mycodo.mycodo_client import DaemonControl
-control = DaemonControl()
-output_id = '{unique_id}'
-
-class OutputRun:
-    def __init__(self, logger, output_id):
-        self.logger = logger
-        self.output_id = output_id
-        self.variables = {{}}
-        self.running = True
-
-    def stop_output(self):
-        self.running = False
-
-    def output_code_run(self):
-"""
-
-        code_on_indented = textwrap.indent(self.options_channels['on_command'][0], ' ' * 8)
-        full_command_on = pre_statement_run + code_on_indented
-
-        code_off_indented = textwrap.indent(self.options_channels['off_command'][0], ' ' * 8)
-        full_command_off = pre_statement_run + code_off_indented
-
-        assure_path_exists(PATH_PYTHON_CODE_USER)
-        file_run = '{}/output_on_{}.py'.format(PATH_PYTHON_CODE_USER, unique_id)
-        with open(file_run, 'w') as fw:
-            fw.write('{}\n'.format(full_command_on))
-            fw.close()
-        set_user_grp(file_run, 'mycodo', 'mycodo')
-
-        file_run = '{}/output_off_{}.py'.format(PATH_PYTHON_CODE_USER, unique_id)
-        with open(file_run, 'w') as fw:
-            fw.write('{}\n'.format(full_command_off))
-            fw.close()
-        set_user_grp(file_run, 'mycodo', 'mycodo')

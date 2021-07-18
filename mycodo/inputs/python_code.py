@@ -152,6 +152,8 @@ INPUT_INFORMATION = {
     'measurements_dict': measurements_dict,
     'measurements_variable_amount': True,
     'channel_quantity_same_as_measurements': False,
+    'execute_at_creation': execute_at_creation,
+    'execute_at_modification': execute_at_modification,
 
     'message': 'All channels require a Measurement Unit to be selected and saved in order to store values to the '
                'database.',
@@ -163,9 +165,6 @@ INPUT_INFORMATION = {
         'pre_output'
     ],
     'options_disabled': ['interface'],
-
-    'execute_at_creation': execute_at_creation,
-    'execute_at_modification': execute_at_modification,
 
     'interfaces': ['Mycodo'],
     'cmd_command': """import random  # Import any external libraries
