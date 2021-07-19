@@ -152,7 +152,7 @@
           {{form_add_output.output_type(class_='selectpicker', **{'data-live-search': 'true', 'title': dict_translation['output']['title'] + ': ' + dict_translation['select_one']['title']})}}
         </div>
         <div class="col-auto">
-          {{form_add_output.output_add(class_='btn btn-primary')}}
+          <input onclick="return $(this).processRequest(this, 'output_add');" name="output_add" value="{{_('Add')}}" class="btn btn-primary" type="button"/>
         </div>
       </div>
     </form>
@@ -202,8 +202,9 @@
       }
       let serializedFull = grid.save(false);
       $.ajax({
-        url: "/save_output_layout",
         type: "POST",
+        url: "/save_output_layout",
+        headers: {"X-CSRFToken": "{{form_mod_output.csrf_token._value()}}"},
         data: JSON.stringify(serializedFull, null, '  '),
         contentType: "application/json; charset=utf-8",
         success: function (data) {}
@@ -225,20 +226,19 @@
       }
     }
 
-    $("body").on("submit", "form", function(e) {
-      let submitter_btn = $(e.originalEvent.submitter);
-      if (submitter_btn.attr("name") === 'output_add' ||
-          submitter_btn.attr("name") === 'output_mod' ||
-          submitter_btn.attr("name") === 'output_delete') {
-        e.preventDefault();
+    jQuery.fn.processRequest = function(button, action) {
+      console.log("Action: ", action)
+      if (action === 'output_add' ||
+          action === 'output_mod' ||
+          action === 'output_delete') {
         toastr['info']('Command sent. Please wait...');
         $.ajax({
           type: "POST",
           url: '/output_submit',
-          data: $(this).serialize()
-              + '&' + submitter_btn.attr("name") + '=' + submitter_btn.attr("value"),
+          headers: {"X-CSRFToken": "{{form_mod_output.csrf_token._value()}}"},
+          data: $(button).parents('form').serialize() + '&' + action + '=1',
           success: function (data) {
-            if (submitter_btn.attr("name") === 'output_add' && 'output_id' in data.data) {
+            if (action === 'output_add' && 'output_id' in data.data) {
               if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
                 $(".dependencies_device_name").text(data.data.dep_name);
                 $(".dependencies_device").text(data.data.dep_unmet);
@@ -268,7 +268,7 @@
               return;
             }
             if (data.data.messages.error.length === 0) {
-              if (submitter_btn.attr("name") === 'output_mod' && 'output_id' in data.data) {
+              if (action === 'output_mod' && 'output_id' in data.data) {
                 if ('return_text' in data.data.messages && data.data.messages.return_text.length > 0) {
                   document.getElementById("return_text_" + data.data.output_id).innerHTML = data.data.messages.return_text.join("<br/><br/>");
                 }
@@ -276,7 +276,7 @@
                   document.getElementById("output_name_" + data.data.output_id).value = data.data.messages.name;
                 }
               }
-              else if (submitter_btn.attr("name") === 'output_delete' && 'output_id' in data.data) {
+              else if (action === 'output_delete' && 'output_id' in data.data) {
                 $('#modal_config_' + data.data.output_id).modal('hide');
                 $('.modal-backdrop').remove();
                 $(document.body).removeClass("modal-open");
@@ -306,15 +306,7 @@
           }
         });
       }
-    });
-
-    $.ajaxSetup({
-      beforeSend: function (xhr, settings) {
-        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-          xhr.setRequestHeader("X-CSRFToken", "{{form_mod_output.csrf_token._value()}}")
-        }
-      }
-    })
+    }
   </script>
 
 {% endblock %}

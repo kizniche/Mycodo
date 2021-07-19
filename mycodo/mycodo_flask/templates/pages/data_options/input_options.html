@@ -19,14 +19,10 @@
       <button type="button" class="form-control btn btn-primary btn-sm btn-block" data-dismiss="modal">{{_('Close')}}</button>
     </div>
     <div class="col-auto">
-      {{form_mod_input.input_mod(class_='form-control btn btn-primary btn-sm btn-block')}}
+      <input onclick="return $(this).processRequest(this, 'input_mod');" name="input_mod" value="{{_('Save')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
     </div>
     <div class="col-auto">
-      {% if has_active_pid or has_active_lcd -%}
-        {{form_mod_input.input_delete(class_='form-control btn btn-primary btn-sm btn-block',**{'onclick':'return confirm("Note: there are currently an active PID that relies on this to operate. Deleting it will deactivate the PID. Are you sure you want to delete this?")'})}}
-      {% else -%}
-        {{form_mod_input.input_delete(class_='form-control btn btn-primary btn-sm btn-block', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-      {% endif -%}
+      <input onclick="return confirm('{{_('Are you sure you want to delete this?')}}') && $(this).processRequest(this, 'input_delete');" name="input_delete" value="{{_('Delete')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
     </div>
   </div>
 
@@ -121,7 +117,7 @@
     </div>
     {% include 'pages/form_options/Custom_Actions_Message.html' %}
     <div class="col-auto small-gutters">
-      {{form_mod_input.input_acquire_measurements(class_='form-control btn btn-primary btn-sm btn-block')}}
+      <input onclick="return $(this).processRequest(this, 'input_acquire_measurements');" name="input_acquire_measurements" class="form-control btn btn-primary btn-sm btn-block" type="button" value="{{_('Acquire Measurements Now')}}"/>
     </div>
     {% if each_input.device in custom_actions and custom_actions[each_input.device] %}
       {% set force_default_value = true %}

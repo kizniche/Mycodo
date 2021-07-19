@@ -25,7 +25,7 @@
       <input class="form-control btn btn-primary btn-sm" type="button" onclick="setClipboard('{{each_function.unique_id}}')" title="UUID: {{each_function.unique_id}}, {{dict_translation['copy_to_clipboard']['phrase']}}" value="Function Actions">
     </div>
     <div class="col-3">
-      {{form_function_base.execute_all_actions(class_='form-control btn btn-primary btn-sm')}}
+      <input onclick="return $(this).processRequest(this, 'execute_all_actions');" name="execute_all_actions" value="{{_('Execute All Actions')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
     </div>
   {% elif each_function.function_type == 'function_spacer' %}
     <div class="col-10">

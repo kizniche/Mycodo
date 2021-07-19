@@ -9,13 +9,13 @@
         <button type="button" class="form-control btn btn-primary btn-sm btn-block" data-dismiss="modal">{{_('Close')}}</button>
       </div>
       <div class="col-auto">
-        {{form_function_base.function_mod(class_='form-control btn btn-primary btn-sm')}}
+        <input onclick="return $(this).processRequest(this, 'function_mod');" name="function_mod" value="{{_('Save')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
       </div>
       <div class="col-auto">
-        {{form_function_base.function_delete(class_='form-control btn btn-primary btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        <input onclick="return confirm('{{_('Are you sure you want to delete this?')}}') && $(this).processRequest(this, 'function_delete');" name="function_delete" value="{{_('Delete')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
       </div>
       <div class="col-auto">
-        {{form_function_base.execute_all_actions(class_='form-control btn btn-primary btn-sm')}}
+        <input onclick="return $(this).processRequest(this, 'execute_all_actions');" name="execute_all_actions" value="{{_('Execute All Actions')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
       </div>
       <div class="col-auto my-auto">
         <h5>{{_('Help')}} <a href="https://kizniche.github.io/Mycodo/Functions/#conditional" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a></h5>
@@ -105,7 +105,7 @@
         {{form_conditional.condition_type(class_='form-control')}}
       </div>
       <div class="col-auto">
-        {{form_conditional.add_condition(class_='form-control btn btn-primary btn-sm')}}
+        <input onclick="return $(this).processRequest(this, 'add_condition');" name="add_condition" value="{{_('Add Condition')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
       </div>
     </div>
     </form>
@@ -132,7 +132,7 @@
           {{form_function_base.action_type(class_='form-control')}}
         </div>
         <div class="col-auto">
-          {{form_function_base.add_action(class_='form-control btn btn-primary btn-sm')}}
+          <input onclick="return $(this).processRequest(this, 'add_action');" name="add_action" value="{{_('Add Action')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
         </div>
       </div>
     </form>

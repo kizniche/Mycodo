@@ -61,7 +61,7 @@
       </div>
 
       <div class="col-auto">
-        {{form_add_function.function_add(class_='btn btn-primary')}}
+        <input onclick="return $(this).processRequest(this, 'function_add');" name="function_add" value="{{_('Add')}}" class="btn btn-primary" type="button"/>
       </div>
     </div>
 
@@ -164,8 +164,9 @@
       }
       let serializedFull = grid.save(false);
       $.ajax({
-        url: "/save_function_layout",
         type: "POST",
+        url: "/save_function_layout",
+        headers: {"X-CSRFToken": "{{form_function_base.csrf_token._value()}}"},
         data: JSON.stringify(serializedFull, null, '  '),
         contentType: "application/json; charset=utf-8",
         success: function (data) {}
@@ -258,35 +259,33 @@
       return model;
     }
 
-    $("body").on("submit", "form", function(e) {
-      let form_values = getFormData($(this));
-      let submitter_btn = $(e.originalEvent.submitter);
-      if (submitter_btn.attr("name") === 'function_add' ||
-          submitter_btn.attr("name") === 'function_mod' ||
-          submitter_btn.attr("name") === 'function_delete' ||
-          submitter_btn.attr("name") === 'function_activate' ||
-          submitter_btn.attr("name") === 'function_deactivate' ||
-          submitter_btn.attr("name") === 'execute_all_actions' ||
-          submitter_btn.attr("name") === 'add_action' ||
-          submitter_btn.attr("name") === 'save_action' ||
-          submitter_btn.attr("name") === 'delete_action' ||
-          submitter_btn.attr("name") === 'add_condition' ||
-          submitter_btn.attr("name") === 'save_condition' ||
-          submitter_btn.attr("name") === 'delete_condition' ||
-          submitter_btn.attr("name") === 'measurement_mod' ||
-          submitter_btn.attr("name") === 'pid_pause' ||
-          submitter_btn.attr("name") === 'pid_hold' ||
-          submitter_btn.attr("name") === 'pid_resume' ||
-          submitter_btn.attr("name").startsWith('custom_button_')) {
-        e.preventDefault();
+    jQuery.fn.processRequest = function(button, action) {
+      console.log("Action: ", action)
+      let form_values = getFormData($(button).parents('form'));
+      if (action === 'function_add' ||
+          action === 'function_mod' ||
+          action === 'function_delete' ||
+          action === 'function_activate' ||
+          action === 'function_deactivate' ||
+          action === 'execute_all_actions' ||
+          action === 'add_action' ||
+          action === 'save_action' ||
+          action === 'delete_action' ||
+          action === 'add_condition' ||
+          action === 'save_condition' ||
+          action === 'delete_condition' ||
+          action === 'pid_pause' ||
+          action === 'pid_hold' ||
+          action === 'pid_resume' ||
+          action.startsWith('custom_button_')) {
         toastr['info']('Command sent. Please wait...');
         $.ajax({
           type: "POST",
           url: '/function_submit',
-          data: $(this).serialize()
-              + '&' + submitter_btn.attr("name") + '=' + submitter_btn.attr("value"),
+          headers: {"X-CSRFToken": "{{form_function_base.csrf_token._value()}}"},
+          data: $(button).parents('form').serialize() + '&' + action + '=1',
           success: function (data) {
-            if (submitter_btn.attr("name") === 'function_add' && 'function_id' in data.data) {
+            if (action === 'function_add' && 'function_id' in data.data) {
               if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
                 $(".dependencies_device_name").text(data.data.dep_name);
                 $(".dependencies_device").text(data.data.dep_unmet);
@@ -317,7 +316,7 @@
               return;
             }
             if (data.data.messages.error.length === 0) {
-              if (submitter_btn.attr("name") === 'function_mod' && 'function_id' in data.data) {
+              if (action === 'function_mod' && 'function_id' in data.data) {
                 if ('return_text' in data.data.messages && data.data.messages.return_text.length > 0) {
                   document.getElementById("return_text_" + data.data.function_id).innerHTML = data.data.messages.return_text.join("<br/><br/>");
                 }
@@ -325,13 +324,13 @@
                   document.getElementById("function_name_" + data.data.function_id).value = data.data.messages.name;
                 }
               }
-              else if (submitter_btn.attr("name") === 'function_delete' && 'function_id' in data.data) {
+              else if (action === 'function_delete' && 'function_id' in data.data) {
                 $('#modal_config_' + data.data.function_id).modal('hide');
                 $('.modal-backdrop').remove();
                 $(document.body).removeClass("modal-open");
                 grid.removeWidget('#gridstack_function_' + data.data.function_id);
               }
-              else if (submitter_btn.attr("name") === 'function_activate' && 'function_id' in data.data) {
+              else if (action === 'function_activate' && 'function_id' in data.data) {
                 function_status_reset(data.data.function_id);
                 $('#function_status_' + data.data.function_id).addClass("active-background");
                 if (document.getElementById('function_activate_' + data.data.function_id) != null) {
@@ -355,7 +354,7 @@
                   }
                 }
               }
-              else if (submitter_btn.attr("name") === 'function_deactivate' && 'function_id' in data.data) {
+              else if (action === 'function_deactivate' && 'function_id' in data.data) {
                 function_status_reset(data.data.function_id);
                 $('#function_status_' + data.data.function_id).addClass("inactive-background");
                 if (document.getElementById('function_activate_' + data.data.function_id) != null) {
@@ -378,36 +377,36 @@
                   }
                 }
               }
-              else if (submitter_btn.attr("name") === 'pid_pause' && 'function_id' in data.data) {
+              else if (action === 'pid_pause' && 'function_id' in data.data) {
                 function_status_reset(data.data.function_id);
                 $('#function_status_' + data.data.function_id).addClass("pause-background");
                 ids_hide(data.data.function_id, ["pid_activate", "pid_pause"]);
                 ids_show(data.data.function_id, ["pid_deactivate", "pid_hold", "pid_resume"]);
                 document.getElementById("pid_activity_indicator_" + data.data.function_id).value = "PID Controller [Paused]";
               }
-              else if (submitter_btn.attr("name") === 'pid_hold' && 'function_id' in data.data) {
+              else if (action === 'pid_hold' && 'function_id' in data.data) {
                 function_status_reset(data.data.function_id);
                 $('#function_status_' + data.data.function_id).addClass("hold-background");
                 ids_hide(data.data.function_id, ["pid_aactivate", "pid_hold"]);
                 ids_show(data.data.function_id, ["pid_deactivate", "pid_pause", "pid_resume"]);
                 document.getElementById("pid_activity_indicator_" + data.data.function_id).value = "PID Controller [Held]";
               }
-              else if (submitter_btn.attr("name") === 'pid_resume' && 'function_id' in data.data) {
+              else if (action === 'pid_resume' && 'function_id' in data.data) {
                 function_status_reset(data.data.function_id);
                 $('#function_status_' + data.data.function_id).addClass("active-background");
                 ids_hide(data.data.function_id, ["pid_activated", "pid_resume"]);
                 ids_show(data.data.function_id, ["pid_deactivate", "pid_pause", "pid_hold"]);
                 document.getElementById("pid_activity_indicator_" + data.data.function_id).value = "PID Controller [Active]";
               }
-              if (submitter_btn.attr("name") === 'delete_action' && 'action_id' in data.data) {
+              if (action === 'delete_action' && 'action_id' in data.data) {
                 document.getElementById("mod_function_action_" + data.data.action_id).remove();
                 popup_response(data);
               }
-              if (submitter_btn.attr("name") === 'delete_condition' && 'condition_id' in data.data) {
+              if (action === 'delete_condition' && 'condition_id' in data.data) {
                 document.getElementById("mod_function_condition_" + data.data.condition_id).remove();
                 popup_response(data);
               }
-              if (submitter_btn.attr("name") === 'function_mod' && 'page_refresh' in data.data && data.data.page_refresh) {
+              if (action === 'function_mod' && 'page_refresh' in data.data && data.data.page_refresh) {
                 $.ajax({
                   type: "GET",
                   url: '/function?function_type=options&function_id=' + data.data.function_id,
@@ -420,7 +419,7 @@
                   }
                 });
               }
-              else if (submitter_btn.attr("name") === 'add_action' && 'page_refresh' in data.data && data.data.page_refresh) {
+              else if (action === 'add_action' && 'page_refresh' in data.data && data.data.page_refresh) {
                 $.ajax({
                   type: "GET",
                   url: '/function?function_type=actions&function_id=' + data.data.function_id + '?action_id=' + data.data.action_id,
@@ -433,7 +432,7 @@
                   }
                 });
               }
-              else if (submitter_btn.attr("name") === 'add_condition' && 'page_refresh' in data.data && data.data.page_refresh) {
+              else if (action === 'add_condition' && 'page_refresh' in data.data && data.data.page_refresh) {
                 $.ajax({
                   type: "GET",
                   url: '/function?function_type=conditions&function_id=' + data.data.function_id + '&condition_id=' + data.data.condition_id,
@@ -457,15 +456,7 @@
           }
         });
       }
-    });
-
-    $.ajaxSetup({
-      beforeSend: function (xhr, settings) {
-        if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-          xhr.setRequestHeader("X-CSRFToken", "{{form_function_base.csrf_token._value()}}")
-        }
-      }
-    });
+    }
 
     $('.clockpicker').clockpicker({
       donetext: 'Done'

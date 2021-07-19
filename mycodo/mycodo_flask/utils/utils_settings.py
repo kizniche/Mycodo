@@ -1611,8 +1611,8 @@ def settings_diagnostic_delete_inputs():
             for each_input in inputs:
                 # Deactivate any active controllers using the input
                 if each_input.is_activated:
-                    messages = input_deactivate_associated_controllers(
-                        messages, each_input.unique_id)
+                    # messages = input_deactivate_associated_controllers(
+                    #     messages, each_input.unique_id)
                     messages = controller_activate_deactivate(
                         messages, 'deactivate', 'Input', each_input.unique_id)
 

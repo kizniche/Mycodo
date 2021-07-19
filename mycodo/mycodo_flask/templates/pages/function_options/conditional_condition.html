@@ -6,10 +6,10 @@
 
     <div class="row align-items-end small-gutters" style="padding-bottom: 0.3em; border-top: 1px dashed #ddd">
       <div class="col-auto">
-        {{form_conditional_conditions.save_condition(class_='form-control btn btn-primary btn-sm')}}
+        <input onclick="return $(this).processRequest(this, 'save_condition');" name="save_condition" value="{{_('Save')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
       </div>
       <div class="col-auto">
-        {{form_conditional_conditions.delete_condition(class_='form-control btn btn-primary btn-sm', **{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+        <input onclick="return confirm('{{_('Are you sure you want to delete this?')}}') && $(this).processRequest(this, 'delete_condition');" name="delete_condition" value="{{_('Delete')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
       </div>
 
     {% if each_condition.condition_type == 'measurement' %}

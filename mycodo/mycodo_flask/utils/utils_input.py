@@ -601,8 +601,8 @@ def input_del(input_id):
             Input.unique_id == input_id).first()
 
         if input_dev.is_activated:
-            messages = input_deactivate_associated_controllers(
-                messages, input_id)
+            # messages = input_deactivate_associated_controllers(
+            #     messages, input_id)
             messages = controller_activate_deactivate(
                 messages, 'deactivate', 'Input', input_id)
 
@@ -735,7 +735,7 @@ def input_deactivate(form_mod):
 
     try:
         input_id = form_mod.input_id.data
-        messages = input_deactivate_associated_controllers(messages, input_id)
+        # messages = input_deactivate_associated_controllers(messages, input_id)
         messages = controller_activate_deactivate(
             messages, 'deactivate', 'Input', input_id, flash_message=False)
         messages["success"].append('{action} {controller}'.format(

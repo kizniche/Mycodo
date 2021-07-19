@@ -23,13 +23,8 @@
       ">
     </div>
     <div class="col-3">
-      {%- if each_function.is_activated %}
-        {{form_function_base.function_deactivate(class_='form-control btn btn-primary btn-sm', id='function_deactivate_' + each_function.unique_id)}}
-        {{form_function_base.function_activate(class_='form-control btn btn-primary btn-sm', id='function_activate_' + each_function.unique_id, style='display: none')}}
-      {%- else %}
-        {{form_function_base.function_deactivate(class_='form-control btn btn-primary btn-sm', id='function_deactivate_' + each_function.unique_id, style='display: none')}}
-        {{form_function_base.function_activate(class_='form-control btn btn-primary btn-sm', id='function_activate_' + each_function.unique_id)}}
-      {%- endif -%}
+      <input {% if each_function.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'function_activate');" name="function_activate" id="function_activate_{{each_function.unique_id}}" class="form-control btn btn-primary btn-sm" type="button" value="{{_('Activate')}}"/>
+      <input {% if not each_function.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'function_deactivate');" name="function_deactivate" id="function_deactivate_{{each_function.unique_id}}" class="form-control btn btn-primary btn-sm" type="button" value="{{_('Deactivate')}}"/>
     </div>
 
   </div> <!- grid-stack-item-content ->
