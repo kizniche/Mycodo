@@ -82,6 +82,14 @@ WIDGET_INFORMATION = {
             'phrase': 'The font size of the measurement'
         },
         {
+            'id': 'font_em_unit',
+            'type': 'float',
+            'default_value': 1.5,
+            'constraints_pass': constraints_pass_positive_value,
+            'name': 'Unit Font Size (em)',
+            'phrase': 'The font size of the unit'
+        },
+        {
             'id': 'font_em_timestamp',
             'type': 'float',
             'default_value': 1.5,
@@ -145,8 +153,7 @@ WIDGET_INFORMATION = {
   
   {%- for each_input in input if each_input.unique_id == device_id and measurement_id in device_measurements_dict -%}
   
-    <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span>
-    <span style="font-size: {{widget_options['font_em_value']}}em">
+    <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span><span style="font-size: {{widget_options['font_em_unit']}}em">
         {%- if dict_measure_units[measurement_id] in dict_units and
                dict_units[dict_measure_units[measurement_id]]['unit'] and
                widget_options['enable_unit'] -%}
@@ -180,15 +187,16 @@ WIDGET_INFORMATION = {
 
   {%- for each_math in math if each_math.unique_id == device_id and measurement_id in device_measurements_dict -%}
 
-  <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span>
+    <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span><span style="font-size: {{widget_options['font_em_unit']}}em">
         {%- if dict_measure_units[measurement_id] in dict_units and
                dict_units[dict_measure_units[measurement_id]]['unit'] and
                widget_options['enable_unit'] -%}
           {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
         {%- endif -%}
+    </span>
 
         {%- if widget_options['enable_name'] or widget_options['enable_channel'] or widget_options['enable_measurement'] -%}
-  <br/><span style="font-size: {{widget_options['font_em_timestamp']}}em">
+    <br/><span style="font-size: {{widget_options['font_em_timestamp']}}em">
         {%- endif -%}
 
         {%- if widget_options['enable_name'] -%}
@@ -213,15 +221,16 @@ WIDGET_INFORMATION = {
   
   {%- for each_function in function if each_function.unique_id == device_id and measurement_id in device_measurements_dict -%}
 
-  <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span>
+    <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span><span style="font-size: {{widget_options['font_em_unit']}}em">
         {%- if dict_measure_units[measurement_id] in dict_units and
                dict_units[dict_measure_units[measurement_id]]['unit'] and
                widget_options['enable_unit'] -%}
           {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
         {%- endif -%}
+    </span>
 
         {%- if widget_options['enable_name'] or widget_options['enable_channel'] or widget_options['enable_measurement'] -%}
-  <br/><span style="font-size: {{widget_options['font_em_timestamp']}}em">
+    <br/><span style="font-size: {{widget_options['font_em_timestamp']}}em">
         {%- endif -%}
 
         {%- if widget_options['enable_name'] -%}
@@ -246,15 +255,16 @@ WIDGET_INFORMATION = {
 
   {%- for each_output in output  if each_output.unique_id == device_id and measurement_id in device_measurements_dict -%}
 
-  <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span>
+    <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span><span style="font-size: {{widget_options['font_em_unit']}}em">
         {%- if dict_measure_units[measurement_id] in dict_units and
                dict_units[dict_measure_units[measurement_id]]['unit'] and
                widget_options['enable_unit'] -%}
           {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
         {%- endif -%}
+    </span>
 
         {%- if widget_options['enable_name'] or widget_options['enable_channel'] or widget_options['enable_measurement'] -%}
-  <br/><span style="font-size: {{widget_options['font_em_timestamp']}}em">
+    <br/><span style="font-size: {{widget_options['font_em_timestamp']}}em">
         {%- endif -%}
 
         {%- if widget_options['enable_name'] -%}
@@ -279,15 +289,16 @@ WIDGET_INFORMATION = {
 
   {%- for each_pid in pid  if each_pid.unique_id == device_id and measurement_id in device_measurements_dict -%}
 
-  <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span>
+    <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span><span style="font-size: {{widget_options['font_em_unit']}}em">
         {%- if dict_measure_units[measurement_id] in dict_units and
                dict_units[dict_measure_units[measurement_id]]['unit'] and
                widget_options['enable_unit'] -%}
           {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
         {%- endif -%}
+    </span>
 
         {%- if widget_options['enable_name'] or widget_options['enable_channel'] or widget_options['enable_measurement'] -%}
-  <br/><span style="font-size: {{widget_options['font_em_timestamp']}}em">
+    <br/><span style="font-size: {{widget_options['font_em_timestamp']}}em">
         {%- endif -%}
 
         {%- if widget_options['enable_name'] -%}
@@ -338,24 +349,40 @@ WIDGET_INFORMATION = {
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
-          document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-          document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
+          if (document.getElementById('value-' + chart_number)) {
+            document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
+          }
+          if (document.getElementById('timestamp-' + chart_number)) {
+            document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
+          }
         }
         else {
           const formattedTime = epoch_to_timestamp(data[0]);
           const measurement = data[1];
-          document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(decimal_places);
+          if (document.getElementById('value-' + chart_number)) {
+            document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(decimal_places);
+          }
           const range_exists = document.getElementById("range_" + chart_number);
           if (range_exists != null) {  // Update range slider value
-            document.getElementById("range_" + chart_number).value = measurement.toFixed(0);
-            document.getElementById("range_val_" + chart_number).innerHTML = measurement.toFixed(0);
+            if (document.getElementById("range_" + chart_number)) {
+              document.getElementById("range_" + chart_number).value = measurement.toFixed(0);
+            }
+            if (document.getElementById("range_val_" + chart_number)) {
+              document.getElementById("range_val_" + chart_number).innerHTML = measurement.toFixed(0);
+            }
           }
-          document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
+          if (document.getElementById('timestamp-' + chart_number)) {
+            document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
+          }
         }
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-        document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
+        if (document.getElementById('value-' + chart_number)) {
+          document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
+        }
+        if (document.getElementById('timestamp-' + chart_number)) {
+          document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
+        }
       }
     });
   

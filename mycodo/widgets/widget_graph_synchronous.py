@@ -502,13 +502,15 @@ WIDGET_INFORMATION = {
             new_time = new_date.getTime();
 
             if (measure_type === 'tag') {
-              if (!note_timestamps.includes(new_time)) {
+              let note_key = chart_number + "_" + series;
+              if (!(note_key in note_timestamps)) note_timestamps[note_key] = [];
+              if (!note_timestamps[note_key].includes(new_time)) {
                 past_data.push({
                   x: new_time,
                   title: data[i][1],
                   text: data[i][2].replace(/(?:\\r\\n|\\r|\\n)/g, '<br/>').replace(/  /g, '\\u2591\\u2591')
                 });
-                note_timestamps.push(new_time);
+                note_timestamps[note_key].push(new_time);
               }
             }
             else {
@@ -582,13 +584,15 @@ WIDGET_INFORMATION = {
             }
 
             if (measure_type === 'tag') {
-              if (!note_timestamps.includes(time_point)) {
+              let note_key = chart_number + "_" + series;
+              if (!(note_key in note_timestamps)) note_timestamps[note_key] = [];
+              if (!note_timestamps[note_key].includes(time_point)) {
                 chart[chart_number].series[series].addPoint({
                     x: time_point,
                     title: data[i][1],
                     text: data[i][2].replace(/(?:\\r\\n|\\r|\\n)/g, '<br/>').replace(/  /g, '\\u2591\\u2591')
                 }, false, graph_shift);
-                note_timestamps.push(time_point);
+                note_timestamps[note_key].push(time_point);
               }
             }
             else {

@@ -159,7 +159,7 @@ class OutputModule(AbstractOutput):
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
-        self.driver = None
+        self.driver = {}
         self.currently_dispensing = False
         self.output_setup = False
         self.channel_setup = {}
@@ -193,8 +193,8 @@ class OutputModule(AbstractOutput):
                     self.gpio.setup(self.options_channels['pin_enable'][channel], self.gpio.OUT)
                 self.stop(channel)
                 if self.options_channels['use_enable'][channel]:
-                    self.driver = self.gpio.PWM(self.options_channels['pin_enable'][channel], 1000)
-                    self.driver.start(self.options_channels['duty_cycle'][channel])
+                    self.driver[channel] = self.gpio.PWM(self.options_channels['pin_enable'][channel], 1000)
+                    self.driver[channel].start(self.options_channels['duty_cycle'][channel])
                 self.channel_setup[channel] = True
                 self.output_setup = True
                 self.output_states[channel] = False

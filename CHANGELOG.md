@@ -58,7 +58,10 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Fix cmd_output() killing daemon upon command timeout ([#1047](https://github.com/kizniche/mycodo/issues/1047))
  - Fix missing check for Widget dependencies during upgrade/restore
  - Fix output_sec_currently_on()
- - Fix widgets being able to be moved/resized when dashboard locked
+ - Fix Widgets being able to be moved/resized when dashboard locked
+ - Fix Indicator Widget unit not using correct font size
+ - Fix display of tags on more than one Graph Widget
+ - Fix first channel of L298N DC Motor Controller Output not working
 
 ### Features
 
@@ -77,6 +80,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Add calibration to the Atlas Scientific EC Input Peristaltic Pump Output
  - Add Spacers for Input and Output lists
  - Add PDF Manual
+ - Add ability to set the Indicator Widget's unit font size
 
 ### Miscellaneous
 
