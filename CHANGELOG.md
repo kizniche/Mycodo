@@ -58,14 +58,15 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Fix cmd_output() killing daemon upon command timeout ([#1047](https://github.com/kizniche/mycodo/issues/1047))
  - Fix missing check for Widget dependencies during upgrade/restore
  - Fix output_sec_currently_on()
+ - Fix widgets being able to be moved/resized when dashboard locked
 
 ### Features
 
  - Add ability to install Javascript/CSS dependencies
  - Add ability to submit forms without refreshing the page ([#1040](https://github.com/kizniche/mycodo/issues/1040))
  - Add ability to install dependencies without changing the page
- - Add drag and drop sorting of Inputs/Ouputs/Functions
- - Add modal dialogue for Input/Output/Function configuration
+ - Add drag and drop sorting of Inputs/Outputs/Functions
+ - Add modal dialog for Input/Output/Function configuration
  - Add option for a numerical keypad login
  - Add options for camera library raspistill: AWB Gain Blue, AWB Gain Red
  - Add Input: ADS1256 with Analog pH/EC sensors

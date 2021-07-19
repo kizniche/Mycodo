@@ -38,7 +38,7 @@
     {% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
     {% set widget_variables = custom_widget_variables[each_widget.unique_id] %}
 
-      <div class="grid-stack-item"
+      <div class="grid-stack-item"{% if this_dashboard.locked %} gs-no-move="yes" gs-no-resize="yes"{% endif %}
          data-custom-chart-number="{{chart_number}}"
          gs-id="{{each_widget.unique_id}}"
          gs-x="{{each_widget.position_x}}"
