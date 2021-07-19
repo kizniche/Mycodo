@@ -2,20 +2,20 @@
 #
 # dc_motor_l298n.py - Output for L298N DC motor controller
 #
-import copy
 import threading
 import time
 
+import copy
 from flask_babel import lazy_gettext
 
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
-from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.influx import add_measurements_influxdb
+from mycodo.utils.constraints_pass import constraints_pass_percent
 from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
-from mycodo.utils.constraints_pass import constraints_pass_percent
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.influx import add_measurements_influxdb
 
 # Measurements
 measurements_dict = {
@@ -63,7 +63,7 @@ OUTPUT_INFORMATION = {
     'url_additional': 'https://www.electronicshub.org/raspberry-pi-l298n-interface-tutorial-control-dc-motor-l298n-raspberry-pi/',
 
     'message': 'The L298N can control 2 DC motors. If these motors control peristaltic pumps, set the Flow Rate '
-               'and the output can can be instructed to dispense volumes in addition to being turned on for durations.',
+               'and the output can can be instructed to dispense volumes accurately in addition to being turned on for durations.',
 
     'options_enabled': [
         'button_on',
@@ -189,10 +189,9 @@ class OutputModule(AbstractOutput):
                 self.gpio.setmode(self.gpio.BCM)
                 self.gpio.setup(self.options_channels['pin_1'][channel], self.gpio.OUT)
                 self.gpio.setup(self.options_channels['pin_2'][channel], self.gpio.OUT)
-                if self.options_channels['use_enable'][channel]:
-                    self.gpio.setup(self.options_channels['pin_enable'][channel], self.gpio.OUT)
                 self.stop(channel)
                 if self.options_channels['use_enable'][channel]:
+                    self.gpio.setup(self.options_channels['pin_enable'][channel], self.gpio.OUT)
                     self.driver[channel] = self.gpio.PWM(self.options_channels['pin_enable'][channel], 1000)
                     self.driver[channel].start(self.options_channels['duty_cycle'][channel])
                 self.channel_setup[channel] = True
@@ -200,6 +199,11 @@ class OutputModule(AbstractOutput):
                 self.output_states[channel] = False
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
+        if not self.running:
+            msg = "Output is not running, cannot turn it on or off."
+            self.logger.error(msg)
+            return msg
+
         if not self.channel_setup[output_channel]:
             msg = "Output channel {} not set up, cannot turn it on or off.".format(output_channel)
             self.logger.error(msg)
@@ -286,7 +290,7 @@ class OutputModule(AbstractOutput):
 
     def stop_output(self):
         """ Called when Output is stopped """
+        self.running = False
         for channel in channels_dict:
             if self.is_setup(channel=channel):
                 self.stop(channel)
-        self.running = False
