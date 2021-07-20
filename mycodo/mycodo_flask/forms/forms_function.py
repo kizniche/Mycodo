@@ -2,7 +2,6 @@
 #
 # forms_function.py - Function Flask Forms
 #
-
 from flask_babel import lazy_gettext
 from flask_wtf import FlaskForm
 from wtforms import BooleanField

@@ -81,19 +81,6 @@ def input_add(form_add):
         new_input.device = input_name
         new_input.position_y = 999
 
-        if input_name == "input_spacer":
-            new_input.name = "Spacer Name"
-            new_input.size_y = 1
-            new_input.position_y = 999
-            new_input.save()
-            new_input_id = new_input.unique_id
-            db.session.commit()
-
-            messages["success"].append('{action} {controller}'.format(
-                action=TRANSLATIONS['add']['title'],
-                controller=TRANSLATIONS['input']['title']))
-            return messages, dep_name, dep_unmet, new_input_id
-
         if input_interface:
             new_input.interface = input_interface
 

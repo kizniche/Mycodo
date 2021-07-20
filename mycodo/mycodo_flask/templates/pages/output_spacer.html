@@ -1,0 +1,30 @@
+  <form method="post" action="/output">
+    {{form_mod_output.csrf_token}}
+    {{form_mod_output.output_id(class_='form-control', value=each_output.unique_id)}}
+    {{form_mod_output.output_pin(class_='form-control', value=each_output.pin)}}
+
+    <div class="grid-stack-item-content">
+      <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 2px 4px 2px 4px;">
+        <div class="col-1 text-center icon-fh my-auto panel-heading">
+          <i style="font-size: 2em" class="fa fa-grip-horizontal" title="{{_('Drag')}}"></i>
+        </div>
+        <div class="col-1 text-center icon-fh my-auto">
+          <a class="btn" style="border-color: transparent; padding: 0" data-toggle="modal" data-target="#modal_config_{{each_output.unique_id}}">
+            <i style="font-size: 1.5em" class="fas fa-cog" title="{{_('Configure')}}"></i>
+          </a>
+        </div>
+        <div class="col-10 text-center font-weight-bold h5" id="output_name_{{each_output.unique_id}}" style="color: {{custom_options_values_outputs[each_output.unique_id]['color']}}">{{each_output.name}}</div>
+      </div>
+    </div> <!- grid-stack-item-content ->
+  </form>
+
+  <div class="modal fade" id="modal_config_{{each_output.unique_id}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content" style="padding: 1em">
+        <div class="modal-header">
+          <h5 class="modal-title">Output Configuration{% if each_output.output_type in dict_outputs %}: {{dict_outputs[each_output.output_type]['output_name']}}{% endif %}</h5>
+        </div>
+        {% include 'pages/output_options.html' %}
+      </div>
+    </div>
+  </div>

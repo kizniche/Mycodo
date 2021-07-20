@@ -180,8 +180,13 @@
                 if ('return_text' in data.data.messages && data.data.messages.return_text.length > 0) {
                   document.getElementById("return_text_" + data.data.input_id).innerHTML = data.data.messages.return_text.join("<br/><br/>");
                 }
-                if ('name' in data.data.messages) {
-                  document.getElementById("input_name_" + data.data.input_id).value = data.data.messages.name;
+                if ('name' in data.data.messages &&
+                    document.getElementById("input_name_" + data.data.input_id)) {
+                  if (document.getElementById("input_name_" + data.data.input_id).tagName === "DIV") {
+                    document.getElementById("input_name_" + data.data.input_id).innerHTML = data.data.messages.name;
+                  } else if (document.getElementById("input_name_" + data.data.input_id).tagName === "INPUT") {
+                    document.getElementById("input_name_" + data.data.input_id).value = data.data.messages.name;
+                  }
                 }
               }
               else if (action === 'input_delete' && 'input_id' in data.data) {

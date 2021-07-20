@@ -165,12 +165,9 @@ return status_dict'''
                 new_func.save()
                 new_function_id = new_func.unique_id
 
-        elif function_name in ['function_spacer',
-                               'function_actions']:
+        elif function_name == 'function_actions':
             new_func = Function()
             new_func.position_y = 999
-            if function_name == 'function_spacer':
-                new_func.name = 'Spacer'
             new_func.function_type = function_name
             if not messages["error"]:
                 new_func.save()

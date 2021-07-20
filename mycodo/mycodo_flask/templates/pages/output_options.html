@@ -102,7 +102,7 @@
         <h5>{{_('Options')}}</h5>
       </div>
 
-      <div class="{% if each_output.output_type == 'output_spacer' %}col-12{% else %}col-auto{% endif %}">
+      <div class="col-auto">
         {{form_mod_output.name.label(class_='control-label')}}
         <div>
           {{form_mod_output.name(class_='form-control', value=each_output.name, **{'title': dict_translation['name']['phrase']})}}

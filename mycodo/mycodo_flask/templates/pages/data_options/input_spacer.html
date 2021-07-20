@@ -1,0 +1,34 @@
+<form method="post" action="/input">
+  {{form_mod_input.csrf_token}}
+  {{form_mod_input.input_id(value=each_input.unique_id)}}
+
+  {% set form = form_mod_input %}
+  {% set dict_options = dict_inputs[each_input.device] %}
+  {% set each_device = each_input %}
+  {% set unique_id = each_input.unique_id %}
+  {% set custom_options_values = custom_options_values_inputs %}
+
+  <div id="input_status_{{each_input.unique_id}}" class="grid-stack-item-content row small-gutters" style="padding: 4px; border-bottom: 1px solid #ddd;">
+    <div class="col-1 text-center icon-fh my-auto panel-heading">
+      <i style="font-size: 2em" class="fa fa-grip-horizontal" title="{{_('Drag')}}"></i>
+    </div>
+    <div class="col-1 text-center icon-fh my-auto">
+      <a class="btn" style="border-color: transparent; padding: 0" data-toggle="modal" data-target="#modal_config_{{each_input.unique_id}}">
+        <i style="font-size: 1.5em" class="fas fa-cog" title="{{_('Configure')}}"></i>
+      </a>
+    </div>
+    <div class="col-10 text-center font-weight-bold h5" id="input_name_{{each_input.unique_id}}" style="color: {{custom_options_values_inputs[each_input.unique_id]['color']}}">{{each_input.name}}</div>
+  </div> <!- grid-stack-item-content ->
+
+</form>
+
+<div class="modal fade" id="modal_config_{{each_input.unique_id}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content" style="padding: 1em">
+      <div class="modal-header">
+        <h5 class="modal-title">Input Configuration{% if each_input.device in dict_inputs %}: {{dict_inputs[each_input.device]['input_name']}}{% endif %}</h5>
+      </div>
+      {% include 'pages/data_options/input_options.html' %}
+    </div>
+  </div>
+</div>

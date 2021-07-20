@@ -1,3 +1,7 @@
+{% if each_function.device == 'function_spacer' %}
+  {% include 'pages/function_options/custom_function_spacer.html' %}
+{% else %}
+
 <form method="post" action="/function">
   {{form_mod_pid_base.csrf_token}}
   {{form_mod_pid_base.function_id(value=each_function.unique_id)}}
@@ -48,3 +52,5 @@
     </div>
   </div>
 </div>
+
+{% endif %}

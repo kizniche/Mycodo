@@ -135,7 +135,7 @@
       <h5>{{_('Options')}}</h5>
     </div>
 
-    <div class="{% if each_input.device == 'input_spacer' %}col-12{% else %}col-auto{% endif %}">
+    <div class="col-auto">
       {{form_mod_input.name.label(class_='control-label')}}
       <div>
         {{form_mod_input.name(class_='form-control', value=each_input.name, **{'title': dict_translation['name']['phrase']})}}

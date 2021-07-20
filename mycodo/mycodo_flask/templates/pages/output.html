@@ -169,7 +169,7 @@
         gs-w="20"
         gs-h="{{each_output.size_y}}"
         data-gs-no-resize="true">
-      {% include 'pages/output_entry.html' %}
+        {% include 'pages/output_entry.html' %}
       </div> <!- grid-stack-item ->
     {%- endfor -%}
     </div> <!- grid-stack ->
@@ -269,11 +269,18 @@
             }
             if (data.data.messages.error.length === 0) {
               if (action === 'output_mod' && 'output_id' in data.data) {
-                if ('return_text' in data.data.messages && data.data.messages.return_text.length > 0) {
+                if ('return_text' in data.data.messages &&
+                    data.data.messages.return_text.length > 0 &&
+                    document.getElementById("return_text_" + data.data.output_id)) {
                   document.getElementById("return_text_" + data.data.output_id).innerHTML = data.data.messages.return_text.join("<br/><br/>");
                 }
-                if ('name' in data.data.messages) {
-                  document.getElementById("output_name_" + data.data.output_id).value = data.data.messages.name;
+                if ('name' in data.data.messages &&
+                    document.getElementById("output_name_" + data.data.output_id)) {
+                  if (document.getElementById("output_name_" + data.data.output_id).tagName === "DIV") {
+                    document.getElementById("output_name_" + data.data.output_id).innerHTML = data.data.messages.name;
+                  } else if (document.getElementById("output_name_" + data.data.output_id).tagName === "INPUT") {
+                    document.getElementById("output_name_" + data.data.output_id).value = data.data.messages.name;
+                  }
                 }
               }
               else if (action === 'output_delete' && 'output_id' in data.data) {

@@ -174,22 +174,21 @@ class OutputController(AbstractController, threading.Thread):
             else:
                 self.output_unique_id[output_id][0] = None
 
-            # Try to stop the output
-            if output_id in self.output:
-                try:
-                    self.output[output_id].stop_output()
-                except Exception:
-                    self.logger.exception("Stopping output")
-
             if self.output_type[output_id] in self.dict_outputs:
                 if ('no_run' in self.dict_outputs[output.output_type] and
                         self.dict_outputs[output.output_type]['no_run']):
                     pass
                 else:
+                    # Try to stop the output
+                    if output_id in self.output:
+                        try:
+                            self.output[output_id].stop_output()
+                        except Exception:
+                            self.logger.exception("Stopping output")
+
                     output_loaded = load_module_from_file(
                         self.dict_outputs[self.output_type[output_id]]['file_path'],
                         'outputs')
-
                     if output_loaded:
                         self.output[output_id] = output_loaded.OutputModule(output)
                         self.output[output_id].setup_output()
@@ -210,12 +209,15 @@ class OutputController(AbstractController, threading.Thread):
         :rtype: int, str
         """
         try:
-            if output_id not in self.output_type:
+            self.dict_outputs = parse_output_information()
+
+            if ('no_run' in self.dict_outputs[self.output_type[output_id]] and
+                    self.dict_outputs[self.output_type[output_id]]['no_run']):
+                pass
+            elif output_id not in self.output_type:
                 msg = "Output ID not found. Can't delete nonexistent Output."
                 self.logger.error(msg)
                 return 1, msg
-
-            self.dict_outputs = parse_output_information()
 
             # instruct output to shutdown
             shutdown_timer = timeit.default_timer()
@@ -236,6 +238,7 @@ class OutputController(AbstractController, threading.Thread):
             self.logger.debug(msg)
             return 0, msg
         except Exception as e:
+            self.logger.exception(1)
             return 1, "Error deleting Output {id}: {e}".format(id=output_id, e=e)
 
     def output_on_off(self,

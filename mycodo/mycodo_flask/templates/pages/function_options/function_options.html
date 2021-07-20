@@ -59,24 +59,6 @@
   {% endfor %}
   </div>
 
-  {% elif each_function.function_type == 'function_spacer' %}
-
-  <form id="mod_function_form" method="post" action="/function">
-  {{form_conditional.csrf_token}}
-  {{form_conditional.function_id(value=each_function.unique_id)}}
-  {{form_conditional.function_type(value='function')}}
-
-    <div class="row small-gutters" style="padding: 0.3em 0.2em 0.3em 0.3em;">
-      <div class="col-12">
-        {{form_function_base.name.label(class_='control-label')}}
-        <div>
-          {{form_function_base.name(class_='form-control', value=each_function.name, **{'title': dict_translation['name']['phrase']})}}
-        </div>
-      </div>
-    </div>
-
-  </form>
-
   {% endif %}
 
 </div>

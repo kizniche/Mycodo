@@ -1,3 +1,7 @@
+{% if each_input.device == 'input_spacer' %}
+  {% include 'pages/data_options/input_spacer.html' %}
+{% else %}
+
 <form method="post" action="/input">
   {{form_mod_input.csrf_token}}
   {{form_mod_input.input_id(value=each_input.unique_id)}}
@@ -8,7 +12,7 @@
   {% set unique_id = each_input.unique_id %}
   {% set custom_options_values = custom_options_values_inputs %}
 
-  <div id="input_status_{{each_input.unique_id}}" class="grid-stack-item-content {% if each_input.is_activated -%}active-background{% elif each_input.device != 'input_spacer' -%}inactive-background{% endif %} row small-gutters" style="padding: 4px; border: 1px solid #ddd; border-radius: 5px">
+  <div id="input_status_{{each_input.unique_id}}" class="grid-stack-item-content {% if each_input.is_activated -%}active-background{% else -%}inactive-background{% endif %} row small-gutters" style="padding: 4px; border: 1px solid #ddd; border-radius: 5px">
     <div class="col-1 text-center icon-fh my-auto panel-heading">
       <i style="font-size: 2em" class="fa fa-grip-horizontal" title="{{_('Drag')}}"></i>
     </div>
@@ -17,11 +21,6 @@
         <i style="font-size: 1.5em" class="fas fa-cog" title="{{_('Configure')}}"></i>
       </a>
     </div>
-  {% if each_input.device == 'input_spacer' %}
-    <div class="col-10">
-      <input id="input_name_{{each_input.unique_id}}" class="form-control btn btn-primary" type="button" value="{{each_input.name}}">
-    </div>
-  {% else %}
     <div class="col-3">
       <input id="input_name_{{each_input.unique_id}}" class="form-control" disabled="" value="{{each_input.name}}" type="text">
     </div>
@@ -32,7 +31,6 @@
       <input {% if each_input.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'input_activate');" name="input_activate" id="input_activate_{{each_input.unique_id}}" class="form-control btn btn-primary btn-sm" type="button" value="{{_('Activate')}}"/>
       <input {% if not each_input.is_activated -%}style="display: none"{% endif %} onclick="return $(this).processRequest(this, 'input_deactivate');" name="input_deactivate" id="input_deactivate_{{each_input.unique_id}}" class="form-control btn btn-primary btn-sm" type="button" value="{{_('Deactivate')}}"/>
     </div>
-  {% endif %}
   </div> <!- grid-stack-item-content ->
 
 </form>
@@ -47,3 +45,5 @@
     </div>
   </div>
 </div>
+
+{% endif %}

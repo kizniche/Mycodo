@@ -27,10 +27,6 @@
     <div class="col-3">
       <input onclick="return $(this).processRequest(this, 'execute_all_actions');" name="execute_all_actions" value="{{_('Execute All Actions')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
     </div>
-  {% elif each_function.function_type == 'function_spacer' %}
-    <div class="col-10">
-      <input id="function_name_{{each_function.unique_id}}" class="form-control btn btn-primary" type="button" value="{{each_function.name}}">
-    </div>
   {% endif %}
   </div> <!- grid-stack-item-content ->
 </form>

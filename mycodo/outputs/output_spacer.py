@@ -15,5 +15,16 @@ OUTPUT_INFORMATION = {
     'options_enabled': [],
     'options_disabled': [],
 
-    'interfaces': ['MYCODO']
+    'interfaces': ['MYCODO'],
+
+    'custom_options': [
+        {
+            'id': 'color',
+            'type': 'text',
+            'default_value': '#000000',
+            'required': True,
+            'name': lazy_gettext('Color'),
+            'phrase': 'The color of the name text'
+        }
+    ]
 }

@@ -507,10 +507,6 @@ CONDITIONAL_CONDITIONS = [
 ]
 
 FUNCTION_INFO = {
-    'function_spacer': {
-        'name': lazy_gettext('Spacer'),
-        'dependencies_module': []
-    },
     'function_actions': {
         'name': lazy_gettext('Execute Actions'),
         'dependencies_module': []
@@ -581,7 +577,6 @@ FUNCTION_INFO = {
 }
 
 FUNCTIONS = [
-    ('function_spacer', FUNCTION_INFO['function_spacer']['name']),
     ('function_actions', FUNCTION_INFO['function_actions']['name']),
     ('conditional_conditional', FUNCTION_INFO['conditional_conditional']['name']),
     ('pid_pid', FUNCTION_INFO['pid_pid']['name']),
