@@ -62,6 +62,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Fix Indicator Widget unit not using correct font size
  - Fix display of tags on more than one Graph Widget
  - Fix first channel of L298N DC Motor Controller Output not working
+ - Fix setting Graph Widget custom colors when tag selected
 
 ### Features
 

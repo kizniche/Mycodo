@@ -371,7 +371,7 @@ WIDGET_INFORMATION = {
         <div class="form-row">
           <div class="col-12">
             {{widget_variables['colors_graph'][n]['type']}}
-            {%- if 'channel' in widget_variables['colors_graph'][n] -%}
+            {%- if 'channel' in widget_variables['colors_graph'][n] and widget_variables['colors_graph'][n]['channel'] -%}
               {{', CH' + widget_variables['colors_graph'][n]['channel']|string}}
             {%- endif -%}
             {%- if widget_variables['colors_graph'][n]['name'] -%}
@@ -1724,7 +1724,7 @@ def dict_custom_colors(widget_options):
 
                 device_measurement = NoteTags.query.filter_by(unique_id=tag_unique_id).first()
 
-                if (index < len(widget_options['measurements_note_tag'].split(',')) and
+                if (index < len(widget_options['measurements_note_tag']) and
                         len(colors) > index_sum + index):
                     color = colors[index_sum + index]
                 else:
