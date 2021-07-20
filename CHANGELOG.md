@@ -63,6 +63,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Fix display of tags on more than one Graph Widget
  - Fix first channel of L298N DC Motor Controller Output not working
  - Fix setting Graph Widget custom colors when tag selected
+ - Fix Graph Widget custom colors when more than one Input selected
 
 ### Features
 
@@ -93,6 +94,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Ensure Atlas DO sensor only returns DO ([#1052](https://github.com/kizniche/mycodo/issues/1052))
  - Remove Highcharts/Highstock Javascript from package to be compliant with licensing
  - Remove calibration page (all functionality has been moved to modules)
+ - Place Output columns at back of Graph Widget charts
 
 
 ## 8.11.0 (2021-06-05) 

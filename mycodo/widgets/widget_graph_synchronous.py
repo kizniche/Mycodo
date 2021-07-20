@@ -634,10 +634,10 @@ WIDGET_INFORMATION = {
 """,
 
     'widget_dashboard_js_ready_end': """
+{% set graph_output_ids = widget_options['measurements_output'] %}
 {% set graph_input_ids = widget_options['measurements_input'] %}
 {% set graph_math_ids = widget_options['measurements_math'] %}
 {% set graph_function_ids = widget_options['measurements_function'] %}
-{% set graph_output_ids = widget_options['measurements_output'] %}
 {% set graph_pid_ids = widget_options['measurements_pid'] %}
 {% set graph_note_tag_ids = widget_options['measurements_note_tag'] %}
 
@@ -653,6 +653,21 @@ WIDGET_INFORMATION = {
       events: {
         load: function () {
           {% set count_series = [] -%}
+          
+          {%- for output_and_measurement_ids in graph_output_ids -%}
+            {%- set output_id = output_and_measurement_ids.split(',')[0] -%}
+            {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
+            {%- set all_output = table_output.query.filter(table_output.unique_id == output_id).all() -%}
+            {%- if all_output -%}
+              {% for each_output in all_output %}
+          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
+                {% if widget_options['enable_auto_refresh'] -%}
+          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+                {%- endif -%}
+                {%- do count_series.append(1) -%}
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
 
           {%- for input_and_measurement_ids in graph_input_ids -%}
             {%- set input_id = input_and_measurement_ids.split(',')[0] -%}
@@ -695,21 +710,6 @@ WIDGET_INFORMATION = {
           getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_function.unique_id}}', 'function', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
                 {% endif %}
                 {%- do count_series.append(1) %}
-              {%- endfor -%}
-            {%- endif -%}
-          {%- endfor -%}
-
-          {%- for output_and_measurement_ids in graph_output_ids -%}
-            {%- set output_id = output_and_measurement_ids.split(',')[0] -%}
-            {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
-            {%- set all_output = table_output.query.filter(table_output.unique_id == output_id).all() -%}
-            {%- if all_output -%}
-              {% for each_output in all_output %}
-          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
-                {% if widget_options['enable_auto_refresh'] -%}
-          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
-                {%- endif -%}
-                {%- do count_series.append(1) -%}
               {%- endfor -%}
             {%- endif -%}
           {%- endfor -%}
@@ -928,6 +928,75 @@ WIDGET_INFORMATION = {
 {#    },#}
 
     series: [
+  {%- for output_and_measurement_ids in graph_output_ids -%}
+    {%- set output_id = output_and_measurement_ids.split(',')[0] -%}
+    {%- set all_output = table_output.query.filter(table_output.unique_id == output_id).all() -%}
+    {%- if all_output -%}
+      {%- for each_output in all_output -%}
+        {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
+
+        {% set disable_data_grouping = [] -%}
+        {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
+          {%- do disable_data_grouping.append(1) %}
+        {% endfor %}
+
+        {%- if measurement_id in device_measurements_dict -%}
+      {
+        name: "{{each_output.name}}
+
+          {%- if device_measurements_dict[measurement_id].name -%}
+            {{' (' + device_measurements_dict[measurement_id].name}})
+          {%- endif -%}
+
+          {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
+          
+          {%- if output_id in custom_options_values_output_channels and 
+                 device_measurements_dict[measurement_id].channel in custom_options_values_output_channels[output_id] and
+                 'name' in custom_options_values_output_channels[output_id][device_measurements_dict[measurement_id].channel] -%}
+            {{', ' + custom_options_values_output_channels[output_id][device_measurements_dict[measurement_id].channel]['name']}}
+          {%- endif -%}
+
+          {%- if dict_measure_measurements[measurement_id] in dict_measurements and
+                 dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
+            {{', ' + dict_measurements[dict_measure_measurements[measurement_id]]['name']}}
+          {%- endif -%}
+
+          {%- if dict_measure_units[measurement_id] in dict_units and
+                 dict_units[dict_measure_units[measurement_id]]['unit'] -%}
+            {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
+          {%- endif -%}
+
+          )",
+        type: 'column',
+        dataGrouping: {
+          enabled: {% if disable_data_grouping %}false{% else %}true{% endif %},
+          groupPixelWidth: 5
+        },
+        tooltip: {
+          valueSuffix: '
+          {%- if device_measurements_dict[measurement_id].conversion_id -%}
+            {{' ' + dict_units[table_conversion.query.filter(table_conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to]['unit']}}
+          {%- elif device_measurements_dict[measurement_id].rescaled_unit -%}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].rescaled_unit]['unit']}}
+          {%- else -%}
+            {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
+          {%- endif -%}
+          ',
+          valueDecimals: 3
+        },
+        yAxis: '
+          {%- if measurement_id in dict_measure_units -%}
+            {{dict_measure_units[measurement_id]}}
+          {%- endif -%}
+            ',
+        data: []
+      },
+
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endif -%}
+  {%- endfor -%}
+    
   {%- for input_and_measurement_ids in graph_input_ids -%}
     {%- set input_id = input_and_measurement_ids.split(',')[0] -%}
     {%- set all_input = table_input.query.filter(table_input.unique_id == input_id).all() -%}
@@ -1127,75 +1196,6 @@ WIDGET_INFORMATION = {
     {%- endfor -%}
   {% endfor %}
 
-  {%- for output_and_measurement_ids in graph_output_ids -%}
-    {%- set output_id = output_and_measurement_ids.split(',')[0] -%}
-    {%- set all_output = table_output.query.filter(table_output.unique_id == output_id).all() -%}
-    {%- if all_output -%}
-      {%- for each_output in all_output -%}
-        {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
-
-        {% set disable_data_grouping = [] -%}
-        {% for each_series in widget_variables['colors_graph'] if each_series['measure_id'] == measurement_id and each_series['disable_data_grouping'] %}
-          {%- do disable_data_grouping.append(1) %}
-        {% endfor %}
-
-        {%- if measurement_id in device_measurements_dict -%}
-      {
-        name: "{{each_output.name}}
-
-          {%- if device_measurements_dict[measurement_id].name -%}
-            {{' (' + device_measurements_dict[measurement_id].name}})
-          {%- endif -%}
-
-          {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
-          
-          {%- if output_id in custom_options_values_output_channels and 
-                 device_measurements_dict[measurement_id].channel in custom_options_values_output_channels[output_id] and
-                 'name' in custom_options_values_output_channels[output_id][device_measurements_dict[measurement_id].channel] -%}
-            {{', ' + custom_options_values_output_channels[output_id][device_measurements_dict[measurement_id].channel]['name']}}
-          {%- endif -%}
-
-          {%- if dict_measure_measurements[measurement_id] in dict_measurements and
-                 dict_measurements[dict_measure_measurements[measurement_id]]['name'] -%}
-            {{', ' + dict_measurements[dict_measure_measurements[measurement_id]]['name']}}
-          {%- endif -%}
-
-          {%- if dict_measure_units[measurement_id] in dict_units and
-                 dict_units[dict_measure_units[measurement_id]]['unit'] -%}
-            {{', ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
-          {%- endif -%}
-
-          )",
-        type: 'column',
-        dataGrouping: {
-          enabled: {% if disable_data_grouping %}false{% else %}true{% endif %},
-          groupPixelWidth: 5
-        },
-        tooltip: {
-          valueSuffix: '
-          {%- if device_measurements_dict[measurement_id].conversion_id -%}
-            {{' ' + dict_units[table_conversion.query.filter(table_conversion.unique_id == device_measurements_dict[measurement_id].conversion_id).first().convert_unit_to]['unit']}}
-          {%- elif device_measurements_dict[measurement_id].rescaled_unit -%}
-            {{' ' + dict_units[device_measurements_dict[measurement_id].rescaled_unit]['unit']}}
-          {%- else -%}
-            {{' ' + dict_units[device_measurements_dict[measurement_id].unit]['unit']}}
-          {%- endif -%}
-          ',
-          valueDecimals: 3
-        },
-        yAxis: '
-          {%- if measurement_id in dict_measure_units -%}
-            {{dict_measure_units[measurement_id]}}
-          {%- endif -%}
-            ',
-        data: []
-      },
-
-        {%- endif -%}
-      {%- endfor -%}
-    {%- endif -%}
-  {%- endfor -%}
-
   {%- for each_pid in pid -%}
     {%- for pid_and_measurement_ids in graph_pid_ids if each_pid.unique_id == pid_and_measurement_ids.split(',')[0] -%}
       {%- set measurement_id = pid_and_measurement_ids.split(',')[1] -%}
@@ -1274,6 +1274,14 @@ WIDGET_INFORMATION = {
 
   $('#updateData{{chart_number}}').click(function() {
     {% set count_series = [] -%}
+    
+    {% for each_output in output -%}
+      {% for output_and_measurement_ids in graph_output_ids if each_output.unique_id == output_and_measurement_ids.split(',')[0] %}
+        {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
+    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+        {%- do count_series.append(1) %}
+      {% endfor %}
+    {%- endfor -%}
 
     {% for each_input in input -%}
       {% for input_and_measurement_ids in graph_input_ids if each_input.unique_id == input_and_measurement_ids.split(',')[0] %}
@@ -1295,14 +1303,6 @@ WIDGET_INFORMATION = {
       {% for function_and_measurement_id in graph_function_ids if each_function.unique_id == function_and_measurement_id.split(',')[0] %}
         {%- set measurement_id = function_and_measurement_id.split(',')[1] -%}
     retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_function.unique_id}}', 'function', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
-        {%- do count_series.append(1) %}
-      {% endfor %}
-    {%- endfor -%}
-
-    {% for each_output in output -%}
-      {% for output_and_measurement_ids in graph_output_ids if each_output.unique_id == output_and_measurement_ids.split(',')[0] %}
-        {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
-    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
         {%- do count_series.append(1) %}
       {% endfor %}
     {%- endfor -%}
@@ -1462,11 +1462,60 @@ def dict_custom_colors(widget_options):
             if colors[x] == '':
                 colors[x] = default_palette[x]
 
-        index = 0
         index_sum = 0
         total = []
 
+        if widget_options['measurements_output']:
+            index = 0
+            for each_set in widget_options['measurements_output']:
+                if not each_set:
+                    continue
+
+                output_unique_id = each_set.split(',')[0]
+                output_measure_id = each_set.split(',')[1]
+
+                device_measurement = DeviceMeasurements.query.filter(
+                    DeviceMeasurements.unique_id == output_measure_id).first()
+                if device_measurement:
+                    measurement_name = device_measurement.name
+                    conversion = Conversion.query.filter(
+                        Conversion.unique_id == device_measurement.conversion_id).first()
+                else:
+                    measurement_name = None
+                    conversion = None
+                channel, unit, measurement = return_measurement_info(
+                    device_measurement, conversion)
+
+                output = Output.query.filter_by(unique_id=output_unique_id).first()
+
+                if (index < len(widget_options['measurements_output']) and
+                        len(colors) > index_sum + index):
+                    color = colors[index_sum + index]
+                else:
+                    color = '#FF00AA'
+
+                # Data grouping
+                disable_data_grouping = False
+                if output_measure_id in widget_options['disable_data_grouping']:
+                    disable_data_grouping = True
+
+                if None not in [output, device_measurement]:
+                    total.append({
+                        'unique_id': output_unique_id,
+                        'measure_id': output_measure_id,
+                        'type': 'Output',
+                        'name': output.name,
+                        'channel': channel,
+                        'unit': unit,
+                        'measure': measurement,
+                        'measure_name': measurement_name,
+                        'color': color,
+                        'disable_data_grouping': disable_data_grouping})
+                    index += 1
+            index_sum += index
+
         if widget_options['measurements_input']:
+            index = 0
             for each_set in widget_options['measurements_input']:
                 if not each_set:
                     continue
@@ -1490,8 +1539,8 @@ def dict_custom_colors(widget_options):
 
                 # Custom colors
                 if (index < len(widget_options['measurements_input']) and
-                        len(colors) > index):
-                    color = colors[index]
+                        len(colors) > index_sum + index):
+                    color = colors[index_sum + index]
                 else:
                     color = '#FF00AA'
 
@@ -1550,7 +1599,7 @@ def dict_custom_colors(widget_options):
                 if math_measure_id in widget_options['disable_data_grouping']:
                     disable_data_grouping = True
 
-                if math is not None:
+                if None not in [math, device_measurement]:
                     total.append({
                         'unique_id': math_unique_id,
                         'measure_id': math_measure_id,
@@ -1615,55 +1664,6 @@ def dict_custom_colors(widget_options):
                     index += 1
             index_sum += index
 
-        if widget_options['measurements_output']:
-            index = 0
-            for each_set in widget_options['measurements_output']:
-                if not each_set:
-                    continue
-
-                output_unique_id = each_set.split(',')[0]
-                output_measure_id = each_set.split(',')[1]
-
-                device_measurement = DeviceMeasurements.query.filter(
-                    DeviceMeasurements.unique_id == output_measure_id).first()
-                if device_measurement:
-                    measurement_name = device_measurement.name
-                    conversion = Conversion.query.filter(
-                        Conversion.unique_id == device_measurement.conversion_id).first()
-                else:
-                    measurement_name = None
-                    conversion = None
-                channel, unit, measurement = return_measurement_info(
-                    device_measurement, conversion)
-
-                output = Output.query.filter_by(unique_id=output_unique_id).first()
-
-                if (index < len(widget_options['measurements_output']) and
-                        len(colors) > index_sum + index):
-                    color = colors[index_sum + index]
-                else:
-                    color = '#FF00AA'
-
-                # Data grouping
-                disable_data_grouping = False
-                if output_measure_id in widget_options['disable_data_grouping']:
-                    disable_data_grouping = True
-
-                if output is not None:
-                    total.append({
-                        'unique_id': output_unique_id,
-                        'measure_id': output_measure_id,
-                        'type': 'Output',
-                        'name': output.name,
-                        'channel': channel,
-                        'unit': unit,
-                        'measure': measurement,
-                        'measure_name': measurement_name,
-                        'color': color,
-                        'disable_data_grouping': disable_data_grouping})
-                    index += 1
-            index_sum += index
-
         if widget_options['measurements_pid']:
             index = 0
             for each_set in widget_options['measurements_pid']:
@@ -1699,7 +1699,7 @@ def dict_custom_colors(widget_options):
                 if pid_measure_id in widget_options['disable_data_grouping']:
                     disable_data_grouping = True
 
-                if pid is not None:
+                if None not in [pid, device_measurement]:
                     total.append({
                         'unique_id': pid_unique_id,
                         'measure_id': pid_measure_id,
@@ -1858,14 +1858,14 @@ def graph_y_axes(dict_measurements, widget_options):
     # Iterate through device tables
     for each_device in devices_list:
 
-        if each_device == input_dev and widget_options['measurements_input']:
+        if each_device == output and widget_options['measurements_output']:
+            dev_and_measure_ids = widget_options['measurements_output']
+        elif each_device == input_dev and widget_options['measurements_input']:
             dev_and_measure_ids = widget_options['measurements_input']
         elif each_device == math and widget_options['measurements_math']:
             dev_and_measure_ids = widget_options['measurements_math']
         elif each_device == function and widget_options['measurements_function']:
             dev_and_measure_ids = widget_options['measurements_function']
-        elif each_device == output and widget_options['measurements_output']:
-            dev_and_measure_ids = widget_options['measurements_output']
         elif each_device == pid and widget_options['measurements_pid']:
             dev_and_measure_ids = widget_options['measurements_pid']
         else:
