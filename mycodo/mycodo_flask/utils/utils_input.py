@@ -349,8 +349,9 @@ def input_mod(form_mod, request_form):
                 "below 7."))
 
         if (form_mod.period.data and
-                mod_input.pre_output_duration and
-                form_mod.period.data < mod_input.pre_output_duration):
+                form_mod.pre_output_duration.data and
+                form_mod.pre_output_id.data and
+                form_mod.period.data < form_mod.pre_output_duration.data):
             messages["error"].append(gettext(
                 "The Read Period cannot be less than the Pre Output Duration"))
 

@@ -493,16 +493,14 @@ WIDGET_INFORMATION = {
     $.getJSON(url,
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
-          let new_time;
           let past_data = [];
+          const note_key = chart_number + "_" + series;
 
+          // Add the received data to the graph
           for (let i = 0; i < data.length; i++) {
-            // Push the received data to the graph
-            let new_date = new Date(data[i][0]);
-            new_time = new_date.getTime();
+            const new_time = new Date(data[i][0]).getTime();
 
             if (measure_type === 'tag') {
-              let note_key = chart_number + "_" + series;
               if (!(note_key in note_timestamps)) note_timestamps[note_key] = [];
               if (!note_timestamps[note_key].includes(new_time)) {
                 past_data.push({
@@ -543,12 +541,11 @@ WIDGET_INFORMATION = {
                             xaxis_duration_min,
                             xaxis_reset,
                             refresh_seconds) {
-    const epoch_mil = new Date().getTime();
-
     // Determine the timestamp of the last known measurement on the graph and
     // calculate the number of seconds from then until now, then build the URL
     // to query the measurements from that time period.
     let url = '';
+    const epoch_mil = new Date().getTime();
     let update_id = chart_number + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
     if (update_id in last_output_time_mil) {
       const past_seconds = Math.floor((epoch_mil - last_output_time_mil[update_id]) / 1000);  // seconds (integer)
@@ -560,52 +557,56 @@ WIDGET_INFORMATION = {
     $.getJSON(url,
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
-
           let time_point;
-          let graph_shift = false;
+          const note_key = chart_number + "_" + series;
           // The timestamp of the beginning of the graph (oldest timestamp allowed on the graph)
           const oldest_timestamp_allowed = epoch_mil - (xaxis_duration_min * 60 * 1000);
 
+          // Loop through data and add points to chart
           for (let i = 0; i < data.length; i++) {
-            let time_point_raw = new Date(data[i][0]);
+            const time_point_raw = new Date(data[i][0]);
             time_point = time_point_raw.getTime();
 
-            // If the timestamp of the last point previously added is >= the new point TS, don't add
-            let index_last = chart[chart_number].series[series].options.data.length - 1;
-            if (typeof chart[chart_number].series[series].options.data[index_last] !== 'undefined') {
-              let last_meas_time = chart[chart_number].series[series].options.data[index_last][0];
-              if (time_point <= last_meas_time) continue;
-            }
-
-            // If the first data point is older than allowed, shift the graph
-            if (typeof chart[chart_number].series[series].options.data[0] !== 'undefined') {
-              let first_meas_time = chart[chart_number].series[series].options.data[0][0];
-              graph_shift = first_meas_time < oldest_timestamp_allowed;
-            }
-
             if (measure_type === 'tag') {
-              let note_key = chart_number + "_" + series;
               if (!(note_key in note_timestamps)) note_timestamps[note_key] = [];
               if (!note_timestamps[note_key].includes(time_point)) {
                 chart[chart_number].series[series].addPoint({
                     x: time_point,
                     title: data[i][1],
                     text: data[i][2].replace(/(?:\\r\\n|\\r|\\n)/g, '<br/>').replace(/  /g, '\\u2591\\u2591')
-                }, false, graph_shift);
+                }, false, false);
                 note_timestamps[note_key].push(time_point);
               }
             }
             else {
-              chart[chart_number].series[series].addPoint([time_point, data[i][1]], false, graph_shift);
+              chart[chart_number].series[series].addPoint([time_point, data[i][1]], false, false);
             }
           }
 
-          // Store latest point timestamp
+          // Store last point timestamp
           if (measure_type === 'tag') last_output_time_mil[update_id] = time_point + 3000;
           else last_output_time_mil[update_id] = time_point;
 
           // Finally, redraw the graph
           redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset);
+          
+          // Remove any points before beginning of chart
+          for (let i = 0; i < chart[chart_number].series[series].options.data.length; i++) {
+            // Get stored point timestamp
+            if (measure_type === 'tag') point_ts = chart[chart_number].series[series].options.data[i].x;
+            else point_ts = chart[chart_number].series[series].options.data[i][0];
+
+            // If stored point timestamp outside graph view, delete the point
+            if (point_ts < oldest_timestamp_allowed) {
+              chart[chart_number].series[series].removePoint(i, false);
+              
+              // Remove timestamp from note array
+              if (measure_type === 'tag') {
+                const index = note_timestamps[note_key].indexOf(point_ts);
+                if (index > -1) note_timestamps[note_key].splice(index, 1);
+              }
+            } else break;
+          }
         }
       }
     );

@@ -64,6 +64,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Fix first channel of L298N DC Motor Controller Output not working
  - Fix setting Graph Widget custom colors when tag selected
  - Fix Graph Widget custom colors when more than one Input selected
+ - Fix note array memory leak on Graph Widgets
 
 ### Features
 
