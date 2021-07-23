@@ -110,19 +110,21 @@ WIDGET_INFORMATION = {
     'dependencies_module': [
         ('apt', 'unzip', 'unzip'),
         ('bash-commands',
-         [
+        [
             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js'
-         ],
-         [
-            'wget --no-clobber https://code.highcharts.com/zips/Highcharts-9.1.2.zip',
+        ],
+        [
+            'rm -rf Highcharts-9.1.2.zip',
+            'wget https://code.highcharts.com/zips/Highcharts-9.1.2.zip',
             'unzip Highcharts-9.1.2.zip -d Highcharts-9.1.2',
             'cp -rf Highcharts-9.1.2/code/highcharts.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
             'cp -rf Highcharts-9.1.2/code/highcharts.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts.js.map',
             'cp -rf Highcharts-9.1.2/code/highcharts-more.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
             'cp -rf Highcharts-9.1.2/code/highcharts-more.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more.js.map',
+            'rm -rf Highcharts-9.1.2.zip',
             'rm -rf Highcharts-9.1.2'
-         ])
+        ])
     ],
 
     'execute_at_creation': execute_at_creation,
