@@ -131,16 +131,17 @@ WIDGET_INFORMATION = {
     'dependencies_module': [
         ('apt', 'unzip', 'unzip'),
         ('bash-commands',
-         [
+        [
              '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
              '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
              '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js',
              '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js',
              '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js',
              '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js'
-         ],
-         [
-            'wget --no-clobber https://code.highcharts.com/zips/Highcharts-Stock-9.1.2.zip',
+        ],
+        [
+            'rm -rf Highcharts-Stock-9.1.2.zip',
+            'wget https://code.highcharts.com/zips/Highcharts-Stock-9.1.2.zip',
             'unzip Highcharts-Stock-9.1.2.zip -d Highcharts-Stock-9.1.2',
             'cp -rf Highcharts-Stock-9.1.2/code/highstock.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
             'cp -rf Highcharts-Stock-9.1.2/code/highstock.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock.js.map',
@@ -154,8 +155,9 @@ WIDGET_INFORMATION = {
             'cp -rf Highcharts-Stock-9.1.2/code/modules/export-data.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data.js.map',
             'cp -rf Highcharts-Stock-9.1.2/code/modules/offline-exporting.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js',
             'cp -rf Highcharts-Stock-9.1.2/code/modules/offline-exporting.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting.js.map',
+            'rm -rf Highcharts-Stock-9.1.2.zip',
             'rm -rf Highcharts-Stock-9.1.2'
-         ])
+        ])
     ],
 
     'execute_at_creation': execute_at_creation,
@@ -458,7 +460,24 @@ WIDGET_INFORMATION = {
       {% endfor %}
 """,
 
-    'widget_dashboard_js': """<!-- No JS content -->""",
+    'widget_dashboard_js': """  Highcharts.setOptions({
+    global: {
+      useUTC: false
+    },
+    lang: {
+      thousandsSep: ','
+    }
+  });
+  
+  // Change opacity of all chart colors
+  Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
+    return Highcharts.Color(color).setOpacity(0.6).get('rgba');
+  });
+  
+  let chart = [];
+  let note_timestamps = {};
+  let last_output_time_mil = {};  // Store the time (epoch) of the last data point received
+""",
 
     'widget_dashboard_js_ready': """
   // Redraw a particular chart

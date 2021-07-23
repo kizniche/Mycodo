@@ -13,9 +13,9 @@
   <script src="/static/js/gridstack-h5.js"></script>
 
   {% for widget_type, file_head in list_html_files_head.items() %}
-  <!-- Widget {{widget_type}} head template begin -->
+  <!-- Widget {{widget_type}} widget_dashboard_head template begin -->
   {% include 'user_templates/{}'.format(file_head) %}
-  <!-- Widget {{widget_type}} head template end -->
+  <!-- Widget {{widget_type}} widget_dashboard_head template end -->
   {% endfor %}
 
   {% if current_user.theme in dark_themes %}
@@ -61,9 +61,9 @@
 
             <div class="my-auto widget-title">
       {% if each_widget.graph_type in list_html_files_title_bar %}
-              <!-- Widget {{each_widget.graph_type}} title_bar template begin -->
+              <!-- Widget {{each_widget.graph_type}} widget_dashboard_title_bar template for {{each_widget.unique_id}} begin -->
               {% include 'user_templates/{}'.format(list_html_files_title_bar[each_widget.graph_type]) %}
-              <!-- Widget {{each_widget.graph_type}} title_bar template end -->
+              <!-- Widget {{each_widget.graph_type}} widget_dashboard_title_bar template for {{each_widget.unique_id}} end -->
       {% endif %}
             </div>
 
@@ -78,9 +78,9 @@
 
           <div id="container-graph-{{each_widget.id}}" style="position: relative; flex-grow: 1; padding: 0.35em">
       {% if each_widget.graph_type in list_html_files_body %}
-            <!-- Widget {{each_widget.graph_type}} body template begin -->
+            <!-- Widget {{each_widget.graph_type}} widget_dashboard_body template for {{each_widget.unique_id}} begin -->
             {% include 'user_templates/{}'.format(list_html_files_body[each_widget.graph_type]) %}
-            <!-- Widget {{each_widget.graph_type}} body template end -->
+            <!-- Widget {{each_widget.graph_type}} widget_dashboard_body template for {{each_widget.unique_id}} end -->
       {% endif %}
           </div>
 
@@ -140,9 +140,9 @@
                     {% endif %}
 
                     {% if each_widget.graph_type in list_html_files_configure_options %}
-                    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} configure_options template begin -->
+                    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} widget_dashboard_configure_options template for {{each_widget.unique_id}} begin -->
                     {% include 'user_templates/{}'.format(list_html_files_configure_options[each_widget.graph_type]) %}
-                    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} configure_options template end -->
+                    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} widget_dashboard_configure_options template for {{each_widget.unique_id}} end -->
                     {% endif %}
 
                   <div class="row small-gutters" style="padding: 1em">
@@ -240,11 +240,17 @@
   {% endif %}
 
 <script type="text/javascript">
-  {% for widget_type, file_js in list_html_files_js.items() %}
-  // Widget {{widget_type}} js template begin
-  {% include 'user_templates/{}'.format(file_js) %}
-  // Widget {{widget_type}} js template end
-  {% endfor %}
+  // Return timestamp from epoch (used in multiple widgets)
+  function epoch_to_timestamp(epoch) {
+    const date = new Date(parseFloat(epoch));
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = "0" + date.getMinutes();
+    const seconds = "0" + date.getSeconds();
+    return month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+  }
 
   // Dashboard Grid
   let options = {
@@ -272,12 +278,19 @@
     });
   });
 
+  grid.on('resizestop', function(event, elem) {
+    const chart_number = $(elem).attr('data-custom-chart-number');
+    if (chart_number in chart && typeof chart[chart_number].reflow !== "undefined") {
+      chart[chart_number].reflow();
+    }
+  });
+
   {% if not this_dashboard.locked %}
-  // Add Dashboard Widget content selector
+  // Show Add Dashboard Widget selector
   $('#widget_type').on('change', function () {
-    let x = document.getElementsByClassName("add_dashboard_widget");  // Find the widgets
+    let x = document.getElementsByClassName("add_dashboard_widget");
     for(let i = 0; i < x.length; i++){
-      x[i].style.display = "none";    // Change the content
+      x[i].style.display = "none";
     }
     if (this.value !== '') {
       document.getElementById(this.value).style.display = "block";
@@ -286,64 +299,30 @@
   });
   {% endif %}
 
-  // Graph Widget
-  Highcharts.setOptions({
-    global: {
-      useUTC: false
-    },
-    lang: {
-      thousandsSep: ','
-    }
-  });
-
-  // Store the time (epoch) of the last data point received, for every condition of every graph
-  let last_output_time_mil = {};
+  {% for widget_type, file_js in list_html_files_js.items() %}
+  // Widget {{widget_type}} widget_dashboard_js template begin
+  {% include 'user_templates/{}'.format(file_js) %}
+  // Widget {{widget_type}} widget_dashboard_js template end
+  {% endfor %}
 
   $(document).ready(function() {
-    let chart = [];
-    let note_timestamps = {};
-
-    // Return timestamp from epoch (used in multiple widgets)
-    function epoch_to_timestamp(epoch) {
-      const date = new Date(parseFloat(epoch));
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-      const hours = date.getHours();
-      const minutes = "0" + date.getMinutes();
-      const seconds = "0" + date.getSeconds();
-      return month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-    }
-
-    {% for widget_type, file_js_ready in list_html_files_js_ready.items() %}
-    <!-- Widget {{widget_type}} js_ready template begin -->
+  {% for widget_type, file_js_ready in list_html_files_js_ready.items() %}
+    <!-- Widget {{widget_type}} widget_dashboard_js_ready template begin -->
     {% include 'user_templates/{}'.format(file_js_ready) %}
-    <!-- Widget {{widget_type}} js_ready template end -->
-    {% endfor %}
-
-    // Change opacity of all chart colors
-    Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
-      return Highcharts.Color(color).setOpacity(0.6).get('rgba');
-    });
+    <!-- Widget {{widget_type}} widget_dashboard_js_ready template end -->
+  {% endfor %}
 
   {% for each_widget in table_widget.query.filter(table_widget.dashboard_id == dashboard_id).all() -%}
-    {%- set chart_number = loop.index -%}
+    {% set chart_number = loop.index %}
     {% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
     {% set widget_variables = custom_widget_variables[each_widget.unique_id] %}
 
     {% if each_widget.graph_type in list_html_files_js_ready_end %}
-    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} js_ready_end template begin -->
+    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} widget_dashboard_js_ready_end template for {{each_widget.unique_id}} begin -->
     {% include 'user_templates/{}'.format(list_html_files_js_ready_end[each_widget.graph_type]) %}
-    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} js_ready_end template end -->
+    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} widget_dashboard_js_ready_end template for {{each_widget.unique_id}} end -->
     {% endif %}
   {%- endfor %}
-
-    grid.on('resizestop', function(event, elem) {
-      const chart_number = $(elem).attr('data-custom-chart-number');
-      if (chart_number in chart && typeof chart[chart_number].reflow !== "undefined") {
-        chart[chart_number].reflow();
-      }
-    });
   });
 </script>
 
