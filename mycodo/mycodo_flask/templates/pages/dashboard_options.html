@@ -1,0 +1,67 @@
+<div id="mod_widget_{{each_widget.unique_id}}">
+  <form id="mod_widget_form" method="post" action="/dashboard/{{dashboard_id}}">
+    {{form_base.csrf_token}}
+    {{form_base.dashboard_id(value=dashboard_id)}}
+    {{form_base.widget_id(value=each_widget.unique_id)}}
+    <input type="hidden" name="widget_type" value="{{each_widget.graph_type}}">
+
+    <div class="row small-gutters" style="padding: 1em">
+      {% if 'message' in dict_widgets[each_widget.graph_type] %}
+      <div class="col-12" style="padding-top: 0.3em; padding-bottom: 1em">
+        {{dict_widgets[each_widget.graph_type]['message']|safe}}
+      </div>
+      {% endif %}
+
+      {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_MOD.html' %}
+    </div>
+
+      {% set dict_options = dict_widgets[each_widget.graph_type] %}
+      {% set unique_id = each_widget.unique_id %}
+      {% set custom_options_values = custom_options_values_widgets %}
+
+      {% if custom_options_values[unique_id] %}
+
+        {% if 'custom_options_message' in dict_options %}
+    <div class="row small-gutters" style="padding: 1em">
+      {% include 'pages/form_options/Custom_Options_Message.html' %}
+    </div>
+        {% endif %}
+
+        {% if 'custom_options' in dict_options %}
+    <div class="row small-gutters" style="padding: 1em">
+          {% for each_option in dict_options['custom_options'] %}
+            {% if each_option['type'] == 'new_line' %}
+    </div>
+    <div class="row small-gutters" style="padding: 1em">
+            {% elif each_option['type'] == 'message' %}
+      <div class="col-12" style="padding-bottom: 0.5em">
+        {{each_option['default_value']|safe}}
+      </div>
+            {% else %}
+      {% include 'pages/form_options/Custom_Options.html' %}
+            {% endif %}
+          {% endfor %}
+    </div>
+        {% endif %}
+      {% endif %}
+
+      {% if each_widget.graph_type in list_html_files_configure_options %}
+      <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} widget_dashboard_configure_options template for {{each_widget.unique_id}} begin -->
+      {% include 'user_templates/{}'.format(list_html_files_configure_options[each_widget.graph_type]) %}
+      <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} widget_dashboard_configure_options template for {{each_widget.unique_id}} end -->
+      {% endif %}
+
+    <div class="row small-gutters" style="padding: 1em">
+      <div class="col-auto">
+        <button type="button" class="btn btn-primary btn-sm btn-block" data-dismiss="modal">{{_('Close')}}</button>
+      </div>
+      <div class="col-auto">
+        {{form_base.widget_mod(class_='btn btn-primary btn-sm btn-block')}}
+      </div>
+      <div class="col-auto">
+        {{form_base.widget_delete(class_='btn btn-primary btn-sm btn-block',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
+      </div>
+    </div>
+
+  </form>
+</div>

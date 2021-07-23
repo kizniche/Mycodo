@@ -229,10 +229,8 @@ WIDGET_INFORMATION = {
             {% endfor %}
 """,
 
-    'widget_dashboard_js': """<!-- No JS content -->""",
-
-    'widget_dashboard_js_ready': """
-  function getLastDataGaugeAngular(chart_number,
+    'widget_dashboard_js': """
+  function getLastDataGaugeAngular(widget_id,
                        unique_id,
                        measure_type,
                        measurement_id,
@@ -241,30 +239,30 @@ WIDGET_INFORMATION = {
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
-          chart[chart_number].series[0].points[0].update(null);
+          chart[widget_id].series[0].points[0].update(null);
         }
         else {
           const formattedTime = epoch_to_timestamp(data[0]);
           const measurement = data[1];
-          chart[chart_number].series[0].points[0].update(measurement);
-          //document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
+          chart[widget_id].series[0].points[0].update(measurement);
+          //document.getElementById('timestamp-' + widget_id).innerHTML = formattedTime;
         }
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        chart[chart_number].series[0].points[0].update(null);
+        chart[widget_id].series[0].points[0].update(null);
       }
     });
   }
 
   // Repeat function for getLastDataGaugeAngular()
-  function repeatLastDataGaugeAngular(chart_number,
+  function repeatLastDataGaugeAngular(widget_id,
                           dev_id,
                           measure_type,
                           measurement_id,
                           period_sec,
                           max_measure_age_sec) {
     setInterval(function () {
-      getLastDataGaugeAngular(chart_number,
+      getLastDataGaugeAngular(widget_id,
                   dev_id,
                   measure_type,
                   measurement_id,
@@ -273,12 +271,14 @@ WIDGET_INFORMATION = {
   }
 """,
 
+    'widget_dashboard_js_ready': """<!-- No JS ready content -->""",
+
     'widget_dashboard_js_ready_end': """
 {%- set device_id = widget_options['measurement'].split(",")[0] -%}
 {%- set measurement_id = widget_options['measurement'].split(",")[1] -%}
 
 {% set measure = { 'measurement_id': None } %}
-  chart[{{chart_number}}] = new Highcharts.chart({
+  chart['{{each_widget.unique_id}}'] = new Highcharts.chart({
     chart: {
       renderTo: 'container-gauge-{{each_widget.unique_id}}',
       type: 'gauge',
@@ -289,23 +289,23 @@ WIDGET_INFORMATION = {
       events: {
         load: function () {
           {% for each_input in input  if each_input.unique_id == device_id %}
-          getLastDataGaugeAngular({{chart_number}}, '{{device_id}}', 'input', '{{measurement_id}}', {{widget_options['max_measure_age']}});
-          repeatLastDataGaugeAngular({{chart_number}}, '{{device_id}}', 'input', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
+          getLastDataGaugeAngular('{{each_widget.unique_id}}', '{{device_id}}', 'input', '{{measurement_id}}', {{widget_options['max_measure_age']}});
+          repeatLastDataGaugeAngular('{{each_widget.unique_id}}', '{{device_id}}', 'input', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
           {%- endfor -%}
 
           {% for each_math in math if each_math.unique_id == device_id %}
-          getLastDataGaugeAngular({{chart_number}}, '{{device_id}}', 'math', '{{measurement_id}}', {{widget_options['max_measure_age']}});
-          repeatLastDataGaugeAngular({{chart_number}}, '{{device_id}}', 'math', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
+          getLastDataGaugeAngular('{{each_widget.unique_id}}', '{{device_id}}', 'math', '{{measurement_id}}', {{widget_options['max_measure_age']}});
+          repeatLastDataGaugeAngular('{{each_widget.unique_id}}', '{{device_id}}', 'math', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
           {%- endfor -%}
           
           {% for each_function in function if each_function.unique_id == device_id %}
-          getLastDataGaugeAngular({{chart_number}}, '{{device_id}}', 'function', '{{measurement_id}}', {{widget_options['max_measure_age']}});
-          repeatLastDataGaugeAngular({{chart_number}}, '{{device_id}}', 'function', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
+          getLastDataGaugeAngular('{{each_widget.unique_id}}', '{{device_id}}', 'function', '{{measurement_id}}', {{widget_options['max_measure_age']}});
+          repeatLastDataGaugeAngular('{{each_widget.unique_id}}', '{{device_id}}', 'function', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
           {%- endfor -%}
 
           {%- for each_pid in pid if each_pid.unique_id == device_id %}
-          getLastDataGaugeAngular({{chart_number}}, '{{device_id}}', 'pid', '{{measurement_id}}', {{widget_options['max_measure_age']}});
-          repeatLastDataGaugeAngular({{chart_number}}, '{{device_id}}', 'pid', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
+          getLastDataGaugeAngular('{{each_widget.unique_id}}', '{{device_id}}', 'pid', '{{measurement_id}}', {{widget_options['max_measure_age']}});
+          repeatLastDataGaugeAngular('{{each_widget.unique_id}}', '{{device_id}}', 'pid', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}});
           {%- endfor -%}
         }
       },

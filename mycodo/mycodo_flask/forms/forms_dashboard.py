@@ -52,9 +52,9 @@ class DashboardBase(FlaskForm):
         widget=NumberInput()
     )
     enable_drag_handle = BooleanField(lazy_gettext('Enable Drag Handle'))
-    create = SubmitField(TRANSLATIONS['create']['title'])
-    modify = SubmitField(TRANSLATIONS['save']['title'])
-    delete = SubmitField(TRANSLATIONS['delete']['title'])
+    widget_add = SubmitField(TRANSLATIONS['create']['title'])
+    widget_mod = SubmitField(TRANSLATIONS['save']['title'])
+    widget_delete = SubmitField(TRANSLATIONS['delete']['title'])
 
 
 class DashboardConfig(FlaskForm):

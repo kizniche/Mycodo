@@ -132,12 +132,12 @@ WIDGET_INFORMATION = {
         ('apt', 'unzip', 'unzip'),
         ('bash-commands',
         [
-             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
-             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
-             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js',
-             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js',
-             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js',
-             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js'
+            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
+            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
+            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/data-9.1.2.js',
+            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/exporting-9.1.2.js',
+            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/export-data-9.1.2.js',
+            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/offline-exporting-9.1.2.js'
         ],
         [
             'rm -rf Highcharts-Stock-9.1.2.zip',
@@ -315,43 +315,26 @@ WIDGET_INFORMATION = {
 """,
 
     'widget_dashboard_title_bar': """
-        <div class="widget-graph-title" id="widget-graph-title-{{chart_number}}">
+        <div class="widget-graph-title" id="widget-graph-title-{{each_widget.unique_id}}">
             <span style="font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>
         </div>
         {% if widget_options['enable_header_buttons'] -%}
-        <div class="widget-graph-controls" id="widget-graph-controls-{{chart_number}}">
-            <div class="widget-graph-responsive-controls" id="widget-graph-responsive-controls-{{chart_number}}">
-                <a class="btn btn-sm btn-success" id="updateData{{chart_number}}" title="Update">
+        <div class="widget-graph-controls" id="widget-graph-controls-{{each_widget.unique_id}}">
+            <div class="widget-graph-responsive-controls" id="widget-graph-responsive-controls-{{each_widget.unique_id}}">
+                <a class="btn btn-sm btn-success" id="updateData{{each_widget.unique_id}}" title="{{_('Update')}}">
                     <i class="fa fa-sync-alt"></i>
                 </a>
-                <a class="btn btn-sm btn-success" id="resetZoom{{chart_number}}" title="Reset">
+                <a class="btn btn-sm btn-success" id="resetZoom{{each_widget.unique_id}}" title="{{_('Reset')}}">
                     <i class="fa fa-undo-alt"></i>
                 </a>
-                <a class="btn btn-sm btn-success" id="showhidebutton{{chart_number}}" title="Hide">
+                <a class="btn btn-sm btn-success" id="showhidebutton{{each_widget.unique_id}}" title="{{_('Hide')}}">
                     <i class="fa fa-eye-slash"></i>
                 </a>
             </div>
-            <a href="javascript:void(0);" class="btn btn-sm menu" onclick="graphMenuFunction{{chart_number}}()">
+            <a href="javascript:void(0);" class="btn btn-sm menu" onclick="return graphMenuFunction('{{each_widget.unique_id}}');" title="{{_('Options')}}">
                 <i class="fa fa-bars"></i>
             </a>
         </div>
-
-        <script>
-            function graphMenuFunction{{chart_number}}() {
-              var x = document.getElementById("widget-graph-responsive-controls-{{chart_number}}");
-              var y = document.getElementById("widget-graph-title-{{chart_number}}");
-              if (x.className === "widget-graph-responsive-controls") {
-                x.className += " responsive";
-              } else {
-                x.className = "widget-graph-responsive-controls";
-              }
-              if (y.className === "widget-graph-title") {
-                y.className += " responsive";
-              } else {
-                y.className = "widget-graph-title";
-              }
-            }
-        </script>
         {% endif %}
     """,
 
@@ -460,7 +443,8 @@ WIDGET_INFORMATION = {
       {% endfor %}
 """,
 
-    'widget_dashboard_js': """  Highcharts.setOptions({
+    'widget_dashboard_js': """
+  Highcharts.setOptions({
     global: {
       useUTC: false
     },
@@ -468,38 +452,51 @@ WIDGET_INFORMATION = {
       thousandsSep: ','
     }
   });
-  
+
   // Change opacity of all chart colors
   Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function (color) {
     return Highcharts.Color(color).setOpacity(0.6).get('rgba');
   });
-  
+
   let chart = [];
   let note_timestamps = {};
   let last_output_time_mil = {};  // Store the time (epoch) of the last data point received
-""",
 
-    'widget_dashboard_js_ready': """
+  function graphMenuFunction(widget_id) {
+    var x = document.getElementById("widget-graph-responsive-controls-" + widget_id);
+    var y = document.getElementById("widget-graph-title-" + widget_id);
+    if (x.className === "widget-graph-responsive-controls") {
+      x.className += " responsive";
+    } else {
+      x.className = "widget-graph-responsive-controls";
+    }
+    if (y.className === "widget-graph-title") {
+      y.className += " responsive";
+    } else {
+      y.className = "widget-graph-title";
+    }
+  }
+
   // Redraw a particular chart
-  function redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset) {
-    chart[chart_number].redraw();
+  function redrawGraph(widget_id, refresh_seconds, xaxis_duration_min, xaxis_reset) {
+    chart[widget_id].redraw();
 
     if (xaxis_reset) {
       const epoch_min = new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)));
       const epoch_max = new Date().getTime();
 
       // Ensure Reset Zoom button resets to the proper start and end times
-      chart[chart_number].xAxis[0].update({min: epoch_min}, false);
-      chart[chart_number].xAxis[0].update({max: epoch_max}, false);
+      chart[widget_id].xAxis[0].update({min: epoch_min}, false);
+      chart[widget_id].xAxis[0].update({max: epoch_max}, false);
 
       // Update the new data time frame and redraw the chart
-      chart[chart_number].xAxis[0].setExtremes(epoch_min, epoch_max, true);
-      chart[chart_number].xAxis[0].isDirty = true;
+      chart[widget_id].xAxis[0].setExtremes(epoch_min, epoch_max, true);
+      chart[widget_id].xAxis[0].isDirty = true;
     }
   }
-  
+
   // Retrieve initial graph data set from the past (duration set by user)
-  function getPastDataSynchronousGraph(chart_number,
+  function getPastDataSynchronousGraph(widget_id,
                        series,
                        unique_id,
                        measure_type,
@@ -507,13 +504,13 @@ WIDGET_INFORMATION = {
                        past_seconds) {
     const epoch_mil = new Date().getTime();
     const url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + past_seconds;
-    const update_id = chart_number + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
+    const update_id = widget_id + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
 
     $.getJSON(url,
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
           let past_data = [];
-          const note_key = chart_number + "_" + series;
+          const note_key = widget_id + "_" + series;
 
           // Add the received data to the graph
           for (let i = 0; i < data.length; i++) {
@@ -542,18 +539,17 @@ WIDGET_INFORMATION = {
           }
 
           // Set x-axis extremes, set graph data
-          chart[chart_number].series[series].isDirty = true;  // Data may not be in order by timestamp
+          chart[widget_id].series[series].isDirty = true;  // Data may not be in order by timestamp
           const epoch_min = new Date().setMinutes(new Date().getMinutes() - (past_seconds / 60))
-          chart[chart_number].xAxis[0].setExtremes(epoch_min, epoch_mil);
-          chart[chart_number].series[series].setData(past_data, true, false);
-          chart[chart_number].zoomOut();
+          chart[widget_id].xAxis[0].setExtremes(epoch_min, epoch_mil);
+          chart[widget_id].series[series].setData(past_data, true, false);
         }
       }
     );
   }
 
   // Retrieve chart data for the period since the last data acquisition (refresh period set by user)
-  function retrieveLiveDataSynchronousGraph(chart_number,
+  function retrieveLiveDataSynchronousGraph(widget_id,
                             series,
                             unique_id,
                             measure_type,
@@ -566,7 +562,7 @@ WIDGET_INFORMATION = {
     // to query the measurements from that time period.
     let url = '';
     const epoch_mil = new Date().getTime();
-    let update_id = chart_number + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
+    let update_id = widget_id + "-" + series + "-" + unique_id + "-" + measure_type + '-' + measurement_id;
     if (update_id in last_output_time_mil) {
       const past_seconds = Math.floor((epoch_mil - last_output_time_mil[update_id]) / 1000);  // seconds (integer)
       url = '/past/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + past_seconds;
@@ -578,7 +574,7 @@ WIDGET_INFORMATION = {
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
           let time_point;
-          const note_key = chart_number + "_" + series;
+          const note_key = widget_id + "_" + series;
           // The timestamp of the beginning of the graph (oldest timestamp allowed on the graph)
           const oldest_timestamp_allowed = epoch_mil - (xaxis_duration_min * 60 * 1000);
 
@@ -590,7 +586,7 @@ WIDGET_INFORMATION = {
             if (measure_type === 'tag') {
               if (!(note_key in note_timestamps)) note_timestamps[note_key] = [];
               if (!note_timestamps[note_key].includes(time_point)) {
-                chart[chart_number].series[series].addPoint({
+                chart[widget_id].series[series].addPoint({
                     x: time_point,
                     title: data[i][1],
                     text: data[i][2].replace(/(?:\\r\\n|\\r|\\n)/g, '<br/>').replace(/  /g, '\\u2591\\u2591')
@@ -599,7 +595,7 @@ WIDGET_INFORMATION = {
               }
             }
             else {
-              chart[chart_number].series[series].addPoint([time_point, data[i][1]], false, false);
+              chart[widget_id].series[series].addPoint([time_point, data[i][1]], false, false);
             }
           }
 
@@ -607,16 +603,19 @@ WIDGET_INFORMATION = {
           if (measure_type === 'tag') last_output_time_mil[update_id] = time_point + 3000;
           else last_output_time_mil[update_id] = time_point;
 
+          // Finally, redraw the graph
+          redrawGraph(widget_id, refresh_seconds, xaxis_duration_min, xaxis_reset);
+
           // Remove any points before beginning of chart
-          for (let i = 0; i < chart[chart_number].series[series].options.data.length; i++) {
+          for (let i = 0; i < chart[widget_id].series[series].options.data.length; i++) {
             // Get stored point timestamp
-            if (measure_type === 'tag') point_ts = chart[chart_number].series[series].options.data[i].x;
-            else point_ts = chart[chart_number].series[series].options.data[i][0];
+            if (measure_type === 'tag') point_ts = chart[widget_id].series[series].options.data[i].x;
+            else point_ts = chart[widget_id].series[series].options.data[i][0];
 
             // If stored point timestamp outside graph view, delete the point
             if (point_ts < oldest_timestamp_allowed) {
-              chart[chart_number].series[series].removePoint(i, false);
-              
+              chart[widget_id].series[series].removePoint(i, false);
+
               // Remove timestamp from note array
               if (measure_type === 'tag') {
                 const index = note_timestamps[note_key].indexOf(point_ts);
@@ -624,16 +623,13 @@ WIDGET_INFORMATION = {
               }
             } else break;
           }
-          
-          // Finally, redraw the graph
-          redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset);
         }
       }
     );
   }
 
   // Repeat function for retrieveLiveData()
-  function getLiveDataSynchronousGraph(chart_number,
+  function getLiveDataSynchronousGraph(widget_id,
                        series,
                        unique_id,
                        measure_type,
@@ -642,7 +638,7 @@ WIDGET_INFORMATION = {
                        xaxis_reset,
                        refresh_seconds) {
     setInterval(function () {
-      retrieveLiveDataSynchronousGraph(chart_number,
+      retrieveLiveDataSynchronousGraph(widget_id,
                        series,
                        unique_id,
                        measure_type,
@@ -654,6 +650,8 @@ WIDGET_INFORMATION = {
   }
 """,
 
+    'widget_dashboard_js_ready': """<!-- No JS ready content -->""",
+
     'widget_dashboard_js_ready_end': """
 {% set graph_output_ids = widget_options['measurements_output'] %}
 {% set graph_input_ids = widget_options['measurements_input'] %}
@@ -662,7 +660,7 @@ WIDGET_INFORMATION = {
 {% set graph_pid_ids = widget_options['measurements_pid'] %}
 {% set graph_note_tag_ids = widget_options['measurements_note_tag'] %}
 
-  chart[{{chart_number}}] = new Highcharts.StockChart({
+  chart['{{each_widget.unique_id}}'] = new Highcharts.StockChart({
     chart : {
       renderTo: 'container-synchronous-graph-{{each_widget.unique_id}}',
       zoomType: 'x',
@@ -674,16 +672,16 @@ WIDGET_INFORMATION = {
       events: {
         load: function () {
           {% set count_series = [] -%}
-          
+
           {%- for output_and_measurement_ids in graph_output_ids -%}
             {%- set output_id = output_and_measurement_ids.split(',')[0] -%}
             {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
             {%- set all_output = table_output.query.filter(table_output.unique_id == output_id).all() -%}
             {%- if all_output -%}
               {% for each_output in all_output %}
-          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
+          getPastDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
                 {% if widget_options['enable_auto_refresh'] -%}
-          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+          getLiveDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
                 {%- endif -%}
                 {%- do count_series.append(1) -%}
               {%- endfor -%}
@@ -696,9 +694,9 @@ WIDGET_INFORMATION = {
             {%- set all_input = table_input.query.filter(table_input.unique_id == input_id).all() -%}
             {%- if all_input -%}
               {% for each_input in all_input %}
-          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
+          getPastDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
                 {% if widget_options['enable_auto_refresh'] -%}
-          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+          getLiveDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
                 {%- endif -%}
                 {%- do count_series.append(1) -%}
               {%- endfor -%}
@@ -711,24 +709,24 @@ WIDGET_INFORMATION = {
             {%- set all_math = table_math.query.filter(table_math.unique_id == math_id).all() -%}
             {%- if all_math -%}
               {% for each_math in all_math %}
-          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
+          getPastDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
                 {% if widget_options['enable_auto_refresh'] %}
-          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+          getLiveDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
                 {% endif %}
                 {%- do count_series.append(1) %}
               {%- endfor -%}
             {%- endif -%}
           {%- endfor -%}
-          
+
           {%- for function_and_measurement_ids in graph_function_ids -%}
             {%- set function_id = function_and_measurement_ids.split(',')[0] -%}
             {%- set measurement_id = function_and_measurement_ids.split(',')[1] -%}
             {%- set all_function = table_function.query.filter(table_function.unique_id == function_id).all() -%}
             {%- if all_function -%}
               {% for each_function in all_function %}
-          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_function.unique_id}}', 'function', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
+          getPastDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_function.unique_id}}', 'function', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
                 {% if widget_options['enable_auto_refresh'] %}
-          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_function.unique_id}}', 'function', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+          getLiveDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_function.unique_id}}', 'function', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
                 {% endif %}
                 {%- do count_series.append(1) %}
               {%- endfor -%}
@@ -738,9 +736,9 @@ WIDGET_INFORMATION = {
           {%- for each_pid in pid -%}
             {%- for pid_and_measurement_id in graph_pid_ids if each_pid.unique_id == pid_and_measurement_id.split(',')[0] %}
               {%- set measurement_id = pid_and_measurement_id.split(',')[1] -%}
-          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
+          getPastDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
           {% if widget_options['enable_auto_refresh'] %}
-          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+          getLiveDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -749,9 +747,9 @@ WIDGET_INFORMATION = {
           {%- for each_tag in tags -%}
             {%- for tag_and_measurement_id in graph_note_tag_ids if each_tag.unique_id == tag_and_measurement_id.split(',')[0] %}
               {%- set measurement_id = tag_and_measurement_id.split(',')[1] -%}
-          getPastDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_tag.unique_id}}', 'tag', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
+          getPastDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_tag.unique_id}}', 'tag', '{{measurement_id}}', {{widget_options['x_axis_minutes']*60}});
           {% if widget_options['enable_auto_refresh'] %}
-          getLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_tag.unique_id}}', 'tag', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+          getLiveDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_tag.unique_id}}', 'tag', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
           {% endif %}
               {%- do count_series.append(1) %}
             {%- endfor -%}
@@ -970,7 +968,7 @@ WIDGET_INFORMATION = {
           {%- endif -%}
 
           {{' (CH' + (device_measurements_dict[measurement_id].channel)|string}}
-          
+
           {%- if output_id in custom_options_values_output_channels and 
                  device_measurements_dict[measurement_id].channel in custom_options_values_output_channels[output_id] and
                  'name' in custom_options_values_output_channels[output_id][device_measurements_dict[measurement_id].channel] -%}
@@ -1017,7 +1015,7 @@ WIDGET_INFORMATION = {
       {%- endfor -%}
     {%- endif -%}
   {%- endfor -%}
-    
+
   {%- for input_and_measurement_ids in graph_input_ids -%}
     {%- set input_id = input_and_measurement_ids.split(',')[0] -%}
     {%- set all_input = table_input.query.filter(table_input.unique_id == input_id).all() -%}
@@ -1151,7 +1149,7 @@ WIDGET_INFORMATION = {
       {%- endif -%}
     {%- endfor -%}
   {% endfor %}
-  
+
   {% for each_function in function -%}
     {%- for function_and_measurement_ids in graph_function_ids if each_function.unique_id == function_and_measurement_ids.split(',')[0] -%}
       {%- set measurement_id = function_and_measurement_ids.split(',')[1] -%}
@@ -1293,13 +1291,13 @@ WIDGET_INFORMATION = {
     ]
   });
 
-  $('#updateData{{chart_number}}').click(function() {
+  $('#updateData{{each_widget.unique_id}}').click(function() {
     {% set count_series = [] -%}
-    
+
     {% for each_output in output -%}
       {% for output_and_measurement_ids in graph_output_ids if each_output.unique_id == output_and_measurement_ids.split(',')[0] %}
         {%- set measurement_id = output_and_measurement_ids.split(',')[1] -%}
-    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+    retrieveLiveDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_output.unique_id}}', 'output', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
         {%- do count_series.append(1) %}
       {% endfor %}
     {%- endfor -%}
@@ -1307,7 +1305,7 @@ WIDGET_INFORMATION = {
     {% for each_input in input -%}
       {% for input_and_measurement_ids in graph_input_ids if each_input.unique_id == input_and_measurement_ids.split(',')[0] %}
         {%- set measurement_id = input_and_measurement_ids.split(',')[1] -%}
-    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+    retrieveLiveDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_input.unique_id}}', 'input', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
         {%- do count_series.append(1) %}
       {% endfor %}
     {%- endfor -%}
@@ -1315,7 +1313,7 @@ WIDGET_INFORMATION = {
     {% for each_math in math -%}
       {% for math_and_measurement_id in graph_math_ids if each_math.unique_id == math_and_measurement_id.split(',')[0] %}
         {%- set measurement_id = math_and_measurement_id.split(',')[1] -%}
-    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+    retrieveLiveDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_math.unique_id}}', 'math', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
         {%- do count_series.append(1) %}
       {% endfor %}
     {%- endfor -%}
@@ -1323,7 +1321,7 @@ WIDGET_INFORMATION = {
     {% for each_function in function -%}
       {% for function_and_measurement_id in graph_function_ids if each_function.unique_id == function_and_measurement_id.split(',')[0] %}
         {%- set measurement_id = function_and_measurement_id.split(',')[1] -%}
-    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_function.unique_id}}', 'function', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+    retrieveLiveDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_function.unique_id}}', 'function', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
         {%- do count_series.append(1) %}
       {% endfor %}
     {%- endfor -%}
@@ -1331,25 +1329,25 @@ WIDGET_INFORMATION = {
     {% for each_pid in pid -%}
       {% for pid_and_measurement_id in graph_pid_ids if each_pid.unique_id == pid_and_measurement_id.split(',')[0] %}
         {%- set measurement_id = pid_and_measurement_id.split(',')[1] -%}
-    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+    retrieveLiveDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_pid.unique_id}}', 'pid', '{{measurement_id}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
         {%- do count_series.append(1) %}
       {% endfor %}
     {%- endfor -%}
 
     {%- for each_tag in tag -%}
       {% for each_id_and_measure in graph_note_tag_ids if each_pid.unique_id == each_id_and_measure.split(',')[0] %}
-    retrieveLiveDataSynchronousGraph({{chart_number}}, {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
+    retrieveLiveDataSynchronousGraph('{{each_widget.unique_id}}', {{count_series|count}}, '{{each_id_and_measure.split(',')[1]}}', '{{each_id_and_measure.split(',')[0]}}', {{widget_options['x_axis_minutes']}}, {{widget_options['enable_xaxis_reset']|int}}, {{widget_options['refresh_seconds']}});
         {%- do count_series.append(1) %}
       {% endfor %}
     {%- endfor -%}
   });
 
-  $('#resetZoom{{chart_number}}').click(function() {
+  $('#resetZoom{{each_widget.unique_id}}').click(function() {
     const chart = $('#container-synchronous-graph-{{each_widget.unique_id}}').highcharts();
     chart.zoomOut();
   });
 
-  $('#showhidebutton{{chart_number}}').click(function() {
+  $('#showhidebutton{{each_widget.unique_id}}').click(function() {
     const chart = $('#container-synchronous-graph-{{each_widget.unique_id}}').highcharts();
     const series = chart.series[0];
     if (series.visible) {
@@ -1822,8 +1820,8 @@ def check_func(all_devices,
 
             # Use custom-converted units
             elif (unique_id in use_unit and
-                    measurement in use_unit[unique_id] and
-                    use_unit[unique_id][measurement]):
+                  measurement in use_unit[unique_id] and
+                  use_unit[unique_id][measurement]):
                 measure_short = use_unit[unique_id][measurement]
                 if measure_short not in y_axes:
                     y_axes.append(measure_short)

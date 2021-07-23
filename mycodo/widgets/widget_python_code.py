@@ -217,43 +217,43 @@ return self.return_string""",
 
     'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
 
-    'widget_dashboard_body': """<span style="font-size: {{widget_options['font_em_body']}}em" id="text-python-code-{{chart_number}}"></span>""",
+    'widget_dashboard_body': """<span style="font-size: {{widget_options['font_em_body']}}em" id="text-python-code-{{each_widget.unique_id}}"></span>""",
 
-    'widget_dashboard_js': """<!-- No JS content -->""",
-
-    'widget_dashboard_js_ready': """
-  function getPythonCodeResponse(chart_number, unique_id) {
-    const url = '/widget_execute/' + unique_id;
+    'widget_dashboard_js': """
+  function getPythonCodeResponse(widget_id) {
+    const url = '/widget_execute/' + widget_id;
     $.ajax(url, {
       success: function (response, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
           if (response !== null) {
-            document.getElementById("text-python-code-" + chart_number).innerHTML = response;
+            document.getElementById("text-python-code-" + widget_id).innerHTML = response;
           } else {
-            document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('NO DATA ERROR')}}';
+            document.getElementById("text-python-code-" + widget_id).innerHTML = '{{_('NO DATA ERROR')}}';
           }
         } else {
-          document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('CONNECTION ERROR')}}';
+          document.getElementById("text-python-code-" + widget_id).innerHTML = '{{_('CONNECTION ERROR')}}';
         }
       },
       error: function (jqXHR, textStatus, errorThrown) {
-        document.getElementById("text-python-code-" + chart_number).innerHTML = '{{_('CONNECTION ERROR')}}';
+        document.getElementById("text-python-code-" + widget_id).innerHTML = '{{_('CONNECTION ERROR')}}';
       }
     });
   }
 
-  function repeatPythonCodeResponse(chart_number, unique_id, refresh_duration) {
+  function repeatPythonCodeResponse(widget_id, refresh_duration) {
     setInterval(function () {
-      getPythonCodeResponse(chart_number, unique_id);
+      getPythonCodeResponse(widget_id);
     }, refresh_duration * 1000);  // Refresh duration in milliseconds
   }
 """,
 
+    'widget_dashboard_js_ready': """<!-- No JS ready content -->""",
+
     'widget_dashboard_js_ready_end': """
-$(function() {
-  getPythonCodeResponse('{{chart_number}}', '{{each_widget.unique_id}}');
-  repeatPythonCodeResponse('{{chart_number}}', '{{each_widget.unique_id}}', {{widget_options['refresh_seconds']}});
-});
+  $(function() {
+    getPythonCodeResponse('{{each_widget.unique_id}}');
+    repeatPythonCodeResponse('{{each_widget.unique_id}}', {{widget_options['refresh_seconds']}});
+  });
 """
 }
 

@@ -21,6 +21,20 @@
   {% if current_user.theme in dark_themes %}
     <script type="text/javascript" src="/static/js/dark-unica-custom.js"></script>
   {% endif %}
+
+  <script>
+    // Return timestamp from epoch (used in multiple widgets)
+    function epoch_to_timestamp(epoch) {
+      const date = new Date(parseFloat(epoch));
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const hours = date.getHours();
+      const minutes = "0" + date.getMinutes();
+      const seconds = "0" + date.getSeconds();
+      return month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+    }
+  </script>
 {% endblock %}
 
 {% block body %}
@@ -32,149 +46,24 @@
   <div class="container-fluid">
 
     <div class="grid-stack">
-
-  {%- for each_widget in table_widget.query.filter(table_widget.dashboard_id == dashboard_id).all() -%}
-    {%- set chart_number = loop.index -%}
-    {% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
-    {% set widget_variables = custom_widget_variables[each_widget.unique_id] %}
-
-      <div class="grid-stack-item"{% if this_dashboard.locked %} gs-no-move="yes" gs-no-resize="yes"{% endif %}
-         data-custom-chart-number="{{chart_number}}"
-         gs-id="{{each_widget.unique_id}}"
-         gs-x="{{each_widget.position_x}}"
-         gs-y="{{each_widget.position_y}}"
-         gs-w="{{each_widget.width}}"
-         gs-h="{{each_widget.height}}">
-
-        <div class="grid-stack-item-content" style="display: flex; flex-flow: column; padding: 0; border: 1px solid #ddd; border-radius: 5px">
-
-    {% if each_widget.graph_type in dict_widgets %}
-
-          <div class="d-flex justify-content-between widget-heading{% if not this_dashboard.locked %} panel-heading{% endif %}">
-      {% if not this_dashboard.locked %}
-            <div class="my-auto widget-drag-handle">
-        {% if each_widget.enable_drag_handle -%}
-              <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="{{_('Drag')}}"></i>
-        {%- endif %}
-            </div>
+    {% for each_widget in table_widget.query.filter(table_widget.dashboard_id == dashboard_id).all() -%}
+      <div id="gridstack_widget_{{each_widget.unique_id}}"
+        class="grid-stack-item"
+      {% if this_dashboard.locked %}
+        gs-no-move="yes"
+        gs-no-resize="yes"
       {% endif %}
+        gs-id="{{each_widget.unique_id}}"
+        gs-x="{{each_widget.position_x}}"
+        gs-y="{{each_widget.position_y}}"
+        gs-w="{{each_widget.width}}"
+        gs-h="{{each_widget.height}}">
+        {% include 'pages/dashboard_entry.html' %}
+      </div> <!- grid-stack-item ->
+    {%- endfor -%}
+    </div> <!- grid-stack ->
 
-            <div class="my-auto widget-title">
-      {% if each_widget.graph_type in list_html_files_title_bar %}
-              <!-- Widget {{each_widget.graph_type}} widget_dashboard_title_bar template for {{each_widget.unique_id}} begin -->
-              {% include 'user_templates/{}'.format(list_html_files_title_bar[each_widget.graph_type]) %}
-              <!-- Widget {{each_widget.graph_type}} widget_dashboard_title_bar template for {{each_widget.unique_id}} end -->
-      {% endif %}
-            </div>
-
-          {% if not this_dashboard.locked %}
-            <div class="my-auto widget-settings">
-              <a class="btn" data-toggle="modal" data-target="#modal_config_{{chart_number}}">
-                <i style="font-size: 1.5em" class="fas fa-cog" title="{{_('Configure')}}"></i>
-              </a>
-            </div>
-      {% endif %}
-          </div>
-
-          <div id="container-graph-{{each_widget.id}}" style="position: relative; flex-grow: 1; padding: 0.35em">
-      {% if each_widget.graph_type in list_html_files_body %}
-            <!-- Widget {{each_widget.graph_type}} widget_dashboard_body template for {{each_widget.unique_id}} begin -->
-            {% include 'user_templates/{}'.format(list_html_files_body[each_widget.graph_type]) %}
-            <!-- Widget {{each_widget.graph_type}} widget_dashboard_body template for {{each_widget.unique_id}} end -->
-      {% endif %}
-          </div>
-
-      {% if not this_dashboard.locked %}
-
-          <div class="modal fade" id="modal_config_{{chart_number}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl" role="document">
-              <div class="modal-content" style="padding: 1em">
-                <div class="modal-header">
-                  <h5 class="modal-title">{{dict_widgets[each_widget.graph_type]['widget_name']}} Widget Configuration</h5>
-                </div>
-
-                <form method="post" action="/dashboard/{{dashboard_id}}">
-                  {{form_base.csrf_token}}
-                  {{form_base.dashboard_id(value=dashboard_id)}}
-                  {{form_base.widget_id(value=each_widget.unique_id)}}
-                  <input type="hidden" name="widget_type" value="{{each_widget.graph_type}}">
-
-                  <div class="row small-gutters" style="padding: 1em">
-                    {% if 'message' in dict_widgets[each_widget.graph_type] %}
-                    <div class="col-12" style="padding-top: 0.3em; padding-bottom: 1em">
-                      {{dict_widgets[each_widget.graph_type]['message']|safe}}
-                    </div>
-                    {% endif %}
-
-                    {% include 'pages/dashboard_options/TEMPLATE_OPTIONS_WIDGET_MOD.html' %}
-                  </div>
-
-                    {% set dict_options = dict_widgets[each_widget.graph_type] %}
-                    {% set unique_id = each_widget.unique_id %}
-                    {% set custom_options_values = custom_options_values_widgets %}
-
-                    {% if custom_options_values[unique_id] %}
-
-                      {% if 'custom_options_message' in dict_options %}
-                  <div class="row small-gutters" style="padding: 1em">
-                    {% include 'pages/form_options/Custom_Options_Message.html' %}
-                  </div>
-                      {% endif %}
-
-                      {% if 'custom_options' in dict_options %}
-                  <div class="row small-gutters" style="padding: 1em">
-                        {% for each_option in dict_options['custom_options'] %}
-                          {% if each_option['type'] == 'new_line' %}
-                  </div>
-                  <div class="row small-gutters" style="padding: 1em">
-                          {% elif each_option['type'] == 'message' %}
-                    <div class="col-12" style="padding-bottom: 0.5em">
-                      {{each_option['default_value']|safe}}
-                    </div>
-                          {% else %}
-                    {% include 'pages/form_options/Custom_Options.html' %}
-                          {% endif %}
-                        {% endfor %}
-                  </div>
-                      {% endif %}
-                    {% endif %}
-
-                    {% if each_widget.graph_type in list_html_files_configure_options %}
-                    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} widget_dashboard_configure_options template for {{each_widget.unique_id}} begin -->
-                    {% include 'user_templates/{}'.format(list_html_files_configure_options[each_widget.graph_type]) %}
-                    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} widget_dashboard_configure_options template for {{each_widget.unique_id}} end -->
-                    {% endif %}
-
-                  <div class="row small-gutters" style="padding: 1em">
-                    <div class="col-auto">
-                      <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-                    </div>
-                    <div class="col-auto">
-                      {{form_base.modify(class_='btn btn-primary')}}
-                    </div>
-                    <div class="col-auto">
-                      {{form_base.delete(class_='btn btn-primary',**{'onclick':'return confirm("Are you sure you want to delete this?")'})}}
-                    </div>
-                  </div>
-
-                </form>
-
-              </div>
-            </div>
-          </div>
-
-      {% endif %}
-
-    {% endif %}
-
-        </div>
-      </div>
-
-  {%- endfor -%}
-
-    </div>
     <hr/>
-
   </div>
 
   <div style="clear: both"></div>
@@ -226,7 +115,7 @@
 
       <div class="form-inline btn-group" style="padding: 1em 0 1em 0">
         <div class="form-group">
-          {{form_base.create(class_='btn btn-primary')}}
+          {{form_base.widget_add(class_='btn btn-primary')}}
         </div>
       </div>
 
@@ -240,18 +129,6 @@
   {% endif %}
 
 <script type="text/javascript">
-  // Return timestamp from epoch (used in multiple widgets)
-  function epoch_to_timestamp(epoch) {
-    const date = new Date(parseFloat(epoch));
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    const hours = date.getHours();
-    const minutes = "0" + date.getMinutes();
-    const seconds = "0" + date.getSeconds();
-    return month + "/" + day + " " + hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
-  }
-
   // Dashboard Grid
   let options = {
     cellHeight: {{misc.grid_cell_height}},
@@ -279,9 +156,9 @@
   });
 
   grid.on('resizestop', function(event, elem) {
-    const chart_number = $(elem).attr('data-custom-chart-number');
-    if (chart_number in chart && typeof chart[chart_number].reflow !== "undefined") {
-      chart[chart_number].reflow();
+    const widget_id = $(elem).attr('gs-id');
+    if (widget_id in chart && typeof chart[widget_id].reflow !== "undefined") {
+      chart[widget_id].reflow();
     }
   });
 
@@ -311,18 +188,6 @@
     {% include 'user_templates/{}'.format(file_js_ready) %}
     <!-- Widget {{widget_type}} widget_dashboard_js_ready template end -->
   {% endfor %}
-
-  {% for each_widget in table_widget.query.filter(table_widget.dashboard_id == dashboard_id).all() -%}
-    {% set chart_number = loop.index %}
-    {% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
-    {% set widget_variables = custom_widget_variables[each_widget.unique_id] %}
-
-    {% if each_widget.graph_type in list_html_files_js_ready_end %}
-    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} widget_dashboard_js_ready_end template for {{each_widget.unique_id}} begin -->
-    {% include 'user_templates/{}'.format(list_html_files_js_ready_end[each_widget.graph_type]) %}
-    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} widget_dashboard_js_ready_end template for {{each_widget.unique_id}} end -->
-    {% endif %}
-  {%- endfor %}
   });
 </script>
 

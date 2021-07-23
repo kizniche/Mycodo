@@ -76,13 +76,10 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",
 
-    'widget_dashboard_body': """<span style="font-size: {{widget_options['font_em_value']}}em" id="status-{{chart_number}}"></span>""",
+    'widget_dashboard_body': """<span style="font-size: {{widget_options['font_em_value']}}em" id="status-{{each_widget.unique_id}}"></span>""",
 
-    'widget_dashboard_js': """<!-- No JS content -->""",
-
-    'widget_dashboard_js_ready': """
-  function function_status(function_id, chart_number) {
-    const url = '/function_status/' + function_id;
+    'widget_dashboard_js': """function function_status(function_id, widget_id) {
+  const url = '/function_status/' + function_id;
     $.getJSON(url,
       function(data, responseText, jqXHR) {
         if (jqXHR.status !== 204) {
@@ -95,24 +92,25 @@ WIDGET_INFORMATION = {
           if ('string_status' in data) {
             string_display += data['string_status'].replace(/(?:\\r\\n|\\r|\\n)/g, "<br>");
           }
-          document.getElementById("status-" + chart_number).innerHTML = string_display;
+          document.getElementById("status-" + widget_id).innerHTML = string_display;
         }
         else {
-          document.getElementById("status-" + chart_number).innerHTML = "Error";
+          document.getElementById("status-" + widget_id).innerHTML = "Error";
         }
       }
     );
   }
   // Repeat function for function_status()
-  function repeat_function_status(function_id, chart_number, period_sec) {
+  function repeat_function_status(function_id, widget_id, period_sec) {
     setInterval(function () {
-      function_status(function_id, chart_number)
+      function_status(function_id, widget_id)
     }, period_sec * 1000);
-  }
-""",
+  }""",
+
+    'widget_dashboard_js_ready': """<!-- No JS ready content -->""",
 
     'widget_dashboard_js_ready_end': """
-  function_status('{{widget_options['function_id']}}', {{chart_number}});
-  repeat_function_status('{{widget_options['function_id']}}', {{chart_number}}, {{widget_options['refresh_seconds']}});
+  function_status('{{widget_options['function_id']}}', '{{each_widget.unique_id}}');
+  repeat_function_status('{{widget_options['function_id']}}', '{{each_widget.unique_id}}', {{widget_options['refresh_seconds']}});
 """
 }

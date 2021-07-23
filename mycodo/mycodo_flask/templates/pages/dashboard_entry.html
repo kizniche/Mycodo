@@ -1,0 +1,63 @@
+{% set widget_options = custom_options_values_widgets[each_widget.unique_id] %}
+{% set widget_variables = custom_widget_variables[each_widget.unique_id] %}
+
+<div class="grid-stack-item-content" style="display: flex; flex-flow: column; padding: 0; border: 1px solid #ddd; border-radius: 5px">
+
+  <div class="d-flex justify-content-between widget-heading{% if not this_dashboard.locked %} panel-heading{% endif %}">
+{% if not this_dashboard.locked %}
+    <div class="my-auto widget-drag-handle">
+  {% if each_widget.enable_drag_handle -%}
+      <i style="font-size: 1.5em" class="fas fa-grip-horizontal" title="{{_('Drag')}}"></i>
+  {%- endif %}
+    </div>
+{% endif %}
+
+    <div class="my-auto widget-title">
+{% if each_widget.graph_type in list_html_files_title_bar %}
+      <!-- Widget {{each_widget.graph_type}} widget_dashboard_title_bar template for {{each_widget.unique_id}} begin -->
+      {% include 'user_templates/{}'.format(list_html_files_title_bar[each_widget.graph_type]) %}
+      <!-- Widget {{each_widget.graph_type}} widget_dashboard_title_bar template for {{each_widget.unique_id}} end -->
+{% endif %}
+    </div>
+
+{% if not this_dashboard.locked %}
+    <div class="my-auto widget-settings">
+      <a class="btn" data-toggle="modal" data-target="#modal_config_{{each_widget.unique_id}}">
+        <i style="font-size: 1.5em" class="fas fa-cog" title="{{_('Configure')}}"></i>
+      </a>
+    </div>
+{% endif %}
+  </div>
+
+  <div id="container-graph-{{each_widget.id}}" style="position: relative; flex-grow: 1; padding: 0.35em">
+{% if each_widget.graph_type in list_html_files_body %}
+    <!-- Widget {{each_widget.graph_type}} widget_dashboard_body template for {{each_widget.unique_id}} begin -->
+    {% include 'user_templates/{}'.format(list_html_files_body[each_widget.graph_type]) %}
+    <!-- Widget {{each_widget.graph_type}} widget_dashboard_body template for {{each_widget.unique_id}} end -->
+{% endif %}
+  </div>
+
+{% if not this_dashboard.locked %}
+  <div class="modal fade" id="modal_config_{{each_widget.unique_id}}" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content" style="padding: 1em">
+        <div class="modal-header">
+          <h5 class="modal-title">{{dict_widgets[each_widget.graph_type]['widget_name']}} Widget Configuration</h5>
+        </div>
+        {% include 'pages/dashboard_options.html' %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+</div>
+
+<script>
+  $(document).ready(function() {
+    {% if each_widget.graph_type in list_html_files_js_ready_end %}
+    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} widget_dashboard_js_ready_end template for {{each_widget.unique_id}} begin -->
+    {% include 'user_templates/{}'.format(list_html_files_js_ready_end[each_widget.graph_type]) %}
+    <!-- Widget {{each_widget.graph_type}} {{each_widget.unique_id}} widget_dashboard_js_ready_end template for {{each_widget.unique_id}} end -->
+    {% endif %}
+  });
+</script>

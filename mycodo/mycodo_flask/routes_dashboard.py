@@ -4,6 +4,7 @@ import logging
 import os
 
 import flask_login
+from flask import jsonify
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -140,11 +141,11 @@ def page_dashboard(dashboard_id):
             return redirect(url_for('routes_dashboard.page_dashboard_default'))
 
         # Widget
-        elif form_base.create.data:
+        elif form_base.widget_add.data:
             unmet_dependencies = utils_dashboard.widget_add(form_base, request.form)
-        elif form_base.modify.data:
+        elif form_base.widget_mod.data:
             utils_dashboard.widget_mod(form_base, request.form)
-        elif form_base.delete.data:
+        elif form_base.widget_delete.data:
             utils_dashboard.widget_del(form_base)
 
         if unmet_dependencies:
@@ -196,15 +197,15 @@ def page_dashboard(dashboard_id):
     widget_types_on_dashboard = []
     custom_widget_variables = {}
     widgets_dash = Widget.query.filter(Widget.dashboard_id == dashboard_id).all()
-    for each_widget in widgets_dash:
+    for each_dash_widget in widgets_dash:
         # Make list of widget types on this particular dashboard
-        if each_widget.graph_type not in widget_types_on_dashboard:
-            widget_types_on_dashboard.append(each_widget.graph_type)
+        if each_dash_widget.graph_type not in widget_types_on_dashboard:
+            widget_types_on_dashboard.append(each_dash_widget.graph_type)
 
         # Generate dictionary of returned values from widget modules on this particular dashboard
-        if 'generate_page_variables' in dict_widgets[each_widget.graph_type]:
-            custom_widget_variables[each_widget.unique_id] = dict_widgets[each_widget.graph_type]['generate_page_variables'](
-                each_widget.unique_id, custom_options_values_widgets[each_widget.unique_id])
+        if 'generate_page_variables' in dict_widgets[each_dash_widget.graph_type]:
+            custom_widget_variables[each_dash_widget.unique_id] = dict_widgets[each_dash_widget.graph_type]['generate_page_variables'](
+                each_dash_widget.unique_id, custom_options_values_widgets[each_dash_widget.unique_id])
 
     # generate lists of html files to include in dashboard template
     list_html_files_body = {}

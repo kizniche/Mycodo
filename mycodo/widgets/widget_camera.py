@@ -145,9 +145,7 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_body': """<a id="{{each_widget.id}}-image-href" href="" target="_blank"><img id="{{each_widget.id}}-image-src" style="height: 100%; width: 100%" src=""></a>""",
 
-    'widget_dashboard_js': """<!-- No JS content -->""",
-
-    'widget_dashboard_js_ready': """
+    'widget_dashboard_js': """
   // Capture image and update the image
   function get_image_cam(dashboard_id, camera_unique_id, image_type, max_age) {
     let url = '';
@@ -214,6 +212,8 @@ WIDGET_INFORMATION = {
     }
   }
 """,
+
+    'widget_dashboard_js_ready': """<!-- No JS ready content -->""",
 
     'widget_dashboard_js_ready_end': """
 $(function() {

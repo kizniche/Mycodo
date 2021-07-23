@@ -123,9 +123,9 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_title_bar': """
     {%- if widget_options['enable_status'] -%}
-      <span id="text-output-state-{{chart_number}}"></span>{{' '}}
+      <span id="text-output-state-{{each_widget.unique_id}}"></span>{{' '}}
     {%- else -%}
-      <span style="display: none" id="text-output-state-{{chart_number}}"></span>
+      <span style="display: none" id="text-output-state-{{each_widget.unique_id}}"></span>
     {%- endif -%}
 
     <span style="padding-right: 0.5em"> {{each_widget.name}}</span>
@@ -146,11 +146,11 @@ WIDGET_INFORMATION = {
   {% endif %}
 {% endfor %}
 
-<div class="pause-background" id="container-output-{{chart_number}}" style="height: 100%; text-align: center">
+<div class="pause-background" id="container-output-{{each_widget.unique_id}}" style="height: 100%; text-align: center">
   {%- if widget_options['enable_value'] -%}
-  <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{chart_number}}"></span>
+  <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{each_widget.unique_id}}"></span>
   {%- else -%}
-  <span style="display: none" id="value-{{chart_number}}"></span>
+  <span style="display: none" id="value-{{each_widget.unique_id}}"></span>
   {%- endif -%}
 
   {%- if dict_measure_units[measurement_id] in dict_units and
@@ -164,9 +164,9 @@ WIDGET_INFORMATION = {
   {%- endif -%}
 
   {%- if widget_options['enable_timestamp'] -%}
-  <span style="font-size: {{widget_options['font_em_timestamp']}}em" id="timestamp-{{chart_number}}"></span>
+  <span style="font-size: {{widget_options['font_em_timestamp']}}em" id="timestamp-{{each_widget.unique_id}}"></span>
   {%- else -%}
-  <span style="display: none" id="timestamp-{{chart_number}}"></span>
+  <span style="display: none" id="timestamp-{{each_widget.unique_id}}"></span>
   {%- endif -%}
 
   {% if widget_options['enable_output_controls'] %}
@@ -175,37 +175,37 @@ WIDGET_INFORMATION = {
     {% if not is_pwm and not is_ezo_pump -%}
 
     <div class="col-auto">
-      <input class="btn btn-sm btn-primary turn_on" id="turn_on" name="{{chart_number}}/{{device_id}}/{{channel_id}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
+      <input class="btn btn-sm btn-primary turn_on" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
     </div>
 
     {%- endif %}
 
     <div class="col-auto">
-      <input class="btn btn-sm btn-primary turn_off" id="turn_off" name="{{chart_number}}/{{device_id}}/{{channel_id}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
+      <input class="btn btn-sm btn-primary turn_off" id="turn_off" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
     </div>
 
     {% if is_pwm %}
 
     <div class="col-auto">
-      <input class="form-control-sm" id="duty_cycle_on_amt_{{chart_number}}_{{device_id}}_{{channel_id}}" name="duty_cycle_on_amt_{{chart_number}}_{{device_id}}_{{channel_id}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
+      <input class="form-control-sm" id="duty_cycle_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="duty_cycle_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
     </div>
     <div class="col-auto">
-      <input class="btn btn-sm btn-primary duty_cycle_on_amt" id="turn_on" name="{{chart_number}}/{{device_id}}/{{channel_id}}/on/pwm/" type="button" value="{{_('PWM On')}}">
+      <input class="btn btn-sm btn-primary duty_cycle_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/pwm/" type="button" value="{{_('PWM On')}}">
     </div>
 
     {% else %}
 
     <div class="col-auto">
-      <input class="form-control-sm" id="sec_on_amt_{{chart_number}}_{{device_id}}_{{channel_id}}" name="sec_on_amt_{{chart_number}}_{{device_id}}_{{channel_id}}" title="Turn this output on for this value (seconds, ml, etc.)" type="number" step="any" value="">
+      <input class="form-control-sm" id="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Turn this output on for this value (seconds, ml, etc.)" type="number" step="any" value="">
     </div>
     <div class="col-auto">
     {% if is_ezo_pump %}
       {%- if dict_measure_units[measurement_id] in dict_units and
              dict_units[dict_measure_units[measurement_id]]['name'] -%}
-      <input class="btn btn-sm btn-primary output_on_amt" id="turn_on" name="{{chart_number}}/{{device_id}}/{{channel_id}}/on/sec/" type="button" value="{{dict_units[dict_measure_units[measurement_id]]['name'] + ' ' + _('Out')}}">
+      <input class="btn btn-sm btn-primary output_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/sec/" type="button" value="{{dict_units[dict_measure_units[measurement_id]]['name'] + ' ' + _('Out')}}">
       {% endif %}
     {% else %}
-      <input class="btn btn-sm btn-primary output_on_amt" id="turn_on" name="{{chart_number}}/{{device_id}}/{{channel_id}}/on/sec/" type="button" value="{{_('Sec On')}}">
+      <input class="btn btn-sm btn-primary output_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/sec/" type="button" value="{{_('Sec On')}}">
     {% endif %}
     </div>
 
@@ -219,9 +219,9 @@ WIDGET_INFORMATION = {
 """,
 
     'widget_dashboard_js': """
-// Turn Output on or off
-function modOutputOutput(btn_val) {
-  $.ajax({
+  // Turn Output on or off
+  function modOutputOutput(btn_val) {
+    $.ajax({
       type: 'GET',
       url: '/output_mod/' + btn_val,
     {% if not misc.hide_alert_success %}
@@ -234,15 +234,108 @@ function modOutputOutput(btn_val) {
         }
       },
     {% endif %}
-    {% if not misc.hide_alert_warning %}
+      {% if not misc.hide_alert_warning %}
       error: function(data) {
-          toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
+        toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
       }
     {% endif %}
-  });
-}
+    });
+  }
 
-$(document).ready(function() {
+  // Retrieve the latest/last measurement for gauges/outputs
+  function getLastDataOutput(widget_id,
+                       unique_id,
+                       measure_type,
+                       measurement_id,
+                       max_measure_age_sec,
+                       decimal_places,
+                       extra) {
+    if (decimal_places === null) {
+      decimal_places = 1;
+    }
+    const url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + max_measure_age_sec.toString();
+    $.ajax(url, {
+      success: function(data, responseText, jqXHR) {
+        if (jqXHR.status === 204) {
+          document.getElementById('value-' + widget_id).innerHTML = 'NO DATA';
+          document.getElementById('timestamp-' + widget_id).innerHTML = 'MAX AGE EXCEEDED';
+        }
+        else {
+          const formattedTime = epoch_to_timestamp(data[0]);
+          const measurement = data[1];
+            document.getElementById('value-' + widget_id).innerHTML = measurement.toFixed(decimal_places);
+   
+            const range_exists = document.getElementById("range_" + widget_id);
+            if (range_exists != null) {  // Update range slider value
+              document.getElementById("range_" + widget_id).value = measurement.toFixed(0);
+              document.getElementById("range_val_" + widget_id).innerHTML = measurement.toFixed(0);
+            }
+          document.getElementById('timestamp-' + widget_id).innerHTML = formattedTime;
+        }
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        document.getElementById('value-' + widget_id).innerHTML = 'NO DATA';
+        document.getElementById('timestamp-' + widget_id).innerHTML = '{{_('Error')}}';
+      }
+    });
+  }
+
+  // Repeat function for getLastData()
+  function repeatLastDataOutput(widget_id,
+                          dev_id,
+                          measure_type,
+                          measurement_id,
+                          period_sec,
+                          max_measure_age_sec,
+                          decimal_places,
+                          extra) {
+    setInterval(function () {
+      getLastDataOutput(widget_id,
+                  dev_id,
+                  measure_type,
+                  measurement_id,
+                  max_measure_age_sec,
+                  decimal_places,
+                  extra)
+    }, period_sec * 1000);
+  }
+  
+  function getGPIOStateOutput(widget_id, unique_id, channel_id) {
+    const url = '/outputstate_unique_id/' + unique_id + '/' + channel_id;
+    $.getJSON(url,
+      function(state, responseText, jqXHR) {
+        if (jqXHR.status !== 204) {
+          if (state !== null) {
+            document.getElementById("container-output-" + widget_id).className = "active-background";
+            if (state !== 'off') {
+              if (state === 'on') {
+                document.getElementById("text-output-state-" + widget_id).innerHTML = '({{_('Active')}})';
+              } else {
+                document.getElementById("text-output-state-" + widget_id).innerHTML = '({{_('Active')}}, ' + state.toFixed(1) + '%)';
+              }
+            }
+            else {
+              document.getElementById("container-output-" + widget_id).className = "inactive-background";
+              document.getElementById("text-output-state-" + widget_id).innerHTML = '({{_('Inactive')}})';
+            }
+          }
+        }
+        else {
+          document.getElementById("container-output-" + widget_id).className = "pause-background";
+          document.getElementById("text-output-state-" + widget_id).innerHTML = '{{_('No Connection')}}';
+        }
+      }
+    );
+  }
+
+  function repeatGPIOStateOutput(widget_id, unique_id, channel_id, refresh_duration) {
+    setInterval(function () {
+      getGPIOStateOutput(widget_id, unique_id, channel_id);
+    }, refresh_duration * 1000);  // Refresh duration in milliseconds
+  }
+""",
+
+    'widget_dashboard_js_ready': """
   $('.turn_on').click(function() {
     const btn_val = this.name;
     const send_cmd = btn_val.substring(btn_val.indexOf('/')+1);
@@ -283,101 +376,6 @@ $(document).ready(function() {
     {% endif %}
     modOutputOutput(send_cmd + dc);
   });
-});
-""",
-
-    'widget_dashboard_js_ready': """
- // Retrieve the latest/last measurement for gauges/outputs
-  function getLastDataOutput(chart_number,
-                       unique_id,
-                       measure_type,
-                       measurement_id,
-                       max_measure_age_sec,
-                       decimal_places,
-                       extra) {
-    if (decimal_places === null) {
-      decimal_places = 1;
-    }
-      const url = '/last/' + unique_id + '/' + measure_type + '/' + measurement_id + '/' + max_measure_age_sec.toString();
-      $.ajax(url, {
-        success: function(data, responseText, jqXHR) {
-          if (jqXHR.status === 204) {
-              document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-              document.getElementById('timestamp-' + chart_number).innerHTML = 'MAX AGE EXCEEDED';
-          }
-          else {
-            const formattedTime = epoch_to_timestamp(data[0]);
-            const measurement = data[1];
-              document.getElementById('value-' + chart_number).innerHTML = measurement.toFixed(decimal_places);
-    
-              const range_exists = document.getElementById("range_" + chart_number);
-              if (range_exists != null) {  // Update range slider value
-                document.getElementById("range_" + chart_number).value = measurement.toFixed(0);
-                document.getElementById("range_val_" + chart_number).innerHTML = measurement.toFixed(0);
-              }
-            document.getElementById('timestamp-' + chart_number).innerHTML = formattedTime;
-          }
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            document.getElementById('value-' + chart_number).innerHTML = 'NO DATA';
-            document.getElementById('timestamp-' + chart_number).innerHTML = '{{_('Error')}}';
-        }
-      });
-  }
-
-  // Repeat function for getLastData()
-  function repeatLastDataOutput(chart_number,
-                          dev_id,
-                          measure_type,
-                          measurement_id,
-                          period_sec,
-                          max_measure_age_sec,
-                          decimal_places,
-                          extra) {
-    setInterval(function () {
-      getLastDataOutput(chart_number,
-                  dev_id,
-                  measure_type,
-                  measurement_id,
-                  max_measure_age_sec,
-                  decimal_places,
-                  extra)
-    }, period_sec * 1000);
-  }
-  
-   function getGPIOStateOutput(chart_number, unique_id, channel_id) {
-    const url = '/outputstate_unique_id/' + unique_id + '/' + channel_id;
-    $.getJSON(url,
-      function(state, responseText, jqXHR) {
-        if (jqXHR.status !== 204) {
-          if (state !== null) {
-            document.getElementById("container-output-" + chart_number).className = "active-background";
-            if (state !== 'off') {
-              if (state === 'on') {
-                document.getElementById("text-output-state-" + chart_number).innerHTML = '({{_('Active')}})';
-              } else {
-                document.getElementById("text-output-state-" + chart_number).innerHTML = '({{_('Active')}}, ' + state.toFixed(1) + '%)';
-              }
-            }
-            else {
-              document.getElementById("container-output-" + chart_number).className = "inactive-background";
-              document.getElementById("text-output-state-" + chart_number).innerHTML = '({{_('Inactive')}})';
-            }
-          }
-        }
-        else {
-          document.getElementById("container-output-" + chart_number).className = "pause-background";
-          document.getElementById("text-output-state-" + chart_number).innerHTML = '{{_('No Connection')}}';
-        }
-      }
-    );
-  }
-
-  function repeatGPIOStateOutput(chart_number, unique_id, channel_id, refresh_duration) {
-    setInterval(function () {
-      getGPIOStateOutput(chart_number, unique_id, channel_id);
-    }, refresh_duration * 1000);  // Refresh duration in milliseconds
-  }
 """,
 
     'widget_dashboard_js_ready_end': """
@@ -386,10 +384,10 @@ $(document).ready(function() {
 {%- set channel_id = widget_options['output'].split(",")[2] -%}
 
 {% for each_output in output if each_output.unique_id == device_id %}
-  getLastDataOutput({{chart_number}}, '{{device_id}}', 'output', '{{measurement_id}}', {{widget_options['max_measure_age']}}, {{widget_options['decimal_places']}});
-  repeatLastDataOutput({{chart_number}}, '{{device_id}}', 'output', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}}, {{widget_options['decimal_places']}});
+  getLastDataOutput('{{each_widget.unique_id}}', '{{device_id}}', 'output', '{{measurement_id}}', {{widget_options['max_measure_age']}}, {{widget_options['decimal_places']}});
+  repeatLastDataOutput('{{each_widget.unique_id}}', '{{device_id}}', 'output', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}}, {{widget_options['decimal_places']}});
 {% endfor %}
-  getGPIOStateOutput({{chart_number}}, '{{device_id}}', '{{channel_id}}', {{widget_options['decimal_places']}});
-  repeatGPIOStateOutput({{chart_number}}, '{{device_id}}', '{{channel_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['decimal_places']}});
+  getGPIOStateOutput('{{each_widget.unique_id}}', '{{device_id}}', '{{channel_id}}', {{widget_options['decimal_places']}});
+  repeatGPIOStateOutput('{{each_widget.unique_id}}', '{{device_id}}', '{{channel_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['decimal_places']}});
 """
 }
