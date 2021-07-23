@@ -527,6 +527,7 @@ WIDGET_INFORMATION = {
           const epoch_min = new Date().setMinutes(new Date().getMinutes() - (past_seconds / 60))
           chart[chart_number].xAxis[0].setExtremes(epoch_min, epoch_mil);
           chart[chart_number].series[series].setData(past_data, true, false);
+          chart[chart_number].zoomOut();
         }
       }
     );
@@ -587,9 +588,6 @@ WIDGET_INFORMATION = {
           if (measure_type === 'tag') last_output_time_mil[update_id] = time_point + 3000;
           else last_output_time_mil[update_id] = time_point;
 
-          // Finally, redraw the graph
-          redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset);
-          
           // Remove any points before beginning of chart
           for (let i = 0; i < chart[chart_number].series[series].options.data.length; i++) {
             // Get stored point timestamp
@@ -607,6 +605,9 @@ WIDGET_INFORMATION = {
               }
             } else break;
           }
+          
+          // Finally, redraw the graph
+          redrawGraph(chart_number, refresh_seconds, xaxis_duration_min, xaxis_reset);
         }
       }
     );
