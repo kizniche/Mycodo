@@ -1,13 +1,16 @@
 [Unit]
 Description=Mycodo server
 After=syslog.target network.target influxd.service
+StartLimitIntervalSec=500
+StartLimitBurst=5
 
 [Service]
+Restart=on-failure
+RestartSec=5s
 Type=forking
 TimeoutSec=0
 ExecStartPre=/bin/bash /var/mycodo-root/install/influxdb_wait_until_running.sh
 ExecStart=/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_daemon.py
-ExecStop=/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_client.py -t
 ExecReload=/bin/kill -HUP $MAINPID
 
 [Install]
