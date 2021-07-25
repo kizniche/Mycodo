@@ -252,10 +252,9 @@ case "${1:-''}" in
         printf "\n#### Updating apt repositories\n"
         apt-get update -y
     ;;
-    'update-cron')
-        printf "\n#### Updating Mycodo restart monitor crontab entry\n"
+    'update-cron')  # TODO: Remove at next major revision
+        printf "\n#### Remove Mycodo restart monitor crontab entry (if it exists)\n"
         /bin/bash "${MYCODO_PATH}"/install/crontab.sh restart_daemon --remove
-        /bin/bash "${MYCODO_PATH}"/install/crontab.sh restart_daemon
     ;;
     'update-dependencies')
         printf "\n#### Checking for updates to dependencies\n"
