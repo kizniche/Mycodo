@@ -312,6 +312,10 @@ WIDGET_INFORMATION = {
 <script type="text/javascript" src="/static/js/user_js/exporting-9.1.2.js"></script>
 <script type="text/javascript" src="/static/js/user_js/export-data-9.1.2.js"></script>
 <script type="text/javascript" src="/static/js/user_js/offline-exporting-9.1.2.js"></script>
+
+{% if current_user.theme in dark_themes %}
+  <script type="text/javascript" src="/static/js/dark-unica-custom.js"></script>
+{% endif %}
 """,
 
     'widget_dashboard_title_bar': """

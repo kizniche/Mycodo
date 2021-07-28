@@ -18,10 +18,6 @@
   <!-- Widget {{widget_type}} widget_dashboard_head template end -->
   {% endfor %}
 
-  {% if current_user.theme in dark_themes %}
-    <script type="text/javascript" src="/static/js/dark-unica-custom.js"></script>
-  {% endif %}
-
   <script>
     // Return timestamp from epoch (used in multiple widgets)
     function epoch_to_timestamp(epoch) {
