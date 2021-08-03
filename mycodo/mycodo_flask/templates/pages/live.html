@@ -128,7 +128,7 @@
 
     {%- endfor -%}
 
-    {% for each_function in table_function.query.filter(table_input.is_activated.is_(True)).order_by(table_function.position_y.asc()).all() %}
+    {% for each_function in table_function.query.filter(table_function.is_activated.is_(True)).order_by(table_function.position_y.asc()).all() %}
       {%- set func_measurements = table_device_measurements.query.filter(
                                       table_device_measurements.device_id == each_function.unique_id).all() -%}
 
