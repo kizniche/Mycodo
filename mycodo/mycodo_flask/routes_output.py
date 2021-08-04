@@ -4,6 +4,7 @@ import logging
 import os
 
 import flask_login
+from flask import current_app
 from flask import jsonify
 from flask import redirect
 from flask import render_template
@@ -35,9 +36,7 @@ from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
-from mycodo.utils.system_pi import check_missing_ids
 from mycodo.utils.system_pi import csv_to_list_of_str
-from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import parse_custom_option_values_json
 from mycodo.utils.system_pi import parse_custom_option_values_output_channels_json
 
@@ -224,6 +223,15 @@ def page_output():
             output_variables[each_output.unique_id][each_channel]['amps'] = None
             output_variables[each_output.unique_id][each_channel]['trigger_startup'] = None
 
+    # Find FTDI devices
+    ftdi_devices = []
+    if not current_app.config['TESTING']:
+        for each_output in output:
+            if each_output.interface == "FTDI":
+                from mycodo.devices.atlas_scientific_ftdi import get_ftdi_device_list
+                ftdi_devices = get_ftdi_device_list()
+                break
+
     if not output_type:
         return render_template('pages/output.html',
                                camera=camera,
@@ -243,6 +251,7 @@ def page_output():
                                form_base=form_base,
                                form_add_output=form_add_output,
                                form_mod_output=form_mod_output,
+                               ftdi_devices=ftdi_devices,
                                lcd=lcd,
                                misc=misc,
                                names_output=names_output,
@@ -272,6 +281,7 @@ def page_output():
                                form_base=form_base,
                                form_add_output=form_add_output,
                                form_mod_output=form_mod_output,
+                               ftdi_devices=ftdi_devices,
                                lcd=lcd,
                                misc=misc,
                                names_output=names_output,
@@ -301,6 +311,7 @@ def page_output():
                                form_base=form_base,
                                form_add_output=form_add_output,
                                form_mod_output=form_mod_output,
+                               ftdi_devices=ftdi_devices,
                                lcd=lcd,
                                misc=misc,
                                names_output=names_output,

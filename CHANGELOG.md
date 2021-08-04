@@ -65,6 +65,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Fix setting Graph Widget custom colors when tag selected
  - Fix Graph Widget custom colors when more than one Input selected
  - Fix note array memory leak on Graph Widgets
+ - Fix FTDI device detection on Output page
 
 ### Features
 
