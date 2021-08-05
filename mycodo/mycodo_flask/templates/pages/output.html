@@ -230,7 +230,8 @@
       console.log("Action: ", action)
       if (action === 'output_add' ||
           action === 'output_mod' ||
-          action === 'output_delete') {
+          action === 'output_delete'||
+          action.startsWith('custom_button_')) {
         toastr['info']('Command sent. Please wait...');
         $.ajax({
           type: "POST",
