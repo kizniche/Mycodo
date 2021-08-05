@@ -118,8 +118,8 @@ OUTPUT_INFORMATION = {
         },
         {
             'id': 'dispense_volume_ml',
-            'type': 'integer',
-            'default_value': 10,
+            'type': 'float',
+            'default_value': 10.0,
             'name': 'Volume to Dispense (ml)',
             'phrase': 'The volume (ml) that is instructed to be dispensed'
         },
@@ -133,8 +133,8 @@ OUTPUT_INFORMATION = {
         },
         {
             'id': 'calibrate_volume_ml',
-            'type': 'integer',
-            'default_value': 10,
+            'type': 'float',
+            'default_value': 10.0,
             'name': 'Actual Volume Dispensed (ml)',
             'phrase': 'The actual volume (ml) that was dispensed'
         },
@@ -182,7 +182,8 @@ class OutputModule(AbstractOutput):
     def setup_output(self):
         self.setup_output_variables(OUTPUT_INFORMATION)
         self.interface = self.output.interface
-        self.atlas_device = setup_atlas_device(self.output)
+        # self.atlas_device = setup_atlas_device(self.output)
+        self.atlas_device = []
         self.output_setup = True
 
     def record_dispersal(self, amount_ml=None, seconds_to_run=None):
