@@ -182,8 +182,7 @@ class OutputModule(AbstractOutput):
     def setup_output(self):
         self.setup_output_variables(OUTPUT_INFORMATION)
         self.interface = self.output.interface
-        # self.atlas_device = setup_atlas_device(self.output)
-        self.atlas_device = []
+        self.atlas_device = setup_atlas_device(self.output)
         self.output_setup = True
 
     def record_dispersal(self, amount_ml=None, seconds_to_run=None):
