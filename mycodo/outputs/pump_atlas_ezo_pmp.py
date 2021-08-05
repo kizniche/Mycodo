@@ -323,13 +323,13 @@ class OutputModule(AbstractOutput):
         if 'dispense_volume_ml' not in args_dict:
             self.logger.error("Cannot calibrate without volume (instructed)")
             return
-        self.calibrate('instructed', args_dict['dispense_volume_ml'])
+        self.calibrate('dispense_ml', args_dict['dispense_volume_ml'])
 
     def calibrate_ml(self, args_dict):
         if 'calibrate_volume_ml' not in args_dict:
             self.logger.error("Cannot calibrate without volume (actual)")
             return
-        self.calibrate('actual', args_dict['calibrate_volume_ml'])
+        self.calibrate('calibrate_ml', args_dict['calibrate_volume_ml'])
 
     def set_i2c_address(self, args_dict):
         if 'new_i2c_address' not in args_dict:

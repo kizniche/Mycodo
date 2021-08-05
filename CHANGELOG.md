@@ -67,6 +67,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Fix note array memory leak on Graph Widgets
  - Fix FTDI device detection on Output page
  - Fix sending commands to Atlas Scientific devices via FTDI
+ - Fix Atlas Scientific Peristaltic Pump Output calibration
 
 ### Features
 
