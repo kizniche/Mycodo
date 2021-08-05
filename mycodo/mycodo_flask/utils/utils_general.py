@@ -1809,7 +1809,7 @@ def custom_action(controller_type, dict_device, unique_id, form):
         messages["error"].append("Could not find button ID")
         return messages
 
-    if not controller.is_activated:
+    if controller_type != "Output" and not controller.is_activated:
         messages["error"].append("Activate controller before executing a Custom Action")
         return messages
 
