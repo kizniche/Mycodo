@@ -88,7 +88,7 @@ class AtlasScientificFTDI(AbstractBaseAtlasScientific, Device):
             print("Failed to read from the sensor.")
             return ''
 
-    def write(self, cmd):
+    def atlas_write(self, cmd):
         self.send_cmd(cmd)
 
     def send_cmd(self, cmd):

@@ -145,6 +145,6 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            self.atlas_device.write(write_cmd)
+            self.atlas_device.atlas_write(write_cmd)
         except:
             self.logger.exception("Exception changing I2C address")

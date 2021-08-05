@@ -216,12 +216,12 @@ class InputModule(AbstractInput):
         try:
             write_cmd = "Cal,{}".format(args_dict['solution_mV'])
             self.logger.debug("Command to send: {}".format(write_cmd))
-            ret_val = self.atlas_device.write(write_cmd)
+            ret_val = self.atlas_device.atlas_write(write_cmd)
             self.logger.info("Command returned: {}".format(ret_val))
             # Verify calibration saved
             write_cmd = "Cal,?"
             self.logger.info("Device Calibrated?: {}".format(
-                self.atlas_device.write(write_cmd)))
+                self.atlas_device.atlas_write(write_cmd)))
         except:
             self.logger.exception("Exception calibrating sensor")
 
@@ -229,7 +229,7 @@ class InputModule(AbstractInput):
         try:
             write_cmd = "Cal,clear"
             self.logger.debug("Calibration command: {}".format(write_cmd))
-            ret_val = self.atlas_device.write(write_cmd)
+            ret_val = self.atlas_device.atlas_write(write_cmd)
             self.logger.info("Command returned: {}".format(ret_val))
         except:
             self.logger.exception("Exception clearing calibration")
@@ -242,7 +242,7 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            ret_val = self.atlas_device.write(write_cmd)
+            ret_val = self.atlas_device.atlas_write(write_cmd)
             self.logger.info("Command returned: {}".format(ret_val))
         except:
             self.logger.exception("Exception changing I2C address")

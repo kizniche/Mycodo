@@ -278,7 +278,7 @@ class InputModule(AbstractInput):
         try:
             write_cmd = "T,{:.2f}".format(args_dict['compensation_temp_c'])
             self.logger.debug("Compensation command: {}".format(write_cmd))
-            ret_val = self.atlas_device.write(write_cmd)
+            ret_val = self.atlas_device.atlas_write(write_cmd)
             self.logger.info("Command returned: {}".format(ret_val))
         except:
             self.logger.exception("Exception compensating temperature")
@@ -290,12 +290,12 @@ class InputModule(AbstractInput):
             else:
                 write_cmd = "Cal,{},{:.2f}".format(level, ph)
             self.logger.debug("Calibration command: {}".format(write_cmd))
-            ret_val = self.atlas_device.write(write_cmd)
+            ret_val = self.atlas_device.atlas_write(write_cmd)
             self.logger.info("Command returned: {}".format(ret_val))
             # Verify calibration saved
             write_cmd = "Cal,?"
             self.logger.info("Device Calibrated?: {}".format(
-                self.atlas_device.write(write_cmd)))
+                self.atlas_device.atlas_write(write_cmd)))
         except:
             self.logger.exception("Exception calibrating")
 
@@ -328,7 +328,7 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            ret_val = self.atlas_device.write(write_cmd)
+            ret_val = self.atlas_device.atlas_write(write_cmd)
             self.logger.info("Command returned: {}".format(ret_val))
             self.atlas_device = None
         except:
