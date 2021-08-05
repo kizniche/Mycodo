@@ -300,9 +300,9 @@ class OutputModule(AbstractOutput):
             if level == "clear":
                 write_cmd = "Cal,clear"
             elif level == "dispense_ml":
-                write_cmd = "D,{}".format(level, ml)
+                write_cmd = "D,{}".format(ml)
             elif level == "calibrate_ml":
-                write_cmd = "Cal,{}".format(level, ml)
+                write_cmd = "Cal,{}".format(ml)
             else:
                 self.logger.error("Unknown option: {}".format(level))
                 return
