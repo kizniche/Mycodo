@@ -302,7 +302,7 @@ MEASUREMENTS = {
 # Measurement units
 UNITS = {
     'unitless': {  # TODO: This unit and "none" are redundant. remove one.
-        'name': '',
+        'name': lazy_gettext('Unitless'),
         'unit': ''},
     'us': {
         'name': lazy_gettext('Microsecond'),
@@ -567,10 +567,16 @@ UNIT_CONVERSIONS = [
     ('GB', 'MB', 'X*1000'),
 
     # Concentration
+    ('ppt', 'ppm', 'x*1000'),
+    ('ppt', 'ppb', 'x*1000000'),
+    ('ppm', 'ppt', 'x/1000'),
     ('ppm', 'ppb', 'x*1000'),
+    ('ppb', 'ppt', 'x/1000000'),
     ('ppb', 'ppm', 'x/1000'),
+    ('ppt', 'percent', 'x/10'),
     ('ppm', 'percent', 'x/10000'),
     ('ppb', 'percent', 'x/10000000'),
+    ('percent', 'ppt', 'x*10'),
     ('percent', 'ppm', 'x*10000'),
     ('percent', 'ppb', 'x*10000000'),
 

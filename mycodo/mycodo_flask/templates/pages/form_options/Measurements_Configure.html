@@ -48,7 +48,7 @@
     {%- if each_measurement.measurement in dict_measurements -%}
       {{' ' + dict_measurements[each_measurement.measurement]['name']}}
     {%- endif -%}
-    {%- if each_measurement.unit in dict_units -%}
+    {%- if each_measurement.unit in dict_units and dict_units[each_measurement.unit]['unit'] -%}
       {{' (' + dict_units[each_measurement.unit]['unit'] + ')'}}
     {%- endif -%}
     ">

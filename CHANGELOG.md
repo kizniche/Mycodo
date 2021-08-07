@@ -103,6 +103,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Remove calibration page (all functionality has been moved to modules)
  - Place Output columns at back of Graph Widget charts
  - Add Measurements/Units: Specific Gravity, Salinity, Total Dissolved Solids, Parts per Thousand
+ - Add conversions for Parts per Thousand
 
 
 ## 8.11.0 (2021-06-05) 
