@@ -47,6 +47,7 @@ INPUT_INFORMATION = {
     'url_datasheet': 'https://www.atlas-scientific.com/files/EC_EZO_Datasheet.pdf',
 
     'options_enabled': [
+        'measurements_select',
         'ftdi_location',
         'i2c_location',
         'uart_location',
