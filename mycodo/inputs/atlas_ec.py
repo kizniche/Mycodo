@@ -27,11 +27,11 @@ measurements_dict = {
     },
     2: {
         'measurement': 'salinity',
-        'unit': 'uS_cm'
+        'unit': 'ppt'
     },
     3: {
         'measurement': 'specific_gravity',
-        'unit': 'uS_cm'
+        'unit': 'unitless'
     }
 }
 
