@@ -4,10 +4,15 @@ import time
 
 from flask_babel import lazy_gettext
 
+from mycodo.databases.models import Conversion
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_from_x_to_y_unit
 from mycodo.utils.atlas_calibration import AtlasScientificCommand
 from mycodo.utils.atlas_calibration import setup_atlas_device
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.system_pi import get_measurement
+from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
 
 # Measurements
@@ -213,17 +218,26 @@ class InputModule(AbstractInput):
         if self.temperature_comp_meas_measurement_id and self.atlas_command:
             self.logger.debug("pH sensor set to calibrate temperature")
 
+            device_measurement = get_measurement(
+                self.temperature_comp_meas_measurement_id)
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
+
             last_measurement = self.get_last_measurement(
                 self.temperature_comp_meas_device_id,
                 self.temperature_comp_meas_measurement_id,
                 max_age=self.max_age)
 
+            out_value = convert_from_x_to_y_unit(unit, "C", last_measurement[1])
+
             if last_measurement:
                 self.logger.debug(
                     "Latest temperature used to calibrate: {temp}".format(
-                        temp=last_measurement[1]))
+                        temp=out_value))
                 ret_value, ret_msg = self.atlas_command.calibrate(
-                    'temperature', set_amount=last_measurement[1])
+                    'temperature', set_amount=out_value)
                 time.sleep(0.5)
                 self.logger.debug(
                     "Calibration returned: {val}, {msg}".format(

@@ -68,6 +68,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Fix FTDI device detection on Output page
  - Fix sending commands to Atlas Scientific devices via FTDI
  - Fix Atlas Scientific Peristaltic Pump Output calibration
+ - Fix temperature compensation unit conversion for Atlas ORP, EC, and pH sensors ([#1064](https://github.com/kizniche/mycodo/issues/1064))
 
 ### Features
 
@@ -87,6 +88,8 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Add Spacers for Input and Output lists
  - Add PDF Manual
  - Add ability to set the Indicator Widget's unit font size
+ - Add temperature compensation to Atlas Dissolved Oxygen sensor
+ - Add TDS, Salinity, and Specific Gravity measurements for Atlas Scientific EC sensor ([#1065](https://github.com/kizniche/mycodo/issues/1065))
 
 ### Miscellaneous
 

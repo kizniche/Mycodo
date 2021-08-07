@@ -237,6 +237,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Revolutions'),
         'meas': 'revolutions',
         'units': ['rpm']},
+    'salinity': {
+        'name': lazy_gettext('Salinity'),
+        'meas': 'salinity',
+        'units': ['ppt']},
     'setpoint': {
         'name': lazy_gettext('Setpoint'),
         'meas': 'setpoint',
@@ -253,6 +257,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Specific Enthalpy'),
         'meas': 'specific_enthalpy',
         'units': ['kJ_kg']},
+    'specific_gravity': {
+        'name': lazy_gettext('Specific Gravity'),
+        'meas': 'specific_gravity',
+        'units': ['unitless']},
     'specific_volume': {
         'name': lazy_gettext('Specific Volume'),
         'meas': 'specific_volume',
@@ -265,6 +273,10 @@ MEASUREMENTS = {
         'name': lazy_gettext('Temperature'),
         'meas': 'temperature',
         'units': ['C', 'F', 'K']},
+    'total_dissolved_solids': {
+        'name': lazy_gettext('Total Dissolved Solids'),
+        'meas': 'total_dissolved_solids',
+        'units': ['ppb', 'ppm']},
     'unitless': {
         'name': lazy_gettext('Unitless'),
         'meas': 'unitless',
@@ -466,6 +478,9 @@ UNITS = {
     'ppm': {
         'name': lazy_gettext('Parts per million'),
         'unit': 'ppm'},
+    'ppt': {
+        'name': lazy_gettext('Parts per thousand'),
+        'unit': 'ppt'},
     'psi': {
         'name': lazy_gettext('Pounds per square inch'),
         'unit': 'psi'},

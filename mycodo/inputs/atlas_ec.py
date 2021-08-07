@@ -4,16 +4,33 @@ import time
 
 from flask_babel import lazy_gettext
 
+from mycodo.databases.models import Conversion
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_from_x_to_y_unit
 from mycodo.utils.atlas_calibration import AtlasScientificCommand
 from mycodo.utils.atlas_calibration import setup_atlas_device
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.system_pi import get_measurement
+from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import str_is_float
 
 # Measurements
 measurements_dict = {
     0: {
         'measurement': 'electrical_conductivity',
+        'unit': 'uS_cm'
+    },
+    1: {
+        'measurement': 'total_dissolved_solids',
+        'unit': 'ppm'
+    },
+    2: {
+        'measurement': 'salinity',
+        'unit': 'uS_cm'
+    },
+    3: {
+        'measurement': 'specific_gravity',
         'unit': 'uS_cm'
     }
 }
@@ -179,12 +196,36 @@ class InputModule(AbstractInput):
             self.atlas_device = setup_atlas_device(self.input_dev)
 
             if self.temperature_comp_meas_measurement_id:
-                self.atlas_command = AtlasScientificCommand(self.input_dev, sensor=self.atlas_device)
+                self.atlas_command = AtlasScientificCommand(
+                    self.input_dev, sensor=self.atlas_device)
+
+            self.set_sensor_settings()
         except Exception:
             self.logger.exception("Exception while initializing sensor")
 
         # Throw out first measurement of Atlas Scientific sensor, as it may be prone to error
         self.get_measurement()
+
+    def set_sensor_settings(self):
+        if self.is_enabled(0):
+            self.atlas_device.query('O,EC,1')
+        else:
+            self.atlas_device.query('O,EC,0')
+
+        if self.is_enabled(1):
+            self.atlas_device.query('O,TDS,1')
+        else:
+            self.atlas_device.query('O,TDS,0')
+
+        if self.is_enabled(2):
+            self.atlas_device.query('O,S,1')
+        else:
+            self.atlas_device.query('O,S,0')
+
+        if self.is_enabled(3):
+            self.atlas_device.query('O,SG,1')
+        else:
+            self.atlas_device.query('O,SG,0')
 
     def get_measurement(self):
         """ Gets the sensor's Electrical Conductivity measurement """
@@ -193,24 +234,38 @@ class InputModule(AbstractInput):
             return
 
         electrical_conductivity = None
+        return_string = None
         self.return_dict = copy.deepcopy(measurements_dict)
 
         # Compensate measurement based on a temperature measurement
         if self.temperature_comp_meas_measurement_id and self.atlas_command:
             self.logger.debug("pH sensor set to calibrate temperature")
 
+            device_measurement = get_measurement(
+                self.temperature_comp_meas_measurement_id)
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+            channel, unit, measurement = return_measurement_info(
+                device_measurement, conversion)
+
             last_measurement = self.get_last_measurement(
                 self.temperature_comp_meas_device_id,
                 self.temperature_comp_meas_measurement_id,
                 max_age=self.max_age)
 
-            if last_measurement:
-                self.logger.debug("Latest temperature used to calibrate: {temp}".format(temp=last_measurement[1]))
+            out_value = convert_from_x_to_y_unit(unit, "C", last_measurement[1])
 
-                ret_value, ret_msg = self.atlas_command.calibrate('temperature', set_amount=last_measurement[1])
+            if last_measurement:
+                self.logger.debug(
+                    "Latest temperature used to calibrate: {temp}".format(
+                        temp=out_value))
+
+                ret_value, ret_msg = self.atlas_command.calibrate(
+                    'temperature', set_amount=out_value)
                 time.sleep(0.5)
 
-                self.logger.debug("Calibration returned: {val}, {msg}".format(val=ret_value, msg=ret_msg))
+                self.logger.debug("Calibration returned: {val}, {msg}".format(
+                    val=ret_value, msg=ret_msg))
             else:
                 self.logger.error(
                     "Calibration measurement not found within the past "
@@ -222,33 +277,51 @@ class InputModule(AbstractInput):
             if ec_list:
                 self.logger.debug("Returned list: {lines}".format(lines=ec_list))
 
-                # Find float value in list
-                float_value = None
-                for each_split in ec_list:
-                    if str_is_float(each_split):
-                        float_value = each_split
-                        break
-
-                # 'check probe' indicates an error reading the sensor
-                if 'check probe' in ec_list:
+            # Check for "check probe"
+            for each_split in ec_list:
+                if 'check probe' in each_split:
                     self.logger.error('"check probe" returned from sensor')
-                # if a string resembling a float value is returned, this
-                # is our measurement value
-                elif str_is_float(float_value):
-                    electrical_conductivity = float(float_value)
-                    self.logger.debug('Found float value: {val}'.format(val=electrical_conductivity))
-                else:
-                    self.logger.error('Value or "check probe" not found in list: {val}'.format(val=ec_list))
+                    return
+
+            # Find float value in list
+            for each_split in ec_list:
+                if "," in each_split or str_is_float(each_split):
+                    return_string = each_split
+                    break
 
         # Read sensor via I2C
         elif self.interface == 'I2C':
-            ec_status, ec_str = self.atlas_device.query('R')
+            ec_status, return_string = self.atlas_device.query('R')
             if ec_status == 'error':
-                self.logger.error("Sensor read unsuccessful: {err}".format(err=ec_str))
+                self.logger.error("Sensor read unsuccessful: {err}".format(err=return_string))
             elif ec_status == 'success':
-                electrical_conductivity = float(ec_str)
+                electrical_conductivity = float(return_string)
 
-        self.value_set(0, electrical_conductivity)
+        if ',' in return_string:
+            # Multiple values returned
+            index_place = 0
+            return_list = return_string.split(',')
+            if self.is_enabled(0):
+                self.value_set(0, return_list[index_place])
+                index_place += 1
+            if self.is_enabled(1):
+                self.value_set(1, return_list[index_place])
+                index_place += 1
+            if self.is_enabled(2):
+                self.value_set(2, return_list[index_place])
+                index_place += 1
+            if self.is_enabled(3):
+                self.value_set(3, return_list[index_place])
+        elif str_is_float(return_string):
+            # Single value returned
+            if self.is_enabled(0):
+                self.value_set(0, float(return_string))
+            elif self.is_enabled(1):
+                self.value_set(1, float(return_string))
+            elif self.is_enabled(2):
+                self.value_set(2, float(return_string))
+            elif self.is_enabled(3):
+                self.value_set(3, float(return_string))
 
         return self.return_dict
 
