@@ -219,7 +219,7 @@
       <div class="col-auto">
         <label class='form-check-label'>{{dict_translation['output_amount_duration']['title']}}</label>
         <div>
-          <input class="form-control" name="on_seconds" title="{{dict_translation['output_amount_duration']['phrase']}}" type="text" value="">
+          <input class="form-control" name="on_seconds_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['output_amount_duration']['phrase']}}" type="text" value="">
         </div>
       </div>
       <div class="col-auto">
@@ -233,7 +233,7 @@
       <div class="col-auto">
         <label class='form-check-label'>{{dict_translation['output_amount_value']['title']}}</label>
         <div>
-          <input class="form-control" name="on_value" title="{{dict_translation['output_amount_value']['phrase']}}" type="text" value="">
+          <input class="form-control" name="on_value_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['output_amount_value']['phrase']}}" type="text" value="">
         </div>
       </div>
       <div class="col-auto">
@@ -247,7 +247,7 @@
       <div class="col-auto">
         <label class='form-check-label'>{{dict_translation['output_amount_volume']['title']}}</label>
         <div>
-          <input class="form-control" name="on_volume" title="{{dict_translation['output_amount_volume']['phrase']}}" type="text" value="">
+          <input class="form-control" name="on_volume_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['output_amount_volume']['phrase']}}" type="text" value="">
         </div>
       </div>
       <div class="col-auto">
@@ -261,7 +261,7 @@
       <div class="col-auto">
         <label class='form-check-label'>{{dict_translation['duty_cycle']['title']}}</label>
         <div>
-          <input class="form-control" name="on_duty_cycle" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
+          <input class="form-control" name="on_duty_cycle_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
         </div>
       </div>
       <div class="col-auto">

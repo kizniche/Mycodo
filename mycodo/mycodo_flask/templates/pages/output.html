@@ -66,17 +66,17 @@
       $.each($(button).parents('form').serializeArray(), function() {
           result[this.name] = this.value;
       });
-      if (out_type === 'seconds' && 'on_seconds' in result) {
-        getAjax(output_id + '/' + channel_id + '/on/sec/' + result.on_seconds);
+      if (out_type === 'seconds' && 'on_seconds_' + output_id + '_' + channel_id in result) {
+        getAjax(output_id + '/' + channel_id + '/on/sec/' + result['on_seconds_' + output_id + '_' + channel_id]);
       }
-      else if (out_type === 'value' && 'on_value' in result) {
-        getAjax(output_id + '/' + channel_id + '/on/value/' + result.on_value);
+      else if (out_type === 'value' && 'on_value_' + output_id + '_' + channel_id in result) {
+        getAjax(output_id + '/' + channel_id + '/on/value/' + result['on_value_' + output_id + '_' + channel_id]);
       }
-      else if (out_type === 'volume' && 'on_volume' in result) {
-        getAjax(output_id + '/' + channel_id + '/on/vol/' + result.on_volume);
+      else if (out_type === 'volume' && 'on_volume_' + output_id + '_' + channel_id in result) {
+        getAjax(output_id + '/' + channel_id + '/on/vol/' + result['on_volume_' + output_id + '_' + channel_id]);
       }
-      else if (out_type === 'pwm' && 'on_duty_cycle' in result) {
-        getAjax(output_id + '/' + channel_id + '/on/pwm/' + result.on_duty_cycle);
+      else if (out_type === 'pwm' && 'on_duty_cycle_' + output_id + '_' + channel_id in result) {
+        getAjax(output_id + '/' + channel_id + '/on/pwm/' + result['on_duty_cycle_' + output_id + '_' + channel_id]);
       }
     }
 
