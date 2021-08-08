@@ -49,11 +49,11 @@
       </div>
       {% if 'button_on' in dict_options['options_enabled'] -%}
       <div class="col-2">
-        <input class="form-control btn btn-primary btn-sm btn-success btn-block turn_on" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
+        <input onclick="return $(this).turn_on(this, '{{each_output.unique_id}}', '{{each_output_channel}}');" class="form-control btn btn-primary btn-sm btn-success btn-block turn_on" name="{{each_output.unique_id}}/{{each_output_channel}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
       </div>
       {%- endif %}
       <div class="{% if 'button_on' in dict_options['options_enabled'] -%}col-2{% else %}col-4{% endif %}">
-        <input class="form-control btn btn-primary btn-sm btn-danger btn-block turn_off" id="turn_off" name="{{each_output.unique_id}}/{{each_output_channel}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
+        <input onclick="return $(this).turn_off(this, '{{each_output.unique_id}}', '{{each_output_channel}}');" class="form-control btn btn-primary btn-sm btn-danger btn-block turn_off" name="{{each_output.unique_id}}/{{each_output_channel}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
       </div>
     </div>
     {% endfor %}

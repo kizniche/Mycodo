@@ -32,56 +32,52 @@
       "hideMethod": "fadeOut"
     }
 
-    function getAjax(btn_val) {
+    function getAjax(endpoint) {
       $.ajax({
         type: 'GET',
-        url: '/output_mod/' + btn_val,
+        url: '/output_mod/' + endpoint,
       {% if not misc.hide_alert_success %}
         success: function(data) {
-          if (data.startsWith("SUCCESS")) toastr['success']("Output " + btn_val.split("/")[0] + ": " + data);
-          else toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
+          if (data.startsWith("SUCCESS")) toastr['success']("Output " + endpoint.split("/")[0] + ": " + data);
+          else toastr['error']("Output " + endpoint.split("/")[0] + ": " + data);
         },
       {% endif %}
       {% if not misc.hide_alert_warning %}
         error: function(data) {
-          toastr['error']("Output " + btn_val.split("/")[0] + ": " + data);
+          toastr['error']("Output " + endpoint.split("/")[0] + ": " + data);
         }
       {% endif %}
       });
     }
 
-    $('.turn_on').click(function() {
-      const btn_val = this.name;
-      const id = btn_val.split('/')[0];
-      {% if not misc.hide_alert_info %}
-      toastr['info']('Command sent to turn output ' + id + ' On');
-      {% endif %}
-      getAjax(btn_val);
-    });
-    $('.turn_off').click(function() {
-      const btn_val = this.name;
-      const id = btn_val.split('/')[0];
-      {% if not misc.hide_alert_info %}
-      toastr['info']('Command sent to turn output ' + id + ' Off');
-      {% endif %}
-      getAjax(btn_val);
-    });
-    $('.output_on_amt').click(function() {
-      const btn_val = this.name;
-      const output_id = btn_val.split('/')[0];
-      const channel_id = btn_val.split('/')[1];
-      const on_type = btn_val.split('/')[3];
-      const on_amt = $('#' + on_type + '_on_amt_' + output_id + '_' + channel_id).val();
-      {% if not misc.hide_alert_info %}
-      toastr['info']('Command sent to turn output ' + output_id + ' On for ' + on_amt + ' ' + on_type);
-      {% endif %}
-      getAjax(btn_val + on_amt);
-    });
+    // Output On Button
+    jQuery.fn.turn_on = function(button, output_id, channel_id) {
+      getAjax(output_id + '/' + channel_id + '/on/sec/0');
+    }
 
-    function pad(num, size) {
-      let s = num + "";
-      while (s.length < size) s = "0" + s;
-      return s;
+    // Output Off Button
+    jQuery.fn.turn_off = function(button, output_id, channel_id) {
+      getAjax(output_id + '/' + channel_id + '/off/sec/0');
+    }
+
+    // Output Send Amount Input/Button
+    jQuery.fn.output_on_amt = function(button, output_id, channel_id, out_type) {
+      let result = {};
+      $.each($(button).parents('form').serializeArray(), function() {
+          result[this.name] = this.value;
+      });
+      if (out_type === 'seconds' && 'on_seconds' in result) {
+        getAjax(output_id + '/' + channel_id + '/on/sec/' + result.on_seconds);
+      }
+      else if (out_type === 'value' && 'on_value' in result) {
+        getAjax(output_id + '/' + channel_id + '/on/value/' + result.on_value);
+      }
+      else if (out_type === 'volume' && 'on_volume' in result) {
+        getAjax(output_id + '/' + channel_id + '/on/vol/' + result.on_volume);
+      }
+      else if (out_type === 'pwm' && 'on_duty_cycle' in result) {
+        getAjax(output_id + '/' + channel_id + '/on/pwm/' + result.on_duty_cycle);
+      }
     }
 
     function gpioState() {

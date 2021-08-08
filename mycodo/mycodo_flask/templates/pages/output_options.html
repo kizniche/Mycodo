@@ -219,11 +219,11 @@
       <div class="col-auto">
         <label class='form-check-label'>{{dict_translation['output_amount_duration']['title']}}</label>
         <div>
-          <input class="form-control" id="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" name="sec_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['output_amount_duration']['phrase']}}" type="text" value="">
+          <input class="form-control" name="on_seconds" title="{{dict_translation['output_amount_duration']['phrase']}}" type="text" value="">
         </div>
       </div>
       <div class="col-auto">
-        <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/sec/" type="button" value="{{_('Send')}}">
+        <input onclick="return $(this).output_on_amt(this, '{{each_output.unique_id}}', '{{each_output_channel.unique_id}}', 'seconds');" class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/sec/" type="button" value="{{_('Send')}}">
       </div>
 
       {% endif %}
@@ -233,11 +233,11 @@
       <div class="col-auto">
         <label class='form-check-label'>{{dict_translation['output_amount_value']['title']}}</label>
         <div>
-          <input class="form-control" id="value_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" name="value_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['output_amount_value']['phrase']}}" type="text" value="">
+          <input class="form-control" name="on_value" title="{{dict_translation['output_amount_value']['phrase']}}" type="text" value="">
         </div>
       </div>
       <div class="col-auto">
-        <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/value/" type="button" value="{{_('Send')}}">
+        <input onclick="return $(this).output_on_amt(this, '{{each_output.unique_id}}', '{{each_output_channel.unique_id}}', 'value');" class="btn btn-success btn-block output_on_amt" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/value/" type="button" value="{{_('Send')}}">
       </div>
 
       {% endif %}
@@ -247,11 +247,11 @@
       <div class="col-auto">
         <label class='form-check-label'>{{dict_translation['output_amount_volume']['title']}}</label>
         <div>
-          <input class="form-control" id="vol_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" name="vol_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['output_amount_volume']['phrase']}}" type="text" value="">
+          <input class="form-control" name="on_volume" title="{{dict_translation['output_amount_volume']['phrase']}}" type="text" value="">
         </div>
       </div>
       <div class="col-auto">
-        <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/vol/" type="button" value="{{_('Send')}}">
+        <input onclick="return $(this).output_on_amt(this, '{{each_output.unique_id}}', '{{each_output_channel.unique_id}}', 'volume');" class="btn btn-success btn-block output_on_amt" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/vol/" type="button" value="{{_('Send')}}">
       </div>
 
       {% endif %}
@@ -261,11 +261,11 @@
       <div class="col-auto">
         <label class='form-check-label'>{{dict_translation['duty_cycle']['title']}}</label>
         <div>
-          <input class="form-control" id="pwm_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" name="pwm_on_amt_{{each_output.unique_id}}_{{each_output_channel.unique_id}}" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
+          <input class="form-control" name="on_duty_cycle" title="{{dict_translation['duty_cycle']['phrase']}}" type="number" value="">
         </div>
       </div>
       <div class="col-auto">
-        <input class="btn btn-success btn-block output_on_amt" id="turn_on" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/pwm/" type="button" value="{{_('Send')}}">
+        <input onclick="return $(this).output_on_amt(this, '{{each_output.unique_id}}', '{{each_output_channel.unique_id}}', 'pwm');" class="btn btn-success btn-block output_on_amt" name="{{each_output.unique_id}}/{{each_output_channel.unique_id}}/on/pwm/" type="button" value="{{_('Send')}}">
       </div>
 
       {% endif %}
