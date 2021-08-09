@@ -90,6 +90,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Add ability to set the Indicator Widget's unit font size
  - Add temperature compensation to Atlas Dissolved Oxygen sensor
  - Add TDS, Salinity, and Specific Gravity measurements for Atlas Scientific EC sensor ([#1065](https://github.com/kizniche/mycodo/issues/1065))
+ - Add ability to define new Flask endpoints in Widget modules
 
 ### Miscellaneous
 

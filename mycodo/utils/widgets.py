@@ -109,6 +109,7 @@ def parse_widget_information(exclude_custom=False):
             # Misc
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'period')
 
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'endpoints')
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'execute_at_creation')
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'execute_at_modification')
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'execute_at_deletion')

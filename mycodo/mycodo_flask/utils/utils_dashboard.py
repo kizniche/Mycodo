@@ -20,6 +20,7 @@ from mycodo.databases.models import Math
 from mycodo.databases.models import Output
 from mycodo.databases.models import PID
 from mycodo.databases.models import Widget
+from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
 from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
@@ -232,6 +233,8 @@ def widget_add(form_base, request_form):
     try:
         if not error:
             new_widget.save()
+
+            add_widget_endpoints()
 
             # Refresh widget settings
             control = DaemonControl()
@@ -529,3 +532,28 @@ def check_func(all_devices,
                     y_axes.append(meas_name)
 
     return y_axes
+
+def add_widget_endpoints(app=current_app):
+    dict_widgets = parse_widget_information()
+
+    if app.config['TESTING']:
+        return
+
+    with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
+        widget = new_session.query(Widget).all()
+        widget_types = []
+        for each_widget in widget:
+            if each_widget.graph_type not in widget_types:
+                widget_types.append(each_widget.graph_type)
+
+        for each_widget_type in widget_types:
+            if 'endpoints' in dict_widgets[each_widget_type]:
+                for rule, endpoint, view_func in dict_widgets[each_widget_type]['endpoints']:
+                    if endpoint in app.view_functions:
+                        logger.info(
+                            "Endpoint {} ({}) already exists. Not adding.".format(
+                                endpoint, rule))
+                    else:
+                        logger.info(
+                            "Adding endpoint {} ({}).".format(endpoint, rule))
+                        app.add_url_rule(rule, endpoint, view_func)
