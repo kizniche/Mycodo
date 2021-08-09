@@ -36,8 +36,8 @@ logger = logging.getLogger(__name__)
 def test_123():
     """
     This endpoint will display different messages for logged in and logged out users.
-    Be very careful when creating endpoints that you don't allow unauthorized users
-    to access endpoints with sensitive information.
+    Be very careful when creating endpoints so unauthorized users don't have access
+    to endpoints with sensitive information.
     """
     if not current_user.is_authenticated:
         return "You are not logged in and cannot access this endpoint"
