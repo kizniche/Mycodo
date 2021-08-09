@@ -79,7 +79,10 @@ WIDGET_INFORMATION = {
     ],
     'url_additional': 'https://github.com',
 
-    'endpoints': [("/test_123", "test_123", test_123)],
+    'endpoints': [
+        # Route URL, route endpoint name, view function, methods
+        ("/test_123", "test_123", test_123, ["GET"])
+    ],
 
     'message': 'This widget is an example endpoint widget, which will create the new endpoint '
                'at /test_123. Open <a href="/test_123">This Link</a> to see this new endpoint.',

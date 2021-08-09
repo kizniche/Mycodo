@@ -548,7 +548,7 @@ def add_widget_endpoints(app=current_app):
 
         for each_widget_type in widget_types:
             if 'endpoints' in dict_widgets[each_widget_type]:
-                for rule, endpoint, view_func in dict_widgets[each_widget_type]['endpoints']:
+                for rule, endpoint, view_func, methods in dict_widgets[each_widget_type]['endpoints']:
                     if endpoint in app.view_functions:
                         logger.info(
                             "Endpoint {} ({}) already exists. Not adding.".format(
@@ -556,4 +556,4 @@ def add_widget_endpoints(app=current_app):
                     else:
                         logger.info(
                             "Adding endpoint {} ({}).".format(endpoint, rule))
-                        app.add_url_rule(rule, endpoint, view_func)
+                        app.add_url_rule(rule, endpoint, view_func, methods=methods)
