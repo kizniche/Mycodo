@@ -234,7 +234,7 @@ def widget_add(form_base, request_form):
         if not error:
             new_widget.save()
 
-            add_widget_endpoints()
+            register_widget_endpoints()
 
             # Refresh widget settings
             control = DaemonControl()
@@ -533,27 +533,31 @@ def check_func(all_devices,
 
     return y_axes
 
-def add_widget_endpoints(app=current_app):
-    dict_widgets = parse_widget_information()
 
-    if app.config['TESTING']:
-        return
+def register_widget_endpoints(app=current_app):
+    try:
+        if app.config['TESTING']:  # TODO: Add pytest endpoint test and remove this
+            return
 
-    with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
-        widget = new_session.query(Widget).all()
-        widget_types = []
-        for each_widget in widget:
-            if each_widget.graph_type not in widget_types:
-                widget_types.append(each_widget.graph_type)
+        dict_widgets = parse_widget_information()
 
-        for each_widget_type in widget_types:
-            if each_widget_type in dict_widgets and 'endpoints' in dict_widgets[each_widget_type]:
-                for rule, endpoint, view_func, methods in dict_widgets[each_widget_type]['endpoints']:
-                    if endpoint in app.view_functions:
-                        logger.info(
-                            "Endpoint {} ({}) already exists. Not adding.".format(
-                                endpoint, rule))
-                    else:
-                        logger.info(
-                            "Adding endpoint {} ({}).".format(endpoint, rule))
-                        app.add_url_rule(rule, endpoint, view_func, methods=methods)
+        with session_scope(app.config['SQLALCHEMY_DATABASE_URI']) as new_session:
+            widget = new_session.query(Widget).all()
+            widget_types = []
+            for each_widget in widget:
+                if each_widget.graph_type not in widget_types:
+                    widget_types.append(each_widget.graph_type)
+
+            for each_widget_type in widget_types:
+                if each_widget_type in dict_widgets and 'endpoints' in dict_widgets[each_widget_type]:
+                    for rule, endpoint, view_func, methods in dict_widgets[each_widget_type]['endpoints']:
+                        if endpoint in app.view_functions:
+                            logger.info(
+                                "Endpoint {} ({}) already exists. Not adding.".format(
+                                    endpoint, rule))
+                        else:
+                            logger.info(
+                                "Adding endpoint {} ({}).".format(endpoint, rule))
+                            app.add_url_rule(rule, endpoint, view_func, methods=methods)
+    except:
+        logger.exception("Adding Widget Endpoints")

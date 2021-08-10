@@ -41,7 +41,7 @@ from mycodo.mycodo_flask import routes_static
 from mycodo.mycodo_flask.api import api_blueprint
 from mycodo.mycodo_flask.api import init_api
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.utils.utils_dashboard import add_widget_endpoints
+from mycodo.mycodo_flask.utils.utils_dashboard import register_widget_endpoints
 from mycodo.mycodo_flask.utils.utils_general import get_ip_address
 
 logger = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ def create_app(config=ProdConfig):
     register_extensions(app)
     register_blueprints(app)
 
-    add_widget_endpoints(app)
+    register_widget_endpoints(app)
 
     return app
 
