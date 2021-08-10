@@ -269,7 +269,7 @@ runSelfUpgrade() {
     # Instructed to wipe configuration files (database, virtualenv)
 
     if [ -d "${CURRENT_MYCODO_DIRECTORY}"/env ] ; then
-      printf "Removing virtaulenv at %s/env..." "${CURRENT_MYCODO_DIRECTORY}"
+      printf "Removing virtualenv at %s/env..." "${CURRENT_MYCODO_DIRECTORY}"
       if ! rm -rf "${CURRENT_MYCODO_DIRECTORY}"/env ; then
         printf "Failed: Error while trying to delete virtaulenv.\n"
       fi

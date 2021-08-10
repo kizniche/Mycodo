@@ -16,6 +16,7 @@ from flask_babel import gettext
 from flask_compress import Compress
 from flask_limiter import Limiter
 from flask_login import current_user
+from flask_session import Session
 from flask_talisman import Talisman
 
 from mycodo.config import LANGUAGES
@@ -77,6 +78,7 @@ def register_extensions(app):
     app = extension_compress(app)  # Compress app responses with gzip
     app = extension_limiter(app)  # Limit authentication blueprint requests to 200 per minute
     app = extension_login_manager(app)  # User login management
+    app = extension_session(app)  # Server side session
 
     # Create and populate database if it doesn't exist
     with app.app_context():
@@ -212,5 +214,22 @@ def extension_login_manager(app):
             pass
         flash(gettext('Please log in to access this page'), "error")
         return redirect(url_for('routes_authentication.login_check'))
+
+    return app
+
+
+def extension_session(app):
+    # Remove flask_session directory every time flask starts
+    # DO this until https://github.com/pallets/cachelib 0.3.0 is released
+    # https://github.com/pallets/cachelib/issues/21
+    # https://github.com/fengsp/flask-session/issues/132
+    try:
+        import shutil
+        shutil.rmtree('/var/mycodo-root/mycodo/flask_session')
+    except:
+        pass
+
+    app.config['SESSION_TYPE'] = 'filesystem'
+    Session(app)
 
     return app

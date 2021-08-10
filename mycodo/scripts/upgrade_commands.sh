@@ -197,7 +197,6 @@ case "${1:-''}" in
         printf "\n#### Checking python 3 virtualenv\n"
         if [[ ! -e ${MYCODO_PATH}/env/bin/python3 ]]; then
             printf "#### Virtualenv doesn't exist. Creating...\n"
-            python3 -m pip install virtualenv --upgrade
             rm -rf "${MYCODO_PATH}"/env
             python3 -m virtualenv --system-site-packages -p "${PYTHON_BINARY_SYS_LOC}" "${MYCODO_PATH}"/env
         else
