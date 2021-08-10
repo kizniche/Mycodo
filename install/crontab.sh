@@ -18,7 +18,6 @@ cron_unique_label="# cmID:$1 #"
 
 crontab="$1".crontab
 crontab_bak=${crontab}.bak
-test -f "${crontab}" || cp "${crontab}".sample "${crontab}"
 
 crontab_exists() {
     crontab -l 2>/dev/null | grep -x "$cron_unique_label" >/dev/null 2>/dev/null
