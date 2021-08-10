@@ -7,10 +7,6 @@ services:
     build:
       context: ../
       dockerfile: docker/influxdb/Dockerfile
-    ports:
-      - "8083:8083"
-      - "8086:8086"
-      - "8090:8090"
     env_file:
       - 'influxdb/env.influxdb'
     volumes:
@@ -43,8 +39,6 @@ services:
       - /dev:/dev
       - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
     privileged: true
-    ports:
-      - "9090:9090"
     command: bash -c "PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py"
     depends_on:
       - mycodo_flask
