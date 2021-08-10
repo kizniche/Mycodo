@@ -18,6 +18,7 @@ PIGPIO_URL="https://github.com/joan2937/pigpio/archive/v79.tar.gz"
 MCB2835_URL="http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz"
 WIRINGPI_URL="https://project-downloads.drogon.net/wiringpi-latest.deb"
 INFLUXDB_VERSION="1.8.0"
+VIRTUALENV_VERSION="20.7.0"
 
 # Required apt packages. This has only been tested with Raspbian for the
 # Raspberry Pi but should work with most Debian-based systems.
@@ -197,6 +198,7 @@ case "${1:-''}" in
         printf "\n#### Checking python 3 virtualenv\n"
         if [[ ! -e ${MYCODO_PATH}/env/bin/python3 ]]; then
             printf "#### Virtualenv doesn't exist. Creating...\n"
+            python3 -m pip install virtualenv==${VIRTUALENV_VERSION}
             rm -rf "${MYCODO_PATH}"/env
             python3 -m virtualenv --system-site-packages -p "${PYTHON_BINARY_SYS_LOC}" "${MYCODO_PATH}"/env
         else

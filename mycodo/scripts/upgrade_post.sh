@@ -42,6 +42,10 @@ TIMER_START_update_logrotate=$SECONDS
 ${INSTALL_CMD} update-logrotate
 TIMER_TOTAL_update_logrotate=$((SECONDS - TIMER_START_update_logrotate))
 
+TIMER_START_setup_virtualenv=$SECONDS
+${INSTALL_CMD} setup-virtualenv
+TIMER_TOTAL_setup_virtualenv=$((SECONDS - TIMER_START_setup_virtualenv))
+
 TIMER_START_update_pip3=$SECONDS
 ${INSTALL_CMD} update-pip3
 TIMER_TOTAL_update_pip3=$((SECONDS - TIMER_START_update_pip3))
@@ -49,10 +53,6 @@ TIMER_TOTAL_update_pip3=$((SECONDS - TIMER_START_update_pip3))
 TIMER_START_update_pip3_packages=$SECONDS
 ${INSTALL_CMD} update-pip3-packages
 TIMER_TOTAL_update_pip3_packages=$((SECONDS - TIMER_START_update_pip3_packages))
-
-TIMER_START_setup_virtualenv=$SECONDS
-${INSTALL_CMD} setup-virtualenv
-TIMER_TOTAL_setup_virtualenv=$((SECONDS - TIMER_START_setup_virtualenv))
 
 TIMER_START_update_influxdb=$SECONDS
 ${INSTALL_CMD} update-influxdb
