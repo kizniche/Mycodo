@@ -189,10 +189,7 @@ case "${1:-''}" in
     ;;
     'restart-daemon')
         printf "\n#### Restarting the Mycodo daemon\n"
-        service mycodo stop
-        sleep 2
-        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/mycodo/scripts/restart_daemon.py
-        service mycodo start
+        service mycodo restart
     ;;
     'setup-virtualenv')
         printf "\n#### Checking python 3 virtualenv\n"

@@ -547,7 +547,7 @@ def add_widget_endpoints(app=current_app):
                 widget_types.append(each_widget.graph_type)
 
         for each_widget_type in widget_types:
-            if 'endpoints' in dict_widgets[each_widget_type]:
+            if each_widget_type in dict_widgets and 'endpoints' in dict_widgets[each_widget_type]:
                 for rule, endpoint, view_func, methods in dict_widgets[each_widget_type]['endpoints']:
                     if endpoint in app.view_functions:
                         logger.info(
