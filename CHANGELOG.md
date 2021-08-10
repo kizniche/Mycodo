@@ -105,7 +105,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Place Output columns at back of Graph Widget charts
  - Add Measurements/Units: Specific Gravity, Salinity, Total Dissolved Solids, Parts per Thousand
  - Add conversions for Parts per Thousand
- - Specify virtualenv install version in requirements.txt
+ - Specify virtualenv install version in requirements.txt ([#1067](https://github.com/kizniche/mycodo/issues/1067))
  - Enable server-side Flask session
 
 
