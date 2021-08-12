@@ -219,15 +219,16 @@ def extension_login_manager(app):
 
 
 def extension_session(app):
-    # Remove flask_session directory every time flask starts
-    # DO this until https://github.com/pallets/cachelib 0.3.0 is released
+    # TODO: Remove this code if Mycodo doesn't produce this issue anymore
+    # If "EOFError: Ran out of input" returns, consider removing flask-session using filesystem
     # https://github.com/pallets/cachelib/issues/21
     # https://github.com/fengsp/flask-session/issues/132
-    try:
-        import shutil
-        shutil.rmtree('/var/mycodo-root/mycodo/flask_session')
-    except:
-        pass
+    # try:
+    #     # Remove flask_session directory every time flask starts
+    #     import shutil
+    #     shutil.rmtree('/var/mycodo-root/mycodo/flask_session')
+    # except:
+    #     pass
 
     app.config['SESSION_TYPE'] = 'filesystem'
     Session(app)
