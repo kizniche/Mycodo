@@ -532,6 +532,7 @@ Thanks
 -  `Flask_Login <https://pypi.org/project/flask_login>`__
 -  `Flask_Marshmallow <https://pypi.org/project/flask_marshmallow>`__
 -  `Flask_RESTX <https://pypi.org/project/flask_restx>`__
+-  `Flask_Session <https://pypi.org/project/flask_session>`__
 -  `Flask_SQLAlchemy <https://pypi.org/project/flask_sqlalchemy>`__
 -  `Flask_Talisman <https://pypi.org/project/flask_talisman>`__
 -  `Flask_WTF <https://pypi.org/project/flask_wtf>`__
