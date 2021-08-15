@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2021-06-11 10:19-0400\n"
-"PO-Revision-Date: 2021-06-11 14:13+0000\n"
+"PO-Revision-Date: 2021-06-12 15:11+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
+"Language-Team: Swedish <http://translate.kylegabriel.com:8080/projects/"
+"mycodo/master/sv/>\n"
 "Language: sv\n"
-"Language-Team: Swedish "
-"<http://translate.kylegabriel.com:8080/projects/mycodo/master/sv/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.6.2\n"
 "Generated-By: Babel 2.9.0\n"
 
 #: config.py:51 config_translations.py:17
@@ -2974,7 +2975,7 @@ msgstr "Tid ÅÅÅÅ-MM-DD HH: MM: SS"
 
 #: mycodo_flask/forms/forms_method.py:89
 msgid "Add to Method"
-msgstr "Lägg till till metod"
+msgstr "Lägg till metod"
 
 #: mycodo_flask/forms/forms_method.py:90
 msgid "Set Repeat Option"
@@ -4127,7 +4128,7 @@ msgstr ""
 
 #: mycodo_flask/templates/admin/upgrade.html:119
 msgid "No upgrade is available. You are running the latest release, version"
-msgstr "Ingen uppgradering är tillgänglig. Du kör den senaste versionen, versionen"
+msgstr "Ingen uppgradering är tillgänglig. Du kör den senaste versionen"
 
 #: mycodo_flask/templates/admin/upgrade.html:133
 msgid ""
@@ -5423,14 +5424,13 @@ msgid ""
 "start (x3) and end (x0) will be automatically stretched or skewed to fit "
 "within a 24-hour period and this method will repeat daily."
 msgstr ""
-"Definiera börvärdet över dagen baserat på en kubisk Bezier-kurva. Om du "
-"inte känner till en Bezier-kurva, rekommenderas att du använder <a "
-"href=\"https://www.desmos.com/calculator/cahqdxeshd\" target=\"_blank\"> "
-"grafisk Bezier-kurvagenerator </a> och använd de 8 variablerna som skapas"
-" för 4 punkter (var och en en uppsättning x och y). X-axeln start (x3) "
-"och slutet (x0) kommer automatiskt att sträckas eller skevas för att "
-"passa inom en 24-timmarsperiod och denna metod kommer att upprepas "
-"dagligen."
+"Definiera börvärdet över dagen baserat på en kubisk Bezier-kurva. Om du inte "
+"känner till en Bezier-kurva, rekommenderas att du använder <a href=\"https"
+"://www.desmos.com/calculator/cahqdxeshd\" target=\"_blank\">grafisk Bezier-"
+"kurvagenerator</a> och använd de 8 variablerna som skapas för 4 punkter (var "
+"och en uppsättning x och y). X-axeln start (x3) och slutet (x0) kommer "
+"automatiskt att sträckas eller skevas för att passa inom en 24-timmarsperiod "
+"och denna metod kommer att upprepas dagligen."
 
 #: mycodo_flask/templates/pages/method_options/build_daily_sine.html:3
 msgid ""
@@ -5530,7 +5530,7 @@ msgstr "Allmänna Inställningar"
 
 #: mycodo_flask/templates/settings/general.html:30
 msgid "Which page to land on after logging in"
-msgstr "Vilken sida ska landa efter efter inloggning"
+msgstr "Vilken sida ska landa efter inloggning"
 
 #: mycodo_flask/templates/settings/general.html:40
 msgid "Which page to land on after clicking brand link (top-corner link)"
@@ -5703,9 +5703,8 @@ msgid "User Settings"
 msgstr "Användarinställningar"
 
 #: mycodo_flask/templates/settings/users.html:20
-#, fuzzy
 msgid "Which page to land on for logging in"
-msgstr "Vilken sida ska landa efter efter inloggning"
+msgstr "Vilken sida ska landa efter inloggning"
 
 #: mycodo_flask/templates/settings/users.html:22
 msgid "Keypad"
@@ -6814,4 +6813,3 @@ msgstr ""
 #: widgets/widget_python_code.py:210
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr ""
-

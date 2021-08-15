@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: Mycodo1 8.11.0\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2021-06-11 10:19-0400\n"
-"PO-Revision-Date: 2021-06-11 14:13+0000\n"
+"PO-Revision-Date: 2021-07-16 13:11+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
+"Language-Team: German <http://translate.kylegabriel.com:8080/projects/mycodo/"
+"master/de/>\n"
 "Language: de\n"
-"Language-Team: German "
-"<http://translate.kylegabriel.com:8080/projects/mycodo/master/de/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.6.2\n"
 "Generated-By: Babel 2.9.0\n"
 
 #: config.py:51 config_translations.py:17
@@ -178,7 +179,7 @@ msgstr ""
 
 #: config.py:439
 msgid "DS-Type"
-msgstr ""
+msgstr "DS-Typ"
 
 #: config.py:466 config_devices_units.py:137
 #: mycodo_flask/templates/pages/function_options/conditional_options/gpio_state.html:8
@@ -328,7 +329,7 @@ msgstr ""
 
 #: config.py:702
 msgid "Send a value to the Output."
-msgstr ""
+msgstr "Einen Wert an den Augang senden."
 
 #: config.py:708
 msgid "Instruct the Output to dispense a volume."
@@ -402,19 +403,19 @@ msgstr ""
 
 #: config_devices_units.py:13
 msgid "Acceleration"
-msgstr ""
+msgstr "Beschleunigung"
 
 #: config_devices_units.py:17
 msgid "Acceleration (X)"
-msgstr ""
+msgstr "Beschleunigung (X)"
 
 #: config_devices_units.py:21
 msgid "Acceleration (Y)"
-msgstr ""
+msgstr "Beschleunigung (Y)"
 
 #: config_devices_units.py:25
 msgid "Acceleration (Z)"
-msgstr ""
+msgstr "Beschleunigung (Z)"
 
 #: config_devices_units.py:29
 msgid "ADC"
@@ -426,7 +427,7 @@ msgstr "Höhenlage"
 
 #: config_devices_units.py:37
 msgid "Angle"
-msgstr ""
+msgstr "Winkel"
 
 #: config_devices_units.py:41
 msgid "Battery"
@@ -620,7 +621,7 @@ msgstr "Spezifisches Volumen"
 
 #: config_devices_units.py:261
 msgid "Speed"
-msgstr ""
+msgstr "Geschwindigkeit"
 
 #: config_devices_units.py:265 mycodo_flask/forms/forms_calibration.py:72
 #: mycodo_flask/templates/pages/data_options/math_options/vapor_pressure_deficit.html:6
@@ -696,7 +697,7 @@ msgstr "Dezimal"
 
 #: config_devices_units.py:335
 msgid "Degree"
-msgstr ""
+msgstr "Grad"
 
 #: config_devices_units.py:338
 msgid "8-Bit Color"
@@ -824,7 +825,7 @@ msgstr ""
 
 #: config_devices_units.py:431
 msgid "Miles per hour"
-msgstr ""
+msgstr "Milen pro Stunde"
 
 #: config_devices_units.py:434
 msgid "Millivolt"
@@ -880,7 +881,7 @@ msgstr "Zweite"
 
 #: config_devices_units.py:482
 msgid "Steps"
-msgstr ""
+msgstr "Schritte"
 
 #: config_devices_units.py:485
 msgid "Microgram per cubic meter"
@@ -1292,7 +1293,7 @@ msgstr "Benutzer"
 #: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js_ready.html:60
 #: outputs/mqtt_value.py:31
 msgid "Value"
-msgstr ""
+msgstr "Wert"
 
 #: config_translations.py:195 config_translations.py:310
 #: config_translations.py:402 inputs/anyleaf_orp.py:52
@@ -1502,7 +1503,7 @@ msgstr "Invertieren Sie die Skala"
 
 #: config_translations.py:277
 msgid "Execute as User"
-msgstr ""
+msgstr "Ausführen als Benutzer"
 
 #: config_translations.py:278
 #: mycodo_flask/templates/pages/function_options/action_options/command.html:7
@@ -2044,7 +2045,7 @@ msgstr "Immer Min (Lower)"
 #: inputs/atlas_do.py:59 inputs/atlas_ec.py:72 inputs/atlas_orp.py:72
 #: inputs/atlas_ph.py:74
 msgid "Max Age"
-msgstr ""
+msgstr "maximales Alter"
 
 #: functions/average_last_multiple.py:84 functions/average_past_single.py:96
 #: functions/difference.py:85 functions/difference.py:105
@@ -2272,9 +2273,8 @@ msgid "Command Timeout"
 msgstr "Befehl Timeout"
 
 #: inputs/linux_command.py:63
-#, fuzzy
 msgid "Current Working Directory"
-msgstr "Das aktuelle Arbeitsverzeichnis der Shell-Umgebung."
+msgstr "Das aktuelle Arbeitsverzeichnis der Shell-Umgebung"
 
 #: inputs/mqtt_paho.py:76 inputs/mqtt_paho_json.py:86
 #: mycodo_flask/templates/pages/function_options/action_options/mqtt_publish.html:20
@@ -6859,4 +6859,3 @@ msgstr ""
 #: widgets/widget_python_code.py:210
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr ""
-

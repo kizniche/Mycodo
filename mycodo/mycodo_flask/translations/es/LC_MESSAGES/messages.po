@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
 "POT-Creation-Date: 2021-06-11 10:19-0400\n"
-"PO-Revision-Date: 2021-06-11 14:13+0000\n"
+"PO-Revision-Date: 2021-06-12 15:11+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
+"Language-Team: Spanish <http://translate.kylegabriel.com:8080/projects/"
+"mycodo/master/es/>\n"
 "Language: es\n"
-"Language-Team: Spanish "
-"<http://translate.kylegabriel.com:8080/projects/mycodo/master/es/>\n"
-"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.6.2\n"
 "Generated-By: Babel 2.9.0\n"
 
 #: config.py:51 config_translations.py:17
@@ -558,7 +559,7 @@ msgstr "Potencial de reducción de oxidación"
 
 #: config_devices_units.py:185
 msgid "PID P-Value"
-msgstr "Valor PID PID"
+msgstr "Valor P de PID"
 
 #: config_devices_units.py:189
 msgid "PID I-Value"
@@ -6845,7 +6846,7 @@ msgstr ""
 
 #: widgets/widget_pid.py:110
 msgid "Show Set Setpoint"
-msgstr "Mostrar Setpoint Setpoint"
+msgstr "Mostrar punto de ajuste"
 
 #: widgets/widget_pid.py:111
 msgid "Enable the setpoint to be set"
@@ -6874,4 +6875,3 @@ msgstr ""
 #: widgets/widget_python_code.py:210
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr ""
-

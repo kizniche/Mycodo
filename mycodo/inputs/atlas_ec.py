@@ -228,7 +228,8 @@ class InputModule(AbstractInput):
         else:
             self.atlas_device.query('O,SG,0')
 
-        self.logger.debug("Measurements enabled: {}".format(self.atlas_device.query('O?')))
+        self.logger.debug("Measurements enabled: {}".format(
+            self.atlas_device.query('O?')))
 
     def get_measurement(self):
         """ Gets the sensor's Electrical Conductivity measurement """
@@ -255,7 +256,8 @@ class InputModule(AbstractInput):
                 self.temperature_comp_meas_measurement_id,
                 max_age=self.max_age)
 
-            out_value = convert_from_x_to_y_unit(unit, "C", last_measurement[1])
+            out_value = convert_from_x_to_y_unit(
+                unit, "C", last_measurement[1])
 
             if last_measurement:
                 self.logger.debug(
@@ -295,7 +297,8 @@ class InputModule(AbstractInput):
         elif self.interface == 'I2C':
             ec_status, return_string = self.atlas_device.query('R')
             if ec_status == 'error':
-                self.logger.error("Sensor read unsuccessful: {err}".format(err=return_string))
+                self.logger.error("Sensor read unsuccessful: {err}".format(
+                    err=return_string))
 
         self.logger.debug("Return string: '{}'".format(return_string))
 
@@ -303,16 +306,24 @@ class InputModule(AbstractInput):
             # Multiple values returned
             index_place = 0
             return_list = return_string.split(',')
-            if self.is_enabled(0) and str_is_float(return_list[index_place]):
+            if (self.is_enabled(0) and
+                    len(return_list) > index_place and
+                    str_is_float(return_list[index_place])):
                 self.value_set(0, float(return_list[index_place]))
                 index_place += 1
-            if self.is_enabled(1) and str_is_float(return_list[index_place]):
+            if (self.is_enabled(1) and
+                    len(return_list) > index_place and
+                    str_is_float(return_list[index_place])):
                 self.value_set(1, float(return_list[index_place]))
                 index_place += 1
-            if self.is_enabled(2) and str_is_float(return_list[index_place]):
+            if (self.is_enabled(2) and
+                    len(return_list) > index_place and
+                    str_is_float(return_list[index_place])):
                 self.value_set(2, float(return_list[index_place]))
                 index_place += 1
-            if self.is_enabled(3) and str_is_float(return_list[index_place]):
+            if (self.is_enabled(3) and
+                    len(return_list) > index_place and
+                    str_is_float(return_list[index_place])):
                 self.value_set(3, float(return_list[index_place]))
         elif str_is_float(return_string):
             # Single value returned
