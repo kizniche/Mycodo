@@ -1557,10 +1557,17 @@ def get_camera_image_info():
     for each_camera in camera:
         camera_path = os.path.join(PATH_CAMERAS, '{uid}'.format(
             uid=each_camera.unique_id))
+
         if each_camera.path_still:
             still_path = each_camera.path_still
         else:
             still_path = os.path.join(camera_path, 'still')
+
+        if each_camera.path_timelapse:
+            tl_path = each_camera.path_timelapse
+        else:
+            tl_path = os.path.join(camera_path, 'timelapse')
+
         try:
             latest_still_img_full_path = max(glob.iglob(
                 '{path}/Still-{cam_id}-*.jpg'.format(
@@ -1581,10 +1588,6 @@ def get_camera_image_info():
         try:
             # Get list of timelapse filename sets for generating a video from images
             time_lapse_imgs[each_camera.unique_id] = []
-            if each_camera.path_timelapse:
-                tl_path = each_camera.path_timelapse
-            else:
-                tl_path = os.path.join(camera_path, 'timelapse')
             for i in os.listdir(tl_path):
                 if (os.path.isfile(os.path.join(tl_path, i)) and
                         i[:-10] not in time_lapse_imgs[each_camera.unique_id]):
@@ -1593,10 +1596,6 @@ def get_camera_image_info():
         except Exception:
             pass
 
-        if each_camera.path_timelapse:
-            tl_path = each_camera.path_timelapse
-        else:
-            tl_path = os.path.join(camera_path, 'timelapse')
         try:
             latest_time_lapse_img_full_path = max(glob.iglob(
                 '{path}/Timelapse-{cam_id}-*.jpg'.format(

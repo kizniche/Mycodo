@@ -10,9 +10,6 @@ from email.mime.text import MIMEText
 
 import os
 
-# from mycodo.utils.system_pi import cmd_output
-# from mycodo.utils.system_pi import set_user_grp
-
 logger = logging.getLogger("mycodo.notification")
 
 
@@ -57,11 +54,10 @@ def send_email(smtp_host, smtp_protocol, smtp_port, smtp_user, smtp_pass,
 
         # Create the enclosing (outer) message
         outer = MIMEMultipart()
-        if subject:
-            outer['Subject'] = subject
-        else:
-            outer['Subject'] = "Mycodo Notification ({})".format(
+        if not subject:
+            subject = "Mycodo Notification ({})".format(
                 socket.gethostname())
+        outer['Subject'] = subject
         outer['To'] = ', '.join(recipients)
         outer['From'] = smtp_email_from
         outer.preamble = 'You will not see this in a MIME-aware mail reader.\n'
@@ -133,6 +129,8 @@ def send_email(smtp_host, smtp_protocol, smtp_port, smtp_user, smtp_pass,
         return 0
 
         # Old code. It remains here to demonstrate how to encoding video for emailing
+        # from mycodo.utils.system_pi import cmd_output
+        # from mycodo.utils.system_pi import set_user_grp
         # if smtp_ssl:
         #     server = smtplib.SMTP_SSL(smtp_host, smtp_port)
         #     server.ehlo()
