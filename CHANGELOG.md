@@ -1,4 +1,4 @@
-## 8.12.0 (Unreleased)
+## 8.12.0 (2021-08-29)
 
 This release changes the way settings are saved, which requires a change to any custom Inputs/Outputs/Functions you have in use. If your custom module includes the seldom-used execute_at_modification() function (such as Mycodo/mycodo/inputs/python_code.py), you will need to change the parameters as well as the return variables.
 

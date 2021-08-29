@@ -72,7 +72,7 @@ Publish "on" or "off" (or any other strings of your choosing) to an MQTT server.
 ##### Force Command
 
 - Type: Boolean
-- Description: Always send the commad if instructed, regardless of the current state
+- Description: Always send the command if instructed, regardless of the current state
 
 ##### Current (Amps)
 
@@ -172,7 +172,7 @@ Publish a value to an MQTT server.
 - Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO)
 - Additional URL: [Link](https://www.electronicshub.org/raspberry-pi-l298n-interface-tutorial-control-dc-motor-l298n-raspberry-pi/)
 
-The L298N can control 2 DC motors. If these motors control peristaltic pumps, set the Flow Rate and the output can can be instructed to dispense volumes in addition to being turned on for durations.
+The L298N can control 2 DC motors. If these motors control peristaltic pumps, set the Flow Rate and the output can can be instructed to dispense volumes accurately in addition to being turned on for durations.
 
 #### Options
 
@@ -613,6 +613,63 @@ Controls the 4 or 8 channel Grove multichannel relay board.
 - Type: Decimal
 - Description: The current draw of the device being controlled
 
+### I/O Expander: MCP23017 (16 Channels): On/Off
+
+- Manufacturer: MICROCHIP
+- Interfaces: I<sup>2</sup>C
+- Output Types: On/Off
+- Dependencies: [pyusb](https://pypi.org/project/pyusb), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-mcp230xx](https://pypi.org/project/adafruit-circuitpython-mcp230xx)
+- Manufacturer URL: [Link](https://www.microchip.com/wwwproducts/en/MCP23017)
+- Datasheet URL: [Link](https://ww1.microchip.com/downloads/en/devicedoc/20001952c.pdf)
+- Product URL: [Link](https://www.amazon.com/Waveshare-MCP23017-Expansion-Interface-Expands/dp/B07P2H1NZG)
+
+Controls the 16 channels of the MCP23017.
+
+#### Options
+
+##### I<sup>2</sup>C Address
+
+- Type: Text
+- Description: The I2C address of the device
+
+##### I<sup>2</sup>C Bus
+
+- Type: Integer
+- Description: The I2C bus the device is connected to
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Description: A name to distinguish this from others
+
+##### Startup State
+
+- Type: Select
+- Description: Set the state of the GPIO when Mycodo starts
+
+##### Shutdown State
+
+- Type: Select
+- Description: Set the state of the GPIO when Mycodo shuts down
+
+##### On State
+
+- Type: Select
+- Options: \[**HIGH** | LOW\] (Default in **bold**)
+- Description: The state of the GPIO that corresponds to an On state
+
+##### Trigger Functions at Startup
+
+- Type: Boolean
+- Description: Whether to trigger functions when the output switches at startup
+
+##### Current (Amps)
+
+- Type: Decimal
+- Description: The current draw of the device being controlled
+
 ### I/O Expander: PCF8574 (8 Channels): On/Off
 
 - Manufacturer: Texas Instruments
@@ -856,6 +913,31 @@ Atlas Scientific peristaltic pumps can be set to dispense at their maximum rate 
 
 #### Actions
 
+##### Calibration: a calibration can be performed to increase the accuracy of the pump. It's a good idea to clear the calibration before calibrating. First, remove all air from the line by pumping the fluid you would like to calibrate to through the pump hose. Next, press Dispense Amount and the pump will be instructed to dispense 10 ml (unless you changed the default value). Measure how much fluid was actually dispensed, enter this value in the Actual Volume Dispensed (ml) field, and press Calibrate to Dispensed Amount. Now any further pump volumes dispensed should be accurate.
+
+##### Clear Calibration
+
+- Type: Button
+##### Volume to Dispense (ml)
+
+- Type: Decimal
+- Default Value: 10.0
+- Description: The volume (ml) that is instructed to be dispensed
+
+##### Dispense Amount
+
+- Type: Button
+##### Actual Volume Dispensed (ml)
+
+- Type: Decimal
+- Default Value: 10.0
+- Description: The actual volume (ml) that was dispensed
+
+##### Calibrate to Dispensed Amount
+
+- Type: Button
+##### The I2C address can be changed. Enter a new address in the 0xYY format (e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and change the I2C address option after setting the new address.
+
 ##### New I2C Address
 
 - Type: Text
@@ -1016,7 +1098,7 @@ Python 3 code will be executed when this output is turned on or off. The "duty_c
 ##### Force Command
 
 - Type: Boolean
-- Description: Always send the commad if instructed, regardless of the current state
+- Description: Always send the command if instructed, regardless of the current state
 
 ##### Current (Amps)
 
@@ -1071,7 +1153,7 @@ Commands will be executed in the Linux shell by the specified user when this out
 ##### Force Command
 
 - Type: Boolean
-- Description: Always send the commad if instructed, regardless of the current state
+- Description: Always send the command if instructed, regardless of the current state
 
 ##### Current (Amps)
 
@@ -1141,6 +1223,20 @@ Commands will be executed in the Linux shell by the specified user when the duty
 
 - Type: Decimal
 - Description: The current draw of the device being controlled
+
+### Spacer
+
+- Interfaces: Mycodo
+
+A spacer to organize Outputs.
+
+#### Options
+
+##### Color
+
+- Type: Text
+- Default Value: #000000
+- Description: The color of the name text
 
 ### Stepper Motor: Bipolar, Generic
 

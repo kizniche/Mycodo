@@ -16,9 +16,9 @@ Measurements
  - [Color (Red)](#color-red)
  - [Color (x)](#color-x)
  - [Color (y)](#color-y)
- - [CPU Load 15 min](#cpu-load-15-min)
- - [CPU Load 1 min](#cpu-load-1-min)
- - [CPU Load 5 min](#cpu-load-5-min)
+ - [CPU Load (15 min)](#cpu-load-15-min)
+ - [CPU Load (1 min)](#cpu-load-1-min)
+ - [CPU Load (5 min)](#cpu-load-5-min)
  - [Dewpoint](#dewpoint)
  - [Direction](#direction)
  - [Disk](#disk)
@@ -51,8 +51,11 @@ Measurements
  - [Volume Flow Rate](#volume-flow-rate)
  - [Resistance](#resistance)
  - [Revolutions](#revolutions)
+ - [Salinity](#salinity)
+ - [Specific Gravity](#specific-gravity)
  - [Speed](#speed)
  - [Temperature](#temperature)
+ - [Total Dissolved Solids](#total-dissolved-solids)
  - [Vapor Pressure Deficit](#vapor-pressure-deficit)
  - [Version](#version)
  - [VOC](#voc)
@@ -174,15 +177,15 @@ Measurements
 
 ### [Atlas Scientific: Atlas Color](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-color)
 
-## CPU Load 15 min
+## CPU Load (15 min)
 
 ### [System: CPU Load](/Mycodo/Supported-Inputs/#system-cpu-load)
 
-## CPU Load 1 min
+## CPU Load (1 min)
 
 ### [System: CPU Load](/Mycodo/Supported-Inputs/#system-cpu-load)
 
-## CPU Load 5 min
+## CPU Load (5 min)
 
 ### [System: CPU Load](/Mycodo/Supported-Inputs/#system-cpu-load)
 
@@ -276,6 +279,8 @@ Measurements
 
 ### [Generic: ADS1115: Analog pH/EC](/Mycodo/Supported-Inputs/#generic-ads1115-analog-ph-ec)
 
+### [Texas Instruments: ADS1256: Analog pH/EC](/Mycodo/Supported-Inputs/#texas-instruments-ads1256-analog-ph-ec)
+
 ### [Xiaomi: Miflora](/Mycodo/Supported-Inputs/#xiaomi-miflora)
 
 ## Electrical Current
@@ -295,6 +300,8 @@ Measurements
 ### [Texas Instruments: ADS1015](/Mycodo/Supported-Inputs/#texas-instruments-ads1015)
 
 ### [Texas Instruments: ADS1115](/Mycodo/Supported-Inputs/#texas-instruments-ads1115)
+
+### [Texas Instruments: ADS1256: Analog pH/EC](/Mycodo/Supported-Inputs/#texas-instruments-ads1256-analog-ph-ec)
 
 ### [Texas Instruments: ADS1256](/Mycodo/Supported-Inputs/#texas-instruments-ads1256)
 
@@ -380,6 +387,8 @@ Measurements
 
 ### [Generic: ADS1115: Analog pH/EC](/Mycodo/Supported-Inputs/#generic-ads1115-analog-ph-ec)
 
+### [Texas Instruments: ADS1256: Analog pH/EC](/Mycodo/Supported-Inputs/#texas-instruments-ads1256-analog-ph-ec)
+
 ## Length
 
 ### [Atlas Scientific: Atlas Color](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-color)
@@ -389,6 +398,8 @@ Measurements
 ### [STMicroelectronics: VL53L0X](/Mycodo/Supported-Inputs/#stmicroelectronics-vl53l0x)
 
 ### [STMicroelectronics: VL53L1X](/Mycodo/Supported-Inputs/#stmicroelectronics-vl53l1x)
+
+### [Silicon Labs: SI1145](/Mycodo/Supported-Inputs/#silicon-labs-si1145)
 
 ## Light
 
@@ -401,6 +412,8 @@ Measurements
 ### [Catnip Electronics: Chirp](/Mycodo/Supported-Inputs/#catnip-electronics-chirp)
 
 ### [ROHM: BH1750](/Mycodo/Supported-Inputs/#rohm-bh1750)
+
+### [Silicon Labs: SI1145](/Mycodo/Supported-Inputs/#silicon-labs-si1145)
 
 ### [Xiaomi: Miflora](/Mycodo/Supported-Inputs/#xiaomi-miflora)
 
@@ -497,6 +510,14 @@ Measurements
 ## Revolutions
 
 ### [Raspberry Pi: Signal (Revolutions)](/Mycodo/Supported-Inputs/#raspberry-pi-signal-revolutions)
+
+## Salinity
+
+### [Atlas Scientific: Atlas EC](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-ec)
+
+## Specific Gravity
+
+### [Atlas Scientific: Atlas EC](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-ec)
 
 ## Speed
 
@@ -613,6 +634,10 @@ Measurements
 ### [Xiaomi: Miflora](/Mycodo/Supported-Inputs/#xiaomi-miflora)
 
 ### [Xiaomi: Mijia LYWSD03MMC (ATC and non-ATC modes)](/Mycodo/Supported-Inputs/#xiaomi-mijia-lywsd03mmc-atc-and-non-atc-modes)
+
+## Total Dissolved Solids
+
+### [Atlas Scientific: Atlas EC](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-ec)
 
 ## Vapor Pressure Deficit
 

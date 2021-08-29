@@ -12,18 +12,24 @@ Displays a camera image or stream.
 
 Displays the status of a Function (if supported).
 
-### Gauge (Angular)
+### Gauge (Angular) [Highcharts]
 
+- Libraries: Highcharts
+- Dependencies: [unzip](https://packages.debian.org/buster/unzip), highcharts-9.1.2.js, highcharts-more-9.1.2.js
 
 Displays an angular gauge. Be sure to set the Maximum option to the last Stop High value for the gauge to display properly.
 
-### Gauge (Solid)
+### Gauge (Solid) [Highcharts]
 
+- Libraries: Highcharts
+- Dependencies: [unzip](https://packages.debian.org/buster/unzip), highcharts-9.1.2.js, highcharts-more-9.1.2.js, solid-gauge-9.1.2.js
 
 Displays a solid gauge. Be sure to set the Maximum option to the last Stop value for the gauge to display properly.
 
-### Graph (Synchronous)
+### Graph (Synchronous) [Highstock]
 
+- Libraries: Highstock
+- Dependencies: [unzip](https://packages.debian.org/buster/unzip), highstock-9.1.2.js, highcharts-more-9.1.2.js, data-9.1.2.js, exporting-9.1.2.js, export-data-9.1.2.js, offline-exporting-9.1.2.js
 
 Displays a synchronous graph (all data is downloaded for the selected period on the x-axis).
 

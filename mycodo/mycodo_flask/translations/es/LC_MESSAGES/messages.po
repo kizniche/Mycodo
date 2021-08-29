@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mycodo VERSION\n"
 "Report-Msgid-Bugs-To: mycodo@kylegabriel.com\n"
-"POT-Creation-Date: 2021-08-14 21:51-0400\n"
+"POT-Creation-Date: 2021-08-29 17:48-0400\n"
 "PO-Revision-Date: 2021-06-12 15:11+0000\n"
 "Last-Translator: Kyle Gabriel <kyletgabriel@gmail.com>\n"
 "Language: es\n"
@@ -17,7 +17,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.8.0\n"
+"Generated-By: Babel 2.9.1\n"
 
 #: config.py:51 config_translations.py:17
 #: mycodo_flask/templates/pages/function.html:64
@@ -283,12 +283,10 @@ msgid "Color"
 msgstr ""
 
 #: config.py:683 config_translations.py:123
-#: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:24
 msgid "Off"
 msgstr "Apague"
 
 #: config.py:691 config_translations.py:125
-#: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:22
 msgid "On"
 msgstr "Encienda"
 
@@ -1032,9 +1030,6 @@ msgid "Energy Usage"
 msgstr "Uso de energía"
 
 #: config_translations.py:77 mycodo_flask/templates/flash_messages.html:46
-#: mycodo_flask/templates/user_templates/widget_template_widget_measurement_js.html:49
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:58
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:69
 msgid "Error"
 msgstr "Error"
 
@@ -1196,7 +1191,6 @@ msgid "Reorder"
 msgstr "Reordenar"
 
 #: config_translations.py:149 mycodo_flask/forms/forms_lcd.py:112
-#: mycodo_flask/templates/user_templates/widget_template_widget_graph_synchronous_title_bar.html:11
 msgid "Reset"
 msgstr "Reiniciar"
 
@@ -1307,7 +1301,6 @@ msgstr "Usuario"
 #: config_translations.py:193 config_translations.py:307
 #: mycodo_flask/templates/pages/function_options/action_options/output_value.html:16
 #: mycodo_flask/templates/pages/function_options/action_options/output_value.html:18
-#: mycodo_flask/templates/user_templates/widget_template_widget_indicator_js.html:60
 #: outputs/mqtt_value.py:31
 msgid "Value"
 msgstr ""
@@ -2453,19 +2446,19 @@ msgstr ""
 msgid "Successfully logged out"
 msgstr "Cerrado con éxito"
 
-#: mycodo_flask/routes_general.py:1037 mycodo_flask/routes_general.py:1051
+#: mycodo_flask/routes_general.py:1044 mycodo_flask/routes_general.py:1058
 msgid "Command to restart the daemon sent"
 msgstr "Comando para reiniciar el daemon enviado"
 
-#: mycodo_flask/routes_general.py:1040 mycodo_flask/routes_general.py:1053
+#: mycodo_flask/routes_general.py:1047 mycodo_flask/routes_general.py:1060
 msgid "Command to reload the frontend sent"
 msgstr "Comando para volver a cargar la interfaz enviada"
 
-#: mycodo_flask/routes_general.py:1047
+#: mycodo_flask/routes_general.py:1054
 msgid "System rebooting in 10 seconds"
 msgstr "Reinicio del sistema en 10 segundos"
 
-#: mycodo_flask/routes_general.py:1049
+#: mycodo_flask/routes_general.py:1056
 msgid "System shutting down in 10 seconds"
 msgstr "El sistema se apaga en 10 segundos"
 
@@ -3832,8 +3825,6 @@ msgstr "No se puede verificar el estado de Daemon"
 
 #: mycodo_flask/templates/layout.html:125
 #: mycodo_flask/templates/pages/output.html:112
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:105
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:116
 msgid "No Connection"
 msgstr "Sin Conexión"
 
@@ -4447,11 +4438,6 @@ msgstr "Métodos Almacenados"
 #: mycodo_flask/templates/pages/function_options/trigger_entry.html:24
 #: mycodo_flask/templates/pages/output.html:95
 #: mycodo_flask/templates/pages/output.html:97
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:92
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:94
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:103
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:105
-#: mycodo_flask/templates/user_templates/widget_template_widget_pid_js.html:132
 msgid "Active"
 msgstr "Activar"
 
@@ -4460,9 +4446,6 @@ msgstr "Activar"
 #: mycodo_flask/templates/pages/function_options/pid_entry.html:28
 #: mycodo_flask/templates/pages/function_options/trigger_entry.html:25
 #: mycodo_flask/templates/pages/output.html:101
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_js.html:99
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_js.html:110
-#: mycodo_flask/templates/user_templates/widget_template_widget_pid_js.html:167
 msgid "Inactive"
 msgstr "Desactivar"
 
@@ -4531,7 +4514,6 @@ msgstr ""
 #: mycodo_flask/templates/pages/data_options/input_options.html:135
 #: mycodo_flask/templates/pages/function_options/custom_function_options.html:132
 #: mycodo_flask/templates/pages/output_options.html:102
-#: mycodo_flask/templates/user_templates/widget_template_widget_graph_synchronous_title_bar.html:18
 msgid "Options"
 msgstr ""
 
@@ -4738,7 +4720,6 @@ msgid "Conditions"
 msgstr "Condiciones"
 
 #: mycodo_flask/templates/pages/function_options/pid_entry.html:26
-#: mycodo_flask/templates/user_templates/widget_template_widget_pid_js.html:61
 msgid "Paused"
 msgstr "Pausar"
 
@@ -5840,53 +5821,6 @@ msgstr "Buscar"
 msgid "Found"
 msgstr "Encontró"
 
-#: mycodo_flask/templates/user_templates/widget_template_widget_graph_synchronous_title_bar.html:8
-msgid "Update"
-msgstr ""
-
-#: mycodo_flask/templates/user_templates/widget_template_widget_graph_synchronous_title_bar.html:14
-msgid "Hide"
-msgstr ""
-
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_body.html:60
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_pwm_slider_body.html:49
-msgid "PWM On"
-msgstr ""
-
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_body.html:72
-#, fuzzy
-msgid "Out"
-msgstr "Terminar la sesión"
-
-#: mycodo_flask/templates/user_templates/widget_template_widget_output_body.html:75
-#, fuzzy
-msgid "Sec On"
-msgstr "segundos"
-
-#: mycodo_flask/templates/user_templates/widget_template_widget_pid_body.html:67
-#, fuzzy
-msgid "A numerical value to set the PID setpoint"
-msgstr "El valor para establecer el punto de ajuste PID"
-
-#: mycodo_flask/templates/user_templates/widget_template_widget_pid_body.html:70
-#, fuzzy
-msgid "Set Setpoint"
-msgstr "consigna aumento"
-
-#: mycodo_flask/templates/user_templates/widget_template_widget_pid_js.html:97
-msgid "Held"
-msgstr ""
-
-#: mycodo_flask/templates/user_templates/widget_template_widget_python_code_js.html:10
-msgid "NO DATA ERROR"
-msgstr ""
-
-#: mycodo_flask/templates/user_templates/widget_template_widget_python_code_js.html:13
-#: mycodo_flask/templates/user_templates/widget_template_widget_python_code_js.html:17
-#, fuzzy
-msgid "CONNECTION ERROR"
-msgstr "Sin Conexión"
-
 #: mycodo_flask/utils/utils_conditional.py:89
 #: mycodo_flask/utils/utils_conditional.py:254
 #: mycodo_flask/utils/utils_trigger.py:150
@@ -6618,4 +6552,34 @@ msgstr ""
 #: widgets/widget_python_code.py:212
 msgid "Python code to execute every dashboard/widget refresh"
 msgstr ""
+
+#~ msgid "Update"
+#~ msgstr ""
+
+#~ msgid "Hide"
+#~ msgstr ""
+
+#~ msgid "PWM On"
+#~ msgstr ""
+
+#~ msgid "Out"
+#~ msgstr "Terminar la sesión"
+
+#~ msgid "Sec On"
+#~ msgstr "segundos"
+
+#~ msgid "A numerical value to set the PID setpoint"
+#~ msgstr "El valor para establecer el punto de ajuste PID"
+
+#~ msgid "Set Setpoint"
+#~ msgstr "consigna aumento"
+
+#~ msgid "Held"
+#~ msgstr ""
+
+#~ msgid "NO DATA ERROR"
+#~ msgstr ""
+
+#~ msgid "CONNECTION ERROR"
+#~ msgstr "Sin Conexión"
 

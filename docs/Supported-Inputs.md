@@ -44,7 +44,7 @@ This Input will execute a command in the shell and store the output as a float v
 - Default Value: mycodo
 - Description: The user to execute the command
 
-##### CWD
+##### Current Working Directory
 
 - Type: Text
 - Default Value: /home/pi
@@ -90,10 +90,10 @@ All channels require a Measurement Unit to be selected and saved in order to sto
 - Manufacturer: Mycodo
 - Measurements: Variable measurements
 - Interfaces: Mycodo
-- Libraries: paho-mqtt
-- Dependencies: [paho-mqtt](https://pypi.org/project/paho-mqtt)
+- Libraries: paho-mqtt, jmespath
+- Dependencies: [paho-mqtt](https://pypi.org/project/paho-mqtt), [jmespath](https://pypi.org/project/jmespath)
 
-A single topic is subscribed to and the returned JSON payload contains one or more key/value pairs. If the set JSON Key exists in the payload, the corresponding value will be stored for that channel. Be sure you select and save the Measurement Unit for each of channels. Once the unit has been saved, you can convert to other units in the Convert Measurement section.
+A single topic is subscribed to and the returned JSON payload contains one or more key/value pairs. The given JSON Key is used as a JMESPATH expression to find the corresponding value that will be stored for that channel. Be sure you select and save the Measurement Unit for each channel. Once the unit has been saved, you can convert to other units in the Convert Measurement section. Example expressions for jmespath (https://jmespath.org) include <i>temperature</i>, <i>sensors[0].temperature</i>, and <i>bathroom.temperature</i> which refer to the temperature as a direct key within the first entry of sensors or as a subkey of bathroom, respectively. Jmespath elements and keys that contain special characters have to be enclosed in double quotes, e.g. <i>"sensor-1".temperature</i>.
 
 #### Options
 
@@ -163,9 +163,9 @@ A single topic is subscribed to and the returned JSON payload contains one or mo
 ##### JSON Key
 
 - Type: Text
-- Description: JSON Key for the value to be stored
+- Description: JMES Path expression to find value in JSON response
 
-### Mycodo: MQTT Subscribe (value payload)
+### Mycodo: MQTT Subscribe (Value payload)
 
 - Manufacturer: Mycodo
 - Measurements: Variable measurements
@@ -271,6 +271,21 @@ A topic is subscribed to for each channel Subscription Topic and the returned pa
 - Type: Decimal
 - Description: The duration (seconds) between measurements or actions
 
+### Mycodo: Spacer
+
+- Manufacturer: Mycodo
+- Interfaces: Mycodo
+
+A spacer to organize Inputs.
+
+#### Options
+
+##### Color
+
+- Type: Text
+- Default Value: #000000
+- Description: The color of the name text
+
 ### Mycodo: TTN Integration: Data Storage
 
 - Manufacturer: Mycodo
@@ -369,11 +384,6 @@ The internal CPU and GPU temperature of the Raspberry Pi.
 - Dependencies: [RPi.GPIO](https://pypi.org/project/RPi.GPIO)
 
 #### Options
-
-##### Period (seconds)
-
-- Type: Decimal
-- Description: The duration (seconds) between measurements or actions
 
 ##### Pre Output
 
@@ -1264,17 +1274,17 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Type: Decimal
 - Description: The duration (seconds) between measurements or actions
 
-##### Temperature Compensation Measurement
+##### Temperature Compensation: Measurement
 
 - Type: Select Measurement
 - Selections: Input, Function, Math, 
 - Description: Select a measurement for temperature compensation
 
-##### Temperature Compensation Max Age
+##### Temperature Compensation: Max Age
 
 - Type: Integer
 - Default Value: 120
-- Description: The maximum age (seconds) of the measurement to use for temperature compensation
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Cal data: V1 (internal)
 
@@ -1554,11 +1564,17 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
-##### Calibrate: Max Age
+##### Temperature Compensation: Measurement
+
+- Type: Select Measurement
+- Selections: Input, Function, Math, 
+- Description: Select a measurement for temperature compensation
+
+##### Temperature Compensation: Max Age
 
 - Type: Integer
 - Default Value: 120
-- Description: The Max Age (seconds) of the measurement to use for calibration
+- Description: The maximum age (seconds) of the measurement to use
 
 #### Actions
 
@@ -1616,6 +1632,11 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 - Type: Text
 - Description: The UART device location (e.g. /dev/ttyUSB1)
 
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
 ##### Period (seconds)
 
 - Type: Decimal
@@ -1646,9 +1667,46 @@ This Input executes the bash command "nc -zv [host] [port]" to determine if the 
 
 - Type: Integer
 - Default Value: 120
-- Description: The maximum age (seconds) of the measurement to use for temperature compensation
+- Description: The maximum age (seconds) of the measurement to use
 
 #### Actions
+
+##### Calibration: a one- or two-point calibration can be performed. It's a good idea to clear the calibration before calibrating. Always perform a dry calibration with the probe in the air (not in any fluid). Then perform either a one- or two-point calibration with calibrated solutions. If performing a one-point calibration, use the Single Point Calibration field and button. If performing a two-point calibration, use the Low and High Point Calibration fields and buttons. Allow a minute or two after submerging your probe in a calibration solution for the measurements to equilibrate before calibrating to that solution. The EZO EC circuit default temperature compensation is set to 25 °C. If the temperature of the calibration solution is +/- 2 °C from 25 °C, consider setting the temperature compensation first. Note that at no point should you change the temperature compensation value during calibration. Therefore, if you have previously enabled temperature compensation, allow at least one measurement to occur (to set the compensation value), then disable the temperature compensation measurement while you calibrate.
+
+##### Clear Calibration
+
+- Type: Button
+##### Calibrate Dry
+
+- Type: Button
+##### Single Point EC (µS)
+
+- Type: Integer
+- Default Value: 84
+- Description: The EC (µS) of the single point calibration solution
+
+##### Calibrate Single Point
+
+- Type: Button
+##### Low Point EC (µS)
+
+- Type: Integer
+- Default Value: 12880
+- Description: The EC (µS) of the low point calibration solution
+
+##### Calibrate Low Point
+
+- Type: Button
+##### High Point EC (µS)
+
+- Type: Integer
+- Default Value: 80000
+- Description: The EC (µS) of the high point calibration solution
+
+##### Calibrate High Point
+
+- Type: Button
+##### The I2C address can be changed. Enter a new address in the 0xYY format (e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and change the I2C address option after setting the new address.
 
 ##### New I2C Address
 
@@ -1901,7 +1959,7 @@ Set the Measurement Time Base to a value most appropriate for your anticipated f
 
 - Type: Integer
 - Default Value: 120
-- Description: The maximum age (seconds) of the measurement to use for temperature compensation
+- Description: The maximum age (seconds) of the measurement to use
 
 #### Actions
 
@@ -2126,11 +2184,11 @@ Calibration Measurement is an optional setting that provides a temperature measu
 
 - Type: Integer
 - Default Value: 120
-- Description: The maximum age (seconds) of the measurement to use for temperature compensation
+- Description: The maximum age (seconds) of the measurement to use
 
 #### Actions
 
-##### Calibration: a one-, two- or three-point calibration can be performed. The first calibration must be the Mid point. The second must be the Low point. And the third must be the High point. You can perform a one-, two- or three-point calibration, but they must be performed in this order. Allow a minute or two after submerging your probe in a calibration solution for the measurements to equilibrate before calibrating to that solution. The EZO pH circuit default temperature compensation is set to 25 °C. If the temperature of the calibration solution is +/- 2 °C from 25 °C, consider setting the temperature compensation first. Note that if you have a Temperature Compensation Measurement selected from the Options, this will overwrite the manual Temperature Compensation set here, so be sure to disable this option if you would like to specify the temperature to compensate with.
+##### Calibration: a one-, two- or three-point calibration can be performed. It's a good idea to clear the calibration before calibrating. The first calibration must be the Mid point. The second must be the Low point. And the third must be the High point. You can perform a one-, two- or three-point calibration, but they must be performed in this order. Allow a minute or two after submerging your probe in a calibration solution for the measurements to equilibrate before calibrating to that solution. The EZO pH circuit default temperature compensation is set to 25 °C. If the temperature of the calibration solution is +/- 2 °C from 25 °C, consider setting the temperature compensation first. Note that if you have a Temperature Compensation Measurement selected from the Options, this will overwrite the manual Temperature Compensation set here, so be sure to disable this option if you would like to specify the temperature to compensate with.
 
 ##### Compensation Temperature (°C)
 
@@ -2838,7 +2896,7 @@ This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH 
 
 - Type: Integer
 - Default Value: 120
-- Description: The maximum age (seconds) of the measurement to use for temperature compensation
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### pH Calibration Data
 
@@ -3031,6 +3089,18 @@ This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+#### Actions
+
+##### Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).
+
+##### Resolution
+
+- Type: Select
+- Description: Select the resolution for the sensor
+
+##### Set Resolution
+
+- Type: Button
 ### MAXIM: DS1825
 
 - Manufacturer: MAXIM
@@ -3063,6 +3133,18 @@ This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+#### Actions
+
+##### Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).
+
+##### Resolution
+
+- Type: Select
+- Description: Select the resolution for the sensor
+
+##### Set Resolution
+
+- Type: Button
 ### MAXIM: DS18B20
 
 - Manufacturer: MAXIM
@@ -3135,6 +3217,18 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+#### Actions
+
+##### Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).
+
+##### Resolution
+
+- Type: Select
+- Description: Select the resolution for the sensor
+
+##### Set Resolution
+
+- Type: Button
 ### MAXIM: DS18S20
 
 - Manufacturer: MAXIM
@@ -3167,6 +3261,18 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+#### Actions
+
+##### Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).
+
+##### Resolution
+
+- Type: Select
+- Description: Select the resolution for the sensor
+
+##### Set Resolution
+
+- Type: Button
 ### MAXIM: DS28EA00
 
 - Manufacturer: MAXIM
@@ -3199,6 +3305,18 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+#### Actions
+
+##### Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).
+
+##### Resolution
+
+- Type: Select
+- Description: Select the resolution for the sensor
+
+##### Set Resolution
+
+- Type: Button
 ### MAXIM: MAX31850K
 
 - Manufacturer: MAXIM
@@ -3232,6 +3350,18 @@ Warning: Counterfeit DS18B20 sensors are common and can cause a host of issues. 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+#### Actions
+
+##### Set the resolution, precision, and response time for the sensor. This setting will be written to the EEPROM to allow persistence after power loss. The EEPROM has a limited amount of writes (>50k).
+
+##### Resolution
+
+- Type: Select
+- Description: Select the resolution for the sensor
+
+##### Set Resolution
+
+- Type: Button
 ### MAXIM: MAX31855
 
 - Manufacturer: MAXIM
@@ -3860,7 +3990,7 @@ This module acquires measurements from the Raspberry Pi Sense HAT sensors, which
 
 - Type: Select
 - Options: \[**Good Accuracy (33 ms, 1.2 m range)** | Better Accuracy (66 ms, 1.2 m range) | Best Accuracy (200 ms, 1.2 m range) | Long Range (33 ms, 2 m) | High Speed, Low Accuracy (20 ms, 1.2 m)\] (Default in **bold**)
-- Description: Set the accuracy. A longer measurement duration yields a more accurate measurement.
+- Description: Set the accuracy. A longer measurement duration yields a more accurate measurement
 
 #### Actions
 
@@ -4341,6 +4471,54 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Default Value: 600
 - Description: Set the logging interval (seconds) the device will store measurements on its internal memory.
 
+### Silicon Labs: SI1145
+
+- Manufacturer: Silicon Labs
+- Measurements: Light (UV/Visible/IR), Proximity (cm)
+- Interfaces: I<sup>2</sup>C
+- Libraries: si1145
+- Dependencies: [SI1145](https://pypi.org/project/SI1145)
+- Manufacturer URL: [Link](https://learn.adafruit.com/adafruit-si1145-breakout-board-uv-ir-visible-sensor)
+- Datasheet URL: [Link](https://www.silabs.com/support/resources.p-sensors_optical-sensors_si114x)
+- Product URL: [Link](https://www.adafruit.com/product/1777)
+
+#### Options
+
+##### I<sup>2</sup>C Address
+
+- Type: Text
+- Description: The I2C address of the device
+
+##### I<sup>2</sup>C Bus
+
+- Type: Integer
+- Description: The I2C bus the device is connected to
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
 ### Sonoff: TH16/10 (Tasmota firmware) with AM2301
 
 - Manufacturer: Sonoff
@@ -4617,6 +4795,192 @@ This input queries the energy usage information from a WiFi outlet that is runni
 - Default Value: 5
 - Description: The number of times to measure each channel. An average of the measurements will be stored.
 
+### Texas Instruments: ADS1256: Analog pH/EC
+
+- Manufacturer: Texas Instruments
+- Measurements: Ion Concentration/Electrical Conductivity
+- Interfaces: UART
+- Libraries: wiringpi, kizniche/PiPyADC-py3
+- Dependencies: [wiringpi](https://pypi.org/project/wiringpi), [pipyadc_py3](https://github.com/kizniche/PiPyADC-py3)
+
+This input relies on an ADS1256 analog-to-digital converter (ADC) to measure pH and/or electrical conductivity (EC) from analog sensors. You can enable or disable either measurement if you want to only connect a pH sensor or an EC sensor by selecting which measurements you want to under Measurements Enabled. Select which channel each sensor is connected to on the ADC. There are default calibration values initially set for the Input. There are also functions to allow you to easily calibrate your sensors with calibration solutions. If you use the Calibrate Slot actions, these values will be calculated and will replace the currently-set values. You can use the Clear Calibration action to delete the database values and return to using the default values. If you delete the Input or create a new Input to use your ADC/sensors with, you will need to recalibrate in order to store new calibration data.
+
+#### Options
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### ADC Channel: pH
+
+- Type: Select
+- Options: \[Not Connected | **Channel 0** | Channel 1 | Channel 2 | Channel 3 | Channel 4 | Channel 5 | Channel 6 | Channel 7\] (Default in **bold**)
+- Description: The ADC channel the pH sensor is connected
+
+##### ADC Channel: EC
+
+- Type: Select
+- Options: \[Not Connected | Channel 0 | **Channel 1** | Channel 2 | Channel 3 | Channel 4 | Channel 5 | Channel 6 | Channel 7\] (Default in **bold**)
+- Description: The ADC channel the EC sensor is connected
+
+##### Temperature Compensation
+
+##### Temperature Compensation: Measurement
+
+- Type: Select Measurement
+- Selections: Input, Function, Math, 
+- Description: Select a measurement for temperature compensation
+
+##### Temperature Compensation: Max Age
+
+- Type: Integer
+- Default Value: 120
+- Description: The maximum age (seconds) of the measurement to use
+
+##### pH Calibration Data
+
+##### Cal data: V1 (internal)
+
+- Type: Decimal
+- Default Value: 1.5
+- Description: Calibration data: Voltage
+
+##### Cal data: pH1 (internal)
+
+- Type: Decimal
+- Default Value: 7.0
+- Description: Calibration data: pH
+
+##### Cal data: T1 (internal)
+
+- Type: Decimal
+- Default Value: 25.0
+- Description: Calibration data: Temperature
+
+##### Cal data: V2 (internal)
+
+- Type: Decimal
+- Default Value: 2.032
+- Description: Calibration data: Voltage
+
+##### Cal data: pH2 (internal)
+
+- Type: Decimal
+- Default Value: 4.0
+- Description: Calibration data: pH
+
+##### Cal data: T2 (internal)
+
+- Type: Decimal
+- Default Value: 25.0
+- Description: Calibration data: Temperature
+
+##### EC Calibration Data
+
+##### EC cal data: V1 (internal)
+
+- Type: Decimal
+- Default Value: 0.232
+- Description: EC calibration data: Voltage
+
+##### EC cal data: EC1 (internal)
+
+- Type: Decimal
+- Default Value: 1413.0
+- Description: EC calibration data: EC
+
+##### EC cal data: T1 (internal)
+
+- Type: Decimal
+- Default Value: 25.0
+- Description: EC calibration data: EC
+
+##### EC cal data: V2 (internal)
+
+- Type: Decimal
+- Default Value: 2.112
+- Description: EC calibration data: Voltage
+
+##### EC cal data: EC2 (internal)
+
+- Type: Decimal
+- Default Value: 12880.0
+- Description: EC calibration data: EC
+
+##### EC cal data: T2 (internal)
+
+- Type: Decimal
+- Default Value: 25.0
+- Description: EC calibration data: EC
+
+##### Calibration
+
+- Type: Select
+- Description: Set the calibration method to perform during Input activation
+
+#### Actions
+
+##### pH Calibration Actions: Place your probe in a solution of known pH.
+            Set the known pH value in the `Calibration buffer pH` field, and press `Calibrate pH, slot 1`.
+            Repeat with a second buffer, and press `Calibrate pH, slot 2`.
+            You don't need to change the values under `Custom Options`.
+
+##### Calibration buffer pH
+
+- Type: Decimal
+- Default Value: 7.0
+- Description: This is the nominal pH of the calibration buffer, usually labelled on the bottle.
+
+##### Calibrate pH, slot 1
+
+- Type: Button
+##### Calibrate pH, slot 2
+
+- Type: Button
+##### Clear pH Calibration Slots
+
+- Type: Button
+##### EC Calibration Actions: Place your probe in a solution of known EC.
+            Set the known EC value in the `Calibration standard EC` field, and press `Calibrate EC, slot 1`.
+            Repeat with a second standard, and press `Calibrate EC, slot 2`.
+            You don't need to change the values under `Custom Options`.
+
+##### Calibration standard EC
+
+- Type: Decimal
+- Default Value: 1413.0
+- Description: This is the nominal EC of the calibration standard, usually labelled on the bottle.
+
+##### Calibrate EC, slot 1
+
+- Type: Button
+##### Calibrate EC, slot 2
+
+- Type: Button
+##### Clear EC Calibration Slots
+
+- Type: Button
 ### Texas Instruments: ADS1256
 
 - Manufacturer: Texas Instruments
@@ -4807,7 +5171,7 @@ The Adafruit_ADS1x15 is deprecated. It's advised to use The Circuit Python ADS1x
 
 - Type: Integer
 - Default Value: 5
-- Description: The number of times to measure. An average of the measurements will be stored.
+- Description: The number of times to measure each channel. An average of the measurements will be stored.
 
 ##### Calibration Range
 

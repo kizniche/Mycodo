@@ -21,11 +21,11 @@ This function acquires the last measurement of those that are selected, averages
 - Default Value: 10
 - Description: The duration (seconds) to wait before the first operation
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of the measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement
 
@@ -56,11 +56,11 @@ This function acquires the past measurements (within Max Age) for the selected m
 - Selections: Input, Math, Function, 
 - Description: Measurement to replace "x" in the equation
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of the measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ### Backup to Remote Host (rsync)
 
@@ -144,6 +144,12 @@ This function will use rsync to back up assets on this system to a remote system
 
 - Type: Boolean
 - Description: Remove local camera images after successful transfer to remote host
+
+##### SSH Port
+
+- Type: Integer
+- Default Value: 22
+- Description: Specify a nonstandard SSH port
 
 #### Actions
 
@@ -325,25 +331,25 @@ This function acquires 2 measurements, calculates the difference, and stores the
 
 - Type: Select Measurement
 - Selections: Input, Math, Function, 
-- Description: Measurement A
+- Description: 
 
 ##### Measurement A Max Age
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of Measurement A
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement B
 
 - Type: Select Measurement
 - Selections: Input, Math, Function, 
-- Description: Measurement B
+- Description: 
 
 ##### Measurement B Max Age
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of Measurement B
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Reverse Order
 
@@ -403,7 +409,7 @@ This Function outputs to a generic 16x2 LCD display via I2C. Since this display 
 
 - Type: Decimal
 - Default Value: 360
-- Description: The maximum allowed age of the measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement Decimal
 
@@ -461,11 +467,11 @@ This Function outputs to a generic 20x4 LCD display via I2C. Since this display 
 - Selections: Input, Math, Function, Output, PID, 
 - Description: Measurement to display on the line
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Decimal
 - Default Value: 360
-- Description: The maximum allowed age of the measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement Decimal
 
@@ -547,11 +553,11 @@ This Function outputs to the Grove 16x2 LCD display via I2C. Since this display 
 - Selections: Input, Math, Function, Output, PID, 
 - Description: Measurement to display on the line
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Decimal
 - Default Value: 360
-- Description: The maximum allowed age of the measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement Decimal
 
@@ -565,11 +571,11 @@ This Function outputs to the Grove 16x2 LCD display via I2C. Since this display 
 - Default Value: Text
 - Description: Text to display
 
-### Display: SSD1306 OLED 128x32 (I2C)
+### Display: SSD1306 OLED 128x32 [2 Lines] (I2C)
 
 - Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
 
-This Function outputs to a 128x32 SSD1306 OLED display via I2C. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
+This Function outputs to a 128x32 SSD1306 OLED display via I2C. This display Function will show 2 lines at a time, so channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 1, then 2 - 3, and so on. After all channels have been displayed, it will cycle back to the beginning.
 
 #### Options
 
@@ -603,6 +609,29 @@ This Function outputs to a 128x32 SSD1306 OLED display via I2C. Since this displ
 - Default Value: 17
 - Description: The pin (BCM numbering) connected to RST of the display
 
+##### Characters Per Line
+
+- Type: Integer
+- Default Value: 17
+- Description: The maximum number of characters to display per line
+
+##### Use Non-Default Font
+
+- Type: Boolean
+- Description: Don't use the default font. Enable to specify the path to a font to use.
+
+##### Non-Default Font Path
+
+- Type: Text
+- Default Value: /usr/share/fonts/truetype/dejavu//DejaVuSans.ttf
+- Description: The path to the non-default font to use
+
+##### Font Size (pt)
+
+- Type: Integer
+- Default Value: 12
+- Description: The size of the font, in points
+
 #### Channel Options
 
 ##### Line Display Type
@@ -616,11 +645,11 @@ This Function outputs to a 128x32 SSD1306 OLED display via I2C. Since this displ
 - Selections: Input, Math, Function, Output, PID, 
 - Description: Measurement to display on the line
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Decimal
 - Default Value: 360
-- Description: The maximum allowed age of the measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement Decimal
 
@@ -634,11 +663,17 @@ This Function outputs to a 128x32 SSD1306 OLED display via I2C. Since this displ
 - Default Value: Text
 - Description: Text to display
 
-### Display: SSD1306 OLED 128x32 (SPI)
+##### Display Unit
 
-- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
+- Type: Boolean
+- Default Value: True
+- Description: Display the measurement unit (if available)
 
-This Function outputs to a 128x32 SSD1306 OLED display via SPI. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
+### Display: SSD1306 OLED 128x32 [2 Lines] (SPI)
+
+- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [Adafruit-GPIO](https://pypi.org/project/Adafruit-GPIO), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
+
+This Function outputs to a 128x32 SSD1306 OLED display via SPI. This display Function will show 2 lines at a time, so channels are added in sets of 2 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 1, then 2 - 3, and so on. After all channels have been displayed, it will cycle back to the beginning.
 
 #### Options
 
@@ -682,6 +717,29 @@ This Function outputs to a 128x32 SSD1306 OLED display via SPI. Since this displ
 - Default Value: 17
 - Description: The pin (BCM numbering) connected to CS of the display
 
+##### Characters Per Line
+
+- Type: Integer
+- Default Value: 17
+- Description: The maximum number of characters to display per line
+
+##### Use Non-Default Font
+
+- Type: Boolean
+- Description: Don't use the default font. Enable to specify the path to a font to use.
+
+##### Non-Default Font Path
+
+- Type: Text
+- Default Value: /usr/share/fonts/truetype/dejavu//DejaVuSans.ttf
+- Description: The path to the non-default font to use
+
+##### Font Size (pt)
+
+- Type: Integer
+- Default Value: 12
+- Description: The size of the font, in points
+
 #### Channel Options
 
 ##### Line Display Type
@@ -695,11 +753,11 @@ This Function outputs to a 128x32 SSD1306 OLED display via SPI. Since this displ
 - Selections: Input, Math, Function, Output, PID, 
 - Description: Measurement to display on the line
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Decimal
 - Default Value: 360
-- Description: The maximum allowed age of the measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement Decimal
 
@@ -713,11 +771,17 @@ This Function outputs to a 128x32 SSD1306 OLED display via SPI. Since this displ
 - Default Value: Text
 - Description: Text to display
 
-### Display: SSD1306 OLED 128x64 (I2C)
+##### Display Unit
+
+- Type: Boolean
+- Default Value: True
+- Description: Display the measurement unit (if available)
+
+### Display: SSD1306 OLED 128x32 [4 Lines] (I2C)
 
 - Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
 
-This Function outputs to a 128x64 SSD1306 OLED display via I2C. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
+This Function outputs to a 128x32 SSD1306 OLED display via I2C. This display Function will show 4 lines at a time, so channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 3, then 4 - 7, and so on. After all channels have been displayed, it will cycle back to the beginning.
 
 #### Options
 
@@ -751,6 +815,29 @@ This Function outputs to a 128x64 SSD1306 OLED display via I2C. Since this displ
 - Default Value: 17
 - Description: The pin (BCM numbering) connected to RST of the display
 
+##### Characters Per Line
+
+- Type: Integer
+- Default Value: 21
+- Description: The maximum number of characters to display per line
+
+##### Use Non-Default Font
+
+- Type: Boolean
+- Description: Don't use the default font. Enable to specify the path to a font to use.
+
+##### Non-Default Font Path
+
+- Type: Text
+- Default Value: /usr/share/fonts/truetype/dejavu//DejaVuSans.ttf
+- Description: The path to the non-default font to use
+
+##### Font Size (pt)
+
+- Type: Integer
+- Default Value: 10
+- Description: The size of the font, in points
+
 #### Channel Options
 
 ##### Line Display Type
@@ -764,11 +851,11 @@ This Function outputs to a 128x64 SSD1306 OLED display via I2C. Since this displ
 - Selections: Input, Math, Function, Output, PID, 
 - Description: Measurement to display on the line
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Decimal
 - Default Value: 360
-- Description: The maximum allowed age of the measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement Decimal
 
@@ -782,11 +869,17 @@ This Function outputs to a 128x64 SSD1306 OLED display via I2C. Since this displ
 - Default Value: Text
 - Description: Text to display
 
-### Display: SSD1306 OLED 128x64 (SPI)
+##### Display Unit
 
-- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
+- Type: Boolean
+- Default Value: True
+- Description: Display the measurement unit (if available)
 
-This Function outputs to a 128x64 SSD1306 OLED display via SPI. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
+### Display: SSD1306 OLED 128x32 [4 Lines] (SPI)
+
+- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [Adafruit-GPIO](https://pypi.org/project/Adafruit-GPIO), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
+
+This Function outputs to a 128x32 SSD1306 OLED display via SPI. This display Function will show 4 lines at a time, so channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 3, then 4 - 7, and so on. After all channels have been displayed, it will cycle back to the beginning.
 
 #### Options
 
@@ -830,6 +923,35 @@ This Function outputs to a 128x64 SSD1306 OLED display via SPI. Since this displ
 - Default Value: 17
 - Description: The pin (BCM numbering) connected to CS of the display
 
+##### Characters Per Line
+
+- Type: Integer
+- Default Value: 21
+- Description: The maximum number of characters to display per line
+
+##### Use Non-Default Font
+
+- Type: Boolean
+- Description: Don't use the default font. Enable to specify the path to a font to use.
+
+##### Non-Default Font Path
+
+- Type: Text
+- Default Value: /usr/share/fonts/truetype/dejavu//DejaVuSans.ttf
+- Description: The path to the non-default font to use
+
+##### Font Size (pt)
+
+- Type: Integer
+- Default Value: 10
+- Description: The size of the font, in points
+
+##### Display Unit
+
+- Type: Boolean
+- Default Value: True
+- Description: Display the measurement unit (if available)
+
 #### Channel Options
 
 ##### Line Display Type
@@ -843,11 +965,11 @@ This Function outputs to a 128x64 SSD1306 OLED display via SPI. Since this displ
 - Selections: Input, Math, Function, Output, PID, 
 - Description: Measurement to display on the line
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Decimal
 - Default Value: 360
-- Description: The maximum allowed age of the measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement Decimal
 
@@ -861,11 +983,429 @@ This Function outputs to a 128x64 SSD1306 OLED display via SPI. Since this displ
 - Default Value: Text
 - Description: Text to display
 
-### Display: SSD1309 OLED 128x64 (I2C)
+##### Display Unit
+
+- Type: Boolean
+- Default Value: True
+- Description: Display the measurement unit (if available)
+
+### Display: SSD1306 OLED 128x64 [4 Lines] (I2C)
+
+- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
+
+This Function outputs to a 128x64 SSD1306 OLED display via I2C. This display Function will show 4 lines at a time, so channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 3, then 4 - 7, and so on. After all channels have been displayed, it will cycle back to the beginning.
+
+#### Options
+
+##### Period (seconds)
+
+- Type: Decimal
+- Default Value: 10
+- Description: The duration (seconds) between measurements or actions
+
+##### I2C Address
+
+- Type: Text
+- Default Value: 0x3c
+- Description: The I2C address of the device
+
+##### I2C Bus
+
+- Type: Integer
+- Default Value: 1
+- Description: The I2C bus the device is connected to
+
+##### Number of Line Sets
+
+- Type: Integer
+- Default Value: 1
+- Description: How many sets of lines to cycle on the LCD
+
+##### Reset Pin
+
+- Type: Integer
+- Default Value: 17
+- Description: The pin (BCM numbering) connected to RST of the display
+
+##### Characters Per Line
+
+- Type: Integer
+- Default Value: 17
+- Description: The maximum number of characters to display per line
+
+##### Use Non-Default Font
+
+- Type: Boolean
+- Description: Don't use the default font. Enable to specify the path to a font to use.
+
+##### Non-Default Font Path
+
+- Type: Text
+- Default Value: /usr/share/fonts/truetype/dejavu//DejaVuSans.ttf
+- Description: The path to the non-default font to use
+
+##### Font Size (pt)
+
+- Type: Integer
+- Default Value: 12
+- Description: The size of the font, in points
+
+#### Channel Options
+
+##### Line Display Type
+
+- Type: Select
+- Description: What to display on the line
+
+##### Measurement
+
+- Type: Select Measurement
+- Selections: Input, Math, Function, Output, PID, 
+- Description: Measurement to display on the line
+
+##### Max Age
+
+- Type: Decimal
+- Default Value: 360
+- Description: The maximum age (seconds) of the measurement to use
+
+##### Measurement Decimal
+
+- Type: Integer
+- Default Value: 1
+- Description: The number of digits after the decimal
+
+##### Text
+
+- Type: Text
+- Default Value: Text
+- Description: Text to display
+
+##### Display Unit
+
+- Type: Boolean
+- Default Value: True
+- Description: Display the measurement unit (if available)
+
+### Display: SSD1306 OLED 128x64 [4 Lines] (SPI)
+
+- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [Adafruit-GPIO](https://pypi.org/project/Adafruit-GPIO), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
+
+This Function outputs to a 128x64 SSD1306 OLED display via SPI. This display Function will show 4 lines at a time, so channels are added in sets of 4 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 3, then 4 - 7, and so on. After all channels have been displayed, it will cycle back to the beginning.
+
+#### Options
+
+##### Period (seconds)
+
+- Type: Decimal
+- Default Value: 10
+- Description: The duration (seconds) between measurements or actions
+
+##### Number of Line Sets
+
+- Type: Integer
+- Default Value: 1
+- Description: How many sets of lines to cycle on the LCD
+
+##### SPI Device
+
+- Type: Integer
+- Description: The SPI device
+
+##### SPI Bus
+
+- Type: Integer
+- Description: The SPI bus
+
+##### DC Pin
+
+- Type: Integer
+- Default Value: 16
+- Description: The pin (BCM numbering) connected to DC of the display
+
+##### Reset Pin
+
+- Type: Integer
+- Default Value: 19
+- Description: The pin (BCM numbering) connected to RST of the display
+
+##### CS Pin
+
+- Type: Integer
+- Default Value: 17
+- Description: The pin (BCM numbering) connected to CS of the display
+
+##### Characters Per Line
+
+- Type: Integer
+- Default Value: 17
+- Description: The maximum number of characters to display per line
+
+##### Use Non-Default Font
+
+- Type: Boolean
+- Description: Don't use the default font. Enable to specify the path to a font to use.
+
+##### Non-Default Font Path
+
+- Type: Text
+- Default Value: /usr/share/fonts/truetype/dejavu//DejaVuSans.ttf
+- Description: The path to the non-default font to use
+
+##### Font Size (pt)
+
+- Type: Integer
+- Default Value: 12
+- Description: The size of the font, in points
+
+#### Channel Options
+
+##### Line Display Type
+
+- Type: Select
+- Description: What to display on the line
+
+##### Measurement
+
+- Type: Select Measurement
+- Selections: Input, Math, Function, Output, PID, 
+- Description: Measurement to display on the line
+
+##### Max Age
+
+- Type: Decimal
+- Default Value: 360
+- Description: The maximum age (seconds) of the measurement to use
+
+##### Measurement Decimal
+
+- Type: Integer
+- Default Value: 1
+- Description: The number of digits after the decimal
+
+##### Text
+
+- Type: Text
+- Default Value: Text
+- Description: Text to display
+
+##### Display Unit
+
+- Type: Boolean
+- Default Value: True
+- Description: Display the measurement unit (if available)
+
+### Display: SSD1306 OLED 128x64 [8 Lines] (I2C)
+
+- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
+
+This Function outputs to a 128x64 SSD1306 OLED display via I2C. This display Function will show 8 lines at a time, so channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
+
+#### Options
+
+##### Period (seconds)
+
+- Type: Decimal
+- Default Value: 10
+- Description: The duration (seconds) between measurements or actions
+
+##### I2C Address
+
+- Type: Text
+- Default Value: 0x3c
+- Description: The I2C address of the device
+
+##### I2C Bus
+
+- Type: Integer
+- Default Value: 1
+- Description: The I2C bus the device is connected to
+
+##### Number of Line Sets
+
+- Type: Integer
+- Default Value: 1
+- Description: How many sets of lines to cycle on the LCD
+
+##### Reset Pin
+
+- Type: Integer
+- Default Value: 17
+- Description: The pin (BCM numbering) connected to RST of the display
+
+##### Characters Per Line
+
+- Type: Integer
+- Default Value: 21
+- Description: The maximum number of characters to display per line
+
+##### Use Non-Default Font
+
+- Type: Boolean
+- Description: Don't use the default font. Enable to specify the path to a font to use.
+
+##### Non-Default Font Path
+
+- Type: Text
+- Default Value: /usr/share/fonts/truetype/dejavu//DejaVuSans.ttf
+- Description: The path to the non-default font to use
+
+##### Font Size (pt)
+
+- Type: Integer
+- Default Value: 10
+- Description: The size of the font, in points
+
+#### Channel Options
+
+##### Line Display Type
+
+- Type: Select
+- Description: What to display on the line
+
+##### Measurement
+
+- Type: Select Measurement
+- Selections: Input, Math, Function, Output, PID, 
+- Description: Measurement to display on the line
+
+##### Max Age
+
+- Type: Decimal
+- Default Value: 360
+- Description: The maximum age (seconds) of the measurement to use
+
+##### Measurement Decimal
+
+- Type: Integer
+- Default Value: 1
+- Description: The number of digits after the decimal
+
+##### Text
+
+- Type: Text
+- Default Value: Text
+- Description: Text to display
+
+##### Display Unit
+
+- Type: Boolean
+- Default Value: True
+- Description: Display the measurement unit (if available)
+
+### Display: SSD1306 OLED 128x64 [8 Lines] (SPI)
+
+- Dependencies: [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [Pillow](https://pypi.org/project/Pillow), [pyusb](https://pypi.org/project/pyusb), [Adafruit-GPIO](https://pypi.org/project/Adafruit-GPIO), [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-framebuf](https://pypi.org/project/adafruit-circuitpython-framebuf), [Adafruit-Circuitpython-SSD1306](https://pypi.org/project/Adafruit-Circuitpython-SSD1306)
+
+This Function outputs to a 128x64 SSD1306 OLED display via SPI. This display Function will show 8 lines at a time, so channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
+
+#### Options
+
+##### Period (seconds)
+
+- Type: Decimal
+- Default Value: 10
+- Description: The duration (seconds) between measurements or actions
+
+##### Number of Line Sets
+
+- Type: Integer
+- Default Value: 1
+- Description: How many sets of lines to cycle on the LCD
+
+##### SPI Device
+
+- Type: Integer
+- Description: The SPI device
+
+##### SPI Bus
+
+- Type: Integer
+- Description: The SPI bus
+
+##### DC Pin
+
+- Type: Integer
+- Default Value: 16
+- Description: The pin (BCM numbering) connected to DC of the display
+
+##### Reset Pin
+
+- Type: Integer
+- Default Value: 19
+- Description: The pin (BCM numbering) connected to RST of the display
+
+##### CS Pin
+
+- Type: Integer
+- Default Value: 17
+- Description: The pin (BCM numbering) connected to CS of the display
+
+##### Characters Per Line
+
+- Type: Integer
+- Default Value: 21
+- Description: The maximum number of characters to display per line
+
+##### Use Non-Default Font
+
+- Type: Boolean
+- Description: Don't use the default font. Enable to specify the path to a font to use.
+
+##### Non-Default Font Path
+
+- Type: Text
+- Default Value: /usr/share/fonts/truetype/dejavu//DejaVuSans.ttf
+- Description: The path to the non-default font to use
+
+##### Font Size (pt)
+
+- Type: Integer
+- Default Value: 10
+- Description: The size of the font, in points
+
+#### Channel Options
+
+##### Line Display Type
+
+- Type: Select
+- Description: What to display on the line
+
+##### Measurement
+
+- Type: Select Measurement
+- Selections: Input, Math, Function, Output, PID, 
+- Description: Measurement to display on the line
+
+##### Max Age
+
+- Type: Decimal
+- Default Value: 360
+- Description: The maximum age (seconds) of the measurement to use
+
+##### Measurement Decimal
+
+- Type: Integer
+- Default Value: 1
+- Description: The number of digits after the decimal
+
+##### Text
+
+- Type: Text
+- Default Value: Text
+- Description: Text to display
+
+##### Display Unit
+
+- Type: Boolean
+- Default Value: True
+- Description: Display the measurement unit (if available)
+
+### Display: SSD1309 OLED 128x64 [8 Lines] (I2C)
 
 - Dependencies: [pyusb](https://pypi.org/project/pyusb), [luma.oled](https://pypi.org/project/luma.oled), [Pillow](https://pypi.org/project/Pillow), [libjpeg-dev](https://packages.debian.org/buster/libjpeg-dev), [zlib1g-dev](https://packages.debian.org/buster/zlib1g-dev), [libfreetype6-dev](https://packages.debian.org/buster/libfreetype6-dev), [liblcms2-dev](https://packages.debian.org/buster/liblcms2-dev), [libopenjp2-7](https://packages.debian.org/buster/libopenjp2-7), [libtiff5](https://packages.debian.org/buster/libtiff5)
 
-This Function outputs to a 128x64 SSD1309 OLED display via I2C. Since this display can show 8 lines at a time, channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next 8 lines. Therefore, the first 8 lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
+This Function outputs to a 128x64 SSD1309 OLED display via I2C. This display Function will show 8 lines at a time, so channels are added in sets of 8 when Number of Line Sets is modified. Every Period, the LCD will refresh and display the next set of lines. Therefore, the first set of lines that are displayed are channels 0 - 7, then 8 - 15, and so on. After all channels have been displayed, it will cycle back to the beginning.
 
 #### Options
 
@@ -912,11 +1452,11 @@ This Function outputs to a 128x64 SSD1309 OLED display via I2C. Since this displ
 - Selections: Input, Math, Function, Output, PID, 
 - Description: Measurement to display on the line
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Decimal
 - Default Value: 360
-- Description: The maximum allowed age of the measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement Decimal
 
@@ -929,6 +1469,12 @@ This Function outputs to a 128x64 SSD1309 OLED display via I2C. Since this displ
 - Type: Text
 - Default Value: Text
 - Description: Text to display
+
+##### Display Unit
+
+- Type: Boolean
+- Default Value: True
+- Description: Display the measurement unit (if available)
 
 ### Equation (Multi-Measure)
 
@@ -953,7 +1499,7 @@ This function acquires two measurements and uses them within a user-set equation
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of measurement a
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement B
 
@@ -965,7 +1511,7 @@ This function acquires two measurements and uses them within a user-set equation
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of measurement b
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Equation
 
@@ -992,11 +1538,11 @@ This function acquires a measurement and uses it within a user-set equation and 
 - Selections: Input, Math, Function, 
 - Description: Measurement to replace "x" in the equation
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of the measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Equation
 
@@ -1038,7 +1584,7 @@ This function calculates the humidity based on wet and dry bulb temperature meas
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of the Dry Bulb measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Wet Bulb Temperature
 
@@ -1050,7 +1596,7 @@ This function calculates the humidity based on wet and dry bulb temperature meas
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of the Wet Bulb measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Pressure
 
@@ -1062,7 +1608,7 @@ This function calculates the humidity based on wet and dry bulb temperature meas
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of the Pressure measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ### PID Autotune
 
@@ -1136,7 +1682,7 @@ This function stores the first available measurement. This is useful if you have
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of measurement a
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement B
 
@@ -1148,7 +1694,7 @@ This function stores the first available measurement. This is useful if you have
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of measurement b
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement C
 
@@ -1160,7 +1706,20 @@ This function stores the first available measurement. This is useful if you have
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of measurement C
+- Description: The maximum age (seconds) of the measurement to use
+
+### Spacer
+
+
+A spacer to organize Functions.
+
+#### Options
+
+##### Color
+
+- Type: Text
+- Default Value: #000000
+- Description: The color of the name text
 
 ### Statistics (Last, Multiple)
 
@@ -1180,11 +1739,11 @@ This function acquires multiple measurements, calculates statistics, and stores 
 - Default Value: 60
 - Description: The duration (seconds) between measurements or actions
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of the measurements
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement
 
@@ -1213,11 +1772,11 @@ This function acquires multiple values from a single measurement, calculates sta
 - Default Value: 60
 - Description: The duration (seconds) between measurements or actions
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of the measurements
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement
 
@@ -1244,11 +1803,11 @@ This function acquires the last measurement of those that are selected, sums the
 - Default Value: 10
 - Description: The duration (seconds) to wait before the first operation
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of the measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement
 
@@ -1279,11 +1838,11 @@ This function acquires the past measurements (within Max Age) for the selected m
 - Selections: Input, Math, Function, 
 - Description: Measurement to replace "x" in the equation
 
-##### Measurement Max Age
+##### Max Age
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of the measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ### Vapor Pressure Deficit
 
@@ -1314,7 +1873,7 @@ This function calculates the vapor pressure deficit based on leaf temperature an
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of the Temperature measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Humidity
 
@@ -1326,7 +1885,7 @@ This function calculates the vapor pressure deficit based on leaf temperature an
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of the Humidity measurement
+- Description: The maximum age (seconds) of the measurement to use
 
 ### Verification
 
@@ -1351,7 +1910,7 @@ This function acquires 2 measurements, calculates the difference, and if the dif
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of Measurement A
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Measurement B
 
@@ -1359,11 +1918,11 @@ This function acquires 2 measurements, calculates the difference, and if the dif
 - Selections: Input, Math, Function, 
 - Description: Measurement B
 
-##### Measurement B Max Age
+##### Measurement A Max Age
 
 - Type: Integer
 - Default Value: 360
-- Description: The maximum allowed age of Measurement B
+- Description: The maximum age (seconds) of the measurement to use
 
 ##### Maximum Difference
 
