@@ -18,6 +18,7 @@ from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import Conversion
+from mycodo.databases.models import CustomController
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import Input
 from mycodo.databases.models import LCD
@@ -166,7 +167,6 @@ def get_condition_value(condition_id):
 
     # Return controller active state
     elif sql_condition.condition_type == 'controller_status':
-        controller_type, _, _ = which_controller(sql_condition.controller_id)
         control = DaemonControl()
         return control.controller_is_active(sql_condition.controller_id)
 
@@ -1278,11 +1278,17 @@ def which_controller(unique_id):
     controller_type = None
     controller_object = None
     controller_entry = None
+
     if db_retrieve_table_daemon(Conditional, unique_id=unique_id):
         controller_type = 'Conditional'
         controller_object = Conditional
         controller_entry = db_retrieve_table_daemon(
             Conditional, unique_id=unique_id)
+    elif db_retrieve_table_daemon(CustomController, unique_id=unique_id):
+        controller_type = 'Function'
+        controller_object = CustomController
+        controller_entry = db_retrieve_table_daemon(
+            CustomController, unique_id=unique_id)
     elif db_retrieve_table_daemon(Input, unique_id=unique_id):
         controller_type = 'Input'
         controller_object = Input
@@ -1308,4 +1314,5 @@ def which_controller(unique_id):
         controller_object = Trigger
         controller_entry = db_retrieve_table_daemon(
             Trigger, unique_id=unique_id)
+
     return controller_type, controller_object, controller_entry

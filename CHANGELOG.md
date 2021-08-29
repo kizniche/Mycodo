@@ -70,6 +70,7 @@ Additionally, if you are currently using the MQTT JSON Input and your topics con
  - Fix Atlas Scientific Peristaltic Pump Output calibration
  - Fix temperature compensation unit conversion for Atlas ORP, EC, and pH sensors ([#1064](https://github.com/kizniche/mycodo/issues/1064))
  - Fix Camera Widget displaying time-lapse images ([#1072](https://github.com/kizniche/mycodo/issues/1072))
+ - Fix Activate/Deactivate Actions not working for Functions
 
 ### Features
 
