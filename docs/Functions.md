@@ -470,6 +470,14 @@ Python 3 is the environment that these conditionals will be executed. The follow
 <td>self.logger.info()</td>
 <td>Writes a log line to the Daemon log. "info" may also be changed to "warning", "error" or "debug". Debug log lines will only appear in the Daemon log when Logging Level: Debug is enabled for the Input.</td>
 </tr>
+<tr>
+<td>self.set_custom_option("option", value)</td>
+<td>Writes the value to the database for retrieval later. The option argument should be a string, and value can be a string, integer, float, list, or dictionary.</td>
+</tr>
+<tr>
+<td>self.get_custom_option("option")</td>
+<td>Reads the value from the database that was previously written with self.set_custom_option(). Returns None if the option is not found or there is no value.</td>
+</tr>
 </tbody>
 </table>
 
