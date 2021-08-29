@@ -14,9 +14,11 @@ Notes to keep track of the steps involved in making a new release.
    - Title in format "## 8.5.3 (2020-06-06)", with current date.
    - Section headers "### Bugfixes", "### Features", and "### Miscellaneous".
    - Changes as bullet list under each section header, with a link to issue(s) at the end of each short description (if applicable).
- - [ ] Commit changes and wait for TravisCI to finish running pytests and verify all were successful.
  - [ ] Ensure mkdocs pip requirements are installed by running Mycodo/env/bin/python -m pip install -r Mycodo/docs/requirements.txt
- - [ ] Clone repo or Pull changes and run ```mkdocs gh-deploy``` to generate and push docs to gh-pages branch (for https://kizniche.github.io/Mycodo)
+ - [ ] Run ```mkdocs build``` to generate Mycodo/site/mycodo-manual.pdf
+ - [ ] Copy Mycodo/site/mycodo-manual.pdf to Mycodo/docs/mycodo-manual.pdf
+ - [ ] Commit changes and wait for TravisCI to finish running pytests and verify all were successful.
+ - [ ] Run ```mkdocs gh-deploy``` to generate and push docs to gh-pages branch (for https://kizniche.github.io/Mycodo)
  - [ ] Optionally, a naive Mycodo system with code prior to the yet-to-be released version can be upgraded to master to test its ability to upgrade (useful if experimental database schema changes are being performed during the upgrade).
  - [ ] Make GitHub Release
    - Tag version follows format "vMAJOR.MINOR.BUGFIX" (e.g. v8.0.3)

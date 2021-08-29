@@ -19,7 +19,7 @@ plugins:
       cover_subtitle: Environmental monitoring and regulation system
       cover_logo: images/logo.png
       copyright: Copyright © 2021
-      output_path: mycodo-manual.pdf
+      output_path: ../docs/mycodo-manual.pdf
 
 theme:
   name: material
