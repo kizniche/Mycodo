@@ -462,7 +462,6 @@ WIDGET_INFORMATION = {
     return Highcharts.Color(color).setOpacity(0.6).get('rgba');
   });
 
-  let chart = [];
   let note_timestamps = {};
   let last_output_time_mil = {};  // Store the time (epoch) of the last data point received
 
@@ -483,19 +482,19 @@ WIDGET_INFORMATION = {
 
   // Redraw a particular chart
   function redrawGraph(widget_id, refresh_seconds, xaxis_duration_min, xaxis_reset) {
-    chart[widget_id].redraw();
+    widget[widget_id].redraw();
 
     if (xaxis_reset) {
       const epoch_min = new Date().setMinutes(new Date().getMinutes() - (1 * (xaxis_duration_min)));
       const epoch_max = new Date().getTime();
 
       // Ensure Reset Zoom button resets to the proper start and end times
-      chart[widget_id].xAxis[0].update({min: epoch_min}, false);
-      chart[widget_id].xAxis[0].update({max: epoch_max}, false);
+      widget[widget_id].xAxis[0].update({min: epoch_min}, false);
+      widget[widget_id].xAxis[0].update({max: epoch_max}, false);
 
       // Update the new data time frame and redraw the chart
-      chart[widget_id].xAxis[0].setExtremes(epoch_min, epoch_max, true);
-      chart[widget_id].xAxis[0].isDirty = true;
+      widget[widget_id].xAxis[0].setExtremes(epoch_min, epoch_max, true);
+      widget[widget_id].xAxis[0].isDirty = true;
     }
   }
 
@@ -543,10 +542,10 @@ WIDGET_INFORMATION = {
           }
 
           // Set x-axis extremes, set graph data
-          chart[widget_id].series[series].isDirty = true;  // Data may not be in order by timestamp
+          widget[widget_id].series[series].isDirty = true;  // Data may not be in order by timestamp
           const epoch_min = new Date().setMinutes(new Date().getMinutes() - (past_seconds / 60))
-          chart[widget_id].xAxis[0].setExtremes(epoch_min, epoch_mil);
-          chart[widget_id].series[series].setData(past_data, true, false);
+          widget[widget_id].xAxis[0].setExtremes(epoch_min, epoch_mil);
+          widget[widget_id].series[series].setData(past_data, true, false);
         }
       }
     );
@@ -590,7 +589,7 @@ WIDGET_INFORMATION = {
             if (measure_type === 'tag') {
               if (!(note_key in note_timestamps)) note_timestamps[note_key] = [];
               if (!note_timestamps[note_key].includes(time_point)) {
-                chart[widget_id].series[series].addPoint({
+                widget[widget_id].series[series].addPoint({
                     x: time_point,
                     title: data[i][1],
                     text: data[i][2].replace(/(?:\\r\\n|\\r|\\n)/g, '<br/>').replace(/  /g, '\\u2591\\u2591')
@@ -599,7 +598,7 @@ WIDGET_INFORMATION = {
               }
             }
             else {
-              chart[widget_id].series[series].addPoint([time_point, data[i][1]], false, false);
+              widget[widget_id].series[series].addPoint([time_point, data[i][1]], false, false);
             }
           }
 
@@ -611,14 +610,14 @@ WIDGET_INFORMATION = {
           redrawGraph(widget_id, refresh_seconds, xaxis_duration_min, xaxis_reset);
 
           // Remove any points before beginning of chart
-          for (let i = 0; i < chart[widget_id].series[series].options.data.length; i++) {
+          for (let i = 0; i < widget[widget_id].series[series].options.data.length; i++) {
             // Get stored point timestamp
-            if (measure_type === 'tag') point_ts = chart[widget_id].series[series].options.data[i].x;
-            else point_ts = chart[widget_id].series[series].options.data[i][0];
+            if (measure_type === 'tag') point_ts = widget[widget_id].series[series].options.data[i].x;
+            else point_ts = widget[widget_id].series[series].options.data[i][0];
 
             // If stored point timestamp outside graph view, delete the point
             if (point_ts < oldest_timestamp_allowed) {
-              chart[widget_id].series[series].removePoint(i, false);
+              widget[widget_id].series[series].removePoint(i, false);
 
               // Remove timestamp from note array
               if (measure_type === 'tag') {
@@ -664,7 +663,7 @@ WIDGET_INFORMATION = {
 {% set graph_pid_ids = widget_options['measurements_pid'] %}
 {% set graph_note_tag_ids = widget_options['measurements_note_tag'] %}
 
-  chart['{{each_widget.unique_id}}'] = new Highcharts.StockChart({
+  widget['{{each_widget.unique_id}}'] = new Highcharts.StockChart({
     chart : {
       renderTo: 'container-synchronous-graph-{{each_widget.unique_id}}',
       zoomType: 'x',

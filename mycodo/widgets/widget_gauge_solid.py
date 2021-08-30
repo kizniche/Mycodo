@@ -130,7 +130,7 @@ WIDGET_INFORMATION = {
         ('apt', 'unzip', 'unzip'),
         ('bash-commands',
         [
-            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
+            '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge-9.1.2.js'
         ],
@@ -138,8 +138,8 @@ WIDGET_INFORMATION = {
             'rm -rf Highcharts-9.1.2.zip',
             'wget https://code.highcharts.com/zips/Highcharts-9.1.2.zip',
             'unzip Highcharts-9.1.2.zip -d Highcharts-9.1.2',
-            'cp -rf Highcharts-9.1.2/code/highcharts.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-9.1.2.js',
-            'cp -rf Highcharts-9.1.2/code/highcharts.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts.js.map',
+            'cp -rf Highcharts-9.1.2/code/highstock.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
+            'cp -rf Highcharts-9.1.2/code/highstock.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock.js.map',
             'cp -rf Highcharts-9.1.2/code/highcharts-more.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
             'cp -rf Highcharts-9.1.2/code/highcharts-more.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more.js.map',
             'cp -rf Highcharts-9.1.2/code/modules/solid-gauge.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge-9.1.2.js',
@@ -217,7 +217,7 @@ WIDGET_INFORMATION = {
         }
     ],
 
-    'widget_dashboard_head': """<script src="/static/js/user_js/highcharts-9.1.2.js"></script>
+    'widget_dashboard_head': """<script src="/static/js/user_js/highstock-9.1.2.js"></script>
 <script src="/static/js/user_js/highcharts-more-9.1.2.js"></script>
 <script src="/static/js/user_js/solid-gauge-9.1.2.js"></script>
 """,
@@ -256,17 +256,17 @@ WIDGET_INFORMATION = {
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
-          chart[widget_id].series[0].points[0].update(null);
+          widget[widget_id].series[0].points[0].update(null);
         }
         else {
           const formattedTime = epoch_to_timestamp(data[0]);
           const measurement = data[1];
-          chart[widget_id].series[0].points[0].update(measurement);
+          widget[widget_id].series[0].points[0].update(measurement);
           //document.getElementById('timestamp-' + widget_id).innerHTML = formattedTime;
         }
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        chart[widget_id].series[0].points[0].update(null);
+        widget[widget_id].series[0].points[0].update(null);
       }
     });
   }
@@ -294,7 +294,7 @@ WIDGET_INFORMATION = {
 {%- set device_id = widget_options['measurement'].split(",")[0] -%}
 {%- set measurement_id = widget_options['measurement'].split(",")[1] -%}
 
-  chart['{{each_widget.unique_id}}'] = new Highcharts.chart({
+  widget['{{each_widget.unique_id}}'] = new Highcharts.chart({
     chart: {
       renderTo: 'container-gauge-{{each_widget.unique_id}}',
       type: 'solidgauge',

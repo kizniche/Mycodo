@@ -172,6 +172,8 @@
   });
   {% endif %}
 
+  let widget = [];
+
   {% for widget_type, file_js in list_html_files_js.items() %}
   // Widget {{widget_type}} widget_dashboard_js template begin
   {% include 'user_templates/{}'.format(file_js) %}
