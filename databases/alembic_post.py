@@ -83,23 +83,22 @@ if __name__ == "__main__":
                             channels = session.query(InputChannel).filter(
                                 InputChannel.input_id == each_input.unique_id).count()
                             if channels == 1:
-                                # Add missing channels
-                                if each_input.device in dict_inputs and 'channels_dict' in dict_inputs[each_input.device]:
-                                    for each_channel, channel_info in dict_inputs[each_input.device]['channels_dict'].items():
+                                # Add missing measurements
+                                if (each_input.device in dict_inputs and
+                                        'measurements_dict' in dict_inputs[each_input.device] and
+                                        dict_inputs[each_input.device]['measurements_dict']):
+                                    for each_channel in dict_inputs[each_input.device]['measurements_dict']:
                                         if each_channel == 0:
                                             pass
-                                        new_channel = InputChannel()
-                                        new_channel.channel = each_channel
-                                        new_channel.input_id = each_input.unique_id
-
-                                        # Generate string to save from custom options
-                                        messages["error"], custom_options = custom_channel_options_return_json(
-                                            messages["error"], dict_inputs, None,
-                                            each_input.unique_id, each_channel,
-                                            device=each_input.device, use_defaults=True)
-                                        new_channel.custom_options = custom_options
-
-                                        new_channel.save()
+                                        measure_info = dict_inputs[each_input.device]['measurements_dict'][each_channel]
+                                        new_measurement = DeviceMeasurements()
+                                        if 'name' in measure_info:
+                                            new_measurement.name = measure_info['name']
+                                        new_measurement.device_id = each_input.unique_id
+                                        new_measurement.measurement = measure_info['measurement']
+                                        new_measurement.unit = measure_info['unit']
+                                        new_measurement.channel = each_channel
+                                        new_measurement.save()
 
             except Exception:
                 msg = "ERROR: post-alembic revision {}: {}".format(
