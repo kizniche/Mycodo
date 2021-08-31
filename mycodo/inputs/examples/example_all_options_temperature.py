@@ -112,6 +112,9 @@ INPUT_INFORMATION = {
         ('internal', 'file-exists /usr/local/include/bcm2835.h', 'bcm2835')
     ],
 
+    # A message to be displayed on the dependency install page
+    'dependencies_message': 'Are you sure you want to install these dependencies? They require...',
+
     # Interface options: 'GPIO', 'I2C', 'UART', '1WIRE', 'BT', 'Mycodo', 'RPi'
     'interfaces': [  # List of strings
         'I2C',

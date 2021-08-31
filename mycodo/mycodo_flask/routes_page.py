@@ -543,7 +543,7 @@ def page_export():
 def page_graph_async():
     """ Generate graphs using asynchronous data retrieval """
     if not current_app.config['TESTING']:
-        dep_unmet, _ = return_dependencies('highstock')
+        dep_unmet, _, _ = return_dependencies('highstock')
         if dep_unmet:
             return redirect(url_for('routes_admin.admin_dependencies',
                                     device='highstock'))
@@ -1051,7 +1051,7 @@ def page_usage():
             return redirect(url_for('routes_page.page_usage'))
 
         if form_energy_usage_add.energy_usage_add.data:
-            dep_unmet, _ = return_dependencies('highstock')
+            dep_unmet, _, _ = return_dependencies('highstock')
             if dep_unmet:
                 return redirect(url_for('routes_admin.admin_dependencies',
                                         device='highstock'))

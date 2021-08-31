@@ -78,6 +78,7 @@ def page_input_submit():
     dep_unmet = ''
     dep_name = ''
     dep_list = []
+    dep_message = ''
 
     form_add_input = forms_input.InputAdd()
     form_mod_input = forms_input.InputMod()
@@ -90,6 +91,7 @@ def page_input_submit():
             (messages,
              dep_name,
              dep_list,
+             dep_message,
              input_id) = utils_input.input_add(form_add_input)
             if dep_list:
                 dep_unmet = form_add_input.input_type.data.split(',')[0]
@@ -132,6 +134,7 @@ def page_input_submit():
         'dep_name': dep_name,
         'dep_list': dep_list,
         'dep_unmet': dep_unmet,
+        'dep_message': dep_message,
         'messages': messages,
         "page_refresh": page_refresh
     })

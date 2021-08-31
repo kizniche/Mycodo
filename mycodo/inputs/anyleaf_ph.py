@@ -3,8 +3,13 @@ import copy
 
 from flask_babel import lazy_gettext
 
+from mycodo.databases.models import Conversion
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_from_x_to_y_unit
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.system_pi import get_measurement
+from mycodo.utils.system_pi import return_measurement_info
 
 # Measurements
 measurements_dict = {
@@ -287,15 +292,28 @@ class InputModule(AbstractInput):
         from anyleaf import OffBoard
         from anyleaf import OnBoard
 
-        last_temp_measurement = None
+        last_measurement = None
         if self.temperature_comp_meas_measurement_id:
-            last_temp_measurement = self.get_last_measurement(
+            last_measurement = self.get_last_measurement(
                 self.temperature_comp_meas_device_id,
                 self.temperature_comp_meas_measurement_id,
                 max_age=self.max_age)
 
-        if last_temp_measurement:
-            return OffBoard(last_temp_measurement[1])
+        if last_measurement and len(last_measurement) > 1:
+            device_measurement = get_measurement(
+                self.temperature_comp_meas_measurement_id)
+            conversion = db_retrieve_table_daemon(
+                Conversion, unique_id=device_measurement.conversion_id)
+            _, unit, _ = return_measurement_info(
+                device_measurement, conversion)
+
+            if unit != "C":
+                out_value = convert_from_x_to_y_unit(
+                    unit, "C", last_measurement[1])
+            else:
+                out_value = last_measurement[1]
+
+            return OffBoard(out_value)
         else:
             return OnBoard()
 

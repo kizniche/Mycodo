@@ -1,3 +1,14 @@
+## 8.12.4 (2021-08-31)
+
+### Bugfixes
+
+ - Fix Input temperature compensation
+
+### Features
+
+ - Add ability to set Dependency Message to be displayed on dependency install page
+
+
 ## 8.12.3 (2021-08-31)
 
 ### Bugfixes

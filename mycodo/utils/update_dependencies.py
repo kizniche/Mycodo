@@ -139,7 +139,7 @@ if __name__ == "__main__":
             devices.append('highstock')
 
     for each_device in devices:
-        device_unmet_dependencies, _ = return_dependencies(each_device)
+        device_unmet_dependencies, _, _ = return_dependencies(each_device)
         for each_dep in device_unmet_dependencies:
             if each_dep not in dependencies:
                 dependencies.append(each_dep)

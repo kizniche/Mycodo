@@ -87,6 +87,12 @@ WIDGET_INFORMATION = {
     'message': 'This widget is an example endpoint widget, which will create the new endpoint '
                'at /test_123. Open <a href="/test_123">This Link</a> to see this new endpoint.',
 
+    # Any dependencies required by the output module. An empty list means no dependencies are required.
+    'dependencies_module': [],
+
+    # A message to be displayed on the dependency install page
+    'dependencies_message': 'Are you sure you want to install these dependencies? They require...',
+
     'widget_width': 8,
     'widget_height': 8,
 

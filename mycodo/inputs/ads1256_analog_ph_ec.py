@@ -4,9 +4,14 @@ import traceback
 from flask_babel import lazy_gettext
 
 from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.databases.models import Conversion
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.utils import session_scope
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import convert_from_x_to_y_unit
+from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.system_pi import get_measurement
+from mycodo.utils.system_pi import return_measurement_info
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -701,7 +706,7 @@ class InputModule(AbstractInput):
         return voltages_list
 
     def get_temp_data(self):
-        """Get the temperature."""
+        """Get the temperature"""
         if self.temperature_comp_meas_measurement_id:
             self.logger.debug("Temperature corrections will be applied")
 
@@ -711,21 +716,33 @@ class InputModule(AbstractInput):
                 max_age=self.max_age
             )
 
-            if last_measurement:
-                self.logger.debug("Latest temperature: {temp}".format(
-                    temp=last_measurement[1]))
-                temp_data = last_measurement[1]
+            if last_measurement and len(last_measurement) > 1:
+                device_measurement = get_measurement(
+                    self.temperature_comp_meas_measurement_id)
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=device_measurement.conversion_id)
+                _, unit, _ = return_measurement_info(
+                    device_measurement, conversion)
+
+                if unit != "C":
+                    out_value = convert_from_x_to_y_unit(
+                        unit, "C", last_measurement[1])
+                else:
+                    out_value = last_measurement[1]
+
+                self.logger.debug("Latest temperature: {temp} C".format(
+                    temp=out_value))
             else:
                 self.logger.error(
                     "Temperature measurement not found within the "
                     "past {} seconds".format(self.max_age))
-                temp_data = None
+                out_value = None
 
         else:
             self.logger.debug("No temperature corrections applied")
-            temp_data = None
+            out_value = None
 
-        return temp_data
+        return out_value
 
     def get_volt_data(self, voltages, channel):
         """Measure voltage at ADC channel."""

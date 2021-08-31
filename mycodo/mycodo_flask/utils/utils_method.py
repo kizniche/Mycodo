@@ -107,7 +107,7 @@ def method_create(form_create_method):
         controller=TRANSLATIONS['method']['title'])
     error = []
 
-    dep_unmet, _ = return_dependencies(form_create_method.method_type.data)
+    dep_unmet, _, _ = return_dependencies(form_create_method.method_type.data)
     if dep_unmet:
         list_unmet_deps = []
         for each_dep in dep_unmet:

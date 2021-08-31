@@ -141,6 +141,7 @@ def parse_input_information(exclude_custom=False):
 
             # Dependencies
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_module')
+            dict_inputs = dict_has_value(dict_inputs, input_custom, 'dependencies_message')
 
             dict_inputs = dict_has_value(dict_inputs, input_custom, 'enable_channel_unit_select')
 

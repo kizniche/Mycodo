@@ -159,13 +159,6 @@ class InputModule(AbstractInput):
                         channel, self.adc_gain, chan.value, chan.voltage))
                     measurement_totals[channel] += chan.voltage
 
-                    # FOr debugginf purposes to test other gains
-                    # for gain in self.dict_gains:
-                    #     if gain != self.adc_gain:
-                    #         self.adc.gain = gain
-                    #         self.logger.debug("Channel {}: Gain {}, {} raw, {} volts".format(
-                    #             channel, gain, chan.value, chan.voltage))
-
         self.logger.debug("All measurements completed in {:.3f} seconds".format(
             timeit.default_timer() - time_start))
 

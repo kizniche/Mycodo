@@ -47,18 +47,17 @@ def function_add(form_add_func):
         "error": []
     }
     new_function_id = None
+    list_unmet_deps = []
     dep_name = None
+    dep_message = ''
 
     function_name = form_add_func.function_type.data
 
     dict_controllers = parse_function_information()
 
-    if current_app.config['TESTING']:
-        dep_unmet = False
-    else:
-        dep_unmet, _ = return_dependencies(function_name)
+    if not current_app.config['TESTING']:
+        dep_unmet, _, dep_message = return_dependencies(function_name)
         if dep_unmet:
-            list_unmet_deps = []
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
             messages["error"].append(
@@ -69,7 +68,7 @@ def function_add(form_add_func):
             else:
                 messages["error"].append("Function not found: {}".format(function_name))
 
-            return messages, dep_name, list_unmet_deps, None
+            return messages, dep_name, list_unmet_deps, dep_message, None
 
     new_func = None
 
@@ -279,7 +278,7 @@ return status_dict'''
         logger.exception("Add Function")
         messages["error"].append(str(except_msg))
 
-    return messages, dep_name, dep_unmet, new_function_id
+    return messages, dep_name, list_unmet_deps, dep_message, new_function_id
 
 
 def function_mod(form):
@@ -365,7 +364,7 @@ def action_add(form):
     dep_name = ""
     page_refresh = False
 
-    dep_unmet, _ = return_dependencies(form.action_type.data)
+    dep_unmet, _, _ = return_dependencies(form.action_type.data)
     if dep_unmet:
         list_unmet_deps = []
         for each_dep in dep_unmet:

@@ -69,6 +69,7 @@ def page_output_submit():
     dep_unmet = ''
     dep_name = ''
     dep_list = []
+    dep_message = ''
     size_y = None
 
     form_add_output = forms_output.OutputAdd()
@@ -82,6 +83,7 @@ def page_output_submit():
             (messages,
              dep_name,
              dep_list,
+             dep_message,
              output_id,
              size_y) = utils_output.output_add(
                 form_add_output, request.form)
@@ -116,6 +118,7 @@ def page_output_submit():
         'dep_name': dep_name,
         'dep_list': dep_list,
         'dep_unmet': dep_unmet,
+        'dep_message': dep_message,
         'size_y': size_y,
         'messages': messages,
         "page_refresh": page_refresh

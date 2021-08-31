@@ -35,7 +35,9 @@ def output_add(form_add, request_form):
         "error": []
     }
     output_id = None
+    list_unmet_deps = []
     dep_name = None
+    dep_message = ''
     size_y = None
 
     dict_outputs = parse_output_information()
@@ -48,12 +50,9 @@ def output_add(form_add, request_form):
         output_interface = ''
         messages["error"].append("Invalid output string (must be a comma-separated string)")
 
-    if current_app.config['TESTING']:
-        dep_unmet = False
-    else:
-        dep_unmet, _ = return_dependencies(form_add.output_type.data.split(',')[0])
+    if not current_app.config['TESTING']:
+        dep_unmet, _, dep_message = return_dependencies(form_add.output_type.data.split(',')[0])
         if dep_unmet:
-            list_unmet_deps = []
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
             messages["error"].append(
@@ -64,7 +63,7 @@ def output_add(form_add, request_form):
             else:
                 messages["error"].append("Output not found: {}".format(output_type))
 
-            return messages, dep_name, list_unmet_deps, None, None
+            return messages, dep_name, list_unmet_deps, dep_message, None, None
 
     if not is_int(form_add.output_quantity.data, check_range=[1, 20]):
         messages["error"].append("{error}. {accepted_values}: 1-20".format(
@@ -221,7 +220,7 @@ def output_add(form_add, request_form):
                 messages["error"].append(str(except_msg))
                 logger.exception(1)
 
-    return messages, dep_unmet, None, output_id, size_y
+    return messages, dep_name, list_unmet_deps, dep_message, output_id, size_y
 
 
 def output_mod(form_output, request_form):

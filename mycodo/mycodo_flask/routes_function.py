@@ -95,6 +95,7 @@ def page_function_submit():
     dep_unmet = ''
     dep_name = ''
     dep_list = []
+    dep_message = ''
 
     if not utils_general.user_has_permission('edit_controllers'):
         messages["error"].append("Your permissions do not allow this action")
@@ -121,6 +122,7 @@ def page_function_submit():
             (messages,
              dep_name,
              dep_list,
+             dep_message,
              function_id) = utils_function.function_add(
                 form_add_function)
             if dep_list:
@@ -259,6 +261,7 @@ def page_function_submit():
         'dep_name': dep_name,
         'dep_list': dep_list,
         'dep_unmet': dep_unmet,
+        'dep_message': dep_message,
         'messages': messages,
         "page_refresh": page_refresh
     })

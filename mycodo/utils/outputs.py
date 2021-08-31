@@ -106,6 +106,7 @@ def parse_output_information(exclude_custom=False):
 
             # Dependencies
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'dependencies_module')
+            dict_outputs = dict_has_value(dict_outputs, output_custom, 'dependencies_message')
 
             # Interface
             dict_outputs = dict_has_value(dict_outputs, output_custom, 'interfaces')

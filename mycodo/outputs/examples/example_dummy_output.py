@@ -62,8 +62,11 @@ OUTPUT_INFORMATION = {
         'interface'  # Show the interface (as a disabled input)
     ],
 
-    # Any dependencies required by the output module
+    # Any dependencies required by the output module. An empty list means no dependencies are required.
     'dependencies_module': [],
+
+    # A message to be displayed on the dependency install page
+    'dependencies_message': 'Are you sure you want to install these dependencies? They require...',
 
     # The interface or interfaces that can be used with this module
     # A custom interface can be used.

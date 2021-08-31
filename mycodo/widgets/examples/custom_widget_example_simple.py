@@ -44,6 +44,12 @@ WIDGET_INFORMATION = {
 
     'message': 'This widget is an example widget, which includes the ability to set text in the widget body.',
 
+    # Any dependencies required by the output module. An empty list means no dependencies are required.
+    'dependencies_module': [],
+
+    # A message to be displayed on the dependency install page
+    'dependencies_message': 'Are you sure you want to install these dependencies? They require...',
+
     'widget_width': 8,
     'widget_height': 8,
 

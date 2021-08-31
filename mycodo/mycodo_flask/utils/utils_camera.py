@@ -28,7 +28,7 @@ def camera_add(form_camera):
         controller=TRANSLATIONS['camera']['title'])
     error = []
 
-    dep_unmet, _ = return_dependencies(form_camera.library.data)
+    dep_unmet, _, _ = return_dependencies(form_camera.library.data)
     if dep_unmet:
         list_unmet_deps = []
         for each_dep in dep_unmet:

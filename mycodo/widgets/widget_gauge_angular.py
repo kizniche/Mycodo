@@ -127,6 +127,12 @@ WIDGET_INFORMATION = {
         ])
     ],
 
+    'dependencies_message': 'Highcharts is free to use for open source, personal use. However, '
+                            'if you are using this software as a part of a commercial product, '
+                            'you or the manufacturer may be required to obtain a commercial '
+                            'license to use it. Contact Highcharts for the most accurate '
+                            'information, at https://shop.highsoft.com',
+
     'execute_at_creation': execute_at_creation,
     'execute_at_modification': execute_at_modification,
     'generate_page_variables': generate_page_variables,

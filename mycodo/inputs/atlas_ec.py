@@ -244,25 +244,25 @@ class InputModule(AbstractInput):
         if self.temperature_comp_meas_measurement_id and self.atlas_command:
             self.logger.debug("pH sensor set to calibrate temperature")
 
-            device_measurement = get_measurement(
-                self.temperature_comp_meas_measurement_id)
-            conversion = db_retrieve_table_daemon(
-                Conversion, unique_id=device_measurement.conversion_id)
-            channel, unit, measurement = return_measurement_info(
-                device_measurement, conversion)
-
             last_measurement = self.get_last_measurement(
                 self.temperature_comp_meas_device_id,
                 self.temperature_comp_meas_measurement_id,
                 max_age=self.max_age)
 
-            if unit != "C":
-                out_value = convert_from_x_to_y_unit(
-                    unit, "C", last_measurement[1])
-            else:
-                out_value = last_measurement[1]
+            if last_measurement and len(last_measurement) > 1:
+                device_measurement = get_measurement(
+                    self.temperature_comp_meas_measurement_id)
+                conversion = db_retrieve_table_daemon(
+                    Conversion, unique_id=device_measurement.conversion_id)
+                _, unit, _ = return_measurement_info(
+                    device_measurement, conversion)
 
-            if last_measurement:
+                if unit != "C":
+                    out_value = convert_from_x_to_y_unit(
+                        unit, "C", last_measurement[1])
+                else:
+                    out_value = last_measurement[1]
+
                 self.logger.debug(
                     "Latest temperature used to calibrate: {temp}".format(
                         temp=out_value))

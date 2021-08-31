@@ -265,7 +265,7 @@ def admin_dependency_install(device):
     }
 
     try:
-        device_unmet_dependencies, _ = utils_general.return_dependencies(device)
+        device_unmet_dependencies, _, _ = utils_general.return_dependencies(device)
         with open(DEPENDENCY_INIT_FILE, 'w') as f:
             f.write('1')
         install_deps = threading.Thread(
@@ -295,9 +295,9 @@ def admin_dependencies(device):
 
     if device != '0':
         # Only loading a single dependency page
-        device_unmet_dependencies, _ = utils_general.return_dependencies(device)
+        device_unmet_dependencies, _, _ = utils_general.return_dependencies(device)
     elif form_dependencies.device.data:
-        device_unmet_dependencies, _ = utils_general.return_dependencies(form_dependencies.device.data)
+        device_unmet_dependencies, _, _ = utils_general.return_dependencies(form_dependencies.device.data)
     else:
         device_unmet_dependencies = []
 
@@ -308,6 +308,7 @@ def admin_dependencies(device):
     unmet_list = {}
     install_in_progress = False
     device_name = None
+    dependencies_message = ""
 
     # Read from the dependency status file created by the upgrade script
     # to indicate if the upgrade is running.
@@ -341,6 +342,11 @@ def admin_dependencies(device):
         for each_device in each_section:
 
             if device in each_section:
+                # Determine if a message for the dependencies exists
+                if "dependencies_message" in each_section[device]:
+                    dependencies_message = each_section[device_name]["dependencies_message"]
+
+                # Find friendly name for device
                 for each_device_, each_val in each_section[device].items():
                     if each_device_ in ['name',
                                         'input_name',
@@ -353,7 +359,7 @@ def admin_dependencies(device):
             # Only get all dependencies when not loading a single dependency page
             if device == '0':
                 # Determine if there are any unmet dependencies for every device
-                dep_unmet, dep_met = utils_general.return_dependencies(each_device)
+                dep_unmet, dep_met, _ = utils_general.return_dependencies(each_device)
 
                 unmet_dependencies.update({
                     each_device: dep_unmet
@@ -392,6 +398,7 @@ def admin_dependencies(device):
     return render_template('admin/dependencies.html',
                            measurements=parse_input_information(),
                            unmet_list=unmet_list,
+                           dependencies_message=dependencies_message,
                            device=device,
                            device_name=device_name,
                            install_in_progress=install_in_progress,

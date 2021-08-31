@@ -40,7 +40,7 @@ def lcd_add(form):
     if current_app.config['TESTING']:
         dep_unmet = False
     else:
-        dep_unmet, _ = return_dependencies(form.lcd_type.data.split(",")[0])
+        dep_unmet, _, _ = return_dependencies(form.lcd_type.data.split(",")[0])
         if dep_unmet:
             list_unmet_deps = []
             for each_dep in dep_unmet:

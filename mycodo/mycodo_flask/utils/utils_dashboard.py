@@ -178,7 +178,7 @@ def widget_add(form_base, request_form):
     if current_app.config['TESTING']:
         dep_unmet = False
     else:
-        dep_unmet, _ = return_dependencies(widget_name)
+        dep_unmet, _, _ = return_dependencies(widget_name)
         if dep_unmet:
             list_unmet_deps = []
             for each_dep in dep_unmet:

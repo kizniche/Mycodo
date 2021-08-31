@@ -41,7 +41,9 @@ def input_add(form_add):
         "error": []
     }
     new_input_id = None
+    list_unmet_deps = []
     dep_name = None
+    dep_message = ''
 
     dict_inputs = parse_input_information()
 
@@ -58,12 +60,9 @@ def input_add(form_add):
         input_interface = ''
         messages["error"].append("Invalid input string (must be a comma-separated string)")
 
-    if current_app.config['TESTING']:
-        dep_unmet = False
-    else:
-        dep_unmet, _ = return_dependencies(input_name)
+    if not current_app.config['TESTING']:
+        dep_unmet, _, dep_message = return_dependencies(input_name)
         if dep_unmet:
-            list_unmet_deps = []
             for each_dep in dep_unmet:
                 list_unmet_deps.append(each_dep[0])
             messages["error"].append(
@@ -74,7 +73,7 @@ def input_add(form_add):
             else:
                 messages["error"].append("Input not found: {}".format(input_name))
 
-            return messages, dep_name, list_unmet_deps, None
+            return messages, dep_name, list_unmet_deps, dep_message, None
 
     if form_add.validate():
         new_input = Input()
@@ -317,7 +316,7 @@ def input_add(form_add):
                             field=getattr(form_add, field).label.text,
                             err=error))
 
-    return messages, dep_name, dep_unmet, new_input_id
+    return messages, dep_name, list_unmet_deps, dep_message, new_input_id
 
 
 def input_mod(form_mod, request_form):

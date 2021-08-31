@@ -291,6 +291,9 @@
                 $(".dependencies_device").text(data.data.dep_unmet);
                 $(".dependencies_unmet").text(data.data.dep_list.join(", "));
                 document.getElementById("dependency_unmet").value = data.data.dep_unmet;
+                if (data.data.dep_message.length > 0) {
+                  document.getElementById("dependencies_message").innerHTML = "<p>Message about dependencies: " + data.data.dep_message + "</p>";
+                }
                 $('#modal_config_dependency_install').modal('show');
                 popup_response(data);
               } else {

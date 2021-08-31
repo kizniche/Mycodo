@@ -101,6 +101,7 @@ def parse_widget_information(exclude_custom=False):
 
             # Dependencies
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'dependencies_module')
+            dict_widgets = dict_has_value(dict_widgets, widget_custom, 'dependencies_message')
 
             # Which form options to display and whether each option is enabled
             dict_widgets = dict_has_value(dict_widgets, widget_custom, 'options_enabled')

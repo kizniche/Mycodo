@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 #         controller=TRANSLATIONS['math']['title'])
 #     error = []
 #
-#     dep_unmet, _ = return_dependencies(form_add_math.math_type.data)
+#     dep_unmet, _, _ = return_dependencies(form_add_math.math_type.data)
 #     if dep_unmet:
 #         list_unmet_deps = []
 #         for each_dep in dep_unmet:
