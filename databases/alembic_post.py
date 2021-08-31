@@ -76,29 +76,30 @@ if __name__ == "__main__":
                 }
 
                 with session_scope(MYCODO_DB_PATH) as session:
-                    inputs = session.query(Input).all()
-                    for each_input in inputs:
+                    for each_input in session.query(Input).all():
                         if each_input.device == "ATLAS_EC":
                             # Check if only 1 channel exists
                             channels = session.query(InputChannel).filter(
                                 InputChannel.input_id == each_input.unique_id).count()
-                            if channels == 1:
-                                # Add missing measurements
-                                if (each_input.device in dict_inputs and
-                                        'measurements_dict' in dict_inputs[each_input.device] and
-                                        dict_inputs[each_input.device]['measurements_dict']):
-                                    for each_channel in dict_inputs[each_input.device]['measurements_dict']:
-                                        if each_channel == 0:
-                                            pass
-                                        measure_info = dict_inputs[each_input.device]['measurements_dict'][each_channel]
-                                        new_measurement = DeviceMeasurements()
-                                        if 'name' in measure_info:
-                                            new_measurement.name = measure_info['name']
-                                        new_measurement.device_id = each_input.unique_id
-                                        new_measurement.measurement = measure_info['measurement']
-                                        new_measurement.unit = measure_info['unit']
-                                        new_measurement.channel = each_channel
-                                        new_measurement.save()
+                            if channels > 1:
+                                continue
+
+                            # Add missing measurements
+                            if (each_input.device in dict_inputs and
+                                    'measurements_dict' in dict_inputs[each_input.device] and
+                                    dict_inputs[each_input.device]['measurements_dict']):
+                                for each_channel in dict_inputs[each_input.device]['measurements_dict']:
+                                    if each_channel == 0:
+                                        pass  # Channel 0 measurement already exists
+                                    measure_info = dict_inputs[each_input.device]['measurements_dict'][each_channel]
+                                    new_measurement = DeviceMeasurements()
+                                    if 'name' in measure_info:
+                                        new_measurement.name = measure_info['name']
+                                    new_measurement.device_id = each_input.unique_id
+                                    new_measurement.measurement = measure_info['measurement']
+                                    new_measurement.unit = measure_info['unit']
+                                    new_measurement.channel = each_channel
+                                    new_measurement.save()
 
             except Exception:
                 msg = "ERROR: post-alembic revision {}: {}".format(
