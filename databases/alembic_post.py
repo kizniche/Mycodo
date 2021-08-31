@@ -69,12 +69,6 @@ if __name__ == "__main__":
                 from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
 
                 dict_inputs = parse_input_information()
-                messages = {
-                    "success": [],
-                    "info": [],
-                    "warning": [],
-                    "error": []
-                }
 
                 with session_scope(MYCODO_DB_PATH) as session:
                     for each_input in session.query(Input).all():

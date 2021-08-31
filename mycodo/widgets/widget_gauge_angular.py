@@ -197,6 +197,10 @@ WIDGET_INFORMATION = {
 
     'widget_dashboard_head': """<script src="/static/js/user_js/highstock-9.1.2.js"></script>
 <script src="/static/js/user_js/highcharts-more-9.1.2.js"></script>
+
+{% if current_user.theme in dark_themes %}
+  <script type="text/javascript" src="/static/js/dark-unica-custom.js"></script>
+{% endif %}
 """,
 
     'widget_dashboard_title_bar': """<span style="padding-right: 0.5em; font-size: {{each_widget.font_em_name}}em">{{each_widget.name}}</span>""",

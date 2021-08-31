@@ -125,6 +125,8 @@
   {% endif %}
 
 <script type="text/javascript">
+  let widget = [];
+
   // Dashboard Grid
   let options = {
     cellHeight: {{misc.grid_cell_height}},
@@ -153,8 +155,8 @@
 
   grid.on('resizestop', function(event, elem) {
     const widget_id = $(elem).attr('gs-id');
-    if (typeof chart !== "undefined" && widget_id in chart && typeof chart[widget_id].reflow !== "undefined") {
-      chart[widget_id].reflow();
+    if (typeof widget !== "undefined" && widget_id in widget && typeof widget[widget_id].reflow !== "undefined") {
+      widget[widget_id].reflow();
     }
   });
 
@@ -171,8 +173,6 @@
     }
   });
   {% endif %}
-
-  let widget = [];
 
   {% for widget_type, file_js in list_html_files_js.items() %}
   // Widget {{widget_type}} widget_dashboard_js template begin

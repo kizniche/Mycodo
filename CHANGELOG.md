@@ -2,6 +2,14 @@
 
 ### Bugfixes
 
+ - Fix redrawing Graph/Gauge Widgets on resize
+ - Fix Gauge Widget dark theme ([#1080](https://github.com/kizniche/mycodo/issues/1080))
+
+
+## 8.12.2 (2021-08-30)
+
+### Bugfixes
+
  - Fix missing channels for Atlas EC sensor
 
 
