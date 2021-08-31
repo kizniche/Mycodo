@@ -74,9 +74,9 @@ if __name__ == "__main__":
                     for each_input in session.query(Input).all():
                         if each_input.device == "ATLAS_EC":
                             # Check if only 1 channel exists
-                            channels = session.query(InputChannel).filter(
-                                InputChannel.input_id == each_input.unique_id).count()
-                            if channels > 1:
+                            measurements = session.query(DeviceMeasurements).filter(
+                                DeviceMeasurements.device_id == each_input.unique_id).count()
+                            if measurements > 1:
                                 continue
 
                             # Add missing measurements
