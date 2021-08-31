@@ -58,6 +58,55 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == '6e394f2e8fec':
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                from mycodo.databases.models import Input
+                from mycodo.databases.models import InputChannel
+                from mycodo.utils.inputs import parse_input_information
+                from mycodo.mycodo_flask.utils.utils_general import custom_channel_options_return_json
+
+                dict_inputs = parse_input_information()
+                messages = {
+                    "success": [],
+                    "info": [],
+                    "warning": [],
+                    "error": []
+                }
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    inputs = session.query(Input).all()
+                    for each_input in inputs:
+                        if each_input.device == "ATLAS_EC":
+                            # Check if only 1 channel exists
+                            channels = session.query(InputChannel).filter(
+                                InputChannel.input_id == each_input.unique_id).count()
+                            if channels == 1:
+                                # Add missing channels
+                                if each_input.device in dict_inputs and 'channels_dict' in dict_inputs[each_input.device]:
+                                    for each_channel, channel_info in dict_inputs[each_input.device]['channels_dict'].items():
+                                        if each_channel == 0:
+                                            pass
+                                        new_channel = InputChannel()
+                                        new_channel.channel = each_channel
+                                        new_channel.input_id = each_input.unique_id
+
+                                        # Generate string to save from custom options
+                                        messages["error"], custom_options = custom_channel_options_return_json(
+                                            messages["error"], dict_inputs, None,
+                                            each_input.unique_id, each_channel,
+                                            device=each_input.device, use_defaults=True)
+                                        new_channel.custom_options = custom_options
+
+                                        new_channel.save()
+
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == 'bdc03b708ac6':
             print("Executing post-alembic code for revision {}".format(
                 each_revision))

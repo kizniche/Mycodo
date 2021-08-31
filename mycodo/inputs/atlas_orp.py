@@ -180,7 +180,11 @@ class InputModule(AbstractInput):
                 self.temperature_comp_meas_measurement_id,
                 max_age=self.max_age)
 
-            out_value = convert_from_x_to_y_unit(unit, "C", last_measurement[1])
+            if unit != "C":
+                out_value = convert_from_x_to_y_unit(
+                    unit, "C", last_measurement[1])
+            else:
+                out_value = last_measurement[1]
 
             if last_measurement:
                 self.logger.debug(

@@ -1,3 +1,10 @@
+## 8.12.2 (Unreleased)
+
+### Bugfixes
+
+ - Fix missing channels for Atlas EC sensor
+
+
 ## 8.12.1 (2021-08-30)
 
 ### Bugfixes
