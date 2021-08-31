@@ -62,6 +62,7 @@ if __name__ == "__main__":
             print("Executing post-alembic code for revision {}".format(
                 each_revision))
             try:
+                from mycodo.databases.models import DeviceMeasurements
                 from mycodo.databases.models import Input
                 from mycodo.databases.models import InputChannel
                 from mycodo.utils.inputs import parse_input_information
@@ -90,16 +91,18 @@ if __name__ == "__main__":
                                     dict_inputs[each_input.device]['measurements_dict']):
                                 for each_channel in dict_inputs[each_input.device]['measurements_dict']:
                                     if each_channel == 0:
-                                        pass  # Channel 0 measurement already exists
+                                        continue  # Channel 0 measurement already exists
                                     measure_info = dict_inputs[each_input.device]['measurements_dict'][each_channel]
                                     new_measurement = DeviceMeasurements()
                                     if 'name' in measure_info:
                                         new_measurement.name = measure_info['name']
                                     new_measurement.device_id = each_input.unique_id
+                                    new_measurement.is_enabled = False
                                     new_measurement.measurement = measure_info['measurement']
                                     new_measurement.unit = measure_info['unit']
                                     new_measurement.channel = each_channel
-                                    new_measurement.save()
+                                    session.add(new_measurement)
+                                    session.commit()
 
             except Exception:
                 msg = "ERROR: post-alembic revision {}: {}".format(
