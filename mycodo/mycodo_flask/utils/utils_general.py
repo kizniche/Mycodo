@@ -1621,8 +1621,6 @@ def return_dependencies(device_type):
     met_deps = False
     dep_message = ''
 
-    logger.info("TEST00: {}".format(device_type))
-
     list_dependencies = [
         parse_function_information(),
         parse_input_information(),
@@ -1639,9 +1637,7 @@ def return_dependencies(device_type):
 
     for each_section in list_dependencies:
         if device_type in each_section:
-            logger.info("TEST01: {}".format(each_section[device_type]))
             if "dependencies_message" in each_section[device_type]:
-                logger.info("TEST02: {}".format(each_section[device_type]["dependencies_message"]))
                 dep_message = each_section[device_type]["dependencies_message"]
 
             for each_device, each_dict in each_section[device_type].items():
