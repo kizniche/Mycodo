@@ -7,6 +7,7 @@ import subprocess
 
 import flask_login
 from flask import current_app
+from flask import flash
 from flask import jsonify
 from flask import redirect
 from flask import render_template
@@ -44,8 +45,10 @@ from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import add_custom_measurements
 from mycodo.utils.system_pi import add_custom_units
+from mycodo.utils.system_pi import check_missing_ids
 from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import dpkg_package_exists
+from mycodo.utils.system_pi import list_to_csv
 from mycodo.utils.system_pi import parse_custom_option_values
 from mycodo.utils.system_pi import parse_custom_option_values_input_channels_json
 
@@ -185,6 +188,7 @@ def page_input():
     form_add_input = forms_input.InputAdd()
     form_mod_input = forms_input.InputMod()
 
+    form_base = forms_math.DataBase()
     form_mod_math = forms_math.MathMod()
     form_mod_math_measurement = forms_math.MathMeasurementMod()
     form_mod_average_single = forms_math.MathModAverageSingle()
@@ -202,8 +206,16 @@ def page_input():
         if not utils_general.user_has_permission('edit_controllers'):
             return redirect(url_for('routes_input.page_input'))
 
+        # Reorder Math controllers
+        if form_base.reorder.data:
+            mod_order = DisplayOrder.query.first()
+            mod_order.math = list_to_csv(form_base.list_visible_elements.data)
+            mod_order.function = check_missing_ids(mod_order.function, [math])
+            db.session.commit()
+            flash("Reorder Complete", "success")
+
         # Mod Math Measurement
-        if form_mod_math_measurement.math_measurement_mod.data:
+        elif form_mod_math_measurement.math_measurement_mod.data:
             utils_math.math_measurement_mod(form_mod_math_measurement)
 
         # Mod other Math settings
@@ -375,6 +387,7 @@ def page_input():
                                dict_units=dict_units,
                                display_order_input=display_order_input,
                                display_order_math=display_order_math,
+                               form_base=form_base,
                                form_add_input=form_add_input,
                                form_mod_input=form_mod_input,
                                form_mod_average_single=form_mod_average_single,

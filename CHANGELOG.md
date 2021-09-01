@@ -1,3 +1,10 @@
+## 8.12.6 (Unreleased)
+
+### Bugfixes
+
+ - Fix loading Input page if Math controllers are present ([#1083](https://github.com/kizniche/mycodo/issues/1083))
+
+
 ## 8.12.5 (2021-09-01)
 
 ### Bugfixes

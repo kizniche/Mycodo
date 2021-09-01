@@ -17,6 +17,12 @@ from wtforms.widgets.html5 import NumberInput
 from mycodo.config_translations import TRANSLATIONS
 
 
+class DataBase(FlaskForm):
+    reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
+    list_visible_elements = SelectMultipleField('New Order')
+    reorder = SubmitField(TRANSLATIONS['save_order']['title'])
+
+
 class MathMod(FlaskForm):
     math_id = StringField('Math ID', widget=widgets.HiddenInput())
     name = StringField(
