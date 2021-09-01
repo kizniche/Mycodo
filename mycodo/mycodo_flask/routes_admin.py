@@ -344,7 +344,7 @@ def admin_dependencies(device):
             if device in each_section:
                 # Determine if a message for the dependencies exists
                 if "dependencies_message" in each_section[device]:
-                    dependencies_message = each_section[device_name]["dependencies_message"]
+                    dependencies_message = each_section[device]["dependencies_message"]
 
                 # Find friendly name for device
                 for each_device_, each_val in each_section[device].items():

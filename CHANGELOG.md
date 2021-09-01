@@ -1,3 +1,11 @@
+## 8.12.5 (2021-09-01)
+
+### Bugfixes
+
+ - Fix dependency page loading
+ - Prevent loading of Highstock JS more than once
+
+
 ## 8.12.4 (2021-08-31)
 
 ### Bugfixes

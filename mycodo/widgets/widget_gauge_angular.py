@@ -201,7 +201,10 @@ WIDGET_INFORMATION = {
         }
     ],
 
-    'widget_dashboard_head': """<script src="/static/js/user_js/highstock-9.1.2.js"></script>
+    'widget_dashboard_head': """{% if "highstock" not in dashboard_dict %}
+  <script src="/static/js/user_js/highstock-9.1.2.js"></script>
+  {% set _dummy = dashboard_dict.update({"highstock": 1}) %}
+{% endif %}
 <script src="/static/js/user_js/highcharts-more-9.1.2.js"></script>
 
 {% if current_user.theme in dark_themes %}

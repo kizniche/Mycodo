@@ -312,7 +312,10 @@ WIDGET_INFORMATION = {
         }
     ],
 
-    'widget_dashboard_head': """<script type="text/javascript" src="/static/js/user_js/highstock-9.1.2.js"></script>
+    'widget_dashboard_head': """{% if "highstock" not in dashboard_dict %}
+  <script type="text/javascript" src="/static/js/user_js/highstock-9.1.2.js"></script>
+  {% set _dummy = dashboard_dict.update({"highstock": 1}) %}
+{% endif %}
 <script type="text/javascript" src="/static/js/user_js/highcharts-more-9.1.2.js"></script>
 <script type="text/javascript" src="/static/js/user_js/data-9.1.2.js"></script>
 <script type="text/javascript" src="/static/js/user_js/exporting-9.1.2.js"></script>
