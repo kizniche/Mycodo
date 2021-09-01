@@ -376,6 +376,14 @@ def admin_dependencies(device):
                 # Find all the devices that use each unmet dependency
                 if unmet_dependencies[each_device]:
                     for each_dep in unmet_dependencies[each_device]:
+                        # Determine if the third element of the tuple is a list, convert it to a tuple
+                        if (type(each_dep) == tuple and
+                                len(each_dep) == 3 and
+                                type(each_dep[2]) == list):
+                            each_dep = list(each_dep)
+                            each_dep[2] = tuple(each_dep[2])
+                            each_dep = tuple(each_dep)
+
                         if each_dep not in unmet_list:
                             unmet_list[each_dep] = []
                         if each_device not in unmet_list[each_dep]:

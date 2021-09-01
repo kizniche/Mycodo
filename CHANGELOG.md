@@ -2,7 +2,14 @@
 
 ### Bugfixes
 
- - Fix dependency page loading
+ - Fix aggregate dependency page ([#1082](https://github.com/kizniche/mycodo/issues/1082))
+
+
+## 8.12.5 (2021-09-01)
+
+### Bugfixes
+
+ - Fix loading of dependency install page
  - Prevent loading of Highstock JS more than once
 
 
