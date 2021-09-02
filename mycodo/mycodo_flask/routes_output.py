@@ -166,7 +166,6 @@ def page_output():
 
     dict_outputs = parse_output_information()
 
-    form_base = forms_output.DataBase()
     form_add_output = forms_output.OutputAdd()
     form_mod_output = forms_output.OutputMod()
 
@@ -251,7 +250,6 @@ def page_output():
                                custom_options_values_output_channels=custom_options_values_output_channels,
                                dict_outputs=dict_outputs,
                                display_order_output=display_order_output,
-                               form_base=form_base,
                                form_add_output=form_add_output,
                                form_mod_output=form_mod_output,
                                ftdi_devices=ftdi_devices,
@@ -281,7 +279,6 @@ def page_output():
                                dict_outputs=dict_outputs,
                                display_order_output=display_order_output,
                                each_output=each_output,
-                               form_base=form_base,
                                form_add_output=form_add_output,
                                form_mod_output=form_mod_output,
                                ftdi_devices=ftdi_devices,
@@ -311,7 +308,6 @@ def page_output():
                                dict_outputs=dict_outputs,
                                display_order_output=display_order_output,
                                each_output=each_output,
-                               form_base=form_base,
                                form_add_output=form_add_output,
                                form_mod_output=form_mod_output,
                                ftdi_devices=ftdi_devices,

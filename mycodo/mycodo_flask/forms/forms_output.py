@@ -22,12 +22,6 @@ from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.utils import sort_tuple
 
 
-class DataBase(FlaskForm):
-    reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
-    list_visible_elements = SelectMultipleField('New Order')
-    reorder = SubmitField(TRANSLATIONS['save_order']['title'])
-
-
 class OutputAdd(FlaskForm):
     choices_outputs = []
     dict_outputs = parse_output_information()

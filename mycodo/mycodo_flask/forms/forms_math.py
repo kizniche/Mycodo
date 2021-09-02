@@ -18,7 +18,6 @@ from mycodo.config_translations import TRANSLATIONS
 
 
 class DataBase(FlaskForm):
-    reorder_type = StringField('Reorder Type', widget=widgets.HiddenInput())
     list_visible_elements = SelectMultipleField('New Order')
     reorder = SubmitField(TRANSLATIONS['save_order']['title'])
 

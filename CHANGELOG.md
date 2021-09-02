@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix loading Input page if Math controllers are present ([#1083](https://github.com/kizniche/mycodo/issues/1083))
+ - Fix MQTT JSON Input dependency version ([#1085](https://github.com/kizniche/mycodo/issues/1085))
 
 
 ## 8.12.5 (2021-09-01)

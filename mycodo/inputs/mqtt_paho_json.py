@@ -56,7 +56,7 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'paho', 'paho-mqtt==1.5.1'),
-        ('pip-pypi', 'jmespath', 'jmespath==0.10.1')
+        ('pip-pypi', 'jmespath', 'jmespath==0.10.0')
     ],
 
     'custom_options': [
