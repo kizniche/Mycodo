@@ -118,7 +118,7 @@ measurements_dict = {
 INPUT_INFORMATION = {
     'input_name_unique': 'ADS1256_ANALOG_PH_EC',
     'input_manufacturer': 'Texas Instruments',
-    'input_name': 'ADS1256: Analog pH/EC',
+    'input_name': 'ADS1256: Generic Analog pH/EC',
     'input_library': 'wiringpi, kizniche/PiPyADC-py3',
     'measurements_name': 'Ion Concentration/Electrical Conductivity',
     'measurements_dict': measurements_dict,
