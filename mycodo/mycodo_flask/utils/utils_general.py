@@ -1543,6 +1543,23 @@ def test_sql():
     except Exception as msg:
         logger.error("Error creating entries: {err}".format(err=msg))
 
+def get_camera_paths(camera):
+    """ Retrieve still/timelapse paths for the given camera object """
+    camera_path = os.path.join(PATH_CAMERAS, '{uid}'.format(
+        uid=camera.unique_id))
+
+    if camera.path_still:
+        still_path = camera.path_still
+    else:
+        still_path = os.path.join(camera_path, 'still')
+
+    if camera.path_timelapse:
+        tl_path = camera.path_timelapse
+    else:
+        tl_path = os.path.join(camera_path, 'timelapse')
+    
+    return still_path, tl_path
+
 
 def get_camera_image_info():
     """ Retrieve information about the latest camera images """
@@ -1555,33 +1572,12 @@ def get_camera_image_info():
     camera = Camera.query.all()
 
     for each_camera in camera:
-        camera_path = os.path.join(PATH_CAMERAS, '{uid}'.format(
-            uid=each_camera.unique_id))
+        still_path, tl_path = get_camera_paths(each_camera)
 
-        if each_camera.path_still:
-            still_path = each_camera.path_still
-        else:
-            still_path = os.path.join(camera_path, 'still')
-
-        if each_camera.path_timelapse:
-            tl_path = each_camera.path_timelapse
-        else:
-            tl_path = os.path.join(camera_path, 'timelapse')
-
-        try:
-            latest_still_img_full_path = max(glob.iglob(
-                '{path}/Still-{cam_id}-*.jpg'.format(
-                    path=still_path,
-                    cam_id=each_camera.id)),
-                key=os.path.getmtime)
-        except ValueError:
-            latest_still_img_full_path = None
-        if latest_still_img_full_path:
-            ts = os.path.getmtime(latest_still_img_full_path)
+        if each_camera.still_last_file:
             latest_img_still_ts[each_camera.unique_id] = datetime.fromtimestamp(
-                ts).strftime("%Y-%m-%d %H:%M:%S")
-            latest_img_still[each_camera.unique_id] = os.path.basename(
-                latest_still_img_full_path)
+                each_camera.still_last_ts).strftime("%Y-%m-%d %H:%M:%S")
+            latest_img_still[each_camera.unique_id] = each_camera.still_last_file
         else:
             latest_img_still[each_camera.unique_id] = None
 
@@ -1596,19 +1592,12 @@ def get_camera_image_info():
         except Exception:
             pass
 
-        try:
-            latest_time_lapse_img_full_path = max(glob.iglob(
-                '{path}/Timelapse-{cam_id}-*.jpg'.format(
-                    path=tl_path,
-                    cam_id=each_camera.id)), key=os.path.getmtime)
         except ValueError:
             latest_time_lapse_img_full_path = None
-        if latest_time_lapse_img_full_path:
-            ts = os.path.getmtime(latest_time_lapse_img_full_path)
+         if each_camera.timelapse_last_file:
             latest_img_tl_ts[each_camera.unique_id] = datetime.fromtimestamp(
-                ts).strftime("%Y-%m-%d %H:%M:%S")
-            latest_img_tl[each_camera.unique_id] = os.path.basename(
-                latest_time_lapse_img_full_path)
+                each_camera.timelapse_last_ts).strftime("%Y-%m-%d %H:%M:%S")
+            latest_img_tl[each_camera.unique_id] = each_camera.timelapse_last_file
         else:
             latest_img_tl[each_camera.unique_id] = None
 

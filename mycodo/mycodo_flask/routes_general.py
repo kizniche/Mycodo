@@ -174,29 +174,19 @@ def camera_img_acquire(image_type, camera_unique_id, max_age):
 @flask_login.login_required
 def camera_img_latest_timelapse(camera_unique_id, max_age):
     """Capture an image and/or return a filename"""
-    _, _, tl_ts, tl_filename, _ = utils_general.get_camera_image_info()
-
-    if camera_unique_id in tl_filename and tl_filename[camera_unique_id]:
-        camera_path = os.path.join(PATH_CAMERAS, '{uid}'.format(
-            uid=camera_unique_id))
-        camera = Camera.query.filter(
+    camera = Camera.query.filter(
             Camera.unique_id == camera_unique_id).first()
-        if camera.path_timelapse:
-            tl_path = camera.path_timelapse
-        else:
-            tl_path = os.path.join(camera_path, 'timelapse')
-        full_img_path = os.path.join(tl_path, tl_filename[camera_unique_id])
 
-        try:
-            timestamp = os.path.getctime(full_img_path)
-            time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
-            if datetime.datetime.fromtimestamp(timestamp) > time_max_age:
-                return_values = '["{}","{}"]'.format(tl_filename[camera_unique_id],
-                                                     tl_ts[camera_unique_id])
-            else:
-                return_values = '["max_age_exceeded"]'
-        except OSError:
-            return_values = '["file_not_found"]'
+    _, tl_path = utils_general.get_camera_paths(camera)
+
+    timelapse_file_path = os.path.join(tl_path, str(camera.timelapse_last_file))
+
+    if camera.timelapse_last_file is not None and os.path.exists(timelapse_file_path):
+        time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
+        if datetime.datetime.fromtimestamp(camera.timelapse_last_ts) > time_max_age:
+            return_values = '["{}","{}"]'.format(timelapse_file_path, camera_unique_id)
+        else:
+            return_values = '["max_age_exceeded"]'
     else:
         return_values = '["file_not_found"]'
     return Response(return_values, mimetype='text/json')
