@@ -2,6 +2,7 @@
 
 ### Bugfixes
 
+ - Fix accessing dependency page ([#1082](https://github.com/kizniche/mycodo/issues/1082))
  - Fix loading Input page if Math controllers are present ([#1083](https://github.com/kizniche/mycodo/issues/1083))
  - Fix MQTT JSON Input dependency version ([#1085](https://github.com/kizniche/mycodo/issues/1085))
 
