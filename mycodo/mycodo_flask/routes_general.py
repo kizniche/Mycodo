@@ -184,7 +184,8 @@ def camera_img_latest_timelapse(camera_unique_id, max_age):
     if camera.timelapse_last_file is not None and os.path.exists(timelapse_file_path):
         time_max_age = datetime.datetime.now() - datetime.timedelta(seconds=int(max_age))
         if datetime.datetime.fromtimestamp(camera.timelapse_last_ts) > time_max_age:
-            return_values = '["{}","{}"]'.format(camera.timelapse_last_file, camera_unique_id)
+            ts = datetime.datetime.fromtimestamp(camera.timelapse_last_ts).strftime("%Y-%m-%d %H:%M:%S")
+            return_values = '["{}","{}"]'.format(camera.timelapse_last_file, ts)
         else:
             return_values = '["max_age_exceeded"]'
     else:
