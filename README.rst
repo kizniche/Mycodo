@@ -93,7 +93,7 @@ My projects
 Featured
 ~~~~~~~~
 
-.. image:: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2021/09/Video-Thumbnail-02-youtube-thumb-1024x576.jpg
+.. image:: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2021/09/MushroomCultivation_512x288.jpg
    :target: https://www.youtube.com/watch?v=z41Wy5ZF4O8
 
 .. image:: https://kylegabriel.com/projects/wp-content/uploads/sites/3/2020/07/VID_PROJ_HYDRO_512x288.jpg
