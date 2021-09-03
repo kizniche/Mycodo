@@ -1594,7 +1594,7 @@ def get_camera_image_info():
 
         except ValueError:
             latest_time_lapse_img_full_path = None
-         if each_camera.timelapse_last_file:
+        if each_camera.timelapse_last_file:
             latest_img_tl_ts[each_camera.unique_id] = datetime.fromtimestamp(
                 each_camera.timelapse_last_ts).strftime("%Y-%m-%d %H:%M:%S")
             latest_img_tl[each_camera.unique_id] = each_camera.timelapse_last_file
