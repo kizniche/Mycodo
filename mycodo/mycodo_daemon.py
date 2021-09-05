@@ -567,7 +567,13 @@ class DaemonController:
 
         """
         try:
-            return self.controller['LCD'][lcd_id].lcd_backlight(state)
+            if lcd_id in self.controller['LCD']:
+                return self.controller['LCD'][lcd_id].lcd_backlight(state)
+            elif lcd_id in self.controller['Function']:
+                if state:
+                    return self.controller['Function'][lcd_id].function_action("lcd_backlight_on")
+                else:
+                    return self.controller['Function'][lcd_id].function_action("lcd_backlight_off")
         except KeyError:
             message = "Cannot stop flashing, LCD not running"
             self.logger.exception(message)

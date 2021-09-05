@@ -173,7 +173,7 @@ class LCD_Grove_LCD_RGB:
         if state:
             self.setRGB(self.red, self.green, self.blue)
         else:
-            self.setRGB(0,0,0)
+            self.setRGB(0, 0, 0)
 
     def lcd_backlight_color(self, color_tuple):
         try:

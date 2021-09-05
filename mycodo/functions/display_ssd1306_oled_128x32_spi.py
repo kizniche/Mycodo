@@ -95,6 +95,8 @@ def execute_at_modification(
     :param custom_options_channels_dict_postsave: dict of post-saved custom output channel options
     :return:
     """
+    page_refresh = False
+
     try:
         dict_controllers = parse_function_information()
 
@@ -154,7 +156,8 @@ def execute_at_modification(
     return (messages,
             mod_function,
             custom_options_dict_postsave,
-            custom_options_channels_dict_postsave)
+            custom_options_channels_dict_postsave,
+            page_refresh)
 
 
 FUNCTION_INFORMATION = {

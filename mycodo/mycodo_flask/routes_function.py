@@ -375,7 +375,8 @@ def page_function():
     unit = Unit.query.all()
     user = User.query.all()
 
-    display_order_function = csv_to_list_of_str(DisplayOrder.query.first().function)
+    display_order_function = csv_to_list_of_str(
+        DisplayOrder.query.first().function)
 
     form_add_function = forms_function.FunctionAdd()
     form_mod_pid_base = forms_pid.PIDModBase()

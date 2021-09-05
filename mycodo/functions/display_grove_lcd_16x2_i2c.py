@@ -96,6 +96,8 @@ def execute_at_modification(
     :param custom_options_channels_dict_postsave: dict of post-saved custom output channel options
     :return:
     """
+    page_refresh = False
+
     try:
         dict_controllers = parse_function_information()
 
@@ -155,7 +157,8 @@ def execute_at_modification(
     return (messages,
             mod_function,
             custom_options_dict_postsave,
-            custom_options_channels_dict_postsave)
+            custom_options_channels_dict_postsave,
+            page_refresh)
 
 
 FUNCTION_INFORMATION = {
@@ -171,6 +174,11 @@ FUNCTION_INFORMATION = {
     'options_disabled': [
         'measurements_select',
         'measurements_configure'
+    ],
+
+    'function_actions': [
+        'lcd_backlight_on',
+        'lcd_backlight_off'
     ],
 
     'custom_options': [
@@ -477,3 +485,15 @@ class CustomModule(AbstractFunction):
         self.lcd.lcd_init()
         self.lcd.lcd_write_lines(
             "Mycodo {}".format(MYCODO_VERSION), "LCD Deactivated", "", "")
+
+    #
+    # Actions
+    #
+
+    def lcd_backlight_on(self, args_dict):
+        """ Turn the backlight on """
+        self.lcd.lcd_backlight(1)
+
+    def lcd_backlight_off(self, args_dict):
+        """ Turn the backlight off """
+        self.lcd.lcd_backlight(0)

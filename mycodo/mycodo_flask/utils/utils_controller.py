@@ -152,7 +152,8 @@ def controller_mod(form_mod, request_form):
             (messages,
              mod_controller,
              custom_options_dict,
-             custom_options_channels_dict) = dict_controllers[mod_controller.device]['execute_at_modification'](
+             custom_options_channels_dict,
+             refresh_page) = dict_controllers[mod_controller.device]['execute_at_modification'](
                 messages,
                 mod_controller,
                 request_form,
@@ -162,6 +163,8 @@ def controller_mod(form_mod, request_form):
                 custom_options_channels_dict_postsave)
             custom_options = json.dumps(custom_options_dict)  # Convert from dict to JSON string
             custom_channel_options = custom_options_channels_dict
+            if refresh_page:
+                page_refresh = True
         else:
             # Don't pass custom options to module
             custom_options = json.dumps(custom_options_dict_postsave)

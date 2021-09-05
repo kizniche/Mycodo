@@ -1,3 +1,15 @@
+## 8.12.7 (Unreleased)
+
+### Bugfixes
+
+ - Fix refreshing LCD Display Function line options when changing number of lines
+
+### Features
+
+ - Add ability for Actions to work on Function Controllers
+ - Add LCD Backlight On/Off Actions to LCD Functions
+
+
 ## 8.12.6 (2021-09-03)
 
 ### Bugfixes

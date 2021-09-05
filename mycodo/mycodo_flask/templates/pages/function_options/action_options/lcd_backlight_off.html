@@ -5,6 +5,11 @@
     {%- for each_lcd in lcd -%}
       <option value="{{each_lcd.unique_id}}"{% if each_action.do_unique_id == each_lcd.unique_id %} selected{% endif %}>[{{'%02d' % each_lcd.id}}] {{each_lcd.name}}</option>
     {%- endfor -%}
+    {%- for each_func in function if each_func.device in dict_controllers and
+                                     "function_actions" in dict_controllers[each_func.device] and
+                                     "lcd_backlight_off" in dict_controllers[each_func.device]["function_actions"] -%}
+      <option value="{{each_func.unique_id}}"{% if each_action.do_unique_id == each_func.unique_id %} selected{% endif %}>[{{'%02d' % each_func.id}}] {{each_func.name}}</option>
+    {%- endfor -%}
   </select>
 </div>
 <div class="col-12">

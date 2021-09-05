@@ -128,8 +128,28 @@ class FunctionController(AbstractController, threading.Thread):
                 return_val = run_action(args_dict)
                 return 0, "Command sent to Function Controller. Returned: {}".format(return_val)
         except:
-            self.logger.exception("Error executing button press function '{}'".format(
-                button_id))
+            self.logger.exception(
+                "Error executing button press function '{}'".format(
+                    button_id))
+
+    def function_action(self, action_string, args_dict=None, thread=True):
+        """Execute function action"""
+        if args_dict is None:
+            args_dict = {}
+        try:
+            run_action = getattr(self.run_function, action_string)
+            if thread:
+                thread_run_action = threading.Thread(
+                    target=run_action,
+                    args=(args_dict,))
+                thread_run_action.start()
+                return 0, "Command sent to Function Controller and is running in the background."
+            else:
+                return_val = run_action(args_dict)
+                return 0, "Command sent to Function Controller. Returned: {}".format(return_val)
+        except:
+            self.logger.exception(
+                "Error executing function action '{}'".format(action_string))
 
     def function_status(self):
         return self.run_function.function_status()
