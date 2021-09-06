@@ -325,6 +325,8 @@ class CustomModule(AbstractFunction):
         self.current_line_set = 0
         self.line_y_dimensions = [0, 8]
         self.pad = -2
+        self.lcd_is_on = None
+        self.lines_being_written = False
 
         # Initialize custom options
         self.period = None
@@ -375,6 +377,7 @@ class CustomModule(AbstractFunction):
 
             self.lcd = LCD_Grove_LCD_RGB(lcd_settings_dict=lcd_settings_dict)
             self.lcd.lcd_init()
+            self.lcd_is_on = True
 
             self.logger.debug("LCD Function started")
         except:
@@ -391,7 +394,11 @@ class CustomModule(AbstractFunction):
             self.logger.error("LCD not set up")
             return
 
+        if not self.lcd_is_on:
+            return  # Don't draw anything on an LCD that has the backlight off
+
         # Generate lines to display
+        self.lines_being_written = True
         lines_display = {}
         for line in range(lcd_lines):
             lines_display[line] = ""
@@ -472,9 +479,10 @@ class CustomModule(AbstractFunction):
         self.logger.debug("Displaying: {}".format(lines_display))
 
         # Display lines
-        self.lcd.lcd_init()
         self.lcd.lcd_write_lines(
             lines_display[0], lines_display[1], "", "")
+
+        self.lines_being_written = False
 
     def lcd_backlight_color(self, color):
         """ Set backlight color """
@@ -483,6 +491,7 @@ class CustomModule(AbstractFunction):
 
     def stop_function(self):
         self.lcd.lcd_init()
+        self.lcd_is_on = True
         self.lcd.lcd_write_lines(
             "Mycodo {}".format(MYCODO_VERSION), "LCD Deactivated", "", "")
 
@@ -492,8 +501,12 @@ class CustomModule(AbstractFunction):
 
     def lcd_backlight_on(self, args_dict):
         """ Turn the backlight on """
+        self.lcd_is_on = True
         self.lcd.lcd_backlight(1)
 
     def lcd_backlight_off(self, args_dict):
         """ Turn the backlight off """
+        self.lcd_is_on = False
+        while self.lines_being_written:
+            time.sleep(0.1)  # Wait for lines to be written before turning backlight off
         self.lcd.lcd_backlight(0)

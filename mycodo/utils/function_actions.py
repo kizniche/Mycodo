@@ -961,12 +961,8 @@ def action_flash_lcd_off(cond_action, message):
 
 def action_lcd_backlight_off(cond_action, message):
     control = DaemonControl()
-    lcd = db_retrieve_table_daemon(
-        LCD, unique_id=cond_action.do_unique_id)
-    message += " LCD {unique_id} ({id}, {name}) Backlight Off.".format(
-        unique_id=cond_action.do_unique_id,
-        id=lcd.id,
-        name=lcd.name)
+    message += " Function {unique_id} Backlight Off.".format(
+        unique_id=cond_action.do_unique_id)
 
     start_flashing = threading.Thread(
         target=control.lcd_backlight,
@@ -977,12 +973,8 @@ def action_lcd_backlight_off(cond_action, message):
 
 def action_lcd_backlight_on(cond_action, message):
     control = DaemonControl()
-    lcd = db_retrieve_table_daemon(
-        LCD, unique_id=cond_action.do_unique_id)
-    message += " LCD {unique_id} ({id}, {name}) Backlight On.".format(
-        unique_id=cond_action.do_unique_id,
-        id=lcd.id,
-        name=lcd.name)
+    message += " Function {unique_id} Backlight On.".format(
+        unique_id=cond_action.do_unique_id)
 
     start_flashing = threading.Thread(
         target=control.lcd_backlight,

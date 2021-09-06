@@ -7,7 +7,7 @@
 ### Features
 
  - Add ability for Actions to work on Function Controllers
- - Add LCD Backlight On/Off Actions to LCD Functions
+ - Add LCD Backlight On/Off Actions to LCD Functions ([#1089](https://github.com/kizniche/mycodo/issues/1089))
 
 
 ## 8.12.6 (2021-09-03)
