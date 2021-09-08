@@ -14,7 +14,7 @@ Flask_Limiter==1.4
 Flask_Login==0.5.0
 Flask_Marshmallow==0.14.0
 #Flask_Profiler==1.8.1  # only use (uncomment and enable in config) when profiling
-Flask_RESTX==0.3.0
+Flask_RESTX==0.5.1
 Flask_Session==0.4.0
 Flask_SQLAlchemy==2.5.1
 Flask_Talisman==0.7.0
