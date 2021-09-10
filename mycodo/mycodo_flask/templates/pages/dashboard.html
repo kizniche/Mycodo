@@ -7,6 +7,10 @@
 {% block title %} - {% for each_dash in dashboards if each_dash.unique_id == dashboard_id %}{{each_dash.name}}{% endfor %} {{dict_translation['dashboard']['title']}}{% endblock %}
 
 {% block head %}
+  <script>
+  let widget = [];
+  </script>
+
   <link href="/static/css/toastr.min.css" rel="stylesheet"/>
   <script type="text/javascript" src="/static/js/toastr.min.js"></script>
 
@@ -127,8 +131,6 @@
   {% endif %}
 
 <script type="text/javascript">
-  let widget = [];
-
   // Dashboard Grid
   let options = {
     cellHeight: {{misc.grid_cell_height}},
