@@ -1,9 +1,8 @@
 # coding=utf-8
-from marshmallow_sqlalchemy import ModelSchema
-
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.extensions import ma
 
 
 class Measurement(CRUDMixin, db.Model):
@@ -20,7 +19,7 @@ class Measurement(CRUDMixin, db.Model):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
 
-class MeasurementSchema(ModelSchema):
+class MeasurementSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Measurement
 
@@ -39,7 +38,7 @@ class Unit(CRUDMixin, db.Model):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
 
-class UnitSchema(ModelSchema):
+class UnitSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Unit
 
@@ -59,7 +58,7 @@ class Conversion(CRUDMixin, db.Model):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
 
-class ConversionSchema(ModelSchema):
+class ConversionSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Conversion
 
@@ -96,6 +95,6 @@ class DeviceMeasurements(CRUDMixin, db.Model):
     conversion_id = db.Column(db.Text, db.ForeignKey('conversion.unique_id'), default='')
 
 
-class DeviceMeasurementsSchema(ModelSchema):
+class DeviceMeasurementsSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = DeviceMeasurements

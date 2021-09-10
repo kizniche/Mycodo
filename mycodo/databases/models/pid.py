@@ -1,9 +1,8 @@
 # coding=utf-8
-from marshmallow_sqlalchemy import ModelSchema
-
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
+from mycodo.mycodo_flask.extensions import ma
 
 
 class PID(CRUDMixin, db.Model):
@@ -71,6 +70,6 @@ class PID(CRUDMixin, db.Model):
         return "<{cls}(id={s.id})>".format(s=self, cls=self.__class__.__name__)
 
 
-class PIDSchema(ModelSchema):
+class PIDSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = PID
