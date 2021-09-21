@@ -318,6 +318,18 @@
               }
               return;
             }
+            else if (action === 'add_action' && 'dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
+              console.log("TEST11");
+              $(".dependencies_device_name").text(data.data.dep_name);
+              $(".dependencies_device").text(data.data.dep_unmet);
+              $(".dependencies_unmet").text(data.data.dep_list.join(", "));
+              document.getElementById("dependency_unmet").value = data.data.dep_unmet;
+              if (data.data.dep_message.length > 0) {
+                document.getElementById("dependencies_message").innerHTML = "<p>Message about dependencies: " + data.data.dep_message + "</p>";
+              }
+              $('#modal_config_dependency_install').modal('show');
+            }
+
             if (data.data.messages.error.length === 0) {
               if (action === 'function_mod' && 'function_id' in data.data) {
                 if ('return_text' in data.data.messages && data.data.messages.return_text.length > 0) {

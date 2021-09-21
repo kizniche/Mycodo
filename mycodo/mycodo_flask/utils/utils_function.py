@@ -364,7 +364,7 @@ def action_add(form):
     dep_name = ""
     page_refresh = False
 
-    dep_unmet, _, _ = return_dependencies(form.action_type.data)
+    dep_unmet, _, dep_message = return_dependencies(form.action_type.data)
     if dep_unmet:
         list_unmet_deps = []
         for each_dep in dep_unmet:
@@ -374,7 +374,7 @@ def action_add(form):
                 dev=form.action_type.data))
         dep_name = form.action_type.data
 
-        return messages, dep_name, list_unmet_deps, None
+        return messages, dep_name, list_unmet_deps, dep_message, None
 
     if form.function_type.data == 'conditional':
         func = Conditional.query.filter(

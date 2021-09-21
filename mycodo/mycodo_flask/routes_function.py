@@ -214,6 +214,8 @@ def page_function_submit():
                  dep_list,
                  action_id,
                  page_refresh) = utils_function.action_add(form_function_base)
+                if dep_list:
+                    dep_unmet = form_function_base.action_type.data
             elif form_actions.save_action.data:
                 messages = utils_function.action_mod(
                     form_actions, request.form)

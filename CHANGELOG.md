@@ -3,6 +3,7 @@
 ### Bugfixes
 
  - Fix refreshing LCD Display Function line options when changing number of lines
+ - Fix installation of Function Action dependencies
 
 ### Features
 

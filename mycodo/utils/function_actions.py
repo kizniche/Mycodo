@@ -294,7 +294,7 @@ def action_pause(cond_action, message):
     return message
 
 
-def action_mqtt_publish(cond_action, message, value):
+def action_mqtt_publish(cond_action, message, value=None):
     import paho.mqtt.publish as publish
 
     try:
