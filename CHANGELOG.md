@@ -10,6 +10,7 @@
  - Add ability for Actions to work on Function Controllers
  - Add LCD Backlight On/Off Actions to LCD Functions ([#1089](https://github.com/kizniche/mycodo/issues/1089))
  - Add Input: SHT2x (using alternate sht20 library with more accurate measurements and settable temperature resolution)
+ - Add Input: SHTC3
 
 ### Miscellaneous
 
