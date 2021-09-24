@@ -43,6 +43,12 @@ class Camera(CRUDMixin, db.Model):
     timelapse_interval = db.Column(db.Float, default=None)
     timelapse_next_capture = db.Column(db.Float, default=None)
     timelapse_capture_number = db.Column(db.Integer, default=None)
+    timelapse_last_file = db.Column(db.Text, default=None)
+    timelapse_last_ts = db.Column(db.Float, default=None)
+
+    # Still tracking
+    still_last_file = db.Column(db.Text, default=None)
+    still_last_ts = db.Column(db.Float, default=None)
 
     # Paths
     path_still = db.Column(db.Text, default='')

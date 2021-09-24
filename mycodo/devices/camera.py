@@ -5,14 +5,18 @@ import os
 import time
 
 from mycodo.config import PATH_CAMERAS
+from mycodo.config import SQL_DATABASE_MYCODO
 from mycodo.databases.models import Camera
 from mycodo.databases.models import OutputChannel
+from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import set_user_grp
+
+MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 logger = logging.getLogger(__name__)
 logger.setLevel(set_log_level(logging))
@@ -33,7 +37,8 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     """
     daemon_control = None
     settings = db_retrieve_table_daemon(Camera, unique_id=unique_id)
-    timestamp = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+    timestamp_date = datetime.datetime.now()
+    timestamp = timestamp_date.strftime('%Y-%m-%d_%H-%M-%S')
     assure_path_exists(PATH_CAMERAS)
     camera_path = assure_path_exists(
         os.path.join(PATH_CAMERAS, '{uid}'.format(uid=settings.unique_id)))
@@ -428,6 +433,18 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     # Turn off output, if configured
     if output_id and output_channel and daemon_control and not output_already_on:
         daemon_control.output_off(output_id, output_channel=output_channel.channel)
+
+    if record_type in ['photo', 'timelapse']:
+        # Store the filename and timestamp in the database for photos and timestamps
+        with session_scope(MYCODO_DB_PATH) as new_session:
+            mod_camera = new_session.query(Camera).filter(Camera.unique_id == unique_id).first()
+            if record_type == 'photo':
+                mod_camera.still_last_file = filename
+                mod_camera.still_last_ts = timestamp_date.timestamp()
+            elif record_type == 'timelapse':
+                mod_camera.timelapse_last_file = filename
+                mod_camera.timelapse_last_ts = timestamp_date.timestamp()
+            new_session.commit()
 
     try:
         set_user_grp(path_file, 'mycodo', 'mycodo')
