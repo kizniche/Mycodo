@@ -70,32 +70,38 @@ limiter = Limiter(key_func=get_ip_address)
 @blueprint.route('/')
 def home():
     """Load the default landing page"""
-    if flask_login.current_user.is_authenticated:
-        if flask_login.current_user.landing_page == 'live':
+    try:
+        if flask_login.current_user.is_authenticated:
+            if flask_login.current_user.landing_page == 'live':
+                return redirect(url_for('routes_page.page_live'))
+            elif flask_login.current_user.landing_page == 'dashboard':
+                return redirect(url_for('routes_dashboard.page_dashboard_default'))
+            elif flask_login.current_user.landing_page == 'info':
+                return redirect(url_for('routes_page.page_info'))
             return redirect(url_for('routes_page.page_live'))
-        elif flask_login.current_user.landing_page == 'dashboard':
-            return redirect(url_for('routes_dashboard.page_dashboard_default'))
-        elif flask_login.current_user.landing_page == 'info':
-            return redirect(url_for('routes_page.page_info'))
-        return redirect(url_for('routes_page.page_live'))
+    except:
+        logger.error("User may not be logged in. Clearing cookie auth.")
     return clear_cookie_auth()
 
 @blueprint.route('/index_page')
 def index_page():
     """Load the index page"""
-    if not flask_login.current_user.index_page:
-        return home()
-    elif flask_login.current_user.index_page == 'landing':
-        return home()
-    else:
-        if flask_login.current_user.is_authenticated:
-            if flask_login.current_user.index_page == 'live':
+    try:
+        if not flask_login.current_user.index_page:
+            return home()
+        elif flask_login.current_user.index_page == 'landing':
+            return home()
+        else:
+            if flask_login.current_user.is_authenticated:
+                if flask_login.current_user.index_page == 'live':
+                    return redirect(url_for('routes_page.page_live'))
+                elif flask_login.current_user.index_page == 'dashboard':
+                    return redirect(url_for('routes_dashboard.page_dashboard_default'))
+                elif flask_login.current_user.index_page == 'info':
+                    return redirect(url_for('routes_page.page_info'))
                 return redirect(url_for('routes_page.page_live'))
-            elif flask_login.current_user.index_page == 'dashboard':
-                return redirect(url_for('routes_dashboard.page_dashboard_default'))
-            elif flask_login.current_user.index_page == 'info':
-                return redirect(url_for('routes_page.page_info'))
-            return redirect(url_for('routes_page.page_live'))
+    except:
+        logger.error("User may not be logged in. Clearing cookie auth.")
     return clear_cookie_auth()
 
 @blueprint.route('/settings', methods=('GET', 'POST'))
