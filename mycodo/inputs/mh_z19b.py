@@ -17,7 +17,7 @@ def constraints_pass_measure_range(mod_input, value):
     errors = []
     all_passed = True
     # Ensure valid range is selected
-    if value not in ['1000', '2000', '3000', '5000']:
+    if value not in ['1000', '2000', '3000', '5000', '10000']:
         all_passed = False
         errors.append("Invalid range")
     return all_passed, errors, mod_input
@@ -74,6 +74,7 @@ INPUT_INFORMATION = {
                 ('2000', '0 - 2000 ppmv'),
                 ('3000', '0 - 3000 ppmv'),
                 ('5000', '0 - 5000 ppmv'),
+                ('10000', '0 - 10000 ppmv'),
             ],
             'required': True,
             'constraints_pass': constraints_pass_measure_range,
@@ -205,7 +206,7 @@ class InputModule(AbstractInput):
 
     def set_measure_range(self, measure_range):
         """
-        Sets the measurement range. Options are: '1000', '2000', '3000', or '5000' (ppmv)
+        Sets the measurement range. Options are: '1000', '2000', '3000', '5000' or '10000' (ppmv)
         :param measure_range: string
         :return: None
         """
@@ -217,6 +218,8 @@ class InputModule(AbstractInput):
             self.ser.write(bytearray([0xff, 0x01, 0x99, 0x00, 0x00, 0x00, 0x0b, 0xb8, 0xa3]))
         elif measure_range == '5000':
             self.ser.write(bytearray([0xff, 0x01, 0x99, 0x00, 0x00, 0x00, 0x13, 0x88, 0xcb]))
+        elif measure_range == '10000':
+            self.ser.write(bytearray([0xff, 0x01, 0x99, 0x00, 0x00, 0x00, 0x27, 0x10, 0x2f]))
         else:
             return "out of range"
 
