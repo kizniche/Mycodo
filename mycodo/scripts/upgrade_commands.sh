@@ -20,11 +20,14 @@ WIRINGPI_URL="https://project-downloads.drogon.net/wiringpi-latest.deb"
 INFLUXDB_VERSION="1.8.0"
 VIRTUALENV_VERSION="20.7.0"
 
-# Required apt packages. This has only been tested with Raspbian for the
-# Raspberry Pi but should work with most Debian-based systems.
+# Required apt packages. This has been tested with Raspbian for the
+# Raspberry Pi and Ubuntu, it should work with most Debian-based systems.
 APT_PKGS="gawk gcc g++ git libffi-dev libi2c-dev logrotate moreutils nginx sqlite3 wget python3 python3-dev python3-setuptools python3-smbus python3-pylint-common rng-tools"
 
 PYTHON_BINARY_SYS_LOC="$(python3 -c "import os; print(os.environ['_'])")"
+
+UNAME_TYPE=$(uname -m)
+MACHINE_TYPE=$(dpkg --print-architecture)
 
 # Get the Mycodo root directory
 SOURCE="${BASH_SOURCE[0]}"
@@ -54,7 +57,7 @@ Options:
   generate-widget-html          Generate HTML templates for all widgets
   restart-daemon                Restart the Mycodo daemon
   setup-virtualenv              Create a Python virtual environment
-  setup-virtualenv-full         Create a Python virtual environment and installs dependencies
+  setup-virtualenv-full         Create a Python virtual environment and install dependencies
   ssl-certs-generate            Generate SSL certificates for the web user interface
   ssl-certs-regenerate          Regenerate SSL certificates
   uninstall-apt-pip             Uninstall the apt version of pip
@@ -76,17 +79,17 @@ Options:
   update-influxdb-db-user       Create the influxdb database and user
   update-logrotate              Install logrotate script
   update-mycodo-startup-script  Install the Mycodo daemon startup script
-  update-packages               Install required apt packages are installed/up-to-date
+  update-packages               Ensure required apt packages are installed/up-to-date
   update-permissions            Set permissions for Mycodo directories/files
   update-pip3                   Update pip
   update-pip3-packages          Update required pip packages
-  update-swap-size              Ensure sqap size is sufficiently large (512 MB)
+  update-swap-size              Ensure swap size is sufficiently large (512 MB)
   upgrade-mycodo                Upgrade Mycodo to latest compatible release and preserve database and virtualenv
   upgrade-release-major {ver}   Upgrade Mycodo to a major version release {ver} and preserve database and virtualenv
   upgrade-release-wipe {ver}    Upgrade Mycodo to a major version release {ver} and wipe database and virtualenv
   upgrade-master                Upgrade Mycodo to the master branch at https://github.com/kizniche/Mycodo
   upgrade-post                  Execute post-upgrade script
-  web-server-connect            Attampt to connect to the web server
+  web-server-connect            Attempt to connect to the web server
   web-server-reload             Reload the web server
   web-server-restart            Restart the web server
   web-server-update             Update the web server configuration files
@@ -167,12 +170,16 @@ case "${1:-''}" in
         useradd -M mycodo
         adduser mycodo adm
         adduser mycodo dialout
-        adduser mycodo gpio
         adduser mycodo i2c
         adduser mycodo kmem
         adduser mycodo video
-        adduser pi mycodo
-        adduser mycodo pi
+        if getent group gpio; then
+            adduser mycodo gpio
+        fi
+        if id pi &>/dev/null; then
+            adduser pi mycodo
+            adduser mycodo pi
+        fi
     ;;
     'generate-widget-html')
         printf "\n#### Generating widget HTML files\n"
@@ -275,9 +282,13 @@ case "${1:-''}" in
         rm -rf ./bcm2835
     ;;
     'install-wiringpi')
-        cd "${MYCODO_PATH}"/install || return
-        wget ${WIRINGPI_URL} -O wiringpi-latest.deb
-        dpkg -i wiringpi-latest.deb
+        if [[ ${MACHINE_TYPE} == 'armhf' ]]; then
+            cd "${MYCODO_PATH}"/install || return
+            wget ${WIRINGPI_URL} -O wiringpi-latest.deb
+            dpkg -i wiringpi-latest.deb
+        else
+            printf "\n#### WiringPi not supported on this architecture, skipping.\n"
+        fi
     ;;
     'build-pigpiod')
         apt-get install -y python3-pigpio
@@ -371,7 +382,7 @@ case "${1:-''}" in
     'update-influxdb')
         printf "\n#### Ensuring compatible version of influxdb is installed ####\n"
         INSTALL_ADDRESS="https://dl.influxdata.com/influxdb/releases/"
-        INSTALL_FILE="influxdb_${INFLUXDB_VERSION}_armhf.deb"
+        INSTALL_FILE="influxdb_${INFLUXDB_VERSION}_${MACHINE_TYPE}.deb"
         CORRECT_VERSION="${INFLUXDB_VERSION}-1"
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
         if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
@@ -397,7 +408,7 @@ case "${1:-''}" in
             break ||
             # Else wait 60 seconds if the influxd port is not accepting connections
             # Everything below will begin executing if an error occurs before the break
-            printf "#### Could not connect to Influxdb. Waiting 30 seconds then trying again...\n" &&
+            printf "#### Could not connect to Influxdb. Waiting 60 seconds then trying again...\n" &&
             sleep 60
         done
     ;;
@@ -454,7 +465,7 @@ case "${1:-''}" in
     ;;
     'update-swap-size')
         printf "\n#### Checking if swap size is 100 MB and needs to be changed to 512 MB\n"
-        if grep -q "CONF_SWAPSIZE=100" "/etc/dphys-swapfile"; then
+        if grep -q -s "CONF_SWAPSIZE=100" "/etc/dphys-swapfile"; then
             printf "#### Swap currently set to 100 MB. Changing to 512 MB and restarting\n"
             sed -i 's/CONF_SWAPSIZE=100/CONF_SWAPSIZE=512/g' /etc/dphys-swapfile
             /etc/init.d/dphys-swapfile stop
@@ -487,7 +498,7 @@ case "${1:-''}" in
             break ||
             # Else wait 60 seconds if localhost is not accepting connections
             # Everything below will begin executing if an error occurs before the break
-            printf "#### Could not connect to http://localhost. Waiting 60 seconds then trying again (up to 5 times)...\n" &&
+            printf "#### Could not connect to http://localhost. Waiting 60 seconds then trying again (up to 10 times)...\n" &&
             sleep 60 &&
             printf "#### Trying again...\n"
         done
@@ -545,8 +556,6 @@ case "${1:-''}" in
             software-properties-common
         curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
 
-        UNAME_TYPE=$(uname -m)
-        MACHINE_TYPE=$(dpkg --print-architecture)
         if [[ ${UNAME_TYPE} == 'x86_64' ]]; then
             add-apt-repository -y \
                "deb [arch=amd64] https://download.docker.com/linux/debian \

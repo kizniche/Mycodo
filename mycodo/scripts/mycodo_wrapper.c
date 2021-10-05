@@ -79,7 +79,7 @@ int main(int argc, char *argv[]) {
       sprintf(cmd, "influxd restore -portable -db mycodo_db -newdb mycodo_db_bak %s", argv[2]);
       system(cmd);
     } else if (strcmp(argv[1], "influxdb_delete_restore_tmp_dir") == 0) {
-      sprintf(cmd, "rm -rf /var/mycodo-root/upload", argv[2]);
+      sprintf(cmd, "rm -rf /var/mycodo-root/upload");
       system(cmd);
     } else if (strcmp(argv[1], "upgrade_database") == 0) {
       upgrade_commands(argv[0], "update-alembic");
