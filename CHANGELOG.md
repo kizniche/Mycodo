@@ -4,9 +4,11 @@
 
  - Fix refreshing LCD Display Function line options when changing number of lines
  - Fix installation of Function Action dependencies
+ - Fix error when unauthenticated users attempting to land on the home page
 
 ### Features
 
+ - Add ability to install on most Debian-based systems
  - Add ability for Actions to work on Function Controllers
  - Add LCD Backlight On/Off Actions to LCD Functions ([#1089](https://github.com/kizniche/mycodo/issues/1089))
  - Add Input: SHT2x (using alternate sht20 library with more accurate measurements and settable temperature resolution)

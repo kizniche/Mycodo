@@ -415,13 +415,10 @@ def thread_import_influxdb(tmp_folder):
     # Delete tmp directory if it exists
     try:
         logger.info("Deleting influxdb restore tmp directory...")
-        command = "{pth}/mycodo/scripts/mycodo_wrapper " \
-                  "influxdb_delete_restore_tmp_dir {dir}".format(
-            pth=INSTALL_DIRECTORY, dir=tmp_folder)
+        command = "{pth}/mycodo/scripts/mycodo_wrapper delete_upload_dir".format(
+            pth=INSTALL_DIRECTORY)
         cmd = subprocess.Popen(
-            command,
-            stdout=subprocess.PIPE,
-            shell=True)
+            command, stdout=subprocess.PIPE, shell=True)
         cmd_out, cmd_err = cmd.communicate()
         cmd_status = cmd.wait()
         logger.info("Command output: {}\nErrors: {}\nStatus: {}".format(

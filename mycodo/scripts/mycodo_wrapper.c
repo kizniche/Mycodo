@@ -60,6 +60,9 @@ int main(int argc, char *argv[]) {
     } else if (strcmp(argv[1], "daemon_stop") == 0) {
       sprintf(cmd, "service mycodo stop");
       system(cmd);
+    } else if (strcmp(argv[1], "delete_upload_dir") == 0) {
+      sprintf(cmd, "rm -rf /var/mycodo-root/upload");
+      system(cmd);
     } else if (strcmp(argv[1], "frontend_reload") == 0) {
       sprintf(cmd, "service mycodoflask reload");
       system(cmd);
@@ -77,9 +80,6 @@ int main(int argc, char *argv[]) {
       system(cmd);
     } else if (strcmp(argv[1], "influxdb_restore_mycodo_db") == 0 && (argc > 2)) {
       sprintf(cmd, "influxd restore -portable -db mycodo_db -newdb mycodo_db_bak %s", argv[2]);
-      system(cmd);
-    } else if (strcmp(argv[1], "influxdb_delete_restore_tmp_dir") == 0) {
-      sprintf(cmd, "rm -rf /var/mycodo-root/upload");
       system(cmd);
     } else if (strcmp(argv[1], "upgrade_database") == 0) {
       upgrade_commands(argv[0], "update-alembic");
@@ -177,6 +177,7 @@ int main(int argc, char *argv[]) {
     printf("   daemon_start:               Start the mycodo daemon\n");
     printf("   daemon_stop:                Stop the mycodo daemon\n");
     printf("   database_upgrade:           Upgrade the database\n");
+    printf("   delete_upload_dir:          Delete the directory uploads are saved to from the UI\n");
     printf("   frontend_reload:            Reload the mycodo frontend\n");
     printf("   frontend_restart:           Restart the mycodo frontend\n");
     printf("   influxdb_start:             Start influxdb\n");
