@@ -151,9 +151,9 @@ printf "
 *********************************
 
 Although the install finished, it doesn't necessarily mean it installed correctly.
-If you experience issues, review the full install log is located at:
+If you experience issues, review the full install log located at:
 %s/install/setup.log
 
-Go to https://%s/, or whatever your Raspberry Pi's
+Go to https://%s/, or whatever your device's
 IP address is, to create an admin user and log in.
 " "${INSTALL_DIRECTORY}" "${IP}" 2>&1 | tee -a "${LOG_LOCATION}"
