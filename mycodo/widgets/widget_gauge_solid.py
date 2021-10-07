@@ -135,17 +135,17 @@ WIDGET_INFORMATION = {
             '/var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge-9.1.2.js'
         ],
         [
-            'rm -rf Highcharts-9.1.2.zip',
-            'wget https://code.highcharts.com/zips/Highcharts-9.1.2.zip',
-            'unzip Highcharts-9.1.2.zip -d Highcharts-9.1.2',
-            'cp -rf Highcharts-9.1.2/code/highstock.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
-            'cp -rf Highcharts-9.1.2/code/highstock.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock.js.map',
-            'cp -rf Highcharts-9.1.2/code/highcharts-more.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
-            'cp -rf Highcharts-9.1.2/code/highcharts-more.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more.js.map',
-            'cp -rf Highcharts-9.1.2/code/modules/solid-gauge.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge-9.1.2.js',
-            'cp -rf Highcharts-9.1.2/code/modules/solid-gauge.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge.js.map',
-            'rm -rf Highcharts-9.1.2.zip',
-            'rm -rf Highcharts-9.1.2'
+            'rm -rf Highcharts-Stock-9.1.2.zip',
+            'wget https://code.highcharts.com/zips/Highcharts-Stock-9.1.2.zip',
+            'unzip Highcharts-Stock-9.1.2.zip -d Highcharts-Stock-9.1.2',
+            'cp -rf Highcharts-Stock-9.1.2/code/highstock.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
+            'cp -rf Highcharts-Stock-9.1.2/code/highstock.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock.js.map',
+            'cp -rf Highcharts-Stock-9.1.2/code/highcharts-more.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more-9.1.2.js',
+            'cp -rf Highcharts-Stock-9.1.2/code/highcharts-more.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highcharts-more.js.map',
+            'cp -rf Highcharts-Stock-9.1.2/code/modules/solid-gauge.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge-9.1.2.js',
+            'cp -rf Highcharts-Stock-9.1.2/code/modules/solid-gauge.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/solid-gauge.js.map',
+            'rm -rf Highcharts-Stock-9.1.2.zip',
+            'rm -rf Highcharts-Stock-9.1.2'
         ])
     ],
 

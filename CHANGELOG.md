@@ -5,6 +5,7 @@
  - Fix refreshing LCD Display Function line options when changing number of lines
  - Fix installation of Function Action dependencies
  - Fix error when unauthenticated users attempting to land on the home page
+ - Fix Gauge Widget dependencies ([#1100](https://github.com/kizniche/mycodo/issues/1100))
 
 ### Features
 
