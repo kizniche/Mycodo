@@ -1,8 +1,5 @@
 # coding=utf-8
 import copy
-import time
-import board
-import math
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
