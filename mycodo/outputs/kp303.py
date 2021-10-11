@@ -71,7 +71,7 @@ OUTPUT_INFORMATION = {
     'interfaces': ['MYCODO'],
 
     'dependencies_module': [
-        ('pip-pypi', 'kasa', 'python-kasa==0.4.0.dev3')
+        ('pip-pypi', 'kasa', 'python-kasa==0.4.0')
     ],
 
     'custom_options': [

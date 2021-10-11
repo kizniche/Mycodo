@@ -195,6 +195,7 @@ def calculate_sunrise_sunset_epoch(trigger):
         elif trigger.rise_or_set == 'sunset':
             return float(sun.calc_sun_time(False)['time_local'].strftime('%s'))
     except Exception:
+        logger.exception("Generating next sunrise/sunset time")
         return None
 
 
