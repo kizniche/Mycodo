@@ -71,6 +71,7 @@ OUTPUT_INFORMATION = {
     'interfaces': ['MYCODO'],
 
     'dependencies_module': [
+        # Do not update past 0.4.0.dev4, 0.4.0.dev5 and above breaks this module's functionality
         ('pip-pypi', 'kasa', 'python-kasa==0.4.0.dev4')
     ],
 
