@@ -24,7 +24,7 @@ jobs:
           sudo bash mycodo/scripts/upgrade_commands.sh update-packages
           git clone --recursive https://github.com/WiringPi/WiringPi-Python.git && cd WiringPi-Python && git submodule update --init && cd WiringPi && ./build && cd ../..
           sudo bash mycodo/scripts/upgrade_commands.sh build-pigpiod
-          wget https://dl.influxdata.com/influxdb/releases/influxdb_1.8.0_amd64.deb && sudo dpkg -i influxdb_1.8.0_amd64.deb
+          sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb
           sudo service influxdb start && sleep 3
           sudo bash mycodo/scripts/upgrade_commands.sh update-influxdb-db-user
           sudo useradd -M mycodo
