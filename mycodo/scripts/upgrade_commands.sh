@@ -306,7 +306,7 @@ case "${1:-''}" in
     ;;
     'install-pigpiod')
         printf "\n#### Installing pigpiod\n"
-        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh build-pigpio
+        /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh build-pigpiod
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh disable-pigpiod
         /bin/bash "${MYCODO_PATH}"/mycodo/scripts/upgrade_commands.sh enable-pigpiod-high
         mkdir -p /opt/mycodo
