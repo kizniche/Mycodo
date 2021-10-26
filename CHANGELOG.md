@@ -1,4 +1,6 @@
-## 8.12.7 (Unreleased)
+## 8.12.7 (2021-10-25)
+
+This is a bugfix release that includes a fix to a severe security vulnerability. It is recommended that all users that have Mycodo exposed to the internet and allow guest access upgrade to patch this vulnerability. Users that only run Mycodo on a local network and/or don't allow unknown user (i.e. guest) access likely won't be affected.
 
 ### Bugfixes
 
@@ -7,6 +9,7 @@
  - Fix error when unauthenticated users attempting to land on the home page
  - Fix Gauge Widget dependencies ([#1100](https://github.com/kizniche/mycodo/issues/1100))
  - Fix installation of pigpiod
+ - Fix file exploit vulnerability ([#1105](https://github.com/kizniche/mycodo/issues/1105))
 
 ### Features
 

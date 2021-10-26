@@ -117,7 +117,8 @@ def send_note_attachment(filename):
     file_path = os.path.join(PATH_NOTE_ATTACHMENTS, filename)
     if file_path is not None:
         try:
-            return send_file(file_path, as_attachment=True)
+            if os.path.abspath(file_path).startswith(PATH_NOTE_ATTACHMENTS):
+                return send_file(file_path, as_attachment=True)
         except Exception:
             logger.exception("Send note attachment")
 
@@ -149,7 +150,8 @@ def camera_img_return_path(camera_unique_id, img_type, filename):
         files = []
     if filename in files:
         path_file = os.path.join(path, filename)
-        return send_file(path_file, mimetype='image/jpeg')
+        if os.path.abspath(path_file).startswith(path):
+            return send_file(path_file, mimetype='image/jpeg')
 
     return "Image not found"
 
