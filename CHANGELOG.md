@@ -1,3 +1,10 @@
+## 8.12.8 (2021-10-27)
+
+### Bugfixes
+
+ - Fix SQLAlchemy bug preventing install
+
+
 ## 8.12.7 (2021-10-25)
 
 This is a bugfix release that includes a fix to a severe security vulnerability. It is recommended that all users that have Mycodo exposed to the internet and allow guest access upgrade to patch this vulnerability. Users that only run Mycodo on a local network and/or don't allow unknown user (i.e. guest) access likely won't be affected.

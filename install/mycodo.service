@@ -6,7 +6,7 @@ StartLimitBurst=5
 
 [Service]
 Restart=on-failure
-RestartSec=5s
+RestartSec=20s
 Type=forking
 TimeoutSec=0
 ExecStartPre=/bin/bash /var/mycodo-root/install/influxdb_wait_until_running.sh

@@ -28,6 +28,6 @@ pyserial==3.5
 python-dateutil==2.8.2
 requests==2.26.0
 setuptools==58.2.0
-SQLAlchemy==1.4.25
+SQLAlchemy==1.4.26
 Werkzeug==2.0.2
 WTForms==2.3.3
