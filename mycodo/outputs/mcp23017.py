@@ -51,7 +51,7 @@ OUTPUT_INFORMATION = {
     'dependencies_module': [
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
         ('pip-pypi', 'adafruit_extended_bus', 'adafruit-extended-bus==1.0.1'),
-        ('pip-pypi', 'adafruit_mcp4728', 'adafruit-circuitpython-mcp230xx==2.4.6')
+        ('pip-pypi', 'adafruit_mcp230xx', 'adafruit-circuitpython-mcp230xx==2.4.6')
     ],
 
     'interfaces': ['I2C'],

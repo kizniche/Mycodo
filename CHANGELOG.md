@@ -1,3 +1,10 @@
+## 8.12.9 (Unreleased)
+
+### Bugfixes
+
+- Fix MCP23017 Output dependency ([#1095](https://github.com/kizniche/mycodo/issues/1095))
+
+
 ## 8.12.8 (2021-10-27)
 
 ### Bugfixes
