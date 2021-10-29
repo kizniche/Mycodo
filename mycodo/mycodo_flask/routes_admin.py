@@ -485,6 +485,8 @@ def admin_upgrade():
         return render_template('admin/upgrade.html',
                                is_internet=False)
 
+    is_internet = True
+
     # Read from the upgrade status file created by the upgrade script
     # to indicate if the upgrade is running.
     try:
@@ -504,12 +506,12 @@ def admin_upgrade():
                   "error")
         return render_template('admin/upgrade.html',
                                current_release=MYCODO_VERSION,
+                               is_internet=is_internet,
                                upgrade=upgrade)
 
     form_backup = forms_misc.Backup()
     form_upgrade = forms_misc.Upgrade()
 
-    is_internet = True
     upgrade_available = False
 
     # Check for any new Mycodo releases on github
