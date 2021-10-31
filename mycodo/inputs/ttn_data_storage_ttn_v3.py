@@ -1,5 +1,6 @@
 # coding=utf-8
 import datetime
+import json
 import time
 
 import requests
@@ -46,9 +47,9 @@ channels_dict = {
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'TTN_DATA_STORAGE',
+    'input_name_unique': 'TTN_DATA_STORAGE_TTN_V3',
     'input_manufacturer': 'Mycodo',
-    'input_name': 'TTN Integration: Data Storage (TTN v2)',
+    'input_name': 'TTN Integration: Data Storage (TTN v3)',
     'input_library': 'requests',
     'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,
@@ -151,33 +152,46 @@ class InputModule(AbstractInput):
 
     def get_new_data(self, past_seconds):
         # Basic implementation. Future development may use more complex library to access API
-        endpoint = "https://{app}.data.thethingsnetwork.org/api/v2/query/{dev}?last={time}".format(
+        endpoint = "https://nam1.cloud.thethings.network/api/v3/as/applications/{app}/devices/{dev}/packages/storage/uplink_message?last={time}&field_mask=up.uplink_message.decoded_payload".format(
             app=self.application_id, dev=self.device_id, time="{}s".format(int(past_seconds)))
         headers = {"Authorization": "key {k}".format(k=self.app_api_key)}
         timestamp_format = '%Y-%m-%dT%H:%M:%S.%f'
 
         response = requests.get(endpoint, headers=headers)
-        try:
-            response.json()
-        except ValueError:  # No data returned
-            self.logger.debug("Response Error. Response: {}. Likely there is no data to be retrieved on TTN".format(
-                response.content))
-            return
+        if response.status_code != 200:
+            self.logger.info("response.status_code != 200: {}".format(response.reason))
+        self.logger.debug("response.content: {}".format(response.content))
 
-        for each_resp in response.json():
+        list_dicts = response.content.decode().split("\n")
+        self.logger.debug("list_dicts: {}".format(list_dicts))
+
+        for each_resp in list_dicts:
             if not self.running:
                 break
 
+            if not each_resp:
+                continue
+            self.logger.debug("each_resp: {}".format(each_resp))
+
             try:
-                datetime_utc = datetime.datetime.strptime(each_resp['time'][:-7], timestamp_format)
+                resp_json = json.loads(each_resp)
+            except:
+                resp_json = {}
+            self.logger.debug("resp_json: {}".format(resp_json))
+
+            try:
+                datetime_utc = datetime.datetime.strptime(
+                    resp_json['result']['received_at'][:-7], timestamp_format)
             except Exception:
                 # Sometimes the original timestamp is in milliseconds
                 # instead of nanoseconds. Therefore, remove 3 less digits
                 # past the decimal and try again to parse.
                 try:
-                    datetime_utc = datetime.datetime.strptime(each_resp['time'][:-4], timestamp_format)
+                    datetime_utc = datetime.datetime.strptime(
+                        resp_json['result']['received_at'][:-4], timestamp_format)
                 except Exception as e:
-                    self.logger.error("Could not parse timestamp '{}': {}".format(each_resp['time'], e))
+                    self.logger.error("Could not parse timestamp '{}': {}".format(
+                        resp_json['result']['received_at'], e))
                     continue  # Malformed timestamp encountered. Discard measurement.
 
             if (not self.latest_datetime or
@@ -187,14 +201,14 @@ class InputModule(AbstractInput):
             measurements = {}
             for channel in self.channels_measurement:
                 if (self.is_enabled(channel) and
-                        self.options_channels['variable_name'][channel] in each_resp and
-                        each_resp[self.options_channels['variable_name'][channel]] is not None):
+                        self.options_channels['variable_name'][channel] in resp_json['result']['uplink_message']['decoded_payload'] and
+                        resp_json['result']['uplink_message']['decoded_payload'][self.options_channels['variable_name'][channel]] is not None):
 
                     # Original value/unit
                     measurements[channel] = {}
                     measurements[channel]['measurement'] = self.channels_measurement[channel].measurement
                     measurements[channel]['unit'] = self.channels_measurement[channel].unit
-                    measurements[channel]['value'] = each_resp[self.options_channels['variable_name'][channel]]
+                    measurements[channel]['value'] = resp_json['result']['uplink_message']['decoded_payload'][self.options_channels['variable_name'][channel]]
                     measurements[channel]['timestamp_utc'] = datetime_utc
 
                     # Convert value/unit is conversion_id present and valid

@@ -6,6 +6,10 @@
  - Fix restoring backups causing upgrade page to not be usable until .upgrade file is deleted
  - Fix .upgrade file interfering with upgrade page rendering ([#1096](https://github.com/kizniche/mycodo/issues/1096))
 
+### Features
+
+ - Add Input: TTN Integration: Data Storage (TTN v3), replaces deprecated TTN v2 Input (deprecated 12/2021)
+
 
 ## 8.12.8 (2021-10-27)
 
