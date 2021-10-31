@@ -1,4 +1,7 @@
 # coding=utf-8
+from marshmallow_sqlalchemy.fields import Nested
+from sqlalchemy.orm import relationship
+
 from mycodo.databases import CRUDMixin
 from mycodo.databases import set_uuid
 from mycodo.mycodo_flask.extensions import db
@@ -94,7 +97,11 @@ class DeviceMeasurements(CRUDMixin, db.Model):
 
     conversion_id = db.Column(db.Text, db.ForeignKey('conversion.unique_id'), default='')
 
+    conversion = relationship("Conversion", foreign_keys="DeviceMeasurements.conversion_id")
+
 
 class DeviceMeasurementsSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = DeviceMeasurements
+
+    conversion = Nested(ConversionSchema)

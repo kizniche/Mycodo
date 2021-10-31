@@ -22,6 +22,11 @@ function_channel_fields = api.model('Function Channel Fields', {
     'custom_options': fields.String,
 })
 
+conversion_fields = api.model('Measurement Conversion Fields', {
+    'id': fields.Integer,
+    'unique_id': fields.String
+})
+
 device_measurement_fields = api.model('Device Measurement Settings Fields', {
     'id': fields.Integer,
     'unique_id': fields.String,
@@ -42,7 +47,7 @@ device_measurement_fields = api.model('Device Measurement Settings Fields', {
     'scale_from_max': fields.Float,
     'scale_to_min': fields.Float,
     'scale_to_max': fields.Float,
-    'conversion_id': fields.String,
+    'conversion': fields.Nested(conversion_fields)
 })
 
 input_fields = api.model('Input Settings Fields', {

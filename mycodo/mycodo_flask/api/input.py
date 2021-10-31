@@ -57,8 +57,10 @@ class Inputs(Resource):
             list_data = get_from_db(InputSchema, Input)
             list_channels = get_from_db(InputChannelSchema, InputChannel)
             if list_data:
-                return {'input settings': list_data,
-                        'input channels': list_channels}, 200
+                return {
+                    'input settings': list_data,
+                    'input channels': list_channels
+                }, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
@@ -94,11 +96,13 @@ class SettingsInputsUniqueID(Resource):
             list_measurements = return_list_of_dictionaries(
                 measure_schema.dump(
                     DeviceMeasurements.query.filter_by(
-                        device_id=unique_id).all(), many=True))
+                        device_id=unique_id).join(DeviceMeasurements.conversion).all(), many=True))
 
-            return {'input settings': list_data,
-                    'input channels': list_channels,
-                    'device measurements': list_measurements}, 200
+            return {
+                'input settings': list_data,
+                'input channels': list_channels,
+                'device measurements': list_measurements
+            }, 200
         except Exception:
             abort(500,
                   message='An exception occurred',
