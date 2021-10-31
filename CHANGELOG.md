@@ -5,7 +5,7 @@
  - Fix MCP23017 Output dependency ([#1095](https://github.com/kizniche/mycodo/issues/1095))
  - Fix restoring backups causing upgrade page to not be usable until .upgrade file is deleted
  - Fix .upgrade file interfering with upgrade page rendering ([#1096](https://github.com/kizniche/mycodo/issues/1096))
- - Fix conversion foreign key in measurement API endpoint
+ - Fix conversion foreign key in measurement API endpoint ([#1011](https://github.com/kizniche/mycodo/issues/1011))
 
 ### Features
 
