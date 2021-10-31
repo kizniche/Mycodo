@@ -96,7 +96,7 @@ class SettingsInputsUniqueID(Resource):
             list_measurements = return_list_of_dictionaries(
                 measure_schema.dump(
                     DeviceMeasurements.query.filter_by(
-                        device_id=unique_id).join(DeviceMeasurements.conversion).all(), many=True))
+                        device_id=unique_id).join(DeviceMeasurements.conversion, isouter=True).all(), many=True))
 
             return {
                 'input settings': list_data,
