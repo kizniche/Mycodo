@@ -151,11 +151,15 @@ class InputModule(AbstractInput):
             INPUT_INFORMATION['custom_channel_options'], input_channels)
 
     def get_new_data(self, past_seconds):
+        timestamp_format = '%Y-%m-%dT%H:%M:%S.%f'
+
         # Basic implementation. Future development may use more complex library to access API
         endpoint = "https://nam1.cloud.thethings.network/api/v3/as/applications/{app}/devices/{dev}/packages/storage/uplink_message?last={time}&field_mask=up.uplink_message.decoded_payload".format(
             app=self.application_id, dev=self.device_id, time="{}s".format(int(past_seconds)))
-        headers = {"Authorization": "key {k}".format(k=self.app_api_key)}
-        timestamp_format = '%Y-%m-%dT%H:%M:%S.%f'
+        headers = {"Authorization": "Bearer {k}".format(k=self.app_api_key)}
+
+        self.logger.debug("endpoint: {}".format(endpoint))
+        self.logger.debug("headers: {}".format(headers))
 
         response = requests.get(endpoint, headers=headers)
         if response.status_code != 200:
