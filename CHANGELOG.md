@@ -6,6 +6,7 @@
  - Fix restoring backups causing upgrade page to not be usable until .upgrade file is deleted
  - Fix .upgrade file interfering with upgrade page rendering ([#1096](https://github.com/kizniche/mycodo/issues/1096))
  - Fix conversion foreign key in measurement API endpoint ([#1011](https://github.com/kizniche/mycodo/issues/1011))
+ - Fix issues with Ajax data refreshing when Input/Output/Function saved
 
 ### Features
 

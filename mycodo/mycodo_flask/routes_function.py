@@ -412,11 +412,11 @@ def page_function():
 
     # TODO: Update actions to use single-file modules and be consistent with other custom_options
     custom_options_values_actions = {}
-    for each_action in actions:
+    for each_action_dev in actions:
         try:
-            custom_options_values_actions[each_action.unique_id] = json.loads(each_action.custom_options)
+            custom_options_values_actions[each_action_dev.unique_id] = json.loads(each_action_dev.custom_options)
         except:
-            custom_options_values_actions[each_action.unique_id] = {}
+            custom_options_values_actions[each_action_dev.unique_id] = {}
 
     # Create lists of built-in and custom functions
     choices_functions = []
@@ -458,13 +458,13 @@ def page_function():
         'conditional': {},
         'trigger': {}
     }
-    for each_action in actions:
-        if (each_action.function_type == 'conditional' and
-                each_action.unique_id not in actions_dict['conditional']):
-            actions_dict['conditional'][each_action.function_id] = True
-        if (each_action.function_type == 'trigger' and
-                each_action.unique_id not in actions_dict['trigger']):
-            actions_dict['trigger'][each_action.function_id] = True
+    for each_action_dev in actions:
+        if (each_action_dev.function_type == 'conditional' and
+                each_action_dev.unique_id not in actions_dict['conditional']):
+            actions_dict['conditional'][each_action_dev.function_id] = True
+        if (each_action_dev.function_type == 'trigger' and
+                each_action_dev.unique_id not in actions_dict['trigger']):
+            actions_dict['trigger'][each_action_dev.function_id] = True
 
     conditions_dict = {}
     for each_cond in conditional_conditions:

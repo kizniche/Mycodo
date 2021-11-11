@@ -194,9 +194,9 @@ def page_output():
         output_channel, dict_controller=dict_outputs, key_name='custom_channel_options')
 
     custom_actions = {}
-    for each_output in output:
-        if 'custom_actions' in dict_outputs[each_output.output_type]:
-            custom_actions[each_output.output_type] = True
+    for each_output_dev in output:
+        if 'custom_actions' in dict_outputs[each_output_dev.output_type]:
+            custom_actions[each_output_dev.output_type] = True
 
     # Create dict of Input names
     names_output = {}
@@ -218,18 +218,18 @@ def page_output():
     display_order_output = csv_to_list_of_str(DisplayOrder.query.first().output)
 
     output_variables = {}
-    for each_output in output:
-        output_variables[each_output.unique_id] = {}
-        for each_channel in dict_outputs[each_output.output_type]['channels_dict']:
-            output_variables[each_output.unique_id][each_channel] = {}
-            output_variables[each_output.unique_id][each_channel]['amps'] = None
-            output_variables[each_output.unique_id][each_channel]['trigger_startup'] = None
+    for each_output_dev in output:
+        output_variables[each_output_dev.unique_id] = {}
+        for each_channel in dict_outputs[each_output_dev.output_type]['channels_dict']:
+            output_variables[each_output_dev.unique_id][each_channel] = {}
+            output_variables[each_output_dev.unique_id][each_channel]['amps'] = None
+            output_variables[each_output_dev.unique_id][each_channel]['trigger_startup'] = None
 
     # Find FTDI devices
     ftdi_devices = []
     if not current_app.config['TESTING']:
-        for each_output in output:
-            if each_output.interface == "FTDI":
+        for each_output_dev in output:
+            if each_output_dev.interface == "FTDI":
                 from mycodo.devices.atlas_scientific_ftdi import get_ftdi_device_list
                 ftdi_devices = get_ftdi_device_list()
                 break

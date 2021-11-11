@@ -261,9 +261,9 @@ def page_input():
         input_channel, dict_controller=dict_inputs, key_name='custom_channel_options')
 
     custom_actions = {}
-    for each_input in input_dev:
-        if 'custom_actions' in dict_inputs[each_input.device]:
-            custom_actions[each_input.device] = True
+    for each_input_dev in input_dev:
+        if each_input_dev.device in dict_inputs and 'custom_actions' in dict_inputs[each_input_dev.device]:
+            custom_actions[each_input_dev.device] = True
 
     # Generate dict that incorporate user-added measurements/units
     dict_outputs = parse_output_information()
@@ -358,8 +358,8 @@ def page_input():
     # Find FTDI devices
     ftdi_devices = []
     if not current_app.config['TESTING']:
-        for each_input in input_dev:
-            if each_input.interface == "FTDI":
+        for each_input_dev in input_dev:
+            if each_input_dev.interface == "FTDI":
                 from mycodo.devices.atlas_scientific_ftdi import get_ftdi_device_list
                 ftdi_devices = get_ftdi_device_list()
                 break
