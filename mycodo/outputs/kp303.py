@@ -168,6 +168,7 @@ class OutputModule(AbstractOutput):
         self.status_thread = None
         self.outlet_status_checking = False
         self.timer_status_check = time.time()
+        self.first_connect = True
 
         self.plug_address = None
         self.status_update_period = None
@@ -212,7 +213,11 @@ class OutputModule(AbstractOutput):
             asyncio.run(self.strip.update())
             self.output_setup = True
         except Exception as e:
-            self.logger.error("Output was unable to be setup: {err}".format(err=e))
+            if self.first_connect:
+                self.first_connect = False
+                self.logger.error("Output was unable to be setup: {err}".format(err=e))
+            else:
+                self.logger.debug("Output was unable to be setup: {err}".format(err=e))
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         if not self.is_setup():
