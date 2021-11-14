@@ -271,12 +271,18 @@ class InputModule(AbstractInput):
             else:
                 self.logger.info("Downloading and parsing past {} seconds of data...".format(int(seconds_download)))
 
-            self.get_new_data(seconds_download)
+            try:
+                self.get_new_data(seconds_download)
+            except Exception:
+                self.logger.exception("Getting data")
 
             if seconds_download == seconds_seven_days:
                 elapsed = time.time() - start
                 self.logger.info("Download and parsing completed in {} seconds.".format(int(elapsed)))
         else:
-            self.get_new_data(self.period)
+            try:
+                self.get_new_data(self.period)
+            except Exception:
+                self.logger.exception("Getting data")
 
         return {}
