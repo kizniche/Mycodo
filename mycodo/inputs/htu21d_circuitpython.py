@@ -1,0 +1,102 @@
+# coding=utf-8
+import copy
+
+from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import calculate_dewpoint
+from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
+
+# Measurements
+measurements_dict = {
+    0: {
+        'measurement': 'temperature',
+        'unit': 'C'
+    },
+    1: {
+        'measurement': 'humidity',
+        'unit': 'percent'
+    },
+    2: {
+        'measurement': 'dewpoint',
+        'unit': 'C'
+    },
+    3: {
+        'measurement': 'vapor_pressure_deficit',
+        'unit': 'Pa'
+    }
+}
+
+# Input information
+INPUT_INFORMATION = {
+    'input_name_unique': 'HTU21D_CIRCUITPYTHON',
+    'input_manufacturer': 'TE Connectivity',
+    'input_name': 'HTU21D',
+    'input_library': 'Adafruit-CircuitPython-HTU21D',
+    'measurements_name': 'Humidity/Temperature',
+    'measurements_dict': measurements_dict,
+    'url_manufacturer': 'https://www.te.com/usa-en/product-CAT-HSC0004.html',
+    'url_datasheet': 'https://www.te.com/commerce/DocumentDelivery/DDEController?Action=showdoc&DocId=Data+Sheet%7FHPC199_6%7FA6%7Fpdf%7FEnglish%7FENG_DS_HPC199_6_A6.pdf%7FCAT-HSC0004',
+    'url_product_purchase': 'https://www.adafruit.com/product/1899',
+
+    'options_enabled': [
+        'i2c_location',
+        'measurements_select',
+        'period',
+        'pre_output'
+    ],
+    'options_disabled': ['interface'],
+
+    'dependencies_module': [
+        ("pip-pypi", "adafruit_extended_bus", "adafruit-extended-bus==1.0.1"),
+        ("pip-pypi", "adafruit_htu21d", "adafruit-circuitpython-HTU21D==0.11.0"),
+    ],
+
+    'interfaces': ['I2C'],
+    'i2c_location': ['0x40'],
+    'i2c_address_editable': False
+}
+
+
+class InputModule(AbstractInput):
+    """
+    A sensor support class that measures the HTU21D's humidity and temperature
+    and calculates the dew point
+    """
+    def __init__(self, input_dev, testing=False):
+        super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
+
+        self.sensor = None
+        self.i2c_address = 0x40  # HTU21D-F Address
+
+        if not testing:
+            self.initialize_input()
+
+    def initialize_input(self):
+        import adafruit_htu21d
+        from adafruit_extended_bus import ExtendedI2C
+
+        self.sensor = adafruit_htu21d.HTU21D(
+            ExtendedI2C(self.input_dev.i2c_bus),
+            address=self.i2c_address,
+        )
+
+    def get_measurement(self):
+        """ Gets the humidity and temperature """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return None
+
+        self.return_dict = copy.deepcopy(measurements_dict)
+
+        if self.is_enabled(0):
+            self.value_set(0, self.sensor.temperature)
+
+        if self.is_enabled(1):
+            self.value_set(1, self.sensor.relative_humidity)
+
+        if self.is_enabled(2) and self.is_enabled(0) and self.is_enabled(1):
+            self.value_set(2, calculate_dewpoint(self.value_get(0), self.value_get(1)))
+
+        if self.is_enabled(3) and self.is_enabled(0) and self.is_enabled(1):
+            self.value_set(3, calculate_vapor_pressure_deficit(self.value_get(0), self.value_get(1)))
+
+        return self.return_dict
