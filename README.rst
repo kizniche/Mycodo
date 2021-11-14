@@ -176,7 +176,7 @@ See the `PID Controller <https://kizniche.github.io/Mycodo/Functions/#pid-contro
 Supported Inputs and Outputs
 ----------------------------
 
-All supported Inputs, Outputs, and other devices can be found under the `Supported Devices <https://kizniche.github.io/Mycodo/Input-Devices/>`__ section of the manual.
+All supported Inputs, Outputs, and other devices can be found under the `Supported Devices <https://kizniche.github.io/Mycodo/Supported-Inputs-By-Measurement/>`__ section of the manual.
 
 Custom Inputs, Outputs, and Controllers
 ---------------------------------------
