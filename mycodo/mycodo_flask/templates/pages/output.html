@@ -292,7 +292,7 @@
               if ('page_refresh' in data.data && data.data.page_refresh) {
                 $.ajax({
                   type: "GET",
-                  url: '/outputoutput_type=options&output_id=' + data.data.output_id,
+                  url: '/output?output_type=options&output_id=' + data.data.output_id,
                   success: function (new_options) {
                     $('#mod_output_' + data.data.output_id).html(new_options);
                     popup_response(data);
