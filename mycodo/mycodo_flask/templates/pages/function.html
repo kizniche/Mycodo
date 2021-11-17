@@ -442,7 +442,7 @@
               else if (action === 'add_action' && 'page_refresh' in data.data && data.data.page_refresh) {
                 $.ajax({
                   type: "GET",
-                  url: '/function?function_type=actions&function_id=' + data.data.function_id + '?action_id=' + data.data.action_id,
+                  url: '/function?function_type=actions&function_id=' + data.data.function_id + '&action_id=' + data.data.action_id,
                   success: function (new_options) {
                     document.getElementById('mod_function_actions_' + data.data.function_id).insertAdjacentHTML('beforeend', (new_options));
                     popup_response(data);
@@ -461,7 +461,7 @@
                     popup_response(data);
                   },
                   error: function() {
-                    toastr['error']('Error: Could not get Function Actions');
+                    toastr['error']('Error: Could not get Function Conditions');
                   }
                 });
               } else {
