@@ -155,8 +155,15 @@ if __name__ == "__main__":
                         log=DEPENDENCY_LOG_FILE)
                     cmd_out, cmd_err, cmd_status = cmd_output(
                         command, timeout=600, cwd="/tmp")
-                    logger.info("Command returned: out: {}, error: {}, status: {}".format(
-                        cmd_out, cmd_err, cmd_status))
+                    ret_list = []
+                    if cmd_out != b"":
+                        ret_list.append("out: {}".format(cmd_out))
+                    if cmd_err != b"":
+                        ret_list.append("error: {}".format(cmd_err))
+                    if cmd_status is not None:
+                        ret_list.append("status: {}".format(cmd_status))
+                    if ret_list:
+                        logger.info("Command returned: {}".format(", ".join(ret_list)))
             else:
                 install_cmd = "{pth}/mycodo/scripts/dependencies.sh {dep}".format(
                     pth=INSTALL_DIRECTORY,
