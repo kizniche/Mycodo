@@ -112,9 +112,9 @@ class OutputModule(AbstractOutput):
                 step = 0
             else:
                 if self.round == "up":
-                    step = math.ceil((1000.0 / amount) * 128) - 1
+                    step = math.ceil((amount / 10000) * 128) - 1
                 else:
-                    step = math.floor((1000.0 / amount) * 128) - 1
+                    step = math.floor((amount / 10000) * 128) - 1
             self.channel_value = amount
             self.dpot.wiper = step
         elif state == 'off' or (amount is not None and amount <= 0):

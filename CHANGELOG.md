@@ -9,6 +9,7 @@
  - Fix issues with Ajax data refreshing when Input/Output/Function saved
  - Fix refreshing Function Actions upon addition/deletion
  - Fix refreshing output configurations
+ - Fix DS3502 Output step calculations
 
 ### Features
 
