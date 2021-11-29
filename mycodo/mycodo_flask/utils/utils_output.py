@@ -65,160 +65,153 @@ def output_add(form_add, request_form):
 
             return messages, dep_name, list_unmet_deps, dep_message, None, None
 
-    if not is_int(form_add.output_quantity.data, check_range=[1, 20]):
-        messages["error"].append("{error}. {accepted_values}: 1-20".format(
-            error=gettext("Invalid quantity"),
-            accepted_values=gettext("Acceptable values")
-        ))
-
     if not messages["error"]:
-        for _ in range(0, form_add.output_quantity.data):
+        try:
+            new_output = Output()
+
             try:
-                new_output = Output()
+                from RPi import GPIO
+                if GPIO.RPI_INFO['P1_REVISION'] == 1:
+                    new_output.i2c_bus = 0
+                else:
+                    new_output.i2c_bus = 1
+            except:
+                logger.error(
+                    "RPi.GPIO and Raspberry Pi required for this action")
 
-                try:
-                    from RPi import GPIO
-                    if GPIO.RPI_INFO['P1_REVISION'] == 1:
-                        new_output.i2c_bus = 0
-                    else:
-                        new_output.i2c_bus = 1
-                except:
-                    logger.error(
-                        "RPi.GPIO and Raspberry Pi required for this action")
+            new_output.name = "Name"
+            new_output.interface = output_interface
+            size_y = len(dict_outputs[output_type]['channels_dict']) + 1
+            new_output.size_y = len(dict_outputs[output_type]['channels_dict']) + 1
+            new_output.output_type = output_type
+            new_output.position_y = 999
 
-                new_output.name = "Name"
-                new_output.interface = output_interface
-                size_y = len(dict_outputs[output_type]['channels_dict']) + 1
-                new_output.size_y = len(dict_outputs[output_type]['channels_dict']) + 1
-                new_output.output_type = output_type
-                new_output.position_y = 999
+            #
+            # Set default values for new input being added
+            #
 
-                #
-                # Set default values for new input being added
-                #
-
-                # input add options
-                if output_type in dict_outputs:
-                    def dict_has_value(key):
-                        if (key in dict_outputs[output_type] and
-                                dict_outputs[output_type][key] is not None):
-                            return True
-
-                    #
-                    # Interfacing options
-                    #
-
-                    if output_interface == 'I2C':
-                        if dict_has_value('i2c_address_default'):
-                            new_output.i2c_location = dict_outputs[output_type]['i2c_address_default']
-                        elif dict_has_value('i2c_location'):
-                            new_output.i2c_location = dict_outputs[output_type]['i2c_location'][0]  # First list entry
-
-                    if output_interface == 'FTDI':
-                        if dict_has_value('ftdi_location'):
-                            new_output.ftdi_location = dict_outputs[output_type]['ftdi_location']
-
-                    if output_interface == 'UART':
-                        if dict_has_value('uart_location'):
-                            new_output.uart_location = dict_outputs[output_type]['uart_location']
-
-                    # UART options
-                    if dict_has_value('uart_baud_rate'):
-                        new_output.baud_rate = dict_outputs[output_type]['uart_baud_rate']
-                    if dict_has_value('pin_cs'):
-                        new_output.pin_cs = dict_outputs[output_type]['pin_cs']
-                    if dict_has_value('pin_miso'):
-                        new_output.pin_miso = dict_outputs[output_type]['pin_miso']
-                    if dict_has_value('pin_mosi'):
-                        new_output.pin_mosi = dict_outputs[output_type]['pin_mosi']
-                    if dict_has_value('pin_clock'):
-                        new_output.pin_clock = dict_outputs[output_type]['pin_clock']
-
-                    # Bluetooth (BT) options
-                    elif output_interface == 'BT':
-                        if dict_has_value('bt_location'):
-                            new_output.location = dict_outputs[output_type]['bt_location']
-                        if dict_has_value('bt_adapter'):
-                            new_output.bt_adapter = dict_outputs[output_type]['bt_adapter']
-
-                    # GPIO options
-                    elif output_interface == 'GPIO':
-                        if dict_has_value('gpio_pin'):
-                            new_output.pin = dict_outputs[output_type]['gpio_pin']
-
-                    # Custom location location
-                    elif dict_has_value('location'):
-                        new_output.location = dict_outputs[output_type]['location']['options'][0][0]  # First entry in list
-
-                # Generate string to save from custom options
-                messages["error"], custom_options = custom_options_return_json(
-                    messages["error"], dict_outputs, request_form, device=output_type, use_defaults=True)
-                new_output.custom_options = custom_options
+            # input add options
+            if output_type in dict_outputs:
+                def dict_has_value(key):
+                    if (key in dict_outputs[output_type] and
+                            dict_outputs[output_type][key] is not None):
+                        return True
 
                 #
-                # Execute at Creation
+                # Interfacing options
                 #
 
-                new_output.unique_id = set_uuid()
+                if output_interface == 'I2C':
+                    if dict_has_value('i2c_address_default'):
+                        new_output.i2c_location = dict_outputs[output_type]['i2c_address_default']
+                    elif dict_has_value('i2c_location'):
+                        new_output.i2c_location = dict_outputs[output_type]['i2c_location'][0]  # First list entry
 
-                if 'execute_at_creation' in dict_outputs[output_type] and not current_app.config['TESTING']:
-                    messages["error"], new_output = dict_outputs[output_type]['execute_at_creation'](
-                        messages["error"], new_output, dict_outputs[output_type])
+                if output_interface == 'FTDI':
+                    if dict_has_value('ftdi_location'):
+                        new_output.ftdi_location = dict_outputs[output_type]['ftdi_location']
 
-                if not messages["error"]:
-                    new_output.save()
-                    output_id = new_output.unique_id
-                    db.session.commit()
+                if output_interface == 'UART':
+                    if dict_has_value('uart_location'):
+                        new_output.uart_location = dict_outputs[output_type]['uart_location']
 
-                    messages["success"].append('{action} {controller}'.format(
-                        action=TRANSLATIONS['add']['title'],
-                        controller=TRANSLATIONS['output']['title']))
+                # UART options
+                if dict_has_value('uart_baud_rate'):
+                    new_output.baud_rate = dict_outputs[output_type]['uart_baud_rate']
+                if dict_has_value('pin_cs'):
+                    new_output.pin_cs = dict_outputs[output_type]['pin_cs']
+                if dict_has_value('pin_miso'):
+                    new_output.pin_miso = dict_outputs[output_type]['pin_miso']
+                if dict_has_value('pin_mosi'):
+                    new_output.pin_mosi = dict_outputs[output_type]['pin_mosi']
+                if dict_has_value('pin_clock'):
+                    new_output.pin_clock = dict_outputs[output_type]['pin_clock']
 
-                    #
-                    # If measurements defined in the Output Module
-                    #
+                # Bluetooth (BT) options
+                elif output_interface == 'BT':
+                    if dict_has_value('bt_location'):
+                        new_output.location = dict_outputs[output_type]['bt_location']
+                    if dict_has_value('bt_adapter'):
+                        new_output.bt_adapter = dict_outputs[output_type]['bt_adapter']
 
-                    if ('measurements_dict' in dict_outputs[output_type] and
-                            dict_outputs[output_type]['measurements_dict'] != []):
-                        for each_measurement in dict_outputs[output_type]['measurements_dict']:
-                            measure_info = dict_outputs[output_type]['measurements_dict'][each_measurement]
-                            new_measurement = DeviceMeasurements()
-                            if 'name' in measure_info:
-                                new_measurement.name = measure_info['name']
-                            new_measurement.device_id = new_output.unique_id
-                            new_measurement.measurement = measure_info['measurement']
-                            new_measurement.unit = measure_info['unit']
-                            new_measurement.channel = each_measurement
-                            new_measurement.save()
+                # GPIO options
+                elif output_interface == 'GPIO':
+                    if dict_has_value('gpio_pin'):
+                        new_output.pin = dict_outputs[output_type]['gpio_pin']
 
-                    for each_channel, channel_info in dict_outputs[output_type]['channels_dict'].items():
-                        new_channel = OutputChannel()
-                        new_channel.channel = each_channel
-                        new_channel.output_id = new_output.unique_id
+                # Custom location location
+                elif dict_has_value('location'):
+                    new_output.location = dict_outputs[output_type]['location']['options'][0][0]  # First entry in list
 
-                        # Generate string to save from custom options
-                        messages["error"], custom_options = custom_channel_options_return_json(
-                            messages["error"], dict_outputs, request_form,
-                            new_output.unique_id, each_channel,
-                            device=output_type, use_defaults=True)
-                        new_channel.custom_options = custom_options
+            # Generate string to save from custom options
+            messages["error"], custom_options = custom_options_return_json(
+                messages["error"], dict_outputs, request_form, device=output_type, use_defaults=True)
+            new_output.custom_options = custom_options
 
-                        new_channel.save()
+            #
+            # Execute at Creation
+            #
 
-                    # Refresh output settings
-                    if not current_app.config['TESTING']:
-                        new_messages = manipulate_output(
-                            'Add', new_output.unique_id)
-                        messages["error"].extend(new_messages["error"])
-                        messages["success"].extend(new_messages["success"])
+            new_output.unique_id = set_uuid()
 
-            except sqlalchemy.exc.OperationalError as except_msg:
-                messages["error"].append(str(except_msg))
-            except sqlalchemy.exc.IntegrityError as except_msg:
-                messages["error"].append(str(except_msg))
-            except Exception as except_msg:
-                messages["error"].append(str(except_msg))
-                logger.exception(1)
+            if 'execute_at_creation' in dict_outputs[output_type] and not current_app.config['TESTING']:
+                messages["error"], new_output = dict_outputs[output_type]['execute_at_creation'](
+                    messages["error"], new_output, dict_outputs[output_type])
+
+            if not messages["error"]:
+                new_output.save()
+                output_id = new_output.unique_id
+                db.session.commit()
+
+                messages["success"].append('{action} {controller}'.format(
+                    action=TRANSLATIONS['add']['title'],
+                    controller=TRANSLATIONS['output']['title']))
+
+                #
+                # If measurements defined in the Output Module
+                #
+
+                if ('measurements_dict' in dict_outputs[output_type] and
+                        dict_outputs[output_type]['measurements_dict'] != []):
+                    for each_measurement in dict_outputs[output_type]['measurements_dict']:
+                        measure_info = dict_outputs[output_type]['measurements_dict'][each_measurement]
+                        new_measurement = DeviceMeasurements()
+                        if 'name' in measure_info:
+                            new_measurement.name = measure_info['name']
+                        new_measurement.device_id = new_output.unique_id
+                        new_measurement.measurement = measure_info['measurement']
+                        new_measurement.unit = measure_info['unit']
+                        new_measurement.channel = each_measurement
+                        new_measurement.save()
+
+                for each_channel, channel_info in dict_outputs[output_type]['channels_dict'].items():
+                    new_channel = OutputChannel()
+                    new_channel.channel = each_channel
+                    new_channel.output_id = new_output.unique_id
+
+                    # Generate string to save from custom options
+                    messages["error"], custom_options = custom_channel_options_return_json(
+                        messages["error"], dict_outputs, request_form,
+                        new_output.unique_id, each_channel,
+                        device=output_type, use_defaults=True)
+                    new_channel.custom_options = custom_options
+
+                    new_channel.save()
+
+                # Refresh output settings
+                if not current_app.config['TESTING']:
+                    new_messages = manipulate_output(
+                        'Add', new_output.unique_id)
+                    messages["error"].extend(new_messages["error"])
+                    messages["success"].extend(new_messages["success"])
+
+        except sqlalchemy.exc.OperationalError as except_msg:
+            messages["error"].append(str(except_msg))
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            messages["error"].append(str(except_msg))
+        except Exception as except_msg:
+            messages["error"].append(str(except_msg))
+            logger.exception(1)
 
     return messages, dep_name, list_unmet_deps, dep_message, output_id, size_y
 

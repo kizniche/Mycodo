@@ -141,9 +141,6 @@
     <form id="new_output_form" method="post" action="/output" style="padding-bottom: 0.5em">
       {{form_add_output.hidden_tag()}}
       <div class="row small-gutters" style="padding-left: 0.75em">
-        <div class="col-2 col-lg-1">
-          {{form_add_output.output_quantity(class_='form-control', type="number", value=1, **{'title': _('Quantity')})}}
-        </div>
         <div class="col-auto">
           {{form_add_output.output_type(class_='selectpicker', **{'data-live-search': 'true', 'title': dict_translation['output']['title'] + ': ' + dict_translation['select_one']['title']})}}
         </div>

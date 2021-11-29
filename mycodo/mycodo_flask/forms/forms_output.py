@@ -48,7 +48,6 @@ class OutputAdd(FlaskForm):
         choices=choices_outputs,
         validators=[DataRequired()]
     )
-    output_quantity = IntegerField(lazy_gettext('Quantity'))
     output_add = SubmitField(TRANSLATIONS['add']['title'])
 
 

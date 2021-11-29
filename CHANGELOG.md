@@ -17,6 +17,10 @@
  - Add Input: HTU21D Variant using the CircuitPython library
  - Add PWM Output option: Invert Stored Signal
 
+### Miscellaneous
+
+ - Remove Output Quantity option when adding outputs
+
 
 ## 8.12.8 (2021-10-27)
 

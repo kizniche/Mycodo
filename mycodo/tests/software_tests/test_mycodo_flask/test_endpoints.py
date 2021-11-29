@@ -651,7 +651,6 @@ def add_output(testapp, output_type='wired'):
             form_dict[each_field[0]] = form[each_field[0]].value
     form_dict['output_add'] = 'Add'
     form_dict['output_type'] = output_type
-    form_dict['output_quantity'] = 1
     response = testapp.post('/output_submit', form_dict)
     # response.showbrowser()
     return response
