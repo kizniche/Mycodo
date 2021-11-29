@@ -242,6 +242,13 @@ self.logger.info(log_string)""",
             'phrase': 'Invert the PWM signal'
         },
         {
+            'id': 'pwm_invert_stored_signal',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Invert Stored Signal'),
+            'phrase': 'Invert the value that is saved to the measurement database'
+        },
+        {
             'id': 'trigger_functions_startup',
             'type': 'bool',
             'default_value': False,
@@ -351,10 +358,13 @@ class OutputModule(AbstractOutput):
             self.output_run_python_pwm.output_code_run(amount)
             self.output_states[0] = amount
 
+            self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=amount))
+
+            if self.options_channels['pwm_invert_stored_signal'][0]:
+                amount = 100.0 - abs(amount)
+
             measure_dict[0]['value'] = amount
             add_measurements_influxdb(self.unique_id, measure_dict)
-
-            self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=amount))
 
     def is_on(self, output_channel=None):
         if self.is_setup():

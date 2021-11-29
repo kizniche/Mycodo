@@ -117,6 +117,13 @@ OUTPUT_INFORMATION = {
             'phrase': lazy_gettext('Invert the PWM signal')
         },
         {
+            'id': 'pwm_invert_stored_signal',
+            'type': 'bool',
+            'default_value': False,
+            'name': lazy_gettext('Invert Stored Signal'),
+            'phrase': 'Invert the value that is saved to the measurement database'
+        },
+        {
             'id': 'trigger_functions_startup',
             'type': 'bool',
             'default_value': False,
@@ -214,9 +221,6 @@ class OutputModule(AbstractOutput):
             cmd_return, cmd_error, cmd_status = cmd_output(
                 cmd, user=self.options_channels['linux_command_user'][0])
 
-            measure_dict[0]['value'] = self.output_states[0]
-            add_measurements_influxdb(self.unique_id, measure_dict)
-
             self.logger.debug("Duty cycle set to {dc:.2f} %".format(dc=amount))
             self.logger.debug(
                 "Output duty cycle {duty_cycle} command returned: "
@@ -227,6 +231,12 @@ class OutputModule(AbstractOutput):
                     stat=cmd_status,
                     ret=cmd_return,
                     err=cmd_error))
+
+            if self.options_channels['pwm_invert_stored_signal'][0]:
+                amount = 100.0 - abs(amount)
+
+            measure_dict[0]['value'] = amount
+            add_measurements_influxdb(self.unique_id, measure_dict)
 
     def is_on(self, output_channel=None):
         if self.is_setup():

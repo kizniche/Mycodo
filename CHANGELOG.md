@@ -15,6 +15,7 @@
 
  - Add Input: TTN Integration: Data Storage (TTN v3), replaces deprecated TTN v2 Input (deprecated 12/2021)
  - Add Input: HTU21D Variant using the CircuitPython library
+ - Add PWM Output option: Invert Stored Signal
 
 
 ## 8.12.8 (2021-10-27)
