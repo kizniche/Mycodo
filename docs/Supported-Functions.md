@@ -103,7 +103,7 @@ This function will use rsync to back up assets on this system to a remote system
 ##### Remote Backup Path
 
 - Type: Text
-- Default Value: /home/pi/backup_mycodo_zeph
+- Default Value: /home/pi/backup_mycodo
 - Description: The path to backup to on the remote host
 
 ##### Rsync Timeout

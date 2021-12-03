@@ -143,6 +143,8 @@ Measurements
 
 ### [Cozir: Cozir CO2](/Mycodo/Supported-Inputs/#cozir-cozir-co2)
 
+### [Sensirion: SCD-4x (SCD-40, SCD-41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-scd-40-scd-41)
+
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
@@ -215,11 +217,15 @@ Measurements
 
 ### [Seeedstudio: DHT11/22](/Mycodo/Supported-Inputs/#seeedstudio-dht11-22)
 
+### [Sensirion: SCD-4x (SCD-40, SCD-41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-scd-40-scd-41)
+
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
 ### [Sensirion: SHT1x/7x](/Mycodo/Supported-Inputs/#sensirion-sht1x-7x)
+
+### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
 
 ### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
 
@@ -229,9 +235,15 @@ Measurements
 
 ### [Sensirion: SHT4X](/Mycodo/Supported-Inputs/#sensirion-sht4x)
 
+### [Sensirion: SHTC3](/Mycodo/Supported-Inputs/#sensirion-shtc3)
+
 ### [Sensorion: SHT31 Smart Gadget](/Mycodo/Supported-Inputs/#sensorion-sht31-smart-gadget)
 
+### [Silicon Labs: Si7021](/Mycodo/Supported-Inputs/#silicon-labs-si7021)
+
 ### [Sonoff: TH16/10 (Tasmota firmware) with AM2301](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301)
+
+### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
 
 ### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
 
@@ -277,9 +289,9 @@ Measurements
 
 ### [Atlas Scientific: Atlas EC](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-ec)
 
-### [Generic: ADS1115: Analog pH/EC](/Mycodo/Supported-Inputs/#generic-ads1115-analog-ph-ec)
+### [Texas Instruments: ADS1115: Generic Analog pH/EC](/Mycodo/Supported-Inputs/#texas-instruments-ads1115-generic-analog-ph-ec)
 
-### [Texas Instruments: ADS1256: Analog pH/EC](/Mycodo/Supported-Inputs/#texas-instruments-ads1256-analog-ph-ec)
+### [Texas Instruments: ADS1256: Generic Analog pH/EC](/Mycodo/Supported-Inputs/#texas-instruments-ads1256-generic-analog-ph-ec)
 
 ### [Xiaomi: Miflora](/Mycodo/Supported-Inputs/#xiaomi-miflora)
 
@@ -301,7 +313,7 @@ Measurements
 
 ### [Texas Instruments: ADS1115](/Mycodo/Supported-Inputs/#texas-instruments-ads1115)
 
-### [Texas Instruments: ADS1256: Analog pH/EC](/Mycodo/Supported-Inputs/#texas-instruments-ads1256-analog-ph-ec)
+### [Texas Instruments: ADS1256: Generic Analog pH/EC](/Mycodo/Supported-Inputs/#texas-instruments-ads1256-generic-analog-ph-ec)
 
 ### [Texas Instruments: ADS1256](/Mycodo/Supported-Inputs/#texas-instruments-ads1256)
 
@@ -351,11 +363,15 @@ Measurements
 
 ### [Seeedstudio: DHT11/22](/Mycodo/Supported-Inputs/#seeedstudio-dht11-22)
 
+### [Sensirion: SCD-4x (SCD-40, SCD-41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-scd-40-scd-41)
+
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
 ### [Sensirion: SHT1x/7x](/Mycodo/Supported-Inputs/#sensirion-sht1x-7x)
+
+### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
 
 ### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
 
@@ -365,9 +381,15 @@ Measurements
 
 ### [Sensirion: SHT4X](/Mycodo/Supported-Inputs/#sensirion-sht4x)
 
+### [Sensirion: SHTC3](/Mycodo/Supported-Inputs/#sensirion-shtc3)
+
 ### [Sensorion: SHT31 Smart Gadget](/Mycodo/Supported-Inputs/#sensorion-sht31-smart-gadget)
 
+### [Silicon Labs: Si7021](/Mycodo/Supported-Inputs/#silicon-labs-si7021)
+
 ### [Sonoff: TH16/10 (Tasmota firmware) with AM2301](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301)
+
+### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
 
 ### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
 
@@ -385,9 +407,9 @@ Measurements
 
 ### [Atlas Scientific: Atlas pH](/Mycodo/Supported-Inputs/#atlas-scientific-atlas-ph)
 
-### [Generic: ADS1115: Analog pH/EC](/Mycodo/Supported-Inputs/#generic-ads1115-analog-ph-ec)
+### [Texas Instruments: ADS1115: Generic Analog pH/EC](/Mycodo/Supported-Inputs/#texas-instruments-ads1115-generic-analog-ph-ec)
 
-### [Texas Instruments: ADS1256: Analog pH/EC](/Mycodo/Supported-Inputs/#texas-instruments-ads1256-analog-ph-ec)
+### [Texas Instruments: ADS1256: Generic Analog pH/EC](/Mycodo/Supported-Inputs/#texas-instruments-ads1256-generic-analog-ph-ec)
 
 ## Length
 
@@ -418,6 +440,8 @@ Measurements
 ### [Xiaomi: Miflora](/Mycodo/Supported-Inputs/#xiaomi-miflora)
 
 ## Magnetic Flux Density
+
+### [Melexis: MLX90393](/Mycodo/Supported-Inputs/#melexis-mlx90393)
 
 ### [Raspberry Pi Foundation: Sense HAT](/Mycodo/Supported-Inputs/#raspberry-pi-foundation-sense-hat)
 
@@ -482,6 +506,8 @@ Measurements
 ### [BOSCH: BMP280](/Mycodo/Supported-Inputs/#bosch-bmp280)
 
 ### [BOSCH: BMP280](/Mycodo/Supported-Inputs/#bosch-bmp280)
+
+### [Infineon: DPS310](/Mycodo/Supported-Inputs/#infineon-dps310)
 
 ### [Raspberry Pi Foundation: Sense HAT](/Mycodo/Supported-Inputs/#raspberry-pi-foundation-sense-hat)
 
@@ -565,6 +591,8 @@ Measurements
 
 ### [Cozir: Cozir CO2](/Mycodo/Supported-Inputs/#cozir-cozir-co2)
 
+### [Infineon: DPS310](/Mycodo/Supported-Inputs/#infineon-dps310)
+
 ### [MAXIM: DS1822](/Mycodo/Supported-Inputs/#maxim-ds1822)
 
 ### [MAXIM: DS1825](/Mycodo/Supported-Inputs/#maxim-ds1825)
@@ -601,11 +629,15 @@ Measurements
 
 ### [Seeedstudio: DHT11/22](/Mycodo/Supported-Inputs/#seeedstudio-dht11-22)
 
+### [Sensirion: SCD-4x (SCD-40, SCD-41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-scd-40-scd-41)
+
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
 ### [Sensirion: SHT1x/7x](/Mycodo/Supported-Inputs/#sensirion-sht1x-7x)
+
+### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
 
 ### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
 
@@ -615,11 +647,17 @@ Measurements
 
 ### [Sensirion: SHT4X](/Mycodo/Supported-Inputs/#sensirion-sht4x)
 
+### [Sensirion: SHTC3](/Mycodo/Supported-Inputs/#sensirion-shtc3)
+
 ### [Sensorion: SHT31 Smart Gadget](/Mycodo/Supported-Inputs/#sensorion-sht31-smart-gadget)
+
+### [Silicon Labs: Si7021](/Mycodo/Supported-Inputs/#silicon-labs-si7021)
 
 ### [Sonoff: TH16/10 (Tasmota firmware) with AM2301](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301)
 
 ### [Sonoff: TH16/10 (Tasmota firmware) with DS18B20](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-ds18b20)
+
+### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
 
 ### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
 
@@ -661,11 +699,15 @@ Measurements
 
 ### [Seeedstudio: DHT11/22](/Mycodo/Supported-Inputs/#seeedstudio-dht11-22)
 
+### [Sensirion: SCD-4x (SCD-40, SCD-41)](/Mycodo/Supported-Inputs/#sensirion-scd-4x-scd-40-scd-41)
+
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
 ### [Sensirion: SCD30](/Mycodo/Supported-Inputs/#sensirion-scd30)
 
 ### [Sensirion: SHT1x/7x](/Mycodo/Supported-Inputs/#sensirion-sht1x-7x)
+
+### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
 
 ### [Sensirion: SHT2x](/Mycodo/Supported-Inputs/#sensirion-sht2x)
 
@@ -675,9 +717,15 @@ Measurements
 
 ### [Sensirion: SHT4X](/Mycodo/Supported-Inputs/#sensirion-sht4x)
 
+### [Sensirion: SHTC3](/Mycodo/Supported-Inputs/#sensirion-shtc3)
+
 ### [Sensorion: SHT31 Smart Gadget](/Mycodo/Supported-Inputs/#sensorion-sht31-smart-gadget)
 
+### [Silicon Labs: Si7021](/Mycodo/Supported-Inputs/#silicon-labs-si7021)
+
 ### [Sonoff: TH16/10 (Tasmota firmware) with AM2301](/Mycodo/Supported-Inputs/#sonoff-th16-10-tasmota-firmware-with-am2301)
+
+### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
 
 ### [TE Connectivity: HTU21D](/Mycodo/Supported-Inputs/#te-connectivity-htu21d)
 

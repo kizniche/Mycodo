@@ -1,6 +1,6 @@
 mkdocs==1.2.3
-mkdocs-material==7.3.3
-mkdocs-minify-plugin==0.4.1
+mkdocs-material==8.0.3
+mkdocs-minify-plugin==0.5.0
 mkdocs-with-pdf==0.9.3
-Pillow==8.3.2
+Pillow==8.4.0
 Pygments>=2.7.4  # syntax highlighting

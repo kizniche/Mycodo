@@ -15,14 +15,14 @@ Displays the status of a Function (if supported).
 ### Gauge (Angular) [Highcharts]
 
 - Libraries: Highcharts
-- Dependencies: [unzip](https://packages.debian.org/buster/unzip), highcharts-9.1.2.js, highcharts-more-9.1.2.js
+- Dependencies: [unzip](https://packages.debian.org/buster/unzip), highstock-9.1.2.js, highcharts-more-9.1.2.js
 
 Displays an angular gauge. Be sure to set the Maximum option to the last Stop High value for the gauge to display properly.
 
 ### Gauge (Solid) [Highcharts]
 
 - Libraries: Highcharts
-- Dependencies: [unzip](https://packages.debian.org/buster/unzip), highcharts-9.1.2.js, highcharts-more-9.1.2.js, solid-gauge-9.1.2.js
+- Dependencies: [unzip](https://packages.debian.org/buster/unzip), highstock-9.1.2.js, highcharts-more-9.1.2.js, solid-gauge-9.1.2.js
 
 Displays a solid gauge. Be sure to set the Maximum option to the last Stop value for the gauge to display properly.
 

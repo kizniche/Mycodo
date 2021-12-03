@@ -420,6 +420,11 @@ See the PWM section of the manual for PWM information and determining which pins
 - Type: Boolean
 - Description: Invert the PWM signal
 
+##### Invert Stored Signal
+
+- Type: Boolean
+- Description: Invert the value that is saved to the measurement database
+
 ##### Trigger Functions at Startup
 
 - Type: Boolean
@@ -848,6 +853,11 @@ The PCA9685 can output a PWM signal to 16 channels at a frequency between 40 and
 - Type: Boolean
 - Description: Invert the PWM signal
 
+##### Invert Stored Signal
+
+- Type: Boolean
+- Description: Invert the value that is saved to the measurement database
+
 ##### Trigger Functions at Startup
 
 - Type: Boolean
@@ -1090,6 +1100,11 @@ Python 3 code will be executed when this output is turned on or off. The "duty_c
 - Type: Boolean
 - Description: Invert the PWM signal
 
+##### Invert Stored Signal
+
+- Type: Boolean
+- Description: Invert the value that is saved to the measurement database
+
 ##### Trigger Functions at Startup
 
 - Type: Boolean
@@ -1208,6 +1223,11 @@ Commands will be executed in the Linux shell by the specified user when the duty
 
 - Type: Boolean
 - Description: Invert the PWM signal
+
+##### Invert Stored Signal
+
+- Type: Boolean
+- Description: Invert the value that is saved to the measurement database
 
 ##### Trigger Functions at Startup
 

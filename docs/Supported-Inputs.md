@@ -286,7 +286,76 @@ A spacer to organize Inputs.
 - Default Value: #000000
 - Description: The color of the name text
 
-### Mycodo: TTN Integration: Data Storage
+### Mycodo: TTN Integration: Data Storage (TTN v2)
+
+- Manufacturer: Mycodo
+- Measurements: Variable measurements
+- Interfaces: Mycodo
+- Libraries: requests
+- Dependencies: [requests](https://pypi.org/project/requests)
+
+This Input receives and stores measurements from the Data Storage Integration on The Things Network.
+
+#### Options
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Start Offset (seconds)
+
+- Type: Integer
+- Description: The duration (seconds) to wait before the first operation
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### Application ID
+
+- Type: Text
+- Description: The Things Network Application ID
+
+##### App API Key
+
+- Type: Text
+- Description: The Things Network Application API Key
+
+##### Device ID
+
+- Type: Text
+- Description: The Things Network Device ID
+
+#### Channel Options
+
+##### Name
+
+- Type: Text
+- Description: A name to distinguish this from others
+
+##### Variable Name
+
+- Type: Text
+- Description: The TTN variable name
+
+### Mycodo: TTN Integration: Data Storage (TTN v3)
 
 - Manufacturer: Mycodo
 - Measurements: Variable measurements
@@ -2825,197 +2894,6 @@ This is similar to the other BMP280 Input, except it uses a different library, w
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
-### Generic: ADS1115: Analog pH/EC
-
-- Manufacturer: Generic
-- Measurements: Ion Concentration/Electrical Conductivity
-- Interfaces: I<sup>2</sup>C
-- Libraries: Adafruit_CircuitPython_ADS1x15
-- Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [Adafruit_CircuitPython_ADS1x15](https://pypi.org/project/Adafruit_CircuitPython_ADS1x15)
-
-This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH and/or electrical conductivity (EC) from analog sensors. You can enable or disable either measurement if you want to only connect a pH sensor or an EC sensor by selecting which measurements you want to under Measurements Enabled. Select which channel each sensor is connected to on the ADC. There are default calibration values initially set for the Input. There are also functions to allow you to easily calibrate your sensors with calibration solutions. If you use the Calibrate Slot actions, these values will be calculated and will replace the currently-set values. You can use the Clear Calibration action to delete the database values and return to using the default values. If you delete the Input or create a new Input to use your ADC/sensors with, you will need to recalibrate in order to store new calibration data.
-
-#### Options
-
-##### I<sup>2</sup>C Address
-
-- Type: Text
-- Description: The I2C address of the device
-
-##### I<sup>2</sup>C Bus
-
-- Type: Integer
-- Description: The I2C bus the device is connected to
-
-##### Measurements Enabled
-
-- Type: Multi-Select
-- Description: The measurements to record
-
-##### Period (seconds)
-
-- Type: Decimal
-- Description: The duration (seconds) between measurements or actions
-
-##### Pre Output
-
-- Type: Select
-- Description: Turn the selected output on before taking every measurement
-
-##### Pre Out Duration
-
-- Type: Decimal
-- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
-
-##### Pre During Measure
-
-- Type: Boolean
-- Description: Check to turn the output off after (opposed to before) the measurement is complete
-
-##### ADC Channel: pH
-
-- Type: Select
-- Options: \[**Channel 0** | Channel 1 | Channel 2 | Channel 3\] (Default in **bold**)
-- Description: The ADC channel the pH sensor is connected
-
-##### ADC Channel: EC
-
-- Type: Select
-- Options: \[Channel 0 | **Channel 1** | Channel 2 | Channel 3\] (Default in **bold**)
-- Description: The ADC channel the EC sensor is connected
-
-##### Temperature Compensation
-
-##### Temperature Compensation: Measurement
-
-- Type: Select Measurement
-- Selections: Input, Function, Math, 
-- Description: Select a measurement for temperature compensation
-
-##### Temperature Compensation: Max Age
-
-- Type: Integer
-- Default Value: 120
-- Description: The maximum age (seconds) of the measurement to use
-
-##### pH Calibration Data
-
-##### Cal data: V1 (internal)
-
-- Type: Decimal
-- Default Value: 1.5
-- Description: Calibration data: Voltage
-
-##### Cal data: pH1 (internal)
-
-- Type: Decimal
-- Default Value: 7.0
-- Description: Calibration data: pH
-
-##### Cal data: T1 (internal)
-
-- Type: Decimal
-- Default Value: 25.0
-- Description: Calibration data: Temperature
-
-##### Cal data: V2 (internal)
-
-- Type: Decimal
-- Default Value: 2.032
-- Description: Calibration data: Voltage
-
-##### Cal data: pH2 (internal)
-
-- Type: Decimal
-- Default Value: 4.0
-- Description: Calibration data: pH
-
-##### Cal data: T2 (internal)
-
-- Type: Decimal
-- Default Value: 25.0
-- Description: Calibration data: Temperature
-
-##### EC Calibration Data
-
-##### EC cal data: V1 (internal)
-
-- Type: Decimal
-- Default Value: 0.232
-- Description: EC calibration data: Voltage
-
-##### EC cal data: EC1 (internal)
-
-- Type: Decimal
-- Default Value: 1413.0
-- Description: EC calibration data: EC
-
-##### EC cal data: T1 (internal)
-
-- Type: Decimal
-- Default Value: 25.0
-- Description: EC calibration data: EC
-
-##### EC cal data: V2 (internal)
-
-- Type: Decimal
-- Default Value: 2.112
-- Description: EC calibration data: Voltage
-
-##### EC cal data: EC2 (internal)
-
-- Type: Decimal
-- Default Value: 12880.0
-- Description: EC calibration data: EC
-
-##### EC cal data: T2 (internal)
-
-- Type: Decimal
-- Default Value: 25.0
-- Description: EC calibration data: EC
-
-#### Actions
-
-##### pH Calibration Actions: Place your probe in a solution of known pH.
-            Set the known pH value in the "Calibration buffer pH" field, and press "Calibrate pH, slot 1".
-            Repeat with a second buffer, and press "Calibrate pH, slot 2".
-            You don't need to change the values under "Custom Options".
-
-##### Calibration buffer pH
-
-- Type: Decimal
-- Default Value: 7.0
-- Description: This is the nominal pH of the calibration buffer, usually labelled on the bottle.
-
-##### Calibrate pH, slot 1
-
-- Type: Button
-##### Calibrate pH, slot 2
-
-- Type: Button
-##### Clear pH Calibration Slots
-
-- Type: Button
-##### EC Calibration Actions: Place your probe in a solution of known EC.
-            Set the known EC value in the "Calibration standard EC" field, and press "Calibrate EC, slot 1".
-            Repeat with a second standard, and press "Calibrate EC, slot 2".
-            You don't need to change the values under "Custom Options".
-
-##### Calibration standard EC
-
-- Type: Decimal
-- Default Value: 1413.0
-- Description: This is the nominal EC of the calibration standard, usually labelled on the bottle.
-
-##### Calibrate EC, slot 1
-
-- Type: Button
-##### Calibrate EC, slot 2
-
-- Type: Button
-##### Clear pH Calibration Slots
-
-- Type: Button
 ### Generic: Hall Flow Meter
 
 - Manufacturer: Generic
@@ -3057,6 +2935,49 @@ This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH 
 ##### Clear Total Volume
 
 - Type: Button
+### Infineon: DPS310
+
+- Manufacturer: Infineon
+- Measurements: Pressure/Temperature
+- Interfaces: I<sup>2</sup>C
+- Libraries: Adafruit-CircuitPython-DPS310
+- Dependencies: [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-dps310](https://pypi.org/project/adafruit-circuitpython-dps310)
+- Manufacturer URL: [Link](https://www.infineon.com/cms/en/product/sensor/pressure-sensors/pressure-sensors-for-iot/dps310/)
+- Datasheet URL: [Link](https://www.infineon.com/dgdl/Infineon-DPS310-DataSheet-v01_02-EN.pdf?fileId=5546d462576f34750157750826c42242)
+- Product URLs: [Link 1](https://www.adafruit.com/product/4494), [Link 2](https://shop.pimoroni.com/products/adafruit-dps310-precision-barometric-pressure-altitude-sensor-stemma-qt-qwiic), [Link 3](https://www.berrybase.de/sensoren-module/luftdruck-wasserdruck/adafruit-dps310-pr-228-zisions-barometrischer-druck-und-h-246-hen-sensor)
+
+#### Options
+
+##### I<sup>2</sup>C Address
+
+- Type: Text
+- Description: The I2C address of the device
+
+##### I<sup>2</sup>C Bus
+
+- Type: Integer
+- Description: The I2C bus the device is connected to
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
 ### MAXIM: DS1822
 
 - Manufacturer: MAXIM
@@ -3514,6 +3435,49 @@ Note: This module does not allow for multiple sensors to be connected at the sam
 
 - Type: Integer
 - Description: The GPIO (using BCM numbering) connected to the Cable Select pin
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+### Melexis: MLX90393
+
+- Manufacturer: Melexis
+- Measurements: Magnetic Flux
+- Interfaces: I<sup>2</sup>C
+- Libraries: Adafruit-CircuitPython-MLX90393
+- Dependencies: [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-mlx90393](https://pypi.org/project/adafruit-circuitpython-mlx90393)
+- Manufacturer URL: [Link](https://www.melexis.com/en/product/MLX90393/Triaxis-Micropower-Magnetometer)
+- Datasheet URL: [Link](https://cdn-learn.adafruit.com/assets/assets/000/069/600/original/MLX90393-Datasheet-Melexis.pdf)
+- Product URLs: [Link 1](https://www.adafruit.com/product/4022), [Link 2](https://shop.pimoroni.com/products/adafruit-wide-range-triple-axis-magnetometer-mlx90393), [Link 3](https://www.berrybase.de/sensoren-module/bewegung-distanz/adafruit-wide-range-drei-achsen-magnetometer-mlx90393)
+
+#### Options
+
+##### I<sup>2</sup>C Address
+
+- Type: Text
+- Description: The I2C address of the device
+
+##### I<sup>2</sup>C Bus
+
+- Type: Integer
+- Description: The I2C bus the device is connected to
 
 ##### Period (seconds)
 
@@ -4100,6 +4064,47 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Options: \[**DHT11 (Blue)** | DHT22 (White)\] (Default in **bold**)
 - Description: Sensor type
 
+### Sensirion: SCD-4x (SCD-40, SCD-41)
+
+- Manufacturer: Sensirion
+- Measurements: CO2/Temperature/Humidity
+- Interfaces: I<sup>2</sup>C
+- Libraries: Adafruit-CircuitPython-SCD4x
+- Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [adafruit-circuitpython-scd4x](https://pypi.org/project/adafruit-circuitpython-scd4x)
+- Manufacturer URL: [Link](https://www.sensirion.com/en/environmental-sensors/carbon-dioxide-sensors/carbon-dioxide-sensor-scd4x/)
+
+#### Options
+
+##### I<sup>2</sup>C Address
+
+- Type: Text
+- Description: The I2C address of the device
+
+##### I<sup>2</sup>C Bus
+
+- Type: Integer
+- Description: The I2C bus the device is connected to
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
 ### Sensirion: SCD30
 
 - Manufacturer: Sensirion
@@ -4221,6 +4226,48 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+### Sensirion: SHT2x
+
+- Manufacturer: Sensirion
+- Measurements: Humidity/Temperature
+- Interfaces: I<sup>2</sup>C
+- Libraries: sht20
+- Dependencies: [sht20](https://pypi.org/project/sht20)
+- Manufacturer URL: [Link](https://www.sensirion.com/en/environmental-sensors/humidity-sensors/humidity-temperature-sensor-sht2x-digital-i2c-accurate/)
+
+#### Options
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### Temperature Resolution
+
+- Type: Select
+- Options: \[11-bit | 12-bit | 13-bit | **14-bit**\] (Default in **bold**)
+- Description: The resolution of the temperature measurement
 
 ### Sensirion: SHT2x
 
@@ -4413,6 +4460,52 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+### Sensirion: SHTC3
+
+- Manufacturer: Sensirion
+- Measurements: Humidity/Temperature
+- Interfaces: I<sup>2</sup>C
+- Libraries: Adafruit_CircuitPython_SHT3C
+- Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [adafruit_circuitpython_shtc3](https://pypi.org/project/adafruit_circuitpython_shtc3)
+- Manufacturer URL: [Link](https://www.sensirion.com/en/environmental-sensors/humidity-sensors/digital-humidity-sensors-for-various-applications/)
+
+#### Options
+
+##### I<sup>2</sup>C Address
+
+- Type: Text
+- Description: The I2C address of the device
+
+##### I<sup>2</sup>C Bus
+
+- Type: Integer
+- Description: The I2C bus the device is connected to
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
 ### Sensorion: SHT31 Smart Gadget
 
 - Manufacturer: Sensorion
@@ -4519,6 +4612,47 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Type: Boolean
 - Description: Check to turn the output off after (opposed to before) the measurement is complete
 
+### Silicon Labs: Si7021
+
+- Manufacturer: Silicon Labs
+- Measurements: Temperature/Humidity
+- Interfaces: I<sup>2</sup>C
+- Libraries: Adafruit-CircuitPython-Si7021
+- Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [adafruit-circuitpython-si7021](https://pypi.org/project/adafruit-circuitpython-si7021)
+- Datasheet URL: [Link](https://www.silabs.com/documents/public/data-sheets/Si7021-A20.pdf)
+
+#### Options
+
+##### I<sup>2</sup>C Address
+
+- Type: Text
+- Description: The I2C address of the device
+
+##### I<sup>2</sup>C Bus
+
+- Type: Integer
+- Description: The I2C bus the device is connected to
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
 ### Sonoff: TH16/10 (Tasmota firmware) with AM2301
 
 - Manufacturer: Sonoff
@@ -4600,6 +4734,54 @@ Enter the Grove Pi+ GPIO pin connected to the sensor and select the sensor type.
 - Type: Text
 - Default Value: 192.168.0.100
 - Description: The IP address of the device
+
+### TE Connectivity: HTU21D
+
+- Manufacturer: TE Connectivity
+- Measurements: Humidity/Temperature
+- Interfaces: I<sup>2</sup>C
+- Libraries: Adafruit-CircuitPython-HTU21D
+- Dependencies: [adafruit-extended-bus](https://pypi.org/project/adafruit-extended-bus), [adafruit-circuitpython-HTU21D](https://pypi.org/project/adafruit-circuitpython-HTU21D)
+- Manufacturer URL: [Link](https://www.te.com/usa-en/product-CAT-HSC0004.html)
+- Datasheet URL: [Link](https://www.te.com/commerce/DocumentDelivery/DDEController?Action=showdoc&DocId=Data+Sheet%7FHPC199_6%7FA6%7Fpdf%7FEnglish%7FENG_DS_HPC199_6_A6.pdf%7FCAT-HSC0004)
+- Product URL: [Link](https://www.adafruit.com/product/1899)
+
+#### Options
+
+##### I<sup>2</sup>C Address
+
+- Type: Text
+- Description: The I2C address of the device
+
+##### I<sup>2</sup>C Bus
+
+- Type: Integer
+- Description: The I2C bus the device is connected to
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
 
 ### TE Connectivity: HTU21D
 
@@ -4744,6 +4926,197 @@ This input queries the energy usage information from a WiFi outlet that is runni
 - Default Value: 5
 - Description: The number of times to measure each channel. An average of the measurements will be stored.
 
+### Texas Instruments: ADS1115: Generic Analog pH/EC
+
+- Manufacturer: Texas Instruments
+- Measurements: Ion Concentration/Electrical Conductivity
+- Interfaces: I<sup>2</sup>C
+- Libraries: Adafruit_CircuitPython_ADS1x15
+- Dependencies: [pyusb](https://pypi.org/project/pyusb), [Adafruit-extended-bus](https://pypi.org/project/Adafruit-extended-bus), [Adafruit_CircuitPython_ADS1x15](https://pypi.org/project/Adafruit_CircuitPython_ADS1x15)
+
+This input relies on an ADS1115 analog-to-digital converter (ADC) to measure pH and/or electrical conductivity (EC) from analog sensors. You can enable or disable either measurement if you want to only connect a pH sensor or an EC sensor by selecting which measurements you want to under Measurements Enabled. Select which channel each sensor is connected to on the ADC. There are default calibration values initially set for the Input. There are also functions to allow you to easily calibrate your sensors with calibration solutions. If you use the Calibrate Slot actions, these values will be calculated and will replace the currently-set values. You can use the Clear Calibration action to delete the database values and return to using the default values. If you delete the Input or create a new Input to use your ADC/sensors with, you will need to recalibrate in order to store new calibration data.
+
+#### Options
+
+##### I<sup>2</sup>C Address
+
+- Type: Text
+- Description: The I2C address of the device
+
+##### I<sup>2</sup>C Bus
+
+- Type: Integer
+- Description: The I2C bus the device is connected to
+
+##### Measurements Enabled
+
+- Type: Multi-Select
+- Description: The measurements to record
+
+##### Period (seconds)
+
+- Type: Decimal
+- Description: The duration (seconds) between measurements or actions
+
+##### Pre Output
+
+- Type: Select
+- Description: Turn the selected output on before taking every measurement
+
+##### Pre Out Duration
+
+- Type: Decimal
+- Description: If a Pre Output is selected, set the duration (seconds) to turn the Pre Output on for before every measurement is acquired.
+
+##### Pre During Measure
+
+- Type: Boolean
+- Description: Check to turn the output off after (opposed to before) the measurement is complete
+
+##### ADC Channel: pH
+
+- Type: Select
+- Options: \[**Channel 0** | Channel 1 | Channel 2 | Channel 3\] (Default in **bold**)
+- Description: The ADC channel the pH sensor is connected
+
+##### ADC Channel: EC
+
+- Type: Select
+- Options: \[Channel 0 | **Channel 1** | Channel 2 | Channel 3\] (Default in **bold**)
+- Description: The ADC channel the EC sensor is connected
+
+##### Temperature Compensation
+
+##### Temperature Compensation: Measurement
+
+- Type: Select Measurement
+- Selections: Input, Function, Math, 
+- Description: Select a measurement for temperature compensation
+
+##### Temperature Compensation: Max Age
+
+- Type: Integer
+- Default Value: 120
+- Description: The maximum age (seconds) of the measurement to use
+
+##### pH Calibration Data
+
+##### Cal data: V1 (internal)
+
+- Type: Decimal
+- Default Value: 1.5
+- Description: Calibration data: Voltage
+
+##### Cal data: pH1 (internal)
+
+- Type: Decimal
+- Default Value: 7.0
+- Description: Calibration data: pH
+
+##### Cal data: T1 (internal)
+
+- Type: Decimal
+- Default Value: 25.0
+- Description: Calibration data: Temperature
+
+##### Cal data: V2 (internal)
+
+- Type: Decimal
+- Default Value: 2.032
+- Description: Calibration data: Voltage
+
+##### Cal data: pH2 (internal)
+
+- Type: Decimal
+- Default Value: 4.0
+- Description: Calibration data: pH
+
+##### Cal data: T2 (internal)
+
+- Type: Decimal
+- Default Value: 25.0
+- Description: Calibration data: Temperature
+
+##### EC Calibration Data
+
+##### EC cal data: V1 (internal)
+
+- Type: Decimal
+- Default Value: 0.232
+- Description: EC calibration data: Voltage
+
+##### EC cal data: EC1 (internal)
+
+- Type: Decimal
+- Default Value: 1413.0
+- Description: EC calibration data: EC
+
+##### EC cal data: T1 (internal)
+
+- Type: Decimal
+- Default Value: 25.0
+- Description: EC calibration data: EC
+
+##### EC cal data: V2 (internal)
+
+- Type: Decimal
+- Default Value: 2.112
+- Description: EC calibration data: Voltage
+
+##### EC cal data: EC2 (internal)
+
+- Type: Decimal
+- Default Value: 12880.0
+- Description: EC calibration data: EC
+
+##### EC cal data: T2 (internal)
+
+- Type: Decimal
+- Default Value: 25.0
+- Description: EC calibration data: EC
+
+#### Actions
+
+##### pH Calibration Actions: Place your probe in a solution of known pH.
+            Set the known pH value in the "Calibration buffer pH" field, and press "Calibrate pH, slot 1".
+            Repeat with a second buffer, and press "Calibrate pH, slot 2".
+            You don't need to change the values under "Custom Options".
+
+##### Calibration buffer pH
+
+- Type: Decimal
+- Default Value: 7.0
+- Description: This is the nominal pH of the calibration buffer, usually labelled on the bottle.
+
+##### Calibrate pH, slot 1
+
+- Type: Button
+##### Calibrate pH, slot 2
+
+- Type: Button
+##### Clear pH Calibration Slots
+
+- Type: Button
+##### EC Calibration Actions: Place your probe in a solution of known EC.
+            Set the known EC value in the "Calibration standard EC" field, and press "Calibrate EC, slot 1".
+            Repeat with a second standard, and press "Calibrate EC, slot 2".
+            You don't need to change the values under "Custom Options".
+
+##### Calibration standard EC
+
+- Type: Decimal
+- Default Value: 1413.0
+- Description: This is the nominal EC of the calibration standard, usually labelled on the bottle.
+
+##### Calibrate EC, slot 1
+
+- Type: Button
+##### Calibrate EC, slot 2
+
+- Type: Button
+##### Clear pH Calibration Slots
+
+- Type: Button
 ### Texas Instruments: ADS1115
 
 - Manufacturer: Texas Instruments
@@ -4795,7 +5168,7 @@ This input queries the energy usage information from a WiFi outlet that is runni
 - Default Value: 5
 - Description: The number of times to measure each channel. An average of the measurements will be stored.
 
-### Texas Instruments: ADS1256: Analog pH/EC
+### Texas Instruments: ADS1256: Generic Analog pH/EC
 
 - Manufacturer: Texas Instruments
 - Measurements: Ion Concentration/Electrical Conductivity
@@ -5499,7 +5872,7 @@ This is the B version of the sensor that includes the ability to conduct automat
 ##### Measurement Range
 
 - Type: Select
-- Options: \[0 - 1000 ppmv | 0 - 2000 ppmv | 0 - 3000 ppmv | **0 - 5000 ppmv**\] (Default in **bold**)
+- Options: \[0 - 1000 ppmv | 0 - 2000 ppmv | 0 - 3000 ppmv | **0 - 5000 ppmv** | 0 - 10000 ppmv\] (Default in **bold**)
 - Description: Set the measuring range of the sensor
 
 #### Actions

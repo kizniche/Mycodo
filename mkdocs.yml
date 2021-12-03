@@ -5,7 +5,7 @@ site_description: Documentation for Mycodo
 repo_name: 'kizniche/Mycodo'
 repo_url: 'https://github.com/kizniche/Mycodo'
 extra:
-    version: 8.12.0
+    version: 8.12.9
 
 plugins:
   - search:

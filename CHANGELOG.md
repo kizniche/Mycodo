@@ -1,7 +1,8 @@
-## 8.12.9 (Unreleased)
+## 8.12.9 (2021-12-02)
 
 ### Bugfixes
 
+ - Fix inability to install due to missing pip
  - Fix MCP23017 Output dependency ([#1095](https://github.com/kizniche/mycodo/issues/1095))
  - Fix restoring backups causing upgrade page to not be usable until .upgrade file is deleted
  - Fix .upgrade file interfering with upgrade page rendering ([#1096](https://github.com/kizniche/mycodo/issues/1096))

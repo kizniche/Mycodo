@@ -14,10 +14,9 @@ cd "${INSTALL_PATH}" || exit
 case "${1:-''}" in
     "dependencies")
         apt-get update -y
-        apt-get install -y python3 python3-dev python3-setuptools libffi-dev libssl-dev build-essential
+        apt-get install -y python3 python3-pip python3-dev python3-setuptools libffi-dev libssl-dev build-essential
         apt remove -y python3-cffi-backend
 
-        python3 /usr/lib/python3/dist-packages/easy_install.py pip
         python3 -m pip install --upgrade pip
 
         "${INSTALL_PATH}"/mycodo/scripts/upgrade_commands.sh setup-virtualenv

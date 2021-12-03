@@ -108,7 +108,7 @@ FUNCTION_INFORMATION = {
         {
             'id': 'remote_backup_path',
             'type': 'text',
-            'default_value': '/home/pi/backup_mycodo_{}'.format(host_name),
+            'default_value': '/home/pi/backup_mycodo',
             'required': True,
             'name': 'Remote Backup Path',
             'phrase': 'The path to backup to on the remote host'
