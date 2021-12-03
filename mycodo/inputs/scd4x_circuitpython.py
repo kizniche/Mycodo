@@ -2,6 +2,8 @@
 import copy
 
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.inputs.sensorutils import calculate_dewpoint
+from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 
 # Measurements
 measurements_dict = {
@@ -16,6 +18,14 @@ measurements_dict = {
     2: {
         'measurement': 'humidity',
         'unit': 'percent'
+    },
+    3: {
+        'measurement': 'dewpoint',
+        'unit': 'C'
+    },
+    4: {
+        'measurement': 'vapor_pressure_deficit',
+        'unit': 'Pa'
     }
 }
 
@@ -82,5 +92,11 @@ class InputModule(AbstractInput):
 
         if self.is_enabled(2):
             self.value_set(2, self.sensor.relative_humidity)
+
+        if self.is_enabled(3) and self.is_enabled(1) and self.is_enabled(2):
+            self.value_set(3, calculate_dewpoint(self.value_get(1), self.value_get(2)))
+
+        if self.is_enabled(4) and self.is_enabled(1) and self.is_enabled(2):
+            self.value_set(4, calculate_vapor_pressure_deficit(self.value_get(1), self.value_get(2)))
 
         return self.return_dict
