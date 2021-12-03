@@ -15,11 +15,14 @@
 
  - Add Input: TTN Integration: Data Storage (TTN v3), replaces deprecated TTN v2 Input (deprecated 12/2021)
  - Add Input: HTU21D Variant using the CircuitPython library
+ - Add Input: SCD-4x (40, 41) CO2/Temp/Hum sensor
+ - Add Input: Si7021 Temp/Hum sensor
  - Add PWM Output option: Invert Stored Signal
 
 ### Miscellaneous
 
  - Remove Output Quantity option when adding outputs
+ - Change Live page refresh to that of the device measurement period
 
 
 ## 8.12.8 (2021-10-27)

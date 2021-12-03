@@ -38,19 +38,17 @@
       });
     }
 
-    function liveTextData(unique_id, measure_type, measurement_id, period) {
-      // Update when page first loads
+    function liveTextData(unique_id, measure_type, measurement_id, period, refresh) {
       updateMeasurements(unique_id, measure_type, measurement_id, period);
       setInterval(function () {
-        // Update after every 30 seconds
         updateMeasurements(unique_id, measure_type, measurement_id, period);
-      }, 30000);
+      }, refresh * 1000);
     }
 
     $(function() {
       {%- for each_input in table_input.query.filter(table_input.is_activated).all() -%}
         {% for each_meas in table_device_measurements.query.filter(table_device_measurements.device_id == each_input.unique_id).all() if each_meas.is_enabled %}
-          liveTextData('{{each_input.unique_id}}', 'input', '{{each_meas.unique_id}}', {{each_input.period * 2}});
+          liveTextData('{{each_input.unique_id}}', 'input', '{{each_meas.unique_id}}', {{each_input.period * 2}}, {{each_input.period}});
         {% endfor %}
       {%- endfor -%}
 
@@ -61,9 +59,9 @@
             {% set function_period = function_options["period"] %}
           {% endif %}
           {% if function_period %}
-          liveTextData('{{each_function.unique_id}}', 'function', '{{each_meas.unique_id}}', {{function_period * 2}});
+          liveTextData('{{each_function.unique_id}}', 'function', '{{each_meas.unique_id}}', {{function_period * 2}}, {{function_period}});
           {% else %}
-          liveTextData('{{each_function.unique_id}}', 'function', '{{each_meas.unique_id}}', 1440);
+          liveTextData('{{each_function.unique_id}}', 'function', '{{each_meas.unique_id}}', 1440, 30);
           {% endif %}
         {% endfor %}
       {%- endfor -%}
