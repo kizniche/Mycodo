@@ -39,8 +39,12 @@ def convert_units(conversion_id, measure_value):
     :return: converted value
     """
     conversion = db_retrieve_table_daemon(Conversion, unique_id=conversion_id)
-    replaced_str = conversion.equation.replace('x', str(measure_value))
-    return float('{0:.5f}'.format(eval(replaced_str)))
+    if conversion:
+        replaced_str = conversion.equation.replace('x', str(measure_value))
+        return float('{0:.5f}'.format(eval(replaced_str)))
+    else:
+        logger.error("Conversion not found, not converting.")
+        return measure_value
 
 
 def convert_from_x_to_y_unit(unit_from, unit_to, in_value):
