@@ -589,6 +589,8 @@ def settings_diagnostic():
             utils_settings.settings_diagnostic_delete_file('upgrade')
         elif form_settings_diagnostic.reset_email_counter.data:
             utils_settings.settings_diagnostic_reset_email_counter()
+        elif form_settings_diagnostic.install_dependencies.data:
+            utils_settings.settings_diagnostic_install_dependencies()
 
         return redirect(url_for('routes_settings.settings_diagnostic'))
 

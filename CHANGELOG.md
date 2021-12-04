@@ -1,3 +1,10 @@
+## 8.12.10 (Unreleased)
+
+### Miscellaneous
+
+ - Add button to install all dependencies on Diagnostics page
+
+
 ## 8.12.9 (2021-12-02)
 
 ### Bugfixes

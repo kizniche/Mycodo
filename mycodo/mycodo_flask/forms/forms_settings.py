@@ -413,3 +413,4 @@ class SettingsDiagnostic(FlaskForm):
     delete_file_dependency = SubmitField(lazy_gettext('Delete File') + ': .dependency')
     delete_file_upgrade = SubmitField(lazy_gettext('Delete File') + ': .upgrade')
     reset_email_counter = SubmitField(lazy_gettext('Reset Email Counter'))
+    install_dependencies = SubmitField(lazy_gettext('Install Dependencies'))

@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import subprocess
+import threading
 import time
 import traceback
 
@@ -18,6 +19,7 @@ from sqlalchemy import or_
 
 from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DEPENDENCY_INIT_FILE
+from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_FUNCTIONS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
@@ -56,7 +58,6 @@ from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactiva
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
-from mycodo.mycodo_flask.utils.utils_input import input_deactivate_associated_controllers
 from mycodo.utils.database import db_retrieve_table
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
@@ -1800,7 +1801,7 @@ def settings_diagnostic_delete_file(delete_type):
 
 
 def settings_diagnostic_reset_email_counter():
-    action = gettext("Reset email counter")
+    action = gettext("Reset Email Counter")
     error = []
 
     if not error:
@@ -1812,6 +1813,43 @@ def settings_diagnostic_reset_email_counter():
         except Exception as except_msg:
             error.append(except_msg)
 
+    flash_success_errors(
+        error, action, url_for('routes_settings.settings_diagnostic'))
+
+
+def settings_diagnostic_install_dependencies():
+    action = gettext("Install Dependencies")
+    error = []
+
+    if not error:
+        try:
+            def install_dependencies():
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper update_dependencies" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
+                    pth=INSTALL_DIRECTORY,
+                    log=DEPENDENCY_LOG_FILE)
+                _, _, _ = cmd_output(cmd)
+
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper frontend_restart" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
+                    pth=INSTALL_DIRECTORY,
+                    log=DEPENDENCY_LOG_FILE)
+                _, _, _ = cmd_output(cmd)
+
+                cmd = "{pth}/mycodo/scripts/mycodo_wrapper daemon_restart" \
+                      " | ts '[%Y-%m-%d %H:%M:%S]' >> {log} 2>&1".format(
+                    pth=INSTALL_DIRECTORY,
+                    log=DEPENDENCY_LOG_FILE)
+                _, _, _ = cmd_output(cmd)
+
+            install_deps = threading.Thread(target=install_dependencies)
+            install_deps.start()
+        except Exception as except_msg:
+            error.append(except_msg)
+
+    flash("Installation of dependencies has been initiated. "
+          "This can take a while. You can view the progress in the Dependency Log. "
+          "At completion, the frontend and backend will be restarted.", "success")
     flash_success_errors(
         error, action, url_for('routes_settings.settings_diagnostic'))
 
