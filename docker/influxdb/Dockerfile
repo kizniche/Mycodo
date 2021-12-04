@@ -1,4 +1,4 @@
-FROM influxdb:latest
+FROM influxdb:1.8.10
 
 RUN mkdir -pv /var/influxdb/data
 

@@ -543,7 +543,6 @@ case "${1:-''}" in
         printf "\n#### Installing pip requirements\n"
         "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools
         "${MYCODO_PATH}"/env/bin/python -m pip install --no-cache-dir -r /home/mycodo/install/requirements.txt
-        "${MYCODO_PATH}"/env/bin/python -m pip install --no-cache-dir -r /home/mycodo/install/requirements-rpi.txt
     ;;
     'install-docker-ce-cli')
         printf "\n#### Installing Docker Client\n"
