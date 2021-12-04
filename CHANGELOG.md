@@ -18,6 +18,7 @@
  - Add Input: HTU21D Variant using the CircuitPython library
  - Add Input: SCD-4x (40, 41) CO2/Temp/Hum sensor
  - Add Input: Si7021 Temp/Hum sensor
+ - Add Input: Generic TH10/16 for any Temp/Hum sensor
  - Add PWM Output option: Invert Stored Signal
 
 ### Miscellaneous

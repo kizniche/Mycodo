@@ -81,7 +81,7 @@ INPUT_INFORMATION = {
             'name': lazy_gettext('Measurements to Average'),
             'phrase': lazy_gettext(
                 'The number of times to measure each channel. An average of the measurements will be stored.')
-        },
+        }
     ]
 }
 
