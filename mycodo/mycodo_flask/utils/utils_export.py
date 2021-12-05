@@ -201,6 +201,7 @@ def import_settings(form):
     error = []
 
     try:
+        logger.info("Beginning settings import")
         correct_format = 'Mycodo_MYCODOVERSION_Settings_DBVERSION_HOST_DATETIME.zip'
         upload_folder = os.path.join(INSTALL_DIRECTORY, 'upload')
         tmp_folder = os.path.join(upload_folder, 'mycodo_db_tmp')
@@ -255,6 +256,7 @@ def import_settings(form):
                     "Exception while verifying file name: {err}".format(err=err))
 
         if not error:
+            logger.info("Saving import file")
             # Save file to upload directory
             filename = secure_filename(
                 form.settings_import_file.data.filename)
@@ -275,6 +277,7 @@ def import_settings(form):
                              "{err}".format(err=err))
 
         if not error:
+            logger.info("Unzipping import file")
             # Unzip file
             try:
                 zip_ref = zipfile.ZipFile(full_path, 'r')
@@ -285,6 +288,7 @@ def import_settings(form):
                              "{err}".format(err=err))
 
         if not error:
+            logger.info("Stopping daemon and copying files")
             try:
                 # Stop Mycodo daemon (backend)
                 cmd = "{pth}/mycodo/scripts/mycodo_wrapper " \
@@ -346,6 +350,7 @@ def import_settings(form):
                             except:
                                 pass
 
+                logger.info("Finalizing import")
                 import_settings_db = threading.Thread(
                     target=thread_import_settings,
                     args=(tmp_folder,))

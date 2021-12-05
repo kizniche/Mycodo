@@ -122,7 +122,13 @@ case "${1:-''}" in
         printf "\n#### Creating files and directories\n"
         mkdir -p /var/log/mycodo
         mkdir -p /var/Mycodo-backups
+
+        mkdir -p "${MYCODO_PATH}"/install
+        mkdir -p "${MYCODO_PATH}"/mycodo
+        mkdir -p "${MYCODO_PATH}"/databases
         mkdir -p "${MYCODO_PATH}"/note_attachments
+        mkdir -p "${MYCODO_PATH}"/mycodo/scripts
+        mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/ssl_certs
         mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/static/js/user_js
         mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/static/css/user_css
 
@@ -546,7 +552,8 @@ case "${1:-''}" in
     ;;
     'install-docker-ce-cli')
         printf "\n#### Installing Docker Client\n"
-        apt-get -y install \
+        apt update
+        apt -y install \
             apt-transport-https \
             ca-certificates \
             curl \

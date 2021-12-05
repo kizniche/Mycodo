@@ -2,26 +2,26 @@ version: "3.7"
 
 services:
 
-  influxdb:
-    container_name: influxdb
+  mycodo_influxdb:
+    container_name: mycodo_influxdb
     build:
       context: ../
       dockerfile: docker/influxdb/Dockerfile
     env_file:
       - 'influxdb/env.influxdb'
     volumes:
-      - influxdb:/var/lib/influxdb
+      - mycodo_influxdb:/var/lib/influxdb
       - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
 
-  nginx:
-    container_name: nginx
+  mycodo_nginx:
+    container_name: mycodo_nginx
     restart: always
     build:
       context: ../
       dockerfile: docker/nginx/Dockerfile
     volumes:
-      - home:/home/mycodo
-      - log:/var/log/mycodo
+      - mycodo_home:/home/mycodo
+      - mycodo_log:/var/log/mycodo
       - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
     ports:
       - "80:80"
@@ -34,15 +34,17 @@ services:
     image: app
     restart: always
     volumes:
-      - home:/home/mycodo
-      - log:/var/log/mycodo
+      - mycodo_home:/home/mycodo
+      - mycodo_log:/var/log/mycodo
       - /dev:/dev
+      - /sys:/sys
+      - /opt:/opt
       - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
     privileged: true
     command: bash -c "PYTHONPATH=/home/mycodo /home/mycodo/env/bin/python mycodo_daemon.py"
     depends_on:
       - mycodo_flask
-      - influxdb
+      - mycodo_influxdb
 
   mycodo_flask:
     container_name: mycodo_flask
@@ -52,38 +54,38 @@ services:
       context: ../
       dockerfile: docker/Dockerfile
     volumes:
-      - home:/home/mycodo
-      - log:/var/log/mycodo
+      - mycodo_home:/home/mycodo
+      - mycodo_log:/var/log/mycodo
       - /dev:/dev
       - /var/run/docker.sock:/var/run/docker.sock:ro  # Permits container to restart itself
       - /etc/localtime:/etc/localtime:ro  # Use timezone of the host (read-only)
     privileged: true
     command: /home/mycodo/env/bin/python -m gunicorn --workers 1 --bind unix:/home/mycodo/mycodoflask.sock start_flask_ui:app
     depends_on:
-      - influxdb
+      - mycodo_influxdb
 
-#  telegraf:
+#  mycodo_telegraf:
 #    image: telegraf:latest
-#    container_name: telegraf
+#    container_name: mycodo_telegraf
 #    volumes:
 #      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
 #    depends_on:
-#      - influxdb
+#      - mycodo_influxdb
 #
-#  grafana:
+#  mycodo_grafana:
 #    image: grafana/grafana:latest
-#    container_name: grafana
+#    container_name: mycodo_grafana
 #    ports:
 #      - "3000:3000"
 #    env_file:
 #      - 'grafana/env.grafana'
 #    volumes:
-#      - grafana:/var/lib/grafana
+#      - mycodo_grafana:/var/lib/grafana
 #    depends_on:
-#      - influxdb
+#      - mycodo_influxdb
 
 volumes:
-  home:
-  log:
-  influxdb:
-  grafana:
+  mycodo_home:
+  mycodo_log:
+  mycodo_influxdb:
+  mycodo_grafana:
