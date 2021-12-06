@@ -183,6 +183,34 @@ WIDGET_INFORMATION = {
             'phrase': 'The period of time between refreshing the widget'
         },
         {
+            'id': 'graph_font_size_em_axes',
+            'type': 'float',
+            'default_value': 1.0,
+            'name': 'Graph Axis Value Font Size (em)',
+            'phrase': 'The size of the fonts of the x/y axis values of the graph'
+        },
+        {
+            'id': 'graph_font_size_em_axes_title',
+            'type': 'float',
+            'default_value': 1.0,
+            'name': 'Graph Axis Title Font Size (em)',
+            'phrase': 'The size of the fonts of the x/y axis titles of the graph'
+        },
+        {
+            'id': 'graph_font_size_em_legend',
+            'type': 'float',
+            'default_value': 1.0,
+            'name': 'Graph Legend Font Size (em)',
+            'phrase': 'The size of the fonts on the legend of the graph'
+        },
+        {
+            'id': 'graph_font_size_em_title',
+            'type': 'float',
+            'default_value': 1.0,
+            'name': 'Graph Title Font Size (em)',
+            'phrase': 'The size of the fonts on the title of the graph'
+        },
+        {
             'id': 'x_axis_minutes',
             'type': 'integer',
             'default_value': 1440,
@@ -778,16 +806,27 @@ WIDGET_INFORMATION = {
   {%- endif -%}
 
     title: {
-      text: "{% if widget_options['enable_title'] %}{{each_widget.name}}{% endif %}"
+      text: "{% if widget_options['enable_title'] %}{{each_widget.name}}{% endif %}",
+      style: {
+        fontSize:'{{widget_options['graph_font_size_em_title']}}em'
+      }
     },
 
     legend: {
-      enabled: {% if widget_options['enable_graph_legend'] %}true{% else %}false{% endif %}
+      enabled: {% if widget_options['enable_graph_legend'] %}true{% else %}false{% endif %},
+      itemStyle: {
+        fontSize:'{{widget_options['graph_font_size_em_legend']}}em'
+      }
     },
 
     xAxis: {
       type: 'datetime',
-      ordinal: false
+      ordinal: false,
+      labels: {
+        style: {
+          fontSize:'{{widget_options['graph_font_size_em_axes']}}em'
+        }
+      }
     },
 
     yAxis: [
@@ -804,10 +843,16 @@ WIDGET_INFORMATION = {
           text: "{{dict_units[each_axis_meas]['name']}}
     {%- if dict_units[each_axis_meas]['unit'] != '' -%}
       {{' (' + dict_units[each_axis_meas]['unit'] + ')'}}
-    {%- endif -%}"
+    {%- endif -%}",
+          style: {
+            fontSize:'{{widget_options['graph_font_size_em_axes_title']}}em'
+          }
         },
         labels: {
-          format: '{value}'
+          format: '{value}',
+          style: {
+            fontSize:'{{widget_options['graph_font_size_em_axes']}}em'
+          }
         },
         opposite: false,
         id: '{{each_axis_meas}}'
