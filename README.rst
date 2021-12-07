@@ -505,8 +505,8 @@ Mycodo最初设计用于种植可食用的蘑菇，已经发展到能够做更�
 
 .. |Build Status| image:: https://github.com/kizniche/Mycodo/actions/workflows/main.yml/badge.svg
    :target: https://github.com/kizniche/Mycodo/actions/workflows/main.yml
-.. |Codacy Badge| image:: https://api.codacy.com/project/badge/Grade/5b9c21d5680f4f7fb87df1cf32f71e80
-   :target: https://www.codacy.com/app/Mycodo/Mycodo?utm_source=github.com&utm_medium=referral&utm_content=kizniche/Mycodo&utm_campaign=Badge_Grade
+.. |Codacy Badge| image:: https://app.codacy.com/project/badge/Grade/bb5ffc43e4444231b813ca6e81359336
+   :target: https://www.codacy.com/gh/kizniche/Mycodo/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=kizniche/Mycodo&amp;utm_campaign=Badge_Grade
 .. |Translation Badge| image:: http://translate.kylegabriel.com:8080/widgets/mycodo/-/svg-badge.svg
    :target: http://translate.kylegabriel.com:8080/engage/mycodo/
 .. |Translation Table| image:: http://translate.kylegabriel.com:8080/widgets/mycodo/-/multi-auto.svg
