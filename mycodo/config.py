@@ -906,8 +906,9 @@ INSTALL_DIRECTORY = os.path.abspath(os.path.dirname(os.path.realpath(__file__)) 
 
 # Database
 DATABASE_NAME = "mycodo.db"
+ALEMBIC_PATH = os.path.join(INSTALL_DIRECTORY, 'alembic_db')
 DATABASE_PATH = os.path.join(INSTALL_DIRECTORY, 'databases')
-ALEMBIC_UPGRADE_POST = os.path.join(DATABASE_PATH, 'alembic_post_upgrade_versions')
+ALEMBIC_UPGRADE_POST = os.path.join(ALEMBIC_PATH, 'alembic_post_upgrade_versions')
 SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, DATABASE_NAME)
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -987,8 +988,8 @@ STATS_PORT = 8086
 STATS_USER = 'mycodo_stats'
 STATS_PASSWORD = 'Io8Nasr5JJDdhPOj32222'
 STATS_DATABASE = 'mycodo_stats'
-STATS_CSV = os.path.join(DATABASE_PATH, 'statistics.csv')
-ID_FILE = os.path.join(DATABASE_PATH, 'statistics.id')
+STATS_CSV = os.path.join(INSTALL_DIRECTORY, 'statistics.csv')
+ID_FILE = os.path.join(INSTALL_DIRECTORY, 'statistics.id')
 
 # Login restrictions
 LOGIN_ATTEMPTS = 5

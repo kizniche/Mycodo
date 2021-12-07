@@ -122,6 +122,7 @@ case "${1:-''}" in
         printf "\n#### Creating files and directories\n"
         mkdir -p /var/log/mycodo
         mkdir -p /var/Mycodo-backups
+        mkdir -p /usr/local/mycodo
 
         mkdir -p "${MYCODO_PATH}"/install
         mkdir -p "${MYCODO_PATH}"/mycodo
@@ -252,12 +253,12 @@ case "${1:-''}" in
     ;;
     'update-alembic')
         printf "\n#### Upgrading Mycodo database with alembic (if needed)\n"
-        cd "${MYCODO_PATH}"/databases || return
+        cd "${MYCODO_PATH}"/alembic_db || return
         "${MYCODO_PATH}"/env/bin/alembic upgrade head
     ;;
     'update-alembic-post')
         printf "\n#### Executing post-alembic script\n"
-        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/databases/alembic_post.py
+        "${MYCODO_PATH}"/env/bin/python "${MYCODO_PATH}"/alembic_db/alembic_post.py
     ;;
     'update-apt')
         printf "\n#### Updating apt repositories\n"
@@ -536,6 +537,49 @@ case "${1:-''}" in
     # Docker-specific commands
     #
 
+    'docker-create-files-directories-symlinks')
+        printf "\n#### Creating files and directories\n"
+        mkdir -p /var/log/mycodo
+        mkdir -p /var/Mycodo-backups
+        mkdir -p /usr/local/mycodo
+
+        mkdir -p "${MYCODO_PATH}"/install
+        mkdir -p "${MYCODO_PATH}"/mycodo
+        mkdir -p "${MYCODO_PATH}"/databases
+        mkdir -p "${MYCODO_PATH}"/note_attachments
+        mkdir -p "${MYCODO_PATH}"/mycodo/scripts
+        mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/static/js/user_js
+        mkdir -p "${MYCODO_PATH}"/mycodo/mycodo_flask/static/css/user_css
+
+        if [[ ! -e /var/log/mycodo/mycodo.log ]]; then
+            touch /var/log/mycodo/mycodo.log
+        fi
+        if [[ ! -e /var/log/mycodo/mycodobackup.log ]]; then
+            touch /var/log/mycodo/mycodobackup.log
+        fi
+        if [[ ! -e /var/log/mycodo/mycodokeepup.log ]]; then
+            touch /var/log/mycodo/mycodokeepup.log
+        fi
+        if [[ ! -e /var/log/mycodo/mycododependency.log ]]; then
+            touch /var/log/mycodo/mycododependency.log
+        fi
+        if [[ ! -e /var/log/mycodo/mycodoupgrade.log ]]; then
+            touch /var/log/mycodo/mycodoupgrade.log
+        fi
+        if [[ ! -e /var/log/mycodo/mycodorestore.log ]]; then
+            touch /var/log/mycodo/mycodorestore.log
+        fi
+        if [[ ! -e /var/log/mycodo/login.log ]]; then
+            touch /var/log/mycodo/login.log
+        fi
+
+        # Create empty mycodo database file if it doesn't exist
+        if [[ ! -e /home/mycodo/databases/mycodo.db ]]; then
+            touch /home/mycodo/databases/mycodo.db
+        fi
+
+        ln -sfn "${MYCODO_PATH}" /var/mycodo-root
+    ;;
     'docker-compile-translations')
         printf "\n#### Compiling Translations\n"
         cd "${MYCODO_PATH}"/mycodo || exit

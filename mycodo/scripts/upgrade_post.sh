@@ -15,8 +15,8 @@ INSTALL_CMD="/bin/bash ${INSTALL_DIRECTORY}/mycodo/scripts/upgrade_commands.sh"
 
 cd "${INSTALL_DIRECTORY}" || exit
 
-rm -f "${INSTALL_DIRECTORY}"/databases/statistics.csv
-rm -f "${INSTALL_DIRECTORY}"/databases/statistics.id
+rm -f "${INSTALL_DIRECTORY}"/statistics.csv
+rm -f "${INSTALL_DIRECTORY}"/statistics.id
 
 TIMER_START_initialize=$SECONDS
 ${INSTALL_CMD} initialize

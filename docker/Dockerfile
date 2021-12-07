@@ -7,8 +7,7 @@ RUN useradd -ms /bin/bash mycodo
 
 COPY ./mycodo/scripts/upgrade_commands.sh /home/mycodo/mycodo/scripts/upgrade_commands.sh
 
-RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh create-files-directories
-RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh create-symlinks
+RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh docker-create-files-directories-symlinks
 RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh update-apt
 RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh update-packages
 RUN /home/mycodo/mycodo/scripts/upgrade_commands.sh ssl-certs-generate

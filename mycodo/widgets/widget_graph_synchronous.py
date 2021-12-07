@@ -183,34 +183,6 @@ WIDGET_INFORMATION = {
             'phrase': 'The period of time between refreshing the widget'
         },
         {
-            'id': 'graph_font_size_em_axes',
-            'type': 'float',
-            'default_value': 1.0,
-            'name': 'Graph Axis Value Font Size (em)',
-            'phrase': 'The size of the fonts of the x/y axis values of the graph'
-        },
-        {
-            'id': 'graph_font_size_em_axes_title',
-            'type': 'float',
-            'default_value': 1.0,
-            'name': 'Graph Axis Title Font Size (em)',
-            'phrase': 'The size of the fonts of the x/y axis titles of the graph'
-        },
-        {
-            'id': 'graph_font_size_em_legend',
-            'type': 'float',
-            'default_value': 1.0,
-            'name': 'Graph Legend Font Size (em)',
-            'phrase': 'The size of the fonts on the legend of the graph'
-        },
-        {
-            'id': 'graph_font_size_em_title',
-            'type': 'float',
-            'default_value': 1.0,
-            'name': 'Graph Title Font Size (em)',
-            'phrase': 'The size of the fonts on the title of the graph'
-        },
-        {
             'id': 'x_axis_minutes',
             'type': 'integer',
             'default_value': 1440,
@@ -272,6 +244,34 @@ WIDGET_INFORMATION = {
             'default_value': True,
             'name': 'Enable Graph Legend',
             'phrase': 'Enable the Graph Legend that is displayed below the graph.'
+        },
+        {
+            'id': 'graph_font_size_em_axes',
+            'type': 'float',
+            'default_value': 1.0,
+            'name': 'Graph Axis Value Font Size (em)',
+            'phrase': 'The size of the fonts of the x/y axis values of the graph'
+        },
+        {
+            'id': 'graph_font_size_em_axes_title',
+            'type': 'float',
+            'default_value': 1.0,
+            'name': 'Graph Axis Title Font Size (em)',
+            'phrase': 'The size of the fonts of the x/y axis titles of the graph'
+        },
+        {
+            'id': 'graph_font_size_em_legend',
+            'type': 'float',
+            'default_value': 1.0,
+            'name': 'Graph Legend Font Size (em)',
+            'phrase': 'The size of the fonts on the legend of the graph'
+        },
+        {
+            'id': 'graph_font_size_em_title',
+            'type': 'float',
+            'default_value': 1.0,
+            'name': 'Graph Title Font Size (em)',
+            'phrase': 'The size of the fonts on the title of the graph'
         },
         {'type': 'new_line'},
         {

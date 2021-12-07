@@ -12,7 +12,7 @@ ExecStart=/var/mycodo-root/env/bin/gunicorn \
 --threads 2 \
 --timeout 300 \
 --pid /var/run/mycodoflask.pid \
---bind unix:/var/run/mycodoflask.sock start_flask_ui:app
+--bind unix:/usr/local/mycodoflask.sock start_flask_ui:app
 
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
