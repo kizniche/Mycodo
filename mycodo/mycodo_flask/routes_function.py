@@ -3,6 +3,7 @@
 import datetime
 import json
 import logging
+import anticrlf
 
 import flask_login
 from flask import jsonify
@@ -64,7 +65,10 @@ from mycodo.utils.system_pi import csv_to_list_of_str
 from mycodo.utils.system_pi import parse_custom_option_values
 from mycodo.utils.system_pi import parse_custom_option_values_function_channels_json
 
+handler = logging.StreamHandler()
+handler.setFormatter(anticrlf.LogFormatter('%(levelname)s:%(name)s:%(message)s'))
 logger = logging.getLogger('mycodo.mycodo_flask.routes_function')
+logger.addHandler(handler)
 
 blueprint = Blueprint('routes_function',
                       __name__,
