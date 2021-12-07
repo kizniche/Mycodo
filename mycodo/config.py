@@ -1035,6 +1035,7 @@ class ProdConfig(object):
     FLASK_SECRET_KEY_PATH = os.path.join(DATABASE_PATH, 'flask_secret_key')
     if not os.path.isfile(FLASK_SECRET_KEY_PATH):
         secret_key = binascii.hexlify(os.urandom(32)).decode()
+        os.makedirs(DATABASE_PATH)
         with open(FLASK_SECRET_KEY_PATH, 'w') as file:
             file.write(secret_key)
     SECRET_KEY = open(FLASK_SECRET_KEY_PATH, 'rb').read()
