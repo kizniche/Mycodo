@@ -170,6 +170,7 @@ class InputMod(FlaskForm):
     # SHT options
     sht_voltage = StringField(TRANSLATIONS['sht_voltage']['title'])
 
+    input_duplicate = SubmitField(TRANSLATIONS['duplicate']['title'])
     input_mod = SubmitField(TRANSLATIONS['save']['title'])
     input_delete = SubmitField(TRANSLATIONS['delete']['title'])
     input_acquire_measurements = SubmitField(lazy_gettext('Acquire Measurements Now'))

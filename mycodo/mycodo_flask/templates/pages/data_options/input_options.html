@@ -24,6 +24,9 @@
     <div class="col-auto">
       <input onclick="return confirm('{{_('Are you sure you want to delete this?')}}') && $(this).processRequest(this, 'input_delete');" name="input_delete" value="{{_('Delete')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
     </div>
+    <div class="col-auto">
+      <input onclick="return confirm('{{_('Are you sure you want to do this?')}}') &&  $(this).processRequest(this, 'input_duplicate');" name="input_duplicate" value="{{_('Duplicate')}}" class="form-control btn btn-primary btn-sm btn-block" type="button"/>
+    </div>
   </div>
 
   {% if each_input.device in dict_inputs %}

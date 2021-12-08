@@ -78,6 +78,7 @@ def page_input_submit():
     }
     page_refresh = False
     input_id = None
+    duplicated_input_id = None
     dep_unmet = ''
     dep_name = ''
     dep_list = []
@@ -98,6 +99,9 @@ def page_input_submit():
              input_id) = utils_input.input_add(form_add_input)
             if dep_list:
                 dep_unmet = form_add_input.input_type.data.split(',')[0]
+        elif form_mod_input.input_duplicate.data:
+            messages, input_id = utils_input.input_duplicate(
+                form_mod_input)
         elif form_mod_input.input_mod.data:
             messages, page_refresh = utils_input.input_mod(
                 form_mod_input, request.form)
@@ -134,6 +138,7 @@ def page_input_submit():
 
     return jsonify(data={
         'input_id': input_id,
+        'duplicated_input_id': duplicated_input_id,
         'dep_name': dep_name,
         'dep_list': dep_list,
         'dep_unmet': dep_unmet,

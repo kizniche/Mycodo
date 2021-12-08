@@ -1,5 +1,9 @@
 ## 8.12.10 (Unreleased)
 
+### Features
+
+ - Add ability to duplicate Inputs
+
 ### Miscellaneous
 
  - Add button to install all dependencies on Diagnostics page

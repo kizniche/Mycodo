@@ -3,7 +3,7 @@ import json
 import logging
 import os
 import re
-
+from mycodo.databases import clone_model
 import sqlalchemy
 from flask import current_app
 from flask import flash
@@ -317,6 +317,48 @@ def input_add(form_add):
                             err=error))
 
     return messages, dep_name, list_unmet_deps, dep_message, new_input_id
+
+
+def input_duplicate(form_mod):
+    messages = {
+        "success": [],
+        "info": [],
+        "warning": [],
+        "error": []
+    }
+
+    mod_input = Input.query.filter(
+        Input.unique_id == form_mod.input_id.data).first()
+
+    if not mod_input:
+        return None, None
+
+    # Duplicate dashboard with new unique_id and name
+    new_input = clone_model(
+        mod_input, unique_id=set_uuid(), name="Copy of {}".format(mod_input.name))
+
+    # Deactivate Input
+    mod_input = Input.query.filter(
+        Input.unique_id == new_input.unique_id).first()
+    if mod_input:
+        mod_input.is_activated = False
+        mod_input.save()
+
+        dev_measurements = DeviceMeasurements.query.filter(
+            DeviceMeasurements.device_id == form_mod.input_id.data).all()
+        for each_dev in dev_measurements:
+            clone_model(each_dev, unique_id=set_uuid(), device_id=mod_input.unique_id)
+
+        dev_channels = InputChannel.query.filter(
+            InputChannel.input_id == form_mod.input_id.data).all()
+        for each_dev in dev_channels:
+            clone_model(each_dev, unique_id=set_uuid(), input_id=mod_input.unique_id)
+
+    messages["success"].append('{action} {controller}'.format(
+        action=TRANSLATIONS['duplicate']['title'],
+        controller=TRANSLATIONS['input']['title']))
+
+    return messages, new_input.unique_id
 
 
 def input_mod(form_mod, request_form):

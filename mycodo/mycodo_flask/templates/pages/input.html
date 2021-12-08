@@ -132,6 +132,7 @@
     jQuery.fn.processRequest = function(button, action) {
       console.log("Action: ", action)
       if (action === 'input_add' ||
+          action === 'input_duplicate' ||
           action === 'input_mod' ||
           action === 'input_delete' ||
           action === 'input_activate' ||
@@ -145,7 +146,7 @@
           headers: {"X-CSRFToken": "{{form_mod_input.csrf_token._value()}}"},
           data: $(button).parents('form').serialize() + '&' + action + '=1',
           success: function (data) {
-            if (action === 'input_add' && 'input_id' in data.data) {
+            if ((action === 'input_add' || action === 'input_duplicate') && 'input_id' in data.data) {
               if ('dep_unmet' in data.data && data.data.dep_unmet.length > 0) {
                 $(".dependencies_device_name").text(data.data.dep_name);
                 $(".dependencies_device").text(data.data.dep_unmet);
@@ -168,6 +169,7 @@
                         y: 999
                       });
                       {% if not hide_tooltips %}$('input[title]').tooltip({placement: 'top'});{% endif %}
+                      if (action === 'input_duplicate') { $('#modal_config_' + ).modal('hide'); }
                     }
                     popup_response(data);
                   },
