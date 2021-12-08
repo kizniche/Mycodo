@@ -21,6 +21,10 @@ import tempfile
 import secrets
 import shutil
 import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../../../..')))
+
 from mycodo.mycodo_flask.app import create_app
 from mycodo.config import TestConfig
 from webtest import TestApp

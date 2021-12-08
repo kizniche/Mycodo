@@ -1406,9 +1406,9 @@ def dashboard_widget_get_info(dashboard_id=None):
 def delete_entry_with_id(table, entry_id, flash_message=True):
     """ Delete SQL database entry with specific id """
     try:
-        entries = table.query.filter(
+        entry = table.query.filter(
             table.unique_id == entry_id).first()
-        db.session.delete(entries)
+        db.session.delete(entry)
         db.session.commit()
         msg = '{action} {table} with ID: {id}'.format(
             action=TRANSLATIONS['delete']['title'],

@@ -423,7 +423,7 @@ def test_add_all_input_devices_logged_in_as_admin(_, testapp):
         assert choice_name == input_dev.device, "Input name doesn't match: {}".format(choice_name)
 
         # Save input
-        response = save_data(testapp, 'input', device_dev=input_dev)
+        response = save_data(testapp, 'input')
         assert 'data' in response.json
         assert 'messages' in response.json['data']
         assert 'error' in response.json['data']['messages']
@@ -483,7 +483,7 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
         output = Output.query.filter(Output.id == output_count).first()
 
         # Save output
-        response = save_data(testapp, 'output', device_dev=output)
+        response = save_data(testapp, 'output')
         assert 'data' in response.json
         assert 'messages' in response.json['data']
         assert 'error' in response.json['data']['messages']
@@ -557,7 +557,7 @@ def test_add_all_function_devices_logged_in_as_admin(_, testapp):
                 break
 
         # Save function
-        response = save_data(testapp, 'function', device_dev=function_dev)
+        response = save_data(testapp, 'function')
         assert 'data' in response.json
         assert 'messages' in response.json['data']
         assert 'error' in response.json['data']['messages']
@@ -683,14 +683,14 @@ def delete_data(testapp, data_type, device_dev=None):
     return response
 
 
-def save_data(testapp, data_type, device_dev=None):
+def save_data(testapp, data_type):
     """ Go to the page and save input/output/function """
     response = None
     if data_type == 'input':
         form = testapp.get('/input').maybe_follow().forms['mod_input_form']
         form_dict = {}
         for each_field in form.fields.items():
-            if each_field[0]:
+            if each_field[0] and each_field[0] not in ['input_delete', 'input_duplicate']:
                 form_dict[each_field[0]] = form[each_field[0]].value
         form_dict['input_mod'] = 'Save'
         response = testapp.post('/input_submit', form_dict)

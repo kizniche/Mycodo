@@ -78,7 +78,7 @@ def page_input_submit():
     }
     page_refresh = False
     input_id = None
-    duplicated_input_id = None
+    duplicated_input_id = ''
     dep_unmet = ''
     dep_name = ''
     dep_list = []
