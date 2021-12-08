@@ -198,6 +198,13 @@ class InputModule(AbstractInput):
                         resp_json['result']['received_at'], e))
                     continue  # Malformed timestamp encountered. Discard measurement.
 
+            if ('result' not in resp_json or
+                    'uplink_message' not in resp_json['result'] or
+                    'decoded_payload' not in resp_json['result']['uplink_message'] or
+                    not resp_json['result']['uplink_message']['decoded_payload']):
+                self.logger.debug("resp_json empty or malformed: {}".format(resp_json))
+                continue
+
             if (not self.latest_datetime or
                     self.latest_datetime < datetime_utc):
                 self.latest_datetime = datetime_utc
