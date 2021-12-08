@@ -2,6 +2,10 @@
 
 If you are upgrading from a version prior to 8.12.10, following the upgrade, you will need to reboot.
 
+### Bugfixes
+
+ - Fix issue with TTNv3 Input if there's no payload
+
 ### Features
 
  - Add ability to duplicate Inputs
