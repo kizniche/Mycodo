@@ -169,7 +169,7 @@
                         y: 999
                       });
                       {% if not hide_tooltips %}$('input[title]').tooltip({placement: 'top'});{% endif %}
-                      if (action === 'input_duplicate') { $('#modal_config_' + ).modal('hide'); }
+                      if (action === 'input_duplicate') { $('#modal_config_' + data.data.duplicated_input_id).modal('hide'); }
                     }
                     popup_response(data);
                   },

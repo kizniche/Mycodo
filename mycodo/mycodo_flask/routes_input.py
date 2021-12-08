@@ -102,6 +102,7 @@ def page_input_submit():
         elif form_mod_input.input_duplicate.data:
             messages, input_id = utils_input.input_duplicate(
                 form_mod_input)
+            duplicated_input_id = form_mod_input.input_id.data
         elif form_mod_input.input_mod.data:
             messages, page_refresh = utils_input.input_mod(
                 form_mod_input, request.form)
