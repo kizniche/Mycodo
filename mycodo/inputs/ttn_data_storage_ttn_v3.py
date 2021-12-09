@@ -161,7 +161,15 @@ class InputModule(AbstractInput):
         self.logger.debug("endpoint: {}".format(endpoint))
         self.logger.debug("headers: {}".format(headers))
 
-        response = requests.get(endpoint, headers=headers)
+        try:
+            response = requests.get(endpoint, headers=headers)
+        except requests.exceptions.ConnectionError as err:
+            self.logger.error("requests.exceptions.ConnectionError: {}".format(err))
+            return
+        except Exception as err:
+            self.logger.error("Exception: {}".format(err))
+            return
+
         if response.status_code != 200:
             self.logger.info("response.status_code != 200: {}".format(response.reason))
         self.logger.debug("response.content: {}".format(response.content))
