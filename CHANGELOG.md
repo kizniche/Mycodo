@@ -9,6 +9,7 @@ If you are upgrading from a version prior to 8.12.10, following the upgrade, you
 ### Features
 
  - Add ability to duplicate Inputs
+ - Add ability to invert the saved duty cycle for PWM Outputs
 
 ### Miscellaneous
 
