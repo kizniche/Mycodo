@@ -147,13 +147,12 @@
   let grid = GridStack.init(options);
 
   grid.on('change', function (event, items) {
-    let serializedFull = grid.save(false);
     const width = Math.max(
       document.documentElement.clientWidth,
       window.innerWidth || 0
     )
-    console.log(width);
     if (width > 768) {
+      let serializedFull = grid.save(false);
       $.ajax({
         url: "/save_dashboard_layout",
         type: "POST",
