@@ -5,6 +5,7 @@ If you are upgrading from a version prior to 8.12.10, following the upgrade, you
 ### Bugfixes
 
  - Fix issue with TTNv3 Input if there's no payload
+ - Fix Desktop Widgets resizing when viewing on mobile browsers
 
 ### Features
 
