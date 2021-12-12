@@ -152,11 +152,10 @@
       window.innerWidth || 0
     )
     if (width > 768) {
-      let serializedFull = grid.save(false);
       $.ajax({
         url: "/save_dashboard_layout",
         type: "POST",
-        data: JSON.stringify(serializedFull, null, '  '),
+        data: JSON.stringify(grid.save(false), null, '  '),
         contentType: "application/json; charset=utf-8",
         success: function (data) {
         }
