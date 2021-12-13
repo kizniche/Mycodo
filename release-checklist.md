@@ -15,7 +15,7 @@ Notes to keep track of the steps involved in making a new release.
    - Section headers "### Bugfixes", "### Features", and "### Miscellaneous".
    - Changes as bullet list under each section header, with a link to issue(s) at the end of each short description (if applicable).
  - [ ] Install mkdocs dependencies:
-   - ```apt install libpango-1.0-0 libpangoft2-1.0-0 libopenjp2-7```
+   - ```sudo apt install libpango-1.0-0 libpangoft2-1.0-0 libopenjp2-7```
    - ```~/Mycodo/env/bin/python -m pip install -r ~/Mycodo/docs/requirements.txt```
  - [ ] Run ```~/Mycodo/env/bin/python -m mkdocs build``` to generate Mycodo/docs/mycodo-manual.pdf
  - [ ] Commit changes and wait for TravisCI to finish running pytests and verify all were successful.
