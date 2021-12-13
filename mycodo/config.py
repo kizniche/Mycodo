@@ -970,9 +970,9 @@ DOCKER_CONTAINER = os.environ.get('DOCKER_CONTAINER', False) == 'TRUE'
 
 # Pyro5 URI/host, used by mycodo_client.py
 if DOCKER_CONTAINER:
-    PYRO_URI = 'PYRO:mycodo.pyro_server@mycodo_daemon:9090'
+    PYRO_URI = 'PYRO:mycodo.pyro_server@mycodo_daemon:9080'
 else:
-    PYRO_URI = 'PYRO:mycodo.pyro_server@127.0.0.1:9090'
+    PYRO_URI = 'PYRO:mycodo.pyro_server@127.0.0.1:9080'
 
 # Influx sensor/device measurement database
 INFLUXDB_HOST = 'localhost' if not DOCKER_CONTAINER else 'influxdb'

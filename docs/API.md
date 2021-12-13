@@ -88,7 +88,7 @@ Documentation for the latest API version is also available in HTML format: `Myco
 
 ### DaemonControl()
 
-**class mycodo_client.DaemonControl**\ (*pyro_uri='PYRO:mycodo.pyro_server@127.0.0.1:9090'*, *pyro_timeout=None*)
+**class mycodo_client.DaemonControl**\ (*pyro_uri='PYRO:mycodo.pyro_server@127.0.0.1:9080'*, *pyro_timeout=None*)
 
 The mycodo client object implements a way to communicate with a mycodo daemon and query information from the influxdb database.
 

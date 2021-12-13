@@ -1338,7 +1338,7 @@ class PyroDaemon(threading.Thread):
             self.logger.info("Starting Pyro5 daemon")
             serve({
                 PyroServer(self.mycodo): 'mycodo.pyro_server',
-            }, host="0.0.0.0", port=9090, use_ns=False)
+            }, host="0.0.0.0", port=9080, use_ns=False)
         except Exception as err:
             self.logger.exception("ERROR: PyroDaemon: {msg}".format(msg=err))
 
@@ -1368,7 +1368,7 @@ class PyroMonitor(threading.Thread):
                     while now > log_timer:
                         log_timer += self.timer_sec
                     try:
-                        proxy = Proxy("PYRO:mycodo.pyro_server@127.0.0.1:9090")
+                        proxy = Proxy("PYRO:mycodo.pyro_server@127.0.0.1:9080")
                         proxy.check_daemon()
                         self.logger.debug("Pyro5 daemon monitor: daemon_status() response: '{stat}'".format(
                             stat=proxy.daemon_status()))

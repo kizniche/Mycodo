@@ -39,7 +39,7 @@ WIDGET_INFORMATION = {
     'message': 'Displays and allows control of a PWM output using a slider.',
 
     'widget_width': 5,
-    'widget_height': 4,
+    'widget_height': 7,
 
     'custom_options': [
         {
