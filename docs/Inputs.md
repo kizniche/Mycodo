@@ -218,7 +218,7 @@ Input Actions are functions within the Input module that can be executed from th
 
 ### The Things Network
 
-[The Things Network](https://www.thethingsnetwork.org/) (TTN) Input module enables downloading of data from TTN if the Data Storage Integration is enabled in your TTN Application. The Data Storage Integration will store data for up to 7 days. Mycodo will download this data periodically and store the measurements locally.
+[The Things Network](https://www.thethingsnetwork.org/) (TTN, v2 and v3) Input module enables downloading of data from TTN if the Data Storage Integration is enabled in your TTN Application. The Data Storage Integration will store data for up to 7 days. Mycodo will download this data periodically and store the measurements locally.
 
 The payload on TTN must be properly decoded to variables that correspond to the "Variable Name" option under "Channel Options", in the lower section of the Input options. For instance, in your TTN Application, if a custom Payload Format is selected, the decoder code may look like this:
 
