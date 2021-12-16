@@ -87,7 +87,7 @@ INPUT_INFORMATION = {
         },
         {
             'id': 'altitude',
-            'type': 'float',
+            'type': 'integer',
             'default_value': 0,
             'required': True,
             'name': 'Altitude (m)',
