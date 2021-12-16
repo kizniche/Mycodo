@@ -135,6 +135,13 @@ class InputModule(AbstractInput):
         self.app_api_key = None
         self.device_id = None
 
+        self.interface = None
+        self.period = None
+        self.latest_datetime = None
+        self.options_channels = {}
+
+        self.timestamp_format = '%Y-%m-%dT%H:%M:%S.%f'
+
         if not testing:
             self.setup_custom_options(
                 INPUT_INFORMATION['custom_options'], input_dev)
@@ -151,16 +158,22 @@ class InputModule(AbstractInput):
             INPUT_INFORMATION['custom_channel_options'], input_channels)
 
     def get_new_data(self, past_seconds):
-        timestamp_format = '%Y-%m-%dT%H:%M:%S.%f'
+        try:
+            seconds = int(past_seconds)
+        except:
+            self.logger.error("past_seconds does not represent an integer")
+            return
 
-        # Basic implementation. Future development may use more complex library to access API
-        endpoint = "https://nam1.cloud.thethings.network/api/v3/as/applications/{app}/devices/{dev}/packages/storage/uplink_message?last={time}&field_mask=up.uplink_message.decoded_payload".format(
-            app=self.application_id, dev=self.device_id, time="{}s".format(int(past_seconds)))
+        endpoint = "https://nam1.cloud.thethings.network" \
+                   "/api/v3/as/applications/{app}/devices/{dev}/packages/storage/uplink_message?" \
+                   "last={time}s&field_mask=up.uplink_message.decoded_payload".format(
+            app=self.application_id, dev=self.device_id, time=seconds)
         headers = {"Authorization": "Bearer {k}".format(k=self.app_api_key)}
 
         self.logger.debug("endpoint: {}".format(endpoint))
         self.logger.debug("headers: {}".format(headers))
 
+        # Get measurement data from TTN
         try:
             response = requests.get(endpoint, headers=headers)
         except requests.exceptions.ConnectionError as err:
@@ -178,6 +191,8 @@ class InputModule(AbstractInput):
         self.logger.debug("list_dicts: {}".format(list_dicts))
 
         for each_resp in list_dicts:
+            measurements = {}
+
             if not self.running:
                 break
 
@@ -193,14 +208,14 @@ class InputModule(AbstractInput):
 
             try:
                 datetime_utc = datetime.datetime.strptime(
-                    resp_json['result']['received_at'][:-7], timestamp_format)
+                    resp_json['result']['received_at'][:-7], self.timestamp_format)
             except Exception:
                 # Sometimes the original timestamp is in milliseconds
                 # instead of nanoseconds. Therefore, remove 3 less digits
                 # past the decimal and try again to parse.
                 try:
                     datetime_utc = datetime.datetime.strptime(
-                        resp_json['result']['received_at'][:-4], timestamp_format)
+                        resp_json['result']['received_at'][:-4], self.timestamp_format)
                 except Exception as e:
                     self.logger.error("Could not parse timestamp '{}': {}".format(
                         resp_json['result']['received_at'], e))
@@ -213,21 +228,20 @@ class InputModule(AbstractInput):
                 self.logger.debug("resp_json empty or malformed: {}".format(resp_json))
                 continue
 
+            payload = resp_json['result']['uplink_message']['decoded_payload']
+
             if (not self.latest_datetime or
                     self.latest_datetime < datetime_utc):
                 self.latest_datetime = datetime_utc
 
-            measurements = {}
             for channel in self.channels_measurement:
-                if (self.is_enabled(channel) and
-                        self.options_channels['variable_name'][channel] in resp_json['result']['uplink_message']['decoded_payload'] and
-                        resp_json['result']['uplink_message']['decoded_payload'][self.options_channels['variable_name'][channel]] is not None):
-
+                var_name = self.options_channels['variable_name'][channel]
+                if self.is_enabled(channel) and var_name in payload and payload[var_name] is not None:
                     # Original value/unit
                     measurements[channel] = {}
                     measurements[channel]['measurement'] = self.channels_measurement[channel].measurement
                     measurements[channel]['unit'] = self.channels_measurement[channel].unit
-                    measurements[channel]['value'] = resp_json['result']['uplink_message']['decoded_payload'][self.options_channels['variable_name'][channel]]
+                    measurements[channel]['value'] = payload[var_name]
                     measurements[channel]['timestamp_utc'] = datetime_utc
 
                     # Convert value/unit is conversion_id present and valid
