@@ -1,5 +1,6 @@
 # coding=utf-8
 import copy
+import time
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
@@ -55,6 +56,39 @@ INPUT_INFORMATION = {
     'interfaces': ['I2C'],
     'i2c_location': ['0x62'],
     'i2c_address_editable': False,
+
+    'custom_options': [
+        {
+            'id': 'temperature_offset',
+            'type': 'float',
+            'default_value': 4,
+            'required': True,
+            'name': 'Temperature Offset',
+            'phrase': 'Set the sensor temperature offset'
+        },
+        {
+            'id': 'altitude',
+            'type': 'float',
+            'default_value': 0,
+            'required': True,
+            'name': 'Altitude (m)',
+            'phrase': 'Set the sensor altitude (meters)'
+        },
+        {
+            'id': 'self_calibration_enabled',
+            'type': 'bool',
+            'default_value': True,
+            'name': 'Automatic Self-Calibration',
+            'phrase': 'Set the sensor automatic self-calibration'
+        },
+        {
+            'id': 'persist_settings',
+            'type': 'bool',
+            'default_value': False,
+            'name': 'Persist Settings',
+            'phrase': 'Settings will persist after powering off'
+        },
+    ]
 }
 
 
@@ -64,6 +98,10 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
+        self.temperature_offset = None
+        self.altitude = None
+        self.self_calibration_enabled = None
+        self.persist_settings = None
 
         if not testing:
             self.initialize_input()
@@ -75,6 +113,20 @@ class InputModule(AbstractInput):
         self.sensor = adafruit_scd4x.SCD4X(
             ExtendedI2C(self.input_dev.i2c_bus),
             address=int(str(self.input_dev.i2c_location), 16))
+        self.logger.debug("Serial number: {}".format([hex(i) for i in self.sensor.serial_number]))
+
+        self.sensor.temperature_offset = self.temperature_offset
+        self.sensor.altitude = self.altitude
+        self.sensor.self_calibration_enabled = self.self_calibration_enabled
+
+        self.logger.debug("Temperature offset: {}".format(self.sensor.temperature_offset))
+        self.logger.debug("Self-calibration enabled: {}".format(self.sensor.self_calibration_enabled))
+        self.logger.debug("Altitude: {} meters above sea level".format(self.sensor.altitude))
+
+        if self.persist_settings:
+            self.sensor.persist_settings()
+
+        self.sensor.start_periodic_measurement()
 
     def get_measurement(self):
         """ Gets the measurements """
@@ -84,19 +136,26 @@ class InputModule(AbstractInput):
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        if self.is_enabled(0):
-            self.value_set(0, self.sensor.CO2)
+        timer = time.time() + 10
+        while not self.sensor.data_ready and time.time() < timer:
+            time.sleep(1)
 
-        if self.is_enabled(1):
-            self.value_set(1, self.sensor.temperature)
+        if self.sensor.data_ready:
+            if self.is_enabled(0):
+                self.value_set(0, self.sensor.CO2)
 
-        if self.is_enabled(2):
-            self.value_set(2, self.sensor.relative_humidity)
+            if self.is_enabled(1):
+                self.value_set(1, self.sensor.temperature)
 
-        if self.is_enabled(3) and self.is_enabled(1) and self.is_enabled(2):
-            self.value_set(3, calculate_dewpoint(self.value_get(1), self.value_get(2)))
+            if self.is_enabled(2):
+                self.value_set(2, self.sensor.relative_humidity)
 
-        if self.is_enabled(4) and self.is_enabled(1) and self.is_enabled(2):
-            self.value_set(4, calculate_vapor_pressure_deficit(self.value_get(1), self.value_get(2)))
+            if self.is_enabled(3) and self.is_enabled(1) and self.is_enabled(2):
+                self.value_set(3, calculate_dewpoint(self.value_get(1), self.value_get(2)))
 
-        return self.return_dict
+            if self.is_enabled(4) and self.is_enabled(1) and self.is_enabled(2):
+                self.value_set(4, calculate_vapor_pressure_deficit(self.value_get(1), self.value_get(2)))
+
+            return self.return_dict
+        else:
+            self.logger.error("data_ready is False")
