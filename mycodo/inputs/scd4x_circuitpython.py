@@ -57,6 +57,25 @@ INPUT_INFORMATION = {
     'i2c_location': ['0x62'],
     'i2c_address_editable': False,
 
+    'custom_actions': [
+        {
+            'type': 'message',
+            'default_value': """You can force the CO2 calibration for a specific CO2 concentration value (in ppmv)."""
+        },
+        {
+            'id': 'co2_concentration',
+            'type': 'float',
+            'default_value': 400.0,
+            'name': 'CO2 Concentration (ppmv)',
+            'phrase': 'Calibrate to this CO2 concentration that the sensor is being exposed to (in ppmv)'
+        },
+        {
+            'id': 'co2_calibration',
+            'type': 'button',
+            'name': 'Calibrate CO2'
+        }
+    ],
+
     'custom_options': [
         {
             'id': 'temperature_offset',
@@ -159,3 +178,17 @@ class InputModule(AbstractInput):
             return self.return_dict
         else:
             self.logger.error("data_ready is False")
+
+    def stop_input(self):
+        self.running = False
+        self.sensor.stop_periodic_measurement()
+
+    def co2_calibration(self, args_dict):
+        if 'co2_concentration' not in args_dict or not args_dict['co2_concentration']:
+            self.logger.error("CO2 Concentration required")
+            return
+        try:
+            self.sensor.force_calibration(float(args_dict['co2_concentration']))
+        except Exception as err:
+            self.logger.error(
+                "Error setting CO2 Concentration: {}".format(err))
