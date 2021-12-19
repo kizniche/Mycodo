@@ -35,6 +35,7 @@ class Camera(CRUDMixin, db.Model):
     url_still = db.Column(db.Text, default='')
     url_stream = db.Column(db.Text, default='')
     show_preview = db.Column(db.Boolean, default=False)
+    output_format = db.Column(db.Text, default=None)
 
     # Timelapse
     timelapse_started = db.Column(db.Boolean, default=False)
@@ -63,7 +64,7 @@ class Camera(CRUDMixin, db.Model):
     resolution_stream_height = db.Column(db.Integer, default=768)
     stream_fps = db.Column(db.Integer, default=5)
 
-    # picamera options
+    # picamera options  # TODO: Change to generic variable names next major release
     picamera_shutter_speed = db.Column(db.Integer, default=0)
     picamera_sharpness = db.Column(db.Integer, default=0)
     picamera_iso = db.Column(db.Integer, default=0)

@@ -5,6 +5,17 @@
   </div>
 </div>
 <div class="col-auto">
+  {{form_camera.output_format.label(class_='control-label')}}
+  <div>
+    <select class="form-control form-tooltip form-dropdown" id="output_format" name="output_format" data-placement="top" title="Set the output format.">
+      <option value="jpg"{% if each_camera.output_format == "jpg" %} selected{% endif %}>JPG</option>
+      <option value="png"{% if each_camera.output_format == "png" %} selected{% endif %}>PNG</option>
+      <option value="rgb"{% if each_camera.output_format == "rgb" %} selected{% endif %}>RGB</option>
+      <option value="bmp"{% if each_camera.output_format == "bmp" %} selected{% endif %}>BMP</option>
+    </select>
+  </div>
+</div>
+<div class="col-auto">
   {{form_camera.rotation.label(class_='control-label')}}
   <div>
     {{form_camera.rotation(class_='form-control', value=each_camera.rotation)}}

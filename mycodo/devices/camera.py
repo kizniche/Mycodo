@@ -224,12 +224,22 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
     elif settings.library == 'libcamera':
         try:
-            cmd = "/usr/bin/libcamera-jpeg --width {w} --height {h} --brightness {bt} " \
+            if settings.output_format:
+                filename = 'Still-{cam_id}-{cam}-{ts}.{ext}'.format(
+                    cam_id=settings.id,
+                    cam=settings.name,
+                    ts=timestamp,
+                    ext=settings.output_format.lower()).replace(" ", "_")
+                path_file = os.path.join(save_path, filename)
+
+            cmd = "/usr/bin/libcamera-still --width {w} --height {h} --brightness {bt} " \
                   "-o {file}".format(w=settings.width,
                                      h=settings.height,
                                      bt=settings.brightness,
                                      file=path_file)
 
+            if settings.output_format:
+                cmd += " --encoding {}".format(settings.output_format)
             if not settings.show_preview:
                 cmd += " --nopreview"
             if settings.contrast is not None:

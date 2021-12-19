@@ -290,8 +290,10 @@ def page_camera():
 
     # Get the full path and timestamps of latest still and time-lapse images
     (latest_img_still_ts,
+     latest_img_still_size,
      latest_img_still,
      latest_img_tl_ts,
+     latest_img_tl_size,
      latest_img_tl,
      time_lapse_imgs) = utils_general.get_camera_image_info()
 
@@ -308,8 +310,10 @@ def page_camera():
                            form_camera=form_camera,
                            latest_img_still=latest_img_still,
                            latest_img_still_ts=latest_img_still_ts,
+                           latest_img_still_size=latest_img_still_size,
                            latest_img_tl=latest_img_tl,
                            latest_img_tl_ts=latest_img_tl_ts,
+                           latest_img_tl_size=latest_img_tl_size,
                            opencv_devices=opencv_devices,
                            output=output,
                            pi_camera_enabled=pi_camera_enabled,

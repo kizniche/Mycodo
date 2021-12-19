@@ -84,6 +84,7 @@ class Camera(FlaskForm):
     hide_still = BooleanField(lazy_gettext('Hide Last Still'))
     hide_timelapse = BooleanField(lazy_gettext('Hide Last Timelapse'))
     show_preview = BooleanField(lazy_gettext('Show Preview'))
+    output_format = StringField(lazy_gettext('Output Format'))
 
     # Resolutions
     width = IntegerField(
