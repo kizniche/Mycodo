@@ -42,6 +42,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
     assure_path_exists(PATH_CAMERAS)
     camera_path = assure_path_exists(
         os.path.join(PATH_CAMERAS, '{uid}'.format(uid=settings.unique_id)))
+
     if record_type == 'photo':
         if settings.path_still:
             save_path = settings.path_still
@@ -52,6 +53,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             cam_id=settings.id,
             cam=settings.name,
             ts=timestamp).replace(" ", "_")
+
     elif record_type == 'timelapse':
         if settings.path_timelapse:
             save_path = settings.path_timelapse
@@ -65,6 +67,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             cam=settings.name,
             st=start,
             cn=settings.timelapse_capture_number).replace(" ", "_")
+
     elif record_type == 'video':
         if settings.path_video:
             save_path = settings.path_video
@@ -73,6 +76,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
         filename = 'Video-{cam}-{ts}.h264'.format(
             cam=settings.name,
             ts=timestamp).replace(" ", "_")
+
     else:
         return
 
@@ -217,6 +221,50 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                     cmd, out, err, status))
         except:
             logger.exception("raspistill")
+
+    elif settings.library == 'libcamera':
+        try:
+            cmd = "/usr/bin/libcamera-jpeg --width {w} --height {h} --brightness {bt} " \
+                  "-o {file}".format(w=settings.width,
+                                     h=settings.height,
+                                     bt=settings.brightness,
+                                     file=path_file)
+
+            if not settings.show_preview:
+                cmd += " --nopreview"
+            if settings.contrast is not None:
+                cmd += " --contrast {}".format(int(settings.contrast))
+            if settings.saturation is not None:
+                cmd += " --saturation {}".format(int(settings.saturation))
+            if settings.picamera_sharpness is not None:
+                cmd += " --sharpness {}".format(int(settings.picamera_sharpness))
+            if settings.gain is not None:
+                cmd += " --gain {}".format(settings.gain)
+            if settings.picamera_awb not in ["off", None]:
+                cmd += " --awb {}".format(settings.picamera_awb)
+            elif (settings.picamera_awb == "off" and
+                  settings.picamera_awb_gain_blue is not None and
+                  settings.picamera_awb_gain_red is not None):
+                cmd += " --awb {}".format(settings.picamera_awb)
+                cmd += " --awbgains {red:.1f},{blue:.1f}".format(
+                    red=settings.picamera_awb_gain_red,
+                    blue=settings.picamera_awb_gain_blue)
+            if settings.hflip:
+                cmd += " --hflip"
+            if settings.vflip:
+                cmd += " --vflip"
+            if settings.rotation:
+                cmd += " --rotation {angle}".format(angle=settings.rotation)
+            if settings.custom_options:
+                cmd += " {}".format(settings.custom_options)
+
+            out, err, status = cmd_output(cmd, stdout_pipe=False, user='root')
+            logger.debug(
+                "Camera debug message: "
+                "cmd: {}; out: {}; error: {}; status: {}".format(
+                    cmd, out, err, status))
+        except:
+            logger.exception("libcamer-jpeg")
 
     elif settings.library == 'opencv':
         try:

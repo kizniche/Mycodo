@@ -11,7 +11,8 @@ Type=forking
 TimeoutSec=0
 ExecStartPre=/bin/bash /var/mycodo-root/install/influxdb_wait_until_running.sh
 ExecStart=/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_daemon.py
-ExecReload=/bin/kill -HUP $MAINPID
+ExecStop=/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_client.py -t
+ExecReload=/var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_client.py -t && /var/mycodo-root/env/bin/python /var/mycodo-root/mycodo/mycodo_daemon.py
 
 [Install]
 WantedBy=multi-user.target

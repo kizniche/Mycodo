@@ -55,6 +55,15 @@ def camera_add(form_camera):
         new_camera.picamera_awb = "auto"
         new_camera.picamera_awb_gain_blue = 3.0
         new_camera.picamera_awb_gain_red = 2.0
+    elif form_camera.library.data == 'libcamera':
+        new_camera.brightness = 0
+        new_camera.contrast = 1
+        new_camera.saturation = 1
+        new_camera.picamera_sharpness = 1
+        new_camera.gain = 0
+        new_camera.picamera_awb = "auto"
+        new_camera.picamera_awb_gain_blue = 3.0
+        new_camera.picamera_awb_gain_red = 2.0
     elif form_camera.library.data == 'picamera':
         new_camera.brightness = 50
         new_camera.contrast = 0.0
@@ -136,6 +145,17 @@ def camera_mod(form_camera):
             mod_camera.picamera_awb_gain_red = form_camera.picamera_awb_gain_red.data
             mod_camera.picamera_awb_gain_blue = form_camera.picamera_awb_gain_blue.data
             mod_camera.custom_options = form_camera.custom_options.data
+        elif mod_camera.library == 'libcamera':
+            mod_camera.brightness = form_camera.brightness.data
+            mod_camera.contrast = form_camera.contrast.data
+            mod_camera.saturation = form_camera.saturation.data
+            mod_camera.picamera_sharpness = form_camera.picamera_sharpness.data
+            mod_camera.gain = float(form_camera.gain.data)
+            mod_camera.picamera_awb = form_camera.picamera_awb.data
+            mod_camera.picamera_awb_gain_red = form_camera.picamera_awb_gain_red.data
+            mod_camera.picamera_awb_gain_blue = form_camera.picamera_awb_gain_blue.data
+            mod_camera.custom_options = form_camera.custom_options.data
+            mod_camera.show_preview = form_camera.show_preview.data
         elif mod_camera.library == 'picamera':
             mod_camera.resolution_stream_width = form_camera.resolution_stream_width.data
             mod_camera.resolution_stream_height = form_camera.resolution_stream_height.data

@@ -72,6 +72,14 @@ CAMERA_INFO = {
         'capable_image': True,
         'capable_stream': False
     },
+    'libcamera': {
+        'name': 'libcamera',
+        'dependencies_module': [
+            ('apt', 'libcamera-apps-lite', 'libcamera-apps-lite')
+        ],
+        'capable_image': True,
+        'capable_stream': False
+    },
     'opencv': {
         'name': 'OpenCV',
         'dependencies_module': [
@@ -82,7 +90,7 @@ CAMERA_INFO = {
         'capable_stream': True
     },
     'picamera': {
-        'name': 'PiCamera',
+        'name': 'PiCamera (deprecated)',
         'dependencies_module': [
             ('pip-pypi', 'picamera', 'picamerab==1.13b1')
         ],
@@ -90,7 +98,7 @@ CAMERA_INFO = {
         'capable_stream': True
     },
     'raspistill': {
-        'name': 'raspistill',
+        'name': 'raspistill (deprecated)',
         'dependencies_module': [],
         'capable_image': True,
         'capable_stream': False
@@ -1037,7 +1045,8 @@ class ProdConfig(object):
     FLASK_SECRET_KEY_PATH = os.path.join(DATABASE_PATH, 'flask_secret_key')
     if not os.path.isfile(FLASK_SECRET_KEY_PATH):
         secret_key = binascii.hexlify(os.urandom(32)).decode()
-        os.makedirs(DATABASE_PATH)
+        if not os.path.exists(DATABASE_PATH):
+            os.makedirs(DATABASE_PATH)
         with open(FLASK_SECRET_KEY_PATH, 'w') as file:
             file.write(secret_key)
     SECRET_KEY = open(FLASK_SECRET_KEY_PATH, 'rb').read()

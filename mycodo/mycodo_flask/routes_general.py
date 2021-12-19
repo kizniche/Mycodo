@@ -1040,10 +1040,8 @@ def computer_command(action):
             if action == 'daemon_restart':
                 control = DaemonControl()
                 control.terminate_daemon()
-                flash(gettext("Command to restart the daemon sent"), "success")
             elif action == 'frontend_reload':
                 subprocess.Popen('docker restart mycodo_flask 2>&1', shell=True)
-                flash(gettext("Command to reload the frontend sent"), "success")
         else:
             cmd = '{path}/mycodo/scripts/mycodo_wrapper {action} 2>&1'.format(
                     path=INSTALL_DIRECTORY, action=action)
