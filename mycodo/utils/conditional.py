@@ -111,7 +111,7 @@ class ConditionalRun(AbstractConditional):
             cmd_test = 'mkdir -p /var/mycodo-root/.pylint.d && ' \
                        'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
                        'export PYLINTHOME=/var/mycodo-root/.pylint.d && ' \
-                       'pylint3 -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413,R0912,R0914,R0915 {path}'.format(
+                       'pylint -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413,R0912,R0914,R0915 {path}'.format(
                            path=file_run)
             cmd_out, _, cmd_status = cmd_output(cmd_test)
     except Exception as err:

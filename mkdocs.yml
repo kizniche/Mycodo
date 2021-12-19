@@ -76,6 +76,7 @@ nav:
     - Notes.md
     - Camera.md
     - Energy Usage: Energy-Usage.md
+    - Python-Code.md
   - Supported Devices:
     - Inputs Sorted by Measurement: Supported-Inputs-By-Measurement.md
     - Supported Inputs: Supported-Inputs.md

@@ -104,7 +104,7 @@ def execute_at_modification(
         custom_options_json_presave,
         custom_options_json_postsave):
     """
-    Function to run when the Input is saved to evaluate the Python 3 code using pylint3
+    Function to run when the Input is saved to evaluate the Python 3 code using pylint
     :param mod_widget:
     :param request_form:
     :param custom_options_json_presave:

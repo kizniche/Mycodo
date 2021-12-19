@@ -515,7 +515,9 @@ FUNCTION_INFO = {
         'name': '{} {}'.format(
             TRANSLATIONS['conditional']['title'],
             TRANSLATIONS['controller']['title']),
-        'dependencies_module': []
+        'dependencies_module': [
+            ('apt', 'pylint', 'pylint'),
+        ]
     },
     'pid_pid': {
         'name': '{} {}'.format(
