@@ -238,6 +238,8 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 cmd += " --saturation {}".format(int(settings.saturation))
             if settings.picamera_sharpness is not None:
                 cmd += " --sharpness {}".format(int(settings.picamera_sharpness))
+            if settings.picamera_shutter_speed is not None:
+                cmd += " --shutter {}".format(int(settings.picamera_shutter_speed))
             if settings.gain is not None:
                 cmd += " --gain {}".format(settings.gain)
             if settings.picamera_awb not in ["off", None]:
