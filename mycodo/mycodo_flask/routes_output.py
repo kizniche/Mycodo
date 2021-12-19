@@ -160,7 +160,7 @@ def page_output():
     method = Method.query.all()
     misc = Misc.query.first()
     output = Output.query.all()
-    output_channel = OutputChannel.query.all()
+    output_channel = OutputChannel
     pid = PID.query.all()
     user = User.query.all()
 
@@ -184,14 +184,14 @@ def page_output():
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
     choices_output_channels = utils_general.choices_outputs_channels(
-        output, output_channel, dict_outputs)
+        output, output_channel.query.all(), dict_outputs)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
 
     custom_options_values_outputs = parse_custom_option_values_json(
         output, dict_controller=dict_outputs)
     custom_options_values_output_channels = parse_custom_option_values_output_channels_json(
-        output_channel, dict_controller=dict_outputs, key_name='custom_channel_options')
+        output_channel.query.all(), dict_controller=dict_outputs, key_name='custom_channel_options')
 
     custom_actions = {}
     for each_output_dev in output:

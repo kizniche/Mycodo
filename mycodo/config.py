@@ -516,7 +516,7 @@ FUNCTION_INFO = {
             TRANSLATIONS['conditional']['title'],
             TRANSLATIONS['controller']['title']),
         'dependencies_module': [
-            ('apt', 'pylint', 'pylint'),
+            ('pip-pypi', 'pylint', 'pylint==2.12.2')
         ]
     },
     'pid_pid': {

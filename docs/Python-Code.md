@@ -3,7 +3,7 @@ There are numerous places where Python 3 code can be used within Mycodo, includi
 
 Here are a few example that demonstrates some useful ways to interact with Mycodo with Python 3 code.
 
-In all the Mycodo environments where your code will be executed, the DaemonControl() class of mycodo/mycodo_client.py is available to communicate with the daemon with the object "control".
+In all the Mycodo environments where your code will be executed, the [DaemonControl() Class](API.md#daemon-control-object) of mycodo/mycodo_client.py is available to communicate with the daemon using the object "control".
 
 ## Outputs
 

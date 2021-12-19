@@ -4,15 +4,16 @@
 #
 import copy
 import importlib.util
+import logging
 import os
 import textwrap
 
 from flask import Markup
 from flask import current_app
-from flask import flash
 from flask_babel import lazy_gettext
 from sqlalchemy import and_
 
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import OutputChannel
@@ -25,7 +26,6 @@ from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import set_user_grp
 
-import logging
 logger = logging.getLogger("mycodo.influxdb")
 
 
@@ -114,8 +114,8 @@ def execute_at_modification(
         cmd_test = 'mkdir -p /var/mycodo-root/.pylint.d && ' \
                    'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
                    'export PYLINTHOME=/var/mycodo-root/.pylint.d && ' \
-                   'pylint -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413 {path}'.format(
-                       path=file_run)
+                   '{dir}/env/bin/python -m pylint -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413 {path}'.format(
+                       dir=INSTALL_DIRECTORY, path=file_run)
         cmd_out, cmd_error, cmd_status = cmd_output(cmd_test)
         pylint_message = Markup(
             '<pre>\n\n'
@@ -168,16 +168,33 @@ OUTPUT_INFORMATION = {
     'message': 'Python 3 code will be executed when this output is turned on or off. The "duty_cycle" '
                'object is a float value that represents the duty cycle that has been set.',
 
-    'options_enabled': [
-        'button_send_duty_cycle'
-    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ('apt', 'pylint', 'pylint'),
+        ('pip-pypi', 'pylint', 'pylint==2.12.2')
     ],
 
     'interfaces': ['PYTHON'],
+
+    'custom_actions': [
+        {
+            'type': 'message',
+            'default_value': """Set the Duty Cycle."""
+        },
+        {
+            'id': 'duty_cycle',
+            'type': 'float',
+            'default_value': 0,
+            'name': 'Duty Cycle',
+            'phrase': 'The duty cycle to set'
+        },
+        {
+            'id': 'set_duty_cycle',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Set Duty Cycle'
+        }
+    ],
 
     'custom_channel_options': [
         {
@@ -390,3 +407,14 @@ class OutputModule(AbstractOutput):
             elif self.options_channels['state_shutdown'][0] == 'set_duty_cycle':
                 self.output_switch('on', amount=self.options_channels['shutdown_value'][0])
         self.running = False
+
+    def set_duty_cycle(self, args_dict):
+        if 'duty_cycle' not in args_dict:
+            self.logger.error("Cannot set without duty cycle")
+            return
+        test = self.control.output_on(
+            self.output.unique_id,
+            output_type='pwm',
+            amount=args_dict["duty_cycle"],
+            output_channel=0)
+        return "Setting duty cycle: {}".format(test)

@@ -44,9 +44,6 @@ OUTPUT_INFORMATION = {
     'message': 'See the PWM section of the manual for PWM information and determining which '
                'pins may be used for each library option.',
 
-    'options_enabled': [
-        'button_send_duty_cycle'
-    ],
     'options_disabled': ['interface'],
 
     'dependencies_module': [
@@ -54,6 +51,26 @@ OUTPUT_INFORMATION = {
     ],
 
     'interfaces': ['GPIO'],
+
+    'custom_actions': [
+        {
+            'type': 'message',
+            'default_value': """Set the Duty Cycle."""
+        },
+        {
+            'id': 'duty_cycle',
+            'type': 'float',
+            'default_value': 0,
+            'name': 'Duty Cycle',
+            'phrase': 'The duty cycle to set'
+        },
+        {
+            'id': 'set_duty_cycle',
+            'type': 'button',
+            'wait_for_return': True,
+            'name': 'Set Duty Cycle'
+        }
+    ],
 
     'custom_channel_options': [
         {
@@ -334,3 +351,14 @@ class OutputModule(AbstractOutput):
         elif duty_cycle < 0:
             duty_cycle = 0
         return duty_cycle
+
+    def set_duty_cycle(self, args_dict):
+        if 'duty_cycle' not in args_dict:
+            self.logger.error("Cannot set without duty cycle")
+            return
+        test = self.control.output_on(
+            self.output.unique_id,
+            output_type='pwm',
+            amount=args_dict["duty_cycle"],
+            output_channel=0)
+        return "Setting duty cycle: {}".format(test)

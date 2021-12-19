@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import textwrap
-
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
@@ -111,8 +111,8 @@ class ConditionalRun(AbstractConditional):
             cmd_test = 'mkdir -p /var/mycodo-root/.pylint.d && ' \
                        'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
                        'export PYLINTHOME=/var/mycodo-root/.pylint.d && ' \
-                       'pylint -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413,R0912,R0914,R0915 {path}'.format(
-                           path=file_run)
+                       '{dir}/env/bin/python -m pylint -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413,R0912,R0914,R0915 {path}'.format(
+                           dir=INSTALL_DIRECTORY, path=file_run)
             cmd_out, _, cmd_status = cmd_output(cmd_test)
     except Exception as err:
         error.append("Error saving/testing conditional code: {}".format(err))

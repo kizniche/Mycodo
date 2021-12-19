@@ -4,6 +4,7 @@ import os
 
 from flask import Markup
 
+from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_PYTHON_CODE_USER
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
@@ -25,7 +26,7 @@ def create_python_file(python_code_run, filename):
 
 def test_python_code(python_code_run, filename):
     """
-    Function to evaluate the Python 3 code using pylint3
+    Function to evaluate the Python 3 code using pylint
     :param :
     :return: tuple (info, warning, success, error)
     """
@@ -53,8 +54,8 @@ def test_python_code(python_code_run, filename):
         cmd_test = 'mkdir -p /var/mycodo-root/.pylint.d && ' \
                    'export PYTHONPATH=$PYTHONPATH:/var/mycodo-root && ' \
                    'export PYLINTHOME=/var/mycodo-root/.pylint.d && ' \
-                   'pylint -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413,R0201,R0903,W0201,W0612 {path}'.format(
-                       path=file_run)
+                   '{dir}/env/bin/python -m pylint -d I,W0621,C0103,C0111,C0301,C0327,C0410,C0413,R0201,R0903,W0201,W0612 {path}'.format(
+                    dir=INSTALL_DIRECTORY, path=file_run)
         cmd_out, _, cmd_status = cmd_output(cmd_test)
 
         message = Markup(

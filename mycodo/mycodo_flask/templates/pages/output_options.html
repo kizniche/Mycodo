@@ -150,8 +150,10 @@
     </div>
   {% endif %}
 
+  {% set output_channel = output_channel.query.filter(output_channel.output_id == each_output.unique_id).all() %}
+
   {%- set output_channel_exists = [] -%}
-  {% for each_output_channel in output_channel if each_output_channel.output_id == each_output.unique_id %}
+  {% for each_output_channel in output_channel %}
     {%- do output_channel_exists.append(1) -%}
   {% endfor %}
 
@@ -167,26 +169,28 @@
 
   {% set custom_options_values = custom_options_values_output_channels %}
 
-  {% for each_output_channel in output_channel if each_output_channel.output_id == each_output.unique_id %}
+  {% for each_output_channel in output_channel %}
 
     {% set dict_options = dict_outputs[each_output.output_type] %}
     {% set unique_id = each_output.unique_id %}
     {% set channel = each_output_channel.channel %}
     {% set each_device = each_output %}
 
+    {% if output_channel|length > 1 %}
     <hr/>
     <div class="row">
       <div class="col-auto">
-        Channel {{each_output_channel.channel}}
+        Channel {{channel}}
 
-      {%- if 'name' in custom_options_values[each_output.unique_id][each_output_channel.channel] and
-           custom_options_values[each_output.unique_id][each_output_channel.channel]['name'] -%}
-        {{': ' + custom_options_values[each_output.unique_id][each_output_channel.channel]['name']}}
-      {%- elif 'name' in dict_outputs[each_output.output_type]['channels_dict'][each_output_channel.channel] -%}
-        {{': ' + dict_outputs[each_output.output_type]['channels_dict'][each_output_channel.channel]['name']}}
+      {%- if 'name' in custom_options_values[each_output.unique_id][channel] and
+           custom_options_values[each_output.unique_id][channel]['name'] -%}
+        {{': ' + custom_options_values[each_output.unique_id][channel]['name']}}
+      {%- elif 'name' in dict_outputs[each_output.output_type]['channels_dict'][channel] -%}
+        {{': ' + dict_outputs[each_output.output_type]['channels_dict'][channel]['name']}}
       {%- endif -%}
       </div>
     </div>
+    {% endif %}
 
         {% if custom_options_values[unique_id] %}
 
