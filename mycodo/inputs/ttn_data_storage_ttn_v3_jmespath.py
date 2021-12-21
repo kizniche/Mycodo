@@ -47,17 +47,24 @@ channels_dict = {
 
 # Input information
 INPUT_INFORMATION = {
-    'input_name_unique': 'TTN_DATA_STORAGE_TTN_V3',
+    'input_name_unique': 'TTN_DATA_STORAGE_TTN_V3_JMESPATH',
     'input_manufacturer': 'Mycodo',
-    'input_name': 'TTN Integration: Data Storage (TTN v3, Payload Key)',
-    'input_library': 'requests',
+    'input_name': 'TTN Integration: Data Storage (TTN v3, Payload jmespath Expression)',
+    'input_library': 'requests, jmespath',
     'measurements_name': 'Variable measurements',
     'measurements_dict': measurements_dict,
     'channels_dict': channels_dict,
 
     'message': 'This Input receives and stores measurements from the Data Storage Integration on The Things Network. '
-               'If you have key/value pairs as your payload, enter the key name in Variable Name and the '
-               'corresponding value for that key will be stored in the measurement database.',
+               'The given Payload jmespath Expression is used as a JMESPATH expression to find the '
+               'corresponding value that will be stored for that channel. Be sure you select and '
+               'save the Measurement Unit for each channel. Once the unit has been saved, '
+               'you can convert to other units in the Convert Measurement section.'
+               ' Example expressions for jmespath (https://jmespath.org) include '
+               '<i>temperature</i>, <i>sensors[0].temperature</i>, and <i>bathroom.temperature</i> which refer to '
+               'the temperature as a direct key within the first entry of sensors or as a subkey '
+               'of bathroom, respectively. Jmespath elements and keys that contain special characters '
+               'have to be enclosed in double quotes, e.g. <i>"sensor-1".temperature</i>.',
 
     'measurements_variable_amount': True,
     'channel_quantity_same_as_measurements': True,
@@ -73,6 +80,7 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'requests', 'requests==2.25.1'),
+        ('pip-pypi', 'jmespath', 'jmespath==0.10.0')
     ],
 
     'interfaces': ['MYCODO'],
@@ -114,12 +122,12 @@ INPUT_INFORMATION = {
             'phrase': TRANSLATIONS['name']['phrase']
         },
         {
-            'id': 'variable_name',
+            'id': 'jmespath_expression',
             'type': 'text',
             'default_value': '',
             'required': True,
-            'name': 'Variable Name',
-            'phrase': 'The TTN variable name'
+            'name': 'Payload jmespath Expression',
+            'phrase': 'The TTN jmespath expression to return the value to store'
         }
     ]
 }
@@ -131,6 +139,7 @@ class InputModule(AbstractInput):
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
+        self.jmespath = None
         self.first_run = True
 
         self.application_id = None
@@ -150,6 +159,10 @@ class InputModule(AbstractInput):
             self.initialize_input()
 
     def initialize_input(self):
+        import jmespath
+
+        self.jmespath = jmespath
+
         self.interface = self.input_dev.interface
         self.period = self.input_dev.period
         self.latest_datetime = self.input_dev.datetime
@@ -237,31 +250,44 @@ class InputModule(AbstractInput):
                 self.latest_datetime = datetime_utc
 
             for channel in self.channels_measurement:
-                var_name = self.options_channels['variable_name'][channel]
-                if self.is_enabled(channel) and var_name in payload and payload[var_name] is not None:
-                    # Original value/unit
-                    measurements[channel] = {}
-                    measurements[channel]['measurement'] = self.channels_measurement[channel].measurement
-                    measurements[channel]['unit'] = self.channels_measurement[channel].unit
-                    measurements[channel]['value'] = payload[var_name]
-                    measurements[channel]['timestamp_utc'] = datetime_utc
+                jmespath_expression = self.options_channels['jmespath_expression'][channel]
+                try:
+                    jmesexpression = self.jmespath.compile(jmespath_expression)
+                    value = jmesexpression.search(payload)
+                    self.logger.debug(
+                        "Expression: {}, value: {}".format(jmespath_expression, value))
+                except Exception as err:
+                    self.logger.error(
+                        "Error in JSON '{}' finding expression '{}': {}".format(
+                            payload, jmespath_expression, err))
+                    continue
 
-                    # Convert value/unit is conversion_id present and valid
-                    if self.channels_conversion[channel]:
-                        conversion = db_retrieve_table_daemon(
-                            Conversion, unique_id=self.channels_measurement[channel].conversion_id)
-                        if conversion:
-                            meas = parse_measurement(
-                                self.channels_conversion[channel],
-                                self.channels_measurement[channel],
-                                measurements,
-                                channel,
-                                measurements[channel],
-                                timestamp=datetime_utc)
+                if value is None:
+                    continue
 
-                            measurements[channel]['measurement'] = meas[channel]['measurement']
-                            measurements[channel]['unit'] = meas[channel]['unit']
-                            measurements[channel]['value'] = meas[channel]['value']
+                # Original value/unit
+                measurements[channel] = {}
+                measurements[channel]['measurement'] = self.channels_measurement[channel].measurement
+                measurements[channel]['unit'] = self.channels_measurement[channel].unit
+                measurements[channel]['value'] = value
+                measurements[channel]['timestamp_utc'] = datetime_utc
+
+                # Convert value/unit is conversion_id present and valid
+                if self.channels_conversion[channel]:
+                    conversion = db_retrieve_table_daemon(
+                        Conversion, unique_id=self.channels_measurement[channel].conversion_id)
+                    if conversion:
+                        meas = parse_measurement(
+                            self.channels_conversion[channel],
+                            self.channels_measurement[channel],
+                            measurements,
+                            channel,
+                            measurements[channel],
+                            timestamp=datetime_utc)
+
+                        measurements[channel]['measurement'] = meas[channel]['measurement']
+                        measurements[channel]['unit'] = meas[channel]['unit']
+                        measurements[channel]['value'] = meas[channel]['value']
 
             if measurements:
                 self.logger.debug("Adding measurements to influxdb: {}".format(measurements))

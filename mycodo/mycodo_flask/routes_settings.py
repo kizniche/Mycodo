@@ -481,8 +481,6 @@ def settings_users():
     }
 
     misc = Misc.query.first()
-    users = User.query.all()
-    user_roles = Role.query.all()
     form_user = forms_settings.User()
     form_add_user = forms_settings.UserAdd()
     form_mod_user = forms_settings.UserMod()
@@ -505,6 +503,9 @@ def settings_users():
         flash(each_info, "info")
     for each_success in messages["success"]:
         flash(each_success, "success")
+
+    users = User.query.all()
+    user_roles = Role.query.all()
 
     return render_template('settings/users.html',
                            misc=misc,
