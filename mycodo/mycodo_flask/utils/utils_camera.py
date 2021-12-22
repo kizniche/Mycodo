@@ -55,6 +55,7 @@ def camera_add(form_camera):
         new_camera.picamera_awb = "auto"
         new_camera.picamera_awb_gain_blue = 3.0
         new_camera.picamera_awb_gain_red = 2.0
+        new_camera.picamera_shutter_speed = 0
     elif form_camera.library.data == 'libcamera':
         new_camera.brightness = 0
         new_camera.contrast = 1
@@ -147,6 +148,7 @@ def camera_mod(form_camera):
             mod_camera.picamera_awb_gain_red = form_camera.picamera_awb_gain_red.data
             mod_camera.picamera_awb_gain_blue = form_camera.picamera_awb_gain_blue.data
             mod_camera.custom_options = form_camera.custom_options.data
+            mod_camera.picamera_shutter_speed = form_camera.picamera_shutter_speed.data
         elif mod_camera.library == 'libcamera':
             mod_camera.brightness = form_camera.brightness.data
             mod_camera.contrast = form_camera.contrast.data

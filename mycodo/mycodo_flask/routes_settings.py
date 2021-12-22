@@ -418,7 +418,7 @@ def settings_users_submit():
     logout = False
     user_id = None
     role_id = None
-    user_generate_api_key = None
+    generated_api_key = None
 
     if not utils_general.user_has_permission('edit_users'):
         messages["error"].append("Your permissions do not allow this action")

@@ -156,6 +156,10 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             logger.exception("picamera")
 
     elif settings.library == 'fswebcam':
+        if not os.path.exists("/usr/bin/fswebcam"):
+            logger.error("/usr/bin/fswebcam not found")
+            return
+
         try:
             cmd = "/usr/bin/fswebcam --device {dev} --resolution {w}x{h} --set brightness={bt}% " \
                   "--no-banner --save {file}".format(dev=settings.device,
@@ -181,6 +185,10 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             logger.exception("fswebcam")
 
     elif settings.library == 'raspistill':
+        if not os.path.exists("/usr/bin/raspistill"):
+            logger.error("/usr/bin/raspistill not found")
+            return
+
         try:
             cmd = "/usr/bin/raspistill -w {w} -h {h} --brightness {bt} " \
                   "-o {file}".format(w=settings.width,
@@ -196,6 +204,8 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 cmd += " --sharpness {}".format(int(settings.picamera_sharpness))
             if settings.picamera_iso not in [0, None]:
                 cmd += " --ISO {}".format(int(settings.picamera_iso))
+            if settings.picamera_shutter_speed is not None:
+                cmd += " --shutter {}".format(int(settings.picamera_shutter_speed))
             if settings.picamera_awb not in ["off", None]:
                 cmd += " --awb {}".format(settings.picamera_awb)
             elif (settings.picamera_awb == "off" and
@@ -223,6 +233,10 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             logger.exception("raspistill")
 
     elif settings.library == 'libcamera':
+        if not os.path.exists("/usr/bin/libcamera-still"):
+            logger.error("/usr/bin/libcamera-still not found")
+            return
+
         try:
             if settings.output_format:
                 filename = 'Still-{cam_id}-{cam}-{ts}.{ext}'.format(
@@ -276,7 +290,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                 "cmd: {}; out: {}; error: {}; status: {}".format(
                     cmd, out, err, status))
         except:
-            logger.exception("libcamer-jpeg")
+            logger.exception("libcamera")
 
     elif settings.library == 'opencv':
         try:

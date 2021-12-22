@@ -5,6 +5,7 @@ If you are upgrading from a version prior to 8.12.10, following the upgrade, you
 ### Bugfixes
 
  - Fix missing netcat and wget install dependencies ([#1124](https://github.com/kizniche/mycodo/issues/1124))
+ - Fix inability to safe user settings
  - Fix install issue due to outdated apt repository
  - Fix pylint command and dependency in Inputs/Outputs/Functions
  - Fix issue with TTNv3 Input if there's no payload

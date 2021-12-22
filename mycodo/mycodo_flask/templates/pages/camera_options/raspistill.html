@@ -41,6 +41,12 @@
    </div>
 </div>
 <div class="col-auto">
+  {{form_camera.picamera_shutter_speed.label(class_='control-label')}}
+  <div>
+    {{form_camera.picamera_shutter_speed(class_='form-control', value=each_camera.picamera_shutter_speed, **{'title': 'Shutter speed in microseconds. Seeting to 0 disables and shutter speed will be automatically determined.'})}}
+   </div>
+</div>
+<div class="col-auto">
   {{form_camera.picamera_iso.label(class_='control-label')}}
   <div>
     <select class="form-control form-tooltip form-dropdown" id="picamera_iso" name="picamera_iso" data-placement="top" title="Changes the ISO applied by the camera.">
