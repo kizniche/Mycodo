@@ -172,7 +172,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
             if settings.vflip:
                 cmd += " --flip h"
             if settings.rotation:
-                cmd += " --rotat {angle}".format(angle=settings.rotation)
+                cmd += " --rotate {angle}".format(angle=settings.rotation)
             if settings.custom_options:
                 cmd += " {}".format(settings.custom_options)
 
