@@ -167,10 +167,14 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
                                                      h=settings.height,
                                                      bt=settings.brightness,
                                                      file=path_file)
-            if settings.hflip:
+
+            if settings.hflip and settings.vflip:
+                cmd += " --flip h,v"
+            elif settings.hflip:
                 cmd += " --flip h"
-            if settings.vflip:
-                cmd += " --flip h"
+            elif settings.vflip:
+                cmd += " --flip v"
+
             if settings.rotation:
                 cmd += " --rotate {angle}".format(angle=settings.rotation)
             if settings.custom_options:
