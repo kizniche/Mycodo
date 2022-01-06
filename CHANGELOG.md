@@ -16,6 +16,7 @@ If you are upgrading from a version prior to 8.12.10, following the upgrade, you
 
  - Add camera library: libcamera ([#1117](https://github.com/kizniche/mycodo/issues/1117))
  - Add Input: TTN Integration: Data Storage (TTN v3, Payload jmespath Expression)
+ - Add Output: Kasa HS300 Smart WiFi Power Strip
  - Add size of file for last still and timelapse images
  - Add ability to duplicate Inputs
  - Add ability to invert the saved duty cycle for PWM Outputs
