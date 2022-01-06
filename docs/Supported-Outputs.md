@@ -743,6 +743,16 @@ Controls the 8 channels of the PCF8574.
 
 This output controls the 3 outlets of the Kasa KP303 Smart WiFi Power Strip.
 
+### HS300 Kasa Smart WiFi Power Strip
+
+- Manufacturer: TP-Link
+- Interfaces: Mycodo
+- Output Types: On/Off
+- Dependencies: [python-kasa](https://pypi.org/project/python-kasa)
+- Manufacturer URL: [Link](https://www.kasasmart.com/us/products/smart-plugs/kasa-smart-wi-fi-power-strip-hs300)
+
+This output controls the 6 outlets of the Kasa HS300 Smart WiFi Power Strip.
+
 #### Options
 
 ##### Host
