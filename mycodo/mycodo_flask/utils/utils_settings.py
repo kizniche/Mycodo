@@ -419,10 +419,9 @@ def settings_general_mod(form):
                 if force_https != form.force_https.data:
                     # Force HTTPS option changed.
                     # Reload web server with new settings.
-                    wsgi_file = '{inst_dir}/mycodo_flask.wsgi'.format(
-                        inst_dir=INSTALL_DIRECTORY)
-                    with open(wsgi_file, 'a'):
-                        os.utime(wsgi_file, None)
+                    cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+                        path=INSTALL_DIRECTORY)
+                    subprocess.Popen(cmd, shell=True)
 
             except Exception as except_msg:
                 messages["error"].append(except_msg)
