@@ -309,7 +309,7 @@ INPUT_INFORMATION = {
             'id': 'clear_ec_calibrate_slots',
             'type': 'button',
             'wait_for_return': True,
-            'name': 'Clear pH Calibration Slots'
+            'name': 'Clear EC Calibration Slots'
         }
     ]
 }
