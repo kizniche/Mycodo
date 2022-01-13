@@ -146,6 +146,7 @@
   };
   let grid = GridStack.init(options);
 
+  {% if not this_dashboard.locked %}
   grid.on('change', function (event, items) {
     const width = Math.max(
       document.documentElement.clientWidth,
@@ -157,11 +158,11 @@
         type: "POST",
         data: JSON.stringify(grid.save(false), null, '  '),
         contentType: "application/json; charset=utf-8",
-        success: function (data) {
-        }
+        success: function (data) {}
       });
     }
   });
+  {% endif %}
 
   grid.on('resizestop', function(event, elem) {
     const widget_id = $(elem).attr('gs-id');
