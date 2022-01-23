@@ -21,6 +21,7 @@ If you are upgrading from a version prior to 8.12.10, following the upgrade, you
  - Add size of file for last still and timelapse images
  - Add ability to duplicate Inputs
  - Add ability to invert the saved duty cycle for PWM Outputs
+ - Add randomly-generated Client IDs for MQTT Inputs/Functions
 
 ### Miscellaneous
 

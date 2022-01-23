@@ -21,9 +21,10 @@
 #
 #  Contact at kylegabriel.com
 
-import sys
-
+import random
 import re
+import string
+import sys
 
 
 def is_email(email):
@@ -221,3 +222,11 @@ def sort_tuple(tup):
                 tup[j] = tup[j + 1]
                 tup[j + 1] = temp
     return tup
+
+
+def random_alphanumeric(length):
+    """Generates a random alphanumeric string"""
+    key = ''
+    for i in range(length):
+        key += random.choice(string.ascii_letters + string.digits)
+    return key

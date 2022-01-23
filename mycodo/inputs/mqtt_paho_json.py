@@ -12,6 +12,7 @@ from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import parse_measurement
+from mycodo.utils.utils import random_alphanumeric
 
 # Measurements
 measurements_dict = {}
@@ -45,7 +46,8 @@ INPUT_INFORMATION = {
                '<i>temperature</i>, <i>sensors[0].temperature</i>, and <i>bathroom.temperature</i> which refer to '
                'the temperature as a direct key within the first entry of sensors or as a subkey '
                'of bathroom, respectively. Jmespath elements and keys that contain special characters '
-               'have to be enclosed in double quotes, e.g. <i>"sensor-1".temperature</i>.',
+               'have to be enclosed in double quotes, e.g. <i>"sensor-1".temperature</i>. Warning: If using '
+               'multiple MQTT Inputs or Functions, ensure the Client IDs are unique.',
 
     'options_enabled': [
         'measurements_select'
@@ -96,7 +98,7 @@ INPUT_INFORMATION = {
         {
             'id': 'mqtt_clientid',
             'type': 'text',
-            'default_value': 'mycodo_mqtt_client',
+            'default_value': 'client_{}'.format(random_alphanumeric(8)),
             'required': True,
             'name': 'Client ID',
             'phrase': 'Unique client ID for connecting to the server'

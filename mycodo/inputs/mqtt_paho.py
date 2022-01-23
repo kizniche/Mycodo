@@ -11,6 +11,7 @@ from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import parse_measurement
+from mycodo.utils.utils import random_alphanumeric
 
 # Measurements
 measurements_dict = {}
@@ -38,7 +39,8 @@ INPUT_INFORMATION = {
     'message': 'A topic is subscribed to for each channel Subscription Topic and the returned '
                'payload value will be stored for that channel. Be sure you select and save the '
                'Measurement Unit for each of the channels. Once the unit has been saved, you '
-               'can convert to other units in the Convert Measurement section.',
+               'can convert to other units in the Convert Measurement section. Warning: If using '
+               'multiple MQTT Inputs or Functions, ensure the Client IDs are unique.',
 
     'options_enabled': [
         'measurements_select'
@@ -80,7 +82,7 @@ INPUT_INFORMATION = {
         {
             'id': 'mqtt_clientid',
             'type': 'text',
-            'default_value': 'mycodo_mqtt_client',
+            'default_value': 'client_{}'.format(random_alphanumeric(8)),
             'required': True,
             'name': 'Client ID',
             'phrase': 'Unique client ID for connecting to the server'

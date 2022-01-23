@@ -32,6 +32,7 @@ from mycodo.utils.conditional import save_conditional_code
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import str_is_float
+from mycodo.utils.utils import random_alphanumeric
 
 logger = logging.getLogger(__name__)
 
@@ -412,7 +413,7 @@ def action_add(form):
                 "port": 1883,
                 "topic": "paho/test/single",
                 "keepalive": 60,
-                "clientid": "mycodo_mqtt_client",
+                "clientid": "client_{}".format(random_alphanumeric(8)),
                 "login": False,
                 "username": "user",
                 "password": ""
