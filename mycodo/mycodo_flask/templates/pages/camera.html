@@ -302,9 +302,14 @@
             <input id="hide_timelapse" name="hide_timelapse" type="checkbox" value="y"{% if each_camera.hide_timelapse %} checked{% endif %}>
           </div>
         </div>
-
-      {% include 'pages/camera_options/' + each_camera.library + '.html' %}
-
+      {% set template_file = 'pages/camera_options/'+each_camera.library+'.html' %}
+      {% if template_exists(template_file) %}
+        {% include template_file %}
+      {% else %}
+        <div class="col-auto">
+          Error: Template {{template_file}} doesn't exist.
+        </div>
+      {% endif %}
       </div>
     </div>
 
