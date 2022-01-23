@@ -151,12 +151,21 @@ class CustomModule(AbstractFunction):
             channel, unit, measurement = return_measurement_info(
                 device_measurement, conversion)
 
+            self.logger.debug("Dev: {}, unit: {}, channel: {}, measurement: {}, max age:; {}".format(
+                device_device_id,
+                unit,
+                channel,
+                measurement,
+                self.max_measure_age))
+
             last_measurement = read_last_influxdb(
                 device_device_id,
                 unit,
                 channel,
                 measure=measurement,
                 duration_sec=self.max_measure_age)
+
+            self.logger.debug("last_measurement: {}".format(last_measurement))
 
             if not last_measurement:
                 self.logger.error(

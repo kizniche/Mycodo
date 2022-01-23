@@ -46,6 +46,13 @@ def before_request_admin_exist():
 blueprint.before_request(before_request_admin_exist)
 
 
+def template_exists(path):
+    path_start = "{}/mycodo/mycodo_flask/templates".format(INSTALL_DIRECTORY)
+    path_full = "{}/{}".format(path_start, path)
+    if os.path.exists(path_full) and os.path.abspath(path_full).startswith(path_start):
+        return True
+
+
 @blueprint.context_processor
 def inject_variables():
     """Variables to send with every page request"""
@@ -81,6 +88,7 @@ def inject_variables():
                 mycodo_version=MYCODO_VERSION,
                 permission_view_settings=user_has_permission('view_settings', silent=True),
                 dict_translation=TRANSLATIONS,
+                template_exists=template_exists,
                 themes=THEMES,
                 upgrade_available=misc.mycodo_upgrade_available)
 

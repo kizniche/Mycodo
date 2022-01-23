@@ -11,6 +11,7 @@ If you are upgrading from a version prior to 8.12.10, following the upgrade, you
  - Fix issue with TTNv3 Input if there's no payload
  - Fix Desktop Widgets resizing when viewing on mobile browsers
  - Fix rotation and flip for fswebcam camera library
+ - Fix error-handling of missing template files ([#1145](https://github.com/kizniche/mycodo/issues/1145))
 
 ### Features
 
