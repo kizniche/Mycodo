@@ -36,7 +36,7 @@ INPUT_INFORMATION = {
         ('pip-pypi', 'PIL', 'Pillow==8.1.2'),
         ('apt', 'python3-scipy', 'python3-scipy'),
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
-        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.1'),
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.2'),
         ('pip-pypi', 'anyleaf', 'anyleaf==0.1.9')
     ],
 

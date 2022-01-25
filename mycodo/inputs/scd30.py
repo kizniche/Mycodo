@@ -50,6 +50,7 @@ INPUT_INFORMATION = {
     ],
 
     'options_enabled': [
+        'measurements_select',
         'i2c_location',
         'period',
         'pre_output'

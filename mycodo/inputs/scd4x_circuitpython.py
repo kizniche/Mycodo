@@ -41,6 +41,7 @@ INPUT_INFORMATION = {
     'url_manufacturer': 'https://www.sensirion.com/en/environmental-sensors/carbon-dioxide-sensors/carbon-dioxide-sensor-scd4x/',
 
     'options_enabled': [
+        'measurements_select',
         'i2c_location',
         'period',
         'pre_output'
@@ -49,8 +50,8 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
-        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.1'),
-        ('pip-pypi', 'adafruit_scd4x', 'adafruit-circuitpython-scd4x==1.2.1 ')
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.2'),
+        ('pip-pypi', 'adafruit_scd4x', 'adafruit-circuitpython-scd4x==1.2.2')
     ],
 
     'interfaces': ['I2C'],

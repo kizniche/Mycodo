@@ -46,7 +46,7 @@ INPUT_INFORMATION = {
     'options_disabled': ['interface'],
 
     'dependencies_module': [
-        ("pip-pypi", "adafruit_extended_bus", "adafruit-extended-bus==1.0.1"),
+        ("pip-pypi", "adafruit_extended_bus", "Adafruit-extended-bus==1.0.2"),
         ("pip-pypi", "adafruit_htu21d", "adafruit-circuitpython-HTU21D==0.11.0"),
     ],
 

@@ -27,7 +27,7 @@ INPUT_INFORMATION = {
     "options_enabled": ["i2c_location", "period", "pre_output"],
     "options_disabled": ["interface"],
     "dependencies_module": [
-        ("pip-pypi", "adafruit_extended_bus", "adafruit-extended-bus==1.0.1"),
+        ("pip-pypi", "adafruit_extended_bus", "Adafruit-extended-bus==1.0.2"),
         ("pip-pypi", "adafruit_mlx90393", "adafruit-circuitpython-mlx90393==2.0.6"),
     ],
     "interfaces": ["I2C"],

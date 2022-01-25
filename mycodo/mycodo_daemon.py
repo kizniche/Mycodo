@@ -31,14 +31,15 @@ sys.path.append(
 
 import argparse
 import logging
+import resource
 import threading
 import time
 import timeit
 
-import resource
-from Pyro5.api import serve
+import Pyro5
 from Pyro5.api import Proxy
 from Pyro5.api import expose
+from Pyro5.api import serve
 from daemonize import Daemonize
 
 from mycodo.config import DAEMON_LOG_FILE
@@ -50,6 +51,7 @@ from mycodo.config import STATS_CSV
 from mycodo.config import STATS_INTERVAL
 from mycodo.config import UPGRADE_CHECK_INTERVAL
 from mycodo.controllers.controller_conditional import ConditionalController
+from mycodo.controllers.controller_function import FunctionController
 from mycodo.controllers.controller_input import InputController
 from mycodo.controllers.controller_lcd import LCDController
 from mycodo.controllers.controller_math import MathController
@@ -57,7 +59,6 @@ from mycodo.controllers.controller_output import OutputController
 from mycodo.controllers.controller_pid import PIDController
 from mycodo.controllers.controller_trigger import TriggerController
 from mycodo.controllers.controller_widget import WidgetController
-from mycodo.controllers.controller_function import FunctionController
 from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import CustomController
@@ -81,6 +82,9 @@ from mycodo.utils.stats import return_stat_file_dict
 from mycodo.utils.stats import send_anonymous_stats
 from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
+
+import Pyro5
+Pyro5.config.COMMTIMEOUT = 5  # 5 seconds
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 

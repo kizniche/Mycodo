@@ -50,6 +50,7 @@ INPUT_INFORMATION = {
     ],
 
     'options_enabled': [
+        'measurements_select',
         'i2c_location',
         'period',
         'pre_output'
@@ -58,7 +59,7 @@ INPUT_INFORMATION = {
 
     'dependencies_module': [
         ('pip-pypi', 'usb.core', 'pyusb==1.1.1'),
-        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.1'),
+        ('pip-pypi', 'adafruit_extended_bus', 'Adafruit-extended-bus==1.0.2'),
         ('pip-pypi', 'adafruit_scd30', 'adafruit-circuitPython-scd30==2.0.3')
     ],
 
