@@ -36,7 +36,6 @@ import threading
 import time
 import timeit
 
-import Pyro5
 from Pyro5.api import Proxy
 from Pyro5.api import expose
 from Pyro5.api import serve
@@ -82,9 +81,6 @@ from mycodo.utils.stats import return_stat_file_dict
 from mycodo.utils.stats import send_anonymous_stats
 from mycodo.utils.tools import generate_output_usage_report
 from mycodo.utils.tools import next_schedule
-
-import Pyro5
-Pyro5.config.COMMTIMEOUT = 5  # 5 seconds
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
