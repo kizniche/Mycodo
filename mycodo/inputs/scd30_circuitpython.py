@@ -126,6 +126,7 @@ INPUT_INFORMATION = {
     ]
 }
 
+
 class InputModule(AbstractInput):
     """ Input support class """
     def __init__(self, input_dev, testing=False):
@@ -151,6 +152,10 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Measures CO2, temperature and humidity """
+        if not self.sensor:
+            self.logger.error("Input not set up")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.sensor.data_available:
