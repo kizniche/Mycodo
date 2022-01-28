@@ -87,7 +87,6 @@ INPUT_INFORMATION = {
             'type': 'bool',
             'default_value': False,
             'name': 'Enable Automatic Self Calibration',
-            'phrase': 'Enable the sensor to automatically calibrate'
         }
     ]
 }

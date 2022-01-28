@@ -92,26 +92,20 @@ INPUT_INFORMATION = {
             'id': 'force_recalibration',
             'type': 'button',
             'name': 'Force Recalibration'
-        },
-        {
-            'type': 'message',
-            'default_value': """Ambient Air Pressure (mBar): Specify the ambient air pressure at the measurement location in mBar. Setting this value adjusts the CO2 measurement calculations to account for the air pressure’s effect on readings. Values must be in mBar, from 700 to 1400 mBar."""
-        },
-        {
-            'id': 'ambient_air_pressure_mBar',
-            'type': 'integer',
-            'default_value': 1400,
-            'name': 'Ambient Air Pressure (mBar)',
-            'phrase': 'The air pressure of the sensor environment when setting air pressure'
-        },
-        {
-            'id': 'set_air_pressure',
-            'type': 'button',
-            'name': 'Set Air Pressure'
-        },
+        }
     ],
 
     'custom_options': [
+        {
+            'type': 'message',
+            'default_value': """I2C Frequency: The SCD-30 has temperamental I2C with clock stretching. The datasheet recommends starting at 50,000 Hz."""
+        },
+        {
+            'id': 'i2c_frequency',
+            'type': 'integer',
+            'default_value': 50000,
+            'name': 'I2C Frequency (Hz)',
+        },
         {
             'type': 'message',
             'default_value': 'Automatic Self Ccalibration (ASC): To work correctly, the sensor must be on and active for 7 days after enabling ASC, and exposed to fresh air for at least 1 hour per day. Consult the manufacturer’s documentation for more information.',
@@ -121,7 +115,36 @@ INPUT_INFORMATION = {
             'type': 'bool',
             'default_value': False,
             'name': 'Enable Automatic Self Calibration',
-            'phrase': 'Enable the sensor to automatically calibrate'
+        },
+        {
+            'type': 'message',
+            'default_value': 'Temperature Offset: Specifies the offset to be added to the reported measurements to account for a bias in the measured signal. Value is in degrees Celsius with a resolution of 0.01 degrees and a maximum value of 655.35 C.',
+        },
+        {
+            'id': 'temperature_offset',
+            'type': 'float',
+            'default_value': 0.0,
+            'name': 'Temperature Offset',
+        },
+        {
+            'type': 'message',
+            'default_value': """Ambient Air Pressure (mBar): Specify the ambient air pressure at the measurement location in mBar. Setting this value adjusts the CO2 measurement calculations to account for the air pressure’s effect on readings. Values must be in mBar, from 700 to 1200 mBar."""
+        },
+        {
+            'id': 'ambient_pressure',
+            'type': 'integer',
+            'default_value': 1200,
+            'name': 'Ambient Air Pressure (mBar)',
+        },
+        {
+            'type': 'message',
+            'default_value': """Altitude: Specifies the altitude at the measurement location in meters above sea level. Setting this value adjusts the CO2 measurement calculations to account for the air pressure’s effect on readings."""
+        },
+        {
+            'id': 'altitude',
+            'type': 'integer',
+            'default_value': 100,
+            'name': 'Altitude (m)',
         },
     ]
 }
@@ -133,7 +156,11 @@ class InputModule(AbstractInput):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
         self.sensor = None
+        self.i2c_frequency = None
         self.enable_self_calibration = None
+        self.temperature_offset = None
+        self.ambient_pressure = None
+        self.altitude = None
 
         if not testing:
             self.setup_custom_options(
@@ -145,10 +172,20 @@ class InputModule(AbstractInput):
         import adafruit_scd30
 
         self.sensor = adafruit_scd30.SCD30(
-            ExtendedI2C(self.input_dev.i2c_bus),
+            ExtendedI2C(self.input_dev.i2c_bus, frequency=self.i2c_frequency),
             address=int(str(self.input_dev.i2c_location), 16))
 
-        self.sensor.self_calibration_enabled = self.enable_self_calibration
+        if self.sensor.self_calibration_enabled != self.enable_self_calibration:
+            self.sensor.self_calibration_enabled = self.enable_self_calibration
+
+        if self.sensor.temperature_offset != self.temperature_offset:
+            self.sensor.temperature_offset = self.temperature_offset
+
+        if self.sensor.ambient_pressure != self.ambient_pressure:
+            self.sensor.ambient_pressure = self.ambient_pressure
+
+        if self.sensor.altitude != self.altitude:
+            self.sensor.altitude = self.altitude
 
     def get_measurement(self):
         """ Measures CO2, temperature and humidity """
@@ -186,10 +223,3 @@ class InputModule(AbstractInput):
             return
         if self.sensor:
             self.sensor.forced_recalibration_reference = args_dict['force_recalibration_ppmv']
-
-    def set_air_pressure(self, args_dict):
-        if 'ambient_air_pressure_mBar' not in args_dict:
-            self.logger.error("Cannot calibrate without Ambient Air Pressure (mBar)")
-            return
-        if self.sensor:
-            self.sensor.ambient_pressure = args_dict['ambient_air_pressure_mBar']
