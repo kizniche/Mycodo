@@ -229,3 +229,13 @@ docs-old/_build/
 
 # PyBuilder
 target/
+
+#to make clean repo
+mycodo/flask_session/  
+mycodo/mycodo_flask/templates/user_templates/
+.dependency
+install/wiringpi-latest.deb
+mycodo/mycodo_flask/ssl_certs/server.crt
+mycodo/mycodo_flask/ssl_certs/server.csr
+mycodo/mycodo_flask/ssl_certs/server.key
+mycodo/scripts/mycodo_wrapper
