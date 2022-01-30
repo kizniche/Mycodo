@@ -22,6 +22,7 @@ If you are upgrading from a version prior to 8.12.10, following the upgrade, you
  - Add ability to duplicate Inputs
  - Add ability to invert the saved duty cycle for PWM Outputs
  - Add randomly-generated Client IDs for MQTT Inputs/Functions
+ - Add calibration, offset, and reset options for SCD-30 Input
 
 ### Miscellaneous
 
