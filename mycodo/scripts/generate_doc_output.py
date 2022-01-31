@@ -233,6 +233,7 @@ def generate_controller_doc(out_file, each_data):
                             select_options += "\] (Default in **bold**)"
                             out_file.write(select_options)
 
-                    out_file.write("\n- Description: {}\n".format(each_option['phrase']))
+                    if 'phrase' in each_option:
+                        out_file.write("\n- Description: {}\n".format(each_option['phrase']))
 
     out_file.write("\n")
