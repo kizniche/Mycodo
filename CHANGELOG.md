@@ -27,6 +27,7 @@ If you are upgrading from a version prior to 8.12.10, following the upgrade, you
 ### Miscellaneous
 
  - Add button to install all dependencies on Diagnostics page
+ - Add Error Codes to log lines and the manual
 
 
 ## 8.12.9 (2021-12-02)

@@ -93,6 +93,7 @@ nav:
     - System Configuration: Configuration-Settings.md
     - Upgrade/Backup/Restore: Upgrade-Backup-Restore.md
     - Export/Import: Export-Import.md
+    - Error Codes: Error-Codes.md
     - Mycodo Client: Mycodo-Client.md
     - API.md
   - Troubleshooting.md

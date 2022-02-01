@@ -205,8 +205,9 @@ class AbstractInput(AbstractBaseController):
         :return:
         """
         if value is None:
-            self.logger.error("Cannot set a value of None. Must be a float or string representing a float. "
-                              "Check the sensor and Input module is working correctly.")
+            self.logger.error(
+                "Error 100: Cannot set a value of '{}' of type {}. Must be a float or string representing a float. "
+                "See https://kizniche.github.io/Mycodo/Error-Codes#error-100 for more info.".format(value, type(value)))
             return
 
         if not self.is_enabled(chan):

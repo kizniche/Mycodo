@@ -81,7 +81,7 @@ INPUT_INFORMATION = {
         {
             'id': 'temperature_offset',
             'type': 'float',
-            'default_value': 4,
+            'default_value': 4.0,
             'required': True,
             'name': 'Temperature Offset',
             'phrase': 'Set the sensor temperature offset'
@@ -97,14 +97,14 @@ INPUT_INFORMATION = {
         {
             'id': 'self_calibration_enabled',
             'type': 'bool',
-            'default_value': True,
+            'default_value': False,
             'name': 'Automatic Self-Calibration',
             'phrase': 'Set the sensor automatic self-calibration'
         },
         {
             'id': 'persist_settings',
             'type': 'bool',
-            'default_value': False,
+            'default_value': True,
             'name': 'Persist Settings',
             'phrase': 'Settings will persist after powering off'
         },
@@ -135,15 +135,20 @@ class InputModule(AbstractInput):
         self.sensor = adafruit_scd4x.SCD4X(
             ExtendedI2C(self.input_dev.i2c_bus),
             address=int(str(self.input_dev.i2c_location), 16))
+
         self.logger.debug("Serial number: {}".format([hex(i) for i in self.sensor.serial_number]))
 
-        self.sensor.temperature_offset = self.temperature_offset
-        self.sensor.altitude = self.altitude
-        self.sensor.self_calibration_enabled = self.self_calibration_enabled
-
+        if self.sensor.temperature_offset != self.temperature_offset:
+            self.sensor.temperature_offset = self.temperature_offset
         self.logger.debug("Temperature offset: {}".format(self.sensor.temperature_offset))
-        self.logger.debug("Self-calibration enabled: {}".format(self.sensor.self_calibration_enabled))
+
+        if self.sensor.altitude != self.altitude:
+            self.sensor.altitude = self.altitude
         self.logger.debug("Altitude: {} meters above sea level".format(self.sensor.altitude))
+
+        if self.sensor.self_calibration_enabled != self.self_calibration_enabled:
+            self.sensor.self_calibration_enabled = self.self_calibration_enabled
+        self.logger.debug("Self-calibration enabled: {}".format(self.sensor.self_calibration_enabled))
 
         if self.persist_settings:
             self.sensor.persist_settings()
