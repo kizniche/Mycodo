@@ -19,6 +19,7 @@ MCB2835_URL="http://www.airspayce.com/mikem/bcm2835/bcm2835-1.50.tar.gz"
 WIRINGPI_URL="https://project-downloads.drogon.net/wiringpi-latest.deb"
 INFLUXDB_VERSION="1.8.0"
 VIRTUALENV_VERSION="20.7.0"
+SETUPTOOLS_VERSION="60.6.0"
 
 # Required apt packages. This has been tested with Raspbian for the
 # Raspberry Pi and Ubuntu, it should work with most Debian-based systems.
@@ -463,7 +464,7 @@ case "${1:-''}" in
         if [[ ! -d ${MYCODO_PATH}/env ]]; then
             printf "\n## Error: Virtualenv doesn't exist. Create with %s setup-virtualenv\n" "${0}"
         else
-            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools
+            "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools=="${SETUPTOOLS_VERSION}"
             "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements.txt
             "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements-rpi.txt
             "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade -r "${MYCODO_PATH}"/install/requirements-testing.txt
@@ -591,7 +592,7 @@ case "${1:-''}" in
     ;;
     'docker-update-pip-packages')
         printf "\n#### Installing pip requirements\n"
-        "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools
+        "${MYCODO_PATH}"/env/bin/python -m pip install --upgrade pip setuptools=="${SETUPTOOLS_VERSION}"
         "${MYCODO_PATH}"/env/bin/python -m pip install --no-cache-dir -r /home/mycodo/install/requirements.txt
     ;;
     'install-docker-ce-cli')
