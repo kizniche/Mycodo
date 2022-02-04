@@ -292,7 +292,7 @@ class InputModule(AbstractInput):
         """
 
         if not self.sensor:
-            self.logger.error("INA219x sensor not set up.")
+            self.logger.error("Input not set up.")
             return None
 
         self.return_dict = copy.deepcopy(measurements_dict)

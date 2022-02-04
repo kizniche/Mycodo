@@ -193,7 +193,6 @@ class OutputModule(AbstractOutput):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
         self.stepper = None
-        self.output_setup = False
 
         output_channels = db_retrieve_table_daemon(
             OutputChannel).filter(OutputChannel.output_id == self.output.unique_id).all()
@@ -242,6 +241,11 @@ class OutputModule(AbstractOutput):
             self.logger.error("Step pin must be set")
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
+        if not self.is_setup():
+            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+            self.logger.error(msg)
+            return msg
+
         measure_dict = copy.deepcopy(measurements_dict)
 
         if amount not in [None, 0]:

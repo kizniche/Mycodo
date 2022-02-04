@@ -211,6 +211,11 @@ class OutputModule(AbstractOutput):
         # self.record_dispersal(seconds_to_run=seconds)
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
+        if not self.is_setup():
+            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+            self.logger.error(msg)
+            return msg
+
         if state == 'on' and output_type == 'sec' and amount:
             # Only dispense for a duration if output_type is 'sec'
             # Otherwise, refer to output_mode

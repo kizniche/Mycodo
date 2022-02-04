@@ -92,10 +92,16 @@ class OutputModule(AbstractOutput):
             self.dpot = adafruit_ds3502.DS3502(
                 ExtendedI2C(self.output.i2c_bus),
                 address=int(str(self.output.i2c_location), 16))
+            self.output_setup = True
         except Exception as err:
             self.logger.error("Setting up Output: {}".format(err))
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
+        if not self.is_setup():
+            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+            self.logger.error(msg)
+            return msg
+
         if amount > 10000:
             self.logger.error(
                 "Amount cannot be greater than 10000. Value passed: {}. "
@@ -136,6 +142,6 @@ class OutputModule(AbstractOutput):
                 return False
 
     def is_setup(self):
-        if self.dpot:
+        if self.output_setup:
             return True
         return False

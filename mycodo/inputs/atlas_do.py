@@ -162,7 +162,7 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         """ Gets the sensor's DO measurement """
         if not self.atlas_device.setup:
-            self.logger.error("Input not set up")
+            self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return
 
         do = None

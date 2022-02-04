@@ -98,6 +98,10 @@ class InputModule(AbstractInput):
         self.adc_resolution = self.input_dev.adc_resolution
 
     def get_measurement(self):
+        if not self.sensor:
+            self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
+            return
+
         self.return_dict = copy.deepcopy(measurements_dict)
 
         for channel in self.channels_measurement:

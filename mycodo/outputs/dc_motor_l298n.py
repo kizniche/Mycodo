@@ -161,7 +161,6 @@ class OutputModule(AbstractOutput):
 
         self.driver = {}
         self.currently_dispensing = False
-        self.output_setup = False
         self.channel_setup = {}
         self.gpio = None
 
@@ -199,13 +198,18 @@ class OutputModule(AbstractOutput):
                 self.output_states[channel] = False
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
+        if not self.is_setup():
+            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+            self.logger.error(msg)
+            return msg
+
         if not self.running:
             msg = "Output is not running, cannot turn it on or off."
             self.logger.error(msg)
             return msg
 
         if not self.channel_setup[output_channel]:
-            msg = "Output channel {} not set up, cannot turn it on or off.".format(output_channel)
+            msg = "Error 101: Output channel {} not set up, cannot turn it on or off. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.".format(output_channel)
             self.logger.error(msg)
             return msg
 
@@ -285,8 +289,7 @@ class OutputModule(AbstractOutput):
     def is_setup(self, channel=None):
         if channel:
             return self.channel_setup[channel]
-        if True in self.channel_setup.values():
-            return True
+        return self.output_setup
 
     def stop_output(self):
         """ Called when Output is stopped """

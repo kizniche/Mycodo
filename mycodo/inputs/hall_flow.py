@@ -91,6 +91,10 @@ class InputModule(AbstractInput):
 
     def get_measurement(self):
         """ Gets the flow rate and volume """
+        if not self.sensor:
+            self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
+            return
+
         if not self.pi.connected:  # Check if pigpiod is running
             self.logger.error("Could not connect to pigpiod. Ensure it is running and try again.")
             return

@@ -242,13 +242,13 @@ class OutputModule(AbstractOutput):
                       amount=None,
                       duty_cycle=None,
                       output_channel=None):
-        if output_channel is None:
-            msg = "Output channel needs to be specified"
+        if not self.is_setup():
+            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
             self.logger.error(msg)
             return msg
 
-        if not self.is_setup():
-            msg = "Output not set up"
+        if output_channel is None:
+            msg = "Output channel needs to be specified"
             self.logger.error(msg)
             return msg
 

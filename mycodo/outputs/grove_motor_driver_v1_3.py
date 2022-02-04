@@ -188,83 +188,12 @@ class OutputModule(AbstractOutput):
             self.logger.exception("Could not set up output")
             return
 
-    def dispense_volume_fastest(self, amount, total_dispense_seconds):
-        """ Dispense at fastest flow rate, a 100 % duty cycle """
-        self.currently_dispensing = True
-        self.logger.debug("Output turned on")
-
-        self.motor.motor_speed_set_a_b(100, 100)
-        if amount > 0:
-            self.motor.motor_direction_set("cw")
-        elif amount < 0:
-            self.motor.motor_direction_set("ccw")
-        timer_dispense = time.time() + total_dispense_seconds
-
-        while time.time() < timer_dispense and self.currently_dispensing:
-            time.sleep(0.01)
-
-        self.motor.motor_speed_set_a_b(0, 0)
-        self.currently_dispensing = False
-        self.logger.debug("Output turned off")
-        self.record_dispersal(amount, total_dispense_seconds, total_dispense_seconds)
-
-    def dispense_volume_rate(self, amount, dispense_rate):
-        """ Dispense at a specific flow rate """
-        # Calculate total disperse time and durations to cycle on/off to reach total volume
-        total_dispense_seconds = abs(amount) / dispense_rate * 60
-        self.logger.debug("Total duration to run: {0:.1f} seconds".format(total_dispense_seconds))
-
-        duty_cycle = dispense_rate / self.options_channels['fastest_dispense_rate_ml_min'][0]
-        self.logger.debug("Duty Cycle: {0:.1f} %".format(duty_cycle * 100))
-
-        total_seconds_on = total_dispense_seconds * duty_cycle
-        self.logger.debug("Total seconds on: {0:.1f}".format(total_seconds_on))
-
-        total_seconds_off = total_dispense_seconds - total_seconds_on
-        self.logger.debug("Total seconds off: {0:.1f}".format(total_seconds_off))
-
-        repeat_seconds_on = self.options_channels['minimum_sec_on_per_min'][0]
-        repeat_seconds_off = self.options_channels['minimum_sec_on_per_min'][0] / duty_cycle
-        self.logger.debug(
-            "Repeat for {rep:.2f} seconds: on {on:.1f} seconds, off {off:.1f} seconds".format(
-                rep=repeat_seconds_off, on=repeat_seconds_on, off=repeat_seconds_off))
-
-        self.currently_dispensing = True
-        timer_dispense = time.time() + total_dispense_seconds
-
-        if amount > 0:
-            self.motor.motor_direction_set("cw")
-        elif amount < 0:
-            self.motor.motor_direction_set("ccw")
-
-        while time.time() < timer_dispense and self.currently_dispensing:
-            # On for duration
-            self.logger.debug("Output turned on")
-            self.motor.motor_speed_set_a_b(
-                self.options_channels['motor_speed'][0],
-                self.options_channels['motor_speed'][1])
-            timer_dispense_on = time.time() + repeat_seconds_on
-            while time.time() < timer_dispense_on and self.currently_dispensing:
-                time.sleep(0.01)
-
-            # Off for duration
-            self.logger.debug("Output turned off")
-            self.motor.motor_speed_set_a_b(0, 0)
-            timer_dispense_off = time.time() + repeat_seconds_off
-            while time.time() < timer_dispense_off and self.currently_dispensing:
-                time.sleep(0.01)
-
-        self.currently_dispensing = False
-        self.record_dispersal(amount, total_seconds_on, total_dispense_seconds)
-
-    def record_dispersal(self, amount, total_on_seconds, total_dispense_seconds):
-        measure_dict = copy.deepcopy(measurements_dict)
-        measure_dict[0]['value'] = total_on_seconds
-        measure_dict[1]['value'] = amount
-        measure_dict[2]['value'] = total_dispense_seconds
-        add_measurements_influxdb(self.unique_id, measure_dict)
-
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
+        if not self.is_setup():
+            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+            self.logger.error(msg)
+            return msg
+
         direction = "CW"
         self.motor.motor_direction_set("cw")
         if amount and amount < 0:
@@ -360,6 +289,82 @@ class OutputModule(AbstractOutput):
                     amt=amount,
                     fr=self.options_channels['flow_rate'][0]))
             return
+
+    def dispense_volume_fastest(self, amount, total_dispense_seconds):
+        """ Dispense at fastest flow rate, a 100 % duty cycle """
+        self.currently_dispensing = True
+        self.logger.debug("Output turned on")
+
+        self.motor.motor_speed_set_a_b(100, 100)
+        if amount > 0:
+            self.motor.motor_direction_set("cw")
+        elif amount < 0:
+            self.motor.motor_direction_set("ccw")
+        timer_dispense = time.time() + total_dispense_seconds
+
+        while time.time() < timer_dispense and self.currently_dispensing:
+            time.sleep(0.01)
+
+        self.motor.motor_speed_set_a_b(0, 0)
+        self.currently_dispensing = False
+        self.logger.debug("Output turned off")
+        self.record_dispersal(amount, total_dispense_seconds, total_dispense_seconds)
+
+    def dispense_volume_rate(self, amount, dispense_rate):
+        """ Dispense at a specific flow rate """
+        # Calculate total disperse time and durations to cycle on/off to reach total volume
+        total_dispense_seconds = abs(amount) / dispense_rate * 60
+        self.logger.debug("Total duration to run: {0:.1f} seconds".format(total_dispense_seconds))
+
+        duty_cycle = dispense_rate / self.options_channels['fastest_dispense_rate_ml_min'][0]
+        self.logger.debug("Duty Cycle: {0:.1f} %".format(duty_cycle * 100))
+
+        total_seconds_on = total_dispense_seconds * duty_cycle
+        self.logger.debug("Total seconds on: {0:.1f}".format(total_seconds_on))
+
+        total_seconds_off = total_dispense_seconds - total_seconds_on
+        self.logger.debug("Total seconds off: {0:.1f}".format(total_seconds_off))
+
+        repeat_seconds_on = self.options_channels['minimum_sec_on_per_min'][0]
+        repeat_seconds_off = self.options_channels['minimum_sec_on_per_min'][0] / duty_cycle
+        self.logger.debug(
+            "Repeat for {rep:.2f} seconds: on {on:.1f} seconds, off {off:.1f} seconds".format(
+                rep=repeat_seconds_off, on=repeat_seconds_on, off=repeat_seconds_off))
+
+        self.currently_dispensing = True
+        timer_dispense = time.time() + total_dispense_seconds
+
+        if amount > 0:
+            self.motor.motor_direction_set("cw")
+        elif amount < 0:
+            self.motor.motor_direction_set("ccw")
+
+        while time.time() < timer_dispense and self.currently_dispensing:
+            # On for duration
+            self.logger.debug("Output turned on")
+            self.motor.motor_speed_set_a_b(
+                self.options_channels['motor_speed'][0],
+                self.options_channels['motor_speed'][1])
+            timer_dispense_on = time.time() + repeat_seconds_on
+            while time.time() < timer_dispense_on and self.currently_dispensing:
+                time.sleep(0.01)
+
+            # Off for duration
+            self.logger.debug("Output turned off")
+            self.motor.motor_speed_set_a_b(0, 0)
+            timer_dispense_off = time.time() + repeat_seconds_off
+            while time.time() < timer_dispense_off and self.currently_dispensing:
+                time.sleep(0.01)
+
+        self.currently_dispensing = False
+        self.record_dispersal(amount, total_seconds_on, total_dispense_seconds)
+
+    def record_dispersal(self, amount, total_on_seconds, total_dispense_seconds):
+        measure_dict = copy.deepcopy(measurements_dict)
+        measure_dict[0]['value'] = total_on_seconds
+        measure_dict[1]['value'] = amount
+        measure_dict[2]['value'] = total_dispense_seconds
+        add_measurements_influxdb(self.unique_id, measure_dict)
 
     def is_on(self, output_channel=None):
         if self.is_setup():

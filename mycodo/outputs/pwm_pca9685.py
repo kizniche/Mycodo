@@ -400,6 +400,11 @@ class OutputModule(AbstractOutput):
             self.logger.exception("Output was unable to be setup: {err}".format(err=except_msg))
 
     def output_switch(self, state, output_type=None, amount=0, output_channel=None):
+        if not self.is_setup():
+            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+            self.logger.error(msg)
+            return msg
+
         measure_dict = copy.deepcopy(measurements_dict)
 
         output_amount = 0

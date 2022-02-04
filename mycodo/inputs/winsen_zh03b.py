@@ -130,7 +130,7 @@ class InputModule(AbstractInput):
     def get_measurement(self):
         """ Gets the WINSEN_ZH03B's Particulate concentration in μg/m^3 """
         if not self.ser:
-            self.logger.error("Input not set up")
+            self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return
 
         pm_1_0 = []

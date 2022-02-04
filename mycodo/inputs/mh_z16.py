@@ -117,7 +117,7 @@ class InputModule(AbstractInput):
 
         if self.input_dev.interface == 'UART':
             if not self.ser:
-                self.logger.error("Input not set up")
+                self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
                 return
 
             self.ser.flushInput()
@@ -132,7 +132,7 @@ class InputModule(AbstractInput):
 
         elif self.input_dev.interface == 'I2C':
             if not self.i2c:
-                self.logger.error("Input not set up")
+                self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
                 return
 
             self.write_register(self.FCR, 0x07)

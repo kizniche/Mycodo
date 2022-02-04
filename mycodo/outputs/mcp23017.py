@@ -186,7 +186,7 @@ class OutputModule(AbstractOutput):
             return msg
 
         if not self.is_setup():
-            msg = "Output not set up"
+            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
             self.logger.error(msg)
             return msg
 

@@ -217,6 +217,120 @@ class OutputModule(AbstractOutput):
             self.logger.exception("Could not set up output")
             return
 
+    def output_switch(self, state, output_type=None, amount=None, output_channel=None):
+        if not self.is_setup():
+            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+            self.logger.error(msg)
+            return msg
+
+        if self.setting_i2c:
+            self.logger.error("Cannot operate output while I2C address is changing")
+            return
+
+        direction = "CW"
+        direction_reg = self.reg_write_run_cw
+        if amount and amount < 0:
+            direction = "CCW"
+            direction_reg = self.reg_write_run_ccw
+
+        self.logger.debug(
+            "state: {st}, channel: {ch}, output_type: {ot}, "
+            "amount: {amt} (direction: {dir}), mode: {fm}, rate: {fr}".format(
+                st=state,
+                ch=output_channel,
+                ot=output_type,
+                amt=amount,
+                dir=direction,
+                fm=self.options_channels['flow_mode'][output_channel],
+                fr=self.options_channels['flow_rate'][output_channel]))
+
+        if state == 'off':
+            if self.currently_dispensing[output_channel]:
+                self.currently_dispensing[output_channel] = False
+            self.logger.debug("Output turned off")
+            self.bus.write_word_data(self.i2c_address, self.reg_write_off, output_channel)
+
+        elif (amount and state == 'on' and
+              output_type in ['vol', None]):
+
+            if self.currently_dispensing[output_channel]:
+                self.logger.debug(
+                    "Pump instructed to turn on for a duration while it's "
+                    "already dispensing. Overriding current dispense with "
+                    "new instruction.")
+
+            if self.options_channels['flow_mode'][output_channel] == 'fastest_flow_rate':
+                total_dispense_seconds = (abs(amount) /
+                                          self.options_channels['dispense_rate_ml_min'][output_channel] *
+                                          60)
+
+                msg = "Turning pump on for {sec:.1f} seconds {dir} to " \
+                      "dispense {ml:.1f} ml (at {rate:.1f} ml/min, " \
+                      "the fastest flow rate).".format(
+                    sec=total_dispense_seconds,
+                    dir=direction,
+                    ml=abs(amount),
+                    rate=self.options_channels['dispense_rate_ml_min'][output_channel])
+                self.logger.debug(msg)
+
+                write_db = threading.Thread(
+                    target=self.dispense_volume_fastest,
+                    args=(output_channel, amount, total_dispense_seconds,))
+                write_db.start()
+                return
+
+            elif self.options_channels['flow_mode'][output_channel] == 'specify_flow_rate':
+                slowest_rate_ml_min = (self.options_channels['dispense_rate_ml_min'][output_channel] /
+                                       60 * self.options_channels['minimum_sec_on_per_min'][output_channel])
+                if self.options_channels['flow_rate'][output_channel] < slowest_rate_ml_min:
+                    self.logger.debug(
+                        "Instructed to dispense {ir:.1f} ml/min, "
+                        "however the slowest rate is set to {sr:.1f} ml/min.".format(
+                            ir=self.options_channels['flow_rate'][output_channel], sr=slowest_rate_ml_min))
+                    dispense_rate = slowest_rate_ml_min
+                elif (self.options_channels['flow_rate'][output_channel] >
+                      self.options_channels['dispense_rate_ml_min'][output_channel]):
+                    self.logger.debug(
+                        "Instructed to dispense {ir:.1f} ml/min, "
+                        "however the fastest rate is set to {fr:.1f} ml/min.".format(
+                            ir=self.options_channels['flow_rate'][output_channel],
+                            fr=self.options_channels['dispense_rate_ml_min'][output_channel]))
+                    dispense_rate = self.options_channels['dispense_rate_ml_min'][output_channel]
+                else:
+                    dispense_rate = self.options_channels['flow_rate'][output_channel]
+
+                self.logger.debug(
+                    "Turning pump on to dispense {ml:.1f} ml {dir} at {rate:.1f} ml/min.".format(
+                        ml=amount, dir=direction, rate=dispense_rate))
+
+                write_db = threading.Thread(
+                    target=self.dispense_volume_rate,
+                    args=(output_channel, amount, dispense_rate,))
+                write_db.start()
+                return
+
+            else:
+                self.logger.error(
+                    "Invalid Output Mode: '{}'. Make sure it is properly set.".format(
+                        self.options_channels['flow_mode'][output_channel]))
+                return
+
+        elif state == 'on' and output_type == 'sec':
+            if self.currently_dispensing[output_channel]:
+                self.logger.debug(
+                    "Pump instructed to turn on while it's already dispensing. "
+                    "Overriding current dispense with new instruction.")
+            self.logger.debug("Speed: {0:.1f}".format(
+                self.options_channels['motor_speed'][output_channel]))
+            self.logger.debug("Output turned on {}".format(direction))
+            self.bus.write_i2c_block_data(
+                self.i2c_address, direction_reg,
+                [output_channel, self.options_channels['motor_speed'][output_channel]])
+
+        else:
+            self.logger.error("Invalid parameters")
+            return
+
     def dispense_volume_fastest(self, channel, amount, total_dispense_seconds):
         """ Dispense at fastest flow rate, a 100 % duty cycle """
         if amount < 0:
@@ -299,115 +413,6 @@ class OutputModule(AbstractOutput):
             measure_dict[4]['value'] = amount
             measure_dict[5]['value'] = total_dispense_seconds
         add_measurements_influxdb(self.unique_id, measure_dict)
-
-    def output_switch(self, state, output_type=None, amount=None, output_channel=None):
-        if self.setting_i2c:
-            self.logger.error("Cannot operate output while I2C address is changing")
-            return
-
-        direction = "CW"
-        direction_reg = self.reg_write_run_cw
-        if amount and amount < 0:
-            direction = "CCW"
-            direction_reg = self.reg_write_run_ccw
-
-        self.logger.debug(
-            "state: {st}, channel: {ch}, output_type: {ot}, "
-            "amount: {amt} (direction: {dir}), mode: {fm}, rate: {fr}".format(
-                st=state,
-                ch=output_channel,
-                ot=output_type,
-                amt=amount,
-                dir=direction,
-                fm=self.options_channels['flow_mode'][output_channel],
-                fr=self.options_channels['flow_rate'][output_channel]))
-
-        if state == 'off':
-            if self.currently_dispensing[output_channel]:
-                self.currently_dispensing[output_channel] = False
-            self.logger.debug("Output turned off")
-            self.bus.write_word_data(self.i2c_address, self.reg_write_off, output_channel)
-
-        elif (amount and state == 'on' and
-                output_type in ['vol', None]):
-
-            if self.currently_dispensing[output_channel]:
-                self.logger.debug(
-                    "Pump instructed to turn on for a duration while it's "
-                    "already dispensing. Overriding current dispense with "
-                    "new instruction.")
-
-            if self.options_channels['flow_mode'][output_channel] == 'fastest_flow_rate':
-                total_dispense_seconds = (abs(amount) /
-                                          self.options_channels['dispense_rate_ml_min'][output_channel] *
-                                          60)
-
-                msg = "Turning pump on for {sec:.1f} seconds {dir} to " \
-                      "dispense {ml:.1f} ml (at {rate:.1f} ml/min, " \
-                      "the fastest flow rate).".format(
-                        sec=total_dispense_seconds,
-                        dir=direction,
-                        ml=abs(amount),
-                        rate=self.options_channels['dispense_rate_ml_min'][output_channel])
-                self.logger.debug(msg)
-
-                write_db = threading.Thread(
-                    target=self.dispense_volume_fastest,
-                    args=(output_channel, amount, total_dispense_seconds,))
-                write_db.start()
-                return
-
-            elif self.options_channels['flow_mode'][output_channel] == 'specify_flow_rate':
-                slowest_rate_ml_min = (self.options_channels['dispense_rate_ml_min'][output_channel] /
-                                       60 * self.options_channels['minimum_sec_on_per_min'][output_channel])
-                if self.options_channels['flow_rate'][output_channel] < slowest_rate_ml_min:
-                    self.logger.debug(
-                        "Instructed to dispense {ir:.1f} ml/min, "
-                        "however the slowest rate is set to {sr:.1f} ml/min.".format(
-                            ir=self.options_channels['flow_rate'][output_channel], sr=slowest_rate_ml_min))
-                    dispense_rate = slowest_rate_ml_min
-                elif (self.options_channels['flow_rate'][output_channel] >
-                        self.options_channels['dispense_rate_ml_min'][output_channel]):
-                    self.logger.debug(
-                        "Instructed to dispense {ir:.1f} ml/min, "
-                        "however the fastest rate is set to {fr:.1f} ml/min.".format(
-                            ir=self.options_channels['flow_rate'][output_channel],
-                            fr=self.options_channels['dispense_rate_ml_min'][output_channel]))
-                    dispense_rate = self.options_channels['dispense_rate_ml_min'][output_channel]
-                else:
-                    dispense_rate = self.options_channels['flow_rate'][output_channel]
-
-                self.logger.debug(
-                    "Turning pump on to dispense {ml:.1f} ml {dir} at {rate:.1f} ml/min.".format(
-                        ml=amount, dir=direction, rate=dispense_rate))
-
-                write_db = threading.Thread(
-                    target=self.dispense_volume_rate,
-                    args=(output_channel, amount, dispense_rate,))
-                write_db.start()
-                return
-
-            else:
-                self.logger.error(
-                    "Invalid Output Mode: '{}'. Make sure it is properly set.".format(
-                        self.options_channels['flow_mode'][output_channel]))
-                return
-
-        elif state == 'on' and output_type == 'sec':
-            if self.currently_dispensing[output_channel]:
-                self.logger.debug(
-                    "Pump instructed to turn on while it's already dispensing. "
-                    "Overriding current dispense with new instruction.")
-            self.logger.debug("Speed: {0:.1f}".format(
-                self.options_channels['motor_speed'][output_channel]))
-            self.logger.debug("Output turned on {}".format(direction))
-            self.bus.write_i2c_block_data(
-                self.i2c_address, direction_reg,
-                [output_channel, self.options_channels['motor_speed'][output_channel]])
-
-        else:
-            self.logger.error("Invalid parameters")
-            return
 
     def is_on(self, output_channel=None):
         if self.is_setup():

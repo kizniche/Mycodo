@@ -177,7 +177,6 @@ class OutputModule(AbstractOutput):
 
         self.dac = None
         self.channel = {}
-        self.output_setup = False
         self.vref = None
 
         self.setup_custom_options(
@@ -224,6 +223,11 @@ class OutputModule(AbstractOutput):
             self.logger.exception("Error setting up Output")
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
+        if not self.is_setup():
+            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+            self.logger.error(msg)
+            return msg
+
         if state == 'on' and None not in [amount, output_channel]:
             self.channel[output_channel].value = int(65535 * (amount / self.vref))
         elif state == 'off' or (amount is not None and amount <= 0):

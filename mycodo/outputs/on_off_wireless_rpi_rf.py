@@ -189,6 +189,11 @@ class OutputModule(AbstractOutput):
             self.output_switch('off')
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
+        if not self.is_setup():
+            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+            self.logger.error(msg)
+            return msg
+
         if state == 'on':
             self.wireless_pi_switch.transmit(int(self.options_channels['on_command'][0]))
             self.output_states[output_channel] = True
@@ -204,9 +209,7 @@ class OutputModule(AbstractOutput):
                 return self.output_states
 
     def is_setup(self):
-        if self.wireless_pi_switch:
-            return True
-        return False
+        return self.output_setup
 
     def stop_output(self):
         """ Called when Output is stopped """

@@ -163,7 +163,6 @@ class OutputModule(AbstractOutput):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
         self.strip = None
-        self.output_setup = False
         self.outlet_switching = False
         self.status_thread = None
         self.outlet_status_checking = False
@@ -221,8 +220,9 @@ class OutputModule(AbstractOutput):
 
     def output_switch(self, state, output_type=None, amount=None, output_channel=None):
         if not self.is_setup():
-            self.logger.error('Output not set up.')
-            return
+            msg = "Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info."
+            self.logger.error(msg)
+            return msg
 
         while self.outlet_status_checking and self.running:
             time.sleep(0.1)
