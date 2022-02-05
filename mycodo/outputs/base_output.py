@@ -62,7 +62,6 @@ class AbstractOutput(AbstractBaseController):
             self.unique_id = output.unique_id
             self.output_name = self.output.name
             self.output_type = self.output.output_type
-            self.output_force_command = self.output.force_command
 
     def __iter__(self):
         """ Support the iterator protocol """
@@ -402,8 +401,13 @@ class AbstractOutput(AbstractBaseController):
                     amount in [None, 0] and
                     output_type in ['sec', None]):
 
+                try:
+                    force_output_channel = self.options_channels["command_force"][output_channel]
+                except:
+                    force_output_channel = False
+
                 # Don't turn on if already on, except if it can be forced on
-                if output_is_on and not self.output_force_command:
+                if output_is_on and not force_output_channel:
                     msg = "Output {id} CH{ch} ({name}) is already on.".format(
                         id=self.unique_id,
                         ch=output_channel,
