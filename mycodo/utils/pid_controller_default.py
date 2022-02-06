@@ -120,25 +120,19 @@ class PIDControl(object):
         band_min = self.setpoint - self.band
         band_max = self.setpoint + self.band
 
-        if self.direction == 'raise':
-            if (measure < band_min or
-                    (band_min < measure < band_max and self.allow_raising)):
-                self.allow_raising = True
-                setpoint = band_max  # New setpoint
-                return setpoint  # Apply the PID
-            elif measure > band_max:
-                self.allow_raising = False
-            return None  # Restrict the PID
+        # measure  # setpoint # resultingError #
+        ########################################
+        #  < min   # max      #   > 2*band     #
+        # between  # measure  #      0         #
+        #  > max   # min      #   < -2*band    #
 
-        elif self.direction == 'lower':
-            if (measure > band_max or
-                    (band_min < measure < band_max and self.allow_lowering)):
-                self.allow_lowering = True
-                setpoint = band_min  # New setpoint
-                return setpoint  # Apply the PID
-            elif measure < band_min:
-                self.allow_lowering = False
-            return None  # Restrict the PID
+        if self.direction == 'raise' or self.direction == 'lower':
+            if (measure < band_min):
+                return band_max  # Apply the PID with new setpoint
+            elif (band_min <= measure <= band_max):
+                return measure  # Restrict the PID
+            elif (measure > band_max):
+                return band_min  # Apply the PID with new setpoint
 
         elif self.direction == 'both':
             if measure < band_min:
