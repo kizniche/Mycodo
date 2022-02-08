@@ -27,7 +27,7 @@ pyro5==5.12
 pyserial==3.5
 python-dateutil==2.8.2
 requests==2.26.0
-setuptools==60.6.0
+setuptools==60.7.1  # Also set version in upgrade_commands.sh
 SQLAlchemy==1.4.26
 Werkzeug==2.0.2
 WTForms==2.3.3
