@@ -258,6 +258,14 @@ FUNCTION_INFORMATION = {
             'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
+            'id': 'measurement_label',
+            'type': 'text',
+            'default_value': '',
+            'required': False,
+            'name': 'Measurement Label',
+            'phrase': 'Set to overwrite the default measurement label'
+        },
+        {
             'id': 'measure_decimal',
             'type': 'integer',
             'default_value': 1,
@@ -274,6 +282,14 @@ FUNCTION_INFORMATION = {
             'name': TRANSLATIONS['text']['title'],
             'phrase': "Text to display"
         },
+        {
+            'id': 'display_unit',
+            'type': 'bool',
+            'default_value': True,
+            'required': True,
+            'name': 'Display Unit',
+            'phrase': "Display the measurement unit (if available)"
+        }
     ]
 }
 
@@ -396,7 +412,10 @@ class CustomModule(AbstractFunction):
                             lines_display[current_line] = format_measurement_line(
                                 self.options_channels['select_measurement'][current_channel]['device_id'],
                                 self.options_channels['select_measurement'][current_channel]['measurement_id'],
-                                val_rounded, lcd_x_characters)
+                                val_rounded,
+                                lcd_x_characters,
+                                display_unit=self.options_channels['display_unit'][current_channel],
+                                label=self.options_channels['measurement_label'][current_channel])
 
                     elif self.options_channels['line_display_type'][current_channel] == 'measurement_ts':
                         if measure_ts:

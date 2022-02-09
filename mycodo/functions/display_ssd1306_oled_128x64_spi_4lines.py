@@ -318,6 +318,14 @@ FUNCTION_INFORMATION = {
             'phrase': lazy_gettext('The maximum age (seconds) of the measurement to use')
         },
         {
+            'id': 'measurement_label',
+            'type': 'text',
+            'default_value': '',
+            'required': False,
+            'name': 'Measurement Label',
+            'phrase': 'Set to overwrite the default measurement label'
+        },
+        {
             'id': 'measure_decimal',
             'type': 'integer',
             'default_value': 1,
@@ -477,7 +485,8 @@ class CustomModule(AbstractFunction):
                                 self.options_channels['select_measurement'][current_channel]['measurement_id'],
                                 val_rounded,
                                 self.characters_x,
-                                display_unit=self.options_channels['display_unit'][current_channel])
+                                display_unit=self.options_channels['display_unit'][current_channel],
+                                label=self.options_channels['measurement_label'][current_channel])
 
                     elif self.options_channels['line_display_type'][current_channel] == 'measurement_ts':
                         if measure_ts:

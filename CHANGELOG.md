@@ -14,6 +14,7 @@ If you are upgrading from a version prior to 8.12.10, following the upgrade, you
  - Fix error-handling of missing template files ([#1145](https://github.com/kizniche/mycodo/issues/1145))
  - Fix displaying values on LCDs when Decimal is set to 0
  - Fix Blank Line option of LCDs actually displaying a blank line
+ - Fix missing Display Unit option for some LCDs
 
 ### Features
 
@@ -25,6 +26,7 @@ If you are upgrading from a version prior to 8.12.10, following the upgrade, you
  - Add ability to invert the saved duty cycle for PWM Outputs
  - Add randomly-generated Client IDs for MQTT Inputs/Functions
  - Add calibration, offset, and reset options for SCD-30 Input
+ - Add Measurement Label as an LCD option
 
 ### Miscellaneous
 
