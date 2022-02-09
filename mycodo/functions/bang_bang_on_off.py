@@ -19,12 +19,13 @@ FUNCTION_INFORMATION = {
     'function_name_unique': 'bang_bang_on_off',
     'function_name': 'Bang-Bang Hysteretic (On/Off) (Raise/Lower/Both)',
 
-    'message': 'A simple bang-bang control for controlling one output from one input.'
-        ' Select an input, an output, enter a setpoint and a hysteresis, and select a direction.'
+    'message': 'A simple bang-bang control for controlling one or two outputs from one input.'
+        ' Select an input, a raise and/or lower output, enter a setpoint and a hysteresis, and select a direction.'
         ' The output will turn on when the input is below (lower = setpoint - hysteresis) and turn off when'
         ' the input is above (higher = setpoint + hysteresis). This is the behavior when Raise is selected, such'
         ' as when heating. Lower direction has the opposite behavior - it will try to'
-        ' turn the output on in order to drive the input lower. The Both option will raise and lower.',
+        ' turn the output on in order to drive the input lower. The Both option will raise and lower.'
+        ' Note: This output will only work with On/Off Outputs.',
 
     'options_disabled': [
         'measurements_select',

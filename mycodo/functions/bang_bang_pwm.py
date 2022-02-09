@@ -20,7 +20,8 @@ FUNCTION_INFORMATION = {
         ' The output will turn on when the input is below below (lower = setpoint - hysteresis) and turn off when'
         ' the input is above (higher = setpoint + hysteresis). This is the behavior when Raise is selected, such'
         ' as when heating. Lower direction has the opposite behavior - it will try to'
-        ' turn the output on in order to drive the input lower. The Both option will raise and lower.',
+        ' turn the output on in order to drive the input lower. The Both option will raise and lower.'
+        ' Note: This output will only work with PWM Outputs.',
 
     'options_disabled': [
         'measurements_select',
