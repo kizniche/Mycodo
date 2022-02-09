@@ -445,7 +445,7 @@ class CustomModule(AbstractFunction):
                     if self.options_channels['line_display_type'][current_channel] == 'measurement_value':
                         if measure_value:
                             if self.options_channels['measure_decimal'][current_channel] == 0:
-                                val_rounded = int(self.options_channels['measure_decimal'][current_channel])
+                                val_rounded = int(measure_value)
                             else:
                                 val_rounded = round(
                                     measure_value,
