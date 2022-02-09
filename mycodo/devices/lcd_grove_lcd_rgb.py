@@ -207,15 +207,15 @@ class LCD_Grove_LCD_RGB:
 
     def lcd_write_lines(self, line_1, line_2, line_3, line_4):
         msg = ""
-        if line_1:
+        if line_1 is not None:
             msg += line_1
         msg += "\n"
-        if line_2:
+        if line_2 is not None:
             msg += line_2
         msg += "\n"
-        if line_3:
+        if line_3 is not None:
             msg += line_3
         msg += "\n"
-        if line_4:
+        if line_4 is not None:
             msg += line_4
         self.setText(msg)
