@@ -58,7 +58,7 @@ WIDGET_INFORMATION = {
             'default_value': 3600,
             'constraints_pass': constraints_pass_positive_value,
             'name': 'Max Age (seconds)',
-            'phrase': 'The maximum age of the camera image'
+            'phrase': 'The maximum age of the measurement'
         },
         {
             'id': 'refresh_seconds',
