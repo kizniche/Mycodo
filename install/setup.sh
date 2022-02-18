@@ -33,7 +33,7 @@ printf "Checking Python version...\n"
 if hash python3 2>/dev/null; then
   if ! python3 "${INSTALL_DIRECTORY}"/mycodo/scripts/upgrade_check.py --min_python_version "3.6"; then
     printf "Incorrect Python version found. Mycodo requires Python >= 3.6.\n"
-    printf "If you're running Raspbian 9 (Stretch) with Python 3.5, you will need to install at least Raspbian 10 (Buster) with Python 3.7 to install the latest version of Mycodo.\n"
+    printf "If you're running Debian Stretch with Python 3.5, you will need to install at least Debian Buster with Python 3.7 to install the latest version of Mycodo.\n"
     exit 1
   else
     printf "Python >= 3.6 found. Continuing with the install.\n"
