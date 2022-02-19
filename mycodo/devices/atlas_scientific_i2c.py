@@ -95,7 +95,7 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
                     (query_str.upper().startswith("CAL"))):
                 time.sleep(self.long_timeout)
             elif query_str.upper().startswith("SLEEP"):
-                return "sleep mode"
+                return "success", "sleep mode"
             else:
                 time.sleep(self.short_timeout)
 

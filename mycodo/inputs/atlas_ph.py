@@ -84,7 +84,7 @@ INPUT_INFORMATION = {
     'custom_actions': [
         {
             'type': 'message',
-            'default_value': """Calibration: a one-, two- or three-point calibration can be performed. It's a good idea to clear the calibration before calibrating. The first calibration must be the Mid point. The second must be the Low point. And the third must be the High point. You can perform a one-, two- or three-point calibration, but they must be performed in this order. Allow a minute or two after submerging your probe in a calibration solution for the measurements to equilibrate before calibrating to that solution. The EZO pH circuit default temperature compensation is set to 25 °C. If the temperature of the calibration solution is +/- 2 °C from 25 °C, consider setting the temperature compensation first. Note that if you have a Temperature Compensation Measurement selected from the Options, this will overwrite the manual Temperature Compensation set here, so be sure to disable this option if you would like to specify the temperature to compensate with."""
+            'default_value': """Calibration: a one-, two- or three-point calibration can be performed. It's a good idea to clear the calibration before calibrating. The first calibration must be the Mid point. The second must be the Low point. And the third must be the High point. You can perform a one-, two- or three-point calibration, but they must be performed in this order. Allow a minute or two after submerging your probe in a calibration solution for the measurements to equilibrate before calibrating to that solution. The EZO pH circuit default temperature compensation is set to 25 °C. If the temperature of the calibration solution is +/- 2 °C from 25 °C, consider setting the temperature compensation first. Note that if you have a Temperature Compensation Measurement selected from the Options, this will overwrite the manual Temperature Compensation set here, so be sure to disable this option if you would like to specify the temperature to compensate with. Status messages will be set to the Daemon Log, accessible from Config -> Mycodo Logs -> Daemon Log."""
         },
         {
             'id': 'compensation_temp_c',
@@ -296,8 +296,7 @@ class InputModule(AbstractInput):
         try:
             write_cmd = "T,{:.2f}".format(args_dict['compensation_temp_c'])
             self.logger.debug("Compensation command: {}".format(write_cmd))
-            ret_val = self.atlas_device.atlas_write(write_cmd)
-            self.logger.info("Command returned: {}".format(ret_val))
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
         except:
             self.logger.exception("Exception compensating temperature")
 
@@ -308,12 +307,10 @@ class InputModule(AbstractInput):
             else:
                 write_cmd = "Cal,{},{:.2f}".format(level, ph)
             self.logger.debug("Calibration command: {}".format(write_cmd))
-            ret_val = self.atlas_device.atlas_write(write_cmd)
-            self.logger.info("Command returned: {}".format(ret_val))
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
             # Verify calibration saved
-            write_cmd = "Cal,?"
-            self.logger.info("Device Calibrated?: {}".format(
-                self.atlas_device.atlas_write(write_cmd)))
+            self.logger.info("Calibrated: {}".format(self.atlas_device.query("Cal,?")))
+            self.logger.info("Slope: {}".format(self.atlas_device.query("Slope,?")))
         except:
             self.logger.exception("Exception calibrating")
 
@@ -346,8 +343,7 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            ret_val = self.atlas_device.atlas_write(write_cmd)
-            self.logger.info("Command returned: {}".format(ret_val))
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
             self.atlas_device = None
         except:
             self.logger.exception("Exception changing I2C address")

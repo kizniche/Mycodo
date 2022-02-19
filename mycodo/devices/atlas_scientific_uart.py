@@ -82,9 +82,13 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
                 time.sleep(1.3)
                 response = self.read_lines()
                 return 'success', response
+            except Exception as err:
+                self.logger.exception(
+                    "{cls} raised an exception when taking a reading: "
+                    "{err}".format(cls=type(self).__name__, err=err))
+                return "error", err
             finally:
                 self.lockfile.lock_release(lock_file_amend)
-        return None, None
 
     def read_lines(self):
         """

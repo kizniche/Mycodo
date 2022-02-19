@@ -79,7 +79,7 @@ class AbstractBaseAtlasScientific(object):
 
     def query(self, query_str):
         self.logger.error(
-            "{cls} did not overwrite the get_measurement() method. All "
-            "subclasses of the AbstractInput class are required to overwrite "
+            "{cls} did not overwrite the query() method. All subclasses of "
+            "the AbstractBaseAtlasScientific class are required to overwrite "
             "this method".format(cls=type(self).__name__))
         raise NotImplementedError

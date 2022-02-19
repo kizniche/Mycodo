@@ -20,6 +20,8 @@ INPUT_INFORMATION = {
     'measurements_name': 'GPIO State',
     'measurements_dict': measurements_dict,
 
+    'message': 'Measures the state of a GPIO pin, returning either 0 (low) or 1 (high).',
+
     'options_enabled': [
         'gpio_location',
         'period',

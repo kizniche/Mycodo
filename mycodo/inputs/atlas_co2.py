@@ -55,6 +55,39 @@ INPUT_INFORMATION = {
 
     'custom_actions': [
         {
+            'type': 'message',
+            'default_value': """A one- or two-point calibration can be performed. After exposing the probe to a concentration of CO2 between 3,000 and 5,000 ppmv until readings stabilize, press Calibrate (High). You can place the probe in a 0 CO2 environment until readings stabilize, then press Calibrate (Zero). You can also clear the currently-saved calibration by pressing Clear Calibration, returning to the factory-set calibration. Status messages will be set to the Daemon Log, accessible from Config -> Mycodo Logs -> Daemon Log."""
+        },
+        {
+            'id': 'co2_high',
+            'type': 'integer',
+            'default_value': 3000,
+            'name': 'High Point CO2',
+            'phrase': 'The high CO2 calibration point (3000 - 5000 ppmv)'
+        },
+        {
+            'id': 'calibrate_high',
+            'type': 'button',
+            'name': 'Calibrate (High)'
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'calibrate_zero',
+            'type': 'button',
+            'name': 'Calibrate (Zero)'
+        },
+        {
+            'id': 'calibrate_clear',
+            'type': 'button',
+            'name': lazy_gettext('Clear Calibration')
+        },
+        {
+            'type': 'message',
+            'default_value': """The I2C address can be changed. Enter a new address in the 0xYY format (e.g. 0x22, 0x50), then press Set I2C Address. Remember to deactivate and change the I2C address option after setting the new address."""
+        },
+        {
             'id': 'new_i2c_address',
             'type': 'text',
             'default_value': '0x69',
@@ -135,6 +168,38 @@ class InputModule(AbstractInput):
 
         return self.return_dict
 
+    def calibrate_high(self, args_dict):
+        if 'co2_high' not in args_dict:
+            self.logger.error("Cannot calibrate without high point CO2 ppmv")
+            return
+        try:
+            write_cmd = "Cal,{}".format(args_dict['co2_high'])
+            self.logger.debug("Command to send: {}".format(write_cmd))
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+            # Verify calibration saved
+            self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
+        except:
+            self.logger.exception("Exception calibrating sensor")
+
+    def calibrate_zero(self, args_dict):
+        try:
+            write_cmd = "Cal,0"
+            self.logger.debug("Command to send: {}".format(write_cmd))
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+            # Verify calibration saved
+            self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
+        except:
+            self.logger.exception("Exception calibrating sensor")
+
+    def calibrate_clear(self, args_dict):
+        try:
+            write_cmd = "Cal,clear"
+            self.logger.debug("Calibration command: {}".format(write_cmd))
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+            self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
+        except:
+            self.logger.exception("Exception clearing calibration")
+
     def set_i2c_address(self, args_dict):
         if 'new_i2c_address' not in args_dict:
             self.logger.error("Cannot set new I2C address without an I2C address")
@@ -143,6 +208,7 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            self.atlas_device.atlas_write(write_cmd)
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+            self.atlas_device = None
         except:
             self.logger.exception("Exception changing I2C address")

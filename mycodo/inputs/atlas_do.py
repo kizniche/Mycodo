@@ -83,7 +83,7 @@ INPUT_INFORMATION = {
     'custom_actions': [
         {
             'type': 'message',
-            'default_value': """A one- or two-point calibration can be performed. After exposing the probe to air for 30 seconds until readings stabilize, press Calibrate (Air). If you require accuracy below 1.0 mg/L, you can place the probe in a 0 mg/L solution for 30 to 90 seconds until readings stabilize, then press Calibrate (0 mg/L). You can also clear the currently-saved calibration by pressing Clear Calibration."""
+            'default_value': """A one- or two-point calibration can be performed. After exposing the probe to air for 30 seconds until readings stabilize, press Calibrate (Air). If you require accuracy below 1.0 mg/L, you can place the probe in a 0 mg/L solution for 30 to 90 seconds until readings stabilize, then press Calibrate (0 mg/L). You can also clear the currently-saved calibration by pressing Clear Calibration. Status messages will be set to the Daemon Log, accessible from Config -> Mycodo Logs -> Daemon Log."""
         },
         {
             'id': 'calibrate_air',
@@ -241,12 +241,9 @@ class InputModule(AbstractInput):
         try:
             write_cmd = "Cal"
             self.logger.debug("Command to send: {}".format(write_cmd))
-            ret_val = self.atlas_device.atlas_write(write_cmd)
-            self.logger.info("Command returned: {}".format(ret_val))
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
             # Verify calibration saved
-            write_cmd = "Cal,?"
-            self.logger.info("Device Calibrated?: {}".format(
-                self.atlas_device.atlas_write(write_cmd)))
+            self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
         except:
             self.logger.exception("Exception calibrating sensor")
 
@@ -254,12 +251,9 @@ class InputModule(AbstractInput):
         try:
             write_cmd = "Cal,0"
             self.logger.debug("Command to send: {}".format(write_cmd))
-            ret_val = self.atlas_device.atlas_write(write_cmd)
-            self.logger.info("Command returned: {}".format(ret_val))
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
             # Verify calibration saved
-            write_cmd = "Cal,?"
-            self.logger.info("Device Calibrated?: {}".format(
-                self.atlas_device.atlas_write(write_cmd)))
+            self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
         except:
             self.logger.exception("Exception calibrating sensor")
 
@@ -267,8 +261,8 @@ class InputModule(AbstractInput):
         try:
             write_cmd = "Cal,clear"
             self.logger.debug("Calibration command: {}".format(write_cmd))
-            ret_val = self.atlas_device.atlas_write(write_cmd)
-            self.logger.info("Command returned: {}".format(ret_val))
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+            self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
         except:
             self.logger.exception("Exception clearing calibration")
 
@@ -280,6 +274,7 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            self.atlas_device.atlas_write(write_cmd)
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+            self.atlas_device = None
         except:
             self.logger.exception("Exception changing I2C address")
