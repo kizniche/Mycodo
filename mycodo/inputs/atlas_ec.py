@@ -180,6 +180,7 @@ class InputModule(AbstractInput):
 
         self.atlas_device = None
         self.interface = None
+        self.lock_timeout = 10
 
         self.temperature_comp_meas_device_id = None
         self.temperature_comp_meas_measurement_id = None
@@ -278,34 +279,43 @@ class InputModule(AbstractInput):
                     "Calibration measurement not found within the past "
                     "{} seconds".format(self.max_age))
 
-        # Read sensor via FTDI or UART
-        if self.interface in ['FTDI', 'UART']:
-            ec_status, ec_list = self.atlas_device.query('R')
-            if ec_list:
-                self.logger.debug("Return list: '{}'".format(ec_list))
+        # Read device
+        if self.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
+            try:
+                atlas_status, atlas_return = self.atlas_device.query('R')
+                self.logger.debug("Returned: {}".format(atlas_return))
+            except:
+                self.logger.exception("Could not acquire measurement")
+                return
+            finally:
+                self.lock_release(self.atlas_device.lock_file)
+        else:
+            self.logger.error("Could not get lock after {} seconds".format(self.lock_timeout))
+            return
 
+        # Parse device return data
+        if self.interface in ['FTDI', 'UART']:
             # Check for "check probe"
-            for each_split in ec_list:
+            for each_split in atlas_return:
                 if 'check probe' in each_split:
                     self.logger.error('"check probe" returned from sensor')
                     return
 
             # Find float value in list
-            for each_split in ec_list:
+            for each_split in atlas_return:
                 if "," in each_split or str_is_float(each_split):
                     return_string = each_split
                     break
 
-        # Read sensor via I2C
         elif self.interface == 'I2C':
-            ec_status, return_string = self.atlas_device.query('R')
-            if ec_status == 'error':
+            atlas_status, atlas_return = self.atlas_device.query('R')
+            if atlas_status == 'error':
                 self.logger.error("Sensor read unsuccessful: {err}".format(
-                    err=return_string))
+                    err=atlas_return))
+            else:
+                return_string = atlas_return
 
-        self.logger.debug("Return string: '{}'".format(return_string))
-
-        if ',' in return_string:
+        if return_string and ',' in return_string:
             # Multiple values returned
             index_place = 0
             return_list = return_string.split(',')
@@ -352,9 +362,13 @@ class InputModule(AbstractInput):
             else:
                 write_cmd = "Cal,{},{}".format(level, ec)
             self.logger.debug("Calibration command: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-            # Verify calibration saved
-            self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
+
+            if self.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
+                try:
+                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+                    self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
+                finally:
+                    self.lock_release(self.atlas_device.lock_file)
         except:
             self.logger.exception("Exception calibrating")
 
@@ -390,7 +404,12 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-            self.atlas_device = None
+            lock_file = self.atlas_device.lock_file
+            if self.lock_acquire(lock_file, timeout=self.lock_timeout):
+                try:
+                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+                    self.atlas_device = None
+                finally:
+                    self.lock_release(lock_file)
         except:
             self.logger.exception("Exception changing I2C address")

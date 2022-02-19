@@ -111,6 +111,7 @@ class InputModule(AbstractInput):
 
         self.atlas_device = None
         self.interface = None
+        self.lock_timeout = 10
 
         if not testing:
             self.initialize_input()
@@ -132,73 +133,73 @@ class InputModule(AbstractInput):
         co2 = None
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        # Read sensor via FTDI or UART
-        if self.interface in ['FTDI', 'UART']:
-            co2_status, co2_list = self.atlas_device.query('R')
-            self.logger.debug("Returned: {}".format(co2_list))
+        # Read device
+        if self.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
+            try:
+                atlas_status, atlas_return = self.atlas_device.query('R')
+                self.logger.debug("Returned: {}".format(atlas_return))
+            except:
+                self.logger.exception("Could not acquire measurement")
+                return
+            finally:
+                self.lock_release(self.atlas_device.lock_file)
+        else:
+            self.logger.error("Could not get lock after {} seconds".format(self.lock_timeout))
+            return
 
+        # Parse device return data
+        if self.interface in ['FTDI', 'UART']:
             # Find float value in list
             float_value = None
-            for each_split in co2_list:
+            for each_split in atlas_return:
                 if str_is_float(each_split):
                     float_value = each_split
                     break
 
-            if 'check probe' in co2_list:
+            if 'check probe' in atlas_return:
                 self.logger.error('"check probe" returned from sensor')
             elif str_is_float(float_value):
                 co2 = float(float_value)
                 self.logger.debug('Found float value: {val}'.format(val=co2))
             else:
-                self.logger.error('Value or "check probe" not found in list: {val}'.format(val=co2_list))
+                self.logger.error('Value or "check probe" not found in list: {val}'.format(val=atlas_return))
 
-        # Read sensor via I2C
         elif self.interface == 'I2C':
-            co2_status, co2_str = self.atlas_device.query('R')
-            self.logger.debug("Returned: {}".format(co2_str))
-            if co2_status == 'error':
-                self.logger.error("Sensor read unsuccessful: {err}".format(err=co2_str))
-            elif co2_status == 'success':
-                if str_is_float(co2_str):
-                    co2 = float(co2_str)
+            if atlas_status == 'error':
+                self.logger.error("Sensor read unsuccessful: {err}".format(err=atlas_return))
+            elif atlas_status == 'success':
+                if str_is_float(atlas_return):
+                    co2 = float(atlas_return)
                 else:
-                    self.logger.error("Could not determine co2 from returned string: '{}'".format(co2_str))
+                    self.logger.error("Could not determine co2 from returned value: '{}'".format(atlas_return))
 
         self.value_set(0, co2)
 
         return self.return_dict
 
+    def calibrate(self, write_cmd):
+        try:
+            self.logger.debug("Command to send: {}".format(write_cmd))
+            if self.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
+                try:
+                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+                    self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
+                finally:
+                    self.lock_release(self.atlas_device.lock_file)
+        except:
+            self.logger.exception("Exception calibrating sensor")
+
     def calibrate_high(self, args_dict):
         if 'co2_high' not in args_dict:
             self.logger.error("Cannot calibrate without high point CO2 ppmv")
             return
-        try:
-            write_cmd = "Cal,{}".format(args_dict['co2_high'])
-            self.logger.debug("Command to send: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-            # Verify calibration saved
-            self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
-        except:
-            self.logger.exception("Exception calibrating sensor")
+        self.calibrate("Cal,{}".format(args_dict['co2_high']))
 
     def calibrate_zero(self, args_dict):
-        try:
-            write_cmd = "Cal,0"
-            self.logger.debug("Command to send: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-            # Verify calibration saved
-            self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
-        except:
-            self.logger.exception("Exception calibrating sensor")
+        self.calibrate("Cal,0")
 
     def calibrate_clear(self, args_dict):
-        try:
-            write_cmd = "Cal,clear"
-            self.logger.debug("Calibration command: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-            self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
-        except:
-            self.logger.exception("Exception clearing calibration")
+        self.calibrate("Cal,clear")
 
     def set_i2c_address(self, args_dict):
         if 'new_i2c_address' not in args_dict:
@@ -208,7 +209,12 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-            self.atlas_device = None
+            lock_file = self.atlas_device.lock_file
+            if self.lock_acquire(lock_file, timeout=self.lock_timeout):
+                try:
+                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+                    self.atlas_device = None
+                finally:
+                    self.lock_release(lock_file)
         except:
             self.logger.exception("Exception changing I2C address")

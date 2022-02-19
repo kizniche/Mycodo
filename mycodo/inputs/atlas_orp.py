@@ -92,7 +92,7 @@ INPUT_INFORMATION = {
             'phrase': 'The value of the calibration solution, in mV'
         },
         {
-            'id': 'calibrate',
+            'id': 'calibrate_mv',
             'type': 'button',
             'name': lazy_gettext('Calibrate')
         },
@@ -130,6 +130,7 @@ class InputModule(AbstractInput):
         self.atlas_device = None
         self.interface = None
         self.atlas_command = None
+        self.lock_timeout = 10
 
         self.temperature_comp_meas_device_id = None
         self.temperature_comp_meas_measurement_id = None
@@ -200,63 +201,67 @@ class InputModule(AbstractInput):
                     "Calibration measurement not found within the past {} seconds".format(
                         self.max_age))
 
-        # Read sensor via FTDI or UART
-        if self.interface in ['FTDI', 'UART']:
-            orp_status, orp_list = self.atlas_device.query('R')
-            if orp_list:
-                self.logger.debug("Returned list: {lines}".format(lines=orp_list))
+        # Read device
+        if self.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
+            try:
+                atlas_status, atlas_return = self.atlas_device.query('R')
+                self.logger.debug("Returned: {}".format(atlas_return))
+            except:
+                self.logger.exception("Could not acquire measurement")
+                return
+            finally:
+                self.lock_release(self.atlas_device.lock_file)
+        else:
+            self.logger.error("Could not get lock after {} seconds".format(self.lock_timeout))
+            return
 
+        # Parse device return data
+        if self.interface in ['FTDI', 'UART']:
             # Find float value in list
             float_value = None
-            for each_split in orp_list:
+            for each_split in atlas_return:
                 if str_is_float(each_split):
                     float_value = each_split
                     break
 
-            if 'check probe' in orp_list:
+            if 'check probe' in atlas_return:
                 self.logger.error('"check probe" returned from sensor')
             elif str_is_float(float_value):
                 orp = float(float_value)
                 self.logger.debug('Found float value: {val}'.format(val=orp))
             else:
-                self.logger.error('Value or "check probe" not found in list: {val}'.format(val=orp_list))
+                self.logger.error('Value or "check probe" not found in list: {val}'.format(val=atlas_return))
 
-        # Read sensor via I2C
         elif self.interface == 'I2C':
-            ec_status, ec_str = self.atlas_device.query('R')
-            if ec_status == 'error':
-                self.logger.error("Sensor read unsuccessful: {err}".format(err=ec_str))
-            elif ec_status == 'success':
-                orp = float(ec_str)
+            if atlas_status == 'error':
+                self.logger.error("Sensor read unsuccessful: {err}".format(err=atlas_return))
+            elif atlas_status == 'success':
+                orp = float(atlas_return)
 
         self.value_set(0, orp)
 
         return self.return_dict
 
-    def calibrate(self, args_dict):
+    def calibrate(self, write_cmd):
+        try:
+            if self.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
+                try:
+                    self.logger.info("Command: {}".format(write_cmd))
+                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+                    self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
+                finally:
+                    self.lock_release(self.atlas_device.lock_file)
+        except:
+            self.logger.exception("Exception calibrating")
+
+    def calibrate_mv(self, args_dict):
         if 'solution_mV' not in args_dict:
             self.logger.error("Cannot calibrate without Solution mV")
             return
-        try:
-            write_cmd = "Cal,{}".format(args_dict['solution_mV'])
-            self.logger.debug("Command to send: {}".format(write_cmd))
-            ret_val = self.atlas_device.atlas_write(write_cmd)
-            self.logger.info("Command returned: {}".format(ret_val))
-            # Verify calibration saved
-            write_cmd = "Cal,?"
-            self.logger.info("Device Calibrated?: {}".format(
-                self.atlas_device.atlas_write(write_cmd)))
-        except:
-            self.logger.exception("Exception calibrating sensor")
+        self.calibrate("Cal,{}".format(args_dict['solution_mV']))
 
     def calibrate_clear(self, args_dict):
-        try:
-            write_cmd = "Cal,clear"
-            self.logger.debug("Calibration command: {}".format(write_cmd))
-            ret_val = self.atlas_device.atlas_write(write_cmd)
-            self.logger.info("Command returned: {}".format(ret_val))
-        except:
-            self.logger.exception("Exception clearing calibration")
+        self.calibrate("Cal,clear")
 
     def set_i2c_address(self, args_dict):
         if 'new_i2c_address' not in args_dict:
@@ -266,7 +271,12 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-            self.atlas_device = None
+            lock_file = self.atlas_device.lock_file
+            if self.lock_acquire(lock_file, timeout=self.lock_timeout):
+                try:
+                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+                    self.atlas_device = None
+                finally:
+                    self.lock_release(lock_file)
         except:
             self.logger.exception("Exception changing I2C address")

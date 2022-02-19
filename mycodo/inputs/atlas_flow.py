@@ -232,8 +232,7 @@ class InputModule(AbstractInput):
 
         self.atlas_device = None
         self.interface = None
-        self.sensor_is_measuring = False
-        self.sensor_is_clearing = False
+        self.lock_timeout = 10
 
         self.flow_meter_type = None
         self.flow_rate_unit = None
@@ -319,40 +318,42 @@ class InputModule(AbstractInput):
         return_string = None
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        while self.sensor_is_clearing:
-            time.sleep(0.1)
-        self.sensor_is_measuring = True
+        # Read device
+        if self.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
+            try:
+                atlas_status, atlas_return = self.atlas_device.query('R')
+                self.logger.debug("Returned: {}".format(atlas_return))
+            except:
+                self.logger.exception("Could not acquire measurement")
+                return
+            finally:
+                self.lock_release(self.atlas_device.lock_file)
+        else:
+            self.logger.error("Could not get lock after {} seconds".format(self.lock_timeout))
+            return
 
-        # Read sensor via FTDI or UART
+        # Parse device return data
         if self.interface in ['FTDI', 'UART']:
-            flow_status, flow_list = self.atlas_device.query('R')
-            if flow_list:
-                self.logger.debug("Returned list: {lines}".format(lines=flow_list))
-
+            if atlas_return:
                 # Check for "check probe"
-                for each_split in flow_list:
+                for each_split in atlas_return:
                     if 'check probe' in each_split:
                         self.logger.error('"check probe" returned from sensor')
                         return
 
                 # Find float value in list
-                for each_split in flow_list:
+                for each_split in atlas_return:
                     if "," in each_split:
                         return_string = each_split
                         break
 
-        # Read sensor via I2C
         elif self.interface == 'I2C':
-            return_status, return_string = self.atlas_device.query('R')
-            if return_status == 'error':
+            if atlas_status == 'error':
                 self.logger.error("Sensor read unsuccessful: {err}".format(
-                    err=return_string))
-            elif return_status == 'success':
-                return_string = return_string
+                    err=atlas_return))
+            elif atlas_status == 'success':
+                return_string = atlas_return
 
-        self.sensor_is_measuring = False
-
-        self.logger.debug("Raw Return String: {}".format(return_string))
         total_volume = None
         flow_rate_raw = None
         flow_rate = None
@@ -402,16 +403,16 @@ class InputModule(AbstractInput):
             return amount * 60
 
     def clear_total_volume(self, args_dict):
-        while self.sensor_is_measuring:
-            time.sleep(0.1)
-        self.sensor_is_clearing = True
         self.logger.debug("Clearing total volume")
-        return_status, return_string = self.atlas_device.query('Clear')
-        self.sensor_is_clearing = False
-        if return_status == 'error':
-            return 1, "Error: {}".format(return_string)
-        elif return_status == 'success':
-            return 0, "Success"
+        if self.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
+            try:
+                atlas_status, return_string = self.atlas_device.query('Clear')
+                if atlas_status == 'error':
+                    return 1, "Error: {}".format(return_string)
+                elif atlas_status == 'success':
+                    return 0, "Success"
+            finally:
+                self.lock_release(self.atlas_device.lock_file)        
 
     def set_i2c_address(self, args_dict):
         if 'new_i2c_address' not in args_dict:
@@ -421,7 +422,12 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-            self.atlas_device = None
+            lock_file = self.atlas_device.lock_file
+            if self.lock_acquire(lock_file, timeout=self.lock_timeout):
+                try:
+                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+                    self.atlas_device = None
+                finally:
+                    self.lock_release(lock_file)
         except:
             self.logger.exception("Exception changing I2C address")

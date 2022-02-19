@@ -23,14 +23,19 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
     def __init__(self, i2c_address=default_address, i2c_bus=default_bus):
         super(AtlasScientificI2C, self).__init__(interface='I2C', name="_{}_{}".format(i2c_address, i2c_bus))
 
+        self.lock_file = '/var/lock/atlas_I2C_{}_{}_{}.lock'.format(
+            __name__, i2c_address, i2c_bus)
+
         # open two file streams, one for reading and one for writing
         # the specific I2C channel is selected with bus
         # it is usually 1, except for older revisions where its 0
         # wb and rb indicate binary read and write
         self.logger = logging.getLogger(
             "{}_{}_{}".format(__name__, i2c_address, i2c_bus))
+
         self.current_addr = i2c_address
         self.setup = False
+
         try:
             self.file_read = io.open("/dev/i2c-" + str(i2c_bus), "rb", buffering=0)
             self.file_write = io.open("/dev/i2c-" + str(i2c_bus), "wb", buffering=0)

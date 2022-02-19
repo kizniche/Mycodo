@@ -20,8 +20,11 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
     def __init__(self, serial_device, baudrate=9600):
         super(AtlasScientificUART, self).__init__(interface='UART', name=serial_device.replace("/", "_"))
 
+        self.lock_file = '/var/lock/atlas_UART_{}_{}.lock'.format(
+            __name__, serial_device.replace("/", "_"))
+
         self.logger = logging.getLogger(
-            "{}{}".format(__name__, serial_device.replace("/", "_")))
+            "{}_{}".format(__name__, serial_device.replace("/", "_")))
 
         self.setup = False
         self.serial_device = serial_device

@@ -180,6 +180,7 @@ class InputModule(AbstractInput):
         self.atlas_device = None
         self.interface = None
         self.atlas_command = None
+        self.lock_timeout = 10
 
         self.temperature_comp_meas_device_id = None
         self.temperature_comp_meas_measurement_id = None
@@ -251,39 +252,47 @@ class InputModule(AbstractInput):
                     "Calibration measurement not found within the past {} seconds".format(
                         self.max_age))
 
-        # Read sensor via FTDI or UART
-        if self.interface in ['FTDI', 'UART']:
-            ph_status, ph_list = self.atlas_device.query('R')
-            if ph_list:
-                self.logger.debug("Returned list: {lines}".format(lines=ph_list))
+        # Read device
+        if self.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
+            try:
+                atlas_status, atlas_return = self.atlas_device.query('R')
+                self.logger.debug("Returned: {}".format(atlas_return))
+            except:
+                self.logger.exception("Could not acquire measurement")
+                return
+            finally:
+                self.lock_release(self.atlas_device.lock_file)
+        else:
+            self.logger.error("Could not get lock after {} seconds".format(self.lock_timeout))
+            return
 
+        # Parse device return data
+        if self.interface in ['FTDI', 'UART']:
             # Find float value in list
             float_value = None
-            for each_split in ph_list:
+            for each_split in atlas_return:
                 if str_is_float(each_split):
                     float_value = each_split
                     break
 
-            if 'check probe' in ph_list:
+            if 'check probe' in atlas_return:
                 self.logger.error('"check probe" returned from sensor')
             elif str_is_float(float_value):
                 ph = float(float_value)
                 self.logger.debug('Found float value: {val}'.format(val=ph))
             else:
-                self.logger.error('Value or "check probe" not found in list: {val}'.format(val=ph_list))
+                self.logger.error('Value or "check probe" not found in list: {val}'.format(val=atlas_return))
 
-        # Read sensor via I2C
         elif self.interface == 'I2C':
-            ph_status, ph_str = self.atlas_device.query('R')
-            if ph_status == 'error':
-                self.logger.error("Sensor read unsuccessful: {err}".format(err=ph_str))
-            elif ph_status == 'success':
-                if ',' in ph_str and str_is_float(ph_str.split(',')[2]):
-                    ph = float(ph_str.split(',')[2])
-                elif str_is_float(ph_str):
-                    ph = float(ph_str)
+            if atlas_status == 'error':
+                self.logger.error("Sensor read unsuccessful")
+            elif atlas_status == 'success':
+                if ',' in atlas_return and str_is_float(atlas_return.split(',')[2]):
+                    ph = float(atlas_return.split(',')[2])
+                elif str_is_float(atlas_return):
+                    ph = float(atlas_return)
                 else:
-                    self.logger.error("Could not determine pH from returned string: '{}'".format(ph_str))
+                    self.logger.error("Could not determine pH from returned value: '{}'".format(atlas_return))
 
         self.value_set(0, ph)
 
@@ -295,8 +304,12 @@ class InputModule(AbstractInput):
             return
         try:
             write_cmd = "T,{:.2f}".format(args_dict['compensation_temp_c'])
-            self.logger.debug("Compensation command: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+            if self.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
+                try:
+                    self.logger.info("Command: {}".format(write_cmd))
+                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+                finally:
+                    self.lock_release(self.atlas_device.lock_file)
         except:
             self.logger.exception("Exception compensating temperature")
 
@@ -307,10 +320,14 @@ class InputModule(AbstractInput):
             else:
                 write_cmd = "Cal,{},{:.2f}".format(level, ph)
             self.logger.debug("Calibration command: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-            # Verify calibration saved
-            self.logger.info("Calibrated: {}".format(self.atlas_device.query("Cal,?")))
-            self.logger.info("Slope: {}".format(self.atlas_device.query("Slope,?")))
+
+            if self.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
+                try:
+                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+                    self.logger.info("Calibrated: {}".format(self.atlas_device.query("Cal,?")))
+                    self.logger.info("Slope: {}".format(self.atlas_device.query("Slope,?")))
+                finally:
+                    self.lock_release(self.atlas_device.lock_file)
         except:
             self.logger.exception("Exception calibrating")
 
@@ -343,7 +360,12 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-            self.atlas_device = None
+            lock_file = self.atlas_device.lock_file
+            if self.lock_acquire(lock_file, timeout=self.lock_timeout):
+                try:
+                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+                    self.atlas_device = None
+                finally:
+                    self.lock_release(lock_file)
         except:
             self.logger.exception("Exception changing I2C address")
