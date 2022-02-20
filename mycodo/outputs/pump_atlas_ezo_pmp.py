@@ -197,14 +197,14 @@ class OutputModule(AbstractOutput):
         # timer_dispense = time.time() + seconds
         self.currently_dispensing = True
         write_cmd = "D,*"
-        self.atlas_device.atlas_write(write_cmd)
         self.logger.debug("EZO-PMP command: {}".format(write_cmd))
+        self.atlas_device.query(write_cmd)
 
         # while time.time() < timer_dispense and self.currently_dispensing:
         #     time.sleep(0.1)
         #
         # write_cmd = 'X'
-        # self.atlas_device.atlas_write(write_cmd)
+        # self.atlas_device.query(write_cmd)
         # self.logger.debug("EZO-PMP command: {}".format(write_cmd))
         # self.currently_dispensing = False
         #
@@ -257,7 +257,7 @@ class OutputModule(AbstractOutput):
             return
 
         self.logger.debug("EZO-PMP command: {}".format(write_cmd))
-        self.atlas_device.atlas_write(write_cmd)
+        self.atlas_device.query(write_cmd)
 
         if amount and seconds_to_run:
             self.record_dispersal(amount_ml=amount, seconds_to_run=seconds_to_run)
@@ -312,12 +312,8 @@ class OutputModule(AbstractOutput):
                 self.logger.error("Unknown option: {}".format(level))
                 return
             self.logger.debug("Calibration command: {}".format(write_cmd))
-            ret_val = self.atlas_device.atlas_write(write_cmd)
-            self.logger.info("Command returned: {}".format(ret_val))
-            # Verify calibration saved
-            write_cmd = "Cal,?"
-            self.logger.info("Device Calibrated?: {}".format(
-                self.atlas_device.atlas_write(write_cmd)))
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+            self.logger.info("Calibrated: {}".format(self.atlas_device.query("Cal,?")))
         except:
             self.logger.exception("Exception calibrating")
 
@@ -343,9 +339,8 @@ class OutputModule(AbstractOutput):
         try:
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
-            self.logger.debug("I2C Change command: {}".format(write_cmd))
-            ret_val = self.atlas_device.atlas_write(write_cmd)
-            self.logger.info("Command returned: {}".format(ret_val))
+            self.logger.info("I2C Change command: {}".format(write_cmd))
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
             self.atlas_device = None
             self.output_setup = False
         except:
