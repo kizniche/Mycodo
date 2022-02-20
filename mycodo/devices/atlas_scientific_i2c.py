@@ -23,8 +23,8 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
     def __init__(self, i2c_address=default_address, i2c_bus=default_bus):
         super(AtlasScientificI2C, self).__init__(interface='I2C', name="_{}_{}".format(i2c_address, i2c_bus))
 
-        self.lock_file = '/var/lock/atlas_I2C_{}_{}_{}.lock'.format(
-            __name__, i2c_address, i2c_bus)
+        self.lock_file = '/var/lock/atlas_{}_{}_{}.lock'.format(
+            __name__.replace(".", "_"), i2c_address, i2c_bus)
 
         # open two file streams, one for reading and one for writing
         # the specific I2C channel is selected with bus

@@ -5,6 +5,7 @@ from flask_babel import lazy_gettext
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.atlas_calibration import setup_atlas_device
+from mycodo.utils.lockfile import LockFile
 from mycodo.utils.system_pi import str_is_float
 
 # Measurements
@@ -134,7 +135,8 @@ class InputModule(AbstractInput):
         self.return_dict = copy.deepcopy(measurements_dict)
 
         # Read device
-        if self.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
+        lf = LockFile()
+        if lf.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
             try:
                 atlas_status, atlas_return = self.atlas_device.query('R')
                 self.logger.debug("Returned: {}".format(atlas_return))
@@ -142,7 +144,7 @@ class InputModule(AbstractInput):
                 self.logger.exception("Could not acquire measurement")
                 return
             finally:
-                self.lock_release(self.atlas_device.lock_file)
+                lf.lock_release(self.atlas_device.lock_file)
         else:
             self.logger.error("Could not get lock after {} seconds".format(self.lock_timeout))
             return
@@ -180,12 +182,13 @@ class InputModule(AbstractInput):
     def calibrate(self, write_cmd):
         try:
             self.logger.debug("Command to send: {}".format(write_cmd))
-            if self.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
+            lf = LockFile()
+            if lf.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
                 try:
                     self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
                     self.logger.info("Device Calibrated?: {}".format(self.atlas_device.query("Cal,?")))
                 finally:
-                    self.lock_release(self.atlas_device.lock_file)
+                    lf.lock_release(self.atlas_device.lock_file)
         except:
             self.logger.exception("Exception calibrating sensor")
 
@@ -210,11 +213,12 @@ class InputModule(AbstractInput):
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
             lock_file = self.atlas_device.lock_file
-            if self.lock_acquire(lock_file, timeout=self.lock_timeout):
+            lf = LockFile()
+            if lf.lock_acquire(lock_file, timeout=self.lock_timeout):
                 try:
                     self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
                     self.atlas_device = None
                 finally:
-                    self.lock_release(lock_file)
+                    lf.lock_release(lock_file)
         except:
             self.logger.exception("Exception changing I2C address")

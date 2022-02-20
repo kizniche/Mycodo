@@ -22,7 +22,7 @@ class AtlasScientificFTDI(AbstractBaseAtlasScientific, Device):
         super(AtlasScientificFTDI, self).__init__(interface='FTDI', name=serial_device.replace("/", "_"))
 
         self.lock_file = '/var/lock/atlas_FTDI_{}_{}.lock'.format(
-            __name__, serial_device)
+            __name__.replace(".", "_"), serial_device)
 
         self.logger = logging.getLogger(
             "{}_{}".format(__name__, serial_device))

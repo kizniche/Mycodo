@@ -1,13 +1,11 @@
 # coding=utf-8
-#
-# mqtt.py - MQTT Output module
-#
 from flask_babel import lazy_gettext
 
 from mycodo.databases.models import OutputChannel
 from mycodo.outputs.base_output import AbstractOutput
 from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.utils import random_alphanumeric
 
 measurements_dict = {
     0: {
@@ -85,7 +83,7 @@ OUTPUT_INFORMATION = {
         {
             'id': 'clientid',
             'type': 'text',
-            'default_value': 'mycodo_mqtt_client',
+            'default_value': 'client_{}'.format(random_alphanumeric(8)),
             'required': True,
             'name': 'Client ID',
             'phrase': 'Unique client ID for connecting to the MQTT server'

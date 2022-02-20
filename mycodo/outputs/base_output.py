@@ -109,13 +109,6 @@ class AbstractOutput(AbstractBaseController):
     def stop_output(self):
         """ Called when Output is stopped """
         self.running = False
-        try:
-            # Release all locks
-            for lockfile, lock_state in self.lockfile.locked.items():
-                if lock_state:
-                    self.lock_release(lockfile)
-        except:
-            pass
 
     #
     # Do not overwrite the function below

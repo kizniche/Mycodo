@@ -21,14 +21,13 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
         super(AtlasScientificUART, self).__init__(interface='UART', name=serial_device.replace("/", "_"))
 
         self.lock_file = '/var/lock/atlas_UART_{}_{}.lock'.format(
-            __name__, serial_device.replace("/", "_"))
+            __name__.replace(".", "_"), serial_device.replace("/", "_"))
 
         self.logger = logging.getLogger(
             "{}_{}".format(__name__, serial_device.replace("/", "_")))
 
         self.setup = False
         self.serial_device = serial_device
-        self.lockfile = LockFile()
 
         try:
             self.atlas_device = serial.Serial(
@@ -79,7 +78,8 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
         lock_file_amend = '/var/lock/sensor-atlas.{dev}'.format(
             dev=self.serial_device.replace("/", "-"))
 
-        if self.lockfile.lock_acquire(lock_file_amend, timeout=3600):
+        lf = LockFile()
+        if lf.lock_acquire(lock_file_amend, timeout=3600):
             try:
                 self.send_cmd(query_str)
                 time.sleep(1.3)
@@ -91,7 +91,7 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
                     "{err}".format(cls=type(self).__name__, err=err))
                 return "error", err
             finally:
-                self.lockfile.lock_release(lock_file_amend)
+                lf.lock_release(lock_file_amend)
 
     def read_lines(self):
         """

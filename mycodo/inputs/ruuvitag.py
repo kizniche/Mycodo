@@ -1,12 +1,12 @@
 # coding=utf-8
+import copy
 import subprocess
 import time
-
-import copy
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
+from mycodo.utils.lockfile import LockFile
 from mycodo.utils.system_pi import str_is_float
 
 # Measurements
@@ -127,7 +127,8 @@ class InputModule(AbstractInput):
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        if self.lock_acquire(self.lock_file, timeout=3600):
+        lf = LockFile()
+        if lf.lock_acquire(self.lock_file, timeout=3600):
             self.logger.debug("Starting measurement")
             try:
                 cmd = 'timeout -k 11 10 /var/mycodo-root/env/bin/python ' \
@@ -206,5 +207,5 @@ class InputModule(AbstractInput):
                 self.logger.debug("Error: {}".format(msg))
 
             finally:
-                self.lock_release(self.lock_file)
+                lf.lock_release(self.lock_file)
                 time.sleep(1)

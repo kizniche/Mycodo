@@ -69,13 +69,6 @@ class AbstractFunction(AbstractBaseController):
     def stop_function(self):
         """ Called when Function is deactivated """
         self.running = False
-        try:
-            # Release all locks
-            for lockfile, lock_state in self.lockfile.locked.items():
-                if lock_state:
-                    self.lock_release(lockfile)
-        except:
-            pass
 
     #
     # Accessory functions

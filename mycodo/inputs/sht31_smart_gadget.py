@@ -1,14 +1,14 @@
 # coding=utf-8
+import copy
 import datetime
 import time
-
-import copy
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
 from mycodo.utils.influx import parse_measurement
 from mycodo.utils.influx import write_influxdb_value
+from mycodo.utils.lockfile import LockFile
 
 
 def constraints_pass_logging_interval(mod_input, value):
@@ -398,7 +398,8 @@ class InputModule(AbstractInput):
         """ Obtain and return the measurements """
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        if self.lock_acquire(self.lock_file, timeout=3600):
+        lf = LockFile()
+        if lf.lock_acquire(self.lock_file, timeout=3600):
             self.logger.debug("Starting measurement")
             try:
                 if not self.initialized:
@@ -465,7 +466,7 @@ class InputModule(AbstractInput):
                 else:
                     self.logger.debug("Not connected: Not measuring")
             finally:
-                self.lock_release(self.lock_file)
+                lf.lock_release(self.lock_file)
                 time.sleep(1)
 
     def set_logging_interval(self):

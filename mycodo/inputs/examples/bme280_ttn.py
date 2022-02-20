@@ -13,14 +13,14 @@
 # Author: Tony DiCola
 # Based on the BMP280 driver with BME280 changes provided by
 # David J Taylor, Edinburgh (www.satsignal.eu)
-import time
-
 import copy
+import time
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import calculate_altitude
 from mycodo.inputs.sensorutils import calculate_dewpoint
 from mycodo.inputs.sensorutils import calculate_vapor_pressure_deficit
+from mycodo.utils.lockfile import LockFile
 
 # Measurements
 measurements_dict = {
@@ -174,7 +174,8 @@ class InputModule(AbstractInput):
                     self.value_get(2),
                     self.value_get(0))
 
-                if self.lock_acquire(self.lock_file, timeout=10):
+                lf = LockFile()
+                if lf.lock_acquire(self.lock_file, timeout=10):
                     try:
                         self.serial_send = self.serial.Serial(
                             port=self.serial_device,
@@ -184,7 +185,7 @@ class InputModule(AbstractInput):
                         self.serial_send.write(string_send.encode())
                         time.sleep(4)
                     finally:
-                        self.lock_release(self.lock_file)
+                        lf.lock_release(self.lock_file)
                 self.ttn_serial_error = False
         except Exception as e:
             if not self.ttn_serial_error:

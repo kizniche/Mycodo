@@ -173,13 +173,6 @@ class AbstractInput(AbstractBaseController):
     def stop_input(self):
         """ Called when Input is deactivated """
         self.running = False
-        try:
-            # Release all locks
-            for lockfile, lock_state in self.lockfile.locked.items():
-                if lock_state:
-                    self.lock_release(lockfile)
-        except:
-            pass
 
     def value_get(self, channel):
         """

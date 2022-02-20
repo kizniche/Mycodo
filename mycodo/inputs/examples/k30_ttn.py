@@ -9,12 +9,12 @@
 #
 # Comment will be updated with other code to go along with this module
 #
-import time
-
 import copy
+import time
 
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.inputs.sensorutils import is_device
+from mycodo.utils.lockfile import LockFile
 
 airtime_seconds = 0.0515  # 51.5 ms
 ttn_max_seconds_transmit_per_day = 30
@@ -143,7 +143,8 @@ class InputModule(AbstractInput):
                 # "K" designates this data belonging to the K30
                 string_send = 'K,{}'.format(self.value_get(0))
 
-                if self.lock_acquire(self.lock_file, timeout=10):
+                lf = LockFile()
+                if lf.lock_acquire(self.lock_file, timeout=10):
                     try:
                         self.serial_send = self.serial.Serial(
                             port=self.serial_device,
@@ -153,7 +154,7 @@ class InputModule(AbstractInput):
                         self.serial_send.write(string_send.encode())
                         time.sleep(4)
                     finally:
-                        self.lock_release(self.lock_file)
+                        lf.lock_release(self.lock_file)
                 self.ttn_serial_error = False
         except Exception as e:
             if not self.ttn_serial_error:

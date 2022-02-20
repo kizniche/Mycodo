@@ -38,6 +38,7 @@ from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import add_measurements_influxdb
 from mycodo.utils.influx import parse_measurement
 from mycodo.utils.inputs import parse_input_information
+from mycodo.utils.lockfile import LockFile
 from mycodo.utils.modules import load_module_from_file
 
 
@@ -72,6 +73,7 @@ class InputController(AbstractController, threading.Thread):
 
         self.unique_id = unique_id
         self.sample_rate = None
+        self.lf = LockFile()
 
         self.control = DaemonControl()
 
@@ -157,7 +159,7 @@ class InputController(AbstractController, threading.Thread):
                     self.pre_output_setup and
                     not self.pre_output_activated):
 
-                if self.lock_acquire(self.pre_output_lock_file, 30):
+                if self.lf.lock_acquire(self.pre_output_lock_file, timeout=30):
                     self.pre_output_timer = time.time() + self.pre_output_duration
                     self.pre_output_activated = True
 
@@ -191,7 +193,7 @@ class InputController(AbstractController, threading.Thread):
                         self.pre_output_activated and
                         now > self.pre_output_timer):
 
-                    if self.lock_locked(self.pre_output_lock_file):
+                    if self.lf.lock_locked(self.pre_output_lock_file):
                         try:
                             if self.pre_output_during_measure:
                                 # Measure then turn off pre-output
@@ -209,7 +211,7 @@ class InputController(AbstractController, threading.Thread):
                             self.get_new_measurement = False
                         finally:
                             # always remove lock
-                            self.lock_release(self.pre_output_lock_file)
+                            self.lf.lock_release(self.pre_output_lock_file)
                     else:
                         self.logger.error("Pre-output lock not found at {}".format(
                             self.pre_output_lock_file))

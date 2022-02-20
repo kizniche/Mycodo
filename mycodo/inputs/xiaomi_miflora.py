@@ -2,6 +2,7 @@
 import copy
 
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.lockfile import LockFile
 
 # Measurements
 measurements_dict = {
@@ -92,7 +93,8 @@ class InputModule(AbstractInput):
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        if self.lock_acquire(self.lock_file, timeout=3600):
+        lf = LockFile()
+        if lf.lock_acquire(self.lock_file, timeout=3600):
             try:
                 from miflora.miflora_poller import MI_CONDUCTIVITY
                 from miflora.miflora_poller import MI_MOISTURE
@@ -119,4 +121,4 @@ class InputModule(AbstractInput):
             except:
                 self.logger.exception("acquiring measurements")
             finally:
-                self.lock_release(self.lock_file)
+                lf.lock_release(self.lock_file)

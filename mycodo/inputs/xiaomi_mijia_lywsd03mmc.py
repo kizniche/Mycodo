@@ -16,6 +16,7 @@ import time
 from errno import EALREADY
 
 from mycodo.inputs.base_input import AbstractInput
+from mycodo.utils.lockfile import LockFile
 
 measurement_values = {}
 
@@ -120,7 +121,8 @@ class InputModule(AbstractInput):
 
         self.return_dict = copy.deepcopy(measurements_dict)
 
-        if self.lock_acquire(self.lock_file, timeout=3600):
+        lf = LockFile()
+        if lf.lock_acquire(self.lock_file, timeout=3600):
             try:
                 self.sensor.run()
 
@@ -140,7 +142,7 @@ class InputModule(AbstractInput):
             except:
                 self.logger.exception("Acquiring measurements")
             finally:
-                self.lock_release(self.lock_file)
+                lf.lock_release(self.lock_file)
 
 
 class LYWSD03MMC:

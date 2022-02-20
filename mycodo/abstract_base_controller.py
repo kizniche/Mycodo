@@ -41,7 +41,6 @@ class AbstractBaseController(object):
             logger_name += "_{}".format(unique_id.split('-')[0])
         self.logger = logging.getLogger(logger_name)
 
-        self.lockfile = LockFile()
         self.channels_conversion = {}
         self.channels_measurement = {}
         self.device_measurements = None
@@ -365,17 +364,6 @@ class AbstractBaseController(object):
                 self.logger.exception("Error parsing options")
 
         return dict_values
-
-    def lock_acquire(self, lockfile, timeout):
-        self.logger.debug("Acquiring lock")
-        return self.lockfile.lock_acquire(lockfile, timeout)
-
-    def lock_locked(self, lockfile):
-        return self.lockfile.lock_locked(lockfile)
-
-    def lock_release(self, lockfile):
-        self.logger.debug("Releasing lock")
-        self.lockfile.lock_release(lockfile)
 
     def _delete_custom_option(self, controller, unique_id, option):
         try:
