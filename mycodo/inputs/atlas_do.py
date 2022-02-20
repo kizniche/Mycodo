@@ -146,9 +146,9 @@ class InputModule(AbstractInput):
             self.atlas_device = setup_atlas_device(self.input_dev)
 
             # Enabling DO, disabling % saturation
-            self.atlas_device.atlas_write("O,mg,1")
-            self.atlas_device.atlas_write("O,%,0")
-            ret_val = self.atlas_device.atlas_write("O,?")
+            self.atlas_device.query("O,mg,1")
+            self.atlas_device.query("O,%,0")
+            ret_status, ret_val = self.atlas_device.query("O,?")
             self.logger.info("Parameters enabled: {}".format(ret_val))
 
             if self.temperature_comp_meas_measurement_id:

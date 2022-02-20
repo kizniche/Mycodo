@@ -69,9 +69,6 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
         fcntl.ioctl(self.file_write, i2c_slave, addr)
         self.current_addr = addr
 
-    def atlas_write(self, cmd):
-        self.write(cmd)
-
     def write(self, cmd):
         """ Append the null character and send the command over I2C"""
         cmd += "\00"
