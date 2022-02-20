@@ -6,7 +6,6 @@ from flask_babel import lazy_gettext
 from mycodo.inputs.base_input import AbstractInput
 from mycodo.utils.atlas_calibration import setup_atlas_device
 from mycodo.utils.constraints_pass import constraints_pass_percent
-from mycodo.utils.lockfile import LockFile
 
 
 def constraints_pass_gamma(mod_input, value):
@@ -230,18 +229,11 @@ class InputModule(AbstractInput):
         self.return_dict = copy.deepcopy(measurements_dict)
 
         # Read device
-        lf = LockFile()
-        if lf.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
-            try:
-                atlas_status, atlas_return = self.atlas_device.query('R')
-                self.logger.debug("Returned: {}".format(atlas_return))
-            except:
-                self.logger.exception("Could not acquire measurement")
-                return
-            finally:
-                lf.lock_release(self.atlas_device.lock_file)
-        else:
-            self.logger.error("Could not get lock after {} seconds".format(self.lock_timeout))
+        atlas_status, atlas_return = self.atlas_device.query('R')
+        self.logger.debug("Returned: {}".format(atlas_return))
+
+        if atlas_status == 'error':
+            self.logger.error("Sensor read unsuccessful: {err}".format(err=atlas_return))
             return
 
         # Parse device return data
@@ -259,11 +251,8 @@ class InputModule(AbstractInput):
                     break
 
         elif self.interface == 'I2C':
-            if atlas_status == 'error':
-                self.logger.error("Sensor read unsuccessful: {err}".format(err=return_string))
-            elif atlas_status == 'success':
-                self.logger.debug('Value: {val}'.format(val=return_string))
-                return_string = atlas_return
+            self.logger.debug('Value: {val}'.format(val=return_string))
+            return_string = atlas_return
 
         if return_string and ',' in return_string:
             index_place = 0
@@ -288,13 +277,8 @@ class InputModule(AbstractInput):
 
     def calibrate(self, args_dict):
         try:
-            lf = LockFile()
-            if lf.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
-                try:
-                    self.logger.info("Command: {}".format('Cal'))
-                    self.logger.info("Command returned: {}".format(self.atlas_device.query('Cal')))
-                finally:
-                    lf.lock_release(self.atlas_device.lock_file)
+            self.logger.info("Command: {}".format('Cal'))
+            self.logger.info("Command returned: {}".format(self.atlas_device.query('Cal')))
         except:
             self.logger.exception("Exception calibrating")
 
@@ -306,13 +290,8 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            lock_file = self.atlas_device.lock_file
-            lf = LockFile()
-            if lf.lock_acquire(lock_file, timeout=self.lock_timeout):
-                try:
-                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-                    self.atlas_device = None
-                finally:
-                    lf.lock_release(lock_file)
+
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+            self.atlas_device = None
         except:
             self.logger.exception("Exception changing I2C address")

@@ -11,7 +11,6 @@ from mycodo.utils.atlas_calibration import AtlasScientificCommand
 from mycodo.utils.atlas_calibration import setup_atlas_device
 from mycodo.utils.constraints_pass import constraints_pass_positive_value
 from mycodo.utils.database import db_retrieve_table_daemon
-from mycodo.utils.lockfile import LockFile
 from mycodo.utils.system_pi import get_measurement
 from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import return_measurement_info
@@ -280,18 +279,11 @@ class InputModule(AbstractInput):
                         self.max_age))
 
         # Read device
-        lf = LockFile()
-        if lf.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
-            try:
-                atlas_status, atlas_return = self.atlas_device.query('R')
-                self.logger.debug("Returned: {}".format(atlas_return))
-            except:
-                self.logger.exception("Could not acquire measurement")
-                return
-            finally:
-                lf.lock_release(self.atlas_device.lock_file)
-        else:
-            self.logger.error("Could not get lock after {} seconds".format(self.lock_timeout))
+        atlas_status, atlas_return = self.atlas_device.query('R')
+        self.logger.debug("Returned: {}".format(atlas_return))
+
+        if atlas_status == 'error':
+            self.logger.error("Sensor read unsuccessful: {err}".format(err=atlas_return))
             return
 
         # Parse device return data
@@ -312,15 +304,12 @@ class InputModule(AbstractInput):
                 self.logger.error('Value or "check probe" not found in list: {val}'.format(val=atlas_return))
 
         elif self.interface == 'I2C':
-            if atlas_status == 'error':
-                self.logger.error("Sensor read unsuccessful")
-            elif atlas_status == 'success':
-                if ',' in atlas_return and str_is_float(atlas_return.split(',')[2]):
-                    ph = float(atlas_return.split(',')[2])
-                elif str_is_float(atlas_return):
-                    ph = float(atlas_return)
-                else:
-                    self.logger.error("Could not determine pH from returned value: '{}'".format(atlas_return))
+            if ',' in atlas_return and str_is_float(atlas_return.split(',')[2]):
+                ph = float(atlas_return.split(',')[2])
+            elif str_is_float(atlas_return):
+                ph = float(atlas_return)
+            else:
+                self.logger.error("Could not determine pH from returned value: '{}'".format(atlas_return))
 
         self.value_set(0, ph)
 
@@ -331,14 +320,9 @@ class InputModule(AbstractInput):
             self.logger.error("Cannot set temperature compensation without temperature")
             return
         try:
-            lf = LockFile()
-            if lf.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
-                try:
-                    write_cmd = "T,{:.2f}".format(args_dict['compensation_temp_c'])
-                    self.logger.info("Command: {}".format(write_cmd))
-                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-                finally:
-                    lf.lock_release(self.atlas_device.lock_file)
+            write_cmd = "T,{:.2f}".format(args_dict['compensation_temp_c'])
+            self.logger.info("Command: {}".format(write_cmd))
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
         except:
             self.logger.exception("Exception compensating temperature")
 
@@ -350,15 +334,10 @@ class InputModule(AbstractInput):
                 write_cmd = "Cal,{},{:.2f}".format(level, ph)
             self.logger.debug("Calibration command: {}".format(write_cmd))
 
-            lf = LockFile()
-            if lf.lock_acquire(self.atlas_device.lock_file, timeout=self.lock_timeout):
-                try:
-                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-                    self.logger.info("Calibrated: {}".format(self.atlas_device.query("Cal,?")))
-                    self.logger.info("Slope: {}".format(self.atlas_device.query("Slope,?")))
-                finally:
-                    time.sleep(2)
-                    lf.lock_release(self.atlas_device.lock_file)
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+            self.logger.info("Calibrated: {}".format(self.atlas_device.query("Cal,?")))
+            self.logger.info("Slope: {}".format(self.atlas_device.query("Slope,?")))
+            time.sleep(2)
         except:
             self.logger.exception("Exception calibrating")
 
@@ -385,34 +364,32 @@ class InputModule(AbstractInput):
 
     def calibration_export(self, args_dict):
         try:
-            lf = LockFile()
-            if lf.lock_acquire(self.atlas_device.lock_file, timeout=20):
-                try:
-                    atlas_status, atlas_return = self.atlas_device.query("Export,?")
-                    self.logger.info("Command returned: {}".format(atlas_return))
-                    if atlas_return and ',' in atlas_return:
-                        list_return = atlas_return.split(',')
-                        length = None
-                        bytes = None
-                        for each_item in list_return:
-                            if is_int(each_item):
-                                if length is None:
-                                    length = int(each_item)
-                                elif bytes is None:
-                                    bytes = int(each_item)
-                                    break
-                        list_export = []
-                        for _ in range(length):
-                            atlas_status, atlas_return = self.atlas_device.query("Export")
-                            if atlas_return:
-                                list_export.append(atlas_return)
-                        atlas_status, atlas_return = self.atlas_device.query("Export")
-                        if atlas_return != "*DONE":
-                            self.logger.error("Did not receive *DONE response indicating export ended")
-                        self.logger.info("pH Calibration export string: {}".format(",".join(list_export)))
-                finally:
-                    time.sleep(2)
-                    lf.lock_release(self.atlas_device.lock_file)
+            atlas_status, atlas_return = self.atlas_device.query("Export,?")
+            self.logger.info("Command returned: {}".format(atlas_return))
+            if atlas_return and ',' in atlas_return:
+                list_return = atlas_return.split(',')
+                length = None
+                bytes = None
+                for each_item in list_return:
+                    if is_int(each_item):
+                        if length is None:
+                            length = int(each_item)
+                        elif bytes is None:
+                            bytes = int(each_item)
+                            break
+                list_export = []
+                for _ in range(length):
+                    atlas_status, atlas_return = self.atlas_device.query("Export")
+                    if atlas_return:
+                        list_export.append(atlas_return)
+                atlas_status, atlas_return = self.atlas_device.query("Export")
+                if atlas_return != "*DONE":
+                    self.logger.error("Did not receive *DONE response indicating export ended")
+                self.logger.info("pH Calibration export string: {}".format(",".join(list_export)))
+
+            atlas_status, atlas_return = self.atlas_device.query("Slope,?")
+            if atlas_status == "success":
+                self.logger.info("Slope: {}".format(atlas_return))
         except:
             self.logger.exception("Exception exporting calibrating")
 
@@ -421,32 +398,25 @@ class InputModule(AbstractInput):
             self.logger.error("Cannot import calibration without calibration string")
             return
         try:
-            lf = LockFile()
-            if lf.lock_acquire(self.atlas_device.lock_file, timeout=20):
-                try:
-                    if "," in args_dict['calibration_import_str']:
-                        list_strings = args_dict['calibration_import_str'].split(',')
-                        self.logger.info("Importing calibration string...")
+            if "," in args_dict['calibration_import_str']:
+                list_strings = args_dict['calibration_import_str'].split(',')
+                self.logger.info("Importing calibration string...")
 
-                        for each_str in list_strings:
-                            try:
-                                self.atlas_device.query("Import,{}".format(each_str))
-                            except:
-                                pass
-                            time.sleep(1)
+                for each_str in list_strings:
+                    try:
+                        self.atlas_device.query("Import,{}".format(each_str))
+                    except:
+                        pass
+                    time.sleep(1)
 
-                        self.logger.info("Calibration imported. There bay be a Remote I/O Error, but this doesn't mean the calibration import failed. Verify it was successful by exporting it. Getting calibration slope...")
+                self.logger.info("Calibration imported. There bay be a Remote I/O Error, but this doesn't mean the calibration import failed. Verify it was successful by exporting it. Getting calibration slope...")
 
-                        atlas_status, atlas_return = self.atlas_device.query("Slope,?")
-                        if atlas_status == "success":
-                            self.logger.info("pH Calibration Slope: {}".format(atlas_return))
-                    else:
-                        self.logger.error("Calibration string does not contain a comma (",")")
-                except Exception as err:
-                    self.logger.error("Error during calibration import: {}".format(err))
-                finally:
-                    time.sleep(2)
-                    lf.lock_release(self.atlas_device.lock_file)
+                atlas_status, atlas_return = self.atlas_device.query("Slope,?")
+                if atlas_status == "success":
+                    self.logger.info("pH Calibration Slope: {}".format(atlas_return))
+            else:
+                self.logger.error("Calibration string does not contain a comma (",")")
+            time.sleep(2)
         except:
             self.logger.exception("Exception importing calibrating")
 
@@ -458,14 +428,8 @@ class InputModule(AbstractInput):
             i2c_address = int(str(args_dict['new_i2c_address']), 16)
             write_cmd = "I2C,{}".format(i2c_address)
             self.logger.debug("I2C Change command: {}".format(write_cmd))
-            lock_file = self.atlas_device.lock_file
 
-            lf = LockFile()
-            if lf.lock_acquire(lock_file, timeout=self.lock_timeout):
-                try:
-                    self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
-                    self.atlas_device = None
-                finally:
-                    lf.lock_release(lock_file)
+            self.logger.info("Command returned: {}".format(self.atlas_device.query(write_cmd)))
+            self.atlas_device = None
         except:
             self.logger.exception("Exception changing I2C address")

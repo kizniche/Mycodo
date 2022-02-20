@@ -10,6 +10,7 @@ import io
 sys.path.append(os.path.abspath(os.path.join(os.path.realpath(__file__), '../../..')))
 
 from mycodo.devices.base_atlas import AbstractBaseAtlasScientific
+from mycodo.utils.lockfile import LockFile
 
 
 class AtlasScientificI2C(AbstractBaseAtlasScientific):
@@ -23,6 +24,7 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
     def __init__(self, i2c_address=default_address, i2c_bus=default_bus):
         super(AtlasScientificI2C, self).__init__(interface='I2C', name="_{}_{}".format(i2c_address, i2c_bus))
 
+        self.lock_timeout = 10
         self.lock_file = '/var/lock/atlas_{}_{}_{}.lock'.format(
             __name__.replace(".", "_"), i2c_address, i2c_bus)
 
@@ -90,26 +92,30 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
 
     def query(self, query_str):
         """ Send command to board and read response """
-        try:
-            # write a command to the board, wait the correct timeout,
-            # and read the response
-            self.write(query_str)
+        lf = LockFile()
+        if lf.lock_acquire(self.lock_file, timeout=self.lock_timeout):
+            try:
+                # write a command to the board, wait the correct timeout,
+                # and read the response
+                self.write(query_str)
 
-            # the read and calibration commands require a longer timeout
-            if ((query_str.upper().startswith("R")) or
-                    (query_str.upper().startswith("CAL"))):
-                time.sleep(self.long_timeout)
-            elif query_str.upper().startswith("SLEEP"):
-                return "success", "sleep mode"
-            else:
-                time.sleep(self.short_timeout)
+                # the read and calibration commands require a longer timeout
+                if ((query_str.upper().startswith("R")) or
+                        (query_str.upper().startswith("CAL"))):
+                    time.sleep(self.long_timeout)
+                elif query_str.upper().startswith("SLEEP"):
+                    return "success", "sleep mode"
+                else:
+                    time.sleep(self.short_timeout)
 
-            return self.read()
-        except Exception as err:
-            self.logger.debug(
-                "{cls} raised an exception when taking a reading: "
-                "{err}".format(cls=type(self).__name__, err=err))
-            return "error", err
+                return self.read()
+            except Exception as err:
+                self.logger.debug(
+                    "{cls} raised an exception when taking a reading: "
+                    "{err}".format(cls=type(self).__name__, err=err))
+                return "error", err
+            finally:
+                lf.lock_release(self.lock_file)
 
     def close(self):
         self.file_read.close()
