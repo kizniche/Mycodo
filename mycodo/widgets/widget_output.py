@@ -35,7 +35,7 @@ WIDGET_INFORMATION = {
     'widget_library': '',
     'no_class': True,
 
-    'message': 'Displays and allows control of an output channel.',
+    'message': 'Displays and allows control of an output channel. All output options and measurements for the selected channel will be displayed. E.g. pumps will have seconds on and volume as measurements, and can be turned on for a duration (seconds) or amount (volume). If NO DATA or TOO OLD is displayed, the Max Age is not sufficiently long enough to find a current measurement.',
 
     'widget_width': 5,
     'widget_height': 4,
@@ -133,36 +133,44 @@ WIDGET_INFORMATION = {
     'widget_dashboard_body': """
 {%- set device_id = "" -%}
 {%- set channel_id = "" -%}
+{%- set out = none -%}
+{%- set out_chan = none -%}
+{%- set measurements = [] -%}
+{%- set channel_output = [] -%}
 
-{% if widget_options['output'] %}
+{%- if widget_options['output'] and "," in widget_options['output'] -%}
     {%- set device_id = widget_options['output'].split(",")[0] -%}
     {%- set channel_id = widget_options['output'].split(",")[1] -%}
-{% endif %}
+{%- endif -%}
 
-{% set out = table_output.query.filter(table_output.unique_id == device_id).first() %}
-{% set out_chan = table_output_channel.query.filter(table_output_channel.unique_id == channel_id).first() %}
+{%- if device_id and channel_id -%}
+    {% set out = table_output.query.filter(table_output.unique_id == device_id).first() %}
+    {% set out_chan = table_output_channel.query.filter(table_output_channel.unique_id == channel_id).first() %}
+{%- endif -%}
 
-{% set measurements = table_device_measurements.query.filter(
-                        and_(table_device_measurements.device_id == device_id,
-                             table_device_measurements.channel.in_(dict_outputs[out.output_type]["channels_dict"][out_chan.channel]["measurements"]))).all() %}
-
-{% set channel_output = [] %}
-{% if out and out.output_type and
-      out_chan and out_chan.channel is not none and
-      out.output_type in dict_outputs and
-      "channels_dict" in dict_outputs[out.output_type] and
-      out_chan.channel in dict_outputs[out.output_type]["channels_dict"] %}
-    {% set channel_output = dict_outputs[out.output_type]["channels_dict"][out_chan.channel] %}
-{% endif %}
+{%- if out and out_chan and 
+       out.output_type and out_chan.channel is not none and
+       out.output_type in dict_outputs and
+       "channels_dict" in dict_outputs[out.output_type] and
+       out_chan.channel in dict_outputs[out.output_type]["channels_dict"] -%}
+    {%- set channel_output = dict_outputs[out.output_type]["channels_dict"][out_chan.channel] -%}
+    {%- if "measurements" in channel_output and channel_output["measurements"] -%}
+        {% set measurements = table_device_measurements.query.filter(
+                                and_(table_device_measurements.device_id == device_id,
+                                     table_device_measurements.channel.in_(channel_output["measurements"]))).all() %}
+    {%- endif -%}
+{%- endif -%}
 
 <div class="pause-background" id="container-output-{{each_widget.unique_id}}" style="height: 100%; text-align: center">
 
-    {% for each_measure in measurements %}
+  <div class="container" style="padding: 0.3em 0">
+    
+    {% for each_measure in measurements if widget_options['enable_value'] or widget_options['enable_unit'] %}
         <span style="{% if not widget_options['enable_value'] %}display: none {% endif %}font-size: {{widget_options['font_em_value']}}em" id="value-{{each_measure.unique_id}}"></span>
 
-        {% if dict_measure_units[each_measure.unique_id] in dict_units and
-             dict_units[dict_measure_units[each_measure.unique_id]]['unit'] and
-             widget_options['enable_unit'] -%}
+        {% if widget_options['enable_unit'] and
+              dict_measure_units[each_measure.unique_id] in dict_units and
+              dict_units[dict_measure_units[each_measure.unique_id]]['unit'] -%}
             {{' ' + dict_units[dict_measure_units[each_measure.unique_id]]['unit']}}
             {% if 'name' in dict_outputs[out.output_type]["measurements_dict"][each_measure.channel] and
                   dict_outputs[out.output_type]["measurements_dict"][each_measure.channel]['name'] %}
@@ -171,13 +179,10 @@ WIDGET_INFORMATION = {
         {% endif %},
 
         <span style="{% if not widget_options['enable_timestamp'] %}display: none {% endif %}font-size: {{widget_options['font_em_timestamp']}}em" id="timestamp-{{each_measure.unique_id}}"></span>
-        <br/>
+        {%- if not loop.last %}<br/>{% endif %}
     {% endfor %}
 
-  {%- if widget_options['enable_value'] or widget_options['enable_unit'] -%}
-  <br/>
-  {%- endif -%}
-
+  </div>
 
   {% if widget_options['enable_output_controls'] %}
 
@@ -195,28 +200,28 @@ WIDGET_INFORMATION = {
     </div>
 
     {%- endif %}
-
-    {% if "types" in channel_output and "pwm" in channel_output["types"] -%}
+    
+    {% if "types" in channel_output and "on_off" in channel_output["types"] -%}
 
     <div class="row small-gutters">
       <div class="col-auto">
-        <input class="form-control-sm" id="duty_cycle_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="duty_cycle_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
+        <input class="form-control-sm" id="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Turn this output on for this duration (seconds)" type="number" step="any" value="">
       </div>
       <div class="col-auto">
-        <input class="btn btn-sm btn-primary duty_cycle_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/pwm/" type="button" value="{{_('Set PWM')}}">
+        <input class="btn btn-sm btn-primary sec_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/sec/" type="button" value="{{_('Seconds On')}}">
       </div>
     </div>
 
     {% endif %}
 
-    {% if "types" in channel_output and "on_off" in channel_output["types"] -%}
+    {% if "types" in channel_output and "pwm" in channel_output["types"] -%}
 
     <div class="row small-gutters">
       <div class="col-auto">
-        <input class="form-control-sm" id="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Turn this output on for this value (seconds, ml, etc.)" type="number" step="any" value="">
+        <input class="form-control-sm" id="duty_cycle_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="duty_cycle_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Select the PWM duty cycle (0.0 - 100.0 %)" type="number" step="any" value="" placeholder="% Duty Cycle">
       </div>
       <div class="col-auto">
-        <input class="btn btn-sm btn-primary sec_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/sec/" type="button" value="{{_('Sec On')}}">
+        <input class="btn btn-sm btn-primary duty_cycle_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/pwm/" type="button" value="{{_('Set PWM')}}">
       </div>
     </div>
 
@@ -226,7 +231,7 @@ WIDGET_INFORMATION = {
 
     <div class="row small-gutters">
       <div class="col-auto">
-        <input class="form-control-sm" id="vol_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Turn this output on for this value (seconds, ml, etc.)" type="number" step="any" value="">
+        <input class="form-control-sm" id="vol_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Instruct the output to dispense this volume (ml, l, etc.)" type="number" step="any" value="">
       </div>
       <div class="col-auto">
         <input class="btn btn-sm btn-primary vol_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/vol/" type="button" value="{{_('Send Volume')}}">
@@ -295,7 +300,7 @@ WIDGET_INFORMATION = {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
           document.getElementById('value-' + measurement_id).innerHTML = 'NO DATA';
-          document.getElementById('timestamp-' + measurement_id).innerHTML = 'MAX AGE EXCEEDED';
+          document.getElementById('timestamp-' + measurement_id).innerHTML = 'TOO OLD';
         }
         else {
           const formattedTime = epoch_to_timestamp(data[0]);
@@ -442,24 +447,41 @@ WIDGET_INFORMATION = {
     'widget_dashboard_js_ready_end': """
 {%- set device_id = "" -%}
 {%- set channel_id = "" -%}
+{%- set out = none -%}
+{%- set out_chan = none -%}
+{%- set measurements = [] -%}
+{%- set channel_output = [] -%}
 
-{% if widget_options['output'] %}
+{%- if widget_options['output'] and "," in widget_options['output'] -%}
     {%- set device_id = widget_options['output'].split(",")[0] -%}
     {%- set channel_id = widget_options['output'].split(",")[1] -%}
-{% endif %}
+{%- endif -%}
 
-{% set out = table_output.query.filter(table_output.unique_id == device_id).first() %}
-{% set out_chan = table_output_channel.query.filter(table_output_channel.unique_id == channel_id).first() %}
+{%- if device_id and channel_id -%}
+    {% set out = table_output.query.filter(table_output.unique_id == device_id).first() %}
+    {% set out_chan = table_output_channel.query.filter(table_output_channel.unique_id == channel_id).first() %}
+{%- endif -%}
 
-{% set measurements = table_device_measurements.query.filter(
-                        and_(table_device_measurements.device_id == device_id,
-                             table_device_measurements.channel.in_(dict_outputs[out.output_type]["channels_dict"][out_chan.channel]["measurements"]))).all() %}
+{%- if out and out_chan and 
+       out.output_type and out_chan.channel is not none and
+       out.output_type in dict_outputs and
+       "channels_dict" in dict_outputs[out.output_type] and
+       out_chan.channel in dict_outputs[out.output_type]["channels_dict"] -%}
+    {%- set channel_output = dict_outputs[out.output_type]["channels_dict"][out_chan.channel] -%}
+    {%- if "measurements" in channel_output and channel_output["measurements"] -%}
+        {% set measurements = table_device_measurements.query.filter(
+                                and_(table_device_measurements.device_id == device_id,
+                                     table_device_measurements.channel.in_(channel_output["measurements"]))).all() %}
+    {%- endif -%}
+{%- endif -%}
 
 {% for each_measure in measurements %}
   getLastDataOutput('{{each_widget.unique_id}}', '{{device_id}}', 'output', '{{each_measure.unique_id}}', {{widget_options['max_measure_age']}}, {{widget_options['decimal_places']}});
   repeatLastDataOutput('{{each_widget.unique_id}}', '{{device_id}}', 'output', '{{each_measure.unique_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}}, {{widget_options['decimal_places']}});
 {% endfor %}
+{% if device_id and channel_id %}
   getGPIOStateOutput('{{each_widget.unique_id}}', '{{device_id}}', '{{channel_id}}', {{widget_options['decimal_places']}});
   repeatGPIOStateOutput('{{each_widget.unique_id}}', '{{device_id}}', '{{channel_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['decimal_places']}});
+{% endif %}
 """
 }
