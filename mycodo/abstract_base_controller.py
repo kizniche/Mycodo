@@ -120,7 +120,11 @@ class AbstractBaseController(object):
                                     len(each_option.split(',')) > 2):
                                 device_id = each_option.split(',')[1]
                                 measurement_id = each_option.split(',')[2]
-                            if (each_option_default['type'] == 'select_measurement_channel' and
+                            elif (each_option_default['type'] == 'select_channel' and
+                                    len(each_option.split(',')) > 2):
+                                device_id = each_option.split(',')[1]
+                                channel_id = each_option.split(',')[2]
+                            elif (each_option_default['type'] == 'select_measurement_channel' and
                                     len(each_option.split(',')) > 3):
                                 device_id = each_option.split(',')[1]
                                 measurement_id = each_option.split(',')[2]
@@ -243,7 +247,11 @@ class AbstractBaseController(object):
                                     len(each_value.split(',')) > 1):
                                 device_id = each_value.split(',')[0]
                                 measurement_id = each_value.split(',')[1]
-                            if (each_option_default['type'] == 'select_measurement_channel' and
+                            elif (each_option_default['type'] == 'select_channel' and
+                                    len(each_value.split(',')) > 1):
+                                device_id = each_value.split(',')[0]
+                                channel_id = each_value.split(',')[1]
+                            elif (each_option_default['type'] == 'select_measurement_channel' and
                                     len(each_value.split(',')) > 2):
                                 device_id = each_value.split(',')[0]
                                 measurement_id = each_value.split(',')[1]

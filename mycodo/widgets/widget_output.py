@@ -1,6 +1,6 @@
 # coding=utf-8
 #
-#  widget_output.py - Output dashboard widget
+#  widget_output.py - Output channel select dashboard widget
 #
 #  Copyright (C) 2015-2020 Kyle T. Gabriel <mycodo@kylegabriel.com>
 #
@@ -29,14 +29,13 @@ from mycodo.utils.constraints_pass import constraints_pass_positive_value
 
 logger = logging.getLogger(__name__)
 
-
 WIDGET_INFORMATION = {
     'widget_name_unique': 'widget_output',
-    'widget_name': 'Output',
+    'widget_name': 'Output Control (Channel)',
     'widget_library': '',
     'no_class': True,
 
-    'message': 'Displays and allows control of an output.',
+    'message': 'Displays and allows control of an output channel.',
 
     'widget_width': 5,
     'widget_height': 4,
@@ -44,13 +43,13 @@ WIDGET_INFORMATION = {
     'custom_options': [
         {
             'id': 'output',
-            'type': 'select_measurement_channel',
+            'type': 'select_channel',
             'default_value': '',
             'options_select': [
-                'Output_Channels_Measurements',
+                'Output_Channels',
             ],
             'name': lazy_gettext('Output'),
-            'phrase': 'Select the output to display and control'
+            'phrase': 'Select the output channel to display and control'
         },
         {
             'id': 'max_measure_age',
@@ -132,81 +131,119 @@ WIDGET_INFORMATION = {
 """,
 
     'widget_dashboard_body': """
-{%- set device_id = widget_options['output'].split(",")[0] -%}
-{%- set measurement_id = widget_options['output'].split(",")[1] -%}
-{%- set channel_id = widget_options['output'].split(",")[2] -%}
+{%- set device_id = "" -%}
+{%- set channel_id = "" -%}
 
-{% set is_pwm = [] -%}
-{% set is_ezo_pump = [] -%}
-{% for each_output in output if each_output.unique_id == device_id %}
-  {% if each_output.output_type in output_types['pwm'] %}
-    {%- do is_pwm.append(1) %}
-  {% elif each_output.output_type in ['atlas_ezo_pmp'] %}
-    {%- do is_ezo_pump.append(1) %}
-  {% endif %}
-{% endfor %}
+{% if widget_options['output'] %}
+    {%- set device_id = widget_options['output'].split(",")[0] -%}
+    {%- set channel_id = widget_options['output'].split(",")[1] -%}
+{% endif %}
+
+{% set out = table_output.query.filter(table_output.unique_id == device_id).first() %}
+{% set out_chan = table_output_channel.query.filter(table_output_channel.unique_id == channel_id).first() %}
+
+{% set measurements = table_device_measurements.query.filter(
+                        and_(table_device_measurements.device_id == device_id,
+                             table_device_measurements.channel.in_(dict_outputs[out.output_type]["channels_dict"][out_chan.channel]["measurements"]))).all() %}
+
+{% set channel_output = [] %}
+{% if out and out.output_type and
+      out_chan and out_chan.channel is not none and
+      out.output_type in dict_outputs and
+      "channels_dict" in dict_outputs[out.output_type] and
+      out_chan.channel in dict_outputs[out.output_type]["channels_dict"] %}
+    {% set channel_output = dict_outputs[out.output_type]["channels_dict"][out_chan.channel] %}
+{% endif %}
 
 <div class="pause-background" id="container-output-{{each_widget.unique_id}}" style="height: 100%; text-align: center">
-  {%- if widget_options['enable_value'] -%}
-  <span style="font-size: {{widget_options['font_em_value']}}em" id="value-{{each_widget.unique_id}}"></span>
-  {%- else -%}
-  <span style="display: none" id="value-{{each_widget.unique_id}}"></span>
-  {%- endif -%}
 
-  {%- if dict_measure_units[measurement_id] in dict_units and
-         dict_units[dict_measure_units[measurement_id]]['unit'] and
-         widget_options['enable_unit'] -%}
-    {{' ' + dict_units[dict_measure_units[measurement_id]]['unit']}}
-  {%- endif -%}
+    {% for each_measure in measurements %}
+        <span style="{% if not widget_options['enable_value'] %}display: none {% endif %}font-size: {{widget_options['font_em_value']}}em" id="value-{{each_measure.unique_id}}"></span>
+
+        {% if dict_measure_units[each_measure.unique_id] in dict_units and
+             dict_units[dict_measure_units[each_measure.unique_id]]['unit'] and
+             widget_options['enable_unit'] -%}
+            {{' ' + dict_units[dict_measure_units[each_measure.unique_id]]['unit']}}
+            {% if 'name' in dict_outputs[out.output_type]["measurements_dict"][each_measure.channel] and
+                  dict_outputs[out.output_type]["measurements_dict"][each_measure.channel]['name'] %}
+                {{dict_outputs[out.output_type]["measurements_dict"][each_measure.channel]['name']}}
+            {% endif %}
+        {% endif %},
+
+        <span style="{% if not widget_options['enable_timestamp'] %}display: none {% endif %}font-size: {{widget_options['font_em_timestamp']}}em" id="timestamp-{{each_measure.unique_id}}"></span>
+        <br/>
+    {% endfor %}
 
   {%- if widget_options['enable_value'] or widget_options['enable_unit'] -%}
   <br/>
   {%- endif -%}
 
-  {%- if widget_options['enable_timestamp'] -%}
-  <span style="font-size: {{widget_options['font_em_timestamp']}}em" id="timestamp-{{each_widget.unique_id}}"></span>
-  {%- else -%}
-  <span style="display: none" id="timestamp-{{each_widget.unique_id}}"></span>
-  {%- endif -%}
 
   {% if widget_options['enable_output_controls'] %}
 
-  <div class="row small-gutters" style="padding: 0.3em 1.5em 0 1.5em">
-    {% if not is_pwm and not is_ezo_pump -%}
+  <div class="container" style="padding: 0.3em 1.5em 0 1.5em">
 
-    <div class="col-auto">
-      <input class="btn btn-sm btn-primary turn_on" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
+    {% if "types" in channel_output and "on_off" in channel_output["types"] -%}
+
+    <div class="row small-gutters">
+      <div class="col-auto">
+        <input class="btn btn-sm btn-primary turn_on" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/sec/0" type="button" value="{{dict_translation['on']['title']}}">
+      </div>
+      <div class="col-auto">
+        <input class="btn btn-sm btn-primary turn_off" id="turn_off" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
+      </div>
     </div>
 
     {%- endif %}
 
-    <div class="col-auto">
-      <input class="btn btn-sm btn-primary turn_off" id="turn_off" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/off/sec/0" type="button" value="{{dict_translation['off']['title']}}">
+    {% if "types" in channel_output and "pwm" in channel_output["types"] -%}
+
+    <div class="row small-gutters">
+      <div class="col-auto">
+        <input class="form-control-sm" id="duty_cycle_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="duty_cycle_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
+      </div>
+      <div class="col-auto">
+        <input class="btn btn-sm btn-primary duty_cycle_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/pwm/" type="button" value="{{_('Set PWM')}}">
+      </div>
     </div>
 
-    {% if is_pwm %}
-
-    <div class="col-auto">
-      <input class="form-control-sm" id="duty_cycle_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="duty_cycle_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Select the PWM duty cycle (0.0 - 100.0)" type="number" step="any" value="" placeholder="% Duty Cycle">
-    </div>
-    <div class="col-auto">
-      <input class="btn btn-sm btn-primary duty_cycle_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/pwm/" type="button" value="{{_('PWM On')}}">
-    </div>
-
-    {% else %}
-
-    <div class="col-auto">
-      <input class="form-control-sm" id="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Turn this output on for this value (seconds, ml, etc.)" type="number" step="any" value="">
-    </div>
-    <div class="col-auto">
-    {% if is_ezo_pump %}
-      {%- if dict_measure_units[measurement_id] in dict_units and
-             dict_units[dict_measure_units[measurement_id]]['name'] -%}
-      <input class="btn btn-sm btn-primary output_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/sec/" type="button" value="{{dict_units[dict_measure_units[measurement_id]]['name'] + ' ' + _('Out')}}">
-      {% endif %}
-    {% else %}
-      <input class="btn btn-sm btn-primary output_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/sec/" type="button" value="{{_('Sec On')}}">
     {% endif %}
+
+    {% if "types" in channel_output and "on_off" in channel_output["types"] -%}
+
+    <div class="row small-gutters">
+      <div class="col-auto">
+        <input class="form-control-sm" id="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Turn this output on for this value (seconds, ml, etc.)" type="number" step="any" value="">
+      </div>
+      <div class="col-auto">
+        <input class="btn btn-sm btn-primary sec_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/sec/" type="button" value="{{_('Sec On')}}">
+      </div>
+    </div>
+
+    {% endif %}
+
+    {% if "types" in channel_output and "volume" in channel_output["types"] -%}
+
+    <div class="row small-gutters">
+      <div class="col-auto">
+        <input class="form-control-sm" id="vol_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Turn this output on for this value (seconds, ml, etc.)" type="number" step="any" value="">
+      </div>
+      <div class="col-auto">
+        <input class="btn btn-sm btn-primary vol_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/vol/" type="button" value="{{_('Send Volume')}}">
+      </div>
+    </div>
+
+    {% endif %}
+
+    {% if "types" in channel_output and "value" in channel_output["types"] -%}
+
+    <div class="row small-gutters">
+      <div class="col-auto">
+        <input class="form-control-sm" id="value_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" name="sec_on_amt_{{each_widget.unique_id}}_{{device_id}}_{{channel_id}}" title="Send this value to the output" type="number" step="any" value="">
+      </div>
+      <div class="col-auto">
+        <input class="btn btn-sm btn-primary value_on_amt" id="turn_on" name="{{each_widget.unique_id}}/{{device_id}}/{{channel_id}}/on/value/" type="button" value="{{_('Send Value')}}">
+      </div>
     </div>
 
     {% endif %}
@@ -257,25 +294,25 @@ WIDGET_INFORMATION = {
     $.ajax(url, {
       success: function(data, responseText, jqXHR) {
         if (jqXHR.status === 204) {
-          document.getElementById('value-' + widget_id).innerHTML = 'NO DATA';
-          document.getElementById('timestamp-' + widget_id).innerHTML = 'MAX AGE EXCEEDED';
+          document.getElementById('value-' + measurement_id).innerHTML = 'NO DATA';
+          document.getElementById('timestamp-' + measurement_id).innerHTML = 'MAX AGE EXCEEDED';
         }
         else {
           const formattedTime = epoch_to_timestamp(data[0]);
           const measurement = data[1];
-            document.getElementById('value-' + widget_id).innerHTML = measurement.toFixed(decimal_places);
-   
+            document.getElementById('value-' + measurement_id).innerHTML = measurement.toFixed(decimal_places);
+
             const range_exists = document.getElementById("range_" + widget_id);
             if (range_exists != null) {  // Update range slider value
               document.getElementById("range_" + widget_id).value = measurement.toFixed(0);
               document.getElementById("range_val_" + widget_id).innerHTML = measurement.toFixed(0);
             }
-          document.getElementById('timestamp-' + widget_id).innerHTML = formattedTime;
+          document.getElementById('timestamp-' + measurement_id).innerHTML = formattedTime;
         }
       },
       error: function(jqXHR, textStatus, errorThrown) {
-        document.getElementById('value-' + widget_id).innerHTML = 'NO DATA';
-        document.getElementById('timestamp-' + widget_id).innerHTML = '{{_('Error')}}';
+        document.getElementById('value-' + measurement_id).innerHTML = 'NO DATA';
+        document.getElementById('timestamp-' + measurement_id).innerHTML = '{{_('Error')}}';
       }
     });
   }
@@ -299,7 +336,7 @@ WIDGET_INFORMATION = {
                   extra)
     }, period_sec * 1000);
   }
-  
+
   function getGPIOStateOutput(widget_id, unique_id, channel_id) {
     const url = '/outputstate_unique_id/' + unique_id + '/' + channel_id;
     $.getJSON(url,
@@ -352,40 +389,75 @@ WIDGET_INFORMATION = {
     {% endif %}
     modOutputOutput(send_cmd);
   });
-  $('.output_on_amt').click(function() {
+  $('.sec_on_amt').click(function() {
     const btn_val = this.name;
     const chart = btn_val.split('/')[0];
     const output_id = btn_val.split('/')[1];
     const channel_id = btn_val.split('/')[2];
-    const on_amt = $('#sec_on_amt_' + chart + '_' + output_id + '_' + channel_id).val();
+    const on_sec = $('#sec_on_amt_' + chart + '_' + output_id + '_' + channel_id).val();
     const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
     {% if not misc.hide_alert_info %}
-    toastr['info']('Command sent to turn output On for ' + on_amt);
+    toastr['info']('Command sent to turn output On for ' + on_sec);
     {% endif %}
-    modOutputOutput(send_cmd + on_amt);
+    modOutputOutput(send_cmd + on_sec);
+  });   
+  $('.vol_on_amt').click(function() {
+    const btn_val = this.name;
+    const chart = btn_val.split('/')[0];
+    const output_id = btn_val.split('/')[1];
+    const channel_id = btn_val.split('/')[2];
+    const on_vol = $('#vol_on_amt_' + chart + '_' + output_id + '_' + channel_id).val();
+    const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
+    {% if not misc.hide_alert_info %}
+    toastr['info']('Command sent to output with volume ' + on_vol);
+    {% endif %}
+    modOutputOutput(send_cmd + on_vol);
+  });
+  $('.value_on_amt').click(function() {
+    const btn_val = this.name;
+    const chart = btn_val.split('/')[0];
+    const output_id = btn_val.split('/')[1];
+    const channel_id = btn_val.split('/')[2];
+    const on_value = $('#value_on_amt_' + chart + '_' + output_id + '_' + channel_id).val();
+    const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
+    {% if not misc.hide_alert_info %}
+    toastr['info']('Command sent to output with value ' + on_value);
+    {% endif %}
+    modOutputOutput(send_cmd + on_value);
   });
   $('.duty_cycle_on_amt').click(function() {
     const btn_val = this.name;
     const chart = btn_val.split('/')[0];
     const output_id = btn_val.split('/')[1];
     const channel_id = btn_val.split('/')[2];
-    const dc = $('#duty_cycle_on_amt_' + chart + '_' + output_id + '_' + channel_id).val();
+    const on_dc = $('#duty_cycle_on_amt_' + chart + '_' + output_id + '_' + channel_id).val();
     const send_cmd = btn_val.substring(btn_val.indexOf('/') + 1);
     {% if not misc.hide_alert_info %}
-    toastr['info']('Command sent to turn output On with a duty cycle of ' + dc + '%');
+    toastr['info']('Command sent to turn output On with a duty cycle of ' + on_dc + '%');
     {% endif %}
-    modOutputOutput(send_cmd + dc);
+    modOutputOutput(send_cmd + on_dc);
   });
 """,
 
     'widget_dashboard_js_ready_end': """
-{%- set device_id = widget_options['output'].split(",")[0] -%}
-{%- set measurement_id = widget_options['output'].split(",")[1] -%}
-{%- set channel_id = widget_options['output'].split(",")[2] -%}
+{%- set device_id = "" -%}
+{%- set channel_id = "" -%}
 
-{% for each_output in output if each_output.unique_id == device_id %}
-  getLastDataOutput('{{each_widget.unique_id}}', '{{device_id}}', 'output', '{{measurement_id}}', {{widget_options['max_measure_age']}}, {{widget_options['decimal_places']}});
-  repeatLastDataOutput('{{each_widget.unique_id}}', '{{device_id}}', 'output', '{{measurement_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}}, {{widget_options['decimal_places']}});
+{% if widget_options['output'] %}
+    {%- set device_id = widget_options['output'].split(",")[0] -%}
+    {%- set channel_id = widget_options['output'].split(",")[1] -%}
+{% endif %}
+
+{% set out = table_output.query.filter(table_output.unique_id == device_id).first() %}
+{% set out_chan = table_output_channel.query.filter(table_output_channel.unique_id == channel_id).first() %}
+
+{% set measurements = table_device_measurements.query.filter(
+                        and_(table_device_measurements.device_id == device_id,
+                             table_device_measurements.channel.in_(dict_outputs[out.output_type]["channels_dict"][out_chan.channel]["measurements"]))).all() %}
+
+{% for each_measure in measurements %}
+  getLastDataOutput('{{each_widget.unique_id}}', '{{device_id}}', 'output', '{{each_measure.unique_id}}', {{widget_options['max_measure_age']}}, {{widget_options['decimal_places']}});
+  repeatLastDataOutput('{{each_widget.unique_id}}', '{{device_id}}', 'output', '{{each_measure.unique_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['max_measure_age']}}, {{widget_options['decimal_places']}});
 {% endfor %}
   getGPIOStateOutput('{{each_widget.unique_id}}', '{{device_id}}', '{{channel_id}}', {{widget_options['decimal_places']}});
   repeatGPIOStateOutput('{{each_widget.unique_id}}', '{{device_id}}', '{{channel_id}}', {{widget_options['refresh_seconds']}}, {{widget_options['decimal_places']}});

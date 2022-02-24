@@ -127,6 +127,7 @@ def custom_options_return_string(error, dict_options, mod_dev, request_form):
                             'text',
                             'select',
                             'select_measurement',
+                            'select_channel',
                             'select_measurement_channel',
                             'select_type_measurement',
                             'select_type_unit',
@@ -196,6 +197,8 @@ def custom_options_return_json(
         device = mod_dev.device
     elif hasattr(mod_dev, 'output_type'):
         device = mod_dev.output_type
+    elif hasattr(mod_dev, 'action_type'):
+        device = mod_dev.action_type
     else:
         logger.error("Unknown device")
         return None, None
@@ -255,6 +258,7 @@ def custom_options_return_json(
                                 'text',
                                 'select',
                                 'select_measurement',
+                                'select_channel',
                                 'select_measurement_channel',
                                 'select_type_measurement',
                                 'select_type_unit',
@@ -403,6 +407,7 @@ def custom_channel_options_return_json(
                                 'multiline_text',
                                 'text',
                                 'select_measurement',
+                                'select_channel',
                                 'select_measurement_channel',
                                 'select_type_measurement',
                                 'select_type_unit',
@@ -1814,6 +1819,16 @@ def generate_form_output_list(dict_outputs):
     for each_output in list_tuples_sorted:
         list_outputs_sorted.append(each_output[0])
     return list_outputs_sorted
+
+
+def generate_form_action_list(dict_actions):
+    # Sort dictionary entries by input_manufacturer, then input_name
+    # Results in list of sorted dictionary keys
+    list_tuples_sorted = sorted(dict_actions.items(), key=lambda x: (x[1]['manufacturer'], x[1]['name']))
+    list_actions_sorted = []
+    for each_action in list_tuples_sorted:
+        list_actions_sorted.append(each_action[0])
+    return list_actions_sorted
 
 
 def generate_form_widget_list(dict_widgets):

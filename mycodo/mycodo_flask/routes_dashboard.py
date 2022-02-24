@@ -4,12 +4,12 @@ import logging
 import os
 
 import flask_login
-from flask import jsonify
 from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
 from flask.blueprints import Blueprint
+from sqlalchemy import and_
 
 from mycodo.config import PATH_HTML_USER
 from mycodo.databases.models import Camera
@@ -263,6 +263,8 @@ def page_dashboard(dashboard_id):
     choices_method = utils_general.choices_methods(method)
     choices_output = utils_general.choices_outputs(
         output, dict_units, dict_measurements)
+    choices_output_channels = utils_general.choices_outputs_channels(
+        output, output_channel, dict_outputs)
     choices_output_channels_measurements = utils_general.choices_outputs_channels_measurements(
         output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_output_pwm = utils_general.choices_outputs_pwm(
@@ -281,6 +283,7 @@ def page_dashboard(dashboard_id):
         device_measurements, input_dev, output, math, function)
 
     return render_template('pages/dashboard.html',
+                           and_=and_,
                            conditional=conditional,
                            custom_options_values_output_channels=custom_options_values_output_channels,
                            custom_options_values_widgets=custom_options_values_widgets,
@@ -291,6 +294,7 @@ def page_dashboard(dashboard_id):
                            table_input=Input,
                            table_math=Math,
                            table_output=Output,
+                           table_output_channel=OutputChannel,
                            table_pid=PID,
                            table_device_measurements=DeviceMeasurements,
                            choices_camera=choices_camera,
@@ -299,6 +303,7 @@ def page_dashboard(dashboard_id):
                            choices_math=choices_math,
                            choices_method=choices_method,
                            choices_output=choices_output,
+                           choices_output_channels=choices_output_channels,
                            choices_output_channels_measurements=choices_output_channels_measurements,
                            choices_output_pwm=choices_output_pwm,
                            choices_pid=choices_pid,
@@ -309,6 +314,7 @@ def page_dashboard(dashboard_id):
                            dict_measure_measurements=dict_measure_measurements,
                            dict_measure_units=dict_measure_units,
                            dict_measurements=dict_measurements,
+                           dict_outputs=dict_outputs,
                            dict_units=dict_units,
                            dict_widgets=dict_widgets,
                            list_html_files_head=list_html_files_head,

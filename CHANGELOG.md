@@ -2,6 +2,8 @@
 
 If you are upgrading from a version prior to 8.12.10, following the upgrade, you will need to reboot.
 
+Changes to how the Output Widget works will require you to reselect an Output channel.
+
 ### Bugfixes
 
  - Fix missing netcat and wget install dependencies ([#1124](https://github.com/kizniche/mycodo/issues/1124))
@@ -15,6 +17,7 @@ If you are upgrading from a version prior to 8.12.10, following the upgrade, you
  - Fix displaying values on LCDs when Decimal is set to 0
  - Fix Blank Line option of LCDs actually displaying a blank line
  - Fix missing Display Unit option for some LCDs
+ - Fix issues with the Output Widget
 
 ### Features
 
