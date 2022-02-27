@@ -61,7 +61,6 @@ def tmp_file():
     make a tmp file in an empty tmp dir and
     remove it after it is used
     """
-
     parent_dir = tempfile.mkdtemp()
     _, tmp_path = tempfile.mkstemp(dir=parent_dir)
 
