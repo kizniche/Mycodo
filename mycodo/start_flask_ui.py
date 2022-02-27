@@ -1,5 +1,5 @@
 # coding=utf-8
-""" Starts the mycodo flask UI """
+"""Starts the mycodo flask UI"""
 import argparse
 import sys
 import os

@@ -443,7 +443,7 @@ class LCDController(AbstractController, threading.Thread):
             self.logger.exception("Error: {err}".format(err=except_msg))
 
     def output_lcds(self):
-        """ Output to all LCDs all at once """
+        """Output to all LCDs all at once"""
         line_1 = ''
         line_2 = ''
         line_3 = ''
@@ -560,7 +560,7 @@ class LCDController(AbstractController, threading.Thread):
             self.lcd_line[display_id][line]['setup'] = True
 
     def lcd_backlight(self, state):
-        """ Turn the backlight on or off """
+        """Turn the backlight on or off"""
         if state:
             self.lcd_out.lcd_backlight(state)
             self.lcd_is_on = True
@@ -569,12 +569,12 @@ class LCDController(AbstractController, threading.Thread):
             self.lcd_is_on = False  # Instruct LCD backlight to turn off
 
     def display_backlight_color(self, color):
-        """ Set backlight color """
+        """Set backlight color"""
         self.lcd_out.display_backlight_color(color)
         self.timer = time.time() - 1  # Induce LCD to update after turning backlight on
 
     def lcd_flash(self, state):
-        """ Enable the LCD to begin or end flashing """
+        """Enable the LCD to begin or end flashing"""
         if state:
             self.flash_lcd_on = True
             return 1, "LCD {} Flashing Turned On".format(self.unique_id)

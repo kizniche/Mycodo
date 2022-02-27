@@ -103,7 +103,7 @@ class InputModule(AbstractInput):
             self.logger.debug("URL: {}".format(self.api_url))
 
     def get_measurement(self):
-        """ Gets the weather data """
+        """Gets the weather data"""
         if not self.api_url:
             self.logger.error("API Key and City required")
             return

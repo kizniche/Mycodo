@@ -101,7 +101,7 @@ def validate_method_data(form_data, this_method):
 
 
 def method_create(form_create_method):
-    """ Create new method table entry (all data stored in method_data table) """
+    """Create new method table entry (all data stored in method_data table)"""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['add']['title'],
         controller=TRANSLATIONS['method']['title'])
@@ -175,7 +175,7 @@ def method_create(form_create_method):
 
 
 def method_add(form_add_method):
-    """ Add line to method_data table """
+    """Add line to method_data table"""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['add']['title'],
         controller=TRANSLATIONS['method']['title'])

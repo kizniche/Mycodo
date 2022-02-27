@@ -395,7 +395,7 @@ class InputModule(AbstractInput):
             return self.device_information
 
     def get_measurement(self):
-        """ Obtain and return the measurements """
+        """Obtain and return the measurements"""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         lf = LockFile()

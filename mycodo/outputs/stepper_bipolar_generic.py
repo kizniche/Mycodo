@@ -289,7 +289,7 @@ class OutputModule(AbstractOutput):
         return False
 
     def stop_output(self):
-        """ Called when Output is stopped """
+        """Called when Output is stopped"""
         if self.is_setup():
             if self.options_channels['enable_shutdown'][0] == "enable":
                 self.stepper.enable(True)

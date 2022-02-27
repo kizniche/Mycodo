@@ -108,7 +108,7 @@ class InputModule(AbstractInput):
         self.either_edge_cb = None
 
     def get_measurement(self):
-        """ Gets the humidity and temperature """
+        """Gets the humidity and temperature"""
         if not self.pi.connected:  # Check if pigpiod is running
             self.logger.error("Could not connect to pigpiod. Ensure it is running and try again.")
             return None
@@ -176,7 +176,7 @@ class InputModule(AbstractInput):
         self.register_callbacks()
 
     def register_callbacks(self):
-        """ Monitors RISING_EDGE changes using callback """
+        """Monitors RISING_EDGE changes using callback"""
         self.either_edge_cb = self.pi.callback(
             self.gpio,
             self.pigpio.EITHER_EDGE,
@@ -197,7 +197,7 @@ class InputModule(AbstractInput):
         handler(tick, diff)
 
     def _edge_rise(self, tick, diff):
-        """ Handle Rise signal """
+        """Handle Rise signal"""
         val = 0
         if diff >= 50:
             val = 1
@@ -224,7 +224,7 @@ class InputModule(AbstractInput):
         self.bit += 1
 
     def _edge_fall(self, tick, diff):
-        """ Handle Fall signal """
+        """Handle Fall signal"""
         self.high_tick = tick
         if diff <= 250000:
             return
@@ -234,11 +234,11 @@ class InputModule(AbstractInput):
         self.temp_humidity = 0
 
     def _edge_either(self, tick, diff):
-        """ Handle Either signal """
+        """Handle Either signal"""
         self.pi.set_watchdog(self.gpio, 0)
 
     def close(self):
-        """ Stop reading sensor, remove callbacks """
+        """Stop reading sensor, remove callbacks"""
         self.pi.set_watchdog(self.gpio, 0)
         if self.either_edge_cb:
             self.either_edge_cb.cancel()

@@ -1,5 +1,5 @@
 # coding=utf-8
-""" Tests for the abstract class and sensor classes """
+"""Tests for the abstract class and sensor classes"""
 import pytest
 from testfixtures import LogCapture
 

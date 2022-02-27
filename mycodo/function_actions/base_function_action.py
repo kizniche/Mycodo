@@ -1,11 +1,12 @@
 # coding=utf-8
 """
-This module contains the AbstractFunctionAction Class which acts as a template
-for all outputs. It is not to be used directly. The AbstractFunctionAction Class
-ensures that certain methods and instance variables are included in each
-Output.
+This module contains the AbstractFunctionAction Class which acts as a template for all Actions.
 
-All Outputs should inherit from this class and overwrite methods that raise
+It is not to be used directly. The AbstractFunctionAction Class
+ensures that certain methods and instance variables are included in each
+Action.
+
+All Actions should inherit from this class and overwrite methods that raise
 NotImplementedErrors
 """
 import logging
@@ -13,12 +14,11 @@ import timeit
 
 from mycodo.abstract_base_controller import AbstractBaseController
 from mycodo.config import SQL_DATABASE_MYCODO
-from mycodo.databases.models import Trigger
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import Function
+from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
-from mycodo.utils.lockfile import LockFile
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
@@ -47,17 +47,17 @@ class AbstractFunctionAction(AbstractBaseController):
             self.unique_id = action_dev.unique_id
 
     def __iter__(self):
-        """ Support the iterator protocol """
+        """Support the iterator protocol"""
         return self
 
     def __repr__(self):
-        """  Representation of object """
+        """Representation of object"""
         return_str = '<{cls}'.format(cls=type(self).__name__)
         return_str += '>'
         return return_str
 
     def __str__(self):
-        """ Return measurement information """
+        """Return measurement information"""
         return_str = ''
         return return_str
 
@@ -76,7 +76,7 @@ class AbstractFunctionAction(AbstractBaseController):
         raise NotImplementedError
 
     def run_action(self, message, dict_vars):
-        """ Called when Action is executed """
+        """Called when Action is executed"""
         pass
 
     #

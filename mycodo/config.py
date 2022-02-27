@@ -753,7 +753,7 @@ RELEASE_URL = 'https://api.github.com/repos/kizniche/Mycodo/tags'
 
 
 class ProdConfig(object):
-    """ Production Configuration """
+    """Production Configuration"""
     SQL_DATABASE_MYCODO = os.path.join(DATABASE_PATH, DATABASE_NAME)
     MYCODO_DB_PATH = 'sqlite:///{}'.format(SQL_DATABASE_MYCODO)
     SQLALCHEMY_DATABASE_URI = 'sqlite:///{}'.format(SQL_DATABASE_MYCODO)
@@ -794,7 +794,7 @@ class ProdConfig(object):
 
 
 class TestConfig(object):
-    """ Testing Configuration """
+    """Testing Configuration"""
     SQLALCHEMY_DATABASE_URI = 'sqlite://'  # in-memory db only. tests drop the tables after they run
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     PRESERVE_CONTEXT_ON_EXCEPTION = False

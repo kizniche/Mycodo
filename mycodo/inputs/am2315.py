@@ -105,7 +105,7 @@ class InputModule(AbstractInput):
         self.sensor = AM2315(self.input_dev.i2c_bus)
 
     def get_measurement(self):
-        """ Gets the humidity and temperature """
+        """Gets the humidity and temperature"""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return
@@ -175,7 +175,8 @@ class AM2315:
         self.debug = debug       				  # Debug flag
 
     def data(self):
-        """ Reads the humidity and temperature from the AS2315.
+        """
+        Reads the humidity and temperature from the AS2315.
 
         Returns:
             Tuple containing the following fields:

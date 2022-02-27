@@ -135,7 +135,7 @@ class InputModule(AbstractInput):
         return self.return_dict
 
     def stop_input(self):
-        """ Called when Input is deactivated """
+        """Called when Input is deactivated"""
         self.sensor.stop_ranging()
         self.sensor.close()
         self.running = False

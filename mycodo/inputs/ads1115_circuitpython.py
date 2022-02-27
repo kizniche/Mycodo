@@ -87,7 +87,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ Read ADC
+    """Read ADC
 
         Choose a gain of 1 for reading measurements from 0 to 4.09V.
         Or pick a different gain to change the range of measurements that are read:

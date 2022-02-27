@@ -230,7 +230,7 @@ def gpio_state():
 @blueprint.route('/outputstate_unique_id/<unique_id>/<channel_id>')
 @flask_login.login_required
 def gpio_state_unique_id(unique_id, channel_id):
-    """Return the GPIO state, for dashboard output """
+    """Return the GPIO state, for dashboard output"""
     channel = OutputChannel.query.filter(OutputChannel.unique_id == channel_id).first()
     daemon_control = DaemonControl()
     state = daemon_control.output_state(unique_id, channel.channel)
@@ -240,7 +240,7 @@ def gpio_state_unique_id(unique_id, channel_id):
 @blueprint.route('/widget_execute/<unique_id>')
 @flask_login.login_required
 def widget_execute(unique_id):
-    """Return the response from the execution of widget code """
+    """Return the response from the execution of widget code"""
     daemon_control = DaemonControl()
     return_value = daemon_control.widget_execute(unique_id)
     return jsonify(return_value)
@@ -249,7 +249,7 @@ def widget_execute(unique_id):
 @blueprint.route('/time')
 @flask_login.login_required
 def get_time():
-    """ Return the current time """
+    """Return the current time"""
     return jsonify(datetime.datetime.now().strftime('%m/%d %H:%M'))
 
 
@@ -549,7 +549,7 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
     from io import StringIO
 
     def iter_csv(data):
-        """ Stream CSV file to user for download """
+        """Stream CSV file to user for download"""
         line = StringIO()
         writer = csv.writer(line)
         writer.writerow([col_1, col_2])
@@ -971,7 +971,7 @@ def async_usage_data(device_id, unit, channel, start_seconds, end_seconds):
 @blueprint.route('/output_mod/<output_id>/<channel>/<state>/<output_type>/<amount>')
 @flask_login.login_required
 def output_mod(output_id, channel, state, output_type, amount):
-    """ Manipulate output (using non-unique ID) """
+    """Manipulate output (using non-unique ID)"""
     if not utils_general.user_has_permission('edit_controllers'):
         return 'Insufficient user permissions to manipulate outputs'
 
@@ -1198,7 +1198,7 @@ def last_data_pid(pid_id, input_period):
 @blueprint.route('/pid_mod_unique_id/<unique_id>/<state>')
 @flask_login.login_required
 def pid_mod_unique_id(unique_id, state):
-    """ Manipulate output (using unique ID) """
+    """Manipulate output (using unique ID)"""
     if not utils_general.user_has_permission('edit_controllers'):
         return 'Insufficient user permissions to manipulate PID'
 

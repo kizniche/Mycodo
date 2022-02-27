@@ -58,7 +58,7 @@ class InputModule(AbstractInput):
         self.control = DaemonControl()
 
     def get_measurement(self):
-        """ Gets the measurement in units by reading resource """
+        """Gets the measurement in units by reading resource"""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         try:

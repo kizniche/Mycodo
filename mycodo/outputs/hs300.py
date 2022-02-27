@@ -239,7 +239,7 @@ class OutputModule(AbstractOutput):
         return self.output_setup
 
     def stop_output(self):
-        """ Called when Output is stopped """
+        """Called when Output is stopped"""
         if self.is_setup():
             for channel in channels_dict:
                 if self.options_channels['state_shutdown'][channel] == 1:

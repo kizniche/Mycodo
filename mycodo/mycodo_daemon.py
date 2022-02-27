@@ -87,7 +87,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class DaemonController:
-    """ Mycodo daemon """
+    """Mycodo daemon"""
     def __init__(self, debug):
         self.logger = logging.getLogger('mycodo.daemon')
         if not debug:
@@ -1077,7 +1077,7 @@ class DaemonController:
             self.logger.exception("Timelapse ERROR")
 
     def timelapse_check(self, camera, now):
-        """ If time-lapses are active, take photo at predefined periods """
+        """If time-lapses are active, take photo at predefined periods"""
         try:
             if (camera.timelapse_started and
                     now > camera.timelapse_end_time):

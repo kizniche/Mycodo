@@ -291,7 +291,7 @@ class OutputModule(AbstractOutput):
             return
 
     def dispense_volume_fastest(self, amount, total_dispense_seconds):
-        """ Dispense at fastest flow rate, a 100 % duty cycle """
+        """Dispense at fastest flow rate, a 100 % duty cycle"""
         self.currently_dispensing = True
         self.logger.debug("Output turned on")
 
@@ -311,7 +311,7 @@ class OutputModule(AbstractOutput):
         self.record_dispersal(amount, total_dispense_seconds, total_dispense_seconds)
 
     def dispense_volume_rate(self, amount, dispense_rate):
-        """ Dispense at a specific flow rate """
+        """Dispense at a specific flow rate"""
         # Calculate total disperse time and durations to cycle on/off to reach total volume
         total_dispense_seconds = abs(amount) / dispense_rate * 60
         self.logger.debug("Total duration to run: {0:.1f} seconds".format(total_dispense_seconds))

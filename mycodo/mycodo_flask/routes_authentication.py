@@ -1,5 +1,5 @@
 # coding=utf-8
-""" flask views that deal with user authentication """
+"""flask views that deal with user authentication"""
 
 import datetime
 import logging

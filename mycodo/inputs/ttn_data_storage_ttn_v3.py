@@ -126,7 +126,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ A sensor support class that retrieves stored data from The Things Network """
+    """A sensor support class that retrieves stored data from The Things Network"""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -281,7 +281,7 @@ class InputModule(AbstractInput):
                     new_session.commit()
 
     def get_measurement(self):
-        """ Gets the data """
+        """Gets the data"""
         if self.first_run:
             # Get data for up to 7 days (longest Data Storage Integration
             # stores data) in the past or until last_datetime.

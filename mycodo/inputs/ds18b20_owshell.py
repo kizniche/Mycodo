@@ -58,7 +58,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ A sensor support class that monitors the DS18B20's temperature """
+    """A sensor support class that monitors the DS18B20's temperature"""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -74,7 +74,7 @@ class InputModule(AbstractInput):
         self.resolution = self.input_dev.resolution
 
     def get_measurement(self):
-        """ Gets the DS18B20's temperature in Celsius """
+        """Gets the DS18B20's temperature in Celsius"""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         temperature = None

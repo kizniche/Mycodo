@@ -183,7 +183,7 @@ OUTPUT_INFORMATION = {
 
 
 class OutputModule(AbstractOutput):
-    """ An output support class that operates an output """
+    """An output support class that operates an output"""
     def __init__(self, output, testing=False):
         super(OutputModule, self).__init__(output, testing=testing, name=__name__)
 
@@ -288,7 +288,7 @@ class OutputModule(AbstractOutput):
         return list_states
 
     def stop_output(self):
-        """ Called when Output is stopped """
+        """Called when Output is stopped"""
         dict_states = {}
         if self.is_setup():
             for channel in channels_dict:
@@ -302,7 +302,7 @@ class OutputModule(AbstractOutput):
 
 
 class GroveMultiRelay(object):
-    """ A software representation of a single GroveMultiRelay IO expander chip """
+    """A software representation of a single GroveMultiRelay IO expander chip"""
     def __init__(self, smbus, i2c_bus, i2c_address):
         self.bus_no = i2c_bus
         self.bus = smbus.SMBus(i2c_bus)
@@ -312,7 +312,7 @@ class GroveMultiRelay(object):
         return "GroveMultiRelay(i2c_bus_no=%r, address=0x%02x)" % (self.bus_no, self.address)
 
     def port(self, value):
-        """ Set the whole port using a list """
+        """Set the whole port using a list"""
         if not isinstance(value, list):
             raise AssertionError
         if len(value) != 8:

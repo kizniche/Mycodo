@@ -25,7 +25,6 @@ from mycodo.databases.utils import session_scope
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import get_last_measurement
 from mycodo.utils.influx import get_past_measurements
-from mycodo.utils.lockfile import LockFile
 
 MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 

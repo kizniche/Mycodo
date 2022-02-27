@@ -343,7 +343,7 @@ def widget_del(form_base):
 
 
 def graph_y_axes_async(dict_measurements, ids_measures):
-    """ Determine which y-axes to use for each Graph """
+    """Determine which y-axes to use for each Graph"""
     if not ids_measures:
         return
 

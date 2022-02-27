@@ -1,5 +1,5 @@
 # coding=utf-8
-""" collection of Page endpoints """
+"""collection of Page endpoints"""
 import logging
 import os
 
@@ -57,7 +57,7 @@ def inject_dictionary():
 @blueprint.route('/output_submit', methods=['POST'])
 @flask_login.login_required
 def page_output_submit():
-    """ Submit form for Output page """
+    """Submit form for Output page"""
     messages = {
         "success": [],
         "info": [],
@@ -145,7 +145,7 @@ def save_output_layout():
 @blueprint.route('/output', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_output():
-    """ Display Output page options """
+    """Display Output page options"""
     output_type = request.args.get('output_type', None)
     output_id = request.args.get('output_id', None)
     each_output = None

@@ -207,7 +207,7 @@ class InputModule(AbstractInput):
             self.logger.debug("Time Dict: {}".format(self.weather_time_dict))
 
     def get_measurement(self):
-        """ Gets the weather data """
+        """Gets the weather data"""
         if not self.api_url:
             self.logger.error("API Key, Latitude, and Longitude required")
             return

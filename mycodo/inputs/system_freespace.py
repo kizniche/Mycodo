@@ -37,7 +37,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ A sensor support class that monitors the free space of a path """
+    """A sensor support class that monitors the free space of a path"""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -51,7 +51,7 @@ class InputModule(AbstractInput):
         self.path = self.input_dev.location
 
     def get_measurement(self):
-        """ Gets the free space """
+        """Gets the free space"""
         if not self.path:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

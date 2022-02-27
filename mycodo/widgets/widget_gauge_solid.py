@@ -505,7 +505,7 @@ def is_rgb_color(color_hex):
 
 
 def custom_colors_gauge(form, error):
-    """ Get variable number of gauge color inputs, turn into CSV string """
+    """Get variable number of gauge color inputs, turn into CSV string"""
     sorted_colors = []
     colors_hex = {}
     # Combine all color form inputs to dictionary

@@ -232,7 +232,7 @@ class PIDController(AbstractController, threading.Thread):
         return "success"
 
     def check_pid(self):
-        """ Get measurement and apply to PID controller """
+        """Get measurement and apply to PID controller"""
         # If PID is active, retrieve measurement and update
         # the control variable.
         # A PID on hold will sustain the current output and
@@ -323,7 +323,7 @@ class PIDController(AbstractController, threading.Thread):
             self.manipulate_output()
 
     def setup_method(self, method_id):
-        """ Initialize method variables to start running a method """
+        """Initialize method variables to start running a method"""
         self.setpoint_tracking_id = ''
 
         method = load_method_handler(method_id, self.logger)
@@ -368,7 +368,7 @@ class PIDController(AbstractController, threading.Thread):
             "Activate the Trigger controller to start it again.")
 
     def write_pid_values(self):
-        """ Write PID values to the measurement database """
+        """Write PID values to the measurement database"""
         if self.PID_Controller.band:
             setpoint_band_lower = self.PID_Controller.setpoint - self.PID_Controller.band
             setpoint_band_upper = self.PID_Controller.setpoint + self.PID_Controller.band
@@ -904,7 +904,7 @@ class PIDController(AbstractController, threading.Thread):
         return "success"
 
     def set_setpoint(self, setpoint):
-        """ Set the setpoint of PID """
+        """Set the setpoint of PID"""
         self.PID_Controller.setpoint = float(setpoint)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()
@@ -913,7 +913,7 @@ class PIDController(AbstractController, threading.Thread):
         return "Setpoint set to {sp}".format(sp=setpoint)
 
     def set_method(self, method_id):
-        """ Set the method of PID """
+        """Set the method of PID"""
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()
             mod_pid.setpoint_tracking_id = method_id
@@ -930,17 +930,17 @@ class PIDController(AbstractController, threading.Thread):
         return "Method set to {me}".format(me=method_id)
 
     def set_integrator(self, integrator):
-        """ Set the integrator of the controller """
+        """Set the integrator of the controller"""
         self.PID_Controller.integrator = float(integrator)
         return "Integrator set to {i}".format(i=self.PID_Controller.integrator)
 
     def set_derivator(self, derivator):
-        """ Set the derivator of the controller """
+        """Set the derivator of the controller"""
         self.PID_Controller.derivator = float(derivator)
         return "Derivator set to {d}".format(d=self.PID_Controller.derivator)
 
     def set_kp(self, p):
-        """ Set Kp gain of the controller """
+        """Set Kp gain of the controller"""
         self.PID_Controller.Kp = float(p)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()
@@ -949,7 +949,7 @@ class PIDController(AbstractController, threading.Thread):
         return "Kp set to {kp}".format(kp=self.PID_Controller.Kp)
 
     def set_ki(self, i):
-        """ Set Ki gain of the controller """
+        """Set Ki gain of the controller"""
         self.PID_Controller.Ki = float(i)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()
@@ -958,7 +958,7 @@ class PIDController(AbstractController, threading.Thread):
         return "Ki set to {ki}".format(ki=self.PID_Controller.Ki)
 
     def set_kd(self, d):
-        """ Set Kd gain of the controller """
+        """Set Kd gain of the controller"""
         self.PID_Controller.Kd = float(d)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()

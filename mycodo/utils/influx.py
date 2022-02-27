@@ -84,7 +84,6 @@ def format_influxdb_data(unique_id, unit, value, channel=None, measure=None, tim
     :type channel: int
     :param timestamp: If supplied, this timestamp will be used in the influxdb
     :type timestamp: datetime object
-
     """
     checked_value = float(value)
 
@@ -203,7 +202,7 @@ def parse_measurement(
 
 
 def rescale_measurements(measurement, measurement_value):
-    """ Rescale measurement """
+    """Rescale measurement"""
     rescaled_measurement = None
     try:
         if measurement.rescale_method == "linear":
@@ -532,7 +531,7 @@ def read_past_influxdb(unique_id, unit, channel, past_seconds, measure=None):
 
 
 def output_sec_on(output_id, past_seconds, output_channel=0):
-    """ Return the number of seconds a output has been ON in the past number of seconds """
+    """Return the number of seconds a output has been ON in the past number of seconds"""
     # Get the number of seconds ON stored in the database
     output = db_retrieve_table_daemon(Output, unique_id=output_id)
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
@@ -623,7 +622,7 @@ def sum_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
 
 
 def influx_time_str_to_milliseconds(timestamp_str):
-    """ Converts InfluxDB time string with "Z" from nanoseconds to milliseconds and removes the Z """
+    """Converts InfluxDB time string with "Z" from nanoseconds to milliseconds and removes the Z"""
     start_date_time = timestamp_str.split('Z')[0].split('.')[0]
     start_milliseconds = timestamp_str.split('Z')[0].split('.')[1][:3]
     return '{}.{}'.format(start_date_time, start_milliseconds)

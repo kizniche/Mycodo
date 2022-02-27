@@ -87,7 +87,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ A sensor support class that measures the MAX31856's temperature """
+    """A sensor support class that measures the MAX31856's temperature"""
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -122,7 +122,7 @@ class InputModule(AbstractInput):
             self.sensor.writeRegister(1, 0x07)  # T Type
 
     def get_measurement(self):
-        """ Get measurements and store in the database """
+        """Get measurements and store in the database"""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

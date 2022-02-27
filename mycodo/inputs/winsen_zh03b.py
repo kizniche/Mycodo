@@ -80,7 +80,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ A sensor support class that monitors the WINSEN_ZH03B's particulate concentration """
+    """A sensor support class that monitors the WINSEN_ZH03B's particulate concentration"""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -128,7 +128,7 @@ class InputModule(AbstractInput):
                 dev=self.input_dev.uart_location))
 
     def get_measurement(self):
-        """ Gets the WINSEN_ZH03B's Particulate concentration in μg/m^3 """
+        """Gets the WINSEN_ZH03B's Particulate concentration in μg/m^3"""
         if not self.ser:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

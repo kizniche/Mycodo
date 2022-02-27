@@ -29,9 +29,7 @@ def setup_atlas_device(atlas_device):
 
 
 class AtlasScientificCommand:
-    """
-    Class to handle issuing commands to the Atlas Scientific sensor boards
-    """
+    """Class to handle issuing commands to the Atlas Scientific sensor boards"""
 
     def __init__(self, input_dev, sensor=None):
         self.cmd_send = None
@@ -144,7 +142,7 @@ class AtlasScientificCommand:
         return err, msg
 
     def send_command(self, cmd_send):
-        """ Send the command (if not None) and return the response """
+        """Send the command (if not None) and return the response"""
         try:
             if not cmd_send:
                 return 1, "No command given"

@@ -141,7 +141,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ A sensor support class that retrieves stored data from MQTT """
+    """A sensor support class that retrieves stored data from MQTT"""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -188,7 +188,7 @@ class InputModule(AbstractInput):
         self.client.loop_start()
 
     def callbacks_connect(self):
-        """ Connect the callback functions """
+        """Connect the callback functions"""
         try:
             self.logger.debug("Connecting MQTT callback functions")
             self.client.on_connect = self.on_connect
@@ -200,7 +200,7 @@ class InputModule(AbstractInput):
             self.logger.error("Unable to connect mqtt callback functions")
 
     def connect(self):
-        """ Set up the connection to the MQTT Server """
+        """Set up the connection to the MQTT Server"""
         try:
             self.client.connect(
                 self.mqtt_hostname,
@@ -213,7 +213,7 @@ class InputModule(AbstractInput):
                 self.mqtt_hostname, self.mqtt_port))
 
     def subscribe(self):
-        """ Set up the subscriptions to the proper MQTT channels to listen to """
+        """Set up the subscriptions to the proper MQTT channels to listen to"""
         try:
             for channel in self.channels_measurement:
                 self.logger.debug("Subscribing to MQTT topic '{}'".format(
@@ -304,7 +304,7 @@ class InputModule(AbstractInput):
         self.logger.debug("Disconnected. Return code: {}".format(rc))
 
     def stop_input(self):
-        """ Called when Input is deactivated """
+        """Called when Input is deactivated"""
         self.running = False
         self.client.loop_stop()
         self.client.disconnect()

@@ -87,18 +87,19 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ Read ADC
+    """
+    Read ADC
 
-        Choose a gain of 1 for reading measurements from 0 to 4.09V.
-        Or pick a different gain to change the range of measurements that are read:
-         - 2/3 = ±6.144 V
-         -   1 = ±4.096 V
-         -   2 = ±2.048 V
-         -   4 = ±1.024 V
-         -   8 = ±0.512 V
-         -  16 = ±0.256 V
-        See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
-        """
+    Choose a gain of 1 for reading measurements from 0 to 4.09V.
+    Or pick a different gain to change the range of measurements that are read:
+     - 2/3 = ±6.144 V
+     -   1 = ±4.096 V
+     -   2 = ±2.048 V
+     -   4 = ±1.024 V
+     -   8 = ±0.512 V
+     -  16 = ±0.256 V
+    See table 3 in the ADS1015/ADS1115 datasheet for more info on gain.
+    """
     def __init__(self, input_dev, testing=False,):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 

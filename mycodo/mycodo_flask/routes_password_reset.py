@@ -1,5 +1,5 @@
 # coding=utf-8
-""" flask views that deal with password reset """
+"""flask views that deal with password reset"""
 import datetime
 import logging
 import socket

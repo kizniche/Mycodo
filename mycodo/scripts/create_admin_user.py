@@ -23,7 +23,7 @@ user_valid = False
 
 
 def set_password(new_password):
-    """ saves a password hash  """
+    """saves a password hash  """
     if isinstance(new_password, str):
         new_password = new_password.encode('utf-8')
     return bcrypt.hashpw(new_password, bcrypt.gensalt())

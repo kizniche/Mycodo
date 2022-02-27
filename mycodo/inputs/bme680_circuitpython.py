@@ -195,7 +195,7 @@ class InputModule(AbstractInput):
         self.sensor.sea_level_pressure = self.sea_level_pressure_ha
 
     def get_measurement(self):
-        """ Gets the measurement in units by reading the """
+        """Gets the measurement in units by reading the"""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

@@ -246,7 +246,7 @@ class OutputModule(AbstractOutput):
             self.stop(output_channel)
 
     def dispense_volume(self, channel, amount, total_dispense_seconds):
-        """ Dispense at flow rate """
+        """Dispense at flow rate"""
         self.currently_dispensing = True
         self.logger.debug("Output turned on")
         self.run(channel)
@@ -292,7 +292,7 @@ class OutputModule(AbstractOutput):
         return self.output_setup
 
     def stop_output(self):
-        """ Called when Output is stopped """
+        """Called when Output is stopped"""
         self.running = False
         for channel in channels_dict:
             if self.is_setup(channel=channel):

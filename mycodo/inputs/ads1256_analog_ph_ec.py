@@ -421,7 +421,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ Read ADC
+    """Read ADC
         Choose a gain of 1 for reading measurements from 0 to 4.09V.
         Or pick a different gain to change the range of measurements that are read:
          -   1 = ±5 V
@@ -601,11 +601,11 @@ class InputModule(AbstractInput):
             self.set_custom_option("ph_cal_t2", t)
 
     def calibrate_ph_slot_1(self, args_dict):
-        """ Auto-calibrate """
+        """calibrate"""
         self.calibrate_ph(1, args_dict)
 
     def calibrate_ph_slot_2(self, args_dict):
-        """ Auto-calibrate """
+        """calibrate"""
         self.calibrate_ph(2, args_dict)
 
     def clear_ph_calibrate_slots(self, args_dict):
@@ -659,11 +659,11 @@ class InputModule(AbstractInput):
             self.set_custom_option("ec_cal_t2", t)
 
     def calibrate_ec_slot_1(self, args_dict):
-        """ Auto-calibrate """
+        """calibrate"""
         self.calibrate_ec(1, args_dict)
 
     def calibrate_ec_slot_2(self, args_dict):
-        """ Auto-calibrate """
+        """calibrate"""
         self.calibrate_ec(2, args_dict)
 
     def clear_ec_calibrate_slots(self, args_dict):
@@ -812,7 +812,7 @@ class InputModule(AbstractInput):
         return return_dict
 
     def get_measurement(self):
-        """ Gets the measurement """
+        """Gets the measurement"""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

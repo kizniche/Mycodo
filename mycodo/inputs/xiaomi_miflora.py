@@ -86,7 +86,7 @@ class InputModule(AbstractInput):
             self.logger.exception("Setting up sensor")
 
     def get_measurement(self):
-        """ Gets the light, moisture, and temperature """
+        """Gets the light, moisture, and temperature"""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

@@ -534,7 +534,7 @@ def camera_record(record_type, unique_id, duration_sec=None, tmp_filename=None):
 
 
 def count_cameras_opencv():
-    """ Returns how many cameras are detected with opencv (cv2) """
+    """Returns how many cameras are detected with opencv (cv2)"""
     import cv2
     camera_ids = []
     max_tested = 10

@@ -1,5 +1,5 @@
 # coding=utf-8
-""" collection of Function endpoints """
+"""collection of Function endpoints"""
 import datetime
 import json
 import logging
@@ -81,7 +81,7 @@ def inject_dictionary():
 @blueprint.route('/function_submit', methods=['POST'])
 @flask_login.login_required
 def page_function_submit():
-    """ Submit form for Data page """
+    """Submit form for Data page"""
     messages = {
         "success": [],
         "info": [],
@@ -308,7 +308,7 @@ def save_function_layout():
 @blueprint.route('/function', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_function():
-    """ Display Function page options """
+    """Display Function page options"""
     function_type = request.args.get('function_type', None)
     function_id = request.args.get('function_id', None)
     action_id = request.args.get('action_id', None)

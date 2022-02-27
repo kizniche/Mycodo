@@ -1,5 +1,5 @@
 # coding=utf-8
-""" collection of Page endpoints """
+"""collection of Page endpoints"""
 import logging
 import os
 
@@ -100,7 +100,7 @@ def page_dashboard_add():
 @blueprint.route('/dashboard/<dashboard_id>', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_dashboard(dashboard_id):
-    """ Generate custom dashboard with various data """
+    """Generate custom dashboard with various data"""
     # Retrieve tables from SQL database
     camera = Camera.query.all()
     conditional = Conditional.query.all()

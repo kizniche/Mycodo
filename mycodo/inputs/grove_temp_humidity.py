@@ -113,7 +113,7 @@ class InputModule(AbstractInput):
         self.sensor_type = int(self.sensor_type)
 
     def get_measurement(self):
-        """ Gets the humidity and temperature """
+        """Gets the humidity and temperature"""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         # Try twice to get measurement. This prevents an anomaly where

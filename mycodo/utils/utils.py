@@ -53,7 +53,6 @@ def pass_length_min(pw, min_len=6):
     :type min_len: int
     :return: Whether the password is long enough
     :rtype: bool
-
     """
     if not len(pw) >= min_len:
         print("The password provided is too short.")

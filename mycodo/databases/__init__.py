@@ -14,7 +14,7 @@ class CRUDMixin(object):
     """
 
     def save(self):
-        """ creates the model in the database """
+        """creates the model in the database"""
         try:
             db.session.add(self)
             db.session.commit()
@@ -24,7 +24,7 @@ class CRUDMixin(object):
             current_app.logger.error("Failed to save {model} due to error: {err}".format(model=self, err=error))
 
     def delete(self):
-        """ deletes the record from the database """
+        """deletes the record from the database"""
         try:
             db.session.delete(self)
             db.session.commit()
@@ -33,12 +33,12 @@ class CRUDMixin(object):
 
 
 def set_api_key(length):
-    """ Generates an API key of specific length """
+    """Generates an API key of specific length"""
     return secrets.token_bytes(length)
 
 
 def set_uuid():
-    """ returns a uuid string """
+    """returns a uuid string"""
     return str(uuid.uuid4())
 
 

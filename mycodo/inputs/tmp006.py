@@ -47,7 +47,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ A sensor support class that monitors the TMP006's die and object temperatures """
+    """A sensor support class that monitors the TMP006's die and object temperatures"""
     def __init__(self, input_dev,  testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -64,7 +64,7 @@ class InputModule(AbstractInput):
             busnum=self.input_dev.i2c_bus)
 
     def get_measurement(self):
-        """ Gets the TMP006's temperature in Celsius """
+        """Gets the TMP006's temperature in Celsius"""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

@@ -279,7 +279,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ A dummy sensor support class """
+    """A dummy sensor support class"""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -342,7 +342,7 @@ class InputModule(AbstractInput):
             pass
 
     def get_measurement(self):
-        """ Gets the temperature and humidity """
+        """Gets the temperature and humidity"""
         #
         # Copy measurements dictionary
         #

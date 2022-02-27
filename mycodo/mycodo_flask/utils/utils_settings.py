@@ -331,7 +331,7 @@ def user_mod(form):
 
 
 def user_del(form):
-    """ Delete user from SQL database """
+    """Delete user from SQL database"""
     messages = {
         "success": [],
         "info": [],
@@ -362,7 +362,7 @@ def user_del(form):
 #
 
 def settings_general_mod(form):
-    """ Modify General settings """
+    """Modify General settings"""
     messages = {
         "success": [],
         "info": [],
@@ -1680,7 +1680,7 @@ def settings_pi_mod(form):
 
 
 def settings_alert_mod(form_mod_alert):
-    """ Modify Alert settings """
+    """Modify Alert settings"""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['modify']['title'],
         controller=gettext("Alert Settings"))

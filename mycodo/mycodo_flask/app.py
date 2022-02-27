@@ -67,7 +67,7 @@ def create_app(config=ProdConfig):
 
 
 def register_extensions(app):
-    """ register extensions to the app """
+    """register extensions to the app"""
     app.jinja_env.add_extension('jinja2.ext.do')  # Global values in jinja
 
     db.init_app(app)  # Influx db time-series database
@@ -100,7 +100,7 @@ def register_extensions(app):
 
 
 def register_blueprints(app):
-    """ register blueprints to the app """
+    """register blueprints to the app"""
     app.register_blueprint(routes_admin.blueprint)  # register admin views
     app.register_blueprint(routes_authentication.blueprint)  # register login/logout views
     app.register_blueprint(routes_password_reset.blueprint)  # register password reset views

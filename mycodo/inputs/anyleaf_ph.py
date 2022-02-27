@@ -260,17 +260,17 @@ class InputModule(AbstractInput):
             self.set_custom_option("cal3_t", t)
 
     def calibrate_slot_1(self, args_dict):
-        # """ Auto-calibrate """
+        """calibrate"""
         from anyleaf import CalSlot
         self.calibrate(CalSlot.ONE, args_dict)
 
     def calibrate_slot_2(self, args_dict):
-        """ Auto-calibrate """
+        """calibrate"""
         from anyleaf import CalSlot
         self.calibrate(CalSlot.TWO, args_dict)
 
     def calibrate_slot_3(self, args_dict):
-        """ Auto-calibrate """
+        """calibrate"""
         from anyleaf import CalSlot
         self.calibrate(CalSlot.THREE, args_dict)
 
@@ -318,7 +318,7 @@ class InputModule(AbstractInput):
             return OnBoard()
 
     def get_measurement(self):
-        """ Gets the measurement """
+        """Gets the measurement"""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if not self.sensor:

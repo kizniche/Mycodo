@@ -1,5 +1,5 @@
 # coding=utf-8
-""" Tests for input classes """
+"""Tests for input classes"""
 import inspect
 from collections.abc import Iterator
 
@@ -72,7 +72,7 @@ input_classes = [
 
 
 def test_inputs_have_depreciated_stop_input():
-    """ Verify that the input objects have the stop_input() method """
+    """Verify that the input objects have the stop_input() method"""
     print("\nTest: test_inputs_have_depreciated_stop_input")
     for index, each_class in enumerate(input_classes):
         print("test_inputs_have_depreciated_stop_input: Testing Class ({}/{}): {}".format(
@@ -81,7 +81,7 @@ def test_inputs_have_depreciated_stop_input():
 
 
 def test__iter__returns_iterator():
-    """ The iter methods must return an iterator in order to work properly """
+    """The iter methods must return an iterator in order to work properly"""
     print("\nTest: test__iter__returns_iterator")
     for index, each_class in enumerate(input_classes):
         full_path = inspect.getfile(each_class.__class__)
@@ -123,7 +123,7 @@ def test__iter__returns_iterator():
 
 
 def test_read_updates_measurement():
-    """  Verify that read() gets the average temp """
+    """  Verify that read() gets the average temp"""
     print("\nTest: test_read_updates_measurement")
     for index, each_class in enumerate(input_classes):
         full_path = inspect.getfile(each_class.__class__)
@@ -178,7 +178,7 @@ def test_read_updates_measurement():
 
 
 def test_special_method_str():
-    """ expect a __str__ format """
+    """expect a __str__ format"""
     print("\nTest: test_special_method_str")
     for index, each_class in enumerate(input_classes):
         full_path = inspect.getfile(each_class.__class__)
@@ -221,7 +221,7 @@ def test_special_method_str():
 
 
 def test_special_method_repr():
-    """ expect a __repr__ format """
+    """expect a __repr__ format"""
     print("\nTest: test_special_method_repr")
     for index, each_class in enumerate(input_classes):
         full_path = inspect.getfile(each_class.__class__)
@@ -252,7 +252,7 @@ def test_special_method_repr():
 
 
 def test_raises_exception():
-    """ stops iteration on read() error """
+    """stops iteration on read() error"""
     print("\nTest: test_raises_exception")
     for index, each_class in enumerate(input_classes):
         full_path = inspect.getfile(each_class.__class__)
@@ -264,7 +264,7 @@ def test_raises_exception():
 
 
 def test_read_returns_1_on_exception():
-    """ Verify the read() method returns true on error """
+    """Verify the read() method returns true on error"""
     print("\nTest: test_read_returns_1_on_exception")
     for index, each_class in enumerate(input_classes):
         full_path = inspect.getfile(each_class.__class__)
@@ -275,7 +275,7 @@ def test_read_returns_1_on_exception():
 
 
 def test_read_logs_unknown_errors():
-    """ verify that IOErrors are logged """
+    """verify that IOErrors are logged"""
     print("\nTest: test_read_logs_unknown_errors")
     with LogCapture() as log_cap:
         for index, each_class in enumerate(input_classes):

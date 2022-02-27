@@ -70,7 +70,7 @@ def alembic_upgrade_db():
     """Upgrade sqlite3 database with alembic"""
 
     def upgrade_alembic():
-        """ Run alembic database upgrade """
+        """Run alembic database upgrade"""
         command = '/bin/bash {path}/mycodo/scripts/upgrade_commands.sh update-alembic'.format(path=INSTALL_DIRECTORY)
         upgrade = subprocess.Popen(
             command, stdout=subprocess.PIPE, shell=True)

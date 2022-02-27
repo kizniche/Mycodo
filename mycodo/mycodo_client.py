@@ -57,9 +57,7 @@ logger = logging.getLogger(__name__)
 
 
 class DaemonControl:
-    """
-    Communicate with the daemon to execute commands or retrieve information.
-    """
+    """Communicate with the daemon to execute commands or retrieve information"""
     def __init__(self, pyro_uri=PYRO_URI, pyro_timeout=None):
         self.pyro_timeout = 30
         try:
@@ -222,7 +220,7 @@ class DaemonControl:
             output_channel=output_channel, trigger_conditionals=trigger_conditionals)
 
     def output_on_off(self, output_id, state, output_type=None, amount=0.0, output_channel=None):
-        """ Turn an output on or off """
+        """Turn an output on or off"""
         if state in ['on', 1, True]:
             return self.output_on(
                 output_id, amount=amount, output_type=output_type, output_channel=output_channel)
@@ -232,7 +230,7 @@ class DaemonControl:
             return 1, 'state not "on", 1, True, "off", 0, or False. Found: "{}"'.format(state)
 
     def output_sec_currently_on(self, output_id, output_channel=None):
-        """ Return the amount of seconds an on/off output channel has been on """
+        """Return the amount of seconds an on/off output channel has been on"""
         return self.proxy().output_sec_currently_on(output_id, output_channel)
 
     def output_setup(self, action, output_id):
@@ -302,7 +300,7 @@ class DaemonControl:
         return self.proxy().widget_execute(unique_id)
 
 def daemon_active():
-    """ Used to determine if the daemon is reachable to communicate """
+    """Used to determine if the daemon is reachable to communicate"""
     try:
         daemon = DaemonControl()
         if daemon.check_daemon() != 'GOOD':

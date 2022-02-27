@@ -35,14 +35,14 @@ class User(UserMixin, CRUDMixin, db.Model):
         return output.format(name=self.name, email=self.email, isadmin=bool(self.role_id == 1))
 
     def set_password(self, new_password):
-        """ saves a password hash  """
+        """saves a password hash  """
         if isinstance(new_password, str):
             new_password = new_password.encode('utf-8')
         self.password_hash = bcrypt.hashpw(new_password, bcrypt.gensalt())
 
     @staticmethod
     def check_password(password, hashed_password):
-        """ validates a password """
+        """validates a password"""
         # Check type of password hashed_password to determine if it is a str
         # and should be encoded
         if isinstance(password, str):

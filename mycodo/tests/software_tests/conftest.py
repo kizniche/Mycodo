@@ -1,5 +1,5 @@
 # coding=utf-8
-""" pytest file """
+"""pytest file"""
 #  Hardware specific libs are found through out the flask app pages
 #  and the following mock work will patch them so that we can pretend
 #  that we have them installed:
@@ -37,7 +37,7 @@ from mycodo.databases.models import populate_db
 
 @pytest.fixture()
 def app():
-    """ creates a flask instance """
+    """Creates a flask instance"""
     _app = create_app(config=TestConfig)
     ctx = _app.test_request_context()
     ctx.push()
@@ -47,7 +47,7 @@ def app():
 
 @pytest.fixture()
 def testapp(app):
-    """ creates a webtest fixture """
+    """Creates a webtest fixture"""
     with app.app_context():
         populate_db()
         create_admin_user()
@@ -73,7 +73,7 @@ def tmp_file():
 
 @pytest.fixture()
 def db(app):
-    """ Creates a config object to setup and databases during tests """
+    """Creates a config object to set up and databases during tests"""
     _db.app = app
     with app.app_context():
         _db.create_all()
@@ -83,7 +83,7 @@ def db(app):
 
 
 def create_admin_user():
-    """ Create an admin user if it doesn't exist """
+    """Create an admin user if it doesn't exist"""
     if not User.query.filter_by(name='admin').count():
         user = UserFactory()
         user.name = 'admin'
@@ -96,7 +96,7 @@ def create_admin_user():
 
 
 def create_guest_user():
-    """ Create a guest user if it doesn't exist """
+    """Create a guest user if it doesn't exist"""
     if not User.query.filter_by(name='guest').count():
         user = UserFactory()
         user.name = 'guest'

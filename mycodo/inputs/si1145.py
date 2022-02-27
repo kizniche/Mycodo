@@ -52,7 +52,7 @@ INPUT_INFORMATION = {
 }
 
 class InputModule(AbstractInput):
-    """ A sensor support class that measures the SI1145 """
+    """A sensor support class that measures the SI1145"""
 
     def __init__(self, input_dev, testing=False):  # generally reserved for defining variable default values
 

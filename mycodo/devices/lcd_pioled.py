@@ -55,7 +55,7 @@ class LCD_Pioled:
             self.disp.begin()
 
     def lcd_init(self):
-        """ Initialize LCD display """
+        """Initialize LCD display"""
         try:
             self.disp.clear()
             self.disp.display()
@@ -72,7 +72,7 @@ class LCD_Pioled:
                         message_line_6=None,
                         message_line_7=None,
                         message_line_8=None):
-        """ Send strings to display """
+        """Send strings to display"""
         x = 0
         top = -2  # padding
         font = ImageFont.load_default()
@@ -101,5 +101,5 @@ class LCD_Pioled:
         time.sleep(0.1)
 
     def lcd_backlight(self, state):
-        """ backlight not supported """
+        """backlight not supported"""
         pass

@@ -70,13 +70,13 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
         self.current_addr = addr
 
     def write(self, cmd):
-        """ Append the null character and send the command over I2C"""
+        """Append the null character and send the command over I2C"""
         cmd += "\00"
         # self.logger.error("Atlas Scientific command being sent: '{}'".format(cmd))
         self.file_write.write(cmd.encode('latin-1'))
 
     def read(self, num_of_bytes=50):
-        """ Read a specified number of bytes from I2C, then parse and display the result """
+        """Read a specified number of bytes from I2C, then parse and display the result"""
         res = self.file_read.read(num_of_bytes)  # read from the board
         if res[0] == 1:  # if the response isn't an error
             response = list(filter(lambda x: x != '\x00', res.decode()))  # remove the null characters
@@ -88,7 +88,7 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
             return "error", str(res[0])
 
     def query(self, query_str):
-        """ Send command to board and read response """
+        """Send command to board and read response"""
         lf = LockFile()
         if lf.lock_acquire(self.lock_file, timeout=self.lock_timeout):
             try:
@@ -119,7 +119,7 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
         self.file_write.close()
 
     def list_i2c_devices(self):
-        """ Determine the addresses of connected I2C devices """
+        """Determine the addresses of connected I2C devices"""
         prev_addr = self.current_addr  # save the current address so we can restore it after
         i2c_devices = []
         for i in range(0, 128):

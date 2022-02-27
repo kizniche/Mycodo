@@ -57,11 +57,11 @@ class AbstractController(AbstractBaseController):
         raise NotImplementedError
 
     def run_finally(self):
-        """ Executed after loop() has finished """
+        """Executed after loop() has finished"""
         pass
 
     def pre_stop(self):
-        """ Executed when the controller is instructed to stop """
+        """Executed when the controller is instructed to stop"""
         pass
 
     #
@@ -118,7 +118,7 @@ class AbstractController(AbstractBaseController):
             self.logger.setLevel(logging.INFO)
 
     def attempt_execute(self, func, times=3, delay_sec=10):
-        """ Attempt to execute a function several times with a delay between attempts """
+        """Attempt to execute a function several times with a delay between attempts"""
         for i in range(1, times + 1):
             try:
                 func()

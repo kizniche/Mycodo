@@ -1,5 +1,5 @@
 # coding=utf-8
-""" collection of Method endpoints """
+"""collection of Method endpoints"""
 import datetime
 import logging
 import time
@@ -62,7 +62,7 @@ def method_data(method_id):
 @blueprint.route('/method', methods=('GET', 'POST'))
 @flask_login.login_required
 def method_list():
-    """ List all methods on one page with a graph for each """
+    """List all methods on one page with a graph for each"""
     form_create_method = forms_method.MethodCreate()
 
     method = Method.query.all()

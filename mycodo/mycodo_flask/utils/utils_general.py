@@ -601,7 +601,7 @@ def controller_activate_deactivate(messages,
 #
 
 def choices_controller_ids():
-    """ populate form multi-select choices from Controller IDS """
+    """populate form multi-select choices from Controller IDS"""
     choices = []
     for each_input in Input.query.all():
         display = '[Input {id:02d}] {name}'.format(
@@ -642,7 +642,7 @@ def choices_controller_ids():
 
 
 def choices_custom_functions():
-    """ populate form multi-select choices from Function entries """
+    """populate form multi-select choices from Function entries"""
     choices = []
     dict_controllers = parse_function_information()
     list_controllers_sorted = generate_form_controller_list(dict_controllers)
@@ -655,7 +655,7 @@ def choices_custom_functions():
 
 
 def choices_inputs(inputs, dict_units, dict_measurements):
-    """ populate form multi-select choices from Input entries """
+    """populate form multi-select choices from Input entries"""
     choices = []
     for each_input in inputs:
         choices = form_input_choices(
@@ -664,7 +664,7 @@ def choices_inputs(inputs, dict_units, dict_measurements):
 
 
 def choices_input_devices(input_dev):
-    """ populate form multi-select choices from Output entries """
+    """populate form multi-select choices from Output entries"""
     choices = []
     for each_input in input_dev:
         choices = form_input_choices_devices(choices, each_input)
@@ -726,7 +726,7 @@ def choices_lcd(inputs, maths, pids, outputs, dict_units, dict_measurements):
 
 
 def choices_maths(maths, dict_units, dict_measurements):
-    """ populate form multi-select choices from Math entries """
+    """populate form multi-select choices from Math entries"""
     choices = []
     for each_math in maths:
         choices = form_math_choices(
@@ -735,7 +735,7 @@ def choices_maths(maths, dict_units, dict_measurements):
 
 
 def choices_functions(functions, dict_units, dict_measurements):
-    """ populate form multi-select choices from Math entries """
+    """populate form multi-select choices from Math entries"""
     choices = []
     for each_function in functions:
         choices = form_function_choices(
@@ -744,7 +744,7 @@ def choices_functions(functions, dict_units, dict_measurements):
 
 
 def choices_measurements(measurements):
-    """ populate form multi-select choices from Measurement entries """
+    """populate form multi-select choices from Measurement entries"""
     choices = []
     for each_meas in measurements:
         value = '{meas}'.format(
@@ -796,7 +796,7 @@ def choices_measurements_units(measurements, units):
 
 
 def choices_outputs(output, dict_units, dict_measurements):
-    """ populate form multi-select choices from Output entries """
+    """populate form multi-select choices from Output entries"""
     choices = []
     for each_output in output:
         choices = form_output_choices(
@@ -806,7 +806,7 @@ def choices_outputs(output, dict_units, dict_measurements):
 
 def choices_outputs_channels_measurements(
         output, table_output_channel, dict_outputs, dict_units, dict_measurements):
-    """ populate form multi-select choices from Output entries """
+    """populate form multi-select choices from Output entries"""
     choices = []
     for each_output in output:
         output_channels = table_output_channel.query.filter(
@@ -817,7 +817,7 @@ def choices_outputs_channels_measurements(
 
 
 def choices_outputs_channels(output, output_channel, dict_outputs):
-    """ populate form multi-select choices from Output entries """
+    """populate form multi-select choices from Output entries"""
     choices = []
     for each_output in output:
         for each_channel in output_channel:
@@ -828,7 +828,7 @@ def choices_outputs_channels(output, output_channel, dict_outputs):
 
 
 def choices_output_devices(output):
-    """ populate form multi-select choices from Output entries """
+    """populate form multi-select choices from Output entries"""
     choices = []
     for each_output in output:
         choices = form_output_choices_devices(choices, each_output)
@@ -836,7 +836,7 @@ def choices_output_devices(output):
 
 
 def choices_outputs_pwm(output, dict_units, dict_measurements, dict_outputs):
-    """ populate form multi-select choices from Output entries """
+    """populate form multi-select choices from Output entries"""
     choices = []
     for each_output in output:
         if ('output_types' in dict_outputs[each_output.output_type] and
@@ -847,7 +847,7 @@ def choices_outputs_pwm(output, dict_units, dict_measurements, dict_outputs):
 
 
 def choices_pids(pid, dict_units, dict_measurements):
-    """ populate form multi-select choices from PID entries """
+    """populate form multi-select choices from PID entries"""
     choices = []
     for each_pid in pid:
         choices = form_pid_choices(
@@ -856,7 +856,7 @@ def choices_pids(pid, dict_units, dict_measurements):
 
 
 def choices_pids_devices(pid):
-    """ populate form multi-select choices from PID device entries """
+    """populate form multi-select choices from PID device entries"""
     choices = []
     for each_pid in pid:
         choices = form_pid_choices_devices(choices, each_pid)
@@ -864,7 +864,7 @@ def choices_pids_devices(pid):
 
 
 def choices_methods(method):
-    """ populate form multi-select choices from Method entries """
+    """populate form multi-select choices from Method entries"""
     choices = []
     for each_method in method:
         choices = form_method_choices(choices, each_method)
@@ -872,7 +872,7 @@ def choices_methods(method):
 
 
 def choices_tags(tags):
-    """ populate form multi-select choices from Tag entries """
+    """populate form multi-select choices from Tag entries"""
     choices = []
     for each_tag in tags:
         choices = form_tag_choices(choices, each_tag)
@@ -880,7 +880,7 @@ def choices_tags(tags):
 
 
 def choices_units(units):
-    """ populate form multi-select choices from Units entries """
+    """populate form multi-select choices from Units entries"""
     choices = []
     for each_unit, each_info in UNITS.items():
         if each_info['name']:
@@ -1313,7 +1313,7 @@ def find_name_measurement(dict_measurements, measurement):
 
 
 def choices_id_name(table):
-    """ Return a dictionary of all available ids and names of a table """
+    """Return a dictionary of all available ids and names of a table"""
     choices = []
     for each_entry in table:
         value = each_entry.unique_id
@@ -1408,7 +1408,7 @@ def dashboard_widget_get_info(dashboard_id=None):
 
 
 def delete_entry_with_id(table, entry_id, flash_message=True):
-    """ Delete SQL database entry with specific id """
+    """Delete SQL database entry with specific id"""
     try:
         entry = table.query.filter(
             table.unique_id == entry_id).first()
@@ -1437,7 +1437,7 @@ def delete_entry_with_id(table, entry_id, flash_message=True):
 
 
 def flash_form_errors(form):
-    """ Flashes form errors for easier display """
+    """Flashes form errors for easier display"""
     for field, errors in form.errors.items():
         for error in errors:
             flash(gettext("Error in the %(field)s field - %(err)s",
@@ -1447,7 +1447,7 @@ def flash_form_errors(form):
 
 
 def form_error_messages(form, error):
-    """ Append form errors """
+    """Append form errors"""
     for field, errors in form.errors.items():
         for each_error in errors:
             error.append(
@@ -1470,7 +1470,7 @@ def flash_success_errors(error, action, redirect_url):
 
 
 def add_display_order(display_order, device_id):
-    """ Add integer ID to list of string IDs """
+    """Add integer ID to list of string IDs"""
     if display_order:
         display_order.append(device_id)
         return ','.join(display_order)
@@ -1495,7 +1495,7 @@ def reorder(display_order, device_id, direction):
 
 
 def reorder_list(modified_list, item, direction):
-    """ Reorder entry in a comma-separated list either up or down """
+    """Reorder entry in a comma-separated list either up or down"""
     from_position = modified_list.index(item)
     if direction == "up":
         if from_position == 0:
@@ -1548,7 +1548,7 @@ def test_sql():
         logger.error("Error creating entries: {err}".format(err=msg))
 
 def get_camera_paths(camera):
-    """ Retrieve still/timelapse paths for the given camera object """
+    """Retrieve still/timelapse paths for the given camera object"""
     camera_path = os.path.join(PATH_CAMERAS, '{uid}'.format(
         uid=camera.unique_id))
 
@@ -1613,7 +1613,7 @@ def bytes2human(n, format='%(value).1f %(symbol)s', symbols='customary'):
     return format % dict(symbol=symbols[0], value=n)
 
 def get_camera_image_info():
-    """ Retrieve information about the latest camera images """
+    """Retrieve information about the latest camera images"""
     latest_img_still_ts = {}
     latest_img_still_size = {}
     latest_img_still = {}

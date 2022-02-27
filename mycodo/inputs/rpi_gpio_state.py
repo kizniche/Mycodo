@@ -53,7 +53,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """ A sensor support class that monitors the K30's CO2 concentration """
+    """A sensor support class that monitors the K30's CO2 concentration"""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -85,7 +85,7 @@ class InputModule(AbstractInput):
             self.gpio.setup(self.location, self.gpio.IN)
 
     def get_measurement(self):
-        """ Gets the GPIO state via RPi.GPIO """
+        """Gets the GPIO state via RPi.GPIO"""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         self.value_set(0, self.gpio.input(self.location))

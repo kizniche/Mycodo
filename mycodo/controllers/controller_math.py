@@ -727,7 +727,7 @@ class MathController(AbstractController, threading.Thread):
         return measurement_dict
 
     def is_measurement_unit(self, unit_from, unit_to, value):
-        """ Converts value from one measurement to another """
+        """Converts value from one measurement to another"""
         if unit_from != unit_to:
             conversion_id = None
             for each_conv in db_retrieve_table_daemon(Conversion, entry='all'):
@@ -808,7 +808,7 @@ class MathController(AbstractController, threading.Thread):
         return True, measure
 
     def return_single_conversion_info(self):
-        """ Return channel, unit, and measurement of a math device measurement """
+        """Return channel, unit, and measurement of a math device measurement"""
         math_dev_measurement = self.device_measurements.filter(
             DeviceMeasurements.channel == 0).first()
         if math_dev_measurement:

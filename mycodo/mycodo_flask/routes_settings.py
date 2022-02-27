@@ -1,5 +1,5 @@
 # coding=utf-8
-""" collection of Page endpoints """
+"""collection of Page endpoints"""
 import logging
 import os
 
@@ -58,7 +58,7 @@ def api_key_tools():
 @blueprint.route('/settings/alerts', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_alerts():
-    """ Display alert settings """
+    """Display alert settings"""
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -82,7 +82,7 @@ def settings_alerts():
 @blueprint.route('/settings/general_submit', methods=['POST'])
 @flask_login.login_required
 def settings_general_submit():
-    """ Submit form for General Settings page """
+    """Submit form for General Settings page"""
     messages = {
         "success": [],
         "info": [],
@@ -106,7 +106,7 @@ def settings_general_submit():
 @blueprint.route('/settings/general', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_general():
-    """ Display general settings """
+    """Display general settings"""
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -121,7 +121,7 @@ def settings_general():
 @blueprint.route('/settings/function', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_function():
-    """ Display function settings """
+    """Display function settings"""
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -166,7 +166,7 @@ def settings_function():
 @blueprint.route('/settings/action', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_action():
-    """ Display action settings """
+    """Display action settings"""
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -211,7 +211,7 @@ def settings_action():
 @blueprint.route('/settings/input', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_input():
-    """ Display measurement settings """
+    """Display measurement settings"""
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -265,7 +265,7 @@ def settings_input():
 @blueprint.route('/settings/output', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_output():
-    """ Display output settings """
+    """Display output settings"""
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -317,7 +317,7 @@ def settings_output():
 @blueprint.route('/settings/widget', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_widget():
-    """ Display widget settings """
+    """Display widget settings"""
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -369,7 +369,7 @@ def settings_widget():
 @blueprint.route('/settings/measurement', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_measurement():
-    """ Display measurement settings """
+    """Display measurement settings"""
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -435,7 +435,7 @@ def settings_measurement():
 @blueprint.route('/change_preferences', methods=('GET', 'POST'))
 @flask_login.login_required
 def change_theme():
-    """ Change theme """
+    """Change theme"""
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -453,7 +453,7 @@ def change_theme():
 @blueprint.route('/settings/users_submit', methods=['POST'])
 @flask_login.login_required
 def settings_users_submit():
-    """ Submit form for User Settings page """
+    """Submit form for User Settings page"""
     messages = {
         "success": [],
         "info": [],
@@ -515,7 +515,7 @@ def settings_users_submit():
 @blueprint.route('/settings/users', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_users():
-    """ Display user settings """
+    """Display user settings"""
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -567,7 +567,7 @@ def settings_users():
 @blueprint.route('/settings/pi', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_pi():
-    """ Display general settings """
+    """Display general settings"""
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -608,7 +608,7 @@ def settings_pi():
 @blueprint.route('/settings/diagnostic', methods=('GET', 'POST'))
 @flask_login.login_required
 def settings_diagnostic():
-    """ Display general settings """
+    """Display general settings"""
     if not utils_general.user_has_permission('view_settings'):
         return redirect(url_for('routes_general.home'))
 

@@ -43,11 +43,11 @@ class AbstractInput(AbstractBaseController):
             self.initialize_measurements()
 
     def __iter__(self):
-        """ Support the iterator protocol """
+        """Support the iterator protocol"""
         return self
 
     def __repr__(self):
-        """  Representation of object """
+        """  Representation of object"""
         return_str = '<{cls}'.format(cls=type(self).__name__)
         if self._measurements:
             for each_channel, channel_data in self._measurements.items():
@@ -63,7 +63,7 @@ class AbstractInput(AbstractBaseController):
             return "Measurements dictionary empty"
 
     def __str__(self):
-        """ Return measurement information """
+        """Return measurement information"""
         return_str = ''
         skip_first_separator = False
         if self._measurements:
@@ -86,14 +86,14 @@ class AbstractInput(AbstractBaseController):
         return self.next()
 
     def next(self):
-        """ Get next measurement reading """
+        """Get next measurement reading"""
         if self.read():  # raised an error
             raise StopIteration  # required
         return self.measurements
 
     @property
     def measurements(self):
-        """ Store measurements """
+        """Store measurements"""
         if self._measurements is None:  # update if needed
             self.read()
         return self._measurements
@@ -167,11 +167,11 @@ class AbstractInput(AbstractBaseController):
                 self.logger.setLevel(logging.INFO)
 
     def start_input(self):
-        """ Not used yet """
+        """Not used yet"""
         self.running = True
 
     def stop_input(self):
-        """ Called when Input is deactivated """
+        """Called when Input is deactivated"""
         self.running = False
 
     def value_get(self, channel):
