@@ -177,8 +177,41 @@ FUNCTION_INFORMATION = {
     ],
 
     'function_actions': [
-        'lcd_backlight_on',
-        'lcd_backlight_off'
+        'backlight_on',
+        'backlight_off',
+        'display_backlight_color'
+    ],
+
+    'custom_actions': [
+        {
+            'id': 'backlight_on',
+            'type': 'button',
+            'wait_for_return': False,
+            'name': 'Backlight On',
+            'phrase': "Turn backlight on"
+        },
+        {
+            'id': 'backlight_off',
+            'type': 'button',
+            'wait_for_return': False,
+            'name': 'Backlight Off',
+            'phrase': "Turn backlight off"
+        },
+        {
+            'type': 'new_line'
+        },
+        {
+            'id': 'color',
+            'type': 'text',
+            'default_value': '255,0,0',
+            'name': 'Color (RGB)',
+            'phrase': 'Color as R,G,B values (e.g. "255,0,0" without quotes)'
+        },
+        {
+            'id': 'display_backlight_color',
+            'type': 'button',
+            'name': "Set Backlight Color"
+        }
     ],
 
     'custom_options': [
@@ -503,11 +536,6 @@ class CustomModule(AbstractFunction):
 
         self.lines_being_written = False
 
-    def lcd_backlight_color(self, color):
-        """ Set backlight color """
-        self.lcd.lcd_backlight_color(color)
-        self.timer_loop = time.time() - 1  # Induce LCD to update after turning backlight on
-
     def stop_function(self):
         self.lcd.lcd_init()
         self.lcd_is_on = True
@@ -518,12 +546,20 @@ class CustomModule(AbstractFunction):
     # Actions
     #
 
-    def lcd_backlight_on(self, args_dict):
+    def display_backlight_color(self, args_dict=None):
+        """ Set backlight color """
+        if 'color' not in args_dict or not args_dict['color']:
+            self.logger.error("color required")
+            return
+        self.lcd.display_backlight_color(args_dict['color'])
+        self.timer_loop = time.time() - 1  # Induce LCD to update after turning backlight on
+
+    def backlight_on(self, args_dict=None):
         """ Turn the backlight on """
         self.lcd_is_on = True
         self.lcd.lcd_backlight(1)
 
-    def lcd_backlight_off(self, args_dict):
+    def backlight_off(self, args_dict=None):
         """ Turn the backlight off """
         self.lcd_is_on = False
         while self.lines_being_written:

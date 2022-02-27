@@ -7,7 +7,7 @@ usage: mycodo-client [-h] [-c] [--activatecontroller CONTROLLER ID]
                      [--trigger_action ACTIONID]
                      [--trigger_all_actions FUNCTIONID]
                      [--input_force_measurements INPUTID]
-                     [--lcd_backlight_on LCDID] [--lcd_backlight_off LCDID]
+                     [--backlight_on LCDID] [--backlight_off LCDID]
                      [--lcd_reset LCDID] [--get_measurement ID UNIT CHANNEL]
                      [--output_state OUTPUTID]
                      [--output_currently_on OUTPUTID] [--outputoff OUTPUTID]
@@ -41,9 +41,9 @@ optional arguments:
                         Trigger all actions belonging to Function with ID
   --input_force_measurements INPUTID
                         Force acquiring measurements for Input ID
-  --lcd_backlight_on LCDID
+  --backlight_on LCDID
                         Turn on LCD backlight with LCD ID
-  --lcd_backlight_off LCDID
+  --backlight_off LCDID
                         Turn off LCD backlight with LCD ID
   --lcd_reset LCDID     Reset LCD with LCD ID
   --get_measurement ID UNIT CHANNEL

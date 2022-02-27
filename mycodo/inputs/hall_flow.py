@@ -51,10 +51,10 @@ INPUT_INFORMATION = {
         }
     ],
 
-    'custom_actions_message': 'The total session volume can be cleared with the following button or as a Function Action.',
+    'custom_actions_message': 'The total volume can be cleared with the following button or with the Clear Total Volume Function Action.',
     'custom_actions': [
         {
-            'id': 'clear_total_session_volume',
+            'id': 'clear_total_volume',
             'type': 'button',
             'name': lazy_gettext('Clear Total Volume')
         }
@@ -89,6 +89,8 @@ class InputModule(AbstractInput):
         self.sensor = ReadHall(
             self.logger, self.pi, self.gpio, pigpio, self.k_value)
 
+        self.sensor.set_total_pulses(self.get_custom_option("total_pulses"))
+
     def get_measurement(self):
         """ Gets the flow rate and volume """
         if not self.sensor:
@@ -112,13 +114,16 @@ class InputModule(AbstractInput):
         self.value_set(0, l_min)
         self.value_set(1, total_volume)
 
+        self.set_custom_option("total_pulses", total_pulses)
+
         return self.return_dict
 
     def stop_input(self):
         self.sensor.cancel()
         self.pi.stop()
 
-    def clear_total_session_volume(self, args_dict):
+    def clear_total_volume(self, args_dict):
+        self.set_custom_option("total_pulses", 0)
         self.sensor.clear_totals()
 
 
@@ -169,6 +174,11 @@ class ReadHall:
             return self._period_pulses
         finally:
             self._period_pulses = 0
+
+    def set_total_pulses(self, pulses):
+        """Sets the total pulses"""
+        if pulses:
+            self._total_pulses = pulses
 
     def total_pulses(self):
         """Returns the total pulses"""

@@ -21,6 +21,7 @@ Changes to how the Output Widget works will require you to reselect an Output ch
 
 ### Features
 
+ - Add ability to create and import Custom Action Modules
  - Add camera library: libcamera ([#1117](https://github.com/kizniche/mycodo/issues/1117))
  - Add Input: TTN Integration: Data Storage (TTN v3, Payload jmespath Expression)
  - Add Output: Kasa HS300 Smart WiFi Power Strip

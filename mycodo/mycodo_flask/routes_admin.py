@@ -31,7 +31,6 @@ from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import FINAL_RELEASES
 from mycodo.config import FORCE_UPGRADE_MASTER
-from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import LCD_INFO
@@ -49,6 +48,7 @@ from mycodo.mycodo_flask.forms import forms_dependencies
 from mycodo.mycodo_flask.forms import forms_misc
 from mycodo.mycodo_flask.routes_static import inject_variables
 from mycodo.mycodo_flask.utils import utils_general
+from mycodo.utils.function_actions import parse_function_action_information
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.github_release_info import MycodoRelease
 from mycodo.utils.inputs import parse_input_information
@@ -327,11 +327,11 @@ def admin_dependencies(device):
 
     list_dependencies = [
         parse_function_information(),
+        parse_function_action_information(),
         parse_input_information(),
         parse_output_information(),
         parse_widget_information(),
         CAMERA_INFO,
-        FUNCTION_ACTION_INFO,
         FUNCTION_INFO,
         LCD_INFO,
         MATH_INFO,

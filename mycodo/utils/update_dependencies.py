@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import importlib
 import logging
-import sys
-
 import os
+import sys
 
 sys.path.append(
     os.path.abspath(os.path.join(
@@ -11,7 +10,6 @@ sys.path.append(
 
 from mycodo.config import CAMERA_INFO
 from mycodo.config import DEPENDENCIES_GENERAL
-from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import DEPENDENCY_LOG_FILE
@@ -30,6 +28,7 @@ from mycodo.databases.models import Method
 from mycodo.databases.models import Output
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.functions import parse_function_information
+from mycodo.utils.function_actions import parse_function_action_information
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.inputs import parse_input_information
@@ -43,10 +42,10 @@ def get_installed_dependencies():
 
     list_dependencies = [
         parse_function_information(),
+        parse_function_action_information(),
         parse_input_information(),
         parse_output_information(),
         CAMERA_INFO,
-        FUNCTION_ACTION_INFO,
         FUNCTION_INFO,
         LCD_INFO,
         METHOD_INFO,

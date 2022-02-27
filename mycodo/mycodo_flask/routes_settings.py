@@ -12,6 +12,7 @@ from flask import request
 from flask import url_for
 from flask.blueprints import Blueprint
 
+from mycodo.config import PATH_FUNCTION_ACTIONS_CUSTOM
 from mycodo.config import PATH_FUNCTIONS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import PATH_OUTPUTS_CUSTOM
@@ -160,6 +161,51 @@ def settings_function():
                            dict_controllers=dict_controllers,
                            form_controller=form_controller,
                            form_controller_delete=form_controller_delete)
+
+
+@blueprint.route('/settings/action', methods=('GET', 'POST'))
+@flask_login.login_required
+def settings_action():
+    """ Display action settings """
+    if not utils_general.user_has_permission('view_settings'):
+        return redirect(url_for('routes_general.home'))
+
+    form_action = forms_settings.Action()
+    form_action_delete = forms_settings.ActionDel()
+
+    # Get list of custom functions
+    excluded_files = ['__init__.py', '__pycache__']
+
+    if request.method == 'POST':
+        if not utils_general.user_has_permission('edit_controllers'):
+            return redirect(url_for('routes_general.home'))
+
+        if form_action.import_action_upload.data:
+            utils_settings.settings_action_import(form_action)
+        elif form_action_delete.delete_action.data:
+            utils_settings.settings_action_delete(form_action_delete)
+
+        return redirect(url_for('routes_settings.settings_action'))
+
+    dict_actions = {}
+
+    for each_file in os.listdir(PATH_FUNCTION_ACTIONS_CUSTOM):
+        if each_file not in excluded_files:
+            try:
+                full_path_file = os.path.join(PATH_FUNCTION_ACTIONS_CUSTOM, each_file)
+                action_info = load_module_from_file(full_path_file, 'function_actions')
+
+                if action_info:
+                    func_info = action_info.FUNCTION_ACTION_INFORMATION
+                    dict_actions[func_info['name_unique']] = {}
+                    dict_actions[func_info['name_unique']]['name'] = func_info['name']
+            except:
+                pass
+
+    return render_template('settings/action.html',
+                           dict_actions=dict_actions,
+                           form_action=form_action,
+                           form_action_delete=form_action_delete)
 
 
 @blueprint.route('/settings/input', methods=('GET', 'POST'))

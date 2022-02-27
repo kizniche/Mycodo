@@ -107,6 +107,9 @@ def generate_controller_doc(out_file, each_data):
     if 'message' in each_data and each_data['message']:
         out_file.write("\n{}\n".format(each_data['message']))
 
+    if 'usage' in each_data and each_data['usage']:
+        out_file.write("\nUsage: {}\n".format(each_data['usage']))
+
     if 'options_enabled' in each_data or 'custom_options' in each_data:
         out_file.write("\n#### Options\n")
 
@@ -196,24 +199,49 @@ def generate_controller_doc(out_file, each_data):
 
                 else:
                     out_file.write("\n##### {}\n".format(each_option['name']))
+
+                    # Common types
                     if each_option['type'] == 'integer':
                         out_file.write("\n- Type: Integer")
                     elif each_option['type'] == 'text':
                         out_file.write("\n- Type: Text")
                     elif each_option['type'] == 'float':
                         out_file.write("\n- Type: Decimal")
-                    elif each_option['type'] == 'select_measurement':
-                        out_file.write("\n- Type: Select Measurement")
-                        if 'options_select' in each_option and each_option['options_select']:
-                            out_file.write("\n- Selections: ")
-                            for i, each_sel in enumerate(each_option['options_select']):
-                                out_file.write(each_sel)
-                                if i < len(each_option['options_select']):
-                                    out_file.write(", ")
                     elif each_option['type'] == 'select':
                         out_file.write("\n- Type: Select")
                     elif each_option['type'] == 'bool':
                         out_file.write("\n- Type: Boolean")
+
+                    # Less common stypes
+                    elif each_option['type'] == 'select_device':
+                        out_file.write("\n- Type: Select Device")
+                    elif each_option['type'] == 'select_measurement_channel':
+                        out_file.write("\n- Type: Select Device, Measurement, and Channel")
+                        if 'options_select' in each_option and each_option['options_select']:
+                            out_file.write("\n- Selections: ")
+                            for i, each_sel in enumerate(each_option['options_select'], start=1):
+                                if each_sel == "Output_Channels_Measurements":
+                                    out_file.write("Output")
+                                elif each_sel == "Output_PWM_Channels_Measurements":
+                                    out_file.write("Output (PWM)")
+                                if i < len(each_option['options_select']):
+                                    out_file.write(", ")
+                    elif each_option['type'] == 'select_channel':
+                        out_file.write("\n- Type: Select Channel")
+                        if 'options_select' in each_option and each_option['options_select']:
+                            out_file.write("\n- Selections: ")
+                            for i, each_sel in enumerate(each_option['options_select'], start=1):
+                                out_file.write(each_sel)
+                                if i < len(each_option['options_select']):
+                                    out_file.write(", ")
+                    elif each_option['type'] == 'select_measurement':
+                        out_file.write("\n- Type: Select Measurement")
+                        if 'options_select' in each_option and each_option['options_select']:
+                            out_file.write("\n- Selections: ")
+                            for i, each_sel in enumerate(each_option['options_select'], start=1):
+                                out_file.write(each_sel)
+                                if i < len(each_option['options_select']):
+                                    out_file.write(", ")
 
                     if 'default_value' in each_option and each_option['default_value']:
                         if each_option['type'] in ['integer', 'text', 'float', 'bool']:

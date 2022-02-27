@@ -95,6 +95,13 @@ Page\: `[Gear Icon] -> Configure -> Custom Functions`
 
 Controller modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Functions](Functions.md#custom-functions) for more details.
 
+## Action Settings
+
+Page\: `[Gear Icon] -> Configure -> Custom Actions`
+
+Action modules may be imported and used within Mycodo. These modules must follow a specific format. See [Function Actions](Functions.md#function-actions) for more details.
+
+
 ## Input Settings
 
 Page\: `[Gear Icon] -> Configure -> Custom Inputs`

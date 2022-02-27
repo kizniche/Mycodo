@@ -144,6 +144,20 @@ class ControllerDel(FlaskForm):
 
 
 #
+# Settings (Action)
+#
+
+class Action(FlaskForm):
+    import_action_file = FileField(lazy_gettext('Upload'))
+    import_action_upload = SubmitField(lazy_gettext('Import Action Module'))
+
+
+class ActionDel(FlaskForm):
+    action_id = StringField(widget=widgets.HiddenInput())
+    delete_action = SubmitField(TRANSLATIONS['delete']['title'])
+
+
+#
 # Settings (Input)
 #
 

@@ -29,6 +29,7 @@ from mycodo.mycodo_flask.utils.utils_general import custom_options_return_json
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.conditional import save_conditional_code
+from mycodo.utils.function_actions import parse_function_action_information
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.system_pi import is_int
 from mycodo.utils.system_pi import str_is_float
@@ -365,6 +366,8 @@ def action_add(form):
     dep_name = ""
     page_refresh = False
 
+    dict_actions = parse_function_action_information()
+
     dep_unmet, _, dep_message = return_dependencies(form.action_type.data)
     if dep_unmet:
         list_unmet_deps = []
@@ -402,23 +405,14 @@ def action_add(form):
         new_action.function_type = form.function_type.data
         new_action.action_type = form.action_type.data
 
-        if form.action_type.data == 'command':
-            new_action.do_output_state = 'mycodo'  # user to execute shell command as
+        #
+        # Custom Options
+        #
 
-        elif form.action_type.data == 'mqtt_publish':
-            # Fill in default values
-            # TODO: Future improvements to actions will be single-file modules, making this obsolete
-            custom_options = {
-                "hostname": "localhost",
-                "port": 1883,
-                "topic": "paho/test/single",
-                "keepalive": 60,
-                "clientid": "client_{}".format(random_alphanumeric(8)),
-                "login": False,
-                "username": "user",
-                "password": ""
-            }
-            new_action.custom_options = json.dumps(custom_options)
+        # Generate string to save from custom options
+        messages["error"], custom_options = custom_options_return_json(
+            messages["error"], dict_actions, device=form.action_type.data, use_defaults=True)
+        new_action.custom_options = custom_options
 
         if not messages["error"]:
             new_action.save()
@@ -452,130 +446,27 @@ def action_mod(form, request_form):
 
     if not action_mod:
         messages["error"].append("Action not found")
+    else:
+        # Parse custom options for action
+        if mod_action.action_type != 'mqtt_publish':
+            dict_actions = parse_function_action_information()
+            if mod_action.action_type in dict_actions:
+                messages["error"], custom_options = custom_options_return_json(
+                    messages["error"], dict_actions, request_form, mod_dev=mod_action, device=mod_action.action_type)
+                mod_action.custom_options = custom_options
 
-    messages["error"] = check_form_actions(form, messages["error"])
-
-    try:
-        if mod_action.action_type == 'pause_actions':
-            mod_action.pause_duration = form.pause_duration.data
-
-        elif mod_action.action_type == 'output':
-            mod_action.do_unique_id = form.do_unique_id.data
-            mod_action.do_output_state = form.do_output_state.data
-            mod_action.do_output_duration = form.do_output_duration.data
-
-        elif mod_action.action_type == 'output_pwm':
-            mod_action.do_unique_id = form.do_unique_id.data
-            mod_action.do_output_pwm = form.do_output_pwm.data
-
-        elif mod_action.action_type == 'output_ramp_pwm':
-            mod_action.do_unique_id = form.do_unique_id.data
-            mod_action.do_output_pwm = form.do_output_pwm.data
-            mod_action.do_output_pwm2 = form.do_output_pwm2.data
-            mod_action.do_action_string = form.do_action_string.data
-            mod_action.do_output_duration = form.do_output_duration.data
-
-        elif mod_action.action_type == 'output_value':
-            mod_action.do_unique_id = form.do_unique_id.data
-            mod_action.do_output_amount = form.do_output_amount.data
-
-        elif mod_action.action_type == 'output_volume':
-            mod_action.do_unique_id = form.do_unique_id.data
-            mod_action.do_output_amount = form.do_output_amount.data
-
-        elif mod_action.action_type in ['activate_controller',
-                                        'deactivate_controller',
-                                        'activate_pid',
-                                        'deactivate_pid',
-                                        'resume_pid',
-                                        'pause_pid',
-                                        'activate_timer',
-                                        'deactivate_timer',
-                                        'clear_total_volume',
-                                        'input_force_measurements']:
-            mod_action.do_unique_id = form.do_unique_id.data
-
-        elif mod_action.action_type in ['setpoint_pid',
-                                        'setpoint_pid_raise',
-                                        'setpoint_pid_lower']:
-            if not str_is_float(form.do_action_string.data):
-                messages["error"].append("Setpoint value must be an integer or float value")
-            mod_action.do_unique_id = form.do_unique_id.data
-            mod_action.do_action_string = form.do_action_string.data
-
-        elif mod_action.action_type == 'method_pid':
-            mod_action.do_unique_id = form.do_unique_id.data
-            mod_action.do_action_string = form.do_action_string.data
-
-        elif mod_action.action_type in ['email',
-                                        'email_multiple']:
-            mod_action.do_action_string = form.do_action_string.data
-
-        elif mod_action.action_type in ['photo_email',
-                                        'video_email']:
-            mod_action.do_action_string = form.do_action_string.data
-            mod_action.do_unique_id = form.do_unique_id.data
-            mod_action.do_camera_duration = form.do_camera_duration.data
-
-        elif mod_action.action_type in ['flash_lcd_on',
-                                        'flash_lcd_off',
-                                        'lcd_backlight_off',
-                                        'lcd_backlight_on']:
-            mod_action.do_unique_id = form.do_unique_id.data
-
-        elif mod_action.action_type == 'lcd_backlight_color':
-            mod_action.do_unique_id = form.do_unique_id.data
-            mod_action.do_action_string = form.do_action_string.data
-
-        elif mod_action.action_type in ['photo', 'camera_timelapse_pause', 'camera_timelapse_resume']:
-            mod_action.do_unique_id = form.do_unique_id.data
-
-        elif mod_action.action_type == 'video':
-            mod_action.do_unique_id = form.do_unique_id.data
-            mod_action.do_camera_duration = form.do_camera_duration.data
-
-        elif mod_action.action_type == 'command':
-            mod_action.do_action_string = form.do_action_string.data
-            mod_action.do_output_state = form.do_output_state.data
-
-        elif mod_action.action_type == 'create_note':
-            mod_action.do_action_string = form.do_action_string.data
-
-        elif mod_action.action_type in ['system_restart',
-                                        'system_shutdown']:
-            pass  # No options
-
-        elif mod_action.action_type == 'webhook':
-            mod_action.do_action_string = form.do_action_string.data
-
-        elif mod_action.action_type == 'mqtt_publish':
-            custom_options = {
-                "hostname": request_form['hostname'],
-                "port": int(request_form['port']),
-                "topic": request_form['topic'],
-                "keepalive": int(request_form['keepalive']),
-                "clientid": request_form['clientid'],
-                "username": request_form['username'],
-                "password": request_form['password']
-            }
-            if 'login' in request_form:
-                custom_options["login"] = True
-            else:
-                custom_options["login"] = False
-            mod_action.custom_options = json.dumps(custom_options)
-
-        if not messages["error"]:
+    if not messages["error"]:
+        try:
             db.session.commit()
             messages["success"].append('{action} {controller}'.format(
                 action=TRANSLATIONS['modify']['title'],
                 controller=TRANSLATIONS['actions']['title']))
-
-    except sqlalchemy.exc.OperationalError as except_msg:
-        messages["error"].append(str(except_msg))
-    except sqlalchemy.exc.IntegrityError as except_msg:
-        messages["error"].append(str(except_msg))
-    except Exception as except_msg:
-        messages["error"].append(str(except_msg))
+        except sqlalchemy.exc.OperationalError as except_msg:
+            messages["error"].append(str(except_msg))
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            messages["error"].append(str(except_msg))
+        except Exception as except_msg:
+            messages["error"].append(str(except_msg))
 
     return messages
 
@@ -600,8 +491,8 @@ def action_del(form):
         messages["error"].append(
             "Deactivate the Conditional before deleting an Action")
 
-    try:
-        if not messages["error"]:
+    if not messages["error"]:
+        try:
             function_action_id = Actions.query.filter(
                 Actions.unique_id == form.function_action_id.data).first().unique_id
             delete_entry_with_id(
@@ -609,13 +500,12 @@ def action_del(form):
             messages["success"].append('{action} {controller}'.format(
                 action=TRANSLATIONS['delete']['title'],
                 controller=TRANSLATIONS['actions']['title']))
-
-    except sqlalchemy.exc.OperationalError as except_msg:
-        messages["error"].append(str(except_msg))
-    except sqlalchemy.exc.IntegrityError as except_msg:
-        messages["error"].append(str(except_msg))
-    except Exception as except_msg:
-        messages["error"].append(str(except_msg))
+        except sqlalchemy.exc.OperationalError as except_msg:
+            messages["error"].append(str(except_msg))
+        except sqlalchemy.exc.IntegrityError as except_msg:
+            messages["error"].append(str(except_msg))
+        except Exception as except_msg:
+            messages["error"].append(str(except_msg))
 
     return messages
 
@@ -651,8 +541,8 @@ def action_execute_all(form):
     if form.function_type.data != 'function_actions' and func and not func.is_activated:
         messages["error"].append("Activate the Controller before testing all Actions")
 
-    try:
-        if not messages["error"]:
+    if not messages["error"]:
+        try:
             debug = bool(hasattr(form, 'log_level_debug') and form.log_level_debug.data)
             control = DaemonControl()
             trigger_all_actions = threading.Thread(
@@ -668,152 +558,7 @@ def action_execute_all(form):
                 action=gettext("Execute All"),
                 controller='{} {}'.format(function_type,
                                           TRANSLATIONS['actions']['title'])))
-    except Exception as except_msg:
-        messages["error"].append(str(except_msg))
+        except Exception as except_msg:
+            messages["error"].append(str(except_msg))
 
     return messages
-
-
-def check_form_actions(form, error):
-    """Check if the Actions form inputs are valid"""
-    action = Actions.query.filter(
-        Actions.unique_id == form.function_action_id.data).first()
-    if action.action_type == 'command':
-        if not form.do_action_string.data or form.do_action_string.data == '':
-            error.append("Command must be set")
-    elif action.action_type == 'output':
-        if not form.do_unique_id.data or form.do_unique_id.data == '':
-            error.append("Output must be set")
-        if not form.do_output_state.data or form.do_output_state.data == '':
-            error.append("State must be set")
-    elif action.action_type == 'output_pwm':
-        if not form.do_unique_id.data or form.do_unique_id.data == '':
-            error.append("Output must be set")
-        if form.do_output_pwm.data < 0 or form.do_output_pwm.data > 100 or form.do_output_pwm.data == '':
-            error.append("Duty Cycle must be set (0 <= duty cycle <= 100)")
-    elif action.action_type == 'output_value':
-        if not form.do_unique_id.data or form.do_unique_id.data == '':
-            error.append("Output must be set")
-        if not form.do_output_amount.data:
-            error.append("Value must be set")
-    elif action.action_type == 'output_volume':
-        if not form.do_unique_id.data or form.do_unique_id.data == '':
-            error.append("Output must be set")
-        if not form.do_output_amount.data:
-            error.append("Volume must be set")
-    elif action.action_type in ['activate_pid',
-                                'deactivate_pid',
-                                'resume_pid',
-                                'pause_pid']:
-        if not form.do_unique_id.data or form.do_unique_id.data == '':
-            error.append("ID must be set")
-    elif action.action_type == 'email':
-        if not form.do_action_string.data or form.do_action_string.data == '':
-            error.append("Email must be set")
-    elif action.action_type in ['photo_email', 'video_email']:
-        if not form.do_action_string.data or form.do_action_string.data == '':
-            error.append("Email must be set")
-        if not form.do_unique_id.data or form.do_unique_id.data == '':
-            error.append("Camera must be set")
-        if (action.action_type == 'video_email' and
-                Camera.query.filter(
-                    and_(Camera.unique_id == form.do_unique_id.data,
-                         Camera.library != 'picamera')).count()):
-            error.append('Only Pi Cameras can record video')
-    elif action.action_type == 'flash_lcd_on' and not form.do_unique_id.data:
-        error.append("LCD must be set")
-    elif action.action_type == 'lcd_backlight_color':
-        if not form.do_unique_id.data:
-            error.append("LCD must be set")
-        try:
-            tuple_colors = form.do_action_string.data.split(",")
-            if len(tuple_colors) != 3:
-                error.append('LCD backlight color must be in the R,G,B format "255,255,255"')
-
-            if not is_int(tuple_colors[0]):
-                error.append('Red color does not represent an integer.')
-            elif int(tuple_colors[0]) < 0 or int(tuple_colors[0]) > 255:
-                error.append('Red color must be >= 0 and <= 255')
-
-            if not is_int(tuple_colors[1]):
-                error.append('Blue color does not represent an integer.')
-            elif int(tuple_colors[1]) < 0 or int(tuple_colors[1]) > 255:
-                error.append('Blue color must be >= 0 and <= 255')
-
-            if not is_int(tuple_colors[2]):
-                error.append('Green color does not represent an integer.')
-            elif int(tuple_colors[2]) < 0 or int(tuple_colors[2]) > 255:
-                error.append('Green color must be >= 0 and <= 255')
-        except:
-            error.append('Error parsing LCD backlight color. Must be in the R,G,B format '
-                         '"255,255,255" without quotes.')
-    elif (action.action_type in ['photo', 'video'] and
-            (not form.do_unique_id.data or form.do_unique_id.data == '')):
-        error.append("Camera must be set")
-    elif action.action_type == 'webhook':
-        if not form.do_action_string.data or form.do_action_string.data == '':
-            error.append("URL must be set")
-    return error
-
-
-def check_actions(action, error):
-    """Check if the Actions form inputs are valid"""
-    if action.action_type == 'command':
-        if not action.do_action_string or action.do_action_string == '':
-            error.append("Command must be set")
-    elif action.action_type == 'output':
-        if not action.do_unique_id or action.do_unique_id == '':
-            error.append("Output must be set")
-        if not action.do_output_state or action.do_output_state == '':
-            error.append("State must be set")
-    elif action.action_type in ['activate_pid',
-                                'deactivate_pid']:
-        if not action.do_unique_id or action.do_unique_id == '':
-            error.append("PID must be set")
-    elif action.action_type == 'email':
-        if not action.do_action_string or action.do_action_string == '':
-            error.append("Email must be set")
-    elif action.action_type in ['photo_email', 'video_email']:
-        if not action.do_action_string or action.do_action_string == '':
-            error.append("Email must be set")
-        if not action.do_unique_id or action.do_unique_id == '':
-            error.append("Camera must be set")
-        if (action.action_type == 'video_email' and
-                Camera.query.filter(
-                    and_(Camera.unique_id == action.do_unique_id,
-                         Camera.library != 'picamera')).count()):
-            error.append('Only Pi Cameras can record video')
-    elif action.action_type == 'flash_lcd_on' and not action.do_unique_id:
-        error.append("LCD must be set")
-    elif action.action_type == 'lcd_backlight_color':
-        if not action.do_unique_id:
-            error.append("LCD must be set")
-        try:
-            tuple_colors = action.do_action_string.split(",")
-            if len(tuple_colors) != 3:
-                error.append('LCD backlight color must be in the R,G,B format "255,255,255"')
-
-            if not is_int(tuple_colors[0]):
-                error.append('Red color does not represent an integer.')
-            elif int(tuple_colors[0]) < 0 or int(tuple_colors[0]) > 255:
-                error.append('Red color must be >= 0 and <= 255')
-
-            if not is_int(tuple_colors[1]):
-                error.append('Blue color does not represent an integer.')
-            elif int(tuple_colors[1]) < 0 or int(tuple_colors[1]) > 255:
-                error.append('Blue color must be >= 0 and <= 255')
-
-            if not is_int(tuple_colors[2]):
-                error.append('Green color does not represent an integer.')
-            elif int(tuple_colors[2]) < 0 or int(tuple_colors[2]) > 255:
-                error.append('Green color must be >= 0 and <= 255')
-        except:
-            error.append('Error parsing LCD backlight color. Must be in the R,G,B format '
-                         '"255,255,255" without quotes.')
-    elif (action.action_type in ['photo', 'video'] and
-            (not action.do_unique_id or action.do_unique_id == '')):
-        error.append("Camera must be set")
-    elif action.action_type == 'webhook':
-        if not action.do_action_string or action.do_action_string == '':
-            error.append("URL must be set")
-    return error

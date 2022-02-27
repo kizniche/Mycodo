@@ -8,11 +8,11 @@
 {% block settings %}
   <!-- Route: /settings/controller -->
   <div class="container">
-    <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="https://kizniche.github.io/Mycodo/Configuration-Settings/#controller-settings" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('Controller Settings')}}</h3>
+    <h3 style="text-align: right; padding-bottom: 1.3em;"><a href="https://kizniche.github.io/Mycodo/Configuration-Settings/#controller-settings" target="_blank"><span style="font-size: 16px" class="fas fa-question-circle"></span></a> {{_('Function Settings')}}</h3>
 
-    <h3>{{_('Import Controller Module')}}</h3>
+    <h3>{{_('Import Function Module')}}</h3>
 
-    <p>This will allow importing a controller module file.</p>
+    <p>This will allow importing a function module file.</p>
 
     <form method="post" action="/settings/function" enctype=multipart/form-data>
     {{form_controller.csrf_token}}

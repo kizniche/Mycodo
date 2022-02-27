@@ -1,11 +1,17 @@
 Page\: `Setup -> Function`
 
-For a full list of supported Inputs, see [Supported Functions](Supported-Functions.md).
+For a full list of supported Functions, see [Supported Functions](Supported-Functions.md).
 
 Function controllers perform tasks that often involve the use of Inputs and Outputs.
 
 !!! note
     "Last" means the Function will only acquire the last (latest) measurement in the database. "Past" means the Function will acquire all measurements from the present until the "Max Age (seconds)" that's been set (e.g. if measurements are acquired every 10 seconds, and a Max Age is set to 60 seconds, there will on average be 6 measurements returned to the Function to operate with).
+
+## Function Actions
+
+These are the actions that can be added to Controllers (i.e. Conditional Controllers, Trigger Controllers) to provide a way to interact with other parts of Mycodo and external to Mycodo.
+
+For a full list of supported Actions, see [Supported Actions](Supported-Actions.md).
 
 ## Custom Functions
 
@@ -887,101 +893,6 @@ This may be useful, for instance, if you desire an Output to remain on during a 
 <tr>
 <td>Period (seconds)</td>
 <td>The period of time between triggering Conditional Actions.</td>
-</tr>
-</tbody>
-</table>
-
-## Function Actions
-
-These are the actions that can be added to Controllers (i.e. Conditional, Trigger).
-
-<table>
-<thead>
-<tr class="header">
-<th>Setting</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Actions: Pause</td>
-<td>Pause executing actions for a duration of time (seconds).</td>
-</tr>
-<tr>
-<td>Camera: Capture Photo</td>
-<td>Capture a photo with the selected camera.</td>
-</tr>
-<tr>
-<td>Create Note</td>
-<td>Create a note containing the conditional statement and actions, using a particular tag.</td>
-</tr>
-<tr>
-<td>Controller: Activate</td>
-<td>Activate a particular controller.</td>
-</tr>
-<tr>
-<td>Controller: Deactivate</td>
-<td>Deactivate a particular controller.</td>
-</tr>
-<tr>
-<td>E-Mail</td>
-<td>Send an email containing the conditional statement and actions.</td>
-</tr>
-<tr>
-<td>E-Mail with Photo Attachment</td>
-<td>Send an email containing the conditional statement, actions, and captured photo.</td>
-</tr>
-<tr>
-<td>E-Mail with Video Attachment</td>
-<td>Send an email containing the conditional statement, actions, and captured video.</td>
-</tr>
-<tr>
-<td>Execute Command</td>
-<td>Execute a command in the linux shell (as user 'root').</td>
-</tr>
-<tr>
-<td>LCD: Backlight</td>
-<td>Turn the LCD backlight on or off. Note: Only some LCDs are supported.</td>
-</tr>
-<tr>
-<td>LCD: Flash</td>
-<td>Start of stop the LCD flashing to indicate an alert. Note: Only some LCDs are supported.</td>
-</tr>
-<tr>
-<td>Output: Duration</td>
-<td>Turn a output on, off, or on for a duration of time.</td>
-</tr>
-<tr>
-<td>Output: Duty Cycle</td>
-<td>Turn a PWM output off or on for a duty cycle.</td>
-</tr>
-<tr>
-<td>PID: Pause</td>
-<td>Pause a particular PID controller.</td>
-</tr>
-<tr>
-<td>PID: Hold</td>
-<td>Hold a particular PID controller.</td>
-</tr>
-<tr>
-<td>PID: Resume</td>
-<td>Resume a particular PID controller.</td>
-</tr>
-<tr>
-<td>PID: Set Method</td>
-<td>Set the Method of a particular PID controller.</td>
-</tr>
-<tr>
-<td>PID: Set Setpoint</td>
-<td>Set the Setpoint of a particular PID controller.</td>
-</tr>
-<tr>
-<td>System: Restart</td>
-<td>Restart the System.</td>
-</tr>
-<tr>
-<td>System: Shutdown</td>
-<td>Shutdown the System.</td>
 </tr>
 </tbody>
 </table>

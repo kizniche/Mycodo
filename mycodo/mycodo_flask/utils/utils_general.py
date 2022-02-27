@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import glob
 import importlib
 import json
 import logging
@@ -17,7 +16,6 @@ from sqlalchemy import and_
 
 from mycodo.config import CAMERA_INFO
 from mycodo.config import DEPENDENCIES_GENERAL
-from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import LCD_INFO
 from mycodo.config import MATH_INFO
@@ -44,6 +42,7 @@ from mycodo.databases.models import User
 from mycodo.databases.models import Widget
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
+from mycodo.utils.function_actions import parse_function_action_information
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.outputs import parse_output_information
@@ -1670,11 +1669,11 @@ def return_dependencies(device_type):
 
     list_dependencies = [
         parse_function_information(),
+        parse_function_action_information(),
         parse_input_information(),
         parse_output_information(),
         parse_widget_information(),
         CAMERA_INFO,
-        FUNCTION_ACTION_INFO,
         FUNCTION_INFO,
         LCD_INFO,
         MATH_INFO,

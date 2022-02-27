@@ -183,8 +183,8 @@ class DaemonControl:
     def lcd_backlight(self, lcd_id, state):
         return self.proxy().lcd_backlight(lcd_id, state)
 
-    def lcd_backlight_color(self, lcd_id, color):
-        return self.proxy().lcd_backlight_color(lcd_id, color)
+    def display_backlight_color(self, lcd_id, color):
+        return self.proxy().display_backlight_color(lcd_id, color)
 
     def lcd_flash(self, lcd_id, state):
         return self.proxy().lcd_flash(lcd_id, state)
@@ -343,10 +343,10 @@ def parseargs(parser):
                         required=False)
 
     # LCD Controller
-    parser.add_argument('--lcd_backlight_on', metavar='LCDID', type=str,
+    parser.add_argument('--backlight_on', metavar='LCDID', type=str,
                         help='Turn on LCD backlight with LCD ID',
                         required=False)
-    parser.add_argument('--lcd_backlight_off', metavar='LCDID', type=str,
+    parser.add_argument('--backlight_off', metavar='LCDID', type=str,
                         help='Turn off LCD backlight with LCD ID',
                         required=False)
     parser.add_argument('--lcd_reset', metavar='LCDID', type=str,
@@ -507,15 +507,15 @@ if __name__ == "__main__":
         logger.info("[Remote command] Reset LCD with ID '{id}': Server returned: {msg}".format(
             id=args.lcd_reset, msg=return_msg))
 
-    elif args.lcd_backlight_off:
-        return_msg = daemon.lcd_backlight(args.lcd_backlight_off, 0)
+    elif args.backlight_off:
+        return_msg = daemon.lcd_backlight(args.backlight_off, 0)
         logger.info("[Remote command] Turn off LCD backlight with ID '{id}': Server returned: {msg}".format(
-            id=args.lcd_backlight_off, msg=return_msg))
+            id=args.backlight_off, msg=return_msg))
 
-    elif args.lcd_backlight_on:
-        return_msg = daemon.lcd_backlight(args.lcd_backlight_on, 1)
+    elif args.backlight_on:
+        return_msg = daemon.lcd_backlight(args.backlight_on, 1)
         logger.info("[Remote command] Turn on LCD backlight with ID '{id}': Server returned: {msg}".format(
-            id=args.lcd_backlight_on, msg=return_msg))
+            id=args.backlight_on, msg=return_msg))
 
     elif args.output_currently_on and args.output_channel is None:
         parser.error("--output_currently_on requires --output_channel")

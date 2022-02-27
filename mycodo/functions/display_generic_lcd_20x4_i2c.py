@@ -176,8 +176,25 @@ FUNCTION_INFORMATION = {
     ],
 
     'function_actions': [
-        'lcd_backlight_on',
-        'lcd_backlight_off'
+        'backlight_on',
+        'backlight_off'
+    ],
+
+    'custom_actions': [
+        {
+            'id': 'backlight_on',
+            'type': 'button',
+            'wait_for_return': False,
+            'name': 'Backlight On',
+            'phrase': "Turn backlight on"
+        },
+        {
+            'id': 'backlight_off',
+            'type': 'button',
+            'wait_for_return': False,
+            'name': 'Backlight Off',
+            'phrase': "Turn backlight off"
+        }
     ],
 
     'custom_options': [
@@ -472,12 +489,12 @@ class CustomModule(AbstractFunction):
     # Actions
     #
 
-    def lcd_backlight_on(self, args_dict):
+    def backlight_on(self, args_dict=None):
         """ Turn the backlight on """
         self.lcd_is_on = True
         self.lcd.lcd_backlight(1)
 
-    def lcd_backlight_off(self, args_dict):
+    def backlight_off(self, args_dict=None):
         """ Turn the backlight off """
         self.lcd_is_on = False
         while self.lines_being_written:

@@ -72,6 +72,7 @@ from mycodo.devices.camera import camera_record
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.function_actions import get_condition_value
 from mycodo.utils.function_actions import get_condition_value_dict
+from mycodo.utils.function_actions import parse_function_action_information
 from mycodo.utils.function_actions import trigger_action
 from mycodo.utils.function_actions import trigger_function_actions
 from mycodo.utils.github_release_info import MycodoRelease
@@ -100,6 +101,9 @@ class DaemonController:
         self.daemon_run = True
         self.terminated = False
         self.debug = debug
+
+        # Function actions
+        self.function_actions = {}
 
         # Controller object that will store the thread objects for each controller
         self.controller = {
@@ -154,6 +158,7 @@ class DaemonController:
         self.logger.debug("Anonymous statistics {state}".format(state=state))
 
     def run(self):
+        self.load_function_actions()
         self.start_all_controllers(self.debug)
         self.daemon_startup_time = timeit.default_timer() - self.startup_timer
         self.logger.info("Mycodo daemon started in {sec:.3f} seconds".format(sec=self.daemon_startup_time))
@@ -571,9 +576,9 @@ class DaemonController:
                 return self.controller['LCD'][lcd_id].lcd_backlight(state)
             elif lcd_id in self.controller['Function']:
                 if state:
-                    return self.controller['Function'][lcd_id].function_action("lcd_backlight_on")
+                    return self.controller['Function'][lcd_id].function_action("backlight_on")
                 else:
-                    return self.controller['Function'][lcd_id].function_action("lcd_backlight_off")
+                    return self.controller['Function'][lcd_id].function_action("backlight_off")
         except KeyError:
             message = "Cannot change backlight: LCD not running"
             self.logger.exception(message)
@@ -582,7 +587,7 @@ class DaemonController:
             message = "Cannot change backlight: {e}".format(e=except_msg)
             self.logger.exception(message)
 
-    def lcd_backlight_color(self, lcd_id, color):
+    def display_backlight_color(self, lcd_id, color):
         """
         Set the LCD backlight color
 
@@ -596,7 +601,7 @@ class DaemonController:
 
         """
         try:
-            return self.controller['LCD'][lcd_id].lcd_backlight_color(color)
+            return self.controller['LCD'][lcd_id].display_backlight_color(color)
         except KeyError:
             message = "Cannot change LCD color: LCD not running"
             self.logger.exception(message)
@@ -883,6 +888,9 @@ class DaemonController:
         except Exception as msg:
             self.logger.exception("Statistics initialization Error: {e}".format(e=msg))
 
+    def load_function_actions(self):
+        self.function_actions = parse_function_action_information()
+
     def start_all_controllers(self, debug):
         """
         Start all activated controllers
@@ -990,6 +998,7 @@ class DaemonController:
     def trigger_action(self, action_id, value=None, message='', single_action=False, debug=False):
         try:
             return trigger_action(
+                self.function_actions,
                 action_id,
                 value=value,
                 message=message,
@@ -1001,7 +1010,8 @@ class DaemonController:
 
     def trigger_all_actions(self, function_id, message='', debug=False):
         try:
-            return trigger_function_actions(function_id, message=message, debug=debug)
+            return trigger_function_actions(
+                self.function_actions, function_id, message=message, debug=debug)
         except Exception as except_msg:
             message = "Could not trigger Conditional Actions: {err}".format(err=except_msg)
             self.logger.exception(message)
@@ -1142,9 +1152,9 @@ class PyroServer(object):
         """Turns an LCD backlight on or off"""
         return self.mycodo.lcd_backlight(lcd_id, state)
 
-    def lcd_backlight_color(self, lcd_id, color):
+    def display_backlight_color(self, lcd_id, color):
         """Set the LCD backlight color"""
-        return self.mycodo.lcd_backlight_color(lcd_id, color)
+        return self.mycodo.display_backlight_color(lcd_id, color)
 
     def lcd_flash(self, lcd_id, state):
         """Starts or stops an LCD from flashing (alarm)"""

@@ -21,6 +21,7 @@ from mycodo.config import DAEMON_LOG_FILE
 from mycodo.config import DEPENDENCY_INIT_FILE
 from mycodo.config import DEPENDENCY_LOG_FILE
 from mycodo.config import INSTALL_DIRECTORY
+from mycodo.config import PATH_FUNCTION_ACTIONS_CUSTOM
 from mycodo.config import PATH_FUNCTIONS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import PATH_OUTPUTS_CUSTOM
@@ -45,6 +46,7 @@ from mycodo.databases.models import Output
 from mycodo.databases.models import OutputChannel
 from mycodo.databases.models import PID
 from mycodo.databases.models import Role
+from mycodo.databases.models import Actions
 from mycodo.databases.models import SMTP
 from mycodo.databases.models import Unit
 from mycodo.databases.models import User
@@ -59,6 +61,7 @@ from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.mycodo_flask.utils.utils_general import flash_form_errors
 from mycodo.mycodo_flask.utils.utils_general import flash_success_errors
 from mycodo.utils.database import db_retrieve_table
+from mycodo.utils.function_actions import parse_function_action_information
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.inputs import parse_input_information
 from mycodo.utils.modules import load_module_from_file
@@ -438,7 +441,7 @@ def settings_general_mod(form):
 
 def settings_function_import(form):
     """
-    Receive an controller module file, check it for errors, add it to Mycodo controller list
+    Receive a function module file, check it for errors, add it to Mycodo controller list
     """
     action = '{action} {controller}'.format(
         action=gettext("Import"),
@@ -448,7 +451,6 @@ def settings_function_import(form):
     controller_info = None
 
     try:
-        # correct_format = 'Mycodo_MYCODOVERSION_Settings_DBVERSION_HOST_DATETIME.zip'
         install_dir = os.path.abspath(INSTALL_DIRECTORY)
         tmp_directory = os.path.join(install_dir, 'mycodo/functions/tmp_functions')
         assure_path_exists(tmp_directory)
@@ -563,6 +565,135 @@ def settings_function_delete(form):
             path=os.path.abspath(INSTALL_DIRECTORY))
         subprocess.Popen(cmd, shell=True)
         flash('Frontend reloaded to scan for new Controller Modules', 'success')
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_function'))
+
+
+def settings_action_import(form):
+    """
+    Receive an action module file, check it for errors, add it to Mycodo controller list
+    """
+    action = '{action} {controller}'.format(
+        action=gettext("Import"),
+        controller=TRANSLATIONS['actions']['title'])
+    error = []
+
+    action_info = None
+
+    try:
+        install_dir = os.path.abspath(INSTALL_DIRECTORY)
+        tmp_directory = os.path.join(install_dir, 'mycodo/function_actions/tmp_function_actions')
+        assure_path_exists(tmp_directory)
+        assure_path_exists(PATH_FUNCTION_ACTIONS_CUSTOM)
+        tmp_name = 'tmp_action_testing.py'
+        full_path_tmp = os.path.join(tmp_directory, tmp_name)
+
+        if not form.import_action_file.data:
+            error.append('No file present')
+        elif form.import_action_file.data.filename == '':
+            error.append('No file name')
+        else:
+            form.import_action_file.data.save(full_path_tmp)
+
+        try:
+            action_info = load_module_from_file(full_path_tmp, 'actions')
+            if not action_info or not hasattr(action_info, 'FUNCTION_ACTION_INFORMATION'):
+                error.append("Could not load FUNCTION_ACTION_INFORMATION dictionary from "
+                             "the uploaded action module")
+        except Exception:
+            error.append("Could not load uploaded file as a python module:\n"
+                         "{}".format(traceback.format_exc()))
+
+        dict_actions = parse_function_action_information()
+        list_actions = []
+        for each_key in dict_actions.keys():
+            list_actions.append(each_key.lower())
+
+        if not error:
+            if 'name_unique' not in action_info.FUNCTION_ACTION_INFORMATION:
+                error.append(
+                    "'name_unique' not found in "
+                    "FUNCTION_ACTION_INFORMATION dictionary")
+            elif action_info.FUNCTION_ACTION_INFORMATION['name_unique'] == '':
+                error.append("'name_unique' is empty")
+            elif action_info.FUNCTION_ACTION_INFORMATION['name_unique'].lower() in list_actions:
+                error.append(
+                    "'name_unique' is not unique, there "
+                    "is already an action with that name ({})".format(
+                        action_info.FUNCTION_ACTION_INFORMATION['name_unique'].lower()))
+
+            if 'name' not in action_info.FUNCTION_ACTION_INFORMATION:
+                error.append("'name' not found in FUNCTION_ACTION_INFORMATION dictionary")
+            elif action_info.FUNCTION_ACTION_INFORMATION['name'] == '':
+                error.append("'name' is empty")
+
+            if 'dependencies_module' in action_info.FUNCTION_ACTION_INFORMATION:
+                if not isinstance(action_info.FUNCTION_ACTION_INFORMATION['dependencies_module'], list):
+                    error.append("'dependencies_module' must be a list of tuples")
+                else:
+                    for each_dep in action_info.FUNCTION_ACTION_INFORMATION['dependencies_module']:
+                        if not isinstance(each_dep, tuple):
+                            error.append("'dependencies_module' must be a list of tuples")
+                        elif len(each_dep) != 3:
+                            error.append("'dependencies_module': tuples in list must have 3 items")
+                        elif not each_dep[0] or not each_dep[1] or not each_dep[2]:
+                            error.append(
+                                "'dependencies_module': tuples in list must "
+                                "not be empty")
+                        elif each_dep[0] not in ['internal', 'pip-pypi', 'pip-git', 'apt']:
+                            error.append(
+                                "'dependencies_module': first in tuple "
+                                "must be 'internal', 'pip-pypi', 'pip-git', "
+                                "or 'apt'")
+
+        if not error:
+            # Determine filename
+            unique_name = '{}.py'.format(action_info.FUNCTION_ACTION_INFORMATION['name_unique'].lower())
+
+            # Move module from temp directory to function directory
+            full_path_final = os.path.join(PATH_FUNCTION_ACTIONS_CUSTOM, unique_name)
+            os.rename(full_path_tmp, full_path_final)
+
+            # Reload frontend to refresh the actions
+            cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+                path=install_dir)
+            subprocess.Popen(cmd, shell=True)
+            flash('Frontend reloaded to scan for new Action Modules', 'success')
+
+    except Exception as err:
+        logger.exception("Action Import")
+        error.append("Exception: {}".format(err))
+
+    flash_success_errors(error, action, url_for('routes_settings.settings_action'))
+
+
+def settings_action_delete(form):
+    action = '{action} {controller}'.format(
+        action=gettext("Import"),
+        controller=TRANSLATIONS['actions']['title'])
+    error = []
+
+    action_device_name = form.action_id.data
+    file_name = '{}.py'.format(form.action_id.data.lower())
+    full_path_file = os.path.join(PATH_FUNCTION_ACTIONS_CUSTOM, file_name)
+
+    # Check if any action entries exist
+    action_dev = Actions.query.filter(
+        Actions.action_type == action_device_name).count()
+    if action_dev:
+        error.append("Cannot delete Action Module if there are still "
+                     "Action entries using it. Delete all "
+                     "Action entries that use this module before deleting "
+                     "the module.")
+
+    if not error:
+        os.remove(full_path_file)
+
+        # Reload frontend to refresh the actions
+        cmd = '{path}/mycodo/scripts/mycodo_wrapper frontend_reload 2>&1'.format(
+            path=os.path.abspath(INSTALL_DIRECTORY))
+        subprocess.Popen(cmd, shell=True)
+        flash('Frontend reloaded to scan for new Action Modules', 'success')
 
     flash_success_errors(error, action, url_for('routes_settings.settings_function'))
 

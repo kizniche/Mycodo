@@ -141,6 +141,13 @@
   {% set function_type = 'conditional' %}
 
   <div id="mod_function_actions_{{each_function.unique_id}}">
+  {% if actions %}
+    <div class="row small-gutters" style="border-bottom: 1px solid #ddd; padding: 0.3em">
+      <div class="col-12">
+        <strong>Usage:</strong>: <strong>self.run_all_actions()</strong> will execute all actions sequentially.
+      </div>
+    </div>
+  {% endif %}
   {% for each_action in actions if each_action.function_id == each_function.unique_id %}
     {% include 'pages/function_options/actions.html' %}
   {% endfor %}

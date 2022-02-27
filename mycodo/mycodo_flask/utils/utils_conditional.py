@@ -14,7 +14,6 @@ from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.utils.utils_function import check_actions
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.utils.conditional import save_conditional_code
@@ -334,9 +333,6 @@ def conditional_activate(cond_id):
             "Conditional activated without any Actions. Typical "
             "Conditional Controller use involves the use of Actions. Only "
             "proceed without Actions if you know what you're doing.")
-
-    for each_action in actions.all():
-        messages["success"] = check_actions(each_action, messages["success"])
 
     messages = controller_activate_deactivate(
         messages, 'activate', 'Conditional', cond_id, flash_message=False)

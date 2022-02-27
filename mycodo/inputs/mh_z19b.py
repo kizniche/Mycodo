@@ -83,12 +83,14 @@ INPUT_INFORMATION = {
         }
     ],
 
-    'custom_actions_message': 'Zero point calibration: activate the sensor in a 400 ppmv CO2 environment, allow to run '
-                              'for 20 minutes, then press the Calibrate Zero Point button.<br>Span point calibration: '
-                              'activate the sensor in an environment with a stable CO2 concentration in the 1000 to '
-                              '2000 ppmv range, allow to run for 20 minutes, enter the ppmv value in the Span Point '
-                              '(ppmv) input field, then press the Calibrate Span Point button. If running a span '
-                              'point calibration, run a zero point calibration first.',
+    'custom_actions_message': 'Zero point calibration: activate the sensor in a 400 ppmv CO2 environment (outside '
+                              'air), allow to run for 20 minutes, then press the Calibrate Zero Point button.<br>Span '
+                              'point calibration: activate the sensor in an environment with a stable CO2 concentration'
+                              ' between 1000 and 2000 ppmv (2000 recommended), allow to run for 20 minutes, enter the '
+                              'ppmv value in the Span Point (ppmv) input field, then press the Calibrate Span Point '
+                              'button. If running a span point calibration, run a zero point calibration first. A span '
+                              'point calibration is not necessary and should only be performed if you know what you are'
+                              ' doing and can accurately produce a 2000 ppmv environment.',
     'custom_actions': [
         {
             'id': 'calibrate_zero_point',
@@ -98,7 +100,7 @@ INPUT_INFORMATION = {
         {
             'id': 'span_point_value_ppmv',
             'type': 'integer',
-            'default_value': 1500,
+            'default_value': 2000,
             'name': 'Span Point (ppmv)',
             'phrase': 'The ppmv concentration for a span point calibration'
         },

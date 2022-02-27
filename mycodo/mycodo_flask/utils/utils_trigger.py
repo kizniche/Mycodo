@@ -9,7 +9,6 @@ from mycodo.databases.models import Actions
 from mycodo.databases.models import Trigger
 from mycodo.mycodo_client import DaemonControl
 from mycodo.mycodo_flask.extensions import db
-from mycodo.mycodo_flask.utils.utils_function import check_actions
 from mycodo.mycodo_flask.utils.utils_general import controller_activate_deactivate
 from mycodo.mycodo_flask.utils.utils_general import delete_entry_with_id
 from mycodo.utils.system_pi import epoch_of_next_time
@@ -228,9 +227,6 @@ def trigger_activate(trigger_id):
     if not actions.count() and mod_trigger.trigger_type != 'trigger_run_pwm_method':
         messages["error"].append(
             "No Actions found: Add at least one Action before activating.")
-
-    for each_action in actions.all():
-        messages["error"] = check_actions(each_action, messages["error"])
 
     messages = controller_activate_deactivate(
         messages, 'activate', 'Trigger', trigger_id, flash_message=False)

@@ -58,6 +58,138 @@ if __name__ == "__main__":
         #         error.append(msg)
         #         print(msg)
 
+        elif each_revision == 'b354722c9b8b':
+            print("Executing post-alembic code for revision {}".format(
+                each_revision))
+            try:
+                import json
+                from sqlalchemy import and_
+                from mycodo.databases.models import Actions
+                from mycodo.databases.models import DeviceMeasurements
+                from mycodo.databases.models import OutputChannel
+
+                def get_measure_id(output_id, channel_id):
+                    device_channel = session.query(OutputChannel).filter(
+                        OutputChannel.unique_id == channel_id).first()
+                    device_measurement = session.query(DeviceMeasurements).filter(
+                        and_(DeviceMeasurements.device_id == output_id,
+                             DeviceMeasurements.channel == device_channel.channel)).first()
+                    if device_measurement:
+                        return device_measurement.unique_id
+                    return ""
+
+                with session_scope(MYCODO_DB_PATH) as session:
+                    for action in session.query(Actions).all():
+                        try:
+                            custom_options = json.loads(action.custom_options)
+                        except:
+                            custom_options = {}
+
+                        try:
+                            if action.action_type == "pause_actions":
+                                custom_options["duration"] = action.pause_duration
+                            elif action.action_type == "flash_lcd_on":
+                                action.action_type = "display_flash_on"
+                                custom_options["controller"] = action.do_unique_id
+                            elif action.action_type == "flash_lcd_off":
+                                action.action_type = "display_flash_off"
+                                custom_options["controller"] = action.do_unique_id
+                            elif action.action_type == "lcd_backlight_on":
+                                action.action_type = "display_backlight_on"
+                                custom_options["controller"] = action.do_unique_id
+                            elif action.action_type == "lcd_backlight_off":
+                                action.action_type = "display_backlight_off"
+                                custom_options["controller"] = action.do_unique_id
+                            elif action.action_type == "lcd_backlight_color":
+                                action.action_type = "display_backlight_color"
+                                custom_options["controller"] = action.do_unique_id
+                                custom_options["color"] = action.do_action_string
+                            elif action.action_type == "resume_pid":
+                                custom_options["controller"] = action.do_unique_id
+                            elif action.action_type == "pause_pid":
+                                custom_options["controller"] = action.do_unique_id
+                            elif action.action_type == "activate_controller":
+                                custom_options["controller"] = action.do_unique_id
+                            elif action.action_type == "deactivate_controller":
+                                custom_options["controller"] = action.do_unique_id
+                            elif action.action_type == 'camera_timelapse_pause':
+                                custom_options["controller"] = action.do_unique_id
+                            elif action.action_type == 'camera_timelapse_resume':
+                                custom_options["controller"] = action.do_unique_id
+                            elif action.action_type == 'webhook':
+                                custom_options["webhook"] = action.do_action_string
+                            elif action.action_type == 'photo':
+                                custom_options["controller"] = action.do_unique_id
+                            elif action.action_type == 'photo_email':
+                                custom_options["controller"] = action.do_unique_id
+                                custom_options["email"] = action.do_action_string
+                            elif action.action_type == 'method_pid':
+                                custom_options["controller"] = action.do_unique_id
+                                custom_options["method"] = action.do_action_string
+                            elif action.action_type == 'setpoint_pid':
+                                custom_options["controller"] = action.do_unique_id
+                                try:
+                                    custom_options["setpoint"] = float(action.do_action_string)
+                                except:
+                                    custom_options["setpoint"] = 0
+                            elif action.action_type in ['setpoint_pid_raise', 'setpoint_pid_lower']:
+                                custom_options["controller"] = action.do_unique_id
+                                try:
+                                    custom_options["amount"] = float(action.do_action_string)
+                                except:
+                                    custom_options["amount"] = 0
+                            elif action.action_type == "command":
+                                custom_options["user"] = action.do_output_state
+                                custom_options["command"] = action.do_action_string
+                            elif action.action_type == "create_note":
+                                custom_options["tag"] = []
+                                if action.do_action_string:
+                                    custom_options["tag"] = ["{},tag".format(action.do_action_string)]
+                            elif action.action_type == "email":
+                                custom_options["email"] = action.do_action_string
+                            elif action.action_type == "email_multiple":
+                                action.action_type = "email"  # Convert email_multiple to email action
+                                custom_options["email"] = action.do_action_string
+                            elif action.action_type == "input_force_measurements":
+                                if "," in action.do_unique_id:
+                                    custom_options["input"] = action.do_unique_id.split(',')[0]
+                            elif action.action_type in ["output",
+                                                        "output_pwm",
+                                                        "output_volume",
+                                                        "output_value",
+                                                        "output_ramp_pwm"]:
+                                output_id = action.do_unique_id.split(",")[0]
+                                channel_id = action.do_unique_id.split(",")[1]
+                                measure_id = get_measure_id(output_id, channel_id)
+                                custom_options["output"] = "{},{},{}".format(output_id, measure_id, channel_id)
+                                if action.action_type == "output":
+                                    custom_options["output_state"] = action.do_output_state
+                                    custom_options["duration"] = action.do_output_duration
+                                elif action.action_type == "output_pwm":
+                                    custom_options["duty_cycle"] = action.do_output_pwm
+                                elif action.action_type == "output_volume":
+                                    custom_options["volume"] = action.do_output_amount
+                                elif action.action_type == "output_value":
+                                    custom_options["value"] = action.do_output_amount
+                                elif action.action_type == "output_ramp_pwm":
+                                    custom_options["duty_cycle_start"] = action.do_output_pwm
+                                    custom_options["duty_cycle_end"] = action.do_output_pwm2
+                                    custom_options["duty_cycle_increment"] = action.do_action_string
+                                    custom_options["duration"] = action.do_output_duration
+                            elif action.action_type == "mqtt_publish":
+                                pass  # Already saved in custom_options as JSON
+
+                            action.custom_options = json.dumps(custom_options)
+                            session.commit()
+                        except Exception as err:
+                            print("Error parsing actions: {}".format(err))
+
+            except Exception:
+                msg = "ERROR: post-alembic revision {}: {}".format(
+                    each_revision, traceback.format_exc())
+                error.append(msg)
+                print(msg)
+
         elif each_revision == '6e394f2e8fec':
             print("Executing post-alembic code for revision {}".format(
                 each_revision))

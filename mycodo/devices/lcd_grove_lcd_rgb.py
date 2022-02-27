@@ -175,7 +175,7 @@ class LCD_Grove_LCD_RGB:
         else:
             self.setRGB(0, 0, 0)
 
-    def lcd_backlight_color(self, color_tuple):
+    def display_backlight_color(self, color_tuple):
         try:
             tuple_colors = color_tuple.split(",")
             self.red = int(tuple_colors[0])

@@ -28,7 +28,6 @@ import math
 import time
 import traceback
 
-from flask import flash
 from flask_babel import lazy_gettext
 
 from mycodo.config import MYCODO_VERSION
@@ -176,8 +175,40 @@ FUNCTION_INFORMATION = {
     ],
 
     'function_actions': [
-        'lcd_backlight_on',
-        'lcd_backlight_off'
+        'backlight_on',
+        'backlight_off',
+        'backlight_flash'
+    ],
+
+    'custom_actions': [
+        {
+            'id': 'backlight_on',
+            'type': 'button',
+            'wait_for_return': False,
+            'name': 'Backlight On',
+            'phrase': "Turn backlight on"
+        },
+        {
+            'id': 'backlight_off',
+            'type': 'button',
+            'wait_for_return': False,
+            'name': 'Backlight Off',
+            'phrase': "Turn backlight off"
+        },
+        {
+            'id': 'backlight_flash_on',
+            'type': 'button',
+            'wait_for_return': False,
+            'name': 'Backlight Flashing On',
+            'phrase': "Start backlight flashing"
+        },
+        {
+            'id': 'backlight_flash_off',
+            'type': 'button',
+            'wait_for_return': False,
+            'name': 'Backlight Flashing Off',
+            'phrase': "Stop backlight flashing"
+        }
     ],
 
     'custom_options': [
@@ -303,6 +334,8 @@ class CustomModule(AbstractFunction):
 
         self.options_channels = {}
         self.lcd = None
+        self.flash_lcd = False
+        self.backlight_timer = time.time()
         self.timer_loop = time.time()
         self.line_sets = []
         self.current_line_set = 0
@@ -359,19 +392,26 @@ class CustomModule(AbstractFunction):
             self.logger.exception("Starting LCD Function")
 
     def loop(self):
-        if self.timer_loop > time.time():
-            return
+        if self.lcd_is_on and self.lcd and self.timer_loop < time.time():
+            while self.timer_loop < time.time():
+                self.timer_loop += self.period
+            self.output_lcd()
 
-        while self.timer_loop < time.time():
-            self.timer_loop += self.period
+        # elif not self.lcd_is_on:
+        #     # Turn backlight off
+        #     self.lcd.lcd_backlight(0)
 
-        if not self.lcd:
-            self.logger.error("LCD not set up")
-            return
+        if self.flash_lcd:
+            if time.time() > self.backlight_timer:
+                if self.lcd_is_on:
+                    self.lcd_backlight(0)
+                    seconds = 0.2
+                else:
+                    self.output_lcd()
+                    seconds = 1.1
+                self.backlight_timer = time.time() + seconds
 
-        if not self.lcd_is_on:
-            return  # Don't draw anything on an LCD that has the backlight off
-
+    def output_lcd(self):
         # Generate lines to display
         self.lines_being_written = True
         lines_display = {}
@@ -462,6 +502,15 @@ class CustomModule(AbstractFunction):
 
         self.lines_being_written = False
 
+    def lcd_backlight(self, state):
+        """ Turn the backlight on or off """
+        if state:
+            self.lcd.lcd_backlight(state)
+            self.lcd_is_on = True
+            self.timer = time.time() - 1  # Induce LCD to update after turning backlight on
+        else:
+            self.lcd_is_on = False  # Instruct LCD backlight to turn off
+
     def stop_function(self):
         self.lcd.lcd_init()
         self.lcd_is_on = True
@@ -472,14 +521,21 @@ class CustomModule(AbstractFunction):
     # Actions
     #
 
-    def lcd_backlight_on(self, args_dict):
+    def backlight_flash_on(self, args_dict=None):
+        self.flash_lcd = True
+
+    def backlight_flash_off(self, args_dict=None):
+        self.flash_lcd = False
+        self.lcd.lcd_backlight(True)
+
+    def backlight_on(self, args_dict=None):
         """ Turn the backlight on """
         self.lcd_is_on = True
-        self.lcd.lcd_backlight(1)
+        self.lcd.lcd_backlight(True)
 
-    def lcd_backlight_off(self, args_dict):
+    def backlight_off(self, args_dict=None):
         """ Turn the backlight off """
         self.lcd_is_on = False
         while self.lines_being_written:
             time.sleep(0.1)  # Wait for lines to be written before turning backlight off
-        self.lcd.lcd_backlight(0)
+        self.lcd.lcd_backlight(False)

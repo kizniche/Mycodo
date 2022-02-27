@@ -15,7 +15,6 @@ from sqlalchemy import and_
 
 from mycodo.config import CONDITIONAL_CONDITIONS
 from mycodo.config import FUNCTIONS
-from mycodo.config import FUNCTION_ACTION_INFO
 from mycodo.config_devices_units import MEASUREMENTS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Camera
@@ -54,6 +53,7 @@ from mycodo.mycodo_flask.utils import utils_general
 from mycodo.mycodo_flask.utils import utils_pid
 from mycodo.mycodo_flask.utils import utils_trigger
 from mycodo.mycodo_flask.utils.utils_misc import determine_controller_type
+from mycodo.utils.function_actions import parse_function_action_information
 from mycodo.utils.functions import parse_function_information
 from mycodo.utils.outputs import output_types
 from mycodo.utils.outputs import parse_output_information
@@ -398,6 +398,7 @@ def page_function():
     form_actions = forms_function.Actions()
 
     dict_controllers = parse_function_information()
+    dict_actions = parse_function_action_information()
 
     # Generate all measurement and units used
     dict_measurements = add_custom_measurements(Measurement.query.all())
@@ -410,7 +411,6 @@ def page_function():
     custom_options_values_function_channels = parse_custom_option_values_function_channels_json(
         function_channel, dict_controller=function, key_name='custom_channel_options')
 
-    # TODO: Update actions to use single-file modules and be consistent with other custom_options
     custom_options_values_actions = {}
     for each_action_dev in actions:
         try:
@@ -449,6 +449,7 @@ def page_function():
         output, OutputChannel, dict_outputs, dict_units, dict_measurements)
     choices_pid = utils_general.choices_pids(
         pid, dict_units, dict_measurements)
+    choices_tag = utils_general.choices_tags(tags)
     choices_measurements_units = utils_general.choices_measurements_units(
         measurement, unit)
 
@@ -555,6 +556,7 @@ def page_function():
                                choices_output_channels=choices_output_channels,
                                choices_output_channels_measurements=choices_output_channels_measurements,
                                choices_pid=choices_pid,
+                               choices_tag=choices_tag,
                                conditional_conditions_list=CONDITIONAL_CONDITIONS,
                                conditional=conditional,
                                conditional_conditions=conditional_conditions,
@@ -566,6 +568,7 @@ def page_function():
                                custom_options_values_actions=custom_options_values_actions,
                                custom_options_values_controllers=custom_options_values_controllers,
                                custom_options_values_function_channels=custom_options_values_function_channels,
+                               dict_actions=dict_actions,
                                dict_controllers=dict_controllers,
                                dict_measurements=dict_measurements,
                                dict_outputs=dict_outputs,
@@ -587,7 +590,6 @@ def page_function():
                                form_mod_pid_volume_raise=form_mod_pid_volume_raise,
                                form_mod_pid_volume_lower=form_mod_pid_volume_lower,
                                form_trigger=form_trigger,
-                               function_action_info=FUNCTION_ACTION_INFO,
                                function_dev=function_dev,
                                function_types=FUNCTIONS,
                                input=input_dev,
@@ -627,6 +629,7 @@ def page_function():
                                choices_output_channels=choices_output_channels,
                                choices_output_channels_measurements=choices_output_channels_measurements,
                                choices_pid=choices_pid,
+                               choices_tag=choices_tag,
                                conditional_conditions_list=CONDITIONAL_CONDITIONS,
                                conditional=conditional,
                                conditional_conditions=conditional_conditions,
@@ -638,6 +641,7 @@ def page_function():
                                custom_options_values_actions=custom_options_values_actions,
                                custom_options_values_controllers=custom_options_values_controllers,
                                custom_options_values_function_channels=custom_options_values_function_channels,
+                               dict_actions=dict_actions,
                                dict_controllers=dict_controllers,
                                dict_measurements=dict_measurements,
                                dict_outputs=dict_outputs,
@@ -660,7 +664,6 @@ def page_function():
                                form_mod_pid_volume_raise=form_mod_pid_volume_raise,
                                form_mod_pid_volume_lower=form_mod_pid_volume_lower,
                                form_trigger=form_trigger,
-                               function_action_info=FUNCTION_ACTION_INFO,
                                function_dev=function_dev,
                                function_types=FUNCTIONS,
                                input=input_dev,
@@ -700,6 +703,7 @@ def page_function():
                                choices_output_channels=choices_output_channels,
                                choices_output_channels_measurements=choices_output_channels_measurements,
                                choices_pid=choices_pid,
+                               choices_tag=choices_tag,
                                conditional_conditions_list=CONDITIONAL_CONDITIONS,
                                conditional=conditional,
                                conditional_conditions=conditional_conditions,
@@ -712,6 +716,7 @@ def page_function():
                                custom_options_values_actions=custom_options_values_actions,
                                custom_options_values_controllers=custom_options_values_controllers,
                                custom_options_values_function_channels=custom_options_values_function_channels,
+                               dict_actions=dict_actions,
                                dict_controllers=dict_controllers,
                                dict_measurements=dict_measurements,
                                dict_outputs=dict_outputs,
@@ -733,7 +738,6 @@ def page_function():
                                form_mod_pid_volume_raise=form_mod_pid_volume_raise,
                                form_mod_pid_volume_lower=form_mod_pid_volume_lower,
                                form_trigger=form_trigger,
-                               function_action_info=FUNCTION_ACTION_INFO,
                                function_dev=function_dev,
                                function_types=FUNCTIONS,
                                input=input_dev,
@@ -773,6 +777,7 @@ def page_function():
                                choices_output_channels=choices_output_channels,
                                choices_output_channels_measurements=choices_output_channels_measurements,
                                choices_pid=choices_pid,
+                               choices_tag=choices_tag,
                                conditional_conditions_list=CONDITIONAL_CONDITIONS,
                                conditional=conditional,
                                conditional_conditions=conditional_conditions,
@@ -786,6 +791,7 @@ def page_function():
                                custom_options_values_actions=custom_options_values_actions,
                                custom_options_values_controllers=custom_options_values_controllers,
                                custom_options_values_function_channels=custom_options_values_function_channels,
+                               dict_actions=dict_actions,
                                dict_controllers=dict_controllers,
                                dict_measurements=dict_measurements,
                                dict_outputs=dict_outputs,
@@ -807,7 +813,6 @@ def page_function():
                                form_mod_pid_volume_raise=form_mod_pid_volume_raise,
                                form_mod_pid_volume_lower=form_mod_pid_volume_lower,
                                form_trigger=form_trigger,
-                               function_action_info=FUNCTION_ACTION_INFO,
                                function_dev=function_dev,
                                function_types=FUNCTIONS,
                                input=input_dev,
@@ -847,6 +852,7 @@ def page_function():
                                choices_output_channels=choices_output_channels,
                                choices_output_channels_measurements=choices_output_channels_measurements,
                                choices_pid=choices_pid,
+                               choices_tag=choices_tag,
                                conditional_conditions_list=CONDITIONAL_CONDITIONS,
                                conditional=conditional,
                                conditional_conditions=conditional_conditions,
@@ -861,6 +867,7 @@ def page_function():
                                custom_options_values_actions=custom_options_values_actions,
                                custom_options_values_controllers=custom_options_values_controllers,
                                custom_options_values_function_channels=custom_options_values_function_channels,
+                               dict_actions=dict_actions,
                                dict_controllers=dict_controllers,
                                dict_measurements=dict_measurements,
                                dict_outputs=dict_outputs,
@@ -882,7 +889,6 @@ def page_function():
                                form_mod_pid_volume_raise=form_mod_pid_volume_raise,
                                form_mod_pid_volume_lower=form_mod_pid_volume_lower,
                                form_trigger=form_trigger,
-                               function_action_info=FUNCTION_ACTION_INFO,
                                function_dev=function_dev,
                                function_types=FUNCTIONS,
                                input=input_dev,
