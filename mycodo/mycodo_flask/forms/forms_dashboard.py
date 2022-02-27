@@ -24,7 +24,7 @@ class DashboardBase(FlaskForm):
     choices_widgets = []
     dict_widgets = parse_widget_information()
     list_widgets_sorted = generate_form_widget_list(dict_widgets)
-    choices_widgets.append(('', lazy_gettext('Add Dashboard Widget'))),
+    choices_widgets.append(('', lazy_gettext('Add Dashboard Widget')))
 
     for each_widget in list_widgets_sorted:
         choices_widgets.append((each_widget, dict_widgets[each_widget]['widget_name']))

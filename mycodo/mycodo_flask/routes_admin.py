@@ -146,11 +146,11 @@ def admin_backup():
                 else:
                     # Zip all files in the_backup directory
                     data = io.BytesIO()
-                    with zipfile.ZipFile(data, 'w') as zip:
+                    with zipfile.ZipFile(data, 'w') as zipf:
                         # writing each file one by one
                         for file in file_paths:
                             # Remove first two directory names from zip file, so the Mycodo root is the zip root
-                            zip.write(file, file.replace(string_remove, ""))
+                            zipf.write(file, file.replace(string_remove, ""))
                     data.seek(0)
 
                     # Send zip file to user

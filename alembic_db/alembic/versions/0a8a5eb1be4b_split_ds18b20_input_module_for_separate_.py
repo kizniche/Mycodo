@@ -19,8 +19,6 @@ def upgrade():
     from alembic_db.alembic_post_utils import write_revision_post_alembic
     write_revision_post_alembic(revision)
 
-    pass
-
 
 def downgrade():
     pass

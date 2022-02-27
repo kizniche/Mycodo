@@ -365,7 +365,6 @@ def import_settings(form):
                                 shutil.move(file_path, new_path)
                             except:
                                 logger.exception("Moving file")
-                                pass
 
                 logger.info("Finalizing import")
                 import_settings_db = threading.Thread(
