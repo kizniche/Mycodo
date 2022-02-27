@@ -63,7 +63,7 @@
 }
 
 .no-gutters {
-    padding: 0 0
+    padding: 0 0;
 }
 
 .checkbox-nopad {
@@ -122,14 +122,14 @@
 }
 
 .widget-graph-controls a.menu {
-  border-color: rgba(0,0,0,0.0);
+  border-color: rgba(0, 0, 0, 0.0);
   opacity: 0.4;
   outline: 0;
 }
 
 .widget-graph-controls a.menu:hover,
 .widget-graph-controls a.menu:active {
-  border-color: rgba(0,0,0,0.0);
+  border-color: rgba(0, 0, 0, 0.0);
   opacity: 1.0;
   outline: 0;
 }
@@ -167,7 +167,7 @@
   top: 50%;
   left: 50%;
   margin-right: -50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
   max-width: 60%;
   max-height: 60%;
 }
