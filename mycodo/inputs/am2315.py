@@ -105,7 +105,7 @@ class InputModule(AbstractInput):
         self.sensor = AM2315(self.input_dev.i2c_bus)
 
     def get_measurement(self):
-        """Gets the humidity and temperature"""
+        """Gets the humidity and temperature."""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return
@@ -280,7 +280,7 @@ class AM2315:
 
     @staticmethod
     def verify_crc(char):
-        """Returns the 16-bit CRC of sensor data"""
+        """Returns the 16-bit CRC of sensor data."""
         crc = 0xFFFF
         for l in char:
             crc = crc ^ l

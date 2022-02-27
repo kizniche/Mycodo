@@ -38,13 +38,13 @@ pid_list_fields = api.model('PID Fields List', {
 @ns_pid.route('/')
 @ns_pid.doc(security='apikey', responses=default_responses)
 class PIDs(Resource):
-    """PID information"""
+    """PID information."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_pid.marshal_with(pid_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all pid settings"""
+        """Show all pid settings."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -70,7 +70,7 @@ class SettingsPIDsUniqueID(Resource):
     @ns_pid.marshal_with(pid_single_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings for a pid"""
+        """Show the settings for a pid."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:

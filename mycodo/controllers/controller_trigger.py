@@ -155,7 +155,7 @@ class TriggerController(AbstractController, threading.Thread):
         pass
 
     def refresh_settings(self):
-        """Signal to pause the main loop and wait for verification, the refresh settings"""
+        """Signal to pause the main loop and wait for verification, the refresh settings."""
         self.pause_loop = True
         while not self.verify_pause_loop:
             time.sleep(0.1)
@@ -168,7 +168,7 @@ class TriggerController(AbstractController, threading.Thread):
         return "Trigger settings successfully refreshed"
 
     def initialize_variables(self):
-        """Define all settings"""
+        """Define all settings."""
         self.email_count = 0
         self.allowed_to_send_notice = True
 
@@ -238,7 +238,7 @@ class TriggerController(AbstractController, threading.Thread):
             self.timer_period = calculate_sunrise_sunset_epoch(self.trigger)
 
     def start_method(self, method_id):
-        """Instruct a method to start running"""
+        """Instruct a method to start running."""
         if method_id:
             this_controller = db_retrieve_table_daemon(
                 Trigger, unique_id=self.unique_id)
@@ -279,7 +279,7 @@ class TriggerController(AbstractController, threading.Thread):
             "Activate the Trigger controller to start it again.")
 
     def get_method_output(self, method_id):
-        """Get output variable from method"""
+        """Get output variable from method."""
         this_controller = db_retrieve_table_daemon(
             Trigger, unique_id=self.unique_id)
 
@@ -300,7 +300,7 @@ class TriggerController(AbstractController, threading.Thread):
         return setpoint, ended
 
     def set_output_duty_cycle(self, duty_cycle):
-        """Set PWM Output duty cycle"""
+        """Set PWM Output duty cycle."""
         output_channel = db_retrieve_table_daemon(OutputChannel).filter(
             OutputChannel.unique_id == self.trigger.unique_id_3).first()
         output_channel = output_channel.channel if output_channel else 0

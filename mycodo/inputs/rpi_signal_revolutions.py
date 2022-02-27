@@ -44,7 +44,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that monitors rpm"""
+    """A sensor support class that monitors rpm."""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -69,7 +69,7 @@ class InputModule(AbstractInput):
         self.sample_time = self.input_dev.sample_time
 
     def get_measurement(self):
-        """Gets the revolutions"""
+        """Gets the revolutions."""
         pi = self.pigpio.pi()
         if not pi.connected:  # Check if pigpiod is running
             self.logger.error("Could not connect to pigpiod. Ensure it is running and try again.")

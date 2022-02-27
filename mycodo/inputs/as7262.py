@@ -145,7 +145,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that acquires measurements from the sensor"""
+    """A sensor support class that acquires measurements from the sensor."""
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -178,7 +178,7 @@ class InputModule(AbstractInput):
         self.sensor.set_integration_time(self.integration_time)
 
     def get_measurement(self):
-        """Get measurements and store in the database"""
+        """Get measurements and store in the database."""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return
@@ -209,7 +209,7 @@ class InputModule(AbstractInput):
         return self.return_dict
 
     def stop_input(self):
-        """Called when Input is deactivated"""
+        """Called when Input is deactivated."""
         self.sensor.set_measurement_mode(3)
         self.sensor.set_indicator_led(0)
         self.sensor.set_illumination_led(0)

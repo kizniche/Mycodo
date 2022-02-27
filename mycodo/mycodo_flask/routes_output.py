@@ -1,5 +1,5 @@
 # coding=utf-8
-"""collection of Page endpoints"""
+"""collection of Page endpoints."""
 import logging
 import os
 
@@ -127,7 +127,7 @@ def page_output_submit():
 
 @blueprint.route('/save_output_layout', methods=['POST'])
 def save_output_layout():
-    """Save positions of outputs"""
+    """Save positions of outputs."""
     if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('routes_general.home'))
     data = request.get_json()
@@ -145,7 +145,7 @@ def save_output_layout():
 @blueprint.route('/output', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_output():
-    """Display Output page options"""
+    """Display Output page options."""
     output_type = request.args.get('output_type', None)
     output_id = request.args.get('output_id', None)
     each_output = None

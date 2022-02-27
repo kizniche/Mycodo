@@ -38,13 +38,13 @@ math_list_fields = api.model('Math Fields List', {
 @ns_math.route('/')
 @ns_math.doc(security='apikey', responses=default_responses)
 class Maths(Resource):
-    """Math information"""
+    """Math information."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_math.marshal_with(math_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all math settings"""
+        """Show all math settings."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -70,7 +70,7 @@ class SettingsMathsUniqueID(Resource):
     @ns_math.marshal_with(math_single_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings for a math"""
+        """Show the settings for a math."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:

@@ -212,7 +212,7 @@ def query_yes_no(question, default="yes"):
 
 
 def sort_tuple(tup):
-    """sort a list of tuples by its second item"""
+    """sort a list of tuples by its second item."""
     lst = len(tup)
     for i in range(0, lst):
         for j in range(0, lst - i - 1):
@@ -224,7 +224,7 @@ def sort_tuple(tup):
 
 
 def random_alphanumeric(length):
-    """Generates a random alphanumeric string"""
+    """Generates a random alphanumeric string."""
     key = ''
     for i in range(length):
         key += random.choice(string.ascii_letters + string.digits)

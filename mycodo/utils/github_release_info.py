@@ -57,7 +57,7 @@ class MycodoRelease:
             return {}
 
     def github_releases(self, mycodo_releases, major_version):
-        """Return the tarball URL for the latest Mycodo release version"""
+        """Return the tarball URL for the latest Mycodo release version."""
         all_versions = []
         for each_release in mycodo_releases:
             if re.match('v{maj}.*(\d\.\d)'.format(maj=major_version),
@@ -66,7 +66,7 @@ class MycodoRelease:
         return self.sort_reverse_list(all_versions)
 
     def github_latest_release(self, mycodo_releases):
-        """Return the latest Mycodo release version"""
+        """Return the latest Mycodo release version."""
         all_versions = []
         for each_release in mycodo_releases:
             if re.match('v.*(\d\.\d\.\d)', each_release['name']):
@@ -128,7 +128,7 @@ class MycodoRelease:
         return versions_sorted
 
     def return_latest_version_url(self, version_only):
-        """Return the tarball URL for the latest Mycodo release version"""
+        """Return the tarball URL for the latest Mycodo release version."""
         all_versions = []
         for each_release in self.mycodo_releases:
             if re.match('v.*(\d\.\d\.\d)', each_release['name']):

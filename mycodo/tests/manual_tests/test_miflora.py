@@ -17,7 +17,7 @@ logger = logging.getLogger("mycodo.inputs.miflora")
 
 
 def poll(args):
-    """Poll data from the sensor"""
+    """Poll data from the sensor."""
     poller = MiFloraPoller(args.mac, BluepyBackend)
     print("Getting data from Mi Flora")
     print("FW: {}".format(poller.firmware_version()))
@@ -29,7 +29,7 @@ def poll(args):
     print("Battery: {}".format(poller.parameter_value(MI_BATTERY)))
 
 def scan(args):
-    """Scan for sensors"""
+    """Scan for sensors."""
     print('Scanning for 10 seconds...')
     devices = miflora_scanner.scan(BluepyBackend, 10)
     print('Found {} devices:'.format(len(devices)))
@@ -37,7 +37,7 @@ def scan(args):
         print('  {}'.format(device))
 
 def valid_miflora_mac(mac, pat=re.compile(r"C4:7C:8D:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}")):
-    """Check for valid mac addresses"""
+    """Check for valid mac addresses."""
     if not pat.match(mac.upper()):
         raise argparse.ArgumentTypeError('The MAC address "{}" seems to be in the wrong format'.format(mac))
     return mac

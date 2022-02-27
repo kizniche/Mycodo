@@ -123,7 +123,7 @@ class InputModule(AbstractInput):
         self._load_calibration()  # Load calibration values
 
     def get_measurement(self):
-        """Gets the measurement in units by reading the"""
+        """Gets the measurement in units by reading the."""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return
@@ -169,7 +169,7 @@ class InputModule(AbstractInput):
         # self.logger.debug('P9 = {0:6d}'.format(self.cal_REGISTER_DIG_P9))
 
     def _load_datasheet_calibration(self):
-        """data from the datasheet example, useful for debug"""
+        """data from the datasheet example, useful for debug."""
         self.cal_REGISTER_DIG_T1 = 27504
         self.cal_REGISTER_DIG_T2 = 26435
         self.cal_REGISTER_DIG_T3 = -1000

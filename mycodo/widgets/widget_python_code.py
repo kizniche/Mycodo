@@ -259,7 +259,7 @@ return self.return_string""",
 
 
 class WidgetModule(AbstractWidget, threading.Thread):
-    """Class to operate custom widget"""
+    """Class to operate custom widget."""
     def __init__(self, widget, testing=False):
         threading.Thread.__init__(self)
         super(WidgetModule, self).__init__(widget, testing=testing, name=__name__)

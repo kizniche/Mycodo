@@ -141,7 +141,7 @@ def calculate_vapor_pressure_deficit_02(temp_c, hum):
 
 
 def is_device(path):
-    """Determines if a path exists, created to check if a /dev/device exists"""
+    """Determines if a path exists, created to check if a /dev/device exists."""
     try:
         os.stat("{dev}".format(dev=path))
     except OSError:

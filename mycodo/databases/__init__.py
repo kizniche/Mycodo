@@ -33,12 +33,12 @@ class CRUDMixin(object):
 
 
 def set_api_key(length):
-    """Generates an API key of specific length"""
+    """Generates an API key of specific length."""
     return secrets.token_bytes(length)
 
 
 def set_uuid():
-    """returns a uuid string"""
+    """returns a uuid string."""
     return str(uuid.uuid4())
 
 

@@ -134,7 +134,7 @@ class InputModule(AbstractInput):
         self.serial = serial
 
     def get_measurement(self):
-        """Gets the measurement in units by reading the"""
+        """Gets the measurement in units by reading the."""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.is_enabled(0):

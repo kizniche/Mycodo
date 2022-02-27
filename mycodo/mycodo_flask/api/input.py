@@ -44,13 +44,13 @@ input_list_fields = api.model('Input Fields List', {
 @ns_input.route('/')
 @ns_input.doc(security='apikey', responses=default_responses)
 class Inputs(Resource):
-    """Input information"""
+    """Input information."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_input.marshal_with(input_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all input settings"""
+        """Show all input settings."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -80,7 +80,7 @@ class SettingsInputsUniqueID(Resource):
     @ns_input.marshal_with(input_single_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings for an input"""
+        """Show the settings for an input."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -121,7 +121,7 @@ class InputsUniqueID(Resource):
     @accept('application/vnd.mycodo.v1+json')
     @flask_login.login_required
     def post(self, unique_id):
-        """Force an input to acquire measurements"""
+        """Force an input to acquire measurements."""
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
 

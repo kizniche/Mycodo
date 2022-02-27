@@ -284,7 +284,7 @@ return status_dict'''
 
 
 def function_mod(form):
-    """Modify a Function"""
+    """Modify a Function."""
     messages = {
         "success": [],
         "info": [],
@@ -319,7 +319,7 @@ def function_mod(form):
 
 
 def function_del(function_id):
-    """Delete a Function"""
+    """Delete a Function."""
     messages = {
         "success": [],
         "info": [],
@@ -355,7 +355,7 @@ def function_del(function_id):
 
 
 def action_add(form):
-    """Add an Action"""
+    """Add an Action."""
     messages = {
         "success": [],
         "info": [],
@@ -433,7 +433,7 @@ def action_add(form):
 
 
 def action_mod(form, request_form):
-    """Modify an Action"""
+    """Modify an Action."""
     messages = {
         "success": [],
         "info": [],
@@ -472,7 +472,7 @@ def action_mod(form, request_form):
 
 
 def action_del(form):
-    """Delete an Action"""
+    """Delete an Action."""
     messages = {
         "success": [],
         "info": [],
@@ -511,7 +511,7 @@ def action_del(form):
 
 
 def action_execute_all(form):
-    """Execute All Conditional Actions"""
+    """Execute All Conditional Actions."""
     messages = {
         "success": [],
         "info": [],

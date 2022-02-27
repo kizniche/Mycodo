@@ -36,17 +36,17 @@ class AbstractWidget(AbstractBaseController):
             self.unique_id = widget.unique_id
 
     def __iter__(self):
-        """Support the iterator protocol"""
+        """Support the iterator protocol."""
         return self
 
     def __repr__(self):
-        """  Representation of object"""
+        """Representation of object."""
         return_str = '<{cls}'.format(cls=type(self).__name__)
         return_str += '>'
         return return_str
 
     def __str__(self):
-        """Return measurement information"""
+        """Return measurement information."""
         return_str = ''
         return return_str
 
@@ -58,7 +58,7 @@ class AbstractWidget(AbstractBaseController):
         raise NotImplementedError
 
     def stop_widget(self):
-        """Called when Widget is stopped"""
+        """Called when Widget is stopped."""
         self.running = False
 
     #

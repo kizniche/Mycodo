@@ -14,14 +14,14 @@ logger = logging.getLogger("mycodo.utils.widget_generate_html")
 
 
 def set_user_grp(filepath, user, group):
-    """Set the UID and GUID of a file"""
+    """Set the UID and GUID of a file."""
     uid = pwd.getpwnam(user).pw_uid
     gid = grp.getgrnam(group).gr_gid
     os.chown(filepath, uid, gid)
 
 
 def assure_path_exists(path):
-    """Create path if it doesn't exist"""
+    """Create path if it doesn't exist."""
     if not os.path.exists(path):
         os.makedirs(path)
         os.chmod(path, 0o774)
@@ -30,7 +30,7 @@ def assure_path_exists(path):
 
 
 def generate_widget_html():
-    """Generate all HTML files for all widgets"""
+    """Generate all HTML files for all widgets."""
     dict_widgets = parse_widget_information()
     assure_path_exists(PATH_HTML_USER)
 

@@ -332,7 +332,7 @@ class OutputModule(AbstractOutput):
             return
 
     def dispense_volume_fastest(self, channel, amount, total_dispense_seconds):
-        """Dispense at fastest flow rate, a 100 % duty cycle"""
+        """Dispense at fastest flow rate, a 100 % duty cycle."""
         if amount < 0:
             direction_reg = self.reg_write_run_ccw
         else:
@@ -355,7 +355,7 @@ class OutputModule(AbstractOutput):
         self.record_dispersal(channel, amount, total_dispense_seconds, total_dispense_seconds)
 
     def dispense_volume_rate(self, channel, amount, dispense_rate):
-        """Dispense at a specific flow rate"""
+        """Dispense at a specific flow rate."""
         if amount < 0:
             direction_reg = self.reg_write_run_ccw
         else:

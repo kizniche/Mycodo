@@ -1,5 +1,5 @@
 # coding=utf-8
-"""flask views that deal with password reset"""
+"""flask views that deal with password reset."""
 import datetime
 import logging
 import socket
@@ -36,7 +36,7 @@ blueprint = Blueprint(
 
 @blueprint.route('/forgot_password', methods=('GET', 'POST'))
 def forgot_password():
-    """Page to send password reset email"""
+    """Page to send password reset email."""
     error = []
     form_forgot_password = forms_authentication.ForgotPassword()
 
@@ -115,7 +115,7 @@ def forgot_password():
 
 @blueprint.route('/reset_password', methods=('GET', 'POST'))
 def reset_password():
-    """Page to reset user password"""
+    """Page to reset user password."""
     error = []
     form_reset_password = forms_authentication.ResetPassword()
 

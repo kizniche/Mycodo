@@ -42,13 +42,13 @@ function_list_fields = api.model('Function Fields List', {
 @ns_function.route('/')
 @ns_function.doc(security='apikey', responses=default_responses)
 class Functions(Resource):
-    """Function information"""
+    """Function information."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_function.marshal_with(function_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all function settings"""
+        """Show all function settings."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -76,7 +76,7 @@ class SettingsFunctionsUniqueID(Resource):
     @ns_function.marshal_with(function_single_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings for an function"""
+        """Show the settings for an function."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:

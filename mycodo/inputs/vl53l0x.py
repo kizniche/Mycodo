@@ -175,7 +175,7 @@ class InputModule(AbstractInput):
             self.setting_i2c = False
 
     def stop_input(self):
-        """Called when Input is deactivated"""
+        """Called when Input is deactivated."""
         self.sensor.stop_ranging()
         self.sensor.close()
         self.running = False

@@ -165,11 +165,11 @@ class LCD_Grove_LCD_RGB:
             self.writeData(ord(c))
 
     def lcd_init(self):
-        """Clear LCD display"""
+        """Clear LCD display."""
         self.clearDisplay()
 
     def lcd_backlight(self, state):
-        """Turn the backlight on or off"""
+        """Turn the backlight on or off."""
         if state:
             self.setRGB(self.red, self.green, self.blue)
         else:
@@ -186,7 +186,7 @@ class LCD_Grove_LCD_RGB:
             self.logger.error("Could not set color. Invalid color string: '{}'".format(color_tuple))
 
     def lcd_byte(self, bits, mode, backlight=None):
-        """Send byte to data pins"""
+        """Send byte to data pins."""
         # bits = the data
         # mode = 1 for data
         #        0 for command
@@ -200,7 +200,7 @@ class LCD_Grove_LCD_RGB:
         pass
 
     def lcd_string_write(self, message, line):
-        """Send strings to display"""
+        """Send strings to display."""
         self.setCursor(0, line)
         for c in message:
             self.writeData(ord(c))

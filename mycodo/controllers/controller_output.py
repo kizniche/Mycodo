@@ -40,7 +40,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class OutputController(AbstractController, threading.Thread):
-    """Class for controlling outputs"""
+    """Class for controlling outputs."""
     def __init__(self, ready, debug):
         threading.Thread.__init__(self)
         super(OutputController, self).__init__(ready, unique_id=None, name=__name__)
@@ -63,7 +63,7 @@ class OutputController(AbstractController, threading.Thread):
         self.output_types = {}
 
     def initialize_variables(self):
-        """Begin initializing output parameters"""
+        """Begin initializing output parameters."""
         self.sample_rate = db_retrieve_table_daemon(Misc, entry='first').sample_rate_controller_output
 
         self.logger.debug("Initializing Outputs")
@@ -83,7 +83,7 @@ class OutputController(AbstractController, threading.Thread):
                 "Problem initializing outputs: {err}".format(err=except_msg))
 
     def loop(self):
-        """Main loop of the output controller"""
+        """Main loop of the output controller."""
         for output_id in self.output:
             for each_channel in self.output_unique_id[output_id]:
 
@@ -103,7 +103,7 @@ class OutputController(AbstractController, threading.Thread):
                     turn_output_off.start()
 
     def run_finally(self):
-        """Run when the controller is shutting down"""
+        """Run when the controller is shutting down."""
         # Turn all outputs to their shutdown state
         for each_output_id in self.output_unique_id:
             shutdown_timer = timeit.default_timer()
@@ -111,7 +111,7 @@ class OutputController(AbstractController, threading.Thread):
             self.output[each_output_id].shutdown(shutdown_timer)
 
     def all_outputs_initialize(self, outputs):
-        """Initialize all output variables and classes"""
+        """Initialize all output variables and classes."""
         self.dict_outputs = parse_output_information()
         self.output_types = output_types()
 
@@ -311,7 +311,7 @@ class OutputController(AbstractController, threading.Thread):
             trigger_conditionals=trigger_conditionals)
 
     def output_setup(self, action, output_id):
-        """Add, delete, or modify a specific output"""
+        """Add, delete, or modify a specific output."""
         if action in ['Add', 'Modify']:
             return self.add_mod_output(output_id)
         elif action == 'Delete':
@@ -404,7 +404,7 @@ class OutputController(AbstractController, threading.Thread):
             self.logger.exception("is_setup() exception")
 
     def custom_button_exec_function(self, button_id, args_dict, unique_id=None, thread=True):
-        """Execute function from custom action button press"""
+        """Execute function from custom action button press."""
         try:
             run_action = getattr(self.output[unique_id], button_id)
             if thread:

@@ -347,7 +347,7 @@ def dpkg_package_exists(package_name):
 
 
 def return_measurement_info(device_measurement, conversion):
-    """Return unit, measurement, and channel of a device measurement"""
+    """Return unit, measurement, and channel of a device measurement."""
     try:
         unit = None
         measurement = None
@@ -425,7 +425,7 @@ def all_conversions(conversions):
 
 
 def get_measurement(measurement_id):
-    """Find measurement"""
+    """Find measurement."""
     device_measurement = db_retrieve_table_daemon(
         DeviceMeasurements).filter(
         DeviceMeasurements.unique_id == measurement_id).first()
@@ -585,7 +585,7 @@ def internet(host="8.8.8.8", port=53, timeout=3):
 
 
 def str_is_float(text):
-    """Returns true if the string represents a float value"""
+    """Returns true if the string represents a float value."""
     try:
         if not text:
             return False
@@ -623,7 +623,7 @@ def is_int(test_var, check_range=None):
 
 
 def assure_path_exists(path):
-    """Create path if it doesn't exist"""
+    """Create path if it doesn't exist."""
     if not os.path.exists(path):
         os.makedirs(path)
         os.chmod(path, 0o774)
@@ -643,7 +643,7 @@ def can_perform_backup():
 
 
 def find_owner(filename):
-    """Return the owner of a file"""
+    """Return the owner of a file."""
     return pwd.getpwuid(os.stat(filename).st_uid).pw_name
 
 
@@ -673,7 +673,7 @@ def get_directory_size(start_path='.', exclude=None):
 
 
 def set_user_grp(filepath, user, group):
-    """Set the UID and GUID of a file"""
+    """Set the UID and GUID of a file."""
     uid = pwd.getpwnam(user).pw_uid
     gid = grp.getgrnam(group).gr_gid
     os.chown(filepath, uid, gid)
@@ -709,7 +709,7 @@ def check_missing_ids(current_ids, db_list):
 
 
 def csv_to_list_of_str(str_csv):
-    """return a list of strings from a string of csv strings"""
+    """return a list of strings from a string of csv strings."""
     list_str = []
     if str_csv:
         for x in str_csv.split(','):
@@ -726,7 +726,7 @@ def list_to_csv(display_order):
 
 
 def get_sec(time_str):
-    """Convert HH:MM:SS string into number of seconds"""
+    """Convert HH:MM:SS string into number of seconds."""
     h, m, s = time_str.split(':')
     return int(h) * 3600 + int(m) * 60 + int(s)
 

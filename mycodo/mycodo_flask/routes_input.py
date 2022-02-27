@@ -1,5 +1,5 @@
 # coding=utf-8
-"""collection of Page endpoints"""
+"""collection of Page endpoints."""
 import logging
 import os
 import re
@@ -151,7 +151,7 @@ def page_input_submit():
 
 @blueprint.route('/save_input_layout', methods=['POST'])
 def save_input_layout():
-    """Save positions of inputs"""
+    """Save positions of inputs."""
     if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('routes_general.home'))
     data = request.get_json()
@@ -169,7 +169,7 @@ def save_input_layout():
 @blueprint.route('/input', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_input():
-    """Display Data page options"""
+    """Display Data page options."""
     input_type = request.args.get('input_type', None)
     input_id = request.args.get('input_id', None)
     each_input = None

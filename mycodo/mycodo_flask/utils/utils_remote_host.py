@@ -170,7 +170,7 @@ def remote_host_add(form_setup, display_order):
 
 
 def remote_host_del(form_setup):
-    """Delete a remote Mycodo from the Remote Admin Dashboard"""
+    """Delete a remote Mycodo from the Remote Admin Dashboard."""
     if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('routes_general.home'))
 

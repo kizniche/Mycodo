@@ -31,7 +31,7 @@ logger = logging.getLogger("mycodo.utils.functions")
 
 
 def parse_function_information(exclude_custom=False):
-    """Parses the variables assigned in each Function and return a dictionary of IDs and values"""
+    """Parses the variables assigned in each Function and return a dictionary of IDs and values."""
     def dict_has_value(dict_inp, controller_cus, key):
         if (key in controller_cus.FUNCTION_INFORMATION and
                 (controller_cus.FUNCTION_INFORMATION[key] or

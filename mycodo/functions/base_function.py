@@ -63,11 +63,11 @@ class AbstractFunction(AbstractBaseController):
                 self.logger.setLevel(logging.INFO)
 
     def start_function(self):
-        """Not used yet"""
+        """Not used yet."""
         self.running = True
 
     def stop_function(self):
-        """Called when Function is deactivated"""
+        """Called when Function is deactivated."""
         self.running = False
 
     #

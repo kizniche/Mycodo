@@ -33,7 +33,7 @@ logger = logging.getLogger("mycodo.utils.outputs")
 
 
 def parse_output_information(exclude_custom=False):
-    """Parses the variables assigned in each Output and return a dictionary of IDs and values"""
+    """Parses the variables assigned in each Output and return a dictionary of IDs and values."""
     def dict_has_value(dict_inp, output_cus, key, force_type=None):
         if (key in output_cus.OUTPUT_INFORMATION and
                 (output_cus.OUTPUT_INFORMATION[key] is not None)):

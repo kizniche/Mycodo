@@ -55,7 +55,7 @@ def template_exists(path):
 
 @blueprint.context_processor
 def inject_variables():
-    """Variables to send with every page request"""
+    """Variables to send with every page request."""
     form_dashboard = forms_dashboard.DashboardConfig()  # Dashboard configuration in layout
 
     dashboards = Dashboard.query.all()
@@ -95,13 +95,13 @@ def inject_variables():
 
 @blueprint.route('/robots.txt')
 def static_from_root():
-    """Return static robots.txt"""
+    """Return static robots.txt."""
     return send_from_directory(current_app.static_folder, request.path[1:])
 
 
 @blueprint.route("/mycodo-manual_{}.pdf".format(MYCODO_VERSION))
 def download_pdf_manual():
-    """Return PDF Manual"""
+    """Return PDF Manual."""
     path_manual = os.path.join(INSTALL_DIRECTORY, "docs")
     return send_from_directory(path_manual, "mycodo-manual.pdf")
 

@@ -87,7 +87,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class DaemonController:
-    """Mycodo daemon"""
+    """Mycodo daemon."""
     def __init__(self, debug):
         self.logger = logging.getLogger('mycodo.daemon')
         if not debug:
@@ -878,7 +878,7 @@ class DaemonController:
                 "Could not query all output statea: {e}".format(e=except_msg))
 
     def startup_stats(self):
-        """Ensure existence of statistics file and save daemon startup time"""
+        """Ensure existence of statistics file and save daemon startup time."""
         try:
             # if statistics file doesn't exist, create it
             if not os.path.isfile(STATS_CSV):
@@ -958,7 +958,7 @@ class DaemonController:
             self.logger.exception(message)
 
     def stop_all_controllers(self):
-        """Stop all running controllers"""
+        """Stop all running controllers."""
         controller_running = {}
 
         # Reverse the list to shut down each controller in the
@@ -1018,7 +1018,7 @@ class DaemonController:
             return message
 
     def terminate_daemon(self):
-        """Instruct the daemon to shut down"""
+        """Instruct the daemon to shut down."""
         self.thread_shutdown_timer = timeit.default_timer()
         self.logger.info("Received command to terminate daemon")
         self.daemon_run = False
@@ -1038,7 +1038,7 @@ class DaemonController:
             self.logger.exception("Free Ram ERROR")
 
     def check_mycodo_upgrade_exists(self, now):
-        """Check for any new Mycodo releases on github"""
+        """Check for any new Mycodo releases on github."""
         try:
             mycodo_releases = MycodoRelease()
             (upgrade_exists, _, _, _, errors) = mycodo_releases.github_upgrade_exists()
@@ -1077,7 +1077,7 @@ class DaemonController:
             self.logger.exception("Timelapse ERROR")
 
     def timelapse_check(self, camera, now):
-        """If time-lapses are active, take photo at predefined periods"""
+        """If time-lapses are active, take photo at predefined periods."""
         try:
             if (camera.timelapse_started and
                     now > camera.timelapse_end_time):
@@ -1117,7 +1117,7 @@ class DaemonController:
             self.logger.exception(message)
 
     def send_stats(self):
-        """Collect and send statistics"""
+        """Collect and send statistics."""
         # Check if stats file exists, recreate if not
         try:
             return_stat_file_dict(STATS_CSV)
@@ -1149,11 +1149,11 @@ class PyroServer(object):
         return self.mycodo.lcd_reset(lcd_id)
 
     def lcd_backlight(self, lcd_id, state):
-        """Turns an LCD backlight on or off"""
+        """Turns an LCD backlight on or off."""
         return self.mycodo.lcd_backlight(lcd_id, state)
 
     def display_backlight_color(self, lcd_id, color):
-        """Set the LCD backlight color"""
+        """Set the LCD backlight color."""
         return self.mycodo.display_backlight_color(lcd_id, color)
 
     def lcd_flash(self, lcd_id, state):
@@ -1167,72 +1167,72 @@ class PyroServer(object):
         return self.mycodo.get_condition_measurement_dict(condition_id)
 
     def custom_button(self, controller_type, unique_id, button_id, args_dict, thread=True):
-        """execute custom button function"""
+        """execute custom button function."""
         return self.mycodo.custom_button(
             controller_type, unique_id, button_id, args_dict, thread)
 
     def controller_activate(self, cont_id):
-        """Activates a controller"""
+        """Activates a controller."""
         return self.mycodo.controller_activate(cont_id)
 
     def controller_deactivate(self, cont_id):
-        """Deactivates a controller"""
+        """Deactivates a controller."""
         return self.mycodo.controller_deactivate(cont_id)
 
     def controller_is_active(self, cont_id):
-        """Checks if a controller is active"""
+        """Checks if a controller is active."""
         return self.mycodo.controller_is_active(cont_id)
 
     def check_daemon(self):
-        """Check if all active controllers respond"""
+        """Check if all active controllers respond."""
         return self.mycodo.check_daemon()
 
     def function_status(self, function_id):
-        """Get status of Function"""
+        """Get status of Function."""
         return self.mycodo.function_status(function_id)
 
     def input_force_measurements(self, input_id):
-        """Updates all input information"""
+        """Updates all input information."""
         return self.mycodo.input_force_measurements(input_id)
 
     def pid_hold(self, pid_id):
-        """Hold PID Controller operation"""
+        """Hold PID Controller operation."""
         return self.mycodo.pid_hold(pid_id)
 
     def pid_mod(self, pid_id):
-        """Set new PID Controller settings"""
+        """Set new PID Controller settings."""
         return self.mycodo.pid_mod(pid_id)
 
     def pid_pause(self, pid_id):
-        """Pause PID Controller operation"""
+        """Pause PID Controller operation."""
         return self.mycodo.pid_pause(pid_id)
 
     def pid_resume(self, pid_id):
-        """Resume PID controller operation"""
+        """Resume PID controller operation."""
         return self.mycodo.pid_resume(pid_id)
 
     def pid_get(self, pid_id, setting):
-        """Get PID setting"""
+        """Get PID setting."""
         return self.mycodo.pid_get(pid_id, setting)
 
     def pid_set(self, pid_id, setting, value):
-        """Set PID setting"""
+        """Set PID setting."""
         return self.mycodo.pid_set(pid_id, setting, value)
 
     def refresh_daemon_camera_settings(self, ):
-        """Instruct the daemon to refresh the camera settings"""
+        """Instruct the daemon to refresh the camera settings."""
         return self.mycodo.refresh_daemon_camera_settings()
 
     def refresh_daemon_conditional_settings(self, unique_id):
-        """Instruct the daemon to refresh a conditional's settings"""
+        """Instruct the daemon to refresh a conditional's settings."""
         return self.mycodo.refresh_daemon_conditional_settings(unique_id)
 
     def refresh_daemon_misc_settings(self):
-        """Instruct the daemon to refresh the misc settings"""
+        """Instruct the daemon to refresh the misc settings."""
         return self.mycodo.refresh_daemon_misc_settings()
 
     def refresh_daemon_trigger_settings(self, unique_id):
-        """Instruct the daemon to refresh a conditional's settings"""
+        """Instruct the daemon to refresh a conditional's settings."""
         return self.mycodo.refresh_daemon_trigger_settings(unique_id)
 
     def output_state(self, output_id, output_channel):
@@ -1240,7 +1240,7 @@ class PyroServer(object):
         return self.mycodo.output_state(output_id, output_channel)
 
     def output_states_all(self):
-        """Return all output states"""
+        """Return all output states."""
         return self.mycodo.output_states_all()
 
     def output_on(self,
@@ -1250,7 +1250,7 @@ class PyroServer(object):
                   min_off=0.0,
                   output_channel=None,
                   trigger_conditionals=True):
-        """Turns output on from the client"""
+        """Turns output on from the client."""
         return self.mycodo.output_on(
             output_id,
             output_channel=output_channel,
@@ -1260,21 +1260,21 @@ class PyroServer(object):
             trigger_conditionals=trigger_conditionals)
 
     def output_off(self, output_id, output_channel=None, trigger_conditionals=True):
-        """Turns output off from the client"""
+        """Turns output off from the client."""
         return self.mycodo.output_off(
             output_id, output_channel=output_channel, trigger_conditionals=trigger_conditionals)
 
     def output_sec_currently_on(self, output_id, output_channel=None):
-        """Turns the amount of time a output has already been on"""
+        """Turns the amount of time a output has already been on."""
         return self.mycodo.controller['Output'].output_sec_currently_on(
             output_id, output_channel=output_channel)
 
     def output_setup(self, action, output_id):
-        """Add, delete, or modify a output in the running output controller"""
+        """Add, delete, or modify a output in the running output controller."""
         return self.mycodo.output_setup(action, output_id)
 
     def trigger_action(self, action_id, value=None, message='', single_action=False, debug=False):
-        """Trigger action"""
+        """Trigger action."""
         return self.mycodo.trigger_action(
             action_id,
             value=value,
@@ -1283,23 +1283,23 @@ class PyroServer(object):
             debug=debug)
 
     def trigger_all_actions(self, function_id, message='', debug=False):
-        """Trigger all actions"""
+        """Trigger all actions."""
         return self.mycodo.trigger_all_actions(function_id, message=message, debug=debug)
 
     def terminate_daemon(self):
-        """Instruct the daemon to shut down"""
+        """Instruct the daemon to shut down."""
         return self.mycodo.terminate_daemon()
 
     def widget_add_refresh(self, unique_id):
-        """Add or refresh widget object"""
+        """Add or refresh widget object."""
         return self.mycodo.controller['Widget'].widget_add_refresh(unique_id)
 
     def widget_remove(self, unique_id):
-        """Remove widget object"""
+        """Remove widget object."""
         return self.mycodo.controller['Widget'].widget_remove(unique_id)
 
     def widget_execute(self, unique_id):
-        """Execute widget object"""
+        """Execute widget object."""
         return self.mycodo.controller['Widget'].widget_execute(unique_id)
 
     @staticmethod
@@ -1315,12 +1315,12 @@ class PyroServer(object):
 
     @staticmethod
     def is_in_virtualenv():
-        """Returns True if this script is running in a virtualenv"""
+        """Returns True if this script is running in a virtualenv."""
         return hasattr(sys, 'real_prefix') or sys.base_prefix != sys.prefix
 
     @staticmethod
     def ram_use():
-        """Return the amount of ram used by the daemon"""
+        """Return the amount of ram used by the daemon."""
         return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / float(1000)
 
 
@@ -1401,7 +1401,7 @@ class MycodoDaemon:
         self.mycodo = mycodo
 
     def start_daemon(self):
-        """Start communication and daemon threads"""
+        """Start communication and daemon threads."""
         try:
             pd = PyroDaemon(self.mycodo, self.debug)
             pd.daemon = True

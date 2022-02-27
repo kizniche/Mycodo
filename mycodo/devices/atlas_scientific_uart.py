@@ -75,7 +75,7 @@ class AtlasScientificUART(AbstractBaseAtlasScientific):
         return b''.join(line_buffer)
 
     def query(self, query_str):
-        """Send command and return reply"""
+        """Send command and return reply."""
         lf = LockFile()
         if lf.lock_acquire(self.lock_file, timeout=self.lock_timeout):
             try:

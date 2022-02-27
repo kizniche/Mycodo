@@ -60,7 +60,7 @@ class LCD_Generic:
         self.I2C_ADDR = self.i2c_address
 
     def lcd_init(self):
-        """Initialize LCD display"""
+        """Initialize LCD display."""
         try:
             self.lcd_byte(0x33, self.LCD_CMD)  # 110011 Initialise
             self.lcd_byte(0x32, self.LCD_CMD)  # 110010 Initialise
@@ -74,14 +74,14 @@ class LCD_Generic:
                 "Could not initialize LCD. Check your configuration and wiring. Error: {err}".format(err=err))
 
     def lcd_backlight(self, state):
-        """Turn the backlight on or off"""
+        """Turn the backlight on or off."""
         if state:
             self.lcd_byte(0x01, self.LCD_CMD, self.LCD_BACKLIGHT)
         else:
             self.lcd_byte(0x01, self.LCD_CMD, self.LCD_BACKLIGHT_OFF)
 
     def lcd_byte(self, bits, mode, backlight=None):
-        """Send byte to data pins"""
+        """Send byte to data pins."""
         if backlight is None:
             backlight = self.LCD_BACKLIGHT
         # bits = the data
@@ -105,7 +105,7 @@ class LCD_Generic:
         time.sleep(self.E_DELAY)
 
     def lcd_string_write(self, message, line):
-        """Send strings to display"""
+        """Send strings to display."""
         line_write = self.LCD_LINE[line]
         message = message.ljust(self.LCD_WIDTH, " ")
         self.lcd_byte(line_write, self.LCD_CMD)

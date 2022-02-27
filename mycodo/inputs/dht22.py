@@ -126,7 +126,7 @@ class InputModule(AbstractInput):
         self.either_edge_cb = None
 
     def get_measurement(self):
-        """Gets the humidity and temperature"""
+        """Gets the humidity and temperature."""
         if not self.pi.connected:  # Check if pigpiod is running
             self.logger.error('Could not connect to pigpiod. Ensure it is running and try again.')
             return None
@@ -202,7 +202,7 @@ class InputModule(AbstractInput):
         self.register_callbacks()
 
     def register_callbacks(self):
-        """Monitors RISING_EDGE changes using callback"""
+        """Monitors RISING_EDGE changes using callback."""
         self.either_edge_cb = self.pi.callback(
             self.gpio, self.pigpio.EITHER_EDGE, self.either_edge_callback)
 
@@ -224,7 +224,7 @@ class InputModule(AbstractInput):
         handler(tick, diff)
 
     def _edge_rise(self, tick, diff):
-        """Handle Rise signal"""
+        """Handle Rise signal."""
         # Edge length determines if bit is 1 or 0.
         if diff >= 50:
             val = 1
@@ -264,7 +264,7 @@ class InputModule(AbstractInput):
         self.bit += 1
 
     def _edge_fall(self, tick, diff):
-        """Handle Fall signal"""
+        """Handle Fall signal."""
         # Edge length determines if bit is 1 or 0.
         self.high_tick = tick
         if diff <= 250000:
@@ -292,30 +292,30 @@ class InputModule(AbstractInput):
             self.no_response = 0
 
     def staleness(self):
-        """Return time since measurement made"""
+        """Return time since measurement made."""
         if self.tov is not None:
             return time.time() - self.tov
         else:
             return -999
 
     def bad_checksum(self):
-        """Return count of messages received with bad checksums"""
+        """Return count of messages received with bad checksums."""
         return self.bad_CS
 
     def short_message(self):
-        """Return count of short messages"""
+        """Return count of short messages."""
         return self.bad_SM
 
     def missing_message(self):
-        """Return count of missing messages"""
+        """Return count of missing messages."""
         return self.bad_MM
 
     def sensor_resets(self):
-        """Return count of power cycles because of sensor hangs"""
+        """Return count of power cycles because of sensor hangs."""
         return self.bad_SR
 
     def close(self):
-        """Stop reading sensor, remove callbacks"""
+        """Stop reading sensor, remove callbacks."""
         self.pi.set_watchdog(self.gpio, 0)
         if self.either_edge_cb:
             self.either_edge_cb.cancel()

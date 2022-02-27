@@ -34,7 +34,7 @@ class Kettle(object):
 
     @property
     def temperature(self):
-        """Get the content's temperature"""
+        """Get the content's temperature."""
         return self._temp
 
     def heat(self, power, duration, efficiency=0.98):

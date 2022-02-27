@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 #
 
 def dashboard_add():
-    """Add a dashboard"""
+    """Add a dashboard."""
     error = []
 
     last_dashboard = Dashboard.query.order_by(
@@ -57,7 +57,7 @@ def dashboard_add():
 
 
 def dashboard_mod(form):
-    """Modify a dashboard"""
+    """Modify a dashboard."""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['modify']['title'],
         controller=TRANSLATIONS['dashboard']['title'])
@@ -81,7 +81,7 @@ def dashboard_mod(form):
 
 
 def dashboard_lock(dashboard_id, lock):
-    """Lock a dashboard"""
+    """Lock a dashboard."""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['lock']['title'],
         controller=TRANSLATIONS['dashboard']['title'])
@@ -105,7 +105,7 @@ def dashboard_lock(dashboard_id, lock):
 
 
 def dashboard_copy(form):
-    """Duplicate a dashboard and its widgets"""
+    """Duplicate a dashboard and its widgets."""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['duplicate']['title'],
         controller=TRANSLATIONS['dashboard']['title'])
@@ -134,7 +134,7 @@ def dashboard_copy(form):
 
 
 def dashboard_del(form):
-    """Delete a dashboard"""
+    """Delete a dashboard."""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['delete']['title'],
         controller=TRANSLATIONS['dashboard']['title'])
@@ -161,7 +161,7 @@ def dashboard_del(form):
 #
 
 def widget_add(form_base, request_form):
-    """Add a widget to the dashboard"""
+    """Add a widget to the dashboard."""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['add']['title'],
         controller=TRANSLATIONS['widget']['title'])
@@ -257,7 +257,7 @@ def widget_add(form_base, request_form):
 
 
 def widget_mod(form_base, request_form):
-    """Modify the settings of an item on the dashboard"""
+    """Modify the settings of an item on the dashboard."""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['modify']['title'],
         controller=TRANSLATIONS['widget']['title'])
@@ -313,7 +313,7 @@ def widget_mod(form_base, request_form):
 
 
 def widget_del(form_base):
-    """Delete a widget from a dashboard"""
+    """Delete a widget from a dashboard."""
     action = '{action} {controller}'.format(
         action=TRANSLATIONS['delete']['title'],
         controller=TRANSLATIONS['widget']['title'])
@@ -343,7 +343,7 @@ def widget_del(form_base):
 
 
 def graph_y_axes_async(dict_measurements, ids_measures):
-    """Determine which y-axes to use for each Graph"""
+    """Determine which y-axes to use for each Graph."""
     if not ids_measures:
         return
 

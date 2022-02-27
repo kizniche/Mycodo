@@ -17,7 +17,7 @@ class LockFile:
         self.locked = {}
 
     def lock_acquire(self, lockfile, timeout):
-        """Non-blocking locking method"""
+        """Non-blocking locking method."""
         self.lock[lockfile] = filelock.FileLock(lockfile, timeout=1)
         self.locked[lockfile] = False
         timer = time.time() + timeout
@@ -45,7 +45,7 @@ class LockFile:
         return self.locked[lockfile]
 
     def lock_release(self, lockfile):
-        """Release lock and force deletion of lock file"""
+        """Release lock and force deletion of lock file."""
         try:
             logger.debug("Releasing lock for {}".format(lockfile))
             self.lock[lockfile].release(force=True)

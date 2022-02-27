@@ -73,7 +73,7 @@ class InputModule(AbstractInput):
         self.filter_average('lux', init_max=3)
 
     def get_measurement(self):
-        """Gets the light, moisture, and temperature"""
+        """Gets the light, moisture, and temperature."""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.is_enabled(0):

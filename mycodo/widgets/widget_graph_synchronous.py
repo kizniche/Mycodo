@@ -1919,7 +1919,7 @@ def check_func(all_devices,
 
 
 def graph_y_axes(dict_measurements, widget_options):
-    """Determine which y-axes to use for each Graph"""
+    """Determine which y-axes to use for each Graph."""
     y_axes = []
 
     function = CustomController.query.all()
@@ -2029,7 +2029,7 @@ def graph_y_axes(dict_measurements, widget_options):
 
 
 def dict_custom_yaxes_min_max(yaxes, widget_options):
-    """Generate a dictionary of the y-axis minimum and maximum for each graph"""
+    """Generate a dictionary of the y-axis minimum and maximum for each graph."""
     dict_yaxes = {}
 
     for each_yaxis in yaxes:

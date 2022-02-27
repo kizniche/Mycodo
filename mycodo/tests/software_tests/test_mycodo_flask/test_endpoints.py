@@ -1,5 +1,5 @@
 # coding=utf-8
-"""functional tests for flask endpoints"""
+"""functional tests for flask endpoints."""
 import base64
 import json
 import random
@@ -29,21 +29,21 @@ from mycodo.utils.outputs import parse_output_information
 #   Non-Logged In Tests
 # ----------------------
 def redirects_to_login_page(testapp, endpoint):
-    """helper function that verifies that we see the login page"""
+    """helper function that verifies that we see the login page."""
     response = testapp.get(endpoint, expect_errors=True).maybe_follow()
     assert response.status_code == 200, "Response Status Failure: {}".format(endpoint)
     assert "Mycodo Login" in response
 
 
 def redirects_to_admin_creation_page(testapp, endpoint):
-    """helper function that verifies that we see the admin creation page"""
+    """helper function that verifies that we see the admin creation page."""
     response = testapp.get(endpoint, expect_errors=True).maybe_follow()
     assert response.status_code == 200, "Response Status Failure: {}".format(endpoint)
     assert "<!-- Route: /create_admin -->" in response
 
 
 def test_sees_admin_creation_form(testapp):
-    """No Admin user exists: user sees the admin creation page"""
+    """No Admin user exists: user sees the admin creation page."""
     print("\nTest: test_sees_admin_creation_form")
     # Delete all admin users to show the admin creation form
     for each_admin in User.query.filter_by(role_id=1).all():
@@ -53,7 +53,7 @@ def test_sees_admin_creation_form(testapp):
 
 
 def test_does_not_see_admin_creation_form(testapp):
-    """Admin user exists: user sees the normal login page"""
+    """Admin user exists: user sees the normal login page."""
     print("\nTest: test_does_not_see_admin_creation_form")
     expected_body_msg = "<!-- Route: /login_password -->"
     assert expected_body_msg in testapp.get('/').maybe_follow()
@@ -132,7 +132,7 @@ api_endpoints = [
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_api_logged_in_as_admin(_, testapp):
-    """Verifies behavior of these API endpoints for a logged in admin user"""
+    """Verifies behavior of these API endpoints for a logged in admin user."""
     print("\nTest: test_api_logged_in_as_admin")
 
     print("test_routes_logged_in_as_admin: login_user(testapp, 'admin', '53CR3t_p4zZW0rD')")
@@ -151,7 +151,7 @@ def test_api_logged_in_as_admin(_, testapp):
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_api_with_admin_apikey_in_header(_, testapp):
-    """Verifies behavior of these API endpoints with an apikey in the header"""
+    """Verifies behavior of these API endpoints with an apikey in the header."""
     print("\nTest: test_api_with_admin_apikey_in_header")
 
     # Test all endpoints
@@ -171,7 +171,7 @@ def test_api_with_admin_apikey_in_header(_, testapp):
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_api_measurement_post_get(_, testapp):
-    """Verifies behavior of these API endpoints with an apikey in the header to post and get a measurement"""
+    """Verifies behavior of these API endpoints with an apikey in the header to post and get a measurement."""
     print("\nTest: test_api_measurement_post_get")
 
     # Add two measurements
@@ -266,7 +266,7 @@ def test_api_measurement_post_get(_, testapp):
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_api_with_guest_apikey_in_header_403_forbidden(_, testapp):
-    """Verifies behavior of these API endpoints with an apikey in the header"""
+    """Verifies behavior of these API endpoints with an apikey in the header."""
     print("\nTest: test_api_with_guest_apikey_in_header_403_forbidden")
 
     # Test all endpoints
@@ -332,7 +332,7 @@ def test_api_docs_when_not_logged_in(testapp):
 # ---------------------------
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_routes_logged_in_as_admin(_, testapp):
-    """Verifies behavior of these endpoints for a logged in admin user"""
+    """Verifies behavior of these endpoints for a logged in admin user."""
     print("\nTest: test_routes_logged_in_as_admin")
 
     print("test_routes_logged_in_as_admin: login_user(testapp, 'admin', '53CR3t_p4zZW0rD')")
@@ -384,7 +384,7 @@ def test_routes_logged_in_as_admin(_, testapp):
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_add_all_input_devices_logged_in_as_admin(_, testapp):
-    """Verifies adding all inputs as a logged in admin user"""
+    """Verifies adding all inputs as a logged in admin user."""
     print("\nTest: test_add_all_input_devices_logged_in_as_admin")
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 
@@ -446,7 +446,7 @@ def test_add_all_input_devices_logged_in_as_admin(_, testapp):
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_add_all_output_devices_logged_in_as_admin(_, testapp):
-    """Verifies adding all outputs as a logged in admin user"""
+    """Verifies adding all outputs as a logged in admin user."""
     print("\nTest: test_add_all_output_devices_logged_in_as_admin")
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 
@@ -506,7 +506,7 @@ def test_add_all_output_devices_logged_in_as_admin(_, testapp):
 
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_add_all_function_devices_logged_in_as_admin(_, testapp):
-    """Verifies adding all functions as a logged in admin user"""
+    """Verifies adding all functions as a logged in admin user."""
     print("\nTest: test_add_all_function_devices_logged_in_as_admin")
     login_user(testapp, 'admin', '53CR3t_p4zZW0rD')
 
@@ -586,7 +586,7 @@ def test_add_all_function_devices_logged_in_as_admin(_, testapp):
 # ---------------------------
 @mock.patch('mycodo.mycodo_flask.routes_authentication.login_log')
 def test_routes_logged_in_as_guest(_, testapp):
-    """Verifies behavior of these endpoints for a logged in guest user"""
+    """Verifies behavior of these endpoints for a logged in guest user."""
     print("\nTest: test_routes_logged_in_as_guest")
 
     print("test_routes_logged_in_as_guest: login_user(testapp, 'guest', '53CR3t_p4zZW0rD')")
@@ -618,7 +618,7 @@ def test_routes_logged_in_as_guest(_, testapp):
 
 
 def create_user(mycodo_db, role_id, name, password):
-    """Create fake admin user"""
+    """Create fake admin user."""
     new_user = UserFactory()
     new_user.name = name
     new_user.set_password(password)
@@ -629,7 +629,7 @@ def create_user(mycodo_db, role_id, name, password):
 
 
 def add_data(testapp, input_type='RPi'):
-    """Go to the data page and create input"""
+    """Go to the data page and create input."""
     form = testapp.get('/input').maybe_follow().forms['new_input_form']
     form_dict = {}
     for each_field in form.fields.items():
@@ -643,7 +643,7 @@ def add_data(testapp, input_type='RPi'):
 
 
 def add_output(testapp, output_type='wired'):
-    """Go to the output page and add output"""
+    """Go to the output page and add output."""
     form = testapp.get('/output').maybe_follow().forms['new_output_form']
     form_dict = {}
     for each_field in form.fields.items():
@@ -657,7 +657,7 @@ def add_output(testapp, output_type='wired'):
 
 
 def add_function(testapp, function_type=''):
-    """Go to the function page and add function"""
+    """Go to the function page and add function."""
     form = testapp.get('/function').maybe_follow().forms['new_function_form']
     form_dict = {}
     for each_field in form.fields.items():
@@ -671,7 +671,7 @@ def add_function(testapp, function_type=''):
 
 
 def delete_data(testapp, data_type, device_dev=None):
-    """Go to the data page and delete input/output/function"""
+    """Go to the data page and delete input/output/function."""
     response = None
     if data_type == 'input':
         response = testapp.post('/input_submit', {'input_delete': 'Delete', 'input_id': device_dev.unique_id})
@@ -684,7 +684,7 @@ def delete_data(testapp, data_type, device_dev=None):
 
 
 def save_data(testapp, data_type):
-    """Go to the page and save input/output/function"""
+    """Go to the page and save input/output/function."""
     response = None
     if data_type == 'input':
         form = testapp.get('/input').maybe_follow().forms['mod_input_form']

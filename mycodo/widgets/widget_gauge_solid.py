@@ -505,7 +505,7 @@ def is_rgb_color(color_hex):
 
 
 def custom_colors_gauge(form, error):
-    """Get variable number of gauge color inputs, turn into CSV string"""
+    """Get variable number of gauge color inputs, turn into CSV string."""
     sorted_colors = []
     colors_hex = {}
     # Combine all color form inputs to dictionary
@@ -540,7 +540,7 @@ def custom_colors_gauge(form, error):
 
 
 def gauge_reformat_stops(current_stops, new_stops, current_colors=None):
-    """Generate stops and colors for new and modified gauges"""
+    """Generate stops and colors for new and modified gauges."""
     if current_colors:
         colors = current_colors
     else:  # Default colors (adding new gauge)

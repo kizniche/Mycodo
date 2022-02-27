@@ -409,12 +409,12 @@ class InputController(AbstractController, threading.Thread):
         return measurements_record
 
     def force_measurements(self):
-        """Signal that a measurement needs to be obtained"""
+        """Signal that a measurement needs to be obtained."""
         self.next_measurement = time.time()
         return 0, "Input instructed to begin acquiring measurements"
 
     def custom_button_exec_function(self, button_id, args_dict, thread=True):
-        """Execute function from custom action button press"""
+        """Execute function from custom action button press."""
         try:
             run_action = getattr(self.measure_input, button_id)
             if thread:

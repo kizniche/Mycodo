@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Generate markdown Output to be inserted into the manual"""
+"""Generate markdown Output to be inserted into the manual."""
 import sys
 import os
 

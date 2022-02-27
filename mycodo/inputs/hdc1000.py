@@ -151,7 +151,7 @@ class InputModule(AbstractInput):
                 HDC1000_CONFIG_HUMIDITY_RESOLUTION_14BIT)
 
     def get_measurement(self):
-        """Gets the humidity and temperature"""
+        """Gets the humidity and temperature."""
         if not self.HDC1000_fr or not self.HDC1000_fw:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

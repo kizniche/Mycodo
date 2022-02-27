@@ -116,7 +116,7 @@ class InputModule(AbstractInput):
         self.sensor.calibrate_all(CalPtOrp(self.cal_v, self.cal_orp,))
 
     def calibrate(self, args_dict):
-        """calibrate"""
+        """calibrate."""
         if 'calibration_orp' not in args_dict:
             self.logger.error("Cannot conduct calibration without a buffer ORP value")
             return
@@ -139,7 +139,7 @@ class InputModule(AbstractInput):
             INPUT_INFORMATION['custom_options'], self.input_dev)
 
     def get_measurement(self):
-        """Gets the measurement"""
+        """Gets the measurement."""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if not self.sensor:

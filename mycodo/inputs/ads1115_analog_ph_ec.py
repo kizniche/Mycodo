@@ -395,7 +395,7 @@ class InputModule(AbstractInput):
             self.logger.error("Error while initializing: {}".format(err))
 
     def calibrate_ph(self, cal_slot, args_dict):
-        """Calibration helper method"""
+        """Calibration helper method."""
         if 'calibration_ph' not in args_dict:
             self.logger.error("Cannot conduct calibration without a buffer pH value")
             return
@@ -436,11 +436,11 @@ class InputModule(AbstractInput):
             self.set_custom_option("ph_cal_t2", t)
 
     def calibrate_ph_slot_1(self, args_dict):
-        """calibrate"""
+        """calibrate."""
         self.calibrate_ph(1, args_dict)
 
     def calibrate_ph_slot_2(self, args_dict):
-        """calibrate"""
+        """calibrate."""
         self.calibrate_ph(2, args_dict)
 
     def clear_ph_calibrate_slots(self, args_dict):
@@ -454,7 +454,7 @@ class InputModule(AbstractInput):
             INPUT_INFORMATION['custom_options'], self.input_dev)
 
     def calibrate_ec(self, cal_slot, args_dict):
-        """Calibration helper method"""
+        """Calibration helper method."""
         if 'calibration_ec' not in args_dict:
             self.logger.error("Cannot conduct calibration without a standard EC value")
             return
@@ -494,11 +494,11 @@ class InputModule(AbstractInput):
             self.set_custom_option("ec_cal_t2", t)
 
     def calibrate_ec_slot_1(self, args_dict):
-        """calibrate"""
+        """calibrate."""
         self.calibrate_ec(1, args_dict)
 
     def calibrate_ec_slot_2(self, args_dict):
-        """calibrate"""
+        """calibrate."""
         self.calibrate_ec(2, args_dict)
 
     def clear_ec_calibrate_slots(self, args_dict):
@@ -530,7 +530,7 @@ class InputModule(AbstractInput):
         return volt_25C
 
     def get_temp_data(self):
-        """Get the temperature"""
+        """Get the temperature."""
         if self.temperature_comp_meas_measurement_id:
             self.logger.debug("Temperature corrections will be applied")
 
@@ -615,7 +615,7 @@ class InputModule(AbstractInput):
         return ec
 
     def get_measurement(self):
-        """Gets the measurement"""
+        """Gets the measurement."""
         if not self.adc:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

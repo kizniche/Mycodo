@@ -112,7 +112,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """Input support class"""
+    """Input support class."""
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -141,7 +141,7 @@ class InputModule(AbstractInput):
         self.i2c_bus = self.input_dev.i2c_bus
 
     def get_measurement(self):
-        """Measures temperature and humidity"""
+        """Measures temperature and humidity."""
         # Resetting these values ensures old measurements aren't mistaken for new measurements
         self.return_dict = copy.deepcopy(measurements_dict)
 

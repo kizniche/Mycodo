@@ -39,7 +39,7 @@ logger = logging.getLogger("mycodo.function_actions")
 
 
 def parse_function_action_information(exclude_custom=False):
-    """Parses the variables assigned in each Function Action and return a dictionary of IDs and values"""
+    """Parses the variables assigned in each Function Action and return a dictionary of IDs and values."""
     def dict_has_value(dict_inp, action, key, force_type=None):
         if (key in action.FUNCTION_ACTION_INFORMATION and
                 (action.FUNCTION_ACTION_INFORMATION[key] or
@@ -485,7 +485,7 @@ def trigger_function_actions(function_actions, function_id, message='', debug=Fa
 
 
 def which_controller(unique_id):
-    """Determine which type of controller the unique_id is for"""
+    """Determine which type of controller the unique_id is for."""
     controller_type = None
     controller_object = None
     controller_entry = None

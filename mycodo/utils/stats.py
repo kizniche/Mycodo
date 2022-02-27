@@ -45,7 +45,7 @@ logger = logging.getLogger("mycodo.stats")
 #
 
 def add_stat_dict(stats_dict, anonymous_id, measurement, value):
-    """Format statistics data for entry into Influxdb database"""
+    """Format statistics data for entry into Influxdb database."""
     new_stat_entry = {
         "measurement": measurement,
         "tags": {
@@ -113,14 +113,14 @@ def add_update_csv(csv_file, key, value):
 
 
 def get_count(q):
-    """Count the number of rows from an SQL query"""
+    """Count the number of rows from an SQL query."""
     count_q = q.statement.with_only_columns([func.count()]).order_by(None)
     count = q.session.execute(count_q).scalar()
     return count
 
 
 def get_pi_revision():
-    """Return the Raspberry Pi board revision ID from /proc/cpuinfo"""
+    """Return the Raspberry Pi board revision ID from /proc/cpuinfo."""
     # Extract board revision from cpuinfo file
     revision = "0000"
     try:

@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 def conditional_mod(form):
-    """Modify a Conditional"""
+    """Modify a Conditional."""
     messages = {
         "success": [],
         "info": [],
@@ -100,7 +100,7 @@ def conditional_mod(form):
 
 
 def conditional_del(cond_id):
-    """Delete a Conditional"""
+    """Delete a Conditional."""
     messages = {
         "success": [],
         "info": [],
@@ -162,7 +162,7 @@ def conditional_del(cond_id):
 
 
 def conditional_condition_add(form):
-    """Add a Conditional Condition"""
+    """Add a Conditional Condition."""
     messages = {
         "success": [],
         "info": [],
@@ -206,7 +206,7 @@ def conditional_condition_add(form):
 
 
 def conditional_condition_mod(form):
-    """Modify a Conditional condition"""
+    """Modify a Conditional condition."""
     messages = {
         "success": [],
         "info": [],
@@ -265,7 +265,7 @@ def conditional_condition_mod(form):
 
 
 def conditional_condition_del(form):
-    """Delete a Conditional Condition"""
+    """Delete a Conditional Condition."""
     messages = {
         "success": [],
         "info": [],
@@ -303,7 +303,7 @@ def conditional_condition_del(form):
 
 
 def conditional_activate(cond_id):
-    """Activate a Conditional"""
+    """Activate a Conditional."""
     messages = {
         "success": [],
         "info": [],
@@ -346,7 +346,7 @@ def conditional_activate(cond_id):
 
 
 def conditional_deactivate(cond_id):
-    """Deactivate a Conditional"""
+    """Deactivate a Conditional."""
     messages = {
         "success": [],
         "info": [],
@@ -366,7 +366,7 @@ def conditional_deactivate(cond_id):
 
 
 def check_form_measurements(form, error):
-    """Checks if the submitted form has any errors"""
+    """Checks if the submitted form has any errors."""
     if not form.measurement.data or form.measurement.data == '':
         error.append("{meas} must be set".format(
             meas=form.measurement.label.text))
@@ -377,7 +377,7 @@ def check_form_measurements(form, error):
 
 
 def check_cond_conditions(cond, error):
-    """Checks if the saved variables have any errors"""
+    """Checks if the saved variables have any errors."""
     if (cond.condition_type == 'measurement' and
             (not cond.measurement or cond.measurement == '')):
         error.append(

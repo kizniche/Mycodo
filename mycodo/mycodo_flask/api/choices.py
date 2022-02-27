@@ -76,13 +76,13 @@ choices_pids_measurements_list_fields = ns_choices.model(
 @ns_choices.route('/controllers')
 @ns_choices.doc(security='apikey', responses=default_responses)
 class ChoicesControllers(Resource):
-    """Form choices for controllers"""
+    """Form choices for controllers."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_choices.marshal_with(choices_controllers_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show form choices for all controllers"""
+        """Show form choices for all controllers."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -97,13 +97,13 @@ class ChoicesControllers(Resource):
 @ns_choices.route('/inputs/measurements')
 @ns_choices.doc(security='apikey', responses=default_responses)
 class ChoicesInputMeasurements(Resource):
-    """Form choices for input measurements"""
+    """Form choices for input measurements."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_choices.marshal_with(choices_inputs_measurements_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show form choices for all input measurements"""
+        """Show form choices for all input measurements."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -125,13 +125,13 @@ class ChoicesInputMeasurements(Resource):
 @ns_choices.route('/maths/measurements')
 @ns_choices.doc(security='apikey', responses=default_responses)
 class ChoicesMaths(Resource):
-    """Form choices for math measurements"""
+    """Form choices for math measurements."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_choices.marshal_with(choices_maths_measurements_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show form choices for all math measurements"""
+        """Show form choices for all math measurements."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -153,13 +153,13 @@ class ChoicesMaths(Resource):
 @ns_choices.route('/outputs/devices')
 @ns_choices.doc(security='apikey', responses=default_responses)
 class ChoicesOutputDevices(Resource):
-    """Form choices for output devices"""
+    """Form choices for output devices."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_choices.marshal_with(choices_outputs_device_measurements_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show form choices for all output devices"""
+        """Show form choices for all output devices."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -175,13 +175,13 @@ class ChoicesOutputDevices(Resource):
 @ns_choices.route('/outputs/measurements')
 @ns_choices.doc(security='apikey', responses=default_responses)
 class ChoicesOutputMeasurements(Resource):
-    """Form choices for output measurements"""
+    """Form choices for output measurements."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_choices.marshal_with(choices_outputs_measurements_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show form choices for all output measurements"""
+        """Show form choices for all output measurements."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -203,13 +203,13 @@ class ChoicesOutputMeasurements(Resource):
 @ns_choices.route('/pids/measurements')
 @ns_choices.doc(security='apikey', responses=default_responses)
 class ChoicesPIDs(Resource):
-    """Form choices for pid measurements"""
+    """Form choices for pid measurements."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_choices.marshal_with(choices_pids_measurements_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show form choices for all PID measurements"""
+        """Show form choices for all PID measurements."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:

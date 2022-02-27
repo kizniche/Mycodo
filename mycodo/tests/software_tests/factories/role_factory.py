@@ -1,5 +1,5 @@
 # coding=utf-8
-"""A collection of model factories using factory boy"""
+"""A collection of model factories using factory boy."""
 import factory  # factory boy
 from mycodo.mycodo_flask.extensions import db
 from mycodo.databases import models
@@ -10,7 +10,7 @@ faker = Faker()
 
 
 class RoleFactory(factory.alchemy.SQLAlchemyModelFactory):
-    """A factory for creating user models"""
+    """A factory for creating user models."""
     class Meta(object):
         model = models.Role
         sqlalchemy_session = db.session

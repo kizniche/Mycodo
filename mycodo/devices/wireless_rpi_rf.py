@@ -9,7 +9,7 @@ logger = logging.getLogger("mycodo.device.wireless_rpi_rf")
 
 
 class Transmit433MHz:
-    """Transmit/Receive 433MHz commands"""
+    """Transmit/Receive 433MHz commands."""
 
     def __init__(self, pin, protocol=1, pulse_length=189):
         self.device = None

@@ -63,7 +63,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that monitors the MH-Z16's CO2 concentration"""
+    """A sensor support class that monitors the MH-Z16's CO2 concentration."""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -110,7 +110,7 @@ class InputModule(AbstractInput):
             self.begin()
 
     def get_measurement(self):
-        """Gets the MH-Z16's CO2 concentration in ppmv"""
+        """Gets the MH-Z16's CO2 concentration in ppmv."""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         co2 = None

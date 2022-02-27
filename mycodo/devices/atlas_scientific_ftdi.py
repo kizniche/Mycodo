@@ -46,7 +46,7 @@ class AtlasScientificFTDI(AbstractBaseAtlasScientific, Device):
         self.setup = True
 
     def query(self, query_str):
-        """Send command and return reply"""
+        """Send command and return reply."""
         lf = LockFile()
         if lf.lock_acquire(self.lock_file, timeout=self.lock_timeout):
             try:

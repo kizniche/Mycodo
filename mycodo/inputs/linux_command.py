@@ -70,7 +70,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that returns a value from a command"""
+    """A sensor support class that returns a value from a command."""
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -89,7 +89,7 @@ class InputModule(AbstractInput):
         self.command = self.input_dev.cmd_command
 
     def get_measurement(self):
-        """Determine if the return value of the command is a number"""
+        """Determine if the return value of the command is a number."""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         self.logger.debug("Command being executed: {}".format(self.command))

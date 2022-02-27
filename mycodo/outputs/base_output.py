@@ -64,17 +64,17 @@ class AbstractOutput(AbstractBaseController):
             self.output_type = self.output.output_type
 
     def __iter__(self):
-        """Support the iterator protocol"""
+        """Support the iterator protocol."""
         return self
 
     def __repr__(self):
-        """Representation of object"""
+        """Representation of object."""
         return_str = '<{cls}'.format(cls=type(self).__name__)
         return_str += '>'
         return return_str
 
     def __str__(self):
-        """Return measurement information"""
+        """Return measurement information."""
         return_str = ''
         return return_str
 
@@ -107,7 +107,7 @@ class AbstractOutput(AbstractBaseController):
         raise NotImplementedError
 
     def stop_output(self):
-        """Called when Output is stopped"""
+        """Called when Output is stopped."""
         self.running = False
 
     #
@@ -132,7 +132,7 @@ class AbstractOutput(AbstractBaseController):
                 self.logger.setLevel(logging.INFO)
 
     def setup_on_off_output(self, output_information):
-        """Deprecated TODO: Remove"""
+        """Deprecated TODO: Remove."""
         self.setup_output_variables(output_information)
 
     def setup_output_variables(self, output_information):
@@ -647,7 +647,7 @@ class AbstractOutput(AbstractBaseController):
             self.control.trigger_all_actions(each_trigger.unique_id, message=message)
 
     def output_sec_currently_on(self, output_channel):
-        """Return how many seconds an output has been currently on for"""
+        """Return how many seconds an output has been currently on for."""
         if not self.is_on(output_channel):
             return 0
         else:

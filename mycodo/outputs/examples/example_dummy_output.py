@@ -145,7 +145,7 @@ class OutputModule(AbstractOutput):
             OUTPUT_INFORMATION['custom_options'], output)
 
     def setup_output(self):
-        """Code executed when Mycodo starts up to initialize the output"""
+        """Code executed when Mycodo starts up to initialize the output."""
         # Variables set by the user interface
         self.gpio_pin = self.output.pin
 
@@ -179,7 +179,7 @@ class OutputModule(AbstractOutput):
             self.output_states[output_channel] = False
 
     def is_on(self, output_channel=None):
-        """Code to return the state of the output"""
+        """Code to return the state of the output."""
         if self.is_setup():
             if output_channel is not None and output_channel in self.output_states:
                 return self.output_states[output_channel]
@@ -187,11 +187,11 @@ class OutputModule(AbstractOutput):
                 return self.output_states
 
     def is_setup(self):
-        """Returns whether the output has successfully been set up"""
+        """Returns whether the output has successfully been set up."""
         return self.output_setup
 
     def input_button(self, args_dict):
-        """Executed when custom action button pressed"""
+        """Executed when custom action button pressed."""
         if 'input_value' not in args_dict:
             self.logger.error("Cannot execute function without an input value")
             return

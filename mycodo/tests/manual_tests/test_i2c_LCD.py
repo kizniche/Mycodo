@@ -70,7 +70,7 @@ def lcd_backlight(state):  # for state, 1 = on, 0 = off
 
 
 def lcd_init():
-    """Initialize LCD display"""
+    """Initialize LCD display."""
     lcd_byte(0x33, LCD_CMD)  # 110011 Initialise
     lcd_byte(0x32, LCD_CMD)  # 110010 Initialise
     lcd_byte(0x06, LCD_CMD)  # 000110 Cursor move direction
@@ -81,7 +81,7 @@ def lcd_init():
 
 
 def lcd_byte(bits, mode, backlight=LCD_BACKLIGHT):
-    """Send byte to data pins"""
+    """Send byte to data pins."""
     # bits = the data
     # mode = 1 for data
     #        0 for command
@@ -96,7 +96,7 @@ def lcd_byte(bits, mode, backlight=LCD_BACKLIGHT):
 
 
 def lcd_toggle_enable(bits):
-    """Toggle enable"""
+    """Toggle enable."""
     time.sleep(E_DELAY)
     bus.write_byte(I2C_ADDR, (bits | ENABLE))
     time.sleep(E_PULSE)
@@ -105,7 +105,7 @@ def lcd_toggle_enable(bits):
 
 
 def lcd_string_write(message, line):
-    """Send string to display"""
+    """Send string to display."""
     message = message.ljust(LCD_WIDTH, " ")
     lcd_byte(line, LCD_CMD)
     for i in range(LCD_WIDTH):

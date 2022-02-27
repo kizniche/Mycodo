@@ -202,7 +202,7 @@ def parse_measurement(
 
 
 def rescale_measurements(measurement, measurement_value):
-    """Rescale measurement"""
+    """Rescale measurement."""
     rescaled_measurement = None
     try:
         if measurement.rescale_method == "linear":
@@ -258,7 +258,7 @@ def query_string(unit, unique_id,
                  value=None, measure=None, channel=None, ts_str=None,
                  start_str=None, end_str=None, past_sec=None, group_sec=None,
                  limit=None, function=None):
-    """Generate influxdb query string"""
+    """Generate influxdb query string."""
     query = "SELECT "
 
     if function:
@@ -531,7 +531,7 @@ def read_past_influxdb(unique_id, unit, channel, past_seconds, measure=None):
 
 
 def output_sec_on(output_id, past_seconds, output_channel=0):
-    """Return the number of seconds a output has been ON in the past number of seconds"""
+    """Return the number of seconds a output has been ON in the past number of seconds."""
     # Get the number of seconds ON stored in the database
     output = db_retrieve_table_daemon(Output, unique_id=output_id)
     client = InfluxDBClient(INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER,
@@ -567,7 +567,7 @@ def output_sec_on(output_id, past_seconds, output_channel=0):
 
 
 def average_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
-    """Return measurement average for the past x seconds"""
+    """Return measurement average for the past x seconds."""
     client = InfluxDBClient(
         INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_PASSWORD,
         INFLUXDB_DATABASE, timeout=5)
@@ -585,7 +585,7 @@ def average_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
 
 
 def average_start_end_seconds(unique_id, unit, channel, str_start, str_end, measure=None):
-    """Return measurement average for a period of time"""
+    """Return measurement average for a period of time."""
     client = InfluxDBClient(
         INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_PASSWORD,
         INFLUXDB_DATABASE, timeout=5)
@@ -604,7 +604,7 @@ def average_start_end_seconds(unique_id, unit, channel, str_start, str_end, meas
 
 
 def sum_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
-    """Return measurement sum for the past x seconds"""
+    """Return measurement sum for the past x seconds."""
     client = InfluxDBClient(
         INFLUXDB_HOST, INFLUXDB_PORT, INFLUXDB_USER, INFLUXDB_PASSWORD,
         INFLUXDB_DATABASE, timeout=5)

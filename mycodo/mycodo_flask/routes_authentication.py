@@ -1,5 +1,5 @@
 # coding=utf-8
-"""flask views that deal with user authentication"""
+"""flask views that deal with user authentication."""
 
 import datetime
 import logging
@@ -227,7 +227,7 @@ def login_keypad():
 
 @blueprint.route('/login_keypad_code/', methods=('GET', 'POST'))
 def login_keypad_code_empty():
-    """Forward to keypad when no code entered"""
+    """Forward to keypad when no code entered."""
     time.sleep(2)
     flash("Please enter a code", "error")
     return redirect('/login_keypad')
@@ -235,7 +235,7 @@ def login_keypad_code_empty():
 
 @blueprint.route('/login_keypad_code/<code>', methods=('GET', 'POST'))
 def login_keypad_code(code):
-    """Check code from keypad"""
+    """Check code from keypad."""
     if not admin_exists():
         return redirect('/create_admin')
 
@@ -280,7 +280,7 @@ def login_keypad_code(code):
 @blueprint.route("/logout")
 @flask_login.login_required
 def logout():
-    """Log out of the web-ui"""
+    """Log out of the web-ui."""
     user = User.query.filter(User.name == flask_login.current_user.name).first()
     role_name = Role.query.filter(Role.id == user.role_id).first().name
     login_log(user.name,
@@ -298,7 +298,7 @@ def logout():
 
 @blueprint.route('/newremote/')
 def newremote():
-    """Verify authentication as a client computer to the remote admin"""
+    """Verify authentication as a client computer to the remote admin."""
     username = request.args.get('user')
     pass_word = request.args.get('passw')
 
@@ -325,7 +325,7 @@ def newremote():
 
 @blueprint.route('/remote_login', methods=('GET', 'POST'))
 def remote_admin_login():
-    """Authenticate Remote Admin login"""
+    """Authenticate Remote Admin login."""
     password_hash = request.form.get('password_hash', None)
     username = request.form.get('username', None)
 
@@ -347,12 +347,12 @@ def remote_admin_login():
 @blueprint.route('/auth/')
 @flask_login.login_required
 def remote_auth():
-    """Checks authentication for remote admin"""
+    """Checks authentication for remote admin."""
     return "authenticated"
 
 
 def admin_exists():
-    """Verify that at least one admin user exists"""
+    """Verify that at least one admin user exists."""
     return User.query.filter_by(role_id=1).count()
 
 
@@ -366,7 +366,7 @@ def check_database_version_issue():
 
 
 def banned_from_login():
-    """Check if the person at the login prompt is banned form logging in"""
+    """Check if the person at the login prompt is banned form logging in."""
     if not session.get('failed_login_count'):
         session['failed_login_count'] = 0
     if not session.get('failed_login_ban_time'):
@@ -381,7 +381,7 @@ def banned_from_login():
 
 
 def failed_login():
-    """Count the number of failed login attempts"""
+    """Count the number of failed login attempts."""
     try:
         session['failed_login_count'] += 1
     except KeyError:
@@ -396,7 +396,7 @@ def failed_login():
 
 
 def login_log(user, group, ip, status):
-    """Write to login log"""
+    """Write to login log."""
     with open(LOGIN_LOG_FILE, 'a') as log_file:
         log_file.write(
             '{dt:%Y-%m-%d %H:%M:%S}: {stat} {user} ({grp}), {ip}\n'.format(
@@ -405,7 +405,7 @@ def login_log(user, group, ip, status):
 
 
 def clear_cookie_auth():
-    """Delete authentication cookies"""
+    """Delete authentication cookies."""
     response = make_response(redirect('/login'))
     session.clear()
     response.set_cookie('remember_token', '', expires=0)

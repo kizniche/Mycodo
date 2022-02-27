@@ -490,12 +490,12 @@ class CustomModule(AbstractFunction):
     #
 
     def backlight_on(self, args_dict=None):
-        """Turn the backlight on"""
+        """Turn the backlight on."""
         self.lcd_is_on = True
         self.lcd.lcd_backlight(1)
 
     def backlight_off(self, args_dict=None):
-        """Turn the backlight off"""
+        """Turn the backlight off."""
         self.lcd_is_on = False
         while self.lines_being_written:
             time.sleep(0.1)  # Wait for lines to be written before turning backlight off

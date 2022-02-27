@@ -154,11 +154,11 @@ class InputModule(AbstractInput):
         self.lock_file = '/var/lock/bluetooth_dev_hci{}'.format(self.bt_adapter)
 
     def initialize(self):
+        """Initialize the device by obtaining sensor information."""
         if not self.SHT31:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return
 
-        """Initialize the device by obtaining sensor information"""
         self.logger.debug("Input Initializing (Initialized: {})".format(self.initialized))
 
         if not self.initialized:
@@ -395,7 +395,7 @@ class InputModule(AbstractInput):
             return self.device_information
 
     def get_measurement(self):
-        """Obtain and return the measurements"""
+        """Obtain and return the measurements."""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         lf = LockFile()

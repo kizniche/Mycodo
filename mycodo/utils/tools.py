@@ -180,7 +180,7 @@ def next_schedule(time_span='daily', set_day=None, set_hour=None):
 
 
 def return_energy_usage(energy_usage, device_measurements_all, conversion_all):
-    """Calculate energy usage from Inputs/Maths measuring amps"""
+    """Calculate energy usage from Inputs/Maths measuring amps."""
     energy_usage_stats = {}
     graph_info = {}
     for each_energy in energy_usage:
@@ -321,7 +321,7 @@ def return_output_usage(
         outputs,
         table_output_channels,
         custom_options_values_output_channels):
-    """Return output usage and cost"""
+    """Return output usage and cost."""
     date_now = datetime.date.today()
     time_now = datetime.datetime.now()
     past_month_seconds = 0

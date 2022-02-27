@@ -32,7 +32,7 @@ logger = logging.getLogger("mycodo.utils.widgets")
 
 
 def parse_widget_information(exclude_custom=False):
-    """Parses the variables assigned in each Widget and return a dictionary of IDs and values"""
+    """Parses the variables assigned in each Widget and return a dictionary of IDs and values."""
     def dict_has_value(dict_inp, widget_cus, key, force_type=None):
         if (key in widget_cus.WIDGET_INFORMATION and
                 (widget_cus.WIDGET_INFORMATION[key] or

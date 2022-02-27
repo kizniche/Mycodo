@@ -1,5 +1,5 @@
 # coding=utf-8
-"""collection of Page endpoints"""
+"""collection of Page endpoints."""
 import logging
 import os
 
@@ -59,7 +59,7 @@ def inject_dictionary():
 
 @blueprint.route('/save_dashboard_layout', methods=['POST'])
 def save_dashboard_layout():
-    """Save positions and sizes of widgets of a particular dashboard"""
+    """Save positions and sizes of widgets of a particular dashboard."""
     if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('routes_general.home'))
     data = request.get_json()
@@ -80,7 +80,7 @@ def save_dashboard_layout():
 @blueprint.route('/dashboard', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_dashboard_default():
-    """Load default dashboard"""
+    """Load default dashboard."""
     dashboard = Dashboard.query.first()
     return redirect(url_for(
         'routes_dashboard.page_dashboard', dashboard_id=dashboard.unique_id))
@@ -89,7 +89,7 @@ def page_dashboard_default():
 @blueprint.route('/dashboard-add', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_dashboard_add():
-    """Add a dashboard"""
+    """Add a dashboard."""
     if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('routes_general.home'))
     dashboard_id = utils_dashboard.dashboard_add()
@@ -100,7 +100,7 @@ def page_dashboard_add():
 @blueprint.route('/dashboard/<dashboard_id>', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_dashboard(dashboard_id):
-    """Generate custom dashboard with various data"""
+    """Generate custom dashboard with various data."""
     # Retrieve tables from SQL database
     camera = Camera.query.all()
     conditional = Conditional.query.all()

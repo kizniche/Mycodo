@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Generate markdown file of Widget information to be inserted into the manual"""
+"""Generate markdown file of Widget information to be inserted into the manual."""
 
 import sys
 

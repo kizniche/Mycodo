@@ -83,7 +83,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that gets weather for a city"""
+    """A sensor support class that gets weather for a city."""
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -103,7 +103,7 @@ class InputModule(AbstractInput):
             self.logger.debug("URL: {}".format(self.api_url))
 
     def get_measurement(self):
-        """Gets the weather data"""
+        """Gets the weather data."""
         if not self.api_url:
             self.logger.error("API Key and City required")
             return

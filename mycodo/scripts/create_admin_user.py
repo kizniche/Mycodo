@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Create admin user"""
+"""Create admin user."""
 import sys
 import traceback
 from getpass import getpass

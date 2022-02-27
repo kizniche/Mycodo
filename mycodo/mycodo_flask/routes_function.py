@@ -1,5 +1,5 @@
 # coding=utf-8
-"""collection of Function endpoints"""
+"""collection of Function endpoints."""
 import datetime
 import json
 import logging
@@ -271,7 +271,7 @@ def page_function_submit():
 
 @blueprint.route('/save_function_layout', methods=['POST'])
 def save_function_layout():
-    """Save positions of functions"""
+    """Save positions of functions."""
     if not utils_general.user_has_permission('edit_controllers'):
         return redirect(url_for('routes_general.home'))
     data = request.get_json()
@@ -308,7 +308,7 @@ def save_function_layout():
 @blueprint.route('/function', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_function():
-    """Display Function page options"""
+    """Display Function page options."""
     function_type = request.args.get('function_type', None)
     function_id = request.args.get('function_id', None)
     action_id = request.args.get('action_id', None)

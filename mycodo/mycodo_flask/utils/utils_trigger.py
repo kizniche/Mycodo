@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 def trigger_mod(form):
-    """Modify a Trigger"""
+    """Modify a Trigger."""
     messages = {
         "success": [],
         "info": [],
@@ -161,7 +161,7 @@ def trigger_mod(form):
 
 
 def trigger_del(trigger_id):
-    """Delete a Trigger"""
+    """Delete a Trigger."""
     messages = {
         "success": [],
         "info": [],
@@ -204,7 +204,7 @@ def trigger_del(trigger_id):
 
 
 def trigger_activate(trigger_id):
-    """Activate a Trigger"""
+    """Activate a Trigger."""
     messages = {
         "success": [],
         "info": [],
@@ -240,7 +240,7 @@ def trigger_activate(trigger_id):
 
 
 def trigger_deactivate(trigger_id):
-    """Deactivate a Trigger"""
+    """Deactivate a Trigger."""
     messages = {
         "success": [],
         "info": [],
@@ -266,14 +266,14 @@ def trigger_deactivate(trigger_id):
 
 
 def check_cond_edge(form, error):
-    """Checks if the saved variables have any errors"""
+    """Checks if the saved variables have any errors."""
     if not form.measurement or form.measurement == '':
         error.append("Measurement must be set")
     return error
 
 
 def check_form_output_duration(form, error):
-    """Checks if the submitted form has any errors"""
+    """Checks if the submitted form has any errors."""
     if not form.unique_id_1.data:
         error.append("{id} must be set".format(
             id=form.unique_id_1.label.text))
@@ -287,7 +287,7 @@ def check_form_output_duration(form, error):
 
 
 def check_cond_output(form, error):
-    """Checks if the saved variables have any errors"""
+    """Checks if the saved variables have any errors."""
     if not form.unique_id_1 or form.unique_id_1 == '':
         error.append("An Output must be set")
     if not form.output_state or form.output_state == '':

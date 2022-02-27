@@ -80,7 +80,7 @@ class InputModule(AbstractInput):
         self.sensor.tempOffset = self.sensor.calculateTemperature() - 25.0
 
     def get_measurement(self):
-        """Gets the CO2, VOC, and temperature"""
+        """Gets the CO2, VOC, and temperature."""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

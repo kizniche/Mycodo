@@ -91,13 +91,13 @@ def return_handler(return_):
 @ns_output.route('/')
 @ns_output.doc(security='apikey', responses=default_responses)
 class Inputs(Resource):
-    """Output information"""
+    """Output information."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_output.marshal_with(output_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all output settings and statuses"""
+        """Show all output settings and statuses."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -129,13 +129,13 @@ class Inputs(Resource):
     params={'unique_id': 'The unique ID of the output.'}
 )
 class Outputs(Resource):
-    """Output status"""
+    """Output status."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_output.marshal_with(output_unique_id_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings and status for an output"""
+        """Show the settings and status for an output."""
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
 
@@ -167,7 +167,7 @@ class Outputs(Resource):
     @ns_output.expect(output_set_fields)
     @flask_login.login_required
     def post(self, unique_id):
-        """Change the state of an output"""
+        """Change the state of an output."""
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
 

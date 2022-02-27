@@ -1,5 +1,5 @@
 # coding=utf-8
-"""flask views that deal with user authentication"""
+"""flask views that deal with user authentication."""
 import json
 import logging
 
@@ -40,7 +40,7 @@ def inject_dictionary():
 @blueprint.route('/remote/input', methods=('GET', 'POST'))
 @flask_login.login_required
 def remote_input():
-    """Returns input information for remote administration"""
+    """Returns input information for remote administration."""
     if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -73,7 +73,7 @@ def remote_input():
 @blueprint.route('/remote/setup', methods=('GET', 'POST'))
 @flask_login.login_required
 def remote_setup():
-    """Return pages for remote administration"""
+    """Return pages for remote administration."""
     if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -112,7 +112,7 @@ def remote_setup():
 @blueprint.route('/remote_get_inputs/')
 @flask_login.login_required
 def remote_get_inputs():
-    """Checks authentication for remote admin"""
+    """Checks authentication for remote admin."""
     inputs = Input.query.all()
     return_inputs = {}
     for each_input in inputs:

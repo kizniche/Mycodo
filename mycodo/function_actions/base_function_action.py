@@ -47,17 +47,17 @@ class AbstractFunctionAction(AbstractBaseController):
             self.unique_id = action_dev.unique_id
 
     def __iter__(self):
-        """Support the iterator protocol"""
+        """Support the iterator protocol."""
         return self
 
     def __repr__(self):
-        """Representation of object"""
+        """Representation of object."""
         return_str = '<{cls}'.format(cls=type(self).__name__)
         return_str += '>'
         return return_str
 
     def __str__(self):
-        """Return measurement information"""
+        """Return measurement information."""
         return_str = ''
         return return_str
 
@@ -76,7 +76,7 @@ class AbstractFunctionAction(AbstractBaseController):
         raise NotImplementedError
 
     def run_action(self, message, dict_vars):
-        """Called when Action is executed"""
+        """Called when Action is executed."""
         pass
 
     #

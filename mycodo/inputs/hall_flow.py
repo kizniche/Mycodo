@@ -64,7 +64,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that monitors flow rate / volume"""
+    """A sensor support class that monitors flow rate / volume."""
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -92,7 +92,7 @@ class InputModule(AbstractInput):
         self.sensor.set_total_pulses(self.get_custom_option("total_pulses"))
 
     def get_measurement(self):
-        """Gets the flow rate and volume"""
+        """Gets the flow rate and volume."""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return
@@ -128,7 +128,7 @@ class InputModule(AbstractInput):
 
 
 class ReadHall:
-    """A class to read pulses and calculate the Flow Rate"""
+    """A class to read pulses and calculate the Flow Rate."""
     def __init__(self, logger, pi, gpio, pigpio, pulses_per_l=1.0):
         self.logger = logger
 
@@ -159,7 +159,7 @@ class ReadHall:
             self._high_tick = tick
 
     def flow_period(self):
-        """Returns the Flow Rate in l/min"""
+        """Returns the Flow Rate in l/min."""
         l_min = 0
         pulses = self.period_pulses()
         minutes = (time.time() - self._last_time) / 60
@@ -176,23 +176,23 @@ class ReadHall:
             self._period_pulses = 0
 
     def set_total_pulses(self, pulses):
-        """Sets the total pulses"""
+        """Sets the total pulses."""
         if pulses:
             self._total_pulses = pulses
 
     def total_pulses(self):
-        """Returns the total pulses"""
+        """Returns the total pulses."""
         return self._total_pulses
 
     def total_volume(self):
-        """Returns the total volume in liters"""
+        """Returns the total volume in liters."""
         volume = 0
         if self._total_pulses:
             volume = float(self._total_pulses / self.pulses_per_l)
         return volume
 
     def cancel(self):
-        """Cancels the reader and releases resources"""
+        """Cancels the reader and releases resources."""
         self.pi.set_watchdog(self.gpio, 0)  # cancel watchdog
         self._cb.cancel()
 

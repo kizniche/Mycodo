@@ -38,13 +38,13 @@ controller_set_fields = ns_controller.model('Controller Modulation Fields', {
     }
 )
 class ControllerStatus(Resource):
-    """Controller status"""
+    """Controller status."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_controller.marshal_with(controller_status_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Get the status of a controller"""
+        """Get the status of a controller."""
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
 
@@ -59,7 +59,7 @@ class ControllerStatus(Resource):
     @ns_controller.expect(controller_set_fields)
     @flask_login.login_required
     def post(self, unique_id):
-        """Activate or deactivate a controller"""
+        """Activate or deactivate a controller."""
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
 

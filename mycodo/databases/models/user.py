@@ -42,7 +42,7 @@ class User(UserMixin, CRUDMixin, db.Model):
 
     @staticmethod
     def check_password(password, hashed_password):
-        """validates a password"""
+        """validates a password."""
         # Check type of password hashed_password to determine if it is a str
         # and should be encoded
         if isinstance(password, str):

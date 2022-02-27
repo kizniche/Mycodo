@@ -115,7 +115,7 @@ class FunctionController(AbstractController, threading.Thread):
                 device=self.device))
 
     def custom_button_exec_function(self, button_id, args_dict, thread=True):
-        """Execute function from custom action button press"""
+        """Execute function from custom action button press."""
         try:
             run_action = getattr(self.run_function, button_id)
             if thread:
@@ -133,7 +133,7 @@ class FunctionController(AbstractController, threading.Thread):
                     button_id))
 
     def function_action(self, action_string, args_dict=None, thread=True):
-        """Execute function action"""
+        """Execute function action."""
         if args_dict is None:
             args_dict = {}
         try:

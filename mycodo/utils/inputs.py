@@ -56,7 +56,7 @@ def list_devices_using_interface(interface):
 
 
 def list_analog_to_digital_converters():
-    """Generates a list of input devices that are analog-to-digital converters"""
+    """Generates a list of input devices that are analog-to-digital converters."""
     list_adc = []
     dict_inputs = parse_input_information()
     for each_input in dict_inputs:
@@ -68,7 +68,7 @@ def list_analog_to_digital_converters():
 
 
 def parse_input_information(exclude_custom=False):
-    """Parses the variables assigned in each Input and return a dictionary of IDs and values"""
+    """Parses the variables assigned in each Input and return a dictionary of IDs and values."""
     def dict_has_value(dict_inp, input_cus, key, force_type=None):
         if (key in input_cus.INPUT_INFORMATION and
                 (input_cus.INPUT_INFORMATION[key] or

@@ -171,7 +171,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that gets weather for a latitude/longitude location"""
+    """A sensor support class that gets weather for a latitude/longitude location."""
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -207,7 +207,7 @@ class InputModule(AbstractInput):
             self.logger.debug("Time Dict: {}".format(self.weather_time_dict))
 
     def get_measurement(self):
-        """Gets the weather data"""
+        """Gets the weather data."""
         if not self.api_url:
             self.logger.error("API Key, Latitude, and Longitude required")
             return

@@ -65,7 +65,7 @@ class InputModule(AbstractInput):
         self.deadline = self.input_dev.deadline
 
     def get_measurement(self):
-        """Determine if the return value of the command is a number"""
+        """Determine if the return value of the command is a number."""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         response = os.system("ping -c {times} -w {deadline} {host} > /dev/null 2>&1".format(

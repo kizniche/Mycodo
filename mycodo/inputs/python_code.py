@@ -183,7 +183,7 @@ self.store_measurement(channel=0, measurement=random_value_channel_0)"""
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that returns a value from a command"""
+    """A sensor support class that returns a value from a command."""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -209,7 +209,7 @@ class InputModule(AbstractInput):
         self.python_code = self.input_dev.cmd_command
 
     def get_measurement(self):
-        """Determine if the return value of the command is a number"""
+        """Determine if the return value of the command is a number."""
         if not self.python_code:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

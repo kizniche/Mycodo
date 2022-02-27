@@ -57,7 +57,7 @@ INPUT_INFORMATION = {
 }
 
 class InputModule(AbstractInput):
-    """A sensor support class that listens for rising or falling pin edge events"""
+    """A sensor support class that listens for rising or falling pin edge events."""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -176,7 +176,7 @@ class InputModule(AbstractInput):
                         each_trigger.unique_id, message=message)
 
     def stop_input(self):
-        """Called when Input is deactivated"""
+        """Called when Input is deactivated."""
         self.running = False
         try:
             self.logger.debug("Cleaning up GPIO")

@@ -60,13 +60,13 @@ measurement_function_fields = ns_measurement.model('Measurement Function Fields'
     }
 )
 class MeasurementsCreate(Resource):
-    """Interacts with Measurement settings in the SQL database"""
+    """Interacts with Measurement settings in the SQL database."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_measurement.expect(measurement_create_fields)
     @flask_login.login_required
     def post(self, unique_id, unit, channel, value):
-        """Create a measurement"""
+        """Create a measurement."""
         if not utils_general.user_has_permission('edit_controllers'):
             abort(403)
 
@@ -117,7 +117,7 @@ class MeasurementsCreate(Resource):
     }
 )
 class MeasurementsHistorical(Resource):
-    """Interacts with Measurement settings in the SQL database"""
+    """Interacts with Measurement settings in the SQL database."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_measurement.marshal_with(measurement_list_fields)
@@ -185,7 +185,7 @@ class MeasurementsHistorical(Resource):
     }
 )
 class MeasurementsHistoricalFunction(Resource):
-    """Interacts with Measurement settings in the SQL database"""
+    """Interacts with Measurement settings in the SQL database."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_measurement.marshal_with(measurement_function_fields)
@@ -245,7 +245,7 @@ class MeasurementsHistoricalFunction(Resource):
     }
 )
 class MeasurementsLast(Resource):
-    """Interacts with Measurement settings in the SQL database"""
+    """Interacts with Measurement settings in the SQL database."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_measurement.marshal_with(measurement_fields)
@@ -289,7 +289,7 @@ class MeasurementsLast(Resource):
     }
 )
 class MeasurementsPast(Resource):
-    """Interacts with Measurement settings in the SQL database"""
+    """Interacts with Measurement settings in the SQL database."""
 
     @accept('application/vnd.mycodo.v1+json')
     @ns_measurement.marshal_with(measurement_list_fields)

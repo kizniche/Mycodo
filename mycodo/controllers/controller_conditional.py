@@ -90,7 +90,7 @@ class ConditionalController(AbstractController, threading.Thread):
             self.attempt_execute(self.check_conditionals)
 
     def initialize_variables(self):
-        """Define all settings"""
+        """Define all settings."""
         cond = db_retrieve_table_daemon(
             Conditional, unique_id=self.unique_id)
         self.is_activated = cond.is_activated
@@ -143,7 +143,7 @@ class ConditionalController(AbstractController, threading.Thread):
                     file.read()))
 
     def refresh_settings(self):
-        """Signal to pause the main loop and wait for verification, the refresh settings"""
+        """Signal to pause the main loop and wait for verification, the refresh settings."""
         self.pause_loop = True
         while not self.verify_pause_loop:
             time.sleep(0.1)

@@ -72,7 +72,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that measure the MLX90614's ambient and object temperature"""
+    """A sensor support class that measure the MLX90614's ambient and object temperature."""
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -120,7 +120,7 @@ class InputModule(AbstractInput):
         return self.data_to_temp(data)
 
     def get_measurement(self):
-        """Gets the ambient (ch0) and object (ch1) temperatures"""
+        """Gets the ambient (ch0) and object (ch1) temperatures."""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if self.is_enabled(0):

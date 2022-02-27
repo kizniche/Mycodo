@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 def controller_mod(form_mod, request_form):
-    """Modify a Custom Function"""
+    """Modify a Custom Function."""
     messages = {
         "success": [],
         "info": [],
@@ -194,7 +194,7 @@ def controller_mod(form_mod, request_form):
 
 
 def controller_del(cond_id):
-    """Delete a custom Function"""
+    """Delete a custom Function."""
     messages = {
         "success": [],
         "info": [],
@@ -254,7 +254,7 @@ def controller_del(cond_id):
 
 
 def controller_activate(controller_id):
-    """Activate a Conditional"""
+    """Activate a Conditional."""
     messages = {
         "success": [],
         "info": [],
@@ -301,7 +301,7 @@ def controller_activate(controller_id):
 
 
 def controller_deactivate(controller_id):
-    """Deactivate a Conditional"""
+    """Deactivate a Conditional."""
     messages = {
         "success": [],
         "info": [],

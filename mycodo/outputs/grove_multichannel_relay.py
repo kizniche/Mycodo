@@ -288,7 +288,7 @@ class OutputModule(AbstractOutput):
         return list_states
 
     def stop_output(self):
-        """Called when Output is stopped"""
+        """Called when Output is stopped."""
         dict_states = {}
         if self.is_setup():
             for channel in channels_dict:
@@ -302,7 +302,7 @@ class OutputModule(AbstractOutput):
 
 
 class GroveMultiRelay(object):
-    """A software representation of a single GroveMultiRelay IO expander chip"""
+    """A software representation of a single GroveMultiRelay IO expander chip."""
     def __init__(self, smbus, i2c_bus, i2c_address):
         self.bus_no = i2c_bus
         self.bus = smbus.SMBus(i2c_bus)

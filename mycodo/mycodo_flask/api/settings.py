@@ -97,7 +97,7 @@ class SettingsDeviceMeasurements(Resource):
     @ns_settings.marshal_with(device_measurement_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all device measurement settings"""
+        """Show all device measurement settings."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -124,7 +124,7 @@ class SettingsDeviceMeasurementsUniqueID(Resource):
     @ns_settings.marshal_with(device_measurement_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings for a device measurement with the unique_id"""
+        """Show the settings for a device measurement with the unique_id."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -154,7 +154,7 @@ class SettingsDeviceMeasurementsDeviceID(Resource):
     @ns_settings.marshal_with(device_measurement_list_fields)
     @flask_login.login_required
     def get(self, device_id):
-        """Show the settings for all device measurements with the device_id"""
+        """Show the settings for all device measurements with the device_id."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -180,7 +180,7 @@ class SettingsInputs(Resource):
     @ns_settings.marshal_with(input_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all input settings"""
+        """Show all input settings."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -206,7 +206,7 @@ class SettingsInputsUniqueID(Resource):
     @ns_settings.marshal_with(input_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings for an input"""
+        """Show the settings for an input."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -228,7 +228,7 @@ class SettingsMaths(Resource):
     @ns_settings.marshal_with(math_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all math settings"""
+        """Show all math settings."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -254,7 +254,7 @@ class SettingsMathsUniqueID(Resource):
     @ns_settings.marshal_with(math_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings for an math"""
+        """Show the settings for an math."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -276,7 +276,7 @@ class SettingsMeasurements(Resource):
     @ns_settings.marshal_with(measurement_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all measurement settings"""
+        """Show all measurement settings."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -302,7 +302,7 @@ class SettingsMeasurementsUniqueID(Resource):
     @ns_settings.marshal_with(measurement_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings for a measurement with the unique_id"""
+        """Show the settings for a measurement with the unique_id."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -325,7 +325,7 @@ class SettingsOutputs(Resource):
     @ns_settings.marshal_with(output_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all output settings"""
+        """Show all output settings."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -351,7 +351,7 @@ class SettingsOutputsUniqueID(Resource):
     @ns_settings.marshal_with(output_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings for an output with the unique_id"""
+        """Show the settings for an output with the unique_id."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -373,7 +373,7 @@ class SettingsPIDs(Resource):
     @ns_settings.marshal_with(pid_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all pid settings"""
+        """Show all pid settings."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -399,7 +399,7 @@ class SettingsPIDsUniqueID(Resource):
     @ns_settings.marshal_with(pid_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings for a pid with the unique_id"""
+        """Show the settings for a pid with the unique_id."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -421,7 +421,7 @@ class SettingsTriggers(Resource):
     @ns_settings.marshal_with(trigger_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all trigger settings"""
+        """Show all trigger settings."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -447,7 +447,7 @@ class SettingsTriggersUniqueID(Resource):
     @ns_settings.marshal_with(trigger_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings for a trigger with the unique_id"""
+        """Show the settings for a trigger with the unique_id."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -469,7 +469,7 @@ class SettingsUnits(Resource):
     @ns_settings.marshal_with(unit_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all unit settings"""
+        """Show all unit settings."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -495,7 +495,7 @@ class SettingsUnitsUniqueID(Resource):
     @ns_settings.marshal_with(unit_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings for a unit with the unique_id"""
+        """Show the settings for a unit with the unique_id."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -517,7 +517,7 @@ class SettingsUsers(Resource):
     @ns_settings.marshal_with(user_list_fields)
     @flask_login.login_required
     def get(self):
-        """Show all user settings"""
+        """Show all user settings."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
         try:
@@ -543,7 +543,7 @@ class SettingsUsersUniqueID(Resource):
     @ns_settings.marshal_with(user_fields)
     @flask_login.login_required
     def get(self, unique_id):
-        """Show the settings for a user with the unique_id"""
+        """Show the settings for a user with the unique_id."""
         if not utils_general.user_has_permission('view_settings'):
             abort(403)
 

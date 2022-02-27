@@ -14,7 +14,7 @@ def cond_statement_replace(
         cond_statement,
         table_conditions_all,
         table_actions_all):
-    """Replace short condition/action IDs in conditional statement with full condition/action IDs"""
+    """Replace short condition/action IDs in conditional statement with full condition/action IDs."""
     cond_statement_replaced = cond_statement
     for each_condition in table_conditions_all:
         condition_id_short = each_condition.unique_id.split('-')[0]

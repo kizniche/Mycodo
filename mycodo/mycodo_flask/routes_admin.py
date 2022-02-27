@@ -1,5 +1,5 @@
 # coding=utf-8
-"""collection of Admin endpoints"""
+"""collection of Admin endpoints."""
 import datetime
 import io
 import logging
@@ -256,7 +256,7 @@ def install_dependencies(dependencies):
 @blueprint.route('/admin/dependency_install/<device>', methods=('GET', 'POST'))
 @flask_login.login_required
 def admin_dependency_install(device):
-    """Install Dependencies"""
+    """Install Dependencies."""
     messages = {
         "success": [],
         "info": [],
@@ -421,7 +421,7 @@ def admin_dependencies(device):
 @blueprint.route('/admin/dependency_status', methods=('GET', 'POST'))
 @flask_login.login_required
 def admin_dependency_status():
-    """Return the last 30 lines of the dependency log"""
+    """Return the last 30 lines of the dependency log."""
     if os.path.isfile(DEPENDENCY_LOG_FILE):
         command = 'tail -n 40 {log}'.format(log=DEPENDENCY_LOG_FILE)
         log = subprocess.Popen(
@@ -440,7 +440,7 @@ def admin_dependency_status():
 @blueprint.route('/admin/statistics', methods=('GET', 'POST'))
 @flask_login.login_required
 def admin_statistics():
-    """Display collected statistics"""
+    """Display collected statistics."""
     if not utils_general.user_has_permission('view_stats'):
         return redirect(url_for('routes_general.home'))
 
@@ -455,7 +455,7 @@ def admin_statistics():
 @blueprint.route('/admin/upgrade_status', methods=('GET', 'POST'))
 @flask_login.login_required
 def admin_upgrade_status():
-    """Return the last 30 lines of the upgrade log"""
+    """Return the last 30 lines of the upgrade log."""
     if os.path.isfile(UPGRADE_TMP_LOG_FILE):
         command = 'cat {log}'.format(log=UPGRADE_TMP_LOG_FILE)
         log = subprocess.Popen(

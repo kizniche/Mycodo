@@ -292,7 +292,7 @@ class OutputModule(AbstractOutput):
         return self.output_setup
 
     def stop_output(self):
-        """Called when Output is stopped"""
+        """Called when Output is stopped."""
         self.running = False
         for channel in channels_dict:
             if self.is_setup(channel=channel):

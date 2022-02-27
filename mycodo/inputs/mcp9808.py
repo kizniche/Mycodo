@@ -42,7 +42,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that monitors the MCP9808's temperature"""
+    """A sensor support class that monitors the MCP9808's temperature."""
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
@@ -52,7 +52,7 @@ class InputModule(AbstractInput):
             self.initialize_input()
 
     def initialize_input(self):
-        """Initialize the MCP9808 sensor class"""
+        """Initialize the MCP9808 sensor class."""
         from Adafruit_MCP9808 import MCP9808
 
         self.sensor = MCP9808.MCP9808(
@@ -61,7 +61,7 @@ class InputModule(AbstractInput):
         self.sensor.begin()
 
     def get_measurement(self):
-        """Get measurements and store in the database"""
+        """Get measurements and store in the database."""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

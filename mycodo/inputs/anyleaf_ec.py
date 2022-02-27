@@ -75,7 +75,7 @@ class InputModule(AbstractInput):
         self.sensor = EcSensor(K=self.constant_k)
 
     def get_measurement(self):
-        """Gets the measurement"""
+        """Gets the measurement."""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         if not self.sensor:

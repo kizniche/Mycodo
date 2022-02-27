@@ -409,7 +409,7 @@ class MotorDriver(object):
         return int(rightMin + (valueScaled * rightSpan))
 
     def motor_speed_set_a_b(self, speed_a, speed_b):
-        """Set motor speed"""
+        """Set motor speed."""
         motor_speed_a = self.map_vals(speed_a, 0, 100, 0, 255)
         motor_speed_b = self.map_vals(speed_b, 0, 100, 0, 255)
         self.bus.write_i2c_block_data(
@@ -419,7 +419,7 @@ class MotorDriver(object):
         time.sleep(0.02)
 
     def motor_direction_set(self, direction):
-        """Set motor direction, either cw or ccw"""
+        """Set motor direction, either cw or ccw."""
         if direction == "cw":
             direction_address = 0b1010
         elif direction == "ccw":

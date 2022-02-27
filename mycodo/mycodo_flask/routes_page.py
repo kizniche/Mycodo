@@ -1,5 +1,5 @@
 # coding=utf-8
-"""collection of Page endpoints"""
+"""collection of Page endpoints."""
 import calendar
 import datetime
 import glob
@@ -545,7 +545,7 @@ def page_export():
 @blueprint.route('/graph-async', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_graph_async():
-    """Generate graphs using asynchronous data retrieval"""
+    """Generate graphs using asynchronous data retrieval."""
     if not current_app.config['TESTING']:
         dep_unmet, _, _ = return_dependencies('highstock')
         if dep_unmet:
@@ -652,7 +652,7 @@ def page_graph_async():
 @blueprint.route('/info', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_info():
-    """Display page with system information from command line tools"""
+    """Display page with system information from command line tools."""
     if not utils_general.user_has_permission('view_stats'):
         return redirect(url_for('routes_general.home'))
 
@@ -822,7 +822,7 @@ def output_pstree_top(pid):
 @blueprint.route('/lcd', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_lcd():
-    """Display LCD output settings"""
+    """Display LCD output settings."""
     lcd = LCD.query.all()
     lcd_data = LCDData.query.all()
     math = Math.query.all()
@@ -897,7 +897,7 @@ def page_lcd():
 @blueprint.route('/live', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_live():
-    """Page of recent and updating input data"""
+    """Page of recent and updating input data."""
     # Get what each measurement uses for a unit
     function = CustomController.query.all()
     device_measurements = DeviceMeasurements.query.all()
@@ -956,7 +956,7 @@ def page_live():
 @blueprint.route('/logview', methods=('GET', 'POST'))
 @flask_login.login_required
 def page_logview():
-    """Display the last (n) lines from a log file"""
+    """Display the last (n) lines from a log file."""
     if not utils_general.user_has_permission('view_logs'):
         return redirect(url_for('routes_general.home'))
 
@@ -1445,7 +1445,7 @@ def dict_custom_colors():
 
 
 def gen(camera):
-    """Video streaming generator function"""
+    """Video streaming generator function."""
     while True:
         frame = camera.get_frame()
         yield (b'--frame\r\n'

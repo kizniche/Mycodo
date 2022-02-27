@@ -101,7 +101,7 @@ class InputModule(AbstractInput):
         self.pi = pigpio.pi()
 
     def get_measurement(self):
-        """Gets the humidity and temperature"""
+        """Gets the humidity and temperature."""
         if not self.pi.connected:
             self.logger.error("Could not connect to pigpiod. Ensure it is running and try again.")
             return None

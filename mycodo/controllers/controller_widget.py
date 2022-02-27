@@ -36,7 +36,7 @@ MYCODO_DB_PATH = 'sqlite:///' + SQL_DATABASE_MYCODO
 
 
 class WidgetController(AbstractController, threading.Thread):
-    """class for controlling widgets"""
+    """class for controlling widgets."""
     def __init__(self, ready, debug):
         threading.Thread.__init__(self)
         super(WidgetController, self).__init__(ready, unique_id=None, name=__name__)
@@ -50,7 +50,7 @@ class WidgetController(AbstractController, threading.Thread):
         self.sample_rate = None
 
     def initialize_variables(self):
-        """Begin initializing widget parameters"""
+        """Begin initializing widget parameters."""
         self.dict_widgets = parse_widget_information()
 
         self.sample_rate = db_retrieve_table_daemon(
@@ -105,7 +105,7 @@ class WidgetController(AbstractController, threading.Thread):
             self.logger.exception("Widget create/refresh")
 
     def widget_remove(self, unique_id):
-        """Remove a widget"""
+        """Remove a widget."""
         try:
             timer = timeit.default_timer()
             if unique_id in self.widget_loaded:

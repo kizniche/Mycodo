@@ -37,7 +37,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that monitors the MLX90393's magnetic flux"""
+    """A sensor support class that monitors the MLX90393's magnetic flux."""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
@@ -57,7 +57,7 @@ class InputModule(AbstractInput):
         )
 
     def get_measurement(self):
-        """Gets the x, y, and z components of the magnetic flux"""
+        """Gets the x, y, and z components of the magnetic flux."""
         if not self.sensor:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

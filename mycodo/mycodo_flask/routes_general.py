@@ -69,7 +69,7 @@ limiter = Limiter(key_func=get_ip_address)
 
 @blueprint.route('/')
 def home():
-    """Load the default landing page"""
+    """Load the default landing page."""
     try:
         if flask_login.current_user.is_authenticated:
             if flask_login.current_user.landing_page == 'live':
@@ -85,7 +85,7 @@ def home():
 
 @blueprint.route('/index_page')
 def index_page():
-    """Load the index page"""
+    """Load the index page."""
     try:
         if not flask_login.current_user.index_page:
             return home()
@@ -113,7 +113,7 @@ def page_settings():
 @blueprint.route('/note_attachment/<filename>')
 @flask_login.login_required
 def send_note_attachment(filename):
-    """Return a file from the note attachment directory"""
+    """Return a file from the note attachment directory."""
     file_path = os.path.join(PATH_NOTE_ATTACHMENTS, filename)
     if file_path is not None:
         try:
@@ -126,7 +126,7 @@ def send_note_attachment(filename):
 @blueprint.route('/camera/<camera_unique_id>/<img_type>/<filename>')
 @flask_login.login_required
 def camera_img_return_path(camera_unique_id, img_type, filename):
-    """Return an image from stills or time-lapses"""
+    """Return an image from stills or time-lapses."""
     camera = Camera.query.filter(Camera.unique_id == camera_unique_id).first()
     camera_path = assure_path_exists(
         os.path.join(PATH_CAMERAS, '{uid}'.format(uid=camera.unique_id)))
@@ -159,7 +159,7 @@ def camera_img_return_path(camera_unique_id, img_type, filename):
 @blueprint.route('/camera_acquire_image/<image_type>/<camera_unique_id>/<max_age>')
 @flask_login.login_required
 def camera_img_acquire(image_type, camera_unique_id, max_age):
-    """Capture an image and return the filename"""
+    """Capture an image and return the filename."""
     if image_type == 'new':
         tmp_filename = None
     elif image_type == 'tmp':
@@ -181,7 +181,7 @@ def camera_img_acquire(image_type, camera_unique_id, max_age):
 @blueprint.route('/camera_latest_timelapse/<camera_unique_id>/<max_age>')
 @flask_login.login_required
 def camera_img_latest_timelapse(camera_unique_id, max_age):
-    """Capture an image and/or return a filename"""
+    """Capture an image and/or return a filename."""
     camera = Camera.query.filter(
             Camera.unique_id == camera_unique_id).first()
 
@@ -223,14 +223,14 @@ def video_feed(unique_id):
 @blueprint.route('/outputstate')
 @flask_login.login_required
 def gpio_state():
-    """Return all output states"""
+    """Return all output states."""
     return jsonify(get_all_output_states())
 
 
 @blueprint.route('/outputstate_unique_id/<unique_id>/<channel_id>')
 @flask_login.login_required
 def gpio_state_unique_id(unique_id, channel_id):
-    """Return the GPIO state, for dashboard output"""
+    """Return the GPIO state, for dashboard output."""
     channel = OutputChannel.query.filter(OutputChannel.unique_id == channel_id).first()
     daemon_control = DaemonControl()
     state = daemon_control.output_state(unique_id, channel.channel)
@@ -240,7 +240,7 @@ def gpio_state_unique_id(unique_id, channel_id):
 @blueprint.route('/widget_execute/<unique_id>')
 @flask_login.login_required
 def widget_execute(unique_id):
-    """Return the response from the execution of widget code"""
+    """Return the response from the execution of widget code."""
     daemon_control = DaemonControl()
     return_value = daemon_control.widget_execute(unique_id)
     return jsonify(return_value)
@@ -249,14 +249,14 @@ def widget_execute(unique_id):
 @blueprint.route('/time')
 @flask_login.login_required
 def get_time():
-    """Return the current time"""
+    """Return the current time."""
     return jsonify(datetime.datetime.now().strftime('%m/%d %H:%M'))
 
 
 @blueprint.route('/dl/<dl_type>/<path:filename>')
 @flask_login.login_required
 def download_file(dl_type, filename):
-    """Serve log file to download"""
+    """Serve log file to download."""
     if dl_type == 'log':
         return send_from_directory(LOG_PATH, filename, as_attachment=True)
 
@@ -266,7 +266,7 @@ def download_file(dl_type, filename):
 @blueprint.route('/last/<unique_id>/<measure_type>/<measurement_id>/<period>')
 @flask_login.login_required
 def last_data(unique_id, measure_type, measurement_id, period):
-    """Return the most recent time and value from influxdb"""
+    """Return the most recent time and value from influxdb."""
     if not str_is_float(period):
         return '', 204
 
@@ -344,7 +344,7 @@ def last_data(unique_id, measure_type, measurement_id, period):
 @blueprint.route('/past/<unique_id>/<measure_type>/<measurement_id>/<past_seconds>')
 @flask_login.login_required
 def past_data(unique_id, measure_type, measurement_id, past_seconds):
-    """Return data from past_seconds until present from influxdb"""
+    """Return data from past_seconds until present from influxdb."""
     if not str_is_float(past_seconds):
         return '', 204
 
@@ -427,7 +427,7 @@ def past_data(unique_id, measure_type, measurement_id, past_seconds):
 @blueprint.route('/generate_thermal_image/<unique_id>/<timestamp>')
 @flask_login.login_required
 def generate_thermal_image_from_timestamp(unique_id, timestamp):
-    """Return a file from the note attachment directory"""
+    """Return a file from the note attachment directory."""
     ts_now = datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     camera_path = assure_path_exists(
         os.path.join(PATH_CAMERAS, '{uid}'.format(uid=unique_id)))
@@ -549,7 +549,7 @@ def export_data(unique_id, measurement_id, start_seconds, end_seconds):
     from io import StringIO
 
     def iter_csv(data):
-        """Stream CSV file to user for download"""
+        """Stream CSV file to user for download."""
         line = StringIO()
         writer = csv.writer(line)
         writer.writerow([col_1, col_2])
@@ -1013,7 +1013,7 @@ def output_mod(output_id, channel, state, output_type, amount):
 @blueprint.route('/daemonactive')
 @flask_login.login_required
 def daemon_active():
-    """Return 'alive' if the daemon is running"""
+    """Return 'alive' if the daemon is running."""
     try:
         control = DaemonControl()
         return control.daemon_status()
@@ -1026,7 +1026,7 @@ def daemon_active():
 @blueprint.route('/systemctl/<action>')
 @flask_login.login_required
 def computer_command(action):
-    """Execute one of several commands as root"""
+    """Execute one of several commands as root."""
     if not utils_general.user_has_permission('edit_settings'):
         return redirect(url_for('routes_general.home'))
 
@@ -1107,7 +1107,7 @@ def return_point_timestamp(dev_id, unit, period, measurement=None, channel=None)
 @blueprint.route('/last_pid/<pid_id>/<input_period>')
 @flask_login.login_required
 def last_data_pid(pid_id, input_period):
-    """Return the most recent time and value from influxdb"""
+    """Return the most recent time and value from influxdb."""
     if not str_is_float(input_period):
         return '', 204
 
@@ -1257,7 +1257,7 @@ def pid_mod_unique_id(unique_id, state):
 # @blueprint.route('/export_swagger')
 # @flask_login.login_required
 # def export_swagger():
-#     """Export swagger JSON to swagger.json file"""
+#     """Export swagger JSON to swagger.json file."""
 #     from mycodo.mycodo_flask.utils import utils_general
 #     import json
 #     if not utils_general.user_has_permission('view_settings'):
