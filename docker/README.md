@@ -12,8 +12,8 @@ Please do not submit github issues for Docker-related problems. Also do not expe
 
 This has been tested to work with:
 
- - Raspberry Pi running Raspbian Buster
- - 64-bit PC running Ubuntu Linux (18.04, 64-bit)
+- Raspberry Pi running Raspbian Buster
+- 64-bit PC running Ubuntu Linux (18.04, 64-bit)
 
 A Dockerized Mycodo instance cannot run if there is a local install of Mycodo also running. You can stop any local non-Docker Mycodo instances prior to building with the following commands. Note that this will only stop these services until reboot.
 
@@ -55,33 +55,33 @@ Download the [Debian Buster with Raspberry Pi Desktop ISO](https://www.raspberry
 
 ### Create New Virtual Machine
 
- -  Start VirtualBox and click ```New``` to create a new virtual machine.
- -  Enter a name, change the Type to ```Linux```, and version to ```Debian (64-bit)```, then click Next.
- -  Select at least 1024 MB RAM to allocate to this virtual machine, then click Next.
- -  Select ```Create a virtual hard disk now```, then click Next.
- -  Select ```VDI (VirtualBox Disk Image)```, then click Next.
- -  Select ```Dynamically allocated```, then click Next.
- -  Raspbian will take up around 8 GB, so allocate at least 12 GB on the next screen, then click Create.
- -  Select the new virtual machine that was just created, then click ```Settings```.
- -  Click ```Storage``` on the left menu, then under ```Controller: IDE```, select ```Empty```, then under ```Attributes``` on the right, click the disc icon next to ```Optical Drive```, then select ```Choose Virtual Optical Disk File``` and select the Raspbian ISO that was downloaded.
- -  Click OK to close the settings menu.
- -  Start the virtual machine by clicking Start.
+- Start VirtualBox and click ```New``` to create a new virtual machine.
+- Enter a name, change the Type to ```Linux```, and version to ```Debian (64-bit)```, then click Next.
+- Select at least 1024 MB RAM to allocate to this virtual machine, then click Next.
+- Select ```Create a virtual hard disk now```, then click Next.
+- Select ```VDI (VirtualBox Disk Image)```, then click Next.
+- Select ```Dynamically allocated```, then click Next.
+- Raspbian will take up around 8 GB, so allocate at least 12 GB on the next screen, then click Create.
+- Select the new virtual machine that was just created, then click ```Settings```.
+- Click ```Storage``` on the left menu, then under ```Controller: IDE```, select ```Empty```, then under ```Attributes``` on the right, click the disc icon next to ```Optical Drive```, then select ```Choose Virtual Optical Disk File``` and select the Raspbian ISO that was downloaded.
+- Click OK to close the settings menu.
+- Start the virtual machine by clicking Start.
 
 ### Installing Raspbian
 
- -  Once the virtual machine starts, you will be presented with a menu titled ```Debian GNU/Linux menu (BIOS mode)```. Select ```install```.
- -  Select your language, then press Enter.
- -  On the ```Partition discs``` screen, select ```Guided - use entire disk```, then press Enter.
- -  On the next screen, select the only disk that's presented, then press Enter.
- -  On the next screen, select ```All files in one partition (recommended for new users)```, then press Enter.
- -  On the next screen, select ```Finish partitioning and write changes to disk```, then press Enter.
- -  On the next screen, select ```<Yes>``` to the ```Write the changes to disks?``` question, then press Enter.
- -  On the ```Install the GRUB boot loader on a hard disk``` screen, select ```<Yes>``` to the ```Install the GRUB boot loader to the master boot record?``` question, then press Enter.
- -  On the next screen, select ```/dev/sda```, then press Enter.
- -  Give the next processes ample time to complete.
- -  On the ```Finish the installation``` screen, select ```<Continue>```, then press Enter.
- -  Once the virtual machine reboots, the Raspbian desktop should load and present a graphical setup to finish installing Raspbian. Follow the prompts to complete the install.
- -  At this point is is recommended to open a terminal and run ```sudo apt update && sudo apt upgrade``` to upgrade your system software to the latest version (if you haven't already done this in the graphical setup).
+- Once the virtual machine starts, you will be presented with a menu titled ```Debian GNU/Linux menu (BIOS mode)```. Select ```install```.
+- Select your language, then press Enter.
+- On the ```Partition discs``` screen, select ```Guided - use entire disk```, then press Enter.
+- On the next screen, select the only disk that's presented, then press Enter.
+- On the next screen, select ```All files in one partition (recommended for new users)```, then press Enter.
+- On the next screen, select ```Finish partitioning and write changes to disk```, then press Enter.
+- On the next screen, select ```<Yes>``` to the ```Write the changes to disks?``` question, then press Enter.
+- On the ```Install the GRUB boot loader on a hard disk``` screen, select ```<Yes>``` to the ```Install the GRUB boot loader to the master boot record?``` question, then press Enter.
+- On the next screen, select ```/dev/sda```, then press Enter.
+- Give the next processes ample time to complete.
+- On the ```Finish the installation``` screen, select ```<Continue>```, then press Enter.
+- Once the virtual machine reboots, the Raspbian desktop should load and present a graphical setup to finish installing Raspbian. Follow the prompts to complete the install.
+- At this point is is recommended to open a terminal and run ```sudo apt update && sudo apt upgrade``` to upgrade your system software to the latest version (if you haven't already done this in the graphical setup).
 
 ### Install Mycodo in Docker containers
 
