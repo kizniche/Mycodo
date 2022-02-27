@@ -28,7 +28,6 @@ import math
 import time
 import traceback
 
-from flask import flash
 from flask_babel import lazy_gettext
 
 from mycodo.config import MYCODO_VERSION
@@ -88,7 +87,7 @@ def execute_at_modification(
     dictionaries. Additionally, both the pre-saved and post-saved options are available, as it's
     sometimes useful to know what settings changed and from what values. You can modify the post-saved
     options and these will be stored in the database.
-    :param mod_output: The post-saved output database entry, minus the custom_options settings
+    :param mod_function: The post-saved output database entry, minus the custom_options settings
     :param request_form: The requests.form object the user submitted
     :param custom_options_dict_presave: dict of pre-saved custom output options
     :param custom_options_channels_dict_presave: dict of pre-saved custom output channel options

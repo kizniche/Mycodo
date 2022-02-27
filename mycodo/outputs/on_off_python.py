@@ -73,7 +73,7 @@ def execute_at_modification(
     """
     Function to run when the Output is saved to evaluate the Python 3 code using pylint
     :param messages: dict of info, warning, error, success messages as well as other variables
-    :param mod_input: The WTForms object containing the form data submitted by the web GUI
+    :param mod_output: The WTForms object containing the form data submitted by the web GUI
     :param request_form: The custom_options form input data (if it exists)
     :param custom_options_dict_presave:
     :param custom_options_channels_dict_presave:

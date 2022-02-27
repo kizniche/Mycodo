@@ -7,7 +7,6 @@ from flask_babel import lazy_gettext
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import Output
-from mycodo.databases.models import OutputChannel
 from mycodo.function_actions.base_function_action import AbstractFunctionAction
 from mycodo.utils.constraints_pass import constraints_pass_positive_or_zero_value
 from mycodo.utils.constraints_pass import constraints_pass_positive_value

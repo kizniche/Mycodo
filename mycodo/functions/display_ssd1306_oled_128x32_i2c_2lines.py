@@ -28,7 +28,6 @@ import math
 import time
 import traceback
 
-from flask import flash
 from flask_babel import lazy_gettext
 
 from mycodo.config import MYCODO_VERSION

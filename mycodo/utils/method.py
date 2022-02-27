@@ -30,8 +30,8 @@ class AbstractMethod(object):
     def __init__(self, method, method_data, logger=None):
         """
         Initializes the method class
+        :param method: method entry from method table
         :param method_data: data queried from method_data table
-        :param method_type: method type from method table
         :param logger: The logger to use
         :return: 0 (success) or 1 (error) and a setpoint value
         """

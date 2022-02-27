@@ -43,7 +43,7 @@ case "${1:-''}" in
         printf "\n#### All dependencies installed\n\n" 2>&1 | tee -a "${LOG_LOCATION}"
 
         printf "#### You must log out then back in before running 'make build'. If you are not running Raspbian under the user 'pi', then you need to add your user to the 'docker group with the command 'usermod -aG docker pi', substituting 'pi' with your user, then log out for the changes to take effect.\n" 2>&1 | tee -a "${LOG_LOCATION}"
-        printf 'For example, to add you current user: `sudo usermod -aG docker $USER`\n' 2>&1 | tee -a "${LOG_LOCATION}"
+        printf 'For example, to add you current user: "sudo usermod -aG docker $USER"\n' 2>&1 | tee -a "${LOG_LOCATION}"
     ;;
     "test")
         docker exec -ti mycodo_flask "${INSTALL_PATH}"/env/bin/python -m pip install --upgrade -r /home/mycodo/mycodo/install/requirements-testing.txt

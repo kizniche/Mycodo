@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Generate markdown file of Input information to be inserted into the manual."""
 import os
-import re
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(__file__, "../../..")))

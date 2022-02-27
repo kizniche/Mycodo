@@ -9,7 +9,6 @@ from wtforms import BooleanField
 from wtforms import HiddenField
 from wtforms import IntegerField
 from wtforms import SelectField
-from wtforms import SelectMultipleField
 from wtforms import StringField
 from wtforms import SubmitField
 from wtforms import widgets

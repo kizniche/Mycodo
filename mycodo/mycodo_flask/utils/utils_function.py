@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
-import json
 import logging
 import threading
 
 import sqlalchemy
 from flask import current_app
 from flask_babel import gettext
-from sqlalchemy import and_
 
 from mycodo.config import FUNCTION_INFO
 from mycodo.config import PID_INFO
 from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases import set_uuid
 from mycodo.databases.models import Actions
-from mycodo.databases.models import Camera
 from mycodo.databases.models import Conditional
 from mycodo.databases.models import ConditionalConditions
 from mycodo.databases.models import CustomController
@@ -31,9 +28,6 @@ from mycodo.mycodo_flask.utils.utils_general import return_dependencies
 from mycodo.utils.conditional import save_conditional_code
 from mycodo.utils.function_actions import parse_function_action_information
 from mycodo.utils.functions import parse_function_information
-from mycodo.utils.system_pi import is_int
-from mycodo.utils.system_pi import str_is_float
-from mycodo.utils.utils import random_alphanumeric
 
 logger = logging.getLogger(__name__)
 

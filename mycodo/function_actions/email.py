@@ -1,7 +1,6 @@
 # coding=utf-8
 import time
 
-from mycodo.config_translations import TRANSLATIONS
 from mycodo.databases.models import Actions
 from mycodo.databases.models import SMTP
 from mycodo.function_actions.base_function_action import AbstractFunctionAction

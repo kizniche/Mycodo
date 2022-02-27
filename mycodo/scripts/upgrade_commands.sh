@@ -395,9 +395,9 @@ case "${1:-''}" in
         CURRENT_VERSION=$(apt-cache policy influxdb | grep 'Installed' | gawk '{print $2}')
         if [[ "${CURRENT_VERSION}" != "${CORRECT_VERSION}" ]]; then
             echo "#### Incorrect InfluxDB version (v${CURRENT_VERSION}) installed. Installing v${CORRECT_VERSION}..."
-            wget --quiet ${INSTALL_ADDRESS}${INSTALL_FILE}
-            dpkg -i ${INSTALL_FILE}
-            rm -rf ${INSTALL_FILE}
+            wget --quiet "${INSTALL_ADDRESS}${INSTALL_FILE}"
+            dpkg -i "${INSTALL_FILE}"
+            rm -rf "${INSTALL_FILE}"
             service influxdb restart
         else
             printf "Correct version of InfluxDB currently installed\n"
@@ -439,7 +439,7 @@ case "${1:-''}" in
     'update-packages')
         printf "\n#### Installing prerequisite apt packages and update pip\n"
         apt-get remove -y apache2 python-cffi-backend python3-cffi-backend
-        apt-get install -y ${APT_PKGS}
+        apt-get install -y "${APT_PKGS}"
         python3 -m pip install --upgrade pip
     ;;
     'update-permissions')

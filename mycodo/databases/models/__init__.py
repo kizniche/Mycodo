@@ -114,19 +114,12 @@ def init_db():
     """
     Binds the database to the specific class tables
     and creates them if needed
-
-    :param db_uri:  URI to the database
-    :return: None
     """
     db.create_all()
 
 
 def drop_db():
-    """
-    Remove all entries in the database
-    :param db_uri: URI to the database
-    :return: None
-    """
+    """Remove all entries in the database."""
     db.drop_all()
 
 
