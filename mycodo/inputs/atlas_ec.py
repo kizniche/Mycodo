@@ -347,7 +347,7 @@ class InputModule(AbstractInput):
             elif level == "dry":
                 write_cmd = "Cal,dry"
             elif level == "single":
-                write_cmd = "Cal,{}".format(level, ec)
+                write_cmd = "Cal,{}".format(ec)
             else:
                 write_cmd = "Cal,{},{}".format(level, ec)
             self.logger.debug("Calibration command: {}".format(write_cmd))

@@ -475,10 +475,10 @@ class LYWSD03MMC:
             batteryVoltage = int(data_str[30:34], 16) / 1000
             batteryPercent = int(data_str[28:30], 16)
 
-            self.logger.debug("Temperature: ", temperature)
-            self.logger.debug("Humidity: ", humidity)
-            self.logger.debug("Battery: {} volts, {}%".format(batteryVoltage, batteryPercent))
-            self.logger.debug("RSSI:", rssi, "dBm")
+            self.logger.debug("Temperature: {}".format(temperature))
+            self.logger.debug("Humidity: {}".format(humidity))
+            self.logger.debug("Battery: {} volts, {} %".format(batteryVoltage, batteryPercent))
+            self.logger.debug("RSSI: {} dBm".format(rssi))
 
             global measurement_values
             measurement_values = {

@@ -8,7 +8,7 @@ import shutil
 import time
 import zipfile
 from collections import OrderedDict
-
+from mycodo.utils.system_pi import parse_custom_option_values_output_channels_json
 from dateutil import relativedelta
 
 from mycodo.config import INFLUXDB_DATABASE
@@ -25,11 +25,13 @@ from mycodo.databases.models import DeviceMeasurements
 from mycodo.databases.models import EnergyUsage
 from mycodo.databases.models import Misc
 from mycodo.databases.models import Output
+from mycodo.databases.models import OutputChannel
 from mycodo.utils.database import db_retrieve_table_daemon
 from mycodo.utils.influx import average_past_seconds
 from mycodo.utils.influx import average_start_end_seconds
 from mycodo.utils.influx import output_sec_on
 from mycodo.utils.logging_utils import set_log_level
+from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
 from mycodo.utils.system_pi import return_measurement_info
@@ -432,7 +434,13 @@ def generate_output_usage_report():
 
         misc = db_retrieve_table_daemon(Misc, entry='first')
         output = db_retrieve_table_daemon(Output)
-        output_usage = return_output_usage(misc, output.all())
+        output_channel = db_retrieve_table_daemon(OutputChannel)
+        dict_outputs = parse_output_information()
+        custom_options_values_output_channels = parse_custom_option_values_output_channels_json(
+            output_channel.query.all(), dict_controller=dict_outputs, key_name='custom_channel_options')
+
+        output_usage = return_output_usage(
+            dict_outputs, misc, output.all(), output_channel, custom_options_values_output_channels)
 
         timestamp = time.strftime("%Y-%m-%d_%H-%M")
         file_name = 'output_usage_report_{ts}.csv'.format(ts=timestamp)

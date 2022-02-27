@@ -1137,6 +1137,7 @@ if __name__ == "__main__":
                 each_revision))
             try:
                 from mycodo.databases.models import Actions
+                from mycodo.databases.models import ConditionalConditions
                 from mycodo.databases.models import Conditional
                 from mycodo.utils.conditional import save_conditional_code
 
@@ -1267,6 +1268,7 @@ if __name__ == "__main__":
             try:
                 from mycodo.databases.models import Actions
                 from mycodo.databases.models import Conditional
+                from mycodo.databases.models import ConditionalConditions
                 from mycodo.databases.models import Input
                 from mycodo.inputs.python_code import execute_at_creation
                 from mycodo.utils.conditional import save_conditional_code
@@ -1303,6 +1305,7 @@ if __name__ == "__main__":
             try:
                 from mycodo.databases.models import Actions
                 from mycodo.databases.models import Conditional
+                from mycodo.databases.models import ConditionalConditions
                 from mycodo.databases.models import Input
                 from mycodo.inputs.python_code import execute_at_creation
                 from mycodo.utils.conditional import save_conditional_code

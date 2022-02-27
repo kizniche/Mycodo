@@ -414,7 +414,7 @@ class InputModule(AbstractInput):
                 if atlas_status == "success":
                     self.logger.info("pH Calibration Slope: {}".format(atlas_return))
             else:
-                self.logger.error("Calibration string does not contain a comma (",")")
+                self.logger.error('Calibration string does not contain a comma (",")')
             time.sleep(2)
         except:
             self.logger.exception("Exception importing calibrating")

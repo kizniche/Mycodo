@@ -314,7 +314,7 @@ def action_lcd_backlight_color(cond_action, message):
 
 def trigger_action(
         function_actions,
-        cond_action_id,
+        action_id,
         value=None,
         message='',
         note_tags=None,
@@ -331,7 +331,7 @@ def trigger_action(
     passed back to this function in order to append to those lists.
 
     :param function_actions: dict of function action information
-    :param cond_action_id: unique_id of action
+    :param action_id: unique_id of action
     :param value: a variable to be sent to the action
     :param message: message string to append to that will be sent back
     :param note_tags: list of note tags to use if creating a note
@@ -343,10 +343,9 @@ def trigger_action(
 
     :return: message or (message, note_tags, email_recipients, attachment_file, attachment_type)
     """
-    cond_action = db_retrieve_table_daemon(Actions, unique_id=cond_action_id)
+    cond_action = db_retrieve_table_daemon(Actions, unique_id=action_id)
     if not cond_action:
-        message += 'Error: Action with ID {} not found!'.format(
-            cond_action_id)
+        message += 'Error: Action with ID {} not found!'.format(action_id)
         if single_action:
             return message
         else:

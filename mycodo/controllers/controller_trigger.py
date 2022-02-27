@@ -26,8 +26,8 @@ import datetime
 import threading
 import time
 
-from mycodo.controllers.base_controller import AbstractController
 from mycodo.config import SQL_DATABASE_MYCODO
+from mycodo.controllers.base_controller import AbstractController
 from mycodo.databases.models import Input
 from mycodo.databases.models import Math
 from mycodo.databases.models import Misc
@@ -39,6 +39,7 @@ from mycodo.databases.models import Trigger
 from mycodo.databases.utils import session_scope
 from mycodo.mycodo_client import DaemonControl
 from mycodo.utils.database import db_retrieve_table_daemon
+from mycodo.utils.function_actions import parse_function_action_information
 from mycodo.utils.function_actions import trigger_function_actions
 from mycodo.utils.method import load_method_handler, parse_db_time
 from mycodo.utils.sunriseset import calculate_sunrise_sunset_epoch
@@ -126,8 +127,12 @@ class TriggerController(AbstractController, threading.Thread):
 
                 self.timer_period += self.trigger.period
                 self.set_output_duty_cycle(pwm_duty_cycle)
+
+                function_actions = parse_function_action_information()
+
                 if self.trigger_actions_at_period:
                     trigger_function_actions(
+                        function_actions,
                         self.unique_id,
                         debug=self.log_level_debug)
                 check_approved = True
@@ -396,7 +401,9 @@ class TriggerController(AbstractController, threading.Thread):
                 return
 
         # If the code hasn't returned by now, action should be executed
+        function_actions = parse_function_action_information()
         trigger_function_actions(
+            function_actions,
             self.unique_id,
             message=message,
             debug=self.log_level_debug)

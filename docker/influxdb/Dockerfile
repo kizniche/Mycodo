@@ -2,7 +2,7 @@ FROM influxdb:1.8.10
 
 RUN mkdir -pv /var/influxdb/data
 
-ADD docker/influxdb/run.sh /run.sh
+COPY docker/influxdb/run.sh /run.sh
 RUN chmod +x /*.sh
 
 ENV PRE_CREATE_DB mycodo_db
