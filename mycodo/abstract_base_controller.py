@@ -421,7 +421,7 @@ class AbstractBaseController(object):
 
     @staticmethod
     def get_output_channel_from_channel_id(channel_id):
-        """Return channel number from channel ID"""
+        """Return channel number from channel ID."""
         output_channel = db_retrieve_table_daemon(
             OutputChannel).filter(
             OutputChannel.unique_id == channel_id).first()

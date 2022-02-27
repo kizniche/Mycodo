@@ -67,7 +67,7 @@ class InputModule(AbstractInput):
                 dev=self.input_dev.uart_location))
 
     def get_measurement(self):
-        """Gets the K30's CO2 concentration in ppmv via UART"""
+        """Gets the K30's CO2 concentration in ppmv via UART."""
         if not self.ser:
             self.logger.error("Error 101: Device not set up. See https://kizniche.github.io/Mycodo/Error-Codes#error-101 for more info.")
             return

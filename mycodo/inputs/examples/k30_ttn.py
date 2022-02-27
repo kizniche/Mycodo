@@ -116,7 +116,7 @@ class InputModule(AbstractInput):
                 min_seconds_between_transmissions))
 
     def get_measurement(self):
-        """Gets the K30's CO2 concentration in ppmv via UART"""
+        """Gets the K30's CO2 concentration in ppmv via UART."""
         if not self.ser:  # Don't measure if device isn't validated
             return None
 

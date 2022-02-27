@@ -579,7 +579,7 @@ class InputModule(AbstractInput):
         return volt_data
 
     def convert_volt_to_ph(self, volt, temp):
-        """Convert voltage to pH"""
+        """Convert voltage to pH."""
         # Calculate slope and intercept from calibration points.
         self.slope = ((self.ph_cal_ph1 - self.ph_cal_ph2) /
                       (self.nernst_correction(self.ph_cal_v1, self.ph_cal_t1) -
@@ -597,7 +597,7 @@ class InputModule(AbstractInput):
         return ph
 
     def convert_volt_to_ec(self, volt, temp):
-        """Convert voltage to EC"""
+        """Convert voltage to EC."""
         # Calculate slope and intercept from calibration points.
         self.slope = ((self.ec_cal_ec1 - self.ec_cal_ec2) /
                       (self.viscosity_correction(self.ec_cal_v1, self.ec_cal_t1) -

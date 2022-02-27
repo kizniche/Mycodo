@@ -1145,7 +1145,7 @@ class PyroServer(object):
         self.mycodo = mycodo
 
     def lcd_reset(self, lcd_id):
-        """Resets an LCD"""
+        """Resets an LCD."""
         return self.mycodo.lcd_reset(lcd_id)
 
     def lcd_backlight(self, lcd_id, state):

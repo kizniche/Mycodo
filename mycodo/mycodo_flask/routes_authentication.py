@@ -118,7 +118,7 @@ def create_admin():
 
 @blueprint.route('/login', methods=('GET', 'POST'))
 def login_check():
-    """Authenticate users of the web-UI"""
+    """Authenticate users of the web-UI."""
     if not admin_exists():
         return redirect('/create_admin')
     elif flask_login.current_user.is_authenticated:
@@ -136,7 +136,7 @@ def login_check():
 
 @blueprint.route('/login_password', methods=('GET', 'POST'))
 def login_password():
-    """Authenticate users of the web-UI"""
+    """Authenticate users of the web-UI."""
     if not admin_exists():
         return redirect('/create_admin')
     elif flask_login.current_user.is_authenticated:

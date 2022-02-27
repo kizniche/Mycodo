@@ -622,7 +622,7 @@ def sum_past_seconds(unique_id, unit, channel, past_seconds, measure=None):
 
 
 def influx_time_str_to_milliseconds(timestamp_str):
-    """Converts InfluxDB time string with "Z" from nanoseconds to milliseconds and removes the Z"""
+    """Converts InfluxDB time string with "Z" from nanoseconds to milliseconds and removes the Z."""
     start_date_time = timestamp_str.split('Z')[0].split('.')[0]
     start_milliseconds = timestamp_str.split('Z')[0].split('.')[1][:3]
     return '{}.{}'.format(start_date_time, start_milliseconds)

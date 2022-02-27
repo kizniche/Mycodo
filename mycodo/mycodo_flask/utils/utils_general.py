@@ -601,7 +601,7 @@ def controller_activate_deactivate(messages,
 #
 
 def choices_controller_ids():
-    """populate form multi-select choices from Controller IDS"""
+    """populate form multi-select choices from Controller IDs."""
     choices = []
     for each_input in Input.query.all():
         display = '[Input {id:02d}] {name}'.format(

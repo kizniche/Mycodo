@@ -16,7 +16,7 @@ from mycodo.utils.lockfile import LockFile
 
 
 class AtlasScientificFTDI(AbstractBaseAtlasScientific, Device):
-    """A Class to communicate with Atlas Scientific sensors via FTDI"""
+    """A Class to communicate with Atlas Scientific sensors via FTDI."""
 
     def __init__(self, serial_device):
         Device.__init__(self, mode='t', device_id=serial_device)

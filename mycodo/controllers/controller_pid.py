@@ -904,7 +904,7 @@ class PIDController(AbstractController, threading.Thread):
         return "success"
 
     def set_setpoint(self, setpoint):
-        """Set the setpoint of PID"""
+        """Set the setpoint of PID."""
         self.PID_Controller.setpoint = float(setpoint)
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()
@@ -913,7 +913,7 @@ class PIDController(AbstractController, threading.Thread):
         return "Setpoint set to {sp}".format(sp=setpoint)
 
     def set_method(self, method_id):
-        """Set the method of PID"""
+        """Set the method of PID."""
         with session_scope(MYCODO_DB_PATH) as db_session:
             mod_pid = db_session.query(PID).filter(PID.unique_id == self.unique_id).first()
             mod_pid.setpoint_tracking_id = method_id

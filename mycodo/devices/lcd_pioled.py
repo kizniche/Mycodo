@@ -11,7 +11,7 @@ logger = logging.getLogger("mycodo.device.lcd_pioled")
 
 
 class LCD_Pioled:
-    """Output to the PiOLED I2C LCD"""
+    """Output to the PiOLED I2C LCD."""
 
     def __init__(self, lcd_dev):
         self.logger = logging.getLogger(

@@ -12,7 +12,7 @@ logger = logging.getLogger("mycodo.device.lcd_pioled_circuitpython")
 
 
 class PiOLEDCircuitpython:
-    """Output to the PiOLED"""
+    """Output to the PiOLED."""
     def __init__(self, lcd_dev=None, lcd_settings_dict=None, font=None):
         self.disp = None
         self.font = font

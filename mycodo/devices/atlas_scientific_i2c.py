@@ -14,7 +14,7 @@ from mycodo.utils.lockfile import LockFile
 
 
 class AtlasScientificI2C(AbstractBaseAtlasScientific):
-    """Class for Atlas Scientific sensor communication via I2C"""
+    """Class for Atlas Scientific sensor communication via I2C."""
 
     long_timeout = 1.5  # the timeout needed to query readings and calibrations
     short_timeout = .5  # timeout for regular commands
@@ -70,7 +70,7 @@ class AtlasScientificI2C(AbstractBaseAtlasScientific):
         self.current_addr = addr
 
     def write(self, cmd):
-        """Append the null character and send the command over I2C"""
+        """Append the null character and send the command over I2C."""
         cmd += "\00"
         # self.logger.error("Atlas Scientific command being sent: '{}'".format(cmd))
         self.file_write.write(cmd.encode('latin-1'))

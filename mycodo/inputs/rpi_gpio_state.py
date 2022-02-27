@@ -85,7 +85,7 @@ class InputModule(AbstractInput):
             self.gpio.setup(self.location, self.gpio.IN)
 
     def get_measurement(self):
-        """Gets the GPIO state via RPi.GPIO"""
+        """Gets the GPIO state via RPi.GPIO."""
         self.return_dict = copy.deepcopy(measurements_dict)
 
         self.value_set(0, self.gpio.input(self.location))

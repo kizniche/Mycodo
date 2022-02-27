@@ -15,7 +15,7 @@ from mycodo.utils.lockfile import LockFile
 
 
 class AtlasScientificUART(AbstractBaseAtlasScientific):
-    """A Class to communicate with Atlas Scientific sensors via UART"""
+    """A Class to communicate with Atlas Scientific sensors via UART."""
 
     def __init__(self, serial_device, baudrate=9600):
         super(AtlasScientificUART, self).__init__(interface='UART', name=serial_device.replace("/", "_"))

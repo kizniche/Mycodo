@@ -197,7 +197,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that monitors the Atlas Scientific sensor pH"""
+    """A sensor support class that monitors the Atlas Scientific sensor pH."""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)

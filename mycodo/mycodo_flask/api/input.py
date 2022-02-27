@@ -116,7 +116,7 @@ class SettingsInputsUniqueID(Resource):
     params={'unique_id': 'The unique ID of the input.'}
 )
 class InputsUniqueID(Resource):
-    """Input with Unique ID"""
+    """Input with Unique ID."""
 
     @accept('application/vnd.mycodo.v1+json')
     @flask_login.login_required

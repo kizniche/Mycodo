@@ -88,7 +88,7 @@ the known ORP value in the `Calibration ORP` field, and press `Calibrate`. You d
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that monitors AnyLeaf sensor pH or ORP"""
+    """A sensor support class that monitors AnyLeaf sensor pH or ORP."""
 
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)

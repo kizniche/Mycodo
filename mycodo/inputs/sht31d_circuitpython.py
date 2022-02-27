@@ -56,7 +56,7 @@ INPUT_INFORMATION = {
 
 
 class InputModule(AbstractInput):
-    """A sensor support class that measures the SHT31-D"""
+    """A sensor support class that measures the SHT31-D."""
     def __init__(self, input_dev, testing=False):
         super(InputModule, self).__init__(input_dev, testing=testing, name=__name__)
 
