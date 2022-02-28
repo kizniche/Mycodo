@@ -49,7 +49,7 @@ def execute_at_creation(error, new_widget, dict_widget):
         '{low},{high},{color}'.format(low=stop, high=stop + stop_size, color=color_list[0]))
     for i in range(custom_options_json['stops'] - 1):
         stop += stop_size
-        if i < len(color_list) - 1:
+        if i + 1 < len(color_list):
             color = color_list[i + 1]
         else:
             color = "#DF5353"
@@ -116,7 +116,7 @@ WIDGET_INFORMATION = {
         ],
         [
             'rm -rf Highcharts-Stock-9.1.2.zip',
-            'wget https://code.highcharts.com/zips/Highcharts-Stock-9.1.2.zip',
+            'wget https://code.highcharts.com/zips/Highcharts-Stock-9.1.2.zip 2>&1',
             'unzip Highcharts-Stock-9.1.2.zip -d Highcharts-Stock-9.1.2',
             'cp -rf Highcharts-Stock-9.1.2/code/highstock.js /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock-9.1.2.js',
             'cp -rf Highcharts-Stock-9.1.2/code/highstock.js.map /var/mycodo-root/mycodo/mycodo_flask/static/js/user_js/highstock.js.map',

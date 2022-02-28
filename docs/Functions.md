@@ -7,12 +7,6 @@ Function controllers perform tasks that often involve the use of Inputs and Outp
 !!! note
     "Last" means the Function will only acquire the last (latest) measurement in the database. "Past" means the Function will acquire all measurements from the present until the "Max Age (seconds)" that's been set (e.g. if measurements are acquired every 10 seconds, and a Max Age is set to 60 seconds, there will on average be 6 measurements returned to the Function to operate with).
 
-## Function Actions
-
-These are the actions that can be added to Controllers (i.e. Conditional Controllers, Trigger Controllers) to provide a way to interact with other parts of Mycodo and external to Mycodo.
-
-For a full list of supported Actions, see [Supported Actions](Supported-Actions.md).
-
 ## Custom Functions
 
 There is a Custom Function import system in Mycodo that allows user-created Functions to be used in the Mycodo system. Custom Functions can be uploaded on the `[Gear Icon] -> Configure -> Custom Functions` page. After import, they will be available to use on the `Setup -> Function` page.

@@ -89,19 +89,6 @@ In order to calculate accurate energy usage statistics, a few characteristics of
 </tbody>
 </table>
 
-## Controller Settings
-
-Page\: `[Gear Icon] -> Configure -> Custom Functions`
-
-Controller modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Functions](Functions.md#custom-functions) for more details.
-
-## Action Settings
-
-Page\: `[Gear Icon] -> Configure -> Custom Actions`
-
-Action modules may be imported and used within Mycodo. These modules must follow a specific format. See [Function Actions](Functions.md#function-actions) for more details.
-
-
 ## Input Settings
 
 Page\: `[Gear Icon] -> Configure -> Custom Inputs`
@@ -140,6 +127,69 @@ Output modules may be imported and used within Mycodo. These modules must follow
 <tr>
 <td>Import Output Module</td>
 <td>Select your output module file, then click this button to begin the import.</td>
+</tr>
+</tbody>
+</table>
+
+## Function Settings
+
+Page\: `[Gear Icon] -> Configure -> Custom Functions`
+
+Function modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Functions](Functions.md#custom-functions) for more details.
+
+<table>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Import Function Module</td>
+<td>Select your function module file, then click this button to begin the import.</td>
+</tr>
+</tbody>
+</table>
+
+## Action Settings
+
+Page\: `[Gear Icon] -> Configure -> Custom Actions`
+
+Action modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Actions](Actions.md#custom-actions) for more details.
+
+<table>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Import Action Module</td>
+<td>Select your action module file, then click this button to begin the import.</td>
+</tr>
+</tbody>
+</table>
+
+## Widget Settings
+
+Page\: `[Gear Icon] -> Configure -> Custom Widgets`
+
+Widget modules may be imported and used within Mycodo. These modules must follow a specific format. See [Custom Widgets](Data-Viewing.md#custom-widgets) for more details.
+
+<table>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Import Widget Module</td>
+<td>Select your widget module file, then click this button to begin the import.</td>
 </tr>
 </tbody>
 </table>

@@ -18,6 +18,7 @@ Changes to how the Output Widget works will require you to reselect an Output ch
  - Fix Blank Line option of LCDs actually displaying a blank line
  - Fix missing Display Unit option for some LCDs
  - Fix issues with the Output Widget
+ - Fix Gauge Widget stop selection ([#1130](https://github.com/kizniche/mycodo/issues/1130))
 
 ### Features
 
