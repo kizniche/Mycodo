@@ -8,12 +8,13 @@ import shutil
 import time
 import zipfile
 from collections import OrderedDict
-from mycodo.utils.system_pi import parse_custom_option_values_output_channels_json
+
 from dateutil import relativedelta
 
 from mycodo.config import INFLUXDB_DATABASE
 from mycodo.config import INSTALL_DIRECTORY
 from mycodo.config import PATH_FUNCTIONS_CUSTOM
+from mycodo.config import PATH_FUNCTION_ACTIONS_CUSTOM
 from mycodo.config import PATH_INPUTS_CUSTOM
 from mycodo.config import PATH_OUTPUTS_CUSTOM
 from mycodo.config import PATH_USER_SCRIPTS
@@ -34,6 +35,7 @@ from mycodo.utils.logging_utils import set_log_level
 from mycodo.utils.outputs import parse_output_information
 from mycodo.utils.system_pi import assure_path_exists
 from mycodo.utils.system_pi import cmd_output
+from mycodo.utils.system_pi import parse_custom_option_values_output_channels_json
 from mycodo.utils.system_pi import return_measurement_info
 from mycodo.utils.system_pi import set_user_grp
 
@@ -90,6 +92,7 @@ def create_settings_export(save_path=None):
                     os.path.basename(SQL_DATABASE_MYCODO))
             export_directories = [
                 (PATH_FUNCTIONS_CUSTOM, "custom_functions"),
+                (PATH_FUNCTION_ACTIONS_CUSTOM, "custom_function_actions"),
                 (PATH_INPUTS_CUSTOM, "custom_inputs"),
                 (PATH_OUTPUTS_CUSTOM, "custom_outputs"),
                 (PATH_WIDGETS_CUSTOM, "custom_widgets"),

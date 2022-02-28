@@ -39,6 +39,7 @@ services:
       - mycodo_env:/home/mycodo/env
       - mycodo_databases:/home/mycodo/databases
       - mycodo_custom_functions:/home/mycodo/mycodo/functions/custom_functions
+      - mycodo_custom_function_actions:/home/mycodo/mycodo/function_actions/custom_function_actions
       - mycodo_custom_inputs:/home/mycodo/mycodo/inputs/custom_inputs
       - mycodo_custom_outputs:/home/mycodo/mycodo/outputs/custom_outputs
       - mycodo_custom_widgets:/home/mycodo/mycodo/widgets/custom_widgets
@@ -67,6 +68,7 @@ services:
       - mycodo_env:/home/mycodo/env
       - mycodo_databases:/home/mycodo/databases
       - mycodo_custom_functions:/home/mycodo/mycodo/functions/custom_functions
+      - mycodo_custom_function_actions:/home/mycodo/mycodo/function_actions/custom_function_actions
       - mycodo_custom_inputs:/home/mycodo/mycodo/inputs/custom_inputs
       - mycodo_custom_outputs:/home/mycodo/mycodo/outputs/custom_outputs
       - mycodo_custom_widgets:/home/mycodo/mycodo/widgets/custom_widgets
@@ -105,6 +107,7 @@ volumes:
   mycodo:
   mycodo_env:
   mycodo_custom_functions:
+  mycodo_custom_function_actions:
   mycodo_custom_inputs:
   mycodo_custom_outputs:
   mycodo_custom_widgets:

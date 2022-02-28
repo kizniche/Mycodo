@@ -1,8 +1,6 @@
 ## 8.12.10 (Unreleased)
 
-If you are upgrading from a version prior to 8.12.10, following the upgrade, you will need to reboot.
-
-Changes to how the Output Widget works will require you to reselect an Output channel.
+Following the upgrade, you will need to reboot to complete the upgrade.
 
 ### Bugfixes
 
@@ -22,7 +20,7 @@ Changes to how the Output Widget works will require you to reselect an Output ch
 
 ### Features
 
- - Add ability to create and import Custom Action Modules
+ - Add ability to import custom Action modules (Configure -> Custom Actions))
  - Add camera library: libcamera ([#1117](https://github.com/kizniche/mycodo/issues/1117))
  - Add Input: TTN Integration: Data Storage (TTN v3, Payload jmespath Expression)
  - Add Output: Kasa HS300 Smart WiFi Power Strip
